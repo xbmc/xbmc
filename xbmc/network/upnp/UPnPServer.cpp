@@ -614,12 +614,10 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     // we will reuse this ThumbLoader for all items
     NPT_Reference<CThumbLoader> thumb_loader;
 
-    // this isn't ideal, just grabbing first item to identify the content type
-    // of this FileItemList, but there's no other option
-    if (!items.IsEmpty() && items.Get(0)->HasVideoInfoTag()) {
+    if (URIUtils::IsVideoDb(items.GetPath())) {
         thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
     }
-    else if (!items.IsEmpty() && items.Get(0)->HasMusicInfoTag()) {
+    else if (URIUtils::IsMusicDb(items.GetPath())) {
         thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
     }
     if (!thumb_loader.IsNull()) {
