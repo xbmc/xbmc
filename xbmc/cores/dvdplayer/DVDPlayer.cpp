@@ -92,6 +92,8 @@
 #include <boost/lexical_cast.hpp>
 #include "Utility/Base64.h"
 #include "PlexAsyncUrlResolver.h"
+
+#include "PlexMediaServerQueue.h"
 /* END PLEX */
 
 using namespace std;
@@ -1079,7 +1081,9 @@ void CDVDPlayer::Process()
   }
 #else
 
-  PlexProcess();
+  CStdString stopURL;
+  if (!PlexProcess(stopURL))
+    return;
 
   try
   {
@@ -1130,7 +1134,9 @@ void CDVDPlayer::Process()
   if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
   {
     fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+#ifndef __PLEX__
     m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond, m_CurrentVideo.hint.height);
+#endif
   }
 
   /*
@@ -1192,6 +1198,10 @@ void CDVDPlayer::Process()
   // make sure application know our info
   UpdateApplication(0);
   UpdatePlayState(0);
+
+  /* PLEX */
+  OpenFileComplete();
+  /* END PLEX */
 
   if(m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
@@ -1378,6 +1388,16 @@ void CDVDPlayer::Process()
     // check if in a cut or commercial break that should be automatically skipped
     CheckAutoSceneSkip();
   }
+
+  /* PLEX */
+  // We're done, if we have a URL to hit on exit, do so now.
+  if (stopURL.empty() == false)
+  {
+    CFileCurl http;
+    CStdString out;
+    http.Get(stopURL, out);
+  }
+  /* END PLEX */
 }
 
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
@@ -2058,6 +2078,10 @@ void CDVDPlayer::OnExit()
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
+    /* PLEX */
+    OpenFileComplete();
+    /* END PLEX */
+
     // set event to inform openfile something went wrong in case openfile is still waiting for this event
     SetCaching(CACHESTATE_DONE);
 
@@ -2118,6 +2142,10 @@ void CDVDPlayer::OnExit()
     m_pInputStream = NULL;
     m_pDemuxer = NULL;
   }
+
+  /* PLEX */
+  OpenFileComplete();
+  /* END PLEX */
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
@@ -2685,7 +2713,13 @@ float CDVDPlayer::GetCachePercentage()
 
 void CDVDPlayer::SetAVDelay(float fValue)
 {
+#ifndef __PLEX__
   m_dvdPlayerVideo.SetDelay( (fValue * DVD_TIME_BASE) ) ;
+#else
+  // Start with the global delay and offset from there.
+  float totalDelay = g_guiSettings.GetInt("audiooutput.defaultdelay")/1000.0 + fValue;
+  m_dvdPlayerVideo.SetDelay( (totalDelay * DVD_TIME_BASE) ) ;
+#endif
 }
 
 float CDVDPlayer::GetAVDelay()
@@ -2739,6 +2773,16 @@ void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
 void CDVDPlayer::SetSubtitle(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetSubtitleStream(iStream));
+
+  /* PLEX */
+  // Return the ID of the selected stream.
+  StreamLock lock(this);
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+
+  // Send the change to the Media Server.
+  CFileItemPtr item = g_application.CurrentFileItemPtr();
+  PlexMediaServerQueue::Get().onStreamSelected(item, GetPlexMediaPartID(), g_settings.m_currentVideoSettings.m_SubtitleOn ? s.plexID : 0, -1);
+  /* END PLEX */
 }
 
 bool CDVDPlayer::GetSubtitleVisible()
@@ -2759,6 +2803,17 @@ void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 {
   g_settings.m_currentVideoSettings.m_SubtitleOn = bVisible;
   m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
+
+  /* PLEX */
+  // Send the change to the Media Server.
+  CFileItemPtr item = g_application.CurrentFileItemPtr();
+  int partID = GetPlexMediaPartID();
+  int subtitleStreamID = GetSubtitlePlexID();
+
+  // Don't send the message over if we're just hiding the initial sub.
+  if (m_hidingSub == false)
+    PlexMediaServerQueue::Get().onStreamSelected(item, partID, g_settings.m_currentVideoSettings.m_SubtitleOn ? subtitleStreamID : 0, -1);
+  /* END PLEX */
 }
 
 int CDVDPlayer::GetAudioStreamCount()
@@ -2790,6 +2845,14 @@ void CDVDPlayer::SetAudioStream(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
   SynchronizeDemuxer(100);
+
+  /* PLEX */
+  StreamLock lock(this);
+
+  // Notify the Plex Media Server.
+  CFileItemPtr item = g_application.CurrentFileItemPtr();
+  PlexMediaServerQueue::Get().onStreamSelected(item, GetPlexMediaPartID(), -1, GetAudioStreamPlexID());
+  /* END PLEX */
 }
 
 TextCacheStruct_t* CDVDPlayer::GetTeletextCache()
@@ -4334,9 +4397,8 @@ CStdString CDVDPlayer::TranscodeURL(CStdString& stopURL, const CStdString& url, 
   return transcodeURL.Get();
 }
 
-void CDVDPlayer::PlexProcess()
+bool CDVDPlayer::PlexProcess(CStdString& stopURL)
 {
-  CStdString stopURL;
   bool usingLocalPath = false;
 
   // See if we can find the file locally.
@@ -4368,7 +4430,7 @@ void CDVDPlayer::PlexProcess()
     {
       resolver->Cancel();
       m_bAbortRequest = true;
-      return;
+      return false;
     }
 
     // Suck the data out of the resolver and see if it's indirect as well.
@@ -4398,7 +4460,7 @@ void CDVDPlayer::PlexProcess()
     {
       g_application.getApplicationMessenger().RestartWithNewPlayer(0, m_item.GetPath());
       m_bFileOpenComplete = true;
-      return;
+      return false;
     }
 
     int pos = m_filename.find("&") + 1;
@@ -4460,6 +4522,7 @@ void CDVDPlayer::PlexProcess()
       dprintf("Transcode URL for remote content: %s", m_filename.c_str());
     }
   }
+  return true;
 }
 
 int CDVDPlayer::GetAudioStreamPlexID()
