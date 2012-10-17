@@ -80,7 +80,7 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);
 
-  void ClearFileItems();
+  void ClearFileItems(bool itemsOnly = false);
   virtual void SortItems(CFileItemList &items);
 
   virtual bool CheckFilterAdvanced(CFileItemList &items) { return false; }

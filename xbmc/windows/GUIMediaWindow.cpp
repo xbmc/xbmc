@@ -566,10 +566,13 @@ void CGUIMediaWindow::UpdateButtons()
     SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
 }
 
-void CGUIMediaWindow::ClearFileItems()
+void CGUIMediaWindow::ClearFileItems(bool itemsOnly /* = false */)
 {
   m_viewControl.Clear();
-  m_vecItems->Clear(); // will clean up everything
+  if (itemsOnly)
+    m_vecItems->ClearItems();
+  else
+    m_vecItems->Clear();
   m_unfilteredItems->Clear();
 }
 
@@ -724,9 +727,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
       GetDirectoryHistoryString(pItem.get(), strSelectedItem);
     }
   }
+
+  bool refresh = strDirectory == m_vecItems->GetPath();
   
   CStdString strCurrentDirectory = m_vecItems->GetPath();
-
   m_history.SetSelectedItem(strSelectedItem, strCurrentDirectory);
 
   CFileItemList items;
@@ -750,10 +754,13 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   if (items.GetLabel().IsEmpty())
     items.SetLabel(CUtil::GetTitleFromPath(items.GetPath(), true));
-
-  ClearFileItems();
-  m_vecItems->Copy(items);
-
+  
+  ClearFileItems(refresh);
+  if (refresh)
+    m_vecItems->Append(items);
+  else
+    m_vecItems->Copy(items);
+    
   // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
