@@ -136,6 +136,8 @@ bool CEGLNativeTypeRaspberryPI::CreateNativeWindow()
 
 bool CEGLNativeTypeRaspberryPI::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 {
+  if (!nativeDisplay)
+    return false;
   *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
   return true;
 }
@@ -143,6 +145,8 @@ bool CEGLNativeTypeRaspberryPI::GetNativeDisplay(XBNativeDisplayType **nativeDis
 bool CEGLNativeTypeRaspberryPI::GetNativeWindow(XBNativeDisplayType **nativeWindow) const
 {
   DLOG("CEGLNativeTypeRaspberryPI::GetNativeWindow\n");
+  if (!nativeWindow)
+    return false;
   *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
 }  

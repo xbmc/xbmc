@@ -80,12 +80,16 @@ bool CEGLNativeTypeAmlogic::CreateNativeWindow()
 
 bool CEGLNativeTypeAmlogic::GetNativeDisplay(EGLNativeDisplayType **nativeDisplay) const
 {
+  if (!nativeDisplay)
+    return false;
   *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
   return true;
 }
 
 bool CEGLNativeTypeAmlogic::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 {
+  if (!nativeWindow)
+    return false;
   *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
 }

@@ -68,12 +68,16 @@ bool CEGLNativeTypeAndroid::CreateNativeWindow()
 
 bool CEGLNativeTypeAndroid::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 {
+  if (!nativeDisplay)
+    return false;
   *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
   return true;
 }
 
 bool CEGLNativeTypeAndroid::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 {
+  if (!nativeWindow)
+    return false;
   *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
 }
