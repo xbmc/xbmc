@@ -4,4 +4,4 @@
 	ignore = all
 [submodule "addons/skin.mediastream"]
 	path = addons/skin.mediastream
-	url = git@github.com:elan/plex-mediastream.git
+	url = git@github.com:plexinc/plex-mediastream.git
