@@ -47,7 +47,11 @@ namespace XFILE
     CSmartPlaylist playlist;
     if (!playlist.Load(strPath))
       return false;
-    return GetDirectory(playlist, items);
+    bool result = GetDirectory(playlist, items);
+    if (result)
+      items.SetProperty("library.smartplaylist", true);
+    
+    return result;
   }
   
   bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir /* = "" */, bool filter /* = false */)

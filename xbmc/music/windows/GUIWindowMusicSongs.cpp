@@ -95,9 +95,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         CStdString strParent;
         URIUtils::GetParentPath(directory.GetPath(), strParent);
         if (directory.GetPath() == m_vecItems->GetPath() || strParent == m_vecItems->GetPath())
-        {
-          Update(m_vecItems->GetPath());
-        }
+          Refresh();
       }
     }
     break;
@@ -420,7 +418,7 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   case CONTEXT_BUTTON_CDDB:
     if (m_musicdatabase.LookupCDDBInfo(true))
-      Update(m_vecItems->GetPath());
+      Refresh();
     return true;
 
   case CONTEXT_BUTTON_DELETE:
