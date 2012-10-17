@@ -207,13 +207,17 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     locations.push_back(share);
 #endif// HAS_FILESYSTEM_NFS
 
+#ifdef HAS_UPNP
     share.strPath = "upnp://";
     share.strName = "UPnP Devices";
     locations.push_back(share);
-
+#endif
+    
+#ifdef HAS_ZEROCONF
     share.strPath = "zeroconf://";
     share.strName = "Zeroconf Browser";
     locations.push_back(share);
+#endif
   }
 }
 
