@@ -194,15 +194,8 @@ void CGUIWindowHome::RestoreSelectedMenuItem()
     
     if (selectionItem != -1)
     {
-      CGUIListItemPtr item = pControl->GetListItem(0);
-      CFileItem* fileItem = (CFileItem* )item.get();
-      
-      // See if we need to refocus.
-      if (fileItem->GetPath() != m_lastSelectedItemKey)
-      {
-        CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), pControl->GetID(), selectionItem+1, 0);
-        g_windowManager.SendThreadMessage(msg);
-      }
+      CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), pControl->GetID(), selectionItem+1, 0);
+      g_windowManager.SendThreadMessage(msg);
     }
   }
 }
