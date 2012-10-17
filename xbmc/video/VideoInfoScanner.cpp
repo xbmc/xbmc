@@ -1536,7 +1536,7 @@ namespace VIDEO
           }
 
           item.GetVideoInfoTag()->m_firstAired = dateAdded;
-          if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, idShow) < 0)
+          if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
             return INFO_ERROR;
         }
       }
