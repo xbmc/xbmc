@@ -25,7 +25,7 @@
 #include "FileItem.h"
 #include "FileURLProtocol.h"
 #include "GUIInfoManager.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 #include "Util.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
