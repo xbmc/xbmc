@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- left bg's -->
+	<include name="ChannelPlotBG">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>355</width>
+			<height>720</height>
+			<include>Black</include>
+			<animation effect="fade" start="0" end="20" time="0" condition="true">Conditional</animation>
+			<visible>true</visible>
+		</control>
+		<control type="group">
+		<control type="image">
+			<posy>385</posy>
+			<posx>0</posx>
+			<width>355</width>
+			<height>263</height>
+			<include>Black</include>
+			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>			
+		</control>
+		<control type="image">
+			<posx>355</posx>
+			<posy>500</posy>
+			<include>ArrowBlack</include>
+			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+		</control>
+		</control>
+	</include>
+	<include name="ChannelPlot">
+		<control type="group">
+			<!-- dummy plot -->
+			<control type="textbox">
+				<posx>100</posx>
+				<posy>410</posy>
+				<width>230</width>
+				<height>205</height>
+				<include>Plot</include>
+				<visible>IsEmpty(Container.ShowPlot)</visible>
+			</control>
+			<!-- plot -->
+			<control type="textbox">
+				<posx>100</posx>
+				<posy>410</posy>
+				<width>230</width>
+				<height>205</height>
+				<include>Plot</include>
+				<label>$INFO[Container.ShowPlot]</label>
+			</control>
+		</control>
+	</include>
+	<include name="ChannelIcon">
+		<control type="group">
+			<posx>85</posx>
+			<posy>112</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>256</width>
+				<height>256</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="40">shadow.png</texture>
+			</control>
+			<control type="image">
+				<description>Parent thumb</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>230</width>
+				<height>230</height>
+				<texture background="true" diffuse="photos-icon-mask.png">$INFO[Container.FolderThumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+		</control>
+	</include>
+	<!-- views -->
+	<include name="ChannelsPhotos">
+		<control type="group">
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<include>ChannelPlotBG</include>
+			<include>ChannelPlot</include>
+			<include>ChannelIcon</include>
+			<!-- main list -->
+			<control type="group">
+				<control type="panel" id="52">
+					<viewtype label="Photos">panel</viewtype>
+					<onup>52</onup>
+					<ondown>52</ondown>
+					<onright>52</onright>
+					<onleft>9100</onleft>
+					<orientation>vertical</orientation>
+					<posx>369</posx>
+					<posy>50</posy>
+					<width>1000</width>
+					<height>665</height>
+					<itemlayout width="150" height="165">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>						
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="150" height="160">
+						<include>PhotoThumbCard</include>
+						<include>PhotoThumb</include>						
+						<control type="label">
+							<include>PhotoLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>SelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="_ChannelsMusic">
+		<control type="group">
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<include>ChannelPlotBG</include>
+			<include>ChannelPlot</include>
+			<include>ChannelIcon</include>
+			<!-- main list -->
+			<control type="group">
+				<control type="panel" id="52">
+					<viewtype label="Photos">panel</viewtype>
+					<onup>52</onup>
+					<ondown>52</ondown>
+					<onright>52</onright>
+					<onleft>9100</onleft>
+					<orientation>vertical</orientation>
+					<posx>400</posx>
+					<posy>56</posy>
+					<width>900</width>
+					<height>645</height>
+					<itemlayout width="216" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="216" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>MusicSelectedBorder</include>
+					</focusedlayout>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

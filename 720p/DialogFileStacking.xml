@@ -1,0 +1,44 @@
+<window id="2008">
+  <defaultcontrol>450</defaultcontrol>
+
+  <controls>
+    <control type="list" id="450">
+      <posx>480</posx>
+      <posy>25</posy>
+      <width>440</width>
+      <height>125</height>
+      <onleft>450</onleft>
+      <onright>450</onright>
+      <onup>450</onup>
+      <ondown>450</ondown>
+      <orientation>horizontal</orientation>
+      <focusposition>2</focusposition>
+      <viewtype label="535">list</viewtype>
+      <scrolltime>200</scrolltime>
+
+      <itemlayout width="40">
+
+      </itemlayout>
+
+      <focusedlayout width="53">
+        <control type="label">
+          <posx>33</posx>
+          <posy>60</posy>
+          <width>80</width>
+          <height>28</height>
+          <align>center</align>
+          <info>ListItem.Label</info>
+        </control>
+      </focusedlayout>
+    </control>
+
+    <control type="label">
+      <posx>907</posx>
+      <posy>31</posy>
+      <height>28</height>
+      <align>right</align>
+      <info>ListItem.Label</info>
+    </control>
+
+  </controls>
+</window>

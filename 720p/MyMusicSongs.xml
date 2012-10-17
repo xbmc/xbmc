@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<window id="501">
+	<defaultcontrol>52</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<!-- DELETE WHEN DEV IS DONE -->
+		<include>devDummies</include>
+		<!-- -->
+		<!-- bg's (Backgrounds.xml) -->
+		<include>GrainyBG</include>
+		<include>FanartBG</include>
+		<include>FanartOverlay</include>
+		<!-- -->
+		<!-- views (ViewsMusic.xml & ViewsChannels.xml) -->
+		<include>MusicLibrary</include>
+		<include>ChannelsMusic</include>
+		<!-- -->
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml) -->
+		<include>LeftSideMenuPhotos</include>
+		<include>TopBar</include>
+	</controls>
+</window>

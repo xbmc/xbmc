@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<window id="123">
+	<defaultcontrol>2</defaultcontrol>
+	<zorder>1</zorder>
+	<controls>
+		<!-- ViewsOSD.xml -->
+		<include>OSDSettings</include>
+	</controls>
+</window>

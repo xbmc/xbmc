@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<window id="125">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="group">
+			<posx>0</posx>
+			<posy>0</posy>
+			<include>VideoOSDSlideDown</include>
+			<control type="image">
+				<description>OSD Background Image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>290</height>
+				<texture flipy="true">OSDBackground.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<control type="label">
+				<description>bookmarks_label</description>
+				<posx>10</posx>
+				<posy>10</posy>
+				<width>310</width>
+				<align>center</align>
+				<label>298</label>
+				<font>MediumDefaultFont</font>
+			</control>
+			<control type="panel" id="11">
+				<posx>15</posx>
+				<posy>46</posy>
+				<width>1250</width>
+				<height>145</height>
+				<onleft>11</onleft>
+				<onright>11</onright>
+				<ondown>2</ondown>
+				<itemlayout width="VideoOSDBkmkThumbAreaWidth" height="145">
+					<control type="image">
+						<posx>6</posx>
+						<posy>6</posy>
+						<width>VideoOSDBkmkThumbImageWidth</width>
+						<height>115</height>
+						<info>ListItem.Icon</info>
+						<bordertexture>Grey.png</bordertexture>
+						<bordersize>1</bordersize>
+						<colordiffuse>99dddddd</colordiffuse>
+					</control>
+					<control type="label">
+						<posx>73</posx>
+						<posy>123</posy>
+						<width>VideoOSDBkmkThumbImageWidth</width>
+						<height>22</height>
+						<align>center</align>
+						<info>ListItem.Label</info>
+						<textcolor>Unfocused</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="VideoOSDBkmkThumbAreaWidth" height="145">
+					<control type="image">
+						<posx>6</posx>
+						<posy>6</posy>
+						<width>VideoOSDBkmkThumbImageWidth</width>
+						<height>115</height>
+						<info>ListItem.Icon</info>
+						<bordertexture>Grey.png</bordertexture>
+						<bordersize>1</bordersize>
+					</control>
+					<control type="label">
+						<posx>73</posx>
+						<posy>123</posy>
+						<width>VideoOSDBkmkThumbImageWidth</width>
+						<height>22</height>
+						<align>center</align>
+						<info>ListItem.Label</info>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="grouplist" id="1">
+				<include>VideoOSDBkmkBtnsGroupDims</include>
+				<orientation>horizontal</orientation>
+				<onup>11</onup>
+				<ondown>11</ondown>
+				<control type="button" id="2">
+					<description>create</description>
+					<width>VideoOSDBkmkBtnWidth</width>
+					<label>294</label>
+					<include>DialogButton</include>
+				</control>
+				<control type="button" id="3">
+					<description>clear</description>
+					<width>VideoOSDBkmkBtnWidth</width>
+					<label>296</label>
+					<include>DialogButton</include>
+				</control>
+				<control type="button" id="4">
+					<description>clear</description>
+					<width>VideoOSDBkmkBtnWidth</width>
+					<label>20406</label>
+					<include>DialogButton</include>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

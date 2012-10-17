@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<window id="2005">
+	<defaultcontrol>702</defaultcontrol>
+	<controls>
+		<include>VideoOSD</include>
+		<control type="textbox" id="8">
+			<posy>65</posy>
+			<width>1210</width>
+			<height>115</height>
+			<align>left</align>
+			<aligny>top</aligny>
+			<label>$INFO[VideoPlayer.Plot]</label>
+		</control>
+	</controls>
+</window>

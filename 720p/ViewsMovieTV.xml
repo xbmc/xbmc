@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<includes>
+	<!-- Library -->
+	<include name="VideoPosters">
+		<!-- Library Movies & TV Shows -->
+		<control type="group">
+			<include>FadeDialog</include>
+			<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary)</visible>
+			<include>rightSideSlide</include>
+			<control type="panel" id="52">
+				<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary)</visible>
+				<viewtype label="Posters">panel</viewtype>
+				<onup>52</onup>
+				<ondown>52</ondown>
+				<onright>52</onright>
+				<onleft>9100</onleft>
+				<orientation>vertical</orientation>
+				<posx>102</posx>
+				<posy>64</posy>
+				<width>1150</width>
+				<height>635</height>
+				<itemlayout width="223" height="315">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>299</height>
+						<include>Shadow</include>
+					</control>
+					<control type="image">
+						<description>Poster image</description>
+						<posx>13</posx>
+						<posy>13</posy>
+						<width>182</width>
+						<height>273</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
+					<control type="label">
+						<description>Poster label</description>
+						<posy>290</posy>
+						<posx>105</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>Condensed-17</font>
+						<textcolor>white</textcolor>
+						<shadowcolor>ff333</shadowcolor>
+					</control>
+					<!--><control type="image">
+						<description>Overlay</description>
+						<posx>20</posx>
+						<posy>173</posy>
+						<include>WtchUnwtchOverlayDims</include>
+						<info>ListItem.Overlay</info>
+						<colordiffuse>FF999999</colordiffuse>
+						<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+					</control>-->
+				</itemlayout>
+				<focusedlayout width="223" height="315">
+					<!-- drop shadow -->
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>299</height>
+						<include>Shadow</include>
+					</control>
+					<control type="image">
+						<description>Poster image</description>
+						<posx>10</posx>
+						<posy>10</posy>
+						<width>188</width>
+						<height>279</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						<include>Border</include>
+					</control>
+					<control type="label">
+						<posy>290</posy>
+						<posx>105</posx>
+						<width>180</width>
+						<height>30</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>Condensed-17</font>
+						<textcolor>orangeLight</textcolor>
+						<shadowcolor>FF222222</shadowcolor>
+					</control>
+					<!--><control type="image">
+						<description>Overlay</description>
+						<posx>20</posx>
+						<posy>175</posy>
+						<include>WtchUnwtchOverlayDims</include>
+						<info>ListItem.Overlay</info>
+						<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+					</control>-->
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+</includes>

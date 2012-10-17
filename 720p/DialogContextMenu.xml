@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<window id="106">
+	<defaultcontrol>1000</defaultcontrol>
+	<!--><coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>-->
+	<controls>
+		<!-- bg's -->
+		<control type="group">
+			<visible>false</visible>
+			<posy>-80</posy>
+			<posx>-210</posx>
+			<control type="image">
+				<posx>-1</posx>
+				<posy>-1</posy>
+				<width>422</width>
+				<height>422</height>
+				<texture>transparent.png</texture>
+				<bordertexture border="10">border-black.png</bordertexture>
+				<bordersize>1</bordersize>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+			</control>
+			<control type="image">
+				<posy>80</posy>
+				<width>420</width>
+				<height>340</height>
+				<texture border="10">base-rounded-half.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+			</control>
+			<!-- title bg -->
+			<control type="image">
+				<width>420</width>
+				<height>80</height>
+				<texture border="10" flipy="true">base-rounded-half.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+			</control>
+			<control type="image">
+				<posy>30</posy>
+				<width>420</width>
+				<height>50</height>
+				<texture>black-bottom-grey.png</texture>
+			</control>
+			<!-- arrow down -->
+			<control type="image">
+				<posx>195</posx>
+				<posy>420</posy>
+				<include>ArrowBlackDown</include>
+				<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
+			</control>
+		</control>
+		<control type="group">
+			<control type="image" id="997">
+				<description>Top Image</description>
+				<posx>0</posx>
+				<posy>-80</posy>
+				<width>420</width>
+				<height>80</height>
+				<texture border="10" flipy="true">base-rounded-half.png</texture>
+				<colordiffuse>FF111111</colordiffuse>
+			</control>
+			<control type="image">
+				<posy>-50</posy>
+				<width>420</width>
+				<height>50</height>
+				<texture>border-bottom-grey.png</texture>
+			</control>
+			<control type="image" id="999">
+				<description>Middle Image</description>
+				<posx>0</posx>
+				<width>420</width>
+				<texture border="10">black.png</texture>
+				<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image" id="998">
+				<description>Bottom Image</description>
+				<width>420</width>
+				<texture border="10">base-rounded-half.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posy>-60</posy>
+				<width>420</width>
+				<align>center</align>
+				<font>Condensed-24</font>
+				<textcolor>orange</textcolor>
+				<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
+				<!--><label>$LOCALIZE[31018]</label>-->
+			</control>
+			<control type="button" id="1000">
+				<posx>10</posx>
+				<description>Buttons</description>
+				<width>400</width>
+				<font>Condensed-18</font>
+				<height>50</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturefocus border="20">black-bottom-grey.png</texturefocus>
+				<texturenofocus border="20">border-bottom-grey.png</texturenofocus>
+				<textoffsetx>10</textoffsetx>
+				<textoffsety>0</textoffsety>
+				<textcolor>Unfocused</textcolor>
+				<focusedcolor>orangeLight</focusedcolor>
+				<disabledcolor>ff505050</disabledcolor>
+				<selectedcolor>orangeLight</selectedcolor>
+			</control>
+		</control>
+	</controls>
+</window>

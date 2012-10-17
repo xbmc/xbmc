@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<window id="6">
+	<defaultcontrol>52</defaultcontrol>
+	<views>49,50,51,52</views>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<!-- -->
+		<!-- bg's (Backgrounds.xml) -->
+		<include>GrainyBG</include>
+		<include>FanartBG</include>
+		<include>FanartOverlay</include>
+		<!-- -->
+		<!-- views (ViewsMovieTV.xml & ViewsPreplay.xml) -->
+		<include>InfoList</include>
+		<include>VideoPosters</include>
+		<include>Preplay</include>
+		<!-- -->
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml) -->
+		<include>LeftSideMenuLibrary</include>
+		<include>TopBar</include>
+		<!--><include>CommonSortLetters</include>-->
+	</controls>
+</window>

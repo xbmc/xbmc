@@ -1,0 +1,475 @@
+<?xml version="1.0"?>
+<window id="7">
+	<defaultcontrol>9000</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<!-- Submenu blade / main menu -->
+		<control type="group" id="302">
+			<include>SettingsSubBlade</include>
+			<control type="grouplist" id="9000">
+				<description>main menu</description>
+				<posx>72</posx>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<itemgap>0</itemgap>
+				<control type="button" id="100">
+					<description>button</description>
+					<label>128</label>
+					<include>SettingsCategoryButton</include>
+				</control>
+				<control type="button" id="101">
+					<description>storage</description>
+					<label>13277</label>
+					<include>SettingsCategoryButton</include>
+				</control>
+				<control type="button" id="102">
+					<description>hdd</description>
+					<label>13275</label>
+					<include>SettingsCategoryButton</include>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="103">
+					<description>dvd</description>
+					<label>13276</label>
+					<include>SettingsCategoryButton</include>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="104">
+					<description>network</description>
+					<label>13279</label>
+					<include>SettingsCategoryButton</include>
+				</control>
+				<control type="button" id="105">
+					<description>video</description>
+					<label>13280</label>
+					<include>SettingsCategoryButton</include>
+				</control>
+				<control type="button" id="106">
+					<description>hardware</description>
+					<label>13281</label>
+					<include>SettingsCategoryButton</include>
+				</control>
+			</control>
+		</control>
+		<!-- Information area -->
+		<include>SettingsTextArea</include>
+		<control type="group" id="200">
+			<description>Control Area</description>
+			<include>SettingsOptionsArea</include>
+			<control type="label">
+				<description>Title label</description>
+				<label>$LOCALIZE[31067]</label>
+				<include>SettingsUpperTitle</include>
+			</control>
+			<control type="label">
+				<description>Title</description>
+				<posx>680</posx>
+				<label>$LOCALIZE[31006]</label>
+				<include>SettingsLowerTitle</include>
+			</control>
+			<control type="group">
+				<posy>-10</posy>
+				<!-- General Info -->
+				<control type="grouplist">
+					<description>General</description>
+					<posx>SysInfoTextPosX</posx>
+					<height>500</height>
+					<visible>controlgroup(9000).hasfocus(100)</visible>
+					<include>CustomSettingsList</include>
+					<control type="label">
+						<description>2</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.cpuusage]</label>
+					</control>
+					<control type="progress">
+						<description>bar_diagram_cpu_usage</description>
+						<info>bar.cpuusage</info>
+						<include>SystemInfoProgress</include>
+					</control>
+					<control type="label">
+						<description>3</description>
+						<include>SystemInfoLabels</include>
+						<label>$LOCALIZE[139] $INFO[system.cputemperature]  -  $INFO[system.gputemperature]</label>
+					</control>
+					<control type="label">
+						<description>4</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.fanspeed]</label>
+					</control>
+					<control type="label">
+						<description>5</description>
+						<include>SystemInfoLabels</include>
+						<label>$LOCALIZE[158] : $INFO[system.freememory] - $LOCALIZE[20161] : $INFO[system.memory(total)]</label>
+					</control>
+					<control type="progress">
+						<description>bar diagram free memory</description>
+						<info>bar.freememory</info>
+						<include>SystemInfoProgress</include>
+					</control>
+					<control type="label">
+						<description>6</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[Network.IPAddress]</label>
+					</control>
+					<control type="label">
+						<description>7</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.screenresolution]</label>
+					</control>
+					<control type="label">
+						<description>8</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.kernelversion]</label>
+					</control>
+					<control type="label">
+						<description>9</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.uptime]</label>
+					</control>
+					<control type="label">
+						<description>10</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.totaluptime]</label>
+					</control>
+				</control>
+				<!-- Storage Info -->
+				<control type="grouplist">
+					<description>storage_contents</description>
+					<posx>SysInfoTextPosX</posx>
+					<height>500</height>
+					<include>CustomSettingsList</include>
+					<visible>controlgroup(9000).hasfocus(101)</visible>
+					<control type="label">
+						<description>2</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.dvdtraystate]</label>
+					</control>
+					<control type="label">
+						<description>3</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace(c)] - $INFO[system.totalspace(c)]</label>
+					</control>
+					<control type="progress">
+						<description>bar_free_space_c:</description>
+						<info>bar.freespace(c)</info>
+						<include>SystemInfoProgress</include>
+					</control>
+					<control type="label">
+						<description>4</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace(e)] - $INFO[system.totalspace(e)]</label>
+					</control>
+					<control type="progress">
+						<description>bar_free_space_e:</description>
+						<INFO>bar.freespace(e)</INFO>
+						<include>SystemInfoProgress</include>
+					</control>
+					<control type="label">
+						<description>5</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace(f)] - $INFO[system.totalspace(f)]</label>
+						<visible>system.hasdrivef</visible>
+					</control>
+					<control type="progress">
+						<description>bar_free_space_f:</description>
+						<info>bar.freespace(f)</info>
+						<visible>system.hasdrivef</visible>
+						<include>SystemInfoProgress</include>
+					</control>
+					<control type="label">
+						<description>6</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace(g)] - $INFO[system.totalspace(g)]</label>
+						<visible>system.hasdriveg</visible>
+					</control>
+					<control type="progress">
+						<description>bar_free_space_g:</description>
+						<info>bar.freespace(g)</info>
+						<visible>system.hasdriveg</visible>
+						<include>SystemInfoProgress</include>
+					</control>
+					<control type="label">
+						<description>7</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace(x)]</label>
+					</control>
+					<control type="label">
+						<description>8</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace(y)]</label>
+					</control>
+					<control type="label">
+						<description>9</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace(z)]</label>
+					</control>
+					<control type="label">
+						<description>10</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.freespace] - $INFO[system.totalspace]</label>
+					</control>
+					<control type="progress">
+						<description>bar Free Space Total</description>
+						<info>bar.freespace</info>
+						<include>SystemInfoProgress</include>
+					</control>
+				</control>
+				<!-- Hard Disk Info -->
+				<control type="grouplist">
+					<description>harddisk_contents</description>
+					<posx>SysInfoTextPosX</posx>
+					<height>500</height>
+					<include>CustomSettingsList</include>
+					<visible>controlgroup(9000).hasfocus(102)</visible>
+					<control type="label">
+						<description>2</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddINFOmodel]</label>
+					</control>
+					<control type="label">
+						<description>3</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddINFOserial]</label>
+					</control>
+					<control type="label">
+						<description>4</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddINFOfirmware]</label>
+					</control>
+					<control type="label">
+						<description>5</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddINFOpw]</label>
+					</control>
+					<control type="label">
+						<description>6</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddINFOlockstate]</label>
+					</control>
+					<control type="label">
+						<description>7</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddlockkey]</label>
+					</control>
+					<control type="label">
+						<description>8</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddbootdate]</label>
+					</control>
+					<control type="label">
+						<description>9</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddcyclecount]</label>
+					</control>
+					<control type="label">
+						<description>10</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.hddtemperature]</label>
+					</control>
+				</control>
+				<!-- DVD Info -->
+				<control type="grouplist">
+					<description>dvd-rom_contents</description>
+					<posx>SysInfoTextPosX</posx>
+					<height>500</height>
+					<include>CustomSettingsList</include>
+					<visible>controlgroup(9000).hasfocus(103)</visible>
+					<control type="label">
+						<description>2</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.dvdINFOmodel]</label>
+					</control>
+					<control type="label">
+						<description>3</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.dvdINFOfirmware]</label>
+					</control>
+					<control type="label">
+						<description>4</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.dvdzone]</label>
+					</control>
+					<control type="label">
+						<description>5</description>
+						<label>$INFO[system.dvdtraystate]</label>
+						<include>SystemInfoLabels</include>
+					</control>
+				</control>
+				<!-- Network Info -->
+				<control type="grouplist">
+					<description>network_contents</description>
+					<posx>SysInfoTextPosX</posx>
+					<height>500</height>
+					<include>CustomSettingsList</include>
+					<visible>controlgroup(9000).hasfocus(104)</visible>
+					<control type="label">
+						<description>2</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.isdhcp]</label>
+					</control>
+					<control type="label">
+						<description>3</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.linkstate]</label>
+					</control>
+					<control type="label">
+						<description>4</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.macadress]</label>
+					</control>
+					<control type="label">
+						<description>5</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.ipaddress]</label>
+					</control>
+					<control type="label">
+						<description>6</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.subetadress]</label>
+					</control>
+					<control type="label">
+						<description>7</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.gatewayadress]</label>
+					</control>
+					<control type="label">
+						<description>8</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.dns1adress]</label>
+					</control>
+					<control type="label">
+						<description>9</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[network.dns2adress]</label>
+					</control>
+					<control type="label">
+						<description>10</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.internetstate]</label>
+					</control>
+				</control>
+				<!-- Video Info -->
+				<control type="grouplist">
+					<description>video_contents</description>
+					<posx>SysInfoTextPosX</posx>
+					<height>500</height>
+					<include>CustomSettingsList</include>
+					<visible>controlgroup(9000).hasfocus(105)</visible>
+					<control type="label">
+						<description>2</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.videoencoderINFO]</label>
+					</control>
+					<control type="label">
+						<description>3</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.screenresolution]</label>
+					</control>
+					<control type="label">
+						<description>4</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.avpackINFO]</label>
+					</control>
+					<control type="label">
+						<description>5</description>
+						<label>$INFO[system.xberegion]</label>
+					</control>
+				</control>
+				<!-- Hardware Info -->
+				<control type="grouplist">
+					<description>hardware_contents</description>
+					<posx>SysInfoTextPosX</posx>
+					<height>500</height>
+					<include>CustomSettingsList</include>
+					<visible>controlgroup(9000).hasfocus(106)</visible>
+					<control type="label">
+						<description>2</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.xboxversion]</label>
+					</control>
+					<control type="label">
+						<description>3</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.xboxserial]</label>
+					</control>
+					<control type="label">
+						<description>4</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.cpufrequency]</label>
+					</control>
+					<control type="label">
+						<description>5</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.modchip]</label>
+					</control>
+					<control type="label">
+						<description>6</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.bios]</label>
+					</control>
+					<control type="label">
+						<description>7</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.xboxproduceINFO]</label>
+					</control>
+					<control type="label">
+						<description>8</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.controllerport(1)]</label>
+					</control>
+					<control type="label">
+						<description>9</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.controllerport(2)]</label>
+					</control>
+					<control type="label">
+						<description>10</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.controllerport(3)]</label>
+					</control>
+					<control type="label">
+						<description>11</description>
+						<include>SystemInfoLabels</include>
+						<label>$INFO[system.controllerport(4)]</label>
+					</control>
+				</control>
+				<!-- Misc Info -->
+				<control type="grouplist">
+					<description>misc_values</description>
+					<posx>SysInfoTextPosX</posx>
+					<posy>484</posy>
+					<height>200</height>
+					<control type="label" id="52">
+						<description>xbmc_xbe_build_version</description>
+						<include>SystemInfoStaticLabel</include>
+						<label>144</label>
+					</control>
+					<control type="label" id="53">
+						<description>mplayer_dll_version</description>
+						<include>SystemInfoStaticLabel</include>
+						<label>144</label>
+					</control>
+					<control type="label" id="53">
+						<description>skin version</description>
+						<textcolor>Selected</textcolor>
+						<include>SystemInfoStaticLabel</include>
+						<include>Revision</include>
+					</control>
+				</control>
+				<control type="image">
+					<posx>SysInfoTextPosX</posx>
+					<posy>480</posy>
+					<width>565</width>
+					<height>200</height>
+					<texture>BlackTransparent.png</texture>
+					<colordiffuse>77666666</colordiffuse>
+				</control>
+			</control>
+		</control>
+		<!-- Blades -->
+		<include>SettingsLeftBlade</include>
+		<!-- Widgets -->
+		<include>Clock</include>
+	</controls>
+</window>

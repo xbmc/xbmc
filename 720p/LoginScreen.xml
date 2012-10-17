@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<window id="29">
+	<defaultcontrol always="true">52</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<control type="image">
+			<description>Background Image Right Blade</description>
+			<posx>821</posx>
+			<posy>0</posy>
+			<width>459</width>
+			<height>720</height>
+			<texture>HomeBladeRight.png</texture>
+			<include>HomeSlideRight</include>
+			<visible>!Skin.HasTheme(lite)</visible>
+		</control>
+		<control type="image">
+			<description>Background Image Left Blade</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>846</width>
+			<height>720</height>
+			<texture border="0,0,500,0">HomeBladeLeft.png</texture>
+			<include>HomeSlideLeft</include>
+		</control>
+		<control type="wraplist" id="52">
+			<description>Login Main Menu</description>
+			<posx>0</posx>
+			<posy>69</posy>
+			<width>829</width>
+			<height>700</height>
+			<onup>52</onup>
+			<ondown>52</ondown>
+			<onleft>3115</onleft>
+			<onright>3112</onright>
+			<focusposition>2</focusposition>
+			<scrolltime>200</scrolltime>
+			<include>HomeSlideLeft</include>
+			<itemlayout width="600" height="140">
+				<control type="label">
+					<posx>802</posx>
+					<posy>20</posy>
+					<width>600</width>
+					<height>0</height>
+					<label>$INFO[ListItem.Label]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>MediumLargeTitleCapsFont</font>
+					<textcolor>HomeMain2</textcolor>
+					<shadowcolor>HomeShadow</shadowcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout width="600" height="140">
+				<control type="label">
+					<posx>806</posx>
+					<posy>20</posy>
+					<width>600</width>
+					<height>0</height>
+					<label>$INFO[ListItem.Label]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>HomeMenuFocusFont</font>
+					<textcolor>HomeMain</textcolor>
+					<shadowcolor>HomeShadow</shadowcolor>
+				</control>
+				<control type="label">
+					<posx>797</posx>
+					<posy>-25</posy>
+					<width>250</width>
+					<height>20</height>
+					<label>$LOCALIZE[31900]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>HomeMenuInfoFont</font>
+					<textcolor>HomeMain</textcolor>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="group">
+			<include>HomeSlideLeft</include>
+			<control type="image">
+				<posx>582</posx>
+				<posy>0</posy>
+				<width>246</width>
+				<height>720</height>
+				<texture diffuse="HomeMenuDiffuse.png">HomeBladeLeftMenuOverlay.png</texture>
+			</control>
+			<control type="image">
+				<description>Shutdown Button Overlay</description>
+				<posx>44</posx>
+				<posy>612</posy>
+				<width>80</width>
+				<height>80</height>
+				<texture>ButtonMenuGlass.png</texture>
+				<visible>Control.HasFocus(3112)</visible>
+			</control>
+			<control type="button" id="3112">
+				<description>Shutdown button</description>
+				<posx>50</posx>
+				<posy>620</posy>
+				<width>68</width>
+				<height>68</height>
+				<texturefocus>ButtonMenuShutdownFO.png</texturefocus>
+				<texturenofocus diffuse="GreyDark.png">ButtonMenuShutdownFO.png</texturenofocus>
+				<onclick>XBMC.ShutDown()</onclick>
+				<pulseonselect>no</pulseonselect>
+				<onleft>52</onleft>
+				<onright>3115</onright>
+				<onup>52</onup>
+				<ondown>52</ondown>
+				<font>-</font>
+				<label>$LOCALIZE[13005]</label>
+			</control>
+			<control type="image">
+				<description>Shutdown Button Overlay</description>
+				<posx>142</posx>
+				<posy>612</posy>
+				<width>80</width>
+				<height>80</height>
+				<texture>ButtonMenuGlass.png</texture>
+				<visible>Control.HasFocus(3115)</visible>
+			</control>
+			<control type="button" id="3115">
+				<description>Restart XBMC button</description>
+				<posx>148</posx>
+				<posy>620</posy>
+				<width>68</width>
+				<height>68</height>
+				<texturefocus>ButtonMenuRestartFO.png</texturefocus>
+				<texturenofocus diffuse="GreyDark.png">ButtonMenuRestartFO.png</texturenofocus>
+				<onclick>XBMC.RestartApp()</onclick>
+				<pulseonselect>no</pulseonselect>
+				<onleft>3112</onleft>
+				<onright>52</onright>
+				<onup>52</onup>
+				<ondown>52</ondown>
+				<font>-</font>
+				<label>$LOCALIZE[13313]</label>
+			</control>
+		</control>
+		<control type="group">
+			<include>HomeSlideRight</include>
+			<visible>!Skin.HasTheme(lite)</visible>
+			<control type="group">
+				<control type="image">
+					<posx>890</posx>
+					<posy>290</posy>
+					<width>160</width>
+					<height>160</height>
+					<texture border="12">ThumbBorder.png</texture>
+					<aspectratio>stretch</aspectratio>
+					<visible>true</visible>
+				</control>
+				<control type="image">
+					<posx>900</posx>
+					<posy>300</posy>
+					<width>139</width>
+					<height>139</height>
+					<colordiffuse>ffffffff</colordiffuse>
+					<info>System.ProfileThumb</info>
+					<aspectratio>keep</aspectratio>
+					<visible>!Control.IsActive(52)</visible>
+				</control>
+				<control type="image">
+					<posx>900</posx>
+					<posy>300</posy>
+					<width>139</width>
+					<height>139</height>
+					<colordiffuse>ffffffff</colordiffuse>
+					<info>ListItem.Icon</info>
+					<aspectratio>keep</aspectratio>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

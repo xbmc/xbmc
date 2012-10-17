@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes" ?>
+<!-- $Revision: 204$ -->
+<!--  strings 31000 thru 31999 reserved for skins  -->
+
+ <strings>
+  <string id="31000">Bladeren</string>		
+  <string id="31001">Video's</string>
+  <string id="31002">Muziek</string>
+  <string id="31003">Foto's</string>
+  <string id="31004">Software</string>
+  <string id="31005">Weer</string>
+  <string id="31006">Systeem</string>
+  <string id="31007">Aan/Uit</string>
+  <string id="31008">TV series</string>
+  <string id="31011">Kijk naar</string>
+  <string id="31012">Luister naar</string>
+  <string id="31013">Bekijk</string>
+  <string id="31014">Gebruik</string>
+  <string id="31015">Raadpleeg</string>
+  <string id="31016">Configureer</string> 
+  <string id="31017">Power</string> 
+  <string id="31018">Menu</string> 
+  <string id="31019">Speel</string> 
+  <string id="31020">Opties</string>
+  <string id="31021">Seizoenen</string> 
+  <string id="31022">Verberg</string>
+  <string id="31023">Sorteer op</string> 
+  <string id="31024">Sorteerrichting</string>
+  <string id="31025">Achterwaarts</string>
+  <string id="31026">Voorwaarts</string>
+  <string id="31027">Gestart</string> 
+  <string id="31028">Geëindigd</string>
+  <string id="31029">Schrijver</string> 
+  <string id="31030">Nummer</string> 
+  <string id="31031">Actief</string> 
+  <string id="31032">Instrumenten</string> 
+  <string id="31033">Laatst ververst</string>
+  <string id="31034">Build</string>
+  <string id="31035">Vrij geheugen</string>
+  <string id="31036">IP-adres</string>
+  <string id="31037">Harde schijf ruimte</string>
+  <string id="31038">Kies</string>
+  <string id="31039">Favorieten</string>
+  <string id="31040">Wijzig</string>
+  <string id="31041">Editor</string>
+  <string id="31042">Afbeelding</string>
+  <string id="31043">Raadpleeg</string>
+  <string id="31044">Op</string>
+  <string id="31045">Recent toegevoegd</string>
+  <string id="31046">Pad naar songteksten script</string> 
+
+<!--  Programs  -->
+  <string id="31051">Games</string>
+  <string id="31052">Emulators</string>
+  <string id="31053">Applicaties</string>
+
+<!--  System  -->
+  <string id="31060">Instellingen</string>
+  <string id="31061">Scripts</string>
+  <string id="31062">Verkenner</string>
+  <string id="31063">Favorieten</string>
+  <string id="31064">Profielen</string>
+  <string id="31065">Info</string>
+  <string id="31066">Ververs</string>
+  <string id="31067">Over</string>
+
+<!--  Power  -->
+  <string id="31071">Uitschakelen</string>
+  <string id="31072">Herstarten</string>
+  <string id="31073">Herlaad XBMC</string>
+  <string id="31074">Dashboard</string>
+  <string id="31075">Herlaad skin</string>
+
+<!--  Video  -->
+  <string id="31111">Films</string>
+  <string id="31112">TV series</string> 
+  <string id="31113">Clips</string> 
+  <string id="31114">Aflevering:</string> 
+  <string id="31115">N/B</string> 
+  <string id="31116">Filmtitel</string>
+  <string id="31117">Thumb</string> 
+  <string id="31118">Fanart</string> 
+  <string id="31119">Toelichting</string> 
+  <string id="31120">Waardering</string>
+  <string id="31121">Film details</string>
+  <string id="31122">Gelanceerd</string>
+  <string id="31123">MPAA</string>
+  <string id="31124">Afl.</string> 
+  <string id="31125">Theatertijden</string>
+  <string id="31126">TV serie details</string>
+  <string id="31127">Aflevering details</string>
+
+<!--  Music  -->
+  <string id="31220">Speelt nu</string>
+  <string id="31221">Vorig nummer</string>
+  <string id="31222">Volgende nummers</string>
+  <string id="31223">Songteksten ophalen</string>
+  <string id="31224">Open MENU voor opties</string>
+  <string id="31225">Waardering</string>
+  <string id="31226">Wijzig</string>
+  <string id="31227">Eigen voorkeur</string>
+  <string id="31228">Songteksten</string>
+
+<!--  Settings  --> 
+  <string id="31601">Uiterlijk</string>
+  <string id="31602">Netwerk</string>
+  <string id="31603">Skin</string> 
+  <string id="31604">Algemeen</string> 
+  <string id="31605">Hoofdscherm</string> 
+  <string id="31606">Wijzig instellingen van</string> 
+  <string id="31607">Huidige</string> 
+  <string id="31608">Bron</string> 
+  <string id="31609">Doel</string> 
+  <string id="31620">Menu</string> 
+  <string id="31621">Deactiveer</string> 
+  <string id="31622">Activeer</string> 
+  <string id="31623">Achtergrond</string>
+  <string id="31624">Selecteer</string>
+  <string id="31625">Gebruik standaard</string>
+  <string id="31650">Verberg rechter submenu</string>
+  <string id="31651">Activeer eigen achtergronden</string>
+  <string id="31652">Activeer</string>
+  <string id="31653">Bekijk</string>
+  <string id="31654">Verberg thumblabels in verkenner dialoog</string>
+  <string id="31655">Toon gekantelde seizoenthumbs in afl. weergave</string>
+  <string id="31656">Achtergronden</string>
+  <string id="31657">Afbeelding</string>
+  <string id="31658">Map</string>
+  <string id="31659">Herstel</string>
+  <string id="31660">Activeer eigen achtergronden op hoofdscherm</string>
+	<string id="31661">Apple movie trailers</string>
+	<string id="31662">Verberg klok</string>
+	<string id="31663">Toon media aantal</string>
+	<string id="31664">Verberg schuifbalk op media schermen</string>
+	<string id="31665">Verberg bekeken/niet-bekeken iconen</string>
+	<string id="31666">Toon hoofdmenu in het midden</string>
+	<string id="31667">MediaStream</string>
+	<string id="31668">Toon grotere klok</string>
+	<string id="31669">Toon weerbericht op hoofdscherm</string>
+	<string id="31670">Toon fanart</string>
+	<string id="31671">Verberg plot in video OSD</string>
+	<string id="31672">Verberg info</string>
+	<string id="31673">media weergaven</string>
+	<string id="31674">Verberg fanart</string>
+	<string id="31675">bij film weergave</string>
+	<string id="31676">bij media preview</string>
+	<string id="31677">bij TV series lijst</string>
+  <string id="31678">Toon seizoenthumb</string>
+  <string id="31679">Verberg focusdetails bij paneel weergave</string>
+  <string id="31680">Verberg thumbs bij lijst weergave</string>
+	<string id="31681">in bestandsmodus</string>
+	<string id="31682">op projectiescherm</string>
+	<string id="31683">bij TV weergave</string>
+	<string id="31684">Verberg eigen achtergronden</string>
+	<string id="31685">Toon animatie bij</string>
+	<string id="31686">Toon horizontale muziek VIS</string>
+	<string id="31687">bij video weergave</string>
+	<string id="31688">bij muziek weergave</string>
+	<string id="31689">bij foto weergave</string>
+	<string id="31690">Verberg 'geen thumb' iconen</string>
+	<string id="31691">Gebruik lagere overlay bij TV series coverflow</string>
+	<string id="31692">Verberg info bij muur weergave</string>
+	<string id="31693">Verberg thumbs in opties menu</string>
+	<string id="31694">Toon 'Speelt nu' venster links</string>
+	<string id="31695">Toon AM/PM in klok</string>
+
+<!--  Options Menu  -->
+  <string id="31701">Setup</string>
+  <string id="31702">Showcase</string>
+  <string id="31703">Seizoenen</string>
+  <string id="31704">Foto</string> 
+  <string id="31705">Bol</string> 
+  <string id="31706">Aflevering thumbs</string> 
+  <string id="31707">Media preview</string> 
+  <string id="31708">Media lijst</string> 
+  <string id="31709">Hol</string>
+  <string id="31710">Weergave</string> 
+  <string id="31711">Info lijst</string>
+  <string id="31712">Afbeelding weergave</string>
+  <string id="31713">Instellingen</string>
+  <string id="31714">Muur weergave</string>
+  <string id="31715">Paneel weergave</string>
+  <string id="31716">Coverflow</string>
+  <string id="31717">opties menu</string>
+
+<!--  Credits  -->
+  <string id="31800">Over</string>
+  <string id="31801">Welkom bij</string>
+  <string id="31802">jouw media....[COLOR Highlighted]jouw[/COLOR] manier</string>
+  <string id="31803"></string>
+  <string id="31804">MediaStream is een nieuwe gebruikersinterface voor het populaire XBMC. Gemaakt door het nieuw gevormde "Team RazorFish". Deze nieuwe interface combineert gebruiksgemak met een ongekende schoonheid.  Vormgegeven en geoptimaliseerd voor de 'High Def' generatie, tracht deze interface een nieuwe ervaring te brengen naar het al jaren populaire platform.</string>
+  <string id="31805">Opmerking</string>
+  <string id="31806">Zorg ervoor dat je de meest recente build van XBMC hebt. Wij adviseren de laatste SVN build van XBMC, en vragen je om altijd het volledige skin-pakket te downloaden.</string>
+  <string id="31807">Over Deze Skin</string>
+  <string id="31808">Het gehele project berust op een samenwerking tussen vele getalenteerde individuen. Namelijk: skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 and aenima99x.  Een speciaal dankwoord gaat uit naar emilio (a.k.a. thedeViL), zonder hem was dit project nooit van de grond gekomen. En natuurlijk bedanken wij jullie, de XBMC gemeenschap... zonder jullie zou er geen reden zijn geweest om dit te doen... blijf vooral doorgaan mensen, jullie zijn de beste!!!</string>
+  <string id="31809">Met Speciale Dank Aan: gehele XBMC team, supporters op de XBMC en Xbox-Scene forums</string>
+  <string id="31810">Klik "OK" om door te gaan en gebruik te gaan maken van onze skin</string>
+  <string id="31811">Opmerking: Dit bericht zal niet meer verschijnen, nadat je op "OK" hebt gedrukt</string>
+
+<!--  Profiles  -->
+  <string id="31900">Inloggen als</string>
+  <string id="31901">Wijzig</string>
+  <string id="31902">Profiel</string>
+  <string id="31903">Profielnaam</string>
+  <string id="31904">Profielfoto </string>
+</strings>

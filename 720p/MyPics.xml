@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<window id="2">
+	<defaultcontrol>52</defaultcontrol>
+	<views>52,53</views>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<!-- DELETE WHEN DEV IS DONE -->
+		<include>_devDummies</include>
+		<!-- -->
+		<!-- bg's (Backgrounds.xml) -->
+		<include>GrainyBG</include>
+		<include>FanartBG</include>
+		<include>FanartOverlay</include>
+		<!-- -->
+		<!-- views (ViewsPhoto.xml) -->
+		<!--><include condition="!Container.Content(plugins)">PhotosLibrary</include>-->
+		<include>ChannelsPhotos</include>
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml) -->
+		<include>LeftSideMenuPhotos</include>
+		<include>TopBar</include>
+	</controls>
+</window>

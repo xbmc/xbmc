@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<window id="51">
+	<defaultcontrol always="true">65</defaultcontrol>
+	<controls>
+		<include>GrainyBG</include>
+		<include>SearchSlideshow</include>
+		<include>SearchMain</include>
+	</controls>
+</window>

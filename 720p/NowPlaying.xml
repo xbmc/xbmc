@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<window id="50">
+	<animation effect="fade" start="0" end="100" time="1000" reversible="true">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="1000" reversible="true">WindowClose</animation>
+	<controls>
+	<include>NowPlaying</include>
+	</controls>
+</window>
