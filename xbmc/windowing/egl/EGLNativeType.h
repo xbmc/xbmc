@@ -20,9 +20,11 @@
  *
  */
 
-#include <EGL/egl.h>
 #include "guilib/Resolution.h"
 #include "EGLQuirks.h"
+
+typedef void* XBNativeDisplayType;
+typedef void* XBNativeWindowType;
 
 /*!
 This class provides extra functionality on top of EGL in order to facilitate
@@ -99,10 +101,10 @@ public:
   virtual bool  CreateNativeWindow() = 0;
 
 /*! \brief Returns the current Native Display */
-  virtual bool  GetNativeDisplay(EGLNativeDisplayType **nativeDisplay) const = 0;
+  virtual bool  GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const = 0;
 
 /*! \brief Returns the current Native Window */
-  virtual bool  GetNativeWindow(EGLNativeWindowType **nativeWindow) const = 0;
+  virtual bool  GetNativeWindow(XBNativeWindowType **nativeWindow) const = 0;
 
 /*! \brief Destroy the Native Window
 
@@ -142,6 +144,6 @@ public:
   virtual bool  ShowWindow(bool show) = 0;
 
 protected:
-  EGLNativeDisplayType m_nativeDisplay;
-  EGLNativeWindowType  m_nativeWindow;
+  XBNativeDisplayType  m_nativeDisplay;
+  XBNativeWindowType   m_nativeWindow;
 };

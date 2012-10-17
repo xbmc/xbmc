@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include <EGL/egl.h>
 #include "EGLNativeTypeAmlogic.h"
 #include <stdlib.h>
 #include <linux/fb.h>
@@ -64,9 +65,13 @@ bool CEGLNativeTypeAmlogic::CreateNativeDisplay()
 bool CEGLNativeTypeAmlogic::CreateNativeWindow()
 {
 #if defined(_FBDEV_WINDOW_H_)
-  m_nativeWindow = new fbdev_window;
-  m_nativeWindow->width = 1280;
-  m_nativeWindow->height = 720;
+  fbdev_window *nativeWindow = new fbdev_window;
+  if (!nativeWindow)
+    return false;
+
+  nativeWindow->width = 1280;
+  nativeWindow->height = 720;
+  m_nativeWindow = nativeWindow;
   return true;
 #else
   return false;
@@ -75,13 +80,17 @@ bool CEGLNativeTypeAmlogic::CreateNativeWindow()
 
 bool CEGLNativeTypeAmlogic::GetNativeDisplay(EGLNativeDisplayType **nativeDisplay) const
 {
-  *nativeDisplay = (EGLNativeDisplayType*) &m_nativeDisplay;
+  if (!nativeDisplay)
+    return false;
+  *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
   return true;
 }
 
-bool CEGLNativeTypeAmlogic::GetNativeWindow(EGLNativeWindowType **nativeWindow) const
+bool CEGLNativeTypeAmlogic::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 {
-  *nativeWindow = (EGLNativeWindowType*) &m_nativeWindow;
+  if (!nativeWindow)
+    return false;
+  *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
 }
 

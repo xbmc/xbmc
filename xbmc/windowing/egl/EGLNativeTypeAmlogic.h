@@ -34,8 +34,8 @@ public:
 
   virtual bool  CreateNativeDisplay();
   virtual bool  CreateNativeWindow();
-  virtual bool  GetNativeDisplay(EGLNativeDisplayType **nativeDisplay) const;
-  virtual bool  GetNativeWindow(EGLNativeWindowType **nativeWindow) const;
+  virtual bool  GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const;
+  virtual bool  GetNativeWindow(XBNativeWindowType **nativeWindow) const;
 
   virtual bool  DestroyNativeWindow();
   virtual bool  DestroyNativeDisplay();

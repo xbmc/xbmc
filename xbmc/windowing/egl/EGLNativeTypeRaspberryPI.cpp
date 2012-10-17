@@ -19,6 +19,7 @@
  */
 #include "system.h"
 
+#include <EGL/egl.h>
 #include "EGLNativeTypeRaspberryPI.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
@@ -133,16 +134,20 @@ bool CEGLNativeTypeRaspberryPI::CreateNativeWindow()
 #endif
 }
 
-bool CEGLNativeTypeRaspberryPI::GetNativeDisplay(EGLNativeDisplayType **nativeDisplay) const
+bool CEGLNativeTypeRaspberryPI::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 {
-  *nativeDisplay = (EGLNativeDisplayType*) &m_nativeDisplay;
+  if (!nativeDisplay)
+    return false;
+  *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
   return true;
 }
 
-bool CEGLNativeTypeRaspberryPI::GetNativeWindow(EGLNativeWindowType **nativeWindow) const
+bool CEGLNativeTypeRaspberryPI::GetNativeWindow(XBNativeDisplayType **nativeWindow) const
 {
-  *nativeWindow = (EGLNativeWindowType*) &m_nativeWindow;
   DLOG("CEGLNativeTypeRaspberryPI::GetNativeWindow\n");
+  if (!nativeWindow)
+    return false;
+  *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
 }  
 
