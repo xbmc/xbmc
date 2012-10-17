@@ -18,6 +18,7 @@
  *
  */
 #include "system.h"
+#include <EGL/egl.h>
 #include "EGLNativeTypeAndroid.h"
 #include "utils/log.h"
 #include "guilib/gui3d.h"
@@ -65,15 +66,15 @@ bool CEGLNativeTypeAndroid::CreateNativeWindow()
 #endif
 }  
 
-bool CEGLNativeTypeAndroid::GetNativeDisplay(EGLNativeDisplayType **nativeDisplay) const
+bool CEGLNativeTypeAndroid::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 {
-  *nativeDisplay = (EGLNativeDisplayType*) &m_nativeDisplay;
+  *nativeDisplay = (XBNativeDisplayType*) &m_nativeDisplay;
   return true;
 }
 
-bool CEGLNativeTypeAndroid::GetNativeWindow(EGLNativeWindowType **nativeWindow) const
+bool CEGLNativeTypeAndroid::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 {
-  *nativeWindow = (EGLNativeWindowType*) &m_nativeWindow;
+  *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
 }
 
@@ -90,10 +91,10 @@ bool CEGLNativeTypeAndroid::DestroyNativeWindow()
 bool CEGLNativeTypeAndroid::GetNativeResolution(RESOLUTION_INFO *res) const
 {
 #if defined(TARGET_ANDROID)
-  ANativeWindow_acquire(m_nativeWindow);
-  res->iWidth = ANativeWindow_getWidth(m_nativeWindow);
-  res->iHeight= ANativeWindow_getHeight(m_nativeWindow);
-  ANativeWindow_release(m_nativeWindow);
+  ANativeWindow_acquire((EGLNativeWindowType)m_nativeWindow);
+  res->iWidth = ANativeWindow_getWidth((EGLNativeWindowType)m_nativeWindow);
+  res->iHeight= ANativeWindow_getHeight((EGLNativeWindowType)m_nativeWindow);
+  ANativeWindow_release((EGLNativeWindowType)m_nativeWindow);
 
   res->fRefreshRate = 60;
   res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;

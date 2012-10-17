@@ -191,7 +191,7 @@ bool CEGLWrapper::InitDisplay(EGLDisplay *display)
   //nativeDisplay can be (and usually is) NULL. Don't use if(nativeDisplay) as a test!
   EGLint status;
   EGLNativeDisplayType *nativeDisplay = NULL;
-  if (!m_nativeTypes->GetNativeDisplay(&nativeDisplay))
+  if (!m_nativeTypes->GetNativeDisplay((XBNativeDisplayType**)&nativeDisplay))
     return false;
 
   *display = eglGetDisplay(*nativeDisplay);
@@ -263,7 +263,7 @@ bool CEGLWrapper::CreateSurface(EGLDisplay display, EGLConfig config, EGLSurface
     return false;
 
   EGLNativeWindowType *nativeWindow=NULL;
-  if (!m_nativeTypes->GetNativeWindow(&nativeWindow))
+  if (!m_nativeTypes->GetNativeWindow((XBNativeWindowType**)&nativeWindow))
     return false;
 
   *surface = eglCreateWindowSurface(display, config, *nativeWindow, NULL);
