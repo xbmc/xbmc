@@ -251,12 +251,14 @@ GTEST_DIR = lib/gtest
 GTEST_INCLUDES = -I$(GTEST_DIR)/include
 GTEST_LIBS = $(GTEST_DIR)/lib/.libs/libgtest.a
 
-CHECK_DIRS = xbmc/filesystem/test \
+CHECK_DIRS = xbmc/dbwrappers/test \
+             xbmc/filesystem/test \
              xbmc/utils/test \
              xbmc/threads/test \
              xbmc/interfaces/python/test \
              xbmc/test
-CHECK_LIBS = xbmc/filesystem/test/filesystemTest.a \
+CHECK_LIBS = xbmc/dbwrappers/test/dynamicDatabaseTest.a \
+             xbmc/filesystem/test/filesystemTest.a \
              xbmc/utils/test/utilsTest.a \
              xbmc/threads/test/threadTest.a \
              xbmc/interfaces/python/test/pythonSwigTest.a \

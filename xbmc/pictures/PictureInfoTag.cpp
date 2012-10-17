@@ -21,15 +21,31 @@
 #include "PictureInfoTag.h"
 #include "XBDateTime.h"
 #include "Util.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
+#include "filesystem/File.h"
+
+#include "system.h"
+#include "lib/bson/src/bson.h"
 
 using namespace std;
+using namespace XFILE;
 
 void CPictureInfoTag::Reset()
 {
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
   memset(&m_iptcInfo, 0, sizeof(m_iptcInfo));
+  m_file.clear();
+  m_path.clear();
+  m_databaseID = -1;
+  m_size = 0;
+  m_folder.clear();
+  m_year = 0;
+  m_camera.clear();
+  m_tags.clear();
   m_isLoaded = false;
 }
 
@@ -38,8 +54,38 @@ const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
   if (this == &right) return * this;
   memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
   memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
+  m_file = right.m_file;
+  m_path = right.m_path;
+  m_databaseID = right.m_databaseID;
+  m_size = right.m_size;
+  m_folder = right.m_folder;
+  m_year = right.m_year;
+  m_camera = right.m_camera;
+  m_tags = right.m_tags;
   m_isLoaded = right.m_isLoaded;
   return *this;
+}
+
+bool CPictureInfoTag::GetDateTime(CDateTime &datetime) const
+{
+  // EXIF datetime looks like 2003:12:14 12:01:44
+  CStdString strDatetime(m_exifInfo.DateTime);
+  if (strDatetime.length() == 19)
+  {
+    int year = atoi(strDatetime.substr(0, 4).c_str());
+    int month = atoi(strDatetime.substr(5, 2).c_str());
+    int day = atoi(strDatetime.substr(8, 2).c_str());
+    int hour = atoi(strDatetime.substr(11, 2).c_str());
+    int minute = atoi(strDatetime.substr(14, 2).c_str());
+    int second = atoi(strDatetime.substr(17, 2).c_str());
+    // Enforce valid year, month and day
+    if (year != 0 && month != 0 && day != 0)
+    {
+      datetime = CDateTime(year, month, day, hour, minute, second);
+      return true;
+    }
+  }
+  return false;
 }
 
 bool CPictureInfoTag::Load(const CStdString &path)
@@ -50,10 +96,101 @@ bool CPictureInfoTag::Load(const CStdString &path)
   if (path.IsEmpty() || !exifDll.Load())
     return false;
 
+  URIUtils::Split(path, m_path, m_file);
+  m_databaseID = -1; // reset this
+
   if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
+  {
     m_isLoaded = true;
 
+    // Extract the year
+    CStdString datetime (m_exifInfo.DateTime);
+    if (datetime.length() >= 4)
+      m_year = atoi(datetime.substr(0, 4).c_str());
+
+    // Get the file size
+    CFile file;
+    file.Open(path);
+    m_size = file.GetLength();
+    file.Close();
+
+    CStdString pathCopy(m_path);
+    URIUtils::RemoveSlashAtEnd(pathCopy);
+    m_folder = URIUtils::GetFileName(pathCopy);
+
+    // Camera name
+    SetCamera(m_exifInfo.CameraMake, m_exifInfo.CameraModel);
+
+    // Parse tags
+    SetTags(m_iptcInfo.Keywords);
+  }
   return m_isLoaded;
+}
+
+void CPictureInfoTag::SetCamera(CStdString make, CStdString model)
+{
+  m_camera.clear();
+  make.Trim();
+  model.Trim();
+
+  // Casify the make (might look like KODAK PICTURE GROUP)
+  // This helps set the make apart from the model, and tests show that all caps
+  // dramatically reduces readability
+  CStdStringArray words;
+  StringUtils::SplitString(make, " ", words);
+  for (CStdStringArray::const_iterator it = words.begin(); it != words.end(); it++)
+  {
+    if (!it->length())
+      continue;
+    if (it->length() == 1)
+    {
+      m_camera += *it + " ";
+      continue;
+    }
+    // Skip some popular abbreviated names
+    if (*it == "HP" || *it == "JVC" || *it == "RIM" || it->Left(3) == "MSM" ||
+        *it == "LOMO" || *it == "DHW" || *it == "HTC")
+    {
+      m_camera += *it + " ";
+      continue;
+    }
+    CStdString thecap = it->substr(0, 1);
+    thecap.ToUpper();
+    CStdString therest = it->substr(1, string::npos);
+    therest.ToLower();
+    m_camera += thecap + therest + " ";
+  }
+
+  // Sometimes the Make shows up in the Model (Canon Canon PowerShot)
+  // Avoid duplication
+  if ((model.Left(m_camera.length() - 1).Equals(m_camera))) // ignore case
+    m_camera = model;
+  else
+    m_camera += model;
+}
+
+void CPictureInfoTag::SetTags(CStdString csvTags)
+{
+  m_tags.clear();
+
+  csvTags.Trim();
+  if (!csvTags.length())
+    return;
+
+  // Try exploding by semicolon first, comma second
+  CStdStringArray tags;
+  StringUtils::SplitString(csvTags, ";", tags);
+  if (tags.size() == 1)
+  {
+    tags.clear();
+    StringUtils::SplitString(csvTags, ",", tags);
+  }
+
+  for (CStdStringArray::iterator it = tags.begin(); it != tags.end(); it++)
+  {
+    it->Trim();
+    m_tags.push_back(it->c_str());
+  }
 }
 
 void CPictureInfoTag::Archive(CArchive& ar)
@@ -120,6 +257,15 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << CStdString(m_iptcInfo.State);
     ar << CStdString(m_iptcInfo.SupplementalCategories);
     ar << CStdString(m_iptcInfo.TransmissionReference);
+
+    ar << m_file;
+    ar << m_path;
+    ar << m_databaseID;
+    ar << m_size;
+    ar << m_folder;
+    ar << m_year;
+    ar << m_camera;
+    ar << m_tags;
   }
   else
   {
@@ -184,6 +330,15 @@ void CPictureInfoTag::Archive(CArchive& ar)
     GetStringFromArchive(ar, m_iptcInfo.State, sizeof(m_iptcInfo.State));
     GetStringFromArchive(ar, m_iptcInfo.SupplementalCategories, sizeof(m_iptcInfo.SupplementalCategories));
     GetStringFromArchive(ar, m_iptcInfo.TransmissionReference, sizeof(m_iptcInfo.TransmissionReference));
+
+    ar >> m_file;
+    ar >> m_path;
+    ar >> m_databaseID;
+    ar >> m_size;
+    ar >> m_folder;
+    ar >> m_year;
+    ar >> m_camera;
+    ar >> m_tags;
   }
 }
 
@@ -208,9 +363,9 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["focallength"] = m_exifInfo.FocalLength;
   value["focallength35mmequiv"] = m_exifInfo.FocalLength35mmEquiv;
   value["gpsinfopresent"] = m_exifInfo.GpsInfoPresent;
-  value["gpsinfo"]["alt"] = CStdString(m_exifInfo.GpsAlt);
-  value["gpsinfo"]["lat"] = CStdString(m_exifInfo.GpsLat);
-  value["gpsinfo"]["long"] = CStdString(m_exifInfo.GpsLong);
+  value["gpsalt"] = CStdString(m_exifInfo.GpsAlt);
+  value["gpslat"] = CStdString(m_exifInfo.GpsLat);
+  value["gpslong"] = CStdString(m_exifInfo.GpsLong);
   value["height"] = m_exifInfo.Height;
   value["iscolor"] = m_exifInfo.IsColor;
   value["isoequivalent"] = m_exifInfo.ISOequivalent;
@@ -248,6 +403,226 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["state"] = CStdString(m_iptcInfo.State);
   value["supplementalcategories"] = CStdString(m_iptcInfo.SupplementalCategories);
   value["transmissionreference"] = CStdString(m_iptcInfo.TransmissionReference);
+
+  value["isloaded"] = m_isLoaded;
+  value["path"] = m_path;
+  value["file"] = m_file;
+  value["databaseid"] = m_databaseID;
+  value["size"] = m_size;
+  value["folder"] = m_folder;
+  value["year"] = m_year;
+  value["camera"] = m_camera;
+  value["tag"] = m_tags;
+}
+
+void CPictureInfoTag::Serialize(bson *document) const
+{
+  // Good BSON resources are http://api.mongodb.org/c/current/bson.html and lib/bson/docs/examples/example.c
+  CStdString arrayKey;
+
+  bson_init(document);
+
+  bson_append_double(document, "aperturefnumber", m_exifInfo.ApertureFNumber);
+  bson_append_string(document, "cameramake", m_exifInfo.CameraMake);
+  bson_append_string(document, "cameramodel", m_exifInfo.CameraModel);
+  bson_append_double(document, "ccdwidth", m_exifInfo.CCDWidth);
+  bson_append_string(document, "comments", GetInfo(SLIDE_EXIF_COMMENT).c_str()); // Charset conversion
+  bson_append_string(document, "description", m_exifInfo.Description);
+  bson_append_string(document, "datetime", m_exifInfo.DateTime);
+  bson_append_start_array(document, "datetimeoffsets");
+  for (int i = 0; i < 10; i++)
+  {
+    arrayKey.Format("%d", i);
+    bson_append_int(document, arrayKey.c_str(), m_exifInfo.DateTimeOffsets[i]);
+  }
+  bson_append_finish_array(document);
+  bson_append_double(document, "digitalzoomratio", m_exifInfo.DigitalZoomRatio);
+  bson_append_double(document, "distance", m_exifInfo.Distance);
+  bson_append_double(document, "exposurebias", m_exifInfo.ExposureBias);
+  bson_append_int(document, "exposuremode", m_exifInfo.ExposureMode);
+  bson_append_int(document, "exposureprogram", m_exifInfo.ExposureProgram);
+  bson_append_double(document, "exposuretime", m_exifInfo.ExposureTime);
+  bson_append_int(document, "flashused", m_exifInfo.FlashUsed);
+  bson_append_double(document, "focallength", m_exifInfo.FocalLength);
+  bson_append_int(document, "focallength35mmequiv", m_exifInfo.FocalLength35mmEquiv);
+  bson_append_int(document, "gpsinfopresent", m_exifInfo.GpsInfoPresent);
+  bson_append_string(document, "gpsalt", m_exifInfo.GpsAlt);
+  bson_append_string(document, "gpslat", m_exifInfo.GpsLat);
+  bson_append_string(document, "gpslong", m_exifInfo.GpsLong);
+  bson_append_int(document, "height", m_exifInfo.Height);
+  bson_append_int(document, "iscolor", m_exifInfo.IsColor);
+  bson_append_int(document, "isoequivalent", m_exifInfo.ISOequivalent);
+  bson_append_long(document, "largestexifoffset", (long)m_exifInfo.LargestExifOffset);
+  bson_append_int(document, "lightsource", m_exifInfo.LightSource);
+  bson_append_int(document, "meteringmode", m_exifInfo.MeteringMode);
+  bson_append_int(document, "numdatetimetags", m_exifInfo.numDateTimeTags);
+  bson_append_int(document, "orientation", m_exifInfo.Orientation);
+  bson_append_int(document, "process", m_exifInfo.Process);
+  bson_append_int(document, "thumbnailatend", m_exifInfo.ThumbnailAtEnd);
+  bson_append_long(document, "thumbnailoffset", (long)m_exifInfo.ThumbnailOffset);
+  bson_append_long(document, "thumbnailsize", (long)m_exifInfo.ThumbnailSize);
+  bson_append_int(document, "thumbnailsizeoffset", m_exifInfo.ThumbnailSizeOffset);
+  bson_append_int(document, "whitebalance", m_exifInfo.Whitebalance);
+  bson_append_int(document, "width", m_exifInfo.Width);
+
+  bson_append_string(document, "author", m_iptcInfo.Author);
+  bson_append_string(document, "byline", m_iptcInfo.Byline);
+  bson_append_string(document, "bylinetitle", m_iptcInfo.BylineTitle);
+  bson_append_string(document, "caption", m_iptcInfo.Caption);
+  bson_append_string(document, "category", m_iptcInfo.Category);
+  bson_append_string(document, "city", m_iptcInfo.City);
+  bson_append_string(document, "copyright", m_iptcInfo.Copyright);
+  bson_append_string(document, "copyrightnotice", m_iptcInfo.CopyrightNotice);
+  bson_append_string(document, "country", m_iptcInfo.Country);
+  bson_append_string(document, "countrycode", m_iptcInfo.CountryCode);
+  bson_append_string(document, "credit", m_iptcInfo.Credit);
+  bson_append_string(document, "date", m_iptcInfo.Date);
+  bson_append_string(document, "headline", m_iptcInfo.Headline);
+  bson_append_string(document, "keywords", m_iptcInfo.Keywords);
+  bson_append_string(document, "objectname", m_iptcInfo.ObjectName);
+  bson_append_string(document, "referenceservice", m_iptcInfo.ReferenceService);
+  bson_append_string(document, "source", m_iptcInfo.Source);
+  bson_append_string(document, "specialinstructions", m_iptcInfo.SpecialInstructions);
+  bson_append_string(document, "state", m_iptcInfo.State);
+  bson_append_string(document, "supplementalcategories", m_iptcInfo.SupplementalCategories);
+  bson_append_string(document, "transmissionreference", m_iptcInfo.TransmissionReference);
+
+  bson_append_bool(document, "isloaded", m_isLoaded);
+  bson_append_string(document, "path", m_path.c_str());
+  bson_append_string(document, "file", m_file.c_str());
+  bson_append_int(document, "databaseid", m_databaseID);
+  bson_append_long(document, "size", m_size);
+  bson_append_string(document, "folder", m_folder.c_str());
+  bson_append_int(document, "year", m_year);
+  bson_append_string(document, "camera", m_camera.c_str());
+  bson_append_start_array(document, "tag");
+  for (unsigned int i = 0; i < m_tags.size(); i++)
+  {
+    arrayKey.Format("%d", i);
+    bson_append_string(document, arrayKey.c_str(), m_tags[i].c_str());
+  }
+  bson_append_finish_array(document);
+
+  bson_finish(document);
+
+  // Object requesting serialization is responsible for calling bson_destroy(document)
+}
+
+void CPictureInfoTag::Deserialize(const bson *document, int dbId)
+{
+  bson_iterator it[1], subit[1];
+  bson_type     type,  subtype;
+  CStdString    key,   subkey;
+
+  // BSON lookups are O(N), deserializing by lookup would be O(N^2), so use an iterator
+  bson_iterator_init(it, document);
+  type = bson_iterator_next(it);
+
+  while (type != BSON_EOO)
+  {
+    key = bson_iterator_key(it);
+    switch (type)
+    {
+    case BSON_STRING:
+      if (key == "cameramake") strncpy(m_exifInfo.CameraMake, bson_iterator_string(it), sizeof(m_exifInfo.CameraMake));
+      else if (key == "cameramodel") strncpy(m_exifInfo.CameraModel, bson_iterator_string(it), sizeof(m_exifInfo.CameraModel));
+      else if (key == "comments") strncpy(m_exifInfo.Comments, bson_iterator_string(it), sizeof(m_exifInfo.Comments));
+      else if (key == "description") strncpy(m_exifInfo.Description, bson_iterator_string(it), sizeof(m_exifInfo.Description));
+      else if (key == "datetime") strncpy(m_exifInfo.DateTime, bson_iterator_string(it), sizeof(m_exifInfo.DateTime));
+      else if (key == "gpsalt") strncpy(m_exifInfo.GpsAlt, bson_iterator_string(it), sizeof(m_exifInfo.GpsAlt));
+      else if (key == "gpslat") strncpy(m_exifInfo.GpsLat, bson_iterator_string(it), sizeof(m_exifInfo.GpsLat));
+      else if (key == "gpslong") strncpy(m_exifInfo.GpsLong, bson_iterator_string(it), sizeof(m_exifInfo.GpsLong));
+      else if (key == "author") strncpy(m_iptcInfo.Author, bson_iterator_string(it), sizeof(m_iptcInfo.Author));
+      else if (key == "byline") strncpy(m_iptcInfo.Byline, bson_iterator_string(it), sizeof(m_iptcInfo.Byline));
+      else if (key == "bylinetitle") strncpy(m_iptcInfo.BylineTitle, bson_iterator_string(it), sizeof(m_iptcInfo.BylineTitle));
+      else if (key == "caption") strncpy(m_iptcInfo.Caption, bson_iterator_string(it), sizeof(m_iptcInfo.Caption));
+      else if (key == "category") strncpy(m_iptcInfo.Category, bson_iterator_string(it), sizeof(m_iptcInfo.Category));
+      else if (key == "city") strncpy(m_iptcInfo.City, bson_iterator_string(it), sizeof(m_iptcInfo.City));
+      else if (key == "copyright") strncpy(m_iptcInfo.Copyright, bson_iterator_string(it), sizeof(m_iptcInfo.Copyright));
+      else if (key == "copyrightnotice") strncpy(m_iptcInfo.CopyrightNotice, bson_iterator_string(it), sizeof(m_iptcInfo.CopyrightNotice));
+      else if (key == "country") strncpy(m_iptcInfo.Country, bson_iterator_string(it), sizeof(m_iptcInfo.Country));
+      else if (key == "countrycode") strncpy(m_iptcInfo.CountryCode, bson_iterator_string(it), sizeof(m_iptcInfo.CountryCode));
+      else if (key == "credit") strncpy(m_iptcInfo.Credit, bson_iterator_string(it), sizeof(m_iptcInfo.Credit));
+      else if (key == "date") strncpy(m_iptcInfo.Date, bson_iterator_string(it), sizeof(m_iptcInfo.Date));
+      else if (key == "headline") strncpy(m_iptcInfo.Headline, bson_iterator_string(it), sizeof(m_iptcInfo.Headline));
+      else if (key == "keywords") strncpy(m_iptcInfo.Keywords, bson_iterator_string(it), sizeof(m_iptcInfo.Keywords));
+      else if (key == "objectname") strncpy(m_iptcInfo.ObjectName, bson_iterator_string(it), sizeof(m_iptcInfo.ObjectName));
+      else if (key == "referenceservice") strncpy(m_iptcInfo.ReferenceService, bson_iterator_string(it), sizeof(m_iptcInfo.ReferenceService));
+      else if (key == "source") strncpy(m_iptcInfo.Source, bson_iterator_string(it), sizeof(m_iptcInfo.Source));
+      else if (key == "specialinstructions") strncpy(m_iptcInfo.SpecialInstructions, bson_iterator_string(it), sizeof(m_iptcInfo.SpecialInstructions));
+      else if (key == "state") strncpy(m_iptcInfo.State, bson_iterator_string(it), sizeof(m_iptcInfo.State));
+      else if (key == "supplementalcategories") strncpy(m_iptcInfo.SupplementalCategories, bson_iterator_string(it), sizeof(m_iptcInfo.SupplementalCategories));
+      else if (key == "transmissionreference") strncpy(m_iptcInfo.TransmissionReference, bson_iterator_string(it), sizeof(m_iptcInfo.TransmissionReference));
+      else if (key == "path") m_path = bson_iterator_string(it);
+      else if (key == "file") m_file = bson_iterator_string(it);
+      else if (key == "folder") m_folder = bson_iterator_string(it);
+      else if (key == "camera") m_camera = bson_iterator_string(it);
+      break;
+    case BSON_INT:
+      if (key == "exposuremode") m_exifInfo.ExposureMode = bson_iterator_int(it);
+      else if (key == "exposureprogram") m_exifInfo.ExposureProgram = bson_iterator_int(it);
+      else if (key == "flashused") m_exifInfo.FlashUsed = bson_iterator_int(it);
+      else if (key == "focallength35mmequiv") m_exifInfo.FocalLength35mmEquiv = bson_iterator_int(it);
+      else if (key == "gpsinfopresent") m_exifInfo.GpsInfoPresent = bson_iterator_int(it);
+      else if (key == "height") m_exifInfo.Height = bson_iterator_int(it);
+      else if (key == "iscolor") m_exifInfo.IsColor = bson_iterator_int(it);
+      else if (key == "isoequivalent") m_exifInfo.ISOequivalent = bson_iterator_int(it);
+      else if (key == "lightsource") m_exifInfo.LightSource = bson_iterator_int(it);
+      else if (key == "meteringmode") m_exifInfo.MeteringMode = bson_iterator_int(it);
+      else if (key == "numdatetimetags") m_exifInfo.numDateTimeTags = bson_iterator_int(it);
+      else if (key == "orientation") m_exifInfo.Orientation = bson_iterator_int(it);
+      else if (key == "process") m_exifInfo.Process = bson_iterator_int(it);
+      else if (key == "thumbnailatend") m_exifInfo.ThumbnailAtEnd = bson_iterator_int(it);
+      else if (key == "thumbnailsizeoffset") m_exifInfo.ThumbnailSizeOffset = bson_iterator_int(it);
+      else if (key == "whitebalance") m_exifInfo.Whitebalance = bson_iterator_int(it);
+      else if (key == "width") m_exifInfo.Width = bson_iterator_int(it);
+      else if (key == "year") m_year = bson_iterator_int(it);
+      break;
+    case BSON_LONG:
+      if (key == "largestexifoffset") m_exifInfo.LargestExifOffset = (unsigned int)bson_iterator_long(it);
+      else if (key == "thumbnailoffset") m_exifInfo.ThumbnailOffset = (unsigned int)bson_iterator_long(it);
+      else if (key == "thumbnailsize") m_exifInfo.ThumbnailSize = (unsigned int)bson_iterator_long(it);
+      else if (key == "size") m_size = (unsigned int)bson_iterator_long(it);
+      break;
+    case BSON_DOUBLE:
+      if (key == "aperturefnumber") m_exifInfo.ApertureFNumber = (float)bson_iterator_double(it);
+      else if (key == "ccdwidth") m_exifInfo.CCDWidth = (float)bson_iterator_long(it);
+      else if (key == "digitalzoomratio") m_exifInfo.DigitalZoomRatio = (float)bson_iterator_long(it);
+      else if (key == "distance") m_exifInfo.Distance = (float)bson_iterator_long(it);
+      else if (key == "exposurebias") m_exifInfo.ExposureBias = (float)bson_iterator_long(it);
+      else if (key == "exposuretime") m_exifInfo.ExposureTime = (float)bson_iterator_long(it);
+      else if (key == "focallength") m_exifInfo.FocalLength = (float)bson_iterator_long(it);
+      break;
+    case BSON_BOOL:
+      if (key == "isloaded") m_isLoaded = (bson_iterator_bool(it) != 0);
+      break;
+    case BSON_ARRAY:
+    case BSON_OBJECT:
+      bson_iterator_subiterator(it, subit);
+      subtype = bson_iterator_next(subit);
+      while (subtype != BSON_EOO)
+      {
+        subkey = bson_iterator_key(subit);
+        if (subtype == BSON_INT && key == "datetimeoffsets")
+        {
+          // Array keys look like "0", "1", ...
+          int i = atoi(subkey);
+          if (0 < i && i < 10)
+            m_exifInfo.DateTimeOffsets[i] = bson_iterator_int(subit);
+        }
+        else if (subtype == BSON_STRING && key == "tag")
+        {
+          m_tags.push_back(bson_iterator_string(subit));
+        }
+        subtype = bson_iterator_next(subit);
+      }
+      break;
+    default:
+      break;
+    }
+    type = bson_iterator_next(it);
+  }
+  m_databaseID = dbId;
 }
 
 void CPictureInfoTag::ToSortable(SortItem& sortable)

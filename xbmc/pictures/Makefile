@@ -3,6 +3,7 @@ SRCS=GUIDialogPictureInfo.cpp \
      GUIWindowPictures.cpp \
      GUIWindowSlideShow.cpp \
      Picture.cpp \
+     PictureDatabase.cpp \
      PictureInfoLoader.cpp \
      PictureInfoTag.cpp \
      PictureThumbLoader.cpp \

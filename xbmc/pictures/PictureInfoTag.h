@@ -20,9 +20,14 @@
  */
 
 #include "utils/ISerializable.h"
+#include "utils/IDBInfoTag.h"
 #include "utils/ISortable.h"
 #include "utils/Archive.h"
+#include "utils/StdString.h"
 #include "DllLibExif.h"
+
+#include <vector>
+#include <string>
 
 #define SLIDE_FILE_NAME             900         // Note that not all image tags will be present for each image
 #define SLIDE_FILE_PATH             901
@@ -83,16 +88,21 @@
 #define SLIDE_IPTC_COUNTRY_CODE     979
 #define SLIDE_IPTC_REF_SERVICE      980
 
-class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable
+class CDateTime;
+
+class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable, public IDBInfoTag
 {
 public:
   CPictureInfoTag() { Reset(); };
   void Reset();
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value) const;
+  virtual void Serialize(bson *document) const;
+  virtual void Deserialize(const bson *document, int dbId);
   virtual void ToSortable(SortItem& sortable);
   const CPictureInfoTag& operator=(const CPictureInfoTag& item);
   const CStdString GetInfo(int info) const;
+  bool GetDateTime(CDateTime &datetime) const;
 
   bool Loaded() const { return m_isLoaded; };
   bool Load(const CStdString &path);
@@ -102,10 +112,42 @@ public:
   void SetInfo(int info, const CStdString& value);
   void SetLoaded(bool loaded = true);
 
+  const CStdString &GetPath() const { return m_path; }
+  void SetPath(const CStdString &path) { m_path = path; }
+
+  const CStdString &GetFilename() const { return m_file; }
+  void SetFilename(const CStdString &file) { m_file = file; }
+  
+  virtual int GetID() const { return m_databaseID; }
+  void SetID(int id) { m_databaseID = id; }
+
+  int64_t GetFileSize() const { return m_size; }
+  void SetFileSize(int64_t size) { m_size = size; }
+
+  const CStdString &GetFolder() const { return m_folder; }
+  void SetFolder(const CStdString &folder) { m_folder = folder; }
+
+  const CStdString &GetCamera() const { return m_camera; }
+  // Instantiate instead of pass-by-reference so we can modify the parameters
+  void SetCamera(CStdString make, CStdString model);
+
+  const std::vector<std::string> &GetTags() const { return m_tags; }
+  void SetTags(CStdString csvTags); // csvTags is comma-separated or semicolon-separated
+  void AddTag(CStdString tag) { m_tags.push_back(tag); }
+  void ClearTags(CStdString tag) { m_tags.clear(); }
+
 private:
   void GetStringFromArchive(CArchive &ar, char *string, size_t length);
   ExifInfo_t m_exifInfo;
   IPTCInfo_t m_iptcInfo;
   bool       m_isLoaded;
+  CStdString m_file;
+  CStdString m_path;
+  int        m_databaseID;
+  int64_t    m_size;
+  CStdString m_folder;
+  int        m_year;
+  CStdString m_camera;
+  std::vector<std::string> m_tags;
 };
 

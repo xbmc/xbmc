@@ -203,6 +203,119 @@ CStdString CDatabase::GetSingleValue(const CStdString &strTable, const CStdStrin
   return GetSingleValue(query, m_pDS);
 }
 
+bool CDatabase::GetAllTables(std::vector<CStdString> &tableList)
+{
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
+  CStdString strSQL;
+
+  try
+  {
+    if (m_sqlite)
+    {
+      strSQL = "SELECT name FROM sqlite_master WHERE type='table'";
+      if (m_pDS->query(strSQL.c_str()))
+      {
+        tableList.clear();
+        while (!m_pDS->eof())
+        {
+          tableList.push_back(m_pDS->fv(0).get_asString());
+          m_pDS->next();
+        }
+        m_pDS->close();
+        return true;
+      }
+    }
+    else
+    {
+      strSQL = PrepareSQL(
+        "SELECT table_name "
+        "FROM information_schema.TABLES "
+        "WHERE table_schema='%s%d'",
+        GetBaseDBName(), GetMinVersion()
+      );
+      if (m_pDS->query(strSQL.c_str()))
+      {
+        tableList.clear();
+        while (!m_pDS->eof())
+        {
+          tableList.push_back(m_pDS->fv(0).get_asString());
+          m_pDS->next();
+        }
+        m_pDS->close();
+        return true;
+      }
+    }
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Could not list tables in %s. SQL: %s", __FUNCTION__, GetBaseDBName(), strSQL.c_str());
+  }
+  return false;
+}
+
+bool CDatabase::GetAllIndices(std::vector<CStdString> &indexList)
+{
+  if (NULL == m_pDB.get()) return false;
+  if (NULL == m_pDS.get()) return false;
+
+  CStdString strSQL;
+
+  try
+  {
+    if (m_sqlite)
+    {
+      strSQL = "SELECT name FROM sqlite_master WHERE type='index'";
+      if (m_pDS->query(strSQL.c_str()))
+      {
+        indexList.clear();
+        while (!m_pDS->eof())
+        {
+          indexList.push_back(m_pDS->fv(0).get_asString());
+          m_pDS->next();
+        }
+        m_pDS->close();
+        return true;
+      }
+    }
+    else
+    {
+      std::vector<CStdString> tables;
+      GetAllTables(tables);
+      indexList.clear();
+      for (std::vector<CStdString>::const_iterator it = tables.begin(); it != tables.end(); it++)
+      {
+        // DISTINCT, because MySQL considers a UNIQUE INDEX across two columns
+        // to be two indices, whereas SQLite only considers it a single one
+        strSQL = PrepareSQL(
+          "SELECT DISTINCT index_name "
+          "FROM information_schema.STATISTICS "
+          "WHERE table_schema='%s%d' and table_name='%s'",
+          GetBaseDBName(), GetMinVersion(), it->c_str()
+        );
+        if (!m_pDS->query(strSQL.c_str()))
+          return false;
+
+        while (!m_pDS->eof())
+        {
+          // Because SQLite doesn't include PRIMARY in its index results
+          if (m_pDS->fv(0).get_asString() != "PRIMARY")
+            indexList.push_back(m_pDS->fv(0).get_asString());
+          m_pDS->next();
+        }
+        m_pDS->close();
+      }
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s - Could not list indices in %s. SQL: %s", __FUNCTION__, GetBaseDBName(), strSQL.c_str());
+  }
+  return false;
+}
+
 bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWhereClause /* = CStdString() */)
 {
   bool bReturn = true;
