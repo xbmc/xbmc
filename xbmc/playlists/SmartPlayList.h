@@ -195,7 +195,7 @@ public:
   static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
   static void GetAvailableOperators(std::vector<std::string> &operatorList);
 
-  bool IsEmpty() const { return m_ruleCombination.m_rules.empty() && m_ruleCombination.m_combinations.empty(); }
+  bool IsEmpty(bool ignoreSortAndLimit = true) const;
 private:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;

@@ -1357,11 +1357,8 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
     return false;
 
   obj.clear();
-  // add "type" and "name"
+  // add "type"
   obj["type"] = m_playlistType;
-
-  if (full)
-    obj["name"] = m_playlistName;
 
   // add "rules"
   CVariant rulesObj = CVariant(CVariant::VariantTypeObject);
@@ -1446,4 +1443,13 @@ void CSmartPlaylist::GetAvailableOperators(std::vector<std::string> &operatorLis
 {
   for (unsigned int index = 0; index < NUM_OPERATORS; index++)
     operatorList.push_back(operators[index].string);
+}
+
+bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const
+{
+  bool empty = m_ruleCombination.m_rules.empty() && m_ruleCombination.m_combinations.empty();
+  if (empty && !ignoreSortAndLimit)
+    empty = m_limit <= 0 && m_orderField == SortByNone && m_orderAscending;
+
+  return empty;
 }

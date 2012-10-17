@@ -5695,7 +5695,8 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     // parse the base path to get additional filters
     CVideoDbUrl videoUrl;
     Filter extFilter = filter;
-    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter))
+    SortDescription sorting = sortDescription;
+    if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter, sorting))
       return false;
 
     // if we have a "setid" option we don't want to retrieve sets
@@ -5749,11 +5750,11 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+        sorting.sortBy == SortByNone &&
+       (sorting.limitStart > 0 || sorting.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
     strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
@@ -5780,7 +5781,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
       results.push_back(result);
     }
 
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMovie, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeMovie, m_pDS, results))
       return false;
 
     // get data from returned rows
@@ -5866,18 +5867,19 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     CVideoDbUrl videoUrl;
     CStdString strSQLExtra;
     Filter extFilter = filter;
-    if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl))
+    SortDescription sorting = sortDescription;
+    if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
 
     items.SetPath(videoUrl.ToString());
 
     // Apply the limiting directly here if there's no special sorting but limiting
-    if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      if (extFilter.limit.empty() &&
+        sorting.sortBy == SortByNone &&
+        (sorting.limitStart > 0 || sorting.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
     strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
@@ -5893,7 +5895,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     
     DatabaseResults results;
     results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeTvShow, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeTvShow, m_pDS, results))
       return false;
 
     // get data from returned rows
@@ -5930,7 +5932,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
       }
     }
 
-    Stack(items, VIDEODB_CONTENT_TVSHOWS, !filter.order.empty() || sortDescription.sortBy != SortByNone);
+    Stack(items, VIDEODB_CONTENT_TVSHOWS, !filter.order.empty() || sorting.sortBy != SortByNone);
 
     // cleanup
     m_pDS->close();
@@ -6182,18 +6184,19 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
     CVideoDbUrl videoUrl;
     CStdString strSQLExtra;
     Filter extFilter = filter;
-    if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl))
+    SortDescription sorting = sortDescription;
+    if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
 
     items.SetPath(videoUrl.ToString());
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      sorting.sortBy == SortByNone &&
+      (sorting.limitStart > 0 || sorting.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
     strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
@@ -6209,7 +6212,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
     
     DatabaseResults results;
     results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeEpisode, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeEpisode, m_pDS, results))
       return false;
     
     // get data from returned rows
@@ -7035,18 +7038,19 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
     CVideoDbUrl videoUrl;
     CStdString strSQLExtra;
     Filter extFilter = filter;
-    if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl))
+    SortDescription sorting = sortDescription;
+    if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
 
     items.SetPath(videoUrl.ToString());
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
-        sortDescription.sortBy == SortByNone &&
-       (sortDescription.limitStart > 0 || sortDescription.limitEnd > 0))
+      sorting.sortBy == SortByNone &&
+      (sorting.limitStart > 0 || sorting.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
-      strSQLExtra += DatabaseUtils::BuildLimitClause(sortDescription.limitEnd, sortDescription.limitStart);
+      strSQLExtra += DatabaseUtils::BuildLimitClause(sorting.limitEnd, sorting.limitStart);
     }
 
     strSQL = PrepareSQL(strSQL, !extFilter.fields.empty() ? extFilter.fields.c_str() : "*") + strSQLExtra;
@@ -7062,7 +7066,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
     
     DatabaseResults results;
     results.reserve(iRowsFound);
-    if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMusicVideo, m_pDS, results))
+    if (!SortUtils::SortFromDataset(sorting, MediaTypeMusicVideo, m_pDS, results))
       return false;
     
     // get data from returned rows
@@ -8934,7 +8938,7 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   return items.Size() > 0;
 }
 
-bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter)
+bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting)
 {
   if (!videoUrl.IsValid())
     return false;
@@ -9349,6 +9353,14 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter)
     {
       std::set<CStdString> playlists;
       filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
+
+      if (xsp.GetLimit() > 0)
+        sorting.limitEnd = xsp.GetLimit();
+      if (xsp.GetOrder() != SortByNone)
+        sorting.sortBy = xsp.GetOrder();
+      sorting.sortOrder = xsp.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
+      if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+        sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
   }
 
