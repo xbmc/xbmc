@@ -937,6 +937,9 @@ bool CFileItem::IsFileFolder() const
 
 bool CFileItem::IsSmartPlayList() const
 {
+  if (HasProperty("library.smartplaylist") && GetProperty("library.smartplaylist").asBoolean())
+    return true;
+
   CStdString strExtension;
   URIUtils::GetExtension(m_strPath, strExtension);
   strExtension.ToLower();
