@@ -132,7 +132,7 @@ if(APPLE)
   set(CPACK_GENERATOR "DragNDrop")
 endif()
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CPACK_STRIP_FILES 0)
 endif()
 
