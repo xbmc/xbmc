@@ -67,6 +67,10 @@ bool CGUIDialogPictureInfo::OnAction(const CAction& action)
         return pWindow->OnAction(action);
       }
       break;
+
+    case ACTION_SHOW_INFO:
+      Close();
+      return true;
   };
   return CGUIDialog::OnAction(action);
 }
