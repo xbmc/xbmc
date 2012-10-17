@@ -31,7 +31,8 @@ class CGUIDialogAddonInfo :
 public:
   CGUIDialogAddonInfo(void);
   virtual ~CGUIDialogAddonInfo(void);
-  bool OnMessage(CGUIMessage& message);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
   
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
   virtual bool HasListItems() const { return true; }
