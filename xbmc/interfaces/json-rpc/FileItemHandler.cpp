@@ -100,7 +100,10 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       CGUIListItem::ArtMap artMap = item->GetArt();
       CVariant artObj(CVariant::VariantTypeObject);
       for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); artIt++)
-        artObj[artIt->first] = CTextureCache::GetWrappedImageURL(artIt->second);
+      {
+        if (!artIt->second.empty())
+          artObj[artIt->first] = CTextureCache::GetWrappedImageURL(artIt->second);
+      }
 
       result["art"] = artObj;
       return true;
