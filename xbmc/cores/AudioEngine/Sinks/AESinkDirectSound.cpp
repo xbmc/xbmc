@@ -75,17 +75,17 @@ struct winEndpointsToAEDeviceType
 
 static const winEndpointsToAEDeviceType winEndpoints[EndpointFormFactor_enum_count] =
 {
-  {"Network Device - ",         AE_DEVTYPE_PCM},
+  {"Network Device - ",     AE_DEVTYPE_NETWORK},
   {"Speakers - ",               AE_DEVTYPE_PCM},
   {"LineLevel - ",              AE_DEVTYPE_PCM},
   {"Headphones - ",             AE_DEVTYPE_PCM},
   {"Microphone - ",             AE_DEVTYPE_PCM},
   {"Headset - ",                AE_DEVTYPE_PCM},
   {"Handset - ",                AE_DEVTYPE_PCM},
-  {"Digital Passthrough - ", AE_DEVTYPE_IEC958},
+  {"Digital Passthrough - ", AE_DEVTYPE_DIGITALOUT},
   {"SPDIF - ",               AE_DEVTYPE_IEC958},
   {"HDMI - ",                  AE_DEVTYPE_HDMI},
-  {"Unknown - ",                AE_DEVTYPE_PCM},
+  {"Unknown - ",            AE_DEVTYPE_UNKNOWN},
 };
 
 // implemented in AESinkWASAPI.cpp
