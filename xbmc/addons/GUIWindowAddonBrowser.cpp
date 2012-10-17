@@ -103,7 +103,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bAddonForeignFilter = !g_settings.m_bAddonForeignFilter;
         g_settings.Save();
-        Update(m_vecItems->GetPath());
+        Refresh();
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -234,7 +234,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
                                            g_localizeStrings.Get(24066),""))
       {
         if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID").asString()))
-          Update(m_vecItems->GetPath());
+          Refresh();
       }
       return true;
     }

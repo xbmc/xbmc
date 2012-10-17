@@ -70,6 +70,12 @@ protected:
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool Update(const CStdString &strDirectory);
+  /* \brief Refreshes the current list by retrieving the lists's path
+   \return true if the list was successfully refreshed otherwise false
+   \sa Update
+   \sa GetDirectory
+   */
+  virtual bool Refresh(bool clearCache = false);
   virtual void FormatAndSort(CFileItemList &items);
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);

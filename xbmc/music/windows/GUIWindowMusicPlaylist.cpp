@@ -80,9 +80,8 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYLIST_CHANGED:
     {
       // global playlist changed outside playlist window
-      m_vecItems->RemoveDiscCache(GetID());
       UpdateButtons();
-      Update(m_vecItems->GetPath());
+      Refresh(true);
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems->Size() <= 0)
       {
@@ -141,7 +140,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
           g_settings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
           g_settings.Save();
           UpdateButtons();
-          Update(m_vecItems->GetPath());
+          Refresh();
         }
       }
       else if (iControl == CONTROL_BTNSAVE)
@@ -271,7 +270,7 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
     }
 
     if (bUpdate)
-      Update(m_vecItems->GetPath());
+      Refresh();
     return true;
   }
 
@@ -319,7 +318,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
     }
     CLog::Log(LOGDEBUG, "Saving music playlist: [%s]", strPath.c_str());
     playlist.Save(strPath);
-    Update(m_vecItems->GetPath()); // need to update
+    Refresh(); // need to update
   }
 }
 
@@ -332,7 +331,7 @@ void CGUIWindowMusicPlayList::ClearPlayList()
     g_playlistPlayer.Reset();
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
-  Update(m_vecItems->GetPath());
+  Refresh();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
 }
 
@@ -347,7 +346,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 
   g_playlistPlayer.Remove(PLAYLIST_MUSIC, iItem);
 
-  Update(m_vecItems->GetPath());
+  Refresh();
 
   if (m_vecItems->Size() <= 0)
   {
@@ -643,7 +642,7 @@ void CGUIWindowMusicPlayList::MoveItem(int iStart, int iDest)
     else
       break;
   }
-  Update(m_vecItems->GetPath());
+  Refresh();
 
   if (bRestart)
     m_musicInfoLoader.Load(*m_vecItems);
