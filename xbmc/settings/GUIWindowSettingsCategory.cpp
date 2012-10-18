@@ -1957,14 +1957,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #if defined(TARGET_DARWIN)
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
 #else
-      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
+      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()].m_DeviceName.c_str());
 #endif
     }
 #if !defined(TARGET_DARWIN)
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
+      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()].m_DeviceName.c_str());
     }
 #endif
     else if (strSetting.Equals("audiooutput.guisoundmode"))
@@ -2860,62 +2860,81 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-  CStdString currentDevice = Passthrough ? g_guiSettings.GetString("audiooutput.passthroughdevice") : g_guiSettings.GetString("audiooutput.audiodevice");
+  std::string currentDevice = Passthrough ? g_guiSettings.GetString("audiooutput.passthroughdevice") : g_guiSettings.GetString("audiooutput.audiodevice");
 
   if (Passthrough)
-  {
     m_DigitalAudioSinkMap.clear();
-    m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
+  else
+    m_AnalogAudioSinkMap.clear();
+
+  int numberSinks = 0;
+  int selectedValue = -1;
+  AEDeviceList sinkList;
+  vector<AEDeviceEx> deviceExList;
+  if (CAEFactory::EnumerateOutputDevicesEx(deviceExList, Passthrough) && !deviceExList.empty())
+  {
+    for(unsigned int i = 0; i < deviceExList.size(); i++)
+    {
+      const AEDeviceEx &dev = deviceExList.at(i);
+      pControl->AddLabel(dev.m_DisplayName, i);
+      if (currentDevice.compare(dev.m_DeviceName) == 0)
+        selectedValue = i;
+
+      if (Passthrough)
+        m_DigitalAudioSinkMap[dev.m_DisplayName] = dev;
+      else 
+        m_AnalogAudioSinkMap[dev.m_DisplayName] = dev;
+    }
   }
   else
   {
-    m_AnalogAudioSinkMap.clear();
-    m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
+    CAEFactory::EnumerateOutputDevices(sinkList, Passthrough);
+    for (unsigned int i = 0; i < sinkList.size(); i++)
+    {
+      AEDeviceEx dev;
+      dev.m_DeviceType = AE_DEVTYPE_UNKNOWN;
+      dev.m_DisplayName = sinkList.at(i).first;
+      dev.m_DeviceName = sinkList.at(i).second;
+      pControl->AddLabel(dev.m_DisplayName, i);
+
+      if (currentDevice.compare(dev.m_DeviceName))
+        selectedValue = i;
+
+      if (Passthrough)
+        m_DigitalAudioSinkMap[dev.m_DisplayName] = dev;
+      else
+        m_AnalogAudioSinkMap[dev.m_DisplayName] = dev;
+    }
   }
 
-  int numberSinks = 0;
-
-  int selectedValue = -1;
-  AEDeviceList sinkList;
-  CAEFactory::EnumerateOutputDevices(sinkList, Passthrough);
-#if !defined(TARGET_DARWIN)
-  if (sinkList.size()==0)
+  if ( Passthrough ? (m_DigitalAudioSinkMap.size() == 0) : (m_AnalogAudioSinkMap.size() == 0) )
   {
-    pControl->AddLabel("Error - no devices found", 0);
+    AEDeviceEx dev;
+    dev.m_DeviceType = AE_DEVTYPE_UNKNOWN;
+    dev.m_DeviceName = "null:";
+    dev.m_DisplayName = g_localizeStrings.Get(34119);
+    if (Passthrough)
+      m_DigitalAudioSinkMap[dev.m_DisplayName] = dev;
+    else
+      m_AnalogAudioSinkMap[dev.m_DisplayName] = dev;
+
+    pControl->AddLabel(dev.m_DisplayName, 0);
     numberSinks = 1;
     selectedValue = 0;
   }
   else
-  {
-#endif
-    AEDeviceList::const_iterator iter = sinkList.begin();
-    for (int i=0; iter != sinkList.end(); iter++)
-    {
-      CStdString label = (*iter).first;
-      CStdString sink  = (*iter).second;
-      pControl->AddLabel(label.c_str(), i);
-
-      if (currentDevice.Equals(sink))
-        selectedValue = i;
-
-      if (Passthrough)
-        m_DigitalAudioSinkMap[label] = sink;
-      else
-        m_AnalogAudioSinkMap[label] = sink;
-
-      i++;
-    }
-
-    numberSinks = sinkList.size();
-#if !defined(TARGET_DARWIN)
-  }
-#endif
+    numberSinks = Passthrough ? m_DigitalAudioSinkMap.size() : m_AnalogAudioSinkMap.size();
 
   if (selectedValue < 0)
   {
-    CLog::Log(LOGWARNING, "Failed to find previously selected audio sink");
-    pControl->AddLabel(currentDevice, numberSinks);
-    pControl->SetValue(numberSinks);
+    if (currentDevice.empty())
+      pControl->SetValue(0);
+    else
+    {
+      CLog::Log(LOGWARNING, "Failed to find previously selected audio sink");
+      pControl->AddLabel(currentDevice, numberSinks);
+      pControl->SetValue(numberSinks);
+    }
   }
   else
     pControl->SetValue(selectedValue);
