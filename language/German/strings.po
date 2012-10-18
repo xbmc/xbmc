@@ -7113,7 +7113,7 @@ msgstr "TuxBox-Laufwerk"
 
 msgctxt "#21359"
 msgid "Add media share..."
-msgstr "Quelle hinzufügen"
+msgstr "Medienfreigabe hinzufügen"
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
@@ -7121,11 +7121,11 @@ msgstr "UPnP-Server aktivieren"
 
 msgctxt "#21364"
 msgid "Edit media share"
-msgstr "Quelle bearbeiten"
+msgstr "Medienfreigabe bearbeiten"
 
 msgctxt "#21365"
 msgid "Remove media share"
-msgstr "Quelle entfernen"
+msgstr "Medienfreigabe entfernen"
 
 msgctxt "#21366"
 msgid "Subtitle folder"
@@ -7209,7 +7209,7 @@ msgstr "Öffnen"
 
 msgctxt "#21386"
 msgid "Acoustic management level"
-msgstr "Acoustic-Management-Stufe"
+msgstr "Akustik-Management-Stufe"
 
 msgctxt "#21387"
 msgid "Fast"
@@ -7413,7 +7413,7 @@ msgstr "%i Titel"
 
 msgctxt "#21437"
 msgid "New smart playlist..."
-msgstr "Neue Smart Playlist..."
+msgstr "Neue Smart-Playlist..."
 
 msgctxt "#21438"
 msgid "%c Drive"
@@ -7437,11 +7437,11 @@ msgstr "Episodentitel"
 
 msgctxt "#21443"
 msgid "Video resolution"
-msgstr "Video Auflösung"
+msgstr "Videoauflösung"
 
 msgctxt "#21444"
 msgid "Audio channels"
-msgstr "Audio Kanäle"
+msgstr "Audiokanäle"
 
 msgctxt "#21445"
 msgid "Video codec"
@@ -7453,11 +7453,11 @@ msgstr "Audio Codec"
 
 msgctxt "#21447"
 msgid "Audio language"
-msgstr "Audio Sprache"
+msgstr "Audiosprache"
 
 msgctxt "#21448"
 msgid "Subtitle language"
-msgstr "Untertitlesprache"
+msgstr "Untertitelsprache"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
@@ -7817,7 +7817,7 @@ msgstr "Fortschritt von Datenbank-Aktualisierungen verbergen"
 
 msgctxt "#22002"
 msgid "- DNS suffix"
-msgstr "DNS Suffix"
+msgstr "- DNS Suffix"
 
 msgctxt "#22003"
 msgid "%2.3fs"
@@ -7845,7 +7845,7 @@ msgstr "OpenGL-Renderer:"
 
 msgctxt "#22009"
 msgid "OpenGL version:"
-msgstr "OpenGL-Version: "
+msgstr "OpenGL-Version:"
 
 msgctxt "#22010"
 msgid "GPU temperature:"
@@ -7901,11 +7901,11 @@ msgstr "Video Dateien in Listen aufnehmen"
 
 msgctxt "#22023"
 msgid "DirectX vendor:"
-msgstr "DirectX Anbieter"
+msgstr "DirectX Anbieter:"
 
 msgctxt "#22024"
 msgid "Direct3D version:"
-msgstr "Direct3D Version"
+msgstr "Direct3D Version:"
 
 msgctxt "#22030"
 msgid "Font"
@@ -8157,7 +8157,7 @@ msgstr "(Die aktuelle Einstellung löschen)"
 
 msgctxt "#24041"
 msgid "Install from zip file"
-msgstr "Aus ZIP Datei installieren"
+msgstr "Aus ZIP-Datei installieren"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
@@ -8217,7 +8217,7 @@ msgstr "Wollen Sie dieses Add-on deaktivieren?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
-msgstr "Neue Version des Add-on verfügbar!"
+msgstr "Neue Version des Add-ons verfügbar!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
@@ -8237,7 +8237,7 @@ msgstr "Add-on aktualisiert"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr "Herunterladen des Add-on abbrechen?"
+msgstr "Herunterladen des Add-ons abbrechen?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
@@ -8265,7 +8265,7 @@ msgstr "Einstellungen fehlen oder sind ungültig"
 
 msgctxt "#24073"
 msgid "Could not connect"
-msgstr "Die Verbindung kann nicht hergestellt werden"
+msgstr "Die Verbindung konnte nicht hergestellt werden"
 
 msgctxt "#24074"
 msgid "Needs to restart"
@@ -8281,7 +8281,7 @@ msgstr "Add-on benötigt"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
-msgstr "Nochmals Verbindungsherstellung versuchen?"
+msgstr "Verbindung wiederherstellen?"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -8333,7 +8333,7 @@ msgstr "Verstecke ausländische"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr "Wähle aus allen Titeln"
+msgstr "Wähle aus allen Titeln ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
@@ -8605,7 +8605,7 @@ msgstr "Benutzerdefinierte Hintergründe"
 
 msgctxt "#33072"
 msgid "View Readme"
-msgstr "Readme lesen"
+msgstr "Readme anzeigen"
 
 msgctxt "#33073"
 msgid "View Changelog"
@@ -8641,7 +8641,7 @@ msgstr "Hass"
 
 msgctxt "#33081"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll."
+msgstr "Diese Datei ist gestapelt, wähle den Teil, der abgespielt werden soll."
 
 msgctxt "#33082"
 msgid "Path to script"
@@ -8765,11 +8765,11 @@ msgstr "Vorheriges Element konnte nich gefunden werden"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
-msgstr "zeroconf konnte nicht gestartet werden"
+msgstr "Zeroconf konnte nicht gestartet werden"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr "Ist der Bonjour Service von Apple installiert? Log-File einsehen für mehr Info"
+msgstr "Ist der Bonjour Service von Apple installiert? Log-File einsehen für mehr Informationen"
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -8801,11 +8801,11 @@ msgstr "2 Finger: links wischen für Backspace"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr "1 Finger: tippen für Enter (oder lange für Context Menü)"
+msgstr "1 Finger: tippen für Enter (oder lange für Kontextmenü)"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr "2 Finger: tippen für Context Menü"
+msgstr "2 Finger: tippen für Kontextmenü"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8965,19 +8965,19 @@ msgstr "Sende 'inaktive Quelle' wenn XBMC beendet wird"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Geräte in den Standby versetzen wenn der PC in den Standby geht"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Dieses Gerät muss gewartet werden"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorieren"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Wenn der Fernseher ausgeschaltet wird"
 
 msgctxt "#36030"
 msgid "Connection lost"
