@@ -70,37 +70,36 @@ const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirect
 
 void CDirectoryHistory::AddPath(const CStdString& strPath)
 {
-  if ((m_vecPathHistory.size() == 0) || m_vecPathHistory.back() != strPath)
-  {
-    m_vecPathHistory.push_back(strPath);
-  }
+  if (!m_vecPathHistory.empty() && m_vecPathHistory.back().m_strPath == strPath)
+    return;
+
+  CPathHistoryItem item;
+  item.m_strPath = strPath;
+  m_vecPathHistory.push_back(item);
 }
 
 void CDirectoryHistory::AddPathFront(const CStdString& strPath)
 {
-  m_vecPathHistory.insert(m_vecPathHistory.begin(), strPath);
+  CPathHistoryItem item;
+  item.m_strPath = strPath;
+  m_vecPathHistory.insert(m_vecPathHistory.begin(), item);
 }
 
 CStdString CDirectoryHistory::GetParentPath()
 {
-  CStdString strParent;
-  if (m_vecPathHistory.size() > 0)
-  {
-    strParent = m_vecPathHistory.back();
-  }
+  if (m_vecPathHistory.empty())
+    return StringUtils::EmptyString;
 
-  return strParent;
+  return m_vecPathHistory.back().m_strPath;
 }
 
 CStdString CDirectoryHistory::RemoveParentPath()
 {
-  CStdString strParent;
-  if (m_vecPathHistory.size() > 0)
-  {
-    strParent = m_vecPathHistory.back();
-    m_vecPathHistory.pop_back();
-  }
+  if (m_vecPathHistory.empty())
+    return StringUtils::EmptyString;
 
+  CStdString strParent = GetParentPath();
+  m_vecPathHistory.pop_back();
   return strParent;
 }
 
@@ -112,13 +111,9 @@ void CDirectoryHistory::ClearPathHistory()
 void CDirectoryHistory::DumpPathHistory()
 {
   // debug log
-  CStdString strTemp;
   CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
   for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-  {
-    strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
-    CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
-  }
+    CLog::Log(LOGDEBUG, "  %02i.[%s]", i, m_vecPathHistory[i].m_strPath.c_str());
 }
 
 CStdString CDirectoryHistory::preparePath(const CStdString &strDirectory, bool tolower /* = true */)

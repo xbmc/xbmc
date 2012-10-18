@@ -34,6 +34,15 @@ public:
     CStdString m_strItem;
     CStdString m_strDirectory;
   };
+
+  class CPathHistoryItem
+  {
+  public:
+    CPathHistoryItem() { }
+    virtual ~CPathHistoryItem() { }
+
+    CStdString m_strPath;
+  };
   
   CDirectoryHistory() { }
   virtual ~CDirectoryHistory();
@@ -48,10 +57,11 @@ public:
   CStdString RemoveParentPath();
   void ClearPathHistory();
   void DumpPathHistory();
+
 private:
   static CStdString preparePath(const CStdString &strDirectory, bool tolower = true);
   
   typedef std::map<CStdString, CHistoryItem> HistoryMap;
   HistoryMap m_vecHistory;
-  std::vector<CStdString> m_vecPathHistory; ///< History of traversed directories
+  std::vector<CPathHistoryItem> m_vecPathHistory; ///< History of traversed directories
 };
