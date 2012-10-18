@@ -521,6 +521,9 @@ void CSoftAE::OnSettingsChange(std::string setting)
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.dtspassthrough"    ||
+      setting == "audiooutput.passthroughaac"    ||
+      setting == "audiooutput.truehdpassthrough" ||
+      setting == "audiooutput.dtshdpassthrough"  ||
       setting == "audiooutput.channellayout"     ||
       setting == "audiooutput.useexclusivemode"  ||
       setting == "audiooutput.multichannellpcm"  ||
