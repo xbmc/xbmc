@@ -688,6 +688,37 @@ void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
   }
 }
 
+bool CSoftAE::EnumerateOutputDevicesEx(std::vector<AEDeviceEx> &devices, bool passthrough)
+{
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    AESinkInfo& sinkInfo = *itt;
+    for (AEDeviceInfoList::iterator itt2 = sinkInfo.m_deviceInfoList.begin(); itt2 != sinkInfo.m_deviceInfoList.end(); ++itt2)
+    {
+      CAEDeviceInfo& devInfo = *itt2;
+      AEDeviceEx dev;
+      if (passthrough && !devInfo.SupportsRaw())
+        continue;
+
+      dev.m_DeviceType = devInfo.m_deviceType;
+      dev.m_DeviceName = devInfo.GetAEDeviceName();
+      dev.m_SupportedDataFormats = devInfo.m_dataFormats;
+
+      /* add the sink name if we have more then one sink type */
+      if (m_sinkInfoList.size() > 1)
+        dev.m_DisplayName = sinkInfo.m_sinkName + ":";
+      
+      dev.m_DisplayName += devInfo.m_displayName;
+
+      if (!devInfo.m_displayNameExtra.empty())
+        dev.m_DisplayName += ", " + devInfo.m_displayNameExtra;
+
+      devices.push_back(dev);
+    }
+  }
+  return true;
+}
+
 std::string CSoftAE::GetDefaultDevice(bool passthrough)
 {
   for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
