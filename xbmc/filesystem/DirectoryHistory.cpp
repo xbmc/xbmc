@@ -20,78 +20,52 @@
 
 #include "DirectoryHistory.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace std;
 
-CDirectoryHistory::CDirectoryHistory()
-{
-  m_strNull = "";
-}
-
 CDirectoryHistory::~CDirectoryHistory()
-{}
+{
+  m_vecHistory.clear();
+  m_vecPathHistory.clear();
+}
 
 void CDirectoryHistory::RemoveSelectedItem(const CStdString& strDirectory)
 {
-  CStdString strDir = strDirectory;
-  strDir.ToLower();
-  URIUtils::RemoveSlashAtEnd(strDir);
-
-  vector<CHistoryItem>::iterator Iter;
-  for (Iter = m_vecHistory.begin();Iter != m_vecHistory.end(); Iter++)
-  {
-    if ( strDir == Iter->m_strDirectory)
-    {
-      m_vecHistory.erase(Iter);
-      return ;
-    }
-  }
+  HistoryMap::iterator iter = m_vecHistory.find(preparePath(strDirectory));
+  if (iter != m_vecHistory.end())
+    m_vecHistory.erase(iter);
 }
 
 void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory)
 {
-  if (strSelectedItem.size() == 0) return ;
-  // if (strDirectory.size()==0) return;
-  CStdString strDir = strDirectory;
-  strDir.ToLower();
-  URIUtils::RemoveSlashAtEnd(strDir);
-
-  CStdString strItem = strSelectedItem;
-  URIUtils::RemoveSlashAtEnd(strItem);
-
-  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
+  if (strSelectedItem.empty())
+    return;
+  
+  CStdString strDir = preparePath(strDirectory);
+  CStdString strItem = preparePath(strSelectedItem, false);
+  
+  HistoryMap::iterator iter = m_vecHistory.find(strDir);
+  if (iter != m_vecHistory.end())
   {
-    CHistoryItem& item = m_vecHistory[i];
-    if ( strDir == item.m_strDirectory)
-    {
-      item.m_strItem = strItem;
-      return ;
-    }
+    iter->second.m_strItem = strItem;
+    return;
   }
 
   CHistoryItem item;
   item.m_strItem = strItem;
   item.m_strDirectory = strDir;
-  m_vecHistory.push_back(item);
+  m_vecHistory[strDir] = item;
 }
 
 const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirectory) const
 {
-  CStdString strDir = strDirectory;
-  strDir.ToLower();
-  URIUtils::RemoveSlashAtEnd(strDir);
+  HistoryMap::const_iterator iter = m_vecHistory.find(preparePath(strDirectory));
+  if (iter != m_vecHistory.end())
+    return iter->second.m_strItem;
 
-  for (int i = 0; i < (int)m_vecHistory.size(); ++i)
-  {
-    const CHistoryItem& item = m_vecHistory[i];
-    if ( strDir == item.m_strDirectory)
-    {
-
-      return item.m_strItem;
-    }
-  }
-  return m_strNull;
+  return StringUtils::EmptyString;
 }
 
 void CDirectoryHistory::AddPath(const CStdString& strPath)
@@ -145,4 +119,14 @@ void CDirectoryHistory::DumpPathHistory()
     strTemp.Format("%02i.[%s]", i, m_vecPathHistory[i]);
     CLog::Log(LOGDEBUG, "  %s", strTemp.c_str());
   }
+}
+
+CStdString CDirectoryHistory::preparePath(const CStdString &strDirectory, bool tolower /* = true */)
+{
+  CStdString strDir = strDirectory;
+  if (tolower)
+    strDir.ToLower();
+  URIUtils::RemoveSlashAtEnd(strDir);
+
+  return strDir;
 }
