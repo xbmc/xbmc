@@ -666,10 +666,18 @@ void CGUISettings::Initialize()
   AddInt(NULL,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(NULL,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 
+#ifdef HAS_ZEROCONF
+#ifdef TARGET_WINDOWS
+  AddBool(NULL, "services.zeroconf", 1260, false);
+#else
+  AddBool(NULL, "services.zeroconf", 1260, true);
+#endif
+#endif
+
   CSettingsCategory* net = AddCategory(6, "network", 798);
 #ifdef HAS_AIRPLAY
   AddSeparator(net, "services.sep5");
-  AddBool(net, "services.airplay", 1270, false);
+  AddBool(net, "services.airplay", 1270, true);
   AddBool(net, "services.useairplaypassword", 1272, false);
   AddString(net, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733);
   AddSeparator(net, "services.sep6");

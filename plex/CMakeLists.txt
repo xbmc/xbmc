@@ -49,20 +49,15 @@ else()
 endif()
 
 add_dependencies(Plex git_revision.h ffmpeg)
-
 target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+
+# Set some variables we need to configure the CMakeCompleteBundle file
+set(PLEXDIR ${plexdir})
+set(ROOTDIR ${root})
+configure_file(CMakeCompleteBundle.cmake.in CMakeCompleteBundle.cmake @ONLY)
 
 install(TARGETS Plex BUNDLE DESTINATION . COMPONENT RUNTIME)
 install(FILES ${plexdir}/Plex.icns DESTINATION Plex.app/Contents/Resources COMPONENT RUNTIME)
-
-install(CODE "
-	include(BundleUtilities)
-	set(BU_CHMOD_BUNDLE_ITEMS ON)
-  set(plugins \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/system/ImageLib-x86-osx.so)
-  message(\${plugins})
-	fixup_bundle(\${CMAKE_INSTALL_PREFIX}/Plex.app \${plugins} ${dependdir}/lib)
-	execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh Plex.app \"${root}\" \"\${CMAKE_INSTALL_PREFIX}\")
-" COMPONENT RUNTIME)
-
+install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
 install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/media/Splash.png)")
 install(FILES ${plexdir}/Splash.png DESTINATION Plex.app/Contents/Resources/XBMC/media)
