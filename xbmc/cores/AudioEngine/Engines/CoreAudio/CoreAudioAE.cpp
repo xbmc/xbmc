@@ -289,7 +289,7 @@ void CCoreAudioAE::Deinitialize()
   HAL->Deinitialize();
 }
 
-void CCoreAudioAE::OnSettingsChange(std::string setting)
+void CCoreAudioAE::OnSettingsChange(const std::string& setting)
 {
   if (setting == "audiooutput.dontnormalizelevels")
   {

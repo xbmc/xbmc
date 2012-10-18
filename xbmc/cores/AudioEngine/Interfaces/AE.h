@@ -94,7 +94,7 @@ public:
    * Callback to alert the AudioEngine of setting changes
    * @param setting The name of the setting that was changed
    */
-  virtual void OnSettingsChange(std::string setting) {}
+  virtual void OnSettingsChange(const std::string& setting) {}
 
   /**
    * Returns the current master volume level of the AudioEngine

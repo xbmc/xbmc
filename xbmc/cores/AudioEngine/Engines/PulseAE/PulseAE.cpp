@@ -196,7 +196,7 @@ bool CPulseAE::Resume()
   return false;
 }
 
-void CPulseAE::OnSettingsChange(std::string setting)
+void CPulseAE::OnSettingsChange(const std::string& setting)
 {
 }
 
