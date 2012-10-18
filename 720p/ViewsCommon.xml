@@ -269,7 +269,7 @@
 					<onup>56</onup>
 					<ondown>56</ondown>
 					<!-- generic -->
-					<itemlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums)])">
+					<itemlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums)]">
 						<!-- horiz separator -->
 						<control type="image">
 							<posx>0</posx>
