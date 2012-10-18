@@ -3348,7 +3348,17 @@ msgctxt "#2050"
 msgid "Runtime"
 msgstr ""
 
-#empty strings from id 2051 to 2099
+#empty strings from id 2051 to 2079
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr ""
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr ""
+
+#empty strings from id 2082 to 2099
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
