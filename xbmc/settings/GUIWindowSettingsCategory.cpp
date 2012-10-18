@@ -2003,7 +2003,29 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         AudioSinkMapIterator itt = m_DigitalAudioSinkMap.find(pControl->GetCurrentLabel());
         if (itt != m_DigitalAudioSinkMap.end())
         {
-          g_guiSettings.SetString("audiooutput.passthroughdevice", itt->second.m_DeviceName.c_str());
+          AEDeviceEx &dev = itt->second;
+          g_guiSettings.SetString("audiooutput.passthroughdevice", dev.m_DeviceName.c_str());
+
+          switch (dev.m_DeviceType)
+          {
+          case AE_DEVTYPE_DP:
+          case AE_DEVTYPE_HDMI:
+            g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI);
+            break;
+          case AE_DEVTYPE_PCM:
+            g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
+            break;
+          case AE_DEVTYPE_DIGITALOUT:
+          case AE_DEVTYPE_IEC958:
+            g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958);
+            break;
+          }
+          CBaseSettingControl *pBaseCtrl = GetSetting("audiooutput.mode");
+          CGUISpinControlEx *pControlMode = NULL;
+          if (pBaseCtrl)
+            pControlMode = (CGUISpinControlEx *)GetControl(pBaseCtrl->GetID());
+          if (pControlMode)
+            pControlMode->SetValue(g_guiSettings.GetInt("audiooutput.mode"));
 
           /* Reset passthrough settings */
           g_guiSettings.SetBool("audiooutput.ac3passthrough", false);
