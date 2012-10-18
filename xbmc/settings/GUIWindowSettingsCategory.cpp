@@ -761,26 +761,60 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") == CDDARIP_ENCODER_FLAC);
     }
     else if (
-             strSetting.Equals("audiooutput.passthroughdevice") ||
              strSetting.Equals("audiooutput.ac3passthrough") ||
              strSetting.Equals("audiooutput.dtspassthrough") ||
-             strSetting.Equals("audiooutput.passthroughaac"))
-    { // only visible if we are in digital mode
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
-    }
-    else if (
+             strSetting.Equals("audiooutput.passthroughaac") ||
              strSetting.Equals("audiooutput.multichannellpcm" ) ||
              strSetting.Equals("audiooutput.truehdpassthrough") ||
              strSetting.Equals("audiooutput.dtshdpassthrough" ))
-    {
+
+    { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
+      if (pControl) 
       {
-        if (strSetting.Equals("audiooutput.dtshdpassthrough") && !g_guiSettings.GetBool("audiooutput.dtspassthrough"))
-          pControl->SetEnabled(false);
+        CBaseSettingControl *pBaseCtrl = GetSetting("audiooutput.passthroughdevice");
+        CGUISpinControlEx *pControlPassDev = NULL;
+        if (pBaseCtrl)
+          pControlPassDev = (CGUISpinControlEx *)GetControl(pBaseCtrl->GetID());
+        AudioSinkMapIterator itt = m_DigitalAudioSinkMap.end();
+        if (pControlPassDev)
+          itt = m_DigitalAudioSinkMap.find(pControlPassDev->GetLabel());
+
+        if (itt == m_DigitalAudioSinkMap.end() || itt->second.m_SupportedDataFormats.empty())
+        {
+          if (strSetting.Equals("audiooutput.multichannellpcm"))
+            pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI);
+          else if (strSetting.Equals("audiooutput.dtshdpassthrough"))
+            pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")) && 
+                                  g_guiSettings.GetBool("audiooutput.dtspassthrough"));
+          else
+            pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
+        }
         else
-          pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI);
+        {
+          bool found = false;
+          int searchFor = AE_FMT_INVALID;
+          if (strSetting.Equals("audiooutput.ac3passthrough"))
+            searchFor = AE_FMT_AC3;
+          else if (strSetting.Equals("audiooutput.dtspassthrough"))
+            searchFor = AE_FMT_DTS;
+          else if (strSetting.Equals("audiooutput.passthroughaac"))
+            searchFor = AE_FMT_AAC;
+          else if (strSetting.Equals("audiooutput.multichannellpcm"))
+            searchFor = AE_FMT_LPCM;
+          else if (strSetting.Equals("audiooutput.truehdpassthrough"))
+            searchFor = AE_FMT_TRUEHD;
+          else if (strSetting.Equals("audiooutput.dtshdpassthrough"))
+            searchFor = AE_FMT_DTSHD;
+          
+          vector<AEDataFormat> &dataFormats = itt->second.m_SupportedDataFormats;
+          for(vector<AEDataFormat>::const_iterator i = dataFormats.cbegin(); !found && i != dataFormats.cend(); i++)
+          {
+            if (*i == searchFor)
+              found = true;
+          }
+          pControl->SetEnabled(found);
+        }
       }
     }
     else if (strSetting.Equals("musicplayer.crossfade"))
