@@ -197,6 +197,14 @@ void CAEFactory::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
     AE->EnumerateOutputDevices(devices, passthrough);
 }
 
+bool CAEFactory::EnumerateOutputDevicesEx(std::vector<AEDeviceEx> &devices, bool passthrough)
+{
+  if(AE)
+    return AE->EnumerateOutputDevicesEx(devices, passthrough);
+  
+  return false;
+}
+
 std::string CAEFactory::GetDefaultDevice(bool passthrough)
 {
   if(AE)
