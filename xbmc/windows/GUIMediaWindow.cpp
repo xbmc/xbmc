@@ -90,6 +90,7 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
   m_iLastControl = -1;
   m_iSelectedItem = -1;
   m_canFilterAdvanced = false;
+  m_itemsLoaded = false;
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
 }
@@ -243,6 +244,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
       ClearFileItems();
+      m_itemsLoaded = false;
       return true;
     }
     break;
@@ -727,11 +729,11 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
       GetDirectoryHistoryString(pItem.get(), strSelectedItem);
     }
   }
-
-  bool refresh = strDirectory == m_vecItems->GetPath();
   
   CStdString strCurrentDirectory = m_vecItems->GetPath();
   m_history.SetSelectedItem(strSelectedItem, strCurrentDirectory);
+
+  bool refresh = (strDirectory == strCurrentDirectory && m_itemsLoaded);
 
   CFileItemList items;
   if (!GetDirectory(strDirectory, items))
@@ -760,6 +762,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_vecItems->Append(items);
   else
     m_vecItems->Copy(items);
+
+  m_itemsLoaded = true;
     
   // if we're getting the root source listing
   // make sure the path history is clean
