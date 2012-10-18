@@ -1998,7 +1998,22 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()].m_DeviceName.c_str());
+      if (pControl)
+      {
+        AudioSinkMapIterator itt = m_DigitalAudioSinkMap.find(pControl->GetCurrentLabel());
+        if (itt != m_DigitalAudioSinkMap.end())
+        {
+          g_guiSettings.SetString("audiooutput.passthroughdevice", itt->second.m_DeviceName.c_str());
+
+          /* Reset passthrough settings */
+          g_guiSettings.SetBool("audiooutput.ac3passthrough", false);
+          g_guiSettings.SetBool("audiooutput.dtspassthrough", false);
+          g_guiSettings.SetBool("audiooutput.passthroughaac", false);
+          g_guiSettings.SetBool("audiooutput.multichannellpcm" , false);
+          g_guiSettings.SetBool("audiooutput.truehdpassthrough", false);
+          g_guiSettings.SetBool("audiooutput.dtshdpassthrough" , false);
+        }
+      }
     }
 #endif
     else if (strSetting.Equals("audiooutput.guisoundmode"))
