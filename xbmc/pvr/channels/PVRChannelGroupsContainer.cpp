@@ -261,7 +261,7 @@ void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void)
   if (channelgroupradio)
     channelgroupradio->SearchAndSetChannelIcons(true);
 
-  CGUIDialogOK::ShowAndGetInput(19103,0,20177,0);
+  CGUIDialogOK::ShowAndGetInput(19167,0,20177,0);
 }
 
 CFileItemPtr CPVRChannelGroupsContainer::GetLastPlayedChannel(void) const
