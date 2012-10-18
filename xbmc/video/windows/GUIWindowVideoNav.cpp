@@ -188,10 +188,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     // update the display
     case GUI_MSG_SCAN_FINISHED:
     case GUI_MSG_REFRESH_THUMBS:
-    {
-      Update(m_vecItems->GetPath());
-    }
-    break;
+      Refresh();
+      break;
   }
   return CGUIWindowVideoBase::OnMessage(message);
 }
@@ -1083,7 +1081,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       OnUnAssignContent(item->GetPath(),20375,20340,20341);
     }
-    Update(m_vecItems->GetPath());
+    Refresh();
     return true;
   }
   switch (button)
@@ -1091,7 +1089,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_EDIT:
     UpdateVideoTitle(item.get());
     CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems->GetPath());
+    Refresh();
     return true;
 
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
@@ -1229,7 +1227,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CUtil::DeleteVideoDatabaseDirectoryCache();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
       g_windowManager.SendMessage(msg);
-      Update(m_vecItems->GetPath());
+      Refresh();
 
       return true;
     }
@@ -1274,7 +1272,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // clear view cache and reload images
       CUtil::DeleteVideoDatabaseDirectoryCache();
 
-      Update(m_vecItems->GetPath());
+      Refresh();
       return true;
     }
   case CONTEXT_BUTTON_TAGS_ADD_ITEMS:
@@ -1349,7 +1347,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_UNLINK_MOVIE:
     {
       OnLinkMovieToTvShow(itemNumber, true);
-      Update(m_vecItems->GetPath());
+      Refresh();
       return true;
     }
   case CONTEXT_BUTTON_LINK_MOVIE:
@@ -1395,7 +1393,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       m_database.DeleteBookMarkForEpisode(*m_vecItems->Get(itemNumber)->GetVideoInfoTag());
       m_database.Close();
       CUtil::DeleteVideoDatabaseDirectoryCache();
-      Update(m_vecItems->GetPath());
+      Refresh();
       return true;
     }
 
@@ -1473,8 +1471,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
       return true;
 
     // update list
-    m_vecItems->RemoveDiscCache(GetID());
-    Update(m_vecItems->GetPath());
+    Refresh(true);
     m_viewControl.SetSelectedItem(iItem);
     return true;
   }
@@ -1524,8 +1521,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
       }
     }
 
-    m_vecItems->RemoveDiscCache(GetID());
-    Update(m_vecItems->GetPath());
+    Refresh(true);
     return true;
   }
 

@@ -338,7 +338,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
              m_vecItems->IsSourcesPath()) && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
-          Update(m_vecItems->GetPath());
+          Refresh();
           m_viewControl.SetSelectedItem(iItem);
         }
         else if (m_vecItems->IsRemovable())
@@ -362,7 +362,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
              m_vecItems->IsSourcesPath()) && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
-          Update(m_vecItems->GetPath());
+          Refresh();
           m_viewControl.SetSelectedItem(iItem);
         }
         return true;
@@ -379,10 +379,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           Update(message.GetStringParam());
         }
         else
-        { // refresh the listing
-          m_vecItems->RemoveDiscCache(GetID());
-          Update(m_vecItems->GetPath());
-        }
+          Refresh(true); // refresh the listing
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
@@ -409,9 +406,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         {
           if((message.GetStringParam() == m_vecItems->GetPath()) ||
              (m_vecItems->IsMultiPath() && XFILE::CMultiPathDirectory::HasPath(m_vecItems->GetPath(), message.GetStringParam())))
-          {
-            Update(m_vecItems->GetPath());
-          }
+            Refresh();
         }
       }
       else if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
@@ -571,10 +566,13 @@ void CGUIMediaWindow::UpdateButtons()
     SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
 }
 
-void CGUIMediaWindow::ClearFileItems()
+void CGUIMediaWindow::ClearFileItems(bool itemsOnly /* = false */)
 {
   m_viewControl.Clear();
-  m_vecItems->Clear(); // will clean up everything
+  if (itemsOnly)
+    m_vecItems->ClearItems();
+  else
+    m_vecItems->Clear();
   m_unfilteredItems->Clear();
 }
 
@@ -729,9 +727,10 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
       GetDirectoryHistoryString(pItem.get(), strSelectedItem);
     }
   }
+
+  bool refresh = strDirectory == m_vecItems->GetPath();
   
   CStdString strCurrentDirectory = m_vecItems->GetPath();
-
   m_history.SetSelectedItem(strSelectedItem, strCurrentDirectory);
 
   CFileItemList items;
@@ -755,10 +754,13 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   if (items.GetLabel().IsEmpty())
     items.SetLabel(CUtil::GetTitleFromPath(items.GetPath(), true));
-
-  ClearFileItems();
-  m_vecItems->Copy(items);
-
+  
+  ClearFileItems(refresh);
+  if (refresh)
+    m_vecItems->Append(items);
+  else
+    m_vecItems->Copy(items);
+    
   // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
@@ -855,6 +857,18 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   return true;
 }
 
+bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
+{
+  CStdString strCurrentDirectory = m_vecItems->GetPath();
+  if (strCurrentDirectory.Equals("?"))
+    return false;
+
+  if (clearCache)
+    m_vecItems->RemoveDiscCache(GetID());
+
+  return Update(strCurrentDirectory);
+}
+
 // \brief This function will be called by Update() before the
 // labels of the fileitems are formatted. Override this function
 // to set custom thumbs or load additional media info.
@@ -944,7 +958,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       {
         m_vecItems->RemoveDiscCache(GetID());
         if (CGUIDialogSmartPlaylistEditor::EditPlaylist(pItem->GetPath()))
-          Update(m_vecItems->GetPath());
+          Refresh();
         return true;
       }
     }
@@ -993,7 +1007,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     {
       m_vecItems->RemoveDiscCache(GetID());
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().Mid(19)))
-        Update(m_vecItems->GetPath());
+        Refresh();
       return true;
     }
     else if (pItem->GetPath().Left(14).Equals("addons://more/"))
@@ -1352,8 +1366,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
 
   if (!CFileUtils::DeleteItem(item))
     return;
-  m_vecItems->RemoveDiscCache(GetID());
-  Update(m_vecItems->GetPath());
+  Refresh(true);
   m_viewControl.SetSelectedItem(iItem);
 }
 
@@ -1367,8 +1380,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 
   if (!CFileUtils::RenameFile(m_vecItems->Get(iItem)->GetPath()))
     return;
-  m_vecItems->RemoveDiscCache(GetID());
-  Update(m_vecItems->GetPath());
+  Refresh(true);
   m_viewControl.SetSelectedItem(iItem);
 }
 
@@ -1376,7 +1388,7 @@ void CGUIMediaWindow::OnInitWindow()
 {
   // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
   m_rootDir.SetAllowThreads(false);
-  Update(m_vecItems->GetPath());
+  Refresh();
   m_rootDir.SetAllowThreads(true);
 
   if (m_iSelectedItem > -1)
@@ -1483,7 +1495,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       ADDON::AddonPtr addon;
       if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon, ADDON_PLUGIN))
         if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
-          Update(m_vecItems->GetPath());
+          Refresh();
       return true;
     }
   case CONTEXT_BUTTON_USER1:
