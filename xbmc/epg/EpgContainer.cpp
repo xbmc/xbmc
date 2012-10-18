@@ -267,7 +267,7 @@ void CEpgContainer::Process(void)
 CEpg *CEpgContainer::GetById(int iEpgId) const
 {
   if (iEpgId < 0)
-    return 0;
+    return NULL;
 
   CSingleLock lock(m_critSection);
   map<unsigned int, CEpg *>::const_iterator it = m_epgs.find((unsigned int) iEpgId);
