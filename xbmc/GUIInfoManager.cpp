@@ -1254,6 +1254,9 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_PLAYCOUNT:
   case MUSICPLAYER_LASTPLAYED:
+  /* PLEX */
+  case MUSICPLAYER_FANART:
+  /* PLEX */
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -1714,9 +1717,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
 
   /* PLEX */
-  case MUSICPLAYER_FANART:
-    strLabel = GetMusicLabel(info);
-    break;
   case SYSTEM_SELECTED_PLEX_MEDIA_SERVER:
   {
     CStdString ret;

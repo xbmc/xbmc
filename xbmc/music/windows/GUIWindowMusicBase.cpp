@@ -275,7 +275,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   if ((pItem->IsMusicDb() && !pItem->HasMusicInfoTag()) || pItem->IsParentFolder() ||
        URIUtils::IsSpecial(pItem->GetPath()) || pItem->GetPath().Left(14).Equals("musicsearch://"))
     return; // nothing to do
-#endif
 
   if (!pItem->m_bIsFolder)
   { // song lookup
@@ -289,7 +288,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   CAlbum album;
   CArtist artist;
 
-#ifndef __PLEX__
   bool foundAlbum = false;
 
   album.idAlbum = -1;
@@ -365,15 +363,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->Close();
   }
 #endif
-
-  /* PLEX */
-  //if (album.idAlbum == -1 && foundAlbum == false)
-
-  if (pItem->GetProperty("type").asString() == "artist")
-  /* END PLEX */
-    ShowArtistInfo(artist, pItem->GetPath(), false, bShowInfo);
-  else
-    ShowAlbumInfo(album, strPath, false, bShowInfo);
 }
 
 void CGUIWindowMusicBase::OnManualAlbumInfo()
@@ -1007,15 +996,17 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_NOW_PLAYING:
-    /* PLEX added if statement */
+    /* PLEX added if statement and changed to WINDOW_NOW_PLAYING*/
     if (g_application.IsPlayingAudio())
-      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+      g_windowManager.ActivateWindow(WINDOW_NOW_PLAYING);
 
     return true;
 
+#ifndef __PLEX__
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");
     return true;
+#endif
 
   case CONTEXT_BUTTON_SETTINGS:
     g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYMUSIC);

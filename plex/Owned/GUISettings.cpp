@@ -286,6 +286,9 @@ void CGUISettings::Initialize()
   AddBool(scr, "scrobbler.lastfmsubmitradio", 15250, false);
   AddString(scr,"scrobbler.lastfmusername", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
   AddString(scr,"scrobbler.lastfmpass", 15203, "", EDIT_CONTROL_MD5_INPUT, false, 15203);
+  AddBool(NULL, "scrobbler.librefmsubmit", 15217, false);
+  AddString(NULL, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
+  AddString(NULL, "scrobbler.librefmpass", 15219, "", EDIT_CONTROL_MD5_INPUT, false, 15219);
 
   CSettingsCategory *bgm = AddCategory(3, "backgroundmusic", 15230);
   AddBool(0, "backgroundmusic.bgmusicenabled", 18104, true);

@@ -174,7 +174,7 @@ public:
   virtual int GetSubtitlePlexID() { return -1; };
   virtual int GetAudioStreamPlexID() { return -1; };
   virtual int GetPlexMediaPartID() { return -1; };
-  virtual bool CanOpenAsync() { return -1; };
+  virtual bool CanOpenAsync() { return false; };
   virtual void Abort() {};
   /* END PLEX */
 

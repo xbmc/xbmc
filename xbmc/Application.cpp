@@ -4132,6 +4132,14 @@ void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
   }
 
   /* PLEX */
+  // If we're supposed to activate the visualizer when playing audio, do so now.
+  if (IsPlayingAudio() &&
+      g_advancedSettings.m_bVisualizerOnPlay &&
+      !g_playlistPlayer.HasPlayedFirstFile() &&
+      !g_playlistPlayer.QueuedFirstFile())
+  {
+    ActivateVisualizer();
+  }
   //return bResult;
   /* END PLEX */
 }

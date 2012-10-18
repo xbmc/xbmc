@@ -32,6 +32,7 @@ ${SYNC} "$SRCROOT/LICENSE.GPL" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resourc
 ${SYNC} "$SRCROOT/xbmc/osx/Credits.html" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/"
 #${SYNC} "$SRCROOT/tools/darwin/runtime"	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/darwin"
 ${ADDONSYNC} "$SRCROOT/addons"		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
+${ADDONSYNC} "$SRCROOT/plex/addons" "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
 ${SYNC} "$SRCROOT/language"		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
 ${SYNC} "$SRCROOT/media" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
 #${SYNCSKIN} "$SRCROOT/addons/skin.confluence" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons"
