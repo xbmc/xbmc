@@ -25,6 +25,14 @@
 
 using namespace std;
 
+const CStdString& CDirectoryHistory::CPathHistoryItem::GetPath(bool filter /* = false */) const
+{
+  if (filter && !m_strFilterPath.empty())
+    return m_strFilterPath;
+
+  return m_strPath;
+}
+
 CDirectoryHistory::~CDirectoryHistory()
 {
   m_vecHistory.clear();
@@ -68,37 +76,39 @@ const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirect
   return StringUtils::EmptyString;
 }
 
-void CDirectoryHistory::AddPath(const CStdString& strPath)
+void CDirectoryHistory::AddPath(const CStdString& strPath, const CStdString &strFilterPath /* = "" */)
 {
   if (!m_vecPathHistory.empty() && m_vecPathHistory.back().m_strPath == strPath)
     return;
 
   CPathHistoryItem item;
   item.m_strPath = strPath;
+  item.m_strFilterPath = strFilterPath;
   m_vecPathHistory.push_back(item);
 }
 
-void CDirectoryHistory::AddPathFront(const CStdString& strPath)
+void CDirectoryHistory::AddPathFront(const CStdString& strPath, const CStdString &strFilterPath /* = "" */)
 {
   CPathHistoryItem item;
   item.m_strPath = strPath;
+  item.m_strFilterPath = strFilterPath;
   m_vecPathHistory.insert(m_vecPathHistory.begin(), item);
 }
 
-CStdString CDirectoryHistory::GetParentPath()
+CStdString CDirectoryHistory::GetParentPath(bool filter /* = false */)
 {
   if (m_vecPathHistory.empty())
     return StringUtils::EmptyString;
 
-  return m_vecPathHistory.back().m_strPath;
+  return m_vecPathHistory.back().GetPath(filter);
 }
 
-CStdString CDirectoryHistory::RemoveParentPath()
+CStdString CDirectoryHistory::RemoveParentPath(bool filter /* = false */)
 {
   if (m_vecPathHistory.empty())
     return StringUtils::EmptyString;
 
-  CStdString strParent = GetParentPath();
+  CStdString strParent = GetParentPath(filter);
   m_vecPathHistory.pop_back();
   return strParent;
 }
@@ -113,7 +123,7 @@ void CDirectoryHistory::DumpPathHistory()
   // debug log
   CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
   for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-    CLog::Log(LOGDEBUG, "  %02i.[%s]", i, m_vecPathHistory[i].m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "  %02i.[%s; %s]", i, m_vecPathHistory[i].m_strPath.c_str(), m_vecPathHistory[i].m_strFilterPath.c_str());
 }
 
 CStdString CDirectoryHistory::preparePath(const CStdString &strDirectory, bool tolower /* = true */)
