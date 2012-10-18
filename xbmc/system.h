@@ -42,7 +42,9 @@
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
+#ifndef __PLEX__
 #define HAS_WEB_INTERFACE
+#endif
 #endif
 
 #define HAS_JSONRPC

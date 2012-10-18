@@ -652,8 +652,8 @@ void CGUISettings::Initialize()
   transcodeQualityMap.erase(43000-1);
   AddInt(pms, "plexmediaserver.localtranscodequality", 40214, -1, transcodeQualityMap, SPIN_CONTROL_TEXT);
 
-  AddBool(NULL,  "services.webserver",        263, false);
-  AddString(NULL,"services.webserverport",    730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+  AddBool(NULL,  "services.webserver",        263, true);
+  AddString(NULL,"services.webserverport",    730, "3000", EDIT_CONTROL_NUMBER_INPUT, false, 730);
   AddString(NULL,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(NULL,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
   AddDefaultAddon(NULL, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
