@@ -265,12 +265,12 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
-bool CGUIWindowMusicNav::Update(const CStdString &strDirectory)
+bool CGUIWindowMusicNav::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (CGUIWindowMusicBase::Update(strDirectory))
+  if (CGUIWindowMusicBase::Update(strDirectory, updateFilterPath))
   {
     m_thumbLoader.Load(*m_unfilteredItems);
     return true;

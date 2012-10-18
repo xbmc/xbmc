@@ -85,12 +85,13 @@ protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
   virtual void OnInitWindow();
   virtual void UpdateButtons();
-  virtual bool Update(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual void OnPrepareFileItems(CFileItemList &items);
 
-  virtual bool CheckFilterAdvanced(CFileItemList &items);
+  virtual bool CheckFilterAdvanced(CFileItemList &items) const;
+  virtual bool CanContainFilter(const CStdString &strDirectory) const;
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);

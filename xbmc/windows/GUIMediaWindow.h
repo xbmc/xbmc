@@ -69,8 +69,16 @@ protected:
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual bool Update(const CStdString &strDirectory);
-  /* \brief Refreshes the current list by retrieving the lists's path
+  /*! \brief Retrieves the items from the given path and updates the list
+   \param strDirectory The path to the directory to get the items from
+   \param updateFilterPath Whether to update the filter path in m_strFilterPath or not
+   \return true if the list was sucessfully updated otherwise false
+   \sa GetDirectory
+   \sa m_vecItems
+   \sa m_strFilterPath
+   */
+  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
+  /*! \brief Refreshes the current list by retrieving the lists's path
    \return true if the list was successfully refreshed otherwise false
    \sa Update
    \sa GetDirectory
@@ -80,10 +88,19 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);
 
-  void ClearFileItems(bool itemsOnly = false);
+  void ClearFileItems();
   virtual void SortItems(CFileItemList &items);
 
-  virtual bool CheckFilterAdvanced(CFileItemList &items) { return false; }
+  /*! \brief Check if the given list can be advance filtered or not
+   \param items List of items to check
+   \return true if the list can be advance filtered otherwise false
+   */
+  virtual bool CheckFilterAdvanced(CFileItemList &items) const { return false; }
+  /*! \brief Check if the given path can contain a "filter" parameter
+   \param strDirectory Path to check
+   \return true if the given path can contain a "filter" parameter otherwise false
+   */
+  virtual bool CanContainFilter(const CStdString &strDirectory) const { return false; }
   virtual bool Filter();
 
   /* \brief Called on response to a GUI_MSG_FILTER_ITEMS message
@@ -129,6 +146,13 @@ protected:
    \return the resulting path */
   virtual CStdString GetStartFolder(const CStdString &url);
 
+  /*! \brief Utility method to remove the given parameter from a path/URL
+   \param strDirectory Path/URL from which to remove the given parameter
+   \param strParameter Parameter to remove from the given path/URL
+   \return Path/URL without the given parameter
+   */
+  static CStdString RemoveParameterFromPath(const CStdString &strDirectory, const CStdString &strParameter);
+
   XFILE::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
 
@@ -145,5 +169,17 @@ protected:
 
   CSmartPlaylist m_filter;
   bool m_canFilterAdvanced;
-  bool m_itemsLoaded;
+  /*! \brief Contains the path used for filtering (including any active filter)
+
+   When Update() is called with a path to e.g. a smartplaylist or
+   a library node filter, that "original" path will be stored in
+   m_vecItems->m_strPath. But the path used by XBMC to retrieve
+   those items from the database (Videodb:// or musicdb://)
+   is stored in this member variable to still have access to it
+   because it is used for filtering by appending the currently active
+   filter as a "filter" parameter to the filter path/URL.
+
+   \sa Update
+   */
+  CStdString m_strFilterPath;
 };

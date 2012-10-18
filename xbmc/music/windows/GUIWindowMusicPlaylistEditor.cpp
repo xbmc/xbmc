@@ -215,12 +215,12 @@ void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem)
   AppendToPlaylist(newItems);
 }
 
-bool CGUIWindowMusicPlaylistEditor::Update(const CStdString &strDirectory)
+bool CGUIWindowMusicPlaylistEditor::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!CGUIMediaWindow::Update(strDirectory))
+  if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
   m_vecItems->SetContent("files");
