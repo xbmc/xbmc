@@ -93,7 +93,7 @@ $(LIBDYLIB): $(PLATFORM)
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM) clean
+	$(MAKE) -C $(PLATFORM)/source clean
 	rm -f .installed-$(PLATFORM)
 
 distclean::
