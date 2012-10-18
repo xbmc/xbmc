@@ -78,7 +78,7 @@ bool CEGLNativeTypeAmlogic::CreateNativeWindow()
 #endif
 }
 
-bool CEGLNativeTypeAmlogic::GetNativeDisplay(EGLNativeDisplayType **nativeDisplay) const
+bool CEGLNativeTypeAmlogic::GetNativeDisplay(XBNativeDisplayType **nativeDisplay) const
 {
   if (!nativeDisplay)
     return false;
