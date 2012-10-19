@@ -1226,7 +1226,7 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   if (obj.isMember("order") && obj["order"].isMember("method") && obj["order"]["method"].isString())
   {
     if (obj["order"].isMember("direction") && obj["order"]["direction"].isString())
-      m_orderAscending = strcmpi(obj["order"]["direction"].asString().c_str(), "ascending") == 0;
+      m_orderDirection = strcmpi(obj["order"]["direction"].asString().c_str(), "ascending") == 0 ? SortOrderAscending : SortOrderDescending;
 
     m_orderField = CSmartPlaylistRule::TranslateOrder(obj["order"]["method"].asString().c_str());
   }
@@ -1285,7 +1285,7 @@ bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
   {
     const char *direction = order->Attribute("direction");
     if (direction)
-      m_orderAscending = strcmpi(direction, "ascending") == 0;
+      m_orderDirection = strcmpi(direction, "ascending") == 0 ? SortOrderAscending : SortOrderDescending;
     m_orderField = CSmartPlaylistRule::TranslateOrder(order->FirstChild()->Value());
   }
   return true;
@@ -1344,7 +1344,7 @@ bool CSmartPlaylist::Save(const CStdString &path) const
   {
     TiXmlText order(CSmartPlaylistRule::TranslateOrder(m_orderField).c_str());
     TiXmlElement nodeOrder("order");
-    nodeOrder.SetAttribute("direction", m_orderAscending ? "ascending" : "descending");
+    nodeOrder.SetAttribute("direction", m_orderDirection == SortOrderDescending ? "descending" : "ascending");
     nodeOrder.InsertEndChild(order);
     pRoot->InsertEndChild(nodeOrder);
   }
@@ -1374,7 +1374,7 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
   {
     obj["order"] = CVariant(CVariant::VariantTypeObject);
     obj["order"]["method"] = CSmartPlaylistRule::TranslateOrder(m_orderField);
-    obj["order"]["direction"] = m_orderAscending ? "ascending" : "descending";
+    obj["order"]["direction"] = m_orderDirection == SortOrderDescending ? "descending" : "ascending";
   }
 
   return true;
@@ -1397,7 +1397,7 @@ void CSmartPlaylist::Reset()
   m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationAnd);
   m_limit = 0;
   m_orderField = SortByNone;
-  m_orderAscending = true;
+  m_orderDirection = SortOrderNone;
   m_playlistType = "songs"; // sane default
 }
 
@@ -1449,7 +1449,7 @@ bool CSmartPlaylist::IsEmpty(bool ignoreSortAndLimit /* = true */) const
 {
   bool empty = m_ruleCombination.m_rules.empty() && m_ruleCombination.m_combinations.empty();
   if (empty && !ignoreSortAndLimit)
-    empty = m_limit <= 0 && m_orderField == SortByNone && m_orderAscending;
+    empty = m_limit <= 0 && m_orderField == SortByNone && m_orderDirection == SortOrderNone;
 
   return empty;
 }
