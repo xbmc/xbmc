@@ -307,6 +307,10 @@ void CAdvancedSettings::Initialize()
   m_bEnableViewRestrictions = true;
   m_bEnableKeyboardBacklightControl = false;
   m_bEnablePlexTokensInLogs = false;
+
+  /* Use Union and 1000ms by default */
+  m_guiAlgorithmDirtyRegions = 1;
+  m_guiDirtyRegionNoFlipTimeout = 1000;
   /* END PLEX */
 }
 
