@@ -1364,6 +1364,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Update(m_vecItems->GetPath());
     return true;
+#else
+  case CONTEXT_BUTTON_MARK_UNWATCHED:
+    MarkUnWatched(item);
+    return true;
+  case CONTEXT_BUTTON_MARK_WATCHED:
+    MarkWatched(item, true);
+    return true;
 #endif
   case CONTEXT_BUTTON_PLAY_AND_QUEUE:
     return OnPlayAndQueueMedia(item);
