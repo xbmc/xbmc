@@ -596,10 +596,10 @@
 						<visible>[!Skin.HasSetting(HidePictures)]</visible>
 						<onclick>XBMC.ActivateWindow(2)</onclick>
 					</item>
-					<item id="14">
+					<!--><item id="14">
 						<label>KB TEST</label>
 						<onclick>ActivateWindow(103)</onclick>
-					</item>
+					</item>-->
 				</content>
 			</control>
 			<control type="group">
