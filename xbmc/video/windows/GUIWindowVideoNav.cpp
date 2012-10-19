@@ -495,8 +495,10 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       }
       
       // set the watched overlay
+#ifndef __PLEX__
       if (pItem->IsVideo())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0);
+#endif
     }
   }
 }
