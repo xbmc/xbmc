@@ -57,7 +57,11 @@ set(ROOTDIR ${root})
 configure_file(CMakeCompleteBundle.cmake.in CMakeCompleteBundle.cmake @ONLY)
 
 install(TARGETS Plex BUNDLE DESTINATION . COMPONENT RUNTIME)
-install(FILES ${plexdir}/Plex.icns DESTINATION Plex.app/Contents/Resources COMPONENT RUNTIME)
+install(FILES ${plexdir}/Resources/Plex.icns DESTINATION Plex.app/Contents/Resources COMPONENT RUNTIME)
 install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+
+# Replace some XBMC files in the output
 install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/XBMC/media/Splash.png)")
-install(FILES ${plexdir}/Splash.png DESTINATION Plex.app/Contents/Resources/XBMC/media)
+install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/Credits.html)")
+install(FILES ${plexdir}/Resources/Credits.html DESTINATION Plex.app/Contents/Resources COMPONENT RUNTIME)
+install(FILES ${plexdir}/Resources/Splash.png DESTINATION Plex.app/Contents/Resources/XBMC/media COMPONENT RUNTIME)
