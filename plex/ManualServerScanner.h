@@ -125,13 +125,13 @@ class ManualServerScanner
         CFileItemList  list;
         
         dprintf("Manual Server Scanner: About to manually test server %s (deleted: %d)", pair.second->address.c_str(), pair.second->deleted);
-        if (pair.second->deleted == false && dir.GetDirectory(pair.second->url(), list) && list.GetProperty("updatedAt").empty() == false)
+        if (pair.second->deleted == false && dir.GetDirectory(pair.second->url(), list) && list.GetProperty("updatedAt").asString().empty() == false)
         {
           // Update name and UUID.
           pair.second->name = list.GetProperty("friendlyName").asString();
           pair.second->uuid = list.GetProperty("machineIdentifier").asString();
           
-          time_t updatedAt = list.GetProperty("updatedAt").asInteger();
+          time_t updatedAt = boost::lexical_cast<int>(list.GetProperty("updatedAt").asString());
           if (pair.second->updatedAt == 0)
           {
             dprintf("Manual Server Scanner: NEW SERVER: %s", pair.second->address.c_str());
