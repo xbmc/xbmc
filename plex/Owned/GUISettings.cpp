@@ -502,7 +502,7 @@ void CGUISettings::Initialize()
   quality.insert(make_pair(13185,MEDIA_QUALITY_SD));
   AddInt(vgen, "videogeneral.onlinemediaquality", 13180, MEDIA_QUALITY_ALWAYS_ASK, quality, SPIN_CONTROL_TEXT);
 
-  CSettingsCategory* vp = AddCategory(5, ".", 16003);
+  CSettingsCategory* vp = AddCategory(5, "videoplayer", 14086);
 
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
