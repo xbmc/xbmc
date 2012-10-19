@@ -42,7 +42,6 @@ namespace XFILE
       CCurlFile();
       virtual ~CCurlFile();
       virtual bool Open(const CURL& url);
-      virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
       virtual bool Exists(const CURL& url);
       virtual int64_t  Seek(int64_t iFilePosition, int iWhence=SEEK_SET);
       virtual int64_t GetPosition();
@@ -51,7 +50,6 @@ namespace XFILE
       virtual void Close();
       virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
       virtual unsigned int Read(void* lpBuf, int64_t uiBufSize)  { return m_state->Read(lpBuf, uiBufSize); }
-      virtual int Write(const void* lpBuf, int64_t uiBufSize);
       virtual CStdString GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
       virtual int IoControl(EIoControl request, void* param);
 
@@ -128,7 +126,7 @@ namespace XFILE
       void SetCorrectHeaders(CReadState* state);
       bool Service(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
 
-    private:
+    protected:
       CReadState*     m_state;
       unsigned int    m_bufferSize;
 
@@ -156,6 +154,7 @@ namespace XFILE
       bool            m_seekable;
       bool            m_multisession;
       bool            m_skipshout;
+      bool            m_postdataset;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
@@ -169,9 +168,6 @@ namespace XFILE
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
 
-      bool            m_openedforwrite;
-      CURL            m_urlforwrite;
-      bool            m_postdataset;
       long            m_httpresponse;
   };
 }
