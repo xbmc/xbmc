@@ -37,6 +37,7 @@
 #include "utils/SystemInfo.h"
 #include "osx/CocoaInterface.h"
 #include "osx/DarwinUtils.h"
+#include "powermanagement/osx/CocoaPowerSyscall.h"
 #undef BOOL
 
 #import <SDL/SDL_video.h>
@@ -44,7 +45,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
-#import <IOKit/pwr_mgt/IOPMLib.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
 
 // turn off deprecated warning spew.
@@ -732,6 +732,9 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
+  
+  //allow system screensaver when in windowed mode
+  EnableSystemScreenSaver(!m_bFullScreen);
 
   cur_context = [NSOpenGLContext currentContext];
   
@@ -1473,36 +1476,13 @@ void CWinSystemOSX::OnMove(int x, int y)
 
 void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 {
-  // see Technical Q&A QA1340
-  static IOPMAssertionID assertionID = 0;
-
-  if (!bEnable)
-  {
-    if (assertionID == 0)
-    {
-      CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
-      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-        kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
-    }
-  }
-  else if (assertionID != 0)
-  {
-    IOPMAssertionRelease(assertionID);
-    assertionID = 0;
-  }
-
+  CCocoaPowerSyscall::BlockSystemSleep(!bEnable);
   m_use_system_screensaver = bEnable;
 }
 
 bool CWinSystemOSX::IsSystemScreenSaverEnabled()
 {
   return m_use_system_screensaver;
-}
-
-void CWinSystemOSX::ResetOSScreensaver()
-{
-  // allow os screensaver only if we are fullscreen
-  EnableSystemScreenSaver(!m_bFullScreen);
 }
 
 bool CWinSystemOSX::EnableFrameLimiter()

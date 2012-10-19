@@ -48,6 +48,8 @@ public:
   virtual bool CanReboot(void);
           bool HasBattery(void);
   virtual int  BatteryLevel(void);
+  
+  static void BlockSystemSleep(bool bBlock);
 
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 private:
