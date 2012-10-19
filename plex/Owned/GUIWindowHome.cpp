@@ -123,7 +123,10 @@ bool CGUIWindowHome::OnAction(const CAction &action)
           // OK, let's load it after a delay.
           CFileItem* pFileItem = (CFileItem* )pItem.get();
           m_workerManager->cancelPending();
-          m_pendingSelectItemKey = pFileItem->GetPath();
+          CStdString path = pFileItem->GetPath();
+          if (path.empty())
+            path = pFileItem->GetLabel();
+          m_pendingSelectItemKey = path;
           m_lastSelectedItemKey.clear();
           m_contentLoadTimer.StartZero();
         }
@@ -210,7 +213,7 @@ int CGUIWindowHome::LookupIDFromKey(const std::string& key)
     BOOST_FOREACH(CGUIListItemPtr item, pControl->GetItems())
     {
       CFileItem* fileItem = (CFileItem* )item.get();
-      if (fileItem->GetPath() == key)
+      if (fileItem->GetPath() == key || fileItem->GetLabel() == key)
         return fileItem->m_iprogramCount;
     }
   }
