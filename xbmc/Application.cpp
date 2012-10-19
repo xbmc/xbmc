@@ -4523,6 +4523,8 @@ void CApplication::ResetScreenSaver()
   // DPMS mode
   if ((!m_bScreenSave && m_iScreenSaveLock == 0) && !m_dpmsIsActive)
     ResetScreenSaverTimer();
+
+  g_Windowing.EnableSystemScreenSaver(false);
 }
 
 void CApplication::ResetScreenSaverTimer()
