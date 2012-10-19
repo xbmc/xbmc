@@ -916,9 +916,6 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
     if(current.type == STREAM_SUBTITLE)
       return false;
 
-    if(current.type == STREAM_TELETEXT)
-      return false;
-
     if(current.id < 0)
       return true;
   }
