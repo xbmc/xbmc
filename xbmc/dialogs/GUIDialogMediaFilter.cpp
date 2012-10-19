@@ -27,6 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "video/VideoDatabase.h"
 
@@ -586,7 +587,10 @@ void CGUIDialogMediaFilter::Reset()
 bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 {
   if (path.empty() || m_filter == NULL)
+  {
+    CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath(%s): invalid path or filter", path.c_str());
     return false;
+  }
 
   delete m_dbUrl;
   bool video = false;
@@ -598,12 +602,18 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
   else if (path.find("musicdb://") == 0)
     m_dbUrl = new CMusicDbUrl();
   else
+  {
+    CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath(%s): invalid path (neither videodb:// nor musicdb://)", path.c_str());
     return false;
+  }
 
   if (!m_dbUrl->FromString(path) ||
      (video && m_dbUrl->GetType() != "movies" && m_dbUrl->GetType() != "tvshows" && m_dbUrl->GetType() != "episodes" && m_dbUrl->GetType() != "musicvideos") ||
      (!video && m_dbUrl->GetType() != "artists" && m_dbUrl->GetType() != "albums" && m_dbUrl->GetType() != "songs"))
+  {
+    CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath(%s): invalid media type", path.c_str());
     return false;
+  }
 
   // remove "filter" option
   if (m_dbUrl->HasOption("filter"))
