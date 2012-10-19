@@ -357,7 +357,7 @@
 						</control>
 						<!-- unwatched icon -->
 						<control type="image">
-							<visible>Window.IsActive(videos) + ListItem.Property(HasWatchedState) + Container.Content(episodes)</visible>
+						<visible>Window.IsActive(videos) + !Container.Content(TVShows) + !Container.Content(Seasons)</visible>
 							<posx>535</posx>
 							<posy>5</posy>
 							<width>35</width>
@@ -527,13 +527,12 @@
 						</control>
 						<!-- unwatched icon -->
 						<control type="image">
-							<visible>Window.IsActive(videos) + ListItem.Property(HasWatchedState) + Container.Content(episodes)</visible>
 							<posx>535</posx>
 							<posy>5</posy>
 							<width>35</width>
 							<height>35</height>
 							<info>ListItem.Overlay</info>
-							<include>MediaListItemFade</include>
+							<visible>Window.IsActive(videos) + !Container.Content(TVShows) + !Container.Content(Seasons)</visible>
 						</control>
 						<control type="label">
 							<visible>![Container.Content(Episodes) | Container.Content(TVShows) | Container.Content(movies) | Container.Content(clip)]</visible>
