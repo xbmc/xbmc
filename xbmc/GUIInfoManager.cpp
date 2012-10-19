@@ -4119,6 +4119,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     return item->GetProperty("director").asString();
 #endif
   case LISTITEM_ALBUM:
+    /* PLEX */
+    if (item->HasProperty("album"))
+      return item->GetProperty("album").asString();
+    /* END PLEX */
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
     if (item->HasMusicInfoTag())
