@@ -601,6 +601,10 @@ void CGUISettings::Initialize()
   if (g_powerManager.CanSuspend())
     shutdown.insert(make_pair(13011,POWERSTATE_SUSPEND));
 
+#if defined(TARGET_DARWIN_OSX)
+  shutdown.insert(make_pair(13019,POWERSTATE_ALLOWSUSPEND));
+#endif
+  
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
     AddInt(pwm, "powermanagement.shutdownstate", 13008, POWERSTATE_SHUTDOWN, shutdown, SPIN_CONTROL_TEXT);
