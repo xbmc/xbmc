@@ -39,6 +39,7 @@ public:
 
   virtual bool Powerdown(void);
   virtual bool Suspend(void);
+  virtual bool AllowSuspend(void);
   virtual bool Hibernate(void);
   virtual bool Reboot(void);
 

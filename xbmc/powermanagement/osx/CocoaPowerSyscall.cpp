@@ -130,6 +130,16 @@ bool CCocoaPowerSyscall::Suspend(void)
 #endif
 }
 
+// allow the os to control the power management
+// (for example sleeping the system when no other apps
+// are holding any assertions)
+bool CCocoaPowerSyscall::AllowSuspend(void)
+{
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::AllowSuspend");
+  BlockSystemSleep(false);
+  return true;
+}
+
 bool CCocoaPowerSyscall::Hibernate(void)
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Hibernate");

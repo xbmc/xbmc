@@ -55,6 +55,7 @@ public:
 
   bool Powerdown();
   bool Suspend();
+  bool AllowSuspend();
   bool Hibernate();
   bool Reboot();
 
