@@ -528,11 +528,6 @@ BuildObject(CFileItem&                    item,
             CStdString title = item.GetLabel();
             if (item.IsPlayList() || !item.m_bIsFolder) URIUtils::RemoveExtension(title);
             object->m_Title = title;
-        } else {
-            CStdString title, volumeNumber;
-            CUtil::GetVolumeFromFileName(item.GetPath(), title, volumeNumber);
-            if (!item.m_bIsFolder) URIUtils::RemoveExtension(title);
-            object->m_Title = title;
         }
     }
 
