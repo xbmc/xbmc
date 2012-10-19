@@ -845,6 +845,7 @@
 							</control>
 							<!-- movie -->
 							<control type="group">
+								<visible>ListItem.Type(movie)</visible>
 								<!-- in progress -->
 								<control type="image">
 									<visible>ListItem.Status(InProgress)</visible>
@@ -862,7 +863,6 @@
 									<height>192</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 									<texture background="true">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(movie)</visible>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -871,7 +871,6 @@
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-									<visible>ListItem.Type(movie)</visible>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
