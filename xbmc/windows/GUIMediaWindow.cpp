@@ -1078,11 +1078,13 @@ bool CGUIMediaWindow::OnClick(int iItem)
     GoParentFolder();
     return true;
   }
+#ifndef __PLEX__
   if (pItem->GetPath() == "add" || pItem->GetPath() == "sources://add/") // 'add source button' in empty root
   {
     OnContextButton(iItem, CONTEXT_BUTTON_ADD_SOURCE);
     return true;
   }
+#endif
 
 #ifndef __PLEX__
   if (!pItem->m_bIsFolder && pItem->IsFileFolder())

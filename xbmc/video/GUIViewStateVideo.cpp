@@ -422,7 +422,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
-
+#ifndef __PLEX__
   if (g_settings.GetSourcesFromType("video")->empty())
   { // no sources - add the "Add Source" item
     CMediaSource share;
@@ -451,6 +451,8 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
+#endif
+
   return CGUIViewStateWindowVideo::GetSources();
 }
 

@@ -365,7 +365,9 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     if (!GetDefaultShareNameByType(type).IsEmpty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
 
+#ifndef __PLEX__
     buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
+#endif
   }
   if (share && LOCK_MODE_EVERYONE != g_settings.GetMasterProfile().getLockMode())
   {
