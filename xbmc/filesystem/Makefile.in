@@ -7,6 +7,7 @@ SRCS += CircularCache.cpp
 SRCS += CDDADirectory.cpp
 SRCS += CDDAFile.cpp
 SRCS += CurlFile.cpp
+SRCS += HTTPFile.cpp
 SRCS += DAAPDirectory.cpp
 SRCS += DAAPFile.cpp
 SRCS += DAVDirectory.cpp

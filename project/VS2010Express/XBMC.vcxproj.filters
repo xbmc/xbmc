@@ -2927,6 +2927,8 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.cpp">
       <Filter>cores\dvdplayer\DVDDemuxers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HTTPFile.cpp">
+      <Filter>filesystem</Filter>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -5734,6 +5736,8 @@
     <ClInclude Include="..\..\xbmc\utils\Screenshot.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h">
+      <Filter>filesystem</Filter>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h">
       <Filter>dialogs</Filter>
     </ClInclude>

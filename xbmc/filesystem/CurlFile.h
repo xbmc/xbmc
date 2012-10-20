@@ -20,6 +20,7 @@
  */
 
 #include "IFile.h"
+#include "URL.h"
 #include "utils/RingBuffer.h"
 #include <map>
 #include "utils/HttpHeader.h"
@@ -70,7 +71,7 @@ namespace XFILE
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
       void SetReferer(CStdString referer)                        { m_referer = referer; }
       void SetCookie(CStdString cookie)                          { m_cookie = cookie; }
-      void SetMimeType(CStdString mimetype)                      { SetRequestHeader("Content-Type", m_mimetype); }
+      void SetMimeType(CStdString mimetype)                      { SetRequestHeader("Content-Type", mimetype); }
       void SetRequestHeader(CStdString header, CStdString value);
       void SetRequestHeader(CStdString header, long value);
 
@@ -125,7 +126,7 @@ namespace XFILE
       void SetCorrectHeaders(CReadState* state);
       bool Service(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
 
-    private:
+    protected:
       CReadState*     m_state;
       unsigned int    m_bufferSize;
 
@@ -153,6 +154,7 @@ namespace XFILE
       bool            m_seekable;
       bool            m_multisession;
       bool            m_skipshout;
+      bool            m_postdataset;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
@@ -165,6 +167,8 @@ namespace XFILE
 
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
+
+      long            m_httpresponse;
   };
 }
 
