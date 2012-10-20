@@ -85,6 +85,9 @@ public:
 #elif defined(_LINUX)
   virtual BOOL ExecuteAppLinux(const char* strSwitches);
 #endif
+#if defined(TARGET_ANDROID)
+  virtual BOOL ExecuteAppAndroid(const char* strSwitches,const char* strPath);
+#endif
 
 private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
