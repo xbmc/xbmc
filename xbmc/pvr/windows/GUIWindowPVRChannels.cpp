@@ -458,15 +458,15 @@ bool CGUIWindowPVRChannels::OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUT
     {
       /* add the current thumb, if available */
       CFileItemPtr current(new CFileItem("thumb://Current", false));
-      current->SetThumbnailImage(channel->IconPath());
+      current->SetArt("thumb", channel->IconPath());
       current->SetLabel(g_localizeStrings.Get(20016));
       items.Add(current);
     }
-    else if (item->HasThumbnail())
+    else if (item->HasArt("thumb"))
     {
       /* already have a thumb that the share doesn't know about - must be a local one, so we may as well reuse it */
       CFileItemPtr current(new CFileItem("thumb://Current", false));
-      current->SetThumbnailImage(item->GetThumbnailImage());
+      current->SetArt("thumb", item->GetArt("thumb"));
       current->SetLabel(g_localizeStrings.Get(20016));
       items.Add(current);
     }

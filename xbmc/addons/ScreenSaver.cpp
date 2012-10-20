@@ -72,7 +72,7 @@ bool CScreenSaver::CreateScreenSaver()
   m_pInfo->presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_pInfo->profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
 
-  if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create())
+  if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create() == ADDON_STATUS_OK)
     return true;
 
   return false;

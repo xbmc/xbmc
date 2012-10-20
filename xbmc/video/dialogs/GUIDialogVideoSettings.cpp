@@ -76,24 +76,19 @@ void CGUIDialogVideoSettings::CreateSettings()
   // create our settings
   {
     vector<pair<int, int> > entries;
-    entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
-#ifndef TARGET_RASPBERRY_PI
-    entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
-#endif
-    entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
 
-    /* remove unsupported methods */
-    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
-    {
-      if(g_renderManager.Supports((EDEINTERLACEMODE)it->first))
-        it++;
-      else
-        it = entries.erase(it);
-    }
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
+      entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
 
-    AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_DeinterlaceMode, entries);
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
+      entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
+
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
+      entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
+
+    if (entries.size())
+      AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_DeinterlaceMode, entries);
   }
-#ifndef TARGET_RASPBERRY_PI
   {
     vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO                 , 16019));
@@ -125,9 +120,12 @@ void CGUIDialogVideoSettings::CreateSettings()
         it = entries.erase(it);
     }
 
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
-    if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
-      EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
+    if (entries.size() > 1)
+    {
+      AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+      if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
+        EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
+    }
   }
   {
     vector<pair<int, int> > entries;
@@ -159,16 +157,21 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_settings.m_currentVideoSettings.m_ScalingMethod, entries);
   }
-#endif
-  AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
+  if (g_renderManager.Supports(RENDERFEATURE_CROP))
+    AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
+  if (g_renderManager.Supports(RENDERFEATURE_STRETCH) || g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
   {
     const int entries[] = {630, 631, 632, 633, 634, 635, 636 };
     AddSpin(VIDEO_SETTINGS_VIEW_MODE, 629, &g_settings.m_currentVideoSettings.m_ViewMode, 7, entries);
   }
-  AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
-  AddSlider(VIDEO_SETTINGS_VERTICAL_SHIFT, 225, &g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.01f, 2.0f, FormatFloat);
-  AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
-  AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &g_settings.m_currentVideoSettings.m_PostProcess);
+  if (g_renderManager.Supports(RENDERFEATURE_ZOOM))
+    AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_VERTICAL_SHIFT))
+    AddSlider(VIDEO_SETTINGS_VERTICAL_SHIFT, 225, &g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.01f, 2.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
+    AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_POSTPROCESS))
+    AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &g_settings.m_currentVideoSettings.m_PostProcess);
 
 #ifdef HAS_VIDEO_PLAYBACK
   if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))

@@ -358,3 +358,12 @@ void CXBMCTestUtils::ParseArgs(int argc, char **argv)
     }
   }
 }
+
+std::string CXBMCTestUtils::getNewLineCharacters() const
+{
+#ifdef TARGET_WINDOWS
+  return "\r\n";
+#else
+  return "\n";
+#endif
+}

@@ -589,13 +589,7 @@ case $host in
      use_dvdcss=no
      use_gles=yes
      use_cpu=cortex-a8
-     check_sdl_arch=[`file /opt/local/lib/libSDL_image.dylib | awk '{V=7; print $V}'`]
-     if test "x$check_sdl_arch" = "xi386"; then
-       use_texturepacker_native=yes
-       USE_TEXTUREPACKER_NATIVE_ROOT="/opt/local"
-     else
-       use_texturepacker=no
-     fi
+     use_texturepacker_native=yes
      ARCH="arm-osx"
      use_arch="arm"
      PYTHON_VERSION="2.6"
@@ -609,7 +603,6 @@ case $host in
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
-     USE_TEXTUREPACKER_NATIVE_ROOT="$prefix"
      ARCH="x86-osx"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
@@ -724,8 +717,8 @@ if test "$use_optimizations" = "yes"; then
     CXXFLAGS="$CXXFLAGS"
     CFLAGS="$CFLAGS"
   else
-    CXXFLAGS="$CXXFLAGS -O2"
-    CFLAGS="$CFLAGS -O2"
+    CXXFLAGS="-O2 $CXXFLAGS"
+    CFLAGS="-O2 $CFLAGS"
   fi
 else
   final_message="$final_message\n  Optimization:\tNo"
@@ -817,6 +810,37 @@ AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd g
 # Check for various sizes
 AC_CHECK_SIZEOF([int])
 AC_CHECK_SIZEOF([size_t])
+
+# Check for intrinsics
+AC_MSG_CHECKING([for __sync_add_and_fetch(temp, 1)])
+AC_TRY_COMPILE([],[long* temp=0; __sync_add_and_fetch(temp, 1);],
+                [have_builtin_sync_add_and_fetch=yes],
+                [have_builtin_sync_add_and_fetch=no])
+AC_MSG_RESULT($have_builtin_sync_add_and_fetch)
+if test "x$have_builtin_sync_add_and_fetch" = "xyes"; then
+    AC_DEFINE(HAS_BUILTIN_SYNC_ADD_AND_FETCH, 1,
+        [Define to 1 if your compiler supports the __sync_add_and_fetch() intrinsic.])
+fi
+
+AC_MSG_CHECKING([for __sync_sub_and_fetch(temp, 1)])
+AC_TRY_COMPILE([],[long* temp=0; __sync_sub_and_fetch(temp, 1);],
+                [have_builtin_sync_sub_and_fetch=yes],
+                [have_builtin_sync_sub_and_fetch=no])
+AC_MSG_RESULT($have_builtin_sync_sub_and_fetch)
+if test "x$have_builtin_sync_sub_and_fetch" = "xyes"; then
+    AC_DEFINE(HAS_BUILTIN_SYNC_SUB_AND_FETCH, 1,
+        [Define to 1 if your compiler supports the __sync_sub_and_fetch() intrinsic.])
+fi
+
+AC_MSG_CHECKING([for __sync_val_compare_and_swap(temp, 1, 1)])
+AC_TRY_COMPILE([],[long *temp = 0; __sync_val_compare_and_swap(temp, 1, 1);],
+                [have_builtin_sync_val_compare_and_swap=yes],
+                [have_builtin_sync_val_compare_and_swap=no])
+AC_MSG_RESULT($have_builtin_sync_val_compare_and_swap)
+if test "x$have_builtin_sync_val_compare_and_swap" = "xyes"; then
+    AC_DEFINE(HAS_BUILTIN_SYNC_VAL_COMPARE_AND_SWAP, 1,
+        [Define to 1 if your compiler supports the __sync_val_compare_and_swap() intrinsic.])
+fi
 
 # Add top source directory for all builds so we can use config.h
 INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
@@ -1456,9 +1480,9 @@ if test "x$use_libcec" != "xno"; then
   # libcec is dyloaded, so we need to check for its headers and link any depends.
   if test "x$use_libcec" != "xno"; then
     if test "x$use_libcec" != "xauto"; then
-      PKG_CHECK_MODULES([CEC],[libcec >= 1.8.0],,[use_libcec="no";AC_MSG_ERROR($libcec_disabled)])
+      PKG_CHECK_MODULES([CEC],[libcec >= 2.0.0],,[use_libcec="no";AC_MSG_ERROR($libcec_disabled)])
     else
-      PKG_CHECK_MODULES([CEC],[libcec >= 1.8.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
+      PKG_CHECK_MODULES([CEC],[libcec >= 2.0.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
     fi
 
     if test "x$use_libcec" != "xno"; then
@@ -2127,7 +2151,7 @@ else
 fi
 
 if test "$use_asap" = "yes"; then
-  AC_CHECK_PROG(HAVE_GDC,gdc,"yes","no")
+  AC_CHECK_PROGS(HAVE_GDC,gdc-4.4 gdc-4.3 gdc,"no")
   if test "$HAVE_GDC" = "no"; then
     AC_MSG_ERROR($missing_program);
   fi

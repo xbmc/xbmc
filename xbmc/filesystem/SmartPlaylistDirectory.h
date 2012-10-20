@@ -36,7 +36,7 @@ namespace XFILE
     virtual bool ContainsFiles(const CStdString& strPath);
     virtual bool Remove(const char *strPath);
 
-    static bool GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items);
+    static bool GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const CStdString &strBaseDir = "", bool filter = false);
 
     static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
   };

@@ -61,28 +61,30 @@
 #define PLT_FILTER_MASK_ORIGINALTRACK               0x00000100
 #define PLT_FILTER_MASK_ACTOR                       0x00000200
 #define PLT_FILTER_MASK_AUTHOR                      0x00000400
-#define PLT_FILTER_MASK_DATE                        0x00000800
-#define PLT_FILTER_MASK_PROGRAMTITLE                0x00001000
-#define PLT_FILTER_MASK_SERIESTITLE                 0x00002000
-#define PLT_FILTER_MASK_EPISODE                     0x00004000
-#define PLT_FILTER_MASK_TITLE                       0x00008000
+#define PLT_FILTER_MASK_DIRECTOR                    0x00000800
+#define PLT_FILTER_MASK_DATE                        0x00001000
+#define PLT_FILTER_MASK_PROGRAMTITLE                0x00002000
+#define PLT_FILTER_MASK_SERIESTITLE                 0x00004000
+#define PLT_FILTER_MASK_EPISODE                     0x00008000
+#define PLT_FILTER_MASK_TITLE                       0x00010000
 
-#define PLT_FILTER_MASK_RES                         0x00010000
-#define PLT_FILTER_MASK_RES_DURATION                0x00020000
-#define PLT_FILTER_MASK_RES_SIZE                    0x00040000
-#define PLT_FILTER_MASK_RES_PROTECTION              0x00080000
-#define PLT_FILTER_MASK_RES_RESOLUTION              0x00100000
-#define PLT_FILTER_MASK_RES_BITRATE                 0x00200000
-#define PLT_FILTER_MASK_RES_BITSPERSAMPLE           0x00400000
-#define PLT_FILTER_MASK_RES_NRAUDIOCHANNELS			0x00800000
-#define PLT_FILTER_MASK_RES_SAMPLEFREQUENCY			0x01000000
+#define PLT_FILTER_MASK_RES                         0x00020000
+#define PLT_FILTER_MASK_RES_DURATION                0x00040000
+#define PLT_FILTER_MASK_RES_SIZE                    0x00080000
+#define PLT_FILTER_MASK_RES_PROTECTION              0x00100000
+#define PLT_FILTER_MASK_RES_RESOLUTION              0x00200000
+#define PLT_FILTER_MASK_RES_BITRATE                 0x00400000
+#define PLT_FILTER_MASK_RES_BITSPERSAMPLE           0x00800000
+#define PLT_FILTER_MASK_RES_NRAUDIOCHANNELS         0x01000000
+#define PLT_FILTER_MASK_RES_SAMPLEFREQUENCY         0x02000000
 
-#define PLT_FILTER_MASK_LONGDESCRIPTION             0x02000000
-#define PLT_FILTER_MASK_ICON                        0x04000000
+#define PLT_FILTER_MASK_LONGDESCRIPTION             0x04000000
+#define PLT_FILTER_MASK_ICON                        0x08000000
+#define PLT_FILTER_MASK_RATING                      0x10000000
 
-#define PLT_FILTER_MASK_TOC							0x02000000
-#define PLT_FILTER_MASK_SEARCHCLASS					0x04000000
-#define PLT_FILTER_MASK_REFID                       0x08000000
+#define PLT_FILTER_MASK_TOC                         0x20000000
+#define PLT_FILTER_MASK_SEARCHCLASS                 0x40000000
+#define PLT_FILTER_MASK_REFID                       0x80000000
 
 #define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
@@ -90,6 +92,7 @@
 #define PLT_FILTER_FIELD_ARTIST                     "upnp:artist"
 #define PLT_FILTER_FIELD_ACTOR                      "upnp:actor"
 #define PLT_FILTER_FIELD_AUTHOR                     "upnp:author"
+#define PLT_FILTER_FIELD_DIRECTOR                   "upnp:director"
 #define PLT_FILTER_FIELD_ALBUM                      "upnp:album"
 #define PLT_FILTER_FIELD_GENRE                      "upnp:genre"
 #define PLT_FILTER_FIELD_ALBUMARTURI                "upnp:albumArtURI"
@@ -97,6 +100,7 @@
 #define PLT_FILTER_FIELD_DESCRIPTION                "dc:description"
 #define PLT_FILTER_FIELD_LONGDESCRIPTION            "upnp:longDescription"
 #define PLT_FILTER_FIELD_ICON                       "upnp:icon"
+#define PLT_FILTER_FIELD_RATING                     "upnp:rating"
 #define PLT_FILTER_FIELD_ORIGINALTRACK              "upnp:originalTrackNumber"
 #define PLT_FILTER_FIELD_PROGRAMTITLE               "upnp:programTitle"
 #define PLT_FILTER_FIELD_SERIESTITLE                "upnp:seriesTitle"

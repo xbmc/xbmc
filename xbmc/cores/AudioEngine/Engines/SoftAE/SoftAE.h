@@ -52,7 +52,7 @@ protected:
 public:
   virtual void  Shutdown();
   virtual bool  Initialize();
-  virtual void  OnSettingsChange(std::string setting);
+  virtual void  OnSettingsChange(const std::string& setting);
 
   virtual void   Run();
   virtual void   Stop();

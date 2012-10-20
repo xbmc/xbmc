@@ -303,11 +303,18 @@ TEST(TestStringUtils, AlphaNumericCompare)
 
 TEST(TestStringUtils, TimeStringToSeconds)
 {
-  long ref, var;
-
-  ref = 77455;
-  var = StringUtils::TimeStringToSeconds("21:30:55");
-  EXPECT_EQ(ref, var);
+  EXPECT_EQ(77455, StringUtils::TimeStringToSeconds("21:30:55"));
+  EXPECT_EQ(7*60, StringUtils::TimeStringToSeconds("7 min"));
+  EXPECT_EQ(7*60, StringUtils::TimeStringToSeconds("7 min\t"));
+  EXPECT_EQ(154*60, StringUtils::TimeStringToSeconds("   154 min"));
+  EXPECT_EQ(1*60+1, StringUtils::TimeStringToSeconds("1:01"));
+  EXPECT_EQ(4*60+3, StringUtils::TimeStringToSeconds("4:03"));
+  EXPECT_EQ(2*3600+4*60+3, StringUtils::TimeStringToSeconds("2:04:03"));
+  EXPECT_EQ(2*3600+4*60+3, StringUtils::TimeStringToSeconds("   2:4:3"));
+  EXPECT_EQ(2*3600+4*60+3, StringUtils::TimeStringToSeconds("  \t\t 02:04:03 \n "));
+  EXPECT_EQ(1*3600+5*60+2, StringUtils::TimeStringToSeconds("01:05:02:04:03 \n "));
+  EXPECT_EQ(0, StringUtils::TimeStringToSeconds("blah"));
+  EXPECT_EQ(0, StringUtils::TimeStringToSeconds("ля-ля"));
 }
 
 TEST(TestStringUtils, RemoveCRLF)
@@ -421,7 +428,7 @@ TEST(TestStringUtils, WordToDigits)
 
 TEST(TestStringUtils, CreateUUID)
 {
-  std::cout << "CreateUUID(): " << StringUtils::CreateUUID() << "\n";
+  std::cout << "CreateUUID(): " << StringUtils::CreateUUID() << std::endl;
 }
 
 TEST(TestStringUtils, ValidateUUID)

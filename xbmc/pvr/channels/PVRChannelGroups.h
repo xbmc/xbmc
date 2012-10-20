@@ -20,6 +20,8 @@
  *
  */
 
+#include <vector>
+
 #include "FileItem.h"
 #include "PVRChannelGroup.h"
 #include "threads/CriticalSection.h"
@@ -105,6 +107,13 @@ namespace PVR
      * @return The last group in this container.
      */
     CPVRChannelGroupPtr GetLastGroup(void) const;
+    
+    /*!
+     * @brief Get the list of groups.
+     * @param groups The list to store the results in.
+     * @return The amount of items that were added.
+     */
+    std::vector<CPVRChannelGroupPtr> GetMembers() const;
 
     /*!
      * @brief Get the list of groups.

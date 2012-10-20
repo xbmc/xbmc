@@ -267,6 +267,22 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
+  else if ((url.GetProtocol() == "videodb" || url.GetProtocol() == "musicdb") && !url.GetOptions().empty())
+  {
+    CStdString options = url.GetOptions();
+    size_t filterStart = options.find("filter=");
+    if (filterStart != string::npos)
+    {
+      size_t filterEnd = options.find("&", filterStart);
+      options.erase(filterStart, filterEnd - filterStart);
+      if (options.Equals("?"))
+        options.clear();
+
+      url.SetOptions(options);
+      strParent = url.Get();
+      return true;
+    }
+  }
   else if (url.GetProtocol() == "stack")
   {
     CStackDirectory dir;
@@ -936,6 +952,13 @@ void URIUtils::AddFileToFolder(const CStdString& strFolder,
     strResult.Replace('\\', '/');
   else
     strResult.Replace('/', '\\');
+}
+
+CStdString URIUtils::GetDirectory(const CStdString &filePath)
+{
+  CStdString directory;
+  GetDirectory(filePath, directory);
+  return directory;
 }
 
 void URIUtils::GetDirectory(const CStdString& strFilePath,

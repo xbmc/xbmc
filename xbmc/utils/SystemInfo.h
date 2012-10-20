@@ -79,6 +79,17 @@ private:
 class CSysInfo : public CInfoLoader
 {
 public:
+  enum WindowsVersion
+  {
+    WindowsVersionUnknown = -1, // Undetected, unsupported Windows version or OS in not Windows
+    WindowsVersionWinXP,        // Windows XP, Windows Server 2003 (R2), Windows Home Server
+    WindowsVersionVista,        // Windows Vista, Windows Server 2008
+    WindowsVersionWin7,         // Windows 7, Windows Server 2008 R2
+    WindowsVersionWin8,         // Windows 8, Windows Server 2012
+    /* Insert new Windows versions here, when they'll be known */
+    WindowsVersionFuture = 100  // Future Windows version, not known to code
+  };
+
   CSysInfo(void);
   virtual ~CSysInfo();
 
@@ -104,6 +115,10 @@ public:
   bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
   bool IsVistaOrHigher();
+  static bool IsWindowsVersion(WindowsVersion ver);
+  static bool IsWindowsVersionAtLeast(WindowsVersion ver);
+  static WindowsVersion GetWindowsVersion();
+  static bool IsOS64bit();
   static CStdString GetKernelVersion();
   CStdString GetCPUModel();
   CStdString GetCPUBogoMips();
@@ -121,6 +136,7 @@ protected:
 
 private:
   CSysData m_info;
+  static WindowsVersion m_WinVer;
   void Reset();
 };
 

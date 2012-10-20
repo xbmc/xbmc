@@ -202,8 +202,8 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_BrowseDataReference& browse_data,
                                  const char*              object_id, 
                                  NPT_Int32                index, 
                                  NPT_Int32                count,
-                                 bool                     browse_metadata,
                                  const char*              filter, 
+                                 bool                     browse_metadata,
                                  const char*              sort)
 {
     NPT_Result res;
@@ -236,7 +236,8 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
                                  PLT_MediaObjectListReference& list,
                                  bool                          metadata, /* = false */
                                  NPT_Int32                     start, /* = 0 */
-                                 NPT_Cardinal                  max_results /* = 0 */)
+                                 NPT_Cardinal                  max_results, /* = 0 */
+                                 const char*                   filter)
 {
     NPT_Result res = NPT_FAILURE;
     NPT_Int32  index = start;
@@ -262,7 +263,8 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
             device,
             (const char*)object_id,
             index,
-            metadata?1:30, // DLNA recommendations for browsing children is no more than 30 at a time
+            metadata?1:200, // DLNA recommendations for browsing children is no more than 30 at a time
+            filter,
             metadata);		
         NPT_CHECK_LABEL_WARNING(res, done);
         

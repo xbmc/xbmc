@@ -1367,7 +1367,10 @@ void CPlugin::WarpedBlitFromVS0ToVS1()
 
 	// warp stuff
 	float fWarpTime = GetTime() * m_pState->m_fWarpAnimSpeed;
-	float fWarpScaleInv = 1.0f / m_pState->m_fWarpScale.eval(GetTime());
+  float fWarpScale = m_pState->m_fWarpScale.eval(GetTime());
+  float fWarpScaleInv = 1.0f;
+  if(fWarpScale != 0.0f)
+    fWarpScaleInv = 1.0f / fWarpScale;
 	float f[4];
 	f[0] = 11.68f + 4.0f*cosf(fWarpTime*1.413f + 10);
 	f[1] =  8.77f + 3.0f*cosf(fWarpTime*1.113f + 7);

@@ -75,7 +75,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
       CStdString strThumb = "special://temp/dvdicon.tbn";
       if (XFILE::CFile::Exists(strThumb))
-        pItem->SetThumbnailImage(strThumb);
+        pItem->SetArt("thumb", strThumb);
     }
     else if (pItem->GetPath().Left(9) == "addons://")
       strIcon = "DefaultHardDisk.png";

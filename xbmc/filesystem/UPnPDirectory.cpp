@@ -275,7 +275,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             CFileItemPtr pItem(new CFileItem((const char*)name));
             pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/"));
             pItem->m_bIsFolder = true;
-            pItem->SetThumbnailImage((const char*)(*device)->GetIconUrl("image/jpeg"));
+            pItem->SetArt("thumb", (const char*)(*device)->GetIconUrl("image/png"));
 
             items.Add(pItem);
 
@@ -355,10 +355,15 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
 #endif
 
+
+        // Browse and wait for result
+        PLT_MediaObjectListReference list;
+        NPT_Result res;
+        // we want all properties, so send empty filter
+        res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list, false, 0, 0, "");
+
         // if error, return now, the device could have gone away
         // this will make us go back to the sources list
-        PLT_MediaObjectListReference list;
-        NPT_Result res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list);
         if (NPT_FAILED(res)) goto failure;
 
         // empty list is ok
@@ -460,17 +465,35 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             // if there is a thumbnail available set it here
             if((*entry)->m_ExtraInfo.album_arts.GetItem(0))
                 // only considers first album art
-                pItem->SetThumbnailImage((const char*) (*entry)->m_ExtraInfo.album_arts.GetItem(0)->uri);
+                pItem->SetArt("thumb", (const char*) (*entry)->m_ExtraInfo.album_arts.GetItem(0)->uri);
             else if((*entry)->m_Description.icon_uri.GetLength())
-                pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
+                pItem->SetArt("thumb", (const char*) (*entry)->m_Description.icon_uri);
 
             PLT_ProtocolInfo fanart_mask("xbmc.org", "*", "fanart", "*");
             for(unsigned i = 0; i < (*entry)->m_Resources.GetItemCount(); ++i) {
                 PLT_MediaItemResource& res = (*entry)->m_Resources[i];
                 if(res.m_ProtocolInfo.Match(fanart_mask)) {
-                    pItem->SetProperty("fanart_image", (const char*)res.m_Uri);
+                    pItem->SetArt("fanart", (const char*)res.m_Uri);
                     break;
                 }
+            }
+            // set the watched overlay, as this will not be set later due to
+            // content set on file item list
+            if (pItem->HasVideoInfoTag()) {
+                int episodes = pItem->GetVideoInfoTag()->m_iEpisode;
+                int played   = pItem->GetVideoInfoTag()->m_playCount;
+                const std::string& type = pItem->GetVideoInfoTag()->m_type;
+                bool watched(false);
+                if (type == "tvshow" || type == "season") {
+                    pItem->SetProperty("totalepisodes", episodes);
+                    pItem->SetProperty("numepisodes", episodes);
+                    pItem->SetProperty("watchedepisodes", played);
+                    pItem->SetProperty("unwatchedepisodes", episodes - played);
+                    watched = (episodes && played == episodes);
+                }
+                else if (type == "episode" || type == "movie")
+                    watched = (played > 0);
+                pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watched);
             }
             items.Add(pItem);
 
@@ -487,7 +510,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             max_count  = it->second;
           }
         }
-        items.SetContent(GetContentMapping(max_string));
+        std::string content = GetContentMapping(max_string);
+        items.SetContent(content);
+        if (content == "unknown")
+          items.AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%L", "%I", "%L", ""));
     }
 
 cleanup:

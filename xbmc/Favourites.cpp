@@ -78,7 +78,7 @@ bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
       {
         CFileItemPtr item(new CFileItem(name));
         item->SetPath(favourite->FirstChild()->Value());
-        if (thumb) item->SetThumbnailImage(thumb);
+        if (thumb) item->SetArt("thumb", thumb);
         items.Add(item);
       }
     }
@@ -100,8 +100,8 @@ bool CFavourites::Save(const CFileItemList &items)
     const CFileItemPtr item = items[i];
     TiXmlElement favNode("favourite");
     favNode.SetAttribute("name", item->GetLabel().c_str());
-    if (item->HasThumbnail())
-      favNode.SetAttribute("thumb", item->GetThumbnailImage().c_str());
+    if (item->HasArt("thumb"))
+      favNode.SetAttribute("thumb", item->GetArt("thumb").c_str());
     TiXmlText execute(item->GetPath());
     favNode.InsertEndChild(execute);
     rootNode->InsertEndChild(favNode);
@@ -131,7 +131,7 @@ bool CFavourites::AddOrRemove(CFileItem *item, int contextWindow)
     CFileItemPtr favourite(new CFileItem(item->GetLabel()));
     if (item->GetLabel().IsEmpty())
       favourite->SetLabel(CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder));
-    favourite->SetThumbnailImage(item->GetThumbnailImage());
+    favourite->SetArt("thumb", item->GetArt("thumb"));
     favourite->SetPath(executePath);
     items.Add(favourite);
   }

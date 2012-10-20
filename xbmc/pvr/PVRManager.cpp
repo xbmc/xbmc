@@ -51,6 +51,7 @@
 #include "epg/EpgContainer.h"
 #include "recordings/PVRRecordings.h"
 #include "timers/PVRTimers.h"
+#include "interfaces/AnnouncementManager.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -178,7 +179,7 @@ void CPVRManager::Stop(void)
   SetState(ManagerStateStopping);
 
   /* stop the EPG updater, since it might be using the pvr add-ons */
-  g_EpgContainer.Unload();
+  g_EpgContainer.Stop();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
@@ -555,17 +556,9 @@ void CPVRManager::ResetEPG(void)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
 
-  StopUpdateThreads();
-  g_EpgContainer.Stop();
+  Stop();
   g_EpgContainer.Reset();
-
-  if (g_guiSettings.GetBool("pvrmanager.enabled"))
-  {
-    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllTV().get())->CreateChannelEpgs(true);
-    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllRadio().get())->CreateChannelEpgs(true);
-    g_EpgContainer.Start();
-    StartUpdateThreads();
-  }
+  Start();
 }
 
 bool CPVRManager::IsPlaying(void) const
@@ -952,6 +945,13 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     SaveCurrentChannelSettings();
   }
 
+  if (!bPreview && m_currentFile)
+  {
+    CVariant data(CVariant::VariantTypeObject);
+    data["end"] = true;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", CFileItemPtr(new CFileItem(*m_currentFile)), data);
+  }
+
   SAFE_DELETE(m_currentFile);
 
   lock.Leave();
@@ -984,6 +984,14 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
         g_localizeStrings.Get(19166), // PVR information
         g_localizeStrings.Get(19035)); // This channel cannot be played. Check the log for details.
+  }
+
+  if (!bPreview && bSwitched)
+  {
+    CVariant param;
+    param["player"]["speed"] = 1;
+    param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", CFileItemPtr(new CFileItem(channel)), param);
   }
 
   return bSwitched;

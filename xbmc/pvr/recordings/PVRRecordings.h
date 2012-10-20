@@ -23,7 +23,7 @@
 #include "XBDateTime.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 #define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
 

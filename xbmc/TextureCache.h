@@ -127,6 +127,13 @@ public:
   static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type = "", const CStdString &options = "");
   static CStdString GetWrappedThumbURL(const CStdString &image);
 
+  /*! \brief Unwrap an image://<url_encoded_path> style URL
+   Such urls are used for art over the webserver or other users of the VFS
+   \param image url of the image
+   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
+   */
+  static CStdString UnwrapImageURL(const CStdString &image);
+
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
    \param image url of the original image
@@ -137,23 +144,18 @@ public:
 
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image
-   \param destination url of the destination image
+   \param destination url of the destination image, excluding extension.
+   \param overwrite whether to overwrite the destination if it exists (TODO: Defaults to false)
    \return true if we successfully exported the file, false otherwise.
    */
-  bool Export(const CStdString &image, const CStdString &destination);
+  bool Export(const CStdString &image, const CStdString &destination, bool overwrite);
+  bool Export(const CStdString &image, const CStdString &destination); // TODO: BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 private:
   // private construction, and no assignements; use the provided singleton methods
   CTextureCache();
   CTextureCache(const CTextureCache&);
   CTextureCache const& operator=(CTextureCache const&);
   virtual ~CTextureCache();
-
-  /*! \brief Unwrap an image://<url_encoded_path> style URL
-   Such urls are used for art over the webserver or other users of the VFS
-   \param image url of the image
-   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
-   */
-  static CStdString UnwrapImageURL(const CStdString &image);
 
   /*! \brief Check if the given image is a cached image
    \param image url of the image

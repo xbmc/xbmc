@@ -47,7 +47,7 @@ TEST(TestPerformanceSample, General)
   EXPECT_GT(a.getFreq(), (int64_t)0);
 
   std::cout << "Estimated Error: " <<
-    testing::PrintToString(a.GetEstimatedError()) << "\n";
-  std::cout << "Start: " << testing::PrintToString(a.getStart()) << "\n";
-  std::cout << "Frequency: " << testing::PrintToString(a.getFreq()) << "\n";
+    testing::PrintToString(a.GetEstimatedError()) << std::endl;
+  std::cout << "Start: " << testing::PrintToString(a.getStart()) << std::endl;
+  std::cout << "Frequency: " << testing::PrintToString(a.getFreq()) << std::endl;
 }

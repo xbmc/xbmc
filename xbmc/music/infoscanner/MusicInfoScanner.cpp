@@ -48,7 +48,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "TextureCache.h"
-#include "ThumbLoader.h"
+#include "music/MusicThumbLoader.h"
 #include "interfaces/AnnouncementManager.h"
 #include "GUIUserMessages.h"
 
@@ -173,7 +173,7 @@ void CMusicInfoScanner::Process()
         if (m_handle)
         {
           m_handle->SetText(StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator)+" - "+it->strAlbum);
-          m_handle->SetPercentage(iCurrentItem++/(double)m_albumsToScan.size());
+          m_handle->SetPercentage(iCurrentItem++/(float)m_albumsToScan.size());
         }
 
         CMusicAlbumInfo albumInfo;
@@ -194,7 +194,7 @@ void CMusicInfoScanner::Process()
         if (m_handle)
         {
           m_handle->SetText(it->strArtist);
-          m_handle->SetPercentage(iCurrentItem++/(double)m_artistsToScan.size()*100);
+          m_handle->SetPercentage(iCurrentItem++/(float)m_artistsToScan.size()*100);
         }
 
         DownloadArtistInfo(it->genre[0],it->strArtist,bCanceled); // genre field holds path - see fetchartistinfo()
@@ -440,7 +440,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     if (m_handle)
     {
       if (m_itemCount>0)
-        m_handle->SetPercentage(m_currentItem/(double)m_itemCount*100);
+        m_handle->SetPercentage(m_currentItem/(float)m_itemCount*100);
       OnDirectoryScanned(strDirectory);
     }
   }
@@ -512,7 +512,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       // if we have the itemcount, update our
       // dialog with the progress we made
       if (m_handle && m_itemCount>0)
-        m_handle->SetPercentage(m_currentItem/(double)m_itemCount*100);
+        m_handle->SetPercentage(m_currentItem/(float)m_itemCount*100);
 
       if (tag.Loaded())
       {

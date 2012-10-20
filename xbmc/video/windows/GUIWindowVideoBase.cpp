@@ -22,6 +22,7 @@
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "video/VideoInfoDownloader.h"
+#include "video/VideoInfoScanner.h"
 #include "utils/RegExp.h"
 #include "utils/Variant.h"
 #include "addons/AddonManager.h"
@@ -29,7 +30,6 @@
 #include "addons/IAddon.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "GUIWindowVideoNav.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -69,6 +69,8 @@
 #include "storage/MediaManager.h"
 #include "Autorun.h"
 #include "URL.h"
+#include "utils/EdenVideoArtUpdater.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -320,7 +322,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
       g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
     int itemNumber = m_viewControl.GetSelectedItem();
-    Update(m_vecItems->GetPath());
+    Refresh();
     m_viewControl.SetSelectedItem(itemNumber);
   }
 }
@@ -586,8 +588,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       // show dialog that we're downloading the movie info
 
       // clear artwork
-      item->SetThumbnailImage("");
-      item->ClearProperty("fanart_image");
+      item->SetArt("thumb", "");
+      item->SetArt("fanart", "");
 
       CFileItemList list;
       CStdString strPath=item->GetPath();
@@ -674,7 +676,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
         *item->GetVideoInfoTag() = movieDetails;
         pDlgInfo->SetMovie(item);
         pDlgInfo->DoModal();
-        item->SetThumbnailImage(pDlgInfo->GetThumbnail());
+        item->SetArt("thumb", pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
         listNeedsUpdating = true;
       }
@@ -750,7 +752,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     GetDirectory(pItem->GetPath(), items);
     FormatAndSort(items);
 
-    int watchedMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+    int watchedMode = g_settings.GetWatchMode(items.GetContent());
     bool unwatchedOnly = watchedMode == VIDEO_SHOW_UNWATCHED;
     bool watchedOnly = watchedMode == VIDEO_SHOW_WATCHED;
     for (int i = 0; i < items.Size(); ++i)
@@ -1220,10 +1222,10 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       {
         buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, GetResumeString(*(item.get())));     // Resume Video
       }
-      //if the item isn't a folder, is a member of a list rather than a single item
+      //if the item isn't a folder or script, is a member of a list rather than a single item
       //and we're not on the last element of the list, 
       //then add add either 'play from here' or 'play only this' depending on default behaviour
-      if (!item->m_bIsFolder && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
+      if (!(item->m_bIsFolder || item->IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         if (!g_guiSettings.GetBool("videoplayer.autoplaynextitem"))
           buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
@@ -1408,10 +1410,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->GetPath() : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
-      { // need to update
-        m_vecItems->RemoveDiscCache(GetID());
-        Update(m_vecItems->GetPath());
-      }
+        Refresh(true); // need to update
       return true;
     }
   case CONTEXT_BUTTON_RENAME:
@@ -1424,13 +1423,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       m_viewControl.SetSelectedItem(newSelection);
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
-      Update(m_vecItems->GetPath());
+      Refresh();
       return true;
     }
   case CONTEXT_BUTTON_MARK_UNWATCHED:
     MarkWatched(item,false);
     CUtil::DeleteVideoDatabaseDirectoryCache();
-    Update(m_vecItems->GetPath());
+    Refresh();
     return true;
   case CONTEXT_BUTTON_PLAY_AND_QUEUE:
     return OnPlayAndQueueMedia(item);
@@ -1577,8 +1576,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 
   OnDeleteItem(m_vecItems->Get(iItem));
 
-  m_vecItems->RemoveDiscCache(GetID());
-  Update(m_vecItems->GetPath());
+  Refresh(true);
   m_viewControl.SetSelectedItem(iItem);
 }
 
@@ -1595,7 +1593,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   }
 
   if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
-      CUtil::SupportsFileOperations(item->GetPath()))
+      CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
 }
 
@@ -1783,7 +1781,34 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory)
 
 bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
+  CStdString directory = strDirectory;
+
+  // check if the path contains a filter and if so load it and
+  // remove it from the path to get proper GUI view states etc
+  CSmartPlaylist filterXsp;
+  CVideoDbUrl videoUrl;
+  if (videoUrl.FromString(strDirectory))
+  {
+    CVariant filter;
+    if (videoUrl.GetOption("filter", filter))
+    {
+      // load the filter and if it's type does not match the
+      // path's item type reset it
+      if (filterXsp.LoadFromJson(filter.asString()) && !filterXsp.GetType().Equals(videoUrl.GetItemType().c_str()))
+        filterXsp.Reset();
+
+      // remove the "filter" option from the path
+      videoUrl.AddOption("filter", "");
+    }
+    directory = videoUrl.ToString();
+  }
+
+  bool bResult = CGUIMediaWindow::GetDirectory(directory, items);
+
+  // (re-)apply the previously retrieved filter
+  // because it was reset in CGUIMediaWindow::GetDirectory()
+  if (!filterXsp.IsEmpty())
+    m_filter = filterXsp;
 
   // add in the "New Playlist" item if we're in the playlists folder
   if ((items.GetPath() == "special://videoplaylists/") && !items.Contains("newplaylist://"))
@@ -1809,7 +1834,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   // we may also be in a tvshow files listing
   // (ideally this should be removed, and our stack regexps tidied up if necessary
   // No "normal" episodes should stack, and multi-parts should be supported)
-  ADDON::ScraperPtr info = m_database.GetScraperForPath(strDirectory);
+  ADDON::ScraperPtr info = m_database.GetScraperForPath(directory);
   if (info && info->Content() == CONTENT_TVSHOWS)
     m_stackingAvailable = false;
 
@@ -1828,6 +1853,15 @@ bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
 
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
 {
+}
+
+bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items)
+{
+  CStdString content = items.GetContent();
+  if (items.IsVideoDb() && (content.Equals("movies") || content.Equals("tvshows") || content.Equals("episodes") || content.Equals("musicvideos")))
+    return true;
+
+  return false;
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
@@ -2108,5 +2142,21 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
   if (bScan)
   {
     g_application.StartVideoScan(path, true);
+  }
+}
+
+void CGUIWindowVideoBase::OnInitWindow()
+{
+  CGUIMediaWindow::OnInitWindow();
+  if (g_settings.m_videoNeedsUpdate == 63 && !g_application.IsVideoScanning() &&
+      g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO))
+  {
+    // rescan of video library required
+    if (CGUIDialogYesNo::ShowAndGetInput(799, 12351, 12352, 12354))
+    {
+      CEdenVideoArtUpdater::Start();
+      g_settings.m_videoNeedsUpdate = 0; // once is enough
+      g_settings.Save();
+    }
   }
 }

@@ -53,7 +53,6 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
   SetID(id);
   SetProperty("xmlfile", xmlFile);
-  m_idRange.push_back(id);
   m_lastControlID = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_isDialog = false;
@@ -1061,6 +1060,13 @@ void CGUIWindow::ClearBackground()
   color_t color = m_clearBackground;
   if (color)
     g_graphicsContext.Clear(color);
+}
+
+void CGUIWindow::SetID(int id)
+{
+  CGUIControlGroup::SetID(id);
+  m_idRange.clear();
+  m_idRange.push_back(id);
 }
 
 bool CGUIWindow::HasID(int controlID) const

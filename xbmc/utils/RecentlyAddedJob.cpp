@@ -32,6 +32,8 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "music/MusicThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 #define NUM_ITEMS 10
 
@@ -52,6 +54,8 @@ bool CRecentlyAddedJob::UpdateVideo()
   int            i = 0;
   CFileItemList  items;
   CVideoDatabase videodatabase;
+  CVideoThumbLoader loader;
+  loader.Initialize();
   
   videodatabase.Open();
 
@@ -73,11 +77,11 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMovie." + value + ".Trailer"     , item->GetVideoInfoTag()->m_strTrailer);
 
-      if (!item->HasThumbnail())
-        m_thumbLoader.LoadItem(item.get());
+      if (!item->HasArt("thumb"))
+        loader.LoadItem(item.get());
 
-      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
-      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetProperty("fanart_image"));
+      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetArt("thumb"));
+      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetArt("fanart"));
     }
   } 
   for (; i < NUM_ITEMS; ++i)
@@ -123,17 +127,17 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
 
-      if (!item->HasThumbnail())
-        m_thumbLoader.LoadItem(item.get());
+      if (!item->HasArt("thumb"))
+        loader.LoadItem(item.get());
 
       std::string seasonThumb;
       if (item->GetVideoInfoTag()->m_iIdSeason > 0)
         seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, "season", "thumb");
 
-      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetThumbnailImage());
-      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetProperty("tvshowthumb"));
+      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
+      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshowthumb"));
       home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
-      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetProperty("fanart_image"));
+      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
     }
   } 
   for (; i < NUM_ITEMS; ++i)
@@ -172,11 +176,11 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator));
 
-      if (!item->HasThumbnail())
-        m_thumbLoader.LoadItem(item.get());
+      if (!item->HasArt("thumb"))
+        loader.LoadItem(item.get());
 
-      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetThumbnailImage());
-      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetProperty("fanart_image"));
+      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetArt("thumb"));
+      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetArt("fanart"));
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -210,6 +214,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   CFileItemList  musicItems;
   CMusicDatabase musicdatabase;
   CMusicThumbLoader loader;
+  loader.Initialize();
   
   musicdatabase.Open();
   
@@ -236,8 +241,8 @@ bool CRecentlyAddedJob::UpdateMusic()
 
         if (loader.LoadItem(item.get()))
         {
-          strAlbumThumb = item->GetThumbnailImage();
-          strAlbumFanart = item->GetProperty("fanart_image").asString();
+          strAlbumThumb = item->GetArt("thumb");
+          strAlbumFanart = item->GetArt("fanart");
         }
       }
 

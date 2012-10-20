@@ -67,7 +67,7 @@ public:
   DemuxPacket* Read();
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL) { return false; }
   void SetSpeed(int iSpeed) {};
-  int GetStreamLength() { return m_header.durationMs; }
+  int GetStreamLength() { return (int)m_header.durationMs; }
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
   std::string GetFileName();

@@ -194,7 +194,7 @@ void CGUIDialogVideoBookmarks::Update()
       bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
 
     CFileItemPtr item(new CFileItem(bookmarkTime));
-    item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
+    item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);

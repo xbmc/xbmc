@@ -75,9 +75,6 @@ class CHTTPVfsHandler;
 #ifdef HAS_JSONRPC
 class CHTTPJsonRpcHandler;
 #endif
-#ifdef HAS_HTTPAPI
-class CHTTPApiHandler;
-#endif
 #ifdef HAS_WEB_INTERFACE
 class CHTTPWebinterfaceHandler;
 class CHTTPWebinterfaceAddonsHandler;
@@ -203,7 +200,6 @@ public:
   void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
-  void CheckForTitleChange();
   void ActivateScreenSaver(bool forceType = false);
 
   virtual void Process();
@@ -294,9 +290,6 @@ public:
 #ifdef HAS_JSONRPC
   CHTTPJsonRpcHandler& m_httpJsonRpcHandler;
 #endif
-#ifdef HAS_HTTPAPI
-  CHTTPApiHandler& m_httpApiHandler;
-#endif
 #ifdef HAS_WEB_INTERFACE
   CHTTPWebinterfaceHandler& m_httpWebinterfaceHandler;
   CHTTPWebinterfaceAddonsHandler& m_httpWebinterfaceAddonsHandler;
@@ -371,6 +364,7 @@ public:
   bool SwitchToFullScreen();
 
   CSplash* GetSplash() { return m_splash; }
+  void SetRenderGUI(bool renderGUI);
 protected:
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
@@ -452,8 +446,6 @@ protected:
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
   bool ProcessPeripherals(float frameTime);
-  bool ProcessHTTPApiButtons();
-  bool ProcessJsonRpcButtons();
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount, unsigned int holdTime = 0);
   int  GetActiveWindowID(void);
 

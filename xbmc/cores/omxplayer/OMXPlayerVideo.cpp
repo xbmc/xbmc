@@ -47,15 +47,15 @@
 
 #include "OMXPlayer.h"
 
-class COMXMsgAudioCodecChange : public CDVDMsg
+class COMXMsgVideoCodecChange : public CDVDMsg
 {
 public:
-  COMXMsgAudioCodecChange(const CDVDStreamInfo &hints, COMXVideo *codec)
+  COMXMsgVideoCodecChange(const CDVDStreamInfo &hints, COMXVideo *codec)
     : CDVDMsg(GENERAL_STREAMCHANGE)
     , m_codec(codec)
     , m_hints(hints)
   {}
- ~COMXMsgAudioCodecChange()
+ ~COMXMsgVideoCodecChange()
   {
     delete m_codec;
   }
@@ -95,6 +95,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_dropbase              = 0.0;
   m_autosync              = 1;
   m_fForcedAspectRatio    = 0.0f;
+  m_send_eos              = false;
   m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
@@ -137,7 +138,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   }
 
   if(m_messageQueue.IsInited())
-    m_messageQueue.Put(new COMXMsgAudioCodecChange(hints, NULL), 0);
+    m_messageQueue.Put(new COMXMsgVideoCodecChange(hints, NULL), 0);
   else
   {
     if(!OpenStream(hints, NULL))
@@ -157,6 +158,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   */
 
   m_open        = true;
+  m_send_eos    = false;
 
   return true;
 }
@@ -585,7 +587,7 @@ void OMXPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
-      COMXMsgAudioCodecChange* msg(static_cast<COMXMsgAudioCodecChange*>(pMsg));
+      COMXMsgVideoCodecChange* msg(static_cast<COMXMsgVideoCodecChange*>(pMsg));
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
     }
@@ -706,7 +708,7 @@ bool OMXPlayerVideo::OpenDecoder()
 
   if(!bVideoDecoderOpen)
   {
-    CLog::Log(LOGERROR, "OMXPlayerAudio : Error open video output");
+    CLog::Log(LOGERROR, "OMXPlayerVideo : Error open video output");
     m_omxVideo.Close();
   }
   else
@@ -746,7 +748,9 @@ int  OMXPlayerVideo::GetDecoderFreeSpace()
 
 void OMXPlayerVideo::WaitCompletion()
 {
-  m_omxVideo.WaitCompletion();
+  if(!m_send_eos)
+    m_omxVideo.WaitCompletion();
+  m_send_eos = true;
 }
 
 void OMXPlayerVideo::SetSpeed(int speed)

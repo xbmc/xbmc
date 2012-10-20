@@ -48,7 +48,8 @@ NPT_SET_LOCAL_LOGGER("platinum.core.statevariable")
 PLT_StateVariable::PLT_StateVariable(PLT_Service* service) : 
     m_Service(service), 
     m_AllowedValueRange(NULL),
-    m_IsSendingEventsIndirectly(true)
+    m_IsSendingEventsIndirectly(true),
+    m_ShouldClearOnSend(false)
 {
 }
 
@@ -145,7 +146,7 @@ PLT_StateVariable::SetRate(NPT_TimeInterval rate)
 |   PLT_StateVariable::SetValue
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_StateVariable::SetValue(const char* value)
+PLT_StateVariable::SetValue(const char* value, const bool clearonsend /*=false*/)
 {
     if (value == NULL) {
         return NPT_FAILURE;
@@ -159,6 +160,7 @@ PLT_StateVariable::SetValue(const char* value)
         }
 
         m_Value = value;
+        m_ShouldClearOnSend = clearonsend;
         m_Service->AddChanged(this); 
     }
 
@@ -180,6 +182,16 @@ PLT_StateVariable::IsReadyToPublish()
     }
 
     return false;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_StateVariable::OnSendCompleted
++---------------------------------------------------------------------*/
+void
+PLT_StateVariable::OnSendCompleted()
+{
+  if(m_ShouldClearOnSend)
+      m_Value = m_DefaultValue;
 }
 
 /*----------------------------------------------------------------------

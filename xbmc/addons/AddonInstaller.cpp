@@ -388,7 +388,8 @@ void CAddonInstaller::PrunePackageCache()
 {
   std::map<CStdString,CFileItemList*> packs;
   int64_t size = EnumeratePackageFolder(packs);
-  if (size < g_advancedSettings.m_addonPackageFolderSize)
+  int64_t limit = g_advancedSettings.m_addonPackageFolderSize*1024*1024;
+  if (size < limit)
     return;
 
   // Prune packages
@@ -403,13 +404,13 @@ void CAddonInstaller::PrunePackageCache()
   }
   items.Sort(SORT_METHOD_SIZE,SortOrderDescending);
   int i=0;
-  while (size > g_advancedSettings.m_addonPackageFolderSize && i < items.Size())
+  while (size > limit && i < items.Size())
   {
     size -= items[i]->m_dwSize;
     CFileUtils::DeleteItem(items[i++],true);
   }
 
-  if (size > g_advancedSettings.m_addonPackageFolderSize)
+  if (size > limit)
   {
     // 2. Remove the oldest packages (leaving least 1 for each add-on)
     items.Clear();
@@ -421,7 +422,7 @@ void CAddonInstaller::PrunePackageCache()
     }
     items.Sort(SORT_METHOD_DATE,SortOrderAscending);
     i=0;
-    while (size > g_advancedSettings.m_addonPackageFolderSize && i < items.Size())
+    while (size > limit && i < items.Size())
     {
       size -= items[i]->m_dwSize;
       CFileUtils::DeleteItem(items[i++],true);
@@ -650,7 +651,10 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    // regrab from manager to have the correct path set
+    AddonPtr addon; 
+    CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
     if (service)
       service->Start();
   }

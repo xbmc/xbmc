@@ -29,8 +29,6 @@ namespace JSONRPC
   class CInputOperations
   {
   public:
-    static CKey GetKey();
-
     static JSONRPC_STATUS SendText(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS ExecuteAction(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
@@ -48,14 +46,10 @@ namespace JSONRPC
     static JSONRPC_STATUS ShowCodec(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS ShowOSD(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static JSONRPC_STATUS SendKey(uint32_t keyCode, bool unicode = false);
     static JSONRPC_STATUS SendAction(int actionID, bool wakeScreensaver = true, bool waitResult = false);
 
   private:
     static JSONRPC_STATUS activateWindow(int windowID);
     static bool        handleScreenSaver();
-
-    static CCriticalSection m_critSection;
-    static CKey m_key;
   };
 }

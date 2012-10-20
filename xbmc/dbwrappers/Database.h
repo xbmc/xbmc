@@ -31,6 +31,7 @@ namespace dbiplus {
 
 class DatabaseSettings; // forward
 class CDbUrl;
+struct SortDescription;
 
 class CDatabase
 {
@@ -83,6 +84,7 @@ public:
    * @return The requested value or an empty string if it wasn't found.
    */
   CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
+  CStdString GetSingleValue(const CStdString &query);
 
   /*! \brief Get a single value from a query on a dataset.
    \param query the query in question.
@@ -134,8 +136,9 @@ public:
    */
   bool CommitInsertQueries();
 
-  virtual bool GetFilter(const CDbUrl &dbUrl, Filter &filter) { return true; }
+  virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter, SortDescription &sorting) { return true; }
   virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl);
+  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
 
 protected:
   friend class CDatabaseManager;

@@ -156,11 +156,11 @@ namespace PVR
 
     /*!
      * @brief Get a channel given it's channel ID from all containers.
-     * @param iClientChannelNumber The channel number on the client.
+     * @param iUniqueChannelId The unique channel id on the client.
      * @param iClientID The ID of the client.
      * @return The channel or NULL if it wasn't found.
      */
-    CPVRChannelPtr GetByUniqueID(int iClientChannelNumber, int iClientID);
+    CPVRChannelPtr GetByUniqueID(int iUniqueChannelId, int iClientID);
 
     /*!
      * @brief Get a channel given it's channel ID from all containers.

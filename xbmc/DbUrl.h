@@ -39,6 +39,7 @@ public:
   const std::string& GetType() const { return m_type; }
   void AppendPath(const std::string &subPath);
 
+  virtual void AddOption(const std::string &key, const char *value) { CUrlOptions::AddOption(key, value); updateOptions(); }
   virtual void AddOption(const std::string &key, const std::string &value) { CUrlOptions::AddOption(key, value); updateOptions(); }
   virtual void AddOption(const std::string &key, int value) { CUrlOptions::AddOption(key, value); updateOptions(); }
   virtual void AddOption(const std::string &key, float value) { CUrlOptions::AddOption(key, value); updateOptions(); }

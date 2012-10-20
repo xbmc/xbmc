@@ -82,7 +82,7 @@ CFileItem::CFileItem(const CSong& song)
   m_lStartPartNumber = 1;
   SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
-  m_strThumbnailImage = song.strThumb;
+  SetArt("thumb", song.strThumb);
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -169,10 +169,7 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
   m_dateTime = tag.StartAsLocalTime();
 
   if (!tag.Icon().IsEmpty())
-  {
-    SetThumbnailImage(tag.Icon());
     SetIconImage(tag.Icon());
-  }
 }
 
 CFileItem::CFileItem(const CPVRChannel& channel)
@@ -217,13 +214,11 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   }
 
   if (!channel.IconPath().IsEmpty())
-  {
-    SetThumbnailImage(channel.IconPath());
     SetIconImage(channel.IconPath());
-  }
 
   SetProperty("channelid", channel.ChannelID());
   SetProperty("path", channel.Path());
+  SetArt("thumb", channel.IconPath());
 }
 
 CFileItem::CFileItem(const CPVRRecording& record)
@@ -265,10 +260,7 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
   m_dateTime = timer.StartAsLocalTime();
 
   if (!timer.ChannelIcon().IsEmpty())
-  {
-    SetThumbnailImage(timer.ChannelIcon());
     SetIconImage(timer.ChannelIcon());
-  }
 }
 
 CFileItem::CFileItem(const CArtist& artist)
@@ -398,7 +390,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  m_strThumbnailImage = share.m_strThumbnailImage;
+  SetArt("thumb", share.m_strThumbnailImage);
   SetLabelPreformated(true);
   if (IsDVD())
     GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
@@ -946,6 +938,9 @@ bool CFileItem::IsFileFolder() const
 
 bool CFileItem::IsSmartPlayList() const
 {
+  if (HasProperty("library.smartplaylist") && GetProperty("library.smartplaylist").asBoolean())
+    return true;
+
   CStdString strExtension;
   URIUtils::GetExtension(m_strPath, strExtension);
   strExtension.ToLower();
@@ -1200,7 +1195,7 @@ bool CFileItem::IsReadOnly() const
 {
   if (IsParentFolder()) return true;
   if (m_bIsShareOrDrive) return true;
-  return !CUtil::SupportsFileOperations(m_strPath);
+  return !CUtil::SupportsWriteFileOperations(m_strPath);
 }
 
 void CFileItem::FillInDefaultIcon()
@@ -1472,8 +1467,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetLabel(item.GetLabel());
   if (replaceLabels && !item.GetLabel2().IsEmpty())
     SetLabel2(item.GetLabel2());
-  if (!item.GetThumbnailImage().IsEmpty())
-    SetThumbnailImage(item.GetThumbnailImage());
+  if (!item.GetArt("thumb").empty())
+    SetArt("thumb", item.GetArt("thumb"));
   if (!item.GetIconImage().IsEmpty())
     SetIconImage(item.GetIconImage());
   AppendProperties(item);
@@ -2793,16 +2788,10 @@ CStdString CFileItem::GetTBNFile() const
   return thumbFile;
 }
 
-CStdString CFileItem::GetUserVideoThumb() const
+CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const
 {
-  if (IsTuxBox())
-  {
-    if (!m_bIsFolder)
-      return g_tuxbox.GetPicon(GetLabel());
-    else return "";
-  }
-
-  if (m_strPath.IsEmpty()
+  // ignore a bunch that are meaningless
+  if (m_strPath.empty()
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
@@ -2814,46 +2803,71 @@ CStdString CFileItem::GetUserVideoThumb() const
    || IsDVD())
     return "";
 
-
-  // 1. check <filename>.tbn or <foldername>.tbn
-  CStdString fileThumb(GetTBNFile());
-  if (CFile::Exists(fileThumb))
-    return fileThumb;
-
-  if (IsOpticalMediaFile())
-  { // special case for optical media "folders" - check the parent folder (or parent of parent)
-    // TODO: A better way to handle this would be to treat stacked folders as folders rather than files.
-    CFileItem item(GetLocalMetadataPath(), true);
-    CStdString thumb(item.GetUserVideoThumb());
-    if (!thumb.IsEmpty())
-      return thumb;
-  }
-
-  // 2. - check movie.tbn, as long as it's not a folder
+  CStdString thumb;
   if (!m_bIsFolder)
   {
-    CStdString strPath, movietbnFile;
-    URIUtils::GetParentPath(m_strPath, strPath);
-    URIUtils::AddFileToFolder(strPath, "movie.tbn", movietbnFile);
-    if (CFile::Exists(movietbnFile))
-      return movietbnFile;
+    thumb = GetLocalArt(artFile, false);
+    if (!thumb.empty() && CFile::Exists(thumb))
+      return thumb;
+  }
+  if ((useFolder || (m_bIsFolder && !IsFileFolder())) && !artFile.empty())
+  {
+    CStdString thumb2 = GetLocalArt(artFile, true);
+    if (!thumb2.empty() && thumb2 != thumb && CFile::Exists(thumb2))
+      return thumb2;
+  }
+  return "";
+}
+
+CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) const
+{
+  // no retrieving of empty art files from folders
+  if (useFolder && artFile.empty())
+    return "";
+
+  CStdString strFile = m_strPath;
+  if (IsStack())
+  {
+/*    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
+    CStdString localArt = item.GetLocalArt(artFile);
+    return localArt;
+    */
+    CStdString strPath;
+    URIUtils::GetParentPath(m_strPath,strPath);
+    URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
   }
 
-  // 3. check folder image in_m_dvdThumbs (folder.jpg)
-  if (m_bIsFolder && !IsFileFolder())
+  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
   {
-    CStdStringArray thumbs;
-    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
-    for (unsigned int i = 0; i < thumbs.size(); ++i)
-    {
-      CStdString folderThumb(GetFolderThumb(thumbs[i]));
-      if (CFile::Exists(folderThumb))
-      {
-        return folderThumb;
-      }
-    }
+    CStdString strPath, strParent;
+    URIUtils::GetDirectory(strFile,strPath);
+    URIUtils::GetParentPath(strPath,strParent);
+    URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(strFile),strFile);
   }
-  // No thumb found
+
+  if (IsMultiPath())
+    strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
+
+  if (IsOpticalMediaFile())
+  { // optical media files should be treated like folders
+    useFolder = true;
+    strFile = GetLocalMetadataPath();
+  }
+  else if (useFolder)
+    strFile = URIUtils::GetDirectory(strFile);
+
+  if (strFile.empty()) // empty filepath -> nothing to find
+    return "";
+
+  if (useFolder)
+    return URIUtils::AddFileToFolder(strFile, artFile);
+  else
+  {
+    if (artFile.empty()) // old thumbnail matching
+      return URIUtils::ReplaceExtension(strFile, ".tbn");
+    else
+      return URIUtils::ReplaceExtension(strFile, "-" + artFile);
+  }
   return "";
 }
 
@@ -2918,47 +2932,6 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
   return strMovieName;
 }
 
-#ifdef UNIT_TESTING
-bool CFileItem::testGetBaseMoviePath()
-{
-  typedef struct
-  {
-    const char *file;
-    bool use_folder;
-    const char *base;
-  } testfiles;
-
-  const testfiles test_files[] = {{ "c:\\dir\\filename.avi", false, "c:\\dir\\filename.avi" },
-                                  { "c:\\dir\\filename.avi", true,  "c:\\dir\\" },
-                                  { "/dir/filename.avi", false, "/dir/filename.avi" },
-                                  { "/dir/filename.avi", true,  "/dir/" },
-                                  { "smb://somepath/file.avi", false, "smb://somepath/file.avi" },
-                                  { "smb://somepath/file.avi", true, "smb://somepath/" },
-                                  { "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi", false, "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi" },
-                                  { "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi", true,  "/path/to/movie_name/" },
-                                  { "/home/user/TV Shows/Dexter/S1/1x01.avi", false, "/home/user/TV Shows/Dexter/S1/1x01.avi" },
-                                  { "/home/user/TV Shows/Dexter/S1/1x01.avi", true, "/home/user/TV Shows/Dexter/S1/" },
-                                  { "rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi", true, "g:\\multimedia\\movies\\" },
-                                  { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", false, "/home/user/movies/movie_name/" },
-                                  { "/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", true, "/home/user/movies/movie_name/" },
-                                  { "/home/user/movies/movie_name/BDMV/index.bdmv", false, "/home/user/movies/movie_name/" },
-                                  { "/home/user/movies/movie_name/BDMV/index.bdmv", true, "/home/user/movies/movie_name/" }};
-
-  for (unsigned int i = 0; i < sizeof(test_files) / sizeof(testfiles); i++)
-  {
-    CFileItem item;
-    item.SetPath(test_files[i].file);
-    CStdString path = item.GetBaseMoviePath(test_files[i].use_folder);
-    if (path != test_files[i].base)
-    {
-      CLog::Log(LOGFATAL, "%s failed ('%s' -> '%s' != '%s')", __FUNCTION__, test_files[i].file, path.c_str(), test_files[i].base);
-      return false;
-    }
-  }
-  return true;
-}
-#endif
-
 CStdString CFileItem::GetLocalFanart() const
 {
   if (IsVideoDb())
@@ -3012,7 +2985,7 @@ CStdString CFileItem::GetLocalFanart() const
   CFileItemList items;
   CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   if (IsOpticalMediaFile())
-  { // grab from the optical media parent folder as well - see GetUserVideoThumb
+  { // grab from the optical media parent folder as well
     CFileItemList moreItems;
     CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
     items.Append(moreItems);
@@ -3075,7 +3048,7 @@ bool CFileItem::LoadMusicTag()
     if (musicDatabase.GetSongByFileName(m_strPath, song))
     {
       GetMusicInfoTag()->SetSong(song);
-      SetThumbnailImage(song.strThumb);
+      SetArt("thumb", song.strThumb);
       return true;
     }
     musicDatabase.Close();

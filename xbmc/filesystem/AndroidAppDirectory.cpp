@@ -66,7 +66,7 @@ bool CAndroidAppDirectory::GetDirectory(const CStdString& strPath, CFileItemList
       path.Format("androidapp://%s/%s/%s", url.GetHostName(), dirname,  applications[i].packageName);
       pItem->SetPath(path);
       pItem->SetLabel(applications[i].packageLabel);
-      pItem->SetThumbnailImage(path+".png");
+      pItem->SetArt("thumb", path+".png");
       items.Add(pItem);
     }
     return true;
