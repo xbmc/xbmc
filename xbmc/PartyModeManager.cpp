@@ -77,7 +77,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     if (context == PARTYMODECONTEXT_UNKNOWN)
     {
       //get it from the xsp file
-      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("mixed"));
+      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("musicvideos") || m_type.Equals("mixed"));
     }
 
     if (m_type.Equals("mixed"))
