@@ -2685,7 +2685,7 @@ namespace JSONRPC
         "},"
         "{ \"name\": \"displaytime\", \"type\": \"integer\", \"minimum\": 1500, \"default\": 5000, \"description\": \"The time in milliseconds the notification will be visible\" }"
       "],"
-      "\"returns\":  { \"$ref\": \"System.Property.Value\", \"required\": true }"
+      "\"returns\": \"string\""
     "}",
     "\"GUI.GetProperties\": {"
       "\"type\": \"method\","
