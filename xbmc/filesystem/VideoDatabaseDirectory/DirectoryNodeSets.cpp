@@ -52,7 +52,7 @@ bool CDirectoryNodeSets::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetSetsNav(BuildPath(), items, params.GetContentType(), true);
+  bool bSuccess=videodatabase.GetSetsNav(BuildPath(), items, params.GetContentType());
 
   videodatabase.Close();
 
