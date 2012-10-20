@@ -3089,7 +3089,8 @@ namespace JSONRPC
       "],"
       "\"returns\": {"
         "\"type\": \"object\","
-        "\"description\": \"List of key-value pairs of the retrieved info labels\""
+        "\"description\": \"Object containing key-value pairs of the retrieved info labels\","
+        "\"additionalProperties\": { \"type\": \"string\" }"
       "}"
     "}",
     "\"XBMC.GetInfoBooleans\": {"
@@ -3102,7 +3103,8 @@ namespace JSONRPC
       "],"
       "\"returns\": {"
         "\"type\": \"object\","
-        "\"description\": \"List of key-value pairs of the retrieved info booleans\""
+        "\"description\": \"Object containing key-value pairs of the retrieved info booleans\","
+        "\"additionalProperties\": { \"type\": \"string\" }"
       "}"
     "}"
   };
