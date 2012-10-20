@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-09-18 17:18+0000\n"
+"PO-Revision-Date: 2012-10-20 20:18+0100\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: French (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -292,7 +292,7 @@ msgstr "Vue : Liste"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "Balayer"
+msgstr "Rechercher"
 
 msgctxt "#103"
 msgid "Sort by: Name"
@@ -632,7 +632,7 @@ msgstr "Effacer"
 
 msgctxt "#193"
 msgid "Scan"
-msgstr "Balayer"
+msgstr "Rechercher"
 
 msgctxt "#194"
 msgid "Searching..."
@@ -1544,11 +1544,11 @@ msgstr "de %s à %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
-msgstr ""
+msgstr "Pas de lecteur optique (DVD, Blu-ray) détecté"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr ""
+msgstr "Cette vidéo requiert un lecteur optique pour être lue"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2212,7 +2212,7 @@ msgstr "Toutes les chansons de"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr ""
+msgstr "Emissions TV en cours"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2508,7 +2508,7 @@ msgstr "Fichiers"
 
 msgctxt "#745"
 msgid "No scanned information for this view"
-msgstr "Aucune information pour cette affichage"
+msgstr "Aucune information pour cet affichage"
 
 msgctxt "#746"
 msgid "Please turn off library mode"
@@ -2700,7 +2700,7 @@ msgstr "Accès Internet"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr ""
+msgstr "Mise à jour de la librairie"
 
 msgctxt "#800"
 msgid "Music library needs to rescan art from tags"
@@ -2708,7 +2708,7 @@ msgstr ""
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr ""
+msgstr "Voulez-vous effectuer un balayage ?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3784,11 +3784,11 @@ msgstr "Arrêt du système"
 
 msgctxt "#13017"
 msgid "Inhibit idle shutdown"
-msgstr ""
+msgstr "Désactiver l'arrêt automatique"
 
 msgctxt "#13018"
 msgid "Allow idle shutdown"
-msgstr ""
+msgstr "Autoriser arrêt automatique"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -4308,7 +4308,7 @@ msgstr "Chercher sur IMDb..."
 
 msgctxt "#13349"
 msgid "Scan for new content"
-msgstr "Balayer pour un nouveau contenu"
+msgstr "Rechercher du nouveau contenu"
 
 msgctxt "#13350"
 msgid "Now playing..."
@@ -4415,7 +4415,7 @@ msgid "Preset"
 msgstr "Préréglages"
 
 msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
+msgid There are no presets available\nfor this visualization"
 msgstr "Aucun préréglages disponibles\npour cette visualisation"
 
 msgctxt "#13390"
@@ -4880,7 +4880,7 @@ msgstr "Filtres d'interface"
 
 msgctxt "#14055"
 msgid "Use background scanning"
-msgstr "Balayer en tâche de fond"
+msgstr "Utiliser la recherche en tâche de fond"
 
 msgctxt "#14056"
 msgid "Stop scan"
@@ -5724,15 +5724,15 @@ msgstr "Afficher le temps de la mise en veille"
 
 msgctxt "#17997"
 msgid "%i MByte"
-msgstr ""
+msgstr "%i Mio"
 
 msgctxt "#17998"
 msgid "%i hours"
-msgstr ""
+msgstr "%i heures"
 
 msgctxt "#17999"
 msgid "%i days"
-msgstr ""
+msgstr "%i jours"
 
 msgctxt "#19000"
 msgid "Switch to channel"
@@ -5740,127 +5740,127 @@ msgstr "Changer de canal"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
-msgstr ""
+msgstr "Séparez les mots-clefs par AND, OR et/ou NOT."
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
-msgstr ""
+msgstr "ou utilisez des phrases pour trouver une correspondance exacte, par exemple \"Le magicien d'Oz\"."
 
 msgctxt "#19003"
 msgid "Find similar programme"
-msgstr ""
+msgstr "Trouver un programme similaire"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr ""
+msgstr "Importation des EPG depuis les clients"
 
 msgctxt "#19005"
 msgid "PVR stream information"
-msgstr ""
+msgstr "Informations sur le flux PVR"
 
 msgctxt "#19006"
 msgid "Receiving device"
-msgstr ""
+msgstr "Récepteur"
 
 msgctxt "#19007"
 msgid "Device status"
-msgstr ""
+msgstr "Statut de l'appareil"
 
 msgctxt "#19008"
 msgid "Signal quality"
-msgstr ""
+msgstr "Qualité du signal"
 
 msgctxt "#19009"
 msgid "SNR"
-msgstr ""
+msgstr "SNR"
 
 msgctxt "#19010"
 msgid "BER"
-msgstr ""
+msgstr "BER"
 
 msgctxt "#19011"
 msgid "UNC"
-msgstr ""
+msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr ""
+msgstr "Backend PVR"
 
 msgctxt "#19013"
 msgid "Free to air"
-msgstr ""
+msgstr "Gratuite"
 
 msgctxt "#19014"
 msgid "Fixed"
-msgstr ""
+msgstr "Réparé"
 
 msgctxt "#19015"
 msgid "Encryption"
-msgstr ""
+msgstr "Encodage"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr ""
+msgstr "Backend PVR %i- %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
-msgstr ""
+msgstr "Enregistrements TV"
 
 msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
-msgstr ""
+msgstr "Dossier par défault pour les aperçus PVR"
 
 msgctxt "#19019"
 msgid "Channels"
-msgstr ""
+msgstr "Chaînes"
 
 msgctxt "#19020"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#19021"
 msgid "Radio"
-msgstr ""
+msgstr "Radio"
 
 msgctxt "#19022"
 msgid "Hidden"
-msgstr ""
+msgstr "Caché"
 
 msgctxt "#19023"
 msgid "TV channels"
-msgstr ""
+msgstr "Chaînes TV"
 
 msgctxt "#19024"
 msgid "Radio channels"
-msgstr ""
+msgstr "Stations radio"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
-msgstr ""
+msgstr "Prochains enregistrements"
 
 msgctxt "#19026"
 msgid "Add timer..."
-msgstr ""
+msgstr "Ajouter programmation..."
 
 msgctxt "#19027"
 msgid "No search results"
-msgstr ""
+msgstr "Pas de résultats"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr ""
+msgstr "Aucun signal EPG"
 
 msgctxt "#19029"
 msgid "Channel"
-msgstr ""
+msgstr "Chaîne"
 
 msgctxt "#19030"
 msgid "Now"
-msgstr ""
+msgstr "Maintenant"
 
 msgctxt "#19031"
 msgid "Next"
-msgstr ""
+msgstr "Prochain"
 
 msgctxt "#19032"
 msgid "Timeline"
@@ -5868,155 +5868,155 @@ msgstr ""
 
 msgctxt "#19033"
 msgid "Information"
-msgstr ""
+msgstr "Information"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
-msgstr ""
+msgstr "Un enregistrement est déjà en cours sur cette chaîne"
 
 msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
-msgstr ""
+msgstr "Cette chaîne ne peut pas être lue. Consultez les logs pour plus de détails."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
-msgstr ""
+msgstr "Cet enregistrement ne peut être lu. Consultez les logs pour plus de détails."
 
 msgctxt "#19037"
 msgid "Show signal quality"
-msgstr ""
+msgstr "Afficher la qualité du signal"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr ""
+msgstr "N'est pas supporté par le backend PVR."
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir cacher cette chaîne ?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr ""
+msgstr "Timer"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir renommer cet enregistrement ?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir renommer le timer ?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr ""
+msgstr "Enregistrement en cours"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr ""
+msgstr "Veuillez vérifier votre configuration, ou consultez les logs pour plus de détails."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr ""
+msgstr "Aucun client PVR n'a été démarré pour l'instant. Attendez le lancement d'un client, ou consultez les logs pour plus de détails."
 
 msgctxt "#19046"
 msgid "New channel"
-msgstr ""
+msgstr "Nouvelle chaîne"
 
 msgctxt "#19047"
 msgid "Programme info"
-msgstr ""
+msgstr "Détails du programme"
 
 msgctxt "#19048"
 msgid "Group management"
-msgstr ""
+msgstr "Gestion de groupe"
 
 msgctxt "#19049"
 msgid "Show channel"
-msgstr ""
+msgstr "Afficher la chaîne"
 
 msgctxt "#19050"
 msgid "Show visible channels"
-msgstr ""
+msgstr "Afficher les chaînes visibles"
 
 msgctxt "#19051"
 msgid "Show hidden channels"
-msgstr ""
+msgstr "Afficher les chaînes masquées"
 
 msgctxt "#19052"
 msgid "Move channel to:"
-msgstr ""
+msgstr "Déplacer la chaîne vers :"
 
 msgctxt "#19053"
 msgid "Recording information"
-msgstr ""
+msgstr "Détails de l'enregistrement"
 
 msgctxt "#19054"
 msgid "Hide channel"
-msgstr ""
+msgstr "Masquer la chaîne"
 
 msgctxt "#19055"
 msgid "No information available"
-msgstr ""
+msgstr "Pas d'information disponible"
 
 msgctxt "#19056"
 msgid "New timer"
-msgstr ""
+msgstr "Nouveau timer"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr ""
+msgstr "Modifier le timer"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr ""
+msgstr "Timer activé"
 
 msgctxt "#19059"
 msgid "Stop recording"
-msgstr ""
+msgstr "Arrêter l'enregistrement"
 
 msgctxt "#19060"
 msgid "Delete timer"
-msgstr ""
+msgstr "Supprimer le timer"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr ""
+msgstr "Ajouter un timer"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
-msgstr ""
+msgstr "Trier par : chaîne"
 
 msgctxt "#19063"
 msgid "Go to begin"
-msgstr ""
+msgstr "Aller au début"
 
 msgctxt "#19064"
 msgid "Go to end"
-msgstr ""
+msgstr "Aller à la fin"
 
 msgctxt "#19065"
 msgid "Default EPG window"
-msgstr ""
+msgstr "Fenêtre EPG par défaut"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
-msgstr ""
+msgstr "Cet événement est déjà enregistré."
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr ""
+msgstr "Cet enregistrement n'a pu être effacé. Consultez les logs pour plus de détails."
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr ""
+msgstr "Fréquence des mises à jour EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr ""
+msgstr "Ne pas stocker l'EPG dans la base de données"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -6028,351 +6028,351 @@ msgstr ""
 
 msgctxt "#19075"
 msgid "Name:"
-msgstr ""
+msgstr "Nom :"
 
 msgctxt "#19076"
 msgid "Folder:"
-msgstr ""
+msgstr "Dossier :"
 
 msgctxt "#19077"
 msgid "Radio:"
-msgstr ""
+msgstr "Radio :"
 
 msgctxt "#19078"
 msgid "Channel:"
-msgstr ""
+msgstr "Chaîne :"
 
 msgctxt "#19079"
 msgid "Day:"
-msgstr ""
+msgstr "Jour :"
 
 msgctxt "#19080"
 msgid "Begin:"
-msgstr ""
+msgstr "Début :"
 
 msgctxt "#19081"
 msgid "End:"
-msgstr ""
+msgstr "Fin :"
 
 msgctxt "#19082"
 msgid "Priority:"
-msgstr ""
+msgstr "Priorité :"
 
 msgctxt "#19083"
 msgid "Lifetime (days):"
-msgstr ""
+msgstr "Durée (jours) :"
 
 msgctxt "#19084"
 msgid "First day:"
-msgstr ""
+msgstr "Premier jour :"
 
 msgctxt "#19085"
 msgid "Unknown channel %u"
-msgstr ""
+msgstr "Chaîne inconnue %u"
 
 msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
-msgstr ""
+msgstr "Lu-__-__-__-__-__-__"
 
 msgctxt "#19087"
 msgid "__-Tu-__-__-__-__-__"
-msgstr ""
+msgstr "__-Ma-__-__-__-__-__"
 
 msgctxt "#19088"
 msgid "__-__-We-__-__-__-__"
-msgstr ""
+msgstr "__-__-Me-__-__-__-__"
 
 msgctxt "#19089"
 msgid "__-__-__-Th-__-__-__"
-msgstr ""
+msgstr "__-__-__-Je-__-__-__"
 
 msgctxt "#19090"
 msgid "__-__-__-__-Fr-__-__"
-msgstr ""
+msgstr "__-__-__-__-Ve-__-__"
 
 msgctxt "#19091"
 msgid "__-__-__-__-__-Sa-__"
-msgstr ""
+msgstr "__-__-__-__-__-Sa-__"
 
 msgctxt "#19092"
 msgid "__-__-__-__-__-__-Su"
-msgstr ""
+msgstr "__-__-__-__-__-__-Di"
 
 msgctxt "#19093"
 msgid "Mo-Tu-We-Th-Fr-__-__"
-msgstr ""
+msgstr "Lu-Ma-Me-Je-Ve-__-__"
 
 msgctxt "#19094"
 msgid "Mo-Tu-We-Th-Fr-Sa-__"
-msgstr ""
+msgstr "Lu-Ma-Me-Je-Ve-Sa-__"
 
 msgctxt "#19095"
 msgid "Mo-Tu-We-Th-Fr-Sa-Su"
-msgstr ""
+msgstr "Lu-Ma-Me-Je-Ve-Sa-Di"
 
 msgctxt "#19096"
 msgid "__-__-__-__-__-Sa-Su"
-msgstr ""
+msgstr "__-__-__-__-__-Sa-Di"
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
-msgstr ""
+msgstr "Entrez le nom de l'enregistrement"
 
 msgctxt "#19098"
 msgid "Warning"
-msgstr ""
+msgstr "Avertissement"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
-msgstr ""
+msgstr "Veuillez changer de chaîne"
 
 msgctxt "#19103"
 msgid "Scan for missing icons"
-msgstr ""
+msgstr "Recherche des icônes manquantes"
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
-msgstr ""
+msgstr "Entrez le nom du dossier pour l'enregistrement"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr ""
+msgstr "Prochain timer à"
 
 msgctxt "#19107"
 msgid "at"
-msgstr ""
+msgstr "à"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr ""
+msgstr "Impossible d'enregistrer la programmation. Consultez les logs pour plus de détails."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr ""
+msgstr "Une erreur inattendue s'est produite. Veuillez essayer plus tard, ou consulter les logs pour plus de détails."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr ""
+msgstr "Erreur du backend PVR. Consultez les logs pour plus de détails."
 
 msgctxt "#19114"
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 msgctxt "#19115"
 msgid "Address"
-msgstr ""
+msgstr "Adresse"
 
 msgctxt "#19116"
 msgid "Disksize"
-msgstr ""
+msgstr "Capacité du disque"
 
 msgctxt "#19117"
 msgid "Search for channels"
-msgstr ""
+msgstr "Recherche de chaînes"
 
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
-msgstr ""
+msgstr "Impossible d'utiliser des fonctions PVR pendant les recherches."
 
 msgctxt "#19119"
 msgid "On which server you want to search?"
-msgstr ""
+msgstr "Sur quel serveur voulez vous rechercher ?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr ""
+msgstr "Numéro de client"
 
 msgctxt "#19121"
 msgid "Avoid repeats"
-msgstr ""
+msgstr "Eviter les répétitions"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr ""
+msgstr "L'enregistrement de ce timer est toujours en cours. Êtes-vous sûr de vouloir le supprimer ?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
-msgstr ""
+msgstr "Chaînes gratuites uniquement"
 
 msgctxt "#19124"
 msgid "Ignore present timers"
-msgstr ""
+msgstr "Ignorer les timers en cours"
 
 msgctxt "#19125"
 msgid "Ignore present recordings"
-msgstr ""
+msgstr "Ignorer les enregistrements en cours"
 
 msgctxt "#19126"
 msgid "Start time"
-msgstr ""
+msgstr "Heure de début"
 
 msgctxt "#19127"
 msgid "End time"
-msgstr ""
+msgstr "Heure de fin"
 
 msgctxt "#19128"
 msgid "Start date"
-msgstr ""
+msgstr "Date de début"
 
 msgctxt "#19129"
 msgid "End date"
-msgstr ""
+msgstr "Date de fin"
 
 msgctxt "#19130"
 msgid "Minimum duration"
-msgstr ""
+msgstr "Durée minimale"
 
 msgctxt "#19131"
 msgid "Maximum duration"
-msgstr ""
+msgstr "Durée maximale"
 
 msgctxt "#19132"
 msgid "Include unknown genres"
-msgstr ""
+msgstr "Inclure les genres inconnus"
 
 msgctxt "#19133"
 msgid "Search string"
-msgstr ""
+msgstr "Rechercher chaîne de caractère"
 
 msgctxt "#19134"
 msgid "Include description"
-msgstr ""
+msgstr "Inclure les descriptions"
 
 msgctxt "#19135"
 msgid "Case sensitive"
-msgstr ""
+msgstr "Sensible à la casse"
 
 msgctxt "#19136"
 msgid "Channel unavailable"
-msgstr ""
+msgstr "Chaîne indisponible"
 
 msgctxt "#19137"
 msgid "No groups defined"
-msgstr ""
+msgstr "Aucun groupe défini"
 
 msgctxt "#19138"
 msgid "Please create a group first"
-msgstr ""
+msgstr "Veuillez d'abord créer un groupe"
 
 msgctxt "#19139"
 msgid "Name of the new group"
-msgstr ""
+msgstr "Nom du nouveau groupe"
 
 msgctxt "#19141"
 msgid "Group"
-msgstr ""
+msgstr "Groupe"
 
 msgctxt "#19142"
 msgid "Search guide"
-msgstr ""
+msgstr "Aide à la recherche"
 
 msgctxt "#19143"
 msgid "Group management"
-msgstr ""
+msgstr "Gestion de groupe"
 
 msgctxt "#19144"
 msgid "No groups defined"
-msgstr ""
+msgstr "Aucun groupe défini"
 
 msgctxt "#19145"
 msgid "Grouped"
-msgstr ""
+msgstr "Groupé"
 
 msgctxt "#19146"
 msgid "Groups"
-msgstr ""
+msgstr "Groupes"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr ""
+msgstr "Le backend PVR ne peut accomplir cette action. Consultez les logs pour plus de détails."
 
 msgctxt "#19148"
 msgid "Channel"
-msgstr ""
+msgstr "Chaîne"
 
 msgctxt "#19149"
 msgid "Mo"
-msgstr ""
+msgstr "Lu"
 
 msgctxt "#19150"
 msgid "Tu"
-msgstr ""
+msgstr "Ma"
 
 msgctxt "#19151"
 msgid "We"
-msgstr ""
+msgstr "Me"
 
 msgctxt "#19152"
 msgid "Th"
-msgstr ""
+msgstr "Je"
 
 msgctxt "#19153"
 msgid "Fr"
-msgstr ""
+msgstr "Ve"
 
 msgctxt "#19154"
 msgid "Sa"
-msgstr ""
+msgstr "Sa"
 
 msgctxt "#19155"
 msgid "Su"
-msgstr ""
+msgstr "Di"
 
 msgctxt "#19156"
 msgid "from"
-msgstr ""
+msgstr "depuis"
 
 msgctxt "#19157"
 msgid "Next recording"
-msgstr ""
+msgstr "Prochain enregistrement"
 
 msgctxt "#19158"
 msgid "Currently recording"
-msgstr ""
+msgstr "Enregistrement en cours"
 
 msgctxt "#19159"
 msgid "from"
-msgstr ""
+msgstr "de"
 
 msgctxt "#19160"
 msgid "to"
-msgstr ""
+msgstr "à"
 
 msgctxt "#19161"
 msgid "On"
-msgstr ""
+msgstr "Actif"
 
 msgctxt "#19162"
 msgid "Recording active"
-msgstr ""
+msgstr "Enregistrement actif"
 
 msgctxt "#19163"
 msgid "Recordings"
-msgstr ""
+msgstr "Enregistrements"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr ""
+msgstr "Impossible de démarrer l'enregistrement. Consultez les logs pour plus de détails."
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr ""
+msgstr "Changer"
 
 msgctxt "#19166"
 msgid "PVR information"
-msgstr ""
+msgstr "Informations PVR"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
-msgstr ""
+msgstr "Recherche des icônes manquantes"
 
 msgctxt "#19168"
 msgid "Switch channel without pressing OK"
-msgstr ""
+msgstr "Changer de chaîne sans appuyer sur OK"
 
 msgctxt "#19169"
 msgid "Hide video information box"
-msgstr ""
+msgstr "Masquer la fenêtre d'infos de la vidéo"
 
 msgctxt "#19170"
 msgid "Timeout when starting playback"
@@ -6384,75 +6384,75 @@ msgstr ""
 
 msgctxt "#19172"
 msgid "Instant recording duration"
-msgstr ""
+msgstr "Durée de l'enregistrement spontané"
 
 msgctxt "#19173"
 msgid "Default recording priority"
-msgstr ""
+msgstr "Priorité d'un enregistrement par défaut"
 
 msgctxt "#19174"
 msgid "Default recording lifetime"
-msgstr ""
+msgstr "Durée de vie d'un enregistrement par défaut"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
-msgstr ""
+msgstr "Marge au début d'un enregistrement"
 
 msgctxt "#19176"
 msgid "Margin at the end of a recording"
-msgstr ""
+msgstr "Marge à la fin d'un enregistrement"
 
 msgctxt "#19177"
 msgid "Playback"
-msgstr ""
+msgstr "Lecture"
 
 msgctxt "#19178"
 msgid "Show channel information when switching channels"
-msgstr ""
+msgstr "Afficher les informations de chaînes lors de la navigation"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
-msgstr ""
+msgstr "Masquer les informations de la chaîne automatiquement"
 
 msgctxt "#19180"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr ""
+msgstr "Menu/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
-msgstr ""
+msgstr "Jours à afficher dans l'EPG"
 
 msgctxt "#19184"
 msgid "Channel information duration"
-msgstr ""
+msgstr "Longueur des infos de la chaîne"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr ""
+msgstr "Reset de la base de données PVR"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr ""
+msgstr "Toutes les informations de la base de données PVR vont être effacées"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr ""
+msgstr "Reset de la base de données EPG"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr ""
+msgstr "EPG est en cours de reset"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
-msgstr ""
+msgstr "Lancer la dernière chaîne au démarrage"
 
 msgctxt "#19190"
 msgid "Minimized"
-msgstr ""
+msgstr "Réduit"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6464,111 +6464,111 @@ msgstr ""
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr ""
+msgstr "La recherche de chaîne n'a pu démarrer. Consultez les logs pour plus de détails."
 
 msgctxt "#19194"
 msgid "Continue?"
-msgstr ""
+msgstr "Continuer ?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr ""
+msgstr "Actions client"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr ""
+msgstr "Spécifications du client PVR"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
-msgstr ""
+msgstr "Enregistrement démarré à : %s"
 
 msgctxt "#19198"
 msgid "Recording finished on: %s"
-msgstr ""
+msgstr "Enregistrement fini à : %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
-msgstr ""
+msgstr "Gestion des chaînes"
 
 msgctxt "#19200"
 msgid "EPG source:"
-msgstr ""
+msgstr "Source EPG :"
 
 msgctxt "#19201"
 msgid "Channel name:"
-msgstr ""
+msgstr "Nom de la chaîne :"
 
 msgctxt "#19202"
 msgid "Channel icon:"
-msgstr ""
+msgstr "Icône de la chaîne :"
 
 msgctxt "#19203"
 msgid "Edit channel"
-msgstr ""
+msgstr "Modifier la chaîne"
 
 msgctxt "#19204"
 msgid "New channel"
-msgstr ""
+msgstr "Nouvelle chaîne"
 
 msgctxt "#19205"
 msgid "Group management"
-msgstr ""
+msgstr "Gestion de groupe"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
-msgstr ""
+msgstr "Activer l'EPG :"
 
 msgctxt "#19207"
 msgid "Group:"
-msgstr ""
+msgstr "Groupe :"
 
 msgctxt "#19208"
 msgid "Enter the name of the new channel"
-msgstr ""
+msgstr "Entrez le nom de la nouvelle chaîne"
 
 msgctxt "#19209"
 msgid "XBMC virtual backend"
-msgstr ""
+msgstr "Backend virtuel XBMC"
 
 msgctxt "#19210"
 msgid "Client"
-msgstr ""
+msgstr "Client"
 
 msgctxt "#19211"
 msgid "Delete channel"
-msgstr ""
+msgstr "Supprimer le canal"
 
 msgctxt "#19212"
 msgid "This list contains changes"
-msgstr ""
+msgstr "Cette liste a été modifiée"
 
 msgctxt "#19213"
 msgid "Select backend"
-msgstr ""
+msgstr "Sélectionner un backend"
 
 msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
-msgstr ""
+msgstr "Entrez une URL valide pour la nouvelle chaîne"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr ""
+msgstr "Le backend PVR ne prend pas les timers en charge."
 
 msgctxt "#19216"
 msgid "All radio channels"
-msgstr ""
+msgstr "Toutes les stations"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr ""
+msgstr "Toutes les chaînes"
 
 msgctxt "#19218"
 msgid "Visible"
-msgstr ""
+msgstr "Visible"
 
 msgctxt "#19219"
 msgid "Ungrouped channels"
-msgstr ""
+msgstr "Canaux dégroupés"
 
 msgctxt "#19220"
 msgid "Channels in"
@@ -6576,575 +6576,575 @@ msgstr ""
 
 msgctxt "#19221"
 msgid "Synchronise channel groups with backends"
-msgstr ""
+msgstr "Synchroniser les groupes de chaînes avec les backends"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr ""
+msgstr "Aucun add-on PVR n'a pu être activé. Vérifiez vos paramètres, ou consultez les logs pour plus de détails."
 
 msgctxt "#19224"
 msgid "Recording aborted"
-msgstr ""
+msgstr "Enregistrement annulé"
 
 msgctxt "#19225"
 msgid "Recording scheduled"
-msgstr ""
+msgstr "Enregistrement programmé"
 
 msgctxt "#19226"
 msgid "Recording started"
-msgstr ""
+msgstr "Début de l'enregistrement"
 
 msgctxt "#19227"
 msgid "Recording completed"
-msgstr ""
+msgstr "Enregistrement terminé"
 
 msgctxt "#19228"
 msgid "Recording deleted"
-msgstr ""
+msgstr "Enregistrement effacé"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr ""
+msgstr "Fermer le canal OSD après avoir changé de chaîne"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
-msgstr ""
+msgstr "Bloquer les mises à jour EPG si un flux TV est actif"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
-msgstr ""
+msgstr "Toujours utiliser l'ordre des chaînes depuis le(s) backend(s)"
 
 msgctxt "#19232"
 msgid "Clear search results"
-msgstr ""
+msgstr "Vider les résultats de recherche"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr ""
+msgstr "Affiche une notification lors des mises à jour des timers"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr ""
+msgstr "Utiliser les numéros de chaînes backend (ne fonctionne qu'avec un add-on PVR activé)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr ""
+msgstr "Le manager PVR démarre"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
-msgstr ""
+msgstr "Charger les chaînes depuis les clients"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr ""
+msgstr "Charger les timers depuis les clients"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
-msgstr ""
+msgstr "Charger les enregistrements depuis les clients"
 
 msgctxt "#19239"
 msgid "Starting background threads"
-msgstr ""
+msgstr "Lancer les processus d'arrière-plan"
 
 msgctxt "#19240"
 msgid "No PVR add-on enabled"
-msgstr ""
+msgstr "Aucun add-on PVR activé"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr ""
+msgstr "Le manager PVR a été activé sans "
 
 msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr ""
+msgstr "add-on PVR actif. Activez au moins un add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
-msgstr ""
+msgstr "pour utiliser les fonctionnalités PVR."
 
 msgctxt "#19244"
 msgid "Backend idle time"
-msgstr ""
+msgstr "Temps de repos backend"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
-msgstr ""
+msgstr "Programmer une commande de réveil (cmd [timestamp])"
 
 msgctxt "#19246"
 msgid "Wakeup before recording"
-msgstr ""
+msgstr "Réveil avant de lancer l'enregistrement"
 
 msgctxt "#19247"
 msgid "Daily wakeup"
-msgstr ""
+msgstr "Réveil quotidien"
 
 msgctxt "#19248"
 msgid "Daily wakeup time (HH:MM:SS)"
-msgstr ""
+msgstr "Heure de réveil quotidienne (HH:MM:SS)"
 
 msgctxt "#19249"
 msgid "Filter channels"
-msgstr ""
+msgstr "Filtrer les chaînes"
 
 msgctxt "#19250"
 msgid "Loading EPG from database"
-msgstr ""
+msgstr "Chargement des EPG depuis la base de données"
 
 msgctxt "#19251"
 msgid "Update EPG information"
-msgstr ""
+msgstr "Mettre à jour les informations EPG"
 
 msgctxt "#19252"
 msgid "Schedule EPG update for this channel?"
-msgstr ""
+msgstr "Voulez-vous plannifier une mise à jour EPG pour cette chaîne ?"
 
 msgctxt "#19253"
 msgid "EPG update scheduled for channel"
-msgstr ""
+msgstr "Mise à jour EPG plannifiée pour la chaîne"
 
 msgctxt "#19254"
 msgid "EPG update failed for channel"
-msgstr ""
+msgstr "La mise à jour EPG a échoué pour la chaîne"
 
 msgctxt "#19255"
 msgid "Start recording"
-msgstr ""
+msgstr "Démarrer l'enregistrement"
 
 msgctxt "#19256"
 msgid "Stop recording"
-msgstr ""
+msgstr "Arrêter l'enregistrement"
 
 msgctxt "#19257"
 msgid "Lock channel"
-msgstr ""
+msgstr "Verrouiller la chaîne"
 
 msgctxt "#19258"
 msgid "Unlock channel"
-msgstr ""
+msgstr "Déverrouiller la chaîne"
 
 msgctxt "#19259"
 msgid "Parental control"
-msgstr ""
+msgstr "Contrôle parental"
 
 msgctxt "#19260"
 msgid "Unlock duration"
-msgstr ""
+msgstr "Durée du déverrouillage"
 
 msgctxt "#19261"
 msgid "Change PIN"
-msgstr ""
+msgstr "Changer de code PIN"
 
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
-msgstr ""
+msgstr "Contrôle parental. Entrez le code PIN :"
 
 msgctxt "#19263"
 msgid "Locked channel. Enter PIN:"
-msgstr ""
+msgstr "Chaîne verrouillée. Entrez le code PIN :"
 
 msgctxt "#19264"
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "PIN incorrect"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
-msgstr ""
+msgstr "Le code PIN renseigné était incorrect."
 
 msgctxt "#19266"
 msgid "Parental locked"
-msgstr ""
+msgstr "Verrouillage parental"
 
 msgctxt "#19267"
 msgid "Parental locked:"
-msgstr ""
+msgstr "Verrouillage parental :"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
-msgstr ""
+msgstr "Masquer les labels 'aucune information disponible'"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr ""
+msgstr "Masquer les avertissements 'connexion perdue'"
 
 msgctxt "#19270"
 msgid "* All recordings"
-msgstr ""
+msgstr "* Tous les enregistrements"
 
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
-msgstr ""
+msgstr "Aucun add-on PVR n'a pu être trouvé"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
-msgstr ""
+msgstr "Vous avez besoin d'un tuner, d'un logiciel backend, et d'un"
 
 msgctxt "#19273"
 msgid "add-on for the backend to be able to use PVR."
-msgstr ""
+msgstr "add-on pour permettre au backend d'utiliser le PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr ""
+msgstr "Merci de visiter xbmc.org/pvr pour en savoir plus."
 
 msgctxt "#19499"
 msgid "Other/Unknown"
-msgstr ""
+msgstr "Autre/Inconnu"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
-msgstr ""
+msgstr "Film/Drama"
 
 msgctxt "#19501"
 msgid "Detective/Thriller"
-msgstr ""
+msgstr "Policier/Thriller"
 
 msgctxt "#19502"
 msgid "Adventure/Western/War"
-msgstr ""
+msgstr "Aventure/Western/Guerre"
 
 msgctxt "#19503"
 msgid "Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science Fiction/Fantasy/Horreur"
 
 msgctxt "#19504"
 msgid "Comedy"
-msgstr ""
+msgstr "Comédie"
 
 msgctxt "#19505"
 msgid "Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Soap/Mélodrame/Folklorique"
 
 msgctxt "#19506"
 msgid "Romance"
-msgstr ""
+msgstr "Romance"
 
 msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Sérieux/Classique/Religieux/Film historique/Drama"
 
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
-msgstr ""
+msgstr "Film pour adulte/Drama"
 
 msgctxt "#19516"
 msgid "News/Current Affairs"
-msgstr ""
+msgstr "Information/Actualité"
 
 msgctxt "#19517"
 msgid "News/Weather Report"
-msgstr ""
+msgstr "Information/Météo"
 
 msgctxt "#19518"
 msgid "News Magazine"
-msgstr ""
+msgstr "Magazine d'information"
 
 msgctxt "#19519"
 msgid "Documentary"
-msgstr ""
+msgstr "Documentaire"
 
 msgctxt "#19520"
 msgid "Discussion/Interview/Debate"
-msgstr ""
+msgstr "Discussion/Interview/Débat"
 
 msgctxt "#19532"
 msgid "Show/Game Show"
-msgstr ""
+msgstr "Emission/Jeu télévisé"
 
 msgctxt "#19533"
 msgid "Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Jeu Télévisé/Quizz/Concours"
 
 msgctxt "#19534"
 msgid "Variety Show"
-msgstr ""
+msgstr "Emission de divertissement"
 
 msgctxt "#19535"
 msgid "Talk Show"
-msgstr ""
+msgstr "Talk Show"
 
 msgctxt "#19548"
 msgid "Sports"
-msgstr ""
+msgstr "Sports"
 
 msgctxt "#19549"
 msgid "Special Event"
-msgstr ""
+msgstr "Evénement Spécial"
 
 msgctxt "#19550"
 msgid "Sport Magazine"
-msgstr ""
+msgstr "Magazine de sport"
 
 msgctxt "#19551"
 msgid "Football"
-msgstr ""
+msgstr "Football"
 
 msgctxt "#19552"
 msgid "Tennis/Squash"
-msgstr ""
+msgstr "Tennis/Squash"
 
 msgctxt "#19553"
 msgid "Team Sports"
-msgstr ""
+msgstr "Jeux en équipe"
 
 msgctxt "#19554"
 msgid "Athletics"
-msgstr ""
+msgstr "Athlétisme"
 
 msgctxt "#19555"
 msgid "Motor Sport"
-msgstr ""
+msgstr "Sports Automobiles"
 
 msgctxt "#19556"
 msgid "Water Sport"
-msgstr ""
+msgstr "Sports nautiques"
 
 msgctxt "#19557"
 msgid "Winter Sports"
-msgstr ""
+msgstr "Sports d'hiver"
 
 msgctxt "#19558"
 msgid "Equestrian"
-msgstr ""
+msgstr "Equitation"
 
 msgctxt "#19559"
 msgid "Martial Sports"
-msgstr ""
+msgstr "Arts martiaux"
 
 msgctxt "#19564"
 msgid "Children's/Youth Programmes"
-msgstr ""
+msgstr "Programmes jeunesse/Enfance"
 
 msgctxt "#19565"
 msgid "Pre-school Children's Programmes"
-msgstr ""
+msgstr "Programmes petite enfance"
 
 msgctxt "#19566"
 msgid "Entertainment Programmes for 6 to 14"
-msgstr ""
+msgstr "Divertissements pour les 6-14 ans"
 
 msgctxt "#19567"
 msgid "Entertainment Programmes for 10 to 16"
-msgstr ""
+msgstr "Divertissements pour les 10-16 ans"
 
 msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
-msgstr ""
+msgstr "Programme pédagogique/Scolaire/Educatif"
 
 msgctxt "#19569"
 msgid "Cartoons/Puppets"
-msgstr ""
+msgstr "Cartoons/Marionnettes"
 
 msgctxt "#19580"
 msgid "Music/Ballet/Dance"
-msgstr ""
+msgstr "Musique/Ballets/Danse"
 
 msgctxt "#19581"
 msgid "Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgctxt "#19582"
 msgid "Serious/Classical Music"
-msgstr ""
+msgstr "Musique classique/sérieuse"
 
 msgctxt "#19583"
 msgid "Folk/Traditional Music"
-msgstr ""
+msgstr "Musique traditionnelle/folklorique"
 
 msgctxt "#19584"
 msgid "Musical/Opera"
-msgstr ""
+msgstr "Comédies musicales/Opéra"
 
 msgctxt "#19585"
 msgid "Ballet"
-msgstr ""
+msgstr "Ballet"
 
 msgctxt "#19596"
 msgid "Arts/Culture"
-msgstr ""
+msgstr "Arts/Culture"
 
 msgctxt "#19597"
 msgid "Performing Arts"
-msgstr ""
+msgstr "Arts du spectacle"
 
 msgctxt "#19598"
 msgid "Fine Arts"
-msgstr ""
+msgstr "Beaux-arts"
 
 msgctxt "#19599"
 msgid "Religion"
-msgstr ""
+msgstr "Religion"
 
 msgctxt "#19600"
 msgid "Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Culture populaire/Arts traditionnels"
 
 msgctxt "#19601"
 msgid "Literature"
-msgstr ""
+msgstr "Littérature"
 
 msgctxt "#19602"
 msgid "Film/Cinema"
-msgstr ""
+msgstr "Film/Cinéma"
 
 msgctxt "#19603"
 msgid "Experimental Film/Video"
-msgstr ""
+msgstr "Films/Courts Métrages expérimentaux"
 
 msgctxt "#19604"
 msgid "Broadcasting/Press"
-msgstr ""
+msgstr "Presse/Radio-diffusion"
 
 msgctxt "#19605"
 msgid "New Media"
-msgstr ""
+msgstr "Nouveaux Médias"
 
 msgctxt "#19606"
 msgid "Arts/Culture Magazines"
-msgstr ""
+msgstr "Magasines Art et Culture"
 
 msgctxt "#19607"
 msgid "Fashion"
-msgstr ""
+msgstr "Mode"
 
 msgctxt "#19612"
 msgid "Social/Political/Economics"
-msgstr ""
+msgstr "Social/Politique/Economie"
 
 msgctxt "#19613"
 msgid "Magazines/Reports/Documentary"
-msgstr ""
+msgstr "Magazines/Reportages/Documentaires"
 
 msgctxt "#19614"
 msgid "Economics/Social Advisory"
-msgstr ""
+msgstr "Conseils Socio-économiques"
 
 msgctxt "#19615"
 msgid "Remarkable People"
-msgstr ""
+msgstr "Personnages Célèbres"
 
 msgctxt "#19628"
 msgid "Education/Science/Factual"
-msgstr ""
+msgstr "Education/Science/Faits Réels"
 
 msgctxt "#19629"
 msgid "Nature/Animals/Environment"
-msgstr ""
+msgstr "Nature/Faune/Environnement"
 
 msgctxt "#19630"
 msgid "Technology/Natural Sciences"
-msgstr ""
+msgstr "Technologie/Sciences Naturelles"
 
 msgctxt "#19631"
 msgid "Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Médecine/Physiologie/Psychologie"
 
 msgctxt "#19632"
 msgid "Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Pays étrangers/Expéditions"
 
 msgctxt "#19633"
 msgid "Social/Spiritual Sciences"
-msgstr ""
+msgstr "Sciences Spirituelles/Sociales"
 
 msgctxt "#19634"
 msgid "Further Education"
-msgstr ""
+msgstr "Culture générale"
 
 msgctxt "#19635"
 msgid "Languages"
-msgstr ""
+msgstr "Langages"
 
 msgctxt "#19644"
 msgid "Leisure/Hobbies"
-msgstr ""
+msgstr "Loisirs/Hobby"
 
 msgctxt "#19645"
 msgid "Tourism/Travel"
-msgstr ""
+msgstr "Tourisme/Voyage"
 
 msgctxt "#19646"
 msgid "Handicraft"
-msgstr ""
+msgstr "Bricolage"
 
 msgctxt "#19647"
 msgid "Motoring"
-msgstr ""
+msgstr "Automobile"
 
 msgctxt "#19648"
 msgid "Fitness &amp; Health"
-msgstr ""
+msgstr "Fitness et Santé"
 
 msgctxt "#19649"
 msgid "Cooking"
-msgstr ""
+msgstr "Cuisine"
 
 msgctxt "#19650"
 msgid "Advertisement/Shopping"
-msgstr ""
+msgstr "Publicité/Shopping"
 
 msgctxt "#19651"
 msgid "Gardening"
-msgstr ""
+msgstr "Jardinage"
 
 msgctxt "#19660"
 msgid "Special Characteristics"
-msgstr ""
+msgstr "Charactéristiques Spéciales"
 
 msgctxt "#19661"
 msgid "Original Language"
-msgstr ""
+msgstr "Versions Originales"
 
 msgctxt "#19662"
 msgid "Black &amp; White"
-msgstr ""
+msgstr "Noir et Blanc"
 
 msgctxt "#19663"
 msgid "Unpublished"
-msgstr ""
+msgstr "Inédit"
 
 msgctxt "#19664"
 msgid "Live Broadcast"
-msgstr ""
+msgstr "Diffusion en direct"
 
 msgctxt "#19676"
 msgid "Drama"
-msgstr ""
+msgstr "Drama"
 
 msgctxt "#19677"
 msgid "Detective/Thriller"
-msgstr ""
+msgstr "Policier/Thriller"
 
 msgctxt "#19678"
 msgid "Adventure/Western/War"
-msgstr ""
+msgstr "Aventure/Westerns/Guerre"
 
 msgctxt "#19679"
 msgid "Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science Fiction/Fantasy/Horreur"
 
 msgctxt "#19680"
 msgid "Comedy"
-msgstr ""
+msgstr "Comédie"
 
 msgctxt "#19681"
 msgid "Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Soap/Mélodrames/Folklorique"
 
 msgctxt "#19682"
 msgid "Romance"
-msgstr ""
+msgstr "Romance"
 
 msgctxt "#19683"
 msgid "Serious/ClassicalReligion/Historical"
-msgstr ""
+msgstr "Sérieux/Classique/Religion/Historique"
 
 msgctxt "#19684"
 msgid "Adult"
-msgstr ""
+msgstr "Adulte"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -7224,7 +7224,7 @@ msgstr "Conflit"
 
 msgctxt "#20024"
 msgid "Scan new"
-msgstr "Balayer les nouveaux"
+msgstr "Rechercher du nouveau"
 
 msgctxt "#20025"
 msgid "Scan all"
@@ -7268,7 +7268,7 @@ msgstr "Nouvelle configuration"
 
 msgctxt "#20045"
 msgid "Enter master mode"
-msgstr "Entrer en mode Administrateur"
+msgstr "Lancer le mode Administrateur"
 
 msgctxt "#20046"
 msgid "Leave master mode"
@@ -7620,7 +7620,7 @@ msgstr "Supprimer la location réseau"
 
 msgctxt "#20135"
 msgid "Do you want to scan the folder?"
-msgstr "Voulez-vous balayer le dossier ?"
+msgstr "Voulez-vous rechercher dans ce dossier ?"
 
 msgctxt "#20136"
 msgid "Memory unit"
@@ -7876,23 +7876,23 @@ msgstr "Échec du téléchargement des infos Artiste"
 
 msgctxt "#20240"
 msgid "Android music"
-msgstr ""
+msgstr "Musique Android"
 
 msgctxt "#20241"
 msgid "Android videos"
-msgstr ""
+msgstr "Vidéos Android"
 
 msgctxt "#20242"
 msgid "Android pictures"
-msgstr ""
+msgstr "Images Android"
 
 msgctxt "#20243"
 msgid "Android photos"
-msgstr ""
+msgstr "Photos Android"
 
 msgctxt "#20244"
 msgid "Android Apps"
-msgstr ""
+msgstr "Applications Android"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -7956,7 +7956,7 @@ msgstr "Impossible d'écrire dans le dossier"
 
 msgctxt "#20303"
 msgid "Do you want to skip and proceed?"
-msgstr "Voulez-vous passer et continuer ?"
+msgstr "Voulez-vous ignorer et continuer ?"
 
 msgctxt "#20304"
 msgid "RSS Feed"
@@ -8068,7 +8068,7 @@ msgstr "ce chemin de la médiathèque ?"
 
 msgctxt "#20342"
 msgid "Movies"
-msgstr "Retirer le clip musical de la Médiathèque"
+msgstr "Films"
 
 msgctxt "#20343"
 msgid "TV shows"
@@ -8528,27 +8528,27 @@ msgstr "Grouper les films en saga"
 
 msgctxt "#20459"
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 msgctxt "#20460"
 msgid "Add %s"
-msgstr ""
+msgstr "Ajouter %s"
 
 msgctxt "#20461"
 msgid "Remove %s"
-msgstr ""
+msgstr "Supprimer %s"
 
 msgctxt "#20462"
 msgid "New tag..."
-msgstr ""
+msgstr "Nouveau tag..."
 
 msgctxt "#20463"
 msgid "A tag with the name '%s' already exists."
-msgstr ""
+msgstr "Un tag incluant le nom '%s' existe déjà"
 
 msgctxt "#20464"
 msgid "Select %s"
-msgstr ""
+msgstr "Choisir %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -8956,7 +8956,7 @@ msgstr "Contenu du cache insuffisant pour une lecture continue"
 
 msgctxt "#21456"
 msgid "External storage"
-msgstr ""
+msgstr "Stockage externe"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9560,7 +9560,7 @@ msgstr "Services"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr ""
+msgstr "Clients PVR"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9800,11 +9800,11 @@ msgstr "Voulez-vous télécharger cette extension ?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
-msgstr ""
+msgstr "Impossible de charger le skin"
 
 msgctxt "#24103"
 msgid "Skin is missing some files"
-msgstr ""
+msgstr "Il manque des fichiers au skin"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10332,7 +10332,7 @@ msgstr "Ne pas utiliser de mappage clavier personnalisé pour cet appareil"
 
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
-msgstr ""
+msgstr "Activer la reconnaissance des joysticks et gamepads"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10452,40 +10452,40 @@ msgstr "Envoyer la commande \"inactive source\" lors de l'arrêt de XBMC"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Mettre l'appareil en veille quand le PC l'est aussi"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Cet appareil a besoin d'entretien"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorer"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Quand la TV s'éteinte"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Connexion perdue"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "Cet utilisateur n'a pas les droits suffisants pour ouvrir l'adaptateur CEC"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Ce port est occupé. L'adaptateur CEC n'est accessible que par un programme à la fois"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
-msgstr ""
+msgstr "Arrêter la lecture lors d'un changement de source"
 
 msgctxt "#36035"
 msgid "Always"
-msgstr ""
+msgstr "Toujours"
 
 msgctxt "#36036"
 msgid "On start/stop"
-msgstr ""
+msgstr "Lors du lancement/arrêt"
