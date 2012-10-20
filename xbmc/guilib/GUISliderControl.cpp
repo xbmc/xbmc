@@ -166,9 +166,19 @@ bool CGUISliderControl::OnAction(const CAction &action)
     Move(-1);
     return true;
 
+  case ACTION_PAGE_DOWN:
+    // go DOWN 10 increments
+    Move(-10);
+    return true;
+
   case ACTION_MOVE_RIGHT:
     //case ACTION_OSD_SHOW_VALUE_PLUS:
     Move(1);
+    return true;
+
+  case ACTION_PAGE_UP:
+    // go UP 10 increments
+    Move(10);
     return true;
 
   case ACTION_SELECT_ITEM:
