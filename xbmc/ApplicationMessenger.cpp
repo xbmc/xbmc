@@ -58,14 +58,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 
-#ifdef HAS_HTTPAPI
-#include "interfaces/http-api/XBMChttp.h"
-#endif
-
 #include "playlists/PlayList.h"
 #include "FileItem.h"
-
-#include "ThumbLoader.h"
 
 #include "pvr/PVRManager.h"
 
@@ -299,7 +293,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
     case TMSG_INHIBITIDLESHUTDOWN:
       {
-        g_application.InhibitIdleShutdown((bool)pMsg->dwParam1);
+        g_application.InhibitIdleShutdown(pMsg->dwParam1 != 0);
       }
       break;
 
@@ -539,39 +533,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
-    case TMSG_HTTPAPI:
-    {
-#ifdef HAS_HTTPAPI
-      if (!m_pXbmcHttp)
-      {
-        m_pXbmcHttp = new CXbmcHttp();
-      }
-      switch (m_pXbmcHttp->xbmcCommand(pMsg->strParam))
-      {
-        case 1:
-          Restart();
-          break;
-
-        case 2:
-          Shutdown();
-          break;
-
-        case 3:
-          Quit();
-          break;
-
-        case 4:
-          Reset();
-          break;
-
-        case 5:
-          RestartApp();
-          break;
-      }
-#endif
-    }
-    break;
-
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
       g_pythonParser.evalFile(pMsg->strParam.c_str(),ADDON::AddonPtr());
@@ -803,13 +764,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_DISPLAY_SETUP:
     {
       *((bool*)pMsg->lpVoid) = g_application.InitWindow();
-      g_application.ReloadSkin();
+      g_application.SetRenderGUI(true);
     }
     break;
     
     case TMSG_DISPLAY_DESTROY:
     {
       *((bool*)pMsg->lpVoid) = g_application.DestroyWindow();
+      g_application.SetRenderGUI(false);
     }
     break;
 
@@ -871,14 +833,6 @@ CStdString CApplicationMessenger::GetResponse()
   return tmp;
 }
 
-void CApplicationMessenger::HttpApi(string cmd, bool wait)
-{
-  SetResponse("");
-  ThreadMessage tMsg = {TMSG_HTTPAPI};
-  tMsg.strParam = cmd;
-  SendMessage(tMsg, wait);
-}
-
 void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
@@ -889,12 +843,6 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 void CApplicationMessenger::MediaPlay(string filename)
 {
   CFileItem item(filename, false);
-  if (item.IsAudio())
-    CMusicThumbLoader::FillThumb(item);
-  else
-    CVideoThumbLoader::FillThumb(item);
-  item.FillInDefaultIcon();
-
   MediaPlay(item);
 }
 

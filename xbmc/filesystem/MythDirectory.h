@@ -45,7 +45,7 @@ public:
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const;
 
-  static bool SupportsFileOperations(const CStdString& strPath);
+  static bool SupportsWriteFileOperations(const CStdString& strPath);
   static bool IsLiveTV(const CStdString& strPath);
 
 private:

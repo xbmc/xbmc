@@ -55,7 +55,6 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ALBUM_TOP100:
     case NODE_TYPE_ALBUM_COMPILATIONS:
     case NODE_TYPE_YEAR_ALBUM:
-    case NODE_TYPE_SINGLES:
       m_type = "albums";
       break;
 
@@ -66,6 +65,7 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_SONG:
     case NODE_TYPE_SONG_TOP100:
     case NODE_TYPE_YEAR_SONG:
+    case NODE_TYPE_SINGLES:
       m_type = "songs";
       break;
 
@@ -94,6 +94,7 @@ bool CMusicDbUrl::parse()
     case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG_TOP100:
     case NODE_TYPE_YEAR_SONG:
+    case NODE_TYPE_SINGLES:
       m_type = "songs";
       break;
 
@@ -106,10 +107,6 @@ bool CMusicDbUrl::parse()
       break;
 
     case NODE_TYPE_ALBUM_COMPILATIONS:
-      m_type = "albums";
-      break;
-
-    case NODE_TYPE_SINGLES:
       m_type = "albums";
       break;
 
@@ -132,6 +129,10 @@ bool CMusicDbUrl::parse()
 
   // retrieve and parse all options
   AddOptions(m_url.GetOptions());
+
+  // add options based on the node type
+  if (dirType == NODE_TYPE_SINGLES || childType == NODE_TYPE_SINGLES)
+    AddOption("singles", true);
 
   // add options based on the QueryParams
   if (queryParams.GetArtistId() != -1)

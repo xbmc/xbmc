@@ -23,7 +23,7 @@
 #include "windows/GUIMediaWindow.h"
 #include "video/VideoDatabase.h"
 #include "PlayListPlayer.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver, public IStreamDetailsObserver
 {
@@ -83,11 +83,14 @@ public:
 
 protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
+  virtual void OnInitWindow();
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual void OnPrepareFileItems(CFileItemList &items);
+
+  virtual bool CheckFilterAdvanced(CFileItemList &items);
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);

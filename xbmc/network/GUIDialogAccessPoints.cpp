@@ -92,11 +92,11 @@ void CGUIDialogAccessPoints::OnInitWindow()
       CFileItemPtr item(new CFileItem(m_aps[i].getEssId()));
 
       int q = m_aps[i].getQuality();
-      if (q <= 20) item->SetThumbnailImage("ap-signal1.png");
-      else if (q <= 40) item->SetThumbnailImage("ap-signal2.png");
-      else if (q <= 60) item->SetThumbnailImage("ap-signal3.png");
-      else if (q <= 80) item->SetThumbnailImage("ap-signal4.png");
-      else if (q <= 100) item->SetThumbnailImage("ap-signal5.png");
+      if (q <= 20) item->SetArt("thumb", "ap-signal1.png");
+      else if (q <= 40) item->SetArt("thumb", "ap-signal2.png");
+      else if (q <= 60) item->SetArt("thumb", "ap-signal3.png");
+      else if (q <= 80) item->SetArt("thumb", "ap-signal4.png");
+      else if (q <= 100) item->SetArt("thumb", "ap-signal5.png");
 
       if (m_aps[i].getEncryptionMode() != ENC_NONE)
          item->SetIconImage("ap-lock.png");

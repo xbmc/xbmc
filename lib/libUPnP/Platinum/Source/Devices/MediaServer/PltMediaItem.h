@@ -91,7 +91,7 @@ typedef struct {
     PLT_PersonRoles actors;
     PLT_PersonRoles authors;
     NPT_String      producer; //TODO: can be multiple
-    NPT_String      director; //TODO: can be multiple
+    PLT_PersonRoles directors;
     NPT_String      publisher; //TODO: can be multiple
     NPT_String      contributor; // should match m_Creator (dc:creator) //TODO: can be multiple
 } PLT_PeopleInfo;
@@ -130,6 +130,9 @@ typedef struct {
     NPT_UInt32 original_track_number;
     NPT_String toc;
     NPT_String user_annotation; //TODO: can be multiple
+    NPT_UInt32 last_position;
+    NPT_String last_time;
+    NPT_Int32  play_count;
 } PLT_MiscInfo;
 
 typedef struct {

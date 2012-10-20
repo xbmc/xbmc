@@ -29,10 +29,6 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#ifdef HAS_HTTPAPI
-#include "interfaces/http-api/XBMChttp.h"
-#include "interfaces/http-api/HttpApi.h"
-#endif
 #include "utils/URIUtils.h"
 #include "aojsonrpc.h"
 #ifndef TARGET_WINDOWS
@@ -119,39 +115,7 @@ namespace XBMCAddon
     String executehttpapi(const char* httpcommand) 
     {
       TRACE;
-#ifdef HAS_HTTPAPI
-      String ret;
-      if (! httpcommand)
-        return ret;
-
-      if (!m_pXbmcHttp)
-        m_pXbmcHttp = new CXbmcHttp();
-
-      int open, close;
-      CStdString parameter="", cmd=httpcommand, execute;
-      open = cmd.Find("(");
-      if (open>0)
-        {
-          close=cmd.length();
-          while (close>open && cmd.Mid(close,1)!=")")
-            close--;
-          if (close>open)
-            {
-              parameter = cmd.Mid(open + 1, close - open - 1);
-              parameter.Replace(",",";");
-              execute = cmd.Left(open);
-            }
-          else //open bracket but no close
-            return ret;
-        }
-      else //no parameters
-        execute = cmd;
-
-      CURL::Decode(parameter);
-      return CHttpApi::MethodCall(execute, parameter);
-#else
       THROW_UNIMP("executehttpapi");
-#endif
     }
 
     String executeJSONRPC(const char* jsonrpccommand)

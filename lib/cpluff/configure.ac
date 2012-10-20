@@ -45,6 +45,7 @@ AC_SUBST([CP_CXX_LIB_VERSION])
 # Automake initialization
 # -----------------------
 AM_INIT_AUTOMAKE([foreign])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.16.1])
 

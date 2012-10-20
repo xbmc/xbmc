@@ -95,14 +95,7 @@ namespace XBMCAddon
     void executebuiltin(const char* function, bool wait = false);
 
     /**
-     * executehttpapi(httpcommand) -- Execute an HTTP API command.
-     * 
-     * httpcommand    : string - http command to execute.
-     * 
-     * List of commands - http://wiki.xbmc.org/?title=WebServerHTTP-API#The_Commands 
-     * 
-     * example:
-     *   - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')
+     * executehttpapi(httpcommand) -- Not implemented anymore.
      */
     String executehttpapi(const char* httpcommand);
 

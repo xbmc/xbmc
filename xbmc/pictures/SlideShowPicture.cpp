@@ -657,11 +657,10 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 
   // if there is a rotation ongoing already
   // add the new angle to the old destination angle
-  float remainder =  0;
   if (m_transistionTemp.type == TRANSISTION_ROTATE && 
       m_transistionTemp.start + m_transistionTemp.length > m_iCounter)
   {
-    remainder = m_transistionTemp.start + m_transistionTemp.length - m_iCounter;
+    int remainder = m_transistionTemp.start + m_transistionTemp.length - m_iCounter;
     fRotateAngle += m_fTransistionAngle * remainder;
   }
 

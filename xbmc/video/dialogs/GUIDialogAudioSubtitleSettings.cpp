@@ -73,33 +73,47 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
 {
   m_usePopupSliders = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
+  if (g_application.m_pPlayer)
+  {
+    g_application.m_pPlayer->GetAudioCapabilities(m_audioCaps);
+    g_application.m_pPlayer->GetSubtitleCapabilities(m_subCaps);
+  }
+
   // clear out any old settings
   m_settings.clear();
   // create our settings
   m_volume = g_settings.m_fVolumeLevel;
   AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM, PercentAsDecibel, false);
-  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
+  if (SupportsAudioFeature(IPC_AUD_AMP))
+    AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
   if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
   {
     EnableSettings(AUDIO_SETTINGS_VOLUME,false);
     EnableSettings(AUDIO_SETTINGS_VOLUME_AMPLIFICATION,false);
   }
-  AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_settings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
-  AddAudioStreams(AUDIO_SETTINGS_STREAM);
+  if (SupportsAudioFeature(IPC_AUD_OFFSET))
+    AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_settings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
+  if (SupportsAudioFeature(IPC_AUD_SELECT_STREAM))
+    AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
   // only show stuff available in digital mode if we have digital output
-  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
+  if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO))
+    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
 
   int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
   m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
-  AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
+  if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
+    AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
 
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
-  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_settings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, FormatDelay);
-  AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
-  AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+  if (SupportsSubtitleFeature(IPC_SUBS_OFFSET))
+    AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_settings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, FormatDelay);
+  if (SupportsSubtitleFeature(IPC_SUBS_SELECT))
+    AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
+  if (SupportsSubtitleFeature(IPC_SUBS_EXTERNAL))
+    AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
   AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
 }
 
@@ -394,3 +408,22 @@ CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float inter
   return text;
 }
 
+bool CGUIDialogAudioSubtitleSettings::SupportsAudioFeature(int feature)
+{
+  for (Features::iterator itr = m_audioCaps.begin(); itr != m_audioCaps.end(); itr++)
+  {
+    if(*itr == feature || *itr == IPC_AUD_ALL)
+      return true;
+  }
+  return false;
+}
+
+bool CGUIDialogAudioSubtitleSettings::SupportsSubtitleFeature(int feature)
+{
+  for (Features::iterator itr = m_subCaps.begin(); itr != m_subCaps.end(); itr++)
+  {
+    if(*itr == feature || *itr == IPC_SUBS_ALL)
+      return true;
+  }
+  return false;
+}

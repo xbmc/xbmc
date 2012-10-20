@@ -141,6 +141,14 @@ DLLEXPORT void PVR_trigger_recording_update(void *hdl, void* cb)
   ((CB_PVRLib*)cb)->TriggerRecordingUpdate(((AddonCB*)hdl)->addonData);
 }
 
+DLLEXPORT void PVR_trigger_epg_update(void* hdl, void* cb, unsigned int iChannelUid)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_PVRLib*)cb)->TriggerEpgUpdate(((AddonCB*)hdl)->addonData, iChannelUid);
+}
+
 DLLEXPORT void PVR_free_demux_packet(void *hdl, void* cb, DemuxPacket* pPacket)
 {
   if (cb == NULL)

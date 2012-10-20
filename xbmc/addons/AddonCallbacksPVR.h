@@ -49,108 +49,115 @@ public:
   /*!
    * @brief Transfer a channel group from the add-on to XBMC. The group will be created if it doesn't exist.
    * @param addonData A pointer to the add-on.
-   * @param handle The handle containing a pointer to the CPVRChannelGroups instance that this group needs to be added to.
-   * @param group The entry to transfer.
+   * @param handle The handle parameter that XBMC used when requesting the channel groups list
+   * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferChannelGroup(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP *group);
+  static void PVRTransferChannelGroup(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP* entry);
 
   /*!
-   * @brief Transfer a channel group member from the add-on to XBMC. The channel will be added to the group if the group can be found.
+   * @brief Transfer a channel group member entry from the add-on to XBMC. The channel will be added to the group if the group can be found.
    * @param addonData A pointer to the add-on.
-   * @param handle The handle that initiated this action.
-   * @param member The entry to transfer.
+   * @param handle The handle parameter that XBMC used when requesting the channel group members list
+   * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferChannelGroupMember(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+  static void PVRTransferChannelGroupMember(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER* entry);
 
   /*!
-   * @brief Transfer an EPG entry from the add-on to XBMC.
+   * @brief Transfer an EPG tag from the add-on to XBMC
    * @param addonData A pointer to the add-on.
-   * @param handle The handle that initiated this action.
-   * @param epgentry The entry to transfer.
+   * @param handle The handle parameter that XBMC used when requesting the EPG data
+   * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferEpgEntry(void *addonData, const ADDON_HANDLE handle, const EPG_TAG *epgentry);
+  static void PVRTransferEpgEntry(void* addonData, const ADDON_HANDLE handle, const EPG_TAG* entry);
 
   /*!
-   * @brief Transfer a channel entry from the add-on to XBMC.
+   * @brief Transfer a channel entry from the add-on to XBMC
    * @param addonData A pointer to the add-on.
-   * @param handle The handle that initiated this action.
-   * @param channel The entry to transfer.
+   * @param handle The handle parameter that XBMC used when requesting the channel list
+   * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferChannelEntry(void *addonData, const ADDON_HANDLE handle, const PVR_CHANNEL *channel);
+  static void PVRTransferChannelEntry(void* addonData, const ADDON_HANDLE handle, const PVR_CHANNEL* entry);
 
   /*!
-   * @brief Transfer a timer entry from the add-on to XBMC.
+   * @brief Transfer a timer entry from the add-on to XBMC
    * @param addonData A pointer to the add-on.
-   * @param handle The handle that initiated this action.
-   * @param timer The entry to transfer.
+   * @param handle The handle parameter that XBMC used when requesting the timers list
+   * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferTimerEntry(void *addonData, const ADDON_HANDLE handle, const PVR_TIMER *timer);
+  static void PVRTransferTimerEntry(void* addonData, const ADDON_HANDLE handle, const PVR_TIMER* entry);
 
   /*!
-   * @brief Transfer a recording entry from the add-on to XBMC.
+   * @brief Transfer a recording entry from the add-on to XBMC
    * @param addonData A pointer to the add-on.
-   * @param handle The handle that initiated this action.
-   * @param recording The entry to transfer.
+   * @param handle The handle parameter that XBMC used when requesting the recordings list
+   * @param entry The entry to transfer to XBMC
    */
-  static void PVRTransferRecordingEntry(void *addonData, const ADDON_HANDLE handle, const PVR_RECORDING *recording);
+  static void PVRTransferRecordingEntry(void* addonData, const ADDON_HANDLE handle, const PVR_RECORDING* entry);
 
   /*!
-   * @brief Add a menu hook to this add-on table.
+   * @brief Add or replace a menu hook for the context menu for this add-on
    * @param addonData A pointer to the add-on.
    * @param hook The hook to add.
    */
-  static void PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook);
+  static void PVRAddMenuHook(void* addonData, PVR_MENUHOOK* hook);
 
   /*!
-   * @brief Notify XBMC that a recording has started or stoppped.
+   * @brief Display a notification in XBMC that a recording started or stopped on the server
    * @param addonData A pointer to the add-on.
-   * @param strName The name of the recording.
-   * @param strFileName The filename of the recording.
-   * @param bOnOff True if the recording started, false if it stopped.
+   * @param strName The name of the recording to display
+   * @param strFileName The filename of the recording
+   * @param bOnOff True when recording started, false when it stopped
    */
-  static void PVRRecording(void *addonData, const char *strName, const char *strFileName, bool bOnOff);
+  static void PVRRecording(void* addonData, const char* strName, const char* strFileName, bool bOnOff);
 
   /*!
-   * @brief Ask the PVRManager to refresh it's channels list.
-   * @param addonData A pointer to the add-on.
-   */
-  static void PVRTriggerChannelUpdate(void *addonData);
-
-  /*!
-   * @brief Ask the PVRManager to refresh it's timers list.
+   * @brief Request XBMC to update it's list of channels
    * @param addonData A pointer to the add-on.
    */
-  static void PVRTriggerTimerUpdate(void *addonData);
+  static void PVRTriggerChannelUpdate(void* addonData);
 
   /*!
-   * @brief Ask the PVRManager to refresh it's recordings list.
+   * @brief Request XBMC to update it's list of timers
    * @param addonData A pointer to the add-on.
    */
-  static void PVRTriggerRecordingUpdate(void *addonData);
+  static void PVRTriggerTimerUpdate(void* addonData);
 
   /*!
-   * @brief Ask the PVRManager to refresh it's channel groups list.
+   * @brief Request XBMC to update it's list of recordings
    * @param addonData A pointer to the add-on.
    */
-  static void PVRTriggerChannelGroupsUpdate(void *addonData);
+  static void PVRTriggerRecordingUpdate(void* addonData);
 
   /*!
-   * @brief Free an allocated demux packet.
+   * @brief Request XBMC to update it's list of channel groups
+   * @param addonData A pointer to the add-on.
+   */
+  static void PVRTriggerChannelGroupsUpdate(void* addonData);
+
+  /*!
+   * @brief Schedule an EPG update for the given channel channel
+   * @param addonData A pointer to the add-on
+   * @param iChannelUid The unique id of the channel for this add-on
+   */
+  static void PVRTriggerEpgUpdate(void* addonData, unsigned int iChannelUid);
+
+  /*!
+   * @brief Free a packet that was allocated with AllocateDemuxPacket
    * @param addonData A pointer to the add-on.
    * @param pPacket The packet to free.
    */
-  static void PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket);
+  static void PVRFreeDemuxPacket(void* addonData, DemuxPacket* pPacket);
 
   /*!
-   * @brief Allocate a new demux packet.
+   * @brief Allocate a demux packet. Free with FreeDemuxPacket
    * @param addonData A pointer to the add-on.
-   * @param iDataSize The packet size.
+   * @param iDataSize The size of the data that will go into the packet
    * @return The allocated packet.
    */
-  static DemuxPacket* PVRAllocateDemuxPacket(void *addonData, int iDataSize = 0);
+  static DemuxPacket* PVRAllocateDemuxPacket(void* addonData, int iDataSize = 0);
 
 private:
-  static PVR::CPVRClient *GetPVRClient(void *addonData);
+  static PVR::CPVRClient* GetPVRClient(void* addonData);
 
   CB_PVRLib    *m_callbacks; /*!< callback addresses */
   CAddon       *m_addon;     /*!< the addon */

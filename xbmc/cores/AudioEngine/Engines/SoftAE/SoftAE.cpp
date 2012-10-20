@@ -514,13 +514,16 @@ bool CSoftAE::Initialize()
   return true;
 }
 
-void CSoftAE::OnSettingsChange(std::string setting)
+void CSoftAE::OnSettingsChange(const std::string& setting)
 {
   if (setting == "audiooutput.passthroughdevice" ||
       setting == "audiooutput.audiodevice"       ||
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.dtspassthrough"    ||
+      setting == "audiooutput.passthroughaac"    ||
+      setting == "audiooutput.truehdpassthrough" ||
+      setting == "audiooutput.dtshdpassthrough"  ||
       setting == "audiooutput.channellayout"     ||
       setting == "audiooutput.useexclusivemode"  ||
       setting == "audiooutput.multichannellpcm"  ||

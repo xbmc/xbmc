@@ -122,7 +122,7 @@ public:
   int GetConvertSize();
   uint8_t *GetExtraData(void);
   int GetExtraSize();
-  void parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames);
+  void parseh264_sps(const uint8_t *sps, const uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames);
 protected:
   // bytestream (Annex B) to bistream conversion support.
   void nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size);

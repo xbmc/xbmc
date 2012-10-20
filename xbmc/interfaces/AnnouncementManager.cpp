@@ -28,6 +28,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
+#include "pvr/channels/PVRChannel.h"
+#include "PlayListPlayer.h"
 
 #define LOOKUP_PROPERTY "database-lookup"
 
@@ -94,8 +96,20 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
   CVariant object = data.isNull() || data.isObject() ? data : CVariant::VariantTypeObject;
   CStdString type;
   int id = 0;
+  
+  if(item->HasPVRChannelInfoTag())
+  {
+    const PVR::CPVRChannel *channel = item->GetPVRChannelInfoTag();
+    id = channel->ChannelID();
+    type = "channel";
 
-  if (item->HasVideoInfoTag())
+    object["item"]["title"] = channel->ChannelName();
+    object["item"]["channeltype"] = channel->IsRadio() ? "radio" : "tv";
+
+    if (data.isMember("player") && data["player"].isMember("playerid"))
+      object["player"]["playerid"] = channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
+  }
+  else if (item->HasVideoInfoTag())
   {
     id = item->GetVideoInfoTag()->m_iDbId;
 
@@ -113,7 +127,10 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag, const char *sender, c
       }
     }
 
-    CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
+    if (!item->GetVideoInfoTag()->m_type.empty())
+      type = item->GetVideoInfoTag()->m_type;
+    else
+      CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
 
     if (id <= 0)
     {

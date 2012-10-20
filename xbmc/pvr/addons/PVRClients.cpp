@@ -535,6 +535,30 @@ bool CPVRClients::CanRecordInstantly(void)
       currentChannel->CanRecord();
 }
 
+bool CPVRClients::CanPauseStream(void) const
+{
+  PVR_CLIENT client;
+
+  if (GetPlayingClient(client))
+  {
+    return client->CanPauseStream();
+  }
+
+  return false;
+}
+
+bool CPVRClients::CanSeekStream(void) const
+{
+  PVR_CLIENT client;
+
+  if (GetPlayingClient(client))
+  {
+    return client->CanSeekStream();
+  }
+
+  return false;
+}
+
 PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, time_t start, time_t end)
 {
   PVR_ERROR error(PVR_ERROR_UNKNOWN);
@@ -837,6 +861,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       }
       else
       {
+        ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
         CSingleLock lock(m_critSection);
         
         PVR_CLIENT addon;
@@ -847,10 +872,10 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
           bDisabled = true;
         }
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
-        else if (addon->Enabled() && !addon->Create(iClientId))
+        else if (addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
-          CLog::Log(LOGWARNING, "%s - failed to create add-on %s", __FUNCTION__, clientAddon->Name().c_str());
-          if (!addon.get() || !addon->DllLoaded())
+          CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, clientAddon->Name().c_str(), status);
+          if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)
           {
             // failed to load the dll of this add-on, disable it
             CLog::Log(LOGWARNING, "%s - failed to load the dll for add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
@@ -1258,6 +1283,13 @@ int64_t CPVRClients::GetStreamPosition(void)
   if (GetPlayingClient(client))
     return client->GetStreamPosition();
   return -EINVAL;
+}
+
+void CPVRClients::PauseStream(bool bPaused)
+{
+  PVR_CLIENT client;
+  if (GetPlayingClient(client))
+    client->PauseStream(bPaused);
 }
 
 CStdString CPVRClients::GetCurrentInputFormat(void) const

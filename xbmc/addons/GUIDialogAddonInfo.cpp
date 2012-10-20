@@ -121,6 +121,16 @@ default:
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogAddonInfo::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_SHOW_INFO)
+  {
+    Close();
+    return true;
+  }
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogAddonInfo::OnInitWindow()
 {
   UpdateControls();

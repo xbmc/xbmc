@@ -511,7 +511,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
     pItem->SetLabel(g_localizeStrings.Get(20070));
-    pItem->SetThumbnailImage("DefaultFolder.png");
+    pItem->SetArt("thumb", "DefaultFolder.png");
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
@@ -524,7 +524,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     URIUtils::GetExtension(pItem->GetPath(), strExtension);
     if (pItem->IsHD() && strExtension == ".tbn")
     {
-      pItem->SetThumbnailImage(pItem->GetPath());
+      pItem->SetArt("thumb", pItem->GetPath());
     }
   }
   m_vecItems[iList]->FillInDefaultIcons();
@@ -906,6 +906,8 @@ bool CGUIWindowFileManager::CanCopy(int iList)
   // can't copy if the destination is not writeable, or if the source is a share!
   // TODO: Perhaps if the source is removeable media (DVD/CD etc.) we could
   // put ripping/backup in here.
+  if (!CUtil::SupportsReadFileOperations(m_Directory[iList]->GetPath())) return false;
+  if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[1 - iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[1 -iList]->IsReadOnly()) return false;

@@ -32,7 +32,7 @@
 #include "utils/StringUtils.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "ThumbLoader.h"
+#include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 
 CTextureCacheJob::CTextureCacheJob(const CStdString &url, const CStdString &oldHash)

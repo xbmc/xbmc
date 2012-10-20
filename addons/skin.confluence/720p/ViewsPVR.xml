@@ -2321,7 +2321,7 @@
 						<control type="textbox">
 							<description>Plot Value for TVShow</description>
 							<posx>50</posx>
-							<posy>40</posy>
+							<posy>35</posy>
 							<width>1000</width>
 							<height>60</height>
 							<font>font12</font>

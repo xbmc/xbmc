@@ -22,7 +22,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "GUIDialogFileBrowser.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "guilib/GUIWindowManager.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
@@ -154,7 +153,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     }
     share.FromNameAndPaths(type, strName, dialog->GetPaths());
     if (dialog->m_paths->Size() > 0) {
-      share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetThumbnailImage();
+      share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetArt("thumb");
     }
     g_settings.AddShare(type, share);
   }

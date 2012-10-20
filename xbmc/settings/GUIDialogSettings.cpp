@@ -198,7 +198,7 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
     {
       float value = *(float *)setting.data;
       pControl->SetFloatValue(value);
-      if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(value, setting.interval));
+      if (setting.formatFunction.standard) pControl->SetTextValue(setting.formatFunction.standard(value, setting.interval));
     }
   }
   else if (setting.type == SettingInfo::BUTTON_DIALOG)
@@ -209,8 +209,8 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
   }
   else if (setting.type == SettingInfo::EDIT)
   {
-    CGUIEditControl *pControl = (CGUIEditControl *)GetControl(controlID);
-    if (pControl && setting.data) pControl->SetLabel2(*(CStdString *)setting.data);
+    SET_CONTROL_LABEL(controlID, setting.name);
+    if (setting.data) SET_CONTROL_LABEL2(controlID, string(*(CStdString *)setting.data));
   }
   else if (setting.type == SettingInfo::EDIT_NUM)
   {
@@ -228,6 +228,17 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
     if (strNewValue.empty())
       strNewValue = "-";
     SET_CONTROL_LABEL2(controlID, strNewValue);
+  }
+  else if (setting.type == SettingInfo::RANGE)
+  {
+    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
+    float** value = (float **)setting.data;
+    if (pControl && setting.data)
+    {
+      pControl->SetFloatValue(*(value[0]), CGUISliderControl::RangeSelectorLower);
+      pControl->SetFloatValue(*(value[1]), CGUISliderControl::RangeSelectorUpper);
+      if (setting.formatFunction.range) pControl->SetTextValue(setting.formatFunction.range(*(value[0]), *(value[1]), setting.interval));
+    }
   }
 
   if (setting.enabled)
@@ -300,13 +311,13 @@ void CGUIDialogSettings::OnClick(int iID)
   {
     CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(iID);
     if (setting.data) *(float *)setting.data = pControl->GetFloatValue();
-    if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(pControl->GetFloatValue(), setting.interval));
+    if (setting.formatFunction.standard) pControl->SetTextValue(setting.formatFunction.standard(pControl->GetFloatValue(), setting.interval));
   }
   else if (setting.type == SettingInfo::BUTTON && m_usePopupSliders && setting.data)
   { // we're using popup sliders
     CGUIDialogSlider::ShowAndGetInput(setting.name, *(float *)setting.data, setting.min, setting.interval, setting.max, this, &setting);
-    if (setting.formatFunction)
-      SET_CONTROL_LABEL2(iID, setting.formatFunction(*(float *)setting.data, setting.interval));
+    if (setting.formatFunction.standard)
+      SET_CONTROL_LABEL2(iID, setting.formatFunction.standard(*(float *)setting.data, setting.interval));
   }
   else if (setting.type == SettingInfo::STRING)
   {
@@ -315,6 +326,19 @@ void CGUIDialogSettings::OnClick(int iID)
     if (strNewValue.empty())
       strNewValue = "-";
     SET_CONTROL_LABEL2(iID, strNewValue);
+  }
+  else if (setting.type == SettingInfo::RANGE)
+  {
+    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(iID);
+    if (setting.data)
+    {
+      *((float **)setting.data)[0] = pControl->GetFloatValue(CGUISliderControl::RangeSelectorLower);
+      *((float **)setting.data)[1] = pControl->GetFloatValue(CGUISliderControl::RangeSelectorUpper);
+    }
+    if (setting.formatFunction.range)
+      pControl->SetTextValue(setting.formatFunction.range(pControl->GetFloatValue(CGUISliderControl::RangeSelectorLower), 
+                                                          pControl->GetFloatValue(CGUISliderControl::RangeSelectorUpper),
+                                                          setting.interval));
   }
   OnSettingChanged(setting);
 }
@@ -346,8 +370,8 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
     ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
-    if (setting.formatFunction)
-      ((CGUIButtonControl *)pControl)->SetLabel2(setting.formatFunction(*(float *)setting.data, setting.interval));
+    if (setting.formatFunction.standard)
+      ((CGUIButtonControl *)pControl)->SetLabel2(setting.formatFunction.standard(*(float *)setting.data, setting.interval));
     pControl->SetWidth(width);
   }
   else if (setting.type == SettingInfo::EDIT && m_pOriginalEdit)
@@ -404,14 +428,14 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     if (!pControl) return ;
     pControl->SetWidth(width);
     ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
-    if (setting.formatFunction)
-      ((CGUISettingsSliderControl *)pControl)->SetTextValue(setting.formatFunction(*(float *)setting.data, setting.interval));
+    if (setting.formatFunction.standard)
+      ((CGUISettingsSliderControl *)pControl)->SetTextValue(setting.formatFunction.standard(*(float *)setting.data, setting.interval));
     ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
     ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
     ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
     if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*(float *)setting.data);
   }
-  if (setting.type == SettingInfo::STRING && m_pOriginalSettingsButton)
+  else if (setting.type == SettingInfo::STRING && m_pOriginalSettingsButton)
   {
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
@@ -421,6 +445,25 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
       strValue = "-";
     ((CGUIButtonControl *)pControl)->SetLabel2(strValue);
     pControl->SetWidth(width);
+  }
+  else if (setting.type == SettingInfo::RANGE)
+  {
+    if (!m_pOriginalSlider) return;
+    pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
+    if (!pControl) return ;
+    pControl->SetWidth(width);
+    ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
+    if (setting.formatFunction.range)
+      ((CGUISettingsSliderControl *)pControl)->SetTextValue(setting.formatFunction.range(*((float **)setting.data)[0], *((float **)setting.data)[1], setting.interval));
+    ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
+    ((CGUISettingsSliderControl *)pControl)->SetRangeSelection(true);
+    ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
+    ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
+    if (setting.data)
+    {
+      ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*((float **)setting.data)[0], CGUISliderControl::RangeSelectorLower);
+      ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*((float **)setting.data)[1], CGUISliderControl::RangeSelectorUpper);
+    }
   }
   if (!pControl) return;
 
@@ -469,7 +512,7 @@ void CGUIDialogSettings::AddButton(unsigned int id, int label, float *current, f
   setting.min = min;
   setting.max = max;
   setting.interval = interval;
-  setting.formatFunction = function;
+  setting.formatFunction.standard = function;
   m_settings.push_back(setting);
 }
 
@@ -583,7 +626,26 @@ void CGUIDialogSettings::AddSlider(unsigned int id, int label, float *current, f
   setting.interval = interval;
   setting.max = max;
   setting.data = current;
-  setting.formatFunction = function;
+  setting.formatFunction.standard = function;
+  m_settings.push_back(setting);
+}
+
+void CGUIDialogSettings::AddRangeSlider(unsigned int id, int label, float *currentLower, float* currentUpper, float min, float interval, float max, RANGEFORMATFUNCTION function)
+{
+  SettingInfo setting;
+  setting.id = id;
+  setting.name = g_localizeStrings.Get(label);
+  setting.type = SettingInfo::RANGE;
+  setting.min = min;
+  setting.interval = interval;
+  setting.max = max;
+
+  float** data = new float*[2];
+  data[0] = currentLower;
+  data[1] = currentUpper;
+  setting.data = data;
+
+  setting.formatFunction.range = function;
   m_settings.push_back(setting);
 }
 
@@ -612,8 +674,19 @@ void CGUIDialogSettings::OnSliderChange(void *data, CGUISliderControl *slider)
     return;
 
   SettingInfo *setting = (SettingInfo *)data;
-  *(float *)setting->data = slider->GetFloatValue();
-  OnSettingChanged(*setting);
-  if (setting->formatFunction)
-    slider->SetTextValue(setting->formatFunction(slider->GetFloatValue(), setting->interval));
+  if (setting->type == SettingInfo::SLIDER || (setting->type == SettingInfo::BUTTON && m_usePopupSliders && !slider->GetRangeSelection()))
+  {
+    *(float *)setting->data = slider->GetFloatValue();
+    OnSettingChanged(*setting);
+    if (setting->formatFunction.standard)
+      slider->SetTextValue(setting->formatFunction.standard(slider->GetFloatValue(), setting->interval));
+  }
+  else if (setting->type == SettingInfo::RANGE || (setting->type == SettingInfo::BUTTON && m_usePopupSliders && slider->GetRangeSelection()))
+  {
+    *((float **)setting->data)[0] = slider->GetFloatValue(CGUISliderControl::RangeSelectorLower);
+    *((float **)setting->data)[1] = slider->GetFloatValue(CGUISliderControl::RangeSelectorUpper);
+    OnSettingChanged(*setting);
+    if (setting->formatFunction.range)
+      slider->SetTextValue(setting->formatFunction.range(slider->GetFloatValue(CGUISliderControl::RangeSelectorLower), slider->GetFloatValue(CGUISliderControl::RangeSelectorUpper), setting->interval));
+  }
 }

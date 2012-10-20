@@ -7,6 +7,7 @@ SRCS=Bookmark.cpp \
      VideoInfoScanner.cpp \
      VideoInfoTag.cpp \
      VideoReferenceClock.cpp \
+     VideoThumbLoader.cpp \
      
 LIB=video.a
 

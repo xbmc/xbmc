@@ -19,24 +19,29 @@
  *
  */
 
+#include <set>
+
 #include "JSONRPC.h"
 #include "JSONUtils.h"
 #include "FileItem.h"
-#include "ThumbLoader.h"
 #include "utils/StdString.h"
+
+class CThumbLoader;
 
 namespace JSONRPC
 {
   class CFileItemHandler : public CJSONUtils
   {
   protected:
-    static void FillDetails(ISerializable* info, CFileItemPtr item, const CVariant& fields, CVariant &result, CThumbLoader *thumbLoader = NULL);
+    static void FillDetails(const ISerializable *info, const CFileItemPtr &item, std::set<std::string> &fields, CVariant &result, CThumbLoader *thumbLoader = NULL);
     static void HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool sortLimit = true);
     static void HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result, int size, bool sortLimit = true);
     static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append = true, CThumbLoader *thumbLoader = NULL);
+    static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const std::set<std::string> &validFields, CVariant &result, bool append = true, CThumbLoader *thumbLoader = NULL);
 
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
   private:
     static void Sort(CFileItemList &items, const CVariant& parameterObject);
+    static bool GetField(const std::string &field, const CVariant &info, const CFileItemPtr &item, CVariant &result, bool &fetchedArt, CThumbLoader *thumbLoader = NULL);
   };
 }

@@ -141,7 +141,7 @@ bool CMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
       if (!icon.IsEmpty())
       {
         url.SetFileName("files/channels/" + URIUtils::GetFileName(icon)); // e.g. files/channels/tv3.jpg
-        item->SetThumbnailImage(url.Get());
+        item->SetArt("thumb", url.Get());
       }
 
       items.Add(item);
@@ -638,7 +638,7 @@ bool CMythDirectory::IsTvShow(const cmyth_proginfo_t program)
   return !IsMovie(program);
 }
 
-bool CMythDirectory::SupportsFileOperations(const CStdString& strPath)
+bool CMythDirectory::SupportsWriteFileOperations(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString filename = url.GetFileName();

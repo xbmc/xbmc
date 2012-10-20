@@ -30,7 +30,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dg;
       if (!numBytes)
-        numBytes = file->GetLength();
+        numBytes = (unsigned long)file->GetLength();
       return (unsigned long)file->Read(buffer, numBytes);
     }
 

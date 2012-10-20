@@ -1180,7 +1180,10 @@ void COMXAudio::WaitCompletion()
   while(nTimeOut)
   {
     if(m_omx_render->IsEOS())
+    {
+      CLog::Log(LOGDEBUG, "%s::%s - got eos\n", CLASSNAME, __func__);
       break;
+    }
 
     if(nTimeOut == 0)
     {

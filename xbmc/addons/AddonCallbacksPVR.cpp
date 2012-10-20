@@ -55,6 +55,7 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks->TriggerChannelGroupsUpdate = PVRTriggerChannelGroupsUpdate;
   m_callbacks->TriggerTimerUpdate         = PVRTriggerTimerUpdate;
   m_callbacks->TriggerRecordingUpdate     = PVRTriggerRecordingUpdate;
+  m_callbacks->TriggerEpgUpdate           = PVRTriggerEpgUpdate;
   m_callbacks->FreeDemuxPacket            = PVRFreeDemuxPacket;
   m_callbacks->AllocateDemuxPacket        = PVRAllocateDemuxPacket;
   m_callbacks->TransferChannelGroup       = PVRTransferChannelGroup;
@@ -293,6 +294,30 @@ void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
 {
   /* update all channel groups in the next iteration of the pvrmanager's main loop */
   g_PVRManager.TriggerChannelGroupsUpdate();
+}
+
+void CAddonCallbacksPVR::PVRTriggerEpgUpdate(void *addonData, unsigned int iChannelUid)
+{
+  // get the client
+  CPVRClient *client = GetPVRClient(addonData);
+  if (!client)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    return;
+  }
+
+  // get the channel
+  CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(iChannelUid, client->GetID());
+  CEpg* epg(NULL);
+  // get the EPG for the channel
+  if (!channel || (epg = channel->GetEPG()) == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR - %s - invalid channel or channel doesn't have an EPG", __FUNCTION__);
+    return;
+  }
+
+  // force an update
+  epg->ForceUpdate();
 }
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)

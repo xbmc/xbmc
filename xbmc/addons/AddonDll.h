@@ -48,7 +48,7 @@ namespace ADDON
     virtual void SaveSettings();
     virtual CStdString GetSetting(const CStdString& key);
 
-    bool Create();
+    ADDON_STATUS Create();
     virtual void Stop();
     void Destroy();
 
@@ -200,13 +200,14 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
-bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
+ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
 {
+  ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
 
   if (!LoadDll())
-    return false;
+    return ADDON_STATUS_PERMANENT_FAILURE;
 
   /* Allocate the helper function class to allow crosstalk over
      helper libraries */
@@ -216,13 +217,13 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
      needed to become the AddOn running */
   try
   {
-    ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
+    status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status == ADDON_STATUS_OK)
       m_initialized = true;
     else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
       m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
-      if (TransferSettings() == ADDON_STATUS_OK)
+      if ((status = TransferSettings()) == ADDON_STATUS_OK)
         m_initialized = true;
       else
         new CAddonStatusHandler(ID(), status, "", false);
@@ -238,10 +239,10 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
     HandleException(e, "m_pDll->Create");
   }
 
-  if  (!m_initialized)
+  if (!m_initialized)
     SAFE_DELETE(m_pHelpers);
 
-  return m_initialized;
+  return status;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>

@@ -311,6 +311,23 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
     CJobQueue::OnJobProgress(jobID, progress, total, job);
 }
 
+bool CTextureCache::Export(const CStdString &image, const CStdString &destination, bool overwrite)
+{
+  CStdString cachedHash;
+  CStdString cachedImage(GetCachedImage(image, cachedHash));
+  if (!cachedImage.IsEmpty())
+  {
+    CStdString dest = destination + URIUtils::GetExtension(cachedImage);
+    if (overwrite || !CFile::Exists(dest))
+    {
+      if (CFile::Cache(cachedImage, dest))
+        return true;
+      CLog::Log(LOGERROR, "%s failed exporting '%s' to '%s'", __FUNCTION__, cachedImage.c_str(), dest.c_str());
+    }
+  }
+  return false;
+}
+
 bool CTextureCache::Export(const CStdString &image, const CStdString &destination)
 {
   CStdString cachedHash;

@@ -81,6 +81,7 @@ protected:
   int                       m_view_mode;
 
   DllBcmHost                m_DllBcmHost;
+  bool                      m_send_eos;
 
   CDVDOverlayContainer  *m_pOverlayContainer;
   CDVDMessageQueue      &m_messageParent;
@@ -107,6 +108,7 @@ public:
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   int  GetLevel() const                             { return m_messageQueue.GetLevel(); }
   bool IsStalled()                                  { return m_stalled;  }
+  bool IsEOS()                                      { return m_send_eos; };
   bool CloseStream(bool bWaitForBuffers);
   void Output(int iGroupId, double pts, bool bDropPacket);
   void Flush();

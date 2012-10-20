@@ -271,7 +271,7 @@
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
-				<enable>false</enable>
+				<enable>Player.SeekEnabled</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
 			</control>
 			<control type="button" id="702">
@@ -308,6 +308,7 @@
 				<onclick>XBMC.PlayerControl(Play)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<enable>false</enable>
+				<enable>Player.PauseEnabled</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
 			</control>
 			<control type="button" id="704">
@@ -324,7 +325,7 @@
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Forward)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
-				<enable>false</enable>
+				<enable>Player.SeekEnabled</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
 			</control>
 			<control type="button" id="700">

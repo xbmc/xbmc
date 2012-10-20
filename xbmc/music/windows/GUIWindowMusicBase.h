@@ -31,6 +31,7 @@
 #include "music/infoscanner/MusicInfoScraper.h"
 #include "PlayListPlayer.h"
 #include "music/MusicInfoLoader.h"
+#include "music/MusicThumbLoader.h"
 
 /*!
  \ingroup windows
@@ -70,6 +71,8 @@ protected:
   void OnRipCD();
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual CStdString GetStartFolder(const CStdString &dir);
+
+  virtual bool CheckFilterAdvanced(CFileItemList &items);
 
   // new methods
   virtual void PlayItem(int iItem);
