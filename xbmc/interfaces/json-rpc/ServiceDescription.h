@@ -784,9 +784,8 @@ namespace JSONRPC
         "\"channeltype\": { \"$ref\": \"PVR.Channel.Type\" },"
         "\"hidden\": { \"type\": \"boolean\" },"
         "\"locked\": { \"type\": \"boolean\" },"
-        "\"starttime\": { \"type\": \"string\" },"
-        "\"endtime\": { \"type\": \"string\" },"
-        "\"thumbnail\": { \"type\": \"string\" }"
+        "\"thumbnail\": { \"type\": \"string\" },"
+        "\"lastplayed\": { \"type\": \"string\" }"
       "}"
     "}",
     "\"PVR.Details.ChannelGroup\": {"
