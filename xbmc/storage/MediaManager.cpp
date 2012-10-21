@@ -641,7 +641,7 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
   CLibcdio *c_cdio = CLibcdio::GetInstance();
   char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
-  int nRetries=2;
+  int nRetries=3;
   while (nRetries-- > 0)
   {
     CdIo_t* cdio = c_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
