@@ -960,10 +960,15 @@ void CGUIWindowFullScreen::FrameMove()
     g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
     g_application.m_pPlayer->GetVideoAspectRatio(fAR);
     {
+      // Splitres scaling factor
+      RESOLUTION res = g_graphicsContext.GetVideoResolution();
+      float xscale = (float)g_settings.m_ResInfo[res].iScreenWidth  / (float)g_settings.m_ResInfo[res].iWidth;
+      float yscale = (float)g_settings.m_ResInfo[res].iScreenHeight / (float)g_settings.m_ResInfo[res].iHeight;
+
       CStdString strSizing;
       strSizing.Format(g_localizeStrings.Get(245),
                        (int)SrcRect.Width(), (int)SrcRect.Height(),
-                       (int)DestRect.Width(), (int)DestRect.Height(),
+                       (int)(DestRect.Width() * xscale), (int)(DestRect.Height() * yscale),
                        g_settings.m_fZoomAmount, fAR*g_settings.m_fPixelRatio, 
                        g_settings.m_fPixelRatio, g_settings.m_fVerticalShift);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
