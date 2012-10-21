@@ -230,8 +230,18 @@ namespace XBMCAddon
       return value;
     }
 
-    DialogProgress::~DialogProgress() {}
+    DialogProgress::~DialogProgress() { TRACE; deallocating(); }
 
+    void DialogProgress::deallocating()
+    {
+      TRACE;
+
+      if (dlg)
+      {
+        DelayedCallGuard dg;
+        dlg->Close();
+      }
+    }
 
     void DialogProgress::create(const String& heading, const String& line1, 
                                 const String& line2,
