@@ -28,9 +28,6 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 $(LIBDYLIB): $(SOURCE)
 	make -j $(MAKE_JOBS) -C $(SOURCE)
 
-.del:
-	echo nothing
-
 .installed:
 	make -C $(SOURCE) install
 	cp $(SOURCE)/include/cdio/cdtext.h $(PREFIX)/include/cdio/
