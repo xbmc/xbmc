@@ -428,6 +428,8 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   // Send the init message
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, currentWindow, iWindowID);
   msg.SetStringParams(params);
+  // TODO: Fix this proper locking.
+  CSingleExit ex(g_graphicsContext);
   pNewWindow->OnMessage(msg);
 //  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
 }
