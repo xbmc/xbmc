@@ -142,6 +142,21 @@ namespace XBMCAddon
       return g_playlistPlayer.GetCurrentSong();
     }
 
+    PlayListItem* PlayList::operator [](long i) throw (PlayListException)
+    {
+      long pos = -1;
+      int iPlayListSize = size();
+
+      pos = i;
+      if (pos < 0) pos += iPlayListSize;
+
+      if (pos < 0 || pos >= iPlayListSize)
+        throw PlayListException("array out of bound");
+
+      CFileItemPtr ptr((*pPlayList)[pos]);
+
+      return new PlayListItem(ptr);
+    }
   }
 }
 

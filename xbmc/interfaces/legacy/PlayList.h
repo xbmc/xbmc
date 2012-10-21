@@ -104,6 +104,12 @@ namespace XBMCAddon
        * getposition() -- returns the position of the current song in this playlist.
        */
       int getposition();
+
+      /**
+       * retrieve the item at the given position. A negative index means from the ending 
+       * rather than from the start.
+       */
+      PlayListItem* operator[](long i) throw (PlayListException);
     };
   }
 }
