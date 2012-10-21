@@ -20,11 +20,16 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	cd $(SOURCE); patch -p1 < ../osx-10.6.patch
+	cd $(SOURCE); patch -p1 < ../osx-10.7.patch
 	cd $(SOURCE); autoconf
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
 	make -j $(MAKE_JOBS) -C $(SOURCE)
+
+.del:
+	echo nothing
 
 .installed:
 	make -C $(SOURCE) install

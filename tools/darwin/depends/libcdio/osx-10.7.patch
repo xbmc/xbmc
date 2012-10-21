@@ -1,0 +1,12 @@
+diff --git a/lib/driver/gnu_linux.c b/lib/driver/gnu_linux.c
+index 6e4b050..65e4023 100644
+--- a/lib/driver/gnu_linux.c
++++ b/lib/driver/gnu_linux.c
+@@ -36,7 +36,6 @@
+ #include <cdio/mmc_cmds.h>
+ #include <cdio/audio.h>
+ #include <cdio/cdtext.h>
+-#include "cdtext_private.h"
+ #include "cdio_assert.h"
+ #include "cdio_private.h"
+ 
