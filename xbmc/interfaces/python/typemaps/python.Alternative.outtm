@@ -37,7 +37,7 @@
 %>
       if (pos == XBMCAddon::${altSwitch[entryIndex]})
       {
-        const ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(curType))}& entry${seq} = ${api}${accessor}${altAccess[entryIndex]}();
+        ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(curType))}& entry${seq} = ${api}${accessor}${altAccess[entryIndex]}();
         {
           ${helper.getOutConversion(curType,result,method,[ 'api' : 'entry' + seq, 'sequence' : sequence ])}
         }
