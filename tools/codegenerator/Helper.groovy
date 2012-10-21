@@ -678,10 +678,14 @@ public class Helper
    {
      String rootType = SwigTypeParser.getRootType(type)
      String namespace = findNamespace(searchFrom,'::',false)
-     return hasFeatureSetting(type,searchFrom,'feature_knownapitypes',{ it.split(',').find(
+     String lastMatch = null
+     hasFeatureSetting(type,searchFrom,'feature_knownapitypes',{ it.split(',').find(
        { 
          if (it.trim() == rootType)
+         {
+           lastMatch = rootType
            return true
+         }
          // we assume the 'type' is defined within namespace and 
          //  so we can walk up the namespace appending the type until 
          //  we find a match.
@@ -689,13 +693,17 @@ public class Helper
          {
 //           System.out.println('checking ' + (namespace + '::' + rootType))
            if ((namespace + '::' + rootType) == it.trim())
+           {
+             lastMatch = it.trim()
              return true
+           }
            // truncate the last namespace
            int chop = namespace.lastIndexOf('::')
            namespace = (chop > 0) ? namespace.substring(0,chop) : ''
          }
          return false
        }) != null })
+     return lastMatch
    }
 
    private static String hasFeatureSetting(String type, Node searchFrom, String feature, Closure test)
