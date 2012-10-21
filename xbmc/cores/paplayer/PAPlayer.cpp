@@ -66,12 +66,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
 
 PAPlayer::~PAPlayer()
 {
-  if (!m_isPaused)
-    SoftStop(true, true);
-  CloseAllStreams(false);
-
-  /* wait for the thread to terminate */
-  StopThread(true);//true - wait for end of thread
+  CloseFile();
   delete m_FileItem;
 }
 
@@ -234,6 +229,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
     CloseAllStreams(!m_isPaused);
+    StopThread();
     m_isPaused = false; // Make sure to reset the pause state
   }
 
@@ -439,7 +435,12 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
 
 bool PAPlayer::CloseFile()
 {
-  m_callback.OnPlayBackStopped();
+  if (!m_isPaused)
+    SoftStop(true, true);
+  CloseAllStreams(false);
+
+  /* wait for the thread to terminate */
+  StopThread(true);//true - wait for end of thread
   return true;
 }
 
@@ -482,6 +483,11 @@ void PAPlayer::Process()
 
     GetTimeInternal(); //update for GUI
   }
+
+  if(m_isFinished && !m_bStop)
+    m_callback.OnPlayBackEnded();
+  else
+    m_callback.OnPlayBackStopped();
 }
 
 inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
@@ -491,7 +497,6 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
   {
     m_isPlaying = false;
     delay       = 0;
-    m_callback.OnPlayBackEnded();
     return;
   }
 
