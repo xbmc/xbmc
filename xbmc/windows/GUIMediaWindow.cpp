@@ -819,6 +819,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
 
+  // if refreshing current list, make sure to clear fileitemlist's sort state, to force resorting.
+  if (refresh) m_vecItems->ClearSortState();
   FormatAndSort(*m_vecItems);
 
   // Ask the devived class if it wants to do custom list operations,
