@@ -2028,6 +2028,8 @@ void CDVDPlayer::HandleMessages()
         double start = DVD_NOPTS_VALUE;
 
         int time = msg.GetRestore() ? (int)m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
+        if(time < 0)
+          time = 0;
         CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
         if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
         {

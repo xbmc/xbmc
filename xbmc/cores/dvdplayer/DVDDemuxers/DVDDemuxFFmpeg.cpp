@@ -609,17 +609,23 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   // we don't care for having a completly exact timestamp anyway
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
+  double timestamp_wrap = 0.0f;
 
   // for dvd's we need the original time
   if(dynamic_cast<CDVDInputStream::IMenus*>(m_pInput))
     starttime = dynamic_cast<CDVDInputStream::IMenus*>(m_pInput)->GetTimeStampCorrection() / DVD_TIME_BASE;
   else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  {
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
+    timestamp_wrap = (double)(m_pFormatContext->timestamp_mask) * num / den;
+  }
 
   if(timestamp > starttime)
     timestamp -= starttime;
   else if( timestamp + 0.1f > starttime )
     timestamp = 0;
+  else if( timestamp < starttime)
+    timestamp += timestamp_wrap - starttime;
 
   return timestamp*DVD_TIME_BASE;
 }
