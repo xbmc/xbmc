@@ -60,7 +60,7 @@ Helper.setup(classes,
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.outtm'),
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm')
-    ], '${result} = makePythonInstance(${api},&Py${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,&Ty${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,true);',
+    ], '${result} = makePythonInstance(${api},&Py${classname.replaceAll(\'::\',\'_\')}_Type,&Ty${classname.replaceAll(\'::\',\'_\')}_Type,true);',
     /**
      * This is meant to contain mini-templates for converting the parameter types
      * of the native call to be converted from the python types provided by the caller.
@@ -164,7 +164,7 @@ void doMethod(method, MethodType methodType)
     boolean isDirectorCall = Helper.isDirector(method)
     if (isDirectorCall)
     {
-      %>      // This is a director call comming from python so it explcitly calls the base class method.
+%>      // This is a director call comming from python so it explcitly calls the base class method.
 <%
     }
     // now do the method call itself
@@ -260,6 +260,18 @@ void doClassTypeInfo(Node clazz, List classNameAsVariables = null)
   TypeConverter<${Helper.findFullClassName(baseclass)},${fullClassName}> ${classNameAsVariable}_ParentConverter;<%
     }
 %>
+  //=========================================================================
+<%    
+}
+
+void doExternClassTypeInfo(String knownType)
+{ 
+  String classNameAsVariable = knownType.replaceAll('::','_')
+%>
+  //=========================================================================
+  // These variables define the type ${knownType} from another module 
+  extern PyTypeObject Py${classNameAsVariable}_Type;
+  extern TypeInfo Ty${classNameAsVariable}_Type;
   //=========================================================================
 <%    
 }
@@ -442,6 +454,23 @@ namespace PythonBindings
   List classNameAsVariables = []
 
   classes.each { clazz -> doClassTypeInfo(clazz, classNameAsVariables) }
+
+  // make sure known api types are declared as externs
+
+  // first, find all of the declared known api types
+  Set<String> knownApiTypes = new HashSet<String>()
+  module.depthFirst().each 
+  { 
+    String attr = it.attribute('feature_knownapitypes')
+    if (attr != null)
+    { 
+      attr.trim().split(',').each { knownApiTypes.add(it) }
+    }
+  }
+
+  // now declare an extern for each one
+  knownApiTypes.each { doExternClassTypeInfo(it) }
+
 %>
 
 <%
@@ -522,6 +551,7 @@ namespace PythonBindings
   }
 
   classes.each { clazz -> doClassMethodInfo(clazz, initTypeCalls) }
+
 %>
 
   static PyMethodDef ${module.@name}_methods[] = { <%
