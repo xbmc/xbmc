@@ -3552,7 +3552,7 @@ msgstr ""
 
 #. Weather token
 msgctxt "#1447"
-msgid "Suqals"
+msgid "Squals"
 msgstr ""
 
 #. Weather token
