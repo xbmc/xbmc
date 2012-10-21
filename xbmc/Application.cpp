@@ -4523,7 +4523,6 @@ void CApplication::ToggleScrSvr()
     WakeUpScreenSaver();  
   else
     ActivateScreenSaver();
-
 }
 
 bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false */)

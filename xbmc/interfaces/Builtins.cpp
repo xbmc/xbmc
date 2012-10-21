@@ -1559,7 +1559,6 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.ToggleScrSvr();
   }
-
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))
   {
