@@ -123,9 +123,11 @@ public:
   void RemoveTexturePath(const CStdString &texturePath); ///< Remove a path from the paths to check when loading media
 
   void FreeUnusedTextures(); ///< Free textures (called from app thread only)
+  void ReleaseHwTexture(unsigned int texture);
 protected:
   std::vector<CTextureMap*> m_vecTextures;
   std::vector<CTextureMap*> m_unusedTextures;
+  std::vector<unsigned int> m_unusedHwTextures;
   typedef std::vector<CTextureMap*>::iterator ivecTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundle m_TexBundle[2];
