@@ -79,6 +79,8 @@ COMXImage::~COMXImage()
 
 void COMXImage::Close()
 {
+  CSingleLock lock(g_OMXSection);
+
   OMX_INIT_STRUCTURE(m_decoded_format);
   OMX_INIT_STRUCTURE(m_encoded_format);
   memset(&m_omx_image, 0x0, sizeof(OMX_IMAGE_PORTDEFINITIONTYPE));
@@ -502,6 +504,8 @@ bool COMXImage::ReadFile(const CStdString& inputFile)
 
 bool COMXImage::Decode(unsigned width, unsigned height)
 {
+  CSingleLock lock(g_OMXSection);
+
   std::string componentName = "";
   bool m_firstFrame = true;
   unsigned int demuxer_bytes = 0;
@@ -510,8 +514,6 @@ bool COMXImage::Decode(unsigned width, unsigned height)
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
 
   OMX_INIT_STRUCTURE(m_decoded_format);
-
-  CSingleLock lock(g_OMXSection);
 
   if(!m_image_buffer)
   {
@@ -772,6 +774,8 @@ bool COMXImage::Decode(unsigned width, unsigned height)
 
 bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned height)
 {
+  CSingleLock lock(g_OMXSection);
+
   std::string componentName = "";
   unsigned int demuxer_bytes = 0;
   const uint8_t *demuxer_content = NULL;
@@ -779,8 +783,6 @@ bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
   OMX_INIT_STRUCTURE(m_encoded_format);
-
-  CSingleLock lock(g_OMXSection);
 
   if (!buffer || !size) 
   {
