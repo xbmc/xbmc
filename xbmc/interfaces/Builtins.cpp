@@ -198,6 +198,7 @@ const BUILT_IN commands[] = {
   { "UpdateAddonRepos",           false,  "Check add-on repositories for updates" },
   { "UpdateLocalAddons",          false,  "Check for local add-on changes" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
+  { "ToggleScrSvr",               false,  "Toggle Screensaver"},
   { "Weather.Refresh",            false,  "Force weather data refresh"},
   { "Weather.LocationNext",       false,  "Switch to next weather location"},
   { "Weather.LocationPrevious",   false,  "Switch to previous weather location"},
@@ -1554,6 +1555,11 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.ToggleDPMS(true);
   }
+  else if (execute.Equals("togglescrsvr"))
+  {
+    g_application.ToggleScrSvr();
+  }
+
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))
   {

@@ -4517,6 +4517,15 @@ bool CApplication::ToggleDPMS(bool manual)
   return false;
 }
 
+void CApplication::ToggleScrSvr()
+{
+  if (m_bScreenSave && m_screenSaver)
+    WakeUpScreenSaver();  
+  else
+    ActivateScreenSaver();
+
+}
+
 bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false */)
 {
 
