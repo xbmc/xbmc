@@ -214,6 +214,7 @@ msgctxt "#62"
 msgid "Dec"
 msgstr ""
 
+#strings from 71 to 97 are reserved for weather translation
 #empty strings from id 63 to 70
 
 #. Weather token
@@ -301,6 +302,7 @@ msgctxt "#87"
 msgid "VAR"
 msgstr ""
 
+#strings through to 97 reserved for weather translation
 #empty strings from id 88 to 97
 
 msgctxt "#98"
@@ -1354,6 +1356,8 @@ msgstr ""
 msgctxt "#369"
 msgid "Title"
 msgstr ""
+
+#strings from 370 to 395 are reserved for weather translation
 
 #. Weather token
 msgctxt "#370"
@@ -3263,6 +3267,7 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr ""
 
+#strings from 1396 to 1449 are reserved for weather translation
 #empty strings from id 1302 to 1395
 
 #. Weather token
@@ -3405,7 +3410,7 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr ""
 
-#strings through to 1450 reserved for weather translation
+#strings through to 1449 reserved for weather translation
 #empty strings from id 1424 to 1449
 
 msgctxt "#1450"
