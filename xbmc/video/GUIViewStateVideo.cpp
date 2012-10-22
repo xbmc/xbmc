@@ -168,6 +168,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551, LABEL_MASKS("%T", "%M", "%T", "%M")); // Title, #Episodes | Title, #Episodes
 
         AddSortMethod(SORT_METHOD_EPISODE, 20360, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Label, #Episodes | Label, #Episodes
+        AddSortMethod(SORT_METHOD_LASTPLAYED, 568, LABEL_MASKS("%T", "%p", "%T", "%p"));  // Title, #Last played | Title, #Last played
         AddSortMethod(SORT_METHOD_YEAR, 562, LABEL_MASKS("%L","%Y","%L","%Y")); // Label, Year | Label, Year
         SetSortMethod(SORT_METHOD_LABEL);
 
