@@ -1,17 +1,24 @@
 MacBook% diff -rwu libcdio-0.83.orig libcdio-0.83                                   
 diff -rwu libcdio-0.83.orig/configure libcdio-0.83/configure
---- a/configure-ac	2011-10-27 13:23:40.000000000 +1100
-+++ b/configure.ac	2012-04-09 19:11:50.000000000 +1000
-@@ -350,7 +350,7 @@
+--- a/configure.ac	2012-10-22 18:41:28.000000000 +0200
++++ b/configure.ac	2012-10-22 18:41:48.000000000 +0200
+@@ -343,14 +343,14 @@
+ dnl Libtool flag for strict linkage
+ LT_NO_UNDEFINED=
+ 
+-case $host_os in
++case $host in
+      aix*)
+        ## Don't use AIX driver until starts to really work
+        ## cd_drivers="${cd_drivers}, AIX"
         ## AC_DEFINE([HAVE_AIX_CDROM], [1],
         ##     [Define 1 if you have AIX CD-ROM support])
         ;;
 -     darwin6*|darwin7*|darwin8*|darwin9*)
-+     darwin6*|darwin7*|darwin8*|darwin9*|darwin10*|darwin*)
++     *86*-apple-darwin*)
         AC_CHECK_HEADERS(IOKit/IOKitLib.h CoreFoundation/CFBase.h, 
                          [have_iokit_h="yes"])
-        if test "x$have_iokit_h" = "xyes" ; then
-diff -rwu libcdio-0.83.orig/lib/driver/osx.c libcdio-0.83/lib/driver/osx.c
+        if test "x$have_iokit_h" = "xyes" ; then 
 --- libcdio-0.83.orig/lib/driver/osx.c	2011-10-21 10:16:20.000000000 +1100
 +++ libcdio-0.83/lib/driver/osx.c	2012-04-26 14:23:02.000000000 +1000
 @@ -56,7 +56,7 @@
