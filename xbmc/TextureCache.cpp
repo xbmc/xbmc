@@ -132,6 +132,11 @@ CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
   return image;
 }
 
+bool CTextureCache::CanCacheImageURL(const CURL &url)
+{
+  return (url.GetUserName().empty() || url.GetUserName() == "music");
+}
+
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
 {
   CStdString cachedHash;

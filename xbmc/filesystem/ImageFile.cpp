@@ -60,8 +60,8 @@ bool CImageFile::Exists(const CURL& url)
     return CFile::Exists(cachedFile);
 
   // need to check if the original can be cached on demand and that the file exists 
-  if (!url.GetUserName().IsEmpty())
-    return false; // not in the cache, and can't be cached on demand
+  if (!CTextureCache::CanCacheImageURL(url))
+    return false;
 
   CStdString image = url.GetHostName();
   CURL::Decode(image);
