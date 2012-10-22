@@ -99,6 +99,39 @@
 		<include>DialogTextColors</include>
 		<texturefocus>HomeBladeSubFO2.png</texturefocus>
 	</include>
+	<!-- Keyboard Dialog BG -->
+	<include name="KeyboardDialogBG">
+		<control type="group">
+			<posx>177</posx>
+			<posy>82</posy>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>926</width>
+				<height>556</height>
+				<include>DialogBGTexture</include>
+				<visible>Skin.HasTheme(lite)</visible>
+			</control>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>0</posx>
+				<posy>3</posy>
+				<width>935</width>
+				<height>548</height>
+				<texture>Keyboard.png</texture>
+				<visible>!Skin.HasTheme(lite)</visible>
+			</control>
+			<control type="label" id="311">
+				<description>Heading Label</description>
+				<posx>0</posx>
+				<posy>30</posy>
+				<width>926</width>
+				<align>center</align>
+				<font>TitleCapsFont</font>
+			</control>
+		</control>
+	</include>
 	<!-- Selection Dialogs -->
 	<include name="SelectionDialogBG">
 		<control type="image">
