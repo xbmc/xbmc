@@ -3,10 +3,6 @@
 	<defaultcontrol always="true">300</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<control type="videowindow">
-			<description>Video Preview Window</description>
-			<include>FullScreenBGImage</include>
-		</control>
 		<control type="image">
 			<texture>Black.png</texture>
 			<animation effect="fade" start="100" end="0" time="600">WindowOpen</animation>
