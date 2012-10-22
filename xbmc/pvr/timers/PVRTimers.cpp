@@ -440,23 +440,22 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
   {
     for (vector<CPVRTimerInfoTagPtr>::iterator timerIt = it->second->begin(); timerIt != it->second->end(); )
     {
-      CPVRTimerInfoTagPtr timer = (*timerIt);
+      bool bDeleteActiveItem = !bCurrentlyActiveOnly ||
+          (CDateTime::GetCurrentDateTime() > (*timerIt)->StartAsLocalTime() &&
+           CDateTime::GetCurrentDateTime() < (*timerIt)->EndAsLocalTime());
+      bool bDeleteRepeatingItem = bDeleteRepeating || !(*timerIt)->m_bIsRepeating;
+      bool bChannelsMatch = (*timerIt)->ChannelNumber() == channel.ChannelNumber() &&
+          (*timerIt)->m_bIsRadio == channel.IsRadio();
 
-      if (bCurrentlyActiveOnly &&
-          (CDateTime::GetCurrentDateTime() < timer->StartAsLocalTime() ||
-           CDateTime::GetCurrentDateTime() > timer->EndAsLocalTime()))
-        continue;
-
-      if (!bDeleteRepeating && timer->m_bIsRepeating)
-        continue;
-
-      if (timer->ChannelNumber() == channel.ChannelNumber() && timer->m_bIsRadio == channel.IsRadio())
+      if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
       {
-        bReturn = timer->DeleteFromClient(true) || bReturn;
+        bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
         timerIt = it->second->erase(timerIt);
       }
       else
-        timerIt++;
+      {
+        ++timerIt;
+      }
     }
   }
 
