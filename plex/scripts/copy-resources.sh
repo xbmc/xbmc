@@ -13,10 +13,10 @@ SYNC="rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *
 
 # rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled
 # using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable 
-SYNCSKIN="rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat"
+SYNCSKIN="rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat --exclude Media* --exclude .git*"
 
 # rsync command for including everything but the skins
-ADDONSYNC="rsync -aq --exclude .DS_Store* --exclude skin.confluence --exclude skin.touched"
+ADDONSYNC="rsync -aq --exclude .DS_Store* --exclude skin.confluence --exclude skin.touched --exclude skin.mediastream"
 
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons"
@@ -41,6 +41,7 @@ ${SYNC} "$SRCROOT/media" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XB
 ${SYNC} "$SRCROOT/sounds" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
 ${SYNC} "$SRCROOT/system" 		"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
 ${SYNC} "$SRCROOT/userdata" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC"
+${SYNCSKIN} "$SRCROOT/addons/skin.mediastream" 	"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons"
 
 # copy extra packages if applicable
 if [ -d "$SRCROOT/extras/system" ]; then

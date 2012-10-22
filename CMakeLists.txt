@@ -84,6 +84,9 @@ add_subdirectory(plex/Dependencies)
 # carry over
 add_subdirectory(lib)
 
+# Build the texturepacker
+add_subdirectory(tools/TexturePacker)
+
 include_directories(
   ${CMAKE_BINARY_DIR}/xbmc
 	${plexdir}

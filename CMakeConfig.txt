@@ -158,6 +158,7 @@ set(external_libs
 	GLEW
 	SDL
 	SDL_mixer
+  SDL_image
 	tinyxml
 	boost_thread
 	boost_system

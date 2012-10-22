@@ -51,6 +51,19 @@ endif()
 add_dependencies(Plex git_revision.h ffmpeg)
 target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
+# find all image files in the skin
+file(GLOB MEDIA_IMAGES ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
+
+# Build the packed textures
+add_custom_command(
+  OUTPUT Textures.xbt
+  COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.mediastream/Media
+  MAIN_DEPENDENCY ${MEDIA_IMAGES}
+  DEPENDS TexturePacker
+)
+add_custom_target(CompressTextures ALL DEPENDS Textures.xbt)
+
+
 # Set some variables we need to configure the CMakeCompleteBundle file
 set(PLEXDIR ${plexdir})
 set(ROOTDIR ${root})
@@ -65,3 +78,4 @@ install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/X
 install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/Plex.app/Contents/Resources/Credits.html)")
 install(FILES ${plexdir}/Resources/Credits.html DESTINATION Plex.app/Contents/Resources COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION Plex.app/Contents/Resources/XBMC/media COMPONENT RUNTIME)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt DESTINATION Plex.app/Contents/Resources/XBMC/addons/skin.mediastream/Media)

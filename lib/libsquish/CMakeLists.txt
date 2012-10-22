@@ -1,3 +1,8 @@
 include_directories(.)
 find_all_sources(. squish_SRCS)
+add_definitions(-DSQUISH_USE_SSE=2)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
+set(CMAKE_C_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 add_library(lib_squish STATIC ${squish_SRCS})
