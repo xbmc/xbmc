@@ -33,8 +33,6 @@ namespace XBMCAddon
   {
     XBMCCOMMONS_STANDARD_EXCEPTION(PlayListException);
 
-    typedef XBMCAddon::xbmcgui::ListItem PlayListItem;
-
     class PlayList : public AddonClass
     {
       long refs;
@@ -64,7 +62,7 @@ namespace XBMCAddon
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
        *   - playlist.add(url=video, listitem=listitem, index=7)\n
        */
-      void add(const String& url, PlayListItem* listitem = NULL, int index = -1);
+      void add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem = NULL, int index = -1);
 
       /**
        * load(filename) -- Load a playlist.
@@ -109,7 +107,7 @@ namespace XBMCAddon
        * retrieve the item at the given position. A negative index means from the ending 
        * rather than from the start.
        */
-      PlayListItem* operator[](long i) throw (PlayListException);
+      XBMCAddon::xbmcgui::ListItem* operator[](long i) throw (PlayListException);
     };
   }
 }

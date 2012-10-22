@@ -49,7 +49,7 @@ namespace XBMCAddon
 
     PlayList::~PlayList()  { }
 
-    void PlayList::add(const String& url, PlayListItem* listitem, int index)
+    void PlayList::add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem, int index)
     {
       CFileItemList items;
 
@@ -142,7 +142,7 @@ namespace XBMCAddon
       return g_playlistPlayer.GetCurrentSong();
     }
 
-    PlayListItem* PlayList::operator [](long i) throw (PlayListException)
+    XBMCAddon::xbmcgui::ListItem* PlayList::operator [](long i) throw (PlayListException)
     {
       long pos = -1;
       int iPlayListSize = size();
@@ -155,7 +155,7 @@ namespace XBMCAddon
 
       CFileItemPtr ptr((*pPlayList)[pos]);
 
-      return new PlayListItem(ptr);
+      return new XBMCAddon::xbmcgui::ListItem(ptr);
     }
   }
 }
