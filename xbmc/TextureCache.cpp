@@ -103,13 +103,16 @@ CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStd
 
   CStdString encoded(image);
   CURL::Encode(encoded);
-  CStdString url = "image://";
-  if (!type.IsEmpty())
-    url += type + "@";
-  url += encoded;
+  CURL url;
+  url.SetProtocol("image");
+  url.SetUserName(type);
+  url.SetHostName(encoded);
   if (!options.IsEmpty())
-    url += "/transform?" + options;
-  return url;
+  {
+    url.SetFileName("transform");
+    url.SetOptions("?" + options);
+  }
+  return url.Get();
 }
 
 CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
