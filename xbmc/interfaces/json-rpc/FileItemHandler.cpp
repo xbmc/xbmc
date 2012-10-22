@@ -183,7 +183,7 @@ void CFileItemHandler::FillDetails(const ISerializable *info, const CFileItemPtr
 
   for (std::set<std::string>::const_iterator fieldIt = originalFields.begin(); fieldIt != originalFields.end(); fieldIt++)
   {
-    if (GetField(*fieldIt, serialization, item, result, fetchedArt, thumbLoader))
+    if (GetField(*fieldIt, serialization, item, result, fetchedArt, thumbLoader) && result.isMember(*fieldIt) && !result[*fieldIt].empty())
       fields.erase(*fieldIt);
   }
 }
