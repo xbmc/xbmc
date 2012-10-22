@@ -495,24 +495,26 @@ void CGUIWindowManager::Process(unsigned int currentTime)
   CSingleLock lock(g_graphicsContext);
 
   CDirtyRegionList dirtyregions;
-
-  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-  if (pWindow)
-    pWindow->DoProcess(currentTime, dirtyregions);
-
-  // process all dialogs - visibility may change etc.
-  for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
-  {
-    CGUIWindow *pWindow = (*it).second;
-    if (pWindow && pWindow->IsDialog())
-      pWindow->DoProcess(currentTime, dirtyregions);
-  }
-
+  /* PLEX move this if statement */
   if (g_application.m_AppActive)
   {
+
+    CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+    if (pWindow)
+      pWindow->DoProcess(currentTime, dirtyregions);
+
+    // process all dialogs - visibility may change etc.
+    for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
+    {
+      CGUIWindow *pWindow = (*it).second;
+      if (pWindow && pWindow->IsDialog())
+        pWindow->DoProcess(currentTime, dirtyregions);
+    }
+
     for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); itr++)
       m_tracker.MarkDirtyRegion(*itr);
   }
+  /* END PLEX */
 }
 
 void CGUIWindowManager::MarkDirty()
@@ -522,6 +524,11 @@ void CGUIWindowManager::MarkDirty()
 
 void CGUIWindowManager::RenderPass()
 {
+  /* PLEX - No need to render when the App is not active */
+  if (!g_application.m_AppActive)
+    return;
+  /* END PLEX */
+
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
   {
