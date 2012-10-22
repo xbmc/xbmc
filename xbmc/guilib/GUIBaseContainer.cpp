@@ -116,11 +116,15 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
     if (itemNo >= 0)
     {
       CGUIListItemPtr item = m_items[itemNo];
+      long oldDirty = dirtyregions.size();
       // render our item
       if (m_orientation == VERTICAL)
         ProcessItem(origin.x, pos, item.get(), focused && HasFocus(), currentTime, dirtyregions);
       else
         ProcessItem(pos, origin.y, item.get(), focused && HasFocus(), currentTime, dirtyregions);
+
+      if (oldDirty != dirtyregions.size())
+        CLog::Log(LOGDEBUG, "Item %s added %ld dirty regions", item->GetLabel().c_str(), dirtyregions.size() - oldDirty);
     }
     // increment our position
     pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
@@ -787,6 +791,9 @@ void CGUIBaseContainer::ValidateOffset()
 void CGUIBaseContainer::AllocResources()
 {
   CalculateLayout();
+  /* PLEX */
+  UpdateStaticItems(true);
+  /* END PLEX */
   if (m_staticDefaultItem != -1) // select default item
     SelectStaticItemById(m_staticDefaultItem);
 }
@@ -811,6 +818,7 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
   // and recalculate the layout
   CalculateLayout();
   SetPageControlRange();
+  CLog::Log(LOGDEBUG, "UpdateLayout");
   MarkDirtyRegion();
 }
 
@@ -849,6 +857,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     SelectItem(item);
   }
 
+#ifndef __PLEX__
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
@@ -884,6 +893,9 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     }
     UpdateScrollByLetter();
   }
+#else
+  UpdateStaticItems();
+#endif
 }
 
 void CGUIBaseContainer::CalculateLayout()
@@ -1046,7 +1058,10 @@ void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
   m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
-  UpdateVisibility();
+
+  /* PLEX */
+  UpdateStaticItems(true);
+  /* END PLEX */
 }
 
 void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)
@@ -1264,4 +1279,53 @@ int CGUIBaseContainer::GetSelectedItemID() const
   CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_items[GetSelectedItem()]);
   return item->m_iprogramCount;
 }
+
+// This method is ported from Frodo
+
+void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
+{
+  if (m_staticContent)
+  { // update our item list with our new content, but only add those items that should
+    // be visible.  Save the previous item and keep it if we are adding that one.
+    std::vector<CGUIListItemPtr> items;
+    int reselect = -1;
+    int selected = GetSelectedItem();
+    CGUIListItem* selectedItem = (selected >= 0 && (unsigned int)selected < m_items.size()) ? m_items[selected].get() : NULL;
+    bool updateItemsProperties = false;
+    if (!m_staticUpdateTime)
+      m_staticUpdateTime = CTimeUtils::GetFrameTime();
+    if (CTimeUtils::GetFrameTime() - m_staticUpdateTime > 1000)
+    {
+      m_staticUpdateTime = CTimeUtils::GetFrameTime();
+      updateItemsProperties = true;
+    }
+    for (unsigned int i = 0; i < m_staticItems.size(); ++i)
+    {
+      CGUIStaticItemPtr staticItem = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
+      if (staticItem->UpdateVisibility(GetParentID()))
+        refreshItems = true;
+      if (staticItem->IsVisible())
+      {
+        items.push_back(staticItem);
+        // if item is selected and it changed position, re-select it
+        if (staticItem.get() == selectedItem && selected != (int)items.size() - 1)
+          reselect = items.size() - 1;
+      }
+      // update any properties
+      if (updateItemsProperties)
+        staticItem->UpdateProperties(GetParentID());
+    }
+    if (refreshItems)
+    {
+      Reset();
+      m_items = items;
+      SetPageControlRange();
+      if (reselect >= 0 && reselect < (int)m_items.size())
+        SelectItem(reselect);
+      SetInvalid();
+    }
+    UpdateScrollByLetter();
+  }
+}
+
 /* END PLEX */
