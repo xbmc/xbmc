@@ -21,28 +21,28 @@
  */
 
 #undef byte
-#include <taglib/aifffile.h>
-#include <taglib/apefile.h>
-#include <taglib/asffile.h>
-#include <taglib/flacfile.h>
-#include <taglib/itfile.h>
-#include <taglib/modfile.h>
-#include <taglib/mpcfile.h>
-#include <taglib/mp4file.h>
-#include <taglib/mpegfile.h>
-#include <taglib/oggfile.h>
-#include <taglib/oggflacfile.h>
-#include <taglib/rifffile.h>
-#include <taglib/speexfile.h>
-#include <taglib/s3mfile.h>
-#include <taglib/trueaudiofile.h>
-#include <taglib/vorbisfile.h>
-#include <taglib/wavpackfile.h>
-#include <taglib/xmfile.h>
+#include <aifffile.h>
+#include <apefile.h>
+#include <asffile.h>
+#include <flacfile.h>
+#include <itfile.h>
+#include <modfile.h>
+#include <mpcfile.h>
+#include <mp4file.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <rifffile.h>
+#include <speexfile.h>
+#include <s3mfile.h>
+#include <trueaudiofile.h>
+#include <vorbisfile.h>
+#include <wavpackfile.h>
+#include <xmfile.h>
 
-#include <taglib/id3v2tag.h>
-#include <taglib/xiphcomment.h>
-#include <taglib/mp4tag.h>
+#include <id3v2tag.h>
+#include <xiphcomment.h>
+#include <mp4tag.h>
 #include "TagLibVFSStream.h"
 
 namespace MUSIC_INFO

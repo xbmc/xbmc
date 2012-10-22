@@ -23,21 +23,21 @@
 
 #include <vector>
 
-#include <taglib/id3v1tag.h>
-#include <taglib/id3v2tag.h>
-#include <taglib/apetag.h>
-#include <taglib/xiphcomment.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <apetag.h>
+#include <xiphcomment.h>
 
-#include <taglib/textidentificationframe.h>
-#include <taglib/uniquefileidentifierframe.h>
-#include <taglib/popularimeterframe.h>
-#include <taglib/commentsframe.h>
-#include <taglib/unsynchronizedlyricsframe.h>
-#include <taglib/attachedpictureframe.h>
+#include <textidentificationframe.h>
+#include <uniquefileidentifierframe.h>
+#include <popularimeterframe.h>
+#include <commentsframe.h>
+#include <unsynchronizedlyricsframe.h>
+#include <attachedpictureframe.h>
 
 #undef byte
-#include <taglib/tstring.h>
-#include <taglib/tpropertymap.h>
+#include <tstring.h>
+#include <tpropertymap.h>
 
 #include "TagLibVFSStream.h"
 #include "MusicInfoTag.h"

@@ -30,7 +30,7 @@
 
 #ifdef HAS_DVD_DRIVE
 
-#include <taglib/id3v1genres.h>
+#include <id3v1genres.h>
 #include "cddb.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
