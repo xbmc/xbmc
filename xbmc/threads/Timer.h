@@ -38,6 +38,7 @@ public:
 
   bool Start(uint32_t timeout, bool interval = false);
   bool Stop(bool wait = false);
+  bool Restart();
 
   bool IsRunning() const { return CThread::IsRunning(); }
 
