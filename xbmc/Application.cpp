@@ -4060,8 +4060,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   // reset m_bStartVideoWindowed as it's a temp setting
   g_settings.m_bStartVideoWindowed = false;
-  // reset any forced player
-  m_eForcedNextPlayer = EPC_NONE;
 
 #ifdef HAS_KARAOKE
   //We have to stop parsing a cdg before mplayer is deallocated
@@ -4963,6 +4961,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // stop lastfm
         if (CLastFmManager::GetInstance()->IsRadioEnabled())
           CLastFmManager::GetInstance()->StopRadio();
+
+        // reset any forced player
+        m_eForcedNextPlayer = EPC_NONE;
 
         delete m_pPlayer;
         m_pPlayer = 0;
