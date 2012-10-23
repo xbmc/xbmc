@@ -429,7 +429,7 @@
 			</control>
 		</control>
 	</include>
-	<include name="SearchScreenTextFieldBG">		
+	<include name="SearchScreenTextFieldBG">
 		<control type="image">
 			<posx>26</posx>
 			<posy>23</posy>

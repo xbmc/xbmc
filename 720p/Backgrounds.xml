@@ -10,24 +10,14 @@
 	</include>
 	<include name="FanartBG">
 		<control type="largeimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<fadetime>400</fadetime>
-			<aspectratio>scale</aspectratio>
+			<include>FullScreenBGImage</include>
 			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
 			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
 			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 		</control>
 	</include>
 	<include name="HomeFanartBG">
-		<posx>0</posx>
-		<posy>0</posy>
-		<width>1280</width>
-		<height>720</height>
-		<fadetime>400</fadetime>
-		<aspectratio>scale</aspectratio>
+		<include>FullScreenBGImage</include>
 		<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
 		<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
 	</include>
