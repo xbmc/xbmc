@@ -51,6 +51,7 @@ endif()
 add_dependencies(Plex git_revision.h ffmpeg)
 target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
+
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
 
@@ -67,8 +68,10 @@ add_custom_target(CompressTextures ALL DEPENDS Textures.xbt)
 # Set some variables we need to configure the CMakeCompleteBundle file
 set(PLEXDIR ${plexdir})
 set(ROOTDIR ${root})
+set(DEPENDDIR ${dependdir})
 configure_file(CMakeCompleteBundle.cmake.in CMakeCompleteBundle.cmake @ONLY)
 
+install(FILES ${CONFIG_PLEX_INSTALL_LIBRARIES} DESTINATION Plex.app/Contents/Frameworks COMPONENT RUNTIME)
 install(TARGETS Plex BUNDLE DESTINATION . COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Plex.icns DESTINATION Plex.app/Contents/Resources COMPONENT RUNTIME)
 install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)

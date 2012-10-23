@@ -151,6 +151,10 @@ if __name__=='__main__':
         if platform.system() == "Darwin":
           print "Fixing install names"
           fix_install_name(os.path.join(os.path.realpath(dirname), "lib"))
+          # fix sparkle framework, if we add more frameworks we probably have to do
+          # this more generic
+          sparklepath = os.path.join(os.path.realpath(dirname), "Frameworks", "Sparkle.framework", "Sparkle")
+          exec_cmd(["install_name_tool", "-id", sparklepath, sparklepath], supress_output=True)
         
         print "Done with %s" % depend
 

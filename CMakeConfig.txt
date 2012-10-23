@@ -136,6 +136,7 @@ if(APPLE)
 		DiskArbitration
 		QuartzCore
 		SystemConfiguration
+    Sparkle
 	)
 endif()
 
@@ -202,14 +203,14 @@ else()
 endif()
 
 # function to find library and set the variables we need
-macro(plex_find_library lib framework systemlib)
+macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
   string(TOUPPER ${lib} LIBN)
   
   # find the library, just searching in our paths
-  if(${systemlib})
-    find_library(CONFIG_LIBRARY_${LIBN} ${lib})
+  if(${nodefaultpath})
+    find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${searchpath} NO_DEFAULT_PATH)
   else()
-	  find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${dependdir}/lib NO_DEFAULT_PATH)
+	  find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${searchpath})
   endif()
   
   # get the actual value
@@ -232,22 +233,30 @@ macro(plex_find_library lib framework systemlib)
     mark_as_advanced(CONFIG_LIBRARY_${LIBN})
   endif()
   
-  list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
+  if(${addtolinklist})
+    list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
+  else()
+    list(APPEND CONFIG_PLEX_INSTALL_LIBRARIES ${REALNAME})
+  endif()
 endmacro()
   
 
 # go through all the libs we need and find them plus set some good variables
-foreach(lib ${external_libs} ${non_link_libs})
-  plex_find_library(${lib} 0 0)
+foreach(lib ${external_libs})
+  plex_find_library(${lib} 0 1 ${dependdir}/lib 1)
+endforeach()
+
+foreach(lib ${non_link_libs})
+  plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
 endforeach()
 
 # find our system libs
 foreach(lib ${system_libs})
-  plex_find_library(${lib} 0 1)
+  plex_find_library(${lib} 0 0 "" 1)
 endforeach()
 
 foreach(lib ${osx_frameworks})
-  plex_find_library(${lib} 1 1)
+  plex_find_library(${lib} 1 0 ${dependdir}/Frameworks 1)
 endforeach()
 
 #### Deal with some generated files
