@@ -208,6 +208,9 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "chaptername",      PLAYER_CHAPTERNAME },
                                   { "starrating",       PLAYER_STAR_RATING },
                                   { "folderpath",       PLAYER_PATH },
+                                  /* PLEX */
+                                  { "hasmusicplaylist",       PLAYER_HAS_MUSIC_PLAYLIST },
+                                  /* END PLEX */
                                   { "filenameandpath",  PLAYER_FILEPATH }};
 
 const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
@@ -2310,6 +2313,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         }
         break;
       }
+    case PLAYER_HAS_MUSIC_PLAYLIST:
+      bReturn = g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC;
+      break;
+
     /* END PLEX */
 
     default: // default, use integer value different from 0 as true
