@@ -5737,8 +5737,13 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h">
       <Filter>dialogs</Filter>
     </ClInclude>
+
+
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h">
       <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEDeviceType.h">
+      <Filter>cores\AudioEngine\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

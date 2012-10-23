@@ -56,10 +56,13 @@ std::string CAEDeviceInfo::DeviceTypeToString(enum AEDeviceType deviceType)
 {
   switch (deviceType)
   {
-    case AE_DEVTYPE_PCM   : return "AE_DEVTYPE_PCM"   ; break;
-    case AE_DEVTYPE_IEC958: return "AE_DEVTYPE_IEC958"; break;
-    case AE_DEVTYPE_HDMI  : return "AE_DEVTYPE_HDMI"  ; break;
-    case AE_DEVTYPE_DP    : return "AE_DEVTYPE_DP"    ; break;
+    case AE_DEVTYPE_UNKNOWN   : return "AE_DEVTYPE_UNKNOWN"   ; break;
+    case AE_DEVTYPE_PCM       : return "AE_DEVTYPE_PCM"       ; break;
+    case AE_DEVTYPE_DIGITALOUT: return "AE_DEVTYPE_DIGITALOUT"; break;
+    case AE_DEVTYPE_IEC958    : return "AE_DEVTYPE_IEC958"    ; break;
+    case AE_DEVTYPE_HDMI      : return "AE_DEVTYPE_HDMI"      ; break;
+    case AE_DEVTYPE_DP        : return "AE_DEVTYPE_DP"        ; break;
+    case AE_DEVTYPE_NETWORK   : return "AE_DEVTYPE_NETWORK"   ; break;
   }
   return "INVALID";
 }

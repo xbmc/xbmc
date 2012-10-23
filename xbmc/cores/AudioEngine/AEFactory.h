@@ -46,6 +46,7 @@ public:
   static void SetSoundMode(const int mode);
   static void OnSettingsChange(std::string setting);
   static void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  static bool EnumerateOutputDevicesEx(std::vector<AEDeviceEx> &devices, bool passthrough);
   static std::string GetDefaultDevice(bool passthrough);
   static bool SupportsRaw();
   static void SetMute(const bool enabled);

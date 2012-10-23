@@ -99,6 +99,7 @@ public:
   double GetCacheTotal();
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  virtual bool EnumerateOutputDevicesEx(std::vector<AEDeviceEx> &devices, bool passthrough);
   virtual std::string GetDefaultDevice(bool passthrough);
   virtual bool SupportsRaw();
 

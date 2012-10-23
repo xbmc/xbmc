@@ -23,16 +23,10 @@
 #include <vector>
 #include "AEAudioFormat.h"
 #include "Utils/AEChannelInfo.h"
+#include "Utils/AEDeviceType.h"
 
 typedef std::vector<unsigned int     > AESampleRateList;
 typedef std::vector<enum AEDataFormat> AEDataFormatList;
-
-enum AEDeviceType {
-  AE_DEVTYPE_PCM,
-  AE_DEVTYPE_IEC958,
-  AE_DEVTYPE_HDMI,
-  AE_DEVTYPE_DP
-};
 
 /**
  * This classt provides the details of what the audio output hardware is capable of
