@@ -335,6 +335,8 @@ extern "C" {
     bool         (__cdecl* CanPauseStream)(void);
     void         (__cdecl* PauseStream)(bool);
     bool         (__cdecl* CanSeekStream)(void);
+    bool         (__cdecl* SeekTime)(int, bool, double*);
+    void         (__cdecl* SetSpeed)(int);
   } PVRClient;
 
 #ifdef __cplusplus

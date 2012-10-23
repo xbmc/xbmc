@@ -107,8 +107,8 @@ public:
   void Abort();
   void Flush();
   DemuxPacket* Read();
-  bool SeekTime(int time, bool backwords = false, double* startpts = NULL) { return false; }
-  void SetSpeed(int iSpeed) {};
+  bool SeekTime(int time, bool backwords = false, double* startpts = NULL);
+  void SetSpeed(int iSpeed);
   int GetStreamLength() { return 0; }
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
