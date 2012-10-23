@@ -76,11 +76,11 @@ public:
   void SetRangeSelector(RangeSelector selector);
   void SwitchRangeSelector();
   void SetInfo(int iInfo);
-  void SetPercentage(int iPercent, RangeSelector selector = RangeSelectorLower);
+  void SetPercentage(int iPercent, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
   int GetPercentage(RangeSelector selector = RangeSelectorLower) const;
-  void SetIntValue(int iValue, RangeSelector selector = RangeSelectorLower);
+  void SetIntValue(int iValue, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
   int GetIntValue(RangeSelector selector = RangeSelectorLower) const;
-  void SetFloatValue(float fValue, RangeSelector selector = RangeSelectorLower);
+  void SetFloatValue(float fValue, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
   float GetFloatValue(RangeSelector selector = RangeSelectorLower) const;
   void SetIntInterval(int iInterval);
   void SetFloatInterval(float fInterval);
@@ -93,7 +93,7 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();
   virtual void Move(int iNumSteps);
-  virtual void SetFromPosition(const CPoint &point);
+  virtual void SetFromPosition(const CPoint &point, bool guessSelector = false);
   /*! \brief Get the current position of the slider as a proportion
    \return slider position in the range [0,1]
    */
