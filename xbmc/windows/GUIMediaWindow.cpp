@@ -409,7 +409,10 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         return true;
       }
       else if (message.GetParam1() == GUI_MSG_UPDATE_REMOTE_SOURCES)
+      {
         RefreshShares(true);
+        return true;
+      }
       /* END PLEX */
 
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
