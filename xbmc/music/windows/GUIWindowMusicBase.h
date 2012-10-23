@@ -84,6 +84,7 @@ protected:
   void OnInfo(int iItem, bool bShowInfo = true);
   void OnInfoAll(int iItem, bool bCurrent=false, bool refresh=false);
   virtual void OnQueueItem(int iItem);
+  virtual void OnQueueFromHere(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
   bool FindAlbumInfo(const CFileItem* album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection);
   bool FindArtistInfo(const CFileItem* artist, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, ALLOW_SELECTION allowSelection);

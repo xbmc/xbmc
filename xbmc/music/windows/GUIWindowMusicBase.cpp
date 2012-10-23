@@ -563,6 +563,21 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   }
 }
 
+/// \brief Add from selected list/thumb control item to to end of list to playlist
+/// \param iItem Selected Item in list/thumb control
+void CGUIWindowMusicBase::OnQueueFromHere(int iItem)
+{
+  // don't re-queue items from playlist window
+  if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_MUSIC_PLAYLIST ) return ;
+  
+  CFileItemList queueItems;
+  for ( int i = iItem; i < m_vecItems->Size(); i++ )
+    AddItemToPlayList(m_vecItems->Get(i), queueItems);
+
+  g_playlistPlayer.Add(PLAYLIST_MUSIC, queueItems);
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+}
+
 /// \brief Add unique file and folders and its subfolders to playlist
 /// \param pItem The file item to add
 void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
@@ -688,6 +703,10 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
+        if (!(item->m_bIsFolder || item->IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
+        {
+          buttons.Add(CONTEXT_BUTTON_QUEUE_FROM_HERE, 13362);      // Queue to Playlist
+        }
 
         // allow a folder to be ad-hoc queued and played by the default player
         if (item->m_bIsFolder || (item->IsPlayList() &&
@@ -736,6 +755,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_QUEUE_ITEM:
     OnQueueItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_QUEUE_FROM_HERE:
+    OnQueueFromHere(itemNumber);
     return true;
 
   case CONTEXT_BUTTON_INFO:

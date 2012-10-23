@@ -764,6 +764,19 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   m_viewControl.SetSelectedItem(iItem + 1);
 }
 
+void CGUIWindowVideoBase::OnQueueFromHere(int iItem)
+{
+  // don't re-queue items from playlist window
+  if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_VIDEO_PLAYLIST ) return ;
+  
+  CFileItemList queueItems;
+  for ( int i = iItem; i < m_vecItems->Size(); i++ )
+    AddItemToPlayList(m_vecItems->Get(i), queueItems);
+
+  g_playlistPlayer.Add(PLAYLIST_VIDEO, queueItems);
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+}
+
 void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
 {
   if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
@@ -1236,6 +1249,10 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
+          if (!(item->m_bIsFolder || item->IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
+          {
+            buttons.Add(CONTEXT_BUTTON_QUEUE_FROM_HERE, 13362);      // Queue to Playlist
+          }
         }
 
         // allow a folder to be ad-hoc queued and played by the default player
@@ -1381,6 +1398,10 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_QUEUE_ITEM:
     OnQueueItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_QUEUE_FROM_HERE:
+    OnQueueFromHere(itemNumber);
     return true;
 
   case CONTEXT_BUTTON_PLAY_ITEM:
