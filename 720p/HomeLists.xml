@@ -677,6 +677,7 @@
 								<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7001).HasFocus">Conditional</animation>
 								<control type="group">
 									<include>ListItemPoster</include>
+									<include>ListItemInProgress</include>
 								</control>
 								<control type="group">
 									<visible>ListItem.Type(episode)</visible>

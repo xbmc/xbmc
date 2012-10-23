@@ -49,6 +49,12 @@
 						<textcolor>white</textcolor>
 						<shadowcolor>ff333</shadowcolor>
 					</control>
+					<control type="image">
+						<visible>[Container.Content(movies) + [ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsMovies)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsMovies)]] | [Container.Content(tvshows) + [ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsTVShows)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]]</visible>
+						<posx>169</posx>
+						<posy>260</posy>
+						<info>ListItem.Overlay</info>
+					</control>
 					<!--><control type="image">
 						<description>Overlay</description>
 						<posx>20</posx>
@@ -90,6 +96,12 @@
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
+						<control type="image">
+							<visible>[ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsMovies)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+							<posx>169</posx>
+							<posy>260</posy>
+							<info>ListItem.Overlay</info>
+						</control>
 					<!--><control type="image">
 						<description>Overlay</description>
 						<posx>20</posx>
