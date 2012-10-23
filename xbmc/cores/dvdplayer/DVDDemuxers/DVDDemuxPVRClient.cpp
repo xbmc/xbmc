@@ -475,3 +475,16 @@ void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, CStdString &strName)
       strName = "eac3";
   }
 }
+
+bool CDVDDemuxPVRClient::SeekTime(int timems, bool backwards, double *startpts)
+{
+  if (m_pInput)
+    return m_pvrClient->SeekTime(timems, backwards, startpts);
+  return false;
+}
+
+void CDVDDemuxPVRClient::SetSpeed ( int speed )
+{
+  if (m_pInput)
+    m_pvrClient->SetSpeed(speed);
+}

@@ -532,6 +532,23 @@ extern "C"
   void PauseStream(bool bPaused);
 
   /*!
+   * Notify the pvr addon/demuxer that XBMC wishes to seek the stream by time
+   * @param time The absolute time since stream start
+   * @param backwards True to seek to keyframe BEFORE time, else AFTER
+   * @param startpts can be updated to point to where display should start
+   * @return True if the seek operation was possible
+   * @remarks Optional, and only used if addon has its own demuxer. Return False if this add-on won't provide this function.
+   */
+  bool SeekTime(int time, bool backwards, double *startpts);
+
+  /*!
+   * Notify the pvr addon/demuxer that XBMC wishes to change playback speed
+   * @param speed The requested playback speed
+   * @remarks Optional, and only used if addon has its own demuxer.
+   */
+  void SetSpeed(int speed);
+
+  /*!
    * Called by XBMC to assign the function pointers of this add-on to pClient.
    * @param pClient The struct to assign the function pointers to.
    */
@@ -590,6 +607,8 @@ extern "C"
     pClient->CanPauseStream                 = CanPauseStream;
     pClient->PauseStream                    = PauseStream;
     pClient->CanSeekStream                  = CanSeekStream;
+    pClient->SeekTime                       = SeekTime;
+    pClient->SetSpeed                       = SetSpeed;
 
     pClient->OpenRecordedStream             = OpenRecordedStream;
     pClient->CloseRecordedStream            = CloseRecordedStream;

@@ -871,6 +871,16 @@ int64_t CPVRClient::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/
   return -EINVAL;
 }
 
+bool CPVRClient::SeekTime(int time, bool backwards, double *startpts)
+{
+  if (IsPlaying())
+  {
+    try { return m_pStruct->SeekTime(time, backwards, startpts); }
+    catch (exception &e) { LogException(e, "SeekTime()"); }
+  }
+  return false;
+}
+
 int64_t CPVRClient::GetStreamPosition(void)
 {
   if (IsPlayingLiveStream())
@@ -1335,6 +1345,15 @@ void CPVRClient::PauseStream(bool bPaused)
   {
     try { m_pStruct->PauseStream(bPaused); }
     catch (exception &e) { LogException(e, "PauseStream()"); }
+  }
+}
+
+void CPVRClient::SetSpeed(int speed)
+{
+  if (IsPlaying())
+  {
+    try { m_pStruct->SetSpeed(speed); }
+    catch (exception &e) { LogException(e, "SetSpeed()"); }
   }
 }
 
