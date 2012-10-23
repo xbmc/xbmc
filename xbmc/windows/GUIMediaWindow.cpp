@@ -64,6 +64,7 @@
 #include "interfaces/python/XBPython.h"
 #endif
 #include "interfaces/Builtins.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #if defined(TARGET_ANDROID)
@@ -870,7 +871,24 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
   if (clearCache)
     m_vecItems->RemoveDiscCache(GetID());
 
-  return Update(strCurrentDirectory);
+  // get the original number of items
+  int oldCount = m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size();
+  if (!Update(strCurrentDirectory))
+    return false;
+
+  // check if we previously had at least 1 item
+  // in the list and whether it now went down to 0
+  // if there are no more items to show after the update
+  // we go one level up in the hierachry to not show an
+  // empty list
+  if (oldCount > 0 &&
+     (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
+    GoParentFolder();
+  }
+
+  return true;
 }
 
 // \brief This function will be called by Update() before the
@@ -1132,7 +1150,15 @@ void CGUIMediaWindow::GoParentFolder()
   // if vector is not empty, pop parent
   // if vector is empty, parent is root source listing
   strParent = m_history.RemoveParentPath();
-  Update(strParent);
+  if (!Update(strParent))
+    return;
+
+  // No items to show so go another level up
+  if (!m_vecItems->GetPath().empty() && (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
+    GoParentFolder();
+  }
 }
 
 // \brief Override the function to change the default behavior on how
