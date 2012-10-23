@@ -122,9 +122,6 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
         ProcessItem(origin.x, pos, item.get(), focused && HasFocus(), currentTime, dirtyregions);
       else
         ProcessItem(pos, origin.y, item.get(), focused && HasFocus(), currentTime, dirtyregions);
-
-      if (oldDirty != dirtyregions.size())
-        CLog::Log(LOGDEBUG, "Item %s added %ld dirty regions", item->GetLabel().c_str(), dirtyregions.size() - oldDirty);
     }
     // increment our position
     pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
