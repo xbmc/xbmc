@@ -3650,4 +3650,12 @@ CStdString CFileItem::GetCachedVideoThumb(size_t i) const
     return CThumbnailCache::GetVideoThumb(*this);
 }
 
+bool CFileItemList::IsPlexMediaServerMusic() const
+{
+  if (GetContent() == "track" || GetContent() == "songs")
+    return true;
+
+  return CFileItem::IsPlexMediaServerMusic();
+}
+
 /* END PLEX */

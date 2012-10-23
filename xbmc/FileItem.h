@@ -599,6 +599,7 @@ public:
   void ClearSortState();
 
   /* PLEX */
+  virtual bool IsPlexMediaServerMusic() const;
   bool m_wasListingCancelled;
   bool m_displayMessage;
   CStdString m_displayMessageTitle;
