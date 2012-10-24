@@ -896,7 +896,7 @@ int64_t CPVRClient::GetStreamLength(void)
   else if (IsPlayingRecording())
   {
     try { return m_pStruct->LengthRecordedStream(); }
-    catch (exception &e) { LogException(e, "PositionRecordedStream()"); }
+    catch (exception &e) { LogException(e, "LengthRecordedStream()"); }
   }
   return -EINVAL;
 }
