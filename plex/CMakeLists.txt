@@ -13,6 +13,7 @@ include_directories(
 	${root}/xbmc/playlists
 	${root}/plex/FileSystem
 	${root}/plex/Network
+  ${CONFIG_INCLUDE_PATH_SPARKLE}
 )
 
 add_subdirectory(FileSystem)
@@ -22,6 +23,7 @@ add_subdirectory(Owned)
 add_subdirectory(Players)
 add_subdirectory(Utility)
 add_subdirectory(Helper)
+add_subdirectory(AutoUpdate)
 
 find_all_sources(. plex_SRCS)
 set(Headers PlexTypes.h)
@@ -36,14 +38,10 @@ set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
 
 if(APPLE)
   add_executable(Plex MACOSX_BUNDLE ${PLEX_ALL_SRCS})
-  set(MACOSX_BUNDLE_INFO_STRING "Plex Media Center")
-  set(MACOSX_BUNDLE_BUNDLE_NAME "Plex")
+  set_target_properties(Plex PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PLEX_VERSION_STRING_SHORT}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${PLEX_VERSION_STRING}")
-  set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.plexapp.plexmediacenter")
-  set(MACOSX_BUNDLE_ICON_FILE Plex.icns)
-  set(MACOSX_BUNDLE_COPYRIGHT "Plex inc")
 else()
   add_executable(Plex ${PLEX_ALL_SRCS})
 endif()

@@ -259,6 +259,9 @@ foreach(lib ${osx_frameworks})
   plex_find_library(${lib} 1 0 ${dependdir}/Frameworks 1)
 endforeach()
 
+#### find some header paths
+find_path(CONFIG_INCLUDE_PATH_SPARKLE Sparkle/Sparkle.h HINTS ${dependdir}/Frameworks)
+
 #### Deal with some generated files
 if(APPLE)
 	set(ARCH "x86-osx")

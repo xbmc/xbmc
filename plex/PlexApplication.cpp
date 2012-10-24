@@ -44,6 +44,8 @@ PlexApplication::PlexApplication()
     if (PlexUtils::IsValidIP(address))
       ManualServerScanner::Get().addServer(address);
   }
+
+  //m_autoUpdater = PlexAutoUpdate::GetAutoUpdater();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

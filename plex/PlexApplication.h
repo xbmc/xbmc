@@ -10,6 +10,7 @@
 #pragma once
 
 #include "guilib/IMsgTargetCallback.h"
+#include "AutoUpdate/PlexAutoUpdate.h"
 
 class PlexApplication;
 class PlexServiceListener;
@@ -45,4 +46,5 @@ private:
   /// Members
   PlexServiceListenerPtr m_serviceListener;
   BackgroundMusicPlayerPtr m_bgMusicPlayer;
+  PlexAutoUpdate m_autoUpdater;
 };
