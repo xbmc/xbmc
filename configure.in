@@ -2761,11 +2761,15 @@ XB_CONFIG_MODULE([lib/gtest], [
 ], [$SKIP_CONFIG_GTEST])
 
 XB_CONFIG_MODULE([pvr-addons], [
+   if test "$USE_EXTERNAL_FFMPEG" = 1; then
+      PVR_EXT_FFMPEG="--enable-external-ffmpeg"
+   fi
   ./configure \
     --prefix="${prefix}" \
     --host=$host_alias \
     --build=$build_alias \
     --target=$target_alias \
+    $PVR_EXT_FFMPEG \
     CC="$CC" \
     CXX="$CXX" \
     CFLAGS="$CFLAGS" \
