@@ -282,6 +282,8 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
       strParent = url.Get();
       return true;
     }
+    else if (strFile.size() == 0)
+      return false;
   }
   else if (url.GetProtocol() == "stack")
   {
