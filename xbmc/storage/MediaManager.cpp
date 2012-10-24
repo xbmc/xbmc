@@ -700,6 +700,15 @@ void CMediaManager::ProcessEvents()
   CSingleLock lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
+#if defined(HAS_DVD_DRIVE) && defined(TARGET_DARWIN_OSX)
+    // darwins GetFirstOpticalDeviceFileName only gives us something
+    // when a disc is inserted
+    // so we have to refresh m_strFirstAvailDrive when this happens after Initialize
+    // was called (e.x. the disc was inserted after the start of xbmc)
+    // else TranslateDevicePath wouldn't give the correct device
+    m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
+#endif
+    
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
     g_windowManager.SendThreadMessage(msg);
   }
