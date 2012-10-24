@@ -77,7 +77,11 @@ CFileItem::CFileItem(const CSong& song)
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
+#ifndef __PLEX__
   m_strThumbnailImage = song.strThumb;
+#else
+  SetThumbnailImage(song.strThumb);
+#endif
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -93,9 +97,17 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   URIUtils::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetAlbum(album);
   if (album.thumbURL.m_url.size() > 0)
+#ifndef __PLEX__
     m_strThumbnailImage = album.thumbURL.m_url[0].m_url;
+#else
+    SetThumbnailImage(album.thumbURL.m_url[0].m_url);
+#endif
   else
+#ifndef __PLEX__
     m_strThumbnailImage.clear();
+#else
+    ClearThumbnailImage();
+#endif
   m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
 }
@@ -225,7 +237,11 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
+#ifndef __PLEX__
   m_strThumbnailImage = share.m_strThumbnailImage;
+#else
+  SetThumbnailImage(share.m_strThumbnailImage);
+#endif
   /* PLEX */
   SetQuickFanart(share.m_strFanArtUrl);
   /* END PLEX */

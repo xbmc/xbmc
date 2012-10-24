@@ -40,7 +40,9 @@ CGUIListItem::CGUIListItem(void)
   m_strLabel = "";
   m_bSelected = false;
   m_strIcon = "";
+#ifndef __PLEX__
   m_strThumbnailImage = "";
+#endif
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -54,7 +56,9 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   SetSortLabel(strLabel);
   m_bSelected = false;
   m_strIcon = "";
+#ifndef __PLEX__
   m_strThumbnailImage = "";
+#endif
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -105,6 +109,7 @@ const CStdStringW& CGUIListItem::GetSortLabel() const
   return m_sortLabel;
 }
 
+#ifndef __PLEX__
 void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
 {
   if (m_strThumbnailImage == strThumbnail)
@@ -112,11 +117,14 @@ void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
   m_strThumbnailImage = strThumbnail;
   SetInvalid();
 }
+#endif
 
+#ifndef __PLEX__
 const CStdString& CGUIListItem::GetThumbnailImage() const
 {
   return m_strThumbnailImage;
 }
+#endif
 
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
 {
@@ -205,7 +213,11 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   FreeMemory();
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
+#ifndef __PLEX__
   m_strThumbnailImage = item.m_strThumbnailImage;
+#else
+  m_strThumbnailImageList = item.m_strThumbnailImageList;
+#endif
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
@@ -273,7 +285,9 @@ void CGUIListItem::Serialize(CVariant &value)
   value["strLabel"] = m_strLabel;
   value["strLabel2"] = m_strLabel2;
   value["sortLabel"] = CStdString(m_sortLabel);
+#ifndef __PLEX__
   value["strThumbnailImage"] = m_strThumbnailImage;
+#endif
   value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
 

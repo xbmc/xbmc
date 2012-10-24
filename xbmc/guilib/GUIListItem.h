@@ -74,8 +74,10 @@ public:
   void SetIconImage(const CStdString& strIcon);
   const CStdString& GetIconImage() const;
 
+#ifndef __PLEX__
   void SetThumbnailImage(const CStdString& strThumbnail);
   const CStdString& GetThumbnailImage() const;
+#endif
 
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
@@ -130,19 +132,25 @@ public:
 
   /* PLEX */
   void SetThumbnailImage(const CStdString &strThumbnail, size_t index);
+  void SetThumbnailImage(const CStdString &strThumbnail) { SetThumbnailImage(strThumbnail, 0); }
   void SetGrandparentThumbnailImage(const CStdString& strThumbnail);
   const CStdString& GetThumbnailImage(size_t index) const;
+  const CStdString& GetThumbnailImage() const { return GetThumbnailImage(0); }
   const CStdString& GetGrandparentThumbnailImage() const;
   size_t GetNumThumbnails() const { return m_strThumbnailImageList.size(); }
   int GetOverlayImageID() const { return m_overlayIcon; }
   bool HasThumbnail(size_t index) const;
   bool HasThumbnail() const { return HasThumbnail(0); }
   bool HasGrandparentThumbnail() const;
+
+  void ClearThumbnailImage() { m_strThumbnailImageList.clear(); }
   /* END PLEX */
 
 protected:
   CStdString m_strLabel2;     // text of column2
+#ifndef __PLEX__
   CStdString m_strThumbnailImage; // filename of thumbnail
+#endif
   CStdString m_strIcon;      // filename of icon
   GUIIconOverlay m_overlayIcon; // type of overlay icon
 
