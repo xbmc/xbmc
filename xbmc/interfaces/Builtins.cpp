@@ -286,7 +286,7 @@ int CBuiltins::Execute(const CStdString& execString)
     bool inhibit = (params.size() == 1 && params[0].Equals("true"));
     CApplicationMessenger::Get().InhibitIdleShutdown(inhibit);
   }
-  else if (execute.Equals("PingApp"))
+  else if (execute.Equals("pingapp"))
   {
     g_application.PingApp();
   }
