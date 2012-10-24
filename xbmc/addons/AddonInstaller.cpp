@@ -332,6 +332,12 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
         return false;
       }
     }
+    // prevent infinite loops
+    if (dep->ID() == addon->ID())
+    {
+      CLog::Log(LOGERROR, "Addon %s depends on itself, ignoring", addon->ID().c_str());
+      return false;
+    }
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     // TODO: should we assume that installed deps are OK?
     if (dep && !CheckDependencies(dep))
