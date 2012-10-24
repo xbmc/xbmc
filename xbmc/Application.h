@@ -156,6 +156,7 @@ public:
   void DimLCDOnPlayback(bool dim);
   bool IsCurrentThread() const;
   void Stop(int exitCode);
+  void PingApp();
   void RestartApp();
   void UnloadSkin(bool forReload = false);
   bool LoadUserWindows();
