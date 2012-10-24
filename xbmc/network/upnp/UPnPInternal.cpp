@@ -389,12 +389,13 @@ BuildObject(CFileItem&                    item,
             } else {
                 object->m_Resources.Insert(object->m_Resources.GetFirstItem(), resource);
             }
-            // copy across the known metadata
-            for(unsigned i=0; i<object->m_Resources.GetItemCount(); i++) {
-                object->m_Resources[i].m_Size = resource.m_Size;
-                object->m_Resources[i].m_Duration = resource.m_Duration;
-                object->m_Resources[i].m_Resolution = resource.m_Resolution;
-            }
+        }
+
+        // copy across the known metadata
+        for(unsigned i=0; i<object->m_Resources.GetItemCount(); i++) {
+            object->m_Resources[i].m_Size       = resource.m_Size;
+            object->m_Resources[i].m_Duration   = resource.m_Duration;
+            object->m_Resources[i].m_Resolution = resource.m_Resolution;
         }
 
         // Some upnp clients expect all audio items to have parent root id 4
