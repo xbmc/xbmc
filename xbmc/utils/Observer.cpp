@@ -24,20 +24,6 @@
 #include "utils/JobManager.h"
 
 using namespace std;
-using namespace ANNOUNCEMENT;
-
-class ObservableMessageJob : public CJob
-{
-private:
-  Observable        m_observable;
-  ObservableMessage m_message;
-public:
-  ObservableMessageJob(const Observable &obs, const ObservableMessage message);
-  virtual ~ObservableMessageJob() {}
-  virtual const char *GetType() const { return "observable-message-job"; }
-
-  virtual bool DoWork();
-};
 
 Observer::~Observer(void)
 {
@@ -74,15 +60,12 @@ void Observer::UnregisterObservable(Observable *obs)
 }
 
 Observable::Observable() :
-    m_bObservableChanged(false),
-    m_bAsyncAllowed(true)
+    m_bObservableChanged(false)
 {
-  CAnnouncementManager::AddAnnouncer(this);
 }
 
 Observable::~Observable()
 {
-  CAnnouncementManager::RemoveAnnouncer(this);
   StopObserver();
 }
 
@@ -133,7 +116,7 @@ void Observable::UnregisterObserver(Observer *obs)
   }
 }
 
-void Observable::NotifyObservers(const ObservableMessage message /* = ObservableMessageNone */, bool bAsync /* = false */)
+void Observable::NotifyObservers(const ObservableMessage message /* = ObservableMessageNone */)
 {
   bool bNotify(false);
   {
@@ -144,27 +127,13 @@ void Observable::NotifyObservers(const ObservableMessage message /* = Observable
   }
 
   if (bNotify)
-  {
-    if (bAsync && m_bAsyncAllowed)
-      CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, message), NULL);
-    else
-      SendMessage(*this, message);
-  }
+    SendMessage(*this, message);
 }
 
 void Observable::SetChanged(bool SetTo)
 {
   CSingleLock lock(m_obsCritSection);
   m_bObservableChanged = SetTo;
-}
-
-void Observable::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
-{
-  if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "ApplicationStop"))
-  {
-    CSingleLock lock(m_obsCritSection);
-    m_bAsyncAllowed = false;
-  }
 }
 
 void Observable::SendMessage(const Observable& obs, const ObservableMessage message)
@@ -183,17 +152,4 @@ void Observable::SendMessage(const Observable& obs, const ObservableMessage mess
       }
     }
   }
-}
-
-ObservableMessageJob::ObservableMessageJob(const Observable &obs, const ObservableMessage message)
-{
-  m_message = message;
-  m_observable = obs;
-}
-
-bool ObservableMessageJob::DoWork()
-{
-  Observable::SendMessage(m_observable, m_message);
-
-  return true;
 }
