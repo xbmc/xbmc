@@ -198,6 +198,7 @@
 		DFD4D22013D7286E00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D21413D7286E00A47C47 /* Implementation.cpp */; };
 		DFD4D22113D7286E00A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D21613D7286E00A47C47 /* README.platform */; };
 		DFD4D22213D7286E00A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D21C13D7286E00A47C47 /* SystemClock.cpp */; };
+		DFD9290E16384B9D00709DAE /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD9290C16384B9D00709DAE /* Timer.cpp */; };
 		DFDB00491516408F005079A4 /* CircularCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00411516408F005079A4 /* CircularCache.cpp */; };
 		DFDB004A1516408F005079A4 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00431516408F005079A4 /* DirectoryCache.cpp */; };
 		DFDB004B1516408F005079A4 /* FileCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00451516408F005079A4 /* FileCache.cpp */; };
@@ -1461,6 +1462,8 @@
 		DFD4D21713D7286E00A47C47 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		DFD4D21C13D7286E00A47C47 /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		DFD4D21D13D7286E00A47C47 /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
+		DFD9290C16384B9D00709DAE /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
+		DFD9290D16384B9D00709DAE /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		DFDB00411516408F005079A4 /* CircularCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CircularCache.cpp; sourceTree = "<group>"; };
 		DFDB00421516408F005079A4 /* CircularCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularCache.h; sourceTree = "<group>"; };
 		DFDB00431516408F005079A4 /* DirectoryCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryCache.cpp; sourceTree = "<group>"; };
@@ -5651,6 +5654,8 @@
 				F56C7709131EC153000AD0F6 /* Thread.cpp */,
 				F56C770A131EC153000AD0F6 /* Thread.h */,
 				F558F66E13AFE81500631E12 /* ThreadLocal.h */,
+				DFD9290C16384B9D00709DAE /* Timer.cpp */,
+				DFD9290D16384B9D00709DAE /* Timer.h */,
 			);
 			path = threads;
 			sourceTree = "<group>";
@@ -7576,6 +7581,7 @@
 				7CC30E1A16292627003E7579 /* VideoThumbLoader.cpp in Sources */,
 				7CC3105D162AAF9B003E7579 /* EdenVideoArtUpdater.cpp in Sources */,
 				DF004948162DB12200A971AD /* PVROperations.cpp in Sources */,
+				DFD9290E16384B9D00709DAE /* Timer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
