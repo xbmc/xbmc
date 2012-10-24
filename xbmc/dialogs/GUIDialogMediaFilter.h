@@ -26,12 +26,13 @@
 #include "dbwrappers/Database.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/GUIDialogSettings.h"
+#include "threads/Timer.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/StdString.h"
 
 class CFileItemList;
 
-class CGUIDialogMediaFilter : public CGUIDialogSettings
+class CGUIDialogMediaFilter : public CGUIDialogSettings, protected ITimerCallback
 {
 public:
   CGUIDialogMediaFilter();
@@ -59,15 +60,17 @@ protected:
   virtual void SetupPage();
   virtual void OnSettingChanged(SettingInfo &setting);
 
+  virtual void OnTimeout();
+
   void Reset();
   bool SetPath(const std::string &path);
   void UpdateControls();
+  void TriggerFilter() const;
 
   void OnBrowse(const Filter &filter, CFileItemList &items, bool countOnly = false);
   CSmartPlaylistRule* AddRule(Field field, CSmartPlaylistRule::SEARCH_OPERATOR ruleOperator = CSmartPlaylistRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
   void GetRange(const Filter &filter, float &min, float &interval, float &max, RANGEFORMATFUNCTION &formatFunction);
-
   bool GetMinMax(const CStdString &table, const CStdString &field, float &min, float &max, const CDatabase::Filter &filter = CDatabase::Filter());
 
   static CStdString RangeAsFloat(float valueLower, float valueUpper, float minimum);
@@ -79,4 +82,5 @@ protected:
   std::string m_mediaType;
   CSmartPlaylist *m_filter;
   std::map<uint32_t, Filter> m_filters;
+  CTimer *m_delayTimer;
 };
