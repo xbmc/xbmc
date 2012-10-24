@@ -352,6 +352,7 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
+  void ToggleScrSvr();
 
   float GetDimScreenSaverLevel() const;
 
