@@ -59,6 +59,9 @@ def platform_str(platform, arch):
     return "linux-%s-%s"%(platform.linux_distribution()[0].strip().lower(), platform.machine())
 
 def fix_install_name(path):
+  if os.path.exists(os.path.join(path, "install_name_fixed")):
+    print "Already done."
+    return
   for root, dirs, files in os.walk(path):
     for f in files:
       fpath = os.path.join(root, f)
@@ -83,7 +86,8 @@ def fix_install_name(path):
             try:
               exec_cmd(["install_name_tool", "-change", currentlib, newname, fpath], supress_output=True)
             except:
-              continue       
+              continue
+  open(os.path.join(path, "install_name_fixed"), "w").close()
 
 if __name__=='__main__':
     parser=optparse.OptionParser()
