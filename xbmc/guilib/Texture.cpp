@@ -226,11 +226,11 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
 
     if(omx_image.ReadFile(texturePath))
     {
-      int width = omx_image.GetWidth();
-      int height = omx_image.GetHeight();
+      unsigned int width = omx_image.GetWidth();
+      unsigned int height = omx_image.GetHeight();
 
-      // We restict textures to the maximum GUI size. This is a workaround for the PI memory limitation
-      g_Windowing.ClampToGUIDisplayLimits(width, height);
+      // We restict textures to the maximum size. This is a workaround for the PI memory limitation
+      omx_image.ClampLimits(width, height);
 
       if(omx_image.Decode(width, height))
       {
@@ -256,8 +256,6 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
           unsigned int imagePitch = GetPitch(m_imageWidth);
           unsigned int imageRows = GetRows(m_imageHeight);
           unsigned int texturePitch = GetPitch(m_textureWidth);
-          unsigned int textureRows = GetRows(m_textureHeight);
-          unsigned int blockSize = GetBlockSize();
 
           unsigned char *src = omx_image.GetDecodedData();
           unsigned char *dst = m_pixels;
