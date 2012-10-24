@@ -293,6 +293,7 @@
 						<shadowcolor>black</shadowcolor>
 						<align>left</align>
 						<aligny>center</aligny>
+						<visible>System.HasAddon(script.tvtunes)</visible>
 					</control>
 					<control type="radiobutton" id="115">
 						<width>750</width>
