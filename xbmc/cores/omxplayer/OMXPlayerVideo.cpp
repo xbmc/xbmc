@@ -633,13 +633,19 @@ void OMXPlayerVideo::Process()
           m_stalled = false;
         }
 
+        double output_pts = 0;
         // validate picture timing,
         // if both dts/pts invalid, use pts calulated from picture.iDuration
         // if pts invalid use dts, else use picture.pts as passed
         if (pPacket->dts == DVD_NOPTS_VALUE && pPacket->pts == DVD_NOPTS_VALUE)
-          pPacket->pts = pts;
+          output_pts = pts;
         else if (pPacket->pts == DVD_NOPTS_VALUE)
-          pPacket->pts = pPacket->dts;
+          output_pts = pPacket->dts;
+        else
+          output_pts = pts;
+
+        if(output_pts != DVD_NOPTS_VALUE)
+          output_pts += m_iVideoDelay;
 
         if(pPacket->pts != DVD_NOPTS_VALUE)
           pPacket->pts += m_iVideoDelay;
@@ -648,7 +654,8 @@ void OMXPlayerVideo::Process()
           pPacket->duration = frametime;
 
         m_omxVideo.Decode(pPacket->pData, pPacket->iSize, pPacket->pts, pPacket->pts);
-        Output(pPacket->iGroupId, pPacket->pts, bRequestDrop);
+
+        Output(pPacket->iGroupId, output_pts, bRequestDrop);
 
         if(m_started == false)
         {
