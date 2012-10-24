@@ -539,6 +539,7 @@
       <f3>FastForward</f3>
 	    <f4>VolumeUp</f4>
       <f5>VolumeDown</f5>
+      <escape>fullscreen</escape>
 		</keyboard>
 	</NowPlaying>
   <PlexSearch>
