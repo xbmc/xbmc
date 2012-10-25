@@ -558,19 +558,12 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
         } else {
             CDirectory::GetDirectory((const char*)parent_id, items);
-            if(!SortItems(items, sort_criteria))
-              DefaultSortItems(items);
+            DefaultSortItems(items);
         }
 
         if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && (XbmcThreads::SystemClockMillis() - time) > 1000 )) {
             items.Save();
         }
-    }
-    else {
-      // the file list was cached, but this request may use a different
-      // sort_criteria
-      if (SortItems(items, sort_criteria))
-        items.Save();
     }
 
     // Don't pass parent_id if action is Search not BrowseDirectChildren, as
