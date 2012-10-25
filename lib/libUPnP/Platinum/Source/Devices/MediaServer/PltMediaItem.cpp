@@ -171,6 +171,7 @@ PLT_MediaObject::Reset()
     m_People.actors.Clear();
     m_People.artists.Clear();    
     m_People.authors.Clear();
+    m_People.directors.Clear();
 
     m_Affiliation.album     = "";
     m_Affiliation.genres.Clear();

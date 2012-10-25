@@ -92,6 +92,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_ARTIST;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ACTOR, len, true) == 0) {
             mask |= PLT_FILTER_MASK_ACTOR;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DIRECTOR, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_DIRECTOR;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_AUTHOR, len, true) == 0) {
             mask |= PLT_FILTER_MASK_AUTHOR;       
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DATE, len, true) == 0) {
@@ -105,6 +107,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_ALBUMARTURI;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DESCRIPTION, len, true) == 0) {
             mask |= PLT_FILTER_MASK_DESCRIPTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LONGDESCRIPTION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LONGDESCRIPTION;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len, true) == 0) {
             mask |= PLT_FILTER_MASK_ORIGINALTRACK;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len, true) == 0) {
@@ -123,6 +127,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_SERIESTITLE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE, len, true) == 0) {
             mask |= PLT_FILTER_MASK_EPISODE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RATING, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RATING;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len, true) == 0) {
             mask |= PLT_FILTER_MASK_RES;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len, true) == 0 ||
