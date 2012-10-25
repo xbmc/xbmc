@@ -224,6 +224,8 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
     return "TvShowYears";
   else if (strPath.Equals("videodb://2/4/"))
     return "TvShowActors";
+  else if (strPath.Equals("videodb://2/5/"))
+    return "TvShowStudios";
   else if (strPath.Equals("videodb://2/9/"))
     return "TvShowTags";
   else if (strPath.Equals("videodb://2/"))
