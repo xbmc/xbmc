@@ -1,7 +1,7 @@
 From 5cc735503bfe1242606f19638bffeb686dd4d1b5 Mon Sep 17 00:00:00 2001
 From: Joakim Plate <elupus@ecce.se>
 Date: Wed, 8 Dec 2010 14:03:43 +0000
-Subject: [PATCH 14/24] changed: allow 8 second skew between streams in mov
+Subject: [PATCH 14/24] changed: allow 4 second skew between streams in mov
  before attempting to seek
 
 ---
@@ -18,8 +18,8 @@ index 9da8eab..0f9836c 100644
                   ((msc->pb != s->pb && dts < best_dts) || (msc->pb == s->pb &&
 -                 ((FFABS(best_dts - dts) <= AV_TIME_BASE && current_sample->pos < sample->pos) ||
 -                  (FFABS(best_dts - dts) > AV_TIME_BASE && dts < best_dts)))))) {
-+                 ((FFABS(best_dts - dts) <= 8*AV_TIME_BASE && current_sample->pos < sample->pos) ||
-+                  (FFABS(best_dts - dts) > 8*AV_TIME_BASE && dts < best_dts)))))) {
++                 ((FFABS(best_dts - dts) <= 4*AV_TIME_BASE && current_sample->pos < sample->pos) ||
++                  (FFABS(best_dts - dts) > 4*AV_TIME_BASE && dts < best_dts)))))) {
                  sample = current_sample;
                  best_dts = dts;
                  *st = avst;
