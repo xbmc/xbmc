@@ -218,7 +218,7 @@ void CPlexSourceScanner::MergeSourcesForWindow(int windowId)
       CheckForRemovedSources(g_settings.m_pictureSources, windowId);
       break;
       
-    case WINDOW_VIDEO_FILES:
+    case WINDOW_VIDEO_NAV:
       BOOST_FOREACH(StringSourcesPair pair, g_hostSourcesMap)
         MergeSource(g_settings.m_videoSources, pair.second->videoSources);
       CheckForRemovedSources(g_settings.m_videoSources, windowId);
@@ -274,7 +274,7 @@ void CPlexSourceScanner::CheckForRemovedSources(VECSOURCES& sources, int windowI
           case WINDOW_PICTURES:
             remoteSources = pair.second->pictureSources;
             break;
-          case WINDOW_VIDEO_FILES:
+          case WINDOW_VIDEO_NAV:
             remoteSources = pair.second->videoSources;
             break;
           case WINDOW_PROGRAMS:
