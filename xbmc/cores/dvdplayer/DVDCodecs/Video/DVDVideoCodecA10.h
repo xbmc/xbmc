@@ -23,6 +23,7 @@
 
 #include "guilib/Geometry.h"
 #include "DVDVideoCodec.h"
+#include "DVDStreamInfo.h"
 
 extern "C" {
 #include "libcedarv.h"
@@ -138,6 +139,8 @@ public:
 
 private:
 
+  bool DoOpen();
+
   typedef struct ScalerParameter {
     int width_in;
     int height_in;
@@ -163,6 +166,7 @@ private:
   //decoding
   cedarv_stream_info_t  m_info;
   float                 m_aspect;
+  CDVDStreamInfo        m_hints;
   cedarv_decoder_t     *m_hcedarv;
   int                   m_hscaler;
   u8                   *m_yuvdata;

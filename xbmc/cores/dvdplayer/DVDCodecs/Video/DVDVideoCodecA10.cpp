@@ -1,7 +1,13 @@
 #include "DVDVideoCodecA10.h"
 #include "DVDClock.h"
-#include "DVDStreamInfo.h"
 #include "utils/log.h"
+#include "threads/Atomics.h"
+//check for eden
+#include "../VideoRenderers/RenderFlags.h"
+#ifdef CONF_FLAGS_FORMAT_A10BUF
+#define RENDER_FMT_YUV420P      DVDVideoPicture::FMT_YUV420P
+#define RENDER_FMT_A10BUF       DVDVideoPicture::FMT_A10BUF
+#endif
 
 #include <sys/ioctl.h>
 #include <math.h>
@@ -11,28 +17,30 @@ extern "C" {
 #include "drv_display_sun4i.h"
 };
 
+static long g_cedaropen = 0;
+
 #define A10DEBUG
 #define MEDIAINFO
 
 /*Cedar Decoder*/
-//#define A10ENABLE_MPEG1
-#define A10ENABLE_MPEG2
-#define A10ENABLE_H264
-//#define A10ENABLE_H263
-//#define A10ENABLE_VC1_WVC1
-#define A10ENABLE_VP6
-#define A10ENABLE_VP8
-#define A10ENABLE_FLV1
-#define A10ENABLE_MJPEG
-#define A10ENABLE_WMV1
-//#define A10ENABLE_WMV2
-//#define A10ENABLE_WMV3
+//#define A10ENABLE_MPEG1       //does not like my tmpgenc videos
+#define A10ENABLE_MPEG2         //ok
+#define A10ENABLE_H264          //ok
+//#define A10ENABLE_H263        //fails
+#define A10ENABLE_VC1_WVC1      //ok
+#define A10ENABLE_VP6           //ok
+#define A10ENABLE_VP8           //ok
+//#define A10ENABLE_FLV1        //fails
+#define A10ENABLE_MJPEG         //ok
+#define A10ENABLE_WMV1          //ok
+//#define A10ENABLE_WMV2        //fails
+#define A10ENABLE_WMV3          //ok
 //#define A10ENABLE_MPEG4V1
 //#define A10ENABLE_MPEG4V2
-//#define A10ENABLE_MPEG4V3
-//#define A10ENABLE_XVID
+//#define A10ENABLE_MPEG4V3     //ok for divx3
 //#define A10ENABLE_DIVX4
 //#define A10ENABLE_DIVX5
+#define A10ENABLE_XVID          //mostly ok
 
 /*
 TODO:- Finish adding MPEG4 codecs tags 
@@ -72,8 +80,6 @@ CDVDVideoCodecA10::~CDVDVideoCodecA10()
  */
 bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  s32 ret;
-
   if (getenv("NOA10"))
   {
     CLog::Log(LOGNOTICE, "A10: disabled.\n");
@@ -83,7 +89,7 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (hints.software)
   {
     CLog::Log(LOGNOTICE, "A10: software decoding requested.\n");
-    m_hwrender = false;
+    return false;
   }
   else
   {
@@ -92,13 +98,14 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   CLog::Log(LOGNOTICE, "A10: using %s rendering.\n", m_hwrender ? "hardware" : "software");
 
-  m_aspect = hints.aspect;
+  m_hints  = hints;
+  m_aspect = m_hints.aspect;
 
   memset(&m_info, 0, sizeof(m_info));
-  //m_info.frame_rate       = (double)hints.fpsrate / hints.fpsscale * 1000;
+  //m_info.frame_rate       = (double)m_hints.fpsrate / m_hints.fpsscale * 1000;
   m_info.frame_duration = 0;
-  m_info.video_width = hints.width;
-  m_info.video_height = hints.height;
+  m_info.video_width = m_hints.width;
+  m_info.video_height = m_hints.height;
   m_info.aspect_ratio = 1000;
   m_info.sub_format = CEDARV_SUB_FORMAT_UNKNOW;
   m_info.container_format = CEDARV_CONTAINER_FORMAT_UNKNOW;
@@ -106,19 +113,19 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   m_info.init_data = NULL;
 
 #ifdef MEDIAINFO
-  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: CodecID %d \n", hints.codec);
-  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: StreamType %d \n", hints.type);
-  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Level %d \n", hints.level);
-  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Profile %d \n", hints.profile);
-  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: PTS_invalid %d \n", hints.ptsinvalid);
-  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Tag %d \n", hints.codec_tag);
-  { u8 *pb = (u8*)&hints.codec_tag;
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: CodecID %d \n", m_hints.codec);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: StreamType %d \n", m_hints.type);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Level %d \n", m_hints.level);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Profile %d \n", m_hints.profile);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: PTS_invalid %d \n", m_hints.ptsinvalid);
+  CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Tag %d \n", m_hints.codec_tag);
+  { u8 *pb = (u8*)&m_hints.codec_tag;
     if (isalnum(pb[0]) && isalnum(pb[1]) && isalnum(pb[2]) && isalnum(pb[3]))
       CLog::Log(LOGDEBUG, "A10: MEDIAINFO: Tag fourcc %c%c%c%c\n", pb[0], pb[1], pb[2], pb[3]);
   }
 #endif
 
-  switch(hints.codec)
+  switch(m_hints.codec)
   {
   //MPEG1
 #ifdef A10ENABLE_MPEG1
@@ -145,9 +152,9 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 #ifdef A10ENABLE_H264
   case CODEC_ID_H264:
     m_info.format = CEDARV_STREAM_FORMAT_H264;
-    m_info.init_data_len = hints.extrasize;
-    m_info.init_data = (u8*)hints.extradata;
-    if(hints.codec_tag==27) //M2TS and TS
+    m_info.init_data_len = m_hints.extrasize;
+    m_info.init_data = (u8*)m_hints.extradata;
+    if(m_hints.codec_tag==27) //M2TS and TS
       m_info.container_format = CEDARV_CONTAINER_FORMAT_TS;
     break;
 #endif
@@ -177,32 +184,32 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 #ifdef A10ENABLE_WMV3
   case CODEC_ID_WMV3:
     m_info.format = CEDARV_STREAM_FORMAT_VC1;
-    m_info.init_data_len = hints.extrasize;
-    m_info.init_data = (u8*)hints.extradata;
+    m_info.init_data_len = m_hints.extrasize;
+    m_info.init_data = (u8*)m_hints.extradata;
     break;
 #endif
     //VC1 and WVC1
 #ifdef A10ENABLE_VC1_WVC1
   case CODEC_ID_VC1:
     m_info.format = CEDARV_STREAM_FORMAT_VC1;
-    m_info.init_data_len = hints.extrasize;
-    m_info.init_data = (u8*)hints.extradata;
+    m_info.init_data_len = m_hints.extrasize;
+    m_info.init_data = (u8*)m_hints.extradata;
     break;
 #endif
     //MJPEG
 #ifdef A10ENABLE_MJPEG
   case CODEC_ID_MJPEG:
     m_info.format = CEDARV_STREAM_FORMAT_MJPEG;
-    m_info.init_data_len = hints.extrasize;
-    m_info.init_data = (u8*)hints.extradata;
+    m_info.init_data_len = m_hints.extrasize;
+    m_info.init_data = (u8*)m_hints.extradata;
     break;
 #endif
     //VP8
 #ifdef A10ENABLE_VP8
   case CODEC_ID_VP8:
     m_info.format = CEDARV_STREAM_FORMAT_VP8;
-    m_info.init_data_len = hints.extrasize;
-    m_info.init_data = (u8*)hints.extradata;
+    m_info.init_data_len = m_hints.extrasize;
+    m_info.init_data = (u8*)m_hints.extradata;
     break;
 #endif
     //MSMPEG4V1
@@ -237,59 +244,51 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     //Detected as MPEG4 (ID 13)
   case CODEC_ID_MPEG4:
     m_info.format = CEDARV_STREAM_FORMAT_MPEG4;
-    switch(hints.codec_tag)
+    switch(m_hints.codec_tag)
     {
-    //MP41(MSMPEG4V1)
-#ifdef A10ENABLE_MPEG4V1
-    case _4CC('m','p','4','1'):
-      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX1;
-      break;
-#endif
-    //MP42(MSMPEG4V2)
-#ifdef A10ENABLE_MPEG4V2
-    case _4CC('m','p','4','2'):
-      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX2;
-      break;
-#endif
-    //MP43(MSMPEG4V3), DIV3, DIV4
-#ifdef A10ENABLE_MPEG4V3
-    case _4CC('m','p','4','3'):
-    case _4CC('d','i','v','3'):
-    case _4CC('d','i','v','4'):
-      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX3;
-      break;
-#endif
-    //XVID
-#ifdef A10ENABLE_XVID
-    case _4CC('X','V','I','D'):
-    case _4CC('m','p','4','v'):
-    case _4CC('p','m','p','4'):
-    case _4CC('f','m','p','4'):
-      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_XVID;
-      break;
-#endif
     //DX40/DIVX4, divx
 #ifdef A10ENABLE_DIVX4
-    case _4CC('D','X','4','0'):
     case _4CC('D','I','V','X'):
       m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX4;
       break;
 #endif
-    //DX50/DIVX5, div5
+    //DX50/DIVX5
 #ifdef A10ENABLE_DIVX5
     case _4CC('D','X','5','0'):
-    case _4CC('d','i','v','5'):
+    case _4CC('D','I','V','5'):
       m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_DIVX5;
       break;
 #endif
+   //XVID
+#ifdef A10ENABLE_XVID
+    case _4CC('X','V','I','D'):
+    case _4CC('M','P','4','V'):
+    case _4CC('P','M','P','4'):
+    case _4CC('F','M','P','4'):
+      m_info.sub_format = CEDARV_MPEG4_SUB_FORMAT_XVID;
+      break;
+#endif
     default:
-      CLog::Log(LOGERROR, "A10: (MPEG4)Codec Tag %d is unknown.\n", hints.codec_tag);
+      CLog::Log(LOGERROR, "A10: (MPEG4)Codec Tag %d is unknown.\n", m_hints.codec_tag);
       return false;
     }
     break;
 
   default:
-    CLog::Log(LOGERROR, "A10: codecid %d is unknown.\n", hints.codec);
+    CLog::Log(LOGERROR, "A10: codecid %d is unknown.\n", m_hints.codec);
+    return false;
+  }
+
+  return DoOpen();
+}
+
+bool CDVDVideoCodecA10::DoOpen()
+{
+  s32 ret;
+
+  if (cas(&g_cedaropen, 0, 1) != 0)
+  {
+    CLog::Log(LOGERROR, "A10: cedar already in use");
     return false;
   }
 
@@ -297,34 +296,34 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "A10: libcedarv_init failed. (%d)\n", ret);
-    return false;
+    goto Error;
   }
 
   ret = m_hcedarv->set_vstream_info(m_hcedarv, &m_info);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "A10: set_vstream_info failed. (%d)\n", ret);
-    return false;
+    goto Error;
   }
 
   ret = m_hcedarv->open(m_hcedarv);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "A10: open failed. (%d)\n", ret);
-    return false;
+    goto Error;
   }
 
   ret = m_hcedarv->ioctrl(m_hcedarv, CEDARV_COMMAND_PLAY, 0);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "A10: CEDARV_COMMAND_PLAY failed. (%d)\n", ret);
-    return false;
+    goto Error;
   }
 
   if (!disp_open())
   {
     CLog::Log(LOGERROR, "A10: disp_open failed.\n");
-    return false;
+    goto Error;
   }
 
 #ifndef A10DEBUG
@@ -338,6 +337,11 @@ bool CDVDVideoCodecA10::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   CLog::Log(LOGDEBUG, "A10: cedar open.");
   return true;
+
+Error:
+
+  Dispose();
+  return false;
 }
 
 /*
@@ -358,6 +362,7 @@ void CDVDVideoCodecA10::Dispose()
     m_hcedarv->close(m_hcedarv);
     libcedarv_exit(m_hcedarv);
     m_hcedarv = NULL;
+    cas(&g_cedaropen, 1, 0);
     CLog::Log(LOGDEBUG, "A10: cedar dispose.");
   }
 }
@@ -373,6 +378,12 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
   u32                        bufsize0, bufsize1;
   cedarv_stream_data_info_t  dinf;
   cedarv_picture_t           picture;
+
+  if (!pData)
+    return VC_BUFFER;
+
+  if (!m_hcedarv)
+    return VC_ERROR;
 
   ret = m_hcedarv->request_write(m_hcedarv, iSize, &buf0, &bufsize0, &buf1, &bufsize1);
   if(ret < 0)
@@ -563,7 +574,9 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
  */
 void CDVDVideoCodecA10::Reset()
 {
-  CLog::Log(LOGERROR, "A10: attention: reset!\n");
+  CLog::Log(LOGDEBUG, "A10: reset requested");
+  Dispose();
+  DoOpen();
 }
 
 /*
