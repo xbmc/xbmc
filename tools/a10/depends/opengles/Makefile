@@ -5,15 +5,20 @@ SUBVERSION1=.9310_Linux
 LOCATION1=http://malideveloper.com/files
 TARBALL1=$(MALISDK)$(SUBVERSION1).tar.gz
 
-GLESLIBS=opengles-a10-bin
-LOCATION2=https://github.com/cnxsoft/a10-bin/tarball/master
+GLESLIBS=mali-libs
+LOCATION2=https://github.com/linux-sunxi/mali-libs/tarball/master
 TARBALL2=$(GLESLIBS).tar.gz
+ifeq ($(USEARMHF), 1)
+LIBVERSION=r3p0/armhf/framebuffer
+else
+LIBVERSION=r2p4/armel/framebuffer
+endif
 
 all: .installed
 
 .installed: .include .lib
 	install -d ${XBMCPREFIX}/lib
-	cp lib/* ${XBMCPREFIX}/lib
+	cp -a lib/* ${XBMCPREFIX}/lib
 	touch $@
 
 .include:	$(TARBALLS)/$(TARBALL1)
@@ -34,16 +39,15 @@ all: .installed
 	
 $(TARBALLS)/$(TARBALL1):
 	wget $(LOCATION1)/$(TARBALL1) -O $(TARBALLS)/$(TARBALL1)
-	
+
 .lib: $(TARBALLS)/$(TARBALL2)
 	rm -rf tmp lib
 	mkdir tmp
 	(	cd tmp &&\
 		tar xvfz $(TARBALLS)/$(TARBALL2) &&\
-		cd cnxsoft-a10-bin* &&\
-		mv armel/lib ../.. &&\
-		cd ../.. &&\
-		rm -r tmp \
+		mv linux-sunxi-mali-libs*/$(LIBVERSION)/lib .. &&\
+		cd .. &&\
+		rm -r tmp\
 	)
 	touch $@
 
@@ -53,6 +57,3 @@ $(TARBALLS)/$(TARBALL2):
 	
 clean:
 	rm -rf .installed .lib lib .include include
-	
-	
-	

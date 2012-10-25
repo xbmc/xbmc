@@ -3,6 +3,12 @@ include ../depends.mk
 TARBALL=cedarx-libs.tar.gz
 URL=https://github.com/linux-sunxi/cedarx-libs/tarball/master
 
+ifeq ($(USEARMHF), 1)
+LIBVERSION=linux-armhf
+else
+LIBVERSION=linux-armel
+endif
+
 SRCS = \
 	libcedarv/vdecoder.c \
 	libcedarv/awprintf.c \
@@ -10,6 +16,10 @@ SRCS = \
 	vbv/vbv.c \
 	adapter/libve_adapter.c \
 	adapter/os_adapter.c
+
+ifeq ($(USEARMHF), 1)
+SRCS += adapter/avheap/avheap.c
+endif
 
 OBJS = $(SRCS:%.c=%.o)
 
@@ -19,7 +29,9 @@ all: .installed
 
 .installed: $(TARGET)
 	install -d $(XBMCPREFIX)/lib
+ifneq ($(USEARMHF), 1)
 	cp adapter/cdxalloc/libcedarxalloc.so $(XBMCPREFIX)/lib
+endif
 	cp libvecore/libvecore.so $(XBMCPREFIX)/lib
 	touch $@
 
@@ -32,8 +44,9 @@ $(TARGET) : .extracted $(OBJS)
 	mkdir tmp
 	( cd tmp &&\
 	  tar xvfz $(TARBALLS)/$(TARBALL) &&\
-	  cd linux-sunxi-*/libcedarv/linux-armel &&\
+	  cd linux-sunxi-*/libcedarv/$(LIBVERSION) &&\
 	  rm Makefile .gitignore cedardefs.mk &&\
+	  rm -rf sample &&\
 	  mv * ../../../../ \
 	)
 	rm -rf tmp $(OBJS)
