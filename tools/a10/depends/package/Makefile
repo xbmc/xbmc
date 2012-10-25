@@ -1,8 +1,6 @@
-#warning: change if XBMCPREFIX gets changed.
-
 include ../depends.mk
 
-LCLPREFIX=allwinner/xbmc-pvr-bin
+LCLPREFIX=$(shell echo $(XBMCPREFIX) | sed 's/^\///g')
 
 DEB=xbmca10.deb
 TARBALL=xbmca10.tar.gz
@@ -10,19 +8,20 @@ TARBALL=xbmca10.tar.gz
 all: $(TARBALL)
 
 $(TARBALL): root/DEBIAN/control $(XBMCPREFIX)/lib/xbmc/xbmc.bin README
-	(	cd root &&\
-		rm -rf $(LCLPREFIX) &&\
-		tar cf /tmp/tmp.tar $(XBMCPREFIX) &&\
-		tar xf /tmp/tmp.tar &&\
+	(	rm -rf tmp &&\
+		cp -r root tmp &&\
+		cd tmp &&\
+		tar cf - $(XBMCPREFIX) | tar xf - &&\
 		rm -rf $(LCLPREFIX)/include &&\
 		rm -rf $(LCLPREFIX)/lib/pkgconfig &&\
 		rm -f  $(LCLPREFIX)/lib/*.a &&\
 		$(STRIP) --strip-unneeded `find . -name xbmc.bin -o -name *.so -print` \
 	)
-	dpkg -b root $(DEB)
+	dpkg -b tmp $(DEB)
 	tar cvfz $(TARBALL) README $(DEB)
+	rm -r tmp $(DEB)
 	
 clean:
-	rm -rf root/$(LCLPREFIX)
+	rm -rf tmp
 	rm -f $(TARBALL) $(DEB)
 
