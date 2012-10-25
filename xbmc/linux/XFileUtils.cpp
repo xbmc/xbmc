@@ -126,14 +126,11 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   }
   free(namelist);
 
-  if (pHandle->m_FindFileResults.size() == 0)
+  if (pHandle->m_FindFileResults.size() == 0 || !FindNextFile(pHandle, lpFindData) )
   {
     delete pHandle;
     return INVALID_HANDLE_VALUE;
   }
-
-  FindNextFile(pHandle, lpFindData);
-
   return pHandle;
 }
 
@@ -142,9 +139,8 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   if (lpFindData == NULL || hHandle == NULL || hHandle->GetType() != CXHandle::HND_FIND_FILE)
     return FALSE;
 
-  if ((unsigned int) hHandle->m_nFindFileIterator >= hHandle->m_FindFileResults.size())
-    return FALSE;
-
+  while ((unsigned int) hHandle->m_nFindFileIterator < hHandle->m_FindFileResults.size())
+  {
   CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
   CStdString strFileNameTest = hHandle->m_FindFileDir + strFileName;
 
@@ -153,9 +149,9 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
 
   struct stat64 fileStat;
   memset(&fileStat, 0, sizeof(fileStat));
- 
+
   if (stat64(strFileNameTest, &fileStat) == -1)
-    return FALSE;
+    continue;
 
   bool bIsDir = false;
   if (S_ISDIR(fileStat.st_mode))
@@ -185,6 +181,8 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
   lpFindData->nFileSizeLow =  (DWORD)fileStat.st_size;
 
   return TRUE;
+  }
+  return FALSE;
 }
 
 BOOL FindClose(HANDLE hFindFile)
