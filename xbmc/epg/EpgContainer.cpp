@@ -176,11 +176,6 @@ void CEpgContainer::LoadFromDB(void)
 
     for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
     {
-      if (InterruptUpdate())
-      {
-        bLoaded = false;
-        break;
-      }
       UpdateProgressDialog(++iCounter, m_epgs.size(), it->second->Name());
       it->second->Load();
     }
@@ -286,12 +281,21 @@ CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 
 void CEpgContainer::InsertFromDatabase(int iEpgID, const CStdString &strName, const CStdString &strScraperName)
 {
-  CEpg *epg = new CEpg(iEpgID, strName, strScraperName, true);
+  CEpg* epg = GetById(iEpgID);
   if (epg)
   {
-    m_epgs.insert(make_pair(iEpgID, epg));
-    SetChanged();
-    epg->RegisterObserver(this);
+    if (!epg->Name().Equals(strName) || !epg->ScraperName().Equals(strScraperName))
+      SetChanged();
+  }
+  else
+  {
+    epg = new CEpg(iEpgID, strName, strScraperName, true);
+    if (epg)
+    {
+      m_epgs.insert(make_pair(iEpgID, epg));
+      SetChanged();
+      epg->RegisterObserver(this);
+    }
   }
 }
 
@@ -490,7 +494,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
       continue;
 
     if (bShowProgress && !bOnlyPending)
-          UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
+      UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
 
     if ((!bOnlyPending || epg->UpdatePending()) && epg->Update(start, end, m_iUpdateTime, bOnlyPending))
       ++iUpdatedTables;
