@@ -355,15 +355,10 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
 #endif
 
-
-        // Browse and wait for result
-        PLT_MediaObjectListReference list;
-        NPT_Result res;
-        // we want all properties, so send empty filter
-        res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list, false, 0, 0, "");
-
         // if error, return now, the device could have gone away
         // this will make us go back to the sources list
+        PLT_MediaObjectListReference list;
+        NPT_Result res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list);
         if (NPT_FAILED(res)) goto failure;
 
         // empty list is ok
