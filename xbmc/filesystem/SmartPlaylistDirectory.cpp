@@ -164,8 +164,8 @@ namespace XFILE
         }
         musicUrl.AddOption(option, xsp);
 
-        CDatabase::Filter filter;
-        success = db.GetArtistsByWhere(musicUrl.ToString(), filter, items, sorting);
+        CDatabase::Filter dbfilter;
+        success = db.GetArtistsNav(musicUrl.ToString(), items, !g_guiSettings.GetBool("musiclibrary.showcompilationartists"), -1, -1, -1, dbfilter, sorting);
         items.SetContent("artists");
         db.Close();
       }
