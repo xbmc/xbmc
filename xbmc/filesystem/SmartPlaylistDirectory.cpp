@@ -166,7 +166,7 @@ namespace XFILE
 
         CDatabase::Filter filter;
         success = db.GetArtistsByWhere(musicUrl.ToString(), filter, items, sorting);
-        items.SetContent("albums");
+        items.SetContent("artists");
         db.Close();
       }
     }
