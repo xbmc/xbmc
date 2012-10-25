@@ -141,46 +141,46 @@ BOOL   FindNextFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindData)
 
   while ((unsigned int) hHandle->m_nFindFileIterator < hHandle->m_FindFileResults.size())
   {
-  CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
-  CStdString strFileNameTest = hHandle->m_FindFileDir + strFileName;
+    CStdString strFileName = hHandle->m_FindFileResults[hHandle->m_nFindFileIterator++];
+    CStdString strFileNameTest = hHandle->m_FindFileDir + strFileName;
 
-  if (IsAliasShortcut(strFileNameTest))
-    TranslateAliasShortcut(strFileNameTest);
+    if (IsAliasShortcut(strFileNameTest))
+      TranslateAliasShortcut(strFileNameTest);
 
-  struct stat64 fileStat;
-  memset(&fileStat, 0, sizeof(fileStat));
+    struct stat64 fileStat;
+    memset(&fileStat, 0, sizeof(fileStat));
 
-  if (stat64(strFileNameTest, &fileStat) == -1)
-    continue;
+    if (stat64(strFileNameTest, &fileStat) == -1)
+      continue;
 
-  bool bIsDir = false;
-  if (S_ISDIR(fileStat.st_mode))
-  {
-    bIsDir = true;
-  }
+    bool bIsDir = false;
+    if (S_ISDIR(fileStat.st_mode))
+    {
+      bIsDir = true;
+    }
 
-  memset(lpFindData,0,sizeof(WIN32_FIND_DATA));
+    memset(lpFindData,0,sizeof(WIN32_FIND_DATA));
 
-  lpFindData->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
-  strcpy(lpFindData->cFileName, strFileName.c_str());
+    lpFindData->dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+    strcpy(lpFindData->cFileName, strFileName.c_str());
 
-  if (bIsDir)
-    lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
+    if (bIsDir)
+      lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
 
-  if (strFileName[0] == '.')
-    lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
+    if (strFileName[0] == '.')
+      lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_HIDDEN;
 
-  if (access(strFileName, R_OK) == 0 && access(strFileName, W_OK) != 0)
-    lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
+    if (access(strFileName, R_OK) == 0 && access(strFileName, W_OK) != 0)
+      lpFindData->dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
 
-  TimeTToFileTime(fileStat.st_ctime, &lpFindData->ftCreationTime);
-  TimeTToFileTime(fileStat.st_atime, &lpFindData->ftLastAccessTime);
-  TimeTToFileTime(fileStat.st_mtime, &lpFindData->ftLastWriteTime);
+    TimeTToFileTime(fileStat.st_ctime, &lpFindData->ftCreationTime);
+    TimeTToFileTime(fileStat.st_atime, &lpFindData->ftLastAccessTime);
+    TimeTToFileTime(fileStat.st_mtime, &lpFindData->ftLastWriteTime);
 
-  lpFindData->nFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
-  lpFindData->nFileSizeLow =  (DWORD)fileStat.st_size;
+    lpFindData->nFileSizeHigh = (DWORD)(fileStat.st_size >> 32);
+    lpFindData->nFileSizeLow =  (DWORD)fileStat.st_size;
 
-  return TRUE;
+    return TRUE;
   }
   return FALSE;
 }
