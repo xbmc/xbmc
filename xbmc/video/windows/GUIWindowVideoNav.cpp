@@ -421,6 +421,11 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         LoadVideoInfo(items);
     }
   }
+
+  /* PLEX */
+  BackgroundMusicPlayer::SendThemeChangeMessage(items.GetProperty("theme").asString());
+  /* END PLEX */
+
   return bResult;
 }
 
