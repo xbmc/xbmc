@@ -369,6 +369,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
         channel->m_strStreamURL            = m_pDS->fv("sStreamURL").get_asString();
         channel->m_iClientEncryptionSystem = m_pDS->fv("iEncryptionSystem").get_asInt();
         channel->m_iEpgId                  = m_pDS->fv("idEpg").get_asInt();
+        channel->UpdateEncryptionName();
 
 #if PVRDB_DEBUGGING
         CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
