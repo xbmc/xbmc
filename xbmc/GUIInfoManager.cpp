@@ -4553,6 +4553,17 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
   case LISTITEM_STAR_RATING:
     {
       CStdString rating;
+      /* PLEX */
+      if (item->HasProperty("userRating"))
+      {
+        rating.Format("rating%d.png", (long)(item->GetProperty("userRating").asDouble() + 0.5f));
+      }
+      else if (item->HasProperty("rating"))
+      {
+        rating.Format("rating%d.png", (long)(item->GetProperty("rating").asDouble() + 0.5f));
+      }
+      else
+      /* END PLEX */
       if (item->HasVideoInfoTag())
       { // rating for videos is assumed 0..10, so convert to 0..5
         rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
