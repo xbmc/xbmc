@@ -196,7 +196,7 @@ public:
 
     virtual NPT_Result Reset();
     virtual NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
-    virtual NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
+    virtual NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
     virtual NPT_Result FromDidl(NPT_XmlElementNode* entry);
 
 public:
@@ -248,7 +248,7 @@ public:
 
     // PLT_MediaObject methods
     NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
-    NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
+    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
     NPT_Result FromDidl(NPT_XmlElementNode* entry);
 };
 
@@ -271,7 +271,7 @@ public:
     // PLT_MediaObject methods
     NPT_Result Reset();
     NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
-    NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
+    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
     NPT_Result FromDidl(NPT_XmlElementNode* entry);
 
 public:
