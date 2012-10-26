@@ -25,7 +25,7 @@
 
 #include <iostream>
 
-#define UPDATER_VERSION "0.12"
+#define UPDATER_VERSION "0.13"
 
 void runWithUi(int argc, char** argv, UpdateInstaller* installer);
 
