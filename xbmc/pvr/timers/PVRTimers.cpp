@@ -251,7 +251,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimers &timers)
     SetChanged();
     lock.Leave();
 
-    NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers, false);
+    NotifyObservers(bAddedOrDeleted ? ObservableMessageTimersReset : ObservableMessageTimers);
 
     if (g_guiSettings.GetBool("pvrrecord.timernotifications"))
     {

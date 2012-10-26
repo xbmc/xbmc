@@ -113,7 +113,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   }
 
   SetChanged();
-  NotifyObservers(ObservableMessageEpgContainer, true);
+  NotifyObservers(ObservableMessageEpgContainer);
 
   if (bThreadRunning)
     Start();
@@ -517,7 +517,7 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   if (iUpdatedTables > 0)
   {
     SetChanged();
-    NotifyObservers(ObservableMessageEpgContainer, true);
+    NotifyObservers(ObservableMessageEpgContainer);
   }
 
   CSingleLock lock(m_critSection);
@@ -610,7 +610,7 @@ bool CEpgContainer::CheckPlayingEvents(void)
     if (bFoundChanges)
     {
       SetChanged();
-      NotifyObservers(ObservableMessageEpgActiveItem, true);
+      NotifyObservers(ObservableMessageEpgActiveItem);
     }
 
     /* pvr tags always start on the full minute */
