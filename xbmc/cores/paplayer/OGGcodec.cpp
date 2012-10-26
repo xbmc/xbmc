@@ -25,8 +25,6 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "music/tags/TagLoaderTagLib.h"
 
-using namespace MUSIC_INFO;
-
 OGGCodec::OGGCodec() : m_callback(m_file)
 {
   m_SampleRate = 0;
