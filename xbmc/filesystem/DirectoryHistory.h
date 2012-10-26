@@ -19,6 +19,8 @@
  *
  */
 
+#include <map>
+
 #include "utils/StdString.h"
 
 class CDirectoryHistory
@@ -32,21 +34,37 @@ public:
     CStdString m_strItem;
     CStdString m_strDirectory;
   };
-  CDirectoryHistory();
+
+  class CPathHistoryItem
+  {
+  public:
+    CPathHistoryItem() { }
+    virtual ~CPathHistoryItem() { }
+
+    const CStdString& GetPath(bool filter = false) const;
+
+    CStdString m_strPath;
+    CStdString m_strFilterPath;
+  };
+  
+  CDirectoryHistory() { }
   virtual ~CDirectoryHistory();
 
   void SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory);
   const CStdString& GetSelectedItem(const CStdString& strDirectory) const;
   void RemoveSelectedItem(const CStdString& strDirectory);
 
-  void AddPath(const CStdString& strPath);
-  void AddPathFront(const CStdString& strPath);
-  CStdString GetParentPath();
-  CStdString RemoveParentPath();
+  void AddPath(const CStdString& strPath, const CStdString &m_strFilterPath = "");
+  void AddPathFront(const CStdString& strPath, const CStdString &m_strFilterPath = "");
+  CStdString GetParentPath(bool filter = false);
+  CStdString RemoveParentPath(bool filter = false);
   void ClearPathHistory();
   void DumpPathHistory();
+
 private:
-  std::vector<CHistoryItem> m_vecHistory;
-  std::vector<CStdString> m_vecPathHistory; ///< History of traversed directories
-  CStdString m_strNull;
+  static CStdString preparePath(const CStdString &strDirectory, bool tolower = true);
+  
+  typedef std::map<CStdString, CHistoryItem> HistoryMap;
+  HistoryMap m_vecHistory;
+  std::vector<CPathHistoryItem> m_vecPathHistory; ///< History of traversed directories
 };

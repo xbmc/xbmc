@@ -32,36 +32,6 @@
 using namespace XFILE;
 using namespace std;
 
-class CUrlOptions
-  : public map<CStdString, CStdString>
-{
-public:
-  CUrlOptions(const CStdString& data)
-  {
-    vector<CStdString> options;
-    CUtil::Tokenize(data, options, "&");
-    for(vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
-    {
-      CStdString name, value;
-      size_t pos = it->find_first_of('=');
-      if(pos != CStdString::npos)
-      {
-        name = it->substr(0, pos);
-        value = it->substr(pos+1);
-      }
-      else
-      {
-        name = *it;
-        value = "";
-      }
-
-      CURL::Decode(name);
-      CURL::Decode(value);
-      insert(value_type(name, value));
-    }
-  }
-};
-
 // -------------------------------------------
 // ------------------ File -------------------
 // -------------------------------------------
@@ -126,14 +96,11 @@ bool CHomeRunFile::Open(const CURL &url)
 
   m_pdll->device_set_tuner_from_str(m_device, url.GetFileName().c_str());
 
-  CUrlOptions options(url.GetOptions().Mid(1));
-  CUrlOptions::iterator it;
+  if(url.HasOption("channel"))
+    m_pdll->device_set_tuner_channel(m_device, url.GetOption("channel").c_str());
 
-  if( (it = options.find("channel")) != options.end() )
-    m_pdll->device_set_tuner_channel(m_device, it->second.c_str());
-
-  if( (it = options.find("program")) != options.end() )
-    m_pdll->device_set_tuner_program(m_device, it->second.c_str());
+  if(url.HasOption("program"))
+    m_pdll->device_set_tuner_program(m_device, url.GetOption("program").c_str());
 
   // start streaming from selected device and tuner
   if( m_pdll->device_stream_start(m_device) <= 0 )

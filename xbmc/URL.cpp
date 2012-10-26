@@ -208,6 +208,7 @@ void CURL::Parse(const CStdString& strURL1)
       else
         m_strOptions = strURL.substr(iOptions);
       iEnd = iOptions;
+      m_options.AddOptions(m_strOptions);
     }
   }
 
@@ -383,11 +384,13 @@ void CURL::SetProtocol(const CStdString& strProtocol)
 void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.Empty();
+  m_options.Clear();
   if( strOptions.length() > 0)
   {
     if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
     {
       m_strOptions = strOptions;
+      m_options.AddOptions(m_strOptions);
     }
     else
       CLog::Log(LOGWARNING, "%s - Invalid options specified for url %s", __FUNCTION__, strOptions.c_str());
@@ -759,3 +762,45 @@ CStdString CURL::TranslateProtocol(const CStdString& prot)
   return prot;
 }
 
+void CURL::GetOptions(std::map<CStdString, CStdString> &options) const
+{
+  CUrlOptions::UrlOptions optionsMap = m_options.GetOptions();
+  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); option++)
+    options[option->first] = option->second.asString();
+}
+
+bool CURL::HasOption(const CStdString &key) const
+{
+  return m_options.HasOption(key);
+}
+
+bool CURL::GetOption(const CStdString &key, CStdString &value) const
+{
+  CVariant valueObj;
+  if (!m_options.GetOption(key, valueObj))
+    return false;
+
+  value = valueObj.asString();
+  return true;
+}
+
+CStdString CURL::GetOption(const CStdString &key) const
+{
+  CStdString value;
+  if (!GetOption(key, value))
+    return "";
+
+  return value;
+}
+
+void CURL::SetOption(const CStdString &key, const CStdString &value)
+{
+  m_options.AddOption(key, value);
+  SetOptions(m_options.GetOptionsString(true));
+}
+
+void CURL::RemoveOption(const CStdString &key)
+{
+  m_options.AddOption(key, "");
+  SetOptions(m_options.GetOptionsString(true));
+}

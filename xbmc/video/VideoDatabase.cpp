@@ -5461,8 +5461,6 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     if (!BuildSQL(strBaseDir, strSQL, filter, strSQL, videoUrl))
       return false;
 
-    items.SetPath(videoUrl.ToString());
-
     int iRowsFound = RunQuery(strSQL);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
@@ -5747,8 +5745,6 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
     if (!CDatabase::BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
-    items.SetPath(videoUrl.ToString());
-
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
         sorting.sortBy == SortByNone &&
@@ -5871,8 +5867,6 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
     SortDescription sorting = sortDescription;
     if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
-
-    items.SetPath(videoUrl.ToString());
 
     // Apply the limiting directly here if there's no special sorting but limiting
       if (extFilter.limit.empty() &&
@@ -6192,8 +6186,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
     SortDescription sorting = sortDescription;
     if (!BuildSQL(strBaseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
-
-    items.SetPath(videoUrl.ToString());
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
@@ -7046,8 +7038,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
     SortDescription sorting = sortDescription;
     if (!BuildSQL(baseDir, strSQLExtra, extFilter, strSQLExtra, videoUrl, sorting))
       return false;
-
-    items.SetPath(videoUrl.ToString());
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (extFilter.limit.empty() &&
