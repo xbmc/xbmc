@@ -98,10 +98,12 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (items.GetPath() == "special://musicplaylists/")
     return new CGUIViewStateWindowMusicSongs(items);
 
+#ifndef __PLEX__
   if (windowId==WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
+#endif
 
-  if (windowId==WINDOW_MUSIC_FILES)
+  if (windowId==WINDOW_MUSIC_FILES || windowId==WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicSongs(items);
 
   if (windowId==WINDOW_MUSIC_PLAYLIST)
@@ -110,11 +112,13 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_MUSIC_PLAYLIST_EDITOR)
     return new CGUIViewStateWindowMusicSongs(items);
 
-  if (windowId==WINDOW_VIDEO_FILES)
+  if (windowId==WINDOW_VIDEO_FILES || windowId==WINDOW_VIDEO_NAV)
     return new CGUIViewStateWindowVideoFiles(items);
 
+#ifndef __PLEX__
   if (windowId==WINDOW_VIDEO_NAV)
     return new CGUIViewStateWindowVideoNav(items);
+#endif
 
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
