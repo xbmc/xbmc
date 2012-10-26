@@ -9,6 +9,7 @@ require 'optparse'
 # line arguments under Windows
 INSTALL_DIR = File.expand_path("install dir/")
 PACKAGE_DIR = File.expand_path("package-dir/")
+PACKAGE_SRC_DIR = File.expand_path("package-src-dir/")
 
 if (RbConfig::CONFIG['host_os'] =~ /mswin|mingw/)
 	OLDAPP_NAME = "oldapp.exe"
@@ -75,6 +76,7 @@ end
 # already exist
 FileUtils.rm_rf(INSTALL_DIR)
 FileUtils.rm_rf(PACKAGE_DIR)
+FileUtils.rm_rf(PACKAGE_SRC_DIR)
 
 # Create the install directory with the old app
 Dir.mkdir(INSTALL_DIR)
@@ -86,11 +88,24 @@ File.open(uninstall_test_file,"w") do |file|
 	file.puts "this file should be removed after the update"
 end
 
-# Create the update archive containing the new app
+# Populate package source dir with files to install
+Dir.mkdir(PACKAGE_SRC_DIR)
+nested_dir_path = "#{PACKAGE_SRC_DIR}/new-dir/new-dir2"
+FileUtils.mkdir_p(nested_dir_path)
+nested_dir_test_file = "#{nested_dir_path}/new-file.txt"
+File.open(nested_dir_test_file,'w') do |file|
+	file.puts "this is a new file in a new nested dir"
+end
+
+FileUtils.cp(NEWAPP_NAME,"#{PACKAGE_SRC_DIR}/#{APP_NAME}")
+
+# Create .zip packages from source files
 Dir.mkdir(PACKAGE_DIR)
-FileUtils.cp(NEWAPP_NAME,"#{PACKAGE_DIR}/#{APP_NAME}")
-system("#{ZIP_TOOL} #{ZIP_FLAGS} #{PACKAGE_DIR}/app-pkg.zip -j #{PACKAGE_DIR}/#{APP_NAME}")
-FileUtils.rm("#{PACKAGE_DIR}/#{APP_NAME}")
+Dir.chdir(PACKAGE_SRC_DIR) do
+	if !system("#{ZIP_TOOL} #{ZIP_FLAGS} -r #{PACKAGE_DIR}/app-pkg.zip .")
+		raise "Unable to create update package"
+	end
+end
 
 # Copy the install script and updater to the target
 # directory

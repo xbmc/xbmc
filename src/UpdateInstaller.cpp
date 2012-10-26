@@ -271,7 +271,7 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 	std::string destDir = FileUtils::dirname(destPath.c_str());
 	if (!FileUtils::fileExists(destDir.c_str()))
 	{
-		FileUtils::mkdir(destDir.c_str());
+		FileUtils::mkpath(destDir.c_str());
 	}
 
 	if (target.empty())

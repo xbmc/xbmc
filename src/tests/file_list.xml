@@ -35,6 +35,14 @@
    <name>test-dir/app-symlink</name>
    <target>../app</target>
   </file>
+  <!-- Test file in new directory !-->
+  <file>
+   <name>new-dir/new-dir2/new-file.txt</name>
+   <hash>$TEST_FILENAME</hash>
+   <size>$TEST_SIZE</size>
+   <package>app-pkg</package>
+   <permissions>0644</permissions>
+  </file>
  </install>
  <uninstall>
   <!-- TODO - List some files to uninstall here !-->
