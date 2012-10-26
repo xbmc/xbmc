@@ -4858,6 +4858,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       // ok, grab the next song
       CFileItemPtr item = playlist[iNext];
+
+#ifdef HAS_UPNP
+      if (URIUtils::IsUPnP(item->GetPath()))
+      {
+        if (!XFILE::CUPnPDirectory::GetResource(item->GetPath(), *item))
+          return true;
+      }
+#endif
+
       // ok - send the file to the player if it wants it
       if (m_pPlayer && m_pPlayer->QueueNextFile(*item))
       { // player wants the next file
