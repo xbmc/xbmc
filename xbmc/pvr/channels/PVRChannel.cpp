@@ -309,10 +309,6 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
 {
   CSingleLock lock(m_critSection);
 
-  /* check if the path is valid */
-  if (!CFile::Exists(strIconPath) && !strIconPath.IsEmpty())
-    return false;
-
   if (m_strIconPath != strIconPath)
   {
     /* update the path */
