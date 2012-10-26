@@ -1559,7 +1559,12 @@ void CAUOutputDevice::Stop()
 {
   // TODO: Check component status
   if (m_Component && m_Initialized)
+  {
     AudioOutputUnitStop(m_Component);    
+    /* PLEX */
+    AudioUnitReset(m_Component, kAudioUnitScope_Global, 0);
+    /* END PLEX */
+  }
 }
 
 Float32 CAUOutputDevice::GetCurrentVolume()
