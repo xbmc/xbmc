@@ -72,7 +72,8 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual CStdString GetStartFolder(const CStdString &dir);
 
-  virtual bool CheckFilterAdvanced(CFileItemList &items);
+  virtual bool CheckFilterAdvanced(CFileItemList &items) const;
+  virtual bool CanContainFilter(const CStdString &strDirectory) const;
 
   // new methods
   virtual void PlayItem(int iItem);

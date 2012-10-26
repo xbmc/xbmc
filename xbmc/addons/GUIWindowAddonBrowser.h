@@ -63,7 +63,7 @@ protected:
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual bool Update(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
   virtual CStdString GetStartFolder(const CStdString &dir);
 private:
   CProgramThumbLoader m_thumbLoader;
