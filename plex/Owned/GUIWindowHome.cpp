@@ -187,7 +187,7 @@ void CGUIWindowHome::RestoreSelectedMenuItem()
       }
       else if (fileItem->GetLabel() == m_lastSelectedItemKey && m_lastSelectedItemKey.empty() == false)
       {
-        UpdateContentForSelectedItem("");
+        UpdateContentForSelectedItem(fileItem->GetLabel());
         selectionItem = i;
         break;
       }
