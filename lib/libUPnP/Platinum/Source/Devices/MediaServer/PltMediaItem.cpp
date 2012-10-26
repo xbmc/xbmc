@@ -215,7 +215,7 @@ PLT_MediaObject::ToDidl(const NPT_String& filter, NPT_String& didl)
 |   PLT_MediaObject::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
 {
     // title is required
     didl += "<dc:title>";
@@ -682,7 +682,7 @@ PLT_MediaItem::ToDidl(const NPT_String& filter, NPT_String& didl)
 |   PLT_MediaItem::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaItem::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+PLT_MediaItem::ToDidl(NPT_UInt64 mask, NPT_String& didl)
 {
     didl += "<item id=\"";
 
@@ -773,7 +773,7 @@ PLT_MediaContainer::ToDidl(const NPT_String& filter, NPT_String& didl)
 |   PLT_MediaContainer::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaContainer::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+PLT_MediaContainer::ToDidl(NPT_UInt64 mask, NPT_String& didl)
 {
 	// container id property
     didl += "<container id=\"";

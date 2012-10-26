@@ -56,7 +56,7 @@ const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0/";
 /*----------------------------------------------------------------------
 |   PLT_Didl::ConvertFilterToMask
 +---------------------------------------------------------------------*/
-NPT_UInt32 
+NPT_UInt64
 PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
 {
     // easy out
@@ -66,7 +66,7 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
     // a given DIDL property (or set of properties).  
     // These fields are or start with: upnp:, @, res@, res, dc:, container@
 
-    NPT_UInt32  mask = 0;
+    NPT_UInt64  mask = 0;
     const char* s = filter;
     int         i = 0;
 
@@ -301,7 +301,7 @@ PLT_Didl::ParseTimeStamp(const NPT_String& timestamp, NPT_UInt32& seconds)
 NPT_Result
 PLT_Didl::ToDidl(PLT_MediaObject& object, const NPT_String& filter, NPT_String& didl)
 {
-    NPT_UInt32 mask = ConvertFilterToMask(filter);
+    NPT_UInt64 mask = ConvertFilterToMask(filter);
 
     // Allocate enough space for the didl
     didl.Reserve(2048);
