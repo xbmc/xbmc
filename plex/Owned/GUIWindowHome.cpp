@@ -180,18 +180,12 @@ void CGUIWindowHome::RestoreSelectedMenuItem()
     BOOST_FOREACH(CGUIListItemPtr item, pControl->GetItems())
     {
       CFileItem* fileItem = (CFileItem* )item.get();
-      if (fileItem->GetPath() == m_lastSelectedItemKey)
+      if (fileItem->GetPath() == m_lastSelectedItemKey ||
+          (fileItem->GetLabel() == m_lastSelectedItemKey && m_lastSelectedItemKey.empty() == false))
       {
         selectionItem = i;
         break;
-      }
-      else if (fileItem->GetLabel() == m_lastSelectedItemKey && m_lastSelectedItemKey.empty() == false)
-      {
-        UpdateContentForSelectedItem(fileItem->GetLabel());
-        selectionItem = i;
-        break;
-      }
-      
+      }      
       i++;
     }
     
