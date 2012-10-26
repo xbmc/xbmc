@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRManager.h"
 #ifdef HAS_SYSINFO
 #include "utils/SystemInfo.h"
 #endif
@@ -58,6 +59,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       ResetLabels();
       SET_CONTROL_LABEL(52, "XBMC " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) +
                             " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR,
+                                  PVR::CPVRManager::Get().IsStarted());
       return true;
     }
     break;
