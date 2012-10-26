@@ -333,21 +333,21 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
     }
 
     // last playback position
-    if (m_MiscInfo.last_position > 0) {
+    if (mask & PLT_FILTER_MASK_LASTPOSITION && m_MiscInfo.last_position > 0) {
         didl += "<upnp:lastPlaybackPosition>";
         didl += NPT_String::FromInteger(m_MiscInfo.last_position);
         didl += "</upnp:lastPlaybackPosition>";
     }
 
     // last playback datetime
-    if (!m_MiscInfo.last_time.IsEmpty()) {
+    if (mask & PLT_FILTER_MASK_LASTPLAYBACK && !m_MiscInfo.last_time.IsEmpty()) {
         didl += "<upnp:lastPlaybackTime>";
         PLT_Didl::AppendXmlEscape(didl, m_MiscInfo.last_time);
         didl += "</upnp:lastPlaybackTime>";
     }
 
     // playcount
-    if (m_MiscInfo.play_count > -1) {
+    if (mask & PLT_FILTER_MASK_PLAYCOUNT && m_MiscInfo.play_count > -1) {
         didl += "<upnp:playbackCount>";
         didl += NPT_String::FromInteger(m_MiscInfo.play_count);
         didl += "</upnp:playbackCount>";
