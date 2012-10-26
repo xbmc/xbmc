@@ -171,7 +171,7 @@ void CGUIWindowPVRChannels::Notify(const Observable &obs, const ObservableMessag
   else if (msg == ObservableMessageChannelGroupReset)
   {
     if (IsVisible())
-      UpdateData(false);
+      UpdateData(true);
     else
       m_bUpdateRequired = true;
   }
@@ -204,6 +204,8 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
 
+  CPVRChannelGroupPtr selectedGroup = SelectedGroup();
+
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
@@ -212,6 +214,8 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
   CPVRChannelGroupPtr currentGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
   if (!currentGroup)
     return;
+
+  SetSelectedGroup(currentGroup);
 
   CStdString strPath;
   strPath.Format("pvr://channels/%s/%s/",

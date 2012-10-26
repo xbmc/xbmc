@@ -98,11 +98,7 @@ void CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel, unsi
     m_members.push_back(newMember);
     m_bChanged = true;
 
-    if (m_bUsingBackendChannelOrder)
-      SortByClientChannelNumber();
-    else
-      SortByChannelNumber();
-    Renumber();
+    SortAndRenumber();
   }
 }
 
@@ -181,7 +177,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannel &channel)
   }
 
   /* renumber this list */
-  Renumber();
+  SortAndRenumber();
 
   /* and persist */
   return realChannel->Persist() &&

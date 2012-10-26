@@ -214,14 +214,10 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Sort the current channel list by client channel number.
+     * @brief Sort the group and fix up channel numbers.
+     * @return True when numbering changed, false otherwise
      */
-    void SortByClientChannelNumber(void);
-
-    /*!
-     * @brief Sort the current channel list by channel number.
-     */
-    void SortByChannelNumber(void);
+    bool SortAndRenumber(void);
 
     //@}
 
@@ -422,6 +418,16 @@ namespace PVR
      * @return True if something changed, false otherwise.
      */
     virtual bool Renumber(void);
+
+    /*!
+     * @brief Sort the current channel list by client channel number.
+     */
+    void SortByClientChannelNumber(void);
+
+    /*!
+     * @brief Sort the current channel list by channel number.
+     */
+    void SortByChannelNumber(void);
 
     /*!
      * @brief Get the previous or next channel in this group.

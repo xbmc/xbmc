@@ -816,9 +816,8 @@ void CGUIDialogPVRChannelManager::SaveList(void)
     pDlgProgress->SetPercentage(iListPtr * 100 / m_channelItems->Size());
   }
 
-  group->SortByChannelNumber();
+  group->SortAndRenumber();
   group->Persist();
-  group->ResetChannelNumberCache();
   m_bContainsChanges = false;
   SetItemsUnchanged();
   pDlgProgress->Close();
