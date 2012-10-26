@@ -120,8 +120,8 @@ set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/git_revision.h PROPERTIE
 
 
 add_subdirectory(xbmc)
-add_subdirectory(plex)
 add_subdirectory(tools/EventClients/Clients/OSXRemote)
+add_subdirectory(plex)
 
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Plex Media Center")
