@@ -4710,6 +4710,10 @@ bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) co
 
 CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condition) const
 {
+  // Home doesn't have a parent, so sometimes it comes through as 0.
+  if (contextWindow == 0)
+    contextWindow = WINDOW_HOME;
+
   CGUIWindow *window = g_windowManager.GetWindow(contextWindow);
   if (CheckWindowCondition(window, condition))
     return window;
