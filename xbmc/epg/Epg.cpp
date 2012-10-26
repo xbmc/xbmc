@@ -744,23 +744,35 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   {
     CPVRChannelPtr channel = Channel();
     if (!channel)
-      CLog::Log(LOGINFO, "%s - channel not found, can't update", __FUNCTION__);
+    {
+      CLog::Log(LOGWARNING, "EPG - %s - channel not found, can't update", __FUNCTION__);
+    }
     else if (!channel->EPGEnabled())
-      CLog::Log(LOGINFO, "%s - EPG updating disabled in the channel configuration", __FUNCTION__);
+    {
+      CLog::Log(LOGDEBUG, "EPG - %s - EPG updating disabled in the channel configuration", __FUNCTION__);
+      bGrabSuccess = true;
+    }
+    else if (channel->IsHidden())
+    {
+      CLog::Log(LOGDEBUG, "EPG - %s - channel '%s' on client '%i' is hidden", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      bGrabSuccess = true;
+    }
     else if (!g_PVRClients->SupportsEPG(channel->ClientID()))
-      CLog::Log(LOGINFO, "%s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+    {
+      CLog::Log(LOGDEBUG, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+    }
     else
     {
-      CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+      CLog::Log(LOGINFO, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
       bGrabSuccess = (g_PVRClients->GetEPGForChannel(*channel, this, start, end) == PVR_ERROR_NO_ERROR);
     }
   }
   else if (m_strScraperName.IsEmpty()) /* no grabber defined */
-    CLog::Log(LOGERROR, "EPG - %s - no EPG scraper defined for table '%s'", __FUNCTION__, m_strName.c_str());
+    CLog::Log(LOGWARNING, "EPG - %s - no EPG scraper defined for table '%s'", __FUNCTION__, m_strName.c_str());
   else
   {
     CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%s' with scraper '%s'", __FUNCTION__, m_strName.c_str(), m_strScraperName.c_str());
-    CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
+    CLog::Log(LOGWARNING, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
   }
 
