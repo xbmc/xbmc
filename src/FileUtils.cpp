@@ -120,7 +120,7 @@ int FileUtils::fileMode(const char* path) throw (IOException)
 void FileUtils::chmod(const char* path, int mode) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
-	if (::chmod(path,mode) != 0)
+	if (::chmod(path,static_cast<mode_t>(mode)) != 0)
 	{
 		throw IOException("Failed to set permissions on " + std::string(path) + " to " + intToStr(mode));
 	}

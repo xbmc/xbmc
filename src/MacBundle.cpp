@@ -31,10 +31,10 @@ void MacBundle::create(const std::string& infoPlist,
 		FileUtils::mkpath(binDir.c_str());
 		
 		// create the Contents/Info.plist file
-		FileUtils::writeFile((contentDir + "/Info.plist").c_str(),infoPlist.c_str(),infoPlist.size());
+		FileUtils::writeFile((contentDir + "/Info.plist").c_str(),infoPlist.c_str(),static_cast<int>(infoPlist.size()));
 
 		// save the icon to Contents/Resources/<appname>.icns
-		FileUtils::writeFile((resourceDir + '/' + m_appName + ".icns").c_str(),icon.c_str(),icon.size());
+		FileUtils::writeFile((resourceDir + '/' + m_appName + ".icns").c_str(),icon.c_str(),static_cast<int>(icon.size()));
 
 		// copy the app binary to Contents/MacOS/<appname>
 		m_exePath = binDir + '/' + m_appName;
