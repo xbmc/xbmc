@@ -1722,6 +1722,10 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
   PlexMediaNode* mediaNode = 0;
 
   bool gotType = false;
+  const char* content = root->Attribute("content");
+  if (content)
+    items.SetContent(CStdString(content));
+
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
     mediaNode = PlexMediaNode::Create(element);
