@@ -111,6 +111,12 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_LONGDESCRIPTION;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len, true) == 0) {
             mask |= PLT_FILTER_MASK_ORIGINALTRACK;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LASTPOSITION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LASTPOSITION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LASTPLAYBACK, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LASTPLAYBACK;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_PLAYCOUNT, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_PLAYCOUNT;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len, true) == 0) {
             mask |= PLT_FILTER_MASK_SEARCHABLE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHCLASS, len, true) == 0) {

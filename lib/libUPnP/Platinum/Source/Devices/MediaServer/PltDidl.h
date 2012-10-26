@@ -86,6 +86,10 @@
 #define PLT_FILTER_MASK_SEARCHCLASS                 0x0000000040000000
 #define PLT_FILTER_MASK_REFID                       0x0000000080000000
 
+#define PLT_FILTER_MASK_LASTPOSITION                0x0000000100000000
+#define PLT_FILTER_MASK_LASTPLAYBACK                0x0000000200000000
+#define PLT_FILTER_MASK_PLAYCOUNT                   0x0000000400000000
+
 #define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
 #define PLT_FILTER_FIELD_DATE                       "dc:date"
@@ -105,6 +109,9 @@
 #define PLT_FILTER_FIELD_PROGRAMTITLE               "upnp:programTitle"
 #define PLT_FILTER_FIELD_SERIESTITLE                "upnp:seriesTitle"
 #define PLT_FILTER_FIELD_EPISODE                    "upnp:episodeNumber"
+#define PLT_FILTER_FIELD_LASTPOSITION               "upnp:lastPlaybackPosition"
+#define PLT_FILTER_FIELD_LASTPLAYBACK               "upnp:lastPlaybackTime"
+#define PLT_FILTER_FIELD_PLAYCOUNT                  "upnp:playbackCount"
 #define PLT_FILTER_FIELD_SEARCHCLASS				"upnp:searchClass"
 #define PLT_FILTER_FIELD_SEARCHABLE                 "@searchable"
 #define PLT_FILTER_FIELD_CHILDCOUNT                 "@childcount"
