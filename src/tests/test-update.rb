@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
 require 'fileutils.rb'
+require 'find'
 require 'rbconfig'
 require 'optparse'
 
@@ -45,6 +46,62 @@ def zip_supports_bzip2(zip_tool)
 	# supported, the tool will output an error, otherwise it will output
 	# "Nothing to do"
 	return `#{zip_tool} -Z bzip2 testing-bzip2-support.zip`.strip.include?("Nothing to do")
+end
+
+# Returns true if |src_file| and |dest_file| have the same contents, type
+# and permissions or false otherwise
+def compare_files(src_file, dest_file)
+	if File.ftype(src_file) != File.ftype(dest_file)
+		$stderr.puts "Type of file #{src_file} and #{dest_file} differ"
+		return false
+	end
+
+	if File.file?(src_file) && !FileUtils.identical?(src_file, dest_file)
+		$stderr.puts "Contents of file #{src_file} and #{dest_file} differ"
+		return false
+	end
+
+	src_stat = File.stat(src_file)
+	dest_stat = File.stat(dest_file)
+
+	if src_stat.mode != dest_stat.mode
+		$stderr.puts "Permissions of #{src_file} and #{dest_file} differ"
+		return false
+	end
+
+	return true
+end
+
+# Compares the contents of two directories and returns a map of (file path => change type)
+# for files and directories which differ between the two
+def compare_dirs(src_dir, dest_dir)
+	src_dir += '/' if !src_dir.end_with?('/')
+	dest_dir += '/' if !dest_dir.end_with?('/')
+
+	src_file_map = {}
+	Find.find(src_dir) do |src_file|
+		src_file = src_file[src_dir.length..-1]
+		src_file_map[src_file] = nil
+	end
+
+	change_map = {}
+	Find.find(dest_dir) do |dest_file|
+		dest_file = dest_file[dest_dir.length..-1]
+
+		if !src_file_map.include?(dest_file)
+			change_map[dest_file] = :deleted
+		elsif !compare_files("#{src_dir}/#{dest_file}", "#{dest_dir}/#{dest_file}")
+			change_map[dest_file] = :updated
+		end
+
+		src_file_map.delete(dest_file)
+	end
+
+	src_file_map.each do |file|
+		change_map[file] = :added
+	end
+
+	return change_map
 end
 
 force_elevation = false
@@ -137,13 +194,26 @@ if (output.strip != "new app starting")
 	throw "Updated app produced unexpected output: #{output}"
 end
 
-# Check that the permissions were correctly set on the installed app
-mode = File.stat(app_path).mode.to_s(8)
-if (mode != "100755")
-	throw "Updated app has incorrect permissions: #{mode}"
+# Check that the packaged dir and install dir match
+dir_diff = compare_dirs(PACKAGE_SRC_DIR, INSTALL_DIR)
+ignored_files = ["test-dir", "test-dir/app-symlink", UPDATER_NAME]
+have_unexpected_change = false
+dir_diff.each do |path, change_type|
+	if !ignored_files.include?(path)
+		case change_type
+		when :added
+			$stderr.puts "File #{path} was not installed"
+		when :changed
+			$stderr.puts "File #{path} differs between install and package dir"
+		when :deleted
+			$stderr.puts "File #{path} was not uninstalled"
+		end
+		have_unexpected_change = true
+	end
 end
 
-if (File.exist?(uninstall_test_file))
-	throw "File to uninstall was not removed"
+if have_unexpected_change
+	throw "Unexpected differences between packaging and update dir"
 end
 
+puts "Test passed"
