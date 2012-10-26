@@ -314,7 +314,7 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
   if (!epg)
   {
     channel->SetEpgID(NextEpgId());
-    epg = new CEpg(channel, true);
+    epg = new CEpg(channel, false);
     m_epgs.insert(make_pair((unsigned int)epg->EpgID(), epg));
     SetChanged();
     epg->RegisterObserver(this);
