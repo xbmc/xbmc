@@ -1302,37 +1302,10 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 
 bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  CStdString directory = strDirectory;
-
-  // check if the path contains a filter and if so load it and
-  // remove it from the path to get proper GUI view states etc
-  CSmartPlaylist filterXsp;
-  CMusicDbUrl musicUrl;
-  if (musicUrl.FromString(strDirectory))
-  {
-    CVariant filter;
-    if (musicUrl.GetOption("filter", filter))
-    {
-      // load the filter and if it's type does not match the
-      // path's item type reset it
-      if (filterXsp.LoadFromJson(filter.asString()) && !filterXsp.GetType().Equals(musicUrl.GetType().c_str()))
-        filterXsp.Reset();
-
-      // remove the "filter" option from the path
-      musicUrl.AddOption("filter", "");
-    }
-    directory = musicUrl.ToString();
-  }
-
   items.SetArt("thumb", "");
-  bool bResult = CGUIMediaWindow::GetDirectory(directory, items);
+  bool bResult = CGUIMediaWindow::GetDirectory(strDirectory, items);
   if (bResult)
     CMusicThumbLoader::FillThumb(items);
-
-  // (re-)apply the previously retrieved filter
-  // because it was reset in CGUIMediaWindow::GetDirectory()
-  if (!filterXsp.IsEmpty())
-    m_filter = filterXsp;
 
   // add in the "New Playlist" item if we're in the playlists folder
   if ((items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
@@ -1365,13 +1338,19 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
 }
 
-bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items)
+bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   CStdString content = items.GetContent();
-  if (items.IsMusicDb() && (content.Equals("artists") || content.Equals("albums") || content.Equals("songs")))
+  if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
+      (content.Equals("artists") || content.Equals("albums") || content.Equals("songs")))
     return true;
 
   return false;
+}
+
+bool CGUIWindowMusicBase::CanContainFilter(const CStdString &strDirectory) const
+{
+  return StringUtils::StartsWith(strDirectory, "musicdb://");
 }
 
 void CGUIWindowMusicBase::OnInitWindow()

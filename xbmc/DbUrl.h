@@ -39,16 +39,17 @@ public:
   const std::string& GetType() const { return m_type; }
   void AppendPath(const std::string &subPath);
 
-  virtual void AddOption(const std::string &key, const char *value) { CUrlOptions::AddOption(key, value); updateOptions(); }
-  virtual void AddOption(const std::string &key, const std::string &value) { CUrlOptions::AddOption(key, value); updateOptions(); }
-  virtual void AddOption(const std::string &key, int value) { CUrlOptions::AddOption(key, value); updateOptions(); }
-  virtual void AddOption(const std::string &key, float value) { CUrlOptions::AddOption(key, value); updateOptions(); }
-  virtual void AddOption(const std::string &key, double value) { CUrlOptions::AddOption(key, value); updateOptions(); }
-  virtual void AddOption(const std::string &key, bool value) { CUrlOptions::AddOption(key, value); updateOptions(); }
-  virtual void AddOptions(const std::string &options) { CUrlOptions::AddOptions(options); updateOptions(); }
+  virtual void AddOption(const std::string &key, const char *value);
+  virtual void AddOption(const std::string &key, const std::string &value);
+  virtual void AddOption(const std::string &key, int value);
+  virtual void AddOption(const std::string &key, float value);
+  virtual void AddOption(const std::string &key, double value);
+  virtual void AddOption(const std::string &key, bool value);
+  virtual void AddOptions(const std::string &options);
 
 protected:
   virtual bool parse() = 0;
+  virtual bool validateOption(const std::string &key, const CVariant &value);
   
   CURL m_url;
   std::string m_type;

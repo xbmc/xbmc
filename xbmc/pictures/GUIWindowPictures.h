@@ -41,7 +41,7 @@ protected:
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
   virtual void OnPrepareFileItems(CFileItemList& items);
-  virtual bool Update(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual CStdString GetStartFolder(const CStdString &dir);

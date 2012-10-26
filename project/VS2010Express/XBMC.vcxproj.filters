@@ -2936,6 +2936,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PVROperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\HTTPFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5739,6 +5742,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h">
       <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

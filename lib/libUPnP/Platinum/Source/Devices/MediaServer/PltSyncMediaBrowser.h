@@ -106,8 +106,7 @@ public:
                           PLT_MediaObjectListReference& list,
                           bool                          metadata = false,
                           NPT_Int32                     start = 0,
-                          NPT_Cardinal                  max_results = 0,
-                          const char*                   filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author,searchable,childCount"); // explicitely specify res otherwise WMP won't return a URL!
+                          NPT_Cardinal                  max_results = 0); // 0 means all
 
     const NPT_Lock<PLT_DeviceMap>& GetMediaServersMap() const { return m_MediaServers; }
     bool IsCached(const char* uuid, const char* object_id);
@@ -118,8 +117,8 @@ protected:
                           const char*              object_id,
                           NPT_Int32                index, 
                           NPT_Int32                count,
-                          const char*              filter,
                           bool                     browse_metadata = false,
+                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,searchable,childCount", // explicitely specify res otherwise WMP won't return a URL!
                           const char*              sort = "");
 private:
     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);

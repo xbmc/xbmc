@@ -333,7 +333,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
       }
     }
     // prevent infinite loops
-    if (dep->ID() == addon->ID())
+    if (dep && dep->ID() == addon->ID())
     {
       CLog::Log(LOGERROR, "Addon %s depends on itself, ignoring", addon->ID().c_str());
       return false;

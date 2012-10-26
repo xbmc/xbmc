@@ -4110,7 +4110,7 @@ msgstr ""
 #empty strings from id 12374 to 12375
 
 msgctxt "#12376"
-msgid "Set as default for all movies"
+msgid "Set as default for all videos"
 msgstr ""
 
 msgctxt "#12377"

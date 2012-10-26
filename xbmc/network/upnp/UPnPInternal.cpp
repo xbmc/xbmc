@@ -477,7 +477,7 @@ BuildObject(CFileItem&                    item,
                   container->m_Recorded.episode_number = tag.m_iEpisode;
                   container->m_MiscInfo.play_count = tag.m_playCount;
                   container->m_Title = tag.m_strTitle;
-                  if(!tag.m_firstAired.IsValid() && tag.m_iYear)
+                  if(!tag.m_premiered.IsValid() && tag.m_iYear)
                     container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
                   else
                     container->m_Date = tag.m_premiered.GetAsDBDate();

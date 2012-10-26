@@ -70,6 +70,74 @@ void CDbUrl::AppendPath(const std::string &subPath)
   m_url.SetFileName(URIUtils::AddFileToFolder(m_url.GetFileName(), subPath));
 }
 
+void CDbUrl::AddOption(const std::string &key, const char *value)
+{
+  if (!validateOption(key, value))
+    return;
+  
+  CUrlOptions::AddOption(key, value);
+  updateOptions();
+}
+
+void CDbUrl::AddOption(const std::string &key, const std::string &value)
+{
+  if (!validateOption(key, value))
+    return;
+  
+  CUrlOptions::AddOption(key, value);
+  updateOptions();
+}
+
+void CDbUrl::AddOption(const std::string &key, int value)
+{
+  if (!validateOption(key, value))
+    return;
+  
+  CUrlOptions::AddOption(key, value);
+  updateOptions();
+}
+
+void CDbUrl::AddOption(const std::string &key, float value)
+{
+  if (!validateOption(key, value))
+    return;
+  
+  CUrlOptions::AddOption(key, value);
+  updateOptions();
+}
+
+void CDbUrl::AddOption(const std::string &key, double value)
+{
+  if (!validateOption(key, value))
+    return;
+  
+  CUrlOptions::AddOption(key, value);
+  updateOptions();
+}
+
+void CDbUrl::AddOption(const std::string &key, bool value)
+{
+  if (!validateOption(key, value))
+    return;
+  
+  CUrlOptions::AddOption(key, value);
+  updateOptions();
+}
+
+void CDbUrl::AddOptions(const std::string &options)
+{
+  CUrlOptions::AddOptions(options);
+  updateOptions();  
+}
+
+bool CDbUrl::validateOption(const std::string &key, const CVariant &value)
+{
+  if (key.empty())
+    return false;
+
+  return true;
+}
+
 void CDbUrl::updateOptions()
 {
   // Update the options string in the CURL object

@@ -425,6 +425,7 @@
 		DF93D7F21444B54A007C6459 /* HDHomeRunFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F01444B54A007C6459 /* HDHomeRunFile.cpp */; };
 		DF93D7F61444B568007C6459 /* HDHomeRunDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */; };
 		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
+		DF9A71EE1639C8F6005ECB2E /* HTTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		DFB0F472161B747500D744F4 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB0F470161B747500D744F4 /* AddonsOperations.cpp */; };
 		DFB15B2215F8FB8100CDF0DE /* SDLMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFB15B2115F8FB8100CDF0DE /* SDLMain.mm */; };
@@ -1953,6 +1954,8 @@
 		DF93D7F51444B568007C6459 /* HDHomeRunDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HDHomeRunDirectory.cpp; sourceTree = "<group>"; };
 		DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
 		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
+		DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPFile.cpp; sourceTree = "<group>"; };
+		DF9A71ED1639C8F6005ECB2E /* HTTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPFile.h; sourceTree = "<group>"; };
 		DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
 		DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		DFB0F470161B747500D744F4 /* AddonsOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonsOperations.cpp; sourceTree = "<group>"; };
@@ -5234,8 +5237,6 @@
 		E38E16940D25F9FA00618676 /* filesystem */ = {
 			isa = PBXGroup;
 			children = (
-				E38E170A0D25F9FA00618676 /* MusicDatabaseDirectory */,
-				E38E175F0D25F9FA00618676 /* VideoDatabaseDirectory */,
 				F5A7B42B113CBB950059D6AA /* AddonsDirectory.cpp */,
 				F5A7B42A113CBB950059D6AA /* AddonsDirectory.h */,
 				DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */,
@@ -5300,6 +5301,8 @@
 				E43196150FB2382E0030E150 /* HTSPSession.h */,
 				F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */,
 				F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */,
+				DF9A71EC1639C8F6005ECB2E /* HTTPFile.cpp */,
+				DF9A71ED1639C8F6005ECB2E /* HTTPFile.h */,
 				E38E16EC0D25F9FA00618676 /* IDirectory.cpp */,
 				E38E16ED0D25F9FA00618676 /* IDirectory.h */,
 				E38E16EE0D25F9FA00618676 /* IFile.cpp */,
@@ -5325,6 +5328,7 @@
 				E38E17090D25F9FA00618676 /* MultiPathDirectory.h */,
 				F50629780E57B9680066625A /* MultiPathFile.cpp */,
 				F50629790E57B9680066625A /* MultiPathFile.h */,
+				E38E170A0D25F9FA00618676 /* MusicDatabaseDirectory */,
 				E38E17370D25F9FA00618676 /* MusicDatabaseDirectory.cpp */,
 				E38E17380D25F9FA00618676 /* MusicDatabaseDirectory.h */,
 				DF93D67B1444A8B0007C6459 /* MusicDatabaseFile.cpp */,
@@ -5419,6 +5423,7 @@
 				E38E175C0D25F9FA00618676 /* UPnPDirectory.h */,
 				DF93D6951444A8B0007C6459 /* UPnPFile.cpp */,
 				DF93D6961444A8B0007C6459 /* UPnPFile.h */,
+				E38E175F0D25F9FA00618676 /* VideoDatabaseDirectory */,
 				E38E178A0D25F9FA00618676 /* VideoDatabaseDirectory.cpp */,
 				E38E178B0D25F9FA00618676 /* VideoDatabaseDirectory.h */,
 				E38E178C0D25F9FA00618676 /* VirtualDirectory.cpp */,
@@ -7640,6 +7645,7 @@
 				7CC30E8A16296078003E7579 /* EdenVideoArtUpdater.cpp in Sources */,
 				DF00492D162DAEA200A971AD /* PVROperations.cpp in Sources */,
 				DFD928F316384B6800709DAE /* Timer.cpp in Sources */,
+				DF9A71EE1639C8F6005ECB2E /* HTTPFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

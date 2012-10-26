@@ -256,12 +256,12 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
     m_dlgProgress->Close();
 }
 
-bool CGUIWindowPictures::Update(const CStdString &strDirectory)
+bool CGUIWindowPictures::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!CGUIMediaWindow::Update(strDirectory))
+  if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
   m_vecItems->SetArt("thumb", "");
