@@ -56,6 +56,9 @@ using namespace std;
 #define LOCALISED_ID_TV_AVR       36039
 #define LOCALISED_ID_NONE         231
 
+/* time in seconds to suppress source activation after receiving OnStop */
+#define CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP 2
+
 class DllLibCECInterface
 {
 public:
@@ -186,10 +189,21 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     ReopenConnection();
   }
+  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
+  {
+    CSingleLock lock(m_critSection);
+    m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
+  }
   else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
   {
     // activate the source when playback started, and the option is enabled
-    if (m_configuration.bActivateSource)
+    bool bActivateSource(false);
+    {
+      CSingleLock lock(m_critSection);
+      bActivateSource = (m_configuration.bActivateSource &&
+          (!m_preventActivateSourceOnPlay.IsValid() || CDateTime::GetCurrentDateTime() - m_preventActivateSourceOnPlay > CDateTimeSpan(0, 0, 0, CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP)));
+    }
+    if (bActivateSource)
       ActivateSource();
   }
 }
