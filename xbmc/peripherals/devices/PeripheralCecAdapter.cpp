@@ -653,13 +653,10 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
 
   if (adapter->m_bIsReady)
   {
-    CLog::Log(LOGDEBUG, "%s - processing command: initiator=%1x destination=%1x opcode=%02x", __FUNCTION__, command.initiator, command.destination, command.opcode);
-
     switch (command.opcode)
     {
     case CEC_OPCODE_STANDBY:
       /* a device was put in standby mode */
-      CLog::Log(LOGDEBUG, "%s - device %1x was put in standby mode", __FUNCTION__, command.initiator);
       if (command.initiator == CECDEVICE_TV &&
           (adapter->m_configuration.bPowerOffOnStandby == 1 || adapter->m_configuration.bShutdownOnStandby == 1) &&
           (!adapter->m_screensaverLastActivated.IsValid() || CDateTime::GetCurrentDateTime() - adapter->m_screensaverLastActivated > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT)))
