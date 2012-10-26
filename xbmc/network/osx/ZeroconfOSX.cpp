@@ -44,7 +44,7 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
                       const std::string& fcr_type,
                       const std::string& fcr_name,
                       unsigned int f_port,
-                      std::map<std::string, std::string> txt)
+                      const std::vector<std::pair<std::string, std::string> >& txt)
 {
   CLog::Log(LOGDEBUG, "CZeroconfOSX::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(),
             fcr_type.c_str(), fcr_name.c_str(), f_port);
@@ -74,7 +74,7 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
     //txt map to dictionary
     CFDataRef txtData = NULL;
     CFMutableDictionaryRef txtDict = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    for(std::map<std::string, std::string>::const_iterator it = txt.begin(); it != txt.end(); ++it)
+    for(std::vector<std::pair<std::string, std::string> >::const_iterator it = txt.begin(); it != txt.end(); ++it)
     {
       CFStringRef key = CFStringCreateWithCString (NULL,
                                                    it->first.c_str(),

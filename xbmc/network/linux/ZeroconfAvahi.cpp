@@ -131,7 +131,7 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
                               const std::string& fcr_type,
                               const std::string& fcr_name,
                               unsigned int f_port,
-                              std::map<std::string, std::string> txt)
+                              const std::vector<std::pair<std::string, std::string> >&  txt)
 {
   CLog::Log(LOGDEBUG, "CZeroconfAvahi::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
@@ -145,7 +145,7 @@ bool CZeroconfAvahi::doPublishService(const std::string& fcr_identifier,
 
   //txt records to AvahiStringList
   AvahiStringList *txtList = NULL;
-  for(std::map<std::string, std::string>::iterator it=txt.begin(); it!=txt.end(); it++)
+  for(std::vector<std::pair<std::string, std::string> >::const_iterator it=txt.begin(); it!=txt.end(); it++)
   {
     txtList = avahi_string_list_add_pair(txtList, it->first.c_str(), it->second.c_str());
   }

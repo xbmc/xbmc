@@ -22,6 +22,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "utils/Job.h"
 
 class CCriticalSection;
@@ -49,7 +50,7 @@ public:
                       const std::string& fcr_type,
                       const std::string& fcr_name,
                       unsigned int f_port,
-                      std::map<std::string, std::string> txt);
+                      const std::vector<std::pair<std::string, std::string> >& txt);
 
   ///removes the specified service
   ///returns false if fcr_identifier does not exist
@@ -86,7 +87,7 @@ protected:
                                 const std::string& fcr_type,
                                 const std::string& fcr_name,
                                 unsigned int f_port,
-                                std::map<std::string, std::string> txt) = 0;
+                                const std::vector<std::pair<std::string, std::string> >& txt) = 0;
   //removes the service if published
   virtual bool doRemoveService(const std::string& fcr_ident) = 0;
 
@@ -107,7 +108,7 @@ private:
     std::string type;
     std::string name;
     unsigned int port;
-    std::map<std::string, std::string> txt;
+    std::vector<std::pair<std::string, std::string> > txt;
   };
 
   //protects data
