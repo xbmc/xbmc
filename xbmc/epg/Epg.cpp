@@ -368,7 +368,7 @@ bool CEpg::Load(void)
 
   if (!database || !database->IsOpen())
   {
-    CLog::Log(LOGERROR, "Epg - %s - could not open the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
@@ -376,14 +376,14 @@ bool CEpg::Load(void)
   int iEntriesLoaded = database->Get(*this);
   if (iEntriesLoaded <= 0)
   {
-    CLog::Log(LOGNOTICE, "Epg - %s - no database entries found for table '%s'.",
+    CLog::Log(LOGNOTICE, "EPG - %s - no database entries found for table '%s'.",
         __FUNCTION__, m_strName.c_str());
   }
   else
   {
     m_lastScanTime = GetLastScanTime();
 #if EPG_DEBUGGING
-    CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.", __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
+    CLog::Log(LOGDEBUG, "EPG - %s - %d entries loaded for table '%s'.", __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
 #endif
     bReturn = true;
   }
@@ -404,7 +404,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
     {
       if (!database || !database->IsOpen())
       {
-        CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+        CLog::Log(LOGERROR, "EPG -%s - could not open the database", __FUNCTION__);
         return bReturn;
       }
       database->BeginTransaction();
@@ -413,19 +413,19 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
     {
       CSingleLock lock(m_critSection);
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "%s - %zu entries in memory before merging", __FUNCTION__, m_tags.size());
+      CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory before merging", __FUNCTION__, m_tags.size());
 #endif
       /* copy over tags */
       for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
         UpdateEntry(*it->second, bStoreInDb, false);
 
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "%s - %zu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+      CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
 #endif
       FixOverlappingEvents(bStoreInDb);
 
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "%s - %zu entries in memory after fixing", __FUNCTION__, m_tags.size());
+      CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after fixing", __FUNCTION__, m_tags.size());
 #endif
       /* update the last scan time of this table */
       m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
@@ -575,7 +575,7 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
 
   if (!database || !database->IsOpen())
   {
-    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
     return false;
   }
 
@@ -672,7 +672,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     database = g_EpgContainer.GetDatabase();
     if (!database || !database->IsOpen())
     {
-      CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+      CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
       return false;
     }
   }
@@ -749,12 +749,16 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
     }
     else if (!channel->EPGEnabled())
     {
+#if EPG_DEBUGGING
       CLog::Log(LOGDEBUG, "EPG - %s - EPG updating disabled in the channel configuration", __FUNCTION__);
+#endif
       bGrabSuccess = true;
     }
     else if (channel->IsHidden())
     {
+#if EPG_DEBUGGING
       CLog::Log(LOGDEBUG, "EPG - %s - channel '%s' on client '%i' is hidden", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+#endif
       bGrabSuccess = true;
     }
     else if (!g_PVRClients->SupportsEPG(channel->ClientID()))
@@ -806,7 +810,7 @@ bool CEpg::PersistTags(void) const
     {
       if (!it->second->Persist())
       {
-        CLog::Log(LOGERROR, "failed to persist epg tag %d", it->second->UniqueBroadcastID());
+        CLog::Log(LOGERROR, "EPG - failed to persist epg tag %d", it->second->UniqueBroadcastID());
         bReturn = false;
       }
     }
