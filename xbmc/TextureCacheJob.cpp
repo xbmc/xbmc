@@ -130,7 +130,6 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
       additional_info = "music";
 
     image = thumbURL.GetHostName();
-    CURL::Decode(image);
 
     CStdString optionString = thumbURL.GetOptions().Mid(1);
     optionString.TrimRight('/'); // in case XBMC adds a slash

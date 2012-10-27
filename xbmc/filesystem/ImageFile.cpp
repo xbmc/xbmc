@@ -63,9 +63,7 @@ bool CImageFile::Exists(const CURL& url)
   if (!CTextureCache::CanCacheImageURL(url))
     return false;
 
-  CStdString image = url.GetHostName();
-  CURL::Decode(image);
-  return CFile::Exists(image);
+  return CFile::Exists(url.GetHostName());
 }
 
 int CImageFile::Stat(const CURL& url, struct __stat64* buffer)

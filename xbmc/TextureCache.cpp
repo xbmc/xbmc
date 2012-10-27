@@ -101,12 +101,10 @@ CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStd
   if (image.compare(0, 8, "image://") == 0)
     return image; // already wrapped
 
-  CStdString encoded(image);
-  CURL::Encode(encoded);
   CURL url;
   url.SetProtocol("image");
   url.SetUserName(type);
-  url.SetHostName(encoded);
+  url.SetHostName(image);
   if (!options.IsEmpty())
   {
     url.SetFileName("transform");
@@ -126,11 +124,7 @@ CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
   {
     CURL url(image);
     if (url.GetUserName().IsEmpty() && url.GetOptions().IsEmpty())
-    {
-      CStdString file(url.GetHostName());
-      CURL::Decode(file);
-      return file;
-    }
+      return url.GetHostName();
   }
   return image;
 }
