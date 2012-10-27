@@ -244,11 +244,14 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 
 void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks)
 {
+  for (size_t i = 0; i < m_sortMethods.size(); ++i)
+    if (m_sortMethods[i].m_sortMethod == sortMethod)
+      return;
+
   SORT_METHOD_DETAILS sort;
   sort.m_sortMethod=sortMethod;
   sort.m_buttonLabel=buttonLabel;
   sort.m_labelMasks=labelmasks;
-
   m_sortMethods.push_back(sort);
 }
 
