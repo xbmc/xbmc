@@ -93,7 +93,7 @@
 				<textcolor>grey2</textcolor>
 				<align>center</align>
 				<aligny>center</aligny>
-				<label>$INFO[VideoPlayer.Title]</label>
+				<label>$INFO[Player.Title]</label>
 				<visible>Player.HasVideo</visible>
 			</control>
 			<!-- control type="visualisation">
