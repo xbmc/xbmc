@@ -47,7 +47,7 @@ int CHTTPFile::Write(const void* lpBuf, int64_t uiBufSize)
     return -1;
 
   CStdString myPostData((char*) lpBuf);
-  if (myPostData.length() != uiBufSize)
+  if ((int64_t)myPostData.length() != uiBufSize)
     return -1;
 
   // If we get here, we (most likely) satisfied the pre-conditions that we used OpenForWrite and passed a string as postdata

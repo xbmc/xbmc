@@ -28,8 +28,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
-using namespace MUSIC_INFO;
-
 CEncoderLame::CEncoderLame()
 {
   memset(m_inPath, 0, 1024 + 1);

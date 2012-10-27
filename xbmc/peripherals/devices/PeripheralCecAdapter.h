@@ -167,6 +167,7 @@ namespace PERIPHERALS
     CEC::libcec_configuration         m_configuration;
     bool                              m_bActiveSourcePending;
     bool                              m_bStandbyPending;
+    CDateTime                         m_preventActivateSourceOnPlay;
   };
 
   class CPeripheralCecAdapterUpdateThread : public CThread

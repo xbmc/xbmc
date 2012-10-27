@@ -220,18 +220,27 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
   if (!asf)
     return false;
 
+  tag.SetTitle(asf->title().to8Bit(true));
   const ASF::AttributeListMap& attributeListMap = asf->attributeListMap();
   for (ASF::AttributeListMap::ConstIterator it = attributeListMap.begin(); it != attributeListMap.end(); ++it)
   {
     if (it->first == "Author")                           SetArtist(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumArtist")              SetAlbumArtist(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumTitle")               tag.SetAlbum(it->second.front().toString().to8Bit(true));
-    else if (it->first == "WM/TrackNumber")              tag.SetTrackNumber(it->second.front().toUInt());
+    else if (it->first == "WM/TrackNumber" ||
+             it->first == "WM/Track")
+    {
+      if (it->second.front().type() == ASF::Attribute::DWordType)
+        tag.SetTrackNumber(it->second.front().toUInt());
+      else
+        tag.SetTrackNumber(atoi(it->second.front().toString().toCString(true)));
+    }
     else if (it->first == "WM/PartOfSet")                tag.SetPartOfSet(it->second.front().toUInt());
     else if (it->first == "WM/Genre")                    SetGenre(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumArtistSortOrder")     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")          {} // Known unsupported, supress warnings
     else if (it->first == "WM/Script")                   {} // Known unsupported, supress warnings
+    else if (it->first == "WM/Year")                     tag.SetYear(it->second.front().toUInt());
     else if (it->first == "MusicBrainz/Artist Id")       tag.SetMusicBrainzArtistID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Id")        tag.SetMusicBrainzAlbumID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Artist Id") tag.SetMusicBrainzAlbumArtistID(it->second.front().toString().to8Bit(true));
@@ -239,7 +248,18 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "MusicBrainz/Album Status")    {}
     else if (it->first == "MusicBrainz/Album Type")      {}
     else if (it->first == "MusicIP/PUID")                {}
-    else
+    else if (it->first == "replaygain_track_gain")       tag.SetReplayGainTrackGain((int)(atof(it->second.front().toString().toCString(true)) * 100 + 0.5));
+    else if (it->first == "replaygain_album_gain")       tag.SetReplayGainAlbumGain((int)(atof(it->second.front().toString().toCString(true)) * 100 + 0.5));
+    else if (it->first == "replaygain_track_peak")       tag.SetReplayGainTrackPeak((float)atof(it->second.front().toString().toCString(true)));
+    else if (it->first == "replaygain_album_peak")       tag.SetReplayGainAlbumPeak((float)atof(it->second.front().toString().toCString(true)));
+    else if (it->first == "WM/Picture")
+    { // picture
+      ASF::Picture pic = it->second.front().toPicture();
+      tag.SetCoverArtInfo(pic.picture().size(), pic.mimeType().toCString());
+      if (art)
+        art->set((const uint8_t *)pic.picture().data(), pic.picture().size(), pic.mimeType().toCString());
+    }
+    else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ASF tag name: %s", it->first.toCString(true));
   }
   tag.SetLoaded(true);
@@ -324,7 +344,7 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
         else if (frame->description() == "replaygain_album_gain")       tag.SetReplayGainAlbumGain((int)(atof(stringList.front().toCString(true)) * 100 + 0.5));
         else if (frame->description() == "replaygain_track_peak")       tag.SetReplayGainTrackPeak((float)atof(stringList.front().toCString(true)));
         else if (frame->description() == "replaygain_album_peak")       tag.SetReplayGainAlbumPeak((float)atof(stringList.front().toCString(true)));
-        else
+        else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
           CLog::Log(LOGDEBUG, "unrecognized user text tag detected: TXXX:%s", frame->description().toCString(true));
       }
     else if (it->first == "UFID")
@@ -373,7 +393,7 @@ bool CTagLoaderTagLib::ParseID3v2Tag(ID3v2::Tag *id3v2, EmbeddedArt *art, CMusic
           tag.SetRating(POPMtoXBMC(popFrame->rating()));
         }
       }
-    else
+    else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ID3 frame detected: %c%c%c%c", it->first[0], it->first[1], it->first[2], it->first[3]);
   } // for
 
@@ -421,7 +441,7 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "MUSICBRAINZ_ALBUMARTISTID") tag.SetMusicBrainzAlbumArtistID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_ALBUMID")       tag.SetMusicBrainzAlbumID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_TRACKID")       tag.SetMusicBrainzTrackID(it->second.toString().to8Bit(true));
-    else
+    else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized APE tag: %s", it->first.toCString(true));
   }
 
@@ -470,7 +490,7 @@ bool CTagLoaderTagLib::ParseXiphComment(Ogg::XiphComment *xiph, EmbeddedArt *art
       if (iRating > 0 && iRating <= 100)
         tag.SetRating((iRating / 20) + '0');
     }
-    else
+    else if (g_advancedSettings.m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized XipComment name: %s", it->first.toCString(true));
   }
 
@@ -508,12 +528,24 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
       MP4::CoverArtList coverArtList = it->second.toCoverArtList();
       for (MP4::CoverArtList::ConstIterator pt = coverArtList.begin(); pt != coverArtList.end(); ++pt)
       {
-        string   mime =             pt->format() == MP4::CoverArt::PNG ? "image/png" : "image/jpeg";
-        size_t   size =             pt->data().size();
-        uint8_t* data = (uint8_t *) pt->data().data();
-        tag.SetCoverArtInfo(size, mime);
+        string mime;
+        switch (pt->format())
+        {
+          case MP4::CoverArt::PNG:
+            mime = "image/png";
+            break;
+          case MP4::CoverArt::JPEG:
+            mime = "image/jpeg";
+            break;
+          default:
+            break;
+        }
+        if (mime.empty())
+          continue;
+        tag.SetCoverArtInfo(pt->data().size(), mime);
         if (art)
-          art->set(data, size, mime);
+          art->set((const uint8_t *)pt->data().data(), pt->data().size(), mime);
+        break; // one is enough
       }
     }
   }

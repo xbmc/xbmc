@@ -125,8 +125,7 @@ int CPVRChannelGroup::Load(void)
         __FUNCTION__, Size() - iChannelCount, m_strGroupName.c_str());
   }
 
-  SortByChannelNumber();
-  Renumber();
+  SortAndRenumber();
 
   g_guiSettings.RegisterObserver(this);
   m_bLoaded = true;
@@ -183,9 +182,6 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  /* make sure the list is sorted by channel number */
-  SortByChannelNumber();
-
   /* old channel number out of range */
   if (iOldChannelNumber > m_members.size())
     return bReturn;
@@ -200,7 +196,7 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   m_members.insert(m_members.begin() + iNewChannelNumber - 1, entry);
 
   /* renumber the list */
-  Renumber();
+  SortAndRenumber();
 
   m_bChanged = true;
 
@@ -278,6 +274,19 @@ struct sortByChannelNumber
     return channel1.iChannelNumber < channel2.iChannelNumber;
   }
 };
+
+bool CPVRChannelGroup::SortAndRenumber(void)
+{
+  CSingleLock lock(m_critSection);
+  if (m_bUsingBackendChannelOrder)
+    SortByClientChannelNumber();
+  else
+    SortByChannelNumber();
+
+  bool bReturn = Renumber();
+  ResetChannelNumberCache();
+  return bReturn;
+}
 
 void CPVRChannelGroup::SortByClientChannelNumber(void)
 {
@@ -641,17 +650,14 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
   if (bChanged)
   {
-    if (bUseBackendChannelNumbers)
-      SortByClientChannelNumber();
-
     /* renumber to make sure all channels have a channel number.
        new channels were added at the back, so they'll get the highest numbers */
-    bool bRenumbered = Renumber();
+    bool bRenumbered = SortAndRenumber();
 
     SetChanged();
     lock.Leave();
 
-    NotifyObservers(HasNewChannels() || bRemoved || bRenumbered ? ObservableMessageChannelGroup : ObservableMessageChannelGroupReset);
+    NotifyObservers(HasNewChannels() || bRemoved || bRenumbered ? ObservableMessageChannelGroupReset : ObservableMessageChannelGroup);
 
     bReturn = Persist();
   }
@@ -749,13 +755,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 
       m_bChanged = true;
 
       if (bSortAndRenumber)
-      {
-        if (m_bUsingBackendChannelOrder)
-          SortByClientChannelNumber();
-        else
-          SortByChannelNumber();
-        Renumber();
-      }
+        SortAndRenumber();
 
       // TODO notify observers
       bReturn = true;
@@ -960,8 +960,7 @@ void CPVRChannelGroup::Notify(const Observable &obs, const ObservableMessage msg
     {
       CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - renumbering group '%s' to use the backend channel order and/or numbers",
           __FUNCTION__, m_strGroupName.c_str());
-      SortByClientChannelNumber();
-      Renumber();
+      SortAndRenumber();
       Persist();
     }
   }

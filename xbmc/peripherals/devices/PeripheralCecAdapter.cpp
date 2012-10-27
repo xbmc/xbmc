@@ -56,6 +56,9 @@ using namespace std;
 #define LOCALISED_ID_TV_AVR       36039
 #define LOCALISED_ID_NONE         231
 
+/* time in seconds to suppress source activation after receiving OnStop */
+#define CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP 2
+
 class DllLibCECInterface
 {
 public:
@@ -186,10 +189,21 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     ReopenConnection();
   }
+  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
+  {
+    CSingleLock lock(m_critSection);
+    m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
+  }
   else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
   {
     // activate the source when playback started, and the option is enabled
-    if (m_configuration.bActivateSource)
+    bool bActivateSource(false);
+    {
+      CSingleLock lock(m_critSection);
+      bActivateSource = (m_configuration.bActivateSource &&
+          (!m_preventActivateSourceOnPlay.IsValid() || CDateTime::GetCurrentDateTime() - m_preventActivateSourceOnPlay > CDateTimeSpan(0, 0, 0, CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP)));
+    }
+    if (bActivateSource)
       ActivateSource();
   }
 }
@@ -653,13 +667,10 @@ int CPeripheralCecAdapter::CecCommand(void *cbParam, const cec_command command)
 
   if (adapter->m_bIsReady)
   {
-    CLog::Log(LOGDEBUG, "%s - processing command: initiator=%1x destination=%1x opcode=%02x", __FUNCTION__, command.initiator, command.destination, command.opcode);
-
     switch (command.opcode)
     {
     case CEC_OPCODE_STANDBY:
       /* a device was put in standby mode */
-      CLog::Log(LOGDEBUG, "%s - device %1x was put in standby mode", __FUNCTION__, command.initiator);
       if (command.initiator == CECDEVICE_TV &&
           (adapter->m_configuration.bPowerOffOnStandby == 1 || adapter->m_configuration.bShutdownOnStandby == 1) &&
           (!adapter->m_screensaverLastActivated.IsValid() || CDateTime::GetCurrentDateTime() - adapter->m_screensaverLastActivated > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT)))

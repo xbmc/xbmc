@@ -27,6 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
+#include "Application.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -43,6 +44,19 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
 CGUIWindowHome::~CGUIWindowHome(void)
 {
   CAnnouncementManager::RemoveAnnouncer(this);
+}
+
+bool CGUIWindowHome::OnAction(const CAction &action)
+{
+  static unsigned int min_hold_time = 1000;
+  if (action.GetID() == ACTION_NAV_BACK &&
+      action.GetHoldTime() < min_hold_time &&
+      g_application.IsPlaying())
+  {
+    g_application.SwitchToFullScreen();
+    return true;
+  }
+  return CGUIWindow::OnAction(action);
 }
 
 void CGUIWindowHome::OnInitWindow()

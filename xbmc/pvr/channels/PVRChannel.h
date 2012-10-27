@@ -324,8 +324,10 @@ namespace PVR
 
     /*!
      * @brief Update the path after the channel number in the internal group changed.
+     * @param group The internal group that contains this channel
+     * @param iNewChannelGroupPosition The new channel number in the group
      */
-    void UpdatePath(unsigned int iNewChannelNumber);
+    void UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewChannelGroupPosition);
 
     /*!
      * @brief Return true if this channel is encrypted.
