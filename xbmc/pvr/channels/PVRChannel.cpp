@@ -27,7 +27,7 @@
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
-#include "PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
 #include "epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRDatabase.h"
@@ -492,20 +492,17 @@ bool CPVRChannel::SetStreamURL(const CStdString &strStreamURL)
   return false;
 }
 
-void CPVRChannel::UpdatePath(unsigned int iNewChannelNumber)
+void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewChannelGroupPosition)
 {
+  if (!group) return;
+
   CStdString strFileNameAndPath;
   CSingleLock lock(m_critSection);
-  CPVRChannelGroupPtr group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
-
-  if (group)
+  strFileNameAndPath.Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), group->GroupName().c_str(), iNewChannelGroupPosition);
+  if (m_strFileNameAndPath != strFileNameAndPath)
   {
-    strFileNameAndPath.Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), group->GroupName().c_str(), iNewChannelNumber);
-    if (m_strFileNameAndPath != strFileNameAndPath)
-    {
-      m_strFileNameAndPath = strFileNameAndPath;
-      SetChanged();
-    }
+    m_strFileNameAndPath = strFileNameAndPath;
+    SetChanged();
   }
 }
 

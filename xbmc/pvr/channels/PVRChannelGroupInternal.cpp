@@ -82,7 +82,7 @@ void CPVRChannelGroupInternal::UpdateChannelPaths(void)
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
     PVRChannelGroupMember member = m_members.at(iChannelPtr);
-    member.channel->UpdatePath(iChannelPtr);
+    member.channel->UpdatePath(this, iChannelPtr);
   }
 }
 
@@ -260,7 +260,7 @@ bool CPVRChannelGroupInternal::Renumber(void)
     if (m_members.at(iChannelPtr).channel->IsHidden())
       m_iHiddenChannels++;
     else
-      m_members.at(iChannelPtr).channel->UpdatePath(iChannelPtr);
+      m_members.at(iChannelPtr).channel->UpdatePath(this, iChannelPtr);
   }
 
   return bReturn;
