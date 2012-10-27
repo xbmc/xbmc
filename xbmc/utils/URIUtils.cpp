@@ -237,7 +237,8 @@ bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
 bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
 {
   return ProtocolHasParentInHostname(prot)
-      || prot.Equals("musicsearch");
+      || prot.Equals("musicsearch")
+      || prot.Equals("image");
 }
 
 bool URIUtils::ProtocolHasEncodedFilename(const CStdString& prot)
