@@ -536,7 +536,15 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     CLog::Log(LOGINFO, "UPnP: Received Browse DirectChildren request for object '%s', with sort criteria %s", object_id, sort_criteria);
 
     items.SetPath(CStdString(parent_id));
-    if (!items.Load()) {
+
+    // guard against loading while saving to the same cache file
+    // as CArchive currently performs no locking itself
+    bool load;
+    { NPT_AutoLock lock(m_CacheMutex);
+      load = items.Load();
+    }
+
+    if (!load) {
         // cache anything that takes more than a second to retrieve
         unsigned int time = XbmcThreads::SystemClockMillis();
 
@@ -562,6 +570,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
         }
 
         if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && (XbmcThreads::SystemClockMillis() - time) > 1000 )) {
+            NPT_AutoLock lock(m_CacheMutex);
             items.Save();
         }
     }

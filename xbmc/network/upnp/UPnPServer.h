@@ -120,6 +120,8 @@ private:
         return file_path.Left(index);
     }
 
+    NPT_Mutex                       m_CacheMutex;
+
     NPT_Mutex                       m_FileMutex;
     NPT_Map<NPT_String, NPT_String> m_FileMap;
 
