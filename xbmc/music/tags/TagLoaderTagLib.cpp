@@ -528,12 +528,24 @@ bool CTagLoaderTagLib::ParseMP4Tag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTa
       MP4::CoverArtList coverArtList = it->second.toCoverArtList();
       for (MP4::CoverArtList::ConstIterator pt = coverArtList.begin(); pt != coverArtList.end(); ++pt)
       {
-        string   mime =             pt->format() == MP4::CoverArt::PNG ? "image/png" : "image/jpeg";
-        size_t   size =             pt->data().size();
-        uint8_t* data = (uint8_t *) pt->data().data();
-        tag.SetCoverArtInfo(size, mime);
+        string mime;
+        switch (pt->format())
+        {
+          case MP4::CoverArt::PNG:
+            mime = "image/png";
+            break;
+          case MP4::CoverArt::JPEG:
+            mime = "image/jpeg";
+            break;
+          default:
+            break;
+        }
+        if (mime.empty())
+          continue;
+        tag.SetCoverArtInfo(pt->data().size(), mime);
         if (art)
-          art->set(data, size, mime);
+          art->set((const uint8_t *)pt->data().data(), pt->data().size(), mime);
+        break; // one is enough
       }
     }
   }
