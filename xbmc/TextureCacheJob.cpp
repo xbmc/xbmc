@@ -124,16 +124,12 @@ CStdString CTextureCacheJob::DecodeImageURL(const CStdString &url, unsigned int 
     // format is image://[type@]<url_encoded_path>?options
     CURL thumbURL(url);
 
-    if (!thumbURL.GetUserName().IsEmpty())
-    {
-      if (thumbURL.GetUserName() == "music")
-        additional_info = "music";
-      else
-        return ""; // we don't re-cache special images (eg picturefolder/video embedded thumbs)
-    }
+    if (!CTextureCache::CanCacheImageURL(thumbURL))
+      return "";
+    if (thumbURL.GetUserName() == "music")
+      additional_info = "music";
 
     image = thumbURL.GetHostName();
-    CURL::Decode(image);
 
     CStdString optionString = thumbURL.GetOptions().Mid(1);
     optionString.TrimRight('/'); // in case XBMC adds a slash

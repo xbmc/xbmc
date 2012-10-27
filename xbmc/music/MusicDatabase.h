@@ -278,7 +278,7 @@ protected:
   std::map<CStdString, CAlbum> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 28; };
+  virtual int GetMinVersion() const { return 29; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddSong(const CSong& song, bool bCheck = true, int idAlbum = -1);
