@@ -386,7 +386,6 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
     CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
 
-    AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS(strTrackLeft, strTrackRight));
     AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
     {
@@ -404,11 +403,9 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     }
     AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
     AddSortMethod(SORT_METHOD_SONG_RATING, 563, LABEL_MASKS("%T - %A", "%R"));  // Titel, Artist, Rating| empty, empty
-    SetSortMethod(SORT_METHOD_PLAYLIST_ORDER);
+    AddPlaylistOrder(items, LABEL_MASKS(strTrackLeft, strTrackRight));
 
     SetViewAsControl(g_settings.m_viewStateMusicNavSongs.m_viewMode);
-
-    SetSortOrder(g_settings.m_viewStateMusicNavSongs.m_sortOrder);
   } 
   else if (items.GetContent() == "albums") 
   {
@@ -419,7 +416,6 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     if (strAlbumRight.IsEmpty())
       strAlbumRight = "%A"; // artist
 
-    AddSortMethod(SORT_METHOD_PLAYLIST_ORDER, 559, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
     // album
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       AddSortMethod(SORT_METHOD_ALBUM_IGNORE_THE, 558, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));  // Filename, empty | Userdefined, Userdefined
@@ -435,9 +431,9 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     // year
     AddSortMethod(SORT_METHOD_YEAR, 562, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
 
-    SetSortMethod(SORT_METHOD_PLAYLIST_ORDER);
+    AddPlaylistOrder(items, LABEL_MASKS("%F", "", strAlbumLeft, strAlbumRight));
+
     SetViewAsControl(g_settings.m_viewStateMusicNavAlbums.m_viewMode);
-    SetSortOrder(g_settings.m_viewStateMusicNavAlbums.m_sortOrder);
   } 
   else 
   {
