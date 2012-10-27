@@ -21,7 +21,7 @@
  */
 
 #include "utils/LabelFormatter.h"
-#include "SortFileItem.h"
+#include "utils/SortUtils.h"
 #include "MediaSource.h"
 
 class CViewState; // forward
