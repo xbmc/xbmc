@@ -159,8 +159,6 @@ bool CWinSystemWin32::CreateBlankWindows()
   // We need as many blank windows as there are screens (minus 1)
   int BlankWindowsCount = m_MonitorsInfo.size() -1;
 
-  m_hBlankWindows.reserve(BlankWindowsCount);
-
   for (int i=0; i < BlankWindowsCount; i++)
   {
     HWND hBlankWindow = CreateWindowEx(WS_EX_TOPMOST, "BlankWindowClass", "", WS_POPUP | WS_DISABLED,
