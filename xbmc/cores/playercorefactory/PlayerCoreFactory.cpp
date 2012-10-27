@@ -232,6 +232,17 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: added %"PRIuS" players", vecCores.size());
 }
 
+void CPlayerCoreFactory::GetRemotePlayers( VECPLAYERCORES &vecCores )
+{
+  CSingleLock lock(s_section);
+  for(unsigned int i = 0; i < s_vecCoreConfigs.size(); i++)
+  {
+    if(s_vecCoreConfigs[i]->m_eCore != EPC_UPNPPLAYER)
+      continue;
+    vecCores.push_back(i+1);
+  }
+}
+
 PLAYERCOREID CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
 {
   VECPLAYERCORES vecCores;
