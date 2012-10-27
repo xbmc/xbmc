@@ -732,18 +732,20 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 
 bool CCurlFile::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
 {
-  return Service(strURL, strPostData, strHTML);
+  m_postdata = strPostData;
+  m_postdataset = true;
+  return Service(strURL, strHTML);
 }
 
 bool CCurlFile::Get(const CStdString& strURL, CStdString& strHTML)
 {
-  return Service(strURL, "", strHTML);
+  m_postdata = "";
+  m_postdataset = false;
+  return Service(strURL, strHTML);
 }
 
-bool CCurlFile::Service(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
+bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
 {
-  m_postdata = strPostData;
-  m_postdataset = true;
   if (Open(strURL))
   {
     if (ReadData(strHTML))
