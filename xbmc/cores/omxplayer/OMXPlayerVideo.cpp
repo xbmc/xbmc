@@ -711,11 +711,8 @@ bool OMXPlayerVideo::OpenDecoder()
     CLog::Log(LOGINFO, "OMXPlayerVideo::OpenDecoder : Invalid framerate %d, using forced 25fps and just trust timestamps\n", (int)m_fFrameRate);
     m_fFrameRate = 25;
   }
-  // use aspect in stream if available
-  if (m_hints.forced_aspect)
-    m_fForcedAspectRatio = m_hints.aspect;
-  else
-    m_fForcedAspectRatio = 0.0;
+  // use aspect in stream always
+  m_fForcedAspectRatio = m_hints.aspect;
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
