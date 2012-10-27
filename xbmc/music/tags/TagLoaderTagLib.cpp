@@ -220,18 +220,27 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
   if (!asf)
     return false;
 
+  tag.SetTitle(asf->title().to8Bit(true));
   const ASF::AttributeListMap& attributeListMap = asf->attributeListMap();
   for (ASF::AttributeListMap::ConstIterator it = attributeListMap.begin(); it != attributeListMap.end(); ++it)
   {
     if (it->first == "Author")                           SetArtist(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumArtist")              SetAlbumArtist(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumTitle")               tag.SetAlbum(it->second.front().toString().to8Bit(true));
-    else if (it->first == "WM/TrackNumber")              tag.SetTrackNumber(it->second.front().toUInt());
+    else if (it->first == "WM/TrackNumber" ||
+             it->first == "WM/Track")
+    {
+      if (it->second.front().type() == ASF::Attribute::DWordType)
+        tag.SetTrackNumber(it->second.front().toUInt());
+      else
+        tag.SetTrackNumber(atoi(it->second.front().toString().toCString(true)));
+    }
     else if (it->first == "WM/PartOfSet")                tag.SetPartOfSet(it->second.front().toUInt());
     else if (it->first == "WM/Genre")                    SetGenre(tag, GetASFStringList(it->second));
     else if (it->first == "WM/AlbumArtistSortOrder")     {} // Known unsupported, supress warnings
     else if (it->first == "WM/ArtistSortOrder")          {} // Known unsupported, supress warnings
     else if (it->first == "WM/Script")                   {} // Known unsupported, supress warnings
+    else if (it->first == "WM/Year")                     tag.SetYear(it->second.front().toUInt());
     else if (it->first == "MusicBrainz/Artist Id")       tag.SetMusicBrainzArtistID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Id")        tag.SetMusicBrainzAlbumID(it->second.front().toString().to8Bit(true));
     else if (it->first == "MusicBrainz/Album Artist Id") tag.SetMusicBrainzAlbumArtistID(it->second.front().toString().to8Bit(true));
@@ -239,6 +248,17 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "MusicBrainz/Album Status")    {}
     else if (it->first == "MusicBrainz/Album Type")      {}
     else if (it->first == "MusicIP/PUID")                {}
+    else if (it->first == "replaygain_track_gain")       tag.SetReplayGainTrackGain((int)(atof(it->second.front().toString().toCString(true)) * 100 + 0.5));
+    else if (it->first == "replaygain_album_gain")       tag.SetReplayGainAlbumGain((int)(atof(it->second.front().toString().toCString(true)) * 100 + 0.5));
+    else if (it->first == "replaygain_track_peak")       tag.SetReplayGainTrackPeak((float)atof(it->second.front().toString().toCString(true)));
+    else if (it->first == "replaygain_album_peak")       tag.SetReplayGainAlbumPeak((float)atof(it->second.front().toString().toCString(true)));
+    else if (it->first == "WM/Picture")
+    { // picture
+      ASF::Picture pic = it->second.front().toPicture();
+      tag.SetCoverArtInfo(pic.picture().size(), pic.mimeType().toCString());
+      if (art)
+        art->set((const uint8_t *)pic.picture().data(), pic.picture().size(), pic.mimeType().toCString());
+    }
     else
       CLog::Log(LOGDEBUG, "unrecognized ASF tag name: %s", it->first.toCString(true));
   }
