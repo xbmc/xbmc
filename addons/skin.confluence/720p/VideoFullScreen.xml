@@ -190,7 +190,7 @@
 						<font>font30</font>
 						<align>left</align>
 						<aligny>center</aligny>
-						<label>$INFO[VideoPlayer.Title]</label>
+						<label>$INFO[Player.Title]</label>
 						<textcolor>orange</textcolor>
 						<scroll>true</scroll>
 					</control>

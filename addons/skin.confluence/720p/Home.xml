@@ -63,7 +63,7 @@
 				<posy>285</posy>
 				<height>30</height>
 				<width>1000</width>
-				<label>$INFO[MusicPlayer.Title]</label>
+				<label>$INFO[Player.Title]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font13_title</font>
@@ -254,7 +254,7 @@
 					<posy>285</posy>
 					<height>30</height>
 					<width>1000</width>
-					<label>$INFO[VideoPlayer.Title]</label>
+					<label>$INFO[Player.Title]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
@@ -307,7 +307,7 @@
 					<posy>285</posy>
 					<height>30</height>
 					<width>1000</width>
-					<label>$INFO[VideoPlayer.Title]</label>
+					<label>$INFO[Player.Title]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
@@ -360,7 +360,7 @@
 					<posy>285</posy>
 					<height>30</height>
 					<width>1000</width>
-					<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year,[COLOR=grey] (,)[/COLOR]]</label>
+					<label>$INFO[Player.Title]$INFO[VideoPlayer.Year,[COLOR=grey] (,)[/COLOR]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
@@ -413,7 +413,7 @@
 					<posy>285</posy>
 					<height>30</height>
 					<width>1000</width>
-					<label>$INFO[VideoPlayer.Title]</label>
+					<label>$INFO[Player.Title]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
