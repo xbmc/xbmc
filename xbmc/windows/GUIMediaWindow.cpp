@@ -79,6 +79,8 @@
 #define CONTROL_LABELFILES          12
 
 #define PROPERTY_PATH_DB            "path.db"
+#define PROPERTY_SORT_ORDER         "sort.order"
+#define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
 using namespace std;
 using namespace ADDON;
@@ -586,7 +588,35 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 
   if (guiState.get())
   {
-    items.Sort(guiState->GetSortMethod(), guiState->GetDisplaySortOrder());
+    bool sorted = false;
+    SORT_METHOD sortMethod = guiState->GetSortMethod();
+    // If the sort method is "sort by playlist" and we have a specific
+    // sort order available we can use the specified sort order to do the sorting
+    // We do this as the new SortBy methods are a superset of the SORT_METHOD methods, thus
+    // not all are available. This may be removed once SORT_METHOD_* have been replaced by
+    // SortBy.
+    if ((sortMethod == SORT_METHOD_PLAYLIST_ORDER) && items.HasProperty(PROPERTY_SORT_ORDER))
+    {
+      SortBy sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
+      if (sortBy != SortByNone && sortBy != SortByPlaylistOrder && sortBy != SortByProgramCount)
+      {
+        SortDescription sorting;
+        sorting.sortBy = sortBy;
+        sorting.sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
+        sorting.sortAttributes = g_guiSettings.GetBool("filelists.ignorethewhensorting") ? SortAttributeIgnoreArticle : SortAttributeNone;
+
+        // if the sort order is descending, we need to switch the original sort order, as we assume
+        // in CGUIViewState::AddPlaylistOrder that SORT_METHOD_PLAYLIST_ORDER is ascending.
+        if (guiState->GetDisplaySortOrder() == SortOrderDescending)
+          sorting.sortOrder = sorting.sortOrder == SortOrderDescending ? SortOrderAscending : SortOrderDescending;
+
+        items.Sort(sorting);
+        sorted = true;
+      }
+    }
+
+    if (!sorted)
+      items.Sort(sortMethod, guiState->GetDisplaySortOrder());
 
     // Should these items be saved to the hdd
     if (items.CacheToDiscAlways() && !IsFiltered())
