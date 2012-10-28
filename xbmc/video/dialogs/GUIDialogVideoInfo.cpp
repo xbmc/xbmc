@@ -610,7 +610,20 @@ void CGUIDialogVideoInfo::OnGetArt()
   dialog->Reset();
   dialog->SetUseDetails(true);
 
+  CVideoDatabase db;
+  db.Open();
+
   vector<string> artTypes = CVideoThumbLoader::GetArtTypes(m_movieItem->GetVideoInfoTag()->m_type);
+
+  // add in any stored art for this item that is non-empty.
+  CGUIListItem::ArtMap currentArt;
+  db.GetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, currentArt);
+  for (CGUIListItem::ArtMap::iterator i = currentArt.begin(); i != currentArt.end(); ++i)
+  {
+    if (!i->second.empty() && find(artTypes.begin(), artTypes.end(), i->first) == artTypes.end())
+      artTypes.push_back(i->first);
+  }
+
   for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
   {
     string type = *i;
@@ -703,12 +716,8 @@ void CGUIDialogVideoInfo::OnGetArt()
     newThumb = "-"; // force local thumbs to be ignored
 
   // update thumb in the database
-  CVideoDatabase db;
-  if (db.Open())
-  {
-    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, type, newThumb);
-    db.Close();
-  }
+  db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, type, newThumb);
+  db.Close();
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
   m_movieItem->SetArt(type, newThumb);
