@@ -656,6 +656,13 @@ void CGUIDialogVideoInfo::OnGetArt()
     item->SetLabel(g_localizeStrings.Get(13512));
     items.Add(item);
   }
+  else if ((type == "poster" || type == "banner") && currentArt.find("thumb") != currentArt.end())
+  { // add the 'thumb' type in
+    CFileItemPtr item(new CFileItem("thumb://Thumb", false));
+    item->SetArt("thumb", currentArt["thumb"]);
+    item->SetLabel(g_localizeStrings.Get(13512));
+    items.Add(item);
+  }
 
   // Grab the thumbnails from the web
   vector<CStdString> thumbs;
@@ -708,6 +715,8 @@ void CGUIDialogVideoInfo::OnGetArt()
     int number = atoi(result.Mid(14));
     newThumb = thumbs[number];
   }
+  else if (result == "thumb://Thumb")
+    newThumb = currentArt["thumb"];
   else if (result == "thumb://Local")
     newThumb = localThumb;
   else if (CFile::Exists(result))
