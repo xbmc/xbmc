@@ -145,6 +145,8 @@ public:
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();
   void StopUPnP(bool bWait);
+  void StartUPnPClient();
+  void StopUPnPClient();
   void StartUPnPRenderer();
   void StopUPnPRenderer();
   void StartUPnPServer();

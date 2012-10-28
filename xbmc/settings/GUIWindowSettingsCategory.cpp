@@ -1697,6 +1697,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       g_application.StopUPnPRenderer();
 #endif
   }
+  else if (strSetting.Equals("services.upnpcontroller"))
+  {
+#ifdef HAS_UPNP
+    g_application.StopUPnPClient(); /* always stop and restart */
+    if (g_guiSettings.GetBool("services.upnpcontroller"))
+      g_application.StartUPnPClient();
+#endif
+  }
   else if (strSetting.Equals("services.esenabled"))
   {
 #ifdef HAS_EVENT_SERVER

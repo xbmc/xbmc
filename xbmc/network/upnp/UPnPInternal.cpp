@@ -311,7 +311,7 @@ BuildObject(CFileItem&                    item,
     PLT_MediaObject*      object = NULL;
     std::string thumb, fanart;
 
-    CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.GetPath());
+    CLog::Log(LOGDEBUG, "UPnP: Building didl for object '%s'", (const char*)item.GetPath());
 
     EClientQuirks quirks = GetClientQuirks(context);
 
@@ -326,6 +326,8 @@ BuildObject(CFileItem&                    item,
         rooturi = NPT_HttpUrl(context->GetLocalAddress().GetIpAddress().ToString(), context->GetLocalAddress().GetPort(), "/");
         ips.Remove(context->GetLocalAddress().GetIpAddress());
         ips.Insert(ips.GetFirstItem(), context->GetLocalAddress().GetIpAddress());
+    } else if(upnp_server) {
+        rooturi = NPT_HttpUrl("localhost", upnp_server->GetPort(), "/");
     }
 
     if (!item.m_bIsFolder) {
