@@ -177,6 +177,8 @@ namespace XBMCAddon
         else if (value == "top")
           item->SetSpecialSort(SortSpecialOnTop);
       }
+      else if (lowerKey.CompareNoCase("fanart_image") == 0)
+        item->SetArt("fanart", value);
       else
         item->SetProperty(lowerKey.ToLower(), value.c_str());
     }
@@ -195,6 +197,8 @@ namespace XBMCAddon
         value.Format("%f", item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
       else if (lowerKey.CompareNoCase("resumetime") == 0)
         value.Format("%f", item->GetVideoInfoTag()->m_resumePoint.timeInSeconds);
+      else if (lowerKey.CompareNoCase("fanart_image") == 0)
+        value = item->GetArt("fanart");
       else
         value = item->GetProperty(lowerKey.ToLower()).asString();
 
