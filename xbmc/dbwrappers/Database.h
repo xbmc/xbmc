@@ -139,6 +139,7 @@ public:
   typedef struct {
     Filter filter;
     SortDescription sortDescription;
+    std::string group;
   } QueryData;
 
   virtual bool GetFilter(CDbUrl &dbUrl, QueryData &data) { return true; }

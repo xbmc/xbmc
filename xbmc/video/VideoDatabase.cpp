@@ -5696,7 +5696,7 @@ bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& i
     videoUrl.AddOption("tagid", idTag);
 
   Filter filter;
-  return GetMoviesByWhere(videoUrl.ToString(), filter, items, idSet == -1, sortDescription);
+  return GetMoviesByWhere(videoUrl.ToString(), filter, items, idSet == -1 && g_guiSettings.GetBool("videolibrary.groupmoviesets"), sortDescription);
 }
 
 bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool fetchSets /* = false */, const SortDescription &sortDescription /* = SortDescription() */)
@@ -5719,16 +5719,19 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const Filter
 
     // if we have a "setid" option we don't want to retrieve sets
     CVariant setId;
-    if (fetchSets && videoUrl.GetOption("setid", setId) &&
-        setId.isInteger() && setId.asInteger() > 0)
+    if ((fetchSets && videoUrl.GetOption("setid", setId) &&
+        setId.isInteger() && setId.asInteger() > 0) ||
+        StringUtils::EqualsNoCase(data.group, "none"))
       fetchSets = false;
+    else if (StringUtils::EqualsNoCase(data.group, "set"))
+      fetchSets = true;
 
     int total = -1;
 
     CStdString strSQL = "select %s from movieview ";
     CStdString strSQLExtra;
     CFileItemList setItems;
-    if (fetchSets && g_guiSettings.GetBool("videolibrary.groupmoviesets"))
+    if (fetchSets)
     {
       // user wants sets (and we're not fetching a particular set node), so grab all sets that match this where clause first
       Filter setsFilter;
@@ -5889,9 +5892,9 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
       return false;
 
     // Apply the limiting directly here if there's no special sorting but limiting
-      if (data.filter.limit.empty() &&
+    if (data.filter.limit.empty() &&
         data.sortDescription.sortBy == SortByNone &&
-        (data.sortDescription.limitStart > 0 || data.sortDescription.limitEnd > 0))
+       (data.sortDescription.limitStart > 0 || data.sortDescription.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
       strSQLExtra += DatabaseUtils::BuildLimitClause(data.sortDescription.limitEnd, data.sortDescription.limitStart);
@@ -6210,8 +6213,8 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const Filt
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (data.filter.limit.empty() &&
-      data.sortDescription.sortBy == SortByNone &&
-      (data.sortDescription.limitStart > 0 || data.sortDescription.limitEnd > 0))
+        data.sortDescription.sortBy == SortByNone &&
+       (data.sortDescription.limitStart > 0 || data.sortDescription.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
       strSQLExtra += DatabaseUtils::BuildLimitClause(data.sortDescription.limitEnd, data.sortDescription.limitStart);
@@ -7063,8 +7066,8 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const Filt
 
     // Apply the limiting directly here if there's no special sorting but limiting
     if (data.filter.limit.empty() &&
-      data.sortDescription.sortBy == SortByNone &&
-      (data.sortDescription.limitStart > 0 || data.sortDescription.limitEnd > 0))
+        data.sortDescription.sortBy == SortByNone &&
+       (data.sortDescription.limitStart > 0 || data.sortDescription.limitEnd > 0))
     {
       total = (int)strtol(GetSingleValue(PrepareSQL(strSQL, "COUNT(1)") + strSQLExtra, m_pDS).c_str(), NULL, 10);
       strSQLExtra += DatabaseUtils::BuildLimitClause(data.sortDescription.limitEnd, data.sortDescription.limitStart);
@@ -9379,6 +9382,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, QueryData &data)
         data.sortDescription.sortOrder = xsp.GetOrderDirection();
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
         data.sortDescription.sortAttributes = SortAttributeIgnoreArticle;
+      
+      data.group = xsp.GetGroup();
     }
   }
 
