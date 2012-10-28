@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-05-31 16:18+0000\n"
+"PO-Revision-Date: 2012-09-24 14:39+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Chinese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "隐藏主菜单按钮"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "启用自定义背景"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "背景图路径："
 
 msgctxt "#31111"
 msgid "Hide"
@@ -217,10 +217,6 @@ msgctxt "#31122"
 msgid "Weather Page"
 msgstr "天气页面"
 
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "剧集中以“海报”代替“宽幅图标”"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "在背景显示“正在播放”视频"
@@ -243,7 +239,7 @@ msgstr "歌词"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "全屏可视效果隐藏同人画"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -449,20 +445,24 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]设置系统参数[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电参数 · 启用调试 · 设置管理员和锁定"
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]设置皮肤参数[/B][CR][CR]设置Confluence皮肤 · 增加和删除主菜单项 · 修改皮肤背景"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]设置扩展功能[/B][CR][CR]管理你安装的扩展功能 · 在xbmc.org浏览并安装扩展功能 · 修改扩展功能设置"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B]设置直播电视[/B][CR][CR]更改全屏信息 · 管理电子节目单数据设置"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]设置网络服务[/B][CR][CR]设置通过UPnP和HTTP控制XBMC · 配置文件共享[CR]启用Zeroconf · 设置AirPlay"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 msgctxt "#31421"
@@ -471,43 +471,43 @@ msgstr "选择您的用户配置文件[CR]登录并继续"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "录制定时器"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "预定时间"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "直播电视"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "增加组"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "更名组"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "删除组"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "可用组"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "频道组"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "定时器设定"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "频道选项"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

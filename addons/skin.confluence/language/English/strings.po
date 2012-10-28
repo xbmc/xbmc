@@ -101,8 +101,8 @@ msgctxt "#31033"
 msgid "Info"
 msgstr ""
 
-#Extra labels
 #empty strings from id 31034 to 31039
+#Extra labels
 
 msgctxt "#31040"
 msgid "Now Playing"
@@ -144,8 +144,8 @@ msgctxt "#31051"
 msgid "Sort: Descending"
 msgstr ""
 
-#Playlist Editor labels
 #empty strings from id 31052 to 31054
+#Playlist Editor labels
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -175,8 +175,8 @@ msgctxt "#31061"
 msgid "Current Selected"
 msgstr ""
 
-#Skin Settings labels
 #empty strings from id 31062 to 31100
+#Skin Settings labels
 
 msgctxt "#31101"
 msgid "Home screen options"
@@ -248,6 +248,8 @@ msgctxt "#31122"
 msgid "Weather Page"
 msgstr ""
 
+#empty string with id 31123
+
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr ""
@@ -304,8 +306,8 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr ""
 
-#Script labels
 #empty strings from id 31142 to 31199
+#Script labels
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -335,8 +337,8 @@ msgctxt "#31208"
 msgid "Upcoming Episodes"
 msgstr ""
 
-#Extra labels
 #empty strings from id 31209 to 31299
+#Extra labels
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -440,8 +442,8 @@ msgctxt "#31331"
 msgid "Album Details"
 msgstr ""
 
-#Video and Music OSD Labels
 #empty strings from id 31332 to 31350
+#Video and Music OSD Labels
 
 msgctxt "#31351"
 msgid "Pause"
@@ -481,8 +483,8 @@ msgctxt "#31392"
 msgid "Arial based"
 msgstr ""
 
-#Description Labels
 #empty strings from id 31393 to 31399
+#Description Labels
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
@@ -529,7 +531,7 @@ msgid "First run help...."
 msgstr ""
 
 msgctxt "#31412"
-msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click "Ok" to close this dialog. It will not appear again."
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 #empty strings from id 31413 to 31420
@@ -538,8 +540,8 @@ msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr ""
 
-#PVR labels
 #empty strings from id 31422 to 31499
+#PVR labels
 
 msgctxt "#31500"
 msgid "Recording Timers"
@@ -583,8 +585,8 @@ msgctxt "#31511"
 msgid "Channel Options"
 msgstr ""
 
-#Weather plugin
 #empty strings from id 31512 to 31900
+#Weather plugin
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-06-05 12:01+0000\n"
+"PO-Revision-Date: 2012-09-23 18:08+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "Ocultar botões do Menu Principal"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "Ativar imagem de fundo customizado"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "Caminho imagem de fundo:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -217,10 +217,6 @@ msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Página do Tempo"
 
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "Usar \"Pôsters\" ao invés de \"Faixas\" para Seriados"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Exibir fundo Vídeo \"Tocando Agora\""
@@ -243,7 +239,7 @@ msgstr "Letras"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "Ocultar Fanart na visualização full screen"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -449,20 +445,24 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]CONFIGURAR AJUSTES DE SISTEMA[/B][CR][CR]Configurar e calibrar telas · Configurar saída de áudio · Configurar controles remotos · Definir opções para economia de energia · Habilitar depuração · Configurar bloqueio mestre"
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]CONFIGURAR AJUSTES DE SKIN[/B][CR][CR]Configurar o skin Confluence · Adicionar e remover itens no menu principal(home) · Alterar fundos do skin"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]CONFIGURAR AJUSTES DE ADD-ONS[/B][CR][CR]Configurar Add-ons existentes · Procurar e instalar novos Add-ons de xbmc.org[CR]Alterar configurações do Add-on"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B]CONFIGURE AJUSTES TV[/B][CR][CR]Alterar info fullscreen· Administrar ajustes de dados do EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGURE AJUSTES SERVIÇOS[/B][CR][CR]Ajustes de controle do XBMC via UPnP e HTTP · Configure Compartilhar Arquivos[CR]Habilite Zeroconf · Configure AirPlay"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 msgctxt "#31421"
@@ -471,43 +471,43 @@ msgstr "Selecione seu Perfil de usuário XBMC[CR]para conectar e continue"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "Agendamentos de Gravações"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "Agendamento"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "TV ao Vivo"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "Adicionar Grupo"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "Renomear Grupo"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "Deletar Grupo"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "Grupos [CR] Disponíveis"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "Grupo Canais"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "Configurar Agendamento"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "Opções Canal"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
