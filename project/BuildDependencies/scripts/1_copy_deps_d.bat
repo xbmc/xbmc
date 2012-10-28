@@ -9,3 +9,4 @@ IF NOT EXIST "%XBMC_PATH%\project\VS2010Express\XBMC\Debug (DirectX)" md "%XBMC_
 IF NOT EXIST "%XBMC_PATH%\system\webserver" md "%XBMC_PATH%\system\webserver"
 IF NOT EXIST "%XBMC_PATH%\system\airplay" md "%XBMC_PATH%\system\airplay"
 IF NOT EXIST "%XBMC_PATH%\project\Win32BuildSetup\dependencies" md "%XBMC_PATH%\project\Win32BuildSetup\dependencies"
+IF NOT EXIST "%XBMC_PATH%\system\cdrip" md "%XBMC_PATH%\system\cdrip"
