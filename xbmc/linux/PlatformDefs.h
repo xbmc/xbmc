@@ -166,7 +166,7 @@
 #define CALLBACK    __stdcall
 #define WINAPI      __stdcall
 #define WINAPIV     __cdecl
-#ifndef __APPLE__
+#ifdef _WIN32
 #define APIENTRY    WINAPI
 #else
 #define APIENTRY
