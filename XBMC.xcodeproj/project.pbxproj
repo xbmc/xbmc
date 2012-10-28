@@ -429,6 +429,32 @@
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		DFB0F472161B747500D744F4 /* AddonsOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB0F470161B747500D744F4 /* AddonsOperations.cpp */; };
 		DFB15B2215F8FB8100CDF0DE /* SDLMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFB15B2115F8FB8100CDF0DE /* SDLMain.mm */; };
+		DFB25D2F163D4743006C4A48 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD17C15FCE77900E10810 /* Addon.cpp */; };
+		DFB25D30163D4743006C4A48 /* AddonCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18015FCE77900E10810 /* AddonCallback.cpp */; };
+		DFB25D31163D4743006C4A48 /* AddonClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18415FCE77900E10810 /* AddonClass.cpp */; };
+		DFB25D32163D4743006C4A48 /* AddonUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18915FCE77900E10810 /* AddonUtils.cpp */; };
+		DFB25D33163D4743006C4A48 /* CallbackFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD18F15FCE77900E10810 /* CallbackFunction.cpp */; };
+		DFB25D34163D4743006C4A48 /* CallbackHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD19315FCE77900E10810 /* CallbackHandler.cpp */; };
+		DFB25D35163D4743006C4A48 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD19715FCE77900E10810 /* Control.cpp */; };
+		DFB25D36163D4743006C4A48 /* Dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD19B15FCE77900E10810 /* Dialog.cpp */; };
+		DFB25D37163D4743006C4A48 /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1A115FCE77900E10810 /* File.cpp */; };
+		DFB25D38163D4743006C4A48 /* InfoTagMusic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1A515FCE77900E10810 /* InfoTagMusic.cpp */; };
+		DFB25D39163D4743006C4A48 /* InfoTagVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1A915FCE77900E10810 /* InfoTagVideo.cpp */; };
+		DFB25D3A163D4743006C4A48 /* Keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1AD15FCE77900E10810 /* Keyboard.cpp */; };
+		DFB25D3B163D4743006C4A48 /* LanguageHook.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1B115FCE77900E10810 /* LanguageHook.cpp */; };
+		DFB25D3C163D4743006C4A48 /* ListItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1B715FCE77900E10810 /* ListItem.cpp */; };
+		DFB25D3D163D4743006C4A48 /* ModuleXbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1BC15FCE77900E10810 /* ModuleXbmc.cpp */; };
+		DFB25D3E163D4743006C4A48 /* ModuleXbmcgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1C015FCE77900E10810 /* ModuleXbmcgui.cpp */; };
+		DFB25D3F163D4743006C4A48 /* ModuleXbmcplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1C415FCE77900E10810 /* ModuleXbmcplugin.cpp */; };
+		DFB25D40163D4743006C4A48 /* ModuleXbmcvfs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1C815FCE77900E10810 /* ModuleXbmcvfs.cpp */; };
+		DFB25D41163D4743006C4A48 /* Monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1CC15FCE77900E10810 /* Monitor.cpp */; };
+		DFB25D42163D4743006C4A48 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1D015FCE77900E10810 /* Player.cpp */; };
+		DFB25D43163D4743006C4A48 /* PlayList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1D415FCE77900E10810 /* PlayList.cpp */; };
+		DFB25D44163D4743006C4A48 /* String.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1D915FCE77900E10810 /* String.cpp */; };
+		DFB25D45163D4743006C4A48 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1DE15FCE77900E10810 /* Window.cpp */; };
+		DFB25D46163D4743006C4A48 /* WindowDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1E215FCE77900E10810 /* WindowDialog.cpp */; };
+		DFB25D47163D4743006C4A48 /* WindowDialogMixin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1E615FCE77900E10810 /* WindowDialogMixin.cpp */; };
+		DFB25D48163D4743006C4A48 /* WindowXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD1EC15FCE77900E10810 /* WindowXML.cpp */; };
 		DFB65FB515373AE7006B8FF1 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6515373AE7006B8FF1 /* AEFactory.cpp */; };
 		DFB65FB715373AE7006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6A15373AE7006B8FF1 /* AEEncoderFFmpeg.cpp */; };
 		DFB65FB815373AE7006B8FF1 /* CoreAudioAE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB65F6D15373AE7006B8FF1 /* CoreAudioAE.cpp */; };
@@ -878,7 +904,6 @@
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A9B1550927000FFD782 /* XbmcContext.cpp */; };
 		F502C02A160F394F00C96C76 /* python_binding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F502C029160F394F00C96C76 /* python_binding.a */; };
-		F502C02E160F399200C96C76 /* legacy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F502C02D160F399200C96C76 /* legacy.a */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F50FE04A11A3410300C8B8CD /* EncoderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */; };
@@ -2972,7 +2997,6 @@
 		F502BFF0160F36AD00C96C76 /* swig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = swig.cpp; path = python/swig.cpp; sourceTree = "<group>"; };
 		F502BFF1160F36AD00C96C76 /* swig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = swig.h; path = python/swig.h; sourceTree = "<group>"; };
 		F502C029160F394F00C96C76 /* python_binding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = python_binding.a; path = xbmc/interfaces/python/python_binding.a; sourceTree = "<group>"; };
-		F502C02D160F399200C96C76 /* legacy.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = legacy.a; path = xbmc/interfaces/legacy/legacy.a; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
@@ -3267,7 +3291,6 @@
 				F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */,
 				DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */,
 				F502C02A160F394F00C96C76 /* python_binding.a in Frameworks */,
-				F502C02E160F399200C96C76 /* legacy.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6254,7 +6277,6 @@
 				43352CED1071634600706B8A /* libsquish.a */,
 				E38E25680D2639F100618676 /* libxdaap.a */,
 				18404DA51396C31B00863BBA /* SlingboxLib.a */,
-				F502C02D160F399200C96C76 /* legacy.a */,
 				F502C029160F394F00C96C76 /* python_binding.a */,
 			);
 			name = "internal libs";
@@ -6531,7 +6553,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMC" */;
 			buildPhases = (
-				F502C031160F39B300C96C76 /* Make interface-legacy */,
 				F502C011160F378F00C96C76 /* Make interface-python */,
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
@@ -6646,21 +6667,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"$ACTION\" = build ] ; then\nmake -C ${SRCROOT}/xbmc/interfaces/python\nfi";
-		};
-		F502C031160F39B300C96C76 /* Make interface-legacy */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Make interface-legacy";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\nmake -C ${SRCROOT}/xbmc/interfaces/legacy\nfi";
-			showEnvVarsInLog = 0;
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7646,6 +7652,32 @@
 				DF00492D162DAEA200A971AD /* PVROperations.cpp in Sources */,
 				DFD928F316384B6800709DAE /* Timer.cpp in Sources */,
 				DF9A71EE1639C8F6005ECB2E /* HTTPFile.cpp in Sources */,
+				DFB25D2F163D4743006C4A48 /* Addon.cpp in Sources */,
+				DFB25D30163D4743006C4A48 /* AddonCallback.cpp in Sources */,
+				DFB25D31163D4743006C4A48 /* AddonClass.cpp in Sources */,
+				DFB25D32163D4743006C4A48 /* AddonUtils.cpp in Sources */,
+				DFB25D33163D4743006C4A48 /* CallbackFunction.cpp in Sources */,
+				DFB25D34163D4743006C4A48 /* CallbackHandler.cpp in Sources */,
+				DFB25D35163D4743006C4A48 /* Control.cpp in Sources */,
+				DFB25D36163D4743006C4A48 /* Dialog.cpp in Sources */,
+				DFB25D37163D4743006C4A48 /* File.cpp in Sources */,
+				DFB25D38163D4743006C4A48 /* InfoTagMusic.cpp in Sources */,
+				DFB25D39163D4743006C4A48 /* InfoTagVideo.cpp in Sources */,
+				DFB25D3A163D4743006C4A48 /* Keyboard.cpp in Sources */,
+				DFB25D3B163D4743006C4A48 /* LanguageHook.cpp in Sources */,
+				DFB25D3C163D4743006C4A48 /* ListItem.cpp in Sources */,
+				DFB25D3D163D4743006C4A48 /* ModuleXbmc.cpp in Sources */,
+				DFB25D3E163D4743006C4A48 /* ModuleXbmcgui.cpp in Sources */,
+				DFB25D3F163D4743006C4A48 /* ModuleXbmcplugin.cpp in Sources */,
+				DFB25D40163D4743006C4A48 /* ModuleXbmcvfs.cpp in Sources */,
+				DFB25D41163D4743006C4A48 /* Monitor.cpp in Sources */,
+				DFB25D42163D4743006C4A48 /* Player.cpp in Sources */,
+				DFB25D43163D4743006C4A48 /* PlayList.cpp in Sources */,
+				DFB25D44163D4743006C4A48 /* String.cpp in Sources */,
+				DFB25D45163D4743006C4A48 /* Window.cpp in Sources */,
+				DFB25D46163D4743006C4A48 /* WindowDialog.cpp in Sources */,
+				DFB25D47163D4743006C4A48 /* WindowDialogMixin.cpp in Sources */,
+				DFB25D48163D4743006C4A48 /* WindowXML.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

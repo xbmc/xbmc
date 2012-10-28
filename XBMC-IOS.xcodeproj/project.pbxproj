@@ -157,6 +157,32 @@
 		DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */; };
 		DFAB4BE615FCCA5000E1BAF6 /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4BE215FCCA5000E1BAF6 /* TagLibVFSStream.cpp */; };
 		DFAB4BE715FCCA5000E1BAF6 /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4BE415FCCA5000E1BAF6 /* TagLoaderTagLib.cpp */; };
+		DFB25CB1163D3A04006C4A48 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD10415FCE71000E10810 /* Addon.cpp */; };
+		DFB25CB2163D3A04006C4A48 /* AddonCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD10815FCE71000E10810 /* AddonCallback.cpp */; };
+		DFB25CB3163D3A04006C4A48 /* AddonClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD10C15FCE71000E10810 /* AddonClass.cpp */; };
+		DFB25CB4163D3A04006C4A48 /* AddonUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD11115FCE71000E10810 /* AddonUtils.cpp */; };
+		DFB25CB5163D3A04006C4A48 /* CallbackFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD11715FCE71000E10810 /* CallbackFunction.cpp */; };
+		DFB25CB6163D3A04006C4A48 /* CallbackHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD11B15FCE71000E10810 /* CallbackHandler.cpp */; };
+		DFB25CB7163D3A04006C4A48 /* Control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD11F15FCE71000E10810 /* Control.cpp */; };
+		DFB25CB8163D3A04006C4A48 /* Dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD12315FCE71000E10810 /* Dialog.cpp */; };
+		DFB25CB9163D3A04006C4A48 /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD12915FCE71000E10810 /* File.cpp */; };
+		DFB25CBA163D3A04006C4A48 /* InfoTagMusic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD12D15FCE71000E10810 /* InfoTagMusic.cpp */; };
+		DFB25CBB163D3A04006C4A48 /* InfoTagVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD13115FCE71000E10810 /* InfoTagVideo.cpp */; };
+		DFB25CBC163D3A04006C4A48 /* Keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD13515FCE71000E10810 /* Keyboard.cpp */; };
+		DFB25CBD163D3A04006C4A48 /* LanguageHook.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD13915FCE71000E10810 /* LanguageHook.cpp */; };
+		DFB25CBE163D3A04006C4A48 /* ListItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD13F15FCE71000E10810 /* ListItem.cpp */; };
+		DFB25CBF163D3A04006C4A48 /* ModuleXbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD14415FCE71000E10810 /* ModuleXbmc.cpp */; };
+		DFB25CC0163D3A04006C4A48 /* ModuleXbmcgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD14815FCE71000E10810 /* ModuleXbmcgui.cpp */; };
+		DFB25CC1163D3A04006C4A48 /* ModuleXbmcplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD14C15FCE71000E10810 /* ModuleXbmcplugin.cpp */; };
+		DFB25CC2163D3A04006C4A48 /* ModuleXbmcvfs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD15015FCE71000E10810 /* ModuleXbmcvfs.cpp */; };
+		DFB25CC3163D3A04006C4A48 /* Monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD15415FCE71000E10810 /* Monitor.cpp */; };
+		DFB25CC4163D3A04006C4A48 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD15815FCE71000E10810 /* Player.cpp */; };
+		DFB25CC5163D3A04006C4A48 /* PlayList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD15C15FCE71000E10810 /* PlayList.cpp */; };
+		DFB25CC6163D3A04006C4A48 /* String.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD16115FCE71000E10810 /* String.cpp */; };
+		DFB25CC7163D3A04006C4A48 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD16615FCE71000E10810 /* Window.cpp */; };
+		DFB25CC8163D3A04006C4A48 /* WindowDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD16A15FCE71000E10810 /* WindowDialog.cpp */; };
+		DFB25CC9163D3A04006C4A48 /* WindowDialogMixin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD16E15FCE71000E10810 /* WindowDialogMixin.cpp */; };
+		DFB25CCA163D3A04006C4A48 /* WindowXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD17415FCE71000E10810 /* WindowXML.cpp */; };
 		DFB6625615376791006B8FF1 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6620615376791006B8FF1 /* AEFactory.cpp */; };
 		DFB6625815376791006B8FF1 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6620B15376791006B8FF1 /* AEEncoderFFmpeg.cpp */; };
 		DFB6625915376791006B8FF1 /* CoreAudioAE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB6620E15376791006B8FF1 /* CoreAudioAE.cpp */; };
@@ -212,7 +238,6 @@
 		DFFD59401506B5B10088DE4B /* IOSEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFFD593F1506B5B10088DE4B /* IOSEAGLView.mm */; };
 		DFFEFBEE15160739001294DC /* IOSScreenManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFFEFBED15160739001294DC /* IOSScreenManager.mm */; };
 		DFFEFC0415160808001294DC /* IOSExternalTouchController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFFEFC0315160808001294DC /* IOSExternalTouchController.mm */; };
-		F502C07F160F419400C96C76 /* legacy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F502C07D160F419400C96C76 /* legacy.a */; };
 		F502C080160F419400C96C76 /* python_binding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F502C07E160F419400C96C76 /* python_binding.a */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
@@ -1502,7 +1527,6 @@
 		F502C079160F417B00C96C76 /* XBPython.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XBPython.h; path = python/XBPython.h; sourceTree = "<group>"; };
 		F502C07A160F417B00C96C76 /* XBPyThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XBPyThread.cpp; path = python/XBPyThread.cpp; sourceTree = "<group>"; };
 		F502C07B160F417B00C96C76 /* XBPyThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XBPyThread.h; path = python/XBPyThread.h; sourceTree = "<group>"; };
-		F502C07D160F419400C96C76 /* legacy.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = legacy.a; path = xbmc/interfaces/legacy/legacy.a; sourceTree = "<group>"; };
 		F502C07E160F419400C96C76 /* python_binding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = python_binding.a; path = xbmc/interfaces/python/python_binding.a; sourceTree = "<group>"; };
 		F558F60613AFDC1700631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		F558F61013AFDC3000631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
@@ -3232,7 +3256,6 @@
 				F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */,
 				18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */,
-				F502C07F160F419400C96C76 /* legacy.a in Frameworks */,
 				F502C080160F419400C96C76 /* python_binding.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6360,7 +6383,6 @@
 				F56C8C0D131F4811000AD0F6 /* libsquish.a */,
 				F56C8C10131F4811000AD0F6 /* libxdaap.a */,
 				18404DD21396C3D200863BBA /* SlingboxLib.a */,
-				F502C07D160F419400C96C76 /* legacy.a */,
 				F502C07E160F419400C96C76 /* python_binding.a */,
 			);
 			name = "Internal Libs";
@@ -6503,7 +6525,6 @@
 			buildConfigurationList = 1DEB911A08733D790010E9CD /* Build configuration list for PBXNativeTarget "XBMC" */;
 			buildPhases = (
 				8D57630F048677EA00EA77CD /* Resources */,
-				F502C082160F41A700C96C76 /* Make interface-legacy */,
 				F502C086160F41D900C96C76 /* Make interface-python */,
 				8D576311048677EA00EA77CD /* Sources */,
 				8D576313048677EA00EA77CD /* Frameworks */,
@@ -6587,20 +6608,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Developer/iphoneentitlements401/gen_entitlements.py \"org.xbmc.xbmc-ios\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
-		};
-		F502C082160F41A700C96C76 /* Make interface-legacy */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Make interface-legacy";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\nmake -C ${SRCROOT}/xbmc/interfaces/legacy\nfi";
 		};
 		F502C086160F41D900C96C76 /* Make interface-python */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7613,6 +7620,32 @@
 				DF00493A162DB10400A971AD /* PVROperations.cpp in Sources */,
 				DFD928FF16384B8500709DAE /* Timer.cpp in Sources */,
 				DF9A71FB1639C916005ECB2E /* HTTPFile.cpp in Sources */,
+				DFB25CB1163D3A04006C4A48 /* Addon.cpp in Sources */,
+				DFB25CB2163D3A04006C4A48 /* AddonCallback.cpp in Sources */,
+				DFB25CB3163D3A04006C4A48 /* AddonClass.cpp in Sources */,
+				DFB25CB4163D3A04006C4A48 /* AddonUtils.cpp in Sources */,
+				DFB25CB5163D3A04006C4A48 /* CallbackFunction.cpp in Sources */,
+				DFB25CB6163D3A04006C4A48 /* CallbackHandler.cpp in Sources */,
+				DFB25CB7163D3A04006C4A48 /* Control.cpp in Sources */,
+				DFB25CB8163D3A04006C4A48 /* Dialog.cpp in Sources */,
+				DFB25CB9163D3A04006C4A48 /* File.cpp in Sources */,
+				DFB25CBA163D3A04006C4A48 /* InfoTagMusic.cpp in Sources */,
+				DFB25CBB163D3A04006C4A48 /* InfoTagVideo.cpp in Sources */,
+				DFB25CBC163D3A04006C4A48 /* Keyboard.cpp in Sources */,
+				DFB25CBD163D3A04006C4A48 /* LanguageHook.cpp in Sources */,
+				DFB25CBE163D3A04006C4A48 /* ListItem.cpp in Sources */,
+				DFB25CBF163D3A04006C4A48 /* ModuleXbmc.cpp in Sources */,
+				DFB25CC0163D3A04006C4A48 /* ModuleXbmcgui.cpp in Sources */,
+				DFB25CC1163D3A04006C4A48 /* ModuleXbmcplugin.cpp in Sources */,
+				DFB25CC2163D3A04006C4A48 /* ModuleXbmcvfs.cpp in Sources */,
+				DFB25CC3163D3A04006C4A48 /* Monitor.cpp in Sources */,
+				DFB25CC4163D3A04006C4A48 /* Player.cpp in Sources */,
+				DFB25CC5163D3A04006C4A48 /* PlayList.cpp in Sources */,
+				DFB25CC6163D3A04006C4A48 /* String.cpp in Sources */,
+				DFB25CC7163D3A04006C4A48 /* Window.cpp in Sources */,
+				DFB25CC8163D3A04006C4A48 /* WindowDialog.cpp in Sources */,
+				DFB25CC9163D3A04006C4A48 /* WindowDialogMixin.cpp in Sources */,
+				DFB25CCA163D3A04006C4A48 /* WindowXML.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
