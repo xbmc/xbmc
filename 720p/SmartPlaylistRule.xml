@@ -2,7 +2,7 @@
 <window id="129">
 	<defaultcontrol>15</defaultcontrol>
 	<controls>
-		<include>DialogFade</include>
+		<include>FadeDialog</include>
 		<control type="group">
 			<include>ProgressDialogCenterPos</include>
 			<include>ProgressDialogBG</include>

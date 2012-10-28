@@ -12,15 +12,13 @@
 			<aspectratio>stretch</aspectratio>
 			<texture>BlackTransparent.png</texture>
 			<colordiffuse>99cccccc</colordiffuse>
-			<include>DialogFade</include>
+			<include>FadeDialog</include>
 		</control>
 		<control type="group">
 			<include>BusyDialogPos</include>
-			<include>DialogSlideUp</include>
 			<control type="image">
 				<description>Panel background</description>
 				<include>BusyDialogBGDims</include>
-				<include>InfoMessagePanelBG</include>
 			</control>
 			<control type="label">
 				<description>Please Wait label</description>

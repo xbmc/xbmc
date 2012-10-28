@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <window id="2002">
 	<defaultcontrol always="true">10</defaultcontrol>
-	<include>DialogFade</include>
+	<include>FadeDialog</include>
 	<controls>
 		<control type="group">
 			<include>ProgressDialogCenterPos</include>

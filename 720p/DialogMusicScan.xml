@@ -9,7 +9,7 @@
 	<controls>
 		<control type="group">
 			<visible>!VideoPlayer.IsFullscreen</visible>
-			<include>DialogFade</include>
+			<include>FadeDialog</include>
 			<include>ScanDialogControls</include>
 		</control>
 	</controls>

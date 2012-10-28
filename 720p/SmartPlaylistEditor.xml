@@ -2,7 +2,7 @@
 <window id="129">
 	<defaultcontrol always="true">22</defaultcontrol>
 	<controls>
-		<include>DialogFade</include>
+		<include>FadeDialog</include>
 		<control type="group">
 			<posx>385</posx>
 			<posy>130</posy>

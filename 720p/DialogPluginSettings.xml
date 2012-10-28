@@ -2,7 +2,7 @@
 <window id="10140">
 	<defaultcontrol>2</defaultcontrol>
 	<controls>
-		<include>DialogFade</include>
+		<include>FadeDialog</include>
 		<control type="image">
 			<description>Background fade</description>
 			<posx>-300</posx>

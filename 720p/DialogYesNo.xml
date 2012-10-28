@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <window id="100">
 	<defaultcontrol always="true">10</defaultcontrol>
-	<include>DialogFade</include>
+	<include>FadeDialog</include>
 	<controls>
 		<include>DialogDarkFadeBG</include>
 		<control type="group">

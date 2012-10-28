@@ -5,7 +5,6 @@
 	<controls>
 		<control type="group">
 			<include>Background</include>
-			<include>MediaViewBGOverlay</include>
 			<control type="group">
 				<include>TopOverlayTitlePos</include>
 				<include>TopOverlayFirstTitleAreaBG</include>

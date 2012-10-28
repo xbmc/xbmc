@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <window id="126">
 	<defaultcontrol always="true">450</defaultcontrol>
-	<include>DialogFade</include>
+	<include>FadeDialog</include>
 	<controls>
-		<include>DialogFadeBG</include>
+		<include>FadeDialogBG</include>
 		<control type="group">
 			<include>InfoDialogPos</include>
 			<include>InfoDialogBG</include>

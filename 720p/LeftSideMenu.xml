@@ -146,7 +146,6 @@
 			<height>650</height>
 			<onup>9100</onup>
 			<ondown>9100</ondown>
-			<include>transition2</include>
 			<orientation>vertical</orientation>
 			<scrolltime>150</scrolltime>
 			<visible allowhiddenfocus="true">![ControlGroup(1100).HasFocus() | ControlGroup(4000).HasFocus() | ControlGroup(2100).HasFocus() | Window.IsActive(2003)]</visible>
@@ -237,7 +236,6 @@
 			<height>650</height>
 			<onup>9100</onup>
 			<ondown>9100</ondown>
-			<include>transition2</include>
 			<orientation>vertical</orientation>
 			<scrolltime>150</scrolltime>
 			<visible allowhiddenfocus="true">true</visible>
@@ -415,7 +413,6 @@
 			<height>650</height>
 			<onup>9100</onup>
 			<ondown>9100</ondown>
-			<include>transition2</include>
 			<orientation>vertical</orientation>
 			<scrolltime>150</scrolltime>
 			<visible allowhiddenfocus="true">true</visible>

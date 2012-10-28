@@ -6,7 +6,6 @@
 		<include>Background</include>
 		<control type="group">
 			<include>BackgroundOverlayFade</include>
-			<include>MediaViewBGOverlay</include>
 		</control>
 		<control type="group">
 			<posy>230</posy>

@@ -2,7 +2,7 @@
 <window id="128">
 	<defaultcontrol>10</defaultcontrol>
 	<controls>
-		<include>DialogFade</include>
+		<include>FadeDialog</include>
 		<control type="group">
 			<include>SelectionDialogPos</include>
 			<include>SelectionDialogBG</include>

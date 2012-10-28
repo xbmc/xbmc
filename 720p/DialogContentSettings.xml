@@ -6,9 +6,9 @@
 		<posx>0</posx>
 		<posy>0</posy>
 	</coordinates>
-	<include>DialogFade</include>
+	<include>FadeDialog</include>
 	<controls>
-		<include>DialogFadeBG</include>
+		<include>FadeDialogBG</include>
 		<control type="group">
 			<include>InfoDialogPos</include>
 			<include>InfoDialogBG</include>

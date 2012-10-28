@@ -13,17 +13,15 @@
       <aspectratio>stretch</aspectratio>
       <texture>BlackTransparent.png</texture>
       <colordiffuse>99cccccc</colordiffuse>
-      <include>DialogFade</include>
+      <include>FadeDialog</include>
     </control>
 
     <control type="group">
       <include>ToastDialogPos</include>
-      <include>DialogSlideUp</include>
 
       <control type="image">
         <description>Panel background</description>
         <include>ToastDialogBGDims</include>
-        <include>InfoMessagePanelBG</include>
       </control>
 
 <!--
