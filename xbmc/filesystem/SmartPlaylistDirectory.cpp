@@ -78,6 +78,7 @@ namespace XFILE
       if (db.Open())
       {
         MediaType mediaType = DatabaseUtils::MediaTypeFromString(playlist.GetType());
+        bool fetchSets = g_guiSettings.GetBool("videolibrary.groupmoviesets");
 
         CStdString baseDir = strBaseDir;
         if (strBaseDir.empty())
@@ -90,8 +91,15 @@ namespace XFILE
             break;
 
           case MediaTypeMovie:
+          {
             baseDir = "videodb://1/2/";
+            const CStdString &group = playlist.GetGroup();
+            if (group.Equals("none"))
+              fetchSets = false;
+            else if (group.Equals("set") && playlist.GroupMixed())
+              fetchSets = true;
             break;
+          }
 
           default:
             return false;
@@ -112,7 +120,7 @@ namespace XFILE
         videoUrl.AddOption(option, xsp);
         
         CDatabase::Filter dbfilter;
-        success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter, true);
+        success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter, fetchSets);
         db.Close();
 
         // if we retrieve a list of episodes and we didn't receive
