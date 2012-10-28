@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA6
+# XBMC-core v12.0-ALPHA7
 msgid ""
 msgstr ""
 "Project-Id-Version: xbmc.core-Frodo\n"
@@ -214,8 +214,8 @@ msgctxt "#62"
 msgid "Dec"
 msgstr ""
 
-#strings from 71 to 97 are reserved for weather translation
 #empty strings from id 63 to 70
+#strings from 71 to 97 are reserved for weather translation
 
 #. Weather token
 msgctxt "#71"
@@ -327,8 +327,8 @@ msgctxt "#92"
 msgid "Variable"
 msgstr ""
 
-#strings through to 97 reserved for weather translation
 #empty strings from id 93 to 97
+#strings through to 97 reserved for weather translation
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -967,7 +967,7 @@ msgstr ""
 
 msgctxt "#264"
 msgid "Record"
-msgstr "Record"
+msgstr ""
 
 msgctxt "#265"
 msgid "Stop Rec."
@@ -2755,8 +2755,8 @@ msgctxt "#767"
 msgid "Grey"
 msgstr ""
 
-#strings 768 and 769 reserved for more subtitle colors
 #empty strings from id 768 to 769
+#strings 768 and 769 reserved for more subtitle colors
 
 msgctxt "#770"
 msgid "Error %i: share not available"
@@ -3274,7 +3274,7 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr ""
 
-#empty string id 1274
+#empty string with id 1274
 
 #. Filter movies/tvshows/music/episodes/artists/musicvideos/albums/songs
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
@@ -3282,7 +3282,7 @@ msgctxt "#1275"
 msgid "Filter %s"
 msgstr ""
 
-#empty strings from id 1274 to 1299
+#empty strings from id 1276 to 1299
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3292,8 +3292,8 @@ msgctxt "#1301"
 msgid "Custom passthrough device"
 msgstr ""
 
-#strings from 1396 to 1449 are reserved for weather translation
 #empty strings from id 1302 to 1395
+#strings from 1396 to 1449 are reserved for weather translation
 
 #. Weather token
 msgctxt "#1396"
@@ -3571,8 +3571,8 @@ msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr ""
 
-#strings through to 1470 reserved for power-saving
 #empty strings from id 1451 to 2049
+#strings through to 1470 reserved for power-saving
 
 msgctxt "#2050"
 msgid "Runtime"
@@ -4065,7 +4065,7 @@ msgctxt "#12354"
 msgid "Would you like to update it now?"
 msgstr ""
 
-#empty strings with id 12355
+#empty string with id 12355
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -7910,8 +7910,8 @@ msgctxt "#20019"
 msgid "Choose thumbnail"
 msgstr ""
 
-#string id 20022 will always be set to an empty string (LocalizeStrings.cpp)
 #empty strings from id 20020 to 20022
+#string id 20022 will always be set to an empty string (LocalizeStrings.cpp)
 
 msgctxt "#20023"
 msgid "Conflict"
@@ -7929,8 +7929,8 @@ msgctxt "#20026"
 msgid "Region"
 msgstr ""
 
-#string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)
 #empty strings from id 20027 to 20036
+#string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)
 
 msgctxt "#20037"
 msgid "Summary"
@@ -8581,8 +8581,8 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr ""
 
-#string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)
 #empty strings from id 20200 to 20239
+#string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)
 
 msgctxt "#20240"
 msgid "Android music"
@@ -9276,8 +9276,8 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr ""
 
-#up to 21329 is reserved for the video db !! !
 #empty strings from id 20465 to 21329
+#up to 21329 is reserved for the video db !! !
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -9311,8 +9311,8 @@ msgctxt "#21337"
 msgid "TuxBox device"
 msgstr ""
 
-#up to 21355 is reserved for the TuxBox Client!! !
 #empty strings from id 21338 to 21358
+#up to 21355 is reserved for the TuxBox Client!! !
 
 msgctxt "#21359"
 msgid "Add media share..."
@@ -10042,8 +10042,8 @@ msgctxt "#21900"
 msgid "Born/Formed"
 msgstr ""
 
-#strings 21900 thru 21999 reserved for slideshow info
 #empty strings from id 21901 to 21999
+#strings 21900 thru 21999 reserved for slideshow info
 
 msgctxt "#22000"
 msgid "Update library on startup"
@@ -10145,8 +10145,8 @@ msgctxt "#22024"
 msgid "Direct3D version:"
 msgstr ""
 
-#strings 22030 thru 22060 reserved for karaoke
 #empty strings from id 22025 to 22029
+#strings 22030 thru 22060 reserved for karaoke
 
 msgctxt "#22030"
 msgid "Font"
@@ -10257,8 +10257,8 @@ msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
 msgstr ""
 
+#empty strings from id 23056 to 23099
 #strings 23100 thru 23150 reserved for external player
-#empty strings from id 23055 to 23099
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -10274,8 +10274,8 @@ msgctxt "#23104"
 msgid "Click OK when playback has ended"
 msgstr ""
 
-#strings 24000 thru 24299 reserved for the Add-ons framework
 #empty strings from id 23105 to 23999
+#strings 24000 thru 24299 reserved for the Add-ons framework
 
 msgctxt "#24000"
 msgid "Add-on"
@@ -10646,8 +10646,8 @@ msgctxt "#25006"
 msgid "Select playback item"
 msgstr ""
 
-#strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 #empty strings from id 25007 to 29799
+#strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10661,11 +10661,11 @@ msgctxt "#29802"
 msgid "Passthrough Audio in use"
 msgstr ""
 
+#empty strings from id 29803 to 33000
 #strings 30000 thru 30999 reserved for plugins and plugin settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
 #strings 33000 thru 33999 reserved for common strings used in addons
-#empty strings from id 29803 to 33000
 
 msgctxt "#33001"
 msgid "Trailer quality"
@@ -10983,8 +10983,8 @@ msgctxt "#33200"
 msgid "Detected New Connection"
 msgstr ""
 
-#translators: no need to add these to your language files
 #empty strings from id 33201 to 33999
+#translators: no need to add these to your language files
 
 msgctxt "#34000"
 msgid "Lame"
@@ -11056,8 +11056,8 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr ""
 
-#34111-34119 reserved for future use
 #empty strings from id 34111 to 34119
+#34111-34119 reserved for future use
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#34120"
@@ -11082,8 +11082,8 @@ msgctxt "#34123"
 msgid "Never"
 msgstr ""
 
-#34124-34200 reserved for future use
 #empty strings from id 34124 to 34200
+#34124-34200 reserved for future use
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -11220,6 +11220,7 @@ msgid "Product ID"
 msgstr ""
 
 #empty strings from id 35505 to 35999
+
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adapter"
@@ -11382,4 +11383,3 @@ msgstr ""
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr ""
-
