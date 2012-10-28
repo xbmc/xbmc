@@ -127,7 +127,7 @@ protected:
 
 private:
   void RequestStreams();
-  void UpdateStreams(PVR_STREAM_PROPERTIES *props);
   void ParsePacket(DemuxPacket* pPacket);
+  void DisposeStream(int iStreamId);
 };
 
