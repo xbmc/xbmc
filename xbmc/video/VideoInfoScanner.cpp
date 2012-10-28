@@ -1244,7 +1244,7 @@ namespace VIDEO
     for (CGUIListItem::ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
       CTextureCache::Get().BackgroundCacheImage(i->second);
 
-    pItem->SetArt(art);
+    pItem->SetArt(art, false); // don't set fallbacks
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     CStdString parentDir = GetParentDir(*pItem);
