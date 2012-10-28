@@ -292,7 +292,7 @@ endif()
 #### Deal with some generated files
 if(APPLE)
 	set(ARCH "x86-osx")
-elif(UNIX)
+elseif(UNIX)
     message("-- Building for ${CMAKE_HOST_SYSTEM_PROCESSOR}")
     set(ARCH "")
 endif()

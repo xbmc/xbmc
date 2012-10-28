@@ -31,7 +31,6 @@ find_all_sources(. plex_SRCS)
 set(Headers PlexTypes.h)
 if(APPLE)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtils.cpp)
-  list(REMOVE_ITEM plex_SRCS ./CocoaUtilsPlus.cpp)
 endif(APPLE)
 
 if(NOT APPLE)
