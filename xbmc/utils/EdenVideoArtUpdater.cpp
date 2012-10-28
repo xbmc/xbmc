@@ -93,8 +93,9 @@ void CEdenVideoArtUpdater::Process()
     if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork))
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
-      if (!art.empty() && CacheTexture(art, cachedThumb))
-        artwork.insert(make_pair("thumb", art));
+      std::string type;
+      if (!art.empty() && CacheTexture(art, cachedThumb, type))
+        artwork.insert(make_pair(type, art));
 
       art = CVideoInfoScanner::GetFanart(item.get(), true);
       if (!art.empty() && CacheTexture(art, cachedFanart))
@@ -125,8 +126,9 @@ void CEdenVideoArtUpdater::Process()
     if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork))
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
-      if (!art.empty() && CacheTexture(art, cachedThumb))
-        artwork.insert(make_pair("thumb", art));
+      std::string type;
+      if (!art.empty() && CacheTexture(art, cachedThumb, type))
+        artwork.insert(make_pair(type, art));
 
       art = CVideoInfoScanner::GetFanart(item.get(), true);
       if (!art.empty() && CacheTexture(art, cachedFanart))
@@ -157,8 +159,9 @@ void CEdenVideoArtUpdater::Process()
     if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork))
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, false, "thumb");
-      if (!art.empty() && CacheTexture(art, cachedThumb))
-        artwork.insert(make_pair("thumb", art));
+      std::string type;
+      if (!art.empty() && CacheTexture(art, cachedThumb, type))
+        artwork.insert(make_pair(type, art));
 
       art = CVideoInfoScanner::GetFanart(item.get(), true);
       if (!art.empty() && CacheTexture(art, cachedFanart))
@@ -178,10 +181,11 @@ void CEdenVideoArtUpdater::Process()
       if (!db.GetArtForItem(idSeason, "season", "thumb").empty())
       {
         std::string cachedSeason = GetCachedSeasonThumb(j->first, item->GetVideoInfoTag()->m_strPath);
-        if (CacheTexture(j->second, cachedSeason))
+        std::string type;
+        if (CacheTexture(j->second, cachedSeason, type))
         {
           if (idSeason > -1)
-            db.SetArtForItem(idSeason, "season", "thumb", j->second);
+            db.SetArtForItem(idSeason, "season", type, j->second);
         }
       }
     }
@@ -268,12 +272,19 @@ void CEdenVideoArtUpdater::Process()
 
 bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const std::string &cachedFile)
 {
+  std::string type;
+  return CacheTexture(originalUrl, cachedFile, type);
+}
+
+bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const std::string &cachedFile, std::string &type)
+{
   if (!CFile::Exists(cachedFile))
     return false;
 
   CTextureDetails details;
-  details.updateable = false;;
+  details.updateable = false;
   details.hash = "NOHASH";
+  type = "thumb"; // unknown art type
 
   CBaseTexture *texture = CTextureCacheJob::LoadImage(cachedFile, 0, 0, "");
   if (texture)
@@ -290,6 +301,7 @@ bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const st
     {
       details.width = width;
       details.height = height;
+      type = CVideoInfoScanner::GetArtTypeFromSize(details.width, details.height);
       delete texture;
       m_textureDB.AddCachedTexture(originalUrl, details);
       return true;
