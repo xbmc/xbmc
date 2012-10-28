@@ -1097,10 +1097,11 @@ namespace VIDEO
       if (pItem->m_bIsFolder)
       {
         // get and cache season thumbs
-        map<int, string> seasonArt;
-        GetSeasonThumbs(movieDetails, seasonArt);
-        for (map<int, string>::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
-          CTextureCache::Get().BackgroundCacheImage(i->second);
+        map<int, map<string, string> > seasonArt;
+        GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes("season"), useLocal);
+        for (map<int, map<string, string> >::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+          for (map<string, string>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+            CTextureCache::Get().BackgroundCacheImage(j->second);
         lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = "tvshow";
@@ -1670,36 +1671,87 @@ namespace VIDEO
     return "";
   }
 
-  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show, map<int, string> &art, bool useLocal)
+  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show, map<int, map<string, string> > &seasonArt, const vector<string> &artTypes, bool useLocal)
   {
-    show.m_strPictureURL.GetSeasonThumbs(art);
-    // override with any local thumbs
-    if (useLocal)
-    {
-      CFileItemList items;
-      CDirectory::GetDirectory(show.m_strPath, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
-      // run through all these items and see which ones match
-      CRegExp reg;
-      if (items.Size() && reg.RegComp("season[ ._-]?([0-9]+)\\.(tbn|jpg|png)"))
-      {
-        for (int i = 0; i < items.Size(); i++)
-        {
-          CStdString name = URIUtils::GetFileName(items[i]->GetPath());
-          URIUtils::RemoveExtension(name);
-          if (name == "season-all")
-            art[-1] = items[i]->GetPath();
-          else if (name == "season-specials")
-            art[0] = items[i]->GetPath();
-          else if (reg.RegFind(name) > -1)
-          {
-            char* seasonStr = reg.GetReplaceString("\\1");
-            int season = atoi(seasonStr);
-            free(seasonStr);
+    bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end();
 
-            art[season] = items[i]->GetPath();
+    // find the maximum number of seasons we have thumbs for (local + remote)
+    int maxSeasons = show.m_strPictureURL.GetMaxSeasonThumb();
+
+    CFileItemList items;
+    CDirectory::GetDirectory(show.m_strPath, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+    CRegExp reg;
+    if (items.Size() && reg.RegComp("season-([0-9]+)(-[a-z]+)?\\.(tbn|jpg|png)"))
+    {
+      for (int i = 0; i < items.Size(); i++)
+      {
+        CStdString name = URIUtils::GetFileName(items[i]->GetPath());
+        if (reg.RegFind(name) > -1)
+        {
+          char* seasonStr = reg.GetReplaceString("\\1");
+          int season = atoi(seasonStr);
+          free(seasonStr);
+          if (season > maxSeasons)
+            maxSeasons = season;
+        }
+      }
+    }
+    for (int season = -1; season <= maxSeasons; season++)
+    {
+      map<string, string> art;
+      if (useLocal)
+      {
+        string basePath;
+        if (season == -1)
+          basePath = "season-all";
+        else if (season == 0)
+          basePath = "season-specials";
+        else
+          basePath = StringUtils::Format("season%02i", season);
+        CFileItem artItem(URIUtils::AddFileToFolder(show.m_strPath, basePath), false);
+
+        for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+        {
+          std::string image = CVideoThumbLoader::GetLocalArt(artItem, *i, false);
+          if (!image.empty())
+            art.insert(make_pair(*i, image));
+        }
+        // find and classify the local thumb (backcompat) if available
+        if (lookForThumb)
+        {
+          std::string image = CVideoThumbLoader::GetLocalArt(artItem, "thumb", false);
+          if (!image.empty())
+          { // cache the image and determine sizing
+            CTextureDetails details;
+            if (CTextureCache::Get().CacheImage(image, details))
+            {
+              std::string type = GetArtTypeFromSize(details.width, details.height);
+              if (art.find(type) == art.end())
+                art.insert(make_pair(type, image));
+            }
           }
         }
       }
+
+      // find online art
+      for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+      {
+        if (art.find(*i) == art.end())
+        {
+          string image = CScraperUrl::GetThumbURL(show.m_strPictureURL.GetSeasonThumb(season, *i));
+          if (!image.empty())
+            art.insert(make_pair(*i, image));
+        }
+      }
+      // use the first piece of online art as the first art type if no thumb type is available yet
+      if (art.empty() && lookForThumb)
+      {
+        string image = CScraperUrl::GetThumbURL(show.m_strPictureURL.GetSeasonThumb(season, "thumb"));
+        if (!image.empty())
+          art.insert(make_pair(artTypes.front(), image));
+      }
+
+      seasonArt.insert(make_pair(season, art));
     }
   }
 

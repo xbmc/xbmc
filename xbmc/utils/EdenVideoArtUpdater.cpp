@@ -173,20 +173,21 @@ void CEdenVideoArtUpdater::Process()
     }
 
     // now season art...
-    map<int, string> seasons;
-    CVideoInfoScanner::GetSeasonThumbs(*item->GetVideoInfoTag(), seasons, true);
-    for (map<int, string>::const_iterator j = seasons.begin(); j != seasons.end(); ++j)
+    map<int, map<string, string> > seasons;
+    vector<string> artTypes; artTypes.push_back("thumb");
+    CVideoInfoScanner::GetSeasonThumbs(*item->GetVideoInfoTag(), seasons, artTypes, true);
+    for (map<int, map<string, string> >::const_iterator j = seasons.begin(); j != seasons.end(); ++j)
     {
+      if (j->second.empty())
+        continue;
       int idSeason = db.AddSeason(item->GetVideoInfoTag()->m_iDbId, j->first);
-      if (!db.GetArtForItem(idSeason, "season", "thumb").empty())
+      map<string, string> seasonArt;
+      if (idSeason > -1 && !db.GetArtForItem(idSeason, "season", seasonArt))
       {
         std::string cachedSeason = GetCachedSeasonThumb(j->first, item->GetVideoInfoTag()->m_strPath);
         std::string type;
-        if (CacheTexture(j->second, cachedSeason, type))
-        {
-          if (idSeason > -1)
-            db.SetArtForItem(idSeason, "season", type, j->second);
-        }
+        if (CacheTexture(j->second.begin()->second, cachedSeason, type))
+          db.SetArtForItem(idSeason, "season", type, j->second.begin()->second);
       }
     }
 
