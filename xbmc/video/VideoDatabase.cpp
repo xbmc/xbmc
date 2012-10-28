@@ -3872,6 +3872,17 @@ bool CVideoDatabase::ScraperInUse(const CStdString &scraperID) const
   return false;
 }
 
+class CArtItem
+{
+public:
+  CArtItem() { art_id = 0; media_id = 0; };
+  int art_id;
+  string art_type;
+  string art_url;
+  int media_id;
+  string media_type;
+};
+
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   if (iVersion < 43)
@@ -4140,6 +4151,39 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       std::string filename = i->second;
       if (URIUtils::UpdateUrlEncoding(filename))
         m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", filename.c_str(), i->first));
+    }
+  }
+  if (iVersion < 72)
+  { // Update thumb to poster or banner as applicable
+    CTextureDatabase db;
+    if (db.Open())
+    {
+      m_pDS->query("select art_id,url,media_id,media_type from art where type='thumb' and media_type in ('movie', 'musicvideo', 'tvshow', 'season', 'set')");
+      vector<CArtItem> art;
+      while (!m_pDS->eof())
+      {
+        CTextureDetails details;
+        if (db.GetCachedTexture(m_pDS->fv(1).get_asString(), details))
+        {
+          CArtItem item;
+          item.art_id = m_pDS->fv(0).get_asInt();
+          item.art_url = m_pDS->fv(1).get_asString();
+          item.art_type = CVideoInfoScanner::GetArtTypeFromSize(details.width, details.height);
+          item.media_id = m_pDS->fv(2).get_asInt();
+          item.media_type = m_pDS->fv(3).get_asString();
+          if (item.art_type != "thumb")
+            art.push_back(item);
+        }
+        m_pDS->next();
+      }
+      m_pDS->close();
+      for (vector<CArtItem>::iterator i = art.begin(); i != art.end(); ++i)
+      {
+        if (GetArtForItem(i->media_id, i->media_type, i->art_type).empty())
+          m_pDS->exec(PrepareSQL("update art set type='%s' where art_id=%d", i->art_type.c_str(), i->art_id));
+        else
+          m_pDS->exec(PrepareSQL("delete from art where art_id=%d", i->art_id));
+      }
     }
   }
   // always recreate the view after any table change
