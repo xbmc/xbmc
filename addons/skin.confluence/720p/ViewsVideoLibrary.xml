@@ -11,7 +11,7 @@
 			<usecontrolcoords>true</usecontrolcoords>
 			<include>VisibleFadeEffect</include>
 			<control type="fixedlist" id="501">
-				<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows)</visible>
+				<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Sets)</visible>
 				<visible>!Container.Content(LiveTV)</visible>
 				<posx>-183</posx>
 				<posy>0</posy>
@@ -115,7 +115,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<visible>Control.IsVisible(501) + Container.Content(Movies)</visible>
+			<visible>Control.IsVisible(501) + [Container.Content(Movies) | Container.Content(Sets)]</visible>
 			<control type="label">
 				<posx>30</posx>
 				<posy>500</posy>

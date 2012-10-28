@@ -58,6 +58,7 @@ public:
   static bool GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding);
   static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
+  static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue, const uint32_t min, const uint32_t max);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);
   static bool GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime& date);
   static bool GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDateTime& dateTime);

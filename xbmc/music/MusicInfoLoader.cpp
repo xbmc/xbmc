@@ -194,10 +194,16 @@ void CMusicInfoLoader::OnLoaderFinish()
     songs.reserve(m_pVecItems->Size());
     for (int i = 0; i < m_pVecItems->Size(); ++i)
     {
-      CSong song(*m_pVecItems->Get(i)->GetMusicInfoTag());
-      song.strThumb = m_pVecItems->Get(i)->GetArt("thumb");
-      song.idSong = i; // for the lookup below
-      songs.push_back(song);
+      CFileItemPtr pItem = m_pVecItems->Get(i);
+      if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+        continue;
+      if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
+      {
+        CSong song(*pItem->GetMusicInfoTag());
+        song.strThumb = pItem->GetArt("thumb");
+        song.idSong = i; // for the lookup below
+        songs.push_back(song);
+      }
     }
     VECALBUMS albums;
     CMusicInfoScanner::CategoriseAlbums(songs, albums);

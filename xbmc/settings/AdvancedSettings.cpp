@@ -195,7 +195,6 @@ void CAdvancedSettings::Initialize()
   m_bFTPThumbs = false;
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
-  m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
 
   m_bMusicLibraryHideAllItems = false;
@@ -915,8 +914,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
-  XMLUtils::GetInt(pRootElement, "fanartres", m_fanartRes, 0, 1080);
-  XMLUtils::GetInt(pRootElement, "imageres", m_imageRes, 0, 1080);
+  XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 1080);
+  XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 1080);
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
@@ -926,11 +925,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
     GetCustomExtensions(pThumbs,m_musicThumbs);
-
-  // dvd thumbs
-  pThumbs = pRootElement->FirstChildElement("dvdthumbs");
-  if (pThumbs)
-    GetCustomExtensions(pThumbs,m_dvdThumbs);
 
   // movie fanarts
   TiXmlElement* pFanart = pRootElement->FirstChildElement("fanart");

@@ -42,6 +42,17 @@ bool XMLUtils::GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t&
   return true;
 }
 
+bool XMLUtils::GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t &value, const uint32_t min, const uint32_t max)
+{
+  if (GetUInt(pRootNode, strTag, value))
+  {
+    if (value < min) value = min;
+    if (value > max) value = max;
+    return true;
+  }
+  return false;
+}
+
 bool XMLUtils::GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );

@@ -4111,6 +4111,19 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     m_pDS->exec("DROP TABLE IF EXISTS setlinkmovie");
   }
+  if (iVersion < 70)
+  { // update old art URLs
+    m_pDS->query("select art_id,url from art where url like 'image://%%'");
+    vector< pair<int, string> > art;
+    while (!m_pDS->eof())
+    {
+      art.push_back(make_pair(m_pDS->fv(0).get_asInt(), CURL(m_pDS->fv(1).get_asString()).Get()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+    for (vector< pair<int, string> >::iterator i = art.begin(); i != art.end(); ++i)
+      m_pDS->exec(PrepareSQL("update art set url='%s' where art_id=%d", i->second.c_str(), i->first));
+  }
   // always recreate the view after any table change
   CreateViews();
   return true;
