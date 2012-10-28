@@ -334,11 +334,13 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         map<string, string> showArt, cacheArt;
         if (m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt))
         {
-          map<string, string>::iterator i = showArt.find("fanart");
-          if (i != showArt.end())
-            cacheArt.insert(make_pair("fanart", i->second));
-          if ((i = showArt.find("thumb")) != showArt.end())
-            cacheArt.insert(make_pair("tvshowthumb", i->second));
+          for (CGUIListItem::ArtMap::iterator i = showArt.begin(); i != showArt.end(); ++i)
+          {
+            if (i->first == "fanart")
+              cacheArt.insert(*i);
+            else
+              cacheArt.insert(make_pair("tvshow." + i->first, i->second));
+          }
           item.AppendArt(cacheArt);
         }
         m_showArt.insert(make_pair(tag.m_iIdShow, cacheArt));
