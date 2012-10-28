@@ -172,12 +172,12 @@ private:
 
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image
-   \param cacheHash [out] set to the hash of the cached image if it needs checking
+   \param details [out] the details of the texture.
    \param trackUsage whether this call should track usage of the image (defaults to false)
    \return cached url of this image, empty if none exists
-   \sa ClearCachedImage
+   \sa ClearCachedImage, CTextureDetails
    */
-  CStdString GetCachedImage(const CStdString &image, CStdString &cacheHash, bool trackUsage = false);
+  CStdString GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage = false);
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
