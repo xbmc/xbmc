@@ -82,6 +82,9 @@ public:
 
   static bool LoadConfiguration(TiXmlElement* pConfig, bool clear);
 
+  static void OnPlayerDiscovered(const CStdString& id, const CStdString& name, EPLAYERCORES core);
+  static void OnPlayerRemoved(const CStdString& id);
+
 private:
   static std::vector<CPlayerCoreConfig *> s_vecCoreConfigs;
   static std::vector<CPlayerSelectionRule *> s_vecCoreSelectionRules;

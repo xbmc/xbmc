@@ -38,9 +38,10 @@ class CPlayerCoreConfig
 friend class CPlayerCoreFactory;
 
 public:
-  CPlayerCoreConfig(CStdString name, const EPLAYERCORES eCore, const TiXmlElement* pConfig)
+  CPlayerCoreConfig(CStdString name, const EPLAYERCORES eCore, const TiXmlElement* pConfig, const CStdString& id = "")
   {
     m_name = name;
+    m_id = id;
     m_eCore = eCore;
     m_bPlaysAudio = false;
     m_bPlaysVideo = false;
@@ -68,6 +69,16 @@ public:
   const CStdString& GetName() const
   {
     return m_name;
+  }
+
+  const CStdString& GetId() const
+  {
+    return m_id;
+  }
+
+  const EPLAYERCORES& GetType() const
+  {
+    return m_eCore;
   }
 
   IPlayer* CreatePlayer(IPlayerCallback& callback) const
@@ -113,6 +124,7 @@ public:
 
 private:
   CStdString m_name;
+  CStdString m_id;
   bool m_bPlaysAudio;
   bool m_bPlaysVideo;
   EPLAYERCORES m_eCore;

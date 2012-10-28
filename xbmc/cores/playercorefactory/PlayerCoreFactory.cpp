@@ -40,6 +40,8 @@ using namespace AUTOPTR;
 
 std::vector<CPlayerCoreConfig *> CPlayerCoreFactory::s_vecCoreConfigs;
 std::vector<CPlayerSelectionRule *> CPlayerCoreFactory::s_vecCoreSelectionRules;
+static CCriticalSection s_section;
+
 
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
@@ -72,6 +74,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCall
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback)
 {
+  CSingleLock lock(s_section);
   if (!s_vecCoreConfigs.size() || eCore-1 > s_vecCoreConfigs.size()-1)
     return NULL;
 
@@ -80,6 +83,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallb
 
 PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName)
 {
+  CSingleLock lock(s_section);
   if (!strCoreName.empty())
   {
     // Dereference "*default*player" aliases
@@ -101,11 +105,13 @@ PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName)
 
 CStdString CPlayerCoreFactory::GetPlayerName(const PLAYERCOREID eCore)
 {
+  CSingleLock lock(s_section);
   return s_vecCoreConfigs[eCore-1]->GetName();
 }
 
 CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const CStdString& strCoreName)
 {
+  CSingleLock lock(s_section);
   PLAYERCOREID id = GetPlayerCore(strCoreName);
   if (id != EPC_NONE) return s_vecCoreConfigs[id-1];
   else return NULL;
@@ -113,17 +119,25 @@ CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const CStdString& strCore
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
 {
+  CSingleLock lock(s_section);
   for(unsigned int i = 0; i < s_vecCoreConfigs.size(); i++)
+  {
+    if(s_vecCoreConfigs[i]->m_eCore == EPC_NONE)
+      continue;
     if (s_vecCoreConfigs[i]->m_bPlaysAudio || s_vecCoreConfigs[i]->m_bPlaysVideo)
       vecCores.push_back(i+1);
+  }
 }
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores, const bool audio, const bool video )
 {
+  CSingleLock lock(s_section);
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: for video=%d, audio=%d", video, audio);
 
   for(unsigned int i = 0; i < s_vecCoreConfigs.size(); i++)
   {
+    if(s_vecCoreConfigs[i]->m_eCore == EPC_NONE)
+      continue;
     if (audio == s_vecCoreConfigs[i]->m_bPlaysAudio && video == s_vecCoreConfigs[i]->m_bPlaysVideo)
     {
       CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding player: %s (%d)", s_vecCoreConfigs[i]->m_name.c_str(), i+1);
@@ -261,6 +275,7 @@ PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(float posX, float posY)
 
 bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
 {
+  CSingleLock lock(s_section);
   if (clear)
   {
     for(std::vector<CPlayerCoreConfig *>::iterator it = s_vecCoreConfigs.begin(); it != s_vecCoreConfigs.end(); it++)
@@ -361,4 +376,39 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
   CLog::Log(LOGNOTICE, "Loaded playercorefactory configuration");
 
   return true;
+}
+
+void CPlayerCoreFactory::OnPlayerDiscovered(const CStdString& id, const CStdString& name, EPLAYERCORES core)
+{
+  CSingleLock lock(s_section);
+  std::vector<CPlayerCoreConfig *>::iterator it;
+  for(it  = s_vecCoreConfigs.begin();
+      it != s_vecCoreConfigs.end();
+      it++)
+  {
+    if ((*it)->GetId() == id)
+    {
+      (*it)->m_name  = name;
+      (*it)->m_eCore = core;
+      return;
+    }
+  }
+
+  CPlayerCoreConfig* player = new CPlayerCoreConfig(name, core, NULL, id);
+  player->m_bPlaysAudio = true;
+  player->m_bPlaysVideo = true;
+  s_vecCoreConfigs.push_back(player);
+}
+
+void CPlayerCoreFactory::OnPlayerRemoved(const CStdString& id)
+{
+  CSingleLock lock(s_section);
+  std::vector<CPlayerCoreConfig *>::iterator it;
+  for(it  = s_vecCoreConfigs.begin();
+      it != s_vecCoreConfigs.end();
+      it++)
+  {
+    if ((*it)->GetId() == id)
+      (*it)->m_eCore = EPC_NONE;
+  }
 }
