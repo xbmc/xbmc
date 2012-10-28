@@ -940,9 +940,10 @@ bool CGUIDialogMediaFilter::GetMinMax(const CStdString &table, const CStdString 
     return false;
   }
 
-  CDatabase::Filter extFilter = filter;
+  CDatabase::QueryData data;
+  data.filter = filter;
   CStdString strSQLExtra;
-  if (!db->BuildSQL(m_dbUrl->ToString(), strSQLExtra, extFilter, strSQLExtra, *dbUrl))
+  if (!db->BuildSQL(m_dbUrl->ToString(), strSQLExtra, data, strSQLExtra, *dbUrl))
   {
     delete db;
     delete dbUrl;
