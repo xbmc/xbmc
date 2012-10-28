@@ -575,8 +575,7 @@ int CDVDVideoCodecA10::Decode(BYTE* pData, int iSize, double dts, double pts)
 void CDVDVideoCodecA10::Reset()
 {
   CLog::Log(LOGDEBUG, "A10: reset requested");
-  Dispose();
-  DoOpen();
+  m_hcedarv->ioctrl(m_hcedarv, CEDARV_COMMAND_RESET, 0);
 }
 
 /*
