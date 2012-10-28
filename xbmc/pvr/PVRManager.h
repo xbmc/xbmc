@@ -45,6 +45,7 @@ namespace PVR
   class CPVRGUIInfo;
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
+  class CPVRChannelSwitchJob;
 
   enum ManagerState
   {
@@ -67,6 +68,7 @@ namespace PVR
   class CPVRManager : private CThread
   {
     friend class CPVRClients;
+    friend class CPVRChannelSwitchJob;
 
   private:
     /*!
@@ -603,6 +605,19 @@ namespace PVR
     virtual ~CPVRChannelSettingsSaveJob() {}
     virtual const char *GetType() const { return "pvr-save-channelsettings"; }
 
+    bool DoWork();
+  };
+
+  class CPVRChannelSwitchJob : public CJob
+  {
+  public:
+    CPVRChannelSwitchJob(CFileItem* previous, CFileItem* next) : m_previous(previous), m_next(next) {}
+    virtual ~CPVRChannelSwitchJob() {}
+    virtual const char *GetType() const { return "pvr-channel-switch"; }
+
     virtual bool DoWork();
+  private:
+    CFileItem* m_previous;
+    CFileItem* m_next;
   };
 }
