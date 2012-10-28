@@ -636,7 +636,7 @@ void CGUIDialogVideoInfo::OnGetArt()
 
   items.Clear();
   // Current thumb
-  if (CFile::Exists(m_movieItem->GetArt(type)))
+  if (m_movieItem->HasArt(type))
   {
     CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetArt("thumb", m_movieItem->GetArt(type));
