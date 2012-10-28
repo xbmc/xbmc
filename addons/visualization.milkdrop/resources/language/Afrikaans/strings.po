@@ -5,23 +5,21 @@
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC-Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-28 15:15+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2012-10-18 12:05+0000\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: LANGUAGE\n"
+"Language-Team: Afrikaans (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/af/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-#settings labels
+"Language: af\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
 msgid "Automatic Blend Time"
-msgstr ""
+msgstr "Outomatiese Meng Tyd"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
@@ -53,7 +51,7 @@ msgstr ""
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
-msgstr ""
+msgstr "Aktiveer Stereo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
@@ -67,8 +65,6 @@ msgctxt "#30011"
 msgid "Preset Shuffle Mode"
 msgstr ""
 
-#empty strings from id 30012 to 30019
-
 msgctxt "#30020"
 msgid "WA51 Presets"
 msgstr ""
@@ -80,9 +76,6 @@ msgstr ""
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
 msgstr ""
-
-#empty strings from id 30023 to 30049
-#setting value formats
 
 msgctxt "#30050"
 msgid "%2.0f secs"

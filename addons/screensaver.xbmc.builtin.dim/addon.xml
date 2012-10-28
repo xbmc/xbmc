@@ -5,6 +5,8 @@
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="af">Sluimerskerm wat jou skerm verdof</summary>
+    <summary lang="ar">شاشة توقف تمكن من تظليم الشاشة</summary>
     <summary lang="bg">Скрийнсейвър, който затъмнява екрана</summary>
     <summary lang="ca">Estalvi de pantalla que enfosqueix la pantalla</summary>
     <summary lang="cs">Spořič obrazovky, který ztmaví vaši obrazovku</summary>
@@ -40,7 +42,9 @@
     <summary lang="uk">Проста заставка що затемняє екран.</summary>
     <summary lang="zh">淡出屏幕保护程序</summary>
     <summary lang="zh_TW">讓螢幕變暗的螢幕保護程式</summary>
-    <description lang="bg">Скрийнсейвърът &quot;Dim&quot; затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
+    <description lang="af">Die Verdof sluimerskerm is 'n eenvoudige sluimerskerm wat jou skerm verdof (uit vaag) tot 'n stelbare waarde tussen 20 en 100%</description>
+    <description lang="ar">Dim عبارة عن شاشة توقف  تمكن من  تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%</description>
+    <description lang="bg">Скрийнсейвърът "Dim" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca">L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>
     <description lang="cs">Jednoduchý spořič obrazovky Ztmavení ztmaví (začerní) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100%.</description>
     <description lang="da">Dim-pauseskærmen er en simpel pauseskærm, der vil dæmpe(fade) din skærm til en valgfri værdi mellem 20 og 100%.</description>
@@ -68,7 +72,7 @@
     <description lang="pt_BR">O protetor de tela Dim é um screensaver  que diminui a intensidade da luminosidade (fade out) de sua tela, com um valor selecionável entre 20 e 100%</description>
     <description lang="ro">Dim este un screensaver simplu care va întuneca (reduce intensitatea luminii) ecranului dumneavoastră la o valoare configurabilă cuprinsă între 20 și 100% .</description>
     <description lang="ru">Эта заставка постепенно затемняет изображение на экране до заданного значения (от 20% до 100%).</description>
-    <description lang="sk">&quot;Dim&quot; šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%.</description>
+    <description lang="sk">"Dim" šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%.</description>
     <description lang="sl">Dim je enostaven ohranjevalnik zaslona, ki postopoma zatemni zaslon do izbrane svetlosti med 20 in 100%.</description>
     <description lang="sq">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. </description>
     <description lang="sv">Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%</description>
