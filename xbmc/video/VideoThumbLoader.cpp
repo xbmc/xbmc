@@ -165,14 +165,26 @@ static void SetupRarOptions(CFileItem& item, const CStdString& path)
 vector<string> CVideoThumbLoader::GetArtTypes(const string &type)
 {
   vector<string> ret;
-  if (type != "episode")
+  if (type == "episode")
+    ret.push_back("thumb");
+  else if (type == "tvshow" || type == "season")
   {
-    ret.push_back("fanart");
-    ret.push_back("poster");
-  }
-  if (type == "tvshow" || type == "season" || type.empty())
     ret.push_back("banner");
-  ret.push_back("thumb");
+    ret.push_back("poster");
+    ret.push_back("fanart");
+  }
+  else if (type == "movie" || type == "musicvideo" || type == "set")
+  {
+    ret.push_back("poster");
+    ret.push_back("fanart");
+  }
+  else if (type.empty()) // unknown - just throw everything in
+  {
+    ret.push_back("poster");
+    ret.push_back("banner");
+    ret.push_back("thumb");
+    ret.push_back("fanart");
+  }
   return ret;
 }
 
@@ -218,6 +230,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (artwork.empty())
   {
     vector<string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
+    if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
+      artTypes.push_back("thumb"); // always look for "thumb" art for files
     for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
     {
       std::string type = *i;
