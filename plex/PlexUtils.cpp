@@ -15,7 +15,7 @@ using namespace std;
 using namespace boost;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-__int64 PlexUtils::Size(const CStdString& strFileName)
+__int64_t PlexUtils::Size(const CStdString& strFileName)
 {
   struct __stat64 buffer;
   if (XFILE::CFile::Stat(strFileName, &buffer) == 0)

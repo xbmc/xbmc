@@ -16,7 +16,7 @@
 #include "settings/GUISettings.h"
 #include "CocoaUtils.h"
 #include "CocoaUtilsPlus.h"
-#include "Log.h"
+#include "log.h"
 #include "filesystem/FileCurl.h"
 #include "FileSystem/PlexDirectory.h"
 #include "PlexLibrarySectionManager.h"

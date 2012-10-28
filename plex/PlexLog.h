@@ -1,7 +1,7 @@
 #ifndef __PLEX_LOG_H__
 #define __PLEX_LOG_H__
 
-#include "utils/Log.h"
+#include "utils/log.h"
 
 #ifdef _WIN32
 #define dprintf(format,  ...) \

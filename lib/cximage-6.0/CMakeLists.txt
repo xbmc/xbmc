@@ -2,7 +2,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -fno-common")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -fno-common")
 add_definitions(-DXBMC -D_DLL)
 
-set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+if(APPLE)
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+elseif(UNIX)
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--unresolved-symbols=ignore-all ")
+endif()
+
+#        $(CXX) $(CFLAGS) $(LDFLAGS) -shared -o $(SLIB) -Wl,--whole-archive $(SLIBS) \
+#                -Wl,--no-whole-archive -lpng -ljasper -ljpeg -ltiff -lz -Wl,--unresolved-symbols=ignore-all \
+#                                `cat ../../xbmc/cores/DllLoader/exports/wrapper.def` \
+#                                                ../../xbmc/cores/DllLoader/exports/wrapper.o
 
 add_subdirectory(CxImage)
 add_subdirectory(jbig)

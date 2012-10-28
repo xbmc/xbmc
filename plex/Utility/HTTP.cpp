@@ -29,7 +29,7 @@
 #include "GUISettings.h"
 #include "Application.h"
 #include "RegExp.h"
-#include "Log.h"
+#include "log.h"
 
 #ifdef _LINUX
 #include <fcntl.h>

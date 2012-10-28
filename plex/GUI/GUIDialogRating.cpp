@@ -1,6 +1,6 @@
 #include "GUIDialogRating.h"
 #include "GUIWindowManager.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "Key.h"
 #include "PlexTypes.h"
 #include "threads/SingleLock.h"

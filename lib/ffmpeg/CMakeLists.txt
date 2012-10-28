@@ -1,5 +1,9 @@
-set(ffmpeg_cflags "-I${dependdir}/include -arch i386 -isysroot ${OSX_SDK}")
-set(ffmpeg_ldflags "-L${dependdir}/lib -arch i386 -isysroot ${OSX_SDK}")
+set(ffmpeg_cflags "-I${dependdir}/include")
+set(ffmpeg_ldflags "-L${dependdir}/lib")
+if(APPLE)
+  set(ffmpeg_cflags "${ffmpeg_cflags} -arch i386 -isysroot ${OSX_SDK}")
+  set(ffmpeg_ldflags "${ffmpeg_cflags} -arch i386 -isysroot ${OSX_SDK}")
+endif()
 
 set(ffmpeg_conf_flags --prefix=${CMAKE_BINARY_DIR}/ffmpeg --extra-cflags=${ffmpeg_cflags} --extra-ldflags=${ffmpeg_ldflags} --disable-amd3dnow --disable-armv5te --disable-armv6t2 --disable-static --disable-muxers --enable-muxer=spdif --enable-muxer=adts --disable-encoders --enable-encoder=ac3 --enable-encoder=aac --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis --disable-devices --disable-ffprobe --disable-ffplay --disable-ffserver --disable-ffmpeg --enable-shared --disable-doc --disable-decoder=mpeg_xvmc --enable-postproc --enable-gpl --enable-protocol=http --enable-pthreads --enable-runtime-cpudetect)
 if(APPLE)
@@ -20,7 +24,11 @@ externalproject_add(ffmpeg
   LOG_INSTALL 1
 )
 
-set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+if(APPLE)
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+elseif(UNIX)
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--unresolved-symbols=ignore-all")
+endif()
 
 macro(wrap_lib srcpath lib)
 	file(GLOB_RECURSE objects ${srcpath}/*.o)

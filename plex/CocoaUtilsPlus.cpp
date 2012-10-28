@@ -8,6 +8,9 @@
 
 #ifdef __APPLE__
 #include <CoreServices/CoreServices.h>
+#endif
+
+#ifndef _WIN32
 #include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -25,11 +28,15 @@
 #define in_addr_t uint32_t
 #endif
 
+#ifdef __linux__
+#include <sys/utsname.h>
+#endif
+
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "CocoaUtilsPlus.h"
-#include "Log.h"
+#include "log.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 string Cocoa_GetMachinePlatform()

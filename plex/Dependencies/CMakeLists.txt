@@ -2,7 +2,7 @@ if(APPLE)
   set(OS "darwin")
   set(ARCH "i686")
 elseif(UNIX)
-  set(OS "ubuntu")
+  set(OS "linux-ubuntu")
   set(ARCH "x86_64")
 endif()
 

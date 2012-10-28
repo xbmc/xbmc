@@ -13,7 +13,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
-#include "Log.h"
+#include "log.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 
 ////////////////////////////////////////////////////////////////////////////////

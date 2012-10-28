@@ -25,7 +25,7 @@
 #include "IProgressCallback.h"
 #include "threads/CriticalSection.h"
 #include "FileItem.h"
-#include "Log.h"
+#include "log.h"
 #include "threads/SingleLock.h"
 
 #include <vector>

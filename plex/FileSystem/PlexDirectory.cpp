@@ -1820,7 +1820,7 @@ void CPlexDirectory::ParseTags(TiXmlElement* element, const CFileItemPtr& item, 
   }
 }
 
-#ifdef _WIN32
+#ifndef __APPLE__
 extern string Cocoa_GetLanguage();
 #endif
 

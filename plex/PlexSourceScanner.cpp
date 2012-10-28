@@ -6,7 +6,7 @@
  *  Copyright 2009 Plex Development Team. All rights reserved.
  *
  */
-#include "Log.h"
+#include "log.h"
 #include "File.h"
 #include "FileItem.h"
 #include "GUISettings.h"

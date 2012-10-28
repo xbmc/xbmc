@@ -23,6 +23,7 @@ set(PLEX_VERSION_STRING_SHORT ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX
 set(root ${PROJECT_SOURCE_DIR})
 set(dependdir ${root}/plex/Dependencies/laika-depends)
 set(plexdir ${root}/plex)
+message("-- Using dependency dir ${dependdir}")
 
 include(CMakeFunctions.txt)
 
@@ -38,6 +39,8 @@ endif()
 
 if(APPLE)
 	set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot ${OSX_SDK}")
+elseif(UNIX)
+    set(EXTRA_CFLAGS "-fPIC -DPIC")
 endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
@@ -47,10 +50,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
 add_definitions(
 #	-DAPI_DEBUG
+  -DAPPLICATION_VERSION="${PLEX_VERSION_STRING}"
   -DNDEBUG=1
   -DTARGET_POSIX
-  -DTARGET_DARWIN
-  -DTARGET_DARWIN_OSX
   -D_LINUX
   -D_REENTRANT
   -D_FILE_DEFINED
@@ -61,6 +63,15 @@ add_definitions(
   -D__PLEX__
   -DPLEX_TARGET_NAME="PlexAlpha"
 )
+
+if(APPLE)
+    add_definitions(
+        -DTARGET_DARWIN
+        -DTARGET_DARWIN_OSX
+    )
+elseif(UNIX)
+    add_definitions(-DTARGET_LINUX)
+endif()
 
 # We need to add these before we compile the dependencies,
 # since CxImage depends on libjpeg and friends
@@ -120,7 +131,9 @@ set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/git_revision.h PROPERTIE
 
 
 add_subdirectory(xbmc)
-add_subdirectory(tools/EventClients/Clients/OSXRemote)
+if(APPLE)
+  add_subdirectory(tools/EventClients/Clients/OSXRemote)
+endif()
 add_subdirectory(plex)
 
 

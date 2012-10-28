@@ -1,3 +1,5 @@
+# vim: setlocal syntax=cmake:
+
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
@@ -136,7 +138,7 @@ if(APPLE)
 		DiskArbitration
 		QuartzCore
 		SystemConfiguration
-    Sparkle
+        Sparkle
 	)
 endif()
 
@@ -154,17 +156,24 @@ set(external_libs
 	samplerate
 	microhttpd
 	yajl
-  jpeg
+    jpeg
 	crypto
-	GLEW
 	SDL
 	SDL_mixer
-  SDL_image
+    SDL_image
 	tinyxml
 	boost_thread
 	boost_system
 	z
+    GLEW
 )
+
+if(NOT APPLE)
+    if(UNIX)
+        list(APPEND external_libs GL)
+        list(APPEND external_libs X11)
+    endif()
+endif()
 
 set(non_link_libs
 	rtmp
@@ -172,7 +181,7 @@ set(non_link_libs
 	shairport
 	cec
 	curl
-	flac
+	FLAC
 	modplug
 	vorbis
 	vorbisfile
@@ -182,8 +191,8 @@ set(non_link_libs
 	mad
 	mpeg2
 	bluray
-  png
-  tiff
+    png
+    tiff
 )
 
 set(CONFIG_INTERNAL_LIBS
@@ -192,51 +201,56 @@ set(CONFIG_INTERNAL_LIBS
   lib_apetag
 )
 
-set(system_libs stdc++)
-
 if(APPLE)
   # on darwin we use the built in iconv
   list(APPEND system_libs iconv)
+
+  # also add apple libstdc++
+  list(APPEND system_libs stdc++)
 else()
   # otherwise use our own version
-  list(APPEND system_libs iconv)
+  list(APPEND external_libs iconv)
 endif()
 
 # function to find library and set the variables we need
 macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
   string(TOUPPER ${lib} LIBN)
-  
+
   # find the library, just searching in our paths
   if(${nodefaultpath})
-    find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${searchpath} NO_DEFAULT_PATH)
+      find_library(CONFIG_LIBRARY_${LIBN} ${lib} PATHS ${searchpath} ${searchpath}64 NO_DEFAULT_PATH)
   else()
 	  find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${searchpath})
   endif()
-  
-  # get the actual value
-	get_property(l VARIABLE PROPERTY CONFIG_LIBRARY_${LIBN})
-  
-  # resolve any symlinks
-  get_filename_component(REALNAME ${l} REALPATH)
 
-  # split out the library name
-  get_filename_component(FNAME ${REALNAME} NAME)
-  
-  # set the SONAME variable, needed for DllPaths_generated.h
-  set(${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
-  
-  # set the HAVE_LIBX variable
-  set(HAVE_LIB${LIBN} 1 CACHE string "the HAVE_LIBX variable")
-  
-  # if this is a framework we need to mark it as advanced
-  if(${framework})
-    mark_as_advanced(CONFIG_LIBRARY_${LIBN})
-  endif()
-  
-  if(${addtolinklist})
-    list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
+  if(CONFIG_LIBRARY_${LIBN} MATCHES "NOTFOUND")
+      message("** Could not detect ${LIBN}")
   else()
-    list(APPEND CONFIG_PLEX_INSTALL_LIBRARIES ${REALNAME})
+      # get the actual value
+      get_property(l VARIABLE PROPERTY CONFIG_LIBRARY_${LIBN})
+      
+      # resolve any symlinks
+      get_filename_component(REALNAME ${l} REALPATH)
+
+      # split out the library name
+      get_filename_component(FNAME ${REALNAME} NAME)
+      
+      # set the SONAME variable, needed for DllPaths_generated.h
+      set(${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
+      
+      # set the HAVE_LIBX variable
+      set(HAVE_LIB${LIBN} 1 CACHE string "the HAVE_LIBX variable")
+      
+      # if this is a framework we need to mark it as advanced
+      if(${framework})
+        mark_as_advanced(CONFIG_LIBRARY_${LIBN})
+      endif()
+      
+      if(${addtolinklist})
+        list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
+      else()
+        list(APPEND CONFIG_PLEX_INSTALL_LIBRARIES ${REALNAME})
+      endif()
   endif()
 endmacro()
   
@@ -260,11 +274,27 @@ foreach(lib ${osx_frameworks})
 endforeach()
 
 #### find some header paths
-find_path(CONFIG_INCLUDE_PATH_SPARKLE Sparkle/Sparkle.h HINTS ${dependdir}/Frameworks)
+if(APPLE)
+  find_path(CONFIG_INCLUDE_PATH_SPARKLE Sparkle/Sparkle.h HINTS ${dependdir}/Frameworks)
+else()
+  set(CONFIG_INCLUDE_PATH_SPARKLE "")
+endif()
+
+####
+if(DEFINED HAVE_LIBX11)
+  set(HAVE_X11 1)
+endif()
+
+if(DEFINED HAVE_LIBSDL)
+  set(HAVE_SDL 1)
+endif()
 
 #### Deal with some generated files
 if(APPLE)
 	set(ARCH "x86-osx")
+elif(UNIX)
+    message("-- Building for ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    set(ARCH "")
 endif()
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)

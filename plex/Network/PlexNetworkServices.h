@@ -11,7 +11,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "Plex/PlexUtils.h"
+#include "plex/PlexUtils.h"
 #include "Network/NetworkServiceBrowser.h"
 #include "PlexSourceScanner.h"
 #include "PlexNetworkServiceAdvertiser.h"

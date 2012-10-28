@@ -9,21 +9,20 @@
 #include <boost/thread.hpp>
 
 #ifdef __APPLE__
+#include <SystemConfiguration/SystemConfiguration.h>
+#endif
+
+#include "log.h"
+#include "NetworkInterface.h"
+
+#if defined(__APPLE__) || defined(__linux__)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <arpa/inet.h>
 
-#include <SystemConfiguration/SystemConfiguration.h>
-#endif
-
-#include "Log.h"
-#include "NetworkInterface.h"
-
 using namespace boost;
-
-#ifdef __APPLE__
 
 vector<NetworkInterface::callback_function> NetworkInterface::g_observers;
 vector<NetworkInterface> NetworkInterface::g_interfaces;
@@ -38,8 +37,10 @@ void NetworkInterface::GetAll(vector<NetworkInterface>& interfaces)
   for (struct ifaddrs* pInterface = ifa; pInterface; pInterface = pInterface->ifa_next)
   {
     // Look for IPv4 interfaces which are UP and capable of multicast.
-    if (pInterface->ifa_flags & IFF_UP &&
+    if (pInterface->ifa_flags & IFF_UP && pInterface->ifa_addr && 
+    #ifdef __APPLE__
         pInterface->ifa_flags & IFF_MULTICAST &&
+    #endif
         !(pInterface->ifa_flags & IFF_POINTOPOINT) &&
         pInterface->ifa_addr->sa_family == AF_INET)
     {
@@ -47,17 +48,26 @@ void NetworkInterface::GetAll(vector<NetworkInterface>& interfaces)
       char str[INET_ADDRSTRLEN];
       struct sockaddr_in *ifa_addr = (struct sockaddr_in *)pInterface->ifa_addr;
       inet_ntop(AF_INET, &ifa_addr->sin_addr, str, INET_ADDRSTRLEN);
-      
+
+      // Get the netmask as a string.
+      char netmask[INET_ADDRSTRLEN];
+      struct sockaddr_in *ifa_msk = (struct sockaddr_in *)pInterface->ifa_netmask;
+      inet_ntop(AF_INET, &ifa_msk->sin_addr, netmask, INET_ADDRSTRLEN);
+
       // The index.
       int index = if_nametoindex(pInterface->ifa_name);
       
-      interfaces.push_back(NetworkInterface(index, pInterface->ifa_name, str, pInterface->ifa_flags & IFF_LOOPBACK));
+      interfaces.push_back(NetworkInterface(index, pInterface->ifa_name, str, pInterface->ifa_flags & IFF_LOOPBACK, netmask));
     }
   }
   
   // Free the structure.
   freeifaddrs(ifa);
 }
+
+#endif
+
+#ifdef __APPLE__
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void NetworkChanged(SCDynamicStoreRef store, CFArrayRef changedKeys, void *context)

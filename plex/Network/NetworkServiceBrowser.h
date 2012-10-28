@@ -19,7 +19,7 @@
 #include "NetworkServiceBase.h"
 #include "NetworkService.h"
 
-#include "FileSystem/FileCurl.h"
+#include "filesystem/FileCurl.h"
 
 class NetworkServiceBrowser;
 typedef boost::shared_ptr<NetworkServiceBrowser> NetworkServiceBrowserPtr;

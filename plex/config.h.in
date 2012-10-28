@@ -136,3 +136,9 @@
 #cmakedefine HAVE_LIBXRANDR
 #cmakedefine HAVE_LIBYAJL
 #cmakedefine HAVE_LIBZ
+#cmakedefine HAVE_LIBX11
+
+
+/* LINUX SPECIFIC CRAP */
+#cmakedefine HAVE_X11
+#cmakedefine HAVE_SDL

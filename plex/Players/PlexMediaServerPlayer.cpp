@@ -35,7 +35,7 @@
 #include "Application.h"
 #include "Settings.h"
 #include "SingleLock.h"
-#include "Log.h"
+#include "log.h"
 #include "LocalizeStrings.h"
 #include "TimeUtils.h"
 #include "VideoRenderers/RenderManager.h"

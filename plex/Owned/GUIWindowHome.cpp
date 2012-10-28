@@ -29,7 +29,7 @@
 #include <map>
 #include <vector>
 
-#include "FileSystem/File.h"
+#include "filesystem/File.h"
 #include "FileItem.h"
 #include "GUIBaseContainer.h"
 #include "GUIStaticItem.h"

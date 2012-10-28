@@ -392,7 +392,76 @@ void NetworkInterface::GetAll(vector<NetworkInterface>& interfaces)
 				
 				default:
 					break;
-			}
+      }
+
+      // Get netmask
+      switch (family)
+      {
+        case AF_INET:
+        {
+          struct sockaddr_in* sa4 = (struct sockaddr_in*)calloc(1, sizeof(sockaddr_in));
+          sa4->sin_family = AF_INET;
+          sa4->sin_addr.s_addr = ipv4Netmask.sin_addr.s_addr;
+          ifa->ifa_netmask = (struct sockaddr*)sa4;
+          break;
+        }
+        case AF_INET6:
+        {
+          struct sockaddr_in6 *sa6 = (struct sockaddr_in6*) calloc(1, sizeof(*sa6));
+          sa6->sin6_family = AF_INET6;
+          memset(sa6->sin6_addr.s6_addr, 0xFF, sizeof(sa6->sin6_addr.s6_addr));
+          ifa->ifa_netmask = (struct sockaddr*) sa6;
+
+          for (IP_ADAPTER_PREFIX* prefix = firstPrefix; prefix; prefix = prefix->Next)
+          {
+            IN6_ADDR mask;
+            IN6_ADDR maskedAddr;
+
+            // According to MSDN:
+            // "On Windows Vista and later, the linked IP_ADAPTER_PREFIX structures pointed to by the FirstPrefix member
+            // include three IP adapter prefixes for each IP address assigned to the adapter. These include the host IP address prefix,
+            // the subnet IP address prefix, and the subnet broadcast IP address prefix.
+            // In addition, for each adapter there is a multicast address prefix and a broadcast address prefix.
+            // On Windows XP with SP1 and later prior to Windows Vista, the linked IP_ADAPTER_PREFIX structures pointed to by the FirstPrefix member
+            // include only a single IP adapter prefix for each IP address assigned to the adapter."
+            //
+            // We're only interested in the subnet IP address prefix.  We'll determine if the prefix is the
+            // subnet prefix by masking our address with a mask (computed from the prefix length) and see if that is the same
+            // as the prefix address.
+
+            if (prefix->PrefixLength == 0 || prefix->PrefixLength > 128 ||
+                addr->Address.iSockaddrLength != prefix->Address.iSockaddrLength ||
+                memcmp(addr->Address.lpSockaddr, prefix->Address.lpSockaddr, addr->Address.iSockaddrLength) == 0)
+            {
+              continue;
+            }
+
+            // Compute the mask
+            memset(mask.s6_addr, 0, sizeof(mask.s6_addr));
+
+            int maskIndex;
+            for (ULONG len = prefix->PrefixLength, maskIndex = 0; len > 0; len -= 8)
+            {
+              uint8_t maskByte = (len >= 8) ? 0xFF : (uint8_t)((0xFFU << (8 - len)) & 0xFFU);
+              mask.s6_addr[maskIndex++] = maskByte;
+            }
+
+            // Apply the mask
+            for (int i = 0; i < 16; i++)
+            {
+              maskedAddr.s6_addr[i] = ((struct sockaddr_in6*)addr->Address.lpSockaddr)->sin6_addr.s6_addr[i] & mask.s6_addr[i];
+            }
+
+            // Compare
+            if (memcmp(((struct sockaddr_in6*)prefix->Address.lpSockaddr)->sin6_addr.s6_addr, maskedAddr.s6_addr, sizeof(maskedAddr.s6_addr)) == 0)
+            {
+              memcpy(sa6->sin6_addr.s6_addr, mask.s6_addr, sizeof(mask.s6_addr));
+              break;
+            }
+          }
+          break;
+        }
+      }
 
       // Only add IPv4 interfaces for now.
       if (family == AF_INET &&
@@ -401,8 +470,11 @@ void NetworkInterface::GetAll(vector<NetworkInterface>& interfaces)
       {
         struct sockaddr_in* ifa_addr = (struct sockaddr_in *)ifa->ifa_addr;
         string address = inet_ntoa(ifa_addr->sin_addr);
+
+        struct sockaddr_in *ifa_msk = (struct sockaddr_in *)ifa->ifa_netmask;
+        string netmask = inet_ntoa(ifa_msk->sin_addr);
       
-        interfaces.push_back(NetworkInterface(ifa->ifa_extra.index, ifa->ifa_name, address, (ifa->ifa_flags & IFF_LOOPBACK) != 0));
+        interfaces.push_back(NetworkInterface(ifa->ifa_extra.index, ifa->ifa_name, address, ifa->ifa_flags & IFF_LOOPBACK, netmask));
       }
 		}
 	}

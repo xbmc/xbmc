@@ -10,7 +10,7 @@
 #include "GUIDialogTimer.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "Key.h"
 #include <boost/lexical_cast.hpp>
 #include "Util.h"

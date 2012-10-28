@@ -5,12 +5,13 @@
 //  Created by Max Feingold on 10/21/2011.
 //  Copyright 2011 Plex Inc. All rights reserved.
 //
-#include <string.h>
+//
+#include <string>
 
 #include "CocoaUtils.h"
 #include "version.h"
 
-#ifdef _WIN32
+#ifndef __APPLE__
 
 using namespace std;
 
@@ -19,6 +20,7 @@ const char* Cocoa_GetAppVersion()
   return APPLICATION_VERSION;
 }
 
+#ifdef _WIN32
 string Cocoa_GetLanguage()
 {
   string strRet = "en-US";
@@ -39,5 +41,12 @@ string Cocoa_GetLanguage()
 
   return strRet;
 }
+
+#elif __linux__
+std::string Cocoa_GetLanguage()
+{
+    return string("en-US");
+}
+#endif
 
 #endif
