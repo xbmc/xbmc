@@ -156,7 +156,6 @@
 			</control>
 			<!-- main list -->
 			<control type="group">
-				<include>MediaViewFade</include>
 				<control type="list" id="56">
 					<viewtype label="InfoList">list</viewtype>
 					<posx>-34</posx>
@@ -354,7 +353,6 @@
 			<!-- scrollbars -->
 			<control type="group">
 				<posx>658</posx>
-				<include>MediaViewFade</include>
 				<!-- all but albums -->
 				<control type="scrollbar" id="61">
 					<posx>3</posx>
@@ -510,5 +508,6 @@
 			<include>MediaCount</include>
 		</control>
 		<include>CommonSortLetters</include>
+		<include>debugInfos</include>
 	</controls>
 </window>

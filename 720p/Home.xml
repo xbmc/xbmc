@@ -21,5 +21,6 @@
 			<textcolor>50FFFFFF</textcolor>
 			<wrapmultiline>false</wrapmultiline>
 		</control>
+		<include>debugInfos</include>
 	</controls>
 </window>

@@ -18,5 +18,6 @@
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml) -->
 		<include>LeftSideMenuPhotos</include>
 		<include>TopBar</include>
+		<include>debugInfos</include>
 	</controls>
 </window>

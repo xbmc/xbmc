@@ -23,7 +23,7 @@
 	<include file="ViewsOSD.xml"/>
 	<include file="ViewsSearch.xml"/>
 	<include file="ViewsKeyboard.xml"/>
-	
+	<include file="Debug.xml"/>
 	<include name="VolumePos">
 		<posx>10</posx>
 		<posy>34</posy>
@@ -35,7 +35,4 @@
 		<include>VolumeLabelDims</include>
 		<font>MediumSmallTitleFont</font>
 	</include>
-	
-
-
-</includes>	
+</includes>

@@ -86,6 +86,7 @@
 		<include>Clock</include>
 		<include>OptionsMenu</include>
 		<include>MediaCount</include>
-		<include>MusicNowPlayingIndicators</include>
+		<include>MusicNowPlayingIndicators</include>		
+		<include>debugInfos</include>
 	</controls>
 </window>

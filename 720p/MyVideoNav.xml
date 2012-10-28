@@ -18,6 +18,7 @@
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml) -->
 		<include>LeftSideMenuLibrary</include>
 		<include>TopBar</include>
+		<include>debugInfos</include>
 		<!--><include>CommonSortLetters</include>-->
 	</controls>
 </window>
