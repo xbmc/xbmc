@@ -163,7 +163,16 @@ void CTextureCache::BackgroundCacheImage(const CStdString &url)
   AddJob(new CTextureCacheJob(UnwrapImageURL(url), details.hash));
 }
 
-CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture)
+bool CTextureCache::CacheImage(const CStdString &image, CTextureDetails &details)
+{
+  CStdString path = GetCachedImage(image, details);
+  if (path.empty()) // not cached
+    path = CacheImage(image, NULL, &details);
+
+  return !path.empty();
+}
+
+CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture, CTextureDetails *details)
 {
   CStdString url = UnwrapImageURL(image);
   CSingleLock lock(m_processingSection);
@@ -175,6 +184,8 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
     CTextureCacheJob job(url);
     bool success = job.CacheTexture(texture);
     OnCachingComplete(success, &job);
+    if (success && details)
+      *details = job.m_details;
     return success ? GetCachedPath(job.m_details.file) : "";
   }
   lock.Leave();
@@ -189,8 +200,10 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
         break;
     }
   }
-  CTextureDetails details;
-  return GetCachedImage(url, details, true);
+  CTextureDetails tempDetails;
+  if (!details)
+    details = &tempDetails;
+  return GetCachedImage(url, *details, true);
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)

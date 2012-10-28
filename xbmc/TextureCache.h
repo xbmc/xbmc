@@ -87,10 +87,19 @@ public:
 
    \param image url of the image to cache
    \param texture [out] the loaded image
+   \param details [out] details of the cached image
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
-  CStdString CacheImage(const CStdString &url, CBaseTexture **texture = NULL);
+  CStdString CacheImage(const CStdString &url, CBaseTexture **texture = NULL, CTextureDetails *details = NULL);
+
+  /*! \brief Cache an image to image cache if not already cached, returning the image details.
+   \param image url of the image to cache.
+   \param details [out] the image details.
+   \return true if the image is in the cache, false otherwise.
+   \sa CTextureCacheJob::CacheTexture
+   */
+  bool CacheImage(const CStdString &image, CTextureDetails &details);
 
   /*! \brief Check whether an image is in the cache
    Note: If the image url won't normally be cached (eg a skin image) this function will return false.

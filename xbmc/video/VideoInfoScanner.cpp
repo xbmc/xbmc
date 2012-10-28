@@ -1179,6 +1179,59 @@ namespace VIDEO
     movieDetails.m_strPictureURL.Parse();
 
     CGUIListItem::ArtMap art;
+
+    // get and cache thumb images
+    vector<string> artTypes = CVideoThumbLoader::GetArtTypes(ContentToMediaType(content, pItem->m_bIsFolder));
+    vector<string>::iterator i = find(artTypes.begin(), artTypes.end(), "fanart");
+    if (i != artTypes.end())
+      artTypes.erase(i); // fanart is handled below
+    bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end();
+
+    // find local art
+    if (useLocal)
+    {
+      for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+      {
+        std::string image = CVideoThumbLoader::GetLocalArt(*pItem, *i, bApplyToDir);
+        if (!image.empty())
+          art.insert(make_pair(*i, image));
+      }
+      // find and classify the local thumb (backcompat) if available
+      if (lookForThumb)
+      {
+        std::string image = CVideoThumbLoader::GetLocalArt(*pItem, "thumb", bApplyToDir);
+        if (!image.empty())
+        { // cache the image and determine sizing
+          CTextureDetails details;
+          if (CTextureCache::Get().CacheImage(image, details))
+          {
+            std::string type = GetArtTypeFromSize(details.width, details.height);
+            if (art.find(type) == art.end())
+              art.insert(make_pair(type, image));
+          }
+        }
+      }
+    }
+
+    // find online art
+    for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+    {
+      if (art.find(*i) == art.end())
+      {
+        std::string image = GetImage(pItem, false, bApplyToDir, *i);
+        if (!image.empty())
+          art.insert(make_pair(*i, image));
+      }
+    }
+
+    // use the first piece of online art as the first art type if no thumb type is available yet
+    if (art.empty() && lookForThumb)
+    {
+      std::string image = GetImage(pItem, false, bApplyToDir, "thumb");
+      if (!image.empty())
+        art.insert(make_pair(artTypes.front(), image));
+    }
+
     // get & save fanart image (treated separately due to it being stored in m_fanart)
     bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
     if (!isEpisode)
@@ -1186,18 +1239,6 @@ namespace VIDEO
       string fanart = GetFanart(pItem, useLocal);
       if (!fanart.empty())
         art.insert(make_pair("fanart", fanart));
-    }
-
-    // get and cache thumb images
-    vector<string> artTypes = CVideoThumbLoader::GetArtTypes(ContentToMediaType(content, pItem->m_bIsFolder));
-    for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
-    {
-      string type = *i;
-      if (type == "fanart")
-        continue; // handled above
-      std::string image = GetImage(pItem, useLocal, bApplyToDir, type);
-      if (!image.empty())
-        art.insert(make_pair(type, image));
     }
 
     for (CGUIListItem::ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
