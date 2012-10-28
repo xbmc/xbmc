@@ -45,7 +45,6 @@ namespace PVR
   class CPVRGUIInfo;
   class CPVRDatabase;
   class CGUIWindowPVRCommon;
-  class CPVRChannelSwitchJob;
 
   enum ManagerState
   {
@@ -68,7 +67,6 @@ namespace PVR
   class CPVRManager : private CThread
   {
     friend class CPVRClients;
-    friend class CPVRChannelSwitchJob;
 
   private:
     /*!
