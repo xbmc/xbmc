@@ -292,7 +292,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
       }
     case SORT_METHOD_DURATION:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_DURATION, 180, LABEL_MASKS("%T", "%D"));
         break;
       }
     case SORT_METHOD_VIDEO_RATING:
@@ -341,7 +341,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
       }
     case SORT_METHOD_VIDEO_RUNTIME:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_RUNTIME, 555, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_RUNTIME, 180, LABEL_MASKS("%T", "%D"));
         break;
       }
     case SORT_METHOD_STUDIO:

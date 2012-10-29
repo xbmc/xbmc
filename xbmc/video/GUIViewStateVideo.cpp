@@ -290,7 +290,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         }
         AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R", "%T", "%R"));  // Title, Rating | Title, Rating
         AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));  // Title, MPAA | empty, empty
-        AddSortMethod(SORT_METHOD_VIDEO_RUNTIME, 2050, LABEL_MASKS("%T", "%D"));  // Title, Duration | empty, empty
+        AddSortMethod(SORT_METHOD_VIDEO_RUNTIME, 180, LABEL_MASKS("%T", "%D"));  // Title, Duration | empty, empty
         AddSortMethod(SORT_METHOD_DATEADDED, 570, LABEL_MASKS("%T", "%a", "%T", "%a"));  // Title, DateAdded | Title, DateAdded
 
         if (g_settings.GetWatchMode(items.GetContent()) == VIDEO_SHOW_ALL)
