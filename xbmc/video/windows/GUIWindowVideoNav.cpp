@@ -1243,46 +1243,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_SET_MOVIESET_FANART:
     {
-      CFileItemList items;
-
-      CVideoThumbLoader loader;
-      loader.LoadItem(item.get());
-
-      if (item->HasArt("fanart"))
-      {
-        CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-        itemCurrent->SetArt("thumb", item->GetArt("fanart"));
-        itemCurrent->SetLabel(g_localizeStrings.Get(20440));
-        items.Add(itemCurrent);
-      }
-
-      // add the none option
-      {
-        CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-        itemNone->SetIconImage("DefaultVideo.png");
-        itemNone->SetLabel(g_localizeStrings.Get(20439));
-        items.Add(itemNone);
-      }
-
-      CStdString result;
-      VECSOURCES sources(g_settings.m_videoSources);
-      g_mediaManager.GetLocalDrives(sources);
-      bool flip=false;
-      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
-        return false;
-
-      if (result.Equals("fanart://None") || !CFile::Exists(result))
-          result.clear();
-      if (!result.IsEmpty() && flip)
-        result = CTextureCache::GetWrappedImageURL(result, "", "flipped");
-
-      // update the db
-      m_database.SetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, "fanart", result);
-
-      // clear view cache and reload images
-      CUtil::DeleteVideoDatabaseDirectoryCache();
-
-      Refresh();
+      OnChooseFanart(*item);
       return true;
     }
   case CONTEXT_BUTTON_TAGS_ADD_ITEMS:
@@ -1412,6 +1373,60 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
+}
+
+void CGUIWindowVideoNav::OnChooseFanart(const CFileItem &videoItem)
+{
+  if (!videoItem.HasVideoInfoTag())
+    return;
+
+  CFileItem item(videoItem);
+
+  CFileItemList items;
+
+  CVideoThumbLoader loader;
+  loader.LoadItem(&item);
+
+  if (item.HasArt("fanart"))
+  {
+    CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
+    itemCurrent->SetArt("thumb", item.GetArt("fanart"));
+    itemCurrent->SetLabel(g_localizeStrings.Get(20440));
+    items.Add(itemCurrent);
+  }
+
+  // add the none option
+  {
+    CFileItemPtr itemNone(new CFileItem("fanart://None", false));
+    itemNone->SetIconImage("DefaultVideo.png");
+    itemNone->SetLabel(g_localizeStrings.Get(20439));
+    items.Add(itemNone);
+  }
+
+  CStdString result;
+  VECSOURCES sources(g_settings.m_videoSources);
+  g_mediaManager.GetLocalDrives(sources);
+  bool flip=false;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
+    return;
+
+  if (result.Equals("fanart://None") || !CFile::Exists(result))
+    result.clear();
+  if (!result.IsEmpty() && flip)
+    result = CTextureCache::GetWrappedImageURL(result, "", "flipped");
+
+  // update the db
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    db.SetArtForItem(item.GetVideoInfoTag()->m_iDbId, item.GetVideoInfoTag()->m_type, "fanart", result);
+    db.Close();
+  }
+
+  // clear view cache and reload images
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+
+  Refresh();
 }
 
 void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
