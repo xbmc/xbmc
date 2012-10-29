@@ -669,7 +669,8 @@ void CGUIDialogVideoInfo::OnGetArt()
 
   // Grab the thumbnails from the web
   vector<CStdString> thumbs;
-  m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs, type);
+  int season = (m_movieItem->GetVideoInfoTag()->m_type == "season") ? m_movieItem->GetVideoInfoTag()->m_iSeason : -1;
+  m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs, type, season);
 
   for (unsigned int i = 0; i < thumbs.size(); ++i)
   {
