@@ -595,18 +595,12 @@ void CGUIDialogVideoInfo::Play(bool resume)
   }
 }
 
-// Get Thumb from user choice.
-// Options are:
-// 1.  Current thumb
-// 2.  IMDb thumb
-// 3.  Local thumb
-// 4.  No thumb (if no Local thumb is available)
-void CGUIDialogVideoInfo::OnGetArt()
+string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string, string> &currentArt)
 {
   // prompt for choice
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  if (!dialog)
-    return;
+  if (!dialog || !videoItem.HasVideoInfoTag())
+    return "";
 
   CFileItemList items;
   dialog->SetHeading(13511);
@@ -616,11 +610,10 @@ void CGUIDialogVideoInfo::OnGetArt()
   CVideoDatabase db;
   db.Open();
 
-  vector<string> artTypes = CVideoThumbLoader::GetArtTypes(m_movieItem->GetVideoInfoTag()->m_type);
+  vector<string> artTypes = CVideoThumbLoader::GetArtTypes(videoItem.GetVideoInfoTag()->m_type);
 
   // add in any stored art for this item that is non-empty.
-  CGUIListItem::ArtMap currentArt;
-  db.GetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, currentArt);
+  db.GetArtForItem(videoItem.GetVideoInfoTag()->m_iDbId, videoItem.GetVideoInfoTag()->m_type, currentArt);
   for (CGUIListItem::ArtMap::iterator i = currentArt.begin(); i != currentArt.end(); ++i)
   {
     if (!i->second.empty() && find(artTypes.begin(), artTypes.end(), i->first) == artTypes.end())
@@ -632,15 +625,21 @@ void CGUIDialogVideoInfo::OnGetArt()
     string type = *i;
     CFileItemPtr item(new CFileItem(type, "false"));
     item->SetLabel(type);
-    if (m_movieItem->HasArt(type))
-      item->SetArt("thumb", m_movieItem->GetArt(type));
+    if (videoItem.HasArt(type))
+      item->SetArt("thumb", videoItem.GetArt(type));
     items.Add(item);
   }
 
   dialog->SetItems(&items);
   dialog->DoModal();
 
-  string type = dialog->GetSelectedItem()->GetLabel();
+  return dialog->GetSelectedItem()->GetLabel();
+}
+
+void CGUIDialogVideoInfo::OnGetArt()
+{
+  map<string, string> currentArt;
+  string type = ChooseArtType(*m_movieItem, currentArt);
   if (type.empty())
     return; // cancelled
 
@@ -650,7 +649,8 @@ void CGUIDialogVideoInfo::OnGetArt()
     return;
   }
 
-  items.Clear();
+  CFileItemList items;
+
   // Current thumb
   if (m_movieItem->HasArt(type))
   {
@@ -729,9 +729,12 @@ void CGUIDialogVideoInfo::OnGetArt()
     newThumb = "-"; // force local thumbs to be ignored
 
   // update thumb in the database
-  db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, type, newThumb);
-  db.Close();
-
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    db.SetArtForItem(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_type, type, newThumb);
+    db.Close();
+  }
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
   m_movieItem->SetArt(type, newThumb);
   if (m_movieItem->HasProperty("set_folder_thumb"))
