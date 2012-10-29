@@ -5913,6 +5913,10 @@ void CApplication::UpdateFileState(const string& aState)
     CGUIMediaWindow* mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
     if (mediaWindow)
       mediaWindow->UpdateSelectedItem(m_itemCurrentFile);
+
+    mediaWindow = (CGUIMediaWindow* )g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
+    if (mediaWindow)
+      mediaWindow->UpdateSelectedItem(m_itemCurrentFile);
   }
 }
 
