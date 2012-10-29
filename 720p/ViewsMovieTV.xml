@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <includes>
 	<!-- Library -->
-	<include name="VideoPosters">
+	<include name="VideoLibrary">
 		<!-- Library Movies & TV Shows -->
-		<control type="group">
+		<control type="group" id="777">
 			<include>FadeDialog</include>
-			<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary)</visible>
+			<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary) + !Container.content(plugins)</visible>
 			<include>rightSideSlide</include>
 			<control type="panel" id="52">
-				<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary)</visible>
+				<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary) + !Container.content(plugins)</visible>
 				<viewtype label="Posters">panel</viewtype>
 				<onup>52</onup>
 				<ondown>52</ondown>
@@ -55,15 +55,6 @@
 						<posy>260</posy>
 						<info>ListItem.Overlay</info>
 					</control>
-					<!--><control type="image">
-						<description>Overlay</description>
-						<posx>20</posx>
-						<posy>173</posy>
-						<include>WtchUnwtchOverlayDims</include>
-						<info>ListItem.Overlay</info>
-						<colordiffuse>FF999999</colordiffuse>
-						<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-					</control>-->
 				</itemlayout>
 				<focusedlayout width="223" height="315">
 					<!-- drop shadow -->
@@ -96,20 +87,12 @@
 						<textcolor>orangeLight</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 					</control>
-						<control type="image">
-							<visible>[ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsMovies)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
-							<posx>169</posx>
-							<posy>260</posy>
-							<info>ListItem.Overlay</info>
-						</control>
-					<!--><control type="image">
-						<description>Overlay</description>
-						<posx>20</posx>
-						<posy>175</posy>
-						<include>WtchUnwtchOverlayDims</include>
+					<control type="image">
+						<visible>[ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsMovies)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
+						<posx>169</posx>
+						<posy>260</posy>
 						<info>ListItem.Overlay</info>
-						<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-					</control>-->
+					</control>
 				</focusedlayout>
 			</control>
 		</control>

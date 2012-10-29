@@ -1,21 +1,19 @@
 <?xml version="1.0"?>
 <window id="501">
-	<defaultcontrol>52</defaultcontrol>
+	<defaultcontrol>777</defaultcontrol>
+	<views>49,50,51,52</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<!-- DELETE WHEN DEV IS DONE -->
-		<include>devDummies</include>
-		<!-- -->
 		<!-- bg's (Backgrounds.xml) -->
-		<include>GrainyBG</include>
-		<include>FanartBG</include>
-		<include>FanartOverlay</include>
-		<!-- -->
+		<include>BGGrainy</include>
+		<include>BGFanart</include>
+		<include>BGOverlay</include>
 		<!-- views (ViewsMusic.xml & ViewsChannels.xml) -->
+		<include>InfoList</include>
+		<include>Channels</include>
+		<include>MusicChannel</include>		
 		<include>MusicLibrary</include>
-		<include>ChannelsMusic</include>
-		<!-- -->
-		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml) -->
+		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuPhotos</include>
 		<include>TopBar</include>
 		<include>debugInfos</include>

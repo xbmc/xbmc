@@ -81,42 +81,45 @@
 	<!-- Library -->
 	<include name="MusicLibrary">
 		<control type="group">
+			<visible>!Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- Library -->
-			<control type="panel" id="52">
-				<viewtype label="Photos">panel</viewtype>
-				<visible>!Container.Content(Albums) + !Container.Content(Songs)</visible>
-				<onup>52</onup>
-				<ondown>52</ondown>
-				<onright>52</onright>
-				<onleft>9100</onleft>
-				<orientation>vertical</orientation>
-				<posx>105</posx>
-				<posy>56</posy>
-				<width>1200</width>
-				<height>645</height>
-				<itemlayout width="190" height="216">
-					<include>MusicThumbCard</include>
-					<include>MusicThumb</include>
-					<control type="label">
-						<include>MusicLabel</include>
-						<textcolor>white</textcolor>
-					</control>
-				</itemlayout>
-				<focusedlayout width="190" height="216">
-					<include>MusicThumbCard</include>
-					<include>MusicThumb</include>
-					<control type="label">
-						<include>MusicLabel</include>
-						<textcolor>orangeLight</textcolor>
-					</control>
-					<include>MusicSelectedBorder</include>
-				</focusedlayout>
+			<control type="group" id="777">
+				<control type="panel" id="52">
+					<viewtype label="MusicLibrary">panel</viewtype>
+					<visible>!Container.Content(Albums) + !Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
+					<posy>56</posy>
+					<posx>105</posx>
+					<width>1200</width>
+					<height>645</height>
+					<onup>52</onup>
+					<ondown>52</ondown>
+					<onright>52</onright>
+					<onleft>9100</onleft>
+					<orientation>vertical</orientation>
+					<itemlayout width="190" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>white</textcolor>
+						</control>
+					</itemlayout>
+					<focusedlayout width="190" height="216">
+						<include>MusicThumbCard</include>
+						<include>MusicThumb</include>
+						<control type="label">
+							<include>MusicLabel</include>
+							<textcolor>orangeLight</textcolor>
+						</control>
+						<include>MusicSelectedBorder</include>
+					</focusedlayout>
+				</control>
 			</control>
 			<!-- Artist Albums -->
-			<control type="group">
-				<visible>Container.content(Albums)</visible>
+			<control type="group" id="777">
+				<visible>Container.Content(Albums) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
 					<!-- backgrounds -->
@@ -222,7 +225,7 @@
 				<!-- list -->
 				<control type="panel" id="52">
 					<visible>Container.Content(Albums)</visible>
-					<viewtype label="Thumbs">panel</viewtype>
+					<viewtype label="MusicLibraryAlbums">panel</viewtype>
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<onright>52</onright>
@@ -252,8 +255,8 @@
 				</control>
 			</control>
 			<!-- Album Tracks -->
-			<control type="group">
-				<visible>Container.Content(Songs)</visible>
+			<control type="group" id="777">
+				<visible>Container.Content(Songs) + !Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
 				<!-- backgrounds & plot -->
 				<control type="group">
 					<!-- backgrounds -->
@@ -345,7 +348,7 @@
 				<!-- list -->
 				<control type="list" id="52">
 					<visible>Container.Content(Songs)</visible>
-					<viewtype label="InfoList">list</viewtype>
+					<viewtype label="MusicLibraryAlbumTracks">list</viewtype>
 					<posx>790</posx>
 					<posy>65</posy>
 					<width>490</width>

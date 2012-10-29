@@ -1,5 +1,44 @@
 <?xml version="1.0"?>
 <includes>
+	<!-- common -->
+	<include name="ChannelSelectedBorder">
+		<control type="image">
+			<posx>12</posx>
+			<posy>12</posy>
+			<width>167</width>
+			<height>167</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="ChannelThumb">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>191</width>
+			<height>191</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<description>Poster image</description>
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>165</width>
+			<height>165</height>
+			<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Thumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="ChannelLabel">
+		<posy>192</posy>
+		<posx>96</posx>
+		<width>150</width>
+		<height>20</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-16</font>
+		<shadowcolor>ff222222</shadowcolor>
+	</include>
 	<!-- left bg's -->
 	<include name="ChannelPlotBG">
 		<control type="image">
@@ -12,20 +51,20 @@
 			<visible>true</visible>
 		</control>
 		<control type="group">
-		<control type="image">
-			<posy>385</posy>
-			<posx>0</posx>
-			<width>355</width>
-			<height>263</height>
-			<include>Black</include>
-			<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>			
-		</control>
-		<control type="image">
-			<posx>355</posx>
-			<posy>500</posy>
-			<include>ArrowBlack</include>
-			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
-		</control>
+			<control type="image">
+				<posy>385</posy>
+				<posx>0</posx>
+				<width>355</width>
+				<height>263</height>
+				<include>Black</include>
+				<animation effect="fade" start="0" end="50" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>355</posx>
+				<posy>500</posy>
+				<include>ArrowBlack</include>
+				<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+			</control>
 		</control>
 	</include>
 	<include name="ChannelPlot">
@@ -74,17 +113,58 @@
 		</control>
 	</include>
 	<!-- views -->
-	<include name="ChannelsPhotos">
+	<!-- top level -->
+	<include name="Channels">
+		<control type="group" id="777">
+			<visible>Container.Content(plugins)</visible>
+			<include>FadeDialog</include>
+			<include>rightSideSlide</include>
+			<!-- main list -->
+			<control type="panel" id="50">
+				<viewtype label="Channels">panel</viewtype>
+				<visible>Container.Content(plugins)</visible>
+				<posy>56</posy>
+				<posx>105</posx>
+				<width>1200</width>
+				<height>645</height>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<onright>50</onright>
+				<onleft>9100</onleft>
+				<orientation>vertical</orientation>
+				<itemlayout width="190" height="216">
+					<include>ChannelThumb</include>
+					<control type="label">
+						<include>ChannelLabel</include>
+						<textcolor>white</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="190" height="216">
+					<include>ChannelThumb</include>
+					<control type="label">
+						<include>ChannelLabel</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>ChannelSelectedBorder</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<!-- inside channels -->
+	<!-- Photo Channel (MyPics.xml) -->
+	<include name="PhotoChannel">
 		<control type="group">
+			<visible>Container.content(plugincontent)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>ChannelPlotBG</include>
 			<include>ChannelPlot</include>
 			<include>ChannelIcon</include>
 			<!-- main list -->
-			<control type="group">
-				<control type="panel" id="52">
-					<viewtype label="Photos">panel</viewtype>
+			<control type="group" id="777">
+				<control type="panel" id="51">
+					<viewtype label="PhotoChannel">panel</viewtype>
+					<visible>Container.content(plugincontent)</visible>
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<onright>52</onright>
@@ -96,7 +176,7 @@
 					<height>665</height>
 					<itemlayout width="150" height="165">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>						
+						<include>PhotoThumb</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>white</textcolor>
@@ -104,7 +184,7 @@
 					</itemlayout>
 					<focusedlayout width="150" height="160">
 						<include>PhotoThumbCard</include>
-						<include>PhotoThumb</include>						
+						<include>PhotoThumb</include>
 						<control type="label">
 							<include>PhotoLabel</include>
 							<textcolor>orangeLight</textcolor>
@@ -115,17 +195,20 @@
 			</control>
 		</control>
 	</include>
-	<include name="_ChannelsMusic">
+	<!-- Music Channel (MyMusicSongs.xml) -->
+	<include name="MusicChannel">
 		<control type="group">
+			<visible>Container.content(plugincontent)</visible>
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<include>ChannelPlotBG</include>
 			<include>ChannelPlot</include>
 			<include>ChannelIcon</include>
 			<!-- main list -->
-			<control type="group">
-				<control type="panel" id="52">
-					<viewtype label="Photos">panel</viewtype>
+			<control type="group" id="777">
+				<control type="panel" id="51">
+					<viewtype label="MusicChannel">panel</viewtype>
+					<visible>Container.content(plugincontent)</visible>
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<onright>52</onright>
