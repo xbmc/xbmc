@@ -1,12 +1,18 @@
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
+if (APPLE)
+  set(HELPER_SHARED_SOURCES ../StlSymbolsLeopard.cpp)
+endif()
+
 # Create helper binaries for unit tests
 add_executable(oldapp
   old_app.cpp
+  ${HELPER_SHARED_SOURCES}
 )
 add_executable(newapp
   new_app.cpp
+  ${HELPER_SHARED_SOURCES}
 )
 
 # Install data files required by unit tests
