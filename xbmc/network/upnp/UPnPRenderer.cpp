@@ -90,6 +90,8 @@ CUPnPRenderer::SetupServices()
         ",http-get:*:audio/ac3:*"
         ",http-get:*:audio/vorbis:*"
         ",http-get:*:audio/speex:*"
+        ",http-get:*:audio/flac:*"
+        ",http-get:*:audio/x-flac:*"
         ",http-get:*:audio/x-aiff:*"
         ",http-get:*:audio/x-pn-realaudio:*"
         ",http-get:*:audio/x-realaudio:*"

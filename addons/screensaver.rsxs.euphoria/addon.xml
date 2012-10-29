@@ -12,6 +12,8 @@
     library_linux="Euphoria.xbs"
     library_osx="Euphoria.xbs"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="af">Omtrent so psigedelies soos sluimerskerm kan kom</summary>
+    <summary lang="ar">حول الحصول على مهدء كشاشة التوقف</summary>
     <summary lang="bg">Колкото халюциногенен може да бъде един скрийнсейвър</summary>
     <summary lang="ca">Quant al més psicodèlic dels estalvis de pantalla</summary>
     <summary lang="cs">Nejdivočejší šetřič obrazovky všech dob</summary>
@@ -45,7 +47,9 @@
     <summary lang="sv">Ungefär så psykedelisk som en skärmsläckare kan bli</summary>
     <summary lang="uk">Настільки психоделічна наскільки можливо для заставки</summary>
     <summary lang="zh">最具迷幻效果的屏幕保护程序</summary>
-    <description lang="bg">Точно колкото може един скрийнсейвър. mogumbo смяташе, че неговият &quot;Plasma saver&quot; е върхът, но този е по-смущаващ. Препоръчвам Ви да вземете една торбичка/лиген, преди да зазяпате в скрийнсейвъра по-дълго отколкото трябва.</description>
+    <description lang="af">Die is omtrent so psigedelies soos sluimerskerm kan kom. mogumbo het gedink sy Plasma beskermer was heel voor in die koor, maar die een sal jou maag selfs meer laat draai. Jy beter een van daardie vlug siekte sakke kry voor jy te lank na hierdie een staar.</description>
+    <description lang="ar">هذا حول الحصول على مهدء كشاشة التوقف. اعتقد موغمبو أن شاشة توقف البلازمة خاصته في قمة الجدول, لكن هذا مقرف أكثر. الأفضل أن تجد أحد أكياس الغثيان قبل أن تنظر لهذا لوقت طويل.</description>
+    <description lang="bg">Точно колкото може един скрийнсейвър. mogumbo смяташе, че неговият "Plasma saver" е върхът, но този е по-смущаващ. Препоръчвам Ви да вземете една торбичка/лиген, преди да зазяпате в скрийнсейвъра по-дълго отколкото трябва.</description>
     <description lang="ca">Aquest és probablement el més psicodèlic dels estalvis de pantalla. mogumbo va pensar que el seu estalvi Plasma estava al capdamunt, però aquest és més nauseabund. Serà millor que agafi una bossa per als marejos si ha d'estar molta estona mirant-lo.</description>
     <description lang="cs">Asi nejdivočejší šetřič obrazovky všech dob.  Použití plazmového šetřiče bývalo vrcholem, ale tento spořič je ještě více zneklidňující. Připravte si pytlíky na zvracení pokud se jej rozhodnete sledovat příliš dlouho.</description>
     <description lang="da">Dette er omtrent så psykedelisk som en pauseskærm kan blive. Mogumbo troede hans Plasma pauseskærm var i toppen af skalaen, men denne er endnu mere kvalmende. Du må hellere finde en luftsygepose inden du kigger alt for længe på denne.</description>
@@ -56,7 +60,7 @@
     <description lang="es_MX">Esto es tan psicodélico como un protector de pantalla debe ser, mogumbo pensó que su protector Plasma estaba en la cima del mundo, pero éste es aún más nauseabundo. Deberías conseguir una bolsa para mareos antes de quedarte observando por mucho tiempo.</description>
     <description lang="et">See on nii psühhedeelne kui üks ekraanisäästja olla saab. mogumbo arvas, et tema Plasma säästja oli tippude tipp, aga see on isegi rohkem iiveldama ajav. Parem otsi endale üks neist lennuki oksekottidest enne kui liiga kauaks seda siin vaatama jääd.</description>
     <description lang="fi">Tämä on mahdollisesti niin psykedeelinen kuin vain näytönsäästäjä voi olla. mogumbo luuli, että hänen Plasma-näytönäästäjänsä oli asteikon huipulla, mutta tämä ohittaa senkin. Oksennuspussin hakeminen on suositeltavaa ennen pitkäaikaista tuijottamista.</description>
-    <description lang="fr">En terme d'économiseur, on fait difficilement plus psychédélique. mogumbo croyait son économiseur Plasma tout en haut de l'échelle mais, celui-ci donne encore plus la nausée. Mieux vaut se munir d'un de ces sachets pour le mal de l'air avant de le regarder trop longtemps.</description>
+    <description lang="fr">En terme d'économiseur, on fait difficilement plus psychédélique. Mogumbo pensait son économiseur Plasma tout en haut de l'échelle mais, celui-ci donne encore plus la nausée. Mieux vaut se munir d'un de ces sachets pour le mal de l'air avant de le regarder trop longtemps.</description>
     <description lang="gl">Este é máis ou menos tan psicodélico como pode selo un gardapantalla. mogumbo pensou que o seu gardapantallas Plasma estaba arriba de todo na escala, pero este é incluso máis mareante. Será millor que colla unha bolsa de ventilzación ante de quedarse mirando a este demasiado tempo.</description>
     <description lang="he">זהו שומר המסך הפסיכודאלי ביותר שיש. מוגמבו חשב ששומר מסך הפלזמה שלו הוא הטוב מסוגו, אבל שומר מסך זה הוא אפילו מבחיל יותר. עדיף שתשיג לעצמך כמה שקיות הקאה לפני שתבהה בזה יותר מדי זמן.</description>
     <description lang="hr">Psihodeličan koliko čuvar zaslona može biti. mogumbo kroz svoj plazma čuvar zaslona je bio vrh, ali ovaj je odvratan. Bilo bi vam bolje da pronađete jednu od onih vrećica za mučninu što dijele u avionima prije nego počnete zuriti u ovaj.</description>

@@ -521,14 +521,18 @@ int CBuiltins::Execute(const CStdString& execString)
         {
           if (plugin->Provides(CPluginSource::VIDEO))
             cmd.Format("ActivateWindow(Video,plugin://%s,return)",params[0]);
-          if (plugin->Provides(CPluginSource::AUDIO))
+          else if (plugin->Provides(CPluginSource::AUDIO))
             cmd.Format("ActivateWindow(Music,plugin://%s,return)",params[0]);
-          if (plugin->Provides(CPluginSource::EXECUTABLE))
+          else if (plugin->Provides(CPluginSource::EXECUTABLE))
             cmd.Format("ActivateWindow(Programs,plugin://%s,return)",params[0]);
-          if (plugin->Provides(CPluginSource::IMAGE))
+          else if (plugin->Provides(CPluginSource::IMAGE))
             cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
+          else
+            // Pass the script name (params[0]) and all the parameters
+            // (params[1] ... params[x]) separated by a comma to RunPlugin
+            cmd.Format("RunPlugin(%s)", StringUtils::JoinString(params, ","));
         }
-        if (addon->Type() == ADDON_SCRIPT)
+        else if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
           cmd.Format("RunScript(%s)", StringUtils::JoinString(params, ","));

@@ -1,0 +1,19 @@
+--- a/configure.ac	2012-10-27 17:07:45.000000000 +0200
++++ b/configure.ac.new	2012-10-28 11:07:00.000000000 +0100
+@@ -352,14 +352,14 @@
+ esac
+ AC_SUBST(native_abs_top_srcdir)
+ 
+-case $host_os in
++case $host in
+      aix*)
+        ## Don't use AIX driver until starts to really work
+        ## cd_drivers="${cd_drivers}, AIX"
+        ## AC_DEFINE([HAVE_AIX_CDROM], [1],
+        ##     [Define 1 if you have AIX CD-ROM support])
+        ;;
+-     darwin[[6-9]].*|darwin1[[0-2]].*)
++     *86*-apple-darwin*)
+        AC_CHECK_HEADERS(IOKit/IOKitLib.h CoreFoundation/CFBase.h, 
+                         [have_iokit_h="yes"])
+        if test "x$have_iokit_h" = "xyes" ; then 

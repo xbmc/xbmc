@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-05-28 23:22+0000\n"
+"PO-Revision-Date: 2012-10-01 12:36+0000\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: LANGUAGE\n"
+"Language-Team: Arabic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -43,7 +43,7 @@ msgstr "شاشة كاملة"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr ""
+msgstr "إجمالي المدة"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -183,11 +183,11 @@ msgstr "إخفاء أزرار القائمة الرئيسية"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "تمكين تخصيص الخلفية"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "خلفية مسار:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -199,7 +199,7 @@ msgstr "خيارات"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "أظهر الألبومات المضافة مؤخرا"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -216,10 +216,6 @@ msgstr "Fanart إخفاء خلفية"
 msgctxt "#31122"
 msgid "Weather Page"
 msgstr "صفحة الطقس"
-
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "استخدام \"ملصقات\" بدلا من \"لافتات\" للمسلسلات التلفزيونية"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -243,7 +239,7 @@ msgstr "كلمات الأغاني"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "إخفاء فانارت في تصوير ملء الشاشة"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -287,15 +283,15 @@ msgstr "مصدر كلمات الأغنية"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr ""
+msgstr "وجد"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr ""
+msgstr "ايجاد المزيد من المواضيع"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "الحلقات القادمة"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -449,20 +445,24 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]تكوين إعدادات النظام[/B][CR][CR]ضبط المعايرة والعرض· تكوين مخرج الصوت · ضبط التحكم عن بعد[CR]تعيين خيارات توفير الطاقة · تمكين التصحيح · ضبط القفل الرئيسي "
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]تكوين إعدادات الخلفيات [/B][CR][CR]Setup the Confluence skin · أضف وإزالة عناصر القائمة الرئيسية[CR]تغيير الخلفيات"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]تكوين الملحقات [/B][CR][CR]xbmc.org إدارة الملحقات المثبتة · تصفح وتثبيت الملحقات من[CR] تعديل إعدادت الملحق"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B] تكوين إعدادات تي في [/B][CR][CR] تغيير معلومات ملء الشاشة. إدارة إعدادات بينات EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "تكوين إعدادات الخدمة [B/][CR][CR] إعداد التحكم بـXBMC عبر UPnP و HTTP. نكوين مشاركة ملف [CR] تمكن  Zeroconf. تكوين التشغيل الحي "
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 msgctxt "#31421"
@@ -471,43 +471,43 @@ msgstr "للدخول والإستمرارا [CR]XBMC  حدد ملفك الشخص
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "تسجيل الأزمنة"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "جدول الزمن"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "تي في مباشر"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "إضافة مجموعة"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "إعادة تسمية مجموعة"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "حذف مجموعة"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "مجموعات [ سي دي] متوفرة"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "مجموعة القناة"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "خصائص المؤقت"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "خيارات القناة"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

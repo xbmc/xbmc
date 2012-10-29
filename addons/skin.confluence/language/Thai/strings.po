@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-13 18:29+0000\n"
+"PO-Revision-Date: 2012-10-09 01:44+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Thai (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/th/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "ซ่อนปุ่มของเมนูหลัก"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "เปิดใช้พิ้นหลังที่กำหนดเอง"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "เส้นทางของพื้นหลัง:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -217,10 +217,6 @@ msgctxt "#31122"
 msgid "Weather Page"
 msgstr "หน้าแสดง สภาพอากาศ"
 
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "ใช้ \"โปสเตอร์\" แทน \"ป้ายรายการ\" สำหรับรายการทีวี"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "แสดงพื้นหลังด้วยวิดีโอ \"ที่กำลังเล่น\""
@@ -243,7 +239,7 @@ msgstr "เนื้อเพลง"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "ซ่อนแฟนอาร์ต ในการแสดงแสงสีแบบเต็มจอ"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -449,20 +445,24 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]ปรับเปลี่ยนการตั้งค่าระบบ[/B][CR][CR]การติดตั้งและปรับเทียบการแสดงผล · กำหนดค่าการส่งออกสัญญาณเสียง · การติดตั้งรีโมทคอนโทรล[CR]ตั้งค่าตัวเลือกการประหยัดพลังงาน · เปิดใช้งานการแก้จุดบกพร่อง · ติดตั้ง กุญแจหลัก"
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]กำหนดการตั้งค่าชุดตกแต่ง[/B][CR][CR]ตั้งค่าชุดตกแต่ง Confluence · เพิ่มและลบรายการเมนูหลัก[CR]เปลี่ยนพื้นหลังชุดตกแต่ง"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]ปรับเปลี่ยน ส่วนเสริม[/B][CR][CR]จัดการส่วนเสริมที่ติดตั้งไว้ของคุณ · เรียกดูและติดตั้งส่วนเสริม จาก xbmc.org[CR]ปรับเปลี่ยน การตั้งค่าส่วนเสริม"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B] ตั้งค่าทีวี [/B] [CR] [CR]เปลี่ยน ข้อมูลบนหน้าจอ·จัดการการตั้งค่าข้อมูล EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]ปรับเปลี่ยนการตั้งค่าบริการ[/B][CR][CR]การตั้งค่าของ การควบคุม XBMC ผ่าน UPnP และ HTTP · กำหนดค่าใช้ไฟล์ร่วมกัน[CR]เปิดใช้ Zeroconf · กำหนดค่า AirPlay"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 msgctxt "#31421"
@@ -471,43 +471,43 @@ msgstr "เลือกโปรไฟล์ ผู้ใช้ XBMC ของ�
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "ตัวตั้งเวลาการบันทึก"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "ระยะเวลาที่กำหนด"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "ทีวี สด"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "เพิ่มกลุ่ม"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "เปลี่ยนชื่อกลุ่ม"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "ลบกลุ่ม"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "กลุ่มทีมีอยู่"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "กลุ่มช่องสัญญาณ"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "ตัวตั้งเวลา"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "ตัวเลือกของช่องสัญญาณ"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

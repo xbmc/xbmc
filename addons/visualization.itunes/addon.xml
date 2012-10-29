@@ -8,6 +8,8 @@
     point="xbmc.player.musicviz"
     library_osx="iTunes.mvis"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="af">iTunes Visualisering Omhulsel</summary>
+    <summary lang="ar">مفتاح  تصوير اي تونز</summary>
     <summary lang="bg">Обвивка за визуализации от iTunes</summary>
     <summary lang="ca">Visualitzador d'efectes de l'iTunes</summary>
     <summary lang="cs">Obal vizualizace iTunes</summary>
@@ -42,6 +44,8 @@
     <summary lang="sv">iTunes Visualization Wrapper</summary>
     <summary lang="uk">Обгортка для візуалізацій iTunes</summary>
     <summary lang="zh">iTunes可视化效果包</summary>
+    <description lang="af">iTunes Visualisering Omhulsel laat jou toe om visualiserings vanaf jou OSX iTunes installasie in XBMC te gebruik</description>
+    <description lang="ar">مفتاح تصوير اي تونز يسمح لك باستخدام الهيئات من تثبيت OSx اي تونز الخاص بك في XBMC </description>
     <description lang="bg">iTunes Visualization Wrapper Ви позволява да използвате визуализациите от локалната инсталация на OSX iTunes в XBMC</description>
     <description lang="ca">El visualitzador d'efectes de l'iTunes utilitza les visualitzacions de l'iTunes instal·lat al seu OSX a l'XBMC.</description>
     <description lang="cs">Obal vizualizace iTunes umožňuje použití vizualizací z Vaší instalace OSX iTunes v XBMC</description>
