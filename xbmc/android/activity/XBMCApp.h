@@ -112,11 +112,15 @@ private:
   bool getWakeLock(JNIEnv *env);
   void acquireWakeLock();
   void releaseWakeLock();
+  bool getKeyguardLock(JNIEnv *env);
+  void reenableKeyguard();
+  void disableKeyguard();
   void run();
   void stop();
 
   static ANativeActivity *m_activity;
   jobject m_wakeLock;
+  jobject m_keyguardLock;
   
   typedef enum {
     // XBMC_Initialize hasn't been executed yet
