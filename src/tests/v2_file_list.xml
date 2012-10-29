@@ -46,11 +46,17 @@
    <size>$UPDATER_SIZE</size>
    <permissions>0755</permissions>
   </file>
-
   <!-- Test symlink !-->
   <file>
    <name>test-dir/app-symlink</name>
    <target>../app</target>
+  </file>
+  <file>
+   <name>new-dir/new-dir2/new-file.txt</name>
+   <hash>$TEST_FILENAME</hash>
+   <size>$TEST_SIZE</size>
+   <package>app-pkg</package>
+   <permissions>0644</permissions>
   </file>
  </install-v3>
  <uninstall>
