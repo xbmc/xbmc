@@ -283,6 +283,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             pDlg->SetHeading(label.c_str());
             pDlg->Reset();
 
+            int selected = -1;
             vector<CStdString> valuesVec;
             if (setting->Attribute("values"))
               CUtil::Tokenize(setting->Attribute("values"), valuesVec, "|");
@@ -291,10 +292,12 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               CUtil::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
               for (unsigned int i = 0; i < valuesVec.size(); i++)
               {
-                CStdString value = m_addon->GetString(atoi(valuesVec[i]));
-                if (value.IsEmpty())
-                  value = g_localizeStrings.Get(atoi(valuesVec[i]));
-                valuesVec[i] = value;
+                if (i == atoi(value))
+                  selected = i;
+                CStdString localized = m_addon->GetString(atoi(valuesVec[i]));
+                if (localized.IsEmpty())
+                  localized = g_localizeStrings.Get(atoi(valuesVec[i]));
+                valuesVec[i] = localized;
               }
             }
             else if (source)
@@ -305,15 +308,18 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             for (unsigned int i = 0; i < valuesVec.size(); i++)
             {
               pDlg->Add(valuesVec[i]);
-              if (valuesVec[i].Equals(value))
+              if (selected == (int)i || (selected < 0 && valuesVec[i].Equals(value)))
                 pDlg->SetSelected(i); // FIXME: the SetSelected() does not select "i", it always defaults to the first position
             }
             pDlg->DoModal();
             int iSelected = pDlg->GetSelectedLabel();
             if (iSelected >= 0)
             {
-              value = valuesVec[iSelected];
-              ((CGUIButtonControl*) control)->SetLabel2(value);
+              if (setting->Attribute("lvalues"))
+                value.Format("%i", iSelected);
+              else
+                value = valuesVec[iSelected];
+              ((CGUIButtonControl*) control)->SetLabel2(valuesVec[iSelected]);
             }
           }
         }
@@ -706,6 +712,18 @@ void CGUIDialogAddonSettings::CreateControls()
           {
             if (isAddonSetting)
               ((CGUIButtonControl *)pControl)->SetLabel2(GetAddonNames(value));
+            else if (strcmpi(type, "select") == 0 && !lvalues.empty())
+            {
+              vector<string> valuesVec = StringUtils::Split(lvalues, "|");
+              int selected = atoi(value.c_str());
+              if (selected >= 0 && selected < (int)valuesVec.size())
+              {
+                CStdString label = m_addon->GetString(atoi(valuesVec[selected].c_str()));
+                if (label.empty())
+                  label = g_localizeStrings.Get(atoi(valuesVec[selected].c_str()));
+                ((CGUIButtonControl *)pControl)->SetLabel2(label);
+              }
+            }
             else
               ((CGUIButtonControl *)pControl)->SetLabel2(value);
           }
