@@ -300,6 +300,7 @@ void CGUISettings::Initialize()
   CSettingsCategory* mp = AddCategory(SETTINGS_MUSIC, "musicplayer", 14086);
   AddBool(mp, "musicplayer.autoplaynextitem", 489, true);
   AddBool(mp, "musicplayer.queuebydefault", 14084, false);
+  AddInt(mp, "musicplayer.partyqueuelength", 36041, 10, 1, 1, 100, SPIN_CONTROL_INT_PLUS, "%i");
   AddSeparator(mp, "musicplayer.sep1");
   map<int,int> gain;
   gain.insert(make_pair(351,REPLAY_GAIN_NONE));
