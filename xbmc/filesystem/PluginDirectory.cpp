@@ -329,9 +329,9 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
     case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 369, LABEL_MASKS("%T", label2Mask));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", label2Mask));
         else
-          dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 369, LABEL_MASKS("%T", label2Mask));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556, LABEL_MASKS("%T", label2Mask));
         break;
       }
     case SORT_METHOD_MPAA_RATING:
