@@ -172,12 +172,12 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     {
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       {
-        AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 551, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
+        AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 557, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
         SetSortMethod(SORT_METHOD_ARTIST_IGNORE_THE);
       }
       else
       {
-        AddSortMethod(SORT_METHOD_ARTIST, 551, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
+        AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
         SetSortMethod(SORT_METHOD_ARTIST);
       }
 
