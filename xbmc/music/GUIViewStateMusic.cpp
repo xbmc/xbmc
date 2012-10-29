@@ -150,7 +150,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_GENRE:
     {
-      AddSortMethod(SORT_METHOD_GENRE, 551, LABEL_MASKS("%F", "", "%G", ""));  // Filename, empty | Genre, empty
+      AddSortMethod(SORT_METHOD_GENRE, 515, LABEL_MASKS("%F", "", "%G", ""));  // Filename, empty | Genre, empty
       SetSortMethod(SORT_METHOD_GENRE);
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
