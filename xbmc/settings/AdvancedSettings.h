@@ -175,7 +175,9 @@ class CAdvancedSettings
 
     bool m_lcdHeartbeat;
     bool m_lcdDimOnScreenSave;
+    CStdString m_lcdScrollSeparator;
     int m_lcdScrolldelay;
+    int m_lcdRefreshRate;
     CStdString m_lcdHostName;
 
     int m_songInfoDuration;

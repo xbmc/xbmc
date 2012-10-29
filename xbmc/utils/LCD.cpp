@@ -325,7 +325,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
     _nDigit = -_nDigit;
   }
 
-  // Set the current size, and value (base numer)
+  // Set the current size, and value (base number)
   nCurrentSize = 1;
   nCurrentValue = 10;
 
@@ -342,7 +342,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
     for ( UINT nX = 0; nX < arrSizes[ _nCharset ][0]; nX++ )
     {
       // Add a space if we have more than one digit, and the given
-      // digit is smaller than the current value (base numer) we are dealing with
+      // digit is smaller than the current value (base number) we are dealing with
       if ( _bSpacePadding && ((nCurrentValue / 10) > (UINT)_nDigit ) && ( nCurrentSize > 1 ) )
       {
         strCurrentDigit += " ";
