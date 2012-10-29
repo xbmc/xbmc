@@ -763,7 +763,10 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup &group)
       bReturn &= Persist(*member.channel, m_sqlite || !member.channel->IsNew());
     }
   }
-  return CommitInsertQueries();
+
+  bReturn &= CommitInsertQueries();
+
+  return bReturn;
 }
 
 bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
