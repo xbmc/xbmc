@@ -1847,6 +1847,12 @@ const CGUIViewState *CGUIMediaWindow::GetViewState() const
 
 const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 {
+  /* PLEX */
+  if (m_vecItems->GetContent().IsEmpty())
+  {
+    m_vecItems->SetContent("plugins");
+  }
+  /* END PLEX */
   return *m_vecItems;
 }
 
