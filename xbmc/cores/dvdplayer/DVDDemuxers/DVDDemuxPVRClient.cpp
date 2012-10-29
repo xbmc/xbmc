@@ -220,17 +220,20 @@ void CDVDDemuxPVRClient::ParsePacket(DemuxPacket* pkt)
     pvr->m_context->time_base.den = DVD_TIME_BASE;
   }
 
-  if(st->ExtraData == NULL && pvr->m_parser->parser->split)
+  if(pvr->m_parser_split && pvr->m_parser->parser->split)
   {
     int len = pvr->m_parser->parser->split(pvr->m_context, pkt->pData, pkt->iSize);
     if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
     {
+      if (st->ExtraData)
+        delete[] (uint8_t*)st->ExtraData;
       st->changes++;
       st->disabled = false;
       st->ExtraSize = len;
       st->ExtraData = new uint8_t[len+FF_INPUT_BUFFER_PADDING_SIZE];
       memcpy(st->ExtraData, pkt->pData, len);
       memset((uint8_t*)st->ExtraData + len, 0 , FF_INPUT_BUFFER_PADDING_SIZE);
+      pvr->m_parser_split = false;
     }
   }
 
@@ -360,6 +363,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iBitRate        = props.stream[i].iBitRate;
       st->iBitsPerSample  = props.stream[i].iBitsPerSample;
       m_streams[props.stream[i].iStreamIndex] = st;
+      st->m_parser_split = true;
     }
     else if (props.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
     {
@@ -386,6 +390,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iWidth          = props.stream[i].iWidth;
       st->fAspect         = props.stream[i].fAspect;
       m_streams[props.stream[i].iStreamIndex] = st;
+      st->m_parser_split = true;
     }
     else if (props.stream[i].iCodecId == CODEC_ID_DVB_TELETEXT)
     {

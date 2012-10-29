@@ -56,6 +56,7 @@ public:
   CDVDDemuxPVRClient  * m_parent;
   AVCodecParserContext* m_parser;
   AVCodecContext      * m_context;
+  bool                  m_parser_split;
 };
 
 class CDemuxStreamVideoPVRClient
