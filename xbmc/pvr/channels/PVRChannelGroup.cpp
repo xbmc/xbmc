@@ -190,6 +190,9 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
     return bReturn;
 
   /* new channel number out of range */
+  if (iNewChannelNumber < 1)
+    return bReturn;
+
   if (iNewChannelNumber > m_members.size())
     iNewChannelNumber = m_members.size();
 
