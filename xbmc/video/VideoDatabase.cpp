@@ -4122,7 +4122,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->exec("DROP TABLE IF EXISTS setlinkmovie");
   }
 
-  if (iVersion < 70)
+  if (iVersion < 71)
   { // update old art URLs
     m_pDS->query("select art_id,url from art where url like 'image://%%'");
     vector< pair<int, string> > art;
@@ -4134,7 +4134,8 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->close();
     for (vector< pair<int, string> >::iterator i = art.begin(); i != art.end(); ++i)
       m_pDS->exec(PrepareSQL("update art set url='%s' where art_id=%d", i->second.c_str(), i->first));
-  if (iVersion < 71)
+  }
+  if (iVersion < 69)
   { // add idSet to movie table
     m_pDS->exec("ALTER TABLE movie ADD playTitle integer");
     m_pDS->query("SELECT idMovie FROM movie");
