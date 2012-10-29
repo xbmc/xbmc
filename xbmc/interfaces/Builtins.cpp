@@ -528,7 +528,7 @@ int CBuiltins::Execute(const CStdString& execString)
           if (plugin->Provides(CPluginSource::IMAGE))
             cmd.Format("ActivateWindow(Pictures,plugin://%s,return)",params[0]);
         }
-        if (addon->Type() == ADDON_SCRIPT)
+        if (addon->Type() >= ADDON_SCRIPT && addon->Type() <= ADDON_SCRIPT_LYRICS)
           // Pass the script name (params[0]) and all the parameters
           // (params[1] ... params[x]) separated by a comma to RunScript
           cmd.Format("RunScript(%s)", StringUtils::JoinString(params, ","));
