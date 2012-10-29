@@ -304,7 +304,7 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
     iPlaylist = PLAYLIST_VIDEO;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-  int iMissingSongs = QUEUE_DEPTH - playlist.size();
+  int iMissingSongs = g_guiSettings.GetInt("musicplayer.partyqueuelength") - playlist.size();
   if (iSongs <= 0)
     iSongs = iMissingSongs;
   // distribute between types if mixed
@@ -591,7 +591,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
   int iPlaylist = m_bIsVideo ? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
-  int iMissingSongs = QUEUE_DEPTH - playlist.size();
+  int iMissingSongs = g_guiSettings.GetInt("musicplayer.partyqueuelength") - playlist.size();
   if (iMissingSongs > 0)
   {
     // generate iMissingSongs random ids from songIDs
