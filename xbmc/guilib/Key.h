@@ -347,6 +347,8 @@
 
 #define WINDOW_ADDON_BROWSER              10040
 
+#define WINDOW_SCREENSAVER_DIM               97
+#define WINDOW_DEBUG_INFO                    98
 #define WINDOW_DIALOG_POINTER             10099
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101

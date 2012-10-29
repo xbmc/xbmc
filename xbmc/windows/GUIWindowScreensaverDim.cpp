@@ -25,7 +25,7 @@
 #include <climits>
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
-    : CGUIDialog(97, "")
+    : CGUIDialog(WINDOW_SCREENSAVER_DIM, "")
 {
   m_needsScaling = false;
   m_dimLevel = 100.0f;

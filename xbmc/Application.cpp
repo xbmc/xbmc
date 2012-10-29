@@ -1211,118 +1211,118 @@ bool CApplication::Initialize()
   {
     g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
 
-    g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
-    g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
-    g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
-    g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
-    g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
-    g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
+    g_windowManager.Add(new CGUIWindowHome);                                        // window id = 0
+    g_windowManager.Add(new CGUIWindowPrograms);                                    // window id = 1
+    g_windowManager.Add(new CGUIWindowPictures);                                    // window id = 2
+    g_windowManager.Add(new CGUIWindowFileManager);                                 // window id = 3
+    g_windowManager.Add(new CGUIWindowSettings);                                    // window id = 4
+    g_windowManager.Add(new CGUIWindowSystemInfo);                                  // window id = 7
 #ifdef HAS_GL
-    g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
+    g_windowManager.Add(new CGUIWindowTestPatternGL);                               // window id = 8
 #endif
 #ifdef HAS_DX
-    g_windowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
+    g_windowManager.Add(new CGUIWindowTestPatternDX);                               // window id = 8
 #endif
-    g_windowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
-    g_windowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
-    g_windowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
-    g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
-    g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
-    g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
-    g_windowManager.Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml")); // window id = 35
-    g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
-    g_windowManager.Add(new CGUIWindowScreensaverDim);            // window id = 97
-    g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
-    g_windowManager.Add(new CGUIWindowPointer);            // window id = 99
-    g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
-    g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
-    g_windowManager.Add(new CGUIDialogExtendedProgressBar);     // window id = 148
-    g_windowManager.Add(new CGUIDialogKeyboardGeneric);    // window id = 103
-    g_windowManager.Add(new CGUIDialogVolumeBar);          // window id = 104
-    g_windowManager.Add(new CGUIDialogSeekBar);            // window id = 115
-    g_windowManager.Add(new CGUIDialogSubMenu);            // window id = 105
-    g_windowManager.Add(new CGUIDialogContextMenu);        // window id = 106
-    g_windowManager.Add(new CGUIDialogKaiToast);           // window id = 107
-    g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
-    g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
-    g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
-    g_windowManager.Add(new CGUIDialogMuteBug);            // window id = 113
-    g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 114
+    g_windowManager.Add(new CGUIWindowSettingsScreenCalibration);                   // window id = 11
+    g_windowManager.Add(new CGUIWindowSettingsCategory);                            // window id = 12
+    g_windowManager.Add(new CGUIWindowVideoNav);                                    // window id = 25
+    g_windowManager.Add(new CGUIWindowVideoPlaylist);                               // window id = 28
+    g_windowManager.Add(new CGUIWindowLoginScreen);                                 // window id = 29
+    g_windowManager.Add(new CGUIWindowSettingsProfile);                             // window id = 34
+    g_windowManager.Add(new CGUIWindow(WINDOW_SKIN_SETTINGS, "SkinSettings.xml"));  // window id = 35
+    g_windowManager.Add(new CGUIWindowAddonBrowser);                                // window id = 40
+    g_windowManager.Add(new CGUIWindowScreensaverDim);                              // window id = 97
+    g_windowManager.Add(new CGUIWindowDebugInfo);                                   // window id = 98
+    g_windowManager.Add(new CGUIWindowPointer);                                     // window id = 99
+    g_windowManager.Add(new CGUIDialogYesNo);                                       // window id = 100
+    g_windowManager.Add(new CGUIDialogProgress);                                    // window id = 101
+    g_windowManager.Add(new CGUIDialogExtendedProgressBar);                         // window id = 151
+    g_windowManager.Add(new CGUIDialogKeyboardGeneric);                             // window id = 103
+    g_windowManager.Add(new CGUIDialogVolumeBar);                                   // window id = 104
+    g_windowManager.Add(new CGUIDialogSeekBar);                                     // window id = 115
+    g_windowManager.Add(new CGUIDialogSubMenu);                                     // window id = 105
+    g_windowManager.Add(new CGUIDialogContextMenu);                                 // window id = 106
+    g_windowManager.Add(new CGUIDialogKaiToast);                                    // window id = 107
+    g_windowManager.Add(new CGUIDialogNumeric);                                     // window id = 109
+    g_windowManager.Add(new CGUIDialogGamepad);                                     // window id = 110
+    g_windowManager.Add(new CGUIDialogButtonMenu);                                  // window id = 111
+    g_windowManager.Add(new CGUIDialogMuteBug);                                     // window id = 113
+    g_windowManager.Add(new CGUIDialogPlayerControls);                              // window id = 114
 #ifdef HAS_KARAOKE
-    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
-    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
+    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall);                    // window id = 143
+    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge);                    // window id = 144
 #endif
-    g_windowManager.Add(new CGUIDialogSlider);             // window id = 145
-    g_windowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
-    g_windowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
-    g_windowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
-    g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
-    g_windowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
+    g_windowManager.Add(new CGUIDialogSlider);                                      // window id = 145
+    g_windowManager.Add(new CGUIDialogMusicOSD);                                    // window id = 120
+    g_windowManager.Add(new CGUIDialogVisualisationPresetList);                     // window id = 122
+    g_windowManager.Add(new CGUIDialogVideoSettings);                               // window id = 123
+    g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);                       // window id = 124
+    g_windowManager.Add(new CGUIDialogVideoBookmarks);                              // window id = 125
     // Don't add the filebrowser dialog - it's created and added when it's needed
-    g_windowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
-    g_windowManager.Add(new CGUIDialogMediaSource);   // window id = 129
-    g_windowManager.Add(new CGUIDialogProfileSettings); // window id = 130
-    g_windowManager.Add(new CGUIDialogFavourites);     // window id = 134
-    g_windowManager.Add(new CGUIDialogSongInfo);       // window id = 135
-    g_windowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
-    g_windowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
-    g_windowManager.Add(new CGUIDialogBusy);      // window id = 138
-    g_windowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
-    g_windowManager.Add(new CGUIDialogAddonInfo);
-    g_windowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
+    g_windowManager.Add(new CGUIDialogNetworkSetup);                                // window id = 128
+    g_windowManager.Add(new CGUIDialogMediaSource);                                 // window id = 129
+    g_windowManager.Add(new CGUIDialogProfileSettings);                             // window id = 130
+    g_windowManager.Add(new CGUIDialogFavourites);                                  // window id = 134
+    g_windowManager.Add(new CGUIDialogSongInfo);                                    // window id = 135
+    g_windowManager.Add(new CGUIDialogSmartPlaylistEditor);                         // window id = 136
+    g_windowManager.Add(new CGUIDialogSmartPlaylistRule);                           // window id = 137
+    g_windowManager.Add(new CGUIDialogBusy);                                        // window id = 138
+    g_windowManager.Add(new CGUIDialogPictureInfo);                                 // window id = 139
+    g_windowManager.Add(new CGUIDialogAddonInfo);                                   // window id = 146
+    g_windowManager.Add(new CGUIDialogAddonSettings);                               // window id = 140
 #ifdef HAS_LINUX_NETWORK
-    g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
+    g_windowManager.Add(new CGUIDialogAccessPoints);                                // window id = 141
 #endif
 
-    g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
+    g_windowManager.Add(new CGUIDialogLockSettings);                                // window id = 131
 
-    g_windowManager.Add(new CGUIDialogContentSettings);        // window id = 132
+    g_windowManager.Add(new CGUIDialogContentSettings);                             // window id = 132
 
-    g_windowManager.Add(new CGUIDialogPlayEject);
+    g_windowManager.Add(new CGUIDialogPlayEject);                                   // window id = 148
 
-    g_windowManager.Add(new CGUIDialogPeripheralManager);
-    g_windowManager.Add(new CGUIDialogPeripheralSettings);
+    g_windowManager.Add(new CGUIDialogPeripheralManager);                           // window id = 149
+    g_windowManager.Add(new CGUIDialogPeripheralSettings);                          // window id = 150
     
-    g_windowManager.Add(new CGUIDialogMediaFilter);   // window id = 151
+    g_windowManager.Add(new CGUIDialogMediaFilter);                                 // window id = 152
 
-    g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
-    g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
-    g_windowManager.Add(new CGUIWindowMusicNav);               // window id = 502
-    g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
+    g_windowManager.Add(new CGUIWindowMusicPlayList);                               // window id = 500
+    g_windowManager.Add(new CGUIWindowMusicSongs);                                  // window id = 501
+    g_windowManager.Add(new CGUIWindowMusicNav);                                    // window id = 502
+    g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);                         // window id = 503
 
     /* Load PVR related Windows and Dialogs */
-    g_windowManager.Add(new CGUIDialogTeletext);               // window id = 600
-    g_windowManager.Add(new CGUIWindowPVR);                    // window id = 601
-    g_windowManager.Add(new CGUIDialogPVRGuideInfo);           // window id = 602
-    g_windowManager.Add(new CGUIDialogPVRRecordingInfo);       // window id = 603
-    g_windowManager.Add(new CGUIDialogPVRTimerSettings);       // window id = 604
-    g_windowManager.Add(new CGUIDialogPVRGroupManager);        // window id = 605
-    g_windowManager.Add(new CGUIDialogPVRChannelManager);      // window id = 606
-    g_windowManager.Add(new CGUIDialogPVRGuideSearch);         // window id = 607
-    g_windowManager.Add(new CGUIDialogPVRChannelsOSD);         // window id = 610
-    g_windowManager.Add(new CGUIDialogPVRGuideOSD);            // window id = 611
-    g_windowManager.Add(new CGUIDialogPVRDirectorOSD);         // window id = 612
-    g_windowManager.Add(new CGUIDialogPVRCutterOSD);           // window id = 613
+    g_windowManager.Add(new CGUIDialogTeletext);                                    // window id = 600
+    g_windowManager.Add(new CGUIWindowPVR);                                         // window id = 601
+    g_windowManager.Add(new CGUIDialogPVRGuideInfo);                                // window id = 602
+    g_windowManager.Add(new CGUIDialogPVRRecordingInfo);                            // window id = 603
+    g_windowManager.Add(new CGUIDialogPVRTimerSettings);                            // window id = 604
+    g_windowManager.Add(new CGUIDialogPVRGroupManager);                             // window id = 605
+    g_windowManager.Add(new CGUIDialogPVRChannelManager);                           // window id = 606
+    g_windowManager.Add(new CGUIDialogPVRGuideSearch);                              // window id = 607
+    g_windowManager.Add(new CGUIDialogPVRChannelsOSD);                              // window id = 610
+    g_windowManager.Add(new CGUIDialogPVRGuideOSD);                                 // window id = 611
+    g_windowManager.Add(new CGUIDialogPVRDirectorOSD);                              // window id = 612
+    g_windowManager.Add(new CGUIDialogPVRCutterOSD);                                // window id = 613
 
-    g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
-    g_windowManager.Add(new CGUIDialogMusicInfo);          // window id = 2001
-    g_windowManager.Add(new CGUIDialogOK);                 // window id = 2002
-    g_windowManager.Add(new CGUIDialogVideoInfo);          // window id = 2003
-    g_windowManager.Add(new CGUIDialogTextViewer);
-    g_windowManager.Add(new CGUIWindowFullScreen);         // window id = 2005
-    g_windowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
-    g_windowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
-    g_windowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
+    g_windowManager.Add(new CGUIDialogSelect);                                      // window id = 2000
+    g_windowManager.Add(new CGUIDialogMusicInfo);                                   // window id = 2001
+    g_windowManager.Add(new CGUIDialogOK);                                          // window id = 2002
+    g_windowManager.Add(new CGUIDialogVideoInfo);                                   // window id = 2003
+    g_windowManager.Add(new CGUIDialogTextViewer);                                  // window id = 147
+    g_windowManager.Add(new CGUIWindowFullScreen);                                  // window id = 2005
+    g_windowManager.Add(new CGUIWindowVisualisation);                               // window id = 2006
+    g_windowManager.Add(new CGUIWindowSlideShow);                                   // window id = 2007
+    g_windowManager.Add(new CGUIDialogFileStacking);                                // window id = 2008
 #ifdef HAS_KARAOKE
-    g_windowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
+    g_windowManager.Add(new CGUIWindowKaraokeLyrics);                               // window id = 2009
 #endif
 
-    g_windowManager.Add(new CGUIDialogVideoOSD);           // window id = 2901
-    g_windowManager.Add(new CGUIDialogMusicOverlay);       // window id = 2903
-    g_windowManager.Add(new CGUIDialogVideoOverlay);       // window id = 2904
-    g_windowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
-    g_windowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
-    g_windowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
+    g_windowManager.Add(new CGUIDialogVideoOSD);                                    // window id = 2901
+    g_windowManager.Add(new CGUIDialogMusicOverlay);                                // window id = 2903
+    g_windowManager.Add(new CGUIDialogVideoOverlay);                                // window id = 2904
+    g_windowManager.Add(new CGUIWindowScreensaver);                                 // window id = 2900 Screensaver
+    g_windowManager.Add(new CGUIWindowWeather);                                     // window id = 2600 WEATHER
+    g_windowManager.Add(new CGUIWindowStartup);                                     // window id = 2999 startup window
 
     /* window id's 3000 - 3100 are reserved for python */
 
