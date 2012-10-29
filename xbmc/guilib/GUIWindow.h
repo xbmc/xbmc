@@ -194,6 +194,10 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlElement *pRootElement);                 ///< Loads from the given XML root element
+  /*! \brief Check if XML file needs (re)loading
+   XML file has to be (re)loaded when window is not loaded or include conditions values were changed
+   */
+  bool NeedXMLReload();
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();
