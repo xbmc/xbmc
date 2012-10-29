@@ -317,7 +317,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       else
         SetSortMethod(g_settings.m_viewStateMusicNavSongs.m_sortMethod);
 
-      AddSortMethod(SORT_METHOD_PLAYCOUNT, 576, LABEL_MASKS("%T - %A", "%V"));  // Titel - Artist, PlayCount
+      AddSortMethod(SORT_METHOD_PLAYCOUNT, 567, LABEL_MASKS("%T - %A", "%V"));  // Titel - Artist, PlayCount
 
       SetViewAsControl(g_settings.m_viewStateMusicNavSongs.m_viewMode);
 
