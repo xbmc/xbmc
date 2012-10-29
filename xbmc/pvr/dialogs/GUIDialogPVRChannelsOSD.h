@@ -23,6 +23,7 @@
 #include "GUIViewControl.h"
 #include "utils/Observer.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include <map>
 
 class CFileItemList;
 
@@ -53,6 +54,9 @@ namespace PVR
 
   private:
     CPVRChannelGroupPtr m_group;
+    std::map<int,int> m_groupSelectedItems;
+    void SetLastSelectedItem(int iGroupID);
+    int GetLastSelectedItem(int iGroupID) const;
   };
 }
 
