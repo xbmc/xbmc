@@ -52,6 +52,16 @@ public:
                         CUSTOM_CHARSET_BIGCHAR,
                         CUSTOM_CHARSET_MAX
                 };
+  enum LCD_RESOLUTION_INDICATOR {
+                        LCD_RESOLUTION_INDICATOR_NONE = 0,
+                        LCD_RESOLUTION_INDICATOR_SD,
+                        LCD_RESOLUTION_INDICATOR_HD
+                };
+  enum LCD_CHARSET_CONVTABS {
+                        LCD_CHARSET_TAB_HD44780 = 0,
+                        LCD_CHARSET_TAB_KS0073 = 1,
+                        LCD_CHARSET_TAB_IMONMDM = 2
+                };
   virtual void Initialize();
   virtual bool IsConnected();
   virtual void Stop() = 0;
@@ -74,14 +84,63 @@ public:
           m_eCurrentCharset(CUSTOM_CHARSET_DEFAULT) {}
 protected:
   virtual void Process() = 0;
-  void StringToLCDCharSet(CStdString& strText);
+  void StringToLCDCharSet(CStdString& strText, unsigned int iCharsetTab);
   unsigned char GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset=-1);
   void LoadMode(TiXmlNode *node, LCD_MODE mode);
+
+  virtual bool SendIconStatesToDisplay(void) = 0;
+  virtual void SetIconMovie(bool on) = 0;
+  virtual void SetIconMusic(bool on) = 0;
+  virtual void SetIconWeather(bool on) = 0;
+  virtual void SetIconTV(bool on) = 0;
+  virtual void SetIconPhoto(bool on) = 0;
+  virtual void SetIconResolution(LCD_RESOLUTION_INDICATOR resolution) = 0;
+  virtual void SetProgressBar1(double progress) = 0;
+  virtual void SetProgressBar2(double progress) = 0;
+  virtual void SetProgressBar3(double progress) = 0;
+  virtual void SetProgressBar4(double progress) = 0;
+  virtual void SetIconMute(bool on) = 0;
+  virtual void SetIconPlaying(bool on) = 0;
+  virtual void SetIconPause(bool on) = 0;
+  virtual void SetIconRepeat(bool on) = 0;
+  virtual void SetIconShuffle(bool on) = 0;
+  virtual void SetIconAlarm(bool on) = 0;
+  virtual void SetIconRecord(bool on) = 0;
+  virtual void SetIconVolume(bool on) = 0;
+  virtual void SetIconTime(bool on) = 0;
+  virtual void SetIconSPDIF(bool on) = 0;
+  virtual void SetIconDiscIn(bool on) = 0;
+  virtual void SetIconSource(bool on) = 0;
+  virtual void SetIconFit(bool on) = 0;
+  virtual void SetIconSCR1(bool on) = 0;
+  virtual void SetIconSCR2(bool on) = 0;
+  // codec icons - video: video stream format
+  virtual void SetIconMPEG(bool on) = 0;
+  virtual void SetIconDIVX(bool on) = 0;
+  virtual void SetIconXVID(bool on) = 0;
+  virtual void SetIconWMV(bool on) = 0;
+  // codec icons - video: audio stream format
+  virtual void SetIconMPGA(bool on) = 0;
+  virtual void SetIconAC3(bool on) = 0;
+  virtual void SetIconDTS(bool on) = 0;
+  virtual void SetIconVWMA(bool on) = 0;
+  // codec icons - audio format
+  virtual void SetIconMP3(bool on) = 0;
+  virtual void SetIconOGG(bool on) = 0;
+  virtual void SetIconAWMA(bool on) = 0;
+  virtual void SetIconWAV(bool on) = 0;
+
+  virtual void SetIconAudioChannels(int channels) = 0;
 
 private:
   int m_disableOnPlay;
 
   std::vector<CGUIInfoLabel> m_lcdMode[LCD_MODE_MAX];
   UINT m_eCurrentCharset;
+
+  void RenderIcons();
+  void SetCodecInformationIcons();
+  void ResetCodecIcons();
+  void SetLCDPlayingState(bool on);
 };
 extern ILCD* g_lcd;

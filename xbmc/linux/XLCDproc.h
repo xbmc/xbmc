@@ -45,10 +45,54 @@ public:
   bool         SendLCDd(const CStdString &command);
   void         ReadAndFlushSocket();
 
+  // Handlers for icon-handling sub-instances
+  bool         SendIconStatesToDisplay();
+  void         HandleStop();
+
+  void         SetIconMovie(bool on);
+  void         SetIconMusic(bool on);
+  void         SetIconWeather(bool on);
+  void         SetIconTV(bool on);
+  void         SetIconPhoto(bool on);
+  void         SetIconResolution(LCD_RESOLUTION_INDICATOR resolution);
+  void         SetProgressBar1(double progress);
+  void         SetProgressBar2(double progress);
+  void         SetProgressBar3(double progress);
+  void         SetProgressBar4(double progress);
+  void         SetIconMute(bool on);
+  void         SetIconPlaying(bool on);
+  void         SetIconPause(bool on);
+  void         SetIconRepeat(bool on);
+  void         SetIconShuffle(bool on);
+  void         SetIconAlarm(bool on);
+  void         SetIconRecord(bool on);
+  void         SetIconVolume(bool on);
+  void         SetIconTime(bool on);
+  void         SetIconSPDIF(bool on);
+  void         SetIconDiscIn(bool on);
+  void         SetIconSource(bool on);
+  void         SetIconFit(bool on);
+  void         SetIconSCR1(bool on);
+  void         SetIconSCR2(bool on);
+  void         SetIconMPEG(bool on);
+  void         SetIconDIVX(bool on);
+  void         SetIconXVID(bool on);
+  void         SetIconWMV(bool on);
+  void         SetIconMPGA(bool on);
+  void         SetIconAC3(bool on);
+  void         SetIconDTS(bool on);
+  void         SetIconVWMA(bool on);
+  void         SetIconMP3(bool on);
+  void         SetIconOGG(bool on);
+  void         SetIconAWMA(bool on);
+  void         SetIconWAV(bool on);
+  void         SetIconAudioChannels(int channels);
+
 protected:
   virtual void Process();
   virtual void SetLine(int iLine, const CStdString& strLine);
   bool         Connect();
+  void         RecognizeAndSetIconDriver();
   void         CloseSocket();
   unsigned int m_iColumns;        // display columns for each line
   unsigned int m_iRows;           // total number of rows
@@ -66,6 +110,9 @@ private:
   int          m_lastInitAttempt;
   int          m_initRetryInterval;
   bool         m_used; //set to false when trying to connect has failed
+
+  XLCDproc     *m_lcdprocIconDevice;
+  unsigned int m_iCharsetTab;
 };
 
 #endif

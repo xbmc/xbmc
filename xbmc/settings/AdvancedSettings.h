@@ -177,6 +177,10 @@ class CAdvancedSettings
     bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;
     CStdString m_lcdHostName;
+    CStdString m_lcdProgressBar1;
+    CStdString m_lcdProgressBar2;
+    CStdString m_lcdProgressBar3;
+    CStdString m_lcdProgressBar4;
 
     int m_songInfoDuration;
     int m_logLevel;
