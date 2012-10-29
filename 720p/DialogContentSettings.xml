@@ -68,16 +68,6 @@
 					<ondown>9001</ondown>
 					<onleft>3</onleft>
 					<onright>3</onright>
-					<include>SetContentDirectoryContentDims</include>
-					<reverse>yes</reverse>
-					<align>center</align>
-					<pulseonselect>no</pulseonselect>
-					<texturefocus>-</texturefocus>
-					<textureup>ArrowUpNF.png</textureup>
-					<textureupfocus>ArrowUpFO.png</textureupfocus>
-					<texturedown>ArrowDownNF.png</texturedown>
-					<texturedownfocus>ArrowDownFO.png</texturedownfocus>
-					<include>DialogTopButton</include>
 				</control>
 				</control>
 				<control type="group" id="9001">
@@ -129,29 +119,13 @@
 						<onright>28</onright>
 						<control type="button" id="7">
 							<description>Default Button</description>
-							<posx>0</posx>
-							<posy>0</posy>
-							<height>30</height>
-							<width>SetContentGroupButtonWidth</width>
 							<label>-</label>
-							<font>MediumSmallDefaultCapsFont</font>
-							<include>DialogTextColors</include>
-							<align>left</align>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 						</control>
 					</control>
 					<control type="radiobutton" id="8">
 						<description>Radiobutton</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>30</height>
-						<align>left</align>
-						<aligny>center</aligny>
-						<font>MediumSmallDefaultCapsFont</font>
-						<textoffsetx>30</textoffsetx>
-						<textoffsety>-2</textoffsety>
-						<include>DialogTextControl</include>
 					</control>
 					<control type="grouplist" id="9002">
 						<onup>5</onup>

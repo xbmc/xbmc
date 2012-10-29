@@ -94,18 +94,6 @@
 				<posx>10</posx>
 				<description>Buttons</description>
 				<width>400</width>
-				<font>Condensed-18</font>
-				<height>50</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturefocus border="20">black-bottom-grey.png</texturefocus>
-				<texturenofocus border="20">border-bottom-grey.png</texturenofocus>
-				<textoffsetx>10</textoffsetx>
-				<textoffsety>0</textoffsety>
-				<textcolor>Unfocused</textcolor>
-				<focusedcolor>orangeLight</focusedcolor>
-				<disabledcolor>ff505050</disabledcolor>
-				<selectedcolor>orangeLight</selectedcolor>
 			</control>
 		</control>
 	</controls>

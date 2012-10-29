@@ -38,18 +38,12 @@
 			<description>default_radiobutton</description>
 			<posx>942</posx>
 			<posy>188</posy>
-			<height>39</height>
-			<aligny>center</aligny>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>default_spincontrolex</description>
 			<posx>942</posx>
 			<posy>188</posy>
-			<height>39</height>
 			<width>533</width>
-			<textoffsetx>21</textoffsetx>
-			<aligny>center</aligny>
-			<reverse>yes</reverse>
 		</control>
 		<control type="sliderex" id="10">
 			<description>default_slider</description>

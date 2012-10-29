@@ -34,8 +34,6 @@
 				<posx>30</posx>
 				<posy>380</posy>
 				<width>1200</width>
-				<font>SmallDefaultFont</font>
-				<textcolor>Focused</textcolor>
 				<label>$LOCALIZE[31851]</label>
 				<wrapmultiline>true</wrapmultiline>
 			</control>
@@ -43,7 +41,6 @@
 				<label>$LOCALIZE[31852]</label>
 				<posx>30</posx>
 				<posy>460</posy>
-				<font>SmallDefaultFont</font>
 			</control>
 			<control type="group">
 				<posx>60</posx>
@@ -57,7 +54,6 @@
 					<label>$LOCALIZE[31853]</label>
 					<posx>20</posx>
 					<posy>0</posy>
-					<font>SmallDefaultFont</font>
 				</control>
 				<control type="image">
 					<texture>bullet.png</texture>
@@ -68,7 +64,6 @@
 					<label>$LOCALIZE[31854]</label>
 					<posx>20</posx>
 					<posy>22</posy>
-					<font>SmallDefaultFont</font>
 				</control>
 				<control type="image">
 					<texture>bullet.png</texture>
@@ -79,7 +74,6 @@
 					<label>$LOCALIZE[31855]</label>
 					<posx>20</posx>
 					<posy>44</posy>
-					<font>SmallDefaultFont</font>
 				</control>
 				<control type="image">
 					<texture>bullet.png</texture>
@@ -90,7 +84,6 @@
 					<label>$LOCALIZE[31856]</label>
 					<posx>20</posx>
 					<posy>66</posy>
-					<font>SmallDefaultFont</font>
 				</control>
 				<control type="image">
 					<texture>bullet.png</texture>
@@ -101,7 +94,6 @@
 					<label>$LOCALIZE[31857]</label>
 					<posx>20</posx>
 					<posy>88</posy>
-					<font>SmallDefaultFont</font>
 				</control>
 				<control type="image">
 					<texture>bullet.png</texture>
@@ -112,7 +104,6 @@
 					<label>$LOCALIZE[31858]</label>
 					<posx>20</posx>
 					<posy>110</posy>
-					<font>SmallDefaultFont</font>
 				</control>
 				<control type="image">
 					<texture>bullet.png</texture>
@@ -123,15 +114,8 @@
 					<label>$LOCALIZE[31859]</label>
 					<posx>20</posx>
 					<posy>132</posy>
-					<font>SmallDefaultFont</font>
 				</control>
 			</control>
-			<!--><control type="label">
-				<label>$LOCALIZE[31860]</label>
-				<posx>30</posx>
-				<posy>660</posy>
-				<font>AltDefaultFont</font>
-			</control>-->
 			<control type="button" id="9000">
 				<description>OK</description>
 				<posx>1120</posx>

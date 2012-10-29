@@ -4,7 +4,7 @@
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<!-- bg's -->
-		<include>SettingsSlideshow</include>
+		<include>SlideshowDimmed</include>
 		<include>SettingsBG</include>
 		<!-- categories menu (top) -->
 		<include>SettingsCategoryMenu</include>

@@ -44,13 +44,11 @@
 					<description>Album title</description>
 					<visible>Container.Content(albums)</visible>
 					<info>ListItem.Album</info>
-					<include>InfoDialogTitle</include>
 				</control>
 				<control type="label">
 					<description>Artist name</description>
 					<visible>Container.Content(artists)</visible>
 					<info>ListItem.Artist</info>
-					<include>InfoDialogTitle</include>
 				</control>
 				<control type="grouplist">
 					<posx>28</posx>
@@ -61,17 +59,14 @@
 					<control type="button" id="5">
 						<description>Cast/Review</description>
 						<label>206</label>
-						<include>MusicInfoTopButton</include>
 					</control>
 					<control type="button" id="6">
 						<description>Refresh</description>
 						<label>184</label>
-						<include>MusicInfoTopButton</include>
 					</control>
 					<control type="button" id="10">
 						<description>Thumb</description>
 						<label>31117</label>
-						<include>MusicInfoTopButton</include>
 					</control>
 				</control>
 				<control type="grouplist">
@@ -83,17 +78,14 @@
 					<control type="button" id="5">
 						<description>Cast/Review</description>
 						<label>206</label>
-						<include>MusicInfoTopButton</include>
 					</control>
 					<control type="button" id="6">
 						<description>Refresh</description>
 						<label>184</label>
-						<include>MusicInfoTopButton</include>
 					</control>
 					<control type="button" id="10">
 						<description>Thumb</description>
 						<label>31117</label>
-						<include>MusicInfoTopButton</include>
 					</control>
 				</control>
 				<control type="group">
@@ -105,88 +97,72 @@
 							<description>Artist</description>
 							<control type="label">
 								<label>$LOCALIZE[557]</label>
-								<include>MediaInfoCaption</include>
 							</control>
 							<control type="label">
 								<info>ListItem.Artist</info>
-								<include>MediaInfoWideValue</include>
 							</control>
 							<control type="group">
 								<description>Genre</description>
 								<posy>MusicAlbumInfoDetailOffset</posy>
 								<control type="label">
 									<label>$LOCALIZE[515]</label>
-									<include>MediaInfoCaption</include>
 								</control>
 								<control type="label">
 									<info>ListItem.Genre</info>
-									<include>MediaInfoWideValue</include>
 								</control>
 								<control type="group">
 									<description>Year</description>
 									<posy>MusicAlbumInfoDetailOffset</posy>
 									<control type="label">
 										<label>$LOCALIZE[345]</label>
-										<include>MediaInfoCaption</include>
 									</control>
 									<control type="label">
 										<info>ListItem.Year</info>
-										<include>MediaInfoWideValue</include>
 									</control>
 									<control type="group">
 										<description>Rating</description>
 										<posy>MusicAlbumInfoDetailOffset</posy>
 										<control type="label">
 											<label>$LOCALIZE[563]</label>
-											<include>MediaInfoCaption</include>
 										</control>
 										<control type="label">
 											<info>ListItem.Rating</info>
-											<include>MediaInfoWideValue</include>
 										</control>
 										<control type="group">
 											<description>Album Moods</description>
 											<posy>MusicAlbumInfoDetailOffset</posy>
 											<control type="label">
 												<label>$LOCALIZE[175]</label>
-												<include>MediaInfoCaption</include>
 											</control>
 											<control type="label">
 												<info>ListItem.Property(AlbumMoods)</info>
-												<include>MediaInfoWideValue</include>
 											</control>
 											<control type="group">
 												<description>Album Styles</description>
 												<posy>MusicAlbumInfoDetailOffset</posy>
 												<control type="label">
 													<label>$LOCALIZE[176]</label>
-													<include>MediaInfoCaption</include>
 												</control>
 												<control type="label">
 													<info>ListItem.Property(AlbumStyles)</info>
-													<include>MediaInfoWideValue</include>
 												</control>
 												<control type="group">
 													<description>Album Themes</description>
 													<posy>MusicAlbumInfoDetailOffset</posy>
 													<control type="label">
 														<label>$LOCALIZE[21895]</label>
-														<include>MediaInfoCaption</include>
 													</control>
 													<control type="label">
 														<info>ListItem.Property(AlbumThemes)</info>
-														<include>MediaInfoWideValue</include>
 													</control>
 													<control type="group">
 														<description>Album Type</description>
 														<posy>MusicAlbumInfoDetailOffset</posy>
 														<control type="label">
 															<label>$LOCALIZE[467]</label>
-															<include>MediaInfoCaption</include>
 														</control>
 														<control type="label">
 															<info>ListItem.Property(AlbumType)</info>
-															<include>MediaInfoWideValue</include>
 														</control>
 													</control>
 												</control>
@@ -203,87 +179,71 @@
 							<description>Born/Formed</description>
 							<control type="label">
 								<label>$LOCALIZE[31027]</label>
-								<include>MediaInfoCaption</include>
 							</control>
 							<control type="label">
 								<visible>!IsEmpty(ListItem.Property(Born))</visible>
 								<info>ListItem.Property(Born)</info>
-								<include>MediaInfoWideValue</include>
 							</control>
 							<control type="label">
 								<visible>IsEmpty(ListItem.Property(Born))</visible>
 								<info>ListItem.Property(Formed)</info>
-								<include>MediaInfoWideValue</include>
 							</control>
 							<control type="group">
 								<description>Genre</description>
 								<posy>MusicArtistInfoDetailOffset</posy>
 								<control type="label">
 									<label>$LOCALIZE[515]</label>
-									<include>MediaInfoCaption</include>
 								</control>
 								<control type="label">
 									<info>ListItem.Genre</info>
-									<include>MediaInfoWideValue</include>
 								</control>
 								<control type="group">
 									<description>Moods</description>
 									<posy>MusicArtistInfoDetailOffset</posy>
 									<control type="label">
 										<label>$LOCALIZE[175]</label>
-										<include>MediaInfoCaption</include>
 									</control>
 									<control type="label">
 										<info>ListItem.Property(Moods)</info>
-										<include>MediaInfoWideValue</include>
 									</control>
 									<control type="group">
 										<description>Styles</description>
 										<posy>MusicArtistInfoDetailOffset</posy>
 										<control type="label">
 											<label>$LOCALIZE[176]</label>
-											<include>MediaInfoCaption</include>
 										</control>
 										<control type="label">
 											<info>ListItem.Property(Styles)</info>
-											<include>MediaInfoWideValue</include>
 										</control>
 										<control type="group">
 											<description>Instruments</description>
 											<posy>MusicArtistInfoDetailOffset</posy>
 											<control type="label">
 												<label>$LOCALIZE[31032]</label>
-												<include>MediaInfoCaption</include>
 											</control>
 											<control type="label">
 												<info>ListItem.Property(Instruments)</info>
-												<include>MediaInfoWideValue</include>
 											</control>
 											<control type="group">
 												<description>Died/Disbanded</description>
 												<posy>MusicArtistInfoDetailOffset</posy>
 												<control type="label">
 													<label>$LOCALIZE[31028]</label>
-													<include>MediaInfoCaption</include>
 												</control>
 												<control type="label">
 													<info>ListItem.Property(Died)</info>
-													<include>MediaInfoWideValue</include>
 												</control>
 												<control type="label">
 													<info>ListItem.Property(Disbanded)</info>
-													<include>MediaInfoWideValue</include>
 												</control>
 												<control type="group">
 													<description>Years Active</description>
 													<posy>MusicArtistInfoDetailOffset</posy>
 													<control type="label">
 														<label>$LOCALIZE[31031]</label>
-														<include>MediaInfoCaption</include>
 													</control>
 													<control type="label">
 														<info>ListItem.Property(YearsActive)</info>
-														<include>MediaInfoWideValue</include>
 													</control>
 												</control>
 											</control>
@@ -299,11 +259,9 @@
 					<posy>308</posy>
 					<control type="textbox" id="4">
 						<description>Review</description>
-						<include>MusicInfoReviewDims</include>
 					</control>
 					<control type="list" id="50">
 						<description>Tracks/Members</description>
-						<include>MusicInfoListDims</include>
 						<onup>5</onup>
 						<onleft>5</onleft>
 						<onright>10</onright>
@@ -322,7 +280,6 @@
 						<ondown>61</ondown>
 						<onleft>5</onleft>
 						<onright>10</onright>
-						<include>MusicInfoListScrollbarDims</include>
 						<visible>Control.IsVisible(50)</visible>
 					</control>
 				</control>

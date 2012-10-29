@@ -146,7 +146,6 @@
 						<height>475</height>
 						<onleft>2</onleft>
 						<onright>2</onright>
-						<showonepage>false</showonepage>
 					</control>
 				</control>
 			</control>

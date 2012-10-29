@@ -27,7 +27,6 @@
 						<width>170</width>
 						<onright>16</onright>
 						<ondown>9000</ondown>
-						<include>DialogTextControl</include>
 					</control>
 					<control type="spincontrolex" id="16">
 						<description>Rule operator</description>
@@ -36,7 +35,6 @@
 						<onleft>15</onleft>
 						<onright>17</onright>
 						<ondown>9000</ondown>
-						<include>DialogTextControl</include>
 					</control>
 					<control type="button" id="17">
 						<description>Value Button</description>

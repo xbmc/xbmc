@@ -25,18 +25,6 @@
 			<control type="radiobutton" id="4">
 				<description>default_radio_button</description>
 				<posx>70</posx>
-				<width>218</width>
-				<height>43</height>
-				<textcolor>HomeSubNoFocus</textcolor>
-				<focusedcolor>Focused</focusedcolor>
-				<disabledcolor>Unfocused</disabledcolor>
-				<textoffsetx>45</textoffsetx>
-				<include>MenuItemNFTextureNF</include>
-				<include>MenuItemNFTextureFO</include>
-				<font>HomeSubMenuFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<radioposx>248</radioposx>
 				<label>$LOCALIZE[20096]</label>
 				<onleft>-</onleft>
 				<onright>-</onright>
@@ -88,30 +76,10 @@
 			<control type="radiobutton" id="8">
 				<description>default_radio_button</description>
 				<width>600</width>
-				<height>43</height>
-				<textcolor>Unfocused</textcolor>
-				<focusedcolor>Focused</focusedcolor>
-				<disabledcolor>Unfocused</disabledcolor>
-				<textoffsetx>45</textoffsetx>
-				<include>MenuItemNFTextureNF</include>
-				<texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
-				<font>MediumDefaultFont</font>
-				<aligny>center</aligny>
-				<radioposx>560</radioposx>
 			</control>
 			<control type="spincontrolex" id="9">
 				<description>default_spincontrol</description>
 				<width>600</width>
-				<height>43</height>
-				<textcolor>Unfocused</textcolor>
-				<focusedcolor>Focused</focusedcolor>
-				<disabledcolor>Unfocused</disabledcolor>
-				<textoffsetx>45</textoffsetx>
-				<include>MenuItemNFTextureNF</include>
-				<texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
-				<font>MediumDefaultFont</font>
-				<aligny>center</aligny>
-				<align>left</align>
 			</control>
 			<control type="sliderex" id="10">
 				<description>slider</description>

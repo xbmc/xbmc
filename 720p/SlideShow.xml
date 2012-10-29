@@ -25,8 +25,6 @@
 				<posy>560</posy>
 				<width>1230</width>
 				<height>153</height>
-				<font>TitleFont</font>
-				<textcolor>Focused</textcolor>
 				<info>ListItem.Property(description)</info>
 				<wrapmultiline>true</wrapmultiline>
 				<autoscroll delay="3000" time="3000" repeat="3000">true</autoscroll>

@@ -26,12 +26,10 @@
 				<posy>60</posy>
 				<control type="spincontrolex" id="22">
 					<description>Set Playlist type</description>
-					<width>SmartPlaylistTextWidth</width>
 					<onright>22</onright>
 					<onleft>22</onleft>
 					<onup>9001</onup>
 					<ondown>12</ondown>
-					<include>DialogTextControl</include>
 				</control>
 				<control type="group">
 					<posx>0</posx>
@@ -136,25 +134,20 @@
 							<posy>114</posy>
 							<control type="spincontrolex" id="16">
 								<description>Rule Matching</description>
-								<width>SmartPlaylistTextWidth</width>
 								<label>21424</label>
 								<onright>16</onright>
 								<onleft>16</onleft>
 								<onup>10</onup>
 								<ondown>17</ondown>
-								<disabledcolor>Unfocused</disabledcolor>
-								<include>DialogTextControl</include>
 							</control>
 							<control type="spincontrolex" id="17">
 								<description>Limit</description>
 								<posy>32</posy>
-								<width>SmartPlaylistTextWidth</width>
 								<label>21427</label>
 								<onright>17</onright>
 								<onleft>17</onleft>
 								<onup>16</onup>
 								<ondown>18</ondown>
-								<include>DialogTextControl</include>
 							</control>
 							<control type="spincontrolex" id="18">
 								<description>Sort By</description>
@@ -165,21 +158,17 @@
 								<onleft>19</onleft>
 								<onup>17</onup>
 								<ondown>9001</ondown>
-								<include>DialogTextControl</include>
 							</control>
 							<control type="radiobutton" id="19">
 								<description>Sort Direction</description>
 								<posx>360</posx>
 								<posy>64</posy>
-								<height>32</height>
-								<aligny>center</aligny>
 								<label>21431</label>
 								<altlabel>21430</altlabel>
 								<onright>18</onright>
 								<onleft>18</onleft>
 								<onup>17</onup>
 								<ondown>9001</ondown>
-								<include>DialogTextControl</include>
 							</control>
 						</control>
 					</control>

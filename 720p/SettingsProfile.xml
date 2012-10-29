@@ -11,12 +11,8 @@
 			<control type="radiobutton" id="4">
 				<description>default_radio_button</description>
 				<posx>70</posx>
-				<textoffsetx>45</textoffsetx>
-				<align>center</align>
-				<radioposx>248</radioposx>
 				<label>$LOCALIZE[20096]</label>
 				<ondown>2</ondown>
-				<include>SettingsCategoryButton</include>
 			</control>
 			<control type="list" id="2">
 				<description>main menu</description>

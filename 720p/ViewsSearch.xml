@@ -813,8 +813,6 @@
 							<height>215</height>
 							<label>$VAR[SearchItemFullInfoPlot]</label>
 							<font>HomePlot</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>ff222222</shadowcolor>
 						</control>
 					</control>
 				</control>

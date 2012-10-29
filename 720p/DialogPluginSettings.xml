@@ -36,18 +36,9 @@
 			</control>
 			<control type="radiobutton" id="4">
 				<description>Default RadioButton</description>
-				<height>27</height>
-				<pulseonselect>false</pulseonselect>
-				<include>DialogTextControl</include>
 			</control>
 			<control type="spincontrolex" id="5">
 				<description>Default SpinControlex</description>
-				<height>27</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<reverse>yes</reverse>
-				<textoffsetx>8</textoffsetx>
-				<include>DialogTextControl</include>
 			</control>
 			<control type="image" id="6">
 				<description>separator image</description>

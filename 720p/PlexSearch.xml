@@ -2,8 +2,8 @@
 <window id="51">
 	<defaultcontrol always="true">65</defaultcontrol>
 	<controls>
-		<include>GrainyBG</include>
-		<include>SearchSlideshow</include>
+		<include>BGGrainy</include>
+		<include>SlideshowDimmed</include>
 		<include>SearchMain</include>
 	</controls>
 </window>

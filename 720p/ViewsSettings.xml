@@ -207,17 +207,7 @@
 			<control type="button" id="10">
 				<width>300</width>
 				<font>CondensedBold-18</font>
-				<height>50</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<texturefocus border="5">black-bottom-grey.png</texturefocus>
-				<texturenofocus border="5">border-bottom-grey.png</texturenofocus>
 				<textoffsetx>20</textoffsetx>
-				<textoffsety>0</textoffsety>
-				<textcolor>Unfocused</textcolor>
-				<focusedcolor>orangeLight</focusedcolor>
-				<disabledcolor>ff505050</disabledcolor>
-				<selectedcolor>orangeLight</selectedcolor>
 				<animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
 			</control>
 		</control>
@@ -258,27 +248,17 @@
 				<pagecontrol>61</pagecontrol>
 			</control>
 			<control type="button" id="7">
-				<font>Condensed-18</font>
-				<height>50</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<texturefocus border="5">black-bottom-grey.png</texturefocus>
-				<texturenofocus border="5">border-bottom-grey.png</texturenofocus>
 				<textoffsetx>20</textoffsetx>
-				<textoffsety>0</textoffsety>
-				<textcolor>Unfocused</textcolor>
-				<focusedcolor>orangeLight</focusedcolor>
-				<disabledcolor>ff505050</disabledcolor>
-				<selectedcolor>orangeLight</selectedcolor>
 			</control>
 			<control type="radiobutton" id="8">
+				<textoffsetx>20</textoffsetx>
 			</control>
 			<control type="spincontrolex" id="9">
+				<textoffsetx>20</textoffsetx>
 			</control>
 			<control type="scrollbar" id="61">
 				<onup>61</onup>
 				<ondown>61</ondown>
-				<include>SettingsOptionsScrollbarDims</include>
 			</control>
 		</control>
 	</include>

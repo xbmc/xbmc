@@ -2,11 +2,6 @@
 <includes>
 	<include file="Defaults.xml"/>
 	<include file="Backgrounds.xml"/>
-	<include file="IncludesDims.xml"/>
-	<include file="OptionsMenu.xml"/>
-	<include file="ViewsCommon.xml"/>
-	<include file="PlexIncludes.xml"/>
-	<include file="IncludesMediaFlags.xml"/>
 	<include file="LeftSideMenu.xml"/>
 	<include file="Views.xml"/>
 	<include file="ViewsChannels.xml"/>
@@ -24,15 +19,4 @@
 	<include file="ViewsSearch.xml"/>
 	<include file="ViewsKeyboard.xml"/>
 	<include file="Debug.xml"/>
-	<include name="VolumePos">
-		<posx>10</posx>
-		<posy>34</posy>
-	</include>
-	<include name="VolumeImage">
-		<include>VolumeImageDims</include>
-	</include>
-	<include name="VolumeLabel">
-		<include>VolumeLabelDims</include>
-		<font>MediumSmallTitleFont</font>
-	</include>
 </includes>

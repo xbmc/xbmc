@@ -15,13 +15,11 @@
 				<include>SelectionDialogControlsPos</include>
 				<control type="spincontrolex" id="10">
 					<description>protocol_spincontrol</description>
-					<width>SelectionDialogTextWidth</width>
 					<label>1008</label>
 					<align>left</align>
 					<ondown>9001</ondown>
 					<onleft>10</onleft>
 					<onright>10</onright>
-					<include>DialogTextControl</include>
 				</control>
 				<control type="group" id="9001">
 					<posy>44</posy>

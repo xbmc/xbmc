@@ -50,7 +50,6 @@
 						<height>196</height>
 						<onleft>2</onleft>
 						<onright>2</onright>
-						<showonepage>false</showonepage>
 					</control>
 					<control type="grouplist" id="5">
 						<description>control area</description>
@@ -71,13 +70,9 @@
 					</control>
 					<control type="radiobutton" id="8">
 						<description>default_radio_button</description>
-						<textoffsetx>20</textoffsetx>
-						<include>DialogTextControl</include>
 					</control>
 					<control type="spincontrolex" id="9">
 						<description>default_spincontrol</description>
-						<textoffsetx>20</textoffsetx>
-						<include>DialogTextControl</include>
 					</control>
 				</control>
 			</control>
@@ -138,7 +133,6 @@
 						<height>325</height>
 						<onleft>2</onleft>
 						<onright>2</onright>
-						<showonepage>false</showonepage>
 					</control>
 					<control type="grouplist" id="5">
 						<description>control area</description>
@@ -169,42 +163,11 @@
 					<control type="radiobutton" id="8">
 						<description>default_radio_button</description>
 						<width>220</width>
-						<height>43</height>
-						<textcolor>Focused</textcolor>
-						<disabledcolor>Unfocused</disabledcolor>
-						<textoffsetx>15</textoffsetx>
-						<include>MenuItemNFTextureNF</include>
-						<texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
-						<font>MediumSmallDefaultFont</font>
-						<aligny>center</aligny>
-						<radioposx>220</radioposx>
 					</control>
 					<control type="spincontrolex" id="9">
 						<description>default_spincontrol</description>
 						<width>260</width>
-						<height>43</height>
-						<textcolor>Focused</textcolor>
-						<disabledcolor>Unfocused</disabledcolor>
-						<textoffsetx>15</textoffsetx>
-						<include>MenuItemNFTextureNF</include>
-						<texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
-						<font>MediumSmallDefaultFont</font>
-						<aligny>center</aligny>
-						<align>left</align>
 					</control>
-					<!--
-          <control type="radiobutton" id="8">
-            <description>Default RadioButton</description>
-            <posx>0</posx>
-            <posy>0</posy>
-          </control>
-
-          <control type="spincontrolex" id="9">
-            <description>Default SpinControlex</description>
-            <posx>0</posx>
-            <posy>0</posy>
-          </control>
--->
 				</control>
 			</control>
 		</control>
