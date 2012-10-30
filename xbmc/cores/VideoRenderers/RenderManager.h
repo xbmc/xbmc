@@ -182,6 +182,18 @@ public:
 
   CSharedSection& GetSection() { return m_sharedSection; };
 
+  /* PLEX */
+  inline void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch)
+  {
+    if (!image)
+      return;
+
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->SetRGB32Image(image, nHeight, nWidth, nPitch);
+  }
+  /* END PLEX */
+
 protected:
   void Render(bool clear, DWORD flags, DWORD alpha);
 

@@ -404,7 +404,7 @@ void CPlexMediaServerPlayer::Render()
   {
     // Grab the new frame out of shared memory.
     ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
-    //g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4); FIXME
+    g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
   }
   
   g_application.NewFrame();
@@ -444,10 +444,10 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
     // Set the initial frame to all black.
     ipc::scoped_lock<ipc::named_mutex> lock(m_frameMutex);
     memset(m_mappedRegion->get_address(), 0, m_height*m_width*4);
-    //g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
+    g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
     
     // Configure renderer.
-    //g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB);
+    g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB, 0);
     
     g_application.NewFrame();
   }
