@@ -520,7 +520,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       /* don't block external player's access to audio device  */
       if (!CAEFactory::Suspend())
       {
-        CLog::Log(LOGNOTICE, __FUNCTION__, "Failed to suspend AudioEngine before launching external program");
+        CLog::Log(LOGNOTICE, "%s: Failed to suspend AudioEngine before launching external program",__FUNCTION__);
       }
 #if defined( _LINUX) && !defined(TARGET_DARWIN)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
@@ -530,7 +530,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       /* Resume AE processing of XBMC native audio */
       if (!CAEFactory::Resume())
       {
-        CLog::Log(LOGFATAL, __FUNCTION__, "Failed to restart AudioEngine after return from external player");
+        CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player",__FUNCTION__);
       }
       break;
 
