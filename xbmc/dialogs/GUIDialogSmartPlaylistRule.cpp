@@ -68,14 +68,11 @@ bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
         OnCancel();
-      else if (iControl == CONTROL_VALUE && CSmartPlaylistRule::GetFieldType(m_rule.m_field) != CSmartPlaylistRule::BROWSEABLE_FIELD)
+      else if (iControl == CONTROL_VALUE)
       {
         CStdString parameter;
         OnEditChanged(iControl, parameter);
-        m_rule.m_parameter.clear();
-
-        if (!parameter.empty())
-          m_rule.m_parameter.push_back(parameter);
+        m_rule.SetParameter(parameter);
       }
       else if (iControl == CONTROL_OPERATOR)
         OnOperator();
@@ -408,8 +405,6 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   switch (fieldType)
   {
   case CSmartPlaylistRule::BROWSEABLE_FIELD:
-    type = CGUIEditControl::INPUT_TYPE_READONLY;
-    break;
   case CSmartPlaylistRule::TEXT_FIELD:
   case CSmartPlaylistRule::PLAYLIST_FIELD:
   case CSmartPlaylistRule::TEXTIN_FIELD:
