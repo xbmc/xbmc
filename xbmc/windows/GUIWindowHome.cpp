@@ -26,6 +26,8 @@
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
+#include "guilib/GUIWindowManager.h"
+#include "Application.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -42,6 +44,19 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
 CGUIWindowHome::~CGUIWindowHome(void)
 {
   CAnnouncementManager::RemoveAnnouncer(this);
+}
+
+bool CGUIWindowHome::OnAction(const CAction &action)
+{
+  static unsigned int min_hold_time = 1000;
+  if (action.GetID() == ACTION_NAV_BACK &&
+      action.GetHoldTime() < min_hold_time &&
+      g_application.IsPlaying())
+  {
+    g_application.SwitchToFullScreen();
+    return true;
+  }
+  return CGUIWindow::OnAction(action);
 }
 
 void CGUIWindowHome::OnInitWindow()
@@ -89,13 +104,8 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
     }
   }
 
-  // add the job immediatedly if the home window is active
-  // otherwise defer it to the next initialisation
-
-  if (IsActive())
-    AddRecentlyAddedJobs(ra_flag);
-  else
-    m_updateRA |= ra_flag;
+  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);
+  g_windowManager.SendThreadMessage(reload, GetID());
 }
 
 void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
@@ -155,10 +165,13 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   case GUI_MSG_NOTIFY_ALL:
     if (message.GetParam1() == GUI_MSG_WINDOW_RESET || message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
     {
+      int updateRA = (message.GetSenderId() == GetID()) ? message.GetParam2() : (Video | Audio | Totals);
+
       if (IsActive())
-        AddRecentlyAddedJobs(Video | Audio | Totals);
+        AddRecentlyAddedJobs(updateRA);
       else
-        m_updateRA |= (Video | Audio | Totals);
+        m_updateRA |= updateRA;
+
       return true;
     }
     break;

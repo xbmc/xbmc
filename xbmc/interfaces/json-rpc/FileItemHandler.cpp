@@ -18,7 +18,9 @@
  *
  */
 
+#include <map>
 #include <string.h>
+
 #include "FileItemHandler.h"
 #include "PlaylistOperations.h"
 #include "AudioLibrary.h"
@@ -34,14 +36,140 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "TextureCache.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
+#include "music/MusicThumbLoader.h"
 #include "Util.h"
+#include "pvr/channels/PVRChannel.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 
-void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const CVariant& fields, CVariant &result, CThumbLoader *thumbLoader /* = NULL */)
+bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, const CFileItemPtr &item, CVariant &result, bool &fetchedArt, CThumbLoader *thumbLoader /* = NULL */)
+{
+  if (result.isMember(field) && !result[field].empty())
+    return true;
+
+  if (info.isMember(field) && !info[field].isNull())
+  {
+    result[field] = info[field];
+    return true;
+  }
+
+  if (item)
+  {
+    if (item->IsAlbum())
+    {
+      if (field == "albumlabel")
+      {
+        result[field] = item->GetProperty("album_label");
+        return true;
+      }
+      if (item->HasProperty("album_" + field + "_array"))
+      {
+        result[field] = item->GetProperty("album_" + field + "_array");
+        return true;
+      }
+      if (item->HasProperty("album_" + field))
+      {
+        result[field] = item->GetProperty("album_" + field);
+        return true;
+      }
+    }
+    
+    if (item->HasProperty("artist_" + field + "_array"))
+    {
+      result[field] = item->GetProperty("artist_" + field + "_array");
+      return true;
+    }
+    if (item->HasProperty("artist_" + field))
+    {
+      result[field] = item->GetProperty("artist_" + field);
+      return true;
+    }
+
+    if (field == "art")
+    {
+      if (thumbLoader != NULL && item->GetArt().size() <= 0 && !fetchedArt &&
+        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
+      {
+        thumbLoader->FillLibraryArt(*item);
+        fetchedArt = true;
+      }
+
+      CGUIListItem::ArtMap artMap = item->GetArt();
+      CVariant artObj(CVariant::VariantTypeObject);
+      for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); artIt++)
+      {
+        if (!artIt->second.empty())
+          artObj[artIt->first] = CTextureCache::GetWrappedImageURL(artIt->second);
+      }
+
+      result["art"] = artObj;
+      return true;
+    }
+    
+    if (field == "thumbnail")
+    {
+      if (thumbLoader != NULL && !item->HasArt("thumb") && !fetchedArt &&
+        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
+      {
+        thumbLoader->FillLibraryArt(*item);
+        fetchedArt = true;
+      }
+      else if (item->HasPictureInfoTag() && !item->HasArt("thumb"))
+        item->SetArt("thumb", CTextureCache::GetWrappedThumbURL(item->GetPath()));
+      
+      if (item->HasArt("thumb"))
+        result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetArt("thumb"));
+      else
+        result["thumbnail"] = "";
+      
+      return true;
+    }
+    
+    if (field == "fanart")
+    {
+      if (thumbLoader != NULL && !item->HasArt("fanart") && !fetchedArt &&
+        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
+      {
+        thumbLoader->FillLibraryArt(*item);
+        fetchedArt = true;
+      }
+      
+      if (item->HasArt("fanart"))
+        result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetArt("fanart"));
+      else
+        result["fanart"] = "";
+      
+      return true;
+    }
+    
+    if (item->HasVideoInfoTag() && item->GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS)
+    {
+      if (item->GetVideoInfoTag()->m_iSeason < 0 && field == "season")
+      {
+        result[field] = (int)item->GetProperty("totalseasons").asInteger();
+        return true;
+      }
+      if (field == "watchedepisodes")
+      {
+        result[field] = (int)item->GetProperty("watchedepisodes").asInteger();
+        return true;
+      }
+    }
+    
+    if (field == "lastmodified" && item->m_dateTime.IsValid())
+    {
+      result[field] = item->m_dateTime.GetAsLocalizedDateTime();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void CFileItemHandler::FillDetails(const ISerializable *info, const CFileItemPtr &item, std::set<std::string> &fields, CVariant &result, CThumbLoader *thumbLoader /* = NULL */)
 {
   if (info == NULL || fields.size() == 0)
     return;
@@ -51,101 +179,12 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
 
   bool fetchedArt = false;
 
-  for (unsigned int i = 0; i < fields.size(); i++)
+  std::set<std::string> originalFields = fields;
+
+  for (std::set<std::string>::const_iterator fieldIt = originalFields.begin(); fieldIt != originalFields.end(); fieldIt++)
   {
-    CStdString field = fields[i].asString();
-
-    if (item)
-    {
-      if (item->IsAlbum() && field.Equals("albumlabel"))
-        field = "label";
-      if (item->IsAlbum())
-      {
-        if (field == "label")
-        {
-          result["albumlabel"] = item->GetProperty("album_label");
-          continue;
-        }
-        if (item->HasProperty("album_" + field + "_array"))
-        {
-          result[field] = item->GetProperty("album_" + field + "_array");
-          continue;
-        }
-        if (item->HasProperty("album_" + field))
-        {
-          result[field] = item->GetProperty("album_" + field);
-          continue;
-        }
-      }
-
-      if (item->HasProperty("artist_" + field + "_array"))
-      {
-        result[field] = item->GetProperty("artist_" + field + "_array");
-        continue;
-      }
-      if (item->HasProperty("artist_" + field))
-      {
-        result[field] = item->GetProperty("artist_" + field);
-        continue;
-      }
-
-      if (field == "thumbnail")
-      {
-        if (thumbLoader != NULL && !item->HasThumbnail() && !fetchedArt &&
-           ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
-        {
-          thumbLoader->FillLibraryArt(*item);
-          fetchedArt = true;
-        }
-        else if (item->HasPictureInfoTag() && !item->HasThumbnail())
-          item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
-
-        if (item->HasThumbnail())
-          result["thumbnail"] = CTextureCache::GetWrappedImageURL(item->GetThumbnailImage());
-        else
-          result["thumbnail"] = "";
-        continue;
-      }
-
-      if (field == "fanart")
-      {
-        if (thumbLoader != NULL && !item->HasProperty("fanart_image") && !fetchedArt &&
-           ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
-        {
-          thumbLoader->FillLibraryArt(*item);
-          fetchedArt = true;
-        }
-
-        if (item->HasProperty("fanart_image"))
-          result["fanart"] = CTextureCache::GetWrappedImageURL(item->GetProperty("fanart_image").asString());
-        else
-          result["fanart"] = "";
-        continue;
-      }
-
-      if (item->HasVideoInfoTag() && item->GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS)
-      {
-        if (item->GetVideoInfoTag()->m_iSeason < 0 && field == "season")
-        {
-          result[field] = (int)item->GetProperty("totalseasons").asInteger();
-          continue;
-        }
-        if (field == "watchedepisodes")
-        {
-          result[field] = (int)item->GetProperty("watchedepisodes").asInteger();
-          continue;
-        }
-      }
-
-      if (field == "lastmodified" && item->m_dateTime.IsValid())
-      {
-        result[field] = item->m_dateTime.GetAsLocalizedDateTime();
-        continue;
-      }
-    }
-
-    if (serialization.isMember(field) && !serialization[field].isNull() && (!result.isMember(field) || result[field].empty()))
-      result[field] = serialization[field];
+    if (GetField(*fieldIt, serialization, item, result, fetchedArt, thumbLoader) && result.isMember(*fieldIt) && !result[*fieldIt].empty())
+      fields.erase(*fieldIt);
   }
 }
 
@@ -179,11 +218,18 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
       thumbLoader->Initialize();
   }
 
+  std::set<std::string> fields;
+  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
+  {
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
+      fields.insert(field->asString());
+  }
+
   for (int i = start; i < end; i++)
   {
     CVariant object;
     CFileItemPtr item = items.Get(i);
-    HandleFileItem(ID, allowFile, resultname, item, parameterObject, parameterObject["properties"], result, true, thumbLoader);
+    HandleFileItem(ID, allowFile, resultname, item, parameterObject, fields, result, true, thumbLoader);
   }
 
   delete thumbLoader;
@@ -191,40 +237,53 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
 
 void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append /* = true */, CThumbLoader *thumbLoader /* = NULL */)
 {
+  std::set<std::string> fields;
+  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
+  {
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
+      fields.insert(field->asString());
+  }
+
+  HandleFileItem(ID, allowFile, resultname, item, parameterObject, fields, result, append, thumbLoader);
+}
+
+void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const std::set<std::string> &validFields, CVariant &result, bool append /* = true */, CThumbLoader *thumbLoader /* = NULL */)
+{
   CVariant object;
-  bool hasFileField = false;
+  std::set<std::string> fields(validFields.begin(), validFields.end());
 
   if (item.get())
   {
-    for (unsigned int i = 0; i < validFields.size(); i++)
+    std::set<std::string>::const_iterator fileField = fields.find("file");
+    if (fileField != fields.end())
     {
-      CStdString field = validFields[i].asString();
+      if (allowFile)
+      {
+        if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().IsEmpty())
+            object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
+        if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
+          object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
-      if (field == "file")
-        hasFileField = true;
-    }
-
-    if (allowFile && hasFileField)
-    {
-      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().IsEmpty())
-          object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
-      if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
-        object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
-
-      if (!object.isMember("file"))
-        object["file"] = item->GetPath().c_str();
+        if (!object.isMember("file"))
+          object["file"] = item->GetPath().c_str();
+      }
+      fields.erase(fileField);
     }
 
     if (ID)
     {
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
+      if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag()->ChannelID() > 0)
+         object[ID] = item->GetPVRChannelInfoTag()->ChannelID();
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
         object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
 
       if (stricmp(ID, "id") == 0)
       {
-        if (item->HasMusicInfoTag())
+        if (item->HasPVRChannelInfoTag())
+          object["type"] = "channel";
+        else if (item->HasMusicInfoTag())
         {
           if (item->m_bIsFolder && item->IsAlbum())
             object["type"] = "album";
@@ -260,14 +319,16 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       }
     }
 
-    FillDetails(item.get(), item, validFields, object, thumbLoader);
-
+    if (item->HasPVRChannelInfoTag())
+      FillDetails(item->GetPVRChannelInfoTag(), item, fields, object, thumbLoader);
     if (item->HasVideoInfoTag())
-      FillDetails(item->GetVideoInfoTag(), item, validFields, object, thumbLoader);
+      FillDetails(item->GetVideoInfoTag(), item, fields, object, thumbLoader);
     if (item->HasMusicInfoTag())
-      FillDetails(item->GetMusicInfoTag(), item, validFields, object, thumbLoader);
+      FillDetails(item->GetMusicInfoTag(), item, fields, object, thumbLoader);
     if (item->HasPictureInfoTag())
-      FillDetails(item->GetPictureInfoTag(), item, validFields, object, thumbLoader);
+      FillDetails(item->GetPictureInfoTag(), item, fields, object, thumbLoader);
+    
+    FillDetails(item.get(), item, fields, object, thumbLoader);
 
     if (deleteThumbloader)
       delete thumbLoader;

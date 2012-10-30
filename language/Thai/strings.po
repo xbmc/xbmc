@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA6
+# XBMC-core v12.0-ALPHA7
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-09-14 11:20+0000\n"
+"PO-Revision-Date: 2012-10-28 08:30+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Thai (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/th/)\n"
 "MIME-Version: 1.0\n"
@@ -273,6 +273,26 @@ msgstr "NNW"
 msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr ""
+
+msgctxt "#89"
+msgid "North"
+msgstr ""
+
+msgctxt "#90"
+msgid "West"
+msgstr ""
+
+msgctxt "#91"
+msgid "East"
+msgstr ""
+
+msgctxt "#92"
+msgid "Variable"
+msgstr ""
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -549,6 +569,10 @@ msgstr "แผ่นปัจจุบัน"
 msgctxt "#166"
 msgid "Skin"
 msgstr "หน้าตา"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr ""
 
 msgctxt "#169"
 msgid "Resolution"
@@ -1544,11 +1568,11 @@ msgstr "From %s at %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
-msgstr ""
+msgstr "ไม่พบ ไดร์ฟออปติคอล"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr ""
+msgstr "คุณต้องมีไดร์ฟออปติคอลในการเล่นวิดีโอนี้"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2212,7 +2236,7 @@ msgstr "เพลงทั้งหมดจาก"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr ""
+msgstr "รายการทีวี ที่ดำเนินการอยู่"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2700,15 +2724,15 @@ msgstr "การเข้าถึงอินเตอร์เน็ต"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr ""
+msgstr "ปรับปรุง คลังข้อมูล"
 
 msgctxt "#800"
 msgid "Music library needs to rescan art from tags"
-msgstr ""
+msgstr "คลังเพลงจำเป็นต้องสแกนอาร์ตอีกครั้ง จากแท็ก"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr ""
+msgstr "คุณต้องการที่จะสแกนตอนนี้หรือไม่"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3078,6 +3102,10 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr ""
+
 msgctxt "#1300"
 msgid "Custom audio device"
 msgstr "ปรับแต่งอุปการณ์เสียง"
@@ -3128,7 +3156,7 @@ msgstr "ใน"
 
 msgctxt "#1406"
 msgid "the"
-msgstr ""
+msgstr "the"
 
 msgctxt "#1407"
 msgid "Vicinity"
@@ -3155,8 +3183,8 @@ msgid "windy"
 msgstr "ลมแรง"
 
 msgctxt "#1413"
-msgid "drizzle"
-msgstr "ฝนโปรยปราย"
+msgid "Patches"
+msgstr ""
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3175,16 +3203,16 @@ msgid "Grains"
 msgstr "Grains"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "พายุฝนฟ้าคะนอง"
+msgid "Thunderstorms"
+msgstr ""
 
 msgctxt "#1419"
-msgid "T-Showers"
-msgstr "ฝนฟ้าคะนอง"
+msgid "Shallow"
+msgstr ""
 
 msgctxt "#1420"
 msgid "Moderate"
-msgstr ""
+msgstr "	\nปานกลาง"
 
 msgctxt "#1421"
 msgid "Very High"
@@ -3192,10 +3220,114 @@ msgstr "สูงมาก"
 
 msgctxt "#1422"
 msgid "Windy"
-msgstr ""
+msgstr "ลมแรง"
 
 msgctxt "#1423"
 msgid "Mist"
+msgstr "หมอก"
+
+msgctxt "#1424"
+msgid "Overcast"
+msgstr ""
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr ""
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr ""
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr ""
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr ""
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr ""
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr ""
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr ""
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr ""
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr ""
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr ""
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr ""
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr ""
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr ""
+
+msgctxt "#1438"
+msgid "Small"
+msgstr ""
+
+msgctxt "#1439"
+msgid "and"
+msgstr ""
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr ""
+
+msgctxt "#1441"
+msgid "with"
+msgstr ""
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr ""
+
+msgctxt "#1443"
+msgid "of"
+msgstr ""
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr ""
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr ""
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr ""
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr ""
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr ""
+
+msgctxt "#1449"
+msgid "Partial"
 msgstr ""
 
 msgctxt "#1450"
@@ -3206,13 +3338,21 @@ msgctxt "#2050"
 msgid "Runtime"
 msgstr "Runtime"
 
+msgctxt "#2080"
+msgid "Empty list"
+msgstr ""
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr ""
+
 msgctxt "#2100"
 msgid "Script failed! : %s"
 msgstr "Script failed! : %s"
 
 msgctxt "#2101"
 msgid "Newer version needed - See log"
-msgstr ""
+msgstr "ต้องการเวอร์ชั่นใหม่ - ดู log"
 
 msgctxt "#4501"
 msgid "Enable LCD/VFD"
@@ -3304,11 +3444,11 @@ msgstr "สคริปต์"
 
 msgctxt "#10021"
 msgid "Web Browser"
-msgstr ""
+msgstr "เว็บเบราเซอร์"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
+msgstr "วิดีโอ"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3316,7 +3456,7 @@ msgstr "วิดีโอ/รายการที่จะเล่น"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr ""
+msgstr "หน้าจอเข้าระบบ"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3324,7 +3464,7 @@ msgstr "การตั้งค่า - แฟ้มประวัติ"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr ""
+msgstr "สืบค้น ส่วนเสริม"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3618,9 +3758,29 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "ล๊อครายการ"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr ""
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr ""
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr ""
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr ""
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "ล๊อคอีกครั้ง"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr ""
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3655,8 +3815,8 @@ msgid "Settings & file manager"
 msgstr "การตั้งค่า & จัดการแฟ้ม"
 
 msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "ตั้งค่าพื้นฐานสำหรับภาพยนต์ทั้งหมด"
+msgid "Set as default for all videos"
+msgstr ""
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3708,7 +3868,7 @@ msgstr "เวลาทำงานทั้งหมด"
 
 msgctxt "#12395"
 msgid "Battery level"
-msgstr ""
+msgstr "ระดับแบตเตอรี่"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -3780,15 +3940,15 @@ msgstr "การกระทำของปุ่มปิด"
 
 msgctxt "#13016"
 msgid "Power off System"
-msgstr ""
+msgstr "ปิดระบบ"
 
 msgctxt "#13017"
 msgid "Inhibit idle shutdown"
-msgstr ""
+msgstr "ยับยั้งการปิดเมื่อไม่ได้ใช้งาน"
 
 msgctxt "#13018"
 msgid "Allow idle shutdown"
-msgstr ""
+msgstr "อนุญาตให้ปิดเมื่อไม่ได้ใช้งาน"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -3816,7 +3976,7 @@ msgstr "ถอดจอยสติ๊ก"
 
 msgctxt "#13050"
 msgid "Running low on battery"
-msgstr ""
+msgstr "แบตเตอรี่ต่ำ"
 
 msgctxt "#13100"
 msgid "Flicker filter"
@@ -4016,11 +4176,11 @@ msgstr "ยกเลิกเวลาที่เหลือ %im%is "
 
 msgctxt "#13213"
 msgid "%2.0fm"
-msgstr ""
+msgstr "%2.0fm"
 
 msgctxt "#13214"
 msgid "%2.0fs"
-msgstr ""
+msgstr "%2.0fs"
 
 msgctxt "#13249"
 msgid "Search for subtitles in RARs"
@@ -4508,7 +4668,7 @@ msgstr "ความเร็วพัดลมต่ำสุด"
 
 msgctxt "#13412"
 msgid "Play from here"
-msgstr ""
+msgstr "เล่นจากตรงนี้"
 
 msgctxt "#13413"
 msgid "Downloading"
@@ -4516,7 +4676,7 @@ msgstr "กำลังดาวน์โหลด"
 
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
-msgstr ""
+msgstr "รวมศิลปินที่ปรากฏเฉพาะงานอัลบั้มรวม"
 
 msgctxt "#13415"
 msgid "Render method"
@@ -4556,38 +4716,46 @@ msgstr "จดจำเส้นทางนี้"
 
 msgctxt "#13424"
 msgid "Use pixel buffer objects"
-msgstr ""
+msgstr "ใช้ pixel buffer objects"
 
 msgctxt "#13425"
 msgid "Allow hardware acceleration (VDPAU)"
-msgstr ""
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (VDPAU)"
 
 msgctxt "#13426"
 msgid "Allow hardware acceleration (VAAPI)"
-msgstr ""
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (VAAPI)"
 
 msgctxt "#13427"
 msgid "Allow hardware acceleration (DXVA2)"
-msgstr ""
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (DXVA2)"
 
 msgctxt "#13428"
 msgid "Allow hardware acceleration (CrystalHD)"
-msgstr ""
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (CrystalHD)"
 
 msgctxt "#13429"
 msgid "Allow hardware acceleration (VDADecoder)"
-msgstr ""
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (VDADecoder)"
 
 msgctxt "#13430"
 msgid "Allow hardware acceleration (OpenMax)"
-msgstr ""
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (OpenMax)"
 
 msgctxt "#13431"
 msgid "Pixel Shaders"
-msgstr ""
+msgstr "Pixel Shaders"
 
 msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
+msgstr "เปิดใช้การเร่งความเร็วฮาร์ดแวร์ (VideoToolbox)"
+
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr ""
+
+msgctxt "#13434"
+msgid "Play only this"
 msgstr ""
 
 msgctxt "#13500"
@@ -4634,9 +4802,29 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "การเล่นเพลงพร้อมกับการแสดงผล"
 
+msgctxt "#13511"
+msgid "Choose art"
+msgstr ""
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr ""
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr ""
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr ""
+
+msgctxt "#13515"
+msgid "No art"
+msgstr ""
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
-msgstr ""
+msgstr "หยุดชั่วคราวในระหว่างการเปลี่ยนอัตรารีเฟรช"
 
 msgctxt "#13551"
 msgid "Off"
@@ -4644,11 +4832,11 @@ msgstr "ปิด"
 
 msgctxt "#13552"
 msgid "%.1f Second"
-msgstr ""
+msgstr "%.1f Second"
 
 msgctxt "#13553"
 msgid "%.1f Seconds"
-msgstr ""
+msgstr "%.1f Seconds"
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -5032,11 +5220,11 @@ msgstr "ประหยัดพลังงาน"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "ริป"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "การกระทำเมื่อใส่แผ่นซีดีเพลง"
 
 msgctxt "#14098"
 msgid "Play"
@@ -5044,6 +5232,10 @@ msgstr "เล่น"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
+msgstr "เอาแผ่นดิสก์ออกเมื่อริปแผ่นซีดีเสร็จสมบูรณ์"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
 msgstr ""
 
 msgctxt "#15015"
@@ -5536,23 +5728,23 @@ msgstr "รายการเพลงโหมดร่วมกัน"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr ""
+msgstr "De-interlace (Half)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr ""
+msgstr "Deinterlace video"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
-msgstr ""
+msgstr "วิธีการ Deinterlace"
 
 msgctxt "#16039"
 msgid "Off"
-msgstr ""
+msgstr "ปิด"
 
 msgctxt "#16040"
 msgid "Auto"
-msgstr ""
+msgstr "อัตโนมัติ"
 
 msgctxt "#16041"
 msgid "On"
@@ -5672,19 +5864,19 @@ msgstr "Inverse Telecine"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimized"
-msgstr ""
+msgstr "ปรับให้เหมาะกับ Lanczos3"
 
 msgctxt "#16316"
 msgid "Auto"
-msgstr "อัตโนมัต"
+msgstr "อัตโนมัติ"
 
 msgctxt "#16317"
 msgid "Temporal (Half)"
-msgstr ""
+msgstr "Temporal (Half)"
 
 msgctxt "#16318"
 msgid "Temporal/Spatial (Half)"
-msgstr ""
+msgstr "Temporal/Spatial (Half)"
 
 msgctxt "#16319"
 msgid "DXVA"
@@ -5692,31 +5884,31 @@ msgstr "DXVA"
 
 msgctxt "#16320"
 msgid "DXVA Bob"
-msgstr ""
+msgstr "DXVA Bob"
 
 msgctxt "#16321"
 msgid "DXVA Best"
-msgstr ""
+msgstr "DXVA Best"
 
 msgctxt "#16322"
 msgid "Spline36"
-msgstr ""
+msgstr "Spline36"
 
 msgctxt "#16323"
 msgid "Spline36 optimized"
-msgstr ""
+msgstr "Spline36 optimized"
 
 msgctxt "#16324"
 msgid "Software Blend"
-msgstr ""
+msgstr "Software Blend"
 
 msgctxt "#16325"
 msgid "Auto - ION Optimized"
-msgstr ""
+msgstr "เพิ่มประสิทธิภาพ - ION อัตโนมัติ"
 
 msgctxt "#16400"
 msgid "Post-processing"
-msgstr ""
+msgstr "การประมวลผลหลัง"
 
 msgctxt "#17500"
 msgid "Display sleep timeout"
@@ -5724,15 +5916,15 @@ msgstr "เวลาพักหน้าจอ"
 
 msgctxt "#17997"
 msgid "%i MByte"
-msgstr ""
+msgstr "%i MByte"
 
 msgctxt "#17998"
 msgid "%i hours"
-msgstr ""
+msgstr "%i ชั่วโมง"
 
 msgctxt "#17999"
 msgid "%i days"
-msgstr ""
+msgstr "%i วัน"
 
 msgctxt "#19000"
 msgid "Switch to channel"
@@ -5740,887 +5932,879 @@ msgstr "เปลี่ยนช่อง"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
-msgstr ""
+msgstr "แยกคำค้นหาโดยใช้ AND, OR และ / หรือ NOT"
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
-msgstr ""
+msgstr "หรือใช้วลีที่จะหาจับคู่ที่ตรงกันเช่น \"Wizard of Oz\""
 
 msgctxt "#19003"
-msgid "Find similar programme"
+msgid "Find similar programs"
 msgstr ""
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr ""
+msgstr "การนำเข้า EPG จากไคลเอนต์"
 
 msgctxt "#19005"
 msgid "PVR stream information"
-msgstr ""
+msgstr "ข้อมูลสตรีม PVR"
 
 msgctxt "#19006"
 msgid "Receiving device"
-msgstr ""
+msgstr "อุปกรณ์ ที่ได้รับ"
 
 msgctxt "#19007"
 msgid "Device status"
-msgstr ""
+msgstr "สถานะของอุปกรณ์"
 
 msgctxt "#19008"
 msgid "Signal quality"
-msgstr ""
+msgstr "คุณภาพของสัญญาณ"
 
 msgctxt "#19009"
 msgid "SNR"
-msgstr ""
+msgstr "SNR"
 
 msgctxt "#19010"
 msgid "BER"
-msgstr ""
+msgstr "BER"
 
 msgctxt "#19011"
 msgid "UNC"
-msgstr ""
+msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr ""
+msgstr "PVR Backend"
 
 msgctxt "#19013"
 msgid "Free to air"
-msgstr ""
+msgstr "ออกอากาศฟรี"
 
 msgctxt "#19014"
 msgid "Fixed"
-msgstr ""
+msgstr "คงที่"
 
 msgctxt "#19015"
 msgid "Encryption"
-msgstr ""
+msgstr "การเข้ารหัส"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr ""
+msgstr "PVR Backend %i - %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
-msgstr ""
+msgstr "บันทึกทีวี"
 
 msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
-msgstr ""
+msgstr "โฟลเดอร์เริ่มต้นสำหรับภาพย่อของ PVR"
 
 msgctxt "#19019"
 msgid "Channels"
-msgstr ""
+msgstr "ช่องสัญญาณ"
 
 msgctxt "#19020"
 msgid "TV"
-msgstr ""
+msgstr "ทีวี"
 
 msgctxt "#19021"
 msgid "Radio"
-msgstr ""
+msgstr "วิทยุ"
 
 msgctxt "#19022"
 msgid "Hidden"
-msgstr ""
+msgstr "ซ่อนอยู่"
 
 msgctxt "#19023"
 msgid "TV channels"
-msgstr ""
+msgstr "ช่อง ทีวี"
 
 msgctxt "#19024"
 msgid "Radio channels"
-msgstr ""
+msgstr "ช่อง วิทยุ"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
-msgstr ""
+msgstr "ที่จะบันทึก"
 
 msgctxt "#19026"
 msgid "Add timer..."
-msgstr ""
+msgstr "เพิ่มตั้งเวลา ..."
 
 msgctxt "#19027"
 msgid "No search results"
-msgstr ""
+msgstr "ไม่มีผลการค้นหา"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr ""
+msgstr "ไม่มีรายการของ EPG"
 
 msgctxt "#19029"
 msgid "Channel"
-msgstr ""
+msgstr "ช่อง"
 
 msgctxt "#19030"
 msgid "Now"
-msgstr ""
+msgstr "ขณะนี้"
 
 msgctxt "#19031"
 msgid "Next"
-msgstr ""
+msgstr "ต่อไป"
 
 msgctxt "#19032"
 msgid "Timeline"
-msgstr ""
+msgstr "ระยะเวลา"
 
 msgctxt "#19033"
 msgid "Information"
-msgstr ""
+msgstr "ข้อมูล"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
-msgstr ""
+msgstr "การบันทึกในช่องนี้เริ่มต้นแล้ว"
 
 msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
-msgstr ""
+msgstr "ช่องนี้เล่นไม่ได้ ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
-msgstr ""
+msgstr "การบันทึกนี้เล่นไม่ได้ ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19037"
 msgid "Show signal quality"
-msgstr ""
+msgstr "แสดงคุณภาพของสัญญาณ"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr ""
+msgstr "ไม่ได้รับการสนับสนุนโดย PVR backend."
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr ""
+msgstr "คุณแน่ใจหรือว่าต้องการซ่อนช่องนี้?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr ""
+msgstr "ตั้งเวลา"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr ""
+msgstr "คุณแน่ใจหรือว่าต้องการเปลี่ยนชื่อการบันทึกนี้?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr ""
+msgstr "คุณแน่ใจหรือว่าต้องการเปลี่ยนชื่อตัวตั้งเวลานี้?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr ""
+msgstr "การบันทึก"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr ""
+msgstr "กรุณาตรวจสอบการตั้งค่าของคุณ หรือตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr ""
+msgstr "ยังไม่มีไคลเอนต์ PVR ที่ถูกเริ่ม รอไคลเอนต์ PVR จะเริ่มขึ้น หรือตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19046"
 msgid "New channel"
-msgstr ""
+msgstr "ช่องใหม่"
 
 msgctxt "#19047"
 msgid "Programme info"
-msgstr ""
+msgstr "ข้อมูลรายการ"
 
 msgctxt "#19048"
 msgid "Group management"
-msgstr ""
+msgstr "การจัดการกลุ่ม"
 
 msgctxt "#19049"
 msgid "Show channel"
-msgstr ""
+msgstr "แสดงช่อง"
 
 msgctxt "#19050"
 msgid "Show visible channels"
-msgstr ""
+msgstr "แสดงช่องปรากฏ"
 
 msgctxt "#19051"
 msgid "Show hidden channels"
-msgstr ""
+msgstr "แสดงช่องที่ซ่อนอยู่"
 
 msgctxt "#19052"
 msgid "Move channel to:"
-msgstr ""
+msgstr "ย้ายช่องไป:"
 
 msgctxt "#19053"
 msgid "Recording information"
-msgstr ""
+msgstr "ข้อมูลการบันทึก"
 
 msgctxt "#19054"
 msgid "Hide channel"
-msgstr ""
+msgstr "ซ่อน ช่อง"
 
 msgctxt "#19055"
 msgid "No information available"
-msgstr ""
+msgstr "ไม่มีข้อมูลปรากฏ"
 
 msgctxt "#19056"
 msgid "New timer"
-msgstr ""
+msgstr "ตั้งเวลาใหม่"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr ""
+msgstr "แก้ไขการตั้งเวลา"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr ""
+msgstr "เปิดใช้การตั้งเวลา"
 
 msgctxt "#19059"
 msgid "Stop recording"
-msgstr ""
+msgstr "หยุดการบันทึก"
 
 msgctxt "#19060"
 msgid "Delete timer"
-msgstr ""
+msgstr "ลบการตั้งเวลา"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr ""
+msgstr "เพิ่มการตั้งเลา"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
-msgstr ""
+msgstr "เรียงโดย: ช่อง"
 
 msgctxt "#19063"
 msgid "Go to begin"
-msgstr ""
+msgstr "ไปยัง จุดเริ่มต้น"
 
 msgctxt "#19064"
 msgid "Go to end"
-msgstr ""
+msgstr "ไปยัง จุดสิ้นสุด"
 
 msgctxt "#19065"
 msgid "Default EPG window"
-msgstr ""
+msgstr "ค่าเริ่มต้น หน้าต่าง EPG"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
-msgstr ""
+msgstr "เหตุการณ์นี้ได้ถูกบันทึกไว้แล้ว"
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr ""
+msgstr "การบันทึกนี้ไม่สามารถลบได้ ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr ""
+msgstr "อยู่ในช่วงอัพเดท EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr ""
+msgstr "ไม่ต้องเก็บ EPG ไว้ในฐานข้อมูล"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
-msgstr ""
+msgstr "หน่วงเวลาการเปลี่ยนช่อง"
 
 msgctxt "#19074"
 msgid "Active:"
-msgstr ""
+msgstr "ใช้งาน:"
 
 msgctxt "#19075"
 msgid "Name:"
-msgstr ""
+msgstr "ชื่อ:"
 
 msgctxt "#19076"
 msgid "Folder:"
-msgstr ""
+msgstr "โฟลเดอร์:"
 
 msgctxt "#19077"
 msgid "Radio:"
-msgstr ""
+msgstr "วิทยุ:"
 
 msgctxt "#19078"
 msgid "Channel:"
-msgstr ""
+msgstr "ช่อง:"
 
 msgctxt "#19079"
 msgid "Day:"
-msgstr ""
+msgstr "วัน:"
 
 msgctxt "#19080"
 msgid "Begin:"
-msgstr ""
+msgstr "เริ่ม:"
 
 msgctxt "#19081"
 msgid "End:"
-msgstr ""
+msgstr "สิ้นสุด:"
 
 msgctxt "#19082"
 msgid "Priority:"
-msgstr ""
+msgstr "ความสำคัญ:"
 
 msgctxt "#19083"
 msgid "Lifetime (days):"
-msgstr ""
+msgstr "เวลาใช้งาน (วัน):"
 
 msgctxt "#19084"
 msgid "First day:"
-msgstr ""
+msgstr "วันแรก:"
 
 msgctxt "#19085"
 msgid "Unknown channel %u"
-msgstr ""
+msgstr "ช่องที่ไม่รู้จัก %u"
 
 msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
-msgstr ""
+msgstr "จ-__-__-__-__-__-__"
 
 msgctxt "#19087"
 msgid "__-Tu-__-__-__-__-__"
-msgstr ""
+msgstr "__-อ-__-__-__-__-__"
 
 msgctxt "#19088"
 msgid "__-__-We-__-__-__-__"
-msgstr ""
+msgstr "__-__-พ-__-__-__-__"
 
 msgctxt "#19089"
 msgid "__-__-__-Th-__-__-__"
-msgstr ""
+msgstr "__-__-__-พฤ-__-__-__"
 
 msgctxt "#19090"
 msgid "__-__-__-__-Fr-__-__"
-msgstr ""
+msgstr "__-__-__-__-ศ-__-__"
 
 msgctxt "#19091"
 msgid "__-__-__-__-__-Sa-__"
-msgstr ""
+msgstr "__-__-__-__-__-ส-__"
 
 msgctxt "#19092"
 msgid "__-__-__-__-__-__-Su"
-msgstr ""
+msgstr "__-__-__-__-__-__-อา"
 
 msgctxt "#19093"
 msgid "Mo-Tu-We-Th-Fr-__-__"
-msgstr ""
+msgstr "จ-อ-พ-พฤ-ศ-__-__"
 
 msgctxt "#19094"
 msgid "Mo-Tu-We-Th-Fr-Sa-__"
-msgstr ""
+msgstr "จ-อ-พ-พฤ-ศ-ส-__"
 
 msgctxt "#19095"
 msgid "Mo-Tu-We-Th-Fr-Sa-Su"
-msgstr ""
+msgstr "จ-อ-พ-พฤ-ศ-ส-อา"
 
 msgctxt "#19096"
 msgid "__-__-__-__-__-Sa-Su"
-msgstr ""
+msgstr "__-__-__-__-__-ส-อา"
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
-msgstr ""
+msgstr "ป้อนชื่อสำหรับการบันทึก"
 
 msgctxt "#19098"
 msgid "Warning"
-msgstr ""
+msgstr "คำเตือน"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
-msgstr ""
-
-msgctxt "#19103"
-msgid "Scan for missing icons"
-msgstr ""
+msgstr "โปรดเปลี่ยนไปยังช่องอื่น"
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
-msgstr ""
+msgstr "ป้อนชื่อโฟลเดอร์สำหรับการบันทึก"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr ""
+msgstr "ตั้งเวลาถัดไป ใน"
 
 msgctxt "#19107"
 msgid "at"
-msgstr ""
+msgstr "ที่"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr ""
+msgstr "ไม่สามารถบันทึกการตั้งเวลา ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr ""
+msgstr "ข้อผิดพลาดที่ไม่คาดคิดเกิดขึ้น ลองอีกครั้งในภายหลังหรือตรวจแฟ้มlogเพื่อดูรายละเอียด"
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr ""
+msgstr "ข้อผิดพลาดของ PVR backend ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19114"
 msgid "Version"
-msgstr ""
+msgstr "เวอร์ชั่น"
 
 msgctxt "#19115"
 msgid "Address"
-msgstr ""
+msgstr "ตำแหน่ง"
 
 msgctxt "#19116"
 msgid "Disksize"
-msgstr ""
+msgstr "พี้นที่ดิสก์"
 
 msgctxt "#19117"
 msgid "Search for channels"
-msgstr ""
+msgstr "ค้นหาช่องสัญญาณ"
 
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
-msgstr ""
+msgstr "ไม่สามารถใช้การทำงาน PVR ขณะที่ทำการค้นหา"
 
 msgctxt "#19119"
 msgid "On which server you want to search?"
-msgstr ""
+msgstr "บนเซิร์ฟเวอร์ที่คุณต้องการค้นหา?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr ""
+msgstr "หมายเลข ลูกข่าบ"
 
 msgctxt "#19121"
 msgid "Avoid repeats"
-msgstr ""
+msgstr "หลีกเลี่ยงการซ้ำ"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr ""
+msgstr "การตั้งเวลานี้ยังคงบันทึกอยู่ คุณแน่ใจหรือว่าต้องการลบการตั้งเวลานี้?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
-msgstr ""
+msgstr "ช่องฟรีทีวีเท่านั้น"
 
 msgctxt "#19124"
 msgid "Ignore present timers"
-msgstr ""
+msgstr "ละเว้นตัวตั้งเวลาปัจจุบัน"
 
 msgctxt "#19125"
 msgid "Ignore present recordings"
-msgstr ""
+msgstr "ละเว้นการบันทึกในปัจจุบัน"
 
 msgctxt "#19126"
 msgid "Start time"
-msgstr ""
+msgstr "เวลาเริ่มต้น"
 
 msgctxt "#19127"
 msgid "End time"
-msgstr ""
+msgstr "เวลาสิ้นสุด"
 
 msgctxt "#19128"
 msgid "Start date"
-msgstr ""
+msgstr "วันที่เริ่มต้น"
 
 msgctxt "#19129"
 msgid "End date"
-msgstr ""
+msgstr "วันที่สิ้นสุด"
 
 msgctxt "#19130"
 msgid "Minimum duration"
-msgstr ""
+msgstr "ระยะเวลาน้อยสุด"
 
 msgctxt "#19131"
 msgid "Maximum duration"
-msgstr ""
+msgstr "ระยะเวลาสูงสุด"
 
 msgctxt "#19132"
 msgid "Include unknown genres"
-msgstr ""
+msgstr "รวมถึงประเภทที่ไม่รู้จัก"
 
 msgctxt "#19133"
 msgid "Search string"
-msgstr ""
+msgstr "คำค้น"
 
 msgctxt "#19134"
 msgid "Include description"
-msgstr ""
+msgstr "รวมถึงคำอธิบาย"
 
 msgctxt "#19135"
 msgid "Case sensitive"
-msgstr ""
+msgstr "ตัวพิมพ์ตรงกันเท่านั้น"
 
 msgctxt "#19136"
 msgid "Channel unavailable"
-msgstr ""
+msgstr "ช่อง ไม่พร้อมใช้งาน"
 
 msgctxt "#19137"
 msgid "No groups defined"
-msgstr ""
+msgstr "ยังไม่มีการกำหนดกลุ่ม"
 
 msgctxt "#19138"
 msgid "Please create a group first"
-msgstr ""
+msgstr "ก่อนอื่น โปรดสร้างกลุ่ม"
 
 msgctxt "#19139"
 msgid "Name of the new group"
-msgstr ""
+msgstr "ชื่อของกลุ่มใหม่"
 
 msgctxt "#19141"
 msgid "Group"
-msgstr ""
+msgstr "กลุ่ม"
 
 msgctxt "#19142"
 msgid "Search guide"
-msgstr ""
+msgstr "คู่มือการค้นหา"
 
 msgctxt "#19143"
 msgid "Group management"
-msgstr ""
+msgstr "การจัดการ กลุ่ม"
 
 msgctxt "#19144"
 msgid "No groups defined"
-msgstr ""
+msgstr "ยังไม่มีการกำหนดกลุ่ม"
 
 msgctxt "#19145"
 msgid "Grouped"
-msgstr ""
+msgstr "จัดกลุ่ม"
 
 msgctxt "#19146"
 msgid "Groups"
-msgstr ""
+msgstr "กลุ่ม"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr ""
+msgstr "PVR backend ไม่สนับสนุนการกระทำนี้ ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19148"
 msgid "Channel"
-msgstr ""
+msgstr "ช่อง"
 
 msgctxt "#19149"
 msgid "Mo"
-msgstr ""
+msgstr "จ"
 
 msgctxt "#19150"
 msgid "Tu"
-msgstr ""
+msgstr "อ"
 
 msgctxt "#19151"
 msgid "We"
-msgstr ""
+msgstr "พ"
 
 msgctxt "#19152"
 msgid "Th"
-msgstr ""
+msgstr "พฤ"
 
 msgctxt "#19153"
 msgid "Fr"
-msgstr ""
+msgstr "ศ"
 
 msgctxt "#19154"
 msgid "Sa"
-msgstr ""
+msgstr "ส"
 
 msgctxt "#19155"
 msgid "Su"
-msgstr ""
+msgstr "อา"
 
 msgctxt "#19156"
 msgid "from"
-msgstr ""
+msgstr "จาก"
 
 msgctxt "#19157"
 msgid "Next recording"
-msgstr ""
+msgstr "การบันทึกถัดไป"
 
 msgctxt "#19158"
 msgid "Currently recording"
-msgstr ""
+msgstr "การบันทึกในปัจุบัน"
 
 msgctxt "#19159"
 msgid "from"
-msgstr ""
+msgstr "จาก"
 
 msgctxt "#19160"
 msgid "to"
-msgstr ""
-
-msgctxt "#19161"
-msgid "On"
-msgstr ""
+msgstr "ถึง"
 
 msgctxt "#19162"
 msgid "Recording active"
-msgstr ""
+msgstr "ใช้งาน การบันทึก"
 
 msgctxt "#19163"
 msgid "Recordings"
-msgstr ""
+msgstr "กำลังบันทึก"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr ""
+msgstr "ไม่สามารถเริ่มต้นการบันทึก ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr ""
+msgstr "สลับไป"
 
 msgctxt "#19166"
 msgid "PVR information"
-msgstr ""
+msgstr "ข้อมูล PVR"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
-msgstr ""
+msgstr "สแกนหาไอคอนที่ไม่มี"
 
 msgctxt "#19168"
 msgid "Switch channel without pressing OK"
-msgstr ""
+msgstr "เปลี่ยนช่องโดยไม่ต้องกด ตกลง"
 
 msgctxt "#19169"
 msgid "Hide video information box"
-msgstr ""
+msgstr "ซ่อนกล่องแสดงข้อมูลวิดีโอ"
 
 msgctxt "#19170"
 msgid "Timeout when starting playback"
-msgstr ""
+msgstr "หมดเวลาขณะเริ่มต้นการเล่น"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
-msgstr ""
+msgstr "เริ่มการเล่นแบบย่อเล็กสุด"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
-msgstr ""
+msgstr "ระยะเวลาของการบันทึกทันที"
 
 msgctxt "#19173"
 msgid "Default recording priority"
-msgstr ""
+msgstr "ค่าเริ่มต้นของ ลำดับความสำคัญในการบันทึก"
 
 msgctxt "#19174"
 msgid "Default recording lifetime"
-msgstr ""
+msgstr "ค่าเริ่มต้นของ ช่วงเวลาการบันทึก"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
-msgstr ""
+msgstr "ช่วงตัดที่จุดเริ่มต้นของการบันทึก"
 
 msgctxt "#19176"
 msgid "Margin at the end of a recording"
-msgstr ""
+msgstr "ช่วงตัดในตอนท้ายของการบันทึก"
 
 msgctxt "#19177"
 msgid "Playback"
-msgstr ""
+msgstr "เล่นเพลง"
 
 msgctxt "#19178"
 msgid "Show channel information when switching channels"
-msgstr ""
+msgstr "แสดงข้อมูลช่องสัญญาณ เมื่อมีการเปลี่ยนช่อง"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
-msgstr ""
+msgstr "ซ่อนข้อมูลช่องสัญญาณ โดยอัตโนมัติ"
 
 msgctxt "#19180"
 msgid "TV"
-msgstr ""
+msgstr "ทีวี"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr ""
+msgstr "เมนู/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
-msgstr ""
+msgstr "วันที่จะแสดงใน EPG"
 
 msgctxt "#19184"
 msgid "Channel information duration"
-msgstr ""
+msgstr "ระยะเวลาแสดงข้อมูลช่องสัญญาณ"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr ""
+msgstr "คืนค่าฐานข้อมูล PVR"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr ""
+msgstr "ข้อมูลทั้งหมดในฐานข้อมูล PVR จะถูกลบ"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr ""
+msgstr "คืนค่าฐานข้อมูล EPG"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr ""
+msgstr "กำลังคืนค่า EPG"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
-msgstr ""
+msgstr "ดูต่อช่องล่าสุดในการเริ่มต้น"
 
 msgctxt "#19190"
 msgid "Minimized"
-msgstr ""
+msgstr "ย่อลง"
 
 msgctxt "#19191"
 msgid "PVR service"
-msgstr ""
+msgstr "บริการ PVR"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr ""
+msgstr "ไม่มีการเชื่อมต่อ PVR backends ที่สนับสนุนการสแกนหาช่อง"
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr ""
+msgstr "สแกนช่องไม่สามารถเริ่มได้ ตรวจสอบlogเพื่อดูรายละเอียด"
 
 msgctxt "#19194"
 msgid "Continue?"
-msgstr ""
+msgstr "ดำเนินการต่อ?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr ""
+msgstr "การทำงานของลูกข่าย"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr ""
+msgstr "การทำงานที่ระบุไว้ของลูกข่าย PVR"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
-msgstr ""
+msgstr "การบันทึกเริ่มแล้วใน: %s"
 
 msgctxt "#19198"
 msgid "Recording finished on: %s"
-msgstr ""
+msgstr "การบันทึกสิ้นสุดแล้วใน: %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
-msgstr ""
+msgstr "ตัวจัดการช่อง"
 
 msgctxt "#19200"
 msgid "EPG source:"
-msgstr ""
+msgstr "แหล่งของ EPG"
 
 msgctxt "#19201"
 msgid "Channel name:"
-msgstr ""
+msgstr "ชื่อของช่อง"
 
 msgctxt "#19202"
 msgid "Channel icon:"
-msgstr ""
+msgstr "รูปย่อของช่อง"
 
 msgctxt "#19203"
 msgid "Edit channel"
-msgstr ""
+msgstr "แก้ไขช่อง"
 
 msgctxt "#19204"
 msgid "New channel"
-msgstr ""
+msgstr "ช่องใหม่"
 
 msgctxt "#19205"
 msgid "Group management"
-msgstr ""
+msgstr "การจัดการกลุ่ม"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
-msgstr ""
+msgstr "เปิดใช้งาน EPG:"
 
 msgctxt "#19207"
 msgid "Group:"
-msgstr ""
+msgstr "กลุ่ม:"
 
 msgctxt "#19208"
 msgid "Enter the name of the new channel"
-msgstr ""
+msgstr "ป้อนชื่อของช่องใหม่"
 
 msgctxt "#19209"
 msgid "XBMC virtual backend"
-msgstr ""
+msgstr "XBMC virtual backend"
 
 msgctxt "#19210"
 msgid "Client"
-msgstr ""
+msgstr "ลูกข่าย"
 
 msgctxt "#19211"
 msgid "Delete channel"
-msgstr ""
+msgstr "ลบช่อง"
 
 msgctxt "#19212"
 msgid "This list contains changes"
-msgstr ""
+msgstr "รายการนี้มีการเปลี่ยนแปลง"
 
 msgctxt "#19213"
 msgid "Select backend"
-msgstr ""
+msgstr "เลือก backend"
 
 msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
-msgstr ""
+msgstr "ใส่ URL ที่ถูกต้องสำหรับช่องใหม่"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr ""
+msgstr "PVR backend ไม่สนับสนุนการตั้งเวลา"
 
 msgctxt "#19216"
 msgid "All radio channels"
-msgstr ""
+msgstr "ทุกช่องวิทยุ"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr ""
+msgstr "ทุกช่องทีวี"
 
 msgctxt "#19218"
 msgid "Visible"
-msgstr ""
+msgstr "ปรากฏ"
 
 msgctxt "#19219"
 msgid "Ungrouped channels"
-msgstr ""
+msgstr "ช่องที่ไม่ได้จัดกลุ่ม"
 
 msgctxt "#19220"
 msgid "Channels in"
-msgstr ""
+msgstr "ช่อง ใน"
 
 msgctxt "#19221"
 msgid "Synchronise channel groups with backends"
-msgstr ""
+msgstr "เชื่อมโยงกลุ่มช่องด้วย backends"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr ""
+msgstr "ไม่มี ส่วนเสริม PVR ที่ใช้งานได้ ตรวจสอบการตั้งค่าหรือ log ของคุณเพื่อดูข้อมูลเพิ่มเติม"
 
 msgctxt "#19224"
 msgid "Recording aborted"
-msgstr ""
+msgstr "ยกเลิกการบันทึก"
 
 msgctxt "#19225"
 msgid "Recording scheduled"
-msgstr ""
+msgstr "กำหนดเวลา การบันทึก"
 
 msgctxt "#19226"
 msgid "Recording started"
-msgstr ""
+msgstr "เริ่มการบันทึก"
 
 msgctxt "#19227"
 msgid "Recording completed"
-msgstr ""
+msgstr "เสร็จสิ้นการบันทึก"
 
 msgctxt "#19228"
 msgid "Recording deleted"
-msgstr ""
+msgstr "ลบการบันทึก"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr ""
+msgstr "ปิด OSD ของช่อง หลังจากเปลี่ยนช่อง"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
-msgstr ""
+msgstr "ป้องกันไม่ให้อัพเดท EPG ในขณะที่เล่นทีวีสตรีม"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
-msgstr ""
+msgstr "ใช้ลำดับของช่องจาก backend(s) เสมอ"
 
 msgctxt "#19232"
 msgid "Clear search results"
-msgstr ""
+msgstr "ล้างผลการค้นหา"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
@@ -6784,15 +6968,31 @@ msgstr ""
 
 msgctxt "#19273"
 msgid "add-on for the backend to be able to use PVR."
-msgstr ""
+msgstr "ส่วนเสริม สำหรับ backend เพื่อให้สามารถใช้งาน PVR"
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "กรุณาเยี่ยมชม xbmc.org/pvr เพื่อเรียนรู้เพิ่มเติม"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr ""
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr ""
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr ""
+
+msgctxt "#19278"
+msgid "Recording error"
 msgstr ""
 
 msgctxt "#19499"
 msgid "Other/Unknown"
-msgstr ""
+msgstr "อื่น ๆ / ไม่ทราบ"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
@@ -7830,6 +8030,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "สำรอง EEPROM"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr ""
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "ใช้งานแถบเลื่อนอัตโนมัติสำหรับ plot & review"
@@ -7848,7 +8052,7 @@ msgstr "ดาวน์โหลดข้อมูลเพิ่มเติม
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr ""
+msgstr "บริการเริ่มต้นสำหรับข้อมูลอัลบั้ม"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
@@ -7908,39 +8112,39 @@ msgstr "Filling glasses (videos)"
 
 msgctxt "#20253"
 msgid "WebDAV server (HTTP)"
-msgstr ""
+msgstr "WebDAV server (HTTP)"
 
 msgctxt "#20254"
 msgid "WebDAV server (HTTPS)"
-msgstr ""
+msgstr "WebDAV server (HTTPS)"
 
 msgctxt "#20255"
 msgid "First logon, edit your profile"
-msgstr ""
+msgstr "เข้าสู่ระบบครั้งแรก, แก้ไขโปรไฟล์ของคุณ"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
-msgstr ""
+msgstr "HTS Tvheadend client"
 
 msgctxt "#20257"
 msgid "VDR Streamdev client"
-msgstr ""
+msgstr "VDR Streamdev client"
 
 msgctxt "#20258"
 msgid "MythTV client"
-msgstr ""
+msgstr "MythTV client"
 
 msgctxt "#20259"
 msgid "Network Filesystem (NFS)"
-msgstr ""
+msgstr "Network Filesystem (NFS)"
 
 msgctxt "#20260"
 msgid "Secure Shell (SSH/SFTP)"
-msgstr ""
+msgstr "Secure Shell (SSH/SFTP)"
 
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
-msgstr ""
+msgstr "Apple Filing Protocol (AFP)"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -8016,7 +8220,7 @@ msgstr "เรียกดูเป้าหมาย"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
+msgstr "ภาพยนตร์ที่อยู่ในโฟลเดอร์แยก ที่ตรงกับชื่อภาพยนตร์"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -8204,7 +8408,7 @@ msgstr "ยกเลิกกำหนดเนื้อหา"
 
 msgctxt "#20376"
 msgid "Original title"
-msgstr ""
+msgstr "ชื่อดั้งเดิม"
 
 msgctxt "#20377"
 msgid "Refresh TV show information"
@@ -8368,7 +8572,7 @@ msgstr "เขียน"
 
 msgctxt "#20419"
 msgid "Replace file names with library titles"
-msgstr ""
+msgstr "แทนชื่อไฟล์ ด้วยชื่อเรื่องจากคลังข้อมูล"
 
 msgctxt "#20420"
 msgid "Never"
@@ -8476,11 +8680,11 @@ msgstr "Fanart"
 
 msgctxt "#20446"
 msgid "Locally stored information found."
-msgstr ""
+msgstr "พบข้อมูลที่เก็บไว้."
 
 msgctxt "#20447"
 msgid "Ignore and refresh from internet?"
-msgstr ""
+msgstr "ละเว้นแล้วฟื้นฟูจากอินเทอร์เน็ต?"
 
 msgctxt "#20448"
 msgid "Could not download information"
@@ -8488,39 +8692,39 @@ msgstr "ไม่สามารถดาวน์โหลดข้อมูล
 
 msgctxt "#20449"
 msgid "Unable to connect to remote server"
-msgstr ""
+msgstr "ไม่สามารถเชื่อมต่อไปยังรีโมทเซิร์ฟเวอร์"
 
 msgctxt "#20450"
 msgid "Would you like to continue scanning?"
-msgstr ""
+msgstr "ต้องการดำเนินการสแกนต่อไป?"
 
 msgctxt "#20451"
 msgid "Countries"
-msgstr ""
+msgstr "ประเทศ"
 
 msgctxt "#20452"
 msgid "episode"
-msgstr ""
+msgstr "ตอน"
 
 msgctxt "#20453"
 msgid "episodes"
-msgstr ""
+msgstr "ตอน"
 
 msgctxt "#20454"
 msgid "Listener"
-msgstr ""
+msgstr "ผู้ฟัง"
 
 msgctxt "#20455"
 msgid "Listeners"
-msgstr ""
+msgstr "ผู้ฟัง"
 
 msgctxt "#20456"
 msgid "Set movieset fanart"
-msgstr ""
+msgstr "ตั้งต่าแฟนอาร์ตของภาพยนตร์ชุด"
 
 msgctxt "#20457"
 msgid "Movie set"
-msgstr ""
+msgstr "ภาพยนตร์ชุด"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
@@ -8608,7 +8812,7 @@ msgstr "ไดเร็กทอรี่ภาพยนต์ & ซับไต
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr ""
+msgstr "แทนที่แบบอักษรคำบรรยาย ASS / SSA"
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
@@ -8808,7 +9012,7 @@ msgstr "หลายภาษา"
 
 msgctxt "#21419"
 msgid "No scrapers present"
-msgstr ""
+msgstr "ไม่พบ scrapers "
 
 msgctxt "#21420"
 msgid "Value to match"
@@ -8936,15 +9140,15 @@ msgstr "- แก้ไข"
 
 msgctxt "#21451"
 msgid "Internet connection required."
-msgstr ""
+msgstr "จำเป็นต้องมีการเชื่อมต่ออินเทอร์เน็ต"
 
 msgctxt "#21452"
 msgid "Get More..."
-msgstr ""
+msgstr "รับอื่น ๆ ..."
 
 msgctxt "#21453"
 msgid "Root filesystem"
-msgstr ""
+msgstr "ระบบแฟ้มราก"
 
 msgctxt "#21454"
 msgid "Cache full"
@@ -8952,7 +9156,7 @@ msgstr "แคชเต็ม"
 
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
+msgstr "แคชเต็มไปก่อนจะถึงปริมาณที่จำเป็นสำหรับการเล่นอย่างต่อเนื่อง"
 
 msgctxt "#21456"
 msgid "External storage"
@@ -8960,26 +9164,38 @@ msgstr ""
 
 msgctxt "#21460"
 msgid "Subtitle location"
-msgstr ""
+msgstr "ตำแหน่งของคำบรรยาย"
 
 msgctxt "#21461"
 msgid "Fixed"
-msgstr ""
+msgstr "คงที่"
 
 msgctxt "#21462"
 msgid "Bottom of video"
-msgstr ""
+msgstr "ล่างสุดของวิดีโอ"
 
 msgctxt "#21463"
 msgid "Below video"
-msgstr ""
+msgstr "ด้านล่างวิดีโอ"
 
 msgctxt "#21464"
 msgid "Top of video"
-msgstr ""
+msgstr "บนสุดของวิดีโอ"
 
 msgctxt "#21465"
 msgid "Above video"
+msgstr "ด้านบนวิดีโอ"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr ""
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr ""
+
+msgctxt "#21469"
+msgid "%s to %s"
 msgstr ""
 
 msgctxt "#21800"
@@ -9292,7 +9508,7 @@ msgstr "- DNS ต่อท้าย"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr ""
+msgstr "%2.3fs"
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
@@ -9436,7 +9652,7 @@ msgstr "ดำ/ขาว"
 
 msgctxt "#22079"
 msgid "Default select action"
-msgstr ""
+msgstr "ค่าเริ่มต้นการกระทำเมื่อเลือก"
 
 msgctxt "#22080"
 msgid "Choose"
@@ -9444,7 +9660,7 @@ msgstr "เลือก"
 
 msgctxt "#22081"
 msgid "Show Information"
-msgstr ""
+msgstr "แสดงข้อมูล"
 
 msgctxt "#22082"
 msgid "More..."
@@ -9456,7 +9672,7 @@ msgstr "เล่นทั้งหมด"
 
 msgctxt "#23049"
 msgid "Teletext not available"
-msgstr ""
+msgstr "เทเลเท็กซ์ไม่สามารถใช้ได้"
 
 msgctxt "#23050"
 msgid "Activate Teletext"
@@ -9478,6 +9694,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "กำลังดำเนินการ"
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr ""
+
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "ตัวเล่นภายนอกทำงาน"
@@ -9492,23 +9712,23 @@ msgstr "กด OK เมื่อเล่นเพลงจบ"
 
 msgctxt "#24000"
 msgid "Add-on"
-msgstr ""
+msgstr "ส่วนเสริม"
 
 msgctxt "#24001"
 msgid "Add-ons"
-msgstr ""
+msgstr "หมวดส่วนเสริม"
 
 msgctxt "#24002"
 msgid "Add-on options"
-msgstr ""
+msgstr "ตัวเลือกของ ส่วนเสริม"
 
 msgctxt "#24003"
 msgid "Add-on Information"
-msgstr ""
+msgstr "ข้อมูลของ ส่วนเสริม"
 
 msgctxt "#24005"
 msgid "Media sources"
-msgstr ""
+msgstr "แหล่งข้อมูลสื่อ"
 
 msgctxt "#24007"
 msgid "Movie information"
@@ -9516,23 +9736,23 @@ msgstr "ข้อมูลภาพยนต์"
 
 msgctxt "#24008"
 msgid "Screensaver"
-msgstr ""
+msgstr "พักหน้าจอ"
 
 msgctxt "#24009"
 msgid "Script"
-msgstr ""
+msgstr "สคริปต์"
 
 msgctxt "#24010"
 msgid "Visualization"
-msgstr ""
+msgstr "Visualization"
 
 msgctxt "#24011"
 msgid "Add-on repository"
-msgstr ""
+msgstr "แหล่งแฟ้มข้อมูล ส่วนเสริม"
 
 msgctxt "#24012"
 msgid "Subtitles"
-msgstr ""
+msgstr "ซับไตเติ้ล"
 
 msgctxt "#24013"
 msgid "Lyrics"
@@ -9556,7 +9776,7 @@ msgstr "ข้อมูลศิลปิน"
 
 msgctxt "#24018"
 msgid "Services"
-msgstr ""
+msgstr "บริการ"
 
 msgctxt "#24019"
 msgid "PVR clients"
@@ -9564,7 +9784,7 @@ msgstr ""
 
 msgctxt "#24020"
 msgid "Configure"
-msgstr "ปรับแต่าง"
+msgstr "ปรับแต่ง"
 
 msgctxt "#24021"
 msgid "Disable"
@@ -9576,7 +9796,7 @@ msgstr "เปิดการใช้งาน"
 
 msgctxt "#24023"
 msgid "Add-on disabled"
-msgstr ""
+msgstr "ปิดใช้งาน ส่วนเสริม"
 
 msgctxt "#24027"
 msgid "Weather"
@@ -9584,23 +9804,27 @@ msgstr "สภาพอากาศ"
 
 msgctxt "#24028"
 msgid "Weather.com (standard)"
+msgstr "Weather.com (มาตรฐาน)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
 msgstr ""
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
-msgstr "โปรแกรมเสริมไม่สามารถปรับแต่งได้"
+msgstr "ส่วนเสริมนี้ ปรับแต่งไม่ได้"
 
 msgctxt "#24031"
 msgid "Error loading settings"
-msgstr ""
+msgstr "ผิดพลาดขณะโหลด การตั้งค่า"
 
 msgctxt "#24032"
 msgid "All Add-ons"
-msgstr "โปรแกรมเสริมทั้งหมด"
+msgstr "ส่วนเสริม ทั้งหมด"
 
 msgctxt "#24033"
 msgid "Get Add-ons"
-msgstr ""
+msgstr "รับ ส่วนเสริม"
 
 msgctxt "#24034"
 msgid "Check for updates"
@@ -9608,11 +9832,11 @@ msgstr "ตรวจสอบอัพเดท"
 
 msgctxt "#24035"
 msgid "Force refresh"
-msgstr ""
+msgstr "บังคับ ฟื้นฟู"
 
 msgctxt "#24036"
 msgid "Change log"
-msgstr ""
+msgstr "บันทึก การปรับเปลี่ยน"
 
 msgctxt "#24037"
 msgid "Uninstall"
@@ -9624,7 +9848,7 @@ msgstr "ติดตั้ง"
 
 msgctxt "#24039"
 msgid "Disabled Add-ons"
-msgstr "ปิดโปรแกรมเสริม"
+msgstr "ปิดใช้งาน ส่วนเสริม"
 
 msgctxt "#24040"
 msgid "(Clear the current setting)"
@@ -9632,7 +9856,7 @@ msgstr "(ล้างการตั้งค่านี้)"
 
 msgctxt "#24041"
 msgid "Install from zip file"
-msgstr "ติดตั้งจาก zip ไฟล์"
+msgstr "ติดตั้งจาก ไฟล์ zip"
 
 msgctxt "#24042"
 msgid "Downloading %i%%"
@@ -9640,23 +9864,23 @@ msgstr "กำลังดาวน์โหลด %i%%"
 
 msgctxt "#24043"
 msgid "Available Updates"
-msgstr ""
+msgstr "ที่มีการปรับรุ่น"
 
 msgctxt "#24044"
 msgid "Dependencies not met"
-msgstr ""
+msgstr "ไม่พบส่วนที่ต้องใช้ร่วมกัน"
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
-msgstr ""
+msgstr "ส่วนเสริม มีโครงสร้างที่ไม่ถูกต้อง"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed add-on(s)"
-msgstr ""
+msgstr "%s ถูกใช้โดย ส่วนเสริมที่ติดตั้งแล้ว ต่อไปนี้(s)"
 
 msgctxt "#24047"
 msgid "This add-on cannot be uninstalled"
-msgstr ""
+msgstr "ส่วนเสริม นี้ไม่สามารถถอนการติดตั้ง"
 
 msgctxt "#24048"
 msgid "Rollback"
@@ -9664,7 +9888,7 @@ msgstr "ย้อนกลับ"
 
 msgctxt "#24050"
 msgid "Available Add-ons"
-msgstr ""
+msgstr "ส่วนเสริม ที่มีอยู่"
 
 msgctxt "#24051"
 msgid "Version:"
@@ -9672,7 +9896,7 @@ msgstr "เวอร์ชั่น:"
 
 msgctxt "#24052"
 msgid "Disclaimer"
-msgstr ""
+msgstr "ปฏิเสธ"
 
 msgctxt "#24053"
 msgid "License:"
@@ -9680,47 +9904,47 @@ msgstr "ลิขสิทธิ์:"
 
 msgctxt "#24054"
 msgid "Changelog"
-msgstr ""
+msgstr "บันทึกการปรับเปลี่ยน"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr ""
+msgstr "คุณต้องการจะเปิดใช้งาน ส่วนเสริม นี้?"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
-msgstr ""
+msgstr "คุณต้องการที่จะปิดการใช้งาน ส่วนเสริม นี้?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
-msgstr ""
+msgstr "ส่วนเสริม ที่พร้อมปรับรุ่น!"
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
-msgstr ""
+msgstr "เปิดใช้ ส่วนเสริม"
 
 msgctxt "#24063"
 msgid "Auto update"
-msgstr ""
+msgstr "ปรับรุ่น อัตโนมัติ"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr ""
+msgstr "ส่วนเสริม เปิดใช้แล้ว"
 
 msgctxt "#24065"
 msgid "Add-on updated"
-msgstr ""
+msgstr "ส่วนเสริม ปรับรุ่นแล้ว"
 
 msgctxt "#24066"
 msgid "Cancel Add-on download?"
-msgstr ""
+msgstr "ยกเลิกการดาวน์โหลด ส่วนเสริม?"
 
 msgctxt "#24067"
 msgid "Currently downloading Add-ons"
-msgstr ""
+msgstr "ส่วนเสริม ที่กำลังดาวน์โหลด"
 
 msgctxt "#24068"
 msgid "Update available"
-msgstr ""
+msgstr "มีที่พร้อมปรับรุ่น"
 
 msgctxt "#24069"
 msgid "Update"
@@ -9728,15 +9952,15 @@ msgstr "อัพเดท"
 
 msgctxt "#24070"
 msgid "Add-on could not be loaded."
-msgstr "ไม่สามารถโหลดโปรแกรมเสริม"
+msgstr "ไม่สามารถโหลด ส่วนเสริม"
 
 msgctxt "#24071"
 msgid "An unknown error has occurred."
-msgstr ""
+msgstr "เกิดข้อผิดพลาดที่ไม่รู้จัก"
 
 msgctxt "#24072"
 msgid "Settings required"
-msgstr ""
+msgstr "จำเป็นต้องตั้งค่า"
 
 msgctxt "#24073"
 msgid "Could not connect"
@@ -9744,7 +9968,7 @@ msgstr "ไม่สามารถเชื่อมต่อได้"
 
 msgctxt "#24074"
 msgid "Needs to restart"
-msgstr "ต้องการ restart"
+msgstr "ต้องการ เริ่มระบบใหม่"
 
 msgctxt "#24075"
 msgid "Disable"
@@ -9752,7 +9976,7 @@ msgstr "ปิดการใช้งาน"
 
 msgctxt "#24076"
 msgid "Add-on Required"
-msgstr ""
+msgstr "ต้องใช้ส่วนเสริม"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
@@ -9760,27 +9984,27 @@ msgstr "ลองเชื่อมต่ออีกครั้ง"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
-msgstr "เริ่มโปรแกรมเสริมใหม่"
+msgstr "เริ่ม ส่วนเสริม ใหม่"
 
 msgctxt "#24090"
 msgid "Lock Add-on manager"
-msgstr ""
+msgstr "ล็อคการจัดการ ส่วนเสริม"
 
 msgctxt "#24094"
 msgid "(current)"
-msgstr ""
+msgstr "(ปัจจุบัน)"
 
 msgctxt "#24095"
 msgid "(blacklisted)"
-msgstr ""
+msgstr "(บัญชีดำ)"
 
 msgctxt "#24096"
 msgid "Add-on has been marked as broken in repository."
-msgstr ""
+msgstr "ส่วนเสริม ถูกระบุว่า เสียหาย ในแหล่งข้อมูล"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
-msgstr ""
+msgstr "คุณต้องการที่จะปิดมันบนระบบของคุณ?"
 
 msgctxt "#24098"
 msgid "Broken"
@@ -9788,15 +10012,15 @@ msgstr "เสียหาย"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr ""
+msgstr "คุณต้องการที่จะสลับไปใช้สกินนี้?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr ""
+msgstr "การใช้คุณสมบัตินี้คุณต้องดาวน์โหลด ส่วนเสริม:"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr ""
+msgstr "คุณต้องการที่จะดาวน์โหลด ส่วนเสริม นี้?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
@@ -9812,11 +10036,11 @@ msgstr "การแจ้งเตือน"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "ซ่อน ประเทศอื่น"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "เลือกจากชื่อเรื่องทั้งหมด ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
@@ -9824,15 +10048,15 @@ msgstr "แสดง bluray เมนู"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "เล่นชื่อเรื่องหลัก: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "ชื่อเรื่อง: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "เลือกรายการที่เล่น"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -10140,27 +10364,27 @@ msgstr "ล้มเหลวในการเริ่มต้น"
 
 msgctxt "#33101"
 msgid "Webserver"
-msgstr ""
+msgstr "เว็บเซิร์ฟเวอร์"
 
 msgctxt "#33102"
 msgid "Event Server"
-msgstr ""
+msgstr "เซิร์ฟเวอร์กิจกรรม"
 
 msgctxt "#33103"
 msgid "Remote communication server"
-msgstr ""
+msgstr "เซิร์ฟเวอร์การสื่อสารระยะไกล"
 
 msgctxt "#33200"
 msgid "Detected New Connection"
-msgstr ""
+msgstr "ตรวจพบการเชื่อมต่อใหม่"
 
 msgctxt "#34000"
 msgid "Lame"
-msgstr ""
+msgstr "Lame"
 
 msgctxt "#34001"
 msgid "Vorbis"
-msgstr ""
+msgstr "Vorbis"
 
 msgctxt "#34002"
 msgid "Wav"
@@ -10224,11 +10448,11 @@ msgstr "7.1"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr ""
+msgstr "เล่นเสียง GUI"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"
-msgstr ""
+msgstr "เฉพาะเมื่อหยุดเล่น"
 
 msgctxt "#34122"
 msgid "Always"
@@ -10236,111 +10460,115 @@ msgstr "เสมอ"
 
 msgctxt "#34123"
 msgid "Never"
-msgstr "ไม่"
+msgstr "ไม่เลย"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
-msgstr ""
+msgstr "ไม่พบรายการถัดไปที่จะเล่น"
 
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
-msgstr ""
+msgstr "ไม่พบรายการก่อนหน้าที่จะเล่น"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
-msgstr ""
+msgstr "ล้มเหลวในการเริ่มต้น zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
+msgstr "มี Apple's Bonjour Service ติดตั้งอยู่หรือไม่ ดู log เพื่อดูข้อมูลเพิ่มเติม"
 
 msgctxt "#34400"
 msgid "Video Rendering"
-msgstr ""
+msgstr "การแสดงผลวิดีโอ"
 
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
+msgstr "ล้มเหลวในการเริ่ม ฟิลเตอร์/ปรับขนาด วิดีโอ, กลับไปใช้การปรับขนาดแบบ bilinear"
 
 msgctxt "#34402"
 msgid "Failed to initialize audio device"
-msgstr ""
+msgstr "ล้มเหลวในการเริ่มต้นอุปกรณ์เสียง"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
-msgstr ""
+msgstr "ตรวจสอบการตั้งค่าเสียงของคุณ"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "ใช้การวาดนิ้วสำหรับการควบคุม"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "ลาก1นิ้ว ซ้าย, ขวา, ขึ้น, ลง สำหรับตัวชี้"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "ลาก2นิ้ว ไปทางซ้ายสำหรับ Backspace"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "1 นิ้วแตะเพียงครั้งเดียว สำหรับ enter"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "2 นิ้ว แตะเพียงครั้งเดียว หรือ 1 นิ้วกดค้าง สำหรับ เมนูเข้าถึง"
 
 msgctxt "#35000"
 msgid "Peripherals"
-msgstr ""
+msgstr "อุปกรณ์ต่อพ่วง"
 
 msgctxt "#35001"
 msgid "Generic HID device"
-msgstr ""
+msgstr "อุปกรณ์ HID ทั่วไป"
 
 msgctxt "#35002"
 msgid "Generic network adapter"
-msgstr ""
+msgstr "การ์ดเชื่อมต่อเครือข่ายทั่วไป"
 
 msgctxt "#35003"
 msgid "Generic disk"
-msgstr ""
+msgstr "ดิสก์ทั่วไป"
 
 msgctxt "#35004"
 msgid "There are no settings available\nfor this peripheral."
-msgstr ""
+msgstr "ไม่มีที่เลือกตั้งค่า⏎ สำหรับอุปกรณ์ต่อพ่วงนี้"
 
 msgctxt "#35005"
 msgid "New device configured"
-msgstr ""
+msgstr "อุปกรณ์ใหม่ กำหนดค่าแล้ว"
 
 msgctxt "#35006"
 msgid "Device removed"
-msgstr "อุปกรณ์ถูกนำออกแล้ว"
+msgstr "อุปกรณ์ถูกนำออก"
 
 msgctxt "#35007"
 msgid "Keymap to use for this device"
-msgstr ""
+msgstr "ผังปุ่มกด ที่จะใช้สำหรับอุปกรณ์นี้"
 
 msgctxt "#35008"
 msgid "Keymap enabled"
-msgstr ""
+msgstr "เปิดการใช้งาน ผังปุ่มกด"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "ไม่ใช้ ผังปุ่มกด ที่กำหนดเองสำหรับอุปกรณ์นี้"
 
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr ""
 
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
+msgstr ""
+
 msgctxt "#35500"
 msgid "Location"
-msgstr ""
+msgstr "ที่ตั้ง"
 
 msgctxt "#35501"
 msgid "Class"
-msgstr ""
+msgstr "Class"
 
 msgctxt "#35502"
 msgid "Name"
@@ -10352,47 +10580,47 @@ msgstr "ผู้จำหน่าย"
 
 msgctxt "#35504"
 msgid "Product ID"
-msgstr "รหัสสินค้า"
+msgstr "รหัสผลิตภัณฑ์"
 
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adapter"
-msgstr ""
+msgstr "การ์ดเชื่อมต่อ Pulse-Eight CEC"
 
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
-msgstr ""
+msgstr "Pulse-Eight Nyxboard"
 
 msgctxt "#36002"
 msgid "Switch to keyboard side command"
-msgstr ""
+msgstr "สลับไปที่คำสั่ง ทางด้านคีย์บอร์ด"
 
 msgctxt "#36003"
 msgid "Switch to remote side command"
-msgstr ""
+msgstr "สลับไปที่คำสั่ง ทางด้านรีโมท"
 
 msgctxt "#36004"
 msgid "Press \"user\" button command"
-msgstr ""
+msgstr "กดปุ่มคำสั่ง \"ผู้ใช้\""
 
 msgctxt "#36005"
 msgid "Enable switch side commands"
-msgstr ""
+msgstr "เปิดใช้งานสลับฝั่งคำสั่ง"
 
 msgctxt "#36006"
 msgid "Could not open the adapter"
-msgstr ""
+msgstr "ไม่สามารถเปิดการ์ดเชื่อมต่อ"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
-msgstr ""
+msgstr "อุปกรณ์ที่จะเปิด เมื่อเริ่มต้น XBMC"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr ""
+msgstr "อุปกรณ์ที่จะปิด เมื่อหยุด XBMC"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
+msgstr "ทำให้อุปกรณ์อยู่ในโหมดสแตนด์บาย เมื่อเปิดใช้งานตัวพักหน้าจอ"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10402,17 +10630,13 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr ""
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr ""
-
 msgctxt "#36015"
 msgid "HDMI port number"
-msgstr ""
+msgstr "หมายเลขพอร์ต HDMI"
 
 msgctxt "#36016"
 msgid "Connected"
-msgstr ""
+msgstr "เชื่อมต่อแล้ว"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
@@ -10420,35 +10644,35 @@ msgstr ""
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
-msgstr ""
+msgstr "ใช้การตั้งค่าภาษาของช่องทีวี"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "เชื่อมต่อกับอุปกรณ์ HDMI"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "ทำให้ XBMC เป็นแหล่งของสื่อที่ทำงานเมื่อเริ่ม"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Physical address (overrules HDMI port)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "พอร์ต COM (เว้นว่างไว้เว้นแต่จำเป็น)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "การกำหนดค่าปรับปรุงแล้ว"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "ล้มเหลวในการตั้งกำหนดค่าใหม่ กรุณาตรวจสอบการตั้งค่าของคุณ"
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "ส่งคำสั่ง 'แหล่งที่ไม่ใช้งาน' เมื่อหยุด XBMC"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
@@ -10484,8 +10708,24 @@ msgstr ""
 
 msgctxt "#36035"
 msgid "Always"
-msgstr ""
+msgstr "เสมอ"
 
 msgctxt "#36036"
 msgid "On start/stop"
+msgstr ""
+
+msgctxt "#36037"
+msgid "TV"
+msgstr ""
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr ""
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr ""
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr ""

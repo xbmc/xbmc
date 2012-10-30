@@ -82,7 +82,7 @@ void CPVRChannelGroupInternal::UpdateChannelPaths(void)
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
     PVRChannelGroupMember member = m_members.at(iChannelPtr);
-    member.channel->UpdatePath(iChannelPtr);
+    member.channel->UpdatePath(this, iChannelPtr);
   }
 }
 
@@ -98,11 +98,7 @@ void CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel, unsi
     m_members.push_back(newMember);
     m_bChanged = true;
 
-    if (m_bUsingBackendChannelOrder)
-      SortByClientChannelNumber();
-    else
-      SortByChannelNumber();
-    Renumber();
+    SortAndRenumber();
   }
 }
 
@@ -181,7 +177,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannel &channel)
   }
 
   /* renumber this list */
-  Renumber();
+  SortAndRenumber();
 
   /* and persist */
   return realChannel->Persist() &&
@@ -264,7 +260,7 @@ bool CPVRChannelGroupInternal::Renumber(void)
     if (m_members.at(iChannelPtr).channel->IsHidden())
       m_iHiddenChannels++;
     else
-      m_members.at(iChannelPtr).channel->UpdatePath(iChannelPtr);
+      m_members.at(iChannelPtr).channel->UpdatePath(this, iChannelPtr);
   }
 
   return bReturn;

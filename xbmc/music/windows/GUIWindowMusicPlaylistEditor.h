@@ -21,7 +21,6 @@
  */
 
 #include "GUIWindowMusicBase.h"
-#include "ThumbLoader.h"
 
 class CFileItemList;
 
@@ -38,7 +37,7 @@ protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void UpdateButtons();
-  virtual bool Update(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);

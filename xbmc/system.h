@@ -45,7 +45,6 @@
 #endif
 
 #define HAS_JSONRPC
-#define HAS_HTTPAPI
 
 #ifdef USE_ASAP_CODEC
 #define HAS_ASAP_CODEC

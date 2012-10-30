@@ -26,12 +26,19 @@
 using namespace std;
 
 CUrlOptions::CUrlOptions()
+  : m_strLead("?")
 { }
+
+CUrlOptions::CUrlOptions(const std::string &options)
+  : m_strLead("?")
+{
+  AddOptions(options);
+}
 
 CUrlOptions::~CUrlOptions()
 { }
 
-std::string CUrlOptions::GetOptionsString() const
+std::string CUrlOptions::GetOptionsString(bool withLeadingSeperator /* = false */) const
 {
   std::string options;
   for (UrlOptions::const_iterator opt = m_options.begin(); opt != m_options.end(); opt++)
@@ -42,7 +49,18 @@ std::string CUrlOptions::GetOptionsString() const
     options += CURL::Encode(opt->first) + "=" + CURL::Encode(opt->second.asString());
   }
 
+  if (withLeadingSeperator && !options.empty())
+    options = m_strLead + options;
+
   return options;
+}
+
+void CUrlOptions::AddOption(const std::string &key, const char *value)
+{
+  if (key.empty() || value == NULL)
+    return;
+
+  return AddOption(key, string(value));
 }
 
 void CUrlOptions::AddOption(const std::string &key, const std::string &value)
@@ -96,9 +114,14 @@ void CUrlOptions::AddOptions(const std::string &options)
 
   string strOptions = options;
 
-  // remove leading ? if present
-  if (strOptions.at(0) == '?')
+  // remove leading ?, # or ; if present
+  if (strOptions.at(0) == '?' || strOptions.at(0) == '#' || strOptions.at(0) == ';')
+  {
+    m_strLead = strOptions.at(0);
     strOptions.erase(0, 1);
+  }
+  else
+    m_strLead = "?";
 
   // split the options by & and process them one by one
   vector<string> optionList = StringUtils::Split(strOptions, "&");
@@ -119,4 +142,30 @@ void CUrlOptions::AddOptions(const std::string &options)
     if (!key.empty())
       AddOption(key, value);
   }
+}
+
+void CUrlOptions::AddOptions(const CUrlOptions &options)
+{
+  m_options.insert(options.m_options.begin(), options.m_options.end());
+}
+
+bool CUrlOptions::HasOption(const std::string &key) const
+{
+  if (key.empty())
+    return false;
+
+  return m_options.find(key) != m_options.end();
+}
+
+bool CUrlOptions::GetOption(const std::string &key, CVariant &value) const
+{
+  if (key.empty())
+    return false;
+
+  UrlOptions::const_iterator option = m_options.find(key);
+  if (option == m_options.end())
+    return false;
+
+  value = option->second;
+  return true;
 }

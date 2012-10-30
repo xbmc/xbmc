@@ -46,9 +46,13 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   if (URIUtils::GetExtension(thumbFile).Equals(".jpg"))
   {
 #if defined(HAS_OMXPLAYER)
-    COMXImage omxImage;
-    if (omxImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
+    COMXImage *omxImage = new COMXImage();
+    if (omxImage && omxImage->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
+    {
+      delete omxImage;
       return true;
+    }
+    delete omxImage;
 #endif
     CJpegIO jpegImage;
     if (jpegImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
@@ -100,8 +104,8 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
   uint32_t max_height = g_advancedSettings.m_imageRes;
   if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
   { // a separate fanart resolution is specified - check if the image is exactly equal to this res
-    if (width == (unsigned int)g_advancedSettings.m_fanartRes * 16/9 && height == (unsigned int)g_advancedSettings.m_fanartRes)
-    { // special case for fanart res
+    if (width * 9 == height * 16 && height >= g_advancedSettings.m_fanartRes)
+    { // special case for 16x9 images larger than the fanart res
       max_height = g_advancedSettings.m_fanartRes;
     }
   }

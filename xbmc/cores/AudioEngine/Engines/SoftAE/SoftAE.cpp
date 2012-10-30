@@ -427,7 +427,7 @@ void CSoftAE::InternalOpenSink()
     m_frameSize      = m_bytesPerSample * m_chLayout.Count();
   }
 
-  CLog::Log(LOGDEBUG, "CSoftAE::InternalOpenSink - Internal Buffer Size: %d", neededBufferSize);
+  CLog::Log(LOGDEBUG, "CSoftAE::InternalOpenSink - Internal Buffer Size: %d", (int)neededBufferSize);
   if (m_buffer.Size() < neededBufferSize)
     m_buffer.Alloc(neededBufferSize);
 
@@ -514,13 +514,16 @@ bool CSoftAE::Initialize()
   return true;
 }
 
-void CSoftAE::OnSettingsChange(std::string setting)
+void CSoftAE::OnSettingsChange(const std::string& setting)
 {
   if (setting == "audiooutput.passthroughdevice" ||
       setting == "audiooutput.audiodevice"       ||
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.dtspassthrough"    ||
+      setting == "audiooutput.passthroughaac"    ||
+      setting == "audiooutput.truehdpassthrough" ||
+      setting == "audiooutput.dtshdpassthrough"  ||
       setting == "audiooutput.channellayout"     ||
       setting == "audiooutput.useexclusivemode"  ||
       setting == "audiooutput.multichannellpcm"  ||

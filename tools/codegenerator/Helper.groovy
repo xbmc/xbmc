@@ -183,11 +183,15 @@ public class Helper
       //    if (convertTemplate == null) convertTemplate = outTypemap[apiLType]
 
       // is the returns a pointer to a known class
-      Node classNode = null
+      String className = null
       if (convertTemplate == null && apiType.startsWith('p.'))
       {
-        classNode = findClassNodeByName(parents(method)[0], SwigTypeParser.getRootType(apiType),method)
-        if (classNode) convertTemplate = defaultOutTypeConversion
+        Node classNode = findClassNodeByName(parents(method)[0], SwigTypeParser.getRootType(apiType),method)
+        if (classNode)
+        {
+          className = findFullClassName(classNode)
+          convertTemplate = defaultOutTypeConversion
+        }
       }
 
       if (convertTemplate == null)
@@ -198,10 +202,20 @@ public class Helper
 
       if (!convertTemplate)
       {
+        String knownApiType = isKnownApiType(apiType,method)
+        if (knownApiType)
+        {
+          convertTemplate = defaultOutTypeConversion
+          className = knownApiType
+        }
+      }
+
+      if (!convertTemplate)
+      {
         if (recurse)
           return getOutConversion(SwigTypeParser.SwigType_ltype(apiType),apiName,method,overrideBindings,false)
-        else
-          throw new RuntimeException("WARNING: Cannot convert the return value of swig type ${apiType} for the call ${Helper.findFullClassName(method) + '::' + Helper.callingName(method)}")
+        else if (!isKnownApiType(apiType,method))
+           throw new RuntimeException("WARNING: Cannot convert the return value of swig type ${apiType} for the call ${Helper.findFullClassName(method) + '::' + Helper.callingName(method)}")
       }
 
       boolean seqSetHere = false
@@ -217,7 +231,7 @@ public class Helper
                       'method' : method, 'helper' : Helper.class, 
                       'swigTypeParser' : SwigTypeParser.class,
                       'sequence' : seq ]
-      if (classNode) bindings['classnode'] = classNode
+      if (className) bindings['classname'] = className
 
       if (overrideBindings) bindings.putAll(overrideBindings)
 
@@ -652,7 +666,7 @@ public class Helper
     */
    public static boolean isKnownBaseType(String type, Node searchFrom) 
    {
-     return hasFeatureSetting(type,searchFrom,'feature_knownbasetypes',{ it.split(',').find({ it == type }) != null })
+     return hasFeatureSetting(type,searchFrom,'feature_knownbasetypes',{ it.split(',').find({ it.trim() == type }) != null })
    }
 
    /**
@@ -660,19 +674,46 @@ public class Helper
     *  looking for a %feature("knownapitypes") declaration that the given 'type' is 
     *  known for 'searchFrom' Node.
     */
-   public static boolean isKnownApiType(String type, Node searchFrom) 
+   public static String isKnownApiType(String type, Node searchFrom)
    {
      String rootType = SwigTypeParser.getRootType(type)
-     return hasFeatureSetting(type,searchFrom,'feature_knownapitypes',{ it.split(',').find({ it == rootType }) != null })
+     String namespace = findNamespace(searchFrom,'::',false)
+     String lastMatch = null
+     hasFeatureSetting(type,searchFrom,'feature_knownapitypes',{ it.split(',').find(
+       { 
+         if (it.trim() == rootType)
+         {
+           lastMatch = rootType
+           return true
+         }
+         // we assume the 'type' is defined within namespace and 
+         //  so we can walk up the namespace appending the type until 
+         //  we find a match.
+         while (namespace != '')
+         {
+//           System.out.println('checking ' + (namespace + '::' + rootType))
+           if ((namespace + '::' + rootType) == it.trim())
+           {
+             lastMatch = it.trim()
+             return true
+           }
+           // truncate the last namespace
+           int chop = namespace.lastIndexOf('::')
+           namespace = (chop > 0) ? namespace.substring(0,chop) : ''
+         }
+         return false
+       }) != null })
+     return lastMatch
    }
 
-   private static boolean hasFeatureSetting(String type, Node searchFrom, String feature, Closure test)
+   private static String hasFeatureSetting(String type, Node searchFrom, String feature, Closure test)
    {
      if (!searchFrom)
-       return false
+       return null
 
-     if (searchFrom.attribute(feature) && test.call(searchFrom.attribute(feature)))
-       return true
+     Object attr = searchFrom.attribute(feature)
+     if (attr && test.call(attr))
+       return attr.toString()
 
      return hasFeatureSetting(type,searchFrom.parent(),feature,test)
    }

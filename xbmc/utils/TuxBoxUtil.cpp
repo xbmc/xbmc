@@ -138,7 +138,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
   //Build new Item
   item_new.SetLabel(item.GetLabel());
   item_new.SetPath(item.GetPath());
-  item_new.SetThumbnailImage(item.GetThumbnailImage());
+  item_new.SetArt("thumb", item.GetArt("thumb"));
 
   if(g_tuxbox.GetZapUrl(item.GetPath(), item_new))
   {
@@ -320,7 +320,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     pbItem->SetLabel(strItemName);
                     pbItem->SetLabelPreformated(true);
                     pbItem->SetPath("tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts");
-                    pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
+                    pbItem->SetArt("thumb", GetPicon(strItemName)); //Set Picon Image
 
                     //DEBUG Log
                     CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());

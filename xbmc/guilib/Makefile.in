@@ -51,7 +51,6 @@ SRCS += GUISettingsSliderControl.cpp
 SRCS += GUISliderControl.cpp
 SRCS += GUISpinControl.cpp
 SRCS += GUISpinControlEx.cpp
-SRCS += GUIStandardWindow.cpp
 SRCS += GUIStaticItem.cpp
 SRCS += GUITextBox.cpp
 SRCS += GUITextLayout.cpp

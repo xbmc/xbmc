@@ -160,7 +160,7 @@ bool CPVRRecording::IncrementPlayCount()
 bool CPVRRecording::SetLastPlayedPosition(int lastplayedposition)
 {
   PVR_ERROR error;
-  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId) &&
+  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId) &&
       !g_PVRClients->SetRecordingLastPlayedPosition(*this, lastplayedposition, &error))
   {
     DisplayError(error);
@@ -171,8 +171,8 @@ bool CPVRRecording::SetLastPlayedPosition(int lastplayedposition)
 
 int CPVRRecording::GetLastPlayedPosition() const
 {
-  int rc = 0;
-  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
+  int rc = -1;
+  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
   {
     rc = g_PVRClients->GetRecordingLastPlayedPosition(*this);
     if (rc < 0)

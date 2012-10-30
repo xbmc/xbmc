@@ -20,6 +20,7 @@
  */
 
 #include "utils/StdString.h"
+#include "utils/UrlOptions.h"
 
 #ifdef _WIN32
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
@@ -74,6 +75,13 @@ public:
   static std::string Encode(const std::string& strURLData);
   static CStdString TranslateProtocol(const CStdString& prot);
 
+  void GetOptions(std::map<CStdString, CStdString> &options) const;
+  bool HasOption(const CStdString &key) const;
+  bool GetOption(const CStdString &key, CStdString &value) const;
+  CStdString GetOption(const CStdString &key) const;
+  void SetOption(const CStdString &key, const CStdString &value);
+  void RemoveOption(const CStdString &key);
+
 protected:
   int m_iPort;
   CStdString m_strHostName;
@@ -86,4 +94,5 @@ protected:
   CStdString m_strFileType;
   CStdString m_strOptions;
   CStdString m_strProtocolOptions;
+  CUrlOptions m_options;
 };

@@ -81,8 +81,8 @@ msgctxt "#30022"
 msgid "User Defined Preset Folder"
 msgstr ""
 
-#setting value formats
 #empty strings from id 30023 to 30049
+#setting value formats
 
 msgctxt "#30050"
 msgid "%2.0f secs"

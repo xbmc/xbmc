@@ -23,7 +23,7 @@
 #include "XBDateTime.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 #define PVR_ALL_RECORDINGS_PATH_EXTENSION "-1"
 
@@ -34,7 +34,6 @@ namespace PVR
   private:
     CCriticalSection             m_critSection;
     bool                         m_bIsUpdating;
-    CStdString                   m_strDirectoryHistory;
     CVideoThumbLoader            m_thumbLoader;
     std::vector<CPVRRecording *> m_recordings;
 

@@ -46,6 +46,7 @@
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
+#include "xbmc/Application.h"
 
 #if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
@@ -197,6 +198,13 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
 
   m_RenderUpdateCallBackFn = NULL;
   m_RenderUpdateCallBackCtx = NULL;
+  if ((m_format == RENDER_FMT_BYPASS) && g_application.GetCurrentPlayer())
+  {
+    g_application.m_pPlayer->GetRenderFeatures(m_renderFeatures);
+    g_application.m_pPlayer->GetDeinterlaceMethods(m_deinterlaceMethods);
+    g_application.m_pPlayer->GetDeinterlaceModes(m_deinterlaceModes);
+    g_application.m_pPlayer->GetScalingMethods(m_scalingMethods);
+  }
 
   return true;
 }
@@ -438,15 +446,18 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (m_RenderUpdateCallBackFn)
       (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
 
-    g_graphicsContext.BeginPaint();
+    if (clear)
+    {
+    	g_graphicsContext.BeginPaint();
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(1.0/255, 2.0/255, 3.0/255, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0, 0, 0, 0);
+    	glEnable(GL_BLEND);
+    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    	glClearColor(1.0/255, 2.0/255, 3.0/255, 0);
+    	glClear(GL_COLOR_BUFFER_BIT);
+    	glClearColor(0, 0, 0, 0);
 
-    g_graphicsContext.EndPaint();
+    	g_graphicsContext.EndPaint();
+    }
   }
 
   // this needs to be checked after texture validation
@@ -1869,6 +1880,13 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 {
+  // Player controls render, let it dictate available render features
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_renderFeatures.begin(),m_renderFeatures.end(), feature);
+    return itr != m_renderFeatures.end();
+  }
+
   if(feature == RENDERFEATURE_BRIGHTNESS)
     return false;
 
@@ -1887,8 +1905,15 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
   if (feature == RENDERFEATURE_NONLINSTRETCH)
     return false;
 
-  if (feature == RENDERFEATURE_ROTATION)
+  if (feature == RENDERFEATURE_STRETCH         ||
+      feature == RENDERFEATURE_CROP            ||
+      feature == RENDERFEATURE_ZOOM            ||
+      feature == RENDERFEATURE_VERTICAL_SHIFT  ||
+      feature == RENDERFEATURE_PIXEL_RATIO     ||
+      feature == RENDERFEATURE_POSTPROCESS     ||
+      feature == RENDERFEATURE_ROTATION)
     return true;
+
 
   return false;
 }
@@ -1900,6 +1925,13 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
 
 bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
 {
+  // Player controls render, let it dictate available deinterlace modes
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_deinterlaceModes.begin(),m_deinterlaceModes.end(), mode);
+    return itr != m_deinterlaceModes.end();
+  }
+
   if (mode == VS_DEINTERLACEMODE_OFF)
     return true;
 
@@ -1918,6 +1950,13 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
 
 bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 {
+  // Player controls render, let it dictate available deinterlace methods
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_deinterlaceMethods.begin(),m_deinterlaceMethods.end(), method);
+    return itr != m_deinterlaceMethods.end();
+  }
+
   if(m_renderMethod & RENDER_OMXEGL)
     return false;
 
@@ -1941,6 +1980,13 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 
 bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 {
+  // Player controls render, let it dictate available scaling methods
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_scalingMethods.begin(),m_scalingMethods.end(), method);
+    return itr != m_scalingMethods.end();
+  }
+
   if(method == VS_SCALINGMETHOD_NEAREST
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
@@ -1950,6 +1996,15 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 {
+  // Player controls render, let it pick the auto-deinterlace method
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    if (m_deinterlaceMethods.size())
+      return ((EINTERLACEMETHOD)m_deinterlaceMethods[0]);
+    else
+      return VS_INTERLACEMETHOD_NONE;
+  }
+
   if(m_renderMethod & RENDER_OMXEGL)
     return VS_INTERLACEMETHOD_NONE;
 

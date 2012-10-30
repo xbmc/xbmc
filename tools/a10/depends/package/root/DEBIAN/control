@@ -58,7 +58,8 @@ Depends: mesa-utils,
  libyajl1 (>= 1.0.5),
  zlib1g (>= 1:1.1.4),
  libcurl3-gnutls (>= 7.16.2-1),
- libtinyxml2.6.2
+ libtinyxml2.6.2,
+ libssh-4
 Recommends: libass4 (>= 0.9.7),
  libbluray1,
  libcec1,

@@ -103,6 +103,12 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
       return false;
   }
 
+  if (AE && !AE->CanInit())
+  {
+    delete AE;
+    AE = NULL;
+  }
+
   return AE != NULL;
 }
 

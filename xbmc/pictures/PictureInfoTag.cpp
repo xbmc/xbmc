@@ -187,7 +187,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
   }
 }
 
-void CPictureInfoTag::Serialize(CVariant& value)
+void CPictureInfoTag::Serialize(CVariant& value) const
 {
   value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
   value["cameramake"] = CStdString(m_exifInfo.CameraMake);

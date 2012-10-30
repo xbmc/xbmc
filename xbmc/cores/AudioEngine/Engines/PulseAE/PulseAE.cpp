@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include <pulse/pulseaudio.h>
+#include <pulse/simple.h>
 #include "guilib/LocalizeStrings.h"
 
 /* Static helpers */
@@ -97,6 +98,29 @@ CPulseAE::~CPulseAE()
     pa_threaded_mainloop_free(m_MainLoop);
   }
 
+}
+
+bool CPulseAE::CanInit()
+{
+  pa_simple *s;
+  pa_sample_spec ss;
+ 
+  ss.format = PA_SAMPLE_S16NE;
+  ss.channels = 2;
+  ss.rate = 48000;
+ 
+  //create a pulse client, if this returns NULL, pulseaudio isn't running
+  s = pa_simple_new(NULL, "XBMC-test", PA_STREAM_PLAYBACK, NULL,"test", &ss, NULL, NULL, NULL);
+ 
+  if (s)
+  {
+    pa_simple_free(s);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 bool CPulseAE::Initialize()
@@ -172,7 +196,7 @@ bool CPulseAE::Resume()
   return false;
 }
 
-void CPulseAE::OnSettingsChange(std::string setting)
+void CPulseAE::OnSettingsChange(const std::string& setting)
 {
 }
 

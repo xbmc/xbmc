@@ -101,15 +101,16 @@ CStdString CTextureCache::GetWrappedImageURL(const CStdString &image, const CStd
   if (image.compare(0, 8, "image://") == 0)
     return image; // already wrapped
 
-  CStdString encoded(image);
-  CURL::Encode(encoded);
-  CStdString url = "image://";
-  if (!type.IsEmpty())
-    url += type + "@";
-  url += encoded;
+  CURL url;
+  url.SetProtocol("image");
+  url.SetUserName(type);
+  url.SetHostName(image);
   if (!options.IsEmpty())
-    url += "/transform?" + options;
-  return url;
+  {
+    url.SetFileName("transform");
+    url.SetOptions("?" + options);
+  }
+  return url.Get();
 }
 
 CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
@@ -123,13 +124,14 @@ CStdString CTextureCache::UnwrapImageURL(const CStdString &image)
   {
     CURL url(image);
     if (url.GetUserName().IsEmpty() && url.GetOptions().IsEmpty())
-    {
-      CStdString file(url.GetHostName());
-      CURL::Decode(file);
-      return file;
-    }
+      return url.GetHostName();
   }
   return image;
+}
+
+bool CTextureCache::CanCacheImageURL(const CURL &url)
+{
+  return (url.GetUserName().empty() || url.GetUserName() == "music");
 }
 
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
@@ -309,6 +311,23 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
   }
   else
     CJobQueue::OnJobProgress(jobID, progress, total, job);
+}
+
+bool CTextureCache::Export(const CStdString &image, const CStdString &destination, bool overwrite)
+{
+  CStdString cachedHash;
+  CStdString cachedImage(GetCachedImage(image, cachedHash));
+  if (!cachedImage.IsEmpty())
+  {
+    CStdString dest = destination + URIUtils::GetExtension(cachedImage);
+    if (overwrite || !CFile::Exists(dest))
+    {
+      if (CFile::Cache(cachedImage, dest))
+        return true;
+      CLog::Log(LOGERROR, "%s failed exporting '%s' to '%s'", __FUNCTION__, cachedImage.c_str(), dest.c_str());
+    }
+  }
+  return false;
 }
 
 bool CTextureCache::Export(const CStdString &image, const CStdString &destination)

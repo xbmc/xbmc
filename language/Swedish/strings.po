@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA6
+# XBMC-core v12.0-ALPHA7
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-09-14 07:47+0000\n"
+"PO-Revision-Date: 2012-10-22 09:55+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -273,6 +273,26 @@ msgstr "NNV"
 msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr ""
+
+msgctxt "#89"
+msgid "North"
+msgstr ""
+
+msgctxt "#90"
+msgid "West"
+msgstr ""
+
+msgctxt "#91"
+msgid "East"
+msgstr ""
+
+msgctxt "#92"
+msgid "Variable"
+msgstr ""
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -549,6 +569,10 @@ msgstr "Skiva laddad"
 msgctxt "#166"
 msgid "Skin"
 msgstr "Skal"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr ""
 
 msgctxt "#169"
 msgid "Resolution"
@@ -1328,11 +1352,11 @@ msgstr "Lätt"
 
 msgctxt "#378"
 msgid "AM"
-msgstr "FM"
+msgstr "fm"
 
 msgctxt "#379"
 msgid "PM"
-msgstr "EM"
+msgstr "em"
 
 msgctxt "#380"
 msgid "Showers"
@@ -1544,11 +1568,11 @@ msgstr "Från %s vid %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
-msgstr ""
+msgstr "Ingen optisk skiva hittades"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr ""
+msgstr "Du behöver en optisk enhet för att spela denna video"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2212,7 +2236,7 @@ msgstr "Alla låtar av"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr ""
+msgstr "Pågående TV-program"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2620,7 +2644,7 @@ msgstr "- Trådlös säkerhet"
 
 msgctxt "#779"
 msgid "Save and apply network interface settings"
-msgstr "Spara och applicera inställningar för nätversgränssnittet"
+msgstr "Spara och applicera inställningar för nätverksgränssnittet"
 
 msgctxt "#780"
 msgid "No encryption"
@@ -2700,15 +2724,15 @@ msgstr "Internetåtkomst"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr ""
+msgstr "Biblioteksuppdatering"
 
 msgctxt "#800"
 msgid "Music library needs to rescan art from tags"
-msgstr ""
+msgstr "Musikbiblioteket måste skanna om bilder från taggar"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr ""
+msgstr "Vill du skanna nu?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3078,6 +3102,10 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr ""
+
 msgctxt "#1300"
 msgid "Custom audio device"
 msgstr "Anpassad ljudenhet"
@@ -3155,8 +3183,8 @@ msgid "windy"
 msgstr "blåsigt"
 
 msgctxt "#1413"
-msgid "drizzle"
-msgstr "duggregn"
+msgid "Patches"
+msgstr ""
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3175,12 +3203,12 @@ msgid "Grains"
 msgstr "Grynigt"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "Åskstorm"
+msgid "Thunderstorms"
+msgstr ""
 
 msgctxt "#1419"
-msgid "T-Showers"
-msgstr "Åskskurar"
+msgid "Shallow"
+msgstr ""
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3198,6 +3226,110 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Dimma"
 
+msgctxt "#1424"
+msgid "Overcast"
+msgstr ""
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr ""
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr ""
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr ""
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr ""
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr ""
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr ""
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr ""
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr ""
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr ""
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr ""
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr ""
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr ""
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr ""
+
+msgctxt "#1438"
+msgid "Small"
+msgstr ""
+
+msgctxt "#1439"
+msgid "and"
+msgstr ""
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr ""
+
+msgctxt "#1441"
+msgid "with"
+msgstr ""
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr ""
+
+msgctxt "#1443"
+msgid "of"
+msgstr ""
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr ""
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr ""
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr ""
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr ""
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr ""
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr ""
+
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr "Slå av bildskärm vid inaktivitet"
@@ -3205,6 +3337,14 @@ msgstr "Slå av bildskärm vid inaktivitet"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Speltid"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr ""
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr ""
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3618,9 +3758,29 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Objekt låst"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr ""
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr ""
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr ""
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr ""
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Återaktivera lås"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr ""
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3655,8 +3815,8 @@ msgid "Settings & file manager"
 msgstr "Inställningar & filhanterare"
 
 msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Ange som standard för alla filmer"
+msgid "Set as default for all videos"
+msgstr ""
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3688,7 +3848,7 @@ msgstr "Månad/Dag"
 
 msgctxt "#12390"
 msgid "System uptime"
-msgstr "Driftstid"
+msgstr "Drifttid"
 
 msgctxt "#12391"
 msgid "Minutes"
@@ -3704,7 +3864,7 @@ msgstr "Dagar"
 
 msgctxt "#12394"
 msgid "Total uptime"
-msgstr "Total driftstid"
+msgstr "Total drifttid"
 
 msgctxt "#12395"
 msgid "Battery level"
@@ -3784,11 +3944,11 @@ msgstr "Stäng av systemet"
 
 msgctxt "#13017"
 msgid "Inhibit idle shutdown"
-msgstr ""
+msgstr "Hindra automatisk avstängning"
 
 msgctxt "#13018"
 msgid "Allow idle shutdown"
-msgstr ""
+msgstr "Tillåt automatisk avstängning"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -3796,7 +3956,7 @@ msgstr "Är en annan session aktiv, kanske över ssh?"
 
 msgctxt "#13021"
 msgid "Mounted removable harddrive"
-msgstr "Monterade flyttbar hårddisk"
+msgstr "Monterad flyttbar hårddisk"
 
 msgctxt "#13022"
 msgid "Unsafe device removal"
@@ -4590,6 +4750,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Tillåt hårdvaruacceleration (Videoverktyg)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr ""
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr ""
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V-synkmetod"
@@ -4633,6 +4801,26 @@ msgstr "Riktigt hög (långsam!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Synkronisera uppspelning till display"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr ""
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr ""
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr ""
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr ""
+
+msgctxt "#13515"
+msgid "No art"
+msgstr ""
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5045,6 +5233,10 @@ msgstr "Spela"
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Mata ut CD när rippningen är färdig"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr ""
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5712,7 +5904,7 @@ msgstr "Mjukvarublandning"
 
 msgctxt "#16325"
 msgid "Auto - ION Optimized"
-msgstr ""
+msgstr "Auto - ION-optimerad"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5724,15 +5916,15 @@ msgstr "Visa insommningstimeout"
 
 msgctxt "#17997"
 msgid "%i MByte"
-msgstr ""
+msgstr "%i MByte"
 
 msgctxt "#17998"
 msgid "%i hours"
-msgstr ""
+msgstr "%i timmar"
 
 msgctxt "#17999"
 msgid "%i days"
-msgstr ""
+msgstr "%i dagar"
 
 msgctxt "#19000"
 msgid "Switch to channel"
@@ -5740,1411 +5932,1419 @@ msgstr "Byt till kanal"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
-msgstr ""
+msgstr "Separera sökorden med AND, OR och/eller NOT."
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
-msgstr ""
+msgstr "eller använd fraser för att få en exakt träff, som \"The wizard of Oz\"."
 
 msgctxt "#19003"
-msgid "Find similar programme"
+msgid "Find similar programs"
 msgstr ""
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr ""
+msgstr "Importerar EPG från klienter"
 
 msgctxt "#19005"
 msgid "PVR stream information"
-msgstr ""
+msgstr "PVR ströminformation"
 
 msgctxt "#19006"
 msgid "Receiving device"
-msgstr ""
+msgstr "Mottagningsenhet"
 
 msgctxt "#19007"
 msgid "Device status"
-msgstr ""
+msgstr "Enhetsstatus"
 
 msgctxt "#19008"
 msgid "Signal quality"
-msgstr ""
+msgstr "Signalkvalitet"
 
 msgctxt "#19009"
 msgid "SNR"
-msgstr ""
+msgstr "SNR"
 
 msgctxt "#19010"
 msgid "BER"
-msgstr ""
+msgstr "BER"
 
 msgctxt "#19011"
 msgid "UNC"
-msgstr ""
+msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr ""
+msgstr "PVR-backend"
 
 msgctxt "#19013"
 msgid "Free to air"
-msgstr ""
+msgstr "Okodade"
 
 msgctxt "#19014"
 msgid "Fixed"
-msgstr ""
+msgstr "Fast"
 
 msgctxt "#19015"
 msgid "Encryption"
-msgstr ""
+msgstr "Kryptering"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
-msgstr ""
+msgstr "PVR-backend %i - %s"
 
 msgctxt "#19017"
 msgid "TV recordings"
-msgstr ""
+msgstr "TV-inspelningar"
 
 msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
-msgstr ""
+msgstr "Standardmapp för PVR-miniatyrbilder"
 
 msgctxt "#19019"
 msgid "Channels"
-msgstr ""
+msgstr "Kanaler"
 
 msgctxt "#19020"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#19021"
 msgid "Radio"
-msgstr ""
+msgstr "Radio"
 
 msgctxt "#19022"
 msgid "Hidden"
-msgstr ""
+msgstr "Dold"
 
 msgctxt "#19023"
 msgid "TV channels"
-msgstr ""
+msgstr "TV-kanaler"
 
 msgctxt "#19024"
 msgid "Radio channels"
-msgstr ""
+msgstr "Radiokanaler"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
-msgstr ""
+msgstr "Kommande inspelningar"
 
 msgctxt "#19026"
 msgid "Add timer..."
-msgstr ""
+msgstr "Lägg till timer..."
 
 msgctxt "#19027"
 msgid "No search results"
-msgstr ""
+msgstr "Inga sökresultat"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr ""
+msgstr "Inga EPG-poster"
 
 msgctxt "#19029"
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 msgctxt "#19030"
 msgid "Now"
-msgstr ""
+msgstr "Nu"
 
 msgctxt "#19031"
 msgid "Next"
-msgstr ""
+msgstr "Nästa"
 
 msgctxt "#19032"
 msgid "Timeline"
-msgstr ""
+msgstr "Tidlinje"
 
 msgctxt "#19033"
 msgid "Information"
-msgstr ""
+msgstr "Information"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
-msgstr ""
+msgstr "Redan startat inspelning av denna kanal"
 
 msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
-msgstr ""
+msgstr "Denna kanal kan inte spelas. Kontrollera loggen för detaljer."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
-msgstr ""
+msgstr "Denna inspelning kan inte spelas. Kontrollera loggen för detaljer."
 
 msgctxt "#19037"
 msgid "Show signal quality"
-msgstr ""
+msgstr "Visa signalkvalitet"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
-msgstr ""
+msgstr "Inget stöd från PVR-backend"
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr ""
+msgstr "Är du säker att du vill dölja denna kanal?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr ""
+msgstr "Timer"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr ""
+msgstr "Är du säker att du vill döpa om denna inspelning?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr ""
+msgstr "Är du säker att du vill döpa om denna timer?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr ""
+msgstr "Spelar in"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr ""
+msgstr "Kontrollera din konfiguration eller loggen för detaljer"
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr ""
+msgstr "Ingen PVR-klient har startat ännu. Vänta tills PVR-klienten startat eller kontrollera loggen för detaljer "
 
 msgctxt "#19046"
 msgid "New channel"
-msgstr ""
+msgstr "Ny kanal"
 
 msgctxt "#19047"
 msgid "Programme info"
-msgstr ""
+msgstr "Programinfo"
 
 msgctxt "#19048"
 msgid "Group management"
-msgstr ""
+msgstr "Grupphantering"
 
 msgctxt "#19049"
 msgid "Show channel"
-msgstr ""
+msgstr "Visa kanal"
 
 msgctxt "#19050"
 msgid "Show visible channels"
-msgstr ""
+msgstr "Visa synliga kanaler"
 
 msgctxt "#19051"
 msgid "Show hidden channels"
-msgstr ""
+msgstr "Visa dolda kanaler"
 
 msgctxt "#19052"
 msgid "Move channel to:"
-msgstr ""
+msgstr "Flytta kanal till:"
 
 msgctxt "#19053"
 msgid "Recording information"
-msgstr ""
+msgstr "Inspelningsinformation"
 
 msgctxt "#19054"
 msgid "Hide channel"
-msgstr ""
+msgstr "Dölj kanal"
 
 msgctxt "#19055"
 msgid "No information available"
-msgstr ""
+msgstr "Ingen information tillgänglig"
 
 msgctxt "#19056"
 msgid "New timer"
-msgstr ""
+msgstr "Ny timer"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr ""
+msgstr "Redigera timer"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr ""
+msgstr "Timer aktiverad"
 
 msgctxt "#19059"
 msgid "Stop recording"
-msgstr ""
+msgstr "Avsluta inspelning"
 
 msgctxt "#19060"
 msgid "Delete timer"
-msgstr ""
+msgstr "Ta bort timer"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr ""
+msgstr "Lägg till timer"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
-msgstr ""
+msgstr "Sort: Kanal"
 
 msgctxt "#19063"
 msgid "Go to begin"
-msgstr ""
+msgstr "Gå till början"
 
 msgctxt "#19064"
 msgid "Go to end"
-msgstr ""
+msgstr "Gå till slutet"
 
 msgctxt "#19065"
 msgid "Default EPG window"
-msgstr ""
+msgstr "Standard EPG-fönster"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
-msgstr ""
+msgstr "Denna händelse spelas redan in."
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr ""
+msgstr "Inspelningen kan inte tas bort. Kontrollera loggen för detaljer."
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr ""
+msgstr "EPG-uppdateringsintervall"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr ""
+msgstr "Lagra inte EPG i databasen"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
-msgstr ""
+msgstr "Fördröjning vid kanalbyte"
 
 msgctxt "#19074"
 msgid "Active:"
-msgstr ""
+msgstr "Aktiv:"
 
 msgctxt "#19075"
 msgid "Name:"
-msgstr ""
+msgstr "Namn:"
 
 msgctxt "#19076"
 msgid "Folder:"
-msgstr ""
+msgstr "Mapp:"
 
 msgctxt "#19077"
 msgid "Radio:"
-msgstr ""
+msgstr "Radio:"
 
 msgctxt "#19078"
 msgid "Channel:"
-msgstr ""
+msgstr "Kanal:"
 
 msgctxt "#19079"
 msgid "Day:"
-msgstr ""
+msgstr "Dag:"
 
 msgctxt "#19080"
 msgid "Begin:"
-msgstr ""
+msgstr "Start:"
 
 msgctxt "#19081"
 msgid "End:"
-msgstr ""
+msgstr "Slut:"
 
 msgctxt "#19082"
 msgid "Priority:"
-msgstr ""
+msgstr "Prioritet:"
 
 msgctxt "#19083"
 msgid "Lifetime (days):"
-msgstr ""
+msgstr "Livstid (dagar):"
 
 msgctxt "#19084"
 msgid "First day:"
-msgstr ""
+msgstr "Första dagen:"
 
 msgctxt "#19085"
 msgid "Unknown channel %u"
-msgstr ""
+msgstr "Okänd kanal %u"
 
 msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
-msgstr ""
+msgstr "Må-__-__-__-__-__-__"
 
 msgctxt "#19087"
 msgid "__-Tu-__-__-__-__-__"
-msgstr ""
+msgstr "__-Ti-__-__-__-__-__"
 
 msgctxt "#19088"
 msgid "__-__-We-__-__-__-__"
-msgstr ""
+msgstr "__-__-On-__-__-__-__"
 
 msgctxt "#19089"
 msgid "__-__-__-Th-__-__-__"
-msgstr ""
+msgstr "__-__-__-To-__-__-__"
 
 msgctxt "#19090"
 msgid "__-__-__-__-Fr-__-__"
-msgstr ""
+msgstr "__-__-__-__-Fr-__-__"
 
 msgctxt "#19091"
 msgid "__-__-__-__-__-Sa-__"
-msgstr ""
+msgstr "__-__-__-__-__-Lö-__"
 
 msgctxt "#19092"
 msgid "__-__-__-__-__-__-Su"
-msgstr ""
+msgstr "__-__-__-__-__-__-Sö"
 
 msgctxt "#19093"
 msgid "Mo-Tu-We-Th-Fr-__-__"
-msgstr ""
+msgstr "Må-Ti-On-To-Fr-__-__"
 
 msgctxt "#19094"
 msgid "Mo-Tu-We-Th-Fr-Sa-__"
-msgstr ""
+msgstr "Må-Ti-On-To-Fr-Lö-__"
 
 msgctxt "#19095"
 msgid "Mo-Tu-We-Th-Fr-Sa-Su"
-msgstr ""
+msgstr "Må-Ti-On-To-Fr-Lö-Sö"
 
 msgctxt "#19096"
 msgid "__-__-__-__-__-Sa-Su"
-msgstr ""
+msgstr "__-__-__-__-__-Lö-Sö"
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
-msgstr ""
+msgstr "Ange ett namn för denna inspelning"
 
 msgctxt "#19098"
 msgid "Warning"
-msgstr ""
+msgstr "Varning"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
-msgstr ""
-
-msgctxt "#19103"
-msgid "Scan for missing icons"
-msgstr ""
+msgstr "Var god byt till en annan kanal."
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
-msgstr ""
+msgstr "Ange mappnamnet för inspelningen"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr ""
+msgstr "Nästa timer på"
 
 msgctxt "#19107"
 msgid "at"
-msgstr ""
+msgstr "kl."
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr ""
+msgstr "Kunde inte spara timer. Kontrollera loggen för detaljer."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr ""
+msgstr "Oväntat fel uppstod. Försök igen eller kolla loggen för detaljer."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr ""
+msgstr "PVR-backendfel. Undersök loggen för detaljer."
 
 msgctxt "#19114"
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 msgctxt "#19115"
 msgid "Address"
-msgstr ""
+msgstr "Adress"
 
 msgctxt "#19116"
 msgid "Disksize"
-msgstr ""
+msgstr "Diskstorlek"
 
 msgctxt "#19117"
 msgid "Search for channels"
-msgstr ""
+msgstr "Sök efter kanaler"
 
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
-msgstr ""
+msgstr "Inte möjligt att använda PVR-funktioner medan sökning pågår."
 
 msgctxt "#19119"
 msgid "On which server you want to search?"
-msgstr ""
+msgstr "På vilken server vill du söka?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr ""
+msgstr "Klientnummer"
 
 msgctxt "#19121"
 msgid "Avoid repeats"
-msgstr ""
+msgstr "Undvik repeteringar"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr ""
+msgstr "Denna inspelning pågår fortfarande. Är du säker på att du vill radera?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
-msgstr ""
+msgstr "Endast okodade kanaler"
 
 msgctxt "#19124"
 msgid "Ignore present timers"
-msgstr ""
+msgstr "Ignorera nuvarande timers"
 
 msgctxt "#19125"
 msgid "Ignore present recordings"
-msgstr ""
+msgstr "Ingorera nuvarande inspelningar"
 
 msgctxt "#19126"
 msgid "Start time"
-msgstr ""
+msgstr "Starttid"
 
 msgctxt "#19127"
 msgid "End time"
-msgstr ""
+msgstr "Sluttid"
 
 msgctxt "#19128"
 msgid "Start date"
-msgstr ""
+msgstr "Startdatum"
 
 msgctxt "#19129"
 msgid "End date"
-msgstr ""
+msgstr "Slutdatum"
 
 msgctxt "#19130"
 msgid "Minimum duration"
-msgstr ""
+msgstr "Minimal längd"
 
 msgctxt "#19131"
 msgid "Maximum duration"
-msgstr ""
+msgstr "Maximal längd"
 
 msgctxt "#19132"
 msgid "Include unknown genres"
-msgstr ""
+msgstr "Inkludera okända genrer"
 
 msgctxt "#19133"
 msgid "Search string"
-msgstr ""
+msgstr "Söksträng"
 
 msgctxt "#19134"
 msgid "Include description"
-msgstr ""
+msgstr "Inkludera beskrivning"
 
 msgctxt "#19135"
 msgid "Case sensitive"
-msgstr ""
+msgstr "Skiftlägeskänslig"
 
 msgctxt "#19136"
 msgid "Channel unavailable"
-msgstr ""
+msgstr "Kanal otillgänglig"
 
 msgctxt "#19137"
 msgid "No groups defined"
-msgstr ""
+msgstr "Inga grupper definerade"
 
 msgctxt "#19138"
 msgid "Please create a group first"
-msgstr ""
+msgstr "Var god skapa en grupp först"
 
 msgctxt "#19139"
 msgid "Name of the new group"
-msgstr ""
+msgstr "Namn på den nya gruppen"
 
 msgctxt "#19141"
 msgid "Group"
-msgstr ""
+msgstr "Grupp"
 
 msgctxt "#19142"
 msgid "Search guide"
-msgstr ""
+msgstr "Sökguide"
 
 msgctxt "#19143"
 msgid "Group management"
-msgstr ""
+msgstr "Grupphantering"
 
 msgctxt "#19144"
 msgid "No groups defined"
-msgstr ""
+msgstr "Inga grupper definerade"
 
 msgctxt "#19145"
 msgid "Grouped"
-msgstr ""
+msgstr "Grupperad"
 
 msgctxt "#19146"
 msgid "Groups"
-msgstr ""
+msgstr "Grupper"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr ""
+msgstr "PVR-backend stödjer inte denna händelse. Kontrollera loggen för detaljer."
 
 msgctxt "#19148"
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 msgctxt "#19149"
 msgid "Mo"
-msgstr ""
+msgstr "Må"
 
 msgctxt "#19150"
 msgid "Tu"
-msgstr ""
+msgstr "Ti"
 
 msgctxt "#19151"
 msgid "We"
-msgstr ""
+msgstr "On"
 
 msgctxt "#19152"
 msgid "Th"
-msgstr ""
+msgstr "To"
 
 msgctxt "#19153"
 msgid "Fr"
-msgstr ""
+msgstr "Fr"
 
 msgctxt "#19154"
 msgid "Sa"
-msgstr ""
+msgstr "Lö"
 
 msgctxt "#19155"
 msgid "Su"
-msgstr ""
+msgstr "Sö"
 
 msgctxt "#19156"
 msgid "from"
-msgstr ""
+msgstr "från"
 
 msgctxt "#19157"
 msgid "Next recording"
-msgstr ""
+msgstr "Nästa inspelning"
 
 msgctxt "#19158"
 msgid "Currently recording"
-msgstr ""
+msgstr "Spelar in"
 
 msgctxt "#19159"
 msgid "from"
-msgstr ""
+msgstr "från"
 
 msgctxt "#19160"
 msgid "to"
-msgstr ""
-
-msgctxt "#19161"
-msgid "On"
-msgstr ""
+msgstr "till"
 
 msgctxt "#19162"
 msgid "Recording active"
-msgstr ""
+msgstr "Inspelning aktiv"
 
 msgctxt "#19163"
 msgid "Recordings"
-msgstr ""
+msgstr "Inspelningar"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr ""
+msgstr "Kan inte starta inspelningen. Kontrollera loggen för detaljer."
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr ""
+msgstr "Byt"
 
 msgctxt "#19166"
 msgid "PVR information"
-msgstr ""
+msgstr "PVR-information"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
-msgstr ""
+msgstr "Skanna efter saknade ikoner"
 
 msgctxt "#19168"
 msgid "Switch channel without pressing OK"
-msgstr ""
+msgstr "Byt kanal utan att trycka OK"
 
 msgctxt "#19169"
 msgid "Hide video information box"
-msgstr ""
+msgstr "Dölj videoinformationsruta"
 
 msgctxt "#19170"
 msgid "Timeout when starting playback"
-msgstr ""
+msgstr "Timeout vid uppspelning"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
-msgstr ""
+msgstr "Starta uppspelning minimerad"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
-msgstr ""
+msgstr "Omedelbar inspelningslängd"
 
 msgctxt "#19173"
 msgid "Default recording priority"
-msgstr ""
+msgstr "Standardinspelningsprioritet"
 
 msgctxt "#19174"
 msgid "Default recording lifetime"
-msgstr ""
+msgstr "Standardinspelningslivstid"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
-msgstr ""
+msgstr "Marginal vid inspelningens början"
 
 msgctxt "#19176"
 msgid "Margin at the end of a recording"
-msgstr ""
+msgstr "Marginal vid inspelningens slut"
 
 msgctxt "#19177"
 msgid "Playback"
-msgstr ""
+msgstr "Uppspelning"
 
 msgctxt "#19178"
 msgid "Show channel information when switching channels"
-msgstr ""
+msgstr "Visa kanalinformation vid kanalbyte"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
-msgstr ""
+msgstr "Dölj kanalinformation automatiskt"
 
 msgctxt "#19180"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr ""
+msgstr "Many/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
-msgstr ""
+msgstr "Dagar att visa i EPG"
 
 msgctxt "#19184"
 msgid "Channel information duration"
-msgstr ""
+msgstr "Kanalinformationslängd"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr ""
+msgstr "Återställ PVR-databasen"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr ""
+msgstr "All data i PVR-databasen har tagits bort"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr ""
+msgstr "Återställ EPG-databasen"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr ""
+msgstr "EPG återställs"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
-msgstr ""
+msgstr "Återuppta sista kanalen vid start"
 
 msgctxt "#19190"
 msgid "Minimized"
-msgstr ""
+msgstr "Minimerad"
 
 msgctxt "#19191"
 msgid "PVR service"
-msgstr ""
+msgstr "PVR-service"
 
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
-msgstr ""
+msgstr "Inget av de anslutna PVR-backendsystemen stödjer kanalsökning."
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr ""
+msgstr "Kanalsökningen kan inte starta. Kontrollera loggen för detaljer."
 
 msgctxt "#19194"
 msgid "Continue?"
-msgstr ""
+msgstr "Fortsätt?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr ""
+msgstr "Klientåtgärder"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr ""
+msgstr "PVR-klient specifika åtgärder"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
-msgstr ""
+msgstr "Inspelning startade: %s"
 
 msgctxt "#19198"
 msgid "Recording finished on: %s"
-msgstr ""
+msgstr "Inspelning slutade: %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
-msgstr ""
+msgstr "Kanalhanterare"
 
 msgctxt "#19200"
 msgid "EPG source:"
-msgstr ""
+msgstr "EPG-källa"
 
 msgctxt "#19201"
 msgid "Channel name:"
-msgstr ""
+msgstr "Kanalnamn:"
 
 msgctxt "#19202"
 msgid "Channel icon:"
-msgstr ""
+msgstr "Kanalikon:"
 
 msgctxt "#19203"
 msgid "Edit channel"
-msgstr ""
+msgstr "Redigera kanal"
 
 msgctxt "#19204"
 msgid "New channel"
-msgstr ""
+msgstr "Ny kanal"
 
 msgctxt "#19205"
 msgid "Group management"
-msgstr ""
+msgstr "Grupphanterare"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
-msgstr ""
+msgstr "Aktivera EPG:"
 
 msgctxt "#19207"
 msgid "Group:"
-msgstr ""
+msgstr "Grupp:"
 
 msgctxt "#19208"
 msgid "Enter the name of the new channel"
-msgstr ""
+msgstr "Ange namnet på den nya kanalen"
 
 msgctxt "#19209"
 msgid "XBMC virtual backend"
-msgstr ""
+msgstr "XBMC virtuellt backend"
 
 msgctxt "#19210"
 msgid "Client"
-msgstr ""
+msgstr "Klient"
 
 msgctxt "#19211"
 msgid "Delete channel"
-msgstr ""
+msgstr "Ta bort kanal"
 
 msgctxt "#19212"
 msgid "This list contains changes"
-msgstr ""
+msgstr "Listan innehåller ändringar"
 
 msgctxt "#19213"
 msgid "Select backend"
-msgstr ""
+msgstr "Välj backend"
 
 msgctxt "#19214"
 msgid "Enter a valid URL for the new channel"
-msgstr ""
+msgstr "Skriv in en giltig URL för den nya kanalen"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr ""
+msgstr "PVR-backendsystemet stödjer inte timers."
 
 msgctxt "#19216"
 msgid "All radio channels"
-msgstr ""
+msgstr "Alla radiokanaler"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr ""
+msgstr "Alla TV-kanaler"
 
 msgctxt "#19218"
 msgid "Visible"
-msgstr ""
+msgstr "Synlig"
 
 msgctxt "#19219"
 msgid "Ungrouped channels"
-msgstr ""
+msgstr "Ogrupperade kanaler"
 
 msgctxt "#19220"
 msgid "Channels in"
-msgstr ""
+msgstr "Kanaler i"
 
 msgctxt "#19221"
 msgid "Synchronise channel groups with backends"
-msgstr ""
+msgstr "Synkronisera kanalgrupper med backend"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr ""
+msgstr "Inget PVR-tillägg kunde aktiveras. Kontrollera dina inställningar eller loggen för mer information."
 
 msgctxt "#19224"
 msgid "Recording aborted"
-msgstr ""
+msgstr "Inspelning avbruten"
 
 msgctxt "#19225"
 msgid "Recording scheduled"
-msgstr ""
+msgstr "Inspelning schemalagd"
 
 msgctxt "#19226"
 msgid "Recording started"
-msgstr ""
+msgstr "Inspelning startade"
 
 msgctxt "#19227"
 msgid "Recording completed"
-msgstr ""
+msgstr "Inspelning färdig"
 
 msgctxt "#19228"
 msgid "Recording deleted"
-msgstr ""
+msgstr "Inspelning borttagen"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr ""
+msgstr "Stäng kanalens OSD efter byte av kanal"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
-msgstr ""
+msgstr "Hindra programguidesuppdateringar under uppspelning av en TV-ström"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
-msgstr ""
+msgstr "Använd alltid kanalordningen från backendsystemen"
 
 msgctxt "#19232"
 msgid "Clear search results"
-msgstr ""
+msgstr "Rensa sökresultat"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr ""
+msgstr "Visa en notifiering vid timeruppdateringar"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr ""
+msgstr "Använd backendsystemens kanalnummer (fungerar bara med 1 aktiverat PVR-tillägg)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
-msgstr ""
+msgstr "PVR-hanteraren startas"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
-msgstr ""
+msgstr "Laddar kanaler från klienter"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr ""
+msgstr "Laddar timers från klienter"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
-msgstr ""
+msgstr "Laddar inspelningar från klienter"
 
 msgctxt "#19239"
 msgid "Starting background threads"
-msgstr ""
+msgstr "Startar bakgrundstrådar"
 
 msgctxt "#19240"
 msgid "No PVR add-on enabled"
-msgstr ""
+msgstr "Inget PVR-tillägg aktiverat"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr ""
+msgstr "PVR-hanteraren har aktiverats utan"
 
 msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr ""
+msgstr "aktiverade PVR-tillägg. Aktivera åtminstone ett tillägg"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
-msgstr ""
+msgstr "för att använda PVR-funktionaliteten"
 
 msgctxt "#19244"
 msgid "Backend idle time"
-msgstr ""
+msgstr "Fri tid för backendsystemet"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
-msgstr ""
+msgstr "Ange uppvakningskommando (kommando [tidsangivelse])"
 
 msgctxt "#19246"
 msgid "Wakeup before recording"
-msgstr ""
+msgstr "Vakna innan inspelning"
 
 msgctxt "#19247"
 msgid "Daily wakeup"
-msgstr ""
+msgstr "Daglig uppvakning"
 
 msgctxt "#19248"
 msgid "Daily wakeup time (HH:MM:SS)"
-msgstr ""
+msgstr "Daglig uppvakningstid (TT:MM:SS)"
 
 msgctxt "#19249"
 msgid "Filter channels"
-msgstr ""
+msgstr "Filtrera kanaler"
 
 msgctxt "#19250"
 msgid "Loading EPG from database"
-msgstr ""
+msgstr "Laddar EPG från databas"
 
 msgctxt "#19251"
 msgid "Update EPG information"
-msgstr ""
+msgstr "Uppdatera EPG-information"
 
 msgctxt "#19252"
 msgid "Schedule EPG update for this channel?"
-msgstr ""
+msgstr "Schemalägg EPG-uppdatering för den här kanalen?"
 
 msgctxt "#19253"
 msgid "EPG update scheduled for channel"
-msgstr ""
+msgstr "EPG-uppdatering schemalagd för denna kanal"
 
 msgctxt "#19254"
 msgid "EPG update failed for channel"
-msgstr ""
+msgstr "EPG-uppdatering misslyckades för kanalen"
 
 msgctxt "#19255"
 msgid "Start recording"
-msgstr ""
+msgstr "Starta inspelning"
 
 msgctxt "#19256"
 msgid "Stop recording"
-msgstr ""
+msgstr "Stoppa inspelning"
 
 msgctxt "#19257"
 msgid "Lock channel"
-msgstr ""
+msgstr "Lås kanal"
 
 msgctxt "#19258"
 msgid "Unlock channel"
-msgstr ""
+msgstr "Lås upp kanal"
 
 msgctxt "#19259"
 msgid "Parental control"
-msgstr ""
+msgstr "Föräldrakontroll"
 
 msgctxt "#19260"
 msgid "Unlock duration"
-msgstr ""
+msgstr "Upplåsningslängd"
 
 msgctxt "#19261"
 msgid "Change PIN"
-msgstr ""
+msgstr "Byt PIN"
 
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
-msgstr ""
+msgstr "Föräldrakontroll. Ange PIN:"
 
 msgctxt "#19263"
 msgid "Locked channel. Enter PIN:"
-msgstr ""
+msgstr "Låst kanal. Ange PIN:"
 
 msgctxt "#19264"
 msgid "Incorrect PIN"
-msgstr ""
+msgstr "Felaktig PIN"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
-msgstr ""
+msgstr "Den angivna PIN-koden var felaktig."
 
 msgctxt "#19266"
 msgid "Parental locked"
-msgstr ""
+msgstr "Föräldralås"
 
 msgctxt "#19267"
 msgid "Parental locked:"
-msgstr ""
+msgstr "Föräldralås:"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
-msgstr ""
+msgstr "Visa inte 'ingen information tillgänglig' etiketter"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr ""
+msgstr "Visa inte 'anslutning tappad' varningar"
 
 msgctxt "#19270"
 msgid "* All recordings"
-msgstr ""
+msgstr "* Alla inspelningar"
 
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
-msgstr ""
+msgstr "Inga PVR-tillägg kunde hittas"
 
 msgctxt "#19272"
 msgid "You need a tuner, backend software, and an"
-msgstr ""
+msgstr "Du behöver en mottagare, backend-mjukvara och ett"
 
 msgctxt "#19273"
 msgid "add-on for the backend to be able to use PVR."
-msgstr ""
+msgstr "tillägg för backend för att kunna använda PVR."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Var god besök xbmc.org/pvr för att lära dig mer."
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr ""
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr ""
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr ""
+
+msgctxt "#19278"
+msgid "Recording error"
 msgstr ""
 
 msgctxt "#19499"
 msgid "Other/Unknown"
-msgstr ""
+msgstr "Annan/Okänd"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
-msgstr ""
+msgstr "Film/Drama"
 
 msgctxt "#19501"
 msgid "Detective/Thriller"
-msgstr ""
+msgstr "Kriminal/Thriller"
 
 msgctxt "#19502"
 msgid "Adventure/Western/War"
-msgstr ""
+msgstr "Äventyr/Västern/Krig"
 
 msgctxt "#19503"
 msgid "Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science Fiction/Fantasi/Skräck"
 
 msgctxt "#19504"
 msgid "Comedy"
-msgstr ""
+msgstr "Komedi"
 
 msgctxt "#19505"
 msgid "Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Såpa/Melodrama/Folk"
 
 msgctxt "#19506"
 msgid "Romance"
-msgstr ""
+msgstr "Romantik"
 
 msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
-msgstr ""
+msgstr "Seriös/Klassisk/Religiös/Historisk film/Drama"
 
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
-msgstr ""
+msgstr "Vuxen film/Drama"
 
 msgctxt "#19516"
 msgid "News/Current Affairs"
-msgstr ""
+msgstr "Nyheter/Aktuella frågor"
 
 msgctxt "#19517"
 msgid "News/Weather Report"
-msgstr ""
+msgstr "Nyheter/Väderlägesrapport"
 
 msgctxt "#19518"
 msgid "News Magazine"
-msgstr ""
+msgstr "Nyhetsmagasin"
 
 msgctxt "#19519"
 msgid "Documentary"
-msgstr ""
+msgstr "Dokumentär"
 
 msgctxt "#19520"
 msgid "Discussion/Interview/Debate"
-msgstr ""
+msgstr "Diskussion/Intervju/Debatt"
 
 msgctxt "#19532"
 msgid "Show/Game Show"
-msgstr ""
+msgstr "Program/Spelprogram"
 
 msgctxt "#19533"
 msgid "Game Show/Quiz/Contest"
-msgstr ""
+msgstr "Spelprogram/Frågesport/Tävling"
 
 msgctxt "#19534"
 msgid "Variety Show"
-msgstr ""
+msgstr "Mångfaldsprogram"
 
 msgctxt "#19535"
 msgid "Talk Show"
-msgstr ""
+msgstr "Pratshow"
 
 msgctxt "#19548"
 msgid "Sports"
-msgstr ""
+msgstr "Sport"
 
 msgctxt "#19549"
 msgid "Special Event"
-msgstr ""
+msgstr "Speciell händelse"
 
 msgctxt "#19550"
 msgid "Sport Magazine"
-msgstr ""
+msgstr "Sportmagasin"
 
 msgctxt "#19551"
 msgid "Football"
-msgstr ""
+msgstr "Fotboll"
 
 msgctxt "#19552"
 msgid "Tennis/Squash"
-msgstr ""
+msgstr "Tennis/Squash"
 
 msgctxt "#19553"
 msgid "Team Sports"
-msgstr ""
+msgstr "Lagsport"
 
 msgctxt "#19554"
 msgid "Athletics"
-msgstr ""
+msgstr "Friidrott"
 
 msgctxt "#19555"
 msgid "Motor Sport"
-msgstr ""
+msgstr "Motorsport"
 
 msgctxt "#19556"
 msgid "Water Sport"
-msgstr ""
+msgstr "Vattensport"
 
 msgctxt "#19557"
 msgid "Winter Sports"
-msgstr ""
+msgstr "Vintersport"
 
 msgctxt "#19558"
 msgid "Equestrian"
-msgstr ""
+msgstr "Hästhoppning"
 
 msgctxt "#19559"
 msgid "Martial Sports"
-msgstr ""
+msgstr "Kampsport"
 
 msgctxt "#19564"
 msgid "Children's/Youth Programmes"
-msgstr ""
+msgstr "Barn/Ungdomsprogram"
 
 msgctxt "#19565"
 msgid "Pre-school Children's Programmes"
-msgstr ""
+msgstr "Dagisbarnsprogram"
 
 msgctxt "#19566"
 msgid "Entertainment Programmes for 6 to 14"
-msgstr ""
+msgstr "Underhållningsprogram för åldrar 6 till 14"
 
 msgctxt "#19567"
 msgid "Entertainment Programmes for 10 to 16"
-msgstr ""
+msgstr "Underhållningsprogram för åldrar 10 till 16"
 
 msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
-msgstr ""
+msgstr "Informations-/Utbildnings-/Skolprogram"
 
 msgctxt "#19569"
 msgid "Cartoons/Puppets"
-msgstr ""
+msgstr "Tecknat/Dockor"
 
 msgctxt "#19580"
 msgid "Music/Ballet/Dance"
-msgstr ""
+msgstr "Musik/Balett/Dans"
 
 msgctxt "#19581"
 msgid "Rock/Pop"
-msgstr ""
+msgstr "Rock/Pop"
 
 msgctxt "#19582"
 msgid "Serious/Classical Music"
-msgstr ""
+msgstr "Seriös/Klassisk musik"
 
 msgctxt "#19583"
 msgid "Folk/Traditional Music"
-msgstr ""
+msgstr "Folk/Traditionell musik"
 
 msgctxt "#19584"
 msgid "Musical/Opera"
-msgstr ""
+msgstr "Musikal/Opera"
 
 msgctxt "#19585"
 msgid "Ballet"
-msgstr ""
+msgstr "Balett"
 
 msgctxt "#19596"
 msgid "Arts/Culture"
-msgstr ""
+msgstr "Konst/Kultur"
 
 msgctxt "#19597"
 msgid "Performing Arts"
-msgstr ""
+msgstr "Framförda konster"
 
 msgctxt "#19598"
 msgid "Fine Arts"
-msgstr ""
+msgstr "Skön konst"
 
 msgctxt "#19599"
 msgid "Religion"
-msgstr ""
+msgstr "Religion"
 
 msgctxt "#19600"
 msgid "Popular Culture/Traditional Arts"
-msgstr ""
+msgstr "Populärkultur/Traditionell konst"
 
 msgctxt "#19601"
 msgid "Literature"
-msgstr ""
+msgstr "Litteratur"
 
 msgctxt "#19602"
 msgid "Film/Cinema"
-msgstr ""
+msgstr "FIlm/Bio"
 
 msgctxt "#19603"
 msgid "Experimental Film/Video"
-msgstr ""
+msgstr "Experimentell film/Video"
 
 msgctxt "#19604"
 msgid "Broadcasting/Press"
-msgstr ""
+msgstr "Sändning/Media"
 
 msgctxt "#19605"
 msgid "New Media"
-msgstr ""
+msgstr "Nytt media"
 
 msgctxt "#19606"
 msgid "Arts/Culture Magazines"
-msgstr ""
+msgstr "Konst-/Kulturmagasin"
 
 msgctxt "#19607"
 msgid "Fashion"
-msgstr ""
+msgstr "Mode"
 
 msgctxt "#19612"
 msgid "Social/Political/Economics"
-msgstr ""
+msgstr "Social/Politisk/Ekonomisk"
 
 msgctxt "#19613"
 msgid "Magazines/Reports/Documentary"
-msgstr ""
+msgstr "Magasin/Rapport/Dokumentär"
 
 msgctxt "#19614"
 msgid "Economics/Social Advisory"
-msgstr ""
+msgstr "Ekonomisk/Social rådgivning"
 
 msgctxt "#19615"
 msgid "Remarkable People"
-msgstr ""
+msgstr "Anmärkningsvärda människor"
 
 msgctxt "#19628"
 msgid "Education/Science/Factual"
-msgstr ""
+msgstr "Utbildning/Vetenskap/Faktisk"
 
 msgctxt "#19629"
 msgid "Nature/Animals/Environment"
-msgstr ""
+msgstr "Natur/Djur/Miljö"
 
 msgctxt "#19630"
 msgid "Technology/Natural Sciences"
-msgstr ""
+msgstr "Teknologi/Naturvetenskap"
 
 msgctxt "#19631"
 msgid "Medicine/Physiology/Psychology"
-msgstr ""
+msgstr "Medicin/Fysiologi/Psykologi"
 
 msgctxt "#19632"
 msgid "Foreign Countries/Expeditions"
-msgstr ""
+msgstr "Främmande länder/Expeditioner"
 
 msgctxt "#19633"
 msgid "Social/Spiritual Sciences"
-msgstr ""
+msgstr "Social/Sprituell vetenskap"
 
 msgctxt "#19634"
 msgid "Further Education"
-msgstr ""
+msgstr "Mer utbildning"
 
 msgctxt "#19635"
 msgid "Languages"
-msgstr ""
+msgstr "Språk"
 
 msgctxt "#19644"
 msgid "Leisure/Hobbies"
-msgstr ""
+msgstr "Fritid/Hobby"
 
 msgctxt "#19645"
 msgid "Tourism/Travel"
-msgstr ""
+msgstr "Turism/Resa"
 
 msgctxt "#19646"
 msgid "Handicraft"
-msgstr ""
+msgstr "Hantverk"
 
 msgctxt "#19647"
 msgid "Motoring"
-msgstr ""
+msgstr "Trafik"
 
 msgctxt "#19648"
 msgid "Fitness &amp; Health"
-msgstr ""
+msgstr "Fitness &amp; hälsa"
 
 msgctxt "#19649"
 msgid "Cooking"
-msgstr ""
+msgstr "Matlagning"
 
 msgctxt "#19650"
 msgid "Advertisement/Shopping"
-msgstr ""
+msgstr "Reklam/Handel"
 
 msgctxt "#19651"
 msgid "Gardening"
-msgstr ""
+msgstr "Trädgårdsskötsel"
 
 msgctxt "#19660"
 msgid "Special Characteristics"
-msgstr ""
+msgstr "Speciella kännetecken"
 
 msgctxt "#19661"
 msgid "Original Language"
-msgstr ""
+msgstr "Originalspråk"
 
 msgctxt "#19662"
 msgid "Black &amp; White"
-msgstr ""
+msgstr "Svart/vit"
 
 msgctxt "#19663"
 msgid "Unpublished"
-msgstr ""
+msgstr "Opublicerat"
 
 msgctxt "#19664"
 msgid "Live Broadcast"
-msgstr ""
+msgstr "Livesändning"
 
 msgctxt "#19676"
 msgid "Drama"
-msgstr ""
+msgstr "Drama"
 
 msgctxt "#19677"
 msgid "Detective/Thriller"
-msgstr ""
+msgstr "Kriminal/Thriller"
 
 msgctxt "#19678"
 msgid "Adventure/Western/War"
-msgstr ""
+msgstr "Äventyr/Västern/Krig"
 
 msgctxt "#19679"
 msgid "Science Fiction/Fantasy/Horror"
-msgstr ""
+msgstr "Science Fiction/Fantasy/Skräck"
 
 msgctxt "#19680"
 msgid "Comedy"
-msgstr ""
+msgstr "Komedi"
 
 msgctxt "#19681"
 msgid "Soap/Melodrama/Folkloric"
-msgstr ""
+msgstr "Såpa/Melodrama/Folkloristisk"
 
 msgctxt "#19682"
 msgid "Romance"
-msgstr ""
+msgstr "Romantik"
 
 msgctxt "#19683"
 msgid "Serious/ClassicalReligion/Historical"
-msgstr ""
+msgstr "Seriös/Klassisk religion/Historisk"
 
 msgctxt "#19684"
 msgid "Adult"
-msgstr ""
+msgstr "Vuxen"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -7830,6 +8030,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr ""
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Aktivera automatisk rullning för handling & recension"
@@ -7876,23 +8080,23 @@ msgstr "Nedladdning av artistinfo misslyckades"
 
 msgctxt "#20240"
 msgid "Android music"
-msgstr ""
+msgstr "Androidmusik"
 
 msgctxt "#20241"
 msgid "Android videos"
-msgstr ""
+msgstr "Androidvideor"
 
 msgctxt "#20242"
 msgid "Android pictures"
-msgstr ""
+msgstr "Androidbilder"
 
 msgctxt "#20243"
 msgid "Android photos"
-msgstr ""
+msgstr "Androidfoton"
 
 msgctxt "#20244"
 msgid "Android Apps"
-msgstr ""
+msgstr "Androidappar"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -8528,27 +8732,27 @@ msgstr "Gruppera filmer i samlingar"
 
 msgctxt "#20459"
 msgid "Tags"
-msgstr ""
+msgstr "Taggar"
 
 msgctxt "#20460"
 msgid "Add %s"
-msgstr ""
+msgstr "Lägg till %s"
 
 msgctxt "#20461"
 msgid "Remove %s"
-msgstr ""
+msgstr "Ta bort %s"
 
 msgctxt "#20462"
 msgid "New tag..."
-msgstr ""
+msgstr "Ny tagg"
 
 msgctxt "#20463"
 msgid "A tag with the name '%s' already exists."
-msgstr ""
+msgstr "En tagg med namnet '%s' finns redan"
 
 msgctxt "#20464"
 msgid "Select %s"
-msgstr ""
+msgstr "Välj %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -8956,7 +9160,7 @@ msgstr "Buffert fylldes innan tillräcklig mängd som krävs för kontinuerlig u
 
 msgctxt "#21456"
 msgid "External storage"
-msgstr ""
+msgstr "Extern lagring"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -8981,6 +9185,18 @@ msgstr "Toppen av videon"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "Över videon"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr ""
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr ""
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr ""
 
 msgctxt "#21800"
 msgid "File name"
@@ -9478,6 +9694,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Igång"
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr ""
+
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Extern spelare är aktiv"
@@ -9560,7 +9780,7 @@ msgstr "Tjänster"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr ""
+msgstr "PVR-klienter"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9585,6 +9805,10 @@ msgstr "Väder"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (standard)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr ""
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -9800,11 +10024,11 @@ msgstr "Vill du ladda ner detta tillägg?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
-msgstr ""
+msgstr "Kunde inte ladda skal"
 
 msgctxt "#24103"
 msgid "Skin is missing some files"
-msgstr ""
+msgstr "Skalet saknar några filer"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10332,6 +10556,10 @@ msgstr "Använd inte anpassad tangentmappning för denna enhet"
 
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
+msgstr "Aktivera joystick och gamepad-stöd"
+
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
 msgstr ""
 
 msgctxt "#35500"
@@ -10402,10 +10630,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Kunde inte hitta CEC-adaptern"
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Ostödd libcec-gränssnittsversion. %d är nyare än versionen XBMC stödjer (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI-portnummer"
@@ -10416,7 +10640,7 @@ msgstr "Ansluten"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Adapter hittat, men libcec är inte tillgänglig"
+msgstr "Adapter hittad, men libcec är inte tillgängligt"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -10452,40 +10676,56 @@ msgstr "Skicka 'inaktiv källa' kommandot när XBMC stoppas"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Sätt enheter i viloläge när PC-n sätts i viloläge"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Den här enheten behöver service"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorera"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "När TVn är avstängd"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Anslutning tappad"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "Denna användare har inte behörighet att öppna CEC-adaptern"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Porten är upptagen. Endast ett program kan kontrollera CEC-adaptern"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
-msgstr ""
+msgstr "Pausa uppspelning vid byte till annan källa"
 
 msgctxt "#36035"
 msgid "Always"
-msgstr ""
+msgstr "Alltid"
 
 msgctxt "#36036"
 msgid "On start/stop"
+msgstr "På start/stopp"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr ""
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr ""
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr ""
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr ""

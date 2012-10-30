@@ -79,6 +79,8 @@ COMXImage::~COMXImage()
 
 void COMXImage::Close()
 {
+  CSingleLock lock(g_OMXSection);
+
   OMX_INIT_STRUCTURE(m_decoded_format);
   OMX_INIT_STRUCTURE(m_encoded_format);
   memset(&m_omx_image, 0x0, sizeof(OMX_IMAGE_PORTDEFINITIONTYPE));
@@ -448,6 +450,35 @@ OMX_IMAGE_CODINGTYPE COMXImage::GetCodingType()
   return m_omx_image.eCompressionFormat;
 }
 
+bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height)
+{
+  RESOLUTION_INFO& res_info =  g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+
+  const unsigned int max_width  = res_info.iWidth;
+  const unsigned int max_height = res_info.iHeight;
+
+  if(!max_width || !max_height)
+    return false;
+
+  float ar = (float)width/(float)height;
+  // bigger than maximum, so need to clamp
+  if (width > max_width || height > max_height) {
+    // wider than max, so clamp width first
+    if (ar > (float)max_width/(float)max_height)
+    {
+      width = max_width;
+      height = (float)max_width / ar + 0.5f;
+    // taller than max, so clamp height first
+    } else {
+      height = max_height;
+      width = (float)max_height * ar + 0.5f;
+    }
+    return true;
+  }
+
+  return false;
+}
+
 void COMXImage::SetHardwareSizeLimits()
 {
   // ensure not too big for hardware
@@ -502,6 +533,8 @@ bool COMXImage::ReadFile(const CStdString& inputFile)
 
 bool COMXImage::Decode(unsigned width, unsigned height)
 {
+  CSingleLock lock(g_OMXSection);
+
   std::string componentName = "";
   bool m_firstFrame = true;
   unsigned int demuxer_bytes = 0;
@@ -510,8 +543,6 @@ bool COMXImage::Decode(unsigned width, unsigned height)
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
 
   OMX_INIT_STRUCTURE(m_decoded_format);
-
-  CSingleLock lock(g_OMXSection);
 
   if(!m_image_buffer)
   {
@@ -587,6 +618,8 @@ bool COMXImage::Decode(unsigned width, unsigned height)
     height = 2048;
 #endif
   }
+
+  ClampLimits(width, height);
 
   OMX_PARAM_PORTDEFINITIONTYPE port_def;
   OMX_INIT_STRUCTURE(port_def);
@@ -717,7 +750,7 @@ bool COMXImage::Decode(unsigned width, unsigned height)
 
       m_omx_decoder.EnablePort(m_omx_decoder.GetOutputPort(), false);
       omx_err = m_omx_decoder.WaitForEvent(OMX_EventPortSettingsChanged);
-      if(omx_err == OMX_ErrorStreamCorrupt)
+      if(omx_err != OMX_ErrorNone)
       {
         CLog::Log(LOGERROR, "%s::%s image not unsupported\n", CLASSNAME, __func__);
         return false;
@@ -725,7 +758,7 @@ bool COMXImage::Decode(unsigned width, unsigned height)
 
       m_omx_resize.EnablePort(m_omx_resize.GetInputPort(), false);
       omx_err = m_omx_resize.WaitForEvent(OMX_EventPortSettingsChanged);
-      if(omx_err == OMX_ErrorStreamCorrupt)
+      if(omx_err != OMX_ErrorNone)
       {
         CLog::Log(LOGERROR, "%s::%s image not unsupported\n", CLASSNAME, __func__);
         return false;
@@ -772,6 +805,8 @@ bool COMXImage::Decode(unsigned width, unsigned height)
 
 bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned height)
 {
+  CSingleLock lock(g_OMXSection);
+
   std::string componentName = "";
   unsigned int demuxer_bytes = 0;
   const uint8_t *demuxer_content = NULL;
@@ -779,8 +814,6 @@ bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *omx_buffer = NULL;
   OMX_INIT_STRUCTURE(m_encoded_format);
-
-  CSingleLock lock(g_OMXSection);
 
   if (!buffer || !size) 
   {

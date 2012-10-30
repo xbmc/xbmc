@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-05-31 16:52+0000\n"
+"PO-Revision-Date: 2012-10-28 18:30+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -127,15 +127,15 @@ msgstr "Sorrend: Csökkenő"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Lejátszásilista megnyitása"
+msgstr "Játszáslista megnyitása"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Lejátszásilista mentése"
+msgstr "Játszáslista mentése"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Lejátszáslista bezárása"
+msgstr "Játszáslista zárása"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -143,7 +143,7 @@ msgstr "Rendszer, zene fájlok"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Jelenlegi lejátszásilista"
+msgstr "Jelenlegi játszáslista"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -183,11 +183,11 @@ msgstr "Főmenü gombok láthatósága"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "Saját háttér engedélyezése"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "Háttér mappa: "
 
 msgctxt "#31111"
 msgid "Hide"
@@ -217,10 +217,6 @@ msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Időjárás oldal"
 
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "Poszterek használata keskeny szalagcímek helyett a sorozatoknál"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "A háttérben az éppen játszott videó megjelenítése"
@@ -231,7 +227,7 @@ msgstr "A háttérben az éppen futó vizualizáció megjelenítése"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "TV főtémadalok játszása a videó médiatárban (TvTunes kiegészítő)"
+msgstr "TV főtéma dalok játszása a videó médiatárban (TvTunes kiegészítő)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -243,7 +239,7 @@ msgstr "Dalszöveg"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "Fanart elrejtése teljes képernyős vizualizációnál"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -363,7 +359,7 @@ msgstr "Játszva"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "Lejátszásilista lehetőségek"
+msgstr "Játszáslista lehetőségek"
 
 msgctxt "#31326"
 msgid "Created"
@@ -439,7 +435,7 @@ msgstr "[B]ZENE BEÁLLÍTÁSOK[/B][CR][CR]Zene médiatár kezelése · Zenelejá
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]FÉNYKÉP BEÁLLÍTÁSOK[/B][CR][CR]Fényképek listázási módjának beállítása · Diavetítés beállítása"
+msgstr "[B]KÉP BEÁLLÍTÁSOK[/B][CR][CR]Képek listázási módjának beállítása · Diavetítés beállítása"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
@@ -449,20 +445,24 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]RENDSZERBEÁLLÍTÁSOK[/B][CR][CR]Kijelzők beállítása, kalibrálása · Hangkimenet konfigurálása · Távirányító beállítása[CR]Energiagazdálkodási lehetőségek beállítása · Hibakeresés bekapcsolása[CR]Mesterzár felállítása"
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]FELSZÍN BEÁLLÍTÁSOK[/B][CR][CR]A Confluence felszín beállítása · Sajátképernyő elemek hozzáadása/elvétele[CR]Felszín hátterek megváltoztatása"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése az xbmc.org[CR]webhelyről · Kiegészítők beállításainak módosítása"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B]TV BEÁLLÍTÁSOK[/B][CR][CR]Teljesképernyős infó · Elektronikus Programújság beállítások"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]SZOLGÁLTATÁSOK BEÁLLÍTÁSA[/B][CR][CR]XBMC UPNP-n és HTTP-n keresztüli vezérlésének beállításai · Fájlmegosztás beállításai[CR]Zeroconf engedélyezése · AirPlay beállításai"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 msgctxt "#31421"
@@ -471,43 +471,43 @@ msgstr "Válaszd ki az XBMC felhasználói profilod[CR]a belépéshez"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "Felvétel időzítők"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "Ütemezett időzítés"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "Élő TV"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "Csoport hozzáadása"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "Csoport átnevezése"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "Csoport törlése"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "Elérhető[CR]Csoportok"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "Csatorna csoportok"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "Időzítő beállítás"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "Csatorna opciók"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

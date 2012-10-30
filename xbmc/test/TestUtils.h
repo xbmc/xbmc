@@ -86,6 +86,9 @@ public:
 
   /* Function to parse command line options */
   void ParseArgs(int argc, char **argv);
+
+  /* Function to return the newline characters for this platform */
+  std::string getNewLineCharacters() const;
 private:
   CXBMCTestUtils();
   CXBMCTestUtils(CXBMCTestUtils const&);

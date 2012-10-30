@@ -189,6 +189,7 @@ static const ActionMapping actions[] =
         {"jumpsms7"          , ACTION_JUMP_SMS7},
         {"jumpsms8"          , ACTION_JUMP_SMS8},
         {"jumpsms9"          , ACTION_JUMP_SMS9},
+        {"filter"            , ACTION_FILTER},
         {"filterclear"       , ACTION_FILTER_CLEAR},
         {"filtersms2"        , ACTION_FILTER_SMS2},
         {"filtersms3"        , ACTION_FILTER_SMS3},
@@ -270,6 +271,7 @@ static const ActionMapping windows[] =
         {"videoplaylist"            , WINDOW_VIDEO_PLAYLIST},
         {"loginscreen"              , WINDOW_LOGIN_SCREEN},
         {"profiles"                 , WINDOW_SETTINGS_PROFILES},
+        {"skinsettings"             , WINDOW_SKIN_SETTINGS},
         {"addonbrowser"             , WINDOW_ADDON_BROWSER},
         {"yesnodialog"              , WINDOW_DIALOG_YES_NO},
         {"progressdialog"           , WINDOW_DIALOG_PROGRESS},
@@ -282,7 +284,6 @@ static const ActionMapping windows[] =
         {"numericinput"             , WINDOW_DIALOG_NUMERIC},
         {"gamepadinput"             , WINDOW_DIALOG_GAMEPAD},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
-        {"musicscan"                , WINDOW_DIALOG_MUSIC_SCAN},
         {"mutebug"                  , WINDOW_DIALOG_MUTE_BUG},
         {"playercontrols"           , WINDOW_DIALOG_PLAYER_CONTROLS},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
@@ -299,8 +300,6 @@ static const ActionMapping windows[] =
         {"profilesettings"          , WINDOW_DIALOG_PROFILE_SETTINGS},
         {"locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS},
         {"contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS},
-        {"videoscan"                , WINDOW_DIALOG_VIDEO_SCAN},
-        {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"songinformation"          , WINDOW_DIALOG_SONG_INFO},
         {"smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR},
         {"smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE},
@@ -338,7 +337,8 @@ static const ActionMapping windows[] =
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
         {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
-        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS}};
+        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS},
+        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER}};
 
 static const ActionMapping mousecommands[] =
 {

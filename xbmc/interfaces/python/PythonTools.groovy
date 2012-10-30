@@ -96,7 +96,8 @@ public class PythonTools
       return (clazz == null) ? method.@sym_name :
       (
       (methodType == MethodType.constructor) ? (clazz + "_New") :
-      (methodType == MethodType.destructor ? (clazz + "_Dealloc") : clazz + "_" + method.@sym_name)
+      (methodType == MethodType.destructor ? (clazz + "_Dealloc") : 
+       ((method.@name.startsWith("operator ") && "[]" == method.@name.substring(9)) ? "${clazz}_operatorIndex_" : clazz + "_" + method.@sym_name))
       )
    }
 

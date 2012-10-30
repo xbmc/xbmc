@@ -58,7 +58,6 @@ class CUtil
 public:
   CUtil(void);
   virtual ~CUtil(void);
-  static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
@@ -147,7 +146,20 @@ public:
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
-  static bool SupportsFileOperations(const CStdString& strPath);
+  /*! \brief Checks wether the supplied path supports Write file operations (e.g. Rename, Delete, ...)
+
+   \param strPath the path to be checked
+
+   \return true if Write file operations are supported, false otherwise
+   */
+  static bool SupportsWriteFileOperations(const CStdString& strPath);
+  /*! \brief Checks wether the supplied path supports Read file operations (e.g. Copy, ...)
+
+   \param strPath the path to be checked
+
+   \return true if Read file operations are supported, false otherwise
+   */
+  static bool SupportsReadFileOperations(const CStdString& strPath);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
 
 #ifdef UNIT_TESTING

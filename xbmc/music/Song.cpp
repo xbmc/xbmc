@@ -62,7 +62,7 @@ CSong::CSong()
   Clear();
 }
 
-void CSong::Serialize(CVariant& value)
+void CSong::Serialize(CVariant& value) const
 {
   value["filename"] = strFileName;
   value["title"] = strTitle;

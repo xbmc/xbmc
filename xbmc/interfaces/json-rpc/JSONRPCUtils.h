@@ -21,6 +21,9 @@
 
 #include "IClient.h"
 #include "ITransportLayer.h"
+#include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "guilib/GUIWindowManager.h"
 #include "interfaces/IAnnouncer.h"
 #include "utils/StdString.h"
 #include "utils/Variant.h"
@@ -61,27 +64,28 @@ namespace JSONRPC
   */
   enum OperationPermission
   {
-    ReadData        =   0x1,
-    ControlPlayback =   0x2,
-    ControlNotify   =   0x4,
-    ControlPower    =   0x8,
-    UpdateData      =  0x10,
-    RemoveData      =  0x20,
-    Navigate        =  0x40,
-    WriteFile       =  0x80,
-    ControlSystem   = 0x100,
-    ControlGUI      = 0x200,
-    ManageAddon     = 0x400,
-    ExecuteAddon    = 0x800
+    ReadData        =    0x1,
+    ControlPlayback =    0x2,
+    ControlNotify   =    0x4,
+    ControlPower    =    0x8,
+    UpdateData      =   0x10,
+    RemoveData      =   0x20,
+    Navigate        =   0x40,
+    WriteFile       =   0x80,
+    ControlSystem   =  0x100,
+    ControlGUI      =  0x200,
+    ManageAddon     =  0x400,
+    ExecuteAddon    =  0x800,
+    ControlPVR      = 0x1000
   };
 
   const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower |
-                                        UpdateData | RemoveData | Navigate | WriteFile |
-                                        ControlSystem | ControlGUI | ManageAddon | ExecuteAddon);
+                                        UpdateData | RemoveData | Navigate | WriteFile | ControlSystem |
+                                        ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
 
   const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData |
                                                  RemoveData | Navigate | WriteFile | ControlSystem |
-                                                 ControlGUI | ManageAddon | ExecuteAddon);
+                                                 ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
 
   /*!
     \brief Returns a string representation for the 
@@ -117,6 +121,8 @@ namespace JSONRPC
       return "ManageAddon";
     case ExecuteAddon:
       return "ExecuteAddon";
+    case ControlPVR:
+      return "ControlPVR";
     default:
       return "Unknown";
     }
@@ -152,7 +158,19 @@ namespace JSONRPC
       return ManageAddon;
     if (permission.compare("ExecuteAddon") == 0)
       return ExecuteAddon;
+    if (permission.compare("ControlPVR") == 0)
+      return ControlPVR;
 
     return ReadData;
   }
+
+  class CJSONRPCUtils
+  {
+  public:
+    static inline void NotifyItemUpdated()
+    {
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
+      g_windowManager.SendThreadMessage(message);
+    }
+  };
 }

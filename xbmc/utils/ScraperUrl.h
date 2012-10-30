@@ -47,6 +47,7 @@ public:
     CStdString m_spoof;
     CStdString m_url;
     CStdString m_cache;
+    std::string m_aspect;
     URLTYPES m_type;
     bool m_post;
     bool m_isgz;
@@ -58,8 +59,8 @@ public:
   bool ParseElement(const TiXmlElement*);
   bool ParseEpisodeGuide(CStdString strUrls); // copies by intention
 
-  const SUrlEntry GetFirstThumb() const;
-  const SUrlEntry GetSeasonThumb(int) const;
+  const SUrlEntry GetFirstThumb(const std::string &type = "") const;
+  const SUrlEntry GetSeasonThumb(int season) const;
   void GetSeasonThumbs(std::map<int, std::string> &thumbs) const;
 
   /*! \brief fetch the full URL (including referrer) of a thumb
@@ -70,9 +71,10 @@ public:
 
   /*! \brief fetch the full URL (including referrer) of thumbs
    \param thumbs [out] vector of thumb URLs to fill
+   \param type the type of thumb URLs to fetch, if empty (the default) picks any
    \param season number of season that we want thumbs for, -1 indicates no season (the default)
    */
-  void GetThumbURLs(std::vector<CStdString> &thumbs, int season = -1) const;
+  void GetThumbURLs(std::vector<CStdString> &thumbs, const std::string &type = "", int season = -1) const;
   void Clear();
   static bool Get(const SUrlEntry&, std::string&, XFILE::CCurlFile& http,
                  const CStdString& cacheContext);

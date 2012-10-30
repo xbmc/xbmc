@@ -60,7 +60,7 @@ Helper.setup(classes,
       (Pattern.compile('''(p.){0,1}std::vector<\\(.*\\)>''')) : new File('typemaps/python.vector.outtm'),
       (Pattern.compile('''(p.){0,1}Tuple<\\(.*\\)>''')) : new File('typemaps/python.Tuple.outtm'),
       (Pattern.compile('''(p.){0,1}Alternative<\\(.*\\)>''')) : new File('typemaps/python.Alternative.outtm')
-    ], '${result} = makePythonInstance(${api},&Py${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,&Ty${Helper.findFullClassName(classnode).replaceAll(\'::\',\'_\')}_Type,true);',
+    ], '${result} = makePythonInstance(${api},&Py${classname.replaceAll(\'::\',\'_\')}_Type,&Ty${classname.replaceAll(\'::\',\'_\')}_Type,true);',
     /**
      * This is meant to contain mini-templates for converting the parameter types
      * of the native call to be converted from the python types provided by the caller.
@@ -78,7 +78,8 @@ Helper.setup(classes,
       'r.q(const).Dictionary' : new File('typemaps/python.dict.intm'),
       'r.q(const).XBMCAddon::Dictionary' : new File('typemaps/python.dict.intm'),
       (Pattern.compile('''(p.){0,1}std::map<\\(.*\\)>''')) : new File('typemaps/python.map.intm'),
-      'bool' : '${api} = (PyInt_AsLong(${slarg}) == 0L ? false : true);'
+      'bool' : '${api} = (PyInt_AsLong(${slarg}) == 0L ? false : true);',
+      'long' : '${api} = PyInt_AsLong(${slarg});'
     ], '${api} = (${swigTypeParser.SwigType_str(ltype)})retrieveApiInstance(${slarg},"${ltype}","${helper.findNamespace(method)}","${helper.callingName(method)}");')
 
 //println 'this: ' + this.binding.getVariables()
@@ -86,9 +87,15 @@ Helper.setup(classes,
 void doMethod(method, MethodType methodType)
 {
   boolean isOperator = method.@name.startsWith("operator ")
+  boolean doAsMappingIndex = false
 
   if (isOperator)
-    return;
+  {
+    if("[]" == method.@name.substring(9))
+      doAsMappingIndex = true
+    else
+      return;
+  }
 
   boolean constructor = methodType == MethodType.constructor
 
@@ -118,12 +125,13 @@ void doMethod(method, MethodType methodType)
 %>
   static <% if(methodType == MethodType.destructor) { %>void<% } else { %>PyObject*<% } %> ${module.@name}_${PythonTools.getPyMethodName(method,methodType)} (<%= ((clazz == null) ? "PyObject" : 
                    (constructor ? "PyTypeObject" : 'PyHolder')) %>* ${constructor ? 'pytype' : 'self'} <% 
-                   if (methodType != MethodType.destructor) { %> , PyObject *args, PyObject *kwds <%} %> )
+                   if (doAsMappingIndex) { %>, PyObject* py${params[0].@name}<% }
+                   else if (methodType != MethodType.destructor) { %> , PyObject *args, PyObject *kwds <%} %> )
   {
     TRACE;
 <%  if (numParams > 0)
     { 
-      if (useKeywordParsing)
+      if (useKeywordParsing && !doAsMappingIndex)
       { %>
     static const char *keywords[] = {<%
           params.each { %>
@@ -137,7 +145,9 @@ void doMethod(method, MethodType methodType)
         { %>
     PyObject* py${it.@name} = NULL;<%
         }
-     } %>
+     }
+    if (!doAsMappingIndex)
+    { %>
     if (!${useKeywordParsing ? 'PyArg_ParseTupleAndKeywords' : 'PyArg_ParseTuple'}(
        args,
        <% if (useKeywordParsing) { %>kwds,<% } %>
@@ -150,6 +160,7 @@ void doMethod(method, MethodType methodType)
     }
 
 <%  }
+    }
     // now actually invoke the method
     if (returns != "void") { %>    ${SwigTypeParser.SwigType_lstr(returns)} apiResult;<%   }
 %>
@@ -157,14 +168,14 @@ void doMethod(method, MethodType methodType)
     {
 <%
     // now do the input converstion if any are necessary
-    params.findAll({ !PythonTools.parameterCanBeUsedDirectly(it) }).each { %>      ${Helper.getInConversion(it.@type, it.@name, 'py' + it.@name, method)} <% println() }
+    params.findAll({ !PythonTools.parameterCanBeUsedDirectly(it) || doAsMappingIndex }).each { %>      ${Helper.getInConversion(it.@type, it.@name, 'py' + it.@name, method)} <% println() }
 %>
 <%
     // check to see if this method is a call to a virtual function on a director class.
     boolean isDirectorCall = Helper.isDirector(method)
     if (isDirectorCall)
     {
-      %>      // This is a director call comming from python so it explcitly calls the base class method.
+%>      // This is a director call comming from python so it explcitly calls the base class method.
 <%
     }
     // now do the method call itself
@@ -264,6 +275,18 @@ void doClassTypeInfo(Node clazz, List classNameAsVariables = null)
 <%    
 }
 
+void doExternClassTypeInfo(String knownType)
+{ 
+  String classNameAsVariable = knownType.replaceAll('::','_')
+%>
+  //=========================================================================
+  // These variables define the type ${knownType} from another module 
+  extern PyTypeObject Py${classNameAsVariable}_Type;
+  extern TypeInfo Ty${classNameAsVariable}_Type;
+  //=========================================================================
+<%    
+}
+
 void doClassMethodInfo(Node clazz, List initTypeCalls = null)
 { 
   String classNameAsVariable = PythonTools.getClassNameAsVariable(clazz)
@@ -273,9 +296,12 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
 
   // see if we have any valid (or invalid) operators
   boolean doComparator = false
+  boolean doAsMapping = false
   boolean hasEquivalenceOp = false
   boolean hasLtOp = false
   boolean hasGtOp = false
+  Node indexOp = null
+  Node sizeNode = null
 
   List normalMethods = clazz.function.findAll { !it.@name.startsWith("operator ") }
   List operators =  clazz.function.findAll { it.@name.startsWith("operator ") }
@@ -285,9 +311,11 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
     if (it.@name.substring(9).startsWith("=="))
       hasEquivalenceOp = true
     else if (it.@name.substring(9) == "<")
-    hasLtOp = true;
+      hasLtOp = true
     else if (it.@name.substring(9) == ">")
-    hasGtOp = true;
+      hasGtOp = true
+    else if (it.@name.substring(9) == "[]")
+      indexOp = it
     else
       System.err.println ("Warning: class ${fullClassName} has an operator \"${it.@name}\" that is being ignored.");
   }
@@ -300,12 +328,40 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
       doComparator = true
   }
 
+  if (indexOp)
+  { 
+    sizeNode =  clazz.function.find { it.@name == "size" }
+    if (sizeNode)
+      doAsMapping = true
+    else
+      System.err.println ("Warning: class ${fullClassName} has an inconsistent operator set. To get a as_mapping you must implement 'size' as well as operator[]")
+  }
+
   if (doComparator){ 
 %>
   static int ${module.@name}_${classNameAsVariable}_cmp(PyObject* obj1, PyObject* obj2)
   {
     return PythonCompare<${fullClassName}>::compare(obj1,obj2,"p.${fullClassName}","${Helper.findNamespace(clazz)}","compare on ${fullClassName}");
   }
+<%
+  }
+
+  if (doAsMapping)
+  {
+%>
+  static Py_ssize_t ${module.@name}_${classNameAsVariable}_size_(PyObject* self)
+  {
+    return (Py_ssize_t)((${fullClassName}*)retrieveApiInstance(self,&Py${classNameAsVariable}_Type,"${Helper.callingName(indexOp)}","${fullClassName}"))-> size();
+  }
+
+  //=========================================================================
+  // tp_as_mapping struct for ${fullClassName}
+  //=========================================================================
+  PyMappingMethods ${module.@name}_${classNameAsVariable}_as_mapping = {
+    ${module.@name}_${classNameAsVariable}_size_,    /* inquiry mp_length;                  __len__ */
+    (PyCFunction)${module.@name}_${PythonTools.getPyMethodName(indexOp,MethodType.method)},   /* binaryfunc mp_subscript             __getitem__ */
+    0,                  /* objargproc mp_ass_subscript;     __setitem__ */
+  };
 <%
   }
 
@@ -442,6 +498,23 @@ namespace PythonBindings
   List classNameAsVariables = []
 
   classes.each { clazz -> doClassTypeInfo(clazz, classNameAsVariables) }
+
+  // make sure known api types are declared as externs
+
+  // first, find all of the declared known api types
+  Set<String> knownApiTypes = new HashSet<String>()
+  module.depthFirst().each 
+  { 
+    String attr = it.attribute('feature_knownapitypes')
+    if (attr != null)
+    { 
+      attr.trim().split(',').each { knownApiTypes.add(it) }
+    }
+  }
+
+  // now declare an extern for each one
+  knownApiTypes.each { doExternClassTypeInfo(it) }
+
 %>
 
 <%
@@ -522,6 +595,7 @@ namespace PythonBindings
   }
 
   classes.each { clazz -> doClassMethodInfo(clazz, initTypeCalls) }
+
 %>
 
   static PyMethodDef ${module.@name}_methods[] = { <%

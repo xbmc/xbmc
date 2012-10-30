@@ -33,6 +33,8 @@
 #include "settings/Settings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -75,7 +77,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     if (context == PARTYMODECONTEXT_UNKNOWN)
     {
       //get it from the xsp file
-      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("mixed"));
+      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("musicvideos") || m_type.Equals("mixed"));
     }
 
     if (m_type.Equals("mixed"))
@@ -205,6 +207,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   // done
   m_bEnabled = true;
+  Announce();
   return true;
 }
 
@@ -213,6 +216,7 @@ void CPartyModeManager::Disable()
   if (!IsEnabled())
     return;
   m_bEnabled = false;
+  Announce();
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode disabled.");
 }
 
@@ -697,4 +701,16 @@ bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT
   if (context == PARTYMODECONTEXT_MUSIC)
     return !m_bIsVideo;
   return true; // unknown, but we're enabled
+}
+
+void CPartyModeManager::Announce()
+{
+  if (g_application.IsPlaying())
+  {
+    CVariant data;
+    
+    data["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+    data["property"]["partymode"] = m_bEnabled;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+  }
 }

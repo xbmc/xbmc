@@ -56,7 +56,7 @@ const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0/";
 /*----------------------------------------------------------------------
 |   PLT_Didl::ConvertFilterToMask
 +---------------------------------------------------------------------*/
-NPT_UInt32 
+NPT_UInt64
 PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
 {
     // easy out
@@ -66,7 +66,7 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
     // a given DIDL property (or set of properties).  
     // These fields are or start with: upnp:, @, res@, res, dc:, container@
 
-    NPT_UInt32  mask = 0;
+    NPT_UInt64  mask = 0;
     const char* s = filter;
     int         i = 0;
 
@@ -92,6 +92,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_ARTIST;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ACTOR, len, true) == 0) {
             mask |= PLT_FILTER_MASK_ACTOR;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DIRECTOR, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_DIRECTOR;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_AUTHOR, len, true) == 0) {
             mask |= PLT_FILTER_MASK_AUTHOR;       
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DATE, len, true) == 0) {
@@ -105,8 +107,16 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_ALBUMARTURI;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DESCRIPTION, len, true) == 0) {
             mask |= PLT_FILTER_MASK_DESCRIPTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LONGDESCRIPTION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LONGDESCRIPTION;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len, true) == 0) {
             mask |= PLT_FILTER_MASK_ORIGINALTRACK;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LASTPOSITION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LASTPOSITION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LASTPLAYBACK, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LASTPLAYBACK;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_PLAYCOUNT, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_PLAYCOUNT;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len, true) == 0) {
             mask |= PLT_FILTER_MASK_SEARCHABLE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHCLASS, len, true) == 0) {
@@ -123,6 +133,8 @@ PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
             mask |= PLT_FILTER_MASK_SERIESTITLE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE, len, true) == 0) {
             mask |= PLT_FILTER_MASK_EPISODE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RATING, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RATING;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len, true) == 0) {
             mask |= PLT_FILTER_MASK_RES;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len, true) == 0 ||
@@ -295,7 +307,7 @@ PLT_Didl::ParseTimeStamp(const NPT_String& timestamp, NPT_UInt32& seconds)
 NPT_Result
 PLT_Didl::ToDidl(PLT_MediaObject& object, const NPT_String& filter, NPT_String& didl)
 {
-    NPT_UInt32 mask = ConvertFilterToMask(filter);
+    NPT_UInt64 mask = ConvertFilterToMask(filter);
 
     // Allocate enough space for the didl
     didl.Reserve(2048);

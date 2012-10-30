@@ -603,6 +603,19 @@ namespace PVR
     virtual ~CPVRChannelSettingsSaveJob() {}
     virtual const char *GetType() const { return "pvr-save-channelsettings"; }
 
+    bool DoWork();
+  };
+
+  class CPVRChannelSwitchJob : public CJob
+  {
+  public:
+    CPVRChannelSwitchJob(CFileItem* previous, CFileItem* next) : m_previous(previous), m_next(next) {}
+    virtual ~CPVRChannelSwitchJob() {}
+    virtual const char *GetType() const { return "pvr-channel-switch"; }
+
     virtual bool DoWork();
+  private:
+    CFileItem* m_previous;
+    CFileItem* m_next;
   };
 }

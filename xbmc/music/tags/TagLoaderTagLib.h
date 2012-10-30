@@ -68,4 +68,8 @@ private:
   bool                           ParseXiphComment(TagLib::Ogg::XiphComment *id3v2, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
   bool                           ParseMP4Tag(TagLib::MP4::Tag *mp4, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
   bool                           ParseGenericTag(TagLib::Tag *generic, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& tag);
+  void                           SetFlacArt(TagLib::FLAC::File *flacFile, MUSIC_INFO::EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag &tag);
+  void                           SetArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
+  void                           SetAlbumArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
+  void                           SetGenre(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
 };

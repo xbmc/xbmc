@@ -54,6 +54,11 @@ namespace XBMCAddon
                const String& iconImage = emptyString,
                const String& thumbnailImage = emptyString,
                const String& path = emptyString);
+
+#ifndef SWIG
+      inline ListItem(CFileItemPtr pitem) : AddonClass("ListItem"), item(pitem) {}
+#endif
+
       virtual ~ListItem();
 
       static inline ListItem* fromString(const String& str) 

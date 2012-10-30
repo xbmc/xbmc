@@ -8,7 +8,9 @@
     point="xbmc.player.musicviz"
     library_windx="Spectrum_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
+    <summary lang="ar">تصور عرض محلل طيف دوار 3 الأبعاد</summary>
     <summary lang="bg">Визуализация представяща ротиращ се 3D спектрален анализатор</summary>
+    <summary lang="ca">Efecte visual que mostra un analitzador d'espectre en 3D rotant</summary>
     <summary lang="cs">Vizualizace zobrazující rotující 3D spektrální analyzátor</summary>
     <summary lang="da">Visualisering der viser en roterende 3D spektrum analyse</summary>
     <summary lang="de">Diese Visualisierung zeigt eine rotierende Spektrumanalyse in 3D</summary>
@@ -40,7 +42,9 @@
     <summary lang="sv">Visualisering som visar en roterande 3D-spektrumanalysator</summary>
     <summary lang="uk">Візуалізація що показує обертаючийся 3D спектроаналізатор.</summary>
     <summary lang="zh">显示旋转三维频谱分析图像的可视化效果</summary>
+    <description lang="ar">طيف دايركت اكس هو عرض تخيل دوار 3 الأبعاد مقدم بدايركت اكس الذي يتحرك مع وقع الموسيقى مُنشِأَ موجة تأثير عبر شبكة الطيف.&#10;وله أيضا إعدادات لتعديل شريط ارتفاع الطيف, و كيف الأشرطة تعرض (صلبة, نقط, سلكية) و لطيفة خفيفة الوزن, تصور بيدو رائع استخدام منخفض لوحدة المعالجة المركزية.</description>
     <description lang="bg">DirectX Spectrum е визуализация изобразяваща ротиращ се 3D спектрален анализатор (рендването се извършва с DirectX). Ротацията е според ритъма на музиката и предизвиква вълнови ефект по спектрална решетка.&#10;Можете да настройвате височината на спектралните стълбове, скоростта и рендването - solid, points, wire frame. Характеризира се с отличен вид, като същевременно почти не натоварва процесора.</description>
+    <description lang="ca">El DirectX Spectrum és una visualització que mostra un analitzador d'espectre rotant en 3D renderitzat en DirectX que es mou al ritme de la música i crea un efecte d'ona a través de la graella de l'espectre. També té ajustos per defniri l'alçada de la barra de l'espectre, la seva velocitat i la manera de renderitzar les barres (sòlid, punts, fil de ferro) i és una visualització lleugera, de poc ús de CPU que llueix be</description>
     <description lang="cs">DirectX Spectrum je vizualizace zobrazující rotující 3D spektrální analyzátor rendrovaný v DirectX, který se pohybuje v rytmu hudby a vytváří vlnový efekt napříč spektrální mřížkou.&#10;Obsahuje také nastavení pro přizpůsobení výšky sloupců spektra, rychlosti a způsobu vykreslení (vyplněný, body, drátový model). Je to velmi lehká vizualizace s nízkou zatíží CPU, která vypadá skvěle.</description>
     <description lang="da">DirectX Spektrum er en visualisering, der viser en roterende 3D-spektrum-analysator renderet i DirectX, som bevæger sig til takten i musikken og skaber en bølgeeffekt på tværs af spektrumfeltet.&#10;Den har også en indstilling til at justere spektrumliniens højde, fart og hvordan den bliver renderet (fast, punkter, trådramme). Det er en letvægts-, lav CPU-forbrugs-visualisering der ser godt ud.</description>
     <description lang="de">DirectX Spectrum ist eine Visualisierung, die eine rotierende Spektrum Analyse in 3D zeigt. Die Visualisierung wird so gerendert, dass sie sich zum Takt der Musik bewegt und eine Welle über das Spektrum Grid legt. Es lässt sich neben der Höhe, die Geschwindigkeit als auch die Art der Balken (durchgehend, Punkte, Drahtgeflecht) einstellen. Eine schöne Visualisierung, die nur eine geringe CPU-Last erzeugt</description>

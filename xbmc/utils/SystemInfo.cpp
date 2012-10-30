@@ -44,6 +44,7 @@
 #include "osx/CocoaInterface.h"
 #endif
 #include "powermanagement/PowerManager.h"
+#include "utils/StringUtils.h"
 
 CSysInfo g_sysinfo;
 
@@ -339,18 +340,77 @@ bool CSysInfo::IsAeroDisabled()
 
 bool CSysInfo::IsVistaOrHigher()
 {
-#ifdef _WIN32
-  OSVERSIONINFOEX osvi;
-  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-  osvi.dwOSVersionInfoSize = sizeof(osvi);
-
-  if (GetVersionEx((OSVERSIONINFO *)&osvi))
-  {
-    if (osvi.dwMajorVersion >= 6)
-      return true; 
-  }
-#endif
+#ifdef TARGET_WINDOWS
+  return IsWindowsVersionAtLeast(WindowsVersionVista);
+#else // TARGET_WINDOWS
   return false;
+#endif // TARGET_WINDOWS
+}
+
+CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
+
+bool CSysInfo::IsWindowsVersion(WindowsVersion ver)
+{
+  if (ver == WindowsVersionUnknown)
+    return false;
+  return GetWindowsVersion() == ver;
+}
+
+bool CSysInfo::IsWindowsVersionAtLeast(WindowsVersion ver)
+{
+  if (ver == WindowsVersionUnknown)
+    return false;
+  return GetWindowsVersion() >= ver;
+}
+
+CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
+{
+#ifdef TARGET_WINDOWS
+  if (m_WinVer == WindowsVersionUnknown)
+  {
+    OSVERSIONINFOEX osvi;
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+    if (GetVersionEx((OSVERSIONINFO *)&osvi))
+    {
+      if (osvi.dwMajorVersion == 5 && (osvi.dwMinorVersion == 1 || osvi.dwMinorVersion == 2 ))
+        m_WinVer = WindowsVersionWinXP;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0)
+        m_WinVer = WindowsVersionVista;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1)
+        m_WinVer = WindowsVersionWin7;
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
+        m_WinVer = WindowsVersionWin8;
+      /* Insert checks for new Windows versions here */
+      else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 2) || osvi.dwMajorVersion > 6)
+        m_WinVer = WindowsVersionFuture;
+    }
+  }
+#endif // TARGET_WINDOWS
+  return m_WinVer;
+}
+
+bool CSysInfo::IsOS64bit()
+{
+#ifdef TARGET_WINDOWS
+  SYSTEM_INFO si;
+  GetSystemInfo(&si);
+  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+    return true;
+  
+  BOOL (WINAPI *ptrIsWow64) (HANDLE, PBOOL);
+  HMODULE hKernel32 = GetModuleHandleA("kernel32");
+  if (hKernel32 == NULL)
+    return false; // Can't detect OS
+  ptrIsWow64 = (BOOL (WINAPI *) (HANDLE, PBOOL)) GetProcAddress(hKernel32, "IsWow64Process");
+  BOOL wow64proc = FALSE;
+  if (ptrIsWow64 == NULL || ptrIsWow64(GetCurrentProcess(), &wow64proc) == FALSE)
+    return false; // Can't detect OS
+  return wow64proc != FALSE;
+#else // TARGET_WINDOWS
+  // TODO: Implement Linux, FreeBSD, Android, OSX
+  return false;
+#endif // TARGET_WINDOWS
 }
 
 CStdString CSysInfo::GetKernelVersion()
@@ -367,91 +427,82 @@ CStdString CSysInfo::GetKernelVersion()
   return "";
 #else
   OSVERSIONINFOEX osvi;
-  SYSTEM_INFO si;
-
-  ZeroMemory(&si, sizeof(SYSTEM_INFO));
   ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-
-  GetSystemInfo(&si);
-
   osvi.dwOSVersionInfoSize = sizeof(osvi);
-  CStdString strKernel = "Windows ";
 
+  std::string strKernel = "Windows";
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
-    if ( osvi.dwMajorVersion == 6 )
+    switch (GetWindowsVersion())
     {
-      if (osvi.dwMinorVersion == 0)
-      {
-        if( osvi.wProductType == VER_NT_WORKSTATION )
-          strKernel.append("Vista");
-        else
-          strKernel.append("Server 2008");
-      } else if (osvi.dwMinorVersion == 1)
-      {
-        if( osvi.wProductType == VER_NT_WORKSTATION )
-          strKernel.append("7");
-        else
-          strKernel.append("Server 2008 R2");
-      }
-
-      if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
-        strKernel.append(", 64-bit Native");
-      else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_INTEL )
-      {
-        BOOL bIsWow = FALSE;;
-        if(IsWow64Process(GetCurrentProcess(), &bIsWow))
-        {
-          if (bIsWow)
-          {
-            GetNativeSystemInfo(&si);
-            if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
-             strKernel.append(", 64-bit (WoW)");
-          }
-          else
-          {
-            strKernel.append(", 32-bit");
-          }
-        }
-        else
-          strKernel.append(", 32-bit");
-      }
-    }
-    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
-    {
-      if( GetSystemMetrics(SM_SERVERR2) )
-        strKernel.append("Windows Server 2003 R2");
-      else if ( osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER )
-        strKernel.append("Windows Storage Server 2003");
-      else if ( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
-        strKernel.append("Windows Home Server");
-      else if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-        strKernel.append("Windows XP Professional x64 Edition");
+    case WindowsVersionWinXP:
+      if (GetSystemMetrics(SM_SERVERR2))
+        strKernel.append(" Server 2003 R2");
+      else if (osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER)
+        strKernel.append(" Storage Server 2003");
+      else if (osvi.wSuiteMask & VER_SUITE_WH_SERVER)
+        strKernel.append(" Home Server");
+      else if (osvi.wProductType == VER_NT_WORKSTATION && IsOS64bit())
+        strKernel.append(" XP Professional");
+      else if (osvi.wProductType != VER_NT_WORKSTATION)
+        strKernel.append(" Server 2003");
+      else if (osvi.wSuiteMask & VER_SUITE_PERSONAL)
+        strKernel.append("XP Home Edition" );
       else
-        strKernel.append("Windows Server 2003");
-    }
-    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
-    {
-      strKernel.append("XP ");
-      if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
-        strKernel.append("Home Edition" );
+        strKernel.append("XP Professional" );
+      break;
+    case WindowsVersionVista:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        strKernel.append(" Vista");
       else
-        strKernel.append("Professional" );
-    }
-    else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
-    {
-      strKernel.append("2000");
+        strKernel.append(" Server 2008");
+      break;
+    case WindowsVersionWin7:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        strKernel.append(" 7");
+      else
+        strKernel.append(" Server 2008 R2");
+      break;
+    case WindowsVersionWin8:
+      if (osvi.wProductType == VER_NT_WORKSTATION)
+        strKernel.append(" 8");
+      else
+        strKernel.append(" Server 2012");
+      break;
+    case WindowsVersionFuture:
+      strKernel.append(" Unknown Future Version");
+      break;
+    default:
+      strKernel.append(" Unknown version");
+      break;
     }
 
-    if( _tcslen(osvi.szCSDVersion) > 0 )
+    // Append Service Pack version if any
+    if (osvi.wServicePackMajor > 0)
     {
-      strKernel.append(" ");
-      strKernel.append(osvi.szCSDVersion);
+      strKernel.append(StringUtils::Format(" SP%d", osvi.wServicePackMajor));
+      if (osvi.wServicePackMinor > 0)
+      {
+        strKernel.append(StringUtils::Format(".%d", osvi.wServicePackMinor));
+      }
     }
-    CStdString strBuild;
-    strBuild.Format(" build %d",osvi.dwBuildNumber);
-    strKernel += strBuild;
+
+    if (IsOS64bit())
+      strKernel.append(" 64-bit");
+    else
+      strKernel.append(" 32-bit");
+
+    strKernel.append(StringUtils::Format(", build %d", osvi.dwBuildNumber));
   }
+  else
+  {
+    strKernel.append(" unknown");
+    if (IsOS64bit())
+      strKernel.append(" 64-bit");
+    else
+      strKernel.append(" 32-bit");
+  }
+
   return strKernel;
 #endif
 }

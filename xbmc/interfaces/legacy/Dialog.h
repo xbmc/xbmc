@@ -224,9 +224,12 @@ namespace XBMCAddon
     {
       CGUIDialogProgress* dlg;
 
+    protected:
+      virtual void deallocating();
+
     public:
 
-      DialogProgress() : AddonClass("DialogProgress") {}
+      DialogProgress() : AddonClass("DialogProgress"), dlg(NULL) {}
       virtual ~DialogProgress();
 
 

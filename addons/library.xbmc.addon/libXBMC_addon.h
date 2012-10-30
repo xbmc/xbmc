@@ -59,7 +59,11 @@
 #endif
 #include <dlfcn.h>              // linux+osx
 #define ADDON_HELPER_EXT        ".so"
-#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define ADDON_DLL_NAME "libXBMC_addon-" ADDON_HELPER_ARCH ADDON_HELPER_EXT
+#define ADDON_DLL "/library.xbmc.addon/" ADDON_DLL_NAME
+#endif
+#if defined(ANDROID)
+#include <sys/stat.h>
 #endif
 
 #ifdef LOG_DEBUG
@@ -117,6 +121,15 @@ namespace ADDON
       std::string libBasePath;
       libBasePath  = ((cb_array*)m_Handle)->libPath;
       libBasePath += ADDON_DLL;
+
+#if defined(ANDROID)
+      struct stat st;
+      if(stat(libBasePath.c_str(),&st) != 0)
+      {
+        std::string tempbin = getenv("XBMC_ANDROID_LIBS");
+        libBasePath = tempbin + "/" + ADDON_DLL_NAME;
+      }
+#endif
 
       m_libXBMC_addon = dlopen(libBasePath.c_str(), RTLD_LAZY);
       if (m_libXBMC_addon == NULL)

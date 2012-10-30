@@ -171,6 +171,7 @@ PLT_MediaObject::Reset()
     m_People.actors.Clear();
     m_People.artists.Clear();    
     m_People.authors.Clear();
+    m_People.directors.Clear();
 
     m_Affiliation.album     = "";
     m_Affiliation.genres.Clear();
@@ -183,6 +184,9 @@ PLT_MediaObject::Reset()
     m_ExtraInfo.artist_discography_uri = "";
 
     m_MiscInfo.original_track_number = 0;
+    m_MiscInfo.last_position         = 0;
+    m_MiscInfo.last_time             = "";
+    m_MiscInfo.play_count            = -1;
     m_MiscInfo.dvdregioncode		 = 0;
     m_MiscInfo.toc					 = "";
     m_MiscInfo.user_annotation		 = "";
@@ -211,7 +215,7 @@ PLT_MediaObject::ToDidl(const NPT_String& filter, NPT_String& didl)
 |   PLT_MediaObject::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
 {
     // title is required
     didl += "<dc:title>";
@@ -250,6 +254,11 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         m_People.authors.ToDidl(didl, "author");
     }
     
+    // director
+    if (mask & PLT_FILTER_MASK_DIRECTOR) {
+        m_People.directors.ToDidl(didl, "director");
+    }
+
     // album
     if ((mask & PLT_FILTER_MASK_ALBUM) && !m_Affiliation.album.IsEmpty()) {
         didl += "<upnp:album>";
@@ -310,11 +319,39 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
         didl += "</upnp:icon>";
     }
 
+    // rating
+    if ((mask & PLT_FILTER_MASK_RATING) && !m_Description.rating.IsEmpty()) {
+        didl += "<upnp:rating>";
+        PLT_Didl::AppendXmlEscape(didl, m_Description.rating);
+        didl += "</upnp:rating>";
+    }
+
     // original track number
     if ((mask & PLT_FILTER_MASK_ORIGINALTRACK) && m_MiscInfo.original_track_number > 0) {
         didl += "<upnp:originalTrackNumber>";
         didl += NPT_String::FromInteger(m_MiscInfo.original_track_number);
         didl += "</upnp:originalTrackNumber>";
+    }
+
+    // last playback position
+    if (mask & PLT_FILTER_MASK_LASTPOSITION && m_MiscInfo.last_position > 0) {
+        didl += "<upnp:lastPlaybackPosition>";
+        didl += NPT_String::FromInteger(m_MiscInfo.last_position);
+        didl += "</upnp:lastPlaybackPosition>";
+    }
+
+    // last playback datetime
+    if (mask & PLT_FILTER_MASK_LASTPLAYBACK && !m_MiscInfo.last_time.IsEmpty()) {
+        didl += "<upnp:lastPlaybackTime>";
+        PLT_Didl::AppendXmlEscape(didl, m_MiscInfo.last_time);
+        didl += "</upnp:lastPlaybackTime>";
+    }
+
+    // playcount
+    if (mask & PLT_FILTER_MASK_PLAYCOUNT && m_MiscInfo.play_count > -1) {
+        didl += "<upnp:playbackCount>";
+        didl += NPT_String::FromInteger(m_MiscInfo.play_count);
+        didl += "</upnp:playbackCount>";
     }
 
     // program title
@@ -465,14 +502,21 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     m_Title = m_Title.SubString(0, 256);    
     m_ObjectClass.type =  m_ObjectClass.type.SubString(0, 256);
 
+    children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "artist", didl_namespace_upnp);
     m_People.artists.FromDidl(children);
     
+    children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "author", didl_namespace_upnp);
     m_People.authors.FromDidl(children);
     
+    children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "actors", didl_namespace_upnp);
     m_People.actors.FromDidl(children);
+
+    children.Clear();
+    PLT_XmlHelper::GetChildren(entry, children, "director", didl_namespace_upnp);
+    m_People.directors.FromDidl(children);
 
     PLT_XmlHelper::GetChildText(entry, "album", m_Affiliation.album, didl_namespace_upnp, 256);
     PLT_XmlHelper::GetChildText(entry, "programTitle", m_Recorded.program_title, didl_namespace_upnp);
@@ -493,6 +537,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "description", m_Description.description, didl_namespace_dc);
     PLT_XmlHelper::GetChildText(entry, "longDescription", m_Description.long_description, didl_namespace_upnp);
     PLT_XmlHelper::GetChildText(entry, "icon", m_Description.icon_uri, didl_namespace_upnp);
+    PLT_XmlHelper::GetChildText(entry, "rating", m_Description.rating, didl_namespace_upnp);
 	PLT_XmlHelper::GetChildText(entry, "toc", m_MiscInfo.toc, didl_namespace_upnp);
     
     // album arts
@@ -510,6 +555,25 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     PLT_XmlHelper::GetChildText(entry, "originalTrackNumber", str, didl_namespace_upnp);
     if (NPT_FAILED(str.ToInteger(value))) value = 0;
     m_MiscInfo.original_track_number = value;
+
+    PLT_XmlHelper::GetChildText(entry, "lastPlaybackPosition", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = 0;
+    m_MiscInfo.last_position = value;
+
+    PLT_XmlHelper::GetChildText(entry, "lastPlaybackTime", m_MiscInfo.last_time, didl_namespace_dc, 256);
+    NPT_String parsed_last_time;
+    for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
+        NPT_DateTime date;
+        if (NPT_SUCCEEDED(date.FromString(m_MiscInfo.last_time, (NPT_DateTime::Format)format))) {
+            parsed_last_time = date.ToString((NPT_DateTime::Format)format);
+            break;
+        }
+    }
+    m_MiscInfo.last_time = parsed_last_time;
+
+    PLT_XmlHelper::GetChildText(entry, "playbackCount", str, didl_namespace_upnp);
+    if (NPT_FAILED(str.ToInteger(value))) value = -1;
+    m_MiscInfo.play_count = value;
 
     children.Clear();
     PLT_XmlHelper::GetChildren(entry, children, "res");
@@ -619,7 +683,7 @@ PLT_MediaItem::ToDidl(const NPT_String& filter, NPT_String& didl)
 |   PLT_MediaItem::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaItem::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+PLT_MediaItem::ToDidl(NPT_UInt64 mask, NPT_String& didl)
 {
     didl += "<item id=\"";
 
@@ -710,7 +774,7 @@ PLT_MediaContainer::ToDidl(const NPT_String& filter, NPT_String& didl)
 |   PLT_MediaContainer::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaContainer::ToDidl(NPT_UInt32 mask, NPT_String& didl)
+PLT_MediaContainer::ToDidl(NPT_UInt64 mask, NPT_String& didl)
 {
 	// container id property
     didl += "<container id=\"";

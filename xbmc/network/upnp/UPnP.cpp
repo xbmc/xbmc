@@ -183,6 +183,7 @@ public:
             path += "/";
         }
 
+        CLog::Log(LOGDEBUG, "UPNP: notfified container update %s", (const char*)path);
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
         g_windowManager.SendThreadMessage(message);
@@ -207,9 +208,11 @@ CUPnP::CUPnP() :
         m_IP = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
     }
     NPT_List<NPT_IpAddress> list;
-    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
+    if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list)) && list.GetItemCount()) {
         m_IP = (*(list.GetFirstItem())).ToString();
     }
+    else if(m_IP.IsEmpty())
+        m_IP = "localhost";
 
     // start upnp monitoring
     m_UPnP->Start();

@@ -16,9 +16,9 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<texture background="true">$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+			<texture background="true">$INFO[Player.Art(fanart)]</texture>
 			<colordiffuse>AAFFFFFF</colordiffuse>
-			<visible>!IsEmpty(MusicPlayer.Property(Fanart_Image)) + !Skin.HasSetting(HideVisualizationFanart)</visible>
+			<visible>!IsEmpty(Player.Art(fanart)) + !Skin.HasSetting(HideVisualizationFanart)</visible>
 			<fadetime>600</fadetime>
 		</control>
 		<!-- media infos -->
@@ -87,7 +87,7 @@
 				<posy>250r</posy>
 				<width>300</width>
 				<height>230</height>
-				<info>MusicPlayer.Cover</info>
+				<texture fallback="DefaultAlbumCover.png">$INFO[Player.Art(thumb)]</texture>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<bordertexture border="8">ThumbShadow.png</bordertexture>
 				<bordersize>8</bordersize>

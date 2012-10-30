@@ -87,7 +87,8 @@ namespace EVENTPACKET
     PTB_NO_REPEAT  = 0x20,
     PTB_VKEY       = 0x40,
     PTB_AXIS       = 0x80,
-    PTB_AXISSINGLE = 0x100
+    PTB_AXISSINGLE = 0x100,
+    PTB_UNICODE    = 0x200
   };
 
   enum MouseFlags

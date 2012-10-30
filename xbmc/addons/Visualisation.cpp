@@ -82,7 +82,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_pInfo->submodule = NULL;
 
-  if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
+  if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create() == ADDON_STATUS_OK)
   {
     // Start the visualisation
     CStdString strFile = URIUtils::GetFileName(g_application.CurrentFile());

@@ -285,6 +285,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     OnJumpLetter((char)(action.GetID() & 0xff));
     return true;
   }
+  // stop the timer on any other action
+  m_matchTimer.Stop();
 
   switch (action.GetID())
   {

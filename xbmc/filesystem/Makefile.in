@@ -1,8 +1,6 @@
 CXXFLAGS += -D__STDC_FORMAT_MACROS
 
 SRCS  = AddonsDirectory.cpp
-SRCS += AndroidAppFile.cpp
-SRCS += AndroidAppDirectory.cpp
 SRCS += ASAPFileDirectory.cpp
 SRCS += CacheStrategy.cpp
 SRCS += CircularCache.cpp
@@ -31,6 +29,7 @@ SRCS += HDHomeRunFile.cpp
 SRCS += HTSPDirectory.cpp
 SRCS += HTSPSession.cpp
 SRCS += HTTPDirectory.cpp
+SRCS += HTTPFile.cpp
 SRCS += IDirectory.cpp
 SRCS += IFile.cpp
 SRCS += ImageFile.cpp
@@ -94,6 +93,8 @@ SRCS += ZipManager.cpp
 ifeq (@USE_ANDROID@,1)
 SRCS += APKDirectory.cpp
 SRCS += APKFile.cpp
+SRCS += AndroidAppFile.cpp
+SRCS += AndroidAppDirectory.cpp
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)

@@ -190,6 +190,11 @@ namespace PythonBindings
       }
     }
 
+    Py_XDECREF(exc_type);
+    Py_XDECREF(exc_value); // caller owns all 3
+    Py_XDECREF(exc_traceback); // already NULL'd out
+    Py_XDECREF(pystring);
+
     SetMessage("%s",msg.c_str());
   }
 

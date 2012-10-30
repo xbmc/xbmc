@@ -125,7 +125,7 @@ bool CAutoSwitch::ByFolders(const CFileItemList& vecItems)
     for (int i = 0; i < vecItems.Size(); i++)
     {
       const CFileItemPtr pItem = vecItems[i];
-      if (pItem->HasThumbnail())
+      if (pItem->HasArt("thumb"))
       {
         bThumbs = true;
         break;
@@ -156,7 +156,7 @@ bool CAutoSwitch::ByFiles(bool bHideParentDirItems, const CFileItemList& vecItem
     for (int i = 0; i < vecItems.Size(); i++)
     {
       const CFileItemPtr pItem = vecItems[i];
-      if (pItem->HasThumbnail())
+      if (pItem->HasArt("thumb"))
       {
         bThumbs = true;
         break;
@@ -185,7 +185,7 @@ bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, const C
   for (int i = 0; i < vecItems.Size(); i++)
   {
     const CFileItemPtr pItem = vecItems[i];
-    if (pItem->HasThumbnail())
+    if (pItem->HasArt("thumb"))
     {
       iNumThumbs++;
       float fTempPercent = ( (float)iNumThumbs / (float)iNumItems ) * (float)100;
@@ -226,7 +226,7 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
   for (int i = 0; i < vecItems.Size(); i++)
   {
     const CFileItemPtr item = vecItems[i];
-    if (item->m_bIsFolder && item->HasThumbnail())
+    if (item->m_bIsFolder && item->HasArt("thumb"))
     {
       numThumbs++;
       if (numThumbs >= 0.01f * percent * (numItems - fileCount))

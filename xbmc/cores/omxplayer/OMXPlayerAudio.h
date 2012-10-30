@@ -88,6 +88,7 @@ protected:
   bool                      m_DecoderOpen;
 
   DllBcmHost                m_DllBcmHost;
+  bool                      m_send_eos;
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -104,6 +105,7 @@ public:
   bool IsInited() const                             { return m_messageQueue.IsInited(); }
   int  GetLevel() const                             { return m_messageQueue.GetLevel(); }
   bool IsStalled()                                  { return m_stalled;  }
+  bool IsEOS()                                      { return m_send_eos; };
   void WaitForBuffers();
   bool CloseStream(bool bWaitForBuffers);
   bool CodecChange();

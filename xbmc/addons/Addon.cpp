@@ -178,7 +178,7 @@ AddonProps::AddonProps(const cp_plugin_info_t *plugin)
   BuildDependencies(plugin);
 }
 
-void AddonProps::Serialize(CVariant &variant)
+void AddonProps::Serialize(CVariant &variant) const
 {
   variant["addonid"] = id;
   variant["type"] = TranslateType(type);

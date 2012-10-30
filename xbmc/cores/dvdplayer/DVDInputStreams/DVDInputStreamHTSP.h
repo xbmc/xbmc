@@ -53,6 +53,9 @@ public:
   bool            IsRecording()       { return false; }
   bool            Record(bool bOnOff) { return false; }
 
+  bool            CanPause()          { return false; }
+  bool            CanSeek()           { return false; }
+
   int             GetTotalTime();
   int             GetTime();
 

@@ -33,6 +33,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
+#include "interfaces/AnnouncementManager.h"
 
 using namespace PLAYLIST;
 
@@ -466,6 +467,8 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
       // so dont do anything
     }
   }
+  
+  AnnouncePropertyChanged(iPlaylist, "shuffled", IsShuffled(iPlaylist));
 }
 
 bool CPlayListPlayer::IsShuffled(int iPlaylist) const
@@ -503,6 +506,21 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state, bool bNotify 
   }
 
   m_repeatState[iPlaylist] = state;
+
+  CVariant data;
+  switch (state)
+  {
+  case REPEAT_ONE:
+    data = "one";
+    break;
+  case REPEAT_ALL:
+    data = "all";
+    break;
+  default:
+    data = "off";
+    break;
+  }
+  AnnouncePropertyChanged(iPlaylist, "repeat", data);
 }
 
 REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist) const
@@ -653,4 +671,17 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   g_windowManager.SendMessage(msg);
+}
+
+void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
+{
+  if (strProperty.empty() || value.isNull() ||
+     (iPlaylist == PLAYLIST_VIDEO && !g_application.IsPlayingVideo()) ||
+     (iPlaylist == PLAYLIST_MUSIC && !g_application.IsPlayingAudio()))
+    return;
+
+  CVariant data;
+  data["player"]["playerid"] = iPlaylist;
+  data["property"][strProperty] = value;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
 }

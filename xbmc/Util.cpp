@@ -235,91 +235,6 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   return strFilename;
 }
 
-bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber)
-{
-  const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
-
-  CStdString strFileNameTemp = strFileName;
-
-  CRegExp reg(true);
-
-  for (unsigned int i = 0; i < regexps.size(); i++)
-  {
-    CStdString strRegExp = regexps[i];
-    if (!reg.RegComp(strRegExp.c_str()))
-    { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "Invalid RegExp:[%s]", regexps[i].c_str());
-      continue;
-    }
-
-    int iFoundToken = reg.RegFind(strFileName.c_str());
-    if (iFoundToken >= 0)
-    {
-      int iRegLength = reg.GetFindLen();
-      int iCount = reg.GetSubCount();
-
-      /*
-      reg.DumpOvector(LOGDEBUG);
-      CLog::Log(LOGDEBUG, "Subcount=%i", iCount);
-      for (int j = 0; j <= iCount; j++)
-      {
-        CStdString str = reg.GetMatch(j);
-        CLog::Log(LOGDEBUG, "Sub(%i):[%s]", j, str.c_str());
-      }
-      */
-
-      // simple regexp, only the volume is captured
-      if (iCount == 1)
-      {
-        strVolumeNumber = reg.GetMatch(1);
-        if (strVolumeNumber.IsEmpty()) return false;
-
-        // Remove the extension (if any).  We do this on the base filename, as the regexp
-        // match may include some of the extension (eg the "." in particular).
-        // The extension will then be added back on at the end - there is no reason
-        // to clean it off here. It will be cleaned off during the display routine, if
-        // the settings to hide extensions are turned on.
-        CStdString strFileNoExt = strFileNameTemp;
-        URIUtils::RemoveExtension(strFileNoExt);
-        CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
-        CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
-        strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
-
-        return true;
-      }
-
-      // advanced regexp with prefix (1), volume (2), and suffix (3)
-      else if (iCount == 3)
-      {
-        // second subpatten contains the stacking volume
-        strVolumeNumber = reg.GetMatch(2);
-        if (strVolumeNumber.IsEmpty()) return false;
-
-        // everything before the regexp match
-        strFileTitle = strFileName.Left(iFoundToken);
-
-        // first subpattern contains prefix
-        strFileTitle += reg.GetMatch(1);
-
-        // third subpattern contains suffix
-        strFileTitle += reg.GetMatch(3);
-
-        // everything after the regexp match
-        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
-
-        return true;
-      }
-
-      // unknown regexp format
-      else
-      {
-        CLog::Log(LOGERROR, "Incorrect movie stacking regexp format:[%s]", regexps[i].c_str());
-      }
-    }
-  }
-  return false;
-}
-
 void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension /* = false */, bool bCleanChars /* = true */)
 {
   strTitleAndYear = strFileName;
@@ -1702,7 +1617,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
   return true;
 }
 
-bool CUtil::SupportsFileOperations(const CStdString& strPath)
+bool CUtil::SupportsWriteFileOperations(const CStdString& strPath)
 {
   // currently only hd, smb, nfs and afp support delete and rename
   if (URIUtils::IsHD(strPath))
@@ -1710,7 +1625,7 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   if (URIUtils::IsSmb(strPath))
     return true;
   if (CUtil::IsTVRecording(strPath))
-    return CPVRDirectory::SupportsFileOperations(strPath);
+    return CPVRDirectory::SupportsWriteFileOperations(strPath);
   if (URIUtils::IsNfs(strPath))
     return true;
   if (URIUtils::IsAfp(strPath))
@@ -1722,14 +1637,22 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
      * it hits the directory cache on the way through, which has the Live Channels and Guide
      * items cached.
      */
-    return CMythDirectory::SupportsFileOperations(strPath);
+    return CMythDirectory::SupportsWriteFileOperations(strPath);
   }
   if (URIUtils::IsStack(strPath))
-    return SupportsFileOperations(CStackDirectory::GetFirstStackedFile(strPath));
+    return SupportsWriteFileOperations(CStackDirectory::GetFirstStackedFile(strPath));
   if (URIUtils::IsMultiPath(strPath))
-    return CMultiPathDirectory::SupportsFileOperations(strPath);
+    return CMultiPathDirectory::SupportsWriteFileOperations(strPath);
 
   return false;
+}
+
+bool CUtil::SupportsReadFileOperations(const CStdString& strPath)
+{
+  if (URIUtils::IsVideoDb(strPath))
+    return false;
+
+  return true;
 }
 
 CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)

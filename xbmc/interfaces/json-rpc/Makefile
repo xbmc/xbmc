@@ -9,10 +9,10 @@ SRCS=AddonsOperations.cpp \
      JSONServiceDescription.cpp \
      PlayerOperations.cpp \
      PlaylistOperations.cpp \
+     PVROperations.cpp \
      SystemOperations.cpp \
      VideoLibrary.cpp \
      XBMCOperations.cpp \
-     PVROperations.cpp \
 
 LIB=json-rpc.a
 

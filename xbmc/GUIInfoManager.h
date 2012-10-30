@@ -103,7 +103,9 @@ namespace INFO
 #define PLAYER_FILEPATH              46
 #define PLAYER_SEEKOFFSET            47
 #define PLAYER_PROGRESS_CACHE        48
-#define PLAYER_ITEM_PROPERTY         49
+#define PLAYER_ITEM_ART              49
+#define PLAYER_CAN_PAUSE             50
+#define PLAYER_CAN_SEEK              51
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -288,6 +290,10 @@ namespace INFO
 #define LASTFM_RADIOPLAYING         330
 #define LASTFM_CANLOVE              331
 #define LASTFM_CANBAN               332
+
+#define CONTAINER_CAN_FILTER         342
+#define CONTAINER_CAN_FILTERADVANCED 343
+#define CONTAINER_FILTERED           344
 
 #define CONTAINER_SCROLL_PREVIOUS   345 // NOTE: These 5 must be kept in this consecutive order
 #define CONTAINER_MOVE_PREVIOUS     346
@@ -608,11 +614,12 @@ namespace INFO
 #define LISTITEM_PROGRESS           (LISTITEM_START + 102)
 #define LISTITEM_HAS_EPG            (LISTITEM_START + 103)
 
-#define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
+#define LISTITEM_PROPERTY_START     (LISTITEM_START + 100)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
-#define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
+#define MUSICPLAYER_PROPERTY_OFFSET 800 // 100 id's reserved for musicplayer props.
+#define LISTITEM_ART_OFFSET         900 // 100 id's reserved for listitem art.
 
 #define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36001
 #define CONDITIONAL_LABEL_END         37000

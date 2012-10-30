@@ -21,6 +21,7 @@
  */
 
 #include "settings/GUIDialogSettings.h"
+typedef std::vector<int> Features;
 
 class CGUIDialogAudioSubtitleSettings :
       public CGUIDialogSettings
@@ -40,10 +41,14 @@ protected:
 
   void AddAudioStreams(unsigned int id);
   void AddSubtitleStreams(unsigned int id);
+  bool SupportsAudioFeature(int feature);
+  bool SupportsSubtitleFeature(int feature);
 
   float m_volume;
   int m_audioStream;
   int m_subtitleStream;
   int m_outputmode;
   bool m_subtitleVisible;
+  Features m_audioCaps;
+  Features m_subCaps;
 };

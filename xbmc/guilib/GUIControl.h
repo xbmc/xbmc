@@ -143,7 +143,7 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetID(void) const;
-  void SetID(int id) { m_controlID = id; };
+  virtual void SetID(int id) { m_controlID = id; };
   virtual bool HasID(int id) const;
   virtual bool HasVisibleID(int id) const;
   int GetParentID() const;

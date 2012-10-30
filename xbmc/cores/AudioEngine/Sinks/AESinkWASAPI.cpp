@@ -270,7 +270,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
 
-    std::string strDevName = localWideToUtf(varName.pwszVal);
+    device = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
     SAFE_RELEASE(pProperty);
   }

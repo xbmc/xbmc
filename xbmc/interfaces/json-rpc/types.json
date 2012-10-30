@@ -43,6 +43,10 @@
       { "type": "string", "enum": [ "toggle" ], "required": true }
     ]
   },
+  "Global.String.NotEmpty": {
+    "type": "string",
+    "minLength": 1
+  },
   "Configuration.Notifications": {
     "type": "object",
     "properties": {
@@ -54,6 +58,7 @@
       "AudioLibrary": { "type": "boolean", "required": true },
       "Application": { "type": "boolean", "required": true },
       "Input": { "type": "boolean", "required": true },
+      "PVR": { "type": "boolean", "required": true },
       "Other": { "type": "boolean", "required": true }
     },
     "additionalProperties": false
@@ -64,10 +69,54 @@
       "notifications": { "$ref": "Configuration.Notifications", "required": true }
     }
   },
+  "Files.Media": {
+    "type": "string",
+    "enum": [ "video", "music", "pictures", "files", "programs" ]
+  },
+  "List.Amount": {
+    "type": "integer",
+    "default": -1,
+    "minimum": 0
+  },
+  "List.Limits": {
+    "type": "object",
+    "properties": {
+      "start": { "type": "integer", "minimum": 0, "default": 0, "description": "Index of the first item to return" },
+      "end": { "$ref": "List.Amount", "description": "Index of the last item to return" }
+    },
+    "additionalProperties": false
+  },
+  "List.LimitsReturned": {
+    "type": "object",
+    "properties": {
+      "start": { "type": "integer", "minimum": 0, "default": 0 },
+      "end": { "$ref": "List.Amount" },
+      "total": { "type": "integer", "minimum": 0, "required": true }
+    },
+    "additionalProperties": false
+  },
+  "List.Sort": {
+    "type": "object",
+    "properties": {
+      "method": { "type": "string", "default": "none",
+        "enum": [ "none", "label", "date", "size", "file", "path", "drivetype", "title", "track", "time", "artist",
+                  "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
+                  "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
+                  "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
+                  "bitrate", "random" ]
+      },
+      "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
+      "ignorearticle": { "type": "boolean", "default": false }
+    }
+  },
   "Library.Id": {
     "type": "integer",
     "default": -1,
     "minimum": 1
+  },
+  "PVR.Channel.Type": {
+    "type": "string",
+    "enum": [ "tv", "radio" ]
   },
   "Playlist.Id": {
     "type": "integer",
@@ -174,7 +223,7 @@
               "totaltime", "playlistid", "position", "repeat", "shuffled",
               "canseek", "canchangespeed", "canmove", "canzoom", "canrotate",
               "canshuffle", "canrepeat", "currentaudiostream", "audiostreams",
-              "subtitleenabled", "currentsubtitle", "subtitles" ]
+              "subtitleenabled", "currentsubtitle", "subtitles", "live" ]
   },
   "Player.Property.Value": {
     "type": "object",
@@ -200,12 +249,13 @@
       "audiostreams": { "type": "array", "items": { "$ref": "Player.Audio.Stream" } },
       "subtitleenabled": { "type": "boolean" },
       "currentsubtitle": { "$ref": "Player.Subtitle" },
-      "subtitles": { "type": "array", "items": { "$ref": "Player.Subtitle" } }
+      "subtitles": { "type": "array", "items": { "$ref": "Player.Subtitle" } },
+      "live": { "type": "boolean" }
     }
   },
   "Notifications.Item.Type": {
     "type": "string",
-    "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture" ]
+    "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture", "channel" ]
   },
   "Notifications.Item": {
     "type": [
@@ -258,6 +308,14 @@
           "type": { "$ref": "Notifications.Item.Type", "required": true },
           "file": { "type": "string", "required": true }
         }
+      },
+      { "type": "object", "description": "A PVR channel is either a radio or tv channel and has a title.",
+        "properties": {
+          "type": { "$ref": "Notifications.Item.Type", "required": true },
+          "id": { "$ref": "Library.Id", "required": true  },
+          "title": { "type": "string", "required": true },
+          "channeltype": { "$ref": "PVR.Channel.Type", "required": true }
+        }
       }
     ]
   },
@@ -299,6 +357,16 @@
       "fanart": { "type": "string" },
       "thumbnail": { "type": "string" }
     }
+  },
+  "Media.Artwork": {
+    "type": "object",
+    "properties": {
+      "thumb": { "$ref": "Global.String.NotEmpty" },
+      "poster": { "$ref": "Global.String.NotEmpty" },
+      "banner": { "$ref": "Global.String.NotEmpty" },
+      "fanart": { "$ref": "Global.String.NotEmpty" }
+    },
+    "additionalProperties": { "$ref": "Global.String.NotEmpty" }
   },
   "Library.Fields.Genre": {
     "extends": "Item.Fields.Base",
@@ -417,13 +485,13 @@
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                 "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
-                "resume", "setid", "dateadded", "tag" ]
+                "resume", "setid", "dateadded", "tag", "art" ]
     }
   },
   "Video.Fields.MovieSet": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
-      "enum": [ "title", "playcount", "fanart", "thumbnail" ]
+      "enum": [ "title", "playcount", "fanart", "thumbnail", "art" ]
     }
   },
   "Video.Fields.TVShow": {
@@ -435,14 +503,14 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "lastplayed" ]
+                "dateadded", "tag", "lastplayed", "art" ]
     }
   },
   "Video.Fields.Season": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
       "enum": [ "season", "showtitle", "playcount", "episode", "fanart", "thumbnail", "tvshowid",
-                "watchedepisodes" ]
+                "watchedepisodes", "art" ]
     }
   },
   "Video.Fields.Episode": {
@@ -453,7 +521,8 @@
                 "firstaired", "playcount", "runtime", "director",
                 "productioncode", "season", "episode", "originaltitle",
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
-                "thumbnail", "file", "resume", "tvshowid", "dateadded" ]
+                "thumbnail", "file", "resume", "tvshowid", "dateadded",
+                "uniqueid", "art" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -462,7 +531,8 @@
       "enum": [ "title", "playcount", "runtime", "director",
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamdetails", "lastplayed",
-                "fanart", "thumbnail", "file", "resume", "dateadded", "tag" ]
+                "fanart", "thumbnail", "file", "resume", "dateadded",
+                "tag", "art" ]
     }
   },
   "Video.Cast": {
@@ -523,7 +593,8 @@
   "Video.Details.Base": {
     "extends": "Media.Details.Base",
     "properties": {
-      "playcount": { "type": "integer" }
+      "playcount": { "type": "integer" },
+      "art": { "$ref": "Media.Artwork" }
     }
   },
   "Video.Details.Media": {
@@ -585,6 +656,7 @@
   "Video.Details.MovieSet.Extended": {
     "extends": "Video.Details.MovieSet",
     "properties": {
+      "limits": { "$ref": "List.LimitsReturned", "required": true },
       "movies": { "type": "array",
         "items": { "$ref": "Video.Details.Movie" }
       }
@@ -633,6 +705,7 @@
       "productioncode": { "type": "string" },
       "season": { "type": "integer" },
       "episode": { "type": "integer" },
+      "uniqueid": { "type": "object", "additionalProperties": { "type": "string", "minLength": 1 } },
       "originaltitle": { "type": "string" },
       "showtitle": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
@@ -652,45 +725,57 @@
       "tag": { "$ref": "Array.String" }
     }
   },
-  "Files.Media": {
+  "PVR.Property.Name": {
     "type": "string",
-    "enum": [ "video", "music", "pictures", "files", "programs" ]
+    "enum": [ "available", "recording", "scanning" ]
   },
-  "List.Amount": {
-    "type": "integer",
-    "default": -1,
-    "minimum": 0
-  },
-  "List.Limits": {
+  "PVR.Property.Value": {
     "type": "object",
     "properties": {
-      "start": { "type": "integer", "minimum": 0, "default": 0, "description": "Index of the first item to return" },
-      "end": { "type": "integer", "minimum": 0, "default": -1, "description": "Index of the last item to return" }
-    },
-    "additionalProperties": false
-  },
-  "List.Sort": {
-    "type": "object",
-    "properties": {
-      "method": { "type": "string", "default": "none",
-        "enum": [ "none", "label", "date", "size", "file", "path", "drivetype", "title", "track", "time", "artist",
-                  "album", "albumtype", "genre", "country", "year", "rating", "votes", "top250", "programcount",
-                  "playlist", "episode", "season", "totalepisodes", "watchedepisodes", "tvshowstatus", "tvshowtitle",
-                  "sorttitle", "productioncode", "mpaa", "studio", "dateadded", "lastplayed", "playcount", "listeners",
-                  "bitrate", "random" ]
-      },
-      "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
-      "ignorearticle": { "type": "boolean", "default": false }
+      "available": { "type": "boolean" },
+      "recording": { "type": "boolean" },
+      "scanning": { "type": "boolean" }
     }
   },
-  "List.LimitsReturned": {
-    "type": "object",
+  "PVR.ChannelGroup.Id": {
+    "type": [
+      { "$ref": "Library.Id", "required": true },
+      { "type": "string", "enum": [ "alltv", "allradio" ], "required": true }
+    ]
+  },
+  "PVR.Fields.Channel": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed" ]
+    }
+  },
+  "PVR.Details.Channel": {
+    "extends": "Item.Details.Base",
     "properties": {
-      "start": { "type": "integer", "minimum": 0, "default": 0 },
-      "end": { "type": "integer", "minimum": 0, "default": -1 },
-      "total": { "type": "integer", "minimum": 0, "required": true }
-    },
-    "additionalProperties": false
+      "channelid": { "$ref": "Library.Id", "required": true },
+      "channel": { "type": "string" },
+      "channeltype": { "$ref": "PVR.Channel.Type" },
+      "hidden": { "type": "boolean" },
+      "locked": { "type": "boolean" },
+      "thumbnail": { "type": "string" },
+      "lastplayed": { "type": "string" }
+    }
+  },
+  "PVR.Details.ChannelGroup": {
+    "extends": "Item.Details.Base",
+    "properties": {
+      "channelgroupid": { "$ref": "Library.Id", "required": true },
+      "channeltype": { "$ref": "PVR.Channel.Type", "required": true }
+    }
+  },
+  "PVR.Details.ChannelGroup.Extended": {
+    "extends": "PVR.Details.ChannelGroup",
+    "properties": {
+      "limits": { "$ref": "List.LimitsReturned", "required": true },
+      "channels": { "type": "array",
+        "items": { "$ref": "PVR.Details.Channel" }
+      }
+    }
   },
   "List.Filter.Rule": {
     "type": "object",
@@ -905,14 +990,15 @@
                 "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
                 "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
-                "disc", "tag" ]
+                "disc", "tag", "art", "channel", "channeltype", "hidden", "locked",
+                "channelnumber", "starttime", "endtime" ]
     }
   },
   "List.Item.All": {
     "extends": [ "Video.Details.File", "Audio.Details.Media" ],
     "properties": {
       "id": { "$ref": "Library.Id" },
-      "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture" ] },
+      "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture", "channel" ] },
       "albumartist": { "$ref": "Array.String" },
       "album": { "type": "string" },
       "track": { "type": "integer" },
@@ -946,7 +1032,14 @@
       "tvshowid": { "$ref": "Library.Id" },
       "watchedepisodes": { "type": "integer" },
       "disc": { "type": "integer" },
-      "tag": { "$ref": "Array.String" }
+      "tag": { "$ref": "Array.String" },
+      "channel": { "type": "string" },
+      "channeltype": { "$ref": "PVR.Channel.Type" },
+      "hidden": { "type": "boolean" },
+      "locked": { "type": "boolean" },
+      "channelnumber": { "type": "integer" },
+      "starttime": { "type": "string" },
+      "endtime": { "type": "string" }
     }
   },
   "List.Fields.Files": {

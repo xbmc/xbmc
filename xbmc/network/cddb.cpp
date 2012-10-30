@@ -46,7 +46,6 @@
 #include <netdb.h>
 
 using namespace std;
-using namespace MUSIC_INFO;
 using namespace MEDIA_DETECT;
 using namespace AUTOPTR;
 using namespace CDDB;
@@ -575,7 +574,7 @@ void Xcddb::parseData(const char *buffer)
           if (StringUtils::IsNaturalNumber(strGenre))
           {
             int iGenre = strtol(strGenre, NULL, 10);
-            m_strGenre = TagLib::ID3v1::genre(iGenre).toCString();
+            m_strGenre = TagLib::ID3v1::genre(iGenre).to8Bit(true);
           }
         }
       }

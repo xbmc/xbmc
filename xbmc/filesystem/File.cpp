@@ -129,7 +129,6 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       return false;
     }
 
-    // 128k is optimal for xbox
     int iBufferSize = 128 * 1024;
 
     CAutoBuffer buffer(iBufferSize);

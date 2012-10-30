@@ -493,14 +493,14 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (!share->m_strThumbnailImage.IsEmpty())
       {
         CFileItemPtr current(new CFileItem("thumb://Current", false));
-        current->SetThumbnailImage(share->m_strThumbnailImage);
+        current->SetArt("thumb", share->m_strThumbnailImage);
         current->SetLabel(g_localizeStrings.Get(20016));
         items.Add(current);
       }
-      else if (item->HasThumbnail())
+      else if (item->HasArt("thumb"))
       { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
         CFileItemPtr current(new CFileItem("thumb://Current", false));
-        current->SetThumbnailImage(item->GetThumbnailImage());
+        current->SetArt("thumb", item->GetArt("thumb"));
         current->SetLabel(g_localizeStrings.Get(20016));
         items.Add(current);
       }
@@ -509,7 +509,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (XFILE::CFile::Exists(folderThumb))
       {
         CFileItemPtr local(new CFileItem("thumb://Local", false));
-        local->SetThumbnailImage(folderThumb);
+        local->SetArt("thumb", folderThumb);
         local->SetLabel(g_localizeStrings.Get(20017));
         items.Add(local);
       }

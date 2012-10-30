@@ -18,5 +18,11 @@ KNOWN PROBLEMS WITH HARDWARE RENDERING:
 
 - Not all xbmc video playback resolution settings are supported at the moment.
 
+KNOWN PROBLEMS WITH PVR:
+========================
+
+- PVR only works with 720p and software rendering
+- only SD-TV tested (since i do not have DVB-S2 hardware)
+
 PLEASE REMEMBER: This is poc.
 

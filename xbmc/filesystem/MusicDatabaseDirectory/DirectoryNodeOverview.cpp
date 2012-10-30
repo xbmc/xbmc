@@ -73,7 +73,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
   bool showSingles = false;
   if (musicDatabase.Open())
   {
-    CDatabase::Filter filter("idAlbum IN (SELECT idAlbum FROM album WHERE strAlbum = '')");
+    CDatabase::Filter filter("songview.idAlbum IN (SELECT idAlbum FROM album WHERE strAlbum = '')");
     if (musicDatabase.GetSongsCount(filter) > 0)
       showSingles = true;
   }

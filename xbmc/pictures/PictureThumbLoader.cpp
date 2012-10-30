@@ -31,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "video/VideoThumbLoader.h"
 
 using namespace XFILE;
 using namespace std;
@@ -50,19 +51,19 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive) return true;
   if (pItem->IsParentFolder()) return true;
 
-  if (pItem->HasThumbnail() && m_regenerateThumbs)
+  if (pItem->HasArt("thumb") && m_regenerateThumbs)
   {
-    CTextureCache::Get().ClearCachedImage(pItem->GetThumbnailImage());
+    CTextureCache::Get().ClearCachedImage(pItem->GetArt("thumb"));
     CTextureDatabase db;
     if (db.Open())
       db.ClearTextureForPath(pItem->GetPath(), "thumb");
-    pItem->SetThumbnailImage("");
+    pItem->SetArt("thumb", "");
   }
 
   CStdString thumb;
   if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // load the thumb from the image file
-    thumb = pItem->HasThumbnail() ? pItem->GetThumbnailImage() : CTextureCache::GetWrappedThumbURL(pItem->GetPath());
+    thumb = pItem->HasArt("thumb") ? pItem->GetArt("thumb") : CTextureCache::GetWrappedThumbURL(pItem->GetPath());
   }
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
@@ -82,14 +83,14 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
       }
     }
   }
-  else if (!pItem->HasThumbnail())
+  else if (!pItem->HasArt("thumb"))
   { // folder, zip, cbz, rar, cbr, playlist may have a previously cached image
     thumb = GetCachedImage(*pItem, "thumb");
   }
   if (!thumb.IsEmpty())
   {
     CTextureCache::Get().BackgroundCacheImage(thumb);
-    pItem->SetThumbnailImage(thumb);
+    pItem->SetArt("thumb", thumb);
   }
   pItem->FillInDefaultIcon();
   return true;
@@ -116,7 +117,7 @@ void CPictureThumbLoader::OnLoaderFinish()
 
 void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 {
-  if (pItem->HasThumbnail())
+  if (pItem->HasArt("thumb"))
     return;
 
   CTextureDatabase db;
@@ -128,7 +129,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
       CTextureCache::Get().BackgroundCacheImage(strTBN);
-      pItem->SetThumbnailImage(strTBN);
+      pItem->SetArt("thumb", strTBN);
       return;
     }
   }
@@ -154,7 +155,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
       CTextureCache::Get().BackgroundCacheImage(thumb);
-      pItem->SetThumbnailImage(thumb);
+      pItem->SetArt("thumb", thumb);
       return;
     }
     if (!pItem->IsPlugin())
@@ -190,7 +191,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
             if (item->m_bIsFolder)
             {
               ProcessFoldersAndArchives(item.get());
-              pItem->SetThumbnailImage(items[i]->GetThumbnailImage());
+              pItem->SetArt("thumb", items[i]->GetArt("thumb"));
               pItem->SetIconImage(items[i]->GetIconImage());
               return;
             }
@@ -208,7 +209,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         CStdString thumb = CTextureCache::GetWrappedThumbURL(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         CTextureCache::Get().BackgroundCacheImage(thumb);
-        pItem->SetThumbnailImage(thumb);
+        pItem->SetArt("thumb", thumb);
       }
       else
       {
@@ -227,7 +228,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
           details.height = g_advancedSettings.GetThumbSize();
           CTextureCache::Get().AddCachedTexture(thumb, details);
           db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-          pItem->SetThumbnailImage(CTextureCache::GetCachedPath(relativeCacheFile));
+          pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
         }
       }
     }

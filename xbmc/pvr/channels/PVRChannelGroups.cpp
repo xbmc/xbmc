@@ -277,7 +277,9 @@ bool CPVRChannelGroups::Load(void)
   LoadUserDefinedChannelGroups();
 
   // set the internal group as selected at startup
-  SetSelectedGroup(internalChannels);
+  internalChannels->SetSelectedGroup(true);
+  internalChannels->Renumber();
+  m_selectedGroup = internalChannels;
 
   CLog::Log(LOGDEBUG, "PVR - %s - %d %s channel groups loaded", __FUNCTION__, (int) m_groups.size(), m_bRadio ? "radio" : "TV");
 
@@ -315,6 +317,13 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetLastGroup(void) const
 
   CPVRChannelGroupPtr empty;
   return empty;
+}
+
+std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers() const
+{
+  CSingleLock lock(m_critSection);
+  std::vector<CPVRChannelGroupPtr> groups(m_groups.begin(), m_groups.end());
+  return groups;
 }
 
 int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
@@ -391,7 +400,10 @@ void CPVRChannelGroups::SetSelectedGroup(CPVRChannelGroupPtr group)
   // update the selected group
   {
     CSingleLock lock(m_critSection);
+    if (m_selectedGroup)
+      m_selectedGroup->SetSelectedGroup(false);
     m_selectedGroup = group;
+    group->SetSelectedGroup(true);
   }
 
   // update the channel number cache

@@ -115,9 +115,6 @@ void CSettings::Initialize()
     m_logFolder = "special://home/";              // log file location
   #endif
 
-  // defaults for scanning
-  m_bMyMusicIsScanning = false;
-
   iAdditionalSubtitleDirectoryChecked = 0;
   m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
   m_iVideoStartWindow = WINDOW_VIDEO_FILES;
@@ -127,8 +124,6 @@ void CSettings::Initialize()
   m_watchMode["musicvideos"] = VIDEO_SHOW_ALL;
 
   m_iSystemTimeTotalUp = 0;
-  m_HttpApiBroadcastLevel = 0;
-  m_HttpApiBroadcastPort = 8278;
 
   m_userAgent = g_sysinfo.GetUserAgent();
 
@@ -670,12 +665,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       XMLUtils::GetBoolean(pChild, "repeat", m_bMyMusicPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", m_bMyMusicPlaylistShuffle);
     }
-    // if the user happened to reboot in the middle of the scan we save this state
-    pChild = pElement->FirstChildElement("scanning");
-    if (pChild)
-    {
-      XMLUtils::GetBoolean(pChild, "isscanning", m_bMyMusicIsScanning);
-    }
     GetInteger(pElement, "startwindow", m_iMyMusicStartWindow, WINDOW_MUSIC_FILES, WINDOW_MUSIC_FILES, WINDOW_MUSIC_NAV); //501; view songs
     XMLUtils::GetBoolean(pElement, "songinfoinvis", m_bMyMusicSongInfoInVis);
     XMLUtils::GetBoolean(pElement, "songthumbinvis", m_bMyMusicSongThumbInVis);
@@ -732,8 +721,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-    GetInteger(pElement, "httpapibroadcastlevel", m_HttpApiBroadcastLevel, 0, 0, 255);
-    GetInteger(pElement, "httpapibroadcastport", m_HttpApiBroadcastPort, 8278, 1, 65535);
     XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
     XMLUtils::GetBoolean(pElement, "addonnotifications", m_bAddonNotifications);
     XMLUtils::GetBoolean(pElement, "addonforeignfilter", m_bAddonForeignFilter);
@@ -870,12 +857,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     XMLUtils::SetBoolean(pChild, "repeat", m_bMyMusicPlaylistRepeat);
     XMLUtils::SetBoolean(pChild, "shuffle", m_bMyMusicPlaylistShuffle);
   }
-  {
-    TiXmlElement childNode("scanning");
-    TiXmlNode *pChild = pNode->InsertEndChild(childNode);
-    if (!pChild) return false;
-    XMLUtils::SetBoolean(pChild, "isscanning", m_bMyMusicIsScanning);
-  }
 
   XMLUtils::SetInt(pNode, "needsupdate", m_musicNeedsUpdate);
   XMLUtils::SetInt(pNode, "startwindow", m_iMyMusicStartWindow);
@@ -935,8 +916,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   pNode = pRoot->InsertEndChild(generalNode);
   if (!pNode) return false;
   XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
-  XMLUtils::SetInt(pNode, "httpapibroadcastport", m_HttpApiBroadcastPort);
-  XMLUtils::SetInt(pNode, "httpapibroadcastlevel", m_HttpApiBroadcastLevel);
   XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
   XMLUtils::SetBoolean(pNode, "addonnotifications", m_bAddonNotifications);
   XMLUtils::SetBoolean(pNode, "addonforeignfilter", m_bAddonForeignFilter);

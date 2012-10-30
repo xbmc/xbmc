@@ -30,6 +30,7 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDDemuxHTSP.h"
 #endif
+#include "DVDDemuxBXA.h"
 #include "DVDDemuxPVRClient.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -39,6 +40,18 @@ using namespace PVR;
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 {
+  // Try to open the AirTunes demuxer
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE) && pInputStream->GetContent().compare("audio/x-xbmc-pcm") == 0 )
+  {
+    // audio/x-xbmc-pcm this is the used codec for AirTunes
+    // (apples audio only streaming)
+    auto_ptr<CDVDDemuxBXA> demuxer(new CDVDDemuxBXA());
+    if(demuxer->Open(pInputStream))
+      return demuxer.release();
+    else
+      return NULL;
+  }
+
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_HTTP))
   {
     CDVDInputStreamHttp* pHttpStream = (CDVDInputStreamHttp*)pInputStream;

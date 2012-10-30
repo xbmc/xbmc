@@ -73,9 +73,9 @@ TEST_F(TestDownloadQueueManager, RequestContent)
   count = 0;
   for (it = urls.begin(); it < urls.end(); it++)
   {
-    std::cout << "Testing URL: " << *it << "\n";
+    std::cout << "Testing URL: " << *it << std::endl;
     TICKET t = g_DownloadManager.RequestContent(*it, &observer);
-    std::cout << "  Ticket Item ID: " << t.dwItemId << "\n";
+    std::cout << "  Ticket Item ID: " << t.dwItemId << std::endl;
     count++;
   }
 
@@ -95,9 +95,9 @@ TEST_F(TestDownloadQueueManager, RequestFile)
   count = 0;
   for (it = urls.begin(); it < urls.end(); it++)
   {
-    std::cout << "Testing URL: " << *it << "\n";
+    std::cout << "Testing URL: " << *it << std::endl;
     TICKET t = g_DownloadManager.RequestFile(*it, &observer);
-    std::cout << "  Ticket Item ID: " << t.dwItemId << "\n";
+    std::cout << "  Ticket Item ID: " << t.dwItemId << std::endl;
     count++;
   }
 

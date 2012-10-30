@@ -80,7 +80,7 @@ CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 {
   CDVDOverlay* pOverlay = NULL;
 
-  if (iPts < m_fLastPts)
+  if (iPts + DVD_SEC_TO_TIME(1) < m_fLastPts)
     Reset();
 
   if (m_pCurrent)

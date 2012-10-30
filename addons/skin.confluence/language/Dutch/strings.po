@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-18 03:08+0000\n"
+"PO-Revision-Date: 2012-09-24 21:11+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "Verberg knoppen hoofdmenu"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "Aangepaste achtergrond toepassen"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "Achtergrond locatie:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -217,10 +217,6 @@ msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Weerpagina"
 
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "Gebruik \"Posters\" in plaats van \"Banners\" voor series"
-
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
 msgstr "Laat achtergrond \"Nu Afspelen\" zien voor video"
@@ -243,7 +239,7 @@ msgstr "Songteksten"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "Verberg fanart in volledig scherm visualisatie"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -449,20 +445,24 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]SYSTEEMINSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer en kalibreer schermgeluidsuitgang · Configureer invoerapparaten en energiebeheeropties · Schakel debugging in · Configureer vergrendelopties"
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]SKININSTELLINGEN CONFIGUREREN[/B][CR][CR]Configureer de Confluence-skin · Voeg items toe aan of verwijder ze uit het beginscherm · Wijzig skinachtergronden"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]ADD-ONS CONFIGUREREN[/B][CR][CR]Beheer uw geïnstalleerde Add-ons · Zoek en installeer Add-ons via xbmc.org · Wijzig Add-oninstellingen"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[[B]CONFIGUREER TV INSTELLINGEN[/B][CR][CR]Verander volledig scherm info  · Beheer EPG data instellingen"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]CONFIGUREER SERVICE-INSTELLINGEN[/B][CR][CR]Stel XBMC-beheer in via UPnP en HTTP · Configureer bestandsdeling[CR]Schakel Zeroconf in · Configureer AirPlay"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 msgctxt "#31421"

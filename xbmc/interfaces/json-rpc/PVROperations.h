@@ -14,28 +14,31 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
+#include "FileItemHandler.h"
 #include "utils/StdString.h"
-#include "JSONRPC.h"
+#include "pvr/channels/PVRChannelGroup.h"
 
 namespace JSONRPC
 {
-  class CPVROperations
+  class CPVROperations : public CFileItemHandler
   {
   public:
-    static JSONRPC_STATUS ChannelSwitch(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ChannelUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ChannelDown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS RecordCurrentChannel(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ScheduleRecording(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS IsAvailable(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS IsScanningChannels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS IsRecording(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-    static JSONRPC_STATUS ScanChannels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetChannelGroups(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetChannelGroupDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetChannels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetChannelDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+
+    static JSONRPC_STATUS Record(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+
+  private:
+    static JSONRPC_STATUS GetPropertyValue(const CStdString &property, CVariant &result);
+    static void FillChannelGroupDetails(const PVR::CPVRChannelGroupPtr &channelGroup, const CVariant &parameterObject, CVariant &result, bool append = false);
   };
 }

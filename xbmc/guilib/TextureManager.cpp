@@ -459,6 +459,19 @@ void CGUITextureManager::FreeUnusedTextures()
   for (ivecTextures i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
     delete *i;
   m_unusedTextures.clear();
+
+#if defined(HAS_GL) || defined(HAS_GLES)
+  for (unsigned int i = 0; i < m_unusedHwTextures.size(); ++i)
+  {
+    glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
+  }
+#endif
+  m_unusedHwTextures.clear();
+}
+
+void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
+{
+  m_unusedHwTextures.push_back(texture);
 }
 
 void CGUITextureManager::Cleanup()

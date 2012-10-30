@@ -65,7 +65,7 @@ public:
            && (*this).version == rhs.version;
   }
   
-  void Serialize(CVariant &variant);
+  void Serialize(CVariant &variant) const;
 
   CStdString id;
   TYPE type;

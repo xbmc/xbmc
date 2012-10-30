@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-08-26 10:49+0000\n"
+"PO-Revision-Date: 2012-10-05 18:47+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hr/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "Sakrite tipke glavnog izbornika"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "Omogućite Uređenje Pozadine"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "Putanja za Pozadinu:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -216,10 +216,6 @@ msgstr "Sakrij Pozadina Fanarta"
 msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Vremenska oznaka"
-
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "Koristite \"Plakati\" umjesto \"Transparenti\" za TV emisije"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -449,10 +445,6 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B] Uredi postavke sustava [/ B] [CR] [CR] Podešavanje i kalibriranjem zaslona · Uredi audio izlaz · Postavljanje daljinskog upravljača [CR] Postavite opcije uštede energije  · Omogućite ispravljanje pogrešaka · Postavljanje glavnog zaključavanja"
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B] Uredi POSTAVKE Izgleda [/ b] [CR] [CR] Postavljanje Confluence izgleda · Dodavanje i uklanjanje stavke glavnog izbornik  [CR] Promjena izgleda pozadine"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B] Uredite  DODATKE [/ B] [CR] [CR] Upravljate instaliranim dodacima · Pregledavajte i instalirajte dodatke iz xbmc.org [CR] Modificirajte  postavke DODATAKA"
@@ -463,6 +455,14 @@ msgstr ""
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B] UREDI POSTAVKE USLUGE [/ B] [CR] [CR] Postavljanje kontrole XBMC putem UPnP i HTTP · Uredi dijeljenje mapa[CR] Deblokada Zeroconf · Postavke izvođenja"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
 msgstr ""
 
 msgctxt "#31421"
@@ -471,43 +471,43 @@ msgstr "Odaberite svoj korisnički profil XBMC [CR] Te se prijavite i nastavite"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "Brojač snimanja"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "Planirano Vrijeme"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "TV u živo"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "Dodaj Grupu"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "Preimenuj Grupu"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "Obriši Grupu"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "Dostupne[CR]Grupe"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "Otkaži Grupu"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "Postavite Brojač"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "Postavke TV Kanala"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

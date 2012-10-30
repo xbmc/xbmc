@@ -61,10 +61,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_scrapers.clear();
-      m_lastSelected.clear();
-      // save our current scraper (if any)
-      if (m_scraper)
-        m_lastSelected[m_content] = m_scraper;
       m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
@@ -229,6 +225,10 @@ void CGUIDialogContentSettings::OnCancel()
 
 void CGUIDialogContentSettings::OnInitWindow()
 {
+  m_lastSelected.clear();
+  // save our current scraper (if any)
+  if (m_scraper)
+    m_lastSelected[m_content] = m_scraper;
   FillContentTypes();
   m_bNeedSave = false;
   CGUIDialogSettings::OnInitWindow();
@@ -320,7 +320,7 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItemPtr item(new CFileItem((*iter)->Name()));
     item->SetPath((*iter)->ID());
-    item->SetThumbnailImage((*iter)->Icon());
+    item->SetArt("thumb", (*iter)->Icon());
     if (m_scraper && (*iter)->ID() == m_scraper->ID())
     {
       item->Select(true);

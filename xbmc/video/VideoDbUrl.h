@@ -30,6 +30,7 @@ public:
 
 protected:
   virtual bool parse();
+  virtual bool validateOption(const std::string &key, const CVariant &value);
 
 private:
   std::string m_itemType;

@@ -36,8 +36,7 @@
 using namespace PVR;
 
 CPVRRecordings::CPVRRecordings(void) :
-    m_bIsUpdating(false),
-    m_strDirectoryHistory("pvr://recordings/")
+    m_bIsUpdating(false)
 {
     m_thumbLoader.SetNumOfWorkers(1); 
 }
@@ -112,10 +111,10 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
       pFileItem->SetIconImage(current->m_strIconPath);
 
     if (!current->m_strThumbnailPath.IsEmpty())
-      pFileItem->SetThumbnailImage(current->m_strThumbnailPath);
+      pFileItem->SetArt("thumb", current->m_strThumbnailPath);
 
     if (!current->m_strFanartPath.IsEmpty())
-      pFileItem->SetProperty("Fanart_Image", current->m_strFanartPath);
+      pFileItem->SetArt("fanart", current->m_strFanartPath);
 
     // Set the play count either directly from client (if supported) or from video db
     if (g_PVRClients->SupportsRecordingPlayCount(pFileItem->GetPVRRecordingInfoTag()->m_iClientId))
@@ -260,17 +259,6 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     }
     results->AddFront(pItem, 0);
   }
-
-  if (!strUseBase.IsEmpty())
-  {
-    CStdString strLabel("..");
-    CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->SetPath(m_strDirectoryHistory);
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    results->AddFront(pItem, 0);
-  }
-  m_strDirectoryHistory.Format("pvr://recordings/%s", strUseBase.c_str());
 }
 
 bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirectory)
@@ -463,7 +451,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     {
       CFileItemPtr pFileItem = files.Get(i);
       CFileItemPtr pThumbItem = items.Get(pFileItem->GetPath());
-      if (!pThumbItem->HasThumbnail())
+      if (!pThumbItem->HasArt("thumb"))
         m_thumbLoader.LoadItem(pThumbItem.get());
     }
   }

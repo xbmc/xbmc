@@ -103,7 +103,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bAddonForeignFilter = !g_settings.m_bAddonForeignFilter;
         g_settings.Save();
-        Update(m_vecItems->GetPath());
+        Refresh();
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -234,7 +234,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
                                            g_localizeStrings.Get(24066),""))
       {
         if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID").asString()))
-          Update(m_vecItems->GetPath());
+          Refresh();
       }
       return true;
     }
@@ -351,12 +351,12 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   item->SetLabelPreformated(true);
 }
 
-bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
+bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!CGUIMediaWindow::Update(strDirectory))
+  if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
   m_thumbLoader.Load(*m_vecItems);

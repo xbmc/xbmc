@@ -64,7 +64,7 @@ public:
   bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
   bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true, const TiXmlElement *additionalNode = NULL);
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem& sortable);
   const CStdString GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
@@ -120,6 +120,7 @@ public:
   int m_iYear;
   int m_iSeason;
   int m_iEpisode;
+  CStdString m_strUniqueId;
   int m_iDbId;
   int m_iFileId;
   int m_iSpecialSortSeason;

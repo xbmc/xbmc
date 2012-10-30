@@ -325,14 +325,14 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
   if (!pItem->GetProperty("Icon").asString().empty())
   {
     CFileItemPtr current(new CFileItem("thumb://Current", false));
-    current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->IconPath());
+    current->SetArt("thumb", pItem->GetPVRChannelInfoTag()->IconPath());
     current->SetLabel(g_localizeStrings.Get(20016));
     items.Add(current);
   }
-  else if (pItem->HasThumbnail())
+  else if (pItem->HasArt("thumb"))
   { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
     CFileItemPtr current(new CFileItem("thumb://Current", false));
-    current->SetThumbnailImage(pItem->GetThumbnailImage());
+    current->SetArt("thumb", pItem->GetArt("thumb"));
     current->SetLabel(g_localizeStrings.Get(20016));
     items.Add(current);
   }
@@ -816,9 +816,8 @@ void CGUIDialogPVRChannelManager::SaveList(void)
     pDlgProgress->SetPercentage(iListPtr * 100 / m_channelItems->Size());
   }
 
-  group->SortByChannelNumber();
+  group->SortAndRenumber();
   group->Persist();
-  group->ResetChannelNumberCache();
   m_bContainsChanges = false;
   SetItemsUnchanged();
   pDlgProgress->Close();

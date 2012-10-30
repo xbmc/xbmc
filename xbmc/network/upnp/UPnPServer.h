@@ -19,8 +19,10 @@
  *
  */
 #include "PltMediaConnect.h"
+#include "interfaces/IAnnouncer.h"
 #include "FileItem.h"
 
+class CThumbLoader;
 class PLT_MediaObject;
 class PLT_HttpRequestContext;
 
@@ -28,13 +30,13 @@ namespace UPNP
 {
 
 class CUPnPServer : public PLT_MediaConnect,
-                    public PLT_FileMediaConnectDelegate
+                    public PLT_FileMediaConnectDelegate,
+                    public ANNOUNCEMENT::IAnnouncer
 {
 public:
-    CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0) :
-        PLT_MediaConnect(friendly_name, false, uuid, port),
-        PLT_FileMediaConnectDelegate("/", "/") {
-    }
+    CUPnPServer(const char* friendly_name, const char* uuid = NULL, int port = 0);
+    ~CUPnPServer();
+    virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
     // PLT_MediaServer methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action,
@@ -73,6 +75,7 @@ public:
                                       NPT_HttpResponse&             response);
 
     virtual NPT_Result SetupServices();
+    virtual NPT_Result SetupIcons();
     NPT_String BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
                                     const char*        host,
                                     const char*        file_path);
@@ -89,9 +92,14 @@ public:
 
 
 private:
+    void OnScanCompleted(int type);
+    void UpdateContainer(const std::string& id);
+    void PropagateUpdates();
+
     PLT_MediaObject* Build(CFileItemPtr                  item,
                            bool                          with_count,
                            const PLT_HttpRequestContext& context,
+                           NPT_Reference<CThumbLoader>&  thumbLoader,
                            const char*                   parent_id = NULL);
     NPT_Result       BuildResponse(PLT_ActionReference&          action,
                                    CFileItemList&                items,
@@ -112,9 +120,13 @@ private:
         return file_path.Left(index);
     }
 
+    NPT_Mutex                       m_CacheMutex;
+
     NPT_Mutex                       m_FileMutex;
     NPT_Map<NPT_String, NPT_String> m_FileMap;
 
+    std::map<std::string, std::pair<bool, unsigned long> > m_UpdateIDs;
+    bool m_scanning;
 public:
     // class members
     static NPT_UInt32 m_MaxReturnedItems;

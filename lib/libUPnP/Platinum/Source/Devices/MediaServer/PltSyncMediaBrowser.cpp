@@ -262,7 +262,7 @@ PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device,
             device,
             (const char*)object_id,
             index,
-            metadata?1:30, // DLNA recommendations for browsing children is no more than 30 at a time
+            metadata?1:200, // DLNA recommendations for browsing children is no more than 30 at a time
             metadata);		
         NPT_CHECK_LABEL_WARNING(res, done);
         

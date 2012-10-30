@@ -25,6 +25,7 @@
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"
 #include "threads/CriticalSection.h"
+#include "utils/ISerializable.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -42,7 +43,7 @@ namespace PVR
   typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
 
   /** PVR Channel class */
-  class CPVRChannel : public Observable
+  class CPVRChannel : public Observable, public ISerializable
   {
     friend class CPVRDatabase;
     friend class CPVRChannelGroupInternal;
@@ -56,6 +57,8 @@ namespace PVR
     bool operator ==(const CPVRChannel &right) const;
     bool operator !=(const CPVRChannel &right) const;
     CPVRChannel &operator=(const CPVRChannel &channel);
+
+    virtual void Serialize(CVariant& value) const;
 
     /*! @name XBMC related channel methods
      */
@@ -321,8 +324,10 @@ namespace PVR
 
     /*!
      * @brief Update the path after the channel number in the internal group changed.
+     * @param group The internal group that contains this channel
+     * @param iNewChannelGroupPosition The new channel number in the group
      */
-    void UpdatePath(unsigned int iNewChannelNumber);
+    void UpdatePath(CPVRChannelGroupInternal* group, unsigned int iNewChannelGroupPosition);
 
     /*!
      * @brief Return true if this channel is encrypted.

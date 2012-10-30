@@ -145,7 +145,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
             item->m_bIsFolder = true;
             CStdString thumb = GetIcon((TYPE)i);
             if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
-              item->SetThumbnailImage(thumb);
+              item->SetArt("thumb", thumb);
             items.Add(item);
             break;
           }
@@ -251,14 +251,14 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
 
   if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
     item->SetLabel2(addon->Version().c_str());
-  item->SetThumbnailImage(addon->Icon());
+  item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
   if (!addon->FanArt().IsEmpty() && 
       (URIUtils::IsInternetStream(addon->FanArt()) || 
        CFile::Exists(addon->FanArt())))
   {
-    item->SetProperty("fanart_image", addon->FanArt());
+    item->SetArt("fanart", addon->FanArt());
   }
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
   return item;

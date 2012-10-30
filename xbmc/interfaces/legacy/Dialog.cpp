@@ -67,9 +67,8 @@ namespace XBMCAddon
         throw WindowException("Error: Window is NULL, this is not possible :-)");
 
       pDialog->Reset();
-      CStdString utf8Heading;
       if (!heading.empty())
-        pDialog->SetHeading(utf8Heading);
+        pDialog->SetHeading(heading);
 
       String listLine;
       for(unsigned int i = 0; i < list.size(); i++)
@@ -231,8 +230,18 @@ namespace XBMCAddon
       return value;
     }
 
-    DialogProgress::~DialogProgress() {}
+    DialogProgress::~DialogProgress() { TRACE; deallocating(); }
 
+    void DialogProgress::deallocating()
+    {
+      TRACE;
+
+      if (dlg)
+      {
+        DelayedCallGuard dg;
+        dlg->Close();
+      }
+    }
 
     void DialogProgress::create(const String& heading, const String& line1, 
                                 const String& line2,

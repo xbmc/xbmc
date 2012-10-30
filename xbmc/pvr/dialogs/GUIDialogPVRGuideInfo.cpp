@@ -185,7 +185,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     CGUIDialog::OnMessage(message);
     Update();
-    break;
+    return true;
   case GUI_MSG_CLICKED:
     return OnClickButtonOK(message) ||
            OnClickButtonRecord(message) ||

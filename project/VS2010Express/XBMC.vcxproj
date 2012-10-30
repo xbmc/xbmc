@@ -394,10 +394,10 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEWAVLoader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
@@ -419,6 +419,7 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogGamepad.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKaiToast.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.cpp" />
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaSource.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMuteBug.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogNumeric.cpp" />
@@ -476,6 +477,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\HTSPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HTSPSession.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\HTTPDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\HTTPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\IDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\IFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ImageFile.cpp" />
@@ -644,7 +646,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUISliderControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISpinControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUISpinControlEx.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUIStandardWindow.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIStaticItem.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUITextBox.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUITextLayout.cpp" />
@@ -704,8 +705,6 @@
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\http-api\HttpApi.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\http-api\XBMChttp.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.cpp" />
@@ -719,6 +718,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PlayerOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PlaylistOperations.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PVROperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\SystemOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\VideoLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\XBMCOperations.cpp" />
@@ -772,7 +772,6 @@
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicInfo.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOSD.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.cpp" />
-    <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicScan.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.cpp" />
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogVisualisationPresetList.cpp" />
     <ClCompile Include="..\..\xbmc\music\GUIViewStateMusic.cpp" />
@@ -824,7 +823,6 @@
     <ClCompile Include="..\..\xbmc\network\EventServer.cpp" />
     <ClCompile Include="..\..\xbmc\network\GUIDialogAccessPoints.cpp" />
     <ClCompile Include="..\..\xbmc\network\GUIDialogNetworkSetup.cpp" />
-    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPImageHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp" />
@@ -968,6 +966,18 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestFileItem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\test\TestTextureCache.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\test\TestUtils.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</ExcludedFromBuild>
@@ -1012,9 +1022,12 @@
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEUtil.h" />
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AEWAVLoader.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxBXA.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ImageFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
@@ -1022,6 +1035,7 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\Addon.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\AddonCallback.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\AddonClass.h" />
@@ -1083,7 +1097,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\IJSONRPCAnnouncer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONRPCUtils.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\GUIOperations.h" />
-    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPJsonRpcHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.h" />
@@ -1198,6 +1211,8 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AddonsOperations.h" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
+    <ClCompile Include="..\..\xbmc\video\VideoThumbLoader.cpp" />
+    <ClCompile Include="..\..\xbmc\music\MusicThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
     <ClCompile Include="..\..\xbmc\URL.cpp" />
     <ClCompile Include="..\..\xbmc\Util.cpp" />
@@ -1215,6 +1230,7 @@
     <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\DownloadQueue.cpp" />
     <ClCompile Include="..\..\xbmc\utils\DownloadQueueManager.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\EdenVideoArtUpdater.cpp" />
     <ClCompile Include="..\..\xbmc\utils\EndianSwap.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Fanart.cpp" />
     <ClCompile Include="..\..\xbmc\utils\fft.cpp" />
@@ -1599,7 +1615,6 @@
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoInfo.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOSD.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.cpp" />
-    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoScan.cpp" />
     <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.cpp" />
     <ClCompile Include="..\..\xbmc\video\GUIViewStateVideo.cpp" />
     <ClCompile Include="..\..\xbmc\video\Teletext.cpp" />
@@ -1942,7 +1957,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\BXAcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h" />
     <ClInclude Include="..\..\xbmc\CueDocument.h" />
@@ -2059,7 +2073,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUISliderControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISpinControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUISpinControlEx.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIStandardWindow.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIStaticItem.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUITextBox.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUITextLayout.h" />
@@ -2129,8 +2142,6 @@
     <ClInclude Include="..\..\xbmc\input\XBMC_vkeys.h" />
     <ClInclude Include="..\..\xbmc\interfaces\AnnouncementManager.h" />
     <ClInclude Include="..\..\xbmc\interfaces\Builtins.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\http-api\HttpApi.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\http-api\XBMChttp.h" />
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h" />
@@ -2158,7 +2169,6 @@
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicInfo.h" />
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicOSD.h" />
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicOverlay.h" />
-    <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogMusicScan.h" />
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogSongInfo.h" />
     <ClInclude Include="..\..\xbmc\music\dialogs\GUIDialogVisualisationPresetList.h" />
     <ClInclude Include="..\..\xbmc\music\GUIViewStateMusic.h" />
@@ -2353,6 +2363,8 @@
     <ClInclude Include="..\..\xbmc\TextureDatabase.h" />
     <ClInclude Include="..\..\xbmc\DatabaseManager.h" />
     <ClInclude Include="..\..\xbmc\ThumbLoader.h" />
+    <ClInclude Include="..\..\xbmc\video\VideoThumbLoader.h" />
+    <ClInclude Include="..\..\xbmc\music\MusicThumbLoader.h" />
     <ClInclude Include="..\..\xbmc\ThumbnailCache.h" />
     <ClInclude Include="..\..\xbmc\URL.h" />
     <ClInclude Include="..\..\xbmc\Util.h" />
@@ -2370,6 +2382,7 @@
     <ClInclude Include="..\..\xbmc\utils\DatabaseUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\DownloadQueue.h" />
     <ClInclude Include="..\..\xbmc\utils\DownloadQueueManager.h" />
+    <ClInclude Include="..\..\xbmc\utils\EdenVideoArtUpdater.h" />
     <ClInclude Include="..\..\xbmc\utils\EndianSwap.h" />
     <ClInclude Include="..\..\xbmc\utils\Fanart.h" />
     <ClInclude Include="..\..\xbmc\utils\fft.h" />
@@ -2446,7 +2459,6 @@
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoInfo.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoOSD.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoOverlay.h" />
-    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoScan.h" />
     <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoSettings.h" />
     <ClInclude Include="..\..\xbmc\video\GUIViewStateVideo.h" />
     <ClInclude Include="..\..\xbmc\video\Teletext.h" />

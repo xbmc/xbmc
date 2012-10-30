@@ -137,5 +137,6 @@ namespace PVR
     SortOrder        m_iSortOrder;
     SORT_METHOD      m_iSortMethod;
     CCriticalSection m_critSection;
+    CDirectoryHistory m_history;
   };
 }

@@ -45,6 +45,12 @@ void CGUIDialogProgressBarHandle::SetText(const string &strText)
   m_strText = strText;
 }
 
+void CGUIDialogProgressBarHandle::SetTitle(const string &strTitle)
+{
+  CSingleLock lock(m_critSection);
+  m_strTitle = strTitle;
+}
+
 void CGUIDialogProgressBarHandle::SetProgress(int currentItem, int itemCount)
 {
   float fPercentage = (float)((currentItem*100)/itemCount);

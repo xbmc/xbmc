@@ -207,13 +207,17 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     locations.push_back(share);
 #endif// HAS_FILESYSTEM_NFS
 
+#ifdef HAS_UPNP
     share.strPath = "upnp://";
     share.strName = "UPnP Devices";
     locations.push_back(share);
-
+#endif
+    
+#ifdef HAS_ZEROCONF
     share.strPath = "zeroconf://";
     share.strName = "Zeroconf Browser";
     locations.push_back(share);
+#endif
   }
 }
 
@@ -230,7 +234,7 @@ bool CMediaManager::HasLocation(const CStdString& path) const
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == path)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, path))
       return true;
   }
 
@@ -242,7 +246,7 @@ bool CMediaManager::RemoveLocation(const CStdString& path)
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == path)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, path))
     {
       // prompt for sources, remove, cancel,
       m_locations.erase(m_locations.begin()+i);
@@ -257,7 +261,7 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == oldPath)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, oldPath))
     {
       m_locations[i].path = newPath;
       return SaveSources();
@@ -637,7 +641,7 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
   CLibcdio *c_cdio = CLibcdio::GetInstance();
   char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
-  int nRetries=2;
+  int nRetries=3;
   while (nRetries-- > 0)
   {
     CdIo_t* cdio = c_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
@@ -696,6 +700,15 @@ void CMediaManager::ProcessEvents()
   CSingleLock lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
+#if defined(HAS_DVD_DRIVE) && defined(TARGET_DARWIN_OSX)
+    // darwins GetFirstOpticalDeviceFileName only gives us something
+    // when a disc is inserted
+    // so we have to refresh m_strFirstAvailDrive when this happens after Initialize
+    // was called (e.x. the disc was inserted after the start of xbmc)
+    // else TranslateDevicePath wouldn't give the correct device
+    m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
+#endif
+    
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
     g_windowManager.SendThreadMessage(msg);
   }
