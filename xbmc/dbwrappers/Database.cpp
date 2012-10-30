@@ -287,7 +287,7 @@ bool CDatabase::QueueInsertQuery(const CStdString &strQuery)
 
 bool CDatabase::CommitInsertQueries()
 {
-  bool bReturn = false;
+  bool bReturn = true;
 
   if (m_bMultiWrite)
   {
@@ -296,10 +296,10 @@ bool CDatabase::CommitInsertQueries()
       m_bMultiWrite = false;
       m_pDS2->post();
       m_pDS2->clear_insert_sql();
-      bReturn = true;
     }
     catch(...)
     {
+      bReturn = false;
       CLog::Log(LOGERROR, "%s - failed to execute queries",
           __FUNCTION__);
     }
