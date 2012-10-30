@@ -209,17 +209,15 @@ void CMusicInfoScanner::Process()
   {
     CLog::Log(LOGERROR, "MusicInfoScanner: Exception while scanning.");
   }
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanFinished");
-  m_bRunning = false;
-  if (m_showDialog)
-  {
-    // clear cache
-    CUtil::DeleteMusicDatabaseDirectoryCache();
 
-    // send message
-    CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
-    g_windowManager.SendThreadMessage(msg);
-  }
+  m_bRunning = false;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanFinished");
+  
+  // we need to clear the musicdb cache and update any active lists
+  CUtil::DeleteMusicDatabaseDirectoryCache();
+  CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
+  g_windowManager.SendThreadMessage(msg);
+  
   if (m_handle)
     m_handle->MarkFinished();
   m_handle = NULL;
