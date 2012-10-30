@@ -32,7 +32,7 @@ namespace XBMCAddon
     void WindowDialogMixin::show()
     {
       TRACE;
-      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, HACK_CUSTOM_ACTION_OPENING, 0};
+      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, HACK_CUSTOM_ACTION_OPENING, 0u};
       tMsg.lpVoid = w->window->get();
       CApplicationMessenger::Get().SendMessage(tMsg, true);
     }

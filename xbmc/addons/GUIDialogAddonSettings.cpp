@@ -292,7 +292,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               CUtil::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
               for (unsigned int i = 0; i < valuesVec.size(); i++)
               {
-                if (i == atoi(value))
+                if (i == (unsigned int)atoi(value))
                   selected = i;
                 CStdString localized = m_addon->GetString(atoi(valuesVec[i]));
                 if (localized.IsEmpty())

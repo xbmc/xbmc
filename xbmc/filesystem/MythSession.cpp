@@ -513,7 +513,7 @@ cmyth_conn_t CMythSession::GetControl()
   if (!m_control)
   {
     if (!m_dll->IsLoaded())
-      return false;
+      return NULL;
 
     m_control = m_dll->conn_connect_ctrl((char*)m_hostname.c_str(), m_port, 16*1024, 4096);
     if (!m_control)
@@ -527,7 +527,7 @@ cmyth_database_t CMythSession::GetDatabase()
   if (!m_database)
   {
     if (!m_dll->IsLoaded())
-      return false;
+      return NULL;
 
     m_database = m_dll->database_init((char*)m_hostname.c_str(), (char*)MYTH_DEFAULT_DATABASE,
                                       (char*)m_username.c_str(), (char*)m_password.c_str());

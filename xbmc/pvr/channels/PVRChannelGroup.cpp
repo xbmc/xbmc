@@ -767,7 +767,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 
 
     if (realChannel)
     {
-      PVRChannelGroupMember newMember = { realChannel, iChannelNumber };
+      PVRChannelGroupMember newMember = { realChannel, (unsigned int)iChannelNumber };
       m_members.push_back(newMember);
       m_bChanged = true;
 

@@ -374,7 +374,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
 #if PVRDB_DEBUGGING
         CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
 #endif
-        PVRChannelGroupMember newMember = { channel, m_pDS->fv("iChannelNumber").get_asInt() };
+        PVRChannelGroupMember newMember = { channel, (unsigned int)m_pDS->fv("iChannelNumber").get_asInt() };
         results.m_members.push_back(newMember);
 
         m_pDS->next();
@@ -718,7 +718,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &group)
 #if PVRDB_DEBUGGING
           CLog::Log(LOGDEBUG, "PVR - %s - channel '%s' loaded from the database", __FUNCTION__, channel->m_strChannelName.c_str());
 #endif
-          PVRChannelGroupMember newMember = { channel, iChannelNumber };
+          PVRChannelGroupMember newMember = { channel, (unsigned int)iChannelNumber };
           group.m_members.push_back(newMember);
           iReturn++;
         }

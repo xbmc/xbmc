@@ -1503,7 +1503,7 @@ bool CGUIAddonWindowDialog::OnMessage(CGUIMessage &message)
 void CGUIAddonWindowDialog::Show(bool show /* = true */)
 {
   unsigned int iCount = g_graphicsContext.exit();
-  ThreadMessage tMsg = {TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0};
+  ThreadMessage tMsg = {TMSG_GUI_ADDON_DIALOG, 1, show ? 1u : 0u};
   tMsg.lpVoid = this;
   CApplicationMessenger::Get().SendMessage(tMsg, true);
   g_graphicsContext.restore(iCount);

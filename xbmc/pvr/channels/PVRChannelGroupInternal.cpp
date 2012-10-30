@@ -94,7 +94,7 @@ void CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel, unsi
     realChannel->UpdateFromClient(channel);
   else
   {
-    PVRChannelGroupMember newMember = { CPVRChannelPtr(new CPVRChannel(channel)), iChannelNumber > 0 ? iChannelNumber : m_members.size() + 1 };
+    PVRChannelGroupMember newMember = { CPVRChannelPtr(new CPVRChannel(channel)), iChannelNumber > 0l ? iChannelNumber : (int)m_members.size() + 1 };
     m_members.push_back(newMember);
     m_bChanged = true;
 
@@ -138,7 +138,7 @@ bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumb
   }
 
   /* move this channel and persist */
-  bReturn = (iChannelNumber > 0) ?
+  bReturn = (iChannelNumber > 0l) ?
     MoveChannel(realChannel->ChannelNumber(), iChannelNumber, true) :
     MoveChannel(realChannel->ChannelNumber(), m_members.size() - m_iHiddenChannels, true);
 

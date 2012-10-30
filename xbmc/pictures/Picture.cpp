@@ -222,9 +222,9 @@ bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned in
                                                          SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   uint8_t *src[] = { in_pixels, 0, 0, 0 };
-  int     srcStride[] = { in_pitch, 0, 0, 0 };
+  int     srcStride[] = { (int)in_pitch, 0, 0, 0 };
   uint8_t *dst[] = { out_pixels , 0, 0, 0 };
-  int     dstStride[] = { out_pitch, 0, 0, 0 };
+  int     dstStride[] = { (int)out_pitch, 0, 0, 0 };
 
   if (context)
   {

@@ -2916,7 +2916,7 @@ void CLinuxRendererGL::ToRGBFrame(YV12Image* im, unsigned flipIndexPlane, unsign
                                                  SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   uint8_t *dst[]       = { m_rgbBuffer, 0, 0, 0 };
-  int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
+  int      dstStride[] = { (int)m_sourceWidth * 4, 0, 0, 0 };
   m_dllSwScale->sws_scale(m_context, src, srcStride, 0, im->height, dst, dstStride);
 
   if (m_rgbPbo)
@@ -2996,7 +2996,7 @@ void CLinuxRendererGL::ToRGBFields(YV12Image* im, unsigned flipIndexPlaneTop, un
                                                  SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
   uint8_t *dstTop[]    = { m_rgbBuffer, 0, 0, 0 };
   uint8_t *dstBot[]    = { m_rgbBuffer + m_sourceWidth * m_sourceHeight * 2, 0, 0, 0 };
-  int      dstStride[] = { m_sourceWidth * 4, 0, 0, 0 };
+  int      dstStride[] = { (int)m_sourceWidth * 4, 0, 0, 0 };
 
   //convert each YUV field to an RGB field, the top field is placed at the top of the rgb buffer
   //the bottom field is placed at the bottom of the rgb buffer
