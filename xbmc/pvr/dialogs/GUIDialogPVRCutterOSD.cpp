@@ -33,29 +33,3 @@ CGUIDialogPVRCutterOSD::CGUIDialogPVRCutterOSD()
 CGUIDialogPVRCutterOSD::~CGUIDialogPVRCutterOSD()
 {
 }
-
-bool CGUIDialogPVRCutterOSD::OnAction(const CAction& action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
-  {
-    Close();
-    return true;
-  }
-
-  return CGUIDialog::OnAction(action);
-}
-
-bool CGUIDialogPVRCutterOSD::OnMessage(CGUIMessage& message)
-{
-  return CGUIDialog::OnMessage(message);
-}
-
-void CGUIDialogPVRCutterOSD::OnInitWindow()
-{
-  CGUIDialog::OnInitWindow();
-}
-
-void CGUIDialogPVRCutterOSD::OnDeinitWindow(int nextWindowID)
-{
-  CGUIDialog::OnDeinitWindow(nextWindowID);
-}

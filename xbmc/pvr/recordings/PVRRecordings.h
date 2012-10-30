@@ -34,7 +34,6 @@ namespace PVR
   private:
     CCriticalSection             m_critSection;
     bool                         m_bIsUpdating;
-    CStdString                   m_strDirectoryHistory;
     CVideoThumbLoader            m_thumbLoader;
     std::vector<CPVRRecording *> m_recordings;
 

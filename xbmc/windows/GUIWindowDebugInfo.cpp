@@ -37,7 +37,7 @@
 #include <climits>
 
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
-    : CGUIDialog(98, "")
+    : CGUIDialog(WINDOW_DEBUG_INFO, "")
 {
   m_needsScaling = false;
   m_layout = NULL;

@@ -320,9 +320,7 @@ void CGUIListItem::Serialize(CVariant &value)
 void CGUIListItem::FreeIcons()
 {
   FreeMemory();
-  ArtMap::iterator i = m_art.find("thumb");
-  if (i != m_art.end())
-    m_art.erase(i);
+  m_art.clear();
   m_strIcon = "";
   SetInvalid();
 }

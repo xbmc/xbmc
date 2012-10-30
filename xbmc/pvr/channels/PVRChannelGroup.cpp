@@ -182,11 +182,17 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
+  /* make sure the list is sorted by channel number */
+  SortByChannelNumber();
+
   /* old channel number out of range */
   if (iOldChannelNumber > m_members.size())
     return bReturn;
 
   /* new channel number out of range */
+  if (iNewChannelNumber < 1)
+    return bReturn;
+
   if (iNewChannelNumber > m_members.size())
     iNewChannelNumber = m_members.size();
 
@@ -196,7 +202,7 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   m_members.insert(m_members.begin() + iNewChannelNumber - 1, entry);
 
   /* renumber the list */
-  SortAndRenumber();
+  Renumber();
 
   m_bChanged = true;
 
@@ -891,11 +897,9 @@ bool CPVRChannelGroup::Renumber(void)
 
 void CPVRChannelGroup::ResetChannelNumberCache(void)
 {
-  CPVRChannelGroupPtr playingGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
-  if (!playingGroup || *this != *playingGroup)
-    return;
-
   CSingleLock lock(m_critSection);
+  if (!m_bSelectedGroup)
+    return;
 
   /* reset the channel number cache */
   if (!IsInternalGroup())
@@ -1159,4 +1163,16 @@ bool CPVRChannelGroup::ToggleChannelLocked(const CFileItem &item)
   channel->SetLocked(!channel->IsLocked());
 
   return true;
+}
+
+void CPVRChannelGroup::SetSelectedGroup(bool bSetTo)
+{
+  CSingleLock lock(m_critSection);
+  m_bSelectedGroup = bSetTo;
+}
+
+bool CPVRChannelGroup::IsSelectedGroup(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bSelectedGroup;
 }

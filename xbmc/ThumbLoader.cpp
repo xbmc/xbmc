@@ -38,7 +38,7 @@ CThumbLoader::~CThumbLoader()
 CStdString CThumbLoader::GetCachedImage(const CFileItem &item, const CStdString &type)
 {
   CTextureDatabase db;
-  if (db.Open())
+  if (!item.GetPath().empty() && db.Open())
     return db.GetTextureForPath(item.GetPath(), type);
   return "";
 }
@@ -46,7 +46,7 @@ CStdString CThumbLoader::GetCachedImage(const CFileItem &item, const CStdString 
 void CThumbLoader::SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image)
 {
   CTextureDatabase db;
-  if (db.Open())
+  if (!item.GetPath().empty() && db.Open())
     db.SetTextureForPath(item.GetPath(), type, image);
 }
 

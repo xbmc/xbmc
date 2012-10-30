@@ -22,11 +22,13 @@
 
 #include "Application.h"
 #include "ApplicationMessenger.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
@@ -195,7 +197,7 @@ bool CGUIWindowPVRCommon::OnAction(const CAction &action)
   bool bReturn = false;
 
   if (action.GetID() == ACTION_NAV_BACK ||
-      action.GetID() == ACTION_PARENT_DIR)
+      action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     bReturn = true;
@@ -713,7 +715,9 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
     if (!bSwitchSuccessful)
     {
-      CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+              g_localizeStrings.Get(19166), // PVR information
+              g_localizeStrings.Get(19035)); // This channel cannot be played. Check the log for details.
       return false;
     }
   }

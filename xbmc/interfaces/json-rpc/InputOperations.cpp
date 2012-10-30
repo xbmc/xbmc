@@ -37,16 +37,11 @@ using namespace JSONRPC;
 //1 million dupes
 bool CInputOperations::handleScreenSaver()
 {
-  bool screenSaverBroken = false; //true if screensaver was active and we did reset him
-
   g_application.ResetScreenSaver();
-  
-  if(g_application.IsInScreenSaver())
-  {
-    g_application.WakeUpScreenSaverAndDPMS();
-    screenSaverBroken = true;
-  }
-  return screenSaverBroken;
+  if (g_application.WakeUpScreenSaverAndDPMS())
+    return true;
+
+  return false;
 }
 
 JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /* = true */, bool waitResult /* = false */)

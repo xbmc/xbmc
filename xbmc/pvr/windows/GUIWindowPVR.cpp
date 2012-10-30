@@ -65,6 +65,20 @@ CGUIWindowPVRCommon *CGUIWindowPVR::GetActiveView(void) const
 void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
 {
   CSingleLock lock(m_critSection);
+
+  if ((!window && m_currentSubwindow) || (window && !m_currentSubwindow) ||
+      (window->GetWindowId() != m_currentSubwindow->GetWindowId()))
+  {
+    // switched views, save current history
+    if (m_currentSubwindow)
+      m_currentSubwindow->m_history = m_history;
+
+    // update m_history
+    if (window)
+      m_history = window->m_history;
+    else
+      m_history.ClearPathHistory();
+  }
   m_currentSubwindow = window;
 }
 

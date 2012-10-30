@@ -36,8 +36,7 @@
 using namespace PVR;
 
 CPVRRecordings::CPVRRecordings(void) :
-    m_bIsUpdating(false),
-    m_strDirectoryHistory("pvr://recordings/")
+    m_bIsUpdating(false)
 {
     m_thumbLoader.SetNumOfWorkers(1); 
 }
@@ -260,17 +259,6 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     }
     results->AddFront(pItem, 0);
   }
-
-  if (!strUseBase.IsEmpty())
-  {
-    CStdString strLabel("..");
-    CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->SetPath(m_strDirectoryHistory);
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    results->AddFront(pItem, 0);
-  }
-  m_strDirectoryHistory.Format("pvr://recordings/%s", strUseBase.c_str());
 }
 
 bool CPVRRecordings::HasAllRecordingsPathExtension(const CStdString &strDirectory)

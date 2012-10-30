@@ -144,7 +144,7 @@
       <t mod="ctrl">ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</t>  <!-- MCE Live TV  -->
       <t mod="ctrl,shift">ActivateWindow(MyPVR)</t>                <!-- MCE My TV -->
       <a mod="ctrl">ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</a>  <!-- MCE My Radio -->
-      <!-- MCE keypresses without an obvious use in XBMC --->
+      <!-- MCE keypresses without an obvious use in XBMC -->
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
     </keyboard>

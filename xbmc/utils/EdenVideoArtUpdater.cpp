@@ -38,6 +38,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "interfaces/AnnouncementManager.h"
 
 using namespace std;
 using namespace VIDEO;
@@ -259,6 +260,9 @@ void CEdenVideoArtUpdater::Process()
     }
   }
   handle->MarkFinished();
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+
   items.Clear();
 }
 

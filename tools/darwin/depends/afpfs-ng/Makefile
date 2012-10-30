@@ -33,6 +33,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p1 <../08-boxee5.patch
 	cd $(SOURCE); patch -p1 <../10-fix-errno.patch
 	cd $(SOURCE); patch -p1 <../11-fix-stat.patch
+	cd $(SOURCE); patch -p1 <../12-fix-even-more-pointers.patch
 	sed -ie 's|SUBDIRS = lib cmdline include docs|SUBDIRS = lib include|' $(SOURCE)/Makefile.am
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
