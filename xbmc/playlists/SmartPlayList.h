@@ -96,6 +96,8 @@ public:
 
   CStdString                  GetLocalizedRule() const;
   CStdString                  GetParameter() const;
+  void                        SetParameter(const CStdString &value);
+  void                        SetParameter(const std::vector<CStdString> &values);
 
   Field                       m_field;
   SEARCH_OPERATOR             m_operator;

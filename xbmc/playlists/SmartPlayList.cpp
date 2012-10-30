@@ -629,6 +629,17 @@ CStdString CSmartPlaylistRule::GetParameter() const
   return StringUtils::JoinString(m_parameter, " / ");
 }
 
+void CSmartPlaylistRule::SetParameter(const CStdString &value)
+{
+  m_parameter.clear();
+  StringUtils::SplitString(value, " / ", m_parameter);
+}
+
+void CSmartPlaylistRule::SetParameter(const std::vector<CStdString> &values)
+{
+  m_parameter.assign(values.begin(), values.end());
+}
+
 CStdString CSmartPlaylistRule::GetVideoResolutionQuery(const CStdString &parameter) const
 {
   CStdString retVal(" in (select distinct idFile from streamdetails where iVideoWidth ");
