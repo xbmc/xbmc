@@ -298,7 +298,7 @@ void CGUIDialogMediaFilter::CreateSettings()
       {
         CStdString *values = new CStdString();
         if (filter.rule != NULL && filter.rule->m_parameter.size() > 0)
-          *values = filter.rule->GetLocalizedParameter(m_mediaType);
+          *values = filter.rule->GetParameter();
         filter.data = values;
 
         AddButton(filter.field, filter.label);
@@ -461,7 +461,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(SettingInfo &setting)
         for (int index = 0; index < items.Size(); index++)
           filter.rule->m_parameter.push_back(items[index]->GetLabel());
 
-        *(CStdString *)filter.data = filter.rule->GetLocalizedParameter(m_mediaType);
+        *(CStdString *)filter.data = filter.rule->GetParameter();
       }
       else
       {

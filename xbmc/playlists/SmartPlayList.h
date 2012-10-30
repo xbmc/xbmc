@@ -94,8 +94,8 @@ public:
   static std::vector<SortBy>  GetOrders(const CStdString &type);
   static FIELD_TYPE           GetFieldType(Field field);
 
-  CStdString                  GetLocalizedRule(const CStdString &type) const;
-  CStdString                  GetLocalizedParameter(const CStdString &type) const;
+  CStdString                  GetLocalizedRule() const;
+  CStdString                  GetParameter() const;
 
   Field                       m_field;
   SEARCH_OPERATOR             m_operator;

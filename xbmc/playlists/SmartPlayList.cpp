@@ -617,14 +617,14 @@ CStdString CSmartPlaylistRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
   return g_localizeStrings.Get(16018);
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedRule(const CStdString &type) const
+CStdString CSmartPlaylistRule::GetLocalizedRule() const
 {
   CStdString rule;
-  rule.Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetLocalizedParameter(type).c_str());
+  rule.Format("%s %s %s", GetLocalizedField(m_field).c_str(), GetLocalizedOperator(m_operator).c_str(), GetParameter().c_str());
   return rule;
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedParameter(const CStdString &type) const
+CStdString CSmartPlaylistRule::GetParameter() const
 {
   return StringUtils::JoinString(m_parameter, " / ");
 }

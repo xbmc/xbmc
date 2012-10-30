@@ -253,7 +253,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     g_mediaManager.GetLocalDrives(sources);
     
-    CStdString path = m_rule.GetLocalizedParameter(m_type);
+    CStdString path = m_rule.GetParameter();
     CGUIDialogFileBrowser::ShowAndGetDirectory(sources, g_localizeStrings.Get(657), path, false);
     if (m_rule.m_parameter.size() > 0)
       m_rule.m_parameter.clear();
@@ -402,7 +402,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   m_rule.m_operator = (CSmartPlaylistRule::SEARCH_OPERATOR)selected.GetParam1();
 
   // update the parameter edit control appropriately
-  SET_CONTROL_LABEL2(CONTROL_VALUE, m_rule.GetLocalizedParameter(m_type));
+  SET_CONTROL_LABEL2(CONTROL_VALUE, m_rule.GetParameter());
   CGUIEditControl::INPUT_TYPE type = CGUIEditControl::INPUT_TYPE_TEXT;
   CSmartPlaylistRule::FIELD_TYPE fieldType = CSmartPlaylistRule::GetFieldType(m_rule.m_field);
   switch (fieldType)
