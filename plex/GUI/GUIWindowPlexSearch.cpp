@@ -440,8 +440,10 @@ void CGUIWindowPlexSearch::StartSearch(const string& search)
   {
     if (PlexServerManager::Get().bestServer())
     {
+      CStdString url;
+      url.Format("http://%s:%d/search", PlexServerManager::Get().bestServer()->address, PlexServerManager::Get().bestServer()->port);
       // Issue the root of the new search.
-      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl("http://127.0.0.1:32400/search", search), 0);
+      m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(url, search), 0);
     }
     else
     {
