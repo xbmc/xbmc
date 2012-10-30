@@ -42,7 +42,6 @@ namespace PVR
     virtual bool OnPopupMenu(int iItem);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
-    virtual bool OnActionClose(const CAction &action);
     virtual bool OnActionMove(const CAction &action);
 
     virtual bool OnMessageInit(CGUIMessage &message);
