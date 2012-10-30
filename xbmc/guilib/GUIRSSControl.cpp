@@ -30,7 +30,8 @@ using namespace std;
 
 CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags)
 : CGUIControl(parentID, controlID, posX, posY, width, height),
-  m_scrollInfo(0,0,labelInfo.scrollSpeed,"")
+  m_scrollInfo(0,0,labelInfo.scrollSpeed,""),
+  m_scrollSpeed(labelInfo.scrollSpeed)
 {
   m_label = labelInfo;
   m_headlineColor = headlineColor;
@@ -40,11 +41,13 @@ CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float po
 
   m_pReader = NULL;
   m_rtl = false;
+  m_stopped = false;
   ControlType = GUICONTROL_RSS;
 }
 
 CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
-: CGUIControl(from),m_scrollInfo(from.m_scrollInfo)
+: CGUIControl(from),m_scrollInfo(from.m_scrollInfo),
+  m_scrollSpeed(from.m_scrollInfo.defaultSpeed)
 {
   m_label = from.m_label;
   m_headlineColor = from.m_headlineColor;
@@ -52,6 +55,7 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
   m_strRSSTags = from.m_strRSSTags;
   m_pReader = NULL;
   m_rtl = from.m_rtl;
+  m_stopped = from.m_stopped;
   ControlType = GUICONTROL_RSS;
 }
 
@@ -71,6 +75,16 @@ void CGUIRSSControl::SetUrls(const vector<string> &vecUrl, bool rtl)
     m_scrollInfo.pixelSpeed *= -1;
   else if (m_scrollInfo.pixelSpeed < 0 && !rtl)
     m_scrollInfo.pixelSpeed *= -1;
+}
+
+void CGUIRSSControl::OnFocus()
+{
+  m_stopped = true;
+}
+
+void CGUIRSSControl::OnUnFocus()
+{
+  m_stopped = false;
 }
 
 void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
@@ -130,6 +144,12 @@ void CGUIRSSControl::Render()
       colors.push_back(m_label.textColor);
       colors.push_back(m_headlineColor);
       colors.push_back(m_channelColor);
+
+      if ( m_stopped )
+        m_scrollInfo.SetSpeed(0);
+      else
+        m_scrollInfo.SetSpeed(m_scrollSpeed);
+
       m_label.font->DrawScrollingText(m_posX, m_posY, colors, m_label.shadowColor, m_feed, 0, m_width, m_scrollInfo);
     }
 
