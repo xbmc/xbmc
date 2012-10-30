@@ -368,6 +368,9 @@ namespace PVR
      */
     CPVRChannelPtr GetByClient(int iUniqueChannelId, int iClientID) const;
 
+    void SetSelectedGroup(bool bSetTo);
+    bool IsSelectedGroup(void) const;
+
   protected:
     /*!
      * @brief Set a new channel icon path if the path exists
@@ -469,6 +472,7 @@ namespace PVR
     bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
     bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */
     bool             m_bUsingBackendChannelNumbers; /*!< true to use the channel numbers from 1 backend, false otherwise */
+    bool             m_bSelectedGroup;              /*!< true when this is the selected group, false otherwise */
     std::vector<PVRChannelGroupMember> m_members;
     CCriticalSection m_critSection;
   };

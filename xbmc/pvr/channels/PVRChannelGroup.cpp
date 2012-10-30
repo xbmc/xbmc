@@ -891,11 +891,9 @@ bool CPVRChannelGroup::Renumber(void)
 
 void CPVRChannelGroup::ResetChannelNumberCache(void)
 {
-  CPVRChannelGroupPtr playingGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
-  if (!playingGroup || *this != *playingGroup)
-    return;
-
   CSingleLock lock(m_critSection);
+  if (!m_bSelectedGroup)
+    return;
 
   /* reset the channel number cache */
   if (!IsInternalGroup())
@@ -1159,4 +1157,16 @@ bool CPVRChannelGroup::ToggleChannelLocked(const CFileItem &item)
   channel->SetLocked(!channel->IsLocked());
 
   return true;
+}
+
+void CPVRChannelGroup::SetSelectedGroup(bool bSetTo)
+{
+  CSingleLock lock(m_critSection);
+  m_bSelectedGroup = bSetTo;
+}
+
+bool CPVRChannelGroup::IsSelectedGroup(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bSelectedGroup;
 }
