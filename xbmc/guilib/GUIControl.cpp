@@ -42,6 +42,7 @@ CGUIControl::CGUIControl()
   m_visibleCondition = 0;
   m_enableCondition = 0;
   m_enabled = true;
+  m_stopped = false;
   m_diffuseColor = 0xffffffff;
   m_posX = 0;
   m_posY = 0;
@@ -74,6 +75,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_visibleCondition = 0;
   m_enableCondition = 0;
   m_enabled = true;
+  m_stopped = false;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -378,6 +380,11 @@ bool CGUIControl::IsVisible() const
 {
   if (m_forceHidden) return false;
   return m_visible == VISIBLE;
+}
+
+bool CGUIControl::IsStopped() const
+{
+	return m_stopped;
 }
 
 bool CGUIControl::IsDisabled() const
