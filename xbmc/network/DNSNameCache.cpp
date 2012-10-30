@@ -53,6 +53,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
     return true;
 
 #ifndef _WIN32
+#ifndef __PLEX__
   // perform netbios lookup (win32 is handling this via gethostbyname)
   char nmb_ip[100];
   char line[200];
@@ -77,6 +78,7 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
     g_DNSCache.Add(strHostName, strIpAddress);
     return true;
   }
+#endif
 #endif
 
   // perform dns lookup
