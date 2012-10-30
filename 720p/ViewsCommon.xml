@@ -990,7 +990,7 @@
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 							</control>
 							<control type="image">
-								<visible>![Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
+								<visible>![Container.Content(albums) | Container.Content(artists) | Container.Content(songs)| Container.Content(plugins)]</visible>
 								<posy>9</posy>
 								<posx>-43</posx>
 								<width>334</width>
@@ -1180,7 +1180,7 @@
 						<control type="group">
 							<posx>-280</posx>
 							<posy>50</posy>
-							<visible>Container.Content(plugincontent) + ![Container.Content(albums) | Container.Content(artists) | Container.Content(songs) | Container.Content(clip)]</visible>
+							<visible>[Container.Content(plugins) | Container.Content(plugincontent)] + ![Container.Content(albums) | Container.Content(artists) | Container.Content(songs) | Container.Content(clip)]</visible>
 							<!-- when no plot -->
 							<!--><control type="image">
 								<posy>9</posy>
@@ -1227,7 +1227,7 @@
 								<height>230</height>
 								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
 								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
-								<visible>!IsEmpty(ListItem.Plot)</visible>
+								<visible>!Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
 							</control>
 							<control type="image">
 								<posx>-3</posx>
@@ -1237,7 +1237,30 @@
 								<info>ListItem.Icon</info>
 								<texture flipy="true" diffuse="DiffuseMirror.png"/>
 								<aspectratio aligny="top">keep</aspectratio>
-								<visible>!IsEmpty(ListItem.Plot)</visible>
+								<visible>!Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
+							</control>
+							<!-- channels directory, with plot -->
+							<control type="group">
+								<posy>70</posy>
+								<posx>215</posx>
+							<visible>Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
+							<control type="image">
+								<posx>0</posx>
+								<posy>26</posy>
+								<width>436</width>
+								<height>230</height>
+								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
+							</control>
+							<control type="image">
+								<posx>0</posx>
+								<posy>258</posy>
+								<width>436</width>
+								<height>230</height>
+								<info>ListItem.Icon</info>
+								<texture flipy="true" diffuse="DiffuseMirror.png"/>
+								<aspectratio aligny="top">keep</aspectratio>
+							</control>
 							</control>
 						</control>
 						<!-- episode/clip image -->
