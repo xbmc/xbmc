@@ -23,6 +23,8 @@
 #include "ApplicationMessenger.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "GUIDialogPVRGuideInfo.h"
 #include "ViewState.h"
@@ -204,7 +206,9 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     if (!g_PVRManager.CheckParentalLock(*channel) ||
         !g_application.m_pPlayer->SwitchChannel(*channel))
     {
-      Close(true);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+              g_localizeStrings.Get(19166), // PVR information
+              g_localizeStrings.Get(19035)); // This channel cannot be played. Check the log for details.
       return;
     }
   }
