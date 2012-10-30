@@ -33,18 +33,3 @@ CGUIDialogPVRCutterOSD::CGUIDialogPVRCutterOSD()
 CGUIDialogPVRCutterOSD::~CGUIDialogPVRCutterOSD()
 {
 }
-
-bool CGUIDialogPVRCutterOSD::OnMessage(CGUIMessage& message)
-{
-  return CGUIDialog::OnMessage(message);
-}
-
-void CGUIDialogPVRCutterOSD::OnInitWindow()
-{
-  CGUIDialog::OnInitWindow();
-}
-
-void CGUIDialogPVRCutterOSD::OnDeinitWindow(int nextWindowID)
-{
-  CGUIDialog::OnDeinitWindow(nextWindowID);
-}

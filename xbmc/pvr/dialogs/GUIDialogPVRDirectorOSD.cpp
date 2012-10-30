@@ -39,18 +39,3 @@ CGUIDialogPVRDirectorOSD::CGUIDialogPVRDirectorOSD()
 CGUIDialogPVRDirectorOSD::~CGUIDialogPVRDirectorOSD()
 {
 }
-
-bool CGUIDialogPVRDirectorOSD::OnMessage(CGUIMessage& message)
-{
-  return CGUIDialog::OnMessage(message);
-}
-
-void CGUIDialogPVRDirectorOSD::OnInitWindow()
-{
-  CGUIDialog::OnInitWindow();
-}
-
-void CGUIDialogPVRDirectorOSD::OnDeinitWindow(int nextWindowID)
-{
-  CGUIDialog::OnDeinitWindow(nextWindowID);
-}
