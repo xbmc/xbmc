@@ -154,7 +154,6 @@ public:
   virtual bool IsDynamicallyAllocated() { return false; };
   virtual bool CanFocus() const;
   virtual bool IsVisible() const;
-  virtual bool IsStopped() const;
   bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; };
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
@@ -346,7 +345,6 @@ protected:
   // enable/disable state
   unsigned int m_enableCondition;
   bool m_enabled;
-  bool m_stopped;
 
   bool m_pushedUpdates;
 
