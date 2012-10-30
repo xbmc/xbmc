@@ -254,7 +254,7 @@ CStdString CTextureDatabase::GetTextureForPath(const CStdString &url, const CStd
     if (NULL == m_pDS.get()) return "";
 
     if (url.empty())
-      return false;
+      return "";
 
     CStdString sql = PrepareSQL("select texture from path where url='%s' and type='%s'", url.c_str(), type.c_str());
     m_pDS->query(sql.c_str());
@@ -282,7 +282,7 @@ void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString
     if (NULL == m_pDS.get()) return;
 
     if (url.empty())
-      return false;
+      return;
 
     CStdString sql = PrepareSQL("select id from path where url='%s' and type='%s'", url.c_str(), type.c_str());
     m_pDS->query(sql.c_str());
