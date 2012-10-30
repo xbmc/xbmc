@@ -32,7 +32,11 @@ CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float 
 CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth)
 #endif
     : CGUIControl(parentID, controlID, posX, posY, width, height)
+#ifndef __PLEX__
     , m_texture(posX, posY, width, height, texture)
+#else
+    , m_texture(posX, posY, width, height, texture, minWidth)
+#endif
 {
   m_crossFadeTime = 0;
   m_currentFadeTime = 0;
