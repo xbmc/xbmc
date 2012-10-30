@@ -49,12 +49,7 @@ CGUIDialogPeripheralManager::~CGUIDialogPeripheralManager(void)
 bool CGUIDialogPeripheralManager::OnAction(const CAction &action)
 {
   int iActionId = action.GetID();
-  if (iActionId == ACTION_PREVIOUS_MENU || iActionId == ACTION_PARENT_DIR)
-  {
-    Close();
-    return true;
-  }
-  else if (GetFocusedControlID() == CONTROL_LIST &&
+  if (GetFocusedControlID() == CONTROL_LIST &&
       (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
        iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP))
   {
