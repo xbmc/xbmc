@@ -686,7 +686,7 @@
 			<control type="group">
 				<posy>235</posy>
 				<posx>1</posx>
-				<visible>[Control.IsVisible(11000) + !Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002)</visible>
+				<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [!Control.IsVisible(11001) + Control.IsVisible(11000)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002)</visible>
 				<animation effect="fade" start="0" end="100" time="500" delay="0">Visible</animation>
 				<animation effect="fade" start="100" end="0" time="100" delay="0">Hidden</animation>
 				<control type="image">
@@ -714,8 +714,9 @@
 				<!-- On Deck (11001) -->
 				<control type="group" id="7002">
 					<height>230</height>
+					<!-- list title when both lists are visible -->
 					<control type="label" id="8002">
-						<visible>Control.IsVisible(11001)</visible>
+						<visible>Control.IsVisible(11001) + Control.IsVisible(11000)</visible>
 						<posx>870</posx>
 						<font>MediumSmallTitleFont2</font>
 						<textcolor>orange</textcolor>
@@ -726,10 +727,33 @@
 						<align>right</align>
 						<label>On Deck</label>
 					</control>
+					<!-- list title when only this list is visible -->
+					<control type="label" id="8002">
+						<posx>870</posx>
+						<font>MediumSmallTitleFont2</font>
+						<textcolor>orange</textcolor>
+						<shadowcolor>FF222222</shadowcolor>
+						<width>350</width>
+						<height>30</height>
+						<posy>240</posy>
+						<align>right</align>
+						<label>On Deck</label>
+						<visible>Control.IsVisible(11001) + !Control.IsVisible(11000)</visible>
+					</control>
+					<!-- select arrow if only this list is visible -->
+					<control type="image">
+						<posy>269</posy>
+						<posx>-2</posx>
+						<visible>ControlGroup(7002).HasFocus + !Control.IsVisible(11000)</visible>
+						<texture background="true">newlistselector.png</texture>
+						<animation effect="fade" start="0" end="100" time="400" condition="true">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
+					</control>
+					<!-- select arrow if both lists are visible -->
 					<control type="image">
 						<posy>166</posy>
 						<posx>-2</posx>
-						<visible>ControlGroup(7002).HasFocus</visible>
+						<visible>ControlGroup(7002).HasFocus + Control.IsVisible(11000)</visible>
 						<texture flipy="true">newlistselector.png</texture>
 						<animation effect="fade" start="0" end="100" time="400" condition="true">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
@@ -744,8 +768,8 @@
 						<posx>-14</posx>
 						<posy>131</posy>
 						<width>870</width>
-						<height>250</height>
-						<itemlayout width="140" height="230">
+						<height>350</height>
+						<itemlayout width="140" height="330">
 							<!-- album -->
 							<control type="image">
 								<posx>15</posx>
@@ -759,9 +783,9 @@
 								<bordersize>2</bordersize>
 								<visible>ListItem.Type(album)</visible>
 							</control>
-							<!-- tv show episode -->
+							<!-- tv show episode when both lists are visible -->
 							<control type="group">
-								<visible>ListItem.Type(episode)</visible>
+								<visible>ListItem.Type(episode) + Control.IsVisible(11000)</visible>
 								<posy>42</posy>
 								<!-- in progress -->
 								<control type="image">
@@ -840,9 +864,90 @@
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 							</control>
-							<!-- movie -->
+							<!-- tv show episode when only this list is visible -->
 							<control type="group">
-								<visible>ListItem.Type(movie)</visible>
+								<visible>ListItem.Type(episode) + !Control.IsVisible(11000)</visible>
+								<posy>144</posy>
+								<!-- in progress -->
+								<control type="image">
+									<visible>ListItem.Status(InProgress)</visible>
+									<posx>42</posx>
+									<posy>163</posy>
+									<width>35</width>
+									<height>35</height>
+									<info>ListItem.Overlay</info>
+								</control>
+								<!-- drop shadow -->
+								<control type="image">
+									<posx>29</posx>
+									<posy>0</posy>
+									<width>132</width>
+									<height>192</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+								</control>
+								<control type="image">
+									<posx>37</posx>
+									<posy>8</posy>
+									<width>116</width>
+									<height>176</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
+								</control>
+								<!-- dimming mask when list not selected -->
+								<control type="image">
+									<posx>37</posx>
+									<posy>8</posy>
+									<width>116</width>
+									<height>176</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">posterMaskSmall.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<visible>ControlGroup(7001).HasFocus</visible>
+									<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
+									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
+								</control>
+								<control type="image">
+									<posx>36</posx>
+									<posy>158</posy>
+									<width>118</width>
+									<height>27</height>
+									<texture border="10">whitewideroundedtflat.png</texture>
+									<colordiffuse>FF222222</colordiffuse>
+									<animation effect="fade" start="0" end="95" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>S $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] E $INFO[ListItem.Episode]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Date]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>[IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+							</control>
+							<!-- movie when both lists are visible -->
+							<control type="group">
+								<visible>ListItem.Type(movie) + Control.IsVisible(11000)</visible>
 								<!-- in progress -->
 								<control type="image">
 									<visible>ListItem.Status(InProgress)</visible>
@@ -883,6 +988,37 @@
 									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 							</control>
+							<!-- movie when only this list is visible -->
+							<control type="group">
+								<visible>ListItem.Type(movie) + !Control.IsVisible(11000)</visible>
+								<posy>102</posy>
+								<!-- in progress -->
+								<control type="image">
+									<visible>ListItem.Status(InProgress)</visible>
+									<posx>42</posx>
+									<posy>205</posy>
+									<width>35</width>
+									<height>35</height>
+									<info>ListItem.Overlay</info>
+								</control>
+								<!-- drop shadow -->
+								<control type="image">
+									<posx>29</posx>
+									<posy>42</posy>
+									<width>132</width>
+									<height>192</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true">posterFrameSmallShadow3.png</texture>
+								</control>
+								<control type="image">
+									<posx>37</posx>
+									<posy>50</posy>
+									<width>116</width>
+									<height>176</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+								</control>
+							</control>
 						</itemlayout>
 						<focusedlayout width="160" height="250">
 							<!-- album -->
@@ -898,9 +1034,9 @@
 								<bordersize>2</bordersize>
 								<visible>ListItem.Type(album)</visible>
 							</control>
-							<!-- tv show episode -->
+							<!-- tv show episode when both lists are visible -->
 							<control type="group">
-								<visible>ListItem.Type(episode)</visible>
+								<visible>ListItem.Type(episode) + Control.IsVisible(11000)</visible>
 								<posy>42</posy>
 								<!-- in progress -->
 								<control type="image">
@@ -944,9 +1080,9 @@
 									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 								<control type="image">
-									<posx>36</posx>
+									<posx>37</posx>
 									<posy>158</posy>
-									<width>117</width>
+									<width>116</width>
 									<height>27</height>
 									<texture border="10">whitewideroundedtflat.png</texture>
 									<colordiffuse>FF222222</colordiffuse>
@@ -981,9 +1117,116 @@
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 							</control>
-							<!-- movie -->
+							<!-- tv show episode when only this list is visible -->
 							<control type="group">
-								<visible>ListItem.Type(movie)</visible>
+								<visible>ListItem.Type(episode) + !Control.IsVisible(11000)</visible>
+								<posy>144</posy>
+								<!-- in progress -->
+								<control type="image">
+									<visible>ListItem.Status(InProgress)</visible>
+									<posx>42</posx>
+									<posy>166</posy>
+									<width>35</width>
+									<height>35</height>
+									<info>ListItem.Overlay</info>
+								</control>
+								<!-- drop shadow -->
+								<control type="image">
+									<posx>29</posx>
+									<posy>0</posy>
+									<width>132</width>
+									<height>192</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+								</control>
+								<control type="image">
+									<posx>34</posx>
+									<posy>5</posy>
+									<width>122</width>
+									<height>182</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
+								</control>
+								<!-- dimming mask when list not selected -->
+								<control type="image">
+									<posx>37</posx>
+									<posy>8</posy>
+									<width>116</width>
+									<height>176</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">posterMaskSmall.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<visible>ControlGroup(7001).HasFocus</visible>
+									<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
+									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
+								</control>
+								<control type="image">
+									<posx>37</posx>
+									<posy>158</posy>
+									<width>116</width>
+									<height>27</height>
+									<texture border="10">whitewideroundedtflat.png</texture>
+									<colordiffuse>FF222222</colordiffuse>
+									<animation effect="fade" start="0" end="95" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>S $INFO[ListItem.Season] [COLOR=orange]&#xB7;[/COLOR] E $INFO[ListItem.Episode]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Date]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>[IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+							</control>
+							<!-- movie when both lists are visible -->
+							<control type="group">
+								<visible>ListItem.Type(movie) + Control.IsVisible(11000)</visible>
+								<!-- in progress -->
+								<control type="image">
+									<visible>ListItem.Status(InProgress)</visible>
+									<posx>42</posx>
+									<posy>208</posy>
+									<width>35</width>
+									<height>35</height>
+									<info>ListItem.Overlay</info>
+								</control>
+								<control type="image">
+									<posx>34</posx>
+									<posy>47</posy>
+									<width>122</width>
+									<height>182</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
+								</control>
+							</control>
+							<!-- movie when only this list is visible -->
+							<control type="group">
+								<visible>ListItem.Type(movie) + !Control.IsVisible(11000)</visible>								
+								<posy>102</posy>
 								<!-- in progress -->
 								<control type="image">
 									<visible>ListItem.Status(InProgress)</visible>
@@ -1007,14 +1250,14 @@
 						</focusedlayout>
 						<height>200</height>
 					</control>
-					<!-- title bar Labels -->
+					<!-- title bar Labels when both lists are visible -->
 					<control type="grouplist">
 						<posx>26</posx>
 						<posy>132</posy>
 						<height>25</height>
 						<orientation>horizontal</orientation>
-						<visible>Control.IsVisible(11001)</visible>
-						<itemgap>0</itemgap>
+						<visible>Control.IsVisible(11001) + Control.IsVisible(11000)</visible>
+						<itemgap>4</itemgap>
 						<!-- tv specific -->
 						<control type="label">
 							<align>left</align>
@@ -1087,6 +1330,129 @@
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
 							<visible>ControlGroup(7002).HasFocus + IsEmpty(Container(11001).ListItem(0).TVShowTitle)</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).Duration]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>FFFFFFFF</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+						</control>
+					</control>
+					<!-- title bar Labels when only this list is visible -->
+					<control type="grouplist">
+						<posx>26</posx>
+						<posy>241</posy>
+						<height>25</height>
+						<orientation>horizontal</orientation>
+						<visible>Control.HasFocus(11001) + !Control.IsVisible(11000)</visible>
+						<itemgap>4</itemgap>
+						<!-- tv specific -->
+						<control type="label">
+							<align>left</align>
+							<label>$INFO[Container(11001).ListItem(0).TVShowTitle]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + Container(11001).ListItem(0).Type(episode)</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
+							<label> &#xB7; Season $INFO[Container(11001).ListItem(0).Season]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>FFFFFFFF</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).Season) + Container(11001).ListItem(0).Type(episode)</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
+							<label> &#xB7; Episode $INFO[Container(11001).ListItem(0).Episode]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).Episode) + Container(11001).ListItem(0).Type(episode)</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).Date]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>FFFFFFFF</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).Date) + Container(11001).ListItem(0).Type(episode)</visible>
+						</control>
+						<!-- music specific -->
+						<control type="label">
+							<align>left</align>
+							<label>$INFO[Container(11001).ListItem(0).Artist]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + Container(11001).ListItem(0).Type(album)</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).Album]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>FFFFFFFF</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + Container(11001).ListItem(0).Type(album) + !IsEmpty(Container(11001).ListItem(0).Album)</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).Year]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>FFFFFFFF</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + Container(11001).ListItem(0).Type(album) + !IsEmpty(Container(11001).ListItem(0).Year)</visible>
+						</control>
+						<!-- photos-->
+						<control type="label">
+							<align>left</align>
+							<label>$INFO[Container(11001).ListItem(0).Title]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="300">auto</width>
+							<visible>ControlGroup(7002).HasFocus + [Container(11001).ListItem(0).Type(photo)]</visible>
+						</control>
+						<!-- general -->
+						<control type="label">
+							<align>left</align>
+							<label>$INFO[Container(11001).ListItem(0).Title]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="300">auto</width>
+							<visible>ControlGroup(7002).HasFocus + [Container(11001).ListItem(0).Type(movie)]</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).Year]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>FFFFFFFF</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="200">auto</width>
+							<visible>ControlGroup(7002).HasFocus + Container(11001).ListItem(0).Type(movie) + !IsEmpty(Container(11001).ListItem(0).Year)</visible>
 						</control>
 						<control type="label">
 							<align>left</align>
@@ -1604,9 +1970,9 @@
 									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 								<control type="image">
-									<posx>36</posx>
+									<posx>37</posx>
 									<posy>158</posy>
-									<width>117</width>
+									<width>116</width>
 									<height>27</height>
 									<texture border="10">whitewideroundedtflat.png</texture>
 									<colordiffuse>FF222222</colordiffuse>
@@ -1678,9 +2044,9 @@
 									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 								<control type="image">
-									<posx>36</posx>
+									<posx>37</posx>
 									<posy>158</posy>
-									<width>117</width>
+									<width>116</width>
 									<height>27</height>
 									<texture border="10">whitewideroundedtflat.png</texture>
 									<colordiffuse>FF222222</colordiffuse>
@@ -1755,7 +2121,7 @@
 						<height>25</height>
 						<orientation>horizontal</orientation>
 						<visible>Control.HasFocus(11000) + Control.IsVisible(11001)</visible>
-						<itemgap>0</itemgap>
+						<itemgap>4</itemgap>
 						<!-- tv specific -->
 						<control type="label">
 							<align>left</align>
@@ -1847,7 +2213,7 @@
 						<height>25</height>
 						<orientation>horizontal</orientation>
 						<visible>Control.HasFocus(11000) + !Control.IsVisible(11001)</visible>
-						<itemgap>0</itemgap>
+						<itemgap>4</itemgap>
 						<!-- tv specific -->
 						<control type="label">
 							<align>left</align>
@@ -2277,7 +2643,7 @@
 							<height>25</height>
 							<orientation>horizontal</orientation>
 							<visible>!Control.IsVisible(11004)</visible>
-							<itemgap>0</itemgap>
+							<itemgap>4</itemgap>
 							<!-- global -->
 							<control type="label">
 								<align>left</align>
@@ -2377,7 +2743,7 @@
 							<height>25</height>
 							<orientation>horizontal</orientation>
 							<visible>Control.IsVisible(11004)</visible>
-							<itemgap>0</itemgap>
+							<itemgap>4</itemgap>
 							<!-- global -->
 							<control type="label">
 								<align>left</align>
@@ -2830,7 +3196,7 @@
 							<height>25</height>
 							<orientation>horizontal</orientation>
 							<visible>!Control.IsVisible(11003)</visible>
-							<itemgap>0</itemgap>
+							<itemgap>4</itemgap>
 							<!-- global -->
 							<control type="label">
 								<align>left</align>
@@ -2940,7 +3306,7 @@
 							<height>25</height>
 							<orientation>horizontal</orientation>
 							<visible>Control.IsVisible(11003) + Control.IsVisible(11004)</visible>
-							<itemgap>0</itemgap>
+							<itemgap>4</itemgap>
 							<!-- global -->
 							<control type="label">
 								<align>left</align>
@@ -3179,7 +3545,7 @@
 						<height>25</height>
 						<orientation>horizontal</orientation>
 						<visible>Control.IsVisible(11002)</visible>
-						<itemgap>0</itemgap>
+						<itemgap>4</itemgap>
 						<!-- tv specific -->
 						<control type="label">
 							<align>left</align>
