@@ -948,8 +948,7 @@ bool CPVRClient::SignalQuality(PVR_SIGNAL_STATUS &qualityinfo)
   {
     try
     {
-      PVR_ERROR retVal = m_pStruct->SignalStatus(qualityinfo);
-      return LogError(retVal, __FUNCTION__);
+      return m_pStruct->SignalStatus(qualityinfo) == PVR_ERROR_NO_ERROR;
     }
     catch (exception &e)
     {
