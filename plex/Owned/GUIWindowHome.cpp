@@ -198,6 +198,20 @@ void CGUIWindowHome::RestoreSelectedMenuItem()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowHome::KeyHaveFanout(const CStdString& key)
+{
+  int id = LookupIDFromKey(key);
+  if (id < 1)
+    return false;
+
+  /* Channels has a ID less than 4 and sections greater than 1000 */
+  if (id <= 4 || id > 1000)
+    return true;
+
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 int CGUIWindowHome::LookupIDFromKey(const std::string& key)
 {
   CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
@@ -248,6 +262,12 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
   else
   {
     bool globalArt = true;
+    PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
+    CStdString bestServerUrl;
+    if(bestServer)
+      bestServerUrl.Format("http://%s:%d/", bestServer->address, bestServer->port);
+    else
+      bestServerUrl = "http://127.0.0.1:32400/";
     
     // Clear old lists.
     m_contentLists.clear();
@@ -294,11 +314,11 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
     }
     else if (itemID >= 1 && itemID <= 4)
     {
-      string filter = (itemID==1) ? "video" : (itemID==2) ? "music" : (itemID==3) ? "photo" : "application";
+      CStdString filter = (itemID==1) ? "video" : (itemID==2) ? "music" : (itemID==3) ? "photo" : "application";
 
       // Recently accessed.
       m_contentLists[CONTENT_LIST_RECENTLY_ACCESSED] = Group(kVIDEO_LOADER);
-      m_workerManager->enqueue(WINDOW_HOME, "http://127.0.0.1:32400/channels/recentlyViewed?filter=" + filter, CONTENT_LIST_RECENTLY_ACCESSED);
+      m_workerManager->enqueue(WINDOW_HOME, bestServerUrl + "channels/recentlyViewed?filter=" + filter, CONTENT_LIST_RECENTLY_ACCESSED);
     }
 
     // If we need to, load global art.
@@ -307,7 +327,7 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
       m_globalArt = true;
       
       if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
-        m_workerManager->enqueue(WINDOW_HOME, "http://127.0.0.1:32400/library/arts", CONTENT_LIST_FANART);
+        m_workerManager->enqueue(WINDOW_HOME, bestServerUrl + "library/arts", CONTENT_LIST_FANART);
       else
         SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
     }
@@ -645,7 +665,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     if (message.GetMessage() != GUI_MSG_UPDATE_MAIN_MENU)
     {
       // Reload if needed.
-      if (m_lastSelectedItemKey.empty() == false)
+      if (KeyHaveFanout(m_lastSelectedItemKey))
       {
         m_pendingSelectItemKey = m_lastSelectedItemKey;
         m_lastSelectedItemKey.clear();
@@ -654,7 +674,16 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       else
       {
         if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
-          m_workerManager->enqueue(WINDOW_HOME, "http://127.0.0.1:32400/library/arts", CONTENT_LIST_FANART);
+        {
+          PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
+          CStdString artUrl;
+          if (bestServer)
+            artUrl.Format("http://%s:%d/library/arts", bestServer->address, bestServer->port);
+          else
+            artUrl = "http://127.0.0.1:32400/library/arts";
+
+          m_workerManager->enqueue(WINDOW_HOME, artUrl, CONTENT_LIST_FANART);
+        }
         else
           SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
       }

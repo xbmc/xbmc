@@ -59,6 +59,7 @@ private:
   bool SaveSelectedMenuItem();
   void RestoreSelectedMenuItem();
   int  LookupIDFromKey(const std::string& key);
+  bool KeyHaveFanout(const CStdString& key);
   
   std::string m_lastSelectedItemKey;
   std::string m_pendingSelectItemKey;

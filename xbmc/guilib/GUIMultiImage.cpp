@@ -87,6 +87,13 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   {
     LoadDirectory();
     m_image.SetFileName(m_files.size() ? m_files[0] : "");
+
+    /* PLEX
+     * Don't run the AllocResources call until we actually have something
+     * to show
+     */
+    return;
+    /* END PLEX */
   }
   if (!m_bAllocated)
     AllocResources();
