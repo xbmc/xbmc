@@ -29,7 +29,6 @@ namespace PVR
     CGUIDialogPVRDirectorOSD(void);
     virtual ~CGUIDialogPVRDirectorOSD(void);
     virtual bool OnMessage(CGUIMessage& message);
-    virtual bool OnAction(const CAction& action);
     virtual void OnInitWindow();
     virtual void OnDeinitWindow(int nextWindowID);
   };

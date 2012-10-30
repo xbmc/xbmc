@@ -72,19 +72,6 @@ CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager(void)
   delete m_channelItems;
 }
 
-bool CGUIDialogPVRChannelManager::OnActionClose(const CAction &action)
-{
-  bool bReturn(false);
-  int iActionId = action.GetID();
-  if (iActionId == ACTION_PREVIOUS_MENU || iActionId == ACTION_PARENT_DIR)
-  {
-    Close();
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
 bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
 {
   bool bReturn(false);
@@ -142,9 +129,8 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
 
 bool CGUIDialogPVRChannelManager::OnAction(const CAction& action)
 {
-  return OnActionClose(action) ||
-      OnActionMove(action) ||
-      CGUIDialog::OnAction(action);
+  return OnActionMove(action) ||
+         CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogPVRChannelManager::OnMessageInit(CGUIMessage &message)
