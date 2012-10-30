@@ -43,6 +43,12 @@ elseif(UNIX)
     set(EXTRA_CFLAGS "-fPIC -DPIC")
 endif()
 
+if(${CMAKE_C_COMPILER} MATCHES "clang")
+  if(NOT DEFINED ${PLEX_DISABLE_COLORS})
+    set(EXTRA_CFLAGS "${EXTRA_CFLAGS} -fcolor-diagnostics")
+  endif()
+endif()
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "-g -O0")
