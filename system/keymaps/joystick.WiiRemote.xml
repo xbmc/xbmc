@@ -111,7 +111,7 @@
       <button id="2">Stop</button>
       <button id="3">SkipNext</button>
       <button id="4">SkipPrevious</button>
-      <button id="5">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="5">OSD</button>
       <button id="6">Info</button>
       <button id="8">XBMC.ActivateWindow(music)</button>
       <button id="10">IncreaseRating</button>

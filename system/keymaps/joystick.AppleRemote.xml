@@ -119,7 +119,7 @@
       <button id="4">SkipNext</button>
       <button id="5">Pause</button>
       <button id="6">Fullscreen</button>
-      <button id="7">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="7">OSD</button>
       <button id="8">Stop</button>
       <!-- SwipeLeft  -->      <button id="80">SkipPrevious</button>
       <!-- SwipeRight -->      <button id="81">SkipNext</button>

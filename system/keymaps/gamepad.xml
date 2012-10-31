@@ -130,7 +130,7 @@
       <Y>XBMC.ActivateWindow(VisualisationPresetList)</Y>
       <black>CodecInfo</black>
       <white>Info</white>
-      <start>XBMC.ActivateWindow(MusicOSD)</start>
+      <start>OSD</start>
       <back>LockPreset</back>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
