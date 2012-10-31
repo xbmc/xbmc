@@ -89,7 +89,6 @@ protected:
   std::vector<int> m_vecIntervals;
   bool m_rtl;
   CScrollInfo m_scrollInfo;
-  const int m_scrollSpeed;
   bool m_stopped;
 };
 #endif

@@ -30,8 +30,7 @@ using namespace std;
 
 CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags)
 : CGUIControl(parentID, controlID, posX, posY, width, height),
-  m_scrollInfo(0,0,labelInfo.scrollSpeed,""),
-  m_scrollSpeed(labelInfo.scrollSpeed)
+  m_scrollInfo(0,0,labelInfo.scrollSpeed,"")
 {
   m_label = labelInfo;
   m_headlineColor = headlineColor;
@@ -46,8 +45,7 @@ CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float po
 }
 
 CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
-: CGUIControl(from),m_scrollInfo(from.m_scrollInfo),
-  m_scrollSpeed(from.m_scrollInfo.defaultSpeed)
+: CGUIControl(from),m_scrollInfo(from.m_scrollInfo)
 {
   m_label = from.m_label;
   m_headlineColor = from.m_headlineColor;
@@ -148,7 +146,7 @@ void CGUIRSSControl::Render()
       if ( m_stopped )
         m_scrollInfo.SetSpeed(0);
       else
-        m_scrollInfo.SetSpeed(m_scrollSpeed);
+        m_scrollInfo.SetSpeed(m_label.scrollSpeed);
 
       m_label.font->DrawScrollingText(m_posX, m_posY, colors, m_label.shadowColor, m_feed, 0, m_width, m_scrollInfo);
     }
