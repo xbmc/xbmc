@@ -126,6 +126,11 @@ protected:
   int m_posX;                        // current position in the texture
   int m_posY;
 
+  /*! \brief the height of each line in the texture.
+   Accounts for spacing between lines to avoid characters overlapping.
+   */
+  unsigned int GetTextureLineHeight() const;
+
   color_t m_color;
 
   Character *m_char;                 // our characters

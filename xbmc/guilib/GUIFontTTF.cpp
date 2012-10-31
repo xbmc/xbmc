@@ -196,7 +196,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
   m_maxChars = CHAR_CHUNK;
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
-  m_posY = -(int)m_cellHeight;
+  m_posY = -(int)GetTextureLineHeight();
   m_textureHeight = 0;
 }
 
@@ -267,7 +267,6 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   // increment for good measure to give space in our texture
   m_cellWidth++;
-  m_cellHeight+=2;
   m_cellBaseLine++;
 
 //  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i, lineheight = %li",
@@ -295,7 +294,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
-  m_posY = -(int)m_cellHeight;
+  m_posY = -(int)GetTextureLineHeight();
 
   // cache the ellipses width
   Character *ellipse = GetCharacter(L'.');
@@ -326,7 +325,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 
   // calculate sizing information
   float startX = 0;
-  float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f*(m_cellHeight-2) : 0;  // vertical centering
+  float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f*m_cellHeight : 0;  // vertical centering
 
   if ( alignment & (XBFONT_RIGHT | XBFONT_CENTER_X) )
   {
@@ -433,7 +432,7 @@ float CGUIFontTTFBase::GetCharWidthInternal(character_t ch)
 
 float CGUIFontTTFBase::GetTextHeight(float lineSpacing, int numLines) const
 {
-  return (float)(numLines - 1) * GetLineHeight(lineSpacing) + (m_cellHeight - 2); // -2 as we increment this for space in our texture
+  return (float)(numLines - 1) * GetLineHeight(lineSpacing) + m_cellHeight;
 }
 
 float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
@@ -441,6 +440,11 @@ float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
   if (m_face)
     return lineSpacing * m_face->size->metrics.height / 64.0f;
   return 0.0f;
+}
+
+unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
+{
+  return m_cellHeight + 2;
 }
 
 CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
@@ -570,14 +574,14 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
     m_posX = 0;
-    m_posY += m_cellHeight;
+    m_posY += GetTextureLineHeight();
     if (bitGlyph->left < 0)
       m_posX += -bitGlyph->left;
 
-    if(m_posY + m_cellHeight >= m_textureHeight)
+    if(m_posY + GetTextureLineHeight() >= m_textureHeight)
     {
       // create the new larger texture
-      unsigned int newHeight = m_posY + m_cellHeight;
+      unsigned int newHeight = m_posY + GetTextureLineHeight();
       // check for max height
       if (newHeight > g_Windowing.GetMaxTextureSize())
       {
