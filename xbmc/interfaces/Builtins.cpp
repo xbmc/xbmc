@@ -1244,7 +1244,8 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("system.logoff"))
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
+    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ||
+        !g_settings.UsingLoginScreen())
       return -1;
 
     g_application.StopPlaying();
