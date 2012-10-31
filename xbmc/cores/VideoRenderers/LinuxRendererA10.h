@@ -1,5 +1,5 @@
-#ifndef LINUXRENDERERGLES_RENDERER
-#define LINUXRENDERERGLES_RENDERER
+#ifndef LinuxRendererA10_RENDERER
+#define LinuxRendererA10_RENDERER
 
 /*
  *      Copyright (C) 2010-2012 Team XBMC
@@ -38,10 +38,10 @@ class CRenderCapture;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-class COpenMaxVideo;
+
 typedef std::vector<int>     Features;
 
-#define NUM_BUFFERS 3
+#define NUM_BUFFERS 4
 
 
 #undef ALIGN
@@ -82,10 +82,6 @@ struct YUVCOEF
 enum RenderMethod
 {
   RENDER_GLSL   = 0x001,
-  RENDER_SW     = 0x004,
-  RENDER_POT    = 0x010,
-  RENDER_OMXEGL = 0x040,
-  RENDER_CVREF  = 0x080,
   RENDER_A10BUF = 0x100,
   RENDER_BYPASS = 0x400
 };
@@ -95,7 +91,6 @@ enum RenderQuality
   RQ_LOW=1,
   RQ_SINGLEPASS,
   RQ_MULTIPASS,
-  RQ_SOFTWARE
 };
 
 #define PLANE_Y 0
@@ -106,23 +101,13 @@ enum RenderQuality
 #define FIELD_TOP 1
 #define FIELD_BOT 2
 
-extern YUVRANGE yuv_range_lim;
-extern YUVRANGE yuv_range_full;
-extern YUVCOEF yuv_coef_bt601;
-extern YUVCOEF yuv_coef_bt709;
-extern YUVCOEF yuv_coef_ebu;
-extern YUVCOEF yuv_coef_smtp240m;
-
-class DllSwScale;
-struct SwsContext;
-
 class CEvent;
 
-class CLinuxRendererGLES : public CBaseRenderer
+class CLinuxRendererA10 : public CBaseRenderer
 {
 public:
-  CLinuxRendererGLES();
-  virtual ~CLinuxRendererGLES();
+  CLinuxRendererA10();
+  virtual ~CLinuxRendererA10();
 
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
@@ -130,8 +115,8 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation);
-  virtual bool IsConfigured() { return m_bConfigured; }
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation);
+  virtual bool         IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual void         FlipPage(int source);
@@ -153,15 +138,7 @@ public:
 
   virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
-#ifdef HAVE_LIBOPENMAX
-  virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
-#endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
-#endif
-#ifdef ALLWINNERA10
-  virtual void         AddProcessor(struct A10VideoBuffer *pVidBuff);
-#endif
+  virtual void AddProcessor(struct A10VideoBuffer *pVidBuff);
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -174,17 +151,13 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  void (CLinuxRendererGLES::*m_textureUpload)(int index);
-  void (CLinuxRendererGLES::*m_textureDelete)(int index);
-  bool (CLinuxRendererGLES::*m_textureCreate)(int index);
+  void (CLinuxRendererA10::*m_textureUpload)(int index);
+  void (CLinuxRendererA10::*m_textureDelete)(int index);
+  bool (CLinuxRendererA10::*m_textureCreate)(int index);
 
   void UploadYV12Texture(int index);
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
-
-  void UploadCVRefTexture(int index);
-  void DeleteCVRefTexture(int index);
-  bool CreateCVRefTexture(int index);
 
   void UploadBYPASSTexture(int index);
   void DeleteBYPASSTexture(int index);
@@ -195,9 +168,6 @@ protected:
   // renderers
   void RenderMultiPass(int index, int field);     // multi pass glsl renderer
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
-  void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
-  void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
-  void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
 
   CFrameBufferObject m_fbo;
 
@@ -240,30 +210,16 @@ protected:
 
   struct YUVBUFFER
   {
-    YUVBUFFER();
-   ~YUVBUFFER();
-
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
 
-#ifdef HAVE_LIBOPENMAX
-    OpenMaxVideoBuffer *openMaxBuffer;
-#endif
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  struct __CVBuffer *cvBufferRef;
-#endif
-#ifdef ALLWINNERA10
-  struct A10VideoBuffer *a10buffer;
-#endif
-
+    struct A10VideoBuffer *a10buffer;
   };
-
-  typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_buffers;
+  YUVBUFFER m_buffers[NUM_BUFFERS];
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
@@ -271,6 +227,7 @@ protected:
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
+
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
 
@@ -281,12 +238,6 @@ protected:
 
   // clear colour for "black" bars
   float m_clearColour;
-
-  // software scale libraries (fallback if required gl version is not available)
-  DllSwScale  *m_dllSwScale;
-  struct SwsContext *m_sw_context;
-  BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  unsigned int m_rgbBufferSize;
 
   CEvent* m_eventTexturesDone[NUM_BUFFERS];
 

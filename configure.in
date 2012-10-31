@@ -2776,6 +2776,8 @@ XB_CONFIG_MODULE([pvr-addons], [
     CXXFLAGS="$CXXFLAGS"
 ], [$DISABLE_PVR_ADDON_CONFIG])
 
+LIBS="$LIBS $CEDARLIBS"
+
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"

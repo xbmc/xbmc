@@ -742,7 +742,12 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
        * found by the enumeration process. Skip them as well ("hw", "dmix",
        * "plughw", "dsnoop"). */
 
-      else if (baseName != "default"
+      else
+#ifndef ALLWINNERA10
+        /*
+         * empat0: wee need the devices on allwinner 3.0.36 kernel
+         */
+           if (baseName != "default"
             && baseName != "sysdefault"
             && baseName != "surround40"
             && baseName != "surround41"
@@ -753,6 +758,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
             && baseName != "dmix"
             && baseName != "plughw"
             && baseName != "dsnoop")
+#endif
       {
         EnumerateDevice(list, name, desc ? desc : name, config);
       }

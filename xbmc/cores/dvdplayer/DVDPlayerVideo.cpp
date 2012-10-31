@@ -195,6 +195,11 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 #endif
 
 
+#ifdef ALLWINNERA10
+  if (m_pVideoCodec && (strcmp(m_pVideoCodec->GetName(), "A10") == 0))
+    m_pVideoCodec->Dispose();
+#endif
+
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
   CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces, formats);
   if(!codec)
@@ -1124,6 +1129,11 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       case RENDER_FMT_CVBREF:
         formatstr = "BGRA";
         break;
+#ifdef ALLWINNERA10
+      case RENDER_FMT_A10BUF:
+        formatstr = "A10BUF";
+        break;
+#endif
       case RENDER_FMT_BYPASS:
         formatstr = "BYPASS";
         break;

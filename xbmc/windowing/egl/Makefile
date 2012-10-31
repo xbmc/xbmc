@@ -1,6 +1,7 @@
 INCLUDES=-I.
 
 SRCS = WinSystemEGL.cpp
+SRCS+= EGLNativeTypeA10.cpp
 SRCS+= EGLNativeTypeAmlogic.cpp
 SRCS+= EGLNativeTypeAndroid.cpp
 SRCS+= EGLNativeTypeRaspberryPI.cpp

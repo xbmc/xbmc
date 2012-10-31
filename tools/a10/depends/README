@@ -1,0 +1,28 @@
+Please look at depends.mk.
+After adjusting run make && make -C xbmc.
+If configure is done you can compile from the source root directory.
+
+KNOWN PROBLEMS WITH HARDWARE RENDERING:
+=======================================
+
+- To enable hardware layer rendering you have to set environment A10HWR=1.
+
+- Sometimes the display engine does not initialize correctly and not all
+  colors get rendered or you get pixel noise. After some video startups this
+  disappears.
+
+- Using 1080p and alpha video blending there is a horrible screen tearing,
+  for this reason alpha blending is disabled at 1080p for video at the moment.
+  You can enable it (e.g. for tracking down the problem at kernel level) 
+  by setting the environment variable A10AB=1.
+
+- Not all xbmc video playback resolution settings are supported at the moment.
+
+KNOWN PROBLEMS WITH PVR:
+========================
+
+- PVR only works with 720p and software rendering
+- only SD-TV tested (since i do not have DVB-S2 hardware)
+
+PLEASE REMEMBER: This is poc.
+

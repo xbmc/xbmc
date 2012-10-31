@@ -22,7 +22,10 @@
 
 #ifdef HAS_EGL
 
+#include "system_gl.h"
+
 #include "utils/log.h"
+#include "EGLNativeTypeA10.h"
 #include "EGLNativeTypeAndroid.h"
 #include "EGLNativeTypeAmlogic.h"
 #include "EGLNativeTypeRaspberryPI.h"
@@ -74,6 +77,20 @@ bool CEGLWrapper::Initialize(const std::string &implementation)
   {
     delete nativeGuess;
     nativeGuess = new CEGLNativeTypeRaspberryPI;
+    if (nativeGuess->CheckCompatibility())
+    {
+      if(implementation == nativeGuess->GetNativeName() || implementation == "auto")
+      {
+        m_nativeTypes = nativeGuess;
+        ret = true;
+      }
+    }
+  }
+
+  if (!ret)
+  {
+    delete nativeGuess;
+    nativeGuess = new CEGLNativeTypeA10;
     if (nativeGuess->CheckCompatibility())
     {
       if(implementation == nativeGuess->GetNativeName() || implementation == "auto")
@@ -268,6 +285,7 @@ bool CEGLWrapper::CreateSurface(EGLDisplay display, EGLConfig config, EGLSurface
 
   *surface = eglCreateWindowSurface(display, config, *nativeWindow, NULL);
   CheckError();
+
   return *surface != EGL_NO_SURFACE;
 }
 
@@ -289,6 +307,20 @@ bool CEGLWrapper::BindContext(EGLDisplay display, EGLSurface surface, EGLContext
   EGLBoolean status;
   status = eglMakeCurrent(display, surface, surface, context);
   CheckError();
+
+  // For EGL backend, it needs to clear all the back buffers of the window
+  // surface before drawing anything, otherwise the image will be blinking
+  // heavily.  The default eglWindowSurface has 3 gdl surfaces as the back
+  // buffer, that's why glClear should be called 3 times.
+  eglSwapInterval(display, 0);
+  glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+  glClear (GL_COLOR_BUFFER_BIT);
+  eglSwapBuffers(display, surface);
+  glClear (GL_COLOR_BUFFER_BIT);
+  eglSwapBuffers(display, surface);
+  glClear (GL_COLOR_BUFFER_BIT);
+  eglSwapBuffers(display, surface);
+
   return status;
 }
 
