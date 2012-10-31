@@ -21,7 +21,7 @@
 				</control>
 				<control type="list" id="3">
 					<posx>18</posx>
-					<width>470</width>
+					<width>550</width>
 					<height>226</height>
 					<onleft>61</onleft>
 					<onright>5</onright>
@@ -31,7 +31,7 @@
 					<scrolltime>200</scrolltime>
 					<itemlayout height="28">
 						<control type="label">
-							<width>500</width>
+							<width>535</width>
 							<info>ListItem.Label</info>
 							<textoffsetx>20</textoffsetx>
 							<textcolor>Unfocused</textcolor>
@@ -39,17 +39,15 @@
 					</itemlayout>
 					<focusedlayout height="28">						
 						<control type="image">
-							<width>500</width>
+							<width>535</width>
 							<height>28</height>
 							<texture>HomeBladeSubFO2b.png</texture>
-							<visible>Window(2000).Control(3).IsActive</visible>
 						</control>
 						<control type="label">
-							<width>500</width>
+							<width>535</width>
 							<info>ListItem.Label</info>
 							<textoffsetx>20</textoffsetx>
 							<textcolor>Focused</textcolor>
-							<visible>Window(2000).Control(3).IsActive</visible>
 						</control>
 					</focusedlayout>
 				</control>
