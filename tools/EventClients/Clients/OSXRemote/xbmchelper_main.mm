@@ -69,7 +69,11 @@ void ReadConfig()
 {
 	// Compute filename.
   std::string strFile = getenv("HOME");
+#ifndef __PLEX__
   strFile += "/Library/Application Support/XBMC/XBMCHelper.conf";
+#else
+  strFile += "/Library/Application Support/+"+ std::string(PLEX_TARGET_NAME) +"/XBMCHelper.conf";
+#endif
   
 	// Open file.
   std::ifstream ifs(strFile.c_str());
