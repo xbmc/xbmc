@@ -62,11 +62,14 @@ public:
   virtual void Render();
   virtual void OnFeedUpdate(const vecText &feed);
   virtual void OnFeedRelease();
-  virtual bool CanFocus() const { return false; };
+  virtual bool CanFocus() const { return true; };
   virtual CRect CalcRenderRegion() const;
 
   void SetIntervals(const std::vector<int>& vecIntervals);
   void SetUrls(const std::vector<std::string>& vecUrl, bool rtl);
+
+  virtual void OnFocus();
+  virtual void OnUnFocus();
 
 protected:
   virtual bool UpdateColors();
@@ -86,5 +89,6 @@ protected:
   std::vector<int> m_vecIntervals;
   bool m_rtl;
   CScrollInfo m_scrollInfo;
+  bool m_stopped;
 };
 #endif
