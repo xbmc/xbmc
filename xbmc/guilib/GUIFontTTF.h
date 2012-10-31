@@ -112,7 +112,7 @@ protected:
   void ClearCharacterCache();
 
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
-  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch) = 0;
+  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
 
   // modifying glyphs

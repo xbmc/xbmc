@@ -615,7 +615,12 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
   {
-    CopyCharToTexture(bitGlyph, ch);
+    // ensure our rect will stay inside the texture (it *should* but we need to be certain)
+    unsigned int x1 = max(m_posX + ch->offsetX, 0);
+    unsigned int y1 = max(m_posY + ch->offsetY, 0);
+    unsigned int x2 = min(x1 + bitmap.width, m_textureWidth);
+    unsigned int y2 = min(y1 + bitmap.rows, m_textureHeight);
+    CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
   }
   m_posX += 1 + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
   m_numChars++;
