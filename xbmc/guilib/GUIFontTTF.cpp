@@ -234,9 +234,26 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   if (!m_face)
     return false;
 
-  // grab the maximum cell height and width
-  m_cellHeight = std::max<unsigned int>(m_face->bbox.yMax - m_face->bbox.yMin, m_face->ascender - m_face->descender);
-  m_cellBaseLine = std::max<unsigned int>(m_face->bbox.yMax, m_face->ascender);
+  /*
+   the values used are described below
+
+      XBMC coords                                     Freetype coords
+
+                0  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  bbox.yMax, ascender
+                        A                 \
+                       A A                |
+                      A   A               |
+                      AAAAA  pppp   cellAscender
+                      A   A  p   p        |
+                      A   A  p   p        |
+   m_cellBaseLine  _ _A_ _A_ pppp_ _ _ _ _/_ _ _ _ _  0, base line.
+                             p            \
+                             p      cellDescender
+     m_cellHeight  _ _ _ _ _ p _ _ _ _ _ _/_ _ _ _ _  bbox.yMin, descender
+
+   */
+  int cellDescender = std::min<int>(m_face->bbox.yMin, m_face->descender);
+  int cellAscender  = std::max<int>(m_face->bbox.yMax, m_face->ascender);
 
   /*
    add on the strength of any border - we do this in non-bordered cases
@@ -247,8 +264,8 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   if (strength < 128)
     strength = 128;
 
-  m_cellHeight += 2 * strength;
-  m_cellBaseLine += strength;
+  cellDescender -= strength;
+  cellAscender  += strength;
 
   if (border)
   {
@@ -257,17 +274,14 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
       FT_Stroker_Set(m_stroker, strength, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
   }
 
+  // scale to pixel sizing, rounding so that maximal extent is obtained
   unsigned int ydpi = g_freeTypeLibrary.GetDPI();
+  float scaler  = height * ydpi / (72 * m_face->units_per_EM);
+  cellDescender = MathUtils::round_int(cellDescender * scaler - 0.5f);   // round down
+  cellAscender  = MathUtils::round_int(cellAscender  * scaler + 0.5f);   // round up
 
-
-  m_cellHeight *= (unsigned int)(height * ydpi);
-  m_cellHeight /= (72 * m_face->units_per_EM);
-
-  m_cellBaseLine *= (unsigned int)(height * ydpi);
-  m_cellBaseLine /= (72 * m_face->units_per_EM);
-
-  // increment for good measure to give space in our texture
-  m_cellBaseLine++;
+  m_cellBaseLine = cellAscender;
+  m_cellHeight   = cellAscender - cellDescender;
 
   m_height = height;
 
