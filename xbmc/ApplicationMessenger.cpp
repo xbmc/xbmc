@@ -62,6 +62,7 @@
 #include "FileItem.h"
 
 #include "pvr/PVRManager.h"
+#include "windows/GUIWindowLoginScreen.h"
 
 using namespace PVR;
 using namespace std;
@@ -789,6 +790,12 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       delete item;
       break;
     }
+
+    case TMSG_LOADPROFILE:
+    {
+      CGUIWindowLoginScreen::LoadProfile(pMsg->dwParam1);
+      break;
+    }
   }
 }
 
@@ -1266,5 +1273,12 @@ void CApplicationMessenger::SetCurrentItem(const CFileItem& item)
   CFileItem* item2 = new CFileItem(item);
   ThreadMessage tMsg = {TMSG_UPDATE_CURRENT_ITEM};
   tMsg.lpVoid = (void*)item2;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::LoadProfile(unsigned int idx)
+{
+  ThreadMessage tMsg = {TMSG_LOADPROFILE};
+  tMsg.dwParam1 = idx;
   SendMessage(tMsg, false);
 }

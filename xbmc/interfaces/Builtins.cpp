@@ -298,8 +298,7 @@ int CBuiltins::Execute(const CStdString& execString)
         && (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
             || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
     {
-
-      CGUIWindowLoginScreen::LoadProfile(index);
+      CApplicationMessenger::Get().LoadProfile(index);
     }
   }
   else if (execute.Equals("mastermode"))

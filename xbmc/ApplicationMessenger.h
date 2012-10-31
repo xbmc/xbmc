@@ -87,6 +87,7 @@ namespace MUSIC_INFO
 #define TMSG_SETLANGUAGE          311
 #define TMSG_RENDERER_FLUSH       312
 #define TMSG_INHIBITIDLESHUTDOWN  313
+#define TMSG_LOADPROFILE          314
 
 #define TMSG_NETWORKMESSAGE         500
 
@@ -201,6 +202,8 @@ public:
   void SetCurrentVideoTag(const CVideoInfoTag& tag);
   //! \brief Set the currently currently item
   void SetCurrentItem(const CFileItem& item);
+
+  void LoadProfile(unsigned int idx);
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
