@@ -134,6 +134,18 @@ public:
    */
   static std::string GetRealPath(const std::string &path);
 
+  /*!
+   \brief Updates the URL encoded hostname of the given path
+
+   This method must only be used to update paths encoded with
+   the old (Eden) URL encoding implementation to the new (Frodo)
+   URL encoding implementation (which does not URL encode -_.!().
+
+   \param strFilename Path to update
+   \return True if the path has been updated/changed otherwise false
+   */
+  static bool UpdateUrlEncoding(std::string &strFilename);
+
 private:
   static std::string resolvePath(const std::string &path);
 };

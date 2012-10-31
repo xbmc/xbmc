@@ -4124,6 +4124,24 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     for (vector< pair<int, string> >::iterator i = art.begin(); i != art.end(); ++i)
       m_pDS->exec(PrepareSQL("update art set url='%s' where art_id=%d", i->second.c_str(), i->first));
   }
+  if (iVersion < 71)
+  { // update URL encoded paths
+    m_pDS->query("select idFile, strFilename from files");
+    vector< pair<int, string> > files;
+    while (!m_pDS->eof())
+    {
+      files.push_back(make_pair(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (vector< pair<int, string> >::iterator i = files.begin(); i != files.end(); ++i)
+    {
+      std::string filename = i->second;
+      if (URIUtils::UpdateUrlEncoding(filename))
+        m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", filename.c_str(), i->first));
+    }
+  }
   // always recreate the view after any table change
   CreateViews();
   return true;
