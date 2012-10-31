@@ -84,7 +84,7 @@ public:
     if (FT_New_Face( m_library, CSpecialProtocol::TranslatePath(filename).c_str(), 0, &face ))
       return NULL;
 
-    unsigned int ydpi = GetDPI();
+    unsigned int ydpi = 72; // 72 points to the inch is the freetype default
     unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
 
     // we set our screen res currently to 96dpi in both directions (windows default)
@@ -123,11 +123,6 @@ public:
     assert(stroker);
     FT_Stroker_Done(stroker);
   }
-
-  unsigned int GetDPI() const
-  {
-    return 72; // default dpi, matches what XPR fonts used to use for sizing
-  };
 
 private:
   FT_Library   m_library;
@@ -275,8 +270,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   }
 
   // scale to pixel sizing, rounding so that maximal extent is obtained
-  unsigned int ydpi = g_freeTypeLibrary.GetDPI();
-  float scaler  = height * ydpi / (72 * m_face->units_per_EM);
+  float scaler  = height / m_face->units_per_EM;
   cellDescender = MathUtils::round_int(cellDescender * scaler - 0.5f);   // round down
   cellAscender  = MathUtils::round_int(cellAscender  * scaler + 0.5f);   // round up
 
