@@ -263,9 +263,6 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   // increment for good measure to give space in our texture
   m_cellBaseLine++;
 
-//  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): height = %i, lineheight = %li",
-//    __FUNCTION__, strFilename.c_str(), height, m_cellHeight, m_face->size->metrics.height / 64);
-
   m_height = height;
 
   delete(m_texture);
