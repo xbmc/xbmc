@@ -63,6 +63,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     }
     break;
 
+  case ACTION_SHOW_OSD:
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_MUSIC_OSD);
+    return true;
+
   case ACTION_SHOW_GUI:
     // save the settings
     g_settings.Save();

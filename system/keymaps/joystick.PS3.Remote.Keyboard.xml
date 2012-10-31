@@ -67,7 +67,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="4">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="4">OSD</button>
       <button id="1">Info</button>
       <button id="2">Play</button>
       <button id="3">Stop</button>

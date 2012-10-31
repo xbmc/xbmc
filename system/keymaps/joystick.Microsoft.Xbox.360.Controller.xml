@@ -128,7 +128,7 @@
       <button id="3">CodecInfo</button>
       <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
-      <button id="9">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="9">OSD</button>
       <button id="13">NextPreset</button>
       <button id="14">SkipNext</button>
       <button id="15">PreviousPreset</button>
