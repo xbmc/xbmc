@@ -235,7 +235,6 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
     return false;
 
   // grab the maximum cell height and width
-  unsigned int m_cellWidth = m_face->bbox.xMax - m_face->bbox.xMin;
   m_cellHeight = std::max<unsigned int>(m_face->bbox.yMax - m_face->bbox.yMin, m_face->ascender - m_face->descender);
   m_cellBaseLine = std::max<unsigned int>(m_face->bbox.yMax, m_face->ascender);
 
@@ -252,12 +251,8 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
       FT_Stroker_Set(m_stroker, strength, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
   }
 
-
   unsigned int ydpi = g_freeTypeLibrary.GetDPI();
-  unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
 
-  m_cellWidth *= (unsigned int)(height * xdpi);
-  m_cellWidth /= (72 * m_face->units_per_EM);
 
   m_cellHeight *= (unsigned int)(height * ydpi);
   m_cellHeight /= (72 * m_face->units_per_EM);
@@ -266,11 +261,10 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   m_cellBaseLine /= (72 * m_face->units_per_EM);
 
   // increment for good measure to give space in our texture
-  m_cellWidth++;
   m_cellBaseLine++;
 
-//  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i, lineheight = %li",
-//    __FUNCTION__, strFilename.c_str(), height, m_cellWidth, m_cellHeight, m_face->size->metrics.height / 64);
+//  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): height = %i, lineheight = %li",
+//    __FUNCTION__, strFilename.c_str(), height, m_cellHeight, m_face->size->metrics.height / 64);
 
   m_height = height;
 
