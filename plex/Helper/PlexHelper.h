@@ -30,6 +30,8 @@ class PlexHelper
 
   void Start();
   void Stop();
+  //void doRestart();
+  void Restart();
 
   void Configure();
 

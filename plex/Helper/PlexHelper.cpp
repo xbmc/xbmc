@@ -129,6 +129,49 @@ void PlexHelper::Stop()
 }
 
 /////////////////////////////////////////////////////////////////////////////
+void PlexHelper::Restart()
+{
+  if (m_mode == APPLE_REMOTE_DISABLED)
+    return;
+
+  /* TODO: This is a bit gettho, we are blocking the main thread,
+   * because this code must be executed after OSX recapturing of
+   * the exclusivity mode. But it should probably be moved to a
+   * separate thread or something
+   */
+  usleep(1000 * 100);
+  CLog::Log(LOGDEBUG, "PlexHelper::Restart");
+  Stop();
+
+  if (m_alwaysOn)
+  {
+    CLog::Log(LOGDEBUG, "PlexHelper::Restart unloading from launchd");
+    std::string cmd = "/bin/launchctl unload ";
+    cmd += m_launchAgentInstallFile;
+    system(cmd.c_str());
+  }
+
+  CLog::Log(LOGDEBUG, "Waiting for the helper to exit");
+  /* loop until it's gone */
+  while (IsRunning())
+  {
+    usleep(1000);
+  }
+
+  CLog::Log(LOGDEBUG, "PlexHelper::Restart is not running anymore.");
+  if (m_alwaysOn)
+  {
+    CLog::Log(LOGDEBUG, "PlexHelper::Restart asking LaunchD to start the helper for us.");
+    // Load it if not running already.
+    std::string cmd = "/bin/launchctl load ";
+    cmd += m_launchAgentInstallFile;
+    system(cmd.c_str());
+  }
+  else
+    Start();
+}
+
+/////////////////////////////////////////////////////////////////////////////
 void PlexHelper::Configure()
 {
   int oldMode = m_mode;
@@ -172,7 +215,7 @@ void PlexHelper::Configure()
         break;
     }
     std::stringstream strPort;
-    strPort << "--port " << m_port;
+    strPort << "--port " << m_port << " ";
     strConfig += strPort.str();
 
 #ifdef _DEBUG

@@ -39,6 +39,11 @@
 
 #ifdef __APPLE__
 #include "osx/CocoaPowerSyscall.h"
+
+/* PLEX */
+#include "Helper/PlexHelper.h"
+/* END PLEX */
+
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
@@ -237,6 +242,12 @@ void CPowerManager::OnWake()
 
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
+
+  /* PLEX */
+#ifdef __APPLE__
+  PlexHelper::GetInstance().Restart();
+#endif
+  /* END PLEX */
 
   CAnnouncementManager::Announce(System, "xbmc", "OnWake");
 }
