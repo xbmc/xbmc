@@ -110,6 +110,8 @@ public:
   bool m_hasStoreServices;
   CStdString m_strPluginIdentifier;
   CStdString m_strFanArtUrl;
+
+  bool operator<(const CMediaSource &src) const { return this->strName < src.strName; }
   /* END PLEX */
 };
 

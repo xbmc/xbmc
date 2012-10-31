@@ -210,24 +210,28 @@ void CPlexSourceScanner::MergeSourcesForWindow(int windowId)
       BOOST_FOREACH(StringSourcesPair pair, g_hostSourcesMap)
         MergeSource(g_settings.m_musicSources, pair.second->musicSources);
       CheckForRemovedSources(g_settings.m_musicSources, windowId);
+      std::sort(g_settings.m_musicSources.begin(), g_settings.m_musicSources.end());
       break;
       
     case WINDOW_PICTURES:
       BOOST_FOREACH(StringSourcesPair pair, g_hostSourcesMap)
         MergeSource(g_settings.m_pictureSources, pair.second->pictureSources);
       CheckForRemovedSources(g_settings.m_pictureSources, windowId);
+      std::sort(g_settings.m_pictureSources.begin(), g_settings.m_pictureSources.end());
       break;
       
     case WINDOW_VIDEO_NAV:
       BOOST_FOREACH(StringSourcesPair pair, g_hostSourcesMap)
         MergeSource(g_settings.m_videoSources, pair.second->videoSources);
       CheckForRemovedSources(g_settings.m_videoSources, windowId);
+      std::sort(g_settings.m_videoSources.begin(), g_settings.m_videoSources.end());
       break;
       
     case WINDOW_PROGRAMS:
       BOOST_FOREACH(StringSourcesPair pair, g_hostSourcesMap)
         MergeSource(g_settings.m_programSources, pair.second->applicationSources);
       CheckForRemovedSources(g_settings.m_programSources, windowId);
+      std::sort(g_settings.m_programSources.begin(), g_settings.m_programSources.end());
       break;
       
     default:

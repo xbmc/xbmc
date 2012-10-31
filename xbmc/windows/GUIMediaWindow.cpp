@@ -681,7 +681,6 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
       items.Save(GetID());
   }
 #endif
-  items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 }
 
 // \brief Formats item labels based on the formatting provided by guiViewState
