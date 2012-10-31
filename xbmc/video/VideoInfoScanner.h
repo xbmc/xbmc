@@ -102,13 +102,21 @@ namespace VIDEO
      */
     void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, const std::string &actorArtPath = "");
 
+    /*! \brief Retrieve the art type for an image from the given size.
+     \param width the width of the image.
+     \param height the height of the image.
+     \return "poster" if the aspect ratio is at most 4:5, "banner" if the aspect ratio
+             is at least 1:4, "thumb" otherwise.
+     */
+    static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
+
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.
      \param show     tvshow info tag
      \param art      artwork map to which season thumbs are added.
      \param useLocal whether to use local thumbs, defaults to true
      */
-    static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::string> &art, bool useLocal = true);
+    static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::map<std::string, std::string> > &art, const std::vector<std::string> &artTypes, bool useLocal = true);
     static std::string GetImage(CFileItem *pItem, bool useLocal, bool bApplyToDir, const std::string &type = "");
     static std::string GetFanart(CFileItem *pItem, bool useLocal);
 

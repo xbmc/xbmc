@@ -9156,9 +9156,7 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr ""
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr ""
+#empty string with id 20435
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -9240,9 +9238,7 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr ""
 
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr ""
+#empty string with id 20456
 
 msgctxt "#20457"
 msgid "Movie set"

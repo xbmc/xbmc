@@ -39,7 +39,9 @@ private:
   /*! \brief Caches the texture from oldCachedFile as if it came from originalUrl into the texture cache.
    \param originalUrl the url that we think the oldCachedFile came from.
    \param oldCachedFile the old cached file
+   \param type [out] the type of art (poster/banner/thumb)
    */
+  bool CacheTexture(const std::string &originalUrl, const std::string &cachedFile, std::string &type);
   bool CacheTexture(const std::string &originalUrl, const std::string &oldCachedFile);
 
   CStdString GetCachedActorThumb(const CFileItem &item);
