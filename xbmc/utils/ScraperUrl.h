@@ -60,8 +60,8 @@ public:
   bool ParseEpisodeGuide(CStdString strUrls); // copies by intention
 
   const SUrlEntry GetFirstThumb(const std::string &type = "") const;
-  const SUrlEntry GetSeasonThumb(int season) const;
-  void GetSeasonThumbs(std::map<int, std::string> &thumbs) const;
+  const SUrlEntry GetSeasonThumb(int season, const std::string &type = "") const;
+  unsigned int GetMaxSeasonThumb() const;
 
   /*! \brief fetch the full URL (including referrer) of a thumb
    \param URL entry to use to create the full URL

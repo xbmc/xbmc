@@ -72,21 +72,19 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 
 bool CTextureCache::HasCachedImage(const CStdString &url)
 {
-  CStdString cachedHash;
-  CStdString cachedImage(GetCachedImage(url, cachedHash));
+  CTextureDetails details;
+  CStdString cachedImage(GetCachedImage(url, details));
   return (!cachedImage.IsEmpty() && cachedImage != url);
 }
 
-CStdString CTextureCache::GetCachedImage(const CStdString &image, CStdString &cachedHash, bool trackUsage)
+CStdString CTextureCache::GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage)
 {
-  cachedHash.clear();
   CStdString url = UnwrapImageURL(image);
 
   if (IsCachedImage(url))
     return url;
 
   // lookup the item in the database
-  CTextureDetails details;
   if (GetCachedTexture(url, details))
   {
     if (trackUsage)
@@ -136,9 +134,9 @@ bool CTextureCache::CanCacheImageURL(const CURL &url)
 
 CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS, bool &needsRecaching)
 {
-  CStdString cachedHash;
-  CStdString path(GetCachedImage(url, cachedHash, true));
-  needsRecaching = !cachedHash.IsEmpty();
+  CTextureDetails details;
+  CStdString path(GetCachedImage(url, details, true));
+  needsRecaching = !details.hash.empty();
   if (!path.IsEmpty())
   {
     if (!needsRecaching && returnDDS && !URIUtils::IsInPath(url, "special://skin/")) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
@@ -156,16 +154,25 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
 
 void CTextureCache::BackgroundCacheImage(const CStdString &url)
 {
-  CStdString cacheHash;
-  CStdString path(GetCachedImage(url, cacheHash));
-  if (!path.IsEmpty() && cacheHash.IsEmpty())
+  CTextureDetails details;
+  CStdString path(GetCachedImage(url, details));
+  if (!path.IsEmpty() && details.hash.empty())
     return; // image is already cached and doesn't need to be checked further
 
   // needs (re)caching
-  AddJob(new CTextureCacheJob(UnwrapImageURL(url), cacheHash));
+  AddJob(new CTextureCacheJob(UnwrapImageURL(url), details.hash));
 }
 
-CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture)
+bool CTextureCache::CacheImage(const CStdString &image, CTextureDetails &details)
+{
+  CStdString path = GetCachedImage(image, details);
+  if (path.empty()) // not cached
+    path = CacheImage(image, NULL, &details);
+
+  return !path.empty();
+}
+
+CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **texture, CTextureDetails *details)
 {
   CStdString url = UnwrapImageURL(image);
   CSingleLock lock(m_processingSection);
@@ -177,6 +184,8 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
     CTextureCacheJob job(url);
     bool success = job.CacheTexture(texture);
     OnCachingComplete(success, &job);
+    if (success && details)
+      *details = job.m_details;
     return success ? GetCachedPath(job.m_details.file) : "";
   }
   lock.Leave();
@@ -191,8 +200,10 @@ CStdString CTextureCache::CacheImage(const CStdString &image, CBaseTexture **tex
         break;
     }
   }
-  CStdString cachedHash;
-  return GetCachedImage(url, cachedHash, true);
+  CTextureDetails tempDetails;
+  if (!details)
+    details = &tempDetails;
+  return GetCachedImage(url, *details, true);
 }
 
 void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)
@@ -315,8 +326,8 @@ void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, uns
 
 bool CTextureCache::Export(const CStdString &image, const CStdString &destination, bool overwrite)
 {
-  CStdString cachedHash;
-  CStdString cachedImage(GetCachedImage(image, cachedHash));
+  CTextureDetails details;
+  CStdString cachedImage(GetCachedImage(image, details));
   if (!cachedImage.IsEmpty())
   {
     CStdString dest = destination + URIUtils::GetExtension(cachedImage);
@@ -332,8 +343,8 @@ bool CTextureCache::Export(const CStdString &image, const CStdString &destinatio
 
 bool CTextureCache::Export(const CStdString &image, const CStdString &destination)
 {
-  CStdString cachedHash;
-  CStdString cachedImage(GetCachedImage(image, cachedHash));
+  CTextureDetails details;
+  CStdString cachedImage(GetCachedImage(image, details));
   if (!cachedImage.IsEmpty())
   {
     if (CFile::Cache(cachedImage, destination))
