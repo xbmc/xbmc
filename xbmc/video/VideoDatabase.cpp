@@ -1849,7 +1849,7 @@ bool CVideoDatabase::GetFileInfo(const CStdString& strFilenameAndPath, CVideoInf
 
     CStdString sql = PrepareSQL("SELECT * FROM files "
                                 "JOIN path ON path.idPath = files.idPath "
-                                "JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = %i "
+                                "LEFT JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = %i "
                                 "WHERE files.idFile = %i", CBookmark::RESUME, idFile);
     if (!m_pDS->query(sql.c_str()))
       return false;
