@@ -41,7 +41,7 @@ module.findAll( { it.name() == 'typetab' } ).each {  SwigTypeParser.appendTypeTa
 methods = module.depthFirst().findAll { it.name() == 'function' || it.name() == 'constructor' || it.name() == 'destructor' }
 classes = module.depthFirst().findAll { it.name() == 'class' }
 
-Helper.setup(classes,
+Helper.setup(this,classes,
     /**
      * This is meant to contain mini-templates for converting the return type
      * of the native call to be returned to the python caller.

@@ -42,6 +42,9 @@ public class Helper
    private static def defaultInTypeConversion = null
    private static def doxygenXmlDir = null
    public static String newline = System.getProperty("line.separator");
+   public static File curTemplateFile = null;
+
+   public static void setTempateFile(File templateFile) { curTemplateFile = templateFile }
 
    /**
     * In order to use any of the typemap helper features, the Helper class needs to be initialized with
@@ -52,15 +55,16 @@ public class Helper
     * @param pinTypemap is the typemap table for input parameters from the scripting language
     * @param defaultInTypemap is the default typemap for the input parameters from the scripting language
     */
-   public static void setup(List pclasses, Map poutTypemap, def defaultOutTypemap,
-   Map pinTypemap, def defaultInTypemap)
-   {
+    public static void setup(def template,List pclasses, Map poutTypemap, def defaultOutTypemap,
+                             Map pinTypemap, def defaultInTypemap)
+    {
+      setTempateFile(template.binding.templateFile)
       classes = pclasses ? pclasses : []
       if (poutTypemap) outTypemap.putAll(poutTypemap)
       if (defaultOutTypemap) defaultOutTypeConversion = defaultOutTypemap
       if (pinTypemap) inTypemap.putAll(pinTypemap)
       if (defaultInTypemap) defaultInTypeConversion = defaultInTypemap
-   }
+    }
 
    public static class Sequence
    {
@@ -242,6 +246,19 @@ public class Helper
         convertTemplate = convertTemplate[0]
       }
 
+      if (File.class.isAssignableFrom(convertTemplate.getClass()))
+      {
+        File cur = (File)convertTemplate
+        if (!cur.exists()) // see if the file is relative to the template file
+        { 
+          File parent = curTemplateFile.getParentFile()
+          // find the relative path to the convertTemplate
+          File cwd = new File('.').getCanonicalFile()
+          String relative = cwd.toURI().relativize(convertTemplate.toURI()).getPath();
+          convertTemplate = new File(parent,relative)
+        }
+      }
+
       if (seqSetHere) curSequence.set(null)
       return new SimpleTemplateEngine().createTemplate(convertTemplate).make(bindings).toString()
    }
@@ -346,6 +363,19 @@ public class Helper
             Map additionalBindings = convertTemplate.size() > 1 ? convertTemplate[1] : [:]
             bindings.putAll(additionalBindings)
             convertTemplate = convertTemplate[0]
+         }
+
+         if (File.class.isAssignableFrom(convertTemplate.getClass()))
+         {
+           File cur = (File)convertTemplate
+           if (!cur.exists()) // see if the file is relative to the template file
+           { 
+             File parent = curTemplateFile.getParentFile()
+             // find the relative path to the convertTemplate
+             File cwd = new File('.').getCanonicalFile()
+             String relative = cwd.toURI().relativize(convertTemplate.toURI()).getPath();
+             convertTemplate = new File(parent,relative)
+           }
          }
 
          if (seqSetHere) curSequence.set(null);
