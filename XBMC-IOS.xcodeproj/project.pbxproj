@@ -6607,7 +6607,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\n/Developer/iphoneentitlements401/gen_entitlements.py \"org.xbmc.xbmc-ios\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
+			shellScript = "export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`\nif [ \"${PLATFORM_NAME}\" == \"iphoneos\" ]; then\nif [ -f \"/Users/Shared/buildslave/keychain_unlock.sh\" ]; then\n/Users/Shared/buildslave/keychain_unlock.sh\nfi\n/Developer/iphoneentitlements401/gen_entitlements.py \"org.xbmc.xbmc-ios\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\";\ncodesign -v -f -s \"iPhone Developer\" --entitlements \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\nfi";
 		};
 		F502C086160F41D900C96C76 /* Make interface-python */ = {
 			isa = PBXShellScriptBuildPhase;
