@@ -662,7 +662,7 @@ void CGUISettings::Initialize()
   AddDefaultAddon(NULL, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
 
   AddBool(NULL,  "services.esenabled",         791, true);
-  AddString(NULL,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
+  AddString(NULL,"services.esport",            792, "9778", EDIT_CONTROL_NUMBER_INPUT, false, 792);
   AddInt(NULL,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
   AddInt(NULL,   "services.esmaxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
   AddBool(NULL,  "services.esallinterfaces",   794, false);
