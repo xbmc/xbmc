@@ -31,7 +31,7 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
 #ifndef _WIN32
     headers["Version"] = Cocoa_GetAppVersion();
 #endif
-    headers["Product"] = "Plex/Nine (dharma)";
+    headers["Product"] = "Plex/Nine (eden)";
   }
   
   /// For subclasses to fill in.
