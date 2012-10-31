@@ -893,6 +893,7 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   }
 }
 
+#ifndef __PLEX__
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item;
@@ -934,12 +935,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       {
         if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
         {
-#ifndef __PLEX__
           if (info && info->Content() != CONTENT_NONE)
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
           else
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
-#endif
         }
       }
 
@@ -1088,7 +1087,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
-#ifndef __PLEX__
         // add "Set/Change content" to folders
         if (item->m_bIsFolder && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
         {
@@ -1105,14 +1103,47 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           }
         }
-#endif
-      }
+S      }
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
   CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
 }
+#else
+void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
+{
+  CFileItemPtr item;
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
+
+  if (item)
+  {
+    if (m_vecItems->GetContent() == "movies")
+      buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+    else if (m_vecItems->GetContent() == "tvshows")
+      buttons.Add(CONTEXT_BUTTON_INFO, 20351);
+    else if (m_vecItems->GetContent() == "episodes")
+      buttons.Add(CONTEXT_BUTTON_INFO, 20352);
+
+    if ((item->IsRemoteSharedPlexMediaServerLibrary() == false) &&
+        (item->GetProperty("HasWatchedState").asBoolean() == true) &&
+        ((item->IsPlexMediaServerLibrary() && m_vecItems->GetContent() != "files") ||
+        item->HasProperty("ratingKey")))
+    {
+      CStdString viewOffset = item->GetProperty("viewOffset").asString();
+
+      if (item->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
+        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
+      if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
+        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+    }
+  }
+  if (m_vecItems->IsVirtualDirectoryRoot() == false)
+    CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
+}
+#endif
+
 
 bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {

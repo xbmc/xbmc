@@ -1128,7 +1128,7 @@ void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const C
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   /* PLEX */
-  if (m_vecItems->GetContent() == "secondary")
+  if (m_vecItems->GetContent() == "secondary" || m_vecItems->GetContent() == "plugins")
     return;
   /* END PLEX */
 
