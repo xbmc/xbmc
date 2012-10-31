@@ -68,6 +68,21 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogMusicOSD::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+  case ACTION_SHOW_OSD:
+    Close();
+    return true;
+
+  default:
+    break;
+  }
+
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogMusicOSD::FrameMove()
 {
   if (m_autoClosing)
