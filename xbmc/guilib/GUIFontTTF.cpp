@@ -605,7 +605,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   // set the character in our table
   ch->letterAndStyle = (style << 16) | letter;
   ch->offsetX = (short)bitGlyph->left;
-  ch->offsetY = (short)max((short)m_cellBaseLine - bitGlyph->top, 0);
+  ch->offsetY = (short)m_cellBaseLine - bitGlyph->top;
   ch->left = (float)m_posX + ch->offsetX;
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
