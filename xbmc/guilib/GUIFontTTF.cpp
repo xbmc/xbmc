@@ -447,9 +447,11 @@ float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
   return 0.0f;
 }
 
+unsigned int CGUIFontTTFBase::spacing_between_characters_in_texture = 1;
+
 unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
 {
-  return m_cellHeight + 2;
+  return m_cellHeight + spacing_between_characters_in_texture;
 }
 
 CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
@@ -633,7 +635,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
     unsigned int y2 = min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
   }
-  m_posX += 1 + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
+  m_posX += spacing_between_characters_in_texture + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
   m_numChars++;
 
   m_textureScaleX = 1.0f / m_textureWidth;
