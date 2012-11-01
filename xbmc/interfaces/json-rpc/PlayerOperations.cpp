@@ -489,7 +489,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
     if (channel == NULL)
       return InvalidParams;
 
-    CApplicationMessenger::Get().PlayFile(CFileItem(*channel.get()));
+    CApplicationMessenger::Get().MediaPlay(CFileItem(*channel.get()));
     return ACK;
   }
   else
