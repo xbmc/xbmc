@@ -115,6 +115,19 @@ extern "C" {
   } PVR_TIMER_STATE;
 
   /*!
+   * @brief PVR menu hook categories
+   */
+  typedef enum
+  {
+    PVR_MENUHOOK_ALL             = 0, /*!< @brief all categories */
+    PVR_MENUHOOK_CHANNEL         = 1, /*!< @brief for channels */
+    PVR_MENUHOOK_TIMER           = 2, /*!< @brief for timers */
+    PVR_MENUHOOK_EPG             = 3, /*!< @brief for EPG */
+    PVR_MENUHOOK_RECORDING       = 4, /*!< @brief for recordings */
+    PVR_MENUHOOK_SETTING         = 5, /*!< @brief for settings */
+  } PVR_MENUHOOK_CAT;
+
+  /*!
    * @brief Properties passed to the Create() method of an add-on.
    */
   typedef struct PVR_PROPERTIES
@@ -188,11 +201,13 @@ extern "C" {
 
   /*!
    * @brief Menu hooks that are available in the context menus while playing a stream via this add-on.
+   * And in the Live TV settings dialog
    */
   typedef struct PVR_MENUHOOK
   {
-    unsigned int iHookId;              /*!< @brief (required) this hook's identifier */
-    unsigned int iLocalizedStringId;   /*!< @brief (required) the id of the label for this hook in g_localizeStrings */
+    unsigned int     iHookId;              /*!< @brief (required) this hook's identifier */
+    unsigned int     iLocalizedStringId;   /*!< @brief (required) the id of the label for this hook in g_localizeStrings */
+    PVR_MENUHOOK_CAT category;             /*!< @brief (required) category of menu hook */
   } ATTRIBUTE_PACKED PVR_MENUHOOK;
 
   /*!

@@ -634,17 +634,17 @@ PVR_ERROR CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group)
   return error;
 }
 
-bool CPVRClients::HasMenuHooks(int iClientID)
+bool CPVRClients::HasMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
 {
   if (iClientID < 0)
     iClientID = GetPlayingClientID();
 
   PVR_CLIENT client;
   return (GetConnectedClient(iClientID, client) &&
-      client->HaveMenuHooks());
+      client->HaveMenuHooks(cat));
 }
 
-bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
+bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, PVR_MENUHOOKS *hooks)
 {
   bool bReturn(false);
 
@@ -652,7 +652,7 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
     iClientID = GetPlayingClientID();
 
   PVR_CLIENT client;
-  if (GetConnectedClient(iClientID, client) && client->HaveMenuHooks())
+  if (GetConnectedClient(iClientID, client) && client->HaveMenuHooks(cat))
   {
     *hooks = *(client->GetMenuHooks());
     bReturn = true;
@@ -661,7 +661,7 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
   return bReturn;
 }
 
-void CPVRClients::ProcessMenuHooks(int iClientID)
+void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
 {
   PVR_MENUHOOKS *hooks = NULL;
 
@@ -669,7 +669,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID)
     iClientID = GetPlayingClientID();
 
   PVR_CLIENT client;
-  if (GetConnectedClient(iClientID, client) && client->HaveMenuHooks())
+  if (GetConnectedClient(iClientID, client) && client->HaveMenuHooks(cat))
   {
     hooks = client->GetMenuHooks();
     std::vector<int> hookIDs;

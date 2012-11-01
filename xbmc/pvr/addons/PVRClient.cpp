@@ -1027,9 +1027,21 @@ DemuxPacket* CPVRClient::DemuxRead(void)
   return NULL;
 }
 
-bool CPVRClient::HaveMenuHooks(void) const
+bool CPVRClient::HaveMenuHooks(PVR_MENUHOOK_CAT cat) const
 {
-  return m_bReadyToUse ? m_menuhooks.size() > 0 : false;
+  bool bReturn(false);
+  if (m_bReadyToUse && m_menuhooks.size() > 0)
+  {
+    for (unsigned int i = 0; i < m_menuhooks.size(); i++)
+    {
+      if (m_menuhooks[i].category == cat || m_menuhooks[i].category == PVR_MENUHOOK_ALL)
+      {
+        bReturn = true;
+        break;
+      }
+    }
+  }
+  return bReturn;
 }
 
 PVR_MENUHOOKS *CPVRClient::GetMenuHooks(void)

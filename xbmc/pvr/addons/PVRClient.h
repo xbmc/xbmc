@@ -146,7 +146,7 @@ namespace PVR
     /*!
      * @return True if this add-on has menu hooks, false otherwise.
      */
-    bool HaveMenuHooks(void) const;
+    bool HaveMenuHooks(PVR_MENUHOOK_CAT cat) const;
 
     /*!
      * @return The menu hooks for this add-on.
