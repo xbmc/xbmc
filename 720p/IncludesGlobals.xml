@@ -38,12 +38,8 @@
 		<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 		<texture background="true" border="50">shadow.png</texture>
 	</include>
-	<include name="_Border">
-		<bordertexture border="30">border.png</bordertexture>
-		<bordersize>3</bordersize>
-	</include>
-	<!-- BORDER: add 6px in width and height when applied -->
 	<include name="Border">
+		<!-- BORDER: add 6px in width and height when applied -->
 		<posx>10</posx>
 		<posy>10</posy>
 		<texture>transparent.png</texture>
@@ -77,13 +73,19 @@
 		<texture flipy="true">arrow-big-up.png</texture>
 		<colordiffuse>FF000000</colordiffuse>
 	</include>
-	<include name="FullScreenBGImage">
+	<include name="FullScreenScaled">
 		<posx>0</posx>
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
-		<fadetime>400</fadetime>
 		<aspectratio>scale</aspectratio>
+	</include>
+	<include name="FullScreenStretched">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>1280</width>
+		<height>720</height>
+		<aspectratio>stretch</aspectratio>
 	</include>
 	<!-- screen top bar -->
 	<!-- variables for item count in top bar -->
@@ -111,10 +113,11 @@
 		<include>Clock</include>
 		<!-- item count -->
 		<control type="group">
-			<posy>11</posy>
+			<posy>0</posy>
 			<posx>30r</posx>
 			<control type="label">
 				<width>500</width>
+				<height>49</height>
 				<align>right</align>
 				<font>Condensed-17</font>
 				<label>$VAR[TopBarItemCountStrings]</label>
@@ -126,19 +129,16 @@
 	<include name="Plot">
 		<label>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</label>
 		<autoscroll delay="10000" time="3000" repeat="5000">!Control.HasFocus(13)</autoscroll>
-		<font>Condensed-17</font>
-		<textcolor>white</textcolor>
-		<shadowcolor>ff222222</shadowcolor>
 	</include>
 	<!-- clock -->
 	<include name="Clock">
 		<control type="group">
 			<include>HomeListItemFullInfoSlide</include>
-			<posy>11</posy>
 			<posx>30</posx>
 			<control type="label">
 				<label>$INFO[System.Time(short_no_meridian)]</label>
 				<width>200</width>
+				<height>49</height>
 				<font>Condensed-17</font>
 				<textcolor>FF999999</textcolor>
 			</control>
@@ -146,7 +146,7 @@
 	</include>
 	<!-- animations -->
 	<include name="FadeDialog">
-		<animation effect="fade" start="100" end="20" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu)">Conditional</animation>
+		<animation effect="fade" start="100" end="20" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog)">Conditional</animation>
 	</include>
 	<include name="FadeQuick">
 		<animation effect="fade" start="0" end="100" time="100">Visible</animation>

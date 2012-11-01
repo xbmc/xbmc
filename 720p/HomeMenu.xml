@@ -68,6 +68,7 @@
 	<include name="HomeMenu">
 		<!-- Main Menu -->
 		<control type="group">
+			<include>FadeDialog</include>
 			<include>MenuSeparatorVertical</include>
 			<include>MenuFocusedLabel</include>
 			<!-- list -->
@@ -208,9 +209,9 @@
 						<visible>[!Skin.HasSetting(HidePictures)]</visible>
 						<onclick>XBMC.ActivateWindow(2)</onclick>
 					</item>
-					<!--><item id="114">
-						<label>KB TEST</label>
-						<onclick>Plex.ActivateWindow(103)</onclick>
+					<!--<item id="114">
+						<label>Perplexe</label>
+						<onclick>XBMC.ActivateWindow(107)</onclick>
 					</item>-->
 				</content>
 			</control>

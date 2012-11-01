@@ -2,6 +2,7 @@
 <includes>
 	<include name="debugFont">
 		<width>570</width>
+		<height>20</height>
 		<font>Condensed-14</font>
 		<textcolor>white</textcolor>
 		<align>left</align>
@@ -35,11 +36,11 @@
 			<control type="group">
 				<animation effect="fade" start="0" end="85" condition="true">Conditional</animation>
 				<control type="image">
-					<include>FullScreenBGImage</include>
+					<include>FullScreenScaled</include>
 					<texture>black.png</texture>
 				</control>
 				<control type="image">
-					<include>FullScreenBGImage</include>
+					<include>FullScreenScaled</include>
 					<texture>bg-overlay-grainy.png</texture>
 				</control>
 			</control>
@@ -50,7 +51,7 @@
 				<width>590</width>
 				<height>600</height>
 				<orientation>vertical</orientation>
-				<itemgap>20</itemgap>
+				<itemgap>0</itemgap>
 				<control type="label">
 					<include>debugFont</include>
 					<label>System.CurrentWindow : [COLOR=orangeLight]$INFO[System.CurrentWindow][/COLOR]</label>
@@ -111,7 +112,7 @@
 				<width>570</width>
 				<height>600</height>
 				<orientation>vertical</orientation>
-				<itemgap>20</itemgap>
+				<itemgap>0</itemgap>
 				<control type="label">
 					<include>debugFont</include>
 					<label>ListItem.FileNameAndPath : [COLOR=orangeLight]$INFO[ListItem.FileNameAndPath][/COLOR]</label>

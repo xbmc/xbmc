@@ -4,7 +4,7 @@
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<!-- bg's -->
-		<include>SettingsSlideshow</include>
+		<include>SlideshowDimmed</include>
 		<include>SettingsBG</include>
 		<!-- categories menu (top) -->
 		<include>SettingsCategoryMenu</include>
@@ -271,13 +271,6 @@
 				<description>Scroll Bar</description>
 				<posx>735</posx>
 				<posy>60</posy>
-				<width>24</width>
-				<height>360</height>
-				<orientation>vertical</orientation>
-				<texturesliderbar border="0,14,0,14">scrollbar-back.png</texturesliderbar>
-				<textureslidernib border="0,14,0,14">-</textureslidernib>
-				<textureslidernibfocus border="0,14,0,14">-</textureslidernibfocus>
-				<showonepage>false</showonepage>
 			</control>
 		</control>
 		<!-- Widgets -->

@@ -2,7 +2,6 @@
 <includes>
 	<include name="CurrentCover">
 		<control type="group">
-			<visible>Player.HasMusicPlaylist</visible>
 			<control type="image">
 				<posx>-4</posx>
 				<posy>-4</posy>
@@ -15,15 +14,13 @@
 				<posy>9</posy>
 				<width>390</width>
 				<height>390</height>
-				<info>MusicPlayer.Cover</info>
+				<texture diffuse="mask-square-big.png">$INFO[MusicPlayer.Cover]</texture>
 				<aspectratio scalediffuse="false">scale</aspectratio>
-				<texture diffuse="mask-square-big.png"/>
 			</control>
 		</control>
 	</include>
 	<include name="NextCover">
 		<control type="group">
-			<visible>Player.HasMusicPlaylist</visible>
 			<control type="image">
 				<posx>-4</posx>
 				<posy>-4</posy>
@@ -36,9 +33,8 @@
 				<posy>9</posy>
 				<width>230</width>
 				<height>230</height>
-				<info>MusicPlayer.Offset(1).Cover</info>
+				<texture diffuse="mask-square.png">$INFO[MusicPlayer.Offset(1).Cover]</texture>
 				<aspectratio scalediffuse="false">scale</aspectratio>
-				<texture diffuse="mask-square.png"/>
 			</control>
 		</control>
 	</include>
@@ -220,22 +216,21 @@
 	</include>
 	<include name="NowPlaying">
 		<control type="largeimage">
-			<include>FullScreenBGImage</include>
-			<info>MusicPlayer.Fanart</info>
-			<visible>!IsEmpty(MusicPlayer.Fanart)</visible>
+			<include>FullScreenScaled</include>
+			<texture>$INFO[MusicPlayer.Fanart]</texture>
 			<include>BackgroundFade</include>
 			<animation effect="fade" end="70" time="0" condition="true">conditional</animation>
 		</control>
-		<!-- MODEL -->
+		<!-- backup bg -->
 		<control type="image">
 			<posy>-22</posy>
 			<posx>0</posx>
 			<width>1280</width>
 			<height>742</height>
-			<texture>now_playing_model_.jpg</texture>
+			<texture>plex.png</texture>
 			<aspectratio>keep</aspectratio>
-			<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
-			<visible>true</visible>
+			<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
+			<visible>IsEmpty(MusicPlayer.Fanart)</visible>
 		</control>
 		<!-- Fanart grainy overlay -->
 		<control type="image">
