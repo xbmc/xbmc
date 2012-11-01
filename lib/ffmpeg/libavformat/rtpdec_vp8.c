@@ -23,7 +23,7 @@
  * @file
  * @brief RTP support for the VP8 payload
  * @author Josh Allmann <joshua.allmann@gmail.com>
- * ( http://www.webmproject.org/code/specs/rtp/ )
+ * @see http://www.webmproject.org/code/specs/rtp/
  */
 
 #include "libavcodec/bytestream.h"
@@ -31,7 +31,7 @@
 #include "rtpdec_formats.h"
 
 struct PayloadContext {
-    ByteIOContext *data;
+    AVIOContext *data;
     uint32_t       timestamp;
     int is_keyframe;
 };
@@ -41,7 +41,7 @@ static void prepare_packet(AVPacket *pkt, PayloadContext *vp8, int stream)
     av_init_packet(pkt);
     pkt->stream_index = stream;
     pkt->flags        = vp8->is_keyframe ? AV_PKT_FLAG_KEY : 0;
-    pkt->size         = url_close_dyn_buf(vp8->data, &pkt->data);
+    pkt->size         = avio_close_dyn_buf(vp8->data, &pkt->data);
     pkt->destruct     = av_destruct_packet;
     vp8->data         = NULL;
 }
@@ -85,7 +85,7 @@ static int vp8_handle_packet(AVFormatContext *ctx,
             // that for the next av_get_packet call
             ret = end_packet ? 1 : 0;
         }
-        if ((res = url_open_dyn_buf(&vp8->data)) < 0)
+        if ((res = avio_open_dyn_buf(&vp8->data)) < 0)
             return res;
         vp8->is_keyframe = *buf & 1;
         vp8->timestamp   = ts;
@@ -111,7 +111,7 @@ static int vp8_handle_packet(AVFormatContext *ctx,
             }
         }
 
-        put_buffer(vp8->data, buf, au_len);
+        avio_write(vp8->data, buf, au_len);
         buf += au_len;
         len -= au_len;
     }
@@ -138,7 +138,7 @@ static void vp8_free_context(PayloadContext *vp8)
 {
     if (vp8->data) {
         uint8_t *tmp;
-        url_close_dyn_buf(vp8->data, &tmp);
+        avio_close_dyn_buf(vp8->data, &tmp);
         av_free(tmp);
     }
     av_free(vp8);
@@ -148,7 +148,7 @@ RTPDynamicProtocolHandler ff_vp8_dynamic_handler = {
     .enc_name       = "VP8",
     .codec_type     = AVMEDIA_TYPE_VIDEO,
     .codec_id       = CODEC_ID_VP8,
-    .open           = vp8_new_context,
-    .close          = vp8_free_context,
+    .alloc          = vp8_new_context,
+    .free           = vp8_free_context,
     .parse_packet   = vp8_handle_packet,
 };

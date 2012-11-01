@@ -30,6 +30,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#ifdef __FreeBSD__
+#include <netinet/in.h>
+#endif
 #ifdef _LINUX
 typedef int SOCKET;
 #endif

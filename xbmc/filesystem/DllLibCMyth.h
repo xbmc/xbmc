@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -38,11 +37,17 @@ public:
   virtual cmyth_recorder_t conn_get_free_recorder   (cmyth_conn_t conn)=0;
   virtual cmyth_recorder_t conn_get_recorder_from_num(cmyth_conn_t conn, int num)=0;
 
+  virtual int              conn_get_freespace       (cmyth_conn_t control,long long *total, long long *used)=0;
+  virtual int              conn_hung                (cmyth_conn_t control)=0;
 
   virtual cmyth_event_t    event_get                (cmyth_conn_t conn, char * data, int len)=0;
   virtual int              event_select             (cmyth_conn_t conn, struct timeval *timeout)=0;
 
   virtual cmyth_proglist_t proglist_get_all_recorded(cmyth_conn_t control)=0;
+  virtual cmyth_proglist_t proglist_get_all_scheduled(cmyth_conn_t control)=0;
+  virtual cmyth_proglist_t proglist_get_all_pending  (cmyth_conn_t control)=0;
+  virtual cmyth_proglist_t proglist_get_conflicting  (cmyth_conn_t control)=0;
+
   virtual int              mysql_get_guide(cmyth_database_t db, cmyth_program_t **prog, time_t starttime, time_t endtime) = 0;
   virtual cmyth_proginfo_t proglist_get_item        (cmyth_proglist_t pl, int index)=0;
   virtual int              proglist_get_count       (cmyth_proglist_t pl)=0;
@@ -106,7 +111,7 @@ public:
   virtual cmyth_timestamp_t proginfo_rec_start      (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_rec_end        (cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_rec_status_t proginfo_rec_status(cmyth_proginfo_t prog)=0;
-  virtual char*             proginfo_prodyear       (cmyth_proginfo_t prog)=0;
+  virtual unsigned short    proginfo_year           (cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_t  proginfo_get_from_basename   (cmyth_conn_t control, const char* basename)=0;
   virtual int               proginfo_delete_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
   virtual int               proginfo_stop_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
@@ -140,11 +145,17 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
 
   DEFINE_METHOD1(cmyth_recorder_t,    conn_get_free_recorder,   (cmyth_conn_t p1))
   DEFINE_METHOD2(cmyth_recorder_t,    conn_get_recorder_from_num,(cmyth_conn_t p1, int p2))
+  DEFINE_METHOD3(int,                 conn_get_freespace,       (cmyth_conn_t p1, long long *p2, long long *p3))
+  DEFINE_METHOD1(int,                 conn_hung,                (cmyth_conn_t p1))
 
   DEFINE_METHOD3(cmyth_event_t,       event_get,                (cmyth_conn_t p1, char * p2, int p3))
   DEFINE_METHOD2(int,                 event_select,             (cmyth_conn_t p1, struct timeval *p2))
 
   DEFINE_METHOD1(cmyth_proglist_t,    proglist_get_all_recorded, (cmyth_conn_t p1))
+  DEFINE_METHOD1(cmyth_proglist_t,    proglist_get_all_scheduled, (cmyth_conn_t p1))
+  DEFINE_METHOD1(cmyth_proglist_t,    proglist_get_all_pending, (cmyth_conn_t p1))
+  DEFINE_METHOD1(cmyth_proglist_t,    proglist_get_conflicting, (cmyth_conn_t p1))
+
   DEFINE_METHOD4(int,                 mysql_get_guide,          (cmyth_database_t p1, cmyth_program_t **p2, time_t p3, time_t p4))
   DEFINE_METHOD2(cmyth_proginfo_t,    proglist_get_item,        (cmyth_proglist_t p1, int p2))
   DEFINE_METHOD1(int,                 proglist_get_count,       (cmyth_proglist_t p1))
@@ -207,7 +218,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_rec_end,         (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_proginfo_rec_status_t, proginfo_rec_status, (cmyth_proginfo_t p1))
   DEFINE_METHOD1(unsigned long,       proginfo_flags,           (cmyth_proginfo_t p1))
-  DEFINE_METHOD1(char*,               proginfo_prodyear,        (cmyth_proginfo_t p1))
+  DEFINE_METHOD1(unsigned short,      proginfo_year,            (cmyth_proginfo_t p1))
   DEFINE_METHOD2(cmyth_proginfo_t,    proginfo_get_from_basename,    (cmyth_conn_t p1, const char* p2))
   DEFINE_METHOD2(int,                 proginfo_delete_recording, (cmyth_conn_t p1, cmyth_proginfo_t p2))
   DEFINE_METHOD2(int,                 proginfo_stop_recording,  (cmyth_conn_t p1, cmyth_proginfo_t p2))
@@ -236,10 +247,15 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_conn_connect_path, conn_connect_path)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_free_recorder, conn_get_free_recorder)
     RESOLVE_METHOD_RENAME(cmyth_conn_get_recorder_from_num, conn_get_recorder_from_num)
+    RESOLVE_METHOD_RENAME(cmyth_conn_get_freespace, conn_get_freespace)
+    RESOLVE_METHOD_RENAME(cmyth_conn_hung, conn_hung)
 
     RESOLVE_METHOD_RENAME(cmyth_event_get, event_get)
     RESOLVE_METHOD_RENAME(cmyth_event_select, event_select)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_all_recorded, proglist_get_all_recorded)
+    RESOLVE_METHOD_RENAME(cmyth_proglist_get_all_scheduled, proglist_get_all_scheduled)
+    RESOLVE_METHOD_RENAME(cmyth_proglist_get_all_pending, proglist_get_all_pending)
+    RESOLVE_METHOD_RENAME(cmyth_proglist_get_conflicting, proglist_get_conflicting)
     RESOLVE_METHOD_RENAME(cmyth_mysql_get_guide, mysql_get_guide)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_item, proglist_get_item)
     RESOLVE_METHOD_RENAME(cmyth_proglist_get_count, proglist_get_count)
@@ -302,7 +318,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_end, proginfo_rec_end)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_status, proginfo_rec_status)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_flags, proginfo_flags)
-    RESOLVE_METHOD_RENAME(cmyth_proginfo_prodyear, proginfo_prodyear)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_year, proginfo_year)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_get_from_basename, proginfo_get_from_basename)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_delete_recording, proginfo_delete_recording)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_stop_recording, proginfo_stop_recording)

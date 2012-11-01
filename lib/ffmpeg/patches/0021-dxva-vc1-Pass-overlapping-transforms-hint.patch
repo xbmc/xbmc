@@ -1,0 +1,29 @@
+From 6ba7fd3e2acf39e8c276e7db901c54dba0fd8307 Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Sat, 22 Oct 2011 21:59:22 +0200
+Subject: [PATCH 21/24] dxva-vc1 Pass overlapping transforms hint
+
+see ticket #11643
+---
+ libavcodec/dxva2_vc1.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/libavcodec/dxva2_vc1.c b/libavcodec/dxva2_vc1.c
+index 23507d3..9d550dd 100644
+--- a/libavcodec/dxva2_vc1.c
++++ b/libavcodec/dxva2_vc1.c
+@@ -103,7 +103,10 @@ static void fill_picture_parameters(AVCodecContext *avctx,
+                                   (v->rangered       << 3) |
+                                   (s->max_b_frames       );
+     pp->bPicExtrapolation       = (!v->interlace || v->fcm == PROGRESSIVE) ? 1 : 2;
+-    pp->bPicDeblocked           = ((v->profile != PROFILE_ADVANCED && v->rangeredfrm) << 5) |
++    pp->bPicDeblocked           = ((v->overlap == 1 &&
++                                  pp->bPicBackwardPrediction == 0 &&
++                                  ctx->cfg->ConfigResidDiffHost == 0)                 << 6) |
++                                  ((v->profile != PROFILE_ADVANCED && v->rangeredfrm) << 5) |
+                                   (s->loop_filter                                     << 1);
+     pp->bPicDeblockConfined     = (v->postprocflag             << 7) |
+                                   (v->broadcast                << 6) |
+-- 
+1.7.9.4
+

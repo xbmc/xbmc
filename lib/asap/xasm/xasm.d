@@ -548,7 +548,7 @@ int operatorShiftLeft(int a, int b) {
 	if (b < 0) {
 		return operatorShiftRight(a, -b);
 	}
-	if (a != 0 & b >= 32) {
+	if (a != 0 && b >= 32) {
 		throw new AssemblyError("Arithmetic overflow");
 	}
 	long r = cast(long) a << b;

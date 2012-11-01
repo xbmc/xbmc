@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -44,15 +43,20 @@ public:
 
   void SetHeading(const CStdString &strHeading);
   void SetMode(INPUT_MODE mode, void *initial);
-  void GetOutput(void *output);
+  void SetMode(INPUT_MODE mode, const CStdString &initial);
+  void GetOutput(void *output) const;
+  CStdString GetOutput() const;
 
   static bool ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading);
   static bool ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading);
   static bool ShowAndGetIPAddress(CStdString &IPAddress, const CStdString &heading);
-  static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading);
+  static bool ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading, unsigned int iAutoCloseTimeoutMs = 0);
   static bool ShowAndGetSeconds(CStdString& timeString, const CStdString &heading);
 
 protected:
+  virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
+
   void OnNumber(unsigned int num);
   void VerifyDate(bool checkYear);
   void OnNext();

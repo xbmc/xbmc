@@ -1,5 +1,6 @@
+#pragma once
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,20 +14,13 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
-#ifndef MATRIX_GLES_H
-#define MATRIX_GLES_H
-
-#pragma once
-
 #include <vector>
-
-using namespace std;
+#include <string.h>
 
 enum EMATRIXMODE
 {
@@ -60,11 +54,25 @@ public:
   bool Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz);
 
 protected:
-  vector<GLfloat*> m_matrices[(int)MM_MATRIXSIZE];
+
+  struct MatrixWrapper 
+  {
+    MatrixWrapper(){};
+    MatrixWrapper( const float values[16]) { memcpy(m_values,values,sizeof(m_values)); }
+    MatrixWrapper( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); }
+    MatrixWrapper &operator=( const MatrixWrapper &rhs ) { memcpy(m_values, rhs.m_values, sizeof(m_values)); return *this;}
+    operator float*() { return m_values; }
+    operator const float*() const { return m_values; }
+
+    float m_values[16];
+  };
+
+  std::vector<struct MatrixWrapper> m_matrices[(int)MM_MATRIXSIZE];
   GLfloat *m_pMatrix;
   EMATRIXMODE m_matrixMode;
+#if defined(__ARM_NEON__)
+  bool m_has_neon;
+#endif
 };
 
 extern CMatrixGLES g_matrices;
-
-#endif // MATRIX_GLES_H

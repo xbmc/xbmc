@@ -34,6 +34,7 @@
  */
 
 #include <string.h>
+#include "os_port.h"
 #include "crypto.h"
 
 /**
@@ -66,13 +67,14 @@ void RC4_setup(RC4_CTX *ctx, const uint8_t *key, int length)
 /**
  * Perform the encrypt/decrypt operation (can use it for either since
  * this is a stream cipher).
+ * NOTE: *msg and *out must be the same pointer (performance tweak)
  */
 void RC4_crypt(RC4_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
 { 
     int i;
     uint8_t *m, x, y, a, b;
-    out = (uint8_t *)msg; 
-
+    (void)msg; /* GBG: unused */
+    
     x = ctx->x;
     y = ctx->y;
     m = ctx->m;

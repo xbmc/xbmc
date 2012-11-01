@@ -127,13 +127,14 @@ NPT_String::Format(const char* format, ...)
     NPT_Size   buffer_size = NPT_STRING_FORMAT_BUFFER_DEFAULT_SIZE; // default value
     
     va_list  args;
-    va_start(args, format);
 
     for(;;) {
         /* try to format (it might not fit) */
         result.Reserve(buffer_size);
         char* buffer = result.UseChars();
+        va_start(args, format);
         int f_result = NPT_FormatStringVN(buffer, buffer_size, format, args);
+        va_end(args);
         if (f_result >= (int)(buffer_size)) f_result = -1;
         if (f_result >= 0) {
             result.SetLength(f_result);
@@ -146,8 +147,6 @@ NPT_String::Format(const char* format, ...)
         buffer_size *= 2;
         if (buffer_size > NPT_STRING_FORMAT_BUFFER_MAX_SIZE) break;
     }
-
-    va_end(args);
     
     return result;
 }
@@ -172,6 +171,16 @@ NPT_String::NPT_String(const char* str, NPT_Size length)
     if (str == NULL || length == 0) {
         m_Chars = NULL;
     } else {
+        for (unsigned int i=0; i<length-1; i++) {
+            if (str[i] == '\0') {
+                if (i == 0) {
+                    m_Chars = NULL;
+                    return;
+                }
+                length = i;
+                break;
+            }
+        }
         m_Chars = Buffer::Create(str, length);
     }
 }
@@ -186,30 +195,6 @@ NPT_String::NPT_String(const NPT_String& str)
     } else {
         m_Chars = Buffer::Create(str.GetChars(), str.GetLength());
     }
-}
-
-/*----------------------------------------------------------------------
-|   NPT_String::NPT_String
-+---------------------------------------------------------------------*/
-NPT_String::NPT_String(const char* str,
-                       NPT_Ordinal first, 
-                       NPT_Size    length)
-{
-    // shortcut
-    if (str != NULL && length != 0) {
-        // truncate length      
-        NPT_Size str_length = StringLength(str);
-        if (first < str_length) {
-            if (first+length > str_length) {
-                length = str_length-first;
-            }
-            if (length != 0) {
-                m_Chars = Buffer::Create(str+first, length);
-                return;
-            }
-        }
-    } 
-    m_Chars = NULL;
 }
 
 /*----------------------------------------------------------------------
@@ -311,6 +296,17 @@ NPT_String::Assign(const char* str, NPT_Size length)
     if (str == NULL || length == 0) {
         Reset();
     } else {
+        for (unsigned int i=0; i<length-1; i++) {
+            if (str[i] == '\0') {
+                if (i == 0) {
+                    Reset();
+                    return;
+                } else {
+                    length = i;
+                    break;
+                }
+            }
+        }
         PrepareToWrite(length);
         CopyBuffer(m_Chars, str, length);
         m_Chars[length] = '\0';
@@ -348,6 +344,24 @@ NPT_String::operator=(const NPT_String& str)
         Assign(str.GetChars(), str.GetLength());
     }
     return *this;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_String::GetHash32
++---------------------------------------------------------------------*/
+NPT_UInt32 
+NPT_String::GetHash32() const
+{
+    return NPT_Fnv1aHashStr32(GetChars());
+}
+
+/*----------------------------------------------------------------------
+|   NPT_String::GetHash64
++---------------------------------------------------------------------*/
+NPT_UInt64
+NPT_String::GetHash64() const
+{
+    return NPT_Fnv1aHashStr64(GetChars());
 }
 
 /*----------------------------------------------------------------------
@@ -464,9 +478,35 @@ NPT_String::Split(const char* separator) const
     int next;  
     do {
         next = Find(separator, current);
-        unsigned int end = (next>=0?next:GetLength());
+        unsigned int end = (next>=0?(unsigned int)next:GetLength());
         result.Add(SubString(current, end-current));
         current = next+separator_length;
+    } while (next >= 0);
+    
+    return result;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_String::SplitAny
++---------------------------------------------------------------------*/
+NPT_Array<NPT_String> 
+NPT_String::SplitAny(const char* separator) const
+{
+    NPT_Array<NPT_String> result((GetLength()>>1)+1);
+    
+    // sepcial case for empty separators
+    if (NPT_StringLength(separator) == 0) {
+        result.Add(*this);
+        return result;
+    }
+    
+    int current = 0;  
+    int next;  
+    do {
+        next = FindAny(separator, current);
+        unsigned int end = (next>=0?(unsigned int)next:GetLength());
+        result.Add(SubString(current, end-current));
+        current = next+1;
     } while (next >= 0);
     
     return result;
@@ -614,6 +654,40 @@ NPT_String::Find(char c, NPT_Ordinal start, bool ignore_case) const
 }
 
 /*----------------------------------------------------------------------
+|   NPT_String::FindAny
++---------------------------------------------------------------------*/
+int
+NPT_String::FindAny(const char* s, NPT_Ordinal start, bool ignore_case) const
+{
+    // check args
+    if (start >= GetLength()) return -1;
+    
+    // skip to start position
+    const char* src = m_Chars + start;
+    
+    // look for the character
+    if (ignore_case) {
+        while (*src) {
+            for (NPT_Size i=0; i<NPT_StringLength(s); i++) {
+                if (NPT_Uppercase(*src) == NPT_Uppercase(s[i])) {
+                    return (int)(src-m_Chars);
+                }
+            }
+            src++;
+        }
+    } else {
+        while (*src) {
+            for (NPT_Size i=0; i<NPT_StringLength(s); i++) {
+                if (*src == s[i]) return (int)(src-m_Chars);
+            }
+            src++;
+        }
+    }
+    
+    return -1;
+}
+
+/*----------------------------------------------------------------------
 |   NPT_String::ReverseFind
 +---------------------------------------------------------------------*/
 int
@@ -726,11 +800,11 @@ NPT_String::ToUppercase() const
 /*----------------------------------------------------------------------
 |   NPT_String::Replace
 +---------------------------------------------------------------------*/
-void
+const NPT_String&
 NPT_String::Replace(char a, char b) 
 {
     // check args
-    if (m_Chars == NULL || a == '\0' || b == '\0') return;
+    if (m_Chars == NULL || a == '\0' || b == '\0') return *this;
 
     // we are going to modify the characters
     char* src = m_Chars;
@@ -740,16 +814,17 @@ NPT_String::Replace(char a, char b)
         if (*src == a) *src = b;
         src++;
     }
+    return *this;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::Replace
 +---------------------------------------------------------------------*/
-void
+const NPT_String&
 NPT_String::Replace(char a, const char* str) 
 {
     // check args
-    if (m_Chars == NULL || a == '\0' || str == NULL || str[0] == '\0') return;
+    if (m_Chars == NULL || a == '\0' || str == NULL || str[0] == '\0') return *this;
 
     // optimization
     if (NPT_StringLength(str) == 1) return Replace(a, str[0]);
@@ -772,20 +847,38 @@ NPT_String::Replace(char a, const char* str)
     }
 
     Assign(dst.GetChars(), dst.GetLength());
+    return *this;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_String::Replace
++---------------------------------------------------------------------*/
+const NPT_String&
+NPT_String::Replace(const char* before, const char* after)
+{
+    NPT_Size size_before = NPT_StringLength(before);
+    NPT_Size size_after  = NPT_StringLength(after);
+    int      index       = Find(before);
+    while (index != NPT_STRING_SEARCH_FAILED) {
+        Erase(index, size_before);
+        Insert(after, index);
+        index = Find(before, index+size_after);
+    }
+    return *this;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::Insert
 +---------------------------------------------------------------------*/
-void
+const NPT_String&
 NPT_String::Insert(const char* str, NPT_Ordinal where)
 {
     // check args
-    if (str == NULL || where > GetLength()) return;
+    if (str == NULL || where > GetLength()) return *this;
 
     // measure the string to insert
     NPT_Size str_length = StringLength(str);
-    if (str_length == 0) return;
+    if (str_length == 0) return *this;
 
     // compute the size of the new string
     NPT_Size old_length = GetLength();
@@ -815,24 +908,26 @@ NPT_String::Insert(const char* str, NPT_Ordinal where)
     // use the new string
     if (m_Chars) delete GetBuffer();
     m_Chars = nst;
+    return *this;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::Erase
 +---------------------------------------------------------------------*/
-void
+const NPT_String&
 NPT_String::Erase(NPT_Ordinal start, NPT_Cardinal count /* = 1 */)
 {
     // check bounds
     NPT_Size length = GetLength();
     if (start+count > length) {
-        if (start >= length) return;
+        if (start >= length) return *this;
         count = length-start;
     }
-    if (count == 0) return;
+    if (count == 0) return *this;
 
     CopyString(m_Chars+start, m_Chars+start+count);
     GetBuffer()->SetLength(length-count);
+    return *this;
 }
 
 /*----------------------------------------------------------------------
@@ -919,29 +1014,29 @@ NPT_String::ToFloat(float& value, bool relaxed) const
 /*----------------------------------------------------------------------
 |   NPT_String::TrimLeft
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::TrimLeft()
 {
-    TrimLeft(NPT_STRINGS_WHITESPACE_CHARS);
+    return TrimLeft(NPT_STRINGS_WHITESPACE_CHARS);
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::TrimLeft
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::TrimLeft(char c)
 {
     char s[2] = {c, 0};
-    TrimLeft((const char*)s);
+    return TrimLeft((const char*)s);
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::TrimLeft
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::TrimLeft(const char* chars)
 {
-    if (m_Chars == NULL) return;
+    if (m_Chars == NULL) return *this;
     const char* s = m_Chars;
     while (char c = *s) {
         const char* x = chars;
@@ -954,41 +1049,42 @@ NPT_String::TrimLeft(const char* chars)
     }
     if (s == m_Chars) {
         // nothing was trimmed
-        return;
+        return *this;
     }
 
     // shift chars to the left
     char* d = m_Chars;
     GetBuffer()->SetLength(GetLength()-(s-d));
     while ((*d++ = *s++)) {};
+    return *this;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::TrimRight
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::TrimRight()
 {
-    TrimRight(NPT_STRINGS_WHITESPACE_CHARS);
+    return TrimRight(NPT_STRINGS_WHITESPACE_CHARS);
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::TrimRight
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::TrimRight(char c)
 {
     char s[2] = {c, 0};
-    TrimRight((const char*)s);
+    return TrimRight((const char*)s);
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::TrimRight
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::TrimRight(const char* chars)
 {
-    if (m_Chars == NULL || m_Chars[0] == '\0') return;
+    if (m_Chars == NULL || m_Chars[0] == '\0') return *this;
     char* tail = m_Chars+GetLength()-1;
     char* s = tail;
     while (s != m_Chars-1) {
@@ -1005,40 +1101,41 @@ NPT_String::TrimRight(const char* chars)
     }
     if (s == tail) {
         // nothing was trimmed
-        return;
+        return *this;
     }
     GetBuffer()->SetLength(1+(int)(s-m_Chars));
+    return *this;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::Trim
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::Trim()
 {
     TrimLeft();
-    TrimRight();
+    return TrimRight();
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::Trim
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::Trim(char c)
 {
     char s[2] = {c, 0};
     TrimLeft((const char*)s);
-    TrimRight((const char*)s);
+    return TrimRight((const char*)s);
 }
 
 /*----------------------------------------------------------------------
 |   NPT_String::Trim
 +---------------------------------------------------------------------*/
-void 
+const NPT_String& 
 NPT_String::Trim(const char* chars)
 {
     TrimLeft(chars);
-    TrimRight(chars);
+    return TrimRight(chars);
 }
 
 /*----------------------------------------------------------------------

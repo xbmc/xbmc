@@ -156,13 +156,13 @@ static void jpeg_put_comments(MpegEncContext *s)
     int size;
     uint8_t *ptr;
 
-    if (s->aspect_ratio_info /* && !lossless */)
+    if (s->avctx->sample_aspect_ratio.num /* && !lossless */)
     {
     /* JFIF header */
     put_marker(p, APP0);
     put_bits(p, 16, 16);
     ff_put_string(p, "JFIF", 1); /* this puts the trailing zero-byte too */
-    put_bits(p, 16, 0x0201); /* v 1.02 */
+    put_bits(p, 16, 0x0102); /* v 1.02 */
     put_bits(p, 8, 0); /* units type: 0 - aspect ratio */
     put_bits(p, 16, s->avctx->sample_aspect_ratio.num);
     put_bits(p, 16, s->avctx->sample_aspect_ratio.den);
@@ -199,6 +199,9 @@ void ff_mjpeg_encode_picture_header(MpegEncContext *s)
     const int lossless= s->avctx->codec_id != CODEC_ID_MJPEG;
 
     put_marker(&s->pb, SOI);
+
+    // hack for AMV mjpeg format
+    if(s->avctx->codec_id == CODEC_ID_AMV) return;
 
     jpeg_put_comments(s);
 
@@ -445,14 +448,48 @@ void ff_mjpeg_encode_mb(MpegEncContext *s, DCTELEM block[6][64])
     s->i_tex_bits += get_bits_diff(s);
 }
 
+// maximum over s->mjpeg_vsample[i]
+#define V_MAX 2
+static int amv_encode_picture(AVCodecContext *avctx,
+                       unsigned char *buf, int buf_size, void *data)
+{
+
+    AVFrame* pic=data;
+    MpegEncContext *s = avctx->priv_data;
+    int i;
+
+    //CODEC_FLAG_EMU_EDGE have to be cleared
+    if(s->avctx->flags & CODEC_FLAG_EMU_EDGE)
+        return -1;
+
+    //picture should be flipped upside-down
+    for(i=0; i < 3; i++) {
+        pic->data[i] += (pic->linesize[i] * (s->mjpeg_vsample[i] * (8 * s->mb_height -((s->height/V_MAX)&7)) - 1 ));
+        pic->linesize[i] *= -1;
+    }
+    return MPV_encode_picture(avctx,buf, buf_size, pic);
+}
+
 AVCodec ff_mjpeg_encoder = {
-    "mjpeg",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_MJPEG,
-    sizeof(MpegEncContext),
-    MPV_encode_init,
-    MPV_encode_picture,
-    MPV_encode_end,
+    .name           = "mjpeg",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_MJPEG,
+    .priv_data_size = sizeof(MpegEncContext),
+    .init           = MPV_encode_init,
+    .encode         = MPV_encode_picture,
+    .close          = MPV_encode_end,
     .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_YUVJ422P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("MJPEG (Motion JPEG)"),
+};
+
+AVCodec ff_amv_encoder = {
+    .name           = "amv",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_AMV,
+    .priv_data_size = sizeof(MpegEncContext),
+    .init           = MPV_encode_init,
+    .encode         = amv_encode_picture,
+    .close          = MPV_encode_end,
+    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_YUVJ422P, PIX_FMT_NONE},
+    .long_name      = NULL_IF_CONFIG_SMALL("AMV Video"),
 };

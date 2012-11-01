@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,9 +22,11 @@
 #include <string>
 #include <set>
 
-#include "mysqldataset.h"
 #include "utils/log.h"
 #include "system.h" // for GetLastError()
+
+#ifdef HAS_MYSQL
+#include "mysqldataset.h"
 #include "mysql/errmsg.h"
 #ifdef _WIN32
 #pragma comment(lib, "mysqlclient.lib")
@@ -213,7 +214,7 @@ int MysqlDatabase::copy(const char *backup_name) {
   if ( !active || conn == NULL)
     throw DbErrors("Can't copy database: no active connection...");
 
-  char sql[512];
+  char sql[4096];
   int ret;
 
   // ensure we're connected to the db we are about to copy
@@ -239,7 +240,10 @@ int MysqlDatabase::copy(const char *backup_name) {
     // create the new database
     sprintf(sql, "CREATE DATABASE `%s`", backup_name);
     if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+    {
+      mysql_free_result(res);
       throw DbErrors("Can't create database for copy: '%s' (%d)", db.c_str(), ret);
+    }
 
     MYSQL_ROW row;
 
@@ -251,14 +255,46 @@ int MysqlDatabase::copy(const char *backup_name) {
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      {
+        mysql_free_result(res);
         throw DbErrors("Can't copy schema for table '%s'\nError: %s", db.c_str(), ret);
+      }
 
       // copy the table data
       sprintf(sql, "INSERT INTO %s.%s SELECT * FROM %s",
               backup_name, row[0], row[0]);
 
       if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      {
+        mysql_free_result(res);
         throw DbErrors("Can't copy data for table '%s'\nError: %s", row[0], ret);
+      }
+    }
+    mysql_free_result(res);
+
+    // after table are recreated and repopulated we can recreate views
+    // grab a list of views and their definitions
+    sprintf(sql, "SELECT TABLE_NAME, VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '%s'", db.c_str());
+    if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      throw DbErrors("Can't determine views to recreate.");
+
+    // get list of all views from old DB
+    MYSQL_RES* resViews = mysql_store_result(conn);
+
+    if (resViews)
+    {
+      while ( (row=mysql_fetch_row(resViews)) != NULL )
+      {
+        sprintf(sql, "CREATE VIEW %s.%s AS %s",
+                backup_name, row[0], row[1]);
+
+        if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+        {
+          mysql_free_result(resViews);
+          throw DbErrors("Can't create view '%s'\nError: %s", db.c_str(), ret);
+        }
+      }
+      mysql_free_result(resViews);
     }
   }
 
@@ -271,7 +307,7 @@ int MysqlDatabase::query_with_reconnect(const char* query) {
 
   // try to reconnect if server is gone
   while ( ((result = mysql_real_query(conn, query, strlen(query))) != MYSQL_OK) &&
-          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR) && 
+          ((result = mysql_errno(conn)) == CR_SERVER_GONE_ERROR || result == CR_SERVER_LOST) &&
           (attempts-- > 0) )
   {
     CLog::Log(LOGINFO,"MYSQL server has gone. Will try %d more attempt(s) to reconnect.", attempts);
@@ -313,6 +349,7 @@ long MysqlDatabase::nextid(const char* sname) {
     lengths = mysql_fetch_lengths(res);
     CLog::Log(LOGINFO,"Next id is [%.*s] ", (int) lengths[0], row[0]);
     sprintf(sqlcmd,"update %s set nextid=%d where seq_name = '%s'",seq_table,id,sname);
+    mysql_free_result(res);
     if ((last_err = query_with_reconnect(sqlcmd) != 0)) return DB_UNEXPECTED_RESULT;
     return id;
   }
@@ -436,7 +473,7 @@ string MysqlDatabase::vprepare(const char *format, va_list args)
 
 #define etINVALID     0 /* Any unrecognized conversion type */
 
-#define ARRAYSIZE(X)    ((int)(sizeof(X)/sizeof(X[0])))
+#define ARRAY_SIZE(X)    ((int)(sizeof(X)/sizeof(X[0])))
 
 /*
 ** An "etByte" is an 8-bit unsigned value.
@@ -708,7 +745,7 @@ void MysqlDatabase::mysqlVXPrintf(
     /* Fetch the info entry for the field */
     infop = &fmtinfo[0];
     xtype = etINVALID;
-    for(idx=0; idx<ARRAYSIZE(fmtinfo); idx++){
+    for(idx=0; idx<ARRAY_SIZE(fmtinfo); idx++){
       if( c==fmtinfo[idx].fmttype ){
         infop = &fmtinfo[idx];
         if( useExtended || (infop->flags & FLAG_INTERN)==0 ){
@@ -1297,6 +1334,20 @@ bool MysqlDataset::dropIndex(const char *table, const char *index)
   return true;
 }
 
+static bool ci_test(char l, char r)
+{
+  return tolower(l) == tolower(r);
+}
+
+static size_t ci_find(const string& where, const string& what)
+{
+  std::string::const_iterator loc = std::search(where.begin(), where.end(), what.begin(), what.end(), ci_test);
+  if (loc == where.end())
+    return string::npos;
+  else
+    return loc - where.begin();
+}
+
 int MysqlDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
   string qry = sql;
@@ -1306,25 +1357,25 @@ int MysqlDataset::exec(const string &sql) {
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
   size_t loc;
 
-  if ( (loc=qry.find("integer primary key")) != string::npos)
+  if ( (loc=ci_find(qry, "integer primary key")) != string::npos)
   {
     qry = qry.insert(loc + 19, " auto_increment ");
   }
 
   // force the charset and collation to UTF-8
-  if ( qry.find("CREATE TABLE") != string::npos )
+  if ( ci_find(qry, "CREATE TABLE") != string::npos )
   {
     qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
   // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
-  else if ( qry.find("CREATE TRIGGER") != string::npos )
+  else if ( ci_find(qry, "CREATE TRIGGER") != string::npos )
   {
-    if ( (loc=qry.find("BEGIN ")) != string::npos )
+    if ( (loc=ci_find(qry, "BEGIN ")) != string::npos )
     {
         qry.replace(loc, 6, "");
     }
 
-    if ( (loc=qry.find(" END")) != string::npos )
+    if ( (loc=ci_find(qry, " END")) != string::npos )
     {
         qry.replace(loc, 4, "");
     }
@@ -1561,4 +1612,5 @@ void MysqlDataset::interrupt() {
 }
 
 }//namespace
+#endif //HAS_MYSQL
 

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.1" date="2012-06-10">
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url cache=&quot;lastfmm-\2.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=track.getinfo&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;artist=\1&amp;track=\2&lt;/url&gt;" dest="3">
+			<expression trim="1,2">(.+)%20%20%20(.+)</expression>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="3">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression>&lt;/id&gt;\s*&lt;name&gt;([^&lt;]*).*?&lt;artist&gt;\s*&lt;name&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\2" dest="7">
+				<expression>&lt;/id&gt;\s*&lt;name&gt;([^&lt;]*).*?&lt;artist&gt;\s*&lt;name&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;$$7 - $$6&lt;/title&gt;&lt;url cache=&quot;lastfmm-\1.xml&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=track.getinfo&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&amp;artist=\2&amp;track=\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression encode="1,2">&lt;/id&gt;\s*&lt;name&gt;([^&lt;]*).*?&lt;artist&gt;\s*&lt;name&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="4">
+				<expression>&lt;/title&gt;\s*&lt;mbid&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression>&lt;album[^&gt;]*&gt;\s*&lt;artist&gt;\s*[^&lt;]*&lt;/artist&gt;\s*&lt;title&gt;([^&lt;]*)&lt;/title&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression>&lt;artist&gt;\s*&lt;name&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression>&lt;name&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$8" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5+">
+				<expression noclean="1" />
+			</RegExp>
+			<RegExp input="$$7" output="&lt;album&gt;\1&lt;/album&gt;" dest="5+">
+				<expression noclean="1" />
+			</RegExp>
+			<RegExp input="$$4" output="&lt;chain function=&quot;GetLastFMAlbumDateByAlbumAndArtist&quot;&gt;$$7::$$8::$$7::$$8&lt;/chain&gt;" dest="5+">
+				<expression noclean="1" />
+			</RegExp>
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression fixchars="1">&lt;content&gt;&lt;!\[CDATA\[(.*?)(User-|\]\])</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">&lt;tag&gt;\s*&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<RegExp conditional="lastfmalbumthumbs" input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression>&lt;image size="extralarge"&gt;\s*([^&lt;]*)\s*&lt;/image&gt;</expression>
+			</RegExp>
+			<RegExp conditional="fanarttvalbumthumbs" input="$$1" output="&lt;chain function=&quot;GetFanartTvAlbumThumbsByMBID&quot;&gt;$$4&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<RegExp conditional="lastfmalbumthumbs" input="$$1" output="&lt;chain function=&quot;GetLastFMAlbumThumbs&quot;&gt;$$7::$$8::$$7::$$8&lt;/chain&gt;" dest="5+">
+				<expression noclean="1" />
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDetails>
+</scraper>

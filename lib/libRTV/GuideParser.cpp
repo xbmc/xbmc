@@ -855,6 +855,7 @@ int CalculateMinutes( int seconds )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+#if _MSC_VER < 1700
 DWORD64 ntohll(DWORD64 llValue)
 {
     DWORD64 retval = 0;
@@ -884,7 +885,7 @@ DWORD64 ntohll(DWORD64 llValue)
 
     return retval;
 }
-
+#endif // _MSC_VER < 1700
 //-------------------------------------------------------------------------
 void ConvertProgramInfoEndian(struct tagProgramInfo * strProgramInfo)
 {

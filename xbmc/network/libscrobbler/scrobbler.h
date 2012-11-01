@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -38,7 +37,7 @@ namespace MUSIC_INFO
 
 namespace XFILE
 {
-  class CFileCurl;
+  class CCurlFile;
 }
 
 /* The following structure describes an entry in the scrobbler submission
@@ -134,7 +133,7 @@ protected:
   CStdString m_strHandshakeTimeStamp;
   SubmissionJournalEntry m_CurrentTrack;
   CEvent m_hEvent;
-  XFILE::CFileCurl  *m_pHttp;
+  XFILE::CCurlFile  *m_pHttp;
   CCriticalSection  m_queueLock;
   CCriticalSection  m_actionLock;
   std::vector<SubmissionJournalEntry> m_vecSubmissionQueue;

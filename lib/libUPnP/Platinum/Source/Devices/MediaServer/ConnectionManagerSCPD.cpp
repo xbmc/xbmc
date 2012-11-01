@@ -2,7 +2,7 @@
 |
 |   Platinum - ConnectionManager SCPD
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -30,6 +31,10 @@
 | http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
+
+/** @file
+ UPnP Service SCPD for urn:schemas-upnp-org:service:ConnectionManager:1
+ */
 
 /*----------------------------------------------------------------------
 |   includes
@@ -254,3 +259,4 @@ NPT_UInt8 MS_ConnectionManagerSCPD[4216] =
   0x62, 0x6C, 0x65, 0x3E, 0x0D, 0x0A, 0x3C, 0x2F, 0x73, 0x63, 0x70, 0x64, 0x3E, 0x0D, 0x0A, 0x00
 };
 
+/** @} */

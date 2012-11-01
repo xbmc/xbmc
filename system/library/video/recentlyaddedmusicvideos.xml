@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="12" type="filter" visible="Library.HasContent(MusicVideos)">
+  <label>20390</label>
+  <icon>DefaultRecentlyAddedMusicVideos.png</icon>
+  <content>musicvideos</content>
+  <order direction="descending">dateadded</order>
+  <limit>25</limit>
+</node>

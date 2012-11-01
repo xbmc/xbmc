@@ -57,7 +57,7 @@ NPT_SelectableMessageQueue::QueueMessage(NPT_Message*        message,
 |    NPT_SelectableMessageQueue::PumpMessage
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_SelectableMessageQueue::PumpMessage(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
+NPT_SelectableMessageQueue::PumpMessage(NPT_Timeout timeout)
 {
     NPT_Result result = NPT_SimpleMessageQueue::PumpMessage(timeout);
     if (NPT_SUCCEEDED(result)) {

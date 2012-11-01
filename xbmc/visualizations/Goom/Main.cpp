@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,9 +26,11 @@ Goom Visualization Interface for XBMC
 
 */
 
+#define __STDC_LIMIT_MACROS
 
 #include "../../addons/include/xbmc_vis_dll.h"
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <string>
 extern "C" {
@@ -136,10 +137,15 @@ extern "C" void ADDON_Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
-  int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) ? iAudioDataLength : (int)sizeof( g_audio_data );
-  memcpy( g_audio_data, pAudioData, copysize );
+  int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) >> 1 ? iAudioDataLength : (int)sizeof( g_audio_data ) >> 1;
+  int ipos, i;
+  for(ipos = 0, i = 0; i < copysize; i += 2, ++ipos)
+  {
+    g_audio_data[0][ipos] = (int)(pAudioData[i  ] * (INT16_MAX+.5f));
+    g_audio_data[1][ipos] = (int)(pAudioData[i+1] * (INT16_MAX+.5f));
+  }
 }
 
 

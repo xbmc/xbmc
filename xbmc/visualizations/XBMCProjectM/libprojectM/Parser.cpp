@@ -154,7 +154,7 @@ double fastatof (const char *p, bool &b_validformat)
 
 bool Parser::tokenWrapAroundEnabled(false);
 
-token_t Parser::parseToken(std::istream &  fs, char * string)
+token_type Parser::parseToken(std::istream &  fs, char * string)
 {
 
   char c;
@@ -396,7 +396,7 @@ int Parser::parse_top_comment(std::istream &  fs)
 {
 
   char string[MAX_TOKEN_SIZE];
-  token_t token;
+  token_type token;
 
   /* Process tokens until left bracket is found */
   while ((token = parseToken(fs, string)) != tLBr)
@@ -414,7 +414,7 @@ int Parser::parse_top_comment(std::istream &  fs)
 int Parser::parse_preset_name(std::istream &  fs, char * name)
 {
 
-  token_t token;
+  token_type token;
 
   if (name == NULL)
     return PROJECTM_FAILURE;
@@ -473,7 +473,7 @@ int Parser::parse_line(std::istream &  fs, Preset * preset)
 {
 
   char eqn_string[MAX_TOKEN_SIZE];
-  token_t token;
+  token_type token;
   InitCond * init_cond;
   PerFrameEqn * per_frame_eqn;
 
@@ -811,7 +811,7 @@ GenExpr * Parser::parse_gen_expr ( std::istream &  fs, TreeExpr * tree_expr, Pre
 
   int i;
   char string[MAX_TOKEN_SIZE];
-  token_t token;
+  token_type token;
   GenExpr * gen_expr;
   float val;
   Param * param = NULL;
@@ -1257,7 +1257,7 @@ int Parser::insert_infix_rec(InfixOp * infix_op, TreeExpr * root)
 }
 
 /* Parses an infix operator */
-GenExpr * Parser::parse_infix_op(std::istream &  fs, token_t token, TreeExpr * tree_expr, Preset * preset)
+GenExpr * Parser::parse_infix_op(std::istream &  fs, token_type token, TreeExpr * tree_expr, Preset * preset)
 {
 
   GenExpr * gen_expr;
@@ -1320,7 +1320,7 @@ int Parser::parse_int(std::istream &  fs, int * int_ptr)
 {
 
   char string[MAX_TOKEN_SIZE];
-  token_t token;
+  token_type token;
   int sign;
   char * end_ptr = (char*)" ";
 
@@ -1382,7 +1382,7 @@ int Parser::parse_float(std::istream &  fs, float * float_ptr)
 
   char string[MAX_TOKEN_SIZE];
   bool conv_success;
-  token_t token;
+  token_type token;
   int sign;
 
   token = parseToken(fs, string);
@@ -1607,7 +1607,7 @@ InitCond * Parser::parse_per_frame_init_eqn(std::istream &  fs, Preset * preset,
   InitCond * init_cond;
   GenExpr * gen_expr;
   float val;
-  token_t token;
+  token_type token;
 
 
   if (preset == NULL)
@@ -1836,7 +1836,7 @@ int Parser::parse_shapecode(char * token, std::istream &  fs, Preset * preset)
   {
 
     std::string text;//[MAX_TOKEN_SIZE];
-    //token_t token = parseToken(fs, text);
+    //token_type token = parseToken(fs, text);
 
     fs >> text;
 

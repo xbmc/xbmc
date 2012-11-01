@@ -2,7 +2,7 @@
 |
 |   Platinum - UPnP Constants
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -35,16 +36,18 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "PltConstants.h"
+#include "PltHttp.h"
 
 static PLT_Constants Constants; 
 
 /*----------------------------------------------------------------------
 |   PLT_Constants::PLT_Constant
 +---------------------------------------------------------------------*/
-PLT_Constants::PLT_Constants() :
-    m_DefaultDeviceLease(NPT_TimeInterval(1800, 0)),
-    m_DefaultSubscribeLease(NPT_TimeInterval(1800, 0))
+PLT_Constants::PLT_Constants()
 {
+    SetDefaultUserAgent(PLT_HTTP_DEFAULT_USER_AGENT);
+    SetDefaultDeviceLease(NPT_TimeInterval(1800.));
+    SetDefaultSubscribeLease(NPT_TimeInterval(1800.));
 }
 
 /*----------------------------------------------------------------------

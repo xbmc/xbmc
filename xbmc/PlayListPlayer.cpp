@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,6 +33,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
+#include "interfaces/AnnouncementManager.h"
 
 /* PLEX */
 #include "PlexAsyncUrlResolver.h"
@@ -43,8 +43,8 @@ using namespace PLAYLIST;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
-  m_PlaylistMusic = new CPlayList;
-  m_PlaylistVideo = new CPlayList;
+  m_PlaylistMusic = new CPlayList(PLAYLIST_MUSIC);
+  m_PlaylistVideo = new CPlayList(PLAYLIST_VIDEO);
   m_PlaylistEmpty = new CPlayList;
   m_iCurrentSong = -1;
   m_bPlayedFirstFile = false;
@@ -498,6 +498,8 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
       // so dont do anything
     }
   }
+  
+  AnnouncePropertyChanged(iPlaylist, "shuffled", IsShuffled(iPlaylist));
 }
 
 bool CPlayListPlayer::IsShuffled(int iPlaylist) const
@@ -535,6 +537,21 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state, bool bNotify 
   }
 
   m_repeatState[iPlaylist] = state;
+
+  CVariant data;
+  switch (state)
+  {
+  case REPEAT_ONE:
+    data = "one";
+    break;
+  case REPEAT_ALL:
+    data = "all";
+    break;
+  default:
+    data = "off";
+    break;
+  }
+  AnnouncePropertyChanged(iPlaylist, "repeat", data);
 }
 
 REPEAT_STATE CPlayListPlayer::GetRepeat(int iPlaylist) const
@@ -691,4 +708,17 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   g_windowManager.SendMessage(msg);
+}
+
+void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
+{
+  if (strProperty.empty() || value.isNull() ||
+     (iPlaylist == PLAYLIST_VIDEO && !g_application.IsPlayingVideo()) ||
+     (iPlaylist == PLAYLIST_MUSIC && !g_application.IsPlayingAudio()))
+    return;
+
+  CVariant data;
+  data["player"]["playerid"] = iPlaylist;
+  data["property"][strProperty] = value;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
 }

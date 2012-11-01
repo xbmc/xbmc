@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Server
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,6 +32,10 @@
 |
 ****************************************************************/
 
+/** @file
+ HTTP Server
+ */
+
 #ifndef _PLT_HTTP_SERVER_H_
 #define _PLT_HTTP_SERVER_H_
 
@@ -38,61 +43,54 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
-#include "PltHttpServerListener.h"
 #include "PltHttpServerTask.h"
-
-/*----------------------------------------------------------------------
-|   forward declarations
-+---------------------------------------------------------------------*/
-class PLT_HttpServerStartIterator;
 
 /*----------------------------------------------------------------------
 |   PLT_HttpServer class
 +---------------------------------------------------------------------*/
-class PLT_HttpServer : public PLT_HttpServerListener,
+/**
+ The PLT_HttpServer class provides an asynchronous way to handle multiple HTTP requests
+ concurrently. Pipelining requests and keep-alive connections are supported.
+ */
+class PLT_HttpServer : public NPT_HttpRequestHandler,
                        public NPT_HttpServer
 {
-    friend class PLT_HttpServerTask<class PLT_HttpServer>;
-    friend class PLT_HttpServerStartIterator;
-
 public:
-    PLT_HttpServer(unsigned int port = 0,
-                   bool         port_rebind = false,
-                   NPT_Cardinal max_clients = 0,
-                   bool         reuse_address = false);
+    PLT_HttpServer(NPT_IpAddress address = NPT_IpAddress::Any,
+                   NPT_IpPort    port = 0,
+                   bool          allow_random_port_on_bind_failure = false,
+                   NPT_Cardinal  max_clients = 0,
+                   bool          reuse_address = false);
     virtual ~PLT_HttpServer();
+    
+    // class methods
+    static NPT_Result ServeFile(const NPT_HttpRequest&        request, 
+                                const NPT_HttpRequestContext& context,
+                                NPT_HttpResponse&             response, 
+                                NPT_String                    file_path);
+    static NPT_Result ServeStream(const NPT_HttpRequest&        request, 
+                                  const NPT_HttpRequestContext& context,
+                                  NPT_HttpResponse&             response,
+                                  NPT_InputStreamReference&     stream, 
+                                  const char*                   content_type);
 
-    // PLT_HttpServerListener method
-    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request, 
-                                          const NPT_HttpRequestContext& context,
-                                          NPT_HttpResponse*&            response,
-                                          bool&                         headers_only);
+    // NPT_HttpRequestHandler methods
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response);
 
+    // methods
     virtual NPT_Result   Start();
     virtual NPT_Result   Stop();
     virtual unsigned int GetPort() { return m_Port; }
 
 private:
-    PLT_TaskManager*          m_TaskManager;
-    unsigned int              m_Port;
-    bool                      m_PortRebind;
-    bool                      m_ReuseAddress;
-    PLT_HttpServerListenTask* m_HttpListenTask;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_FileServer class
-+---------------------------------------------------------------------*/
-class PLT_FileServer
-{
-public:
-    // class methods
-    static NPT_Result ServeFile(NPT_HttpResponse& response, 
-                                NPT_String        file_path, 
-                                NPT_Position      start = (NPT_Position)-1, 
-                                NPT_Position      end = (NPT_Position)-1,
-                                bool              request_is_head = false);
-    static const char* GetMimeType(const NPT_String& filename);
+    PLT_TaskManager*    m_TaskManager;
+    NPT_IpAddress       m_Address;
+    NPT_IpPort          m_Port;
+    bool                m_AllowRandomPortOnBindFailure;
+    bool                m_ReuseAddress;
+    PLT_HttpListenTask* m_HttpListenTask;
 };
 
 #endif /* _PLT_HTTP_SERVER_H_ */

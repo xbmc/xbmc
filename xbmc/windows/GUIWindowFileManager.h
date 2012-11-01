@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,8 +24,7 @@
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/DirectoryHistory.h"
 #include "threads/CriticalSection.h"
-#include "filesystem/File.h"
-#include "utils/Job.h"
+#include "utils/JobManager.h"
 
 class CFileItem;
 class CFileItemList;
@@ -34,8 +32,7 @@ class CGUIDialogProgress;
 
 class CGUIWindowFileManager :
       public CGUIWindow,
-      public XFILE::IFileCallback,
-      public IJobCallback
+      public CJobQueue 
 {
 public:
 
@@ -44,14 +41,11 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual bool OnBack(int actionID);
-  virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
   const CFileItem &CurrentDirectory(int indx) const;
 
-  void ResetProgressBar(bool showProgress = true);
   static int64_t CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
-  virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 protected:
   virtual void OnInitWindow();
   void SetInitialPath(const CStdString &path);
@@ -99,7 +93,6 @@ protected:
   typedef std::vector <CFileItem*> ::iterator ivecItems;
   CFileItem* m_Directory[2];
   CStdString m_strParentPath[2];
-  CGUIDialogProgress* m_dlgProgress;
   CDirectoryHistory m_history[2];
 
   int m_errorHeading, m_errorLine;

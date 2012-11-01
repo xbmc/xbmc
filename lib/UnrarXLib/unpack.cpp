@@ -8,11 +8,6 @@
 #include "unpack20.cpp"
 #endif
 
-#ifdef _LINUX
-#include "XSyncUtils.h"
-#include "XEventUtils.h"
-#endif
-
 Unpack::Unpack(ComprDataIO *DataIO)
 {
   UnpIO=DataIO;

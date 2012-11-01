@@ -1,0 +1,20 @@
+--- readline-6.0/complete.c	2011-01-16 21:32:57.000000000 +0100
++++ readline-6.0.orig/complete.c	2011-10-15 22:45:29.000000000 +0200
+@@ -2029,6 +2029,9 @@
+   static int namelen, first_char, first_char_loc;
+   char *value;
+ 
++#if defined(__ANDROID__)
++  return (char*)NULL;
++#else
+   if (state == 0)
+     {
+       FREE (username);
+@@ -2040,6 +2043,7 @@
+       namelen = strlen (username);
+       setpwent ();
+     }
++#endif;
+ 
+ #if defined (HAVE_GETPWENT)
+   while (entry = getpwent ())

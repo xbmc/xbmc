@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2009 Team XBMC
+ *      Copyright (C) 2009-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -73,7 +72,8 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 2;
   m_SampleRate = 44100;
   m_BitsPerSample = 16;
-  m_TotalTime = (__int64)(m_dll.ModPlug_GetLength(m_module));
+  m_DataFormat = AE_FMT_S16NE;
+  m_TotalTime = (int64_t)(m_dll.ModPlug_GetLength(m_module));
 
   return true;
 }
@@ -85,7 +85,7 @@ void ModplugCodec::DeInit()
   m_module = NULL;
 }
 
-__int64 ModplugCodec::Seek(__int64 iSeekTime)
+int64_t ModplugCodec::Seek(int64_t iSeekTime)
 {
   m_dll.ModPlug_Seek(m_module, (int)iSeekTime);
   return iSeekTime;

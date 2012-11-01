@@ -41,18 +41,18 @@ static int voc_probe(AVProbeData *p)
 static int voc_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     VocDecContext *voc = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     int header_size;
     AVStream *st;
 
-    url_fskip(pb, 20);
-    header_size = get_le16(pb) - 22;
+    avio_skip(pb, 20);
+    header_size = avio_rl16(pb) - 22;
     if (header_size != 4) {
         av_log(s, AV_LOG_ERROR, "unknown header size: %d\n", header_size);
         return AVERROR(ENOSYS);
     }
-    url_fskip(pb, header_size);
-    st = av_new_stream(s, 0);
+    avio_skip(pb, header_size);
+    st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -66,31 +66,31 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
 {
     VocDecContext *voc = s->priv_data;
     AVCodecContext *dec = st->codec;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     VocType type;
     int size, tmp_codec=-1;
     int sample_rate = 0;
     int channels = 1;
 
     while (!voc->remaining_size) {
-        type = get_byte(pb);
+        type = avio_r8(pb);
         if (type == VOC_TYPE_EOF)
             return AVERROR(EIO);
-        voc->remaining_size = get_le24(pb);
+        voc->remaining_size = avio_rl24(pb);
         if (!voc->remaining_size) {
-            if (url_is_streamed(s->pb))
+            if (!s->pb->seekable)
                 return AVERROR(EIO);
-            voc->remaining_size = url_fsize(pb) - url_ftell(pb);
+            voc->remaining_size = avio_size(pb) - avio_tell(pb);
         }
         max_size -= 4;
 
         switch (type) {
         case VOC_TYPE_VOICE_DATA:
-            dec->sample_rate = 1000000 / (256 - get_byte(pb));
+            dec->sample_rate = 1000000 / (256 - avio_r8(pb));
             if (sample_rate)
                 dec->sample_rate = sample_rate;
             dec->channels = channels;
-            tmp_codec = get_byte(pb);
+            tmp_codec = avio_r8(pb);
             dec->bits_per_coded_sample = av_get_bits_per_sample(dec->codec_id);
             voc->remaining_size -= 2;
             max_size -= 2;
@@ -101,26 +101,26 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
             break;
 
         case VOC_TYPE_EXTENDED:
-            sample_rate = get_le16(pb);
-            get_byte(pb);
-            channels = get_byte(pb) + 1;
+            sample_rate = avio_rl16(pb);
+            avio_r8(pb);
+            channels = avio_r8(pb) + 1;
             sample_rate = 256000000 / (channels * (65536 - sample_rate));
             voc->remaining_size = 0;
             max_size -= 4;
             break;
 
         case VOC_TYPE_NEW_VOICE_DATA:
-            dec->sample_rate = get_le32(pb);
-            dec->bits_per_coded_sample = get_byte(pb);
-            dec->channels = get_byte(pb);
-            tmp_codec = get_le16(pb);
-            url_fskip(pb, 4);
+            dec->sample_rate = avio_rl32(pb);
+            dec->bits_per_coded_sample = avio_r8(pb);
+            dec->channels = avio_r8(pb);
+            tmp_codec = avio_rl16(pb);
+            avio_skip(pb, 4);
             voc->remaining_size -= 12;
             max_size -= 12;
             break;
 
         default:
-            url_fskip(pb, voc->remaining_size);
+            avio_skip(pb, voc->remaining_size);
             max_size -= voc->remaining_size;
             voc->remaining_size = 0;
             break;
@@ -142,7 +142,7 @@ voc_get_packet(AVFormatContext *s, AVPacket *pkt, AVStream *st, int max_size)
         }
     }
 
-    dec->bit_rate = dec->sample_rate * dec->bits_per_coded_sample;
+    dec->bit_rate = dec->sample_rate * dec->channels * dec->bits_per_coded_sample;
 
     if (max_size <= 0)
         max_size = 2048;
@@ -157,11 +157,11 @@ static int voc_read_packet(AVFormatContext *s, AVPacket *pkt)
 }
 
 AVInputFormat ff_voc_demuxer = {
-    "voc",
-    NULL_IF_CONFIG_SMALL("Creative Voice file format"),
-    sizeof(VocDecContext),
-    voc_probe,
-    voc_read_header,
-    voc_read_packet,
+    .name           = "voc",
+    .long_name      = NULL_IF_CONFIG_SMALL("Creative Voice file format"),
+    .priv_data_size = sizeof(VocDecContext),
+    .read_probe     = voc_probe,
+    .read_header    = voc_read_header,
+    .read_packet    = voc_read_packet,
     .codec_tag=(const AVCodecTag* const []){ff_voc_codec_tags, 0},
 };

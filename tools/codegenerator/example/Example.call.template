@@ -1,0 +1,48 @@
+<%
+import SwigTypeParser
+import Helper
+
+Helper.setup(null,
+        [ 'void': 'Py_INCREF(Py_None); ${result} = Py_None;' ],
+        null,
+        [ 'p.q(const).char':'${api} = convertSlString(${slarg});',
+          'int':'${api} = convertSlInt(${slarg});'],
+        null)
+%>
+Module Name: ${module.@name}
+<%
+module.function.each { functionNode ->
+%>
+  function: ${functionNode.@name}
+
+<%
+  functionNode.parm.eachWithIndex { param, index ->
+%>
+    parameter ${index}= name:${param.@name}, type:${param.@type}<% if (param.@value) { %>, default value: ${param.@value} <% } %>
+                 lvalue:${SwigTypeParser.SwigType_lstr(param.@type)}
+                 rvalue:${SwigTypeParser.SwigType_str(param.@type)}
+    code to handle parameter ${index} {
+      // declare and set the value that came in from the scripting languge
+      ScriptingLanguageType sl_${param.@name} = /* set the value from the scripting language */;
+      // declare and set the variable that will contain the api parameter
+      ${SwigTypeParser.SwigType_lstr(param.@type)} p_${param.@name};
+      ${Helper.getInConversion(param.@type,'p_' + param.@name,'sl_' + param.@name, functionNode)}
+    }
+<%
+   }
+%>
+    code to invoke the api method {
+      ${Helper.callingName(functionNode)}( <% 
+          functionNode.parm.eachWithIndex { param, i -> 
+            %> p_${param.@name}${i < functionNode.parm.size() - 1 ? "," : ""} <% } %> );
+    }
+
+    code to handle return value {
+      // This is an example of how Python handles return values
+      Py_Object* result;
+      ${Helper.getOutConversion(Helper.getReturnSwigType(functionNode),'result',functionNode)}
+      return result;
+    }
+<%
+}
+%>

@@ -1,21 +1,2 @@
 #!/bin/sh
-
-set -e
-
-autoreconf -vif
-autoreconf -vif lib/libid3tag/libid3tag
-autoreconf -vif xbmc/screensavers/rsxs-0.9
-autoreconf -vif xbmc/visualizations/Goom/goom2k4-0
-autoreconf -vif lib/libapetag
-autoreconf -vif lib/cpluff
-# order matters with libdvd and friends
-[ -d lib/libdvd/libdvdcss ] && \
-  autoreconf -vif lib/libdvd/libdvdcss
-autoreconf -vif lib/libdvd/libdvdread
-autoreconf -vif lib/libdvd/libdvdnav
-
-# Clean the generated files
-find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
-
-echo "Please (re)run configure..."
-
+BOOTSTRAP_STANDALONE=1 make -f bootstrap.mk

@@ -1,0 +1,18 @@
+Description: TinyXml is built with TIXML_USE_STL, so we have to
+ enforce it when the library is used.
+Author: Felix Geyer <debfx-pkg@fobos.de>
+
+diff -Nur tinyxml-2.5.3/tinyxml.h tinyxml-2.5.3.patch/tinyxml.h
+--- tinyxml-2.5.3/tinyxml.h	2007-05-07 00:41:23.000000000 +0200
++++ tinyxml-2.5.3.patch/tinyxml.h	2009-07-08 22:32:03.000000000 +0200
+@@ -26,6 +26,10 @@
+ #ifndef TINYXML_INCLUDED
+ #define TINYXML_INCLUDED
+ 
++#ifndef TIXML_USE_STL
++	#define TIXML_USE_STL
++#endif
++
+ #ifdef _MSC_VER
+ #pragma warning( push )
+ #pragma warning( disable : 4530 )

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,17 +13,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #ifndef _COCOA_POWER_SYSCALL_H_
 #define _COCOA_POWER_SYSCALL_H_
 
-#if defined (__APPLE__)
+#if defined (TARGET_DARWIN)
 #include "powermanagement/IPowerSyscall.h"
-#if defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
 #include <pthread.h>
 typedef mach_port_t io_object_t;
 typedef io_object_t io_service_t;
@@ -66,7 +65,7 @@ private:
   int  m_BatteryPercent;
   bool m_SentBatteryMessage;
 
-#if !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   io_connect_t m_root_port;             // a reference to the Root Power Domain IOService
   io_object_t  m_notifier_object;       // notifier object, used to deregister later
   IONotificationPortRef m_notify_port;  // notification port allocated by IORegisterForSystemPower

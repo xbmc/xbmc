@@ -3,11 +3,13 @@ SRCS=GUIDialogBoxBase.cpp \
      GUIDialogButtonMenu.cpp \
      GUIDialogCache.cpp \
      GUIDialogContextMenu.cpp \
+     GUIDialogExtendedProgressBar.cpp \
      GUIDialogFavourites.cpp \
      GUIDialogFileBrowser.cpp \
      GUIDialogGamepad.cpp \
      GUIDialogKaiToast.cpp \
-     GUIDialogKeyboard.cpp \
+     GUIDialogKeyboardGeneric.cpp \
+     GUIDialogMediaFilter.cpp \
      GUIDialogMediaSource.cpp \
      GUIDialogMuteBug.cpp \
      GUIDialogNumeric.cpp \

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,73 +14,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <string.h>
 #include <stdlib.h>
-#include "utils/StdString.h"
+
+#include "JSONRPCUtils.h"
+#include "SortFileItem.h"
 #include "interfaces/IAnnouncer.h"
-#include "interfaces/AnnouncementUtils.h"
-#include "ITransportLayer.h"
-#include "utils/Variant.h"
+#include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
 
-
 namespace JSONRPC
 {
-  /*!
-   \ingroup jsonrpc
-   \brief Possible statuc codes of a response
-   to a JSON RPC request
-   */
-  enum JSON_STATUS
-  {
-    OK = 0,
-    ACK = -1,
-    InvalidRequest = -32600,
-    MethodNotFound = -32601,
-    InvalidParams = -32602,
-    InternalError = -32603,
-    ParseError = -32700,
-    //-32099..-32000 Reserved for implementation-defined server-errors.
-    BadPermission = -32099,
-    FailedToExecute = -32100
-  };
-
-  /*!
-   \brief Function pointer for json rpc methods
-   */
-  typedef JSON_STATUS (*MethodCall) (const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-
-  /*!
-   \ingroup jsonrpc
-   \brief Permission categories for json rpc methods
-   
-   A json rpc method will only be called if the caller 
-   has the correct permissions to exectue the method.
-   The method call needs to be perfectly threadsafe.
-  */
-  enum OperationPermission
-  {
-    ReadData        =   0x1,
-    ControlPlayback =   0x2,
-    ControlNotify   =   0x4,
-    ControlPower    =   0x8,
-    UpdateData      =  0x10,
-    RemoveData      =  0x20,
-    Navigate        =  0x40,
-    WriteFile       =  0x80
-  };
-
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
-
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
-
   /*!
    \brief Possible value types of a parameter or return type
    */
@@ -121,6 +71,127 @@ namespace JSONRPC
     }
 
   protected:
+    static void HandleLimits(const CVariant &parameterObject, CVariant &result, int size, int &start, int &end)
+    {
+      if (size < 0)
+        size = 0;
+    
+      start = (int)parameterObject["limits"]["start"].asInteger();
+      end   = (int)parameterObject["limits"]["end"].asInteger();
+      end = (end <= 0 || end > size) ? size : end;
+      start = start > end ? end : start;
+
+      result["limits"]["start"] = start;
+      result["limits"]["end"]   = end;
+      result["limits"]["total"] = size;
+    }
+
+    static bool ParseSorting(const CVariant &parameterObject, SortBy &sortBy, SortOrder &sortOrder, SortAttribute &sortAttributes)
+    {
+      CStdString method = parameterObject["sort"]["method"].asString();
+      CStdString order = parameterObject["sort"]["order"].asString();
+      method.ToLower();
+      order.ToLower();
+
+      sortAttributes = SortAttributeNone;
+      if (parameterObject["sort"]["ignorearticle"].asBoolean())
+        sortAttributes = SortAttributeIgnoreArticle;
+      else
+        sortAttributes = SortAttributeNone;
+
+      if (order.Equals("ascending"))
+        sortOrder = SortOrderAscending;
+      else if (order.Equals("descending"))
+        sortOrder = SortOrderDescending;
+      else
+        return false;
+
+      if (method.Equals("none"))
+        sortBy = SortByNone;
+      else if (method.Equals("label"))
+        sortBy = SortByLabel;
+      else if (method.Equals("date"))
+        sortBy = SortByDate;
+      else if (method.Equals("size"))
+        sortBy = SortBySize;
+      else if (method.Equals("file"))
+        sortBy = SortByFile;
+      else if (method.Equals("path"))
+        sortBy = SortByPath;
+      else if (method.Equals("drivetype"))
+        sortBy = SortByDriveType;
+      else if (method.Equals("title"))
+        sortBy = SortByTitle;
+      else if (method.Equals("track"))
+        sortBy = SortByTrackNumber;
+      else if (method.Equals("time"))
+        sortBy = SortByTime;
+      else if (method.Equals("artist"))
+        sortBy = SortByArtist;
+      else if (method.Equals("album"))
+        sortBy = SortByAlbum;
+      else if (method.Equals("albumtype"))
+        sortBy = SortByAlbumType;
+      else if (method.Equals("genre"))
+        sortBy = SortByGenre;
+      else if (method.Equals("country"))
+        sortBy = SortByCountry;
+      else if (method.Equals("year"))
+        sortBy = SortByYear;
+      else if (method.Equals("rating"))
+        sortBy = SortByRating;
+      else if (method.Equals("votes"))
+        sortBy = SortByVotes;
+      else if (method.Equals("top250"))
+        sortBy = SortByTop250;
+      else if (method.Equals("programcount"))
+        sortBy = SortByProgramCount;
+      else if (method.Equals("playlist"))
+        sortBy = SortByPlaylistOrder;
+      else if (method.Equals("episode"))
+        sortBy = SortByEpisodeNumber;
+      else if (method.Equals("season"))
+        sortBy = SortBySeason;
+      else if (method.Equals("totalepisodes"))
+        sortBy = SortByNumberOfEpisodes;
+      else if (method.Equals("watchedepisodes"))
+        sortBy = SortByNumberOfWatchedEpisodes;
+      else if (method.Equals("tvshowstatus"))
+        sortBy = SortByTvShowStatus;
+      else if (method.Equals("tvshowtitle"))
+        sortBy = SortByTvShowTitle;
+      else if (method.Equals("sorttitle"))
+        sortBy = SortBySortTitle;
+      else if (method.Equals("productioncode"))
+        sortBy = SortByProductionCode;
+      else if (method.Equals("mpaa"))
+        sortBy = SortByMPAA;
+      else if (method.Equals("studio"))
+        sortBy = SortByStudio;
+      else if (method.Equals("dateadded"))
+        sortBy = SortByDateAdded;
+      else if (method.Equals("lastplayed"))
+        sortBy = SortByLastPlayed;
+      else if (method.Equals("playcount"))
+        sortBy = SortByPlaycount;
+      else if (method.Equals("listeners"))
+        sortBy = SortByListeners;
+      else if (method.Equals("bitrate"))
+        sortBy = SortByBitrate;
+      else if (method.Equals("random"))
+        sortBy = SortByRandom;
+      else
+        return false;
+
+      return true;
+    }
+
+    static void ParseLimits(const CVariant &parameterObject, int &limitStart, int &limitEnd)
+    {
+      limitStart = (int)parameterObject["limits"]["start"].asInteger();
+      limitEnd = (int)parameterObject["limits"]["end"].asInteger();
+    }
+  
     /*!
      \brief Checks if the given object contains a parameter
      \param parameterObject Object to check for a parameter
@@ -191,63 +262,6 @@ namespace JSONRPC
       }
 
       return str;
-    }
-
-    /*!
-     \brief Returns a string representation for the 
-     given OperationPermission
-     \param permission Specific OperationPermission
-     \return String representation of the given OperationPermission
-     */
-    static inline const char *PermissionToString(const OperationPermission &permission)
-    {
-      switch (permission)
-      {
-      case ReadData:
-        return "ReadData";
-      case ControlPlayback:
-        return "ControlPlayback";
-      case ControlNotify:
-        return "ControlNotify";
-      case ControlPower:
-        return "ControlPower";
-      case UpdateData:
-        return "UpdateData";
-      case RemoveData:
-        return "RemoveData";
-      case Navigate:
-        return "Navigate";
-      case WriteFile:
-        return "WriteFile";
-      default:
-        return "Unknown";
-      }
-    }
-
-    /*!
-     \brief Returns a OperationPermission value for the given
-     string representation
-     \param permission String representation of the OperationPermission
-     \return OperationPermission value of the given string representation
-     */
-    static inline OperationPermission StringToPermission(std::string permission)
-    {
-      if (permission.compare("ControlPlayback") == 0)
-        return ControlPlayback;
-      if (permission.compare("ControlNotify") == 0)
-        return ControlNotify;
-      if (permission.compare("ControlPower") == 0)
-        return ControlPower;
-      if (permission.compare("UpdateData") == 0)
-        return UpdateData;
-      if (permission.compare("RemoveData") == 0)
-        return RemoveData;
-      if (permission.compare("Navigate") == 0)
-        return Navigate;
-      if (permission.compare("WriteFile") == 0)
-        return WriteFile;
-
-      return ReadData;
     }
 
     /*!
@@ -371,7 +385,10 @@ namespace JSONRPC
       }
 
       if (jsonObject.size() == 1)
-        jsonObject = jsonObject[0];
+      {
+        CVariant jsonType = jsonObject[0];
+        jsonObject = jsonType;
+      }
     }
 
     static inline const char *ValueTypeToString(CVariant::VariantType valueType)
@@ -477,25 +494,48 @@ namespace JSONRPC
           value = CVariant(CVariant::VariantTypeObject);
           break;
         default:
-          value = CVariant(CVariant::VariantTypeConstNull);
+          value = CVariant(CVariant::VariantTypeNull);
       }
     }
 
     static inline bool HasType(JSONSchemaType typeObject, JSONSchemaType type) { return (typeObject & type) == type; }
 
-    static std::string AnnouncementToJSON(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
+    static inline bool ParameterNotNull(const CVariant &parameterObject, std::string key) { return parameterObject.isMember(key) && !parameterObject[key].isNull(); }
+
+    /*!
+     \brief Copies the values from the jsonStringArray to the stringArray.
+     stringArray is cleared.
+     \param jsonStringArray JSON object representing a string array
+     \param stringArray String array where the values are copied into (cleared)
+     */
+    static void CopyStringArray(const CVariant &jsonStringArray, std::vector<std::string> &stringArray)
     {
-      CVariant root;
-      root["jsonrpc"] = "2.0";
+      if (!jsonStringArray.isArray())
+        return;
 
-      CStdString namespaceMethod;
-      namespaceMethod.Format("%s.%s", ANNOUNCEMENT::CAnnouncementUtils::AnnouncementFlagToString(flag), method);
-      root["method"]  = namespaceMethod.c_str();
+      stringArray.clear();
+      for (CVariant::const_iterator_array it = jsonStringArray.begin_array(); it != jsonStringArray.end_array(); it++)
+        stringArray.push_back(it->asString());
+    }
 
-      root["params"]["data"] = data;
-      root["params"]["sender"] = sender;
+    static bool GetXspFiltering(const CStdString &type, const CVariant &filter, CStdString &xsp)
+    {
+      if (type.empty() || !filter.isObject())
+        return false;
 
-      return CJSONVariantWriter::Write(root, compactOutput);
+      CVariant xspObj(CVariant::VariantTypeObject);
+      xspObj["type"] = type;
+
+      if (filter.isMember("field"))
+      {
+        xspObj["rules"]["and"] = CVariant(CVariant::VariantTypeArray);
+        xspObj["rules"]["and"].push_back(filter);
+      }
+      else
+        xspObj["rules"] = filter;
+
+      CSmartPlaylist playlist;
+      return playlist.Load(xspObj) && playlist.SaveAsJson(xsp, false);
     }
   };
 }

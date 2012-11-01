@@ -43,7 +43,11 @@
 #include <sys/time.h>
 #include <sys/timeb.h>
 #include <sys/wait.h>
+#if defined(__ANDROID__)
+#include <signal.h>
+#else
 #include <sys/signal.h>
+#endif
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>

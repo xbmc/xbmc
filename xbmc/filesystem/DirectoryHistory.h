@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,11 +14,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include <map>
 
 #include "utils/StdString.h"
 
@@ -33,21 +34,37 @@ public:
     CStdString m_strItem;
     CStdString m_strDirectory;
   };
-  CDirectoryHistory();
+
+  class CPathHistoryItem
+  {
+  public:
+    CPathHistoryItem() { }
+    virtual ~CPathHistoryItem() { }
+
+    const CStdString& GetPath(bool filter = false) const;
+
+    CStdString m_strPath;
+    CStdString m_strFilterPath;
+  };
+  
+  CDirectoryHistory() { }
   virtual ~CDirectoryHistory();
 
   void SetSelectedItem(const CStdString& strSelectedItem, const CStdString& strDirectory);
   const CStdString& GetSelectedItem(const CStdString& strDirectory) const;
   void RemoveSelectedItem(const CStdString& strDirectory);
 
-  void AddPath(const CStdString& strPath);
-  void AddPathFront(const CStdString& strPath);
-  CStdString GetParentPath();
-  CStdString RemoveParentPath();
+  void AddPath(const CStdString& strPath, const CStdString &m_strFilterPath = "");
+  void AddPathFront(const CStdString& strPath, const CStdString &m_strFilterPath = "");
+  CStdString GetParentPath(bool filter = false);
+  CStdString RemoveParentPath(bool filter = false);
   void ClearPathHistory();
   void DumpPathHistory();
+
 private:
-  std::vector<CHistoryItem> m_vecHistory;
-  std::vector<CStdString> m_vecPathHistory; ///< History of traversed directories
-  CStdString m_strNull;
+  static CStdString preparePath(const CStdString &strDirectory, bool tolower = true);
+  
+  typedef std::map<CStdString, CHistoryItem> HistoryMap;
+  HistoryMap m_vecHistory;
+  std::vector<CPathHistoryItem> m_vecPathHistory; ///< History of traversed directories
 };

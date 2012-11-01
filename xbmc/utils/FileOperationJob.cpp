@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,13 +22,17 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ZipManager.h"
-#include "filesystem/FactoryFileDirectory.h"
+#include "filesystem/FileDirectoryFactory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "log.h"
 #include "Util.h"
 #include "URIUtils.h"
+#include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
+
 #ifdef HAS_FILESYSTEM_RAR
 #include "filesystem/RarManager.h"
 #endif
@@ -39,10 +42,19 @@ using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
 {
+  m_handle = NULL;
+  m_displayProgress = false;
 }
 
-CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile)
+CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
+                                    const CStdString& strDestFile,
+                                    bool displayProgress,
+                                    int heading, int line)
 {
+  m_handle = NULL;
+  m_displayProgress = displayProgress;
+  m_heading = heading;
+  m_line = line;
   SetFileOperation(action, items, strDestFile);
 }
 
@@ -60,6 +72,14 @@ bool CFileOperationJob::DoWork()
 {
   FileOperationList ops;
   double totalTime = 0.0;
+
+  if (m_displayProgress)
+  {
+    CGUIDialogExtendedProgressBar* dialog =
+      (CGUIDialogExtendedProgressBar*)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    m_handle = dialog->GetHandle(GetActionString(m_action));
+  }
+
   bool success = DoProcess(m_action, m_items, m_strDestFile, ops, totalTime);
 
   unsigned int size = ops.size();
@@ -69,6 +89,9 @@ bool CFileOperationJob::DoWork()
 
   for (unsigned int i = 0; i < size && success; i++)
     success &= ops[i].ExecuteOperation(this, current, opWeight);
+
+  if (m_handle)
+    m_handle->MarkFinished();
 
   return success;
 }
@@ -95,7 +118,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
 {
   // check whether this folder is a filedirectory - if so, we don't process it's contents
   CFileItem item(strPath, false);
-  IFileDirectory *file = CFactoryFileDirectory::Create(strPath, &item);
+  IFileDirectory *file = CFileDirectoryFactory::Create(strPath, &item);
   if (file)
   {
     delete file;
@@ -104,7 +127,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);
-  CDirectory::GetDirectory(strPath, items, "", false, false, DIR_CACHE_ONCE, true, false, true);
+  CDirectory::GetDirectory(strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_GET_HIDDEN);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
@@ -134,6 +157,11 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
       URIUtils::RemoveSlashAtEnd(strNoSlash);
       CStdString strFileName = URIUtils::GetFileName(strNoSlash);
 
+      // URL Decode for cases where source uses URL encoding and target does not 
+      if ( URIUtils::ProtocolHasEncodedFilename(CURL(pItem->GetPath()).GetProtocol() )
+       && !URIUtils::ProtocolHasEncodedFilename(CURL(strDestFile).GetProtocol() ) )
+        CURL::Decode(strFileName);
+
       // special case for upnp
       if (URIUtils::IsUPnP(items.GetPath()) || URIUtils::IsUPnP(pItem->GetPath()))
       {
@@ -161,13 +189,13 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         // processing those
         FileAction subdirAction = (action == ActionReplace) ? ActionCopy : action;
         // create folder on dest. drive
-        if (action != ActionDelete)
+        if (action != ActionDelete && action != ActionDeleteFolder)
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
         if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
           DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
         if (!DoProcessFolder(subdirAction, pItem->GetPath(), strnewDestFile, fileOperations, totalTime))
           return false;
-        if (action == ActionDelete)
+        if (action == ActionDelete || action == ActionDeleteFolder)
           DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
       }
       else
@@ -188,35 +216,47 @@ struct DataHolder
   double opWeight;
 };
 
+CStdString CFileOperationJob::GetActionString(FileAction action)
+{
+  CStdString result;
+  switch (action)
+  {
+    case ActionCopy:
+    case ActionReplace:
+      result = g_localizeStrings.Get(115);
+      break;
+    case ActionMove:
+      result = g_localizeStrings.Get(116);
+      break;
+    case ActionDelete:
+    case ActionDeleteFolder:
+      result = g_localizeStrings.Get(117);
+      break;
+    case ActionCreateFolder:
+      result = g_localizeStrings.Get(119);
+      break;
+    default:
+      break;
+  }
+
+  return result;
+}
+
 bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base, double &current, double opWeight)
 {
   bool bResult = true;
 
   base->m_currentFile = CURL(m_strFileA).GetFileNameWithoutPath();
-
-  switch (m_action)
-  {
-    case ActionCopy:
-    case ActionReplace:
-      base->m_currentOperation = g_localizeStrings.Get(115);
-      break;
-    case ActionMove:
-      base->m_currentOperation = g_localizeStrings.Get(116);
-      break;
-    case ActionDelete:
-    case ActionDeleteFolder:
-      base->m_currentOperation = g_localizeStrings.Get(117);
-      break;
-    case ActionCreateFolder:
-      base->m_currentOperation = g_localizeStrings.Get(119);
-      break;
-    default:
-      base->m_currentOperation = "";
-      break;
-  }
+  base->m_currentOperation = GetActionString(m_action);
 
   if (base->ShouldCancel((unsigned)current, 100))
     return false;
+
+  if (base->m_handle)
+  {
+    base->m_handle->SetText(base->GetCurrentFile());
+    base->m_handle->SetPercentage((float)current);
+  }
 
   DataHolder data = {base, current, opWeight};
 
@@ -293,9 +333,42 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
   double current = data->current + ((double)ipercent * data->opWeight * (double)m_time)/ 100.0;
 
   if (avgSpeed > 1000000.0f)
-    data->base->m_avgSpeed.Format("%.1f Mb/s", avgSpeed / 1000000.0f);
+    data->base->m_avgSpeed.Format("%.1f MB/s", avgSpeed / 1000000.0f);
   else
-    data->base->m_avgSpeed.Format("%.1f Kb/s", avgSpeed / 1000.0f);
+    data->base->m_avgSpeed.Format("%.1f KB/s", avgSpeed / 1000.0f);
+
+  if (data->base->m_handle)
+  {
+    CStdString line;
+    line.Format("%s (%s)", data->base->GetCurrentFile().c_str(),
+                           data->base->GetAverageSpeed().c_str());
+    data->base->m_handle->SetText(line);
+    data->base->m_handle->SetPercentage((float)current);
+  }
 
   return !data->base->ShouldCancel((unsigned)current, 100);
+}
+
+bool CFileOperationJob::operator==(const CJob* job) const
+{
+  if (strcmp(job->GetType(),GetType()) == 0)
+  {
+    const CFileOperationJob* rjob = dynamic_cast<const CFileOperationJob*>(job);
+    if (rjob)
+    {
+      if (GetAction() == rjob->GetAction() &&
+          m_strDestFile == rjob->m_strDestFile &&
+          m_items.Size() == rjob->m_items.Size())
+      {
+        for (int i=0;i<m_items.Size();++i)
+        {
+          if (m_items[i]->GetPath() != rjob->m_items[i]->GetPath() ||
+              m_items[i]->IsSelected() != rjob->m_items[i]->IsSelected())
+            return false;
+        }
+        return true;
+      }
+    }
+  }
+  return false;
 }

@@ -24,38 +24,18 @@
 #include "libavutil/common.h"
 #include "libavutil/mathematics.h"
 #include "fft.h"
+#include "fft-internal.h"
 
 /**
  * @file
  * MDCT/IMDCT transforms.
  */
 
-// Generate a Kaiser-Bessel Derived Window.
-#define BESSEL_I0_ITER 50 // default: 50 iterations of Bessel I0 approximation
-av_cold void ff_kbd_window_init(float *window, float alpha, int n)
-{
-   int i, j;
-   double sum = 0.0, bessel, tmp;
-   double local_window[FF_KBD_WINDOW_MAX];
-   double alpha2 = (alpha * M_PI / n) * (alpha * M_PI / n);
-
-   assert(n <= FF_KBD_WINDOW_MAX);
-
-   for (i = 0; i < n; i++) {
-       tmp = i * (n - i) * alpha2;
-       bessel = 1.0;
-       for (j = BESSEL_I0_ITER; j > 0; j--)
-           bessel = bessel * tmp / (j * j) + 1;
-       sum += bessel;
-       local_window[i] = sum;
-   }
-
-   sum++;
-   for (i = 0; i < n; i++)
-       window[i] = sqrt(local_window[i] / sum);
-}
-
-#include "mdct_tablegen.h"
+#if CONFIG_FFT_FLOAT
+#   define RSCALE(x) (x)
+#else
+#   define RSCALE(x) ((x) >> 1)
+#endif
 
 /**
  * init MDCT or IMDCT computation.
@@ -71,7 +51,7 @@ av_cold int ff_mdct_init(FFTContext *s, int nbits, int inverse, double scale)
     s->mdct_bits = nbits;
     s->mdct_size = n;
     n4 = n >> 2;
-    s->permutation = FF_MDCT_PERM_NONE;
+    s->mdct_permutation = FF_MDCT_PERM_NONE;
 
     if (ff_fft_init(s, s->mdct_bits - 2, inverse) < 0)
         goto fail;
@@ -80,7 +60,7 @@ av_cold int ff_mdct_init(FFTContext *s, int nbits, int inverse, double scale)
     if (!s->tcos)
         goto fail;
 
-    switch (s->permutation) {
+    switch (s->mdct_permutation) {
     case FF_MDCT_PERM_NONE:
         s->tsin = s->tcos + n4;
         tstep = 1;
@@ -97,24 +77,13 @@ av_cold int ff_mdct_init(FFTContext *s, int nbits, int inverse, double scale)
     scale = sqrt(fabs(scale));
     for(i=0;i<n4;i++) {
         alpha = 2 * M_PI * (i + theta) / n;
-        s->tcos[i*tstep] = -cos(alpha) * scale;
-        s->tsin[i*tstep] = -sin(alpha) * scale;
+        s->tcos[i*tstep] = FIX15(-cos(alpha) * scale);
+        s->tsin[i*tstep] = FIX15(-sin(alpha) * scale);
     }
     return 0;
  fail:
     ff_mdct_end(s);
     return -1;
-}
-
-/* complex multiplication: p = a * b */
-#define CMUL(pre, pim, are, aim, bre, bim) \
-{\
-    FFTSample _are = (are);\
-    FFTSample _aim = (aim);\
-    FFTSample _bre = (bre);\
-    FFTSample _bim = (bim);\
-    (pre) = _are * _bre - _aim * _bim;\
-    (pim) = _are * _bim + _aim * _bre;\
 }
 
 /**
@@ -146,7 +115,7 @@ void ff_imdct_half_c(FFTContext *s, FFTSample *output, const FFTSample *input)
         in1 += 2;
         in2 -= 2;
     }
-    ff_fft_calc(s, z);
+    s->fft_calc(s, z);
 
     /* post rotation + reordering */
     for(k = 0; k < n8; k++) {
@@ -188,7 +157,7 @@ void ff_imdct_calc_c(FFTContext *s, FFTSample *output, const FFTSample *input)
 void ff_mdct_calc_c(FFTContext *s, FFTSample *out, const FFTSample *input)
 {
     int i, j, n, n8, n4, n2, n3;
-    FFTSample re, im;
+    FFTDouble re, im;
     const uint16_t *revtab = s->revtab;
     const FFTSample *tcos = s->tcos;
     const FFTSample *tsin = s->tsin;
@@ -202,18 +171,18 @@ void ff_mdct_calc_c(FFTContext *s, FFTSample *out, const FFTSample *input)
 
     /* pre rotation */
     for(i=0;i<n8;i++) {
-        re = -input[2*i+3*n4] - input[n3-1-2*i];
-        im = -input[n4+2*i] + input[n4-1-2*i];
+        re = RSCALE(-input[2*i+n3] - input[n3-1-2*i]);
+        im = RSCALE(-input[n4+2*i] + input[n4-1-2*i]);
         j = revtab[i];
         CMUL(x[j].re, x[j].im, re, im, -tcos[i], tsin[i]);
 
-        re = input[2*i] - input[n2-1-2*i];
-        im = -(input[n2+2*i] + input[n-1-2*i]);
+        re = RSCALE( input[2*i]    - input[n2-1-2*i]);
+        im = RSCALE(-input[n2+2*i] - input[ n-1-2*i]);
         j = revtab[n8 + i];
         CMUL(x[j].re, x[j].im, re, im, -tcos[n8 + i], tsin[n8 + i]);
     }
 
-    ff_fft_calc(s, x);
+    s->fft_calc(s, x);
 
     /* post rotation */
     for(i=0;i<n8;i++) {

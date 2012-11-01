@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -48,6 +47,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_tAudio = GetTristate(pRule->Attribute("audio"));
   m_tVideo = GetTristate(pRule->Attribute("video"));
 
+  m_tBD = GetTristate(pRule->Attribute("bd"));
   m_tDVD = GetTristate(pRule->Attribute("dvd"));
   m_tDVDFile = GetTristate(pRule->Attribute("dvdfile"));
   m_tDVDImage = GetTristate(pRule->Attribute("dvdimage"));
@@ -111,6 +111,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo()) return;
   if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream()) return;
 
+  if (m_tBD >= 0 && (m_tBD > 0) != (item.IsBDFile() && item.IsOnDVD())) return;
   if (m_tDVD >= 0 && (m_tDVD > 0) != item.IsDVD()) return;
   if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile()) return;
   if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDVDImage()) return;

@@ -64,7 +64,7 @@ echo "##### building ffmpeg dlls #####"
 cd /xbmc/lib/ffmpeg/
 sh ./build_xbmc_win32.sh $MAKECLEAN
 setfilepath /xbmc/system/players/dvdplayer
-checkfiles avcodec-52.dll avcore-0.dll avformat-52.dll avutil-50.dll postproc-51.dll swscale-0.dll avfilter-1.dll
+checkfiles avcodec-53.dll avformat-53.dll avutil-51.dll postproc-52.dll swscale-2.dll avfilter-2.dll swresample-0.dll
 echo "##### building of ffmpeg dlls done #####"
 
 echo "##### building libdvd dlls #####"

@@ -2,7 +2,7 @@
  * Many concepts and protocol are taken from
  * the Boxee project. http://www.boxee.tv
  * 
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -57,8 +56,24 @@ class Pipe
     int  RefCount(); 
     
     bool IsEmpty();
-    int  Read(char *buf, int nMaxSize, int nWaitMillis);
-    bool Write(const char *buf, int nSize, int nWaitMillis);
+
+    /**
+     * Read into the buffer from the Pipe the num of bytes asked for
+     * blocking forever (which happens to be 5 minutes in this case).
+     *
+     * In the case where nWaitMillis is provided block for that number
+     * of milliseconds instead.
+     */
+    int  Read(char *buf, int nMaxSize, int nWaitMillis = -1);
+
+    /**
+     * Write into the Pipe from the buffer the num of bytes asked for
+     * blocking forever.
+     *
+     * In the case where nWaitMillis is provided block for that number
+     * of milliseconds instead.
+     */
+    bool Write(const char *buf, int nSize, int nWaitMillis = -1);
 
     void Flush();
     

@@ -2,7 +2,7 @@
 |
 |   Platinum - Datagram Stream
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,6 +32,10 @@
 |
 ****************************************************************/
 
+/** @file
+ Datagram Input/Output Neptune streams
+ */
+
 #ifndef _PLT_DATAGRAM_H_
 #define _PLT_DATAGRAM_H_
 
@@ -42,11 +47,17 @@
 /*----------------------------------------------------------------------
 |   PLT_InputDatagramStream
 +---------------------------------------------------------------------*/
+/**
+ The PLT_InputDatagramStream class is a simple buffered input stream 
+ used when reading SSDP packets on a UDP socket. It allows to use Neptune
+ HTTP parsing as if reading on a TCP socket.
+ */
 class PLT_InputDatagramStream : public NPT_InputStream
 {
 public:
     // methods
-    PLT_InputDatagramStream(NPT_UdpSocket* socket);
+    PLT_InputDatagramStream(NPT_UdpSocket* socket,
+                            NPT_Size       buffer_size = 2000);
     virtual ~PLT_InputDatagramStream();
     
     NPT_Result GetInfo(NPT_SocketInfo& info);
@@ -65,6 +76,8 @@ public:
 protected:
     NPT_UdpSocket*      m_Socket;
     NPT_SocketInfo      m_Info;
+    NPT_DataBuffer      m_Buffer;
+    NPT_Position        m_BufferOffset;
 };
 
 typedef NPT_Reference<PLT_InputDatagramStream> PLT_InputDatagramStreamReference;
@@ -72,6 +85,11 @@ typedef NPT_Reference<PLT_InputDatagramStream> PLT_InputDatagramStreamReference;
 /*----------------------------------------------------------------------
 |   PLT_OutputDatagramStream
 +---------------------------------------------------------------------*/
+/**
+ The PLT_OutputDatagramStream class is a simple buffered output stream 
+ used when writing SSDP packets on a UDP socket. It allows to use Neptune
+ HTTP client as if writing on a TCP socket.
+ */
 class PLT_OutputDatagramStream : public NPT_OutputStream
 {
 public:

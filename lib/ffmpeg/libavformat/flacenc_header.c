@@ -24,7 +24,7 @@
 #include "avformat.h"
 #include "flacenc.h"
 
-int ff_flac_write_header(ByteIOContext *pb, AVCodecContext *codec,
+int ff_flac_write_header(AVIOContext *pb, AVCodecContext *codec,
                          int last_block)
 {
     uint8_t header[8] = {
@@ -34,16 +34,14 @@ int ff_flac_write_header(ByteIOContext *pb, AVCodecContext *codec,
     enum FLACExtradataFormat format;
 
     header[4] = last_block ? 0x80 : 0x00;
-    if (!ff_flac_is_extradata_valid(codec, &format, &streaminfo))
+    if (!avpriv_flac_is_extradata_valid(codec, &format, &streaminfo))
         return -1;
 
-    /* write "fLaC" stream marker and first metadata block header if needed */
-    if (format == FLAC_EXTRADATA_FORMAT_STREAMINFO) {
-        put_buffer(pb, header, 8);
-    }
+    /* write "fLaC" stream marker and first metadata block header */
+    avio_write(pb, header, 8);
 
-    /* write STREAMINFO or full header */
-    put_buffer(pb, codec->extradata, codec->extradata_size);
+    /* write STREAMINFO */
+    avio_write(pb, streaminfo, FLAC_STREAMINFO_SIZE);
 
     return 0;
 }

@@ -667,19 +667,19 @@ NPT_XmlAccumulator::AppendUTF8(unsigned int c)
     if (needed > m_Allocated) Allocate(needed);
 
     if (c <= 0x7F) {
-        // 000000ﾖ00007F -> 1 char = 0xxxxxxx
+        // 000000-00007F -> 1 char = 0xxxxxxx
         m_Buffer[m_Valid++] = (char)c;
     } else if (c <= 0x7FF) {
-        // 000080ﾖ0007FF -> 2 chars = 110zzzzx 10xxxxxx
+        // 000080-0007FF -> 2 chars = 110zzzzx 10xxxxxx
         m_Buffer[m_Valid++] = 0xC0|(c>>6  );
         m_Buffer[m_Valid++] = 0x80|(c&0x3F);
     } else if (c <= 0xFFFF) {
-        // 000800ﾖ00FFFF -> 3 chars = 1110zzzz 10zxxxxx 10xxxxxx
+        // 000800-00FFFF -> 3 chars = 1110zzzz 10zxxxxx 10xxxxxx
         m_Buffer[m_Valid++] = 0xE0| (c>>12      );
         m_Buffer[m_Valid++] = 0x80|((c&0xFC0)>>6);
         m_Buffer[m_Valid++] = 0x80| (c&0x3F     );
     } else if (c <= 0x10FFFF) {
-        // 010000ﾖ10FFFF -> 4 chars = 11110zzz 10zzxxxx 10xxxxxx 10xxxxxx
+        // 010000-10FFFF -> 4 chars = 11110zzz 10zzxxxx 10xxxxxx 10xxxxxx
         m_Buffer[m_Valid++] = 0xF0| (c>>18         );
         m_Buffer[m_Valid++] = 0x80|((c&0x3F000)>>12);
         m_Buffer[m_Valid++] = 0x80|((c&0xFC0  )>> 6);
@@ -1100,6 +1100,7 @@ public:
 
     // methods
     NPT_Result ProcessBuffer(const char* buffer, NPT_Size size);
+    void       Reset();
     
 private:
     // types
@@ -1113,6 +1114,9 @@ private:
     } Context;
 
     typedef enum {
+        STATE_IN_INIT,
+        STATE_IN_BOM_EF,
+        STATE_IN_BOM_BB,
         STATE_IN_WHITESPACE,
         STATE_IN_NAME,
         STATE_IN_NAME_SPECIAL,
@@ -1151,6 +1155,9 @@ private:
 #ifdef NPT_XML_PARSER_DEBUG
     const char* StateName(State state) {
         switch (state) {
+          case STATE_IN_INIT: return "IN_INIT";
+          case STATE_IN_BOM_EF: return "IN_BOM_EF";
+          case STATE_IN_BOM_BB: return "IN_BOM_BB";
           case STATE_IN_WHITESPACE: return "IN_WHITESPACE";
           case STATE_IN_NAME: return "IN_NAME";
           case STATE_IN_NAME_SPECIAL: return "IN_NAME_SPECIAL";
@@ -1218,10 +1225,21 @@ private:
 +---------------------------------------------------------------------*/
 NPT_XmlProcessor::NPT_XmlProcessor(NPT_XmlParser* parser) :
     m_Parser(parser),
-    m_State(STATE_IN_WHITESPACE),
+    m_State(STATE_IN_INIT),
     m_Context(CONTEXT_NONE),
     m_SkipNewline(false)
 {
+}
+
+/*----------------------------------------------------------------------
+|   NPT_XmlProcessor::Reset
++---------------------------------------------------------------------*/
+void
+NPT_XmlProcessor::Reset()
+{
+    m_State       = STATE_IN_INIT;
+    m_Context     = CONTEXT_NONE;
+    m_SkipNewline = false;
 }
 
 /*----------------------------------------------------------------------
@@ -1315,6 +1333,33 @@ NPT_XmlProcessor::ProcessBuffer(const char* buffer, NPT_Size size)
 
         // process the character
         switch (m_State) {
+          case STATE_IN_INIT:
+            if (NPT_XML_CHAR_IS_WHITESPACE(c)) {
+                SetState(STATE_IN_WHITESPACE);
+                break;
+            } else if (c == '<') {
+                SetState(STATE_IN_TAG_START);
+                break;
+            } else if (c == 0xEF) {
+                SetState(STATE_IN_BOM_EF);
+                break;
+            }
+            return NPT_ERROR_INVALID_SYNTAX;
+            
+          case STATE_IN_BOM_EF:
+            if (c == 0xBB) {
+                SetState(STATE_IN_BOM_BB);
+                break;
+            }
+            return NPT_ERROR_INVALID_SYNTAX;
+            
+          case STATE_IN_BOM_BB:
+            if (c == 0xBF) {
+                SetState(STATE_IN_WHITESPACE);
+                break;
+            }
+            return NPT_ERROR_INVALID_SYNTAX;
+                        
           case STATE_IN_WHITESPACE:
             if (NPT_XML_CHAR_IS_WHITESPACE(c)) break;
             switch (m_Context) {
@@ -1651,7 +1696,7 @@ NPT_XmlProcessor::ProcessBuffer(const char* buffer, NPT_Size size)
 |   NPT_XmlParser::NPT_XmlParser
 +---------------------------------------------------------------------*/
 NPT_XmlParser::NPT_XmlParser(bool keep_whitespace /* = false */) :
-    m_Tree(NULL),
+    m_Root(NULL),
     m_CurrentElement(NULL),
     m_KeepWhitespace(keep_whitespace)
 {
@@ -1663,7 +1708,28 @@ NPT_XmlParser::NPT_XmlParser(bool keep_whitespace /* = false */) :
 +---------------------------------------------------------------------*/
 NPT_XmlParser::~NPT_XmlParser()
 {
+    Reset();
+    delete m_CurrentElement;
     delete m_Processor;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_XmlParser::Reset
++---------------------------------------------------------------------*/
+void
+NPT_XmlParser::Reset()
+{
+    // delete anything that has been created 
+    NPT_XmlNode* walker = m_CurrentElement; 
+    while (walker && walker->GetParent()) { 
+        walker = walker->GetParent(); 
+    } 
+    delete walker; 
+    m_CurrentElement = NULL; 
+    
+    m_Processor->Reset();
+    
+    m_Root = NULL;
 }
 
 /*----------------------------------------------------------------------
@@ -1677,12 +1743,13 @@ NPT_XmlParser::Parse(NPT_InputStream& stream,
 {       
     NPT_Result result;
 
-    // reset the tree unless we're in incremental mode
-    if (!incremental) m_Tree = NULL;
-
-    // provide a default return node in case of error
-    node = m_Tree;
-
+    // start with a known state
+    m_Root = NULL;
+    node = NULL;
+    if (!incremental) {
+        Reset();
+    }
+    
     // use a  buffer on the stack
     char buffer[256];
 
@@ -1696,27 +1763,33 @@ NPT_XmlParser::Parse(NPT_InputStream& stream,
             size+bytes_to_read > max_bytes_to_read) {
             bytes_to_read = max_bytes_to_read-size;
         }
-        result = stream.Read(buffer, sizeof(buffer), &bytes_read);
+        result = stream.Read(buffer, bytes_to_read, &bytes_read);
         if (NPT_SUCCEEDED(result)) {
             // update the counter
             size += bytes_read;
 
             // parse the buffer
-            NPT_CHECK(m_Processor->ProcessBuffer(buffer, bytes_read));
+            result = m_Processor->ProcessBuffer(buffer, bytes_read);
+            if (NPT_FAILED(result)) break;
         } else {
-            if (result == NPT_ERROR_WOULD_BLOCK && incremental) break;
-            if (result != NPT_ERROR_EOS) return result;
+            break;
         }
     } while(NPT_SUCCEEDED(result) && 
             (max_bytes_to_read == 0 || size < max_bytes_to_read));
 
     // return a tree if we have one 
-    node = m_Tree;
-
+    node = m_Root;
     if (incremental) {
         return result;
     } else {
-        return m_Tree?NPT_SUCCESS:NPT_FAILURE;
+        if (NPT_FAILED(result) && result != NPT_ERROR_EOS) {
+            delete m_Root;
+            m_Root = NULL;
+            node = NULL;
+            return result;
+        } else {
+            return m_Root?NPT_SUCCESS:NPT_ERROR_XML_NO_ROOT;     
+        }
     }
 }
 
@@ -1754,22 +1827,29 @@ NPT_XmlParser::Parse(const char*   xml,
                      NPT_XmlNode*& node,
                      bool          incremental /* = false */)
 { 
-    // reset the tree unless we're in incremental mode
-    if (!incremental) m_Tree = NULL;
-
-    // provide a default return node in case of error
-    node = m_Tree;
+    // start with a known state
+    m_Root = NULL;
+    node = NULL;
+    if (!incremental) {
+        Reset();
+    }
 
     // parse the buffer
-    NPT_CHECK(m_Processor->ProcessBuffer(xml, size));
-
+    NPT_Result result = m_Processor->ProcessBuffer(xml, size);
+    
     // return a tree if we have one 
-    node = m_Tree;
-
+    node = m_Root;
     if (incremental) {
-        return NPT_SUCCESS;
+        return result;
     } else {
-        return m_Tree?NPT_SUCCESS:NPT_FAILURE;
+        if (NPT_FAILED(result)) {
+            delete m_Root;
+            m_Root = NULL;
+            node = NULL;
+            return result;
+        } else {
+            return m_Root?NPT_SUCCESS:NPT_ERROR_XML_NO_ROOT;     
+        }
     }
 }
 
@@ -1781,6 +1861,11 @@ NPT_XmlParser::OnStartElement(const char* name)
 {
     NPT_XML_Debug_1("\nNPT_XmlParser::OnStartElement: %s\n", name);
 
+    // we cannot start an element if we already have a root
+    if (m_Root) {
+        return NPT_ERROR_XML_MULTIPLE_ROOTS;
+    }
+    
     // create new node
     NPT_XmlElementNode* node = new NPT_XmlElementNode(name);
 
@@ -1862,10 +1947,19 @@ NPT_XmlParser::OnEndElement(const char* name)
 
     // pop up the stack
     NPT_XmlNode* parent = m_CurrentElement->GetParent();
-    if (parent == NULL) {
-        m_Tree = m_CurrentElement;
+    if (parent) {
+        m_CurrentElement = parent->AsElementNode();
+    } else {
+        if (m_Root) {
+            // this should never happen
+            delete m_CurrentElement;
+            m_CurrentElement = NULL;
+            return NPT_ERROR_XML_MULTIPLE_ROOTS;
+        } else {
+            m_Root = m_CurrentElement;
+            m_CurrentElement = NULL;
+        }
     }
-    m_CurrentElement = parent ? parent->AsElementNode() : NULL;
 
     return NPT_SUCCESS;
 }
@@ -1924,7 +2018,7 @@ class NPT_XmlNodeWriter
 public:
     NPT_XmlNodeWriter(NPT_XmlSerializer& serializer) : 
         m_Serializer(serializer), m_AttributeWriter(serializer) {
-        m_Serializer.StartDocument(); // WMP needs this!
+        m_Serializer.StartDocument();
     }
     void operator()(NPT_XmlNode*& node) const {
         if (NPT_XmlElementNode* element = node->AsElementNode()) {
@@ -1980,7 +2074,7 @@ public:
                                MapChainLink*      map_chain = NULL) : 
         m_MapChain(map_chain),
         m_Serializer(serializer) {
-        m_Serializer.StartDocument(); // WMP needs this!
+        m_Serializer.StartDocument();
     }
     void operator()(NPT_XmlNode*& node) const;
 
@@ -2244,14 +2338,14 @@ NPT_XmlNodeCanonicalWriter::operator()(NPT_XmlNode*& node) const
 NPT_XmlSerializer::NPT_XmlSerializer(NPT_OutputStream* output,
                                      NPT_Cardinal      indentation,
                                      bool              shrink_empty_elements,
-									 bool			   add_header) :
+                                     bool              add_xml_decl) :
     m_Output(output),
     m_ElementPending(false),
     m_Depth(0),
     m_Indentation(indentation),
     m_ElementHasText(false),
     m_ShrinkEmptyElements(shrink_empty_elements),
-	m_AddHeader(add_header)
+    m_AddXmlDecl(add_xml_decl)
 {
 }
 
@@ -2268,9 +2362,9 @@ NPT_XmlSerializer::~NPT_XmlSerializer()
 NPT_Result 
 NPT_XmlSerializer::StartDocument()
 {
-	if (!m_AddHeader) return NPT_SUCCESS;
+    if (!m_AddXmlDecl) return NPT_SUCCESS;
 
-    return m_Output->WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    return m_Output->WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
 }
 
 /*----------------------------------------------------------------------
@@ -2345,7 +2439,7 @@ NPT_XmlSerializer::OutputEscapedString(const char* text, bool attribute)
         }
         if (insert) {
             // output pending chars
-            if (start != text) m_Output->Write(start, (NPT_Size)(text-start));
+            if (start != text) m_Output->WriteFully(start, (NPT_Size)(text-start));
             m_Output->WriteString(insert);
             start = ++text;
         } else {
@@ -2353,7 +2447,7 @@ NPT_XmlSerializer::OutputEscapedString(const char* text, bool attribute)
         }
     }
     if (start != text) {
-        m_Output->Write(start, (NPT_Size)(text-start));
+        m_Output->WriteFully(start, (NPT_Size)(text-start));
     }
 
     return NPT_SUCCESS;
@@ -2365,7 +2459,7 @@ NPT_XmlSerializer::OutputEscapedString(const char* text, bool attribute)
 void
 NPT_XmlSerializer::OutputIndentation(bool start)
 {
-    if (m_Depth || !start) m_Output->Write("\n", 1);
+    if (m_Depth || !start) m_Output->Write("\r\n", 2);
 
     // ensure we have enough chars in the prefix string
     unsigned int prefix_length = m_Indentation*m_Depth;
@@ -2377,7 +2471,7 @@ NPT_XmlSerializer::OutputIndentation(bool start)
     }
 
     // print the indentation prefix
-    m_Output->Write(m_IndentationPrefix.GetChars(), prefix_length);
+    m_Output->WriteFully(m_IndentationPrefix.GetChars(), prefix_length);
 }
 
 /*----------------------------------------------------------------------
@@ -2411,7 +2505,7 @@ NPT_XmlSerializer::EndElement(const char* prefix, const char* name)
         // this element has no children
         m_ElementPending = false;
         if (m_ShrinkEmptyElements) {
-            return m_Output->Write("/>", 2);
+            return m_Output->WriteFully("/>", 2);
         } else {
             m_Output->Write(">",1);
         }
@@ -2419,7 +2513,7 @@ NPT_XmlSerializer::EndElement(const char* prefix, const char* name)
 
     if (m_Indentation && !m_ElementHasText) OutputIndentation(false);
     m_ElementHasText = false;
-    m_Output->Write("</", 2);
+    m_Output->WriteFully("</", 2);
     if (prefix && prefix[0]) {
         m_Output->WriteString(prefix);
         m_Output->Write(":", 1);
@@ -2440,7 +2534,7 @@ NPT_XmlSerializer::Attribute(const char* prefix, const char* name, const char* v
         m_Output->Write(":", 1);
     }
     m_Output->WriteString(name);
-    m_Output->Write("=\"", 2);
+    m_Output->WriteFully("=\"", 2);
     OutputEscapedString(value, true);
     return m_Output->Write("\"", 1);
 }
@@ -2464,9 +2558,9 @@ NPT_XmlSerializer::CdataSection(const char* data)
 {
     ProcessPending();
     m_ElementHasText = true;
-    m_Output->Write("<![CDATA[", 9);
+    m_Output->WriteFully("<![CDATA[", 9);
     m_Output->WriteString(data);
-    return m_Output->Write("]]>", 3);
+    return m_Output->WriteFully("]]>", 3);
 }
 
 /*----------------------------------------------------------------------
@@ -2476,20 +2570,20 @@ NPT_Result
 NPT_XmlSerializer::Comment(const char* comment)
 {
     ProcessPending();
-    m_Output->Write("<!--", 4);
+    m_Output->WriteFully("<!--", 4);
     m_Output->WriteString(comment);
-    return m_Output->Write("-->", 3);
+    return m_Output->WriteFully("-->", 3);
 }
 
 /*----------------------------------------------------------------------
 |   NPT_XmlWriter::Serialize
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_XmlWriter::Serialize(NPT_XmlNode&	   node, 
-						 NPT_OutputStream& output, 
-						 bool			   add_header)
+NPT_XmlWriter::Serialize(NPT_XmlNode&      node, 
+                         NPT_OutputStream& output, 
+                         bool              add_xml_decl)
 {
-    NPT_XmlSerializer serializer(&output, m_Indentation, true, add_header);
+    NPT_XmlSerializer serializer(&output, m_Indentation, true, add_xml_decl);
     NPT_XmlNodeWriter node_writer(serializer);
     NPT_XmlNode* node_pointer = &node;
     node_writer(node_pointer);
@@ -2502,11 +2596,11 @@ NPT_XmlWriter::Serialize(NPT_XmlNode&	   node,
 +---------------------------------------------------------------------*/
 NPT_Result
 NPT_XmlCanonicalizer::Serialize(NPT_XmlNode&      node, 
-								NPT_OutputStream& output, 
-								bool			  add_header)
+                                NPT_OutputStream& output, 
+                                bool              add_xml_decl)
 {
     // create a serializer with no indentation and no shrinking of empty elements
-    NPT_XmlSerializer serializer(&output, 0, false, add_header);
+    NPT_XmlSerializer serializer(&output, 0, false, add_xml_decl);
 
     // serialize the node
     NPT_XmlNodeCanonicalWriter node_writer(serializer);

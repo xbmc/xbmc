@@ -18,6 +18,7 @@
 #include "NptUtils.h"
 #include "NptTypes.h"
 #include "NptDynamicCast.h"
+#include "NptHash.h"
 
 /*----------------------------------------------------------------------
 |       macros
@@ -510,5 +511,18 @@ main(int /*argc*/, char** /*argv*/)
     SHOULD_SUCCEED(NPT_ParseFloat(".3db", f, true));
     SHOULD_EQUAL_F(f, .3f);
 
+    // FNV hash
+    NPT_UInt32 h32 = NPT_Fnv1aHash32((const NPT_UInt8*)"curds and whey", 14);
+    SHOULD_EQUAL_I(h32, 0x22d5344e);
+    h32 = NPT_Fnv1aHashStr32("curds and whey");
+    SHOULD_EQUAL_I(h32, 0x22d5344e);
+    h32 = NPT_Hash<const char*>()("curds and whey");
+    SHOULD_EQUAL_I(h32, 0x22d5344e);
+    
+    NPT_UInt64 h64 = NPT_Fnv1aHash64((const NPT_UInt8*)"curds and whey", 14);
+    SHOULD_EQUAL_I(h64, 0x23e520e2751bb46eULL);
+    h64 = NPT_Fnv1aHashStr64("curds and whey");
+    SHOULD_EQUAL_I(h64, 0x23e520e2751bb46eULL);
+    
     return 0;
 }

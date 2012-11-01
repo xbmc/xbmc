@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,6 +23,8 @@
 #include "FileItem.h"
 #include "Job.h"
 #include "filesystem/File.h"
+
+class CGUIDialogProgressBarHandle;
 
 class CFileOperationJob : public CJob
 {
@@ -39,16 +40,27 @@ public:
   };
 
   CFileOperationJob();
-  CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile);
+  CFileOperationJob(FileAction action, CFileItemList & items,
+                    const CStdString& strDestFile,
+                    bool displayProgress=false,
+                    int errorHeading=0, int errorLine=0);
 
   void SetFileOperation(FileAction action, CFileItemList &items, const CStdString &strDestFile);
+
+  virtual bool operator==(const CJob *job) const;
+
+  static CStdString GetActionString(FileAction action);
+
+  const char* GetType() const { return m_displayProgress?"filemanager":""; }
 
   virtual bool DoWork();
   const CStdString &GetAverageSpeed()     { return m_avgSpeed; }
   const CStdString &GetCurrentOperation() { return m_currentOperation; }
   const CStdString &GetCurrentFile()      { return m_currentFile; }
   const CFileItemList &GetItems()         { return m_items; }
-  FileAction GetAction()                  { return m_action; }
+  FileAction GetAction() const            { return m_action; }
+  int GetHeading() const                  { return m_heading; }
+  int GetLine() const                     { return m_line; }
 private:
   class CFileOperation : public XFILE::IFileCallback
   {
@@ -74,4 +86,8 @@ private:
   CFileItemList m_items;
   CStdString m_strDestFile;
   CStdString m_avgSpeed, m_currentOperation, m_currentFile;
+  CGUIDialogProgressBarHandle* m_handle;
+  bool m_displayProgress;
+  int m_heading;
+  int m_line;
 };

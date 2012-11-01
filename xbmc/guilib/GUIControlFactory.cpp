@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,6 +48,7 @@
 #include "GUIListContainer.h"
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
+#include "epg/GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"
@@ -64,6 +64,7 @@
 #include "GUIAction.h"
 
 using namespace std;
+using namespace EPG;
 
 typedef struct
 {
@@ -106,6 +107,7 @@ static const ControlMapping controls[] =
     {"list",              CGUIControl::GUICONTAINER_LIST},
     {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
     {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
+    {"epggrid",           CGUIControl::GUICONTAINER_EPGGRID},
     {"panel",             CGUIControl::GUICONTAINER_PANEL}};
 
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const CStdString &type)
@@ -672,6 +674,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   int focusPosition = 0;
   int scrollTime = 200;
+  int timeBlocks = 36;
+  int rulerUnit = 12;
   bool useControlCoords = false;
   bool renderFocusedLast = false;
 
@@ -721,12 +725,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
-  if (!GetActions(pControlNode, "onup",    upActions))    upActions.SetNavigation(id);
-  if (!GetActions(pControlNode, "ondown",  downActions))  downActions.SetNavigation(id);
-  if (!GetActions(pControlNode, "onleft",  leftActions))  leftActions.SetNavigation(id);
-  if (!GetActions(pControlNode, "onright", rightActions)) rightActions.SetNavigation(id);
-  if (!GetActions(pControlNode, "onnext",  nextActions))  nextActions.SetNavigation(id);
-  if (!GetActions(pControlNode, "onprev",  prevActions))  prevActions.SetNavigation(id);
+  GetActions(pControlNode, "onup",    upActions);
+  GetActions(pControlNode, "ondown",  downActions);
+  GetActions(pControlNode, "onleft",  leftActions);
+  GetActions(pControlNode, "onright", rightActions);
+  GetActions(pControlNode, "onnext",  nextActions);
+  GetActions(pControlNode, "onprev",  prevActions);
   GetActions(pControlNode, "onback",  backActions);
 
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
@@ -888,6 +892,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetAspectRatio(pControlNode, "aspectratio", aspect);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
+  XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
+  XMLUtils::GetInt(pControlNode, "rulerunit", rulerUnit);
 
   GetInfoTexture(pControlNode, "imagepath", texture, texturePath, parentID);
 
@@ -1187,6 +1193,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height,
       textureBackground, textureLeft, textureMid, textureRight,
       textureOverlay, bReveal);
+
     ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
   else if (type == CGUIControl::GUICONTROL_IMAGE)
@@ -1246,6 +1253,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
     ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
+  }
+  else if (type == CGUIControl::GUICONTAINER_EPGGRID)
+  {
+    control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, timeBlocks, rulerUnit);
+    ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
+    ((CGUIEPGGridContainer *)control)->SetRenderOffset(offset);
   }
   else if (type == CGUIControl::GUICONTAINER_FIXEDLIST)
   {

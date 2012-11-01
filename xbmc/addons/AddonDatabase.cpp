@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -101,32 +100,20 @@ bool CAddonDatabase::CreateTables()
 
 bool CAddonDatabase::UpdateOldVersion(int version)
 {
-  BeginTransaction();
-  
-  try
+  if (version < 13)
   {
-    if (version < 13)
-    {
-      m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
-      m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
-    }
-    if (version < 14)
-    {
-      m_pDS->exec("ALTER TABLE addon add minversion text");
-    }
-    if (version < 15)
-    {
-      m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
-    }
+    m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
+    m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
   }
-  catch (...)
+  if (version < 14)
   {
-    CLog::Log(LOGERROR, "Error attempting to upgrade an old addon database!");
-    RollbackTransaction();
-    return false;
+    m_pDS->exec("ALTER TABLE addon add minversion text");
   }
-  CommitTransaction();
+  if (version < 15)
+  {
+    m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
+  }
   return true;
 }
 
@@ -169,6 +156,9 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
       sql = PrepareSQL("insert into dependencies(id, addon, version, optional) values (%i, '%s', '%s', %i)", idAddon, i->first.c_str(), i->second.first.c_str(), i->second.second ? 1 : 0);
       m_pDS->exec(sql.c_str());
     }
+    // these need to be configured
+    if (addon->Type() == ADDON_PVRDLL)
+      DisableAddon(addon->ID(), true);
     return idAddon;
   }
   catch (...)
@@ -280,7 +270,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
       m_pDS2->query(sql.c_str());
       while (!m_pDS2->eof())
       {
-        props.dependencies.insert(make_pair(m_pDS2->fv(0).get_asString(), make_pair(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asBool())));
+        props.dependencies.insert(make_pair(m_pDS2->fv(0).get_asString(), make_pair(AddonVersion(m_pDS2->fv(1).get_asString()), m_pDS2->fv(2).get_asBool())));
         m_pDS2->next();
       }
 
@@ -558,6 +548,10 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.StarRating",starrating);
   pItem->SetProperty("Addon.Path", addon->Path());
   pItem->SetProperty("Addon.Broken", addon->Props().broken);
+  std::map<CStdString,CStdString>::iterator it = 
+                    addon->Props().extrainfo.find("language");
+  if (it != addon->Props().extrainfo.end())
+    pItem->SetProperty("Addon.Language", it->second);
 }
 
 bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = true */)
@@ -638,6 +632,14 @@ bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& rea
   return false;
 }
 
+bool CAddonDatabase::HasAddon(const CStdString &addonID)
+{
+  CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+  CStdString strHasAddon = GetSingleValue("addon", "id", strWhereClause);
+  
+  return !strHasAddon.IsEmpty();
+}
+
 bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
 {
   try
@@ -656,6 +658,14 @@ bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
     CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
   }
   return false;
+}
+
+bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
+{
+  CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+  CStdString strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
+
+  return !strEnabled.IsEmpty();
 }
 
 CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)

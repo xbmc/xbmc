@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,6 +30,8 @@
 #include "interfaces/Builtins.h"
 #include "filesystem/AddonsDirectory.h"
 #include "dialogs/GUIDialogKaiToast.h"
+
+#include <climits>
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -60,7 +61,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_scrapers.clear();
-      m_lastSelected.clear();
       m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
@@ -114,15 +114,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   return CGUIDialogSettings::OnMessage(message);
 }
 
-void CGUIDialogContentSettings::OnWindowLoaded()
-{
-  // save our current scraper (if any)
-  m_lastSelected.clear();
-  m_lastSelected[m_content] = m_scraper;
-  FillContentTypes();
-  CGUIDialogSettings::OnWindowLoaded();
-}
-
 void CGUIDialogContentSettings::SetupPage()
 {
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
@@ -162,31 +153,29 @@ void CGUIDialogContentSettings::CreateSettings()
   {
   case CONTENT_TVSHOWS:
     {
-      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
-      AddBool(2,20379,&m_bSingleItem, m_bShowScanSettings);
-      AddBool(3,20432,&m_bNoUpdate, m_bShowScanSettings);
+      AddBool(1,20379,&m_bSingleItem, m_bShowScanSettings);
+      AddBool(2,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
     break;
   case CONTENT_MOVIES:
     {
-      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
-      AddBool(2,20329,&m_bUseDirNames, m_bShowScanSettings);
+      AddBool(1,20329,&m_bUseDirNames, m_bShowScanSettings);
+      AddBool(2,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
+      AddBool(3,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
+      AddBool(4,20432,&m_bNoUpdate, m_bShowScanSettings);
+    }
+    break;
+  case CONTENT_MUSICVIDEOS:
+    {
+      AddBool(1,20346,&m_bScanRecursive, m_bShowScanSettings);
+      AddBool(2,20330,&m_bUseDirNames, m_bShowScanSettings);
       AddBool(3,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
       AddBool(4,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
       AddBool(5,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
     break;
-  case CONTENT_MUSICVIDEOS:
-    {
-      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
-      AddBool(2,20346,&m_bScanRecursive, m_bShowScanSettings);
-      AddBool(3,20432,&m_bNoUpdate, m_bShowScanSettings);
-    }
-    break;
   case CONTENT_ALBUMS:
-    {
-      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
-    }
+  case CONTENT_ARTISTS:
     break;
   case CONTENT_NONE:
   default:
@@ -236,6 +225,11 @@ void CGUIDialogContentSettings::OnCancel()
 
 void CGUIDialogContentSettings::OnInitWindow()
 {
+  m_lastSelected.clear();
+  // save our current scraper (if any)
+  if (m_scraper)
+    m_lastSelected[m_content] = m_scraper;
+  FillContentTypes();
   m_bNeedSave = false;
   CGUIDialogSettings::OnInitWindow();
 }
@@ -326,7 +320,7 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItemPtr item(new CFileItem((*iter)->Name()));
     item->SetPath((*iter)->ID());
-    item->SetThumbnailImage((*iter)->Icon());
+    item->SetArt("thumb", (*iter)->Icon());
     if (m_scraper && (*iter)->ID() == m_scraper->ID())
     {
       item->Select(true);
@@ -367,25 +361,25 @@ CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
   return m_vecItems->Get(item);
 }
 
-bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)
+bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings)
 {
   CVideoDatabase database;
   database.Open();
   scraper = database.GetScraperForPath(strDirectory, settings);
-  bool bResult = Show(scraper,settings,bRunScan);
+  bool bResult = Show(scraper,settings);
   if (bResult)
     database.SetScraperForPath(strDirectory,scraper,settings);
 
   return bResult;
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
+bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
 {
   VIDEO::SScanSettings dummy;
-  return Show(scraper,dummy,bRunScan,musicContext);
+  return Show(scraper,dummy,musicContext);
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
+bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
 {
   CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog)
@@ -401,10 +395,9 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24023), scraper->Name(), 2000, true);
   }
 
-  dialog->m_bRunScan = bRunScan;
   dialog->m_bScanRecursive = (settings.recurse > 0 && !settings.parent_name) || (settings.recurse > 1 && settings.parent_name);
   dialog->m_bUseDirNames   = settings.parent_name;
-  dialog->m_bExclude       = settings.exclude; 
+  dialog->m_bExclude       = settings.exclude;
   dialog->m_bSingleItem    = settings.parent_name_root;
   dialog->m_bNoUpdate      = settings.noupdate;
   dialog->m_bNeedSave = false;
@@ -416,14 +409,12 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     if (!scraper || content == CONTENT_NONE)
     {
       scraper.reset();
-      bRunScan = false;
       settings.exclude = dialog->m_bExclude;
     }
-    else 
+    else
     {
       settings.exclude = false;
       settings.noupdate = dialog->m_bNoUpdate;
-      bRunScan = dialog->m_bRunScan;
       scraper->SetPathSettings(content, "");
 
       if (content == CONTENT_TVSHOWS)
@@ -455,9 +446,24 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       }
       else if (content == CONTENT_MUSICVIDEOS)
       {
-        settings.parent_name = false;
-        settings.parent_name_root = false;
-        settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
+        if (dialog->m_bUseDirNames)
+        {
+          settings.parent_name = true;
+          settings.parent_name_root = false;
+          settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 1;
+
+          if (dialog->m_bSingleItem)
+          {
+            settings.parent_name_root = true;
+            settings.recurse = 0;
+          }
+        }
+        else
+         {
+           settings.parent_name = false;
+           settings.parent_name_root = false;
+           settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
+         }
       }
     }
   }

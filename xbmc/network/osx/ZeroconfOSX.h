@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,23 +14,22 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <memory>
-#include <CoreFoundation/CoreFoundation.h>
-#if !defined(__arm__)
-#include <Carbon/Carbon.h>
-#include <CoreServices/CoreServices.h>
-#else
-#include <CFNetwork/CFNetServices.h>
-#endif
 
 #include "network/Zeroconf.h"
 #include "threads/CriticalSection.h"
+
+#include <CoreFoundation/CoreFoundation.h>
+#if defined(TARGET_DARWIN_OSX)
+  #include <CoreServices/CoreServices.h>
+#else
+  #include <CFNetwork/CFNetServices.h>
+#endif
 
 class CZeroconfOSX : public CZeroconf
 {

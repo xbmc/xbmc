@@ -2,7 +2,7 @@
 #define __YUV2RGB_SHADERS_H__
 
 /*
- *      Copyright (C) 2007-2010 Team XBMC
+ *      Copyright (C) 2007-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,16 +16,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "guilib/TransformMatrix.h"
+#include "cores/VideoRenderers/RenderFormats.h"
 
 void CalculateYUVMatrix(TransformMatrix &matrix
                         , unsigned int  flags
+                        , ERenderFormat format
                         , float         black
                         , float         contrast);
 
@@ -69,7 +70,7 @@ namespace Shaders {
     , public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool stretch);
+    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, ERenderFormat format, bool stretch);
    ~BaseYUV2RGBGLSLShader() {}
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
@@ -93,6 +94,7 @@ namespace Shaders {
     bool OnEnabled();
 
     unsigned m_flags;
+    ERenderFormat m_format;
     int   m_width;
     int   m_height;
     int   m_field;
@@ -131,7 +133,7 @@ namespace Shaders {
     , public CARBShaderProgram
   {
   public:
-    BaseYUV2RGBARBShader(unsigned flags);
+    BaseYUV2RGBARBShader(unsigned flags, ERenderFormat format);
    ~BaseYUV2RGBARBShader() {}
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
@@ -142,6 +144,7 @@ namespace Shaders {
 
   protected:
     unsigned m_flags;
+    ERenderFormat m_format;
     int   m_width;
     int   m_height;
     int   m_field;
@@ -158,7 +161,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShaderARB : public BaseYUV2RGBARBShader
   {
   public:
-    YUV2RGBProgressiveShaderARB(bool rect=false, unsigned flags=0);
+    YUV2RGBProgressiveShaderARB(bool rect=false, unsigned flags=0, ERenderFormat format=RENDER_FMT_NONE);
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
@@ -167,13 +170,13 @@ namespace Shaders {
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0, bool stretch = false);
+    YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0, ERenderFormat format=RENDER_FMT_NONE, bool stretch = false);
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBBobShader(bool rect=false, unsigned flags=0);
+    YUV2RGBBobShader(bool rect=false, unsigned flags=0, ERenderFormat format=RENDER_FMT_NONE);
     void OnCompiledAndLinked();
     bool OnEnabled();
 

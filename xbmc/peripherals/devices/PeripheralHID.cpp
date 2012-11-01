@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,7 +36,7 @@ CPeripheralHID::CPeripheralHID(const PeripheralType type, const PeripheralBusTyp
 
 CPeripheralHID::~CPeripheralHID(void)
 {
-  if (!m_strKeymap.IsEmpty() && GetSettingBool("keymap_enabled"))
+  if (!m_strKeymap.IsEmpty() && !GetSettingBool("do_not_use_custom_keymap"))
   {
     CLog::Log(LOGDEBUG, "%s - switching active keymapping to: default", __FUNCTION__);
     CButtonTranslator::GetInstance().RemoveDevice(m_strKeymap);
@@ -59,9 +58,12 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
       SetSetting("keymap", m_strKeymap);
     }
 
+    if (!IsSettingVisible("keymap"))
+      SetSettingVisible("do_not_use_custom_keymap", false);
+
     if (!m_strKeymap.IsEmpty())
     {
-      bool bKeymapEnabled(GetSettingBool("keymap_enabled"));
+      bool bKeymapEnabled(!GetSettingBool("do_not_use_custom_keymap"));
       if (bKeymapEnabled)
       {
         CLog::Log(LOGDEBUG, "%s - adding keymapping for: %s", __FUNCTION__, m_strKeymap.c_str());
@@ -82,7 +84,7 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralHID::OnSettingChanged(const CStdString &strChangedSetting)
 {
-  if (m_bInitialised && ((strChangedSetting.Equals("keymap") && GetSettingBool("keymap_enabled")) || strChangedSetting.Equals("keymap_enabled")))
+  if (m_bInitialised && ((strChangedSetting.Equals("keymap") && !GetSettingBool("do_not_use_custom_keymap")) || strChangedSetting.Equals("keymap_enabled")))
   {
     m_bInitialised = false;
     InitialiseFeature(FEATURE_HID);

@@ -898,9 +898,20 @@ static void roq_encode_video(RoqContext *enc)
     for (i=0; i<enc->width*enc->height/64; i++)
         gather_data_for_cel(tempData->cel_evals + i, enc, tempData);
 
-    /* Quake 3 can't handle chunks bigger than 65536 bytes */
-    if (tempData->mainChunkSize/8 > 65536) {
-        enc->lambda *= .8;
+    /* Quake 3 can't handle chunks bigger than 65535 bytes */
+    if (tempData->mainChunkSize/8 > 65535) {
+        av_log(enc->avctx, AV_LOG_ERROR,
+               "Warning, generated a frame too big (%d > 65535), "
+               "try using a smaller qscale value.\n",
+               tempData->mainChunkSize/8);
+        enc->lambda *= 1.5;
+        tempData->mainChunkSize = 0;
+        memset(tempData->used_option, 0, sizeof(tempData->used_option));
+        memset(tempData->codebooks.usedCB4, 0,
+               sizeof(tempData->codebooks.usedCB4));
+        memset(tempData->codebooks.usedCB2, 0,
+               sizeof(tempData->codebooks.usedCB2));
+
         goto retry_encode;
     }
 
@@ -1054,16 +1065,15 @@ static int roq_encode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_roq_encoder =
-{
-    "roqvideo",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_ROQ,
-    sizeof(RoqContext),
-    roq_encode_init,
-    roq_encode_frame,
-    roq_encode_end,
+AVCodec ff_roq_encoder = {
+    .name                 = "roqvideo",
+    .type                 = AVMEDIA_TYPE_VIDEO,
+    .id                   = CODEC_ID_ROQ,
+    .priv_data_size       = sizeof(RoqContext),
+    .init                 = roq_encode_init,
+    .encode               = roq_encode_frame,
+    .close                = roq_encode_end,
     .supported_framerates = (const AVRational[]){{30,1}, {0,0}},
-    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_YUV444P, PIX_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("id RoQ video"),
+    .pix_fmts             = (const enum PixelFormat[]){PIX_FMT_YUV444P, PIX_FMT_NONE},
+    .long_name            = NULL_IF_CONFIG_SMALL("id RoQ video"),
 };

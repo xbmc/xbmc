@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -107,6 +106,7 @@ public:
   }
 
   int GetDataSize() const               { return m_iDataSize; }
+  int GetTimeSize() const;
   unsigned GetPacketCount(CDVDMsg::Message type);
   bool ReceivedAbortRequest()           { return m_bAbortRequest; }
   void WaitUntilEmpty();
@@ -118,7 +118,9 @@ public:
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
   void SetMaxTimeSize(double sec)       { m_TimeSize  = 1.0 / std::max(1.0, sec); }
   int GetMaxDataSize() const            { return m_iMaxDataSize; }
+  double GetMaxTimeSize() const         { return m_TimeSize; }
   bool IsInited() const                 { return m_bInitialized; }
+  bool IsDataBased() const;
 
 private:
 

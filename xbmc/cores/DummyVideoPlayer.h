@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -36,8 +35,8 @@ public:
   virtual bool IsPlaying() const;
   virtual void Pause();
   virtual bool IsPaused() const;
-  virtual bool HasVideo();
-  virtual bool HasAudio();
+  virtual bool HasVideo() const;
+  virtual bool HasAudio() const;
   virtual void ToggleOSD() { }; // empty
   virtual void SwitchToNextLanguage();
   virtual void ToggleSubtitles();
@@ -45,7 +44,7 @@ public:
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
-  virtual void SetVolume(long nVolume) {}
+  virtual void SetVolume(float volume) {}
   virtual void SetDynamicRangeCompression(long drc) {}
   virtual void SetContrast(bool bPlus) {}
   virtual void SetBrightness(bool bPlus) {}
@@ -66,9 +65,9 @@ public:
   virtual void SetSubTitleDelay(float fValue = 0.0f);
   virtual float GetSubTitleDelay();
 
-  virtual void SeekTime(__int64 iTime);
-  virtual __int64 GetTime();
-  virtual int GetTotalTime();
+  virtual void SeekTime(int64_t iTime);
+  virtual int64_t GetTime();
+  virtual int64_t GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual void ShowOSD(bool bOnoff);
   virtual void DoAudioWork()                                    {}
@@ -80,7 +79,7 @@ private:
   virtual void Process();
 
   bool m_paused;
-  __int64 m_clock;
+  int64_t m_clock;
   unsigned int m_lastTime;
   int m_speed;
 };

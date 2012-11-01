@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,7 @@
 #include "WAVcodec.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #if defined(WIN32)
 #include <mmreg.h>
@@ -48,9 +48,10 @@ WAVCodec::WAVCodec()
   m_SampleRate = 0;
   m_Channels = 0;
   m_BitsPerSample = 0;
-  m_bHasFloat = false;
-  m_iDataStart=0;
-  m_iDataLen=0;
+  m_DataFormat = AE_FMT_INVALID;
+  m_iDataStart = 0;
+  m_iDataLen = 0;
+  m_ChannelMask = 0;
   m_Bitrate = 0;
   m_CodecName = "WAV";
 }
@@ -99,8 +100,16 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
       m_Channels      = Endian_SwapLE16(wfx.Format.nChannels     );
       m_BitsPerSample = Endian_SwapLE16(wfx.Format.wBitsPerSample);
 
+      switch(m_BitsPerSample)
+      {
+        case 8 : m_DataFormat = AE_FMT_U8   ;  break;
+        case 16: m_DataFormat = AE_FMT_S16LE;  break;
+        case 24: m_DataFormat = AE_FMT_S24NE3; break;
+        case 32: m_DataFormat = AE_FMT_FLOAT;  break;
+      }
+
       CLog::Log(LOGINFO, "WAVCodec::Init - Sample Rate: %d, Bits Per Sample: %d, Channels: %d", m_SampleRate, m_BitsPerSample, m_Channels);
-      if ((m_SampleRate == 0) || (m_Channels == 0) || (m_BitsPerSample == 0))
+      if ((m_SampleRate == 0) || (m_Channels == 0) || (m_BitsPerSample == 0) || (m_DataFormat == AE_FMT_INVALID))
       {
         CLog::Log(LOGERROR, "WAVCodec::Init - Invalid data in WAVE header");
         return false;
@@ -115,7 +124,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
         case WAVE_FORMAT_PCM:
           CLog::Log(LOGINFO, "WAVCodec::Init - WAVE_FORMAT_PCM detected");
           m_ChannelMask = 0;
-          m_bHasFloat = false;
         break;
 
         case WAVE_FORMAT_IEEE_FLOAT:
@@ -127,7 +135,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
           }
 
           m_ChannelMask = 0;
-          m_bHasFloat = true;
         break;
 
         case WAVE_FORMAT_EXTENSIBLE:
@@ -145,7 +152,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
           if (memcmp(&wfx.SubFormat, &KSDATAFORMAT_SUBTYPE_PCM, sizeof(GUID)) == 0)
           {
             CLog::Log(LOGINFO, "WAVCodec::Init - SubFormat KSDATAFORMAT_SUBTYPE_PCM Detected");
-            m_bHasFloat = false;
           }
           else if (memcmp(&wfx.SubFormat, &KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(GUID)) == 0)
           {
@@ -155,7 +161,6 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
               CLog::Log(LOGERROR, "WAVCodec::Init - Only 32bit Float is supported");
               return false;
             }
-            m_bHasFloat = true;
           }
           else
           {
@@ -235,7 +240,7 @@ void WAVCodec::DeInit()
   m_file.Close();
 }
 
-__int64 WAVCodec::Seek(__int64 iSeekTime)
+int64_t WAVCodec::Seek(int64_t iSeekTime)
 {
   //  Calculate size of a single sample of the file
   int iSampleSize=m_SampleRate*m_Channels*(m_BitsPerSample/8);
@@ -263,19 +268,20 @@ int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_ERROR;
 }
 
-int WAVCodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
-{
-  int ret = READ_ERROR;
-  *actualsamples = 0;
-  if (m_bHasFloat)
-  {
-    ret = ReadPCM((BYTE*)pBuffer, numsamples * (m_BitsPerSample >> 3), actualsamples);
-    *actualsamples /= (m_BitsPerSample >> 3);
-  }
-  return ret;
-}
-
 bool WAVCodec::CanInit()
 {
   return true;
+}
+
+CAEChannelInfo WAVCodec::GetChannelInfo()
+{
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR  , AE_CH_NULL}
+  };
+
+  if (m_Channels > 2)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }

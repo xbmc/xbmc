@@ -90,6 +90,7 @@ const CodecMime ff_mkv_mime_tags[] = {
     {"image/tiff"                 , CODEC_ID_TIFF},
     {"application/x-truetype-font", CODEC_ID_TTF},
     {"application/x-font"         , CODEC_ID_TTF},
+    {"application/vnd.ms-opentype", CODEC_ID_OTF},
 
     {""                           , CODEC_ID_NONE}
 };
@@ -98,4 +99,28 @@ const AVMetadataConv ff_mkv_metadata_conv[] = {
     { "LEAD_PERFORMER", "performer" },
     { "PART_NUMBER"   , "track"  },
     { 0 }
+};
+
+const char * const matroska_video_stereo_mode[MATROSKA_VIDEO_STEREO_MODE_COUNT] = {
+    "mono",
+    "left_right",
+    "bottom_top",
+    "top_bottom",
+    "checkerboard_rl",
+    "checkerboard_lr"
+    "row_interleaved_rl",
+    "row_interleaved_lr",
+    "col_interleaved_rl",
+    "col_interleaved_lr",
+    "anaglyph_cyan_red",
+    "right_left",
+    "anaglyph_green_magenta",
+    "block_lr",
+    "block_rl",
+};
+
+const char * const matroska_video_stereo_plane[MATROSKA_VIDEO_STEREO_PLANE_COUNT] = {
+    "left",
+    "right",
+    "background",
 };

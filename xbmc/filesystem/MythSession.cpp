@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -166,7 +165,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
     tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
    */
-  tag->m_strGenre         = GetValue(m_dll->proginfo_category(program)); // e.g. Sports
+  tag->m_genre            = StringUtils::Split(GetValue(m_dll->proginfo_category(program)), g_advancedSettings.m_videoItemSeparator); // e.g. Sports
   tag->m_strAlbum         = GetValue(m_dll->proginfo_chansign(program)); // e.g. TV3
   tag->m_strRuntime       = StringUtils::SecondsToTimeString(m_dll->proginfo_length_sec(program));
   
@@ -179,7 +178,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   CStdString originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
   if (originalairdate != "1970-01-01"
   &&  originalairdate != "1969-12-31")
-    tag->m_strFirstAired = originalairdate;
+  tag->m_firstAired.SetFromDateString(originalairdate);
 
   /*
    * Video sort title is the raw title with the date appended on the end in a sortable format so
@@ -236,7 +235,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
     if (!chanicon.IsEmpty())
     {
       url.SetFileName("files/channels/" + URIUtils::GetFileName(chanicon)); // e.g. files/channels/tv3.jpg
-      item.SetThumbnailImage(url.Get());
+      item.SetArt("thumb", url.Get());
     }
   }
   else
@@ -247,7 +246,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
     if (m_dll->proginfo_rec_status(program) == RS_RECORDED)
     {
       url.SetFileName("files/" + URIUtils::GetFileName(GetValue(m_dll->proginfo_pathname(program))) + ".png");
-      item.SetThumbnailImage(url.Get());
+      item.SetArt("thumb", url.Get());
     }
   }
 }
@@ -359,7 +358,7 @@ void CMythSession::SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *sea
   return;
 }
 
-CMythSession::CMythSession(const CURL& url)
+CMythSession::CMythSession(const CURL& url) : CThread("CMythSession")
 {
   m_control   = NULL;
   m_event     = NULL;
@@ -514,7 +513,7 @@ cmyth_conn_t CMythSession::GetControl()
   if (!m_control)
   {
     if (!m_dll->IsLoaded())
-      return false;
+      return NULL;
 
     m_control = m_dll->conn_connect_ctrl((char*)m_hostname.c_str(), m_port, 16*1024, 4096);
     if (!m_control)
@@ -528,7 +527,7 @@ cmyth_database_t CMythSession::GetDatabase()
   if (!m_database)
   {
     if (!m_dll->IsLoaded())
-      return false;
+      return NULL;
 
     m_database = m_dll->database_init((char*)m_hostname.c_str(), (char*)MYTH_DEFAULT_DATABASE,
                                       (char*)m_username.c_str(), (char*)m_password.c_str());

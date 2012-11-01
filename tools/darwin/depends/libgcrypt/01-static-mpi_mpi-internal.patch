@@ -1,0 +1,53 @@
+*** mpi/mpi-internal.h	Sun May  6 17:39:56 2012
+--- mpi/mpi-internal_new.h	Sun May  6 17:45:59 2012
+*************** void _gcry_mpi_lshift_limbs( gcry_mpi_t 
+*** 183,206 ****
+  
+  
+  /*-- mpih-add.c --*/
+! mpi_limb_t _gcry_mpih_add_1(mpi_ptr_t res_ptr,  mpi_ptr_t s1_ptr,
+! 			 mpi_size_t s1_size, mpi_limb_t s2_limb );
+  mpi_limb_t _gcry_mpih_add_n( mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+! 			  mpi_ptr_t s2_ptr,  mpi_size_t size);
+! mpi_limb_t _gcry_mpih_add(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr, mpi_size_t s1_size,
+! 		       mpi_ptr_t s2_ptr, mpi_size_t s2_size);
+! 
+  /*-- mpih-sub.c --*/
+! mpi_limb_t _gcry_mpih_sub_1( mpi_ptr_t res_ptr,  mpi_ptr_t s1_ptr,
+! 			  mpi_size_t s1_size, mpi_limb_t s2_limb );
+  mpi_limb_t _gcry_mpih_sub_n( mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+! 			  mpi_ptr_t s2_ptr, mpi_size_t size);
+! mpi_limb_t _gcry_mpih_sub(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr, mpi_size_t s1_size,
+! 		       mpi_ptr_t s2_ptr, mpi_size_t s2_size);
+! 
+  /*-- mpih-cmp.c --*/
+! int _gcry_mpih_cmp( mpi_ptr_t op1_ptr, mpi_ptr_t op2_ptr, mpi_size_t size );
+! 
+  /*-- mpih-mul.c --*/
+  
+  struct karatsuba_ctx {
+--- 183,206 ----
+  
+  
+  /*-- mpih-add.c --*/
+! static mpi_limb_t _gcry_mpih_add_1(mpi_ptr_t res_ptr,  mpi_ptr_t s1_ptr,
+!                         mpi_size_t s1_size, mpi_limb_t s2_limb );
+  mpi_limb_t _gcry_mpih_add_n( mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+!                          mpi_ptr_t s2_ptr,  mpi_size_t size);
+! static mpi_limb_t _gcry_mpih_add(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr, mpi_size_t s1_size,
+!                       mpi_ptr_t s2_ptr, mpi_size_t s2_size);
+!  
+  /*-- mpih-sub.c --*/
+! static mpi_limb_t _gcry_mpih_sub_1( mpi_ptr_t res_ptr,  mpi_ptr_t s1_ptr,
+!                          mpi_size_t s1_size, mpi_limb_t s2_limb );
+  mpi_limb_t _gcry_mpih_sub_n( mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+!                          mpi_ptr_t s2_ptr, mpi_size_t size);
+! static mpi_limb_t _gcry_mpih_sub(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr, mpi_size_t s1_size,
+!                       mpi_ptr_t s2_ptr, mpi_size_t s2_size);
+!  
+  /*-- mpih-cmp.c --*/
+! static int _gcry_mpih_cmp( mpi_ptr_t op1_ptr, mpi_ptr_t op2_ptr, mpi_size_t size );
+!  
+  /*-- mpih-mul.c --*/
+  
+  struct karatsuba_ctx {

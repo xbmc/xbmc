@@ -2,7 +2,7 @@
 #define KARAOKEWINDOWBACKGROUND_H
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,7 +48,7 @@ public:
   virtual void StartImage( const CStdString& path );
 
   // Start with song-specific video background
-  virtual void StartVideo( const CStdString& path, __int64 offset = 0 );
+  virtual void StartVideo( const CStdString& path, int64_t offset = 0 );
 
   // Start with default (setting-specific) background
   virtual void StartDefault();
@@ -106,7 +105,7 @@ private:
   // For default visualisation mode
   BackgroundMode             m_defaultMode;
   CStdString                 m_path; // image or video
-  __int64                    m_videoLastTime; // video only
+  int64_t                    m_videoLastTime; // video only
   bool                       m_playingDefaultVideo; // whether to store the time
 };
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,6 @@
 #include "GUIDialogPlayEject.h"
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
-#include "storage/IoSupport.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -58,7 +56,7 @@ bool CGUIDialogPlayEject::OnMessage(CGUIMessage& message)
     }
     if (iControl == ID_BUTTON_EJECT)
     {
-      CIoSupport::ToggleTray();
+      g_mediaManager.ToggleTray();
       return true;
     }
   }
@@ -101,20 +99,8 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
   if (!pDialog)
     return false;
 
-  // Figure out Line 1 of the dialog
-  CStdString strLine1;
-  if (item.GetVideoInfoTag())
-  {
-    strLine1 = item.GetVideoInfoTag()->m_strTitle;
-  }
-  else
-  {
-    strLine1 = URIUtils::GetFileName(item.GetPath());
-    URIUtils::RemoveExtension(strLine1);
-  }
-
-  // Figure out Line 2 of the dialog
-  CStdString strLine2;
+  // Figure out Lines 1 and 2 of the dialog
+  CStdString strLine1, strLine2;
   CXBMCTinyXML discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {
@@ -122,8 +108,15 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
     if (!pRootElement || strcmpi(pRootElement->Value(), "discstub") != 0)
       CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
     else
+    {
+      XMLUtils::GetString(pRootElement, "title", strLine1);
       XMLUtils::GetString(pRootElement, "message", strLine2);
+    }
   }
+
+  // Use the label for Line 1 if not defined
+  if (strLine1.IsEmpty())
+    strLine1 = item.GetLabel();
 
   // Setup dialog parameters
   pDialog->SetHeading(219);

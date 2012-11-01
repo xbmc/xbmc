@@ -9,7 +9,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,9 +23,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -138,7 +137,8 @@
 #define ACTION_CALIBRATE_SWAP_ARROWS  47 // select next arrow. Can b used in: settingsScreenCalibration.xml windowid=11
 #define ACTION_CALIBRATE_RESET        48 // reset calibration to defaults. Can b used in: settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
 #define ACTION_ANALOG_MOVE            49 // analog thumbstick move. Can b used in: slideshow.xml window id=2007/settingsScreenCalibration.xml windowid=11/settingsUICalibration.xml windowid=10
-#define ACTION_ROTATE_PICTURE         50 // rotate current picture during slideshow. Can b used in slideshow.xml window id=2007
+#define ACTION_ROTATE_PICTURE_CW      50 // rotate current picture clockwise during slideshow. Can be used in slideshow.xml window id=2007
+#define ACTION_ROTATE_PICTURE_CCW     51 // rotate current picture counterclockwise during slideshow. Can be used in slideshow.xml window id=2007
 
 #define ACTION_SUBTITLE_DELAY_MIN     52 // Decrease subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
 #define ACTION_SUBTITLE_DELAY_PLUS    53 // Increase subtitle/movie Delay.  Can b used in videoFullScreen.xml window id=2005
@@ -184,6 +184,8 @@
 #define ACTION_VOLUME_DOWN          89
 #define ACTION_MUTE                 91
 #define ACTION_NAV_BACK             92
+#define ACTION_VOLAMP_UP            93
+#define ACTION_VOLAMP_DOWN          94
 
 #define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100
@@ -265,6 +267,8 @@
 #define ACTION_AUDIO_DELAY            161
 #define ACTION_SUBTITLE_DELAY         162
 
+#define ACTION_RECORD                 170
+
 #define ACTION_PASTE                  180
 #define ACTION_NEXT_CONTROL           181
 #define ACTION_PREV_CONTROL           182
@@ -305,6 +309,8 @@
 #define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in DVDPlayer
 #define ACTION_SUBTITLE_ALIGN         232 // toggle vertical alignment of subtitles
 
+#define ACTION_FILTER                 233
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -318,16 +324,18 @@
 #define WINDOW_TEST_PATTERN               10008
 #define WINDOW_SCREEN_CALIBRATION         10011
 
+#define WINDOW_SETTINGS_START             10012
 #define WINDOW_SETTINGS_MYPICTURES        10012
 #define WINDOW_SETTINGS_MYPROGRAMS        10013
 #define WINDOW_SETTINGS_MYWEATHER         10014
 #define WINDOW_SETTINGS_MYMUSIC           10015
 #define WINDOW_SETTINGS_SYSTEM            10016
 #define WINDOW_SETTINGS_MYVIDEOS          10017
-#define WINDOW_SETTINGS_NETWORK           10018
+#define WINDOW_SETTINGS_SERVICE           10018 // former (Eden) WINDOW_SETTINGS_NETWORK
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
 #define WINDOW_SCRIPTS                    10020 // virtual window for backward compatibility
+#define WINDOW_SETTINGS_MYPVR             10021
 
 #define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_NAV                  10025
@@ -335,9 +343,12 @@
 
 #define WINDOW_LOGIN_SCREEN               10029
 #define WINDOW_SETTINGS_PROFILES          10034
+#define WINDOW_SKIN_SETTINGS              10035
 
 #define WINDOW_ADDON_BROWSER              10040
 
+#define WINDOW_SCREENSAVER_DIM               97
+#define WINDOW_DEBUG_INFO                    98
 #define WINDOW_DIALOG_POINTER             10099
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
@@ -349,7 +360,6 @@
 #define WINDOW_DIALOG_NUMERIC             10109
 #define WINDOW_DIALOG_GAMEPAD             10110
 #define WINDOW_DIALOG_BUTTON_MENU         10111
-#define WINDOW_DIALOG_MUSIC_SCAN          10112
 #define WINDOW_DIALOG_MUTE_BUG            10113
 #define WINDOW_DIALOG_PLAYER_CONTROLS     10114
 #define WINDOW_DIALOG_SEEK_BAR            10115
@@ -365,7 +375,6 @@
 #define WINDOW_DIALOG_PROFILE_SETTINGS    10130
 #define WINDOW_DIALOG_LOCK_SETTINGS       10131
 #define WINDOW_DIALOG_CONTENT_SETTINGS    10132
-#define WINDOW_DIALOG_VIDEO_SCAN          10133
 #define WINDOW_DIALOG_FAVOURITES          10134
 #define WINDOW_DIALOG_SONG_INFO           10135
 #define WINDOW_DIALOG_SMART_PLAYLIST_EDITOR 10136
@@ -383,6 +392,8 @@
 #define WINDOW_DIALOG_PLAY_EJECT          10148
 #define WINDOW_DIALOG_PERIPHERAL_MANAGER  10149
 #define WINDOW_DIALOG_PERIPHERAL_SETTINGS 10150
+#define WINDOW_DIALOG_EXT_PROGRESS        10151
+#define WINDOW_DIALOG_MEDIA_FILTER        10152
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
@@ -390,6 +401,22 @@
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
 
 #define WINDOW_DIALOG_OSD_TELETEXT        10600
+
+// PVR related Window and Dialog ID's
+#define WINDOW_PVR                        10601
+#define WINDOW_DIALOG_PVR_GUIDE_INFO      10602
+#define WINDOW_DIALOG_PVR_RECORDING_INFO  10603
+#define WINDOW_DIALOG_PVR_TIMER_SETTING   10604
+#define WINDOW_DIALOG_PVR_GROUP_MANAGER   10605
+#define WINDOW_DIALOG_PVR_CHANNEL_MANAGER 10606
+#define WINDOW_DIALOG_PVR_GUIDE_SEARCH    10607
+#define WINDOW_DIALOG_PVR_CHANNEL_SCAN    10608
+#define WINDOW_DIALOG_PVR_UPDATE_PROGRESS 10609
+#define WINDOW_DIALOG_PVR_OSD_CHANNELS    10610
+#define WINDOW_DIALOG_PVR_OSD_GUIDE       10611
+#define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10612
+#define WINDOW_DIALOG_PVR_OSD_CUTTER      10613
+// PVR_WINDOW VIEWS = 10694-10699
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000
@@ -418,6 +445,11 @@
 #define WINDOW_PYTHON_START               13000
 #define WINDOW_PYTHON_END                 13099
 
+// WINDOW_ID's from 14000 to 14099 reserved for Addons
+
+#define WINDOW_ADDON_START                14000
+#define WINDOW_ADDON_END                  14099
+
 #define ICON_TYPE_NONE          101
 #define ICON_TYPE_PROGRAMS      102
 #define ICON_TYPE_MUSIC         103
@@ -436,7 +468,7 @@ class CKey;
 class CAction
 {
 public:
-  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
+  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "", unsigned int holdTime = 0);
   CAction(int actionID, wchar_t unicode);
   CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
   CAction(int actionID, const CStdString &name, const CKey &key);

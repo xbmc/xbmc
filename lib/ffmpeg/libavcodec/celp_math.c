@@ -25,6 +25,7 @@
 #include <assert.h>
 
 #include "avcodec.h"
+#include "mathops.h"
 #include "celp_math.h"
 
 #ifdef G729_BITEXACT
@@ -194,6 +195,17 @@ int ff_log2(uint32_t value)
     value += (frac_dx * (tab_log2[frac_x0+1] - tab_log2[frac_x0])) >> 15;
 
     return (power_int << 15) + value;
+}
+
+int64_t ff_dot_product(const int16_t *a, const int16_t *b, int length)
+{
+    int i;
+    int64_t sum = 0;
+
+    for (i = 0; i < length; i++)
+        sum += MUL16(a[i], b[i]);
+
+    return sum;
 }
 
 float ff_dot_productf(const float* a, const float* b, int length)

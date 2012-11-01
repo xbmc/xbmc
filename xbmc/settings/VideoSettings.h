@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 // VideoSettings.h: interface for the CVideoSettings class.
@@ -58,14 +57,13 @@ enum EINTERLACEMETHOD
   VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF=13,
   VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL=14,
   VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF=15,
-
   VS_INTERLACEMETHOD_DEINTERLACE_HALF=16,
-
   VS_INTERLACEMETHOD_DXVA_BOB = 17,
   VS_INTERLACEMETHOD_DXVA_BEST = 18,
   // VS_INTERLACEMETHOD_DXVA_ANY = 19, Legacy
 
   VS_INTERLACEMETHOD_SW_BLEND = 20,
+  VS_INTERLACEMETHOD_AUTO_ION = 21,
 
   VS_INTERLACEMETHOD_MAX // do not use and keep as last enum value.
 };

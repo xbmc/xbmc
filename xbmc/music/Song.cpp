@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,11 +30,11 @@ CSong::CSong(CMusicInfoTag& tag)
   SYSTEMTIME stTime;
   tag.GetReleaseDate(stTime);
   strTitle = tag.GetTitle();
-  strGenre = tag.GetGenre();
+  genre = tag.GetGenre();
   strFileName = tag.GetURL();
-  strArtist = tag.GetArtist();
+  artist = tag.GetArtist();
   strAlbum = tag.GetAlbum();
-  strAlbumArtist = tag.GetAlbumArtist();
+  albumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
   strMusicBrainzArtistID = tag.GetMusicBrainzArtistID();
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
@@ -46,6 +45,8 @@ CSong::CSong(CMusicInfoTag& tag)
   iYear = stTime.wYear;
   iTrack = tag.GetTrackAndDiskNumber();
   iDuration = tag.GetDuration();
+  bCompilation = tag.GetCompilation();
+  embeddedArt = tag.GetCoverArtInfo();
   strThumb = "";
   iStartOffset = 0;
   iEndOffset = 0;
@@ -53,7 +54,6 @@ CSong::CSong(CMusicInfoTag& tag)
   iTimesPlayed = 0;
   iKaraokeNumber = 0;
   iKaraokeDelay = 0;         //! Karaoke song lyrics-music delay in 1/10 seconds.
-  iArtistId = -1;
   iAlbumId = -1;
 }
 
@@ -62,14 +62,14 @@ CSong::CSong()
   Clear();
 }
 
-void CSong::Serialize(CVariant& value)
+void CSong::Serialize(CVariant& value) const
 {
   value["filename"] = strFileName;
   value["title"] = strTitle;
-  value["artist"] = strArtist;
+  value["artist"] = artist;
   value["album"] = strAlbum;
-  value["albumartist"] = strAlbumArtist;
-  value["genre"] = strGenre;
+  value["albumartist"] = albumArtist;
+  value["genre"] = genre;
   value["duration"] = iDuration;
   value["track"] = iTrack;
   value["year"] = iYear;
@@ -81,8 +81,8 @@ void CSong::Serialize(CVariant& value)
   value["comment"] = strComment;
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
+  value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDateTime() : "";
   value["karaokenumber"] = (int64_t) iKaraokeNumber;
-  value["artistid"] = iArtistId;
   value["albumid"] = iAlbumId;
 }
 
@@ -90,10 +90,10 @@ void CSong::Clear()
 {
   strFileName.Empty();
   strTitle.Empty();
-  strArtist.Empty();
+  artist.clear();
   strAlbum.Empty();
-  strAlbumArtist.Empty();
-  strGenre.Empty();
+  albumArtist.clear();
+  genre.clear();
   strThumb.Empty();
   strMusicBrainzTrackID.Empty();
   strMusicBrainzArtistID.Empty();
@@ -109,12 +109,26 @@ void CSong::Clear()
   iEndOffset = 0;
   idSong = -1;
   iTimesPlayed = 0;
-  lastPlayed = "";
+  lastPlayed.Reset();
   iKaraokeNumber = 0;
   strKaraokeLyrEncoding.Empty();
   iKaraokeDelay = 0;
-  iArtistId = -1;
   iAlbumId = -1;
+  bCompilation = false;
+  embeddedArt.clear();
+}
+
+bool CSong::HasArt() const
+{
+  if (!strThumb.empty()) return true;
+  if (!embeddedArt.empty()) return true;
+  return false;
+}
+
+bool CSong::ArtMatches(const CSong &right) const
+{
+  return (right.strThumb == strThumb &&
+          embeddedArt.matches(right.embeddedArt));
 }
 
 CSongMap::CSongMap()

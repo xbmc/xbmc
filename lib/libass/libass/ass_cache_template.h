@@ -4,6 +4,8 @@
     typedef struct structname {
 #define GENERIC(type, member) \
         type member;
+#define STRING(member) \
+        char *member;
 #define FTVECTOR(member) \
         FT_Vector member;
 #define BITMAPHASHKEY(member) \
@@ -14,13 +16,15 @@
 #elif defined(CREATE_COMPARISON_FUNCTIONS)
 #undef CREATE_COMPARISON_FUNCTIONS
 #define START(funcname, structname) \
-    static int funcname##_compare(void *key1, void *key2, size_t key_size) \
+    static unsigned funcname##_compare(void *key1, void *key2, size_t key_size) \
     { \
         struct structname *a = key1; \
         struct structname *b = key2; \
         return // conditions follow
 #define GENERIC(type, member) \
             a->member == b->member &&
+#define STRING(member) \
+            strcmp(a->member, b->member) == 0 &&
 #define FTVECTOR(member) \
             a->member.x == b->member.x && a->member.y == b->member.y &&
 #define BITMAPHASHKEY(member) \
@@ -38,6 +42,8 @@
         unsigned hval = FNV1_32A_INIT;
 #define GENERIC(type, member) \
         hval = fnv_32a_buf(&p->member, sizeof(p->member), hval);
+#define STRING(member) \
+        hval = fnv_32a_str(p->member, hval);
 #define FTVECTOR(member) GENERIC(, member.x); GENERIC(, member.y);
 #define BITMAPHASHKEY(member) { \
         unsigned temp = bitmap_hash(&p->member, sizeof(p->member)); \
@@ -53,19 +59,11 @@
 
 
 
-// describes a bitmap; bitmaps with equivalents structs are considered identical
-START(bitmap, bitmap_hash_key)
-    GENERIC(char, bitmap) // bool : true = bitmap, false = outline
-    GENERIC(ASS_Font *, font)
-    GENERIC(double, size) // font size
-    GENERIC(uint32_t, ch) // character code
-    FTVECTOR(outline) // border width, 16.16 fixed point value
-    GENERIC(int, bold)
-    GENERIC(int, italic)
+// describes an outline bitmap
+START(outline_bitmap, outline_bitmap_hash_key)
+    GENERIC(OutlineHashValue *, outline)
     GENERIC(char, be) // blur edges
     GENERIC(double, blur) // gaussian blur
-    GENERIC(unsigned, scale_x) // 16.16
-    GENERIC(unsigned, scale_y) // 16.16
     GENERIC(int, frx) // signed 16.16
     GENERIC(int, fry) // signed 16.16
     GENERIC(int, frz) // signed 16.16
@@ -78,25 +76,48 @@ START(bitmap, bitmap_hash_key)
     GENERIC(int, shift_y)
     FTVECTOR(advance) // subpixel shift vector
     FTVECTOR(shadow_offset) // shadow subpixel shift
-    GENERIC(unsigned, drawing_hash) // hashcode of a drawing
-    GENERIC(unsigned, flags)    // glyph decoration
-    GENERIC(unsigned, border_style)
-END(BitmapHashKey)
+END(OutlineBitmapHashKey)
+
+// describe a clip mask bitmap
+START(clip_bitmap, clip_bitmap_hash_key)
+    STRING(text)
+END(ClipMaskHashKey)
 
 // describes an outline glyph
 START(glyph, glyph_hash_key)
     GENERIC(ASS_Font *, font)
     GENERIC(double, size) // font size
-    GENERIC(uint32_t, ch) // character code
+    GENERIC(int, face_index)
+    GENERIC(int, glyph_index)
     GENERIC(int, bold)
     GENERIC(int, italic)
     GENERIC(unsigned, scale_x) // 16.16
     GENERIC(unsigned, scale_y) // 16.16
     FTVECTOR(outline) // border width, 16.16
-    GENERIC(unsigned, drawing_hash) // hashcode of a drawing
     GENERIC(unsigned, flags)    // glyph decoration flags
     GENERIC(unsigned, border_style)
 END(GlyphHashKey)
+
+START(glyph_metrics, glyph_metrics_hash_key)
+    GENERIC(ASS_Font *, font)
+    GENERIC(double, size)
+    GENERIC(int, face_index)
+    GENERIC(int, glyph_index)
+    GENERIC(unsigned, scale_x)
+    GENERIC(unsigned, scale_y)
+END(GlyphMetricsHashKey)
+
+// describes an outline drawing
+START(drawing, drawing_hash_key)
+    GENERIC(unsigned, scale_x)
+    GENERIC(unsigned, scale_y)
+    GENERIC(int, pbo)
+    FTVECTOR(outline)
+    GENERIC(unsigned, border_style)
+    GENERIC(int, scale)
+    GENERIC(unsigned, hash)
+    STRING(text)
+END(DrawingHashKey)
 
 // Cache for composited bitmaps
 START(composite, composite_hash_key)
@@ -117,6 +138,7 @@ END(CompositeHashKey)
 
 #undef START
 #undef GENERIC
+#undef STRING
 #undef FTVECTOR
 #undef BITMAPHASHKEY
 #undef END

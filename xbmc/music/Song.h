@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 /*!
@@ -26,14 +25,11 @@
 
 #include "utils/StdString.h"
 #include "utils/ISerializable.h"
+#include "XBDateTime.h"
+#include "music/tags/MusicInfoTag.h" // for EmbeddedArt
 
 #include <map>
 #include <vector>
-
-namespace MUSIC_INFO
-{
-  class CMusicInfoTag;
-}
 
 /*!
  \ingroup music
@@ -61,7 +57,7 @@ public:
   CSong(MUSIC_INFO::CMusicInfoTag& tag);
   virtual ~CSong(){};
   void Clear() ;
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
 
   bool operator<(const CSong &song) const
   {
@@ -70,14 +66,26 @@ public:
     if (iTrack < song.iTrack) return true;
     return false;
   }
+
+  /*! \brief whether this song has art associated with it
+   Tests both the strThumb and embeddedArt members.
+   */
+  bool HasArt() const;
+
+  /*! \brief whether the art from this song matches the art from another
+   Tests both the strThumb and embeddedArt members.
+   */
+  bool ArtMatches(const CSong &right) const;
+
   long idSong;
   CStdString strFileName;
   CStdString strTitle;
-  CStdString strArtist;
+  std::vector<std::string> artist;
   CStdString strAlbum;
-  CStdString strAlbumArtist;
-  CStdString strGenre;
+  std::vector<std::string> albumArtist;
+  std::vector<std::string> genre;
   CStdString strThumb;
+  MUSIC_INFO::EmbeddedArtInfo embeddedArt;
   CStdString strMusicBrainzTrackID;
   CStdString strMusicBrainzArtistID;
   CStdString strMusicBrainzAlbumID;
@@ -89,11 +97,11 @@ public:
   int iDuration;
   int iYear;
   int iTimesPlayed;
-  CStdString lastPlayed;
+  CDateTime lastPlayed;
   int iStartOffset;
   int iEndOffset;
-  int iArtistId;
   int iAlbumId;
+  bool bCompilation;
 
   // Karaoke-specific information
   long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDInputStreamNavigator.h"
-#include "Util.h"
 #include "utils/LangCodeExpander.h"
 #include "../DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
@@ -28,8 +26,7 @@
 #include "LangInfo.h"
 #include "utils/log.h"
 #include "guilib/Geometry.h"
-#include "filesystem/IFile.h"
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "CocoaInterface.h"
 #endif
 
@@ -52,6 +49,11 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
   m_iTime = m_iTotalTime = 0;
+  m_bEOF = false;
+  m_icurrentGroupId = 0;
+  m_lastevent = DVDNAV_NOP;
+
+  memset(m_lastblock, 0, sizeof(m_lastblock));
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -92,7 +94,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   && strncasecmp(strDVDFile + len - 8, "VIDEO_TS", 8) == 0)
     strDVDFile[len - 9] = '\0';
 
-#if defined(__APPLE__) && !defined(__arm__)
+#if defined(TARGET_DARWIN_OSX)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
   strDVDFile = Cocoa_MountPoint2DeviceName(strDVDFile);
@@ -252,7 +254,7 @@ int CDVDInputStreamNavigator::Read(BYTE* buf, int buf_size)
 }
 
 // not working yet, but it is the recommanded way for seeking
-__int64 CDVDInputStreamNavigator::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamNavigator::Seek(int64_t offset, int whence)
 {
   if(whence == SEEK_POSSIBLE)
     return 0;
@@ -265,7 +267,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   if (!m_dvdnav) return -1;
 
   int result;
-  int len;
+  int len = 2048;
   int iNavresult = NAVRESULT_NOP;
 
   // m_tempbuffer will be used for anything that isn't a normal data block
@@ -315,6 +317,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // user input to make menus and other interactive stills work.
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
+        m_holdmode = HOLDMODE_NONE;
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
 
         /* if user didn't care for action, just skip it */
@@ -419,9 +422,10 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           iNavresult = NAVRESULT_HOLD;
         }
         else
+        {
+          m_bInMenu   = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
           iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_VTS_CHANGE);
-
-        m_bInMenu = (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
+        }
       }
       break;
 
@@ -482,7 +486,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // Calculate current time
         //unsigned int pos, len;
         //m_dll.dvdnav_get_position(m_dvdnav, &pos, &len);
-        //m_iTime = (int)(((__int64)m_iTotalTime * pos) / len);
+        //m_iTime = (int)(((int64_t)m_iTotalTime * pos) / len);
 
         pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
         m_dll.dvdnav_get_current_nav_dsi(m_dvdnav);
@@ -497,7 +501,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_bInMenu = pci->hli.hl_gi.hli_ss || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
 
         /* check for any gap in the stream, this is likely a discontinuity */
-        __int64 gap = (__int64)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;
+        int64_t gap = (int64_t)pci->pci_gi.vobu_s_ptm - m_iVobUnitStop;
         if(gap)
         {
           /* make sure demuxer is flushed before we change any correction */
@@ -510,7 +514,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           }
           m_iVobUnitCorrection += gap;
 
-          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%"PRId64" TO:%"PRId64" DIFF:%"PRId64, (m_iVobUnitStop * 1000)/90, ((__int64)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
+          CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%"PRId64" TO:%"PRId64" DIFF:%"PRId64, (m_iVobUnitStop * 1000)/90, ((int64_t)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
         }
 
         m_iVobUnitStart = pci->pci_gi.vobu_s_ptm;
@@ -785,15 +789,17 @@ void CDVDInputStreamNavigator::SkipWait()
   m_dll.dvdnav_wait_skip(m_dvdnav);
 }
 
-void CDVDInputStreamNavigator::SkipHold()
+CDVDInputStream::ENextStream CDVDInputStreamNavigator::NextStream()
 {
-  if(IsHeld())
+  if(m_holdmode == HOLDMODE_HELD)
     m_holdmode = HOLDMODE_SKIP;
-}
 
-bool CDVDInputStreamNavigator::IsHeld()
-{
-  return m_holdmode == HOLDMODE_HELD;
+  if(m_bEOF)
+    return NEXTSTREAM_NONE;
+  else if(m_lastevent == DVDNAV_VTS_CHANGE)
+    return NEXTSTREAM_OPEN;
+  else
+    return NEXTSTREAM_RETRY;
 }
 
 int CDVDInputStreamNavigator::GetActiveSubtitleStream()
@@ -1268,9 +1274,6 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
-
-  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
-  return -1;
 }
 
 int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
@@ -1342,7 +1345,4 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
-
-  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
-  return -1;
 }

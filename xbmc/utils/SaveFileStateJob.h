@@ -4,6 +4,8 @@
 
 #include "Job.h"
 #include "FileItem.h"
+#include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecordings.h"
 
 /* PLEX */
 #include "PlexMediaServerQueue.h"
@@ -13,13 +15,16 @@
 class CSaveFileStateJob : public CJob
 {
   CFileItem m_item;
+  CFileItem m_item_discstack;
   CBookmark m_bookmark;
   bool      m_updatePlayCount;
 public:
                 CSaveFileStateJob(const CFileItem& item,
+                                  const CFileItem& item_discstack,
                                   const CBookmark& bookmark,
                                   bool updatePlayCount)
                   : m_item(item),
+                    m_item_discstack(item_discstack),
                     m_bookmark(bookmark),
                     m_updatePlayCount(updatePlayCount) {}
   virtual       ~CSaveFileStateJob() {}
@@ -43,7 +48,11 @@ bool CSaveFileStateJob::DoWork()
 
 #ifndef __PLEX__
       CVideoDatabase videodatabase;
-      if (videodatabase.Open())
+      if (!videodatabase.Open())
+      {
+        CLog::Log(LOGWARNING, "%s - Unable to open video database. Can not save file state!", __FUNCTION__);
+      }
+      else
 #endif
       {
         bool updateListing = false;
@@ -59,6 +68,11 @@ bool CSaveFileStateJob::DoWork()
             videodatabase.IncrementPlayCount(m_item);
 #endif
             m_item.GetVideoInfoTag()->m_playCount++;
+
+            // PVR: Set recording's play count on the backend (if supported)
+            if (m_item.HasPVRRecordingInfoTag())
+              m_item.GetPVRRecordingInfoTag()->IncrementPlayCount();
+
             m_item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
             updateListing = true;
             /* PLEX */
@@ -73,9 +87,9 @@ bool CSaveFileStateJob::DoWork()
           if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
           {
 #ifndef __PLEX__
-            if (m_bookmark.timeInSeconds < 0.0f)
+            if (m_bookmark.timeInSeconds <= 0.0f)
               videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-            else if (m_bookmark.timeInSeconds > 0.0f)
+            else
               videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
 #else
             if (m_bookmark.timeInSeconds < 0.0f)
@@ -88,6 +102,15 @@ bool CSaveFileStateJob::DoWork()
 #endif
             if (m_item.HasVideoInfoTag())
               m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
+
+            // PVR: Set/clear recording's resume bookmark on the backend (if supported)
+            if (m_item.HasPVRRecordingInfoTag())
+            {
+              PVR::CPVRRecording *recording = m_item.GetPVRRecordingInfoTag();
+              recording->SetLastPlayedPosition(m_bookmark.timeInSeconds <= 0.0f ? 0 : (int)m_bookmark.timeInSeconds);
+              recording->m_resumePoint = m_bookmark;
+            }
+
             updateListing = true;
           }
         }
@@ -109,7 +132,14 @@ bool CSaveFileStateJob::DoWork()
 #endif
           updateListing = true;
         }
+
 #ifndef __PLEX__
+        // in order to properly update the the list, we need to update the stack item which is held in g_application.m_stackFileItemToUpdate
+        if (m_item.HasProperty("stackFileItemToUpdate"))
+        {
+          m_item = m_item_discstack; // as of now, the item is replaced by the discstack item
+          videodatabase.GetResumePoint(*m_item.GetVideoInfoTag());
+        }
         videodatabase.Close();
 #endif
 
@@ -127,7 +157,7 @@ bool CSaveFileStateJob::DoWork()
 
     if (m_item.IsAudio())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, m_item.GetPath().c_str());
 
       if (m_updatePlayCount)
       {
@@ -137,13 +167,17 @@ bool CSaveFileStateJob::DoWork()
         if (dialog && !dialog->IsDialogRunning())
 #endif
         {
-          // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
-
           CMusicDatabase musicdatabase;
-          if (musicdatabase.Open())
+          if (!musicdatabase.Open())
           {
-            musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
+            CLog::Log(LOGWARNING, "%s - Unable to open music database. Can not save file state!", __FUNCTION__);
+          }
+          else
+          {
+            // consider this item as played
+            CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, m_item.GetPath().c_str());
+
+            musicdatabase.IncrementPlayCount(m_item);
             musicdatabase.Close();
           }
         }

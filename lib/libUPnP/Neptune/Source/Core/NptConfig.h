@@ -37,9 +37,12 @@
 +---------------------------------------------------------------------*/
 #define NPT_CONFIG_HAVE_ASSERT_H
 #define NPT_CONFIG_HAVE_STD_C
+#define NPT_CONFIG_HAVE_POSIX_TIME
+#define NPT_CONFIG_HAVE_ASSERT_H
 #define NPT_CONFIG_HAVE_STDLIB_H
 #define NPT_CONFIG_HAVE_STDIO_H
 #define NPT_CONFIG_HAVE_STDARG_H
+#define NPT_CONFIG_HAVE_STDINT_H
 #define NPT_CONFIG_HAVE_STRING_H
 #define NPT_CONFIG_HAVE_LIMITS_H
 
@@ -55,8 +58,17 @@
 #define NPT_CONFIG_HAVE_MEMSET
 #define NPT_CONFIG_HAVE_MEMCMP
 #define NPT_CONFIG_HAVE_GETENV
+#define NPT_CONFIG_HAVE_SETENV
+#define NPT_CONFIG_HAVE_UNSETENV
 #define NPT_CONFIG_HAVE_READDIR_R
 #endif /* NPT_CONFIG_HAS_STD_C */
+
+#if defined(NPT_CONFIG_HAVE_POSIX_TIME)
+#define NPT_CONFIG_HAVE_GMTIME
+#define NPT_CONFIG_HAVE_GMTIME_R
+#define NPT_CONFIG_HAVE_LOCALTIME
+#define NPT_CONFIG_HAVE_LOCALTIME_R
+#endif
 
 #if defined(NPT_CONFIG_HAVE_STRING_H)
 #define NPT_CONFIG_HAVE_STRCMP
@@ -119,6 +131,7 @@
 
 /* linux */
 #if defined(__linux__)
+#define NPT_CONFIG_HAVE_GETADDRINFO
 #undef NPT_CONFIG_HAVE_SOCKADDR_SA_LEN
 #endif
 
@@ -126,6 +139,19 @@
 #if defined(__SYMBIAN32__)
 /* If defined, specify the stack size of each NPT_Thread. */
 #define NPT_CONFIG_THREAD_STACK_SIZE   0x14000
+#endif
+
+/* android */
+#if defined(ANDROID)
+#define NPT_CONFIG_HAVE_GETADDRINFO
+#undef NPT_CONFIG_HAVE_SOCKADDR_SA_LEN
+#endif
+
+/* OSX and iOS */
+#if defined(__APPLE__)
+#define NPT_CONFIG_HAVE_GETADDRINFO
+#define NPT_CONFIG_HAVE_AUTORELEASE_POOL
+//#define NPT_CONFIG_HAVE_SYSTEM_LOG_CONFIG
 #endif
 
 /*----------------------------------------------------------------------
@@ -157,6 +183,9 @@
 
 /* Microsoft C/C++ Compiler */
 #if defined(_MSC_VER)
+#undef NPT_CONFIG_HAVE_STDINT_H
+#define NPT_CONFIG_HAVE_GETADDRINFO
+#define NPT_CONFIG_STAT_ST_CTIME_IS_ST_BIRTHTIME
 #define NPT_FORMAT_64 "I64"
 #define NPT_CONFIG_INT64_TYPE __int64
 #define NPT_INT64_MIN _I64_MIN
@@ -185,8 +214,8 @@ typedef long NPT_PointerLong;
 #endif
 #define NPT_POINTER_TO_LONG(_p) ((NPT_PointerLong) (_p) )
 #if _MSC_VER >= 1400 && !defined(_WIN32_WCE)
-#define NPT_CONFIG_HAVE_GMTIME_S
-#define NPT_CONFIG_HAVE_LOCALTIME_S
+#define gmtime_r(a,b) gmtime_s(a,b)
+#define localtime_r(a,b) localtime_s(b,a)
 #define NPT_CONFIG_HAVE_FOPEN_S
 #define NPT_CONFIG_HAVE_FSOPEN
 #define NPT_CONFIG_HAVE_SHARE_H
@@ -197,7 +226,13 @@ typedef long NPT_PointerLong;
 #undef NPT_CONFIG_HAVE_GETENV
 #define NPT_CONFIG_HAVE_DUPENV_S
 #define dupenv_s _dupenv_s
+#undef NPT_CONFIG_HAVE_SETENV
+#undef NPT_CONFIG_HAVE_UNSETENV
+#define NPT_CONFIG_HAVE_PUTENV_S
+#define putenv_s _putenv_s
 #else
+#undef NPT_CONFIG_HAVE_GMTIME_R
+#undef NPT_CONFIG_HAVE_LOCALTIME_R
 #define NPT_vsnprintf  _vsnprintf
 #define NPT_snprintf   _snprintf
 #endif
@@ -210,12 +245,6 @@ typedef long NPT_PointerLong;
 #if defined(_WIN32_WCE)
 #if defined(NPT_CONFIG_HAVE_FOPEN_S)
 #undef NPT_CONFIG_HAVE_FOPEN_S
-#endif
-#if defined(NPT_CONFIG_HAVE_GMTIME_S)
-#undef NPT_CONFIG_HAVE_GMTIME_S
-#endif
-#if defined(NPT_CONFIG_HAVE_LOCALTIME_S)
-#undef NPT_CONFIG_HAVE_LOCALTIME_S
 #endif
 #endif
 
@@ -231,6 +260,20 @@ typedef long NPT_PointerLong;
 /* Android */
 #if defined(ANDROID)
 #define NPT_CONFIG_NO_RTTI
+#endif
+
+/* OSX and iOS */
+#if defined(__APPLE__)
+#include <TargetConditionals.h>
+#include <AvailabilityMacros.h>
+#define NPT_CONFIG_HAVE_NET_IF_DL_H
+#define NPT_CONFIG_HAVE_SOCKADDR_DL
+#if !defined(TARGET_OS_IPHONE) || !TARGET_OS_IPHONE
+#define NPT_CONFIG_HAVE_NET_IF_TYPES_H
+#if defined(MAC_OS_X_VERSION_10_6) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
+#define NPT_CONFIG_HAVE_STAT_ST_BIRTHTIME
+#endif
+#endif
 #endif
 
 /*----------------------------------------------------------------------

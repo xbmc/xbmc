@@ -47,6 +47,10 @@ typedef enum {
 
 static av_cold int decode_init(AVCodecContext *avctx)
 {
+    C93DecoderContext * const c93 = avctx->priv_data;
+
+    avcodec_get_frame_defaults(&c93->pictures[0]);
+    avcodec_get_frame_defaults(&c93->pictures[1]);
     avctx->pix_fmt = PIX_FMT_PAL8;
     return 0;
 }
@@ -126,7 +130,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
 
     c93->currentpic ^= 1;
 
-    newpic->reference = 1;
+    newpic->reference = 3;
     newpic->buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE |
                          FF_BUFFER_HINTS_REUSABLE | FF_BUFFER_HINTS_READABLE;
     if (avctx->reget_buffer(avctx, newpic)) {
@@ -137,10 +141,10 @@ static int decode_frame(AVCodecContext *avctx, void *data,
     stride = newpic->linesize[0];
 
     if (buf[0] & C93_FIRST_FRAME) {
-        newpic->pict_type = FF_I_TYPE;
+        newpic->pict_type = AV_PICTURE_TYPE_I;
         newpic->key_frame = 1;
     } else {
-        newpic->pict_type = FF_P_TYPE;
+        newpic->pict_type = AV_PICTURE_TYPE_P;
         newpic->key_frame = 0;
     }
 
@@ -148,7 +152,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
         uint32_t *palette = (uint32_t *) newpic->data[1];
         const uint8_t *palbuf = buf + buf_size - 768 - 1;
         for (i = 0; i < 256; i++) {
-            palette[i] = bytestream_get_be24(&palbuf);
+            palette[i] = 0xFF << 24 | bytestream_get_be24(&palbuf);
         }
     } else {
         if (oldpic->data[1])
@@ -243,14 +247,13 @@ static int decode_frame(AVCodecContext *avctx, void *data,
 }
 
 AVCodec ff_c93_decoder = {
-    "c93",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_C93,
-    sizeof(C93DecoderContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "c93",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_C93,
+    .priv_data_size = sizeof(C93DecoderContext),
+    .init           = decode_init,
+    .close          = decode_end,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Interplay C93"),
 };

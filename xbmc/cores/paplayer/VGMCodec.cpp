@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,6 +27,7 @@ VGMCodec::VGMCodec()
   m_CodecName = "VGM";
   m_vgm = 0;
   m_iDataPos = -1;
+  m_DataFormat = AE_FMT_INVALID;
 }
 
 VGMCodec::~VGMCodec()
@@ -53,7 +53,14 @@ bool VGMCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-  m_TotalTime = (__int64)m_dll.GetLength(m_vgm);
+  switch (m_BitsPerSample)
+  {
+    case  8: m_DataFormat = AE_FMT_U8   ; break;
+    case 16: m_DataFormat = AE_FMT_S16NE; break;
+    case 32: m_DataFormat = AE_FMT_FLOAT; break;
+  }
+
+  m_TotalTime = (int64_t)m_dll.GetLength(m_vgm);
 
   return true;
 }
@@ -65,9 +72,9 @@ void VGMCodec::DeInit()
   m_vgm = 0;
 }
 
-__int64 VGMCodec::Seek(__int64 iSeekTime)
+int64_t VGMCodec::Seek(int64_t iSeekTime)
 {
-  __int64 result = (__int64)m_dll.Seek(m_vgm,(unsigned long)iSeekTime);
+  int64_t result = (int64_t)m_dll.Seek(m_vgm,(unsigned long)iSeekTime);
   m_iDataPos = result/1000*m_SampleRate*m_BitsPerSample*m_Channels/8;
 
   return result;

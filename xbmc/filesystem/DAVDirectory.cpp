@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DAVDirectory.h"
 #include "URL.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -168,13 +167,12 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
 
 bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CFileCurl dav;
+  CCurlFile dav;
   CURL url(strPath);
   CStdString strRequest = "PROPFIND";
 
   dav.SetCustomRequest(strRequest);
   dav.SetMimeType("text/xml; charset=\"utf-8\"");
-  dav.SetRequestHeader("content-type", "text/xml");
   dav.SetRequestHeader("depth", 1);
   dav.SetPostData(
     "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
@@ -251,7 +249,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
 bool CDAVDirectory::Exists(const char* strPath)
 {
-  CFileCurl dav;
+  CCurlFile dav;
   CURL url(strPath);
   return dav.Exists(url);
 }

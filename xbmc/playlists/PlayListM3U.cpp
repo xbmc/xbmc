@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,24 +13,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "PlayListM3U.h"
 #include "filesystem/File.h"
+#include "URL.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#ifndef _LINUX
-#include "cores/dllloader/exports/emu_msvcrt.h"
-#endif
-
 #include "settings/AdvancedSettings.h"
 #include "music/tags/MusicInfoTag.h"
 
@@ -41,6 +37,8 @@ using namespace XFILE;
 #define M3U_INFO_MARKER  "#EXTINF"
 #define M3U_ARTIST_MARKER  "#EXTART"
 #define M3U_ALBUM_MARKER  "#EXTALB"
+#define M3U_STREAM_MARKER  "#EXT-X-STREAM-INF"
+#define M3U_BANDWIDTH_MARKER  "BANDWIDTH"
 
 // example m3u file:
 //   #EXTM3U
@@ -52,6 +50,14 @@ using namespace XFILE;
 //   E:\Program Files\Winamp3\demo.mp3
 
 
+// example m3u8 containing streams of different bitrates
+//   #EXTM3U
+//   #EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=1600000
+//   playlist_1600.m3u8
+//   #EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=3000000
+//   playlist_3000.m3u8
+//   #EXT-X-STREAM-INF:PROGRAM-ID=1, BANDWIDTH=800000
+//   playlist_800.m3u8
 
 
 CPlayListM3U::CPlayListM3U(void)
@@ -174,3 +180,111 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
   }
   file.Close();
 }
+
+CStdString CPlayListM3U::GetBestBandwidthStream(const CStdString &strFileName, size_t bandwidth)
+{
+  // we may be passed a playlist that does not contain playlists of different
+  // bitrates (eg: this playlist is really the HLS video). So, default the
+  // return to the filename so it can be played
+  char szLine[4096];
+  CStdString strLine;
+  CStdString strPlaylist = strFileName;
+  size_t maxBandwidth = 0;
+
+  // if we cannot get the last / we wont be able to determine the sub-playlists
+  size_t baseEnd = strPlaylist.rfind('/');
+  if (baseEnd == std::string::npos)
+    return strPlaylist;
+
+  // store the base path (the path without the filename)
+  CStdString basePath = strPlaylist.substr(0, baseEnd + 1);
+
+  // open the file, and if it fails, return
+  CFile file;
+  if (!file.Open(strFileName) )
+  {
+    file.Close();
+    return strPlaylist;
+  }
+
+  // convert bandwidth specified in kbps to bps used by the m3u8
+  bandwidth *= 1000;
+
+  while (file.ReadString(szLine, 1024))
+  {
+    // read and trim a line
+    strLine = szLine;
+    strLine.TrimRight(" \t\r\n");
+    strLine.TrimLeft(" \t");
+
+    // skip the first line
+    if (strLine == M3U_START_MARKER)
+        continue;
+    else if (strLine.Left(strlen(M3U_STREAM_MARKER)) == M3U_STREAM_MARKER)
+    {
+      // parse the line so we can pull out the bandwidth
+      std::map< CStdString, CStdString > params = ParseStreamLine(strLine);
+      std::map< CStdString, CStdString >::iterator it = params.find(M3U_BANDWIDTH_MARKER);
+
+      if (it != params.end())
+      {
+        size_t streamBandwidth = atoi(it->second.c_str());
+        if ((maxBandwidth < streamBandwidth) && (streamBandwidth <= bandwidth))
+        {
+          // read the next line
+          if (!file.ReadString(szLine, 1024))
+            continue;
+
+          strLine = szLine;
+          strLine.TrimRight(" \t\r\n");
+          strLine.TrimLeft(" \t");
+
+          // this line was empty
+          if (strLine.empty())
+            continue;
+
+          // store the max bandwidth
+          maxBandwidth = streamBandwidth;
+
+          // if the path is absolute just use it
+          if (CURL::IsFullPath(strLine))
+            strPlaylist = strLine;
+          else
+            strPlaylist = basePath + strLine;
+        }
+      }
+    }
+  }
+
+  CLog::Log(LOGINFO, "Auto-selecting %s based on configured bandwidth.", strPlaylist.c_str());
+
+  return strPlaylist;
+}
+
+std::map< CStdString, CStdString > CPlayListM3U::ParseStreamLine(const CStdString &streamLine)
+{
+  std::map< CStdString, CStdString > params;
+
+  // ensure the line has something beyond the stream marker and ':'
+  if (strlen(streamLine) < strlen(M3U_STREAM_MARKER) + 2)
+    return params;
+
+  // get the actual params following the :
+  CStdString strParams(streamLine.substr(strlen(M3U_STREAM_MARKER) + 1));
+
+  // separate the parameters
+  CStdStringArray vecParams = StringUtils::SplitString(strParams, ",");
+  for (size_t i = 0; i < vecParams.size(); i++)
+  {
+    // split the param, ensure there was an =
+    CStdStringArray vecTuple = StringUtils::SplitString(vecParams[i].Trim(), "=");
+    if (vecTuple.size() < 2)
+      continue;
+
+    // remove white space from name and value and store it in the dictionary
+    params[vecTuple[0].Trim()] = vecTuple[1].Trim();
+  }
+
+  return params;
+}
+

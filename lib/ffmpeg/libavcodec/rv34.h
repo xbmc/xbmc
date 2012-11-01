@@ -32,6 +32,7 @@
 #include "mpegvideo.h"
 
 #include "h264pred.h"
+#include "rv34dsp.h"
 
 #define MB_TYPE_SEPARATE_DC 0x01000000
 #define IS_SEPARATE_DC(a)   ((a) & MB_TYPE_SEPARATE_DC)
@@ -83,6 +84,7 @@ typedef struct SliceInfo{
 /** decoder context */
 typedef struct RV34DecContext{
     MpegEncContext s;
+    RV34DSPContext rdsp;
     int8_t *intra_types_hist;///< old block types, used for prediction
     int8_t *intra_types;     ///< block types
     int    intra_types_stride;///< block types array stride
@@ -90,7 +92,6 @@ typedef struct RV34DecContext{
     const uint8_t *luma_dc_quant_p;///< luma subblock DC quantizer for interframes
 
     RV34VLC *cur_vlcs;       ///< VLC set used for current frame decoding
-    int bits;                ///< slice size in bits
     H264PredContext h;       ///< functions for 4x4 and 16x16 intra block prediction
     SliceInfo si;            ///< current slice information
 
@@ -105,6 +106,7 @@ typedef struct RV34DecContext{
     int rpr;                 ///< one field size in RV30 slice header
 
     int cur_pts, last_pts, next_pts;
+    int weight1, weight2;    ///< B frame distance fractions (0.14) used in motion compensation
 
     uint16_t *cbp_luma;      ///< CBP values for luma subblocks
     uint8_t  *cbp_chroma;    ///< CBP values for chroma subblocks
@@ -112,6 +114,11 @@ typedef struct RV34DecContext{
 
     /** 8x8 block available flags (for MV prediction) */
     DECLARE_ALIGNED(8, uint32_t, avail_cache)[3*4];
+
+    /** temporary blocks for RV4 weighted MC */
+    uint8_t *tmp_b_block_y[2];
+    uint8_t *tmp_b_block_uv[4];
+    uint8_t *tmp_b_block_base;
 
     int (*parse_slice_header)(struct RV34DecContext *r, GetBitContext *gb, SliceInfo *si);
     int (*decode_mb_info)(struct RV34DecContext *r);
@@ -126,5 +133,7 @@ int ff_rv34_get_start_offset(GetBitContext *gb, int blocks);
 int ff_rv34_decode_init(AVCodecContext *avctx);
 int ff_rv34_decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt);
 int ff_rv34_decode_end(AVCodecContext *avctx);
+int ff_rv34_decode_init_thread_copy(AVCodecContext *avctx);
+int ff_rv34_decode_update_thread_context(AVCodecContext *dst, const AVCodecContext *src);
 
 #endif /* AVCODEC_RV34_H */

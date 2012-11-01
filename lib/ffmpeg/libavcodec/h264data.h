@@ -36,7 +36,7 @@
 
 
 static const uint8_t golomb_to_pict_type[5]=
-{FF_P_TYPE, FF_B_TYPE, FF_I_TYPE, FF_SP_TYPE, FF_SI_TYPE};
+{AV_PICTURE_TYPE_P, AV_PICTURE_TYPE_B, AV_PICTURE_TYPE_I, AV_PICTURE_TYPE_SP, AV_PICTURE_TYPE_SI};
 
 static const uint8_t golomb_to_intra4x4_cbp[48]={
  47, 31, 15,  0, 23, 27, 29, 30,  7, 11, 13, 14, 39, 43, 45, 46,
@@ -80,7 +80,14 @@ static const uint8_t luma_dc_field_scan[16]={
 
 static const uint8_t chroma_dc_scan[4]={
  (0+0*2)*16, (1+0*2)*16,
- (0+1*2)*16, (1+1*2)*16,  //FIXME
+ (0+1*2)*16, (1+1*2)*16,
+};
+
+static const uint8_t chroma422_dc_scan[8]={
+ (0+0*2)*16, (0+1*2)*16,
+ (1+0*2)*16, (0+2*2)*16,
+ (0+3*2)*16, (1+1*2)*16,
+ (1+2*2)*16, (1+3*2)*16,
 };
 
 // zigzag_scan8x8_cavlc[i] = zigzag_scan8x8[(i/4) + 16*(i%4)]

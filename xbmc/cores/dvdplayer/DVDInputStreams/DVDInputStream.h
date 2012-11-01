@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,14 +15,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <string>
 #include "utils/BitstreamStats.h"
+#include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
 
@@ -39,12 +39,21 @@ enum DVDStreamType
   DVDSTREAM_TYPE_HTSP   = 8,
   DVDSTREAM_TYPE_MPLS   = 10,
   DVDSTREAM_TYPE_BLURAY = 11,
+  DVDSTREAM_TYPE_PVRMANAGER = 12,
 };
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
 #define DVDSTREAM_BLOCK_SIZE_DVD  2048
+
+class CPoint;
+
+namespace PVR
+{
+  class CPVRChannel;
+  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+}
 
 class CDVDInputStream
 {
@@ -53,10 +62,17 @@ public:
   {
     public:
     virtual ~IChannel() {};
-    virtual bool NextChannel() = 0;
-    virtual bool PrevChannel() = 0;
-    virtual bool SelectChannel(unsigned int channel) = 0;
+    virtual bool NextChannel(bool preview = false) = 0;
+    virtual bool PrevChannel(bool preview = false) = 0;
+    virtual bool SelectChannelByNumber(unsigned int channel) = 0;
+    virtual bool SelectChannel(const PVR::CPVRChannel &channel) { return false; };
+    virtual bool GetSelectedChannel(PVR::CPVRChannelPtr&) { return false; };
     virtual bool UpdateItem(CFileItem& item) = 0;
+    virtual bool CanRecord() = 0;
+    virtual bool IsRecording() = 0;
+    virtual bool Record(bool bOnOff) = 0;
+    virtual bool CanPause() = 0;
+    virtual bool CanSeek() = 0;
   };
 
   class IDisplayTime
@@ -76,7 +92,7 @@ public:
 
   class IChapter
   {
-    public:    
+    public:
     virtual ~IChapter() {};
     virtual int  GetChapter() = 0;
     virtual int  GetChapterCount() = 0;
@@ -84,25 +100,49 @@ public:
     virtual bool SeekChapter(int ch) = 0;
   };
 
+  class IMenus
+  {
+    public:
+    virtual ~IMenus() {};
+    virtual void ActivateButton() = 0;
+    virtual void SelectButton(int iButton) = 0;
+    virtual int  GetCurrentButton() = 0;
+    virtual int  GetTotalButtons() = 0;
+    virtual void OnUp() = 0;
+    virtual void OnDown() = 0;
+    virtual void OnLeft() = 0;
+    virtual void OnRight() = 0;
+    virtual void OnMenu() = 0;
+    virtual void OnBack() = 0;
+    virtual void OnNext() = 0;
+    virtual void OnPrevious() = 0;
+    virtual bool OnMouseMove(const CPoint &point) = 0;
+    virtual bool OnMouseClick(const CPoint &point) = 0;
+    virtual bool IsInMenu() = 0;
+    virtual double GetTimeStampCorrection() = 0;
+  };
+
+  enum ENextStream
+  {
+    NEXTSTREAM_NONE,
+    NEXTSTREAM_OPEN,
+    NEXTSTREAM_RETRY,
+  };
+
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content);
   virtual void Close() = 0;
   virtual int Read(BYTE* buf, int buf_size) = 0;
-  virtual __int64 Seek(__int64 offset, int whence) = 0;
+  virtual int64_t Seek(int64_t offset, int whence) = 0;
   virtual bool Pause(double dTime) = 0;
-  virtual __int64 GetLength() = 0;
+  virtual int64_t GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
   virtual std::string& GetFileName() { return m_strFileName; }
-  virtual bool NextStream() { return false; }
+  virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
-
-  /*! \brief Get the number of bytes currently cached/buffered ahead from
-   the current position in the input stream if applicable.
-   \return number of cached ahead data bytes (-1 if not available)
-   */
-  virtual __int64 GetCachedBytes() { return -1; }
+  virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should
@@ -110,10 +150,10 @@ public:
    */
   virtual void SetReadRate(unsigned rate) {}
 
-  /*! \briaf Current read speed from source
-   *  used to calculate caching time for startup
+  /*! \brief Get the cache status
+   \return true when cache status was succesfully obtained
    */
-  virtual unsigned GetReadRate() { return 0; }
+  virtual bool GetCacheStatus(XFILE::SCacheStatus *status) { return false; }
 
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;

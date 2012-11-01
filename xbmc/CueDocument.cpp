@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -61,6 +60,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
+#include "settings/AdvancedSettings.h"
 
 #include <set>
 
@@ -102,7 +102,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
   {
     if (!ReadNextLine(strLine))
       break;
-    if (strLine.Left(7) == "INDEX 0")
+    if (strLine.Left(8) == "INDEX 01")
     {
       if (bCurrentFileChanged)
       {
@@ -228,12 +228,12 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   {
     CSong song;
     if ((m_Track[i].strArtist.length() == 0) && (m_strArtist.length() > 0))
-      song.strArtist = m_strArtist;
+      song.artist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
     else
-      song.strArtist = m_Track[i].strArtist;
-    song.strAlbumArtist = m_strArtist;
+      song.artist = StringUtils::Split(m_Track[i].strArtist, g_advancedSettings.m_musicItemSeparator);
+    song.albumArtist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
     song.strAlbum = m_strAlbum;
-    song.strGenre = m_strGenre;
+    song.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);
     song.iYear = m_iYear;
     song.iTrack = m_Track[i].iTrackNumber;
     if (m_Track[i].strTitle.length() == 0) // No track information for this track!

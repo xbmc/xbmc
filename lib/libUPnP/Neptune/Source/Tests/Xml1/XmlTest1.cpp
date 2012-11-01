@@ -167,7 +167,7 @@ TestNamespaces()
     writer.Serialize(*root, output);
     NPT_LargeSize size;
     output.GetSize(size);
-    printf(NPT_String((const char*)output.GetData(), (NPT_Size)size).GetChars());
+    printf("%s", NPT_String((const char*)output.GetData(), (NPT_Size)size).GetChars());
 
     delete top;
     delete root;
@@ -499,22 +499,21 @@ TestMakeStandalone()
 static void
 TestFile(const char* filename)
 {
-    NPT_File*                input;
     NPT_InputStreamReference stream;
     NPT_Result               result;
 
     // open the input file
-    input = new NPT_File(filename);
-    result = input->Open(NPT_FILE_OPEN_MODE_READ);
+    NPT_File input(filename);
+    result = input.Open(NPT_FILE_OPEN_MODE_READ);
     if (NPT_FAILED(result)) {
         NPT_Debug("XmtTest1:: cannot open input (%d)\n", result);
         return;
     }
-    result = input->GetInputStream(stream);
-
+    result = input.GetInputStream(stream);
+    
     // parse the buffer
     NPT_XmlParser parser;
-    NPT_XmlNode*  tree;
+    NPT_XmlNode*  tree = NULL;
     result = parser.Parse(*stream, tree);
     if (NPT_FAILED(result)) {
         NPT_Debug("XmlTest1:: cannot parse input (%d)\n", result);
@@ -532,9 +531,21 @@ TestFile(const char* filename)
 
     // delete the tree
     delete tree;
+}
 
-    // delete the input
-    delete input;
+/*----------------------------------------------------------------------
+|       TestBadInput
++---------------------------------------------------------------------*/
+static void
+TestBadInput()
+{
+    NPT_XmlParser parser;
+    NPT_XmlNode* root = NULL;
+    
+    const char* doc = "<top1></top1><top2></top2>";
+    NPT_Result result = parser.Parse(doc, root);
+    CHECK(result == NPT_ERROR_XML_MULTIPLE_ROOTS);
+    CHECK(root == NULL);
 }
 
 /*----------------------------------------------------------------------
@@ -573,6 +584,7 @@ main(int argc, char** argv)
     TestCanonicalizer();
     TestFinders();
     TestWriter();
+    TestBadInput();
     
     return 0;
 }

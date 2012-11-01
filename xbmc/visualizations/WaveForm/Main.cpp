@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2008-2010 Team XBMC
+ *      Copyright (C) 2008-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -100,16 +99,15 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
-  // Convert the audio data into a floating -1 to +1 range
   int ipos=0;
   while (ipos < 512)
   {
     for (int i=0; i < iAudioDataLength; i+=2)
     {
-      g_fWaveform[0][ipos] = pAudioData[i] / 32768.0f;    // left channel
-      g_fWaveform[1][ipos] = pAudioData[i+1] / 32768.0f;  // right channel
+      g_fWaveform[0][ipos] = pAudioData[i  ]; // left channel
+      g_fWaveform[1][ipos] = pAudioData[i+1]; // right channel
       ipos++;
       if (ipos >= 512) break;
     }

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -56,7 +55,10 @@ public:
   // waits until all available data has been rendered
   // just waiting for packetqueue should be enough for video
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
-  bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
+  bool AcceptsData() const                          { return !m_messageQueue.IsFull(); }
+  bool HasData() const                              { return m_messageQueue.GetDataSize() > 0; }
+  int  GetLevel();
+  bool IsInited() const                             { return m_messageQueue.IsInited(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -96,9 +98,6 @@ public:
   void SetSpeed(int iSpeed);
 
   // classes
-  CDVDMessageQueue m_messageQueue;
-  CDVDMessageQueue& m_messageParent;
-
   CDVDOverlayContainer* m_pOverlayContainer;
 
   CDVDClock* m_pClock;
@@ -125,6 +124,9 @@ protected:
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
 #endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
+
+  CDVDMessageQueue m_messageQueue;
+  CDVDMessageQueue& m_messageParent;
 
   double m_iCurrentPts; // last pts displayed
   double m_iVideoDelay;

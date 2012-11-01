@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "addons/Addon.h"
@@ -47,7 +46,7 @@ typedef enum
 
 namespace XFILE
 {
-  class CFileCurl;
+  class CCurlFile;
 }
 
 class CScraperUrl;
@@ -121,19 +120,19 @@ public:
   // scraper media functions
   CScraperUrl NfoUrl(const CStdString &sNfoContent);
 
-  std::vector<CScraperUrl> FindMovie(XFILE::CFileCurl &fcurl,
+  std::vector<CScraperUrl> FindMovie(XFILE::CCurlFile &fcurl,
     const CStdString &sMovie, bool fFirst);
-  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CFileCurl &fcurl,
+  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CCurlFile &fcurl,
     const CStdString &sAlbum, const CStdString &sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
-    XFILE::CFileCurl &fcurl, const CStdString &sArtist);
-  EPISODELIST GetEpisodeList(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl);
+    XFILE::CCurlFile &fcurl, const CStdString &sArtist);
+  VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
 
-  bool GetVideoDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+  bool GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     bool fMovie/*else episode*/, CVideoInfoTag &video);
-  bool GetAlbumDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+  bool GetAlbumDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     CAlbum &album);
-  bool GetArtistDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+  bool GetArtistDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     const CStdString &sSearch, CArtist &artist);
 
 private:
@@ -144,15 +143,15 @@ private:
   bool Load();
   std::vector<CStdString> Run(const CStdString& function,
                               const CScraperUrl& url,
-                              XFILE::CFileCurl& http,
+                              XFILE::CCurlFile& http,
                               const std::vector<CStdString>* extras = NULL);
   std::vector<CStdString> RunNoThrow(const CStdString& function,
                               const CScraperUrl& url,
-                              XFILE::CFileCurl& http,
+                              XFILE::CCurlFile& http,
                               const std::vector<CStdString>* extras = NULL);
   CStdString InternalRun(const CStdString& function,
                          const CScraperUrl& url,
-                         XFILE::CFileCurl& http,
+                         XFILE::CCurlFile& http,
                          const std::vector<CStdString>* extras);
 
   bool m_fLoaded;

@@ -1,6 +1,4 @@
-/**
- * VP8 compatible video decoder
- *
+/*
  * Copyright (C) 2010 David Conrad
  * Copyright (C) 2010 Ronald S. Bultje
  *
@@ -21,6 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/**
+ * @file
+ * VP8 compatible video decoder
+ */
 
 #ifndef AVCODEC_VP8DSP_H
 #define AVCODEC_VP8DSP_H
@@ -79,5 +81,6 @@ void ff_put_vp8_pixels4_c(uint8_t *dst, uint8_t *src, int stride, int h, int x, 
 void ff_vp8dsp_init(VP8DSPContext *c);
 void ff_vp8dsp_init_x86(VP8DSPContext *c);
 void ff_vp8dsp_init_altivec(VP8DSPContext *c);
+void ff_vp8dsp_init_arm(VP8DSPContext *c);
 
 #endif /* AVCODEC_VP8DSP_H */

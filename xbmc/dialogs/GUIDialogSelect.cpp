@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,12 +33,14 @@ CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
+  m_buttonString = -1;
   m_useDetails = false;
   m_vecListInternal = new CFileItemList;
   m_selectedItems = new CFileItemList;
   m_multiSelection = false;
   m_vecList = m_vecListInternal;
   m_iSelected = -1;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
@@ -55,7 +56,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialog::OnMessage(message);
-      m_viewControl.Reset();
+      m_viewControl.Clear();
+
       m_bButtonEnabled = false;
       m_useDetails = false;
       m_multiSelection = false;
@@ -76,6 +78,9 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 
       m_vecListInternal->Clear();
       m_vecList = m_vecListInternal;
+
+      m_buttonString = -1;
+      SET_CONTROL_LABEL(CONTROL_BUTTON, "");
       return true;
     }
     break;
@@ -83,6 +88,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_bButtonPressed = false;
+      m_bConfirmed = false;
       CGUIDialog::OnMessage(message);
       return true;
     }
@@ -108,6 +114,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
               for (int i = 0 ; i < m_vecList->Size() ; i++)
                 m_vecList->Get(i)->Select(false);
               item->Select(true);
+              m_bConfirmed = true;
               Close();
             }
           }
@@ -117,6 +124,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       {
         m_iSelected = -1;
         m_bButtonPressed = true;
+        if (m_multiSelection)
+          m_bConfirmed = true;
         Close();
       }
     }
@@ -138,6 +147,8 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 bool CGUIDialogSelect::OnBack(int actionID)
 {
   m_iSelected = -1;
+  m_selectedItems->Clear();
+  m_bConfirmed = false;
   return CGUIDialog::OnBack(actionID);
 }
 
@@ -201,9 +212,10 @@ const CFileItemList& CGUIDialogSelect::GetSelectedItems() const
 void CGUIDialogSelect::EnableButton(bool enable, int string)
 {
   m_bButtonEnabled = enable;
-  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_BUTTON);
-  msg.SetLabel(string);
-  OnMessage(msg);
+  m_buttonString = string;
+
+  if (IsActive())
+    SetupButton();
 }
 
 bool CGUIDialogSelect::IsButtonPressed()
@@ -213,18 +225,66 @@ bool CGUIDialogSelect::IsButtonPressed()
 
 void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 {
-  m_vecList->Sort(SORT_METHOD_LABEL,bSortOrder?SORT_ORDER_ASC:SORT_ORDER_DESC);
+  m_vecList->Sort(SORT_METHOD_LABEL, bSortOrder ? SortOrderAscending : SortOrderDescending);
 }
 
 void CGUIDialogSelect::SetSelected(int iSelected)
 {
-  if (iSelected < 0 || iSelected >= (int)m_vecList->Size()) return;
-  m_iSelected = iSelected;
+  if (iSelected < 0 || iSelected >= (int)m_vecList->Size() ||
+      m_vecList->Get(iSelected).get() == NULL) 
+    return;
+
+  // only set m_iSelected if there is no multi-select
+  // or if it doesn't have a valid value yet
+  // or if the current value is bigger than the new one
+  // so that we always focus the item nearest to the beginning of the list
+  if (!m_multiSelection || m_iSelected < 0 || m_iSelected > iSelected)
+    m_iSelected = iSelected;
+  m_vecList->Get(iSelected)->Select(true);
+  m_selectedItems->Add(m_vecList->Get(iSelected));
+}
+
+void CGUIDialogSelect::SetSelected(const CStdString &strSelectedLabel)
+{
+  if (strSelectedLabel.empty())
+    return;
+
+  for (int index = 0; index < m_vecList->Size(); index++)
+  {
+    if (strSelectedLabel.Equals(m_vecList->Get(index)->GetLabel()))
+    {
+      SetSelected(index);
+      return;
+    }
+  }
+}
+
+void CGUIDialogSelect::SetSelected(std::vector<int> selectedIndexes)
+{
+  if (selectedIndexes.empty())
+    return;
+
+  for (std::vector<int>::const_iterator it = selectedIndexes.begin(); it != selectedIndexes.end(); it++)
+    SetSelected(*it);
+}
+
+void CGUIDialogSelect::SetSelected(const std::vector<CStdString> &selectedLabels)
+{
+  if (selectedLabels.empty())
+    return;
+
+  for (std::vector<CStdString>::const_iterator it = selectedLabels.begin(); it != selectedLabels.end(); it++)
+    SetSelected(*it);
 }
 
 void CGUIDialogSelect::SetUseDetails(bool useDetails)
 {
   m_useDetails = useDetails;
+}
+
+void CGUIDialogSelect::SetMultiSelection(bool multiSelection)
+{
+  m_multiSelection = multiSelection;
 }
 
 CGUIControl *CGUIDialogSelect::GetFirstFocusableControl(int id)
@@ -263,19 +323,30 @@ void CGUIDialogSelect::OnInitWindow()
   CStdString items;
   items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
+  
+  if (m_multiSelection)
+    EnableButton(true, 186);
 
-  if (m_bButtonEnabled)
-  {
-    CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_BUTTON);
-    g_windowManager.SendMessage(msg2);
-  }
-  else
-  {
-    CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_BUTTON);
-    g_windowManager.SendMessage(msg2);
-  }
+  SetupButton();
   CGUIDialogBoxBase::OnInitWindow();
 
   if (m_iSelected >= 0)
     m_viewControl.SetSelectedItem(m_iSelected);
+}
+
+void CGUIDialogSelect::OnWindowUnload()
+{
+  CGUIDialog::OnWindowUnload();
+  m_viewControl.Reset();
+}
+
+void CGUIDialogSelect::SetupButton()
+{
+  if (m_bButtonEnabled)
+  {
+    SET_CONTROL_LABEL(CONTROL_BUTTON, g_localizeStrings.Get(m_buttonString));
+    SET_CONTROL_VISIBLE(CONTROL_BUTTON);
+  }
+  else
+    SET_CONTROL_HIDDEN(CONTROL_BUTTON);
 }

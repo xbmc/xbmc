@@ -2,7 +2,7 @@
 #define __FRAMEBUFFEROBJECT_H__
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,15 +16,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h" // for HAS_GL
 
 #if defined(HAS_GL) || HAS_GLES == 2
+#include "system_gl.h"
 
 //
 // CFrameBufferObject
@@ -44,12 +44,6 @@
 //     bind and use texture anywhere
 //     glBindTexture(GL_TEXTURE_2D, fbo->Texture());
 //
-
-#if HAS_GLES == 2
-// For OpenGL ES2.0, FBO are not extensions but part of the API.
-#define glBindFramebufferEXT  glBindFramebuffer
-#define GL_FRAMEBUFFER_EXT    GL_FRAMEBUFFER
-#endif
 
 class CFrameBufferObject
 {
@@ -80,28 +74,15 @@ public:
 
   // Create a new texture and bind to it
   bool CreateAndBindToTexture(GLenum target, int width, int height, GLenum format,
-                              GLenum filter=GL_LINEAR, GLenum clamp=GL_CLAMP_TO_EDGE);
+                              GLenum filter=GL_LINEAR, GLenum clampmode=GL_CLAMP_TO_EDGE);
 
   // Return the internally created texture ID
   GLuint Texture() { return m_texid; }
 
   // Begin rendering to FBO
-  bool BeginRender()
-  {
-    if (IsValid() && IsBound())
-    {
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_fbo);
-      return true;
-    }
-    return false;
-  }
-
+  bool BeginRender();
   // Finish rendering to FBO
-  void EndRender()
-  {
-    if (IsValid())
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-  }
+  void EndRender();
 
 private:
   GLuint m_fbo;

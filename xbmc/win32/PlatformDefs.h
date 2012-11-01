@@ -2,7 +2,7 @@
 #define __PLATFORM_DEFS_H__
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +32,6 @@ typedef __int64       off64_t;
 typedef __int64       fpos64_t;
 typedef __int64       __off64_t;
 typedef long          __off_t;
-typedef unsigned long ThreadIdentifier;
 
 #define ssize_t int
 
@@ -47,17 +45,11 @@ typedef unsigned long ThreadIdentifier;
 #define strncasecmp strnicmp
 #endif
 
-#ifndef PRIdS
-#define PRIdS "Id"
-#endif
-
 #define popen   _popen
-#define pclose  _pclose 
+#define pclose  _pclose
 
-#ifdef HAS_SDL
-#include <SDL/SDL_endian.h>
-
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if 0
+// big endian
 #define PIXEL_ASHIFT 0
 #define PIXEL_RSHIFT 8
 #define PIXEL_GSHIFT 16
@@ -66,8 +58,8 @@ typedef unsigned long ThreadIdentifier;
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
-
 #else
+// little endian
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
 #define PIXEL_GSHIFT 8
@@ -76,7 +68,6 @@ typedef unsigned long ThreadIdentifier;
 #define RMASK 0x00ff0000
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
-#endif
 #endif
 
 #ifndef va_copy

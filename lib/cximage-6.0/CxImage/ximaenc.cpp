@@ -695,11 +695,19 @@ CxImage::CxImage(BYTE * buffer, DWORD size, DWORD imagetype)
  * \param imagetype: file format, see ENUM_CXIMAGE_FORMATS
  * \return true if everything is ok
  */
+#ifdef XBMC
+bool CxImage::Decode(BYTE * buffer, DWORD size, DWORD imagetype, int &width, int &height)
+{
+	CxMemFile file(buffer,size);
+	return Decode(&file,imagetype,width,height);
+}
+#else
 bool CxImage::Decode(BYTE * buffer, DWORD size, DWORD imagetype)
 {
 	CxMemFile file(buffer,size);
 	return Decode(&file,imagetype);
 }
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Loads an image from file handle.

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,37 +13,18 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "filesystem/StackDirectory.h"
 #include "ThumbLoader.h"
-#include "utils/URIUtils.h"
-#include "URL.h"
-#include "pictures/Picture.h"
 #include "filesystem/File.h"
-#include "filesystem/DirectoryCache.h"
 #include "FileItem.h"
-#include "settings/GUISettings.h"
-#include "GUIUserMessages.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/TextureManager.h"
 #include "TextureCache.h"
-#include "utils/log.h"
-#include "programs/Shortcut.h"
-#include "video/VideoInfoTag.h"
-#include "video/VideoDatabase.h"
-#include "cores/dvdplayer/DVDFileInfo.h"
 
-/* PLEX */
-#include "PlexUtils.h"
-/* END PLEX */
-
-using namespace XFILE;
 using namespace std;
+using namespace XFILE;
 
 CThumbLoader::CThumbLoader(int nThreads) :
   CBackgroundInfoLoader(nThreads)
@@ -54,343 +35,19 @@ CThumbLoader::~CThumbLoader()
 {
 }
 
-#ifndef __PLEX__
-bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
-{
-  // look for remote thumbs
-  CStdString thumb(pItem->GetThumbnailImage());
-  if (!g_TextureManager.CanLoad(thumb))
-  {
-    CStdString cachedThumb(pItem->GetCachedVideoThumb());
-    if (CFile::Exists(cachedThumb))
-      pItem->SetThumbnailImage(cachedThumb);
-    else
-    {
-      if (CPicture::CreateThumbnail(thumb, cachedThumb))
-        pItem->SetThumbnailImage(cachedThumb);
-      else
-        pItem->SetThumbnailImage("");
-    }
-  }
-  return pItem->HasThumbnail();
-}
-#endif
-
-CStdString CThumbLoader::GetCachedThumb(const CFileItem &item)
+CStdString CThumbLoader::GetCachedImage(const CFileItem &item, const CStdString &type)
 {
   CTextureDatabase db;
-  if (db.Open())
-    return db.GetTextureForPath(item.GetPath());
+  if (!item.GetPath().empty() && db.Open())
+    return db.GetTextureForPath(item.GetPath(), type);
   return "";
 }
 
-bool CThumbLoader::CheckAndCacheThumb(CFileItem &item)
+void CThumbLoader::SetCachedImage(const CFileItem &item, const CStdString &type, const CStdString &image)
 {
-  if (item.HasThumbnail() && !g_TextureManager.CanLoad(item.GetThumbnailImage()))
-  {
-    CStdString thumb = CTextureCache::Get().CheckAndCacheImage(item.GetThumbnailImage());
-    item.SetThumbnailImage(thumb);
-    return !thumb.IsEmpty();
-  }
-  return false;
-}
-
-CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& target)
-{
-  m_listpath = listpath;
-  m_target = target;
-  m_thumb = thumb;
-  m_item = item;
-
-  m_path = item.GetPath();
-
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    m_path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-
-  if (URIUtils::IsStack(m_path))
-    m_path = CStackDirectory::GetFirstStackedFile(m_path);
-}
-
-CThumbExtractor::~CThumbExtractor()
-{
-}
-
-bool CThumbExtractor::operator==(const CJob* job) const
-{
-  if (strcmp(job->GetType(),GetType()) == 0)
-  {
-    const CThumbExtractor* jobExtract = dynamic_cast<const CThumbExtractor*>(job);
-    if (jobExtract && jobExtract->m_listpath == m_listpath)
-      return true;
-  }
-  return false;
-}
-
-bool CThumbExtractor::DoWork()
-{
-  if (URIUtils::IsLiveTV(m_path)
-  ||  URIUtils::IsUPnP(m_path)
-  ||  URIUtils::IsDAAP(m_path)
-  ||  m_item.IsDVD()
-  ||  m_item.IsDVDImage()
-  ||  m_item.IsDVDFile(false, true)
-  ||  m_item.IsInternetStream()
-  ||  m_item.IsPlayList())
-    return false;
-
-  if (URIUtils::IsRemote(m_path) && !URIUtils::IsOnLAN(m_path))
-    return false;
-
-  bool result=false;
-  if (m_thumb)
-  {
-    CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
-    result = CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
-    if(result)
-    {
-      m_item.SetProperty("HasAutoThumb", true);
-      m_item.SetProperty("AutoThumbImage", m_target);
-      m_item.SetThumbnailImage(m_target);
-    }
-  }
-  else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
-  {
-    CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, m_path.c_str());
-    result = CDVDFileInfo::GetFileStreamDetails(&m_item);
-  }
-
-  return result;
-}
-
-CVideoThumbLoader::CVideoThumbLoader() :
-  CThumbLoader(1), CJobQueue(true), m_pStreamDetailsObs(NULL)
-{
-}
-
-CVideoThumbLoader::~CVideoThumbLoader()
-{
-  StopThread();
-}
-
-void CVideoThumbLoader::OnLoaderStart()
-{
-}
-
-void CVideoThumbLoader::OnLoaderFinish()
-{
-}
-
-static void SetupRarOptions(CFileItem& item, const CStdString& path)
-{
-  CStdString path2(path);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    path2 = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  CURL url(path2);
-  CStdString opts = url.GetOptions();
-  if (opts.Find("flags") > -1)
-    return;
-  if (opts.size())
-    opts += "&flags=8";
-  else
-    opts = "?flags=8";
-  url.SetOptions(opts);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    item.GetVideoInfoTag()->m_strFileNameAndPath = url.Get();
-  else
-    item.SetPath(url.Get());
-  g_directoryCache.ClearDirectory(url.GetWithoutFilename());
-}
-
-/**
- * Look for a thumbnail for pItem.  If one does not exist, look for an autogenerated
- * thumbnail.  If that does not exist, attempt to autogenerate one.  Finally, check
- * for the existance of fanart and set properties accordinly.
- * @return: true if pItem has been modified
- */
-bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
-{
-  if (pItem->m_bIsShareOrDrive
-  ||  pItem->IsParentFolder())
-    return false;
-
-#ifndef __PLEX__
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds == 0)
-  {
-    CVideoDatabase db;
-    db.Open();
-    if (db.GetResumePoint(*pItem->GetVideoInfoTag()))
-      pItem->SetInvalid();
-    db.Close();
-  }
-#endif
-
-  CStdString cachedThumb(pItem->GetCachedVideoThumb());
-
-  if (!pItem->HasProperty("fanart_image"))
-  {
-#ifndef __PLEX__
-    if (pItem->CacheLocalFanart())
-      pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
-#else
-    pItem->CacheLocalFanart();
-
-    if (pItem->GetQuickFanart().size() > 0)
-    {
-      if (CFile::Exists(pItem->GetCachedPlexMediaServerFanart()))
-        pItem->SetProperty("fanart_image", pItem->GetCachedPlexMediaServerFanart());
-    }
-    else
-    {
-      if (CFile::Exists(pItem->GetCachedFanart()))
-        pItem->SetProperty("fanart_image", pItem->GetCachedFanart());
-    }
-  }
-
-  if (!pItem->HasProperty("banner_image"))
-  {
-    pItem->CacheBanner();
-    if (pItem->GetQuickBanner().size() > 0)
-    {
-      if (CFile::Exists(pItem->GetCachedPlexMediaServerBanner()))
-        pItem->SetProperty("banner_image", pItem->GetCachedPlexMediaServerBanner());
-    }
-  }
-#endif
-
-  if (!pItem->HasThumbnail())
-  {
-    pItem->SetUserVideoThumb();
-    if (CFile::Exists(cachedThumb))
-      pItem->SetThumbnailImage(cachedThumb);
-    else
-    {
-      CStdString strPath, strFileName;
-      URIUtils::Split(cachedThumb, strPath, strFileName);
-
-      // create unique thumb for auto generated thumbs
-      cachedThumb = strPath + "auto-" + strFileName;
-      if (CFile::Exists(cachedThumb))
-      {
-        // this is abit of a hack to avoid loading zero sized images
-        // which we know will fail. They will just display empty image
-        // we should really have some way for the texture loader to
-        // do fallbacks to default images for a failed image instead
-        struct __stat64 st;
-        if(CFile::Stat(cachedThumb, &st) == 0 && st.st_size > 0)
-        {
-          pItem->SetProperty("HasAutoThumb", true);
-          pItem->SetProperty("AutoThumbImage", cachedThumb);
-          pItem->SetThumbnailImage(cachedThumb);
-        }
-      }
-      else if (!pItem->m_bIsFolder && pItem->IsVideo())
-      {
-        CFileItem item(*pItem);
-        CStdString path(item.GetPath());
-
-#ifndef __PLEX__
-        if (URIUtils::IsInRAR(item.GetPath()))
-          SetupRarOptions(item,path);
-#endif
-
-        CThumbExtractor* extract = new CThumbExtractor(item, path, true, cachedThumb);
-        AddJob(extract);
-        return true;
-      }
-    }
-  }
-  else if (!pItem->GetThumbnailImage().Left(10).Equals("special://"))
-    LoadRemoteThumb(pItem);
-
-  /* PLEX */
-  if (!pItem->HasProperty("fanart_image"))
-  {
-    pItem->CacheLocalFanart();
-
-    if (pItem->GetQuickFanart().size() > 0)
-    {
-      if (CFile::Exists(pItem->GetCachedPlexMediaServerFanart()))
-        pItem->SetProperty("fanart_image", pItem->GetCachedPlexMediaServerFanart());
-    }
-    else
-    {
-      if (CFile::Exists(pItem->GetCachedFanart()))
-        pItem->SetProperty("fanart_image", pItem->GetCachedFanart());
-    }
-  }
-
-  if (!pItem->HasProperty("banner_image"))
-  {
-    pItem->CacheBanner();
-    if (pItem->GetQuickBanner().size() > 0)
-    {
-      if (CFile::Exists(pItem->GetCachedPlexMediaServerBanner()))
-        pItem->SetProperty("banner_image", pItem->GetCachedPlexMediaServerBanner());
-    }
-  }
-  /* END PLEX */
-
-#ifndef __PLEX__
-  if (!pItem->m_bIsFolder &&
-       pItem->HasVideoInfoTag() &&
-       g_guiSettings.GetBool("myvideos.extractflags") &&
-       (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
-         pItem->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() <= 0))
-  {
-    CFileItem item(*pItem);
-    CStdString path(item.GetPath());
-    if (URIUtils::IsInRAR(item.GetPath()))
-      SetupRarOptions(item,path);
-    CThumbExtractor* extract = new CThumbExtractor(item,path,false);
-    AddJob(extract);
-  }
-#endif
-
-
-  /* PLEX */
-  // Walk through properties and see if there are any image resources to be loaded.
-  CGUIListItem::PropertyMap& properties = pItem->GetPropertyDict();
-  typedef pair<CStdString, CVariant> PropertyPair;
-  BOOST_FOREACH(PropertyPair pair, properties)
-  {
-    if (pair.first.substr(0, 6) == "cache$")
-    {
-      string name = pair.first.substr(6);
-      string url = pair.second.asString();
-
-      string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
-      if (CFile::Exists(localFile) == false)
-      {
-        if (CPicture::CreateThumbnail(url, localFile))
-          pItem->SetProperty(name, localFile);
-      }
-      else
-      {
-        pItem->SetProperty(name, localFile);
-      }
-    }
-  }
-  /* END PLEX */
-
-  return true;
-}
-
-void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
-{
-  if (success)
-  {
-    CThumbExtractor* loader = (CThumbExtractor*)job;
-    loader->m_item.SetPath(loader->m_listpath);
-    CVideoInfoTag* info = loader->m_item.GetVideoInfoTag();
-    if (m_pStreamDetailsObs)
-      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, info->m_strFileNameAndPath, info->m_iFileId);
-    if (m_pObserver)
-      m_pObserver->OnItemLoaded(&loader->m_item);
-    CFileItemPtr pItem(new CFileItem(loader->m_item));
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
-    g_windowManager.SendThreadMessage(msg);
-  }
-  CJobQueue::OnJobComplete(jobID, success, job);
+  CTextureDatabase db;
+  if (!item.GetPath().empty() && db.Open())
+    db.SetTextureForPath(item.GetPath(), type, image);
 }
 
 CProgramThumbLoader::CProgramThumbLoader()
@@ -410,51 +67,34 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 bool CProgramThumbLoader::FillThumb(CFileItem &item)
 {
   // no need to do anything if we already have a thumb set
-  if (CheckAndCacheThumb(item) || item.HasThumbnail())
-    return true;
+  CStdString thumb = item.GetArt("thumb");
 
-  // see whether we have a cached image for this item
-  CStdString thumb = GetCachedThumb(item);
+  if (thumb.IsEmpty())
+  { // see whether we have a cached image for this item
+    thumb = GetCachedImage(item, "thumb");
+    if (thumb.IsEmpty())
+    {
+      thumb = GetLocalThumb(item);
+      if (!thumb.IsEmpty())
+        SetCachedImage(item, "thumb", thumb);
+    }
+  }
+
   if (!thumb.IsEmpty())
   {
-    item.SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
-    return true;
+    CTextureCache::Get().BackgroundCacheImage(thumb);
+    item.SetArt("thumb", thumb);
   }
-  thumb = GetLocalThumb(item);
-  if (!thumb.IsEmpty())
-  {
-    CTextureDatabase db;
-    if (db.Open())
-      db.SetTextureForPath(item.GetPath(), thumb);
-    thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
-  }
-  item.SetThumbnailImage(thumb);
   return true;
 }
 
 CStdString CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
 {
   // look for the thumb
-  if (item.IsShortCut())
-  {
-    CShortcut shortcut;
-    if ( shortcut.Create( item.GetPath() ) )
-    {
-      // use the shortcut's thumb
-      if (!shortcut.m_strThumb.IsEmpty())
-        return shortcut.m_strThumb;
-      else
-      {
-        CFileItem cut(shortcut.m_strPath,false);
-        if (FillThumb(cut))
-          return cut.GetThumbnailImage();
-      }
-    }
-  }
-  else if (item.m_bIsFolder)
+  if (item.m_bIsFolder)
   {
     CStdString folderThumb = item.GetFolderThumb();
-    if (XFILE::CFile::Exists(folderThumb))
+    if (CFile::Exists(folderThumb))
       return folderThumb;
   }
   else
@@ -464,88 +104,4 @@ CStdString CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
       return fileThumb;
   }
   return "";
-}
-
-CMusicThumbLoader::CMusicThumbLoader()
-{
-}
-
-CMusicThumbLoader::~CMusicThumbLoader()
-{
-}
-
-bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
-{
-  if (pItem->m_bIsShareOrDrive) return true;
-  if (!pItem->HasThumbnail())
-    pItem->SetUserMusicThumb();
-  else
-    LoadRemoteThumb(pItem);
-
-  /* PLEX */
-  if (!pItem->HasProperty("fanart_image"))
-  {
-    pItem->CacheLocalFanart();
-
-    if (pItem->GetQuickFanart().size() > 0)
-    {
-      if (CFile::Exists(pItem->GetCachedPlexMediaServerFanart()))
-        pItem->SetProperty("fanart_image", pItem->GetCachedPlexMediaServerFanart());
-    }
-    else
-    {
-      if (CFile::Exists(pItem->GetCachedProgramFanart()))
-        pItem->SetProperty("fanart_image",pItem->GetCachedProgramFanart());
-    }
-  }
-  /* END PLEX */
-
-  return true;
-}
-
-/* PLEX */
-bool CThumbLoader::LoadRemoteGrandparentThumb(CFileItem *pItem)
-{
-  // look for remote thumbs
-  CStdString thumb(pItem->GetGrandparentThumbnailImage());
-  if (!g_TextureManager.CanLoad(thumb) || PlexUtils::IsPlexMediaServer(thumb))
-  {
-    CStdString cachedThumb(pItem->GetCachedVideoGrandparentThumb());
-    if (CFile::Exists(cachedThumb))
-      pItem->SetGrandparentThumbnailImage(cachedThumb);
-    else
-    {
-      if (CPicture::CreateThumbnail(thumb, cachedThumb))
-        pItem->SetGrandparentThumbnailImage(cachedThumb);
-      else
-        pItem->SetGrandparentThumbnailImage("");
-    }
-  }
-  return pItem->HasGrandparentThumbnail();
-}
-
-bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
-{
-  for (size_t i=0; i<pItem->GetNumThumbnails(); i++)
-  {
-    // look for remote thumbs.
-    CStdString thumb(pItem->GetThumbnailImage(i));
-
-    if (!g_TextureManager.CanLoad(thumb) || PlexUtils::IsPlexMediaServer(thumb))
-    {
-      CStdString cachedThumb(pItem->GetCachedVideoThumb(i));
-
-      if (CFile::Exists(cachedThumb))
-        pItem->SetThumbnailImage(cachedThumb, i);
-      else
-      {
-        if (CPicture::CreateThumbnail(thumb, cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb, i);
-        else
-          pItem->SetThumbnailImage("", i);
-      }
-    }
-  }
-
-  return pItem->HasThumbnail();
 }

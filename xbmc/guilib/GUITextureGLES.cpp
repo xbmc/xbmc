@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,12 +40,11 @@ CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float heig
 void CGUITextureGLES::Begin(color_t color)
 {
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
-  glActiveTexture(GL_TEXTURE0);
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
 
-  glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
+  texture->BindToUnit(0);
 
   // Setup Colors
   for (int i = 0; i < 4; i++)
@@ -72,8 +70,7 @@ void CGUITextureGLES::Begin(color_t color)
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
+    m_diffuse.m_textures[0]->BindToUnit(1);
 
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
@@ -109,7 +106,7 @@ void CGUITextureGLES::Begin(color_t color)
 
   if ( hasAlpha )
   {
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
     glEnable( GL_BLEND );
   }
   else
@@ -217,9 +214,8 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
 {
   if (texture)
   {
-    glActiveTexture(GL_TEXTURE0);
     texture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
+    texture->BindToUnit(0);
   }
 
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

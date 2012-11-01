@@ -149,7 +149,7 @@ public:
    \param args - va_list of variables for substitution in format string placeholders.
    \return escaped and formatted string.
    */
-  virtual std::string vprepare(const char *format, va_list args);
+  virtual std::string vprepare(const char *format, va_list args) = 0;
 
   virtual bool in_transaction() {return false;};
 
@@ -185,6 +185,11 @@ protected:
   dsStates ds_state;	        // current state
   Fields *fields_object, *edit_object;
       
+  /* query results*/
+  result_set result;
+  result_set exec_res;
+  bool autorefresh;
+  char* errmsg;
 
   bool active;			// Is Query Opened?
   bool haveError;
@@ -382,6 +387,10 @@ public:
 /* ----------------- for debug -------------------- */
   Fields *get_fields_object() {return fields_object;};
   Fields *get_edit_object() {return edit_object;};
+
+/* --------------- for fast access ---------------- */
+  const result_set& get_result_set() { return result; }
+  const sql_record* const get_sql_record();
 
  private:
   void set_ds_state(dsStates new_state) {ds_state = new_state;};	

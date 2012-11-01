@@ -1,0 +1,64 @@
+From a8a72d52860df38f3a126ca544663f9ea379a929 Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Sat, 22 Oct 2011 18:33:45 +0200
+Subject: [PATCH 03/24] [matroska] Check return value of avio_seek and avoid
+ modifying state if it fails
+
+The code still modifies state if the timestamp is not found. Not
+sure exactly how to avoid that.
+---
+ libavformat/matroskadec.c |   19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/libavformat/matroskadec.c b/libavformat/matroskadec.c
+index 135fddd..a9a0d1f 100644
+--- a/libavformat/matroskadec.c
++++ b/libavformat/matroskadec.c
+@@ -2052,7 +2052,8 @@ static int matroska_read_seek(AVFormatContext *s, int stream_index,
+     timestamp = FFMAX(timestamp, st->index_entries[0].timestamp);
+ 
+     if ((index = av_index_search_timestamp(st, timestamp, flags)) < 0) {
+-        avio_seek(s->pb, st->index_entries[st->nb_index_entries-1].pos, SEEK_SET);
++        if (avio_seek(s->pb, st->index_entries[st->nb_index_entries-1].pos, SEEK_SET) < 0)
++            return -1;
+         matroska->current_id = 0;
+         while ((index = av_index_search_timestamp(st, timestamp, flags)) < 0) {
+             matroska_clear_queue(matroska);
+@@ -2061,16 +2062,11 @@ static int matroska_read_seek(AVFormatContext *s, int stream_index,
+         }
+     }
+ 
+-    matroska_clear_queue(matroska);
+     if (index < 0)
+         return 0;
+ 
+     index_min = index;
+     for (i=0; i < matroska->tracks.nb_elem; i++) {
+-        tracks[i].audio.pkt_cnt = 0;
+-        tracks[i].audio.sub_packet_cnt = 0;
+-        tracks[i].audio.buf_timecode = AV_NOPTS_VALUE;
+-        tracks[i].end_timecode = 0;
+         if (tracks[i].type == MATROSKA_TRACK_TYPE_SUBTITLE
+             && !tracks[i].stream->discard != AVDISCARD_ALL) {
+             index_sub = av_index_search_timestamp(tracks[i].stream, st->index_entries[index].timestamp, AVSEEK_FLAG_BACKWARD);
+@@ -2081,7 +2077,16 @@ static int matroska_read_seek(AVFormatContext *s, int stream_index,
+         }
+     }
+ 
+-    avio_seek(s->pb, st->index_entries[index_min].pos, SEEK_SET);
++    if (avio_seek(s->pb, st->index_entries[index_min].pos, SEEK_SET) < 0)
++        return -1;
++
++    matroska_clear_queue(matroska);
++    for (i=0; i < matroska->tracks.nb_elem; i++) {
++        tracks[i].audio.pkt_cnt = 0;
++        tracks[i].audio.sub_packet_cnt = 0;
++        tracks[i].audio.buf_timecode = AV_NOPTS_VALUE;
++        tracks[i].end_timecode = 0;
++    }
+     matroska->current_id = 0;
+     matroska->skip_to_keyframe = !(flags & AVSEEK_FLAG_ANY);
+     matroska->skip_to_timecode = st->index_entries[index].timestamp;
+-- 
+1.7.9.4
+

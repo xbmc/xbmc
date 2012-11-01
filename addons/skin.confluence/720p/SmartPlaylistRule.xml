@@ -88,7 +88,7 @@
 				<posy>100</posy>
 				<width>300</width>
 				<height>40</height>
-				<font>font13caps</font>
+				<font>font13</font>
 				<label>$INFO[Control.GetLabel(15)]</label>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -115,7 +115,7 @@
 				<posy>100</posy>
 				<width>300</width>
 				<height>40</height>
-				<font>font13caps</font>
+				<font>font13</font>
 				<label>$INFO[Control.GetLabel(16)]</label>
 				<align>left</align>
 				<aligny>center</aligny>

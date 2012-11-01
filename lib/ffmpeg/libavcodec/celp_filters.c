@@ -58,7 +58,7 @@ void ff_celp_circ_addf(float *out, const float *in,
 int ff_celp_lp_synthesis_filter(int16_t *out, const int16_t *filter_coeffs,
                                 const int16_t *in, int buffer_length,
                                 int filter_length, int stop_on_overflow,
-                                int rounder)
+                                int shift, int rounder)
 {
     int i,n;
 
@@ -67,7 +67,7 @@ int ff_celp_lp_synthesis_filter(int16_t *out, const int16_t *filter_coeffs,
         for (i = 1; i <= filter_length; i++)
             sum -= filter_coeffs[i-1] * out[n-i];
 
-        sum = (sum >> 12) + in[n];
+        sum = ((sum >> 12) + in[n]) >> shift;
 
         if (sum + 0x8000 > 0xFFFFU) {
             if (stop_on_overflow)
@@ -109,7 +109,7 @@ void ff_celp_lp_synthesis_filterf(float *out, const float *filter_coeffs,
     old_out2 = out[-2];
     old_out3 = out[-1];
     for (n = 0; n <= buffer_length - 4; n+=4) {
-        float tmp0,tmp1,tmp2,tmp3;
+        float tmp0,tmp1,tmp2;
         float val;
 
         out0 = in[0];
@@ -160,7 +160,6 @@ void ff_celp_lp_synthesis_filterf(float *out, const float *filter_coeffs,
         tmp0 = out0;
         tmp1 = out1;
         tmp2 = out2;
-        tmp3 = out3;
 
         out3 -= a * tmp2;
         out2 -= a * tmp1;

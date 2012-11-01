@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -40,6 +39,7 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner) : m_hEvent(true)
   m_TimeBack      = DVD_NOPTS_VALUE;
   m_TimeFront     = DVD_NOPTS_VALUE;
   m_TimeSize      = 1.0 / 4.0; /* 4 seconds */
+  m_iMaxDataSize  = 0;
 }
 
 CDVDMessageQueue::~CDVDMessageQueue()
@@ -163,7 +163,9 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
   if(m_list.empty() && m_bEmptied == false && priority == 0 && m_owner != "teletext")
   {
+#if !defined(TARGET_RASPBERRY_PI)
     CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - asked for new data packet, with nothing available", m_owner.c_str());
+#endif
     m_bEmptied = true;
   }
 
@@ -253,10 +255,23 @@ int CDVDMessageQueue::GetLevel() const
   if(m_iDataSize == 0)
     return 0;
 
-  if(m_TimeBack  == DVD_NOPTS_VALUE
-  || m_TimeFront == DVD_NOPTS_VALUE
-  || m_TimeFront <= m_TimeBack)
+  if(IsDataBased())
     return min(100, 100 * m_iDataSize / m_iMaxDataSize);
 
   return min(100, MathUtils::round_int(100.0 * m_TimeSize * (m_TimeFront - m_TimeBack) / DVD_TIME_BASE ));
+}
+
+int CDVDMessageQueue::GetTimeSize() const
+{
+  if(IsDataBased())
+    return 0;
+  else
+    return (int)((m_TimeFront - m_TimeBack) / DVD_TIME_BASE);
+}
+
+bool CDVDMessageQueue::IsDataBased() const
+{
+  return (m_TimeBack == DVD_NOPTS_VALUE  ||
+          m_TimeFront == DVD_NOPTS_VALUE ||
+          m_TimeFront <= m_TimeBack);
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,13 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "TimidityCodec.h"
+#include "URL.h"
 #include "../DllLoader/LibraryLoader.h"
 #include "../DllLoader/SoLoader.h"
 #include "../DllLoader/DllLoader.h"
@@ -39,6 +39,7 @@ TimidityCodec::TimidityCodec()
   m_iTrack = -1;
   m_iDataPos = -1;
   m_loader = NULL;
+  memset(&m_dll, 0, sizeof(m_dll));
 }
 
 TimidityCodec::~TimidityCodec()
@@ -114,7 +115,7 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
     url.Parse(file);
   }
 
-  m_mid = m_dll.LoadMID(_P(url.Get()).c_str());
+  m_mid = m_dll.LoadMID(CSpecialProtocol::TranslatePath(url.Get()).c_str());
   if (!m_mid)
   {
     CLog::Log(LOGERROR,"TimidityCodec: error opening file %s: %s",strFile.c_str(), m_dll.ErrorMsg());
@@ -124,7 +125,8 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 2;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
-  m_TotalTime = (__int64)m_dll.GetLength(m_mid);
+  m_DataFormat = AE_FMT_S16NE;
+  m_TotalTime = (int64_t)m_dll.GetLength(m_mid);
 
   return true;
 }
@@ -145,9 +147,9 @@ void TimidityCodec::DeInit()
   m_loader = 0;
 }
 
-__int64 TimidityCodec::Seek(__int64 iSeekTime)
+int64_t TimidityCodec::Seek(int64_t iSeekTime)
 {
-  __int64 result = (__int64)m_dll.Seek(m_mid,(unsigned long)iSeekTime);
+  int64_t result = (int64_t)m_dll.Seek(m_mid,(unsigned long)iSeekTime);
   m_iDataPos = result/1000*48000*4;
 
   return result;

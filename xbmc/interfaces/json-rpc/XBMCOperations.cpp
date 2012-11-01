@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "XBMCOperations.h"
-#include "Application.h"
 #include "ApplicationMessenger.h"
 #include "Util.h"
 #include "utils/Variant.h"
@@ -28,7 +26,7 @@
 
 using namespace JSONRPC;
 
-JSON_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::vector<CStdString> info;
 
@@ -42,7 +40,7 @@ JSON_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportL
 
   if (info.size() > 0)
   {
-    std::vector<CStdString> infoLabels = g_application.getApplicationMessenger().GetInfoLabels(info);
+    std::vector<CStdString> infoLabels = CApplicationMessenger::Get().GetInfoLabels(info);
     for (unsigned int i = 0; i < info.size(); i++)
     {
       if (i >= infoLabels.size())
@@ -54,7 +52,7 @@ JSON_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportL
   return OK;
 }
 
-JSON_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::vector<CStdString> info;
 
@@ -83,7 +81,7 @@ JSON_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITranspor
 
   if (info.size() > 0)
   {
-    std::vector<bool> infoLabels = g_application.getApplicationMessenger().GetInfoBooleans(info);
+    std::vector<bool> infoLabels = CApplicationMessenger::Get().GetInfoBooleans(info);
     for (unsigned int i = 0; i < info.size(); i++)
     {
       if (i >= infoLabels.size())

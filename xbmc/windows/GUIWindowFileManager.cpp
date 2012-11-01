@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,19 +13,18 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
 #include "GUIWindowFileManager.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ZipManager.h"
-#include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIListContainer.h"
 #include "dialogs/GUIDialogMediaSource.h"
@@ -40,8 +39,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "Favourites.h"
 #include "playlists/PlayList.h"
 #include "utils/AsyncFileCopy.h"
@@ -59,6 +59,7 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;
@@ -90,9 +91,9 @@ using namespace PLAYLIST;
 #define CONTROL_CURRENTDIRLABEL_RIGHT 102
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
-    : CGUIWindow(WINDOW_FILES, "FileManager.xml")
+    : CGUIWindow(WINDOW_FILES, "FileManager.xml"),
+      CJobQueue(false,2)
 {
-  m_dlgProgress = NULL;
   m_Directory[0] = new CFileItem;
   m_Directory[1] = new CFileItem;
   m_vecItems[0] = new CFileItemList;
@@ -102,6 +103,7 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
   m_Directory[0]->m_bIsFolder = true;
   m_Directory[1]->m_bIsFolder = true;
   bCheckShareConnectivity = true;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIWindowFileManager::~CGUIWindowFileManager(void)
@@ -241,6 +243,11 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
         }
         return true;
       }
+      else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
+      {
+        Refresh();
+        return true;
+      }
     }
     break;
   case GUI_MSG_PLAYBACK_STARTED:
@@ -345,7 +352,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 
   }
 
-  m_vecItems[iList]->Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+  m_vecItems[iList]->Sort(SORT_METHOD_LABEL, SortOrderAscending);
 }
 
 void CGUIWindowFileManager::ClearFileItems(int iList)
@@ -486,7 +493,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(SORT_ON_BOTTOM);
+    pItem->SetSpecialSort(SortSpecialOnBottom);
     m_vecItems[iList]->Add(pItem);
   }
   else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
@@ -504,7 +511,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
     pItem->SetLabel(g_localizeStrings.Get(20070));
-    pItem->SetThumbnailImage("DefaultFolder.png");
+    pItem->SetArt("thumb", "DefaultFolder.png");
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
@@ -517,7 +524,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     URIUtils::GetExtension(pItem->GetPath(), strExtension);
     if (pItem->IsHD() && strExtension == ".tbn")
     {
-      pItem->SetThumbnailImage(pItem->GetPath());
+      pItem->SetArt("thumb", pItem->GetPath());
     }
   }
   m_vecItems[iList]->FillInDefaultIcons();
@@ -545,7 +552,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
 
 void CGUIWindowFileManager::OnClick(int iList, int iItem)
 {
-  if ( iList < 0 || iList > 2) return ;
+  if ( iList < 0 || iList >= 2) return ;
   if ( iItem < 0 || iItem >= m_vecItems[iList]->Size() ) return ;
 
   CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
@@ -631,8 +638,6 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
     return ;
   }
 #endif
-  if (pItem->IsShortCut())
-    CUtil::RunShortcut(pItem->GetPath());
   if (pItem->IsPicture())
   {
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -705,12 +710,10 @@ void CGUIWindowFileManager::OnCopy(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(120, 123, 0, 0))
     return;
 
-  ResetProgressBar();
-
-  m_errorHeading = 16201;
-  m_errorLine    = 16202;
-
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy, *m_vecItems[iList], m_Directory[1 - iList]->GetPath()), this);
+  AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy, 
+                                *m_vecItems[iList],
+                                m_Directory[1 - iList]->GetPath(),
+                                true, 16201, 16202));
 }
 
 void CGUIWindowFileManager::OnMove(int iList)
@@ -718,12 +721,10 @@ void CGUIWindowFileManager::OnMove(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(121, 124, 0, 0))
     return;
 
-  ResetProgressBar();
-
-  m_errorHeading = 16203;
-  m_errorLine    = 16204;
-
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionMove, *m_vecItems[iList], m_Directory[1 - iList]->GetPath()), this);
+  AddJob(new CFileOperationJob(CFileOperationJob::ActionMove,
+                               *m_vecItems[iList],
+                               m_Directory[1 - iList]->GetPath(),
+                               true, 16203, 16204));
 }
 
 void CGUIWindowFileManager::OnDelete(int iList)
@@ -731,12 +732,10 @@ void CGUIWindowFileManager::OnDelete(int iList)
   if (!CGUIDialogYesNo::ShowAndGetInput(122, 125, 0, 0))
     return;
 
-  ResetProgressBar(false);
-
-  m_errorHeading = 16205;
-  m_errorLine    = 16206;
-
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, *m_vecItems[iList], m_Directory[iList]->GetPath()), this);
+  AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,
+                               *m_vecItems[iList],
+                               m_Directory[iList]->GetPath(),
+                               true, 16205, 16206));
 }
 
 void CGUIWindowFileManager::OnRename(int iList)
@@ -772,7 +771,7 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
 void CGUIWindowFileManager::OnNewFolder(int iList)
 {
   CStdString strNewFolder = "";
-  if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, g_localizeStrings.Get(16014), false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(strNewFolder, g_localizeStrings.Get(16014), false))
   {
     CStdString strNewPath = m_Directory[iList]->GetPath();
     URIUtils::AddSlashAtEnd(strNewPath);
@@ -845,20 +844,6 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   Update(iList, strPath);
 }
 
-bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
-{
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetPercentage(ipercent);
-    CStdString speedString;
-    speedString.Format("%2.2f KB/s", avgSpeed / 1024);
-    m_dlgProgress->SetLine(0, speedString);
-    m_dlgProgress->Progress();
-    if (m_dlgProgress->IsCanceled()) return false;
-  }
-  return true;
-}
-
 /// \brief Build a directory history string
 /// \param pItem Item to build the history string from
 /// \param strHistoryString History string build as return value
@@ -921,6 +906,8 @@ bool CGUIWindowFileManager::CanCopy(int iList)
   // can't copy if the destination is not writeable, or if the source is a share!
   // TODO: Perhaps if the source is removeable media (DVD/CD etc.) we could
   // put ripping/backup in here.
+  if (!CUtil::SupportsReadFileOperations(m_Directory[iList]->GetPath())) return false;
+  if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[1 - iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[iList]->IsVirtualDirectoryRoot()) return false;
   if (m_Directory[1 -iList]->IsReadOnly()) return false;
@@ -966,7 +953,7 @@ int CGUIWindowFileManager::GetFocusedList() const
 
 void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven /* = true */)
 {
-  if (list < 0 || list > 2) return ;
+  if (list < 0 || list >= 2) return ;
   bool bDeselect = SelectItem(list, item);
   // calculate the position for our menu
   float posX = 200;
@@ -1038,6 +1025,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   choices.Add(10, 5);     // Settings
   choices.Add(11, 20128); // Go To Root
   choices.Add(12, 523);     // switch media
+  if (CJobManager::GetInstance().IsProcessing("filemanager"))
+    choices.Add(13, 167);
 
   int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (btnid == 1)
@@ -1115,6 +1104,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->GetPath());
     return;
   }
+  if (btnid == 13)
+    CancelJobs();
 
   if (bDeselect && item >= 0 && item < m_vecItems[list]->Size())
   { // deselect item as we didn't do anything
@@ -1170,39 +1161,21 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
 
 void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  m_dlgProgress->SetLine(0, 1040);
-  m_dlgProgress->SetLine(1, "");
-  m_dlgProgress->SetLine(2, "");
-  m_dlgProgress->SetPercentage(100);
-  Refresh();
-  m_dlgProgress->Close();
-
   if(!success)
-    CGUIDialogOK::ShowAndGetInput(m_errorHeading, m_errorLine, 16200, 0);
-}
-
-void CGUIWindowFileManager::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
-{
-  if (m_dlgProgress->IsCanceled())
   {
-    CJobManager::GetInstance().CancelJob(jobID);
-    m_dlgProgress->SetLine(0, 1040);
-    m_dlgProgress->SetLine(1, "");
-    m_dlgProgress->SetLine(2, "");
-    Refresh();
-    m_dlgProgress->Close();
+    CFileOperationJob* fileJob = (CFileOperationJob*)job;
+    CGUIDialogOK::ShowAndGetInput(fileJob->GetHeading(),
+                                  fileJob->GetLine(), 16200, 0);
   }
-  else
+
+  if (IsActive())
   {
-    CFileOperationJob *fileJob = (CFileOperationJob *)job;
-
-    m_dlgProgress->SetLine(0, fileJob->GetCurrentOperation());
-    m_dlgProgress->SetLine(1, fileJob->GetCurrentFile());
-    m_dlgProgress->SetLine(2, fileJob->GetAverageSpeed());
-
-    if (total > 0)
-      m_dlgProgress->SetPercentage((int)((float)progress * 100.0f / (float)total));
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_UPDATE);
+    CApplicationMessenger::Get().SendGUIMessage(msg, GetID(), false);
   }
+
+  if (success)
+    CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
@@ -1226,9 +1199,6 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
 void CGUIWindowFileManager::OnInitWindow()
 {
-  m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (m_dlgProgress) m_dlgProgress->SetHeading(126);
-
   for (int i = 0; i < 2; i++)
   {
     Update(i, m_Directory[i]->GetPath());
@@ -1307,20 +1277,6 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
   }
 
   if (m_Directory[1]->GetPath() == "?") m_Directory[1]->SetPath("");
-}
-
-void CGUIWindowFileManager::ResetProgressBar(bool showProgress /*= true */)
-{
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->SetHeading(126);
-    m_dlgProgress->SetLine(0, 0);
-    m_dlgProgress->SetLine(1, 0);
-    m_dlgProgress->SetLine(2, 0);
-    m_dlgProgress->SetPercentage(0);
-    m_dlgProgress->StartModal();
-    m_dlgProgress->ShowProgressBar(showProgress);
-  }
 }
 
 const CFileItem& CGUIWindowFileManager::CurrentDirectory(int indx) const

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,13 +33,27 @@ namespace XFILE
     DIR_CACHE_ALWAYS     ///< Always cache this directory to memory, so that each additional fetch of this folder will utilize the cache (until it's cleared)
   };
 
+  /*! \brief Available directory flags
+   The defaults are to allow file directories, no prompting, retrieve file information, hide hidden files, and utilise the directory cache
+   based on the implementation's wishes.
+   */
+  enum DIR_FLAG
+  {
+    DIR_FLAG_DEFAULTS      = 0,
+    DIR_FLAG_NO_FILE_DIRS  = (2 << 0), ///< Don't convert files (zip, rar etc.) to directories
+    DIR_FLAG_ALLOW_PROMPT  = (2 << 1), ///< Allow prompting for further info (passwords etc.)
+    DIR_FLAG_NO_FILE_INFO  = (2 << 2), ///< Don't read additional file info (stat for example)
+    DIR_FLAG_GET_HIDDEN    = (2 << 3), ///< Get hidden files
+    DIR_FLAG_READ_CACHE    = (2 << 4), ///< Force reading from the directory cache (if available)
+    DIR_FLAG_BYPASS_CACHE  = (2 << 5)  ///< Completely bypass the directory cache (no reading, no writing)
+  };
 /*!
  \ingroup filesystem
  \brief Interface to the directory on a file system.
 
- This Interface is retrieved from CFactoryDirectory and can be used to
+ This Interface is retrieved from CDirectoryFactory and can be used to
  access the directories on a filesystem.
- \sa CFactoryDirectory
+ \sa CDirectoryFactory
  */
 class IDirectory
 {
@@ -52,21 +65,32 @@ public:
    \param strPath Directory to read.
    \param items Retrieves the directory entries.
    \return Returns \e true, if successfull.
-   \sa CFactoryDirectory
+   \sa CDirectoryFactory
    */
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items) = 0;
+  /*!
+   \brief Retrieve the progress of the current directory fetch (if possible).
+   \return the progress as a float in the range 0..100.
+   \sa GetDirectory, CancelDirectory
+   */
+  virtual float GetProgress() const { return 0.0f; };
+  /*!
+   \brief Cancel the current directory fetch (if possible).
+   \sa GetDirectory
+   */
+  virtual void CancelDirectory() { };
   /*!
   \brief Create the directory
   \param strPath Directory to create.
   \return Returns \e true, if directory is created or if it already exists
-  \sa CFactoryDirectory
+  \sa CDirectoryFactory
   */
   virtual bool Create(const char* strPath) { return false; }
   /*!
   \brief Check for directory existence
   \param strPath Directory to check.
   \return Returns \e true, if directory exists
-  \sa CFactoryDirectory
+  \sa CDirectoryFactory
   */
   virtual bool Exists(const char* strPath) { return false; }
   /*!
@@ -91,10 +115,7 @@ public:
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
 
   void SetMask(const CStdString& strMask);
-  void SetAllowPrompting(bool allowPrompting);
-  void SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory);
-  void SetUseFileDirectories(bool useFileDirectories);
-  void SetExtFileInfo(bool extFileInfo);
+  void SetFlags(int flags);
 
   /*! \brief Process additional requirements before the directory fetch is performed.
    Some directory fetches may require authentication, keyboard input etc.  The IDirectory subclass
@@ -137,10 +158,8 @@ protected:
   void RequireAuthentication(const CStdString &url);
 
   CStdString m_strFileMask;  ///< Holds the file mask specified by SetMask()
-  bool m_allowPrompting;    ///< If true, the directory handlers may prompt the user
-  DIR_CACHE_TYPE m_cacheDirectory;    ///< If !DIR_CACHE_NEVER the directory is cached by g_directoryCache (defaults to DIR_CACHE_ONCE)
-  bool m_useFileDirectories; ///< If true the directory may allow file directories (defaults to false)
-  bool m_extFileInfo;       ///< If true the GetDirectory call can retrieve extra file information (defaults to true)
+
+  int m_flags; ///< Directory flags - see DIR_FLAG
 
   CVariant m_requirements;
 };

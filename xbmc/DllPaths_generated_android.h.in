@@ -1,0 +1,95 @@
+/*
+ *      Copyright (C) 2005-2012 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
+ *
+ */
+#pragma once
+/* libraries */
+
+//Android rules:
+// - All solibs must be in the form ^lib*.so$
+// - All solibs must be in the same dir
+// - Arch need not be specified, each arch will get its own lib dir.
+//   We only keep @ARCH@ here to retain the same structure as *nix.
+// * foo.so will be renamed libfoo.so in the packaging stage
+
+#define DLL_PATH_CPLUFF        "libcpluff-@ARCH@.so"
+#define DLL_PATH_IMAGELIB      "libImageLib-@ARCH@.so"
+#define DLL_PATH_LIBEXIF       "libexif-@ARCH@.so"
+#define DLL_PATH_LIBHDHOMERUN  "libhdhomerun-@ARCH@.so"
+#define DLL_PATH_MEDIAINFO     "libmediainfo-@ARCH@.so"
+#define DLL_PATH_LIBCMYTH      "libcmyth-@ARCH@.so"
+
+#define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
+#define DLL_PATH_LIBNFS        "@NFS_SONAME@"
+#define DLL_PATH_LIBAFP        "@AFPCLIENT_SONAME@"
+#define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
+#define DLL_PATH_LIBSHAIRPORT  "@SHAIRPORT_SONAME@"
+#define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"
+
+#ifndef DLL_PATH_LIBCURL
+#define DLL_PATH_LIBCURL       "@CURL_SONAME@"
+#endif
+
+/* paplayer */
+#define DLL_PATH_AAC_CODEC     "libAACCodec-@ARCH@.so"
+#define DLL_PATH_ADPCM_CODEC   "libadpcm-@ARCH@.so"
+#define DLL_PATH_ADPLUG_CODEC  "libadplug-@ARCH@.so"
+#define DLL_PATH_APE_CODEC     "libMACDll-@ARCH@.so"
+#define DLL_PATH_ASAP_CODEC    "libxbmc_asap-@ARCH@.so"
+#define DLL_PATH_DCA_CODEC     "libdcacodec-@ARCH@.so"
+#define DLL_PATH_GYM_CODEC     "libgensapu-@ARCH@.so"
+#define DLL_PATH_MID_CODEC     "libtimidity-@ARCH@.so"
+#define DLL_PATH_MODULE_CODEC  "libdumb-@ARCH@.so"
+#define DLL_PATH_MPC_CODEC     "libmpcdec-@ARCH@.so"
+#define DLL_PATH_NSF_CODEC     "libnosefart-@ARCH@.so"
+#define DLL_PATH_SID_CODEC     "libsidplay2-@ARCH@.so"
+#define DLL_PATH_SPC_CODEC     "libSNESAPU-@ARCH@.so"
+#define DLL_PATH_VGM_CODEC     "libvgmstream-@ARCH@.so"
+#define DLL_PATH_WAVPACK_CODEC "@WAVPACK_SONAME@"
+#define DLL_PATH_YM_CODEC      "libstsoundlibrary-@ARCH@.so"
+
+#define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
+#define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
+#define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
+
+/* dvdplayer */
+#define DLL_PATH_LIBASS        "@ASS_SONAME@"
+#define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
+#define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
+#define DLL_PATH_LIBMAD        "@MAD_SONAME@"
+
+/* ffmpeg */
+#define DLL_PATH_LIBAVCODEC    "libavcodec-53-@ARCH@.so"
+#define DLL_PATH_LIBAVFORMAT   "libavformat-53-@ARCH@.so"
+#define DLL_PATH_LIBAVUTIL     "libavutil-51-@ARCH@.so"
+#define DLL_PATH_LIBPOSTPROC   "libpostproc-52-@ARCH@.so"
+#define DLL_PATH_LIBSWSCALE    "libswscale-2-@ARCH@.so"
+#define DLL_PATH_LIBAVFILTER   "libavfilter-2-@ARCH@.so"
+#define DLL_PATH_LIBSWRESAMPLE "libswresample-0-@ARCH@.so"
+
+/* cdrip */
+#define DLL_PATH_LAME_ENC      "@LAMEENC_SONAME@"
+#define DLL_PATH_OGG           "@OGG_SONAME@"
+#define DLL_PATH_VORBIS_ENC    "@VORBISENC_SONAME@"
+#define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
+
+/* libbluray */
+#define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
+
+/* Android's libui for gralloc */
+#define DLL_PATH_LIBUI         "libui.so"

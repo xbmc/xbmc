@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="Debug"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -83,12 +83,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;xcopy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="Release"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -154,6 +155,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;xcopy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\$(ConfigurationName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -167,6 +169,10 @@
 			>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptBase64.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Bsd\NptBsdResolver.cpp"
 				>
 			</File>
 			<File
@@ -195,6 +201,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptHash.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptHash.h"
 				>
 			</File>
 			<File
@@ -250,10 +264,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Source\System\StdC\NptStdCTime.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\..\Source\Core\NptStreams.cpp"
 				>
 			</File>
@@ -262,15 +272,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Source\Core\NptSystem.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\..\Source\Core\NptThreads.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptTime.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptTls.cpp"
 				>
 			</File>
 			<File
@@ -315,6 +325,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Threads.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32Time.cpp"
 				>
 			</File>
 			<File
@@ -461,6 +475,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Source\Core\NptTime.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Source\Core\NptTls.h"
 				>
 			</File>
 			<File

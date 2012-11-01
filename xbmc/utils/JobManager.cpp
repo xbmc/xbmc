@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,9 @@
 #include <algorithm>
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include "system.h"
+
 
 using namespace std;
 
@@ -97,6 +99,24 @@ void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     m_processing.erase(i);
   // request a new job be queued
   QueueNextJob();
+}
+
+void CJobQueue::CancelJob(const CJob *job)
+{
+  CSingleLock lock(m_section);
+  Processing::iterator i = find(m_processing.begin(), m_processing.end(), job);
+  if (i != m_processing.end())
+  {
+    i->CancelJob();
+    m_processing.erase(i);
+    return;
+  }
+  Queue::iterator j = find(m_jobQueue.begin(), m_jobQueue.end(), job);
+  if (j != m_jobQueue.end())
+  {
+    j->FreeJob();
+    m_jobQueue.erase(j);
+  }
 }
 
 void CJobQueue::AddJob(CJob *job)
@@ -239,6 +259,15 @@ CJob *CJobManager::PopJob()
     if (m_jobQueue[priority].size() && m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
     {
       CWorkItem job = m_jobQueue[priority].front();
+
+      // skip adding any paused types
+      if (priority <= CJob::PRIORITY_LOW)
+      {
+        std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), job.m_job->GetType());
+        if (i != m_pausedTypes.end())
+          return NULL;
+      }
+
       m_jobQueue[priority].pop_front();
       // add to the processing vector
       m_processing.push_back(job);
@@ -247,6 +276,42 @@ CJob *CJobManager::PopJob()
     }
   }
   return NULL;
+}
+
+void CJobManager::Pause(const std::string &pausedType)
+{
+  CSingleLock lock(m_section);
+  // just push it in so we get ref counting,
+  // the queue will resume when all Pause requests
+  // for a given type have been UnPaused.
+  m_pausedTypes.push_back(pausedType);
+}
+
+void CJobManager::UnPause(const std::string &pausedType)
+{
+  CSingleLock lock(m_section);
+  std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), pausedType);
+  if (i != m_pausedTypes.end())
+    m_pausedTypes.erase(i);
+}
+
+bool CJobManager::IsPaused(const std::string &pausedType)
+{
+  CSingleLock lock(m_section);
+  std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), pausedType);
+  return (i != m_pausedTypes.end());
+}
+
+int CJobManager::IsProcessing(const std::string &pausedType)
+{
+  int jobsMatched = 0;
+  CSingleLock lock(m_section);
+  for(Processing::iterator it = m_processing.begin(); it < m_processing.end(); it++)
+  {
+    if (pausedType == std::string(it->m_job->GetType()))
+      jobsMatched++;
+  }
+  return jobsMatched;
 }
 
 CJob *CJobManager::GetNextJob(const CJobWorker *worker)

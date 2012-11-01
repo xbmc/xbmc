@@ -520,6 +520,7 @@ public:
 	bool Load(const char * filename, DWORD imagetype, int &iWidth, int &iHeight);
 	bool Decode(FILE * hFile, DWORD imagetype, int &iWidth, int &iHeight);
 	bool Decode(CxFile * hFile, DWORD imagetype, int &iWidth, int &iHeight);
+	bool Decode(BYTE *buffer, DWORD size, DWORD imagetype, int &iWidth, int &iHeight);
 	bool Load(const char * filename, DWORD imagetype)
 	{
 		int iWidth=0;
@@ -538,12 +539,18 @@ public:
 		int iHeight=0;
 		return Decode(hFile, imagetype, iWidth, iHeight);
 	};
+	bool Decode(BYTE *buffer, unsigned int size, DWORD imagetype)
+	{
+		int iWidth=0;
+		int iHeight=0;
+		return Decode(buffer, size, imagetype, iWidth, iHeight);
+	};
 #else
 	bool Load(const char * filename, DWORD imagetype);
 	bool Decode(FILE * hFile, DWORD imagetype);
 	bool Decode(CxFile * hFile, DWORD imagetype);
-#endif
 	bool Decode(BYTE * buffer, DWORD size, DWORD imagetype);
+#endif
 
 	bool CheckFormat(CxFile * hFile, DWORD imagetype = 0);
 	bool CheckFormat(BYTE * buffer, DWORD size, DWORD imagetype = 0);

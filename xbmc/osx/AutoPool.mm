@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2009 Team XBMC
+ *      Copyright (C) 2009-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#if defined(__APPLE__)
-#if defined(__arm__)
+#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
   #import <Foundation/Foundation.h>
 #else
   #import <Cocoa/Cocoa.h>

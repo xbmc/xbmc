@@ -31,7 +31,7 @@ CxImageTIF::~CxImageTIF()
 bool CxImageTIF::Decode(CxFile * hFile)
 {
 	//Comment this line if you need more information on errors
-	// TIFFSetErrorHandler(NULL);	//<Patrick Hoffmann>
+	TIFFSetErrorHandler(NULL);
 
 	//Open file and fill the TIFF structure
 	// m_tif = TIFFOpen(imageFileName,"rb");

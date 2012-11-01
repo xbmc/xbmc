@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,27 +13,28 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
-#include "LinuxTimezone.h"
 #include "XTimeUtils.h"
-#include "../utils/log.h"
+#include "LinuxTimezone.h"
+
+#if defined(TARGET_DARWIN)
+#include "threads/Atomics.h"
+#endif
+
+#if defined(__ANDROID__)
+#include <time64.h>
+#endif
+
 #include <errno.h>
 #include <time.h>
 #include <unistd.h>
 #include <sys/times.h>
 #include <sched.h>
-
-#ifdef __APPLE__
-#include "threads/Atomics.h"
-#include <mach/mach_time.h>
-#include <CoreVideo/CVHostTime.h>
-#endif
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
 
@@ -55,13 +56,7 @@ void WINAPI Sleep(DWORD dwMilliSeconds)
   }
 #endif
 
-  struct timespec req;
-  req.tv_sec = dwMilliSeconds / 1000;
-  req.tv_nsec = (dwMilliSeconds % 1000) * 1000000;
-
-  // many calls will be interupted. so we keep looping till we're done.
-  while ( nanosleep(&req, &req) == -1 && errno == EINTR && (req.tv_nsec > 0 || req.tv_sec > 0))
-    ;
+  usleep(dwMilliSeconds * 1000);
 }
 
 VOID GetLocalTime(LPSYSTEMTIME sysTime)
@@ -92,7 +87,7 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
 BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   static long timegm_lock = 0;
 #endif
 
@@ -111,10 +106,15 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
     sysTime.tm_yday++;
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   CAtomicSpinLock lock(timegm_lock);
 #endif
+
+#if defined(__ANDROID__)
+  time64_t t = timegm64(&sysTime);
+#else
   time_t t = timegm(&sysTime);
+#endif
 
   LARGE_INTEGER result;
   result.QuadPart = (long long) t * 10000000 + (long long) lpSystemTime->wMilliseconds * 10000;

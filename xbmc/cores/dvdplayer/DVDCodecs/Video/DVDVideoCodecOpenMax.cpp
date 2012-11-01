@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -104,8 +103,8 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
-    //m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
-    m_videobuffer.format = DVDVideoPicture::FMT_OMXEGL;
+    //m_videobuffer.format = RENDER_FMT_YUV420P;
+    m_videobuffer.format = RENDER_FMT_OMXEGL;
     m_videobuffer.color_range  = 0;
     m_videobuffer.color_matrix = 4;
     m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;

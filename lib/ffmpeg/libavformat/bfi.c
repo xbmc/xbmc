@@ -23,11 +23,12 @@
  * @file
  * @brief Brute Force & Ignorance (.bfi) file demuxer
  * @author Sisir Koppaka ( sisir.koppaka at gmail dot com )
- * @sa http://wiki.multimedia.cx/index.php?title=BFI
+ * @see http://wiki.multimedia.cx/index.php?title=BFI
  */
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
+#include "internal.h"
 
 typedef struct BFIContext {
     int nframes;
@@ -49,44 +50,44 @@ static int bfi_probe(AVProbeData * p)
 static int bfi_read_header(AVFormatContext * s, AVFormatParameters * ap)
 {
     BFIContext *bfi = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     AVStream *vstream;
     AVStream *astream;
     int fps, chunk_header;
 
     /* Initialize the video codec... */
-    vstream = av_new_stream(s, 0);
+    vstream = avformat_new_stream(s, NULL);
     if (!vstream)
         return AVERROR(ENOMEM);
 
     /* Initialize the audio codec... */
-    astream = av_new_stream(s, 0);
+    astream = avformat_new_stream(s, NULL);
     if (!astream)
         return AVERROR(ENOMEM);
 
     /* Set the total number of frames. */
-    url_fskip(pb, 8);
-    chunk_header           = get_le32(pb);
-    bfi->nframes           = get_le32(pb);
-    get_le32(pb);
-    get_le32(pb);
-    get_le32(pb);
-    fps                    = get_le32(pb);
-    url_fskip(pb, 12);
-    vstream->codec->width  = get_le32(pb);
-    vstream->codec->height = get_le32(pb);
+    avio_skip(pb, 8);
+    chunk_header           = avio_rl32(pb);
+    bfi->nframes           = avio_rl32(pb);
+    avio_rl32(pb);
+    avio_rl32(pb);
+    avio_rl32(pb);
+    fps                    = avio_rl32(pb);
+    avio_skip(pb, 12);
+    vstream->codec->width  = avio_rl32(pb);
+    vstream->codec->height = avio_rl32(pb);
 
     /*Load the palette to extradata */
-    url_fskip(pb, 8);
+    avio_skip(pb, 8);
     vstream->codec->extradata      = av_malloc(768);
     vstream->codec->extradata_size = 768;
-    get_buffer(pb, vstream->codec->extradata,
+    avio_read(pb, vstream->codec->extradata,
                vstream->codec->extradata_size);
 
-    astream->codec->sample_rate = get_le32(pb);
+    astream->codec->sample_rate = avio_rl32(pb);
 
     /* Set up the video codec... */
-    av_set_pts_info(vstream, 32, 1, fps);
+    avpriv_set_pts_info(vstream, 32, 1, fps);
     vstream->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     vstream->codec->codec_id   = CODEC_ID_BFI;
     vstream->codec->pix_fmt    = PIX_FMT_PAL8;
@@ -98,8 +99,8 @@ static int bfi_read_header(AVFormatContext * s, AVFormatParameters * ap)
     astream->codec->bits_per_coded_sample = 8;
     astream->codec->bit_rate        =
         astream->codec->sample_rate * astream->codec->bits_per_coded_sample;
-    url_fseek(pb, chunk_header - 3, SEEK_SET);
-    av_set_pts_info(astream, 64, 1, astream->codec->sample_rate);
+    avio_seek(pb, chunk_header - 3, SEEK_SET);
+    avpriv_set_pts_info(astream, 64, 1, astream->codec->sample_rate);
     return 0;
 }
 
@@ -107,7 +108,7 @@ static int bfi_read_header(AVFormatContext * s, AVFormatParameters * ap)
 static int bfi_read_packet(AVFormatContext * s, AVPacket * pkt)
 {
     BFIContext *bfi = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     int ret, audio_offset, video_offset, chunk_size, audio_size = 0;
     if (bfi->nframes == 0 || url_feof(pb)) {
         return AVERROR(EIO);
@@ -119,14 +120,14 @@ static int bfi_read_packet(AVFormatContext * s, AVPacket * pkt)
         while(state != MKTAG('S','A','V','I')){
             if (url_feof(pb))
                 return AVERROR(EIO);
-            state = 256*state + get_byte(pb);
+            state = 256*state + avio_r8(pb);
         }
         /* Now that the chunk's location is confirmed, we proceed... */
-        chunk_size      = get_le32(pb);
-        get_le32(pb);
-        audio_offset    = get_le32(pb);
-        get_le32(pb);
-        video_offset    = get_le32(pb);
+        chunk_size      = avio_rl32(pb);
+        avio_rl32(pb);
+        audio_offset    = avio_rl32(pb);
+        avio_rl32(pb);
+        video_offset    = avio_rl32(pb);
         audio_size      = video_offset - audio_offset;
         bfi->video_size = chunk_size - video_offset;
 
@@ -159,10 +160,10 @@ static int bfi_read_packet(AVFormatContext * s, AVPacket * pkt)
 }
 
 AVInputFormat ff_bfi_demuxer = {
-    "bfi",
-    NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
-    sizeof(BFIContext),
-    bfi_probe,
-    bfi_read_header,
-    bfi_read_packet,
+    .name           = "bfi",
+    .long_name      = NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
+    .priv_data_size = sizeof(BFIContext),
+    .read_probe     = bfi_probe,
+    .read_header    = bfi_read_header,
+    .read_packet    = bfi_read_packet,
 };

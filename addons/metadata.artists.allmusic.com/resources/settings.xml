@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-    <setting label="30000" type="bool" id="htbfanart" default="true"/>
-    <setting label="30001" type="bool" id="allmusicartistthumbs" default="true"/>
-    <setting label="30002" type="bool" id="lastfmartistthumbs" default="false"/>
-    <setting label="30003" type="bool" id="htbthumbs" default="true"/>
-</settings>

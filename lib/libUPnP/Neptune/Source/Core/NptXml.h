@@ -45,6 +45,8 @@
 +---------------------------------------------------------------------*/
 const int NPT_ERROR_XML_INVALID_NESTING = NPT_ERROR_BASE_XML - 0;
 const int NPT_ERROR_XML_TAG_MISMATCH    = NPT_ERROR_BASE_XML - 1;
+const int NPT_ERROR_XML_NO_ROOT         = NPT_ERROR_BASE_XML - 2;
+const int NPT_ERROR_XML_MULTIPLE_ROOTS  = NPT_ERROR_BASE_XML - 3;
 
 #define NPT_XML_ANY_NAMESPACE "*"
 #define NPT_XML_NO_NAMESPACE  NULL
@@ -304,10 +306,13 @@ class NPT_XmlParser
 
     // members
     NPT_XmlProcessor*   m_Processor;
-    NPT_XmlElementNode* m_Tree;
+    NPT_XmlElementNode* m_Root;
     NPT_XmlElementNode* m_CurrentElement;
     bool                m_KeepWhitespace;
 
+private:
+    void Reset();
+    
     // friends
     friend class NPT_XmlProcessor;
 };
@@ -322,7 +327,7 @@ public:
                        NPT_XmlSerializer(NPT_OutputStream* output,
                                          NPT_Cardinal      indentation = 0,
                                          bool              shrink_empty_elements = true,
-										 bool			   add_header = true);
+                                         bool              add_xml_decl = false);
     virtual           ~NPT_XmlSerializer();
     virtual NPT_Result StartDocument();
     virtual NPT_Result EndDocument();
@@ -348,7 +353,7 @@ protected:
     NPT_String        m_IndentationPrefix;
     bool              m_ElementHasText;
     bool              m_ShrinkEmptyElements;
-	bool			  m_AddHeader;
+    bool              m_AddXmlDecl;
 };
 
 /*----------------------------------------------------------------------
@@ -361,9 +366,9 @@ public:
     explicit NPT_XmlWriter(NPT_Cardinal indentation = 0) : m_Indentation(indentation) {}
 
     // methods
-	NPT_Result Serialize(NPT_XmlNode&	   node, 
-						 NPT_OutputStream& stream, 
-						 bool			   add_header = true);
+    NPT_Result Serialize(NPT_XmlNode&      node, 
+                         NPT_OutputStream& stream, 
+                         bool              add_xml_decl = false);
 
 private:
     // members
@@ -377,9 +382,9 @@ class NPT_XmlCanonicalizer
 {
 public:
     // methods
-	NPT_Result Serialize(NPT_XmlNode&      node, 
-						 NPT_OutputStream& stream, 
-						 bool			   add_header = true);
+    NPT_Result Serialize(NPT_XmlNode&      node, 
+                         NPT_OutputStream& stream, 
+                         bool              add_xml_decl = false);
 };
 
 #endif // _NPT_XML_H_

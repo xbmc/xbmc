@@ -1,0 +1,11 @@
+TOOLCHAIN=/Users/Shared/xbmc-depends/toolchain
+export PATH:=$(TOOLCHAIN)/bin:${PATH}
+
+TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+MAKE_JOBS=$(shell sysctl hw.ncpu | awk '{print $$2}')
+
+RETRIEVE_TOOL=/usr/bin/curl
+RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
+ARCHIVE_TOOL=tar
+ARCHIVE_TOOL_FLAGS=xf

@@ -1,0 +1,12 @@
+--- gettext-tools/src/msginit.c	2010-06-06 08:49:58.000000000 -0400
++++ gettext-tools/src/msginit.c	2012-07-25 14:54:54.511533424 -0400
+@@ -1073,7 +1073,7 @@
+   struct passwd *pwd;
+ 
+   pwd = get_user_pwd ();
+-#if HAVE_PWD_H
++#if HAVE_PWD_H && !defined(__ANDROID__)
+   if (pwd != NULL)
+     {
+       const char *fullname;
+

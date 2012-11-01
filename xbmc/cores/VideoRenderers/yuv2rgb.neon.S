@@ -94,17 +94,18 @@
 #define C_U_BLUE       129  /* u -> blue, +129 */
 
 /* Coefficients */
+    .align 4
 coefficients:
-coeff_bias_r:
+#coeff_bias_r:
     .short  -14240  /* bias_r = 74 * (-16)                + (102 * -128) */
                     /*          -1,184                    + -13,056      */
-coeff_bias_g:
+#coeff_bias_g:
     .short    8672  /* bias_g = 74 * (-16) -  25 * (-128) - ( 52 * -128) */
                     /*          -1,184     -  -3200       - -6,656       */
-coeff_bias_b:
+#coeff_bias_b:
     .short  -17696  /* bias_b = 74 * (-16) + 129 * (-128)                */
                     /*          -1,184     + -16,512                     */
-coeff_pad:
+#coeff_pad:
     .short       0
 
 #ifndef __APPLE__

@@ -2,7 +2,7 @@
 #define __X_HANDLE__
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,16 +16,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #ifndef _WIN32
 
 #include <list>
-#include <pthread.h>
 
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
@@ -36,7 +34,7 @@
 struct CXHandle {
 
 public:
-  typedef enum { HND_NULL = 0, HND_FILE, HND_EVENT, HND_MUTEX, HND_THREAD, HND_FIND_FILE } HandleType;
+  typedef enum { HND_NULL = 0, HND_FILE, HND_EVENT, HND_MUTEX, HND_FIND_FILE } HandleType;
 
   CXHandle();
   CXHandle(HandleType nType);
@@ -47,22 +45,12 @@ public:
   inline HandleType GetType() { return m_type; }
   void ChangeType(HandleType newType);
 
-  ThreadIdentifier      m_hThread;
-  bool                  m_threadValid;
   XbmcThreads::ConditionVariable     *m_hCond;
   std::list<CXHandle*>  m_hParents;
-
-#ifdef __APPLE__
-  // Save the Mach thrad port, I don't think it can be obtained from
-  // the pthread_t. We'll use it for querying timer information.
-  //
-  mach_port_t m_machThreadPort;
-#endif
 
   // simulate mutex and critical section
   CCriticalSection *m_hMutex;
   int       RecursionCount;  // for mutex - for compatibility with WIN32 critical section
-  pthread_t OwningThread;
   int       fd;
   bool      m_bManualEvent;
   time_t    m_tmCreation;

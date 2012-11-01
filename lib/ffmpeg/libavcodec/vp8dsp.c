@@ -1,6 +1,4 @@
-/**
- * VP8 compatible video decoder
- *
+/*
  * Copyright (C) 2010 David Conrad
  * Copyright (C) 2010 Ronald S. Bultje
  *
@@ -19,6 +17,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+/**
+ * @file
+ * VP8 compatible video decoder
  */
 
 #include "dsputil.h"
@@ -77,7 +80,6 @@ static void vp8_luma_dc_wht_dc_c(DCTELEM block[4][4][16], DCTELEM dc[16])
 static void vp8_idct_add_c(uint8_t *dst, DCTELEM block[16], int stride)
 {
     int i, t0, t1, t2, t3;
-    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
     DCTELEM tmp[16];
 
     for (i = 0; i < 4; i++) {
@@ -102,10 +104,10 @@ static void vp8_idct_add_c(uint8_t *dst, DCTELEM block[16], int stride)
         t2 = MUL_35468(tmp[1*4+i]) - MUL_20091(tmp[3*4+i]);
         t3 = MUL_20091(tmp[1*4+i]) + MUL_35468(tmp[3*4+i]);
 
-        dst[0] = cm[dst[0] + ((t0 + t3 + 4) >> 3)];
-        dst[1] = cm[dst[1] + ((t1 + t2 + 4) >> 3)];
-        dst[2] = cm[dst[2] + ((t1 - t2 + 4) >> 3)];
-        dst[3] = cm[dst[3] + ((t0 - t3 + 4) >> 3)];
+        dst[0] = av_clip_uint8(dst[0] + ((t0 + t3 + 4) >> 3));
+        dst[1] = av_clip_uint8(dst[1] + ((t1 + t2 + 4) >> 3));
+        dst[2] = av_clip_uint8(dst[2] + ((t1 - t2 + 4) >> 3));
+        dst[3] = av_clip_uint8(dst[3] + ((t0 - t3 + 4) >> 3));
         dst += stride;
     }
 }
@@ -113,14 +115,13 @@ static void vp8_idct_add_c(uint8_t *dst, DCTELEM block[16], int stride)
 static void vp8_idct_dc_add_c(uint8_t *dst, DCTELEM block[16], int stride)
 {
     int i, dc = (block[0] + 4) >> 3;
-    uint8_t *cm = ff_cropTbl + MAX_NEG_CROP + dc;
     block[0] = 0;
 
     for (i = 0; i < 4; i++) {
-        dst[0] = cm[dst[0]];
-        dst[1] = cm[dst[1]];
-        dst[2] = cm[dst[2]];
-        dst[3] = cm[dst[3]];
+        dst[0] = av_clip_uint8(dst[0] + dc);
+        dst[1] = av_clip_uint8(dst[1] + dc);
+        dst[2] = av_clip_uint8(dst[2] + dc);
+        dst[3] = av_clip_uint8(dst[3] + dc);
         dst += stride;
     }
 }
@@ -523,4 +524,6 @@ av_cold void ff_vp8dsp_init(VP8DSPContext *dsp)
         ff_vp8dsp_init_x86(dsp);
     if (HAVE_ALTIVEC)
         ff_vp8dsp_init_altivec(dsp);
+    if (ARCH_ARM)
+        ff_vp8dsp_init_arm(dsp);
 }

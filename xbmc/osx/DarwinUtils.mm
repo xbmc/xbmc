@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -43,6 +42,22 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
+bool SysctlMatches(std::string key, std::string searchValue)
+{
+  int result = -1;
+#if defined(TARGET_DARWIN_IOS)
+  char        buffer[512];
+  size_t      len = 512;
+  result = 0;
+
+  if (sysctlbyname(key.c_str(), &buffer, &len, NULL, 0) == 0)
+    key = buffer;
+  
+  if (key.find(searchValue) != std::string::npos)
+    result = 1;   
+#endif
+  return result;
+}
 
 bool DarwinIsAppleTV2(void)
 {
@@ -50,20 +65,26 @@ bool DarwinIsAppleTV2(void)
 #if defined(TARGET_DARWIN_IOS)
   if( result == -1 )
   {
-    char        buffer[512];
-    size_t      len = 512;
-    result = 0;    
-    std::string hw_machine = "unknown";
-
-    if (sysctlbyname("hw.machine", &buffer, &len, NULL, 0) == 0)
-      hw_machine = buffer;
-
-    if (hw_machine.find("AppleTV2,1") != std::string::npos)
-      result = 1;   
+    result = SysctlMatches("hw.machine", "AppleTV2,1");
   }
 #endif
   return (result == 1);
 }
+
+bool DarwinIsIPad3(void)
+{
+  static int result = -1;
+#if defined(TARGET_DARWIN_IOS)
+  if( result == -1 )
+  {
+    //valid ipad3 identifiers - iPad3,1 iPad3,2 and iPad3,3
+    //taken from http://stackoverflow.com/questions/9638970/ios-the-new-ipad-uidevicehardware-hw-machine-codename
+    result = SysctlMatches("hw.machine", "iPad3");
+  }
+#endif
+  return (result == 1);
+}
+
 
 const char *GetDarwinVersionString(void)
 {

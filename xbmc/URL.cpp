@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -97,9 +96,14 @@ void CURL::Parse(const CStdString& strURL1)
     // example: filename /foo/bar.zip/alice.rar/bob.avi
     // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
     iPos = 0;
+    bool is_apk = (strURL.Find(".apk/", iPos) > 0);
     while (1)
     {
-      iPos = strURL.Find(".zip/", iPos);
+      if (is_apk)
+        iPos = strURL.Find(".apk/", iPos);
+      else
+        iPos = strURL.Find(".zip/", iPos);
+
       int extLen = 3;
       if (iPos < 0)
       {
@@ -119,8 +123,16 @@ void CURL::Parse(const CStdString& strURL1)
 #endif
         {
           Encode(archiveName);
-          CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
-          *this = c;
+          if (is_apk)
+          {
+            CURL c((CStdString)"apk" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            *this = c;
+          }
+          else
+          {
+            CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            *this = c;
+          }
           return;
         }
       }
@@ -157,17 +169,24 @@ void CURL::Parse(const CStdString& strURL1)
   int iEnd = strURL.length();
   const char* sep = NULL;
 
+  //TODO fix all Addon paths
   CStdString strProtocol2 = GetTranslatedProtocol();
   if(m_strProtocol.Equals("rss") ||
      m_strProtocol.Equals("rar") ||
-     m_strProtocol.Equals("addons"))
+     m_strProtocol.Equals("addons") ||
+     m_strProtocol.Equals("image") ||
+     m_strProtocol.Equals("videodb") ||
+     m_strProtocol.Equals("musicdb") ||
+     m_strProtocol.Equals("androidapp"))
     sep = "?";
   else
   if(strProtocol2.Equals("http")
     || strProtocol2.Equals("https")
     || strProtocol2.Equals("plugin")
+    || strProtocol2.Equals("addons")
     || strProtocol2.Equals("hdhomerun")
     || strProtocol2.Equals("rtsp")
+    || strProtocol2.Equals("apk")
     || strProtocol2.Equals("zip"))
     sep = "?;#|";
   else if(strProtocol2.Equals("ftp")
@@ -189,9 +208,14 @@ void CURL::Parse(const CStdString& strURL1)
       else
         m_strOptions = strURL.substr(iOptions);
       iEnd = iOptions;
+      m_options.AddOptions(m_strOptions);
+
       /* PLEX */
       m_strWithoutOptions = strURL.substr(0,iOptions);
+      /* END PLEX */
     }
+
+    /* PLEX */
     m_strWithoutOptions = strURL;
     /* END PLEX */
   }
@@ -294,6 +318,7 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("sources") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
+    || m_strProtocol.CompareNoCase("pvr") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")
@@ -367,11 +392,13 @@ void CURL::SetProtocol(const CStdString& strProtocol)
 void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.Empty();
+  m_options.Clear();
   if( strOptions.length() > 0)
   {
     if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
     {
       m_strOptions = strOptions;
+      m_options.AddOptions(m_strOptions);
     }
     else
       CLog::Log(LOGWARNING, "%s - Invalid options specified for url %s", __FUNCTION__, strOptions.c_str());
@@ -436,22 +463,7 @@ const CStdString& CURL::GetProtocol() const
 
 const CStdString CURL::GetTranslatedProtocol() const
 {
-  if (m_strProtocol == "ftpx")
-    return "ftp";
-
-  if (m_strProtocol == "shout"
-   || m_strProtocol == "daap"
-   || m_strProtocol == "dav"
-   || m_strProtocol == "tuxbox"
-   || m_strProtocol == "lastfm"
-   || m_strProtocol == "mms"
-   || m_strProtocol == "rss")
-   return "http";
-  
-  if (m_strProtocol == "davs")
-    return "https";
-  
-  return m_strProtocol;
+  return TranslateProtocol(m_strProtocol);
 }
 
 const CStdString& CURL::GetFileType() const
@@ -472,7 +484,10 @@ const CStdString& CURL::GetProtocolOptions() const
 const CStdString CURL::GetFileNameWithoutPath() const
 {
   // *.zip and *.rar store the actual zip/rar path in the hostname of the url
-  if ((m_strProtocol == "rar" || m_strProtocol == "zip") && m_strFileName.IsEmpty())
+  if ((m_strProtocol == "rar"  || 
+       m_strProtocol == "zip"  ||
+       m_strProtocol == "apk") &&
+       m_strFileName.IsEmpty())
     return URIUtils::GetFileName(m_strHostName);
 
   // otherwise, we've already got the filepath, so just grab the filename portion
@@ -659,6 +674,7 @@ bool CURL::IsFullPath(const CStdString &url)
   if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
   if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
   if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
+  if (url.compare(0,2,"\\\\") == 0) return true;    //   \\UNC\path\to\file
   return false;
 }
 
@@ -709,8 +725,11 @@ void CURL::Encode(CStdString& strURLData)
   for (int i = 0; i < (int)strURLData.size(); ++i)
   {
     int kar = (unsigned char)strURLData[i];
-    //if (kar == ' ') strResult += '+';
-    if (isalnum(kar)) strResult += kar;
+    //if (kar == ' ') strResult += '+'; // obsolete
+    if (isalnum(kar) || strchr("-_.!()" , kar) ) // Don't URL encode these according to RFC1738
+    {
+      strResult += kar;
+    }
     else
     {
       CStdString strTmp;
@@ -721,38 +740,80 @@ void CURL::Encode(CStdString& strURLData)
   strURLData = strResult;
 }
 
-/* PLEX */
-const std::map<CStdString, CStdString> CURL::GetOptionsAsMap() const
+std::string CURL::Decode(const std::string& strURLData)
 {
-  std::map<CStdString, CStdString> result;
-  CStdString options = m_strOptions;
-
-  if (m_strOptions.Left(1) == "?")
-  {
-    options = m_strOptions.Right(m_strOptions.size() - 1);
-  }
-
-  if (options == "")
-  {
-    return result;
-  }
-
-  int equalPos;
-  std::vector<CStdString> tokens;
-  CUtil::Tokenize(options, tokens, "&");
-
-  for (size_t i = 0; i < tokens.size(); i++)
-  {
-    equalPos = tokens[i].Find("=");
-    CStdString key = tokens[i].Left(equalPos);
-    CStdString value = tokens[i].Right(tokens[i].size() - equalPos - 1);
-    CURL::Decode(value);
-    result[key] = value;
-  }
-
-  return result;
+  CStdString url = strURLData;
+  Decode(url);
+  return url;
 }
 
+std::string CURL::Encode(const std::string& strURLData)
+{
+  CStdString url = strURLData;
+  Encode(url);
+  return url;
+}
+
+CStdString CURL::TranslateProtocol(const CStdString& prot)
+{
+  if (prot == "shout"
+   || prot == "daap"
+   || prot == "dav"
+   || prot == "tuxbox"
+   || prot == "lastfm"
+   || prot == "rss")
+   return "http";
+
+  if (prot == "davs")
+    return "https";
+
+  return prot;
+}
+
+void CURL::GetOptions(std::map<CStdString, CStdString> &options) const
+{
+  CUrlOptions::UrlOptions optionsMap = m_options.GetOptions();
+  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); option++)
+    options[option->first] = option->second.asString();
+}
+
+bool CURL::HasOption(const CStdString &key) const
+{
+  return m_options.HasOption(key);
+}
+
+bool CURL::GetOption(const CStdString &key, CStdString &value) const
+{
+  CVariant valueObj;
+  if (!m_options.GetOption(key, valueObj))
+    return false;
+
+  value = valueObj.asString();
+  return true;
+}
+
+CStdString CURL::GetOption(const CStdString &key) const
+{
+  CStdString value;
+  if (!GetOption(key, value))
+    return "";
+
+  return value;
+}
+
+void CURL::SetOption(const CStdString &key, const CStdString &value)
+{
+  m_options.AddOption(key, value);
+  SetOptions(m_options.GetOptionsString(true));
+}
+
+void CURL::RemoveOption(const CStdString &key)
+{
+  m_options.AddOption(key, "");
+  SetOptions(m_options.GetOptionsString(true));
+}
+
+/* PLEX */
 const CStdString& CURL::GetUrlWithoutOptions() const
 {
   return m_strWithoutOptions;

@@ -1,0 +1,10 @@
+/Makefile
+/configure
+/Makefile.include
+/autom4te.cache/
+/**/.gitignore
+/**/.installed-*
+/*/x86/*
+/*/x86-native/*
+/*/armeabi-v7a/*
+/*/armeabi-v7a-native/*

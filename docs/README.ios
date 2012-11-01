@@ -1,0 +1,171 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Install required libs
+  3.1. Install Xcode
+  3.2. Install Cross libs and runtime environment
+4. How to compile and run
+	4.1 Using XCode
+	4.2 Using Command line
+5. Packaging
+6. Gesture Handling on iPad/iPhone/iPod touch
+7. Remote control on ATV2
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+This is a platform port of XBMC for the Apple iOS operating system. 
+The current build system supports Xcode 3.2.6 or Xcode 4.3.x with iOS SDK 4.2/4.3/5.1
+There are two ways to build XBMC for Mac.
+
+1) command-line or
+2) Xcode.
+
+Generally, Xcode is the easiest as it presents the build system in a GUI environment.
+The command-line build is still under development.
+
+XBMC for iOS is composed of a main binary with numerous dynamic libraries and
+codecs that support a multitude of music and video formats.
+
+NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
+commands that need to be typed into a Terminal window. Note that the '$'
+character itself should NOT be typed as part of the command.
+
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+ $ cd $HOME
+ $ git clone git://github.com/xbmc/xbmc.git xbmc
+ $ cd xbmc
+ $ git submodule update --init addons/skin.touched
+
+-----------------------------------------------------------------------------
+3.0 Install Xcode
+-----------------------------------------------------------------------------
+See point 3.0a below for an updated list of supported Xcode/osx constellations!!!
+
+Install latest Xcode (4.3.2 or 3.2.6 as of the writing). You can download it from 
+
+1. Apple's site after registration at http://developer.apple.com/tools/download (Xcode 3.2.6)
+2. In the MacOSX AppStore (Xcode 4.3.x). 
+
+If you are using XCode 4.3.x you also need to install the "Command Line Tools". To do so
+after installing Xcode you have to go to "Xcode->Preferences->Downloads" and install the
+package "Command Line Tools".
+
+Xcode 3.2.6 only runs on 10.6.x (Snow Leopard). 
+Xcode 4.3.x only runs on 10.7.x (Lion).
+
+The preferred iOS SDK Version is 4.3 (when using Xcode 3.2.6) or 5.1 (when using
+Xcode 4.3.x).
+
+-----------------------------------------------------------------------------
+3.0a Supported Xcode and OSX constellations
+-----------------------------------------------------------------------------
+As far as we know the compilation for ios and atv2 should work with the following
+constellations of Xcode and osx versions (to be updated once we know more):
+
+1. XCode 3.2.6 against iOS SDK 4.3 on 10.6.x (Snow Leopard)
+2. XCode 4.3.x against iOS SDK 4.3 and 5.1 on 10.7.x (Lion)
+3. XCode 4.5.1 against iOS SDK 4.3, 5.1 and 6.0 on 10.7.x (Lion) and 10.8.x (ML)
+3.a Building against iOS SDK 6.0 will only allow to run on targets with iOS 5.1 and below.
+    There is no support for devices running iOS 6.0 for now!
+
+-----------------------------------------------------------------------------
+3.1 Install Cross libs and runtime environment
+-----------------------------------------------------------------------------
+
+ $ cd $HOME/XBMC
+  $ cd tools/darwin/depends
+ $ ./bootstrap
+ $ ./configure --with-darwin=ios
+ $ make
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+Both Xcode and Terminal compilation require that build environment be setup
+from the step 3.1.
+
+ $ cd $HOME/XBMC
+ $ make -C tools/darwin/depends/xbmc
+ $ make clean
+ $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
+
+-----------------------------------------------------------------------------
+4.1 Using Xcode
+-----------------------------------------------------------------------------
+Start XCode and open the XBMC project (XBMC-IOS.xcodeproj or XBMC-ATV2.xcodeproj)
+located in $HOME/XBMC.
+
+There are two relevant build targets : Release and Debug. Compile always for device
+end not simulator.
+
+-----------------------------------------------------------------------------
+4.2 Using Terminal (command-line)
+-----------------------------------------------------------------------------
+
+ $ cd $HOME/XBMC
+ $ xcodebuild -project XBMC-IOS.xcodeproj -target XBMC -configuration Release build \
+   ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.1 \
+   SDKROOT=iphoneos4.2
+
+or
+
+ $ xcodebuild -project XBMC-ATV2.xcodeproj -target XBMC -configuration Release build \
+  ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.1 \
+  SDKROOT=iphoneos4.2
+ 
+ Make sure to set SDKROOT to the iOS SDK you want to use.
+
+-----------------------------------------------------------------------------
+5. Packaging
+-----------------------------------------------------------------------------
+
+This section describes how to package XBMC in a deb image for
+distribution.
+
+  1. build XBMC for iOS or ATV2 from XCode so that the application bundle is 
+     correctly updated.
+
+  2. 
+   $ cd tools/darwin/packaging/xbmc-atv2
+   or
+   $ cd tools/darwin/packaging/xbmc-ios
+
+  3. $ ./mk-xbmc-atv2.sh release
+     or
+     $ ./mk-xbmc-ios.sh release
+     
+  4. Use release or debug - you have to be sure that you build the corresponding 
+     version before.
+  
+  5. The resulting deb file can be copied to the iOS/ATV2 via ssh/scp and then be 
+     installed manually. For this you need to ssh into the iOS/ATV2 and do:
+     $ dpkg -i <name of the deb file>
+
+-----------------------------------------------------------------------------
+6. Gesture Handling on iPad/iPhone/iPod touch
+-----------------------------------------------------------------------------
+
+ - double finger swipe left                   -> back
+ - double finger tap/single finger long tap   -> right mouse
+ - single finger tap                          -> left mouse
+ - panning, and flicking                      -> for navigating in lists
+ - dragging                                   -> for scrollbars and sliders
+ - zoom gesture                               -> in the pictureviewer
+
+-----------------------------------------------------------------------------
+7. Remote control on ATV2
+-----------------------------------------------------------------------------
+
+ - Select             -> like enter/left click - OK button on other remotes (during playback its pause by defaul)
+ - Select long press  -> During playback show the overlay
+ - Cursor keys        -> for moving around and selecting controls
+ - Menu               -> back
+ - Menu long press    -> context menu
+ 

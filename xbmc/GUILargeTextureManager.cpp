@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,17 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "threads/SystemClock.h"
 #include "GUILargeTextureManager.h"
-#include "pictures/Picture.h"
 #include "settings/GUISettings.h"
-#include "FileItem.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
@@ -48,40 +45,31 @@ CImageLoader::~CImageLoader()
 
 bool CImageLoader::DoWork()
 {
+  bool needsChecking = false;
+
   CStdString texturePath = g_TextureManager.GetTexturePath(m_path);
-  CStdString loadPath = CTextureCache::Get().CheckCachedImage(texturePath); 
-  
-  // If empty, then go on to validate and cache image as appropriate
-  // If hit, continue down and load image
+  CStdString loadPath = CTextureCache::Get().CheckCachedImage(texturePath, true, needsChecking); 
+
   if (loadPath.IsEmpty())
   {
-    CFileItem file(m_path, false);
-
-    // Validate file URL to see if it is an image
-    /* PLEX */
-    if ((file.IsPlexMediaServer() && file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
-       || file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
-    /* END PLEX */
-    { 
-      // Cache the image if necessary
-      loadPath = CTextureCache::Get().CacheImageFile(texturePath);
-      if (loadPath.IsEmpty())
-        return false;
-    }
-    else
-      return true;
+    // not in our texture cache, so try and load directly and then cache the result
+    loadPath = CTextureCache::Get().CacheImage(texturePath, &m_texture);
+    if (m_texture)
+      return true; // we're done
   }
- 
-  m_texture = new CTexture();
-  unsigned int start = XbmcThreads::SystemClockMillis();
-  if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
+  if (!loadPath.IsEmpty())
   {
-    delete m_texture;
-    m_texture = NULL;
-  }
-  else if (XbmcThreads::SystemClockMillis() - start > 100)
-    CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
+    // direct route - load the image
+    unsigned int start = XbmcThreads::SystemClockMillis();
+    m_texture = CBaseTexture::LoadFromFile(loadPath, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), g_guiSettings.GetBool("pictures.useexifrotation"));
+    if (!m_texture)
+      return false;
+    if (XbmcThreads::SystemClockMillis() - start > 100)
+      CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
 
+    if (needsChecking)
+      CTextureCache::Get().BackgroundCacheImage(texturePath);
+  }
   return true;
 }
 
@@ -162,7 +150,6 @@ void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 // else, add to the queue list if appropriate.
 bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest)
 {
-  // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {

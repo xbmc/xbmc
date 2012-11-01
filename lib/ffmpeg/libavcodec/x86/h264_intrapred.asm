@@ -19,11 +19,11 @@
 ;*
 ;* You should have received a copy of the GNU Lesser General Public
 ;* License along with FFmpeg; if not, write to the Free Software
-;* 51, Inc., Foundation Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+;* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;******************************************************************************
 
-%include "x86inc.asm"
-%include "x86util.asm"
+%include "libavutil/x86/x86inc.asm"
+%include "libavutil/x86/x86util.asm"
 
 SECTION_RODATA
 
@@ -836,7 +836,6 @@ PRED8x8_H ssse3
 ;-----------------------------------------------------------------------------
 ; void pred8x8_top_dc_mmxext(uint8_t *src, int stride)
 ;-----------------------------------------------------------------------------
-%ifdef CONFIG_GPL
 cglobal pred8x8_top_dc_mmxext, 2,5
     sub         r0, r1
     movq       mm0, [r0]
@@ -927,7 +926,6 @@ cglobal pred8x8_dc_mmxext, 2,5
     movq [r4+r1*1], m1
     movq [r4+r1*2], m1
     RET
-%endif
 
 ;-----------------------------------------------------------------------------
 ; void pred8x8_dc_rv40(uint8_t *src, int stride)
@@ -1083,7 +1081,6 @@ cglobal pred8x8_tm_vp8_ssse3, 2,3,6
 ;-----------------------------------------------------------------------------
 ; void pred8x8l_top_dc(uint8_t *src, int has_topleft, int has_topright, int stride)
 ;-----------------------------------------------------------------------------
-%ifdef CONFIG_GPL
 %macro PRED8x8L_TOP_DC 1
 cglobal pred8x8l_top_dc_%1, 4,4
     sub          r0, r3
@@ -2476,7 +2473,6 @@ PRED8x8L_HORIZONTAL_DOWN sse2
 INIT_MMX
 %define PALIGNR PALIGNR_SSSE3
 PRED8x8L_HORIZONTAL_DOWN ssse3
-%endif
 
 ;-----------------------------------------------------------------------------
 ; void pred4x4_dc_mmxext(uint8_t *src, const uint8_t *topright, int stride)
@@ -2608,7 +2604,6 @@ cglobal pred4x4_vertical_vp8_mmxext, 3,3
 ;-----------------------------------------------------------------------------
 ; void pred4x4_down_left_mmxext(uint8_t *src, const uint8_t *topright, int stride)
 ;-----------------------------------------------------------------------------
-%ifdef CONFIG_GPL
 INIT_MMX
 cglobal pred4x4_down_left_mmxext, 3,3
     sub       r0, r2
@@ -2616,12 +2611,11 @@ cglobal pred4x4_down_left_mmxext, 3,3
     punpckldq m1, [r1]
     movq      m2, m1
     movq      m3, m1
-    movq      m4, m1
     psllq     m1, 8
     pxor      m2, m1
     psrlq     m2, 8
-    pxor      m3, m2
-    PRED4x4_LOWPASS m0, m1, m3, m4, m5
+    pxor      m2, m3
+    PRED4x4_LOWPASS m0, m1, m2, m3, m4
     lea       r1, [r0+r2*2]
     psrlq     m0, 8
     movd      [r0+r2*1], m0
@@ -2786,4 +2780,3 @@ cglobal pred4x4_down_right_mmxext, 3,3
     psrlq     m0, 8
     movh      [r0+r2*1], m0
     RET
-%endif

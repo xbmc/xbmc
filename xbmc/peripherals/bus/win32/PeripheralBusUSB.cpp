@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -67,8 +66,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 
   bReturn = true;
   BOOL bResult = true;
-  TCHAR *buffer = NULL;
-  PSP_DEVICE_INTERFACE_DETAIL_DATA devicedetailData;
+  PSP_DEVICE_INTERFACE_DETAIL_DATA devicedetailData = NULL;
   while(bResult)
   {
     bResult = SetupDiEnumDeviceInfo(hDevHandle, iMemberIndex, &devInfoData);
@@ -76,55 +74,61 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
     if (bResult)
       bResult = SetupDiEnumDeviceInterfaces(hDevHandle, 0, guid, iMemberIndex, &deviceInterfaceData);
 
-    if(!bResult)
+    if (bResult)
+    {
+      iMemberIndex++;
+      BOOL bDetailResult = false;
+      {
+        // As per MSDN, Get the required buffer size. Call SetupDiGetDeviceInterfaceDetail with a 
+        // NULL DeviceInterfaceDetailData pointer, a DeviceInterfaceDetailDataSize of zero, 
+        // and a valid RequiredSize variable. In response to such a call, this function returns 
+        // the required buffer size at RequiredSize and fails with GetLastError returning 
+        // ERROR_INSUFFICIENT_BUFFER. 
+        // Allocate an appropriately sized buffer and call the function again to get the interface details. 
+
+        SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, NULL, 0, &required, NULL);
+
+        devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(required * sizeof(TCHAR));
+        devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
+        nBufferSize = required;
+      }
+
+      bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, NULL);
+      if (bDetailResult)
+      {
+        CStdString strVendorId(StringUtils::EmptyString);
+        CStdString strProductId(StringUtils::EmptyString);
+        CStdString strTmp(devicedetailData->DevicePath);
+        strVendorId = strTmp.substr(strTmp.Find("vid_") + 4, 4);
+        strProductId = strTmp.substr(strTmp.Find("pid_") + 4, 4);
+
+        if ((strTmp.Find("&mi_") < 0) || (strTmp.Find("&mi_00") >= 0))
+        {
+          PeripheralScanResult prevDevice;
+          if (!results.GetDeviceOnLocation(devicedetailData->DevicePath, &prevDevice))
+          {
+            PeripheralScanResult result;
+            result.m_strLocation  = devicedetailData->DevicePath;
+            result.m_type         = type;
+            result.m_iVendorId    = PeripheralTypeTranslator::HexStringToInt(strVendorId.c_str());
+            result.m_iProductId   = PeripheralTypeTranslator::HexStringToInt(strProductId.c_str());
+
+            if (!results.ContainsResult(result))
+              results.m_results.push_back(result);
+          }
+        }
+      }
+
+      if (devicedetailData)
+      {
+        free(devicedetailData);
+        devicedetailData = NULL;
+      } 
+    }
+    else
     {
       SetupDiDestroyDeviceInfoList(hDevHandle);
-      delete []buffer;
-      buffer = NULL;
       return bReturn;
-    }
-
-    iMemberIndex++;
-    BOOL bDetailResult = false;
-    {
-      // As per MSDN, Get the required buffer size. Call SetupDiGetDeviceInterfaceDetail with a 
-      // NULL DeviceInterfaceDetailData pointer, a DeviceInterfaceDetailDataSize of zero, 
-      // and a valid RequiredSize variable. In response to such a call, this function returns 
-      // the required buffer size at RequiredSize and fails with GetLastError returning 
-      // ERROR_INSUFFICIENT_BUFFER. 
-      // Allocate an appropriately sized buffer and call the function again to get the interface details. 
-
-      SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, NULL, 0, &required, NULL);
-
-      buffer = new TCHAR[required];
-      devicedetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA) buffer;
-      devicedetailData->cbSize = sizeof(SP_INTERFACE_DEVICE_DETAIL_DATA);
-      nBufferSize = required;
-    }
-
-    bDetailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, NULL);
-    if(!bDetailResult)
-      continue;
-
-    CStdString strVendorId(StringUtils::EmptyString);
-    CStdString strProductId(StringUtils::EmptyString);
-    CStdString strTmp(devicedetailData->DevicePath);
-    strVendorId = strTmp.substr(strTmp.Find("vid_") + 4, 4);
-    strProductId = strTmp.substr(strTmp.Find("pid_") + 4, 4);
-    if (strTmp.Find("&mi_") >= 0 && strTmp.Find("&mi_00") < 0)
-      continue;
-
-    PeripheralScanResult prevDevice;
-    if (!results.GetDeviceOnLocation(devicedetailData->DevicePath, &prevDevice))
-    {
-      PeripheralScanResult result;
-      result.m_strLocation  = devicedetailData->DevicePath;
-      result.m_type         = type;
-      result.m_iVendorId    = PeripheralTypeTranslator::HexStringToInt(strVendorId.c_str());
-      result.m_iProductId   = PeripheralTypeTranslator::HexStringToInt(strProductId.c_str());
-
-      if (!results.ContainsResult(result))
-        results.m_results.push_back(result);
     }
   }
 

@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:29+0000\n"
+"PO-Revision-Date: 2012-10-17 10:54+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Arabic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "الوضع"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "ممتلء"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "سلكي"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "نقط"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "شريط الارتفاع"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "صغير"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "الافتراضية"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "كبير"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "كبير جدا"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "سرعة"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "ب\\يء جدا"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "بطيء"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "الافتراضية"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "سريع"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "سريع جدا"

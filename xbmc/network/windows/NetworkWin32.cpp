@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -52,7 +51,7 @@ CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
 
 CStdString& CNetworkInterfaceWin32::GetName(void)
 {
-  if (!g_charsetConverter.isValidUtf8(m_adaptername)) 
+  if (!g_charsetConverter.isValidUtf8(m_adaptername))
     g_charsetConverter.unknownToUTF8(m_adaptername);
   return m_adaptername;
 }
@@ -79,6 +78,11 @@ CStdString CNetworkInterfaceWin32::GetMacAddress()
   unsigned char* mAddr = m_adapter.Address;
   result.Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
+}
+
+void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6])
+{
+  memcpy(rawMac, m_adapter.Address, 6);
 }
 
 CStdString CNetworkInterfaceWin32::GetCurrentIPAddress(void)
@@ -184,31 +188,29 @@ void CNetworkWin32::queryInterfaceList()
   ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
 
   adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-  if (adapterInfo == NULL) 
+  if (adapterInfo == NULL)
     return;
 
-  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) 
+  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
   {
     free(adapterInfo);
     adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
-    if (adapterInfo == NULL) 
+    if (adapterInfo == NULL)
     {
       OutputDebugString("Error allocating memory needed to call GetAdaptersinfo\n");
       return;
     }
   }
 
-  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR) 
+  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
   {
     adapter = adapterInfo;
-    while (adapter) 
+    while (adapter)
     {
       m_interfaces.push_back(new CNetworkInterfaceWin32(this, *adapter));
-
       adapter = adapter->Next;
     }
   }
-
   free(adapterInfo);
 }
 
@@ -221,24 +223,24 @@ std::vector<CStdString> CNetworkWin32::GetNameServers(void)
   IP_ADDR_STRING *pIPAddr;
 
   pFixedInfo = (FIXED_INFO *) malloc(sizeof (FIXED_INFO));
-  if (pFixedInfo == NULL) 
+  if (pFixedInfo == NULL)
   {
     OutputDebugString("Error allocating memory needed to call GetNetworkParams\n");
     return result;
   }
   ulOutBufLen = sizeof (FIXED_INFO);
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) 
+  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
   {
     free(pFixedInfo);
     pFixedInfo = (FIXED_INFO *) malloc(ulOutBufLen);
-    if (pFixedInfo == NULL) 
+    if (pFixedInfo == NULL)
     {
       OutputDebugString("Error allocating memory needed to call GetNetworkParams\n");
       return result;
     }
   }
 
-  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR) 
+  if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR)
   {
     result.push_back(pFixedInfo->DnsServerList.IpAddress.String);
     pIPAddr = pFixedInfo->DnsServerList.Next;
@@ -256,28 +258,13 @@ std::vector<CStdString> CNetworkWin32::GetNameServers(void)
 
 void CNetworkWin32::SetNameServers(std::vector<CStdString> nameServers)
 {
-   FILE* fp = fopen("/etc/resolv.conf", "w");
-   if (fp != NULL)
-   {
-      for (unsigned int i = 0; i < nameServers.size(); i++)
-      {
-         fprintf(fp, "nameserver %s\n", nameServers[i].c_str());
-      }
-      fclose(fp);
-   }
-   else
-   {
-      // TODO:
-   }
+  return;
 }
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
 {
    std::vector<NetworkAccessPoint> result;
 
-   /*if (!IsWireless())
-      return result;*/
- 
    return result;
 }
 
@@ -298,31 +285,31 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdStri
   ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
 
   adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-  if (adapterInfo == NULL) 
+  if (adapterInfo == NULL)
     return;
 
-  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) 
+  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
   {
     free(adapterInfo);
     adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
-    if (adapterInfo == NULL) 
+    if (adapterInfo == NULL)
     {
       OutputDebugString("Error allocating memory needed to call GetAdaptersinfo\n");
       return;
     }
   }
 
-  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR) 
+  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
   {
     adapter = adapterInfo;
-    while (adapter) 
+    while (adapter)
     {
       if(m_adapter.Index == adapter->Index)
       {
         ipAddress = adapter->IpAddressList.IpAddress.String;
         networkMask = adapter->IpAddressList.IpMask.String;
         defaultGateway = adapter->GatewayList.IpAddress.String;
-        if (adapter->DhcpEnabled) 
+        if (adapter->DhcpEnabled)
           assignment = NETWORK_DHCP;
         else
           assignment = NETWORK_STATIC;
@@ -393,27 +380,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdStri
 
 void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
-  if(IsWireless())
-  {
-  }
-  else
-  {
-    /*if(assignment == NETWORK_STATIC)
-    {
-      DWORD dwRet = 0;
-      ULONG NTEContext = 0;  
-      ULONG NTEInstance;  
-
-      if((dwRet = AddIPAddress(inet_addr(ipAddress.c_str()), inet_addr(networkMask.c_str()), m_adapter.Index, &NTEContext, &NTEInstance)) == NO_ERROR)
-      {
-        if((dwRet = DeleteIPAddress(m_adapter.IpAddressList.Context)) != NO_ERROR)
-          CLog::Log(LOGERROR, "Unable to delete IP entry: %s, Error code: %d",m_adapter.IpAddressList.IpAddress.String, dwRet);
-      }
-      else
-        CLog::Log(LOGERROR, "Unable to add IP entry: %s, Error code: %d", ipAddress.c_str(),dwRet);
-    }*/
-  }
-
+  return;
 }
 
 void CNetworkInterfaceWin32::WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)

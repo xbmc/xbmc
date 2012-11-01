@@ -22,7 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 #include "avcodec.h"
 #include "bytestream.h"
 #include "get_bits.h"
@@ -71,7 +71,7 @@ static void pcx_palette(const uint8_t **src, uint32_t *dst, unsigned int pallen)
     unsigned int i;
 
     for (i=0; i<pallen; i++)
-        *dst++ = bytestream_get_be24(src);
+        *dst++ = 0xFF000000 | bytestream_get_be24(src);
     if (pallen < 256)
         memset(dst, 0, (256 - pallen) * sizeof(*dst));
 }
@@ -152,7 +152,7 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         return -1;
     }
 
-    p->pict_type = FF_I_TYPE;
+    p->pict_type = AV_PICTURE_TYPE_I;
 
     ptr    = p->data[0];
     stride = p->linesize[0];
@@ -224,6 +224,9 @@ static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
     if (nplanes == 1 && bits_per_pixel == 8) {
         pcx_palette(&buf, (uint32_t *) p->data[1], 256);
+    } else if (bits_per_pixel * nplanes == 1) {
+        AV_WN32A(p->data[1]  , 0xFF000000);
+        AV_WN32A(p->data[1]+4, 0xFFFFFFFF);
     } else if (bits_per_pixel < 8) {
         const uint8_t *palette = bufstart+16;
         pcx_palette(&palette, (uint32_t *) p->data[1], 16);
@@ -248,15 +251,13 @@ static av_cold int pcx_end(AVCodecContext *avctx) {
 }
 
 AVCodec ff_pcx_decoder = {
-    "pcx",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_PCX,
-    sizeof(PCXContext),
-    pcx_init,
-    NULL,
-    pcx_end,
-    pcx_decode_frame,
-    CODEC_CAP_DR1,
-    NULL,
+    .name           = "pcx",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_PCX,
+    .priv_data_size = sizeof(PCXContext),
+    .init           = pcx_init,
+    .close          = pcx_end,
+    .decode         = pcx_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("PC Paintbrush PCX image"),
 };

@@ -1,15 +1,161 @@
 # no horiz rules between sections
-$end_section = \&FFMPEG_end_section;
-sub FFMPEG_end_section($$)
+$end_section = \&FFmpeg_end_section;
+sub FFmpeg_end_section($$)
 {
 }
 
-$print_page_foot = \&FFMPEG_print_page_foot;
-sub FFMPEG_print_page_foot($$)
+$EXTRA_HEAD =
+'<link rel="icon" href="favicon.png" type="image/png" />
+<link rel="stylesheet" type="text/css" href="default.css" />
+';
+
+$CSS_LINES = <<EOT;
+<style type="text/css">
+<!--
+a.summary-letter { text-decoration: none }
+a { color: #2D6198; }
+a:visited { color: #884488; }
+h1 a, h2 a, h3 a { text-decoration: inherit; color: inherit; }
+p { margin-left: 1em; margin-right: 1em; }
+table { margin-left: 2em; }
+pre { margin-left: 2em; }
+#footer { text-align: center; }
+#body { margin-left: 1em; margin-right: 1em; }
+body { background-color: #313131; margin: 0; }
+
+#container {
+    background-color: white;
+    color: #202020;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+h1 {
+    background-color: #7BB37B;
+    border: 1px solid #6A996A;
+    color: #151515;
+    font-size: 1.2em;
+    padding-bottom: 0.2em;
+    padding-left: 0.4em;
+    padding-top: 0.2em;
+}
+
+h2 {
+    color: #313131;
+    font-size: 1.2em;
+}
+
+h3 {
+    color: #313131;
+    font-size: 0.8em;
+    margin-bottom: -8px;
+}
+
+.note {
+    margin: 1em;
+    border: 1px solid #bbc9d8;
+    background-color: #dde1e1;
+}
+
+.important {
+    margin: 1em;
+    border: 1px solid #d26767;
+    background-color: #f8e1e1;
+}
+
+-->
+</style>
+EOT
+
+my $FFMPEG_NAVBAR = $ENV{"FFMPEG_NAVBAR"} || '';
+
+$AFTER_BODY_OPEN =
+'<div id="container">' .
+"\n$FFMPEG_NAVBAR\n" .
+'<div id="body">';
+
+$PRE_BODY_CLOSE = '</div></div>';
+
+$SMALL_RULE = '';
+$BODYTEXT = '';
+
+$print_page_foot = \&FFmpeg_print_page_foot;
+sub FFmpeg_print_page_foot($$)
 {
     my $fh = shift;
-    print $fh "$SMALL_RULE\n";
+    print $fh '<div id="footer">' . "\n";
     T2H_DEFAULT_print_page_foot($fh);
+    print $fh "</div>\n";
+}
+
+$float = \&FFmpeg_float;
+
+sub FFmpeg_float($$$$)
+{
+    my $text = shift;
+    my $float = shift;
+    my $caption = shift;
+    my $shortcaption = shift;
+
+    my $label = '';
+    if (exists($float->{'id'}))
+    {
+        $label = &$anchor($float->{'id'});
+    }
+    my $class = '';
+    my $subject = '';
+
+    if ($caption =~ /NOTE/)
+    {
+        $class = "note";
+    }
+    elsif ($caption =~ /IMPORTANT/)
+    {
+        $class = "important";
+    }
+
+    return '<div class="float ' . $class . '">' . "$label\n" . $text . '</div>';
+}
+
+$print_page_head = \&FFmpeg_print_page_head;
+sub FFmpeg_print_page_head($$)
+{
+    my $fh = shift;
+    my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
+    $longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
+    my $description = $DOCUMENT_DESCRIPTION;
+    $description = $longtitle if (!defined($description));
+    $description = "<meta name=\"description\" content=\"$description\">" if
+         ($description ne '');
+    $description = $Texi2HTML::THISDOC{'documentdescription'} if (defined($Texi2HTML::THISDOC{'documentdescription'}));
+    my $encoding = '';
+    $encoding = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$ENCODING\">" if (defined($ENCODING) and ($ENCODING ne ''));
+    $longtitle =~ s/Documentation.*//g;
+    $longtitle = "FFmpeg documentation : " . $longtitle;
+
+    print $fh <<EOT;
+$DOCTYPE
+<html>
+$Texi2HTML::THISDOC{'copying'}<!-- Created on $Texi2HTML::THISDOC{today} by $Texi2HTML::THISDOC{program} -->
+<!--
+$Texi2HTML::THISDOC{program_authors}
+-->
+<head>
+<title>$longtitle</title>
+
+$description
+<meta name="keywords" content="$longtitle">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="$Texi2HTML::THISDOC{program}">
+$encoding
+$CSS_LINES
+$EXTRA_HEAD
+</head>
+
+<body $BODYTEXT>
+$AFTER_BODY_OPEN
+EOT
 }
 
 # no navigation elements

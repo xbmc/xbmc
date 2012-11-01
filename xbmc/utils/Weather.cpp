@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,7 @@
 #include "Weather.h"
 #include "filesystem/ZipManager.h"
 #include "XMLUtils.h"
+#include "utils/POUtils.h"
 #include "Temperature.h"
 #include "network/Network.h"
 #include "Application.h"
@@ -49,11 +49,11 @@ using namespace XFILE;
 #define LOCALIZED_TOKEN_FIRSTID    370
 #define LOCALIZED_TOKEN_LASTID     395
 #define LOCALIZED_TOKEN_FIRSTID2  1396
-#define LOCALIZED_TOKEN_LASTID2   1450
+#define LOCALIZED_TOKEN_LASTID2   1449
 #define LOCALIZED_TOKEN_FIRSTID3    11
 #define LOCALIZED_TOKEN_LASTID3     17
 #define LOCALIZED_TOKEN_FIRSTID4    71
-#define LOCALIZED_TOKEN_LASTID4     89
+#define LOCALIZED_TOKEN_LASTID4     97
 
 /*
 FIXME'S
@@ -233,6 +233,44 @@ void CWeatherJob::FormatTemperature(CStdString &text, int temp)
 void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
+
+  // Try the strings PO file first
+  CPODocument PODoc;
+  if (PODoc.LoadFile("special://xbmc/language/English/strings.po"))
+  {
+    int counter = 0;
+
+    while (PODoc.GetNextEntry())
+    {
+      if (PODoc.GetEntryType() != ID_FOUND)
+        continue;
+
+      uint32_t id = PODoc.GetEntryID();
+      PODoc.ParseEntry(ISSOURCELANG);
+
+      if (id > LOCALIZED_TOKEN_LASTID2) break;
+      if ((LOCALIZED_TOKEN_FIRSTID  <= id && id <= LOCALIZED_TOKEN_LASTID)  ||
+          (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2) ||
+          (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
+          (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
+      {
+        if (!PODoc.GetMsgid().empty())
+        {
+          m_localizedTokens.insert(make_pair(PODoc.GetMsgid(), id));
+          counter++;
+        }
+      }
+    }
+
+    CLog::Log(LOGDEBUG, "POParser: loaded %i weather tokens", counter);
+    return;
+  }
+
+  CLog::Log(LOGDEBUG,
+            "Weather: no PO string file available, to load English tokens, "
+            "fallback to strings.xml file");
+
+  // We load the tokens from the strings.xml file
   CStdString strLanguagePath = "special://xbmc/language/English/strings.xml";
 
   CXBMCTinyXML xmlDoc;
@@ -259,7 +297,7 @@ void CWeatherJob::LoadLocalizedToken()
       if (attrId && !pChild->NoChildren())
       {
         int id = atoi(attrId);
-        if ((LOCALIZED_TOKEN_FIRSTID <= id && id <= LOCALIZED_TOKEN_LASTID) ||
+        if ((LOCALIZED_TOKEN_FIRSTID  <= id && id <= LOCALIZED_TOKEN_LASTID)  ||
             (LOCALIZED_TOKEN_FIRSTID2 <= id && id <= LOCALIZED_TOKEN_LASTID2) ||
             (LOCALIZED_TOKEN_FIRSTID3 <= id && id <= LOCALIZED_TOKEN_LASTID3) ||
             (LOCALIZED_TOKEN_FIRSTID4 <= id && id <= LOCALIZED_TOKEN_LASTID4))
@@ -295,55 +333,58 @@ void CWeatherJob::SetFromProperties()
   if (!m_localizedTokens.size())
     LoadLocalizedToken();
 
-  CGUIWindow* window        = g_windowManager.GetWindow(WINDOW_WEATHER);
-  CDateTime time=CDateTime::GetCurrentDateTime();
-  m_info.lastUpdateTime     = time.GetAsLocalizedDateTime(false, false);
-  m_info.currentConditions  = window->GetProperty("Current.Condition").asString();
-  m_info.currentIcon = ConstructPath(window->GetProperty("Current.OutlookIcon").asString());
-  LocalizeOverview(m_info.currentConditions);
-  FormatTemperature(m_info.currentTemperature,
-      strtol(window->GetProperty("Current.Temperature").asString().c_str(),0,10));
-  FormatTemperature(m_info.currentFeelsLike,
-      strtol(window->GetProperty("Current.FeelsLike").asString().c_str(),0,10));
-  m_info.currentUVIndex     = window->GetProperty("Current.UVIndex").asString();
-  LocalizeOverview(m_info.currentUVIndex);
-  int speed = ConvertSpeed(strtol(window->GetProperty("Current.Wind").asString().c_str(),0,10));
-  CStdString direction = window->GetProperty("Current.WindDirection").asString();
-  if (direction ==  "CALM")
-    m_info.currentWind = g_localizeStrings.Get(1410);
-  else
+  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
+  if (window)
   {
-    LocalizeOverviewToken(direction);
-    m_info.currentWind.Format(g_localizeStrings.Get(434).c_str(),
-        direction, speed, g_langInfo.GetSpeedUnitString().c_str());
-  }
-  CStdString windspeed;
-  windspeed.Format("%i %s",speed,g_langInfo.GetSpeedUnitString().c_str());
-  window->SetProperty("Current.WindSpeed",windspeed);
-  FormatTemperature(m_info.currentDewPoint,
-      strtol(window->GetProperty("Current.DewPoint").asString().c_str(),0,10));
-  if (window->GetProperty("Current.Humidity").asString().empty())
-    m_info.currentHumidity.clear();
-  else
-    m_info.currentHumidity.Format("%s%%",window->GetProperty("Current.Humidity").asString().c_str());
-  m_info.location           = window->GetProperty("Current.Location").asString();
-  for (int i=0;i<NUM_DAYS;++i)
-  {
-    CStdString strDay;
-    strDay.Format("Day%i.Title",i);
-    m_info.forecast[i].m_day = window->GetProperty(strDay).asString();
-    LocalizeOverviewToken(m_info.forecast[i].m_day);
-    strDay.Format("Day%i.HighTemp",i);
-    FormatTemperature(m_info.forecast[i].m_high,
-                  strtol(window->GetProperty(strDay).asString().c_str(),0,10));
-    strDay.Format("Day%i.LowTemp",i);
-    FormatTemperature(m_info.forecast[i].m_low,
-                  strtol(window->GetProperty(strDay).asString().c_str(),0,10));
-    strDay.Format("Day%i.OutlookIcon",i);
-    m_info.forecast[i].m_icon = ConstructPath(window->GetProperty(strDay).asString());
-    strDay.Format("Day%i.Outlook",i);
-    m_info.forecast[i].m_overview = window->GetProperty(strDay).asString();
-    LocalizeOverview(m_info.forecast[i].m_overview);
+    CDateTime time = CDateTime::GetCurrentDateTime();
+    m_info.lastUpdateTime = time.GetAsLocalizedDateTime(false, false);
+    m_info.currentConditions = window->GetProperty("Current.Condition").asString();
+    m_info.currentIcon = ConstructPath(window->GetProperty("Current.OutlookIcon").asString());
+    LocalizeOverview(m_info.currentConditions);
+    FormatTemperature(m_info.currentTemperature,
+        strtol(window->GetProperty("Current.Temperature").asString().c_str(),0,10));
+    FormatTemperature(m_info.currentFeelsLike,
+        strtol(window->GetProperty("Current.FeelsLike").asString().c_str(),0,10));
+    m_info.currentUVIndex = window->GetProperty("Current.UVIndex").asString();
+    LocalizeOverview(m_info.currentUVIndex);
+    int speed = ConvertSpeed(strtol(window->GetProperty("Current.Wind").asString().c_str(),0,10));
+    CStdString direction = window->GetProperty("Current.WindDirection").asString();
+    if (direction == "CALM")
+      m_info.currentWind = g_localizeStrings.Get(1410);
+    else
+    {
+      LocalizeOverviewToken(direction);
+      m_info.currentWind.Format(g_localizeStrings.Get(434).c_str(),
+          direction, speed, g_langInfo.GetSpeedUnitString().c_str());
+    }
+    CStdString windspeed;
+    windspeed.Format("%i %s",speed,g_langInfo.GetSpeedUnitString().c_str());
+    window->SetProperty("Current.WindSpeed",windspeed);
+    FormatTemperature(m_info.currentDewPoint,
+        strtol(window->GetProperty("Current.DewPoint").asString().c_str(),0,10));
+    if (window->GetProperty("Current.Humidity").asString().empty())
+      m_info.currentHumidity.clear();
+    else
+      m_info.currentHumidity.Format("%s%%",window->GetProperty("Current.Humidity").asString().c_str());
+    m_info.location = window->GetProperty("Current.Location").asString();
+    for (int i=0;i<NUM_DAYS;++i)
+    {
+      CStdString strDay;
+      strDay.Format("Day%i.Title",i);
+      m_info.forecast[i].m_day = window->GetProperty(strDay).asString();
+      LocalizeOverviewToken(m_info.forecast[i].m_day);
+      strDay.Format("Day%i.HighTemp",i);
+      FormatTemperature(m_info.forecast[i].m_high,
+                    strtol(window->GetProperty(strDay).asString().c_str(),0,10));
+      strDay.Format("Day%i.LowTemp",i);
+      FormatTemperature(m_info.forecast[i].m_low,
+                    strtol(window->GetProperty(strDay).asString().c_str(),0,10));
+      strDay.Format("Day%i.OutlookIcon",i);
+      m_info.forecast[i].m_icon = ConstructPath(window->GetProperty(strDay).asString());
+      strDay.Format("Day%i.Outlook",i);
+      m_info.forecast[i].m_overview = window->GetProperty(strDay).asString();
+      LocalizeOverview(m_info.forecast[i].m_overview);
+    }
   }
 }
 
@@ -386,9 +427,13 @@ CStdString CWeather::TranslateInfo(int info) const
 CStdString CWeather::GetLocation(int iLocation)
 {
   CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
-  CStdString setting;
-  setting.Format("Location%i", iLocation);
-  return window->GetProperty(setting).asString();
+  if (window)
+  {
+    CStdString setting;
+    setting.Format("Location%i", iLocation);
+    return window->GetProperty(setting).asString();
+  }
+  return "";
 }
 
 void CWeather::Reset()

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -30,13 +29,15 @@ class CGUIDialogSmartPlaylistEditor :
       public CGUIDialog
 {
 public:
-  enum PLAYLIST_TYPE { TYPE_SONGS = 1, TYPE_ALBUMS, TYPE_MIXED, TYPE_MUSICVIDEOS, TYPE_MOVIES, TYPE_TVSHOWS, TYPE_EPISODES };
+  enum PLAYLIST_TYPE { TYPE_SONGS = 1, TYPE_ALBUMS, TYPE_ARTISTS, TYPE_MIXED, TYPE_MUSICVIDEOS, TYPE_MOVIES, TYPE_TVSHOWS, TYPE_EPISODES };
 
   CGUIDialogSmartPlaylistEditor(void);
   virtual ~CGUIDialogSmartPlaylistEditor(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
+  virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
 
   static bool EditPlaylist(const CStdString &path, const CStdString &type = "");
   static bool NewPlaylist(const CStdString &type);
@@ -53,6 +54,7 @@ protected:
   void OnOK();
   void OnCancel();
   void UpdateButtons();
+  void UpdateRuleControlButtons();
   int GetSelectedItem();
   void HighlightItem(int item);
   PLAYLIST_TYPE ConvertType(const CStdString &type);

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -59,12 +58,7 @@ void CGUIFontTTFDX::Begin()
   if (m_nestedBeginCount == 0)
   {
     // just have to blit from our texture.
-    pD3DDevice->SetTexture( 0, m_texture->GetTextureObject() );
-
-    pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-    pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-    pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-    pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
+    m_texture->BindToUnit(0);
     pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
     pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
     pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
@@ -155,7 +149,7 @@ void CGUIFontTTFDX::End()
 
 CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
-  CBaseTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
+  CDXTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
   pNewTexture->CreateTextureObject();
   LPDIRECT3DTEXTURE9 newTexture = pNewTexture->GetTextureObject();
 
@@ -186,14 +180,14 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   // There might be data to copy from the previous texture
   if ((newSpeedupTexture && m_speedupTexture) || (newTexture && m_texture))
   {
-    if (m_speedupTexture)
+    if (m_speedupTexture && newSpeedupTexture)
     {
       m_speedupTexture->GetSurfaceLevel(0, &pSource);
       newSpeedupTexture->GetSurfaceLevel(0, &pTarget);
     }
     else
     {
-      m_texture->GetTextureObject()->GetSurfaceLevel(0, &pSource);
+      ((CDXTexture *)m_texture)->GetTextureObject()->GetSurfaceLevel(0, &pSource);
       newTexture->GetSurfaceLevel(0, &pTarget);
     }
 
@@ -269,11 +263,12 @@ bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
 {
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
+  LPDIRECT3DTEXTURE9 texture = ((CDXTexture *)m_texture)->GetTextureObject();
   LPDIRECT3DSURFACE9 target;
   if (m_speedupTexture)
     m_speedupTexture->GetSurfaceLevel(0, &target);
   else
-    m_texture->GetTextureObject()->GetSurfaceLevel(0, &target);
+    texture->GetSurfaceLevel(0, &target);
 
   RECT sourcerect = { 0, 0, bitmap.width, bitmap.rows };
   RECT targetrect;
@@ -297,7 +292,7 @@ bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
   if (m_speedupTexture)
   {
     // Upload to GPU - the automatic dirty region tracking takes care of the rect.
-    HRESULT hr = g_Windowing.Get3DDevice()->UpdateTexture(m_speedupTexture->Get(), m_texture->GetTextureObject());
+    HRESULT hr = g_Windowing.Get3DDevice()->UpdateTexture(m_speedupTexture->Get(), texture);
     if (FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to upload from sysmem to vidmem (0x%08X)", hr);

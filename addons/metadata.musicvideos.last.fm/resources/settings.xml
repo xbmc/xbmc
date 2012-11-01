@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+      <setting label="30000" type="bool" id="fanarttvalbumthumbs" default="true"/>
+      <setting label="30001" type="bool" id="lastfmalbumthumbs" default="true"/>
+</settings>

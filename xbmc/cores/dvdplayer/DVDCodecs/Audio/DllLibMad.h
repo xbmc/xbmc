@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
@@ -25,7 +24,7 @@
 #endif
 /* undefine byte from PlatformDefs.h since it's used in mad.h */
 #undef byte
-#if defined(_LINUX) || defined(__APPLE__)
+#if defined(_LINUX) || defined(TARGET_DARWIN)
   #include <mad.h>
 #else
   #include "libmad/mad.h"

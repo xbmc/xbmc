@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,10 +30,33 @@ namespace dbiplus {
 #include <memory>
 
 class DatabaseSettings; // forward
+class CDbUrl;
+struct SortDescription;
 
 class CDatabase
 {
 public:
+  class Filter
+  {
+  public:
+    Filter() : fields("*") {};
+    Filter(const char *w) : fields("*"), where(w) {};
+    Filter(const std::string &w) : fields("*"), where(w) {};
+    
+    void AppendField(const std::string &strField);
+    void AppendJoin(const std::string &strJoin);
+    void AppendWhere(const std::string &strWhere, bool combineWithAnd = true);
+    void AppendOrder(const std::string &strOrder);
+    void AppendGroup(const std::string &strGroup);
+
+    std::string fields;
+    std::string join;
+    std::string where;
+    std::string order;
+    std::string group;
+    std::string limit;
+  };
+
   CDatabase(void);
   virtual ~CDatabase(void);
   bool IsOpen();
@@ -62,6 +84,14 @@ public:
    * @return The requested value or an empty string if it wasn't found.
    */
   CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
+  CStdString GetSingleValue(const CStdString &query);
+
+  /*! \brief Get a single value from a query on a dataset.
+   \param query the query in question.
+   \param ds the dataset to use for the query.
+   \return the value from the query, empty on failure.
+   */
+  std::string GetSingleValue(const std::string &query, std::auto_ptr<dbiplus::Dataset> &ds);
 
   /*!
    * @brief Delete values from a table.
@@ -106,7 +136,14 @@ public:
    */
   bool CommitInsertQueries();
 
+  virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter, SortDescription &sorting) { return true; }
+  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl);
+  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
+
 protected:
+  friend class CDatabaseManager;
+  bool Update(const DatabaseSettings &db);
+
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   uint32_t ComputeCRC(const CStdString &text);
 
@@ -118,7 +155,10 @@ protected:
   virtual int GetMinVersion() const=0;
   virtual const char *GetBaseDBName() const=0;
 
+  int GetDBVersion();
   bool UpdateVersion(const CStdString &dbName);
+
+  bool BuildSQL(const CStdString &strQuery, const Filter &filter, CStdString &strSQL);
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
@@ -127,7 +167,8 @@ protected:
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
 
 private:
-  bool Connect(const DatabaseSettings &db, bool create);
+  void InitSettings(DatabaseSettings &dbSettings);
+  bool Connect(const CStdString &dbName, const DatabaseSettings &db, bool create);
   bool UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */

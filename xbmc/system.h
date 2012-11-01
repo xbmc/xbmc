@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -36,9 +35,9 @@
 #define HAS_SCREENSAVER
 //#define HAS_PYTHON
 #define HAS_SYSINFO
-//#define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
+#define HAS_PVRCLIENTS
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
@@ -48,7 +47,6 @@
 #endif
 
 #define HAS_JSONRPC
-#define HAS_HTTPAPI
 
 #ifdef USE_ASAP_CODEC
 #define HAS_ASAP_CODEC
@@ -82,6 +80,14 @@
   #define HAS_AIRTUNES
 #endif
 
+#ifdef HAVE_MYSQL
+  #define HAS_MYSQL
+#endif
+
+#if defined(USE_UPNP)
+  #define HAS_UPNP
+#endif
+
 /**********************
  * Non-free Components
  **********************/
@@ -99,7 +105,6 @@
  *****************/
 
 #if defined(TARGET_WINDOWS)
-#define HAS_SDL
 #define HAS_SDL_JOYSTICK
 #define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
@@ -117,7 +122,12 @@
 #define HAS_FILESYSTEM_NFS
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
+#define HAS_AIRTUNES
 #define HAVE_LIBCEC
+#define HAVE_LIBMP3LAME
+#define HAVE_LIBVORBISENC
+#define HAS_MYSQL
+#define HAS_UPNP
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
@@ -130,19 +140,19 @@
   #if defined(TARGET_DARWIN_OSX)
     #define HAS_GL
     #define HAS_SDL
-    #define HAS_SDL_AUDIO
     #define HAS_SDL_OPENGL
     #define HAS_SDL_WIN_EVENTS
   #endif
   #define HAS_ZEROCONF
   #define HAS_LINUX_NETWORK
+  #define HAS_LCD
 #endif
 
 /*****************
  * Linux Specific
  *****************/
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
 #if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
 #define HAS_ZEROCONF
 #define HAS_AVAHI
@@ -160,8 +170,9 @@
 #ifndef HAS_SDL_OPENGL
 #define HAS_SDL_OPENGL
 #endif
-#define HAS_SDL_AUDIO
 #define HAS_SDL_WIN_EVENTS
+#else
+#define HAS_LINUX_EVENTS
 #endif
 #define HAS_LINUX_NETWORK
 #define HAS_LIRC
@@ -170,6 +181,9 @@
 #endif
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
+#endif
+#ifdef HAVE_ALSA
+#define HAS_ALSA
 #endif
 #endif
 
@@ -222,10 +236,10 @@
 #include "PlatformInclude.h"
 #endif
 
-// ARM does not support certain features... disable them here!
-#ifdef _ARMEL
-#undef HAS_VISUALISATION
-#undef HAS_FILESYSTEM_HTSP
+#if defined(TARGET_ANDROID)
+#undef HAS_LINUX_EVENTS
+#undef HAS_LIRC
+#undef HAS_LCD
 #endif
 
 // EGL detected. Dont use GLX!
@@ -244,34 +258,6 @@
 #ifdef HAVE_LIBGLES
 #undef HAS_GL
 #define HAS_GLES 1
-#endif
-
-
-#ifdef HAS_GL
-#if defined(TARGET_WINDOWS)
-#include "GL/glew.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
-//#include <GL/wglext.h>
-#elif defined(TARGET_DARWIN)
-#if !defined(__gltypes_h_)
-#include <GL/glew.h>
-#endif
-#include <OpenGL/gl.h>
-#elif defined(TARGET_LINUX)
-#include <GL/glew.h>
-#include <GL/gl.h>
-#endif
-#endif
-
-#if HAS_GLES == 2
-  #if defined(TARGET_DARWIN)
-    #include <OpenGLES/ES2/gl.h>
-    #include <OpenGLES/ES2/glext.h>
-  #else
-    #include <GLES2/gl2.h>
-    #include <GLES2/gl2ext.h>
-  #endif
 #endif
 
 #ifdef HAS_DVD_DRIVE

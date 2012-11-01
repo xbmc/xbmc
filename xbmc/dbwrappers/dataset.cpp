@@ -75,24 +75,6 @@ string Database::prepare(const char *format, ...)
   return result;
 }
 
-string Database::vprepare(const char *format, va_list args)
-{
-  char *p = NULL;
-  string result = "";
-
-  vsprintf(p, format, args);
-
-  if ( p )
-  {
-    result = p;
-    free(p);
-  }
-
-  return result;
-}
-
-
-
 //************* Dataset implementation ***************
 
 Dataset::Dataset() {
@@ -373,6 +355,14 @@ const field_value Dataset::get_field_value(int index) {
   throw DbErrors("Dataset state is Inactive");
   //field_value fv;
   //return fv;
+}
+
+const sql_record* const Dataset::get_sql_record()
+{
+  if (result.records.size() == 0 || frecno >= (int)result.records.size())
+    return NULL;
+
+  return result.records[frecno];
 }
 
 const field_value Dataset::f_old(const char *f_name) {

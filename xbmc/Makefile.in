@@ -4,6 +4,8 @@ SRCS=Application.cpp \
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \
      CueDocument.cpp \
+     DatabaseManager.cpp \
+     DbUrl.cpp \
      DynamicDll.cpp \
      Favourites.cpp \
      FileItem.cpp \
@@ -19,10 +21,10 @@ SRCS=Application.cpp \
      PlayListPlayer.cpp \
      PartyModeManager.cpp \
      SectionLoader.cpp \
-     SortFileItem.cpp \
      SystemGlobals.cpp \
      Temperature.cpp \
      TextureCache.cpp \
+     TextureCacheJob.cpp \
      TextureDatabase.cpp \
      ThumbLoader.cpp \
      ThumbnailCache.cpp \
@@ -32,6 +34,7 @@ SRCS=Application.cpp \
      XBApplicationEx.cpp \
      XBDateTime.cpp \
      xbmc.cpp \
+     XbmcContext.cpp \
 
 LIB=xbmc.a
 

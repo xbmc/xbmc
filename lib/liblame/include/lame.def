@@ -1,4 +1,4 @@
-LIBRARY  lame_enc.DLL
+LIBRARY  libmp3lame.dll
 EXPORTS
 
 lame_init		@1

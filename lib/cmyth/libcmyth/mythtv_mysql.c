@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund
+ *  Copyright (C) 2004-2012, Eric Lund
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -17,35 +17,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#ifdef _MSC_VER
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
 #include <mysql/mysql.h>
 #include <cmyth_local.h>
 #include <safe_string.h>
-
-#ifdef _MSC_VER
-static void nullprint(a, ...) { return; }
-#define PRINTF nullprint
-#define TRC  nullprint
-#elif 0
-#define PRINTF(x...) PRINTF(x)
-#define TRC(fmt, args...) PRINTF(fmt, ## args) 
-#else
-#define PRINTF(x...)
-#define TRC(fmt, args...) 
-#endif
-
 
 void
 cmyth_database_close(cmyth_database_t db)
@@ -76,7 +54,6 @@ cmyth_database_init(char *host, char *db_name, char *user, char *pass)
 int
 cmyth_database_set_host(cmyth_database_t db, char *host)
 {
-	PRINTF("** SSDEBUG: setting the db host to %s\n", host);
 	cmyth_database_close(db);
 	ref_release(db->db_host);
 	db->db_host = ref_strdup(host);
@@ -89,7 +66,6 @@ cmyth_database_set_host(cmyth_database_t db, char *host)
 int
 cmyth_database_set_user(cmyth_database_t db, char *user)
 {
-	PRINTF("** SSDEBUG: setting the db user to %s\n", user);
 	cmyth_database_close(db);
 	ref_release(db->db_user);
 	db->db_user = ref_strdup(user);
@@ -102,7 +78,6 @@ cmyth_database_set_user(cmyth_database_t db, char *user)
 int
 cmyth_database_set_pass(cmyth_database_t db, char *pass)
 {
-	PRINTF("** SSDEBUG: setting the db pass to %s\n", pass);
 	cmyth_database_close(db);
 	ref_release(db->db_user);
 	db->db_pass = ref_strdup(pass);
@@ -115,7 +90,6 @@ cmyth_database_set_pass(cmyth_database_t db, char *pass)
 int
 cmyth_database_set_name(cmyth_database_t db, char *name)
 {
-	PRINTF("** SSDEBUG: setting the db name to %s\n", name);
 	cmyth_database_close(db);
 	ref_release(db->db_name);
 	db->db_name = ref_strdup(name);
@@ -129,7 +103,6 @@ cmyth_database_set_name(cmyth_database_t db, char *name)
 static int
 cmyth_db_check_connection(cmyth_database_t db)
 {
-    int new_conn = 0;
     if(db->mysql != NULL)
     {
 	/* Fetch the mysql stats (uptime and stuff) to check the connection is
@@ -143,7 +116,6 @@ cmyth_db_check_connection(cmyth_database_t db)
     if(db->mysql == NULL)
     {
 	db->mysql = mysql_init(NULL);
-	new_conn = 1;
 	if(db->mysql == NULL)
 	{
 	    fprintf(stderr,"%s: mysql_init() failed, insufficient memory?",
@@ -671,21 +643,49 @@ fill_program_recording_status(cmyth_conn_t conn, char * msg)
 	}
 	return err;
 }
+int
+cmyth_update_bookmark_setting(cmyth_database_t db, cmyth_proginfo_t prog)
+{
+	MYSQL_RES *res = NULL;
+	const char *query_str = "UPDATE recorded SET bookmark = 1 WHERE chanid = ? AND starttime = ?";
+	cmyth_mysql_query_t * query;
+	char starttime[CMYTH_TIMESTAMP_LEN + 1];
 
-int 
-cmyth_get_bookmark_mark(cmyth_database_t db, cmyth_proginfo_t prog, long long bk)
+	cmyth_timestamp_to_string(starttime, prog->proginfo_rec_start_ts);
+	query = cmyth_mysql_query_create(db,query_str);
+	if (cmyth_mysql_query_param_long(query, prog->proginfo_chanId) < 0
+		|| cmyth_mysql_query_param_str(query, starttime) < 0 ) {
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
+		ref_release(query);
+		return -1;
+	}
+	res = cmyth_mysql_query_result(query);
+	ref_release(query);
+	if (res == NULL) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s, finalisation/execution of query failed!\n", __FUNCTION__);
+		return -1;
+	}
+	mysql_free_result(res);
+	return (1);
+}
+
+long long 
+cmyth_get_bookmark_mark(cmyth_database_t db, cmyth_proginfo_t prog, long long bk, int mode)
 {
 	MYSQL_RES *res = NULL;
 	MYSQL_ROW row;
-	const char *query_str = "SELECT mark FROM recordedseek WHERE chanid = ? AND offset>= ? AND type = 6 ORDER by MARK ASC LIMIT 0,1;";
+	const char *query_str = "SELECT mark, type FROM recordedseek WHERE chanid = ? AND offset < ? AND (type = 6 or type = 9 ) AND starttime = ? ORDER by MARK DESC LIMIT 0, 1;";
 	int rows = 0;
-	int mark=0;
+	long long mark=0;
+	int rectype = 0;
 	char start_ts_dt[CMYTH_TIMESTAMP_LEN + 1];
 	cmyth_mysql_query_t * query;
-	cmyth_datetime_to_string(start_ts_dt, prog->proginfo_rec_start_ts);
+	cmyth_timestamp_to_string(start_ts_dt, prog->proginfo_rec_start_ts);
 	query = cmyth_mysql_query_create(db,query_str);
+
 	if (cmyth_mysql_query_param_long(query, prog->proginfo_chanId) < 0
 		|| cmyth_mysql_query_param_long(query, bk) < 0
+		|| cmyth_mysql_query_param_str(query, start_ts_dt) < 0
 		) {
 		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
 		ref_release(query);
@@ -699,24 +699,39 @@ cmyth_get_bookmark_mark(cmyth_database_t db, cmyth_proginfo_t prog, long long bk
 	}
 	while ((row = mysql_fetch_row(res))) {
 		mark = safe_atoi(row[0]);
+		rectype = safe_atoi(row[1]);
 		rows++;
 	}
 	mysql_free_result(res);
+
+	if (rectype == 6) {
+		if (mode == 0) {
+			mark=(mark-1)*15;
+		}
+		else if (mode == 1) {
+			mark=(mark-1)*12;
+		}
+	}
+
 	return mark;
 }
 
 int 
-cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark) 
+cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark, char *starttime, int mode) 
 {
 	MYSQL_RES *res = NULL;
 	MYSQL_ROW row;
-	const char *query_str = "SELECT * FROM recordedseek WHERE chanid = ? AND mark= ?;";
 	int offset=0;
 	int rows = 0;
+	int rectype = 0;
 	cmyth_mysql_query_t * query;
+	
+	const char *query_str = "SELECT * FROM recordedseek WHERE chanid = ? AND mark<= ? AND starttime = ? ORDER BY MARK DESC LIMIT 1;";
+
 	query = cmyth_mysql_query_create(db,query_str);
 	if (cmyth_mysql_query_param_long(query, chanid) < 0
 		|| cmyth_mysql_query_param_long(query, mark) < 0
+		|| cmyth_mysql_query_param_str(query, starttime) < 0
 		) {
 		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
 		ref_release(query);
@@ -730,7 +745,35 @@ cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark)
 	}
 	while ((row = mysql_fetch_row(res))) {
 		offset = safe_atoi(row[3]);
+		rectype = safe_atoi(row[4]);
 		rows++;
+	}
+	if (rectype != 9) {
+		if (mode == 0) {
+			mark=(mark/15)+1;
+		}
+		else if (mode == 1) {
+			mark=(mark/12)+1;
+		}
+		query = cmyth_mysql_query_create(db, query_str);
+		if (cmyth_mysql_query_param_long(query, chanid) < 0
+			|| cmyth_mysql_query_param_long(query, mark) < 0
+			|| cmyth_mysql_query_param_str(query, starttime) < 0
+			) {
+			cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
+			ref_release(query);
+			return -1;
+		}
+		res = cmyth_mysql_query_result(query);
+		ref_release(query);
+		if (res == NULL) {
+			cmyth_dbg(CMYTH_DBG_ERROR, "%s, finalisation/execution of query failed!\n", __FUNCTION__);
+			return -1;
+		}
+		while ((row = mysql_fetch_row(res))) {
+			offset = safe_atoi(row[3]);
+			rows++;
+		}
 	}
 	mysql_free_result(res);
 	return offset;
@@ -903,7 +946,49 @@ cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_
 }
 
 int
-cmyth_mythtv_remove_previos_recorded(cmyth_database_t db,char *query)
+cmyth_tuner_type_check(cmyth_database_t db, cmyth_recorder_t rec, int check_tuner_type) {
+	MYSQL_RES *res=NULL;
+	MYSQL_ROW row;
+	const char * query_str = "SELECT cardtype from capturecard WHERE cardid=?";
+	cmyth_mysql_query_t * query;
+
+	if ( check_tuner_type == 0 ) {
+		cmyth_dbg(CMYTH_DBG_ERROR,"MythTV Tuner check not enabled in Mythtv Options\n");
+		return (1);
+	}
+	
+
+	query = cmyth_mysql_query_create(db,query_str);
+	if (cmyth_mysql_query_param_uint(query,rec->rec_id) < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query failed\n",__FUNCTION__);
+		ref_release(query);
+		return -1;
+	}
+	res = cmyth_mysql_query_result(query);
+
+	if(res == NULL) {
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, finalisation/execution\n",__FUNCTION__);
+		return -1;
+	}
+	row = mysql_fetch_row(res);
+	ref_release(query);
+	mysql_free_result(res);
+	if (strcmp(row[0],"MPEG") == 0) {
+		return (1); //return the first available MPEG tuner
+	}
+	else if (strcmp(row[0],"HDHOMERUN") == 0) {
+		return (1); //return the first available MPEG2TS tuner
+	}
+	else if (strcmp(row[0],"DVB") == 0) {
+		return (1); //return the first available DVB tuner
+	}
+	else {
+		return (0);
+	}
+}
+
+int
+cmyth_mythtv_remove_previous_recorded(cmyth_database_t db,char *query)
 {
 	MYSQL_RES *res=NULL;
 	char N_query[128];
@@ -930,6 +1015,7 @@ cmyth_mythtv_remove_previos_recorded(cmyth_database_t db,char *query)
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: mysql_query() Failed: %s\n", 
 			__FUNCTION__, mysql_error(db->mysql));
 	}
+	mysql_free_result(res);
 
 	return rows;
 }

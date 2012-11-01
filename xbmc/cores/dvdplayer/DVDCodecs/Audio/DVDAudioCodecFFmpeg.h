@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,17 +15,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDAudioCodec.h"
 #include "DllAvCodec.h"
-#include "DllAvCore.h"
 #include "DllAvFormat.h"
 #include "DllAvUtil.h"
+#include "DllSwResample.h"
 
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
@@ -38,35 +37,37 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
-  virtual enum PCMChannels *GetChannelMap();
+  virtual CAEChannelInfo GetChannelMap();
   virtual int GetSampleRate();
-  virtual int GetBitsPerSample();
+  virtual int GetEncodedSampleRate();
+  virtual enum AEDataFormat GetDataFormat();
   virtual const char* GetName() { return "FFmpeg"; }
   virtual int GetBufferSize() { return m_iBuffered; }
   virtual int GetBitRate();
 
 protected:
-  AVCodecContext* m_pCodecContext;
-  AVAudioConvert* m_pConvert;;
-  enum AVSampleFormat m_iSampleFormat;
-  enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
+  AVCodecContext*     m_pCodecContext;
+  SwrContext*         m_pConvert;
+  enum AVSampleFormat m_iSampleFormat;  
+  CAEChannelInfo      m_channelLayout;
+  bool                m_bLpcmMode;  
 
-  BYTE *m_pBuffer1;
-  int   m_iBufferSize1;
-
-  BYTE *m_pBuffer2;
-  int   m_iBufferSize2;
+  AVFrame* m_pFrame1;
+  int      m_iBufferSize1;
+  BYTE*    m_pBuffer2;
+  int      m_iBufferSize2;
 
   bool m_bOpenedCodec;
   int m_iBuffered;
 
-  int     m_channels;
-  int64_t m_layout;
+  int      m_channels;
+  uint64_t m_layout;
 
   DllAvCodec m_dllAvCodec;
-  DllAvCore m_dllAvCore;
   DllAvUtil m_dllAvUtil;
+  DllSwResample m_dllSwResample;
 
   void BuildChannelMap();
+  void ConvertToFloat();  
 };
 

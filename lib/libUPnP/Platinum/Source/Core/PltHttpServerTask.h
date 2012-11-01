@@ -2,7 +2,7 @@
 |
 |   Platinum - HTTP Server Tasks
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,6 +32,10 @@
 |
 ****************************************************************/
 
+/** @file
+ HTTP Server Tasks
+ */
+
 #ifndef _PLT_HTTP_SERVER_TASK_H_
 #define _PLT_HTTP_SERVER_TASK_H_
 
@@ -43,15 +48,14 @@
 #include "PltThreadTask.h"
 
 /*----------------------------------------------------------------------
-|   forward declarations
-+---------------------------------------------------------------------*/
-template <class T> class PLT_HttpListenTask;
-class PLT_HttpServerListener; 
-typedef PLT_HttpListenTask<PLT_HttpServerListener> PLT_HttpServerListenTask;
-
-/*----------------------------------------------------------------------
 |   PLT_HttpServerSocketTask class
 +---------------------------------------------------------------------*/
+/** 
+ The PLT_HttpServerSocketTask class is a task used for handling one or more HTTP 
+ requests from a client. It is created by a PLT_HttpListenTask instance upon
+ receiving a connection request. A PLT_HttpServer will handle the delegation for
+ setting up the HTTP response.
+ */
 class PLT_HttpServerSocketTask : public PLT_ThreadTask
 {
     friend class PLT_ThreadTask;
@@ -64,17 +68,16 @@ protected:
 
 protected:
     // Request callback handler
-    virtual NPT_Result ProcessRequest(NPT_HttpRequest&              request, 
-                                      const NPT_HttpRequestContext& context,
-                                      NPT_HttpResponse*&            response,
-                                      bool&                         headers_only) = 0;
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response) = 0;
 
     // overridables
     virtual NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     virtual NPT_Result GetInfo(NPT_SocketInfo& info);
 
     // PLT_ThreadTask methods
-    virtual void DoAbort() { m_Socket->Disconnect(); }
+    virtual void DoAbort() { if (m_Socket) m_Socket->Cancel(); }
     virtual void DoRun();
 
 private:
@@ -84,7 +87,10 @@ private:
     virtual NPT_Result Write(NPT_HttpResponse* response, 
                              bool&             keep_alive, 
                              bool              headers_only = false);
-
+    virtual NPT_Result RespondToClient(NPT_HttpRequest&              request, 
+                                       const NPT_HttpRequestContext& context,
+                                       NPT_HttpResponse*&            response);
+    
 protected:
     NPT_Socket*         m_Socket;
     bool                m_StayAliveForever;
@@ -93,71 +99,60 @@ protected:
 /*----------------------------------------------------------------------
 |   PLT_HttpServerTask class
 +---------------------------------------------------------------------*/
-template <class T>
+/**
+ The PLT_HttpServerTask class is a version of PLT_HttpServerSocketTask that supports 
+ delegation of HTTP request handling.
+ */
 class PLT_HttpServerTask : public PLT_HttpServerSocketTask
 {
 public:
-    PLT_HttpServerTask<T>(T*          data, 
-                          NPT_Socket* socket, 
-                          bool        keep_alive = false) : 
-        PLT_HttpServerSocketTask(socket, keep_alive), m_Data(data) {}
+    PLT_HttpServerTask(NPT_HttpRequestHandler* handler, 
+                       NPT_Socket*             socket, 
+                       bool                    keep_alive = false) : 
+        PLT_HttpServerSocketTask(socket, keep_alive), m_Handler(handler) {}
 
 protected:
-    virtual ~PLT_HttpServerTask<T>() {}
+    virtual ~PLT_HttpServerTask() {}
 
-protected:
-    NPT_Result ProcessRequest(NPT_HttpRequest&              request, 
-                              const NPT_HttpRequestContext& context,
-                              NPT_HttpResponse*&            response,
-                              bool&                         headers_only) {
-        return m_Data->ProcessHttpRequest(request, context, response, headers_only);
+    NPT_Result SetupResponse(NPT_HttpRequest&              request, 
+                             const NPT_HttpRequestContext& context,
+                             NPT_HttpResponse&             response) {
+        return m_Handler->SetupResponse(request, context, response);
     }
 
 protected:
-    T* m_Data;
+    NPT_HttpRequestHandler* m_Handler;
 };
 
 /*----------------------------------------------------------------------
 |   PLT_HttpListenTask class
 +---------------------------------------------------------------------*/
-template <class T>
+/**
+ The PLT_HttpListenTask class is used by a PLT_HttpServer to listen for incoming
+ connections and spawn a new task for handling each request.
+ */
 class PLT_HttpListenTask : public PLT_ThreadTask
 {
 public:
-    PLT_HttpListenTask<T>(T* data, NPT_TcpServerSocket* socket, bool cleanup_socket = true) : 
-        m_Data(data), m_Socket(socket), m_CleanupSocket(cleanup_socket) {}
+    PLT_HttpListenTask(NPT_HttpRequestHandler* handler, 
+                       NPT_TcpServerSocket*    socket, 
+                       bool                    owns_socket = true) : 
+        m_Handler(handler), m_Socket(socket), m_OwnsSocket(owns_socket) {}
 
 protected:
-    virtual ~PLT_HttpListenTask<T>() { 
-        if (m_CleanupSocket) delete m_Socket;
+    virtual ~PLT_HttpListenTask() { 
+        if (m_OwnsSocket && m_Socket) delete m_Socket;
     }
 
 protected:
     // PLT_ThreadTask methods
-    virtual void DoAbort() { m_Socket->Disconnect(); }
-    virtual void DoRun() {
-        while (!IsAborting(0)) {
-            NPT_Socket* client = NULL;
-            NPT_Result  result = m_Socket->WaitForNewClient(client, 5000);
-            if (NPT_FAILED(result) && result != NPT_ERROR_TIMEOUT) {
-                if (client) delete client;
-                //NPT_LOG_WARNING_2("PLT_HttpListenTask exiting with %d (%s)", result, NPT_ResultText(result));
-                break;
-            }
-
-            if (NPT_SUCCEEDED(result)) {
-                PLT_ThreadTask* task = new PLT_HttpServerTask<T>(m_Data, client);
-                if (NPT_FAILED(m_TaskManager->StartTask(task))) {
-                    task->Kill();
-                }
-            }
-        }
-    }
+    virtual void DoAbort() { if (m_Socket) m_Socket->Cancel(); }
+    virtual void DoRun();
 
 protected:
-    T*                   m_Data;
-    NPT_TcpServerSocket* m_Socket;
-    bool                 m_CleanupSocket;
+    NPT_HttpRequestHandler* m_Handler;
+    NPT_TcpServerSocket*    m_Socket;
+    bool                    m_OwnsSocket;
 };
 
 #endif /* _PLT_HTTP_SERVER_TASK_H_ */

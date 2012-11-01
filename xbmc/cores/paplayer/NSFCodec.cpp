@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,11 +25,14 @@
 
 NSFCodec::NSFCodec()
 {
+  m_iTrack = 0;
   m_CodecName = "NSF";
-  m_nsf = 0;
+  m_nsf = NULL;
   m_bIsPlaying = false;
-  m_iDataInBuffer = 0;
   m_szBuffer = NULL;
+  m_szStartOfBuffer = NULL;
+  m_iDataInBuffer = 0;
+  m_iDataPos = 0;
 }
 
 NSFCodec::~NSFCodec()
@@ -73,6 +75,7 @@ bool NSFCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_Channels = 1;
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = 4*60*1000; // fixme?
   m_iDataPos = 0;
 
@@ -91,7 +94,7 @@ void NSFCodec::DeInit()
   m_szBuffer = NULL;
 }
 
-__int64 NSFCodec::Seek(__int64 iSeekTime)
+int64_t NSFCodec::Seek(int64_t iSeekTime)
 {
   if (m_iDataPos > iSeekTime/1000*48000*2)
   {

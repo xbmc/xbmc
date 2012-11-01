@@ -2,7 +2,7 @@
 #define NETWORK_H_
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,14 +16,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <vector>
 #include "utils/StdString.h"
+#include "system.h"
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
 enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };
@@ -60,6 +60,7 @@ public:
    virtual bool IsWireless(void) = 0;
 
    virtual CStdString GetMacAddress(void) = 0;
+   virtual void GetMacAddressRaw(char rawMac[6]) = 0;
 
    virtual CStdString GetCurrentIPAddress() = 0;
    virtual CStdString GetCurrentNetmask() = 0;

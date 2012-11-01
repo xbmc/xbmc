@@ -25,7 +25,7 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 #include "internal.h"
 #include "dsputil.h"
 #include "avcodec.h"
@@ -57,11 +57,45 @@ static const AVRational pixel_aspect[17]={
  {2, 1},
 };
 
-const uint8_t ff_h264_chroma_qp[52]={
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,
-   12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,
-   28,29,29,30,31,32,32,33,34,34,35,35,36,36,37,37,
-   37,38,38,38,39,39,39,39
+#define QP(qP,depth) ( (qP)+6*((depth)-8) )
+
+#define CHROMA_QP_TABLE_END(d) \
+     QP(0,d),  QP(1,d),  QP(2,d),  QP(3,d),  QP(4,d),  QP(5,d),\
+     QP(6,d),  QP(7,d),  QP(8,d),  QP(9,d), QP(10,d), QP(11,d),\
+    QP(12,d), QP(13,d), QP(14,d), QP(15,d), QP(16,d), QP(17,d),\
+    QP(18,d), QP(19,d), QP(20,d), QP(21,d), QP(22,d), QP(23,d),\
+    QP(24,d), QP(25,d), QP(26,d), QP(27,d), QP(28,d), QP(29,d),\
+    QP(29,d), QP(30,d), QP(31,d), QP(32,d), QP(32,d), QP(33,d),\
+    QP(34,d), QP(34,d), QP(35,d), QP(35,d), QP(36,d), QP(36,d),\
+    QP(37,d), QP(37,d), QP(37,d), QP(38,d), QP(38,d), QP(38,d),\
+    QP(39,d), QP(39,d), QP(39,d), QP(39,d)
+
+const uint8_t ff_h264_chroma_qp[5][QP_MAX_NUM+1] = {
+    {
+        CHROMA_QP_TABLE_END(8)
+    },
+    {
+        0, 1, 2, 3, 4, 5,
+        CHROMA_QP_TABLE_END(9)
+    },
+    {
+        0, 1, 2, 3,  4,  5,
+        6, 7, 8, 9, 10, 11,
+        CHROMA_QP_TABLE_END(10)
+    },
+    {
+        0,  1, 2, 3,  4,  5,
+        6,  7, 8, 9, 10, 11,
+        12,13,14,15, 16, 17,
+        CHROMA_QP_TABLE_END(11)
+    },
+    {
+        0,  1, 2, 3,  4,  5,
+        6,  7, 8, 9, 10, 11,
+        12,13,14,15, 16, 17,
+        18,19,20,21, 22, 23,
+        CHROMA_QP_TABLE_END(12)
+    },
 };
 
 static const uint8_t default_scaling4[2][16]={
@@ -109,8 +143,8 @@ static inline int decode_hrd_parameters(H264Context *h, SPS *sps){
     get_bits(&s->gb, 4); /* bit_rate_scale */
     get_bits(&s->gb, 4); /* cpb_size_scale */
     for(i=0; i<cpb_count; i++){
-        get_ue_golomb(&s->gb); /* bit_rate_value_minus1 */
-        get_ue_golomb(&s->gb); /* cpb_size_value_minus1 */
+        get_ue_golomb_long(&s->gb); /* bit_rate_value_minus1 */
+        get_ue_golomb_long(&s->gb); /* cpb_size_value_minus1 */
         get_bits1(&s->gb);     /* cbr_flag */
     }
     sps->initial_cpb_removal_delay_length = get_bits(&s->gb, 5) + 1;
@@ -195,7 +229,8 @@ static inline int decode_vui_parameters(H264Context *h, SPS *sps){
     if(sps->nal_hrd_parameters_present_flag || sps->vcl_hrd_parameters_present_flag)
         get_bits1(&s->gb);     /* low_delay_hrd_flag */
     sps->pic_struct_present_flag = get_bits1(&s->gb);
-
+    if(!get_bits_left(&s->gb))
+        return 0;
     sps->bitstream_restriction_flag = get_bits1(&s->gb);
     if(sps->bitstream_restriction_flag){
         get_bits1(&s->gb);     /* motion_vectors_over_pic_boundaries_flag */
@@ -206,8 +241,7 @@ static inline int decode_vui_parameters(H264Context *h, SPS *sps){
         sps->num_reorder_frames= get_ue_golomb(&s->gb);
         get_ue_golomb(&s->gb); /*max_dec_frame_buffering*/
 
-        if(s->gb.size_in_bits < get_bits_count(&s->gb)){
-            av_log(h->s.avctx, AV_LOG_ERROR, "Overread VUI by %d bits\n", get_bits_count(&s->gb) - s->gb.size_in_bits);
+        if (get_bits_left(&s->gb) < 0) {
             sps->num_reorder_frames=0;
             sps->bitstream_restriction_flag= 0;
         }
@@ -216,6 +250,10 @@ static inline int decode_vui_parameters(H264Context *h, SPS *sps){
             av_log(h->s.avctx, AV_LOG_ERROR, "illegal num_reorder_frames %d\n", sps->num_reorder_frames);
             return -1;
         }
+    }
+    if (get_bits_left(&s->gb) < 0) {
+        av_log(h->s.avctx, AV_LOG_ERROR, "Overread VUI by %d bits\n", -get_bits_left(&s->gb));
+        return AVERROR_INVALIDDATA;
     }
 
     return 0;
@@ -248,7 +286,7 @@ static void decode_scaling_matrices(H264Context *h, SPS *sps, PPS *pps, int is_s
         fallback_sps ? sps->scaling_matrix4[0] : default_scaling4[0],
         fallback_sps ? sps->scaling_matrix4[3] : default_scaling4[1],
         fallback_sps ? sps->scaling_matrix8[0] : default_scaling8[0],
-        fallback_sps ? sps->scaling_matrix8[1] : default_scaling8[1]
+        fallback_sps ? sps->scaling_matrix8[3] : default_scaling8[1]
     };
     if(get_bits1(&s->gb)){
         sps->scaling_matrix_present |= is_sps;
@@ -260,7 +298,15 @@ static void decode_scaling_matrices(H264Context *h, SPS *sps, PPS *pps, int is_s
         decode_scaling_list(h,scaling_matrix4[5],16,default_scaling4[1],scaling_matrix4[4]); // Inter, Cb
         if(is_sps || pps->transform_8x8_mode){
             decode_scaling_list(h,scaling_matrix8[0],64,default_scaling8[0],fallback[2]);  // Intra, Y
-            decode_scaling_list(h,scaling_matrix8[1],64,default_scaling8[1],fallback[3]);  // Inter, Y
+            if(sps->chroma_format_idc == 3){
+                decode_scaling_list(h,scaling_matrix8[1],64,default_scaling8[0],scaling_matrix8[0]);  // Intra, Cr
+                decode_scaling_list(h,scaling_matrix8[2],64,default_scaling8[0],scaling_matrix8[1]);  // Intra, Cb
+            }
+            decode_scaling_list(h,scaling_matrix8[3],64,default_scaling8[1],fallback[3]);  // Inter, Y
+            if(sps->chroma_format_idc == 3){
+                decode_scaling_list(h,scaling_matrix8[4],64,default_scaling8[1],scaling_matrix8[3]);  // Inter, Cr
+                decode_scaling_list(h,scaling_matrix8[5],64,default_scaling8[1],scaling_matrix8[4]);  // Inter, Cb
+            }
         }
     }
 }
@@ -293,17 +339,28 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     sps->profile_idc= profile_idc;
     sps->constraint_set_flags = constraint_set_flags;
     sps->level_idc= level_idc;
+    sps->full_range = -1;
 
     memset(sps->scaling_matrix4, 16, sizeof(sps->scaling_matrix4));
     memset(sps->scaling_matrix8, 16, sizeof(sps->scaling_matrix8));
     sps->scaling_matrix_present = 0;
+    sps->colorspace = 2; //AVCOL_SPC_UNSPECIFIED
 
     if(sps->profile_idc >= 100){ //high profile
         sps->chroma_format_idc= get_ue_golomb_31(&s->gb);
+        if (sps->chroma_format_idc > 3U) {
+            av_log(h->s.avctx, AV_LOG_ERROR, "chroma_format_idc %d is illegal\n", sps->chroma_format_idc);
+            goto fail;
+        }
         if(sps->chroma_format_idc == 3)
             sps->residual_color_transform_flag = get_bits1(&s->gb);
         sps->bit_depth_luma   = get_ue_golomb(&s->gb) + 8;
         sps->bit_depth_chroma = get_ue_golomb(&s->gb) + 8;
+        if (sps->bit_depth_luma > 12U || sps->bit_depth_chroma > 12U) {
+            av_log(h->s.avctx, AV_LOG_ERROR, "illegal bit depth value (%d, %d)\n",
+                   sps->bit_depth_luma, sps->bit_depth_chroma);
+            goto fail;
+        }
         sps->transform_bypass = get_bits1(&s->gb);
         decode_scaling_matrices(h, sps, NULL, 1, sps->scaling_matrix4, sps->scaling_matrix8);
     }else{
@@ -336,7 +393,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     }
 
     sps->ref_frame_count= get_ue_golomb_31(&s->gb);
-    if(sps->ref_frame_count > MAX_PICTURE_COUNT-2 || sps->ref_frame_count >= 32U){
+    if(sps->ref_frame_count > MAX_PICTURE_COUNT-2 || sps->ref_frame_count > 16U){
         av_log(h->s.avctx, AV_LOG_ERROR, "too many reference frames\n");
         goto fail;
     }
@@ -356,10 +413,6 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
         sps->mb_aff= 0;
 
     sps->direct_8x8_inference_flag= get_bits1(&s->gb);
-    if(!sps->frame_mbs_only_flag && !sps->direct_8x8_inference_flag){
-        av_log(h->s.avctx, AV_LOG_ERROR, "This stream was generated by a broken encoder, invalid 8x8 inference\n");
-        goto fail;
-    }
 
 #ifndef ALLOW_INTERLACE
     if(sps->mb_aff)
@@ -367,15 +420,24 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 #endif
     sps->crop= get_bits1(&s->gb);
     if(sps->crop){
+        int crop_vertical_limit   = sps->chroma_format_idc  & 2 ? 16 : 8;
+        int crop_horizontal_limit = sps->chroma_format_idc == 3 ? 16 : 8;
         sps->crop_left  = get_ue_golomb(&s->gb);
         sps->crop_right = get_ue_golomb(&s->gb);
         sps->crop_top   = get_ue_golomb(&s->gb);
         sps->crop_bottom= get_ue_golomb(&s->gb);
         if(sps->crop_left || sps->crop_top){
-            av_log(h->s.avctx, AV_LOG_ERROR, "insane cropping not completely supported, this could look slightly wrong ...\n");
+            av_log(h->s.avctx, AV_LOG_ERROR, "insane cropping not completely supported, this could look slightly wrong ... (left: %d, top: %d)\n", sps->crop_left, sps->crop_top);
         }
-        if(sps->crop_right >= 8 || sps->crop_bottom >= 8){
-            av_log(h->s.avctx, AV_LOG_ERROR, "brainfart cropping not supported, this could look slightly wrong ...\n");
+        if(sps->crop_right >= crop_horizontal_limit || sps->crop_bottom >= crop_vertical_limit){
+            av_log(h->s.avctx, AV_LOG_ERROR, "brainfart cropping not supported, cropping disabled (right: %d, bottom: %d)\n", sps->crop_right, sps->crop_bottom);
+        /* It is very unlikely that partial cropping will make anybody happy.
+         * Not cropping at all fixes for example playback of Sisvel 3D streams
+         * in applications supporting Sisvel 3D. */
+        sps->crop_left  =
+        sps->crop_right =
+        sps->crop_top   =
+        sps->crop_bottom= 0;
         }
     }else{
         sps->crop_left  =
@@ -393,7 +455,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
         sps->sar.den= 1;
 
     if(s->avctx->debug&FF_DEBUG_PICT_INFO){
-        av_log(h->s.avctx, AV_LOG_DEBUG, "sps:%u profile:%d/%d poc:%d ref:%d %dx%d %s %s crop:%d/%d/%d/%d %s %s %d/%d\n",
+        av_log(h->s.avctx, AV_LOG_DEBUG, "sps:%u profile:%d/%d poc:%d ref:%d %dx%d %s %s crop:%d/%d/%d/%d %s %s %d/%d b%d\n",
                sps_id, sps->profile_idc, sps->level_idc,
                sps->poc_type,
                sps->ref_frame_count,
@@ -405,7 +467,8 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
                sps->vui_parameters_present_flag ? "VUI" : "",
                ((const char*[]){"Gray","420","422","444"})[sps->chroma_format_idc],
                sps->timing_info_present_flag ? sps->num_units_in_tick : 0,
-               sps->timing_info_present_flag ? sps->time_scale : 0
+               sps->timing_info_present_flag ? sps->time_scale : 0,
+               sps->bit_depth_luma
                );
     }
 
@@ -419,17 +482,35 @@ fail:
 }
 
 static void
-build_qp_table(PPS *pps, int t, int index)
+build_qp_table(PPS *pps, int t, int index, const int depth)
 {
     int i;
-    for(i = 0; i < 52; i++)
-        pps->chroma_qp_table[t][i] = ff_h264_chroma_qp[av_clip(i + index, 0, 51)];
+    const int max_qp = 51 + 6*(depth-8);
+    for(i = 0; i < max_qp+1; i++)
+        pps->chroma_qp_table[t][i] = ff_h264_chroma_qp[depth-8][av_clip(i + index, 0, max_qp)];
+}
+
+static int more_rbsp_data_in_pps(H264Context *h, PPS *pps)
+{
+    const SPS *sps = h->sps_buffers[pps->sps_id];
+    int profile_idc = sps->profile_idc;
+
+    if ((profile_idc == 66 || profile_idc == 77 ||
+         profile_idc == 88) && (sps->constraint_set_flags & 7)) {
+        av_log(h->s.avctx, AV_LOG_VERBOSE,
+               "Current profile doesn't provide more RBSP data in PPS, skipping\n");
+        return 0;
+    }
+
+    return 1;
 }
 
 int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
     MpegEncContext * const s = &h->s;
     unsigned int pps_id= get_ue_golomb(&s->gb);
     PPS *pps;
+    const int qp_bd_offset = 6*(h->sps.bit_depth_luma-8);
+    int bits_left;
 
     if(pps_id >= MAX_PPS_COUNT) {
         av_log(h->s.avctx, AV_LOG_ERROR, "pps_id (%d) out of range\n", pps_id);
@@ -494,8 +575,8 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
 
     pps->weighted_pred= get_bits1(&s->gb);
     pps->weighted_bipred_idc= get_bits(&s->gb, 2);
-    pps->init_qp= get_se_golomb(&s->gb) + 26;
-    pps->init_qs= get_se_golomb(&s->gb) + 26;
+    pps->init_qp= get_se_golomb(&s->gb) + 26 + qp_bd_offset;
+    pps->init_qs= get_se_golomb(&s->gb) + 26 + qp_bd_offset;
     pps->chroma_qp_index_offset[0]= get_se_golomb(&s->gb);
     pps->deblocking_filter_parameters_present= get_bits1(&s->gb);
     pps->constrained_intra_pred= get_bits1(&s->gb);
@@ -506,7 +587,8 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
     memcpy(pps->scaling_matrix4, h->sps_buffers[pps->sps_id]->scaling_matrix4, sizeof(pps->scaling_matrix4));
     memcpy(pps->scaling_matrix8, h->sps_buffers[pps->sps_id]->scaling_matrix8, sizeof(pps->scaling_matrix8));
 
-    if(get_bits_count(&s->gb) < bit_length){
+    bits_left = bit_length - get_bits_count(&s->gb);
+    if(bits_left > 0 && more_rbsp_data_in_pps(h, pps)){
         pps->transform_8x8_mode= get_bits1(&s->gb);
         decode_scaling_matrices(h, h->sps_buffers[pps->sps_id], pps, 0, pps->scaling_matrix4, pps->scaling_matrix8);
         pps->chroma_qp_index_offset[1]= get_se_golomb(&s->gb); //second_chroma_qp_index_offset
@@ -514,8 +596,8 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
         pps->chroma_qp_index_offset[1]= pps->chroma_qp_index_offset[0];
     }
 
-    build_qp_table(pps, 0, pps->chroma_qp_index_offset[0]);
-    build_qp_table(pps, 1, pps->chroma_qp_index_offset[1]);
+    build_qp_table(pps, 0, pps->chroma_qp_index_offset[0], h->sps.bit_depth_luma);
+    build_qp_table(pps, 1, pps->chroma_qp_index_offset[1], h->sps.bit_depth_luma);
     if(pps->chroma_qp_index_offset[0] != pps->chroma_qp_index_offset[1])
         pps->chroma_qp_diff= 1;
 

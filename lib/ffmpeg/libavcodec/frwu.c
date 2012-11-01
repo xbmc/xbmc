@@ -27,7 +27,7 @@
 static av_cold int decode_init(AVCodecContext *avctx)
 {
     if (avctx->width & 1) {
-        av_log(avctx, AV_LOG_ERROR, "FRWU needs even width\n");
+        av_log(avctx, AV_LOG_ERROR, "frwu needs even width\n");
         return -1;
     }
     avctx->pix_fmt = PIX_FMT_UYVY422;
@@ -61,7 +61,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     if (avctx->get_buffer(avctx, pic) < 0)
         return -1;
 
-    pic->pict_type = FF_I_TYPE;
+    pic->pict_type = AV_PICTURE_TYPE_I;
     pic->key_frame = 1;
     pic->interlaced_frame = 1;
     pic->top_field_first = 1;
@@ -110,14 +110,12 @@ static av_cold int decode_close(AVCodecContext *avctx)
 }
 
 AVCodec ff_frwu_decoder = {
-    "FRWU",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_FRWU,
-    0,
-    decode_init,
-    NULL,
-    decode_close,
-    decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "frwu",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_FRWU,
+    .init           = decode_init,
+    .close          = decode_close,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Forward Uncompressed"),
 };

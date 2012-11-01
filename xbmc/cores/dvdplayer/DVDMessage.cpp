@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,35 +23,86 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
+#include "threads/CriticalSection.h"
+#include "threads/Condition.h"
+#include "threads/SystemClock.h"
+#include "utils/MathUtils.h"
 
+class CDVDMsgGeneralSynchronizePriv
+{
+public:
+  CDVDMsgGeneralSynchronizePriv(unsigned int timeout, unsigned int sources)
+    : sources(sources ? sources : SYNCSOURCE_ALL)
+    , reached(0)
+    , timeout(timeout)
+  {}
+  unsigned int                   sources;
+  unsigned int                   reached;
+  CCriticalSection               section;
+  XbmcThreads::ConditionVariable condition;
+  XbmcThreads::EndTime           timeout;
+};
 
 /**
  * CDVDMsgGeneralSynchronize --- GENERAL_SYNCRONIZR
  */
-CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(DWORD timeout, DWORD sources) : CDVDMsg(GENERAL_SYNCHRONIZE)
+CDVDMsgGeneralSynchronize::CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources) : CDVDMsg(GENERAL_SYNCHRONIZE)
+  , m_p(new CDVDMsgGeneralSynchronizePriv(timeout, sources))
 {
-  if( sources )
-    m_sources = sources;
-  else
-    m_sources = SYNCSOURCE_ALL;
-
-  m_objects = 0;
-  m_timeout = timeout;
 }
 
-void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
+CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
 {
+  delete m_p;
+}
+
+bool CDVDMsgGeneralSynchronize::Wait(unsigned long milliseconds, unsigned int source)
+{
+  if(source == 0)
+    source = SYNCSOURCE_OWNER;
+
   /* if we are not requested to wait on this object just return, reference count will be decremented */
-  if (source && !(m_sources & source)) return;
+  if (!(m_p->sources & source))
+    return true;
 
-  AtomicIncrement(&m_objects);
+  CSingleLock lock(m_p->section);
 
-  XbmcThreads::EndTime timeout(m_timeout);
+  XbmcThreads::EndTime timeout(milliseconds);
 
-  if (abort)
-    while( m_objects < GetNrOfReferences() && !timeout.IsTimePast() && !(*abort)) Sleep(1);
-  else
-    while( m_objects < GetNrOfReferences() && !timeout.IsTimePast() ) Sleep(1);
+  m_p->reached |= source & m_p->sources;
+
+  while( (long)MathUtils::bitcount(m_p->reached) < GetNrOfReferences() )
+  {
+    milliseconds = std::min(m_p->timeout.MillisLeft(), timeout.MillisLeft());
+    if(m_p->condition.wait(lock, milliseconds))
+      continue;
+    if(m_p->timeout.IsTimePast())
+      return true;  /* global timeout, we are done */
+    if(timeout.IsTimePast())
+      return false; /* request timeout, should be retried */
+  }
+  return true;
+}
+
+void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, unsigned int source)
+{
+  while(!Wait(100, source))
+  {
+    if(abort && *abort)
+      return;
+  }
+}
+
+long CDVDMsgGeneralSynchronize::Release()
+{
+  CSingleLock lock(m_p->section);
+  long count = --m_refs;
+  m_p->condition.notifyAll();
+  lock.Leave();
+  if (count == 0)
+    delete this;
+  return count;
 }
 
 /**

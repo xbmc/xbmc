@@ -2,7 +2,7 @@
 #define DLL_PATHS_WIN32_H_
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,6 +32,7 @@
 #define DLL_PATH_LIBMICROHTTP  "special://xbmcbin/system/webserver/libmicrohttpd-5.dll"
 #define DLL_PATH_LIBNFS        "special://xbmcbin/system/libnfs.dll"
 #define DLL_PATH_LIBPLIST      "special://xbmcbin/system/airplay/libplist.dll"
+#define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/system/airplay/libshairplay-1.dll"
 #define DLL_PATH_LIBCEC        "special://xbmcbin/system/libcec.dll"
 
 /* paplayer */
@@ -58,13 +58,13 @@
 #define DLL_PATH_LIBRTMP       "special://xbmcbin/system/players/dvdplayer/librtmp.dll"
 
 /* ffmpeg */
-#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-52.dll"
-#define DLL_PATH_LIBAVCORE     "special://xbmcbin/system/players/dvdplayer/avcore-0.dll"
-#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-52.dll"
-#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-50.dll"
-#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-1.dll"
-#define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-51.dll"
-#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0.dll"
+#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-53.dll"
+#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-53.dll"
+#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-51.dll"
+#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-2.dll"
+#define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-52.dll"
+#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-2.dll"
+#define DLL_PATH_LIBSWRESAMPLE "special://xbmcbin/system/players/dvdplayer/swresample-0.dll"
 
 /* cdrip */
 #define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc.dll"

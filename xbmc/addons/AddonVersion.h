@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,18 @@
 
 namespace ADDON
 {
+  /* \brief Addon versioning using the debian versioning scheme
+
+    AddonVersion uses debian versioning, which means in the each section of the period
+    separated version string, numbers are compared numerically rather than lexicographically,
+    thus any preceding zeros are ignored.
+
+    i.e. 1.00 is considered the same as 1.0, and 1.01 is considered the same as 1.1.
+
+    Further, 1.0 < 1.0.0
+
+    See here for more info: http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
+    */
   class AddonVersion : public boost::totally_ordered<AddonVersion> {
   public:
     AddonVersion(const AddonVersion& other) : mUpstream(NULL), mRevision(NULL) { *this = other; }
@@ -45,6 +56,8 @@ namespace ADDON
 
     static bool SplitFileName(CStdString& ID, CStdString& version,
                               const CStdString& filename);
+
+    static bool Test();
   protected:
     CStdString m_originalVersion;
     int mEpoch;
@@ -58,13 +71,6 @@ namespace ADDON
   {
     free(mUpstream);
     free(mRevision);
-  }
-
-  inline bool AddonVersion::operator==(const AddonVersion& other) const
-  {
-    return Epoch() == other.Epoch()
-      && strcmp(Upstream(), other.Upstream()) == 0
-      && strcmp(Revision(), other.Revision()) == 0;
   }
 
   inline AddonVersion& AddonVersion::operator=(const AddonVersion& other)

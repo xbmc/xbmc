@@ -19,6 +19,7 @@
 */
 
 #include "File.h"
+#include "IFile.h"
 #include "FileFactory.h"
 #include "Application.h"
 #include "DirectoryCache.h"
@@ -28,11 +29,9 @@
 #include "utils/URIUtils.h"
 #include "utils/BitstreamStats.h"
 #include "Util.h"
-
-#ifndef _LINUX
-#include "utils/Win32Exception.h"
-#endif
 #include "URL.h"
+
+#include "commons/Exception.h"
 
 using namespace XFILE;
 using namespace std;
@@ -85,7 +84,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 
   // special case for zips - ignore caching
   CURL url(strFileName);
-  if (URIUtils::IsInZIP(strFileName))
+  if (URIUtils::IsInZIP(strFileName) || URIUtils::IsInAPK(strFileName))
     url.SetOptions("?cache=no");
   if (file.Open(url.Get(), READ_TRUNCATED))
   {
@@ -130,7 +129,6 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       return false;
     }
 
-    // 128k is optimal for xbox
     int iBufferSize = 128 * 1024;
 
     CAutoBuffer buffer(iBufferSize);
@@ -218,6 +216,8 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   {
     bool bPathInCache;
     CURL url2(strFileName);
+    if (url2.GetProtocol() == "apk")
+      url2.SetOptions("");
     if (url2.GetProtocol() == "zip")
       url2.SetOptions("");
     if (!g_directoryCache.FileExists(url2.Get(), bPathInCache) )
@@ -299,12 +299,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
 
     return true;
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -328,12 +323,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
     }
     return false;
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception opening %s", __FUNCTION__, strFileName.c_str());
@@ -367,12 +357,7 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 
     return pFile->Exists(url);
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch (CRedirectException *pRedirectEx)
   {
     // the file implementation decided this item should use a different implementation.
@@ -413,6 +398,13 @@ int CFile::Stat(struct __stat64 *buffer)
   return m_pFile->Stat(buffer);
 }
 
+bool CFile::SkipNext()
+{
+  if (m_pFile)
+    return m_pFile->SkipNext();
+  return false;
+}
+
 int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 {
   CURL url;
@@ -423,15 +415,10 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
     
     auto_ptr<IFile> pFile(CFileFactory::CreateLoader(url));
     if (!pFile.get())
-      return false;
+      return -1;
     return pFile->Stat(url, buffer);
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch (CRedirectException *pRedirectEx)
   {
     // the file implementation decided this item should use a different implementation.
@@ -447,14 +434,14 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
       {
         if (pImp.get() && !pImp->Stat(*pNewUrl, buffer))
         {
-          return false;
+          return 0;
         }
       }
       else     
       {
         if (pImp.get() && !pImp->Stat(url, buffer))
         {
-          return false;
+          return 0;
         }
       }
     }
@@ -517,12 +504,7 @@ unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
       return done;
     }
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -538,12 +520,7 @@ void CFile::Close()
     SAFE_DELETE(m_pBuffer);
     SAFE_DELETE(m_pFile);
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -558,12 +535,7 @@ void CFile::Flush()
     if (m_pFile)
       m_pFile->Flush();
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -591,12 +563,25 @@ int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
   {
     return m_pFile->Seek(iFilePosition, iWhence);
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
+  XBMCCOMMONS_HANDLE_UNCHECKED
+  catch(...)
   {
-    e.writelog(__FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-#endif
+  return -1;
+}
+
+//*********************************************************************************************
+int CFile::Truncate(int64_t iSize)
+{
+  if (!m_pFile)
+    return -1;
+  
+  try
+  {
+    return m_pFile->Truncate(iSize);
+  }
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -613,12 +598,7 @@ int64_t CFile::GetLength()
       return m_pFile->GetLength();
     return 0;
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -627,7 +607,7 @@ int64_t CFile::GetLength()
 }
 
 //*********************************************************************************************
-int64_t CFile::GetPosition()
+int64_t CFile::GetPosition() const
 {
   if (!m_pFile)
     return -1;
@@ -639,12 +619,7 @@ int64_t CFile::GetPosition()
   {
     return m_pFile->GetPosition();
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -706,12 +681,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   {
     return m_pFile->ReadString(szLine, iLineLength);
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -725,12 +695,7 @@ int CFile::Write(const void* lpBuf, int64_t uiBufSize)
   {
     return m_pFile->Write(lpBuf, uiBufSize);
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -754,16 +719,7 @@ bool CFile::Delete(const CStdString& strFileName)
       return true;
     }
   }
-#ifndef _LINUX
-  catch (const access_violation &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -791,12 +747,7 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
       return true;
     }
   }
-#ifndef _LINUX
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception ", __FUNCTION__);
@@ -840,6 +791,13 @@ int CFile::IoControl(EIoControl request, void* param)
   }
 
   return result;
+}
+
+int CFile::GetChunkSize()
+{
+  if (m_pFile)
+    return m_pFile->GetChunkSize();
+  return 0;
 }
 //*********************************************************************************************
 //*************** Stream IO for CFile objects *************************************************
@@ -893,19 +851,7 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
     memmove(m_buffer, egptr()-backsize, backsize);
   }
 
-  unsigned int size = 0;
-#ifndef _LINUX
-  try
-  {
-#endif
-    size = m_file->Read(m_buffer+backsize, m_frontsize);
-#ifndef _LINUX
-  }
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-  }
-#endif
+  unsigned int size = m_file->Read(m_buffer+backsize, m_frontsize);
 
   if(size == 0)
     return traits_type::eof();
@@ -948,24 +894,12 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   setp(0,0);
 
   int64_t position = -1;
-#ifndef _LINUX
-  try
-  {
-#endif
-    if(way == ios_base::cur)
-      position = m_file->Seek(offset, SEEK_CUR);
-    else if(way == ios_base::end)
-      position = m_file->Seek(offset, SEEK_END);
-    else
-      position = m_file->Seek(offset, SEEK_SET);
-#ifndef _LINUX
-  }
-  catch (const win32_exception &e)
-  {
-    e.writelog(__FUNCTION__);
-    return streampos(-1);
-  }
-#endif
+  if(way == ios_base::cur)
+    position = m_file->Seek(offset, SEEK_CUR);
+  else if(way == ios_base::end)
+    position = m_file->Seek(offset, SEEK_END);
+  else
+    position = m_file->Seek(offset, SEEK_SET);
 
   if(position<0)
     return streampos(-1);
@@ -1035,17 +969,3 @@ bool CFileStream::Open(const CStdString& filename)
 {
   return Open(CURL(URIUtils::SubstitutePath(filename)));
 }
-
-#ifdef _ARMEL
-char* CFileStream::ReadFile()
-{
-  if(!m_file)
-    return NULL;
-
-  int64_t length = m_file->GetLength();
-  char *str = new char[length+1];
-  m_file->Read(str, length);
-  str[length] = '\0';
-  return str;
-}
-#endif

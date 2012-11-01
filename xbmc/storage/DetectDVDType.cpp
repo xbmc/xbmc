@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,23 +33,22 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#if !defined(__APPLE__) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
 #include <linux/cdrom.h>
 #endif
 #endif
 #include "settings/AdvancedSettings.h"
 #include "GUIUserMessages.h"
 #include "utils/URIUtils.h"
-#include "pictures/Picture.h"
-#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (__APPLE__)
+#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (TARGET_DARWIN)
 #define USING_CDIO78
 #endif
 #include "guilib/GUIWindowManager.h"
-#include "filesystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "IoSupport.h"
 #include "cdioSupport.h"
+#include "storage/MediaManager.h"
 
 
 using namespace XFILE;
@@ -88,7 +86,7 @@ void CDetectDVDMedia::OnStartup()
 void CDetectDVDMedia::Process()
 {
 // for apple - currently disable this check since cdio will return null if no media is loaded
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
   //Before entering loop make sure we actually have a CDrom drive
   CdIo_t *p_cdio = m_cdio->cdio_open(NULL, DRIVER_DEVICE);
   if (p_cdio == NULL)
@@ -185,7 +183,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
         }
         break;
       case DRIVE_READY:
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
         return ;
 #endif
       case DRIVE_CLOSED_MEDIA_PRESENT:
@@ -193,10 +191,6 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT)
           {
             m_DriveState = DRIVE_CLOSED_MEDIA_PRESENT;
-            // drive has been closed and is ready
-            OutputDebugString("Drive closed media present, remounting...\n");
-            CIoSupport::Dismount("Cdrom0");
-            CIoSupport::RemapDriveLetter('D', "Cdrom0");
             // Detect ISO9660(mode1/mode2) or CDDA filesystem
             DetectMediaType();
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
@@ -316,30 +310,6 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
   // store it in case others want it
   m_diskLabel = strDescription;
   m_diskPath = strNewUrl;
-
-  // delete any previously cached disc thumbnail
-  CStdString strCache = "special://temp/dvdicon.tbn";
-  if (CFile::Exists(strCache))
-    CFile::Delete(strCache);
-
-  // find and cache disc thumbnail
-  if (IsDiscInDrive() && !bCDDA)
-  {
-    CStdString strThumb;
-    CStdStringArray thumbs;
-    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
-    for (unsigned int i = 0; i < thumbs.size(); ++i)
-    {
-      URIUtils::AddFileToFolder(m_diskPath, thumbs[i], strThumb);
-      CLog::Log(LOGDEBUG,"%s: looking for disc thumb:[%s]", __FUNCTION__, strThumb.c_str());
-      if (CFile::Exists(strThumb))
-      {
-        CLog::Log(LOGDEBUG,"%s: found disc thumb:[%s], caching as:[%s]", __FUNCTION__, strThumb.c_str(), strCache.c_str());
-        CPicture::CreateThumbnail(strThumb, strCache);
-        break;
-      }
-    }
-  }
 }
 
 DWORD CDetectDVDMedia::GetTrayState()

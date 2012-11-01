@@ -2,7 +2,7 @@
 #define LINUXRENDERERGL_RENDERER
 
 /*
- *      Copyright (C) 2007-2010 Team XBMC
+ *      Copyright (C) 2007-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,13 +16,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
+#include "system.h"
+
 #ifdef HAS_GL
+#include "system_gl.h"
 
 #include "guilib/FrameBufferObject.h"
 #include "guilib/Shader.h"
@@ -30,6 +32,7 @@
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
+#include "RenderFormats.h"
 
 #include "threads/Event.h"
 
@@ -65,13 +68,6 @@ struct DRAWRECT
   float bottom;
 };
 
-enum EFIELDSYNC
-{
-  FS_NONE,
-  FS_TOP,
-  FS_BOT
-};
-
 struct YUVRANGE
 {
   int y_min, y_max;
@@ -94,6 +90,7 @@ enum RenderMethod
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
   RENDER_VAAPI=0x20,
+  RENDER_CVREF = 0x40,
 };
 
 enum RenderQuality
@@ -132,7 +129,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatl, unsigned int orientation);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -148,6 +145,9 @@ public:
 #ifdef HAVE_LIBVA
   virtual void         AddProcessor(VAAPI::CHolder& holder);
 #endif
+#ifdef TARGET_DARWIN
+  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
+#endif
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -159,6 +159,7 @@ public:
   virtual bool Supports(ESCALINGMETHOD method);
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
 
   /* PLEX */
   virtual void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch);
@@ -198,6 +199,10 @@ protected:
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
+  void UploadCVRefTexture(int index);
+  void DeleteCVRefTexture(int index);
+  bool CreateCVRefTexture(int index);
+
   void UploadYUV422PackedTexture(int index);
   void DeleteYUV422PackedTexture(int index);
   bool CreateYUV422PackedTexture(int index);
@@ -211,12 +216,18 @@ protected:
 
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
+  void RenderToFBO(int renderBuffer, int field);
+  void RenderFromFBO();
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
   void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
 
-  CFrameBufferObject m_fbo;
+  struct
+  {
+    CFrameBufferObject fbo;
+    float width, height;
+  } m_fbo;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -224,13 +235,14 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
-  unsigned m_iFlags;
+  ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
-
+  
   // Raw data used by renderer
   int m_currentField;
   int m_reloadShaders;
@@ -274,6 +286,9 @@ protected:
 #ifdef HAVE_LIBVA
     VAAPI::CHolder& vaapi;
 #endif
+#ifdef TARGET_DARWIN_OSX
+    struct __CVBuffer *cvBufferRef;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -284,7 +299,7 @@ protected:
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
-                , int stride, void* data, GLuint* pbo = NULL );
+                , int stride, int bpp, void* data, GLuint* pbo = NULL );
 
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,13 +24,39 @@
 #endif
 #ifdef TARGET_WINDOWS
 #define TIXML_USE_STL
+#if _MSC_VER < 1700
 #ifdef _DEBUG
 #pragma comment(lib, "tinyxmlSTLd.lib")
 #else
 #pragma comment(lib, "tinyxmlSTL.lib")
 #endif
+#else // _MSC_VER < 1700
+#ifdef _DEBUG
+#pragma comment(lib, "tinyxmlSTL11d.lib")
+#else
+#pragma comment(lib, "tinyxmlSTL11.lib")
 #endif
+#endif // _MSC_VER < 1700
+#else
+//compile fix for TinyXml < 2.6.0
+#define DOCUMENT    TINYXML_DOCUMENT
+#define ELEMENT     TINYXML_ELEMENT
+#define COMMENT     TINYXML_COMMENT
+#define UNKNOWN     TINYXML_UNKNOWN
+#define TEXT        TINYXML_TEXT
+#define DECLARATION TINYXML_DECLARATION
+#define TYPECOUNT   TINYXML_TYPECOUNT
+#endif
+
 #include <tinyxml.h>
+
+#undef DOCUMENT
+#undef ELEMENT
+#undef COMMENT
+#undef UNKNOWN
+#undef TEXT
+#undef DECLARATION
+#undef TYPECOUNT
 
 #include "StdString.h"
 

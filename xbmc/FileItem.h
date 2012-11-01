@@ -5,7 +5,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,15 +19,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "guilib/GUIListItem.h"
 #include "utils/Archive.h"
 #include "utils/ISerializable.h"
+#include "utils/ISortable.h"
 #include "XBDateTime.h"
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"
@@ -42,6 +42,16 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
+namespace EPG
+{
+  class CEpgInfoTag;
+}
+namespace PVR
+{
+  class CPVRChannel;
+  class CPVRRecording;
+  class CPVRTimerInfoTag;
+}
 class CPictureInfoTag;
 
 class CAlbum;
@@ -61,7 +71,7 @@ class CMediaSource;
   \sa CFileItemList
   */
 class CFileItem :
-  public CGUIListItem, public IArchivable, public ISerializable
+  public CGUIListItem, public IArchivable, public ISerializable, public ISortable
 {
 public:
   CFileItem(void);
@@ -73,7 +83,12 @@ public:
   CFileItem(const CStdString &path, const CAlbum& album);
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
+  CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
+  CFileItem(const EPG::CEpgInfoTag& tag);
+  CFileItem(const PVR::CPVRChannel& channel);
+  CFileItem(const PVR::CPVRRecording& record);
+  CFileItem(const PVR::CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
@@ -84,7 +99,8 @@ public:
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
+  virtual void ToSortable(SortItem &sortable);
   virtual bool IsFileItem() const { return true; };
 
   bool Exists(bool bUseCache = true) const;
@@ -100,18 +116,17 @@ public:
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;
-  bool IsXBE() const;
   bool IsPlugin() const;
   bool IsScript() const;
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
-  bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsBDFile() const;
   bool IsRAR() const;
+  bool IsAPK() const;
   bool IsZIP() const;
   bool IsCBZ() const;
   bool IsCBR() const;
@@ -131,6 +146,10 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
+  bool IsEPG() const;
+  bool IsPVRChannel() const;
+  bool IsPVRRecording() const;
+  bool IsPVRTimer() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -144,22 +163,23 @@ public:
   bool IsHDHomeRun() const;
   bool IsSlingbox() const;
   bool IsVTP() const;
+  bool IsPVR() const;
   bool IsLiveTV() const;
   bool IsRSS() const;
+  bool IsAndroidApp() const;
 
   void RemoveExtension();
   void CleanString();
   void FillInDefaultIcon();
-  void SetMusicThumb(bool alwaysCheckRemote = false);
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
   CURL GetAsUrl() const;
   int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
-  bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }
-  bool SortsOnBottom() const { return m_specialSort == SORT_ON_BOTTOM; }
-  void SetSpecialSort(SPECIAL_SORT sort) { m_specialSort = sort; }
+  bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
+  bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
+  void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
 
   inline bool HasMusicInfoTag() const
   {
@@ -185,6 +205,54 @@ public:
     return m_videoInfoTag;
   }
 
+  inline bool HasEPGInfoTag() const
+  {
+    return m_epgInfoTag != NULL;
+  }
+
+  EPG::CEpgInfoTag* GetEPGInfoTag();
+
+  inline const EPG::CEpgInfoTag* GetEPGInfoTag() const
+  {
+    return m_epgInfoTag;
+  }
+
+  inline bool HasPVRChannelInfoTag() const
+  {
+    return m_pvrChannelInfoTag != NULL;
+  }
+
+  PVR::CPVRChannel* GetPVRChannelInfoTag();
+
+  inline const PVR::CPVRChannel* GetPVRChannelInfoTag() const
+  {
+    return m_pvrChannelInfoTag;
+  }
+
+  inline bool HasPVRRecordingInfoTag() const
+  {
+    return m_pvrRecordingInfoTag != NULL;
+  }
+
+  PVR::CPVRRecording* GetPVRRecordingInfoTag();
+
+  inline const PVR::CPVRRecording* GetPVRRecordingInfoTag() const
+  {
+    return m_pvrRecordingInfoTag;
+  }
+
+  inline bool HasPVRTimerInfoTag() const
+  {
+    return m_pvrTimerInfoTag != NULL;
+  }
+
+  PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag();
+
+  inline const PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag() const
+  {
+    return m_pvrTimerInfoTag;
+  }
+
   inline bool HasPictureInfoTag() const
   {
     return m_pictureInfoTag != NULL;
@@ -197,42 +265,30 @@ public:
 
   CPictureInfoTag* GetPictureInfoTag();
 
-  // Gets the cached thumb filename (no existence checks)
-#ifndef __PLEX__
-  CStdString GetCachedVideoThumb() const;
-#endif
-  CStdString GetCachedEpisodeThumb() const;
-  CStdString GetCachedArtistThumb() const;
-  CStdString GetCachedSeasonThumb() const;
-  CStdString GetCachedActorThumb() const;
-  /*!
-   \brief Get the cached fanart path for this item if it exists
-   \return path to the cached fanart for this item, or empty if none exists
-   \sa CacheLocalFanart, GetLocalFanart
-   */
-  CStdString GetCachedFanart() const;
-  static CStdString GetCachedThumb(const CStdString &path, const CStdString& strPath2, bool split=false);
-
-  // Sets the video thumb (cached first, else caches user thumb)
-  void SetVideoThumb();
-  /*!
-   \brief Cache a copy of the local fanart for this item if we don't already have an image cached
-   \return true if we already have cached fanart or if the caching was successful, false if no image is cached.
-   \sa GetLocalFanart, GetCachedFanart
-   */
-  bool CacheLocalFanart() const;
   /*!
    \brief Get the local fanart for this item if it exists
    \return path to the local fanart for this item, or empty if none exists
-   \sa CacheLocalFanart, GetCachedFanart
+   \sa GetFolderThumb, GetTBNFile
    */
   CStdString GetLocalFanart() const;
 
-  // Sets the cached thumb for the item if it exists
-  void SetCachedVideoThumb();
-  void SetCachedArtistThumb();
-  void SetCachedMusicThumb();
-  void SetCachedSeasonThumb();
+  /*! \brief Assemble the filename of a particular piece of local artwork for an item.
+             No file existence check is typically performed.
+   \param artFile the art file to search for.
+   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \return the path to the local artwork.
+   \sa FindLocalArt
+   */
+  CStdString GetLocalArt(const std::string &artFile, bool useFolder = false) const;
+
+  /*! \brief Assemble the filename of a particular piece of local artwork for an item,
+             and check for file existence.
+   \param artFile the art file to search for.
+   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \return the path to the local artwork if it exists, empty otherwise.
+   \sa GetLocalArt
+   */
+  CStdString FindLocalArt(const std::string &artFile, bool useFolder) const;
 
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile() const;
@@ -250,17 +306,8 @@ public:
    */
   CStdString GetBaseMoviePath(bool useFolderNames) const;
 
-#ifdef UNIT_TESTING
-  static bool testGetBaseMoviePath();
-#endif
-
   // Gets the user thumb, if it exists
-  CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
-
-  // Caches the user thumb and assigns it to the item
-  void SetUserVideoThumb();
-  void SetUserMusicThumb(bool alwaysCheckRemote = false);
 
   /*! \brief Get the path where we expect local metadata to reside.
    For a folder, this is just the existing path (eg tvshow folder)
@@ -304,11 +351,7 @@ public:
   bool IsSamePath(const CFileItem *item) const;
 
   bool IsAlbum() const;
-private:
-  // Gets the previously cached thumb file (with existence checks)
-  CStdString GetPreviouslyCachedMusicThumb() const;
 
-public:
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
@@ -318,6 +361,7 @@ public:
   int m_iprogramCount;
   int m_idepth;
   int m_lStartOffset;
+  int m_lStartPartNumber;
   int m_lEndOffset;
   LockType m_iLockMode;
   CStdString m_strLockCode;
@@ -405,7 +449,7 @@ public:
 private:
   CStdString m_strPath;            ///< complete path to item
 
-  SPECIAL_SORT m_specialSort;
+  SortSpecial m_specialSort;
   bool m_bIsParentFolder;
   bool m_bCanQueue;
   bool m_bLabelPreformated;
@@ -413,6 +457,10 @@ private:
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
+  EPG::CEpgInfoTag* m_epgInfoTag;
+  PVR::CPVRChannel* m_pvrChannelInfoTag;
+  PVR::CPVRRecording* m_pvrRecordingInfoTag;
+  PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
 
@@ -508,9 +556,16 @@ public:
   void Assign(const CFileItemList& itemlist, bool append = false);
   bool Copy  (const CFileItemList& item);
   void Reserve(int iCount);
-  void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
+  void Sort(SORT_METHOD sortMethod, SortOrder sortOrder);
+  /* \brief Sorts the items based on the given sorting options
+
+  In contrast to Sort (see above) this does not change the internal
+  state by storing the sorting method and order used and therefore
+  will always execute the sorting even if the list of items has
+  already been sorted with the same options before.
+  */
+  void Sort(SortDescription sortDescription);
   void Randomize();
-  void SetMusicThumbs();
   void FillInDefaultIcons();
   int GetFolderCount() const;
   int GetFileCount() const;
@@ -529,7 +584,7 @@ public:
    */
   void Stack(bool stackFiles = true);
 
-  SORT_ORDER GetSortOrder() const { return m_sortOrder; }
+  SortOrder GetSortOrder() const { return m_sortOrder; }
   SORT_METHOD GetSortMethod() const { return m_sortMethod; }
   /*! \brief load a CFileItemList out of the cache
 
@@ -569,9 +624,6 @@ public:
   void RemoveDiscCache(int windowID = 0) const;
   bool AlwaysCache() const;
 
-  void SetCachedVideoThumbs();
-  void SetCachedMusicThumbs();
-
   void Swap(unsigned int item1, unsigned int item2);
 
   /*! \brief Update an item in the item list
@@ -609,7 +661,7 @@ public:
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
-  CStdString GetDiscCacheFile(int windowID) const;
+  CStdString GetDiscFileCache(int windowID) const;
 
   /*!
    \brief stack files in a CFileItemList
@@ -627,7 +679,7 @@ private:
   MAPFILEITEMS m_map;
   bool m_fastLookup;
   SORT_METHOD m_sortMethod;
-  SORT_ORDER m_sortOrder;
+  SortOrder m_sortOrder;
   bool m_sortIgnoreFolders;
   CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDDemuxSPU.h"
-#include "Util.h"
 #include "DVDClock.h"
 #include "utils/log.h"
 
@@ -308,6 +306,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
       default:
         DebugLog("GetPacket, error parsing control sequence");
+        delete pSPUInfo;
         return NULL;
         break;
       }
@@ -404,7 +403,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
               {
                 /* We have a boo boo ! */
                 CLog::Log(LOGERROR, "ParseRLE: unknown RLE code 0x%.4x", i_code);
-                return false;
+                return NULL;
               }
             }
           }
@@ -415,7 +414,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
       {
         CLog::Log(LOGERROR, "ParseRLE: out of bounds, %i at (%i,%i) is out of %ix%i",
                  i_code >> 2, i_x, i_y, i_width, i_height );
-        return false;
+        return NULL;
       }
 
       // keep trace of all occouring pixels, even keeping the background in mind
@@ -435,7 +434,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
       if ((BYTE *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
         CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((BYTE *)p_dest - pSPU->result));
-        return false;
+        return NULL;
       }
       *p_dest++ = i_code;
     }
@@ -444,7 +443,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
     if ( i_x > i_width )
     {
       CLog::Log(LOGERROR, "ParseRLE: i_x overflowed, %i > %i", i_x, i_width );
-      return false;
+      return NULL;
     }
 
     /* Byte-align the stream */
@@ -472,13 +471,13 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, BYTE* pUnparsedData
       if ((BYTE *)p_dest >= pSPU->result + sizeof(pSPU->result))
       {
         CLog::Log(LOGERROR, "ParseRLE: Overrunning our data range.  Need %li bytes", (long)((BYTE *)p_dest - pSPU->result));
-        return false;
+        return NULL;
       }
       *p_dest++ = i_width << 2;
       i_y++;
     }
 
-    return false;
+    return NULL;
   }
 
   DebugLog("ParseRLE: valid subtitle, size: %ix%i, position: %i,%i",

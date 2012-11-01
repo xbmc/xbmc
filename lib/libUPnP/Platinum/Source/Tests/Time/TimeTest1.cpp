@@ -2,7 +2,7 @@
 |
 |   Platinum - Time Test
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,6 +17,7 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
+| licensing@plutinosoft.com
 | 
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,10 +40,6 @@
 #include <stdio.h>
 #include "Neptune.h"
 #include "Platinum.h"
-
-#include "NptLogging.h"
-
-NPT_SET_LOCAL_LOGGER("platinum.time.test")
 
 /*----------------------------------------------------------------------
 |       macros
@@ -98,19 +95,19 @@ static void
 TestSuiteGetTime()
 {
     NPT_TimeStamp now, now2;
-    NPT_Date      today;
+    NPT_DateTime  today;
 
     /* get utc time */
     SHOULD_SUCCEED(NPT_System::GetCurrentTimeStamp(now));
 
     /* convert utc time to date */
-    SHOULD_SUCCEED(NPT_Time::GetGMTDateFromTimeStamp(now, today));
+    SHOULD_SUCCEED(today.FromTimeStamp(now));
 
     /* convert local time back to utc */
-    SHOULD_SUCCEED(PLT_Time::GetTimeStampFromDate(today, now2));
+    SHOULD_SUCCEED(today.ToTimeStamp(now2));
 
     /* verify utc time has not change */
-    SHOULD_EQUAL_I(now.m_Seconds, now2.m_Seconds);
+    SHOULD_EQUAL_I(now.ToSeconds(), now2.ToSeconds());
 }
 
 /*----------------------------------------------------------------------
@@ -120,25 +117,25 @@ static void
 TestSuiteSetDateTimeZone()
 {
     NPT_TimeStamp now, now2;
-    NPT_Date      today, today2;
-    NPT_TimeZone  tz;
+    NPT_DateTime today, today2;
+    NPT_Int32    tz;
 
     /* get utc time */
     SHOULD_SUCCEED(NPT_System::GetCurrentTimeStamp(now));
 
     /* convert utc time to date */
-    SHOULD_SUCCEED(NPT_Time::GetGMTDateFromTimeStamp(now, today));
+    SHOULD_SUCCEED(today.FromTimeStamp(now));
 
     for (tz = -60*12; tz <= 60*12; tz+=30) {
         /* convert date to another timezone */
         today2 = today;
-        SHOULD_SUCCEED(PLT_Time::SetDateTimeZone(today2, tz));
+        SHOULD_SUCCEED(today2.ChangeTimeZone(tz));
 
         /* get timestamp from converted date */
-        SHOULD_SUCCEED(PLT_Time::GetTimeStampFromDate(today2, now2));
+        SHOULD_SUCCEED(today2.ToTimeStamp(now2));
 
         /* verify utc time has not change */
-        SHOULD_EQUAL_I(now.m_Seconds, now2.m_Seconds);
+        SHOULD_EQUAL_I(now.ToSeconds(), now2.ToSeconds());
     }
 }
 
@@ -148,30 +145,35 @@ TestSuiteSetDateTimeZone()
 static void
 TestSuiteFormatTime()
 {
-    char          output[30];
-    NPT_Date      gmt_today, tz_today;
+    NPT_DateTime  gmt_today, tz_today;
     NPT_TimeStamp now;
+    NPT_String    output_s;
 
     /* current time */
     SHOULD_SUCCEED(NPT_System::GetCurrentTimeStamp(now));
 
     /* get the date */
-    SHOULD_SUCCEED(NPT_Time::GetGMTDateFromTimeStamp(now, gmt_today));
+    SHOULD_SUCCEED(gmt_today.FromTimeStamp(now));
 
     /* print out current local date and daylight savings settings */
     /* this should convert to GMT internally if dst is set */
-    SHOULD_SUCCEED(NPT_Time::FormatDate(gmt_today, output, sizeof(output)));
-
-    NPT_LOG_INFO_1("GMT time for Today is: %s", output);
+    printf("GMT time for Today is: %s\n", gmt_today.ToString().GetChars());
 
     /* convert the date to GMT-8 */
     tz_today = gmt_today;
-    SHOULD_SUCCEED(PLT_Time::SetDateTimeZone(tz_today, 8*60));
+    SHOULD_SUCCEED(tz_today.ChangeTimeZone(-8*60));
 
     /* this should convert to GMT internally if dst is set */
-    SHOULD_SUCCEED(NPT_Time::FormatDate(tz_today, output, sizeof(output)));
+    printf("(GMT-8) time for Today is: %s\n", tz_today.ToString(NPT_DateTime::FORMAT_RFC_1123).GetChars());
+    printf("(GMT-8) time for Today is: %s\n", tz_today.ToString(NPT_DateTime::FORMAT_RFC_1036).GetChars());
+    printf("(GMT-8) time for Today is: %s\n", tz_today.ToString(NPT_DateTime::FORMAT_ANSI).GetChars());
+    printf("(GMT-8) time for Today is: %s\n", tz_today.ToString(NPT_DateTime::FORMAT_W3C).GetChars());
 
-    NPT_LOG_INFO_1("(GMT-8) time for Today is: %s", output);
+    /* print with RFC1123 */
+    printf("GMT time for Today is: %s\n", gmt_today.ToString(NPT_DateTime::FORMAT_RFC_1123).GetChars());
+    printf("GMT time for Today is: %s\n", gmt_today.ToString(NPT_DateTime::FORMAT_RFC_1036).GetChars());
+    printf("GMT time for Today is: %s\n", gmt_today.ToString(NPT_DateTime::FORMAT_ANSI).GetChars());
+    printf("GMT time for Today is: %s\n", gmt_today.ToString(NPT_DateTime::FORMAT_W3C).GetChars());
 }
 
 /*----------------------------------------------------------------------

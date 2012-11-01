@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -102,6 +101,16 @@ public:
    \sa CJob
    */
   void AddJob(CJob *job);
+
+  /*!
+   \brief Cancel a job in the queue
+   Cancels a job in the queue. Any job currently being processed may complete after this
+   call has completed, but OnJobComplete will not be performed. If the job is only queued
+   then it will be removed from the queue and deleted.
+   \param job a pointer to the job to cancel. The job should be subclassed from CJob.
+   \sa CJob
+   */
+  void CancelJob(const CJob *job);
 
   /*!
    \brief Cancel all jobs in the queue
@@ -215,6 +224,39 @@ public:
    */
   void CancelJobs();
 
+  /*!
+   \brief Suspends queueing of the specified type until unpaused
+   Useful to (for ex) stop queuing thumb jobs during video playback. Only affects PRIORITY_LOW or lower.
+   Does not affect currently processing jobs, use IsProcessing to see if any need to be waited on
+   Types accumulate, so more than one can be set at a time.
+   Refcounted, so UnPause() must be called once for each Pause().
+   \param pausedType only jobs of this type will be affected
+   \sa UnPause(), IsPaused(), IsProcessing()
+   */
+  void Pause(const std::string &pausedType);
+
+  /*!
+   \brief Resumes queueing of the specified type
+   \param pausedType only jobs of this type will be affected
+   \sa Pause(), IsPaused(), IsProcessing()
+   */
+  void UnPause(const std::string &pausedType);
+
+  /*!
+   \brief Checks if jobs of specified type are paused.
+   \param pausedType only jobs of this type will be affected
+   \sa Pause(), UnPause(), IsProcessing()
+   */
+  bool IsPaused(const std::string &pausedType);
+
+  /*!
+   \brief Checks to see if any jobs of a specific type are currently processing.
+   \param pausedType Job type to search for
+   \return Number of matching jobs
+   \sa Pause(), UnPause(), IsPaused()
+   */
+  int IsProcessing(const std::string &pausedType);
+
 protected:
   friend class CJobWorker;
   friend class CJob;
@@ -275,4 +317,5 @@ private:
   CCriticalSection m_section;
   CEvent           m_jobEvent;
   bool             m_running;
+  std::vector<std::string>  m_pausedTypes;
 };

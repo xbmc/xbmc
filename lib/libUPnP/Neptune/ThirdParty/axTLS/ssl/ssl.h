@@ -68,7 +68,7 @@ extern "C" {
 #endif
 
 #include <time.h>
-/*#include "crypto.h"*/
+#include "os_port.h"
 
 /* need to predefine before ssl_lib.h gets to it */
 #define SSL_SESSION_ID_SIZE                     32
@@ -83,11 +83,13 @@ extern "C" {
 #define SSL_DISPLAY_BYTES                       0x00100000
 #define SSL_DISPLAY_CERTS                       0x00200000
 #define SSL_DISPLAY_RSA                         0x00400000
+#define SSL_CONNECT_IN_PARTS                    0x00800000
 
 /* errors that can be generated */
 #define SSL_OK                                  0
 #define SSL_NOT_OK                              -1
 #define SSL_ERROR_DEAD                          -2
+#define SSL_CLOSE_NOTIFY                        -3
 #define SSL_ERROR_CONN_LOST                     -256
 #define SSL_ERROR_SOCK_SETUP_FAILURE            -258
 #define SSL_ERROR_INVALID_HANDSHAKE             -260
@@ -100,11 +102,16 @@ extern "C" {
 #define SSL_ERROR_INVALID_KEY                   -269
 #define SSL_ERROR_FINISHED_INVALID              -271
 #define SSL_ERROR_NO_CERT_DEFINED               -272
+#define SSL_ERROR_NO_CLIENT_RENOG               -273
 #define SSL_ERROR_NOT_SUPPORTED                 -274
 #define SSL_ERROR_TIMEOUT                       -275 /* GBG */
 #define SSL_ERROR_EOS                           -276 /* GBG */
 #define SSL_X509_OFFSET                         -512
 #define SSL_X509_ERROR(A)                       (SSL_X509_OFFSET+A)
+
+/* alert types that are recognized */
+#define SSL_ALERT_TYPE_WARNING                  1
+#define SLL_ALERT_TYPE_FATAL                    2
 
 /* these are all the alerts that are recognized */
 #define SSL_ALERT_CLOSE_NOTIFY                  0
@@ -116,6 +123,7 @@ extern "C" {
 #define SSL_ALERT_DECODE_ERROR                  50
 #define SSL_ALERT_DECRYPT_ERROR                 51
 #define SSL_ALERT_INVALID_VERSION               70
+#define SSL_ALERT_NO_RENEGOTIATION              100
 
 /* The ciphers that are supported */
 #define SSL_AES128_SHA                          0x2f
@@ -192,7 +200,8 @@ extern "C" {
  * are passed during a handshake.
  * - SSL_DISPLAY_RSA (full mode build only): Display the RSA key details that
  * are passed during a handshake.
- *
+ * - SSL_CONNECT_IN_PARTS (client only): To use a non-blocking version of 
+ * ssl_client_new().
  * @param num_sessions [in] The number of sessions to be used for session
  * caching. If this value is 0, then there is no session caching. This option
  * is not used in skeleton mode.
@@ -226,8 +235,9 @@ EXP_FUNC SSL * STDCALL ssl_server_new(SSL_CTX *ssl_ctx, SSL_SOCKET* client_fd);
  * It is up to the application to establish the initial logical connection 
  * (whether it is  a socket, serial connection etc).
  *
- * This is a blocking call - it will finish when the handshake is complete (or
- * has failed).
+ * This is a normally a blocking call - it will finish when the handshake is 
+ * complete (or has failed). To use in non-blocking mode, set 
+ * SSL_CONNECT_IN_PARTS in ssl_ctx_new().
  * @param ssl_ctx [in] The client context.
  * @param client_fd [in] The client's file descriptor.
  * @param session_id [in] A 32 byte session id for session resumption. This 
@@ -250,7 +260,8 @@ EXP_FUNC void STDCALL ssl_free(SSL *ssl);
 
 /**
  * @brief Read the SSL data stream.
- * The socket must be in blocking mode.
+ * If the socket is non-blocking and data is blocked then SSO_OK will be
+ * returned.
  * @param ssl [in] An SSL object reference.
  * @param in_data [out] If the read was successful, a pointer to the read
  * buffer will be here. Do NOT ever free this memory as this buffer is used in
@@ -267,7 +278,8 @@ EXP_FUNC int STDCALL ssl_read(SSL *ssl, uint8_t **in_data);
 
 /**
  * @brief Write to the SSL data stream. 
- * The socket must be in blocking mode.
+ * if the socket is non-blocking and data is blocked then a check is made
+ * to ensure that all data is sent (i.e. blocked mode is forced).
  * @param ssl [in] An SSL obect reference.
  * @param out_data [in] The data to be written
  * @param out_len [in] The number of bytes to be written.
@@ -371,9 +383,7 @@ EXP_FUNC int STDCALL ssl_verify_cert(const SSL *ssl);
  * This will usually be used by a client to check that the server's common 
  * name matches the URL.
  *
- * A full handshake needs to occur for this call to work properly.
- *
- * @param ssl [in] An SSL object reference.
+ * @param ssl [in] An SSL_X509_CERT object reference. [GBG: modified]
  * @param component [in] one of:
  * - SSL_X509_CERT_COMMON_NAME
  * - SSL_X509_CERT_ORGANIZATION
@@ -384,10 +394,30 @@ EXP_FUNC int STDCALL ssl_verify_cert(const SSL *ssl);
  * @return The appropriate string (or null if not defined)
  * @note Verification build mode must be enabled.
  */
-EXP_FUNC const char * STDCALL ssl_get_cert_dn(const SSL *ssl, int component);
+/* GBG: modified */
+EXP_FUNC const char * STDCALL ssl_cert_get_dn(const SSL_X509_CERT *cert, int component);
+
+/**
+ * @brief Retrieve a Subject Alternative DNSName
+ *
+ * When a handshake is complete and a certificate has been exchanged, then the
+ * details of the remote certificate can be retrieved.
+ *
+ * This will usually be used by a client to check that the server's DNS  
+ * name matches the URL.
+ *
+ * @param ssl [in] An SSL_X509_CERT object reference. [GBG: modified]
+ * @param dnsindex [in] The index of the DNS name to retrieve.
+ * @return The appropriate string (or null if not defined)
+ * @note Verification build mode must be enabled.
+ */
+/* GBG: modified */
+EXP_FUNC const char * STDCALL ssl_cert_get_subject_alt_dnsname(const SSL_X509_CERT *cert, int dnsindex);
 
 /* GBG added */
-EXP_FUNC void ssl_get_cert_fingerprints(const SSL* ssl, unsigned char* md5, unsigned char* sha1);
+EXP_FUNC const SSL_X509_CERT* ssl_get_peer_cert(const SSL* ssl, unsigned int position);
+EXP_FUNC void ssl_cert_get_fingerprints(const SSL_X509_CERT *cert, unsigned char* md5, unsigned char* sha1);
+EXP_FUNC void ssl_cert_get_validity_dates(const SSL_X509_CERT *cert, SSL_DateTime* not_before, SSL_DateTime* not_after);
 
 /**
  * @brief Force the client to perform its handshake again.
@@ -469,6 +499,8 @@ EXP_FUNC int STDCALL ssl_x509_create(SSL_CTX *ssl_ctx, uint32_t options, const c
  * @brief Return the axTLS library version as a string.
  */
 EXP_FUNC const char * STDCALL ssl_version(void);
+
+EXP_FUNC void ssl_mem_free(void* mem); /* GBG */
 
 /** @} */
 

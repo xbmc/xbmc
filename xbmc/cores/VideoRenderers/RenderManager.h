@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,24 +15,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <list>
 
-#if defined (HAS_GL)
-  #include "LinuxRendererGL.h"
-#elif HAS_GLES == 2
-  #include "LinuxRendererGLES.h"
-#elif defined(HAS_DX)
-  #include "WinRenderer.h"
-#elif defined(HAS_SDL)
-  #include "LinuxRenderer.h"
-#endif
-
+#include "cores/VideoRenderers/BaseRenderer.h"
+#include "guilib/Geometry.h"
+#include "guilib/Resolution.h"
 #include "threads/SharedSection.h"
 #include "threads/Thread.h"
 #include "settings/VideoSettings.h"
@@ -47,6 +39,11 @@ struct DVDVideoPicture;
 
 #define ERRORBUFFSIZE 30
 
+class CWinRenderer;
+class CLinuxRenderer;
+class CLinuxRendererGL;
+class CLinuxRendererGLES;
+
 class CXBMCRenderManager
 {
 public:
@@ -54,8 +51,8 @@ public:
   ~CXBMCRenderManager();
 
   // Functions called from the GUI
-  void GetVideoRect(CRect &source, CRect &dest) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(source, dest); };
-  float GetAspectRatio() { CSharedLock lock(m_sharedSection); if (m_pRenderer) return m_pRenderer->GetAspectRatio(); else return 1.0f; };
+  void GetVideoRect(CRect &source, CRect &dest);
+  float GetAspectRatio();
   void Update(bool bPauseDrawing);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
@@ -65,10 +62,10 @@ public:
   void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);
   void ManageCaptures();
 
-  void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
+  void SetViewMode(int iViewMode);
 
   // Functions called from mplayer
-  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
+  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation);
   bool IsConfigured();
 
   int AddVideoPicture(DVDVideoPicture& picture);
@@ -90,67 +87,21 @@ public:
     m_overlays.AddCleanup(o);
   }
 
-  inline void Reset()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->Reset();
-  }
-  RESOLUTION GetResolution()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->GetResolution();
-    else
-      return RES_INVALID;
-  }
+  void Reset();
+
+  RESOLUTION GetResolution();
 
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
   double GetDisplayLatency() { return m_displayLatency; }
 
-  bool Supports(ERENDERFEATURE feature)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(feature);
-    else
-      return false;
-  }
+  bool Supports(ERENDERFEATURE feature);
+  bool Supports(EDEINTERLACEMODE method);
+  bool Supports(EINTERLACEMETHOD method);
+  bool Supports(ESCALINGMETHOD method);
 
-  bool Supports(EDEINTERLACEMODE method)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(method);
-    else
-      return false;
-  }
-
-  bool Supports(EINTERLACEMETHOD method)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(method);
-    else
-      return false;
-  }
-
-  bool Supports(ESCALINGMETHOD method)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->Supports(method);
-    else
-      return false;
-  }
-
-  EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt)
-  {
-    CSharedLock lock(m_sharedSection);
-    return AutoInterlaceMethodInternal(mInt);
-  }
+  EINTERLACEMETHOD AutoInterlaceMethod(EINTERLACEMETHOD mInt);
 
   double GetPresentTime();
   void  WaitPresentTime(double presenttime);
@@ -159,28 +110,27 @@ public:
 
   void UpdateResolution();
 
-  unsigned int GetProcessorSize()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->GetProcessorSize();
-    return 0;
-  }
-
 #ifdef HAS_GL
-  CLinuxRendererGL *m_pRenderer;
+  CLinuxRendererGL    *m_pRenderer;
 #elif HAS_GLES == 2
-  CLinuxRendererGLES *m_pRenderer;
+  CLinuxRendererGLES  *m_pRenderer;
 #elif defined(HAS_DX)
-  CWinRenderer *m_pRenderer;
+  CWinRenderer        *m_pRenderer;
 #elif defined(HAS_SDL)
-  CLinuxRenderer *m_pRenderer;
+  CLinuxRenderer      *m_pRenderer;
 #endif
+
+  unsigned int GetProcessorSize();
+
+  // Supported pixel formats, can be called before configure
+  std::vector<ERenderFormat> SupportedFormats();
 
   void Present();
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };
+
+  void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
 
   /* PLEX */
   inline void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch)
@@ -193,13 +143,11 @@ public:
       m_pRenderer->SetRGB32Image(image, nHeight, nWidth, nPitch);
   }
   /* END PLEX */
-
 protected:
   void Render(bool clear, DWORD flags, DWORD alpha);
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
-  void PresentWeave(bool clear, DWORD flags, DWORD alpha);
-  void PresentBob(bool clear, DWORD flags, DWORD alpha);
+  void PresentFields(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   EINTERLACEMETHOD AutoInterlaceMethodInternal(EINTERLACEMETHOD mInt);

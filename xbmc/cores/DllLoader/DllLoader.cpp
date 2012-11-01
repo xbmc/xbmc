@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -38,7 +37,7 @@ typedef struct _UNICODE_STRING {
   USHORT  MaximumLength;
   PWSTR  Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
-#include "utils/Win32Exception.h"
+#include "commons/Exception.h"
 
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
@@ -156,7 +155,7 @@ int DllLoader::Parse()
   int iResult = 0;
 
   CStdString strFileName= GetFileName();
-  FILE* fp = fopen_utf8(_P(strFileName).c_str(), "rb");
+  FILE* fp = fopen_utf8(CSpecialProtocol::TranslatePath(strFileName).c_str(), "rb");
 
   if (fp)
   {
@@ -683,11 +682,7 @@ bool DllLoader::Load()
 #endif
 
     }
-    catch(win32_exception &e)
-    {
-      e.writelog(__FUNCTION__);
-      return false;
-    }
+    XBMCCOMMONS_HANDLE_UNCHECKED
     catch(...)
     {
       CLog::Log(LOGERROR, "%s - Unhandled exception during DLL_PROCESS_ATTACH", __FUNCTION__);

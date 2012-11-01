@@ -47,7 +47,7 @@ void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
     assert(s->modified_quant==1);
     assert(s->loop_filter==1);
 
-    s->h263_aic= s->pict_type == FF_I_TYPE;
+    s->h263_aic= s->pict_type == AV_PICTURE_TYPE_I;
     if(s->h263_aic){
         s->y_dc_scale_table=
         s->c_dc_scale_table= ff_aic_dc_scale_table;
@@ -58,13 +58,13 @@ void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
 }
 
 AVCodec ff_rv20_encoder = {
-    "rv20",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_RV20,
-    sizeof(MpegEncContext),
-    MPV_encode_init,
-    MPV_encode_picture,
-    MPV_encode_end,
+    .name           = "rv20",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_RV20,
+    .priv_data_size = sizeof(MpegEncContext),
+    .init           = MPV_encode_init,
+    .encode         = MPV_encode_picture,
+    .close          = MPV_encode_end,
     .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("RealVideo 2.0"),
 };

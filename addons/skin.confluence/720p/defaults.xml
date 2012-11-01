@@ -11,12 +11,14 @@
 		<label>-</label>
 		<font>font13</font>
 		<textcolor>white</textcolor>
+		<disabledcolor>grey3</disabledcolor>
 	</default>
 	<default type="fadelabel">
 		<posx>80</posx>
 		<posy>60</posy>
 		<font>font13</font>
 		<textcolor>white</textcolor>
+		<disabledcolor>grey3</disabledcolor>
 	</default>
 	<default type="button">
 		<posx>300</posx>
@@ -123,6 +125,7 @@
 		<disabledcolor>grey3</disabledcolor>
 		<textoffsetx>7</textoffsetx>
 		<aligny>center</aligny>
+		<pulseonselect>no</pulseonselect>
 	</default>
 	<default type="selectbutton">
 		<posx>490</posx>

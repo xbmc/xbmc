@@ -47,17 +47,18 @@ static inline int mystrcmp(char **p, const char *sample)
         return 0;
 }
 
-static void change_font_size(ASS_Renderer *render_priv, double sz)
+double ensure_font_size(ASS_Renderer *priv, double size)
 {
-    double size = sz * render_priv->font_scale;
-
     if (size < 1)
         size = 1;
-    else if (size > render_priv->height * 2)
-        size = render_priv->height * 2;
+    else if (size > priv->height * 2)
+        size = priv->height * 2;
 
-    ass_font_set_size(render_priv->state.font, size);
+    return size;
+}
 
+static void change_font_size(ASS_Renderer *render_priv, double sz)
+{
     render_priv->state.font_size = sz;
 }
 
@@ -189,17 +190,18 @@ interpolate_alpha(long long now, long long t1, long long t2, long long t3,
 {
     unsigned a;
     double cf;
-    if (now <= t1) {
+
+    if (now < t1) {
         a = a1;
     } else if (now >= t4) {
         a = a3;
-    } else if (now < t2) {      // and > t1
+    } else if (now < t2 && t2 > t1) {
         cf = ((double) (now - t1)) / (t2 - t1);
         a = a1 * (1 - cf) + a2 * cf;
-    } else if (now > t3) {
+    } else if (now >= t3 && t4 > t3) {
         cf = ((double) (now - t3)) / (t4 - t3);
         a = a2 * (1 - cf) + a3 * cf;
-    } else {                    // t2 <= now <= t3
+    } else {                    // t2 <= now < t3
         a = a2;
     }
 
@@ -216,13 +218,9 @@ static char *parse_vector_clip(ASS_Renderer *render_priv, char *p)
     int res = 0;
     ASS_Drawing *drawing = render_priv->state.clip_drawing;
 
-    if (drawing && drawing->glyph)
-        FT_Done_Glyph((FT_Glyph) drawing->glyph);
     ass_drawing_free(drawing);
-    render_priv->state.clip_drawing = ass_drawing_new(
-        render_priv->fontconfig_priv,
-        render_priv->state.font,
-        render_priv->ftlibrary);
+    render_priv->state.clip_drawing =
+        ass_drawing_new(render_priv->library, render_priv->ftlibrary);
     drawing = render_priv->state.clip_drawing;
     skipopt('(');
     res = mystrtoi(&p, &scale);
@@ -259,6 +257,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
         else
             val = -1.;
         change_border(render_priv, val, render_priv->state.border_y);
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "ybord")) {
         double val;
         if (mystrtod(&p, &val))
@@ -273,6 +272,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
         else
             val = 0.;
         render_priv->state.shadow_x = val;
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "yshad")) {
         double val;
         if (mystrtod(&p, &val))
@@ -280,6 +280,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
         else
             val = 0.;
         render_priv->state.shadow_y = val;
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "fax")) {
         double val;
         if (mystrtod(&p, &val))
@@ -331,6 +332,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
             render_priv->state.blur = val;
         } else
             render_priv->state.blur = 0.0;
+        render_priv->state.bm_run_id++;
         // ASS standard tags
     } else if (mystrcmp(&p, "fsc")) {
         char tp = *p++;
@@ -391,6 +393,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
         } else
             val = -1.;          // reset to default
         change_border(render_priv, val, val);
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "move")) {
         double x1, x2, y1, y2;
         long long t1, t2, delta_t, t;
@@ -492,6 +495,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
             change_alpha(&render_priv->state.c[3],
                          render_priv->state.style->BackColour, pwr);
         }
+        render_priv->state.bm_run_id++;
         // FIXME: simplify
     } else if (mystrcmp(&p, "an")) {
         int val;
@@ -682,6 +686,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
             val = render_priv->state.style->PrimaryColour;
         ass_msg(render_priv->library, MSGL_DBG2, "color: %X", val);
         change_color(&render_priv->state.c[0], val, pwr);
+        render_priv->state.bm_run_id++;
     } else if ((*p >= '1') && (*p <= '4') && (++p)
                && (mystrcmp(&p, "c") || mystrcmp(&p, "a"))) {
         char n = *(p - 2);
@@ -711,9 +716,11 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
         switch (cmd) {
         case 'c':
             change_color(render_priv->state.c + cidx, val, pwr);
+            render_priv->state.bm_run_id++;
             break;
         case 'a':
             change_alpha(render_priv->state.c + cidx, val >> 24, pwr);
+            render_priv->state.bm_run_id++;
             break;
         default:
             ass_msg(render_priv->library, MSGL_WARN, "Bad command: %c%c",
@@ -733,6 +740,7 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
             render_priv->state.be = val;
         } else
             render_priv->state.be = 0;
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "b")) {
         int b;
         if (mystrtoi(&p, &b)) {
@@ -781,18 +789,21 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
         } else
             val = 0.;
         render_priv->state.shadow_x = render_priv->state.shadow_y = val;
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "s")) {
         int val;
         if (mystrtoi(&p, &val) && val)
             render_priv->state.flags |= DECO_STRIKETHROUGH;
         else
             render_priv->state.flags &= ~DECO_STRIKETHROUGH;
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "u")) {
         int val;
         if (mystrtoi(&p, &val) && val)
             render_priv->state.flags |= DECO_UNDERLINE;
         else
             render_priv->state.flags &= ~DECO_UNDERLINE;
+        render_priv->state.bm_run_id++;
     } else if (mystrcmp(&p, "pbo")) {
         double val = 0;
         if (mystrtod(&p, &val))
@@ -809,6 +820,11 @@ static char *parse_tag(ASS_Renderer *render_priv, char *p, double pwr)
         if (!mystrtoi(&p, &val))
             val = render_priv->track->WrapStyle;
         render_priv->state.wrap_style = val;
+    } else if (mystrcmp(&p, "fe")) {
+        int val;
+        if (!mystrtoi(&p, &val))
+            val = render_priv->state.style->Encoding;
+        render_priv->state.font_encoding = val;
     }
 
     return p;
@@ -888,6 +904,77 @@ void apply_transition_effects(ASS_Renderer *render_priv, ASS_Event *event)
     }
 
 }
+
+/**
+ * \brief determine karaoke effects
+ * Karaoke effects cannot be calculated during parse stage (get_next_char()),
+ * so they are done in a separate step.
+ * Parse stage: when karaoke style override is found, its parameters are stored in the next glyph's
+ * (the first glyph of the karaoke word)'s effect_type and effect_timing.
+ * This function:
+ * 1. sets effect_type for all glyphs in the word (_karaoke_ word)
+ * 2. sets effect_timing for all glyphs to x coordinate of the border line between the left and right karaoke parts
+ * (left part is filled with PrimaryColour, right one - with SecondaryColour).
+ */
+void process_karaoke_effects(ASS_Renderer *render_priv)
+{
+    GlyphInfo *cur, *cur2;
+    GlyphInfo *s1, *e1;      // start and end of the current word
+    GlyphInfo *s2;           // start of the next word
+    int i;
+    int timing;                 // current timing
+    int tm_start, tm_end;       // timings at start and end of the current word
+    int tm_current;
+    double dt;
+    int x;
+    int x_start, x_end;
+
+    tm_current = render_priv->time - render_priv->state.event->Start;
+    timing = 0;
+    s1 = s2 = 0;
+    for (i = 0; i <= render_priv->text_info.length; ++i) {
+        cur = render_priv->text_info.glyphs + i;
+        if ((i == render_priv->text_info.length)
+            || (cur->effect_type != EF_NONE)) {
+            s1 = s2;
+            s2 = cur;
+            if (s1) {
+                e1 = s2 - 1;
+                tm_start = timing + s1->effect_skip_timing;
+                tm_end = tm_start + s1->effect_timing;
+                timing = tm_end;
+                x_start = 1000000;
+                x_end = -1000000;
+                for (cur2 = s1; cur2 <= e1; ++cur2) {
+                    x_start = FFMIN(x_start, d6_to_int(cur2->bbox.xMin + cur2->pos.x));
+                    x_end = FFMAX(x_end, d6_to_int(cur2->bbox.xMax + cur2->pos.x));
+                }
+
+                dt = (tm_current - tm_start);
+                if ((s1->effect_type == EF_KARAOKE)
+                    || (s1->effect_type == EF_KARAOKE_KO)) {
+                    if (dt > 0)
+                        x = x_end + 1;
+                    else
+                        x = x_start;
+                } else if (s1->effect_type == EF_KARAOKE_KF) {
+                    dt /= (tm_end - tm_start);
+                    x = x_start + (x_end - x_start) * dt;
+                } else {
+                    ass_msg(render_priv->library, MSGL_ERR,
+                            "Unknown effect type");
+                    continue;
+                }
+
+                for (cur2 = s1; cur2 <= e1; ++cur2) {
+                    cur2->effect_type = s1->effect_type;
+                    cur2->effect_timing = x - d6_to_int(cur2->pos.x);
+                }
+            }
+        }
+    }
+}
+
 
 /**
  * \brief Get next ucs4 char from string, parsing and executing style overrides

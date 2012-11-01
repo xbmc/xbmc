@@ -1,0 +1,83 @@
+diff -uPr afpfs-ng-0.8.1/include/afpfs-ng/afp.h afpfs-ng-0.8.1/include/afpfs-ng/afp.h
+--- afpfs-ng-0.8.1/include/afpfs-ng/afp.h	2012-10-30 22:30:29.000000000 +0100
++++ afpfs-ng-0.8.1/include/afpfs-ng/afp.h	2012-10-30 22:26:15.000000000 +0100
+@@ -71,7 +71,7 @@
+ 	struct afp_file_info * largelist_next;
+ 	unsigned char isdir;
+ 	unsigned long long size;
+-	unsigned short resourcesize;
++	unsigned long long resourcesize;
+ 	unsigned int resource;
+ 	unsigned short forkid;
+ 	struct afp_icon * icon;
+--- afpfs-ng-0.8.1/lib/loop.c	2012-10-30 22:48:19.000000000 +0100
++++ afpfs-ng-0.8.1/lib/loop.c	2012-10-30 22:48:47.000000000 +0100
+@@ -87,12 +87,13 @@
+ static int ending=0;
+ void * just_end_it_now(void * ignore)
+ {
+-	if (ending) return;
++	if (ending) return NULL;
+ 	ending=1;
+ 	if (libafpclient->forced_ending_hook) 
+ 		libafpclient->forced_ending_hook();
+ 	exit_program=2;
+ 	signal_main_thread();
++	return NULL;
+ }
+ 
+ /*This is a hack to handle a problem where the first pthread_kill doesnt' work*/
+diff -uPr afpfs-ng-0.8.1/lib/dsi.c afpfs-ng-0.8.1/lib/dsi.c
+--- afpfs-ng-0.8.1/lib/dsi.c	2012-10-30 22:30:29.000000000 +0100
++++ afpfs-ng-0.8.1/lib/dsi.c	2012-10-30 22:11:09.000000000 +0100
+@@ -478,7 +478,7 @@
+ 	}
+ 	server->flags=ntohs(reply1->flags);
+ 
+-	p=(void *)((unsigned int) server->incoming_buffer + sizeof(*reply1));
++	p=(void *)((unsigned long) server->incoming_buffer + sizeof(*reply1));
+ 	p+=copy_from_pascal(server->server_name,p,AFP_SERVER_NAME_LEN)+1;
+ 
+ 	/* Now work our way through the variable bits */
+@@ -762,7 +762,7 @@
+ 		printf("<<< read() of rest of AFP, %d bytes\n",amount_to_read);
+ 		#endif
+ 		ret = read(server->fd, (void *)
+-		(((unsigned int) server->incoming_buffer)+server->data_read),
++		(((unsigned long) server->incoming_buffer)+server->data_read),
+ 			amount_to_read);
+ 		if (ret<0) return -1;
+ 		if (ret==0) {
+diff -uPr afpfs-ng-0.8.1/lib/lowlevel.c afpfs-ng-0.8.1/lib/lowlevel.c
+--- afpfs-ng-0.8.1/lib/lowlevel.c	2012-10-30 22:30:29.000000000 +0100
++++ afpfs-ng-0.8.1/lib/lowlevel.c	2012-10-30 22:29:57.000000000 +0100
+@@ -582,7 +582,7 @@
+ 	if (volume->server->using_version->av_number>=30 && fp.unixprivs.permissions != 0)
+ 		stbuf->st_mode |= fp.unixprivs.permissions;
+ 	else
+-		set_nonunix_perms(&stbuf->st_mode,&fp);
++		set_nonunix_perms((mode_t *)&stbuf->st_mode,&fp);
+ 
+ 	stbuf->st_uid=fp.unixprivs.uid;
+ 	stbuf->st_gid=fp.unixprivs.gid;
+diff -uPr afpfs-ng-0.8.1/lib/proto_directory.c afpfs-ng-0.8.1/lib/proto_directory.c
+--- afpfs-ng-0.8.1/lib/proto_directory.c	2012-10-30 22:30:29.000000000 +0100
++++ afpfs-ng-0.8.1/lib/proto_directory.c	2012-10-30 22:15:28.000000000 +0100
+@@ -259,7 +259,7 @@
+ 		uint16_t reqcount;
+ 	} __attribute__((__packed__)) * reply = (void *) buf;
+ 
+-	struct {
++	struct sEntry{
+ 		uint16_t size;
+ 		uint8_t isdir;
+ 		uint8_t pad;
+@@ -293,7 +293,7 @@
+ 			filecur=new_file;
+ 		}
+ 
+-		entry = p;
++		entry = (struct sEntry *)p;
+ 
+ 		parse_reply_block(server,p+sizeof(*entry),
+ 			ntohs(entry->size),entry->isdir,

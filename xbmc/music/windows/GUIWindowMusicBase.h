@@ -6,7 +6,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,9 +20,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,6 +31,7 @@
 #include "music/infoscanner/MusicInfoScraper.h"
 #include "PlayListPlayer.h"
 #include "music/MusicInfoLoader.h"
+#include "music/MusicThumbLoader.h"
 
 /*!
  \ingroup windows
@@ -49,9 +49,9 @@ public:
   virtual bool OnBack(int actionID);
 
   void OnInfo(CFileItem *pItem, bool bShowInfo = false);
-  static void SetupFanart(CFileItemList& items);
 
 protected:
+  virtual void OnInitWindow();
   /*!
   \brief Will be called when an popup context menu has been asked for
   \param itemNumber List/thumb control item that has been clicked on
@@ -72,13 +72,16 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual CStdString GetStartFolder(const CStdString &dir);
 
+  virtual bool CheckFilterAdvanced(CFileItemList &items) const;
+  virtual bool CanContainFilter(const CStdString &strDirectory) const;
+
   // new methods
   virtual void PlayItem(int iItem);
   virtual bool OnPlayMedia(int iItem);
 
   void RetrieveMusicInfo();
   void OnInfo(int iItem, bool bShowInfo = true);
-  void OnInfoAll(int iItem, bool bCurrent=false);
+  void OnInfoAll(int iItem, bool bCurrent=false, bool refresh=false);
   virtual void OnQueueItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
   bool FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, MUSIC_GRABBER::CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection);

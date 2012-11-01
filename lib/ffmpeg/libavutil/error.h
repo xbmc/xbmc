@@ -27,6 +27,13 @@
 #include <errno.h>
 #include "avutil.h"
 
+/**
+ * @addtogroup lavu_error
+ *
+ * @{
+ */
+
+
 /* error handling */
 #if EDOM > 0
 #define AVERROR(e) (-(e))   ///< Returns a negative error code from a POSIX error code, to return from library functions.
@@ -37,34 +44,27 @@
 #define AVUNERROR(e) (e)
 #endif
 
-#if LIBAVUTIL_VERSION_MAJOR < 51
-#define AVERROR_INVALIDDATA AVERROR(EINVAL)  ///< Invalid data found when processing input
-#define AVERROR_IO          AVERROR(EIO)     ///< I/O error
-#define AVERROR_NOENT       AVERROR(ENOENT)  ///< No such file or directory
-#define AVERROR_NOFMT       AVERROR(EILSEQ)  ///< Unknown format
-#define AVERROR_NOMEM       AVERROR(ENOMEM)  ///< Not enough memory
-#define AVERROR_NOTSUPP     AVERROR(ENOSYS)  ///< Operation not supported
-#define AVERROR_NUMEXPECTED AVERROR(EDOM)    ///< Number syntax expected in filename
-#define AVERROR_UNKNOWN     AVERROR(EINVAL)  ///< Unknown error
-#endif
-
-#define AVERROR_EOF         AVERROR(EPIPE)   ///< End of file
-
-#define AVERROR_PATCHWELCOME    (-MKTAG('P','A','W','E')) ///< Not yet implemented in FFmpeg, patches welcome
-
-#if LIBAVUTIL_VERSION_MAJOR > 50
-#define AVERROR_INVALIDDATA     (-MKTAG('I','N','D','A')) ///< Invalid data found when processing input
-#define AVERROR_NUMEXPECTED     (-MKTAG('N','U','E','X')) ///< Number syntax expected in filename
-#endif
-
-#define AVERROR_DEMUXER_NOT_FOUND  (-MKTAG(0xF8,'D','E','M')) ///< Demuxer not found
-#define AVERROR_MUXER_NOT_FOUND    (-MKTAG(0xF8,'M','U','X')) ///< Muxer not found
-#define AVERROR_DECODER_NOT_FOUND  (-MKTAG(0xF8,'D','E','C')) ///< Decoder not found
-#define AVERROR_ENCODER_NOT_FOUND  (-MKTAG(0xF8,'E','N','C')) ///< Encoder not found
-#define AVERROR_PROTOCOL_NOT_FOUND (-MKTAG(0xF8,'P','R','O')) ///< Protocol not found
-#define AVERROR_FILTER_NOT_FOUND   (-MKTAG(0xF8,'F','I','L')) ///< Filter not found
 #define AVERROR_BSF_NOT_FOUND      (-MKTAG(0xF8,'B','S','F')) ///< Bitstream filter not found
+#define AVERROR_BUG                (-MKTAG( 'B','U','G','!')) ///< Internal bug, also see AVERROR_BUG2
+#define AVERROR_DECODER_NOT_FOUND  (-MKTAG(0xF8,'D','E','C')) ///< Decoder not found
+#define AVERROR_DEMUXER_NOT_FOUND  (-MKTAG(0xF8,'D','E','M')) ///< Demuxer not found
+#define AVERROR_ENCODER_NOT_FOUND  (-MKTAG(0xF8,'E','N','C')) ///< Encoder not found
+#define AVERROR_EOF                (-MKTAG( 'E','O','F',' ')) ///< End of file
+#define AVERROR_EXIT               (-MKTAG( 'E','X','I','T')) ///< Immediate exit was requested; the called function should not be restarted
+#define AVERROR_FILTER_NOT_FOUND   (-MKTAG(0xF8,'F','I','L')) ///< Filter not found
+#define AVERROR_INVALIDDATA        (-MKTAG( 'I','N','D','A')) ///< Invalid data found when processing input
+#define AVERROR_MUXER_NOT_FOUND    (-MKTAG(0xF8,'M','U','X')) ///< Muxer not found
+#define AVERROR_OPTION_NOT_FOUND   (-MKTAG(0xF8,'O','P','T')) ///< Option not found
+#define AVERROR_PATCHWELCOME       (-MKTAG( 'P','A','W','E')) ///< Not yet implemented in FFmpeg, patches welcome
+#define AVERROR_PROTOCOL_NOT_FOUND (-MKTAG(0xF8,'P','R','O')) ///< Protocol not found
 #define AVERROR_STREAM_NOT_FOUND   (-MKTAG(0xF8,'S','T','R')) ///< Stream not found
+
+/**
+ * This is semantically identical to AVERROR_BUG
+ * it has been introduced in Libav after our AVERROR_BUG and with a modified value.
+ */
+#define AVERROR_BUG2               (-MKTAG( 'B','U','G',' '))
+#define AVERROR_UNKNOWN            (-MKTAG( 'U','N','K','N')) ///< Unknown error, typically from an external library
 
 /**
  * Put a description of the AVERROR code errnum in errbuf.
@@ -79,5 +79,9 @@
  * cannot be found
  */
 int av_strerror(int errnum, char *errbuf, size_t errbuf_size);
+
+/**
+ * @}
+ */
 
 #endif /* AVUTIL_ERROR_H */

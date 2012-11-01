@@ -106,12 +106,6 @@ public:
 
 class SqliteDataset : public Dataset {
 protected:
-/* query results*/
-  result_set result;
-  result_set exec_res;
-  bool autorefresh;
-  char* errmsg;
-
   sqlite3* handle();
 
 /* Makes direct queries to database */

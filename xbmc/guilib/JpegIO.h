@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2011 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -24,7 +23,7 @@
 
 #ifdef TARGET_WINDOWS
 #define XMD_H
-#pragma comment(lib, "jpeg-static.lib")
+#pragma comment(lib, "turbojpeg-static.lib")
 #endif
 
 #include <jpeglib.h>
@@ -36,11 +35,14 @@ class CJpegIO
 public:
   CJpegIO();
   ~CJpegIO();
-  bool           Open(const CStdString& m_texturePath,  unsigned int m_minx=0, unsigned int m_miny=0);
+  bool           Open(const CStdString& m_texturePath,  unsigned int minx=0, unsigned int miny=0, bool read=true);
+  bool           Read(unsigned char* buffer, unsigned int bufSize, unsigned int minx, unsigned int miny);
   bool           Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format);
+  bool           CreateThumbnail(const CStdString& sourceFile, const CStdString& destFile, int minx, int miny, bool rotateExif);
+  bool           CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny);
+  bool           CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile);
   void           Close();
 
-  unsigned int   FileSize()    { return m_imgsize; }
   unsigned int   Width()       { return m_width; }
   unsigned int   Height()      { return m_height; }
   unsigned int   Orientation() { return m_orientation; }
@@ -48,18 +50,13 @@ public:
 protected:
   static  void   jpeg_error_exit(j_common_ptr cinfo);
 
-  bool           GetExif();
-  unsigned int   findExifMarker( unsigned char *jpegData, 
-                                 unsigned int dataSize, 
-                                 unsigned char *&exifPtr);
+  unsigned int   GetExifOrientation(unsigned char* exif_data, unsigned int exif_data_size);
+
   unsigned char  *m_inputBuff;
   unsigned int   m_inputBuffSize;
-  unsigned int   m_minx;
-  unsigned int   m_miny;
   struct         jpeg_decompress_struct m_cinfo;
   CStdString     m_texturePath;
 
-  unsigned int   m_imgsize;
   unsigned int   m_width;
   unsigned int   m_height;
   unsigned int   m_orientation;

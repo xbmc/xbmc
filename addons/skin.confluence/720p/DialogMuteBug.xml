@@ -7,26 +7,13 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
-		<control type="group">
-			<posx>80r</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="100,0" time="200" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="100,0" time="200" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>80</width>
-				<height>35</height>
-				<texture flipx="true" border="32,0,0,0">header.png</texture>
-			</control>
-			<control type="image">
-				<posx>35</posx>
-				<posy>0</posy>
-				<width>30</width>
-				<height>30</height>
-				<aspectratio>keep</aspectratio>
-				<texture>icon-mute.png</texture>
-			</control>
+		<control type="image">
+			<posx>50r</posx>
+			<posy>2</posy>
+			<width>45</width>
+			<height>45</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon-mute.png</texture>
 		</control>
 	</controls>
 </window>

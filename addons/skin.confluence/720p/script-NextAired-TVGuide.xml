@@ -1,0 +1,534 @@
+<window>
+	<onload>ClearProperty(TVGuide.MondayList,Home)</onload>
+	<onload>ClearProperty(TVGuide.TuesdayList,Home)</onload>
+	<onload>ClearProperty(TVGuide.WednesdayList,Home)</onload>
+	<onload>ClearProperty(TVGuide.ThursdayList,Home)</onload>
+	<onload>ClearProperty(TVGuide.FridayList,Home)</onload>
+	<onload>ClearProperty(TVGuide.SaturdayList,Home)</onload>
+	<onload>ClearProperty(TVGuide.SundayList,Home)</onload>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="group">
+			<visible>!IsEmpty(Window(home).Property(TVGuide.BackgroundFanart))</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$INFO[Container(200).ListItem.Property(Fanart)]</texture>
+				<visible>Control.HasFocus(200)</visible>
+				<fadetime>600</fadetime>
+				<animation effect="fade" time="600">Visible</animation>
+				<animation effect="fade" time="600">Hidden</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$INFO[Container(201).ListItem.Property(Fanart)]</texture>
+				<visible>Control.HasFocus(201)</visible>
+				<fadetime>600</fadetime>
+				<animation effect="fade" time="600">Visible</animation>
+				<animation effect="fade" time="600">Hidden</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$INFO[Container(202).ListItem.Property(Fanart)]</texture>
+				<visible>Control.HasFocus(202)</visible>
+				<fadetime>600</fadetime>
+				<animation effect="fade" time="600">Visible</animation>
+				<animation effect="fade" time="600">Hidden</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$INFO[Container(203).ListItem.Property(Fanart)]</texture>
+				<visible>Control.HasFocus(203)</visible>
+				<fadetime>600</fadetime>
+				<animation effect="fade" time="600">Visible</animation>
+				<animation effect="fade" time="600">Hidden</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$INFO[Container(204).ListItem.Property(Fanart)]</texture>
+				<visible>Control.HasFocus(204)</visible>
+				<fadetime>600</fadetime>
+				<animation effect="fade" time="600">Visible</animation>
+				<animation effect="fade" time="600">Hidden</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$INFO[Container(205).ListItem.Property(Fanart)]</texture>
+				<visible>Control.HasFocus(205)</visible>
+				<fadetime>600</fadetime>
+				<animation effect="fade" time="600">Visible</animation>
+				<animation effect="fade" time="600">Hidden</animation>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<aspectratio>scale</aspectratio>
+				<texture background="true">$INFO[Container(206).ListItem.Property(Fanart)]</texture>
+				<visible>Control.HasFocus(206)</visible>
+				<fadetime>600</fadetime>
+				<animation effect="fade" time="600">Visible</animation>
+				<animation effect="fade" time="600">Hidden</animation>
+			</control>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>100r</posy>
+			<width>1280</width>
+			<height>100</height>
+			<texture>floor.png</texture>
+			<aspectratio>stretch</aspectratio>
+			<animation effect="slide" start="0,10" end="0,0" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="0,10" time="200" condition="Window.Next(Home)">WindowClose</animation>
+		</control>
+		<control type="image">
+			<description>Section header image</description>
+			<posx>20</posx>
+			<posy>3</posy>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_video.png</texture>
+		</control>
+		<control type="grouplist">
+			<posx>65</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>$LOCALIZE[SCRIPT450]</label>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<label>[COLOR=blue] - [/COLOR]$LOCALIZE[31208]</label>
+			</control>
+		</control>
+		<control type="grouplist" id="2000">
+			<include>Window_OpenClose_Animation</include>		
+			<posx>40</posx>
+			<posy>60</posy>
+			<width>1200</width>
+			<height>660</height>
+			<orientation>horizontal</orientation>
+			<align>center</align>
+			<itemgap>0</itemgap>
+			<control type="group">
+				<description>Monday</description>
+				<visible>IntegerGreaterThan(Container(200).NumItems,0)</visible>
+				<width>300</width>
+				<height>660</height>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>592</posy>
+					<width>300</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="label">
+					<posx>20</posx>
+					<posy>13</posy>
+					<width>260</width>
+					<height>20</height>
+					<label>$LOCALIZE[11]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="panel" id="200">
+					<posx>10</posx>
+					<posy>40</posy>
+					<width>280</width>
+					<height>530</height>
+					<scrolltime>200</scrolltime>
+					<onup>200</onup>
+					<ondown>200</ondown>
+					<onleft>9000</onleft>
+					<onright>201</onright>
+					<include>TVNextAiredListCommonLayout</include>
+				</control>
+			</control>
+			<control type="group">
+				<description>Tuesday</description>
+				<visible>IntegerGreaterThan(Container(201).NumItems,0)</visible>
+				<width>300</width>
+				<height>660</height>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>592</posy>
+					<width>300</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="label">
+					<posx>20</posx>
+					<posy>13</posy>
+					<width>260</width>
+					<height>20</height>
+					<label>$LOCALIZE[12]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="panel" id="201">
+					<posx>10</posx>
+					<posy>40</posy>
+					<width>280</width>
+					<height>530</height>
+					<scrolltime>200</scrolltime>
+					<onup>201</onup>
+					<ondown>201</ondown>
+					<onleft>200</onleft>
+					<onright>202</onright>
+					<include>TVNextAiredListCommonLayout</include>
+				</control>
+			</control>
+			<control type="group">
+				<description>Wednesday</description>
+				<visible>IntegerGreaterThan(Container(202).NumItems,0)</visible>
+				<width>300</width>
+				<height>660</height>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>592</posy>
+					<width>300</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="label">
+					<posx>20</posx>
+					<posy>13</posy>
+					<width>260</width>
+					<height>20</height>
+					<label>$LOCALIZE[13]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="panel" id="202">
+					<posx>10</posx>
+					<posy>40</posy>
+					<width>280</width>
+					<height>530</height>
+					<scrolltime>200</scrolltime>
+					<onup>202</onup>
+					<ondown>202</ondown>
+					<onleft>201</onleft>
+					<onright>203</onright>
+					<include>TVNextAiredListCommonLayout</include>
+				</control>
+			</control>
+			<control type="group">
+				<description>Thursday</description>
+				<visible>IntegerGreaterThan(Container(203).NumItems,0)</visible>
+				<width>300</width>
+				<height>660</height>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>592</posy>
+					<width>300</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="label">
+					<posx>20</posx>
+					<posy>13</posy>
+					<width>260</width>
+					<height>20</height>
+					<label>$LOCALIZE[14]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="panel" id="203">
+					<posx>10</posx>
+					<posy>40</posy>
+					<width>280</width>
+					<height>530</height>
+					<scrolltime>200</scrolltime>
+					<onup>203</onup>
+					<ondown>203</ondown>
+					<onleft>202</onleft>
+					<onright>204</onright>
+					<include>TVNextAiredListCommonLayout</include>
+				</control>
+			</control>
+			<control type="group">
+				<description>Friday</description>
+				<visible>IntegerGreaterThan(Container(204).NumItems,0)</visible>
+				<width>300</width>
+				<height>660</height>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>592</posy>
+					<width>300</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="label">
+					<posx>20</posx>
+					<posy>13</posy>
+					<width>260</width>
+					<height>20</height>
+					<label>$LOCALIZE[15]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="panel" id="204">
+					<posx>10</posx>
+					<posy>40</posy>
+					<width>280</width>
+					<height>530</height>
+					<scrolltime>200</scrolltime>
+					<onup>204</onup>
+					<ondown>204</ondown>
+					<onleft>203</onleft>
+					<onright>205</onright>
+					<include>TVNextAiredListCommonLayout</include>
+				</control>
+			</control>
+			<control type="group">
+				<description>Saturday</description>
+				<visible>IntegerGreaterThan(Container(205).NumItems,0)</visible>
+				<width>300</width>
+				<height>660</height>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>592</posy>
+					<width>300</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="label">
+					<posx>20</posx>
+					<posy>13</posy>
+					<width>260</width>
+					<height>20</height>
+					<label>$LOCALIZE[16]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="panel" id="205">
+					<posx>10</posx>
+					<posy>40</posy>
+					<width>280</width>
+					<height>530</height>
+					<scrolltime>200</scrolltime>
+					<onup>205</onup>
+					<ondown>205</ondown>
+					<onleft>204</onleft>
+					<onright>206</onright>
+					<include>TVNextAiredListCommonLayout</include>
+				</control>
+			</control>
+			<control type="group">
+				<description>Sunday</description>
+				<visible>IntegerGreaterThan(Container(206).NumItems,0)</visible>
+				<width>300</width>
+				<height>660</height>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>600</height>
+					<texture border="15">ContentPanel.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>592</posy>
+					<width>300</width>
+					<height>64</height>
+					<texture border="15">ContentPanelMirror.png</texture>
+				</control>
+				<control type="label">
+					<posx>20</posx>
+					<posy>13</posy>
+					<width>260</width>
+					<height>20</height>
+					<label>$LOCALIZE[17]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+				</control>
+				<control type="panel" id="206">
+					<posx>10</posx>
+					<posy>40</posy>
+					<width>280</width>
+					<height>530</height>
+					<scrolltime>200</scrolltime>
+					<onup>206</onup>
+					<ondown>206</ondown>
+					<onleft>205</onleft>
+					<onright>206</onright>
+					<include>TVNextAiredListCommonLayout</include>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Animation</include>		
+			<control type="image">
+				<description>left Arrow</description>
+				<posx>10</posx>
+				<posy>120</posy>
+				<width>30</width>
+				<height>40</height>
+				<texture>arrow-big-left.png</texture>
+				<visible>Container(2000).HasPrevious</visible>
+				<include>VisibleFadeEffect</include>
+			</control>
+			<control type="image">
+				<description>left Arrow</description>
+				<posx>10</posx>
+				<posy>170r</posy>
+				<width>30</width>
+				<height>40</height>
+				<texture>arrow-big-left.png</texture>
+				<visible>Container(2000).HasPrevious</visible>
+				<include>VisibleFadeEffect</include>
+			</control>
+			<control type="image">
+				<description>right Arrow</description>
+				<posx>1240</posx>
+				<posy>120</posy>
+				<width>30</width>
+				<height>40</height>
+				<texture>arrow-big-right.png</texture>
+				<visible>Container(2000).HasNext</visible>
+				<include>VisibleFadeEffect</include>
+			</control>
+			<control type="image">
+				<description>right Arrow</description>
+				<posx>1240</posx>
+				<posy>170r</posy>
+				<width>30</width>
+				<height>40</height>
+				<texture>arrow-big-right.png</texture>
+				<visible>Container(2000).HasNext</visible>
+				<include>VisibleFadeEffect</include>
+			</control>
+		</control>
+		<include>CommonNowPlaying</include>
+		<include>MainWindowMouseButtons</include>
+		<include>BehindDialogFadeOut</include>
+		<control type="group">
+			<posx>-250</posx>
+			<include>SideBladeLeft</include>
+			<control type="grouplist" id="9000">
+				<posx>0</posx>
+				<posy>110</posy>
+				<width>250</width>
+				<height>600</height>
+				<onleft>9000</onleft>
+				<onright>200</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<onback>200</onback>
+				<itemgap>0</itemgap>
+				<control type="image" id="2">
+					<description>LOGO</description>
+					<width>250</width>
+					<height>150</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[system.addonicon(script.tv.show.next.aired)]</texture>
+				</control>
+				<control type="label" id="7">
+					<width>250</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31006</label>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="button" id="8">
+					<description>Settings</description>
+					<textwidth>235</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>5</label>
+					<onright>200</onright>
+				</control>
+				<!-- include>CommonNowPlaying_Controls</include -->
+			</control>
+		</control>
+		<include>Clock</include>
+	</controls>
+</window>

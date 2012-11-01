@@ -1,7 +1,7 @@
 
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,23 +15,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include "system_gl.h"
+
+#include <queue>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#define GLX_GLXEXT_PROTOTYPES
+#include <GL/glx.h>
 
 #include "DllAvUtil.h"
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "libavcodec/vdpau.h"
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#define GL_GLEXT_PROTOTYPES
-#define GLX_GLXEXT_PROTOTYPES
-#include <GL/gl.h>
-#include <GL/glx.h>
-#include <queue>
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"
@@ -218,7 +218,7 @@ public:
   bool Supports(EINTERLACEMETHOD method);
   EINTERLACEMETHOD AutoInterlaceMethod();
 
-  VdpVideoMixerFeature m_features[10];
+  VdpVideoMixerFeature m_features[14];
   int                  m_feature_count;
 
   static bool IsVDPAUFormat(PixelFormat fmt);

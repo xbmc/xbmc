@@ -62,7 +62,8 @@ static LPSTR W2AHelper(LPSTR lpa, LPCWSTR lpw, int nChars, UINT acp)
     lpa[0] = '\0';
     ret = WideCharToMultiByte(acp, 0, lpw, -1, lpa, nChars, NULL, NULL);
     if (ret == 0) {
-        assert(0);
+        int error = GetLastError();
+        assert(error);
         return NULL;
     }
     return lpa;
@@ -81,9 +82,10 @@ static LPSTR W2AHelper(LPSTR lpa, LPCWSTR lpw, int nChars, UINT acp)
     (INT_MAX/2<_convert)? NULL :  \
     A2WHelper((LPWSTR) alloca(_convert*sizeof(WCHAR)), _lpa, _convert, CP_UTF8)))
 
+/* +2 instead of +1 temporary fix for Chinese characters */
 #define NPT_WIN32_W2A(lpw) (\
     ((_lpw = lpw) == NULL) ? NULL : (\
-    (_convert = (lstrlenW(_lpw)+1), \
+    (_convert = (lstrlenW(_lpw)+2), \
     (_convert>INT_MAX/2) ? NULL : \
     W2AHelper((LPSTR) alloca(_convert*sizeof(WCHAR)), _lpw, _convert*sizeof(WCHAR), CP_UTF8))))
 
@@ -244,7 +246,7 @@ NPT_fsopen_utf8(const char* path, const char* mode, int sh_flags)
 /*----------------------------------------------------------------------
 |   NPT_FilePath::Separator
 +---------------------------------------------------------------------*/
-const NPT_String NPT_FilePath::Separator("\\");
+const char* const NPT_FilePath::Separator = "\\";
 
 /*----------------------------------------------------------------------
 |   NPT_File::GetRoots

@@ -35,7 +35,20 @@
  */
 
 #include <string.h>
+#include "os_port.h"
 #include "crypto.h"
+
+/* GBG: don't depend on ntoh */
+#if defined(__ppc__)
+#define NPT_CONFIG_BYTE_ORDER_BIG_ENDIAN 1
+#endif
+#if defined(NPT_CONFIG_BYTE_ORDER_BIG_ENDIAN)
+#define AES_ntohl(x) (x)
+#define AES_htonl(x) (x)
+#else 
+#define AES_ntohl(x) ( ((x)>>24) | (((x)>>8)&0x0000FF00) | (((x)<<8)&0x00FF0000) | ((x)<<24) ) 
+#define AES_htonl(x) AES_ntohl(x)
+#endif
 
 /* all commented out in skeleton mode */
 #ifndef CONFIG_SSL_SKELETON_MODE
@@ -168,7 +181,7 @@ static void AES_decrypt(const AES_CTX *ctx, uint32_t *data);
    x^8+x^4+x^3+x+1 */
 static unsigned char AES_xtime(uint32_t x)
 {
-	return x = (x&0x80) ? (x<<1)^0x1b : x<<1;
+	return (x&0x80) ? (x<<1)^0x1b : x<<1;
 }
 
 /**
@@ -275,7 +288,7 @@ void AES_cbc_encrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
 
     memcpy(iv, ctx->iv, AES_IV_SIZE);
     for (i = 0; i < 4; i++)
-        tout[i] = ntohl(iv[i]);
+        tout[i] = AES_ntohl(iv[i]);
 
     for (length -= AES_BLOCKSIZE; length >= 0; length -= AES_BLOCKSIZE)
     {
@@ -285,14 +298,14 @@ void AES_cbc_encrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
         msg += AES_BLOCKSIZE;
 
         for (i = 0; i < 4; i++)
-            tin[i] = ntohl(msg_32[i])^tout[i];
+            tin[i] = AES_ntohl(msg_32[i])^tout[i];
 
         AES_encrypt(ctx, tin);
 
         for (i = 0; i < 4; i++)
         {
             tout[i] = tin[i]; 
-            out_32[i] = htonl(tout[i]);
+            out_32[i] = AES_ntohl(tout[i]);
         }
 
         memcpy(out, out_32, AES_BLOCKSIZE);
@@ -300,7 +313,7 @@ void AES_cbc_encrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
     }
 
     for (i = 0; i < 4; i++)
-        iv[i] = htonl(tout[i]);
+        iv[i] = AES_htonl(tout[i]);
     memcpy(ctx->iv, iv, AES_IV_SIZE);
 }
 
@@ -314,7 +327,7 @@ void AES_cbc_decrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
 
     memcpy(iv, ctx->iv, AES_IV_SIZE);
     for (i = 0; i < 4; i++)
-        xor[i] = ntohl(iv[i]);
+        xor[i] = AES_ntohl(iv[i]);
 
     for (length -= 16; length >= 0; length -= 16)
     {
@@ -325,7 +338,7 @@ void AES_cbc_decrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
 
         for (i = 0; i < 4; i++)
         {
-            tin[i] = ntohl(msg_32[i]);
+            tin[i] = AES_ntohl(msg_32[i]);
             data[i] = tin[i];
         }
 
@@ -335,7 +348,7 @@ void AES_cbc_decrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
         {
             tout[i] = data[i]^xor[i];
             xor[i] = tin[i];
-            out_32[i] = htonl(tout[i]);
+            out_32[i] = AES_htonl(tout[i]);
         }
 
         memcpy(out, out_32, AES_BLOCKSIZE);
@@ -343,7 +356,7 @@ void AES_cbc_decrypt(AES_CTX *ctx, const uint8_t *msg, uint8_t *out, int length)
     }
 
     for (i = 0; i < 4; i++)
-        iv[i] = htonl(xor[i]);
+        iv[i] = AES_htonl(xor[i]);
     memcpy(ctx->iv, iv, AES_IV_SIZE);
 }
 

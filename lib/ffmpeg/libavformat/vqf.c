@@ -20,7 +20,11 @@
  */
 
 #include "avformat.h"
+#include "internal.h"
 #include "libavutil/intreadwrite.h"
+#include "libavutil/dict.h"
+#include "libavutil/mathematics.h"
+#include "riff.h"
 
 typedef struct VqfContext {
     int frame_bit_len;
@@ -42,11 +46,11 @@ static int vqf_probe(AVProbeData *probe_packet)
     return AVPROBE_SCORE_MAX/2;
 }
 
-static void add_metadata(AVFormatContext *s, const char *tag,
+static void add_metadata(AVFormatContext *s, uint32_t tag,
                          unsigned int tag_len, unsigned int remaining)
 {
     int len = FFMIN(tag_len, remaining);
-    char *buf;
+    char *buf, key[5] = {0};
 
     if (len == UINT_MAX)
         return;
@@ -54,27 +58,51 @@ static void add_metadata(AVFormatContext *s, const char *tag,
     buf = av_malloc(len+1);
     if (!buf)
         return;
-    get_buffer(s->pb, buf, len);
+    avio_read(s->pb, buf, len);
     buf[len] = 0;
-    av_metadata_set2(&s->metadata, tag, buf, AV_METADATA_DONT_STRDUP_VAL);
+    AV_WL32(key, tag);
+    av_dict_set(&s->metadata, key, buf, AV_DICT_DONT_STRDUP_VAL);
 }
+
+static const AVMetadataConv vqf_metadata_conv[] = {
+    { "(c) ", "copyright" },
+    { "ARNG", "arranger"  },
+    { "AUTH", "author"    },
+    { "BAND", "band"      },
+    { "CDCT", "conductor" },
+    { "COMT", "comment"   },
+    { "FILE", "filename"  },
+    { "GENR", "genre"     },
+    { "LABL", "publisher" },
+    { "MUSC", "composer"  },
+    { "NAME", "title"     },
+    { "NOTE", "note"      },
+    { "PROD", "producer"  },
+    { "PRSN", "personnel" },
+    { "REMX", "remixer"   },
+    { "SING", "singer"    },
+    { "TRCK", "track"     },
+    { "WORD", "words"     },
+    { 0 },
+};
 
 static int vqf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     VqfContext *c = s->priv_data;
-    AVStream *st  = av_new_stream(s, 0);
+    AVStream *st  = avformat_new_stream(s, NULL);
     int chunk_tag;
     int rate_flag = -1;
     int header_size;
     int read_bitrate = 0;
     int size;
+    uint8_t comm_chunk[12];
 
     if (!st)
         return AVERROR(ENOMEM);
 
-    url_fskip(s->pb, 12);
+    avio_skip(s->pb, 12);
 
-    header_size = get_be32(s->pb);
+    header_size = avio_rb32(s->pb);
 
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codec->codec_id   = CODEC_ID_TWINVQ;
@@ -82,12 +110,12 @@ static int vqf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     do {
         int len;
-        chunk_tag = get_le32(s->pb);
+        chunk_tag = avio_rl32(s->pb);
 
         if (chunk_tag == MKTAG('D','A','T','A'))
             break;
 
-        len = get_be32(s->pb);
+        len = avio_rb32(s->pb);
 
         if ((unsigned) len > INT_MAX/2) {
             av_log(s, AV_LOG_ERROR, "Malformed header\n");
@@ -98,49 +126,33 @@ static int vqf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
         switch(chunk_tag){
         case MKTAG('C','O','M','M'):
-            st->codec->channels = get_be32(s->pb) + 1;
-            read_bitrate        = get_be32(s->pb);
-            rate_flag           = get_be32(s->pb);
-            url_fskip(s->pb, len-12);
+            avio_read(s->pb, comm_chunk, 12);
+            st->codec->channels = AV_RB32(comm_chunk    ) + 1;
+            read_bitrate        = AV_RB32(comm_chunk + 4);
+            rate_flag           = AV_RB32(comm_chunk + 8);
+            avio_skip(s->pb, len-12);
 
             st->codec->bit_rate              = read_bitrate*1000;
-            st->codec->bits_per_coded_sample = 16;
             break;
-        case MKTAG('N','A','M','E'):
-            add_metadata(s, "title"    , len, header_size);
+        case MKTAG('D','S','I','Z'): // size of compressed data
+        {
+            char buf[8] = {0};
+            int size = avio_rb32(s->pb);
+
+            snprintf(buf, sizeof(buf), "%d", size);
+            av_dict_set(&s->metadata, "size", buf, 0);
+        }
             break;
-        case MKTAG('(','c',')',' '):
-            add_metadata(s, "copyright", len, header_size);
-            break;
-        case MKTAG('A','U','T','H'):
-            add_metadata(s, "author"   , len, header_size);
-            break;
-        case MKTAG('A','L','B','M'):
-            add_metadata(s, "album"    , len, header_size);
-            break;
-        case MKTAG('T','R','C','K'):
-            add_metadata(s, "track"    , len, header_size);
-            break;
-        case MKTAG('C','O','M','T'):
-            add_metadata(s, "comment"  , len, header_size);
-            break;
-        case MKTAG('F','I','L','E'):
-            add_metadata(s, "filename" , len, header_size);
-            break;
-        case MKTAG('D','S','I','Z'):
-            add_metadata(s, "size"     , len, header_size);
-            break;
-        case MKTAG('D','A','T','E'):
-            add_metadata(s, "date"     , len, header_size);
-            break;
-        case MKTAG('G','E','N','R'):
-            add_metadata(s, "genre"    , len, header_size);
+        case MKTAG('Y','E','A','R'): // recording date
+        case MKTAG('E','N','C','D'): // compression date
+        case MKTAG('E','X','T','R'): // reserved
+        case MKTAG('_','Y','M','H'): // reserved
+        case MKTAG('_','N','T','T'): // reserved
+        case MKTAG('_','I','D','3'): // reserved for ID3 tags
+            avio_skip(s->pb, FFMIN(len, header_size));
             break;
         default:
-            av_log(s, AV_LOG_ERROR, "Unknown chunk: %c%c%c%c\n",
-                   ((char*)&chunk_tag)[0], ((char*)&chunk_tag)[1],
-                   ((char*)&chunk_tag)[2], ((char*)&chunk_tag)[3]);
-            url_fskip(s->pb, FFMIN(len, header_size));
+            add_metadata(s, chunk_tag, len, header_size);
             break;
         }
 
@@ -189,7 +201,15 @@ static int vqf_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return -1;
     }
     c->frame_bit_len = st->codec->bit_rate*size/st->codec->sample_rate;
-    av_set_pts_info(st, 64, 1, st->codec->sample_rate);
+    avpriv_set_pts_info(st, 64, 1, st->codec->sample_rate);
+
+    /* put first 12 bytes of COMM chunk in extradata */
+    if (!(st->codec->extradata = av_malloc(12 + FF_INPUT_BUFFER_PADDING_SIZE)))
+        return AVERROR(ENOMEM);
+    st->codec->extradata_size = 12;
+    memcpy(st->codec->extradata, comm_chunk, 12);
+
+    ff_metadata_conv_ctx(s, NULL, vqf_metadata_conv);
 
     return 0;
 }
@@ -200,7 +220,7 @@ static int vqf_read_packet(AVFormatContext *s, AVPacket *pkt)
     int ret;
     int size = (c->frame_bit_len - c->remaining_bits + 7)>>3;
 
-    pkt->pos          = url_ftell(s->pb);
+    pkt->pos          = avio_tell(s->pb);
     pkt->stream_index = 0;
 
     if (av_new_packet(pkt, size+2) < 0)
@@ -208,7 +228,7 @@ static int vqf_read_packet(AVFormatContext *s, AVPacket *pkt)
 
     pkt->data[0] = 8 - c->remaining_bits; // Number of bits to skip
     pkt->data[1] = c->last_frame_bits;
-    ret = get_buffer(s->pb, pkt->data+2, size);
+    ret = avio_read(s->pb, pkt->data+2, size);
 
     if (ret<=0) {
         av_free_packet(pkt);
@@ -240,7 +260,7 @@ static int vqf_read_seek(AVFormatContext *s,
     st->cur_dts = av_rescale(pos, st->time_base.den,
                              st->codec->bit_rate * (int64_t)st->time_base.num);
 
-    if ((ret = url_fseek(s->pb, ((pos-7) >> 3) + s->data_offset, SEEK_SET)) < 0)
+    if ((ret = avio_seek(s->pb, ((pos-7) >> 3) + s->data_offset, SEEK_SET)) < 0)
         return ret;
 
     c->remaining_bits = -7 - ((pos-7)&7);
@@ -248,13 +268,12 @@ static int vqf_read_seek(AVFormatContext *s,
 }
 
 AVInputFormat ff_vqf_demuxer = {
-    "vqf",
-    NULL_IF_CONFIG_SMALL("Nippon Telegraph and Telephone Corporation (NTT) TwinVQ"),
-    sizeof(VqfContext),
-    vqf_probe,
-    vqf_read_header,
-    vqf_read_packet,
-    NULL,
-    vqf_read_seek,
-    .extensions = "vqf",
+    .name           = "vqf",
+    .long_name      = NULL_IF_CONFIG_SMALL("Nippon Telegraph and Telephone Corporation (NTT) TwinVQ"),
+    .priv_data_size = sizeof(VqfContext),
+    .read_probe     = vqf_probe,
+    .read_header    = vqf_read_header,
+    .read_packet    = vqf_read_packet,
+    .read_seek      = vqf_read_seek,
+    .extensions     = "vqf,vql,vqe",
 };

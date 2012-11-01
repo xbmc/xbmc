@@ -38,6 +38,17 @@
 #include "NptBufferedStreams.h"
 #include "NptUtils.h"
 
+#define NPT_CHECK_NOLOGTIMEOUT(_x)   \
+do {                                 \
+    NPT_Result __result = (_x);      \
+    if (__result != NPT_SUCCESS) {   \
+        if (__result != NPT_ERROR_TIMEOUT && __result != NPT_ERROR_EOS) { \
+            NPT_CHECK(__result);     \
+        }                            \
+        return __result;             \
+    }                                \
+} while(0)
+
 /*----------------------------------------------------------------------
 |   NPT_BufferedInputStream::NPT_BufferedInputStream
 +---------------------------------------------------------------------*/
@@ -151,13 +162,17 @@ NPT_BufferedInputStream::ReadLine(char*     buffer,
 {
     NPT_Result result = NPT_SUCCESS;
     char*      buffer_start = buffer;
+    char*      buffer_end   = buffer_start+size-1;
     bool       skip_newline = false;
 
     // check parameters
-    if (buffer == NULL || size < 1) return NPT_ERROR_INVALID_PARAMETERS;
+    if (buffer == NULL || size < 1) {
+        if (chars_read) *chars_read = 0;
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
 
     // read until EOF or newline
-    while (buffer-buffer_start < (long)(size-1)) {
+    for (;;) {
         while (m_Buffer.offset != m_Buffer.valid) {
             // there is some data left in the buffer
             NPT_Byte c = m_Buffer.data[m_Buffer.offset++];
@@ -172,6 +187,10 @@ NPT_BufferedInputStream::ReadLine(char*     buffer,
                 }
                 goto done;
             } else {
+                if (buffer == buffer_end) {
+                    result = NPT_ERROR_NOT_ENOUGH_SPACE;
+                    goto done;
+                }
                 *buffer++ = c;
             }
         }
@@ -188,6 +207,10 @@ NPT_BufferedInputStream::ReadLine(char*     buffer,
                 } else if (*buffer == '\n') {
                     goto done;
                 } else {
+                    if (buffer == buffer_end) {
+                        result = NPT_ERROR_NOT_ENOUGH_SPACE;
+                        goto done;
+                    }
                     ++buffer;
                 }
             }
@@ -234,7 +257,7 @@ NPT_BufferedInputStream::ReadLine(NPT_String& line,
 
     // read the line
     NPT_Size chars_read = 0;
-    NPT_CHECK(ReadLine(line.UseChars(), max_chars, &chars_read, break_on_cr));
+    NPT_CHECK_NOLOGTIMEOUT(ReadLine(line.UseChars(), max_chars, &chars_read, break_on_cr));
 
     // adjust the length of the string object
     line.SetLength(chars_read);
@@ -278,9 +301,9 @@ NPT_BufferedInputStream::Read(void*     buffer,
             NPT_CopyMemory(buffer, 
                            m_Buffer.data + m_Buffer.offset,
                            buffered);
-            buffer = (void*)((NPT_Byte*)buffer+buffered);
+            //buffer = (void*)((NPT_Byte*)buffer+buffered);
             m_Buffer.offset += buffered;
-            bytes_to_read -= buffered;
+            //bytes_to_read -= buffered;
             total_read += buffered;
             goto done;
         }
@@ -345,7 +368,7 @@ NPT_BufferedInputStream::Peek(void*     buffer,
     buffered = m_Buffer.valid-m_Buffer.offset;
     if (bytes_to_read > buffered && buffered < new_size && !m_Eos) {
         // we need more data than what we have          
-        // switch to unbuffer mode and resize to force relocation
+        // switch to unbuffered mode and resize to force relocation
         // of data to the beginning of the buffer
         SetBufferSize(new_size, true);
         // fill up the end of the buffer
@@ -370,7 +393,6 @@ NPT_BufferedInputStream::Peek(void*     buffer,
             // some chars, so do not return EOS now
             return NPT_SUCCESS;
         }
-    
     }
     return result;    
 }

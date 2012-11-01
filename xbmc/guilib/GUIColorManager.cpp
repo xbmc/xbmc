@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,7 +48,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
 
   // load the global color map if it exists
   CXBMCTinyXML xmlDoc;
-  if (xmlDoc.LoadFile(PTH_IC("special://xbmc/system/colors.xml")))
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/colors.xml")))
     LoadXML(xmlDoc);
 
   // first load the default color map if it exists
@@ -57,7 +56,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
   URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors", basePath);
   URIUtils::AddFileToFolder(basePath, "defaults.xml", path);
 
-  if (xmlDoc.LoadFile(PTH_IC(path)))
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
     LoadXML(xmlDoc);
 
   // now the color map requested

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string id="30000">Enable Artist Fanarts from HTBackdrops.com</string>
+    <string id="30001">Enable Artist Thumbs from allmusic.com</string>
+    <string id="30002">Enable Artist Thumbs from last.fm</string>
+    <string id="30003">Enable Artist Thumbs from HTBackdrops.com</string>
+    <string id="30004">Enable Artist Fanarts from fanart.tv</string>
+    <string id="30005">Enable Artist Thumbs from fanart.tv</string>
+    <string id="30006">Get Artist Biography from</string>
+    <string id="30007">Artwork</string>
+    <string id="30008">Get Artist Discography from</string>
+    <string id="30009">Get Artist Genres from</string>
+    <string id="30010">Get Artist Styles from</string>
+    <string id="30011">Get Artist Life-Span from</string>
+    <string id="30012">Get Artist Moods from</string>
+    <string id="30014">Get Artist Years Active from</string>
+    <string id="30015">     Preferred Language</string>
+    <string id="30016">Fallback to Artist Biography from</string>
+    <string id="30017">Fallback to Artist Discography from</string>
+    <string id="30018">Fallback to Artist Genres from</string>
+    <string id="30019">Fallback to Artist Styles from</string>
+    <string id="30020">Fallback to Artist Life-Span from</string>
+    <string id="30021">Fallbacks</string>
+</strings>

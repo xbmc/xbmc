@@ -198,6 +198,9 @@ static inline void ls_decode_line(JLSState *state, MJpegDecodeContext *s, void *
             r = ff_log2_run[state->run_index[comp]];
             if(r)
                 r = get_bits_long(&s->gb, r);
+            if(x + r * stride > w) {
+                r = (w - x) / stride;
+            }
             for(i = 0; i < r; i++) {
                 W(dst, x, Ra);
                 x += stride;
@@ -286,8 +289,8 @@ int ff_jpegls_decode_picture(MJpegDecodeContext *s, int near, int point_transfor
 //    av_log(s->avctx, AV_LOG_DEBUG, "JPEG-LS params: %ix%i NEAR=%i MV=%i T(%i,%i,%i) RESET=%i, LIMIT=%i, qbpp=%i, RANGE=%i\n",s->width,s->height,state->near,state->maxval,state->T1,state->T2,state->T3,state->reset,state->limit,state->qbpp, state->range);
 //    av_log(s->avctx, AV_LOG_DEBUG, "JPEG params: ILV=%i Pt=%i BPP=%i, scan = %i\n", ilv, point_transform, s->bits, s->cur_scan);
     if(ilv == 0) { /* separate planes */
-        off = s->cur_scan - 1;
         stride = (s->nb_components > 1) ? 3 : 1;
+        off = av_clip(s->cur_scan - 1, 0, stride);
         width = s->width * stride;
         cur += off;
         for(i = 0; i < s->height; i++) {
@@ -309,11 +312,12 @@ int ff_jpegls_decode_picture(MJpegDecodeContext *s, int near, int point_transfor
     } else if(ilv == 1) { /* line interleaving */
         int j;
         int Rc[3] = {0, 0, 0};
+        stride = (s->nb_components > 1) ? 3 : 1;
         memset(cur, 0, s->picture.linesize[0]);
-        width = s->width * 3;
+        width = s->width * stride;
         for(i = 0; i < s->height; i++) {
-            for(j = 0; j < 3; j++) {
-                ls_decode_line(state, s, last + j, cur + j, Rc[j], width, 3, j, 8);
+            for(j = 0; j < stride; j++) {
+                ls_decode_line(state, s, last + j, cur + j, Rc[j], width, stride, j, 8);
                 Rc[j] = last[j];
 
                 if (s->restart_interval && !--s->restart_count) {
@@ -364,14 +368,13 @@ int ff_jpegls_decode_picture(MJpegDecodeContext *s, int near, int point_transfor
 
 
 AVCodec ff_jpegls_decoder = {
-    "jpegls",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_JPEGLS,
-    sizeof(MJpegDecodeContext),
-    ff_mjpeg_decode_init,
-    NULL,
-    ff_mjpeg_decode_end,
-    ff_mjpeg_decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "jpegls",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_JPEGLS,
+    .priv_data_size = sizeof(MJpegDecodeContext),
+    .init           = ff_mjpeg_decode_init,
+    .close          = ff_mjpeg_decode_end,
+    .decode         = ff_mjpeg_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("JPEG-LS"),
 };

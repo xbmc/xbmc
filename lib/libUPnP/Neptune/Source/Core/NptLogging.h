@@ -39,7 +39,6 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "NptConfig.h"
-#include "NptDebug.h"
 #include "NptTypes.h"
 #include "NptTime.h"
 #include "NptStrings.h"
@@ -65,11 +64,15 @@ public:
     const char*   m_SourceFile;
     unsigned int  m_SourceLine;
     const char*   m_SourceFunction;
+    unsigned long m_ThreadId;
 };
 
 class NPT_LogHandler {
 public:
+    typedef void(*CustomHandlerExternalFunction)(const NPT_LogRecord* record);
+    
     // class methods
+    static NPT_Result SetCustomHandlerFunction(CustomHandlerExternalFunction function);
     static NPT_Result Create(const char*      logger_name,
                              const char*      handler_name,
                              NPT_LogHandler*& handler);
@@ -92,7 +95,7 @@ public:
              const char*  msg, 
                           ...);
 
-    NPT_Result AddHandler(NPT_LogHandler* handler);
+    NPT_Result AddHandler(NPT_LogHandler* handler, bool transfer_ownership = true);
     NPT_Result DeleteHandlers();
     NPT_Result SetParent(NPT_Logger* parent);
     const NPT_String& GetName()  const { return m_Name;  }
@@ -109,6 +112,7 @@ private:
     bool                      m_ForwardToParent;
     NPT_Logger*               m_Parent;
     NPT_List<NPT_LogHandler*> m_Handlers;
+    NPT_List<NPT_LogHandler*> m_ExternalHandlers;
 
     // friends
     friend class NPT_LogManager;
@@ -153,10 +157,11 @@ public:
     NPT_Result                    Configure(const char* config_sources = NULL);
     NPT_String*                   GetConfigValue(const char* prefix, const char* suffix);
     NPT_List<NPT_Logger*>&        GetLoggers() { return m_Loggers; }
-	NPT_List<NPT_LogConfigEntry>& GetConfig()  { return m_Config;  }
-	void Enable(bool value) { m_Enabled = value; }
-    void Lock()   { m_Lock.Lock();   }
-    void Unlock() { m_Lock.Unlock(); }
+    NPT_List<NPT_LogConfigEntry>& GetConfig()  { return m_Config;  }
+    void                          SetEnabled(bool enabled) { m_Enabled = enabled; }
+    bool                          IsEnabled()              { return m_Enabled;    }
+    void                          Lock();
+    void                          Unlock();
 
 private:
     // methods
@@ -170,9 +175,9 @@ private:
 
     // members
     NPT_Mutex                    m_Lock;
-    volatile bool                m_Enabled;
-    volatile bool                m_Configured;
-    volatile bool                m_Configuring;
+    NPT_Thread::ThreadId         m_LockOwner;
+    bool                         m_Enabled;
+    bool                         m_Configured;
     NPT_List<NPT_LogConfigEntry> m_Config;
     NPT_List<NPT_Logger*>        m_Loggers;
     NPT_Logger*                  m_Root;
@@ -199,6 +204,8 @@ private:
     NPT_HttpServer* m_Server;
 };
 
+NPT_Result NPT_GetSystemLogConfig(NPT_String& config);
+
 /*----------------------------------------------------------------------
 |   constants
 +---------------------------------------------------------------------*/
@@ -222,7 +229,8 @@ private:
     }
 
 #if defined(NPT_CONFIG_ENABLE_LOGGING)
-
+//TODO: volatile makes tons of errors for me
+//#define NPT_DEFINE_LOGGER(_logger, _name) static volatile NPT_LoggerReference _logger = { NULL, (_name) };
 #define NPT_DEFINE_LOGGER(_logger, _name) static NPT_LoggerReference _logger = { NULL, (_name) };
 
 #define NPT_LOG_X(_logger, _level, _argsx)                              \

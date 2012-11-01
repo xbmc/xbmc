@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,18 +32,15 @@
 #else
 #define DEFAULT_SKIN          "skin.mediastream"
 #endif
-#define DEFAULT_FANART_HEIGHT 0
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED
-#define DEFAULT_THUMB_SIZE  256
 #else  // MID
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(TARGET_DARWIN) || defined(_WIN32)
 #define DEFAULT_VSYNC       VSYNC_ALWAYS
 #else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
 #endif
-#define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
 #include "settings/VideoSettings.h"
@@ -60,8 +56,10 @@
 #define CACHE_VIDEO 1
 #define CACHE_VOB   2
 
-#define VOLUME_MINIMUM -6000  // -60dB
-#define VOLUME_MAXIMUM 0      // 0dB
+#define VOLUME_MINIMUM 0.0f        // -60dB
+#define VOLUME_MAXIMUM 1.0f        // 0dB
+#define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
+#define VOLUME_CONTROL_STEPS 90    // 90 steps
 #define VOLUME_DRC_MINIMUM 0    // 0dB
 #define VOLUME_DRC_MAXIMUM 6000 // 60dB
 
@@ -191,9 +189,6 @@ public:
   bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
 
-  // for scanning
-  bool m_bMyMusicIsScanning;
-
   CVideoSettings m_defaultVideoSettings;
   CVideoSettings m_currentVideoSettings;
 
@@ -208,6 +203,7 @@ public:
   bool m_bStartVideoWindowed;
   bool m_bAddonAutoUpdate;
   bool m_bAddonNotifications;
+  bool m_bAddonForeignFilter;
 
   int m_iVideoStartWindow;
 
@@ -215,11 +211,7 @@ public:
 
   int iAdditionalSubtitleDirectoryChecked;
 
-  int m_HttpApiBroadcastPort;
-  int m_HttpApiBroadcastLevel;
-  int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
-  int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
-  int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
+  float m_fVolumeLevel;        // float 0.0 - 1.0 range
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
 
@@ -253,6 +245,9 @@ public:
   int        m_UPnPMaxReturnedItems;
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
+
+  int        m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
+  int        m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
 
   /*! \brief Retrieve the master profile
    \return const reference to the master profile
@@ -334,6 +329,7 @@ public:
   int GetCurrentProfileId() const;
 
   std::vector<RESOLUTION_INFO> m_ResInfo;
+  std::vector<RESOLUTION_INFO> m_Calibrations;
 
   // utility functions for user data folders
 
@@ -344,14 +340,9 @@ public:
   CStdString GetDatabaseFolder() const;
   CStdString GetCDDBFolder() const;
   CStdString GetThumbnailsFolder() const;
-  CStdString GetMusicThumbFolder() const;
-  CStdString GetLastFMThumbFolder() const;
-  CStdString GetMusicArtistThumbFolder() const;
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetSourcesFile() const;
-  CStdString GetVideoFanartFolder() const;
-  CStdString GetMusicFanartFolder() const;
 
   CStdString GetSettingsFile() const;
 
@@ -391,6 +382,9 @@ public:
   CStdString GetPlexMediaServerFanartFolder() const;
   CStdString GetProgramFanartFolder() const;
   /* END PLEX */
+
+  void ApplyCalibrations();
+  void UpdateCalibrations();
 
 protected:
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);

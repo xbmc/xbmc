@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{12AFF2E5-6D95-4809-9728-9551677C078A}</ProjectGuid>
+    <RootNamespace>Neptune</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;..\..\..\..\ThirdParty\axTLS\config\Win32;..\..\..\..\ThirdParty\axTLS\crypto;..\..\..\..\ThirdParty\axTLS\ssl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;NPT_DEBUG;NPT_CONFIG_ENABLE_LOGGING;NPT_CONFIG_ENABLE_TLS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)Neptune.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Neptune.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\..\..\Source\Core;..\..\..\..\Source\System\Win32;..\..\..\..\ThirdParty\axTLS\config\Win32;..\..\..\..\ThirdParty\axTLS\crypto;..\..\..\..\ThirdParty\axTLS\ssl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_TLS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)Neptune.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Neptune.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\Core\NptBase64.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptHash.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Bsd\NptBsdResolver.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Bsd\NptBsdSockets.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptBufferedStreams.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptCommon.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptConsole.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptCrypto.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptDataBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptDebug.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptDigest.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptFile.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptHttp.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptList.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptLogging.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptMessaging.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptNetwork.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Posix\NptPosixFile.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptQueue.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptResults.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptRingBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptSimpleMessageQueue.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptSockets.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\StdC\NptStdcEnvironment.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\StdC\NptStdcFile.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptStreams.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptStrings.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptSystem.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptThreads.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptTime.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptTls.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptUri.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\NptUtils.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32Console.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32Debug.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32DynamicLibraries.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32File.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32MessageQueue.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32Network.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32Queue.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32SerialPort.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32System.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32Threads.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\Win32\NptWin32Time.cpp" />
+    <ClCompile Include="..\..\..\..\Source\System\WinCE\NptWinceConsole.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\System\WinCE\NptWinceEnvironment.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\System\WinCE\NptWinceMain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Source\Core\NptXml.cpp" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\aes.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\asn1.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\bigint.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\crypto_misc.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\gen_cert.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\hmac.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\loader.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\md2.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\md5.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\p12.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\rc4.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\rsa.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\crypto\sha1.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\tls1.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\tls1_clnt.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\tls1_svr.c" />
+    <ClCompile Include="..\..\..\..\ThirdParty\axTLS\ssl\x509.c" />
+    <ClCompile Include="..\..\..\..\Source\Data\TLS\NptTlsDefaultTrustAnchorsBase.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Data\TLS\NptTlsDefaultTrustAnchorsExtended.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Source\Core\NptHash.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\crypto\bigint.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\crypto\bigint_impl.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\ssl\cert.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\config\Win32\config.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\crypto\crypto.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\ssl\crypto_misc.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\ssl\os_port.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\ssl\ssl.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\ssl\tls1.h" />
+    <ClInclude Include="..\..\..\..\ThirdParty\axTLS\ssl\version.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\Neptune.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptArray.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptBase64.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptBufferedStreams.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptCommon.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptConfig.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptConsole.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptConstants.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptCrypto.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDataBuffer.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDebug.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDefs.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptDigest.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptFile.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptHttp.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptInterfaces.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptList.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptLogging.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptMap.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptMessaging.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptNetwork.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptQueue.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptReferences.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptResults.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptRingBuffer.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSelectableMessageQueue.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSerialPort.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSimpleMessageQueue.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSockets.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptStack.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptStreams.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptStrings.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptSystem.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptThreads.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTime.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTls.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptTypes.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptUri.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptUtils.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptVersion.h" />
+    <ClInclude Include="..\..\..\..\Source\System\Win32\NptWin32MessageQueue.h" />
+    <ClInclude Include="..\..\..\..\Source\System\Win32\NptWin32Network.h" />
+    <ClInclude Include="..\..\..\..\Source\System\Win32\NptWin32Threads.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\NptXml.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

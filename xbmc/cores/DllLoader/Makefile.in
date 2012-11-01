@@ -1,23 +1,23 @@
-CFLAGS+=-DAPI_DEBUG
-CXXFLAGS+=-DAPI_DEBUG
+CFLAGS   += -DAPI_DEBUG
+CXXFLAGS += -DAPI_DEBUG
 
-SRCS=coff.cpp \
-     dll.cpp \
-     DllLoader.cpp \
-     DllLoaderContainer.cpp \
-     dll_tracker.cpp \
-     dll_tracker_file.cpp \
-     dll_tracker_library.cpp \
-     dll_util.cpp \
-     LibraryLoader.cpp \
-     mmap_anon.c \
-     SoLoader.cpp \
+SRCS  = coff.cpp
+SRCS += dll.cpp
+SRCS += DllLoader.cpp
+SRCS += DllLoaderContainer.cpp
+SRCS += dll_tracker.cpp
+SRCS += dll_tracker_file.cpp
+SRCS += dll_tracker_library.cpp
+SRCS += dll_util.cpp
+SRCS += LibraryLoader.cpp
+SRCS += mmap_anon.c
+SRCS += SoLoader.cpp
 
 ifneq ($(findstring freebsd,@ARCH@),freebsd)
 SRCS += ldt_keeper.c
 endif
 
-LIB=dllloader.a
+LIB = dllloader.a
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

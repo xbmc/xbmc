@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,7 @@
 #include "IDirectory.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "URL.h"
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
@@ -33,10 +32,7 @@ using namespace XFILE;
 IDirectory::IDirectory(void)
 {
   m_strFileMask = "";
-  m_allowPrompting = false;
-  m_cacheDirectory = DIR_CACHE_NEVER;
-  m_useFileDirectories = false;
-  m_extFileInfo = true;
+  m_flags = DIR_FLAG_DEFAULTS;
 }
 
 IDirectory::~IDirectory(void)
@@ -103,46 +99,12 @@ void IDirectory::SetMask(const CStdString& strMask)
 }
 
 /*!
- \brief Set whether the directory handlers can prompt the user.
- \param allowPrompting Set true to allow prompting to occur (default is false).
-
- Directory handlers should only prompt the user as a direct result of the
- users actions.
+ \brief Set the flags for this directory handler.
+ \param flags - \sa XFILE::DIR_FLAG for a description.
  */
-
-void IDirectory::SetAllowPrompting(bool allowPrompting)
+void IDirectory::SetFlags(int flags)
 {
-  m_allowPrompting = allowPrompting;
-}
-
-/*!
- \brief Set whether the directory should be cached by our directory cache.
- \param cacheDirectory Set DIR_CACHE_NEVER or DIR_CACHE_ALWAYS to enable or disable caching (default is DIR_CACHE_ONCE).
- */
-
-void IDirectory::SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory)
-{
-  m_cacheDirectory = cacheDirectory;
-}
-
-/*!
- \brief Set whether the directory should allow file directories.
- \param useFileDirectories Set true to enable file directories (default is true).
- */
-
-void IDirectory::SetUseFileDirectories(bool useFileDirectories)
-{
-  m_useFileDirectories = useFileDirectories;
-}
-
-/*!
- \brief Set whether the GetDirectory call will retrieve extended file information (stat calls for example).
- \param extFileInfo Set true to enable extended file info (default is true).
- */
-
-void IDirectory::SetExtFileInfo(bool extFileInfo)
-{
-  m_extFileInfo = extFileInfo;
+  m_flags = flags;
 }
 
 bool IDirectory::ProcessRequirements()
@@ -151,7 +113,7 @@ bool IDirectory::ProcessRequirements()
   if (type == "keyboard")
   {
     CStdString input;
-    if (CGUIDialogKeyboard::ShowAndGetInput(input, m_requirements["heading"], false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(input, m_requirements["heading"], false))
     {
       m_requirements["input"] = input;
       return true;

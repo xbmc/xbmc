@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,6 +36,7 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 : CGUITextureBase(posX, posY, width, height, texture, minWidth)
 #endif
 {
+  memset(m_col, 0, sizeof(m_col));
 }
 
 void CGUITextureGL::Begin(color_t color)
@@ -47,13 +47,11 @@ void CGUITextureGL::Begin(color_t color)
   m_col[3] = (GLubyte)GET_A(color);
 
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
-  glActiveTextureARB(GL_TEXTURE0_ARB);
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
 
-  glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
-  glEnable(GL_TEXTURE_2D);
+  texture->BindToUnit(0);
 
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
@@ -70,9 +68,7 @@ void CGUITextureGL::Begin(color_t color)
 
   if (m_diffuse.size())
   {
-    glActiveTextureARB(GL_TEXTURE1_ARB);
-    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
+    m_diffuse.m_textures[0]->BindToUnit(1);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
@@ -148,10 +144,8 @@ void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *tex
 {
   if (texture)
   {
-    glActiveTextureARB(GL_TEXTURE0_ARB);
     texture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
+    texture->BindToUnit(0);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);

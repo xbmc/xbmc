@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -58,17 +57,12 @@ namespace XFILE
     void Clear();
     void AddFile(const CStdString& strFile);
     bool FileExists(const CStdString& strPath, bool& bInCache);
-    void InitThumbCache();
-    void ClearThumbCache();
-    void InitMusicThumbCache();
-    void ClearMusicThumbCache();
 #ifdef _DEBUG
     void PrintStats() const;
 #endif
   protected:
     void InitCache(std::set<CStdString>& dirs);
     void ClearCache(std::set<CStdString>& dirs);
-    bool IsCacheDir(const CStdString &strPath) const;
     void CheckIfFull();
 
     std::map<CStdString, CDir*> m_cache;
@@ -77,10 +71,6 @@ namespace XFILE
     void Delete(iCache i);
 
     CCriticalSection m_cs;
-    std::set<CStdString> m_thumbDirs;
-    std::set<CStdString> m_musicThumbDirs;
-    int m_iThumbCacheRefCount;
-    int m_iMusicThumbCacheRefCount;
 
     unsigned int m_accessCounter;
 

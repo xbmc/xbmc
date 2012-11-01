@@ -1,7 +1,6 @@
 SRCS=GUIDialogMusicInfo.cpp \
      GUIDialogMusicOSD.cpp \
      GUIDialogMusicOverlay.cpp \
-     GUIDialogMusicScan.cpp \
      GUIDialogSongInfo.cpp \
      GUIDialogVisualisationPresetList.cpp \
 

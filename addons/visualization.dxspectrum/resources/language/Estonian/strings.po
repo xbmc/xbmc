@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:17+0000\n"
+"PO-Revision-Date: 2012-06-02 16:09+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Estonian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/et/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "Režiim"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Täidetud"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Sõrestik"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Punktid"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Riba kõrgus"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Väike"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "Vaikimisi"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "Suur"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Väga suur"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "Kiirus"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Väga aeglane"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Aeglane"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "Vaikimisi"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "Kiire"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Väga kiire"

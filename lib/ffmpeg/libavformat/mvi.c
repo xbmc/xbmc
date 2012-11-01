@@ -20,6 +20,7 @@
  */
 
 #include "avformat.h"
+#include "internal.h"
 
 #define MVI_FRAC_BITS 10
 
@@ -27,7 +28,7 @@
 #define MVI_VIDEO_STREAM_INDEX 1
 
 typedef struct MviDemuxContext {
-    unsigned int (*get_int)(ByteIOContext *);
+    unsigned int (*get_int)(AVIOContext *);
     uint32_t audio_data_size;
     uint64_t audio_size_counter;
     uint64_t audio_frame_size;
@@ -38,35 +39,35 @@ typedef struct MviDemuxContext {
 static int read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     MviDemuxContext *mvi = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     AVStream *ast, *vst;
     unsigned int version, frames_count, msecs_per_frame, player_version;
 
-    ast = av_new_stream(s, 0);
+    ast = avformat_new_stream(s, NULL);
     if (!ast)
         return AVERROR(ENOMEM);
 
-    vst = av_new_stream(s, 0);
+    vst = avformat_new_stream(s, NULL);
     if (!vst)
         return AVERROR(ENOMEM);
 
     vst->codec->extradata_size = 2;
     vst->codec->extradata = av_mallocz(2 + FF_INPUT_BUFFER_PADDING_SIZE);
 
-    version                  = get_byte(pb);
-    vst->codec->extradata[0] = get_byte(pb);
-    vst->codec->extradata[1] = get_byte(pb);
-    frames_count             = get_le32(pb);
-    msecs_per_frame          = get_le32(pb);
-    vst->codec->width        = get_le16(pb);
-    vst->codec->height       = get_le16(pb);
-    get_byte(pb);
-    ast->codec->sample_rate  = get_le16(pb);
-    mvi->audio_data_size     = get_le32(pb);
-    get_byte(pb);
-    player_version           = get_le32(pb);
-    get_le16(pb);
-    get_byte(pb);
+    version                  = avio_r8(pb);
+    vst->codec->extradata[0] = avio_r8(pb);
+    vst->codec->extradata[1] = avio_r8(pb);
+    frames_count             = avio_rl32(pb);
+    msecs_per_frame          = avio_rl32(pb);
+    vst->codec->width        = avio_rl16(pb);
+    vst->codec->height       = avio_rl16(pb);
+    avio_r8(pb);
+    ast->codec->sample_rate  = avio_rl16(pb);
+    mvi->audio_data_size     = avio_rl32(pb);
+    avio_r8(pb);
+    player_version           = avio_rl32(pb);
+    avio_rl16(pb);
+    avio_r8(pb);
 
     if (frames_count == 0 || mvi->audio_data_size == 0)
         return AVERROR_INVALIDDATA;
@@ -76,18 +77,18 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
         return AVERROR_INVALIDDATA;
     }
 
-    av_set_pts_info(ast, 64, 1, ast->codec->sample_rate);
+    avpriv_set_pts_info(ast, 64, 1, ast->codec->sample_rate);
     ast->codec->codec_type      = AVMEDIA_TYPE_AUDIO;
     ast->codec->codec_id        = CODEC_ID_PCM_U8;
     ast->codec->channels        = 1;
     ast->codec->bits_per_coded_sample = 8;
     ast->codec->bit_rate        = ast->codec->sample_rate * 8;
 
-    av_set_pts_info(vst, 64, msecs_per_frame, 1000000);
+    avpriv_set_pts_info(vst, 64, msecs_per_frame, 1000000);
     vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     vst->codec->codec_id   = CODEC_ID_MOTIONPIXELS;
 
-    mvi->get_int = (vst->codec->width * vst->codec->height < (1 << 16)) ? get_le16 : get_le24;
+    mvi->get_int = (vst->codec->width * vst->codec->height < (1 << 16)) ? avio_rl16 : avio_rl24;
 
     mvi->audio_frame_size   = ((uint64_t)mvi->audio_data_size << MVI_FRAC_BITS) / frames_count;
     mvi->audio_size_counter = (ast->codec->sample_rate * 830 / mvi->audio_frame_size - 1) * mvi->audio_frame_size;
@@ -100,7 +101,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     int ret, count;
     MviDemuxContext *mvi = s->priv_data;
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
 
     if (mvi->video_frame_size == 0) {
         mvi->video_frame_size = (mvi->get_int)(pb);
@@ -124,11 +125,10 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
 }
 
 AVInputFormat ff_mvi_demuxer = {
-    "mvi",
-    NULL_IF_CONFIG_SMALL("Motion Pixels MVI format"),
-    sizeof(MviDemuxContext),
-    NULL,
-    read_header,
-    read_packet,
+    .name           = "mvi",
+    .long_name      = NULL_IF_CONFIG_SMALL("Motion Pixels MVI format"),
+    .priv_data_size = sizeof(MviDemuxContext),
+    .read_header    = read_header,
+    .read_packet    = read_packet,
     .extensions = "mvi"
 };

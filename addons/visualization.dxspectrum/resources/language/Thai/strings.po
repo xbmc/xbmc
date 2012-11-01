@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: DirectX Spectrum
+# Addon id: visualization.dxspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:17+0000\n"
+"PO-Revision-Date: 2012-06-25 10:13+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Thai (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/th/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "โหมด"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Points"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "เล็ก"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "ค่าพื้นฐาน"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "ใหญ่"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "ใหญ่มาก"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "ความเร็ว"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "ช้ามาก"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "ช้า"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "ค่าพื้นฐาน"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "เร็ว"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "เร็วมาก"

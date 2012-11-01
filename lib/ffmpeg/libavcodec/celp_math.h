@@ -64,7 +64,17 @@ static inline int bidir_sal(int value, int offset)
 }
 
 /**
- * returns the dot product.
+ * returns the dot product of 2 int16_t vectors.
+ * @param a input data array
+ * @param b input data array
+ * @param length number of elements
+ *
+ * @return dot product = sum of elementwise products
+ */
+int64_t ff_dot_product(const int16_t *a, const int16_t *b, int length);
+
+/**
+ * Return the dot product.
  * @param a input data array
  * @param b input data array
  * @param length number of elements

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDInputStreamFile.h"
 #include "filesystem/File.h"
+#include "filesystem/IFile.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
@@ -92,14 +92,14 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
   return (int)(ret & 0xFFFFFFFF);
 }
 
-__int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamFile::Seek(int64_t offset, int whence)
 {
   if(!m_pFile) return -1;
 
   if(whence == SEEK_POSSIBLE)
     return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
-  __int64 ret = m_pFile->Seek(offset, whence);
+  int64_t ret = m_pFile->Seek(offset, whence);
 
   /* if we succeed, we are not eof anymore */
   if( ret >= 0 ) m_eof = false;
@@ -107,34 +107,19 @@ __int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
   return ret;
 }
 
-__int64 CDVDInputStreamFile::GetLength()
+int64_t CDVDInputStreamFile::GetLength()
 {
   if (m_pFile)
     return m_pFile->GetLength();
   return 0;
 }
 
-__int64 CDVDInputStreamFile::GetCachedBytes()
+bool CDVDInputStreamFile::GetCacheStatus(XFILE::SCacheStatus *status)
 {
-  SCacheStatus status;
-  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
-    return status.forward;
+  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, status) >= 0)
+    return true;
   else
-    return -1;
-}
-
-unsigned CDVDInputStreamFile::GetReadRate()
-{
-  SCacheStatus status;
-  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
-  {
-    if(status.full)
-      return (unsigned)-1;
-    else
-      return status.currate;
-  }
-  else
-    return (unsigned)-1;
+    return false;
 }
 
 BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const

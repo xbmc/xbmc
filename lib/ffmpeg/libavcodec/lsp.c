@@ -74,9 +74,9 @@ void ff_acelp_lsf2lspd(double *lsp, const float *lsf, int lp_order)
 }
 
 /**
- * \brief decodes polynomial coefficients from LSP
- * \param f [out] decoded polynomial coefficients (-0x20000000 <= (3.22) <= 0x1fffffff)
- * \param lsp LSP coefficients (-0x8000 <= (0.15) <= 0x7fff)
+ * @brief decodes polynomial coefficients from LSP
+ * @param[out] f decoded polynomial coefficients (-0x20000000 <= (3.22) <= 0x1fffffff)
+ * @param lsp LSP coefficients (-0x8000 <= (0.15) <= 0x7fff)
  */
 static void lsp2poly(int* f, const int16_t* lsp, int lp_half_order)
 {
@@ -120,8 +120,8 @@ void ff_acelp_lsp2lpc(int16_t* lp, const int16_t* lsp, int lp_half_order)
 void ff_amrwb_lsp2lpc(const double *lsp, float *lp, int lp_order)
 {
     int lp_half_order = lp_order >> 1;
-    double buf[lp_half_order + 1];
-    double pa[lp_half_order + 1];
+    double buf[MAX_LP_HALF_ORDER + 1];
+    double pa[MAX_LP_HALF_ORDER + 1];
     double *qa = buf + 1;
     int i,j;
 

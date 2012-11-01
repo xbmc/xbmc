@@ -32,7 +32,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "IFile.h"
+#include "File.h"
 #include "FileFactory.h"
 #include "utils/log.h"
 #include "Util.h"
@@ -44,6 +44,12 @@
 #include "NptInterfaces.h"
 #include "NptStrings.h"
 #include "NptDebug.h"
+
+#ifdef TARGET_WINDOWS
+#define S_IWUSR _S_IWRITE
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
 
 using namespace XFILE;
 
@@ -315,13 +321,6 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
 
         bool result;
         CURL* url = new CURL(name);
-        /* path is not fully qualified so assume it's relative to home dir */
-        if (url->GetFileName().IsEmpty()) {
-            delete url;
-            CStdString homepath;
-            CUtil::GetHomePath(homepath);
-            url = new CURL(homepath + "/" + name);
-        }
 
         // compute mode
         if (mode & NPT_FILE_OPEN_MODE_WRITE) {
@@ -401,6 +400,27 @@ NPT_XbmcFile::GetOutputStream(NPT_OutputStreamReference& stream)
     return NPT_SUCCESS;
 }
 
+static NPT_Result
+MapErrno(int err) {
+    switch (err) {
+      case EACCES:       return NPT_ERROR_PERMISSION_DENIED;
+      case EPERM:        return NPT_ERROR_PERMISSION_DENIED;
+      case ENOENT:       return NPT_ERROR_NO_SUCH_FILE;
+      case ENAMETOOLONG: return NPT_ERROR_INVALID_PARAMETERS;
+      case EBUSY:        return NPT_ERROR_FILE_BUSY;
+      case EROFS:        return NPT_ERROR_FILE_NOT_WRITABLE;
+      case ENOTDIR:      return NPT_ERROR_FILE_NOT_DIRECTORY;
+      case EEXIST:       return NPT_ERROR_FILE_ALREADY_EXISTS;
+      case ENOSPC:       return NPT_ERROR_FILE_NOT_ENOUGH_SPACE;
+      case ENOTEMPTY:    return NPT_ERROR_DIRECTORY_NOT_EMPTY;
+      default:           return NPT_ERROR_ERRNO(err);
+    }
+}
+/*----------------------------------------------------------------------
+|   NPT_FilePath::Separator
++---------------------------------------------------------------------*/
+const char* const NPT_FilePath::Separator = "/";
+
 /*----------------------------------------------------------------------
 |   NPT_File::NPT_File
 +---------------------------------------------------------------------*/
@@ -421,5 +441,108 @@ NPT_File::operator=(const NPT_File& file)
         m_Delegate = new NPT_XbmcFile(*this);
     }
     return *this;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::GetRoots
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::GetRoots(NPT_List<NPT_String>& roots)
+{
+    return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::CreateDir
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::CreateDir(const char* path)
+{
+    return NPT_ERROR_PERMISSION_DENIED;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::RemoveFile
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::RemoveFile(const char* path)
+{
+    return NPT_ERROR_PERMISSION_DENIED;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::RemoveDir
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::RemoveDir(const char* path)
+{
+    return NPT_ERROR_PERMISSION_DENIED;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::Rename
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::Rename(const char* from_path, const char* to_path)
+{
+    return NPT_ERROR_PERMISSION_DENIED;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::ListDir
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::ListDir(const char*           path,
+                  NPT_List<NPT_String>& entries,
+                  NPT_Ordinal           start /* = 0 */,
+                  NPT_Cardinal          max   /* = 0 */)
+{
+    return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::GetWorkingDir
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::GetWorkingDir(NPT_String& path)
+{
+    return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::GetInfo
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
+{
+    struct __stat64 stat_buffer = {0};
+    int result;
+
+    if (!info)
+      return NPT_FAILURE;
+
+    NPT_SetMemory(info, 0, sizeof(*info));
+
+    result = CFile::Stat(path, &stat_buffer);
+    if (result !=0) return MapErrno(errno);
+    if (info)
+    {
+      info->m_Size = stat_buffer.st_size;
+      if (S_ISREG(stat_buffer.st_mode)) {
+          info->m_Type = NPT_FileInfo::FILE_TYPE_REGULAR;
+      } else if (S_ISDIR(stat_buffer.st_mode)) {
+          info->m_Type = NPT_FileInfo::FILE_TYPE_DIRECTORY;
+      } else {
+          info->m_Type = NPT_FileInfo::FILE_TYPE_OTHER;
+      }
+      info->m_AttributesMask &= NPT_FILE_ATTRIBUTE_READ_ONLY;
+      if ((stat_buffer.st_mode & S_IWUSR) == 0) {
+          info->m_Attributes &= NPT_FILE_ATTRIBUTE_READ_ONLY;
+      }
+      info->m_CreationTime.SetSeconds(0);
+      info->m_ModificationTime.SetSeconds(stat_buffer.st_mtime);
+    }
+
+    return NPT_SUCCESS;
 }
 

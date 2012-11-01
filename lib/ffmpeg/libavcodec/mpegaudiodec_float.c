@@ -22,147 +22,85 @@
 #define CONFIG_FLOAT 1
 #include "mpegaudiodec.c"
 
-void ff_mpa_synth_filter_float(MPADecodeContext *s, float *synth_buf_ptr,
-                               int *synth_buf_offset,
-                               float *window, int *dither_state,
-                               float *samples, int incr,
-                               float sb_samples[SBLIMIT])
-{
-    float *synth_buf;
-    int offset;
-
-    offset = *synth_buf_offset;
-    synth_buf = synth_buf_ptr + offset;
-
-    s->dct.dct32(synth_buf, sb_samples);
-    s->apply_window_mp3(synth_buf, window, dither_state, samples, incr);
-
-    offset = (offset - 32) & 511;
-    *synth_buf_offset = offset;
-}
-
-static void compute_antialias_float(MPADecodeContext *s,
-                              GranuleDef *g)
-{
-    float *ptr;
-    int n, i;
-
-    /* we antialias only "long" bands */
-    if (g->block_type == 2) {
-        if (!g->switch_point)
-            return;
-        /* XXX: check this for 8000Hz case */
-        n = 1;
-    } else {
-        n = SBLIMIT - 1;
-    }
-
-    ptr = g->sb_hybrid + 18;
-    for(i = n;i > 0;i--) {
-        float tmp0, tmp1;
-        float *csa = &csa_table_float[0][0];
-#define FLOAT_AA(j)\
-        tmp0= ptr[-1-j];\
-        tmp1= ptr[   j];\
-        ptr[-1-j] = tmp0 * csa[0+4*j] - tmp1 * csa[1+4*j];\
-        ptr[   j] = tmp0 * csa[1+4*j] + tmp1 * csa[0+4*j];
-
-        FLOAT_AA(0)
-        FLOAT_AA(1)
-        FLOAT_AA(2)
-        FLOAT_AA(3)
-        FLOAT_AA(4)
-        FLOAT_AA(5)
-        FLOAT_AA(6)
-        FLOAT_AA(7)
-
-        ptr += 18;
-    }
-}
-
-static av_cold int decode_end(AVCodecContext * avctx)
-{
-    MPADecodeContext *s = avctx->priv_data;
-    ff_dct_end(&s->dct);
-    return 0;
-}
-
 #if CONFIG_MP1FLOAT_DECODER
-AVCodec ff_mp1float_decoder =
-{
-    "mp1float",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_MP1,
-    sizeof(MPADecodeContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP1 (MPEG audio layer 1)"),
+AVCodec ff_mp1float_decoder = {
+    .name           = "mp1float",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_MP1,
+    .priv_data_size = sizeof(MPADecodeContext),
+    .init           = decode_init,
+    .decode         = decode_frame,
+#if FF_API_PARSE_FRAME
+    .capabilities   = CODEC_CAP_PARSE_ONLY | CODEC_CAP_DR1,
+#else
+    .capabilities   = CODEC_CAP_DR1,
+#endif
+    .flush          = flush,
+    .long_name      = NULL_IF_CONFIG_SMALL("MP1 (MPEG audio layer 1)"),
 };
 #endif
 #if CONFIG_MP2FLOAT_DECODER
-AVCodec ff_mp2float_decoder =
-{
-    "mp2float",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_MP2,
-    sizeof(MPADecodeContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
+AVCodec ff_mp2float_decoder = {
+    .name           = "mp2float",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_MP2,
+    .priv_data_size = sizeof(MPADecodeContext),
+    .init           = decode_init,
+    .decode         = decode_frame,
+#if FF_API_PARSE_FRAME
+    .capabilities   = CODEC_CAP_PARSE_ONLY | CODEC_CAP_DR1,
+#else
+    .capabilities   = CODEC_CAP_DR1,
+#endif
+    .flush          = flush,
+    .long_name      = NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
 };
 #endif
 #if CONFIG_MP3FLOAT_DECODER
-AVCodec ff_mp3float_decoder =
-{
-    "mp3float",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_MP3,
-    sizeof(MPADecodeContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP3 (MPEG audio layer 3)"),
+AVCodec ff_mp3float_decoder = {
+    .name           = "mp3float",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_MP3,
+    .priv_data_size = sizeof(MPADecodeContext),
+    .init           = decode_init,
+    .decode         = decode_frame,
+#if FF_API_PARSE_FRAME
+    .capabilities   = CODEC_CAP_PARSE_ONLY | CODEC_CAP_DR1,
+#else
+    .capabilities   = CODEC_CAP_DR1,
+#endif
+    .flush          = flush,
+    .long_name      = NULL_IF_CONFIG_SMALL("MP3 (MPEG audio layer 3)"),
 };
 #endif
 #if CONFIG_MP3ADUFLOAT_DECODER
-AVCodec ff_mp3adufloat_decoder =
-{
-    "mp3adufloat",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_MP3ADU,
-    sizeof(MPADecodeContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame_adu,
-    CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("ADU (Application Data Unit) MP3 (MPEG audio layer 3)"),
+AVCodec ff_mp3adufloat_decoder = {
+    .name           = "mp3adufloat",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_MP3ADU,
+    .priv_data_size = sizeof(MPADecodeContext),
+    .init           = decode_init,
+    .decode         = decode_frame_adu,
+#if FF_API_PARSE_FRAME
+    .capabilities   = CODEC_CAP_PARSE_ONLY | CODEC_CAP_DR1,
+#else
+    .capabilities   = CODEC_CAP_DR1,
+#endif
+    .flush          = flush,
+    .long_name      = NULL_IF_CONFIG_SMALL("ADU (Application Data Unit) MP3 (MPEG audio layer 3)"),
 };
 #endif
 #if CONFIG_MP3ON4FLOAT_DECODER
-AVCodec ff_mp3on4float_decoder =
-{
-    "mp3on4float",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_MP3ON4,
-    sizeof(MP3On4DecodeContext),
-    decode_init_mp3on4,
-    NULL,
-    decode_close_mp3on4,
-    decode_frame_mp3on4,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP3onMP4"),
+AVCodec ff_mp3on4float_decoder = {
+    .name           = "mp3on4float",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_MP3ON4,
+    .priv_data_size = sizeof(MP3On4DecodeContext),
+    .init           = decode_init_mp3on4,
+    .close          = decode_close_mp3on4,
+    .decode         = decode_frame_mp3on4,
+    .capabilities   = CODEC_CAP_DR1,
+    .flush          = flush_mp3on4,
+    .long_name      = NULL_IF_CONFIG_SMALL("MP3onMP4"),
 };
 #endif

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +32,7 @@ CArchive::CArchive(CFile* pFile, int mode)
   m_iMode = mode;
 
   m_pBuffer = new BYTE[BUFFER_MAX];
-  memset(m_pBuffer, 0, sizeof(m_pBuffer));
+  memset(m_pBuffer, 0, BUFFER_MAX);
 
   m_BufferPos = 0;
 }
@@ -156,6 +155,30 @@ CArchive& CArchive::operator<<(char c)
   return *this;
 }
 
+CArchive& CArchive::operator<<(const std::string& str)
+{
+  *this << (int)str.size();
+
+  int size = str.size();
+  if (m_BufferPos + size >= BUFFER_MAX)
+    FlushBuffer();
+
+  int iBufferMaxParts=size/BUFFER_MAX;
+  for (int i=0; i<iBufferMaxParts; i++)
+  {
+    memcpy(&m_pBuffer[m_BufferPos], str.c_str()+(i*BUFFER_MAX), BUFFER_MAX);
+    m_BufferPos+=BUFFER_MAX;
+    FlushBuffer();
+  }
+
+  int iPos=iBufferMaxParts*BUFFER_MAX;
+  int iSizeLeft=size-iPos;
+  memcpy(&m_pBuffer[m_BufferPos], str.c_str()+iPos, iSizeLeft);
+  m_BufferPos+=iSizeLeft;
+
+  return *this;
+}
+
 CArchive& CArchive::operator<<(const CStdString& str)
 {
   *this << str.GetLength();
@@ -184,7 +207,7 @@ CArchive& CArchive::operator<<(const CStdStringW& str)
 {
   *this << str.GetLength();
 
-  int size = str.GetLength();
+  int size = str.GetLength() * sizeof(wchar_t);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -238,7 +261,7 @@ CArchive& CArchive::operator<<(const CVariant& variant)
     *this << variant.asBoolean();
     break;
   case CVariant::VariantTypeString:
-    *this << CStdString(variant.asString());
+    *this << variant.asString();
     break;
   case CVariant::VariantTypeDouble:
     *this << variant.asDouble();
@@ -252,7 +275,7 @@ CArchive& CArchive::operator<<(const CVariant& variant)
     *this << variant.size();
     for (CVariant::const_iterator_map itr = variant.begin_map(); itr != variant.end_map(); itr++)
     {
-      *this << CStdString(itr->first);
+      *this << itr->first;
       *this << itr->second;
     }
     break;
@@ -261,6 +284,24 @@ CArchive& CArchive::operator<<(const CVariant& variant)
   default:
     break;
   }
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(const std::vector<std::string>& strArray)
+{
+  *this << (unsigned int)strArray.size();
+  for (unsigned int index = 0; index < strArray.size(); index++)
+    *this << strArray.at(index);
+
+  return *this;
+}
+
+CArchive& CArchive::operator<<(const std::vector<int>& iArray)
+{
+  *this << (unsigned int)iArray.size();
+  for (unsigned int index = 0; index < iArray.size(); index++)
+    *this << iArray.at(index);
 
   return *this;
 }
@@ -321,6 +362,19 @@ CArchive& CArchive::operator>>(char& c)
   return *this;
 }
 
+CArchive& CArchive::operator>>(std::string& str)
+{
+  int iLength = 0;
+  *this >> iLength;
+
+  char *s = new char[iLength];
+  m_pFile->Read(s, iLength);
+  str.assign(s, iLength);
+  delete[] s;
+
+  return *this;
+}
+
 CArchive& CArchive::operator>>(CStdString& str)
 {
   int iLength = 0;
@@ -338,7 +392,7 @@ CArchive& CArchive::operator>>(CStdStringW& str)
   int iLength = 0;
   *this >> iLength;
 
-  m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength);
+  m_pFile->Read((void*)str.GetBufferSetLength(iLength), iLength * sizeof(wchar_t));
   str.ReleaseBuffer();
 
 
@@ -390,7 +444,7 @@ CArchive& CArchive::operator>>(CVariant& variant)
   }
   case CVariant::VariantTypeString:
   {
-    CStdString value;
+    std::string value;
     *this >> value;
     variant = value;
     break;
@@ -420,7 +474,7 @@ CArchive& CArchive::operator>>(CVariant& variant)
     *this >> size;
     for (; size > 0; size--)
     {
-      CStdString name;
+      std::string name;
       CVariant value;
       *this >> name;
       *this >> value;
@@ -432,6 +486,36 @@ CArchive& CArchive::operator>>(CVariant& variant)
   case CVariant::VariantTypeConstNull:
   default:
     break;
+  }
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(std::vector<std::string>& strArray)
+{
+  int size;
+  *this >> size;
+  strArray.clear();
+  for (int index = 0; index < size; index++)
+  {
+    std::string str;
+    *this >> str;
+    strArray.push_back(str);
+  }
+
+  return *this;
+}
+
+CArchive& CArchive::operator>>(std::vector<int>& iArray)
+{
+  int size;
+  *this >> size;
+  iArray.clear();
+  for (int index = 0; index < size; index++)
+  {
+    int i;
+    *this >> i;
+    iArray.push_back(i);
   }
 
   return *this;

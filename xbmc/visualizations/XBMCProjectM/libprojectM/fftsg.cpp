@@ -782,6 +782,16 @@ void makect(int nc, int *ip, double *c)
 #include <stdio.h>
 #include <stdlib.h>
 #define cdft_thread_t HANDLE
+#ifdef __FreeBSD__
+#define cdft_thread_create(thp,func,argp) { \
+    LONG thid; \
+    *(thp) = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) func, (LPVOID) argp, 0, &thid); \
+    if (*(thp) == 0) { \
+        fprintf(stderr, "cdft thread error\n"); \
+        exit(1); \
+    } \
+}
+#else
 #define cdft_thread_create(thp,func,argp) { \
     DWORD thid; \
     *(thp) = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) func, (LPVOID) argp, 0, &thid); \
@@ -790,6 +800,7 @@ void makect(int nc, int *ip, double *c)
         exit(1); \
     } \
 }
+#endif
 #define cdft_thread_wait(th) { \
     WaitForSingleObject(th, INFINITE); \
     CloseHandle(th); \

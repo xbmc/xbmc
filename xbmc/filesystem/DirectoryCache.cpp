@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -50,8 +49,6 @@ void CDirectoryCache::CDir::SetLastAccess(unsigned int &accessCounter)
 
 CDirectoryCache::CDirectoryCache(void)
 {
-  m_iThumbCacheRefCount = 0;
-  m_iMusicThumbCacheRefCount = 0;
   m_accessCounter = 0;
 #ifdef _DEBUG
   m_cacheHits = 0;
@@ -210,17 +207,12 @@ bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 
 void CDirectoryCache::Clear()
 {
-  // this routine clears everything except things we always cache
+  // this routine clears everything
   CSingleLock lock (m_cs);
 
   iCache i = m_cache.begin();
   while (i != m_cache.end() )
-  {
-    if (!IsCacheDir(i->first))
-      Delete(i++);
-    else
-      i++;
-  }
+    Delete(i++);
 }
 
 void CDirectoryCache::InitCache(set<CStdString>& dirs)
@@ -230,7 +222,7 @@ void CDirectoryCache::InitCache(set<CStdString>& dirs)
   {
     const CStdString& strDir = *it;
     CFileItemList items;
-    CDirectory::GetDirectory(strDir, items, "", false);
+    CDirectory::GetDirectory(strDir, items, "", DIR_FLAG_NO_FILE_DIRS);
     items.Clear();
   }
 }
@@ -247,98 +239,6 @@ void CDirectoryCache::ClearCache(set<CStdString>& dirs)
   }
 }
 
-bool CDirectoryCache::IsCacheDir(const CStdString &strPath) const
-{
-  if (m_thumbDirs.find(strPath) == m_thumbDirs.end())
-    return false;
-  if (m_musicThumbDirs.find(strPath) == m_musicThumbDirs.end())
-    return false;
-
-  return true;
-}
-
-void CDirectoryCache::InitThumbCache()
-{
-  CSingleLock lock (m_cs);
-
-  if (m_iThumbCacheRefCount > 0)
-  {
-    m_iThumbCacheRefCount++;
-    return ;
-  }
-  m_iThumbCacheRefCount++;
-
-  // Init video, pictures cache directories
-  if (m_thumbDirs.size() == 0)
-  {
-    // thumbnails directories
-/*    m_thumbDirs.insert(g_settings.GetThumbnailsFolder());
-    for (unsigned int hex=0; hex < 16; hex++)
-    {
-      CStdString strHex;
-      strHex.Format("\\%x",hex);
-      m_thumbDirs.insert(g_settings.GetThumbnailsFolder() + strHex);
-    }*/
-  }
-
-  InitCache(m_thumbDirs);
-}
-
-void CDirectoryCache::ClearThumbCache()
-{
-  CSingleLock lock (m_cs);
-
-  if (m_iThumbCacheRefCount > 1)
-  {
-    m_iThumbCacheRefCount--;
-    return ;
-  }
-
-  m_iThumbCacheRefCount--;
-  ClearCache(m_thumbDirs);
-}
-
-void CDirectoryCache::InitMusicThumbCache()
-{
-  CSingleLock lock (m_cs);
-
-  if (m_iMusicThumbCacheRefCount > 0)
-  {
-    m_iMusicThumbCacheRefCount++;
-    return ;
-  }
-  m_iMusicThumbCacheRefCount++;
-
-  // Init music cache directories
-  if (m_musicThumbDirs.size() == 0)
-  {
-    // music thumbnails directories
-    for (int i = 0; i < 16; i++)
-    {
-      CStdString hex, folder;
-      hex.Format("%x", i);
-      URIUtils::AddFileToFolder(g_settings.GetMusicThumbFolder(), hex, folder);
-      m_musicThumbDirs.insert(folder);
-    }
-  }
-
-  InitCache(m_musicThumbDirs);
-}
-
-void CDirectoryCache::ClearMusicThumbCache()
-{
-  CSingleLock lock (m_cs);
-
-  if (m_iMusicThumbCacheRefCount > 1)
-  {
-    m_iMusicThumbCacheRefCount--;
-    return ;
-  }
-
-  m_iMusicThumbCacheRefCount--;
-  ClearCache(m_musicThumbDirs);
-}
-
 void CDirectoryCache::CheckIfFull()
 {
   CSingleLock lock (m_cs);
@@ -350,7 +250,7 @@ void CDirectoryCache::CheckIfFull()
   for (iCache i = m_cache.begin(); i != m_cache.end(); i++)
   {
     // ensure dirs that are always cached aren't cleared
-    if (!IsCacheDir(i->first) && i->second->m_cacheType != DIR_CACHE_ALWAYS)
+    if (i->second->m_cacheType != DIR_CACHE_ALWAYS)
     {
       if (lastAccessed == m_cache.end() || i->second->GetLastAccess() < lastAccessed->second->GetLastAccess())
         lastAccessed = i;
@@ -379,13 +279,10 @@ void CDirectoryCache::PrintStats() const
   unsigned int numDirs = 0;
   for (ciCache i = m_cache.begin(); i != m_cache.end(); i++)
   {
-    if (!IsCacheDir(i->first))
-    {
-      CDir *dir = i->second;
-      oldest = min(oldest, dir->GetLastAccess());
-      numItems += dir->m_Items->Size();
-      numDirs++;
-    }
+    CDir *dir = i->second;
+    oldest = min(oldest, dir->GetLastAccess());
+    numItems += dir->m_Items->Size();
+    numDirs++;
   }
   CLog::Log(LOGDEBUG, "%s - %u folders cached, with %u items total.  Oldest is %u, current is %u", __FUNCTION__, numDirs, numItems, oldest, m_accessCounter);
 }

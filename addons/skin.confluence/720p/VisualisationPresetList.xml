@@ -61,7 +61,7 @@
 				<width>760</width>
 				<align>center</align>
 				<label>13389</label>
-				<font>font13caps</font>
+				<font>font13</font>
 			</control>
 			<control type="list" id="2">
 				<posx>40</posx>

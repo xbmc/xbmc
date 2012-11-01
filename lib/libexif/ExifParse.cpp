@@ -33,6 +33,7 @@
 #include <windows.h>
 #else
 #include <memory.h>
+#include <cstring>
 #define min(a,b) (a)>(b)?(b):(a)
 #define max(a,b) (a)<(b)?(b):(a)
 #endif
@@ -413,7 +414,13 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     // Extract useful components of tag
     switch(Tag)
     {
-//      case TAG_DESCRIPTION:       strncpy(m_ExifInfo->Description, ValuePtr, 5);    break;
+      case TAG_DESCRIPTION:
+      {
+        int length = max(ByteCount, 0);
+        length = min(length, MAX_COMMENT);
+        strncpy(m_ExifInfo->Description, (char *)ValuePtr, length);
+        break;
+      }
       case TAG_MAKE:              strncpy(m_ExifInfo->CameraMake, (char *)ValuePtr, 32);    break;
       case TAG_MODEL:             strncpy(m_ExifInfo->CameraModel, (char *)ValuePtr, 40);    break;
 //      case TAG_SOFTWARE:          strncpy(m_ExifInfo->Software, ValuePtr, 5);    break;
@@ -444,11 +451,32 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
 
       case TAG_USERCOMMENT:
       {
-        const int EXIF_COMMENT_HDR_LENGTH = 8;        // All comment tags have 8 bytes of header info
-        int length = max(ByteCount - EXIF_COMMENT_HDR_LENGTH, 0);
-        length = min(length, 2000);
-        strncpy(m_ExifInfo->Comments, (char *)ValuePtr+EXIF_COMMENT_HDR_LENGTH, length);
-//        FixComment(comment);                          // Ensure comment is printable
+        // The UserComment allows comments without the charset limitations of ImageDescription.
+        // Therefore the UserComment field is prefixed by a CharacterCode field (8 Byte):
+        //  - ASCII:         'ASCII\0\0\0'
+        //  - Unicode:       'UNICODE\0'
+        //  - JIS X208-1990: 'JIS\0\0\0\0\0'
+        //  - Unknown:       '\0\0\0\0\0\0\0\0' (application specific)
+
+        m_ExifInfo->CommentsCharset = EXIF_COMMENT_CHARSET_UNKNOWN;
+
+        const int EXIF_COMMENT_CHARSET_LENGTH = 8;
+        if (ByteCount >= EXIF_COMMENT_CHARSET_LENGTH)
+        {
+          // As some implementations use spaces instead of \0 for the padding,
+          // we're not so strict and check only the prefix.
+          if (memcmp(ValuePtr, "ASCII", 5) == 0)
+            m_ExifInfo->CommentsCharset = EXIF_COMMENT_CHARSET_ASCII;
+          else if (memcmp(ValuePtr, "UNICODE", 7) == 0)
+            m_ExifInfo->CommentsCharset = EXIF_COMMENT_CHARSET_UNICODE;
+          else if (memcmp(ValuePtr, "JIS", 3) == 0)
+            m_ExifInfo->CommentsCharset = EXIF_COMMENT_CHARSET_JIS;
+
+          int length = ByteCount - EXIF_COMMENT_CHARSET_LENGTH;
+          length = min(length, MAX_COMMENT);
+          memcpy(m_ExifInfo->Comments, ValuePtr + EXIF_COMMENT_CHARSET_LENGTH, length);
+//          FixComment(comment);                          // Ensure comment is printable
+        }
       }
       break;
 

@@ -111,6 +111,7 @@ main(int argc, char**)
             printf("    netmask             = ");
             printf("%s\n", nwifaddr->GetNetMask().ToString().GetChars());
             ++nwifaddr;
+            ++addr_index;
         }
         
         ++iface;

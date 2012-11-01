@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -36,6 +35,22 @@ public:
 
   CStdString GetGuiCharSet() const;
   CStdString GetSubtitleCharSet() const;
+
+  // three char language code (not win32 specific)
+  const CStdString& GetLanguageCode() const { return m_languageCodeGeneral; }
+
+  const CStdString& GetAudioLanguage() const;
+  // language can either be a two char language code as defined in ISO639
+  // or a three char language code
+  // or a language name in english (as used by XBMC)
+  void SetAudioLanguage(const CStdString &language);
+  
+  // three char language code (not win32 specific)
+  const CStdString& GetSubtitleLanguage() const;
+  // language can either be a two char language code as defined in ISO639
+  // or a three char language code
+  // or a language name in english (as used by XBMC)
+  void SetSubtitleLanguage(const CStdString &language);
 
   const CStdString& GetDVDMenuLanguage() const;
   const CStdString& GetDVDAudioLanguage() const;
@@ -141,6 +156,11 @@ protected:
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
+
+  CStdString m_audioLanguage;
+  CStdString m_subtitleLanguage;
+  // this is the general (not win32-specific) three char language code
+  CStdString m_languageCodeGeneral;
 };
 
 

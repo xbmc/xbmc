@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,8 +24,12 @@
 #include "threads/Helpers.h"
 
 #include <pthread.h>
-#include <sys/time.h>
-#include <assert.h>
+
+#ifdef TARGET_DARWIN
+  #include <sys/time.h> //for gettimeofday
+#else
+  #include <time.h> //for clock_gettime
+#endif
 
 namespace XbmcThreads
 {
@@ -59,18 +62,21 @@ namespace XbmcThreads
 
     inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
     { 
-      struct timeval tv;
       struct timespec ts;
 
-      gettimeofday(&tv,NULL);
+#ifdef TARGET_DARWIN
+      struct timeval tv;
+      gettimeofday(&tv, NULL);
+      ts.tv_nsec = tv.tv_usec * 1000;
+      ts.tv_sec  = tv.tv_sec;
+#else
+      clock_gettime(CLOCK_REALTIME, &ts);
+#endif
 
-      milliseconds += tv.tv_usec / 1000; // move the usecs onto milliseconds
+      ts.tv_nsec += milliseconds % 1000 * 1000000;
+      ts.tv_sec  += milliseconds / 1000 + ts.tv_nsec / 1000000000;
+      ts.tv_nsec %= 1000000000;
 
-      time_t tsecs = (time_t)(milliseconds/1000); // temporary used for assert
-      assert(tsecs >= (time_t)0);
-
-      ts.tv_sec = tv.tv_sec + tsecs;
-      ts.tv_nsec = (long)((milliseconds % (unsigned long)1000) * (unsigned long)1000000);
       return (pthread_cond_timedwait(&cond,&lock.get_underlying().mutex,&ts) == 0);
     }
 

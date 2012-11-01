@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,14 +14,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "IDirectory.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "utils/XBMCTinyXML.h"
 #include "threads/Thread.h"
 
@@ -62,7 +61,7 @@ protected:
   bool m_Downloaded;
   CXBMCTinyXML m_xmlDoc;
 
-  XFILE::CFileCurl m_http;
+  XFILE::CCurlFile m_http;
 
   CStdString m_objtype;
   CStdString m_objname;

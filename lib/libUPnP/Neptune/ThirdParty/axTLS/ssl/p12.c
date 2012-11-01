@@ -62,7 +62,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
+#include "os_port.h"
 #include "ssl.h"
 
 /* all commented out if not used */
@@ -233,15 +233,14 @@ static int p8_decrypt(const char *uni_pass, int uni_pass_len,
 int pkcs12_decode(SSL_CTX *ssl_ctx, SSLObjLoader *ssl_obj, const char *password)
 {
     uint8_t *buf = ssl_obj->buf;
-    int all_ok = 0, len, iterations, auth_safes_start, 
+    int len, iterations, auth_safes_start, 
               auth_safes_end, auth_safes_len, key_offset, offset = 0;
     int all_certs = 0;
     uint8_t *version = NULL, *auth_safes = NULL, *cert, *orig_mac;
     uint8_t key[SHA1_SIZE];
     uint8_t mac[SHA1_SIZE];
     const uint8_t *salt;
-    int uni_pass_len, ret;
-    int error_code = SSL_ERROR_NOT_SUPPORTED;
+    int uni_pass_len, ret = SSL_OK;
     char *uni_pass = make_uni_pass(password, &uni_pass_len);
     static const uint8_t pkcs_data[] = /* pkc7 data */
         { 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07, 0x01 };
@@ -260,7 +259,7 @@ int pkcs12_decode(SSL_CTX *ssl_ctx, SSLObjLoader *ssl_obj, const char *password)
 
     if (asn1_get_int(buf, &offset, &version) < 0 || *version != 3)
     {
-        error_code = SSL_ERROR_INVALID_VERSION;
+        ret = SSL_ERROR_INVALID_VERSION;
         goto error;
     }
 
@@ -414,17 +413,15 @@ int pkcs12_decode(SSL_CTX *ssl_ctx, SSLObjLoader *ssl_obj, const char *password)
 
     if (memcmp(mac, orig_mac, SHA1_SIZE))
     {
-        error_code = SSL_ERROR_INVALID_HMAC;                  
+        ret = SSL_ERROR_INVALID_HMAC;                  
         goto error;
     }
-
-    all_ok = 1;
 
 error:
     free(version);
     free(uni_pass);
     free(auth_safes);
-    return all_ok ? SSL_OK : error_code;
+    return ret;
 }
 
 /*

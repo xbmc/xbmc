@@ -22,10 +22,11 @@
 /**
  * @file
  * Cinepak video decoder
- * by Ewald Snel <ewald@rambo.its.tudelft.nl>
- * For more information on the Cinepak algorithm, visit:
+ * @author Ewald Snel <ewald@rambo.its.tudelft.nl>
+ *
+ * @see For more information on the Cinepak algorithm, visit:
  *   http://www.csse.monash.edu.au/~timf/
- * For more information on the quirky data inside Sega FILM/CPK files, visit:
+ * @see For more information on the quirky data inside Sega FILM/CPK files, visit:
  *   http://wiki.multimedia.cx/index.php?title=Sega_FILM
  */
 
@@ -67,6 +68,7 @@ typedef struct CinepakContext {
 
     int sega_film_skip_bytes;
 
+    uint32_t pal[256];
 } CinepakContext;
 
 static void cinepak_decode_codebook (cvid_codebook *codebook,
@@ -146,7 +148,7 @@ static int cinepak_decode_vectors (CinepakContext *s, cvid_strip *strip,
         for (x=strip->x1; x < strip->x2; x+=4) {
             if ((chunk_id & 0x01) && !(mask >>= 1)) {
                 if ((data + 4) > eod)
-                    return -1;
+                    return AVERROR_INVALIDDATA;
 
                 flag  = AV_RB32 (data);
                 data += 4;
@@ -156,7 +158,7 @@ static int cinepak_decode_vectors (CinepakContext *s, cvid_strip *strip,
             if (!(chunk_id & 0x01) || (flag & mask)) {
                 if (!(chunk_id & 0x02) && !(mask >>= 1)) {
                     if ((data + 4) > eod)
-                        return -1;
+                        return AVERROR_INVALIDDATA;
 
                     flag  = AV_RB32 (data);
                     data += 4;
@@ -165,7 +167,7 @@ static int cinepak_decode_vectors (CinepakContext *s, cvid_strip *strip,
 
                 if ((chunk_id & 0x02) || (~flag & mask)) {
                     if (data >= eod)
-                        return -1;
+                        return AVERROR_INVALIDDATA;
 
                     codebook = &strip->v1_codebook[*data++];
                     s->frame.data[0][iy[0] + 0] = codebook->y0;
@@ -206,7 +208,7 @@ static int cinepak_decode_vectors (CinepakContext *s, cvid_strip *strip,
 
                 } else if (flag & mask) {
                     if ((data + 4) > eod)
-                        return -1;
+                        return AVERROR_INVALIDDATA;
 
                     codebook = &strip->v4_codebook[*data++];
                     s->frame.data[0][iy[0] + 0] = codebook->y0;
@@ -268,16 +270,16 @@ static int cinepak_decode_strip (CinepakContext *s,
     int      chunk_id, chunk_size;
 
     /* coordinate sanity checks */
-    if (strip->x1 >= s->width  || strip->x2 > s->width  ||
-        strip->y1 >= s->height || strip->y2 > s->height ||
+    if (strip->x2 > s->width   ||
+        strip->y2 > s->height  ||
         strip->x1 >= strip->x2 || strip->y1 >= strip->y2)
-        return -1;
+        return AVERROR_INVALIDDATA;
 
     while ((data + 4) <= eod) {
         chunk_id   = data[0];
         chunk_size = AV_RB24 (&data[1]) - 4;
         if(chunk_size < 0)
-            return -1;
+            return AVERROR_INVALIDDATA;
 
         data      += 4;
         chunk_size = ((data + chunk_size) > eod) ? (eod - data) : chunk_size;
@@ -310,7 +312,7 @@ static int cinepak_decode_strip (CinepakContext *s,
         data += chunk_size;
     }
 
-    return -1;
+    return AVERROR_INVALIDDATA;
 }
 
 static int cinepak_decode (CinepakContext *s)
@@ -321,21 +323,27 @@ static int cinepak_decode (CinepakContext *s)
     int           encoded_buf_size;
 
     if (s->size < 10)
-        return -1;
+        return AVERROR_INVALIDDATA;
 
     frame_flags = s->data[0];
     num_strips  = AV_RB16 (&s->data[8]);
-    encoded_buf_size = ((s->data[1] << 16) | AV_RB16 (&s->data[2]));
+    encoded_buf_size = AV_RB24(&s->data[1]);
 
     /* if this is the first frame, check for deviant Sega FILM data */
     if (s->sega_film_skip_bytes == -1) {
-        if (encoded_buf_size != s->size) {
+        if (!encoded_buf_size) {
+            av_log_ask_for_sample(s->avctx, "encoded_buf_size is 0");
+            return AVERROR_INVALIDDATA;
+        }
+        if (encoded_buf_size != s->size && (s->size % encoded_buf_size) != 0) {
             /* If the encoded frame size differs from the frame size as indicated
              * by the container file, this data likely comes from a Sega FILM/CPK file.
              * If the frame header is followed by the bytes FE 00 00 06 00 00 then
              * this is probably one of the two known files that have 6 extra bytes
-             * after the frame header. Else, assume 2 extra bytes. */
-            if ((s->data[10] == 0xFE) &&
+             * after the frame header. Else, assume 2 extra bytes. The container
+             * size also cannot be a multiple of the encoded size. */
+            if (s->size >= 16 &&
+                (s->data[10] == 0xFE) &&
                 (s->data[11] == 0x00) &&
                 (s->data[12] == 0x00) &&
                 (s->data[13] == 0x06) &&
@@ -350,12 +358,13 @@ static int cinepak_decode (CinepakContext *s)
 
     s->data += 10 + s->sega_film_skip_bytes;
 
-    if (num_strips > MAX_STRIPS)
-        num_strips = MAX_STRIPS;
+    num_strips = FFMIN(num_strips, MAX_STRIPS);
+
+    s->frame.key_frame = 0;
 
     for (i=0; i < num_strips; i++) {
         if ((s->data + 12) > eod)
-            return -1;
+            return AVERROR_INVALIDDATA;
 
         s->strips[i].id = s->data[0];
         s->strips[i].y1 = y0;
@@ -363,7 +372,12 @@ static int cinepak_decode (CinepakContext *s)
         s->strips[i].y2 = y0 + AV_RB16 (&s->data[8]);
         s->strips[i].x2 = s->avctx->width;
 
+        if (s->strips[i].id == 0x10)
+            s->frame.key_frame = 1;
+
         strip_size = AV_RB24 (&s->data[1]) - 12;
+        if (strip_size < 0)
+            return AVERROR_INVALIDDATA;
         s->data   += 12;
         strip_size = ((s->data + strip_size) > eod) ? (eod - s->data) : strip_size;
 
@@ -395,7 +409,7 @@ static av_cold int cinepak_decode_init(AVCodecContext *avctx)
     s->sega_film_skip_bytes = -1;  /* uninitialized state */
 
     // check for paletted data
-    if ((avctx->palctrl == NULL) || (avctx->bits_per_coded_sample == 40)) {
+    if (avctx->bits_per_coded_sample != 8) {
         s->palette_video = 0;
         avctx->pix_fmt = PIX_FMT_YUV420P;
     } else {
@@ -403,6 +417,7 @@ static av_cold int cinepak_decode_init(AVCodecContext *avctx)
         avctx->pix_fmt = PIX_FMT_PAL8;
     }
 
+    avcodec_get_frame_defaults(&s->frame);
     s->frame.data[0] = NULL;
 
     return 0;
@@ -413,30 +428,32 @@ static int cinepak_decode_frame(AVCodecContext *avctx,
                                 AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
+    int ret = 0, buf_size = avpkt->size;
     CinepakContext *s = avctx->priv_data;
 
     s->data = buf;
     s->size = buf_size;
 
-    s->frame.reference = 1;
+    s->frame.reference = 3;
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE |
                             FF_BUFFER_HINTS_REUSABLE;
-    if (avctx->reget_buffer(avctx, &s->frame)) {
+    if ((ret = avctx->reget_buffer(avctx, &s->frame))) {
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
-        return -1;
+        return ret;
+    }
+
+    if (s->palette_video) {
+        const uint8_t *pal = av_packet_get_side_data(avpkt, AV_PKT_DATA_PALETTE, NULL);
+        if (pal) {
+            s->frame.palette_has_changed = 1;
+            memcpy(s->pal, pal, AVPALETTE_SIZE);
+        }
     }
 
     cinepak_decode(s);
 
-    if (s->palette_video) {
-        memcpy (s->frame.data[1], avctx->palctrl->palette, AVPALETTE_SIZE);
-        if (avctx->palctrl->palette_changed) {
-            s->frame.palette_has_changed = 1;
-            avctx->palctrl->palette_changed = 0;
-        } else
-            s->frame.palette_has_changed = 0;
-    }
+    if (s->palette_video)
+        memcpy (s->frame.data[1], s->pal, AVPALETTE_SIZE);
 
     *data_size = sizeof(AVFrame);
     *(AVFrame*)data = s->frame;
@@ -456,14 +473,13 @@ static av_cold int cinepak_decode_end(AVCodecContext *avctx)
 }
 
 AVCodec ff_cinepak_decoder = {
-    "cinepak",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_CINEPAK,
-    sizeof(CinepakContext),
-    cinepak_decode_init,
-    NULL,
-    cinepak_decode_end,
-    cinepak_decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "cinepak",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_CINEPAK,
+    .priv_data_size = sizeof(CinepakContext),
+    .init           = cinepak_decode_init,
+    .close          = cinepak_decode_end,
+    .decode         = cinepak_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Cinepak"),
 };

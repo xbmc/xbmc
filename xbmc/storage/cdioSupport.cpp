@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -645,18 +644,32 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
 
 void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
 {
+  // cdtext disabled for windows as some setup doesn't like mmc commands
+  // and stall for over a minute in cdio_get_cdtext 83
+#if !defined(TARGET_WINDOWS)
   CSingleLock lock(*m_cdio);
 
   // Get the CD-Text , if any
+#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 83)
+  cdtext_t *pcdtext = static_cast<cdtext_t*>( cdio_get_cdtext(cdio) );
+#else
   cdtext_t *pcdtext = (cdtext_t *)::cdio_get_cdtext(cdio, trackNum);
-
+#endif 
+  
   if (pcdtext == NULL)
     return ;
 
+#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 83)
+  for (int i=0; i < MAX_CDTEXT_FIELDS; i++) 
+    if (cdtext_get_const(pcdtext, (cdtext_field_t)i, trackNum))
+      xcdt[(cdtext_field_t)i] = cdtext_field2str((cdtext_field_t)i);
+#else
   // same ids used in libcdio and for our structure + the ids are consecutive make this copy loop safe.
   for (int i = 0; i < MAX_CDTEXT_FIELDS; i++)
     if (pcdtext->field[i])
       xcdt[(cdtext_field_t)i] = pcdtext->field[(cdtext_field_t)i];
+#endif
+#endif // TARGET_WINDOWS
 }
 
 CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
@@ -681,7 +694,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   m_nFirstTrackNum = ::cdio_get_first_track_num(cdio);
   if (m_nFirstTrackNum == CDIO_INVALID_TRACK)
   {
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
     ::cdio_destroy(cdio);
     return NULL;
 #else
@@ -693,7 +706,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   m_nNumTracks = ::cdio_get_num_tracks(cdio);
   if (m_nNumTracks == CDIO_INVALID_TRACK)
   {
-#ifndef __APPLE__
+#if !defined(TARGET_DARWIN)
     ::cdio_destroy(cdio);
     return NULL;
 #else
@@ -757,10 +770,14 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       if ( -1 == m_nFirstData)
         m_nFirstData = i;
     }
+    ti.nfsInfo = FS_NO_DATA;
     ti.ms_offset = 0;
     ti.isofs_size = 0;
     ti.nJolietLevel = 0;
     ti.nFrames = ::cdio_get_track_lba(cdio, i);
+    ti.nMins = 0;
+    ti.nSecs = 0;
+
     info->SetTrackInformation( i, ti );
     /* skip to leadout? */
     if (i == m_nNumTracks)
@@ -822,6 +839,8 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
           ti.isofs_size = 0;
           ti.nJolietLevel = 0;
           ti.nFrames = ::cdio_get_track_lba(cdio, i);
+          ti.nMins = 0;
+          ti.nSecs = 0;
           info->SetTrackInformation( i + 1, ti );
         }
       case TRACK_FORMAT_ERROR:
@@ -850,6 +869,8 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
       ti.isofs_size = m_nIsofsSize;
       ti.nJolietLevel = m_nJolietLevel;
       ti.nFrames = ::cdio_get_track_lba(cdio, i);
+      ti.nMins = 0;
+      ti.nSecs = 0;
       info->SetDiscLabel(m_strDiscLabel);
 
 

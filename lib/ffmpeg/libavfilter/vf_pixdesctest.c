@@ -92,7 +92,7 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
 
         for (i = y1; i < y1 + h1; i++) {
             av_read_image_line(priv->line,
-                               inpic->data,
+                               (void*)inpic->data,
                                inpic->linesize,
                                priv->pix_desc,
                                0, i, c, w1, 0);
@@ -115,7 +115,7 @@ AVFilter avfilter_vf_pixdesctest = {
     .priv_size = sizeof(PixdescTestContext),
     .uninit    = uninit,
 
-    .inputs    = (AVFilterPad[]) {{ .name            = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name      = "default",
                                     .type            = AVMEDIA_TYPE_VIDEO,
                                     .start_frame     = start_frame,
                                     .draw_slice      = draw_slice,
@@ -123,7 +123,7 @@ AVFilter avfilter_vf_pixdesctest = {
                                     .min_perms       = AV_PERM_READ, },
                                   { .name = NULL}},
 
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name      = "default",
                                     .type            = AVMEDIA_TYPE_VIDEO, },
                                   { .name = NULL}},
 };

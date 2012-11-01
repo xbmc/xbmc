@@ -2,7 +2,7 @@
 #define NETWORK_LINUX_H_
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,7 +30,7 @@ class CNetworkLinux;
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, CStdString interfaceMacAdr);
+   CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, char interfaceMacAddrRaw[6]);
    ~CNetworkInterfaceLinux(void);
 
    virtual CStdString& GetName(void);
@@ -41,6 +40,7 @@ public:
    virtual bool IsWireless(void);
 
    virtual CStdString GetMacAddress(void);
+   virtual void GetMacAddressRaw(char rawMac[6]);
 
    virtual CStdString GetCurrentIPAddress();
    virtual CStdString GetCurrentNetmask();
@@ -57,6 +57,7 @@ private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
    CStdString     m_interfaceName;
    CStdString     m_interfaceMacAdr;
+   char           m_interfaceMacAddrRaw[6];
    CNetworkLinux* m_network;
 };
 
@@ -68,12 +69,7 @@ public:
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
-#if defined(__APPLE__) && defined(__arm__)
-   // on iOS, overwrite the GetFirstConnectedInterface and requery
-   // the interface list if no connected device is found
-   // this fixes a bug when no network is available after first start of xbmc after reboot
    virtual CNetworkInterface* GetFirstConnectedInterface(void);        
-#endif
     
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void);
@@ -83,7 +79,7 @@ public:
 
 private:
    int GetSocket() { return m_sock; }
-   CStdString GetMacAddress(CStdString interfaceName);
+   void GetMacAddress(CStdString interfaceName, char macAddrRaw[6]);
    void queryInterfaceList();
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,20 +13,19 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
- /* Functions taken from SDL (SDL_endian.h) */
+ /* Endian_SwapXX functions taken from SDL (SDL_endian.h) */
 
 #ifndef __ENDIAN_SWAP_H__
 #define __ENDIAN_SWAP_H__
 
 /* Include config.h to define (or not) WORDS_BIGENDIAN
    File created by configure */
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 #include "config.h"
 #include <inttypes.h>
 #endif
@@ -82,6 +81,8 @@ static __inline__ uint64_t Endian_Swap64(uint64_t x) {
         return(x);
 
 }
+
+void Endian_Swap16_buf(uint16_t *dst, uint16_t *src, int w);
 
 #ifndef WORDS_BIGENDIAN
 #define Endian_SwapLE16(X) (X)

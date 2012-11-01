@@ -1,0 +1,8 @@
+/images/*
+xbmc/assets/*
+xbmc/lib/*
+xbmc/libs/*
+xbmc/obj/*
+xbmc/src/org/xbmc/xbmc/*.class
+xbmc/classes.dex
+tmp/*

@@ -30,7 +30,7 @@ def GetDirPath(dir):
     return '#/'+dir
     
 def DeclareBuildDir(dir):
-    env.BuildDir(dir, GetDirPath(dir), duplicate=0)
+    env.VariantDir(dir, GetDirPath(dir), duplicate=0)
     
 def GetIncludeDirs(modules, exclude=None):
     dirs = []
@@ -136,7 +136,7 @@ def Application(name, dir):
     cpp_path = GetIncludeDirs('Neptune')
     
     prog = env.Program(name, 
-                       GlobSources(dir, ['*.c', '*.cpp']), 
+                       GlobSources(dir, ['*.c', '*.cpp']) + env['NPT_EXTRA_EXECUTABLE_OBJECTS'],
                        LIBS=libs, CPPPATH=cpp_path)
     #env.Alias(name, prog)
     if env.has_key('NPT_EXECUTABLE_POST_PROCESSOR'):
@@ -149,9 +149,12 @@ Import("env")
 
 ### defaults
 env['NPT_EXTRA_LIBS'] = []
+env['NPT_EXTRA_EXECUTABLE_OBJECTS'] = []
 
 if (env['build_config'] == 'Debug'):
     env.AppendUnique(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
+else:
+    env.AppendUnique(CPPDEFINES=['NDEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
 
 ### try to read in any target specific configuration
 target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
@@ -161,48 +164,61 @@ if os.path.exists(target_config_file):
 
 #######################################################
 # modules
-#
-# Usage:
-#
-# The LibraryModule() function declares a code module
-# The included_modules parameter is a list of all the modules and/or directories
-# that will be added to the include path when building this module AND to
-# the include path of any other module that depends on this one.
-# The linked_modules parameter is a list of all the modules and/or directories
-# that are necessary to build this module. These modules will be added to
-# the include path of this module, but not to that of the modules that depend
-# on this module. The modules that depend on this module, however, will 
-# automatically link with the linked_modules. 
-# Note that the included_modules list is automatically added to the 
-# linked_modules list, so that you do not need to list in linked_modules
-# the modules that are already listed in included_modules.
-# If a module needs to export an include path to its dependents that
-# is not a module that the dependent can link with (ex: an include dir),
-# list it in the included_only_modules.
-# To summarize: included_modules should list all the modules that users
-# of the public interface should depend on; linked_modules should list
-# all the modules not listed in included_modules that are used by the
-# module's implementation only.
 #######################################################
 
 LibraryModule(name                  = 'Zlib',
               source_root           = '.',
               build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
 
+LibraryModule(name                  = 'axTLS',
+              source_root           = '.',
+              build_source_dirs     = ['ThirdParty/axTLS/crypto', 'ThirdParty/axTLS/ssl', 'ThirdParty/axTLS/config/Generic'])
 
 extra_cpp_flags = []
 if not env.has_key('NPT_CONFIG_NO_ZIP'):
     extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
     
+if not env.has_key('NPT_CONFIG_NO_SSL'):
+    extra_cpp_flags += ['NPT_CONFIG_ENABLE_TLS']
+    tls_data_dirs  = ['Data/TLS']
+    tls_tests      = ['Tls1']
+else:
+    tls_data_dirs = []
+    tls_tests     = []
+	
 LibraryModule(name                  = 'Neptune',
-              build_source_dirs     = ['Core'],
+              build_source_dirs     = ['Core']+tls_data_dirs,
               build_source_files    = env['NPT_SYSTEM_SOURCES'],
               extra_cpp_defines     = extra_cpp_flags,
-              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'])
+              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib']+['axTLS'])
            
-for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho', 'MiniHttpServer']:
+for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho', 'NetGet', 'NetResolve', 'MiniHttpServer']:
     Application(app, 'Source/Apps/'+app)
     
-for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Queue1', 'Messages1', 'Messages2', 'Url1', 'Zip1', 'Time1']:
+tests = ['Arrays1', 
+		 'BufferedStreams1', 
+		 'HttpClient1', 
+		 'HttpClient2',
+		 'HttpServer1', 
+		 'Network1', 
+		 'Lists1', 
+		 'Maps1', 
+		 'Misc1', 
+		 'RingBuffer1', 
+		 'Strings1', 
+		 'Xml1', 
+		 'Udp1', 
+		 'Threads1', 
+		 'Queue1', 
+		 'Messages1', 
+		 'Messages2', 
+		 'Url1', 
+		 'Zip1', 
+		 'Time1', 
+		 'Sockets1', 
+		 'FileTest1', 
+		 'FileTest2']+tls_tests
+	
+for test in tests:
     Application(test+'Test', 'Source/Tests/'+test)
 

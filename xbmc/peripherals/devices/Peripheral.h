@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,13 +14,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <vector>
+#include <set>
 #include "utils/StdString.h"
 #include "peripherals/PeripheralTypes.h"
 
@@ -53,6 +52,7 @@ namespace PERIPHERALS
     const CStdString &DeviceName(void) const       { return m_strDeviceName; }
     bool IsHidden(void) const                      { return m_bHidden; }
     void SetHidden(bool bSetTo = true)             { m_bHidden = bSetTo; }
+    const CStdString &GetVersionInfo(void) const   { return m_strVersionInfo; }
 
     /*!
      * @brief Check whether this device has the given feature.
@@ -85,6 +85,11 @@ namespace PERIPHERALS
      * @param strChangedSetting The changed setting.
      */
     virtual void OnSettingChanged(const CStdString &strChangedSetting) {};
+
+    /*!
+     * @brief Called when this device is removed, before calling the destructor.
+     */
+    virtual void OnDeviceRemoved(void) {}
 
     /*!
      * @brief Get all subdevices if this device is multifunctional.
@@ -127,20 +132,24 @@ namespace PERIPHERALS
      * @return The value or an empty string if it wasn't found.
      */
     virtual const CStdString GetSettingString(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, const CStdString &strValue);
+    virtual bool SetSetting(const CStdString &strKey, const CStdString &strValue);
+    virtual void SetSettingVisible(const CStdString &strKey, bool bSetTo);
+    virtual bool IsSettingVisible(const CStdString &strKey) const;
 
     virtual int GetSettingInt(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, int iValue);
+    virtual bool SetSetting(const CStdString &strKey, int iValue);
 
     virtual bool GetSettingBool(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, bool bValue);
+    virtual bool SetSetting(const CStdString &strKey, bool bValue);
 
     virtual float GetSettingFloat(const CStdString &strKey) const;
-    virtual void SetSetting(const CStdString &strKey, float fValue);
+    virtual bool SetSetting(const CStdString &strKey, float fValue);
 
     virtual void PersistSettings(bool bExiting = false);
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
+
+    virtual std::vector<CSetting *> GetSettings(void) const;
 
     virtual bool ErrorOccured(void) const { return m_bError; }
 
@@ -157,12 +166,13 @@ namespace PERIPHERALS
     CStdString                       m_strVendorId;
     int                              m_iProductId;
     CStdString                       m_strProductId;
+    CStdString                       m_strVersionInfo;
     bool                             m_bInitialised;
     bool                             m_bHidden;
     bool                             m_bError;
     std::vector<PeripheralFeature>   m_features;
     std::vector<CPeripheral *>       m_subDevices;
     std::map<CStdString, CSetting *> m_settings;
-    std::vector<CStdString>          m_changedSettings;
+    std::set<CStdString>             m_changedSettings;
   };
 }

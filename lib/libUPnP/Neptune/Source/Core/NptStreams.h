@@ -75,8 +75,7 @@ class NPT_InputStream
     virtual NPT_Result Tell(NPT_Position& offset) = 0;
     virtual NPT_Result GetSize(NPT_LargeSize& size) = 0;
     virtual NPT_Result GetAvailable(NPT_LargeSize& available) = 0;
-    virtual NPT_Result Close() { return NPT_SUCCESS; }    
-
+    
     // data access methods
     NPT_Result ReadUI64(NPT_UInt64& value);
     NPT_Result ReadUI32(NPT_UInt32& value);

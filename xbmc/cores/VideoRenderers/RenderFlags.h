@@ -2,7 +2,7 @@
 #define _RENDER_FLAGS_H_
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,6 +28,7 @@
 
 #define RENDER_FLAG_FIELD0      0x80
 #define RENDER_FLAG_FIELD1      0x100
+#define RENDER_FLAG_WEAVE       0x200
 
 // #define RENDER_FLAG_LAST        0x40
 
@@ -69,15 +69,8 @@
 #define CONF_FLAGS_TRC_GAMMA22    0x0800
 #define CONF_FLAGS_TRC_GAMMA28    0x0c00
 
-#define CONF_FLAGS_FORMAT_MASK(a) ((a) & 0x00fff000)
-#define CONF_FLAGS_FORMAT_YV12   0x001000
-#define CONF_FLAGS_FORMAT_NV12   0x002000
-#define CONF_FLAGS_FORMAT_UYVY   0x004000
-#define CONF_FLAGS_FORMAT_YUY2   0x008000
-#define CONF_FLAGS_FORMAT_DXVA   0x010000
-#define CONF_FLAGS_FORMAT_VDPAU  0x020000
-#define CONF_FLAGS_FORMAT_VAAPI  0x030000
-#define CONF_FLAGS_FORMAT_OMXEGL 0x040000
-#define CONF_FLAGS_FORMAT_CVBREF 0x080000
-#define CONF_FLAGS_FORMAT_BYPASS 0x100000
+/* defines 3d modes */
+#define CONF_FLAGS_FORMAT_SBS     0x001000
+#define CONF_FLAGS_FORMAT_TB      0x002000
+
 #endif

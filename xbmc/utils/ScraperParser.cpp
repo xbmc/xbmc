@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -42,12 +41,15 @@ CScraperParser::CScraperParser()
   m_pRootElement = NULL;
   m_document = NULL;
   m_SearchStringEncoding = "UTF-8";
+  m_scraper = NULL;
 }
 
 CScraperParser::CScraperParser(const CScraperParser& parser)
 {
+  m_pRootElement = NULL;
   m_document = NULL;
   m_SearchStringEncoding = "UTF-8";
+  m_scraper = NULL;
   *this = parser;
 }
 
@@ -62,6 +64,8 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
       m_document = new CXBMCTinyXML(*parser.m_document);
       LoadFromXML();
     }
+    else
+      m_scraper = NULL;
   }
   return *this;
 }
@@ -84,14 +88,14 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 {
   Clear();
 
-  m_document = new CXBMCTinyXML(strXMLFile);
+  m_document = new CXBMCTinyXML();
 
   if (!m_document)
     return false;
 
   m_strFile = strXMLFile;
 
-  if (m_document->LoadFile())
+  if (m_document->LoadFile(strXMLFile))
     return LoadFromXML();
 
   delete m_document;
@@ -161,6 +165,18 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
     CStdString strReplace;
     if (m_scraper)
       strReplace = m_scraper->GetSetting(strInfo);
+    strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
+    iIndex += strReplace.length();
+  }
+  // insert localize strings
+  iIndex = 0;
+  while ((size_t)(iIndex = strDest.find("$LOCALIZE[",iIndex)) != CStdString::npos)
+  {
+    int iEnd = strDest.Find("]",iIndex);
+    CStdString strInfo = strDest.Mid(iIndex+10,iEnd-iIndex-10);
+    CStdString strReplace;
+    if (m_scraper)
+      strReplace = m_scraper->GetString(strtol(strInfo.c_str(),NULL,10));
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
     iIndex += strReplace.length();
   }
@@ -280,22 +296,24 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       // nasty hack #1 - & means \0 in a replace string
       strCurOutput.Replace("&","!!!AMPAMP!!!");
       char* result = reg.GetReplaceString(strCurOutput.c_str());
-      if (result && strlen(result))
+      if (result)
       {
-        CStdString strResult(result);
-        strResult.Replace("!!!AMPAMP!!!","&");
-        Clean(strResult);
-        ReplaceBuffers(strResult);
-        if (iCompare > -1)
+        if (strlen(result))
         {
-          CStdString strResultNoCase = strResult;
-          strResultNoCase.ToLower();
-          if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
+          CStdString strResult(result);
+          strResult.Replace("!!!AMPAMP!!!","&");
+          Clean(strResult);
+          ReplaceBuffers(strResult);
+          if (iCompare > -1)
+          {
+            CStdString strResultNoCase = strResult;
+            strResultNoCase.ToLower();
+            if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
+              dest += strResult;
+          }
+          else
             dest += strResult;
         }
-        else
-          dest += strResult;
-
         free(result);
       }
       if (bRepeat && iLen > 0)

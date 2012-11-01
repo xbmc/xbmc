@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -41,11 +40,11 @@ class CAudioBuffer
 public:
   CAudioBuffer(int iSize);
   virtual ~CAudioBuffer();
-  const short* Get() const;
-  void Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample);
+  const float* Get() const;
+  void Set(const float* psBuffer, int iSize);
 private:
   CAudioBuffer();
-  short* m_pBuffer;
+  float* m_pBuffer;
   int m_iLen;
 };
 
@@ -58,10 +57,10 @@ namespace ADDON
     CVisualisation(const ADDON::AddonProps &props) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
     CVisualisation(const cp_extension_t *ext) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(ext) {}
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
-    virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
+    virtual void OnAudioData(const float* pAudioData, int iAudioDataLength);
     bool Create(int x, int y, int w, int h);
     void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
-    void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+    void AudioData(const float *pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void Render();
     void Stop();
     void GetInfo(VIS_INFO *info);

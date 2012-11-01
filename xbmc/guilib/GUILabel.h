@@ -6,7 +6,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,9 +20,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -90,8 +89,9 @@ public:
    */
   enum OVER_FLOW { OVER_FLOW_TRUNCATE = 0,
                    OVER_FLOW_SCROLL,
-                   OVER_FLOW_WRAP };
-  
+                   OVER_FLOW_WRAP,
+                   OVER_FLOW_CLIP };
+
   CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, OVER_FLOW overflow = OVER_FLOW_TRUNCATE);
   virtual ~CGUILabel(void);
 
@@ -143,6 +143,12 @@ public:
    \param scrolling true if this label should scroll.
    */
   bool SetScrolling(bool scrolling);
+
+  /*! \brief Set how this label should handle overflowing text.
+   \param overflow the overflow type
+   \sa OVER_FLOW
+   */
+  bool SetOverflow(OVER_FLOW overflow);
 
   /*! \brief Set this label invalid.  Forces an update of the control
    */

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,16 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogSongInfo.h"
-#include "Util.h"
 #include "utils/URIUtils.h"
-#include "pictures/Picture.h"
+#include "utils/StringUtils.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -31,7 +29,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -39,7 +37,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "music/Album.h"
-#include "ThumbnailCache.h"
 
 using namespace XFILE;
 
@@ -55,6 +52,7 @@ CGUIDialogSongInfo::CGUIDialogSongInfo(void)
   m_cancelled = false;
   m_needsUpdate = false;
   m_startRating = -1;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSongInfo::~CGUIDialogSongInfo(void)
@@ -144,6 +142,11 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
       SetRating(rating - 1);
     return true;
   }
+  else if (action.GetID() == ACTION_SHOW_INFO)
+  {
+    Close();
+    return true;
+  }
   return CGUIDialog::OnAction(action);
 }
 
@@ -180,10 +183,13 @@ void CGUIDialogSongInfo::SetRating(char rating)
 {
   if (rating < '0') rating = '0';
   if (rating > '5') rating = '5';
-  m_song->GetMusicInfoTag()->SetRating(rating);
-  // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
-  g_windowManager.SendMessage(msg);
+  if (rating != m_song->GetMusicInfoTag()->GetRating())
+  {
+    m_song->GetMusicInfoTag()->SetRating(rating);
+    // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
+    g_windowManager.SendMessage(msg);
+  }
 }
 
 void CGUIDialogSongInfo::SetSong(CFileItem *item)
@@ -193,12 +199,14 @@ void CGUIDialogSongInfo::SetSong(CFileItem *item)
   m_startRating = m_song->GetMusicInfoTag()->GetRating();
   MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song.get());
   // set artist thumb as well
-  if (m_song->HasMusicInfoTag())
+  if (m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
   {
-    CFileItem artist(m_song->GetMusicInfoTag()->GetArtist());
-    artist.SetCachedArtistThumb();
-    if (CFile::Exists(artist.GetThumbnailImage()))
-      m_song->SetProperty("artistthumb", artist.GetThumbnailImage());
+    CMusicDatabase db;
+    db.Open();
+    int idArtist = db.GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
+    std::string thumb = db.GetArtForItem(idArtist, "artist", "thumb");
+    if (!thumb.empty())
+      m_song->SetProperty("artistthumb", thumb);
   }
   m_needsUpdate = false;
 }
@@ -212,7 +220,7 @@ bool CGUIDialogSongInfo::DownloadThumbnail(const CStdString &thumbFile)
 {
   // TODO: Obtain the source...
   CStdString source;
-  CFileCurl http;
+  CCurlFile http;
   http.Download(source, thumbFile);
   return true;
 }
@@ -238,16 +246,16 @@ void CGUIDialogSongInfo::OnGetThumb()
   if (DownloadThumbnail(thumbFromWeb))
   {
     CFileItemPtr item(new CFileItem("thumb://allmusic.com", false));
-    item->SetThumbnailImage(thumbFromWeb);
+    item->SetArt("thumb", thumbFromWeb);
     item->SetLabel(g_localizeStrings.Get(20055));
     items.Add(item);
   }*/
 
   // Current thumb
-  if (CFile::Exists(m_song->GetThumbnailImage()))
+  if (CFile::Exists(m_song->GetArt("thumb")))
   {
     CFileItemPtr item(new CFileItem("thumb://Current", false));
-    item->SetThumbnailImage(m_song->GetThumbnailImage());
+    item->SetArt("thumb", m_song->GetArt("thumb"));
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
@@ -262,21 +270,17 @@ void CGUIDialogSongInfo::OnGetThumb()
   }
   if (CFile::Exists(localThumb))
   {
-    URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    if (CPicture::CreateThumbnail(localThumb, cachedLocalThumb))
-    {
-      CFileItemPtr item(new CFileItem("thumb://Local", false));
-      item->SetThumbnailImage(cachedLocalThumb);
-      item->SetLabel(g_localizeStrings.Get(20017));
-      items.Add(item);
-    }
+    CFileItemPtr item(new CFileItem("thumb://Local", false));
+    item->SetArt("thumb", localThumb);
+    item->SetLabel(g_localizeStrings.Get(20017));
+    items.Add(item);
   }
   else
   { // no local thumb exists, so we are just using the allmusic.com thumb or cached thumb
     // which is probably the allmusic.com thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
     CFileItemPtr item(new CFileItem("thumb://None", false));
-    item->SetThumbnailImage("DefaultAlbumCover.png");
+    item->SetArt("thumb", "DefaultAlbumCover.png");
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
   }
@@ -291,22 +295,25 @@ void CGUIDialogSongInfo::OnGetThumb()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
 
-  CStdString cachedThumb(CThumbnailCache::GetAlbumThumb(m_song->GetMusicInfoTag()));
-
-  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
+  CStdString newThumb;
   if (result == "thumb://None")
-  {
-    CFile::Delete(cachedThumb);
-    cachedThumb = "";
-  }
+    newThumb = "-";
   else if (result == "thumb://allmusic.com")
-    CFile::Cache(thumbFromWeb, cachedThumb);
+    newThumb = thumbFromWeb;
   else if (result == "thumb://Local")
-    CFile::Cache(cachedLocalThumb, cachedThumb);
-  else if (CFile::Exists(result))
-    CPicture::CreateThumbnail(result, cachedThumb);
+    newThumb = localThumb;
+  else
+    newThumb = result;
 
-  m_song->SetThumbnailImage(cachedThumb);
+  // update thumb in the database
+  CMusicDatabase db;
+  if (db.Open())
+  {
+    db.SetArtForItem(m_song->GetMusicInfoTag()->GetDatabaseId(), m_song->GetMusicInfoTag()->GetType(), "thumb", newThumb);
+    db.Close();
+  }
+
+  m_song->SetArt("thumb", newThumb);
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

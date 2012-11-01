@@ -1,0 +1,16 @@
+--- samba-3.0.25borig/source/modules/vfs_default.c	2007-04-09 10:30:58.000000000 -0700
++++ samba3025bfinal/source/modules/vfs_default.c	2007-07-24 12:18:07.000000000 -0700
+@@ -813,10 +813,11 @@
+ 
+ 	START_PROFILE(syscall_linux_setlease);
+ 
+-#ifdef LINUX
++#ifdef HAVE_KERNEL_OPLOCKS_LINUX
+ 	/* first set the signal handler */
+-	if(linux_set_lease_sighandler(fd) == -1)
++	if(linux_set_lease_sighandler(fd) == -1) {
+ 		return -1;
++	}
+ 
+ 	result = linux_setlease(fd, leasetype);
+ #else

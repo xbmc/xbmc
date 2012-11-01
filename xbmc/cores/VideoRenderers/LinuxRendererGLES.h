@@ -2,7 +2,7 @@
 #define LINUXRENDERERGLES_RENDERER
 
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,13 +16,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #if HAS_GLES == 2
+
+#include "system_gl.h"
 
 #include "xbmc/guilib/FrameBufferObject.h"
 #include "xbmc/guilib/Shader.h"
@@ -38,6 +39,7 @@ class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
+typedef std::vector<int>     Features;
 
 #define NUM_BUFFERS 3
 
@@ -61,13 +63,6 @@ struct DRAWRECT
   float top;
   float right;
   float bottom;
-};
-
-enum EFIELDSYNC
-{
-  FS_NONE,
-  FS_TOP,
-  FS_BOT
 };
 
 struct YUVRANGE
@@ -134,7 +129,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_formatunsigned, unsigned int orientation);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
@@ -142,6 +137,7 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+  virtual void         ReorderDrawPoints();
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -154,12 +150,15 @@ public:
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
+  virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
+
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  virtual void         AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoPicture *picture);
+  virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
 #endif
+
 protected:
   virtual void Render(DWORD flags, int index);
 
@@ -204,10 +203,12 @@ protected:
 
   bool m_bConfigured;
   bool m_bValidated;
+  std::vector<ERenderFormat> m_formats;
   bool m_bImageReady;
-  unsigned m_iFlags;
+  ERenderFormat m_format;
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
+  unsigned short m_oldRenderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;
@@ -265,6 +266,11 @@ protected:
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
   ESCALINGMETHOD m_scalingMethodGui;
+
+  Features m_renderFeatures;
+  Features m_deinterlaceMethods;
+  Features m_deinterlaceModes;
+  Features m_scalingMethods;
 
   // clear colour for "black" bars
   float m_clearColour;

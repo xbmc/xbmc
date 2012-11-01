@@ -34,6 +34,7 @@
  */
 
 #include <string.h>
+#include "os_port.h"
 #include "crypto.h"
 
 /*

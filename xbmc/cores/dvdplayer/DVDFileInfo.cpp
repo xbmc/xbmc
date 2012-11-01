@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +32,9 @@
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -47,6 +48,7 @@
 #include "DllAvCodec.h"
 #include "DllSwScale.h"
 #include "filesystem/File.h"
+#include "TextureCache.h"
 
 /* PLEX */
 static DllAvFormat _dllAvFormat;
@@ -78,7 +80,22 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
     return false;
 }
 
-bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails)
+int DegreeToOrientation(int degrees)
+{
+  switch(degrees)
+  {
+    case 90:
+      return 5;
+    case 180:
+      return 2;
+    case 270:
+      return 7;
+    default:
+      return 0;
+  }
+}
+
+bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &details, CStreamDetails *pStreamDetails)
 {
   unsigned int nTime = XbmcThreads::SystemClockMillis();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
@@ -145,6 +162,8 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   }
 
   bool bOk = false;
+  int packetsTried = 0;
+
   if (nVideoStream != -1)
   {
     CDVDVideoCodec *pVideoCodec;
@@ -175,11 +194,15 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         int iDecoderState = VC_ERROR;
         DVDVideoPicture picture;
 
-        // num streams * 40 frames, should get a valid frame, if not abort.
-        int abort_index = pDemuxer->GetNrOfStreams() * 40;
+        memset(&picture, 0, sizeof(picture));
+
+        // num streams * 80 frames, should get a valid frame, if not abort.
+        int abort_index = pDemuxer->GetNrOfStreams() * 80;
         do
         {
           pPacket = pDemuxer->Read();
+          packetsTried++;
+
           if (!pPacket)
             break;
 
@@ -210,11 +233,11 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
-            int nWidth = g_advancedSettings.m_thumbSize;
+            unsigned int nWidth = g_advancedSettings.GetThumbSize();
             double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
             if(hint.forced_aspect && hint.aspect != 0)
               aspect = hint.aspect;
-            int nHeight = (int)((double)g_advancedSettings.m_thumbSize / aspect);
+            unsigned int nHeight = (unsigned int)((double)g_advancedSettings.GetThumbSize() / aspect);
 
             DllSwScale dllSwScale;
             dllSwScale.Load();
@@ -229,10 +252,13 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
             if (context)
             {
+              int orientation = DegreeToOrientation(hint.orientation);
               dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
               dllSwScale.sws_freeContext(context);
 
-              CPicture::CreateThumbnailFromSurface(pOutBuf, nWidth, nHeight, nWidth * 4, strTarget);
+              details.width = nWidth;
+              details.height = nHeight;
+              CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, orientation, nWidth, nHeight, CTextureCache::GetCachedPath(details.file));
               bOk = true;
             }
 
@@ -242,7 +268,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         }
         else
         {
-          CLog::Log(LOGDEBUG,"%s - decode failed in %s", __FUNCTION__, strPath.c_str());
+          CLog::Log(LOGDEBUG,"%s - decode failed in %s after %d packets.", __FUNCTION__, strPath.c_str(), packetsTried);
         }
       }
       delete pVideoCodec;
@@ -257,12 +283,12 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   if(!bOk)
   {
     XFILE::CFile file;
-    if(file.OpenForWrite(strTarget))
+    if(file.OpenForWrite(CTextureCache::GetCachedPath(details.file)))
       file.Close();
   }
 
   unsigned int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
-  CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strPath.c_str());
+  CLog::Log(LOGDEBUG,"%s - measured %u ms to extract thumb from file <%s> in %d packets. ", __FUNCTION__, nTotalTime, strPath.c_str(), packetsTried);
   return bOk;
 }
 
@@ -361,8 +387,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
-      if (stream->language)
-        p->m_strLanguage = stream->language;
+      p->m_strLanguage = stream->language;
       pDemux->GetStreamCodecName(iStream, p->m_strCodec);
       details.AddStream(p);
       retVal = true;
@@ -370,18 +395,15 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
 
     else if (stream->type == STREAM_SUBTITLE)
     {
-      if (stream->language)
-      {
-        CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
-        p->m_strLanguage = stream->language;
-        details.AddStream(p);
-        retVal = true;
-      }
+      CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+      p->m_strLanguage = stream->language;
+      details.AddStream(p);
+      retVal = true;
     }
   }  /* for iStream */
 
   details.DetermineBestStreams();
-
+#ifdef HAVE_LIBBLURAY
   // correct bluray runtime. we need the duration from the input stream, not the demuxer.
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
   {
@@ -390,7 +412,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
       ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = ((CDVDInputStreamBluray*)pInputStream)->GetTotalTime() / 1000;
     }
   }
-
+#endif
   return retVal;
 }
 

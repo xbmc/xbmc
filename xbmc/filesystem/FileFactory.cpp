@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,28 +24,29 @@
 #endif
 #include "system.h"
 #include "FileFactory.h"
-#include "FileHD.h"
-#include "FileCurl.h"
-#include "FileShoutcast.h"
-#include "FileLastFM.h"
-#include "FileFileReader.h"
+#include "HDFile.h"
+#include "CurlFile.h"
+#include "HTTPFile.h"
+#include "ShoutcastFile.h"
+#include "LastFMFile.h"
+#include "FileReaderFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
-#include "WINFileSmb.h"
+#include "windows/WINFileSmb.h"
 #else
-#include "FileSmb.h"
+#include "SmbFile.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
-#include "FileCDDA.h"
+#include "CDDAFile.h"
 #endif
 #ifdef HAS_FILESYSTEM
-#include "FileISO.h"
+#include "ISOFile.h"
 #ifdef HAS_FILESYSTEM_RTV
-#include "FileRTV.h"
+#include "RTVFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_DAAP
-#include "FileDAAP.h"
+#include "DAAPFile.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_SAP
@@ -55,30 +55,42 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPFile.h"
 #endif
-#include "FileZip.h"
+#ifdef HAS_PVRCLIENTS
+#include "PVRFile.h"
+#endif
+#if defined(TARGET_ANDROID)
+#include "APKFile.h"
+#endif
+#include "ZipFile.h"
 #ifdef HAS_FILESYSTEM_RAR
-#include "FileRar.h"
+#include "RarFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
-#include "FileSFTP.h"
+#include "SFTPFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_NFS
-#include "FileNFS.h"
+#include "NFSFile.h"
 #endif
 #ifdef HAS_FILESYSTEM_AFP
-#include "FileAFP.h"
+#include "AFPFile.h"
 #endif
-#include "FileUPnP.h"
+#if defined(TARGET_ANDROID)
+#include "AndroidAppFile.h"
+#endif
+#ifdef HAS_UPNP
+#include "UPnPFile.h"
+#endif
 #include "PipesManager.h"
-#include "FilePipe.h"
-#include "FileMusicDatabase.h"
-#include "FileSpecialProtocol.h"
+#include "PipeFile.h"
+#include "MusicDatabaseFile.h"
+#include "SpecialProtocolFile.h"
 #include "MultiPathFile.h"
-#include "FileTuxBox.h"
-#include "FileUDF.h"
+#include "TuxBoxFile.h"
+#include "UDFFile.h"
 #include "MythFile.h"
-#include "HDHomeRun.h"
-#include "Slingbox.h"
+#include "HDHomeRunFile.h"
+#include "SlingboxFile.h"
+#include "ImageFile.h"
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -105,41 +117,48 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
-  if (strProtocol == "zip") return new CFileZip();
-#ifdef HAS_FILESYSTEM_RAR
-  else if (strProtocol == "rar") return new CFileRar();
+#if defined(TARGET_ANDROID)
+  if (strProtocol == "apk") return new CAPKFile();
 #endif
-  else if (strProtocol == "musicdb") return new CFileMusicDatabase();
+  if (strProtocol == "zip") return new CZipFile();
+  else if (strProtocol == "rar")
+  {
+#ifdef HAS_FILESYSTEM_RAR
+    return new CRarFile();
+#else
+    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
+#endif
+  }
+  else if (strProtocol == "musicdb") return new CMusicDatabaseFile();
   else if (strProtocol == "videodb") return NULL;
-  else if (strProtocol == "special") return new CFileSpecialProtocol();
+  else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "multipath") return new CMultiPathFile();
-  else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
-  else if (strProtocol == "filereader") return new CFileFileReader();
+  else if (strProtocol == "image") return new CImageFile();
+  else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CHDFile();
+  else if (strProtocol == "filereader") return new CFileReaderFile();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (strProtocol == "cdda") return new CFileCDDA();
 #endif
 #ifdef HAS_FILESYSTEM
-  else if (strProtocol == "iso9660") return new CFileISO();
+  else if (strProtocol == "iso9660") return new CISOFile();
 #endif
-  else if(strProtocol == "udf") return new CFileUDF();
+  else if(strProtocol == "udf") return new CUDFFile();
 
   if( g_application.getNetwork().IsAvailable() )
   {
-    if (strProtocol == "http"
-    ||  strProtocol == "https"
-    ||  strProtocol == "dav"
+    if (strProtocol == "dav"
     ||  strProtocol == "davs"
     ||  strProtocol == "ftp"
-    ||  strProtocol == "ftpx"
     ||  strProtocol == "ftps"
-    ||  strProtocol == "rss") return new CFileCurl();
+    ||  strProtocol == "rss") return new CCurlFile();
+    else if (strProtocol == "http" ||  strProtocol == "https") return new CHTTPFile();
 #ifdef HAS_FILESYSTEM_SFTP
-    else if (strProtocol == "sftp" || strProtocol == "ssh") return new CFileSFTP();
+    else if (strProtocol == "sftp" || strProtocol == "ssh") return new CSFTPFile();
 #endif
-    else if (strProtocol == "shout") return new CFileShoutcast();
-    else if (strProtocol == "lastfm") return new CFileLastFM();
-    else if (strProtocol == "tuxbox") return new CFileTuxBox();
-    else if (strProtocol == "hdhomerun") return new CFileHomeRun();
+    else if (strProtocol == "shout") return new CShoutcastFile();
+    else if (strProtocol == "lastfm") return new CLastFMFile();
+    else if (strProtocol == "tuxbox") return new CTuxBoxFile();
+    else if (strProtocol == "hdhomerun") return new CHomeRunFile();
 #ifndef __PLEX__
     else if (strProtocol == "sling") return new CSlingboxFile();
 #endif
@@ -149,15 +168,15 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef _WIN32
     else if (strProtocol == "smb") return new CWINFileSMB();
 #else
-    else if (strProtocol == "smb") return new CFileSMB();
+    else if (strProtocol == "smb") return new CSmbFile();
 #endif
 #endif
 #ifdef HAS_FILESYSTEM
 #ifdef HAS_FILESYSTEM_RTV
-    else if (strProtocol == "rtv") return new CFileRTV();
+    else if (strProtocol == "rtv") return new CRTVFile();
 #endif
 #ifdef HAS_FILESYSTEM_DAAP
-    else if (strProtocol == "daap") return new CFileDAAP();
+    else if (strProtocol == "daap") return new CDAAPFile();
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_SAP
@@ -166,15 +185,21 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_VTP
     else if (strProtocol == "vtp") return new CVTPFile();
 #endif
+#ifdef HAS_PVRCLIENTS
+    else if (strProtocol == "pvr") return new CPVRFile();
+#endif
 #ifdef HAS_FILESYSTEM_NFS
-    else if (strProtocol == "nfs") return new CFileNFS();
+    else if (strProtocol == "nfs") return new CNFSFile();
 #endif
 #ifdef HAS_FILESYSTEM_AFP
-    else if (strProtocol == "afp") return new CFileAFP();
+    else if (strProtocol == "afp") return new CAFPFile();
 #endif
-    else if (strProtocol == "pipe") return new CFilePipe();    
-#ifndef __PLEX__
-    else if (strProtocol == "upnp") return new CFileUPnP();
+    else if (strProtocol == "pipe") return new CPipeFile();    
+#ifdef HAS_UPNP
+    else if (strProtocol == "upnp") return new CUPnPFile();
+#endif
+#if defined(TARGET_ANDROID)
+    else if (strProtocol == "androidapp") return new CFileAndroidApp();
 #endif
   }
 

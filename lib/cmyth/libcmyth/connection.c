@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund, Jon Gettler
+ *  Copyright (C) 2004-2012, Eric Lund, Jon Gettler
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -23,21 +23,8 @@
  * interacting with those connections.  
  */
 
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
 #include <stdio.h>
-#ifdef _MSC_VER
-#include <winsock2.h>
-#include <Ws2tcpip.h>
-#else
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#endif
 #include <errno.h>
 #include <string.h>
 #include <signal.h>
@@ -48,7 +35,7 @@ static char * cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hos
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
-	int version;
+	unsigned int version;
 	char token[9]; // 8 characters + the terminating NULL character
 } myth_protomap_t;
 
@@ -56,7 +43,16 @@ static myth_protomap_t protomap[] = {
 	{62, "78B5631E"},
 	{63, "3875641D"},
 	{64, "8675309J"},
-	{0, 0}
+	{65, "D2BB94C2"},
+	{66, "0C0FFEE0"},
+	{67, "0G0G0G0"},
+	{68, "90094EAD"},
+	{69, "63835135"},
+	{70, "53153836"},
+	{71, "05e82186"},
+	{72, "D78EFD6F"},
+	{73, "D7FE8D6F"},
+	{0, ""}
 };
 
 /*
@@ -527,7 +523,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	int err = 0;
 	int count = 0;
 	int r;
-	int ann_size = sizeof("ANN FileTransfer []:[][]:[]");
+	int ann_size = sizeof("ANN FileTransfer  0[]:[][]:[]");
 	cmyth_file_t ret = NULL;
 
 	if (!prog) {
@@ -555,6 +551,10 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	if (control->conn_version >= 17) {
 		myth_host = cmyth_conn_get_setting_unlocked(control, prog->proginfo_host,
 		                                   "BackendServerIP");
+		if (myth_host && (strcmp(myth_host, "-1") == 0)) {
+			ref_release(myth_host);
+			myth_host = NULL;
+		}
 	}
 	if (!myth_host) {
 		cmyth_dbg(CMYTH_DBG_PROTO,
@@ -575,6 +575,12 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 			  myth_host, prog->proginfo_port, buflen);
 		goto shut;
 	}
+	/*
+	 * Explicitly set the conn version to the control version as cmyth_connect() doesn't and some of
+	 * the cmyth_rcv_* functions expect it to be the same as the protocol version used by mythbackend.
+	 */
+	conn->conn_version = control->conn_version;
+
 	ann_size += strlen(prog->proginfo_pathname) + strlen(my_hostname);
 	announcement = malloc(ann_size);
 	if (!announcement) {
@@ -584,7 +590,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 		goto shut;
 	}
 	if (control->conn_version >= 44) {
-		sprintf(announcement, "ANN FileTransfer %s[]:[]%s[]:[]",
+		sprintf(announcement, "ANN FileTransfer %s 0[]:[]%s[]:[]", // write = false
 			  my_hostname, prog->proginfo_pathname);
 	}
 	else {
@@ -628,14 +634,18 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 		goto shut;
 	}
 	count -= r;
-	r = cmyth_rcv_u_long_long(conn, &err, &ret->file_length, count);
+	r = cmyth_rcv_uint64(conn, &err, &ret->file_length, count);
 	if (err) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
-			  "%s: (length) cmyth_rcv_longlong() failed (%d)\n",
+			  "%s: (length) cmyth_rcv_uint64() failed (%d)\n",
 			  __FUNCTION__, err);
 		goto shut;
 	}
 	count -= r;
+	if (count != 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR, "%s: %d leftover bytes\n",
+			  __FUNCTION__, count);
+	}
 	free(announcement);
 	ref_release(conn);
 	ref_release(myth_host);
@@ -683,7 +693,7 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 	int err = 0;
 	int count = 0;
 	int r, port;
-	int ann_size = sizeof("ANN FileTransfer []:[][]:[]");
+	int ann_size = sizeof("ANN FileTransfer  0[]:[][]:[]");
 	struct sockaddr_in addr;
         socklen_t addr_size = sizeof(addr);
 	cmyth_file_t ret = NULL;
@@ -716,6 +726,12 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 			  __FUNCTION__, host, port, buflen);
 		goto shut;
 	}
+	/*
+	 * Explicitly set the conn version to the control version as cmyth_connect() doesn't and some of
+	 * the cmyth_rcv_* functions expect it to be the same as the protocol version used by mythbackend.
+	 */
+	conn->conn_version = control->conn_version;
+
 	ann_size += strlen(path) + strlen(my_hostname);
 	announcement = malloc(ann_size);
 	if (!announcement) {
@@ -725,7 +741,7 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 		goto shut;
 	}
 	if (control->conn_version >= 44) {
-		sprintf(announcement, "ANN FileTransfer %s[]:[]%s[]:[]",
+		sprintf(announcement, "ANN FileTransfer %s 0[]:[]%s[]:[]",  // write = false
 			  my_hostname, path);
 	}
 	else {
@@ -768,10 +784,10 @@ cmyth_conn_connect_path(char* path, cmyth_conn_t control,
 		goto shut;
 	}
 	count -= r;
-	r = cmyth_rcv_u_long_long(conn, &err, &ret->file_length, count);
+	r = cmyth_rcv_uint64(conn, &err, &ret->file_length, count);
 	if (err) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
-			  "%s: (length) cmyth_rcv_longlong() failed (%d)\n",
+			  "%s: (length) cmyth_rcv_uint64() failed (%d)\n",
 			  __FUNCTION__, err);
 		goto shut;
 	}
@@ -928,7 +944,7 @@ int
 cmyth_conn_check_block(cmyth_conn_t conn, unsigned long size)
 {
 	fd_set check;
-	struct timeval timeout = {0,0};
+	struct timeval timeout;
 	int length;
 	int err = 0;
 	unsigned long sent;
@@ -936,6 +952,7 @@ cmyth_conn_check_block(cmyth_conn_t conn, unsigned long size)
 	if (!conn) {
 		return -EINVAL;
 	}
+	timeout.tv_sec = timeout.tv_usec = 0;
 	FD_ZERO(&check);
 	FD_SET(conn->conn_fd, &check);
 	if (select((int)conn->conn_fd + 1, &check, NULL, NULL, &timeout) < 0) {
@@ -1180,7 +1197,7 @@ cmyth_conn_get_freespace(cmyth_conn_t control,
 	int r;
 	char msg[256];
 	char reply[256];
-	long long lreply;
+	int64_t lreply;
 
 	if (control == NULL)
 		return -EINVAL;
@@ -1214,19 +1231,17 @@ cmyth_conn_get_freespace(cmyth_conn_t control,
 	}
 	
 	if (control->conn_version >= 17) {
-		if ((r=cmyth_rcv_long_long(control, &err, &lreply,
-					   count)) < 0) {
+		if ((r=cmyth_rcv_int64(control, &err, &lreply, count)) < 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
-				  "%s: cmyth_rcv_long_long() failed (%d)\n",
+				  "%s: cmyth_rcv_int64() failed (%d)\n",
 				  __FUNCTION__, err);
 			ret = err;
 			goto out;
 		}
 		*total = lreply;
-		if ((r=cmyth_rcv_long_long(control, &err, &lreply,
-					   count-r)) < 0) {
+		if ((r=cmyth_rcv_int64(control, &err, &lreply, count - r)) < 0) {
 			cmyth_dbg(CMYTH_DBG_ERROR,
-				  "%s: cmyth_rcv_long_long() failed (%d)\n",
+				  "%s: cmyth_rcv_int64() failed (%d)\n",
 				  __FUNCTION__, err);
 			ret = err;
 			goto out;
@@ -1335,18 +1350,6 @@ cmyth_conn_get_free_recorder_count(cmyth_conn_t conn)
 	return ret;
 }
 
-char *
-cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* setting)
-{
-	char* result = NULL;
-
-	pthread_mutex_lock(&mutex);
-	result = cmyth_conn_get_setting_unlocked(conn, hostname, setting);
-	pthread_mutex_unlock(&mutex);
-
-	return result;
-}
-
 static char *
 cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting)
 {
@@ -1406,3 +1409,14 @@ err:
 	return NULL;
 }
 
+char *
+cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* setting)
+{
+	char* result = NULL;
+
+	pthread_mutex_lock(&mutex);
+	result = cmyth_conn_get_setting_unlocked(conn, hostname, setting);
+	pthread_mutex_unlock(&mutex);
+
+	return result;
+}

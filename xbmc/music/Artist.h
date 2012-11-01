@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,16 +40,16 @@ public:
   void Reset()
   {
     strArtist.Empty();
-    strGenre.Empty();
+    genre.clear();
     strBiography.Empty();
-    strStyles.Empty();
-    strMoods.Empty();
-    strInstruments.Empty();
+    styles.clear();
+    moods.clear();
+    instruments.clear();
     strBorn.Empty();
     strFormed.Empty();
     strDied.Empty();
     strDisbanded.Empty();
-    strYearsActive.Empty();
+    yearsActive.clear();
     thumbURL.Clear();
     discography.clear();
     idArtist = -1;
@@ -67,16 +66,16 @@ public:
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   CStdString strArtist;
-  CStdString strGenre;
+  std::vector<std::string> genre;
   CStdString strBiography;
-  CStdString strStyles;
-  CStdString strMoods;
-  CStdString strInstruments;
+  std::vector<std::string> styles;
+  std::vector<std::string> moods;
+  std::vector<std::string> instruments;
   CStdString strBorn;
   CStdString strFormed;
   CStdString strDied;
   CStdString strDisbanded;
-  CStdString strYearsActive;
+  std::vector<std::string> yearsActive;
   CScraperUrl thumbURL;
   CFanart fanart;
   std::vector<std::pair<CStdString,CStdString> > discography;

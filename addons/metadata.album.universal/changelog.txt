@@ -1,0 +1,36 @@
+[B]1.2.2[/B]
+Fixed: accommodate new Frodo style URL encoding
+
+[B]1.2.1[/B]
+Removed: '&' sign from artist splitter
+
+[B]1.2.0[/B]
+Added: scraping album review from amazon.de (if link exist on MusicBrainz)
+
+[B]1.1.4[/B]
+Fixed: typo blocks preferring album in search result
+
+[B]1.1.3[/B]
+Fixed: won't find tracks without recording id
+
+[B]1.1.2[/B]
+Fixed: won't find tracks without duration
+
+[B]1.1.1[/B]
+Fixed: artists won't find with 'and' in their name
+
+[B]1.1.0[/B]
+Added: trying to get album info when multiple artists are credited (first artist will be used)
+Fixed: will not find some albums
+
+[B]1.0.3[/B]
+Fixed: Some Album releases were not found
+
+[B]1.0.2[/B]
+Fixed: Track Duration from MusicBrainz was wrong in certain cases. Credits to scudlee!
+
+[B]1.0.1[/B]
+Fixed: scraping moods from allmusic.com
+
+[B]1.0.0[/B]
+Initial version

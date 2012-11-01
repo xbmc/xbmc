@@ -70,11 +70,47 @@ public:
 }
 
 /*----------------------------------------------------------------------
+|       compare
++---------------------------------------------------------------------*/
+static int
+compare(NPT_UInt32 a, NPT_UInt32 b)
+{
+    return (a==b)?0:(a<b)?-1:1;
+}
+
+/*----------------------------------------------------------------------
+|       SortTest
++---------------------------------------------------------------------*/
+static int
+SortTest()
+{
+    for (unsigned int i=0; i<10000; i++) {
+        unsigned int list_size = 1+NPT_System::GetRandomInteger()%100;
+        NPT_List<NPT_UInt32> list;
+        for (unsigned int j=0; j<list_size; j++) {
+            list.Add(NPT_System::GetRandomInteger()%(2*list_size));
+        }
+        CHECK(NPT_SUCCEEDED(list.Sort(compare)));
+        NPT_UInt32 value = 0;
+        for (unsigned int j=0; j<list_size; j++) {
+            NPT_UInt32 cursor = 0;
+            list.Get(j, cursor);
+            CHECK(cursor >= value);
+            value = cursor;
+        }
+    }
+    
+    return 0;
+}
+
+/*----------------------------------------------------------------------
 |       main
 +---------------------------------------------------------------------*/
 int
 main(int /*argc*/, char** /*argv*/)
 {
+    if (SortTest()) return 1;
+    
     NPT_List<A> a_list;
     a_list.Add(A(1,2));
     a_list.Add(A(2,3));

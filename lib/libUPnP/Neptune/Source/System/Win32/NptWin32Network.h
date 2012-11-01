@@ -14,7 +14,7 @@ class NPT_WinsockSystem {
 public:
     static NPT_WinsockSystem Initializer;
     ~NPT_WinsockSystem();
-	
+    
 private:
     NPT_WinsockSystem();
 };

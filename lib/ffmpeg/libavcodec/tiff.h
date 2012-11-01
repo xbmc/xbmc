@@ -1,5 +1,4 @@
 /*
- * TIFF tables
  * Copyright (c) 2006 Konstantin Shishkov
  *
  * This file is part of FFmpeg.
@@ -20,10 +19,14 @@
  */
 
 /**
- * TIFF tables
  * @file
+ * TIFF tables
+ *
+ * For more information about the TIFF format, check the official docs at:
+ * http://partners.adobe.com/public/developer/tiff/index.html
  * @author Konstantin Shishkov
  */
+
 #ifndef AVCODEC_TIFF_H
 #define AVCODEC_TIFF_H
 
@@ -53,6 +56,10 @@ enum TiffTags{
     TIFF_SOFTWARE_NAME = 0x131,
     TIFF_PREDICTOR = 0x13D,
     TIFF_PAL = 0x140,
+    TIFF_TILE_WIDTH = 0x142,
+    TIFF_TILE_LENGTH = 0x143,
+    TIFF_TILE_OFFSETS = 0x144,
+    TIFF_TILE_BYTE_COUNTS = 0x145,
     TIFF_YCBCR_COEFFICIENTS = 0x211,
     TIFF_YCBCR_SUBSAMPLING = 0x212,
     TIFF_YCBCR_POSITIONING = 0x213,

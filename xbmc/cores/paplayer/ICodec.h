@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,15 +15,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "ReplayGain.h"
 #include "utils/StdString.h"
 #include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
+
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0
@@ -36,7 +37,9 @@ public:
   {
     m_TotalTime = 0;
     m_SampleRate = 0;
+    m_EncodedSampleRate = 0;
     m_BitsPerSample = 0;
+    m_DataFormat = AE_FMT_INVALID;
     m_Channels = 0;
     m_Bitrate = 0;
     m_CodecName = "";
@@ -66,21 +69,13 @@ public:
   // Should seek to the appropriate time (in ms) in the file, and return the
   // time to which we managed to seek (in the case where seeking is problematic)
   // This is used in FFwd/Rewd so can be called very often.
-  virtual __int64 Seek(__int64 iSeekTime)=0;
+  virtual int64_t Seek(int64_t iSeekTime)=0;
 
   // ReadPCM()
   // Decodes audio into pBuffer up to size bytes.  The actual amount of returned data
   // is given in actualsize.  Returns READ_SUCCESS on success.  Returns READ_EOF when
   // the data has been exhausted, and READ_ERROR on error.
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize)=0;
-
-  // ReadSamples()
-  // Decodes audio into floats (normalized to 1) into pBuffer up to numsamples samples.
-  // The actual amount of returned samples is given in actualsamples.  Samples are
-  // total samples (ie distributed over channels).
-  // Returns READ_SUCCESS on success.  Returns READ_EOF when the data has been exhausted,
-  // and READ_ERROR on error.
-  virtual int ReadSamples(float *pBuffer, int numsamples, int *actualsamples) { return READ_ERROR; };
 
   // CanInit()
   // Should return true if the codec can be initialized
@@ -92,21 +87,28 @@ public:
   virtual bool SkipNext(){return false;}
 
   // set the total time - useful when info comes from a preset tag
-  virtual void SetTotalTime(__int64 totaltime) {}
+  virtual void SetTotalTime(int64_t totaltime) {}
 
   virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
-  // true if we can retrieve normalized float data immediately
-  virtual bool HasFloatData() const { return false; }
+  // GetChannelInfo()
+  // Return the channel layout and count information in an CAEChannelInfo object
+  // Implemented in PAPlayer.cpp to avoid an include here
+  virtual CAEChannelInfo GetChannelInfo(); 
 
-  __int64 m_TotalTime;  // time in ms
+  int64_t m_TotalTime;  // time in ms
   int m_SampleRate;
+  int m_EncodedSampleRate;
   int m_BitsPerSample;
-  int m_Channels;
+  enum AEDataFormat m_DataFormat;
   int m_Bitrate;
   CStdString m_CodecName;
-  CReplayGain m_replayGain;
+  MUSIC_INFO::CMusicInfoTag m_tag;
   XFILE::CFile m_file;
+
+protected:
+  int m_Channels; /* remove this soon, its being deprecated */
+
 };
 

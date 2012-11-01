@@ -264,6 +264,7 @@
 				<visible>Control.IsVisible(50)</visible>
 			</control>
 			<control type="label">
+				<animation effect="slide" start="0,0" end="-90,0" time="0" condition="system.getbool(input.enablemouse)">Conditional</animation>
 				<description>number of files/pages</description>
 				<posx>660</posx>
 				<posy>627</posy>

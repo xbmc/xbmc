@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  */
 
-#if defined(__arm__)
+#if defined(__arm__) && !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN_IOS)
 #if defined(__ARM_NEON__)
 
         .text
@@ -526,4 +526,9 @@ copy_last_3_and_return:
 #endif
 
 #endif    /* __ARM_ARCH__ < 7 */
+#endif
+
+#if defined(__linux__) && defined(__ELF__)
+/* we don't need an executable stack */
+.section .note.GNU-stack,"",%progbits
 #endif

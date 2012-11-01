@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
+
+#define CONTROL_NO_BUTTON 10
+#define CONTROL_YES_BUTTON 11
 
 CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
     : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogYesNo.xml")
@@ -42,13 +44,13 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
       int iAction = message.GetParam1();
       if (1 || ACTION_SELECT_ITEM == iAction)
       {
-        if (iControl == 10)
+        if (iControl == CONTROL_NO_BUTTON)
         {
           m_bConfirmed = false;
           Close();
           return true;
         }
-        if (iControl == 11)
+        if (iControl == CONTROL_YES_BUTTON)
         {
           m_bConfirmed = true;
           Close();
@@ -93,8 +95,12 @@ bool CGUIDialogYesNo::ShowAndGetInput(int heading, int line0, int line1, int lin
     dialog->SetAutoClose(autoCloseTime);
   if (iNoLabel != -1)
     dialog->SetChoice(0,iNoLabel);
+  else
+    dialog->SetChoice(0,106);
   if (iYesLabel != -1)
     dialog->SetChoice(1,iYesLabel);
+  else
+    dialog->SetChoice(1,107);
   dialog->m_bCanceled = false;
   dialog->DoModal();
   bCanceled = dialog->m_bCanceled;
@@ -118,10 +124,22 @@ bool CGUIDialogYesNo::ShowAndGetInput(const CStdString& heading, const CStdStrin
   dialog->m_bCanceled = false;
   if (!noLabel.IsEmpty())
     dialog->SetChoice(0,noLabel);
+  else
+    dialog->SetChoice(0,106);
   if (!yesLabel.IsEmpty())
     dialog->SetChoice(1,yesLabel);
+  else
+    dialog->SetChoice(1,107);
   dialog->DoModal();
   bCanceled = dialog->m_bCanceled;
   return (dialog->IsConfirmed()) ? true : false;
 }
 
+int CGUIDialogYesNo::GetDefaultLabelID(int controlId) const
+{
+  if (controlId == CONTROL_NO_BUTTON)
+    return 106;
+  else if (controlId == CONTROL_YES_BUTTON)
+    return 107;
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
+}

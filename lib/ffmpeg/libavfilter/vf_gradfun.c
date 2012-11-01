@@ -32,7 +32,7 @@
  * Dither it back to 8bit.
  */
 
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 #include "libavutil/cpu.h"
 #include "libavutil/pixdesc.h"
 #include "avfilter.h"
@@ -49,7 +49,7 @@ DECLARE_ALIGNED(16, static const uint16_t, dither)[8][8] = {
     {0x54,0x34,0x4C,0x2C,0x52,0x32,0x4A,0x2A},
 };
 
-void ff_gradfun_filter_line_c(uint8_t *dst, uint8_t *src, uint16_t *dc, int width, int thresh, const uint16_t *dithers)
+void ff_gradfun_filter_line_c(uint8_t *dst, const uint8_t *src, const uint16_t *dc, int width, int thresh, const uint16_t *dithers)
 {
     int x;
     for (x = 0; x < width; x++, dc += x & 1) {
@@ -63,7 +63,7 @@ void ff_gradfun_filter_line_c(uint8_t *dst, uint8_t *src, uint16_t *dc, int widt
     }
 }
 
-void ff_gradfun_blur_line_c(uint16_t *dc, uint16_t *buf, uint16_t *buf1, uint8_t *src, int src_linesize, int width)
+void ff_gradfun_blur_line_c(uint16_t *dc, uint16_t *buf, const uint16_t *buf1, const uint8_t *src, int src_linesize, int width)
 {
     int x, v, old;
     for (x = 0; x < width; x++) {
@@ -74,7 +74,7 @@ void ff_gradfun_blur_line_c(uint16_t *dc, uint16_t *buf, uint16_t *buf1, uint8_t
     }
 }
 
-static void filter(GradFunContext *ctx, uint8_t *dst, uint8_t *src, int width, int height, int dst_linesize, int src_linesize, int r)
+static void filter(GradFunContext *ctx, uint8_t *dst, const uint8_t *src, int width, int height, int dst_linesize, int src_linesize, int r)
 {
     int bstride = FFALIGN(width, 16) / 2;
     int y;
@@ -160,7 +160,7 @@ static int query_formats(AVFilterContext *ctx)
         PIX_FMT_NONE
     };
 
-    avfilter_set_common_formats(ctx, avfilter_make_format_list(pix_fmts));
+    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
 
     return 0;
 }
@@ -240,7 +240,7 @@ AVFilter avfilter_vf_gradfun = {
     .uninit        = uninit,
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO,
                                     .config_props     = config_input,
                                     .start_frame      = start_frame,
@@ -248,7 +248,7 @@ AVFilter avfilter_vf_gradfun = {
                                     .end_frame        = end_frame,
                                     .min_perms        = AV_PERM_READ, },
                                   { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO, },
                                   { .name = NULL}},
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -40,13 +39,11 @@ public:
 
   // waits until all available data has been rendered
   void WaitForBuffers() { m_messageQueue.WaitUntilEmpty(); }
-  bool AcceptsData() { return !m_messageQueue.IsFull(); }
+  bool AcceptsData() const { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg) { if(m_messageQueue.IsInited()) m_messageQueue.Put(pMsg); }
 
   TextCacheStruct_t* GetTeletextCache() { return &m_TXTCache; }
   void LoadPage(int p, int sp, unsigned char* buffer);
-
-  CDVDMessageQueue m_messageQueue;
 
 protected:
   virtual void OnExit();
@@ -62,5 +59,6 @@ private:
   int m_speed;
   TextCacheStruct_t  m_TXTCache;
   CCriticalSection m_critSection;
+  CDVDMessageQueue m_messageQueue;
 };
 

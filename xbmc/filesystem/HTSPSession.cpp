@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,6 +23,8 @@
 #include "video/VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -633,7 +634,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   tag->m_strShowTitle = event.title;
   tag->m_strPlot      = event.descs;
   tag->m_strStatus    = "livetv";
-  tag->m_strGenre     = GetGenre(event.content);
+  tag->m_genre        = StringUtils::Split(GetGenre(event.content), g_advancedSettings.m_videoItemSeparator);
 
   tag->m_strTitle = tag->m_strAlbum;
   if(tag->m_strShowTitle.length() > 0)
@@ -641,9 +642,8 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 
   item.SetPath(url.Get());
   item.m_strTitle = tag->m_strTitle;
-  item.SetThumbnailImage(channel.icon);
+  item.SetArt("thumb", channel.icon);
   item.SetMimeType("video/X-htsp");
-  item.SetCachedVideoThumb();
   return true;
 }
 

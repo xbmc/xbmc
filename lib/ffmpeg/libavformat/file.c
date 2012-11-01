@@ -1,5 +1,5 @@
 /*
- * Buffered file io for ffmpeg system
+ * buffered file I/O
  * Copyright (c) 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include "os_support.h"
+#include "url.h"
 
 
 /* standard file protocol */
@@ -36,18 +37,33 @@
 static int file_read(URLContext *h, unsigned char *buf, int size)
 {
     int fd = (intptr_t) h->priv_data;
-    return read(fd, buf, size);
+    int r = read(fd, buf, size);
+    return (-1 == r)?AVERROR(errno):r;
 }
 
 static int file_write(URLContext *h, const unsigned char *buf, int size)
 {
     int fd = (intptr_t) h->priv_data;
-    return write(fd, buf, size);
+    int r = write(fd, buf, size);
+    return (-1 == r)?AVERROR(errno):r;
 }
 
 static int file_get_handle(URLContext *h)
 {
     return (intptr_t) h->priv_data;
+}
+
+static int file_check(URLContext *h, int mask)
+{
+    struct stat st;
+    int ret = stat(h->filename, &st);
+    if (ret < 0)
+        return AVERROR(errno);
+
+    ret |= st.st_mode&S_IRUSR ? mask&AVIO_FLAG_READ  : 0;
+    ret |= st.st_mode&S_IWUSR ? mask&AVIO_FLAG_WRITE : 0;
+
+    return ret;
 }
 
 #if CONFIG_FILE_PROTOCOL
@@ -59,9 +75,9 @@ static int file_open(URLContext *h, const char *filename, int flags)
 
     av_strstart(filename, "file:", &filename);
 
-    if (flags & URL_RDWR) {
+    if (flags & AVIO_FLAG_WRITE && flags & AVIO_FLAG_READ) {
         access = O_CREAT | O_TRUNC | O_RDWR;
-    } else if (flags & URL_WRONLY) {
+    } else if (flags & AVIO_FLAG_WRITE) {
         access = O_CREAT | O_TRUNC | O_WRONLY;
     } else {
         access = O_RDONLY;
@@ -95,13 +111,14 @@ static int file_close(URLContext *h)
 }
 
 URLProtocol ff_file_protocol = {
-    "file",
-    file_open,
-    file_read,
-    file_write,
-    file_seek,
-    file_close,
+    .name                = "file",
+    .url_open            = file_open,
+    .url_read            = file_read,
+    .url_write           = file_write,
+    .url_seek            = file_seek,
+    .url_close           = file_close,
     .url_get_file_handle = file_get_handle,
+    .url_check           = file_check,
 };
 
 #endif /* CONFIG_FILE_PROTOCOL */
@@ -116,7 +133,7 @@ static int pipe_open(URLContext *h, const char *filename, int flags)
 
     fd = strtol(filename, &final, 10);
     if((filename == final) || *final ) {/* No digits found, or something like 10ab */
-        if (flags & URL_WRONLY) {
+        if (flags & AVIO_FLAG_WRITE) {
             fd = 1;
         } else {
             fd = 0;
@@ -131,11 +148,12 @@ static int pipe_open(URLContext *h, const char *filename, int flags)
 }
 
 URLProtocol ff_pipe_protocol = {
-    "pipe",
-    pipe_open,
-    file_read,
-    file_write,
+    .name                = "pipe",
+    .url_open            = pipe_open,
+    .url_read            = file_read,
+    .url_write           = file_write,
     .url_get_file_handle = file_get_handle,
+    .url_check           = file_check,
 };
 
 #endif /* CONFIG_PIPE_PROTOCOL */

@@ -20,20 +20,26 @@
  */
 
 #include "avcodec.h"
-#define ALT_BITSTREAM_READER_LE
+#define BITSTREAM_READER_LE
 #include "get_bits.h"
 #include "ra288.h"
 #include "lpc.h"
 #include "celp_math.h"
 #include "celp_filters.h"
+#include "dsputil.h"
 
 #define MAX_BACKWARD_FILTER_ORDER  36
 #define MAX_BACKWARD_FILTER_LEN    40
 #define MAX_BACKWARD_FILTER_NONREC 35
 
+#define RA288_BLOCK_SIZE        5
+#define RA288_BLOCKS_PER_FRAME 32
+
 typedef struct {
-    float sp_lpc[36];      ///< LPC coefficients for speech data (spec: A)
-    float gain_lpc[10];    ///< LPC coefficients for gain        (spec: GB)
+    AVFrame frame;
+    DSPContext dsp;
+    DECLARE_ALIGNED(16, float,   sp_lpc)[FFALIGN(36, 8)];   ///< LPC coefficients for speech data (spec: A)
+    DECLARE_ALIGNED(16, float, gain_lpc)[FFALIGN(10, 8)];   ///< LPC coefficients for gain        (spec: GB)
 
     /** speech data history                                      (spec: SB).
      *  Its first 70 coefficients are updated only at backward filtering.
@@ -54,14 +60,14 @@ typedef struct {
 
 static av_cold int ra288_decode_init(AVCodecContext *avctx)
 {
+    RA288Context *ractx = avctx->priv_data;
     avctx->sample_fmt = AV_SAMPLE_FMT_FLT;
-    return 0;
-}
+    dsputil_init(&ractx->dsp, avctx);
 
-static void apply_window(float *tgt, const float *m1, const float *m2, int n)
-{
-    while (n--)
-        *tgt++ = *m1++ * *m2++;
+    avcodec_get_frame_defaults(&ractx->frame);
+    avctx->coded_frame = &ractx->frame;
+
+    return 0;
 }
 
 static void convolve(float *tgt, const float *src, int len, int n)
@@ -96,14 +102,14 @@ static void decode(RA288Context *ractx, float gain, int cb_coef)
     for (i=0; i < 5; i++)
         buffer[i] = codetable[cb_coef][i] * sumsum;
 
-    sum = ff_dot_productf(buffer, buffer, 5) * ((1<<24)/5.);
+    sum = ff_dot_productf(buffer, buffer, 5);
 
-    sum = FFMAX(sum, 1);
+    sum = FFMAX(sum, 5. / (1<<24));
 
     /* shift and store */
     memmove(gain_block, gain_block + 1, 9 * sizeof(*gain_block));
 
-    gain_block[9] = 10 * log10(sum) - 32;
+    gain_block[9] = 10 * log10(sum) + (10*log10(((1<<24)/5.)) - 32);
 
     ff_celp_lp_synthesis_filterf(block, ractx->sp_lpc, buffer, 5, 36);
 }
@@ -120,15 +126,18 @@ static void decode(RA288Context *ractx, float gain, int cb_coef)
  * @param out2    pointer to the recursive part of the output
  * @param window  pointer to the windowing function table
  */
-static void do_hybrid_window(int order, int n, int non_rec, float *out,
+static void do_hybrid_window(RA288Context *ractx,
+                             int order, int n, int non_rec, float *out,
                              float *hist, float *out2, const float *window)
 {
     int i;
     float buffer1[MAX_BACKWARD_FILTER_ORDER + 1];
     float buffer2[MAX_BACKWARD_FILTER_ORDER + 1];
-    float work[MAX_BACKWARD_FILTER_ORDER + MAX_BACKWARD_FILTER_LEN + MAX_BACKWARD_FILTER_NONREC];
+    LOCAL_ALIGNED_16(float, work, [FFALIGN(MAX_BACKWARD_FILTER_ORDER +
+                                           MAX_BACKWARD_FILTER_LEN   +
+                                           MAX_BACKWARD_FILTER_NONREC, 8)]);
 
-    apply_window(work, window, hist, order + n + non_rec);
+    ractx->dsp.vector_fmul(work, window, hist, FFALIGN(order + n + non_rec, 8));
 
     convolve(buffer1, work + order    , n      , order);
     convolve(buffer2, work + order + n, non_rec, order);
@@ -145,27 +154,28 @@ static void do_hybrid_window(int order, int n, int non_rec, float *out,
 /**
  * Backward synthesis filter, find the LPC coefficients from past speech data.
  */
-static void backward_filter(float *hist, float *rec, const float *window,
+static void backward_filter(RA288Context *ractx,
+                            float *hist, float *rec, const float *window,
                             float *lpc, const float *tab,
                             int order, int n, int non_rec, int move_size)
 {
     float temp[MAX_BACKWARD_FILTER_ORDER+1];
 
-    do_hybrid_window(order, n, non_rec, temp, hist, rec, window);
+    do_hybrid_window(ractx, order, n, non_rec, temp, hist, rec, window);
 
     if (!compute_lpc_coefs(temp, order, lpc, 0, 1, 1))
-        apply_window(lpc, lpc, tab, order);
+        ractx->dsp.vector_fmul(lpc, lpc, tab, FFALIGN(order, 8));
 
     memmove(hist, hist + n, move_size*sizeof(*hist));
 }
 
 static int ra288_decode_frame(AVCodecContext * avctx, void *data,
-                              int *data_size, AVPacket *avpkt)
+                              int *got_frame_ptr, AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    float *out = data;
-    int i, j;
+    float *out;
+    int i, ret;
     RA288Context *ractx = avctx->priv_data;
     GetBitContext gb;
 
@@ -173,45 +183,50 @@ static int ra288_decode_frame(AVCodecContext * avctx, void *data,
         av_log(avctx, AV_LOG_ERROR,
                "Error! Input buffer is too small [%d<%d]\n",
                buf_size, avctx->block_align);
-        return 0;
+        return AVERROR_INVALIDDATA;
     }
 
-    if (*data_size < 32*5*4)
-        return -1;
+    /* get output buffer */
+    ractx->frame.nb_samples = RA288_BLOCK_SIZE * RA288_BLOCKS_PER_FRAME;
+    if ((ret = avctx->get_buffer(avctx, &ractx->frame)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
+    }
+    out = (float *)ractx->frame.data[0];
 
     init_get_bits(&gb, buf, avctx->block_align * 8);
 
-    for (i=0; i < 32; i++) {
+    for (i=0; i < RA288_BLOCKS_PER_FRAME; i++) {
         float gain = amptable[get_bits(&gb, 3)];
         int cb_coef = get_bits(&gb, 6 + (i&1));
 
         decode(ractx, gain, cb_coef);
 
-        for (j=0; j < 5; j++)
-            *(out++) = ractx->sp_hist[70 + 36 + j];
+        memcpy(out, &ractx->sp_hist[70 + 36], RA288_BLOCK_SIZE * sizeof(*out));
+        out += RA288_BLOCK_SIZE;
 
         if ((i & 7) == 3) {
-            backward_filter(ractx->sp_hist, ractx->sp_rec, syn_window,
+            backward_filter(ractx, ractx->sp_hist, ractx->sp_rec, syn_window,
                             ractx->sp_lpc, syn_bw_tab, 36, 40, 35, 70);
 
-            backward_filter(ractx->gain_hist, ractx->gain_rec, gain_window,
+            backward_filter(ractx, ractx->gain_hist, ractx->gain_rec, gain_window,
                             ractx->gain_lpc, gain_bw_tab, 10, 8, 20, 28);
         }
     }
 
-    *data_size = (char *)out - (char *)data;
+    *got_frame_ptr   = 1;
+    *(AVFrame *)data = ractx->frame;
+
     return avctx->block_align;
 }
 
-AVCodec ff_ra_288_decoder =
-{
-    "real_288",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_RA_288,
-    sizeof(RA288Context),
-    ra288_decode_init,
-    NULL,
-    NULL,
-    ra288_decode_frame,
-    .long_name = NULL_IF_CONFIG_SMALL("RealAudio 2.0 (28.8K)"),
+AVCodec ff_ra_288_decoder = {
+    .name           = "real_288",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_RA_288,
+    .priv_data_size = sizeof(RA288Context),
+    .init           = ra288_decode_init,
+    .decode         = ra288_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
+    .long_name      = NULL_IF_CONFIG_SMALL("RealAudio 2.0 (28.8K)"),
 };

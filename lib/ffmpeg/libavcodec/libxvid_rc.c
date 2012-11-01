@@ -22,6 +22,7 @@
 
 #include <xvid.h>
 #include <unistd.h>
+#include "libavutil/file.h"
 #include "avcodec.h"
 #include "libxvid_internal.h"
 //#include "dsputil.h"
@@ -40,7 +41,7 @@ int ff_xvid_rate_control_init(MpegEncContext *s){
 
 //xvid_debug=-1;
 
-    fd=ff_tempfile("xvidrc.", &tmp_name);
+    fd=av_tempfile("xvidrc.", &tmp_name, 0, s->avctx);
     if (fd == -1) {
         av_log(NULL, AV_LOG_ERROR, "Can't create temporary pass2 file.\n");
         return -1;
@@ -134,7 +135,7 @@ float ff_xvid_rate_estimate_qscale(MpegEncContext *s, int dry_run){
     if(!dry_run)
         s->rc_context.dry_run_qscale= 0;
 
-    if(s->pict_type == FF_B_TYPE) //FIXME this is not exactly identical to xvid
+    if(s->pict_type == AV_PICTURE_TYPE_B) //FIXME this is not exactly identical to xvid
         return xvid_plg_data.quant * FF_QP2LAMBDA * s->avctx->b_quant_factor + s->avctx->b_quant_offset;
     else
         return xvid_plg_data.quant * FF_QP2LAMBDA;

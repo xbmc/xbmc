@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *      Initial code sponsored by: Voddler Inc (voddler.com)
@@ -15,23 +15,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #pragma once
+#include "system_gl.h"
 #include "OverlayRenderer.h"
-
-#ifdef HAS_GL
-#include <GL/glew.h>
-#endif
 
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
+typedef struct ass_image ASS_Image;
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
@@ -56,7 +53,8 @@ namespace OVERLAY {
      : public COverlayMainThread
   {
   public:
-   COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
+   COverlayGlyphGL(ASS_Image* images, int width, int height);
+
    virtual ~COverlayGlyphGL();
 
    void Render(SRenderState& state);

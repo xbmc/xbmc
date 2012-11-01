@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,7 @@
 #include "GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
@@ -42,19 +42,18 @@ extern bool g_fullScreen;
 static CSettingInt* g_guiSkinzoom = NULL;
 
 CGraphicContext::CGraphicContext(void) :
-  m_iScreenHeight(576), 
-  m_iScreenWidth(720), 
-  m_iScreenId(0), 
-  m_strMediaDir(""), 
-  /*m_videoRect,*/ 
-  m_bFullScreenRoot(false), 
+  m_iScreenHeight(576),
+  m_iScreenWidth(720),
+  m_iScreenId(0),
+  /*m_videoRect,*/
+  m_bFullScreenRoot(false),
   m_bFullScreenVideo(false),
-  m_bCalibrating(false), 
-  m_Resolution(RES_INVALID), 
+  m_bCalibrating(false),
+  m_Resolution(RES_INVALID),
   /*m_windowResolution,*/
-  m_guiScaleX(1.0f), 
-  m_guiScaleY(1.0f) 
-  /*,m_cameras, */ 
+  m_guiScaleX(1.0f),
+  m_guiScaleY(1.0f)
+  /*,m_cameras, */
   /*m_origins, */
   /*m_clipRegions,*/
   /*m_guiTransform,*/
@@ -279,15 +278,16 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 #if defined(HAS_VIDEO_PLAYBACK)
   if(m_bFullScreenRoot)
   {
-    if(m_bFullScreenVideo)
-      g_graphicsContext.SetVideoResolution(g_renderManager.GetResolution());
+    bool allowDesktopRes = g_guiSettings.GetInt("videoplayer.adjustrefreshrate") == ADJUST_REFRESHRATE_ALWAYS;
+    if(m_bFullScreenVideo || (!allowDesktopRes && g_application.IsPlayingVideo()))
+      SetVideoResolution(g_renderManager.GetResolution());
     else if(g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+      SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
     else
-      g_graphicsContext.SetVideoResolution(RES_DESKTOP);
+      SetVideoResolution(RES_DESKTOP);
   }
   else
-    g_graphicsContext.SetVideoResolution(RES_WINDOW);
+    SetVideoResolution(RES_WINDOW);
 #endif
 
   Unlock();
@@ -340,7 +340,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   {
     //pause the player during the refreshrate change
     int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
-    if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+    if (delay > 0 && g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.IsPlayingVideo() && !g_application.IsPaused())
     {
       g_application.m_pPlayer->Pause();
       ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
@@ -373,7 +373,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 
   if (g_advancedSettings.m_fullScreen)
   {
-#if defined (__APPLE__) || defined (_WIN32)
+#if defined (TARGET_DARWIN) || defined (_WIN32)
     bool blankOtherDisplays = g_guiSettings.GetBool("videoscreen.blankdisplays");
     g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays);
 #else
@@ -416,6 +416,22 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
     overscan.right = 1920;
     overscan.bottom = 1080;
     break;
+  case RES_HDTV_720pSBS:
+    overscan.right = 640;
+    overscan.bottom = 720;
+    break;
+  case RES_HDTV_720pTB:
+    overscan.right = 1280;
+    overscan.bottom = 360;
+    break;
+  case RES_HDTV_1080pSBS:
+    overscan.right = 960;
+    overscan.bottom = 1080;
+    break;
+  case RES_HDTV_1080pTB:
+    overscan.right = 1920;
+    overscan.bottom = 540;
+    break;
   case RES_HDTV_720p:
     overscan.right = 1280;
     overscan.bottom = 720;
@@ -456,6 +472,38 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
     g_settings.m_ResInfo[res].strMode ="1080i 16:9";
+    break;
+  case RES_HDTV_720pSBS:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 720);
+    g_settings.m_ResInfo[res].iWidth = 640;
+    g_settings.m_ResInfo[res].iHeight = 720;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "720pSBS 16:9";
+    break;
+  case RES_HDTV_720pTB:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 360);
+    g_settings.m_ResInfo[res].iWidth = 1280;
+    g_settings.m_ResInfo[res].iHeight = 360;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "720pTB 16:9";
+    break;
+  case RES_HDTV_1080pSBS:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 1080);
+    g_settings.m_ResInfo[res].iWidth = 960;
+    g_settings.m_ResInfo[res].iHeight = 1080;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "1080pSBS 16:9";
+    break;
+  case RES_HDTV_1080pTB:
+    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 540);
+    g_settings.m_ResInfo[res].iWidth = 1920;
+    g_settings.m_ResInfo[res].iHeight = 540;
+    g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
+    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
+    g_settings.m_ResInfo[res].strMode = "1080pTB 16:9";
     break;
   case RES_HDTV_720p:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 720);
@@ -532,6 +580,8 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   default:
     break;
   }
+  g_settings.m_ResInfo[res].iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
+  g_settings.m_ResInfo[res].iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
 }
 
@@ -783,7 +833,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
     uiRes = newRes;
 
 #if defined(HAS_VIDEO_PLAYBACK)
-    if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
+    if (IsFullScreenVideo() || IsCalibrating())
     {
       /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
       m_bFullScreenRoot = true;

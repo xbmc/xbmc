@@ -23,31 +23,25 @@
  * @file
  * ALAC (Apple Lossless Audio Codec) decoder
  * @author 2005 David Hammerton
+ * @see http://crazney.net/programs/itunes/alac.html
  *
- * For more information on the ALAC format, visit:
- *  http://crazney.net/programs/itunes/alac.html
- *
- * Note: This decoder expects a 36- (0x24-)byte QuickTime atom to be
+ * Note: This decoder expects a 36-byte QuickTime atom to be
  * passed through the extradata[_size] fields. This atom is tacked onto
  * the end of an 'alac' stsd atom and has the following format:
- *  bytes 0-3   atom size (0x24), big-endian
- *  bytes 4-7   atom type ('alac', not the 'alac' tag from start of stsd)
- *  bytes 8-35  data bytes needed by decoder
  *
- * Extradata:
- * 32bit  size
- * 32bit  tag (=alac)
- * 32bit  zero?
- * 32bit  max sample per frame
- *  8bit  ?? (zero?)
+ * 32bit  atom size
+ * 32bit  tag                  ("alac")
+ * 32bit  tag version          (0)
+ * 32bit  samples per frame    (used when not set explicitly in the frames)
+ *  8bit  compatible version   (0)
  *  8bit  sample size
- *  8bit  history mult
- *  8bit  initial history
- *  8bit  kmodifier
- *  8bit  channels?
- * 16bit  ??
- * 32bit  max coded frame size
- * 32bit  bitrate?
+ *  8bit  history mult         (40)
+ *  8bit  initial history      (14)
+ *  8bit  kmodifier            (10)
+ *  8bit  channels
+ * 16bit  maxRun               (255)
+ * 32bit  max coded frame size (0 means unknown)
+ * 32bit  average bitrate      (0 means unknown)
  * 32bit  samplerate
  */
 
@@ -64,17 +58,17 @@
 typedef struct {
 
     AVCodecContext *avctx;
+    AVFrame frame;
     GetBitContext gb;
 
     int numchannels;
-    int bytespersample;
 
     /* buffers */
     int32_t *predicterror_buffer[MAX_CHANNELS];
 
     int32_t *outputsamples_buffer[MAX_CHANNELS];
 
-    int32_t *wasted_bits_buffer[MAX_CHANNELS];
+    int32_t *extra_bits_buffer[MAX_CHANNELS];
 
     /* stuff from setinfo */
     uint32_t setinfo_max_samples_per_frame; /* 0x1000 = 4096 */    /* max samples per frame? */
@@ -84,57 +78,8 @@ typedef struct {
     uint8_t setinfo_rice_kmodifier; /* 0x0e */
     /* end setinfo stuff */
 
-    int wasted_bits;
+    int extra_bits;                         /**< number of extra bits beyond 16-bit */
 } ALACContext;
-
-static void allocate_buffers(ALACContext *alac)
-{
-    int chan;
-    for (chan = 0; chan < MAX_CHANNELS; chan++) {
-        alac->predicterror_buffer[chan] =
-            av_malloc(alac->setinfo_max_samples_per_frame * 4);
-
-        alac->outputsamples_buffer[chan] =
-            av_malloc(alac->setinfo_max_samples_per_frame * 4);
-
-        alac->wasted_bits_buffer[chan] = av_malloc(alac->setinfo_max_samples_per_frame * 4);
-    }
-}
-
-static int alac_set_info(ALACContext *alac)
-{
-    const unsigned char *ptr = alac->avctx->extradata;
-
-    ptr += 4; /* size */
-    ptr += 4; /* alac */
-    ptr += 4; /* 0 ? */
-
-    if(AV_RB32(ptr) >= UINT_MAX/4){
-        av_log(alac->avctx, AV_LOG_ERROR, "setinfo_max_samples_per_frame too large\n");
-        return -1;
-    }
-
-    /* buffer size / 2 ? */
-    alac->setinfo_max_samples_per_frame = bytestream_get_be32(&ptr);
-    ptr++;                          /* ??? */
-    alac->setinfo_sample_size           = *ptr++;
-    if (alac->setinfo_sample_size > 32) {
-        av_log(alac->avctx, AV_LOG_ERROR, "setinfo_sample_size too large\n");
-        return -1;
-    }
-    alac->setinfo_rice_historymult      = *ptr++;
-    alac->setinfo_rice_initialhistory   = *ptr++;
-    alac->setinfo_rice_kmodifier        = *ptr++;
-    ptr++;                         /* channels? */
-    bytestream_get_be16(&ptr);      /* ??? */
-    bytestream_get_be32(&ptr);      /* max coded frame size */
-    bytestream_get_be32(&ptr);      /* bitrate ? */
-    bytestream_get_be32(&ptr);      /* samplerate */
-
-    allocate_buffers(alac);
-
-    return 0;
-}
 
 static inline int decode_scalar(GetBitContext *gb, int k, int limit, int readsamplesize){
     /* read x - number of 1s before 0 represent the rice */
@@ -163,7 +108,7 @@ static inline int decode_scalar(GetBitContext *gb, int k, int limit, int readsam
     return x;
 }
 
-static void bastardized_rice_decompress(ALACContext *alac,
+static int bastardized_rice_decompress(ALACContext *alac,
                                  int32_t *output_buffer,
                                  int output_size,
                                  int readsamplesize, /* arg_10 */
@@ -184,6 +129,9 @@ static void bastardized_rice_decompress(ALACContext *alac,
 
         /* standard rice encoding */
         int k; /* size of extra bits */
+
+        if(get_bits_left(&alac->gb) <= 0)
+            return -1;
 
         /* read k, that is bits as is */
         k = av_log2((history >> 9) + 3);
@@ -230,6 +178,7 @@ static void bastardized_rice_decompress(ALACContext *alac,
             history = 0;
         }
     }
+    return 0;
 }
 
 static inline int sign_only(int v)
@@ -286,20 +235,9 @@ static void predictor_decompress_fir_adapt(int32_t *error_buffer,
             buffer_out[i+1] = val;
         }
 
-#if 0
     /* 4 and 8 are very common cases (the only ones i've seen). these
      * should be unrolled and optimized
      */
-    if (predictor_coef_num == 4) {
-        /* FIXME: optimized general case */
-        return;
-    }
-
-    if (predictor_coef_table == 8) {
-        /* FIXME: optimized general case */
-        return;
-    }
-#endif
 
     /* general case */
     if (predictor_coef_num > 0) {
@@ -360,99 +298,72 @@ static void predictor_decompress_fir_adapt(int32_t *error_buffer,
     }
 }
 
-static void reconstruct_stereo_16(int32_t *buffer[MAX_CHANNELS],
-                                  int16_t *buffer_out,
-                                  int numchannels, int numsamples,
-                                  uint8_t interlacing_shift,
-                                  uint8_t interlacing_leftweight)
+static void decorrelate_stereo(int32_t *buffer[MAX_CHANNELS],
+                               int numsamples, uint8_t interlacing_shift,
+                               uint8_t interlacing_leftweight)
 {
     int i;
-    if (numsamples <= 0)
-        return;
 
-    /* weighted interlacing */
-    if (interlacing_leftweight) {
-        for (i = 0; i < numsamples; i++) {
-            int32_t a, b;
-
-            a = buffer[0][i];
-            b = buffer[1][i];
-
-            a -= (b * interlacing_leftweight) >> interlacing_shift;
-            b += a;
-
-            buffer_out[i*numchannels] = b;
-            buffer_out[i*numchannels + 1] = a;
-        }
-
-        return;
-    }
-
-    /* otherwise basic interlacing took place */
     for (i = 0; i < numsamples; i++) {
-        int16_t left, right;
+        int32_t a, b;
 
-        left = buffer[0][i];
-        right = buffer[1][i];
+        a = buffer[0][i];
+        b = buffer[1][i];
 
-        buffer_out[i*numchannels] = left;
-        buffer_out[i*numchannels + 1] = right;
+        a -= (b * interlacing_leftweight) >> interlacing_shift;
+        b += a;
+
+        buffer[0][i] = b;
+        buffer[1][i] = a;
     }
 }
 
-static void decorrelate_stereo_24(int32_t *buffer[MAX_CHANNELS],
-                                  int32_t *buffer_out,
-                                  int32_t *wasted_bits_buffer[MAX_CHANNELS],
-                                  int wasted_bits,
-                                  int numchannels, int numsamples,
-                                  uint8_t interlacing_shift,
-                                  uint8_t interlacing_leftweight)
+static void append_extra_bits(int32_t *buffer[MAX_CHANNELS],
+                              int32_t *extra_bits_buffer[MAX_CHANNELS],
+                              int extra_bits, int numchannels, int numsamples)
+{
+    int i, ch;
+
+    for (ch = 0; ch < numchannels; ch++)
+        for (i = 0; i < numsamples; i++)
+            buffer[ch][i] = (buffer[ch][i] << extra_bits) | extra_bits_buffer[ch][i];
+}
+
+static void interleave_stereo_16(int32_t *buffer[MAX_CHANNELS],
+                                 int16_t *buffer_out, int numsamples)
 {
     int i;
 
-    if (numsamples <= 0)
-        return;
-
-    /* weighted interlacing */
-    if (interlacing_leftweight) {
-        for (i = 0; i < numsamples; i++) {
-            int32_t a, b;
-
-            a = buffer[0][i];
-            b = buffer[1][i];
-
-            a -= (b * interlacing_leftweight) >> interlacing_shift;
-            b += a;
-
-            if (wasted_bits) {
-                b  = (b  << wasted_bits) | wasted_bits_buffer[0][i];
-                a  = (a  << wasted_bits) | wasted_bits_buffer[1][i];
-            }
-
-            buffer_out[i * numchannels]     = b << 8;
-            buffer_out[i * numchannels + 1] = a << 8;
-        }
-    } else {
-        for (i = 0; i < numsamples; i++) {
-            int32_t left, right;
-
-            left  = buffer[0][i];
-            right = buffer[1][i];
-
-            if (wasted_bits) {
-                left   = (left   << wasted_bits) | wasted_bits_buffer[0][i];
-                right  = (right  << wasted_bits) | wasted_bits_buffer[1][i];
-            }
-
-            buffer_out[i * numchannels]     = left  << 8;
-            buffer_out[i * numchannels + 1] = right << 8;
-        }
+    for (i = 0; i < numsamples; i++) {
+        *buffer_out++ = buffer[0][i];
+        *buffer_out++ = buffer[1][i];
     }
 }
 
-static int alac_decode_frame(AVCodecContext *avctx,
-                             void *outbuffer, int *outputsize,
-                             AVPacket *avpkt)
+static void interleave_stereo_24(int32_t *buffer[MAX_CHANNELS],
+                                 int32_t *buffer_out, int numsamples)
+{
+    int i;
+
+    for (i = 0; i < numsamples; i++) {
+        *buffer_out++ = buffer[0][i] << 8;
+        *buffer_out++ = buffer[1][i] << 8;
+    }
+}
+
+static void interleave_stereo_32(int32_t *buffer[MAX_CHANNELS],
+                                 int32_t *buffer_out, int numsamples)
+{
+    int i;
+
+    for (i = 0; i < numsamples; i++) {
+        *buffer_out++ = buffer[0][i];
+        *buffer_out++ = buffer[1][i];
+    }
+}
+
+static int alac_decode_frame(AVCodecContext *avctx, void *data,
+                             int *got_frame_ptr, AVPacket *avpkt)
 {
     const uint8_t *inbuffer = avpkt->data;
     int input_buffer_size = avpkt->size;
@@ -465,18 +376,14 @@ static int alac_decode_frame(AVCodecContext *avctx,
     int isnotcompressed;
     uint8_t interlacing_shift;
     uint8_t interlacing_leftweight;
-
-    /* short-circuit null buffers */
-    if (!inbuffer || !input_buffer_size)
-        return -1;
+    int i, ch, ret;
 
     init_get_bits(&alac->gb, inbuffer, input_buffer_size * 8);
 
     channels = get_bits(&alac->gb, 3) + 1;
-    if (channels > MAX_CHANNELS) {
-        av_log(avctx, AV_LOG_ERROR, "channels > %d not supported\n",
-               MAX_CHANNELS);
-        return -1;
+    if (channels != avctx->channels) {
+        av_log(avctx, AV_LOG_ERROR, "frame header channel count mismatch\n");
+        return AVERROR_INVALIDDATA;
     }
 
     /* 2^result = something to do with output waiting.
@@ -489,7 +396,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
     /* the output sample size is stored soon */
     hassize = get_bits1(&alac->gb);
 
-    alac->wasted_bits = get_bits(&alac->gb, 2) << 3;
+    alac->extra_bits = get_bits(&alac->gb, 2) << 3;
 
     /* whether the frame is compressed */
     isnotcompressed = get_bits1(&alac->gb);
@@ -504,25 +411,18 @@ static int alac_decode_frame(AVCodecContext *avctx,
     } else
         outputsamples = alac->setinfo_max_samples_per_frame;
 
-    switch (alac->setinfo_sample_size) {
-    case 16: avctx->sample_fmt    = AV_SAMPLE_FMT_S16;
-             alac->bytespersample = channels << 1;
-             break;
-    case 24: avctx->sample_fmt    = AV_SAMPLE_FMT_S32;
-             alac->bytespersample = channels << 2;
-             break;
-    default: av_log(avctx, AV_LOG_ERROR, "Sample depth %d is not supported.\n",
-                    alac->setinfo_sample_size);
-             return -1;
+    /* get output buffer */
+    if (outputsamples > INT32_MAX) {
+        av_log(avctx, AV_LOG_ERROR, "unsupported block size: %u\n", outputsamples);
+        return AVERROR_INVALIDDATA;
+    }
+    alac->frame.nb_samples = outputsamples;
+    if ((ret = avctx->get_buffer(avctx, &alac->frame)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
+        return ret;
     }
 
-    if(outputsamples > *outputsize / alac->bytespersample){
-        av_log(avctx, AV_LOG_ERROR, "sample buffer too small\n");
-        return -1;
-    }
-
-    *outputsize = outputsamples * alac->bytespersample;
-    readsamplesize = alac->setinfo_sample_size - (alac->wasted_bits) + channels - 1;
+    readsamplesize = alac->setinfo_sample_size - alac->extra_bits + channels - 1;
     if (readsamplesize > MIN_CACHE_BITS) {
         av_log(avctx, AV_LOG_ERROR, "readsamplesize too big (%d)\n", readsamplesize);
         return -1;
@@ -535,118 +435,123 @@ static int alac_decode_frame(AVCodecContext *avctx,
         int prediction_type[MAX_CHANNELS];
         int prediction_quantitization[MAX_CHANNELS];
         int ricemodifier[MAX_CHANNELS];
-        int i, chan;
 
         interlacing_shift = get_bits(&alac->gb, 8);
         interlacing_leftweight = get_bits(&alac->gb, 8);
 
-        for (chan = 0; chan < channels; chan++) {
-            prediction_type[chan] = get_bits(&alac->gb, 4);
-            prediction_quantitization[chan] = get_bits(&alac->gb, 4);
+        for (ch = 0; ch < channels; ch++) {
+            prediction_type[ch] = get_bits(&alac->gb, 4);
+            prediction_quantitization[ch] = get_bits(&alac->gb, 4);
 
-            ricemodifier[chan] = get_bits(&alac->gb, 3);
-            predictor_coef_num[chan] = get_bits(&alac->gb, 5);
+            ricemodifier[ch] = get_bits(&alac->gb, 3);
+            predictor_coef_num[ch] = get_bits(&alac->gb, 5);
 
             /* read the predictor table */
-            for (i = 0; i < predictor_coef_num[chan]; i++)
-                predictor_coef_table[chan][i] = (int16_t)get_bits(&alac->gb, 16);
+            for (i = 0; i < predictor_coef_num[ch]; i++)
+                predictor_coef_table[ch][i] = (int16_t)get_bits(&alac->gb, 16);
         }
 
-        if (alac->wasted_bits) {
-            int i, ch;
+        if (alac->extra_bits) {
             for (i = 0; i < outputsamples; i++) {
+                if(get_bits_left(&alac->gb) <= 0)
+                    return -1;
                 for (ch = 0; ch < channels; ch++)
-                    alac->wasted_bits_buffer[ch][i] = get_bits(&alac->gb, alac->wasted_bits);
+                    alac->extra_bits_buffer[ch][i] = get_bits(&alac->gb, alac->extra_bits);
             }
         }
-        for (chan = 0; chan < channels; chan++) {
-            bastardized_rice_decompress(alac,
-                                        alac->predicterror_buffer[chan],
+        for (ch = 0; ch < channels; ch++) {
+            int ret = bastardized_rice_decompress(alac,
+                                        alac->predicterror_buffer[ch],
                                         outputsamples,
                                         readsamplesize,
                                         alac->setinfo_rice_initialhistory,
                                         alac->setinfo_rice_kmodifier,
-                                        ricemodifier[chan] * alac->setinfo_rice_historymult / 4,
+                                        ricemodifier[ch] * alac->setinfo_rice_historymult / 4,
                                         (1 << alac->setinfo_rice_kmodifier) - 1);
+            if(ret<0)
+                return ret;
 
-            if (prediction_type[chan] == 0) {
-                /* adaptive fir */
-                predictor_decompress_fir_adapt(alac->predicterror_buffer[chan],
-                                               alac->outputsamples_buffer[chan],
-                                               outputsamples,
-                                               readsamplesize,
-                                               predictor_coef_table[chan],
-                                               predictor_coef_num[chan],
-                                               prediction_quantitization[chan]);
-            } else {
-                av_log(avctx, AV_LOG_ERROR, "FIXME: unhandled prediction type: %i\n", prediction_type[chan]);
-                /* I think the only other prediction type (or perhaps this is
-                 * just a boolean?) runs adaptive fir twice.. like:
-                 * predictor_decompress_fir_adapt(predictor_error, tempout, ...)
-                 * predictor_decompress_fir_adapt(predictor_error, outputsamples ...)
-                 * little strange..
+            /* adaptive FIR filter */
+            if (prediction_type[ch] == 15) {
+                /* Prediction type 15 runs the adaptive FIR twice.
+                 * The first pass uses the special-case coef_num = 31, while
+                 * the second pass uses the coefs from the bitstream.
+                 *
+                 * However, this prediction type is not currently used by the
+                 * reference encoder.
                  */
+                predictor_decompress_fir_adapt(alac->predicterror_buffer[ch],
+                                               alac->predicterror_buffer[ch],
+                                               outputsamples, readsamplesize,
+                                               NULL, 31, 0);
+            } else if (prediction_type[ch] > 0) {
+                av_log(avctx, AV_LOG_WARNING, "unknown prediction type: %i\n",
+                       prediction_type[ch]);
             }
+            predictor_decompress_fir_adapt(alac->predicterror_buffer[ch],
+                                           alac->outputsamples_buffer[ch],
+                                           outputsamples, readsamplesize,
+                                           predictor_coef_table[ch],
+                                           predictor_coef_num[ch],
+                                           prediction_quantitization[ch]);
         }
     } else {
         /* not compressed, easy case */
-        int i, chan;
-        if (alac->setinfo_sample_size <= 16) {
-        for (i = 0; i < outputsamples; i++)
-            for (chan = 0; chan < channels; chan++) {
-                int32_t audiobits;
-
-                audiobits = get_sbits_long(&alac->gb, alac->setinfo_sample_size);
-
-                alac->outputsamples_buffer[chan][i] = audiobits;
-            }
-        } else {
-            for (i = 0; i < outputsamples; i++) {
-                for (chan = 0; chan < channels; chan++) {
-                    alac->outputsamples_buffer[chan][i] = get_bits(&alac->gb,
-                                                          alac->setinfo_sample_size);
-                    alac->outputsamples_buffer[chan][i] = sign_extend(alac->outputsamples_buffer[chan][i],
-                                                                      alac->setinfo_sample_size);
-                }
+        for (i = 0; i < outputsamples; i++) {
+            if(get_bits_left(&alac->gb) <= 0)
+                return -1;
+            for (ch = 0; ch < channels; ch++) {
+                alac->outputsamples_buffer[ch][i] = get_sbits_long(&alac->gb,
+                                                                   alac->setinfo_sample_size);
             }
         }
-        alac->wasted_bits = 0;
+        alac->extra_bits = 0;
         interlacing_shift = 0;
         interlacing_leftweight = 0;
     }
     if (get_bits(&alac->gb, 3) != 7)
         av_log(avctx, AV_LOG_ERROR, "Error : Wrong End Of Frame\n");
 
+    if (channels == 2 && interlacing_leftweight) {
+        decorrelate_stereo(alac->outputsamples_buffer, outputsamples,
+                           interlacing_shift, interlacing_leftweight);
+    }
+
+    if (alac->extra_bits) {
+        append_extra_bits(alac->outputsamples_buffer, alac->extra_bits_buffer,
+                          alac->extra_bits, alac->numchannels, outputsamples);
+    }
+
     switch(alac->setinfo_sample_size) {
     case 16:
         if (channels == 2) {
-            reconstruct_stereo_16(alac->outputsamples_buffer,
-                                  (int16_t*)outbuffer,
-                                  alac->numchannels,
-                                  outputsamples,
-                                  interlacing_shift,
-                                  interlacing_leftweight);
+            interleave_stereo_16(alac->outputsamples_buffer,
+                                 (int16_t *)alac->frame.data[0], outputsamples);
         } else {
-            int i;
+            int16_t *outbuffer = (int16_t *)alac->frame.data[0];
             for (i = 0; i < outputsamples; i++) {
-                ((int16_t*)outbuffer)[i] = alac->outputsamples_buffer[0][i];
+                outbuffer[i] = alac->outputsamples_buffer[0][i];
             }
         }
         break;
     case 24:
         if (channels == 2) {
-            decorrelate_stereo_24(alac->outputsamples_buffer,
-                                  outbuffer,
-                                  alac->wasted_bits_buffer,
-                                  alac->wasted_bits,
-                                  alac->numchannels,
-                                  outputsamples,
-                                  interlacing_shift,
-                                  interlacing_leftweight);
+            interleave_stereo_24(alac->outputsamples_buffer,
+                                 (int32_t *)alac->frame.data[0], outputsamples);
         } else {
-            int i;
+            int32_t *outbuffer = (int32_t *)alac->frame.data[0];
             for (i = 0; i < outputsamples; i++)
-                ((int32_t *)outbuffer)[i] = alac->outputsamples_buffer[0][i] << 8;
+                outbuffer[i] = alac->outputsamples_buffer[0][i] << 8;
+        }
+        break;
+    case 32:
+        if (channels == 2) {
+            interleave_stereo_32(alac->outputsamples_buffer,
+                                 (int32_t *)alac->frame.data[0], outputsamples);
+        } else {
+            int32_t *outbuffer = (int32_t *)alac->frame.data[0];
+            for (i = 0; i < outputsamples; i++)
+                outbuffer[i] = alac->outputsamples_buffer[0][i];
         }
         break;
     }
@@ -654,14 +559,81 @@ static int alac_decode_frame(AVCodecContext *avctx,
     if (input_buffer_size * 8 - get_bits_count(&alac->gb) > 8)
         av_log(avctx, AV_LOG_ERROR, "Error : %d bits left\n", input_buffer_size * 8 - get_bits_count(&alac->gb));
 
+    *got_frame_ptr   = 1;
+    *(AVFrame *)data = alac->frame;
+
     return input_buffer_size;
+}
+
+static av_cold int alac_decode_close(AVCodecContext *avctx)
+{
+    ALACContext *alac = avctx->priv_data;
+
+    int ch;
+    for (ch = 0; ch < alac->numchannels; ch++) {
+        av_freep(&alac->predicterror_buffer[ch]);
+        av_freep(&alac->outputsamples_buffer[ch]);
+        av_freep(&alac->extra_bits_buffer[ch]);
+    }
+
+    return 0;
+}
+
+static int allocate_buffers(ALACContext *alac)
+{
+    int ch;
+    for (ch = 0; ch < alac->numchannels; ch++) {
+        int buf_size = alac->setinfo_max_samples_per_frame * sizeof(int32_t);
+
+        FF_ALLOC_OR_GOTO(alac->avctx, alac->predicterror_buffer[ch],
+                         buf_size, buf_alloc_fail);
+
+        FF_ALLOC_OR_GOTO(alac->avctx, alac->outputsamples_buffer[ch],
+                         buf_size, buf_alloc_fail);
+
+        FF_ALLOC_OR_GOTO(alac->avctx, alac->extra_bits_buffer[ch],
+                         buf_size, buf_alloc_fail);
+    }
+    return 0;
+buf_alloc_fail:
+    alac_decode_close(alac->avctx);
+    return AVERROR(ENOMEM);
+}
+
+static int alac_set_info(ALACContext *alac)
+{
+    const unsigned char *ptr = alac->avctx->extradata;
+
+    ptr += 4; /* size */
+    ptr += 4; /* alac */
+    ptr += 4; /* version */
+
+    if(AV_RB32(ptr) >= UINT_MAX/4){
+        av_log(alac->avctx, AV_LOG_ERROR, "setinfo_max_samples_per_frame too large\n");
+        return -1;
+    }
+
+    /* buffer size / 2 ? */
+    alac->setinfo_max_samples_per_frame = bytestream_get_be32(&ptr);
+    ptr++;                          /* compatible version */
+    alac->setinfo_sample_size           = *ptr++;
+    alac->setinfo_rice_historymult      = *ptr++;
+    alac->setinfo_rice_initialhistory   = *ptr++;
+    alac->setinfo_rice_kmodifier        = *ptr++;
+    alac->numchannels                   = *ptr++;
+    bytestream_get_be16(&ptr);      /* maxRun */
+    bytestream_get_be32(&ptr);      /* max coded frame size */
+    bytestream_get_be32(&ptr);      /* average bitrate */
+    bytestream_get_be32(&ptr);      /* samplerate */
+
+    return 0;
 }
 
 static av_cold int alac_decode_init(AVCodecContext * avctx)
 {
+    int ret;
     ALACContext *alac = avctx->priv_data;
     alac->avctx = avctx;
-    alac->numchannels = alac->avctx->channels;
 
     /* initialize from the extradata */
     if (alac->avctx->extradata_size != ALAC_EXTRADATA_SIZE) {
@@ -674,31 +646,51 @@ static av_cold int alac_decode_init(AVCodecContext * avctx)
         return -1;
     }
 
-    return 0;
-}
-
-static av_cold int alac_decode_close(AVCodecContext *avctx)
-{
-    ALACContext *alac = avctx->priv_data;
-
-    int chan;
-    for (chan = 0; chan < MAX_CHANNELS; chan++) {
-        av_freep(&alac->predicterror_buffer[chan]);
-        av_freep(&alac->outputsamples_buffer[chan]);
-        av_freep(&alac->wasted_bits_buffer[chan]);
+    switch (alac->setinfo_sample_size) {
+    case 16: avctx->sample_fmt    = AV_SAMPLE_FMT_S16;
+             break;
+    case 32:
+    case 24: avctx->sample_fmt    = AV_SAMPLE_FMT_S32;
+             break;
+    default: av_log_ask_for_sample(avctx, "Sample depth %d is not supported.\n",
+                                   alac->setinfo_sample_size);
+             return AVERROR_PATCHWELCOME;
     }
+
+    if (alac->numchannels < 1) {
+        av_log(avctx, AV_LOG_WARNING, "Invalid channel count\n");
+        alac->numchannels = avctx->channels;
+    } else {
+        if (alac->numchannels > MAX_CHANNELS)
+            alac->numchannels = avctx->channels;
+        else
+            avctx->channels = alac->numchannels;
+    }
+    if (avctx->channels > MAX_CHANNELS) {
+        av_log(avctx, AV_LOG_ERROR, "Unsupported channel count: %d\n",
+               avctx->channels);
+        return AVERROR_PATCHWELCOME;
+    }
+
+    if ((ret = allocate_buffers(alac)) < 0) {
+        av_log(avctx, AV_LOG_ERROR, "Error allocating buffers\n");
+        return ret;
+    }
+
+    avcodec_get_frame_defaults(&alac->frame);
+    avctx->coded_frame = &alac->frame;
 
     return 0;
 }
 
 AVCodec ff_alac_decoder = {
-    "alac",
-    AVMEDIA_TYPE_AUDIO,
-    CODEC_ID_ALAC,
-    sizeof(ALACContext),
-    alac_decode_init,
-    NULL,
-    alac_decode_close,
-    alac_decode_frame,
+    .name           = "alac",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_ALAC,
+    .priv_data_size = sizeof(ALACContext),
+    .init           = alac_decode_init,
+    .close          = alac_decode_close,
+    .decode         = alac_decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("ALAC (Apple Lossless Audio Codec)"),
 };

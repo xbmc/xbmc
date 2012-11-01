@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 // NfoFile.cpp: implementation of the CNfoFile class.
@@ -27,12 +26,10 @@
 #include "addons/AddonManager.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
-#include "Util.h"
 #include "FileItem.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "settings/GUISettings.h"
-#include "LangInfo.h"
 #include "utils/log.h"
 
 #include <vector>
@@ -93,18 +90,29 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   vector<ScraperPtr> vecScrapers;
 
-  // add selected scraper
+  // add selected scraper - first proirity
   if (m_info)
     vecScrapers.push_back(m_info);
 
+  // Add all scrapers except selected and default
   VECADDONS addons;
   CAddonMgr::Get().GetAddons(m_type,addons);
-  // first pass - add language based scrapers
-  if (m_info && g_guiSettings.GetBool("scrapers.langfallback"))
-    AddScrapers(addons,vecScrapers);
 
-  // add default scraper
-  if (defaultScraper && m_info && m_info->ID() != defaultScraper->ID())
+  for (unsigned i = 0; i < addons.size(); ++i)
+  {
+    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
+
+    // skip if scraper requires settings and there's nothing set yet
+    if (scraper->RequiresSettings() && !scraper->HasUserSettings())
+      continue;
+
+    if( (!m_info || m_info->ID() != scraper->ID()) && (!defaultScraper || defaultScraper->ID() != scraper->ID()) )
+      vecScrapers.push_back(scraper);
+  }
+
+  // add default scraper - not user selectable so it's last priority
+  if( defaultScraper && (!m_info || m_info->ID() != defaultScraper->ID()) &&
+      ( !defaultScraper->RequiresSettings() || defaultScraper->HasUserSettings() ) )
     vecScrapers.push_back(defaultScraper);
 
   // search ..
@@ -178,21 +186,4 @@ void CNfoFile::Close()
   delete m_doc;
   m_doc = NULL;
   m_scurl.Clear();
-}
-
-void CNfoFile::AddScrapers(VECADDONS& addons,
-                           vector<ScraperPtr>& vecScrapers)
-{
-  for (unsigned i=0;i<addons.size();++i)
-  {
-    ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
-
-    // skip if scraper requires settings and there's nothing set yet
-    if (scraper->RequiresSettings() && !scraper->HasUserSettings())
-      continue;
-
-    // add same language and multi-language
-    if (scraper->Language() == m_info->Language() || scraper->Language().Equals("multi"))
-      vecScrapers.push_back(scraper);
-  }
 }

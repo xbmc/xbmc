@@ -16,10 +16,11 @@
 ;*
 ;* You should have received a copy of the GNU Lesser General Public
 ;* License along with FFmpeg; if not, write to the Free Software
-;* 51, Inc., Foundation Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+;* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;******************************************************************************
 
-%include "x86inc.asm"
+%include "libavutil/x86/x86inc.asm"
+%include "x86util.asm"
 
 SECTION_RODATA
 pb_f: times 16 db 15
@@ -27,8 +28,10 @@ pb_zzzzzzzz77777777: times 8 db -1
 pb_7: times 8 db 7
 pb_zzzz3333zzzzbbbb: db -1,-1,-1,-1,3,3,3,3,-1,-1,-1,-1,11,11,11,11
 pb_zz11zz55zz99zzdd: db -1,-1,1,1,-1,-1,5,5,-1,-1,9,9,-1,-1,13,13
+pb_revwords: db 14, 15, 12, 13, 10, 11, 8, 9, 6, 7, 4, 5, 2, 3, 0, 1
+pd_16384: times 4 dd 16384
 
-section .text align=16
+SECTION_TEXT
 
 %macro SCALARPRODUCT 1
 ; int scalarproduct_int16(int16_t *v1, int16_t *v2, int order, int shift)
@@ -202,6 +205,130 @@ SCALARPRODUCT_LOOP 0
     RET
 
 
+;-----------------------------------------------------------------------------
+; void ff_apply_window_int16(int16_t *output, const int16_t *input,
+;                            const int16_t *window, unsigned int len)
+;-----------------------------------------------------------------------------
+
+%macro REVERSE_WORDS_MMXEXT 1-2
+    pshufw   %1, %1, 0x1B
+%endmacro
+
+%macro REVERSE_WORDS_SSE2 1-2
+    pshuflw  %1, %1, 0x1B
+    pshufhw  %1, %1, 0x1B
+    pshufd   %1, %1, 0x4E
+%endmacro
+
+%macro REVERSE_WORDS_SSSE3 2
+    pshufb  %1, %2
+%endmacro
+
+; dst = (dst * src) >> 15
+; pmulhw cuts off the bottom bit, so we have to lshift by 1 and add it back
+; in from the pmullw result.
+%macro MUL16FIXED_MMXEXT 3 ; dst, src, temp
+    mova    %3, %1
+    pmulhw  %1, %2
+    pmullw  %3, %2
+    psrlw   %3, 15
+    psllw   %1, 1
+    por     %1, %3
+%endmacro
+
+; dst = ((dst * src) + (1<<14)) >> 15
+%macro MUL16FIXED_SSSE3 3 ; dst, src, unused
+    pmulhrsw   %1, %2
+%endmacro
+
+%macro APPLY_WINDOW_INT16 3 ; %1=instruction set, %2=mmxext/sse2 bit exact version, %3=has_ssse3
+cglobal apply_window_int16_%1, 4,5,6, output, input, window, offset, offset2
+    lea     offset2q, [offsetq-mmsize]
+%if %2
+    mova          m5, [pd_16384]
+%elifidn %1, ssse3
+    mova          m5, [pb_revwords]
+    ALIGN 16
+%endif
+.loop:
+%if %2
+    ; This version expands 16-bit to 32-bit, multiplies by the window,
+    ; adds 16384 for rounding, right shifts 15, then repacks back to words to
+    ; save to the output. The window is reversed for the second half.
+    mova          m3, [windowq+offset2q]
+    mova          m4, [ inputq+offset2q]
+    pxor          m0, m0
+    punpcklwd     m0, m3
+    punpcklwd     m1, m4
+    pmaddwd       m0, m1
+    paddd         m0, m5
+    psrad         m0, 15
+    pxor          m2, m2
+    punpckhwd     m2, m3
+    punpckhwd     m1, m4
+    pmaddwd       m2, m1
+    paddd         m2, m5
+    psrad         m2, 15
+    packssdw      m0, m2
+    mova  [outputq+offset2q], m0
+    REVERSE_WORDS m3
+    mova          m4, [ inputq+offsetq]
+    pxor          m0, m0
+    punpcklwd     m0, m3
+    punpcklwd     m1, m4
+    pmaddwd       m0, m1
+    paddd         m0, m5
+    psrad         m0, 15
+    pxor          m2, m2
+    punpckhwd     m2, m3
+    punpckhwd     m1, m4
+    pmaddwd       m2, m1
+    paddd         m2, m5
+    psrad         m2, 15
+    packssdw      m0, m2
+    mova  [outputq+offsetq], m0
+%elif %3
+    ; This version does the 16x16->16 multiplication in-place without expanding
+    ; to 32-bit. The ssse3 version is bit-identical.
+    mova          m0, [windowq+offset2q]
+    mova          m1, [ inputq+offset2q]
+    pmulhrsw      m1, m0
+    REVERSE_WORDS m0, m5
+    pmulhrsw      m0, [ inputq+offsetq ]
+    mova  [outputq+offset2q], m1
+    mova  [outputq+offsetq ], m0
+%else
+    ; This version does the 16x16->16 multiplication in-place without expanding
+    ; to 32-bit. The mmxext and sse2 versions do not use rounding, and
+    ; therefore are not bit-identical to the C version.
+    mova          m0, [windowq+offset2q]
+    mova          m1, [ inputq+offset2q]
+    mova          m2, [ inputq+offsetq ]
+    MUL16FIXED    m1, m0, m3
+    REVERSE_WORDS m0
+    MUL16FIXED    m2, m0, m3
+    mova  [outputq+offset2q], m1
+    mova  [outputq+offsetq ], m2
+%endif
+    add      offsetd, mmsize
+    sub     offset2d, mmsize
+    jae .loop
+    REP_RET
+%endmacro
+
+INIT_MMX
+%define REVERSE_WORDS REVERSE_WORDS_MMXEXT
+%define MUL16FIXED MUL16FIXED_MMXEXT
+APPLY_WINDOW_INT16 mmxext,     0, 0
+APPLY_WINDOW_INT16 mmxext_ba,  1, 0
+INIT_XMM
+%define REVERSE_WORDS REVERSE_WORDS_SSE2
+APPLY_WINDOW_INT16 sse2,       0, 0
+APPLY_WINDOW_INT16 sse2_ba,    1, 0
+APPLY_WINDOW_INT16 ssse3_atom, 0, 1
+%define REVERSE_WORDS REVERSE_WORDS_SSSE3
+APPLY_WINDOW_INT16 ssse3,      0, 1
+
 
 ; void add_hfyu_median_prediction_mmx2(uint8_t *dst, const uint8_t *top, const uint8_t *diff, int w, int *left, int *left_top)
 cglobal add_hfyu_median_prediction_mmx2, 6,6,0, dst, top, diff, w, left, left_top
@@ -370,14 +497,14 @@ cglobal scalarproduct_float_sse, 3,3,2, v1, v2, offset
 ; ... and then the same for left/right extend also. See below for loop
 ; function implementations. Fast are fixed-width, slow is variable-width
 
-%macro EMU_EDGE_FUNC 1
+%macro EMU_EDGE_FUNC 0
 %ifdef ARCH_X86_64
 %define w_reg r10
-cglobal emu_edge_core_%1, 6, 7, 1
+cglobal emu_edge_core, 6, 7, 1
     mov        r11, r5          ; save block_h
 %else
 %define w_reg r6
-cglobal emu_edge_core_%1, 2, 7, 0
+cglobal emu_edge_core, 2, 7, 0
     mov         r4, r4m         ; end_y
     mov         r5, r5m         ; block_h
 %endif
@@ -468,6 +595,11 @@ cglobal emu_edge_core_%1, 2, 7, 0
 %define valw  ax
 %define valw2 r10w
 %define valw3 r3w
+%ifdef WIN64
+%define valw4 r4w
+%else ; unix64
+%define valw4 r3w
+%endif
 %define vald eax
 %else
 %define vall  bl
@@ -475,6 +607,7 @@ cglobal emu_edge_core_%1, 2, 7, 0
 %define valw  bx
 %define valw2 r6w
 %define valw3 valw2
+%define valw4 valw3
 %define vald ebx
 %define stack_offset 0x14
 %endif
@@ -497,18 +630,18 @@ cglobal emu_edge_core_%1, 2, 7, 0
 ;            - if (%2 & 3 == 3)  fills 2 bytes into r6, and 1 into ebx
 ;            - else              fills remaining bytes into ebx
 ; writing data out is in the same way
-%macro READ_NUM_BYTES 3
+%macro READ_NUM_BYTES 2
 %assign %%src_off 0 ; offset in source buffer
 %assign %%smidx   0 ; mmx register idx
 %assign %%sxidx   0 ; xmm register idx
 
-%ifnidn %3, mmx
+%if cpuflag(sse)
 %rep %2/16
-    movdqu xmm %+ %%sxidx, [r1+%%src_off]
+    movups xmm %+ %%sxidx, [r1+%%src_off]
 %assign %%src_off %%src_off+16
 %assign %%sxidx   %%sxidx+1
 %endrep ; %2/16
-%endif ; !mmx
+%endif
 
 %ifdef ARCH_X86_64
 %if (%2-%%src_off) == 8
@@ -537,21 +670,23 @@ cglobal emu_edge_core_%1, 2, 7, 0
 %elif (%2-%%src_off) == 3
 %ifidn %1, top
     mov         valw2, [r1+%%src_off]
-%else ; %1 != top
+%elifidn %1, body
     mov         valw3, [r1+%%src_off]
+%elifidn %1, bottom
+    mov         valw4, [r1+%%src_off]
 %endif ; %1 ==/!= top
     mov          vall, [r1+%%src_off+2]
 %endif ; (%2-%%src_off) == 1/2/3
 %endmacro ; READ_NUM_BYTES
 
-%macro WRITE_NUM_BYTES 3
+%macro WRITE_NUM_BYTES 2
 %assign %%dst_off 0 ; offset in destination buffer
 %assign %%dmidx   0 ; mmx register idx
 %assign %%dxidx   0 ; xmm register idx
 
-%ifnidn %3, mmx
+%if cpuflag(sse)
 %rep %2/16
-    movdqu [r0+%%dst_off], xmm %+ %%dxidx
+    movups [r0+%%dst_off], xmm %+ %%dxidx
 %assign %%dst_off %%dst_off+16
 %assign %%dxidx   %%dxidx+1
 %endrep ; %2/16
@@ -584,8 +719,10 @@ cglobal emu_edge_core_%1, 2, 7, 0
 %elif (%2-%%dst_off) == 3
 %ifidn %1, top
     mov    [r0+%%dst_off], valw2
-%else ; %1 != top
+%elifidn %1, body
     mov    [r0+%%dst_off], valw3
+%elifidn %1, bottom
+    mov    [r0+%%dst_off], valw4
 %endif ; %1 ==/!= top
     mov  [r0+%%dst_off+2], vall
 %endif ; (%2-%%dst_off) == 1/2/3
@@ -597,7 +734,7 @@ cglobal emu_edge_core_%1, 2, 7, 0
 ; those out into the destination buffer
 ; r0=buf,r1=src,r2=linesize,r3(64)/r3m(32)=start_x,r4=end_y,r5=block_h
 ; r6(eax/64)/r3(ebx/32)=val_reg
-%macro VERTICAL_EXTEND 1
+%macro VERTICAL_EXTEND 0
 %assign %%n 1
 %rep 22
 ALIGN 128
@@ -610,12 +747,12 @@ ALIGN 128
     cmp      dword r3m, 0
     je .emuedge_copy_body_ %+ %%n %+ _loop
 %endif ; ARCH_X86_64/32
-    READ_NUM_BYTES  top,    %%n, %1          ; read bytes
+    READ_NUM_BYTES  top,    %%n              ; read bytes
 .emuedge_extend_top_ %+ %%n %+ _loop:        ; do {
-    WRITE_NUM_BYTES top,    %%n, %1          ;   write bytes
+    WRITE_NUM_BYTES top,    %%n              ;   write bytes
     add            r0 , r2                   ;   dst += linesize
 %ifdef ARCH_X86_64
-    dec            r3
+    dec            r3d
 %else ; ARCH_X86_32
     dec      dword r3m
 %endif ; ARCH_X86_64/32
@@ -623,22 +760,22 @@ ALIGN 128
 
     ; copy body pixels
 .emuedge_copy_body_ %+ %%n %+ _loop:         ; do {
-    READ_NUM_BYTES  body,   %%n, %1          ;   read bytes
-    WRITE_NUM_BYTES body,   %%n, %1          ;   write bytes
+    READ_NUM_BYTES  body,   %%n              ;   read bytes
+    WRITE_NUM_BYTES body,   %%n              ;   write bytes
     add            r0 , r2                   ;   dst += linesize
     add            r1 , r2                   ;   src += linesize
-    dec            r4
+    dec            r4d
     jnz .emuedge_copy_body_ %+ %%n %+ _loop  ; } while (--end_y)
 
     ; copy bottom pixels
     test           r5 , r5                   ; if (!block_h)
     jz .emuedge_v_extend_end_ %+ %%n         ;   goto end
     sub            r1 , r2                   ; src -= linesize
-    READ_NUM_BYTES  bottom, %%n, %1          ; read bytes
+    READ_NUM_BYTES  bottom, %%n              ; read bytes
 .emuedge_extend_bottom_ %+ %%n %+ _loop:     ; do {
-    WRITE_NUM_BYTES bottom, %%n, %1          ;   write bytes
+    WRITE_NUM_BYTES bottom, %%n              ;   write bytes
     add            r0 , r2                   ;   dst += linesize
-    dec            r5
+    dec            r5d
     jnz .emuedge_extend_bottom_ %+ %%n %+ _loop ; } while (--block_h)
 
 .emuedge_v_extend_end_ %+ %%n:
@@ -659,17 +796,17 @@ ALIGN 128
 ; lowest two bytes of the register (so val*0x0101), and are splatted
 ; into each byte of mm0 as well if n_pixels >= 8
 
-%macro READ_V_PIXEL 3
+%macro READ_V_PIXEL 2
     mov        vall, %2
     mov        valh, vall
 %if %1 >= 8
     movd        mm0, vald
-%ifidn %3, mmx
+%if cpuflag(mmx2)
+    pshufw      mm0, mm0, 0
+%else ; mmx
     punpcklwd   mm0, mm0
     punpckldq   mm0, mm0
-%else ; !mmx
-    pshufw      mm0, mm0, 0
-%endif ; mmx
+%endif ; sse
 %endif ; %1 >= 8
 %endmacro
 
@@ -694,13 +831,13 @@ ALIGN 128
 %endmacro
 
 ; r0=buf+block_h*linesize, r1=start_x, r2=linesize, r5=block_h, r6/r3=val
-%macro LEFT_EXTEND 1
+%macro LEFT_EXTEND 0
 %assign %%n 2
 %rep 11
 ALIGN 64
 .emuedge_extend_left_ %+ %%n:          ; do {
     sub         r0, r2                 ;   dst -= linesize
-    READ_V_PIXEL  %%n, [r0+r1], %1     ;   read pixels
+    READ_V_PIXEL  %%n, [r0+r1]         ;   read pixels
     WRITE_V_PIXEL %%n, r0              ;   write pixels
     dec         r5
     jnz .emuedge_extend_left_ %+ %%n   ; } while (--block_h)
@@ -714,19 +851,19 @@ ALIGN 64
 %endmacro ; LEFT_EXTEND
 
 ; r3/r0=buf+block_h*linesize, r2=linesize, r11/r5=block_h, r0/r6=end_x, r6/r3=val
-%macro RIGHT_EXTEND 1
+%macro RIGHT_EXTEND 0
 %assign %%n 2
 %rep 11
 ALIGN 64
 .emuedge_extend_right_ %+ %%n:          ; do {
 %ifdef ARCH_X86_64
     sub        r3, r2                   ;   dst -= linesize
-    READ_V_PIXEL  %%n, [r3+w_reg-1], %1 ;   read pixels
+    READ_V_PIXEL  %%n, [r3+w_reg-1]     ;   read pixels
     WRITE_V_PIXEL %%n, r3+r4-%%n        ;   write pixels
     dec       r11
 %else ; ARCH_X86_32
     sub        r0, r2                   ;   dst -= linesize
-    READ_V_PIXEL  %%n, [r0+w_reg-1], %1 ;   read pixels
+    READ_V_PIXEL  %%n, [r0+w_reg-1]     ;   read pixels
     WRITE_V_PIXEL %%n, r0+r4-%%n        ;   write pixels
     dec     r5
 %endif ; ARCH_X86_64/32
@@ -768,17 +905,17 @@ ALIGN 64
 .%1_skip_%4_px:
 %endmacro
 
-%macro V_COPY_ROW 3
+%macro V_COPY_ROW 2
 %ifidn %1, bottom
     sub         r1, linesize
 %endif
 .%1_copy_loop:
     xor    cnt_reg, cnt_reg
-%ifidn %3, mmx
+%if notcpuflag(sse)
 %define linesize r2m
     V_COPY_NPX %1,  mm0, movq,    8, 0xFFFFFFF8
-%else ; !mmx
-    V_COPY_NPX %1, xmm0, movdqu, 16, 0xFFFFFFF0
+%else ; sse
+    V_COPY_NPX %1, xmm0, movups, 16, 0xFFFFFFF0
 %ifdef ARCH_X86_64
 %define linesize r2
     V_COPY_NPX %1, rax , mov,     8
@@ -786,7 +923,7 @@ ALIGN 64
 %define linesize r2m
     V_COPY_NPX %1,  mm0, movq,    8
 %endif ; ARCH_X86_64/32
-%endif ; mmx
+%endif ; sse
     V_COPY_NPX %1, vald, mov,     4
     V_COPY_NPX %1, valw, mov,     2
     V_COPY_NPX %1, vall, mov,     1
@@ -799,7 +936,7 @@ ALIGN 64
     jnz .%1_copy_loop
 %endmacro
 
-%macro SLOW_V_EXTEND 1
+%macro SLOW_V_EXTEND 0
 .slow_v_extend_loop:
 ; r0=buf,r1=src,r2(64)/r2m(32)=linesize,r3(64)/r3m(32)=start_x,r4=end_y,r5=block_h
 ; r11(64)/r3(later-64)/r2(32)=cnt_reg,r6(64)/r3(32)=val_reg,r10(64)/r6(32)=w=end_x-start_x
@@ -808,16 +945,16 @@ ALIGN 64
     test        r3, r3
 %define cnt_reg r11
     jz .do_body_copy            ; if (!start_y) goto do_body_copy
-    V_COPY_ROW top, r3, %1
+    V_COPY_ROW top, r3
 %else
     cmp  dword r3m, 0
 %define cnt_reg r2
     je .do_body_copy            ; if (!start_y) goto do_body_copy
-    V_COPY_ROW top, dword r3m, %1
+    V_COPY_ROW top, dword r3m
 %endif
 
 .do_body_copy:
-    V_COPY_ROW body, r4, %1
+    V_COPY_ROW body, r4
 
 %ifdef ARCH_X86_64
     pop        r11              ; restore old value of block_h
@@ -829,7 +966,7 @@ ALIGN 64
 %else
     jz .skip_bottom_extend
 %endif
-    V_COPY_ROW bottom, r5, %1
+    V_COPY_ROW bottom, r5
 %ifdef ARCH_X86_32
 .skip_bottom_extend:
     mov         r2, r2m
@@ -837,12 +974,12 @@ ALIGN 64
     jmp .v_extend_end
 %endmacro
 
-%macro SLOW_LEFT_EXTEND 1
+%macro SLOW_LEFT_EXTEND 0
 .slow_left_extend_loop:
 ; r0=buf+block_h*linesize,r2=linesize,r6(64)/r3(32)=val,r5=block_h,r4=cntr,r10/r6=start_x
     mov         r4, 8
     sub         r0, linesize
-    READ_V_PIXEL 8, [r0+w_reg], %1
+    READ_V_PIXEL 8, [r0+w_reg]
 .left_extend_8px_loop:
     movq [r0+r4-8], mm0
     add         r4, 8
@@ -865,7 +1002,7 @@ ALIGN 64
     jmp .right_extend
 %endmacro
 
-%macro SLOW_RIGHT_EXTEND 1
+%macro SLOW_RIGHT_EXTEND 0
 .slow_right_extend_loop:
 ; r3(64)/r0(32)=buf+block_h*linesize,r2=linesize,r4=block_w,r11(64)/r5(32)=block_h,
 ; r10(64)/r6(32)=end_x,r6/r3=val,r1=cntr
@@ -878,7 +1015,7 @@ ALIGN 64
 %endif
     lea         r1, [r4-8]
     sub    buf_reg, linesize
-    READ_V_PIXEL 8, [buf_reg+w_reg-1], %1
+    READ_V_PIXEL 8, [buf_reg+w_reg-1]
 .right_extend_8px_loop:
     movq [buf_reg+r1], mm0
     sub         r1, 8
@@ -899,16 +1036,147 @@ ALIGN 64
 %endmacro
 
 %macro emu_edge 1
-EMU_EDGE_FUNC     %1
-VERTICAL_EXTEND   %1
-LEFT_EXTEND       %1
-RIGHT_EXTEND      %1
-SLOW_V_EXTEND     %1
-SLOW_LEFT_EXTEND  %1
-SLOW_RIGHT_EXTEND %1
+INIT_XMM %1
+EMU_EDGE_FUNC
+VERTICAL_EXTEND
+LEFT_EXTEND
+RIGHT_EXTEND
+SLOW_V_EXTEND
+SLOW_LEFT_EXTEND
+SLOW_RIGHT_EXTEND
 %endmacro
 
 emu_edge sse
 %ifdef ARCH_X86_32
 emu_edge mmx
+%endif
+
+;-----------------------------------------------------------------------------
+; void ff_vector_clip_int32(int32_t *dst, const int32_t *src, int32_t min,
+;                           int32_t max, unsigned int len)
+;-----------------------------------------------------------------------------
+
+; %1 = number of xmm registers used
+; %2 = number of inline load/process/store loops per asm loop
+; %3 = process 4*mmsize (%3=0) or 8*mmsize (%3=1) bytes per loop
+; %4 = CLIPD function takes min/max as float instead of int (CLIPD_SSE2)
+; %5 = suffix
+%macro VECTOR_CLIP_INT32 4-5
+cglobal vector_clip_int32%5, 5,5,%2, dst, src, min, max, len
+%if %4
+    cvtsi2ss  m4, minm
+    cvtsi2ss  m5, maxm
+%else
+    movd      m4, minm
+    movd      m5, maxm
+%endif
+    SPLATD    m4
+    SPLATD    m5
+.loop:
+%assign %%i 1
+%rep %2
+    mova      m0,  [srcq+mmsize*0*%%i]
+    mova      m1,  [srcq+mmsize*1*%%i]
+    mova      m2,  [srcq+mmsize*2*%%i]
+    mova      m3,  [srcq+mmsize*3*%%i]
+%if %3
+    mova      m7,  [srcq+mmsize*4*%%i]
+    mova      m8,  [srcq+mmsize*5*%%i]
+    mova      m9,  [srcq+mmsize*6*%%i]
+    mova      m10, [srcq+mmsize*7*%%i]
+%endif
+    CLIPD  m0,  m4, m5, m6
+    CLIPD  m1,  m4, m5, m6
+    CLIPD  m2,  m4, m5, m6
+    CLIPD  m3,  m4, m5, m6
+%if %3
+    CLIPD  m7,  m4, m5, m6
+    CLIPD  m8,  m4, m5, m6
+    CLIPD  m9,  m4, m5, m6
+    CLIPD  m10, m4, m5, m6
+%endif
+    mova  [dstq+mmsize*0*%%i], m0
+    mova  [dstq+mmsize*1*%%i], m1
+    mova  [dstq+mmsize*2*%%i], m2
+    mova  [dstq+mmsize*3*%%i], m3
+%if %3
+    mova  [dstq+mmsize*4*%%i], m7
+    mova  [dstq+mmsize*5*%%i], m8
+    mova  [dstq+mmsize*6*%%i], m9
+    mova  [dstq+mmsize*7*%%i], m10
+%endif
+%assign %%i %%i+1
+%endrep
+    add     srcq, mmsize*4*(%2+%3)
+    add     dstq, mmsize*4*(%2+%3)
+    sub     lend, mmsize*(%2+%3)
+    jg .loop
+    REP_RET
+%endmacro
+
+INIT_MMX mmx
+%define SPLATD SPLATD_MMX
+%define CLIPD CLIPD_MMX
+VECTOR_CLIP_INT32 0, 1, 0, 0
+INIT_XMM sse2
+%define SPLATD SPLATD_SSE2
+VECTOR_CLIP_INT32 6, 1, 0, 0, _int
+%define CLIPD CLIPD_SSE2
+VECTOR_CLIP_INT32 6, 2, 0, 1
+INIT_XMM sse4
+%define CLIPD CLIPD_SSE41
+%ifdef m8
+VECTOR_CLIP_INT32 11, 1, 1, 0
+%else
+VECTOR_CLIP_INT32 6, 1, 0, 0
+%endif
+
+;-----------------------------------------------------------------------------
+; void ff_butterflies_float_interleave(float *dst, const float *src0,
+;                                      const float *src1, int len);
+;-----------------------------------------------------------------------------
+
+%macro BUTTERFLIES_FLOAT_INTERLEAVE 0
+cglobal butterflies_float_interleave, 4,4,3, dst, src0, src1, len
+%ifdef ARCH_X86_64
+    movsxd    lenq, lend
+%endif
+    test      lenq, lenq
+    jz .end
+    shl       lenq, 2
+    lea      src0q, [src0q +   lenq]
+    lea      src1q, [src1q +   lenq]
+    lea       dstq, [ dstq + 2*lenq]
+    neg       lenq
+.loop:
+    mova        m0, [src0q + lenq]
+    mova        m1, [src1q + lenq]
+    subps       m2, m0, m1
+    addps       m0, m0, m1
+    unpcklps    m1, m0, m2
+    unpckhps    m0, m0, m2
+%if cpuflag(avx)
+    vextractf128 [dstq + 2*lenq     ], m1, 0
+    vextractf128 [dstq + 2*lenq + 16], m0, 0
+    vextractf128 [dstq + 2*lenq + 32], m1, 1
+    vextractf128 [dstq + 2*lenq + 48], m0, 1
+%else
+    mova [dstq + 2*lenq         ], m1
+    mova [dstq + 2*lenq + mmsize], m0
+%endif
+    add       lenq, mmsize
+    jl .loop
+%if mmsize == 32
+    vzeroupper
+    RET
+%endif
+.end:
+    REP_RET
+%endmacro
+
+INIT_XMM sse
+BUTTERFLIES_FLOAT_INTERLEAVE
+%ifdef HAVE_AVX
+INIT_YMM avx
+BUTTERFLIES_FLOAT_INTERLEAVE
 %endif

@@ -33,20 +33,20 @@
 // cos(i * M_PI / 16) * sqrt(2) * (1 << 14)
 // W4 is actually exactly 16384, but using 16383 works around
 // accumulating rounding errors for some encoders
-#define W1 ((int_fast32_t) 22725)
-#define W2 ((int_fast32_t) 21407)
-#define W3 ((int_fast32_t) 19266)
-#define W4 ((int_fast32_t) 16383)
-#define W5 ((int_fast32_t) 12873)
-#define W6 ((int_fast32_t)  8867)
-#define W7 ((int_fast32_t)  4520)
+#define W1 22725
+#define W2 21407
+#define W3 19266
+#define W4 16383
+#define W5 12873
+#define W6  8867
+#define W7  4520
 #define ROW_SHIFT 11
 #define COL_SHIFT 20
 
 /* 0: all entries 0, 1: only first entry nonzero, 2: otherwise  */
 static inline int idct_row(DCTELEM *row)
 {
-    int_fast32_t a0, a1, a2, a3, b0, b1, b2, b3, t;
+    int a0, a1, a2, a3, b0, b1, b2, b3, t;
     uint64_t l, r, t2;
     l = ldq(row);
     r = ldq(row + 4);
@@ -154,7 +154,7 @@ static inline int idct_row(DCTELEM *row)
 
 static inline void idct_col(DCTELEM *col)
 {
-    int_fast32_t a0, a1, a2, a3, b0, b1, b2, b3;
+    int a0, a1, a2, a3, b0, b1, b2, b3;
 
     col[0] += (1 << (COL_SHIFT - 1)) / W4;
 
@@ -235,7 +235,7 @@ static inline void idct_col2(DCTELEM *col)
     uint64_t l, r;
 
     for (i = 0; i < 8; ++i) {
-        int_fast32_t a0 = col[i] + (1 << (COL_SHIFT - 1)) / W4;
+        int a0 = col[i] + (1 << (COL_SHIFT - 1)) / W4;
 
         a0 *= W4;
         col[i] = a0 >> COL_SHIFT;

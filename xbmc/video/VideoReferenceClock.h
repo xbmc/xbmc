@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,7 @@
 //TODO: get rid of #ifdef hell, abstract implementations in separate classes
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
+  #include "system_gl.h"
   #include <X11/X.h>
   #include <X11/Xlib.h>
   #include <GL/glx.h>
@@ -71,7 +71,7 @@ class CVideoReferenceClock : public CThread
     void    SetFineAdjust(double fineadjust);
     void    RefreshChanged() { m_RefreshChanged = 1; }
 
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
     void VblankHandler(int64_t nowtime, double fps);
 #endif
 
@@ -139,7 +139,7 @@ class CVideoReferenceClock : public CThread
     unsigned int  m_Height;
     bool          m_Interlaced;
 
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
     bool SetupCocoa();
     void RunCocoa();
     void CleanupCocoa();

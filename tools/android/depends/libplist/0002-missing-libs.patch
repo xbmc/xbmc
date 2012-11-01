@@ -1,0 +1,12 @@
+diff -ruN armeabi-v7a/src/CMakeLists.txt armeabi-v7a.good//src/CMakeLists.txt
+--- src/CMakeLists.txt	2011-06-24 21:00:48.000000000 -0400
++++ src/CMakeLists.txt	2012-06-08 13:52:14.934096496 -0400
+@@ -35,7 +35,7 @@
+ SET_SOURCE_FILES_PROPERTIES(${libcnary_object_files} PROPERTIES EXTERNAL_OBJECT true GENERATED true)
+ 
+ ADD_LIBRARY( plist SHARED ${libplist_SRC} ${libcnary_object_files} )
+-TARGET_LINK_LIBRARIES( plist ${LIBXML2_LIBRARIES} )
++TARGET_LINK_LIBRARIES( plist m z iconv ${LIBXML2_LIBRARIES} )
+ SET_TARGET_PROPERTIES( plist PROPERTIES VERSION ${LIBPLIST_LIBVERSION} )
+ SET_TARGET_PROPERTIES( plist PROPERTIES SOVERSION ${LIBPLIST_SOVERSION} )
+ if(APPLE)

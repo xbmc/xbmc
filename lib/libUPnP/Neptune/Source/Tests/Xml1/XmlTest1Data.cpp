@@ -64,28 +64,28 @@ const char* xml_cano_1[] = {
 
 // test 3
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>",
 
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>",
 
 // test 4
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt foo:btt=\"att1\" bla:att=\"att2\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt foo:btt=\"att1\" bla:att=\"att2\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>",
 
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt bla:att=\"att2\" foo:btt=\"att1\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt bla:att=\"att2\" foo:btt=\"att1\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>",
 // Test att1-xmlsec.xml
 "<elt xmlns:foo = 'http://a.org'>\n"
@@ -98,11 +98,11 @@ const char* xml_cano_1[] = {
 ,
 // Test att2-xmlsec.xml
 "<elt xmlns:foo = 'http://a.org' xmlns:bar='http://b.org'>\n"
-"	<elt1 bar:att=\"2\" foo:att='1'>babar</elt1>\n"
+"   <elt1 bar:att=\"2\" foo:att='1'>babar</elt1>\n"
 "</elt>"
 ,
 "<elt>\n"
-"	<elt1 xmlns:bar=\"http://b.org\" xmlns:foo=\"http://a.org\" foo:att=\"1\" bar:att=\"2\">babar</elt1>\n"
+"   <elt1 xmlns:bar=\"http://b.org\" xmlns:foo=\"http://a.org\" foo:att=\"1\" bar:att=\"2\">babar</elt1>\n"
 "</elt>"
 ,
 // Test char_modi-xmlsec.xml
@@ -261,50 +261,50 @@ const char* xml_cano_1[] = {
 ,
 // Test same_namespaces-xmlsec.xml
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\"/>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\"/>\n"
 "</foo:bar>"
 ,
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\"></bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\"></bla:zoo>\n"
 "</foo:bar>"
 ,
 // Test same_namespaces2-xmlsec.xml
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>"
 ,
 "<foo:bar xmlns:foo=\"http://a.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt foo:att=\"att1\" bla:btt=\"att2\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>"
 ,
 // Test same_namespaces2b-xmlsec.xml
 "<foo:bar xmlns:foo=\"http://b.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt foo:att=\"att1\" bla:att2=\"att2\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt foo:att=\"att1\" bla:att2=\"att2\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>"
 ,
 "<foo:bar xmlns:foo=\"http://b.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt bla:att2=\"att2\" foo:att=\"att1\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt bla:att2=\"att2\" foo:att=\"att1\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>"
 ,
 // Test same_namespaces2c-xmlsec.xml
 "<foo:bar xmlns:foo=\"http://b.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt foo:att=\"att1\" bla:att=\"att2\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt foo:att=\"att1\" bla:att=\"att2\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>"
 ,
 "<foo:bar xmlns:foo=\"http://b.com\">\n"
-"	<bla:zoo xmlns:bla=\"http://a.com\">\n"
-"		<elt bla:att=\"att2\" foo:att=\"att1\">youf</elt>\n"
-"	</bla:zoo>\n"
+"   <bla:zoo xmlns:bla=\"http://a.com\">\n"
+"       <elt bla:att=\"att2\" foo:att=\"att1\">youf</elt>\n"
+"   </bla:zoo>\n"
 "</foo:bar>"
 ,
 // Test start_end_tags-xmlsec.xml

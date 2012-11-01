@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,20 +13,24 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
+
+#include "Shader.h"
 #include "settings/Settings.h"
 #include "filesystem/File.h"
-#include "Shader.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+
+#ifdef HAS_GLES
+#define GLchar char
+#endif
 
 #define LOG_SIZE 1024
 
@@ -49,12 +53,7 @@ bool CShader::LoadSource(const string& filename, const string& prefix)
     CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
     return false;
   }
-#ifdef _ARMEL
-  CLog::Log(LOGDEBUG, "Shader - Loading shader file %s", filename.c_str());
-  m_source.assign(file.ReadFile());
-#else
   getline(file, m_source, '\0');
-#endif
   m_source.insert(0, prefix);
   return true;
 }

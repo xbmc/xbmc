@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund, Jon Gettler
+ *  Copyright (C) 2004-2009, Eric Lund, Jon Gettler
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -26,32 +26,12 @@
  *                owns the tuner and channel information (i.e. program
  *                guide data).
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#ifdef _MSC_VER
 #include <time.h>
-#else
-#include <sys/time.h>
-#endif
 #include <cmyth_local.h>
-
-#ifdef _MSC_VER
-static void nullprint(a, ...) { return; }
-#define PRINTF nullprint
-#define TRC  nullprint
-#elif 0
-#define PRINTF(x...) PRINTF(x)
-#define TRC(fmt, args...) PRINTF(fmt, ## args) 
-#else
-#define PRINTF(x...)
-#define TRC(fmt, args...) 
-#endif
 
 /*
  * cmyth_recorder_destroy(cmyth_recorder_t rec)
@@ -509,7 +489,6 @@ cmyth_recorder_pause(cmyth_recorder_t rec)
 
 	pthread_mutex_lock(&mutex);
 
-	PRINTF("** SSDEBUG: trying to pause recorder:%p:%p\n",rec,rec->rec_conn);
 	sprintf(Buffer, "QUERY_RECORDER %ld[]:[]PAUSE", (long) rec->rec_id);
 	if ((ret=cmyth_send_message(rec->rec_conn, Buffer)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
@@ -527,7 +506,6 @@ cmyth_recorder_pause(cmyth_recorder_t rec)
 	ret = 0;
 
     err:
-	PRINTF("** SSDEBUG: recorder paused:\n");
 	pthread_mutex_unlock(&mutex);
 
 	return ret;

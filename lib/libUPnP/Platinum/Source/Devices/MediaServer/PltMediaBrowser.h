@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Browser (Media Server Control Point)
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,6 +32,10 @@
 |
 ****************************************************************/
 
+/** @file
+ UPnP AV Media Controller implementation.
+ */
+
 #ifndef _PLT_MEDIA_BROWSER_H_
 #define _PLT_MEDIA_BROWSER_H_
 
@@ -43,17 +48,26 @@
 /*----------------------------------------------------------------------
 |   PLT_BrowseInfo
 +---------------------------------------------------------------------*/
-struct PLT_BrowseInfo {
+/**
+ The PLT_BrowseInfo struct is used to marshall Browse or Search action 
+ response results across different threads of execution.
+ */
+typedef struct {
     NPT_String                   object_id;
     PLT_MediaObjectListReference items;
+    NPT_UInt32                   si;
     NPT_UInt32                   nr;
     NPT_UInt32                   tm;
     NPT_UInt32                   uid;
-};
+} PLT_BrowseInfo;
 
 /*----------------------------------------------------------------------
-|   PLT_MediaBrowserDelegate class
+|   PLT_MediaBrowserDelegate
 +---------------------------------------------------------------------*/
+/**
+ The PLT_MediaBrowserDelegate class is an interface for receiving PLT_MediaBrowser
+ events or action responses.
+ */
 class PLT_MediaBrowserDelegate
 {
 public:
@@ -80,8 +94,11 @@ public:
 };
 
 /*----------------------------------------------------------------------
-|   PLT_MediaBrowser class
+|   PLT_MediaBrowser
 +---------------------------------------------------------------------*/
+/**
+ The PLT_MediaBrowser class implements a UPnP AV Media Server control point.
+ */
 class PLT_MediaBrowser : public PLT_CtrlPointListener
 {
 public:
@@ -95,7 +112,7 @@ public:
                               NPT_UInt32               start_index,
                               NPT_UInt32               count = 30, // DLNA recommendations
                               bool                     browse_metadata = false,
-                              const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author",
+                              const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:originalTrackNumber,upnp:album,upnp:artist,upnp:author", // explicitely specify res otherwise WMP won't return a URL!
                               const char*              sort_criteria = "",
                               void*                    userdata = NULL);
 
@@ -104,9 +121,8 @@ public:
 							  const char*              search_criteria,
 				              NPT_UInt32               start_index,
 					          NPT_UInt32               count = 30, // DLNA recommendations
-						      const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:album,upnp:artist,upnp:author",
+                              const char*              filter = "dc:date,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:originalTrackNumber,upnp:album,upnp:artist,upnp:author", // explicitely specify res otherwise WMP won't return a URL!
 						  	  void*                    userdata = NULL);
-	//BBMOD END
 
     // methods
     virtual const NPT_Lock<PLT_DeviceDataReferenceList>& GetMediaServers() { return m_MediaServers; }

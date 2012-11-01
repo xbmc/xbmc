@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -114,8 +113,11 @@ CDVDAudioCodecPcm::CDVDAudioCodecPcm() : CDVDAudioCodec()
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
   m_decodedDataSize = 0;
-  m_pInputBuffer = NULL;
   m_codecID = CODEC_ID_NONE;
+  m_iOutputChannels = 0;
+
+  memset(m_decodedData, 0, sizeof(m_decodedData));
+  memset(table, 0, sizeof(table));
 }
 
 CDVDAudioCodecPcm::~CDVDAudioCodecPcm()
@@ -275,7 +277,6 @@ int CDVDAudioCodecPcm::GetData(BYTE** dst)
 
 void CDVDAudioCodecPcm::SetDefault()
 {
-  m_pInputBuffer = m_inputBuffer;
   m_iSourceChannels = 0;
   m_iSourceSampleRate = 0;
   m_iSourceBitrate = 0;
@@ -293,18 +294,19 @@ int CDVDAudioCodecPcm::GetChannels()
   return m_iOutputChannels;
 }
 
-enum PCMChannels* CDVDAudioCodecPcm::GetChannelMap()
+CAEChannelInfo CDVDAudioCodecPcm::GetChannelMap()
 {
-  static enum PCMChannels map[8][8] =
+  assert(m_iOutputChannels > 0 && m_iOutputChannels <= 8);
+  static enum AEChannel map[8][9] =
   {
-    /* MONO   */ {PCM_FRONT_CENTER                                                                                                                                                    },
-    /* STEREO */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT                                                                                                                                     },
-    /* 3.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER                                                                                                                   },
-    /* 4.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                                   },
-    /* 5.0    */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                                },
-    /* 5.1    */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                                },
-    /* 7.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                                },
-    /* 7.1 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                }
+    /* MONO   */ {AE_CH_FC, AE_CH_NULL,                                                                      },
+    /* STEREO */ {AE_CH_FL, AE_CH_FR, AE_CH_NULL,                                                            },
+    /* 3.0 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_NULL,                                                  },
+    /* 4.0 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR , AE_CH_NULL,                                       },
+    /* 5.0    */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL , AE_CH_BR, AE_CH_NULL                              },
+    /* 5.1    */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_NULL,                   },
+    /* 7.0 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_BL , AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL          },
+    /* 7.1 ?  */ {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL}
   };
 
   return map[m_iOutputChannels - 1];
@@ -315,7 +317,7 @@ int CDVDAudioCodecPcm::GetSampleRate()
   return m_iSourceSampleRate;
 }
 
-int CDVDAudioCodecPcm::GetBitsPerSample()
+enum AEDataFormat CDVDAudioCodecPcm::GetDataFormat()
 {
-  return 16;
+  return AE_FMT_S16NE;
 }

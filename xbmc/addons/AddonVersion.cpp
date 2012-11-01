@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -112,9 +111,16 @@ namespace ADDON
 
     int result = CompareComponent(Upstream(), other.Upstream());
     if (result)
-      return (-1 == result);
+      return (result < 0);
 
-    return (-1 == CompareComponent(Revision(), other.Revision()));
+    return (CompareComponent(Revision(), other.Revision()) < 0);
+  }
+
+  bool AddonVersion::operator==(const AddonVersion& other) const
+  {
+    return Epoch() == other.Epoch()
+      && CompareComponent(Upstream(), other.Upstream()) == 0
+      && CompareComponent(Revision(), other.Revision()) == 0;
   }
 
   CStdString AddonVersion::Print() const
@@ -135,5 +141,30 @@ namespace ADDON
     version = version.Mid(0,version.size()-4);
 
     return true;
+  }
+
+  bool AddonVersion::Test()
+  {
+    AddonVersion v1_0("1.0");
+    AddonVersion v1_00("1.00");
+    AddonVersion v1_0_0("1.0.0");
+    AddonVersion v1_1("1.1");
+    AddonVersion v1_01("1.01");
+    AddonVersion v1_0_1("1.0.1");
+
+    bool ret = false;
+
+    // These are totally sane
+    ret = (v1_0 < v1_1) && (v1_0 < v1_01) && (v1_0 < v1_0_1) &&
+          (v1_1 > v1_0_1) && (v1_01 > v1_0_1);
+
+    // These are rather sane
+    ret &= (v1_0 != v1_0_0) && (v1_0 < v1_0_0) && (v1_0_0 > v1_0) &&
+           (v1_00 != v1_0_0) && (v1_00 < v1_0_0) && (v1_0_0 > v1_00);
+
+    ret &= (v1_0 == v1_00) && !(v1_0 < v1_00) && !(v1_0 > v1_00);
+    ret &= (v1_1 == v1_01) && !(v1_1 < v1_01) && !(v1_1 > v1_01);
+
+    return ret;
   }
 }

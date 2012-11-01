@@ -2,12 +2,14 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=libogg
-VERSION=1.1.4
+VERSION=1.3.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+PACKAGE_NAME=libogg
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) \
+  PACKAGE_NAME=$(PACKAGE_NAME)
 
 LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
 

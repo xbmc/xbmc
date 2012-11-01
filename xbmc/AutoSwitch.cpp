@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "AutoSwitch.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
@@ -127,7 +125,7 @@ bool CAutoSwitch::ByFolders(const CFileItemList& vecItems)
     for (int i = 0; i < vecItems.Size(); i++)
     {
       const CFileItemPtr pItem = vecItems[i];
-      if (pItem->HasThumbnail())
+      if (pItem->HasArt("thumb"))
       {
         bThumbs = true;
         break;
@@ -158,7 +156,7 @@ bool CAutoSwitch::ByFiles(bool bHideParentDirItems, const CFileItemList& vecItem
     for (int i = 0; i < vecItems.Size(); i++)
     {
       const CFileItemPtr pItem = vecItems[i];
-      if (pItem->HasThumbnail())
+      if (pItem->HasArt("thumb"))
       {
         bThumbs = true;
         break;
@@ -187,7 +185,7 @@ bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, const C
   for (int i = 0; i < vecItems.Size(); i++)
   {
     const CFileItemPtr pItem = vecItems[i];
-    if (pItem->HasThumbnail())
+    if (pItem->HasArt("thumb"))
     {
       iNumThumbs++;
       float fTempPercent = ( (float)iNumThumbs / (float)iNumItems ) * (float)100;
@@ -228,7 +226,7 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
   for (int i = 0; i < vecItems.Size(); i++)
   {
     const CFileItemPtr item = vecItems[i];
-    if (item->m_bIsFolder && item->HasThumbnail())
+    if (item->m_bIsFolder && item->HasArt("thumb"))
     {
       numThumbs++;
       if (numThumbs >= 0.01f * percent * (numItems - fileCount))

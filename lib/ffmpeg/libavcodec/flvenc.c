@@ -25,7 +25,7 @@ void ff_flv_encode_picture_header(MpegEncContext * s, int picture_number)
 {
       int format;
 
-      align_put_bits(&s->pb);
+      avpriv_align_put_bits(&s->pb);
 
       put_bits(&s->pb, 17, 1);
       put_bits(&s->pb, 5, (s->h263_flv-1)); /* 0: h263 escape codes 1: 11-bit escape codes */
@@ -53,7 +53,7 @@ void ff_flv_encode_picture_header(MpegEncContext * s, int picture_number)
         put_bits(&s->pb, 16, s->width);
         put_bits(&s->pb, 16, s->height);
       }
-      put_bits(&s->pb, 2, s->pict_type == FF_P_TYPE); /* PictureType */
+      put_bits(&s->pb, 2, s->pict_type == AV_PICTURE_TYPE_P); /* PictureType */
       put_bits(&s->pb, 1, 1); /* DeblockingFlag: on */
       put_bits(&s->pb, 5, s->qscale); /* Quantizer */
       put_bits(&s->pb, 1, 0); /* ExtraInformation */
@@ -85,13 +85,13 @@ void ff_flv2_encode_ac_esc(PutBitContext *pb, int slevel, int level, int run, in
 }
 
 AVCodec ff_flv_encoder = {
-    "flv",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_FLV1,
-    sizeof(MpegEncContext),
-    MPV_encode_init,
-    MPV_encode_picture,
-    MPV_encode_end,
+    .name           = "flv",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_FLV1,
+    .priv_data_size = sizeof(MpegEncContext),
+    .init           = MPV_encode_init,
+    .encode         = MPV_encode_picture,
+    .close          = MPV_encode_end,
     .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
 };

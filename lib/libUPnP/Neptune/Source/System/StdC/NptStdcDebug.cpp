@@ -2,7 +2,7 @@
 |
 |      File: NptStdcDebug.c
 |
-|      Atomix - Debug Support: StdC Implementation
+|      Neptune - Debug Support: StdC Implementation
 |
 |      (c) 2002-2009 Gilles Boccon-Gibod
 |      Author: Gilles Boccon-Gibod (bok@bok.net)

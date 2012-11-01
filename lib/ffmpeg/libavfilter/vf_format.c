@@ -25,6 +25,7 @@
 
 #include "libavutil/pixdesc.h"
 #include "avfilter.h"
+#include "internal.h"
 
 typedef struct {
     /**
@@ -41,7 +42,7 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     FormatContext *format = ctx->priv;
     const char *cur, *sep;
     char             pix_fmt_name[PIX_FMT_NAME_MAXSIZE];
-    int              pix_fmt_name_len;
+    int              pix_fmt_name_len, ret;
     enum PixelFormat pix_fmt;
 
     /* parse the list of formats */
@@ -57,12 +58,9 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 
         memcpy(pix_fmt_name, cur, pix_fmt_name_len);
         pix_fmt_name[pix_fmt_name_len] = 0;
-        pix_fmt = av_get_pix_fmt(pix_fmt_name);
 
-        if (pix_fmt == PIX_FMT_NONE) {
-            av_log(ctx, AV_LOG_ERROR, "Unknown pixel format: %s\n", pix_fmt_name);
-            return -1;
-        }
+        if ((ret = ff_parse_pixel_format(&pix_fmt, pix_fmt_name, ctx)) < 0)
+            return ret;
 
         format->listed_pix_fmt_flags[pix_fmt] = 1;
     }
@@ -88,7 +86,7 @@ static AVFilterFormats *make_format_list(FormatContext *format, int flag)
 #if CONFIG_FORMAT_FILTER
 static int query_formats_format(AVFilterContext *ctx)
 {
-    avfilter_set_common_formats(ctx, make_format_list(ctx->priv, 1));
+    avfilter_set_common_pixel_formats(ctx, make_format_list(ctx->priv, 1));
     return 0;
 }
 
@@ -102,14 +100,14 @@ AVFilter avfilter_vf_format = {
 
     .priv_size = sizeof(FormatContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name            = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name      = "default",
                                     .type            = AVMEDIA_TYPE_VIDEO,
                                     .get_video_buffer= avfilter_null_get_video_buffer,
                                     .start_frame     = avfilter_null_start_frame,
                                     .draw_slice      = avfilter_null_draw_slice,
                                     .end_frame       = avfilter_null_end_frame, },
                                   { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name      = "default",
                                     .type            = AVMEDIA_TYPE_VIDEO },
                                   { .name = NULL}},
 };
@@ -118,7 +116,7 @@ AVFilter avfilter_vf_format = {
 #if CONFIG_NOFORMAT_FILTER
 static int query_formats_noformat(AVFilterContext *ctx)
 {
-    avfilter_set_common_formats(ctx, make_format_list(ctx->priv, 0));
+    avfilter_set_common_pixel_formats(ctx, make_format_list(ctx->priv, 0));
     return 0;
 }
 
@@ -132,14 +130,14 @@ AVFilter avfilter_vf_noformat = {
 
     .priv_size = sizeof(FormatContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name            = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name      = "default",
                                     .type            = AVMEDIA_TYPE_VIDEO,
                                     .get_video_buffer= avfilter_null_get_video_buffer,
                                     .start_frame     = avfilter_null_start_frame,
                                     .draw_slice      = avfilter_null_draw_slice,
                                     .end_frame       = avfilter_null_end_frame, },
                                   { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name      = "default",
                                     .type            = AVMEDIA_TYPE_VIDEO },
                                   { .name = NULL}},
 };

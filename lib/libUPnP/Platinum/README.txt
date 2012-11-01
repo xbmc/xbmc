@@ -11,20 +11,25 @@ Unless you intend to use Neptune independently from Platinum, it is recommended 
 BUILDING SDK & SAMPLE APPLICATIONS
 
 * Windows:
-Open the Visual Studio 2005 solution located @ Platinum\Build\Targets\x86-microsoft-win32-vs2005\Platinum.sln
 Open the Visual Studio 2008 solution located @ Platinum\Build\Targets\x86-microsoft-win32-vs2008\Platinum.sln
 
-* XBox:
-Open the Visual Studio .NET 2003 solution located @ Platinum\Build\Targets\x86-microsoft-xbox-vs2003\Platinum.sln
+* MacOSX, iOS:
+Open the XCode project file located @ Platinum/Build/Targets/universal-apple-macosx/Platinum.xcodeproj
+To include Platinum to your XCode projects, simply add the project file then add Platinum as a Target Dependency as well as libPlatinum.lib in Link Binaries.
+Alternatively, you can build the Platinum.Framework using the PlatinumFramework target and add it to your project.
 
-* MacOSX:
-Open the XCode project file located @ Platinum/Build/Targets/universal-apple-macosx/PlatinumApps.xcodeproj
-To include Platinum to your XCode projects, simply add the project file located @ Platinum/Build/Targets/universal-apple-macosx/Platinum.xcodeproj.
-
-* Linux, Cygwin, MacOSX
+* Linux, Cygwin, MacOSX, iOS
 Open a shell, go to the Platinum root directory and type 'scons' (http://scons.org). 
 The output of the scons build will be found under Platinum/Build/Targets/{TARGET}/{Debug|Release}. 
-Additionally, the output is copied under Platinum/Targets/{TARGET}/{Debug|Release} for convenience.
+Additionally, the output is copied under Platinum/Targets/{TARGET}/{Debug|Release} for convenience when applicable.
+
+Command Line Examples:
+Builds libPlatinum.a, Platinum.Framework on both OSX & iOS using Xcode. Apps & Tests on OSX only.
+[The framework for OSX is i386 and x86_64 compatible, the iOS version is armv6, armv7 and i386 compatible so you can link with it and run your app on device and simulator]
+> scons target=universal-apple-macosx-xcode build_config=Release
+
+Builds Platinum.lib, Tests & Apps for Windows
+> scons target=x86-microsoft-win32 build_config=Release
 
 ---------------------------------------------
 RUNNING SAMPLE APPLICATIONS
@@ -80,3 +85,22 @@ Experimental MediaRenderer commands (not yet full implemented):
 * MediaConnect
 --------------
 This is a derived implementation of the FileMediaServerTest with the only difference that it makes it visible to a XBox 360.
+
+* MediaServerCocoaTest
+----------------------
+A basic cocoa test server app showing how to use the Platinum framework on Mac OSX.
+
+---------------------------------------------
+LANGUAGE BINDINGS
+
+* Objective-C
+-------------
+Under Source/Extras/ObjectiveC
+
+* C++/CLR
+---------
+Under Source/Extras/Managed
+
+* Android Java/JNI
+------------------
+TBD

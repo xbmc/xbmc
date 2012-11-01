@@ -188,7 +188,7 @@
       <!-- minus      	-->      <button id="2">DecreaseRating</button>
       <!-- left       	-->      <button id="3">PreviousPreset</button>
       <!-- right      	-->      <button id="4">NextPreset</button>
-      <!-- menu       	-->      <button id="6">XBMC.ActivateWindow(MusicOSD)</button>
+      <!-- menu       	-->      <button id="6">OSD</button>
       <!-- Prev		-->      <button id="32">LockPreset</button>
       <!-- Info  	-->      <button id="31">Info</button>
       <!-- F8		-->      <button id="96">XBMC.ActivateWindow(VisualisationPresetList)</button>

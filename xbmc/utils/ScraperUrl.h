@@ -2,7 +2,7 @@
 #define SCRAPER_URL_H
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,17 +16,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <vector>
+#include <map>
 #include "StdString.h"
 
 class TiXmlElement;
-namespace XFILE { class CFileCurl; }
+namespace XFILE { class CCurlFile; }
 
 class CScraperUrl
 {
@@ -47,6 +47,7 @@ public:
     CStdString m_spoof;
     CStdString m_url;
     CStdString m_cache;
+    std::string m_aspect;
     URLTYPES m_type;
     bool m_post;
     bool m_isgz;
@@ -58,8 +59,9 @@ public:
   bool ParseElement(const TiXmlElement*);
   bool ParseEpisodeGuide(CStdString strUrls); // copies by intention
 
-  const SUrlEntry GetFirstThumb() const;
-  const SUrlEntry GetSeasonThumb(int) const;
+  const SUrlEntry GetFirstThumb(const std::string &type = "") const;
+  const SUrlEntry GetSeasonThumb(int season, const std::string &type = "") const;
+  unsigned int GetMaxSeasonThumb() const;
 
   /*! \brief fetch the full URL (including referrer) of a thumb
    \param URL entry to use to create the full URL
@@ -69,13 +71,13 @@ public:
 
   /*! \brief fetch the full URL (including referrer) of thumbs
    \param thumbs [out] vector of thumb URLs to fill
+   \param type the type of thumb URLs to fetch, if empty (the default) picks any
    \param season number of season that we want thumbs for, -1 indicates no season (the default)
    */
-  void GetThumbURLs(std::vector<CStdString> &thumbs, int season = -1) const;
+  void GetThumbURLs(std::vector<CStdString> &thumbs, const std::string &type = "", int season = -1) const;
   void Clear();
-  static bool Get(const SUrlEntry&, std::string&, XFILE::CFileCurl& http,
+  static bool Get(const SUrlEntry&, std::string&, XFILE::CCurlFile& http,
                  const CStdString& cacheContext);
-  static bool DownloadThumbnail(const CStdString &thumb, const SUrlEntry& entry);
 
   CStdString m_xml;
   CStdString m_spoof; // for backwards compatibility only!

@@ -1,0 +1,35 @@
+TOC
+1. Introduction
+2. Installing and setting up the buildroot environment
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+For developemnt you can use a customized buildroot to produce a small 
+raspberrypi system image which is used to boot the raspberrypi and as
+crosscompile environment.
+
+-----------------------------------------------------------------------------
+2. Installing and setting up the buildroot environment
+-----------------------------------------------------------------------------
+
+Create a top level directory where you checkout xbmc and buildroot.
+
+For example :
+
+mkdir /opt/xbmc-raspberrypi
+cd /opt/xbmc-raspberrypi
+
+Checkout xbmc :
+
+git clone https://github.com/xbmc/xbmc.git
+
+Checkout buildroot :
+
+git clone https://github.com/huceke/buildroot-rbp.git
+
+cd /opt/xbmc-raspberrypi/buildroot-rbp
+
+Follow the instroctions in README.rbp how to build the system and xbmc.
+

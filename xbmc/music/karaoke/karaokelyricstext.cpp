@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -70,7 +69,7 @@ CKaraokeLyricsText::CKaraokeLyricsText()
   m_karaokeFont = 0;
 
   int coloridx = g_guiSettings.GetInt("karaoke.fontcolors");
-  if ( coloridx < KARAOKE_COLOR_START || coloridx > KARAOKE_COLOR_END )
+  if ( coloridx < KARAOKE_COLOR_START || coloridx >= KARAOKE_COLOR_END )
     coloridx = 0;
 
   m_colorLyrics = gLyricColors[coloridx].text;
@@ -735,7 +734,7 @@ bool CKaraokeLyricsText::HasVideo()
   return m_videoFile.IsEmpty() ? false : true;
 }
 
-void CKaraokeLyricsText::GetVideoParameters(CStdString & path, __int64 & offset)
+void CKaraokeLyricsText::GetVideoParameters(CStdString & path, int64_t & offset)
 {
   path = m_videoFile;
   offset = m_videoOffset;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,18 @@
 
 #ifdef _LINUX
 #define _onexit_t void*
+#endif
+
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
+typedef off_t __off_t;
+typedef int64_t off64_t;
+typedef off64_t __off64_t;
+typedef fpos_t fpos64_t;
+#endif
+#if defined(__ANDROID__)
+typedef long int __off_t;
+typedef long int __off64_t;
+typedef fpos_t   fpos64_t; // no 64-bit on android
 #endif
 
 #ifdef WIN32
@@ -132,7 +143,11 @@ extern "C"
   uintptr_t dll_beginthread(void( *start_address )( void * ),unsigned stack_size,void *arglist);
   HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
                            LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
+#ifdef __FreeBSD__
+                           LPLONG lpThreadId);
+#else
                            LPDWORD lpThreadId);
+#endif
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);
 #ifdef _WIN32
@@ -163,12 +178,13 @@ extern "C"
   int dll_fstat64i32(int fd, struct _stat64i32 *buffer);
   int dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags);
 #endif
-  int dll_fstatvfs64(int fd, struct statvfs64 *buf);
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
   int dll_filbuf(FILE *fp);
   int dll_flsbuf(int data, FILE*fp);
 
-#ifdef _LINUX
+#if defined(__ANDROID__)
+  volatile int * __cdecl dll_errno(void);
+#elif defined(_LINUX)
   int * __cdecl dll_errno(void);
 #endif
 

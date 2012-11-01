@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -55,7 +54,7 @@ void CPerformanceStats::AddSample(const string &strStatName, const PerformanceCo
 
 void CPerformanceStats::AddSample(const string &strStatName, double dTime)
 {
-  AddSample(strStatName, *(new PerformanceCounter(dTime)));
+  AddSample(strStatName, PerformanceCounter(dTime));
 }
 
 void CPerformanceStats::DumpStats()
@@ -70,7 +69,7 @@ void CPerformanceStats::DumpStats()
     double dAvg = iter->second->m_time / (double)iter->second->m_samples;
     double dAvgUser = iter->second->m_user / (double)iter->second->m_samples;
     double dAvgSys  = iter->second->m_sys / (double)iter->second->m_samples;
-    CLog::Log(LOGINFO, "%s - counter <%s>. avg duration: <%f sec>, avg user: <%f>, avg sys: <%f> (%llu samples)",
+    CLog::Log(LOGINFO, "%s - counter <%s>. avg duration: <%f sec>, avg user: <%f>, avg sys: <%f> (%"PRIu64" samples)",
       __FUNCTION__, iter->first.c_str(), dAvg, dAvgUser, dAvgSys, iter->second->m_samples);
     iter++;
   }

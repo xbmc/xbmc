@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,6 @@
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
-#include "Util.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
 #include "video/VideoDatabase.h"
@@ -37,9 +35,12 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRManager.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 using namespace std;
 using namespace XFILE;
+using namespace PVR;
 
 #ifdef HAS_VIDEO_PLAYBACK
 extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
@@ -72,33 +73,48 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
 {
   m_usePopupSliders = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
+  if (g_application.m_pPlayer)
+  {
+    g_application.m_pPlayer->GetAudioCapabilities(m_audioCaps);
+    g_application.m_pPlayer->GetSubtitleCapabilities(m_subCaps);
+  }
+
   // clear out any old settings
   m_settings.clear();
   // create our settings
-  m_volume = g_settings.m_nVolumeLevel * 0.01f;
-  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, FormatDecibel, false);
-  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
+  m_volume = g_settings.m_fVolumeLevel;
+  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM, PercentAsDecibel, false);
+  if (SupportsAudioFeature(IPC_AUD_AMP))
+    AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
   if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
   {
     EnableSettings(AUDIO_SETTINGS_VOLUME,false);
     EnableSettings(AUDIO_SETTINGS_VOLUME_AMPLIFICATION,false);
   }
-  AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_settings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
-  AddAudioStreams(AUDIO_SETTINGS_STREAM);
+  if (SupportsAudioFeature(IPC_AUD_OFFSET))
+    AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_settings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
+  if (SupportsAudioFeature(IPC_AUD_SELECT_STREAM))
+    AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
   // only show stuff available in digital mode if we have digital output
-  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
+  if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO))
+    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
 
   int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
   m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
-  AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
+  if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
+    AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
 
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
-  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_settings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, FormatDelay);
-  AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
-  AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+  if (SupportsSubtitleFeature(IPC_SUBS_OFFSET))
+    AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_settings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, FormatDelay);
+  if (SupportsSubtitleFeature(IPC_SUBS_SELECT))
+    AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
+  if (SupportsSubtitleFeature(IPC_SUBS_EXTERNAL))
+    AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+
 #ifndef __PLEX__ /* Not possible in Plex */
   AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
 #endif
@@ -218,8 +234,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   // check and update anything that needs it
   if (setting.id == AUDIO_SETTINGS_VOLUME)
   {
-    g_settings.m_nVolumeLevel = (long)(m_volume * 100.0f);
-    g_application.SetVolume(int(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f));
+    g_settings.m_fVolumeLevel = m_volume;
+    g_application.SetVolume(m_volume, false);//false - value is not in percent
   }
   else if (setting.id == AUDIO_SETTINGS_VOLUME_AMPLIFICATION)
   {
@@ -367,11 +383,14 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.Save();
     }
   }
+
+  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
+    g_PVRManager.TriggerSaveChannelSettings();
 }
 
 void CGUIDialogAudioSubtitleSettings::FrameMove()
 {
-  m_volume = g_settings.m_nVolumeLevel * 0.01f;
+  m_volume = g_settings.m_fVolumeLevel;
   UpdateSetting(AUDIO_SETTINGS_VOLUME);
   if (g_application.m_pPlayer)
   {
@@ -381,6 +400,13 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
     UpdateSetting(SUBTITLE_SETTINGS_DELAY);
   }
   CGUIDialogSettings::FrameMove();
+}
+
+CStdString CGUIDialogAudioSubtitleSettings::PercentAsDecibel(float value, float interval)
+{
+  CStdString text;
+  text.Format("%2.1f dB", CAEUtil::PercentToGain(value));
+  return text;
 }
 
 CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)
@@ -420,3 +446,23 @@ CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float inter
   return text;
 }
 #endif
+
+bool CGUIDialogAudioSubtitleSettings::SupportsAudioFeature(int feature)
+{
+  for (Features::iterator itr = m_audioCaps.begin(); itr != m_audioCaps.end(); itr++)
+  {
+    if(*itr == feature || *itr == IPC_AUD_ALL)
+      return true;
+  }
+  return false;
+}
+
+bool CGUIDialogAudioSubtitleSettings::SupportsSubtitleFeature(int feature)
+{
+  for (Features::iterator itr = m_subCaps.begin(); itr != m_subCaps.end(); itr++)
+  {
+    if(*itr == feature || *itr == IPC_SUBS_ALL)
+      return true;
+  }
+  return false;
+}

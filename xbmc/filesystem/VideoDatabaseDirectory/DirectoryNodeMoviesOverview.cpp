@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,7 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace std;
@@ -36,6 +36,7 @@ Node MovieChildren[] = {
                         { NODE_TYPE_STUDIO,       6, 20388 },
                         { NODE_TYPE_SETS,         7, 20434 },
                         { NODE_TYPE_COUNTRY,      8, 20451 },
+                        { NODE_TYPE_TAGS,         9, 20459 }
                        };
 
 CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const CStdString& strName, CDirectoryNode* pParent)
@@ -63,6 +64,10 @@ CStdString CDirectoryNodeMoviesOverview::GetLocalizedName() const
 
 bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items) const
 {
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(BuildPath()))
+    return false;
+  
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
   {
     if (i == 6)
@@ -71,9 +76,12 @@ bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items) const
       if (db.Open() && !db.HasSets())
         continue;
     }
-    CStdString path;
-    path.Format("%s%ld/", BuildPath().c_str(), MovieChildren[i].id);
-    CFileItemPtr pItem(new CFileItem(path, true));
+
+    CVideoDbUrl itemUrl = videoUrl;
+    CStdString strDir; strDir.Format("%ld/", MovieChildren[i].id);
+    itemUrl.AppendPath(strDir);
+
+    CFileItemPtr pItem(new CFileItem(itemUrl.ToString(), true));
     pItem->SetLabel(g_localizeStrings.Get(MovieChildren[i].label));
     pItem->SetCanQueue(false);
     items.Add(pItem);

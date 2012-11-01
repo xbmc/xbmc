@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,14 +15,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
-#include "utils/PCMRemap.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
@@ -34,7 +33,7 @@ struct AVStream;
 
 class CDVDStreamInfo;
 class CDVDCodecOption;
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+class CDVDCodecOptions;
 
 class CDVDAudioCodec
 {
@@ -76,9 +75,14 @@ public:
   virtual int GetChannels() = 0;
 
   /*
+   * returns the nr of channels for the encoded audio stream
+   */
+  virtual int GetEncodedChannels() { return 0; }
+
+  /*
    * returns the channel mapping
    */
-  virtual enum PCMChannels* GetChannelMap() = 0;
+  virtual CAEChannelInfo GetChannelMap() = 0;
 
   /*
    * returns the samplerate for the decoded audio stream
@@ -86,9 +90,14 @@ public:
   virtual int GetSampleRate() = 0;
 
   /*
-   * returns the bitspersample for the decoded audio stream (eg 16 bits)
+   * returns the samplerate for the encoded audio stream
    */
-  virtual int GetBitsPerSample() = 0;
+  virtual int GetEncodedSampleRate() { return 0; } 
+
+  /*
+   * returns the data format for the decoded audio stream (eg AE_FMT_S16LE)
+   */
+  virtual enum AEDataFormat GetDataFormat() = 0;
 
   /*
    * should return the average input bit rate 

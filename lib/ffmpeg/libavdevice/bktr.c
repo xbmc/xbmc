@@ -24,10 +24,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#define _BSD_SOURCE 1
-#define _NETBSD_SOURCE
-
-#include "libavformat/avformat.h"
+#include "libavformat/internal.h"
+#include "libavutil/log.h"
+#include "libavutil/opt.h"
+#include "libavutil/parseutils.h"
 #if HAVE_DEV_BKTR_IOCTL_METEOR_H && HAVE_DEV_BKTR_IOCTL_BT848_H
 # include <dev/bktr/ioctl_meteor.h>
 # include <dev/bktr/ioctl_bt848.h>
@@ -47,15 +47,17 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <stdint.h>
-#include <strings.h>
+#include "avdevice.h"
 
 typedef struct {
+    AVClass *class;
     int video_fd;
     int tuner_fd;
     int width, height;
-    int frame_rate;
-    int frame_rate_base;
     uint64_t per_frame;
+    int standard;
+    char *video_size; /**< String describing video size, set by a private option. */
+    char *framerate;  /**< Set by a private option. */
 } VideoData;
 
 
@@ -246,54 +248,60 @@ static int grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     VideoData *s = s1->priv_data;
     AVStream *st;
     int width, height;
-    int frame_rate;
-    int frame_rate_base;
-    int format = -1;
+    AVRational framerate;
+    int ret = 0;
 
-    if (ap->width <= 0 || ap->height <= 0 || ap->time_base.den <= 0)
-        return -1;
+    if ((ret = av_parse_video_size(&width, &height, s->video_size)) < 0) {
+        av_log(s1, AV_LOG_ERROR, "Could not parse video size '%s'.\n", s->video_size);
+        goto out;
+    }
 
-    width = ap->width;
-    height = ap->height;
-    frame_rate = ap->time_base.den;
-    frame_rate_base = ap->time_base.num;
+    if (!s->framerate)
+        switch (s->standard) {
+        case PAL:   s->framerate = av_strdup("pal");  break;
+        case NTSC:  s->framerate = av_strdup("ntsc"); break;
+        case SECAM: s->framerate = av_strdup("25");   break;
+        default:
+            av_log(s1, AV_LOG_ERROR, "Unknown standard.\n");
+            ret = AVERROR(EINVAL);
+            goto out;
+        }
+    if ((ret = av_parse_video_rate(&framerate, s->framerate)) < 0) {
+        av_log(s1, AV_LOG_ERROR, "Could not parse framerate '%s'.\n", s->framerate);
+        goto out;
+    }
 
-    st = av_new_stream(s1, 0);
-    if (!st)
-        return AVERROR(ENOMEM);
-    av_set_pts_info(st, 64, 1, 1000000); /* 64 bits pts in use */
+    st = avformat_new_stream(s1, NULL);
+    if (!st) {
+        ret = AVERROR(ENOMEM);
+        goto out;
+    }
+    avpriv_set_pts_info(st, 64, 1, 1000000); /* 64 bits pts in use */
 
     s->width = width;
     s->height = height;
-    s->frame_rate = frame_rate;
-    s->frame_rate_base = frame_rate_base;
-    s->per_frame = ((uint64_t)1000000 * s->frame_rate_base) / s->frame_rate;
+    s->per_frame = ((uint64_t)1000000 * framerate.den) / framerate.num;
 
     st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->pix_fmt = PIX_FMT_YUV420P;
     st->codec->codec_id = CODEC_ID_RAWVIDEO;
     st->codec->width = width;
     st->codec->height = height;
-    st->codec->time_base.den = frame_rate;
-    st->codec->time_base.num = frame_rate_base;
+    st->codec->time_base.den = framerate.num;
+    st->codec->time_base.num = framerate.den;
 
-    if (ap->standard) {
-        if (!strcasecmp(ap->standard, "pal"))
-            format = PAL;
-        else if (!strcasecmp(ap->standard, "secam"))
-            format = SECAM;
-        else if (!strcasecmp(ap->standard, "ntsc"))
-            format = NTSC;
+
+    if (bktr_init(s1->filename, width, height, s->standard,
+                  &s->video_fd, &s->tuner_fd, -1, 0.0) < 0) {
+        ret = AVERROR(EIO);
+        goto out;
     }
-
-    if (bktr_init(s1->filename, width, height, format,
-            &(s->video_fd), &(s->tuner_fd), -1, 0.0) < 0)
-        return AVERROR(EIO);
 
     nsignals = 0;
     last_frame_time = 0;
 
-    return 0;
+out:
+    return ret;
 }
 
 static int grab_read_close(AVFormatContext *s1)
@@ -314,13 +322,35 @@ static int grab_read_close(AVFormatContext *s1)
     return 0;
 }
 
+#define OFFSET(x) offsetof(VideoData, x)
+#define DEC AV_OPT_FLAG_DECODING_PARAM
+static const AVOption options[] = {
+    { "standard", "", offsetof(VideoData, standard), AV_OPT_TYPE_INT, {.dbl = VIDEO_FORMAT}, PAL, NTSCJ, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "PAL",      "", 0, AV_OPT_TYPE_CONST, {.dbl = PAL},   0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "NTSC",     "", 0, AV_OPT_TYPE_CONST, {.dbl = NTSC},  0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "SECAM",    "", 0, AV_OPT_TYPE_CONST, {.dbl = SECAM}, 0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "PALN",     "", 0, AV_OPT_TYPE_CONST, {.dbl = PALN},  0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "PALM",     "", 0, AV_OPT_TYPE_CONST, {.dbl = PALM},  0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "NTSCJ",    "", 0, AV_OPT_TYPE_CONST, {.dbl = NTSCJ}, 0, 0, AV_OPT_FLAG_DECODING_PARAM, "standard" },
+    { "video_size", "A string describing frame size, such as 640x480 or hd720.", OFFSET(video_size), AV_OPT_TYPE_STRING, {.str = "vga"}, 0, 0, DEC },
+    { "framerate", "", OFFSET(framerate), AV_OPT_TYPE_STRING, {.str = NULL}, 0, 0, DEC },
+    { NULL },
+};
+
+static const AVClass bktr_class = {
+    .class_name = "BKTR grab interface",
+    .item_name  = av_default_item_name,
+    .option     = options,
+    .version    = LIBAVUTIL_VERSION_INT,
+};
+
 AVInputFormat ff_bktr_demuxer = {
-    "bktr",
-    NULL_IF_CONFIG_SMALL("video grab"),
-    sizeof(VideoData),
-    NULL,
-    grab_read_header,
-    grab_read_packet,
-    grab_read_close,
-    .flags = AVFMT_NOFILE,
+    .name           = "bktr",
+    .long_name      = NULL_IF_CONFIG_SMALL("video grab"),
+    .priv_data_size = sizeof(VideoData),
+    .read_header    = grab_read_header,
+    .read_packet    = grab_read_packet,
+    .read_close     = grab_read_close,
+    .flags          = AVFMT_NOFILE,
+    .priv_class     = &bktr_class,
 };

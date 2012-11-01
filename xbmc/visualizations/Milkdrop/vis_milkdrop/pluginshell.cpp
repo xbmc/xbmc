@@ -206,7 +206,7 @@ char* CPluginShell::GetDriverDescription() { if (m_lpDX) return m_lpDX->GetDesc(
 int CPluginShell::InitNonDx8Stuff()
 {
 //    timeBeginPeriod(1);
-    m_fftobj.Init(576, NUM_FREQUENCIES);
+    m_fftobj.Init(512, NUM_FREQUENCIES);
     if (!InitGDIStuff()) return false;
     return AllocateMyNonDx8Stuff();
 }
@@ -1079,8 +1079,8 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 
     // PRIVATE AUDIO PROCESSING DATA
     //(m_fftobj needs no init)
-    memset(m_oldwave[0], 0, sizeof(float)*576);
-    memset(m_oldwave[1], 0, sizeof(float)*576);
+    memset(m_oldwave[0], 0, sizeof(float)*512);
+    memset(m_oldwave[1], 0, sizeof(float)*512);
     m_prev_align_offset[0] = 0;
     m_prev_align_offset[1] = 0;
     m_align_weights_ready = 0;
@@ -1794,7 +1794,7 @@ void CPluginShell::DoTime()
 
 void CPluginShell::AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR)
 {
-    // we get 576 samples in from winamp.
+    // we get 512 samples in from XBMC.
     // the output of the fft has 'num_frequencies' samples,
     //   and represents the frequency range 0 hz - 22,050 hz.
     // usually, plugins only use half of this output (the range 0 hz - 11,025 hz),
@@ -1802,10 +1802,10 @@ void CPluginShell::AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR)
 
     int i;
 
-    float temp_wave[2][576];
+    float temp_wave[2][512];
 
     int old_i = 0;
-    for (i=0; i<576; i++)
+    for (i=0; i<512; i++)
     {
         m_sound.fWaveform[0][i] = (float)((pWaveL[i] ^ 128) - 128);
         m_sound.fWaveform[1][i] = (float)((pWaveR[i] ^ 128) - 128);
@@ -3205,17 +3205,17 @@ LRESULT CPluginShell::PluginShellDesktopWndProc(HWND hWnd, unsigned uMsg, WPARAM
 void CPluginShell::AlignWaves()
 {
     // align waves, using recursive (mipmap-style) least-error matching
-    // note: NUM_WAVEFORM_SAMPLES must be between 32 and 576.
+    // note: NUM_WAVEFORM_SAMPLES must be between 32 and 512.
 
     int align_offset[2] = { 0, 0 };
 
-#if (NUM_WAVEFORM_SAMPLES < 576) // [don't let this code bloat our DLL size if it's not going to be used]
+#if (NUM_WAVEFORM_SAMPLES < 512) // [don't let this code bloat our DLL size if it's not going to be used]
 
     int nSamples = NUM_WAVEFORM_SAMPLES;
 
     #define MAX_OCTAVES 10
 
-    int octaves = floorf(logf(576-nSamples)/logf(2.0f));
+    int octaves = floorf(logf(512-nSamples)/logf(2.0f));
     if (octaves < 4)
         return;
     if (octaves > MAX_OCTAVES)
@@ -3224,18 +3224,18 @@ void CPluginShell::AlignWaves()
     for (int ch=0; ch<2; ch++)
     {
         // only worry about matching the lower 'nSamples' samples
-        float temp_new[MAX_OCTAVES][576];
-        float temp_old[MAX_OCTAVES][576];
-        static float temp_weight[MAX_OCTAVES][576];
+        float temp_new[MAX_OCTAVES][512];
+        float temp_old[MAX_OCTAVES][512];
+        static float temp_weight[MAX_OCTAVES][512];
         static int   first_nonzero_weight[MAX_OCTAVES];
         static int   last_nonzero_weight[MAX_OCTAVES];
         int spls[MAX_OCTAVES];
         int space[MAX_OCTAVES];
 
-        memcpy(temp_new[0], m_sound.fWaveform[ch], sizeof(float)*576);
+        memcpy(temp_new[0], m_sound.fWaveform[ch], sizeof(float)*512);
         memcpy(temp_old[0], &m_oldwave[ch][m_prev_align_offset[ch]], sizeof(float)*nSamples);
-        spls[0] = 576;
-        space[0] = 576 - nSamples;
+        spls[0] = 512;
+        space[0] = 512 - nSamples;
 
         // potential optimization: could reuse (instead of recompute) mip levels for m_oldwave[2][]?
         for (int octave=1; octave<octaves; octave++)
@@ -3334,12 +3334,12 @@ void CPluginShell::AlignWaves()
         }
     }
 #endif
-    memcpy(m_oldwave[0], m_sound.fWaveform[0], sizeof(float)*576);
-    memcpy(m_oldwave[1], m_sound.fWaveform[1], sizeof(float)*576);
+    memcpy(m_oldwave[0], m_sound.fWaveform[0], sizeof(float)*512);
+    memcpy(m_oldwave[1], m_sound.fWaveform[1], sizeof(float)*512);
     m_prev_align_offset[0] = align_offset[0];
     m_prev_align_offset[1] = align_offset[1];
 
-    // finally, apply the results: modify m_sound.fWaveform[2][0..576]
+    // finally, apply the results: modify m_sound.fWaveform[2][0..512]
     // by scooting the aligned samples so that they start at m_sound.fWaveform[2][0].
     for (int ch=0; ch<2; ch++)
         if (align_offset[ch]>0)
@@ -3347,7 +3347,7 @@ void CPluginShell::AlignWaves()
             for (int i=0; i<nSamples; i++)
                 m_sound.fWaveform[ch][i] = m_sound.fWaveform[ch][i+align_offset[ch]];
             // zero the rest out, so it's visually evident that these samples are now bogus:
-            memset(&m_sound.fWaveform[ch][nSamples], 0, (576-nSamples)*sizeof(float));
+            memset(&m_sound.fWaveform[ch][nSamples], 0, (512-nSamples)*sizeof(float));
         }
 }
 

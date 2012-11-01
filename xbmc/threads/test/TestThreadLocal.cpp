@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,17 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "threads/ThreadLocal.h"
 
 #include "threads/Event.h"
-#include <boost/test/unit_test.hpp>
-#include <boost/thread/thread.hpp>
+#include "TestHelpers.h"
 
 using namespace XbmcThreads;
 
@@ -47,7 +45,7 @@ void cleanup()
 }
 
 CEvent waiter;
-class Runnable
+class Runnable : public IRunnable
 {
 public:
   bool waiting;
@@ -55,7 +53,7 @@ public:
   ThreadLocal<Thinggy>& threadLocal;
 
   inline Runnable(ThreadLocal<Thinggy>& tl) : waiting(false), threadLocal(tl) {}
-  inline void operator()()
+  inline void Run()
   {
     staticThinggy = new Thinggy;
     staticThreadLocal.set(staticThinggy);
@@ -91,80 +89,80 @@ public:
 };
 
 
-BOOST_AUTO_TEST_CASE(TestSimpleThreadLocal)
+TEST(TestThreadLocal, Simple)
 {
   GlobalThreadLocal runnable;
-  boost::thread(boost::ref(runnable));
+  thread t(runnable);
 
   gate.Wait();
-  BOOST_CHECK(runnable.waiting);
-  BOOST_CHECK(staticThinggy != NULL);
-  BOOST_CHECK(staticThreadLocal.get() == NULL);
+  EXPECT_TRUE(runnable.waiting);
+  EXPECT_TRUE(staticThinggy != NULL);
+  EXPECT_TRUE(staticThreadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
-  BOOST_CHECK(runnable.threadLocalHadValue);
-  BOOST_CHECK(!destructorCalled);
+  EXPECT_TRUE(runnable.threadLocalHadValue);
+  EXPECT_TRUE(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  EXPECT_TRUE(destructorCalled);
   cleanup();
 }
 
-BOOST_AUTO_TEST_CASE(TestStackThreadLocal)
+TEST(TestThreadLocal, Stack)
 {
   StackThreadLocal runnable;
-  boost::thread(boost::ref(runnable));
+  thread t(runnable);
 
   gate.Wait();
-  BOOST_CHECK(runnable.waiting);
-  BOOST_CHECK(staticThinggy != NULL);
-  BOOST_CHECK(runnable.threadLocal.get() == NULL);
+  EXPECT_TRUE(runnable.waiting);
+  EXPECT_TRUE(staticThinggy != NULL);
+  EXPECT_TRUE(runnable.threadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
-  BOOST_CHECK(runnable.threadLocalHadValue);
-  BOOST_CHECK(!destructorCalled);
+  EXPECT_TRUE(runnable.threadLocalHadValue);
+  EXPECT_TRUE(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  EXPECT_TRUE(destructorCalled);
   cleanup();
 }
 
-BOOST_AUTO_TEST_CASE(TestHeapThreadLocal)
+TEST(TestThreadLocal, Heap)
 {
   HeapThreadLocal runnable;
-  boost::thread(boost::ref(runnable));
+  thread t(runnable);
 
   gate.Wait();
-  BOOST_CHECK(runnable.waiting);
-  BOOST_CHECK(staticThinggy != NULL);
-  BOOST_CHECK(runnable.threadLocal.get() == NULL);
+  EXPECT_TRUE(runnable.waiting);
+  EXPECT_TRUE(staticThinggy != NULL);
+  EXPECT_TRUE(runnable.threadLocal.get() == NULL);
   waiter.Set();
   gate.Wait();
-  BOOST_CHECK(runnable.threadLocalHadValue);
-  BOOST_CHECK(!destructorCalled);
+  EXPECT_TRUE(runnable.threadLocalHadValue);
+  EXPECT_TRUE(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  EXPECT_TRUE(destructorCalled);
   cleanup();
 }
 
-BOOST_AUTO_TEST_CASE(TestHeapThreadLocalDestroyed)
+TEST(TestThreadLocal, HeapDestroyed)
 {
   {
     HeapThreadLocal runnable;
-    boost::thread(boost::ref(runnable));
+    thread t(runnable);
 
     gate.Wait();
-    BOOST_CHECK(runnable.waiting);
-    BOOST_CHECK(staticThinggy != NULL);
-    BOOST_CHECK(runnable.threadLocal.get() == NULL);
+    EXPECT_TRUE(runnable.waiting);
+    EXPECT_TRUE(staticThinggy != NULL);
+    EXPECT_TRUE(runnable.threadLocal.get() == NULL);
     waiter.Set();
     gate.Wait();
-    BOOST_CHECK(runnable.threadLocalHadValue);
-    BOOST_CHECK(!destructorCalled);
+    EXPECT_TRUE(runnable.threadLocalHadValue);
+    EXPECT_TRUE(!destructorCalled);
   } // runnable goes out of scope
 
   // even though the threadlocal is gone ...
-  BOOST_CHECK(!destructorCalled);
+  EXPECT_TRUE(!destructorCalled);
   delete staticThinggy;
-  BOOST_CHECK(destructorCalled);
+  EXPECT_TRUE(destructorCalled);
   cleanup();
 }
 

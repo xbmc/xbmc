@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,20 +13,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogBusy.h"
+#include "guilib/GUIProgressControl.h"
 #include "guilib/GUIWindowManager.h"
+
+#define PROGRESS_CONTROL 10
 
 CGUIDialogBusy::CGUIDialogBusy(void)
   : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml"), m_bLastVisible(false)
 {
-  m_loadOnDemand = false;
+  m_loadType = LOAD_ON_GUI_INIT;
   m_bModal = true;
+  m_progress = 0;
 }
 
 CGUIDialogBusy::~CGUIDialogBusy(void)
@@ -40,6 +43,7 @@ void CGUIDialogBusy::Show_Internal()
   m_bModal = true;
   m_bLastVisible = true;
   m_closing = false;
+  m_progress = 0;
   g_windowManager.RouteToWindow(this);
 
   // active this window...
@@ -53,6 +57,16 @@ void CGUIDialogBusy::DoProcess(unsigned int currentTime, CDirtyRegionList &dirty
   if(!visible && m_bLastVisible)
     dirtyregions.push_back(m_renderRegion);
   m_bLastVisible = visible;
+
+  // update the progress control if available
+  const CGUIControl *control = GetControl(PROGRESS_CONTROL);
+  if (control && control->GetControlType() == CGUIControl::GUICONTROL_PROGRESS)
+  {
+    CGUIProgressControl *progress = (CGUIProgressControl *)control;
+    progress->SetPercentage(m_progress);
+    progress->SetVisible(m_progress > 0);
+  }
+
   CGUIDialog::DoProcess(currentTime, dirtyregions);
 }
 
@@ -67,4 +81,9 @@ bool CGUIDialogBusy::OnBack(int actionID)
 {
   m_bCanceled = true;
   return true;
+}
+
+void CGUIDialogBusy::SetProgress(float percent)
+{
+  m_progress = percent;
 }

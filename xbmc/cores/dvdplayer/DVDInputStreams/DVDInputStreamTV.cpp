@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,16 +13,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDInputStreamTV.h"
 #include "filesystem/MythFile.h"
 #include "filesystem/VTPFile.h"
-#include "filesystem/Slingbox.h"
+#include "pvr/channels/PVRChannel.h"
+#include "filesystem/VTPFile.h"
+#include "filesystem/SlingboxFile.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -109,10 +110,10 @@ int CDVDInputStreamTV::Read(BYTE* buf, int buf_size)
   return (int)(ret & 0xFFFFFFFF);
 }
 
-__int64 CDVDInputStreamTV::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamTV::Seek(int64_t offset, int whence)
 {
   if(!m_pFile) return -1;
-  __int64 ret = m_pFile->Seek(offset, whence);
+  int64_t ret = m_pFile->Seek(offset, whence);
 
   /* if we succeed, we are not eof anymore */
   if( ret >= 0 ) m_eof = false;
@@ -120,7 +121,7 @@ __int64 CDVDInputStreamTV::Seek(__int64 offset, int whence)
   return ret;
 }
 
-__int64 CDVDInputStreamTV::GetLength()
+int64_t CDVDInputStreamTV::GetLength()
 {
   if (!m_pFile) return 0;
   return m_pFile->GetLength();
@@ -133,25 +134,25 @@ int CDVDInputStreamTV::GetTotalTime()
   return m_pLiveTV->GetTotalTime();
 }
 
-int CDVDInputStreamTV::GetStartTime()
+int CDVDInputStreamTV::GetTime()
 {
   if(!m_pLiveTV) return -1;
   return m_pLiveTV->GetStartTime();
 }
 
-bool CDVDInputStreamTV::NextChannel()
+bool CDVDInputStreamTV::NextChannel(bool preview/* = false*/)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->NextChannel();
 }
 
-bool CDVDInputStreamTV::PrevChannel()
+bool CDVDInputStreamTV::PrevChannel(bool preview/* = false*/)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->PrevChannel();
 }
 
-bool CDVDInputStreamTV::SelectChannel(unsigned int channel)
+bool CDVDInputStreamTV::SelectChannelByNumber(unsigned int channel)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->SelectChannel(channel);
@@ -169,15 +170,15 @@ bool CDVDInputStreamTV::SeekTime(int iTimeInMsec)
   return false;
 }
 
-bool CDVDInputStreamTV::NextStream()
+CDVDInputStream::ENextStream CDVDInputStreamTV::NextStream()
 {
-  if(!m_pFile) return false;
+  if(!m_pFile) return NEXTSTREAM_NONE;
   if(m_pFile->SkipNext())
   {
     m_eof = false;
-    return true;
+    return NEXTSTREAM_OPEN;
   }
-  return false;
+  return NEXTSTREAM_NONE;
 }
 
 bool CDVDInputStreamTV::CanRecord()

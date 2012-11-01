@@ -164,18 +164,25 @@ static int decode_buffering_period(H264Context *h){
 int ff_h264_decode_sei(H264Context *h){
     MpegEncContext * const s = &h->s;
 
-    while(get_bits_count(&s->gb) + 16 < s->gb.size_in_bits){
+    while (get_bits_left(&s->gb) > 16) {
         int size, type;
 
         type=0;
         do{
+            if (get_bits_left(&s->gb) < 8)
+                return -1;
             type+= show_bits(&s->gb, 8);
         }while(get_bits(&s->gb, 8) == 255);
 
         size=0;
         do{
+            if (get_bits_left(&s->gb) < 8)
+                return -1;
             size+= show_bits(&s->gb, 8);
         }while(get_bits(&s->gb, 8) == 255);
+
+        if(s->avctx->debug&FF_DEBUG_STARTCODE)
+            av_log(h->s.avctx, AV_LOG_DEBUG, "SEI %d len:%d\n", type, size);
 
         switch(type){
         case SEI_TYPE_PIC_TIMING: // Picture timing SEI

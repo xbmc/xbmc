@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
  
 #if defined (TARGET_DARWIN)
 // defined in PlatformDefs.h but I don't want to include that here
-typedef unsigned char   BYTE;
+typedef unsigned char BYTE;
 
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
@@ -29,20 +28,50 @@ typedef unsigned char   BYTE;
 #include "powermanagement/PowerManager.h"
 #include "windowing/WindowingFactory.h"
 #include "CocoaPowerSyscall.h"
-#if !defined(TARGET_DARWIN_IOS)
-#include <IOKit/pwr_mgt/IOPMLib.h>
-#include <IOKit/ps/IOPowerSources.h>
-#include <IOKit/ps/IOPSKeys.h>
+
+#if defined(TARGET_DARWIN_OSX)
+  #include <IOKit/pwr_mgt/IOPMLib.h>
+  #include <IOKit/ps/IOPowerSources.h>
+  #include <IOKit/ps/IOPSKeys.h>
+  #include <ApplicationServices/ApplicationServices.h>
 #endif
 
 #include "osx/DarwinUtils.h"
 
-// missing in 10.4/10.5 SDKs.
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
-#define kIOPSNotifyLowBattery   "com.apple.system.powersources.lowbattery"
-#endif
-
 #include "CocoaInterface.h"
+
+#if defined(TARGET_DARWIN_OSX)
+OSStatus SendAppleEventToSystemProcess(AEEventID eventToSendID)
+{
+  AEAddressDesc targetDesc;
+  static const  ProcessSerialNumber kPSNOfSystemProcess = {0, kSystemProcess };
+  AppleEvent    eventReply  = {typeNull, NULL};
+  AppleEvent    eventToSend = {typeNull, NULL};
+
+  OSStatus status = AECreateDesc(typeProcessSerialNumber,
+    &kPSNOfSystemProcess, sizeof(kPSNOfSystemProcess), &targetDesc);
+
+  if (status != noErr)
+    return status;
+
+  status = AECreateAppleEvent(kCoreEventClass, eventToSendID,
+    &targetDesc, kAutoGenerateReturnID, kAnyTransactionID, &eventToSend);
+  AEDisposeDesc(&targetDesc);
+
+  if (status != noErr)
+    return status;
+
+  status = AESendMessage(&eventToSend, &eventReply, kAENormalPriority, kAEDefaultTimeout);
+  AEDisposeDesc(&eventToSend);
+
+  if (status != noErr)
+    return status;
+
+  AEDisposeDesc(&eventReply);
+
+  return status;
+}
+#endif
 
 CCocoaPowerSyscall::CCocoaPowerSyscall()
 {
@@ -71,23 +100,14 @@ bool CCocoaPowerSyscall::Powerdown(void)
 #if defined(TARGET_DARWIN_IOS)
   result = false;
 #else
-  if (g_sysinfo.IsAppleTV())
-  {
-    // The ATV prefered method is via command-line, others don't seem to work
-    system("echo frontrow | sudo -S shutdown -h now");
-    result = true;
-  }
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
+  //sending shutdown event to system
+  OSErr error = SendAppleEventToSystemProcess(kAEShutDown);
+  if (error == noErr)
+    CLog::Log(LOGINFO, "Computer is going to shutdown!");
   else
-  {
-    CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
-    //sending shutdown event to system
-    OSErr error = SendAppleEventToSystemProcess(kAEShutDown);
-    if (error == noErr)
-      CLog::Log(LOGINFO, "Computer is going to shutdown!");
-    else
-      CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
-    result = (error == noErr);
-  }
+    CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
+  result = (error == noErr);
 #endif
   return result;
 }
@@ -128,21 +148,12 @@ bool CCocoaPowerSyscall::Reboot(void)
 #if defined(TARGET_DARWIN_IOS)
   result = false;
 #else
-  if (g_sysinfo.IsAppleTV())
-  {
-    // The ATV prefered method is via command-line, others don't seem to work
-    system("echo frontrow | sudo -S reboot");
-    result = true;
-  }
+  OSErr error = SendAppleEventToSystemProcess(kAERestart);
+  if (error == noErr)
+    CLog::Log(LOGINFO, "Computer is going to restart!");
   else
-  {
-    OSErr error = SendAppleEventToSystemProcess(kAERestart);
-    if (error == noErr)
-      CLog::Log(LOGINFO, "Computer is going to restart!");
-    else
-      CLog::Log(LOGINFO, "Computer wouldn't restart!");
-    result = (error == noErr);
-  }
+    CLog::Log(LOGINFO, "Computer wouldn't restart!");
+  result = (error == noErr);
 #endif
   return result;
 }
@@ -163,11 +174,7 @@ bool CCocoaPowerSyscall::CanSuspend(void)
 #if defined(TARGET_DARWIN_IOS)
   result = false;
 #else
-  // Only OSX boxes can suspend, the AppleTV cannot
-  if (g_sysinfo.IsAppleTV())
-    result = false;
-  else
-    result =IOPMSleepEnabled();
+  result =IOPMSleepEnabled();
 #endif
   return(result);
 }
@@ -199,20 +206,13 @@ bool CCocoaPowerSyscall::HasBattery(void)
 
   if (m_HasBattery == -1)
   {
-    if (g_sysinfo.IsAppleTV())
-    {
-      result = false;
-    }
-    else
-    {
-      CCocoaAutoPool autopool;
-      CFArrayRef battery_info = NULL;
+    CCocoaAutoPool autopool;
+    CFArrayRef battery_info = NULL;
 
-      if (IOPMCopyBatteryInfo(kIOMasterPortDefault, &battery_info) != kIOReturnSuccess)
-        result = false;
-      else
-        CFRelease(battery_info);
-    }
+    if (IOPMCopyBatteryInfo(kIOMasterPortDefault, &battery_info) != kIOReturnSuccess)
+      result = false;
+    else
+      CFRelease(battery_info);
     // cache if we have a battery or not
     m_HasBattery = result;
   }

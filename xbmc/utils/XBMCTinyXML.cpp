@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -30,20 +30,18 @@ CXBMCTinyXML::CXBMCTinyXML()
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
-: TiXmlDocument()
+: TiXmlDocument(documentName)
 {
-  LoadFile(documentName);
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const CStdString &documentName)
-: TiXmlDocument()
+: TiXmlDocument(documentName)
 {
-  LoadFile(documentName);
 }
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
 {
-  return TiXmlDocument::LoadFile(encoding);
+  return LoadFile(value, encoding);
 }
 
 bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
@@ -91,12 +89,10 @@ bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 {
   CStdString data("");
   char buf[BUFFER_SIZE];
-  int result, count = 0;
+  memset(buf, 0, BUFFER_SIZE);
+  int result;
   while ((result = fread(buf, 1, BUFFER_SIZE, f)) > 0)
-  {
-    data.reserve(BUFFER_SIZE * (++count));
-    data.append(buf);
-  }
+    data.append(buf, result);
   return Parse(data, NULL, encoding) != NULL;
 }
 
@@ -130,7 +126,7 @@ const char *CXBMCTinyXML::Parse(CStdString &data, TiXmlParsingData *prevData, Ti
   // Preprocess string, replacing '&' with '&amp; for invalid XML entities
   size_t pos = 0;
   CRegExp re(true);
-  re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4});.*");
+  re.RegComp("^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
   while ((pos = data.find("&", pos)) != CStdString::npos)
   {
     CStdString tmp = data.substr(pos, pos + MAX_ENTITY_LENGTH);
@@ -149,7 +145,7 @@ bool CXBMCTinyXML::Test()
                   "cache=\"tmdb-en-12244.json\">"
                   "http://api.themoviedb.org/3/movie/12244"
                   "?api_key=57983e31fb435df4df77afb854740ea9"
-                  "&language=en&#01af;&#x01AF;</url></details>");
+                  "&language=en&#x3f;&#x003F;&#0063;</url></details>");
   doc.Parse(data.c_str());
   TiXmlNode *root = doc.RootElement();
   if (root && root->ValueStr() == "details")
@@ -157,7 +153,7 @@ bool CXBMCTinyXML::Test()
     TiXmlElement *url = root->FirstChildElement("url");
     if (url && url->FirstChild())
     {
-      return (url->FirstChild()->ValueStr() == "http://api.themoviedb.org/3/movie/12244?api_key=57983e31fb435df4df77afb854740ea9&language=en");
+      return (url->FirstChild()->ValueStr() == "http://api.themoviedb.org/3/movie/12244?api_key=57983e31fb435df4df77afb854740ea9&language=en???");
     }
   }
   return false;

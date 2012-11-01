@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,6 +40,7 @@ using namespace XFILE;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+  m_initialized = false;
 }
 
 void CAdvancedSettings::Initialize()
@@ -49,10 +49,20 @@ void CAdvancedSettings::Initialize()
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
+  m_audioResample = 0;
+  m_allowTranscode44100 = false;
+  m_audioForceDirectSound = false;
+  m_audioAudiophile = false;
+  m_allChannelStereo = false;
+  m_streamSilence = false;
+  m_audioSinkBufferDurationMsec = 50;
 
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
   m_limiterHold = 0.025f;
   m_limiterRelease = 0.1f;
+
+  m_omxHWAudioDecode = false;
+  m_omxDecodeStartWithValidFrame = false;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
@@ -112,7 +122,6 @@ void CAdvancedSettings::Initialize()
   m_musicPercentSeekBackward = -1;
   m_musicPercentSeekForwardBig = 10;
   m_musicPercentSeekBackwardBig = -10;
-  m_musicResample = 0;
 
   m_slideshowPanAmount = 2.5f;
   m_slideshowZoomAmount = 5.0f;
@@ -123,10 +132,7 @@ void CAdvancedSettings::Initialize()
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
-  m_autoDetectPingTime = 30;
-
   m_songInfoDuration = 10;
-  m_busyDialogDelay = 2000;
 
   m_cddbAddress = "freedb.freedb.org";
 
@@ -154,21 +160,21 @@ void CAdvancedSettings::Initialize()
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
   // foo.s01.e01, foo.s01_e01, S01E02 foo, S01 - E02
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][ ._-]*[Ee]([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // foo.ep01, foo.EP_01
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\._ -]()[Ee][Pp]_?([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\._ -]()[Ee][Pp]_?([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
   m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // foo.103*, 103 foo
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
+  m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([\\._ -][^\\\\/]*)$"));
   // Part I, Pt.VI
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$"));
 
-  m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+)";
+  m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)";
 
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
@@ -176,8 +182,8 @@ void CAdvancedSettings::Initialize()
   m_playlistAsFolders = true;
   m_detectAsUdf = false;
 
-  m_thumbSize = DEFAULT_THUMB_SIZE;
-  m_fanartHeight = DEFAULT_FANART_HEIGHT;
+  m_fanartRes = 1080;
+  m_imageRes = 720;
   m_useDDSFanart = false;
 
   m_sambaclienttimeout = 10;
@@ -189,7 +195,6 @@ void CAdvancedSettings::Initialize()
   m_bFTPThumbs = false;
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
-  m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
 
   m_bMusicLibraryHideAllItems = false;
@@ -204,13 +209,13 @@ void CAdvancedSettings::Initialize()
 
   m_bVideoLibraryHideAllItems = false;
   m_bVideoLibraryAllItemsOnBottom = false;
-  m_iVideoLibraryRecentlyAddedItems = 25;
-  m_bVideoLibraryHideRecentlyAddedItems = false;
   m_bVideoLibraryHideEmptySeries = false;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryExportAutoThumbs = false;
   m_bVideoLibraryImportWatchedState = false;
+  m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
+  m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
   m_iTuxBoxStreamtsPort = 31339;
   m_bTuxBoxAudioChannelSelection = false;
@@ -225,6 +230,14 @@ void CAdvancedSettings::Initialize()
   m_iTuxBoxZapstreamPort = 31344;
 
   m_iMythMovieLength = 0; // 0 == Off
+
+  m_iEpgLingerTime = 60;           /* keep 1 hour by default */
+  m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
+  m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
+  m_iEpgActiveTagCheckInterval = 60; /* check for updated active tags every minute */
+  m_iEpgRetryInterruptedUpdateInterval = 30; /* retry an interrupted epg update after 30 seconds */
+  m_bEpgDisplayUpdatePopup = true; /* display a progress popup while updating EPG data from clients */
+  m_bEpgDisplayIncrementalUpdatePopup = false; /* also display a progress popup while doing incremental EPG updates */
 
   m_bEdlMergeShortCommBreaks = false;      // Off by default
   m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
@@ -264,7 +277,7 @@ void CAdvancedSettings::Initialize()
 
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
   // default for osx is fullscreen always on top
   m_alwaysOnTop = true;
 #else
@@ -274,9 +287,17 @@ void CAdvancedSettings::Initialize()
 
   m_bgInfoLoaderMaxThreads = 5;
 
+  m_iPVRTimeCorrection             = 0;
+  m_iPVRInfoToggleInterval         = 3000;
+  m_bPVRShowEpgInfoOnEpgItemSelect = true;
+  m_iPVRMinVideoCacheLevel         = 5;
+  m_iPVRMinAudioCacheLevel         = 10;
+  m_bPVRCacheInDvdPlayer           = true;
+
   m_measureRefreshrate = false;
 
   m_cacheMemBufferSize = 1024 * 1024 * 20;
+  m_addonPackageFolderSize = 200;
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
@@ -285,11 +306,17 @@ void CAdvancedSettings::Initialize()
 
   m_canWindowed = true;
   m_guiVisualizeDirtyRegions = false;
-  m_guiAlgorithmDirtyRegions = 0;
-  m_guiDirtyRegionNoFlipTimeout = -1;
+  m_guiAlgorithmDirtyRegions = 3;
+  m_guiDirtyRegionNoFlipTimeout = 0;
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
+  m_initialized = true;
+
+  m_databaseMusic.Reset();
+  m_databaseVideo.Reset();
+
+  m_logLevelHint = m_logLevel = LOG_LEVEL_NORMAL;
 
   /* PLEX */
   /* Adjust the timeseekbackward to match what Plex9 did */
@@ -312,6 +339,8 @@ void CAdvancedSettings::Initialize()
   m_guiAlgorithmDirtyRegions = 1;
   m_guiDirtyRegionNoFlipTimeout = 1000;
   /* END PLEX */
+
+
 }
 
 bool CAdvancedSettings::Load()
@@ -379,7 +408,14 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "percentseekforwardbig", m_musicPercentSeekForwardBig, 0, 100);
     XMLUtils::GetInt(pElement, "percentseekbackwardbig", m_musicPercentSeekBackwardBig, -100, 0);
 
-    XMLUtils::GetInt(pElement, "resample", m_musicResample, 0, 192000);
+    XMLUtils::GetInt(pElement, "resample", m_audioResample, 0, 192000);
+    XMLUtils::GetBoolean(pElement, "allowtranscode44100", m_allowTranscode44100);
+    XMLUtils::GetBoolean(pElement, "forceDirectSound", m_audioForceDirectSound);
+    XMLUtils::GetBoolean(pElement, "audiophile", m_audioAudiophile);
+    XMLUtils::GetBoolean(pElement, "allchannelstereo", m_allChannelStereo);
+    XMLUtils::GetBoolean(pElement, "streamsilence", m_streamSilence);
+    XMLUtils::GetString(pElement, "transcodeto", m_audioTranscodeTo);
+    XMLUtils::GetInt(pElement, "audiosinkbufferdurationmsec", m_audioSinkBufferDurationMsec);
 
     TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pAudioExcludes)
@@ -395,6 +431,13 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
+  }
+
+  pElement = pRootElement->FirstChildElement("omx");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "omxhwaudiodecode", m_omxHWAudioDecode);
+    XMLUtils::GetBoolean(pElement, "omxdecodestartwithvalidframe", m_omxDecodeStartWithValidFrame);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -622,13 +665,13 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", m_bVideoLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", m_bVideoLibraryAllItemsOnBottom);
-    XMLUtils::GetInt(pElement, "recentlyaddeditems", m_iVideoLibraryRecentlyAddedItems, 1, INT_MAX);
-    XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", m_bVideoLibraryHideRecentlyAddedItems);
     XMLUtils::GetBoolean(pElement, "hideemptyseries", m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
+    XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
+    XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
@@ -662,7 +705,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
-    XMLUtils::GetInt(pElement, "autodetectpingtime", m_autoDetectPingTime, 1, 240);
     XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
@@ -710,18 +752,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
     CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   }
-     
+
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 
   //airtunes + airplay
   XMLUtils::GetBoolean(pRootElement, "enableairtunesdebuglog", m_logEnableAirtunes);
   XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);
   XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);  
-  
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
@@ -729,7 +770,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetBoolean(pRootElement, "canwindowed", m_canWindowed);
 
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
-  XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
   XMLUtils::GetInt(pRootElement, "playlistretries", m_playlistRetries, -1, 5000);
   XMLUtils::GetInt(pRootElement, "playlisttimeout", m_playlistTimeout, 0, 5000);
 
@@ -743,6 +783,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
+  XMLUtils::GetUInt(pRootElement, "packagefoldersize", m_addonPackageFolderSize);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -766,6 +807,19 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   if (pElement)
   {
     XMLUtils::GetInt(pElement, "movielength", m_iMythMovieLength);
+  }
+
+  // EPG
+  pElement = pRootElement->FirstChildElement("epg");
+  if (pElement)
+  {
+    XMLUtils::GetInt(pElement, "lingertime", m_iEpgLingerTime);
+    XMLUtils::GetInt(pElement, "updatecheckinterval", m_iEpgUpdateCheckInterval);
+    XMLUtils::GetInt(pElement, "cleanupinterval", m_iEpgCleanupInterval);
+    XMLUtils::GetInt(pElement, "activetagcheckinterval", m_iEpgActiveTagCheckInterval);
+    XMLUtils::GetInt(pElement, "retryinterruptedupdateinterval", m_iEpgRetryInterruptedUpdateInterval);
+    XMLUtils::GetBoolean(pElement, "displayupdatepopup", m_bEpgDisplayUpdatePopup);
+    XMLUtils::GetBoolean(pElement, "displayincrementalupdatepopup", m_bEpgDisplayIncrementalUpdatePopup);
   }
 
   // EDL commercial break handling
@@ -856,7 +910,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
       CStdString strFrom, strTo;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom)
-        strFrom = _P(pFrom->FirstChild()->Value()).c_str();
+        strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
       TiXmlNode* pTo = pSubstitute->FirstChild("to");
       if (pTo)
         strTo = pTo->FirstChild()->Value();
@@ -884,8 +938,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
-  XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 0, 1024);
-  XMLUtils::GetInt(pRootElement, "fanartheight", m_fanartHeight, 0, 1080);
+  XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 1080);
+  XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 1080);
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
@@ -895,11 +949,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
     GetCustomExtensions(pThumbs,m_musicThumbs);
-
-  // dvd thumbs
-  pThumbs = pRootElement->FirstChildElement("dvdthumbs");
-  if (pThumbs)
-    GetCustomExtensions(pThumbs,m_dvdThumbs);
 
   // movie fanarts
   TiXmlElement* pFanart = pRootElement->FirstChildElement("fanart");
@@ -944,6 +993,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
+  TiXmlElement *pPVR = pRootElement->FirstChildElement("pvr");
+  if (pPVR)
+  {
+    XMLUtils::GetInt(pPVR, "timecorrection", m_iPVRTimeCorrection, 0, 1440);
+    XMLUtils::GetInt(pPVR, "infotoggleinterval", m_iPVRInfoToggleInterval, 0, 30000);
+    XMLUtils::GetBoolean(pPVR, "showepginfoonselect", m_bPVRShowEpgInfoOnEpgItemSelect);
+    XMLUtils::GetInt(pPVR, "minvideocachelevel", m_iPVRMinVideoCacheLevel, 0, 100);
+    XMLUtils::GetInt(pPVR, "minaudiocachelevel", m_iPVRMinAudioCacheLevel, 0, 100);
+    XMLUtils::GetBoolean(pPVR, "cacheindvdplayer", m_bPVRCacheInDvdPlayer);
+  }
+
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 
   TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
@@ -967,6 +1027,28 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+  }
+
+  pDatabase = pRootElement->FirstChildElement("tvdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseTV.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseTV.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseTV.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseTV.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseTV.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseTV.name);
+  }
+
+  pDatabase = pRootElement->FirstChildElement("epgdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseEpg.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseEpg.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseEpg.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseEpg.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseEpg.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseEpg.name);
   }
 
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
@@ -1016,46 +1098,58 @@ void CAdvancedSettings::Clear()
 
 void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings)
 {
-  int iAction = 0; // overwrite
-  // for backward compatibility
-  const char* szAppend = pRootElement->Attribute("append");
-  if ((szAppend && stricmp(szAppend, "yes") == 0))
-    iAction = 1;
-  // action takes precedence if both attributes exist
-  const char* szAction = pRootElement->Attribute("action");
-  if (szAction)
+  TiXmlElement *pElement = pRootElement;
+  while (pElement)
   {
-    iAction = 0; // overwrite
-    if (stricmp(szAction, "append") == 0)
-      iAction = 1; // append
-    else if (stricmp(szAction, "prepend") == 0)
-      iAction = 2; // prepend
-  }
-  if (iAction == 0)
-    settings.clear();
-  TiXmlNode* pRegExp = pRootElement->FirstChild("regexp");
-  int i = 0;
-  while (pRegExp)
-  {
-    if (pRegExp->FirstChild())
+    int iAction = 0; // overwrite
+    // for backward compatibility
+    const char* szAppend = pElement->Attribute("append");
+    if ((szAppend && stricmp(szAppend, "yes") == 0))
+      iAction = 1;
+    // action takes precedence if both attributes exist
+    const char* szAction = pElement->Attribute("action");
+    if (szAction)
     {
-      bool bByDate = false;
-      if (pRegExp->ToElement())
-      {
-        CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
-        if(byDate && stricmp(byDate, "true") == 0)
-        {
-          bByDate = true;
-        }
-      }
-      CStdString regExp = pRegExp->FirstChild()->Value();
-      regExp.MakeLower();
-      if (iAction == 2)
-        settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp));
-      else
-        settings.push_back(TVShowRegexp(bByDate,regExp));
+      iAction = 0; // overwrite
+      if (stricmp(szAction, "append") == 0)
+        iAction = 1; // append
+      else if (stricmp(szAction, "prepend") == 0)
+        iAction = 2; // prepend
     }
-    pRegExp = pRegExp->NextSibling("regexp");
+    if (iAction == 0)
+      settings.clear();
+    TiXmlNode* pRegExp = pElement->FirstChild("regexp");
+    int i = 0;
+    while (pRegExp)
+    {
+      if (pRegExp->FirstChild())
+      {
+        bool bByDate = false;
+        int iDefaultSeason = 1;
+        if (pRegExp->ToElement())
+        {
+          CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
+          if(byDate && stricmp(byDate, "true") == 0)
+          {
+            bByDate = true;
+          }
+          CStdString defaultSeason = pRegExp->ToElement()->Attribute("defaultseason");
+          if(!defaultSeason.empty())
+          {
+            iDefaultSeason = atoi(defaultSeason.c_str());
+          }
+        }
+        CStdString regExp = pRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        if (iAction == 2)
+          settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp,iDefaultSeason));
+        else
+          settings.push_back(TVShowRegexp(bByDate,regExp,iDefaultSeason));
+      }
+      pRegExp = pRegExp->NextSibling("regexp");
+    }
+
+    pElement = pElement->NextSiblingElement(pRootElement->Value());
   }
 }
 
@@ -1137,4 +1231,22 @@ float CAdvancedSettings::GetDisplayLatency(float refreshrate)
   }
 
   return delay; // in seconds
+}
+
+void CAdvancedSettings::SetDebugMode(bool debug)
+{
+  if (debug)
+  {
+    int level = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+    m_logLevel = level;
+    CLog::SetLogLevel(level);
+    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
+  }
+  else
+  {
+    int level = std::min(m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+    CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
+    m_logLevel = level;
+    CLog::SetLogLevel(level);
+  }
 }

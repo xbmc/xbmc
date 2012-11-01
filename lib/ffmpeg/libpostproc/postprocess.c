@@ -71,10 +71,11 @@ try to unroll inner for(x=0 ... loop to avoid these damn if(x ... checks
 ...
 */
 
-//Changelog: use the Subversion log
+//Changelog: use git log
 
 #include "config.h"
 #include "libavutil/avutil.h"
+#include "libavutil/avassert.h"
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,9 +87,11 @@ try to unroll inner for(x=0 ... loop to avoid these damn if(x ... checks
 //#define DEBUG_BRIGHTNESS
 #include "postprocess.h"
 #include "postprocess_internal.h"
+#include "libavutil/avstring.h"
 
 unsigned postproc_version(void)
 {
+    av_assert0(LIBPOSTPROC_VERSION_MICRO >= 100);
     return LIBPOSTPROC_VERSION_INT;
 }
 
@@ -245,7 +248,6 @@ static inline int isVertDC_C(uint8_t src[], int stride, PPContext *c)
 static inline int isHorizMinMaxOk_C(uint8_t src[], int stride, int QP)
 {
     int i;
-#if 1
     for(i=0; i<2; i++){
         if((unsigned)(src[0] - src[5] + 2*QP) > 4*QP) return 0;
         src += stride;
@@ -256,19 +258,11 @@ static inline int isHorizMinMaxOk_C(uint8_t src[], int stride, int QP)
         if((unsigned)(src[6] - src[3] + 2*QP) > 4*QP) return 0;
         src += stride;
     }
-#else
-    for(i=0; i<8; i++){
-        if((unsigned)(src[0] - src[7] + 2*QP) > 4*QP) return 0;
-        src += stride;
-    }
-#endif
     return 1;
 }
 
 static inline int isVertMinMaxOk_C(uint8_t src[], int stride, int QP)
 {
-#if 1
-#if 1
     int x;
     src+= stride*4;
     for(x=0; x<BLOCK_SIZE; x+=4){
@@ -277,30 +271,7 @@ static inline int isVertMinMaxOk_C(uint8_t src[], int stride, int QP)
         if((unsigned)(src[2+x + 4*stride] - src[2+x + 1*stride] + 2*QP) > 4*QP) return 0;
         if((unsigned)(src[3+x + 6*stride] - src[3+x + 3*stride] + 2*QP) > 4*QP) return 0;
     }
-#else
-    int x;
-    src+= stride*3;
-    for(x=0; x<BLOCK_SIZE; x++){
-        if((unsigned)(src[x + stride] - src[x + (stride<<3)] + 2*QP) > 4*QP) return 0;
-    }
-#endif
     return 1;
-#else
-    int x;
-    src+= stride*4;
-    for(x=0; x<BLOCK_SIZE; x++){
-        int min=255;
-        int max=0;
-        int y;
-        for(y=0; y<8; y++){
-            int v= src[x + y*stride];
-            if(v>max) max=v;
-            if(v<min) min=v;
-        }
-        if(max-min > 2*QP) return 0;
-    }
-    return 1;
-#endif
 }
 
 static inline int horizClassify_C(uint8_t src[], int stride, PPContext *c)
@@ -675,7 +646,7 @@ static inline void postProcess(const uint8_t src[], int srcStride, uint8_t dst[]
 #endif
             postProcess_C(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #endif
-#else //CONFIG_RUNTIME_CPUDETECT
+#else /* CONFIG_RUNTIME_CPUDETECT */
 #if   HAVE_MMX2
             postProcess_MMX2(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #elif HAVE_AMD3DNOW
@@ -687,7 +658,7 @@ static inline void postProcess(const uint8_t src[], int srcStride, uint8_t dst[]
 #else
             postProcess_C(src, srcStride, dst, dstStride, width, height, QPs, QPStride, isColor, c);
 #endif
-#endif //!CONFIG_RUNTIME_CPUDETECT
+#endif /* !CONFIG_RUNTIME_CPUDETECT */
 }
 
 //static void postProcess(uint8_t src[], int srcStride, uint8_t dst[], int dstStride, int width, int height,
@@ -766,7 +737,8 @@ pp_mode *pp_get_mode_by_name_and_quality(const char *name, int quality)
     ppMode->maxClippedThreshold= 0.01;
     ppMode->error=0;
 
-    strncpy(temp, name, GET_MODE_BUFFER_SIZE);
+    memset(temp, 0, GET_MODE_BUFFER_SIZE);
+    av_strlcpy(temp, name, GET_MODE_BUFFER_SIZE - 1);
 
     av_log(NULL, AV_LOG_DEBUG, "pp: %s\n", name);
 
@@ -817,12 +789,11 @@ pp_mode *pp_get_mode_by_name_and_quality(const char *name, int quality)
                 int plen;
                 int spaceLeft;
 
-                if(p==NULL) p= temp, *p=0;      //last filter
-                else p--, *p=',';               //not last filter
+                p--, *p=',';
 
                 plen= strlen(p);
                 spaceLeft= p - temp + plen;
-                if(spaceLeft + newlen  >= GET_MODE_BUFFER_SIZE){
+                if(spaceLeft + newlen  >= GET_MODE_BUFFER_SIZE - 1){
                     ppMode->error++;
                     break;
                 }
@@ -943,7 +914,7 @@ static void reallocBuffers(PPContext *c, int width, int height, int stride, int 
             c->yHistogram[i]= width*height/64*15/256;
 
     for(i=0; i<3; i++){
-        //Note: The +17*1024 is just there so i do not have to worry about r/w over the end.
+        //Note: The +17*1024 is just there so I do not have to worry about r/w over the end.
         reallocAlign((void **)&c->tempBlurred[i], 8, stride*mbHeight*16 + 17*1024);
         reallocAlign((void **)&c->tempBlurredPast[i], 8, 256*((height+7)&(~7))/2 + 17*1024);//FIXME size
     }
@@ -1103,4 +1074,3 @@ void  pp_postprocess(const uint8_t * src[3], const int srcStride[3],
         }
     }
 }
-

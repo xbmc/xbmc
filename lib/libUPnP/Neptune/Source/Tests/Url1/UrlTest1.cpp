@@ -59,7 +59,9 @@ static ParseTestVector ParseTestVectors[] = {
   {"http://foo.bar/",                                                        true,  "http", "foo.bar", 80,  "/",                   NULL,                            NULL,       "http://foo.bar/"},
   {"http://foo.bar/blabla/blibli/?query",                                    true,  "http", "foo.bar", 80,  "/blabla/blibli/",     "query",                         NULL,       "http://foo.bar/blabla/blibli/?query"},
   {"http://foo.bar/blabla/blibli/?query=1&bla=%20&slash=/&foo=a#fragment",   true,  "http", "foo.bar", 80,  "/blabla/blibli/",     "query=1&bla=%20&slash=/&foo=a", "fragment", "http://foo.bar/blabla/blibli/?query=1&bla=%20&slash=/&foo=a#fragment"},
-  {"http://foo.bar/blabla foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment", true,  "http", "foo.bar", 80,  "/blabla foo/blibli/", "query=1&bla=2&slash=/&foo=a",   "fragment", "http://foo.bar/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment"},
+  {"http://foo.bar/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment", true,  "http", "foo.bar", 80,  "/blabla%20foo/blibli/", "query=1&bla=2&slash=/&foo=a","fragment", "http://foo.bar/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment"},
+  {"http://foo.bar?query",                                                   true,  "http", "foo.bar", 80,  NULL,                  "query",                         NULL,       "http://foo.bar/?query"},
+  {"http://foo.bar#fragment",                                                true,  "http", "foo.bar", 80,  NULL,                   NULL,                           "fragment", "http://foo.bar/#fragment"}
 };
  
 typedef struct {
@@ -179,11 +181,11 @@ main(int /*argc*/, char** /*argv*/)
     NPT_HttpUrl url;
     CHECK(!url.IsValid());
 
-    url = "http://foo.bar/blabla foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment";
+    url = "http://foo.bar/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a#fragment";
     CHECK(url.IsValid());
     CHECK(url.GetHost() == "foo.bar");
     CHECK(url.GetPort() == 80);
-    CHECK(url.GetPath() == "/blabla foo/blibli/");
+    CHECK(url.GetPath() == "/blabla%20foo/blibli/");
     CHECK(url.GetQuery() == "query=1&bla=2&slash=/&foo=a");
     CHECK(url.GetFragment() == "fragment");
     CHECK(url.ToString(false) == "http://foo.bar/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a");
@@ -197,7 +199,7 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(url.GetFragment() == "fragment");
     CHECK(url.ToRequestString() == "/blabla%20foo/blibli/?query=1&bla=2&slash=/&foo=a");
 
-    url.SetPathPlus("/bla/foo?query=bar");
+    url.ParsePathPlus("/bla/foo?query=bar");
     url.SetHost("bar.com:8080");
     CHECK(url.IsValid());
     CHECK(url.GetHost() == "bar.com");
@@ -205,7 +207,7 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(url.GetPath() == "/bla/foo");
     CHECK(url.GetQuery() == "query=bar");
     
-    url.SetPathPlus("bla/foo?query=bar");
+    url.ParsePathPlus("bla/foo?query=bar");
     url.SetHost("bar.com:8080");
     CHECK(url.IsValid());
     CHECK(url.GetHost() == "bar.com");
@@ -213,7 +215,7 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(url.GetPath() == "bla/foo");
     CHECK(url.GetQuery() == "query=bar");
 
-    url.SetPathPlus("*");
+    url.ParsePathPlus("*");
     CHECK(url.IsValid());
     CHECK(url.GetPath() == "*");
 
@@ -230,10 +232,10 @@ main(int /*argc*/, char** /*argv*/)
     NPT_UrlQuery query;
     query.AddField("url1","http://foo.bar/foo?q=3&bar=+7/3&boo=a%3Db&bli=a b");
     query.AddField("url2","(1234+456 789)");
-    CHECK(query.ToString() == "url1=http%3A%2F%2Ffoo.bar%2Ffoo%3Fq%3D3%26bar%3D%2B7%2F3%26boo%3Da%3Db%26bli%3Da+b&url2=(1234%2B456+789)");
+    CHECK(query.ToString() == "url1=http%3A%2F%2Ffoo.bar%2Ffoo%3Fq%3D3%26bar%3D%2B7%2F3%26boo%3Da%253Db%26bli%3Da+b&url2=(1234%2B456+789)");
 
     query = "url1=http%3A%2F%2Ffoo.bar%2Ffoo%3Fq%3D3%26bar%3D%2B7%2F3&url2=12+34";
-    CHECK(query.ToString() == "url1=http%3A%2F%2Ffoo.bar%2Ffoo%3Fq%3D3%26bar%3D%2B7%2F3&url2=12%2B34");
+    CHECK(query.ToString() == "url1=http%3A%2F%2Ffoo.bar%2Ffoo%3Fq%3D3%26bar%3D%2B7%2F3&url2=12+34");
 
     // url query decoding
     NPT_UrlQuery query2("a=1+2+3&b=http%3A%2F%2Ffoo.bar%2Ffoo%3Fq%3D3%26bar%3D%2B7%2F3%26boo%3Da%3Db%26bli%3Da+b");
@@ -248,6 +250,19 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(NPT_UrlQuery::UrlDecode(b_field) == "http://foo.bar/foo?q=3&bar= 7/3&boo=a=b&bli=a b");
     CHECK(c_field == NULL);
     
+    // url query misc
+    NPT_UrlQuery query3;
+    query3.SetField("a b", "c&3", false);
+    query3.AddField("a b", "c&4 b&6", false);
+    query3.SetField("c d", "c&5", false);
+    query3.SetField("a+b", "c_3", true);
+    const char* field1 = query3.GetField("a b");
+    const char* field2 = query3.GetField("c d");
+    CHECK(field1 != NULL);
+    CHECK(NPT_UrlQuery::UrlDecode(field1) == "c_3");
+    CHECK(field2 != NULL);
+    CHECK(NPT_UrlQuery::UrlDecode(field2) == "c&5");
+
     printf("--- test done\n");
     
     return 0;

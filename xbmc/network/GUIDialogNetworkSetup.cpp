@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,16 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogNetworkSetup.h"
 #include "guilib/GUISpinControlEx.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogKeyboard.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIEditControl.h"
@@ -45,6 +42,7 @@ CGUIDialogNetworkSetup::CGUIDialogNetworkSetup(void)
 {
   m_protocol = NET_PROTOCOL_SMB;
   m_confirmed = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
@@ -108,7 +106,7 @@ bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(CStdString &path)
   return dialog->IsConfirmed();
 }
 
-void CGUIDialogNetworkSetup::OnInitWindow()
+void CGUIDialogNetworkSetup::OnWindowLoaded()
 {
   // replace our buttons with edits
   ChangeButtonToEdit(CONTROL_SERVER_ADDRESS);
@@ -117,6 +115,11 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   ChangeButtonToEdit(CONTROL_PORT_NUMBER);
   ChangeButtonToEdit(CONTROL_PASSWORD);
 
+  CGUIDialog::OnWindowLoaded();
+}
+
+void CGUIDialogNetworkSetup::OnInitWindow()
+{
   // start as unconfirmed
   m_confirmed = false;
 
@@ -132,7 +135,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 #endif
   pSpin->AddLabel(g_localizeStrings.Get(20256), NET_PROTOCOL_HTSP);
   pSpin->AddLabel(g_localizeStrings.Get(20257), NET_PROTOCOL_VTP);
+#ifdef HAS_MYSQL
   pSpin->AddLabel(g_localizeStrings.Get(20258), NET_PROTOCOL_MYTH);
+#endif
   pSpin->AddLabel(g_localizeStrings.Get(21331), NET_PROTOCOL_TUXBOX);
   pSpin->AddLabel(g_localizeStrings.Get(20301), NET_PROTOCOL_HTTPS);
   pSpin->AddLabel(g_localizeStrings.Get(20300), NET_PROTOCOL_HTTP);
@@ -154,6 +159,16 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
+}
+
+void CGUIDialogNetworkSetup::OnDeinitWindow(int nextWindowID)
+{
+  // clear protocol spinner
+  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_PROTOCOL);
+  if (pSpin)
+    pSpin->Clear();
+
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 void CGUIDialogNetworkSetup::OnServerBrowse()
@@ -425,5 +440,6 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
   m_port.Format("%i", url.GetPort());
   m_server = url.GetHostName();
   m_path = url.GetFileName();
+  URIUtils::RemoveSlashAtEnd(m_path);
 }
 

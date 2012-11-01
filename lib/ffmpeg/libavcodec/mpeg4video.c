@@ -28,12 +28,12 @@ uint8_t ff_mpeg4_static_rl_table_store[3][2][2*MAX_RUN + MAX_LEVEL + 3];
 
 int ff_mpeg4_get_video_packet_prefix_length(MpegEncContext *s){
     switch(s->pict_type){
-        case FF_I_TYPE:
+        case AV_PICTURE_TYPE_I:
             return 16;
-        case FF_P_TYPE:
-        case FF_S_TYPE:
+        case AV_PICTURE_TYPE_P:
+        case AV_PICTURE_TYPE_S:
             return s->f_code+15;
-        case FF_B_TYPE:
+        case AV_PICTURE_TYPE_B:
             return FFMAX3(s->f_code, s->b_code, 2) + 15;
         default:
             return -1;
@@ -89,7 +89,7 @@ static inline void ff_mpeg4_set_one_direct_mv(MpegEncContext *s, int mx, int my,
     uint16_t time_pb= s->pb_time;
     int p_mx, p_my;
 
-    p_mx= s->next_picture.motion_val[0][xy][0];
+    p_mx = s->next_picture.f.motion_val[0][xy][0];
     if((unsigned)(p_mx + tab_bias) < tab_size){
         s->mv[0][i][0] = s->direct_scale_mv[0][p_mx + tab_bias] + mx;
         s->mv[1][i][0] = mx ? s->mv[0][i][0] - p_mx
@@ -99,7 +99,7 @@ static inline void ff_mpeg4_set_one_direct_mv(MpegEncContext *s, int mx, int my,
         s->mv[1][i][0] = mx ? s->mv[0][i][0] - p_mx
                             : p_mx*(time_pb - time_pp)/time_pp;
     }
-    p_my= s->next_picture.motion_val[0][xy][1];
+    p_my = s->next_picture.f.motion_val[0][xy][1];
     if((unsigned)(p_my + tab_bias) < tab_size){
         s->mv[0][i][1] = s->direct_scale_mv[0][p_my + tab_bias] + my;
         s->mv[1][i][1] = my ? s->mv[0][i][1] - p_my
@@ -120,7 +120,7 @@ static inline void ff_mpeg4_set_one_direct_mv(MpegEncContext *s, int mx, int my,
  */
 int ff_mpeg4_set_direct_mv(MpegEncContext *s, int mx, int my){
     const int mb_index= s->mb_x + s->mb_y*s->mb_stride;
-    const int colocated_mb_type= s->next_picture.mb_type[mb_index];
+    const int colocated_mb_type = s->next_picture.f.mb_type[mb_index];
     uint16_t time_pp;
     uint16_t time_pb;
     int i;
@@ -137,7 +137,7 @@ int ff_mpeg4_set_direct_mv(MpegEncContext *s, int mx, int my){
     } else if(IS_INTERLACED(colocated_mb_type)){
         s->mv_type = MV_TYPE_FIELD;
         for(i=0; i<2; i++){
-            int field_select= s->next_picture.ref_index[0][4*mb_index + 2*i];
+            int field_select = s->next_picture.f.ref_index[0][4 * mb_index + 2 * i];
             s->field_select[0][i]= field_select;
             s->field_select[1][i]= i;
             if(s->top_field_first){

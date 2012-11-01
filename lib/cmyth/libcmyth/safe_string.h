@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006, Simon Hyde
+ *  Copyright (C) 2006-2009, Simon Hyde
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -17,12 +17,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/** \file mvp_string.h
+/** \file safe_string.h
  * Some basic string handling routines to help avoid segfaults/buffer overflows
  */
 
-#ifndef __MVP_STRING_H
-#define __MVP_STRING_H
+#ifndef __CMYTH_STRING_H
+#define __CMYTH_STRING_H
 
 #include <stdio.h>
 
@@ -46,4 +46,4 @@ static inline char * safe_strncpy(char *dest,const char *src,size_t n)
 #define safe_atoll(str) (((str) == NULL)? (long long)0: atoll(str))
 #define safe_atoi(str) (((str) == NULL)? (int)0: atoi(str))
 
-#endif /* __MVP_STRING_H */
+#endif /* __CMYTH_STRING_H */

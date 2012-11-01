@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,7 +24,6 @@
 
 #include "RTVDirectory.h"
 #include "utils/URIUtils.h"
-#include "SectionLoader.h"
 #include "URL.h"
 #include "utils/XBMCTinyXML.h"
 #include "FileItem.h"
@@ -43,12 +41,10 @@ extern "C"
 
 CRTVDirectory::CRTVDirectory(void)
 {
-  CSectionLoader::Load("LIBRTV");
 }
 
 CRTVDirectory::~CRTVDirectory(void)
 {
-  CSectionLoader::Unload("LIBRTV");
 }
 
 //*********************************************************************************************
@@ -122,8 +118,9 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (url.HasPort())
   {
     char buffer[10];
+    sprintf(buffer,"%i",url.GetPort());
     strHostAndPort += ':';
-    strHostAndPort += itoa(url.GetPort(), buffer, 10);
+    strHostAndPort += buffer;
   }
 
   // No path given, list shows from ReplayGuide

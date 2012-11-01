@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -93,9 +92,10 @@ namespace PERIPHERALS
     virtual bool HasPeripheral(const CStdString &strLocation) const;
 
     /*!
-     * @brief Get the first instance of a peripheral that has the given feature.
+     * @brief Get all peripheral instances that have the given feature.
+     * @param results The list of results.
      * @param feature The feature to search for.
-     * @return The peripheral or NULL if it wasn't found.
+     * @return The number of devices that have been found.
      */
     virtual int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature) const;
 

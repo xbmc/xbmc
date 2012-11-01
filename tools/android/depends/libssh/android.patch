@@ -1,0 +1,49 @@
+--- src/connect.c	2011-05-31 10:29:52.000000000 -0400
++++ src/connect.c	2012-07-25 23:15:22.281514489 -0400
+@@ -159,7 +159,7 @@
+   int timeout_ms;
+   ssh_pollfd_t fds;
+   int rc = 0;
+-  unsigned int len = sizeof(rc);
++  socklen_t len = sizeof(rc);
+ 
+   enter_function();
+
+--- src/misc.c	2011-05-31 10:29:52.000000000 -0400
++++ src/misc.c	2012-07-25 23:24:46.611514133 -0400
+@@ -207,6 +207,9 @@
+ #endif /* NSS_BUFLEN_PASSWD */
+ 
+ char *ssh_get_user_home_dir(void) {
++#if defined(__ANDROID__)
++  return NULL;
++#else
+   char *szPath = NULL;
+   struct passwd pwd;
+   struct passwd *pwdbuf;
+@@ -221,6 +224,7 @@
+   szPath = strdup(pwd.pw_dir);
+ 
+   return szPath;
++#endif
+ }
+ 
+ /* we have read access on file */
+@@ -233,6 +237,9 @@
+ }
+ 
+ char *ssh_get_local_username(ssh_session session) {
++#if defined(__ANDROID__)
++  return NULL;
++#else
+     struct passwd pwd;
+     struct passwd *pwdbuf;
+     char buf[NSS_BUFLEN_PASSWD];
+@@ -254,6 +261,7 @@
+     }
+ 
+     return name;
++#endif
+ }
+ 
+ int ssh_is_ipaddr_v4(const char *str) {

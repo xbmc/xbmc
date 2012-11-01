@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006, Sergio Slobodrian
+ *  Copyright (C) 2006-2012, Sergio Slobodrian
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -24,28 +24,12 @@
  *                This allows the watcher to do things like pause, rewind
  *                and so forth on live-tv.
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#include <sys/socket.h>
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/types.h>
 #include <cmyth_local.h>
-
-#ifdef _MSC_VER
-static void nullprint(a, ...) { return; }
-#define PRINTF nullprint
-#define TRC  nullprint
-#elif 0
-#define PRINTF(x...) PRINTF(x)
-#define TRC(fmt, args...) PRINTF(fmt, ## args) 
-#else
-#define PRINTF(x...)
-#define TRC(fmt, args...) 
-#endif
 
 #define LAST 0x7FFFFFFF
 
@@ -427,7 +411,6 @@ cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
 {
 	int ret=0;
 	char url[1024];
-	cmyth_conn_t control;
 	cmyth_proginfo_t loc_prog;
 	cmyth_file_t ft;
 
@@ -435,8 +418,6 @@ cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: rec is NULL\n", __FUNCTION__);
 		goto out;
 	}
-
-	control = rec->rec_conn;
 
 	loc_prog = cmyth_recorder_get_cur_proginfo(rec);
 	pthread_mutex_lock(&mutex);
@@ -665,7 +646,6 @@ cmyth_livetv_chain_switch(cmyth_recorder_t rec, int dir)
 	ret = 0;
 
 	if(dir == LAST) {
-		PRINTF("**SSDEBUG:(cmyth_livetv_chain_switch) dir: %d\n", dir);
 		dir = rec->rec_livetv_chain->chain_ct
 				- rec->rec_livetv_chain->chain_current - 1;
 		ret = 1;
@@ -676,8 +656,6 @@ cmyth_livetv_chain_switch(cmyth_recorder_t rec, int dir)
 			  rec->rec_livetv_chain->chain_ct - dir )) {
 		ref_release(rec->rec_livetv_file);
 		ret = rec->rec_livetv_chain->chain_current += dir;
-		PRINTF("**SSDEBUG:(cmyth_livetv_chain_switch): %s:%d\n",
-		"dooingSwitcheroo",ret);
 		rec->rec_livetv_file = ref_hold(rec->rec_livetv_chain->chain_files[ret]);
 		rec->rec_livetv_chain
 					->prog_update_callback(rec->rec_livetv_chain->progs[ret]);
@@ -711,7 +689,6 @@ cmyth_livetv_chain_switch_last(cmyth_recorder_t rec)
 	pthread_mutex_lock(&mutex);
 	dir = rec->rec_livetv_chain->chain_ct
 			- rec->rec_livetv_chain->chain_current - 1;
-	PRINTF("#@@@@#SSDEBUG: switch file changing adjusted dir: %d\n", dir);
 	if(dir != 0) {
 		cmyth_livetv_chain_switch(rec, dir);
 	}
@@ -759,8 +736,6 @@ cmyth_livetv_chain_request_block(cmyth_recorder_t rec, unsigned long len)
 		ret = cmyth_file_request_block(rec->rec_livetv_file, len);
 		if (ret == 0) { /* We've gotten to the end, need to progress in the chain */
 			/* Switch if there are files left in the chain */
-			PRINTF("**SSDEBUG:(cmyth_livetv_request_block): %s\n",
-			"reached end of stream must dooSwitcheroo");
 			retry = cmyth_livetv_chain_switch(rec, 1);
 		}
 	}
@@ -792,8 +767,6 @@ int cmyth_livetv_chain_read(cmyth_recorder_t rec, char *buf, unsigned long len)
 		ret = cmyth_file_read(rec->rec_livetv_file, buf, len);	
 		if (ret == 0) {
 			/* eof, switch to next file */
-			PRINTF("**SSDEBUG:(cmyth_livetv_chain_read): %s\n",
-			"reached end of stream must dooSwitcheroo");
 			retry = cmyth_livetv_chain_switch(rec, 1);
 		}
 	} while(retry);
@@ -894,8 +867,6 @@ cmyth_livetv_chain_seek(cmyth_recorder_t rec, long long offset, int whence)
 	pthread_mutex_lock(&mutex);
 
 	ret = cmyth_file_seek(fp, offset, whence);
-
-	PRINTF("** SSDEBUG: new pos %lld after seek command\n", ret);
 
 	cur -= rec->rec_livetv_chain->chain_current;
 	if (ret >= 0 && cur) {
@@ -1040,7 +1011,6 @@ cmyth_spawn_live_tv(cmyth_recorder_t rec, unsigned buflen, int tcp_rcvbuf,
 	cmyth_recorder_t rtrn = NULL;
 	int i;
 
-	//printf("** SSDEBUG: version is %ld\n", rec->rec_conn->conn_version);
 	if(rec->rec_conn->conn_version >= 26) {
 		if (cmyth_recorder_spawn_chain_livetv(rec, channame) != 0) {
 			*err = "Spawn livetv failed.";

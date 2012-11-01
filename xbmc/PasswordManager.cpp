@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -79,12 +78,25 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
   url.SetUserName(username);
 
   // save the information for later
+  SaveAuthenticatedURL(url, saveDetails);
+  return true;
+}
+
+void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
+{
+  // don't store/save authenticated url if it doesn't contain username
+  if (url.GetUserName().IsEmpty())
+    return;
+
+  CSingleLock lock(m_critSection);
+
+  CStdString path = GetLookupPath(url);
   CStdString authenticatedPath = url.Get();
 
   if (!m_loaded)
     Load();
 
-  if (saveDetails)
+  if (saveToProfile)
   { // write to some random XML file...
     m_permanentCache[path] = authenticatedPath;
     Save();
@@ -93,7 +105,6 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
   // save for both this path and more generally the server as a whole.
   m_temporaryCache[path] = authenticatedPath;
   m_temporaryCache[GetServerLookup(path)] = authenticatedPath;
-  return true;
 }
 
 void CPasswordManager::Clear()

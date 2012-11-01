@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -101,6 +100,7 @@ CTextureBundleXPR::CTextureBundleXPR(void)
 {
   m_hFile = NULL;
   m_themeBundle = false;
+  m_TimeStamp = 0;
 }
 
 CTextureBundleXPR::~CTextureBundleXPR(void)
@@ -138,11 +138,11 @@ bool CTextureBundleXPR::OpenBundle()
   else
     strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xpr");
 
-  strPath = PTH_IC(strPath);
+  strPath = CSpecialProtocol::TranslatePathConvertCase(strPath);
 
 #ifndef _LINUX
   CStdStringW strPathW;
-  g_charsetConverter.utf8ToW(_P(strPath), strPathW, false);
+  g_charsetConverter.utf8ToW(CSpecialProtocol::TranslatePath(strPath), strPathW, false);
   m_hFile = _wfopen(strPathW.c_str(), L"rb");
 #else
   m_hFile = fopen(strPath.c_str(), "rb");
@@ -284,7 +284,7 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     GlobalMemoryStatusEx(&stat);
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %"PRIu64" bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize, stat.ullAvailPhys);
-#elif defined(__APPLE__) || defined(__FreeBSD__)
+#elif defined(TARGET_DARWIN) || defined(__FreeBSD__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize);
 #else
@@ -300,12 +300,17 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   }
 
   // read the file into our buffer
-  DWORD n;
-  fseek(m_hFile, file->second.Offset, SEEK_SET);
-  n = fread(buffer, 1, ReadSize, m_hFile);
+  if (fseek(m_hFile, file->second.Offset, SEEK_SET) != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading texture: %s: %s: Seek error", Filename.c_str(), strerror(ferror(m_hFile)));
+    free(buffer);
+    return false;            
+  }
+  
+  DWORD n = fread(buffer, 1, ReadSize, m_hFile);
   if (n < ReadSize && !feof(m_hFile))
   {
-    CLog::Log(LOGERROR, "Error loading texture: %s: %s", Filename.c_str(), strerror(ferror(m_hFile)));
+    CLog::Log(LOGERROR, "Error loading texture: %s: %s: Read error", Filename.c_str(), strerror(ferror(m_hFile)));
     free(buffer);
     return false;
   }

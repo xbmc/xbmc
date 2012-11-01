@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,20 +13,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "CDDAcodec.h"
-#if !(defined(__APPLE__) && defined(__arm__))
+#if !defined(TARGET_DARWIN_IOS)
 #include <cdio/sector.h>
 #else
 typedef int32_t lsn_t;
 #define CDIO_CD_FRAMESIZE_RAW   2352
 #define CDIO_CD_FRAMES_PER_SEC   75
 #endif
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define SECTOR_COUNT 55 // max. sectors that can be read at once
 #define MAX_BUFFER_SIZE 2*SECTOR_COUNT*CDIO_CD_FRAMESIZE_RAW
@@ -36,6 +36,7 @@ CDDACodec::CDDACodec()
   m_SampleRate = 44100;
   m_Channels = 2;
   m_BitsPerSample = 16;
+  m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = 0;
   m_Bitrate = 0;
   m_CodecName = "CDDA";
@@ -63,7 +64,10 @@ bool CDDACodec::Init(const CStdString &strFile, unsigned int filecache)
 
   //  Calculate total time of the track
   m_TotalTime=(m_file.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime);
+  if (m_TotalTime > 0)
+    m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime);
+  else
+    m_Bitrate = 0;
   m_TotalTime*=1000; // ms
   return true;
 }
@@ -73,7 +77,7 @@ void CDDACodec::DeInit()
   m_file.Close();
 }
 
-__int64 CDDACodec::Seek(__int64 iSeekTime)
+int64_t CDDACodec::Seek(int64_t iSeekTime)
 {
   //  Calculate the next full second...
   int iSeekTimeFullSec=(int)(iSeekTime+(1000-(iSeekTime%1000)))/1000;
@@ -87,7 +91,7 @@ __int64 CDDACodec::Seek(__int64 iSeekTime)
 
   // ... and look if we really got there.
   int iNewSeekTime=(iNewOffset/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  return iNewSeekTime*1000; // ms
+  return iNewSeekTime*(int64_t)1000; // ms
 }
 
 int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
@@ -139,4 +143,17 @@ int CDDACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool CDDACodec::CanInit()
 {
   return true;
+}
+
+CAEChannelInfo CDDACodec::GetChannelInfo()
+{
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR  , AE_CH_NULL}
+  };
+
+  if (m_Channels > 2)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }

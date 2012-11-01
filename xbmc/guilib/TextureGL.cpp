@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -35,6 +34,7 @@ using namespace std;
 CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int format)
 : CBaseTexture(width, height, format)
 {
+  m_texture = 0;
 }
 
 CGLTexture::~CGLTexture()
@@ -182,4 +182,18 @@ void CGLTexture::LoadToGPU()
 
   m_loadedToGPU = true;
 }
+
+void CGLTexture::BindToUnit(unsigned int unit)
+{
+  // we support only 2 texture units at present
+#ifndef HAS_GLES
+  glActiveTexture((unit == 1) ? GL_TEXTURE1_ARB : GL_TEXTURE0_ARB);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+  glEnable(GL_TEXTURE_2D);
+#else // GLES
+  glActiveTexture((unit == 1) ? GL_TEXTURE1 : GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+#endif
+}
+
 #endif // HAS_GL

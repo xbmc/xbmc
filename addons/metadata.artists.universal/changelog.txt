@@ -1,0 +1,37 @@
+[B]2.0.6[/B]
+Fixed: accommodate new Frodo style URL encoding
+
+[B]2.0.5[/B]
+Removed: '&' sign from artist splitter
+
+[B]2.0.4[/B]
+Improved: further improve search results for artists with almost no data
+
+[B]2.0.3[/B]
+Improved: search results are now return artists with almost no data
+
+[B]2.0.2[/B]
+Fixed: artists won't find with 'and' in their name
+
+[B]2.0.1[/B]
+Fixed: potential crashes due to infinite loop
+
+[B]2.0.0[/B]
+Added: Fallback per field
+Added: scraping in case of multiple artists (feat., ft., &, and)
+Added: other improvements
+
+[B]1.2.1[/B]
+Added: Enable all source for artwork by default
+
+[B]1.2.0[/B]
+Added: extra options for Artist Biography
+
+[B]1.1.1[/B]
+Added: handling of new format of allmusic link
+
+[B]1.1.0[/B]
+Added: language setting for last.fm artist biography
+
+[B]1.0.0[/B]
+Initial version

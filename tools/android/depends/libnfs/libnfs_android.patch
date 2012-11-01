@@ -1,0 +1,45 @@
+--- lib/libnfs-sync.c	2011-09-02 06:45:30.000000000 -0400
++++ lib/libnfs-sync.c	2012-06-02 22:17:11.904404289 -0400
+@@ -25,7 +25,13 @@
+ #include <strings.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <sys/statvfs.h>
++#ifndef ANDROID
++#include <sys/statvfs.h>
++#else
++#include <sys/vfs.h>
++#define statvfs statfs
++#define fstatvfs fstatfs
++#endif
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+--- lib/libnfs.c	2012-06-02 22:17:23.324404282 -0400
++++ lib/libnfs.c	2012-06-02 22:17:11.904404289 -0400
+@@ -27,7 +27,13 @@
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <sys/statvfs.h>
++#ifndef ANDROID
++#include <sys/statvfs.h>
++#else
++#include <sys/vfs.h>
++#define statvfs statfs
++#define fstatvfs fstatfs
++#endif
+ #include <utime.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+@@ -1919,10 +1925,6 @@
+ 	svfs.f_bavail  = res->FSSTAT3res_u.resok.abytes/4096;
+ 	svfs.f_files   = res->FSSTAT3res_u.resok.tfiles;
+ 	svfs.f_ffree   = res->FSSTAT3res_u.resok.ffiles;
+-	svfs.f_favail  = res->FSSTAT3res_u.resok.afiles;
+-	svfs.f_fsid    = 0;
+-	svfs.f_flag    = 0;
+-	svfs.f_namemax = 256;
+ 
+ 	data->cb(0, nfs, &svfs, data->private_data);
+ 	free_nfs_cb_data(data);

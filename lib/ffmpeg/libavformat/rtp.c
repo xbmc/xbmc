@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <libavutil/opt.h>
 #include "avformat.h"
 
 #include "rtp.h"
@@ -43,7 +44,7 @@ static const struct
 {
   {0, "PCMU",        AVMEDIA_TYPE_AUDIO,   CODEC_ID_PCM_MULAW, 8000, 1},
   {3, "GSM",         AVMEDIA_TYPE_AUDIO,   CODEC_ID_NONE, 8000, 1},
-  {4, "G723",        AVMEDIA_TYPE_AUDIO,   CODEC_ID_NONE, 8000, 1},
+  {4, "G723",        AVMEDIA_TYPE_AUDIO,   CODEC_ID_G723_1, 8000, 1},
   {5, "DVI4",        AVMEDIA_TYPE_AUDIO,   CODEC_ID_NONE, 8000, 1},
   {6, "DVI4",        AVMEDIA_TYPE_AUDIO,   CODEC_ID_NONE, 16000, 1},
   {7, "LPC",         AVMEDIA_TYPE_AUDIO,   CODEC_ID_NONE, 8000, 1},
@@ -89,21 +90,32 @@ int ff_rtp_get_codec_info(AVCodecContext *codec, int payload_type)
     return -1;
 }
 
-int ff_rtp_get_payload_type(AVCodecContext *codec)
+int ff_rtp_get_payload_type(AVFormatContext *fmt, AVCodecContext *codec)
 {
-    int i, payload_type;
+    int i;
+    AVOutputFormat *ofmt = fmt ? fmt->oformat : NULL;
 
-    /* compute the payload type */
-    for (payload_type = -1, i = 0; AVRtpPayloadTypes[i].pt >= 0; ++i)
+    /* Was the payload type already specified for the RTP muxer? */
+    if (ofmt && ofmt->priv_class) {
+        int64_t payload_type;
+        if (av_opt_get_int(fmt->priv_data, "payload_type", 0, &payload_type) >= 0 &&
+            payload_type >= 0)
+            return (int)payload_type;
+    }
+
+    /* static payload type */
+    for (i = 0; AVRtpPayloadTypes[i].pt >= 0; ++i)
         if (AVRtpPayloadTypes[i].codec_id == codec->codec_id) {
             if (codec->codec_id == CODEC_ID_H263)
                 continue;
             if (codec->codec_id == CODEC_ID_PCM_S16BE)
                 if (codec->channels != AVRtpPayloadTypes[i].audio_channels)
                     continue;
-            payload_type = AVRtpPayloadTypes[i].pt;
+            return AVRtpPayloadTypes[i].pt;
         }
-    return payload_type;
+
+    /* dynamic payload type */
+    return RTP_PT_PRIVATE + (codec->codec_type == AVMEDIA_TYPE_AUDIO);
 }
 
 const char *ff_rtp_enc_name(int payload_type)

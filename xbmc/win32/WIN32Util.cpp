@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -107,14 +106,16 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
   return flat;
 }
 
-int CWIN32Util::GetDriveStatus(const CStdString &strPath)
+int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
 {
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
   ULONG ulChanges=0;
   DWORD dwBytesReturned;
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
-  byte DataBuf[16];  //Buffer for holding data to/from drive.
+  byte DataBuf[8];  //Buffer for holding data to/from drive.
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting status for drive %s.", strPath.c_str());
 
   hDevice = CreateFile( strPath.c_str(),                  // drive
                         0,                                // no access to the drive
@@ -126,9 +127,11 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 
   if (hDevice == INVALID_HANDLE_VALUE)                    // cannot open the drive
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile for %s.", strPath.c_str());
     return -1;
   }
 
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting media status for drive %s.", strPath.c_str());
   iResult = DeviceIoControl((HANDLE) hDevice,             // handle to device
                              IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode
                              NULL,                        // lpInBuffer
@@ -143,8 +146,12 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   if(iResult == 1)
     return 2;
 
+  // don't request the tray status as we often doesn't need it
+  if(!bStatusEx)
+    return 0;
+
   hDevice = CreateFile( strPath.c_str(),
-                        GENERIC_READ | GENERIC_WRITE, 
+                        GENERIC_READ | GENERIC_WRITE,
                         FILE_SHARE_READ | FILE_SHARE_WRITE,
                         NULL,
                         OPEN_EXISTING,
@@ -153,18 +160,19 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 
   if (hDevice == INVALID_HANDLE_VALUE)
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile2 for %s.", strPath.c_str());
     return -1;
   }
 
   sptd_sb.sptd.Length=sizeof(SCSI_PASS_THROUGH_DIRECT);
-  sptd_sb.sptd.PathId=0; 
+  sptd_sb.sptd.PathId=0;
   sptd_sb.sptd.TargetId=0;
   sptd_sb.sptd.Lun=0;
   sptd_sb.sptd.CdbLength=10;
   sptd_sb.sptd.SenseInfoLength=MAX_SENSE_LEN;
   sptd_sb.sptd.DataIn=SCSI_IOCTL_DATA_IN;
-  sptd_sb.sptd.DataTransferLength=8;
-  sptd_sb.sptd.TimeOutValue=108000;
+  sptd_sb.sptd.DataTransferLength=sizeof(DataBuf);
+  sptd_sb.sptd.TimeOutValue=2;
   sptd_sb.sptd.DataBuffer=(PVOID)&(DataBuf);
   sptd_sb.sptd.SenseInfoOffset=sizeof(SCSI_PASS_THROUGH_DIRECT);
 
@@ -185,9 +193,11 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   sptd_sb.sptd.Cdb[14]=0;
   sptd_sb.sptd.Cdb[15]=0;
 
+  ZeroMemory(DataBuf, 8);
   ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
 
   //Send the command to drive
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting tray status for drive %s.", strPath.c_str());
   iResult = DeviceIoControl((HANDLE) hDevice,
                             IOCTL_SCSI_PASS_THROUGH_DIRECT,
                             (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
@@ -207,6 +217,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
     else
       return 2; // tray closed, media present
   }
+  CLog::Log(LOGERROR, __FUNCTION__": Could not determine tray status %d", GetLastError());
   return -1;
 }
 
@@ -242,7 +253,7 @@ bool CWIN32Util::PowerManagement(PowerState State)
   }
   // Get the LUID for the shutdown privilege.
   LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
-  tkp.PrivilegeCount = 1;  // one privilege to set   
+  tkp.PrivilegeCount = 1;  // one privilege to set
   tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
   // Get the shutdown privilege for this process.
   AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
@@ -318,12 +329,12 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
 
   strExe.Replace("\"","");
 
-  strWorkingDir = strExe; 
-  iIndex = strWorkingDir.ReverseFind('\\'); 
-  if(iIndex != -1) 
-  { 
-    strWorkingDir[iIndex+1] = '\0'; 
-  } 
+  strWorkingDir = strExe;
+  iIndex = strWorkingDir.ReverseFind('\\');
+  if(iIndex != -1)
+  {
+    strWorkingDir[iIndex+1] = '\0';
+  }
 
   CStdStringW WstrExe, WstrParams, WstrWorkingDir;
   g_charsetConverter.utf8ToW(strExe, WstrExe);
@@ -375,12 +386,12 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   if( dwStrLength != 0 )
   {
     CStdString strRet;
-    
+
     dwStrLength+= 1;
     pcBuffer= new char [dwStrLength];
     GetLogicalDriveStrings( dwStrLength, pcBuffer );
     int iPos= 0;
-    do 
+    do
     {
       CStdString strDrive = pcBuffer + iPos;
       if( DRIVE_FIXED == GetDriveType( strDrive.c_str()  ) &&
@@ -425,7 +436,7 @@ CStdString CWIN32Util::GetSpecialFolder(int csidl)
   {
     g_charsetConverter.wToUTF8(szPath, strProfilePath);
     strProfilePath = UncToSmb(strProfilePath);
-  }  
+  }
   else
     strProfilePath = "";
 
@@ -443,12 +454,12 @@ CStdString CWIN32Util::GetProfilePath()
   CStdString strHomePath;
 
   CUtil::GetHomePath(strHomePath);
-  
+
   if(g_application.PlatformDirectoriesEnabled())
     strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "XBMC");
   else
     strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
-  
+
   if (strProfilePath.length() == 0)
     strProfilePath = strHomePath;
 
@@ -464,6 +475,17 @@ CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
   {
     strRetPath = "smb:" + strPath;
     strRetPath.Replace("\\","/");
+  }
+  return strRetPath;
+}
+
+CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
+{
+  CStdString strRetPath(strPath);
+  if(strRetPath.Left(6).Equals("smb://"))
+  {
+    strRetPath.Replace("smb://","\\\\");
+    strRetPath.Replace("/","\\");
   }
   return strRetPath;
 }
@@ -493,7 +515,7 @@ void CWIN32Util::ExtendDllPath()
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
   BOOL bRet= FALSE;
-  DWORD dwReq;
+  DWORD dwReq = 0;
   char cDL = cDriveLetter;
   if( !cDL )
   {
@@ -502,18 +524,18 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
       return S_FALSE;
     cDL = dvdDevice[0];
   }
-  
-  CStdString strVolFormat; 
+
+  CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
-  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 
+  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  CStdString strRootFormat; 
+  CStdString strRootFormat;
   strRootFormat.Format( _T("%c:\\"), cDL);
-  if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) && 
+  if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
       ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
   {
     DWORD dwDummy;
-    dwReq = (GetDriveStatus(strVolFormat) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
+    dwReq = (GetDriveStatus(strVolFormat, true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
     bRet = DeviceIoControl( hDrive, dwReq, NULL, 0, NULL, 0, &dwDummy, NULL);
     CloseHandle( hDrive );
   }
@@ -540,13 +562,13 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
       return S_FALSE;
     cDL = dvdDevice[0];
   }
-  
-  CStdString strVolFormat; 
+
+  CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
 
-  if(GetDriveStatus(strVolFormat) != 1)
+  if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
-  else 
+  else
     return S_OK;
 }
 
@@ -560,22 +582,22 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
       return S_FALSE;
     cDL = dvdDevice[0];
   }
-  
-  CStdString strVolFormat; 
+
+  CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
 
-  if(GetDriveStatus(strVolFormat) == 1)
+  if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
-  else 
+  else
     return S_OK;
 }
 
-// safe removal of USB drives: 
+// safe removal of USB drives:
 // http://www.codeproject.com/KB/system/RemoveDriveByLetter.aspx
 // http://www.techtalkz.com/microsoft-device-drivers/250734-remove-usb-device-c-3.html
 
 #if _MSC_VER > 1400
-DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber) 
+DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
 {
 
   GUID* guid = (GUID*)(void*)&GUID_DEVINTERFACE_DISK;
@@ -600,7 +622,7 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
 
   spdid.cbSize = sizeof(spdid);
 
-  while ( true ) 
+  while ( true )
   {
     bRet = SetupDiEnumDeviceInterfaces(hDevInfo, NULL, guid, dwIndex, &devInterfaceData);
     if (!bRet)
@@ -611,7 +633,7 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
     dwSize = 0;
     SetupDiGetDeviceInterfaceDetail(hDevInfo, &spdid, NULL, 0, &dwSize, NULL);
 
-    if ( dwSize ) 
+    if ( dwSize )
     {
       pspdidd = (PSP_DEVICE_INTERFACE_DETAIL_DATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwSize);
       if ( pspdidd == NULL )
@@ -623,17 +645,17 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
 
       long res = SetupDiGetDeviceInterfaceDetail(hDevInfo, &spdid,
       pspdidd, dwSize, &dwSize, &spdd);
-      if ( res ) 
+      if ( res )
       {
         HANDLE hDrive = CreateFile(pspdidd->DevicePath, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, NULL, NULL);
-        if ( hDrive != INVALID_HANDLE_VALUE ) 
+        if ( hDrive != INVALID_HANDLE_VALUE )
         {
           STORAGE_DEVICE_NUMBER sdn;
           DWORD dwBytesReturned = 0;
           res = DeviceIoControl(hDrive, IOCTL_STORAGE_GET_DEVICE_NUMBER, NULL, 0, &sdn, sizeof(sdn), &dwBytesReturned, NULL);
-          if ( res ) 
+          if ( res )
           {
-            if ( DiskNumber == (long)sdn.DeviceNumber ) 
+            if ( DiskNumber == (long)sdn.DeviceNumber )
             {
               CloseHandle(hDrive);
               SetupDiDestroyDeviceInfoList(hDevInfo);
@@ -658,7 +680,7 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   if( !cDriveLetter )
     return false;
 
-  CStdString strVolFormat; 
+  CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDriveLetter);
 
   long DiskNumber = -1;
@@ -751,21 +773,21 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 {
   BOOL b;
   SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
-  PSID AdministratorsGroup; 
+  PSID AdministratorsGroup;
   b = AllocateAndInitializeSid(
       &NtAuthority,
       2,
       SECURITY_BUILTIN_DOMAIN_RID,
       DOMAIN_ALIAS_RID_ADMINS,
       0, 0, 0, 0, 0, 0,
-      &AdministratorsGroup); 
+      &AdministratorsGroup);
   if(b)
   {
-    if (!CheckTokenMembership( NULL, AdministratorsGroup, &b)) 
+    if (!CheckTokenMembership( NULL, AdministratorsGroup, &b))
     {
          b = FALSE;
-    } 
-    FreeSid(AdministratorsGroup); 
+    }
+    FreeSid(AdministratorsGroup);
   }
 
   return(b);
@@ -778,7 +800,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
   if( dwStrLength != 0 )
   {
     CMediaSource share;
-    
+
     dwStrLength+= 1;
     pcBuffer= new WCHAR [dwStrLength];
     GetLogicalDriveStringsW( dwStrLength, pcBuffer );
@@ -790,7 +812,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       cVolumeName[0]= L'\0';
 
       CStdStringW strWdrive = pcBuffer + iPos;
-      
+
       UINT uDriveType= GetDriveTypeW( strWdrive.c_str()  );
       // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
       // no floppy HW is attached which causes huge delays.
@@ -813,7 +835,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       share.strPath= share.strName= "";
 
       bool bUseDCD= false;
-      if( uDriveType > DRIVE_UNKNOWN && 
+      if( uDriveType > DRIVE_UNKNOWN &&
         (( eDriveType == ALL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE || uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )) ||
          ( eDriveType == LOCAL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE)) ||
          ( eDriveType == REMOVABLE_DRIVES && ( uDriveType == DRIVE_REMOVABLE )) ||
@@ -873,6 +895,17 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     } while( wcslen( pcBuffer + iPos ) > 0 );
     delete[] pcBuffer;
   }
+}
+
+std::string CWIN32Util::GetFirstOpticalDrive()
+{
+  VECSOURCES vShare;
+  std::string strdevice = "\\\\.\\";
+  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    return strdevice.append(vShare.front().strPath);
+  else
+    return "";
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)
@@ -1430,7 +1463,7 @@ bool CWIN32Util::GetFocussedProcess(CStdString &strProcessFile)
     HINSTANCE hpsapi = LoadLibrary("psapi.dll");
     if (hpsapi)
     {
-      DWORD (WINAPI *pGetModuleFileNameExA)(HANDLE,HMODULE,LPTSTR,DWORD); 
+      DWORD (WINAPI *pGetModuleFileNameExA)(HANDLE,HMODULE,LPTSTR,DWORD);
       pGetModuleFileNameExA = (DWORD (WINAPI*)(HANDLE,HMODULE,LPTSTR,DWORD)) GetProcAddress(hpsapi, "GetModuleFileNameExA");
       if (pGetModuleFileNameExA)
         if (pGetModuleFileNameExA(hproc, NULL, procfile, MAX_PATH))
@@ -1496,7 +1529,7 @@ extern "C"
 {
   /* case-independent string matching, similar to strstr but
   * matching */
-  char * strcasestr(const char* haystack, const char* needle) 
+  char * strcasestr(const char* haystack, const char* needle)
   {
     int i;
     int nlength = (int) strlen (needle);
@@ -1506,9 +1539,9 @@ extern "C"
     if (hlength <= 0) return NULL;
     if (nlength <= 0) return (char *)haystack;
     /* hlength and nlength > 0, nlength <= hlength */
-    for (i = 0; i <= (hlength - nlength); i++) 
+    for (i = 0; i <= (hlength - nlength); i++)
     {
-      if (strncasecmp (haystack + i, needle, nlength) == 0) 
+      if (strncasecmp (haystack + i, needle, nlength) == 0)
       {
         return (char *)haystack + i;
       }
@@ -1525,7 +1558,7 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 {
   CStdStringW strWDevicePath;
   strWDevicePath.Format(L"\\\\.\\%s",strWdrive.Left(2));
- 
+
   HANDLE deviceHandle = CreateFileW(
     strWDevicePath.c_str(),
    0,                // no access to the drive
@@ -1538,18 +1571,18 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 
   if(deviceHandle == INVALID_HANDLE_VALUE)
     return false;
- 
+
   // setup query
   STORAGE_PROPERTY_QUERY query;
   memset(&query, 0, sizeof(query));
   query.PropertyId = StorageDeviceProperty;
   query.QueryType = PropertyStandardQuery;
-   
+
   // issue query
   DWORD bytes;
   STORAGE_DEVICE_DESCRIPTOR devd;
   STORAGE_BUS_TYPE busType = BusTypeUnknown;
- 
+
   if (DeviceIoControl(deviceHandle,
    IOCTL_STORAGE_QUERY_PROPERTY,
    &query, sizeof(query),
@@ -1558,8 +1591,8 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
   {
    busType = devd.BusType;
   }
-   
+
   CloseHandle(deviceHandle);
- 
+
   return BusTypeUsb == busType;
  }

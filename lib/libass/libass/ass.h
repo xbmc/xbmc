@@ -23,7 +23,7 @@
 #include <stdarg.h>
 #include "ass_types.h"
 
-#define LIBASS_VERSION 0x00913000
+#define LIBASS_VERSION 0x01000000
 
 /*
  * A linked list of images produced by an ass renderer.
@@ -59,6 +59,19 @@ typedef enum {
     ASS_HINTING_NORMAL,
     ASS_HINTING_NATIVE
 } ASS_Hinting;
+
+/**
+ * \brief Text shaping levels.
+ *
+ * SIMPLE is a fast, font-agnostic shaper that can do only substitutions.
+ * COMPLEX is a slower shaper using OpenType for substitutions and positioning.
+ *
+ * libass uses the best shaper available by default.
+ */
+typedef enum {
+    ASS_SHAPING_SIMPLE = 0,
+    ASS_SHAPING_COMPLEX
+} ASS_ShapingLevel;
 
 /**
  * \brief Initialize the library.
@@ -145,6 +158,13 @@ void ass_renderer_done(ASS_Renderer *priv);
  * \param h height
  */
 void ass_set_frame_size(ASS_Renderer *priv, int w, int h);
+
+/**
+ * \brief Set shaping level. This is merely a hint, the renderer will use
+ * whatever is available if the request cannot be fulfilled.
+ * \param level shaping level
+ */
+void ass_set_shaper(ASS_Renderer *priv, ASS_ShapingLevel level);
 
 /**
  * \brief Set frame margins.  These values may be negative if pan-and-scan

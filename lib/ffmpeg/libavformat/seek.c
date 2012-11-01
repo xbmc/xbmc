@@ -21,6 +21,7 @@
  */
 
 #include "seek.h"
+#include "libavutil/mathematics.h"
 #include "libavutil/mem.h"
 #include "internal.h"
 
@@ -313,7 +314,7 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
     step = s->pb->buffer_size;
     curpos = FFMAX(pos - step / 2, 0);
     for (;;) {
-        url_fseek(s->pb, curpos, SEEK_SET);
+        avio_seek(s->pb, curpos, SEEK_SET);
         search_hi_lo_keyframes(s,
                                ts, time_base,
                                flags,
@@ -385,7 +386,7 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
         }
     }
 
-    url_fseek(s->pb, pos, SEEK_SET);
+    avio_seek(s->pb, pos, SEEK_SET);
     av_free(sync);
     return pos;
 }
@@ -405,7 +406,7 @@ AVParserState *ff_store_parser_state(AVFormatContext *s)
         return NULL;
     }
 
-    state->fpos = url_ftell(s->pb);
+    state->fpos = avio_tell(s->pb);
 
     // copy context structures
     state->cur_st                           = s->cur_st;
@@ -456,7 +457,7 @@ void ff_restore_parser_state(AVFormatContext *s, AVParserState *state)
     if (!state)
         return;
 
-    url_fseek(s->pb, state->fpos, SEEK_SET);
+    avio_seek(s->pb, state->fpos, SEEK_SET);
 
     // copy context structures
     s->cur_st                           = state->cur_st;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,6 +34,7 @@ CDVDInputStreamStack::CDVDInputStreamStack() : CDVDInputStream(DVDSTREAM_TYPE_FI
 {
   m_eof = true;
   m_pos = 0;
+  m_length = 0;
 }
 
 CDVDInputStreamStack::~CDVDInputStreamStack()
@@ -133,9 +133,9 @@ int CDVDInputStreamStack::Read(BYTE* buf, int buf_size)
   return (int)ret;
 }
 
-__int64 CDVDInputStreamStack::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamStack::Seek(int64_t offset, int whence)
 {
-  __int64 pos, len;
+  int64_t pos, len;
 
   if     (whence == SEEK_SET)
     pos = offset;
@@ -152,7 +152,7 @@ __int64 CDVDInputStreamStack::Seek(__int64 offset, int whence)
     if(len + it->length > pos)
     {
       TFile   file     = it->file;
-      __int64 file_pos = pos - len;
+      int64_t file_pos = pos - len;
       if(file->GetPosition() != file_pos)
       {
         if(file->Seek(file_pos, SEEK_SET) < 0)
@@ -170,7 +170,7 @@ __int64 CDVDInputStreamStack::Seek(__int64 offset, int whence)
   return -1;
 }
 
-__int64 CDVDInputStreamStack::GetLength()
+int64_t CDVDInputStreamStack::GetLength()
 {
   return m_length;
 }

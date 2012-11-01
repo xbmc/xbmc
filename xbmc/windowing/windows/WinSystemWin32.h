@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -139,16 +138,12 @@ public:
   virtual int  GetCurrentScreen();
   virtual void ShowOSMouse(bool show);
   virtual bool WindowedMode() { return true; }
-  virtual bool HasInertialGestures(){ return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling 
+  virtual bool HasInertialGestures(){ return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling
 
   virtual bool Minimize();
   virtual bool Restore();
   virtual bool Hide();
   virtual bool Show(bool raise = true);
-
-   // OS System screensaver
-  virtual void EnableSystemScreenSaver(bool bEnable);
-  virtual bool IsSystemScreenSaverEnabled();
 
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }

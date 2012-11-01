@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -68,6 +67,11 @@ public:
    \sa IsAddonDisabled, HasDisabledAddons */
   bool DisableAddon(const CStdString &addonID, bool disable = true);
 
+  /*! \brief Checks if an addon is in the database.
+   \param addonID id of the addon to be checked
+   \return true if addon is in database, false if addon is not in database yet */
+  bool HasAddon(const CStdString &addonID);
+  
   /*! \brief Check whether an addon has been disabled via DisableAddon.
    \param addonID id of the addon to check
    \return true if the addon is disabled, false otherwise
@@ -78,6 +82,10 @@ public:
    \return true if we have disabled addons, false otherwise
    \sa DisableAddon, IsAddonDisabled */
   bool HasDisabledAddons();
+
+  /*! @deprecated only here to allow clean upgrades from earlier pvr versions
+   */
+  bool IsSystemPVRAddonEnabled(const CStdString &addonID);
 
   /*! \brief Mark an addon as broken
    Sets a flag that this addon has been marked as broken in the repository.

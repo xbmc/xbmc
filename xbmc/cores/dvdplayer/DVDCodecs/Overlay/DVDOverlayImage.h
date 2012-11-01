@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,13 +15,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDOverlay.h"
+#include <string.h>
+#include <stdlib.h>
 
 class CDVDOverlayImage : public CDVDOverlay
 {
@@ -38,6 +39,26 @@ public:
     height = 0;
     source_width  = 0;
     source_height = 0;
+  }
+
+  CDVDOverlayImage(const CDVDOverlayImage& src)
+    : CDVDOverlay(src)
+  {
+    data    = (BYTE*)malloc(src.linesize * src.height);
+    memcpy(data, src.data, src.linesize * src.height);
+
+    palette = (uint32_t*)malloc(src.palette_colors * 4);
+    memcpy(palette, src.palette, src.palette_colors * 4);
+
+    palette_colors = src.palette_colors;
+    linesize       = src.linesize;
+    x              = src.x;
+    y              = src.y;
+    width          = src.width;
+    height         = src.height;
+    source_width   = src.source_width;
+    source_height  = src.source_height;
+
   }
 
   ~CDVDOverlayImage()

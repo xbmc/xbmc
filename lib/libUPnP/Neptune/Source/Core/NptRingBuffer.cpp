@@ -56,7 +56,8 @@ NPT_RingBuffer::NPT_RingBuffer(NPT_Size size) :
 +---------------------------------------------------------------------*/
 NPT_RingBuffer::NPT_RingBuffer(void* buffer, NPT_Size size) :
     m_Size(size),
-    m_BufferIsLocal(false)
+    m_BufferIsLocal(false),
+    m_Closed(false)
 {
     m_Data.start = (unsigned char*)buffer;
     m_Data.end   = m_Data.start + size;

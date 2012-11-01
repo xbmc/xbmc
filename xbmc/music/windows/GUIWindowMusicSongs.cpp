@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,7 +25,6 @@
 #include "Application.h"
 #include "CueDocument.h"
 #include "GUIPassword.h"
-#include "music/dialogs/GUIDialogMusicScan.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
@@ -38,6 +36,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "cdrip/CDDARipper.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -96,9 +95,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
         CStdString strParent;
         URIUtils::GetParentPath(directory.GetPath(), strParent);
         if (directory.GetPath() == m_vecItems->GetPath() || strParent == m_vecItems->GetPath())
-        {
-          Update(m_vecItems->GetPath());
-        }
+          Refresh();
       }
     }
     break;
@@ -177,16 +174,15 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
 
 void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
 {
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsScanning())
+  if (g_application.IsMusicScanning())
   {
-    musicScan->StopScanning();
+    g_application.StopMusicScan();
     return;
   }
 
   // Start background loader
   int iControl=GetFocusedControlID();
-  if (musicScan) musicScan->StartScanning(strPath);
+  g_application.StartMusicScan(strPath);
   SET_CONTROL_FOCUS(iControl, 0);
   UpdateButtons();
 
@@ -211,8 +207,6 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
 void CGUIWindowMusicSongs::OnPrepareFileItems(CFileItemList &items)
 {
   RetrieveMusicInfo();
-
-  items.SetCachedMusicThumbs();
 }
 
 void CGUIWindowMusicSongs::UpdateButtons()
@@ -269,8 +263,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSCAN);
   }
 
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-  if (musicScan && musicScan->IsScanning())
+  if (g_application.IsMusicScanning())
   {
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
   }
@@ -308,7 +301,12 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
-          buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
+        {
+          if (CJobManager::GetInstance().IsProcessing("cdrip"))
+            buttons.Add(CONTEXT_BUTTON_CANCEL_RIP_CD, 14100);
+          else
+            buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
+        }
       }
 #endif
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
@@ -318,7 +316,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
       if (item->GetProperty("pluginreplacecontextitems").asBoolean())
         return;
-      if (!item->IsPlayList())
+      if (!item->IsPlayList() && !item->IsPlugin() && !item->IsScript())
       {
 #ifndef __PLEX__
         if (item->IsAudio() && !item->IsLastFM())
@@ -365,26 +363,23 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 
 #ifndef __PLEX__ // Plex doesn't need any freaking scan!
     // Add the scan button(s)
-    CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (pScanDlg)
+    if (g_application.IsMusicScanning())
+      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
+    else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
+             !item->IsLastFM()                                         &&
+             !item->GetPath().Equals("add") && !item->IsParentFolder() &&
+             !item->IsPlugin()                                         &&
+             !item->GetPath().Left(9).Equals("addons://")              &&
+            (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
-      if (pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353); // Stop Scanning
-      else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
-               !item->IsLastFM()                                         &&
-               !item->GetPath().Equals("add") && !item->IsParentFolder() &&
-               !item->IsPlugin()                                         &&
-              (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
-      {
-        buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
-      }
+      buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
     }
 #endif
     if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
 #ifndef __PLEX__
-  if (!m_vecItems->IsVirtualDirectoryRoot())
+  if (!m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->IsPlugin())
     buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
 #endif
   CGUIWindowMusicBase::GetNonContextButtons(buttons);
@@ -421,9 +416,15 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     OnRipCD();
     return true;
 
+#ifdef HAS_CDDA_RIPPER
+  case CONTEXT_BUTTON_CANCEL_RIP_CD:
+    CCDDARipper::GetInstance().CancelJobs();
+    return true;
+#endif
+
   case CONTEXT_BUTTON_CDDB:
     if (m_musicdatabase.LookupCDDBInfo(true))
-      Update(m_vecItems->GetPath());
+      Refresh();
     return true;
 
   case CONTEXT_BUTTON_DELETE:
@@ -468,12 +469,12 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 
-bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory)
+bool CGUIWindowMusicSongs::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!CGUIMediaWindow::Update(strDirectory))
+  if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
   if (m_vecItems->GetContent().IsEmpty())

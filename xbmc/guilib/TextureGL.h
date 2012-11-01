@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,25 +13,18 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
-/*!
-\file TextureManager.h
-\brief
-*/
-
-#ifndef GUILIB_TEXTUREGL_H
-#define GUILIB_TEXTUREGL_H
+#pragma once
 
 #include "Texture.h"
 
-#pragma once
-
 #if defined(HAS_GL) || defined(HAS_GLES)
+
+#include "system_gl.h"
 
 /************************************************************************/
 /*    CGLTexture                                                       */
@@ -45,8 +38,10 @@ public:
   void CreateTextureObject();
   virtual void DestroyTextureObject();
   void LoadToGPU();
-};
+  void BindToUnit(unsigned int unit);
 
-#endif
+private:
+  GLuint m_texture;
+};
 
 #endif

@@ -151,8 +151,6 @@ static int biquad_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
     // during filtering, the delay state will include the gain multiplication
     c->cx[0] = lrintf(x0 / c->gain);
     c->cx[1] = lrintf(x1 / c->gain);
-    c->cy[0] /= c->gain;
-    c->cy[1] /= c->gain;
 
     return 0;
 }
@@ -313,6 +311,9 @@ av_cold void ff_iir_filter_free_coeffs(struct FFIIRFilterCoeffs *coeffs)
 }
 
 #ifdef TEST
+#undef printf
+#include <stdio.h>
+
 #define FILT_ORDER 4
 #define SIZE 1024
 int main(void)
@@ -322,9 +323,8 @@ int main(void)
     float cutoff_coeff = 0.4;
     int16_t x[SIZE], y[SIZE];
     int i;
-    FILE* fd;
 
-    fcoeffs = ff_iir_filter_init_coeffs(FF_FILTER_TYPE_BUTTERWORTH,
+    fcoeffs = ff_iir_filter_init_coeffs(NULL, FF_FILTER_TYPE_BUTTERWORTH,
                                         FF_FILTER_MODE_LOWPASS, FILT_ORDER,
                                         cutoff_coeff, 0.0, 0.0);
     fstate  = ff_iir_filter_init_state(FILT_ORDER);
@@ -335,13 +335,8 @@ int main(void)
 
     ff_iir_filter(fcoeffs, fstate, SIZE, x, 1, y, 1);
 
-    fd = fopen("in.bin", "w");
-    fwrite(x, sizeof(x[0]), SIZE, fd);
-    fclose(fd);
-
-    fd = fopen("out.bin", "w");
-    fwrite(y, sizeof(y[0]), SIZE, fd);
-    fclose(fd);
+    for (i = 0; i < SIZE; i++)
+        printf("%6d %6d\n", x[i], y[i]);
 
     ff_iir_filter_free_coeffs(fcoeffs);
     ff_iir_filter_free_state(fstate);

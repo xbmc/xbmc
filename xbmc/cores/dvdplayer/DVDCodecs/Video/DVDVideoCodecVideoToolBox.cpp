@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -333,7 +332,7 @@ CreateFormatDescription(VTFormatId format_id, int width, int height)
 static CMFormatDescriptionRef
 CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height, const uint8_t *extradata, int extradata_size, uint32_t atom)
 {
-  CMFormatDescriptionRef fmt_desc;
+  CMFormatDescriptionRef fmt_desc = NULL;
   OSStatus status;
 
   FigVideoHack.lpAddress = (void*)FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom;
@@ -437,7 +436,7 @@ typedef struct {
   uint8_t* decoderConfig;
 } quicktime_esds_t;
 
-int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, ByteIOContext *pb, int length, int compact)
+int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, AVIOContext *pb, int length, int compact)
 {
   int i;
   uint8_t b;
@@ -474,45 +473,45 @@ int quicktime_write_mp4_descr_length(DllAvFormat *av_format_ctx, ByteIOContext *
     {
       b |= 0x80;
     }
-    av_format_ctx->put_byte(pb, b);
+    av_format_ctx->avio_w8(pb, b);
   }
 
   return numBytes; 
 }
 
-void quicktime_write_esds(DllAvFormat *av_format_ctx, ByteIOContext *pb, quicktime_esds_t *esds)
+void quicktime_write_esds(DllAvFormat *av_format_ctx, AVIOContext *pb, quicktime_esds_t *esds)
 {
-  av_format_ctx->put_byte(pb, 0);     // Version
-  av_format_ctx->put_be24(pb, 0);     // Flags
+  av_format_ctx->avio_w8(pb, 0);     // Version
+  av_format_ctx->avio_wb24(pb, 0);     // Flags
 
   // elementary stream descriptor tag
-  av_format_ctx->put_byte(pb, 0x03);
+  av_format_ctx->avio_w8(pb, 0x03);
   quicktime_write_mp4_descr_length(av_format_ctx, pb,
     3 + 5 + (13 + 5 + esds->decoderConfigLen) + 3, false);
   // 3 bytes + 5 bytes for tag
-  av_format_ctx->put_be16(pb, esds->esid);
-  av_format_ctx->put_byte(pb, esds->stream_priority);
+  av_format_ctx->avio_wb16(pb, esds->esid);
+  av_format_ctx->avio_w8(pb, esds->stream_priority);
 
   // decoder configuration description tag
-  av_format_ctx->put_byte(pb, 0x04);
+  av_format_ctx->avio_w8(pb, 0x04);
   quicktime_write_mp4_descr_length(av_format_ctx, pb,
     13 + 5 + esds->decoderConfigLen, false);
   // 13 bytes + 5 bytes for tag
-  av_format_ctx->put_byte(pb, esds->objectTypeId); // objectTypeIndication
-  av_format_ctx->put_byte(pb, esds->streamType);   // streamType
-  av_format_ctx->put_be24(pb, esds->bufferSizeDB); // buffer size
-  av_format_ctx->put_be32(pb, esds->maxBitrate);   // max bitrate
-  av_format_ctx->put_be32(pb, esds->avgBitrate);   // average bitrate
+  av_format_ctx->avio_w8(pb, esds->objectTypeId); // objectTypeIndication
+  av_format_ctx->avio_w8(pb, esds->streamType);   // streamType
+  av_format_ctx->avio_wb24(pb, esds->bufferSizeDB); // buffer size
+  av_format_ctx->avio_wb32(pb, esds->maxBitrate);   // max bitrate
+  av_format_ctx->avio_wb32(pb, esds->avgBitrate);   // average bitrate
 
   // decoder specific description tag
-  av_format_ctx->put_byte(pb, 0x05);
+  av_format_ctx->avio_w8(pb, 0x05);
   quicktime_write_mp4_descr_length(av_format_ctx, pb, esds->decoderConfigLen, false);
-  av_format_ctx->put_buffer(pb, esds->decoderConfig, esds->decoderConfigLen);
+  av_format_ctx->avio_write(pb, esds->decoderConfig, esds->decoderConfigLen);
 
   // sync layer configuration descriptor tag
-  av_format_ctx->put_byte(pb, 0x06);  // tag
-  av_format_ctx->put_byte(pb, 0x01);  // length
-  av_format_ctx->put_byte(pb, 0x7F);  // no SL
+  av_format_ctx->avio_w8(pb, 0x06);  // tag
+  av_format_ctx->avio_w8(pb, 0x01);  // length
+  av_format_ctx->avio_w8(pb, 0x7F);  // no SL
 
   /* no IPI_DescrPointer */
 	/* no IP_IdentificationDataSet */
@@ -654,7 +653,7 @@ const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end)
 }
 
 const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *buf_in, int size)
+  AVIOContext *pb, const uint8_t *buf_in, int size)
 {
   const uint8_t *p = buf_in;
   const uint8_t *end = p + size;
@@ -666,8 +665,8 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
   {
     while (!*(nal_start++));
     nal_end = avc_find_startcode(nal_start, end);
-    av_format_ctx->put_be32(pb, nal_end - nal_start);
-    av_format_ctx->put_buffer(pb, nal_start, nal_end - nal_start);
+    av_format_ctx->avio_wb32(pb, nal_end - nal_start);
+    av_format_ctx->avio_write(pb, nal_start, nal_end - nal_start);
     size += 4 + nal_end - nal_start;
     nal_start = nal_end;
   }
@@ -677,15 +676,15 @@ const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
 const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
   const uint8_t *buf_in, uint8_t **buf, int *size)
 {
-  ByteIOContext *pb;
-  int ret = av_format_ctx->url_open_dyn_buf(&pb);
+  AVIOContext *pb;
+  int ret = av_format_ctx->avio_open_dyn_buf(&pb);
   if (ret < 0)
     return ret;
 
   avc_parse_nal_units(av_format_ctx, pb, buf_in, *size);
 
   av_util_ctx->av_freep(buf);
-  *size = av_format_ctx->url_close_dyn_buf(pb, buf);
+  *size = av_format_ctx->avio_close_dyn_buf(pb, buf);
   return 0;
 }
 
@@ -731,7 +730,7 @@ const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format
    (field_pic_flag: 1 would indicate a normal interlaced frame).
 */
 const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
-  ByteIOContext *pb, const uint8_t *data, int len)
+  AVIOContext *pb, const uint8_t *data, int len)
 {
   // extradata from bytestream h264, convert to avcC atom data for bitstream
   if (len > 6)
@@ -770,26 +769,26 @@ const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
       }
       assert(sps);
 
-      av_format_ctx->put_byte(pb, 1); /* version */
-      av_format_ctx->put_byte(pb, sps[1]); /* profile */
-      av_format_ctx->put_byte(pb, sps[2]); /* profile compat */
-      av_format_ctx->put_byte(pb, sps[3]); /* level */
-      av_format_ctx->put_byte(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
-      av_format_ctx->put_byte(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
+      av_format_ctx->avio_w8(pb, 1); /* version */
+      av_format_ctx->avio_w8(pb, sps[1]); /* profile */
+      av_format_ctx->avio_w8(pb, sps[2]); /* profile compat */
+      av_format_ctx->avio_w8(pb, sps[3]); /* level */
+      av_format_ctx->avio_w8(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
+      av_format_ctx->avio_w8(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
 
-      av_format_ctx->put_be16(pb, sps_size);
-      av_format_ctx->put_buffer(pb, sps, sps_size);
+      av_format_ctx->avio_wb16(pb, sps_size);
+      av_format_ctx->avio_write(pb, sps, sps_size);
       if (pps)
       {
-        av_format_ctx->put_byte(pb, 1); /* number of pps */
-        av_format_ctx->put_be16(pb, pps_size);
-        av_format_ctx->put_buffer(pb, pps, pps_size);
+        av_format_ctx->avio_w8(pb, 1); /* number of pps */
+        av_format_ctx->avio_wb16(pb, pps_size);
+        av_format_ctx->avio_write(pb, pps, pps_size);
       }
       av_util_ctx->av_free(start);
     }
     else
     {
-      av_format_ctx->put_buffer(pb, data, len);
+      av_format_ctx->avio_write(pb, data, len);
     }
   }
   return 0;
@@ -926,7 +925,7 @@ typedef struct
 } sps_info_struct;
 
 static void
-parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames)
+parseh264_sps(uint8_t *sps, uint32_t sps_size,  int *level, int *profile, bool *interlaced, int32_t *max_ref_frames)
 {
   nal_bitstream bs;
   sps_info_struct sps_info = {0};
@@ -966,7 +965,9 @@ parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_re
   sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
   if (sps_info.log2_max_frame_num_minus4 > 12)
   { // must be between 0 and 12
-    return;
+    // don't early return here - the bits we are using (profile/level/interlaced/ref frames)
+    // might still be valid - let the parser go on and pray.
+    //return;
   }
 
   sps_info.pic_order_cnt_type = nal_bs_read_ue(&bs);
@@ -1007,11 +1008,13 @@ parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_re
     sps_info.frame_crop_bottom_offset     = nal_bs_read_ue(&bs);
   }
 
+  *level = sps_info.level_idc;
+  *profile = sps_info.profile_idc;
   *interlaced = !sps_info.frame_mbs_only_flag;
   *max_ref_frames = sps_info.max_num_ref_frames;
 }
 
-bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_frames)
+bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_frames, int *level, int *profile)
 {
   // check the avcC atom's sps for number of reference frames and
   // bail if interlaced, VDA does not handle interlaced h264.
@@ -1019,9 +1022,9 @@ bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_
   uint8_t *spc = extradata + 6;
   uint32_t sps_size = VDA_RB16(spc);
   if (sps_size)
-    parseh264_sps(spc+3, sps_size-1, &interlaced, max_ref_frames);
-  //if (interlaced)
-  //  return false;
+    parseh264_sps(spc+3, sps_size-1, level, profile, &interlaced, max_ref_frames);
+  if (interlaced)
+    return false;
   return true;
 }
 
@@ -1055,26 +1058,38 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 {
   if (g_guiSettings.GetBool("videoplayer.usevideotoolbox") && !hints.software)
   {
-    int32_t width, height, profile, level;
-    uint8_t *extradata; // extra data for codec to use
-    unsigned int extrasize; // size of extra data
     m_dllAvUtil = new DllAvUtil;
     m_dllAvFormat = new DllAvFormat;
     if (!m_dllAvUtil->Load() || !m_dllAvFormat->Load())
       return false;
-    
-    //
-    width  = hints.width;
-    height = hints.height;
-    level  = hints.level;
-    profile = hints.profile;
-    extrasize = hints.extrasize;
-    extradata = (uint8_t*)hints.extradata;
+
+    int width  = hints.width;
+    int height = hints.height;
+    int level  = hints.level;
+    int profile = hints.profile;
+    int spsLevel = level;
+    int spsProfile = profile;
+    unsigned int extrasize = hints.extrasize; // extra data for codec to use
+    uint8_t *extradata = (uint8_t*)hints.extradata; // size of extra data
  
-    if (width <= 0 || height <= 0 || profile <= 0 || level <= 0)
+    switch(profile)
     {
-      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d), profile(%d), level(%d)",
-        __FUNCTION__, width, height, profile, level);
+      case FF_PROFILE_H264_HIGH_10:
+      case FF_PROFILE_H264_HIGH_10_INTRA:
+      case FF_PROFILE_H264_HIGH_422:
+      case FF_PROFILE_H264_HIGH_422_INTRA:
+      case FF_PROFILE_H264_HIGH_444_PREDICTIVE:
+      case FF_PROFILE_H264_HIGH_444_INTRA:
+      case FF_PROFILE_H264_CAVLC_444:
+        CLog::Log(LOGNOTICE, "%s - unsupported h264 profile(%d)", __FUNCTION__, hints.profile);
+        return false;
+        break;
+    }
+
+    if (width <= 0 || height <= 0)
+    {
+      CLog::Log(LOGNOTICE, "%s - bailing with bogus hints, width(%d), height(%d)",
+        __FUNCTION__, width, height);
       return false;
     }
     
@@ -1083,10 +1098,10 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       case CODEC_ID_MPEG4:
         if (extrasize)
         {
-          ByteIOContext *pb;
+          AVIOContext *pb;
           quicktime_esds_t *esds;
 
-          if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+          if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
             return false;
 
           esds = quicktime_set_esds(m_dllAvFormat, extradata, extrasize);
@@ -1095,7 +1110,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           // unhook from ffmpeg's extradata
           extradata = NULL;
           // extract the esds atom decoderConfig from extradata
-          extrasize = m_dllAvFormat->url_close_dyn_buf(pb, &extradata);
+          extrasize = m_dllAvFormat->avio_close_dyn_buf(pb, &extradata);
           free(esds->decoderConfig);
           free(esds);
 
@@ -1128,8 +1143,26 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         if (extradata[0] == 1)
         {
           // check for interlaced and get number of ref frames
-          if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames))
+          if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames, &spsLevel, &spsProfile))
             return false;
+
+          // overwrite level and profile from the hints
+          // if we got something more valid from the extradata
+          if (level == 0 && spsLevel > 0)
+            level = spsLevel;
+          
+          if (profile == 0 && spsProfile > 0)
+            profile = spsProfile;
+
+          // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
+          // with a bogus m_fmt_desc returned that crashes on CFRelease.
+          if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+          {
+            // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
+            CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+              __FUNCTION__, m_max_ref_frames);
+            return false;
+          }
 
           if (extradata[4] == 0xFE)
           {
@@ -1146,13 +1179,14 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
         }
         else
         {
-          if (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1)
+          if ( (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1) ||
+               (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 1))
           {
             // video content is from x264 or from bytestream h264 (AnnexB format)
             // NAL reformating to bitstream format required
 
-            ByteIOContext *pb;
-            if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+            AVIOContext *pb;
+            if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
               return false;
 
             m_convert_bytestream = true;
@@ -1161,15 +1195,34 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
             // unhook from ffmpeg's extradata
             extradata = NULL;
             // extract the avcC atom data into extradata getting size into extrasize
-            extrasize = m_dllAvFormat->url_close_dyn_buf(pb, &extradata);
+            extrasize = m_dllAvFormat->avio_close_dyn_buf(pb, &extradata);
 
             // check for interlaced and get number of ref frames
-            if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames))
+            if (!validate_avcC_spc(extradata, extrasize, &m_max_ref_frames, &spsLevel, &spsProfile))
             {
               m_dllAvUtil->av_free(extradata);
               return false;
             }
+            
+            // overwrite level and profile from the hints
+            // if we got something more valid from the extradata
+            if (level == 0 && spsLevel > 0)
+              level = spsLevel;
+            
+            if (profile == 0 && spsProfile > 0)
+              profile = spsProfile;
 
+            // we need to check this early, CreateFormatDescriptionFromCodecData will silently fail
+            // with a bogus m_fmt_desc returned that crashes on CFRelease.
+            if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
+            {
+              // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
+              CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+                __FUNCTION__, m_max_ref_frames);
+              m_dllAvUtil->av_free(extradata);
+              return false;
+            }
+ 
             // CFDataCreate makes a copy of extradata contents
             m_fmt_desc = CreateFormatDescriptionFromCodecData(
               kVTFormatH264, width, height, extradata, extrasize, 'avcC');
@@ -1192,21 +1245,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
-    if (profile == FF_PROFILE_H264_MAIN && level == 32 && m_max_ref_frames > 4)
-    {
-      // Main@L3.2, VTB cannot handle greater than 4 ref frames (ie. flash video)
-      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
-        __FUNCTION__, m_max_ref_frames);
-      CFRelease(m_fmt_desc);
-      return false;
-    }
- 
     if(m_fmt_desc == NULL)
     {
       CLog::Log(LOGNOTICE, "%s - created avcC atom of failed", __FUNCTION__);
       m_pFormatName = "";
       return false;
     }
+
     if (m_max_ref_frames == 0)
       m_max_ref_frames = 2;
 
@@ -1228,7 +1273,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
 
     m_videobuffer.dts = DVD_NOPTS_VALUE;
     m_videobuffer.pts = DVD_NOPTS_VALUE;
-    m_videobuffer.format = DVDVideoPicture::FMT_CVBREF;
+    m_videobuffer.format = RENDER_FMT_CVBREF;
     m_videobuffer.color_range  = 0;
     m_videobuffer.color_matrix = 4;
     m_videobuffer.iFlags  = DVP_FLAG_ALLOCATED;
@@ -1294,24 +1339,24 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
     uint32_t decoderFlags = 0;
     CFDictionaryRef frameInfo = NULL;;
     CMSampleBufferRef sampleBuff = NULL;
-    ByteIOContext *pb = NULL;
+    AVIOContext *pb = NULL;
     int demux_size = 0;
     uint8_t *demux_buff = NULL;
     
     if (m_convert_bytestream)
     {
       // convert demuxer packet from bytestream (AnnexB) to bitstream
-      if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      if(m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
         return VC_ERROR;
 
       demux_size = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
-      demux_size = m_dllAvFormat->url_close_dyn_buf(pb, &demux_buff);
+      demux_size = m_dllAvFormat->avio_close_dyn_buf(pb, &demux_buff);
       sampleBuff = CreateSampleBufferFrom(m_fmt_desc, demux_buff, demux_size);
     }
     else if (m_convert_3byteTo4byteNALSize)
     {
       // convert demuxer packet from 3 byte NAL sizes to 4 byte
-      if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      if (m_dllAvFormat->avio_open_dyn_buf(&pb) < 0)
         return VC_ERROR;
 
       uint32_t nal_size;
@@ -1320,13 +1365,13 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
       while (nal_start < end)
       {
         nal_size = VDA_RB24(nal_start);
-        m_dllAvFormat->put_be32(pb, nal_size);
+        m_dllAvFormat->avio_wb32(pb, nal_size);
         nal_start += 3;
-        m_dllAvFormat->put_buffer(pb, nal_start, nal_size);
+        m_dllAvFormat->avio_write(pb, nal_start, nal_size);
         nal_start += nal_size;
       }
 
-      demux_size = m_dllAvFormat->url_close_dyn_buf(pb, &demux_buff);
+      demux_size = m_dllAvFormat->avio_close_dyn_buf(pb, &demux_buff);
       sampleBuff = CreateSampleBufferFrom(m_fmt_desc, demux_buff, demux_size);
     }
     else
@@ -1420,7 +1465,6 @@ bool CDVDVideoCodecVideoToolBox::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iHeight         = m_display_queue->height;
   pDvdVideoPicture->iDisplayWidth   = m_display_queue->width;
   pDvdVideoPicture->iDisplayHeight  = m_display_queue->height;
-  pDvdVideoPicture->vtb             = this;
   pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
   m_display_queue->pixel_buffer_ref = NULL;
   pthread_mutex_unlock(&m_queue_mutex);
@@ -1477,31 +1521,36 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   VTDecompressionOutputCallback outputCallback;
   OSStatus status;
 
-  #if defined(__arm__)
-    // decoding, scaling and rendering above 1920 x 800 runs into
-    // some bandwidth limit. detect and scale down to reduce
-    // the bandwidth requirements.
-    int width_clamp = 1280;
-    if ((width * height) > (1920 * 800))
-      width_clamp = 960;
+  #if defined(TARGET_DARWIN_IOS)
+    //TODO - remove the clamp for ipad3 when CVOpenGLESTextureCacheCreateTextureFromImage
+    //has been planted ...
+    //if (!DarwinIsIPad3())
+    {
+      // decoding, scaling and rendering above 1920 x 800 runs into
+      // some bandwidth limit. detect and scale down to reduce
+      // the bandwidth requirements.
+      int width_clamp = 1280;
+      if ((width * height) > (1920 * 800))
+        width_clamp = 960;
 
-    int new_width = CheckNP2(width);
-    if (width != new_width)
-    {
-      // force picture width to power of two and scale up height
-      // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
-      // and the CVPixelBufferPixel gets created using some
-      // strange alignment when width is non-standard.
-      double w_scaler = (double)new_width / width;
-      width = new_width;
-      height = height * w_scaler;
-    }
-    // scale output pictures down to 720p size for display
-    if (width > width_clamp)
-    {
-      double w_scaler = (float)width_clamp / width;
-      width = width_clamp;
-      height = height * w_scaler;
+      int new_width = CheckNP2(width);
+      if (width != new_width)
+      {
+        // force picture width to power of two and scale up height
+        // we do this because no GL_UNPACK_ROW_LENGTH in OpenGLES
+        // and the CVPixelBufferPixel gets created using some
+        // strange alignment when width is non-standard.
+        double w_scaler = (double)new_width / width;
+        width = new_width;
+        height = height * w_scaler;
+      }
+      // scale output pictures down to 720p size for display
+      if (width > width_clamp)
+      {
+        double w_scaler = (float)width_clamp / width;
+        width = width_clamp;
+        height = height * w_scaler;
+      }
     }
   #endif
   destinationPixelBufferAttributes = CFDictionaryCreateMutable(

@@ -32,7 +32,7 @@
 static av_cold int raw_init_encoder(AVCodecContext *avctx)
 {
     avctx->coded_frame = (AVFrame *)avctx->priv_data;
-    avctx->coded_frame->pict_type = FF_I_TYPE;
+    avctx->coded_frame->pict_type = AV_PICTURE_TYPE_I;
     avctx->coded_frame->key_frame = 1;
     avctx->bits_per_coded_sample = av_get_bits_per_pixel(&av_pix_fmt_descriptors[avctx->pix_fmt]);
     if(!avctx->codec_tag)
@@ -56,11 +56,11 @@ static int raw_encode(AVCodecContext *avctx,
 }
 
 AVCodec ff_rawvideo_encoder = {
-    "rawvideo",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_RAWVIDEO,
-    sizeof(AVFrame),
-    raw_init_encoder,
-    raw_encode,
+    .name           = "rawvideo",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_RAWVIDEO,
+    .priv_data_size = sizeof(AVFrame),
+    .init           = raw_init_encoder,
+    .encode         = raw_encode,
     .long_name = NULL_IF_CONFIG_SMALL("raw video"),
 };

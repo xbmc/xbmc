@@ -25,8 +25,6 @@
 
 #include "libavutil/x86_cpu.h"
 
-#define ALIGN_MASK "$-8"
-
 #undef REAL_PAVGB
 #undef PAVGB
 #undef PMINUB
@@ -767,11 +765,10 @@ static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext 
 }
 */
 #elif HAVE_MMX
+    DECLARE_ALIGNED(8, uint64_t, tmp)[4]; // make space for 4 8-byte vars
     src+= stride*4;
     __asm__ volatile(
         "pxor %%mm7, %%mm7                      \n\t"
-        "lea -40(%%"REG_SP"), %%"REG_c"         \n\t" // make space for 4 8-byte vars
-        "and "ALIGN_MASK", %%"REG_c"            \n\t" // align
 //      0       1       2       3       4       5       6       7
 //      %0      %0+%1   %0+2%1  eax+2%1 %0+4%1  eax+4%1 edx+%1  edx+2%1
 //      %0      eax     eax+%1  eax+2%1 %0+4%1  edx     edx+%1  edx+2%1
@@ -813,8 +810,8 @@ static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext 
         "psubw %%mm3, %%mm1                     \n\t" // 2H0 - 5H1 + 5H2 - H3
         "psubw %%mm2, %%mm0                     \n\t" // 2L0 - 5L1 + 5L2 - 2L3
         "psubw %%mm3, %%mm1                     \n\t" // 2H0 - 5H1 + 5H2 - 2H3
-        "movq %%mm0, (%%"REG_c")                \n\t" // 2L0 - 5L1 + 5L2 - 2L3
-        "movq %%mm1, 8(%%"REG_c")               \n\t" // 2H0 - 5H1 + 5H2 - 2H3
+        "movq %%mm0, (%3)                       \n\t" // 2L0 - 5L1 + 5L2 - 2L3
+        "movq %%mm1, 8(%3)                      \n\t" // 2H0 - 5H1 + 5H2 - 2H3
 
         "movq (%%"REG_a", %1, 2), %%mm0         \n\t"
         "movq %%mm0, %%mm1                      \n\t"
@@ -823,8 +820,8 @@ static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext 
 
         "psubw %%mm0, %%mm2                     \n\t" // L3 - L4
         "psubw %%mm1, %%mm3                     \n\t" // H3 - H4
-        "movq %%mm2, 16(%%"REG_c")              \n\t" // L3 - L4
-        "movq %%mm3, 24(%%"REG_c")              \n\t" // H3 - H4
+        "movq %%mm2, 16(%3)                     \n\t" // L3 - L4
+        "movq %%mm3, 24(%3)                     \n\t" // H3 - H4
         "paddw %%mm4, %%mm4                     \n\t" // 2L2
         "paddw %%mm5, %%mm5                     \n\t" // 2H2
         "psubw %%mm2, %%mm4                     \n\t" // 2L2 - L3 + L4
@@ -872,8 +869,8 @@ static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext 
         "psubw %%mm2, %%mm0                     \n\t" // 2L4 - 5L5 + 5L6 - 2L7
         "psubw %%mm3, %%mm1                     \n\t" // 2H4 - 5H5 + 5H6 - 2H7
 
-        "movq (%%"REG_c"), %%mm2                \n\t" // 2L0 - 5L1 + 5L2 - 2L3
-        "movq 8(%%"REG_c"), %%mm3               \n\t" // 2H0 - 5H1 + 5H2 - 2H3
+        "movq (%3), %%mm2                       \n\t" // 2L0 - 5L1 + 5L2 - 2L3
+        "movq 8(%3), %%mm3                      \n\t" // 2H0 - 5H1 + 5H2 - 2H3
 
 #if HAVE_MMX2
         "movq %%mm7, %%mm6                      \n\t" // 0
@@ -951,8 +948,8 @@ static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext 
         "psrlw $6, %%mm4                        \n\t"
         "psrlw $6, %%mm5                        \n\t"
 
-        "movq 16(%%"REG_c"), %%mm0              \n\t" // L3 - L4
-        "movq 24(%%"REG_c"), %%mm1              \n\t" // H3 - H4
+        "movq 16(%3), %%mm0                     \n\t" // L3 - L4
+        "movq 24(%3), %%mm1                     \n\t" // H3 - H4
 
         "pxor %%mm2, %%mm2                      \n\t"
         "pxor %%mm3, %%mm3                      \n\t"
@@ -995,8 +992,8 @@ static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext 
         "movq %%mm0, (%0, %1)                   \n\t"
 
         : "+r" (src)
-        : "r" ((x86_reg)stride), "m" (c->pQPb)
-        : "%"REG_a, "%"REG_c
+        : "r" ((x86_reg)stride), "m" (c->pQPb), "r"(tmp)
+        : "%"REG_a
     );
 #else //HAVE_MMX2 || HAVE_AMD3DNOW
     const int l1= stride;
@@ -1044,6 +1041,7 @@ static inline void RENAME(doVertDefFilter)(uint8_t src[], int stride, PPContext 
 static inline void RENAME(dering)(uint8_t src[], int stride, PPContext *c)
 {
 #if HAVE_MMX2 || HAVE_AMD3DNOW
+    DECLARE_ALIGNED(8, uint64_t, tmp)[3];
     __asm__ volatile(
         "pxor %%mm6, %%mm6                      \n\t"
         "pcmpeqb %%mm7, %%mm7                   \n\t"
@@ -1134,16 +1132,16 @@ FIND_MIN_MAX((%0, %1, 8))
 #endif
         "movq %%mm6, %%mm0                      \n\t" // max
         "psubb %%mm7, %%mm6                     \n\t" // max - min
-        "movd %%mm6, %%ecx                      \n\t"
-        "cmpb "MANGLE(deringThreshold)", %%cl   \n\t"
+        "push %4                              \n\t"
+        "movd %%mm6, %k4                        \n\t"
+        "cmpb "MANGLE(deringThreshold)", %b4    \n\t"
+        "pop %4                               \n\t"
         " jb 1f                                 \n\t"
-        "lea -24(%%"REG_SP"), %%"REG_c"         \n\t"
-        "and "ALIGN_MASK", %%"REG_c"            \n\t"
         PAVGB(%%mm0, %%mm7)                           // a=(max + min)/2
         "punpcklbw %%mm7, %%mm7                 \n\t"
         "punpcklbw %%mm7, %%mm7                 \n\t"
         "punpcklbw %%mm7, %%mm7                 \n\t"
-        "movq %%mm7, (%%"REG_c")                \n\t"
+        "movq %%mm7, (%4)                       \n\t"
 
         "movq (%0), %%mm0                       \n\t" // L10
         "movq %%mm0, %%mm1                      \n\t" // L10
@@ -1207,8 +1205,8 @@ FIND_MIN_MAX((%0, %1, 8))
         PAVGB(t0, lx)                                 /* (src[-1] + src[+1])/2 */\
         PAVGB(sx, lx)                                 /* (src[-1] + 2src[0] + src[+1])/4 */\
         PAVGB(lx, pplx)                                     \
-        "movq " #lx ", 8(%%"REG_c")             \n\t"\
-        "movq (%%"REG_c"), " #lx "              \n\t"\
+        "movq " #lx ", 8(%4)                    \n\t"\
+        "movq (%4), " #lx "                     \n\t"\
         "psubusb " #lx ", " #t1 "               \n\t"\
         "psubusb " #lx ", " #t0 "               \n\t"\
         "psubusb " #lx ", " #sx "               \n\t"\
@@ -1235,7 +1233,7 @@ FIND_MIN_MAX((%0, %1, 8))
         "pandn " #dst ", " #ppsx "              \n\t"\
         "por " #pplx ", " #ppsx "               \n\t"\
         "movq " #ppsx ", " #dst "               \n\t"\
-        "movq 8(%%"REG_c"), " #lx "             \n\t"
+        "movq 8(%4), " #lx "                    \n\t"
 
 #define DERING_CORE(dst,src,ppsx,psx,sx,pplx,plx,lx,t0,t1) \
    REAL_DERING_CORE(dst,src,ppsx,psx,sx,pplx,plx,lx,t0,t1)
@@ -1265,8 +1263,8 @@ DERING_CORE((%%REGd, %1, 2),(%0, %1, 8)    ,%%mm0,%%mm2,%%mm4,%%mm1,%%mm3,%%mm5,
 DERING_CORE((%0, %1, 8)    ,(%%REGd, %1, 4),%%mm2,%%mm4,%%mm0,%%mm3,%%mm5,%%mm1,%%mm6,%%mm7)
 
         "1:                        \n\t"
-        : : "r" (src), "r" ((x86_reg)stride), "m" (c->pQPb), "m"(c->pQPb2)
-        : "%"REG_a, "%"REG_d, "%"REG_c
+        : : "r" (src), "r" ((x86_reg)stride), "m" (c->pQPb), "m"(c->pQPb2), "q"(tmp)
+        : "%"REG_a, "%"REG_d
     );
 #else //HAVE_MMX2 || HAVE_AMD3DNOW
     int y;
@@ -1912,7 +1910,7 @@ MEDIAN((%%REGd, %1), (%%REGd, %1, 2), (%0, %1, 8))
 
 #if HAVE_MMX
 /**
- * transposes and shift the given 8x8 Block into dst1 and dst2
+ * Transpose and shift the given 8x8 Block into dst1 and dst2.
  */
 static inline void RENAME(transpose1)(uint8_t *dst1, uint8_t *dst2, uint8_t *src, int srcStride)
 {
@@ -1997,7 +1995,7 @@ static inline void RENAME(transpose1)(uint8_t *dst1, uint8_t *dst2, uint8_t *src
 }
 
 /**
- * transposes the given 8x8 block
+ * Transpose the given 8x8 block.
  */
 static inline void RENAME(transpose2)(uint8_t *dst, int dstStride, uint8_t *src)
 {
@@ -2472,7 +2470,7 @@ static av_always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int st
     int64_t dc_mask, eq_mask, both_masks;
     int64_t sums[10*8*2];
     src+= step*3; // src points to begin of the 8x8 Block
-//START_TIMER
+    //{ START_TIMER
     __asm__ volatile(
         "movq %0, %%mm7                         \n\t"
         "movq %1, %%mm6                         \n\t"
@@ -2762,10 +2760,9 @@ static av_always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int st
 
     if(eq_mask != -1LL){
         uint8_t *temp_src= src;
+        DECLARE_ALIGNED(8, uint64_t, tmp)[4]; // make space for 4 8-byte vars
         __asm__ volatile(
             "pxor %%mm7, %%mm7                      \n\t"
-            "lea -40(%%"REG_SP"), %%"REG_c"         \n\t" // make space for 4 8-byte vars
-            "and "ALIGN_MASK", %%"REG_c"            \n\t" // align
 //      0       1       2       3       4       5       6       7       8       9
 //      %0      eax     eax+%1  eax+2%1 %0+4%1  ecx     ecx+%1  ecx+2%1 %1+8%1  ecx+4%1
 
@@ -2806,8 +2803,8 @@ static av_always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int st
             "psubw %%mm3, %%mm1                     \n\t" // 2H0 - 5H1 + 5H2 - H3
             "psubw %%mm2, %%mm0                     \n\t" // 2L0 - 5L1 + 5L2 - 2L3
             "psubw %%mm3, %%mm1                     \n\t" // 2H0 - 5H1 + 5H2 - 2H3
-            "movq %%mm0, (%%"REG_c")                \n\t" // 2L0 - 5L1 + 5L2 - 2L3
-            "movq %%mm1, 8(%%"REG_c")               \n\t" // 2H0 - 5H1 + 5H2 - 2H3
+            "movq %%mm0, (%4)                       \n\t" // 2L0 - 5L1 + 5L2 - 2L3
+            "movq %%mm1, 8(%4)                      \n\t" // 2H0 - 5H1 + 5H2 - 2H3
 
             "movq (%%"REG_a", %1, 2), %%mm0         \n\t"
             "movq %%mm0, %%mm1                      \n\t"
@@ -2816,8 +2813,8 @@ static av_always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int st
 
             "psubw %%mm0, %%mm2                     \n\t" // L3 - L4
             "psubw %%mm1, %%mm3                     \n\t" // H3 - H4
-            "movq %%mm2, 16(%%"REG_c")              \n\t" // L3 - L4
-            "movq %%mm3, 24(%%"REG_c")              \n\t" // H3 - H4
+            "movq %%mm2, 16(%4)                     \n\t" // L3 - L4
+            "movq %%mm3, 24(%4)                     \n\t" // H3 - H4
             "paddw %%mm4, %%mm4                     \n\t" // 2L2
             "paddw %%mm5, %%mm5                     \n\t" // 2H2
             "psubw %%mm2, %%mm4                     \n\t" // 2L2 - L3 + L4
@@ -2865,8 +2862,8 @@ static av_always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int st
             "psubw %%mm2, %%mm0                     \n\t" // 2L4 - 5L5 + 5L6 - 2L7
             "psubw %%mm3, %%mm1                     \n\t" // 2H4 - 5H5 + 5H6 - 2H7
 
-            "movq (%%"REG_c"), %%mm2                \n\t" // 2L0 - 5L1 + 5L2 - 2L3
-            "movq 8(%%"REG_c"), %%mm3               \n\t" // 2H0 - 5H1 + 5H2 - 2H3
+            "movq (%4), %%mm2                       \n\t" // 2L0 - 5L1 + 5L2 - 2L3
+            "movq 8(%4), %%mm3                      \n\t" // 2H0 - 5H1 + 5H2 - 2H3
 
 #if HAVE_MMX2
             "movq %%mm7, %%mm6                      \n\t" // 0
@@ -2944,8 +2941,8 @@ static av_always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int st
             "psrlw $6, %%mm4                        \n\t"
             "psrlw $6, %%mm5                        \n\t"
 
-            "movq 16(%%"REG_c"), %%mm0              \n\t" // L3 - L4
-            "movq 24(%%"REG_c"), %%mm1              \n\t" // H3 - H4
+            "movq 16(%4), %%mm0                     \n\t" // L3 - L4
+            "movq 24(%4), %%mm1                     \n\t" // H3 - H4
 
             "pxor %%mm2, %%mm2                      \n\t"
             "pxor %%mm3, %%mm3                      \n\t"
@@ -2990,15 +2987,16 @@ static av_always_inline void RENAME(do_a_deblock)(uint8_t *src, int step, int st
             "movq %%mm0, (%0, %1)                   \n\t"
 
             : "+r" (temp_src)
-            : "r" ((x86_reg)step), "m" (c->pQPb), "m"(eq_mask)
-            : "%"REG_a, "%"REG_c
+            : "r" ((x86_reg)step), "m" (c->pQPb), "m"(eq_mask), "r"(tmp)
+            : "%"REG_a
         );
     }
 /*if(step==16){
     STOP_TIMER("step16")
 }else{
     STOP_TIMER("stepX")
-}*/
+}
+    } */
 }
 #endif //HAVE_MMX
 
@@ -3372,14 +3370,14 @@ static void RENAME(postProcess)(const uint8_t src[], int srcStride, uint8_t dst[
             linecpy(tempSrc + srcStride*copyAhead, srcBlock + srcStride*copyAhead,
                     FFMAX(height-y-copyAhead, 0), srcStride);
 
-            /* duplicate last line of src to fill the void upto line (copyAhead+7) */
+            /* duplicate last line of src to fill the void up to line (copyAhead+7) */
             for(i=FFMAX(height-y, 8); i<copyAhead+8; i++)
                     memcpy(tempSrc + srcStride*i, src + srcStride*(height-1), FFABS(srcStride));
 
             /* copy up to (copyAhead+1) lines of dst (line -1 to (copyAhead-1))*/
             linecpy(tempDst, dstBlock - dstStride, FFMIN(height-y+1, copyAhead+1), dstStride);
 
-            /* duplicate last line of dst to fill the void upto line (copyAhead) */
+            /* duplicate last line of dst to fill the void up to line (copyAhead) */
             for(i=height-y+1; i<=copyAhead; i++)
                     memcpy(tempDst + dstStride*i, dst + dstStride*(height-1), FFABS(dstStride));
 
@@ -3518,9 +3516,10 @@ static void RENAME(postProcess)(const uint8_t src[], int srcStride, uint8_t dst[
                 else if(mode & H_DEBLOCK){
 #if HAVE_ALTIVEC
                     DECLARE_ALIGNED(16, unsigned char, tempBlock)[272];
+                    int t;
                     transpose_16x8_char_toPackedAlign_altivec(tempBlock, dstBlock - (4 + 1), stride);
 
-                    const int t=vertClassify_altivec(tempBlock-48, 16, &c);
+                    t = vertClassify_altivec(tempBlock-48, 16, &c);
                     if(t==1) {
                         doVertLowPass_altivec(tempBlock-48, 16, &c);
                         transpose_8x16_char_fromPackedAlign_altivec(dstBlock - (4 + 1), tempBlock, stride);
@@ -3591,7 +3590,7 @@ static void RENAME(postProcess)(const uint8_t src[], int srcStride, uint8_t dst[
 /*
         for(x=0; x<width; x+=32){
             volatile int i;
-            i+= + dstBlock[x + 7*dstStride] + dstBlock[x + 8*dstStride]
+            i+=   dstBlock[x + 7*dstStride] + dstBlock[x + 8*dstStride]
                 + dstBlock[x + 9*dstStride] + dstBlock[x +10*dstStride]
                 + dstBlock[x +11*dstStride] + dstBlock[x +12*dstStride];
                 + dstBlock[x +13*dstStride]

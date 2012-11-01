@@ -1,0 +1,542 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.0
+# Addon Provider: Jezz_X, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-04 12:52+0000\n"
+"PO-Revision-Date: 2012-09-23 14:22+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Albanian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sq/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sq\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "Ndrysho"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr ""
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Në Funksionim..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr ""
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr ""
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Ekran i Plotë"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr ""
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Skeda - Muzikë"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr ""
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Faqe"
+
+msgctxt "#31025"
+msgid "Items"
+msgstr "Artikuj"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr ""
+
+msgctxt "#31027"
+msgid "Location"
+msgstr "Lokalizimi"
+
+msgctxt "#31028"
+msgid "Poster Wrap"
+msgstr ""
+
+msgctxt "#31029"
+msgid "Fanart"
+msgstr ""
+
+msgctxt "#31031"
+msgid "Pic Thumbs"
+msgstr ""
+
+msgctxt "#31032"
+msgid "Image Wrap"
+msgstr ""
+
+msgctxt "#31033"
+msgid "Info"
+msgstr ""
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Duke Luajtur Tani"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "DUKE LUAJTUR"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "PAUZUAR"
+
+msgctxt "#31044"
+msgid "FAST FORWARD"
+msgstr "PËRSHPEJTO"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "RIKTHE"
+
+msgctxt "#31048"
+msgid "Visualization Presets"
+msgstr "Paracilësime të Vizualizimit"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Koha e Përfundimit"
+
+msgctxt "#31050"
+msgid "Sort: Ascending"
+msgstr "Rendit: Me Ngjitje"
+
+msgctxt "#31051"
+msgid "Sort: Descending"
+msgstr "Rendit: Me Zbritje"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Hap playlist’ën"
+
+msgctxt "#31056"
+msgid "Save playlist"
+msgstr "Ruaj playlist’ën "
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Mbyll playlist’ën "
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Skeda muzikore të sistemit"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Playlist’a aktuale"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Kjo skedë është grupuar, zgjidh pjesën, nga e cila doni të luani."
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr ""
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr ""
+
+msgctxt "#31102"
+msgid "Background"
+msgstr ""
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr ""
+
+msgctxt "#31104"
+msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr ""
+
+msgctxt "#31106"
+msgid "Miscellaneous options"
+msgstr ""
+
+msgctxt "#31107"
+msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr ""
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr ""
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr ""
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr ""
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr ""
+
+msgctxt "#31112"
+msgid "Options"
+msgstr ""
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr ""
+
+msgctxt "#31117"
+msgid "Show Recently added Videos"
+msgstr ""
+
+msgctxt "#31118"
+msgid "Home Page Programs Submenu"
+msgstr ""
+
+msgctxt "#31119"
+msgid "Hide Background Fanart"
+msgstr ""
+
+msgctxt "#31122"
+msgid "Weather Page"
+msgstr ""
+
+msgctxt "#31124"
+msgid "Show Background \"Now Playing\" Video"
+msgstr ""
+
+msgctxt "#31125"
+msgid "Show Background \"Now Playing\" Visualization"
+msgstr ""
+
+msgctxt "#31126"
+msgid "Play TV theme songs in video library (TvTunes add-on)"
+msgstr ""
+
+msgctxt "#31127"
+msgid "TvTunes"
+msgstr ""
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr ""
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr ""
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr ""
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr ""
+
+msgctxt "#31134"
+msgid "Home Page Videos Submenu"
+msgstr ""
+
+msgctxt "#31135"
+msgid "Home Page Music Submenu"
+msgstr ""
+
+msgctxt "#31136"
+msgid "Home Page Pictures Submenu"
+msgstr ""
+
+msgctxt "#31140"
+msgid "Music OSD"
+msgstr ""
+
+msgctxt "#31141"
+msgid "Video OSD"
+msgstr ""
+
+msgctxt "#31200"
+msgid "Shortcuts"
+msgstr ""
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr ""
+
+msgctxt "#31205"
+msgid "Lyrics Source"
+msgstr ""
+
+msgctxt "#31206"
+msgid "Found"
+msgstr ""
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr ""
+
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr ""
+
+msgctxt "#31300"
+msgid "Current Temp"
+msgstr "Temperatura Aktuale"
+
+msgctxt "#31301"
+msgid "Last Updated"
+msgstr "Azhornuar së Fundmi"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Pajisës i të Dhënave"
+
+msgctxt "#31307"
+msgid "Hide Fanart"
+msgstr ""
+
+msgctxt "#31308"
+msgid "Movie Details"
+msgstr ""
+
+msgctxt "#31309"
+msgid "Memory Used:"
+msgstr "Memorje Përdorur"
+
+msgctxt "#31310"
+msgid "Track Number"
+msgstr ""
+
+msgctxt "#31311"
+msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
+msgstr ""
+
+msgctxt "#31312"
+msgid "Current Scraper"
+msgstr ""
+
+msgctxt "#31313"
+msgid "Choose a Scraper"
+msgstr ""
+
+msgctxt "#31314"
+msgid "Content Scanning Options"
+msgstr "Opsionet e Skanimit të Përmbajtjes"
+
+msgctxt "#31317"
+msgid "Set Fanart Path"
+msgstr ""
+
+msgctxt "#31319"
+msgid "Selected Profile"
+msgstr ""
+
+msgctxt "#31320"
+msgid "Last Logged In"
+msgstr "I Loguar së Fundmi"
+
+msgctxt "#31321"
+msgid "Karaoke Song Selector"
+msgstr "Përzgjedhës i Këngëve Karaoke"
+
+msgctxt "#31322"
+msgid "Aired"
+msgstr "Në Transmetim"
+
+msgctxt "#31325"
+msgid "Playlist Options"
+msgstr ""
+
+msgctxt "#31326"
+msgid "Created"
+msgstr ""
+
+msgctxt "#31327"
+msgid "Resolution"
+msgstr ""
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr ""
+
+msgctxt "#31329"
+msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
+msgstr ""
+
+msgctxt "#31330"
+msgid "Click button to play[CR][CR]Movie trailer"
+msgstr ""
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr ""
+
+msgctxt "#31351"
+msgid "Pause"
+msgstr "Pauzo"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Ndalo"
+
+msgctxt "#31353"
+msgid "Fast Forward"
+msgstr "Përshpejto"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Rikthe"
+
+msgctxt "#31355"
+msgid "Movie menu"
+msgstr ""
+
+msgctxt "#31356"
+msgid "Download Subtitles"
+msgstr "Shkarko Titra"
+
+msgctxt "#31390"
+msgid "Skin default"
+msgstr "Standarte e Maskës"
+
+msgctxt "#31391"
+msgid "Skin default with no Caps"
+msgstr ""
+
+msgctxt "#31392"
+msgid "Arial based"
+msgstr "Në Arial"
+
+msgctxt "#31400"
+msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
+msgstr ""
+
+msgctxt "#31401"
+msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
+msgstr ""
+
+msgctxt "#31402"
+msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
+msgstr ""
+
+msgctxt "#31403"
+msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
+msgstr ""
+
+msgctxt "#31404"
+msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
+msgstr ""
+
+msgctxt "#31406"
+msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
+msgstr ""
+
+msgctxt "#31408"
+msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
+msgstr ""
+
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr ""
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
+msgstr ""
+
+msgctxt "#31421"
+msgid "Select your XBMC user Profile[CR]to login and continue"
+msgstr ""
+
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr ""
+
+msgctxt "#31902"
+msgid "Hourly Forecast"
+msgstr ""
+
+msgctxt "#31903"
+msgid "Weekend Forecast"
+msgstr ""
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr ""
+
+msgctxt "#31905"
+msgid "Forecast"
+msgstr ""
+
+msgctxt "#31906"
+msgid "Maps & Video"
+msgstr ""
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr ""
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr ""

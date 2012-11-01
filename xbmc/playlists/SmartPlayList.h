@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,78 +14,36 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
+#include <set>
+#include <vector>
+
+#include "utils/SortUtils.h"
 #include "utils/StdString.h"
 #include "utils/XBMCTinyXML.h"
-#include <vector>
-#include <set>
 
 class CDatabase;
+class CVariant;
 
-class CSmartPlaylistRule
+class ISmartPlaylistRule
+{
+public:
+  virtual ~ISmartPlaylistRule() { }
+
+  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8") = 0;
+  virtual bool Load(const CVariant &obj) = 0;
+  virtual bool Save(TiXmlNode *parent) const = 0;
+  virtual bool Save(CVariant &obj) const = 0;
+};
+
+class CSmartPlaylistRule : public ISmartPlaylistRule
 {
 public:
   CSmartPlaylistRule();
-
-  enum DATABASE_FIELD { FIELD_NONE = 0,
-                        FIELD_GENRE = 1,
-                        FIELD_ALBUM,
-                        FIELD_ARTIST,
-                        FIELD_ALBUMARTIST,
-                        FIELD_TITLE,
-                        FIELD_YEAR,
-                        FIELD_TIME,
-                        FIELD_TRACKNUMBER,
-                        FIELD_FILENAME,
-                        FIELD_PATH,
-                        FIELD_PLAYCOUNT,
-                        FIELD_LASTPLAYED,
-                        FIELD_INPROGRESS,
-                        FIELD_RATING,
-                        FIELD_COMMENT,
-                        FIELD_DATEADDED,
-                        FIELD_TVSHOWTITLE,
-                        FIELD_EPISODETITLE,
-                        FIELD_PLOT,
-                        FIELD_PLOTOUTLINE,
-                        FIELD_TAGLINE,
-                        FIELD_STATUS,
-                        FIELD_VOTES,
-                        FIELD_DIRECTOR,
-                        FIELD_ACTOR,
-                        FIELD_STUDIO,
-                        FIELD_COUNTRY,
-                        FIELD_MPAA,
-                        FIELD_TOP250,
-                        FIELD_NUMEPISODES,
-                        FIELD_NUMWATCHED,
-                        FIELD_WRITER,
-                        FIELD_AIRDATE,
-                        FIELD_EPISODE,
-                        FIELD_SEASON,
-                        FIELD_REVIEW,
-                        FIELD_THEMES,
-                        FIELD_MOODS,
-                        FIELD_STYLES,
-                        FIELD_ALBUMTYPE,
-                        FIELD_LABEL,
-                        FIELD_HASTRAILER,
-                        FIELD_VIDEORESOLUTION,
-                        FIELD_AUDIOCHANNELS,
-                        FIELD_VIDEOCODEC,
-                        FIELD_AUDIOCODEC,
-                        FIELD_AUDIOLANGUAGE,
-                        FIELD_SUBTITLELANGUAGE,
-                        FIELD_VIDEOASPECT,
-                        FIELD_PLAYLIST,
-                        FIELD_RANDOM,
-                        FIELD_SET
-                      };
 
   enum SEARCH_OPERATOR { OPERATOR_START = 0,
                          OPERATOR_CONTAINS,
@@ -102,6 +60,7 @@ public:
                          OPERATOR_NOT_IN_THE_LAST,
                          OPERATOR_TRUE,
                          OPERATOR_FALSE,
+                         OPERATOR_BETWEEN,
                          OPERATOR_END
                        };
 
@@ -115,29 +74,77 @@ public:
                     TEXTIN_FIELD
                   };
 
-  CStdString GetWhereClause(CDatabase &db, const CStdString& strType);
-  void TranslateStrings(const char *field, const char *oper, const char *parameter);
-  static DATABASE_FIELD TranslateField(const char *field);
-  static CStdString     TranslateField(DATABASE_FIELD field);
-  static CStdString     GetDatabaseField(DATABASE_FIELD field, const CStdString& strType);
-  static CStdString     TranslateOperator(SEARCH_OPERATOR oper);
+  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8");
+  virtual bool Load(const CVariant &obj);
+  virtual bool Save(TiXmlNode *parent) const;
+  virtual bool Save(CVariant &obj) const;
 
-  static CStdString     GetLocalizedField(DATABASE_FIELD field);
-  static CStdString     GetLocalizedOperator(SEARCH_OPERATOR oper);
-  static std::vector<DATABASE_FIELD> GetFields(const CStdString &type, bool sortOrders = false);
-  static FIELD_TYPE     GetFieldType(DATABASE_FIELD field);
+  CStdString                  GetWhereClause(const CDatabase &db, const CStdString& strType) const;
+  static Field                TranslateField(const char *field);
+  static CStdString           TranslateField(Field field);
+  static SortBy               TranslateOrder(const char *order);
+  static CStdString           TranslateOrder(SortBy order);
+  static CStdString           GetField(Field field, const CStdString& strType);
+  static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
 
-  CStdString            GetLocalizedRule();
+  static CStdString           GetLocalizedField(Field field);
+  static CStdString           GetLocalizedOrder(SortBy order);
+  static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static std::vector<Field>   GetFields(const CStdString &type);
+  static std::vector<SortBy>  GetOrders(const CStdString &type);
+  static FIELD_TYPE           GetFieldType(Field field);
 
-  TiXmlElement GetAsElement();
+  CStdString                  GetLocalizedRule() const;
+  CStdString                  GetParameter() const;
+  void                        SetParameter(const CStdString &value);
+  void                        SetParameter(const std::vector<CStdString> &values);
 
-  DATABASE_FIELD     m_field;
-  SEARCH_OPERATOR    m_operator;
-  CStdString         m_parameter;
+  Field                       m_field;
+  SEARCH_OPERATOR             m_operator;
+  std::vector<CStdString>     m_parameter;
 private:
-  SEARCH_OPERATOR    TranslateOperator(const char *oper);
+  static SEARCH_OPERATOR TranslateOperator(const char *oper);
 
-  CStdString GetVideoResolutionQuery(void);
+  CStdString GetVideoResolutionQuery(const CStdString &parameter) const;
+};
+
+class CSmartPlaylistRuleCombination;
+
+typedef std::vector<CSmartPlaylistRule> CSmartPlaylistRules;
+typedef std::vector<CSmartPlaylistRuleCombination> CSmartPlaylistRuleCombinations;
+
+class CSmartPlaylistRuleCombination : public ISmartPlaylistRule
+{
+public:
+  CSmartPlaylistRuleCombination();
+
+  typedef enum {
+    CombinationOr = 0,
+    CombinationAnd
+  } Combination;
+
+  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8") { return false; }
+  virtual bool Load(const CVariant &obj);
+  virtual bool Save(TiXmlNode *parent) const { return false; }
+  virtual bool Save(CVariant &obj) const;
+
+  CStdString GetWhereClause(const CDatabase &db, const CStdString& strType, std::set<CStdString> &referencedPlaylists) const;
+  std::string TranslateCombinationType() const;
+
+  Combination GetType() const { return m_type; }
+  void SetType(Combination combination) { m_type = combination; }
+
+  void AddRule(const CSmartPlaylistRule &rule);
+  void AddCombination(const CSmartPlaylistRuleCombination &rule);
+
+private:
+  friend class CSmartPlaylist;
+  friend class CGUIDialogSmartPlaylistEditor;
+  friend class CGUIDialogMediaFilter;
+
+  Combination m_type;
+  CSmartPlaylistRuleCombinations m_combinations;
+  CSmartPlaylistRules m_rules;
 };
 
 class CSmartPlaylist
@@ -146,28 +153,35 @@ public:
   CSmartPlaylist();
 
   bool Load(const CStdString &path);
-  bool Save(const CStdString &path);
+  bool Load(const CVariant &obj);
+  bool LoadFromXml(const CStdString &xml);
+  bool LoadFromJson(const CStdString &json);
+  bool Save(const CStdString &path) const;
+  bool Save(CVariant &obj, bool full = true) const;
+  bool SaveAsJson(CStdString &json, bool full = true) const;
 
   TiXmlElement *OpenAndReadName(const CStdString &path);
+  bool LoadFromXML(TiXmlElement *root, const CStdString &encoding = "UTF-8");
+
+  void Reset();
 
   void SetName(const CStdString &name);
   void SetType(const CStdString &type); // music, video, mixed
   const CStdString& GetName() const { return m_playlistName; };
   const CStdString& GetType() const { return m_playlistType; };
 
-  void SetMatchAllRules(bool matchAll) { m_matchAllRules = matchAll; };
-  bool GetMatchAllRules() const { return m_matchAllRules; };
+  void SetMatchAllRules(bool matchAll) { m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr); }
+  bool GetMatchAllRules() const { return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd; }
 
   void SetLimit(unsigned int limit) { m_limit = limit; };
   unsigned int GetLimit() const { return m_limit; };
 
-  void SetOrder(CSmartPlaylistRule::DATABASE_FIELD order) { m_orderField = order; };
-  CSmartPlaylistRule::DATABASE_FIELD GetOrder() const { return m_orderField; };
+  void SetOrder(SortBy order) { m_orderField = order; };
+  SortBy GetOrder() const { return m_orderField; };
 
-  void SetOrderAscending(bool orderAscending) { m_orderAscending = orderAscending; };
-  bool GetOrderAscending() const { return m_orderAscending; };
-
-  void AddRule(const CSmartPlaylistRule &rule);
+  void SetOrderAscending(bool orderAscending) { m_orderDirection = orderAscending ? SortOrderAscending : SortOrderDescending; };
+  bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; };
+  SortOrder GetOrderDirection() const { return m_orderDirection; }
 
   /*! \brief get the where clause for a playlist
    We handle playlists inside playlists separately in order to ensure we don't introduce infinite loops
@@ -177,23 +191,30 @@ public:
    \param referencedPlaylists a set of playlists to know when we reach a cycle
    \param needWhere whether we need to prepend the where clause with "WHERE "
    */
-  CStdString GetWhereClause(CDatabase &db, std::set<CStdString> &referencedPlaylists, bool needWhere = true);
-  CStdString GetOrderClause(CDatabase &db);
-
-  const std::vector<CSmartPlaylistRule> &GetRules() const;
+  CStdString GetWhereClause(const CDatabase &db, std::set<CStdString> &referencedPlaylists) const;
 
   CStdString GetSaveLocation() const;
+
+  static void GetAvailableFields(const std::string &type, std::vector<std::string> &fieldList);
+  static void GetAvailableOperators(std::vector<std::string> &operatorList);
+
+  bool IsEmpty(bool ignoreSortAndLimit = true) const;
 private:
   friend class CGUIDialogSmartPlaylistEditor;
+  friend class CGUIDialogMediaFilter;
 
-  std::vector<CSmartPlaylistRule> m_playlistRules;
+  TiXmlElement* readName();
+  TiXmlElement *readNameFromXml(const CStdString &xml);
+  bool load(TiXmlElement *root);
+
+  CSmartPlaylistRuleCombination m_ruleCombination;
   CStdString m_playlistName;
   CStdString m_playlistType;
-  bool m_matchAllRules;
+
   // order information
   unsigned int m_limit;
-  CSmartPlaylistRule::DATABASE_FIELD m_orderField;
-  bool m_orderAscending;
+  SortBy m_orderField;
+  SortOrder m_orderDirection;
 
   CXBMCTinyXML m_xmlDoc;
 };

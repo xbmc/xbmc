@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,11 +24,16 @@
 #include "settings/GUISettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#ifdef __APPLE__
+#include "interfaces/python/XBPython.h"
+#if defined(TARGET_DARWIN)
 #include "../osx/OSXGNUReplacements.h"
+#endif
+#ifdef __FreeBSD__
+#include "freebsd/FreeBSDGNUReplacements.h"
 #endif
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 #include <vector>
 #include <string.h>
 #include <ostream>
@@ -75,7 +79,7 @@ static const TypeMapping types[] =
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166, "DefaultAddonSkin.png" },
    {"xbmc.gui.webinterface",             ADDON_WEB_INTERFACE,         199, "DefaultAddonWebSkin.png" },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011, "DefaultAddonRepository.png" },
-   {"pvrclient",                         ADDON_PVRDLL,                  0, "" },
+   {"xbmc.pvrclient",                    ADDON_PVRDLL,              24019, "" },
    {"xbmc.addon.video",                  ADDON_VIDEO,                1037, "DefaultAddonVideo.png" },
    {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
    {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
@@ -150,6 +154,10 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
+    CStdString language;
+    language = CAddonMgr::Get().GetExtValue(metadata->configuration, "language");
+    if (!language.IsEmpty())
+      extrainfo.insert(make_pair("language",language));
     broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
     EMPTY_IF("nofanart",fanart)
     EMPTY_IF("noicon",icon)
@@ -168,6 +176,60 @@ AddonProps::AddonProps(const cp_plugin_info_t *plugin)
   , stars(0)
 {
   BuildDependencies(plugin);
+}
+
+void AddonProps::Serialize(CVariant &variant) const
+{
+  variant["addonid"] = id;
+  variant["type"] = TranslateType(type);
+  variant["version"] = version.c_str();
+  variant["minversion"] = minversion.c_str();
+  variant["name"] = name;
+  variant["parent"] = parent;
+  variant["license"] = license;
+  variant["summary"] = summary;
+  variant["description"] = description;
+  variant["path"] = path;
+  variant["libname"] = libname;
+  variant["author"] = author;
+  variant["source"] = source;
+
+  if (CURL::IsFullPath(icon))
+    variant["icon"] = icon;
+  else
+    variant["icon"] = URIUtils::AddFileToFolder(path, icon);
+
+  variant["thumbnail"] = variant["icon"];
+  variant["disclaimer"] = disclaimer;
+  variant["changelog"] = changelog;
+
+  if (CURL::IsFullPath(fanart))
+    variant["fanart"] = fanart;
+  else
+    variant["fanart"] = URIUtils::AddFileToFolder(path, fanart);
+
+  variant["dependencies"] = CVariant(CVariant::VariantTypeArray);
+  for (ADDONDEPS::const_iterator it = dependencies.begin(); it != dependencies.end(); it++)
+  {
+    CVariant dep(CVariant::VariantTypeObject);
+    dep["addonid"] = it->first;
+    dep["version"] = it->second.first.c_str();
+    dep["optional"] = it->second.second;
+    variant["dependencies"].push_back(dep);
+  }
+  if (broken.empty())
+    variant["broken"] = false;
+  else
+    variant["broken"] = broken;
+  variant["extrainfo"] = CVariant(CVariant::VariantTypeArray);
+  for (InfoMap::const_iterator it = extrainfo.begin(); it != extrainfo.end(); it++)
+  {
+    CVariant info(CVariant::VariantTypeObject);
+    info["key"] = it->first;
+    info["value"] = it->second;
+    variant["extrainfo"].push_back(info);
+  }
+  variant["rating"] = stars;
 }
 
 void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
@@ -281,6 +343,9 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_VIZ:
       ext = ADDON_VIS_EXT;
       break;
+    case ADDON_PVRDLL:
+      ext = ADDON_PVRDLL_EXT;
+      break;
     case ADDON_SCRIPT:
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
@@ -316,6 +381,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRAPER_MUSICVIDEOS:
       case ADDON_SCRAPER_TVSHOWS:
       case ADDON_SCRAPER_LIBRARY:
+      case ADDON_PVRDLL:
       case ADDON_PLUGIN:
       case ADDON_SERVICE:
         {
@@ -336,12 +402,9 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
 bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
-  CStdString chosenPath;
-  chosenPath.Format("resources/language/%s/strings.xml", g_guiSettings.GetString("locale.language").c_str());
-  CStdString chosen = URIUtils::AddFileToFolder(m_props.path, chosenPath);
-  CStdString fallback = URIUtils::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
+  CStdString chosenPath = URIUtils::AddFileToFolder(m_props.path, "resources/language/");
 
-  m_hasStrings = m_strings.Load(chosen, fallback);
+  m_hasStrings = m_strings.Load(chosenPath, g_guiSettings.GetString("locale.language"));
   return m_checkedStrings = true;
 }
 
@@ -443,6 +506,7 @@ void CAddon::SaveSettings(void)
   doc.SaveFile(m_userSettingsPath);
   
   CAddonMgr::Get().ReloadSettings(ID());//push the settings changes to the running addon instance
+  g_pythonParser.OnSettingsChanged(ID());
 }
 
 CStdString CAddon::GetSetting(const CStdString& key)

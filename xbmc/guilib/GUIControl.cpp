@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -83,6 +82,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
+  m_controlIsDirty = false;
 }
 
 
@@ -129,7 +129,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 {
   CRect dirtyRegion = m_renderRegion;
 
-  bool changed = m_bInvalidated;
+  bool changed = m_bInvalidated && IsVisible();
 
   changed |= Animate(currentTime);
 
@@ -138,7 +138,10 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
     g_graphicsContext.SetCameraPosition(m_camera);
 
   if (IsVisible())
+  {
     Process(currentTime, dirtyregions);
+    m_bInvalidated = false;
+  }
 
   changed |=  m_controlIsDirty;
 
@@ -152,7 +155,6 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
     g_graphicsContext.RestoreCameraPosition();
   g_graphicsContext.RemoveTransform();
 
-  m_bInvalidated = false;
   m_controlIsDirty = false;
 }
 
@@ -224,46 +226,50 @@ bool CGUIControl::OnAction(const CAction &action)
   return false;
 }
 
+bool CGUIControl::Navigate(int direction)
+{
+  if (HasFocus())
+  {
+    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), direction);
+    return SendWindowMessage(msg);
+  }
+  return false;
+}
+
 // Movement controls (derived classes can override)
 void CGUIControl::OnUp()
 {
-  if (HasFocus())
-    m_actionUp.Execute(GetID(), GetParentID(), ACTION_MOVE_UP);
+  Navigate(ACTION_MOVE_UP);
 }
 
 void CGUIControl::OnDown()
 {
-  if (HasFocus())
-    m_actionDown.Execute(GetID(), GetParentID(), ACTION_MOVE_DOWN);
+  Navigate(ACTION_MOVE_DOWN);
 }
 
 void CGUIControl::OnLeft()
 {
-  if (HasFocus())
-    m_actionLeft.Execute(GetID(), GetParentID(), ACTION_MOVE_LEFT);
+  Navigate(ACTION_MOVE_LEFT);
 }
 
 void CGUIControl::OnRight()
 {
-  if (HasFocus())
-    m_actionRight.Execute(GetID(), GetParentID(), ACTION_MOVE_RIGHT);
+  Navigate(ACTION_MOVE_RIGHT);
 }
 
 bool CGUIControl::OnBack()
 {
-  return HasFocus() ? m_actionBack.Execute(GetID(), GetParentID(), ACTION_NAV_BACK) : false;
+  return Navigate(ACTION_NAV_BACK);
 }
 
 void CGUIControl::OnNextControl()
 {
-  if (HasFocus())
-    m_actionNext.Execute(GetID(), GetParentID(), ACTION_NEXT_CONTROL);
+  Navigate(ACTION_NEXT_CONTROL);
 }
 
 void CGUIControl::OnPrevControl()
 {
-  if (HasFocus())
-    m_actionPrev.Execute(GetID(), GetParentID(), ACTION_PREV_CONTROL);
+  Navigate(ACTION_PREV_CONTROL);
 }
 
 bool CGUIControl::SendWindowMessage(CGUIMessage &message)
@@ -476,6 +482,33 @@ void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &d
   if (!m_actionUp.HasAnyActions()    || replace) m_actionUp    = up;
   if (!m_actionDown.HasAnyActions()  || replace) m_actionDown  = down;
   if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
+}
+
+void CGUIControl::SetNavigationAction(int direction, const CGUIAction &action, bool replace /*= true*/)
+{
+  switch (direction)
+  {
+  case ACTION_MOVE_UP:
+    if (!m_actionUp.HasAnyActions() || replace)
+      m_actionUp = action;
+    break;
+  case ACTION_MOVE_DOWN:
+    if (!m_actionDown.HasAnyActions() || replace)
+      m_actionDown = action;
+    break;
+  case ACTION_MOVE_LEFT:
+    if (!m_actionLeft.HasAnyActions() || replace)
+      m_actionLeft = action;
+    break;
+  case ACTION_MOVE_RIGHT:
+    if (!m_actionRight.HasAnyActions() || replace)
+      m_actionRight = action;
+    break;
+  case ACTION_NAV_BACK:
+    if (!m_actionBack.HasAnyActions() || replace)
+      m_actionBack = action;
+    break;
+  }
 }
 
 void CGUIControl::SetWidth(float width)
@@ -863,22 +896,27 @@ bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
   return false;
 }
 
-int CGUIControl::GetNextControl(int direction) const
+bool CGUIControl::GetNavigationAction(int direction, CGUIAction& action) const
 {
   switch (direction)
   {
   case ACTION_MOVE_UP:
-    return m_actionUp.GetNavigation();
+    action = m_actionUp;
+    return true;
   case ACTION_MOVE_DOWN:
-    return m_actionDown.GetNavigation();
+    action = m_actionDown;
+    return true;
   case ACTION_MOVE_LEFT:
-    return m_actionLeft.GetNavigation();
+    action = m_actionLeft;
+    return true;
   case ACTION_MOVE_RIGHT:
-    return m_actionRight.GetNavigation();
+    action = m_actionRight;
+    return true;
   case ACTION_NAV_BACK:
-    return m_actionBack.GetNavigation();
+    action = m_actionBack;
+    return true;
   default:
-    return -1;
+    return false;
   }
 }
 

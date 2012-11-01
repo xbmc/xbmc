@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
  
@@ -33,7 +32,7 @@
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
-      CThread()
+      CThread("CDummyVideoPlayer")
 {
   m_paused = false;
   m_clock = 0;
@@ -52,7 +51,7 @@ bool CDummyVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &op
   {
     Create();
     if( options.starttime > 0 )
-      SeekTime( (__int64)(options.starttime * 1000) );
+      SeekTime( (int64_t)(options.starttime * 1000) );
     return true;
   }
   catch(...)
@@ -119,12 +118,12 @@ bool CDummyVideoPlayer::IsPaused() const
   return m_paused;
 }
 
-bool CDummyVideoPlayer::HasVideo()
+bool CDummyVideoPlayer::HasVideo() const
 {
   return true;
 }
 
-bool CDummyVideoPlayer::HasAudio()
+bool CDummyVideoPlayer::HasAudio() const
 {
   return true;
 }
@@ -144,7 +143,7 @@ bool CDummyVideoPlayer::CanSeek()
 
 void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2000*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     int seek = 0;
     if (bLargeStep)
@@ -191,14 +190,13 @@ void CDummyVideoPlayer::SwitchToNextAudioLanguage()
 
 void CDummyVideoPlayer::SeekPercentage(float iPercent)
 {
-  __int64 iTotalMsec = GetTotalTime() * 1000;
-  __int64 iTime = (__int64)(iTotalMsec * iPercent / 100);
+  int64_t iTime = (int64_t)(GetTotalTime() * iPercent / 100);
   SeekTime(iTime);
 }
 
 float CDummyVideoPlayer::GetPercentage()
 {
-  __int64 iTotalTime = GetTotalTime() * 1000;
+  int64_t iTotalTime = GetTotalTime();
 
   if (iTotalTime != 0)
   {
@@ -227,7 +225,7 @@ float CDummyVideoPlayer::GetSubTitleDelay()
   return 0.0;
 }
 
-void CDummyVideoPlayer::SeekTime(__int64 iTime)
+void CDummyVideoPlayer::SeekTime(int64_t iTime)
 {
   int seekOffset = (int)(iTime - m_clock);
   m_clock = iTime;
@@ -235,15 +233,15 @@ void CDummyVideoPlayer::SeekTime(__int64 iTime)
 }
 
 // return the time in milliseconds
-__int64 CDummyVideoPlayer::GetTime()
+int64_t CDummyVideoPlayer::GetTime()
 {
   return m_clock;
 }
 
-// return length in seconds.. this should be changed to return in milleseconds throughout xbmc
-int CDummyVideoPlayer::GetTotalTime()
+// return length in milliseconds
+int64_t CDummyVideoPlayer::GetTotalTime()
 {
-  return 1000;
+  return 1000000;
 }
 
 void CDummyVideoPlayer::ToFFRW(int iSpeed)

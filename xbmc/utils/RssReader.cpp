@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,8 +25,8 @@
 #include "CharsetConverter.h"
 #include "URL.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
-#ifdef __APPLE__
+#include "filesystem/CurlFile.h"
+#if defined(TARGET_DARWIN)
 #include "CocoaInterface.h"
 #endif
 #include "settings/Settings.h"
@@ -44,12 +43,14 @@ using namespace XFILE;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CRssReader::CRssReader() : CThread()
+CRssReader::CRssReader() : CThread("CRssReader")
 {
   m_pObserver = NULL;
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
   m_SavedScrollPos = 0;
+  m_rtlText = false;
+  m_requestRefresh = false;
 }
 
 CRssReader::~CRssReader()
@@ -126,7 +127,7 @@ void CRssReader::Process()
     m_strFeed[iFeed] = "";
     m_strColors[iFeed] = "";
 
-    CFileCurl http;
+    CCurlFile http;
     http.SetUserAgent(g_settings.m_userAgent);
     http.SetTimeout(2);
     CStdString strXML;

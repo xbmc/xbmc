@@ -1,0 +1,83 @@
+TOOLCHAIN=@use_toolchain@
+NDKROOT=@use_ndk@
+SDKROOT=@use_sdk@
+XBMCPREFIX=@use_staging@
+TARBALLS_LOCATION=@use_tarballs@
+HOST=@use_host@
+PLATFORM=@use_cpu@
+NATIVEPLATFORM=@use_cpu@-native
+SDK_PLATFORM=@use_sdk_platform@
+RETRIEVE_TOOL=@CURL@
+ARCHIVE_TOOL=@TAR@
+
+ifneq ($(XBMC_OVERRIDE_TOOLCHAIN),)
+TOOLCHAIN=$(XBMC_OVERRIDE_TOOLCHAIN)
+endif
+
+ifneq ($(XBMC_OVERRIDE_PLATFORM),)
+PLATFORM=$(XBMC_OVERRIDE_PLATFORM)
+NATIVEPLATFORM=$(XBMC_OVERRIDE_PLATFORM)-native
+endif
+
+ifneq ($(XBMC_OVERRIDE_HOST),)
+HOST=$(XBMC_OVERRIDE_HOST)
+endif
+
+PREFIX=$(XBMCPREFIX)/$(PLATFORM)
+NATIVEPREFIX=$(XBMCPREFIX)/$(NATIVEPLATFORM)
+
+PLATFORM_FLAGS=-DANDROID -Os
+ifeq ($(PLATFORM),armeabi-v7a)
+  PLATFORM_FLAGS+=-march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon -D__ARM_ARCH_7__ -D__ARM_ARCH_7A__
+endif
+
+ifeq ($(PLATFORM),x86)
+  PLATFORM_FLAGS+=-fomit-frame-pointer
+endif
+
+BASE_URL=http://mirrors.xbmc.org/build-deps/sources
+RETRIEVE_TOOL_FLAGS=-Ls --create-dirs -f --output $(TARBALLS_LOCATION)/$(ARCHIVE)
+ARCHIVE_TOOL_FLAGS=-C $(PLATFORM) --strip-components=1 -xf
+CONFIG_SUB=$(NATIVEPREFIX)/share/automake-1.11/config.sub
+CONFIG_GUESS=$(NATIVEPREFIX)/share/automake-1.11/config.guess
+RPL=$(NATIVEPREFIX)/bin/python $(NATIVEPREFIX)/bin/rpl
+YASM=$(NATIVEPREFIX)/bin/yasm
+
+ifneq ($(NATIVE_BUILD),1)
+  export SYSROOT=$(TOOLCHAIN)/sysroot
+  export CROSSTOOLS=$(TOOLCHAIN)/bin/$(HOST)-
+  export LD=$(CROSSTOOLS)ld
+  export CC=$(CROSSTOOLS)gcc
+  export CXX=$(CROSSTOOLS)g++
+  export AR=$(CROSSTOOLS)ar
+  export AS=$(CROSSTOOLS)as
+  export NM=$(CROSSTOOLS)nm
+  export STRIP=$(CROSSTOOLS)strip
+  export RANLIB=$(CROSSTOOLS)ranlib
+  export OBJDUMP=$(CROSSTOOLS)objdump
+  export READELF=$(CROSSTOOLS)readelf
+  export CFLAGS=$(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions
+  export LDFLAGS=$(PLATFORM_FLAGS) -L$(PREFIX)/lib -L$(PREFIX)/lib/$(SDK_PLATFORM)
+  export CPPFLAGS=$(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions
+  export CXXFLAGS=$(PLATFORM_FLAGS) -I$(PREFIX)/include -I$(PREFIX)/include/$(SDK_PLATFORM) -fexceptions -frtti
+
+  export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
+  export PKG_CONFIG=$(NATIVEPREFIX)/bin/pkg-config
+
+  export AUTOMAKE=$(NATIVEPREFIX)/bin/automake
+  export AUTOCONF=$(NATIVEPREFIX)/bin/autoconf
+  export ACLOCAL=$(NATIVEPREFIX)/bin/aclocal
+  export ACLOCAL_PATH=$(PREFIX)/share/aclocal:$(NATIVEPREFIX)/share/aclocal
+  export LIBTOOLIZE=$(NATIVEPREFIX)/bin/libtoolize
+  export AUTORECONF=$(NATIVEPREFIX)/bin/autoreconf
+else
+  PLATFORM=$(NATIVEPLATFORM)
+  PREFIX=$(NATIVEPREFIX)
+
+  export CFLAGS=-I$(PREFIX)/include
+  export LDFLAGS=-L$(PREFIX)/lib
+  export CPPFLAGS=-I$(PREFIX)/include
+  export CXXFLAGS=-I$(PREFIX)/include
+endif
+  export PATH:=$(NATIVEPREFIX)/bin:$(PATH)
+  export LD_LIBRARY_PATH:=$(NATIVEPREFIX)/lib:$(LD_LIBRARY_PATH)

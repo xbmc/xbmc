@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-    <setting label="30000" type="labelenum" values="192|256|384|512|1024" id="yahooscale" default="384"/>
-</settings>

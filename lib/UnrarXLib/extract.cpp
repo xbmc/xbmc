@@ -1,9 +1,5 @@
 #include "rar.hpp"
 #include "Util.h"
-#ifdef _LINUX
-#include "XSyncUtils.h"
-#include "XEventUtils.h"
-#endif
 
 // a cautious wrapper around strncpy
 char *strncpy_null_terminated(char *dest, const char *src, size_t n)
@@ -863,10 +859,7 @@ void CmdExtract::UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize)
       }
       if (Code > 0)
       {
-        Code=Code<DestUnpSize ? Code:int64to32(DestUnpSize);
         DataIO.UnpWrite(&Buffer[0],Code);
-        if (DestUnpSize>=0)
-          DestUnpSize-=Code;
       }
       else 
       {

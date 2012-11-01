@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Controller (Media Renderer Control Point)
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,6 +17,7 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
+| licensing@plutinosoft.com
 | 
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,7 +39,7 @@
 #include "PltMediaController.h"
 #include "PltDidl.h"
 #include "PltDeviceData.h"
-#include "PltXmlHelper.h"
+#include "PltUtilities.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.media.renderer.controller")
 
@@ -187,25 +188,66 @@ PLT_MediaController::FindRenderer(const char* uuid, PLT_DeviceDataReference& dev
 |   PLT_MediaController::GetProtocolInfoSink
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_MediaController::GetProtocolInfoSink(PLT_DeviceDataReference& device, 
-                                         NPT_List<NPT_String>&    sinks)
+PLT_MediaController::GetProtocolInfoSink(const NPT_String&     device_uuid, 
+                                         NPT_List<NPT_String>& sinks)
 {
     PLT_DeviceDataReference renderer;
-    NPT_CHECK_WARNING(FindRenderer(device->GetUUID(), renderer));
+    NPT_CHECK_WARNING(FindRenderer(device_uuid, renderer));
 
     // look for ConnectionManager service
     PLT_Service* serviceCMR;
-    NPT_CHECK_SEVERE(device->FindServiceByType(
-        "urn:schemas-upnp-org:service:ConnectionManager:*", 
-        serviceCMR));
+    NPT_CHECK_SEVERE(renderer->FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:*", 
+                                                 serviceCMR));
 
     NPT_String value;
-    NPT_CHECK_SEVERE(serviceCMR->GetStateVariableValue(
-        "SinkProtocolInfo", 
-        value));
+    NPT_CHECK_SEVERE(serviceCMR->GetStateVariableValue("SinkProtocolInfo", 
+                                                       value));
 
     sinks = value.Split(",");
     return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaController::GetTransportState
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_MediaController::GetTransportState(const NPT_String&  device_uuid, 
+                                       NPT_String&        state)
+{
+    PLT_DeviceDataReference renderer;
+    NPT_CHECK_WARNING(FindRenderer(device_uuid, renderer));
+    
+    // look for AVTransport service
+    PLT_Service* serviceAVT;
+    NPT_CHECK_SEVERE(renderer->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:*", 
+                                                 serviceAVT));
+    
+    NPT_CHECK_SEVERE(serviceAVT->GetStateVariableValue("TransportState", 
+                                                       state));
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaController::GetVolumeState
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_MediaController::GetVolumeState(const NPT_String&  device_uuid, 
+                                    NPT_UInt32&        volume)
+{
+    PLT_DeviceDataReference renderer;
+    NPT_CHECK_WARNING(FindRenderer(device_uuid, renderer));
+    
+    // look for RenderingControl service
+    PLT_Service* serviceRC;
+    NPT_CHECK_SEVERE(renderer->FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:*", 
+                                                 serviceRC));
+    
+    NPT_String value;
+    NPT_CHECK_SEVERE(serviceRC->GetStateVariableValue("Volume", 
+                                                      value));
+    
+    return value.ToInteger32(volume);
 }
 
 /*----------------------------------------------------------------------
@@ -213,14 +255,16 @@ PLT_MediaController::GetProtocolInfoSink(PLT_DeviceDataReference& device,
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaController::FindMatchingProtocolInfo(NPT_List<NPT_String>& sinks,
-                                              const char* protocol_info)
+                                              const char*           protocol_info)
 {
     PLT_ProtocolInfo protocol(protocol_info);
     for (NPT_List<NPT_String>::Iterator iter = sinks.GetFirstItem();
          iter;
          iter++) {
         PLT_ProtocolInfo sink(*iter);
-        if (sink.Match(protocol)) return NPT_SUCCESS;
+        if (sink.Match(protocol)) {
+            return NPT_SUCCESS;
+        }
     }
 
     return NPT_ERROR_NO_SUCH_ITEM;
@@ -237,7 +281,7 @@ PLT_MediaController::FindBestResource(PLT_DeviceDataReference& device,
     if (item.m_Resources.GetItemCount() <= 0) return NPT_ERROR_INVALID_PARAMETERS;
 
     NPT_List<NPT_String> sinks;
-    NPT_CHECK_SEVERE(GetProtocolInfoSink(device, sinks));
+    NPT_CHECK_SEVERE(GetProtocolInfoSink(device->GetUUID(), sinks));
 
     // look for best resource
     for (NPT_Cardinal i=0; i< item.m_Resources.GetItemCount(); i++) {
@@ -257,8 +301,8 @@ PLT_MediaController::FindBestResource(PLT_DeviceDataReference& device,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_MediaController::InvokeActionWithInstance(PLT_ActionReference& action,
-                                           NPT_UInt32           instance_id,
-                                           void*                userdata)
+                                              NPT_UInt32           instance_id,
+                                              void*                userdata)
 {
     // Set the object id
     NPT_CHECK_SEVERE(action->SetArgumentValue(
@@ -503,6 +547,36 @@ PLT_MediaController::SetAVTransportURI(PLT_DeviceDataReference& device,
         return NPT_ERROR_INVALID_PARAMETERS;
     }
 
+    return InvokeActionWithInstance(action, instance_id, userdata);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaController::SetNextAVTransportURI
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_MediaController::SetNextAVTransportURI(PLT_DeviceDataReference& device, 
+                                           NPT_UInt32               instance_id, 
+                                           const char*              next_uri,
+                                           const char*              next_metadata,
+                                           void*                    userdata)
+{
+    PLT_ActionReference action;
+    NPT_CHECK_SEVERE(m_CtrlPoint->CreateAction(
+                                               device, 
+                                               "urn:schemas-upnp-org:service:AVTransport:1", 
+                                               "SetNextAVTransportURI", 
+                                               action));
+    
+    // set the uri
+    if (NPT_FAILED(action->SetArgumentValue("NextURI", next_uri))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+    
+    // set the uri metadata
+    if (NPT_FAILED(action->SetArgumentValue("NextURIMetaData", next_metadata))) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+    
     return InvokeActionWithInstance(action, instance_id, userdata);
 }
 
@@ -987,7 +1061,7 @@ PLT_MediaController::OnGetPositionInfoResponse(NPT_Result               res,
     }
     if (NPT_FAILED(PLT_Didl::ParseTimeStamp(value, info.track_duration))) {
          // some renderers return garbage sometimes
-		info.track_duration = NPT_TimeStamp(0, 0);
+		info.track_duration = NPT_TimeStamp(0.);
     }
 
     if (NPT_FAILED(action->GetArgumentValue("TrackMetaData", info.track_metadata))) {
@@ -1289,71 +1363,11 @@ PLT_MediaController::OnEventNotify(PLT_Service*                  service,
         return NPT_FAILURE;
 
     if (!m_Delegate) return NPT_SUCCESS;
+
+    /* make sure device associated to service is still around */
+    PLT_DeviceDataReference data;
+    NPT_CHECK_WARNING(FindRenderer(service->GetDevice()->GetUUID(), data));
     
-    // parse LastChange var into smaller vars
-    PLT_StateVariable* lastChangeVar = NULL;
-    if (NPT_SUCCEEDED(NPT_ContainerFind(*vars, 
-                                        PLT_ListStateVariableNameFinder("LastChange"), 
-                                        lastChangeVar))) {
-        vars->Remove(lastChangeVar);
-        PLT_Service* var_service = lastChangeVar->GetService();
-        NPT_String text = lastChangeVar->GetValue();
-        
-        NPT_XmlNode* xml = NULL;
-        NPT_XmlParser parser;
-        if (NPT_FAILED(parser.Parse(text, xml)) || !xml || !xml->AsElementNode()) {
-            delete xml;
-            return NPT_FAILURE;
-        }
-
-        NPT_XmlElementNode* node = xml->AsElementNode();
-        if (!node->GetTag().Compare("Event", true)) {
-            // look for the instance with attribute id = 0
-            NPT_XmlElementNode* instance = NULL;
-            for (NPT_Cardinal i=0; i<node->GetChildren().GetItemCount(); i++) {
-                NPT_XmlElementNode* child;
-                if (NPT_FAILED(PLT_XmlHelper::GetChild(node, child, i)))
-                    continue;
-
-                if (!child->GetTag().Compare("InstanceID", true)) {
-                    // extract the "val" attribute value
-                    NPT_String value;
-                    if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(child, "val", value)) &&
-                        !value.Compare("0")) {
-                        instance = child;
-                        break;
-                    }
-                }
-            }
-
-            // did we find an instance with id = 0 ?
-            if (instance != NULL) {
-                // all the children of the Instance node are state variables
-                for (NPT_Cardinal j=0; j<instance->GetChildren().GetItemCount(); j++) {
-                    NPT_XmlElementNode* var_node;
-                    if (NPT_FAILED(PLT_XmlHelper::GetChild(instance, var_node, j)))
-                        continue;
-
-                    // look for the state variable in this service
-                    const NPT_String* value = var_node->GetAttribute("val");
-                    PLT_StateVariable* var = var_service->FindStateVariable(var_node->GetTag());
-                    if (value != NULL && var != NULL) {
-                        // get the value and set the state variable
-                        // if it succeeded, add it to the list of vars we'll event
-                        if (NPT_SUCCEEDED(var->SetValue(*value))) {
-                            vars->Add(var);
-                            NPT_LOG_FINE_2("PLT_MediaController received var change for (%s): %s", (const char*)var->GetName(), (const char*)var->GetValue());
-                        }
-                    }
-                }
-            }
-        }
-        delete xml;
-    }
-
-    if (vars->GetItemCount()) {
-        m_Delegate->OnMRStateVariablesChanged(service, vars);
-    }
-    
+    m_Delegate->OnMRStateVariablesChanged(service, vars);
     return NPT_SUCCESS;
 }

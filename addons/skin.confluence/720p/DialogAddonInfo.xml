@@ -75,7 +75,7 @@
 				<height>30</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font13caps</font>
+				<font>font13</font>
 				<label>[B]$INFO[ListItem.Property(Addon.Name)][/B]</label>
 				<textcolor>white</textcolor>
 				<scroll>true</scroll>

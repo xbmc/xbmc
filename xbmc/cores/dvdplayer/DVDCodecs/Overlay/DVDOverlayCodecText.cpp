@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,13 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
+#include "DVDClock.h"
 #include "DVDOverlayCodecText.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
@@ -53,15 +53,19 @@ void CDVDOverlayCodecText::Dispose()
     SAFE_RELEASE(m_pOverlay);
 }
 
-int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double duration)
+int CDVDOverlayCodecText::Decode(DemuxPacket *pPacket)
 {
   if(m_pOverlay)
     SAFE_RELEASE(m_pOverlay);
 
+  if(!pPacket)
+    return OC_ERROR;
+  
+  BYTE *data = pPacket->pData;
+  int size = pPacket->iSize;
+  
   m_pOverlay = new CDVDOverlayText();
-  m_pOverlay->iPTSStartTime = 0;
-  m_pOverlay->iPTSStopTime = 0;
-
+  CDVDOverlayCodec::GetAbsoluteTimes(m_pOverlay->iPTSStartTime, m_pOverlay->iPTSStopTime, pPacket, m_pOverlay->replace);
 
   char *start, *end, *p;
   start = (char*)data;

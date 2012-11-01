@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,13 +15,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <vector>
+#include "cores/VideoRenderers/RenderFormats.h"
 
 class CDVDVideoCodec;
 class CDVDAudioCodec;
@@ -30,12 +30,12 @@ class CDVDOverlayCodec;
 class CDemuxStreamVideo;
 class CDVDStreamInfo;
 class CDVDCodecOption;
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+class CDVDCodecOptions;
 
 class CDVDFactoryCodec
 {
 public:
-  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces = 0);
+  static CDVDVideoCodec* CreateVideoCodec(CDVDStreamInfo &hint, unsigned int surfaces = 0, const std::vector<ERenderFormat>& formats = std::vector<ERenderFormat>());
   static CDVDAudioCodec* CreateAudioCodec(CDVDStreamInfo &hint, bool passthrough = true );
   static CDVDOverlayCodec* CreateOverlayCodec(CDVDStreamInfo &hint );
 

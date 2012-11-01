@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -160,11 +159,8 @@ static bool LoadTexture(int width, int height, int stride
   return true;
 }
 
-COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
+COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
 {
-  CRect src, dst;
-  g_renderManager.GetVideoRect(src, dst);
-
   m_width  = 1.0;
   m_height = 1.0;
   m_align  = ALIGN_VIDEO;
@@ -172,14 +168,10 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
   m_x      = 0.0f;
   m_y      = 0.0f;
   m_count  = 0;
-
-  int width  = MathUtils::round_int(dst.Width());
-  int height = MathUtils::round_int(dst.Height());
-
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
   SQuads quads;
-  if(!convert_quad(o, pts, width, height, quads))
+  if(!convert_quad(images, quads))
     return;
   
   float u, v;

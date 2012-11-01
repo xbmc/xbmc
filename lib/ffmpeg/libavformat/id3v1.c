@@ -21,6 +21,7 @@
 
 #include "id3v1.h"
 #include "libavcodec/avcodec.h"
+#include "libavutil/dict.h"
 
 const char * const ff_id3v1_genre_str[ID3v1_GENRE_MAX + 1] = {
       [0] = "Blues",
@@ -191,7 +192,7 @@ static void get_string(AVFormatContext *s, const char *key,
     *q = '\0';
 
     if (*str)
-        av_metadata_set2(&s->metadata, key, str, 0);
+        av_dict_set(&s->metadata, key, str, 0);
 }
 
 /**
@@ -215,29 +216,30 @@ static int parse_tag(AVFormatContext *s, const uint8_t *buf)
     get_string(s, "comment", buf + 97, 30);
     if (buf[125] == 0 && buf[126] != 0) {
         snprintf(str, sizeof(str), "%d", buf[126]);
-        av_metadata_set2(&s->metadata, "track", str, 0);
+        av_dict_set(&s->metadata, "track", str, 0);
     }
     genre = buf[127];
     if (genre <= ID3v1_GENRE_MAX)
-        av_metadata_set2(&s->metadata, "genre", ff_id3v1_genre_str[genre], 0);
+        av_dict_set(&s->metadata, "genre", ff_id3v1_genre_str[genre], 0);
     return 0;
 }
 
 void ff_id3v1_read(AVFormatContext *s)
 {
-    int ret, filesize;
+    int ret;
     uint8_t buf[ID3v1_TAG_SIZE];
+    int64_t filesize, position = avio_tell(s->pb);
 
-    if (!url_is_streamed(s->pb)) {
+    if (s->pb->seekable) {
         /* XXX: change that */
-        filesize = url_fsize(s->pb);
+        filesize = avio_size(s->pb);
         if (filesize > 128) {
-            url_fseek(s->pb, filesize - 128, SEEK_SET);
-            ret = get_buffer(s->pb, buf, ID3v1_TAG_SIZE);
+            avio_seek(s->pb, filesize - 128, SEEK_SET);
+            ret = avio_read(s->pb, buf, ID3v1_TAG_SIZE);
             if (ret == ID3v1_TAG_SIZE) {
                 parse_tag(s, buf);
             }
-            url_fseek(s->pb, 0, SEEK_SET);
+            avio_seek(s->pb, position, SEEK_SET);
         }
     }
 }

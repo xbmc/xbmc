@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -91,16 +90,16 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
 
     CStdString sql;
     if (skin.IsEmpty())
-      sql = PrepareSQL("select * from view where window = %i and path like '%s'", window, path1.c_str());
+      sql = PrepareSQL("select * from view where window = %i and path='%s'", window, path1.c_str());
     else
-      sql = PrepareSQL("select * from view where window = %i and path like '%s' and skin='%s'", window, path1.c_str(), skin.c_str());
+      sql = PrepareSQL("select * from view where window = %i and path='%s' and skin='%s'", window, path1.c_str(), skin.c_str());
     m_pDS->query(sql.c_str());
 
     if (!m_pDS->eof())
     { // have some information
       state.m_viewMode = m_pDS->fv("viewMode").get_asInt();
       state.m_sortMethod = (SORT_METHOD)m_pDS->fv("sortMethod").get_asInt();
-      state.m_sortOrder = (SORT_ORDER)m_pDS->fv("sortOrder").get_asInt();
+      state.m_sortOrder = (SortOrder)m_pDS->fv("sortOrder").get_asInt();
       m_pDS->close();
       return true;
     }
@@ -126,7 +125,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
     URIUtils::AddSlashAtEnd(path1);
     if (path1.IsEmpty()) path1 = "root://";
 
-    CStdString sql = PrepareSQL("select idView from view where window = %i and path like '%s' and skin='%s'", window, path1.c_str(), skin.c_str());
+    CStdString sql = PrepareSQL("select idView from view where window = %i and path='%s' and skin='%s'", window, path1.c_str(), skin.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update the view

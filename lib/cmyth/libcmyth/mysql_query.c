@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2006, Simon Hyde
+ *  Copyright (C) 2006-2009, Simon Hyde
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or

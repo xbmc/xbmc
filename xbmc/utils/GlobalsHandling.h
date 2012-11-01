@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #pragma once
 
-#include "boost/shared_ptr.hpp"
+#include <boost/shared_ptr.hpp>
 
 /**
  * This file contains the pattern for moving "globals" from the BSS Segment to the heap.
@@ -182,6 +181,14 @@ namespace xbmcutil
 
   template <class T> typename GlobalsSingleton<T>::template Deleter<boost::shared_ptr<T> > GlobalsSingleton<T>::instance;
   template <class T> T* GlobalsSingleton<T>::quick;
+
+  /**
+   * This is another bit of hackery that will act as a flag for 
+   *  whether or not a global/static has been initialized yet. An instance
+   *  should be placed in the cpp file after the static/global it's meant to
+   *  monitor. 
+   */
+  class InitFlag {  public:  InitFlag(bool& flag) { flag = true; }  };
 }
 
 /**

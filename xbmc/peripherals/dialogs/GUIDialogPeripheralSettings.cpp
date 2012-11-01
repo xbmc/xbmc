@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -51,6 +50,7 @@ void CGUIDialogPeripheralSettings::SetFileItem(CFileItemPtr item)
     delete m_item;
     m_boolSettings.clear();
     m_intSettings.clear();
+    m_intTextSettings.clear();
     m_floatSettings.clear();
     m_stringSettings.clear();
     m_settings.clear();
@@ -66,17 +66,15 @@ void CGUIDialogPeripheralSettings::CreateSettings()
 
   if (m_item)
   {
-    int iIndex = 1;
     CPeripheral *peripheral = g_peripherals.GetByPath(m_item->GetPath());
     if (peripheral)
     {
-      map<CStdString, CSetting *>::iterator it = peripheral->m_settings.begin();
-      while (it != peripheral->m_settings.end())
+      vector<CSetting *> settings = peripheral->GetSettings();
+      for (size_t iPtr = 0; iPtr < settings.size(); iPtr++)
       {
-        CSetting *setting = (*it).second;
+        CSetting *setting = settings[iPtr];
         if (!setting->IsVisible())
         {
-          ++it;
           CLog::Log(LOGDEBUG, "%s - invisible", __FUNCTION__);
           continue;
         }
@@ -89,7 +87,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (boolSetting)
             {
               m_boolSettings.insert(make_pair(CStdString(boolSetting->GetSetting()), boolSetting->GetData()));
-              AddBool(iIndex++, boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetSetting()], true);
+              AddBool(boolSetting->GetOrder(), boolSetting->GetLabel(), &m_boolSettings[boolSetting->GetSetting()], true);
             }
           }
           break;
@@ -98,8 +96,23 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             CSettingInt *intSetting = (CSettingInt *) setting;
             if (intSetting)
             {
-              m_intSettings.insert(make_pair(CStdString(intSetting->GetSetting()), (float) intSetting->GetData()));
-              AddSlider(iIndex++, intSetting->GetLabel(), &m_intSettings[intSetting->GetSetting()], (float)intSetting->m_iMin, (float)intSetting->m_iStep, (float)intSetting->m_iMax, CGUIDialogVideoSettings::FormatInteger, false);
+              if (intSetting->GetControlType() == SPIN_CONTROL_INT)
+              {
+                m_intSettings.insert(make_pair(CStdString(intSetting->GetSetting()), (float) intSetting->GetData()));
+                AddSlider(intSetting->GetOrder(), intSetting->GetLabel(), &m_intSettings[intSetting->GetSetting()], (float)intSetting->m_iMin, (float)intSetting->m_iStep, (float)intSetting->m_iMax, CGUIDialogVideoSettings::FormatInteger, false);
+              }
+              else if (intSetting->GetControlType() == SPIN_CONTROL_TEXT)
+              {
+                m_intTextSettings.insert(make_pair(CStdString(intSetting->GetSetting()), intSetting->GetData()));
+                vector<pair<int, int> > entries;
+                map<int, int>::iterator entriesItr = intSetting->m_entries.begin();
+                while (entriesItr != intSetting->m_entries.end())
+                {
+                  entries.push_back(make_pair(entriesItr->first, entriesItr->second));
+                  ++entriesItr;
+                }
+                AddSpin(intSetting->GetOrder(), intSetting->GetLabel(), &m_intTextSettings[intSetting->GetSetting()], entries);
+              }
             }
           }
           break;
@@ -109,7 +122,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (floatSetting)
             {
               m_floatSettings.insert(make_pair(CStdString(floatSetting->GetSetting()), floatSetting->GetData()));
-              AddSlider(iIndex++, floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetSetting()], floatSetting->m_fMin, floatSetting->m_fStep, floatSetting->m_fMax, CGUIDialogVideoSettings::FormatFloat, false);
+              AddSlider(floatSetting->GetOrder(), floatSetting->GetLabel(), &m_floatSettings[floatSetting->GetSetting()], floatSetting->m_fMin, floatSetting->m_fStep, floatSetting->m_fMax, CGUIDialogVideoSettings::FormatFloat, false);
             }
           }
           break;
@@ -119,7 +132,7 @@ void CGUIDialogPeripheralSettings::CreateSettings()
             if (stringSetting)
             {
               m_stringSettings.insert(make_pair(CStdString(stringSetting->GetSetting()), stringSetting->GetData()));
-              AddString(iIndex, stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetSetting()]);
+              AddString(stringSetting->GetOrder(), stringSetting->GetLabel(), &m_stringSettings[stringSetting->GetSetting()]);
             }
           }
           break;
@@ -128,7 +141,6 @@ void CGUIDialogPeripheralSettings::CreateSettings()
           CLog::Log(LOGDEBUG, "%s - unknown type", __FUNCTION__);
           break;
         }
-        ++it;
       }
     }
     else
@@ -161,6 +173,13 @@ void CGUIDialogPeripheralSettings::UpdatePeripheralSettings(void)
   {
     peripheral->SetSetting((*intItr).first, (int) (*intItr).second);
     ++intItr;
+  }
+
+  map<CStdString, int>::iterator intTextItr = m_intTextSettings.begin();
+  while (intTextItr != m_intTextSettings.end())
+  {
+    peripheral->SetSetting((*intTextItr).first, (*intTextItr).second);
+    ++intTextItr;
   }
 
   map<CStdString, float>::iterator floatItr = m_floatSettings.begin();
@@ -213,6 +232,7 @@ void CGUIDialogPeripheralSettings::ResetDefaultSettings(void)
     /* clear the settings */
     m_boolSettings.clear();
     m_intSettings.clear();
+    m_intTextSettings.clear();
     m_floatSettings.clear();
     m_stringSettings.clear();
     m_settings.clear();

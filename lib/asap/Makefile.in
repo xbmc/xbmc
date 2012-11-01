@@ -73,7 +73,7 @@ mads/mads: force
 	make -C mads
 
 xasm/xasm: force
-	make -C xasm
+	make -C xasm GDC=@HAVE_GDC@
 
 players/cmc.obx: players/cmc.asx xasm/xasm
 	$(XASM) -d CM3=0 -o $@ players/cmc.asx

@@ -33,6 +33,7 @@
  */
 
 #include <string.h>
+#include "os_port.h"
 #include "crypto.h"
 
 /* Constants for MD5Transform routine.

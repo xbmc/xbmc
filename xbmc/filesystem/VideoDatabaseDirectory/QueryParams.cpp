@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -39,6 +38,7 @@ CQueryParams::CQueryParams()
   m_idMVideo = -1;
   m_idAlbum = -1;
   m_idSet = -1;
+  m_idTag = -1;
 }
 
 void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName)
@@ -91,6 +91,9 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeNa
     break;
   case NODE_TYPE_SETS:
     m_idSet = idDb;
+    break;
+  case NODE_TYPE_TAGS:
+    m_idTag = idDb;
     break;
   default:
     break;

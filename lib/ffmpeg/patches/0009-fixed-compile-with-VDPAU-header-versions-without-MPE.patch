@@ -1,0 +1,63 @@
+From 13fa8f2299e51192354cfb468dc05452ab9c9e4e Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 03:04:26 -0400
+Subject: [PATCH 09/24] fixed: compile with VDPAU header versions without
+ MPEG4 support.
+
+See http://repo.or.cz/w/FFMpeg-mirror/mplayer-patches.git/commitdiff/136c16af11076153717d3de31c9d84360644e006
+---
+ configure          |    2 ++
+ libavcodec/vdpau.c |    2 ++
+ libavcodec/vdpau.h |    2 ++
+ 3 files changed, 6 insertions(+)
+
+diff --git a/configure b/configure
+index 07d473e..6255f57 100755
+--- a/configure
++++ b/configure
+@@ -3058,6 +3058,8 @@ check_header sys/select.h
+ check_header termios.h
+ check_header vdpau/vdpau.h
+ check_header vdpau/vdpau_x11.h
++check_cpp_condition vdpau/vdpau.h "defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)" && enable vdpau_mpeg4_support
++
+ check_header X11/extensions/XvMClib.h
+ check_header asm/types.h
+ 
+diff --git a/libavcodec/vdpau.c b/libavcodec/vdpau.c
+index ce5103a..21b4fc9 100644
+--- a/libavcodec/vdpau.c
++++ b/libavcodec/vdpau.c
+@@ -316,6 +316,7 @@ void ff_vdpau_vc1_decode_picture(MpegEncContext *s, const uint8_t *buf,
+     render->bitstream_buffers_used        = 0;
+ }
+ 
++#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_SP
+ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
+                                    int buf_size)
+ {
+@@ -369,6 +370,7 @@ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
+     ff_draw_horiz_band(s, 0, s->avctx->height);
+     render->bitstream_buffers_used = 0;
+ }
++#endif
+ 
+ // Only dummy functions for now
+ static int vdpau_mpeg2_start_frame(AVCodecContext *avctx, const uint8_t *buffer, uint32_t size)
+diff --git a/libavcodec/vdpau.h b/libavcodec/vdpau.h
+index f3a5471..3748675 100644
+--- a/libavcodec/vdpau.h
++++ b/libavcodec/vdpau.h
+@@ -79,7 +79,9 @@ struct vdpau_render_state {
+         VdpPictureInfoH264        h264;
+         VdpPictureInfoMPEG1Or2    mpeg;
+         VdpPictureInfoVC1          vc1;
++#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_SP
+         VdpPictureInfoMPEG4Part2 mpeg4;
++#endif
+     } info;
+ };
+ 
+-- 
+1.7.9.4
+

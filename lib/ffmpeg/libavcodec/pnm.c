@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 #include "avcodec.h"
 #include "pnm.h"
 
@@ -93,7 +93,9 @@ int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s)
             } else if (!strcmp(buf1, "MAXVAL")) {
                 pnm_get(s, buf1, sizeof(buf1));
                 maxval = strtol(buf1, NULL, 10);
-            } else if (!strcmp(buf1, "TUPLETYPE")) {
+            } else if (!strcmp(buf1, "TUPLTYPE") ||
+                       /* libavcodec used to write invalid files */
+                       !strcmp(buf1, "TUPLETYPE")) {
                 pnm_get(s, tuple_type, sizeof(tuple_type));
             } else if (!strcmp(buf1, "ENDHDR")) {
                 break;
@@ -107,21 +109,30 @@ int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s)
 
         avctx->width  = w;
         avctx->height = h;
+        s->maxval     = maxval;
         if (depth == 1) {
-            if (maxval == 1)
+            if (maxval == 1) {
                 avctx->pix_fmt = PIX_FMT_MONOWHITE;
-            else
+            } else if (maxval == 255) {
                 avctx->pix_fmt = PIX_FMT_GRAY8;
+            } else {
+                avctx->pix_fmt = PIX_FMT_GRAY16BE;
+            }
+        } else if (depth == 2) {
+            if (maxval == 255)
+                avctx->pix_fmt = PIX_FMT_GRAY8A;
         } else if (depth == 3) {
             if (maxval < 256) {
             avctx->pix_fmt = PIX_FMT_RGB24;
             } else {
-                av_log(avctx, AV_LOG_ERROR, "16-bit components are only supported for grayscale\n");
-                avctx->pix_fmt = PIX_FMT_NONE;
-                return -1;
+                avctx->pix_fmt = PIX_FMT_RGB48BE;
             }
         } else if (depth == 4) {
-            avctx->pix_fmt = PIX_FMT_RGB32;
+            if (maxval < 256) {
+                avctx->pix_fmt = PIX_FMT_RGBA;
+            } else {
+                avctx->pix_fmt = PIX_FMT_RGBA64BE;
+            }
         } else {
             return -1;
         }
@@ -135,7 +146,7 @@ int ff_pnm_decode_header(AVCodecContext *avctx, PNMContext * const s)
         return -1;
     pnm_get(s, buf1, sizeof(buf1));
     avctx->height = atoi(buf1);
-    if(av_image_check_size(avctx->width, avctx->height, 0, avctx))
+    if(avctx->height <= 0 || av_image_check_size(avctx->width, avctx->height, 0, avctx))
         return -1;
     if (avctx->pix_fmt != PIX_FMT_MONOWHITE) {
         pnm_get(s, buf1, sizeof(buf1));

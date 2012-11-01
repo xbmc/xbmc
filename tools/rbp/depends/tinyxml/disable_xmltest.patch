@@ -1,0 +1,20 @@
+--- a/Makefile	2012-05-04 07:53:05.910023997 +0200
++++ b/Makefile	2012-05-04 07:53:19.030023561 +0200
+@@ -81,7 +81,7 @@
+ # Targets of the build
+ #****************************************************************************
+ 
+-OUTPUT := xmltest
++OUTPUT := xmltest
+ 
+ all: ${OUTPUT}
+ 
+@@ -90,7 +90,7 @@
+ # Source files
+ #****************************************************************************
+ 
+-SRCS := tinyxml.cpp tinyxmlparser.cpp xmltest.cpp tinyxmlerror.cpp tinystr.cpp
++SRCS := tinyxml.cpp tinyxmlparser.cpp tinyxmlerror.cpp tinystr.cpp
+ 
+ # Add on the sources for libraries
+ SRCS := ${SRCS}

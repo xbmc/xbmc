@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "log.h"
 #include "system.h"
+
+#include "GLUtils.h"
+#include "log.h"
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 
@@ -121,3 +122,27 @@ void LogGraphicsInfo()
 #endif /* !HAS_GL */
 }
 
+int glFormatElementByteCount(GLenum format)
+{
+  switch (format)
+  {
+#ifndef HAS_GLES
+  case GL_BGRA:
+#endif
+  case GL_RGBA:
+    return 4;
+#ifndef HAS_GLES
+  case GL_BGR:
+#endif
+  case GL_RGB:
+    return 3;
+  case GL_LUMINANCE_ALPHA:
+    return 2;
+  case GL_LUMINANCE:
+  case GL_ALPHA:
+    return 1;
+  default:
+    CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format %u", format);
+    return 1;
+  }
+}

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,7 +25,7 @@
 #include "File.h"
 #include "URL.h"
 
-#include "CacheCircular.h"
+#include "CircularCache.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -79,7 +78,7 @@ private:
 };
 
 
-CFileCache::CFileCache()
+CFileCache::CFileCache() : CThread("CFileCache")
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -89,13 +88,13 @@ CFileCache::CFileCache()
    if (g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
-     m_pCache = new CCacheCircular(g_advancedSettings.m_cacheMemBufferSize
+     m_pCache = new CCircularCache(g_advancedSettings.m_cacheMemBufferSize
                                  , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
    m_seekPossible = 0;
    m_cacheFull = false;
 }
 
-CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
+CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("CFileCache")
 {
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;
@@ -103,6 +102,7 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
   m_readPos = 0;
   m_writePos = 0;
   m_nSeekResult = 0;
+  m_chunkSize = 0;
 }
 
 CFileCache::~CFileCache()
@@ -161,8 +161,11 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
+  m_source.IoControl(IOCTRL_SET_CACHE,this);
+
   // check if source can seek
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+  m_chunkSize = CFile::GetChunkSize(m_source.GetChunkSize(), READ_CACHE_CHUNK_SIZE);
 
   m_readPos = 0;
   m_writePos = 0;
@@ -185,11 +188,8 @@ void CFileCache::Process()
     return;
   }
 
-  // setup read chunks size
-  int chunksize = CFile::GetChunkSize(m_source.GetChunkSize(), READ_CACHE_CHUNK_SIZE);
-
   // create our read buffer
-  auto_aptr<char> buffer(new char[chunksize]);
+  auto_aptr<char> buffer(new char[m_chunkSize]);
   if (buffer.get() == NULL)
   {
     CLog::Log(LOGERROR, "%s - failed to allocate read buffer", __FUNCTION__);
@@ -243,7 +243,7 @@ void CFileCache::Process()
       }
     }
 
-    int iRead = m_source.Read(buffer.get(), chunksize);
+    int iRead = m_source.Read(buffer.get(), m_chunkSize);
     if (iRead == 0)
     {
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
@@ -393,13 +393,28 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     if (m_seekPossible == 0)
       return m_nSeekResult;
 
-    m_seekPos = iTarget;
+    /* never request closer to end than 2k, speeds up tag reading */
+    m_seekPos = std::min(iTarget, std::max((int64_t)0, m_source.GetLength() - m_chunkSize));
+
     m_seekEvent.Set();
     if (!m_seekEnded.Wait())
     {
       CLog::Log(LOGWARNING,"%s - seek to %"PRId64" failed.", __FUNCTION__, m_seekPos);
       return -1;
     }
+
+    /* wait for any remainin data */
+    if(m_seekPos < iTarget)
+    {
+      CLog::Log(LOGDEBUG,"%s - waiting for position %"PRId64".", __FUNCTION__, iTarget);
+      if(m_pCache->WaitForData((unsigned)(iTarget - m_seekPos), 10000) < iTarget - m_seekPos)
+      {
+        CLog::Log(LOGWARNING,"%s - failed to get remaining data", __FUNCTION__);
+        return -1;
+      }
+      m_pCache->Seek(iTarget);
+    }
+    m_readPos = iTarget;
     m_seekEvent.Reset();
   }
   else

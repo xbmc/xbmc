@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,34 +15,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <stdio.h>
 #include <string>
 
+#include "commons/ilog.h"
 #include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
-
-#define LOG_LEVEL_NONE         -1 // nothing at all is logged
-#define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
-#define LOG_LEVEL_DEBUG         1 // shows all
-#define LOG_LEVEL_DEBUG_FREEMEM 2 // shows all + shows freemem on screen
-#define LOG_LEVEL_DEBUG_SAMBA   3 // shows all + freemem on screen + samba debugging
-#define LOG_LEVEL_MAX           LOG_LEVEL_DEBUG_SAMBA
-
-// ones we use in the code
-#define LOGDEBUG   0
-#define LOGINFO    1
-#define LOGNOTICE  2
-#define LOGWARNING 3
-#define LOGERROR   4
-#define LOGSEVERE  5
-#define LOGFATAL   6
-#define LOGNONE    7
 
 #ifdef __GNUC__
 #define ATTRIB_LOG_FORMAT __attribute__((format(printf,2,3)))
@@ -81,5 +64,17 @@ public:
 private:
   static void OutputDebugString(const std::string& line);
 };
+
+#undef ATTRIB_LOG_FORMAT
+
+namespace XbmcUtils
+{
+  class LogImplementation : public XbmcCommons::ILogger
+  {
+  public:
+    virtual ~LogImplementation() {}
+    inline virtual void log(int logLevel, const char* message) { CLog::Log(logLevel,"%s",message); }
+  };
+}
 
 XBMC_GLOBAL_REF(CLog::CLogGlobals,g_log_globals);

@@ -28,11 +28,11 @@
 
 typedef struct QpegContext{
     AVCodecContext *avctx;
-    AVFrame pic;
-    uint8_t *refdata;
+    AVFrame pic, ref;
+    uint32_t pal[256];
 } QpegContext;
 
-static void qpeg_decode_intra(const uint8_t *src, uint8_t *dst, int size,
+static int qpeg_decode_intra(const uint8_t *src, uint8_t *dst, int size,
                             int stride, int width, int height)
 {
     int i;
@@ -94,6 +94,8 @@ static void qpeg_decode_intra(const uint8_t *src, uint8_t *dst, int size,
             }
         } else {
             size -= copy;
+            if (size<0)
+                return AVERROR_INVALIDDATA;
             for(i = 0; i < copy; i++) {
                 dst[filled++] = *src++;
                 if (filled >= width) {
@@ -106,6 +108,7 @@ static void qpeg_decode_intra(const uint8_t *src, uint8_t *dst, int size,
             }
         }
     }
+    return 0;
 }
 
 static const int qpeg_table_h[16] =
@@ -123,9 +126,12 @@ static void qpeg_decode_inter(const uint8_t *src, uint8_t *dst, int size,
     int filled = 0;
     int orig_height;
 
+    if(!refdata)
+        refdata= dst;
+
     /* copy prev frame */
     for(i = 0; i < height; i++)
-        memcpy(refdata + (i * width), dst + (i * stride), width);
+        memcpy(dst + (i * stride), refdata + (i * stride), width);
 
     orig_height = height;
     height--;
@@ -171,10 +177,10 @@ static void qpeg_decode_inter(const uint8_t *src, uint8_t *dst, int size,
                                me_x, me_y, me_w, me_h, filled, height);
                     else {
                         /* do motion compensation */
-                        me_plane = refdata + (filled + me_x) + (height - me_y) * width;
+                        me_plane = refdata + (filled + me_x) + (height - me_y) * stride;
                         for(j = 0; j < me_h; j++) {
                             for(i = 0; i < me_w; i++)
-                                dst[filled + i - (j * stride)] = me_plane[i - (j * width)];
+                                dst[filled + i - (j * stride)] = me_plane[i - (j * stride)];
                         }
                     }
                 }
@@ -197,6 +203,8 @@ static void qpeg_decode_inter(const uint8_t *src, uint8_t *dst, int size,
                     filled = 0;
                     dst -= stride;
                     height--;
+                    if(height < 0)
+                        break;
                 }
             }
         } else if(code >= 0xC0) { /* copy code: 0xC0..0xDF */
@@ -208,6 +216,8 @@ static void qpeg_decode_inter(const uint8_t *src, uint8_t *dst, int size,
                     filled = 0;
                     dst -= stride;
                     height--;
+                    if(height < 0)
+                        break;
                 }
             }
             size -= code + 1;
@@ -253,32 +263,38 @@ static int decode_frame(AVCodecContext *avctx,
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     QpegContext * const a = avctx->priv_data;
-    AVFrame * const p= (AVFrame*)&a->pic;
+    AVFrame * p= (AVFrame*)&a->pic;
+    AVFrame * ref= (AVFrame*)&a->ref;
     uint8_t* outdata;
-    int delta;
+    int delta, ret = 0;
+    const uint8_t *pal = av_packet_get_side_data(avpkt, AV_PKT_DATA_PALETTE, NULL);
 
-    if(p->data[0])
-        avctx->release_buffer(avctx, p);
+    if(ref->data[0])
+        avctx->release_buffer(avctx, ref);
+    FFSWAP(AVFrame, *ref, *p);
 
-    p->reference= 0;
+    p->reference= 3;
     if(avctx->get_buffer(avctx, p) < 0){
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
     outdata = a->pic.data[0];
     if(buf[0x85] == 0x10) {
-        qpeg_decode_intra(buf+0x86, outdata, buf_size - 0x86, a->pic.linesize[0], avctx->width, avctx->height);
+        ret = qpeg_decode_intra(buf+0x86, outdata, buf_size - 0x86, a->pic.linesize[0], avctx->width, avctx->height);
     } else {
         delta = buf[0x85];
-        qpeg_decode_inter(buf+0x86, outdata, buf_size - 0x86, a->pic.linesize[0], avctx->width, avctx->height, delta, buf + 4, a->refdata);
+        qpeg_decode_inter(buf+0x86, outdata, buf_size - 0x86, a->pic.linesize[0], avctx->width, avctx->height, delta, buf + 4, a->ref.data[0]);
     }
 
+    if (ret<0)
+        return ret;
+
     /* make the palette available on the way out */
-    memcpy(a->pic.data[1], a->avctx->palctrl->palette, AVPALETTE_SIZE);
-    if (a->avctx->palctrl->palette_changed) {
+    if (pal) {
         a->pic.palette_has_changed = 1;
-        a->avctx->palctrl->palette_changed = 0;
+        memcpy(a->pal, pal, AVPALETTE_SIZE);
     }
+    memcpy(a->pic.data[1], a->pal, AVPALETTE_SIZE);
 
     *data_size = sizeof(AVFrame);
     *(AVFrame*)data = a->pic;
@@ -289,13 +305,10 @@ static int decode_frame(AVCodecContext *avctx,
 static av_cold int decode_init(AVCodecContext *avctx){
     QpegContext * const a = avctx->priv_data;
 
-    if (!avctx->palctrl) {
-        av_log(avctx, AV_LOG_FATAL, "Missing required palette via palctrl\n");
-        return -1;
-    }
+    avcodec_get_frame_defaults(&a->pic);
+    avcodec_get_frame_defaults(&a->ref);
     a->avctx = avctx;
     avctx->pix_fmt= PIX_FMT_PAL8;
-    a->refdata = av_malloc(avctx->width * avctx->height);
 
     return 0;
 }
@@ -303,23 +316,24 @@ static av_cold int decode_init(AVCodecContext *avctx){
 static av_cold int decode_end(AVCodecContext *avctx){
     QpegContext * const a = avctx->priv_data;
     AVFrame * const p= (AVFrame*)&a->pic;
+    AVFrame * const ref= (AVFrame*)&a->ref;
 
     if(p->data[0])
         avctx->release_buffer(avctx, p);
+    if(ref->data[0])
+        avctx->release_buffer(avctx, ref);
 
-    av_free(a->refdata);
     return 0;
 }
 
 AVCodec ff_qpeg_decoder = {
-    "qpeg",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_QPEG,
-    sizeof(QpegContext),
-    decode_init,
-    NULL,
-    decode_end,
-    decode_frame,
-    CODEC_CAP_DR1,
+    .name           = "qpeg",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_QPEG,
+    .priv_data_size = sizeof(QpegContext),
+    .init           = decode_init,
+    .close          = decode_end,
+    .decode         = decode_frame,
+    .capabilities   = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Q-team QPEG"),
 };

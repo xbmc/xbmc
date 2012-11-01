@@ -21,7 +21,7 @@
 #include "avformat.h"
 
 static int daud_header(AVFormatContext *s, AVFormatParameters *ap) {
-    AVStream *st = av_new_stream(s, 0);
+    AVStream *st = avformat_new_stream(s, NULL);
     if (!st)
         return AVERROR(ENOMEM);
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -36,12 +36,12 @@ static int daud_header(AVFormatContext *s, AVFormatParameters *ap) {
 }
 
 static int daud_packet(AVFormatContext *s, AVPacket *pkt) {
-    ByteIOContext *pb = s->pb;
+    AVIOContext *pb = s->pb;
     int ret, size;
     if (url_feof(pb))
         return AVERROR(EIO);
-    size = get_be16(pb);
-    get_be16(pb); // unknown
+    size = avio_rb16(pb);
+    avio_rb16(pb); // unknown
     ret = av_get_packet(pb, pkt, size);
     pkt->stream_index = 0;
     return ret;
@@ -57,39 +57,37 @@ static int daud_write_header(struct AVFormatContext *s)
 
 static int daud_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 {
-    put_be16(s->pb, pkt->size);
-    put_be16(s->pb, 0x8010); // unknown
-    put_buffer(s->pb, pkt->data, pkt->size);
-    put_flush_packet(s->pb);
+    if (pkt->size > 65535) {
+        av_log(s, AV_LOG_ERROR,
+               "Packet size too large for s302m. (%d > 65535)\n", pkt->size);
+        return -1;
+    }
+    avio_wb16(s->pb, pkt->size);
+    avio_wb16(s->pb, 0x8010); // unknown
+    avio_write(s->pb, pkt->data, pkt->size);
+    avio_flush(s->pb);
     return 0;
 }
 
 #if CONFIG_DAUD_DEMUXER
 AVInputFormat ff_daud_demuxer = {
-    "daud",
-    NULL_IF_CONFIG_SMALL("D-Cinema audio format"),
-    0,
-    NULL,
-    daud_header,
-    daud_packet,
-    NULL,
-    NULL,
+    .name           = "daud",
+    .long_name      = NULL_IF_CONFIG_SMALL("D-Cinema audio format"),
+    .read_header    = daud_header,
+    .read_packet    = daud_packet,
     .extensions = "302",
 };
 #endif
 
 #if CONFIG_DAUD_MUXER
-AVOutputFormat ff_daud_muxer =
-{
-    "daud",
-    NULL_IF_CONFIG_SMALL("D-Cinema audio format"),
-    NULL,
-    "302",
-    0,
-    CODEC_ID_PCM_S24DAUD,
-    CODEC_ID_NONE,
-    daud_write_header,
-    daud_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+AVOutputFormat ff_daud_muxer = {
+    .name         = "daud",
+    .long_name    = NULL_IF_CONFIG_SMALL("D-Cinema audio format"),
+    .extensions   = "302",
+    .audio_codec  = CODEC_ID_PCM_S24DAUD,
+    .video_codec  = CODEC_ID_NONE,
+    .write_header = daud_write_header,
+    .write_packet = daud_write_packet,
+    .flags        = AVFMT_NOTIMESTAMPS,
 };
 #endif

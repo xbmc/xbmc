@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,15 +15,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "utils/LabelFormatter.h"
 #include "SortFileItem.h"
-#include "guilib/GUIBaseContainer.h"
 #include "MediaSource.h"
 
 class CViewState; // forward
@@ -46,9 +44,9 @@ public:
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
   void GetSortMethods(std::vector< std::pair<int,int> > &sortMethods) const;
 
-  SORT_ORDER SetNextSortOrder();
-  SORT_ORDER GetSortOrder() const { return m_sortOrder; };
-  SORT_ORDER GetDisplaySortOrder() const;
+  SortOrder SetNextSortOrder();
+  SortOrder GetSortOrder() const { return m_sortOrder; };
+  SortOrder GetDisplaySortOrder() const;
   virtual bool HideExtensions();
   virtual bool HideParentDirItems();
   virtual bool DisableAddSourceButtons();
@@ -73,11 +71,14 @@ protected:
    \param thumb the skin image to use as the icon
    */
   void AddAddonsSource(const CStdString &content, const CStdString &label, const CStdString& thumb);
+#if defined(TARGET_ANDROID)
+  void AddAndroidSource(const CStdString &content, const CStdString &label, const CStdString& thumb);
+#endif
   void AddLiveTVSources();
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);
-  void SetSortOrder(SORT_ORDER sortOrder);
+  void SetSortOrder(SortOrder sortOrder);
   const CFileItemList& m_items;
 
   static VECSOURCES m_sources;
@@ -88,7 +89,7 @@ protected:
   std::vector<SORT_METHOD_DETAILS> m_sortMethods;
   int m_currentSortMethod;
 
-  SORT_ORDER m_sortOrder;
+  SortOrder m_sortOrder;
 
   static CStdString m_strPlaylistDirectory;
 };
@@ -106,6 +107,15 @@ class CGUIViewStateFromItems : public CGUIViewState
 {
 public:
   CGUIViewStateFromItems(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+};
+
+class CGUIViewStateLibrary : public CGUIViewState
+{
+public:
+  CGUIViewStateLibrary(const CFileItemList& items);
 
 protected:
   virtual void SaveViewState();

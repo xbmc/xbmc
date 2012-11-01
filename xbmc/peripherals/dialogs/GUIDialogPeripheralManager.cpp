@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -39,6 +38,7 @@ CGUIDialogPeripheralManager::CGUIDialogPeripheralManager(void) :
     m_iSelected(0),
     m_peripheralItems(new CFileItemList)
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogPeripheralManager::~CGUIDialogPeripheralManager(void)
@@ -49,12 +49,7 @@ CGUIDialogPeripheralManager::~CGUIDialogPeripheralManager(void)
 bool CGUIDialogPeripheralManager::OnAction(const CAction &action)
 {
   int iActionId = action.GetID();
-  if (iActionId == ACTION_PREVIOUS_MENU || iActionId == ACTION_PARENT_DIR)
-  {
-    Close();
-    return true;
-  }
-  else if (GetFocusedControlID() == CONTROL_LIST &&
+  if (GetFocusedControlID() == CONTROL_LIST &&
       (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
        iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP))
   {
@@ -69,13 +64,11 @@ bool CGUIDialogPeripheralManager::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIDialogPeripheralManager::OnMessageInit(CGUIMessage &message)
+void CGUIDialogPeripheralManager::OnInitWindow()
 {
-  CGUIWindow::OnMessage(message);
+  CGUIWindow::OnInitWindow();
   m_iSelected = 0;
   Update();
-
-  return true;
 }
 
 bool CGUIDialogPeripheralManager::OnClickList(CGUIMessage &message)
@@ -137,11 +130,6 @@ bool CGUIDialogPeripheralManager::OnMessage(CGUIMessage& message)
       break;
     case GUI_MSG_ITEM_SELECT:
       return true;
-    case GUI_MSG_WINDOW_INIT:
-      {
-        OnMessageInit(message);
-        break;
-      }
     case GUI_MSG_CLICKED:
       return OnMessageClick(message);
   }

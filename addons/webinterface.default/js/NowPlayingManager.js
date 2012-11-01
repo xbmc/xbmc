@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -42,12 +41,11 @@ NowPlayingManager.prototype = {
     $(window).bind('click', jQuery.proxy(this.hidePlaylist, this));
   },
   updateState: function() {
-    jQuery.ajax({
-      type: 'POST',
-      url: JSON_RPC + '?UpdateState',
-      data: '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}',
-      timeout: 3000,
-      success: jQuery.proxy(function(data) {
+    xbmc.rpc.request({
+      'context': this,
+      'method': 'Player.GetActivePlayers',
+      'timeout': 3000,
+      'success': function(data) {
         if (data && data.result && data.result.length > 0) {
           if (data.result[0].playerid != this.activePlayerId) {
             this.activePlayerId = data.result[0].playerid;
@@ -71,11 +69,10 @@ NowPlayingManager.prototype = {
             }
 
             this.stopRefreshTime();
-
             this.updatePlayer();
           }
         }
-        else if (data.result.length <= 0)
+        else if (!data || !data.result || data.result.length <= 0)
         {
           this.stopVideoPlaylistUpdate();
           this.stopAudioPlaylistUpdate();
@@ -83,33 +80,44 @@ NowPlayingManager.prototype = {
           this.activePlayerId = -1;
         }
 
-        if (this.activePlayerId >= 0)
+        if (this.activePlayerId >= 0) {
           this.showFooter();
-        else {
+        } else {
           this.stopRefreshTime();
           this.hideFooter();
         }
 
         setTimeout(jQuery.proxy(this.updateState, this), 1000);
-      }, this),
-      error: jQuery.proxy(function(data, error) {
-        displayCommunicationError();
+      },
+      'error': function(data, error) {
+        xbmc.core.displayCommunicationError();
         setTimeout(jQuery.proxy(this.updateState, this), 2000);
-      }, this),
-      dataType: 'json'});
+      }
+    });
   },
   updatePlayer: function() {
-    jQuery.post(JSON_RPC + '?UpdatePlayer',
-      '{"jsonrpc": "2.0", "method": "Player.GetProperties", "params": { "playerid": ' + this.activePlayerId + ', "properties": [ "playlistid", "speed", "position", "totaltime", "time" ] }, "id": 1}',
-      jQuery.proxy(function(data) {
+    xbmc.rpc.request({
+      'context': this,
+      'method': 'Player.GetProperties',
+      'params': {
+        'playerid': this.activePlayerId,
+        'properties': [
+          'playlistid',
+          'speed',
+          'position',
+          'totaltime',
+          'time'
+        ]
+      },
+      'success': function(data) {
         if (data && data.result)
         {
           this.playlistid = data.result.playlistid;
           this.playing = data.result.speed != 0;
           this.paused = data.result.speed == 0;
           this.currentItem = data.result.position;
-          this.trackBaseTime = timeToDuration(data.result.time);
-          this.trackDurationTime = timeToDuration(data.result.totaltime);
+          this.trackBaseTime = xbmc.core.timeToDuration(data.result.time);
+          this.trackDurationTime = xbmc.core.timeToDuration(data.result.totaltime);
           if (!this.autoRefreshAudioData && !this.autoRefreshVideoData && this.playing) {
             if (this.activePlayer == 'audio') {
               this.autoRefreshAudioData = true;
@@ -124,7 +132,8 @@ NowPlayingManager.prototype = {
           this.activeItemTimer = 1;
           setTimeout(jQuery.proxy(this.updateActiveItemDurationLoop, this), 1000);
         }
-      }, this), 'json');
+      }
+    });
   },
   bindPlaybackControls: function() {
     $('#pbNext').bind('click', jQuery.proxy(this.nextTrack, this));
@@ -153,49 +162,69 @@ NowPlayingManager.prototype = {
   },
   nextTrack: function() {
     if (this.activePlayer) {
-      jQuery.post(JSON_RPC + '?SkipNext', '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}', jQuery.proxy(function(data) {
-        if (data && data.result == 'OK') {
-          //this.updateAudioPlaylist(true);
-        }
-      }, this), 'json');
+      xbmc.rpc.request({
+        'method': 'Player.GoTo',
+        'params': {
+          'playerid': this.activePlayerId,
+          'to': 'next'
+        },
+        'success': function() {}
+      });
     }
   },
   prevTrack: function() {
     if (this.activePlayer) {
-      jQuery.post(JSON_RPC + '?SkipPrevious', '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}', jQuery.proxy(function(data) {
-        if (data && data.result == 'OK') {
-          //this.updateAudioPlaylist(true);
-        }
-      }, this), 'json');
+      xbmc.rpc.request({
+        'method': 'Player.GoTo',
+        'params': {
+          'playerid': this.activePlayerId,
+          'to': 'previous'
+        },
+        'success': function() {}
+      });
     }
   },
   stopTrack: function() {
     if (this.activePlayer) {
-      jQuery.post(JSON_RPC + '?Stop', '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}', jQuery.proxy(function(data) {
-        if (data && data.result == 'OK') {
-          this.playing = false;
-          this.paused = false;
-          this.trackBaseTime = 0;
-          this.trackDurationTime = 0;
-          this.showPlayButton();
+      xbmc.rpc.request({
+        'context': this,
+        'method': 'Player.Stop',
+        'params': {
+          'playerid': this.activePlayerId
+        },
+        'success': function(data) {
+          if (data && data.result == 'OK') {
+            this.playing = false;
+            this.paused = false;
+            this.trackBaseTime = 0;
+            this.trackDurationTime = 0;
+            this.showPlayButton();
+          }
         }
-      }, this), 'json');
+      });
     }
   },
   playPauseTrack: function() {
     if (this.activePlayer) {
       var method = ((this.playing || this.paused) ? 'Player.PlayPause' : 'Playlist.Play');
-      jQuery.post(JSON_RPC + '?PlayPause', '{"jsonrpc": "2.0", "method": "' + method + '", "params": { "playerid": ' + this.activePlayerId + ' }, "id": 1}', jQuery.proxy(function(data) {
-        if (data && data.result) {
-          this.playing = data.result.speed != 0;
-          this.paused = data.result.speed == 0;
-          if (this.playing) {
-            this.showPauseButton();
-          } else {
-            this.showPlayButton();
+      xbmc.rpc.request({
+        'context': this,
+        'method': method, 
+        'params': {
+          'playerid': this.activePlayerId
+        },
+        'success': function(data) {
+          if (data && data.result) {
+            this.playing = data.result.speed != 0;
+            this.paused = data.result.speed == 0;
+            if (this.playing) {
+              this.showPauseButton();
+            } else {
+              this.showPlayButton();
+            }
           }
         }
-      }, this), 'json');
+      });
     }
   },
   showPauseButton: function() {
@@ -221,7 +250,14 @@ NowPlayingManager.prototype = {
   playPlaylistItem: function(sender) {
     var sequenceId = $(sender.currentTarget).attr('seq');
     if (!this.activePlaylistItem || (this.activePlaylistItem !== undefined && sequenceId != this.activePlaylistItem.seq)) {
-      jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.GoTo", "params": { "playerid": ' + this.activePlayerId + ', "item": ' + sequenceId + '}, "id": 1}', function() {}, 'json');
+      xbmc.rpc.request({
+        'method': 'Player.GoTo',
+        'params': {
+          'playerid': this.activePlayerId,
+          'to': sequenceId
+        },
+        'success': function() {}
+      });
     }
     this.hidePlaylist();
   },
@@ -243,19 +279,27 @@ NowPlayingManager.prototype = {
     return false;
   },
   updateAudioPlaylist: function() {
-    jQuery.ajax({
-      type: 'POST',
-      url: JSON_RPC + '?updateAudioPlaylist',
-      data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "properties": [ "title", "album", "artist", "duration", "thumbnail" ] }, "id": 1}',
-      success: jQuery.proxy(function(data) {
+    xbmc.rpc.request({
+      'context': this,
+      'method': 'Playlist.GetItems',
+      'params': {
+        'playlistid': this.playlistid,
+        'properties':[
+          'title',
+          'album',
+          'artist',
+          'duration',
+          'thumbnail'
+        ]
+      },
+      'success': function(data) {
         if (data && data.result && data.result.items && data.result.items.length > 0 && data.result.limits.total > 0) {
-          //Compare new playlist to active playlist, only redraw if a change is noticed
           if (!this.activePlaylistItem || this.playlistChanged(data.result.items) || (this.activePlaylistItem && (this.activePlaylistItem.seq != this.currentItem))) {
             var ul = $('<ul>');
             var activeItem;
             $.each($(data.result.items), jQuery.proxy(function(i, item) {
               var li = $('<li>');
-              var code = '<span class="duration">' + durationToString(item.duration) + '</span><div class="trackInfo" title="' + item.title + ' - ' + item.artist + '"><span class="trackTitle">' + item.title + '</span> - <span class="trackArtist">' + item.artist + '</span></div>';
+              var code = '<span class="duration">' + xbmc.core.durationToString(item.duration) + '</span><div class="trackInfo" title="' + item.title + ' - ' + item.artist + '"><span class="trackTitle">' + item.title + '</span> - <span class="trackArtist">' + item.artist + '</span></div>';
               if (i == this.currentItem) {
                 activeItem = item;
                 activeItem.seq = i;
@@ -300,14 +344,13 @@ NowPlayingManager.prototype = {
         if (this.autoRefreshAudioPlaylist) {
           setTimeout(jQuery.proxy(this.updateAudioPlaylist, this), 1000);
         }
-      }, this),
-      error: jQuery.proxy(function(data) {
-        displayCommunicationError();
+      },
+      'error': function(data) {
+        xbmc.core.displayCommunicationError();
         if (this.autoRefreshAudioPlaylist) {
           setTimeout(jQuery.proxy(this.updateAudioPlaylist, this), 2000); /* Slow down request period */
         }
-      }, this),
-      dataType: 'json'
+      }
     });
   },
   stopAudioPlaylistUpdate: function() {
@@ -342,9 +385,9 @@ NowPlayingManager.prototype = {
     if (this.activePlaylistItem) {
       if (this.activePlaylistItem != this.lastPlaylistItem) {
         this.lastPlaylistItem = this.activePlaylistItem;
-        var imgPath = DEFAULT_ALBUM_COVER;
+        var imgPath = xbmc.core.DEFAULT_ALBUM_COVER;
         if (this.activePlaylistItem.thumbnail) {
-          imgPath = (this.activePlaylistItem.thumbnail.startsWith('special://') ? '/vfs/' : 'images/') + this.activePlaylistItem.thumbnail;
+          imgPath = 'image/' + encodeURI(this.activePlaylistItem.thumbnail);
         }
         $('#audioCoverArt').html('<img src="' + imgPath + '" alt="' + this.activePlaylistItem.album + ' cover art">');
         $('#audioTrackTitle').html('<span title="' + this.activePlaylistItem.title + '">' + this.activePlaylistItem.title + '</span>');
@@ -357,7 +400,7 @@ NowPlayingManager.prototype = {
         $('#audioArtistTitle').html(this.activePlaylistItem.artist);
         $('#progressBar').attr('style', '');
       }
-      $('#audioDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.trackDurationTime));
+      $('#audioDuration').html(xbmc.core.durationToString(this.trackBaseTime) + ' / ' + xbmc.core.durationToString(this.trackDurationTime));
       var buttonWidth = $('#progressBar .progressIndicator').width();
       var progressBarWidth = (this.trackBaseTime / this.trackDurationTime) * 100;
       var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
@@ -390,9 +433,9 @@ NowPlayingManager.prototype = {
     if (this.activePlaylistItem) {
       if (this.activePlaylistItem != this.lastPlaylistItem) {
         this.lastPlaylistItem = this.activePlaylistItem;
-        var imgPath = DEFAULT_VIDEO_COVER;
+        var imgPath = xbmc.core.DEFAULT_VIDEO_COVER;
         if (this.activePlaylistItem.thumbnail) {
-          imgPath = (this.activePlaylistItem.thumbnail.startsWith('special://') ? '/vfs/' : 'images/') + this.activePlaylistItem.thumbnail;
+          imgPath = 'image/' + encodeURI(this.activePlaylistItem.thumbnail);
         }
         $('#videoCoverArt').html('<img src="' + imgPath + '" alt="' + this.activePlaylistItem.title + ' cover art">');
         $('#videoShowTitle').html(this.activePlaylistItem.showtitle||'&nbsp;');
@@ -402,7 +445,7 @@ NowPlayingManager.prototype = {
         }
         $('#videoTitle').html(extra + this.activePlaylistItem.title);
       }
-      $('#videoDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.trackDurationTime));
+      $('#videoDuration').html(xbmc.core.durationToString(this.trackBaseTime) + ' / ' + xbmc.core.durationToString(this.trackDurationTime));
       var buttonWidth = $('#progressBar .progressIndicator').width();
       var progressBarWidth = (this.trackBaseTime / this.trackDurationTime) * 100;
       var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
@@ -450,13 +493,23 @@ NowPlayingManager.prototype = {
     return true;
   },
   updateVideoPlaylist: function() {
-    jQuery.ajax({
-      type: 'POST',
-      url: JSON_RPC + '?updateVideoPlaylist',
-      data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "properties": ["title", "season", "episode", "plot", "runtime", "showtitle","thumbnail"] }, "id": 1}',
-      success: jQuery.proxy(function(data) {
+    xbmc.rpc.request({
+      'context': this,
+      'method': 'Playlist.GetItems',
+      'params': {
+        'playlistid': this.playlistid,
+        'properties':[
+          'title',
+          'season',
+          'episode',
+          'plot',
+          'runtime',
+          'showtitle',
+          'thumbnail'
+        ]
+      },
+      'success': function(data) {
         if (data && data.result && data.result.items && data.result.items.length > 0 && data.result.limits.total > 0) {
-          //Compare new playlist to active playlist, only redraw if a change is noticed.
           if (this.playlistChanged(data.result.items)) {
             var ul = $('<ul>');
             var activeItem;
@@ -466,7 +519,7 @@ NowPlayingManager.prototype = {
               if (item.season >= 0 && item.episode >= 0) {
                 extra = item.season + 'x' + item.episode + ' ';
               }
-              var code = '<span class="duration">' + durationToString(item.runtime) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
+              var code = '<span class="duration">' + xbmc.core.durationToString(item.runtime) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
               if (i == this.currentItem) {
                 activeItem = item;
                 activeItem.seq = i;
@@ -504,21 +557,61 @@ NowPlayingManager.prototype = {
             $('#nowPlayingPanel').show();
           }
         } else {
-          this.activePlaylist = null;
-          $('#videoDescription').hide();
-          $('#nowPlayingPanel').hide();
+          xbmc.rpc.request({
+            'context': this,
+            'method': 'Player.GetItem',
+            'params': {
+              'playerid': this.activePlayerId,
+              'properties': [
+                'title',
+                'season',
+                'episode',
+                'plot',
+                'runtime',
+                'showtitle',
+                'thumbnail'
+              ]
+            },
+            'success': function(data) {
+              if (data && data.result && data.result.item) {
+                this.activePlaylistItem = data.result.item;
+                if (!this.updateActiveItemDurationRunOnce) {
+                  this.updateActiveItemDurationRunOnce = true;
+                  this.updatePlayer();
+                }
+                
+                $('#nextText').hide();
+                $('#nowPlayingPlaylist').hide();
+                $('#nextTrack').hide();
+
+                $('#videoDescription').show();
+                $('#audioDescription').hide();
+                $('#nowPlayingPanel').show();
+              }
+              else {
+                this.activePlaylist = null;
+                $('#videoDescription').hide();
+                $('#nowPlayingPanel').hide();
+              }
+            },
+            'error': function(data) {
+              xbmc.core.displayCommunicationError();
+              if (this.autoRefreshVideoPlaylist) {
+                setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 2000); /* Slow down request period */
+              }
+            }
+          });
         }
         if (this.autoRefreshVideoPlaylist) {
           setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 1000);
         }
-      }, this),
-      error: jQuery.proxy(function(data) {
-        displayCommunicationError();
+      },
+      'error': function(data) {
+        xbmc.core.displayCommunicationError();
         if (this.autoRefreshVideoPlaylist) {
           setTimeout(jQuery.proxy(this.updateVideoPlaylist, this), 2000); /* Slow down request period */
         }
-      }, this),
-      dataType: 'json'
+      }
     });
   }
 }

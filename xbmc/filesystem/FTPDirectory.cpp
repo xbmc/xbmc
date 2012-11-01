@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,7 @@
 #include "FTPParse.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
@@ -36,7 +35,7 @@ CFTPDirectory::~CFTPDirectory(void){}
 
 bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CFileCurl reader;
+  CCurlFile reader;
 
   CURL url(strPath);
 
@@ -101,7 +100,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
 bool CFTPDirectory::Exists(const char* strPath)
 {
-  CFileCurl ftp;
+  CCurlFile ftp;
   CURL url(strPath);
   return ftp.Exists(url);
 }

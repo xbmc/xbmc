@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,10 +22,8 @@
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
-#include "guilib/TextureManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
-#include "SectionLoader.h"
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -35,45 +32,43 @@
 #include "network/Network.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
-#include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "music/tags/MusicInfoTag.h"
 
 #include "powermanagement/PowerManager.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
-#elif defined __APPLE__
+#elif defined(TARGET_DARWIN)
 #include "CocoaInterface.h"
 #endif
+#include "addons/AddonCallbacks.h"
+#include "addons/AddonCallbacksGUI.h"
 #include "storage/MediaManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
-#ifdef HAS_PYTHON
-#include "interfaces/python/xbmcmodule/GUIPythonWindowDialog.h"
-#include "interfaces/python/xbmcmodule/GUIPythonWindowXMLDialog.h"
-#endif
-
-#ifdef HAS_HTTPAPI
-#include "interfaces/http-api/XBMChttp.h"
-#endif
 
 #include "playlists/PlayList.h"
 #include "FileItem.h"
 
-#include "utils/JobManager.h"
-#include "storage/DetectDVDType.h"
+#include "pvr/PVRManager.h"
+#include "windows/GUIWindowLoginScreen.h"
 
+using namespace PVR;
 using namespace std;
+using namespace MUSIC_INFO;
 
-CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
+CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("CDelayedMessage")
 {
   m_msg.dwMessage  = msg.dwMessage;
   m_msg.dwParam1   = msg.dwParam1;
@@ -91,7 +86,17 @@ void CDelayedMessage::Process()
   Sleep(m_delay);
 
   if (!m_bStop)
-    g_application.getApplicationMessenger().SendMessage(m_msg, false);
+    CApplicationMessenger::Get().SendMessage(m_msg, false);
+}
+
+CApplicationMessenger& CApplicationMessenger::Get()
+{
+  static CApplicationMessenger s_messenger;
+  return s_messenger;
+}
+
+CApplicationMessenger::CApplicationMessenger()
+{
 }
 
 CApplicationMessenger::~CApplicationMessenger()
@@ -244,7 +249,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
-case TMSG_POWERDOWN:
+    case TMSG_POWERDOWN:
       {
         g_application.Stop(EXITCODE_POWERDOWN);
         g_powerManager.Powerdown();
@@ -259,12 +264,14 @@ case TMSG_POWERDOWN:
 
     case TMSG_HIBERNATE:
       {
+        g_PVRManager.SetWakeupCommand();
         g_powerManager.Hibernate();
       }
       break;
 
     case TMSG_SUSPEND:
       {
+        g_PVRManager.SetWakeupCommand();
         g_powerManager.Suspend();
       }
       break;
@@ -279,10 +286,15 @@ case TMSG_POWERDOWN:
 
     case TMSG_RESTARTAPP:
       {
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
         g_application.Stop(EXITCODE_RESTARTAPP);
 #endif
-        // TODO
+      }
+      break;
+
+    case TMSG_INHIBITIDLESHUTDOWN:
+      {
+        g_application.InhibitIdleShutdown(pMsg->dwParam1 != 0);
       }
       break;
 
@@ -331,6 +343,13 @@ case TMSG_POWERDOWN:
               g_application.PlayMedia(*((*list)[0]), playlist);
             else
             {
+              // Handle "shuffled" option if present
+              if (list->HasProperty("shuffled") && list->GetProperty("shuffled").isBoolean())
+                g_playlistPlayer.SetShuffle(playlist, list->GetProperty("shuffled").asBoolean(), false);
+              // Handle "repeat" option if present
+              if (list->HasProperty("repeat") && list->GetProperty("repeat").isInteger())
+                g_playlistPlayer.SetRepeat(playlist, (PLAYLIST::REPEAT_STATE)list->GetProperty("repeat").asInteger(), false);
+
               g_playlistPlayer.Add(playlist, (*list));
               g_playlistPlayer.Play(pMsg->dwParam1);
             }
@@ -497,46 +516,23 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_EXECUTE_OS:
-#if defined( _LINUX) && !defined(__APPLE__)
+      /* Suspend AE temporarily so exclusive or hog-mode sinks */
+      /* don't block external player's access to audio device  */
+      if (!CAEFactory::Suspend())
+      {
+        CLog::Log(LOGNOTICE, "%s: Failed to suspend AudioEngine before launching external program",__FUNCTION__);
+      }
+#if defined( _LINUX) && !defined(TARGET_DARWIN)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #elif defined(_WIN32)
       CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #endif
+      /* Resume AE processing of XBMC native audio */
+      if (!CAEFactory::Resume())
+      {
+        CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player",__FUNCTION__);
+      }
       break;
-
-    case TMSG_HTTPAPI:
-    {
-#ifdef HAS_HTTPAPI
-      if (!m_pXbmcHttp)
-      {
-        CSectionLoader::Load("LIBHTTP");
-        m_pXbmcHttp = new CXbmcHttp();
-      }
-      switch (m_pXbmcHttp->xbmcCommand(pMsg->strParam))
-      {
-        case 1:
-          g_application.getApplicationMessenger().Restart();
-          break;
-
-        case 2:
-          g_application.getApplicationMessenger().Shutdown();
-          break;
-
-        case 3:
-          g_application.getApplicationMessenger().Quit();
-          break;
-
-        case 4:
-          g_application.getApplicationMessenger().Reset();
-          break;
-
-        case 5:
-          g_application.getApplicationMessenger().RestartApp();
-          break;
-      }
-#endif
-    }
-    break;
 
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
@@ -675,16 +671,22 @@ case TMSG_POWERDOWN:
       }
       break;
 
-#ifdef HAS_PYTHON
-    case TMSG_GUI_PYTHON_DIALOG:
+    case TMSG_GUI_ADDON_DIALOG:
       {
         if (pMsg->lpVoid)
         { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
-          if (pMsg->dwParam1)
-            ((CGUIPythonWindowXMLDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
-          else
-            ((CGUIPythonWindowDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
+          ((ADDON::CGUIAddonWindowDialog *) pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
         }
+      }
+      break;
+
+#ifdef HAS_PYTHON // Plex:: we don't build with Python so make sure this is not called.
+    case TMSG_GUI_PYTHON_DIALOG:
+      {
+        // This hack is not much better but at least I don't need to make ApplicationMessenger
+        //  know about Addon (Python) specific classes.
+        CAction caction(pMsg->dwParam1);
+        ((CGUIWindow*)pMsg->lpVoid)->OnAction(caction);
       }
       break;
 #endif
@@ -757,10 +759,45 @@ case TMSG_POWERDOWN:
 
     case TMSG_SPLASH_MESSAGE:
       {
-        if (g_application.m_splash)
-          g_application.m_splash->Show(pMsg->strParam);
+        if (g_application.GetSplash())
+          g_application.GetSplash()->Show(pMsg->strParam);
       }
       break;
+      
+    case TMSG_DISPLAY_SETUP:
+    {
+      *((bool*)pMsg->lpVoid) = g_application.InitWindow();
+      g_application.SetRenderGUI(true);
+    }
+    break;
+    
+    case TMSG_DISPLAY_DESTROY:
+    {
+      *((bool*)pMsg->lpVoid) = g_application.DestroyWindow();
+      g_application.SetRenderGUI(false);
+    }
+    break;
+
+    case TMSG_UPDATE_CURRENT_ITEM:
+    {
+      CFileItem* item = (CFileItem*)pMsg->lpVoid;
+      if (!item)
+        return;
+      if (pMsg->dwParam1 == 1 && item->HasMusicInfoTag()) // only grab music tag
+        g_infoManager.SetCurrentSongTag(*item->GetMusicInfoTag());
+      else if (pMsg->dwParam1 == 2 && item->HasVideoInfoTag()) // only grab video tag
+        g_infoManager.SetCurrentVideoTag(*item->GetVideoInfoTag());
+      else
+        g_infoManager.SetCurrentItem(*item);
+      delete item;
+      break;
+    }
+
+    case TMSG_LOADPROFILE:
+    {
+      CGUIWindowLoginScreen::LoadProfile(pMsg->dwParam1);
+      break;
+    }
 
     /* PLEX */
     case TMSG_MEDIA_RESTART_WITH_NEW_PLAYER:
@@ -779,6 +816,7 @@ case TMSG_POWERDOWN:
       }
       break;
     /* END PLEX */
+
   }
 }
 
@@ -823,14 +861,6 @@ CStdString CApplicationMessenger::GetResponse()
   return tmp;
 }
 
-void CApplicationMessenger::HttpApi(string cmd, bool wait)
-{
-  SetResponse("");
-  ThreadMessage tMsg = {TMSG_HTTPAPI};
-  tMsg.strParam = cmd;
-  SendMessage(tMsg, wait);
-}
-
 void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 {
   ThreadMessage tMsg = {TMSG_EXECUTE_BUILT_IN};
@@ -841,12 +871,6 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 void CApplicationMessenger::MediaPlay(string filename)
 {
   CFileItem item(filename, false);
-  if (item.IsAudio())
-    item.SetMusicThumb();
-  else
-    item.SetVideoThumb();
-  item.FillInDefaultIcon();
-
   MediaPlay(item);
 }
 
@@ -888,10 +912,10 @@ void CApplicationMessenger::PlayFile(const CFileItem &item, bool bRestart /*= fa
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::MediaStop()
+void CApplicationMessenger::MediaStop(bool bWait /* = true */)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_STOP};
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, bWait);
 }
 
 void CApplicationMessenger::MediaPause()
@@ -914,14 +938,14 @@ void CApplicationMessenger::PlayListPlayerPlay()
 
 void CApplicationMessenger::PlayListPlayerPlay(int iSong)
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, iSong};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD)iSong};
   SendMessage(tMsg, true);
 }
 
 bool CApplicationMessenger::PlayListPlayerPlaySongId(int songId)
 {
   bool returnState;
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, songId};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY_SONG_ID, (DWORD)songId};
   tMsg.lpVoid = (void *)&returnState;
   SendMessage(tMsg, true);
   return returnState;
@@ -977,7 +1001,7 @@ void CApplicationMessenger::PlayListPlayerInsert(int playlist, const CFileItemLi
 
 void CApplicationMessenger::PlayListPlayerRemove(int playlist, int position)
 {
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, playlist, position};
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REMOVE, (DWORD)playlist, (DWORD)position};
   SendMessage(tMsg, true);
 }
 
@@ -1096,6 +1120,12 @@ void CApplicationMessenger::RestartApp()
   SendMessage(tMsg);
 }
 
+void CApplicationMessenger::InhibitIdleShutdown(bool inhibit)
+{
+  ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, (DWORD)inhibit};
+  SendMessage(tMsg);
+}
+
 void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
 {
   ThreadMessage tMsg = {TMSG_NETWORKMESSAGE, dwMessage, dwParam};
@@ -1136,7 +1166,7 @@ void CApplicationMessenger::ExecOS(const CStdString command, bool waitExit)
 
 void CApplicationMessenger::UserEvent(int code)
 {
-  ThreadMessage tMsg = {code};
+  ThreadMessage tMsg = {(DWORD)code};
   SendMessage(tMsg, false);
 }
 
@@ -1149,15 +1179,15 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
 
 void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool waitResult /*= true*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
-  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, nextWindowID};
-  tMsg.dwParam2 = (DWORD)(forceClose ? 0x01 : 0 | enableSound ? 0x02 : 0);
+  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, (DWORD)nextWindowID};
+  tMsg.dwParam2 = (DWORD)((forceClose ? 0x01 : 0) | (enableSound ? 0x02 : 0));
   tMsg.lpVoid = window;
   SendMessage(tMsg, waitResult);
 }
 
 void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
 {
-  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
+  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, (DWORD)windowID, swappingWindows ? 1u : 0u};
   tMsg.params = params;
   SendMessage(tMsg, true);
 }
@@ -1219,8 +1249,62 @@ void CApplicationMessenger::SetSplashMessage(int stringID)
   SetSplashMessage(g_localizeStrings.Get(stringID));
 }
 
-/* PLEX */
+bool CApplicationMessenger::SetupDisplay()
+{
+  bool result;
+  
+  ThreadMessage tMsg = {TMSG_DISPLAY_SETUP};
+  tMsg.lpVoid = (void*)&result;
+  SendMessage(tMsg, true);
+  
+  return result;
+}
 
+bool CApplicationMessenger::DestroyDisplay()
+{
+  bool result;
+  
+  ThreadMessage tMsg = {TMSG_DISPLAY_DESTROY};
+  tMsg.lpVoid = (void*)&result;
+  SendMessage(tMsg, true);
+  
+  return result;
+}
+
+void CApplicationMessenger::SetCurrentSongTag(const CMusicInfoTag& tag)
+{
+  CFileItem* item = new CFileItem(tag);
+  ThreadMessage tMsg = {TMSG_UPDATE_CURRENT_ITEM};
+  tMsg.dwParam1 = 1;
+  tMsg.lpVoid = (void*)item;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetCurrentVideoTag(const CVideoInfoTag& tag)
+{
+  CFileItem* item = new CFileItem(tag);
+  ThreadMessage tMsg = {TMSG_UPDATE_CURRENT_ITEM};
+  tMsg.dwParam1 = 2;
+  tMsg.lpVoid = (void*)item;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetCurrentItem(const CFileItem& item)
+{
+  CFileItem* item2 = new CFileItem(item);
+  ThreadMessage tMsg = {TMSG_UPDATE_CURRENT_ITEM};
+  tMsg.lpVoid = (void*)item2;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::LoadProfile(unsigned int idx)
+{
+  ThreadMessage tMsg = {TMSG_LOADPROFILE};
+  tMsg.dwParam1 = idx;
+  SendMessage(tMsg, false);
+}
+
+/* PLEX */
 void CApplicationMessenger::MediaOpenComplete(bool bStatus, const CStdString& strErrorMsg)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_OPEN_COMPLETE};

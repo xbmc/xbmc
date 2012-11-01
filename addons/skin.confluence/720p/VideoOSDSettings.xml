@@ -77,7 +77,7 @@
 				<width>760</width>
 				<align>center</align>
 				<label>13390</label>
-				<font>font13caps</font>
+				<font>font13</font>
 			</control>
 			<control type="grouplist" id="5">
 				<description>control area</description>

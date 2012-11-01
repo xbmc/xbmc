@@ -1,7 +1,22 @@
-libass (0.9.13)
- * Fix critical problem with the outline preprocessor, fixes crash with
-   FreeType 2.4.6
- * Various small bugfixes, merged from master
+libass (0.10.0)
+ * Bidirectional layout and Arabic shaping via FriBidi (GC #13)
+ * OpenType shaping via HarfBuzz-ng (GC #13)
+ * Add API for shaper configuration
+ * Add support for `Language' Script Info property, this can be used for
+   hinting the text language
+ * Vertical layout improvements
+   * Use `vert' and `vkna' OpenType features for vertical glyph variants
+   * Position rotated glyphs onto baseline
+ * Parse font encoding property for base text direction hinting
+ * Refactor cache system
+ * Use generic outlines in place of FreeType glyphs
+ * Direct outline bitmap rendering
+ * Fix whitespace trimming (GC #35)
+ * Do not render border if there's no shadow or glyph (GC #29)
+ * Adjust spacing after a italic to non-italic style change (GC #37)
+ * Fix fade timing
+ * Fix x positioning with borders (GC #27)
+ * Build system tweaks
 
 libass (0.9.12)
  * Switch to permissive (ISC) license

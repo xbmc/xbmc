@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon version: 1.0.1
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: 2012-05-28 23:39+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (United States) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en_US/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Low"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr ""
+
+msgctxt "#30003"
+msgid "High"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr ""
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr ""
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr ""
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr ""
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr ""

@@ -1,5 +1,4 @@
-/**
- * @file
+/*
  * Psygnosis YOP decoder
  *
  * Copyright (C) 2010 Mohamed Naufal Basheer <naufal11@gmail.com>
@@ -24,7 +23,7 @@
  */
 
 #include "libavutil/intreadwrite.h"
-#include "libavcore/imgutils.h"
+#include "libavutil/imgutils.h"
 
 #include "avcodec.h"
 #include "get_bits.h"
@@ -92,6 +91,7 @@ static av_cold int yop_decode_init(AVCodecContext *avctx)
 
     avctx->pix_fmt = PIX_FMT_PAL8;
 
+    avcodec_get_frame_defaults(&s->frame);
     s->num_pal_colors = avctx->extradata[0];
     s->first_color[0] = avctx->extradata[1];
     s->first_color[1] = avctx->extradata[2];
@@ -217,10 +217,13 @@ static int yop_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     firstcolor   = s->first_color[is_odd_frame];
     palette      = (uint32_t *)s->frame.data[1];
 
-    for (i = 0; i < s->num_pal_colors; i++, s->srcptr += 3)
+    for (i = 0; i < s->num_pal_colors; i++, s->srcptr += 3) {
         palette[i + firstcolor] = (s->srcptr[0] << 18) |
                                   (s->srcptr[1] << 10) |
                                   (s->srcptr[2] << 2);
+        palette[i + firstcolor] |= 0xFF << 24 |
+                                   (palette[i + firstcolor] >> 6) & 0x30303;
+    }
 
     s->frame.palette_has_changed = 1;
 
@@ -249,13 +252,12 @@ static int yop_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 }
 
 AVCodec ff_yop_decoder = {
-    "yop",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_YOP,
-    sizeof(YopDecContext),
-    yop_decode_init,
-    NULL,
-    yop_decode_close,
-    yop_decode_frame,
+    .name           = "yop",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_YOP,
+    .priv_data_size = sizeof(YopDecContext),
+    .init           = yop_decode_init,
+    .close          = yop_decode_close,
+    .decode         = yop_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("Psygnosis YOP Video"),
 };

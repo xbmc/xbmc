@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2007-2010 Team XBMC
+ *      Copyright (C) 2007-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,13 +24,14 @@
 
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
+#include "../RenderFormats.h"
 
 
 class CYUV2RGBMatrix
 {
 public:
   CYUV2RGBMatrix();
-  void SetParameters(float contrast, float blacklevel, unsigned int flags);
+  void SetParameters(float contrast, float blacklevel, unsigned int flags, ERenderFormat format);
   D3DXMATRIX* Matrix();
 
 private:
@@ -39,6 +39,7 @@ private:
   float        m_contrast;
   float        m_blacklevel;
   unsigned int m_flags;
+  ERenderFormat m_format;
   D3DXMATRIX   m_mat;
 };
 
@@ -66,7 +67,7 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt);
+  virtual bool Create(unsigned int sourceWidth, unsigned int sourceHeight, ERenderFormat fmt);
   virtual void Render(CRect sourceRect,
                       CRect destRect,
                       float contrast,
@@ -88,6 +89,7 @@ private:
   CYUV2RGBMatrix m_matrix;
   unsigned int   m_sourceWidth, m_sourceHeight;
   CRect          m_sourceRect, m_destRect;
+  ERenderFormat  m_format;
   CD3DTexture    m_YUVPlanes[3];
   float          m_texSteps[2];
 

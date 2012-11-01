@@ -2,7 +2,7 @@
 |
 |   Platinum - DIDL
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -35,7 +36,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "PltDidl.h"
-#include "PltXmlHelper.h"
+#include "PltUtilities.h"
 #include "PltService.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.media.server.didl")
@@ -55,8 +56,8 @@ const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0/";
 /*----------------------------------------------------------------------
 |   PLT_Didl::ConvertFilterToMask
 +---------------------------------------------------------------------*/
-NPT_UInt32 
-PLT_Didl::ConvertFilterToMask(NPT_String filter)
+NPT_UInt64
+PLT_Didl::ConvertFilterToMask(const NPT_String& filter)
 {
     // easy out
     if (filter.GetLength() == 0) return PLT_FILTER_MASK_ALL;
@@ -65,70 +66,95 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
     // a given DIDL property (or set of properties).  
     // These fields are or start with: upnp:, @, res@, res, dc:, container@
 
-    NPT_UInt32  mask = 0;
+    NPT_UInt64  mask = 0;
     const char* s = filter;
     int         i = 0;
 
     while (s[i] != '\0') {
         int next_comma = filter.Find(',', i);
-        int len = ((next_comma < 0)?filter.GetLength():next_comma)-i;
+        int len = ((next_comma < 0)?(int)filter.GetLength():next_comma)-i;
 
         if (NPT_String::CompareN(s+i, "*", 1) == 0) {
             // return now, there's no point in parsing the rest
             return PLT_FILTER_MASK_ALL;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CREATOR, len) == 0) {
-            mask |= PLT_FILTER_MASK_CREATOR;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ARTIST, len) == 0) {
-            mask |= PLT_FILTER_MASK_ARTIST;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ACTOR, len) == 0) {
-            mask |= PLT_FILTER_MASK_ACTOR;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_AUTHOR, len) == 0) {
-            mask |= PLT_FILTER_MASK_AUTHOR;       
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DATE, len) == 0) {
-            mask |= PLT_FILTER_MASK_DATE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ALBUM, len) == 0) {
-            mask |= PLT_FILTER_MASK_ALBUM;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_GENRE, len) == 0) {
-            mask |= PLT_FILTER_MASK_GENRE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ALBUMARTURI, len) == 0) {
-            mask |= PLT_FILTER_MASK_ALBUMARTURI;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DESCRIPTION, len) == 0) {
-            mask |= PLT_FILTER_MASK_DESCRIPTION;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len) == 0) {
-            mask |= PLT_FILTER_MASK_ORIGINALTRACK;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len) == 0) {
-            mask |= PLT_FILTER_MASK_SEARCHABLE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CONTAINER_SEARCHABLE, len) == 0) {
-            mask |= PLT_FILTER_MASK_SEARCHABLE;       
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CHILDCOUNT, len) == 0) {
-            mask |= PLT_FILTER_MASK_CHILDCOUNT;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CONTAINER_CHILDCOUNT, len) == 0) {
-            mask |= PLT_FILTER_MASK_CHILDCOUNT;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_PROGRAMTITLE, len) == 0) {
-            mask |= PLT_FILTER_MASK_PROGRAMTITLE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SERIESTITLE, len) == 0) {
-            mask |= PLT_FILTER_MASK_SERIESTITLE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE, len) == 0) {
-            mask |= PLT_FILTER_MASK_EPISODE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_DURATION;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_SIZE, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SIZE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_PROTECTION, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_PROTECTION;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_RESOLUTION, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_RESOLUTION;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_BITRATE, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_BITRATE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_BITSPERSAMPLE, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_BITSPERSAMPLE;
-		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_NRAUDIOCHANNELS, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_NRAUDIOCHANNELS;
-		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_SAMPLEFREQUENCY, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SAMPLEFREQUENCY;
-		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len) == 0) {
-            mask |= PLT_FILTER_MASK_RES;
         }
+        
+        // title is required, so we return a non empty mask
+        mask |= PLT_FILTER_MASK_TITLE;
+
+        if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_TITLE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_TITLE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_REFID, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_REFID;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CREATOR, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_CREATOR;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ARTIST, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_ARTIST;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ACTOR, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_ACTOR;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DIRECTOR, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_DIRECTOR;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_AUTHOR, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_AUTHOR;       
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DATE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_DATE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ALBUM, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_ALBUM;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_GENRE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_GENRE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ALBUMARTURI, len, true) == 0 ||
+                   NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ALBUMARTURI_DLNAPROFILEID, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_ALBUMARTURI;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_DESCRIPTION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_DESCRIPTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LONGDESCRIPTION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LONGDESCRIPTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_ORIGINALTRACK, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_ORIGINALTRACK;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LASTPOSITION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LASTPOSITION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_LASTPLAYBACK, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_LASTPLAYBACK;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_PLAYCOUNT, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_PLAYCOUNT;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHABLE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_SEARCHABLE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SEARCHCLASS, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_SEARCHCLASS;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CONTAINER_SEARCHABLE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_SEARCHABLE;       
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CHILDCOUNT, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_CHILDCOUNT;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_CONTAINER_CHILDCOUNT, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_CHILDCOUNT;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_PROGRAMTITLE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_PROGRAMTITLE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_SERIESTITLE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_SERIESTITLE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_EPISODE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_EPISODE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RATING, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RATING;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION, len, true) == 0 ||
+				   NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_DURATION_SHORT, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_DURATION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_SIZE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SIZE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_PROTECTION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_PROTECTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_RESOLUTION, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_RESOLUTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_BITRATE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_BITRATE;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_BITSPERSAMPLE, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_BITSPERSAMPLE;
+		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_NRAUDIOCHANNELS, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_NRAUDIOCHANNELS;
+		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_SAMPLEFREQUENCY, len, true) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SAMPLEFREQUENCY;
+		}
 
         if (next_comma < 0) {
             return mask;
@@ -198,99 +224,80 @@ PLT_Didl::AppendXmlEscape(NPT_String& out, const char* in)
 /*----------------------------------------------------------------------
 |   PLT_Didl::FormatTimeStamp
 +---------------------------------------------------------------------*/
-void
-PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
+NPT_String
+PLT_Didl::FormatTimeStamp(NPT_UInt32 seconds)
 {
+    NPT_String result;
     int hours = seconds/3600;
     if (hours == 0) {
-        out += "0:";
+        result += "0:";
     } else {
-        out += NPT_String::FromInteger(hours) + ":";
+        result += NPT_String::FromInteger(hours) + ":";
     }
 
     int minutes = (seconds/60)%60;
     if (minutes == 0) {
-        out += "00:";
+        result += "00:";
     } else {
         if (minutes < 10) {
-            out += '0';
+            result += '0';
         }
-        out += NPT_String::FromInteger(minutes) + ":";
+        result += NPT_String::FromInteger(minutes) + ":";
     }
 
     int secs = seconds%60;
     if (secs == 0) {
-        out += "00";
+        result += "00";
     } else {
         if (secs < 10) {
-            out += '0';
+            result += '0';
         }
-        out += NPT_String::FromInteger(secs);
+        result += NPT_String::FromInteger(secs);
     }
 
-	out += ".000"; // needed for XBOX360 otherwise it won't play the track
+	result += ".000"; // needed for XBOX360 otherwise it won't play the track
+    return result;
 }
 
 /*----------------------------------------------------------------------
 |   PLT_Didl::ParseTimeStamp
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
+PLT_Didl::ParseTimeStamp(const NPT_String& timestamp, NPT_UInt32& seconds)
 {
-    // assume a timestamp in the format HH:MM:SS
-    int colon;
+    // assume a timestamp in the format HH:MM:SS.FFF
+    int separator;
     NPT_String str = timestamp;
-    NPT_UInt32 num;
+    NPT_UInt32 value;
 
-    // extract millisecondsfirst
-    if ((colon = timestamp.ReverseFind('.')) != -1) {
-        str = timestamp.SubString(colon + 1);
-        timestamp = timestamp.Left(colon);
+    // reset output params first
+    seconds = 0;
+    
+    // remove milliseconds first if any
+    if ((separator = str.ReverseFind('.')) != -1) {
+        str = str.Left(separator);
     }
 
+    // look for next separator
+    if ((separator = str.ReverseFind(':')) == -1) return NPT_FAILURE;
+    
     // extract seconds
-    str = timestamp;
-    if ((colon = timestamp.ReverseFind(':')) != -1) {
-        str = timestamp.SubString(colon + 1);
-        timestamp = timestamp.Left(colon);
-    }
+    NPT_CHECK_WARNING(str.SubString(separator+1).ToInteger(value));
+    seconds = value;
+    str = str.Left(separator);
 
-    if (NPT_FAILED(str.ToInteger(num))) {
-        return NPT_FAILURE;
-    }
-
-    seconds = num;
-
+    // look for next separator
+    if ((separator = str.ReverseFind(':')) == -1) return NPT_FAILURE;
+    
     // extract minutes
-    str = timestamp;
-    if (timestamp.GetLength()) {
-        if ((colon = timestamp.ReverseFind(':')) != -1) {
-            str = timestamp.SubString(colon + 1);
-            timestamp = timestamp.Left(colon);
-        }
-
-        if (NPT_FAILED(str.ToInteger(num))) {
-            return NPT_FAILURE;
-        }
-
-        seconds += 60*num;
-    }
-
+    NPT_CHECK_WARNING(str.SubString(separator+1).ToInteger(value));
+    seconds += 60*value;
+    str = str.Left(separator);
+    
     // extract hours
-    str = timestamp;
-    if (timestamp.GetLength()) {
-        if ((colon = timestamp.ReverseFind(':')) != -1) {
-            str = timestamp.SubString(colon + 1);
-            timestamp = timestamp.Left(colon);
-        }
-
-        if (NPT_FAILED(str.ToInteger(num))) {
-            return NPT_FAILURE;
-        }
-
-        seconds += 3600*num;
-    }
-
+    NPT_CHECK_WARNING(str.ToInteger(value));
+    seconds += 3600*value;
+    
     return NPT_SUCCESS;
 }
 
@@ -298,9 +305,9 @@ PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
 |   PLT_Didl::ToDidl
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_Didl::ToDidl(PLT_MediaObject& object, NPT_String filter, NPT_String& didl)
+PLT_Didl::ToDidl(PLT_MediaObject& object, const NPT_String& filter, NPT_String& didl)
 {
-    NPT_UInt32 mask = ConvertFilterToMask(filter);
+    NPT_UInt64 mask = ConvertFilterToMask(filter);
 
     // Allocate enough space for the didl
     didl.Reserve(2048);
@@ -353,9 +360,10 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
             continue;
         }
 
-        if(NPT_FAILED(object->FromDidl(child))) {
-          NPT_LOG_WARNING("Invalid didl");
-          continue;
+        if (NPT_FAILED(object->FromDidl(child))) {
+            NPT_LOG_WARNING_1("Invalid didl for object: %s", 
+                (const char*) PLT_XmlHelper::Serialize(*child, false));
+          	continue;
         }
 
         objects->Add(object);

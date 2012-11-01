@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,33 +13,21 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
 #include "GUIWindowPrograms.h"
 #include "Util.h"
-#include "Shortcut.h"
-#include "filesystem/HDDirectory.h"
-#include "GUIPassword.h"
-#include "dialogs/GUIDialogMediaSource.h"
-#include "Autorun.h"
-#include "utils/LabelFormatter.h"
+#include "addons/GUIDialogAddonInfo.h"
 #include "Autorun.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogKeyboard.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
-
-using namespace XFILE;
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3
@@ -67,20 +55,16 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
     {
       if (m_thumbLoader.IsLoading())
         m_thumbLoader.StopThread();
-      m_database.Close();
     }
     break;
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_iRegionSet = 0;
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // is this the first time accessing this window?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
         message.SetStringParam(g_settings.m_defaultProgramSource);
-
-      m_database.Open();
 
       return CGUIMediaWindow::OnMessage(message);
     }
@@ -88,30 +72,18 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_CLICKED:
     {
-      if (message.GetSenderId() == CONTROL_BTNSORTBY)
-      {
-        // need to update shortcuts manually
-        if (CGUIMediaWindow::OnMessage(message))
-        {
-          LABEL_MASKS labelMasks;
-          m_guiState->GetSortMethodLabelMasks(labelMasks);
-          CLabelFormatter formatter("", labelMasks.m_strLabel2File);
-          for (int i=0;i<m_vecItems->Size();++i)
-          {
-            CFileItemPtr item = m_vecItems->Get(i);
-            if (item->IsShortCut())
-              formatter.FormatLabel2(item.get());
-          }
-          return true;
-        }
-        else
-          return false;
-      }
       if (m_viewControl.HasControl(message.GetSenderId()))  // list/thumb control
       {
-        if (message.GetParam1() == ACTION_PLAYER_PLAY)
+        int iAction = message.GetParam1();
+        int iItem = m_viewControl.GetSelectedItem();
+        if (iAction == ACTION_PLAYER_PLAY)
         {
-          OnPlayMedia(m_viewControl.GetSelectedItem());
+          OnPlayMedia(iItem);
+          return true;
+        }
+        else if (iAction == ACTION_SHOW_INFO)
+        {
+          OnInfo(iItem);
           return true;
         }
       }
@@ -135,20 +107,8 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
-      if (item->IsXBE() || item->IsShortCut())
-      {
-        CStdString strLaunch = g_localizeStrings.Get(518); // Launch
-        buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
-
-        if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.GetCurrentProfile().canWriteDatabases())
-        {
-          if (item->IsShortCut())
-            buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
-          else
-            buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
-        }
-      }
-
+      if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+        buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
 
@@ -172,42 +132,12 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   switch (button)
   {
-  case CONTEXT_BUTTON_RENAME:
-    {
-      CStdString strDescription;
-      CShortcut cut;
-      if (item->IsShortCut())
-      {
-        cut.Create(item->GetPath());
-        strDescription = cut.m_strLabel;
-      }
-      else
-        strDescription = item->GetLabel();
-
-      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(16008), false))
-      {
-        if (item->IsShortCut())
-        {
-          cut.m_strLabel = strDescription;
-          cut.Save(item->GetPath());
-        }
-        else
-        {
-          // SetXBEDescription will truncate to 40 characters.
-          //CUtil::SetXBEDescription(item->GetPath(),strDescription);
-          //m_database.SetDescription(item->GetPath(),strDescription);
-        }
-        Update(m_vecItems->GetPath());
-      }
-      return true;
-    }
-
   case CONTEXT_BUTTON_GOTO_ROOT:
     Update("");
     return true;
 
-  case CONTEXT_BUTTON_LAUNCH:
-    OnClick(itemNumber);
+  case CONTEXT_BUTTON_INFO:
+    OnInfo(itemNumber);
     return true;
 
   default:
@@ -216,12 +146,12 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
+bool CGUIWindowPrograms::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!CGUIMediaWindow::Update(strDirectory))
+  if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
   m_thumbLoader.Load(*m_vecItems);
@@ -241,12 +171,6 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
   if (pItem->m_bIsFolder) return false;
 
   return false;
-}
-
-int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
-{
-  // TODO?
-  return 0;
 }
 
 bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
@@ -290,4 +214,16 @@ CStdString CGUIWindowPrograms::GetStartFolder(const CStdString &dir)
     return dir;
   }
   return CGUIMediaWindow::GetStartFolder(dir);
+}
+
+void CGUIWindowPrograms::OnInfo(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return;
+
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  {
+    CGUIDialogAddonInfo::ShowForItem(item);
+  }
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRManager.h"
 #ifdef HAS_SYSINFO
 #include "utils/SystemInfo.h"
 #endif
@@ -35,14 +35,16 @@
 #define CONTROL_BT_NETWORK  96
 #define CONTROL_BT_VIDEO    97
 #define CONTROL_BT_HARDWARE 98
+#define CONTROL_BT_PVR      99
 
 #define CONTROL_START       CONTROL_BT_STORAGE
-#define CONTROL_END         CONTROL_BT_HARDWARE
+#define CONTROL_END         CONTROL_BT_PVR
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void)
 :CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
 {
   m_section = CONTROL_BT_DEFAULT;
+  m_loadType = KEEP_IN_MEMORY;
 }
 CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 {
@@ -56,7 +58,9 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       ResetLabels();
       SET_CONTROL_LABEL(52, "XBMC " + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) +
-                            " (Compiled : " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
+                            " (Compiled: " + g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BT_PVR,
+                                  PVR::CPVRManager::Get().IsStarted());
       return true;
     }
     break;
@@ -64,6 +68,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
       m_diskUsage.clear();
+      ResetLabels();
       return true;
     }
     break;
@@ -142,15 +147,41 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20160));
 #ifdef HAS_SYSINFO
-    SET_CONTROL_LABEL(i++, g_sysinfo.GetXBVerInfo());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUModel());
+#if defined(__arm__) && defined(TARGET_LINUX)
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUBogoMips());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUHardware());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPURevision());
+    SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUSerial());
+#endif
     SetControlLabel(i++, "%s %s", 22011, SYSTEM_CPU_TEMPERATURE);
+#if !defined(__arm__)
     SetControlLabel(i++, "%s %s", 13284, SYSTEM_CPUFREQUENCY);
 #endif
+#endif
+#if !(defined(__arm__) && defined(TARGET_LINUX))
     SetControlLabel(i++, "%s %s", 13271, SYSTEM_CPU_USAGE);
+#endif
     i++; // empty line
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
   }
+  else if(m_section == CONTROL_BT_PVR)
+  {
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(19166));
+    int i = 2;
+
+    SetControlLabel(i++, "%s: %s", 19120, PVR_BACKEND_NUMBER);
+    i++; // empty line
+    SetControlLabel(i++, "%s: %s", 19012, PVR_BACKEND_NAME);
+    SetControlLabel(i++, "%s: %s", 19114, PVR_BACKEND_VERSION);
+    SetControlLabel(i++, "%s: %s", 19115, PVR_BACKEND_HOST);
+    SetControlLabel(i++, "%s: %s", 19116, PVR_BACKEND_DISKSPACE);
+    SetControlLabel(i++, "%s: %s", 19019, PVR_BACKEND_CHANNELS);
+    SetControlLabel(i++, "%s: %s", 19163, PVR_BACKEND_RECORDINGS);
+    SetControlLabel(i++, "%s: %s", 19025, PVR_BACKEND_TIMERS);
+  }
+
   CGUIWindow::FrameMove();
 }
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "URL.h"
 
 using namespace std;
 namespace XFILE
@@ -40,24 +40,13 @@ namespace XFILE
   bool CStackDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
   {
     items.Clear();
-    // format is:
-    // stack://file1 , file2 , file3 , file4
-    // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
-    //CStdString folder, file;
-    //URIUtils::Split(strPath, folder, file);
-    // split files on the single comma
     CStdStringArray files;
-    StringUtils::SplitString(strPath, " , ", files);
-    if (files.empty())
+    if (!GetPaths(strPath, files))
       return false;   // error in path
-    // remove "stack://" from the folder
+
     for (unsigned int i = 0; i < files.size(); i++)
     {
       CStdString file = files[i];
-      if (i == 0)
-        file = file.Mid(8);
-      // replace double comma's with single ones.
-      file.Replace(",,", ",");
       CFileItemPtr item(new CFileItem(file));
       //URIUtils::AddFileToFolder(folder, file, item->GetPath());
       item->SetPath(file);
@@ -102,6 +91,12 @@ namespace XFILE
 
       CStdString File1 = URIUtils::GetFileName(files[0]->GetPath());
       CStdString File2 = URIUtils::GetFileName(files[1]->GetPath());
+      // Check if source path uses URL encoding
+      if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
+      {
+        CURL::Decode(File1);
+        CURL::Decode(File2);
+      }
 
       std::vector<CRegExp>::iterator itRegExp = RegExps.begin();
       int offset = 0;
@@ -132,6 +127,10 @@ namespace XFILE
                 {
                   // got it
                   strStackTitle = Title1 + Ignore1 + Extension1;
+                  // Check if source path uses URL encoding
+                  if (URIUtils::ProtocolHasEncodedFilename(CURL(strCommonDir).GetProtocol()))
+                    CURL::Encode(strStackTitle);
+
                   itRegExp = RegExps.end();
                   break;
                 }
@@ -173,6 +172,27 @@ namespace XFILE
     URIUtils::AddFileToFolder(folder, file, path);
 
     return path;
+  }
+
+  bool CStackDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
+  {
+    // format is:
+    // stack://file1 , file2 , file3 , file4
+    // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
+    CStdString path = strPath;
+    // remove stack:// from the beginning
+    path = path.Mid(8);
+    
+    vecPaths.clear();
+    StringUtils::SplitString(path, " , ", vecPaths);
+    if (vecPaths.empty())
+      return false;
+
+    // because " , " is used as a seperator any "," in the real paths are double escaped
+    for (vector<CStdString>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
+      itPath->Replace(",,", ",");
+
+    return true;
   }
 
   CStdString CStackDirectory::ConstructStackPath(const CFileItemList &items, const vector<int> &stack)

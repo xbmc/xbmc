@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2006-2010 Team XBMC
+ *      Copyright (C) 2006-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,7 +31,8 @@ enum DVDOverlayType
   DVDOVERLAY_TYPE_SPU     = 1,
   DVDOVERLAY_TYPE_TEXT    = 2,
   DVDOVERLAY_TYPE_IMAGE   = 3,
-  DVDOVERLAY_TYPE_SSA     = 4
+  DVDOVERLAY_TYPE_SSA     = 4,
+  DVDOVERLAY_TYPE_GROUP   = 5,
 };
 
 class CDVDOverlay
@@ -110,3 +110,29 @@ private:
 
 typedef std::vector<CDVDOverlay*> VecOverlays;
 typedef std::vector<CDVDOverlay*>::iterator VecOverlaysIter;
+
+
+class CDVDOverlayGroup : public CDVDOverlay
+{
+
+public:
+  virtual ~CDVDOverlayGroup()
+  {
+    for(VecOverlaysIter it = m_overlays.begin(); it != m_overlays.end(); ++it)
+      (*it)->Release();
+    m_overlays.clear();
+  }
+
+  CDVDOverlayGroup()
+    : CDVDOverlay(DVDOVERLAY_TYPE_GROUP)
+  {
+  }
+
+  CDVDOverlayGroup(CDVDOverlayGroup& src)
+    : CDVDOverlay(src)
+  {
+    for(VecOverlaysIter it = m_overlays.begin(); it != m_overlays.end(); ++it)
+      m_overlays.push_back((*it)->Acquire());
+  }
+  VecOverlays m_overlays;
+};

@@ -2,7 +2,7 @@
 |
 |   Platinum - Service Action
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -36,7 +37,7 @@
 +---------------------------------------------------------------------*/
 #include "PltAction.h"
 #include "PltService.h"
-#include "PltXmlHelper.h"
+#include "PltUtilities.h"
 
 #define REMOVE_WMP_DATATYPE_EXTENSION
 
@@ -225,7 +226,7 @@ PLT_Action::SetArgumentValue(const char* name,
     for (NPT_Cardinal i=0;
          i<m_Arguments.GetItemCount();
          i++) {
-        NPT_Array<PLT_Argument*>::Iterator iter = m_Arguments.GetItem(i);
+        iter = m_Arguments.GetItem(i);
         if ((*iter)->GetPosition() > arg->GetPosition()) {
             return m_Arguments.Insert(iter, arg);
         }
@@ -345,9 +346,9 @@ PLT_Action::SetError(unsigned int code, const char* description)
 |   PLT_Action::GetError
 +---------------------------------------------------------------------*/
 const char* 
-PLT_Action::GetError(unsigned int& code) 
+PLT_Action::GetError(unsigned int* code /* = NULL */) 
 {
-    code = m_ErrorCode;
+    if (code) *code = m_ErrorCode;
     return m_ErrorDescription;
 }
 

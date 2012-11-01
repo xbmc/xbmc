@@ -100,7 +100,7 @@ TcpServerLoop(int port)
     if (NPT_FAILED(result)) {
         NPT_Debug("ERROR: Bind() failed (%d : %s)\n", result, NPT_ResultText(result));
     }
-		
+        
     NPT_Socket* client;
 
     for (;;) {
@@ -164,7 +164,3 @@ main(int argc, char** argv)
 
     return 0;
 }
-
-
-
-

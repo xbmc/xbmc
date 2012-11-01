@@ -75,6 +75,7 @@ struct ogg_stream {
     int incomplete; ///< whether we're expecting a continuation in the next page
     int page_end;   ///< current packet is the last one completed in the page
     int keyframe_seek;
+    int got_start;
     void *private;
 };
 
@@ -98,6 +99,7 @@ struct ogg {
 #define OGG_FLAG_BOS  2
 #define OGG_FLAG_EOS  4
 
+extern const struct ogg_codec ff_celt_codec;
 extern const struct ogg_codec ff_dirac_codec;
 extern const struct ogg_codec ff_flac_codec;
 extern const struct ogg_codec ff_ogm_audio_codec;
@@ -111,7 +113,7 @@ extern const struct ogg_codec ff_speex_codec;
 extern const struct ogg_codec ff_theora_codec;
 extern const struct ogg_codec ff_vorbis_codec;
 
-int ff_vorbis_comment(AVFormatContext *ms, AVMetadata **m, const uint8_t *buf, int size);
+int ff_vorbis_comment(AVFormatContext *ms, AVDictionary **m, const uint8_t *buf, int size);
 
 static inline int
 ogg_find_stream (struct ogg * ogg, int serial)

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,19 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "Fanart.h"
 #include "utils/XBMCTinyXML.h"
 #include "URIUtils.h"
-#include "pictures/Picture.h"
-#include "filesystem/FileCurl.h"
 #include "StringUtils.h"
-#include "filesystem/File.h"
 
 const unsigned int CFanart::max_fanart_colors=3;
 
@@ -131,44 +127,6 @@ bool CFanart::SetPrimaryFanart(unsigned int index)
   Pack();
 
   return true;
-}
-
-bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination) const
-{
-  if (index >= m_fanart.size())
-    return false;
-
-  CStdString thumbURL;
-  if (!m_fanart[index].strPreview.IsEmpty())
-  {
-    if (m_url.IsEmpty())
-      thumbURL = m_fanart[index].strPreview;
-    else
-      thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strPreview);
-
-    XFILE::CFileCurl http;
-    if (http.Download(thumbURL, strDestination))
-      return true;
-  }
-
-  // try downloading the image instead
-  if (m_url.IsEmpty())
-    thumbURL = m_fanart[index].strImage;
-  else
-    thumbURL = URIUtils::AddFileToFolder(m_url, m_fanart[index].strImage);
-  return DownloadImage(thumbURL, strDestination);
-}
-
-bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination) const
-{
-  return CPicture::CacheFanart(url, destination);
-}
-
-bool CFanart::DownloadImage(const CStdString &strDestination) const
-{
-  if (m_fanart.size() == 0)
-    return false;
-  return DownloadImage(GetImageURL(), strDestination);
 }
 
 unsigned int CFanart::GetNumFanarts()

@@ -20,8 +20,9 @@
 
 #include "asm.S"
 
-.text
-.align 4
+const   vp3_idct_constants, align=4
+.short 64277, 60547, 54491, 46341, 36410, 25080, 12785
+endconst
 
 #define xC1S7 d0[0]
 #define xC2S6 d0[1]
@@ -104,14 +105,10 @@ function ff_vp3_h_loop_filter_neon, export=1
     bx              lr
 endfunc
 
-.align 4
-vp3_idct_constants:
-.short 64277, 60547, 54491, 46341, 36410, 25080, 12785
-.align 4
 
 function vp3_idct_start_neon
     vpush           {d8-d15}
-    adr             r3,  vp3_idct_constants
+    movrel          r3,  vp3_idct_constants
     vld1.64         {d0-d1},   [r3,:128]
     vld1.64         {d16-d19}, [r2,:128]!
     vld1.64         {d20-d23}, [r2,:128]!
@@ -119,9 +116,8 @@ function vp3_idct_start_neon
     vadd.s16        q1,  q8,  q12
     vsub.s16        q8,  q8,  q12
     vld1.64         {d28-d31}, [r2,:128]!
-endfunc
 
-function vp3_idct_core_neon
+vp3_idct_core_neon:
     vmull.s16       q2,  d18, xC1S7     // (ip[1] * C1) << 16
     vmull.s16       q3,  d19, xC1S7
     vmull.s16       q4,  d2,  xC4S4     // ((ip[0] + ip[4]) * C4) << 16

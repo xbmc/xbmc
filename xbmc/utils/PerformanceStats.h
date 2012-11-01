@@ -2,7 +2,7 @@
 #define PERFORMANCESTATS_H
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,9 +32,9 @@ public:
   double     m_time;
   double     m_user;
   double     m_sys;
-  __int64    m_samples;
+  int64_t    m_samples;
 
-  PerformanceCounter(double dTime=0.0, double dUser=0.0, double dSys=0.0, __int64 nSamples=1LL) :
+  PerformanceCounter(double dTime=0.0, double dUser=0.0, double dSys=0.0, int64_t nSamples=1LL) :
      m_time(dTime), m_user(dUser), m_sys(dSys), m_samples(nSamples) { }
   virtual ~PerformanceCounter() { }
 };

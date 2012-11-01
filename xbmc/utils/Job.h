@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,13 +14,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 class CJob;
+
+#include <stddef.h>
 
 /*!
  \ingroup jobs
@@ -66,7 +67,7 @@ public:
    \param jobID the unique id of the job (as retrieved from CJobManager::AddJob)
    \param progress the current progress of the job, out of total.
    \param total the total amount of work to be processed.
-   \param job the job that has been processed.  The job will be destroyed after this function returns
+   \param job the job that has been processed.
    \sa CJobManager and CJob
    */
   virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) {};

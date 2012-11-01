@@ -78,6 +78,7 @@ void ass_set_style_overrides(ASS_Library *priv, char **list)
             free(*p);
     }
     free(priv->style_overrides);
+    priv->style_overrides = NULL;
 
     if (!list)
         return;

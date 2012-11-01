@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +32,7 @@ CMusicInfoTagLoaderASAP::~CMusicInfoTagLoaderASAP()
 {
 }
 
-bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag)
+bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag, EmbeddedArt *art)
 {
   tag.SetLoaded(false);
 
@@ -70,7 +69,8 @@ bool CMusicInfoTagLoaderASAP::Load(const CStdString &strFile, CMusicInfoTag &tag
     tag.SetDuration(songInfo.duration / 1000);
   if (songInfo.year > 0)
   {
-    SYSTEMTIME dateTime = { songInfo.year, songInfo.month, 0, songInfo.day, 0, 0, 0, 0 };
+    SYSTEMTIME dateTime = { (WORD)songInfo.year, (WORD)songInfo.month, 0, 
+                            (WORD)songInfo.day, 0, 0, 0, 0 };
     tag.SetReleaseDate(dateTime);
   }
   tag.SetLoaded(true);

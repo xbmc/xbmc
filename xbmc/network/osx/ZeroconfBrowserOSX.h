@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,11 +27,10 @@
 #include "threads/CriticalSection.h"
 
 #include <CoreFoundation/CoreFoundation.h>
-#if !defined(__arm__)
-#include <Carbon/Carbon.h>
-#include <CoreServices/CoreServices.h>
+#if defined(TARGET_DARWIN_OSX)
+  #include <CoreServices/CoreServices.h>
 #else
-#include <CFNetwork/CFNetServices.h>
+  #include <CFNetwork/CFNetServices.h>
 #endif
 
 //platform specific implementation of  zeroconfbrowser interface using native os x APIs
@@ -45,22 +43,22 @@ public:
 private:
   ///implementation if CZeroconfBrowser interface
   ///@{
-  virtual bool doAddServiceType(const CStdString& fcr_service_type);
-  virtual bool doRemoveServiceType(const CStdString& fcr_service_type);
+  virtual bool doAddServiceType(const CStdString &fcr_service_type);
+  virtual bool doRemoveServiceType(const CStdString &fcr_service_type);
 
   virtual std::vector<CZeroconfBrowser::ZeroconfService> doGetFoundServices();
-  virtual bool doResolveService(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout);
+  virtual bool doResolveService(CZeroconfBrowser::ZeroconfService &fr_service, double f_timeout);
   ///@}
 
   /// browser callback
   static void BrowserCallback(CFNetServiceBrowserRef browser, CFOptionFlags flags, CFTypeRef domainOrService, CFStreamError *error, void *info);
   /// resolve callback
-  static void ResolveCallback(CFNetServiceRef theService, CFStreamError* error, void* info);
+  static void ResolveCallback(CFNetServiceRef theService, CFStreamError *error, void *info);
 
   /// adds the service to list of found services
-  void addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const& fcr_service);
+  void addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const &fcr_service);
   /// removes the service from list of found services
-  void removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const& fcr_service);
+  void removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, ZeroconfService const &fcr_service);
   
   //CF runloop ref; we're using main-threads runloop
   CFRunLoopRef m_runloop;

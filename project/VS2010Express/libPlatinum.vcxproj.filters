@@ -54,9 +54,6 @@
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDownloader.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltEvent.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
@@ -75,12 +72,6 @@
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltLeaks.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltService.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
@@ -91,9 +82,6 @@
       <Filter>Platinum\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStateVariable.h">
-      <Filter>Platinum\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStreamPump.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\PltSvnVersion.h">
@@ -282,6 +270,15 @@
     <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.h">
       <Filter>Neptune\System</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMimeType.h">
+      <Filter>Platinum\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltProtocolInfo.h">
+      <Filter>Platinum\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHash.h">
+      <Filter>Neptune\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltAction.cpp">
@@ -308,9 +305,6 @@
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDownloader.cpp">
-      <Filter>Platinum\Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltEvent.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
@@ -329,12 +323,6 @@
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltIconsData.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltLeaks.cpp">
-      <Filter>Platinum\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.cpp">
-      <Filter>Platinum\Core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltService.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
@@ -342,9 +330,6 @@
       <Filter>Platinum\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStateVariable.cpp">
-      <Filter>Platinum\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStreamPump.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltTaskManager.cpp">
@@ -494,9 +479,6 @@
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdSockets.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixFile.cpp">
-      <Filter>Neptune\System</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcEnvironment.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
@@ -526,6 +508,24 @@
     </ClCompile>
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.cpp">
       <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMimeType.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltProtocolInfo.cpp">
+      <Filter>Platinum\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHash.cpp">
+      <Filter>Neptune\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixEnvironment.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixTime.cpp">
+      <Filter>Neptune\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\ContentDirectorySCPD.cpp">
+      <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

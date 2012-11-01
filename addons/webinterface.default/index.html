@@ -4,15 +4,13 @@
     <title>XBMC</title>
     <meta http-equiv="Content-Language" content="EN" />
     <meta http-equiv="Content-Type" content="UTF-8" />
-    <!-- <link rel="search" href="/provider.xml" type="application/opensearchdescription+xml" title="XBMC Library" /> -->
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <!-- <link rel="search" href="provider.xml" type="application/opensearchdescription+xml" title="XBMC Library" /> -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <!-- <link href="/images/logo.png" rel="image_src" /> -->
     <meta name="robots" content="NOINDEX, NOFOLLOW">
-    <link href="/css/core.css?1.3.57" rel="stylesheet" type="text/css">
-    <link href="/css/ipad.css?1.0.5" rel="stylesheet" media="only screen and (max-device-width: 1024px)" type="text/css">
-    <script type="text/javascript" src="/js/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/js/Launcher.js?1.0.0"></script>
+    <link href="css/core.css?1.3.57" rel="stylesheet" type="text/css">
+    <link href="css/ipad.css?1.0.5" rel="stylesheet" media="only screen and (max-device-width: 1024px)" type="text/css">
   </head>
   <body>
     <div id="header">
@@ -23,11 +21,9 @@
           <li id="movieLibrary">Movies</li>
           <li id="tvshowLibrary">TV Shows</li>
           <li id="musicLibrary">Music</li>
-          <!-- <li id="pictureLibrary">Pictures</li> TODO: needs pagination -->
-          <!-- <li id="settingsPanel">Settings</li> -->
         </ul>
       </div>
-      <img src="/images/ajax-loader.gif" alt="Loading please wait" id="spinner" style="display: none">
+      <img src="images/ajax-loader.gif" alt="Loading please wait" id="spinner" style="display: none">
     </div>
     <div id="body">
       <div id="topScrollFade" style="display: none;"></div>
@@ -71,10 +67,6 @@
         <div id="nowPlayingPlaylist" style="display: none;"></div>
       </div>
     </div>
-    <script type="text/javascript">
-      var mediaLibrary = new MediaLibrary();
-      var nowPlayingManager = new NowPlayingManager();
-      applyDeviceFixes();
-    </script>
+    <script type="text/javascript" src="js/xbmc.launcher.js?v=2.1.0"></script>
   </body>
 </html>

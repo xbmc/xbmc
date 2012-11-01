@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -50,14 +49,20 @@ public:
   bool IsButtonPressed();
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
+  void SetSelected(const CStdString &strSelectedLabel);
+  void SetSelected(std::vector<int> selectedIndexes);
+  void SetSelected(const std::vector<CStdString> &selectedLabels);
   void SetUseDetails(bool useDetails);
-  void SetMultiSelection(bool multiSelection) { m_multiSelection = multiSelection; };
+  void SetMultiSelection(bool multiSelection);
 protected:
   virtual CGUIControl *GetFirstFocusableControl(int id);
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
+  virtual void OnWindowUnload();
+  void SetupButton();
 
   bool m_bButtonEnabled;
+  int m_buttonString;
   bool m_bButtonPressed;
   int m_iSelected;
   bool m_useDetails;

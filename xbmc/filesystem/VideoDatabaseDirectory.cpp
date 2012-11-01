@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -54,7 +53,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   for (int i=0;i<items.Size();++i)
   {
     CFileItemPtr item = items[i];
-    if (item->m_bIsFolder && !item->HasIcon() && !item->HasThumbnail())
+    if (item->m_bIsFolder && !item->HasIcon() && !item->HasArt("thumb"))
     {
       CStdString strImage = GetIcon(item->GetPath());
       if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
@@ -160,6 +159,10 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
   if (params.GetSetId() != -1)
     strLabel += videodatabase.GetSetById(params.GetSetId());
 
+  // get tag
+  if (params.GetTagId() != -1)
+    strLabel += videodatabase.GetTagById(params.GetTagId());
+
   // get year
   if (params.GetYear() != -1)
   {
@@ -190,6 +193,8 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(20348); break;
     case NODE_TYPE_SETS: // Sets
       strLabel = g_localizeStrings.Get(20434); break;
+    case NODE_TYPE_TAGS: // Tags
+      strLabel = g_localizeStrings.Get(20459); break;
     case NODE_TYPE_MOVIES_OVERVIEW: // Movies
       strLabel = g_localizeStrings.Get(342); break;
     case NODE_TYPE_TVSHOWS_OVERVIEW: // TV Shows
@@ -253,6 +258,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     return "DefaultCountry.png";
   case NODE_TYPE_SETS: // Sets
     return "DefaultSets.png";
+  case NODE_TYPE_TAGS: // Tags
+    return "DefaultTags.png";
   case NODE_TYPE_YEAR: // Year
     return "DefaultYear.png";
   case NODE_TYPE_DIRECTOR: // Director

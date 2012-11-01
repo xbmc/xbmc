@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,7 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 
 CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -35,7 +35,10 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
   m_wasRunning = false;
   m_renderOrder = 1;
   m_autoClosing = false;
+  m_showStartTime = 0;
+  m_showDuration = 0;
   m_enableSound = true;
+  m_bAutoClosed = false;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -97,7 +100,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_showStartTime = CTimeUtils::GetFrameTime();
+      m_showStartTime = 0;
       return true;
     }
   }
@@ -206,7 +209,7 @@ void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().DoModal(this, iWindowID, param);
+    CApplicationMessenger::Get().DoModal(this, iWindowID, param);
   }
   else
     DoModal_Internal(iWindowID, param);
@@ -218,7 +221,7 @@ void CGUIDialog::Show()
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().Show(this);
+    CApplicationMessenger::Get().Show(this);
   }
   else
     Show_Internal();
@@ -226,8 +229,22 @@ void CGUIDialog::Show()
 
 void CGUIDialog::FrameMove()
 {
-  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_closing)
-    Close();
+  if (m_autoClosing)
+  { // check if our timer is running
+    if (!m_showStartTime)
+    {
+      if (HasRendered()) // start timer
+        m_showStartTime = CTimeUtils::GetFrameTime();
+    }
+    else
+    {
+      if (m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_closing)
+      {
+        m_bAutoClosed = true;
+        Close();
+      }
+    }
+  }
   CGUIWindow::FrameMove();
 }
 
@@ -249,8 +266,11 @@ void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
 {
    m_autoClosing = true;
    m_showDuration = timeoutMs;
-   if (m_active)
-     m_showStartTime = CTimeUtils::GetFrameTime();
+   ResetAutoClose();
 }
 
-
+void CGUIDialog::ResetAutoClose(void)
+{
+  if (m_autoClosing && m_active)
+    m_showStartTime = CTimeUtils::GetFrameTime();
+}

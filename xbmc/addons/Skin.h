@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -50,10 +49,9 @@ public:
   CSkinInfo(const cp_extension_t *ext);
   virtual ~CSkinInfo();
 
-  /*! \brief Load information regarding the skin from the given skin directory
-   \param skinDir folder of the skin to load (defaults to this skin's basedir)
+  /*! \brief Load resultion information from directories in Path().
    */
-  void Start(const CStdString& skinDir = "");
+  void Start();
 
   bool HasSkinFile(const CStdString &strFile) const;
 
@@ -93,7 +91,7 @@ public:
    */
   static bool TranslateResolution(const CStdString &name, RESOLUTION_INFO &res);
 
-  void ResolveIncludes(TiXmlElement *node);
+  void ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions = NULL);
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; };
 
@@ -105,6 +103,8 @@ public:
   void GetSkinPaths(std::vector<CStdString> &paths) const;
 
   bool IsInUse() const;
+
+  const CStdString& GetCurrentAspect() const { return m_currentAspect; }
 
 //  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
   static double GetMinVersion();
@@ -134,6 +134,7 @@ protected:
 
   float m_effectsSlowDown;
   CGUIIncludes m_includes;
+  CStdString m_currentAspect;
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_onlyAnimateToHome;

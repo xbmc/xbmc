@@ -44,11 +44,11 @@ static void fill_picture_parameters(AVCodecContext *avctx,
     memset(pp, 0, sizeof(*pp));
     pp->wDecodedPictureIndex         = ff_dxva2_get_surface_index(ctx, current_picture);
     pp->wDeblockedPictureIndex       = 0;
-    if (s->pict_type != FF_I_TYPE)
+    if (s->pict_type != AV_PICTURE_TYPE_I)
         pp->wForwardRefPictureIndex  = ff_dxva2_get_surface_index(ctx, &s->last_picture);
     else
         pp->wForwardRefPictureIndex  = 0xffff;
-    if (s->pict_type == FF_B_TYPE)
+    if (s->pict_type == AV_PICTURE_TYPE_B)
         pp->wBackwardRefPictureIndex = ff_dxva2_get_surface_index(ctx, &s->next_picture);
     else
         pp->wBackwardRefPictureIndex = 0xffff;
@@ -61,8 +61,8 @@ static void fill_picture_parameters(AVCodecContext *avctx,
     pp->bBPPminus1                   = 7;
     pp->bPicStructure                = s->picture_structure;
     pp->bSecondField                 = is_field && !s->first_field;
-    pp->bPicIntra                    = s->pict_type == FF_I_TYPE;
-    pp->bPicBackwardPrediction       = s->pict_type == FF_B_TYPE;
+    pp->bPicIntra                    = s->pict_type == AV_PICTURE_TYPE_I;
+    pp->bPicBackwardPrediction       = s->pict_type == AV_PICTURE_TYPE_B;
     pp->bBidirectionalAveragingMode  = 0;
     pp->bMVprecisionAndChromaRelation= 0; /* FIXME */
     pp->bChromaFormat                = s->chroma_format;
@@ -109,10 +109,10 @@ static void fill_quantization_matrices(AVCodecContext *avctx,
         qm->bNewQmatrix[i] = 1;
     for (i = 0; i < 64; i++) {
         int n = s->dsp.idct_permutation[ff_zigzag_direct[i]];
-        qm->Qmatrix[0][i] = s->intra_matrix[n];;
-        qm->Qmatrix[1][i] = s->inter_matrix[n];;
-        qm->Qmatrix[2][i] = s->chroma_intra_matrix[n];;
-        qm->Qmatrix[3][i] = s->chroma_inter_matrix[n];;
+        qm->Qmatrix[0][i] = s->intra_matrix[n];
+        qm->Qmatrix[1][i] = s->inter_matrix[n];
+        qm->Qmatrix[2][i] = s->chroma_intra_matrix[n];
+        qm->Qmatrix[3][i] = s->chroma_inter_matrix[n];
     }
 }
 
@@ -151,7 +151,7 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
     const struct MpegEncContext *s = avctx->priv_data;
     struct dxva_context *ctx = avctx->hwaccel_context;
     struct dxva2_picture_context *ctx_pic =
-        s->current_picture_ptr->hwaccel_picture_private;
+        s->current_picture_ptr->f.hwaccel_picture_private;
     const int is_field = s->picture_structure != PICT_FRAME;
     const unsigned mb_count = s->mb_width * (s->mb_height >> is_field);
     uint8_t  *dxva_data, *current, *end;
@@ -210,7 +210,7 @@ static int start_frame(AVCodecContext *avctx,
     const struct MpegEncContext *s = avctx->priv_data;
     struct dxva_context *ctx = avctx->hwaccel_context;
     struct dxva2_picture_context *ctx_pic =
-        s->current_picture_ptr->hwaccel_picture_private;
+        s->current_picture_ptr->f.hwaccel_picture_private;
 
     if (!ctx->decoder || !ctx->cfg || ctx->surface_count <= 0)
         return -1;
@@ -242,7 +242,7 @@ static int decode_slice(AVCodecContext *avctx,
 {
     const struct MpegEncContext *s = avctx->priv_data;
     struct dxva2_picture_context *ctx_pic =
-        s->current_picture_ptr->hwaccel_picture_private;
+        s->current_picture_ptr->f.hwaccel_picture_private;
     unsigned position;
     DXVA_SliceInfo* slice;
 
@@ -267,7 +267,7 @@ static int end_frame(AVCodecContext *avctx)
 {
     struct MpegEncContext *s = avctx->priv_data;
     struct dxva2_picture_context *ctx_pic =
-        s->current_picture_ptr->hwaccel_picture_private;
+        s->current_picture_ptr->f.hwaccel_picture_private;
     struct dxva_context *ctx = avctx->hwaccel_context;
 
     if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
@@ -285,7 +285,6 @@ AVHWAccel ff_mpeg2_dxva2_hwaccel = {
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_MPEG2VIDEO,
     .pix_fmt        = PIX_FMT_DXVA2_VLD,
-    .capabilities   = 0,
     .start_frame    = start_frame,
     .decode_slice   = decode_slice,
     .end_frame      = end_frame,

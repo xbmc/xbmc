@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="4" type="filter" visible="Library.HasContent(TVShows)">
+  <label>626</label>
+  <icon>DefaultInProgressShows.png</icon>
+  <content>tvshows</content>
+  <rule field="inprogress" operator="true" />
+</node>

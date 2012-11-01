@@ -61,12 +61,12 @@ static int avs_read_header(AVFormatContext * s, AVFormatParameters * ap)
 
     s->ctx_flags |= AVFMTCTX_NOHEADER;
 
-    url_fskip(s->pb, 4);
-    avs->width = get_le16(s->pb);
-    avs->height = get_le16(s->pb);
-    avs->bits_per_sample = get_le16(s->pb);
-    avs->fps = get_le16(s->pb);
-    avs->nb_frames = get_le32(s->pb);
+    avio_skip(s->pb, 4);
+    avs->width = avio_rl16(s->pb);
+    avs->height = avio_rl16(s->pb);
+    avs->bits_per_sample = avio_rl16(s->pb);
+    avs->fps = avio_rl16(s->pb);
+    avs->nb_frames = avio_rl32(s->pb);
     avs->remaining_frame_size = 0;
     avs->remaining_audio_size = 0;
 
@@ -104,7 +104,7 @@ avs_read_video_packet(AVFormatContext * s, AVPacket * pkt,
     pkt->data[palette_size + 1] = type;
     pkt->data[palette_size + 2] = size & 0xFF;
     pkt->data[palette_size + 3] = (size >> 8) & 0xFF;
-    ret = get_buffer(s->pb, pkt->data + palette_size + 4, size - 4) + 4;
+    ret = avio_read(s->pb, pkt->data + palette_size + 4, size - 4) + 4;
     if (ret < size) {
         av_free_packet(pkt);
         return AVERROR(EIO);
@@ -123,9 +123,9 @@ static int avs_read_audio_packet(AVFormatContext * s, AVPacket * pkt)
     AvsFormat *avs = s->priv_data;
     int ret, size;
 
-    size = url_ftell(s->pb);
+    size = avio_tell(s->pb);
     ret = voc_get_packet(s, pkt, avs->st_audio, avs->remaining_audio_size);
-    size = url_ftell(s->pb) - size;
+    size = avio_tell(s->pb) - size;
     avs->remaining_audio_size -= size;
 
     if (ret == AVERROR(EIO))
@@ -154,20 +154,24 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
 
     while (1) {
         if (avs->remaining_frame_size <= 0) {
-            if (!get_le16(s->pb))    /* found EOF */
+            if (!avio_rl16(s->pb))    /* found EOF */
                 return AVERROR(EIO);
-            avs->remaining_frame_size = get_le16(s->pb) - 4;
+            avs->remaining_frame_size = avio_rl16(s->pb) - 4;
         }
 
         while (avs->remaining_frame_size > 0) {
-            sub_type = get_byte(s->pb);
-            type = get_byte(s->pb);
-            size = get_le16(s->pb);
+            sub_type = avio_r8(s->pb);
+            type = avio_r8(s->pb);
+            size = avio_rl16(s->pb);
+            if (size < 4)
+                return AVERROR_INVALIDDATA;
             avs->remaining_frame_size -= size;
 
             switch (type) {
             case AVS_PALETTE:
-                ret = get_buffer(s->pb, palette, size - 4);
+                if (size - 4 > sizeof(palette))
+                    return AVERROR_INVALIDDATA;
+                ret = avio_read(s->pb, palette, size - 4);
                 if (ret < size - 4)
                     return AVERROR(EIO);
                 palette_size = size;
@@ -175,7 +179,7 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
 
             case AVS_VIDEO:
                 if (!avs->st_video) {
-                    avs->st_video = av_new_stream(s, AVS_VIDEO);
+                    avs->st_video = avformat_new_stream(s, NULL);
                     if (avs->st_video == NULL)
                         return AVERROR(ENOMEM);
                     avs->st_video->codec->codec_type = AVMEDIA_TYPE_VIDEO;
@@ -192,7 +196,7 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
 
             case AVS_AUDIO:
                 if (!avs->st_audio) {
-                    avs->st_audio = av_new_stream(s, AVS_AUDIO);
+                    avs->st_audio = avformat_new_stream(s, NULL);
                     if (avs->st_audio == NULL)
                         return AVERROR(ENOMEM);
                     avs->st_audio->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -204,7 +208,7 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
                 break;
 
             default:
-                url_fskip(s->pb, size - 4);
+                avio_skip(s->pb, size - 4);
             }
         }
     }
@@ -216,11 +220,11 @@ static int avs_read_close(AVFormatContext * s)
 }
 
 AVInputFormat ff_avs_demuxer = {
-    "avs",
-    NULL_IF_CONFIG_SMALL("AVS format"),
-    sizeof(AvsFormat),
-    avs_probe,
-    avs_read_header,
-    avs_read_packet,
-    avs_read_close,
+    .name           = "avs",
+    .long_name      = NULL_IF_CONFIG_SMALL("AVS format"),
+    .priv_data_size = sizeof(AvsFormat),
+    .read_probe     = avs_probe,
+    .read_header    = avs_read_header,
+    .read_packet    = avs_read_packet,
+    .read_close     = avs_read_close,
 };

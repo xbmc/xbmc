@@ -2,8 +2,7 @@
 	<defaultcontrol always="true">2</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<include>CommonSettingsBackground</include>
-		<include>CommonMediaPlayingBackground</include>
+		<include>CommonBackground</include>
 		<control type="image">
 			<posx>0</posx>
 			<posy>100r</posy>
@@ -88,7 +87,7 @@
 				<posy>135</posy>
 				<width>240</width>
 				<height>25</height>
-				<font>font13caps</font>
+				<font>font13</font>
 				<textcolor>grey2</textcolor>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -100,7 +99,7 @@
 				<posy>135</posy>
 				<width>240</width>
 				<height>25</height>
-				<font>font13caps</font>
+				<font>font13</font>
 				<textcolor>grey2</textcolor>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -136,7 +135,7 @@
 					<posy>245</posy>
 					<width>240</width>
 					<height>20</height>
-					<font>font13caps</font>
+					<font>font13</font>
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -158,7 +157,7 @@
 					<posy>305</posy>
 					<width>240</width>
 					<height>30</height>
-					<font>font13caps</font>
+					<font>font13</font>
 					<textcolor>white</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -269,26 +268,30 @@
 			</control>
 		</control>
 		<include>CommonNowPlaying</include>
+		<include>MainWindowMouseButtons</include>
 		<include>BehindDialogFadeOut</include>
-		<control type="group">
-			<posx>60</posx>
-			<posy>0</posy>
-			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>35</height>
-				<texture border="0,0,32,0">header.png</texture>
-			</control>
+		<control type="image">
+			<description>Section header image</description>
+			<posx>20</posx>
+			<posy>3</posy>
+			<width>35</width>
+			<height>35</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_system.png</texture>
+		</control>
+		<control type="grouplist">
+			<posx>65</posx>
+			<posy>5</posy>
+			<width>1000</width>
+			<height>30</height>
+			<orientation>horizontal</orientation>
+			<align>left</align>
+			<itemgap>5</itemgap>
 			<control type="label">
 				<include>WindowTitleCommons</include>
-				<posx>220</posx>
 				<label>$LOCALIZE[13200]</label>
 			</control>
 		</control>
-		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
 	</controls>
 </window>

@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -142,6 +141,16 @@ void CDXTexture::LoadToGPU()
   m_pixels = NULL;
 
   m_loadedToGPU = true;
+}
+
+void CDXTexture::BindToUnit(unsigned int unit)
+{
+  LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
+  p3DDevice->SetTexture( unit, m_texture.Get() );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+  p3DDevice->SetSamplerState( unit, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
 }
 
 #endif

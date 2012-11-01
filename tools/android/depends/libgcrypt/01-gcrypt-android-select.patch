@@ -1,0 +1,13 @@
+--- libgcrypt-1.4.0/src/gcrypt.h	2007-12-10 10:05:46.000000000 +0100
++++ libgcrypt-1.4.0.new/src/gcrypt.h	2011-11-13 12:12:23.000000000 +0100
+@@ -37,6 +37,10 @@
+ # include <sys/socket.h>
+ #endif /*!_WIN32*/
+ 
++#if defined(__ANDROID__)
++#include <sys/select.h>
++#endif
++
+ typedef socklen_t gcry_socklen_t;
+ 
+ #include <sys/time.h>

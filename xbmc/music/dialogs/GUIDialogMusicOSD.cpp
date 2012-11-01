@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogMusicOSD.h"
-#include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/MouseStat.h"
 #include "GUIUserMessages.h"
@@ -34,6 +32,7 @@
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMusicOSD::~CGUIDialogMusicOSD(void)
@@ -67,6 +66,21 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
     break;
   }
   return CGUIDialog::OnMessage(message);
+}
+
+bool CGUIDialogMusicOSD::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+  case ACTION_SHOW_OSD:
+    Close();
+    return true;
+
+  default:
+    break;
+  }
+
+  return CGUIDialog::OnAction(action);
 }
 
 void CGUIDialogMusicOSD::FrameMove()

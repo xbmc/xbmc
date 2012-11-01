@@ -48,6 +48,7 @@ extern "C" {
 #define MAX_IPTC_STRING 256
 
 typedef struct {
+  char RecordVersion[MAX_IPTC_STRING];
   char SupplementalCategories[MAX_IPTC_STRING];
   char Keywords[MAX_IPTC_STRING];
   char Caption[MAX_IPTC_STRING];
@@ -69,7 +70,16 @@ typedef struct {
   char Copyright[MAX_IPTC_STRING];
   char ReferenceService[MAX_IPTC_STRING];
   char CountryCode[MAX_IPTC_STRING];
+  char TimeCreated[MAX_IPTC_STRING];
+  char SubLocation[MAX_IPTC_STRING];
+  char ImageType[MAX_IPTC_STRING];
 } IPTCInfo_t;
+
+#define EXIF_COMMENT_CHARSET_CONVERTED -1 // Comments contains converted data
+#define EXIF_COMMENT_CHARSET_UNKNOWN    0 // Exif: Unknown
+#define EXIF_COMMENT_CHARSET_ASCII      2 // Exif: Ascii
+#define EXIF_COMMENT_CHARSET_UNICODE    3 // Exif: Unicode (UTF-16)
+#define EXIF_COMMENT_CHARSET_JIS        4 // Exif: JIS X208-1990
 
 #define MAX_COMMENT 2000
 #define MAX_DATE_COPIES 10
@@ -97,7 +107,9 @@ typedef struct {
     int   ExposureMode;
     int   ISOequivalent;
     int   LightSource;
+    int   CommentsCharset;             // EXIF_COMMENT_CHARSET_*
     char  Comments[MAX_COMMENT];
+    char  Description[MAX_COMMENT];
 
     unsigned ThumbnailOffset;          // Exif offset to thumbnail
     unsigned ThumbnailSize;            // Size of thumbnail.

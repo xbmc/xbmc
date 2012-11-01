@@ -49,7 +49,7 @@ static int encode_picture_lossless(AVCodecContext *avctx, unsigned char *buf, in
     init_put_bits(&s->pb, buf, buf_size);
 
     *p = *pict;
-    p->pict_type= FF_I_TYPE;
+    p->pict_type= AV_PICTURE_TYPE_I;
     p->key_frame= 1;
 
     ff_mjpeg_encode_picture_header(s);
@@ -187,12 +187,12 @@ static int encode_picture_lossless(AVCodecContext *avctx, unsigned char *buf, in
 
 
 AVCodec ff_ljpeg_encoder = { //FIXME avoid MPV_* lossless JPEG should not need them
-    "ljpeg",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_LJPEG,
-    sizeof(MpegEncContext),
-    MPV_encode_init,
-    encode_picture_lossless,
-    MPV_encode_end,
-    .long_name = NULL_IF_CONFIG_SMALL("Lossless JPEG"),
+    .name           = "ljpeg",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_LJPEG,
+    .priv_data_size = sizeof(MpegEncContext),
+    .init           = MPV_encode_init,
+    .encode         = encode_picture_lossless,
+    .close          = MPV_encode_end,
+    .long_name      = NULL_IF_CONFIG_SMALL("Lossless JPEG"),
 };

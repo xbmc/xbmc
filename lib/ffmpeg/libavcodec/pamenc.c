@@ -20,7 +20,6 @@
  */
 
 #include "avcodec.h"
-#include "bytestream.h"
 #include "pnm.h"
 
 
@@ -40,7 +39,7 @@ static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf,
     }
 
     *p           = *pict;
-    p->pict_type = FF_I_TYPE;
+    p->pict_type = AV_PICTURE_TYPE_I;
     p->key_frame = 1;
 
     s->bytestream_start =
@@ -50,7 +49,7 @@ static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf,
     h = avctx->height;
     w = avctx->width;
     switch (avctx->pix_fmt) {
-    case PIX_FMT_MONOWHITE:
+    case PIX_FMT_MONOBLACK:
         n          = (w + 7) >> 3;
         depth      = 1;
         maxval     = 1;
@@ -62,39 +61,58 @@ static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf,
         maxval     = 255;
         tuple_type = "GRAYSCALE";
         break;
+    case PIX_FMT_GRAY16BE:
+        n          = w * 2;
+        depth      = 1;
+        maxval     = 0xFFFF;
+        tuple_type = "GRAYSCALE";
+        break;
+    case PIX_FMT_GRAY8A:
+        n          = w * 2;
+        depth      = 2;
+        maxval     = 255;
+        tuple_type = "GRAYSCALE_ALPHA";
+        break;
     case PIX_FMT_RGB24:
         n          = w * 3;
         depth      = 3;
         maxval     = 255;
         tuple_type = "RGB";
         break;
-    case PIX_FMT_RGB32:
+    case PIX_FMT_RGBA:
         n          = w * 4;
         depth      = 4;
         maxval     = 255;
+        tuple_type = "RGB_ALPHA";
+        break;
+    case PIX_FMT_RGB48BE:
+        n          = w * 6;
+        depth      = 3;
+        maxval     = 0xFFFF;
+        tuple_type = "RGB";
+        break;
+    case PIX_FMT_RGBA64BE:
+        n          = w * 8;
+        depth      = 4;
+        maxval     = 0xFFFF;
         tuple_type = "RGB_ALPHA";
         break;
     default:
         return -1;
     }
     snprintf(s->bytestream, s->bytestream_end - s->bytestream,
-             "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLETYPE %s\nENDHDR\n",
+             "P7\nWIDTH %d\nHEIGHT %d\nDEPTH %d\nMAXVAL %d\nTUPLTYPE %s\nENDHDR\n",
              w, h, depth, maxval, tuple_type);
     s->bytestream += strlen(s->bytestream);
 
     ptr      = p->data[0];
     linesize = p->linesize[0];
 
-    if (avctx->pix_fmt == PIX_FMT_RGB32) {
+    if (avctx->pix_fmt == PIX_FMT_MONOBLACK){
         int j;
-        unsigned int v;
-
         for (i = 0; i < h; i++) {
-            for (j = 0; j < w; j++) {
-                v = ((uint32_t *)ptr)[j];
-                bytestream_put_be24(&s->bytestream, v);
-                *s->bytestream++ = v >> 24;
-            }
+            for (j = 0; j < w; j++)
+                *s->bytestream++ = ptr[j >> 3] >> (7 - j & 7) & 1;
             ptr += linesize;
         }
     } else {
@@ -109,12 +127,12 @@ static int pam_encode_frame(AVCodecContext *avctx, unsigned char *outbuf,
 
 
 AVCodec ff_pam_encoder = {
-    "pam",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_PAM,
-    sizeof(PNMContext),
-    ff_pnm_init,
-    pam_encode_frame,
-    .pix_fmts  = (const enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGB32, PIX_FMT_GRAY8, PIX_FMT_MONOWHITE, PIX_FMT_NONE},
+    .name           = "pam",
+    .type           = AVMEDIA_TYPE_VIDEO,
+    .id             = CODEC_ID_PAM,
+    .priv_data_size = sizeof(PNMContext),
+    .init           = ff_pnm_init,
+    .encode         = pam_encode_frame,
+    .pix_fmts  = (const enum PixelFormat[]){PIX_FMT_RGB24, PIX_FMT_RGBA, PIX_FMT_RGB48BE, PIX_FMT_RGBA64BE, PIX_FMT_GRAY8, PIX_FMT_GRAY8A, PIX_FMT_GRAY16BE, PIX_FMT_MONOBLACK, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("PAM (Portable AnyMap) image"),
 };

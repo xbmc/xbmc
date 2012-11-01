@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDPlayerCodec.h"
-#include "Util.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"
@@ -28,6 +27,8 @@
 #include "cores/dvdplayer/DVDStreamInfo.h"
 #include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
 #include "utils/log.h"
+#include "settings/GUISettings.h"
+#include "URL.h"
 
 #include "AudioDecoder.h"
 
@@ -37,6 +38,7 @@ DVDPlayerCodec::DVDPlayerCodec()
   m_pDemuxer = NULL;
   m_pInputStream = NULL;
   m_pAudioCodec = NULL;
+  m_nAudioStream = -1;
   m_audioPos = 0;
   m_pPacket = NULL;
   m_decoded = NULL;;
@@ -134,7 +136,8 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   CDVDStreamInfo hint(*pStream, true);
 
-  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, false);
+  bool passthrough = AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode"));
+  m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint, passthrough);
   if (!m_pAudioCodec)
   {
     CLog::Log(LOGERROR, "%s: Could not create audio codec", __FUNCTION__);
@@ -155,10 +158,12 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     if (ReadPCM(dummy, nSize, &nSize) == READ_ERROR)
       ++nErrors;
 
-    // We always ask ffmpeg to return s16le
-    m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
+    m_DataFormat    = m_pAudioCodec->GetDataFormat();
+    m_BitsPerSample = CAEUtil::DataFormatToBits(m_DataFormat);
     m_SampleRate = m_pAudioCodec->GetSampleRate();
+    m_EncodedSampleRate = m_pAudioCodec->GetEncodedSampleRate();
     m_Channels = m_pAudioCodec->GetChannels();
+    m_ChannelInfo = m_pAudioCodec->GetChannelMap();
 
   }
   if (nErrors >= 10)
@@ -211,7 +216,7 @@ void DVDPlayerCodec::DeInit()
   m_nDecodedLen = 0;
 }
 
-__int64 DVDPlayerCodec::Seek(__int64 iSeekTime)
+int64_t DVDPlayerCodec::Seek(int64_t iSeekTime)
 {
   if (m_pPacket)
     CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);

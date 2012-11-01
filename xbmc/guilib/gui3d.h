@@ -8,7 +8,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,9 +22,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,9 +31,11 @@
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
-#define D3DPRESENTFLAG_INTERLACED 1
-#define D3DPRESENTFLAG_WIDESCREEN 2
-#define D3DPRESENTFLAG_PROGRESSIVE 4
+#define D3DPRESENTFLAG_INTERLACED   1
+#define D3DPRESENTFLAG_WIDESCREEN   2
+#define D3DPRESENTFLAG_PROGRESSIVE  4
+#define D3DPRESENTFLAG_MODE3DSBS    8
+#define D3DPRESENTFLAG_MODE3DTB    16
 
 #define D3DFMT_LIN_A8R8G8B8 D3DFMT_A8R8G8B8
 #define D3DFMT_LIN_X8R8G8B8 D3DFMT_X8R8G8B8
@@ -66,40 +67,4 @@ struct D3DPalette
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
-#if defined(HAS_GL) || defined(HAS_GLES)
-
-namespace XBMC
-{
-  typedef void*  DevicePtr;
-  typedef GLuint SurfacePtr;
-  typedef GLuint TexturePtr;
-  typedef void* PalettePtr; // elis change it
-  typedef GLint PixelFormat; // elis change it
-}
-
-#if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
-#define GL_GLEXT_PROTOTYPES
-#endif
-
-#endif // HAS_GL
-
-#ifdef HAS_DX
-
-namespace XBMC
-{
-  typedef LPDIRECT3DDEVICE9  DevicePtr;
-  typedef LPDIRECT3DTEXTURE9 TexturePtr;
-  typedef LPDIRECT3DSURFACE9 SurfacePtr;
-  typedef LPDIRECT3DPALETTE8 PalettePtr;
-};
-
-#define DELETE_TEXTURE(texture) texture->Release()
-
-#endif // HAS_DX
-
-#ifdef HAS_GLES
-
-#define GLchar char
-
-#endif
 #endif // GUILIB_GUI3D_H

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2004-2010 Team XBMC
+ *      Copyright (C) 2004-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -93,7 +92,8 @@ extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
   _mkdir(visprops->profile);
 
   Preinit();
-  g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio);
+  if(!g_plugin || !g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio))
+    return ADDON_STATUS_UNKNOWN;
 
   return ADDON_STATUS_NEED_SAVEDSETTINGS; // We need some settings to be saved later before we quit this plugin
 }
@@ -112,22 +112,22 @@ extern "C" void ADDON_Stop()
   }
 }
 
-unsigned char waves[2][576];
+unsigned char waves[2][512];
 
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
 	int ipos=0;
-	while (ipos < 576)
+	while (ipos < 512)
 	{
 		for (int i=0; i < iAudioDataLength; i+=2)
 		{
-      waves[0][ipos] = char ((pAudioData[i] / 65535.0f) * 255.0f);
-      waves[1][ipos] = char ((pAudioData[i+1] / 65535.0f) * 255.0f);
+      waves[0][ipos] = char (pAudioData[i] * 255.0f);
+      waves[1][ipos] = char (pAudioData[i+1]  * 255.0f);
 			ipos++;
-			if (ipos >= 576) break;
+			if (ipos >= 512) break;
 		}
 	}
 }
@@ -264,7 +264,7 @@ extern "C" void ADDON_FreeSettings()
 //-----------------------------------------------------------------------------
 extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
 {
-  if (!id || !value)
+  if (!id || !value || !g_plugin)
     return ADDON_STATUS_UNKNOWN;
 
   if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -464,18 +463,33 @@ int CGUIControlGroup::GetFocusedControlID() const
 
 CGUIControl *CGUIControlGroup::GetFocusedControl() const
 {
+  // try lookup first
+  if (m_focusedControl)
+  {
+    // we may have multiple controls with same id - we pick first that has focus
+    pair<LookupMap::const_iterator, LookupMap::const_iterator> range = m_lookup.equal_range(m_focusedControl);
+    for (LookupMap::const_iterator i = range.first; i != range.second; ++i)
+    {
+      if (i->second->HasFocus())
+        return i->second;
+    }
+  }
+
+  // if lookup didn't find focused control, iterate m_children to find it
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     const CGUIControl* control = *it;
-    if (control->HasFocus())
+    // Avoid calling HasFocus() on control group as it will (possibly) recursively
+    // traverse entire group tree just to check if there is focused control.
+    // We are recursively traversing it here so no point in doing it twice.
+    if (control->IsGroup())
     {
-      if (control->IsGroup())
-      {
-        CGUIControlGroup *group = (CGUIControlGroup *)control;
-        return group->GetFocusedControl();
-      }
-      return (CGUIControl *)control;
+      CGUIControl* focusedControl = ((CGUIControlGroup *)control)->GetFocusedControl();
+      if (focusedControl)
+        return (CGUIControl *)focusedControl;
     }
+    else if (control->HasFocus())
+      return (CGUIControl *)control;
   }
   return NULL;
 }

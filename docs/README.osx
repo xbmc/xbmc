@@ -1,0 +1,195 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Install required libs
+  3.1. Install Xcode
+  3.2. Install XBMC build depends
+4. How to compile and run
+	4.1 Using XCode
+	4.2 Using Command line
+5. Packaging
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+This is a platform port of XBMC for the Apple OSX operating system. 10.6, 10.7
+and 10.8 Intel development platforms are supported. Xcode 3.2.6 and 4.3 and newer
+are the recommended versions.
+There are 3 ways to build XBMC for Mac, from command-line with make, from command-line
+using xcodebuild or from Xcode.
+
+Generally, Xcode is the easiest as it presents the build system in a GUI environment.
+The command-line build is still under development.
+
+XBMC for Mac is composed of a main binary with numerous dynamic libraries and
+codecs that support a multitude of music and video formats.
+
+On Snow Leopard (OSX 10.6.x) we recommend using Xcode 3.2.6.
+On Lion (OSX 10.7.x) we recommend using Xcode 4.3.x.
+On Mountain Lion (OSX 10.8.1) we recommend using Xcode 4.4.
+
+NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
+commands that need to be typed into a Terminal window. Note that the '$'
+character itself should NOT be typed as part of the command.
+
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+ $ cd $HOME
+ $ git clone git://github.com/xbmc/xbmc.git xbmc
+
+-----------------------------------------------------------------------------
+3.0 Install XCODE
+-----------------------------------------------------------------------------
+Install latest Xcode (4.3.2 or 3.2.6 as of the writing). You can download it from 
+
+1. Apple's site after registration at http://developer.apple.com/tools/download (Xcode 3.2.6)
+2. In the MacOSX AppStore (Xcode 4.3.x). 
+
+If you are using XCode 4.3.x or later you also need to install the "Command Line Tools". To do so
+after installing Xcode you have to go to "Xcode->Preferences->Downloads" and install the
+package "Command Line Tools".
+
+Xcode 3.2.6 only runs on 10.6.x (Snow Leopard). 
+Xcode 4.3.x only runs on 10.7.x (Lion).
+Xcode 4.4 only runs on 10.8.x (Mountain Lion).
+
+-----------------------------------------------------------------------------
+3.1 Install XBMC build depends
+-----------------------------------------------------------------------------
+
+3.1.1 Compiling as 32 Bit binary
+ $ cd $HOME/XBMC
+ $ cd tools/darwin/depends
+ $ ./bootstrap
+ $ ./configure --with-darwin=osx
+ $ make
+
+3.1.2 Compiling as 64 Bit binary
+ $ cd $HOME/XBMC
+ $ cd tools/darwin/depends
+ $ ./bootstrap
+ $ ./configure --with-darwin=osx --with-arch=x86_64
+ $ make
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+Both Xcode and Terminal compilation require that build environment be setup
+first. This is a simple step and involves the following:
+
+4.a Compilation by using command-line building via xcodebuild or
+    by compiling via Xcode GUI
+
+ $ cd $HOME/XBMC
+ $ make -C tools/darwin/depends/xbmc
+ $ make clean
+ $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
+
+4.b Compilation by using command-line building via make (experimental)
+
+ $ cd $HOME/XBMC
+ $ make -C tools/darwin/depends/xbmc
+ $ make clean
+
+The configure operation will setup the build environment for codecs and
+internal libraries that are used by XBMC. This step is required for both Xcode
+and command-line building. The "make clean" ensures that there are no stale
+binaries from git that might cause problems.
+
+-----------------------------------------------------------------------------
+4.1 Using Xcode
+-----------------------------------------------------------------------------
+Start XCode and open the XBMC project (XBMC.xcodeproj) located in $HOME/XBMC.
+For development, XBMC is run from the $HOME/XBMC directory and needs to have
+the XBMC_HOME environment variable set to know where that directory is located.
+To set XBMC_HOME environment variable:
+
+Xcode 3.2.6
+ Menu -> Project -> Edit Active Executable "XBMC", click "Arguments" tab and
+ add "XBMC_HOME" as an enviroment variable. Set the value to the path to the
+ XBMC root folder. For example, "/Users/bigdog/Documents/XBMC"
+
+Xcode 4.3.x and later
+ Menu -> Product -> Edit Sheme -> "Run XBMC"/"Debug" -> Add XBMC_HOME into 
+ the List of "Environment Variables".Set the value to the path to thev XBMC 
+ root folder. For example, "/Users/bigdog/Documents/XBMC"	
+
+There are two build targets "XBMC" and "XBMC.app" (each in 32Bit and 64Bit flavour) 
+with debug and release settings. The "XBMC" target is used for rapid build and 
+debug cycles while the "XBMC.app" target is used to build a self contained 
+OSX application.
+
+Set the build target to "XBMC" or "XBMC.app" and be sure to select the same 
+architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 for 64Bit), 
+then build. 
+
+The build process will take a long time when building the first time. 
+You can see the progress in "Build Results". There are a large number of static 
+and dynamic libaries that will need to be built. Once these are built, 
+subsequent builds will be faster.
+
+After the build, you can ether run XBMC for Mac from Xcode or run it from
+the command-line. If you run it from the command-line, make sure your set
+the XBMC_HOME environment variable (export XBMC_HOME=$HOME/XBMC). Then, to
+run the debug version:
+
+$ ./build/Debug/XBMC
+
+Or the release version:
+
+$ ./build/Release/XBMC
+
+You can also build via Xcode from the command-line using the following:
+
+$ xcodebuild -configuration Release ONLY_ACTIVE_ARCH=YES ARCHS=i386 VALID_ARCHS=i386 \
+  -target "XBMC.app" -project XBMC.xcodeproj
+
+You can specify "Release" instead of "Debug" as a configuration. Be sure to set *_ARCHS
+variables to the same architecture as selected in step 3.1 (either i386 for 32Bit or x86_64 
+for 64Bit).
+
+-----------------------------------------------------------------------------
+4.2 Using Terminal (command-line) (this is a work in progress and might fail)
+-----------------------------------------------------------------------------
+There are two methods, a) make/Xcode and b) make (which might fail as it's under
+construction).
+
+If you want to build a cross-compiled version that can run under 10.6/10.7, 
+you could try xcodebuild from the command-line (normally unneeded - for advanced
+developers).
+
+ a)
+ $ cd $HOME/XBMC
+ $ export XBMC_HOME=`pwd`
+ $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
+ $ xcodebuild -sdk macosx10.7 -project XBMC.xcodeproj -target XBMC.app ONLY_ACTIVE_ARCH=YES \
+   ARCHS=x86_64 VALID_ARCHS=x86_64  -configuration Release build
+
+ b) building via make
+ $ cd $HOME/XBMC
+ $ export XBMC_HOME=`pwd`
+ $ make
+ $ ./xbmc.bin
+
+-----------------------------------------------------------------------------
+5. Packaging
+-----------------------------------------------------------------------------
+This section describes how to package XBMC in a disk image for
+distribution.
+
+  1. build XBMC.app from XCode so that the application bundle is correctly updated.
+
+  2. make -C tools/darwin/packaging/xbmc-osx
+
+  3. If completed successfully, a disk image named XBMC_for_Mac.dmg will be
+  present in the users XBMC build directory:
+
+Remember to unmount/eject XBMC.dmg before attempting to recreate it,
+otherwise dmgmaker.pl will fail.
+

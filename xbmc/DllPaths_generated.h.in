@@ -2,7 +2,7 @@
 #define DLL_PATHS_GENERATED_H_
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,7 +28,6 @@
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif-@ARCH@.so"
-#define DLL_PATH_LIBID3TAG     "special://xbmcbin/system/libid3tag-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"
@@ -74,20 +72,16 @@
 #define DLL_PATH_LIBMAD        "@MAD_SONAME@"
 
 /* ffmpeg */
-#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-52-@ARCH@.so"
-#define DLL_PATH_LIBAVCORE     "special://xbmcbin/system/players/dvdplayer/avcore-0-@ARCH@.so"
-#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-52-@ARCH@.so"
-#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-50-@ARCH@.so"
-#define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-51-@ARCH@.so"
-#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0-@ARCH@.so"
-#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-1-@ARCH@.so"
+#define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-53-@ARCH@.so"
+#define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-53-@ARCH@.so"
+#define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-51-@ARCH@.so"
+#define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-52-@ARCH@.so"
+#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-2-@ARCH@.so"
+#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-2-@ARCH@.so"
+#define DLL_PATH_LIBSWRESAMPLE "special://xbmcbin/system/players/dvdplayer/swresample-0-@ARCH@.so"
 
 /* cdrip */
-#if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LAME_ENC      "libmp3lame.so.0"
-#else
-#define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc-@ARCH@.so"
-#endif
+#define DLL_PATH_LAME_ENC      "@LAMEENC_SONAME@"
 #define DLL_PATH_OGG           "@OGG_SONAME@"
 #define DLL_PATH_VORBIS_ENC    "@VORBISENC_SONAME@"
 #define DLL_PATH_VORBIS        "@VORBIS_SONAME@"

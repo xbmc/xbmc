@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -226,8 +225,8 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
 
   if (control)
   { // set the navigation of items so that they form a list
-    int beforeID = (m_orientation == VERTICAL) ? GetControlIdUp() : GetControlIdLeft();
-    int afterID = (m_orientation == VERTICAL) ? GetControlIdDown() : GetControlIdRight();
+    CGUIAction beforeAction = (m_orientation == VERTICAL) ? m_actionUp : m_actionLeft;
+    CGUIAction afterAction = (m_orientation == VERTICAL) ? m_actionDown : m_actionRight;
     if (m_children.size())
     {
       // we're inserting at the given position, so grab the items above and below and alter
@@ -237,55 +236,62 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
       if (position == 0)
       { // inserting at the beginning
         after = m_children[0];
-        if (afterID == GetID()) // we're wrapping around bottom->top, so we have to update the last item
+        if (!afterAction.HasActionsMeetingCondition() || afterAction.GetNavigation() == GetID()) // we're wrapping around bottom->top, so we have to update the last item
           before = m_children[m_children.size() - 1];
-        if (beforeID == GetID())   // we're wrapping around top->bottom
-          beforeID = m_children[m_children.size() - 1]->GetID();
-        afterID = after->GetID();
+        if (!beforeAction.HasActionsMeetingCondition() || beforeAction.GetNavigation() == GetID())   // we're wrapping around top->bottom
+          beforeAction = CGUIAction(m_children[m_children.size() - 1]->GetID());
+        afterAction = CGUIAction(after->GetID());
       }
       else if (position == (int)m_children.size())
       { // inserting at the end
         before = m_children[m_children.size() - 1];
-        if (beforeID == GetID())   // we're wrapping around top->bottom, so we have to update the first item
+        if (!beforeAction.HasActionsMeetingCondition() || beforeAction.GetNavigation() == GetID())   // we're wrapping around top->bottom, so we have to update the first item
           after = m_children[0];
-        if (afterID == GetID()) // we're wrapping around bottom->top
-          afterID = m_children[0]->GetID();
-        beforeID = before->GetID();
+        if (!afterAction.HasActionsMeetingCondition() || afterAction.GetNavigation() == GetID()) // we're wrapping around bottom->top
+          afterAction = CGUIAction(m_children[0]->GetID());
+        beforeAction = CGUIAction(before->GetID());
       }
       else
       { // inserting somewhere in the middle
         before = m_children[position - 1];
         after = m_children[position];
-        beforeID = before->GetID();
-        afterID = after->GetID();
+        beforeAction = CGUIAction(before->GetID());
+        afterAction = CGUIAction(after->GetID());
       }
       if (m_orientation == VERTICAL)
       {
         if (before) // update the DOWN action to point to us
-          before->SetNavigation(before->GetControlIdUp(), control->GetID(), GetControlIdLeft(), GetControlIdRight(), GetControlIdBack());
+          before->SetNavigationAction(ACTION_MOVE_DOWN, CGUIAction(control->GetID()));
         if (after) // update the UP action to point to us
-          after->SetNavigation(control->GetID(), after->GetControlIdDown(), GetControlIdLeft(), GetControlIdRight(), GetControlIdBack());
+          after->SetNavigationAction(ACTION_MOVE_UP, CGUIAction(control->GetID()));
       }
       else
       {
         if (before) // update the RIGHT action to point to us
-          before->SetNavigation(GetControlIdUp(), GetControlIdDown(), before->GetControlIdLeft(), control->GetID(), GetControlIdBack());
+          before->SetNavigationAction(ACTION_MOVE_RIGHT, CGUIAction(control->GetID()));
         if (after) // update the LEFT action to point to us
-          after->SetNavigation(GetControlIdUp(), GetControlIdDown(), control->GetID(), after->GetControlIdRight(), GetControlIdBack());
+          after->SetNavigationAction(ACTION_MOVE_LEFT, CGUIAction(control->GetID()));
       }
     }
     // now the control's nav
-    CGUIAction empty;
+    // set navigation path on orientation axis
+    // and try to apply other nav actions from grouplist
+    // don't override them if child have already defined actions
     if (m_orientation == VERTICAL)
     {
-      control->SetNavigation(beforeID, afterID, GetControlIdLeft(), GetControlIdRight(), GetControlIdBack());
-      control->SetNavigationActions(empty, empty, m_actionLeft, m_actionRight, empty, false);
+      control->SetNavigationAction(ACTION_MOVE_UP, beforeAction);
+      control->SetNavigationAction(ACTION_MOVE_DOWN, afterAction);
+      control->SetNavigationAction(ACTION_MOVE_LEFT, m_actionLeft, false);
+      control->SetNavigationAction(ACTION_MOVE_RIGHT, m_actionRight, false);
     }
     else
     {
-      control->SetNavigation(GetControlIdUp(), GetControlIdDown(), beforeID, afterID, GetControlIdBack());
-      control->SetNavigationActions(m_actionUp, m_actionDown, empty, empty, empty, false);
+      control->SetNavigationAction(ACTION_MOVE_LEFT, beforeAction);
+      control->SetNavigationAction(ACTION_MOVE_RIGHT, afterAction);
+      control->SetNavigationAction(ACTION_MOVE_UP, m_actionUp, false);
+      control->SetNavigationAction(ACTION_MOVE_DOWN, m_actionDown, false);
     }
+    control->SetNavigationAction(ACTION_NAV_BACK, m_actionBack, false);
 
     if (!m_useControlPositions)
       control->SetPosition(0,0);

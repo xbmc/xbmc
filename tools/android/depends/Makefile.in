@@ -1,0 +1,90 @@
+#include Makefile.include
+
+BUILDTOOLS = help2man gettext-native autoconf automake libtool pkg-config yasm cmake
+
+SUBDIRS = \
+	ncurses pcre expat libiconv gettext readline sqlite3 libgpg-error \
+	libgcrypt bzip2 liblzo2 libzip freetype2 fontconfig \
+	openssl libssh2 curl \
+	libjpeg-turbo tiff jasper libpng \
+	libogg libvorbis libflac libmad fribidi libmpeg2 \
+	libass libsamplerate \
+	libmodplug librtmp libxml2 yajl libmicrohttpd mysql libffi \
+	python26-native python26 samba alsa-lib libcdio afpfs-ng libshairport \
+	libplist libcec libbluray boost tinyxml dummy-libxbmc libsdl \
+	liblzo2-native libjpeg-turbo-native libpng-native tiff-native libsdl_image rpl \
+	libamplayer libssh taglib swig-native pcre-native xbmc-pvr-addons
+
+.PHONY: buildtools $(BUILDTOOLS) subdirs $(SUBDIRS) arm
+
+all: subdirs
+	@echo "Dependencies built successfully."
+
+release: armeabi-v7a x86
+
+# Dependency layout for parallel builds
+gettext: libiconv ncurses
+libgcrypt: libgpg-error
+fontconfig: freetype2 expat libiconv
+libssh2: libgcrypt openssl rpl
+curl: openssl libssh2 rpl
+tiff: libjpeg-turbo
+jasper: libjpeg-turbo
+libvorbis: libogg rpl
+libflac: libogg gettext rpl
+libass: fontconfig libpng freetype2 expat libiconv rpl
+librtmp: openssl rpl
+libxml2: libiconv
+libmicrohttpd: openssl libgpg-error libgcrypt
+python26: python26-native expat gettext libxml2 sqlite3 openssl libffi
+libcdio: libiconv
+afpfs-ng: libgcrypt readline libiconv rpl
+libshairport: openssl rpl
+libplist: libxml2 cmake
+libbluray: libiconv libxml2 rpl
+yajl: cmake
+libsdl_image: buildtools libsdl libjpeg-turbo-native libpng-native tiff-native
+python26-native: buildtools
+libsdl: buildtools
+alsa-lib: rpl
+libcec: rpl
+libmad: rpl
+libmodplug: rpl
+libmpeg2: rpl
+libogg: rpl
+rpl: python26-native
+libjpeg-turbo-native: buildtools
+libpng-native: buildtools
+tiff-native: buildtools libjpeg-turbo-native 
+liblzo2-native: buildtools
+libssh: openssl cmake rpl
+taglib: cmake
+swig-native: buildtools pcre-native
+pcre-native: buildtools
+
+
+X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)
+ARMOVERRIDES=XBMC_OVERRIDE_HOST=arm-linux-androideabi XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_ARM_TOOLCHAIN)
+
+buildtools: $(BUILDTOOLS)
+$(BUILDTOOLS):
+	$(MAKE) -C $@
+
+subdirs: $(SUBDIRS)
+$(SUBDIRS): help2man autoconf automake libtool pkg-config yasm
+	$(MAKE) -C $@
+clean:
+	for d in $(BUILDTOOLS); do $(MAKE) -C $$d clean; done
+	for d in $(SUBDIRS); do $(MAKE) -C $$d clean; done
+
+distclean::
+	for d in $(BUILDTOOLS); do $(MAKE) -C $$d distclean; done
+	for d in $(SUBDIRS); do $(MAKE) -C $$d distclean; done
+
+arm: armeabi-v7a
+
+armeabi-v7a: $(XBMC_ARM_TOOLCHAIN)
+	XBMC_OVERRIDE_PLATFORM=$@ $(ARMOVERRIDES) $(MAKE) all
+
+x86: $(XBMC_X86_TOOLCHAIN)
+	XBMC_OVERRIDE_PLATFORM=$@ $(X86OVERRIDES) $(MAKE) all

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -134,6 +133,7 @@ void CPeripheralBus::Clear(void)
 void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &results)
 {
   CSingleLock lock(m_critSection);
+  vector<CPeripheral *> removedPeripherals;
   for (int iDevicePtr = (int) m_peripherals.size() - 1; iDevicePtr >= 0; iDevicePtr--)
   {
     CPeripheral *peripheral = m_peripherals.at(iDevicePtr);
@@ -142,14 +142,26 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
         updatedDevice != *peripheral)
     {
       /* device removed */
-      if (peripheral->Type() != PERIPHERAL_UNKNOWN)
-        CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+      removedPeripherals.push_back(peripheral);
       m_peripherals.erase(m_peripherals.begin() + iDevicePtr);
-      lock.Leave();
-
-      m_manager->OnDeviceDeleted(*this, *peripheral);
-      delete peripheral;
     }
+  }
+  lock.Leave();
+
+  for (unsigned int iDevicePtr = 0; iDevicePtr < removedPeripherals.size(); iDevicePtr++)
+  {
+    CPeripheral *peripheral = removedPeripherals.at(iDevicePtr);
+    vector<PeripheralFeature> features;
+    peripheral->GetFeatures(features);
+    bool peripheralHasFeatures = features.size() > 1 || (features.size() == 1 && features.at(0) != FEATURE_UNKNOWN);
+    if (peripheral->Type() != PERIPHERAL_UNKNOWN || peripheralHasFeatures)
+    {
+      CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+      peripheral->OnDeviceRemoved();
+    }
+
+    m_manager->OnDeviceDeleted(*this, *peripheral);
+    delete peripheral;
   }
 }
 
@@ -323,6 +335,7 @@ void CPeripheralBus::GetDirectory(const CStdString &strPath, CFileItemList &item
     peripheralFile->SetProperty("bus", PeripheralTypeTranslator::BusTypeToString(peripheral->GetBusType()));
     peripheralFile->SetProperty("location", peripheral->Location());
     peripheralFile->SetProperty("class", PeripheralTypeTranslator::TypeToString(peripheral->Type()));
+    peripheralFile->SetProperty("version", peripheral->GetVersionInfo());
     items.Add(peripheralFile);
   }
 }

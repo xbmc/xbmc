@@ -2,7 +2,7 @@
 #define __XBMC_VIS_H__
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,7 +28,7 @@ extern "C"
 {
   // Functions that your visualisation must implement
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-  void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+  void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
   bool OnAction(long action, const void *param);
   void GetInfo(VIS_INFO* pInfo);

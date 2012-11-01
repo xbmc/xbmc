@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2004-2006, Eric Lund
+ *  Copyright (C) 2004-2010, Eric Lund
  *  http://www.mvpmc.org/
  *
  *  This library is free software; you can redistribute it and/or
@@ -23,18 +23,12 @@
  *               and cmyth_timestamp_t and between time_t and
  *               cmyth_timestamp_t.
  */
-#include <sys/types.h>
 #include <stdlib.h>
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
-#include <ctype.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <errno.h>
 #include <string.h>
 #include <cmyth_local.h>
-#include <time.h>
-
 
 /*
  * cmyth_timestamp_create(void)

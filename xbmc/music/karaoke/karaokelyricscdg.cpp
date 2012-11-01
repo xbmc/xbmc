@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
+#include "system.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
-#include "system.h"
 #include "guilib/Texture.h"
 #include "guilib/GUITexture.h"
 #include "settings/AdvancedSettings.h"
@@ -64,7 +63,7 @@ bool CKaraokeLyricsCDG::HasVideo()
   return false;
 }
 
-void CKaraokeLyricsCDG::GetVideoParameters(CStdString & path, __int64 & offset)
+void CKaraokeLyricsCDG::GetVideoParameters(CStdString & path, int64_t & offset)
 {
   // no bg video
 }
@@ -89,7 +88,7 @@ void CKaraokeLyricsCDG::setPixel( int x, int y, BYTE color )
 {
   unsigned int offset = x + y * CDG_FULL_WIDTH;
 
-  if ( x < 0 || y < 0 || offset > CDG_FULL_HEIGHT * CDG_FULL_WIDTH )
+  if ( x < 0 || y < 0 || offset >= CDG_FULL_HEIGHT * CDG_FULL_WIDTH )
   {
 	CLog::Log( LOGERROR, "CDG renderer: set pixel (%d,%d) is out of boundary", x, y );
 	return;

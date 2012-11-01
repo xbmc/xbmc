@@ -1,4 +1,4 @@
-include ../Makefile.include
+include ../Makefile.buildtools
 
 # lib name, version
 APPNAME=m4

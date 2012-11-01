@@ -81,7 +81,7 @@
 			<posy>95</posy>
 			<width>460</width>
 			<align>left</align>
-			<font>font16caps</font>
+			<font>font16</font>
 			<textcolor>white</textcolor>
 		</control>
 		<control type="label">

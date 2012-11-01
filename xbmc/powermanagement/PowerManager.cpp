@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,13 +36,15 @@
 #include "utils/LCDFactory.h"
 #endif
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
 
 /* PLEX */
 #include "Helper/PlexHelper.h"
 /* END PLEX */
 
+#elif defined(TARGET_ANDROID)
+#include "android/AndroidPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
@@ -71,8 +72,10 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
-#if defined(__APPLE__)
+#if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
+#elif defined(TARGET_ANDROID)
+  m_instance = new CAndroidPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleUPowerSyscall();
@@ -198,6 +201,7 @@ void CPowerManager::OnSleep()
   CBuiltins::Execute("LIRC.Stop");
 #endif
 
+  g_application.SaveFileState(true);
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
@@ -210,7 +214,7 @@ void CPowerManager::OnWake()
   // reset out timers
   g_application.ResetShutdownTimers();
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
   if (g_Windowing.IsFullScreen())
   {
 #ifdef _WIN32

@@ -31,6 +31,7 @@
 #include "libavcodec/ac3dec.h"
 #include "dsputil_mmx.h"
 #include "idct_xvid.h"
+#include "diracdsp_mmx.h"
 
 //#undef NDEBUG
 //#include <assert.h>
@@ -42,7 +43,8 @@ DECLARE_ALIGNED(8,  const uint64_t, ff_wtwo) = 0x0002000200020002ULL;
 DECLARE_ALIGNED(16, const uint64_t, ff_pdw_80000000)[2] =
 {0x8000000080000000ULL, 0x8000000080000000ULL};
 
-DECLARE_ALIGNED(8,  const uint64_t, ff_pw_1  ) = 0x0001000100010001ULL;
+DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_1  ) = {0x0001000100010001ULL, 0x0001000100010001ULL};
+DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_2  ) = {0x0002000200020002ULL, 0x0002000200020002ULL};
 DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_3  ) = {0x0003000300030003ULL, 0x0003000300030003ULL};
 DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_4  ) = {0x0004000400040004ULL, 0x0004000400040004ULL};
 DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_5  ) = {0x0005000500050005ULL, 0x0005000500050005ULL};
@@ -63,6 +65,8 @@ DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_64 ) = {0x0040004000400040ULL, 0x00400
 DECLARE_ALIGNED(8,  const uint64_t, ff_pw_96 ) = 0x0060006000600060ULL;
 DECLARE_ALIGNED(8,  const uint64_t, ff_pw_128) = 0x0080008000800080ULL;
 DECLARE_ALIGNED(8,  const uint64_t, ff_pw_255) = 0x00ff00ff00ff00ffULL;
+DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_512) = {0x0200020002000200ULL, 0x0200020002000200ULL};
+DECLARE_ALIGNED(16, const xmm_reg,  ff_pw_1019)= {0x03FB03FB03FB03FBULL, 0x03FB03FB03FB03FBULL};
 
 DECLARE_ALIGNED(16, const xmm_reg,  ff_pb_0  ) = {0x0000000000000000ULL, 0x0000000000000000ULL};
 DECLARE_ALIGNED(16, const xmm_reg,  ff_pb_1  ) = {0x0101010101010101ULL, 0x0101010101010101ULL};
@@ -286,9 +290,6 @@ void ff_put_pixels_clamped_mmx(const DCTELEM *block, uint8_t *pixels, int line_s
             :"memory");
 }
 
-DECLARE_ASM_CONST(8, uint8_t, ff_vector128)[8] =
-  { 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80 };
-
 #define put_signed_pixels_clamped_mmx_half(off) \
             "movq    "#off"(%2), %%mm1          \n\t"\
             "movq 16+"#off"(%2), %%mm2          \n\t"\
@@ -313,7 +314,7 @@ void ff_put_signed_pixels_clamped_mmx(const DCTELEM *block, uint8_t *pixels, int
     x86_reg line_skip3;
 
     __asm__ volatile (
-            "movq "MANGLE(ff_vector128)", %%mm0 \n\t"
+            "movq "MANGLE(ff_pb_80)", %%mm0 \n\t"
             "lea (%3, %3, 2), %1                \n\t"
             put_signed_pixels_clamped_mmx_half(0)
             "lea (%0, %3, 4), %0                \n\t"
@@ -458,12 +459,12 @@ static void put_pixels16_sse2(uint8_t *block, const uint8_t *pixels, int line_si
          "movdqu (%1,%3), %%xmm1        \n\t"
          "movdqu (%1,%3,2), %%xmm2      \n\t"
          "movdqu (%1,%4), %%xmm3        \n\t"
+         "lea (%1,%3,4), %1             \n\t"
          "movdqa %%xmm0, (%2)           \n\t"
          "movdqa %%xmm1, (%2,%3)        \n\t"
          "movdqa %%xmm2, (%2,%3,2)      \n\t"
          "movdqa %%xmm3, (%2,%4)        \n\t"
          "subl $4, %0                   \n\t"
-         "lea (%1,%3,4), %1             \n\t"
          "lea (%2,%3,4), %2             \n\t"
          "jnz 1b                        \n\t"
          : "+g"(h), "+r" (pixels),  "+r" (block)
@@ -480,6 +481,7 @@ static void avg_pixels16_sse2(uint8_t *block, const uint8_t *pixels, int line_si
          "movdqu (%1,%3), %%xmm1        \n\t"
          "movdqu (%1,%3,2), %%xmm2      \n\t"
          "movdqu (%1,%4), %%xmm3        \n\t"
+         "lea (%1,%3,4), %1             \n\t"
          "pavgb  (%2), %%xmm0           \n\t"
          "pavgb  (%2,%3), %%xmm1        \n\t"
          "pavgb  (%2,%3,2), %%xmm2      \n\t"
@@ -489,7 +491,6 @@ static void avg_pixels16_sse2(uint8_t *block, const uint8_t *pixels, int line_si
          "movdqa %%xmm2, (%2,%3,2)      \n\t"
          "movdqa %%xmm3, (%2,%4)        \n\t"
          "subl $4, %0                   \n\t"
-         "lea (%1,%3,4), %1             \n\t"
          "lea (%2,%3,4), %2             \n\t"
          "jnz 1b                        \n\t"
          : "+g"(h), "+r" (pixels),  "+r" (block)
@@ -582,29 +583,7 @@ static void add_bytes_mmx(uint8_t *dst, uint8_t *src, int w){
         dst[i+0] += src[i+0];
 }
 
-static void add_bytes_l2_mmx(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w){
-    x86_reg i=0;
-    __asm__ volatile(
-        "jmp 2f                         \n\t"
-        "1:                             \n\t"
-        "movq   (%2, %0), %%mm0         \n\t"
-        "movq  8(%2, %0), %%mm1         \n\t"
-        "paddb  (%3, %0), %%mm0         \n\t"
-        "paddb 8(%3, %0), %%mm1         \n\t"
-        "movq %%mm0,  (%1, %0)          \n\t"
-        "movq %%mm1, 8(%1, %0)          \n\t"
-        "add $16, %0                    \n\t"
-        "2:                             \n\t"
-        "cmp %4, %0                     \n\t"
-        " js 1b                         \n\t"
-        : "+r" (i)
-        : "r"(dst), "r"(src1), "r"(src2), "r"((x86_reg)w-15)
-    );
-    for(; i<w; i++)
-        dst[i] = src1[i] + src2[i];
-}
-
-#if HAVE_7REGS && HAVE_TEN_OPERANDS
+#if HAVE_7REGS
 static void add_hfyu_median_prediction_cmov(uint8_t *dst, const uint8_t *top, const uint8_t *diff, int w, int *left, int *left_top) {
     x86_reg w2 = -w;
     x86_reg x;
@@ -786,7 +765,7 @@ static void h263_h_loop_filter_mmx(uint8_t *src, int stride, int qscale){
 
 /* draw the edges of width 'w' of an image of size width, height
    this mmx version can only handle w==8 || w==16 */
-static void draw_edges_mmx(uint8_t *buf, int wrap, int width, int height, int w)
+static void draw_edges_mmx(uint8_t *buf, int wrap, int width, int height, int w, int h, int sides)
 {
     uint8_t *ptr, *last_line;
     int i;
@@ -839,112 +818,45 @@ static void draw_edges_mmx(uint8_t *buf, int wrap, int width, int height, int w)
         );
     }
 
-    for(i=0;i<w;i+=4) {
-        /* top and bottom (and hopefully also the corners) */
-        ptr= buf - (i + 1) * wrap - w;
-        __asm__ volatile(
-                "1:                             \n\t"
-                "movq (%1, %0), %%mm0           \n\t"
-                "movq %%mm0, (%0)               \n\t"
-                "movq %%mm0, (%0, %2)           \n\t"
-                "movq %%mm0, (%0, %2, 2)        \n\t"
-                "movq %%mm0, (%0, %3)           \n\t"
-                "add $8, %0                     \n\t"
-                "cmp %4, %0                     \n\t"
-                " jb 1b                         \n\t"
-                : "+r" (ptr)
-                : "r" ((x86_reg)buf - (x86_reg)ptr - w), "r" ((x86_reg)-wrap), "r" ((x86_reg)-wrap*3), "r" (ptr+width+2*w)
-        );
-        ptr= last_line + (i + 1) * wrap - w;
-        __asm__ volatile(
-                "1:                             \n\t"
-                "movq (%1, %0), %%mm0           \n\t"
-                "movq %%mm0, (%0)               \n\t"
-                "movq %%mm0, (%0, %2)           \n\t"
-                "movq %%mm0, (%0, %2, 2)        \n\t"
-                "movq %%mm0, (%0, %3)           \n\t"
-                "add $8, %0                     \n\t"
-                "cmp %4, %0                     \n\t"
-                " jb 1b                         \n\t"
-                : "+r" (ptr)
-                : "r" ((x86_reg)last_line - (x86_reg)ptr - w), "r" ((x86_reg)wrap), "r" ((x86_reg)wrap*3), "r" (ptr+width+2*w)
-        );
+    /* top and bottom (and hopefully also the corners) */
+    if (sides&EDGE_TOP) {
+        for(i = 0; i < h; i += 4) {
+            ptr= buf - (i + 1) * wrap - w;
+            __asm__ volatile(
+                    "1:                             \n\t"
+                    "movq (%1, %0), %%mm0           \n\t"
+                    "movq %%mm0, (%0)               \n\t"
+                    "movq %%mm0, (%0, %2)           \n\t"
+                    "movq %%mm0, (%0, %2, 2)        \n\t"
+                    "movq %%mm0, (%0, %3)           \n\t"
+                    "add $8, %0                     \n\t"
+                    "cmp %4, %0                     \n\t"
+                    " jb 1b                         \n\t"
+                    : "+r" (ptr)
+                    : "r" ((x86_reg)buf - (x86_reg)ptr - w), "r" ((x86_reg)-wrap), "r" ((x86_reg)-wrap*3), "r" (ptr+width+2*w)
+            );
+        }
+    }
+
+    if (sides&EDGE_BOTTOM) {
+        for(i = 0; i < h; i += 4) {
+            ptr= last_line + (i + 1) * wrap - w;
+            __asm__ volatile(
+                    "1:                             \n\t"
+                    "movq (%1, %0), %%mm0           \n\t"
+                    "movq %%mm0, (%0)               \n\t"
+                    "movq %%mm0, (%0, %2)           \n\t"
+                    "movq %%mm0, (%0, %2, 2)        \n\t"
+                    "movq %%mm0, (%0, %3)           \n\t"
+                    "add $8, %0                     \n\t"
+                    "cmp %4, %0                     \n\t"
+                    " jb 1b                         \n\t"
+                    : "+r" (ptr)
+                    : "r" ((x86_reg)last_line - (x86_reg)ptr - w), "r" ((x86_reg)wrap), "r" ((x86_reg)wrap*3), "r" (ptr+width+2*w)
+            );
+        }
     }
 }
-
-#define PAETH(cpu, abs3)\
-static void add_png_paeth_prediction_##cpu(uint8_t *dst, uint8_t *src, uint8_t *top, int w, int bpp)\
-{\
-    x86_reg i = -bpp;\
-    x86_reg end = w-3;\
-    __asm__ volatile(\
-        "pxor      %%mm7, %%mm7 \n"\
-        "movd    (%1,%0), %%mm0 \n"\
-        "movd    (%2,%0), %%mm1 \n"\
-        "punpcklbw %%mm7, %%mm0 \n"\
-        "punpcklbw %%mm7, %%mm1 \n"\
-        "add       %4, %0 \n"\
-        "1: \n"\
-        "movq      %%mm1, %%mm2 \n"\
-        "movd    (%2,%0), %%mm1 \n"\
-        "movq      %%mm2, %%mm3 \n"\
-        "punpcklbw %%mm7, %%mm1 \n"\
-        "movq      %%mm2, %%mm4 \n"\
-        "psubw     %%mm1, %%mm3 \n"\
-        "psubw     %%mm0, %%mm4 \n"\
-        "movq      %%mm3, %%mm5 \n"\
-        "paddw     %%mm4, %%mm5 \n"\
-        abs3\
-        "movq      %%mm4, %%mm6 \n"\
-        "pminsw    %%mm5, %%mm6 \n"\
-        "pcmpgtw   %%mm6, %%mm3 \n"\
-        "pcmpgtw   %%mm5, %%mm4 \n"\
-        "movq      %%mm4, %%mm6 \n"\
-        "pand      %%mm3, %%mm4 \n"\
-        "pandn     %%mm3, %%mm6 \n"\
-        "pandn     %%mm0, %%mm3 \n"\
-        "movd    (%3,%0), %%mm0 \n"\
-        "pand      %%mm1, %%mm6 \n"\
-        "pand      %%mm4, %%mm2 \n"\
-        "punpcklbw %%mm7, %%mm0 \n"\
-        "movq      %6,    %%mm5 \n"\
-        "paddw     %%mm6, %%mm0 \n"\
-        "paddw     %%mm2, %%mm3 \n"\
-        "paddw     %%mm3, %%mm0 \n"\
-        "pand      %%mm5, %%mm0 \n"\
-        "movq      %%mm0, %%mm3 \n"\
-        "packuswb  %%mm3, %%mm3 \n"\
-        "movd      %%mm3, (%1,%0) \n"\
-        "add       %4, %0 \n"\
-        "cmp       %5, %0 \n"\
-        "jle 1b \n"\
-        :"+r"(i)\
-        :"r"(dst), "r"(top), "r"(src), "r"((x86_reg)bpp), "g"(end),\
-         "m"(ff_pw_255)\
-        :"memory"\
-    );\
-}
-
-#define ABS3_MMX2\
-        "psubw     %%mm5, %%mm7 \n"\
-        "pmaxsw    %%mm7, %%mm5 \n"\
-        "pxor      %%mm6, %%mm6 \n"\
-        "pxor      %%mm7, %%mm7 \n"\
-        "psubw     %%mm3, %%mm6 \n"\
-        "psubw     %%mm4, %%mm7 \n"\
-        "pmaxsw    %%mm6, %%mm3 \n"\
-        "pmaxsw    %%mm7, %%mm4 \n"\
-        "pxor      %%mm7, %%mm7 \n"
-
-#define ABS3_SSSE3\
-        "pabsw     %%mm3, %%mm3 \n"\
-        "pabsw     %%mm4, %%mm4 \n"\
-        "pabsw     %%mm5, %%mm5 \n"
-
-PAETH(mmx2, ABS3_MMX2)
-#if HAVE_SSSE3
-PAETH(ssse3, ABS3_SSSE3)
-#endif
 
 #define QPEL_V_LOW(m3,m4,m5,m6, pw_20, pw_3, rnd, in0, in1, in2, in7, out, OP)\
         "paddw " #m4 ", " #m3 "           \n\t" /* x1 */\
@@ -1660,10 +1572,6 @@ QPEL_2TAP(put_,  8, 3dnow)
 QPEL_2TAP(avg_,  8, 3dnow)
 
 
-#if 0
-static void just_return(void) { return; }
-#endif
-
 #if HAVE_YASM
 typedef void emu_edge_core_func (uint8_t *buf, const uint8_t *src,
                                  x86_reg linesize, x86_reg start_y,
@@ -1874,7 +1782,7 @@ static void gmc_mmx(uint8_t *dst, uint8_t *src, int stride, int h, int ox, int o
                     int dxx, int dxy, int dyx, int dyy, int shift, int r, int width, int height)
 {
     gmc(dst, src, stride, h, ox, oy, dxx, dxy, dyx, dyy, shift, r,
-        width, height, &ff_emulated_edge_mc);
+        width, height, &ff_emulated_edge_mc_8);
 }
 #endif
 
@@ -1894,34 +1802,16 @@ PREFETCH(prefetch_3dnow, prefetch)
 
 void ff_put_h264_chroma_mc8_mmx_rnd   (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
-void ff_put_vc1_chroma_mc8_mmx_nornd  (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
-void ff_put_rv40_chroma_mc8_mmx       (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
 void ff_avg_h264_chroma_mc8_mmx2_rnd  (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
-void ff_avg_vc1_chroma_mc8_mmx2_nornd (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
-void ff_avg_rv40_chroma_mc8_mmx2      (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
 void ff_avg_h264_chroma_mc8_3dnow_rnd (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
-void ff_avg_vc1_chroma_mc8_3dnow_nornd(uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
-void ff_avg_rv40_chroma_mc8_3dnow     (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
 
 void ff_put_h264_chroma_mc4_mmx       (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
-void ff_put_rv40_chroma_mc4_mmx       (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
 void ff_avg_h264_chroma_mc4_mmx2      (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
-void ff_avg_rv40_chroma_mc4_mmx2      (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
 void ff_avg_h264_chroma_mc4_3dnow     (uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
-void ff_avg_rv40_chroma_mc4_3dnow     (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
 
 void ff_put_h264_chroma_mc2_mmx2      (uint8_t *dst, uint8_t *src,
@@ -1931,18 +1821,27 @@ void ff_avg_h264_chroma_mc2_mmx2      (uint8_t *dst, uint8_t *src,
 
 void ff_put_h264_chroma_mc8_ssse3_rnd (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
-void ff_put_vc1_chroma_mc8_ssse3_nornd(uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
 void ff_put_h264_chroma_mc4_ssse3     (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
 
 void ff_avg_h264_chroma_mc8_ssse3_rnd (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
-void ff_avg_vc1_chroma_mc8_ssse3_nornd(uint8_t *dst, uint8_t *src,
-                                       int stride, int h, int x, int y);
 void ff_avg_h264_chroma_mc4_ssse3     (uint8_t *dst, uint8_t *src,
                                        int stride, int h, int x, int y);
 
+#define CHROMA_MC(OP, NUM, DEPTH, OPT) \
+void ff_ ## OP ## _h264_chroma_mc ## NUM ## _ ## DEPTH ## _ ## OPT \
+                                      (uint8_t *dst, uint8_t *src,\
+                                       int stride, int h, int x, int y);
+
+CHROMA_MC(put, 2, 10, mmxext)
+CHROMA_MC(avg, 2, 10, mmxext)
+CHROMA_MC(put, 4, 10, mmxext)
+CHROMA_MC(avg, 4, 10, mmxext)
+CHROMA_MC(put, 8, 10, sse2)
+CHROMA_MC(avg, 8, 10, sse2)
+CHROMA_MC(put, 8, 10, avx)
+CHROMA_MC(avg, 8, 10, avx)
 
 /* CAVS specific */
 void ff_put_cavs_qpel8_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride) {
@@ -1965,6 +1864,84 @@ void ff_put_vc1_mspel_mc00_mmx(uint8_t *dst, const uint8_t *src, int stride, int
 void ff_avg_vc1_mspel_mc00_mmx2(uint8_t *dst, const uint8_t *src, int stride, int rnd) {
     avg_pixels8_mmx2(dst, src, stride, 8);
 }
+
+/* only used in VP3/5/6 */
+static void put_vp_no_rnd_pixels8_l2_mmx(uint8_t *dst, const uint8_t *a, const uint8_t *b, int stride, int h)
+{
+//    START_TIMER
+    MOVQ_BFE(mm6);
+    __asm__ volatile(
+        "1:                             \n\t"
+        "movq   (%1), %%mm0             \n\t"
+        "movq   (%2), %%mm1             \n\t"
+        "movq   (%1,%4), %%mm2          \n\t"
+        "movq   (%2,%4), %%mm3          \n\t"
+        PAVGBP_MMX_NO_RND(%%mm0, %%mm1, %%mm4,   %%mm2, %%mm3, %%mm5)
+        "movq   %%mm4, (%3)             \n\t"
+        "movq   %%mm5, (%3,%4)          \n\t"
+
+        "movq   (%1,%4,2), %%mm0        \n\t"
+        "movq   (%2,%4,2), %%mm1        \n\t"
+        "movq   (%1,%5), %%mm2          \n\t"
+        "movq   (%2,%5), %%mm3          \n\t"
+        "lea    (%1,%4,4), %1           \n\t"
+        "lea    (%2,%4,4), %2           \n\t"
+        PAVGBP_MMX_NO_RND(%%mm0, %%mm1, %%mm4,   %%mm2, %%mm3, %%mm5)
+        "movq   %%mm4, (%3,%4,2)        \n\t"
+        "movq   %%mm5, (%3,%5)          \n\t"
+        "lea    (%3,%4,4), %3           \n\t"
+        "subl   $4, %0                  \n\t"
+        "jnz    1b                      \n\t"
+        :"+r"(h), "+r"(a), "+r"(b), "+r"(dst)
+        :"r"((x86_reg)stride), "r"((x86_reg)3L*stride)
+        :"memory");
+//    STOP_TIMER("put_vp_no_rnd_pixels8_l2_mmx")
+}
+static void put_vp_no_rnd_pixels16_l2_mmx(uint8_t *dst, const uint8_t *a, const uint8_t *b, int stride, int h)
+{
+    put_vp_no_rnd_pixels8_l2_mmx(dst, a, b, stride, h);
+    put_vp_no_rnd_pixels8_l2_mmx(dst+8, a+8, b+8, stride, h);
+}
+
+#if CONFIG_DIRAC_DECODER
+#define DIRAC_PIXOP(OPNAME, EXT)\
+void ff_ ## OPNAME ## _dirac_pixels8_ ## EXT(uint8_t *dst, const uint8_t *src[5], int stride, int h)\
+{\
+    OPNAME ## _pixels8_ ## EXT(dst, src[0], stride, h);\
+}\
+void ff_ ## OPNAME ## _dirac_pixels16_ ## EXT(uint8_t *dst, const uint8_t *src[5], int stride, int h)\
+{\
+    OPNAME ## _pixels16_ ## EXT(dst, src[0], stride, h);\
+}\
+void ff_ ## OPNAME ## _dirac_pixels32_ ## EXT(uint8_t *dst, const uint8_t *src[5], int stride, int h)\
+{\
+    OPNAME ## _pixels16_ ## EXT(dst   , src[0]   , stride, h);\
+    OPNAME ## _pixels16_ ## EXT(dst+16, src[0]+16, stride, h);\
+}
+
+DIRAC_PIXOP(put, mmx)
+DIRAC_PIXOP(avg, mmx)
+DIRAC_PIXOP(avg, mmx2)
+
+void ff_put_dirac_pixels16_sse2(uint8_t *dst, const uint8_t *src[5], int stride, int h)
+{
+    put_pixels16_sse2(dst, src[0], stride, h);
+}
+void ff_avg_dirac_pixels16_sse2(uint8_t *dst, const uint8_t *src[5], int stride, int h)
+{
+    avg_pixels16_sse2(dst, src[0], stride, h);
+}
+void ff_put_dirac_pixels32_sse2(uint8_t *dst, const uint8_t *src[5], int stride, int h)
+{
+    put_pixels16_sse2(dst   , src[0]   , stride, h);
+    put_pixels16_sse2(dst+16, src[0]+16, stride, h);
+}
+void ff_avg_dirac_pixels32_sse2(uint8_t *dst, const uint8_t *src[5], int stride, int h)
+{
+    avg_pixels16_sse2(dst   , src[0]   , stride, h);
+    avg_pixels16_sse2(dst+16, src[0]+16, stride, h);
+}
+#endif
 
 /* XXX: those functions should be suppressed ASAP when all IDCTs are
    converted */
@@ -2401,15 +2378,45 @@ int32_t ff_scalarproduct_int16_sse2(const int16_t *v1, const int16_t *v2, int or
 int32_t ff_scalarproduct_and_madd_int16_mmx2(int16_t *v1, const int16_t *v2, const int16_t *v3, int order, int mul);
 int32_t ff_scalarproduct_and_madd_int16_sse2(int16_t *v1, const int16_t *v2, const int16_t *v3, int order, int mul);
 int32_t ff_scalarproduct_and_madd_int16_ssse3(int16_t *v1, const int16_t *v2, const int16_t *v3, int order, int mul);
+
+void ff_apply_window_int16_mmxext    (int16_t *output, const int16_t *input,
+                                      const int16_t *window, unsigned int len);
+void ff_apply_window_int16_mmxext_ba (int16_t *output, const int16_t *input,
+                                      const int16_t *window, unsigned int len);
+void ff_apply_window_int16_sse2      (int16_t *output, const int16_t *input,
+                                      const int16_t *window, unsigned int len);
+void ff_apply_window_int16_sse2_ba   (int16_t *output, const int16_t *input,
+                                      const int16_t *window, unsigned int len);
+void ff_apply_window_int16_ssse3     (int16_t *output, const int16_t *input,
+                                      const int16_t *window, unsigned int len);
+void ff_apply_window_int16_ssse3_atom(int16_t *output, const int16_t *input,
+                                      const int16_t *window, unsigned int len);
+
 void ff_add_hfyu_median_prediction_mmx2(uint8_t *dst, const uint8_t *top, const uint8_t *diff, int w, int *left, int *left_top);
 int  ff_add_hfyu_left_prediction_ssse3(uint8_t *dst, const uint8_t *src, int w, int left);
 int  ff_add_hfyu_left_prediction_sse4(uint8_t *dst, const uint8_t *src, int w, int left);
 
 float ff_scalarproduct_float_sse(const float *v1, const float *v2, int order);
 
+void ff_vector_clip_int32_mmx     (int32_t *dst, const int32_t *src, int32_t min,
+                                   int32_t max, unsigned int len);
+void ff_vector_clip_int32_sse2    (int32_t *dst, const int32_t *src, int32_t min,
+                                   int32_t max, unsigned int len);
+void ff_vector_clip_int32_int_sse2(int32_t *dst, const int32_t *src, int32_t min,
+                                   int32_t max, unsigned int len);
+void ff_vector_clip_int32_sse4    (int32_t *dst, const int32_t *src, int32_t min,
+                                   int32_t max, unsigned int len);
+
+extern void ff_butterflies_float_interleave_sse(float *dst, const float *src0,
+                                                const float *src1, int len);
+extern void ff_butterflies_float_interleave_avx(float *dst, const float *src0,
+                                                const float *src1, int len);
+
 void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
 {
     int mm_flags = av_get_cpu_flags();
+    const int high_bit_depth = avctx->bits_per_raw_sample > 8;
+    const int bit_depth = avctx->bits_per_raw_sample;
 
     if (avctx->dsp_mask) {
         if (avctx->dsp_mask & AV_CPU_FLAG_FORCE)
@@ -2436,7 +2443,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
     if (mm_flags & AV_CPU_FLAG_MMX) {
         const int idct_algo= avctx->idct_algo;
 
-        if(avctx->lowres==0){
+        if (avctx->lowres == 0 && avctx->bits_per_raw_sample <= 8) {
             if(idct_algo==FF_IDCT_AUTO || idct_algo==FF_IDCT_SIMPLEMMX){
                 c->idct_put= ff_simple_idct_put_mmx;
                 c->idct_add= ff_simple_idct_add_mmx;
@@ -2491,6 +2498,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->put_pixels_clamped = ff_put_pixels_clamped_mmx;
         c->put_signed_pixels_clamped = ff_put_signed_pixels_clamped_mmx;
         c->add_pixels_clamped = ff_add_pixels_clamped_mmx;
+        if (!high_bit_depth) {
         c->clear_block  = clear_block_mmx;
         c->clear_blocks = clear_blocks_mmx;
         if ((mm_flags & AV_CPU_FLAG_SSE) &&
@@ -2499,6 +2507,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->clear_block  = clear_block_sse;
             c->clear_blocks = clear_blocks_sse;
         }
+        }
 
 #define SET_HPEL_FUNCS(PFX, IDX, SIZE, CPU) \
         c->PFX ## _pixels_tab[IDX][0] = PFX ## _pixels ## SIZE ## _ ## CPU; \
@@ -2506,6 +2515,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->PFX ## _pixels_tab[IDX][2] = PFX ## _pixels ## SIZE ## _y2_ ## CPU; \
         c->PFX ## _pixels_tab[IDX][3] = PFX ## _pixels ## SIZE ## _xy2_ ## CPU
 
+        if (!high_bit_depth) {
         SET_HPEL_FUNCS(put, 0, 16, mmx);
         SET_HPEL_FUNCS(put_no_rnd, 0, 16, mmx);
         SET_HPEL_FUNCS(avg, 0, 16, mmx);
@@ -2514,18 +2524,23 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         SET_HPEL_FUNCS(put_no_rnd, 1, 8, mmx);
         SET_HPEL_FUNCS(avg, 1, 8, mmx);
         SET_HPEL_FUNCS(avg_no_rnd, 1, 8, mmx);
+        }
 
 #if ARCH_X86_32 || !HAVE_YASM
         c->gmc= gmc_mmx;
 #endif
 #if ARCH_X86_32 && HAVE_YASM
+        if (!high_bit_depth)
         c->emulated_edge_mc = emulated_edge_mc_mmx;
 #endif
 
         c->add_bytes= add_bytes_mmx;
-        c->add_bytes_l2= add_bytes_l2_mmx;
 
-        c->draw_edges = draw_edges_mmx;
+        if (!high_bit_depth)
+            c->draw_edges = draw_edges_mmx;
+
+        c->put_no_rnd_pixels_l2[0]= put_vp_no_rnd_pixels16_l2_mmx;
+        c->put_no_rnd_pixels_l2[1]= put_vp_no_rnd_pixels8_l2_mmx;
 
         if (CONFIG_H263_DECODER || CONFIG_H263_ENCODER) {
             c->h263_v_loop_filter= h263_v_loop_filter_mmx;
@@ -2533,17 +2548,18 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         }
 
 #if HAVE_YASM
+        if (!high_bit_depth && CONFIG_H264CHROMA) {
         c->put_h264_chroma_pixels_tab[0]= ff_put_h264_chroma_mc8_mmx_rnd;
         c->put_h264_chroma_pixels_tab[1]= ff_put_h264_chroma_mc4_mmx;
-        c->put_no_rnd_vc1_chroma_pixels_tab[0]= ff_put_vc1_chroma_mc8_mmx_nornd;
+        }
 
-        c->put_rv40_chroma_pixels_tab[0]= ff_put_rv40_chroma_mc8_mmx;
-        c->put_rv40_chroma_pixels_tab[1]= ff_put_rv40_chroma_mc4_mmx;
+        c->vector_clip_int32 = ff_vector_clip_int32_mmx;
 #endif
 
         if (mm_flags & AV_CPU_FLAG_MMX2) {
             c->prefetch = prefetch_mmx2;
 
+            if (!high_bit_depth) {
             c->put_pixels_tab[0][1] = put_pixels16_x2_mmx2;
             c->put_pixels_tab[0][2] = put_pixels16_y2_mmx2;
 
@@ -2557,14 +2573,17 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->avg_pixels_tab[1][0] = avg_pixels8_mmx2;
             c->avg_pixels_tab[1][1] = avg_pixels8_x2_mmx2;
             c->avg_pixels_tab[1][2] = avg_pixels8_y2_mmx2;
+            }
 
             if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
+                if (!high_bit_depth) {
                 c->put_no_rnd_pixels_tab[0][1] = put_no_rnd_pixels16_x2_mmx2;
                 c->put_no_rnd_pixels_tab[0][2] = put_no_rnd_pixels16_y2_mmx2;
                 c->put_no_rnd_pixels_tab[1][1] = put_no_rnd_pixels8_x2_mmx2;
                 c->put_no_rnd_pixels_tab[1][2] = put_no_rnd_pixels8_y2_mmx2;
                 c->avg_pixels_tab[0][3] = avg_pixels16_xy2_mmx2;
                 c->avg_pixels_tab[1][3] = avg_pixels8_xy2_mmx2;
+                }
 
                 if (CONFIG_VP3_DECODER && HAVE_YASM) {
                     c->vp3_v_loop_filter= ff_vp3_v_loop_filter_mmx2;
@@ -2581,68 +2600,82 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
                 c->put_no_rnd_pixels_tab[1][2] = put_no_rnd_pixels8_y2_exact_mmx2;
             }
 
-#define SET_QPEL_FUNCS(PFX, IDX, SIZE, CPU) \
-            c->PFX ## _pixels_tab[IDX][ 0] = PFX ## SIZE ## _mc00_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 1] = PFX ## SIZE ## _mc10_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 2] = PFX ## SIZE ## _mc20_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 3] = PFX ## SIZE ## _mc30_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 4] = PFX ## SIZE ## _mc01_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 5] = PFX ## SIZE ## _mc11_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 6] = PFX ## SIZE ## _mc21_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 7] = PFX ## SIZE ## _mc31_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 8] = PFX ## SIZE ## _mc02_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][ 9] = PFX ## SIZE ## _mc12_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][10] = PFX ## SIZE ## _mc22_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][11] = PFX ## SIZE ## _mc32_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][12] = PFX ## SIZE ## _mc03_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][13] = PFX ## SIZE ## _mc13_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][14] = PFX ## SIZE ## _mc23_ ## CPU; \
-            c->PFX ## _pixels_tab[IDX][15] = PFX ## SIZE ## _mc33_ ## CPU
+#define SET_QPEL_FUNCS(PFX, IDX, SIZE, CPU, PREFIX) \
+            c->PFX ## _pixels_tab[IDX][ 0] = PREFIX ## PFX ## SIZE ## _mc00_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 1] = PREFIX ## PFX ## SIZE ## _mc10_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 2] = PREFIX ## PFX ## SIZE ## _mc20_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 3] = PREFIX ## PFX ## SIZE ## _mc30_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 4] = PREFIX ## PFX ## SIZE ## _mc01_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 5] = PREFIX ## PFX ## SIZE ## _mc11_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 6] = PREFIX ## PFX ## SIZE ## _mc21_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 7] = PREFIX ## PFX ## SIZE ## _mc31_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 8] = PREFIX ## PFX ## SIZE ## _mc02_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][ 9] = PREFIX ## PFX ## SIZE ## _mc12_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][10] = PREFIX ## PFX ## SIZE ## _mc22_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][11] = PREFIX ## PFX ## SIZE ## _mc32_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][12] = PREFIX ## PFX ## SIZE ## _mc03_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][13] = PREFIX ## PFX ## SIZE ## _mc13_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][14] = PREFIX ## PFX ## SIZE ## _mc23_ ## CPU; \
+            c->PFX ## _pixels_tab[IDX][15] = PREFIX ## PFX ## SIZE ## _mc33_ ## CPU
 
-            SET_QPEL_FUNCS(put_qpel, 0, 16, mmx2);
-            SET_QPEL_FUNCS(put_qpel, 1, 8, mmx2);
-            SET_QPEL_FUNCS(put_no_rnd_qpel, 0, 16, mmx2);
-            SET_QPEL_FUNCS(put_no_rnd_qpel, 1, 8, mmx2);
-            SET_QPEL_FUNCS(avg_qpel, 0, 16, mmx2);
-            SET_QPEL_FUNCS(avg_qpel, 1, 8, mmx2);
+            SET_QPEL_FUNCS(put_qpel, 0, 16, mmx2, );
+            SET_QPEL_FUNCS(put_qpel, 1, 8, mmx2, );
+            SET_QPEL_FUNCS(put_no_rnd_qpel, 0, 16, mmx2, );
+            SET_QPEL_FUNCS(put_no_rnd_qpel, 1, 8, mmx2, );
+            SET_QPEL_FUNCS(avg_qpel, 0, 16, mmx2, );
+            SET_QPEL_FUNCS(avg_qpel, 1, 8, mmx2, );
 
-            SET_QPEL_FUNCS(put_h264_qpel, 0, 16, mmx2);
-            SET_QPEL_FUNCS(put_h264_qpel, 1, 8, mmx2);
-            SET_QPEL_FUNCS(put_h264_qpel, 2, 4, mmx2);
-            SET_QPEL_FUNCS(avg_h264_qpel, 0, 16, mmx2);
-            SET_QPEL_FUNCS(avg_h264_qpel, 1, 8, mmx2);
-            SET_QPEL_FUNCS(avg_h264_qpel, 2, 4, mmx2);
+            if (!high_bit_depth) {
+            SET_QPEL_FUNCS(put_h264_qpel, 0, 16, mmx2, );
+            SET_QPEL_FUNCS(put_h264_qpel, 1, 8, mmx2, );
+            SET_QPEL_FUNCS(put_h264_qpel, 2, 4, mmx2, );
+            SET_QPEL_FUNCS(avg_h264_qpel, 0, 16, mmx2, );
+            SET_QPEL_FUNCS(avg_h264_qpel, 1, 8, mmx2, );
+            SET_QPEL_FUNCS(avg_h264_qpel, 2, 4, mmx2, );
+            }
+            else if (bit_depth == 10) {
+#if HAVE_YASM
+#if !ARCH_X86_64
+                SET_QPEL_FUNCS(avg_h264_qpel, 0, 16, 10_mmxext, ff_);
+                SET_QPEL_FUNCS(put_h264_qpel, 0, 16, 10_mmxext, ff_);
+                SET_QPEL_FUNCS(put_h264_qpel, 1, 8,  10_mmxext, ff_);
+                SET_QPEL_FUNCS(avg_h264_qpel, 1, 8,  10_mmxext, ff_);
+#endif
+                SET_QPEL_FUNCS(put_h264_qpel, 2, 4,  10_mmxext, ff_);
+                SET_QPEL_FUNCS(avg_h264_qpel, 2, 4,  10_mmxext, ff_);
+#endif
+            }
 
-            SET_QPEL_FUNCS(put_2tap_qpel, 0, 16, mmx2);
-            SET_QPEL_FUNCS(put_2tap_qpel, 1, 8, mmx2);
-            SET_QPEL_FUNCS(avg_2tap_qpel, 0, 16, mmx2);
-            SET_QPEL_FUNCS(avg_2tap_qpel, 1, 8, mmx2);
+            SET_QPEL_FUNCS(put_2tap_qpel, 0, 16, mmx2, );
+            SET_QPEL_FUNCS(put_2tap_qpel, 1, 8, mmx2, );
+            SET_QPEL_FUNCS(avg_2tap_qpel, 0, 16, mmx2, );
+            SET_QPEL_FUNCS(avg_2tap_qpel, 1, 8, mmx2, );
 
 #if HAVE_YASM
-            c->avg_rv40_chroma_pixels_tab[0]= ff_avg_rv40_chroma_mc8_mmx2;
-            c->avg_rv40_chroma_pixels_tab[1]= ff_avg_rv40_chroma_mc4_mmx2;
-
-            c->avg_no_rnd_vc1_chroma_pixels_tab[0]= ff_avg_vc1_chroma_mc8_mmx2_nornd;
-
+            if (!high_bit_depth && CONFIG_H264CHROMA) {
             c->avg_h264_chroma_pixels_tab[0]= ff_avg_h264_chroma_mc8_mmx2_rnd;
             c->avg_h264_chroma_pixels_tab[1]= ff_avg_h264_chroma_mc4_mmx2;
             c->avg_h264_chroma_pixels_tab[2]= ff_avg_h264_chroma_mc2_mmx2;
             c->put_h264_chroma_pixels_tab[2]= ff_put_h264_chroma_mc2_mmx2;
+            }
+            if (bit_depth == 10 && CONFIG_H264CHROMA) {
+                c->put_h264_chroma_pixels_tab[2]= ff_put_h264_chroma_mc2_10_mmxext;
+                c->avg_h264_chroma_pixels_tab[2]= ff_avg_h264_chroma_mc2_10_mmxext;
+                c->put_h264_chroma_pixels_tab[1]= ff_put_h264_chroma_mc4_10_mmxext;
+                c->avg_h264_chroma_pixels_tab[1]= ff_avg_h264_chroma_mc4_10_mmxext;
+            }
 
             c->add_hfyu_median_prediction = ff_add_hfyu_median_prediction_mmx2;
 #endif
-#if HAVE_7REGS && HAVE_TEN_OPERANDS
-            if( mm_flags&AV_CPU_FLAG_3DNOW )
+#if HAVE_7REGS
+            if (HAVE_AMD3DNOW && (mm_flags & AV_CPU_FLAG_3DNOW))
                 c->add_hfyu_median_prediction = add_hfyu_median_prediction_cmov;
 #endif
 
-            if (CONFIG_VC1_DECODER)
-                ff_vc1dsp_init_mmx(c, avctx);
-
-            c->add_png_paeth_prediction= add_png_paeth_prediction_mmx2;
-        } else if (mm_flags & AV_CPU_FLAG_3DNOW) {
+        } else if (HAVE_AMD3DNOW && (mm_flags & AV_CPU_FLAG_3DNOW)) {
             c->prefetch = prefetch_3dnow;
 
+            if (!high_bit_depth) {
             c->put_pixels_tab[0][1] = put_pixels16_x2_3dnow;
             c->put_pixels_tab[0][2] = put_pixels16_y2_3dnow;
 
@@ -2665,6 +2698,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
                 c->avg_pixels_tab[0][3] = avg_pixels16_xy2_3dnow;
                 c->avg_pixels_tab[1][3] = avg_pixels8_xy2_3dnow;
             }
+            }
 
             if (CONFIG_VP3_DECODER
                 && (avctx->codec_id == CODEC_ID_VP3 || avctx->codec_id == CODEC_ID_THEORA)) {
@@ -2672,33 +2706,33 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
                 c->put_no_rnd_pixels_tab[1][2] = put_no_rnd_pixels8_y2_exact_3dnow;
             }
 
-            SET_QPEL_FUNCS(put_qpel, 0, 16, 3dnow);
-            SET_QPEL_FUNCS(put_qpel, 1, 8, 3dnow);
-            SET_QPEL_FUNCS(put_no_rnd_qpel, 0, 16, 3dnow);
-            SET_QPEL_FUNCS(put_no_rnd_qpel, 1, 8, 3dnow);
-            SET_QPEL_FUNCS(avg_qpel, 0, 16, 3dnow);
-            SET_QPEL_FUNCS(avg_qpel, 1, 8, 3dnow);
+            SET_QPEL_FUNCS(put_qpel, 0, 16, 3dnow, );
+            SET_QPEL_FUNCS(put_qpel, 1, 8, 3dnow, );
+            SET_QPEL_FUNCS(put_no_rnd_qpel, 0, 16, 3dnow, );
+            SET_QPEL_FUNCS(put_no_rnd_qpel, 1, 8, 3dnow, );
+            SET_QPEL_FUNCS(avg_qpel, 0, 16, 3dnow, );
+            SET_QPEL_FUNCS(avg_qpel, 1, 8, 3dnow, );
 
-            SET_QPEL_FUNCS(put_h264_qpel, 0, 16, 3dnow);
-            SET_QPEL_FUNCS(put_h264_qpel, 1, 8, 3dnow);
-            SET_QPEL_FUNCS(put_h264_qpel, 2, 4, 3dnow);
-            SET_QPEL_FUNCS(avg_h264_qpel, 0, 16, 3dnow);
-            SET_QPEL_FUNCS(avg_h264_qpel, 1, 8, 3dnow);
-            SET_QPEL_FUNCS(avg_h264_qpel, 2, 4, 3dnow);
+            if (!high_bit_depth) {
+            SET_QPEL_FUNCS(put_h264_qpel, 0, 16, 3dnow, );
+            SET_QPEL_FUNCS(put_h264_qpel, 1, 8, 3dnow, );
+            SET_QPEL_FUNCS(put_h264_qpel, 2, 4, 3dnow, );
+            SET_QPEL_FUNCS(avg_h264_qpel, 0, 16, 3dnow, );
+            SET_QPEL_FUNCS(avg_h264_qpel, 1, 8, 3dnow, );
+            SET_QPEL_FUNCS(avg_h264_qpel, 2, 4, 3dnow, );
+            }
 
-            SET_QPEL_FUNCS(put_2tap_qpel, 0, 16, 3dnow);
-            SET_QPEL_FUNCS(put_2tap_qpel, 1, 8, 3dnow);
-            SET_QPEL_FUNCS(avg_2tap_qpel, 0, 16, 3dnow);
-            SET_QPEL_FUNCS(avg_2tap_qpel, 1, 8, 3dnow);
+            SET_QPEL_FUNCS(put_2tap_qpel, 0, 16, 3dnow, );
+            SET_QPEL_FUNCS(put_2tap_qpel, 1, 8, 3dnow, );
+            SET_QPEL_FUNCS(avg_2tap_qpel, 0, 16, 3dnow, );
+            SET_QPEL_FUNCS(avg_2tap_qpel, 1, 8, 3dnow, );
 
 #if HAVE_YASM
+            if (!high_bit_depth && CONFIG_H264CHROMA) {
             c->avg_h264_chroma_pixels_tab[0]= ff_avg_h264_chroma_mc8_3dnow_rnd;
             c->avg_h264_chroma_pixels_tab[1]= ff_avg_h264_chroma_mc4_3dnow;
+            }
 
-            c->avg_no_rnd_vc1_chroma_pixels_tab[0]= ff_avg_vc1_chroma_mc8_3dnow_nornd;
-
-            c->avg_rv40_chroma_pixels_tab[0]= ff_avg_rv40_chroma_mc8_3dnow;
-            c->avg_rv40_chroma_pixels_tab[1]= ff_avg_rv40_chroma_mc4_3dnow;
 #endif
         }
 
@@ -2710,27 +2744,53 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->avg_h264_qpel_pixels_tab[1][x+y*4] = avg_h264_qpel8_mc##x##y##_##CPU;
         if((mm_flags & AV_CPU_FLAG_SSE2) && !(mm_flags & AV_CPU_FLAG_3DNOW)){
             // these functions are slower than mmx on AMD, but faster on Intel
+            if (!high_bit_depth) {
             c->put_pixels_tab[0][0] = put_pixels16_sse2;
             c->put_no_rnd_pixels_tab[0][0] = put_pixels16_sse2;
             c->avg_pixels_tab[0][0] = avg_pixels16_sse2;
             H264_QPEL_FUNCS(0, 0, sse2);
+            }
         }
         if(mm_flags & AV_CPU_FLAG_SSE2){
-            H264_QPEL_FUNCS(0, 1, sse2);
-            H264_QPEL_FUNCS(0, 2, sse2);
-            H264_QPEL_FUNCS(0, 3, sse2);
-            H264_QPEL_FUNCS(1, 1, sse2);
-            H264_QPEL_FUNCS(1, 2, sse2);
-            H264_QPEL_FUNCS(1, 3, sse2);
-            H264_QPEL_FUNCS(2, 1, sse2);
-            H264_QPEL_FUNCS(2, 2, sse2);
-            H264_QPEL_FUNCS(2, 3, sse2);
-            H264_QPEL_FUNCS(3, 1, sse2);
-            H264_QPEL_FUNCS(3, 2, sse2);
-            H264_QPEL_FUNCS(3, 3, sse2);
+            if (!high_bit_depth) {
+                H264_QPEL_FUNCS(0, 1, sse2);
+                H264_QPEL_FUNCS(0, 2, sse2);
+                H264_QPEL_FUNCS(0, 3, sse2);
+                H264_QPEL_FUNCS(1, 1, sse2);
+                H264_QPEL_FUNCS(1, 2, sse2);
+                H264_QPEL_FUNCS(1, 3, sse2);
+                H264_QPEL_FUNCS(2, 1, sse2);
+                H264_QPEL_FUNCS(2, 2, sse2);
+                H264_QPEL_FUNCS(2, 3, sse2);
+                H264_QPEL_FUNCS(3, 1, sse2);
+                H264_QPEL_FUNCS(3, 2, sse2);
+                H264_QPEL_FUNCS(3, 3, sse2);
+            }
+#if HAVE_YASM
+#define H264_QPEL_FUNCS_10(x, y, CPU)\
+            c->put_h264_qpel_pixels_tab[0][x+y*4] = ff_put_h264_qpel16_mc##x##y##_10_##CPU;\
+            c->put_h264_qpel_pixels_tab[1][x+y*4] = ff_put_h264_qpel8_mc##x##y##_10_##CPU;\
+            c->avg_h264_qpel_pixels_tab[0][x+y*4] = ff_avg_h264_qpel16_mc##x##y##_10_##CPU;\
+            c->avg_h264_qpel_pixels_tab[1][x+y*4] = ff_avg_h264_qpel8_mc##x##y##_10_##CPU;
+            if (bit_depth == 10) {
+                SET_QPEL_FUNCS(put_h264_qpel, 0, 16, 10_sse2, ff_);
+                SET_QPEL_FUNCS(put_h264_qpel, 1, 8,  10_sse2, ff_);
+                SET_QPEL_FUNCS(avg_h264_qpel, 0, 16, 10_sse2, ff_);
+                SET_QPEL_FUNCS(avg_h264_qpel, 1, 8,  10_sse2, ff_);
+                H264_QPEL_FUNCS_10(1, 0, sse2_cache64)
+                H264_QPEL_FUNCS_10(2, 0, sse2_cache64)
+                H264_QPEL_FUNCS_10(3, 0, sse2_cache64)
+
+                if (CONFIG_H264CHROMA) {
+                    c->put_h264_chroma_pixels_tab[0] = ff_put_h264_chroma_mc8_10_sse2;
+                    c->avg_h264_chroma_pixels_tab[0] = ff_avg_h264_chroma_mc8_10_sse2;
+                }
+            }
+#endif
         }
 #if HAVE_SSSE3
         if(mm_flags & AV_CPU_FLAG_SSSE3){
+            if (!high_bit_depth) {
             H264_QPEL_FUNCS(1, 0, ssse3);
             H264_QPEL_FUNCS(1, 1, ssse3);
             H264_QPEL_FUNCS(1, 2, ssse3);
@@ -2743,14 +2803,19 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             H264_QPEL_FUNCS(3, 1, ssse3);
             H264_QPEL_FUNCS(3, 2, ssse3);
             H264_QPEL_FUNCS(3, 3, ssse3);
-            c->add_png_paeth_prediction= add_png_paeth_prediction_ssse3;
+            }
 #if HAVE_YASM
-            c->put_no_rnd_vc1_chroma_pixels_tab[0]= ff_put_vc1_chroma_mc8_ssse3_nornd;
-            c->avg_no_rnd_vc1_chroma_pixels_tab[0]= ff_avg_vc1_chroma_mc8_ssse3_nornd;
+            else if (bit_depth == 10) {
+                H264_QPEL_FUNCS_10(1, 0, ssse3_cache64)
+                H264_QPEL_FUNCS_10(2, 0, ssse3_cache64)
+                H264_QPEL_FUNCS_10(3, 0, ssse3_cache64)
+            }
+            if (!high_bit_depth && CONFIG_H264CHROMA) {
             c->put_h264_chroma_pixels_tab[0]= ff_put_h264_chroma_mc8_ssse3_rnd;
             c->avg_h264_chroma_pixels_tab[0]= ff_avg_h264_chroma_mc8_ssse3_rnd;
             c->put_h264_chroma_pixels_tab[1]= ff_put_h264_chroma_mc4_ssse3;
             c->avg_h264_chroma_pixels_tab[1]= ff_avg_h264_chroma_mc4_ssse3;
+            }
             c->add_hfyu_left_prediction = ff_add_hfyu_left_prediction_ssse3;
             if (mm_flags & AV_CPU_FLAG_SSE4) // not really sse4, just slow on Conroe
                 c->add_hfyu_left_prediction = ff_add_hfyu_left_prediction_sse4;
@@ -2758,11 +2823,11 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
         }
 #endif
 
-        if(mm_flags & AV_CPU_FLAG_3DNOW){
+        if (HAVE_AMD3DNOW && (mm_flags & AV_CPU_FLAG_3DNOW)) {
             c->vorbis_inverse_coupling = vorbis_inverse_coupling_3dnow;
             c->vector_fmul = vector_fmul_3dnow;
         }
-        if(mm_flags & AV_CPU_FLAG_3DNOWEXT){
+        if (HAVE_AMD3DNOWEXT && (mm_flags & AV_CPU_FLAG_3DNOWEXT)) {
             c->vector_fmul_reverse = vector_fmul_reverse_3dnow2;
 #if HAVE_6REGS
             c->vector_fmul_window = vector_fmul_window_3dnow2;
@@ -2772,6 +2837,11 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
 #if HAVE_YASM
             c->scalarproduct_int16 = ff_scalarproduct_int16_mmx2;
             c->scalarproduct_and_madd_int16 = ff_scalarproduct_and_madd_int16_mmx2;
+            if (avctx->flags & CODEC_FLAG_BITEXACT) {
+                c->apply_window_int16 = ff_apply_window_int16_mmxext_ba;
+            } else {
+                c->apply_window_int16 = ff_apply_window_int16_mmxext;
+            }
 #endif
         }
         if(mm_flags & AV_CPU_FLAG_SSE){
@@ -2786,58 +2856,71 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->vector_clipf = vector_clipf_sse;
 #if HAVE_YASM
             c->scalarproduct_float = ff_scalarproduct_float_sse;
+            c->butterflies_float_interleave = ff_butterflies_float_interleave_sse;
+
+            if (!high_bit_depth)
+                c->emulated_edge_mc = emulated_edge_mc_sse;
+            c->gmc = gmc_sse;
 #endif
         }
-        if(mm_flags & AV_CPU_FLAG_3DNOW)
+        if (HAVE_AMD3DNOW && (mm_flags & AV_CPU_FLAG_3DNOW))
             c->vector_fmul_add = vector_fmul_add_3dnow; // faster than sse
         if(mm_flags & AV_CPU_FLAG_SSE2){
 #if HAVE_YASM
             c->scalarproduct_int16 = ff_scalarproduct_int16_sse2;
             c->scalarproduct_and_madd_int16 = ff_scalarproduct_and_madd_int16_sse2;
-
-            c->emulated_edge_mc = emulated_edge_mc_sse;
-            c->gmc= gmc_sse;
+            if (mm_flags & AV_CPU_FLAG_ATOM) {
+                c->vector_clip_int32 = ff_vector_clip_int32_int_sse2;
+            } else {
+                c->vector_clip_int32 = ff_vector_clip_int32_sse2;
+            }
+            if (avctx->flags & CODEC_FLAG_BITEXACT) {
+                c->apply_window_int16 = ff_apply_window_int16_sse2_ba;
+            } else {
+                if (!(mm_flags & AV_CPU_FLAG_SSE2SLOW)) {
+                    c->apply_window_int16 = ff_apply_window_int16_sse2;
+                }
+            }
 #endif
         }
-        if((mm_flags & AV_CPU_FLAG_SSSE3) && !(mm_flags & (AV_CPU_FLAG_SSE42|AV_CPU_FLAG_3DNOW)) && HAVE_YASM) // cachesplit
-            c->scalarproduct_and_madd_int16 = ff_scalarproduct_and_madd_int16_ssse3;
+        if (mm_flags & AV_CPU_FLAG_SSSE3) {
+#if HAVE_YASM
+            if (mm_flags & AV_CPU_FLAG_ATOM) {
+                c->apply_window_int16 = ff_apply_window_int16_ssse3_atom;
+            } else {
+                c->apply_window_int16 = ff_apply_window_int16_ssse3;
+            }
+            if (!(mm_flags & (AV_CPU_FLAG_SSE42|AV_CPU_FLAG_3DNOW))) { // cachesplit
+                c->scalarproduct_and_madd_int16 = ff_scalarproduct_and_madd_int16_ssse3;
+            }
+#endif
+        }
+
+        if (mm_flags & AV_CPU_FLAG_SSE4 && HAVE_SSE) {
+#if HAVE_YASM
+            c->vector_clip_int32 = ff_vector_clip_int32_sse4;
+#endif
+        }
+
+#if HAVE_AVX && HAVE_YASM
+        if (mm_flags & AV_CPU_FLAG_AVX) {
+            if (bit_depth == 10) {
+                //AVX implies !cache64.
+                //TODO: Port cache(32|64) detection from x264.
+                H264_QPEL_FUNCS_10(1, 0, sse2)
+                H264_QPEL_FUNCS_10(2, 0, sse2)
+                H264_QPEL_FUNCS_10(3, 0, sse2)
+
+                if (CONFIG_H264CHROMA) {
+                    c->put_h264_chroma_pixels_tab[0] = ff_put_h264_chroma_mc8_10_avx;
+                    c->avg_h264_chroma_pixels_tab[0] = ff_avg_h264_chroma_mc8_10_avx;
+                }
+            }
+            c->butterflies_float_interleave = ff_butterflies_float_interleave_avx;
+        }
+#endif
     }
 
     if (CONFIG_ENCODERS)
         dsputilenc_init_mmx(c, avctx);
-
-#if 0
-    // for speed testing
-    get_pixels = just_return;
-    put_pixels_clamped = just_return;
-    add_pixels_clamped = just_return;
-
-    pix_abs16x16 = just_return;
-    pix_abs16x16_x2 = just_return;
-    pix_abs16x16_y2 = just_return;
-    pix_abs16x16_xy2 = just_return;
-
-    put_pixels_tab[0] = just_return;
-    put_pixels_tab[1] = just_return;
-    put_pixels_tab[2] = just_return;
-    put_pixels_tab[3] = just_return;
-
-    put_no_rnd_pixels_tab[0] = just_return;
-    put_no_rnd_pixels_tab[1] = just_return;
-    put_no_rnd_pixels_tab[2] = just_return;
-    put_no_rnd_pixels_tab[3] = just_return;
-
-    avg_pixels_tab[0] = just_return;
-    avg_pixels_tab[1] = just_return;
-    avg_pixels_tab[2] = just_return;
-    avg_pixels_tab[3] = just_return;
-
-    avg_no_rnd_pixels_tab[0] = just_return;
-    avg_no_rnd_pixels_tab[1] = just_return;
-    avg_no_rnd_pixels_tab[2] = just_return;
-    avg_no_rnd_pixels_tab[3] = just_return;
-
-    //av_fdct = just_return;
-    //ff_idct = just_return;
-#endif
 }

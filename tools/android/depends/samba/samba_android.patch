@@ -1,0 +1,220 @@
+--- source/lib/fault.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/fault.c	2012-05-11 00:55:11.115651420 -0400
+@@ -136,7 +136,7 @@
+ #endif
+ #endif
+ 
+-#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
++#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE) && !defined(ANDROID)
+ 	/* On Linux we lose the ability to dump core when we change our user
+ 	 * ID. We know how to dump core safely, so let's make sure we have our
+ 	 * dumpable flag set.
+--- source/lib/system.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/system.c	2012-05-11 00:56:25.965651373 -0400
+@@ -1065,7 +1065,7 @@
+ 	new_pwd.pw_passwd = SMB_STRDUP("x");
+ 	new_pwd.pw_uid = uid;
+ 	new_pwd.pw_gid = 100;
+-	new_pwd.pw_gecos = SMB_STRDUP("faked user");
++//	new_pwd.pw_gecos = SMB_STRDUP("faked user");
+ 	new_pwd.pw_dir = SMB_STRDUP("/nodir");
+ 	new_pwd.pw_shell = SMB_STRDUP("/bin/false");
+ 
+@@ -1241,7 +1241,7 @@
+ 	retval.pw_passwd = pwret->pw_passwd;
+ 	retval.pw_uid = pwret->pw_uid;
+ 	retval.pw_gid = pwret->pw_gid;
+-	unix_to_unicode(retval.pw_gecos, pwret->pw_gecos, sizeof(retval.pw_gecos));
++//	unix_to_unicode(retval.pw_gecos, pwret->pw_gecos, sizeof(retval.pw_gecos));
+ 	unix_to_unicode(retval.pw_dir, pwret->pw_dir, sizeof(retval.pw_dir));
+ 	unix_to_unicode(retval.pw_shell, pwret->pw_shell, sizeof(retval.pw_shell));
+ 
+@@ -1264,7 +1264,7 @@
+ 	retval.pw_passwd = pwret->pw_passwd;
+ 	retval.pw_uid = pwret->pw_uid;
+ 	retval.pw_gid = pwret->pw_gid;
+-	unix_to_unicode(retval.pw_gecos, pwret->pw_gecos, sizeof(retval.pw_gecos));
++//	unix_to_unicode(retval.pw_gecos, pwret->pw_gecos, sizeof(retval.pw_gecos));
+ 	unix_to_unicode(retval.pw_dir, pwret->pw_dir, sizeof(retval.pw_dir));
+ 	unix_to_unicode(retval.pw_shell, pwret->pw_shell, sizeof(retval.pw_shell));
+ 
+--- source/lib/util_pw.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/util_pw.c	2012-05-11 00:55:43.485651400 -0400
+@@ -32,7 +32,7 @@
+ 	ret->pw_passwd = talloc_strdup(ret, from->pw_passwd);
+ 	ret->pw_uid = from->pw_uid;
+ 	ret->pw_gid = from->pw_gid;
+-	ret->pw_gecos = talloc_strdup(ret, from->pw_gecos);
++//	ret->pw_gecos = talloc_strdup(ret, from->pw_gecos);
+ 	ret->pw_dir = talloc_strdup(ret, from->pw_dir);
+ 	ret->pw_shell = talloc_strdup(ret, from->pw_shell);
+ 	return ret;
+--- source/libads/dns.c	2009-09-30 08:21:56.000000000 -0400
++++ source/libads/dns.c	2012-05-11 01:05:46.485651020 -0400
+@@ -38,6 +38,11 @@
+ 
+ #define MAX_DNS_PACKET_SIZE 0xffff
+ 
++#  define C_IN          1
++#  define T_A           1
++#  define T_NS          2
++#  define NS_HFIXEDSZ   12
++#  define NS_PACKETSZ	512
+ #ifdef NS_HFIXEDSZ	/* Bind 8/9 interface */
+ #if !defined(C_IN)	/* AIX 5.3 already defines C_IN */
+ #  define C_IN		ns_c_in
+@@ -45,18 +50,18 @@
+ #if !defined(T_A)	/* AIX 5.3 already defines T_A */
+ #  define T_A   	ns_t_a
+ #endif
+-#  define T_SRV 	ns_t_srv
++#  define T_SRV 	33
+ #if !defined(T_NS)	/* AIX 5.3 already defines T_NS */
+-#  define T_NS 		ns_t_ns
++#  define T_NS 		2
+ #endif
+ #else
+-#  ifdef HFIXEDSZ
+-#    define NS_HFIXEDSZ HFIXEDSZ
+-#  else
+-#    define NS_HFIXEDSZ sizeof(HEADER)
+-#  endif	/* HFIXEDSZ */
++//#  ifdef HFIXEDSZ
++//#    define NS_HFIXEDSZ HFIXEDSZ
++//#  else
++//#    define NS_HFIXEDSZ sizeof(HEADER)
++//#  endif	/* HFIXEDSZ */
+ #  ifdef PACKETSZ
+-#    define NS_PACKETSZ	PACKETSZ
++#    define NS_PACKETSZ	512
+ #  else	/* 512 is usually the default */
+ #    define NS_PACKETSZ	512
+ #  endif	/* PACKETSZ */
+--- source/passdb/passdb.c	2009-09-30 08:21:56.000000000 -0400
++++ source/passdb/passdb.c	2012-05-11 00:57:08.295651347 -0400
+@@ -143,7 +143,7 @@
+ 	/* Basic properties based upon the Unix account information */
+ 	
+ 	pdb_set_username(user, pwd->pw_name, PDB_SET);
+-	pdb_set_fullname(user, pwd->pw_gecos, PDB_SET);
++//	pdb_set_fullname(user, pwd->pw_gecos, PDB_SET);
+ 	pdb_set_domain (user, get_global_sam_name(), PDB_DEFAULT);
+ #if 0
+ 	/* This can lead to a primary group of S-1-22-2-XX which 
+diff -ruN source/lib/iconv.c source/lib/iconv.c
+--- source/lib/iconv.c	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/iconv.c	2012-05-11 02:13:02.365648475 -0400
+@@ -20,6 +20,8 @@
+ */
+ 
+ #include "includes.h"
++//#include <stdint.h>
++//#include <asm/byteorder.h>
+ 
+ /*
+  * We have to use strcasecmp here as the character conversions
+@@ -489,6 +491,21 @@
+ 	return 0;
+ }
+ 
++#include <stdint.h>
++#include <asm/byteorder.h>
++
++void swab(const void *from, void*to, ssize_t n)
++{
++  ssize_t i;
++
++  if (n < 0)
++    return;
++
++  for (i = 0; i < (n/2)*2; i += 2)
++    *((uint16_t*)to+i) = __arch__swab16(*((uint16_t*)from+i));
++}
++
++
+ static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
+ 			 char **outbuf, size_t *outbytesleft)
+ {
+diff -ruN source/lib/replace/system/passwd.h source/lib/replace/system/passwd.h
+--- source/lib/replace/system/passwd.h	2009-09-30 08:21:56.000000000 -0400
++++ source/lib/replace/system/passwd.h	2012-05-11 02:19:27.025648232 -0400
+@@ -60,8 +60,8 @@
+ #include <compat.h>
+ #endif
+ 
+-#ifdef REPLACE_GETPASS
+-#define getpass(prompt) getsmbpass((prompt))
++#ifndef REPLACE_GETPASS
++#define getpass(prompt) NULL
+ #endif
+ 
+ #ifndef NGROUPS_MAX
+diff -ruN source/lib/system.c source/lib/system.c
+--- source/lib/system.c	2012-05-11 00:56:25.965651373 -0400
++++ source/lib/system.c	2012-05-11 02:22:37.945648112 -0400
+@@ -476,7 +476,8 @@
+ #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_SEEKDIR64)
+ 	seekdir64(dirp, offset);
+ #else
+-	seekdir(dirp, offset);
++//	seekdir64(dirp, offset);
++	return;
+ #endif
+ }
+ 
+@@ -489,7 +490,8 @@
+ #if defined(HAVE_EXPLICIT_LARGEFILE_SUPPORT) && defined(HAVE_TELLDIR64)
+ 	return (long)telldir64(dirp);
+ #else
+-	return (long)telldir(dirp);
++//	return (long)telldir(dirp);
++	return(0);
+ #endif
+ }
+ 
+@@ -985,17 +987,19 @@
+ 
+ void sys_setpwent(void)
+ {
+-	setpwent();
++//	setpwent();
+ }
+ 
+ struct passwd *sys_getpwent(void)
+ {
+-	return getpwent();
++//	return getpwent();
++	return NULL;
++	
+ }
+ 
+ void sys_endpwent(void)
+ {
+-	endpwent();
++//	endpwent();
+ }
+ 
+ /**************************************************************************
+diff -ruN source/passdb/pdb_interface.c source/passdb/pdb_interface.c
+--- source/passdb/pdb_interface.c	2009-09-30 08:21:56.000000000 -0400
++++ source/passdb/pdb_interface.c	2012-05-11 02:22:29.085648117 -0400
+@@ -1380,8 +1380,8 @@
+ 	}
+ 
+ 	/* Primary group members */
+-	setpwent();
+-	while ((pwd = getpwent()) != NULL) {
++	sys_setpwent();
++	while ((pwd = sys_getpwent()) != NULL) {
+ 		if (pwd->pw_gid == gid) {
+ 			if (!add_uid_to_array_unique(mem_ctx, pwd->pw_uid,
+ 						pp_uids, p_num)) {
+@@ -1389,7 +1389,7 @@
+ 			}
+ 		}
+ 	}
+-	endpwent();
++	sys_endpwent();
+ 
+ 	/* Secondary group members */
+ 	for (gr = grp->gr_mem; (*gr != NULL) && ((*gr)[0] != '\0'); gr += 1) {

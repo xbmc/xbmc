@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,6 +23,7 @@
 #include "GUIFontTTFGL.h"
 #include "GUIFontManager.h"
 #include "Texture.h"
+#include "TextureManager.h"
 #include "GraphicContext.h"
 #include "gui3d.h"
 #include "utils/log.h"
@@ -79,7 +79,7 @@ void CGUIFontTTFGL::Begin()
     }
 
     // Turn Blending On
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
     glEnable(GL_BLEND);
 #ifdef HAS_GL
     glEnable(GL_TEXTURE_2D);
@@ -178,6 +178,7 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   if (!newTexture || newTexture->GetPixels() == NULL)
   {
     CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);
+    delete newTexture;
     return NULL;
   }
   m_textureHeight = newTexture->GetHeight();
@@ -234,7 +235,7 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   if (m_bTextureLoaded)
   {
     if (glIsTexture(m_nTexture))
-      glDeleteTextures(1, (GLuint*) &m_nTexture);
+      g_TextureManager.ReleaseHwTexture(m_nTexture);
     m_bTextureLoaded = false;
   }
 }

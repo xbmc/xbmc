@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,43 +13,24 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-
-// XBMC
-//
-// libraries:
-//   - CDRipX   : doesnt support section loading yet
-//   - xbfilezilla : doesnt support section loading yet
-//
-
-#include "system.h"
-#include "settings/AppParamParser.h"
-#include "settings/AdvancedSettings.h"
-#include "FileItem.h"
 #include "Application.h"
-#include "PlayListPlayer.h"
-#include "utils/log.h"
-#ifdef _LINUX
-#include <sys/resource.h>
-#include <signal.h>
-#endif
-#ifdef __APPLE__
-#include "Util.h"
-#endif
-#ifdef HAS_LIRC
-#include "input/linux/LIRC.h"
+#include "settings/AdvancedSettings.h"
+
+#ifdef TARGET_RASPBERRY_PI
+#include "linux/RBP.h"
 #endif
 
-int main(int argc, char* argv[])
+extern "C" int XBMC_Run(bool renderGUI)
 {
   int status = -1;
-  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
-  //the loglevel set with the --debug flag
+
+  if (!g_advancedSettings.Initialized())
+  {
 #ifdef _DEBUG
   g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
   g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
@@ -57,46 +38,45 @@ int main(int argc, char* argv[])
   g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+    g_advancedSettings.Initialize();
+  }
 
-#ifdef _LINUX
-#if defined(DEBUG)
-  struct rlimit rlim;
-  rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
-  if (setrlimit(RLIMIT_CORE, &rlim) == -1)
-    CLog::Log(LOGDEBUG, "Failed to set core size limit (%s)", strerror(errno));
-#endif
-  // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
-  struct sigaction sa;
-  memset(&sa, 0, sizeof(sa));
-
-  sa.sa_flags = SA_NOCLDWAIT;
-  sa.sa_handler = SIG_IGN;
-  sigaction(SIGCHLD, &sa, NULL);
-#endif
-  setlocale(LC_NUMERIC, "C");
-  g_advancedSettings.Initialize();
-  
-#ifndef _WIN32
-  CAppParamParser appParamParser;
-  appParamParser.Parse((const char **)argv, argc);
-#endif
-  g_application.Preflight();
   if (!g_application.Create())
   {
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
     return status;
   }
 
+#ifdef TARGET_RASPBERRY_PI
+  if(!g_RBP.Initialize())
+    return false;
+  g_RBP.LogFirmwareVerison();
+#endif
+
+  if (renderGUI && !g_application.CreateGUI())
+  {
+    fprintf(stderr, "ERROR: Unable to create GUI. Exiting\n");
+    return status;
+  }
+  if (!g_application.Initialize())
+  {
+    fprintf(stderr, "ERROR: Unable to Initialize. Exiting\n");
+    return status;
+  }
+
   try
   {
-    status = g_application.Run();
+    status = g_application.Run(renderGUI);
   }
   catch(...)
   {
     fprintf(stderr, "ERROR: Exception caught on main loop. Exiting\n");
     status = -1;
   }
+
+#ifdef TARGET_RASPBERRY_PI
+  g_RBP.Deinitialize();
+#endif
 
   return status;
 }

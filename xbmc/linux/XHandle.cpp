@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,18 +13,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "XHandle.h"
-#include "XThreadUtils.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
 int CXHandle::m_objectTracker[10] = {0};
+
+HANDLE WINAPI GetCurrentProcess(void) {
+  return (HANDLE)-1; // -1 a special value - pseudo handle
+}
 
 CXHandle::CXHandle()
 {
@@ -46,11 +48,6 @@ CXHandle::CXHandle(const CXHandle &src)
   CLog::Log(LOGWARNING,"%s, copy handle.", __FUNCTION__);
 
   Init();
-
-  if (m_threadValid)
-  {
-    CLog::Log(LOGERROR, "%s - thread handle copied instead of passed!", __FUNCTION__);
-  }
 
   if (src.m_hMutex)
     m_hMutex = new CCriticalSection();
@@ -80,7 +77,7 @@ CXHandle::~CXHandle()
     CLog::Log(LOGERROR,"%s, destroying handle with ref count %d", __FUNCTION__, m_nRefCount);
     assert(false);
   }
-  
+
   if (m_hMutex) {
     delete m_hMutex;
   }
@@ -93,10 +90,6 @@ CXHandle::~CXHandle()
     delete m_hCond;
   }
 
-  if (m_threadValid) {
-    pthread_join(m_hThread, NULL);
-  }
-
   if ( fd != 0 ) {
     close(fd);
   }
@@ -107,20 +100,15 @@ void CXHandle::Init()
 {
   fd=0;
   m_hMutex=NULL;
-  m_threadValid=false;
   m_hCond=NULL;
   m_type = HND_NULL;
   RecursionCount=0;
-  OwningThread=0;
   m_bManualEvent=FALSE;
   m_bEventSet=FALSE;
   m_nFindFileIterator=0 ;
   m_nRefCount=1;
   m_tmCreation = time(NULL);
   m_internalLock = new CCriticalSection();
-#ifdef __APPLE__
-  m_machThreadPort = 0;
-#endif
 }
 
 void CXHandle::ChangeType(HandleType newType) {
@@ -171,10 +159,6 @@ BOOL WINAPI DuplicateHandle(
       && dwOptions            == DUPLICATE_SAME_ACCESS);
 
   if (hSourceHandle == INVALID_HANDLE_VALUE)
-    return FALSE;
-
-  /* psuevdo handles re not supported */
-  if (hSourceHandle == (HANDLE)-1)
     return FALSE;
 
   {

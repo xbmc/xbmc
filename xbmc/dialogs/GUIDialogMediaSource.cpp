@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,26 +13,33 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogMediaSource.h"
-#include "GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "GUIDialogFileBrowser.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "video/dialogs/GUIDialogVideoScan.h"
 #include "guilib/GUIWindowManager.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
+#include "filesystem/PluginDirectory.h"
+#include "filesystem/PVRDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
+#include "PasswordManager.h"
+#include "URL.h"
+
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#include "filesystem/File.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -51,6 +58,7 @@ CGUIDialogMediaSource::CGUIDialogMediaSource(void)
     : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
 {
   m_paths =  new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMediaSource::~CGUIDialogMediaSource()
@@ -145,7 +153,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     }
     share.FromNameAndPaths(type, strName, dialog->GetPaths());
     if (dialog->m_paths->Size() > 0) {
-      share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetThumbnailImage();
+      share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetArt("thumb");
     }
     g_settings.AddShare(type, share);
   }
@@ -219,8 +227,21 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     m_bNameChanged=true;
 
   if (m_type == "music")
-  { // add the music playlist location
+  {
     CMediaSource share1;
+#if defined(TARGET_ANDROID)
+    // add the default android music directory
+    std::string path;
+    if (CXBMCApp::GetExternalStorage(path, "music") && !path.empty() && CFile::Exists(path))
+    {
+      share1.strPath = path;
+      share1.strName = g_localizeStrings.Get(20240);
+      share1.m_ignore = true;
+      extraShares.push_back(share1);
+    }
+#endif
+
+    // add the music playlist location
     share1.strPath = "special://musicplaylists/";
     share1.strName = g_localizeStrings.Get(20011);
     share1.m_ignore = true;
@@ -245,8 +266,21 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     }
  }
   else if (m_type == "video")
-  { // add the music playlist location
+  {
     CMediaSource share1;
+#if defined(TARGET_ANDROID)
+    // add the default android video directory
+    std::string path;
+    if (CXBMCApp::GetExternalStorage(path, "videos") && !path.empty() && CFile::Exists(path))
+    {
+      share1.strPath = path;
+      share1.strName = g_localizeStrings.Get(20241);
+      share1.m_ignore = true;
+      extraShares.push_back(share1);
+    }
+#endif
+
+    // add the video playlist location
     share1.m_ignore = true;
     share1.strPath = "special://videoplaylists/";
     share1.strName = g_localizeStrings.Get(20012);
@@ -263,10 +297,39 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strPath = "sap://";
     share1.strName = "SAP Streams";
     extraShares.push_back(share1);
+
+    // add the recordings dir as needed
+    if (CPVRDirectory::HasRecordings())
+    {
+      share1.strPath = "pvr://recordings/";
+      share1.strName = g_localizeStrings.Get(19017); // TV Recordings
+      extraShares.push_back(share1);
+    }
   }
   else if (m_type == "pictures")
   {
     CMediaSource share1;
+#if defined(TARGET_ANDROID)
+    // add the default android music directory
+    std::string path;
+    if (CXBMCApp::GetExternalStorage(path, "pictures") && !path.empty() &&  CFile::Exists(path))
+    {
+      share1.strPath = path;
+      share1.strName = g_localizeStrings.Get(20242);
+      share1.m_ignore = true;
+      extraShares.push_back(share1);
+    }
+
+    path.clear();
+    if (CXBMCApp::GetExternalStorage(path, "photos") && !path.empty() &&  CFile::Exists(path))
+    {
+      share1.strPath = path;
+      share1.strName = g_localizeStrings.Get(20243);
+      share1.m_ignore = true;
+      extraShares.push_back(share1);
+    }
+#endif
+
     share1.m_ignore = true;
     if (g_guiSettings.GetString("debug.screenshotpath",false)!= "")
     {
@@ -302,7 +365,7 @@ void CGUIDialogMediaSource::OnPath(int item)
     m_bNameChanged=true;
 
   CStdString path(m_paths->Get(item)->GetPath());
-  CGUIDialogKeyboard::ShowAndGetInput(path, g_localizeStrings.Get(1021), false);
+  CGUIKeyboardFactory::ShowAndGetInput(path, g_localizeStrings.Get(1021), false);
   URIUtils::AddSlashAtEnd(path);
   m_paths->Get(item)->SetPath(path);
 
@@ -327,7 +390,7 @@ void CGUIDialogMediaSource::OnOK()
   VECSOURCES *shares = g_settings.GetSourcesFromType(m_type);
   if (shares)
     shares->push_back(share);
-  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", false, true) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
+  if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))
   {
     m_confirmed = true;
     Close();
@@ -467,7 +530,29 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
 {
   vector<CStdString> paths;
   for (int i = 0; i < m_paths->Size(); i++)
+  {
     if (!m_paths->Get(i)->GetPath().IsEmpty())
-      paths.push_back(m_paths->Get(i)->GetPath());
+    { // strip off the user and password for smb paths (anything that the password manager can auth)
+      // and add the user/pass to the password manager - note, we haven't confirmed that it works
+      // at this point, but if it doesn't, the user will get prompted anyway in SMBDirectory.
+      CURL url(m_paths->Get(i)->GetPath());
+      if (url.GetProtocol() == "smb")
+      {
+        CPasswordManager::GetInstance().SaveAuthenticatedURL(url);
+        url.SetPassword("");
+        url.SetUserName("");
+      }
+      paths.push_back(url.Get());
+    }
+  }
   return paths;
+}
+
+void CGUIDialogMediaSource::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  // clear paths container
+  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PATH, 0);
+  OnMessage(msg);
 }

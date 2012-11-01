@@ -239,7 +239,7 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
   z_angle = 0.0f;
 }
 
-extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
   int y=0;
@@ -261,8 +261,8 @@ extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *
     {
       if (c<iAudioDataLength)
       {
-        if(pAudioData[c] > y)
-          y = (int)pAudioData[c];
+        if((int)(pAudioData[c] * (0x07fff+.5f) > y))
+          y = (int)(pAudioData[c] * (0x07fff+.5f));
       }
       else
         continue;

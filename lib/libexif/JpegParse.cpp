@@ -34,6 +34,7 @@
 #include <windows.h>
 #else
 #include <memory.h>
+#include <cstring>
 #define min(a,b) (a)>(b)?(b):(a)
 typedef unsigned char BYTE;
 #endif

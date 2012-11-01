@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,33 +13,29 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDAudioCodecLibMad.h"
 #include "DVDStreamInfo.h"
 
-static inline signed int scale(mad_fixed_t sample)
-{
-  /* round */
-  sample += (1L << (MAD_F_FRACBITS - 16));
-
-  /* clip */
-  if (sample >= MAD_F_ONE)
-    sample = MAD_F_ONE - 1;
-  else if (sample < -MAD_F_ONE)
-    sample = -MAD_F_ONE;
-
-  /* quantize */
-  return sample >> (MAD_F_FRACBITS + 1 - 16);
-}
-
 CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
 {
   m_bInitialized = false;
+  
+  memset(&m_synth, 0, sizeof(m_synth));
+  memset(&m_stream, 0, sizeof(m_stream));
+  memset(&m_frame, 0, sizeof(m_frame));
+  
+  m_iDecodedDataSize = 0;
+  
+  m_iSourceSampleRate = 0;
+  m_iSourceChannels = 0;
+  m_iSourceBitrate = 0;
+  
+  m_iInputBufferSize = 0;
 }
 
 CDVDAudioCodecLibMad::~CDVDAudioCodecLibMad()
@@ -96,14 +92,11 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 
   // m_inputBuffer should always have room here for extra bytes
   int iBytesFree = MAD_INPUT_SIZE - m_iInputBufferSize;
-  int iBytesUsed = iBytesFree;
-  if (iBytesUsed > iSize) iBytesUsed = iSize;
+  int iBytesUsed = std::min(iSize, iBytesFree);
 
   // copy data into our buffer for decoding
   memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesUsed);
   m_iInputBufferSize += iBytesUsed;
-
-
 
   if (m_bInitialized)
   {
@@ -134,7 +127,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
         if (m_stream.next_frame)
         {
           m_iInputBufferSize = m_stream.bufend - m_stream.next_frame;
-	        pBuffer = (BYTE*)m_stream.next_frame;
+          pBuffer = (BYTE*)m_stream.next_frame;
         }
 
         if (m_iInputBufferSize <= 0)
@@ -142,74 +135,50 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
           return iBytesUsed;
         }
 
-	      // buffer again after a sync
-	      m_dll.mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
+        // buffer again after a sync
+        m_dll.mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
       }
       else
       {
         // decoded some data
 
         m_iSourceSampleRate = m_frame.header.samplerate;
-	      m_iSourceChannels = (m_frame.header.mode == MAD_MODE_SINGLE_CHANNEL) ? 1 : 2;
-	      m_iSourceBitrate = m_frame.header.bitrate;
-
-  /*
-              switch (this->frame.header.layer) {
-              case MAD_LAYER_I:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
-                  "MPEG audio layer 1 (lib: MAD)");
-                break;
-              case MAD_LAYER_II:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
-                  "MPEG audio layer 2 (lib: MAD)");
-                break;
-              case MAD_LAYER_III:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
-                  "MPEG audio layer 3 (lib: MAD)");
-                break;
-              default:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
-                  "MPEG audio (lib: MAD)");
-              }
-  */
+        m_iSourceChannels   = (m_frame.header.mode == MAD_MODE_SINGLE_CHANNEL) ? 1 : 2;
+        m_iSourceBitrate    = m_frame.header.bitrate;
         m_dll.mad_synth_frame(&m_synth, &m_frame);
 
         {
           unsigned int nchannels, nsamples;
-	        mad_fixed_t const* left_ch, *right_ch;
-	        struct mad_pcm* pcm = &m_synth.pcm;
-	        unsigned __int16* output = (unsigned __int16*)(m_decodedData + m_iDecodedDataSize);
+          mad_fixed_t const* left_ch, *right_ch;
+          struct mad_pcm* pcm = &m_synth.pcm;
+          float* output = (float*)(m_decodedData + m_iDecodedDataSize);
 
           nchannels = pcm->channels;
           nsamples  = pcm->length;
-	        left_ch   = pcm->samples[0];
-	        right_ch  = pcm->samples[1];
+          left_ch   = pcm->samples[0];
+          right_ch  = pcm->samples[1];
 
-          int iSize = nsamples * 2;
-          if (nchannels == 2) iSize += nsamples * 2;
-
+          unsigned int iSize = nsamples * sizeof(float) * nchannels;
           if (iSize < (MAD_DECODED_SIZE - m_iDecodedDataSize))
           {
-	          while (nsamples--)
-	          {
-	            // output sample(s) in 16-bit signed little-endian PCM
-	            *output++ = scale(*left_ch++);
-        	
-	            if (nchannels == 2)
-	            {
-	              *output++ = scale(*right_ch++);
-	            }
-	          }
+            while (nsamples--)
+            {
+              // output sample(s) in float
+              *output++ = mad_f_todouble(*left_ch++);   	
+              if (nchannels == 2)
+              {
+                *output++ = mad_f_todouble(*right_ch++);
+              }
+            }
+            m_iDecodedDataSize += iSize;
+          }
 	
-	          m_iDecodedDataSize += iSize;
-	        }
-	
-	        if (iSize > (MAD_DECODED_SIZE - m_iDecodedDataSize))
+          if (iSize > (MAD_DECODED_SIZE - m_iDecodedDataSize))
           {
             // next audio frame is not going to fit
             bFullOutputBuffer = true;
           }
-	      }
+        }
       }
     }
   }
@@ -244,13 +213,15 @@ void CDVDAudioCodecLibMad::Reset()
   }
 }
 
-enum PCMChannels* CDVDAudioCodecLibMad::GetChannelMap()
+CAEChannelInfo CDVDAudioCodecLibMad::GetChannelMap()
 {
-  static enum PCMChannels map[2][2] = {
-    {PCM_FRONT_CENTER},
-    {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}
+  assert(m_iSourceChannels > 0 && m_iSourceChannels < 3);
+
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
   };
 
-  return map[m_iSourceChannels - 1];
+  return CAEChannelInfo(map[m_iSourceChannels -1]);
 }
 

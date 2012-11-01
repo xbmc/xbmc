@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #ifndef _OSX_INTERFACE_H_
@@ -23,19 +22,12 @@
 
 #include <string>
 #include "utils/StdString.h"
-#if !defined(__arm__)
-#include <Carbon/Carbon.h>
-#endif
 #include "AutoPool.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-  // Power and Screen
-  //
-  void Cocoa_UpdateSystemActivity(void);
-
   // DisplayLink
   //
   bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext);
@@ -63,10 +55,6 @@ extern "C"
   void Cocoa_ShowMouse();
   void Cocoa_HideDock();
 
-  // Smart folders.
-  //
-  void Cocoa_GetSmartFolderResults(const char* strFile, void (*)(void* userData, void* userData2, const char* path), void* userData, void* userData2);
-
   // Version.
   //
   const char* Cocoa_GetAppVersion();
@@ -79,14 +67,6 @@ extern "C"
   void  Cocoa_DestroyChildWindow();
 
   const char *Cocoa_Paste() ;
-
-#if !defined(__arm__)
-  // helper from QA 1134
-  // http://developer.apple.com/mac/library/qa/qa2001/qa1134.html
-  OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend);
-#endif
-
-  void Cocoa_ResetAudioDevices();
 
 #ifdef __cplusplus
 }

@@ -26,7 +26,7 @@
 
 #include "libavutil/colorspace.h"
 #include "libavutil/pixdesc.h"
-#include "libavcore/parseutils.h"
+#include "libavutil/parseutils.h"
 #include "avfilter.h"
 
 enum { Y, U, V, A };
@@ -34,7 +34,7 @@ enum { Y, U, V, A };
 typedef struct {
     int x, y, w, h;
     unsigned char yuv_color[4];
-    int vsub, hsub;   //< chroma subsampling
+    int vsub, hsub;   ///< chroma subsampling
 } DrawBoxContext;
 
 static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
@@ -70,7 +70,7 @@ static int query_formats(AVFilterContext *ctx)
         PIX_FMT_NONE
     };
 
-    avfilter_set_common_formats(ctx, avfilter_make_format_list(pix_fmts));
+    avfilter_set_common_pixel_formats(ctx, avfilter_make_format_list(pix_fmts));
     return 0;
 }
 
@@ -127,7 +127,7 @@ AVFilter avfilter_vf_drawbox = {
     .init      = init,
 
     .query_formats   = query_formats,
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
+    .inputs    = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO,
                                     .config_props     = config_input,
                                     .get_video_buffer = avfilter_null_get_video_buffer,
@@ -137,7 +137,7 @@ AVFilter avfilter_vf_drawbox = {
                                     .min_perms        = AV_PERM_WRITE | AV_PERM_READ,
                                     .rej_perms        = AV_PERM_PRESERVE },
                                   { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
+    .outputs   = (const AVFilterPad[]) {{ .name       = "default",
                                     .type             = AVMEDIA_TYPE_VIDEO, },
                                   { .name = NULL}},
 };

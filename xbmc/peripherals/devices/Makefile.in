@@ -1,13 +1,14 @@
-SRCS=Peripheral.cpp \
-     PeripheralBluetooth.cpp \
-     PeripheralDisk.cpp \
-     PeripheralHID.cpp \
-     PeripheralNIC.cpp \
-     PeripheralNyxboard.cpp \
-     PeripheralTuner.cpp
+SRCS  = Peripheral.cpp
+SRCS += PeripheralBluetooth.cpp
+SRCS += PeripheralDisk.cpp
+SRCS += PeripheralHID.cpp
+SRCS += PeripheralImon.cpp
+SRCS += PeripheralNIC.cpp
+SRCS += PeripheralNyxboard.cpp
+SRCS += PeripheralTuner.cpp
 
 ifeq (@USE_LIBCEC@,1)
-SRCS+=PeripheralCecAdapter.cpp
+SRCS += PeripheralCecAdapter.cpp
 endif
 
 LIB = peripheral-devices.a

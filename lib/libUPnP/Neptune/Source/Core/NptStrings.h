@@ -42,7 +42,9 @@
 #include "NptTypes.h"
 #include "NptConstants.h"
 #include "NptList.h"
+#include "NptArray.h"
 #include "NptDebug.h"
+#include "NptHash.h"
 
 /*----------------------------------------------------------------------
 |   constants
@@ -64,10 +66,9 @@ public:
     NPT_String(const NPT_String& str);
     NPT_String(const char* str);
     NPT_String(const char* str, NPT_Size length);
-    NPT_String(const char* str, NPT_Ordinal first, NPT_Size length);
     NPT_String(char c, NPT_Cardinal repeat = 1);
     NPT_String() : m_Chars(NULL) {}
-   ~NPT_String() { if (m_Chars) delete GetBuffer(); }
+   ~NPT_String() { if (m_Chars) GetBuffer()->Destroy(); }
 
     // string info and manipulations
     bool       IsEmpty() const { return m_Chars == NULL || GetBuffer()->GetLength() == 0; }
@@ -96,10 +97,15 @@ public:
                SubString(GetLength()-length, length);
     }
     NPT_List<NPT_String> Split(const char* separator) const;
+    NPT_Array<NPT_String> SplitAny(const char* separator) const;
     static NPT_String Join(NPT_List<NPT_String>& args, const char* separator);
     
     // buffer management
     void       Reserve(NPT_Size length);
+
+    // hashing
+    NPT_UInt32 GetHash32() const;
+    NPT_UInt64 GetHash64() const;
 
     // conversions
     NPT_String ToLowercase() const;
@@ -117,30 +123,32 @@ public:
     // processing
     void MakeLowercase();
     void MakeUppercase();
-    void Replace(char a, char b);
-    void Replace(char a, const char* b);
+    const NPT_String& Replace(char a, char b);
+    const NPT_String& Replace(char a, const char* b);
 
     // search
     int  Find(char c, NPT_Ordinal start = 0, bool ignore_case = false) const;
     int  Find(const char* s, NPT_Ordinal start = 0, bool ignore_case = false) const;
+    int  FindAny(const char* s, NPT_Ordinal start, bool ignore_case = false) const;
     int  ReverseFind(char c, NPT_Ordinal start = 0, bool ignore_case = false) const;
     int  ReverseFind(const char* s, NPT_Ordinal start = 0, bool ignore_case = false) const;
     bool StartsWith(const char* s, bool ignore_case = false) const;
     bool EndsWith(const char* s, bool ignore_case = false) const;
 
     // editing
-    void Insert(const char* s, NPT_Ordinal where = 0);
-    void Erase(NPT_Ordinal start, NPT_Cardinal count = 1);
-    void Replace(NPT_Ordinal start, NPT_Cardinal count, const char* s);
-    void TrimLeft();
-    void TrimLeft(char c);
-    void TrimLeft(const char* chars);
-    void TrimRight();
-    void TrimRight(char c);
-    void TrimRight(const char* chars);
-    void Trim();
-    void Trim(char c);
-    void Trim(const char* chars);
+    const NPT_String& Insert(const char* s, NPT_Ordinal where = 0);
+    const NPT_String& Erase(NPT_Ordinal start, NPT_Cardinal count = 1);
+    const NPT_String& Replace(const char* before, const char* after);
+    // void Replace(NPT_Ordinal start, NPT_Cardinal count, const char* s);
+    const NPT_String& TrimLeft();
+    const NPT_String& TrimLeft(char c);
+    const NPT_String& TrimLeft(const char* chars);
+    const NPT_String& TrimRight();
+    const NPT_String& TrimRight(char c);
+    const NPT_String& TrimRight(const char* chars);
+    const NPT_String& Trim();
+    const NPT_String& Trim(char c);
+    const NPT_String& Trim(const char* chars);
 
     // type casting
     operator char*() const        { return m_Chars ? m_Chars: &EmptyString; }
@@ -225,13 +233,14 @@ protected:
         NPT_Size GetLength() const      { return m_Length; }
         void SetLength(NPT_Size length) { m_Length = length; }
         NPT_Size GetAllocated() const   { return m_Allocated; }
-
+        void Destroy() { ::operator delete((void*)this); }
+        
     private:
         // methods
         Buffer(NPT_Size allocated, NPT_Size length = 0) : 
             m_Length(length),
             m_Allocated(allocated) {}
-
+        
         // members
         NPT_Cardinal m_Length;
         NPT_Cardinal m_Allocated;
@@ -335,5 +344,15 @@ inline bool operator>=(const NPT_String& s1, const char* s2) {
 inline bool operator>=(const char* s1, const NPT_String& s2) {
     return s2.Compare(s1) <= 0; 
 }
+
+/*----------------------------------------------------------------------
+|   hashing
++---------------------------------------------------------------------*/
+template <>
+struct NPT_Hash<NPT_String>
+{
+    NPT_UInt32 operator()(const NPT_String& s) const { return s.GetHash32(); }
+};
+
 
 #endif // _NPT_STRINGS_H_

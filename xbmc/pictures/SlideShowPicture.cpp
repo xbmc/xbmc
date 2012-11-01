@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,22 +13,24 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "SlideShowPicture.h"
 #include "system.h"
 #include "guilib/Texture.h"
-#include "utils/ssrc.h"         // for M_PI
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>
 
 using namespace std;
 
@@ -94,52 +96,89 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
   float fadeTime = std::min(0.2f*g_guiSettings.GetInt("slideshow.staytime"), 3.0f);
   m_transistionStart.length = (int)(g_graphicsContext.GetFPS() * fadeTime); // transition time in frames
   m_transistionEnd.type = transEffect;
-  m_transistionEnd.start = m_transistionStart.length + max((int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
   m_transistionEnd.length = m_transistionStart.length;
-  CLog::Log(LOGDEBUG,"Duration: %i (transistion out length %i)", m_transistionEnd.start, m_transistionEnd.length);
   m_transistionTemp.type = TRANSISTION_NONE;
   m_fTransistionAngle = 0;
   m_fTransistionZoom = 0;
-  m_fAngle = 0;
+  m_fAngle = 0.0f;
   if (pTexture->GetOrientation() == 7)
   { // rotate to 270 degrees
-    m_fAngle = 3.0f;
+    m_fAngle = 270.0f;
   }
   if (pTexture->GetOrientation() == 2)
   { // rotate to 180 degrees
-      m_fAngle = 2.0f;
+      m_fAngle = 180.0f;
   }
   if (pTexture->GetOrientation() == 5)
   { // rotate to 90 degrees
-    m_fAngle = 1.0f;
+    m_fAngle = 90.0f;
   }
   m_fZoomAmount = 1;
   m_fZoomLeft = 0;
   m_fZoomTop = 0;
-  m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + max((int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
   // initialize our display effect
   if (dispEffect == EFFECT_RANDOM)
-    m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM - 1)) + 1);
+  {
+    if (((m_fWidth / m_fHeight) > 1.9) || ((m_fHeight / m_fWidth) > 1.9))
+      m_displayEffect = EFFECT_PANORAMA;
+    else
+      m_displayEffect = (DISPLAY_EFFECT)((rand() % (EFFECT_RANDOM - 1)) + 1);
+  }
   else
     m_displayEffect = dispEffect;
   m_fPosX = m_fPosY = 0.0f;
   m_fPosZ = 1.0f;
   m_fVelocityX = m_fVelocityY = m_fVelocityZ = 0.0f;
-  if (m_displayEffect == EFFECT_FLOAT)
+  int iFrames = max((int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime")), 1);
+  if (m_displayEffect == EFFECT_PANORAMA)
   {
-    // Calculate start and end positions
-    // choose a random direction
-    float angle = (rand() % 1000) / 1000.0f * 2 * (float)M_PI;
-    m_fPosX = cos(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
-    m_fPosY = sin(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
-    m_fVelocityX = -m_fPosX * 2.0f / m_iTotalFrames;
-    m_fVelocityY = -m_fPosY * 2.0f / m_iTotalFrames;
+    RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
+	  float fScreenWidth = (float)g_settings.m_ResInfo[iRes].Overscan.right - g_settings.m_ResInfo[iRes].Overscan.left;
+    float fScreenHeight = (float)g_settings.m_ResInfo[iRes].Overscan.bottom - g_settings.m_ResInfo[iRes].Overscan.top;
+
+    if (m_fWidth > m_fHeight)
+    {
+      iFrames = (int)(iFrames * (m_fWidth - m_fHeight) / m_fHeight);
+      m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+
+      m_fPosX = 0.5f - (fScreenWidth / fScreenHeight) * (m_fHeight / m_fWidth) * 0.5f;
+      if (rand() % 2)
+        m_fPosX = -m_fPosX;
+      m_fVelocityX = -m_fPosX * 2.0f / m_iTotalFrames;
+    }
+    else
+    {
+      iFrames = (int)(iFrames * (m_fHeight - (0.5f * m_fWidth)) / m_fWidth);
+      m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+
+      m_fPosY = 0.5f - (fScreenHeight / fScreenWidth) * (m_fWidth / m_fHeight) * 0.5f;
+      if (rand() % 2)
+        m_fPosY = -m_fPosY;
+      m_fVelocityY = -m_fPosY * 2.0f / m_iTotalFrames;
+    }
   }
-  else if (m_displayEffect == EFFECT_ZOOM)
+  else
   {
-    m_fPosZ = 1.0f;
-    m_fVelocityZ = 0.0001f * g_advancedSettings.m_slideshowZoomAmount;
+    m_iTotalFrames = m_transistionStart.length + m_transistionEnd.length + iFrames;
+
+    if (m_displayEffect == EFFECT_FLOAT)
+    {
+      // Calculate start and end positions
+      // choose a random direction
+      float angle = (rand() % 1000) / 1000.0f * 2 * (float)M_PI;
+      m_fPosX = cos(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
+      m_fPosY = sin(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
+      m_fVelocityX = -m_fPosX * 2.0f / m_iTotalFrames;
+      m_fVelocityY = -m_fPosY * 2.0f / m_iTotalFrames;
+    }
+    else if (m_displayEffect == EFFECT_ZOOM)
+    {
+      m_fPosZ = 1.0f;
+      m_fVelocityZ = 0.0001f * g_advancedSettings.m_slideshowZoomAmount;
+    }
   }
+
+  m_transistionEnd.start = m_transistionStart.length + iFrames;
 
   m_bIsFinished = false;
   m_bDrawNextImage = false;
@@ -156,7 +195,7 @@ void CSlideShowPic::SetOriginalSize(int iOriginalWidth, int iOriginalHeight, boo
 
 int CSlideShowPic::GetOriginalWidth()
 {
-  int iAngle = (int)(m_fAngle + 0.4f);
+  int iAngle = (int)(m_fAngle / 90.0f + 0.4f);
   if (iAngle % 2)
     return m_iOriginalHeight;
   else
@@ -165,7 +204,7 @@ int CSlideShowPic::GetOriginalWidth()
 
 int CSlideShowPic::GetOriginalHeight()
 {
-  int iAngle = (int)(m_fAngle + 0.4f);
+  int iAngle = (int)(m_fAngle / 90.0f + 0.4f);
   if (iAngle % 2)
     return m_iOriginalWidth;
   else
@@ -243,34 +282,35 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
         { // correct for any introduced inaccuracies.
           int i;
           for (i = 0; i < 10; i++)
+          {
             if (fabs(m_fZoomAmount - zoomamount[i]) < 0.01*zoomamount[i])
+            {
+              m_fZoomAmount = zoomamount[i];
               break;
-          m_fZoomAmount = zoomamount[i];
+            }
+          }
           m_bNoEffect = (m_fZoomAmount != 1.0f); // turn effect rendering back on.
-        }
-        if (m_transistionTemp.type == TRANSISTION_ROTATE)
-        { // round to nearest integer for accuracy purposes
-          m_fAngle = floor(m_fAngle + 0.4f);
         }
         m_transistionTemp.type = TRANSISTION_NONE;
       }
       else
       {
         if (m_transistionTemp.type == TRANSISTION_ROTATE)
-        {
           m_fAngle += m_fTransistionAngle;
-        }
         if (m_transistionTemp.type == TRANSISTION_ZOOM)
-        {
           m_fZoomAmount += m_fTransistionZoom;
-        }
       }
     }
   }
   // now just display
   if (!m_bNoEffect && !bPaused)
   {
-    if (m_displayEffect == EFFECT_FLOAT)
+    if (m_displayEffect == EFFECT_PANORAMA)
+    {
+      m_fPosX += m_fVelocityX;
+      m_fPosY += m_fVelocityY;
+    }
+    else if (m_displayEffect == EFFECT_FLOAT)
     {
       m_fPosX += m_fVelocityX;
       m_fPosY += m_fVelocityY;
@@ -362,8 +402,8 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   // Rotate the image as needed
   float x[4];
   float y[4];
-  float si = (float)sin(m_fAngle * M_PI * 0.5);
-  float co = (float)cos(m_fAngle * M_PI * 0.5);
+  float si = (float)sin(m_fAngle / 180.0f * M_PI);
+  float co = (float)cos(m_fAngle / 180.0f * M_PI);
   x[0] = -m_fWidth * co + m_fHeight * si;
   y[0] = -m_fWidth * si - m_fHeight * co;
   x[1] = m_fWidth * co + m_fHeight * si;
@@ -401,6 +441,13 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   float fScale = si * si * (fScaleInv - fScaleNorm) + fScaleNorm;
   // scale if we need to due to the effect we're using
+  if (m_displayEffect == EFFECT_PANORAMA)
+  {
+    if (m_fWidth > m_fHeight)
+      fScale *= m_fWidth / fScreenWidth * fScreenHeight / m_fHeight;
+    else
+      fScale *= m_fHeight / fScreenHeight * fScreenWidth / m_fWidth;
+  }
   if (m_displayEffect == EFFECT_FLOAT)
     fScale *= (1.0f + g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.0001f);
   if (m_displayEffect == EFFECT_ZOOM)
@@ -433,6 +480,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     }
     float w = maxx - minx;
     float h = maxy - miny;
+    m_bCanMoveHorizontally = (w >= fScreenWidth);
     if (w >= fScreenWidth)
     { // must have no black bars
       if (minx + m_fZoomLeft*w > fOffsetX)
@@ -597,31 +645,46 @@ void CSlideShowPic::SetTransistionTime(int iType, int iTime)
     m_transistionEnd.length = iTime;
 }
 
-void CSlideShowPic::Rotate(int iRotate)
+void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 {
-  if (m_bDrawNextImage) return ;
-  if (m_transistionTemp.type == TRANSISTION_ZOOM) return ;
+  if (m_bDrawNextImage) return;
+  if (m_transistionTemp.type == TRANSISTION_ZOOM) return;
+  if (immediate)
+  {
+    m_fAngle += fRotateAngle;
+    return;
+  }
+
+  // if there is a rotation ongoing already
+  // add the new angle to the old destination angle
+  if (m_transistionTemp.type == TRANSISTION_ROTATE && 
+      m_transistionTemp.start + m_transistionTemp.length > m_iCounter)
+  {
+    int remainder = m_transistionTemp.start + m_transistionTemp.length - m_iCounter;
+    fRotateAngle += m_fTransistionAngle * remainder;
+  }
+
   m_transistionTemp.type = TRANSISTION_ROTATE;
   m_transistionTemp.start = m_iCounter;
   m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionAngle = (float)(iRotate - m_fAngle) / (float)m_transistionTemp.length;
+  m_fTransistionAngle = (float)fRotateAngle / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
 }
 
-void CSlideShowPic::Zoom(int iZoom, bool immediate /*= false*/)
+void CSlideShowPic::Zoom(float fZoom, bool immediate /* = false */)
 {
-  if (m_bDrawNextImage) return ;
-  if (m_transistionTemp.type == TRANSISTION_ROTATE) return ;
+  if (m_bDrawNextImage) return;
+  if (m_transistionTemp.type == TRANSISTION_ROTATE) return;
   if (immediate)
   {
-    m_fZoomAmount = zoomamount[iZoom - 1];
+    m_fZoomAmount = fZoom;
     return;
   }
   m_transistionTemp.type = TRANSISTION_ZOOM;
   m_transistionTemp.start = m_iCounter;
   m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionZoom = (float)(zoomamount[iZoom - 1] - m_fZoomAmount) / (float)m_transistionTemp.length;
+  m_fTransistionZoom = (fZoom - m_fZoomAmount) / (float)m_transistionTemp.length;
   // reset the timer
   m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
   // turn off the render effects until we're back down to normal zoom
@@ -643,7 +706,7 @@ void CSlideShowPic::Render()
   Render(m_ax, m_ay, m_pImage, (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1 || m_bIsComic) return ;
+  if (m_fZoomAmount == 1.0f || m_bIsComic) return ;
 
   Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
   Render(m_sx, m_sy, m_pImage, 0xFFFFFFFF);
@@ -682,7 +745,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    g_Windowing.Get3DDevice()->SetTexture( 0, pTexture->GetTextureObject() );
+    pTexture->BindToUnit(0);
   }
 
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
@@ -693,10 +756,6 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_settings.m_minFilter*/ );
-  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_settings.m_maxFilter*/ );
   g_Windowing.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
   g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
   g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
@@ -720,8 +779,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
+    pTexture->BindToUnit(0);
 
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
@@ -772,8 +830,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
+    pTexture->BindToUnit(0);
 
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On

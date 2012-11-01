@@ -123,7 +123,7 @@ function ff_pred16x16_plane_neon, export=1
         vaddl.u8        q8,  d2,  d3
         vsubl.u8        q2,  d2,  d0
         vsubl.u8        q3,  d3,  d1
-        adr             r3,  p16weight
+        movrel          r3,  p16weight
         vld1.8          {q0},     [r3,:128]
         vmul.s16        q2,  q2,  q0
         vmul.s16        q3,  q3,  q0
@@ -166,11 +166,9 @@ function ff_pred16x16_plane_neon, export=1
         bx              lr
 endfunc
 
-        .align          4
-p16weight:
+const   p16weight, align=4
         .short          1,2,3,4,5,6,7,8
-
-        .text
+endconst
 
 function ff_pred8x8_hor_neon, export=1
         sub             r2,  r0,  #1
@@ -206,7 +204,7 @@ function ff_pred8x8_plane_neon, export=1
         vrev32.8        d0,  d0
         vtrn.32         d2,  d3
         vsubl.u8        q2,  d2,  d0
-        adr             r3,  p16weight
+        movrel          r3,  p16weight
         vld1.16         {q0},     [r3,:128]
         vmul.s16        d4,  d4,  d0
         vmul.s16        d5,  d5,  d0

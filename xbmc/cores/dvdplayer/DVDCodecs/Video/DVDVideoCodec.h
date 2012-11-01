@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,15 +15,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
 
 #include <vector>
+#include "cores/VideoRenderers/RenderFormats.h"
 
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
@@ -38,10 +38,6 @@ class CVDPAU;
 class COpenMax;
 class COpenMaxVideo;
 struct OpenMaxVideoBuffer;
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  class CDVDVideoCodecVideoToolBox;
-  struct __CVBuffer;
-#endif
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -69,12 +65,10 @@ struct DVDVideoPicture
       COpenMax *openMax;
       OpenMaxVideoBuffer *openMaxBuffer;
     };
-#ifdef HAVE_VIDEOTOOLBOXDECODER
+
     struct {
-      CDVDVideoCodecVideoToolBox *vtb;
       struct __CVBuffer *cvBufferRef;
     };
-#endif
   };
 
   unsigned int iFlags;
@@ -99,17 +93,7 @@ struct DVDVideoPicture
   unsigned int iDisplayWidth;  // width of the picture without black bars
   unsigned int iDisplayHeight; // height of the picture without black bars
 
-  enum EFormat {
-    FMT_YUV420P = 0,
-    FMT_VDPAU,
-    FMT_NV12,
-    FMT_UYVY,
-    FMT_YUY2,
-    FMT_DXVA,
-    FMT_VAAPI,
-    FMT_OMXEGL,
-    FMT_CVBREF,
-  } format;
+  ERenderFormat format;
 };
 
 struct DVDVideoUserData
@@ -135,7 +119,7 @@ struct DVDVideoUserData
 
 class CDVDStreamInfo;
 class CDVDCodecOption;
-typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
+class CDVDCodecOptions;
 
 // VC_ messages, messages can be combined
 #define VC_ERROR    0x00000001  // an error occured, no other messages will be returned
@@ -207,6 +191,21 @@ public:
    */
   virtual void SetDropState(bool bDrop) = 0;
 
+  /*
+   * returns the number of demuxer bytes in any internal buffers
+   */
+  virtual int GetDataSize(void)
+  {
+    return 0;
+  }
+
+  /*
+   * returns the time in seconds for demuxer bytes in any internal buffers
+   */
+  virtual double GetTimeSize(void)
+  {
+    return 0;
+  }
 
   enum EFilterFlags {
     FILTER_NONE                =  0x0,
@@ -214,6 +213,7 @@ public:
     FILTER_DEINTERLACE_ANY     =  0xf,  /* use any deinterlace mode */
     FILTER_DEINTERLACE_FLAGGED = 0x10,  /* only deinterlace flagged frames */
     FILTER_DEINTERLACE_HALFED  = 0x20,  /* do half rate deinterlacing */
+    FILTER_ROTATE              = 0x40,  /* rotate image according to the codec hints */
   };
 
   /*

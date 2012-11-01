@@ -1,5 +1,7 @@
+#pragma once
+
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,28 +15,27 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#if !defined(__arm__)
-#ifndef WINDOW_SYSTEM_OSX_H
-#define WINDOW_SYSTEM_OSX_H
+#if defined(TARGET_DARWIN_OSX)
 
 #include "windowing/WinSystem.h"
 #include "threads/CriticalSection.h"
-#include <SDL/SDL_video.h>
 
-/* PLEX CHANGE */
+/* PLEX */
 typedef u_int32_t CGDirectDisplayID;
-/* END PLEX CHANGE */
+/* END PLEX */
+
 typedef u_int32_t CGDisplayChangeSummaryFlags;
 
-class IDispResource;
+typedef struct SDL_Surface SDL_Surface;
 
+class IDispResource;
 class CWinEventsOSX;
+
 class CWinSystemOSX : public CWinSystemBase
 {
 public:
@@ -57,11 +58,13 @@ public:
   virtual bool Show(bool raise = true);
   virtual void OnMove(int x, int y);
 
-  virtual void Register(IDispResource *resource);
-  virtual void Unregister(IDispResource *resource);
-
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();
+  virtual void ResetOSScreensaver();
+  virtual bool EnableFrameLimiter();
+
+  virtual void Register(IDispResource *resource);
+  virtual void Unregister(IDispResource *resource);
   
   virtual int GetNumScreens();
 
@@ -71,6 +74,8 @@ public:
   virtual int GetCurrentScreen();
   virtual void UpdateDisplayBlanking();
   /* END PLEX */
+  
+  void* GetCGLContextObj();
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
@@ -79,14 +84,16 @@ protected:
   bool  SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx);
   void  FillInVideoModes();
   bool  FlushBuffer(void);
+  bool  IsObscured(void);
 
-  static void DisplayReconfigured(CGDirectDisplayID display, 
-    CGDisplayChangeSummaryFlags flags, void *userData);
-  
   void* m_glContext;
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
   CWinEventsOSX *m_osx_events;
+  bool                         m_obscured;
+  unsigned int                 m_obscured_timecheck;
+
+  bool                         m_use_system_screensaver;
   bool                         m_can_display_switch;
   void                        *m_windowDidMove;
   void                        *m_windowDidReSize;
@@ -95,5 +102,4 @@ protected:
   std::vector<IDispResource*>  m_resources;
 };
 
-#endif // WINDOW_SYSTEM_H
 #endif

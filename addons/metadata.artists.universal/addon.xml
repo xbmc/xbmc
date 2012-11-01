@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.artists.universal"
+       name="Universal Artist Scraper"
+       version="2.0.6"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+    <import addon="metadata.common.last.fm" version="1.4.1"/>
+    <import addon="metadata.common.allmusic.com" version="2.4.1"/>
+    <import addon="metadata.common.musicbrainz.org" version="1.2.1"/>
+    <import addon="metadata.common.htbackdrops.com" version="1.2.0"/>
+    <import addon="metadata.common.fanart.tv" version="1.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.artists"
+             language="en"
+             library="artistuniversal.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Universal Scraper for Artists</summary>
+    <description lang="en">This scraper collects information from the following supported sites: MusicBrainz, last.fm, and allmusic.com, while grabs artwork from: fanart.tv, htbackdrops.com, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.
+
+The initial search is always done on MusicBrainz. In case allmusic link is not added on the MusicBrainz site fields from allmusic.com cannot be fetched (very easy to add those missing links though).</description>
+    <platform>all</platform>
+  </extension>
+</addon>

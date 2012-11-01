@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -70,7 +69,8 @@ public:
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    PLAYER_CHANNEL_SELECT,          // switches to given playback channel
+    PLAYER_CHANNEL_SELECT_NUMBER,   // switches to the channel with the provided channel number
+    PLAYER_CHANNEL_SELECT,          // switches to the provided channel
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
 
     // demuxer related messages
@@ -147,20 +147,23 @@ public:
 #define SYNCSOURCE_AUDIO  0x00000001
 #define SYNCSOURCE_VIDEO  0x00000002
 #define SYNCSOURCE_SUB    0x00000004
-#define SYNCSOURCE_ALL    (SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO | SYNCSOURCE_SUB)
+#define SYNCSOURCE_OWNER  0x80000000 /* only allowed for the constructor of the object */
+#define SYNCSOURCE_ALL    (SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO | SYNCSOURCE_SUB | SYNCSOURCE_OWNER)
 
+class CDVDMsgGeneralSynchronizePriv;
 class CDVDMsgGeneralSynchronize : public CDVDMsg
 {
 public:
-  CDVDMsgGeneralSynchronize(DWORD timeout, DWORD sources);
+  CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources);
+ ~CDVDMsgGeneralSynchronize();
+  virtual long Release();
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
-  void Wait(volatile bool *abort, DWORD source);
+  bool Wait(unsigned long  ms   , unsigned int source);
+  void Wait(volatile bool *abort, unsigned int source);
 private:
-  DWORD m_sources;
-  long m_objects;
-  unsigned int m_timeout;
+  class CDVDMsgGeneralSynchronizePriv* m_p;
 };
 
 template <typename T>

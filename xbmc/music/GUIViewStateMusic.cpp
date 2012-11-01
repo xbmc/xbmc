@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIViewStateMusic.h"
 #include "PlayListPlayer.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "video/VideoDatabase.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
@@ -137,7 +135,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   case NODE_TYPE_TOP100:
@@ -147,7 +145,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   case NODE_TYPE_GENRE:
@@ -157,7 +155,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SORT_ORDER_ASC);
+      SetSortOrder(SortOrderAscending);
     }
     break;
   case NODE_TYPE_YEAR:
@@ -167,7 +165,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SORT_ORDER_ASC);
+      SetSortOrder(SortOrderAscending);
     }
     break;
   case NODE_TYPE_ARTIST:
@@ -221,7 +219,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(g_settings.m_viewStateMusicNavAlbums.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
@@ -231,7 +229,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(g_settings.m_viewStateMusicNavSongs.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
@@ -241,7 +239,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(g_settings.m_viewStateMusicNavAlbums.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
@@ -251,7 +249,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(g_settings.m_viewStateMusicNavAlbums.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   case NODE_TYPE_ALBUM_TOP100:
@@ -261,7 +259,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   case NODE_TYPE_SINGLES:
@@ -333,7 +331,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 
       SetViewAsControl(g_settings.m_viewStateMusicNavSongs.m_viewMode);
 
-      SetSortOrder(SORT_ORDER_NONE);
+      SetSortOrder(SortOrderNone);
     }
     break;
   default:
@@ -500,7 +498,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
 
     SetViewAsControl(DEFAULT_VIEW_LIST);
 
-    SetSortOrder(SORT_ORDER_NONE);
+    SetSortOrder(SortOrderNone);
   }
   else
   {
@@ -542,7 +540,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
     }
     SetViewAsControl(DEFAULT_VIEW_LIST);
 
-    SetSortOrder(SORT_ORDER_ASC);
+    SetSortOrder(SortOrderAscending);
   }
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
 }
@@ -569,7 +567,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   m_sources.clear();
   //  Musicdb shares
   CFileItemList items;
-  CDirectory::GetDirectory("musicdb://", items, "", true, false, DIR_CACHE_ONCE, true, false);
+  CDirectory::GetDirectory("musicdb://", items, "");
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];
@@ -623,7 +621,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 
     SetViewAsControl(DEFAULT_VIEW_LIST);
 
-    SetSortOrder(SORT_ORDER_ASC);
+    SetSortOrder(SortOrderAscending);
   }
   else if (items.GetPath() == "special://musicplaylists/")
   { // playlists list sorts by label only, ignoring folders
@@ -676,7 +674,7 @@ CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileIt
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  SetSortOrder(SORT_ORDER_NONE);
+  SetSortOrder(SortOrderNone);
 
   LoadViewState(items.GetPath(), WINDOW_MUSIC_PLAYLIST);
 }

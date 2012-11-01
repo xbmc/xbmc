@@ -29,125 +29,121 @@
 #ifndef AVCODEC_X86_H264_I386_H
 #define AVCODEC_X86_H264_I386_H
 
+#include <stddef.h>
+
 #include "libavcodec/cabac.h"
+#include "cabac.h"
 
 //FIXME use some macros to avoid duplicating get_cabac (cannot be done yet
 //as that would make optimization work hard)
-#if ARCH_X86 && HAVE_7REGS && HAVE_EBX_AVAILABLE && !defined(BROKEN_RELOCATIONS)
+#if HAVE_7REGS && !defined(BROKEN_RELOCATIONS)
 static int decode_significance_x86(CABACContext *c, int max_coeff,
                                    uint8_t *significant_coeff_ctx_base,
-                                   int *index){
+                                   int *index, x86_reg last_off){
     void *end= significant_coeff_ctx_base + max_coeff - 1;
-    int minusstart= -(int)significant_coeff_ctx_base;
-    int minusindex= 4-(int)index;
-    int coeff_count;
+    int minusstart= -(intptr_t)significant_coeff_ctx_base;
+    int minusindex= 4-(intptr_t)index;
+    int bit;
+    x86_reg coeff_count;
     __asm__ volatile(
-        "movl "RANGE    "(%3), %%esi            \n\t"
-        "movl "LOW      "(%3), %%ebx            \n\t"
-
         "2:                                     \n\t"
 
-        BRANCHLESS_GET_CABAC("%%edx", "%3", "(%1)", "%%ebx",
-                             "%%bx", "%%esi", "%%eax", "%%al")
+        BRANCHLESS_GET_CABAC("%4", "(%1)", "%3",
+                             "%w3", "%5", "%k0", "%b0", "%6")
 
-        "test $1, %%edx                         \n\t"
+        "test $1, %4                            \n\t"
         " jz 3f                                 \n\t"
+        "add  %10, %1                           \n\t"
 
-        BRANCHLESS_GET_CABAC("%%edx", "%3", "61(%1)", "%%ebx",
-                             "%%bx", "%%esi", "%%eax", "%%al")
+        BRANCHLESS_GET_CABAC("%4", "(%1)", "%3",
+                             "%w3", "%5", "%k0", "%b0", "%6")
 
-        "mov  %2, %%"REG_a"                     \n\t"
-        "movl %4, %%ecx                         \n\t"
+        "sub  %10, %1                           \n\t"
+        "mov  %2, %0                            \n\t"
+        "movl %7, %%ecx                         \n\t"
         "add  %1, %%"REG_c"                     \n\t"
-        "movl %%ecx, (%%"REG_a")                \n\t"
+        "movl %%ecx, (%0)                       \n\t"
 
-        "test $1, %%edx                         \n\t"
+        "test $1, %4                            \n\t"
         " jnz 4f                                \n\t"
 
-        "add  $4, %%"REG_a"                     \n\t"
-        "mov  %%"REG_a", %2                     \n\t"
+        "add"OPSIZE"  $4, %2                    \n\t"
 
         "3:                                     \n\t"
         "add  $1, %1                            \n\t"
-        "cmp  %5, %1                            \n\t"
+        "cmp  %8, %1                            \n\t"
         " jb 2b                                 \n\t"
-        "mov  %2, %%"REG_a"                     \n\t"
-        "movl %4, %%ecx                         \n\t"
+        "mov  %2, %0                            \n\t"
+        "movl %7, %%ecx                         \n\t"
         "add  %1, %%"REG_c"                     \n\t"
-        "movl %%ecx, (%%"REG_a")                \n\t"
+        "movl %%ecx, (%0)                       \n\t"
         "4:                                     \n\t"
-        "add  %6, %%eax                         \n\t"
-        "shr $2, %%eax                          \n\t"
-
-        "movl %%esi, "RANGE    "(%3)            \n\t"
-        "movl %%ebx, "LOW      "(%3)            \n\t"
-        :"=&a"(coeff_count), "+r"(significant_coeff_ctx_base), "+m"(index)
-        :"r"(c), "m"(minusstart), "m"(end), "m"(minusindex)
-        : "%"REG_c, "%ebx", "%edx", "%esi", "memory"
+        "add  %9, %k0                           \n\t"
+        "shr $2, %k0                            \n\t"
+        :"=&q"(coeff_count), "+r"(significant_coeff_ctx_base), "+m"(index),
+         "+&r"(c->low), "=&r"(bit), "+&r"(c->range),
+         "+m"(c->bytestream)
+        :"m"(minusstart), "m"(end), "m"(minusindex), "m"(last_off)
+        : "%"REG_c, "memory"
     );
     return coeff_count;
 }
 
 static int decode_significance_8x8_x86(CABACContext *c,
                                        uint8_t *significant_coeff_ctx_base,
-                                       int *index, const uint8_t *sig_off){
-    int minusindex= 4-(int)index;
-    int coeff_count;
+                                       int *index, uint8_t *last_coeff_ctx_base, const uint8_t *sig_off){
+    int minusindex= 4-(intptr_t)index;
+    int bit;
+    x86_reg coeff_count;
     x86_reg last=0;
+    x86_reg state;
     __asm__ volatile(
-        "movl "RANGE    "(%3), %%esi            \n\t"
-        "movl "LOW      "(%3), %%ebx            \n\t"
-
-        "mov %1, %%"REG_D"                      \n\t"
+        "mov %1, %6                             \n\t"
         "2:                                     \n\t"
 
-        "mov %6, %%"REG_a"                      \n\t"
-        "movzbl (%%"REG_a", %%"REG_D"), %%edi   \n\t"
-        "add %5, %%"REG_D"                      \n\t"
+        "mov %10, %0                            \n\t"
+        "movzbl (%0, %6), %k6                   \n\t"
+        "add %9, %6                             \n\t"
 
-        BRANCHLESS_GET_CABAC("%%edx", "%3", "(%%"REG_D")", "%%ebx",
-                             "%%bx", "%%esi", "%%eax", "%%al")
+        BRANCHLESS_GET_CABAC("%4", "(%6)", "%3",
+                             "%w3", "%5", "%k0", "%b0", "%7")
 
-        "mov %1, %%edi                          \n\t"
-        "test $1, %%edx                         \n\t"
+        "mov %1, %k6                            \n\t"
+        "test $1, %4                            \n\t"
         " jz 3f                                 \n\t"
 
-        "movzbl "MANGLE(last_coeff_flag_offset_8x8)"(%%edi), %%edi\n\t"
-        "add %5, %%"REG_D"                      \n\t"
+        "movzbl "MANGLE(last_coeff_flag_offset_8x8)"(%k6), %k6\n\t"
+        "add %11, %6                            \n\t"
 
-        BRANCHLESS_GET_CABAC("%%edx", "%3", "15(%%"REG_D")", "%%ebx",
-                             "%%bx", "%%esi", "%%eax", "%%al")
+        BRANCHLESS_GET_CABAC("%4", "(%6)", "%3",
+                             "%w3", "%5", "%k0", "%b0", "%7")
 
-        "mov %2, %%"REG_a"                      \n\t"
-        "mov %1, %%edi                          \n\t"
-        "movl %%edi, (%%"REG_a")                \n\t"
+        "mov %2, %0                             \n\t"
+        "mov %1, %k6                            \n\t"
+        "movl %k6, (%0)                         \n\t"
 
-        "test $1, %%edx                         \n\t"
+        "test $1, %4                            \n\t"
         " jnz 4f                                \n\t"
 
-        "add $4, %%"REG_a"                      \n\t"
-        "mov %%"REG_a", %2                      \n\t"
+        "add"OPSIZE"  $4, %2                    \n\t"
 
         "3:                                     \n\t"
-        "addl $1, %%edi                         \n\t"
-        "mov %%edi, %1                          \n\t"
-        "cmpl $63, %%edi                        \n\t"
+        "addl $1, %k6                           \n\t"
+        "mov %k6, %1                            \n\t"
+        "cmpl $63, %k6                          \n\t"
         " jb 2b                                 \n\t"
-        "mov %2, %%"REG_a"                      \n\t"
-        "movl %%edi, (%%"REG_a")                \n\t"
+        "mov %2, %0                             \n\t"
+        "movl %k6, (%0)                         \n\t"
         "4:                                     \n\t"
-        "addl %4, %%eax                         \n\t"
-        "shr $2, %%eax                          \n\t"
-
-        "movl %%esi, "RANGE    "(%3)            \n\t"
-        "movl %%ebx, "LOW      "(%3)            \n\t"
-        :"=&a"(coeff_count),"+m"(last), "+m"(index)
-        :"r"(c), "m"(minusindex), "m"(significant_coeff_ctx_base), "m"(sig_off)
-        : "%"REG_c, "%ebx", "%edx", "%esi", "%"REG_D, "memory"
+        "addl %8, %k0                           \n\t"
+        "shr $2, %k0                            \n\t"
+        :"=&q"(coeff_count),"+m"(last), "+m"(index), "+&r"(c->low), "=&r"(bit),
+         "+&r"(c->range), "=&r"(state), "+m"(c->bytestream)
+        :"m"(minusindex), "m"(significant_coeff_ctx_base), "m"(sig_off), "m"(last_coeff_ctx_base)
+        : "%"REG_c, "memory"
     );
     return coeff_count;
 }
-#endif /* ARCH_X86 && HAVE_7REGS && HAVE_EBX_AVAILABLE */
-       /* !defined(BROKEN_RELOCATIONS) */
+#endif /* HAVE_7REGS && !defined(BROKEN_RELOCATIONS) */
 
 #endif /* AVCODEC_X86_H264_I386_H */

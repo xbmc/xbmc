@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "MusicAlbumInfo.h"
 #include "addons/Scraper.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace MUSIC_GRABBER;
@@ -38,7 +39,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& s
   const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL)
 {
   m_album.strAlbum = strAlbum;
-  m_album.strArtist = strArtist;
+  m_album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
   m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;
   m_relevance = -1;
@@ -53,7 +54,7 @@ void CMusicAlbumInfo::SetAlbum(CAlbum& album)
   m_bLoaded = true;
 }
 
-bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper)
+bool CMusicAlbumInfo::Load(XFILE::CCurlFile& http, const ADDON::ScraperPtr& scraper)
 {
   bool fSuccess = scraper->GetAlbumDetails(http, m_albumURL, m_album);
   if (fSuccess && m_strTitle2.empty())

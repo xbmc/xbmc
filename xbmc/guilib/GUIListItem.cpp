@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,6 +23,8 @@
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/Variant.h"
+
+using namespace std;
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
@@ -40,9 +41,6 @@ CGUIListItem::CGUIListItem(void)
   m_strLabel = "";
   m_bSelected = false;
   m_strIcon = "";
-#ifndef __PLEX__
-  m_strThumbnailImage = "";
-#endif
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -56,9 +54,6 @@ CGUIListItem::CGUIListItem(const CStdString& strLabel)
   SetSortLabel(strLabel);
   m_bSelected = false;
   m_strIcon = "";
-#ifndef __PLEX__
-  m_strThumbnailImage = "";
-#endif
   m_overlayIcon = ICON_OVERLAY_NONE;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -104,27 +99,65 @@ void CGUIListItem::SetSortLabel(const CStdString &label)
   // no need to invalidate - this is never shown in the UI
 }
 
+void CGUIListItem::SetSortLabel(const CStdStringW &label)
+{
+  m_sortLabel = label;
+}
+
 const CStdStringW& CGUIListItem::GetSortLabel() const
 {
   return m_sortLabel;
 }
 
-#ifndef __PLEX__
-void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail)
+void CGUIListItem::SetArt(const std::string &type, const std::string &url)
 {
-  if (m_strThumbnailImage == strThumbnail)
-    return;
-  m_strThumbnailImage = strThumbnail;
+  ArtMap::iterator i = m_art.find(type);
+  if (i == m_art.end() || i->second != url)
+  {
+    m_art[type] = url;
+    SetInvalid();
+  }
+}
+
+void CGUIListItem::SetArt(const ArtMap &art, bool setFallback /* = true */)
+{
+  m_art = art;
+  // ensure that the fallback "thumb" is available
+  if (setFallback && m_art.find("thumb") == m_art.end())
+  {
+    if (HasArt("poster"))
+      m_art["thumb"] = m_art["poster"];
+    else if (HasArt("banner"))
+      m_art["thumb"] = m_art["banner"];
+  }
+  
   SetInvalid();
 }
-#endif
 
-#ifndef __PLEX__
-const CStdString& CGUIListItem::GetThumbnailImage() const
+void CGUIListItem::AppendArt(const ArtMap &art)
 {
-  return m_strThumbnailImage;
+  for (ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
+    SetArt(i->first, i->second);
 }
-#endif
+
+std::string CGUIListItem::GetArt(const std::string &type) const
+{
+  ArtMap::const_iterator i = m_art.find(type);
+  if (i != m_art.end())
+    return i->second;
+  return "";
+}
+
+const CGUIListItem::ArtMap &CGUIListItem::GetArt() const
+{
+  return m_art;
+}
+
+bool CGUIListItem::HasArt(const std::string &type) const
+{
+  ArtMap::const_iterator i = m_art.find(type);
+  return (i != m_art.end() && !i->second.empty());
+}
 
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
 {
@@ -187,13 +220,6 @@ bool CGUIListItem::HasIcon() const
   return (m_strIcon.size() != 0);
 }
 
-#ifndef __PLEX__
-bool CGUIListItem::HasThumbnail() const
-{
-  return (m_strThumbnailImage.size() != 0);
-}
-#endif
-
 bool CGUIListItem::HasOverlay() const
 {
   return (m_overlayIcon != CGUIListItem::ICON_OVERLAY_NONE);
@@ -213,18 +239,10 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   FreeMemory();
   m_bSelected = item.m_bSelected;
   m_strIcon = item.m_strIcon;
-#ifndef __PLEX__
-  m_strThumbnailImage = item.m_strThumbnailImage;
-#else
-  m_strThumbnailImageList = item.m_strThumbnailImageList;
-#endif
   m_overlayIcon = item.m_overlayIcon;
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
-
-  /* PLEX */
-  m_strThumbnailImageList.assign(item.m_strThumbnailImageList.begin(), item.m_strThumbnailImageList.end());
-  /* END PLEX */
+  m_art = item.m_art;
 
   SetInvalid();
   return *this;
@@ -238,9 +256,6 @@ void CGUIListItem::Archive(CArchive &ar)
     ar << m_strLabel;
     ar << m_strLabel2;
     ar << m_sortLabel;
-#ifndef __PLEX__
-    ar << m_strThumbnailImage;
-#endif
     ar << m_strIcon;
     ar << m_bSelected;
     ar << m_overlayIcon;
@@ -250,6 +265,12 @@ void CGUIListItem::Archive(CArchive &ar)
       ar << it->first;
       ar << it->second;
     }
+    ar << (int)m_art.size();
+    for (ArtMap::const_iterator i = m_art.begin(); i != m_art.end(); i++)
+    {
+      ar << i->first;
+      ar << i->second;
+    }
   }
   else
   {
@@ -257,9 +278,6 @@ void CGUIListItem::Archive(CArchive &ar)
     ar >> m_strLabel;
     ar >> m_strLabel2;
     ar >> m_sortLabel;
-#ifndef __PLEX__
-    ar >> m_strThumbnailImage;
-#endif
     ar >> m_strIcon;
     ar >> m_bSelected;
 
@@ -271,11 +289,19 @@ void CGUIListItem::Archive(CArchive &ar)
     ar >> mapSize;
     for (int i = 0; i < mapSize; i++)
     {
-      CStdString key;
+      std::string key;
       CVariant value;
       ar >> key;
       ar >> value;
       SetProperty(key, value);
+    }
+    ar >> mapSize;
+    for (int i = 0; i < mapSize; i++)
+    {
+      std::string key, value;
+      ar >> key;
+      ar >> value;
+      m_art.insert(make_pair(key, value));
     }
   }
 }
@@ -284,10 +310,7 @@ void CGUIListItem::Serialize(CVariant &value)
   value["isFolder"] = m_bIsFolder;
   value["strLabel"] = m_strLabel;
   value["strLabel2"] = m_strLabel2;
-  value["sortLabel"] = CStdString(m_sortLabel);
-#ifndef __PLEX__
-  value["strThumbnailImage"] = m_strThumbnailImage;
-#endif
+  value["sortLabel"] = m_sortLabel;
   value["strIcon"] = m_strIcon;
   value["selected"] = m_bSelected;
 
@@ -295,16 +318,14 @@ void CGUIListItem::Serialize(CVariant &value)
   {
     value["properties"][it->first] = it->second;
   }
+  for (ArtMap::const_iterator it = m_art.begin(); it != m_art.end(); it++)
+    value["art"][it->first] = it->second;
 }
 
 void CGUIListItem::FreeIcons()
 {
   FreeMemory();
-#ifndef __PLEX__
-  m_strThumbnailImage = "";
-#else
-  m_strThumbnailImageList.clear();
-#endif
+  m_art.clear();
   m_strIcon = "";
   SetInvalid();
 }

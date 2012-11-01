@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
+#include "os_port.h"
 #include "ssl.h"
 
 static const uint8_t g_hello_done[] = { HS_SERVER_HELLO_DONE, 0, 0, 0 };
@@ -84,13 +84,14 @@ int do_svr_handshake(SSL *ssl, int handshake_type, uint8_t *buf, int hs_len)
         case HS_CERTIFICATE:/* the client sends its cert */
             ret = process_certificate(ssl, &ssl->x509_ctx);
 
-            if (ret == SSL_OK)    /* verify the cert */
+            /* GBG: removed (modified process_certificate to do the cert verification for both client and server
+            if (ret == SSL_OK)    
             { 
                 int cert_res;
                 cert_res = x509_verify(
-                        ssl->ssl_ctx->ca_cert_ctx, ssl->x509_ctx);
+                        ssl->ssl_ctx->ca_cert_ctx, ssl->x509_ctx, NULL);
                 ret = (cert_res == 0) ? SSL_OK : SSL_X509_ERROR(cert_res);
-            }
+            }*/
             break;
 
         case HS_CERT_VERIFY:    
@@ -103,7 +104,7 @@ int do_svr_handshake(SSL *ssl, int handshake_type, uint8_t *buf, int hs_len)
             break;
 
         case HS_FINISHED:
-            ret = process_finished(ssl, hs_len);
+            ret = process_finished(ssl, buf, hs_len);
             disposable_free(ssl);   /* free up some memory */
             break;
     }
@@ -120,11 +121,17 @@ static int process_client_hello(SSL *ssl)
     uint8_t *record_buf = ssl->hmac_header;
     int pkt_size = ssl->bm_index;
     int i, j, cs_len, id_len, offset = 6 + SSL_RANDOM_SIZE;
-    int version = (record_buf[1] << 4) + record_buf[2];
     int ret = SSL_OK;
     
-    /* should be v3.1 (TLSv1) or better - we'll send in v3.1 mode anyway */
-    if (version < 0x31) 
+    uint8_t version = (record_buf[1] << 4) + record_buf[2];
+    ssl->version = ssl->client_version = version;
+
+    if (version > SSL_PROTOCOL_VERSION_MAX)
+    {
+        /* use client's version instead */
+        ssl->version = SSL_PROTOCOL_VERSION_MAX; 
+    }
+    else if (version < SSL_PROTOCOL_MIN_VERSION)  /* old version supported? */
     {
         ret = SSL_ERROR_INVALID_VERSION;
         ssl_display_error(ret);
@@ -151,10 +158,11 @@ static int process_client_hello(SSL *ssl)
 
     PARANOIA_CHECK(pkt_size, offset);
 
-    /* work out what cipher suite we are going to use */
-    for (j = 0; j < NUM_PROTOCOLS; j++)
+    /* work out what cipher suite we are going to use - client defines 
+       the preference */
+    for (i = 0; i < cs_len; i += 2)
     {
-        for (i = 0; i < cs_len; i += 2)
+        for (j = 0; j < NUM_PROTOCOLS; j++)
         {
             if (ssl_prot_prefs[j] == buf[offset+i])   /* got a match? */
             {
@@ -180,7 +188,6 @@ int process_sslv23_client_hello(SSL *ssl)
 {
     uint8_t *buf = ssl->bm_data;
     int bytes_needed = ((buf[0] & 0x7f) << 8) + buf[1];
-    int version = (buf[3] << 4) + buf[4];
     int ret = SSL_OK;
 
     /* we have already read 3 extra bytes so far */
@@ -193,12 +200,6 @@ int process_sslv23_client_hello(SSL *ssl)
 
     DISPLAY_BYTES(ssl, "received %d bytes", buf, read_len, read_len);
     
-    /* should be v3.1 (TLSv1) or better - we'll send in v3.1 mode anyway */
-    if (version < 0x31)
-    {
-        return SSL_ERROR_INVALID_VERSION;
-    }
-
     add_packet(ssl, buf, read_len);
 
     /* connection has gone, so die */
@@ -308,7 +309,7 @@ static int send_server_hello(SSL *ssl)
     buf[2] = 0;
     /* byte 3 is calculated later */
     buf[4] = 0x03;
-    buf[5] = 0x01;
+    buf[5] = ssl->version & 0x0f;
 
     /* server random value */
     get_random(SSL_RANDOM_SIZE, &buf[6]);
@@ -370,7 +371,7 @@ static int send_server_hello_done(SSL *ssl)
  */
 static int process_client_key_xchg(SSL *ssl)
 {
-    uint8_t *buf = ssl->bm_data;
+    uint8_t *buf = &ssl->bm_data[ssl->dc->bm_proc_index];
     int pkt_size = ssl->bm_index;
     int premaster_size, secret_length = (buf[2] << 8) + buf[3];
     uint8_t premaster_secret[MAX_KEY_BYTE_SIZE];
@@ -378,7 +379,11 @@ static int process_client_key_xchg(SSL *ssl)
     int offset = 4;
     int ret = SSL_OK;
     
-    DISPLAY_RSA(ssl, rsa_ctx);
+    if (rsa_ctx == NULL)
+    {
+        ret = SSL_ERROR_NO_CERT_DEFINED;
+        goto error;
+    }
 
     /* is there an extra size field? */
     if ((secret_length - 2) == rsa_ctx->num_octets)
@@ -392,11 +397,12 @@ static int process_client_key_xchg(SSL *ssl)
     SSL_CTX_UNLOCK(ssl->ssl_ctx->mutex);
 
     if (premaster_size != SSL_SECRET_SIZE || 
-            premaster_secret[0] != 0x03 ||  /* check version is 3.1 (TLS) */
-            premaster_secret[1] != 0x01)
+            premaster_secret[0] != 0x03 ||  /* must be the same as client
+                                               offered version */
+                premaster_secret[1] != (ssl->client_version & 0x0f))
     {
         /* guard against a Bleichenbacher attack */
-        memset(premaster_secret, 0, SSL_SECRET_SIZE);
+        get_random(SSL_SECRET_SIZE, premaster_secret);
         /* and continue - will die eventually when checking the mac */
     }
 
@@ -412,12 +418,14 @@ static int process_client_key_xchg(SSL *ssl)
 #else
     ssl->next_state = HS_FINISHED; 
 #endif
+
+    ssl->dc->bm_proc_index += rsa_ctx->num_octets+offset;
 error:
     return ret;
 }
 
 #ifdef CONFIG_SSL_CERT_VERIFICATION
-static const uint8_t g_cert_request[] = { HS_CERT_REQ, 0, 0, 4, 1, 0, 0, 0 };
+static const uint8_t g_cert_request[] = { HS_CERT_REQ, 0, 0, 4, 1, /* GBG: changed from 0 to 1 */ 1, 0, 0 };
 
 /*
  * Send the certificate request message.
@@ -434,7 +442,7 @@ static int send_certificate_request(SSL *ssl)
  */
 static int process_cert_verify(SSL *ssl)
 {
-    uint8_t *buf = ssl->bm_data;
+    uint8_t *buf = &ssl->bm_data[ssl->dc->bm_proc_index];
     int pkt_size = ssl->bm_index;
     uint8_t dgst_buf[MAX_KEY_BYTE_SIZE];
     uint8_t dgst[MD5_SIZE+SHA1_SIZE];
@@ -443,7 +451,6 @@ static int process_cert_verify(SSL *ssl)
     int n;
 
     PARANOIA_CHECK(pkt_size, x509_ctx->rsa_ctx->num_octets+6);
-
     DISPLAY_RSA(ssl, x509_ctx->rsa_ctx);
 
     /* rsa_ctx->bi_ctx is not thread-safe */

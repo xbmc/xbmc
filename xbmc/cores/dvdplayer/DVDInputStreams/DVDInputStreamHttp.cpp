@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDInputStreamHttp.h"
 #include "URL.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 
 using namespace XFILE;
 
@@ -40,7 +39,7 @@ bool CDVDInputStreamHttp::IsEOF()
 {
   if(m_pFile && !m_eof)
   {
-    __int64 size = m_pFile->GetLength();
+    int64_t size = m_pFile->GetLength();
     if( size > 0 && m_pFile->GetPosition() >= size )
     {
       m_eof = true;
@@ -55,7 +54,7 @@ bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
-  m_pFile = new CFileCurl();
+  m_pFile = new CCurlFile();
   if (!m_pFile) return false;
 
   std::string filename = strFile;
@@ -103,7 +102,7 @@ int CDVDInputStreamHttp::Read(BYTE* buf, int buf_size)
   return (int)(ret & 0xFFFFFFFF);
 }
 
-__int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
+int64_t CDVDInputStreamHttp::Seek(int64_t offset, int whence)
 {
   if(!m_pFile)
     return -1;
@@ -111,7 +110,7 @@ __int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
   if(whence == SEEK_POSSIBLE)
     return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
-  __int64 ret = m_pFile->Seek(offset, whence);
+  int64_t ret = m_pFile->Seek(offset, whence);
 
   if( ret >= 0 ) m_eof = false;
 
@@ -124,7 +123,7 @@ CHttpHeader* CDVDInputStreamHttp::GetHttpHeader()
   else return NULL;
 }
 
-__int64 CDVDInputStreamHttp::GetLength()
+int64_t CDVDInputStreamHttp::GetLength()
 {
   if (m_pFile)
     return m_pFile->GetLength();

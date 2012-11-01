@@ -39,16 +39,17 @@ I. BASICS:
 
 0. Get GIT:
 
+  Most distributions have a git package, if not
   You can get git from http://git-scm.com/
 
 
 1. Cloning the source tree:
 
-    git clone git://git.ffmpeg.org/ffmpeg.git <target>
+    git clone git://source.ffmpeg.org/ffmpeg <target>
 
   This will put the FFmpeg sources into the directory <target>.
 
-    git clone git@git.ffmpeg.org:ffmpeg.git <target>
+    git clone git@source.ffmpeg.org:ffmpeg <target>
 
   This will put the FFmpeg sources into the directory <target> and let
   you push back your changes to the remote repository.
@@ -97,7 +98,7 @@ I. BASICS:
     git log <filename(s)>
 
   You may also use the graphical tools like gitview or gitk or the web
-  interface available at http://git.ffmpeg.org/
+  interface available at http://source.ffmpeg.org
 
 6. Checking source tree status:
 
@@ -120,7 +121,7 @@ I. BASICS:
 
   For cosmetics-only commits you should get (almost) empty output from
 
-    git diff -wb <filename(s)>
+    git diff -w -b <filename(s)>
 
   Also check the output of
 
@@ -205,8 +206,19 @@ I. BASICS:
 
     git format-patch <commit> [-o directory]
 
-  will generate a set of patches out of the current branch starting from
-  commit. By default the patches are created in the current directory.
+  will generate a set of patches for each commit between <commit> and
+  current HEAD. E.g.
+
+    git format-patch origin/master
+
+  will generate patches for all commits on current branch which are not
+  present in upstream.
+  A useful shortcut is also
+
+    git format-patch -n
+
+  which will generate patches from last n commits.
+  By default the patches are created in the current directory.
 
 11. Sending patches for review
 
@@ -215,6 +227,8 @@ I. BASICS:
   will send the patches created by git format-patch or directly generates
   them. All the email fields can be configured in the global/local
   configuration or overridden by command line.
+  Note that this tool must often be installed separately (e.g. git-email
+  package on Debian-based distros).
 
 12. Pushing changes to remote trees
 
@@ -255,5 +269,5 @@ I. BASICS:
   where $SHA1 is the commit SHA1 from the 'git log' output.
 
 
-Contact the project admins <git at ffmpeg dot org> if you have technical
+Contact the project admins <root at ffmpeg dot org> if you have technical
 problems with the GIT server.

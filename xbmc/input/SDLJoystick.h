@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2007-2010 Team XBMC
+*      Copyright (C) 2007-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -57,12 +56,14 @@ public:
   void Update();
   void Update(SDL_Event& event);
   bool GetButton (int& id, bool consider_repeat=true);
-  bool GetAxis (int &id) { if (!IsAxisActive()) return false; id=m_AxisId; return true; }
+  bool GetAxis (int &id);
   bool GetHat (int &id, int &position, bool consider_repeat=true);
   std::string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
   float GetAmount(int axis);
   float GetAmount() { return GetAmount(m_AxisId); }
+  bool IsEnabled() const { return m_joystickEnabled; }
+  void SetEnabled(bool enabled = true);
   float SetDeadzone(float val);
   bool Reinitialize();
 
@@ -74,6 +75,8 @@ private:
   bool IsAxisActive() { return (m_ActiveFlags & JACTIVE_AXIS) == JACTIVE_AXIS; }
   bool IsHatActive() { return (m_ActiveFlags & JACTIVE_HAT) == JACTIVE_HAT; }
 
+  bool ReleaseJoysticks();
+
   int m_Amount[MAX_AXES];
   int m_AxisId;
   int m_ButtonId;
@@ -82,6 +85,7 @@ private:
   int m_JoyId;
   int m_NumAxes;
   int m_DeadzoneRange;
+  bool m_joystickEnabled;
   uint32_t m_pressTicksButton;
   uint32_t m_pressTicksHat;
   uint8_t m_ActiveFlags;

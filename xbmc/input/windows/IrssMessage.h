@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -164,14 +163,14 @@
     /// Operation Time-Out.
     /// </summary>
     IRSSMF_Timeout         = 0x0020,
-    
+
     //IRSSMF_Error           = 0x0040,
 
     //IRSSMF_DataString      = 0x0080,
     //IRSSMF_DataBytes       = 0x0100,
 
     //IRSSMF_ForceRespond    = 0x0200,
-    
+
     /// <summary>
     /// Force the recipient not to respond.
     /// </summary>
@@ -201,7 +200,7 @@ public:
 private:
   IRSS_MessageType m_type;
   uint32_t m_flags;
-  
+
   char* m_data;
   int m_dataSize;
 

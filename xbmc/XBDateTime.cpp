@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,20 +13,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/log.h"
 
 #define SECONDS_PER_DAY 86400UL
 #define SECONDS_PER_HOUR 3600UL
 #define SECONDS_PER_MINUTE 60UL
 #define SECONDS_TO_FILETIME 10000000UL
+
+static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 /////////////////////////////////////////////////
 //
@@ -279,22 +282,8 @@ CDateTime CDateTime::GetCurrentDateTime()
 
 CDateTime CDateTime::GetUTCDateTime()
 {
-  TIME_ZONE_INFORMATION tz;
-
   CDateTime time(GetCurrentDateTime());
-  switch(GetTimeZoneInformation(&tz))
-  {
-    case TIME_ZONE_ID_DAYLIGHT:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
-        break;
-    case TIME_ZONE_ID_STANDARD:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
-        break;
-    case TIME_ZONE_ID_UNKNOWN:
-        time += CDateTimeSpan(0, 0, tz.Bias, 0);
-        break;
-  }
-
+  time += GetTimezoneBias();
   return time;
 }
 
@@ -638,7 +627,8 @@ bool CDateTime::IsValid() const
 
 bool CDateTime::ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const
 {
-  return SystemTimeToFileTime(&time, &fileTime)==TRUE;
+  return SystemTimeToFileTime(&time, &fileTime) == TRUE &&
+         (fileTime.dwLowDateTime > 0 || fileTime.dwHighDateTime > 0);
 }
 
 bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
@@ -862,6 +852,64 @@ CStdString CDateTime::GetAsDBDateTime() const
   return date;
 }
 
+CStdString CDateTime::GetAsSaveString() const
+{
+  SYSTEMTIME st;
+  GetAsSystemTime(st);
+
+  CStdString date;
+  date.Format("%04i%02i%02i_%02i%02i%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
+  return date;
+}
+
+void CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
+{
+  CDateTime tmp(dateTime);
+  tmp -= GetTimezoneBias();
+
+  m_time = tmp.m_time;
+  m_state = tmp.m_state;
+}
+
+static bool bGotTimezoneBias = false;
+
+void CDateTime::ResetTimezoneBias(void)
+{
+  bGotTimezoneBias = false;
+}
+
+CDateTimeSpan CDateTime::GetTimezoneBias(void)
+{
+  static CDateTimeSpan timezoneBias;
+
+  if (!bGotTimezoneBias)
+  {
+    bGotTimezoneBias = true;
+    TIME_ZONE_INFORMATION tz;
+    switch(GetTimeZoneInformation(&tz))
+    {
+      case TIME_ZONE_ID_DAYLIGHT:
+        timezoneBias = CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
+        break;
+      case TIME_ZONE_ID_STANDARD:
+        timezoneBias = CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
+        break;
+      case TIME_ZONE_ID_UNKNOWN:
+        timezoneBias = CDateTimeSpan(0, 0, tz.Bias, 0);
+        break;
+    }
+  }
+
+  return timezoneBias;
+}
+
+void CDateTime::SetFromUTCDateTime(const time_t &dateTime)
+{
+  CDateTime tmp(dateTime);
+  SetFromUTCDateTime(tmp);
+}
+
 void CDateTime::SetFromW3CDate(const CStdString &dateTime)
 {
   CStdString date, time, zone;
@@ -951,6 +999,38 @@ void CDateTime::SetFromDBTime(const CStdString &time)
   second = atoi(time.Mid(6,2).c_str());
 
   SetTime(hour, minute, second);
+}
+
+void CDateTime::SetFromRFC1123DateTime(const CStdString &dateTime)
+{
+  CStdString date = dateTime;
+  date.Trim();
+
+  if (date.size() != 29)
+    return;
+
+  int day  = strtol(date.Mid(5, 2).c_str(), NULL, 10);
+
+  CStdString strMonth = date.Mid(8, 3);
+  int month = 0;
+  for (unsigned int index = 0; index < 12; index++)
+  {
+    if (strMonth.Equals(MONTH_NAMES[index]))
+    {
+      month = index + 1;
+      break;
+    }
+  }
+
+  if (month < 1)
+    return;
+
+  int year = strtol(date.Mid(12, 4).c_str(), NULL, 10);
+  int hour = strtol(date.Mid(17, 2).c_str(), NULL, 10);
+  int min  = strtol(date.Mid(20, 2).c_str(), NULL, 10);
+  int sec  = strtol(date.Mid(23, 2).c_str(), NULL, 10);
+
+  SetDateTime(year, month, day, hour, min, sec);
 }
 
 CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeconds) const
@@ -1089,19 +1169,15 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
     }
     else if (c=='x') // add meridiem symbol
     {
-      int partLength=0;
-
       int pos=strFormat.find_first_not_of(c,i+1);
       if (pos>-1)
       {
         // Get length of the meridiem mask
-        partLength=pos-i;
         i=pos-1;
       }
       else
       {
         // mask ends at the end of the string, extract it
-        partLength=length-i;
         i=length;
       }
 
@@ -1257,32 +1333,44 @@ CStdString CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool withS
 
 CDateTime CDateTime::GetAsUTCDateTime() const
 {
-  TIME_ZONE_INFORMATION tz;
-
   CDateTime time(m_time);
-  switch(GetTimeZoneInformation(&tz))
-  {
-    case TIME_ZONE_ID_DAYLIGHT:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
-        break;
-    case TIME_ZONE_ID_STANDARD:
-        time += CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
-        break;
-    case TIME_ZONE_ID_UNKNOWN:
-        time += CDateTimeSpan(0, 0, tz.Bias, 0);
-        break;
-  }
-
+  time += GetTimezoneBias();
   return time;
 }
 
-static const char *DAY_NAMES[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-
 CStdString CDateTime::GetAsRFC1123DateTime() const
 {
-  CDateTime time(GetAsUTCDateTime()); 
+  CDateTime time(GetAsUTCDateTime());
+
+  int weekDay = time.GetDayOfWeek();
+  if (weekDay < 0)
+    weekDay = 0;
+  else if (weekDay > 6)
+    weekDay = 6;
+  if (weekDay != time.GetDayOfWeek())
+    CLog::Log(LOGWARNING, "Invalid day of week %d in %s", time.GetDayOfWeek(), time.GetAsDBDateTime().c_str());
+
+  int month = time.GetMonth();
+  if (month < 1)
+    month = 1;
+  else if (month > 12)
+    month = 12;
+  if (month != time.GetMonth())
+    CLog::Log(LOGWARNING, "Invalid month %d in %s", time.GetMonth(), time.GetAsDBDateTime().c_str());
+
   CStdString result;
-  result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[time.GetDayOfWeek()], time.GetDay(), MONTH_NAMES[time.GetMonth()-1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
+  result.Format("%s, %02i %s %04i %02i:%02i:%02i GMT", DAY_NAMES[weekDay], time.GetDay(), MONTH_NAMES[month - 1], time.GetYear(), time.GetHour(), time.GetMinute(), time.GetSecond());
   return result;
+}
+
+int CDateTime::MonthStringToMonthNum(const CStdString& month)
+{
+  const char* months[] = {"january","february","march","april","may","june","july","august","september","october","november","december"};
+  const char* abr_months[] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+
+  int i = 0;
+  for (; i < 12 && month.CompareNoCase(months[i]) != 0 && month.CompareNoCase(abr_months[i]) != 0; i++);
+  i++;
+
+  return i;
 }

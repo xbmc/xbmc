@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -38,6 +37,12 @@
 /* PLEX */
 #include "PlexTypes.h"
 /* END PLEX */
+
+#if defined(TARGET_WINDOWS)
+#include "input/windows/WINJoystick.h"
+#elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#include "SDLJoystick.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -96,7 +101,8 @@ static const ActionMapping actions[] =
         {"nextcalibration"   , ACTION_CALIBRATE_SWAP_ARROWS},
         {"resetcalibration"  , ACTION_CALIBRATE_RESET},
         {"analogmove"        , ACTION_ANALOG_MOVE},
-        {"rotate"            , ACTION_ROTATE_PICTURE},
+        {"rotate"            , ACTION_ROTATE_PICTURE_CW},
+        {"rotateccw"         , ACTION_ROTATE_PICTURE_CCW},
         {"close"             , ACTION_NAV_BACK}, // backwards compatibility
         {"subtitledelayminus", ACTION_SUBTITLE_DELAY_MIN},
         {"subtitledelay"     , ACTION_SUBTITLE_DELAY},
@@ -187,6 +193,7 @@ static const ActionMapping actions[] =
         {"jumpsms7"          , ACTION_JUMP_SMS7},
         {"jumpsms8"          , ACTION_JUMP_SMS8},
         {"jumpsms9"          , ACTION_JUMP_SMS9},
+        {"filter"            , ACTION_FILTER},
         {"filterclear"       , ACTION_FILTER_CLEAR},
         {"filtersms2"        , ACTION_FILTER_SMS2},
         {"filtersms3"        , ACTION_FILTER_SMS3},
@@ -205,6 +212,8 @@ static const ActionMapping actions[] =
         {"blue"              , ACTION_TELETEXT_BLUE},
         {"increasepar"       , ACTION_INCREASE_PAR},
         {"decreasepar"       , ACTION_DECREASE_PAR},
+        {"volampup"          , ACTION_VOLAMP_UP},
+        {"volampdown"        , ACTION_VOLAMP_DOWN},
 
         // Mouse actions
         {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
@@ -222,6 +231,11 @@ static const ActionMapping actions[] =
 
 static const ActionMapping windows[] =
        {{"home"                     , WINDOW_HOME},
+        /* PLEX */
+        {"sharedcontent"            , WINDOW_SHARED_CONTENT},
+        {"nowplaying"               , WINDOW_NOW_PLAYING},
+        {"plexsearch"               , WINDOW_PLEX_SEARCH},
+        /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},
         {"filemanager"              , WINDOW_FILES},
@@ -230,6 +244,21 @@ static const ActionMapping windows[] =
         {"music"                    , WINDOW_MUSIC},
         {"video"                    , WINDOW_VIDEOS},
         {"videos"                   , WINDOW_VIDEO_NAV},
+        {"tv"                       , WINDOW_PVR}, // backward compat
+        {"pvr"                      , WINDOW_PVR},
+        {"pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO},
+        {"pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO},
+        {"pvrtimersetting"          , WINDOW_DIALOG_PVR_TIMER_SETTING},
+        {"pvrgroupmanager"          , WINDOW_DIALOG_PVR_GROUP_MANAGER},
+        {"pvrchannelmanager"        , WINDOW_DIALOG_PVR_CHANNEL_MANAGER},
+        {"pvrguidesearch"           , WINDOW_DIALOG_PVR_GUIDE_SEARCH},
+        {"pvrchannelscan"           , WINDOW_DIALOG_PVR_CHANNEL_SCAN},
+        {"pvrupdateprogress"        , WINDOW_DIALOG_PVR_UPDATE_PROGRESS},
+        {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
+        {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
+        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
+        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
+        {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
@@ -240,14 +269,18 @@ static const ActionMapping windows[] =
         {"musicsettings"            , WINDOW_SETTINGS_MYMUSIC},
         {"systemsettings"           , WINDOW_SETTINGS_SYSTEM},
         {"videossettings"           , WINDOW_SETTINGS_MYVIDEOS},
-        {"networksettings"          , WINDOW_SETTINGS_NETWORK},
+        {"networksettings"          , WINDOW_SETTINGS_SERVICE}, // backward compat
+        {"servicesettings"          , WINDOW_SETTINGS_SERVICE},
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
+        {"pvrsettings"              , WINDOW_SETTINGS_MYPVR},
+        {"tvsettings"               , WINDOW_SETTINGS_MYPVR},  // backward compat
         {"scripts"                  , WINDOW_PROGRAMS}, // backward compat
         {"videofiles"               , WINDOW_VIDEO_FILES},
         {"videolibrary"             , WINDOW_VIDEO_NAV},
         {"videoplaylist"            , WINDOW_VIDEO_PLAYLIST},
         {"loginscreen"              , WINDOW_LOGIN_SCREEN},
         {"profiles"                 , WINDOW_SETTINGS_PROFILES},
+        {"skinsettings"             , WINDOW_SKIN_SETTINGS},
         {"addonbrowser"             , WINDOW_ADDON_BROWSER},
         {"yesnodialog"              , WINDOW_DIALOG_YES_NO},
         {"progressdialog"           , WINDOW_DIALOG_PROGRESS},
@@ -260,7 +293,6 @@ static const ActionMapping windows[] =
         {"numericinput"             , WINDOW_DIALOG_NUMERIC},
         {"gamepadinput"             , WINDOW_DIALOG_GAMEPAD},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
-        {"musicscan"                , WINDOW_DIALOG_MUSIC_SCAN},
         {"mutebug"                  , WINDOW_DIALOG_MUTE_BUG},
         {"playercontrols"           , WINDOW_DIALOG_PLAYER_CONTROLS},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
@@ -277,8 +309,6 @@ static const ActionMapping windows[] =
         {"profilesettings"          , WINDOW_DIALOG_PROFILE_SETTINGS},
         {"locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS},
         {"contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS},
-        {"videoscan"                , WINDOW_DIALOG_VIDEO_SCAN},
-        {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"songinformation"          , WINDOW_DIALOG_SONG_INFO},
         {"smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR},
         {"smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE},
@@ -315,12 +345,9 @@ static const ActionMapping windows[] =
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
-        /* PLEX */
-        {"sharedcontent"            , WINDOW_SHARED_CONTENT},
-        {"nowplaying"               , WINDOW_NOW_PLAYING},
-        {"plexsearch"               , WINDOW_PLEX_SEARCH},
-        /* END PLEX */
-        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS}};
+        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
+        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS},
+        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER}};
 
 static const ActionMapping mousecommands[] =
 {
@@ -444,7 +471,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
       CFileItemList files;
       XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, ".xml");
       // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-      files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+      files.Sort(SORT_METHOD_FILE, SortOrderAscending);
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
       {
         if (!files[fileIndex]->m_bIsFolder)
@@ -463,7 +490,7 @@ bool CButtonTranslator::Load(bool AlwaysLoad)
           CFileItemList files;
           XFILE::CDirectory::GetDirectory(devicedir, files, ".xml");
           // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-          files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+          files.Sort(SORT_METHOD_FILE, SortOrderAscending);
           for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
           {
             if (!files[fileIndex]->m_bIsFolder)
@@ -845,6 +872,24 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 }
 #endif
 
+void CButtonTranslator::GetActions(std::vector<std::string> &actionList)
+{
+  unsigned int size = sizeof(actions) / sizeof(ActionMapping);
+  actionList.clear();
+  actionList.reserve(size);
+  for (unsigned int index = 0; index < size; index++)
+    actionList.push_back(actions[index].name);
+}
+
+void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
+{
+  unsigned int size = sizeof(windows) / sizeof(ActionMapping);
+  windowList.clear();
+  windowList.reserve(size);
+  for (unsigned int index = 0; index < size; index++)
+    windowList.push_back(windows[index].name);
+}
+
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
 {
   CStdString strAction;
@@ -1142,13 +1187,17 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("pageminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
   else if (strButton.Equals("mute")) buttonCode = XINPUT_IR_REMOTE_MUTE;
   else if (strButton.Equals("recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton.Equals("livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
+  else if (strButton.Equals("liveradio")) buttonCode = XINPUT_IR_REMOTE_LIVE_RADIO;
+  else if (strButton.Equals("epgsearch")) buttonCode = XINPUT_IR_REMOTE_EPG_SEARCH;
   else if (strButton.Equals("star")) buttonCode = XINPUT_IR_REMOTE_STAR;
   else if (strButton.Equals("hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
   else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
   else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_ENTER;
   else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
+  else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
   else if (strButton.Equals("red")) buttonCode = XINPUT_IR_REMOTE_RED;
   else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;

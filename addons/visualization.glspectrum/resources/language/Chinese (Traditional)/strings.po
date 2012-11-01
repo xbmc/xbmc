@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: OpenGL Spectrum
+# Addon id: visualization.glspectrum
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:29+0000\n"
+"PO-Revision-Date: 2012-06-01 02:59+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh_TW/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#30000"
+msgid "Mode"
+msgstr "模式"
+
+msgctxt "#30001"
+msgid "Filled"
+msgstr "填滿"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "線框"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "點狀"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "頻譜長條高度"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "小"
+
+msgctxt "#30006"
+msgid "Default"
+msgstr "預設"
+
+msgctxt "#30007"
+msgid "Big"
+msgstr "大"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "非常大"
+
+msgctxt "#30009"
+msgid "Speed"
+msgstr "速度"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "非常慢"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "縵"
+
+msgctxt "#30012"
+msgid "Default"
+msgstr "預設"
+
+msgctxt "#30013"
+msgid "Fast"
+msgstr "快"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "非常快"

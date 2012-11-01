@@ -33,6 +33,7 @@
 #ifdef CONFIG_SSL_GENERATE_X509_CERT
 #include <string.h>
 #include <stdlib.h>
+#include "os_port.h"
 #include "ssl.h"
 
 /**
@@ -122,7 +123,7 @@ static int gen_dn(const char *name, uint8_t dn_type,
                         uint8_t *buf, int *offset)
 {
     int ret = X509_OK;
-    int name_size = strlen(name);
+    int name_size = (int)strlen(name);
 
     if (name_size > 0x70)    /* just too big */
     {
@@ -141,7 +142,7 @@ static int gen_dn(const char *name, uint8_t dn_type,
     buf[(*offset)++] = dn_type;
     buf[(*offset)++] = ASN1_PRINTABLE_STR;
     buf[(*offset)++] = name_size;
-    strcpy(&buf[*offset], name);
+    memcpy((char*)&buf[*offset], name, name_size);
     *offset += name_size;
 
 error:
@@ -154,6 +155,7 @@ static int gen_issuer(const char * dn[], uint8_t *buf, int *offset)
     int seq_offset;
     int seq_size = pre_adjust_with_size(
                             ASN1_SEQUENCE, &seq_offset, buf, offset);
+#if 0 /* GBG */
     char fqdn[128]; 
 
     /* we need the common name, so if not configured, work out the fully
@@ -172,6 +174,7 @@ static int gen_issuer(const char * dn[], uint8_t *buf, int *offset)
 
         dn[X509_COMMON_NAME] = fqdn;
     }
+#endif /* GBG */
 
     if ((ret = gen_dn(dn[X509_COMMON_NAME], 3, buf, offset)))
         goto error;
@@ -349,12 +352,13 @@ EXP_FUNC int STDCALL ssl_x509_create(SSL_CTX *ssl_ctx, uint32_t options, const c
     if ((ret = gen_tbs_cert(dn, ssl_ctx->rsa_ctx, buf, &offset, sha_dgst)) < 0)
         goto error;
 
+    (void)options; /* GBG */
     gen_signature_alg(buf, &offset);
     gen_signature(ssl_ctx->rsa_ctx, sha_dgst, buf, &offset);
     adjust_with_size(seq_size, seq_offset, buf, &offset);
     *cert_data = (uint8_t *)malloc(offset); /* create the exact memory for it */
     memcpy(*cert_data, buf, offset);
-
+    
 error:
     return ret < 0 ? ret : offset;
 }

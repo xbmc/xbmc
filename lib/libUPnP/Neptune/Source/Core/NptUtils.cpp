@@ -105,6 +105,59 @@ NPT_BytesToInt16Be(const unsigned char* bytes)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_BytesToInt64Le
++---------------------------------------------------------------------*/
+NPT_UInt64 
+NPT_BytesToInt64Le(const unsigned char* bytes)
+{
+    return 
+        ( ((NPT_UInt64)bytes[7])<<56 ) |
+        ( ((NPT_UInt64)bytes[6])<<48 ) |
+        ( ((NPT_UInt64)bytes[5])<<40 ) |
+        ( ((NPT_UInt64)bytes[4])<<32 ) |
+        ( ((NPT_UInt64)bytes[3])<<24 ) |
+        ( ((NPT_UInt64)bytes[2])<<16 ) |
+        ( ((NPT_UInt64)bytes[1])<<8  ) |
+        ( ((NPT_UInt64)bytes[0])     );    
+}
+
+/*----------------------------------------------------------------------
+|   NPT_BytesToInt32Le
++---------------------------------------------------------------------*/
+NPT_UInt32 
+NPT_BytesToInt32Le(const unsigned char* bytes)
+{
+    return 
+        ( ((NPT_UInt32)bytes[3])<<24 ) |
+        ( ((NPT_UInt32)bytes[2])<<16 ) |
+        ( ((NPT_UInt32)bytes[1])<<8  ) |
+        ( ((NPT_UInt32)bytes[0])     );    
+}
+
+/*----------------------------------------------------------------------
+|   NPT_BytesToInt24Le
++---------------------------------------------------------------------*/
+NPT_UInt32 
+NPT_BytesToInt24Le(const unsigned char* bytes)
+{
+    return 
+        ( ((NPT_UInt32)bytes[2])<<16 ) |
+        ( ((NPT_UInt32)bytes[1])<<8  ) |
+        ( ((NPT_UInt32)bytes[0])     );    
+}
+
+/*----------------------------------------------------------------------
+|   NPT_BytesToInt16Le
++---------------------------------------------------------------------*/
+NPT_UInt16
+NPT_BytesToInt16Le(const unsigned char* bytes)
+{
+    return 
+        ( ((NPT_UInt16)bytes[1])<<8  ) |
+        ( ((NPT_UInt16)bytes[0])     );    
+}
+
+/*----------------------------------------------------------------------
 |    NPT_BytesFromInt64Be
 +---------------------------------------------------------------------*/
 void 
@@ -151,6 +204,55 @@ NPT_BytesFromInt16Be(unsigned char* buffer, NPT_UInt16 value)
 {
     buffer[0] = (unsigned char)((value>> 8) & 0xFF);
     buffer[1] = (unsigned char)((value    ) & 0xFF);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_BytesFromInt64Le
++---------------------------------------------------------------------*/
+void 
+NPT_BytesFromInt64Le(unsigned char* buffer, NPT_UInt64 value)
+{
+    buffer[7] = (unsigned char)(value>>56) & 0xFF;
+    buffer[6] = (unsigned char)(value>>48) & 0xFF;
+    buffer[5] = (unsigned char)(value>>40) & 0xFF;
+    buffer[4] = (unsigned char)(value>>32) & 0xFF;
+    buffer[3] = (unsigned char)(value>>24) & 0xFF;
+    buffer[2] = (unsigned char)(value>>16) & 0xFF;
+    buffer[1] = (unsigned char)(value>> 8) & 0xFF;
+    buffer[0] = (unsigned char)(value    ) & 0xFF;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_BytesFromInt32Le
++---------------------------------------------------------------------*/
+void 
+NPT_BytesFromInt32Le(unsigned char* buffer, NPT_UInt32 value)
+{
+    buffer[3] = (unsigned char)(value>>24) & 0xFF;
+    buffer[2] = (unsigned char)(value>>16) & 0xFF;
+    buffer[1] = (unsigned char)(value>> 8) & 0xFF;
+    buffer[0] = (unsigned char)(value    ) & 0xFF;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_BytesFromInt24Le
++---------------------------------------------------------------------*/
+void 
+NPT_BytesFromInt24Le(unsigned char* buffer, NPT_UInt32 value)
+{
+    buffer[2] = (unsigned char)(value>>16) & 0xFF;
+    buffer[1] = (unsigned char)(value>> 8) & 0xFF;
+    buffer[0] = (unsigned char)(value    ) & 0xFF;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_BytesFromInt16Le
++---------------------------------------------------------------------*/
+void 
+NPT_BytesFromInt16Le(unsigned char* buffer, NPT_UInt16 value)
+{
+    buffer[1] = (unsigned char)((value>> 8) & 0xFF);
+    buffer[0] = (unsigned char)((value    ) & 0xFF);
 }
 
 #if !defined(NPT_CONFIG_HAVE_SNPRINTF)
@@ -220,6 +322,28 @@ NPT_HexToByte(const char* buffer, NPT_Byte& b)
     if (nibble_1 < 0) return NPT_ERROR_INVALID_SYNTAX;
 
     b = (nibble_0 << 4) | nibble_1;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_HexToBytes
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_HexToBytes(const char*    hex,
+              NPT_DataBuffer& bytes)
+{
+    // check the size
+    NPT_Size len = NPT_StringLength(hex);
+    if ((len%2) != 0) return NPT_ERROR_INVALID_PARAMETERS;
+    NPT_Size bytes_size = len / 2;
+    NPT_Result result = bytes.SetDataSize(bytes_size);
+    if (NPT_FAILED(result)) return result;
+    
+    // decode
+    for (NPT_Ordinal i=0; i<bytes_size; i++) {
+        result = NPT_HexToByte(hex+(i*2), *(bytes.UseData()+i));
+        if (NPT_FAILED(result)) return result;
+    }
     return NPT_SUCCESS;
 }
 

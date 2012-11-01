@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,14 +14,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #include "utils/StdString.h"
+#include "utils/UrlOptions.h"
 
 class CFileItemList;
 
@@ -54,7 +53,8 @@ namespace XFILE
       NODE_TYPE_TITLE_MUSICVIDEOS,
       NODE_TYPE_MUSICVIDEOS_ALBUM,
       NODE_TYPE_SETS,
-      NODE_TYPE_COUNTRY
+      NODE_TYPE_COUNTRY,
+      NODE_TYPE_TAGS
     } NODE_TYPE;
 
     typedef struct {
@@ -83,6 +83,7 @@ namespace XFILE
       CDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
 
+      void AddOptions(const CStdString &options);
       void CollectQueryParams(CQueryParams& params) const;
 
       const CStdString& GetName() const;
@@ -100,6 +101,7 @@ namespace XFILE
       NODE_TYPE m_Type;
       CStdString m_strName;
       CDirectoryNode* m_pParent;
+      CUrlOptions m_options;
     };
   }
 }

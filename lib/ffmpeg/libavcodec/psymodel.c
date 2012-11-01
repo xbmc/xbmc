@@ -25,16 +25,31 @@
 
 extern const FFPsyModel ff_aac_psy_model;
 
-av_cold int ff_psy_init(FFPsyContext *ctx, AVCodecContext *avctx,
-                        int num_lens,
-                        const uint8_t **bands, const int* num_bands)
+av_cold int ff_psy_init(FFPsyContext *ctx, AVCodecContext *avctx, int num_lens,
+                        const uint8_t **bands, const int* num_bands,
+                        int num_groups, const uint8_t *group_map)
 {
+    int i, j, k = 0;
+
     ctx->avctx = avctx;
-    ctx->psy_bands = av_mallocz(sizeof(FFPsyBand) * PSY_MAX_BANDS * avctx->channels);
+    ctx->ch        = av_mallocz(sizeof(ctx->ch[0]) * avctx->channels * 2);
+    ctx->group     = av_mallocz(sizeof(ctx->group[0]) * num_groups);
     ctx->bands     = av_malloc (sizeof(ctx->bands[0])     * num_lens);
     ctx->num_bands = av_malloc (sizeof(ctx->num_bands[0]) * num_lens);
     memcpy(ctx->bands,     bands,     sizeof(ctx->bands[0])     *  num_lens);
     memcpy(ctx->num_bands, num_bands, sizeof(ctx->num_bands[0]) *  num_lens);
+
+    /* assign channels to groups (with virtual channels for coupling) */
+    for (i = 0; i < num_groups; i++) {
+        /* NOTE: Add 1 to handle the AAC chan_config without modification.
+         *       This has the side effect of allowing an array of 0s to map
+         *       to one channel per group.
+         */
+        ctx->group[i].num_ch = group_map[i] + 1;
+        for (j = 0; j < ctx->group[i].num_ch * 2; j++)
+            ctx->group[i].ch[j]  = &ctx->ch[k++];
+    }
+
     switch (ctx->avctx->codec_id) {
     case CODEC_ID_AAC:
         ctx->model = &ff_aac_psy_model;
@@ -45,17 +60,14 @@ av_cold int ff_psy_init(FFPsyContext *ctx, AVCodecContext *avctx,
     return 0;
 }
 
-FFPsyWindowInfo ff_psy_suggest_window(FFPsyContext *ctx,
-                                      const int16_t *audio, const int16_t *la,
-                                      int channel, int prev_type)
+FFPsyChannelGroup *ff_psy_find_group(FFPsyContext *ctx, int channel)
 {
-    return ctx->model->window(ctx, audio, la, channel, prev_type);
-}
+    int i = 0, ch = 0;
 
-void ff_psy_set_band_info(FFPsyContext *ctx, int channel,
-                          const float *coeffs, const FFPsyWindowInfo *wi)
-{
-    ctx->model->analyze(ctx, channel, coeffs, wi);
+    while (ch <= channel)
+        ch += ctx->group[i++].num_ch;
+
+    return &ctx->group[i-1];
 }
 
 av_cold void ff_psy_end(FFPsyContext *ctx)
@@ -64,7 +76,8 @@ av_cold void ff_psy_end(FFPsyContext *ctx)
         ctx->model->end(ctx);
     av_freep(&ctx->bands);
     av_freep(&ctx->num_bands);
-    av_freep(&ctx->psy_bands);
+    av_freep(&ctx->group);
+    av_freep(&ctx->ch);
 }
 
 typedef struct FFPsyPreprocessContext{
@@ -99,20 +112,15 @@ av_cold struct FFPsyPreprocessContext* ff_psy_preprocess_init(AVCodecContext *av
     return ctx;
 }
 
-void ff_psy_preprocess(struct FFPsyPreprocessContext *ctx,
-                       const int16_t *audio, int16_t *dest,
-                       int tag, int channels)
+void ff_psy_preprocess(struct FFPsyPreprocessContext *ctx, float **audio, int channels)
 {
-    int ch, i;
+    int ch;
+    int frame_size = ctx->avctx->frame_size;
+
     if (ctx->fstate) {
         for (ch = 0; ch < channels; ch++)
-            ff_iir_filter(ctx->fcoeffs, ctx->fstate[tag+ch], ctx->avctx->frame_size,
-                          audio + ch, ctx->avctx->channels,
-                          dest  + ch, ctx->avctx->channels);
-    } else {
-        for (ch = 0; ch < channels; ch++)
-            for (i = 0; i < ctx->avctx->frame_size; i++)
-                dest[i*ctx->avctx->channels + ch] = audio[i*ctx->avctx->channels + ch];
+            ff_iir_filter_flt(ctx->fcoeffs, ctx->fstate[ch], frame_size,
+                              &audio[ch][frame_size], 1, &audio[ch][frame_size], 1);
     }
 }
 

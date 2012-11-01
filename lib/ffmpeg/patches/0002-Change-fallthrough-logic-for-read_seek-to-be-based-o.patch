@@ -1,0 +1,145 @@
+From 8b480b7321130ad691cf46314164787301691161 Mon Sep 17 00:00:00 2001
+From: Joakim Plate <elupus@ecce.se>
+Date: Mon, 12 Sep 2011 23:53:29 +0200
+Subject: [PATCH 02/24] Change fallthrough logic for read_seek to be based on
+ return value
+
+This changes the logic for read_seek to only use generic seek
+rutines if the return value is AVERROR(ENOSYS) to avoid retrying
+seeks if the demuxer already realized it wasn't possible.
+---
+ libavformat/asfdec.c      |    2 +-
+ libavformat/gxf.c         |    4 ++--
+ libavformat/jvdec.c       |    2 +-
+ libavformat/matroskadec.c |    2 +-
+ libavformat/oggdec.c      |    4 +++-
+ libavformat/pmpdec.c      |    2 +-
+ libavformat/r3d.c         |    2 +-
+ libavformat/utils.c       |    4 +++-
+ 8 files changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/libavformat/asfdec.c b/libavformat/asfdec.c
+index 0deafc6..a62bab3 100644
+--- a/libavformat/asfdec.c
++++ b/libavformat/asfdec.c
+@@ -1278,7 +1278,7 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int
+     AVStream *st = s->streams[stream_index];
+ 
+     if (s->packet_size <= 0)
+-        return -1;
++        return AVERROR(ENOSYS);
+ 
+     /* Try using the protocol's read_seek if available */
+     if(s->pb) {
+diff --git a/libavformat/gxf.c b/libavformat/gxf.c
+index e773ba7..a3298a7 100644
+--- a/libavformat/gxf.c
++++ b/libavformat/gxf.c
+@@ -542,7 +542,7 @@ static int gxf_seek(AVFormatContext *s, int stream_index, int64_t timestamp, int
+     idx = av_index_search_timestamp(st, timestamp - start_time,
+                                     AVSEEK_FLAG_ANY | AVSEEK_FLAG_BACKWARD);
+     if (idx < 0)
+-        return -1;
++        return AVERROR(ENOSYS);
+     pos = st->index_entries[idx].pos;
+     if (idx < st->nb_index_entries - 2)
+         maxlen = st->index_entries[idx + 2].pos - pos;
+@@ -552,7 +552,7 @@ static int gxf_seek(AVFormatContext *s, int stream_index, int64_t timestamp, int
+         return res;
+     found = gxf_resync_media(s, maxlen, -1, timestamp);
+     if (FFABS(found - timestamp) > 4)
+-        return -1;
++        return AVERROR(ENOSYS);
+     return 0;
+ }
+ 
+diff --git a/libavformat/jvdec.c b/libavformat/jvdec.c
+index 212cd8a..d52060b 100644
+--- a/libavformat/jvdec.c
++++ b/libavformat/jvdec.c
+@@ -207,7 +207,7 @@ static int read_seek(AVFormatContext *s, int stream_index,
+     }
+ 
+     if (i < 0 || i >= ast->nb_index_entries)
+-        return 0;
++        return -1;
+     if (avio_seek(s->pb, ast->index_entries[i].pos, SEEK_SET) < 0)
+         return -1;
+ 
+diff --git a/libavformat/matroskadec.c b/libavformat/matroskadec.c
+index 2787a17..135fddd 100644
+--- a/libavformat/matroskadec.c
++++ b/libavformat/matroskadec.c
+@@ -2048,7 +2048,7 @@ static int matroska_read_seek(AVFormatContext *s, int stream_index,
+     }
+ 
+     if (!st->nb_index_entries)
+-        return 0;
++        return -1;
+     timestamp = FFMAX(timestamp, st->index_entries[0].timestamp);
+ 
+     if ((index = av_index_search_timestamp(st, timestamp, flags)) < 0) {
+diff --git a/libavformat/oggdec.c b/libavformat/oggdec.c
+index ceb4091..80669a5 100644
+--- a/libavformat/oggdec.c
++++ b/libavformat/oggdec.c
+@@ -663,8 +663,10 @@ static int ogg_read_seek(AVFormatContext *s, int stream_index,
+ 
+     ret = ff_seek_frame_binary(s, stream_index, timestamp, flags);
+     os = ogg->streams + stream_index;
+-    if (ret < 0)
++    if (ret < 0) {
+         os->keyframe_seek = 0;
++        ret = AVERROR(ENOSYS);
++    }
+     return ret;
+ }
+ 
+diff --git a/libavformat/pmpdec.c b/libavformat/pmpdec.c
+index a57b660..9db4e26 100644
+--- a/libavformat/pmpdec.c
++++ b/libavformat/pmpdec.c
+@@ -157,7 +157,7 @@ static int pmp_seek(AVFormatContext *s, int stream_index, int64_t ts, int flags)
+     PMPContext *pmp = s->priv_data;
+     pmp->cur_stream = 0;
+     // fallback to default seek now
+-    return -1;
++    return AVERROR(ENOSYS);
+ }
+ 
+ static int pmp_close(AVFormatContext *s)
+diff --git a/libavformat/r3d.c b/libavformat/r3d.c
+index 874c361..0adad72 100644
+--- a/libavformat/r3d.c
++++ b/libavformat/r3d.c
+@@ -358,7 +358,7 @@ static int r3d_seek(AVFormatContext *s, int stream_index, int64_t sample_time, i
+     int frame_num;
+ 
+     if (!st->codec->time_base.num || !st->time_base.den)
+-        return -1;
++        return AVERROR(ENOSYS);
+ 
+     frame_num = sample_time*st->codec->time_base.den/
+         ((int64_t)st->codec->time_base.num*st->time_base.den);
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index 9164cd0..242d616 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -1910,11 +1910,13 @@ int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int f
+         ff_read_frame_flush(s);
+         ret = s->iformat->read_seek(s, stream_index, timestamp, flags);
+     } else
+-        ret = -1;
++        ret = AVERROR(ENOSYS);
+     )
+     if (ret >= 0) {
+         return 0;
+     }
++    if (ret != AVERROR(ENOSYS))
++        return ret;
+ 
+     if (s->iformat->read_timestamp && !(s->iformat->flags & AVFMT_NOBINSEARCH)) {
+         ff_read_frame_flush(s);
+-- 
+1.7.9.4
+

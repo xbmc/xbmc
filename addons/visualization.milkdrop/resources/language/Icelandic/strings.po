@@ -1,0 +1,90 @@
+# XBMC Media Center language file
+# Addon Name: MilkDrop
+# Addon id: visualization.milkdrop
+# Addon version: 1.0.0
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: 2012-05-29 10:09+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Icelandic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/is/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Automatic Blend Time"
+msgstr "Sjálfvirkur blöndunartími"
+
+msgctxt "#30001"
+msgid "Time Between Presets"
+msgstr "Tími á milli forstillinga"
+
+msgctxt "#30002"
+msgid "Additional Random Time"
+msgstr "Aukalegur slembitími"
+
+msgctxt "#30003"
+msgid "Enable Anisotropic Filtering"
+msgstr "Virkja Anisotropic filter"
+
+msgctxt "#30004"
+msgid "Enable Hard Cuts"
+msgstr "Virkja snöggar skiptingar"
+
+msgctxt "#30005"
+msgid "Loudness Threshold For Hard Cuts"
+msgstr "Hljóðstyrks þröskuldur fyrir snöggar skiptingar"
+
+msgctxt "#30006"
+msgid "Average Time Between Hard Cuts"
+msgstr "Meðal tími á milli snöggra skiptinga"
+
+msgctxt "#30007"
+msgid "Maximum Refresh Rate"
+msgstr "Hámarks uppfærslu tími"
+
+msgctxt "#30008"
+msgid "Enable Stereo 3D"
+msgstr "Virkja Stereo 3D"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Forstillinga pakki"
+
+msgctxt "#30010"
+msgid "User Preset Folder        "
+msgstr "Mappa fyrir forstillingar notenda"
+
+msgctxt "#30011"
+msgid "Preset Shuffle Mode"
+msgstr "Slembi hamur forstillinga"
+
+msgctxt "#30020"
+msgid "WA51 Presets"
+msgstr "WA51 forstilling"
+
+msgctxt "#30021"
+msgid "Winamp Presets"
+msgstr "Winamp forstillingar"
+
+msgctxt "#30022"
+msgid "User Defined Preset Folder"
+msgstr "Mappa fyrir forstillingar skilgreindar af notanda"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f sekúndur"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"
+
+msgctxt "#30052"
+msgid "%2.0f fps"
+msgstr "%2.0f fps"

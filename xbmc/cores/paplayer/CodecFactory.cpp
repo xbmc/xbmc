@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,7 +40,6 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
-#include "BXAcodec.h" 
 #include "PCMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
@@ -65,7 +63,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("wav"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("dts") || strFileType.Equals("ac3") ||
-           strFileType.Equals("m4a") || strFileType.Equals("aac"))
+           strFileType.Equals("m4a") || strFileType.Equals("aac") ||
+           strFileType.Equals("pvr"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
     return new DVDPlayerCodec();
@@ -139,9 +138,15 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
   else if (strContent.Equals("audio/x-xbmc-pcm"))
-    return (ICodec*)new BXACodec();  
-   else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
-     return new FLACCodec();
+  {
+    // audio/x-xbmc-pcm this is the used codec for AirTunes
+    // (apples audio only streaming)
+    DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
+    dvdcodec->SetContentType(strContent);
+    return dvdcodec;
+  }
+  else if (strContent.Equals("audio/flac") || strContent.Equals("audio/x-flac") || strContent.Equals("application/x-flac"))
+    return new FLACCodec();
 
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {

@@ -65,7 +65,7 @@ main(int /*argc*/, char** /*argv*/)
     NPT_ASSERT(i16 == 0x0203);
     NPT_ASSERT(i24 == 0x040506);
     NPT_ASSERT(i32 == 0x0708090A);
-    NPT_ASSERT(i64 == (((NPT_UInt64)0x0B0C0D0E)<<32) | (((NPT_UInt64)0x0F000102)));
+    NPT_ASSERT(i64 == ((((NPT_UInt64)0x0B0C0D0E)<<32) | (((NPT_UInt64)0x0F000102))));
     NPT_ASSERT(mems.GetDataSize() == 18);
     NPT_ASSERT(mems.GetAvailable(available) == NPT_SUCCESS);
     NPT_ASSERT(available == 0);

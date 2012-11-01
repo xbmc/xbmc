@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,15 +33,26 @@ public:
   CDirectory(void);
   virtual ~CDirectory(void);
 
+  class CHints
+  {
+  public:
+    CHints() : flags(DIR_FLAG_DEFAULTS)
+    {
+    };
+    CStdString mask;
+    int flags;
+  };
+
   static bool GetDirectory(const CStdString& strPath
-                         , CFileItemList &items
-                         , CStdString strMask=""
-                         , bool bUseFileDirectories=true
-                         , bool allowPrompting=false
-                         , DIR_CACHE_TYPE cacheDirectory=DIR_CACHE_ONCE
-                         , bool extFileInfo=true
-                         , bool allowThreads=false
-                         , bool getHidden=false);
+                           , CFileItemList &items
+                           , const CStdString &strMask=""
+                           , int flags=DIR_FLAG_DEFAULTS
+                           , bool allowThreads=false);
+
+  static bool GetDirectory(const CStdString& strPath
+                           , CFileItemList &items
+                           , const CHints &hints
+                           , bool allowThreads=false);
 
   static bool Create(const CStdString& strPath);
   static bool Exists(const CStdString& strPath);

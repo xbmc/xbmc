@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -47,6 +46,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicDbUrl.h"
 
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -87,6 +87,10 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
     NodeType= pNode ? pNode->GetChildType() : NODE_TYPE_NONE;
     pParent=pNode;
   }
+
+  // Add all the additional URL options to the last node
+  if (pNode)
+    pNode->AddOptions(url.GetOptions());
 
   return pNode;
 }
@@ -217,7 +221,19 @@ CStdString CDirectoryNode::BuildPath() const
   for (int i=0; i<(int)array.size(); ++i)
     strPath+=array[i]+"/";
 
+  string options = m_options.GetOptionsString();
+  if (!options.empty())
+    strPath += "?" + options;
+
   return strPath;
+}
+
+void CDirectoryNode::AddOptions(const CStdString &options)
+{
+  if (options.empty())
+    return;
+
+  m_options.AddOptions(options);
 }
 
 //  Collects Query params from this and all parent nodes. If a NODE_TYPE can
@@ -253,6 +269,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
   bool bSuccess=false;
   if (pNode.get())
   {
+    pNode->m_options = m_options;
     bSuccess=pNode->GetContent(items);
     if (bSuccess)
     {
@@ -275,6 +292,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
 {
   CFileItemPtr pItem;
 
+  CMusicDbUrl musicUrl;
+  if (!musicUrl.FromString(BuildPath()))
+    return;
+
   // always hide "all" items
   if (g_advancedSettings.m_bMusicLibraryHideAllItems)
     return;
@@ -294,14 +315,16 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   /* no need for all genres
   case NODE_TYPE_GENRE:
     pItem.reset(new CFileItem(g_localizeStrings.Get(15105)));  // "All Genres"
-    pItem->GetPath() = BuildPath() + "-1/";
+    musicUrl.AppendPath("-1/");
+    pItem->SetPath(musicUrl.ToString());
     break;
   */
 
   case NODE_TYPE_ARTIST:
     if (GetType() == NODE_TYPE_OVERVIEW) return;
     pItem.reset(new CFileItem(g_localizeStrings.Get(15103)));  // "All Artists"
-    pItem->SetPath(BuildPath() + "-1/");
+    musicUrl.AppendPath("-1/");
+    pItem->SetPath(musicUrl.ToString());
     break;
 
     //  All album related nodes
@@ -313,7 +336,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   case NODE_TYPE_ALBUM_TOP100:
   case NODE_TYPE_YEAR_ALBUM:
     pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
-    pItem->SetPath(BuildPath() + "-1/");
+    musicUrl.AppendPath("-1/");
+    pItem->SetPath(musicUrl.ToString());
     break;
 
     //  All song related nodes
@@ -324,7 +348,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   case NODE_TYPE_SONG_TOP100:
   case NODE_TYPE_SONG:
     pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
-    pItem->GetPath() = BuildPath() + "-1/";
+    musicUrl.AppendPath("-1/");
+    pItem->SetPath(musicUrl.ToString());
     break;*/
   default:
     break;
@@ -333,7 +358,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   if (pItem)
   {
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(g_advancedSettings.m_bMusicLibraryAllItemsOnBottom ? SORT_ON_BOTTOM : SORT_ON_TOP);
+    pItem->SetSpecialSort(g_advancedSettings.m_bMusicLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
     pItem->SetCanQueue(false);
     pItem->SetLabelPreformated(true);
     if (g_advancedSettings.m_bMusicLibraryAllItemsOnBottom)

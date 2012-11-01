@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -238,7 +237,7 @@ public: \
 //  entry as required by gcc compiled dlls, it is abit abfuscated
 //  to allow for different sized variables
 //
-//  __int64 test(__int64 p1, char p2, char p3)
+//  int64_t test(int64_t p1, char p2, char p3)
 //  {
 //    int o,s = ((sizeof(p1)+3)&~3)+((sizeof(p2)+3)&~3)+((sizeof(p3)+3)&~3);
 //    __asm mov [o],esp;

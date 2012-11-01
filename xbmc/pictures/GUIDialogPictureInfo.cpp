@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,6 +23,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
+#include "PictureInfoTag.h"
 
 #define CONTROL_PICTURE_INFO 5
 
@@ -33,6 +33,7 @@ CGUIDialogPictureInfo::CGUIDialogPictureInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PICTURE_INFO, "DialogPictureInfo.xml")
 {
   m_pictureInfo = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogPictureInfo::~CGUIDialogPictureInfo(void)
@@ -66,6 +67,10 @@ bool CGUIDialogPictureInfo::OnAction(const CAction& action)
         return pWindow->OnAction(action);
       }
       break;
+
+    case ACTION_SHOW_INFO:
+      Close();
+      return true;
   };
   return CGUIDialog::OnAction(action);
 }
@@ -88,6 +93,11 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
   m_pictureInfo->Clear();
   for (int info = SLIDE_INFO_START; info <= SLIDE_INFO_END; ++info)
   {
+    // we don't need want to add both SLIDE_EXIF_DATE_TIME and SLIDE_EXIF_DATE
+    // so we skip one without time
+    if (info == SLIDE_EXIF_DATE)
+      continue;
+
     CStdString picInfo = g_infoManager.GetLabel(info);
     if (!picInfo.IsEmpty())
     {

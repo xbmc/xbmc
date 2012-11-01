@@ -127,6 +127,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimeTest1", "TimeTest1\Time
 		{12AFF2E5-6D95-4809-9728-9551677C078A} = {12AFF2E5-6D95-4809-9728-9551677C078A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TlsTest1", "TlsTest1\TlsTest1.vcproj", "{B99CCB0B-DD53-4C03-A184-692D02A02918}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE} = {5A06F861-0EFF-417B-89C3-963A172CE6EE}
+		{12AFF2E5-6D95-4809-9728-9551677C078A} = {12AFF2E5-6D95-4809-9728-9551677C078A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "axTLS", "axTLS\axTLS.vcproj", "{5A06F861-0EFF-417B-89C3-963A172CE6EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -237,6 +245,14 @@ Global
 		{33C106AF-C3C0-49A9-B0CB-8A43D6187E10}.Debug|Win32.Build.0 = Debug|Win32
 		{33C106AF-C3C0-49A9-B0CB-8A43D6187E10}.Release|Win32.ActiveCfg = Release|Win32
 		{33C106AF-C3C0-49A9-B0CB-8A43D6187E10}.Release|Win32.Build.0 = Release|Win32
+		{B99CCB0B-DD53-4C03-A184-692D02A02918}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B99CCB0B-DD53-4C03-A184-692D02A02918}.Debug|Win32.Build.0 = Debug|Win32
+		{B99CCB0B-DD53-4C03-A184-692D02A02918}.Release|Win32.ActiveCfg = Release|Win32
+		{B99CCB0B-DD53-4C03-A184-692D02A02918}.Release|Win32.Build.0 = Release|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Debug|Win32.Build.0 = Debug|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Release|Win32.ActiveCfg = Release|Win32
+		{5A06F861-0EFF-417B-89C3-963A172CE6EE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

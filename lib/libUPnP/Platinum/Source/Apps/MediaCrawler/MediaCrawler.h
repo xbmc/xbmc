@@ -2,7 +2,7 @@
 |
 |   Platinum - Media Crawler
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,6 +17,7 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
+| licensing@plutinosoft.com
 | 
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -46,7 +47,7 @@
 |   CMediaCrawler
 +---------------------------------------------------------------------*/
 class CMediaCrawler : public PLT_MediaBrowser,
-                      public PLT_MediaConnect
+                      public PLT_MediaServer
 
 {
 public:
@@ -58,9 +59,6 @@ public:
     virtual ~CMediaCrawler();
 
     NPT_Result AddStreamHandler(CStreamHandler* handler);
-
-    // accessor methods
-    NPT_HttpUrl GetFileBaseUri() const { return m_FileBaseUri; }
 
 protected:
     // PLT_MediaServer methods

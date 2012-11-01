@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="11" type="filter" visible="Library.HasContent(TVShows)">
+  <label>20387</label>
+  <icon>DefaultRecentlyAddedEpisodes.png</icon>
+  <content>episodes</content>
+  <order direction="descending">dateadded</order>
+  <limit>25</limit>
+</node>

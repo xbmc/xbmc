@@ -125,7 +125,7 @@
 				<posy>315</posy>
 				<width>320</width>
 				<height>30</height>
-				<font>font13caps</font>
+				<font>font13</font>
 				<label>[B]$INFO[ListItem.Label][/B]</label>
 				<align>center</align>
 				<aligny>center</aligny>

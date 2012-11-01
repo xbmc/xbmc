@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,6 +27,11 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
+bool CAlbum::operator<(const CAlbum &a) const
+{
+  return strAlbum +StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator) < a.strAlbum + StringUtils::Join(a.artist, g_advancedSettings.m_musicItemSeparator);
+}
+
 bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 {
   if (!album) return false;
@@ -36,11 +40,11 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   XMLUtils::GetString(album,"title",strAlbum);
 
-  XMLUtils::GetAdditiveString(album, "artist", g_advancedSettings.m_musicItemSeparator, strArtist, prioritise);
-  XMLUtils::GetAdditiveString(album, "genre", g_advancedSettings.m_musicItemSeparator, strGenre, prioritise);
-  XMLUtils::GetAdditiveString(album, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prioritise);
-  XMLUtils::GetAdditiveString(album, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prioritise);
-  XMLUtils::GetAdditiveString(album, "theme", g_advancedSettings.m_musicItemSeparator, strThemes, prioritise);
+  XMLUtils::GetStringArray(album, "artist", artist, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "genre", genre, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "style", styles, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "mood", moods, prioritise, g_advancedSettings.m_musicItemSeparator);
+  XMLUtils::GetStringArray(album, "theme", themes, prioritise, g_advancedSettings.m_musicItemSeparator);
 
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
@@ -56,6 +60,8 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     XMLUtils::GetFloat(album, "rating", rating);
     if (rElement->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating>=1)
       rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5 
+    if (rating > 5.f)
+      rating = 5.f;
     iRating = MathUtils::round_int(rating);
   }
 
@@ -125,16 +131,11 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   if (!album) return false;
 
   XMLUtils::SetString(album,  "title", strAlbum);
-  XMLUtils::SetAdditiveString(album, "artist",
-                           g_advancedSettings.m_musicItemSeparator, strArtist);
-  XMLUtils::SetAdditiveString(album,  "genre",
-                           g_advancedSettings.m_musicItemSeparator, strGenre);
-  XMLUtils::SetAdditiveString(album, "style",
-                           g_advancedSettings.m_musicItemSeparator, strStyles);
-  XMLUtils::SetAdditiveString(album,  "mood",
-                           g_advancedSettings.m_musicItemSeparator, strMoods);
-  XMLUtils::SetAdditiveString(album,  "theme",
-                           g_advancedSettings.m_musicItemSeparator, strThemes);
+  XMLUtils::SetStringArray(album, "artist", artist);
+  XMLUtils::SetStringArray(album,  "genre", genre);
+  XMLUtils::SetStringArray(album,  "style", styles);
+  XMLUtils::SetStringArray(album,   "mood", moods);
+  XMLUtils::SetStringArray(album,  "theme", themes);
 
   XMLUtils::SetString(album,      "review", strReview);
   XMLUtils::SetString(album,        "type", strType);

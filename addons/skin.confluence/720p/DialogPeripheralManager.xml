@@ -117,7 +117,7 @@
 						<posy>50</posy>
 						<width>520</width>
 						<height>20</height>
-						<label>$LOCALIZE[35501]:  [COLOR=grey2]$INFO[ListItem.Property(Class)][/COLOR]</label>
+						<label>$LOCALIZE[35501]:  [COLOR=grey2]$INFO[ListItem.Property(Class)][/COLOR]     $LOCALIZE[19114]:  [COLOR=grey2]$INFO[ListItem.Property(Version)][/COLOR]</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<font>font12</font>
@@ -173,7 +173,7 @@
 						<posy>50</posy>
 						<width>520</width>
 						<height>20</height>
-						<label>$LOCALIZE[35501]:  [COLOR=grey2]$INFO[ListItem.Property(Class)][/COLOR]</label>
+						<label>$LOCALIZE[35501]:  [COLOR=grey2]$INFO[ListItem.Property(Class)][/COLOR]     $LOCALIZE[19114]:  [COLOR=grey2]$INFO[ListItem.Property(Version)][/COLOR]</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<font>font12</font>

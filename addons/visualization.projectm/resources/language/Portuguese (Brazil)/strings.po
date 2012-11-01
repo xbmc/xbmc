@@ -1,0 +1,78 @@
+# XBMC Media Center language file
+# Addon Name: projectM
+# Addon id: visualization.projectm
+# Addon version: 1.0.1
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"PO-Revision-Date: 2012-05-29 15:33+0000\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Qualidade do Render"
+
+msgctxt "#30001"
+msgid "Low"
+msgstr "Mínima"
+
+msgctxt "#30002"
+msgid "Medium"
+msgstr "Médio"
+
+msgctxt "#30003"
+msgid "High"
+msgstr "Máxima"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Máximo"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Modo Shuffle"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Duração predefinida Suave"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Duração do Preset"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Sensibilidade da batida"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Pacote de presets"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Pacote Padrão"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "Diretório pré-definido pelo usuário"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "Pasta Preset Usuário"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f segs"
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

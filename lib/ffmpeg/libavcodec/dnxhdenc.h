@@ -25,8 +25,9 @@
 #define AVCODEC_DNXHDENC_H
 
 #include <stdint.h>
-#include "libavcodec/mpegvideo.h"
-#include "libavcodec/dnxhddata.h"
+
+#include "mpegvideo.h"
+#include "dnxhddata.h"
 
 typedef struct {
     uint16_t mb;
@@ -39,6 +40,7 @@ typedef struct {
 } RCEntry;
 
 typedef struct DNXHDEncContext {
+    AVClass *class;
     MpegEncContext m; ///< Used for quantization dsp functions
 
     AVFrame frame;
@@ -50,10 +52,17 @@ typedef struct DNXHDEncContext {
 
     struct DNXHDEncContext *thread[MAX_THREADS];
 
+    // Because our samples are either 8 or 16 bits for 8-bit and 10-bit
+    // encoding respectively, these refer either to bytes or to two-byte words.
     unsigned dct_y_offset;
     unsigned dct_uv_offset;
+    unsigned block_width_l2;
+
     int interlaced;
     int cur_field;
+
+    int nitris_compat;
+    unsigned min_padding;
 
     DECLARE_ALIGNED(16, DCTELEM, blocks)[8][64];
 
@@ -74,8 +83,6 @@ typedef struct DNXHDEncContext {
     unsigned slice_bits;
     unsigned qscale;
     unsigned lambda;
-
-    unsigned thread_size;
 
     uint16_t *mb_bits;
     uint8_t  *mb_qscale;

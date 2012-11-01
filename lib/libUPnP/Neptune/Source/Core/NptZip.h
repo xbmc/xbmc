@@ -37,6 +37,7 @@
 +---------------------------------------------------------------------*/
 #include "NptConfig.h"
 #include "NptStreams.h"
+#include "NptFile.h"
 
 /*----------------------------------------------------------------------
 |   class references
@@ -77,7 +78,16 @@ public:
      * Inflate (i.e decompress) a buffer
      */
     static NPT_Result Inflate(const NPT_DataBuffer& in,
-                              NPT_DataBuffer&       out);                       
+                              NPT_DataBuffer&       out);   
+    
+    /**
+     * Deflate (i.e compress) a file
+     */
+    static NPT_Result Deflate(NPT_File& in,
+                              NPT_File& out,
+                              int       compression_level = NPT_ZIP_COMPRESSION_LEVEL_DEFAULT,
+                              Format    format = GZIP);
+    
 };
 
 /*----------------------------------------------------------------------
@@ -138,7 +148,29 @@ private:
 };
 
 /*----------------------------------------------------------------------
-|   NPT_ZipDeflatingInputStream
+|   NPT_ZipDeflatingOutputStream
 +---------------------------------------------------------------------*/
+/*class NPT_ZipDeflatingOutputStream : public NPT_OutputStream 
+{
+public:
+    NPT_ZipDeflatingOutputStream(NPT_OutputStreamReference& source,
+                                 int                        compression_level = NPT_ZIP_COMPRESSION_LEVEL_DEFAULT,
+                                 NPT_Zip::Format            format = NPT_Zip::ZLIB);
+   NPT_ZipDeflatingOutputStream();
+   
+    // NPT_OutputStream methods
+    virtual NPT_Result Write(void*     buffer, 
+                             NPT_Size  bytes_to_write, 
+                             NPT_Size* bytes_written = NULL);
+    virtual NPT_Result Seek(NPT_Position offset);
+    virtual NPT_Result Tell(NPT_Position& offset);
+
+private:
+    NPT_OutputStreamReference m_Output;
+    NPT_Position              m_Position;
+    bool                      m_Eos;
+    NPT_ZipDeflateState*      m_State;
+    NPT_DataBuffer            m_Buffer;
+}; */
 
 #endif // _NPT_ZIP_H_

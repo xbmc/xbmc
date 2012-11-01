@@ -29,12 +29,13 @@
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "filesystem/File.h"
-#include "Util.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/md5.h"
 #include "utils/Variant.h"
 #include "guilib/GUIWindowManager.h"
+#include "URL.h"
 
 #ifdef TARGET_WINDOWS
 #define close closesocket
@@ -184,7 +185,7 @@ void CAirPlayServer::StopServer(bool bWait)
   }
 }
 
-CAirPlayServer::CAirPlayServer(int port, bool nonlocal)
+CAirPlayServer::CAirPlayServer(int port, bool nonlocal) : CThread("AirPlayServer")
 {
   m_port = port;
   m_nonlocal = nonlocal;
@@ -269,6 +270,7 @@ bool CAirPlayServer::Initialize()
   Deinitialize();
 
   struct sockaddr_in myaddr;
+  memset(&myaddr, 0, sizeof(myaddr));
 
   myaddr.sin_family = AF_INET;
   myaddr.sin_port = htons(m_port);
@@ -336,6 +338,7 @@ CAirPlayServer::CTCPClient::CTCPClient()
 CAirPlayServer::CTCPClient::CTCPClient(const CTCPClient& client)
 {
   Copy(client);
+  m_httpParser = new HttpParser();
   m_pLibPlist = new DllLibPlist();
 }
 
@@ -346,11 +349,14 @@ CAirPlayServer::CTCPClient::~CTCPClient()
     m_pLibPlist->Unload();
   }
   delete m_pLibPlist;
+  delete m_httpParser;
 }
 
 CAirPlayServer::CTCPClient& CAirPlayServer::CTCPClient::operator=(const CTCPClient& client)
 {
   Copy(client);
+  m_httpParser = new HttpParser();
+  m_pLibPlist = new DllLibPlist();
   return *this;
 }
 
@@ -456,6 +462,7 @@ void CAirPlayServer::CTCPClient::Disconnect()
     close(m_socket);
     m_socket = INVALID_SOCKET;
     delete m_httpParser;
+    m_httpParser = NULL;
   }
 }
 
@@ -667,7 +674,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && !g_application.m_pPlayer->IsPaused())
         {
-          g_application.getApplicationMessenger().MediaPause();
+          CApplicationMessenger::Get().MediaPause();
           ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PAUSED);
         }
       }
@@ -675,7 +682,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       {
         if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
         {
-          g_application.getApplicationMessenger().MediaPause();
+          CApplicationMessenger::Get().MediaPause();
           ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
         }
       }
@@ -688,7 +695,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   else if (uri == "/volume")
   {
       const char* found = strstr(queryString.c_str(), "volume=");
-      double volume = found ? (double)(atof(found + strlen("volume="))) : 0;
+      float volume = found ? (float)strtod(found + strlen("volume="), NULL) : 0;
 
       CLog::Log(LOGDEBUG, "AIRPLAY: got request %s with volume %f", uri.c_str(), volume);
 
@@ -703,7 +710,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         if(oldVolume != (int)volume)
         {
           g_application.SetVolume(volume);          
-          g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
+          CApplicationMessenger::Get().ShowVolumeBar(oldVolume < volume);
         }
       }
   }
@@ -800,7 +807,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
       CFileItem fileToPlay(location, false);
       fileToPlay.SetProperty("StartPercent", position*100.0f);
-      g_application.getApplicationMessenger().MediaPlay(fileToPlay);
+      CApplicationMessenger::Get().MediaPlay(fileToPlay);
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
     }
   }
@@ -820,14 +827,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       if (g_application.m_pPlayer && g_application.m_pPlayer->GetTotalTime())
       {
         float position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
-        responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime(), position);
-
-        //unpause media on GET scrub when paused
-        if (g_application.m_pPlayer->IsPlaying() && g_application.m_pPlayer->IsPaused())
-        {
-          g_application.getApplicationMessenger().MediaPause();
-          ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
-        }
+        responseBody.Format("duration: %d\r\nposition: %f", g_application.m_pPlayer->GetTotalTime() / 1000, position);
       }
       else 
       {
@@ -840,7 +840,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       
       if (found && g_application.m_pPlayer)
       {
-        __int64 position = (__int64) (atof(found + strlen("position=")) * 1000.0);
+        int64_t position = (int64_t) (atof(found + strlen("position=")) * 1000.0);
         g_application.m_pPlayer->SeekTime(position);
         CLog::Log(LOGDEBUG, "AIRPLAY: got POST request %s with pos %"PRId64, uri.c_str(), position);
       }
@@ -859,7 +859,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     {
       if (IsPlaying()) //only stop player if we started him
       {
-        g_application.getApplicationMessenger().MediaStop();
+        CApplicationMessenger::Get().MediaStop();
         CAirPlayServer::m_isPlaying--;
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
@@ -899,7 +899,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
 
         if (writtenBytes > 0 && (unsigned int)writtenBytes == m_httpParser->getContentLength())
         {
-          g_application.getApplicationMessenger().PictureShow(tmpFileName);
+          CApplicationMessenger::Get().PictureShow(tmpFileName);
         }
         else
         {
@@ -913,7 +913,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
   {
     float position = 0.0f;
     float duration = 0.0f;
-    float cacheDuration = 0.0f;
+    float cachePosition = 0.0f;
     bool playing = false;
 
     CLog::Log(LOGDEBUG, "AIRPLAY: got request %s", uri.c_str());
@@ -927,12 +927,12 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       if (g_application.m_pPlayer->GetTotalTime())
       {
         position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
-        duration = (float) g_application.m_pPlayer->GetTotalTime();
+        duration = ((float) g_application.m_pPlayer->GetTotalTime()) / 1000;
         playing = g_application.m_pPlayer ? !g_application.m_pPlayer->IsPaused() : false;
-        cacheDuration = (float) g_application.m_pPlayer->GetTotalTime() * g_application.GetCachePercentage()/100.0f;
+        cachePosition = position + (duration * g_application.m_pPlayer->GetCachePercentage() / 100.0f);
       }
 
-      responseBody.Format(PLAYBACK_INFO, duration, cacheDuration, position, (playing ? 1 : 0), duration);
+      responseBody.Format(PLAYBACK_INFO, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
 
       if (g_application.m_pPlayer->IsCaching())
@@ -950,7 +950,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     }
     else
     {
-      responseBody.Format(PLAYBACK_INFO_NOT_READY, duration, cacheDuration, position, (playing ? 1 : 0), duration);
+      responseBody.Format(PLAYBACK_INFO_NOT_READY, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";     
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
     }

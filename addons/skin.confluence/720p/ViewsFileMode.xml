@@ -15,7 +15,6 @@
 				<viewtype label="535">list</viewtype>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<visible>![Window.IsVisible(VideoLibrary) + Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)]</visible>
 				<itemlayout height="40" width="580">
 					<control type="image">
 						<posx>0</posx>
@@ -77,7 +76,15 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(Videos)</visible>
+						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<posx>665</posx>
+						<posy>14</posy>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>Window.IsVisible(Videos) + ListItem.IsResumable</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -160,7 +167,15 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(Videos)</visible>
+						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<posx>665</posx>
+						<posy>14</posy>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>Window.IsVisible(Videos) + ListItem.IsResumable</visible>
 					</control>
 				</focusedlayout>
 			</control>
@@ -191,7 +206,7 @@
 					<height>540</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture background="true">$VAR[PosterThumb]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
 				</control>
@@ -202,7 +217,7 @@
 					<height>524</height>
 					<aspectratio aligny="top">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture diffuse="diffuse_mirror3.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
+					<texture diffuse="diffuse_mirror3.png" flipy="true" background="true">$VAR[PosterThumb]</texture>
 				</control>
 			</control>
 		</control>
@@ -224,7 +239,7 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>
-				<itemlayout height="186" width="216">
+				<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(TVShows) + !Container.Content(Sets)" height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -259,7 +274,7 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<posx>180</posx>
+						<posx>170</posx>
 						<posy>130</posy>
 						<width>30</width>
 						<height>30</height>
@@ -267,7 +282,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout height="186" width="216">
+				<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(TVShows) + !Container.Content(Sets)" height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -310,6 +325,68 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</focusedlayout>
+				<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Sets)" height="279" width="216">
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>214</width>
+						<height>240</height>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$VAR[PosterThumb]</texture>
+					</control>
+					<control type="label">
+						<posx>108</posx>
+						<posy>240</posy>
+						<width>200</width>
+						<height>25</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="image">
+						<posx>170</posx>
+						<posy>210</posy>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[ListItem.Overlay]</texture>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Sets)" height="276" width="216">
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>214</width>
+						<height>240</height>
+						<bordertexture border="5">folder-focus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$VAR[PosterThumb]</texture>
+					</control>
+					<control type="label">
+						<posx>108</posx>
+						<posy>240</posy>
+						<width>200</width>
+						<height>25</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="image">
+						<posx>170</posx>
+						<posy>210</posy>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[ListItem.Overlay]</texture>
+					</control>
+				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
 				<posx>1170</posx>
@@ -334,7 +411,7 @@
 			<visible>Control.IsVisible(505)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="panel" id="505">
-				<visible>!Container.Content(LiveTV) + !Container.Content(Movies) + !Container.Content(Episodes) + !Container.Content(Seasons) + !Container.Content(MusicVideos) + !Container.Content(Addons) + !Skin.HasSetting(TVShowsUsePosters)</visible>
+				<visible>Container.Content(TVShows) | Container.Content(Files)</visible>
 				<posx>95</posx>
 				<posy>80</posy>
 				<width>1080</width>
@@ -355,7 +432,7 @@
 						<height>105</height>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<texture background="true">$VAR[BannerThumb]</texture>
 					</control>
 					<control type="image">
 						<posx>500</posx>
@@ -374,7 +451,7 @@
 						<height>105</height>
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<texture background="true">$VAR[BannerThumb]</texture>
 					</control>
 					<control type="image">
 						<posx>500</posx>
@@ -488,7 +565,15 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(Videos)</visible>
+						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<posx>1050</posx>
+						<posy>14</posy>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>Window.IsVisible(Videos) + ListItem.IsResumable</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="1080">
@@ -578,7 +663,15 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(Videos)</visible>
+						<visible>Window.IsVisible(Videos) + !ListItem.IsResumable</visible>
+					</control>
+					<control type="image">
+						<posx>1050</posx>
+						<posy>14</posy>
+						<width>16</width>
+						<height>16</height>
+						<texture>OverlayWatching.png</texture>
+						<visible>Window.IsVisible(Videos) + ListItem.IsResumable</visible>
 					</control>
 				</focusedlayout>
 			</control>

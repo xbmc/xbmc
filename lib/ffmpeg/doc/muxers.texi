@@ -18,16 +18,90 @@ enabled muxers.
 
 A description of some of the currently available muxers follows.
 
+@anchor{crc}
+@section crc
+
+CRC (Cyclic Redundancy Check) testing format.
+
+This muxer computes and prints the Adler-32 CRC of all the input audio
+and video frames. By default audio frames are converted to signed
+16-bit raw audio and video frames to raw video before computing the
+CRC.
+
+The output of the muxer consists of a single line of the form:
+CRC=0x@var{CRC}, where @var{CRC} is a hexadecimal number 0-padded to
+8 digits containing the CRC for all the decoded input frames.
+
+For example to compute the CRC of the input, and store it in the file
+@file{out.crc}:
+@example
+ffmpeg -i INPUT -f crc out.crc
+@end example
+
+You can print the CRC to stdout with the command:
+@example
+ffmpeg -i INPUT -f crc -
+@end example
+
+You can select the output format of each frame with @command{ffmpeg} by
+specifying the audio and video codec and format. For example to
+compute the CRC of the input audio converted to PCM unsigned 8-bit
+and the input video converted to MPEG-2 video, use the command:
+@example
+ffmpeg -i INPUT -c:a pcm_u8 -c:v mpeg2video -f crc -
+@end example
+
+See also the @ref{framecrc} muxer.
+
+@anchor{framecrc}
+@section framecrc
+
+Per-frame CRC (Cyclic Redundancy Check) testing format.
+
+This muxer computes and prints the Adler-32 CRC for each decoded audio
+and video frame. By default audio frames are converted to signed
+16-bit raw audio and video frames to raw video before computing the
+CRC.
+
+The output of the muxer consists of a line for each audio and video
+frame of the form: @var{stream_index}, @var{frame_dts},
+@var{frame_size}, 0x@var{CRC}, where @var{CRC} is a hexadecimal
+number 0-padded to 8 digits containing the CRC of the decoded frame.
+
+For example to compute the CRC of each decoded frame in the input, and
+store it in the file @file{out.crc}:
+@example
+ffmpeg -i INPUT -f framecrc out.crc
+@end example
+
+You can print the CRC of each decoded frame to stdout with the command:
+@example
+ffmpeg -i INPUT -f framecrc -
+@end example
+
+You can select the output format of each frame with @command{ffmpeg} by
+specifying the audio and video codec and format. For example, to
+compute the CRC of each decoded input audio frame converted to PCM
+unsigned 8-bit and of each decoded input video frame converted to
+MPEG-2 video, use the command:
+@example
+ffmpeg -i INPUT -c:a pcm_u8 -c:v mpeg2video -f framecrc -
+@end example
+
+See also the @ref{crc} muxer.
+
+@anchor{image2}
 @section image2
 
 Image file muxer.
 
-This muxer writes video frames to multiple image files specified by a
-pattern.
+The image file muxer writes video frames to image files.
 
-The pattern may contain the string "%d" or "%0@var{N}d", which
+The output filenames are specified by a pattern, which can be used to
+produce sequentially numbered series of files.
+The pattern may contain the string "%d" or "%0@var{N}d", this string
 specifies the position of the characters representing a numbering in
-the filenames. If the form "%d0@var{N}d" is used, the string
+the filenames. If the form "%0@var{N}d" is used, the string
 representing the number in each filename is 0-padded to @var{N}
 digits. The literal character '%' can be specified in the pattern with
 the string "%%".
@@ -46,27 +120,45 @@ The pattern "img%%-%d.jpg" will specify a sequence of filenames of the
 form @file{img%-1.jpg}, @file{img%-2.jpg}, ..., @file{img%-10.jpg},
 etc.
 
-The following example shows how to use @file{ffmpeg} for creating a
+The following example shows how to use @command{ffmpeg} for creating a
 sequence of files @file{img-001.jpeg}, @file{img-002.jpeg}, ...,
 taking one image every second from the input video:
 @example
-ffmpeg -i in.avi -r 1 -f image2 'img-%03d.jpeg'
+ffmpeg -i in.avi -vsync 1 -r 1 -f image2 'img-%03d.jpeg'
 @end example
 
-Note that with @file{ffmpeg}, if the format is not specified with the
+Note that with @command{ffmpeg}, if the format is not specified with the
 @code{-f} option and the output filename specifies an image file
 format, the image2 muxer is automatically selected, so the previous
 command can be written as:
 @example
-ffmpeg -i in.avi -r 1 'img-%03d.jpeg'
+ffmpeg -i in.avi -vsync 1 -r 1 'img-%03d.jpeg'
 @end example
 
 Note also that the pattern must not necessarily contain "%d" or
 "%0@var{N}d", for example to create a single image file
 @file{img.jpeg} from the input video you can employ the command:
 @example
-ffmpeg -i in.avi -f image2 -vframes 1 img.jpeg
+ffmpeg -i in.avi -f image2 -frames:v 1 img.jpeg
 @end example
+
+The image muxer supports the .Y.U.V image file format. This format is
+special in that that each image frame consists of three files, for
+each of the YUV420P components. To read or write this image file format,
+specify the name of the '.Y' file. The muxer will automatically open the
+'.U' and '.V' files as required.
+
+@section mov
+
+MOV / MP4 muxer
+
+The muxer options are:
+
+@table @option
+@item -moov_size @var{bytes}
+Reserves space for the moov atom at the beginning of the file instead of placing the
+moov atom at the end. If the space reserved is insufficient, muxing will fail.
+@end table
 
 @section mpegts
 
@@ -98,7 +190,7 @@ and @code{service_name}. If they are not set the default for
 @code{service_name} is "Service01".
 
 @example
-ffmpeg -i file.mpg -acodec copy -vcodec copy \
+ffmpeg -i file.mpg -c copy \
      -mpegts_original_network_id 0x1122 \
      -mpegts_transport_stream_id 0x3344 \
      -mpegts_service_id 0x5566 \
@@ -108,5 +200,121 @@ ffmpeg -i file.mpg -acodec copy -vcodec copy \
      -metadata service_name="Some Channel" \
      -y out.ts
 @end example
+
+@section null
+
+Null muxer.
+
+This muxer does not generate any output file, it is mainly useful for
+testing or benchmarking purposes.
+
+For example to benchmark decoding with @command{ffmpeg} you can use the
+command:
+@example
+ffmpeg -benchmark -i INPUT -f null out.null
+@end example
+
+Note that the above command does not read or write the @file{out.null}
+file, but specifying the output file is required by the @command{ffmpeg}
+syntax.
+
+Alternatively you can write the command as:
+@example
+ffmpeg -benchmark -i INPUT -f null -
+@end example
+
+@section matroska
+
+Matroska container muxer.
+
+This muxer implements the matroska and webm container specs.
+
+The recognized metadata settings in this muxer are:
+
+@table @option
+
+@item title=@var{title name}
+Name provided to a single track
+@end table
+
+@table @option
+
+@item language=@var{language name}
+Specifies the language of the track in the Matroska languages form
+@end table
+
+@table @option
+
+@item stereo_mode=@var{mode}
+Stereo 3D video layout of two views in a single video track
+@table @option
+@item mono
+video is not stereo
+@item left_right
+Both views are arranged side by side, Left-eye view is on the left
+@item bottom_top
+Both views are arranged in top-bottom orientation, Left-eye view is at bottom
+@item top_bottom
+Both views are arranged in top-bottom orientation, Left-eye view is on top
+@item checkerboard_rl
+Each view is arranged in a checkerboard interleaved pattern, Left-eye view being first
+@item checkerboard_lr
+Each view is arranged in a checkerboard interleaved pattern, Right-eye view being first
+@item row_interleaved_rl
+Each view is constituted by a row based interleaving, Right-eye view is first row
+@item row_interleaved_lr
+Each view is constituted by a row based interleaving, Left-eye view is first row
+@item col_interleaved_rl
+Both views are arranged in a column based interleaving manner, Right-eye view is first column
+@item col_interleaved_lr
+Both views are arranged in a column based interleaving manner, Left-eye view is first column
+@item anaglyph_cyan_red
+All frames are in anaglyph format viewable through red-cyan filters
+@item right_left
+Both views are arranged side by side, Right-eye view is on the left
+@item anaglyph_green_magenta
+All frames are in anaglyph format viewable through green-magenta filters
+@item block_lr
+Both eyes laced in one Block, Left-eye view is first
+@item block_rl
+Both eyes laced in one Block, Right-eye view is first
+@end table
+@end table
+
+For example a 3D WebM clip can be created using the following command line:
+@example
+ffmpeg -i sample_left_right_clip.mpg -an -c:v libvpx -metadata stereo_mode=left_right -y stereo_clip.webm
+@end example
+
+@section segment
+
+Basic stream segmenter.
+
+The segmenter muxer outputs streams to a number of separate files of nearly
+fixed duration. Output filename pattern can be set in a fashion similar to
+@ref{image2}.
+
+Every segment starts with a video keyframe, if a video stream is present.
+The segment muxer works best with a single constant frame rate video.
+
+Optionally it can generate a flat list of the created segments, one segment
+per line.
+
+@table @option
+@item segment_format @var{format}
+Override the inner container format, by default it is guessed by the filename
+extension.
+@item segment_time @var{t}
+Set segment duration to @var{t} seconds.
+@item segment_list @var{name}
+Generate also a listfile named @var{name}.
+@item segment_list_size @var{size}
+Overwrite the listfile once it reaches @var{size} entries.
+@end table
+
+@example
+ffmpeg -i in.mkv -c copy -map 0 -f segment -list out.list out%03d.nut
+@end example
+
 
 @c man end MUXERS

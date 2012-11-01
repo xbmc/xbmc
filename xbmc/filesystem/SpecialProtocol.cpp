@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -145,6 +144,9 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
     URIUtils::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName, translatedPath);
   else if (RootDir.Equals("skin"))
     URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName, translatedPath);
+  else if (RootDir.Equals("logpath"))
+    URIUtils::AddFileToFolder(g_settings.m_logFolder, FileName, translatedPath);
+
 
   // from here on, we have our "real" special paths
   else if (RootDir.Equals("xbmc") ||

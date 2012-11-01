@@ -60,7 +60,7 @@
 			<width>640</width>
 			<align>center</align>
 			<label>35004</label>
-			<font>font13caps</font>
+			<font>font13</font>
 		</control>
 		<control type="grouplist" id="5">
 			<animation effect="slide" start="0,0" end="5,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>

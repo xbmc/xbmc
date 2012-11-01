@@ -2,7 +2,7 @@
 |
 |   Platinum - main
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,6 +17,7 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
+| licensing@plutinosoft.com
 | 
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,6 +46,9 @@
 +---------------------------------------------------------------------*/
 int main(void)
 {
+    // setup Neptune logging
+    NPT_LogManager::GetDefault().Configure("plist:.level=INFO;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=58");
+
     PLT_UPnP upnp;
     PLT_CtrlPointReference ctrlPoint(new PLT_CtrlPoint());
     upnp.AddCtrlPoint(ctrlPoint);

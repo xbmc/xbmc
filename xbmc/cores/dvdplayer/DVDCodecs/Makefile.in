@@ -1,7 +1,7 @@
 INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
-SRCS=	DVDCodecUtils.cpp \
-	DVDFactoryCodec.cpp \
+SRCS  = DVDCodecUtils.cpp
+SRCS += DVDFactoryCodec.cpp
 
 LIB=	DVDCodecs.a
 

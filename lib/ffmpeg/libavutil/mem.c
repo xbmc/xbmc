@@ -24,6 +24,8 @@
  * default memory allocator for libavutil
  */
 
+#define _XOPEN_SOURCE 600
+
 #include "config.h"
 
 #include <limits.h>
@@ -57,11 +59,19 @@ void  free(void *ptr);
 
 #endif /* MALLOC_PREFIX */
 
+#define ALIGN (HAVE_AVX ? 32 : 16)
+
 /* You can redefine av_malloc and av_free in your project to use your
    memory allocator. You do not need to suppress this file because the
    linker will do it automatically. */
 
-void *av_malloc(FF_INTERNAL_MEM_TYPE size)
+static size_t max_alloc_size= INT_MAX;
+
+void av_max_alloc(size_t max){
+    max_alloc_size = max;
+}
+
+void *av_malloc(size_t size)
 {
     void *ptr = NULL;
 #if CONFIG_MEMALIGN_HACK
@@ -69,21 +79,22 @@ void *av_malloc(FF_INTERNAL_MEM_TYPE size)
 #endif
 
     /* let's disallow possible ambiguous cases */
-    if(size > (INT_MAX-16) )
+    if (size > (max_alloc_size-32))
         return NULL;
 
 #if CONFIG_MEMALIGN_HACK
-    ptr = malloc(size+16);
+    ptr = malloc(size+ALIGN);
     if(!ptr)
         return ptr;
-    diff= ((-(long)ptr - 1)&15) + 1;
+    diff= ((-(long)ptr - 1)&(ALIGN-1)) + 1;
     ptr = (char*)ptr + diff;
     ((char*)ptr)[-1]= diff;
 #elif HAVE_POSIX_MEMALIGN
-    if (posix_memalign(&ptr,16,size))
+    if (size) //OS X on SDK 10.6 has a broken posix_memalign implementation
+    if (posix_memalign(&ptr,ALIGN,size))
         ptr = NULL;
 #elif HAVE_MEMALIGN
-    ptr = memalign(16,size);
+    ptr = memalign(ALIGN,size);
     /* Why 64?
        Indeed, we should align it:
          on 4 for 386
@@ -93,10 +104,8 @@ void *av_malloc(FF_INTERNAL_MEM_TYPE size)
        Because L1 and L2 caches are aligned on those values.
        But I don't want to code such logic here!
      */
-     /* Why 16?
-        Because some CPUs need alignment, for example SSE2 on P4, & most RISC CPUs
-        it will just trigger an exception and the unaligned load will be done in the
-        exception handler or it will just segfault (SSE2 on P4).
+     /* Why 32?
+        For AVX ASM. SSE / NEON needs only 16.
         Why not larger? Because I did not see a difference in benchmarks ...
      */
      /* benchmarks with P3
@@ -113,37 +122,55 @@ void *av_malloc(FF_INTERNAL_MEM_TYPE size)
 #else
     ptr = malloc(size);
 #endif
+    if(!ptr && !size)
+        ptr= av_malloc(1);
     return ptr;
 }
 
-void *av_realloc(void *ptr, FF_INTERNAL_MEM_TYPE size)
+void *av_realloc(void *ptr, size_t size)
 {
 #if CONFIG_MEMALIGN_HACK
     int diff;
 #endif
 
     /* let's disallow possible ambiguous cases */
-    if(size > (INT_MAX-16) )
+    if (size > (max_alloc_size-32))
         return NULL;
 
 #if CONFIG_MEMALIGN_HACK
     //FIXME this isn't aligned correctly, though it probably isn't needed
     if(!ptr) return av_malloc(size);
     diff= ((char*)ptr)[-1];
-    return (char*)realloc((char*)ptr - diff, size + diff) + diff;
+    ptr= realloc((char*)ptr - diff, size + diff);
+    if(ptr) ptr = (char*)ptr + diff;
+    return ptr;
 #else
-    return realloc(ptr, size);
+    return realloc(ptr, size + !size);
 #endif
+}
+
+void *av_realloc_f(void *ptr, size_t nelem, size_t elsize)
+{
+    size_t size;
+    void *r;
+
+    if (av_size_mult(elsize, nelem, &size)) {
+        av_free(ptr);
+        return NULL;
+    }
+    r = av_realloc(ptr, size);
+    if (!r && size)
+        av_free(ptr);
+    return r;
 }
 
 void av_free(void *ptr)
 {
-    /* XXX: this test should not be needed on most libcs */
-    if (ptr)
 #if CONFIG_MEMALIGN_HACK
+    if (ptr)
         free((char*)ptr - ((char*)ptr)[-1]);
 #else
-        free(ptr);
+    free(ptr);
 #endif
 }
 
@@ -154,12 +181,19 @@ void av_freep(void *arg)
     *ptr = NULL;
 }
 
-void *av_mallocz(FF_INTERNAL_MEM_TYPE size)
+void *av_mallocz(size_t size)
 {
     void *ptr = av_malloc(size);
     if (ptr)
         memset(ptr, 0, size);
     return ptr;
+}
+
+void *av_calloc(size_t nmemb, size_t size)
+{
+    if (size <= 0 || nmemb >= INT_MAX / size)
+        return NULL;
+    return av_mallocz(nmemb * size);
 }
 
 char *av_strdup(const char *s)
@@ -174,3 +208,23 @@ char *av_strdup(const char *s)
     return ptr;
 }
 
+/* add one element to a dynamic array */
+void av_dynarray_add(void *tab_ptr, int *nb_ptr, void *elem)
+{
+    /* see similar ffmpeg.c:grow_array() */
+    int nb, nb_alloc;
+    intptr_t *tab;
+
+    nb = *nb_ptr;
+    tab = *(intptr_t**)tab_ptr;
+    if ((nb & (nb - 1)) == 0) {
+        if (nb == 0)
+            nb_alloc = 1;
+        else
+            nb_alloc = nb * 2;
+        tab = av_realloc(tab, nb_alloc * sizeof(intptr_t));
+        *(intptr_t**)tab_ptr = tab;
+    }
+    tab[nb++] = (intptr_t)elem;
+    *nb_ptr = nb;
+}
