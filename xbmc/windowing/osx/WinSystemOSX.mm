@@ -1362,6 +1362,7 @@ void CWinSystemOSX::CheckDisplayChanging(u_int32_t flags)
   }
 }
 
+#ifndef __PLEX__
 void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display, 
   CGDisplayChangeSummaryFlags flags, void* userData)
 {
@@ -1387,6 +1388,42 @@ void CWinSystemOSX::DisplayReconfigured(CGDirectDisplayID display,
     }
   }
 }
+#else
+static void DisplayReconfigured(CGDirectDisplayID display,
+  CGDisplayChangeSummaryFlags flags, void* userData)
+{
+  CWinSystemOSX *winsys = (CWinSystemOSX*)userData;
+  if (!winsys)
+    return;
+
+  if (flags & kCGDisplaySetModeFlag || flags & kCGDisplayBeginConfigurationFlag)
+  {
+    // pre/post-reconfiguration changes
+    RESOLUTION res = g_graphicsContext.GetVideoResolution();
+    if (res == RES_INVALID)
+      return;
+
+    NSScreen* pScreen = nil;
+    unsigned int screenIdx = g_settings.m_ResInfo[res].iScreen;
+
+    if ( screenIdx < [[NSScreen screens] count] )
+    {
+        pScreen = [[NSScreen screens] objectAtIndex:screenIdx];
+    }
+
+    if (pScreen)
+    {
+      CGDirectDisplayID xbmc_display = GetDisplayIDFromScreen(pScreen);
+      if (xbmc_display == display)
+      {
+        // we only respond to changes on the display we are running on.
+        CLog::Log(LOGDEBUG, "CWinSystemOSX::DisplayReconfigured");
+        winsys->CheckDisplayChanging(flags);
+      }
+    }
+  }
+}
+#endif
 
 /* PLEX */
 void CWinSystemOSX::UpdateDisplayBlanking()
