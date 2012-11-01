@@ -9,6 +9,6 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
-		<include>NumericKeyboard</include>
+		<include>KeyboardNumeric</include>
 	</controls>
 </window>

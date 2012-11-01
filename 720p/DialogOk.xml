@@ -1,99 +1,10 @@
 ﻿<?xml version="1.0"?>
 <window id="2002">
 	<defaultcontrol always="true">10</defaultcontrol>
-	<animation effect="fade" time="300">WindowOpen</animation>
-	<animation effect="fade" time="100">WindowClose</animation>
+	<!-- ViewsDialog.xml -->
+	<include>DialogFadeInOut</include>
 	<controls>
-		<control type="group">
-			<posx>340</posx>
-			<posy>260</posy>
-			<control type="group">
-				<control type="image">
-					<posx>-1</posx>
-					<posy>-1</posy>
-					<width>602</width>
-					<height>202</height>
-					<texture>transparent.png</texture>
-					<bordertexture border="10">border-black.png</bordertexture>
-					<bordersize>1</bordersize>
-					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-					<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
-				</control>
-				<control type="image">
-					<description>Background image</description>
-					<width>600</width>
-					<height>200</height>
-					<include>BlackRounded</include>
-					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
-				</control>
-				<control type="image">
-					<width>600</width>
-					<height>50</height>
-					<texture border="10" flipy="true">base-rounded-half.png</texture>
-					<colordiffuse>FF111111</colordiffuse>
-				</control>
-				<control type="image">
-					<posy>0</posy>
-					<width>600</width>
-					<height>50</height>
-					<texture>border-bottom-grey.png</texture>
-					<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-					<animation effect="fade" start="100" end="0" time="0">WindowClose</animation>
-				</control>
-				<control type="image">
-					<posx>285</posx>
-					<posy>200</posy>
-					<width>30</width>
-					<height>14</height>
-					<include>ArrowBlackDown</include>
-				</control>
-			</control>
-			<control type="group">
-				<posy>22</posy>
-				<control type="label" id="1">
-					<description>Heading</description>
-					<width>600</width>
-					<include>DialogHeading</include>
-				</control>
-				<control type="group">
-					<posy>27</posy>
-					<control type="label" id="2">
-						<description>Line 1</description>
-						<posy>30</posy>
-						<posx>20</posx>
-						<width>560</width>
-						<scroll>yes</scroll>
-					</control>
-					<control type="label" id="3">
-						<description>Line 2</description>
-						<posy>50</posy>
-						<posx>20</posx>
-						<width>560</width>
-						<scroll>yes</scroll>
-					</control>
-					<control type="label" id="4">
-						<description>Line 3</description>
-						<posy>70</posy>
-						<posx>20</posx>
-						<width>560</width>
-						<scroll>yes</scroll>
-					</control>
-					<control type="group">
-						<posy>90</posy>
-						<posx>260</posx>
-						<control type="button" id="10">
-							<description>OK Button</description>
-							<width>80</width>
-							<height>50</height>
-							<align>center</align>
-							<label>$LOCALIZE[186]</label>
-							<font>CondensedBold-18</font>
-							<texturefocus border="12">black-rounded.png</texturefocus>
-							<texturenofocus border="12">OSDProgressBack.png</texturenofocus>
-						</control>
-					</control>
-				</control>
-			</control>
-		</control>
+		<!-- ViewsDialog.xml -->
+		<include>DialogOK</include>
 	</controls>
 </window>
