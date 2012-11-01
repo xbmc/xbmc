@@ -76,8 +76,8 @@ public:
   void SetRangeSelector(RangeSelector selector);
   void SwitchRangeSelector();
   void SetInfo(int iInfo);
-  void SetPercentage(int iPercent, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
-  int GetPercentage(RangeSelector selector = RangeSelectorLower) const;
+  void SetPercentage(float iPercent, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
+  float GetPercentage(RangeSelector selector = RangeSelectorLower) const;
   void SetIntValue(int iValue, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
   int GetIntValue(RangeSelector selector = RangeSelectorLower) const;
   void SetFloatValue(float fValue, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
@@ -113,7 +113,7 @@ protected:
   bool m_rangeSelection;
   RangeSelector m_currentSelector;
 
-  int m_percentValues[2];
+  float m_percentValues[2];
 
   int m_intValues[2];
   int m_iStart;
