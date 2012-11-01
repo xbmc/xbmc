@@ -72,8 +72,6 @@ public:
   void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor);
   void PythonSetDisabledColor(color_t disabledColor);
 
-  void SettingsCategorySetTextAlign(uint32_t align);
-
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.HasActionsMeetingCondition(); };
 

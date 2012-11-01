@@ -692,7 +692,6 @@ void CGUIDialogAddonSettings::CreateControls()
       {
         pControl = new CGUIButtonControl(*pOriginalButton);
         if (!pControl) return;
-        ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
         {
