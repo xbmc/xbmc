@@ -1,5 +1,11 @@
 <fonts>
 	<fontset id="Default" unicode="true">
+		<!-- Default -->
+		<font>
+			<name>DefaultFont</name>
+			<filename>DejaVuSansCondensed.ttf</filename>
+			<size>18</size>
+		</font>
 		<!-- normal weight -->
 		<font>
 			<name>Normal-17</name>
