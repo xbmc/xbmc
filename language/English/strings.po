@@ -7452,7 +7452,17 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr ""
 
-#empty strings from id 19279 to 19498
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#19279"
+msgid "Client specific"
+msgstr ""
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr ""
+
+#empty strings from id 19281 to 19498
 
 msgctxt "#19499"
 msgid "Other/Unknown"
