@@ -1525,23 +1525,14 @@ void CVideoDatabase::AddCountryToMovie(int idMovie, int idCountry)
 //********************************************************************************************************************************
 bool CVideoDatabase::LoadVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details)
 {
-  if (GetMovieInfo(strFilenameAndPath, details))
-  {
-    CLog::Log(LOGDEBUG,"%s, got movie info!", __FUNCTION__);
-    CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
-  }
-  else if (GetEpisodeInfo(strFilenameAndPath, details))
-  {
-    CLog::Log(LOGDEBUG,"%s, got episode info!", __FUNCTION__);
-    CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
-  }
-  else if (GetMusicVideoInfo(strFilenameAndPath, details))
-  {
-    CLog::Log(LOGDEBUG,"%s, got music video info!", __FUNCTION__);
-    CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
-  }
-  else if (GetFileInfo(strFilenameAndPath, details))
-    CLog::Log(LOGDEBUG,"%s, got file info!", __FUNCTION__);
+  if (!GetMovieInfo(strFilenameAndPath, details))
+    return false;
+  if (!GetEpisodeInfo(strFilenameAndPath, details))
+    return false;
+  if (!GetMusicVideoInfo(strFilenameAndPath, details))
+    return false;
+  if (!GetFileInfo(strFilenameAndPath, details))
+    return false;
 
   return !details.IsEmpty();
 }
@@ -1849,7 +1840,7 @@ bool CVideoDatabase::GetFileInfo(const CStdString& strFilenameAndPath, CVideoInf
 
     CStdString sql = PrepareSQL("SELECT * FROM files "
                                 "JOIN path ON path.idPath = files.idPath "
-                                "JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = %i "
+                                "LEFT JOIN bookmark ON bookmark.idFile = files.idFile AND bookmark.type = %i "
                                 "WHERE files.idFile = %i", CBookmark::RESUME, idFile);
     if (!m_pDS->query(sql.c_str()))
       return false;
