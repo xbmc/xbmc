@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="501">
 	<defaultcontrol>777</defaultcontrol>
-	<views>44,70,73,52</views>
+	<views>40,70,73,52</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->

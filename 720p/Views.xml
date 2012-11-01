@@ -42,7 +42,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
-							<font>CondensedBold-34</font>
+							<font>CondensedBold-48</font>
 							<scroll>false</scroll>
 							<textcolor>orangeLight</textcolor>
 							<shadowcolor>FF222222</shadowcolor>

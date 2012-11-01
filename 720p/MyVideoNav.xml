@@ -24,7 +24,7 @@
 		<!-- ChannelVideo ID 71 -->
 		<include>ChannelVideo</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
-		<include>LeftSideMenuLibrary</include>
+		<include>LeftSideMenu</include>
 		<include>TopBar</include>
 		<!--><include>CommonSortLetters</include>-->
 		<include>debugInfos</include>
