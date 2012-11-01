@@ -665,6 +665,41 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
 {
   PVR_MENUHOOKS *hooks = NULL;
 
+  // get client id
+  if (iClientID < 0 && cat == PVR_MENUHOOK_SETTING)
+  {
+    PVR_CLIENTMAP clients;
+    GetConnectedClients(clients);
+
+    if (clients.size() == 1)
+    {
+      iClientID = clients.begin()->first;
+    }
+    else if (clients.size() > 1)
+    {
+      // have user select client
+      CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+      pDialog->Reset();
+      pDialog->SetHeading(19196);
+
+      PVR_CLIENTMAP_ITR itrClients;
+      for (itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
+      {
+        pDialog->Add(itrClients->second->GetBackendName());
+      }
+      pDialog->DoModal();
+
+      int selection = pDialog->GetSelectedLabel();
+      if (selection >= 0)
+      {
+        itrClients = clients.begin();
+        for (int i = 0; i < selection; i++)
+          itrClients++;
+        iClientID = itrClients->first;
+      }
+    }
+  }
+
   if (iClientID < 0)
     iClientID = GetPlayingClientID();
 
