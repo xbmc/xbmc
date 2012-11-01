@@ -4,11 +4,13 @@
 	<zorder>5</zorder>
 	<controls>
 		<control type="group">
-			<include>VolumePos</include>
+			<posx>10</posx>
+			<posy>34</posy>
 			<control type="image">
 				<description>Mute image</description>
-				<texture>VolumeRed.png</texture>
-				<include>VolumeImage</include>
+				<width>100</width>
+				<height>100</height>
+				<texture>Mute.png</texture>
 			</control>
 		</control>
 	</controls>
