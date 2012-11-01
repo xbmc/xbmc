@@ -140,11 +140,6 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
         CFileItem fileItem;
         if (FillFileItem(items[i], fileItem, media))
         {
-          fileItem.m_bIsFolder = items[i]->m_bIsFolder;
-          fileItem.m_dateTime = items[i]->m_dateTime;
-          fileItem.m_dwSize = items[i]->m_dwSize;
-          fileItem.SetMimeType(items[i]->GetMimeType());
-
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(CFileItemPtr(new CFileItem(fileItem)));
           else
@@ -271,6 +266,9 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItem &
   if (originalItem.get() == NULL)
     return false;
 
+  // copy all the available details
+  item = *originalItem;
+
   bool status = false;
   CStdString strFilename = originalItem->GetPath();
   if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
@@ -302,8 +300,9 @@ bool CFileOperations::FillFileItem(const CFileItemPtr &originalItem, CFileItem &
         if (label.empty())
           return false;
 
-        item = CFileItem(strFilename, isDir);
         item.SetLabel(label);
+        item.SetPath(strFilename);
+        item.m_bIsFolder = isDir;
       }
       else
         item = *originalItem.get();
