@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="501">
 	<defaultcontrol>777</defaultcontrol>
-	<views>49,50,51,52</views>
+	<views>44,70,73,52</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
@@ -9,12 +9,16 @@
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
 		<!-- views (ViewsMusic.xml & ViewsChannels.xml) -->
-		<include>InfoList</include>
+		<!-- ListSecondary ID 40 -->
+		<include>ListSecondary</include>
+		<!-- Channels ID 70 -->
 		<include>Channels</include>
-		<include>MusicChannel</include>		
-		<include>MusicLibrary</include>
+		<!-- ChannelMusic ID 73 -->
+		<include>ChannelMusic</include>
+		<!-- LibraryMusic ID 52 -->		
+		<include>LibraryMusic</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
-		<include>LeftSideMenuPhotos</include>
+		<include>LeftSideMenu</include>
 		<include>TopBar</include>
 		<include>debugInfos</include>
 	</controls>

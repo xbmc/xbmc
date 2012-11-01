@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <includes>
 	<!-- Library -->
-	<include name="VideoLibrary">
+	<include name="LibraryPosters">
 		<!-- Library Movies & TV Shows -->
 		<control type="group" id="777">
 			<include>FadeDialog</include>
-			<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary) + !Container.content(plugins)</visible>
+			<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
 			<include>rightSideSlide</include>
-			<control type="panel" id="52">
-				<visible>!Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(secondary) + !Container.content(plugins)</visible>
-				<viewtype label="Posters">panel</viewtype>
-				<onup>52</onup>
-				<ondown>52</ondown>
-				<onright>52</onright>
+			<control type="panel" id="50">
+				<visible>!Container.Content(secondary) + [Container.content(movies) | Container.Content(TVShows)]</visible>
+				<viewtype label="LibraryPosters">panel</viewtype>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<onright>50</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
 				<posx>102</posx>

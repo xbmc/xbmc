@@ -149,6 +149,15 @@
 					<visible>!Window.IsActive(142)</visible>
 				</control>
 			</control>
+			<!-- cache bar TEST -->
+			<!-- not very interesting to be honest, shows only when in video player window (not during the wait before the video player window opens), and the cache fills up very quickly once available, so... -->
+			<!--><control type="progress">
+				<description>Progressbar</description>
+				<posx>100</posx>
+				<posy>-20</posy>
+				<width>1040</width>
+				<info>Player.CacheLevel</info>
+			</control>-->
 			<!-- progress bar -->
 			<control type="progress">
 				<description>Progressbar</description>
@@ -728,9 +737,7 @@
 				<control type="group">
 					<control type="label" id="2">
 						<width>580</width>
-						<align>center</align>
-						<font>Condensed-24</font>
-						<textcolor>orange</textcolor>
+						<include>DialogHeading</include>
 					</control>
 					<!-- settings -->
 					<control type="grouplist" id="5">
@@ -747,18 +754,6 @@
 					</control>
 				</control>
 				<control type="button" id="7">
-					<font>Condensed-18</font>
-					<height>50</height>
-					<align>left</align>
-					<aligny>center</aligny>
-					<texturefocus border="5">black-bottom-grey.png</texturefocus>
-					<texturenofocus border="5">border-bottom-grey.png</texturenofocus>
-					<textoffsetx>20</textoffsetx>
-					<textoffsety>0</textoffsety>
-					<textcolor>Unfocused</textcolor>
-					<focusedcolor>orangeLight</focusedcolor>
-					<disabledcolor>ff505050</disabledcolor>
-					<selectedcolor>orangeLight</selectedcolor>
 				</control>
 				<control type="radiobutton" id="8">
 				</control>
@@ -772,12 +767,6 @@
 					<posy>75</posy>
 					<width>20</width>
 					<height>310</height>
-					<orientation>vertical</orientation>
-					<texturesliderbar border="0,14,0,14">scrollbar-back.png</texturesliderbar>
-					<textureslidernib border="0,14,0,14">-</textureslidernib>
-					<textureslidernibfocus border="0,14,0,14">-</textureslidernibfocus>
-					<showonepage>false</showonepage>
-					<visible allowhiddenfocus="true">true</visible>
 				</control>
 			</control>
 		</control>

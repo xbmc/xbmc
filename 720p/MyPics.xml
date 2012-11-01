@@ -1,18 +1,22 @@
 <?xml version="1.0"?>
 <window id="2">
 	<defaultcontrol>777</defaultcontrol>
-	<views>49,50,51,52</views>
+	<views>40,70,72,51</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
-		<!-- views (ViewsPhoto.xml) & ViewsChannels.xml) -->
-		<include>InfoList</include>
+		<!-- views (ViewsPhoto.xml & ViewsChannels.xml) -->
+		<!-- ListSecondary ID 40 -->
+		<include>ListSecondary</include>
+		<!-- Channels ID 70 -->
 		<include>Channels</include>
-		<include>PhotoChannel</include>
-		<include>PhotoLibrary</include>
+		<!-- ChannelPhoto ID 72 -->
+		<include>ChannelPhoto</include>
+		<!-- LibraryPhoto ID 51 -->
+		<include>LibraryPhoto</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuPhotos</include>
 		<include>TopBar</include>

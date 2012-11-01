@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <window id="6">
 	<defaultcontrol>777</defaultcontrol>
-	<views>49,50,51,52</views>
+	<views>40,50,60,61,70,71</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
@@ -9,11 +9,20 @@
 		<include>BGFanart</include>
 		<include>BGOverlay</include>
 		<!-- views (ViewsMovieTV.xml & ViewsChannels.xml & ViewsPreplay.xml) -->
-		<include>InfoList</include>
+		<!-- ListSecondary ID 40 -->
+		<include>ListSecondary</include>
+		<!-- LibraryPosters ID 50 -->
+		<include>LibraryPosters</include>
+		<include>PreplayMovie</include>
+		<!-- PreplayShow ID 60 -->
+		<include>PreplayShow</include>
+		<!-- PreplaySeason ID 61 -->
+		<include>PreplaySeason</include>
+		<include>PreplayEpisode</include>
+		<!-- Channels ID 70 -->
 		<include>Channels</include>
-		<include>VideoChannel</include>
-		<include>VideoLibrary</include>
-		<include>Preplay</include>
+		<!-- ChannelVideo ID 71 -->
+		<include>ChannelVideo</include>
 		<!-- top-level ui (LeftSidemenu.xml & IncludesGlobals.xml & Debug.xml) -->
 		<include>LeftSideMenuLibrary</include>
 		<include>TopBar</include>

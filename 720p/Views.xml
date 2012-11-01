@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <includes>
-	<include name="InfoList">
+	<include name="ListSecondary">
 		<control type="group">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<visible>Container.content(secondary)</visible>
 			<control type="group" id="777">
-				<control type="fixedlist" id="49">
+				<control type="fixedlist" id="40">
 					<visible>Container.content(secondary)</visible>
 					<viewtype label="ListSecondary">list</viewtype>
 					<posy>235</posy>
@@ -15,8 +15,8 @@
 					<height>400</height>
 					<onright>-</onright>
 					<onleft>9100</onleft>
-					<onup>49</onup>
-					<ondown>49</ondown>
+					<onup>40</onup>
+					<ondown>40</ondown>
 					<focusposition>1</focusposition>
 					<wraparound>true</wraparound>
 					<scrolltime>200</scrolltime>

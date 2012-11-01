@@ -49,7 +49,7 @@
 			<font>Condensed-14</font>
 			<shadowcolor>ff222222</shadowcolor>
 	</include>
-	<!-- PhotoLibrary -->
+	<!-- LibraryPhoto -->
 	<include name="PlotBGLibrary">
 		<control type="image">
 			<posx>0</posx>
@@ -194,7 +194,7 @@
 		</control>
 	</include>
 	<!-- Library -->
-	<include name="PhotoLibrary">
+	<include name="LibraryPhoto">
 		<control type="group">
 			<visible>!Container.content(addons) + !Container.content(plugins) + !Container.content(secondary)</visible>
 			<include>FadeDialog</include>
@@ -205,12 +205,12 @@
 			<include>PlotLibrary</include>
 			<!-- main list -->
 			<control type="group" id="777">
-				<control type="panel" id="52">
+				<control type="panel" id="51">
 					<visible>!Container.content(addons) + !Container.content(plugins) + !Container.content(secondary)</visible>
-					<viewtype label="PhotoLibrary">panel</viewtype>
-					<onup>52</onup>
-					<ondown>52</ondown>
-					<onright>52</onright>
+					<viewtype label="LibraryPhoto">panel</viewtype>
+					<onup>51</onup>
+					<ondown>51</ondown>
+					<onright>51</onright>
 					<onleft>9100</onleft>
 					<orientation>vertical</orientation>
 					<posx>573</posx>

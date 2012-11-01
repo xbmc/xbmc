@@ -146,6 +146,7 @@
 			<height>650</height>
 			<onup>9100</onup>
 			<ondown>9100</ondown>
+			<onright>777</onright>
 			<orientation>vertical</orientation>
 			<scrolltime>150</scrolltime>
 			<visible allowhiddenfocus="true">![ControlGroup(1100).HasFocus() | ControlGroup(4000).HasFocus() | ControlGroup(2100).HasFocus() | Window.IsActive(2003)]</visible>
@@ -154,7 +155,7 @@
 				<onup>9100</onup>
 				<ondown>9100</ondown>
 				<onleft>-</onleft>
-				<onright>52</onright>
+				<onright>777</onright>
 				<itemgap>0</itemgap>
 				<!-- FILTERS-->
 				<control type="label" id="9001">
@@ -236,6 +237,7 @@
 			<height>650</height>
 			<onup>9100</onup>
 			<ondown>9100</ondown>
+			<onright>777</onright>
 			<orientation>vertical</orientation>
 			<scrolltime>150</scrolltime>
 			<visible allowhiddenfocus="true">true</visible>
@@ -244,7 +246,7 @@
 				<onup>9100</onup>
 				<ondown>9100</ondown>
 				<onleft>-</onleft>
-				<onright>99</onright>
+				<onright>777</onright>
 				<itemgap>30</itemgap>
 				<!-- ACTIONS -->
 				<control type="button" id="9080">
@@ -403,7 +405,7 @@
 			</control>
 		</control>
 	</include>
-	<!-- Preplay menu -->
+	<!-- Photos menu -->
 	<include name="LeftSideMenuPhotos">
 		<include>leftMenuBg</include>
 		<control type="group" id="1300">

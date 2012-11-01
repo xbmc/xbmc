@@ -120,16 +120,16 @@
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
 			<!-- main list -->
-			<control type="panel" id="50">
+			<control type="panel" id="70">
 				<viewtype label="Channels">panel</viewtype>
 				<visible>Container.Content(plugins)</visible>
 				<posy>56</posy>
 				<posx>105</posx>
 				<width>1200</width>
 				<height>645</height>
-				<onup>50</onup>
-				<ondown>50</ondown>
-				<onright>50</onright>
+				<onup>70</onup>
+				<ondown>70</ondown>
+				<onright>70</onright>
 				<onleft>9100</onleft>
 				<orientation>vertical</orientation>
 				<itemlayout width="190" height="216">
@@ -152,7 +152,7 @@
 	</include>
 	<!-- inside channels -->
 	<!-- Photo Channel (MyPics.xml) -->
-	<include name="PhotoChannel">
+	<include name="ChannelPhoto">
 		<control type="group">
 			<visible>Container.content(plugincontent)</visible>
 			<include>FadeDialog</include>
@@ -162,12 +162,12 @@
 			<include>ChannelIcon</include>
 			<!-- main list -->
 			<control type="group" id="777">
-				<control type="panel" id="51">
-					<viewtype label="PhotoChannel">panel</viewtype>
+				<control type="panel" id="72">
+					<viewtype label="ChannelPhoto">panel</viewtype>
 					<visible>Container.content(plugincontent)</visible>
-					<onup>52</onup>
-					<ondown>52</ondown>
-					<onright>52</onright>
+					<onup>72</onup>
+					<ondown>72</ondown>
+					<onright>72</onright>
 					<onleft>9100</onleft>
 					<orientation>vertical</orientation>
 					<posx>369</posx>
@@ -196,7 +196,7 @@
 		</control>
 	</include>
 	<!-- Music Channel (MyMusicSongs.xml) -->
-	<include name="MusicChannel">
+	<include name="ChannelMusic">
 		<control type="group">
 			<visible>Container.content(plugincontent)</visible>
 			<include>FadeDialog</include>
@@ -206,12 +206,12 @@
 			<include>ChannelIcon</include>
 			<!-- main list -->
 			<control type="group" id="777">
-				<control type="panel" id="51">
-					<viewtype label="MusicChannel">panel</viewtype>
+				<control type="panel" id="73">
+					<viewtype label="ChannelMusic">panel</viewtype>
 					<visible>Container.content(plugincontent)</visible>
-					<onup>52</onup>
-					<ondown>52</ondown>
-					<onright>52</onright>
+					<onup>73</onup>
+					<ondown>73</ondown>
+					<onright>73</onright>
 					<onleft>9100</onleft>
 					<orientation>vertical</orientation>
 					<posx>400</posx>
