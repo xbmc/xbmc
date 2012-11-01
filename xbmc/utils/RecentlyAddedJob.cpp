@@ -135,7 +135,7 @@ bool CRecentlyAddedJob::UpdateVideo()
         seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, "season", "thumb");
 
       home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
-      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshowthumb"));
+      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
       home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
     }

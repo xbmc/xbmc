@@ -121,7 +121,7 @@ static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addi
         && resolutions[idx].interlaced == interlaced)
       return; // already taken care of.
 
-  RESOLUTION_WHR res = {width, height, interlaced, addindex};
+  RESOLUTION_WHR res = {width, height, interlaced, (int)addindex};
   resolutions.push_back(res);
 }
 
@@ -154,7 +154,7 @@ static void AddRefreshRate(vector<REFRESHRATE> &refreshrates, unsigned int addin
     if (   refreshrates[idx].RefreshRate == RefreshRate)
       return; // already taken care of.
 
-  REFRESHRATE rr = {RefreshRate, addindex};
+  REFRESHRATE rr = {RefreshRate, (int)addindex};
   refreshrates.push_back(rr);
 }
 

@@ -85,9 +85,10 @@ public:
 
   /*! \brief set artwork for an item
    \param art a type:url map for artwork
+   \param setFallback whether to set the "thumb" fallback, defaults to true.
    \sa GetArt
    */
-  void SetArt(const ArtMap &art);
+  void SetArt(const ArtMap &art, bool setFallback = true);
 
   /*! \brief append artwork to an item
    \param art a type:url map for artwork

@@ -53,7 +53,7 @@ namespace XBMCAddon
         pKeyboard->SetAutoClose(autoclose);
 
       // do modal of dialog
-      ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow()};
+      ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, (DWORD)g_windowManager.GetActiveWindow()};
       CApplicationMessenger::Get().SendMessage(tMsg, true);
     }
 

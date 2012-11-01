@@ -39,6 +39,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "ApplicationMessenger.h"
+#include "Application.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -464,6 +465,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   unsigned int startTime = XbmcThreads::SystemClockMillis();
   CGUIDialogProgress *progressBar = NULL;
   bool cancelled = false;
+  bool inMainAppThread = g_application.IsCurrentThread();
 
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
@@ -521,6 +523,11 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         m_cancelled = true;
       }
     }
+    else // if the progressBar exists and we call StartModal or Progress we get the
+         //  ProcessRenderLoop call anyway.
+      if (inMainAppThread) 
+        g_windowManager.ProcessRenderLoop();
+
     if (!cancelled && m_cancelled)
     {
       cancelled = true;

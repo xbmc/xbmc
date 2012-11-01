@@ -298,8 +298,7 @@ int CBuiltins::Execute(const CStdString& execString)
         && (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
             || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
     {
-
-      CGUIWindowLoginScreen::LoadProfile(index);
+      CApplicationMessenger::Get().LoadProfile(index);
     }
   }
   else if (execute.Equals("mastermode"))
@@ -1244,7 +1243,8 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("system.logoff"))
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
+    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ||
+        !g_settings.UsingLoginScreen())
       return -1;
 
     g_application.StopPlaying();

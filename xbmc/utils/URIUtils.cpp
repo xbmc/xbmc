@@ -1072,3 +1072,47 @@ std::string URIUtils::resolvePath(const std::string &path)
 
   return realPath;
 }
+
+bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
+{
+  if (strFilename.empty())
+    return false;
+  
+  CURL url(strFilename);
+  // if this is a stack:// URL we need to work with its filename
+  if (URIUtils::IsStack(strFilename))
+  {
+    vector<CStdString> files;
+    if (!CStackDirectory::GetPaths(strFilename, files))
+      return false;
+
+    for (vector<CStdString>::iterator file = files.begin(); file != files.end(); file++)
+    {
+      std::string filePath = *file;
+      UpdateUrlEncoding(filePath);
+      *file = filePath;
+    }
+
+    CStdString stackPath;
+    if (!CStackDirectory::ConstructStackPath(files, stackPath))
+      return false;
+
+    url.Parse(stackPath);
+  }
+  // if the protocol has an encoded hostname we need to work with its hostname
+  else if (URIUtils::ProtocolHasEncodedHostname(url.GetProtocol()))
+  {
+    std::string hostname = url.GetHostName();
+    UpdateUrlEncoding(hostname);
+    url.SetHostName(hostname);
+  }
+  else
+    return false;
+
+  std::string newFilename = url.Get();
+  if (newFilename == strFilename)
+    return false;
+  
+  strFilename = newFilename;
+  return true;
+}

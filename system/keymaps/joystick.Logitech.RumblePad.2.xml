@@ -71,7 +71,7 @@
       <button id="4">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="5">Rewind</button>
       <button id="6">FastForward</button>
-      <button id="10">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="10">OSD</button>
 
       <hat    id="1" position="left">SkipPrevious</hat>
       <hat    id="1" position="right">SkipNext</hat>

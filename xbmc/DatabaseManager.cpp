@@ -54,6 +54,9 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   if (addonsOnly)
     return;
   CLog::Log(LOGDEBUG, "%s, updating databases...", __FUNCTION__);
+
+  // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
+  //       before CVideoDatabase.
   { CViewDatabase db; UpdateDatabase(db); }
   { CTextureDatabase db; UpdateDatabase(db); }
   { CMusicDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseMusic); }

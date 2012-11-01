@@ -55,13 +55,13 @@ if (newargs.size() > 3)
 File moduleSpec = new File(newargs[0])
 assert moduleSpec.exists() && moduleSpec.isFile(), 'Cannot locate the spec file "' + moduleSpec.getCanonicalPath() + '."'
 
-spec = [ 'module' : Helper.transformSwigXml(new XmlParser().parse(moduleSpec)) ]
+File templateFile = new File(newargs[1])
+assert templateFile.exists() && templateFile.isFile(), 'Cannot locate the template file "' + templateFile.getCanonicalPath() + '."'
+
+spec = [ 'module' : Helper.transformSwigXml(new XmlParser().parse(moduleSpec)), 'templateFile' : templateFile ]
 
 if (verbose)
    println XmlUtil.serialize(spec['module'])
-
-File templateFile = new File(newargs[1])
-assert templateFile.exists() && templateFile.isFile(), 'Cannot locate the template file "' + templateFile.getCanonicalPath() + '."'
 
 te = new SimpleTemplateEngine()
 println 'Processing "' + templateFile + '" using the module specification for module "' + moduleSpec + '"'

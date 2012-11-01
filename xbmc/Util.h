@@ -137,8 +137,6 @@ public:
   static CStdString MusicPlaylistsLocation();
   static CStdString VideoPlaylistsLocation();
 
-  static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
-  static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);

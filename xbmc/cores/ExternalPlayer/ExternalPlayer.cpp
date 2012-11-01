@@ -292,7 +292,7 @@ void CExternalPlayer::Process()
   /* don't block external player's access to audio device  */
   if (!CAEFactory::Suspend())
   {
-    CLog::Log(LOGNOTICE, __FUNCTION__, "Failed to suspend AudioEngine before launching external player");
+    CLog::Log(LOGNOTICE,"%s: Failed to suspend AudioEngine before launching external player", __FUNCTION__);
   }
 
 
@@ -361,7 +361,7 @@ void CExternalPlayer::Process()
   /* Resume AE processing of XBMC native audio */
   if (!CAEFactory::Resume())
   {
-    CLog::Log(LOGFATAL, __FUNCTION__, "Failed to restart AudioEngine after return from external player");
+    CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player",__FUNCTION__);
   }
 
   // We don't want to come back to an active screensaver

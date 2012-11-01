@@ -26,8 +26,8 @@
 // These messages are a side effect of the way dialogs work through the
 // main ApplicationMessenger. At some point it would be nice to remove
 // the messenger and have direct (or even drive) communications.
-#define HACK_CUSTOM_ACTION_CLOSING -3
-#define HACK_CUSTOM_ACTION_OPENING -4
+#define HACK_CUSTOM_ACTION_CLOSING -3u
+#define HACK_CUSTOM_ACTION_OPENING -4u
 
 namespace XBMCAddon
 {

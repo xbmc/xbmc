@@ -40,24 +40,13 @@ namespace XFILE
   bool CStackDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
   {
     items.Clear();
-    // format is:
-    // stack://file1 , file2 , file3 , file4
-    // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
-    //CStdString folder, file;
-    //URIUtils::Split(strPath, folder, file);
-    // split files on the single comma
     CStdStringArray files;
-    StringUtils::SplitString(strPath, " , ", files);
-    if (files.empty())
+    if (!GetPaths(strPath, files))
       return false;   // error in path
-    // remove "stack://" from the folder
+
     for (unsigned int i = 0; i < files.size(); i++)
     {
       CStdString file = files[i];
-      if (i == 0)
-        file = file.Mid(8);
-      // replace double comma's with single ones.
-      file.Replace(",,", ",");
       CFileItemPtr item(new CFileItem(file));
       //URIUtils::AddFileToFolder(folder, file, item->GetPath());
       item->SetPath(file);
@@ -183,6 +172,27 @@ namespace XFILE
     URIUtils::AddFileToFolder(folder, file, path);
 
     return path;
+  }
+
+  bool CStackDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
+  {
+    // format is:
+    // stack://file1 , file2 , file3 , file4
+    // filenames with commas are double escaped (ie replaced with ,,), thus the " , " separator used.
+    CStdString path = strPath;
+    // remove stack:// from the beginning
+    path = path.Mid(8);
+    
+    vecPaths.clear();
+    StringUtils::SplitString(path, " , ", vecPaths);
+    if (vecPaths.empty())
+      return false;
+
+    // because " , " is used as a seperator any "," in the real paths are double escaped
+    for (vector<CStdString>::iterator itPath = vecPaths.begin(); itPath != vecPaths.end(); itPath++)
+      itPath->Replace(",,", ",");
+
+    return true;
   }
 
   CStdString CStackDirectory::ConstructStackPath(const CFileItemList &items, const vector<int> &stack)

@@ -58,14 +58,19 @@ In this case you will have to manually compile the latest version.
    # make
    # sudo make install
 
-We currently need a version of taglib that has not been packaged yet. We supply a Makefile in
-lib/taglib to make it easy to install into /usr/local until it is available in apt.
+For >= 12.10
+   # sudo apt-get install libtag1-dev
+
+For <= 12.04
+
+We need a new version of taglib than what is available. We supply a Makefile in
+lib/taglib to make it easy to install into /usr/local.
 
    # make -C lib/taglib
    # sudo make -C lib/taglib install
 
 Unless you are proficient with how linux libraries and versions work, do not
-try to provide it yourself.
+try to provide it yourself, as you will likely mess up for other programs.
 
 --------------------------------------------------------------
 3.2. Use a single command to get all build dependencies

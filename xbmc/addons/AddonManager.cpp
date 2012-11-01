@@ -436,7 +436,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)
   {
-    addon = GetAddonFromDescriptor(cpaddon);
+    addon = GetAddonFromDescriptor(cpaddon, type==ADDON_UNKNOWN?"":TranslateType(type));
     m_cpluff->release_info(m_cp_context, cpaddon);
 
     if (addon && addon.get())
@@ -716,7 +716,8 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStd
   return true;
 }
 
-AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
+AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
+                                           const CStdString& type)
 {
   if (!info)
     return AddonPtr();
@@ -732,7 +733,8 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
   // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
   for (unsigned int i = 0; i < info->num_extensions; ++i)
   {
-    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id))
+    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id) &&
+        (type.empty() || 0 == strcmp(type.c_str(), info->extensions[i].ext_point_id)))
     { // note that Factory takes care of whether or not we have platform support
       return Factory(&info->extensions[i]);
     }

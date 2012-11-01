@@ -168,11 +168,12 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetFirstThumb(const std::string &type)
   return result;
 }
 
-const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
+const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season, const std::string &type) const
 {
   for (vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
   {
-    if (iter->m_type == URL_TYPE_SEASON && iter->m_season == season)
+    if (iter->m_type == URL_TYPE_SEASON && iter->m_season == season &&
+       (type.empty() || type == "thumb" || iter->m_aspect == type))
       return *iter;
   }
 
@@ -184,13 +185,15 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-void CScraperUrl::GetSeasonThumbs(map<int, string> &thumbs) const
+unsigned int CScraperUrl::GetMaxSeasonThumb() const
 {
+  unsigned int maxSeason = 0;
   for (vector<SUrlEntry>::const_iterator iter=m_url.begin();iter != m_url.end();++iter)
   {
-    if (iter->m_type == URL_TYPE_SEASON && thumbs.find(iter->m_season) == thumbs.end())
-      thumbs.insert(make_pair(iter->m_season, GetThumbURL(*iter)));
+    if (iter->m_type == URL_TYPE_SEASON && iter->m_season > 0 && (unsigned int)iter->m_season > maxSeason)
+      maxSeason = iter->m_season;
   }
+  return maxSeason;
 }
 
 bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCurlFile& http, const CStdString& cacheContext)

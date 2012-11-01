@@ -313,7 +313,6 @@ BuildObject(CFileItem&                    item,
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
     std::string thumb, fanart;
-    bool fetched_art(false);
 
     CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.GetPath());
 
@@ -534,7 +533,7 @@ BuildObject(CFileItem&                    item,
 
     // determine the correct artwork for this item
     if (!thumb_loader.IsNull())
-        fetched_art = thumb_loader->FillLibraryArt(item);
+        thumb_loader->FillLibraryArt(item);
 
     // finally apply the found artwork
     thumb = item.GetArt("thumb");
