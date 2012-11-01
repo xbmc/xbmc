@@ -145,5 +145,5 @@ public:
 
 protected:
   XBNativeDisplayType  m_nativeDisplay;
-  XBNativeWindowType   m_nativeWindow;
+  mutable XBNativeWindowType   m_nativeWindow;
 };
