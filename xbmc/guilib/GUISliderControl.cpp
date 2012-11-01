@@ -25,8 +25,8 @@
 #include "GUIWindowManager.h"
 
 static const SliderAction actions[] = {
-  {"seek",    "PlayerControl(SeekPercentage(%2d))", PLAYER_PROGRESS, false},
-  {"volume",  "SetVolume(%2d)",                     PLAYER_VOLUME,   true}
+  {"seek",    "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS, false},
+  {"volume",  "SetVolume(%2f)",                     PLAYER_VOLUME,   true}
  };
 
 CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
@@ -246,8 +246,8 @@ void CGUISliderControl::Move(int iNumSteps)
 
 void CGUISliderControl::SendClick()
 {
-  int percent = MathUtils::round_int(100*GetProportion());
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), percent);
+  float percent = 100*GetProportion();
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(percent));
   if (m_action && (!m_dragging || m_action->fireOnDrag))
   {
     CStdString action;
