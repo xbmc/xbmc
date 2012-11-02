@@ -339,7 +339,7 @@ protected:
   bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
 
 
-  void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true);
+  void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true, bool sync = true);
 
   void HandleMessages();
   void HandlePlaySpeed();
@@ -393,8 +393,10 @@ protected:
   int m_playSpeed;
   struct SSpeedState
   {
-    double lastpts;  // holds last display pts during ff/rw operations
-    double lasttime;
+    double  lastpts;  // holds last display pts during ff/rw operations
+    int64_t lasttime;
+    int lastseekpts;
+    double  lastabstime;
   } m_SpeedState;
 
   int m_errorCount;

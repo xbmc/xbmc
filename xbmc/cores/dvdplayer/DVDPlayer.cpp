@@ -593,6 +593,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
     m_State.Clear();
+    memset(&m_SpeedState, 0, sizeof(m_SpeedState));
     m_UpdateApplication = 0;
     m_offset_pts = 0;
     m_CurrentAudio.originaldts = DVD_NOPTS_VALUE;
@@ -1797,11 +1798,13 @@ void CDVDPlayer::HandlePlaySpeed()
     }
     else if (m_CurrentVideo.id >= 0
           &&  (m_CurrentVideo.inited == true || GetPlaySpeed() < 0) // allow rewind at end of file
-          &&  m_SpeedState.lastpts  != m_dvdPlayerVideo->GetCurrentPts()
+          &&  (m_SpeedState.lastpts  != m_dvdPlayerVideo->GetCurrentPts() || fabs(m_SpeedState.lastabstime - CDVDClock::GetAbsoluteClock()) > DVD_MSEC_TO_TIME(200))
+          &&  (m_dvdPlayerVideo->GetCurrentPts() != DVD_NOPTS_VALUE)
           &&  m_SpeedState.lasttime != GetTime())
     {
       m_SpeedState.lastpts  = m_dvdPlayerVideo->GetCurrentPts();
       m_SpeedState.lasttime = (double) GetTime();
+      m_SpeedState.lastabstime = CDVDClock::GetAbsoluteClock();
       // check how much off clock video is when ff/rw:ing
       // a problem here is that seeking isn't very accurate
       // and since the clock will be resynced after seek
@@ -1818,9 +1821,15 @@ void CDVDPlayer::HandlePlaySpeed()
 
       if(error > DVD_MSEC_TO_TIME(1000))
       {
-        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
-        int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 500000.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
-        m_messenger.Put(new CDVDMsgPlayerSeek((int) iTime, (GetPlaySpeed() < 0), true, false, false, true));
+        error  = (int)DVD_TIME_TO_MSEC(m_clock.GetClock()) - m_SpeedState.lastseekpts;
+
+        if(abs(error) > 1000)
+        {
+          CLog::Log(LOGDEBUG, "CDVDPlayer::Process - Seeking to catch up");
+          m_SpeedState.lastseekpts = (int)DVD_TIME_TO_MSEC(m_clock.GetClock());
+          int iTime = DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset + 500000.0 * m_playSpeed / DVD_PLAYSPEED_NORMAL);
+          m_messenger.Put(new CDVDMsgPlayerSeek(iTime, (GetPlaySpeed() < 0), true, false, false, true, false));
+        }
       }
     }
   }
@@ -2292,7 +2301,7 @@ void CDVDPlayer::HandleMessages()
           else
             m_StateInput.dts = start;
 
-          FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate());
+          FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate(), msg.GetSync());
         }
         else
           CLog::Log(LOGWARNING, "error while seeking");
@@ -2428,9 +2437,10 @@ void CDVDPlayer::HandleMessages()
           double offset;
           offset  = CDVDClock::GetAbsoluteClock() - m_State.timestamp;
           offset *= m_playSpeed / DVD_PLAYSPEED_NORMAL;
+          offset  = DVD_TIME_TO_MSEC(offset);
           if(offset >  1000) offset =  1000;
           if(offset < -1000) offset = -1000;
-          m_State.time     += DVD_TIME_TO_MSEC(offset);
+          m_State.time     += offset;
           m_State.timestamp =  CDVDClock::GetAbsoluteClock();
         }
 
@@ -2446,7 +2456,8 @@ void CDVDPlayer::HandleMessages()
         // do a seek after rewind, clock is not in sync with current pts
         if (m_playSpeed < 0 && speed >= 0)
         {
-          m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+          int64_t iTime = (int64_t)DVD_TIME_TO_MSEC(m_clock.GetClock() + m_State.time_offset);
+          m_messenger.Put(new CDVDMsgPlayerSeek(iTime, true, true, false, false, true));
         }
 
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
@@ -3420,7 +3431,7 @@ void CDVDPlayer::UpdateClockMaster()
   }
 }
 
-void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
+void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate, bool sync)
 {
   double startpts;
   if(accurate && !m_omxplayer_mode)
@@ -3432,19 +3443,23 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
   if(startpts != DVD_NOPTS_VALUE)
     startpts -= m_offset_pts;
 
-  m_CurrentAudio.inited      = false;
+  if (sync)
+  {
+    m_CurrentAudio.inited      = false;
+    m_CurrentVideo.inited      = false;
+    m_CurrentSubtitle.inited   = false;
+    m_CurrentTeletext.inited   = false;
+  }
+
   m_CurrentAudio.dts         = DVD_NOPTS_VALUE;
   m_CurrentAudio.startpts    = startpts;
 
-  m_CurrentVideo.inited      = false;
   m_CurrentVideo.dts         = DVD_NOPTS_VALUE;
   m_CurrentVideo.startpts    = startpts;
 
-  m_CurrentSubtitle.inited   = false;
   m_CurrentSubtitle.dts      = DVD_NOPTS_VALUE;
   m_CurrentSubtitle.startpts = startpts;
 
-  m_CurrentTeletext.inited   = false;
   m_CurrentTeletext.dts      = DVD_NOPTS_VALUE;
   m_CurrentTeletext.startpts = startpts;
 
@@ -3488,7 +3503,7 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
       m_CurrentTeletext.started = false;
     }
 
-    if(pts != DVD_NOPTS_VALUE)
+    if(pts != DVD_NOPTS_VALUE && sync)
       m_clock.Discontinuity(pts);
     UpdatePlayState(0);
 
