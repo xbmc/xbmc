@@ -48,7 +48,10 @@ namespace XBMCAddon
 
       // now that we're done, register hook me into the system
       if (languageHook)
+      {
+        DelayedCallGuard dc(languageHook);
         languageHook->registerPlayerCallback(this);
+      }
     }
 
     Player::~Player()
@@ -58,7 +61,7 @@ namespace XBMCAddon
       // we're shutting down so unregister me.
       if (languageHook)
       {
-        DelayedCallGuard dc;
+        DelayedCallGuard dc(languageHook);
         languageHook->unregisterPlayerCallback(this);
       }
     }
@@ -66,6 +69,7 @@ namespace XBMCAddon
     void Player::playStream(const String& item, const xbmcgui::ListItem* plistitem, bool windowed)
     {
       TRACE;
+      DelayedCallGuard dc(languageHook);
       if (!item.empty())
       {
         // set fullscreen or windowed
@@ -95,6 +99,7 @@ namespace XBMCAddon
     void Player::playCurrent(bool windowed)
     {
       TRACE;
+      DelayedCallGuard dc(languageHook);
       // set fullscreen or windowed
       g_settings.m_bStartVideoWindowed = windowed;
 
@@ -110,6 +115,7 @@ namespace XBMCAddon
     void Player::playPlaylist(const PlayList* playlist, bool windowed)
     {
       TRACE;
+      DelayedCallGuard dc(languageHook);
       if (playlist != NULL)
       {
         // set fullscreen or windowed
@@ -142,6 +148,7 @@ namespace XBMCAddon
     void Player::playnext()
     {
       TRACE;
+      DelayedCallGuard dc(languageHook);
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
 
@@ -151,6 +158,7 @@ namespace XBMCAddon
     void Player::playprevious()
     {
       TRACE;
+      DelayedCallGuard dc(languageHook);
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
 
@@ -160,6 +168,7 @@ namespace XBMCAddon
     void Player::playselected(int selected)
     {
       TRACE;
+      DelayedCallGuard dc(languageHook);
       // force a playercore before playing
       g_application.m_eForcedNextPlayer = playerCore;
 
