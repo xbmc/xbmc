@@ -802,6 +802,7 @@ unsigned int CVideoInfoTag::GetDurationFromMinuteString(const std::string &runti
   if (!duration)
   { // failed for some reason, or zero
     duration = strtoul(runtime.c_str(), NULL, 10);
+    CLog::Log(LOGWARNING, "%s <runtime> should be in minutes. Interpreting '%s' as %u minutes", __FUNCTION__, runtime.c_str(), duration);
   }
   return duration*60;
 }
