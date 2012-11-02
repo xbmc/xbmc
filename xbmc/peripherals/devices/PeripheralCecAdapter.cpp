@@ -933,6 +933,8 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_POWER:
+  case CEC_USER_CONTROL_CODE_POWER_TOGGLE_FUNCTION:
+  case CEC_USER_CONTROL_CODE_POWER_OFF_FUNCTION:
     xbmcKey.iButton = XINPUT_IR_REMOTE_POWER;
     PushCecKeypress(xbmcKey);
     break;
@@ -945,6 +947,8 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
     PushCecKeypress(xbmcKey);
     break;
   case CEC_USER_CONTROL_CODE_MUTE:
+  case CEC_USER_CONTROL_CODE_MUTE_FUNCTION:
+  case CEC_USER_CONTROL_CODE_RESTORE_VOLUME_FUNCTION:
     xbmcKey.iButton = XINPUT_IR_REMOTE_MUTE;
     PushCecKeypress(xbmcKey);
     break;
@@ -1089,14 +1093,10 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress &key)
   case CEC_USER_CONTROL_CODE_RECORD_FUNCTION:
   case CEC_USER_CONTROL_CODE_PAUSE_RECORD_FUNCTION:
   case CEC_USER_CONTROL_CODE_STOP_FUNCTION:
-  case CEC_USER_CONTROL_CODE_MUTE_FUNCTION:
-  case CEC_USER_CONTROL_CODE_RESTORE_VOLUME_FUNCTION:
   case CEC_USER_CONTROL_CODE_TUNE_FUNCTION:
   case CEC_USER_CONTROL_CODE_SELECT_MEDIA_FUNCTION:
   case CEC_USER_CONTROL_CODE_SELECT_AV_INPUT_FUNCTION:
   case CEC_USER_CONTROL_CODE_SELECT_AUDIO_INPUT_FUNCTION:
-  case CEC_USER_CONTROL_CODE_POWER_TOGGLE_FUNCTION:
-  case CEC_USER_CONTROL_CODE_POWER_OFF_FUNCTION:
   case CEC_USER_CONTROL_CODE_F5:
   case CEC_USER_CONTROL_CODE_UNKNOWN:
   default:
