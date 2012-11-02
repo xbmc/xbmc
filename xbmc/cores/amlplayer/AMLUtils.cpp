@@ -85,7 +85,7 @@ bool aml_present()
   static int has_aml = -1;
   if (has_aml == -1)
   {
-    if (aml_get_sysfs_int("/sys/class/amhdmitx/amhdmitx0/disp_cap") != -1)
+    if (aml_get_sysfs_int("/sys/class/audiodsp/digital_raw") != -1)
       has_aml = 1;
     else
       has_aml = 0;
