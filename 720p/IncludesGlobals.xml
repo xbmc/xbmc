@@ -98,7 +98,8 @@
 		<value condition="Container.Content(artists)">$INFO[Container.NumItems] $LOCALIZE[133]</value>
 		<value condition="Container.Content(songs)">$INFO[Container.NumItems] $LOCALIZE[134]</value>
 		<value condition="Container.Content(genres)">$INFO[Container.NumItems] $LOCALIZE[135]</value>
-		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>
+		<value condition="Container.Content(photos)">$INFO[Container.NumItems] $LOCALIZE[1213]</value>		
+		<value condition="Window.IsActive(1) + !IsEmpty(Container.SecondTitle)">$INFO[Container.NumItems] $LOCALIZE[31970]</value>
 	</variable>
 	<include name="TopBar">
 		<!-- bg -->

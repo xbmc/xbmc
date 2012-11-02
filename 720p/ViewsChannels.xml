@@ -112,8 +112,85 @@
 			</control>
 		</control>
 	</include>
+	<include name="ChannelDirectoryPlot">
+		<control type="group">
+			<!-- plot -->
+			<control type="textbox">
+				<posx>100</posx>
+				<posy>410</posy>
+				<width>230</width>
+				<height>205</height>
+				<label>$INFO[ListItem.Plot]</label>
+			</control>
+		</control>
+	</include>
+	<include name="ChannelDirectoryIcon">
+		<control type="group">
+			<posx>85</posx>
+			<posy>112</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>256</width>
+				<height>256</height>
+				<include>Shadow</include>
+			</control>
+			<control type="image">
+				<description>Channel Icon</description>
+				<posx>13</posx>
+				<posy>13</posy>
+				<width>230</width>
+				<height>230</height>
+				<fadetime>200</fadetime>
+				<texture background="true" diffuse="mask-square.png">$INFO[Container(74).ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+		</control>		
+	</include>
 	<!-- views -->
-	<!-- top level -->
+	<!-- channel directory -->
+	<include name="ChannelsDirectory">
+		<control type="group" id="777">
+			<visible>Window.IsActive(1) + !IsEmpty(Container.SecondTitle)</visible>
+			<include>FadeDialog</include>
+			<control type="group">
+				<posx>-74</posx>
+			<include>ChannelPlotBG</include>
+			<include>ChannelDirectoryPlot</include>
+			<include>ChannelDirectoryIcon</include>
+			</control>
+			<!-- main list -->
+			<control type="panel" id="74">
+				<viewtype label="ChannelsDirectory">panel</viewtype>
+				<visible>Window.IsActive(1) + !IsEmpty(Container.SecondTitle)</visible>
+				<posy>56</posy>
+				<posx>293</posx>
+				<width>1100</width>
+				<height>645</height>
+				<onup>74</onup>
+				<ondown>74</ondown>
+				<onright>74</onright>
+				<onleft>9100</onleft>
+				<orientation>vertical</orientation>
+				<itemlayout width="196" height="216">
+					<include>ChannelThumb</include>
+					<control type="label">
+						<include>ChannelLabel</include>
+						<textcolor>white</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="196" height="216">
+					<include>ChannelThumb</include>
+					<control type="label">
+						<include>ChannelLabel</include>
+						<textcolor>orangeLight</textcolor>
+					</control>
+					<include>ChannelSelectedBorder</include>
+				</focusedlayout>
+			</control>
+		</control>
+	</include>
+	<!-- top level of any channels section -->
 	<include name="Channels">
 		<control type="group" id="777">
 			<visible>Container.Content(plugins)</visible>

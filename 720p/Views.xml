@@ -4,10 +4,10 @@
 		<control type="group">
 			<include>FadeDialog</include>
 			<include>rightSideSlide</include>
-			<visible>Container.content(secondary)</visible>
+			<visible>Container.content(secondary) | [Window.IsActive(1) + IsEmpty(Container.SecondTitle)]</visible>
 			<control type="group" id="777">
 				<control type="fixedlist" id="40">
-					<visible>Container.content(secondary)</visible>
+					<visible>Container.content(secondary) | [Window.IsActive(1) + IsEmpty(Container.SecondTitle)]</visible>
 					<viewtype label="ListSecondary">list</viewtype>
 					<posy>235</posy>
 					<posx>100</posx>

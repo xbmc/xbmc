@@ -1,92 +1,20 @@
 <?xml version="1.0"?>
 <window id="1">
-	<defaultcontrol>59</defaultcontrol>
-	<views>59</views>
+	<defaultcontrol>777</defaultcontrol>
+	<views>40,74</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<!-- DELETE WHEN DEV IS DONE -->
-		<include>devDummies</include>
-		<!-- -->
-		<include>Background</include>
-		<include>PluginStream</include>
-		<!--><include>PanelStream</include>-->
-		<include>InfoList</include>
-		<control type="group">
-			<posy>9</posy>
-			<include>TopOverlayTitlePos</include>
-			<control type="group">
-				<visible>!IsEmpty(Container.SecondTitle)</visible>
-				<include>TopOverlayFirstTitleSlide</include>
-				<control type="grouplist">
-					<orientation>horizontal</orientation>
-					<itemgap>7</itemgap>
-					<control type="label">
-						<height>32</height>
-						<font>LargeTitleFont</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
-						<width>10</width>
-					</control>
-					<control type="label">
-						<description>First title</description>
-						<include>TopOverlayFirstTitleAreaText</include>
-						<label>$INFO[Container.FirstTitle]</label>
-					</control>
-					<control type="label">
-						<description>Second title</description>
-						<label>: $INFO[Container.SecondTitle]</label>
-						<include>TopOverlaySecondTitleAreaText</include>
-					</control>
-				</control>
-			</control>
-			<control type="group">
-				<visible>IsEmpty(Container.SecondTitle) + !IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleSlide</include>
-				<control type="grouplist">
-					<orientation>horizontal</orientation>
-					<itemgap>7</itemgap>
-					<control type="label">
-						<height>32</height>
-						<font>LargeTitleFont</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
-						<width>10</width>
-					</control>
-					<control type="label">
-						<description>First title</description>
-						<include>TopOverlayFirstTitleAreaText</include>
-						<label>$INFO[Container.FirstTitle]</label>
-					</control>
-				</control>
-			</control>
-			<control type="group">
-				<visible>IsEmpty(Container.FirstTitle) + IsEmpty(Container.SecondTitle)</visible>
-				<include>TopOverlayFirstTitleSlide</include>
-				<control type="grouplist">
-					<orientation>horizontal</orientation>
-					<itemgap>7</itemgap>
-					<control type="label">
-						<height>32</height>
-						<font>LargeTitleFont</font>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
-						<width>10</width>
-					</control>
-					<control type="label">
-						<description>Programs label</description>
-						<include>TopOverlayFirstTitleAreaText</include>
-						<label>$LOCALIZE[0]</label>
-					</control>
-				</control>
-			</control>	
-		</control>
-		<include>Clock</include>
-		<include>OptionsMenu</include>
-		<include>MediaCount</include>
-		<include>MusicNowPlayingIndicators</include>		
+		<!-- bg's (Backgrounds.xml) -->
+		<include>BGGrainy</include>
+		<include>BGFanart</include>
+		<include>BGOverlay</include>
+		<!-- views (Views.xml & ViewsChannels.xml) -->
+		<!-- ListSecondary ID 40 -->
+		<include>ListSecondary</include>
+		<!-- ChannelsDirectory ID 74 -->
+		<include>ChannelsDirectory</include>
+		<!-- top-level ui (IncludesGlobals.xml & Debug.xml) -->
+		<include>TopBar</include>		
 		<include>debugInfos</include>
 	</controls>
 </window>
