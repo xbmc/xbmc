@@ -446,7 +446,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["set"] = m_strSet;
   value["setid"] = m_iSetId;
   value["tag"] = m_tags;
-  value["runtime"] = StringUtils::Format("%i", GetDuration() / 60);
+  value["runtime"] = GetDuration();
   value["file"] = m_strFile;
   value["path"] = m_strPath;
   value["imdbnumber"] = m_strIMDBNumber;
