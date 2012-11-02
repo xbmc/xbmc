@@ -222,7 +222,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       if (movie)
         nDuration = movie->GetDuration();
       if (nDuration > 0)
-        value = StringUtils::SecondsToTimeString(nDuration);
+        value = StringUtils::SecondsToTimeString(nDuration, (nDuration >= 3600) ? TIME_FORMAT_H_MM_SS : TIME_FORMAT_MM_SS);
       else if (item->m_dwSize > 0)
         value = StringUtils::SizeToString(item->m_dwSize);
     }
