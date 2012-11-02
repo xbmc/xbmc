@@ -79,7 +79,6 @@ void CVideoInfoTag::Reset()
   m_iBookmarkId = -1;
   m_iTrack = -1;
   m_fanart.m_xml.clear();
-  m_strRuntime.clear();
   m_duration = 0;
   m_lastPlayed.Reset();
   m_showLink.clear();
@@ -296,7 +295,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strSet;
     ar << m_iSetId;
     ar << m_tags;
-    ar << m_strRuntime;
     ar << m_duration;
     ar << m_strFile;
     ar << m_strPath;
@@ -375,7 +373,6 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strSet;
     ar >> m_iSetId;
     ar >> m_tags;
-    ar >> m_strRuntime;
     ar >> m_duration;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -590,7 +587,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
   XMLUtils::GetString(movie, "plot", m_strPlot);
   XMLUtils::GetString(movie, "tagline", m_strTagLine);
-  XMLUtils::GetString(movie, "runtime", m_strRuntime);
+  CStdString runtime;
+  if (XMLUtils::GetString(movie, "runtime", runtime))
+    m_duration = GetDurationFromMinuteString(runtime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::GetInt(movie, "playcount", m_playCount);
   XMLUtils::GetDate(movie, "lastplayed", m_lastPlayed);
@@ -794,10 +793,7 @@ unsigned int CVideoInfoTag::GetDuration() const
   if (m_streamDetails.GetVideoDuration() > 0)
     return m_streamDetails.GetVideoDuration();
 
-  if (m_duration)
-    return m_duration;
-
-  return GetDurationFromMinuteString(m_strRuntime);
+  return m_duration;
 }
 
 unsigned int CVideoInfoTag::GetDurationFromMinuteString(const std::string &runtime)

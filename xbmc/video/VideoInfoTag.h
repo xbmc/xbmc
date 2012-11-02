@@ -108,7 +108,6 @@ public:
   CStdString m_strSet;
   int m_iSetId;
   std::vector<std::string> m_tags;
-  CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;
   CStdString m_strIMDBNumber;
