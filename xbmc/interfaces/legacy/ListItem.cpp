@@ -232,8 +232,11 @@ namespace XBMCAddon
       }
 
       if (item->HasVideoInfoTag())
-        return item->GetVideoInfoTag()->m_strRuntime;
-
+      {
+        std::ostringstream oss;
+        oss << item->GetVideoInfoTag()->GetDuration() / 60;
+        return oss.str();
+      }
       return "0";
     }
 

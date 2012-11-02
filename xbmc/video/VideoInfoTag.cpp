@@ -134,7 +134,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
-  XMLUtils::SetString(movie, "runtime", m_strRuntime);
+  XMLUtils::SetInt(movie, "runtime", GetDuration() / 60);
   if (!m_strPictureURL.m_xml.empty())
   {
     CXBMCTinyXML doc;
@@ -446,7 +446,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["set"] = m_strSet;
   value["setid"] = m_iSetId;
   value["tag"] = m_tags;
-  value["runtime"] = m_strRuntime;
+  value["runtime"] = StringUtils::Format("%i", GetDuration() / 60);
   value["file"] = m_strFile;
   value["path"] = m_strPath;
   value["imdbnumber"] = m_strIMDBNumber;
@@ -500,7 +500,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldStudio] = m_studio;
   sortable[FieldTrailer] = m_strTrailer;
   sortable[FieldSet] = m_strSet;
-  sortable[FieldTime] = m_strRuntime;
+  sortable[FieldTime] = GetDuration();
   sortable[FieldFilename] = m_strFile;
   sortable[FieldMPAA] = m_strMPAARating;
   sortable[FieldPath] = m_strFileNameAndPath;
@@ -524,8 +524,6 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldTrackNumber] = m_iTrack;
   sortable[FieldTag] = m_tags;
 
-  if (m_streamDetails.HasItems() && m_streamDetails.GetVideoDuration() > 0)
-    sortable[FieldTime] = m_streamDetails.GetVideoDuration();
   sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight();
   sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect();
   sortable[FieldVideoCodec] = m_streamDetails.GetVideoCodec();
@@ -786,4 +784,17 @@ bool CVideoInfoTag::IsEmpty() const
   return (m_strTitle.IsEmpty() &&
           m_strFile.IsEmpty() &&
           m_strPath.IsEmpty());
+}
+
+unsigned int CVideoInfoTag::GetDuration() const
+{
+  if (m_streamDetails.GetVideoDuration() > 0)
+    return m_streamDetails.GetVideoDuration();
+
+  unsigned int duration = (unsigned int)str2uint64(runtime);
+  if (!duration)
+  { // failed for some reason, or zero
+    duration = strtoul(runtime.c_str(), NULL, 10);
+  }
+  return duration*60;
 }

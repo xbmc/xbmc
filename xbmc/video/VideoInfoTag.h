@@ -77,6 +77,11 @@ public:
     return m_strFileNameAndPath;
   };
 
+  /*! \brief retrieve the duration in seconds.
+   Prefers the duration from stream details if available.
+   */
+  unsigned int GetDuration() const;
+
   CStdString m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   std::vector<std::string> m_director;
