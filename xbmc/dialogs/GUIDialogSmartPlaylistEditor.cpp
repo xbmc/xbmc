@@ -407,8 +407,8 @@ void CGUIDialogSmartPlaylistEditor::OnInitWindow()
 void CGUIDialogSmartPlaylistEditor::OnDeinitWindow(int nextWindowID)
 {
   CGUIDialog::OnDeinitWindow(nextWindowID);
-  CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);
-  OnMessage(msg);
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_RULE_LIST);
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_TYPE);
   m_ruleLabels->Clear();
 }
 
