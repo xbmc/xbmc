@@ -1810,7 +1810,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey2</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label2</info>
+							<info>ListItem.Date</info>
 						</control>
 						<control type="label">
 							<posx>310</posx>
@@ -1929,7 +1929,7 @@
 							<aligny>center</aligny>
 							<textcolor>white</textcolor>
 							<selectedcolor>selected</selectedcolor>
-							<info>ListItem.Label2</info>
+							<info>ListItem.Date</info>
 						</control>
 						<control type="label">
 							<posx>310</posx>

@@ -1586,7 +1586,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CURL plugin(m_vecItems->Get(itemNumber)->GetPath());
       ADDON::AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon, ADDON_PLUGIN))
+      if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon))
         if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
           Refresh();
       return true;

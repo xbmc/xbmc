@@ -45,7 +45,7 @@ namespace XBMCAddon
     public:
       inline File(const String& filepath, const char* mode = NULL) : AddonClass("File"), file(new XFILE::CFile())
       {
-        DelayedCallGuard dg;
+        DelayedCallGuard dg(languageHook);
         if (mode && strncmp(mode, "w", 1) == 0)
           file->OpenForWrite(filepath,true);
         else
@@ -88,7 +88,7 @@ namespace XBMCAddon
        *  s = f.size()
        *  f.close()
        */
-      inline long long size() { DelayedCallGuard dg; return file->GetLength(); }
+      inline long long size() { DelayedCallGuard dg(languageHook); return file->GetLength(); }
 
       /**
        * seek()
@@ -100,7 +100,7 @@ namespace XBMCAddon
        *  result = f.seek(8129, 0)
        *  f.close()
        */
-      inline long long seek(long long seekBytes, int iWhence) { DelayedCallGuard dg; return file->Seek(seekBytes,iWhence); }
+      inline long long seek(long long seekBytes, int iWhence) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
 
       /**
        * close()
@@ -109,7 +109,7 @@ namespace XBMCAddon
        *  f = xbmcvfs.File(file)
        *  f.close()
        */
-      inline void close() { DelayedCallGuard dg; file->Close(); }
+      inline void close() { DelayedCallGuard dg(languageHook); file->Close(); }
 
 #ifndef SWIG
       inline const XFILE::CFile* getFile() const { return file; }
