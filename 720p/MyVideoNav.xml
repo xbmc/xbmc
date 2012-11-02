@@ -3,6 +3,7 @@
 	<defaultcontrol>777</defaultcontrol>
 	<views>40,50,60,61,70,71</views>
 	<allowoverlay>yes</allowoverlay>
+	<onunload>SetFocus(777)</onunload>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>

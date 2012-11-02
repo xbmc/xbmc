@@ -79,7 +79,7 @@
 		</control>
 	</include>
 	<!-- Library -->
-	<include name="MusicLibrary">
+	<include name="LibraryMusic">
 		<control type="group">
 			<visible>!Container.Content(addons) + !Container.Content(plugins) + !Container.Content(secondary)</visible>
 			<include>FadeDialog</include>
@@ -96,7 +96,7 @@
 					<onup>52</onup>
 					<ondown>52</ondown>
 					<onright>52</onright>
-					<onleft>9100</onleft>
+					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<itemlayout width="190" height="216">
 						<include>MusicThumbCard</include>
@@ -223,13 +223,13 @@
 					</control>
 				</control>
 				<!-- list -->
-				<control type="panel" id="52">
+				<control type="panel" id="53">
 					<visible>Container.Content(Albums)</visible>
 					<viewtype label="MusicLibraryAlbums">panel</viewtype>
-					<onup>52</onup>
-					<ondown>52</ondown>
-					<onright>52</onright>
-					<onleft>9100</onleft>
+					<onup>53</onup>
+					<ondown>53</ondown>
+					<onright>53</onright>
+					<onleft>1300</onleft>
 					<orientation>vertical</orientation>
 					<posx>832</posx>
 					<posy>57</posy>
@@ -346,7 +346,7 @@
 					</control>
 				</control>
 				<!-- list -->
-				<control type="list" id="52">
+				<control type="list" id="54">
 					<visible>Container.Content(Songs)</visible>
 					<viewtype label="MusicLibraryAlbumTracks">list</viewtype>
 					<posx>790</posx>
@@ -355,9 +355,9 @@
 					<height>450</height>
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
-					<onleft>9100</onleft>
-					<onup>52</onup>
-					<ondown>52</ondown>
+					<onleft>1300</onleft>
+					<onup>54</onup>
+					<ondown>54</ondown>
 					<itemlayout height="49" width="490">
 						<control type="image">
 							<posx>20</posx>
@@ -368,7 +368,7 @@
 						</control>
 						<control type="label">
 							<posx>35</posx>
-							<width>454</width>
+							<width>434</width>
 							<height>50</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -378,7 +378,7 @@
 						</control>
 						<control type="label">
 							<posx>470</posx>
-							<width>100</width>
+							<width>120</width>
 							<height>50</height>
 							<align>right</align>
 							<aligny>center</aligny>
@@ -399,7 +399,7 @@
 						</control>
 						<control type="label">
 							<posx>35</posx>
-							<width>454</width>
+							<width>434</width>
 							<height>50</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -412,7 +412,7 @@
 						</control>
 						<control type="label">
 							<posx>470</posx>
-							<width>100</width>
+							<width>120</width>
 							<height>50</height>
 							<align>right</align>
 							<aligny>center</aligny>

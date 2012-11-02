@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <window id="501">
 	<defaultcontrol>777</defaultcontrol>
-	<views>40,70,73,52</views>
+	<views>40,70,73,52,53,54</views>
 	<allowoverlay>yes</allowoverlay>
+	<onunload>SetFocus(777)</onunload>
 	<controls>
 		<!-- bg's (Backgrounds.xml) -->
 		<include>BGGrainy</include>
