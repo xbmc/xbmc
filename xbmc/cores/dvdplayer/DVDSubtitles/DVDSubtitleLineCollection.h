@@ -55,7 +55,6 @@ private:
   ListElement* m_pTail;
 
   int m_iSize;
-  double m_fLastPts;
   //CRITICAL_SECTION m_critSection;
 };
 

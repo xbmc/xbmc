@@ -29,7 +29,6 @@ CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()
   m_pTail = NULL;
 
   m_iSize = 0;
-  m_fLastPts = DVD_NOPTS_VALUE;
 }
 
 CDVDSubtitleLineCollection::~CDVDSubtitleLineCollection()
@@ -80,9 +79,6 @@ CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 {
   CDVDOverlay* pOverlay = NULL;
 
-  if (iPts + DVD_SEC_TO_TIME(1) < m_fLastPts)
-    Reset();
-
   if (m_pCurrent)
   {
     while (m_pCurrent && m_pCurrent->pOverlay->iPTSStopTime < iPts)
@@ -96,7 +92,6 @@ CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 
       // advance to the next overlay
       m_pCurrent = m_pCurrent->pNext;
-      m_fLastPts = iPts;
     }
   }
   return pOverlay;
@@ -124,5 +119,4 @@ void CDVDSubtitleLineCollection::Clear()
   m_pHead    = NULL;
   m_pCurrent = NULL;
   m_iSize    = 0;
-  m_fLastPts = DVD_NOPTS_VALUE;
 }
