@@ -95,11 +95,11 @@ bool aml_present()
 
 void aml_cpufreq_limit(bool limit)
 {
-  static int audiotrack_cputype = -1;
-  if (audiotrack_cputype == -1)
+  static int aml_cputype = -1;
+  if (aml_cputype == -1)
   {
     // defualt to m1 SoC
-    audiotrack_cputype = 1;
+    aml_cputype = 1;
 
     FILE *cpuinfo_fd = fopen("/proc/cpuinfo", "r");
     if (cpuinfo_fd)
@@ -110,7 +110,7 @@ void aml_cpufreq_limit(bool limit)
         std::string stdbuffer(buffer);
         if (stdbuffer.find("MESON-M3") != std::string::npos)
         {
-          audiotrack_cputype = 3;
+          aml_cputype = 3;
           break;
         }
       }
@@ -121,7 +121,7 @@ void aml_cpufreq_limit(bool limit)
   // or risk hw audio dropouts. AML code does a 2X scaling based off
   // /sys/class/audiodsp/codec_mips but tests show that this is
   // seems risky so we just clamp to 600Mhz to be safe.
-  if (audiotrack_cputype == 3)
+  if (aml_cputype == 3)
     return;
 
   int cpufreq = 300000;
