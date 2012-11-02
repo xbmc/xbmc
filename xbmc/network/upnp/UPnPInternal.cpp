@@ -664,7 +664,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     if(resource)
     {
       if (resource->m_Duration)
-        tag.m_strRuntime.Format("%d",resource->m_Duration/60);
+        tag.m_duration = resource->m_Duration;
       if (object.m_MiscInfo.last_position > 0 )
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;

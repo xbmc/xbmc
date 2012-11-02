@@ -80,6 +80,7 @@ void CVideoInfoTag::Reset()
   m_iTrack = -1;
   m_fanart.m_xml.clear();
   m_strRuntime.clear();
+  m_duration = 0;
   m_lastPlayed.Reset();
   m_showLink.clear();
   m_streamDetails.Reset();
@@ -296,6 +297,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iSetId;
     ar << m_tags;
     ar << m_strRuntime;
+    ar << m_duration;
     ar << m_strFile;
     ar << m_strPath;
     ar << m_strIMDBNumber;
@@ -374,6 +376,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iSetId;
     ar >> m_tags;
     ar >> m_strRuntime;
+    ar >> m_duration;
     ar >> m_strFile;
     ar >> m_strPath;
     ar >> m_strIMDBNumber;
@@ -791,6 +794,14 @@ unsigned int CVideoInfoTag::GetDuration() const
   if (m_streamDetails.GetVideoDuration() > 0)
     return m_streamDetails.GetVideoDuration();
 
+  if (m_duration)
+    return m_duration;
+
+  return GetDurationFromMinuteString(m_strRuntime);
+}
+
+unsigned int CVideoInfoTag::GetDurationFromMinuteString(const std::string &runtime)
+{
   unsigned int duration = (unsigned int)str2uint64(runtime);
   if (!duration)
   { // failed for some reason, or zero
