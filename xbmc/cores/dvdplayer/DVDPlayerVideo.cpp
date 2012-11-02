@@ -1470,7 +1470,7 @@ double CDVDPlayerVideo::GetCurrentPts()
 
   if( m_stalled )
     iRenderPts = DVD_NOPTS_VALUE;
-  else
+  else if ( m_speed == DVD_PLAYSPEED_NORMAL)
     iRenderPts = iRenderPts - max(0.0, iSleepTime);
 
   return iRenderPts;
@@ -1569,6 +1569,8 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
   bool   bNewFrame;
   int    iSkippedDeint = 0;
   int    iBufferLevel;
+
+  m_droppingStats.m_lastPts = pts;
 
   // get decoder stats
   if (!m_pVideoCodec->GetCodecStats(iDecoderPts, iSkippedDeint, interlaced))
