@@ -30,7 +30,7 @@ public:
   virtual bool  CheckCompatibility();
   virtual void  Initialize();
   virtual void  Destroy();
-  virtual int   GetQuirks() { return EGL_QUIRK_NEED_WINDOW_FOR_RES; };
+  virtual int   GetQuirks() { return EGL_QUIRK_NEED_WINDOW_FOR_RES | EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE; };
 
   virtual bool  CreateNativeDisplay();
   virtual bool  CreateNativeWindow();

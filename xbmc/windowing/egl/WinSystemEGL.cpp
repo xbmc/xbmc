@@ -266,6 +266,11 @@ bool CWinSystemEGL::DestroyWindow()
   if (m_surface != EGL_NO_SURFACE)
     m_egl->DestroySurface(m_surface, m_display);
 
+  int quirks;
+  m_egl->GetQuirks(&quirks);
+  if (quirks & EGL_QUIRK_DESTROY_NATIVE_WINDOW_WITH_SURFACE)
+    m_egl->DestroyNativeWindow();
+
   m_surface = EGL_NO_SURFACE;
   m_bWindowCreated = false;
   return true;
