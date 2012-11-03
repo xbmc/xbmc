@@ -8417,6 +8417,9 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         }
       }
 
+      // tvshow paths can be multipaths, and writing to a multipath is indeterminate.
+      if (URIUtils::IsMultiPath(tvshow.m_strPath))
+        tvshow.m_strPath = CMultiPathDirectory::GetFirstPath(tvshow.m_strPath);
 
       CFileItem item(tvshow.m_strPath, true);
       if (singleFiles && CUtil::SupportsWriteFileOperations(tvshow.m_strPath))
