@@ -250,6 +250,7 @@
 				<posy>95r</posy>
 				<visible>!VideoPlayer.Content(LiveTV) | [VideoPlayer.Content(LiveTV) + VideoPlayer.HasEpg]</visible>
 				<control type="label" id="1">
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>100</width>
@@ -258,6 +259,17 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<label>$INFO[Player.Time(hh:mm:ss)]</label>
+				</control>
+				<control type="label" id="1">
+					<visible>VideoPlayer.Content(LiveTV)</visible>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>100</width>
+					<height>40</height>
+					<font>font13</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[Player.StartTime(hh:mm:ss)]</label>
 				</control>
 				<control type="progress" id="1">
 					<description>ProgressbarCache</description>
@@ -277,6 +289,7 @@
 					<info>Player.Progress</info>
 				</control>
 				<control type="label" id="1">
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 					<posx>920</posx>
 					<posy>0</posy>
 					<width>100</width>
@@ -285,6 +298,17 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<label>$INFO[Player.Duration(hh:mm:ss)]</label>
+				</control>
+				<control type="label" id="1">
+					<visible>VideoPlayer.Content(LiveTV)</visible>
+					<posx>920</posx>
+					<posy>0</posy>
+					<width>100</width>
+					<height>40</height>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$INFO[Player.FinishTime(hh:mm:ss)]</label>
 				</control>
 			</control>
 		</control>
