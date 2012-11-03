@@ -530,7 +530,7 @@ BuildObject(CFileItem&                    item,
 
     // determine the correct artwork for this item
     if (!thumb_loader.IsNull())
-        thumb_loader->FillLibraryArt(item);
+        thumb_loader->LoadItem(&item);
 
     // finally apply the found artwork
     thumb = item.GetArt("thumb");
