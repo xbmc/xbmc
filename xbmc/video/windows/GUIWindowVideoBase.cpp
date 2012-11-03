@@ -2072,7 +2072,8 @@ bool CGUIWindowVideoBase::OnUnAssignContent(const CStdString &path, int label1, 
   db.Open();
   if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
   {
-    db.RemoveContentForPath(path);
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    db.RemoveContentForPath(path, progress);
     db.Close();
     CUtil::DeleteVideoDatabaseDirectoryCache();
     return true;
