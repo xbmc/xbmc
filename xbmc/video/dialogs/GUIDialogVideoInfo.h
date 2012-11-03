@@ -43,6 +43,7 @@ public:
 
   static std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
 protected:
+  virtual void OnInitWindow();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
 

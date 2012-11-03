@@ -90,39 +90,6 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_WINDOW_INIT:
-    {
-      m_bRefresh = false;
-      m_bRefreshAll = true;
-      m_hasUpdatedThumb = false;
-
-      CGUIDialog::OnMessage(message);
-      m_bViewReview = true;
-
-      CVideoDatabase database;
-      ADDON::ScraperPtr scraper;
-
-      if(database.Open())
-      {
-        scraper = database.GetScraperForPath(m_movieItem->GetVideoInfoTag()->GetPath());
-        database.Close();
-      }
-
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx") && scraper);
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
-
-      VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
-      if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
-        CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
-      else
-        CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
-
-      Update();
-      return true;
-    }
-    break;
-
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -220,6 +187,36 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogVideoInfo::OnInitWindow()
+{
+  m_bRefresh = false;
+  m_bRefreshAll = true;
+  m_hasUpdatedThumb = false;
+  m_bViewReview = true;
+
+  CVideoDatabase database;
+  ADDON::ScraperPtr scraper;
+
+  if(database.Open())
+  {
+    scraper = database.GetScraperForPath(m_movieItem->GetVideoInfoTag()->GetPath());
+    database.Close();
+  }
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx") && scraper);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+
+  VIDEODB_CONTENT_TYPE type = (VIDEODB_CONTENT_TYPE)m_movieItem->GetVideoContentType();
+  if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+  else
+    CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
+
+  Update();
+
+  CGUIDialog::OnInitWindow();
 }
 
 bool CGUIDialogVideoInfo::OnAction(const CAction &action)
