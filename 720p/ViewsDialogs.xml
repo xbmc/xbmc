@@ -52,15 +52,97 @@
 		<animation effect="slide" end="0,200" time="300">WindowClose</animation>
 	</include>
 	<include name="FadeDialog">
-		<animation effect="fade" start="100" end="20" time="300" condition="
-			Window.IsActive(selectdialog) | 
-			Window.IsActive(contextmenu) | 
-			Window.IsActive(okdialog) | 
-			Window.IsActive(addonsettings)
-			">Conditional</animation>
+		<animation effect="fade" start="100" end="20" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog) | Window.IsActive(addonsettings) | Window.IsActive(progressdialog)">Conditional</animation>
 	</include>
 	<!-- -->
 	<!-- DIALOG WINDOWS -->
+	<!-- DialogProgress.xml -->
+	<include name="DialogProgress">
+		<control type="group">
+			<posx>340</posx>
+			<posy>260</posy>
+			<control type="group">
+				<control type="image">
+					<description>Background</description>
+					<width>600</width>
+					<height>250</height>
+					<include>DialogBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg</description>
+					<width>600</width>
+					<height>50</height>
+					<include>DialogHeaderBG</include>
+				</control>
+				<control type="image">
+					<description>Title bg bottom border</description>
+					<width>600</width>
+					<include>DialogHeaderBorder</include>
+				</control>
+				<control type="image">
+					<description>Background border</description>
+					<width>602</width>
+					<height>252</height>
+					<include>DialogBorder</include>
+				</control>
+				<control type="image">
+					<description>Dialog arrow</description>
+					<posx>285</posx>
+					<posy>250</posy>
+					<include>DialogArrow</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>22</posy>
+				<control type="label" id="1">
+					<description>Heading</description>
+					<width>600</width>
+					<include>DialogHeading</include>
+				</control>
+				<control type="group">
+					<posy>20</posy>
+					<control type="label" id="2">
+						<description>Line 1</description>
+						<posy>30</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="3">
+						<description>Line 2</description>
+						<posy>50</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="label" id="4">
+						<description>Line 3</description>
+						<posy>70</posy>
+						<posx>20</posx>
+						<width>560</width>
+						<scroll>yes</scroll>
+					</control>
+					<control type="progress" id="20">
+						<description>progress control</description>
+						<posx>11</posx>
+						<posy>95</posy>
+						<width>580</width>
+					</control>
+				</control>
+				<control type="group">
+					<posy>155</posy>
+					<posx>225</posx>
+					<control type="button" id="10">
+						<description>Cancel Button</description>
+						<width>150</width>
+						<label>$LOCALIZE[222]</label>
+						<include>DialogPressButton</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<!-- -->
 	<!-- DialogOk.xml -->
 	<include name="DialogOK">
 		<control type="group">
