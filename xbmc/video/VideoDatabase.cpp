@@ -2365,6 +2365,21 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
         details.GetSubtitleLanguage(i).c_str()));
     }
 
+    // update the runtime information, if empty
+    if (details.GetVideoDuration())
+    {
+      vector< pair<string, int> > tables;
+      tables.push_back(make_pair("movie", VIDEODB_ID_RUNTIME));
+      tables.push_back(make_pair("episode", VIDEODB_ID_EPISODE_RUNTIME));
+      tables.push_back(make_pair("musicvideo", VIDEODB_ID_MUSICVIDEO_RUNTIME));
+      for (vector< pair<string, int> >::iterator i = tables.begin(); i != tables.end(); ++i)
+      {
+        CStdString sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''",
+                                    i->first.c_str(), i->second, details.GetVideoDuration(), idFile, i->second);
+        m_pDS->exec(sql);
+      }
+    }
+
     CommitTransaction();
   }
   catch (...)
