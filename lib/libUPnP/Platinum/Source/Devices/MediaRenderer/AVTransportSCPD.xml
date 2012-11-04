@@ -281,6 +281,26 @@
          </argumentList>
       </action>
       <action>
+         <name>SetNextAVTransportURI</name>
+         <argumentList>
+            <argument>
+               <name>InstanceID</name>
+               <direction>in</direction>
+               <relatedStateVariable>A_ARG_TYPE_InstanceID</relatedStateVariable>
+            </argument>
+            <argument>
+               <name>NextURI</name>
+               <direction>in</direction>
+               <relatedStateVariable>NextAVTransportURI</relatedStateVariable>
+            </argument>
+            <argument>
+               <name>NextURIMetaData</name>
+               <direction>in</direction>
+               <relatedStateVariable>NextAVTransportURIMetaData</relatedStateVariable>
+            </argument>
+         </argumentList>
+      </action>
+      <action>
          <name>SetPlayMode</name>
          <argumentList>
             <argument>

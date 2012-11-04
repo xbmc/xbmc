@@ -176,6 +176,11 @@ public:
         PLT_DeviceDataReference& /* device */,
         void*                    /* userdata */) {}
 
+    virtual void OnSetNextAVTransportURIResult(
+        NPT_Result               /* res */,
+        PLT_DeviceDataReference& /* device */,
+        void*                    /* userdata */) {}
+
     virtual void OnSetPlayModeResult(
         NPT_Result               /* res */,
         PLT_DeviceDataReference& /* device */,

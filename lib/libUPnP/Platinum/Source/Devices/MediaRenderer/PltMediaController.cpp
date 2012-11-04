@@ -882,6 +882,10 @@ PLT_MediaController::OnActionResponse(NPT_Result           res,
         if (NPT_FAILED(FindRenderer(uuid, device))) res = NPT_FAILURE;
         m_Delegate->OnSetAVTransportURIResult(res, device, userdata);
     }
+    else if (actionName.Compare("SetNextAVTransportURI", true) == 0) {
+      if (NPT_FAILED(FindRenderer(uuid, device))) res = NPT_FAILURE;
+      m_Delegate->OnSetNextAVTransportURIResult(res, device, userdata);
+    }
     else if (actionName.Compare("SetPlayMode", true) == 0) {
         if (NPT_FAILED(FindRenderer(uuid, device))) res = NPT_FAILURE;
         m_Delegate->OnSetPlayModeResult(res, device, userdata);
