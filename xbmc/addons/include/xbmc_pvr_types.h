@@ -164,7 +164,6 @@ extern "C" {
     unsigned int iStreamCount;
     struct PVR_STREAM
     {
-      unsigned int iStreamIndex;       /*!< @brief (required) stream index */
       unsigned int iPhysicalId;        /*!< @brief (required) physical index */
       unsigned int iCodecType;         /*!< @brief (required) codec type id */
       unsigned int iCodecId;           /*!< @brief (required) codec id */
