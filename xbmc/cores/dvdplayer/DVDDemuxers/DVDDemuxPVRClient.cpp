@@ -336,10 +336,11 @@ void CDVDDemuxPVRClient::RequestStreams()
 
   PVR_STREAM_PROPERTIES props;
   m_pvrClient->GetStreamProperties(&props);
+  unsigned int i;
 
-  for (unsigned int i = 0; i < props.iStreamCount; ++i)
+  for (i = 0; i < props.iStreamCount; ++i)
   {
-    CDemuxStream *stm = m_streams[props.stream[i].iStreamIndex];
+    CDemuxStream *stm = m_streams[i];
 
     if (props.stream[i].iCodecType == AVMEDIA_TYPE_AUDIO)
     {
@@ -348,9 +349,9 @@ void CDVDDemuxPVRClient::RequestStreams()
       {
         st = dynamic_cast<CDemuxStreamAudioPVRClient*>(stm);
         if (!st || (st->codec != (CodecID)props.stream[i].iCodecId))
-          DisposeStream(props.stream[i].iStreamIndex);
+          DisposeStream(i);
       }
-      if (!m_streams[props.stream[i].iStreamIndex])
+      if (!m_streams[i])
       {
         st = new CDemuxStreamAudioPVRClient(this);
         st->m_parser = m_dllAvCodec.av_parser_init(props.stream[i].iCodecId);
@@ -362,7 +363,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iBlockAlign     = props.stream[i].iBlockAlign;
       st->iBitRate        = props.stream[i].iBitRate;
       st->iBitsPerSample  = props.stream[i].iBitsPerSample;
-      m_streams[props.stream[i].iStreamIndex] = st;
+      m_streams[i] = st;
       st->m_parser_split = true;
     }
     else if (props.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
@@ -375,9 +376,9 @@ void CDVDDemuxPVRClient::RequestStreams()
             || (st->codec != (CodecID)props.stream[i].iCodecId)
             || (st->iWidth != props.stream[i].iWidth)
             || (st->iHeight != props.stream[i].iHeight))
-          DisposeStream(props.stream[i].iStreamIndex);
+          DisposeStream(i);
       }
-      if (!m_streams[props.stream[i].iStreamIndex])
+      if (!m_streams[i])
       {
         st = new CDemuxStreamVideoPVRClient(this);
         st->m_parser = m_dllAvCodec.av_parser_init(props.stream[i].iCodecId);
@@ -389,7 +390,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iHeight         = props.stream[i].iHeight;
       st->iWidth          = props.stream[i].iWidth;
       st->fAspect         = props.stream[i].fAspect;
-      m_streams[props.stream[i].iStreamIndex] = st;
+      m_streams[i] = st;
       st->m_parser_split = true;
     }
     else if (props.stream[i].iCodecId == CODEC_ID_DVB_TELETEXT)
@@ -397,10 +398,10 @@ void CDVDDemuxPVRClient::RequestStreams()
       if (stm)
       {
         if (stm->codec != (CodecID)props.stream[i].iCodecId)
-          DisposeStream(props.stream[i].iStreamIndex);
+          DisposeStream(i);
       }
-      if (!m_streams[props.stream[i].iStreamIndex])
-        m_streams[props.stream[i].iStreamIndex] = new CDemuxStreamTeletext();
+      if (!m_streams[i])
+        m_streams[i] = new CDemuxStreamTeletext();
     }
     else if (props.stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
     {
@@ -409,53 +410,44 @@ void CDVDDemuxPVRClient::RequestStreams()
       {
         st = dynamic_cast<CDemuxStreamSubtitlePVRClient*>(stm);
         if (!st || (st->codec != (CodecID)props.stream[i].iCodecId))
-          DisposeStream(props.stream[i].iStreamIndex);
+          DisposeStream(i);
       }
-      if (!m_streams[props.stream[i].iStreamIndex])
+      if (!m_streams[i])
       {
         st = new CDemuxStreamSubtitlePVRClient(this);
       }
       st->identifier = props.stream[i].iIdentifier;
-      m_streams[props.stream[i].iStreamIndex] = st;
+      m_streams[i] = st;
     }
     else
     {
-      if (!m_streams[props.stream[i].iStreamIndex])
-        m_streams[props.stream[i].iStreamIndex] = new CDemuxStream();
+      if (!m_streams[i])
+        m_streams[i] = new CDemuxStream();
     }
 
-    m_streams[props.stream[i].iStreamIndex]->codec       = (CodecID)props.stream[i].iCodecId;
-    m_streams[props.stream[i].iStreamIndex]->iId         = props.stream[i].iStreamIndex;
-    m_streams[props.stream[i].iStreamIndex]->iPhysicalId = props.stream[i].iPhysicalId;
-    m_streams[props.stream[i].iStreamIndex]->language[0] = props.stream[i].strLanguage[0];
-    m_streams[props.stream[i].iStreamIndex]->language[1] = props.stream[i].strLanguage[1];
-    m_streams[props.stream[i].iStreamIndex]->language[2] = props.stream[i].strLanguage[2];
-    m_streams[props.stream[i].iStreamIndex]->language[3] = props.stream[i].strLanguage[3];
+    m_streams[i]->codec       = (CodecID)props.stream[i].iCodecId;
+    m_streams[i]->iId         = i;
+    m_streams[i]->iPhysicalId = props.stream[i].iPhysicalId;
+    m_streams[i]->language[0] = props.stream[i].strLanguage[0];
+    m_streams[i]->language[1] = props.stream[i].strLanguage[1];
+    m_streams[i]->language[2] = props.stream[i].strLanguage[2];
+    m_streams[i]->language[3] = props.stream[i].strLanguage[3];
 
     CLog::Log(LOGDEBUG,"CDVDDemuxPVRClient::RequestStreams(): added/updated stream %d:%d with codec_id %d",
-        m_streams[props.stream[i].iStreamIndex]->iId,
-        m_streams[props.stream[i].iStreamIndex]->iPhysicalId,
-        m_streams[props.stream[i].iStreamIndex]->codec);
+        m_streams[i]->iId,
+        m_streams[i]->iPhysicalId,
+        m_streams[i]->codec);
   }
   // check if we need to dispose any streams no longer in props
-  for (unsigned int i = 0; i < MAX_STREAMS; i++)
+  for (unsigned int j = i; j < MAX_STREAMS; j++)
   {
-    if (m_streams[i])
+    if (m_streams[j])
     {
-      bool found(false);
-      for (int j = 0; j < props.iStreamCount; j++)
-      {
-        if (props.stream[j].iStreamIndex == i)
-          found = true;
-      }
-      if (!found)
-      {
-        CLog::Log(LOGDEBUG,"CDVDDemuxPVRClient::RequestStreams(): disposed stream %d:%d with codec_id %d",
-            m_streams[i]->iId,
-            m_streams[i]->iPhysicalId,
-            m_streams[i]->codec);
-        DisposeStream(i);
-      }
+      CLog::Log(LOGDEBUG,"CDVDDemuxPVRClient::RequestStreams(): disposed stream %d:%d with codec_id %d",
+          m_streams[j]->iId,
+          m_streams[j]->iPhysicalId,
+          m_streams[j]->codec);
+      DisposeStream(j);
     }
   }
 }
