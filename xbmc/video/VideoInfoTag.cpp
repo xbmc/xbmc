@@ -503,7 +503,8 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldTime] = m_strRuntime;
   sortable[FieldFilename] = m_strFile;
   sortable[FieldMPAA] = m_strMPAARating;
-  sortable[FieldPath] = m_strFileNameAndPath;
+//  sortable[FieldPath] = m_strFileNameAndPath;
+  sortable[FieldPath] = m_basePath;
   sortable[FieldSortTitle] = m_strSortTitle;
   sortable[FieldTvShowStatus] = m_strStatus;
   sortable[FieldProductionCode] = m_strProductionCode;
