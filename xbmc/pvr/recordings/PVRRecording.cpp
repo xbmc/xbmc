@@ -241,13 +241,16 @@ void CPVRRecording::UpdatePath(void)
   {
     CStdString strTitle(m_strTitle);
     CStdString strDatetime(m_recordingTime.GetAsSaveString());
+    CStdString strDirectory;
+    CStdString strChannel;
     strTitle.Replace('/','-');
     strTitle.Remove('?');
 
     if (m_strDirectory != StringUtils::EmptyString)
-      m_strFileNameAndPath.Format("pvr://recordings/%s/%s/%s.pvr", m_strDirectory.c_str(), strDatetime.c_str(), strTitle.c_str());
-    else
-      m_strFileNameAndPath.Format("pvr://recordings/%s/%s.pvr", strDatetime.c_str(), strTitle.c_str());
+      strDirectory.Format("%s/", m_strDirectory.c_str());
+    if (m_strChannelName != StringUtils::EmptyString)
+      strChannel.Format(" (%s)", m_strChannelName.c_str());
+    m_strFileNameAndPath.Format("pvr://recordings/%s%s, TV%s, %s.pvr", strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }
 }
 
