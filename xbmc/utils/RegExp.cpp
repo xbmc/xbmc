@@ -149,6 +149,18 @@ int CRegExp::GetCaptureTotal()
   return c;
 }
 
+CStdString CRegExp::GetReplaceStdString( const char* sReplaceExp )
+{
+  char *temp = CRegExp::GetReplaceString( sReplaceExp );
+  CStdString replace;
+  if( temp )
+  {
+    replace = *temp;
+    free(temp);
+  }
+  return replace;
+}
+
 char* CRegExp::GetReplaceString( const char* sReplaceExp )
 {
   char *src = (char *)sReplaceExp;
