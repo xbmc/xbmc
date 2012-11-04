@@ -2424,9 +2424,18 @@ bool CApplication::OnKey(const CKey& key)
       // if player is in some sort of menu, (ie DVDMENU) map buttons differently
       action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
     }
+    else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    {
+      // check for PVR specific keymaps in FULLSCREEN_VIDEO window
+      action = CButtonTranslator::GetInstance().GetAction(WINDOW_FULLSCREEN_LIVETV, key, false);
+
+      // if no PVR specific action/mapping is found, fall back to default
+      if (action.GetID() == 0)
+        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+    }
     else
     {
-      // no then use the fullscreen window section of keymap.xml to map key->action
+      // in any other case use the fullscreen window section of keymap.xml to map key->action
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
     }
   }
