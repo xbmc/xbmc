@@ -540,6 +540,14 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
         devt.button.button = XBMC_BUTTON_WHEELUP;
         break;
 
+      case BTN_TOUCH:
+        devt.button.button = XBMC_BUTTON_LEFT;
+        break;
+
+      case BTN_TOOL_DOUBLETAP:
+        devt.button.button = XBMC_BUTTON_RIGHT;
+        break;
+
       default:
         CLog::Log(LOGWARNING, "CLinuxInputDevice::KeyEvent: Unknown mouse button code: %d\n", levt.code);
         return false;
