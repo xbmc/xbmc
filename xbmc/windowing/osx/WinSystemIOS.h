@@ -69,10 +69,11 @@ public:
   virtual int GetNumScreens();    
   virtual int GetCurrentScreen();
   
-          bool InitDisplayLink(CVideoSyncIos *syncImpl);
-          void DeinitDisplayLink(void);
-          void OnAppFocusChange(bool focus);
-          bool IsBackgrounded() const { return m_bIsBackgrounded; }
+  bool InitDisplayLink(CVideoSyncIos *syncImpl);
+  void DeinitDisplayLink(void);
+  void OnAppFocusChange(bool focus);
+  bool IsBackgrounded() const { return m_bIsBackgrounded; }
+  void* GetEAGLContextObj();
 
 protected:
   virtual void PresentRenderImpl(bool rendered);
