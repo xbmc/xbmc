@@ -1525,16 +1525,16 @@ void CVideoDatabase::AddCountryToMovie(int idMovie, int idCountry)
 //********************************************************************************************************************************
 bool CVideoDatabase::LoadVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details)
 {
-  if (!GetMovieInfo(strFilenameAndPath, details))
-    return false;
-  if (!GetEpisodeInfo(strFilenameAndPath, details))
-    return false;
-  if (!GetMusicVideoInfo(strFilenameAndPath, details))
-    return false;
-  if (!GetFileInfo(strFilenameAndPath, details))
-    return false;
+  if (GetMovieInfo(strFilenameAndPath, details))
+    return true;
+  if (GetEpisodeInfo(strFilenameAndPath, details))
+    return true;
+  if (GetMusicVideoInfo(strFilenameAndPath, details))
+    return true;
+  if (GetFileInfo(strFilenameAndPath, details))
+    return true;
 
-  return !details.IsEmpty();
+  return false;
 }
 
 bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
