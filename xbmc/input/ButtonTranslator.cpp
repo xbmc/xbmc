@@ -212,8 +212,8 @@ static const ActionMapping actions[] =
         {"volampdown"        , ACTION_VOLAMP_DOWN},
 
         // PVR actions
-        {"channelup"             , ACTION_NEXT_ITEM}, // more self-explanatory alias for "skipnext"
-        {"channeldown"           , ACTION_PREV_ITEM}, // more self-explanatory alias for "skipprevious"
+        {"channelup"             , ACTION_CHANNEL_UP},
+        {"channeldown"           , ACTION_CHANNEL_DOWN},
         {"previouschannelgroup"  , ACTION_PREVIOUS_CHANNELGROUP},
         {"nextchannelgroup"      , ACTION_NEXT_CHANNELGROUP},
 

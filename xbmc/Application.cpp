@@ -2732,6 +2732,13 @@ bool CApplication::OnAction(const CAction &action)
 
   if (IsPlaying())
   {
+    // forward channel switches to the player - he knows what to do
+    if (action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)
+    {
+      m_pPlayer->OnAction(action);
+      return true;
+    }
+
     // pause : pauses current audio song
     if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
     {

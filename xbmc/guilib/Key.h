@@ -273,8 +273,10 @@
 #define ACTION_NEXT_CONTROL           181
 #define ACTION_PREV_CONTROL           182
 #define ACTION_CHANNEL_SWITCH         183
-#define ACTION_NEXT_CHANNELGROUP      184
-#define ACTION_PREVIOUS_CHANNELGROUP  185
+#define ACTION_CHANNEL_UP             184
+#define ACTION_CHANNEL_DOWN           185
+#define ACTION_NEXT_CHANNELGROUP      186
+#define ACTION_PREVIOUS_CHANNELGROUP  187
 
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
