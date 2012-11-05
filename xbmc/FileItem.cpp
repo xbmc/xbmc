@@ -39,7 +39,9 @@
 #include "epg/Epg.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/PVRManager.h"
 #include "utils/Observer.h"
 #include "video/VideoInfoTag.h"
 #include "threads/SingleLock.h"
@@ -2918,6 +2920,15 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 {
   if (IsLabelPreformated())
     return GetLabel();
+
+  if (m_pvrRecordingInfoTag)
+    return m_pvrRecordingInfoTag->m_strTitle;
+  else if (CUtil::IsTVRecording(m_strPath))
+  {
+    CFileItemPtr recording = g_PVRRecordings->GetByPath(m_strPath);
+    if (recording->m_pvrRecordingInfoTag)
+      return recording->m_pvrRecordingInfoTag->m_strTitle;
+  }
 
   CStdString strMovieName = GetBaseMoviePath(bUseFolderNames);
 
