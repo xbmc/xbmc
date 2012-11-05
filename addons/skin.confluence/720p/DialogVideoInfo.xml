@@ -77,10 +77,10 @@
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>4</bordersize>
 						<aspectratio>keep</aspectratio>
-						<visible>!IsEmpty(Listitem.Property(Fanart_Image))</visible>
+						<visible>!IsEmpty(Listitem.Art(fanart))</visible>
 					</control>
 					<control type="group">
-						<visible>IsEmpty(Listitem.Property(Fanart_Image))</visible>
+						<visible>IsEmpty(Listitem.Art(fanart))</visible>
 						<control type="image">
 							<description>No Fanart Back</description>
 							<posx>0</posx>
