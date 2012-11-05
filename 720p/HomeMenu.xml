@@ -209,10 +209,10 @@
 						<visible>[!Skin.HasSetting(HidePictures)]</visible>
 						<onclick>XBMC.ActivateWindow(2)</onclick>
 					</item>
-					<!--<item id="114">
+					<item id="114">
 						<label>Perplexe</label>
-						<onclick>XBMC.ActivateWindow(107)</onclick>
-					</item>-->
+						<onclick>XBMC.ActivateWindow(101)</onclick>
+					</item>
 				</content>
 			</control>
 		</control>		

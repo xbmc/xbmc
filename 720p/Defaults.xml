@@ -33,8 +33,8 @@
 		<focusedcolor>Focused</focusedcolor>
 		<disabledcolor>Disabled</disabledcolor>
 		<selectedcolor>Selected</selectedcolor>
-		<texturefocus border="5">black-bottom-grey.png</texturefocus>
-		<texturenofocus border="5">border-bottom-grey.png</texturenofocus>
+		<texturefocus border="15">black-bottom-grey.png</texturefocus>
+		<texturenofocus border="15">border-bottom-grey.png</texturenofocus>
 	</default>
 	<default type="radiobutton">
 		<description>Default Radiobutton</description>

@@ -146,9 +146,6 @@
 		</control>
 	</include>
 	<!-- animations -->
-	<include name="FadeDialog">
-		<animation effect="fade" start="100" end="20" time="300" condition="Window.IsActive(selectdialog) | Window.IsActive(contextmenu) | Window.IsActive(okdialog)">Conditional</animation>
-	</include>
 	<include name="FadeQuick">
 		<animation effect="fade" start="0" end="100" time="100">Visible</animation>
 		<animation effect="fade" start="100" end="0" time="100">Hidden</animation>

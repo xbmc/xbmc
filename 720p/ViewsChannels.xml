@@ -142,7 +142,7 @@
 				<width>230</width>
 				<height>230</height>
 				<fadetime>200</fadetime>
-				<texture background="true" diffuse="mask-square.png">$INFO[Container(74).ListItem.Thumb]</texture>
+				<texture background="true" diffuse="mask-square.png">$INFO[ListItem.Thumb]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 		</control>		
