@@ -2800,6 +2800,14 @@ CStdString CFileItem::GetTBNFile() const
   if (m_bIsFolder && !IsFileFolder())
     URIUtils::RemoveSlashAtEnd(strFile);
 
+  CLog::Log(LOGDEBUG, "mike: GetTBNFile %s", strFile.c_str());
+  if (IsOpticalMediaFile())
+  {
+      strFile = URIUtils::GetParentPath(URIUtils::GetParentPath(strFile));
+      URIUtils::RemoveSlashAtEnd(strFile);
+      CLog::Log(LOGDEBUG, "mike: GetTBNFile DVD tbn file %s", strFile.c_str());
+  }
+
   if (!strFile.IsEmpty())
   {
     if (m_bIsFolder && !IsFileFolder())

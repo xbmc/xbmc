@@ -8238,11 +8238,6 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         {
           CStdString nfoFile(URIUtils::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
-          if (item.IsOpticalMediaFile())
-          {
-            nfoFile = URIUtils::GetParentFolderURI(nfoFile, true);
-          }
-
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
             if(!xmlDoc.SaveFile(nfoFile))
@@ -8619,7 +8614,13 @@ void CVideoDatabase::ExportActorThumbs(const CStdString &strDir, const CVideoInf
   CStdString strPath(strDir);
   if (singleFiles)
   {
-    strPath = URIUtils::AddFileToFolder(tag.m_strPath, ".actors");
+    strPath = tag.m_strPath;
+    CStdString dirName;
+    CUtil::GetDirectoryName(strPath, dirName);
+    if (dirName.Equals( "VIDEO_TS" ) || dirName.Equals( "BDMV" ) )
+        strPath = URIUtils::GetParentPath(URIUtils::GetParentPath(strPath));
+    CLog::Log(LOGDEBUG, "mike: export actor thumbs '%s' %s %s %s", strPath.c_str(), tag.m_strPath.c_str(), tag.m_basePath.c_str(), dirName.c_str());
+    strPath = URIUtils::AddFileToFolder(strPath, ".actors");
     if (!CDirectory::Exists(strPath))
     {
       CDirectory::Create(strPath);
