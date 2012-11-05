@@ -345,6 +345,9 @@ CHECK_C_SOURCE_COMPILES("
 "
 HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO)
 
+#### default lircdevice
+set(LIRC_DEVICE "/dev/lircd")
+
 #### Deal with some generated files
 if(APPLE)
 	set(ARCH "x86-osx")

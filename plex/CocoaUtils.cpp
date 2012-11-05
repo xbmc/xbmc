@@ -9,7 +9,6 @@
 #include <string>
 
 #include "CocoaUtils.h"
-#include "version.h"
 
 #ifndef __APPLE__
 

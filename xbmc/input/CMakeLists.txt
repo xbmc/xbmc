@@ -1,2 +1,7 @@
+if(UNIX)
+    if(NOT APPLE)
+        add_subdirectory(linux)
+    endif()
+endif()
 find_all_sources(. input_SRCS)
 add_sources(${input_SRCS})

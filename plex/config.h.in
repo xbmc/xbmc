@@ -169,3 +169,5 @@
 /* LINUX SPECIFIC CRAP */
 #cmakedefine HAVE_X11 @HAVE_X11@
 #cmakedefine HAVE_SDL @HAVE_SDL@
+
+#define LIRC_DEVICE "@LIRC_DEVICE@"
