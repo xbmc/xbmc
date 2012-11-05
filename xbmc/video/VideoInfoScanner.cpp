@@ -1550,6 +1550,19 @@ namespace VIDEO
       {
         CFileItem parentDirectory(item->GetLocalMetadataPath(), true);
         nfoFile = GetnfoFile(&parentDirectory, true);
+        if (nfoFile.IsEmpty())
+        {
+          if (bGrabAny)
+            nfoFile = URIUtils::AddFileToFolder(URIUtils::GetParentPath(parentDirectory.GetPath()), "movie.nfo");
+          if (!CFile::Exists(nfoFile) )
+            nfoFile.clear();
+          nfoFile = parentDirectory.GetPath();
+          URIUtils::RemoveSlashAtEnd(nfoFile);
+          nfoFile = URIUtils::ReplaceExtension(nfoFile, ".nfo");
+
+          if (!nfoFile.IsEmpty())
+            return nfoFile;
+        }
       }
     }
     // folders (or stacked dvds) can take any nfo file if there's a unique one
