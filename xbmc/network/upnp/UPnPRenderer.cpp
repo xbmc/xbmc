@@ -18,6 +18,8 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "playlists/PlayList.h"
+#include "GUIUserMessages.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -145,6 +147,11 @@ CUPnPRenderer::SetupServices()
         ",http-get:*:video/x-msvideo:*"
         ",http-get:*:video/x-xvid:*"
         );
+
+    NPT_CHECK_FATAL(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
+    service->SetStateVariable("NextAVTransportURI", "");
+    service->SetStateVariable("NextAVTransportURIMetadata", "");
+
     return NPT_SUCCESS;
 }
 
@@ -228,6 +235,10 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
 
             avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
             avt->SetStateVariable("TransportState", "PLAYING");
+
+            /* this could be a transition to next track, so clear next */
+            avt->SetStateVariable("NextAVTransportURI", "");
+            avt->SetStateVariable("NextAVTransportURIMetaData", "");
         }
         else if (strcmp(message, "OnPause") == 0) {
             avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["speed"].asInteger()));
@@ -321,6 +332,8 @@ CUPnPRenderer::UpdateState()
         avt->SetStateVariable("AbsoluteTimePosition", "00:00:00");
         avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
         avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
+        avt->SetStateVariable("NextAVTransportURI", "");
+        avt->SetStateVariable("NextAVTransportURIMetaData", "");
     }
 }
 
@@ -497,12 +510,64 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
         service->SetStateVariable("TransportPlaySpeed", "1");
         service->SetStateVariable("AVTransportURI", uri);
         service->SetStateVariable("AVTransportURIMetaData", meta);
+        service->SetStateVariable("NextAVTransportURI", "");
+        service->SetStateVariable("NextAVTransportURIMetaData", "");
 
         NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
         return NPT_SUCCESS;
     }
 
     return PlayMedia(uri, meta, action.AsPointer());
+}
+
+/*----------------------------------------------------------------------
+ |   CUPnPRenderer::OnSetAVTransportURI
+ +---------------------------------------------------------------------*/
+NPT_Result
+CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
+{
+    NPT_String uri, meta;
+    PLT_Service* service;
+    NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
+
+    NPT_CHECK_SEVERE(action->GetArgumentValue("NextURI", uri));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("NextURIMetaData", meta));
+
+    CFileItemPtr item = GetFileItem(uri, meta);
+    if (!item) {
+        return NPT_FAILURE;
+    }
+
+    if (g_application.IsPlaying()) {
+
+        int playlist = PLAYLIST_MUSIC;
+        if(item->IsVideo())
+          playlist = PLAYLIST_VIDEO;
+
+        {   CSingleLock lock(g_graphicsContext);
+            g_playlistPlayer.ClearPlaylist(playlist);
+            g_playlistPlayer.Add(playlist, item);
+
+            g_playlistPlayer.SetCurrentSong(-1);
+            g_playlistPlayer.SetCurrentPlaylist(playlist);
+        }
+
+        CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+        g_windowManager.SendThreadMessage(msg);
+
+
+        service->SetStateVariable("NextAVTransportURI", uri);
+        service->SetStateVariable("NextAVTransportURIMetaData", meta);
+
+        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+
+        return NPT_SUCCESS;
+
+  } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        return NPT_FAILURE;
+  } else {
+        return NPT_FAILURE;
+  }
 }
 
 /*----------------------------------------------------------------------
@@ -541,6 +606,9 @@ CUPnPRenderer::PlayMedia(const NPT_String& uri, const NPT_String& meta, PLT_Acti
         service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
     }
+
+    service->SetStateVariable("NextAVTransportURI", "");
+    service->SetStateVariable("NextAVTransportURIMetaData", "");
 
     if (action) {
         NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
