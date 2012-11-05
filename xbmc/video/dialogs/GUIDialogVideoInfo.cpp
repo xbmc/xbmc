@@ -733,7 +733,15 @@ void CGUIDialogVideoInfo::OnGetArt()
     db.Close();
   }
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  m_movieItem->SetArt(type, newThumb);
+  // update the art - we need to call the map version of SetArt to force
+  // the thumb image to update in the case it's a fallback image
+  map<string, string> itemArt(m_movieItem->GetArt());
+  if (currentArt.find("thumb") == currentArt.end())
+  { // no "thumb" image, so make sure we reset the thumb fallback
+    itemArt.erase("thumb");
+  }
+  itemArt[type] = newThumb;
+  m_movieItem->SetArt(itemArt);
   if (m_movieItem->HasProperty("set_folder_thumb"))
   { // have a folder thumb to set as well
     VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), newThumb);
