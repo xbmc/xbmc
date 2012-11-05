@@ -90,11 +90,13 @@ include_directories(
   ${dependdir}/include/freetype2
   ${dependdir}/include/python2.6
 )
-include(CMakeConfig.txt)
 
 # MUST BE ADDED FIRST :)
 # This will download our dependency tree
 add_subdirectory(plex/Dependencies)
+
+# Now check for available functions
+include(CMakeConfig.txt)
 
 # Now build auxilary xbmc libraries.
 # Note that we want to do this before we add all
