@@ -421,8 +421,9 @@ void CDVDDemuxPVRClient::RequestStreams()
     }
     else
     {
-      if (!m_streams[i])
-        m_streams[i] = new CDemuxStream();
+      if (m_streams[i])
+        DisposeStream(i);
+      m_streams[i] = new CDemuxStream();
     }
 
     m_streams[i]->codec       = (CodecID)props.stream[i].iCodecId;
