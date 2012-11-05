@@ -557,6 +557,8 @@ bool CDVDPlayer::OpenInputStream()
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
+
+  int title = 100000;
 retry:
   // before creating the input stream, if this is an HLS playlist then get the
   // most appropriate bitrate based on our network settings
@@ -579,7 +581,27 @@ retry:
   else
     m_pInputStream->SetFileItem(m_item);
 
-  if (!m_pInputStream->Open(m_filename.c_str(), m_mimetype))
+  if( title >= 100000 )   // match filename.titnnn.iso
+  {
+    int t, n=-1, len;
+    char *p, *q;
+    p = strdup(m_filename.c_str());
+    len = strlen( p );
+    if( len > 4 && strcasecmp(&p[len-4], ".iso" ) == 0 )
+    {
+      p[len-4] = 0;
+      if( (q = rindex(p, '.'))
+          && strcasecmp( q, ".tit" )
+          && sscanf( q+4, "%d%n", &t, &n ) >= 1
+          && q[n+4] == 0 )
+        title = t;
+    }
+    free( p );
+  }
+  if( title < 100000 )
+    filename.AppendFormat("?title=%d",title);
+
+  if (!m_pInputStream->Open(filename.c_str(), m_mimetype))
   {
       if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
@@ -587,10 +609,6 @@ retry:
         m_mimetype = "bluray/iso";
         filename = m_filename;
         filename = filename + "/BDMV/index.bdmv";
-        int title = (int)m_item.GetProperty("BlurayStartingTitle").asInteger();
-        if( title )
-          filename.AppendFormat("?title=%d",title);
-
         m_filename = filename;
         goto retry;
       }

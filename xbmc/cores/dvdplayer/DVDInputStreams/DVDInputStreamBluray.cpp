@@ -274,12 +274,24 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filena
 
 bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content)
 {
+  int title = 100000;
   if(m_player == NULL)
     return false;
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", strFile);
 
   CStdString strPath(strFile);
   CStdString filename;
   CStdString root;
+
+  int iPos = strPath.ReverseFind('?');
+  if( iPos > 0
+      && iPos > strPath.ReverseFind('/')
+      && iPos > strPath.ReverseFind('\\')
+      && strPath.Mid(iPos,7).CompareNoCase("?title") )
+  {
+    title = atoi( strPath.Mid(iPos+7).c_str());
+    strPath = strPath.Left(iPos);
+  }
 
   if(strPath.Left(7).Equals("bluray:"))
   {
@@ -289,6 +301,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   }
   else
   {
+    filename = URIUtils::GetFileName(strPath);
     URIUtils::GetDirectory(strPath,strPath);
     URIUtils::RemoveSlashAtEnd(strPath);
 
@@ -304,7 +317,6 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
       URIUtils::RemoveSlashAtEnd(strPath);
     }
     root     = strPath;
-    filename = URIUtils::GetFileName(strFile);
   }
 
   if (!m_dll)
@@ -315,7 +327,11 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", root.c_str());
+  if( title == 100000 )
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s, %s", root.c_str(), filename.c_str());
+  else
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s, %s title=%d", root.c_str(), filename.c_str(), title);
+
   m_bd = m_dll->bd_open(root.c_str(), NULL);
 
   if(!m_bd)
@@ -366,7 +382,10 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   if(filename.Equals("index.bdmv"))
   {
     m_navmode = false;
-    m_title = GetTitleLongest();
+    if( title >= 100000 || title == 0 )
+      m_title = GetTitleLongest();
+    else
+      m_title = m_dll->bd_get_playlist_info(m_bd, abs(title), 0);
   }
   else if(URIUtils::GetExtension(filename).Equals(".mpls"))
   {

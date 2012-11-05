@@ -52,6 +52,7 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_bEOF = false;
   m_icurrentGroupId = 0;
   m_lastevent = DVDNAV_NOP;
+  m_bFinishedPGC = false;
 
   memset(m_lastblock, 0, sizeof(m_lastblock));
 }
@@ -64,6 +65,7 @@ CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
 bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content)
 {
   char* strDVDFile;
+  int start_title = 100000;
   m_icurrentGroupId = 0;
   if (!CDVDInputStream::Open(strFile, "video/x-dvd-mpeg"))
     return false;
@@ -83,6 +85,12 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // at least one path separator character.
 
   strDVDFile = strdup(strFile);
+  char *p = rindex(strDVDFile, '?');
+  if( p && strncasecmp( p, "?title=", 7) == 0 )
+  {
+    start_title = atoi( p+7 );
+    *p = 0;
+  }
   int len = strlen(strDVDFile);
 
   if(len >= 13  // +1 on purpose, to include a separator char before the searched string
@@ -93,6 +101,16 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   if(len >= 9  // +1 on purpose, to include a separator char before the searched string
   && strncasecmp(strDVDFile + len - 8, "VIDEO_TS", 8) == 0)
     strDVDFile[len - 9] = '\0';
+
+  len = strlen(strDVDFile);
+  if( start_title < 100000 )
+    ;
+  else if(len >= 6  // .TITNN
+  && strncasecmp(strDVDFile + len - 6, ".TIT", 4) == 0)
+    start_title = atoi( strDVDFile + len - 2 );
+  else if(len >= 6  // .TRKNN                           // historical reasons
+  && strncasecmp(strDVDFile + len - 6, ".TRK", 4) == 0)
+    start_title = atoi( strDVDFile + len - 2 );
 
 #if defined(TARGET_DARWIN_OSX)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
@@ -185,8 +203,29 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
     return false;
   }
 
+  m_iTitle = m_iTitleCount = 0;
+  m_iPart = m_iPartCount = 0;
+  m_iTime = m_iTotalTime = 0;
+  m_iPlayTitle = 0;
+
+  if( start_title < 100000 )
+    {
+    int len, event, parts;
+    uint8_t buf[2048];
+    uint8_t* buf_ptr = buf;
+    CLog::Log(LOGDEBUG, "*************** setting title to %d", start_title);
+    m_iTitle = start_title;
+    m_iPlayTitle = start_title;
+    m_iPlayTitleTotalTime = 0;
+    //      m_dll.dvdnav_part_play(m_dvdnav, 0, 1);
+    m_dll.dvdnav_part_play(m_dvdnav, m_iTitle, 1);
+    // these all get fixed up in DVDNAV_CELL_CHANGE
+    m_iTitleCount = 0;
+    m_iPart = m_iPartCount = 0;
+    m_iTime = m_iTotalTime = 0;
+    }
   // jump directly to title menu
-  if(g_guiSettings.GetBool("dvds.automenu"))
+  else if(g_guiSettings.GetBool("dvds.automenu"))
   {
     int len, event;
     uint8_t buf[2048];
@@ -208,9 +247,6 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   m_iVobUnitCorrection = 0LL;
   m_bInMenu = false;
   m_holdmode = HOLDMODE_NONE;
-  m_iTitle = m_iTitleCount = 0;
-  m_iPart = m_iPartCount = 0;
-  m_iTime = m_iTotalTime = 0;
 
   return true;
 }
@@ -464,9 +500,16 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         m_iCellStart = cell_change_event->cell_start; // store cell time as we need that for time later
         m_iTime      = (int) (m_iCellStart / 90);
         m_iTotalTime = (int) (cell_change_event->pgc_length / 90);
+        if( m_iTitle == m_iPlayTitle )
+          m_iPlayTitleTotalTime = m_iTotalTime;
         m_icurrentGroupId = cell_change_event->pgN * 1000 + cell_change_event->cellN;
 
-        iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
+        if( m_iPlayTitle && m_bFinishedPGC ) {
+          m_bEOF = true;
+          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STOP);
+        }
+        else
+          iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_CELL_CHANGE);
       }
       break;
 
@@ -515,6 +558,10 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
           m_iVobUnitCorrection += gap;
 
           CLog::Log(LOGDEBUG, "DVDNAV_NAV_PACKET - DISCONTINUITY FROM:%"PRId64" TO:%"PRId64" DIFF:%"PRId64, (m_iVobUnitStop * 1000)/90, ((int64_t)pci->pci_gi.vobu_s_ptm*1000)/90, (gap*1000)/90);
+        }
+        if( m_iTitle == m_iPlayTitle && pci->pci_gi.vobu_e_ptm/90 >= m_iTotalTime-1 )
+        {
+          m_bFinishedPGC = true;
         }
 
         m_iVobUnitStart = pci->pci_gi.vobu_s_ptm;

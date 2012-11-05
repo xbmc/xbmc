@@ -154,6 +154,7 @@ protected:
 
   int m_iTotalTime;
   int m_iTime;
+  bool m_bFinishedPGC;
   int64_t m_iCellStart; // start time of current cell in pts units (90khz clock)
 
   bool m_bInMenu;
@@ -164,7 +165,8 @@ protected:
 
   int m_iTitleCount;
   int m_iTitle;
-
+  int m_iPlayTitle;
+  int m_iPlayTitleTotalTime;
   int m_iPartCount;
   int m_iPart;
 
