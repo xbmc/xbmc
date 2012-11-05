@@ -2928,6 +2928,9 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
     CFileItemPtr recording = g_PVRRecordings->GetByPath(m_strPath);
     if (recording->m_pvrRecordingInfoTag)
       return recording->m_pvrRecordingInfoTag->m_strTitle;
+    CStdString title = CPVRRecording::GetTitleFromURL(m_strPath);
+    if (title != StringUtils::EmptyString)
+      return title;
   }
 
   CStdString strMovieName = GetBaseMoviePath(bUseFolderNames);

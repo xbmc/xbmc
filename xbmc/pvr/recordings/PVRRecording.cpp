@@ -24,6 +24,8 @@
 #include "PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/StringUtils.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 
 #include "epg/Epg.h"
 
@@ -260,4 +262,16 @@ const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
   tmp.SetFromUTCDateTime(m_recordingTime);
 
   return tmp;
+}
+
+CStdString CPVRRecording::GetTitleFromURL(const CStdString &url)
+{
+  CRegExp reg(true);
+  if (reg.RegComp("pvr://recordings/(.*/)*(.*), TV( \\(.*\\))?, "
+      "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].pvr"))
+  {
+    if (reg.RegFind(url.c_str()) >= 0)
+      return reg.GetReplaceString("\\2");
+  }
+  return StringUtils::EmptyString;
 }
