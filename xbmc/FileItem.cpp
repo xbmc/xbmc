@@ -2457,7 +2457,7 @@ void CFileItemList::StackFolders()
             item->m_bIsFolder = false;
             item->SetPath(dvdPath);
             item->SetLabel2("");
-            item->SetLabelPreformated(true);
+//            item->SetLabelPreformated(true);
             m_sortMethod = SORT_METHOD_NONE; /* sorting is now broken */
           }
         }
@@ -2939,9 +2939,9 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
 
   if (IsOpticalMediaFile())
-    return GetLocalMetadataPath();
+    strMovieName = GetLocalMetadataPath();
 
-  if ((!m_bIsFolder || URIUtils::IsInArchive(m_strPath)) && bUseFolderNames)
+  if ((!m_bIsFolder || URIUtils::IsInArchive(m_strPath) || IsOpticalMediaFile()) && bUseFolderNames)
   {
     CStdString name2(strMovieName);
     URIUtils::GetParentPath(name2,strMovieName);
