@@ -10,44 +10,63 @@
 	<controls>
 		<include>FadeDialogBG</include>
 		<control type="group">
-			<include>InfoDialogPos</include>
+			<posx>142</posx>
+			<posy>61</posy>
 			<include>InfoDialogBG</include>
 			<control type="group">
-				<posx>InfoDialogLargeThumbPosX</posx>
+				<posx>50</posx>
 				<posy>228</posy>
 				<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 				<control type="image">
 					<description>Poster</description>
 					<visible>Control.HasFocus(4)</visible>
 					<texture fallback="amt-blank-poster.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
-					<include>SetContentDialogThumb</include>
+					<width>426</width>
+					<height>170</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<bordertexture border="14">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
 					<visible>!Skin.HasTheme(lite)</visible>
 				</control>
 				<control type="image">
 					<description>Poster</description>
 					<visible>!Control.HasFocus(4)</visible>
 					<texture fallback="amt-blank-poster.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
-					<include>SetContentDialogThumb</include>
+					<width>426</width>
+					<height>170</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<bordertexture border="14">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
 					<visible>!Skin.HasTheme(lite)</visible>
 				</control>
 				<control type="label">
 					<posy>60</posy>
-					<width>InfoDialogLargeThumbWidth</width>
+					<width>426</width>
 					<font>TitleCapsFont</font>
-					<include>NoThumbLabel</include>
+					<align>center</align>
+					<label>$LOCALIZE[20018]</label>
+					<visible>IsEmpty(ListItem.Thumb) + !Skin.HasSetting(HideNoThumbIcon)</visible>
 				</control>
 				<control type="image">
 					<description>Poster reflection</description>
 					<visible>Control.HasFocus(4)</visible>
 					<texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
-					<include>SetContentDialogThumbRflctn</include>
+					<posx>8</posx>
+					<posy>162</posy>
+					<width>426</width>
+					<height>154</height>
+					<aspectratio aligny="top">keep</aspectratio>
 					<visible>!Skin.HasTheme(lite)</visible>
 				</control>
 				<control type="image">
 					<description>Poster reflection</description>
 					<visible>!Control.HasFocus(4)</visible>
 					<texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
-					<include>SetContentDialogThumbRflctn</include>
+					<posx>8</posx>
+					<posy>162</posy>
+					<width>426</width>
+					<height>154</height>
+					<aspectratio aligny="top">keep</aspectratio>
 					<visible>!Skin.HasTheme(lite)</visible>
 				</control>
 			</control>
@@ -57,7 +76,7 @@
 				<control type="label" id="1000">
 					<description>Heading</description>
 					<label>$LOCALIZE[20333]</label>
-					<include>InfoDialogTitle</include>
+					<include>DialogHeading</include>
 				</control>
 				<control type="group">
 					<posy>10</posy>
@@ -73,7 +92,10 @@
 				<control type="group" id="9001">
 					<control type="panel" id="4">
 						<description>Directory List</description>
-						<include>SetContentDirectoryListDims</include>
+						<posx>40</posx>
+						<posy>100</posy>
+						<width>400</width>
+						<height>272</height>
 						<onup>3</onup>
 						<ondown>5</ondown>
 						<onleft>3</onleft>
@@ -83,26 +105,45 @@
 						<visible allowhiddenfocus="false">true</visible>
 						<itemlayout width="132" height="136">
 							<control type="image">
-								<include>SetContentDialogIcon</include>
+								<posx>5</posx>
+								<posy>5</posy>
+								<width>132</width>
+								<height>114</height>
+								<texture fallback="Scraper_Default_icon.png">$INFO[ListItem.Label,Scraper_,_icon.png]</texture>
+								<visible>!Skin.HasTheme(lite)</visible>
 								<colordiffuse>cc999999</colordiffuse>
 							</control>
 							<control type="label">
-								<include>SetContentDialogIconLabel</include>
+								<posx>71</posx>
+								<posy>114</posy>
+								<width>132</width>
+								<info>ListItem.Label</info>
 							</control>
 						</itemlayout>
 						<focusedlayout width="132" height="136">
 							<control type="image">
-								<include>SetContentDialogIcon</include>
+								<posx>5</posx>
+								<posy>5</posy>
+								<width>132</width>
+								<height>114</height>
+								<texture fallback="Scraper_Default_icon.png">$INFO[ListItem.Label,Scraper_,_icon.png]</texture>
+								<visible>!Skin.HasTheme(lite)</visible>
 							</control>
 							<control type="label">
 								<visible>!Control.HasFocus(4)</visible>
-								<include>SetContentDialogIconLabel</include>
+								<posx>71</posx>
+								<posy>114</posy>
+								<width>132</width>
+								<info>ListItem.Label</info>
 							</control>
 							<control type="label">
 								<visible>Control.HasFocus(4)</visible>
 								<textcolor>Focused</textcolor>
 								<scroll>true</scroll>
-								<include>SetContentDialogIconLabel</include>
+								<posx>71</posx>
+								<posy>114</posy>
+								<width>132</width>
+								<info>ListItem.Label</info>
 							</control>
 						</focusedlayout>
 					</control>
@@ -112,7 +153,7 @@
 						<posy>386</posy>
 						<itemgap>0</itemgap>
 						<orientation>vertical</orientation>
-						<width>SetContentGroupListWidth</width>
+						<width>450</width>
 						<onup>4</onup>
 						<ondown>28</ondown>
 						<onleft>28</onleft>
@@ -130,14 +171,17 @@
 					<control type="grouplist" id="9002">
 						<onup>5</onup>
 						<ondown>3</ondown>
-						<include>SetContentButtonsGroupDims</include>
+						<posx>4</posx>
+						<posy>528</posy>
+						<itemgap>8</itemgap>
 						<orientation>horizontal</orientation>
 						<control type="button" id="28">
 							<description>Select</description>
 							<onleft>29</onleft>
 							<onright>6</onright>
 							<label>$LOCALIZE[424]</label>
-							<include>MediaSourceDialogButton</include>
+							<width>108</width>
+							<include>DialogPressButton</include>
 						</control>
 						<control type="button" id="6">
 							<description>Settings button</description>
@@ -145,14 +189,15 @@
 							<onright>29</onright>
 							<label>$LOCALIZE[5]</label>
 							<width>170</width>
-							<include>MediaSourceDialogButton</include>
+							<include>DialogPressButton</include>
 						</control>
 						<control type="button" id="29">
 							<description>Cancel</description>
 							<onleft>6</onleft>
 							<onright>28</onright>
 							<label>$LOCALIZE[222]</label>
-							<include>MediaSourceDialogButton</include>
+							<width>108</width>
+							<include>DialogPressButton</include>
 						</control>
 					</control>
 				</control>
