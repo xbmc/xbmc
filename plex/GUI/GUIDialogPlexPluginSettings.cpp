@@ -10,7 +10,7 @@
 #include "GUIControlGroupList.h"
 #include "GUIDialogPlexPluginSettings.h"
 #include "GUIDialogOK.h"
-#include "GUIDialogKeyboard.h"
+#include "GUIKeyboardFactory.h"
 #include "GUIDialogNumeric.h"
 #include "GUIImage.h"
 #include "GUILabelControl.h"
@@ -19,11 +19,12 @@
 #include "Util.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "FileSystem/PlexDirectory.h"
 #include "LocalizeStrings.h"
 #include "Settings.h"
+#include "ApplicationMessenger.h"
 
 #define CONTROL_AREA                    2
 #define CONTROL_DEFAULT_BUTTON          3
@@ -294,7 +295,7 @@ bool CGUIDialogPlexPluginSettings::ShowVirtualKeyboard(int iControl)
           if (option)
             bHidden = (strcmp(option, "hidden") == 0);
           
-          if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
+          if (CGUIKeyboardFactory::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
             ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
@@ -311,7 +312,7 @@ bool CGUIDialogPlexPluginSettings::ShowVirtualKeyboard(int iControl)
           {
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
-            g_application.getApplicationMessenger().ExecBuiltIn(setting->Attribute("default"));
+            CApplicationMessenger::Get().ExecBuiltIn(setting->Attribute("default"));
           }
         }
         break;

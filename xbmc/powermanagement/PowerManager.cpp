@@ -201,7 +201,9 @@ void CPowerManager::OnSleep()
   CBuiltins::Execute("LIRC.Stop");
 #endif
 
+#ifndef __PLEX__
   g_application.SaveFileState(true);
+#endif
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();

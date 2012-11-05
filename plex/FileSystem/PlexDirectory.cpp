@@ -22,7 +22,7 @@
 #include "PlexDirectory.h"
 #include "DirectoryCache.h"
 #include "Util.h"
-#include "FileCurl.h"
+#include "CurlFile.h"
 #include "utils/HttpHeader.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
@@ -40,6 +40,8 @@
 #include "PlexTypes.h"
 #include "URIUtils.h"
 #include "PlexUtils.h"
+#include "TextureCache.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -54,7 +56,8 @@ CFileItemListPtr CPlexDirectory::g_filterList;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog)
-: m_bStop(false)
+: CThread("PlexDirectory")
+, m_bStop(false)
 , m_bSuccess(true)
 , m_bParseResults(parseResults)
 , m_bReplaceLocalhost(true)
@@ -62,13 +65,14 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog)
 {
   m_timeout = 300;
   
-  if (displayDialog == false)
-    m_allowPrompting = false;
+  if (displayDialog)
+    m_flags = DIR_FLAG_DEFAULTS | DIR_FLAG_ALLOW_PROMPT;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog, bool replaceLocalhost, int timeout)
-  : m_bStop(false)
+  : CThread("PlexDirectory")
+  , m_bStop(false)
   , m_bSuccess(true)
   , m_bParseResults(parseResults)
   , m_bReplaceLocalhost(replaceLocalhost)
@@ -76,8 +80,8 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog, bool repla
 {
   m_timeout = timeout;
 
-  if (displayDialog == false)
-    m_allowPrompting = false;
+  if (displayDialog)
+    m_flags = DIR_FLAG_DEFAULTS | DIR_FLAG_ALLOW_PROMPT;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +170,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   while (m_downloadEvent.WaitMSec(100) == false)
   {
     // If enough time has passed, display the dialog.
-    if (XbmcThreads::SystemClockMillis() - time > 1000 && m_allowPrompting == true)
+    if (XbmcThreads::SystemClockMillis() - time > 1000 && m_flags & DIR_FLAG_ALLOW_PROMPT)
     {
       dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
@@ -196,7 +200,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     dlgProgress->Close();
 
   // Wait for the thread to exit.
-  WaitForThreadExit(INFINITE);
+  WaitForThreadExit(0xFFFFFFFF);
   StopThread();
 
   // See if we suceeded.
@@ -244,6 +248,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   if (thumb && strlen(thumb) > 0)
     strThumb = ProcessMediaElement(strPath, thumb, MAX_THUMBNAIL_AGE, localServer);
 
+#if 0
   // See if the item is too old.
   if (strFanart.empty() == false)
   {
@@ -251,6 +256,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     if (PlexUtils::FileAge(cachedFile) > MAX_FANART_AGE)
       CFile::Delete(cachedFile);
   }
+#endif
 
   // Walk the parsed tree.
   string strFileLabel = "%N - %T";
@@ -321,9 +327,9 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     }
     
     // Fall back to directory fanart?
-    if ((strFanart.size() > 0 && pItem->GetQuickFanart().size() == 0) || disableFanart)
+    if ((strFanart.size() > 0 && pItem->GetArt(PLEX_ART_FANART).size() == 0) || disableFanart)
     {
-      pItem->SetQuickFanart(strFanart);
+      pItem->SetArt(PLEX_ART_FANART, strFanart);
 
       if (strFanart.find("/:/resources") != string::npos)
         pItem->SetProperty("fanart_fallback", "1");
@@ -332,9 +338,10 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     // Save the fallback fanart in case we need it while loading the real one.
     if (strFanart.size() > 0)
     {
-      // Only do this if we have it cached already.
-      if (CFile::Exists(CFileItem::GetCachedPlexMediaServerFanart(strFanart)))
-        pItem->SetProperty("fanart_image_fallback", CFileItem::GetCachedPlexMediaServerFanart(strFanart));
+      bool needsRecache = false;
+      std::string imageURL = CTextureCache::Get().CheckCachedImage(strFanart, false, needsRecache);
+      if (!imageURL.empty())
+        pItem->SetArt(PLEX_ART_FANART_FALLBACK, imageURL);
     }
 
     // Fall back to directory thumb?
@@ -375,7 +382,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   
   // Set fanart on directory.
   if (strFanart.size() > 0)
-    items.SetQuickFanart(strFanart);
+    items.SetArt(PLEX_ART_FANART, strFanart);
 
   // Set the view mode.
   bool hasViewMode = false;
@@ -489,7 +496,8 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
   CURL mediaUrl(encodedUrl);
 
   CStdString token;
-  map<CStdString, CStdString> options = mediaUrl.GetOptionsAsMap();
+  map<CStdString, CStdString> options;
+  mediaUrl.GetOptions(options);
   if (options.find("X-Plex-Token") != options.end())
     token = "&X-Plex-Token=" + options["X-Plex-Token"];
 
@@ -506,7 +514,7 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
 
   if (strstr(imageURL.c_str(), "poster") || strstr(imageURL.c_str(), "thumb"))
   {
-    width = boost::lexical_cast<string>(g_advancedSettings.m_thumbSize);
+    width = boost::lexical_cast<string>(g_advancedSettings.GetThumbSize());
     height = width;
   }
   else if (strstr(imageURL.c_str(), "banner"))
@@ -562,7 +570,7 @@ class PlexMediaNode
      
      // Sort label.
      if (el.Attribute("titleSort"))
-       pItem->SetSortLabel(el.Attribute("titleSort"));
+       pItem->SetSortLabel(CStdString(el.Attribute("titleSort")));
      else
        pItem->SetSortLabel(pItem->GetLabel());
 
@@ -634,12 +642,12 @@ class PlexMediaNode
        // Fanart.
        string strArt = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("art"), MAX_FANART_AGE, localServer);
        if (strArt.size() > 0)
-         pItem->SetQuickFanart(strArt);
+         pItem->SetArt(PLEX_ART_FANART, strArt);
 
        // Banner.
        string strBanner = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("banner"), MAX_FANART_AGE, localServer);
        if (strBanner.size() > 0)
-         pItem->SetQuickBanner(strBanner);
+         pItem->SetArt(PLEX_ART_BANNER, strBanner);
 
        // Theme music.
        string strTheme = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("theme"), MAX_FANART_AGE, localServer);
@@ -789,13 +797,21 @@ class PlexMediaNode
            theURL.SetOptions("?t=" + version + "&" + theURL.GetOptions().substr(1));
        
          string url = theURL.Get();
-         
+
+#if 0
          // See if it exists (fasttrack) or queue it for download.
          string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
          if (CFile::Exists(localFile))
            mediaItem->SetProperty("mediaTag::" + attr, localFile);
          else if (url.find("plexapp.com") == string::npos)
            mediaItem->SetProperty("cache$mediaTag::" + attr, url);
+#endif
+         /* Fire up the async fetcher and hopefully we will have it done by the time
+          * we need to show it */
+         PlexUtils::CacheImageUrlAsync(url);
+
+         /* FIXME: attr here might be wrong? */
+         mediaItem->SetArt(attr, url);
        }
 
        string value = val;
@@ -1060,7 +1076,8 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     CSong song;
 
     // Artist, album, year.
-    SetValue(el, *parent, song.strArtist, "grandparentTitle");
+    CStdString artist = StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator);
+    SetValue(el, *parent, artist, "grandparentTitle");
     SetValue(el, *parent, song.strAlbum, "parentTitle");
     SetValue(el, *parent, song.iYear, "parentYear");
 
@@ -1308,7 +1325,7 @@ class PlexMediaDirectory : public PlexMediaNode
 
     // Studio.
     if (el.Attribute("studio"))
-      tag.m_strStudio = el.Attribute("studio");
+      tag.m_studio.push_back(el.Attribute("studio"));
 
     // Year.
     if (el.Attribute("year"))
@@ -1427,8 +1444,8 @@ class PlexMediaAlbum : public PlexMediaNode
     album.strLabel = GetLabel(el);
     //album.idAlbum = boost::lexical_cast<int>(el.Attribute("key"));
     album.strAlbum = el.Attribute("album");
-    album.strArtist = el.Attribute("artist");
-    album.strGenre = el.Attribute("genre");
+    album.artist.push_back(el.Attribute("artist"));
+    album.genre.push_back(el.Attribute("genre"));
     album.iYear = boost::lexical_cast<int>(el.Attribute("year"));
 
     CFileItemPtr newItem(new CFileItem(pItem->GetPath(), album));
@@ -1559,7 +1576,7 @@ class PlexMediaTrack : public PlexMediaNode
 
     CSong song;
     song.strTitle = GetLabel(el);
-    song.strArtist = el.Attribute("artist");
+    song.artist.push_back(el.Attribute("artist"));
     song.strAlbum = el.Attribute("album");
     song.strFileName = pItem->GetPath();
 
@@ -1899,6 +1916,7 @@ string CPlexDirectory::ProcessMediaElement(const string& parentPath, const char*
       // Build a special URL to get the media from the media server.
       strMedia = CPlexDirectory::BuildImageURL(parentPath, strMedia, local);
     }
+#if 0
     else
     {
       // See if the item is too old.
@@ -1906,6 +1924,7 @@ string CPlexDirectory::ProcessMediaElement(const string& parentPath, const char*
       if (PlexUtils::FileAge(cachedFile) > maxAge)
         CFile::Delete(cachedFile);
     }
+#endif
 
     return strMedia;
   }
@@ -1975,7 +1994,8 @@ string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool 
   string finalURL = theURL.Get();
 
   // If we have an auth token, make sure it gets propagated.
-  map<CStdString, CStdString> options = theFullURL.GetOptionsAsMap();
+  map<CStdString, CStdString> options;
+  theFullURL.GetOptions(options);
   finalURL = CheckAuthToken(options, finalURL, "X-Plex-Token");
   
   //CLog::Log(LOGNOTICE, "Processed [%s] + [%s] => [%s]\n", parent.c_str(), url.c_str(), finalURL.c_str());

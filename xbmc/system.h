@@ -37,7 +37,9 @@
 #define HAS_SYSINFO
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
+#ifndef __PLEX__
 #define HAS_PVRCLIENTS
+#endif
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER

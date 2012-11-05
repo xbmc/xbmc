@@ -416,7 +416,7 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
         /* PLEX */
-        g_application.getApplicationMessenger().Hide();
+        CApplicationMessenger::Get().Hide();
         return true;
         /* END PLEX */
 

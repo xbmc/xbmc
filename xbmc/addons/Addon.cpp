@@ -506,7 +506,9 @@ void CAddon::SaveSettings(void)
   doc.SaveFile(m_userSettingsPath);
   
   CAddonMgr::Get().ReloadSettings(ID());//push the settings changes to the running addon instance
+#if HAS_PYTHON
   g_pythonParser.OnSettingsChanged(ID());
+#endif
 }
 
 CStdString CAddon::GetSetting(const CStdString& key)

@@ -60,6 +60,7 @@
 
 /* PLEX */
 #include "plex/CocoaUtils.h"
+#include "plex/PlexTypes.h"
 /* END PLEX */
 
 using namespace std;
@@ -406,7 +407,7 @@ CFileItem::CFileItem(const CMediaSource& share)
     GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
 
   /* PLEX */
-  SetQuickFanart(share.m_strFanArtUrl);
+  SetArt(PLEX_ART_FANART, share.m_strFanArtUrl);
   /* END PLEX */
 }
 
@@ -1536,13 +1537,13 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
 
       else
       {
-        CFileCurl::GetMimeType(GetAsUrl(), m_ref);
+        CCurlFile::GetMimeType(GetAsUrl(), m_ref);
 
         // try to get mime-type again but with an NSPlayer User-Agent
         // in order for server to provide correct mime-type.  Allows us
         // to properly detect an MMS stream
         if (m_ref.Left(11).Equals("video/x-ms-"))
-          CFileCurl::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
+          CCurlFile::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
       }
       /* END PLEX */
 
@@ -3571,16 +3572,6 @@ int CFileItem::GetVideoContentType() const
 
 #include "PlexUtils.h"
 
-CStdString CFileItem::GetCachedVideoGrandparentThumb() const
-{
-  CStdString path = m_strPath;
-
-  if (IsPlexMediaServer() && m_strGrandparentThumbnailImage.size() > 0)
-    return GetCachedThumb(m_strGrandparentThumbnailImage, g_settings.GetPlexMediaServerThumbFolder(),true);
-
-  return "";
-}
-
 bool CFileItem::IsPlexMediaServer() const
 {
   return PlexUtils::IsPlexMediaServer(m_strPath);
@@ -3671,88 +3662,6 @@ void CFileItem::SetEpisodeData(int total, int watchedCount)
     SetProperty("zeroepisodecount", 1);
   else
     ClearProperty("zeroepisodecount");
-}
-
-CStdString CFileItem::GetCachedProgramFanart() const
-{
-  if (m_strFanartUrl.size() > 0)
-    return CFileItem::GetCachedProgramFanart(m_strFanartUrl);
-
-  return CFileItem::GetCachedProgramFanart(m_strPath);
-}
-
-CStdString CFileItem::GetCachedProgramFanart(const CStdString &path)
-{
-  return GetCachedThumb(path, g_settings.GetProgramFanartFolder());
-}
-
-void CFileItem::SetQuickFanart(const CStdString& fanartURL)
-{
-  m_strFanartUrl = fanartURL;
-
-  // See if it's already cached, and the cached version isn't too old.
-  if (CFile::Exists(GetCachedPlexMediaServerFanart()))
-    SetProperty("fanart_image", GetCachedPlexMediaServerFanart());
-}
-
-void CFileItem::SetQuickBanner(const CStdString& bannerURL)
-{
-  m_strBannerUrl = bannerURL;
-
-  // See if it's already cached, and the cached version isn't too old.
-  if (CFile::Exists(GetCachedPlexMediaServerBanner()))
-    SetProperty("banner_image", GetCachedPlexMediaServerBanner());
-}
-
-CStdString CFileItem::GetCachedPlexMediaServerThumb() const
-{
-  if (m_strThumbnailImageList.size() > 0)
-    return GetCachedPlexMediaServerThumb(m_strThumbnailImageList[0]);
-
-  return "";
-}
-
-CStdString CFileItem::GetCachedPlexMediaServerThumb(const CStdString& path)
-{
-  return GetCachedThumb(path, g_settings.GetPlexMediaServerThumbFolder(), true);
-}
-
-CStdString CFileItem::GetCachedPlexMediaServerFanart() const
-{
-  return CFileItem::GetCachedPlexMediaServerFanart(m_strFanartUrl);
-}
-
-CStdString CFileItem::GetCachedPlexMediaServerFanart(const CStdString &path)
-{
-  return GetCachedThumb(path, g_settings.GetPlexMediaServerThumbFolder(), true);
-}
-
-CStdString CFileItem::GetCachedPlexMediaServerBanner() const
-{
-  return CFileItem::GetCachedPlexMediaServerThumb(m_strBannerUrl);
-}
-
-bool CFileItem::CacheBanner() const
-{
-  if (m_strBannerUrl.size() > 0)
-  {
-    CStdString localBanner = GetCachedPlexMediaServerBanner();
-    if (CFile::Exists(localBanner) == false)
-      return CPicture::CacheBanner(m_strBannerUrl, localBanner);
-  }
-  return false;
-}
-
-CStdString CFileItem::GetCachedVideoThumb(size_t i) const
-{
-  CStdString path = m_strPath;
-
-  if (IsPlexMediaServer() && m_strThumbnailImageList.size() > i)
-  {
-    return GetCachedThumb(m_strThumbnailImageList[i], g_settings.GetPlexMediaServerThumbFolder(),true);
-  }
-  else
-    return CThumbnailCache::GetVideoThumb(*this);
 }
 
 bool CFileItemList::IsPlexMediaServerMusic() const

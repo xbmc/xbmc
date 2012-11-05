@@ -24,7 +24,7 @@ using namespace std;
 CGUIDialogTimer::CGUIDialogTimer(void)
 : CGUIDialog(WINDOW_DIALOG_TIMER, "DialogTimer.xml")
 {
-  m_loadOnDemand = true;
+  m_loadType = LOAD_ON_GUI_INIT;
   m_iTime = 0;
   m_typedString = "";
 }

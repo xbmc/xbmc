@@ -8,7 +8,7 @@
 CGUIDialogRating::CGUIDialogRating(void)
 : CGUIDialog(WINDOW_DIALOG_RATING, "DialogRating.xml")
 {
-  m_loadOnDemand = true;
+  m_loadType = LOAD_ON_GUI_INIT;
   m_iRating = 5;
   m_bConfirmed = false;
 }

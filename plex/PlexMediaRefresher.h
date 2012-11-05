@@ -9,7 +9,8 @@ class PlexMediaRefresher : public CThread
 public:
 
   PlexMediaRefresher(const string& path)
-  : m_path(path)
+  : CThread("PlexMediaRefreshener")
+  , m_path(path)
   , m_doneLoading(false)
   , m_canDie(false)
   {

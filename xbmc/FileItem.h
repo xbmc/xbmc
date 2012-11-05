@@ -37,6 +37,11 @@
 #include <vector>
 #include "boost/shared_ptr.hpp"
 
+/* PLEX */
+class CFileItem;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+/* END PLEX */
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
@@ -381,19 +386,6 @@ public:
   bool IsPlexMediaServerLibrary() const;
   bool IsPlexWebkit() const;
 
-  CStdString GetCachedVideoGrandparentThumb() const;
-
-  CStdString GetCachedPlexMediaServerThumb() const;
-  static CStdString GetCachedPlexMediaServerThumb(const CStdString &path);
-
-  CStdString GetCachedPlexMediaServerFanart() const;
-  static CStdString GetCachedPlexMediaServerFanart(const CStdString &path);
-
-  CStdString GetCachedPlexMediaServerBanner() const;
-
-  static CStdString GetCachedProgramFanart(const CStdString &path);
-  CStdString GetCachedProgramFanart() const;
-
   void SetDefaultViewMode(int viewMode) { m_defaultViewMode = viewMode; }
   int GetDefaultViewMode() const { return m_defaultViewMode; }
 
@@ -408,12 +400,6 @@ public:
 
   void AddProvider(const CFileItemPtr& provider) { m_chainedProviders.push_back(provider); }
   std::vector<CFileItemPtr>& GetProviders() { return m_chainedProviders; }
-
-  void SetQuickFanart(const CStdString& fanartURL);
-  const CStdString& GetQuickFanart() const { return m_strFanartUrl; }
-
-  void SetQuickBanner(const CStdString& bannerURL);
-  const CStdString& GetQuickBanner() const { return m_strBannerUrl; }
 
   bool GetSaveInHistory() const { return m_saveInHistory; }
   void SetSaveInHistory(bool save) { m_saveInHistory = save; }
@@ -441,9 +427,6 @@ public:
   void SetIsSettingsDir(bool issettings) { m_bIsSettingsDir = issettings; }
   bool IsSettingsDir() const { return m_bIsSettingsDir; }
 
-  bool CacheBanner() const;
-  CStdString GetCachedVideoThumb(size_t i) const;
-  CStdString GetCachedVideoThumb() const { return GetCachedVideoThumb(0); }
   /* END PLEX */
 
 private:

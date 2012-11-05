@@ -8,7 +8,7 @@
  */
 #include <string>
 
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "FileItem.h"
 #include "filesystem/IDirectory.h"
 #include "threads/Thread.h"
@@ -76,7 +76,7 @@ class CPlexDirectory : public IDirectory,
   bool       m_bParseResults;
   bool       m_bReplaceLocalhost;
   int        m_timeout;
-  CFileCurl  m_http;
+  CCurlFile  m_http;
   DIR_CACHE_TYPE m_dirCacheType;
   
   static CFileItemListPtr g_filterList;

@@ -19,10 +19,10 @@
  */
 
 #include "system.h"
+#include "settings/GUISettings.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
@@ -238,7 +238,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
-                     g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
+                     g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != 0;
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;

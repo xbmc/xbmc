@@ -30,6 +30,10 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+/* PLEX */
+#include "cores/VideoRenderers/LinuxRendererGL.h"
+/* END PLEX */
+
 class CRenderCapture;
 
 namespace DXVA { class CProcessor; }

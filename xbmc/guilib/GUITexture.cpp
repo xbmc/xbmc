@@ -664,8 +664,8 @@ bool CGUITextureBase::SetFileName(const CStdString& filename)
   // later the texture is requested with the cached name and we don't want it
   // flickering.
   //
-  if (CFileItem::GetCachedPlexMediaServerThumb(m_info.filename) == filename)
-    return false;
+  //if (CFileItem::GetCachedPlexMediaServerThumb(m_info.filename) == filename)
+    //return false;
   /* END PLEX */
 
   // Don't completely free resources here - we may be just changing

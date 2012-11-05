@@ -134,6 +134,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(strPath, items, (hints.flags & DIR_FLAG_READ_CACHE) == DIR_FLAG_READ_CACHE))
+    {
       items.SetPath(strPath);
 
       /* PLEX - We want to make sure that we refetch this from the Media Server */
@@ -223,7 +224,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
       /* END PLEX */
       {
         if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
-          (item->GetProperty("file:hidden").asBoolean() && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
+            (item->GetProperty("file:hidden").asBoolean() && !(hints.flags & DIR_FLAG_GET_HIDDEN) && !g_guiSettings.GetBool("filelists.showhidden")))
         {
           items.Remove(i);
           i--; // don't confuse loop

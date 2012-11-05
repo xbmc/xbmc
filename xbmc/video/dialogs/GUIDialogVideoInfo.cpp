@@ -54,6 +54,7 @@
 #include "HTTP.h"
 #include "PlexUtils.h"
 #include "CocoaUtilsPlus.h"
+#include "pictures/Picture.h"
 /* END PLEX */
 
 using namespace std;
@@ -389,7 +390,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItemPtr& item)
     url.SetOptions("?skipRefresh=1");
 
     // Download the data.
-    CFileCurl set;
+    CCurlFile set;
     CStdString strData;
     set.Get(url.Get(), strData);
 
@@ -675,7 +676,59 @@ void CGUIDialogVideoInfo::Play(bool resume)
 
 string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string, string> &currentArt)
 {
+  // prompt for choice
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!dialog || !videoItem.HasVideoInfoTag())
+    return "";
+
+  CFileItemList items;
+  dialog->SetHeading(13511);
+  dialog->Reset();
+  dialog->SetUseDetails(true);
+
+  CVideoDatabase db;
+  db.Open();
+
+  vector<string> artTypes = CVideoThumbLoader::GetArtTypes(videoItem.GetVideoInfoTag()->m_type);
+
+  // add in any stored art for this item that is non-empty.
+  db.GetArtForItem(videoItem.GetVideoInfoTag()->m_iDbId, videoItem.GetVideoInfoTag()->m_type, currentArt);
+  for (CGUIListItem::ArtMap::iterator i = currentArt.begin(); i != currentArt.end(); ++i)
+  {
+    if (!i->second.empty() && find(artTypes.begin(), artTypes.end(), i->first) == artTypes.end())
+      artTypes.push_back(i->first);
+  }
+
+  for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  {
+    string type = *i;
+    CFileItemPtr item(new CFileItem(type, "false"));
+    item->SetLabel(type);
+    if (videoItem.HasArt(type))
+      item->SetArt("thumb", videoItem.GetArt(type));
+    items.Add(item);
+  }
+
+  dialog->SetItems(&items);
+  dialog->DoModal();
+
+  return dialog->GetSelectedItem()->GetLabel();
+}
+
+void CGUIDialogVideoInfo::OnGetArt()
+{
 #ifndef __PLEX__
+  map<string, string> currentArt;
+  string type = ChooseArtType(*m_movieItem, currentArt);
+  if (type.empty())
+    return; // cancelled
+
+  if (type == "fanart")
+  { // TODO: this can be removed once these are unified.
+    OnGetFanart();
+    return;
+  }
+
   CFileItemList items;
 
   // Current thumb
@@ -768,21 +821,7 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
   { // have a folder thumb to set as well
     VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), newThumb);
   }
-#else
-  string newPoster = OnGetMedia("posters", m_movieItem->GetThumbnailImage(), 20016);
-  if (newPoster.size() > 0)
-  {
-    string newPosterFile = CFileItem::GetCachedPlexMediaServerThumb(newPoster);
-    bool   success = true;
-
-    if (CFile::Exists(newPosterFile) == false)
-      success = AsyncDownloadMedia(newPoster, newPosterFile);
-
-    if (success)
-      m_movieItem->SetThumbnailImage(newPosterFile);
-  }
 #endif
-
   m_hasUpdatedThumb = true;
 
   // Update our screen
@@ -879,24 +918,8 @@ void CGUIDialogVideoInfo::OnGetFanart()
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-#else
-  string newFanart = OnGetMedia("arts", m_movieItem->GetCachedFanart(), 20035);
-  if (newFanart.size() > 0)
-  {
-    string newFanartFile = CFileItem::GetCachedPlexMediaServerFanart(newFanart);
-    bool   success = true;
-
-    if (CFile::Exists(newFanartFile) == false)
-      success = AsyncDownloadMedia(newFanart, newFanartFile);
-
-    if (success)
-    {
-      m_movieItem->SetQuickFanart(newFanart);
-      m_movieItem->SetProperty("fanart_image", newFanartFile);
-    }
-  }
 #endif
-  m_movieItem->SetArt("fanart", result);
+
   m_hasUpdatedThumb = true;
 
   // Update our screen
@@ -1004,6 +1027,7 @@ string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   return CPlexDirectory::BuildImageURL(url, finalURL.Get(), local);
 }
 
+#if 0
 bool CGUIDialogVideoInfo::AsyncDownloadMedia(const string& remoteFile, const string& localFile)
 {
   CStdString tempFile = "special://temp/media_download.jpg";
@@ -1014,4 +1038,5 @@ bool CGUIDialogVideoInfo::AsyncDownloadMedia(const string& remoteFile, const str
 
   return success;
 }
+#endif
 /* END PLEX */

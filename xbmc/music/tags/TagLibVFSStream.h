@@ -21,6 +21,7 @@
  */
 #include "filesystem/File.h"
 #include "utils/StdString.h"
+#ifndef __PLEX__
 #include <taglib/tiostream.h>
 
 using namespace XFILE;
@@ -134,4 +135,4 @@ namespace MUSIC_INFO
     int         m_bufferSize;
   };
 }
-
+#endif

@@ -21,6 +21,7 @@
 #include "CocoaUtilsPlus.h"
 #include "PlexLibrarySectionManager.h"
 #include "URIUtils.h"
+#include "TextureCache.h"
 
 map<std::string, HostSourcesPtr> CPlexSourceScanner::g_hostSourcesMap;
 boost::recursive_mutex CPlexSourceScanner::g_lock;
@@ -106,9 +107,11 @@ void CPlexSourceScanner::Process()
       item->SetProperty("machineIdentifier", m_sources->uuid);
       
       // Load and set fanart.
+      /*
       item->CacheLocalFanart();
       if (CFile::Exists(item->GetCachedProgramFanart()))
         item->SetProperty("fanart_image", item->GetCachedProgramFanart());
+      */
       
       CLog::Log(LOGNOTICE, " -> Local section '%s' found.", item->GetLabel().c_str());
       sections.push_back(item);
@@ -338,10 +341,11 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
           share.m_hasStoreServices = item->GetProperty("hasStoreServices").asBoolean();
         
         share.strPath = item->GetPath();
-        share.m_strFanArtUrl = item->GetQuickFanart();
+        share.m_strFanArtUrl = item->GetArt(PLEX_ART_FANART);
         share.m_ignore = true;
         
         // Download thumbnail if needed.
+        /*
         CStdString cachedThumb(item->GetCachedPlexMediaServerThumb());
         CStdString thumb(item->GetThumbnailImage());
         
@@ -357,8 +361,25 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
             item->SetThumbnailImage("");
         }
         
-        share.m_strThumbnailImage = cachedThumb;
+        share.m_strThumbnailImage = cachedThumb;*/
+        bool needsRecache = false;
+        CStdString imageURL = item->GetArt(PLEX_ART_THUMB);
+        CStdString loadPath = CTextureCache::Get().CheckCachedImage(item->GetArt(PLEX_ART_THUMB), false, needsRecache);
+
+        if (loadPath.IsEmpty())
+        {
+          CTextureDetails details;
+          // not in our texture cache, so try and load directly and then cache the result
+          if (CTextureCache::Get().CacheImage(imageURL, details))
+            imageURL = details.file;
+        }
+        else
+          imageURL = loadPath;
+
+        share.m_strThumbnailImage = imageURL;
         
+        /* IS THIS REALLY NEEDED ? */
+#if 0
         // Fanart.
         if (!item->HasProperty("fanart_image"))
         {
@@ -366,6 +387,7 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
           if (CFile::Exists(item->GetCachedProgramFanart()))
             item->SetProperty("fanart_image", item->GetCachedProgramFanart());
         }
+#endif
         
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)

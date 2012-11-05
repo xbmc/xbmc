@@ -10,9 +10,39 @@
 #include "File.h"
 #include "URIUtils.h"
 #include "StackDirectory.h"
+#include "URL.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace boost;
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::CacheImageUrl(const string &url)
+{
+  bool needsRecache = false;
+  std::string returnFile = CTextureCache::Get().CheckCachedImage(url, false, needsRecache);
+  if (returnFile.empty())
+  {
+    CTextureDetails details;
+    if (CTextureCache::Get().CacheImage(url, details))
+      returnFile = details.file;
+  }
+  return returnFile;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::string PlexUtils::CacheImageUrlAsync(const std::string &url)
+{
+  bool needsRecache = false;
+  std::string returnFile = CTextureCache::Get().CheckCachedImage(url, false, needsRecache);
+  if (returnFile.empty())
+  {
+    CTextureCache::Get().BackgroundCacheImage(url);
+    return "";
+  }
+  return returnFile;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 __int64_t PlexUtils::Size(const CStdString& strFileName)

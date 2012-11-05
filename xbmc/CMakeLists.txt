@@ -1,6 +1,6 @@
-set(subdirs cores cores/AudioRenderers addons cdrip dbwrappers dialogs filesystem guilib input interfaces music network
+set(subdirs cores addons cdrip dbwrappers dialogs filesystem guilib input interfaces music network
 peripherals pictures playlists powermanagement programs rendering settings storage threads
-utils video windowing windows)
+utils video windowing windows pvr commons epg main)
 
 if(APPLE)
 	list(APPEND subdirs osx)

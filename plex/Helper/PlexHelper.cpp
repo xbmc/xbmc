@@ -354,7 +354,7 @@ bool PlexHelper::IsRunning()
 void PlexHelper::CaptureAllInput()
 {
   // Take keyboard focus away from FrontRow and native screen saver
-  if (g_sysinfo.IsAppleTV())
+  if (g_sysinfo.IsAppleTV2())
   {
     ProcessSerialNumber psn = {0, kCurrentProcess};
 
@@ -367,7 +367,7 @@ void PlexHelper::CaptureAllInput()
 void PlexHelper::ReleaseAllInput()
 {
   // Give keyboard focus back to FrontRow and native screen saver
-  if (g_sysinfo.IsAppleTV())
+  if (g_sysinfo.IsAppleTV2())
   {
     DisableSecureEventInput();
   }

@@ -103,6 +103,7 @@
 #include "PlexAsyncUrlResolver.h"
 
 #include "PlexMediaServerQueue.h"
+#include "ApplicationMessenger.h"
 /* END PLEX */
 
 using namespace std;
@@ -1116,7 +1117,7 @@ void CDVDPlayer::Process()
   }
   catch (CRedirectException* ex)
   {
-    g_application.getApplicationMessenger().RestartWithNewPlayer(0, ex->m_pNewUrl->Get());
+    CApplicationMessenger::Get().RestartWithNewPlayer(0, ex->m_pNewUrl->Get());
     delete ex;
     m_bFileOpenComplete = true;
     return;
@@ -1430,7 +1431,7 @@ void CDVDPlayer::Process()
   // We're done, if we have a URL to hit on exit, do so now.
   if (stopURL.empty() == false)
   {
-    CFileCurl http;
+    CCurlFile http;
     CStdString out;
     http.Get(stopURL, out);
   }
@@ -4336,7 +4337,7 @@ void CDVDPlayer::OpenFileComplete()
     else if (m_strError.size() > 0)
       err = m_strError, ret = false;
 
-    g_application.getApplicationMessenger().MediaOpenComplete(ret, err);
+    CApplicationMessenger::Get().MediaOpenComplete(ret, err);
 
     // allow renderer to switch to fullscreen if requested
     m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
@@ -4648,7 +4649,7 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     //
     if (Cocoa_IsHostLocal(serverHost) == true)
     {
-      g_application.getApplicationMessenger().RestartWithNewPlayer(0, m_item.GetPath());
+      CApplicationMessenger::Get().RestartWithNewPlayer(0, m_item.GetPath());
       m_bFileOpenComplete = true;
       return false;
     }

@@ -29,6 +29,11 @@
 #include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
 
+/* PLEX */
+#include "filesystem/IFile.h"
+#include "URL.h"
+/* END PLEX */
+
 //using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;

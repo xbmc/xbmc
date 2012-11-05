@@ -42,10 +42,10 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 
   /* PLEX */
   // Make sure we set up the environment for SSA+fontconfig.
-#ifdef _WIN32
-  SetEnvironmentVariable("FONTCONFIG_PATH", _P("special://xbmc/fontconfig").c_str());
+#ifdef TARGET_WINDOWS
+  SetEnvironmentVariable("FONTCONFIG_PATH", CSpecialProtocol::TranslatePath(CStdString("special://xbmc/fontconfig")).c_str());
 #else
-  setenv("FONTCONFIG_PATH", _P("special://xbmc/fontconfig").c_str(), 1);
+  setenv("FONTCONFIG_PATH", CSpecialProtocol::TranslatePath(CStdString("special://xbmc/fontconfig")).c_str(), 1);
 #endif
   /* END PLEX */
 

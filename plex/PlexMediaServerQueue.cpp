@@ -7,7 +7,7 @@ PlexMediaServerQueue PlexMediaServerQueue::g_plexMediaServerQueue;
 
 /////////////////////////////////////////////////////////////////////////////
 PlexMediaServerQueue::PlexMediaServerQueue()
-  : m_allowScrobble(true)
+  : CThread("PlexMediaServerQueue"), m_allowScrobble(true)
 {
   Create();
 }
@@ -38,7 +38,7 @@ void PlexMediaServerQueue::Process()
       else
       {
         // Hit the Plex Media Server.
-        CFileCurl  http;
+        CCurlFile  http;
         CStdString resp;
         
         if (pair.first == "PUT")

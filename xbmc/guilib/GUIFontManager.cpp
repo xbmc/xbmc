@@ -475,7 +475,7 @@ void GUIFontManager::LoadFonts(const CStdString& strFontSet)
                 else if (style == "italics")
                   iAliasStyle = FONT_STYLE_ITALICS;
                 else if (style == "bolditalics")
-                  iAliasStyle = FONT_STYLE_BOLD_ITALICS;
+                  iAliasStyle = FONT_STYLE_BOLD | FONT_STYLE_ITALICS;
               }
 
               CLog::Log(LOGINFO, "Adding alias %s -> %s:%d", key.c_str(), alias, iAliasStyle);
@@ -730,7 +730,7 @@ bool GUIFontManager::FindSystemFontPath(const CStdString& strFilename, CStdStrin
         foundFullPath += fontExtensions[j];
 
 #ifdef _LINUX
-      foundFullPath = PTH_IC(foundFullPath);
+      foundFullPath = CSpecialProtocol::TranslatePathConvertCase(foundFullPath);
 #endif
 
       if (XFILE::CFile::Exists(foundFullPath))

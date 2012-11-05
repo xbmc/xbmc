@@ -429,13 +429,16 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     m_pFormatContext     = m_dllAvFormat.avformat_alloc_context();
     m_pFormatContext->pb = m_ioContext;
 
-    if (m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, NULL) < 0)
+    /* PLEX */
+    int res;
+    if ((res=m_dllAvFormat.avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, NULL) < 0))
     {
       SetError(GetErrorString(res));
       CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
       Dispose();
       return false;
     }
+    /* END PLEX */
   }
 
   // set the interrupt callback, appeared in libavformat 53.15.0
@@ -1026,8 +1029,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iBitsPerPixel = pStream->codec->bits_per_coded_sample;
 
         /* PLEX */
-        st->iLevel = pStream->codec->level;
-        st->iProfile = pStream->codec->profile;
+        st->level = pStream->codec->level;
+        st->profile = pStream->codec->profile;
         st->iBitRate = pStream->codec->bit_rate;
         /* END PLEX */
 

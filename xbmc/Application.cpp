@@ -3609,7 +3609,11 @@ void CApplication::Stop(int exitCode)
     CVariant vExitCode(exitCode);
     CAnnouncementManager::Announce(System, "xbmc", "OnQuit", vExitCode);
 
+#ifndef __PLEX__
     SaveFileState(true);
+#else
+    UpdateFileState("stop");
+#endif
 
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
@@ -3627,7 +3631,7 @@ void CApplication::Stop(int exitCode)
     CBackgroundRunner::StopAll();
     for (int i=0; CBackgroundRunner::GetNumActive() != 0 && i<120; i++)
     {
-      m_applicationMessenger.ProcessMessages();
+      CApplicationMessenger::Get().ProcessMessages();
       Sleep(50);
     }
     /* END PLEX */
@@ -3719,6 +3723,7 @@ void CApplication::Stop(int exitCode)
     if (PlexHelper::GetInstance().IsAlwaysOn() == false)
       PlexHelper::GetInstance().Stop();
     /* END PLEX */
+#endif
 #endif
 
     /* PLEX */
@@ -4368,8 +4373,10 @@ void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
     g_audioManager.Enable(false);
 #endif
 
+#ifndef __PLEX__
     if (item.HasPVRChannelInfoTag())
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
+#endif
   }
   m_bPlaybackStarting = false;
 

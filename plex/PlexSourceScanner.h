@@ -107,7 +107,7 @@ protected:
   static void CheckForRemovedSources(VECSOURCES& sources, int windowId);
   
   CPlexSourceScanner(const HostSourcesPtr& sources)
-    : m_sources(sources)
+    : CThread(CStdString("PlexSourceScanner: ") + CStdString(sources->host)), m_sources(sources)
   {
     Create(true);
   }

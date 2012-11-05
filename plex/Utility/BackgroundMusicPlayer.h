@@ -54,7 +54,7 @@ private:
   
   // Audio callbacks
   void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
-  void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength){};
+  void OnAudioData(const float* pAudioData, int iAudioDataLength) {};
   
   // Member variables.
   int m_globalVolume;

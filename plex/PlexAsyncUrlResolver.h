@@ -9,10 +9,11 @@ typedef boost::shared_ptr<PlexAsyncUrlResolver> PlexAsyncUrlResolverPtr;
 #include "PlexLog.h"
 #include "PlexUtils.h"
 #include "HTTP.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "FileSystem/PlexDirectory.h"
 #include "Application.h"
 #include <boost/thread.hpp>
+#include "URL.h"
 
 class PlexAsyncUrlResolver
 {
@@ -79,7 +80,7 @@ class PlexAsyncUrlResolver
       // FIXME, we should look at postHeaders as well.
       //
       CLog::Log(LOGNOTICE, "Found a POST URL, going to fetch %s", m_item.GetProperty("postURL").c_str());
-      CFileCurl curl;
+      CCurlFile curl;
       curl.ClearCookies();
       if (curl.Get(m_item.GetProperty("postURL").asString(), body))
       {

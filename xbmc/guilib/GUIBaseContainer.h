@@ -95,7 +95,6 @@ public:
 
   /* PLEX */
   virtual int GetSelectedItemID() const;
-  void UpdateStaticItems(bool refreshItems = false);
   std::vector<CGUIListItemPtr>& GetStaticItems() { return m_staticItems; }
   std::vector<CGUIListItemPtr>& GetItems() { return m_items; }
   /* END PLEX */

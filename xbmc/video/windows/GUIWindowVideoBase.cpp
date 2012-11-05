@@ -898,8 +898,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int& starto
   return startoffset;
 #else
   if (item->HasProperty("viewOffset"))
-    return boost::lexical_cast<int>(item->GetProperty("viewOffset").asString()) * 75 / 1000;
-  return 0;
+    startoffset = boost::lexical_cast<int>(item->GetProperty("viewOffset").asString()) * 75 / 1000;
 #endif
 }
 

@@ -83,6 +83,12 @@ namespace XFILE
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
       static bool GetMimeType(const CURL &url, CStdString &content, CStdString useragent="");
 
+      /* PLEX */
+      bool Put(const CStdString& strURL, CStdString& strHTML);
+      bool Delete(const CStdString& strURL, CStdString& strHTML);
+      void ClearCookies() { m_clearCookies = true; }
+      /* END PLEX */
+
       class CReadState
       {
       public:
@@ -116,6 +122,19 @@ namespace XFILE
 
           long         Connect(unsigned int size);
           void         Disconnect();
+
+          /* PLEX */
+          CStdString    m_strDeadEndUrl; // If we can't redirect, this holds the last URL.
+          int           m_ticklePipe[2];
+
+          void Cancel()
+          {
+#ifndef TARGET_WINDOWS
+            write(m_ticklePipe[1], "Q", 1);
+#endif
+            m_cancelled = true;
+          }
+          /* END PLEX */
       };
 
     protected:
@@ -167,6 +186,11 @@ namespace XFILE
       MAPHTTPHEADERS m_requestheaders;
 
       long            m_httpresponse;
+
+      /* PLEX */
+      CStdString      m_verb;
+      bool            m_clearCookies;
+      /* END PLEX */
   };
 }
 

@@ -123,7 +123,7 @@ public:
     else
     {
       // ok, now load the font face
-     if (FT_New_Face( m_library, _P(filename), 0, &face ) != 0)
+     if (FT_New_Face( m_library, CSpecialProtocol::TranslatePath(filename), 0, &face ) != 0)
         return NULL;
     }
 #endif

@@ -39,6 +39,7 @@
 
 /* PLEX */
 #include "ThumbLoader.h"
+#include "music/MusicThumbLoader.h"
 /* END PLEX */
 
 namespace MUSIC_INFO

@@ -1929,9 +1929,9 @@ CStdString CSettings::GetPlexMediaServerThumbFolder() const
 {
   CStdString folder;
   if (GetCurrentProfile().hasDatabases())
-    URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), _P("Thumbnails\\"), folder);
+    URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\", folder);
   else
-    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), _P("Thumbnails\\"), folder);
+    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\", folder);
 
   return folder;
 

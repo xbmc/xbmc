@@ -24,6 +24,7 @@
 #include "GUIWindowSlideShow.h"
 #include "PictureThumbLoader.h"
 #include "DllImageLib.h"
+#include "video/VideoThumbLoader.h"
 
 class CGUIDialogProgress;
 

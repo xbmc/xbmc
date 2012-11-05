@@ -23,6 +23,7 @@
 #include "windows/GUIMediaWindow.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 class CGUIWindowPrograms :
       public CGUIMediaWindow, public IBackgroundLoaderObserver

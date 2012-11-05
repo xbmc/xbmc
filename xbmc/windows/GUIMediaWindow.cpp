@@ -71,7 +71,6 @@
 #include "xbmc/android/activity/XBMCApp.h"
 #endif
 
-<<<<<<< HEAD
 /* PLEX */
 #include "video/VideoInfoTag.h"
 #include "GUI/GUIDialogPlexPluginSettings.h"
@@ -79,18 +78,13 @@
 #include "GUI/GUIDialogRating.h"
 #include "dialogs/GUIDialogCache.h"
 #include "PlexSourceScanner.h"
+#include "guilib/GUIKeyboardFactory.h"
 /* END PLEX */
 
-#define CONTROL_BTNVIEWASICONS     2
-#define CONTROL_BTNSORTBY          3
-#define CONTROL_BTNSORTASC         4
-#define CONTROL_BTN_FILTER        19
-=======
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
 #define CONTROL_BTNSORTASC           4
 #define CONTROL_BTN_FILTER          19
->>>>>>> xbmc/master
 
 #define CONTROL_LABELFILES          12
 
@@ -874,7 +868,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
 
   /* PLEX */
   // Save the default view mode.
-  if (strOldDirectory == directory)
+  if (strDirectory == directory)
     items.SetDefaultViewMode(m_vecItems->GetDefaultViewMode());
 
 #ifndef __PLEX__
@@ -888,7 +882,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
     if (items.m_wasListingCancelled == true)
     {
       // Fast path.
-      if (strDirectory.Equals(strOldDirectory) == false)
+      if (strDirectory.Equals(directory) == false)
         m_history.RemoveParentPath();
 
       return true;
@@ -1260,7 +1254,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (pItem->IsSearchDir())
     {
       CStdString strSearchTerm = "";
-      if (CGUIDialogKeyboard::ShowAndGetInput(strSearchTerm, pItem->GetSearchPrompt(), false))
+      if (CGUIKeyboardFactory::ShowAndGetInput(strSearchTerm, pItem->GetSearchPrompt(), false))
       {
         // Encode the query.
         CURL::Encode(strSearchTerm);
@@ -1769,7 +1763,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
 
   // Delete.
   CStdString strData;
-  CFileCurl http;
+  CCurlFile http;
   bool status = http.Delete(item->GetProperty("key").asString(), strData);
 
   if (status == false)

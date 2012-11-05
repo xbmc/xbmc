@@ -45,6 +45,7 @@
 #include "VideoInfoTag.h"
 #include "utils/SystemInfo.h"
 #include "GUIDialogKaiToast.h"
+#include "ApplicationMessenger.h"
 
 #include <vector>
 #include <set>
@@ -53,7 +54,7 @@ bool CPlexMediaServerPlayer::g_needToRestartMediaServer = false;
 
 CPlexMediaServerPlayer::CPlexMediaServerPlayer(IPlayerCallback& callback)
     : IPlayer(callback)
-    , CThread()
+    , CThread("PlexMediaServerPlayer")
     , m_http(true)
     , m_mappedRegion(0)
     , m_frameMutex(ipc::open_or_create, "plex_frame_mutex")
@@ -368,13 +369,13 @@ void CPlexMediaServerPlayer::SeekTime(__int64 iTime)
 }
 
 // return the time in milliseconds
-__int64 CPlexMediaServerPlayer::GetTime()
+int64_t CPlexMediaServerPlayer::GetTime()
 {
   return m_clock;
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc
-int CPlexMediaServerPlayer::GetTotalTime()
+int64_t CPlexMediaServerPlayer::GetTotalTime()
 {
   return m_totalTime;
 }
@@ -422,7 +423,7 @@ void CPlexMediaServerPlayer::OnPlaybackEnded(const string& args)
     pDialog->SetLine(2, "");
 
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, false);
+    CApplicationMessenger::Get().SendMessage(tMsg, false);
   }
   
   if (m_pDlgCache)
@@ -430,7 +431,7 @@ void CPlexMediaServerPlayer::OnPlaybackEnded(const string& args)
   m_pDlgCache = NULL; 
 
   ThreadMessage tMsg = {TMSG_MEDIA_STOP};
-  g_application.getApplicationMessenger().SendMessage(tMsg, false);
+  CApplicationMessenger::Get().SendMessage(tMsg, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -447,7 +448,7 @@ void CPlexMediaServerPlayer::OnPlaybackStarted()
     g_renderManager.SetRGB32Image((const char*)m_mappedRegion->get_address(), m_height, m_width, m_width*4);
     
     // Configure renderer.
-    g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB, 0);
+    g_renderManager.Configure(m_width, m_height, m_width, m_height, 30.0f, CONF_FLAGS_FULLSCREEN | CONF_FLAGS_RGB, RENDER_FMT_NONE, 0, 0);
     
     g_application.NewFrame();
   }

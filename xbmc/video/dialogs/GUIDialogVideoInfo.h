@@ -48,7 +48,11 @@ public:
   void SetMovie(const CFileItemPtr& item);
   /* END PLEX */
 
+#ifndef __PLEX__
   static std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
+#else
+  std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
+#endif
 protected:
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
@@ -72,7 +76,7 @@ protected:
 
   /* PLEX */
   std::string OnGetMedia(const std::string& mediaType, const std::string& currentCachedMedia, int label);
-  bool AsyncDownloadMedia(const std::string& remoteFile, const std::string& localFile);
+  //bool AsyncDownloadMedia(const std::string& remoteFile, const std::string& localFile);
   std::map<std::string, std::string> m_mediaMap;
   /* END PLEX */
 };

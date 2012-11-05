@@ -14,7 +14,7 @@
 #include <boost/thread.hpp>
 
 #include "CocoaUtilsPlus.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
@@ -54,7 +54,7 @@ class PlexServer
   /// Is it alive? Blocks, can take time.
   bool reachable()
   {
-    CFileCurl  http;
+    CCurlFile  http;
 
     /* set short timeout */
     http.SetTimeout(1);

@@ -87,8 +87,8 @@ public:
   virtual float GetSubTitleDelay() { return 0.0f; }
 
   virtual void SeekTime(__int64 iTime);
-  virtual __int64 GetTime();
-  virtual int GetTotalTime();
+  virtual int64_t GetTime();
+  virtual int64_t GetTotalTime();
   virtual void ToFFRW(int iSpeed);
   virtual void DoAudioWork() {}
   

@@ -73,6 +73,10 @@ public:
   std::string GetFileName();
   virtual void GetStreamCodecName(int iStreamId, CStdString &strName);
 
+  /* PLEX */
+  virtual int GetStreamBitrate() { return 0; }
+  /* END PLEX */
+
 protected:
   friend class CDemuxStreamAudioBXA;
   CDVDInputStream* m_pInput;

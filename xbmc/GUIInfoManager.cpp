@@ -4150,7 +4150,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   else
   {
     CMusicThumbLoader loader;
-    loader.LoadItem(m_currentFile);
+    loader.LoadItem(m_currentFile.get());
   }
   m_currentFile->FillInDefaultIcon();
 
@@ -4177,7 +4177,9 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   if (!item.HasArt("thumb"))
   {
     CVideoThumbLoader loader;
-    loader.LoadItem(m_currentFile);
+    /* PLEX */
+    loader.LoadItem(m_currentFile.get());
+    /* END PLEX */
   }
 
   // find a thumb for this stream

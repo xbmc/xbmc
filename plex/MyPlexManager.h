@@ -17,7 +17,7 @@
 #include "CocoaUtils.h"
 #include "CocoaUtilsPlus.h"
 #include "log.h"
-#include "filesystem/FileCurl.h"
+#include "filesystem/CurlFile.h"
 #include "FileSystem/PlexDirectory.h"
 #include "PlexLibrarySectionManager.h"
 #include "PlexServerManager.h"
@@ -49,13 +49,12 @@ class MyPlexManager
     if (g_guiSettings.GetString("myplex.email").empty() || g_guiSettings.GetString("myplex.password").empty())
       return false;
     
-    CFileCurl http;
+    CCurlFile http;
     SetupRequestHeaders(http);
-    http.SetUserAndPassword(g_guiSettings.GetString("myplex.email"), g_guiSettings.GetString("myplex.password"));
     
     // Issue the sign-in request.
     CStdString res;
-    string request = GetBaseUrl(true) + "/users/sign_in.xml";
+    string request = GetBaseUrl(true, g_guiSettings.GetString("myplex.email"), g_guiSettings.GetString("myplex.password")) + "/users/sign_in.xml";
     bool success = http.Post(request, "", res);
     
     if (success && res.empty() == false)
@@ -202,7 +201,7 @@ class MyPlexManager
         
         // Add token to path and to fanart.
         section->SetPath(addArgument(section->GetPath(), "X-Plex-Token=" + token));
-        section->SetQuickFanart(addArgument(section->GetQuickFanart(), "X-Plex-Token=" + token));
+        //section->SetQuickFanart(addArgument(section->GetQuickFanart(), "X-Plex-Token=" + token));
         
         // Separate 'em into shared and owned.
         if (section->GetProperty("owned") == "1")
@@ -286,7 +285,7 @@ class MyPlexManager
   }
 
   /// Utility method for myPlex to setup request headers.
-  static void SetupRequestHeaders(CFileCurl& http)
+  static void SetupRequestHeaders(CCurlFile& http)
   {
     // Initialize headers.
     http.SetRequestHeader("Content-Type", "application/xml");
@@ -299,15 +298,19 @@ class MyPlexManager
   }
   
   /// Utility method to retrieve the myPlex URL.
-  static string GetBaseUrl(bool secure=true)
+  static string GetBaseUrl(bool secure=true, string username=string(), string password=string())
   {
     string ret;
+    string unamepassword;
+
+    if (!username.empty() && !password.empty())
+      unamepassword = username + ":" + password;
     
     // Allow the environment variable to override the default, useful for debugging.
     if (getenv("MYPLEX_URL"))
       ret = getenv("MYPLEX_URL");
     else
-      ret = (secure ? "https://" : "http://") + cMyPlexURL;
+      ret = (secure ? "https://" : "http://") + unamepassword + cMyPlexURL;
     
     return ret;
   }

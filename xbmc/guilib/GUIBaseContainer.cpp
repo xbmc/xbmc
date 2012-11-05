@@ -125,9 +125,9 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
       else
         ProcessItem(pos, origin.y, item, focused, currentTime, dirtyregions);
 #else
-        ProcessItem(origin.x, pos, item.get(), focused && HasFocus(), currentTime, dirtyregions);
+        ProcessItem(origin.x, pos, item, focused && HasFocus(), currentTime, dirtyregions);
       else
-        ProcessItem(pos, origin.y, item.get(), focused && HasFocus(), currentTime, dirtyregions);
+        ProcessItem(pos, origin.y, item, focused && HasFocus(), currentTime, dirtyregions);
 #endif
     }
     // increment our position

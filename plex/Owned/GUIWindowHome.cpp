@@ -623,7 +623,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         }
         
         newItem->m_idepth = 0;
-        newItem->SetQuickFanart(item->GetQuickFanart());
+        //newItem->SetQuickFanart(item->GetQuickFanart());
+        newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
         newItem->m_iprogramCount = id++;
 
         newList.push_back(newItem);

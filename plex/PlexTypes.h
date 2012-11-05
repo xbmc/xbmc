@@ -53,16 +53,16 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 #define MUSICPLAYER_HAS_NEW_COVER_NEXT 227
 #define MUSICPLAYER_NEXT_NEW_COVER  228
 #define MUSICPLAYER_NOW_PLAYING_FLIPPED 229
-#define MUSICPLAYER_FANART          230
+#define MUSICPLAYER_FANART          240
 #define CONTAINER_FIRST_TITLE       5000
 #define CONTAINER_SECOND_TITLE      5001
 
 #define SYSTEM_SELECTED_PLEX_MEDIA_SERVER      5002
 #define SLIDESHOW_SHOW_DESCRIPTION  990
 
-#define LISTITEM_STAR_DIFFUSE       (LISTITEM_START + 100)
-#define LISTITEM_BANNER             (LISTITEM_START + 101)
-#define LISTITEM_FIRST_GENRE        (LISTITEM_START + 102)
+#define LISTITEM_STAR_DIFFUSE       (LISTITEM_START + 110)
+#define LISTITEM_BANNER             (LISTITEM_START + 111)
+#define LISTITEM_FIRST_GENRE        (LISTITEM_START + 112)
 
 #define LISTITEM_TYPE               (LISTITEM_START + 150)
 #define LISTITEM_GRANDPARENT_THUMB  (LISTITEM_START + 151)
@@ -82,5 +82,12 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 #define TMSG_HIDE                 911
 
 #define CONF_FLAGS_RGB           0x20
+
+#define PLEX_ART_THUMB "plex_thumb"
+#define PLEX_ART_GRANDPARENT_THUMB "plex_grandparentthumb"
+#define PLEX_ART_FANART "plex_fanart"
+#define PLEX_ART_FANART_IMAGE "plex_fanart_image"
+#define PLEX_ART_FANART_FALLBACK "plex_fanart_fallback"
+#define PLEX_ART_BANNER "plex_banner"
 
 #endif

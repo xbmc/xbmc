@@ -43,6 +43,7 @@
 #include "sha.h"
 #include "threads/Thread.h"
 #include "PlexUtils.h"
+#include "URL.h"
 /* END PLEX */
 
 using namespace XFILE;
@@ -414,11 +415,6 @@ uint32_t *CPicture::TransposeOffAxis(uint32_t *pixels, unsigned int width, unsig
 }
 
 /* PLEX */
-bool CPicture::CacheBanner(const CStdString& sourceUrl, const CStdString& destFile)
-{
-  return CacheImage(sourceUrl, destFile, 0, 0);
-}
-
 bool CPicture::GetMediaFromPlexMediaServerCache(const CStdString& strFileName, const CStdString& strThumbFileName)
 {
   CFileItem fileItem(strFileName, false);
@@ -436,7 +432,7 @@ bool CPicture::GetMediaFromPlexMediaServerCache(const CStdString& strFileName, c
       // Bogus, needs to match PlexDirectory.
       CStdString size = "1280-720";
       if (url.Find("/poster") != -1 || url.Find("/thumb") != -1)
-        size = boost::lexical_cast<std::string>(g_advancedSettings.m_thumbSize) + "-" + boost::lexical_cast<std::string>(g_advancedSettings.m_thumbSize);
+        size = boost::lexical_cast<std::string>(g_advancedSettings.GetThumbSize()) + "-" + boost::lexical_cast<std::string>(g_advancedSettings.GetThumbSize());
       else if (url.Find("/banner") != -1)
         size = "800-200";
 

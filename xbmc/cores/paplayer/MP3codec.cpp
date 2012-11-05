@@ -164,6 +164,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int64_t length = 0;
   bool bTags = false;
   /* PLEX */
+  CFileItem item(strFile, false);
   bool bIsInternetStream = item.IsInternetStream();
   /* END PLEX */
 
@@ -171,19 +172,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
     return false;
-  }
-
-  /* PLEX - Wrap tag reading in this if statement. Improves performance */
-  if (!bIsInternetStream)
-  {
-    bTags = mp3info.ReadSeekAndReplayGainInfo(strFile);
-    if(bTags)
-    {
-      // Guess Bitrate and obtain replayGain information etc.
-      mp3info.ReadSeekAndReplayGainInfo(strFile);
-      mp3info.GetSeekInfo(m_seekInfo);
-      mp3info.GetReplayGain(m_replayGain);
-    }
   }
 
   // Guess Bitrate and obtain replayGain information etc.

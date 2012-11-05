@@ -44,6 +44,12 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 
+/* PLEX */
+#include "Application.h"
+#include "FileItem.h"
+#include "Variant.h"
+/* END PLEX */
+
 using namespace XFILE;
 using namespace XCURL;
 
@@ -134,6 +140,21 @@ size_t CCurlFile::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmem
 
   free(strData);
 
+  /* PLEX */
+  // See if we redirected to a player that CURL can't handle.
+  CStdString redirectUrl = m_httpheader.GetValue("Location");
+  if (redirectUrl.size() > 7)
+  {
+    if (redirectUrl.substr(0, 7) == "plex://" ||
+        redirectUrl.substr(0, 6) == "mms://"  ||
+        redirectUrl.Find("/video/:/webkit") != -1)
+    {
+      CLog::Log(LOGINFO, "We reached a non-CURL URL: %s", redirectUrl.c_str());
+      m_strDeadEndUrl = redirectUrl;
+    }
+  }
+  /* END PLEX */
+
   return iSize;
 }
 
@@ -198,6 +219,15 @@ CCurlFile::CReadState::CReadState()
   m_cancelled = false;
   m_bFirstLoop = true;
   m_headerdone = false;
+
+  /* PLEX */
+#ifdef TARGET_WINDOWS
+  ::shutdown(m_ticklePipe[0], 2);
+  ::close(m_ticklePipe[0]);
+  ::shutdown(m_ticklePipe[1], 2);
+  ::close(m_ticklePipe[1]);
+#endif
+  /* END PLEX */
 }
 
 CCurlFile::CReadState::~CReadState()
@@ -329,6 +359,10 @@ CCurlFile::CCurlFile()
   m_state = new CReadState();
   m_skipshout = false;
   m_httpresponse = -1;
+
+  /* PLEX */
+  m_clearCookies = false;
+  /* END PLEX */
 }
 
 //Has to be called before Open()
@@ -390,6 +424,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_FOLLOWLOCATION, TRUE);
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
+#ifndef __PLEX__
   // Enable cookie engine for current handle to re-use them in future requests
   CStdString strCookieFile;
   CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
@@ -403,6 +438,20 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
 
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIELIST, "FLUSH");
+#else
+  /* PLEX */
+  if (m_clearCookies == false)
+  {
+    // Set custom cookie if requested
+    if (!m_cookie.IsEmpty())
+      g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
+  }
+  else
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_COOKIESESSION, 1);
+  }
+  /* END PLEX */
+#endif
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -432,6 +481,12 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDSIZE, m_postdata.length());
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDS, m_postdata.c_str());
   }
+
+  /* PLEX */
+  // Another verb?
+  if (m_verb.empty() == false)
+    g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_verb.c_str());
+  /* END PLEX */
 
   // setup Referer header if needed
   if (!m_referer.IsEmpty())
@@ -520,6 +575,20 @@ void CCurlFile::SetCommonOptions(CReadState* state)
 
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
+
+  /* PLEX */
+  // See if we need to add any options from the FileItem.
+  if (g_application.CurrentFileItem().GetPath() == m_url)
+  {
+    CStdString cookies = g_application.CurrentFileItem().GetProperty("httpCookies").asString();
+    if (cookies.size() > 0)
+      g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, cookies.c_str());
+
+    CStdString userAgent = g_application.CurrentFileItem().GetProperty("userAgent").asString();
+    if (userAgent.size() > 0)
+      g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, userAgent.c_str());
+  }
+  /* END PLEX */
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
@@ -818,6 +887,9 @@ bool CCurlFile::IsInternet(bool checkDNS /* = true */)
 void CCurlFile::Cancel()
 {
   m_state->m_cancelled = true;
+  /* PLEX */
+  m_state->Cancel();
+  /* END PLEX */
   while (m_opened)
     Sleep(1);
 }
@@ -846,7 +918,11 @@ bool CCurlFile::Open(const CURL& url)
   SetRequestHeaders(m_state);
 
   m_httpresponse = m_state->Connect(m_bufferSize);
+#ifndef __PLEX__
   if( m_httpresponse < 0 || m_httpresponse >= 400)
+#else
+  if ((m_httpresponse < 0 || m_httpresponse >= 400) && m_state->m_strDeadEndUrl.empty())
+#endif
     return false;
 
   SetCorrectHeaders(m_state);
@@ -866,6 +942,15 @@ bool CCurlFile::Open(const CURL& url)
     CLog::Log(LOGDEBUG,"CurlFile - file <%s> is a shoutcast stream. re-opening", m_url.c_str());
     throw new CRedirectException(new CShoutcastFile);
   }
+
+  /* PLEX */
+  // Did we hit a dead end?
+  if (m_state->m_strDeadEndUrl.size() > 0)
+  {
+    /* FIXME: verify that this actually works */
+    throw new CRedirectException(new CCurlFile, new CURL(m_state->m_strDeadEndUrl));
+  }
+  /* END PLEX */
 
   m_multisession = false;
   if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))
@@ -951,7 +1036,11 @@ bool CCurlFile::Exists(const CURL& url)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
+#ifndef __PLEX__
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+#else
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 15);
+#endif
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
 
@@ -1089,6 +1178,10 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
+  /* PLEX */
+  if (m_state->m_strDeadEndUrl.size() > 0)
+    throw new CRedirectException(new CCurlFile, new CURL(m_state->m_strDeadEndUrl));
+  /* END PLEX */
 
   if(result == CURLE_HTTP_RETURNED_ERROR)
   {
@@ -1326,6 +1419,16 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
 
         struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
 
+        /* PLEX */
+#ifdef TARGET_WINDOWS
+        // Add the tickle pipe
+        FD_SET(m_ticklePipe[0], &fdread);
+        if (m_ticklePipe[0] > maxfd)
+          maxfd = m_ticklePipe[0];
+#endif
+        /* END PLEX */
+
+
         /* Wait until data is available or a timeout occurs.
            We call dllselect(maxfd + 1, ...), specially in case of (maxfd == -1),
            we call dllselect(0, ...), which is basically equal to sleep. */
@@ -1334,6 +1437,19 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
           CLog::Log(LOGERROR, "%s - curl failed with socket error", __FUNCTION__);
           return false;
         }
+
+        /* PLEX */
+#ifdef TARGET_WINDOWS
+        // Read the byte from the tickle socket if there was one
+        if (FD_ISSET(m_ticklePipe[0], &fdread))
+        {
+          CLog::Log(LOGINFO, "The curl loop was woken up.");
+          char theTickleByte;
+          ::read(m_ticklePipe[0], &theTickleByte, 1);
+        }
+#endif
+        /* END PLEX */
+
       }
       break;
       case CURLM_CALL_MULTI_PERFORM:
@@ -1420,3 +1536,18 @@ int CCurlFile::IoControl(EIoControl request, void* param)
 
   return -1;
 }
+
+/* PLEX */
+bool CCurlFile::Put(const CStdString& strURL, CStdString& strHTML)
+{
+  m_verb = "PUT";
+  return Service(strURL, strHTML);
+}
+
+bool CCurlFile::Delete(const CStdString& strURL, CStdString& strHTML)
+{
+  m_verb = "DELETE";
+  return Service(strURL, strHTML);
+}
+
+/* END PLEX */
