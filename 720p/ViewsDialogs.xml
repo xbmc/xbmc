@@ -40,7 +40,7 @@
 	<include name="DialogHeading">
 		<align>center</align>
 		<font>Condensed-24</font>
-		<textcolor>Unfocused</textcolor>
+		<textcolor>white</textcolor>
 	</include>
 	<!-- animations open/close -->
 	<include name="DialogFadeInOut">
