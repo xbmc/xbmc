@@ -1,4 +1,7 @@
 add_subdirectory(libscrobbler)
+add_subdirectory(websocket)
+add_subdirectory(httprequesthandler)
+
 if(APPLE)
     add_subdirectory(osx)
 endif(APPLE)

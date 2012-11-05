@@ -1,5 +1,4 @@
 add_subdirectory(libsquish)
-add_subdirectory(libapetag)
 add_subdirectory(libhts)
 
 # build our external projects
@@ -11,21 +10,4 @@ if(APPLE)
 	set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS "-bundle")
 endif()
 
-if(NOT DEFINED USING_XCODE)
-  add_subdirectory(cximage-6.0)
-  add_subdirectory(ffmpeg)
-  add_subdirectory(cpluff)
-
-  # wrap them
-  add_custom_target(wraplibs ALL DEPENDS
-    avcodec-52-${ARCH}
-    avutil-50-${ARCH}
-    avcore-0-${ARCH}
-    avformat-52-${ARCH}
-    avfilter-1-${ARCH} 
-    swscale-0-${ARCH} 
-    postproc-51-${ARCH}
-    cpluff-${ARCH}
-    ImageLib-${ARCH}
-  )
-endif()
+add_subdirectory(cpluff)

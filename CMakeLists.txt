@@ -68,6 +68,7 @@ add_definitions(
   -D_LARGEFILE64_SOURCE
   -D__PLEX__
   -DPLEX_TARGET_NAME="PlexAlpha"
+  -DUSE_EXTERNAL_FFMPEG
 )
 
 if(APPLE)
@@ -119,9 +120,9 @@ include_directories(
 	${root}/xbmc/settings
 	${root}/lib
 	${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff
-  ${CMAKE_BINARY_DIR}/lib/ffmpeg/ffmpeg-prefix/src/ffmpeg
 
 	${root}/tools/darwin/depends/libcrystalhd
+	${root}/xbmc/cores/AudioEngine
 )
 
 

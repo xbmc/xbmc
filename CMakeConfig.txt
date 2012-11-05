@@ -1,15 +1,18 @@
 # vim: setlocal syntax=cmake:
 
+set(CMAKE_REQUIRED_INCLUDES "${dependdir}/include")
+
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
 include(CheckLibraryExists)
+include(CheckCSourceCompiles)
 
 set(AC_APPLE_UNIVERSAL_BUILD 0)
 set(HAS_DVD_DRIVE 0)
 set(HAS_LIBRTMP 1)
 
-######################### CHECK HEADER 
+######################### CHECK HEADER
 set(headers
   arpa/inet
   cdio/iso9660
@@ -49,6 +52,32 @@ set(headers
   utime
   wchar
   wctype
+  
+  # ffmpeg
+  libavcodec/avcodec
+  libavfilter/avfilter
+  libavformat/avformat
+  libavutil/avutil
+  libpostproc/postprocess
+  libswscale/swscale
+  
+  ffmpeg/avcodec
+  ffmpeg/avfilter
+  ffmpeg/avformat
+  ffmpeg/avutil
+  postproc/postprocess
+  ffmpeg/swscale
+  
+  libavcore/avcore
+  libavcore/samplefmt
+  libavutil/mem
+  libavutil/samplefmt
+  libavutil/opt
+  libavutil/mathematics
+  libswscale/rgb2rgb
+  ffmpeg/rgb2rgb
+  libswresample/swresample
+  libavresample/avresample
 )
 
 foreach(header ${headers})
@@ -138,7 +167,8 @@ if(APPLE)
 		DiskArbitration
 		QuartzCore
 		SystemConfiguration
-        Sparkle
+    Sparkle
+    IOSurface
 	)
 endif()
 
@@ -156,16 +186,26 @@ set(external_libs
 	samplerate
 	microhttpd
 	yajl
-    jpeg
+  jpeg
 	crypto
 	SDL
 	SDL_mixer
-    SDL_image
+  SDL_image
 	tinyxml
 	boost_thread
 	boost_system
 	z
-    GLEW
+  GLEW
+  
+  # ffmpeg libraries
+  avcodec
+  avutil
+  avformat
+  avfilter
+  avdevice
+  postproc
+  swscale
+  swresample
 )
 
 if(NOT APPLE)
@@ -179,7 +219,6 @@ set(non_link_libs
 	rtmp
 	plist
 	shairport
-	cec
 	curl
 	FLAC
 	modplug
@@ -190,15 +229,14 @@ set(non_link_libs
 	ass
 	mad
 	mpeg2
-	bluray
-    png
-    tiff
+  bluray
+  png
+  tiff
 )
 
 set(CONFIG_INTERNAL_LIBS
   lib_hts
   lib_squish
-  lib_apetag
 )
 
 if(APPLE)
@@ -288,6 +326,24 @@ endif()
 if(DEFINED HAVE_LIBSDL)
   set(HAVE_SDL 1)
 endif()
+
+#### check FFMPEG member name
+if(DEFINED HAVE_LIBAVFILTER_AVFILTER_H)
+  set(AVFILTER_INC "#include <libavfilter/avfilter.h>")
+else()
+  set(AVFILTER_INC "#include <ffmpeg/avfilter.h>")
+endif()
+CHECK_C_SOURCE_COMPILES("
+  ${AVFILTER_INC}
+  int main(int argc, char *argv[])
+  { 
+    static AVFilterBufferRefVideoProps test;
+    if(sizeof(test.sample_aspect_ratio))
+      return 0;
+    return 0;
+  }
+"
+HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO)
 
 #### Deal with some generated files
 if(APPLE)

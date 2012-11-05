@@ -1,5 +1,1 @@
-if(WIN)
-	find_all_sources(win threads_os_SRCS)
-endif()
-find_all_sources(. threads_platform_SRCS)
-add_sources(${threads_platform_SRCS} ${threads_os_SRCS})
+add_sources(Implementation.cpp)

@@ -1,5 +1,0 @@
-set(common_SRCS AudioRendererFactory.cpp NullDirectSound.cpp)
-if(APPLE)
-	set(os_SRCS CoreAudioRenderer.cpp)
-endif()
-add_sources(${common_SRCS} ${os_SRCS})
