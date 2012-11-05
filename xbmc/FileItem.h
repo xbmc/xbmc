@@ -321,7 +321,7 @@ public:
 
      \sa URIUtils::GetParentPath
    */
-  CStdString GetLocalMetadataPath() const;
+  CStdString GetOpticalFolderPath() const;
 
   // finds a matching local trailer file
   CStdString FindTrailer() const;

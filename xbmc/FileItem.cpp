@@ -2883,7 +2883,7 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
   if (IsOpticalMediaFile())
   { // optical media folders should be treated like a file
 //    useFolder = true;
-    strFile = GetLocalMetadataPath();
+    strFile = GetOpticalFolderPath();
   }
   if (useFolder)
     strFile = URIUtils::GetDirectory(strFile);
@@ -2947,7 +2947,7 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
 
   if (IsOpticalMediaFile())
-    strMovieName = GetLocalMetadataPath();
+    strMovieName = GetOpticalFolderPath();
 
   if ((!m_bIsFolder || URIUtils::IsInArchive(m_strPath) || IsOpticalMediaFile()) && bUseFolderNames)
   {
@@ -3019,7 +3019,7 @@ CStdString CFileItem::GetLocalFanart() const
   if (IsOpticalMediaFile())
   { // grab from the optical media parent folder as well
     CFileItemList moreItems;
-    CDirectory::GetDirectory(GetLocalMetadataPath(), moreItems, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+    CDirectory::GetDirectory(GetOpticalFolderPath(), moreItems, g_settings.m_pictureExtensions, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
     items.Append(moreItems);
   }
 
@@ -3048,7 +3048,7 @@ CStdString CFileItem::GetLocalFanart() const
   return "";
 }
 // only called if IsOpticalMediaFile
-CStdString CFileItem::GetLocalMetadataPath() const
+CStdString CFileItem::GetOpticalFolderPath() const
 {
   if (m_bIsFolder && !IsFileFolder())
     return m_strPath;

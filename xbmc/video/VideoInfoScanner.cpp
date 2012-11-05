@@ -1252,7 +1252,7 @@ namespace VIDEO
     // parent folder to apply the thumb to and to search for local actor thumbs
     CStdString parentDir = GetParentDir(*pItem);
     if (pItem->IsOpticalMediaFile())
-      parentDir = URIUtils::GetParentPath(pItem->GetLocalMetadataPath());
+      parentDir = URIUtils::GetParentPath(pItem->GetOpticalFolderPath());
   if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
@@ -1550,7 +1550,7 @@ namespace VIDEO
 
       if (nfoFile.IsEmpty() && item->IsOpticalMediaFile())
       {
-        CFileItem parentDirectory(item->GetLocalMetadataPath(), true);
+        CFileItem parentDirectory(item->GetOpticalFolderPath(), true);
         nfoFile = GetnfoFile(&parentDirectory, true);
         if (nfoFile.IsEmpty())
         {

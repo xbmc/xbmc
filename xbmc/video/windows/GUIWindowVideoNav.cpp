@@ -436,7 +436,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
     CFileItemPtr pItem = items[i];
     CFileItemPtr match;
     if (!content.IsEmpty()) /* optical media will be stacked down, so it's path won't match the base path */
-      match = dbItems.Get(pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath());
+      match = dbItems.Get(pItem->IsOpticalMediaFile() ? pItem->GetOpticalFolderPath() : pItem->GetPath());
     if (match)
     {
       pItem->UpdateInfo(*match, replaceLabels);
