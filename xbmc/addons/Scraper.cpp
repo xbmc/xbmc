@@ -488,7 +488,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl, const CStd
 {
   // prepare parameters for URL creation
   CStdString sTitle, sTitleYear, sYear;
-  CUtil::CleanString(sMovie, sTitle, sTitleYear, sYear, true/*fRemoveExt*/, fFirst);
+  CUtil::CleanString(sMovie, sTitle, sTitleYear, sYear, true/*fRemoveExt*/, !fFirst);
 
   if (!fFirst || Content() == CONTENT_MUSICVIDEOS)
     sTitle.Replace("-"," ");
