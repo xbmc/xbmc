@@ -235,6 +235,21 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
+bool CGUIWindowMusicBase::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
+  {
+    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC ||
+        g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    {
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+      return true;
+    }
+  }
+
+  return CGUIMediaWindow::OnAction(action);
+}
+
 void CGUIWindowMusicBase::OnInfoAll(int iItem, bool bCurrent, bool refresh)
 {
   CMusicDatabaseDirectory dir;
