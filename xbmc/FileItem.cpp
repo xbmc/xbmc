@@ -2881,11 +2881,11 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
     strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
 
   if (IsOpticalMediaFile())
-  { // optical media files should be treated like folders
-    useFolder = true;
+  { // optical media folders should be treated like a file
+//    useFolder = true;
     strFile = GetLocalMetadataPath();
   }
-  else if (useFolder)
+  if (useFolder)
     strFile = URIUtils::GetDirectory(strFile);
 
   if (strFile.empty()) // empty filepath -> nothing to find
@@ -3047,7 +3047,7 @@ CStdString CFileItem::GetLocalFanart() const
 
   return "";
 }
-
+// only called if IsOpticalMediaFile
 CStdString CFileItem::GetLocalMetadataPath() const
 {
   if (m_bIsFolder && !IsFileFolder())
@@ -3061,6 +3061,7 @@ CStdString CFileItem::GetLocalMetadataPath() const
   { // go back up another one
     parent = URIUtils::GetParentPath(parent);
   }
+  URIUtils::RemoveSlashAtEnd(parent);
   return parent;
 }
 

@@ -1251,7 +1251,9 @@ namespace VIDEO
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     CStdString parentDir = GetParentDir(*pItem);
-    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+    if (pItem->IsOpticalMediaFile())
+      parentDir = URIUtils::GetParentPath(pItem->GetLocalMetadataPath());
+  if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
