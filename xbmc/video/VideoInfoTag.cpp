@@ -85,6 +85,7 @@ void CVideoInfoTag::Reset()
   m_streamDetails.Reset();
   m_playCount = 0;
   m_fEpBookmark = 0;
+  m_iPlayTitle = 100000;
   m_basePath.clear();
   m_parentPathID = -1;
   m_resumePoint.Reset();
@@ -115,6 +116,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
   XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
+  if( m_iPlayTitle < 100000 )
+    XMLUtils::SetInt(movie, "playtitle", m_iPlayTitle);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   if (tag == "episodedetails" || tag == "tvshow")
@@ -336,6 +339,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_dateAdded.GetAsDBDateTime();
     ar << m_type;
     ar << m_iIdSeason;
+    ar << m_iPlayTitle;
   }
   else
   {
@@ -417,6 +421,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     m_dateAdded.SetFromDBDateTime(dateAdded);
     ar >> m_type;
     ar >> m_iIdSeason;
+    ar >> m_iPlayTitle;
   }
 }
 
@@ -484,6 +489,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["dateadded"] = m_dateAdded.IsValid() ? m_dateAdded.GetAsDBDateTime() : StringUtils::EmptyString;
   value["type"] = m_type;
   value["seasonid"] = m_iIdSeason;
+  value["playtitle"] = m_iPlayTitle;
 }
 
 void CVideoInfoTag::ToSortable(SortItem& sortable)
@@ -523,6 +529,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable)
   sortable[FieldId] = m_iDbId;
   sortable[FieldTrackNumber] = m_iTrack;
   sortable[FieldTag] = m_tags;
+  sortable[FieldPlayTitle] = m_iPlayTitle;
 
   if (m_streamDetails.HasItems() && m_streamDetails.GetVideoDuration() > 0)
     sortable[FieldTime] = m_streamDetails.GetVideoDuration();
@@ -564,6 +571,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
   XMLUtils::GetFloat(movie, "epbookmark", m_fEpBookmark);
+  CStdString temp;
+  if( !XMLUtils::GetInt(movie, "playtitle", m_iPlayTitle) )
+    m_iPlayTitle = 100000;
   int max_value = 10;
   const TiXmlElement* rElement = movie->FirstChildElement("rating");
   if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value>=1)
