@@ -393,7 +393,20 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
   {
     if (itemNumber > -1)
     {
-      if (CFavourites::IsFavourite(m_vecItems->Get(itemNumber).get(), GetID()))
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      // check what players we have, if we have multiple display play with option
+      VECPLAYERCORES vecCores;
+      if (item->IsVideoDb())
+      {
+        CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
+        CPlayerCoreFactory::GetPlayers(item2, vecCores);
+      }
+      else
+        CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      if (vecCores.size() > 1)
+        buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
+
+      if (CFavourites::IsFavourite(item.get(), GetID()))
         buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite
       else
         buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
@@ -419,6 +432,28 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 {
   switch (button)
   {
+  case CONTEXT_BUTTON_PLAY_WITH:
+    {
+      CFileItemPtr item;
+      if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+        item = m_vecItems->Get(itemNumber);
+      if (!item)
+        break;
+
+      VECPLAYERCORES vecCores;
+      if (item->IsVideoDb())
+      {
+        CFileItem item2(*item->GetVideoInfoTag());
+        CPlayerCoreFactory::GetPlayers(item2, vecCores);
+      }
+      else
+        CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
+      if (g_application.m_eForcedNextPlayer != EPC_NONE)
+        OnClick(itemNumber);
+      return true;
+    }
+
   case CONTEXT_BUTTON_MOVE_ITEM:
     m_movingFrom = itemNumber;
     return true;

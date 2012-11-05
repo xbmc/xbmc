@@ -395,7 +395,8 @@ void CGUIDialogMediaSource::OnOK()
     m_confirmed = true;
     Close();
     if (m_type == "video" && !URIUtils::IsLiveTV(share.strPath) && 
-        !share.strPath.Left(6).Equals("rss://"))
+        !share.strPath.Left(6).Equals("rss://") &&
+        !share.strPath.Left(7).Equals("upnp://"))
     {
       CGUIWindowVideoBase::OnAssignContent(share.strPath);
     }

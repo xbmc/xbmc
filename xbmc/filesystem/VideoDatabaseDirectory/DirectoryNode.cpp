@@ -369,10 +369,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
 
 bool CDirectoryNode::CanCache() const
 {
-  //  Only cache the directorys in the root
-  //NODE_TYPE childnode=GetChildType();
-  //NODE_TYPE node=GetType();
-
-  // something should probably be cached
-  return true;//(childnode==NODE_TYPE_TITLE_MOVIES || childnode==NODE_TYPE_EPISODES || childnode == NODE_TYPE_SEASONS || childnode == NODE_TYPE_TITLE_TVSHOWS);
+  // no caching is required - the list is cached in CGUIMediaWindow::GetDirectory
+  // if it was slow to fetch anyway.
+  return false;
 }

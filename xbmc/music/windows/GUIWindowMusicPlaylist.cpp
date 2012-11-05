@@ -514,6 +514,12 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     }
     else
     { // aren't in a move
+      // check what players we have, if we have multiple display play with option
+      VECPLAYERCORES vecCores;
+      CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      if (vecCores.size() > 1)
+        buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
+
       if (!item->IsLastFM())
         buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
       if (CFavourites::IsFavourite(item.get(), GetID()))
@@ -542,6 +548,21 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 {
   switch (button)
   {
+  case CONTEXT_BUTTON_PLAY_WITH:
+    {
+      CFileItemPtr item;
+      if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+        item = m_vecItems->Get(itemNumber);
+      if (!item)
+        break;
+
+      VECPLAYERCORES vecCores;  
+      CPlayerCoreFactory::GetPlayers(*item, vecCores);
+      g_application.m_eForcedNextPlayer = CPlayerCoreFactory::SelectPlayerDialog(vecCores);
+      if( g_application.m_eForcedNextPlayer != EPC_NONE )
+        OnClick(itemNumber);
+      return true;
+    }
   case CONTEXT_BUTTON_MOVE_ITEM:
     m_movingFrom = itemNumber;
     return true;

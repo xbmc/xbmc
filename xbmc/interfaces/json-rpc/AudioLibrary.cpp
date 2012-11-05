@@ -533,7 +533,7 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
     if (!musicdatabase.GetAlbumInfo(albumid, album, NULL))
       return false;
 
-    item = CFileItem(strFilename, album);
+    item.SetFromAlbum(album);
   }
   else
   {
@@ -541,7 +541,7 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
     if (!musicdatabase.GetSongByFileName(strFilename, song))
       return false;
 
-    item = CFileItem(song);
+    item.SetFromSong(song);
   }
 
   return true;

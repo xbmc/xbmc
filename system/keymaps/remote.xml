@@ -150,7 +150,7 @@
       <back>SmallStepBack</back>
       <menu>OSD</menu>
       <start>OSD</start>
-      <select>AspectRatio</select>
+      <select>OSD</select>
       <title>CodecInfo</title>
       <info>Info</info>
       <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>

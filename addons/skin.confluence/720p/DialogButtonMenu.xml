@@ -1,4 +1,4 @@
-<window type="buttonMenu" id="111">
+<window type="buttonMenu">
 	<defaultcontrol>9001</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>

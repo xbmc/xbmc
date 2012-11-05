@@ -66,6 +66,7 @@ public:
 
   enum FIELD_TYPE { TEXT_FIELD = 0,
                     BROWSEABLE_FIELD,
+                    BROWSEABLE_NUMERIC_FIELD,
                     NUMERIC_FIELD,
                     DATE_FIELD,
                     PLAYLIST_FIELD,

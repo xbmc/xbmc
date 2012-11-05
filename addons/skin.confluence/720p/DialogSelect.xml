@@ -1,4 +1,4 @@
-<window type="dialog" id="2000">
+<window type="dialog">
 	<defaultcontrol always="true">3</defaultcontrol>
 	<coordinates>
 		<system>1</system>

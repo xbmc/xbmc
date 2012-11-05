@@ -1,4 +1,4 @@
-<window id="145">
+<window>
 	<defaultcontrol>11</defaultcontrol>
 	<animation effect="slide" start="0,-80" end="0,0" time="100">WindowOpen</animation>
 	<animation effect="slide" start="0,0" end="0,-80" time="100">WindowClose</animation>

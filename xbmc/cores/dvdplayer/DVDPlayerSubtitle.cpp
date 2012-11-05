@@ -195,8 +195,11 @@ void CDVDPlayerSubtitle::Process(double pts)
     if(pts == DVD_NOPTS_VALUE)
       return;
 
-    if (pts < m_lastPts)
+    if (pts + DVD_SEC_TO_TIME(1) < m_lastPts)
+    {
       m_pOverlayContainer->Clear();
+      m_pSubtitleFileParser->Reset();
+    }
 
     if(m_pOverlayContainer->GetSize() >= 5)
       return;

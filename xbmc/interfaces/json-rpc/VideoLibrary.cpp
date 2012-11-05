@@ -699,7 +699,7 @@ bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
   if (!videodatabase.LoadVideoInfo(strFilename, details))
     return false;
 
-  item = CFileItem(details);
+  item.SetFromVideoInfoTag(details);
   return true;
 }
 

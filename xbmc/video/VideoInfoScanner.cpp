@@ -428,6 +428,8 @@ namespace VIDEO
       }
       if (ret == INFO_ADDED || ret == INFO_HAVE_ALREADY)
         FoundSomeInfo = true;
+      else if (ret == INFO_NOT_FOUND)
+        CLog::Log(LOGWARNING, "No information found for item '%s', it won't be added to the library.", pItem->GetPath().c_str());
 
       pURL = NULL;
 

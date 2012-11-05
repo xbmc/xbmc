@@ -1,4 +1,4 @@
-<window id="136">
+<window>
 	<animation effect="fade" time="100">WindowOpen</animation>
 	<animation effect="fade" time="200">WindowClose</animation>
 	<coordinates>
