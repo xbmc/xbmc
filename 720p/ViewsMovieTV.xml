@@ -1,5 +1,48 @@
 <?xml version="1.0"?>
 <includes>
+	<include name="MovieTVPoster">
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>208</width>
+			<height>299</height>
+			<include>Shadow</include>
+		</control>
+		<control type="image">
+			<posx>13</posx>
+			<posy>13</posy>
+			<width>182</width>
+			<height>273</height>
+			<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
+			<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		</control>
+	</include>
+	<include name="MovieTVPosterSelectedBorder">
+		<control type="image">
+			<width>188</width>
+			<height>279</height>
+			<include>Border</include>
+		</control>
+	</include>
+	<include name="MovieTVTitle">
+		<posy>290</posy>
+		<posx>105</posx>
+		<width>180</width>
+		<height>30</height>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[ListItem.Label]</label>
+		<font>Condensed-17</font>
+		<shadowcolor>FF222222</shadowcolor>
+	</include>
+	<include name="MovieTVUnwatchedOverlay">
+		<control type="image">
+			<visible>[Container.Content(movies) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsMovies)] | [Container.Content(TVShows) + !IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]</visible>
+			<posx>169</posx>
+			<posy>260</posy>
+			<info>ListItem.Overlay</info>
+		</control>
+	</include>
 	<!-- Library -->
 	<include name="LibraryPosters">
 		<!-- Library Movies & TV Shows -->
@@ -20,79 +63,20 @@
 				<width>1150</width>
 				<height>635</height>
 				<itemlayout width="223" height="315">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>208</width>
-						<height>299</height>
-						<include>Shadow</include>
-					</control>
-					<control type="image">
-						<description>Poster image</description>
-						<posx>13</posx>
-						<posy>13</posy>
-						<width>182</width>
-						<height>273</height>
-						<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
-						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-					</control>
+					<include>MovieTVPoster</include>
 					<control type="label">
-						<description>Poster label</description>
-						<posy>290</posy>
-						<posx>105</posx>
-						<width>180</width>
-						<height>30</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
-						<font>Condensed-17</font>
-						<textcolor>white</textcolor>
-						<shadowcolor>ff333</shadowcolor>
+						<include>MovieTVTitle</include>
 					</control>
-					<control type="image">
-						<visible>[Container.Content(movies) + [ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsMovies)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsMovies)]] | [Container.Content(tvshows) + [ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsTVShows)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsTVShows)]]</visible>
-						<posx>169</posx>
-						<posy>260</posy>
-						<info>ListItem.Overlay</info>
-					</control>
+					<include>MovieTVUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="223" height="315">
-					<!-- drop shadow -->
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>208</width>
-						<height>299</height>
-						<include>Shadow</include>
-					</control>
-					<control type="image">
-						<description>Poster image</description>
-						<posx>10</posx>
-						<posy>10</posy>
-						<width>188</width>
-						<height>279</height>
-						<texture background="true" diffuse="mask-poster-middle.png">$INFO[ListItem.Thumb]</texture>
-						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-						<include>Border</include>
-					</control>
+					<include>MovieTVPoster</include>
 					<control type="label">
-						<posy>290</posy>
-						<posx>105</posx>
-						<width>180</width>
-						<height>30</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]</label>
-						<font>Condensed-17</font>
+						<include>MovieTVTitle</include>
 						<textcolor>orangeLight</textcolor>
-						<shadowcolor>FF222222</shadowcolor>
 					</control>
-					<control type="image">
-						<visible>[ListItem.Status(InProgress) + !Skin.HasSetting(HideInprogressIconsMovies)] | [ListItem.Status(Unwatched) + !Skin.HasSetting(HideUnwatchedIconsMovies)]</visible>
-						<posx>169</posx>
-						<posy>260</posy>
-						<info>ListItem.Overlay</info>
-					</control>
+					<include>MovieTVPosterSelectedBorder</include>
+					<include>MovieTVUnwatchedOverlay</include>
 				</focusedlayout>
 			</control>
 		</control>
