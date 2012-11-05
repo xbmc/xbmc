@@ -45,7 +45,7 @@ TEST(TestRegExp, GetReplaceString)
 
   EXPECT_TRUE(regex.RegComp("^(Test)\\s*(.*)\\."));
   EXPECT_EQ(0, regex.RegFind("Test string."));
-  EXPECT_STREQ("string", regex.GetReplaceString("\\2"));
+  EXPECT_STREQ("string", regex.GetReplaceString("\\2").c_str());
 }
 
 TEST(TestRegExp, GetFindLen)
