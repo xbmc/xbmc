@@ -39,13 +39,13 @@ TEST(TestRegExp, RegFind)
   EXPECT_EQ(-1, regex.RegFind("Test string."));
 }
 
-TEST(TestRegExp, GetReplaceString)
+TEST(TestRegExp, GetReplaceStdString)
 {
   CRegExp regex;
 
   EXPECT_TRUE(regex.RegComp("^(Test)\\s*(.*)\\."));
   EXPECT_EQ(0, regex.RegFind("Test string."));
-  EXPECT_STREQ("string", regex.GetReplaceString("\\2"));
+  EXPECT_EG("string", regex.GetReplaceStdString("\\2").c_str());
 }
 
 TEST(TestRegExp, GetFindLen)
