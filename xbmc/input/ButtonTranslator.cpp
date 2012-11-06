@@ -211,6 +211,12 @@ static const ActionMapping actions[] =
         {"volampup"          , ACTION_VOLAMP_UP},
         {"volampdown"        , ACTION_VOLAMP_DOWN},
 
+        // PVR actions
+        {"channelup"             , ACTION_CHANNEL_UP},
+        {"channeldown"           , ACTION_CHANNEL_DOWN},
+        {"previouschannelgroup"  , ACTION_PREVIOUS_CHANNELGROUP},
+        {"nextchannelgroup"      , ACTION_NEXT_CHANNELGROUP},
+
         // Mouse actions
         {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
         {"rightclick"        , ACTION_MOUSE_RIGHT_CLICK},
@@ -322,6 +328,7 @@ static const ActionMapping windows[] =
         {"movieinformation"         , WINDOW_DIALOG_VIDEO_INFO},
         {"textviewer"               , WINDOW_DIALOG_TEXT_VIEWER},
         {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
+        {"fullscreenlivetv"         , WINDOW_FULLSCREEN_LIVETV}, // virtual window/keymap section for PVR specific bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
         {"visualisation"            , WINDOW_VISUALISATION},
         {"slideshow"                , WINDOW_SLIDESHOW},
         {"filestackingdialog"       , WINDOW_DIALOG_FILESTACKING},
