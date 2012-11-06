@@ -25,25 +25,41 @@
 					<colordiffuse>FF000000</colordiffuse>
 					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
 				</control>
-				<control type="image">
-					<width>200</width>
-					<height>94</height>
-					<aspectratio>keep</aspectratio>
-					<info>VideoPlayer.Cover</info>
+				<control type="group">
+					<control type="image">
+						<posx>7</posx>
+						<posy>-166</posy>
+						<width>208</width>
+						<height>299</height>
+						<include>Shadow</include>
+					</control>
+					<control type="image">
+						<posx>20</posx>
+						<posy>-153</posy>
+						<width>182</width>
+						<height>273</height>
+						<texture background="true" diffuse="mask-poster-middle.png">$INFO[VideoPlayer.Cover]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
 				</control>
-				<control type="textbox" id="8">
-					<posy>65</posy>
-					<width>1210</width>
-					<height>115</height>
-					<align>left</align>
-					<aligny>top</aligny>
-					<label>$INFO[VideoPlayer.Plot]</label>
-				</control>
-				<control type="label" id="1">
-					<width>1000</width>
-					<label>$INFO[VideoPlayer.Title]</label>
-					<align>left</align>
-					<textcolor>white</textcolor>
+				<control type="group">
+					<posx>220</posx>
+					<control type="label" id="1">
+						<posy>-30</posy>
+						<width>1000</width>
+						<label>$INFO[VideoPlayer.Title]</label>
+						<align>left</align>
+						<textcolor>white</textcolor>
+						<font>CondensedBold-36</font>
+						<shadowcolor>FF222222</shadowcolor>
+					</control>
+					<control type="textbox" id="8">
+						<posy>10</posy>
+						<width>1000</width>
+						<height>115</height>
+						<label>$INFO[VideoPlayer.Plot]</label>
+						<include>Plot</include>
+					</control>
 				</control>
 			</control>
 			<include>VideoSeek</include>
@@ -73,12 +89,6 @@
 		<control type="group">
 			<posx>20</posx>
 			<posy>635</posy>
-			<control type="image">
-				<width>200</width>
-				<height>94</height>
-				<aspectratio>keep</aspectratio>
-				<info>VideoPlayer.Cover</info>
-			</control>
 			<!-- bg's -->
 			<control type="group">
 				<!-- bg -->
@@ -92,6 +102,7 @@
 			</control>
 			<!-- infos -->
 			<control type="group">
+				<posy>10</posy>
 				<posx>20</posx>
 				<!-- top row -->
 				<control type="group">
@@ -138,7 +149,7 @@
 			</control>
 			<!-- seeking/paused labels -->
 			<control type="group">
-				<posy>-40</posy>
+				<posy>-20</posy>
 				<posx>20</posx>
 				<control type="label">
 					<width>200</width>
@@ -208,7 +219,7 @@
 				<posx>20</posx>
 				<!-- top row -->
 				<control type="group">
-					<posy>18</posy>
+					<posy>30</posy>
 					<!-- clock -->
 					<control type="label">
 						<width>200</width>
@@ -229,14 +240,13 @@
 				</control>
 				<!-- bottom row -->
 				<control type="group">
-					<posy>63</posy>
+					<posy>76</posy>
 					<!-- time in media -->
 					<control type="label">
 						<width>200</width>
 						<align>left</align>
 						<font>Condensed-18</font>
 						<label>$INFO[Player.Time]</label>
-						<!--><label>01:09:23</label>-->
 						<textcolor>white</textcolor>
 					</control>
 					<!-- duration -->
@@ -246,14 +256,13 @@
 						<align>right</align>
 						<font>Condensed-18</font>
 						<label>$INFO[Player.Duration]</label>
-						<!--><label>01:43:10</label>-->
 						<textcolor>white</textcolor>
 					</control>
 				</control>
 			</control>
 			<!-- seeking/paused labels -->
 			<control type="group">
-				<posy>-40</posy>
+				<posy>-20</posy>
 				<posx>20</posx>
 				<visible>!Control.HasFocus(999)</visible>
 				<!-- time in media -->
@@ -299,7 +308,7 @@
 				</control>
 				<!-- TO DELETE, JUST AN EXAMPLE -->
 				<control type="label">
-					<posy>12</posy>
+					<posy>24</posy>
 					<posx>50</posx>
 					<width>200</width>
 					<align>left</align>
@@ -309,7 +318,7 @@
 					<visible>!Control.HasFocus(701)</visible>
 				</control>
 				<control type="label">
-					<posy>12</posy>
+					<posy>24</posy>
 					<posx>50</posx>
 					<width>200</width>
 					<align>left</align>
@@ -379,7 +388,7 @@
 				</control>
 				<!-- TO DELETE, JUST AN EXAMPLE -->
 				<control type="label">
-					<posy>12</posy>
+					<posy>24</posy>
 					<posx>580</posx>
 					<width>200</width>
 					<align>left</align>
@@ -390,7 +399,7 @@
 					<visible>!Control.HasFocus(703)</visible>
 				</control>
 				<control type="label">
-					<posy>12</posy>
+					<posy>24</posy>
 					<posx>580</posx>
 					<width>200</width>
 					<align>left</align>
@@ -437,52 +446,58 @@
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- audio settings -->
-				<control type="button" id="717">
+				<control type="group">
 					<posy>15</posy>
-					<posx>-60</posx>
-					<width>30</width>
-					<height>23</height>
-					<texturefocus>b-audio.png</texturefocus>
-					<texturenofocus>b-audio.png</texturenofocus>
-					<onclick>ActivateWindow(124)</onclick>
-					<visible>!Control.HasFocus(717)</visible>
-					<colordiffuse>FF666666</colordiffuse>
-				</control>
-				<control type="button" id="717">
-					<posy>15</posy>
-					<posx>-60</posx>
-					<width>30</width>
-					<height>23</height>
-					<texturefocus>b-audio.png</texturefocus>
-					<texturenofocus>b-audio.png</texturenofocus>
-					<onleft>718</onleft>
-					<onright>712</onright>
-					<onup>200</onup>
-					<ondown>200</ondown>
-					<onclick>ActivateWindow(124)</onclick>
-					<visible>Control.HasFocus(717)</visible>
-					<colordiffuse>orange</colordiffuse>
-				</control>
-				<control type="label">
-					<posy>12</posy>
-					<posx>-15</posx>
-					<width>200</width>
-					<align>left</align>
-					<font>Condensed-18</font>
-					<label>SETTINGS</label>
-					<textcolor>FF666666</textcolor>
-					<visible>!Control.HasFocus(717)</visible>
-				</control>
-				<control type="label">
-					<posy>12</posy>
-					<posx>-15</posx>
-					<width>200</width>
-					<align>left</align>
-					<font>Condensed-18</font>
-					<!--><label>$INFO[Player.Time]</label>-->
-					<label>SETTINGS</label>
-					<textcolor>white</textcolor>
-					<visible>Control.HasFocus(717)</visible>
+					<control type="button" id="717">
+						<posy>0</posy>
+						<posx>-60</posx>
+						<width>30</width>
+						<height>23</height>
+						<texturefocus>b-audio.png</texturefocus>
+						<texturenofocus>b-audio.png</texturenofocus>
+						<onclick>ActivateWindow(124)</onclick>
+						<visible>!Control.HasFocus(717)</visible>
+						<colordiffuse>FF666666</colordiffuse>
+					</control>
+					<control type="button" id="717">
+						<posy>0</posy>
+						<posx>-60</posx>
+						<width>30</width>
+						<height>23</height>
+						<texturefocus>b-audio.png</texturefocus>
+						<texturenofocus>b-audio.png</texturenofocus>
+						<onleft>718</onleft>
+						<onright>712</onright>
+						<onup>200</onup>
+						<ondown>200</ondown>
+						<onclick>ActivateWindow(124)</onclick>
+						<visible>Control.HasFocus(717)</visible>
+						<colordiffuse>orange</colordiffuse>
+					</control>
+					<control type="group">
+						<posy>9</posy>
+						<control type="label">
+							<posy>0</posy>
+							<posx>-15</posx>
+							<width>200</width>
+							<align>left</align>
+							<font>Condensed-18</font>
+							<label>SETTINGS</label>
+							<textcolor>FF666666</textcolor>
+							<visible>!Control.HasFocus(717)</visible>
+						</control>
+						<control type="label">
+							<posy>0</posy>
+							<posx>-15</posx>
+							<width>200</width>
+							<align>left</align>
+							<font>Condensed-18</font>
+							<!--><label>$INFO[Player.Time]</label>-->
+							<label>SETTINGS</label>
+							<textcolor>white</textcolor>
+							<visible>Control.HasFocus(717)</visible>
+						</control>
+					</control>
 				</control>
 				<!-- previous -->
 				<control type="button" id="712">
@@ -616,51 +631,57 @@
 				</control>
 				<!-- video settings -->
 				<control type="group">
-					<posy>12</posy>
+					<posy>15</posy>
 					<posx>650</posx>
-				<control type="button" id="718">
-					<posy>3</posy>
-					<width>33</width>
-					<height>24</height>
-					<texturefocus>b-video.png</texturefocus>
-					<texturenofocus>b-video.png</texturenofocus>
-					<onclick>ActivateWindow(123)</onclick>
-					<visible>!Control.HasFocus(718)</visible>
-					<colordiffuse>FF666666</colordiffuse>
-				</control>
-				<control type="button" id="718">
-					<posy>3</posy>
-					<width>33</width>
-					<height>24</height>
-					<texturefocus>b-video.png</texturefocus>
-					<texturenofocus>b-video.png</texturenofocus>
-					<onleft>716</onleft>
-					<onright>717</onright>
-					<onup>200</onup>
-					<ondown>200</ondown>
-					<onclick>ActivateWindow(123)</onclick>
-					<visible>Control.HasFocus(718)</visible>
-					<colordiffuse>orange</colordiffuse>
-				</control>
-				<control type="label">
-					<posx>50</posx>
-					<width>200</width>
-					<align>left</align>
-					<font>Condensed-18</font>
-					<label>SETTINGS</label>
-					<textcolor>FF666666</textcolor>
-					<visible>!Control.HasFocus(718)</visible>
-				</control>
-				<control type="label">
-					<posx>50</posx>
-					<width>200</width>
-					<align>left</align>
-					<font>Condensed-18</font>
-					<!--><label>$INFO[Player.Time]</label>-->
-					<label>SETTINGS</label>
-					<textcolor>white</textcolor>
-					<visible>Control.HasFocus(718)</visible>
-				</control>
+					<control type="group">
+						<control type="button" id="718">
+							<posy>0</posy>
+							<width>33</width>
+							<height>24</height>
+							<texturefocus>b-video.png</texturefocus>
+							<texturenofocus>b-video.png</texturenofocus>
+							<onclick>ActivateWindow(123)</onclick>
+							<visible>!Control.HasFocus(718)</visible>
+							<colordiffuse>FF666666</colordiffuse>
+						</control>
+						<control type="button" id="718">
+							<posy>0</posy>
+							<width>33</width>
+							<height>24</height>
+							<texturefocus>b-video.png</texturefocus>
+							<texturenofocus>b-video.png</texturenofocus>
+							<onleft>716</onleft>
+							<onright>717</onright>
+							<onup>200</onup>
+							<ondown>200</ondown>
+							<onclick>ActivateWindow(123)</onclick>
+							<visible>Control.HasFocus(718)</visible>
+							<colordiffuse>orange</colordiffuse>
+						</control>
+					</control>
+					<control type="group">
+						<posy>9</posy>
+						<control type="label">
+							<posy>0</posy>
+							<posx>50</posx>
+							<width>200</width>
+							<align>left</align>
+							<font>Condensed-18</font>
+							<label>SETTINGS</label>
+							<textcolor>FF666666</textcolor>
+							<visible>!Control.HasFocus(718)</visible>
+						</control>
+						<control type="label">
+							<posy>0</posy>
+							<posx>50</posx>
+							<width>200</width>
+							<align>left</align>
+							<font>Condensed-18</font>
+							<label>SETTINGS</label>
+							<textcolor>white</textcolor>
+							<visible>Control.HasFocus(718)</visible>
+						</control>
+					</control>
 				</control>
 			</control>
 			<!-- progress bar -->
