@@ -509,9 +509,8 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 |   CUPnPRenderer::PlayMedia
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
+CUPnPRenderer::PlayMedia(const NPT_String& uri, const NPT_String& meta, PLT_Action* action)
 {
-    bool bImageFile = false;
     PLT_Service* service;
     NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
 
@@ -520,59 +519,15 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
       service->SetStateVariable("TransportStatus", "OK");
     }
 
-    PLT_MediaObjectListReference list;
-    PLT_MediaObject*             object = NULL;
-
-    if (meta && NPT_SUCCEEDED(PLT_Didl::FromDidl(meta, list))) {
-        list->Get(0, object);
+    CFileItemPtr item = GetFileItem(uri, meta);
+    if (!item) {
+        return NPT_FAILURE;
     }
 
-    if (object) {
-        CFileItem item(uri, false);
-
-        PLT_MediaItemResource* res = object->m_Resources.GetFirstItem();
-        for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
-            if(object->m_Resources[i].m_Uri == uri) {
-                res = &object->m_Resources[i];
-                break;
-            }
-        }
-        for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
-            if(object->m_Resources[i].m_ProtocolInfo.ToString().StartsWith("xbmc-get:")) {
-                res = &object->m_Resources[i];
-                item.SetPath(CStdString(res->m_Uri));
-                break;
-            }
-        }
-
-        if (res && res->m_ProtocolInfo.IsValid()) {
-            item.SetMimeType((const char*)res->m_ProtocolInfo.GetContentType());
-        }
-
-        item.m_dateTime.SetFromDateString((const char*)object->m_Date);
-        item.m_strTitle = (const char*)object->m_Title;
-        item.SetLabel((const char*)object->m_Title);
-        item.SetLabelPreformated(true);
-        if (object->m_ExtraInfo.album_arts.GetItem(0)) {
-            //FIXME only considers 1st image
-            item.SetArt("thumb", (const char*)object->m_ExtraInfo.album_arts.GetItem(0)->uri);
-        }
-        if (object->m_ObjectClass.type.StartsWith("object.item.audioItem")) {
-            if(NPT_SUCCEEDED(PopulateTagFromObject(*item.GetMusicInfoTag(), *object, res)))
-                item.SetLabelPreformated(false);
-        } else if (object->m_ObjectClass.type.StartsWith("object.item.videoItem")) {
-            if(NPT_SUCCEEDED(PopulateTagFromObject(*item.GetVideoInfoTag(), *object, res)))
-                item.SetLabelPreformated(false);
-        } else if (object->m_ObjectClass.type.StartsWith("object.item.imageItem")) {
-            bImageFile = true;
-        }
-        bImageFile?CApplicationMessenger::Get().PictureShow(item.GetPath())
-                  :CApplicationMessenger::Get().MediaPlay(item);
+    if (item->IsPicture()) {
+        CApplicationMessenger::Get().PictureShow(item->GetPath());
     } else {
-        bImageFile = NPT_String(PLT_MediaObject::GetUPnPClass(uri)).StartsWith("object.item.imageItem", true);
-
-        bImageFile?CApplicationMessenger::Get().PictureShow((const char*)uri)
-                  :CApplicationMessenger::Get().MediaPlay((const char*)uri);
+        CApplicationMessenger::Get().MediaPlay(*item);
     }
 
     if (g_application.IsPlaying() || g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {

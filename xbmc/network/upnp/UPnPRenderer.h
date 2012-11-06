@@ -66,8 +66,8 @@ private:
     NPT_Result SetupServices();
     NPT_Result SetupIcons();
     NPT_Result GetMetadata(NPT_String& meta);
-    NPT_Result PlayMedia(const char* uri,
-                         const char* metadata = NULL,
+    NPT_Result PlayMedia(const NPT_String& uri,
+                         const NPT_String& meta,
                          PLT_Action* action = NULL);
     NPT_Mutex m_state;
 };
