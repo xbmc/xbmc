@@ -27,4 +27,8 @@ add_library(ImageLib-${ARCH} MODULE
 )
 
 target_link_libraries(ImageLib-${ARCH} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
-install(TARGETS ImageLib-${ARCH} DESTINATION Plex.app/Contents/Resources/XBMC/system)
+if(APPLE)
+  install(TARGETS ImageLib-${ARCH} DESTINATION ${RESOURCEPATH}/XBMC/system)
+elseif(UNIX)
+  install(TARGETS ImageLib-${ARCH} DESTINATION ${BINPATH}/system)
+endif()

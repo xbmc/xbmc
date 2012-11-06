@@ -70,4 +70,8 @@ set(libcpluff_srcs
   libcpluff/thread_posix.c
 )
 add_library(cpluff-${ARCH} MODULE ${libcpluff_srcs})
-install(TARGETS cpluff-${ARCH} DESTINATION Plex.app/Contents/Resources/XBMC/system)
+if(APPLE)
+  install(TARGETS cpluff-${ARCH} DESTINATION ${RESOURCEPATH}/XBMC/system)
+elseif(UNIX)
+  install(TARGETS cpluff-${ARCH} DESTINATION ${BINPATH}/system)
+endif()
