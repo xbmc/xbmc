@@ -275,9 +275,9 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
       CLog::Log(LOGERROR, "%s: Invalid string clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
       continue;
     }
-    int j = reTags.RegFind(strTitleAndYear.c_str());
-    if (j >= 0 && strTitleAndYear.size() != reTags.GetFindLen())
-      strTitleAndYear = (j!=0) ? strTitleAndYear.Mid(0, j): strTitleAndYear.Mid(reTags.GetFindLen());
+    int j=0;
+    if ((j=reTags.RegFind(strFileName.c_str())) > 0)
+      strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
   // final cleanup - special characters used instead of spaces:
