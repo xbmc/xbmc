@@ -692,6 +692,17 @@ static void new_pes_packet(PESContext *pes, AVPacket *pkt)
     pkt->pos = pes->ts_packet_pos;
     pkt->flags = pes->flags;
 
+    // fix-up timestamps in case of overflow
+    if (pes && pes->stream && pes->stream->bit_rate) {
+        if (pkt->pos * 8 / pes->stream->bit_rate * 90000 > pkt->pts) {
+#ifdef DEBUG
+            av_log(NULL, AV_LOG_DEBUG, "fixing up %lld with bit rate %ld\n", pkt->pts, pes->stream->bit_rate );
+#endif
+            pkt->pts += 0x200000000;
+            pkt->dts += 0x200000000;
+        }
+    }
+
     /* reset pts values */
     pes->pts = AV_NOPTS_VALUE;
     pes->dts = AV_NOPTS_VALUE;
@@ -2181,11 +2192,15 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
         if ((pcr_pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pcr_pid) &&
             parse_pcr(&timestamp, &pcr_l, buf) == 0) {
             *ppos = pos;
+            // fix-up timestamp in case of overflow
+            if (pos * 8 / s->bit_rate * 90000 > timestamp) timestamp += 0x200000000;
             return timestamp;
         }
         if ((pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pid) &&
             parse_timestamp(&timestamp, buf) == 0) {
             *ppos = pos;
+            // fix-up timestamp in case of overflow
+            if (pos * 8 / s->bit_rate * 90000 > timestamp) timestamp += 0x200000000;
             return timestamp;
         }
         pos += ts->raw_packet_size;
