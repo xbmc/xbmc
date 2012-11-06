@@ -450,8 +450,7 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, const CStdString &strA
   try
   {
     CStdString strAlbum=strAlbum1;
-    strAlbum.TrimLeft(" ");
-    strAlbum.TrimRight(" ");
+    strAlbum.Trim();
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
@@ -513,8 +512,7 @@ int CMusicDatabase::AddGenre(const CStdString& strGenre1)
   try
   {
     CStdString strGenre = strGenre1;
-    strGenre.TrimLeft(" ");
-    strGenre.TrimRight(" ");
+    strGenre.Trim();
 
     if (strGenre.IsEmpty())
       strGenre=g_localizeStrings.Get(13205); // Unknown
@@ -563,8 +561,7 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist1)
   try
   {
     CStdString strArtist = strArtist1;
-    strArtist.TrimLeft(" ");
-    strArtist.TrimRight(" ");
+    strArtist.Trim();
 
     if (strArtist.IsEmpty())
       strArtist=g_localizeStrings.Get(13205); // Unknown
