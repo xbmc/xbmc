@@ -1059,7 +1059,11 @@ bool CApplication::InitDirectoriesLinux()
     /* END PLEX */
 
     CStdString strTempPath = userHome;
+#ifndef __PLEX__
     strTempPath = URIUtils::AddFileToFolder(strTempPath, ".xbmc/temp");
+#else
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, ".plex/temp");
+#endif
     if (getenv("XBMC_TEMP"))
       strTempPath = getenv("XBMC_TEMP");
     CSpecialProtocol::SetTempPath(strTempPath);
