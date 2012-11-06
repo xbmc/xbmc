@@ -24,6 +24,7 @@
 
 #include <string>
 #include <vector>
+#include "StdString.h"
 
 namespace PCRE {
 #ifdef _WIN32
@@ -49,6 +50,7 @@ public:
   CRegExp* RegComp(const std::string& re) { return RegComp(re.c_str()); }
   int RegFind(const char *str, int startoffset = 0);
   int RegFind(const std::string& str, int startoffset = 0) { return RegFind(str.c_str(), startoffset); }
+  CStdString GetReplaceStdString( const char* sReplaceExp );
   char* GetReplaceString( const char* sReplaceExp );
   int GetFindLen()
   {

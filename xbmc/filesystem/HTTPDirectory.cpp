@@ -77,8 +77,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     if (reItem.RegFind(strBuffer.c_str()) >= 0)
     {
-      strLink = reItem.GetReplaceString("\\1");
-      strName = reItem.GetReplaceString("\\2");
+      strLink = reItem.GetReplaceStdString("\\1");
+      strName = reItem.GetReplaceStdString("\\2");
 
       if(strLink[0] == '/')
         strLink = strLink.Mid(1);
@@ -116,27 +116,27 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
         if (reDateTime.RegFind(strBuffer.c_str()) >= 0)
         {
-          day = reDateTime.GetReplaceString("\\1");
-          month = reDateTime.GetReplaceString("\\2");
-          year = reDateTime.GetReplaceString("\\3");
-          hour = reDateTime.GetReplaceString("\\4");
-          minute = reDateTime.GetReplaceString("\\5");
+          day = reDateTime.GetReplaceStdString("\\1");
+          month = reDateTime.GetReplaceStdString("\\2");
+          year = reDateTime.GetReplaceStdString("\\3");
+          hour = reDateTime.GetReplaceStdString("\\4");
+          minute = reDateTime.GetReplaceStdString("\\5");
         }
         else if (reDateTimeNginx.RegFind(strBuffer.c_str()) >= 0)
         {
-          day = reDateTimeNginx.GetReplaceString("\\1");
-          month = reDateTimeNginx.GetReplaceString("\\2");
-          year = reDateTimeNginx.GetReplaceString("\\3");
-          hour = reDateTimeNginx.GetReplaceString("\\4");
-          minute = reDateTimeNginx.GetReplaceString("\\5");
+          day = reDateTimeNginx.GetReplaceStdString("\\1");
+          month = reDateTimeNginx.GetReplaceStdString("\\2");
+          year = reDateTimeNginx.GetReplaceStdString("\\3");
+          hour = reDateTimeNginx.GetReplaceStdString("\\4");
+          minute = reDateTimeNginx.GetReplaceStdString("\\5");
         }
         else if (reDateTimeLighttp.RegFind(strBuffer.c_str()) >= 0)
         {
-          day = reDateTimeLighttp.GetReplaceString("\\3");
-          month = reDateTimeLighttp.GetReplaceString("\\2");
-          year = reDateTimeLighttp.GetReplaceString("\\1");
-          hour = reDateTimeLighttp.GetReplaceString("\\4");
-          minute = reDateTimeLighttp.GetReplaceString("\\5");
+          day = reDateTimeLighttp.GetReplaceStdString("\\3");
+          month = reDateTimeLighttp.GetReplaceStdString("\\2");
+          year = reDateTimeLighttp.GetReplaceStdString("\\1");
+          hour = reDateTimeLighttp.GetReplaceStdString("\\4");
+          minute = reDateTimeLighttp.GetReplaceStdString("\\5");
         }
 
         if (day.length() > 0 && month.length() > 0 && year.length() > 0)
@@ -148,8 +148,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         {
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
-            double Size = atof(reSize.GetReplaceString("\\1"));
-            CStdString strUnit = reSize.GetReplaceString("\\2");
+            double Size = atof(reSize.GetReplaceStdString("\\1"));
+            CStdString strUnit = reSize.GetReplaceStdString("\\2");
 
             if (strUnit == "K")
               Size = Size * 1024;
@@ -162,8 +162,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           }
           else if (reSizeNginx.RegFind(strBuffer.c_str()) >= 0)
           {
-            double Size = atof(reSizeNginx.GetReplaceString("\\1"));
-            CStdString strUnit = reSizeNginx.GetReplaceString("\\2");
+            double Size = atof(reSizeNginx.GetReplaceStdString("\\1"));
+            CStdString strUnit = reSizeNginx.GetReplaceStdString("\\2");
 
             if (strUnit == "K")
               Size = Size * 1024;
