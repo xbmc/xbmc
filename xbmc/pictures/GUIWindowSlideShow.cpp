@@ -378,6 +378,8 @@ void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
   m_bSlideShow = true;
   m_iDirection = 1;
   m_bScreensaver = screensaver;
+  if (m_slides->Size())
+    AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
 }
 
 void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &regions)
@@ -699,7 +701,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_PREVIOUS_MENU:
   case ACTION_NAV_BACK:
   case ACTION_STOP:
-    if (m_bSlideShow && m_slides->Size())
+    if (m_slides->Size())
       AnnouncePlayerStop(m_slides->Get(m_iCurrentSlide));
     g_windowManager.PreviousWindow();
     break;
