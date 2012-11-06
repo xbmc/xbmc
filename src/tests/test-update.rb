@@ -11,8 +11,9 @@ require 'optparse'
 INSTALL_DIR = File.expand_path("install dir/")
 PACKAGE_DIR = File.expand_path("package-dir/")
 PACKAGE_SRC_DIR = File.expand_path("package-src-dir/")
+IS_WINDOWS = RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
 
-if (RbConfig::CONFIG['host_os'] =~ /mswin|mingw/)
+if IS_WINDOWS
 	OLDAPP_NAME = "oldapp.exe"
 	NEWAPP_NAME = "newapp.exe"
 	APP_NAME = "app.exe"
@@ -148,7 +149,11 @@ FileUtils.cp(OLDAPP_NAME,"#{INSTALL_DIR}/#{APP_NAME}")
 
 # Create a dummy file to uninstall
 uninstall_test_file = create_test_file("#{INSTALL_DIR}/file-to-uninstall.txt", "this file should be removed after the update")
-uninstall_test_symlink = FileUtils.ln_s("#{INSTALL_DIR}/file-to-uninstall.txt", "#{INSTALL_DIR}/symlink-to-file-to-uninstall.txt")
+uninstall_test_symlink = if not IS_WINDOWS
+	FileUtils.ln_s("#{INSTALL_DIR}/file-to-uninstall.txt", "#{INSTALL_DIR}/symlink-to-file-to-uninstall.txt")
+else
+	create_test_file("#{INSTALL_DIR}/symlink-to-file-to-uninstall.txt", "dummy file.  this is a symlink on Unix")
+end
 
 # Populate package source dir with files to install
 Dir.mkdir(PACKAGE_SRC_DIR)
