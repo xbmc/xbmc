@@ -47,5 +47,6 @@
  <uninstall>
   <!-- TODO - List some files to uninstall here !-->
   <file>file-to-uninstall.txt</file>
+  <file>symlink-to-file-to-uninstall.txt</file>
  </uninstall>
 </update>

@@ -67,8 +67,17 @@ class FileUtils
 		  * Unix mode_t values.
 		  */
 		static void chmod(const char* path, int permissions) throw (IOException);
+
+		/** Returns true if the file at @p path exists.  If @p path is a symlink,
+		  * returns true if the symlink itself exists, not the target.
+		  */
 		static bool fileExists(const char* path) throw (IOException);
+
+		/** Returns the Unix mode flags of @p path.  If @p path is a symlink,
+		  * returns the mode flags of the target.
+		  */
 		static int fileMode(const char* path) throw (IOException);
+
 		static void moveFile(const char* src, const char* dest) throw (IOException);
 		static void mkdir(const char* dir) throw (IOException);
 		static void rmdir(const char* dir) throw (IOException);

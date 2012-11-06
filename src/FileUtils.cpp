@@ -80,7 +80,7 @@ bool FileUtils::fileExists(const char* path) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	struct stat fileInfo;
-	if (stat(path,&fileInfo) != 0)
+	if (lstat(path,&fileInfo) != 0)
 	{
 		if (errno == ENOENT)
 		{

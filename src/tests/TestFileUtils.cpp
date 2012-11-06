@@ -23,9 +23,21 @@ void TestFileUtils::testIsRelative()
 #endif
 }
 
+void TestFileUtils::testSymlinkFileExists()
+{
+#ifdef PLATFORM_UNIX
+	const char* linkName = "link-name";
+	FileUtils::removeFile(linkName);
+	FileUtils::createSymLink(linkName, "target-that-does-not-exist");
+	TEST_COMPARE(FileUtils::fileExists(linkName), true);
+#endif
+}
+
 int main(int,char**)
 {
 	TestList<TestFileUtils> tests;
 	tests.addTest(&TestFileUtils::testDirName);
+	tests.addTest(&TestFileUtils::testIsRelative);
+	tests.addTest(&TestFileUtils::testSymlinkFileExists);
 	return TestUtils::runTest(tests);
 }

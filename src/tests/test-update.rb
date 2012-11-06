@@ -104,6 +104,13 @@ def compare_dirs(src_dir, dest_dir)
 	return change_map
 end
 
+def create_test_file(name, content)
+	File.open(name, 'w') do |file|
+		file.puts content
+	end
+	return name
+end
+
 force_elevation = false
 run_in_debugger = false
 
@@ -140,10 +147,8 @@ Dir.mkdir(INSTALL_DIR)
 FileUtils.cp(OLDAPP_NAME,"#{INSTALL_DIR}/#{APP_NAME}")
 
 # Create a dummy file to uninstall
-uninstall_test_file = "#{INSTALL_DIR}/file-to-uninstall.txt"
-File.open(uninstall_test_file,"w") do |file|
-	file.puts "this file should be removed after the update"
-end
+uninstall_test_file = create_test_file("#{INSTALL_DIR}/file-to-uninstall.txt", "this file should be removed after the update")
+uninstall_test_symlink = FileUtils.ln_s("#{INSTALL_DIR}/file-to-uninstall.txt", "#{INSTALL_DIR}/symlink-to-file-to-uninstall.txt")
 
 # Populate package source dir with files to install
 Dir.mkdir(PACKAGE_SRC_DIR)
