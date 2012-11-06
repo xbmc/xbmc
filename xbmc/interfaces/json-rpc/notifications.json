@@ -156,6 +156,24 @@
     ],
     "returns": null
   },
+  "AudioLibrary.OnCleanStarted": {
+    "type": "notification",
+    "description": "An audio library clean operation has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "AudioLibrary.OnCleanFinished": {
+    "type": "notification",
+    "description": "The audio library has been cleaned.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
   "VideoLibrary.OnUpdate": {
     "type": "notification",
     "description": "A video item has been updated.",
@@ -197,6 +215,24 @@
   "VideoLibrary.OnScanFinished": {
     "type": "notification",
     "description": "Scanning the video library has been finished.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "VideoLibrary.OnCleanStarted": {
+    "type": "notification",
+    "description": "A video library clean operation has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "VideoLibrary.OnCleanFinished": {
+    "type": "notification",
+    "description": "The video library has been cleaned.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "null", "required": true }
