@@ -427,6 +427,13 @@ namespace PVR
     int GetRecordingLastPlayedPosition(const CPVRRecording &recording);
 
     /*!
+    * @brief Retrieve the edit decision list (EDL) from the backend.
+    * @param recording The recording.
+    * @return The edit decision list (empty on error).
+    */
+    std::vector<PVR_EDL_ENTRY> GetRecordingEdl(const CPVRRecording &recording);
+
+    /*!
      * @brief Check whether there is an active recording on the current channel.
      * @return True if there is, false otherwise.
      */
@@ -546,6 +553,7 @@ namespace PVR
     bool SupportsRadio(int iClientId) const;
     bool SupportsRecordingFolders(int iClientId) const;
     bool SupportsRecordingPlayCount(int iClientId) const;
+    bool SupportsRecordingEdl(int iClientId) const;
     bool SupportsTimers(int iClientId) const;
     bool SupportsTV(int iClientId) const;
     bool HandlesDemuxing(int iClientId) const;

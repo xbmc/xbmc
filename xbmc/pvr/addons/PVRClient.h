@@ -267,6 +267,13 @@ namespace PVR
     */
     int GetRecordingLastPlayedPosition(const CPVRRecording &recording);
 
+    /*!
+    * @brief Retrieve the edit decision list (EDL) from the backend.
+    * @param recording The recording.
+    * @return The edit decision list (empty on error).
+    */
+    std::vector<PVR_EDL_ENTRY> GetRecordingEdl(const CPVRRecording &recording);
+
     //@}
     /** @name PVR timer methods */
     //@{
@@ -460,6 +467,7 @@ namespace PVR
     bool SupportsRecordings(void) const;
     bool SupportsRecordingFolders(void) const;
     bool SupportsRecordingPlayCount(void) const;
+    bool SupportsRecordingEdl(void) const;
     bool SupportsTimers(void) const;
     bool SupportsTV(void) const;
     bool HandlesDemuxing(void) const;

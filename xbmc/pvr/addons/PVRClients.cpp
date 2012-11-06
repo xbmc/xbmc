@@ -531,6 +531,17 @@ bool CPVRClients::SetRecordingPlayCount(const CPVRRecording &recording, int coun
   return *error == PVR_ERROR_NO_ERROR;
 }
 
+std::vector<PVR_EDL_ENTRY> CPVRClients::GetRecordingEdl(const CPVRRecording &recording)
+{
+  PVR_CLIENT client;
+  if (GetConnectedClient(recording.m_iClientId, client) && client->SupportsRecordingEdl())
+    return client->GetRecordingEdl(recording);
+  else
+    CLog::Log(LOGERROR, "PVR - %s - client %d does not support getting Edl", __FUNCTION__, recording.m_iClientId);
+
+  return std::vector<PVR_EDL_ENTRY>();
+}
+
 bool CPVRClients::IsRecordingOnPlayingChannel(void) const
 {
   CPVRChannelPtr currentChannel;
@@ -1218,6 +1229,12 @@ bool CPVRClients::SupportsRecordingPlayCount(int iClientId) const
 {
   PVR_CLIENT client;
   return GetConnectedClient(iClientId, client) && client->SupportsRecordingPlayCount();
+}
+
+bool CPVRClients::SupportsRecordingEdl(int iClientId) const
+{
+  PVR_CLIENT client;
+  return GetConnectedClient(iClientId, client) && client->SupportsRecordingEdl();
 }
 
 bool CPVRClients::SupportsTimers(int iClientId) const
