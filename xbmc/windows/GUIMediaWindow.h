@@ -27,6 +27,16 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "playlists/SmartPlayList.h"
 
+/* PLEX */
+#include "BackgroundInfoLoader.h"
+#include "FileItem.h"
+#include "PlexMediaRefresher.h"
+#include "PlexMediaServerQueue.h"
+
+#define CONTENT_LIST_FILTERS 13000
+#define DEFAULT_MODE_FOR_DISABLED_VIEWS 65586
+/* END PLEX */
+
 class CFileItemList;
 
 // base class for all media windows
@@ -47,6 +57,15 @@ public:
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   const CGUIViewState *GetViewState() const;
+
+  /* PLEX */
+  void UpdateSelectedItem(const CFileItemPtr& updatedItem)
+  {
+    CFileItem* pItem = new CFileItem();
+    (*pItem) = *(updatedItem.get());
+    m_updatedItem = CFileItemPtr(pItem);
+  }
+  /* END PLEX */
 
   virtual bool CanFilterAdvanced() { return m_canFilterAdvanced; }
   virtual bool IsFiltered();
@@ -137,6 +156,16 @@ protected:
   void UpdateFileList();
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);
+
+  /* PLEX */
+  virtual bool OnPlayMedia(CFileItem* pItem);
+  virtual void Render();
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return 0; }
+  void RefreshShares(bool update=false);
+  CFileItemPtr m_updatedItem;
+  PlexMediaRefresher* m_mediaRefresher;
+  CStopWatch m_refreshTimer;
+  /* END PLEX */
 
 protected:
   bool WaitForNetwork() const;

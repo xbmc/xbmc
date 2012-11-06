@@ -31,17 +31,21 @@
 #define HAS_DVD_SWSCALE
 #define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
-#define HAS_KARAOKE
+//#define HAS_KARAOKE
 #define HAS_SCREENSAVER
-#define HAS_PYTHON
+//#define HAS_PYTHON
 #define HAS_SYSINFO
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
+#ifndef __PLEX__
 #define HAS_PVRCLIENTS
+#endif
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
+#ifndef __PLEX__
 #define HAS_WEB_INTERFACE
+#endif
 #endif
 
 #define HAS_JSONRPC
@@ -52,10 +56,10 @@
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_CDDA
-#define HAS_FILESYSTEM_RTV
-#define HAS_FILESYSTEM_DAAP
-#define HAS_FILESYSTEM_SAP
-#define HAS_FILESYSTEM_VTP
+//#define HAS_FILESYSTEM_RTV
+//#define HAS_FILESYSTEM_DAAP
+//#define HAS_FILESYSTEM_SAP
+//#define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
 #ifdef HAVE_LIBSMBCLIENT
@@ -91,10 +95,10 @@
  **********************/
 
 #if defined(TARGET_WINDOWS)
-  #define HAS_FILESYSTEM_RAR
+  //#define HAS_FILESYSTEM_RAR
 #else
   #if defined(HAVE_XBMC_NONFREE)
-    #define HAS_FILESYSTEM_RAR
+    //#define HAS_FILESYSTEM_RAR
   #endif
 #endif
 

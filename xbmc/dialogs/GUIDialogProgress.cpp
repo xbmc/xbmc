@@ -62,6 +62,11 @@ void CGUIDialogProgress::StartModal()
 {
   CSingleLock lock(g_graphicsContext);
 
+  /* PLEX : Don't show if we are already active. */
+  if (m_active)
+    return;
+  /* END PLEX */
+
   CLog::Log(LOGDEBUG, "DialogProgress::StartModal called %s", m_active ? "(already running)!" : "");
   m_bCanceled = false;
 

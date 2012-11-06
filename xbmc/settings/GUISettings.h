@@ -20,6 +20,10 @@
  *
  */
 
+#ifdef __PLEX__
+#include "plex/Owned/GUISettings.h"
+#else
+
 #include <vector>
 #include <map>
 #include "guilib/Resolution.h"
@@ -527,3 +531,5 @@ private:
 };
 
 extern CGUISettings g_guiSettings;
+
+#endif

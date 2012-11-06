@@ -1,0 +1,117 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* The earliest ABI compatible version or cmakedefineined */
+#define CP_ABI_COMPATIBILITY @CP_ABI_COMPATIBILITY@
+
+/* File name separator character */
+#define CP_FNAMESEP_CHAR @CP_FNAMESEP_CHAR@
+
+/* File name separator string */
+#define CP_FNAMESEP_STR @CP_FNAMESEP_STR@
+
+/* Shared library extension */
+#define CP_SHREXT @CP_SHREXT@ 
+
+/* Multi-threading support type */
+#define CP_THREADS @CP_THREADS@
+
+/* Define to use GNU Libtool libltdl */
+#cmakedefine DLOPEN_LIBTOOL
+
+/* Define to use Posix dlopen */
+#cmakedefine DLOPEN_POSIX
+
+/* Define to 1 if translation of program messages to the user's native
+   language is requested. */
+#cmakedefine ENABLE_NLS
+
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#cmakedefine HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#cmakedefine HAVE_CFPREFERENCESCOPYAPPVALUE
+
+/* Define if the GNU dcgettext() function is already present or preinstalled.
+   */
+#cmakedefine HAVE_DCGETTEXT
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#cmakedefine HAVE_DLFCN_H
+
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#cmakedefine HAVE_GETTEXT
+
+/* Define if you have the iconv() function. */
+#cmakedefine HAVE_ICONV
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#cmakedefine HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `lstat' function. */
+#cmakedefine HAVE_LSTAT
+
+/* Define to 1 if you have the <memory.h> header file. */
+#cmakedefine HAVE_MEMORY_H
+
+/* Define to 1 if you have the `stat' function. */
+#cmakedefine HAVE_STAT
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#cmakedefine HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#cmakedefine HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#cmakedefine HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#cmakedefine HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#cmakedefine HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#cmakedefine HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine HAVE_UNISTD_H
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#cmakedefine LT_OBJDIR
+
+/* Define to 1 if your C compiler doesn't accept -c and -o together. */
+#cmakedefine NO_MINUS_C_MINUS_O
+
+/* Name of package */
+#cmakedefine PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#cmakedefine PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#cmakedefine PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#cmakedefine PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#cmakedefine PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#cmakedefine PACKAGE_URL
+
+/* Define to the version of this package. */
+#define PACKAGE_VERSION @PACKAGE_VERSION@
+
+/* Define to 1 if you have the ANSI C header files. */
+#cmakedefine STDC_HEADERS
+
+/* Version number of package */
+#define VERSION @VERSION@
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#cmakedefine const

@@ -30,7 +30,7 @@
 #if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #define DEFAULT_SKIN          "skin.touched"
 #else
-#define DEFAULT_SKIN          "skin.confluence"
+#define DEFAULT_SKIN          "skin.mediastream"
 #endif
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
 #ifdef MID
@@ -377,8 +377,15 @@ public:
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
 
+  /* PLEX */
+  CStdString GetPlexMediaServerThumbFolder() const;
+  CStdString GetPlexMediaServerFanartFolder() const;
+  CStdString GetProgramFanartFolder() const;
+  /* END PLEX */
+
   void ApplyCalibrations();
   void UpdateCalibrations();
+
 protected:
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);

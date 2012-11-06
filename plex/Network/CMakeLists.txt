@@ -1,0 +1,8 @@
+set(net_SRCS NetworkInterface.cpp NetworkInterface.h  NetworkServiceAdvertiser.h  NetworkServiceAdvertiserPMS.h  NetworkServiceBase.h  NetworkServiceBrowser.h  NetworkService.h  PlexNetworkServiceAdvertiser.h  PlexNetworkServices.h)
+if(APPLE)
+elseif(UNIX)
+    list(APPEND net_SRCS NetworkInterfaceLinux.cpp)
+else()
+    list(APPEND net_SRCS NetworkInterfaceWin32.cpp)
+endif()
+add_sources(${net_SRCS})

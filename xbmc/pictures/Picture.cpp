@@ -38,6 +38,14 @@
 #include "cores/omxplayer/OMXImage.h"
 #endif
 
+/* PLEX */
+#include <boost/lexical_cast.hpp>
+#include "sha.h"
+#include "threads/Thread.h"
+#include "PlexUtils.h"
+#include "URL.h"
+/* END PLEX */
+
 using namespace XFILE;
 
 bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
@@ -405,3 +413,61 @@ uint32_t *CPicture::TransposeOffAxis(uint32_t *pixels, unsigned int width, unsig
   delete[] pixels;
   return dest;
 }
+
+/* PLEX */
+bool CPicture::GetMediaFromPlexMediaServerCache(const CStdString& strFileName, const CStdString& strThumbFileName)
+{
+  CFileItem fileItem(strFileName, false);
+  if (fileItem.IsPlexMediaServer() && (strFileName.Find("/photo/:/transcode") != -1))
+  {
+    CLog::Log(LOGDEBUG, "Asked to check media from PMS: %s", strFileName.c_str());
+
+    // First optimize by checking for the actual cached file; size requested is always 720p.
+    int start = fileItem.GetPath().Find("url=") + 4;
+    CStdString url = fileItem.GetPath().substr(start);
+    CURL::Decode(url);
+
+    if (url.Find("127.0.0.1") != -1)
+    {
+      // Bogus, needs to match PlexDirectory.
+      CStdString size = "1280-720";
+      if (url.Find("/poster") != -1 || url.Find("/thumb") != -1)
+        size = boost::lexical_cast<std::string>(g_advancedSettings.GetThumbSize()) + "-" + boost::lexical_cast<std::string>(g_advancedSettings.GetThumbSize());
+      else if (url.Find("/banner") != -1)
+        size = "800-200";
+
+      std::string cacheToken = url + "-" + size;
+
+      // Compute SHA.
+      SHA_CTX m_ctx;
+      SHA1_Init(&m_ctx);
+      SHA1_Update(&m_ctx, (const u_int8_t* )cacheToken.c_str(), cacheToken.size());
+      char sha[SHA1_DIGEST_STRING_LENGTH];
+      SHA1_End(&m_ctx, sha);
+      std::string hash = sha;
+
+      // Compute cache file.
+      CStdString cacheFile = getenv("HOME");
+      cacheFile += "/Library/Caches/PlexMediaServer/PhotoTranscoder/";
+      cacheFile += hash.substr(0, 2) + "/";
+      cacheFile += hash + ".jpg";
+
+      // Copy it over
+      if (CFile::Exists(cacheFile))
+        return CFile::Cache(cacheFile, strThumbFileName);
+
+      // Otherwise, let's take exactly what we get from the Plex Media Server.
+      CLog::Log(LOGINFO, "Cache file didn't exist for %s (%s)", url.c_str(), cacheFile.c_str());
+    }
+  }
+
+  CFile::Cache(strFileName, strThumbFileName, 0);
+  if (PlexUtils::Size(strThumbFileName) == 0)
+  {
+    CFile::Delete(strThumbFileName);
+    return false;
+  }
+
+  return true;
+}
+/* END PLEX */

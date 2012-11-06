@@ -25,6 +25,11 @@
 
 #include "IDVDPlayer.h"
 
+/* PLEX */
+#include "Variant.h"
+#include "PlexMediaPart.h"
+/* END PLEX */
+
 #include "DVDMessageQueue.h"
 #include "DVDClock.h"
 #include "DVDPlayerAudio.h"
@@ -106,7 +111,11 @@ public:
   }
 };
 
+#ifndef __PLEX__
 typedef struct
+#else
+struct SelectionStream
+#endif
 {
   StreamType   type;
   int          type_index;
@@ -119,7 +128,41 @@ typedef struct
   int          id;
   std::string  codec;
   int          channels;
+
+
+  /* PLEX */
+  SelectionStream()
+    : plexID(-1)
+    , plexSubIndex(-1)
+  {}
+
+  SelectionStream& operator=(const SelectionStream& other)
+  {
+    // Preserve Plex ID by *not* copying over plexID member
+    type = other.type;
+    filename = other.filename;
+
+    // Stream language from Plex stream.
+    if (type != STREAM_SUBTITLE)
+      name = other.name;
+    else if (language.size() != 3)
+      name = language;
+
+    language = other.language;
+    id = other.id;
+    flags = other.flags;
+    source = other.source;
+
+    return *this;
+  }
+  int plexID;
+  int plexSubIndex;
+  /* END PLEX */
+#ifndef __PLEX__
 } SelectionStream;
+#else
+};
+#endif
 
 typedef std::vector<SelectionStream> SelectionStreams;
 
@@ -265,6 +308,22 @@ public:
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);
+
+  /* PLEX */
+  virtual int GetSubtitlePlexID();
+  virtual int GetAudioStreamPlexID();
+  virtual int GetPlexMediaPartID()
+  {
+    PlexMediaPartPtr part = GetMediaPart();
+    if (part)
+      return part->id;
+
+    return -1;
+  }
+  virtual bool CanOpenAsync() { return true; }
+  virtual void Abort() { m_bAbortRequest = true; }
+  bool PlexProcess(CStdString& stopURL);
+  /* END PLEX */
 protected:
   friend class CSelectionStreams;
 
@@ -480,4 +539,35 @@ protected:
   } m_EdlAutoSkipMarkers;
 
   CPlayerOptions m_PlayerOptions;
+
+  /* PLEX */
+  void OpenFileComplete();
+  void RelinkPlexStreams();
+  virtual CStdString TranscodeURL(CStdString& stopURL, const CStdString& url, int quality=-1, const CStdString& transcodeHost = "", const CStdString& extraOptions = "");
+
+  bool         m_bFileOpenComplete;
+  CStdString   m_strError;
+  CFileItemPtr m_itemWithDetails;
+  bool         m_hidingSub;
+  int          m_vobsubToDisplay;
+
+  PlexMediaPartPtr GetMediaPart()
+  {
+    PlexMediaPartPtr part;
+
+    if (m_itemWithDetails)
+    {
+      // Figure out what part we're on.
+      int partIndex = 0;
+      if (m_item.HasProperty("partIndex"))
+        partIndex = m_item.GetProperty("partIndex").asInteger();
+
+      // Get the part if we have it.
+      if (partIndex >= 0 && size_t(partIndex) < m_itemWithDetails->m_mediaParts.size())
+        part = m_itemWithDetails->m_mediaParts[partIndex];
+    }
+
+    return part;
+  }
+
 };

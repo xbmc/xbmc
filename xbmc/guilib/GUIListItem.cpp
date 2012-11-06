@@ -201,6 +201,10 @@ CStdString CGUIListItem::GetOverlayImage() const
     return "OverlayWatched.png";
   case ICON_OVERLAY_HD:
     return "OverlayHD.png";
+  /* PLEX */
+  case ICON_OVERLAY_IN_PROGRESS:
+    return "OverlayInProgress.png";
+  /* END PLEX */
   default:
     return "";
   }
@@ -239,6 +243,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
   m_art = item.m_art;
+
   SetInvalid();
   return *this;
 }
@@ -423,3 +428,50 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
   for (PropertyMap::const_iterator i = item.m_mapProperties.begin(); i != item.m_mapProperties.end(); ++i)
     SetProperty(i->first, i->second);
 }
+
+/* PLEX */
+void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail, size_t index)
+{
+  if (m_strThumbnailImageList.size() < index+1)
+    m_strThumbnailImageList.resize(index+1);
+
+  if (m_strThumbnailImageList[index] != strThumbnail)
+  {
+    m_strThumbnailImageList[index] = strThumbnail;
+    SetInvalid();
+  }
+}
+
+void CGUIListItem::SetGrandparentThumbnailImage(const CStdString& strThumbnail)
+{
+  if (m_strGrandparentThumbnailImage == strThumbnail)
+    return;
+
+  m_strGrandparentThumbnailImage = strThumbnail;
+  SetInvalid();
+}
+
+const CStdString& CGUIListItem::GetThumbnailImage(size_t index) const
+{
+  if (index < m_strThumbnailImageList.size())
+    return m_strThumbnailImageList[index];
+
+  static CStdString blank;
+  return blank;
+}
+
+const CStdString& CGUIListItem::GetGrandparentThumbnailImage() const
+{
+  return m_strGrandparentThumbnailImage;
+}
+
+bool CGUIListItem::HasGrandparentThumbnail() const
+{
+  return (m_strGrandparentThumbnailImage.size() != 0);
+}
+
+bool CGUIListItem::HasThumbnail(size_t index) const
+{
+  return (m_strThumbnailImageList.size() > index && m_strThumbnailImageList[index].size() != 0);
+}
+/* END PLEX */

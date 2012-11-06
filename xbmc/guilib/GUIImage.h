@@ -61,7 +61,11 @@ public:
     bool         m_fading;   ///< whether we're fading out
   };
 
+#ifndef __PLEX__
   CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture);
+#else
+  CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth=0.0f);
+#endif
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
   virtual CGUIImage *Clone() const { return new CGUIImage(*this); };
@@ -97,6 +101,11 @@ public:
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
+
+  /* PLEX */
+  virtual void SetLazyLoaded() { m_texture.SetLazyLoaded(); }
+  virtual float GetWidth() const { return m_texture.GetWidth(); }
+  /* END PLEX */
 protected:
   virtual void AllocateOnDemand();
   virtual void FreeTextures(bool immediately = false);
@@ -118,5 +127,9 @@ protected:
   unsigned int m_crossFadeTime;
   unsigned int m_currentFadeTime;
   unsigned int m_lastRenderTime;
+
+  /* PLEX */
+  float m_minWidth;
+  /* END PLEX */
 };
 #endif

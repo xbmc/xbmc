@@ -31,6 +31,12 @@ CHttpHeader::~CHttpHeader()
 
 void CHttpHeader::Parse(CStdString strData)
 {
+  /* PLEX */
+  // Add to the string that holds all of the headers in raw form.
+  if (strData.find("HTTP/") == -1)
+    m_headers += strData;
+  /* END PLEX */
+
   unsigned int iIter = 0;
   int iValueStart = 0;
   int iValueEnd = 0;
@@ -106,4 +112,7 @@ void CHttpHeader::GetHeader(CStdString& strHeader) const
 void CHttpHeader::Clear()
 {
   m_params.clear();
+  /* PLEX */
+  m_headers.clear();
+  /* END PLEX */
 }

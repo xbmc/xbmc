@@ -1,0 +1,1 @@
+add_library(cx_jbig OBJECT jbig.c jbig_tab.c)

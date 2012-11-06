@@ -44,6 +44,9 @@ CVirtualDirectory::CVirtualDirectory(void)
   m_flags = DIR_FLAG_ALLOW_PROMPT;
   m_allowNonLocalSources = true;
   m_allowThreads = true;
+  /* PLEX - Disable XBMC features*/
+  m_allowNonLocalSources = false;
+  /* END PLEX */
 }
 
 CVirtualDirectory::~CVirtualDirectory(void)
@@ -82,7 +85,12 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
   if (strPath.IsEmpty())
+  {
     items.Clear();
+    /* PLEX */
+    g_directoryCache.ClearSubPaths("");
+    /* END PLEX */
+  }
 
   // return the root listing
   items.SetPath(strPath);

@@ -1,0 +1,6 @@
+set(main_SRCS main.cpp)
+if(APPLE)
+  list(APPEND main_SRCS osx/SDLMain.mm)
+  list(APPEND main_SRCS osx/SDLMain.h)
+endif()
+add_sources(${main_SRCS})

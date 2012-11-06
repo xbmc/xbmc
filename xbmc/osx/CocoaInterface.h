@@ -39,11 +39,11 @@ extern "C"
   //
   void Cocoa_DoAppleScript(const char* scriptSource);
   void Cocoa_DoAppleScriptFile(const char* filePath);
-  
+
   // Application support
   //
   const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char *_iconName);
-  
+
   // Devices
   //
   char* Cocoa_MountPoint2DeviceName(char *path);
@@ -62,11 +62,11 @@ extern "C"
   bool Cocoa_GPUForDisplayIsNvidiaPureVideo3();
   int Cocoa_GetOSVersion();
 
-  
+
   void  Cocoa_MakeChildWindow();
   void  Cocoa_DestroyChildWindow();
 
-  const char *Cocoa_Paste() ;  
+  const char *Cocoa_Paste() ;
 
 #ifdef __cplusplus
 }

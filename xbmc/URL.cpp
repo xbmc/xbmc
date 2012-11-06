@@ -209,7 +209,15 @@ void CURL::Parse(const CStdString& strURL1)
         m_strOptions = strURL.substr(iOptions);
       iEnd = iOptions;
       m_options.AddOptions(m_strOptions);
+
+      /* PLEX */
+      m_strWithoutOptions = strURL.substr(0,iOptions);
+      /* END PLEX */
     }
+
+    /* PLEX */
+    m_strWithoutOptions = strURL;
+    /* END PLEX */
   }
 
   int iSlash = strURL.Find("/", iPos);
@@ -804,3 +812,10 @@ void CURL::RemoveOption(const CStdString &key)
   m_options.AddOption(key, "");
   SetOptions(m_options.GetOptionsString(true));
 }
+
+/* PLEX */
+const CStdString& CURL::GetUrlWithoutOptions() const
+{
+  return m_strWithoutOptions;
+}
+/* END PLEX */

@@ -36,7 +36,8 @@ public:
 
   virtual void OnPrepareFileItems(CFileItemList &items);
 
-  virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
+  virtual void OnInfo(const CFileItemPtr& pItem, ADDON::ScraperPtr &info);
+
   static bool CanDelete(const CStdString& strPath);
   static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 

@@ -157,6 +157,10 @@ public:
   pSetGestureConfig       PtrSetGestureConfig;
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
 
+  /* PLEX */
+  virtual void UpdateDisplayBlanking();
+  /* END PLEX */
+
 protected:
   bool ChangeResolution(RESOLUTION_INFO res);
   virtual bool ResizeInternal(bool forceRefresh = false);

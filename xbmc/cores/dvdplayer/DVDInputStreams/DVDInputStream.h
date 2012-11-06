@@ -162,10 +162,19 @@ public:
 
   void SetFileItem(const CFileItem& item);
 
+  /* PLEX */
+  void SetError(const CStdString& error) { m_strError = error; }
+  const CStdString& GetError() const { return m_strError; }
+  /* END PLEX */
+
 protected:
   DVDStreamType m_streamType;
   std::string m_strFileName;
   BitstreamStats m_stats;
   std::string m_content;
   CFileItem m_item;
+
+  /* PLEX */
+  CStdString m_strError;
+  /* END PLEX */
 };

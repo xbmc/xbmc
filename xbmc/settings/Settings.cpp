@@ -134,6 +134,10 @@ void CSettings::Initialize()
 
   m_musicNeedsUpdate = 0;
   m_videoNeedsUpdate = 0;
+
+  /* PLEX */
+  m_userAgent = "Plex Firefox/2.0.0.11";
+  /* END PLEX */
 }
 
 CSettings::~CSettings(void)
@@ -1404,7 +1408,9 @@ void CSettings::LoadSources()
   if (pRootElement)
   {
     CStdString dummy;
+#ifndef __PLEX__
     GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
+#endif
     GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
     GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
     GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
@@ -1917,3 +1923,39 @@ void CSettings::LoadMasterForLogin()
   if (m_currentProfile != 0)
     LoadProfile(0);
 }
+
+/* PLEX */
+CStdString CSettings::GetPlexMediaServerThumbFolder() const
+{
+  CStdString folder;
+  if (GetCurrentProfile().hasDatabases())
+    URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\", folder);
+  else
+    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\", folder);
+
+  return folder;
+
+}
+
+CStdString CSettings::GetPlexMediaServerFanartFolder() const
+{
+  CStdString folder;
+  if (GetCurrentProfile().hasDatabases())
+    URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "Thumbnails\\", folder);
+  else
+    URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), "Thumbnails\\", folder);
+
+  return folder;
+}
+
+CStdString CSettings::GetProgramFanartFolder() const
+{
+  CStdString folder;
+  if (GetCurrentProfile().hasDatabases())
+    URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Programs/Fanart", folder);
+  else
+    URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Programs/Fanart", folder);
+
+  return folder;
+}
+/* END PLEX */

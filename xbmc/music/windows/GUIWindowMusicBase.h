@@ -105,4 +105,9 @@ protected:
   bool m_hideExtensions;
   CMusicDatabase m_musicdatabase;
   MUSIC_INFO::CMusicInfoLoader m_musicInfoLoader;
+
+  /* PLEX */
+  virtual void OnShuffleItem(int iItem);
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return &m_musicInfoLoader; }
+  /* END PLEX */
 };

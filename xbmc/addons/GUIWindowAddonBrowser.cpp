@@ -423,6 +423,17 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
         items.Add(item);
     }
 
+    /* PLEX */
+    if (*it == ADDON_VIZ)
+    {
+      CFileItemPtr nowPlaying(new CFileItem());
+      nowPlaying->SetLabel("Now Playing");
+      nowPlaying->SetPath("Now Playing");
+
+      items.Add(nowPlaying);
+    }
+    /* END PLEX */
+
     if (!heading.IsEmpty())
       heading += ", ";
     heading += TranslateType(*it, true);

@@ -1,0 +1,6 @@
+add_subdirectory(VideoShaders)
+find_all_sources(. videorenderers_SRCS)
+list(REMOVE_ITEM videorenderers_SRCS ./OverlayRendererDX.cpp)
+list(REMOVE_ITEM videorenderers_SRCS ./LinuxRendererGLES.cpp)
+list(REMOVE_ITEM videorenderers_SRCS ./WinRenderer.cpp)
+add_sources(${videorenderers_SRCS})

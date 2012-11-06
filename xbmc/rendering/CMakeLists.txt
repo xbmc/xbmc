@@ -1,0 +1,5 @@
+find_all_sources(. rendering_SRCS)
+if(UNIX)
+	find_all_sources(gl system_SRCS)
+endif(UNIX)
+add_sources(${rendering_SRCS} ${system_SRCS})

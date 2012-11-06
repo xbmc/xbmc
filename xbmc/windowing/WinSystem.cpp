@@ -200,3 +200,9 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, vector<REFRESHRATE> r
   }
   return bestmatch;
 }
+
+/* PLEX */
+void CWinSystemBase::UpdateDisplayBlanking()
+{
+}
+/* END PLEX */

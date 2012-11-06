@@ -1,0 +1,5 @@
+find_all_sources(. bus_SRCS)
+if(APPLE)
+	find_all_sources(osx bus_os_SRCS)
+endif(APPLE)
+add_sources(${bus_SRCS} ${bus_os_SRCS})

@@ -30,6 +30,11 @@ public:
   virtual ~CGUIDialogOK(void);
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(const CVariant &heading, const CVariant &line0, const CVariant &line1, const CVariant &line2);
+
+  /* PLEX */
+  static void ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2);
+  /* END PLEX */
+
 protected:
   virtual int GetDefaultLabelID(int controlId) const;
 };

@@ -23,6 +23,7 @@
 
 #include <vector>
 
+#ifndef __PLEX__
 #include <taglib/id3v1tag.h>
 #include <taglib/id3v2tag.h>
 #include <taglib/apetag.h>
@@ -38,6 +39,7 @@
 #undef byte
 #include <taglib/tstring.h>
 #include <taglib/tpropertymap.h>
+#endif
 
 #include "TagLibVFSStream.h"
 #include "MusicInfoTag.h"
@@ -47,7 +49,9 @@
 #include "settings/AdvancedSettings.h"
 
 using namespace std;
+#ifndef __PLEX__
 using namespace TagLib;
+#endif
 using namespace MUSIC_INFO;
 
 CTagLoaderTagLib::CTagLoaderTagLib()
@@ -59,6 +63,7 @@ CTagLoaderTagLib::~CTagLoaderTagLib()
   
 }
 
+#ifndef __PLEX__
 static const vector<string> StringListToVectorString(const StringList& stringList)
 {
   vector<string> values;
@@ -66,9 +71,12 @@ static const vector<string> StringListToVectorString(const StringList& stringLis
     values.push_back(it->to8Bit(true));
   return values;
 }
+#endif
 
 bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art /* = NULL */)
 {  
+
+#ifndef __PLEX__
   CStdString strExtension;
   URIUtils::GetExtension(strFileName, strExtension);
   strExtension.ToLower();
@@ -258,9 +266,11 @@ bool CTagLoaderTagLib::ParseASF(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
       CLog::Log(LOGDEBUG, "unrecognized ASF tag name: %s", it->first.toCString(true));
   }
   tag.SetLoaded(true);
+#endif
   return true;
 }
 
+#ifndef __PLEX__
 char POPMtoXBMC(int popm)
 {
   // Ratings:
@@ -631,3 +641,4 @@ void CTagLoaderTagLib::SetGenre(CMusicInfoTag &tag, const vector<string> &values
   else
     tag.SetGenre(values);
 }
+#endif

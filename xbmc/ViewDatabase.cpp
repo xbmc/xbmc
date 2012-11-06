@@ -78,6 +78,7 @@ bool CViewDatabase::UpdateOldVersion(int version)
 
 bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state, const CStdString &skin)
 {
+#ifndef __PLEX__
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -108,11 +109,13 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
   {
     CLog::Log(LOGERROR, "%s, failed on path '%s'", __FUNCTION__, path.c_str());
   }
+#endif
   return false;
 }
 
 bool CViewDatabase::SetViewState(const CStdString &path, int window, const CViewState &state, const CStdString &skin)
 {
+#ifndef __PLEX__
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -143,6 +146,8 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
     CLog::Log(LOGERROR, "%s failed on path '%s'", __FUNCTION__, path.c_str());
   }
   return true;
+#endif
+  return false;
 }
 
 bool CViewDatabase::ClearViewStates(int windowID)

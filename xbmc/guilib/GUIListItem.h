@@ -55,6 +55,7 @@ public:
                         ICON_OVERLAY_TRAINED,
                         ICON_OVERLAY_UNWATCHED,
                         ICON_OVERLAY_WATCHED,
+                        ICON_OVERLAY_IN_PROGRESS, /* PLEX */
                         ICON_OVERLAY_HD};
 
   CGUIListItem(void);
@@ -162,6 +163,22 @@ public:
 
   CVariant   GetProperty(const CStdString &strKey) const;
 
+  /* PLEX */
+  void SetThumbnailImage(const CStdString &strThumbnail, size_t index);
+  void SetThumbnailImage(const CStdString &strThumbnail) { SetThumbnailImage(strThumbnail, 0); }
+  void SetGrandparentThumbnailImage(const CStdString& strThumbnail);
+  const CStdString& GetThumbnailImage(size_t index) const;
+  const CStdString& GetThumbnailImage() const { return GetThumbnailImage(0); }
+  const CStdString& GetGrandparentThumbnailImage() const;
+  size_t GetNumThumbnails() const { return m_strThumbnailImageList.size(); }
+  int GetOverlayImageID() const { return m_overlayIcon; }
+  bool HasThumbnail(size_t index) const;
+  bool HasThumbnail() const { return HasThumbnail(0); }
+  bool HasGrandparentThumbnail() const;
+
+  void ClearThumbnailImage() { m_strThumbnailImageList.clear(); }
+  /* END PLEX */
+
 protected:
   CStdString m_strLabel2;     // text of column2
   CStdString m_strIcon;      // filename of icon
@@ -171,6 +188,8 @@ protected:
   CGUIListItemLayout *m_focusedLayout;
   bool m_bSelected;     // item is selected or not
 
+  /* PLEX */
+public:
   struct icompare
   {
     bool operator()(const CStdString &s1, const CStdString &s2) const
@@ -181,6 +200,14 @@ protected:
 
   typedef std::map<CStdString, CVariant, icompare> PropertyMap;
   PropertyMap m_mapProperties;
+
+  PropertyMap& GetPropertyDict() { return m_mapProperties; }
+
+protected:
+  CStdString m_strGrandparentThumbnailImage;
+  std::vector<CStdString> m_strThumbnailImageList;
+  /* END PLEX */
+
 private:
   CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
   CStdString m_strLabel;      // text of column1

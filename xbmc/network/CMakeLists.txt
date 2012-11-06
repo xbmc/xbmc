@@ -1,0 +1,14 @@
+add_subdirectory(libscrobbler)
+add_subdirectory(websocket)
+add_subdirectory(httprequesthandler)
+
+if(APPLE)
+    add_subdirectory(osx)
+endif(APPLE)
+if(UNIX)
+    add_subdirectory(linux)
+endif(UNIX)
+
+find_all_sources(. network_SRCS)
+list(REMOVE_ITEM network_SRCS ./UPnP.cpp)
+add_sources(${network_SRCS})

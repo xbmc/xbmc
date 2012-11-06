@@ -163,6 +163,10 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int result = -1;
   int64_t length = 0;
   bool bTags = false;
+  /* PLEX */
+  CFileItem item(strFile, false);
+  bool bIsInternetStream = item.IsInternetStream();
+  /* END PLEX */
 
   if (!m_file.Open(strFile, READ_CACHED))
   {

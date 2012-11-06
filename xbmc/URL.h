@@ -26,6 +26,10 @@
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
 #endif
 
+/* PLEX */
+#include <map>
+/* END PLEX */
+
 class CURL
 {
 public:
@@ -82,6 +86,11 @@ public:
   void SetOption(const CStdString &key, const CStdString &value);
   void RemoveOption(const CStdString &key);
 
+  /* PLEX */
+  const CStdString& GetUrlWithoutOptions() const;
+  /* END PLEX */
+
+
 protected:
   int m_iPort;
   CStdString m_strHostName;
@@ -95,4 +104,8 @@ protected:
   CStdString m_strOptions;
   CStdString m_strProtocolOptions;
   CUrlOptions m_options;
+
+  /* PLEX */
+  CStdString m_strWithoutOptions;
+  /* END PLEX */
 };

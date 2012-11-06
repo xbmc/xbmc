@@ -25,6 +25,12 @@
 #include "windowing/WinSystem.h"
 #include "threads/CriticalSection.h"
 
+/* PLEX */
+typedef u_int32_t CGDirectDisplayID;
+/* END PLEX */
+
+typedef u_int32_t CGDisplayChangeSummaryFlags;
+
 typedef struct SDL_Surface SDL_Surface;
 
 class IDispResource;
@@ -63,9 +69,13 @@ public:
   virtual int GetNumScreens();
 
   void CheckDisplayChanging(u_int32_t flags);
+
+  /* PLEX */
+  virtual int GetCurrentScreen();
+  virtual void UpdateDisplayBlanking();
+  /* END PLEX */
   
   void* GetCGLContextObj();
-
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);

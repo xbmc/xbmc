@@ -21,6 +21,7 @@
  */
 
 #undef byte
+#ifndef __PLEX__
 #include <taglib/aifffile.h>
 #include <taglib/apefile.h>
 #include <taglib/asffile.h>
@@ -43,6 +44,7 @@
 #include <taglib/id3v2tag.h>
 #include <taglib/xiphcomment.h>
 #include <taglib/mp4tag.h>
+#endif
 #include "TagLibVFSStream.h"
 
 namespace MUSIC_INFO
@@ -58,6 +60,7 @@ public:
   virtual ~CTagLoaderTagLib();
   virtual bool                   Load(const std::string& strFileName, MUSIC_INFO::CMusicInfoTag& tag, MUSIC_INFO::EmbeddedArt *art = NULL);
 private:
+#ifndef __PLEX__
   bool                           Open(const std::string& strFileName, bool readOnly);
   const std::vector<std::string> GetASFStringList(const TagLib::List<TagLib::ASF::Attribute>& list);
   const std::vector<std::string> GetID3v2StringList(const TagLib::ID3v2::FrameList& frameList) const;
@@ -72,4 +75,5 @@ private:
   void                           SetArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   void                           SetAlbumArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   void                           SetGenre(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
+#endif
 };

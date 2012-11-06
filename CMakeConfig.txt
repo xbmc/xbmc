@@ -1,0 +1,373 @@
+# vim: setlocal syntax=cmake:
+
+set(CMAKE_REQUIRED_INCLUDES "${dependdir}/include")
+
+include(CheckIncludeFiles)
+include(CheckFunctionExists)
+include(CheckSymbolExists)
+include(CheckLibraryExists)
+include(CheckCSourceCompiles)
+
+set(AC_APPLE_UNIVERSAL_BUILD 0)
+set(HAS_DVD_DRIVE 0)
+set(HAS_LIBRTMP 1)
+
+######################### CHECK HEADER
+set(headers
+  arpa/inet
+  cdio/iso9660
+  dirent
+  fcntl
+  float
+  inttypes
+  limits
+  locale
+  malloc
+  memory
+  ndir
+  netdb
+  netinet/in
+  nfsc/libfs
+  stdbool
+  stddef
+  stdint
+  stdlib
+  strings
+  string
+  sys/dir
+  sys/file
+  sys/ioctl
+  sys/mount
+  sys/ndir
+  sys/param
+  sys/select
+  sys/socket
+  sys/stat
+  sys/timeb
+  sys/time
+  sys/types
+  sys/vfs
+  termios
+  unistd
+  utime
+  wchar
+  wctype
+  
+  # ffmpeg
+  libavcodec/avcodec
+  libavfilter/avfilter
+  libavformat/avformat
+  libavutil/avutil
+  libpostproc/postprocess
+  libswscale/swscale
+  
+  ffmpeg/avcodec
+  ffmpeg/avfilter
+  ffmpeg/avformat
+  ffmpeg/avutil
+  postproc/postprocess
+  ffmpeg/swscale
+  
+  libavcore/avcore
+  libavcore/samplefmt
+  libavutil/mem
+  libavutil/samplefmt
+  libavutil/opt
+  libavutil/mathematics
+  libswscale/rgb2rgb
+  ffmpeg/rgb2rgb
+  libswresample/swresample
+  libavresample/avresample
+)
+
+foreach(header ${headers})
+  set(_HAVE_VAR HAVE_${header}_H)
+  string(TOUPPER ${_HAVE_VAR} _HAVE_VAR)
+  string(REPLACE "/" "_" _HAVE_VAR ${_HAVE_VAR})
+  check_include_files(${header}.h ${_HAVE_VAR})
+endforeach()
+
+######################### CHECK FUNCTIONS 
+set(functions
+  alarm
+  atexit
+  chown
+  _doprnt
+  dup2
+  fdatasync
+  floor
+  fs_stat_dev
+  ftime
+  ftruncate
+  getcwd
+  gethostbyaddr
+  gethostbyname
+  getpagesize
+  getpass
+  gettimeofday
+  inet_ntoa
+  inotify
+  lchown
+  localeconv
+  memchr
+  memmove
+  mkdir
+  modf
+  mmap
+  munmap
+  pow
+  rmdir
+  select
+  setenv
+  setlocale
+  socket
+  sqrt
+  strcasecmp
+  strchr
+  strcoll
+  strcspn
+  strdup
+  strerror
+  strftime
+  strncasecmp
+  strpbrk
+  strrchr
+  strspn
+  strstr
+  strtol
+  strtoul
+  sysinfo
+  tzset
+  utime
+  vprintf
+)
+
+foreach(func ${functions})
+  set(_HAVE_VAR HAVE_${func})
+  string(TOUPPER ${_HAVE_VAR} _HAVE_VAR)
+  check_function_exists(${func} ${_HAVE_VAR})
+endforeach()
+
+######################### CHECK LIBRARIES / FRAMEWORKS
+#### Frameworks for MacOSX
+if(APPLE)
+	set(osx_frameworks
+		AudioToolbox
+		AudioUnit
+		Cocoa
+		CoreAudio
+		CoreServices
+		Foundation
+		OpenGL
+		AppKit
+		ApplicationServices
+		IOKit
+		QuickTime
+		Carbon
+		DiskArbitration
+		QuartzCore
+		SystemConfiguration
+    Sparkle
+    IOSurface
+	)
+endif()
+
+#### libraries we want to link to
+set(external_libs 
+	ssh
+	lzo2
+	pcre
+	pcrecpp
+	fribidi
+	cdio
+	freetype
+	fontconfig
+	sqlite3
+	samplerate
+	microhttpd
+	yajl
+  jpeg
+	crypto
+	SDL
+	SDL_mixer
+  SDL_image
+	tinyxml
+	boost_thread
+	boost_system
+	z
+  GLEW
+  
+  # ffmpeg libraries
+  avcodec
+  avutil
+  avformat
+  avfilter
+  avdevice
+  postproc
+  swscale
+  swresample
+)
+
+if(NOT APPLE)
+    if(UNIX)
+        list(APPEND external_libs GL)
+        list(APPEND external_libs X11)
+    endif()
+endif()
+
+set(non_link_libs
+	rtmp
+	plist
+	shairport
+	curl
+	FLAC
+	modplug
+	vorbis
+	vorbisfile
+	vorbisenc
+	ogg
+	ass
+	mad
+	mpeg2
+  bluray
+  png
+  tiff
+)
+
+set(CONFIG_INTERNAL_LIBS
+  lib_hts
+  lib_squish
+)
+
+if(APPLE)
+  # on darwin we use the built in iconv
+  list(APPEND system_libs iconv)
+
+  # also add apple libstdc++
+  list(APPEND system_libs stdc++)
+else()
+  # otherwise use our own version
+  list(APPEND external_libs iconv)
+endif()
+
+# function to find library and set the variables we need
+macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
+  string(TOUPPER ${lib} LIBN)
+
+  # find the library, just searching in our paths
+  if(${nodefaultpath})
+      find_library(CONFIG_LIBRARY_${LIBN} ${lib} PATHS ${searchpath} ${searchpath}64 NO_DEFAULT_PATH)
+  else()
+	  find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${searchpath})
+  endif()
+
+  if(CONFIG_LIBRARY_${LIBN} MATCHES "NOTFOUND")
+      message("** Could not detect ${LIBN}")
+  else()
+      # get the actual value
+      get_property(l VARIABLE PROPERTY CONFIG_LIBRARY_${LIBN})
+      
+      # resolve any symlinks
+      get_filename_component(REALNAME ${l} REALPATH)
+
+      # split out the library name
+      get_filename_component(FNAME ${REALNAME} NAME)
+      
+      # set the SONAME variable, needed for DllPaths_generated.h
+      set(${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
+      
+      # set the HAVE_LIBX variable
+      set(HAVE_LIB${LIBN} 1 CACHE string "the HAVE_LIBX variable")
+      
+      # if this is a framework we need to mark it as advanced
+      if(${framework})
+        mark_as_advanced(CONFIG_LIBRARY_${LIBN})
+      endif()
+      
+      if(${addtolinklist})
+        list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${l})
+      else()
+        list(APPEND CONFIG_PLEX_INSTALL_LIBRARIES ${REALNAME})
+      endif()
+  endif()
+endmacro()
+  
+
+# go through all the libs we need and find them plus set some good variables
+foreach(lib ${external_libs})
+  plex_find_library(${lib} 0 1 ${dependdir}/lib 1)
+endforeach()
+
+foreach(lib ${non_link_libs})
+  plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
+endforeach()
+
+# find our system libs
+foreach(lib ${system_libs})
+  plex_find_library(${lib} 0 0 "" 1)
+endforeach()
+
+foreach(lib ${osx_frameworks})
+  plex_find_library(${lib} 1 0 ${dependdir}/Frameworks 1)
+endforeach()
+
+#### find some header paths
+if(APPLE)
+  find_path(CONFIG_INCLUDE_PATH_SPARKLE Sparkle/Sparkle.h HINTS ${dependdir}/Frameworks)
+else()
+  set(CONFIG_INCLUDE_PATH_SPARKLE "")
+endif()
+
+####
+if(DEFINED HAVE_LIBX11)
+  set(HAVE_X11 1)
+endif()
+
+if(DEFINED HAVE_LIBSDL)
+  set(HAVE_SDL 1)
+endif()
+
+#### check FFMPEG member name
+if(DEFINED HAVE_LIBAVFILTER_AVFILTER_H)
+  set(AVFILTER_INC "#include <libavfilter/avfilter.h>")
+else()
+  set(AVFILTER_INC "#include <ffmpeg/avfilter.h>")
+endif()
+CHECK_C_SOURCE_COMPILES("
+  ${AVFILTER_INC}
+  int main(int argc, char *argv[])
+  { 
+    static AVFilterBufferRefVideoProps test;
+    if(sizeof(test.sample_aspect_ratio))
+      return 0;
+    return 0;
+  }
+"
+HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO)
+
+#### default lircdevice
+set(LIRC_DEVICE "/dev/lircd")
+
+#### Deal with some generated files
+if(APPLE)
+	set(ARCH "x86-osx")
+elseif(UNIX)
+    if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+        set(ARCH "x86_64-linux")
+    else()
+        set(ARCH "i486-linux")
+    endif()
+endif()
+
+if(APPLE)
+  set(LIBPATH Plex.app/Contents/Frameworks)
+  set(BINPATH Plex.app/Contents/MacOSX)
+  set(RESOURCEPATH Plex.app/Contents/Resources)
+else()
+  set(LIBPATH bin)
+  set(BINPATH bin)
+  set(RESOURCEPATH share)
+endif() 
+
+configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
+configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)

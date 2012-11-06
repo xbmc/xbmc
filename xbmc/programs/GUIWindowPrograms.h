@@ -23,6 +23,7 @@
 #include "windows/GUIMediaWindow.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 class CGUIWindowPrograms :
       public CGUIMediaWindow, public IBackgroundLoaderObserver
@@ -43,5 +44,10 @@ protected:
 
   CGUIDialogProgress* m_dlgProgress;
 
+#ifndef __PLEX__
   CProgramThumbLoader m_thumbLoader;
+#else
+  virtual CBackgroundInfoLoader* GetBackgroundLoader() { return &m_thumbLoader; }
+  CVideoThumbLoader m_thumbLoader;
+#endif
 };

@@ -33,6 +33,9 @@
 #include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "utils/log.h"
 
+/* PLEX */
+#include "Players/PlexMediaServerPlayer.h"
+
 class CPlayerCoreConfig
 {
 friend class CPlayerCoreFactory;
@@ -91,6 +94,9 @@ public:
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
 #endif
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
+      /* PLEX */
+      case EPC_PMSPLAYER: pPlayer = new CPlexMediaServerPlayer(callback); break;
+      /* END PLEX */
 #if defined(HAS_AMLPLAYER)
       case EPC_AMLPLAYER: pPlayer = new CAMLPlayer(callback); break;
 #endif

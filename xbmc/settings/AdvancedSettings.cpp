@@ -317,6 +317,30 @@ void CAdvancedSettings::Initialize()
   m_databaseVideo.Reset();
 
   m_logLevelHint = m_logLevel = LOG_LEVEL_NORMAL;
+
+  /* PLEX */
+  /* Adjust the timeseekbackward to match what Plex9 did */
+  m_videoTimeSeekBackward = -15;
+
+  /* Disable this since Plex has it's own plugins etc */
+  m_bVirtualShares = false;
+
+  m_secondsToVisualizer = 10;
+  m_bVisualizerOnPlay = true;
+  m_nowPlayingFlipTime = 120;
+  m_bBackgroundMusicOnlyWhenFocused = true;
+  m_bAutoShuffle = true;
+  m_bUseAnamorphicZoom = false;
+  m_bEnableViewRestrictions = true;
+  m_bEnableKeyboardBacklightControl = false;
+  m_bEnablePlexTokensInLogs = false;
+
+  /* Use Union and 1000ms by default */
+  m_guiAlgorithmDirtyRegions = 1;
+  m_guiDirtyRegionNoFlipTimeout = 1000;
+  /* END PLEX */
+
+
 }
 
 bool CAdvancedSettings::Load()
@@ -1040,6 +1064,20 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
   }
+
+  /* PLEX */
+  XMLUtils::GetInt(pRootElement, "nowplayingfliptime", m_nowPlayingFlipTime, 10, 6000);
+  XMLUtils::GetBoolean(pRootElement, "enableviewrestricitons", m_bEnableViewRestrictions);
+  XMLUtils::GetInt(pRootElement, "secondstovisualizer", m_secondsToVisualizer, 0, 6000);
+  XMLUtils::GetInt(pRootElement, "nowplayingfliptime", m_nowPlayingFlipTime, 10, 6000);
+  XMLUtils::GetBoolean(pRootElement, "visualizeronplay", m_bVisualizerOnPlay);
+  XMLUtils::GetBoolean(pRootElement, "backgroundmusiconlywhenfocused", m_bBackgroundMusicOnlyWhenFocused);
+  XMLUtils::GetBoolean(pRootElement, "autoshuffle", m_bAutoShuffle);
+  XMLUtils::GetBoolean(pRootElement, "anamorphiczoom", m_bUseAnamorphicZoom);
+  XMLUtils::GetBoolean(pRootElement, "enableviewrestrictions", m_bEnableViewRestrictions);
+  XMLUtils::GetBoolean(pRootElement, "enablekeyboardbacklightcontrol", m_bEnableKeyboardBacklightControl);
+  XMLUtils::GetBoolean(pRootElement, "enableplextokensinlogs", m_bEnablePlexTokensInLogs);
+  /* END PLEX */
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in

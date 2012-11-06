@@ -103,6 +103,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
 bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 {
+#ifndef __PLEX__
   CStdString strMimeType = item.GetMimeType();
   strMimeType.ToLower();
 
@@ -126,7 +127,7 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
   || strMimeType == "playlist"
   || strMimeType == "audio/x-mpegurl")
     return true;
-
+#endif
   return IsPlaylist(item.GetPath());
 }
 

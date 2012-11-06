@@ -216,6 +216,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   if (items.GetFolderCount()==items.Size() || !g_guiSettings.GetBool("pictures.usetags"))
     return;
 
+#ifndef __PLEX__ // No need to do this
   // Start the music info loader thread
   CPictureInfoLoader loader;
   loader.SetProgressCallback(m_dlgProgress);
@@ -255,6 +256,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
 
   if (bProgressVisible && m_dlgProgress)
     m_dlgProgress->Close();
+#endif
 }
 
 bool CGUIWindowPictures::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
@@ -445,12 +447,19 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
 void CGUIWindowPictures::OnRegenerateThumbs()
 {
   if (m_thumbLoader.IsLoading()) return;
+#ifndef __PLEX__
   m_thumbLoader.SetRegenerateThumbs(true);
+#endif
   m_thumbLoader.Load(*m_vecItems);
 }
 
 void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
+  /* PLEX */
+  if (m_vecItems->GetContent() == "secondary")
+    return;
+  /* END PLEX */
+
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
@@ -550,7 +559,9 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
+#ifndef __PLEX__
   CPictureThumbLoader::ProcessFoldersAndArchives(pItem);
+#endif
 }
 
 void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)

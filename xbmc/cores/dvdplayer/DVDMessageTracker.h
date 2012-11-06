@@ -36,7 +36,7 @@ public:
   {
     m_pMsg = pMsg;
     m_debug_logged = false;
-    m_time_created = CTimeUtils::GetTimeMS();
+    m_time_created = XbmcThreads::SystemClockMillis();
   }
 
   CDVDMsg* m_pMsg;

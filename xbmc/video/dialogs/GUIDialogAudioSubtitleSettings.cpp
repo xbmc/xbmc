@@ -114,7 +114,10 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
     AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
   if (SupportsSubtitleFeature(IPC_SUBS_EXTERNAL))
     AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+
+#ifndef __PLEX__ /* Not possible in Plex */
   AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
+#endif
 }
 
 void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
@@ -132,6 +135,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
 
   if( m_audioStream < 0 ) m_audioStream = 0;
 
+#ifndef __PLEX__
   // check if we have a single, stereo stream, and if so, allow us to split into
   // left, right or both
   if (!setting.max)
@@ -156,6 +160,7 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
       return;
     }
   }
+#endif
 
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i <= setting.max; ++i)
@@ -306,7 +311,22 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
       strPath = url.GetHostName();
     }
     else
+    {
       strPath = g_application.CurrentFileItem().GetPath();
+
+      /* PLEX */
+      // If we're inside the library, we'll need a different path.
+      if (g_application.CurrentFileItem().IsPlexMediaServerLibrary())
+      {
+        // Use the local path.
+        strPath = g_application.CurrentFileItem().GetProperty("localPath").asString();
+
+        // If that didn't work, just go from root. FIXME, I'm sure there is a better default. Jamie?
+        if (strPath.size() == 0)
+          strPath = "/";
+      }
+      /* END PLEX */
+    }
 
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
@@ -396,6 +416,7 @@ CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float int
   return text;
 }
 
+#ifndef __PLEX__ /* More userfriendly version of the Delay format */
 CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float interval)
 {
   CStdString text;
@@ -407,6 +428,24 @@ CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float inter
     text.Format(g_localizeStrings.Get(22005).c_str(), value);
   return text;
 }
+#else
+CStdString CGUIDialogAudioSubtitleSettings::FormatDelay(float value, float interval)
+{
+  CStdString text;
+
+  int msValue = (int)(value*1000.0);
+  int error = msValue % 25;
+
+  if (abs(msValue) < 500.0*interval)
+    text.Format(g_localizeStrings.Get(22003).c_str(), 0);
+  else if (value < 0)
+    text.Format(g_localizeStrings.Get(22004).c_str(), abs(msValue-error));
+  else
+    text.Format(g_localizeStrings.Get(22005).c_str(), msValue-error);
+
+  return text;
+}
+#endif
 
 bool CGUIDialogAudioSubtitleSettings::SupportsAudioFeature(int feature)
 {

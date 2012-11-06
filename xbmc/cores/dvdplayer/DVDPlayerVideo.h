@@ -102,6 +102,10 @@ public:
 
   CDVDClock* m_pClock;
 
+  /* PLEX */
+  void SetMaxDataSize(int dataSize)                 { m_messageQueue.SetMaxDataSize(dataSize); }
+  int  GetMaxDataSize()                             { return m_messageQueue.GetMaxDataSize(); }
+  /* END PLEX */
 protected:
   virtual void OnStartup();
   virtual void OnExit();

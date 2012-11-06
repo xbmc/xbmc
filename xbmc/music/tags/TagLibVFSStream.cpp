@@ -23,6 +23,8 @@
 #include "filesystem/File.h"
 #include "utils/StdString.h"
 #include "utils/log.h"
+
+#ifndef __PLEX__
 #include <taglib/tiostream.h>
 
 using namespace XFILE;
@@ -288,3 +290,4 @@ void TagLibVFSStream::truncate(long length)
 {
   m_file.Truncate(length);
 }
+#endif

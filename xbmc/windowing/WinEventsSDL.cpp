@@ -415,6 +415,11 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       return true;
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
+        /* PLEX */
+        CApplicationMessenger::Get().Hide();
+        return true;
+        /* END PLEX */
+
     case SDLK_m: // CMD-m to minimize
       CApplicationMessenger::Get().Minimize();
       return true;

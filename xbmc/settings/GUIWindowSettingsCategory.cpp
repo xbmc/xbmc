@@ -72,7 +72,11 @@
 #endif
 #endif
 #if defined(TARGET_DARWIN_OSX)
+#ifndef __PLEX__
 #include "XBMCHelper.h"
+#else
+#include "Helper/PlexHelper.h"
+#endif
 #endif
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
@@ -119,6 +123,12 @@
 #if defined(HAS_WEB_SERVER)
 #include "network/WebServer.h"
 #endif
+
+/* PLEX */
+#include "MyPlexManager.h"
+#include "ManualServerScanner.h"
+#include "PlexUtils.h"
+/* END PLEX */
 
 using namespace std;
 using namespace XFILE;
@@ -626,6 +636,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
         else
           pControl->SetEnabled(false);
+
+        /* PLEX */
+        g_graphicsContext.UpdateDisplayBlanking();
+        /* END PLEX */
       }
     }
 #endif
@@ -642,6 +656,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
       }
 
+#ifndef __PLEX__
       // if XBMC helper is running, prompt user before effecting change
       if ( XBMCHelper::GetInstance().IsRunning() && XBMCHelper::GetInstance().GetMode()!=remoteMode )
       {
@@ -674,6 +689,40 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
         pControl->SetValue(APPLE_REMOTE_DISABLED);
       }
+#else
+      // if Plex helper is running, prompt user before effecting change
+      if ( PlexHelper::GetInstance().IsRunning() && PlexHelper::GetInstance().GetMode()!=remoteMode )
+      {
+        bool cancelled;
+        if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
+        {
+          // user declined, restore previous spinner state and appleremote mode
+          CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+          g_guiSettings.SetInt("input.appleremotemode", PlexHelper::GetInstance().GetMode());
+          pControl->SetValue(PlexHelper::GetInstance().GetMode());
+        }
+        else
+        {
+          // reload configuration
+          PlexHelper::GetInstance().Configure();
+        }
+      }
+      else
+      {
+        // set new configuration.
+        PlexHelper::GetInstance().Configure();
+      }
+
+      if (PlexHelper::GetInstance().ErrorStarting() == true)
+      {
+        // inform user about error
+        CGUIDialogOK::ShowAndGetInput(13620, 13621, 20022, 20022);
+
+        // reset spinner to disabled state
+        CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+        pControl->SetValue(APPLE_REMOTE_DISABLED);
+      }
+#endif
     }
     else if (strSetting.Equals("input.appleremotealwayson"))
      {
@@ -1021,6 +1070,41 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
         pControl->SetEnabled(g_peripherals.GetNumberOfPeripherals() > 0);
     }
+
+    /* PLEX */
+    else if (strSetting.Equals("myplex.status"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      if (pControl)
+        pControl->SetEnabled(false);
+    }
+    else if (strSetting.Equals("myplex.signin"))
+    {
+      int label = g_guiSettings.GetString("myplex.token").empty() ? 19002 : 19003;
+
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetLabel(g_localizeStrings.Get(label));
+      //pSettingString->SetLabel(19003);
+    }
+    else if (strSetting.Equals("plexmediaserver.address"))
+    {
+      bool enabled = g_guiSettings.GetBool("plexmediaserver.manualaddress");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(enabled);
+    }
+    else if (strSetting.Equals("plexmediaserver.localtranscodequality"))
+    {
+      bool enabled = g_guiSettings.GetBool("plexmediaserver.forcelocaltranscode");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(enabled);
+    }
+    else if (strSetting.Equals("backgroundmusic.thememusicenabled") || strSetting.Equals("backgroundmusic.bgmusicvolume"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"));
+    }
+
+    /* END PLEX */
   }
 
   g_guiSettings.SetChanged();
@@ -1734,7 +1818,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #if defined(TARGET_DARWIN_OSX)
     //reconfigure XBMCHelper for port changes
+#ifndef __PLEX__
     XBMCHelper::GetInstance().Configure();
+#else
+    PlexHelper::GetInstance().Configure();
+#endif
 #endif
 #endif
   }
@@ -1992,6 +2080,75 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
   }
+
+  /* PLEX */
+  else if (strSetting.Equals("myplex.status"))
+  {
+    CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+    if (pControl)
+      pControl->SetEnabled(false);
+  }
+  else if (strSetting.Equals("myplex.signin"))
+  {
+    CGUIButtonControl* pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+    CSettingString*    pSettingString = (CSettingString* )pSettingControl->GetSetting();
+
+    if (g_guiSettings.GetString("myplex.token").empty())
+    {
+      // We're signing in.
+      if (MyPlexManager::Get().signIn())
+      {
+        // Change the status to show success.
+        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19011));
+
+        // Change button to "sign out"
+        pControl->SetLabel(g_localizeStrings.Get(19003));
+        pSettingString->SetLabel(19003);
+      }
+      else
+      {
+        // Change the status to reflect an error.
+        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19012));
+      }
+    }
+    else
+    {
+      // We're signing out.
+      MyPlexManager::Get().signOut();
+
+      // Change the status to show success.
+      g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19010));
+
+      // Change the button to "sign in".
+      pControl->SetLabel(g_localizeStrings.Get(19002));
+      pSettingString->SetLabel(19002);
+
+      // Nuke the password.
+      g_guiSettings.SetString("myplex.password", "");
+    }
+  }
+  else if (strSetting.Equals("backgroundmusic.thememusicenabled") || strSetting.Left(23).Equals("backgroundmusic.bgmusic"))
+  {
+    CGUIMessage msg(GUI_MSG_BG_MUSIC_SETTINGS_UPDATED, 0, 0);
+    g_windowManager.SendMessage(msg);
+  }
+  else if (strSetting.Left(15).Equals("plexmediaserver"))
+  {
+    // Check manual server.
+    if (g_guiSettings.GetBool("plexmediaserver.manualaddress"))
+    {
+      string address = g_guiSettings.GetString("plexmediaserver.address");
+      if (PlexUtils::IsValidIP(address))
+        ManualServerScanner::Get().addServer(address, true);
+      else
+        ManualServerScanner::Get().removeAllServersButLocal();
+    }
+    else
+    {
+      ManualServerScanner::Get().removeAllServersButLocal();
+    }
+  }
+  /* END PLEX */
 
   UpdateSettings();
 }

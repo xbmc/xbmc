@@ -37,6 +37,11 @@
 #include <vector>
 #include "boost/shared_ptr.hpp"
 
+/* PLEX */
+class CFileItem;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
+/* END PLEX */
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
@@ -386,6 +391,62 @@ public:
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
 
+  /* PLEX */
+  #include "PlexMediaPart.h"
+  std::vector<CFileItemPtr> m_contextItems;
+  std::vector<CFileItemPtr> m_mediaItems;
+  std::vector<PlexMediaPartPtr> m_mediaParts;
+
+  bool IsPlexMediaServer() const;
+  bool IsRemoteSharedPlexMediaServerLibrary() const;
+  bool IsRemotePlexMediaServerLibrary() const;
+  virtual bool IsPlexMediaServerMusic() const;
+  bool IsPlexMediaServerLibrary() const;
+  bool IsPlexWebkit() const;
+
+  void SetDefaultViewMode(int viewMode) { m_defaultViewMode = viewMode; }
+  int GetDefaultViewMode() const { return m_defaultViewMode; }
+
+  void SetDisabledViewModes(const CStdString &viewModes) { m_disabledViewModes = viewModes; }
+  const CStdString& GetDisabledViewModes() const { return m_disabledViewModes; }
+
+  void SetFirstTitle(const CStdString& title) { m_firstTitle = title; }
+  const CStdString& GetFirstTitle() const { return m_firstTitle; }
+
+  void SetSecondTitle(const CStdString& title) { m_secondTitle = title; }
+  const CStdString& GetSecondTitle() const { return m_secondTitle; }
+
+  void AddProvider(const CFileItemPtr& provider) { m_chainedProviders.push_back(provider); }
+  std::vector<CFileItemPtr>& GetProviders() { return m_chainedProviders; }
+
+  bool GetSaveInHistory() const { return m_saveInHistory; }
+  void SetSaveInHistory(bool save) { m_saveInHistory = save; }
+
+  bool GetAutoRefresh() const { return m_autoRefresh; }
+  void SetAutoRefresh(bool autorefresh) { m_autoRefresh = autorefresh; }
+
+  int GetBitrate() const { return m_iBitrate; }
+  void SetBitrate(int br) { m_iBitrate = br; }
+
+  bool GetIncludeStandardContextItems() const { return m_includeStandardContextItems; }
+  void SetIncludeStandardContextItems(bool includeStandardContextItems) { m_includeStandardContextItems = includeStandardContextItems; }
+
+  void SetEpisodeData(int total, int watchedCount);
+
+  void SetIsPopupMenuItem(bool ispopup) { m_bIsPopupMenuItem = ispopup; }
+  bool IsPopupMenuItem() const { return m_bIsPopupMenuItem; }
+
+  void SetIsSearchDir(bool issearch) { m_bIsSearchDir = issearch; }
+  bool IsSearchDir() const { return m_bIsSearchDir; }
+
+  void SetSearchPrompt(const CStdString &prompt) { m_strSearchPrompt = prompt; }
+  bool GetSearchPrompt() const { return m_strSearchPrompt; }
+
+  void SetIsSettingsDir(bool issettings) { m_bIsSettingsDir = issettings; }
+  bool IsSettingsDir() const { return m_bIsSettingsDir; }
+
+  /* END PLEX */
+
 private:
   CStdString m_strPath;            ///< complete path to item
 
@@ -403,6 +464,25 @@ private:
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
+
+  /* PLEX */
+protected:
+  int m_defaultViewMode;
+  CStdString m_disabledViewModes;
+  CStdString m_firstTitle;
+  CStdString m_secondTitle;
+  std::vector<CFileItemPtr> m_chainedProviders;
+  CStdString m_strFanartUrl;
+  CStdString m_strBannerUrl;
+  bool m_saveInHistory;
+  bool m_autoRefresh;
+  int m_iBitrate;
+  bool m_includeStandardContextItems;
+  bool m_bIsPopupMenuItem;
+  bool m_bIsSearchDir;            // whether to show keyboard & append input as query
+  CStdString m_strSearchPrompt;   // text to show as keyboard header
+  bool m_bIsSettingsDir;
+  /* END PLEX */
 };
 
 /*!
@@ -570,6 +650,15 @@ public:
   const CStdString &GetContent() const { return m_content; };
 
   void ClearSortState();
+
+  /* PLEX */
+  virtual bool IsPlexMediaServerMusic() const;
+  bool m_wasListingCancelled;
+  bool m_displayMessage;
+  CStdString m_displayMessageTitle;
+  CStdString m_displayMessageContents;
+  /* END PLEX */
+
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);

@@ -24,6 +24,10 @@
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"
 
+/* PLEX */
+#include "FileItem.h"
+/* END PLEX */
+
 using namespace std;
 
 CTextureInfo::CTextureInfo()
@@ -50,7 +54,11 @@ CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
   return *this;
 }
 
+#ifndef __PLEX__
 CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture)
+#else
+CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture, float minWidth)
+#endif
 {
   m_posX = posX;
   m_posY = posY;
@@ -83,6 +91,9 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_allocateDynamically = false;
   m_isAllocated = NO;
   m_invalid = true;
+
+  /* PLEX */
+  m_minWidth = minWidth;
 }
 
 CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
@@ -119,6 +130,8 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
 
   m_isAllocated = NO;
   m_invalid = true;
+
+  m_minWidth = right.m_minWidth;
 }
 
 CGUITextureBase::~CGUITextureBase(void)
@@ -404,9 +417,9 @@ bool CGUITextureBase::CalculateSize()
     if (m_aspect.align & ASPECT_ALIGN_LEFT)
       newPosX = m_posX;
     else if (m_aspect.align & ASPECT_ALIGN_RIGHT)
-      newPosX = m_posX + m_width - newWidth;
+      newPosX = m_posX + GetWidth() - newWidth; // PLEX
     else
-      newPosX = m_posX + (m_width - newWidth) * 0.5f;
+      newPosX = m_posX + (GetWidth() - newWidth) * 0.5f; // PLEX
     if (m_aspect.align & ASPECT_ALIGNY_TOP)
       newPosY = m_posY;
     else if (m_aspect.align & ASPECT_ALIGNY_BOTTOM)
@@ -644,6 +657,17 @@ bool CGUITextureBase::SetAspectRatio(const CAspectRatio &aspect)
 bool CGUITextureBase::SetFileName(const CStdString& filename)
 {
   if (m_info.filename.Equals(filename)) return false;
+
+  /* PLEX */
+  // If the new name is the cached version of the old name, don't do anything.
+  // This can occur if the texture cache loads something for us, and then a bit
+  // later the texture is requested with the cached name and we don't want it
+  // flickering.
+  //
+  //if (CFileItem::GetCachedPlexMediaServerThumb(m_info.filename) == filename)
+    //return false;
+  /* END PLEX */
+
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeResources();
@@ -665,3 +689,49 @@ int CGUITextureBase::GetOrientation() const
                                  7, 4, 5, 6, 3, 0, 1, 2 };
   return (int)orient_table[8 * m_info.orientation + m_texture.m_orientation];
 }
+
+/* PLEX */
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
+float CGUITextureBase::GetWidth() const
+{
+  float ret = m_width;
+
+  if (m_minWidth)
+  {
+    float newWidth = m_width;
+    float newHeight = m_height;
+
+    if (m_aspect.ratio != CAspectRatio::AR_STRETCH && m_frameWidth && m_frameHeight)
+    {
+      // to get the pixel ratio, we must use the SCALED output sizes
+      float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
+
+      float fSourceFrameRatio = m_frameWidth / m_frameHeight;
+      if (GetOrientation() & 4)
+        fSourceFrameRatio = m_frameHeight / m_frameWidth;
+      float fOutputFrameRatio = fSourceFrameRatio / pixelRatio;
+
+      // maximize the width
+      newHeight = m_width / fOutputFrameRatio;
+
+      if ((m_aspect.ratio == CAspectRatio::AR_SCALE && newHeight < m_height) ||
+          (m_aspect.ratio == CAspectRatio::AR_KEEP && newHeight > m_height))
+      {
+        newHeight = m_height;
+        newWidth = newHeight * fOutputFrameRatio;
+      }
+      if (m_aspect.ratio == CAspectRatio::AR_CENTER)
+      { // keep original size + center
+        newWidth = m_frameWidth;
+        newHeight = m_frameHeight;
+      }
+    }
+
+    if (m_minWidth != m_width)
+      ret = CLAMP(newWidth, m_minWidth, m_width);
+  }
+
+  return ret;
+}
+/* END PLEX */

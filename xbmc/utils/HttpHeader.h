@@ -45,8 +45,15 @@ public:
 
   void Clear();
 
+  /* PLEX */
+  CStdString GetHeaders() { return m_headers; }
+  /* END PLEX */
+
 protected:
   HeaderParams m_params;
   CStdString   m_protoLine;
+  /* PLEX */
+  CStdString   m_headers;
+  /* END PLEX */
 };
 

@@ -1,0 +1,6 @@
+find_all_sources(. network_linux_SRCS)
+if(APPLE)
+	list(REMOVE_ITEM network_linux_SRCS ./ZeroconfAvahi.cpp)
+	list(REMOVE_ITEM network_linux_SRCS ./ZeroconfBrowserAvahi.cpp)
+endif(APPLE)
+add_sources(${network_linux_SRCS})

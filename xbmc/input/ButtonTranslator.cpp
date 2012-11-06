@@ -34,6 +34,10 @@
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
 
+/* PLEX */
+#include "PlexTypes.h"
+/* END PLEX */
+
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
 #elif defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
@@ -233,6 +237,11 @@ static const ActionMapping actions[] =
 
 static const ActionMapping windows[] =
        {{"home"                     , WINDOW_HOME},
+        /* PLEX */
+        {"sharedcontent"            , WINDOW_SHARED_CONTENT},
+        {"nowplaying"               , WINDOW_NOW_PLAYING},
+        {"plexsearch"               , WINDOW_PLEX_SEARCH},
+        /* END PLEX */
         {"programs"                 , WINDOW_PROGRAMS},
         {"pictures"                 , WINDOW_PICTURES},
         {"filemanager"              , WINDOW_FILES},

@@ -20,7 +20,11 @@ double g_universal_timeout = 0.500;
 bool g_verbose_mode = false;
 
 //
+#ifndef __PLEX__
 const char* PROGNAME="XBMCHelper";
+#else
+const char* PROGNAME="PlexHelper";
+#endif
 const char* PROGVERS="0.7";
 
 void ParseOptions(int argc, char** argv);
@@ -65,7 +69,11 @@ void ReadConfig()
 {
 	// Compute filename.
   std::string strFile = getenv("HOME");
+#ifndef __PLEX__
   strFile += "/Library/Application Support/XBMC/XBMCHelper.conf";
+#else
+  strFile += "/Library/Application Support/+"+ std::string(PLEX_TARGET_NAME) +"/XBMCHelper.conf";
+#endif
   
 	// Open file.
   std::ifstream ifs(strFile.c_str());

@@ -2,3 +2,6 @@
 	path = addons/skin.touched
 	url = git://github.com/xbmc/skin.touched.git
 	ignore = all
+[submodule "addons/skin.mediastream"]
+	path = addons/skin.mediastream
+	url = git@github.com:plexinc/plex-mediastream.git

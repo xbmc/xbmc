@@ -487,6 +487,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->GetPath());
+#ifndef __PLEX__
     if (childtype == NODE_TYPE_ALBUM               ||
         childtype == NODE_TYPE_ARTIST              ||
         nodetype == NODE_TYPE_GENRE                ||
@@ -501,6 +502,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // 4. specific per album
       buttons.Add(CONTEXT_BUTTON_SET_CONTENT,20195);
     }
+#endif
     if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetArtist().size() > 0)
     {
       CVideoDatabase database;
@@ -602,7 +604,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (pWindow)
         {
           ADDON::ScraperPtr info;
-          pWindow->OnInfo(item.get(),info);
+          pWindow->OnInfo(item,info);
           Refresh();
         }
       }
@@ -649,6 +651,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     }
 
+#ifndef __PLEX__ // FIXME: Port Plex functionallity.
   case CONTEXT_BUTTON_MARK_WATCHED:
     CGUIWindowVideoBase::MarkWatched(item,true);
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -660,6 +663,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     Refresh();
     return true;
+#endif
 
   case CONTEXT_BUTTON_RENAME:
     CGUIWindowVideoBase::UpdateVideoTitle(item.get());

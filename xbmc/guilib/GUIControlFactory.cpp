@@ -1020,7 +1020,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     const CGUIInfoLabel &content = (infoLabels.size()) ? infoLabels[0] : CGUIInfoLabel("");
     if (insideContainer)
     { // inside lists we use CGUIListLabel
-      control = new CGUIListLabel(parentID, id, posX, posY, width, height, labelInfo, content, bScrollLabel);
+      control = new CGUIListLabel(parentID, id, posX, posY, width, height, labelInfo, content, bScrollLabel, wrapMultiLine);
     }
     else
     {
@@ -1060,6 +1060,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTROL_RSS)
   {
+#ifndef __PLEX__
     control = new CGUIRSSControl(
       parentID, id, posX, posY, width, height,
       labelInfo, textColor3, headlineColor, strRSSTags);
@@ -1072,6 +1073,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     }
     else
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
+#endif
   }
   else if (type == CGUIControl::GUICONTROL_BUTTON)
   {
@@ -1202,16 +1204,25 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
     if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
-        parentID, id, posX, posY, width, height, texture);
+        parentID, id, posX, posY, width, height, texture, minWidth);
     else
       control = new CGUIBorderedImage(
-        parentID, id, posX, posY, width, height, texture, borderTexture, borderSize);
+        parentID, id, posX, posY, width, height, texture, borderTexture, borderSize, minWidth);
     ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
     ((CGUIImage *)control)->SetCrossFade(fadeTime);
   }
   else if (type == CGUIControl::GUICONTROL_MULTI_IMAGE)
   {
+    /* PLEX */
+    TiXmlElement *info = pControlNode->FirstChildElement("info");
+    if (info)
+    {
+      if (info->Attribute("background") && strcmp(info->Attribute("background"), "true") == 0)
+        texture.useLarge = true;
+    }
+    /* END PLEX */
+
     control = new CGUIMultiImage(
       parentID, id, posX, posY, width, height, texture, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
     ((CGUIMultiImage *)control)->SetInfo(texturePath);

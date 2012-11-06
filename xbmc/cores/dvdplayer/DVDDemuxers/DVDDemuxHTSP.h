@@ -48,6 +48,10 @@ public:
   CDemuxStream* GetStream(int iStreamId);
   int           GetNrOfStreams();
 
+  /* PLEX */
+  int           GetStreamBitrate() { return 0; };
+  /* END PLEX */
+
 protected:
   friend class CDemuxStreamVideoHTSP;
 

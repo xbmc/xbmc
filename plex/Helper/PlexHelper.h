@@ -1,0 +1,82 @@
+#ifndef __PLEXHELPER_H__
+#define __PLEXHELPER_H__
+
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
+class PlexHelper
+{
+ public:
+
+  static PlexHelper& GetInstance();
+
+  void Start();
+  void Stop();
+  //void doRestart();
+  void Restart();
+
+  void Configure();
+
+  bool IsRunning();
+
+  bool IsAlwaysOn() const { return m_alwaysOn; }
+  int  GetMode() const { return m_mode; }
+
+  bool ErrorStarting() { return m_errorStarting; }
+
+  //global helpers
+  static void CaptureAllInput();
+  static void ReleaseAllInput();
+
+private:
+  PlexHelper();
+  PlexHelper(PlexHelper const& );
+  PlexHelper& operator=(PlexHelper const&);
+
+  bool InstallHelper();
+  void InstallLauncher();
+  void UninstallLauncher();
+
+  bool IsRemoteBuddyInstalled();
+  bool IsSofaControlRunning();
+
+  int GetProcessPid(const char* processName);
+
+  std::string ReadFile(const char* fileName);
+  void WriteFile(const char* fileName, const std::string& data);
+
+  bool m_alwaysOn;
+  int  m_mode;
+  int  m_sequenceDelay;
+  int  m_port;
+  bool m_errorStarting;
+
+  std::string m_configFile;
+  std::string m_launchAgentLocalFile;
+  std::string m_launchAgentInstallFile;
+  std::string m_homepath;
+  std::string m_helperFile;
+  std::string m_helperInstalledPath;
+
+  static PlexHelper* smp_instance;
+};
+
+#endif

@@ -159,8 +159,11 @@ public:
   virtual bool Supports(ESCALINGMETHOD method);
 
   virtual EINTERLACEMETHOD AutoInterlaceMethod();
-
   virtual std::vector<ERenderFormat> SupportedFormats() { return m_formats; }
+
+  /* PLEX */
+  virtual void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch);
+  /* END PLEX */
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
@@ -324,6 +327,10 @@ protected:
   bool  m_nonLinStretch;
   bool  m_nonLinStretchGui;
   float m_pixelRatio;
+
+  /* PLEX */
+  bool         m_bRGBImageSet;
+  /* END PLEX */
 };
 
 

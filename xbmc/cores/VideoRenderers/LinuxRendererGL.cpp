@@ -174,6 +174,10 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_rgbPbo = 0;
 
   m_dllSwScale = new DllSwScale;
+
+  /* PLEX */
+  m_bRGBImageSet = false;
+  /* END PLEX */
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -220,16 +224,28 @@ bool CLinuxRendererGL::ValidateRenderer()
     return false;
 
   // this needs to be checked after texture validation
+#ifndef __PLEX__
   if (!m_bImageReady)
+#else
+  if (!m_bRGBImageSet && !m_bImageReady)
+#endif
     return false;
 
   int index = m_iYV12RenderBuffer;
   YUVBUFFER& buf =  m_buffers[index];
 
+#ifndef __PLEX__
   if (!buf.fields[FIELD_FULL][0].id)
+#else
+  if (!m_bRGBImageSet && !buf.fields[FIELD_FULL][0].id)
+#endif
     return false;
 
+#ifndef __PLEX__
   if (buf.image.flags==0)
+#else
+  if (!m_bRGBImageSet && buf.image.flags==0)
+#endif
     return false;
 
   return true;
@@ -312,6 +328,12 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_pixelRatio       = 1.0;
 
   m_pboSupported = glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo");
+
+  /* PLEX */
+  m_rgbBufferSize = width*height*4;
+  m_rgbBuffer = new BYTE[m_rgbBufferSize];
+  memset(m_rgbBuffer, 0, m_rgbBufferSize);
+  /* END PLEX */
 
   return true;
 }
@@ -453,8 +475,14 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                                 , unsigned width, unsigned height
                                 , int stride, int bpp, void* data, GLuint* pbo/*= NULL*/)
 {
+  /* PLEX */
+  if(!m_bRGBImageSet && plane.flipindex == flipindex)
+    return;
+  /* END PLEX */
+#ifndef __PLEX__
   if(plane.flipindex == flipindex)
     return;
+#endif
 
   //if no pbo given, use the plane pbo
   GLuint currPbo;
@@ -505,7 +533,11 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
+#ifndef __PLEX__
   if (!(im->flags&IMAGE_FLAG_READY))
+#else
+  if (!m_bRGBImageSet && !(im->flags&IMAGE_FLAG_READY))
+#endif
   {
     m_eventTexturesDone[source]->Set();
     return;
@@ -629,7 +661,11 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   g_graphicsContext.BeginPaint();
 
+#ifndef __PLEX__
   if( !m_eventTexturesDone[index]->WaitMSec(500))
+#else
+  if( !m_bRGBImageSet && !m_eventTexturesDone[index]->WaitMSec(500))
+#endif
   {
     CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
 
@@ -774,6 +810,10 @@ void CLinuxRendererGL::FlipPage(int source)
 unsigned int CLinuxRendererGL::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
+  /* PLEX */
+  m_bRGBImageSet = false;
+  /* END PLEX */
+
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
@@ -950,6 +990,16 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
 void CLinuxRendererGL::LoadShaders(int field)
 {
+  /* PLEX */
+  if (m_bRGBImageSet)
+  {
+    /* If we have a RGBImageSet we override the renderMethod */
+    CLog::Log(LOGNOTICE, "GL: Using Software render method because of RGBImageSet");
+    m_renderMethod = RENDER_SW;
+  }
+  else
+  /* END PLEX */
+
   if (m_format == RENDER_FMT_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
@@ -3054,7 +3104,11 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
+#ifndef __PLEX__
   if (!(im->flags&IMAGE_FLAG_READY))
+#else
+  if (!m_bRGBImageSet && !(im->flags&IMAGE_FLAG_READY))
+#endif
   {
     m_eventTexturesDone[source]->Set();
     return;
@@ -3443,5 +3497,39 @@ void CLinuxRendererGL::AddProcessor(struct __CVBuffer *cvBufferRef)
   CVBufferRetain(buf.cvBufferRef);
 }
 #endif
+
+/* PLEX */
+void CLinuxRendererGL::SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch)
+{
+  CSingleLock lock(g_graphicsContext);
+  if (m_rgbBuffer == 0)
+  {
+    m_rgbBufferSize = nWidth*nHeight*4;
+    m_rgbBuffer = new BYTE[m_rgbBufferSize];
+    memset(m_rgbBuffer, 0, m_rgbBufferSize);
+  }
+
+  if (nHeight * nWidth * 4 > m_rgbBufferSize)
+  {
+    CLog::Log(LOGERROR,"%s, incorrect image size", __FUNCTION__);
+    return;
+  }
+
+  if (nPitch == nWidth * 4)
+    memcpy(m_rgbBuffer, image, nHeight * nPitch);
+  else
+    for (int i=0; i<nHeight; i++)
+      memcpy(m_rgbBuffer + (i * nWidth * 4), image + (i * nPitch),  nWidth * 4);
+
+  m_bRGBImageSet = true;
+  m_renderMethod = RENDER_SW;
+
+  if (m_pYUVShader)
+  {
+    delete m_pYUVShader;
+    m_pYUVShader = NULL;
+  }
+}
+/* END PLEX */
 
 #endif

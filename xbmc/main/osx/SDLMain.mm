@@ -27,6 +27,11 @@
 
 #import "HotKeyController.h"
 
+/* PLEX */
+#import "GUIUserMessages.h"
+#import "guilib/GUIWindowManager.h"
+/* END PLEX */
+
 // For some reaon, Apple removed setAppleMenu from the headers in 10.4,
 // but the method still is there and works. To avoid warnings, we declare
 // it ourselves here.
@@ -251,6 +256,11 @@ static void setupWindowMenu(void)
   //[[HotKeyController sharedController] sysPower:NO];
   //[[HotKeyController sharedController] sysVolume:NO];
   [[HotKeyController sharedController] setActive:NO];
+
+  /* PLEX */
+  CGUIMessage msg(GUI_MSG_APP_DEACTIVATED, 0, 0);
+  g_windowManager.SendMessage(msg);
+  /* END PLEX */
 }
 
 - (void) applicationWillBecomeActive:(NSNotification *) note
@@ -258,6 +268,11 @@ static void setupWindowMenu(void)
   //[[HotKeyController sharedController] sysPower:YES];
   //[[HotKeyController sharedController] sysVolume:YES];
   [[HotKeyController sharedController] setActive:YES];
+
+  /* PLEX */
+  CGUIMessage msg(GUI_MSG_APP_ACTIVATED, 0, 0);
+  g_windowManager.SendMessage(msg);
+  /* END PLEX */
 }
 
 // To use Cocoa on secondary POSIX threads, your application must first detach

@@ -10,6 +10,9 @@
   </players>
 
   <rules name="system rules">
+    <!-- Plex Media Server WebKit player -->
+    <rule name="pms" protocols="plex" player="PMSPlayer" />
+
     <rule name="rtv" protocols="rtv" player="DVDPlayer" />
     <rule name="hdhomerun/myth/mms/udp" protocols="hdhomerun|myth|cmyth|mms|mmsh|udp" player="DVDPlayer" />
     <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />

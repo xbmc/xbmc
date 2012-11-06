@@ -1037,7 +1037,11 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
 
 bool CUtil::IsUsingTTFSubtitles()
 {
+#ifndef __PLEX__
   return URIUtils::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
+#else
+  return true;
+#endif
 }
 
 #ifdef UNIT_TESTING
@@ -1084,7 +1088,12 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
 
   // remove any whitespace, and the standard prefix (if it exists)
   function.Trim();
+#ifndef __PLEX__
   if( function.Left(5).Equals("xbmc.", false) )
+#else
+  if( function.Left(5).Equals("plex.", false) ||
+      function.Left(5).Equals("xbmc.", false))
+#endif
     function.Delete(0, 5);
 
   SplitParams(paramString, parameters);

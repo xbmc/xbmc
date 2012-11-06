@@ -18,6 +18,12 @@
  *
  */
 
+/* PLEX */
+#include <boost/regex.hpp>
+#include <boost/xpressive/xpressive.hpp>
+#include "AdvancedSettings.h"
+/* END PLEX */
+
 #include "system.h"
 #include "log.h"
 #include "stdio_utf8.h"
@@ -31,6 +37,11 @@
 #elif defined(TARGET_WINDOWS)
 #include "win32/WIN32Util.h"
 #endif
+
+/* PLEX */
+using namespace boost;
+using namespace xpressive;
+/* END PLEX */
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
 #define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
@@ -83,6 +94,15 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.FormatV(format,va);
     va_end(va);
 
+    /* PLEX */
+    // Take out tokens.
+    if (g_advancedSettings.m_bEnablePlexTokensInLogs == false && strData.find("X-Plex-Token") != std::string::npos)
+    {
+      static sregex reToken = sregex::compile("X-Plex-Token=[0-9a-z]+", xpressive::regex_constants::icase);
+      strData = regex_replace(strData, reToken, "X-Plex-Token=<secret>");
+    }
+    /* END PLEX */
+
     if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
     {
       m_repeatCount++;
@@ -112,8 +132,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       strData.TrimRight("\r");
     }
 
-    if (!length)
-      return;
+    if (!length) return;
     
     OutputDebugString(strData);
 
@@ -143,8 +162,13 @@ bool CLog::Init(const char* path)
     // and changed in CApplication::Create()
     CStdString strLogFile, strLogFileOld;
 
+#ifndef __PLEX__
     strLogFile.Format("%sxbmc.log", path);
     strLogFileOld.Format("%sxbmc.old.log", path);
+#else
+    strLogFile.Format("%s%s.log", path, PLEX_TARGET_NAME);
+    strLogFileOld.Format("%s%s.old.log", path, PLEX_TARGET_NAME);
+#endif
 
 #if defined(TARGET_WINDOWS)
     // the appdata folder might be redirected to an unc share
@@ -236,3 +260,23 @@ void CLog::OutputDebugString(const std::string& line)
   ::OutputDebugString("\n");
 #endif
 }
+
+/* PLEX */
+void CLog::FatalError(const char* format, ...)
+{
+  char msg[2048];
+  va_list va;
+  va_start(va, format);
+  vsprintf(msg, format, va);
+  va_end(va);
+
+  Log(LOGFATAL, "FATAL ERROR: %s", msg);
+#ifdef _WIN32
+  // Terminate the process while generating a crash dump
+  const DWORD STATUS_FATAL_ERROR = 0xc0dedead;
+  RaiseException(STATUS_FATAL_ERROR, EXCEPTION_NONCONTINUABLE, 0, NULL);
+#else
+  throw std::runtime_error(msg);
+#endif
+}
+/* END PLEX */

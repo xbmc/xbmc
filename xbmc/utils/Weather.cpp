@@ -73,6 +73,9 @@ CWeatherJob::CWeatherJob(int location)
 
 bool CWeatherJob::DoWork()
 {
+#ifdef __PLEX__
+  return false;
+#else
   // wait for the network
   if (!g_application.getNetwork().IsAvailable(true))
     return false;
@@ -117,6 +120,7 @@ bool CWeatherJob::DoWork()
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
 
   return true;
+#endif
 }
 
 const CWeatherInfo &CWeatherJob::GetInfo() const

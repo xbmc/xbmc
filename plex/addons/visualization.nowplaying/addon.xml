@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.nowplaying"
+  version="1.0.0"
+  name="Now Playing"
+  provider-name="Plex Inc">
+  <extension
+    point="xbmc.player.musicviz"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Now Playing Visualization</summary>
+    <description lang="en">Plex's yummy now playing visualization</description>
+    <platform>osx</platform>
+  </extension>
+</addon>

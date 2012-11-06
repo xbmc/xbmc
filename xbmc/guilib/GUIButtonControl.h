@@ -81,6 +81,10 @@ public:
 
   virtual CRect CalcRenderRegion() const;
 
+  /* PLEX */
+  void SetHidden(bool hidden) { m_label2.SetHidden(hidden); }
+  /* END PLEX */
+
 protected:
   friend class CGUISpinControlEx;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);

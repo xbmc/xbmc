@@ -134,13 +134,23 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(strPath, items, (hints.flags & DIR_FLAG_READ_CACHE) == DIR_FLAG_READ_CACHE))
+    {
       items.SetPath(strPath);
+
+      /* PLEX - We want to make sure that we refetch this from the Media Server */
+      g_directoryCache.ClearSubPaths(strPath);
+      /* END PLEX */
+    }
     else
     {
       // need to clear the cache (in case the directory fetch fails)
       // and (re)fetch the folder
       if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
         g_directoryCache.ClearDirectory(strPath);
+
+      /* PLEX */
+      g_directoryCache.ClearSubPaths(strPath);
+      /* END PLEX */
 
       pDirectory->SetFlags(hints.flags);
 
@@ -197,7 +207,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
       }
 
       // cache the directory, if necessary
-      if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
+      /* PLEX - Added some respect to the directory cache preference.*/
+      if (!(hints.flags & DIR_FLAG_BYPASS_CACHE) && pDirectory->GetCacheType(strPath) != DIR_CACHE_NEVER)
         g_directoryCache.SetDirectory(strPath, items, pDirectory->GetCacheType(strPath));
     }
 
@@ -208,18 +219,25 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, c
       CFileItemPtr item = items[i];
       // TODO: we shouldn't be checking the gui setting here;
       // callers should use getHidden instead
-      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
-          (item->GetProperty("file:hidden").asBoolean() && !(hints.flags & DIR_FLAG_GET_HIDDEN) && !g_guiSettings.GetBool("filelists.showhidden")))
+      // PLEX
+      if (item->IsPlexMediaServer() == false && items.IsPlexMediaServer() == false)
+      /* END PLEX */
       {
-        items.Remove(i);
-        i--; // don't confuse loop
+        if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
+            (item->GetProperty("file:hidden").asBoolean() && !(hints.flags & DIR_FLAG_GET_HIDDEN) && !g_guiSettings.GetBool("filelists.showhidden")))
+        {
+          items.Remove(i);
+          i--; // don't confuse loop
+        }
       }
     }
 
+#ifndef __PLEX__ /* Elans original comment was that this code seemed to do lockups in DNS cache */
     //  Should any of the files we read be treated as a directory?
     //  Disable for database folders, as they already contain the extracted items
     if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
       FilterFileDirectories(items, hints.mask);
+#endif
 
     return true;
   }

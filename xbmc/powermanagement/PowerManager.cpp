@@ -38,6 +38,11 @@
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
+
+/* PLEX */
+#include "Helper/PlexHelper.h"
+/* END PLEX */
+
 #elif defined(TARGET_ANDROID)
 #include "android/AndroidPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
@@ -196,7 +201,9 @@ void CPowerManager::OnSleep()
   CBuiltins::Execute("LIRC.Stop");
 #endif
 
+#ifndef __PLEX__
   g_application.SaveFileState(true);
+#endif
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
@@ -241,6 +248,12 @@ void CPowerManager::OnWake()
 
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
+
+  /* PLEX */
+#ifdef __APPLE__
+  PlexHelper::GetInstance().Restart();
+#endif
+  /* END PLEX */
 
   CAnnouncementManager::Announce(System, "xbmc", "OnWake");
 }

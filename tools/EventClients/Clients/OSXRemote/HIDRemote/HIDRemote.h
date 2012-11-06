@@ -1,16 +1,16 @@
 //
 //  HIDRemote.h
-//  HIDRemote V1.1.1
+//  HIDRemote V1.2
 //
 //  Created by Felix Schwarz on 06.04.07.
-//  Copyright 2007-2009 IOSPIRIT GmbH. All rights reserved.
+//  Copyright 2007-2011 IOSPIRIT GmbH. All rights reserved.
 //
 //  The latest version of this class is available at
 //     http://www.iospirit.com/developers/hidremote/
 //
 //  ** LICENSE *************************************************************************
 //
-//  Copyright (c) 2007-2009 IOSPIRIT GmbH (http://www.iospirit.com/)
+//  Copyright (c) 2007-2011 IOSPIRIT GmbH (http://www.iospirit.com/)
 //  All rights reserved.
 //  
 //  Redistribution and use in source and binary forms, with or without modification,
@@ -39,7 +39,6 @@
 //  DAMAGE.
 //
 //  ************************************************************************************
-
 
 
 //  ************************************************************************************
@@ -244,8 +243,23 @@ typedef enum
 	
 	// Exclusive lock lending
 	BOOL _exclusiveLockLending;
+	BOOL _sendExclusiveResourceReuseNotification;
 	NSNumber *_waitForReturnByPID;
 	NSNumber *_returnToPID;
+	BOOL _isRestarting;
+	
+	// Status notifications
+	BOOL _sendStatusNotifications;
+	NSString *_pidString;
+	
+	// Status
+	BOOL _applicationIsTerminating;
+	BOOL _isStopping;
+	
+	// Thread safety
+	#ifdef HIDREMOTE_THREADSAFETY_HARDENED_NOTIFICATION_HANDLING /* #define HIDREMOTE_THREADSAFETY_HARDENED_NOTIFICATION_HANDLING if you're running your HIDRemote instance on a background thread (requires OS X 10.5 or later) */
+	NSThread *_runOnThread;
+	#endif
 }
 
 #pragma mark -- PUBLIC: Shared HID Remote --
@@ -261,6 +275,7 @@ typedef enum
 - (void)stopRemoteControl;
 
 - (BOOL)isStarted;
+- (HIDRemoteMode)startedInMode;
 
 - (unsigned)activeRemoteControlCount;
 
@@ -285,6 +300,9 @@ typedef enum
 - (void)setExclusiveLockLendingEnabled:(BOOL)newExclusiveLockLendingEnabled;
 - (BOOL)exclusiveLockLendingEnabled;
 
+- (BOOL)isApplicationTerminating;
+- (BOOL)isStopping;
+
 #pragma mark -- PRIVATE: HID Event handling --
 - (void)_handleButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed hidAttribsDict:(NSMutableDictionary *)hidAttribsDict;
 - (void)_sendButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed hidAttribsDict:(NSMutableDictionary *)hidAttribsDict;
@@ -299,6 +317,8 @@ typedef enum
 #pragma mark -- PRIVATE: Distributed notifiations handling --
 - (void)_postStatusWithAction:(NSString *)action;
 - (void)_handleNotifications:(NSNotification *)notification;
+- (void)_setSendStatusNotifications:(BOOL)doSend;
+- (BOOL)_sendStatusNotifications;
 
 #pragma mark -- PRIVATE: Application becomes active / inactive handling for kHIDRemoteModeExclusiveAuto --
 - (void)_appStatusChanged:(NSNotification *)notification;
@@ -335,6 +355,8 @@ extern NSString *kHIDRemoteAluminumRemoteSupportOnDemand;
 extern NSString *kHIDRemoteDNHIDRemotePing;
 extern NSString *kHIDRemoteDNHIDRemoteRetry;
 extern NSString *kHIDRemoteDNHIDRemoteStatus;
+
+extern NSString *kHIDRemoteDNHIDRemoteRetryGlobalObject;
 
 #pragma mark -- Distributed notifications userInfo keys and values --
 extern NSString *kHIDRemoteDNStatusHIDRemoteVersionKey;

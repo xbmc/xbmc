@@ -1,0 +1,7 @@
+find_all_sources(. storage_SRCS)
+if(APPLE)
+	find_all_sources(osx storage_os_SRCS)
+elseif(UNIX)
+	find_all_sources(linux storage_os_SRCS)
+endif()
+add_sources(${storage_SRCS} ${storage_os_SRCS})

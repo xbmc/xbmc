@@ -29,6 +29,11 @@
 #include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
 
+/* PLEX */
+#include "filesystem/IFile.h"
+#include "URL.h"
+/* END PLEX */
+
 //using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -456,7 +461,25 @@ bool CPlayList::LoadData(const CStdString& strData)
 bool CPlayList::Expand(int position)
 {
   CFileItemPtr item = m_vecItems[position];
+#ifndef __PLEX__
   std::auto_ptr<CPlayList> playlist (CPlayListFactory::Create(*item.get()));
+#else
+  std::auto_ptr<CPlayList> playlist;
+
+  try
+  {
+    playlist = std::auto_ptr<CPlayList>(CPlayListFactory::Create(*item.get()));
+  }
+  catch (CRedirectException* ex)
+  {
+    // We just redirected to something completely not handled by CURL, so let's
+    // use that URL instead. Usually MMS, RTMP, or Plex.
+    //
+    m_vecItems[position] = CFileItemPtr(new CFileItem(ex->m_pNewUrl->Get(), false));
+    delete ex;
+    return true;
+  }
+#endif
   if ( NULL == playlist.get())
     return false;
 

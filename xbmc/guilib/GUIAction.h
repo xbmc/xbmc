@@ -69,4 +69,16 @@ private:
   typedef std::vector<cond_action_pair>::const_iterator ciActions;
   typedef std::vector<cond_action_pair>::iterator iActions;
   friend class CGUIControlFactory; // no need for setters / adders
+	
+	/* PLEX */
+ public:
+
+	CGUIAction(const CStdString& condition, const CStdString& action)
+	{
+		cond_action_pair pair;
+		pair.condition = condition;
+		pair.action = action;
+		m_actions.push_back(pair);
+	}
+	/* PLEX */
 };

@@ -227,6 +227,14 @@ public:
    */
   virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
 
+  /* PLEX */
+  virtual int GetSubtitlePlexID() { return -1; };
+  virtual int GetAudioStreamPlexID() { return -1; };
+  virtual int GetPlexMediaPartID() { return -1; };
+  virtual bool CanOpenAsync() { return false; };
+  virtual void Abort() {};
+  /* END PLEX */
+
 protected:
   IPlayerCallback& m_callback;
 };

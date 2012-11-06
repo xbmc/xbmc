@@ -108,10 +108,12 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol() == "androidapp")
     return new CGUIViewStateWindowPrograms(items);
 
+#ifndef __PLEX__
   if (windowId==WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
+#endif
 
-  if (windowId==WINDOW_MUSIC_FILES)
+  if (windowId==WINDOW_MUSIC_FILES || windowId==WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicSongs(items);
 
   if (windowId==WINDOW_MUSIC_PLAYLIST)
@@ -120,11 +122,13 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_MUSIC_PLAYLIST_EDITOR)
     return new CGUIViewStateWindowMusicSongs(items);
 
-  if (windowId==WINDOW_VIDEO_FILES)
+  if (windowId==WINDOW_VIDEO_FILES || windowId==WINDOW_VIDEO_NAV)
     return new CGUIViewStateWindowVideoFiles(items);
 
+#ifndef __PLEX__
   if (windowId==WINDOW_VIDEO_NAV)
     return new CGUIViewStateWindowVideoNav(items);
+#endif
 
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
@@ -302,7 +306,11 @@ bool CGUIViewState::HideExtensions()
 
 bool CGUIViewState::HideParentDirItems()
 {
+#ifndef __PLEX__
   return !g_guiSettings.GetBool("filelists.showparentdiritems");
+#else
+  return true;
+#endif
 }
 
 bool CGUIViewState::DisableAddSourceButtons()
@@ -315,7 +323,15 @@ bool CGUIViewState::DisableAddSourceButtons()
 
 int CGUIViewState::GetPlaylist()
 {
-  return m_playlist;
+  /* PLEX */
+  if (m_items.IsPlexMediaServer() == true)
+  {
+    if (m_items.IsPlexMediaServerMusic() == true)
+      return PLAYLIST_MUSIC;
+  }
+
+  return PLAYLIST_NONE;
+  /* END PLEX */
 }
 
 const CStdString& CGUIViewState::GetPlaylistDirectory()
@@ -343,6 +359,11 @@ bool CGUIViewState::IsCurrentPlaylistDirectory(const CStdString& strDirectory)
 
 bool CGUIViewState::AutoPlayNextItem()
 {
+  /* PLEX */
+  if (m_items.IsPlexMediaServer() == true && m_items.IsPlexMediaServerMusic() == true)
+    return true;
+  /* END PLEX */
+
   return false;
 }
 

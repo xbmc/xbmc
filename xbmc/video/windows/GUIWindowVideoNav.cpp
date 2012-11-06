@@ -54,6 +54,10 @@
 #include "video/VideoInfoScanner.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 
+/* PLEX */
+#include "BackgroundMusicPlayer.h"
+/* END PLEX */
+
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace std;
@@ -87,6 +91,11 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
+  /* PLEX */
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
+    BackgroundMusicPlayer::SendThemeChangeMessage();
+  /* END PLEX */
+
   if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
@@ -110,6 +119,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
       m_thumbLoader.StopThread();
+    /* PLEX */
+    BackgroundMusicPlayer::SendThemeChangeMessage();
+    /* END PLEX */
     break;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -389,6 +401,11 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       items.Add(newTag);
     }
   }
+
+  /* PLEX */
+  BackgroundMusicPlayer::SendThemeChangeMessage(items.GetProperty("theme").asString());
+  /* END PLEX */
+
   return bResult;
 }
 
@@ -468,8 +485,10 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       }
       
       // set the watched overlay
+#ifndef __PLEX__
       if (pItem->IsVideo())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0);
+#endif
     }
   }
 }
@@ -637,7 +656,7 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
   CGUIWindowVideoBase::PlayItem(iItem);
 }
 
-void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
+void CGUIWindowVideoNav::OnInfo(const CFileItemPtr& pItem, ADDON::ScraperPtr& scraper)
 {
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
@@ -669,6 +688,7 @@ bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
 
 void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
 {
+#ifndef __PLEX__
   if (m_vecItems->IsParentFolder())
     return;
 
@@ -759,6 +779,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
+#endif
 }
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
@@ -847,6 +868,7 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   CGUIWindowVideoBase::OnPrepareFileItems(items);
 }
 
+#ifndef __PLEX__
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item;
@@ -1070,13 +1092,47 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           }
         }
-      }
+S      }
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
   CGUIWindowVideoBase::GetNonContextButtons(itemNumber, buttons);
 }
+#else
+void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
+{
+  CFileItemPtr item;
+  if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
+    item = m_vecItems->Get(itemNumber);
+
+  if (item)
+  {
+    if (m_vecItems->GetContent() == "movies")
+      buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+    else if (m_vecItems->GetContent() == "tvshows")
+      buttons.Add(CONTEXT_BUTTON_INFO, 20351);
+    else if (m_vecItems->GetContent() == "episodes")
+      buttons.Add(CONTEXT_BUTTON_INFO, 20352);
+
+    if ((item->IsRemoteSharedPlexMediaServerLibrary() == false) &&
+        (item->GetProperty("HasWatchedState").asBoolean() == true) &&
+        ((item->IsPlexMediaServerLibrary() && m_vecItems->GetContent() != "files") ||
+        item->HasProperty("ratingKey")))
+    {
+      CStdString viewOffset = item->GetProperty("viewOffset").asString();
+
+      if (item->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
+        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
+      if (item->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
+        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+    }
+  }
+  if (m_vecItems->IsVirtualDirectoryRoot() == false)
+    CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
+}
+#endif
+
 
 bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
@@ -1129,9 +1185,13 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       else
       { // SEASON, SET
         map<string, string> currentArt;
+#ifndef __PLEX__ FIXME!
         artType = CGUIDialogVideoInfo::ChooseArtType(*m_vecItems->Get(itemNumber), currentArt);
         if (artType.empty())
           return false;
+#else
+        return false;
+#endif
 
         if (artType == "fanart")
         {

@@ -105,6 +105,11 @@ typedef struct
 } BUILT_IN;
 
 const BUILT_IN commands[] = {
+  /* PLEX */
+  #if defined(__APPLE__) || defined(_WIN32)
+  { "ToggleDisplayBlanking",      false,  "Toggle display blanking"},
+  #endif
+  /* END PLEX */
   { "Help",                       false,  "This help message" },
   { "Reboot",                     false,  "Reboot the system" },
   { "Restart",                    false,  "Restart the system (same as reboot)" },
@@ -395,9 +400,13 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("runscript") && params.size())
   {
 #if defined(TARGET_DARWIN_OSX)
+#ifndef __PLEX__
+    if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript")
+#else
     if (URIUtils::GetExtension(strParameterCaseIntact) == ".applescript" ||
         URIUtils::GetExtension(strParameterCaseIntact) == ".scpt")
     {
+#endif
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
       Cocoa_DoAppleScriptFile(osxPath.c_str());
     }
@@ -1631,6 +1640,16 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.StopPVRManager();
   }
+  /* PLEX */
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
+  else if (execute.Equals("toggledisplayblanking"))
+  {
+    g_guiSettings.SetBool("videoscreen.blankdisplays", !g_guiSettings.GetBool("videoscreen.blankdisplays"));
+    g_graphicsContext.UpdateDisplayBlanking();
+    //g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
+#endif
+  /* PLEX */
   else
     return -1;
   return 0;

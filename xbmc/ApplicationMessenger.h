@@ -139,6 +139,11 @@ struct ThreadMessageCallback
   void *userptr;
 };
 
+/* PLEX */
+class CGUIDialogCache;
+#include "PlexTypes.h"
+/* END PLEX */
+
 class CApplicationMessenger
 {
 public:
@@ -235,6 +240,12 @@ public:
   
   bool SetupDisplay();
   bool DestroyDisplay();
+
+  /* PLEX */
+  void MediaOpenComplete(bool bStatus, const CStdString& error = "");
+  void Hide();
+  void RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL);
+  /* END PLEX */
 
 private:
   // private construction, and no assignements; use the provided singleton methods

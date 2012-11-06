@@ -56,12 +56,14 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
     m_pLiveTV     = ((CVTPFile*)m_pFile)->GetLiveTV();
     m_pRecordable = NULL;
   }
+#ifndef __PLEX__
   else if (strncmp(strFile, "sling://", 8) == 0)
   {
     m_pFile       = new CSlingboxFile();
     m_pLiveTV     = ((CSlingboxFile*)m_pFile)->GetLiveTV();
     m_pRecordable = NULL;
   }
+#endif
   else
   {
     m_pFile       = new CMythFile();
