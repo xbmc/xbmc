@@ -41,6 +41,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "interfaces/AnnouncementManager.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -354,6 +355,13 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 
   if (startSlideShow)
     pSlideShow->StartSlideShow(false);
+  else 
+  {
+    CVariant param;
+    param["player"]["speed"] = 1;
+    param["player"]["playerid"] = PLAYLIST_PICTURE;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", pSlideShow->GetCurrentSlide(), param);
+  }
 
   m_slideShowStarted = true;
   g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
