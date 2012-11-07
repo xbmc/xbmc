@@ -1212,6 +1212,10 @@ void CFileItem::FillInDefaultIcon()
         // Live TV Channel
         SetIconImage("DefaultVideo.png");
       }
+      else if ( URIUtils::IsArchive(m_strPath) )
+      { // archive
+        SetIconImage("DefaultFile.png");
+      }
       else if ( IsAudio() )
       {
         // audio

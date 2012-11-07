@@ -1525,16 +1525,16 @@ void CVideoDatabase::AddCountryToMovie(int idMovie, int idCountry)
 //********************************************************************************************************************************
 bool CVideoDatabase::LoadVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details)
 {
-  if (!GetMovieInfo(strFilenameAndPath, details))
-    return false;
-  if (!GetEpisodeInfo(strFilenameAndPath, details))
-    return false;
-  if (!GetMusicVideoInfo(strFilenameAndPath, details))
-    return false;
-  if (!GetFileInfo(strFilenameAndPath, details))
-    return false;
+  if (GetMovieInfo(strFilenameAndPath, details))
+    return true;
+  if (GetEpisodeInfo(strFilenameAndPath, details))
+    return true;
+  if (GetMusicVideoInfo(strFilenameAndPath, details))
+    return true;
+  if (GetFileInfo(strFilenameAndPath, details))
+    return true;
 
-  return !details.IsEmpty();
+  return false;
 }
 
 bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
@@ -4144,8 +4144,12 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     for (vector< pair<int, string> >::iterator i = files.begin(); i != files.end(); ++i)
     {
       std::string filename = i->second;
-      if (URIUtils::UpdateUrlEncoding(filename))
-        m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", filename.c_str(), i->first));
+      bool update = URIUtils::UpdateUrlEncoding(filename) &&
+                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", i->second.c_str())) || m_pDS->num_rows() <= 0);
+      m_pDS->close();
+
+      if (update)
+        m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", i->second.c_str(), i->first));
     }
   }
   if (iVersion < 72)
@@ -7683,6 +7687,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     unsigned int time = XbmcThreads::SystemClockMillis();
     CLog::Log(LOGNOTICE, "%s: Starting videodatabase cleanup ..", __FUNCTION__);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanStarted");
 
     BeginTransaction();
 
@@ -7693,6 +7698,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (paths->size() == 0)
       {
         RollbackTransaction();
+        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
         return;
       }
 
@@ -7777,6 +7783,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
           {
             progress->Close();
             m_pDS->close();
+            ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
             return;
           }
         }
@@ -8071,6 +8078,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
   }
   if (progress)
     progress->Close();
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
@@ -8417,6 +8426,9 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         }
       }
 
+      // tvshow paths can be multipaths, and writing to a multipath is indeterminate.
+      if (URIUtils::IsMultiPath(tvshow.m_strPath))
+        tvshow.m_strPath = CMultiPathDirectory::GetFirstPath(tvshow.m_strPath);
 
       CFileItem item(tvshow.m_strPath, true);
       if (singleFiles && CUtil::SupportsWriteFileOperations(tvshow.m_strPath))

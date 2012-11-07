@@ -92,6 +92,7 @@ public:
   static bool IsVTP(const CStdString& strFile);
   static bool IsAPK(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
+  static bool IsArchive(const CStdString& strFile);
   static bool IsBluray(const CStdString& strFile);
   static bool IsAndroidApp(const CStdString& strFile);
 

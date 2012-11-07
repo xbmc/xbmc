@@ -484,6 +484,14 @@
       <backspace>Close</backspace>
     </keyboard>
   </NumericInput>
+  <FullscreenLiveTV>
+    <keyboard>
+      <left>PreviousChannelGroup</left>
+      <right>NextChannelGroup</right>
+      <up>ChannelUp</up>
+      <down>ChannelDown</down>
+    </keyboard>
+  </FullscreenLiveTV>
   <PVROSDChannels>
     <keyboard>
       <backspace>Close</backspace>

@@ -183,27 +183,22 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
   if (file->audioProperties())
     tag.SetDuration(file->audioProperties()->length());
 
-  if (ape && !g_advancedSettings.m_prioritiseAPEv2tags)
-    ParseAPETag(ape, art, tag);
-
   if (asf)
     ParseASF(asf, art, tag);
-  else if (id3v2)
+  if (id3v2)
     ParseID3v2Tag(id3v2, art, tag);
-  else if (generic)
+  if (generic)
     ParseGenericTag(generic, art, tag);
-  else if (mp4)
+  if (mp4)
     ParseMP4Tag(mp4, art, tag);
-  else if (xiph)
+  if (xiph) // xiph tags override id3v2 tags in badly tagged FLACs
     ParseXiphComment(xiph, art, tag);
+  if (ape && (!id3v2 || g_advancedSettings.m_prioritiseAPEv2tags)) // ape tags override id3v2 if we're prioritising them
+    ParseAPETag(ape, art, tag);
 
   // art for flac files is outside the tag
   if (flacFile)
     SetFlacArt(flacFile, art, tag);
-
-  // Add APE tags over the top of ID3 tags if we want to prioritize them
-  if (ape && g_advancedSettings.m_prioritiseAPEv2tags)
-    ParseAPETag(ape, art, tag);
 
   if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().empty() || !tag.GetAlbum().IsEmpty())
     tag.SetLoaded();

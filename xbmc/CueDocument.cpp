@@ -276,18 +276,14 @@ CStdString CCueDocument::GetMediaTitle()
 ////////////////////////////////////////////////////////////////////////////////////
 bool CCueDocument::ReadNextLine(CStdString &szLine)
 {
-  char *pos;
   // Read the next line.
   while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
   {
-    // Remove the white space at the beginning of the line.
-    pos = m_szBuffer;
-    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\r' || *pos == '\n')) pos++;
-    if (pos)
-    {
-      szLine = pos;
+    // Remove the white space at the beginning and end of the line.
+    szLine = m_szBuffer;
+    szLine.Trim();
+    if (!szLine.empty())
       return true;
-    }
     // If we are here, we have an empty line so try the next line
   }
   return false;

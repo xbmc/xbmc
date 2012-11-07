@@ -614,6 +614,18 @@ bool URIUtils::IsZIP(const CStdString& strFile) // also checks for comic books!
   return false;
 }
 
+bool URIUtils::IsArchive(const CStdString& strFile)
+{
+  CStdString extension;
+  GetExtension(strFile, extension);
+
+  return (extension.CompareNoCase(".zip") == 0 ||
+          extension.CompareNoCase(".rar") == 0 ||
+          extension.CompareNoCase(".apk") == 0 ||
+          extension.CompareNoCase(".cbz") == 0 ||
+          extension.CompareNoCase(".cbr") == 0);
+}
+
 bool URIUtils::IsSpecial(const CStdString& strFile)
 {
   CStdString strFile2(strFile);

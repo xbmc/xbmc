@@ -107,7 +107,12 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
   }
 
   if (addon)
-    path = URIUtils::AddFileToFolder(addon->Path(), path);
+    path = URIUtils::AddFileToFolder(addonPath, path);
+
+  string realPath = URIUtils::GetRealPath(path);
+  string realAddonPath = URIUtils::GetRealPath(addonPath);
+  if (!URIUtils::IsInPath(realPath, realAddonPath))
+    return MHD_HTTP_NOT_FOUND;
   
   if (CDirectory::Exists(path))
   {

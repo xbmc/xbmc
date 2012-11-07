@@ -61,10 +61,10 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
   {
     if (reg.RegFind(line) > -1)
     {
-      char* hour = reg.GetReplaceString("\\1");
-      char* min  = reg.GetReplaceString("\\2");
-      char* sec  = reg.GetReplaceString("\\3");
-      char* lines[3];
+      std::string hour = reg.GetReplaceString("\\1");
+      std::string min  = reg.GetReplaceString("\\2");
+      std::string sec  = reg.GetReplaceString("\\3");
+      std::string lines[3];
       lines[0] = reg.GetReplaceString("\\4");
       lines[1] = reg.GetReplaceString("\\6");
       lines[2] = reg.GetReplaceString("\\8");
@@ -72,7 +72,7 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
       CDVDOverlayText* pOverlay = new CDVDOverlayText();
       pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 
-      pOverlay->iPTSStartTime = m_framerate * (3600*atoi(hour) + 60*atoi(min) + atoi(sec));
+      pOverlay->iPTSStartTime = m_framerate * (3600*atoi(hour.c_str()) + 60*atoi(min.c_str()) + atoi(sec.c_str()));
 
       // set StopTime for previous overlay
       if (pPrevOverlay)
@@ -83,15 +83,8 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
           pPrevOverlay->iPTSStopTime = pPrevOverlay->iPTSStartTime + iDefaultDuration;
       }
       pPrevOverlay = pOverlay;
-      for(int i=0;i<3 && lines[i] && *lines[i];i++)
-          pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i]));
-
-      free(lines[0]);
-      free(lines[1]);
-      free(lines[2]);
-      free(hour);
-      free(min);
-      free(sec);
+      for (int i = 0; i < 3 && !lines[i].empty(); i++)
+          pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i].c_str()));
 
       m_collection.Add(pOverlay);
     }

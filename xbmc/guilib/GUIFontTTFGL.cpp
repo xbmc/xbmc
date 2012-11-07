@@ -201,16 +201,16 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   return newTexture;
 }
 
-bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
+bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
   unsigned char* source = (unsigned char*) bitmap.buffer;
-  unsigned char* target = (unsigned char*) m_texture->GetPixels() + (m_posY + ch->offsetY) * m_texture->GetPitch() + m_posX + bitGlyph->left;
+  unsigned char* target = (unsigned char*) m_texture->GetPixels() + y1 * m_texture->GetPitch() + x1;
 
-  for (int y = 0; y < bitmap.rows; y++)
+  for (unsigned int y = y1; y < y2; y++)
   {
-    memcpy(target, source, bitmap.width);
+    memcpy(target, source, x2-x1);
     source += bitmap.width;
     target += m_texture->GetPitch();
   }

@@ -154,10 +154,9 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
 
   if (reTitle.RegFind(strBuffer.c_str()) != -1)
   {
-    char* newtitle = reTitle.GetReplaceString("\\1");
-    result = m_tag.GetTitle() != newtitle;
+    std::string newtitle = reTitle.GetReplaceString("\\1");
+    result = (m_tag.GetTitle() != newtitle);
     m_tag.SetTitle(newtitle);
-    free(newtitle);
   }
 
   return result;

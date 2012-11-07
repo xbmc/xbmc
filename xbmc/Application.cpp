@@ -2424,9 +2424,18 @@ bool CApplication::OnKey(const CKey& key)
       // if player is in some sort of menu, (ie DVDMENU) map buttons differently
       action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
     }
+    else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    {
+      // check for PVR specific keymaps in FULLSCREEN_VIDEO window
+      action = CButtonTranslator::GetInstance().GetAction(WINDOW_FULLSCREEN_LIVETV, key, false);
+
+      // if no PVR specific action/mapping is found, fall back to default
+      if (action.GetID() == 0)
+        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+    }
     else
     {
-      // no then use the fullscreen window section of keymap.xml to map key->action
+      // in any other case use the fullscreen window section of keymap.xml to map key->action
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
     }
   }
@@ -2723,6 +2732,13 @@ bool CApplication::OnAction(const CAction &action)
 
   if (IsPlaying())
   {
+    // forward channel switches to the player - he knows what to do
+    if (action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)
+    {
+      m_pPlayer->OnAction(action);
+      return true;
+    }
+
     // pause : pauses current audio song
     if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
     {
@@ -2868,9 +2884,9 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
-    if (iPlaylist == PLAYLIST_VIDEO)
+    if (iPlaylist == PLAYLIST_VIDEO && g_windowManager.GetActiveWindow() != WINDOW_VIDEO_PLAYLIST)
       g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    else if (iPlaylist == PLAYLIST_MUSIC)
+    else if (iPlaylist == PLAYLIST_MUSIC && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
   }
