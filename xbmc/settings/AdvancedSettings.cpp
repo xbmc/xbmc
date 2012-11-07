@@ -112,6 +112,7 @@ void CAdvancedSettings::Initialize()
   m_DXVANoDeintProcForProgressive = false;
   m_videoFpsDetect = 1;
   m_videoDefaultLatency = 0.0;
+  m_videoFrameLatency = 1;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -625,6 +626,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
       // Get default global display latency
       XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
+      XMLUtils::GetInt(pVideoLatency, "frames", m_videoFrameLatency, -60, 60);
     }
   }
 
@@ -1195,6 +1197,8 @@ void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
 float CAdvancedSettings::GetDisplayLatency(float refreshrate)
 {
   float delay = m_videoDefaultLatency / 1000.0f;
+  if(refreshrate)
+    delay += m_videoFrameLatency / refreshrate;
   for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)
   {
     RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];
