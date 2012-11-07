@@ -348,10 +348,10 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
         return;
 
     if (data.isNull()) {
-        if (!strcmp(message, "OnScanStarted")) {
+        if (!strcmp(message, "OnScanStarted") || !strcmp(message, "OnCleanStarted")) {
             m_scanning = true;
         }
-        else if (!strcmp(message, "OnScanFinished")) {
+        else if (!strcmp(message, "OnScanFinished") || !strcmp(message, "OnCleanFinished")) {
             OnScanCompleted(flag);
         }
     }
