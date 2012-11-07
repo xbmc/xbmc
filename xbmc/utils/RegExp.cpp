@@ -149,7 +149,7 @@ int CRegExp::GetCaptureTotal()
   return c;
 }
 
-char* CRegExp::GetReplaceString( const char* sReplaceExp )
+std::string CRegExp::GetReplaceString( const char* sReplaceExp )
 {
   char *src = (char *)sReplaceExp;
   char *buf;
@@ -158,8 +158,7 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
   size_t len;
 
   if( sReplaceExp == NULL || !m_bMatched )
-    return NULL;
-
+    return std::string();
 
   // First compute the length of the string
   int replacelen = 0;
@@ -190,7 +189,7 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
   // Now allocate buf
   buf = (char *)malloc((replacelen + 1)*sizeof(char));
   if( buf == NULL )
-    return NULL;
+    return std::string();
 
   char* sReplaceStr = buf;
 
@@ -224,7 +223,10 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
     }
   }
 
-  return sReplaceStr;
+  std::string replaceStr(sReplaceStr);
+  free(sReplaceStr);
+
+  return replaceStr;
 }
 
 std::string CRegExp::GetMatch(int iSub /* = 0 */)
