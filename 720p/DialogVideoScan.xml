@@ -1,4 +1,5 @@
 <window id="112">
+<!-- DELETE THIS FILE WHEN FRODO MERGE IS AVAILABLE -->
 	<controls>
 		<control type="group">
 			<visible>![Window.IsActive(12999) | Window.IsActive(2005) | Window.IsActive(script-XBMC_Lyrics-main.xml)]</visible>
