@@ -9,7 +9,7 @@ set(ARCH @ARCH@)
 if(APPLE)
   set(TARGET "Plex.app")
 elseif(UNIX)
-  set(TARGET "$BINPATH/Plex")
+  set(TARGET "${BINPATH}/Plex")
 endif()
 
 function(gp_item_default_embedded_path_override item default_embedded_path_var)
