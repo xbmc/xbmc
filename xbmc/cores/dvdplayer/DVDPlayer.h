@@ -278,8 +278,8 @@ protected:
   virtual void OnExit();
   virtual void Process();
 
-  bool OpenAudioStream(int iStream, int source);
-  bool OpenVideoStream(int iStream, int source);
+  bool OpenAudioStream(int iStream, int source, bool reset = true);
+  bool OpenVideoStream(int iStream, int source, bool reset = true);
   bool OpenSubtitleStream(int iStream, int source);
   bool OpenTeletextStream(int iStream, int source);
   bool CloseAudioStream(bool bWaitForBuffers);
@@ -334,7 +334,7 @@ protected:
 
   bool OpenInputStream();
   bool OpenDemuxStream();
-  void OpenDefaultStreams();
+  void OpenDefaultStreams(bool reset = true);
 
   void UpdateApplication(double timeout);
   void UpdatePlayState(double timeout);
