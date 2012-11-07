@@ -12,7 +12,7 @@
 	</include>
 	<include name="DialogBG">
 		<include>BlackRounded</include>
-		<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+		<animation effect="fade" start="0" end="75" time="0" condition="true">Conditional</animation>
 	</include>
 	<include name="DialogHeaderBG">
 		<texture border="10" flipy="true">base-rounded-half.png</texture>
@@ -227,49 +227,64 @@
 	<!-- DialogContextMenu.xml -->
 	<include name="DialogContextMenu">
 		<control type="group">
-			<control type="image" id="997">
+			<posx>0</posx>
+			<posy>0</posy>
+		<control type="group">			
+			<posy>-30</posy>
+			<control type="image" id="999">
+				<description>Background</description>
+				<width>340</width>
+				<height>480</height>
+				<include>DialogBG</include>
+			</control>
+			<control type="image">
 				<description>Title bg</description>
-				<posx>0</posx>
-				<posy>-80</posy>
-				<width>420</width>
-				<height>80</height>
+				<width>340</width>
+				<height>60</height>
 				<include>DialogHeaderBG</include>
 			</control>
 			<control type="image">
 				<description>Title bg bottom border</description>
-				<posy>-50</posy>
-				<width>420</width>
+				<posy>10</posy>
+				<width>340</width>
 				<include>DialogHeaderBorder</include>
 			</control>
-			<control type="image" id="999">
-				<description>Middle Image</description>
-				<posx>0</posx>
-				<width>420</width>
-				<texture border="10">black.png</texture>
-				<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<description>Background border</description>
+				<width>342</width>
+				<height>482</height>
+				<include>DialogBorder</include>
 			</control>
-			<control type="image" id="998">
-				<description>Bottom Image</description>
-				<posx>0</posx>
-				<width>420</width>
-				<height>30</height>
-				<texture border="5">base-rounded-half.png</texture>
-				<colordiffuse>FF000000</colordiffuse>
-				<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+			<control type="image">
+				<description>Dialog arrow</description>
+				<posx>155</posx>
+				<posy>480</posy>
+				<include>DialogArrow</include>
 			</control>
+		</control>
+		<control type="group">
 			<control type="label">
-				<posy>-80</posy>
-				<width>420</width>
-				<height>80</height>
+				<posy>-20</posy>
+				<width>340</width>
+				<height>40</height>
 				<include>DialogHeading</include>
 				<label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label>
 				<!--><label>$LOCALIZE[31018]</label>-->
+			</control>
+			<control type="grouplist" id="996">
+				<description>grouplist for context buttons</description>
+				<posx>10</posx>
+				<posy>30</posy>
+				<width>320</width>
+				<height max="400">auto</height>
+				<itemgap>0</itemgap>
 			</control>
 			<control type="button" id="1000">
 				<description>Buttons</description>
 				<posx>20</posx>
 				<width>380</width>
 			</control>
+		</control>
 		</control>
 	</include>
 	<!-- -->
