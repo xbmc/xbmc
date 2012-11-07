@@ -2929,7 +2929,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
     if (recording->m_pvrRecordingInfoTag)
       return recording->m_pvrRecordingInfoTag->m_strTitle;
     CStdString title = CPVRRecording::GetTitleFromURL(m_strPath);
-    if (title != StringUtils::EmptyString)
+    if (!title.IsEmpty())
       return title;
   }
 

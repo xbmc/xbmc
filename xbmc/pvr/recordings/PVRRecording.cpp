@@ -248,9 +248,9 @@ void CPVRRecording::UpdatePath(void)
     strTitle.Replace('/','-');
     strTitle.Remove('?');
 
-    if (m_strDirectory != StringUtils::EmptyString)
+    if (!m_strDirectory.IsEmpty())
       strDirectory.Format("%s/", m_strDirectory.c_str());
-    if (m_strChannelName != StringUtils::EmptyString)
+    if (!m_strChannelName.IsEmpty())
       strChannel.Format(" (%s)", m_strChannelName.c_str());
     m_strFileNameAndPath.Format("pvr://recordings/%s%s, TV%s, %s.pvr", strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }
