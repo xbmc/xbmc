@@ -211,7 +211,7 @@
 					</item>
 					<!--<item id="114">
 						<label>Perplexe</label>
-						<onclick>XBMC.ActivateWindow(132)</onclick>
+						<onclick>XBMC.ActivateWindow(busydialog)</onclick>
 					</item>-->
 				</content>
 			</control>

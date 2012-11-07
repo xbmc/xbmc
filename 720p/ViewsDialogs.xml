@@ -484,13 +484,33 @@
 					<include>DialogArrow</include>
 				</control>
 			</control>
-			<control type="label">
-				<description>"Please wait..." label</description>
-				<posx>10</posx>
-				<width>230</width>
-				<height>60</height>
-				<align>center</align>
-				<label>$LOCALIZE[20186]...</label>
+			<control type="group">
+				<visible>Control.IsVisible(10)</visible>
+				<control type="label">
+					<description>"Please wait..." label</description>
+					<posx>10</posx>
+					<width>230</width>
+					<height>35</height>
+					<align>center</align>
+					<label>$LOCALIZE[20186]...</label>
+				</control>
+				<control type="progress" id="10">
+					<description>Progressbar</description>
+					<posx>10</posx>
+					<posy>32</posy>
+					<width>230</width>
+				</control>
+			</control>
+			<control type="group">
+				<visible>!Control.IsVisible(10)</visible>
+				<control type="label">
+					<description>"Please wait..." label</description>
+					<posx>10</posx>
+					<width>230</width>
+					<height>60</height>
+					<align>center</align>
+					<label>$LOCALIZE[20186]...</label>
+				</control>
 			</control>
 		</control>
 	</include>
