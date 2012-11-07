@@ -227,7 +227,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
   return false;
 }
 
-char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
+const char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 {
   CStdString string;
   if (strSource != NULL)
