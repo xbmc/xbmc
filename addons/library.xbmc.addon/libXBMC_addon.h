@@ -158,7 +158,7 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_queue_notification");
       if (XBMC_queue_notification == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_unknown_to_utf8 = (void (*)(void* HANDLE, void* CB, std::string &str))
+      XBMC_unknown_to_utf8 = (const char* (*)(void* HANDLE, void* CB, const char* str))
         dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
       if (XBMC_unknown_to_utf8 == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -293,9 +293,10 @@ namespace ADDON
 
     /*!
      * @brief Translate a string with an unknown encoding to UTF8.
-     * @param sourceDest The string to translate.
+     * @param str The string to translate.
+     * @return The string translated to UTF8. Must be freed when done.
      */
-    void UnknownToUTF8(std::string &str)
+    const char* UnknownToUTF8(const char* str)
     {
       return XBMC_unknown_to_utf8(m_Handle, m_Callbacks, str);
     }
@@ -527,7 +528,7 @@ namespace ADDON
     void (*XBMC_log)(void *HANDLE, void* CB, const addon_log_t loglevel, const char *msg);
     bool (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
     void (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
-    void (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, std::string &str);
+    const char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
     const char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
     const char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
     void* (*XBMC_open_file)(void *HANDLE, void* CB, const char* strFileName, unsigned int flags);

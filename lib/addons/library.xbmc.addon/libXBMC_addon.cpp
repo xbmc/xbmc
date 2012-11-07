@@ -84,13 +84,12 @@ DLLEXPORT void XBMC_queue_notification(void *hdl, void* cb, const queue_msg_t ty
   ((CB_AddOnLib*)cb)->QueueNotification(((AddonCB*)hdl)->addonData, type, msg);
 }
 
-DLLEXPORT void XBMC_unknown_to_utf8(void *hdl, void* cb, string &str)
+DLLEXPORT const char* XBMC_unknown_to_utf8(void *hdl, void* cb, const char* str)
 {
   if (cb == NULL)
-    return;
+    return NULL;
 
-  string buffer = ((CB_AddOnLib*)cb)->UnknownToUTF8(str.c_str());
-  str = buffer;
+  return ((CB_AddOnLib*)cb)->UnknownToUTF8(str);
 }
 
 DLLEXPORT const char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
