@@ -4,13 +4,13 @@
 		<animation effect="slide" start="-100" end="0" time="400">Visible</animation>
 	</include>
 	<include name="leftMenuSlide">
-		<animation effect="slide" start="0" end="246" time="500" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
-		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus()">WindowClose</animation>
-		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus() + Container.Content(secondary)">Conditional</animation>
+		<animation effect="slide" start="0" end="246" time="500" condition="ControlGroup(1300).HasFocus() | Control.HasFocus(8)">Conditional</animation>
+		<animation effect="slide" start="0" end="-246" time="500" condition="ControlGroup(1300).HasFocus() | Control.HasFocus(8)">WindowClose</animation>
+		<animation effect="slide" start="0" end="-246" time="500" condition="[ControlGroup(1300).HasFocus() | Control.HasFocus(8)] + Container.Content(secondary)">Conditional</animation>
 	</include>
 	<include name="rightSideSlide">
 		<include>leftMenuSlide</include>
-		<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+		<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(1300).HasFocus() | Control.HasFocus(8)">Conditional</animation>
 	</include>
 	<include name="leftMenuBg">
 		<control type="group">
@@ -144,6 +144,17 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-search-field-bg.png</texture>
 				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
+			</control>			
+			<control type="button" id="8">
+				<posy>110</posy>
+				<posx>-250</posx>
+				<onup>-</onup>
+				<ondown>9100</ondown>
+				<onleft>-</onleft>
+				<onright>777</onright>
+				<description>Search</description>
+				<include>leftMenuFormat</include>
+				<label>Search</label>
 			</control>
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">![Container.Content(Seasons) | Container.Content(episodes)] + !Container.Content(secondary)</visible>
@@ -151,7 +162,7 @@
 				<posy>0</posy>
 				<width>253</width>
 				<height>650</height>
-				<onup>9100</onup>
+				<onup>8</onup>
 				<ondown>9100</ondown>
 				<onright>777</onright>
 				<orientation>vertical</orientation>
@@ -159,7 +170,7 @@
 				<control type="grouplist" id="9100">
 					<visible>![Container.Content(Seasons) | Container.Content(episodes)] + !Container.Content(secondary)</visible>
 					<posy>154</posy>
-					<onup>9100</onup>
+					<onup>8</onup>
 					<ondown>9100</ondown>
 					<onleft>-</onleft>
 					<onright>777</onright>

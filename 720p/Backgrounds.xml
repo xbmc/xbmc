@@ -45,8 +45,8 @@
 			<aspectratio aligny="top">stretch</aspectratio>
 			<texture background="true">bg-overlay-black.png</texture>
 			<visible>true</visible>
-			<animation effect="fade" start="90" end="40" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
-			<animation effect="fade" start="40" end="90" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+			<animation effect="fade" start="90" end="40" time="500" condition="!ControlGroup(1300).HasFocus() + !Control.HasFocus(8)">Conditional</animation>
+			<animation effect="fade" start="40" end="90" time="300" condition="ControlGroup(1300).HasFocus() | Control.HasFocus(8)">Conditional</animation>
 		</control>
 		<!-- white overlay -->
 		<control type="largeimage">
@@ -57,8 +57,8 @@
 			<aspectratio aligny="top">stretch</aspectratio>
 			<texture background="true">bg-overlay-white.png</texture>
 			<visible>true</visible>
-			<animation effect="fade" start="80" end="50" time="500" condition="!ControlGroup(1300).HasFocus()">Conditional</animation>
-			<animation effect="fade" start="50" end="80" time="300" condition="ControlGroup(1300).HasFocus()">Conditional</animation>
+			<animation effect="fade" start="80" end="50" time="500" condition="!ControlGroup(1300).HasFocus() + !Control.HasFocus(8)">Conditional</animation>
+			<animation effect="fade" start="50" end="80" time="300" condition="ControlGroup(1300).HasFocus() | Control.HasFocus(8)">Conditional</animation>
 		</control>
 	</include>
 	<include name="SlideshowHome">
