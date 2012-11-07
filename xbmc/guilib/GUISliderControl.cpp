@@ -107,6 +107,7 @@ bool CGUISliderControl::ProcessSelector(CGUITexture &nib, unsigned int currentTi
   CAspectRatio ratio(CAspectRatio::AR_KEEP);
   ratio.align = ASPECT_ALIGN_LEFT | ASPECT_ALIGNY_CENTER;
   dirty |= nib.SetAspectRatio(ratio);
+  dirty |= nib.Process(currentTime);
   CRect rect = nib.GetRenderRect();
 
   float offset = GetProportion(selector) * m_width - rect.Width() / 2;
@@ -115,7 +116,7 @@ bool CGUISliderControl::ProcessSelector(CGUITexture &nib, unsigned int currentTi
   if (offset < 0)
     offset = 0;
   dirty |= nib.SetPosition(m_guiBackground.GetXPosition() + offset, m_guiBackground.GetYPosition());
-  dirty |= nib.Process(currentTime);
+  dirty |= nib.Process(currentTime); // need to process again as the position may have changed
 
   return dirty;
 }
