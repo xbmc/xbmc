@@ -268,16 +268,16 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       {
         char temp[4];
         sprintf(temp,"\\%i",iOptional);
-        char* szParam = reg.GetReplaceString(temp);
+        std::string szParam = reg.GetReplaceString(temp);
         CRegExp reg2;
         reg2.RegComp("(.*)(\\\\\\(.*\\\\2.*)\\\\\\)(.*)");
         int i2=reg2.RegFind(strCurOutput.c_str());
         while (i2 > -1)
         {
-          char* szRemove = reg2.GetReplaceString("\\2");
-          int iRemove = strlen(szRemove);
+          std::string szRemove = reg2.GetReplaceString("\\2");
+          int iRemove = szRemove.size();
           int i3 = strCurOutput.find(szRemove);
-          if (szParam && strcmp(szParam,""))
+          if (!szParam.empty())
           {
             strCurOutput.erase(i3+iRemove,2);
             strCurOutput.erase(i3,2);
@@ -285,36 +285,29 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
           else
             strCurOutput.replace(strCurOutput.begin()+i3,strCurOutput.begin()+i3+iRemove+2,"");
 
-          free(szRemove);
-
           i2 = reg2.RegFind(strCurOutput.c_str());
         }
-        free(szParam);
       }
 
       int iLen = reg.GetFindLen();
       // nasty hack #1 - & means \0 in a replace string
       strCurOutput.Replace("&","!!!AMPAMP!!!");
-      char* result = reg.GetReplaceString(strCurOutput.c_str());
-      if (result)
+      std::string result = reg.GetReplaceString(strCurOutput.c_str());
+      if (!result.empty())
       {
-        if (strlen(result))
+        CStdString strResult(result);
+        strResult.Replace("!!!AMPAMP!!!","&");
+        Clean(strResult);
+        ReplaceBuffers(strResult);
+        if (iCompare > -1)
         {
-          CStdString strResult(result);
-          strResult.Replace("!!!AMPAMP!!!","&");
-          Clean(strResult);
-          ReplaceBuffers(strResult);
-          if (iCompare > -1)
-          {
-            CStdString strResultNoCase = strResult;
-            strResultNoCase.ToLower();
-            if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
-              dest += strResult;
-          }
-          else
+          CStdString strResultNoCase = strResult;
+          strResultNoCase.ToLower();
+          if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
             dest += strResult;
         }
-        free(result);
+        else
+          dest += strResult;
       }
       if (bRepeat && iLen > 0)
       {
@@ -502,13 +495,11 @@ void CScraperParser::ConvertJSON(CStdString &string)
   while (reg.RegFind(string.c_str()) > -1)
   {
     int pos = reg.GetSubStart(1);
-    char* szReplace = reg.GetReplaceString("\\1");
+    std::string szReplace = reg.GetReplaceString("\\1");
 
     CStdString replace;
-    replace.Format("&#x%s;", szReplace);
+    replace.Format("&#x%s;", szReplace.c_str());
     string.replace(string.begin()+pos-2, string.begin()+pos+4, replace);
-
-    free(szReplace);
   }
 
   CRegExp reg2;
@@ -517,13 +508,11 @@ void CScraperParser::ConvertJSON(CStdString &string)
   {
     int pos1 = reg2.GetSubStart(1);
     int pos2 = reg2.GetSubStart(2);
-    char* szHexValue = reg2.GetReplaceString("\\1");
+    std::string szHexValue = reg2.GetReplaceString("\\1");
 
     CStdString replace;
-    replace.Format("%c", strtol(szHexValue, NULL, 16));
+    replace.Format("%c", strtol(szHexValue.c_str(), NULL, 16));
     string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
-
-    free(szHexValue);
   }
 
   string.Replace("\\\"","\"");
