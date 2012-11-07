@@ -267,11 +267,16 @@ const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
 CStdString CPVRRecording::GetTitleFromURL(const CStdString &url)
 {
   CRegExp reg(true);
+  CStdString result = StringUtils::EmptyString;
   if (reg.RegComp("pvr://recordings/(.*/)*(.*), TV( \\(.*\\))?, "
       "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].pvr"))
   {
     if (reg.RegFind(url.c_str()) >= 0)
-      return reg.GetReplaceString("\\2");
+    {
+      char *replace_string = reg.GetReplaceString("\\2");
+      result = replace_string;
+      free(replace_string);
+    }
   }
-  return StringUtils::EmptyString;
+  return result;
 }
