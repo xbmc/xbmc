@@ -10,6 +10,8 @@
 
 #include "CocoaUtils.h"
 
+#include "config.h"
+
 #ifndef __APPLE__
 
 using namespace std;
