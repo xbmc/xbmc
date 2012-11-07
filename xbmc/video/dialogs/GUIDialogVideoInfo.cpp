@@ -977,7 +977,7 @@ string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   if (currentCachedMedia.size() > 0 && CFile::Exists(currentCachedMedia))
   {
     CFileItemPtr itemCurrent(new CFileItem("media://Current", false));
-    itemCurrent->SetThumbnailImage(currentCachedMedia);
+    itemCurrent->SetArt(PLEX_ART_THUMB, currentCachedMedia);
     itemCurrent->SetLabel(g_localizeStrings.Get(label));
     items.Add(itemCurrent);
   }

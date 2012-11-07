@@ -83,10 +83,9 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 
 #define CONF_FLAGS_RGB           0x20
 
-#define PLEX_ART_THUMB "plex_thumb"
+#define PLEX_ART_THUMB "thumb"
 #define PLEX_ART_GRANDPARENT_THUMB "plex_grandparentthumb"
-#define PLEX_ART_FANART "plex_fanart"
-#define PLEX_ART_FANART_IMAGE "plex_fanart_image"
+#define PLEX_ART_FANART "fanart"
 #define PLEX_ART_FANART_FALLBACK "plex_fanart_fallback"
 #define PLEX_ART_BANNER "plex_banner"
 

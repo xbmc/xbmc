@@ -2372,14 +2372,14 @@ void CFileItemList::FillInDefaultIcons()
 #ifdef __APPLE__ /* PLEX */
     if (Cocoa_IsAppBundle(pItem->GetPath().c_str()))
     {
-      pItem->SetThumbnailImage(Cocoa_GetAppIcon(pItem->GetPath()));
+      pItem->SetArt(PLEX_ART_THUMB, Cocoa_GetAppIcon(pItem->GetPath()));
       CStdString itemLabel = pItem->GetLabel();
       URIUtils::RemoveExtension(itemLabel);
       pItem->SetLabel(itemLabel);
     }
     else if (Cocoa_IsWflowBundle(pItem->GetPath().c_str()))
     {
-      pItem->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/Automator.app", "AutomatorDocument"));
+      pItem->SetArt(PLEX_ART_THUMB, Cocoa_GetIconFromBundle("/Applications/Automator.app", "AutomatorDocument"));
       CStdString itemLabel = pItem->GetLabel();
       URIUtils::RemoveExtension(itemLabel);
       pItem->SetLabel(itemLabel);

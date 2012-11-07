@@ -164,19 +164,10 @@ public:
   CVariant   GetProperty(const CStdString &strKey) const;
 
   /* PLEX */
-  void SetThumbnailImage(const CStdString &strThumbnail, size_t index);
-  void SetThumbnailImage(const CStdString &strThumbnail) { SetThumbnailImage(strThumbnail, 0); }
-  void SetGrandparentThumbnailImage(const CStdString& strThumbnail);
-  const CStdString& GetThumbnailImage(size_t index) const;
-  const CStdString& GetThumbnailImage() const { return GetThumbnailImage(0); }
-  const CStdString& GetGrandparentThumbnailImage() const;
-  size_t GetNumThumbnails() const { return m_strThumbnailImageList.size(); }
   int GetOverlayImageID() const { return m_overlayIcon; }
-  bool HasThumbnail(size_t index) const;
-  bool HasThumbnail() const { return HasThumbnail(0); }
-  bool HasGrandparentThumbnail() const;
-
-  void ClearThumbnailImage() { m_strThumbnailImageList.clear(); }
+  void SetArt(const std::string &type, int index, const std::string &url);
+  std::string GetArt(const std::string &type, int index) const;
+  void RemoveArt(const std::string &type);
   /* END PLEX */
 
 protected:

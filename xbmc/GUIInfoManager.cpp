@@ -2569,7 +2569,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           if (g_playlistPlayer.GetCurrentSong() < (g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size() - 1))
           {
             CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
-            bReturn = !playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[g_playlistPlayer.GetNextSong()]->GetThumbnailImage());
+            bReturn = !(playlist[g_playlistPlayer.GetCurrentSong()]->GetArt(PLEX_ART_THUMB) == playlist[g_playlistPlayer.GetNextSong()]->GetArt(PLEX_ART_THUMB));
           }
         }
         break;
@@ -3341,8 +3341,8 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow, CStdString *fa
         CPlayList playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
         for (int i=g_playlistPlayer.GetCurrentSong()+1; i < g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).size(); i++)
         {
-          if (!playlist[g_playlistPlayer.GetCurrentSong()]->GetThumbnailImage().Equals(playlist[i]->GetThumbnailImage()))
-            return playlist[i]->GetThumbnailImage();
+          if (!(playlist[g_playlistPlayer.GetCurrentSong()]->GetArt(PLEX_ART_THUMB) == playlist[i]->GetArt(PLEX_ART_THUMB)))
+            return playlist[i]->GetArt(PLEX_ART_THUMB);
         }
       }
     }
@@ -4845,9 +4845,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_THUMB2:
   case LISTITEM_THUMB3:
   case LISTITEM_THUMB4:
-      return item->GetThumbnailImage(info-LISTITEM_THUMB0);
+      return item->GetArt(PLEX_ART_THUMB, info-LISTITEM_THUMB0);
   case LISTITEM_GRANDPARENT_THUMB:
-    return item->GetGrandparentThumbnailImage();
+    return item->GetArt(PLEX_ART_GRANDPARENT_THUMB);
   /* END PLEX */
 
   case LISTITEM_ICON:

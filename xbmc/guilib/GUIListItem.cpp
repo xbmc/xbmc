@@ -24,6 +24,10 @@
 #include "utils/CharsetConverter.h"
 #include "utils/Variant.h"
 
+/* PLEX */
+#include "boost/format.hpp"
+/* END PLEX */
+
 using namespace std;
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
@@ -430,48 +434,30 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
 }
 
 /* PLEX */
-void CGUIListItem::SetThumbnailImage(const CStdString& strThumbnail, size_t index)
+std::string CGUIListItem::GetArt(const string &type, int index) const
 {
-  if (m_strThumbnailImageList.size() < index+1)
-    m_strThumbnailImageList.resize(index+1);
+  if (index == 0)
+    return GetArt(type);
 
-  if (m_strThumbnailImageList[index] != strThumbnail)
+  std::string typeNum = (boost::format("%s____%d") % type % index).str();
+  return GetArt(typeNum);
+}
+
+void CGUIListItem::SetArt(const string &type, int index, const string &url)
+{
+  if (index == 0)
+    SetArt(type, url);
+  else
   {
-    m_strThumbnailImageList[index] = strThumbnail;
-    SetInvalid();
+    std::string typeNum = (boost::format("%s____%d") % type % index).str();
+    SetArt(typeNum, url);
   }
 }
 
-void CGUIListItem::SetGrandparentThumbnailImage(const CStdString& strThumbnail)
+void CGUIListItem::RemoveArt(const string &type)
 {
-  if (m_strGrandparentThumbnailImage == strThumbnail)
-    return;
-
-  m_strGrandparentThumbnailImage = strThumbnail;
-  SetInvalid();
+  if (HasArt(type))
+    m_art.erase(type);
 }
 
-const CStdString& CGUIListItem::GetThumbnailImage(size_t index) const
-{
-  if (index < m_strThumbnailImageList.size())
-    return m_strThumbnailImageList[index];
-
-  static CStdString blank;
-  return blank;
-}
-
-const CStdString& CGUIListItem::GetGrandparentThumbnailImage() const
-{
-  return m_strGrandparentThumbnailImage;
-}
-
-bool CGUIListItem::HasGrandparentThumbnail() const
-{
-  return (m_strGrandparentThumbnailImage.size() != 0);
-}
-
-bool CGUIListItem::HasThumbnail(size_t index) const
-{
-  return (m_strThumbnailImageList.size() > index && m_strThumbnailImageList[index].size() != 0);
-}
 /* END PLEX */

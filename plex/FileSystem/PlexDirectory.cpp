@@ -345,8 +345,8 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     }
 
     // Fall back to directory thumb?
-    if (strThumb.size() > 0 && pItem->GetThumbnailImage().size() == 0)
-      pItem->SetThumbnailImage(strThumb);
+    if (strThumb.size() > 0 && pItem->HasArt(PLEX_ART_THUMB))
+      pItem->SetArt(PLEX_ART_THUMB, strThumb);
 
     // Make sure sort label is lower case.
     CStdString sortLabel = pItem->GetSortLabel();
@@ -627,17 +627,17 @@ class PlexMediaNode
        // Thumb.
        string strThumb = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("thumb"), MAX_THUMBNAIL_AGE, localServer);
        if (strThumb.size() > 0)
-         pItem->SetThumbnailImage(strThumb);
+         pItem->SetArt(PLEX_ART_THUMB, strThumb);
 
        // Multiple thumbs?
        int i=0;
        for (TiXmlElement* thumbEl = el.FirstChildElement("Thumb"); thumbEl; thumbEl=thumbEl->NextSiblingElement("Thumb"))
-         pItem->SetThumbnailImage(thumbEl->Attribute("key"), i++);
+         pItem->SetArt(PLEX_ART_THUMB, i++, thumbEl->Attribute("key"));
 
        // Grandparent thumb.
        string strGrandparentThumb = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("grandparentThumb"), MAX_THUMBNAIL_AGE, localServer);
        if (strGrandparentThumb.size() > 0)
-         pItem->SetGrandparentThumbnailImage(strGrandparentThumb);
+         pItem->SetArt(PLEX_ART_GRANDPARENT_THUMB, strGrandparentThumb);
        
        // Fanart.
        string strArt = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("art"), MAX_FANART_AGE, localServer);
@@ -763,8 +763,9 @@ class PlexMediaNode
      if (pRoot && pVersion)
      {
        string url = CPlexDirectory::ProcessUrl(parentPath, pRoot, false);
+/*
        CacheMediaThumb(pItem, &el, url, "contentRating", pVersion);
-       CacheMediaThumb(pItem, &el, url, "studio", pVersion);
+       CacheMediaThumb(pItem, &el, url, "studio", pVersion);*/
      }
 
      return pItem;
@@ -1256,6 +1257,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
           string url = pRoot ? CPlexDirectory::ProcessUrl(parentPath, pRoot, false) : "";
           string version = pVersion ? pVersion : ""; 
           
+          /*
           CacheMediaThumb(theMediaItem, media, url, "aspectRatio", version);
           CacheMediaThumb(theMediaItem, media, url, "audioChannels", version);
           CacheMediaThumb(theMediaItem, media, url, "audioCodec", version);
@@ -1273,6 +1275,8 @@ class PlexMediaNodeLibrary : public PlexMediaNode
             CacheMediaThumb(theMediaItem, &el, url, "studio", version);
           else
             CacheMediaThumb(theMediaItem, parent, url, "grandparentStudio", version, "studio");
+          */
+
         }
           
         // But we add each one to the list.
