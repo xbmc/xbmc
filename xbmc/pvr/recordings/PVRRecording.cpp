@@ -24,6 +24,8 @@
 #include "PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/StringUtils.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 
 #include "epg/Epg.h"
 
@@ -241,13 +243,16 @@ void CPVRRecording::UpdatePath(void)
   {
     CStdString strTitle(m_strTitle);
     CStdString strDatetime(m_recordingTime.GetAsSaveString());
+    CStdString strDirectory;
+    CStdString strChannel;
     strTitle.Replace('/','-');
     strTitle.Remove('?');
 
-    if (m_strDirectory != StringUtils::EmptyString)
-      m_strFileNameAndPath.Format("pvr://recordings/%s/%s/%s.pvr", m_strDirectory.c_str(), strDatetime.c_str(), strTitle.c_str());
-    else
-      m_strFileNameAndPath.Format("pvr://recordings/%s/%s.pvr", strDatetime.c_str(), strTitle.c_str());
+    if (!m_strDirectory.IsEmpty())
+      strDirectory.Format("%s/", m_strDirectory.c_str());
+    if (!m_strChannelName.IsEmpty())
+      strChannel.Format(" (%s)", m_strChannelName.c_str());
+    m_strFileNameAndPath.Format("pvr://recordings/%s%s, TV%s, %s.pvr", strDirectory.c_str(), strTitle.c_str(), strChannel.c_str(), strDatetime.c_str());
   }
 }
 
@@ -257,4 +262,21 @@ const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
   tmp.SetFromUTCDateTime(m_recordingTime);
 
   return tmp;
+}
+
+CStdString CPVRRecording::GetTitleFromURL(const CStdString &url)
+{
+  CRegExp reg(true);
+  CStdString result = StringUtils::EmptyString;
+  if (reg.RegComp("pvr://recordings/(.*/)*(.*), TV( \\(.*\\))?, "
+      "(19[0-9][0-9]|20[0-9][0-9])[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9].pvr"))
+  {
+    if (reg.RegFind(url.c_str()) >= 0)
+    {
+      char *replace_string = reg.GetReplaceString("\\2");
+      result = replace_string;
+      free(replace_string);
+    }
+  }
+  return result;
 }
