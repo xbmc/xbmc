@@ -1763,7 +1763,7 @@ namespace VIDEO
           URIUtils::RemoveExtension(compare);
           if (!items[j]->m_bIsFolder && compare == thumbFile)
           {
-            i->thumb = items[j]->GetPath();;
+            i->thumb = items[j]->GetPath();
             break;
           }
         }
