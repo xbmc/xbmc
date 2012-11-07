@@ -47,7 +47,6 @@ protected:
 
 private:
   void RenderTTFSubtitles();
-  void SeekTV(bool bPlus, bool bLargeStep);
   void SeekChapter(int iChapter);
   void FillInTVGroups();
   void ToggleOSD();

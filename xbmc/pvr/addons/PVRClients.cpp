@@ -862,17 +862,19 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
       else
       {
         ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
-        CSingleLock lock(m_critSection);
-        
         PVR_CLIENT addon;
-        if (!GetClient(iClientId, addon))
         {
-          CLog::Log(LOGWARNING, "%s - failed to find add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
-          disableAddons.push_back(clientAddon);
-          bDisabled = true;
+          CSingleLock lock(m_critSection);
+          if (!GetClient(iClientId, addon))
+          {
+            CLog::Log(LOGWARNING, "%s - failed to find add-on %s, disabling it", __FUNCTION__, clientAddon->Name().c_str());
+            disableAddons.push_back(clientAddon);
+            bDisabled = true;
+          }
         }
+
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
-        else if (addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
+        if (!bDisabled && addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {
           CLog::Log(LOGWARNING, "%s - failed to create add-on %s, status = %d", __FUNCTION__, clientAddon->Name().c_str(), status);
           if (!addon.get() || !addon->DllLoaded() || status == ADDON_STATUS_PERMANENT_FAILURE)

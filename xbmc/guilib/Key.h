@@ -273,6 +273,10 @@
 #define ACTION_NEXT_CONTROL           181
 #define ACTION_PREV_CONTROL           182
 #define ACTION_CHANNEL_SWITCH         183
+#define ACTION_CHANNEL_UP             184
+#define ACTION_CHANNEL_DOWN           185
+#define ACTION_NEXT_CHANNELGROUP      186
+#define ACTION_PREVIOUS_CHANNELGROUP  187
 
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
@@ -416,6 +420,7 @@
 #define WINDOW_DIALOG_PVR_OSD_GUIDE       10611
 #define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10612
 #define WINDOW_DIALOG_PVR_OSD_CUTTER      10613
+#define WINDOW_FULLSCREEN_LIVETV          10614 // virtual window for PVR specific keymap bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
 // PVR_WINDOW VIEWS = 10694-10699
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
