@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<window id="1001">
-	<!-- DELETE THIS FILE WHEN FRODO MERGE IS AVAILABLE -->
+<window>
 	<defaultcontrol always="true">101</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
