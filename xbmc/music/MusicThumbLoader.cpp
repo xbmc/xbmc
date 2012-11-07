@@ -66,7 +66,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive)
     return true;
 
-  if (pItem->HasMusicInfoTag() && pItem->GetArt().empty())
+  if (pItem->HasMusicInfoTag() && (!pItem->HasArt("thumb") || !pItem->HasArt("fanart")))
   {
     if (FillLibraryArt(*pItem))
       return true;

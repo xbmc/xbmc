@@ -136,6 +136,7 @@ public:
   CBookmark m_resumePoint;
   CDateTime m_dateAdded;
   CStdString m_type;
+  std::map<std::string, std::string> m_art;
 
 private:
   /* \brief Parse our native XML format for video info.

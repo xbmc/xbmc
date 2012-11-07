@@ -225,14 +225,18 @@ void CMusicDatabase::CreateViews()
               "  strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed,"
               "  rating, comment, song.idAlbum AS idAlbum, strAlbum, strPath,"
               "  iKaraNumber, iKaraDelay, strKaraEncoding,"
-              "  album.bCompilation AS bCompilation "
+              "  album.bCompilation AS bCompilation, "
+              "  art.url AS urlThumb "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
               "  JOIN path ON"
               "    song.idPath=path.idPath"
               "  LEFT OUTER JOIN karaokedata ON"
-              "    song.idSong=karaokedata.idSong");
+              "    song.idSong=karaokedata.idSong"
+              "  LEFT JOIN art ON"
+              "    art.media_id = song.idSong AND art.media_type=\"song\" AND art.type=\"thumb\""
+              );
 
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("DROP VIEW IF EXISTS albumview");
@@ -244,12 +248,15 @@ void CMusicDatabase::CreateViews()
               "  idAlbumInfo, strMoods, strStyles, strThemes,"
               "  strReview, strLabel, strType, strImage, iRating, "
               "  bCompilation, "
-              "  sum(song.iTimesPlayed) AS iTimesPlayed "
+              "  sum(song.iTimesPlayed) AS iTimesPlayed, "
+              "  art.url AS urlThumb "
               "FROM album "
               "  LEFT OUTER JOIN albuminfo ON"
               "    album.idAlbum=albuminfo.idAlbum"
               "  LEFT OUTER JOIN song ON"
               "    album.idAlbum=song.idAlbum "
+              "  LEFT JOIN art ON"
+              "    art.media_id = album.idAlbum AND art.media_type=\"album\" AND art.type=\"thumb\""
               "GROUP BY album.idAlbum");
 
   CLog::Log(LOGINFO, "create artist view");
@@ -259,10 +266,14 @@ void CMusicDatabase::CreateViews()
               "  strBorn, strFormed, strGenres,"
               "  strMoods, strStyles, strInstruments, "
               "  strBiography, strDied, strDisbanded, "
-              "  strYearsActive, strImage, strFanart "
+              "  strYearsActive, strImage, strFanart, "
+              "  art.url AS urlThumb "
               "FROM artist "
               "  LEFT OUTER JOIN artistinfo ON"
-              "    artist.idArtist = artistinfo.idArtist");
+              "    artist.idArtist = artistinfo.idArtist"
+              "  LEFT JOIN art ON"
+              "    art.media_id = artist.idArtist AND art.media_type=\"artist\" AND art.type=\"thumb\""
+              );
 }
 
 int CMusicDatabase::AddAlbum(const CAlbum &album, vector<int> &songIDs)
@@ -854,6 +865,8 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.strKaraokeLyrEncoding = m_pDS->fv(song_strKarEncoding).get_asString();
   song.iKaraokeDelay = m_pDS->fv(song_iKarDelay).get_asInt();
   song.bCompilation = m_pDS->fv(song_bCompilation).get_asInt() == 1;
+  song.strThumb = m_pDS->fv(song_strUrlThumb).get_asString();
+
 
   // Get filename with full path
   if (!bWithMusicDbPath)
@@ -906,6 +919,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   URIUtils::AddFileToFolder(record->at(song_strPath).get_asString(), record->at(song_strFileName).get_asString(), strRealPath);
   item->GetMusicInfoTag()->SetURL(strRealPath);
   item->GetMusicInfoTag()->SetCompilation(m_pDS->fv(song_bCompilation).get_asInt() == 1);
+  item->SetArt("thumb", m_pDS->fv(song_strUrlThumb).get_asString());
   item->GetMusicInfoTag()->SetLoaded(true);
   // Get filename with full path
   if (strMusicDBbasePath.IsEmpty())
@@ -951,6 +965,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.strType = record->at(album_strType).get_asString();
   album.bCompilation = record->at(album_bCompilation).get_asInt() == 1;
   album.iTimesPlayed = record->at(album_iTimesPlayed).get_asInt();
+  album.art.insert(make_pair("thumb", record->at(album_strUrlThumb).get_asString()));
   return album;
 }
 
@@ -974,6 +989,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   artist.strDisbanded = record->at(artist_strDisbanded).get_asString();
   artist.yearsActive = StringUtils::Split(record->at(artist_strYearsActive).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.instruments = StringUtils::Split(record->at(artist_strInstruments).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.art.insert(make_pair("thumb", record->at(artist_strUrlThumb).get_asString()));
 
   if (needThumb)
   {

@@ -53,6 +53,7 @@ public:
     thumbURL.Clear();
     discography.clear();
     idArtist = -1;
+    art.clear();
   }
 
   /*! \brief Load artist information from an XML file.
@@ -79,6 +80,7 @@ public:
   CScraperUrl thumbURL;
   CFanart fanart;
   std::vector<std::pair<CStdString,CStdString> > discography;
+  std::map<std::string, std::string> art;
 };
 
 typedef std::vector<CArtist> VECARTISTS;

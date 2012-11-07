@@ -210,5 +210,7 @@ public:
   float m_fAlbumPeak;
   int m_iHasGainInfo;   // valid info
   EmbeddedArtInfo m_coverArt; ///< art information
+
+  CStdString m_strThumbUrl;
 };
 }

@@ -3982,7 +3982,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   }
 
   // Find a thumb for this file.
-  if (!item.HasArt("thumb"))
+  if (!item.HasArt("thumb") || !item.HasArt("fanart"))
   {
     CVideoThumbLoader loader;
     loader.LoadItem(m_currentFile);
