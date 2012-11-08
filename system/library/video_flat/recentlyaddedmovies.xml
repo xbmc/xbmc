@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="10" type="filter" visible="Library.HasContent(Movies)">
+<node order="10" type="folder" visible="Library.HasContent(Movies)">
   <label>20386</label>
   <icon>DefaultRecentlyAddedMovies.png</icon>
-  <content>movies</content>
-  <order direction="descending">dateadded</order>
-  <limit>25</limit>
+  <path>videodb://4</path>
 </node>
