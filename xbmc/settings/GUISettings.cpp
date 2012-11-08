@@ -379,7 +379,7 @@ void CGUISettings::Initialize()
   AddString(kar, "karaoke.font", 22030, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(kar, "karaoke.fontheight", 22031, 36, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   map<int,int> colors;
-  for (int i = KARAOKE_COLOR_START; i <= KARAOKE_COLOR_END; i++)
+  for (int i = KARAOKE_COLOR_START; i < KARAOKE_COLOR_END; i++)
     colors.insert(make_pair(22040 + i, i));
   AddInt(kar, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, colors, SPIN_CONTROL_TEXT);
   AddString(kar, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);

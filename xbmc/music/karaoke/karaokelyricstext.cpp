@@ -56,7 +56,7 @@ static LyricColors gLyricColors[] =
   // <string id="22042">white/blue</string>
   {  0xFFDADADA,  0xFF0000FF,  0xFF000000  },
 
-  // <string id="22046">black/white</string>
+  // <string id="22043">black/white</string>
   {  0xFF000000,  0xFFDADADA,  0xFFFFFFFF  },
 };
 
