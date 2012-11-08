@@ -5,4 +5,5 @@
   <content>movies</content>
   <order direction="descending">dateadded</order>
   <limit>25</limit>
+  <group>none</group>
 </node>

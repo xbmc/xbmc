@@ -21,6 +21,7 @@
  */
 
 #include "utils/StdString.h"
+#include "utils/SortUtils.h"
 
 namespace dbiplus {
   class Database;
@@ -31,7 +32,6 @@ namespace dbiplus {
 
 class DatabaseSettings; // forward
 class CDbUrl;
-struct SortDescription;
 
 class CDatabase
 {
@@ -136,9 +136,14 @@ public:
    */
   bool CommitInsertQueries();
 
-  virtual bool GetFilter(CDbUrl &dbUrl, Filter &filter, SortDescription &sorting) { return true; }
-  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl);
-  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl, SortDescription &sorting);
+  typedef struct {
+    Filter filter;
+    SortDescription sortDescription;
+    std::string group;
+  } QueryData;
+
+  virtual bool GetFilter(CDbUrl &dbUrl, QueryData &data) { return true; }
+  virtual bool BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, QueryData &data, CStdString &strSQL, CDbUrl &dbUrl);
 
 protected:
   friend class CDatabaseManager;

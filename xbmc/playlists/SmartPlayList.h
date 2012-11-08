@@ -200,6 +200,9 @@ public:
   static void GetAvailableOperators(std::vector<std::string> &operatorList);
 
   bool IsEmpty(bool ignoreSortAndLimit = true) const;
+
+  const CStdString& GetGroup() const { return m_group; }
+  bool GroupMixed() const { return m_groupMixed; }
 private:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;
@@ -216,6 +219,8 @@ private:
   unsigned int m_limit;
   SortBy m_orderField;
   SortOrder m_orderDirection;
+  CStdString m_group;
+  bool m_groupMixed;
 
   CXBMCTinyXML m_xmlDoc;
 };

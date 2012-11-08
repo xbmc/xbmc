@@ -708,18 +708,12 @@ bool CDatabase::BuildSQL(const CStdString &strQuery, const Filter &filter, CStdS
   return true;
 }
 
-bool CDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl)
-{
-  SortDescription sorting;
-  return BuildSQL(strBaseDir, strQuery, filter, strSQL, dbUrl, sorting);
-}
-
-bool CDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl, SortDescription &sorting /* = SortDescription() */)
+bool CDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, QueryData &data, CStdString &strSQL, CDbUrl &dbUrl)
 {
   // parse the base path to get additional filters
   dbUrl.Reset();
-  if (!dbUrl.FromString(strBaseDir) || !GetFilter(dbUrl, filter, sorting))
+  if (!dbUrl.FromString(strBaseDir) || !GetFilter(dbUrl, data))
     return false;
 
-  return BuildSQL(strQuery, filter, strSQL);
+  return BuildSQL(strQuery, data.filter, strSQL);
 }

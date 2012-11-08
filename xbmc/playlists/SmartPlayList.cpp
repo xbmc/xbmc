@@ -1242,6 +1242,14 @@ bool CSmartPlaylist::Load(const CVariant &obj)
     m_orderField = CSmartPlaylistRule::TranslateOrder(obj["order"]["method"].asString().c_str());
   }
 
+  // and group
+  if (obj.isMember("group") && obj["group"].isMember("type") && obj["group"]["type"].isString())
+  {
+    m_group = obj["group"]["type"].asString();
+    if (obj["group"].isMember("mixed") && obj["group"]["mixed"].isBoolean())
+      m_groupMixed = obj["group"]["mixed"].asBoolean();
+  }
+
   return true;
 }
 
@@ -1298,6 +1306,16 @@ bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
     if (direction)
       m_orderDirection = strcmpi(direction, "ascending") == 0 ? SortOrderAscending : SortOrderDescending;
     m_orderField = CSmartPlaylistRule::TranslateOrder(order->FirstChild()->Value());
+  }
+
+  // and group
+  // format is <group mixed="true/false">type</order>
+  TiXmlElement *options = root->FirstChildElement("group");
+  if (options && options->FirstChild())
+  {
+    if (options->QueryBoolAttribute("mixed", &m_groupMixed) != TIXML_SUCCESS)
+      m_groupMixed = false;
+    m_group = options->FirstChild()->ValueStr();
   }
   return true;
 }
@@ -1359,6 +1377,17 @@ bool CSmartPlaylist::Save(const CStdString &path) const
     nodeOrder.InsertEndChild(order);
     pRoot->InsertEndChild(nodeOrder);
   }
+
+  // add <group>
+  if (!m_group.empty())
+  {
+    TiXmlElement nodeGroup("group");
+    if (m_groupMixed)
+      nodeGroup.SetAttribute("mixed", "true");
+    TiXmlText textGroup(m_group.c_str());
+    nodeGroup.InsertEndChild(textGroup);
+    pRoot->InsertEndChild(nodeGroup);
+  }
   return doc.SaveFile(path);
 }
 
@@ -1388,6 +1417,13 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
     obj["order"]["direction"] = m_orderDirection == SortOrderDescending ? "descending" : "ascending";
   }
 
+  // and "group"
+  if (!m_group.empty())
+  {
+    obj["group"]["type"] = m_group;
+    obj["group"]["mixed"] = m_groupMixed;
+  }
+
   return true;
 }
 
@@ -1410,6 +1446,8 @@ void CSmartPlaylist::Reset()
   m_orderField = SortByNone;
   m_orderDirection = SortOrderNone;
   m_playlistType = "songs"; // sane default
+  m_group.clear();
+  m_groupMixed = false;
 }
 
 void CSmartPlaylist::SetName(const CStdString &name)
