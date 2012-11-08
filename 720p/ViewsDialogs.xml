@@ -14,6 +14,9 @@
 		<include>BlackRounded</include>
 		<animation effect="fade" start="0" end="75" time="0" condition="true">Conditional</animation>
 	</include>
+	<include name="DialogBGContextMenu">
+		<texture border="30">bg-dialog-context-menu.png</texture>
+	</include>
 	<include name="DialogHeaderBG">
 		<texture border="10" flipy="true">base-rounded-half.png</texture>
 		<colordiffuse>FF111111</colordiffuse>
@@ -234,8 +237,8 @@
 			<control type="image" id="999">
 				<description>Background</description>
 				<width>340</width>
-				<height>480</height>
-				<include>DialogBG</include>
+				<height>500</height>
+				<include>DialogBGContextMenu</include>
 			</control>
 			<control type="image">
 				<description>Title bg</description>
@@ -248,18 +251,6 @@
 				<posy>10</posy>
 				<width>340</width>
 				<include>DialogHeaderBorder</include>
-			</control>
-			<control type="image">
-				<description>Background border</description>
-				<width>342</width>
-				<height>482</height>
-				<include>DialogBorder</include>
-			</control>
-			<control type="image">
-				<description>Dialog arrow</description>
-				<posx>155</posx>
-				<posy>480</posy>
-				<include>DialogArrow</include>
 			</control>
 		</control>
 		<control type="group">
