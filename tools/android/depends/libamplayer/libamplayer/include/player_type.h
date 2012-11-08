@@ -5,6 +5,7 @@
 #include <stream_format.h>
 
 #define MSG_SIZE                    64
+#define MAX_CHAPTERS                64
 #define MAX_VIDEO_STREAMS           8
 #define MAX_AUDIO_STREAMS           8
 #define MAX_SUB_INTERNAL            8
@@ -107,6 +108,7 @@ typedef struct
 
 typedef struct
 {    
+    int index;
     int id;
     int channel;
     int sample_rate;
@@ -114,10 +116,12 @@ typedef struct
     aformat_t aformat;
     int duration;
 	audio_tag_info *audio_tag;    
+    char audio_language[4];
 }maudio_info_t;
 
 typedef struct
 {
+    int index;
     char id;
     char internal_external; //0:internal_sub 1:external_sub       
     unsigned short width;
@@ -147,7 +151,15 @@ typedef struct
     int cur_sub_index;	
     int seekable;
     int drm_check;
+    int has_chapter;
+    int total_chapter_num;
 }mstream_info_t;
+
+typedef struct
+{
+    char    *name;
+    int64_t seekto_ms;
+} mchapter_info_t;
 
 typedef struct
 {	
@@ -155,6 +167,7 @@ typedef struct
 	mvideo_info_t *video_info[MAX_VIDEO_STREAMS];
 	maudio_info_t *audio_info[MAX_AUDIO_STREAMS];
     msub_info_t *sub_info[MAX_SUB_STREAMS];
+    mchapter_info_t *chapter_info[MAX_CHAPTERS];
 }media_info_t;
 
 typedef struct player_info
@@ -231,7 +244,7 @@ typedef struct
 	int	video_index;						//video track, no assigned, please set to -1
 	int	audio_index;						//audio track, no assigned, please set to -1
 	int sub_index;							//subtitle track, no assigned, please set to -1
-	int t_pos;                  //start postion, use second as unit
+	float t_pos;							//start postion, use second as unit
 	int	read_max_cnt;						//read retry maxium counts, if exceed it, return error
 	int avsync_threshold;                             //for adec av sync threshold in ms
 	union
