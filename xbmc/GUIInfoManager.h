@@ -106,6 +106,7 @@ namespace INFO
 #define PLAYER_ITEM_ART              49
 #define PLAYER_CAN_PAUSE             50
 #define PLAYER_CAN_SEEK              51
+#define PLAYER_START_TIME            52
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
