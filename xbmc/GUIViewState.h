@@ -21,7 +21,7 @@
  */
 
 #include "utils/LabelFormatter.h"
-#include "SortFileItem.h"
+#include "utils/SortUtils.h"
 #include "MediaSource.h"
 
 class CViewState; // forward
@@ -75,6 +75,13 @@ protected:
   void AddAndroidSource(const CStdString &content, const CStdString &label, const CStdString& thumb);
 #endif
   void AddLiveTVSources();
+
+  /*! \brief Add the sort order defined in a smartplaylist
+   Defaults to SORT_METHOD_PLAYLIST_ORDER if no order is defined.
+   \param items the list of items for the view state.
+   \param label_mask the label masks for formatting items.
+   */
+  void AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks);
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);

@@ -23,6 +23,7 @@
 #include <string>
 
 #include "DatabaseUtils.h"
+#include "SortFileItem.h"
 
 typedef enum {
   SortOrderNone = 0,
@@ -109,6 +110,15 @@ typedef DatabaseResults SortItems;
 class SortUtils
 {
 public:
+  static SORT_METHOD TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle);
+  static SortDescription TranslateOldSortMethod(SORT_METHOD sortBy);
+
+  /*! \brief retrieve the label id associated with a sort method for displaying in the UI.
+   \param sortBy the sort method in question.
+   \return the label id of the sort method.
+   */
+  static int GetSortLabel(SortBy sortBy);
+
   static void Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attributes, SortItems& items, int limitEnd = -1, int limitStart = 0);
   static void Sort(const SortDescription &sortDescription, SortItems& items);
   static bool SortFromDataset(const SortDescription &sortDescription, MediaType mediaType, const std::auto_ptr<dbiplus::Dataset> &dataset, DatabaseResults &results);

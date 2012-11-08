@@ -744,3 +744,115 @@ string SortUtils::RemoveArticles(const string &label)
 
   return label;
 }
+
+typedef struct
+{
+  SortBy        sort;
+  SORT_METHOD   old;
+  SortAttribute flags;
+  int           label;
+} sort_map;
+
+const sort_map table[] = {
+  { SortByLabel,                    SORT_METHOD_LABEL,                        SortAttributeNone,          551 },
+  { SortByLabel,                    SORT_METHOD_LABEL_IGNORE_THE,             SortAttributeIgnoreArticle, 551 },
+  { SortByLabel,                    SORT_METHOD_LABEL_IGNORE_FOLDERS,         SortAttributeIgnoreFolders, 551 },
+  { SortByDate,                     SORT_METHOD_DATE,                         SortAttributeNone,          552 },
+  { SortBySize,                     SORT_METHOD_SIZE,                         SortAttributeNone,          553 },
+  { SortByBitrate,                  SORT_METHOD_BITRATE,                      SortAttributeNone,          623 },
+  { SortByDriveType,                SORT_METHOD_DRIVE_TYPE,                   SortAttributeNone,          564 },
+  { SortByTrackNumber,              SORT_METHOD_TRACKNUM,                     SortAttributeNone,          554 },
+  { SortByEpisodeNumber,            SORT_METHOD_EPISODE,                      SortAttributeNone,          20359 },// 20360 "Episodes" used for SORT_METHOD_EPISODE for sorting tvshows by episode count
+  { SortByTime,                     SORT_METHOD_DURATION,                     SortAttributeNone,          180 },
+  { SortByTime,                     SORT_METHOD_VIDEO_RUNTIME,                SortAttributeNone,          180 },
+  { SortByTitle,                    SORT_METHOD_TITLE,                        SortAttributeNone,          556 },
+  { SortByTitle,                    SORT_METHOD_TITLE_IGNORE_THE,             SortAttributeIgnoreArticle, 556 },
+  { SortByTitle,                    SORT_METHOD_VIDEO_TITLE,                  SortAttributeNone,          556 },
+  { SortByArtist,                   SORT_METHOD_ARTIST,                       SortAttributeNone,          557 },
+  { SortByArtist,                   SORT_METHOD_ARTIST_IGNORE_THE,            SortAttributeIgnoreArticle, 557 },
+  { SortByAlbum,                    SORT_METHOD_ALBUM,                        SortAttributeNone,          558 },
+  { SortByAlbum,                    SORT_METHOD_ALBUM_IGNORE_THE,             SortAttributeIgnoreArticle, 558 },
+  { SortByGenre,                    SORT_METHOD_GENRE,                        SortAttributeNone,          515 },
+  { SortByCountry,                  SORT_METHOD_COUNTRY,                      SortAttributeNone,          574 },
+  { SortByDateAdded,                SORT_METHOD_DATEADDED,                    SortAttributeIgnoreFolders, 570 },
+  { SortByFile,                     SORT_METHOD_FILE,                         SortAttributeIgnoreFolders, 561 },
+  { SortByRating,                   SORT_METHOD_SONG_RATING,                  SortAttributeNone,          563 },
+  { SortByRating,                   SORT_METHOD_VIDEO_RATING,                 SortAttributeIgnoreFolders, 563 },
+  { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE,             SortAttributeIgnoreFolders, 556 },
+  { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE,  (SortAttribute)(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 556 },
+  { SortByYear,                     SORT_METHOD_YEAR,                         SortAttributeIgnoreFolders, 562 },
+  { SortByProductionCode,           SORT_METHOD_PRODUCTIONCODE,               SortAttributeNone,          20368 },
+  { SortByProgramCount,             SORT_METHOD_PROGRAM_COUNT,                SortAttributeNone,          567 }, // label is "play count"
+  { SortByPlaylistOrder,            SORT_METHOD_PLAYLIST_ORDER,               SortAttributeIgnoreFolders, 559 },
+  { SortByMPAA,                     SORT_METHOD_MPAA_RATING,                  SortAttributeNone,          20074 },
+  { SortByStudio,                   SORT_METHOD_STUDIO,                       SortAttributeNone,          572 },
+  { SortByStudio,                   SORT_METHOD_STUDIO_IGNORE_THE,            SortAttributeIgnoreArticle, 572 },
+  { SortByPath,                     SORT_METHOD_FULLPATH,                     SortAttributeNone,          573 },
+  { SortByLastPlayed,               SORT_METHOD_LASTPLAYED,                   SortAttributeIgnoreFolders, 568 },
+  { SortByPlaycount,                SORT_METHOD_PLAYCOUNT,                    SortAttributeIgnoreFolders, 567 },
+  { SortByListeners,                SORT_METHOD_LISTENERS,                    SortAttributeNone,          20455 },
+  { SortByChannel,                  SORT_METHOD_CHANNEL,                      SortAttributeNone,          19029 },
+  { SortByNone,                     SORT_METHOD_NONE,                         SortAttributeNone,          16018 },
+  // the following have no corresponding SORT_METHOD_*
+  { SortByAlbumType,                SORT_METHOD_NONE,                         SortAttributeNone,          564 },
+  { SortByVotes,                    SORT_METHOD_NONE,                         SortAttributeNone,          205 },
+  { SortByTop250,                   SORT_METHOD_NONE,                         SortAttributeNone,          13409 },
+  { SortByMPAA,                     SORT_METHOD_NONE,                         SortAttributeNone,          20074 },
+  { SortByDateAdded,                SORT_METHOD_NONE,                         SortAttributeNone,          570 },
+  { SortByTvShowTitle,              SORT_METHOD_NONE,                         SortAttributeNone,          20364 },
+  { SortByTvShowStatus,             SORT_METHOD_NONE,                         SortAttributeNone,          126 },
+  { SortBySeason,                   SORT_METHOD_NONE,                         SortAttributeNone,          20373 },
+  { SortByNumberOfEpisodes,         SORT_METHOD_NONE,                         SortAttributeNone,          20360 },
+  { SortByNumberOfWatchedEpisodes,  SORT_METHOD_NONE,                         SortAttributeNone,          21441 },
+  { SortByVideoResolution,          SORT_METHOD_NONE,                         SortAttributeNone,          21443 },
+  { SortByVideoCodec,               SORT_METHOD_NONE,                         SortAttributeNone,          21445 },
+  { SortByVideoAspectRatio,         SORT_METHOD_NONE,                         SortAttributeNone,          21374 },
+  { SortByAudioChannels,            SORT_METHOD_NONE,                         SortAttributeNone,          21444 },
+  { SortByAudioCodec,               SORT_METHOD_NONE,                         SortAttributeNone,          21446 },
+  { SortByAudioLanguage,            SORT_METHOD_NONE,                         SortAttributeNone,          21447 },
+  { SortBySubtitleLanguage,         SORT_METHOD_NONE,                         SortAttributeNone,          21448 },
+  { SortByRandom,                   SORT_METHOD_NONE,                         SortAttributeNone,          590 }
+};
+
+SORT_METHOD SortUtils::TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle)
+{
+  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  {
+    if (table[i].sort == sortBy)
+    {
+      if (ignoreArticle == ((table[i].flags & SortAttributeIgnoreArticle) == SortAttributeIgnoreArticle))
+        return table[i].old;
+    }
+  }
+  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  {
+    if (table[i].sort == sortBy)
+      return table[i].old;
+  }
+  return SORT_METHOD_NONE;
+}
+
+SortDescription SortUtils::TranslateOldSortMethod(SORT_METHOD sortBy)
+{
+  SortDescription description;
+  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  {
+    if (table[i].old == sortBy)
+    {
+      description.sortBy = table[i].sort;
+      description.sortAttributes = table[i].flags;
+      break;
+    }
+  }
+  return description;
+}
+
+int SortUtils::GetSortLabel(SortBy sortBy)
+{
+  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  {
+    if (table[i].sort == sortBy)
+      return table[i].label;
+  }
+  return 16018; // None
+}
