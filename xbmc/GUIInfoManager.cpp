@@ -209,7 +209,8 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "timespeed",        PLAYER_TIME_SPEED },
                                   { "time",             PLAYER_TIME },
                                   { "duration",         PLAYER_DURATION },
-                                  { "finishtime",       PLAYER_FINISH_TIME }};
+                                  { "finishtime",       PLAYER_FINISH_TIME },
+                                  { "starttime",        PLAYER_START_TIME}};
 
 const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
                                   { "conditions",       WEATHER_CONDITIONS },         // labels from here
@@ -2947,9 +2948,26 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   }
   else if (info.m_info == PLAYER_FINISH_TIME)
   {
-    CDateTime time = CDateTime::GetCurrentDateTime();
-    time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+    CDateTime time;
+    if (m_currentFile->HasEPGInfoTag())
+      time = m_currentFile->GetEPGInfoTag()->EndAsLocalTime();
+    else
+    {
+      time = CDateTime::GetCurrentDateTime();
+      time += CDateTimeSpan(0, 0, 0, GetPlayTimeRemaining());
+    }
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
+  }
+  else if (info.m_info == PLAYER_START_TIME)
+  {
+    CDateTime time;
+    if (m_currentFile->HasEPGInfoTag())
+      time = m_currentFile->GetEPGInfoTag()->StartAsLocalTime();
+    else
+    {
+      time = CDateTime::GetCurrentDateTime();
+      time -= CDateTimeSpan(0, 0, 0, GetPlayTime());
+    }
   }
   else if (info.m_info == PLAYER_TIME_SPEED)
   {
@@ -3875,6 +3893,15 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
     SetCurrentSong(item);
   else
     SetCurrentMovie(item);
+
+  if (item.HasEPGInfoTag())
+    *m_currentFile->GetEPGInfoTag() = *item.GetEPGInfoTag();
+  else if (item.HasPVRChannelInfoTag())
+  {
+    CEpgInfoTag tag;
+    if (item.GetPVRChannelInfoTag()->GetEPGNow(tag))
+      *m_currentFile->GetEPGInfoTag() = tag;
+  }
 
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
