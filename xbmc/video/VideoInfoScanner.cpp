@@ -1675,7 +1675,7 @@ namespace VIDEO
     CFileItemList items;
     CDirectory::GetDirectory(show.m_strPath, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
     CRegExp reg;
-    if (items.Size() && reg.RegComp("season-([0-9]+)(-[a-z]+)?\\.(tbn|jpg|png)"))
+    if (items.Size() && reg.RegComp("season([0-9]+)(-[a-z]+)?\\.(tbn|jpg|png)"))
     {
       for (int i = 0; i < items.Size(); i++)
       {
