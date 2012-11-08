@@ -89,7 +89,6 @@ public:
   static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
 
   static CStdString           GetLocalizedField(Field field);
-  static CStdString           GetLocalizedOrder(SortBy order);
   static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
   static std::vector<Field>   GetFields(const CStdString &type);
   static std::vector<SortBy>  GetOrders(const CStdString &type);

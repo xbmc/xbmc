@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 #include "JSONRPCUtils.h"
-#include "SortFileItem.h"
+#include "utils/SortUtils.h"
 #include "interfaces/IAnnouncer.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantWriter.h"

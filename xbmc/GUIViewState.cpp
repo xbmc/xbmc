@@ -47,6 +47,10 @@
 #if defined(TARGET_ANDROID)
 #include "filesystem/AndroidAppDirectory.h"
 #endif
+
+#define PROPERTY_SORT_ORDER         "sort.order"
+#define PROPERTY_SORT_ASCENDING     "sort.ascending"
+
 using namespace std;
 using namespace ADDON;
 using namespace PVR;
@@ -244,11 +248,14 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 
 void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks)
 {
+  for (size_t i = 0; i < m_sortMethods.size(); ++i)
+    if (m_sortMethods[i].m_sortMethod == sortMethod)
+      return;
+
   SORT_METHOD_DETAILS sort;
   sort.m_sortMethod=sortMethod;
   sort.m_buttonLabel=buttonLabel;
   sort.m_labelMasks=labelmasks;
-
   m_sortMethods.push_back(sort);
 }
 
@@ -468,6 +475,32 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
       g_settings.Save();
   }
 }
+
+void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)
+{
+  SORT_METHOD sortMethod = SORT_METHOD_PLAYLIST_ORDER;
+  int         sortLabel = 559;
+  SortOrder   sortOrder = SortOrderAscending;
+  if (items.HasProperty(PROPERTY_SORT_ORDER))
+  {
+    SortBy sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
+    if (sortBy != SortByNone)
+    {
+      sortMethod = SortUtils::TranslateOldSortMethod(sortBy, g_guiSettings.GetBool("filelists.ignorethewhensorting"));
+      if (sortMethod == SORT_METHOD_NONE)
+        sortMethod = SORT_METHOD_PLAYLIST_ORDER;
+      else
+      {
+        sortLabel = SortUtils::GetSortLabel(sortBy);
+        sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
+      }
+    }
+  }
+  AddSortMethod(sortMethod, sortLabel, label_masks);
+  SetSortMethod(sortMethod);
+  SetSortOrder(sortOrder);
+}
+
 
 CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGUIViewState(items)
 {
