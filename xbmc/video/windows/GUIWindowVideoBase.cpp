@@ -1852,6 +1852,27 @@ bool CGUIWindowVideoBase::CanContainFilter(const CStdString &strDirectory) const
   return StringUtils::StartsWith(strDirectory, "videodb://");
 }
 
+bool CGUIWindowVideoBase::CheckFilteredItem(const CFileItemPtr &item, const CFileItemList &items) const
+{
+  // the only additional items that are valid in a filtered list are items
+  // that were previously part of a movie set
+  if (!CanContainFilter(m_strFilterPath) || !item->HasVideoInfoTag() ||
+      item->GetVideoInfoTag()->m_type != "movie" || item->GetVideoInfoTag()->m_iSetId <= 0)
+    return false;
+
+  int setId = item->GetVideoInfoTag()->m_iSetId;
+
+  for (int i = 0; i < items.Size(); i++)
+  {
+    const CFileItemPtr &origItem = items[i];
+    if (origItem->HasVideoInfoTag() && origItem->GetVideoInfoTag()->m_type == "set" &&
+        origItem->GetVideoInfoTag()->m_iDbId == setId)
+      return true;
+  }
+
+  return false;
+}
+
 void CGUIWindowVideoBase::AddToDatabase(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())

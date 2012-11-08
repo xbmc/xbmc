@@ -91,6 +91,7 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
 
   virtual bool CheckFilterAdvanced(CFileItemList &items) const;
+  virtual bool CheckFilteredItem(const CFileItemPtr &item, const CFileItemList &items) const;
   virtual bool CanContainFilter(const CStdString &strDirectory) const;
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
