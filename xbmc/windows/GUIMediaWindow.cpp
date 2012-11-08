@@ -985,8 +985,15 @@ bool CGUIMediaWindow::OnClick(int iItem)
   {
     // execute the script
     CURL url(pItem->GetPath());
-    CBuiltins::Execute(StringUtils::Format("runscript(%s)", url.GetHostName().c_str()));
-    return true;
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT))
+    {
+#ifdef HAS_PYTHON
+      if (!g_pythonParser.StopScript(addon->LibPath()))
+        g_pythonParser.evalFile(addon->LibPath(),addon);
+#endif
+      return true;
+    }
   }
 
   if (pItem->m_bIsFolder)
