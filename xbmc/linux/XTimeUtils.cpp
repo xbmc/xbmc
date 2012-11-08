@@ -79,8 +79,14 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
 
 BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileTime)
 {
-  // TODO: FileTimeToLocalTime not implemented
-  *lpLocalFileTime = *lpFileTime;
+  ULARGE_INTEGER l;
+  l.u.LowPart = lpFileTime->dwLowDateTime;
+  l.u.HighPart = lpFileTime->dwHighDateTime;
+
+  l.QuadPart -= (uint64_t) timezone * 10000000;
+
+  lpLocalFileTime->dwLowDateTime = l.u.LowPart;
+  lpLocalFileTime->dwHighDateTime = l.u.HighPart;
   return true;
 }
 
