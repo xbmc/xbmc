@@ -234,7 +234,7 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
     break;
 
   case PT_BUTTON:
-    valid = OnPacketBUTTON(packet);
+    valid = OnPacketBUTTON(packet,false);
     break;
 
   case PT_MOUSE:
@@ -256,7 +256,11 @@ bool CEventClient::ProcessPacket(CEventPacket *packet)
   case PT_ACTION:
     valid = OnPacketACTION(packet);
     break;
-
+          
+  case PT_BUTTON_EXTENDED:
+    valid = OnPacketBUTTON(packet,true);
+    break;
+          
   default:
     CLog::Log(LOGDEBUG, "ES: Got Unknown Packet");
     break;
@@ -359,20 +363,29 @@ bool CEventClient::OnPacketBYE(CEventPacket *packet)
   return true;
 }
 
-bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
+bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
 {
   unsigned char *payload = (unsigned char *)packet->Payload();
   int psize = (int)packet->PayloadSize();
 
   string map, button;
   unsigned short flags;
-  unsigned short bcode;
+  unsigned int bcode;
   unsigned short amount;
 
   // parse the button code
-  if (!ParseUInt16(payload, psize, bcode))
-    return false;
-
+  if(!extended)
+  {
+      unsigned short bcode_tmp;
+      if (!ParseUInt16(payload, psize, bcode_tmp))
+          return false;
+      bcode = bcode_tmp;
+  }
+  else
+  {
+      if (!ParseUInt32(payload, psize, bcode))
+          return false;
+  }
   // parse flags
   if (!ParseUInt16(payload, psize, flags))
     return false;

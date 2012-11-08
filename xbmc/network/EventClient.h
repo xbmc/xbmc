@@ -202,7 +202,7 @@ namespace EVENTCLIENT
     // packet handlers
     virtual bool OnPacketHELO(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketBYE(EVENTPACKET::CEventPacket *packet);
-    virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet);
+    virtual bool OnPacketBUTTON(EVENTPACKET::CEventPacket *packet, bool extended);
     virtual bool OnPacketMOUSE(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketNOTIFICATION(EVENTPACKET::CEventPacket *packet);
     virtual bool OnPacketLOG(EVENTPACKET::CEventPacket *packet);
