@@ -396,7 +396,7 @@
 		<font>CondensedBold-26</font>
 		<shadowcolor>ff222222</shadowcolor>
 	</include>
-	<!-- -->
+	<!-- page ui and search formatting -->
 	<include name="SearchSeparatorVertical">
 		<control type="group">
 			<posx>-15</posx>

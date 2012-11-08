@@ -722,7 +722,6 @@
 	<!-- Pre-play Episode -->
 	<include name="PreplayEpisode">
 		<visible>Container.Content(Episode)</visible>
-		<include>PreplayCommon</include>
 		<control type="group" id="777">
 			<visible>Container.Content(Episode)</visible>
 			<include>FadeDialog</include>
@@ -1093,7 +1092,6 @@
 	<!-- Pre-play Movie -->
 	<include name="PreplayMovie">
 		<visible>Container.Content(Movie)</visible>
-		<include>PreplayCommon</include>
 		<control type="group">
 			<visible>Container.Content(Movie)</visible>
 			<include>FadeDialog</include>
