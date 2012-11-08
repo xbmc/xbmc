@@ -1,2 +1,3 @@
 #!/bin/sh
 BOOTSTRAP_STANDALONE=1 make -f bootstrap.mk
+BOOTSTRAP_STANDALONE=1 make -f codegenerator.mk
