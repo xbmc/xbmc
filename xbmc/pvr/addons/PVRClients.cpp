@@ -541,7 +541,7 @@ bool CPVRClients::CanPauseStream(void) const
 
   if (GetPlayingClient(client))
   {
-    return client->CanPauseStream();
+    return m_bIsPlayingRecording || client->CanPauseStream();
   }
 
   return false;
@@ -553,7 +553,7 @@ bool CPVRClients::CanSeekStream(void) const
 
   if (GetPlayingClient(client))
   {
-    return client->CanSeekStream();
+    return m_bIsPlayingRecording || client->CanSeekStream();
   }
 
   return false;
