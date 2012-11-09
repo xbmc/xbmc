@@ -2140,14 +2140,14 @@ void COMXPlayer::HandleMessages()
               m_dvd.iSelectedAudioStream = -1;
               CloseAudioStream(false);
               // TODO : check //CloseVideoStream(false);
-              m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+              m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
             }
           }
           else
           {
             CloseAudioStream(false);
             OpenAudioStream(st.id, st.source);
-            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true. true));
           }
         }
       }
