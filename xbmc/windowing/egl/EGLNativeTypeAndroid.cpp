@@ -78,6 +78,7 @@ bool CEGLNativeTypeAndroid::GetNativeWindow(XBNativeWindowType **nativeWindow) c
 {
   if (!nativeWindow || !m_nativeWindow)
     return false;
+  m_nativeWindow = CXBMCApp::GetNativeWindow();
   *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
 }
