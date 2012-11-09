@@ -2968,6 +2968,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
       time = CDateTime::GetCurrentDateTime();
       time -= CDateTimeSpan(0, 0, 0, GetPlayTime());
     }
+    return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }
   else if (info.m_info == PLAYER_TIME_SPEED)
   {
