@@ -20,7 +20,6 @@
  */
 
 #include "utils/LabelFormatter.h"
-#include "utils/SortUtils.h"
 
 typedef enum {
   SORT_METHOD_NONE=0,

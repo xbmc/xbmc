@@ -259,7 +259,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   return pNewTexture;
 }
 
-bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
+bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
@@ -271,12 +271,8 @@ bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
     texture->GetSurfaceLevel(0, &target);
 
   RECT sourcerect = { 0, 0, bitmap.width, bitmap.rows };
-  RECT targetrect;
-  targetrect.top = m_posY + ch->offsetY;
-  targetrect.left = m_posX + bitGlyph->left;
-  targetrect.bottom = targetrect.top + bitmap.rows;
-  targetrect.right = targetrect.left + bitmap.width;
-  
+  RECT targetrect = { x1, y1, x2, y2 };
+
   HRESULT hr = D3DXLoadSurfaceFromMemory( target, NULL, &targetrect,
                                           bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect,
                                           D3DX_FILTER_NONE, 0x00000000);

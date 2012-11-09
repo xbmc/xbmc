@@ -397,9 +397,9 @@ bool CHTSPDirectory::GetChannels( const CURL &base
     items.AddSortMethod(SORT_METHOD_ALBUM,            558,   LABEL_MASKS("%B", "%Z", "%L", ""));
 
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z", "%B", "%L", ""));
   else
-    items.AddSortMethod(SORT_METHOD_LABEL,            20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL,            551, LABEL_MASKS("%Z", "%B", "%L", ""));
 
   items.SetContent("livetv");
 

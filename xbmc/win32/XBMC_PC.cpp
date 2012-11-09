@@ -157,7 +157,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     return 0;
   }
 
-  g_application.Run(true);
+  g_application.Run();
 
   // clear previously set timer resolution
   timeEndPeriod(1);		

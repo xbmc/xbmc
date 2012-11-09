@@ -326,13 +326,6 @@ CStdString CSmartPlaylistRule::GetLocalizedField(Field field)
   return g_localizeStrings.Get(16018);
 }
 
-CStdString CSmartPlaylistRule::GetLocalizedOrder(SortBy order)
-{
-  for (unsigned int i = 0; i < NUM_FIELDS; i++)
-    if (order == fields[i].sort) return g_localizeStrings.Get(fields[i].localizedString);
-  return g_localizeStrings.Get(16018);
-}
-
 CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(Field field)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)

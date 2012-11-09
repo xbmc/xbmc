@@ -100,7 +100,7 @@ bool CThumbExtractor::DoWork()
       CTextureCache::Get().AddCachedTexture(m_target, details);
       m_item.SetProperty("HasAutoThumb", true);
       m_item.SetProperty("AutoThumbImage", m_target);
-      m_item.SetArt("thumb", CTextureCache::GetCachedPath(details.file));
+      m_item.SetArt("thumb", m_target);
     }
   }
   else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())

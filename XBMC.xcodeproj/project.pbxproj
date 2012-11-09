@@ -383,6 +383,16 @@
 		DF3488E713FD958F0026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF3488E513FD958F0026A711 /* GUIAction.cpp */; };
 		DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34892813FD9C780026A711 /* AirPlayServer.cpp */; };
 		DF34898213FDAAF60026A711 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34898113FDAAF60026A711 /* HttpParser.cpp */; };
+		DF402A581644613B001C56B8 /* AddonModuleXbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD115FCE50700E10810 /* AddonModuleXbmc.cpp */; };
+		DF402A591644613B001C56B8 /* AddonModuleXbmcaddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD515FCE50700E10810 /* AddonModuleXbmcaddon.cpp */; };
+		DF402A5A1644613B001C56B8 /* AddonModuleXbmcgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFD915FCE50700E10810 /* AddonModuleXbmcgui.cpp */; };
+		DF402A5B1644613B001C56B8 /* AddonModuleXbmcplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFDD15FCE50700E10810 /* AddonModuleXbmcplugin.cpp */; };
+		DF402A5C1644613B001C56B8 /* AddonModuleXbmcvfs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1ACFE115FCE50700E10810 /* AddonModuleXbmcvfs.cpp */; };
+		DF402A63164461B0001C56B8 /* CallbackHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */; };
+		DF402A64164461B9001C56B8 /* LanguageHook.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE4160F34DC00C96C76 /* LanguageHook.cpp */; };
+		DF402A65164461B9001C56B8 /* swig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFF0160F36AD00C96C76 /* swig.cpp */; };
+		DF402A66164461B9001C56B8 /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE6160F34FE00C96C76 /* XBPython.cpp */; };
+		DF402A67164461B9001C56B8 /* XBPyThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE8160F34FE00C96C76 /* XBPyThread.cpp */; };
 		DF448457140048A60069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF448455140048A60069344B /* AirTunesServer.cpp */; };
 		DF44845E140048C80069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44845B140048C80069344B /* PipesManager.cpp */; };
 		DF5276E1151BAEDA00B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52769A151BAEDA00B5B63B /* Base64.cpp */; };
@@ -903,7 +913,6 @@
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		EC720A8F155091BB00FFD782 /* ilog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A8D155091BB00FFD782 /* ilog.cpp */; };
 		EC720A9D1550927000FFD782 /* XbmcContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EC720A9B1550927000FFD782 /* XbmcContext.cpp */; };
-		F502C02A160F394F00C96C76 /* python_binding.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F502C029160F394F00C96C76 /* python_binding.a */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F50FE04A11A3410300C8B8CD /* EncoderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */; };
@@ -2996,7 +3005,6 @@
 		F502BFE9160F34FE00C96C76 /* XBPyThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XBPyThread.h; path = python/XBPyThread.h; sourceTree = "<group>"; };
 		F502BFF0160F36AD00C96C76 /* swig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = swig.cpp; path = python/swig.cpp; sourceTree = "<group>"; };
 		F502BFF1160F36AD00C96C76 /* swig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = swig.h; path = python/swig.h; sourceTree = "<group>"; };
-		F502C029160F394F00C96C76 /* python_binding.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = python_binding.a; path = xbmc/interfaces/python/python_binding.a; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
@@ -3290,7 +3298,6 @@
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				F52A733D1560BC34005B1A0B /* CoreFoundation.framework in Frameworks */,
 				DFBE805115F7D75700D7D102 /* SystemConfiguration.framework in Frameworks */,
-				F502C02A160F394F00C96C76 /* python_binding.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4451,11 +4458,11 @@
 		DF1ACFE815FCE53900E10810 /* python */ = {
 			isa = PBXGroup;
 			children = (
+				DF1ACFD015FCE50700E10810 /* generated */,
 				F502BFDA160F34B900C96C76 /* CallbackHandler.cpp */,
 				F502BFDB160F34B900C96C76 /* CallbackHandler.h */,
 				F502BFE4160F34DC00C96C76 /* LanguageHook.cpp */,
 				F502BFE5160F34DC00C96C76 /* LanguageHook.h */,
-				DF1ACFD015FCE50700E10810 /* generated */,
 				F502BFF0160F36AD00C96C76 /* swig.cpp */,
 				F502BFF1160F36AD00C96C76 /* swig.h */,
 				F502BFE6160F34FE00C96C76 /* XBPython.cpp */,
@@ -6277,7 +6284,6 @@
 				43352CED1071634600706B8A /* libsquish.a */,
 				E38E25680D2639F100618676 /* libxdaap.a */,
 				18404DA51396C31B00863BBA /* SlingboxLib.a */,
-				F502C029160F394F00C96C76 /* python_binding.a */,
 			);
 			name = "internal libs";
 			sourceTree = "<group>";
@@ -6666,7 +6672,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\nmake -C ${SRCROOT}/xbmc/interfaces/python\nfi";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\nmake -f ${SRCROOT}/codegenerator.mk\nfi";
 		};
 		F5DEC3580E6DEBB2005A4E24 /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7678,6 +7684,16 @@
 				DFB25D46163D4743006C4A48 /* WindowDialog.cpp in Sources */,
 				DFB25D47163D4743006C4A48 /* WindowDialogMixin.cpp in Sources */,
 				DFB25D48163D4743006C4A48 /* WindowXML.cpp in Sources */,
+				DF402A581644613B001C56B8 /* AddonModuleXbmc.cpp in Sources */,
+				DF402A591644613B001C56B8 /* AddonModuleXbmcaddon.cpp in Sources */,
+				DF402A5A1644613B001C56B8 /* AddonModuleXbmcgui.cpp in Sources */,
+				DF402A5B1644613B001C56B8 /* AddonModuleXbmcplugin.cpp in Sources */,
+				DF402A5C1644613B001C56B8 /* AddonModuleXbmcvfs.cpp in Sources */,
+				DF402A63164461B0001C56B8 /* CallbackHandler.cpp in Sources */,
+				DF402A64164461B9001C56B8 /* LanguageHook.cpp in Sources */,
+				DF402A65164461B9001C56B8 /* swig.cpp in Sources */,
+				DF402A66164461B9001C56B8 /* XBPython.cpp in Sources */,
+				DF402A67164461B9001C56B8 /* XBPyThread.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

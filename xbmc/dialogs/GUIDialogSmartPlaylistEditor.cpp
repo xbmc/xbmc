@@ -296,7 +296,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   for (unsigned int i = 0; i < orders.size(); i++)
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_ORDER_FIELD, orders[i]);
-    msg.SetLabel(CSmartPlaylistRule::GetLocalizedOrder(orders[i]));
+    msg.SetLabel(SortUtils::GetSortLabel(orders[i]));
     OnMessage(msg);
   }
   {

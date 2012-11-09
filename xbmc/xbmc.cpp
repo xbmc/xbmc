@@ -66,7 +66,7 @@ extern "C" int XBMC_Run(bool renderGUI)
 
   try
   {
-    status = g_application.Run(renderGUI);
+    status = g_application.Run();
   }
   catch(...)
   {

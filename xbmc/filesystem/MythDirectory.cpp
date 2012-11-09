@@ -329,9 +329,9 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
   if (type != TV_SHOWS)
   {
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%K", "%J"));
+      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556, LABEL_MASKS("%K", "%J"));
     else
-      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551 /* Name */, LABEL_MASKS("%K", "%J"));
+      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556, LABEL_MASKS("%K", "%J"));
   }
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
 

@@ -76,7 +76,7 @@ bool CEGLNativeTypeAndroid::GetNativeDisplay(XBNativeDisplayType **nativeDisplay
 
 bool CEGLNativeTypeAndroid::GetNativeWindow(XBNativeWindowType **nativeWindow) const
 {
-  if (!nativeWindow)
+  if (!nativeWindow || !m_nativeWindow)
     return false;
   *nativeWindow = (XBNativeWindowType*) &m_nativeWindow;
   return true;
@@ -89,6 +89,7 @@ bool CEGLNativeTypeAndroid::DestroyNativeDisplay()
 
 bool CEGLNativeTypeAndroid::DestroyNativeWindow()
 {
+  m_nativeWindow = NULL;
   return true;
 }
 

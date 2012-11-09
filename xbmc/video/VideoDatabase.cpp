@@ -6362,7 +6362,7 @@ bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFi
 {
   Filter filter;
   filter.order = "dateAdded desc, idMovie desc";
-  filter.limit = PrepareSQL("%u", limit ? limit : 25);
+  filter.limit = PrepareSQL("%u", limit ? limit : g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetMoviesByWhere(strBaseDir, filter, items);
 }
 
@@ -6370,7 +6370,7 @@ bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, C
 {
   Filter filter;
   filter.order = "dateAdded desc, idEpisode desc";
-  filter.limit = PrepareSQL("%u", limit ? limit : 25);
+  filter.limit = PrepareSQL("%u", limit ? limit : g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetEpisodesByWhere(strBaseDir, filter, items, false);
 }
 
@@ -6378,7 +6378,7 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir
 {
   Filter filter;
   filter.order = "dateAdded desc, idMVideo desc";
-  filter.limit = PrepareSQL("%u", limit ? limit : 25);
+  filter.limit = PrepareSQL("%u", limit ? limit : g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetMusicVideosByWhere(strBaseDir, filter, items);
 }
 
@@ -7687,6 +7687,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
 
     unsigned int time = XbmcThreads::SystemClockMillis();
     CLog::Log(LOGNOTICE, "%s: Starting videodatabase cleanup ..", __FUNCTION__);
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanStarted");
 
     BeginTransaction();
 
@@ -7697,6 +7698,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
       if (paths->size() == 0)
       {
         RollbackTransaction();
+        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
         return;
       }
 
@@ -7781,6 +7783,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
           {
             progress->Close();
             m_pDS->close();
+            ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
             return;
           }
         }
@@ -8075,6 +8078,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
   }
   if (progress)
     progress->Close();
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
 }
 
 void CVideoDatabase::DumpToDummyFiles(const CStdString &path)

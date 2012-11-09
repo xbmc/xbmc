@@ -837,6 +837,7 @@ bool CApplication::Create()
 
 bool CApplication::CreateGUI()
 {
+  m_renderGUI = true;
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 
@@ -3006,9 +3007,9 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
-    if (iPlaylist == PLAYLIST_VIDEO && !g_windowManager.GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
+    if (iPlaylist == PLAYLIST_VIDEO && g_windowManager.GetActiveWindow() != WINDOW_VIDEO_PLAYLIST)
       g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    else if (iPlaylist == PLAYLIST_MUSIC && !g_windowManager.GetActiveWindow() == WINDOW_MUSIC_PLAYLIST)
+    else if (iPlaylist == PLAYLIST_MUSIC && g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
   }

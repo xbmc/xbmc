@@ -257,12 +257,8 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   {
     if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      char* ty = reYear.GetReplaceString("\\1");
-      char* y = reYear.GetReplaceString("\\2");
-      strTitleAndYear = ty;
-      strYear = y;
-      free(ty);
-      free(y);
+      strTitleAndYear = reYear.GetReplaceString("\\1");
+      strYear = reYear.GetReplaceString("\\2");
     }
   }
 
@@ -276,7 +272,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileName.c_str())) > 0)
+    if ((j=reTags.RegFind(strTitleAndYear.c_str())) > 0)
       strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 

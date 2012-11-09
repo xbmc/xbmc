@@ -13,7 +13,7 @@ SUBDIRS = \
 	python26-native python26 samba alsa-lib libcdio afpfs-ng libshairport \
 	libplist libcec libbluray boost tinyxml dummy-libxbmc libsdl \
 	liblzo2-native libjpeg-turbo-native libpng-native tiff-native libsdl_image rpl \
-	libamplayer libssh taglib swig-native pcre-native xbmc-pvr-addons
+	libamplayer libssh taglib swig-native pcre-native xbmc-pvr-addons libusb
 
 .PHONY: buildtools $(BUILDTOOLS) subdirs $(SUBDIRS) arm
 

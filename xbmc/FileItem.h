@@ -29,7 +29,7 @@
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "XBDateTime.h"
-#include "SortFileItem.h"
+#include "utils/SortUtils.h"
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"

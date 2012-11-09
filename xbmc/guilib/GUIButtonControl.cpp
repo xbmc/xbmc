@@ -301,11 +301,6 @@ void CGUIButtonControl::PythonSetDisabledColor(color_t disabledColor)
   m_label.GetLabelInfo().disabledColor = disabledColor;
 }
 
-void CGUIButtonControl::SettingsCategorySetTextAlign(uint32_t align)
-{
-  m_label.SetAlign(align);
-}
-
 void CGUIButtonControl::OnClick()
 {
   // Save values, as the click message may deactivate the window
