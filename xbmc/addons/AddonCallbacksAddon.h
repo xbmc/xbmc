@@ -38,9 +38,9 @@ public:
   static void AddOnLog(void *addonData, const addon_log_t addonLogLevel, const char *strMessage);
   static bool GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue);
   static void QueueNotification(void *addonData, const queue_msg_t type, const char *strMessage);
-  static const char *UnknownToUTF8(const char *strSource);
-  static const char *GetLocalizedString(const void* addonData, long dwCode);
-  static const char *GetDVDMenuLanguage(const void* addonData);
+  static char* UnknownToUTF8(const char *strSource);
+  static char* GetLocalizedString(const void* addonData, long dwCode);
+  static char* GetDVDMenuLanguage(const void* addonData);
 
   // file operations
   static void* OpenFile(const void* addonData, const char* strFileName, unsigned int flags);
