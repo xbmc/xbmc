@@ -14,6 +14,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">'n Betoverende deeltjie effek sluimerskerm</summary>
     <summary lang="ar">أداة ساحرة تؤثر بشاشة التوقف</summary>
+    <summary lang="be">A mesmerizing particle effects screensaver</summary>
     <summary lang="bg">Скрийнсейвър с частици, които очароват</summary>
     <summary lang="ca">Un estalvi de pantalla amb uns efectes de partícula fascinants</summary>
     <summary lang="cs">Spořič obrazovky s fascinujícími částicovými efekty</summary>
@@ -43,12 +44,13 @@
     <summary lang="ru">Завораживающая заставка с эффектами частиц</summary>
     <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
     <summary lang="sk">Fascinujúci šetrič s efektom častíc</summary>
-    <summary lang="sl">Mesmerizing particle effects ohranjevalnik zaslona</summary>
+    <summary lang="sl">Ohranjevalnik zaslona z učinkom hipnotičnih delčkov</summary>
     <summary lang="sv">En hypnotiserande partikeleffektskärmsläckare</summary>
     <summary lang="uk">Заставка із частинок, що має гіпнотизуючий ефект</summary>
     <summary lang="zh">一个迷人的粒子效果屏幕保护程序</summary>
     <description lang="af">Hierdie is 'n uiters betoverende deeltjie effek sluimerskerm. Jy sal vind dat jy 'n ongelooflike aantal verskillende patrone kan bewerkstellig.</description>
     <description lang="ar">أداة ساحرة جدا تؤثر بشاشة التوقف. ستجد أنك تستطيع أن تحقق عدد مذهل من الأنماط المختلفة.</description>
+    <description lang="be">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="bg">Това е скрийнсейвър, който очарова с частиците си. Ще откриете, че можете да създадете изключително голям брой различни модели.</description>
     <description lang="ca">Aquest és un estalvi de pantalla amb uns efectes de partícules fascinants. Veurà que pot obtenir un nombre increïble de patrons diferents.</description>
     <description lang="cs">Spořič obrazovky s velmi fascinujícími částicovými efekty. Zjistíte, že můžete dosáhnout úžasného množství různých vzorů.</description>
@@ -78,10 +80,11 @@
     <description lang="ru">Завораживающая заставка с эффектами частиц. Для этой заставки на выбор доступно огромное количество вариаций эффектов.</description>
     <description lang="se">Detta är en mycket fascinerande partikeleffektsskärmsläckare. Du kommer att upptäcka att du kan uppnå ett otroligt antal olika mönster.</description>
     <description lang="sk">Toto je veľmi fascinujúci šetrič s efektom častíc. Zistíte, že môžete dosiahnuť neskutočné číslo rôznych vzorov.</description>
-    <description lang="sl">To je mesmerizing particle ohranjevalnik zaslona. Odkrili boste, da lahko dosežejo neverjetno število različnih vzorcev.</description>
+    <description lang="sl">To je ohranjevalnik zaslona s presenetiljivim hipnotičnim učinkom delcev. Odkrili boste, da lahko dosežejo neverjetno število različnih vzorcev.</description>
     <description lang="sv">Detta är en väldigt hypnotiserande partikeleffektskärmsläckare. Du kommer att upptäcka att du kan åstadkomma ett häpnadsväckande antal olika mönster.</description>
     <description lang="uk">Це дуже гіпнотизуюча заставка із різноманітних ефектів частинок. Ви побачите надзвичайно велику кількість різноманітних візерунків.</description>
     <description lang="zh">这是一个非常迷人的粒子效果屏幕保护程序。你会发现你能看到惊人数量的不同图案。</description>
     <platform>linux osx</platform>
   </extension>
 </addon>
+
