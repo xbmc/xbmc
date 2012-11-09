@@ -41,6 +41,7 @@ public:
   static char* UnknownToUTF8(const char *strSource);
   static char* GetLocalizedString(const void* addonData, long dwCode);
   static char* GetDVDMenuLanguage(const void* addonData);
+  static void FreeString(const void* addonData, char* str);
 
   // file operations
   static void* OpenFile(const void* addonData, const char* strFileName, unsigned int flags);

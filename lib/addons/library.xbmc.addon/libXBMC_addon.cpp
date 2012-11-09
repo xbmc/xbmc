@@ -109,6 +109,14 @@ DLLEXPORT char* XBMC_get_dvd_menu_language(void *hdl, void* cb)
   return strdup(buffer.c_str());
 }
 
+DLLEXPORT void XBMC_free_string(void* hdl, void* cb, char* str)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_AddOnLib*)cb)->FreeString(((AddonCB*)hdl)->addonData, str);
+}
+
 DLLEXPORT void* XBMC_open_file(void *hdl, void* cb, const char* strFileName, unsigned int flags)
 {
   if (cb == NULL)

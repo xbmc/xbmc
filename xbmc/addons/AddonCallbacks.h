@@ -30,6 +30,7 @@ typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *
 typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
 typedef char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
 typedef char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
+typedef void (*AddOnFreeString)(const void* addonData, char* str);
 
 typedef void* (*AddOnOpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
 typedef void* (*AddOnOpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
@@ -59,6 +60,7 @@ typedef struct CB_AddOn
   AddOnUnknownToUTF8      UnknownToUTF8;
   AddOnGetLocalizedString GetLocalizedString;
   AddOnGetDVDMenuLanguage GetDVDMenuLanguage;
+  AddOnFreeString         FreeString;
 
   AddOnOpenFile           OpenFile;
   AddOnOpenFileForWrite   OpenFileForWrite;

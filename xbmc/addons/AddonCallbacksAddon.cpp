@@ -46,6 +46,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
   m_callbacks->GetLocalizedString = GetLocalizedString;
   m_callbacks->GetDVDMenuLanguage = GetDVDMenuLanguage;
+  m_callbacks->FreeString         = FreeString;
 
   m_callbacks->OpenFile           = OpenFile;
   m_callbacks->OpenFileForWrite   = OpenFileForWrite;
@@ -268,6 +269,11 @@ char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
 
   char* buffer = strdup(string.c_str());
   return buffer;
+}
+
+void CAddonCallbacksAddon::FreeString(const void* addonData, char* str)
+{
+  delete[] str;
 }
 
 void* CAddonCallbacksAddon::OpenFile(const void* addonData, const char* strFileName, unsigned int flags)
