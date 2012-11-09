@@ -31,17 +31,23 @@ using namespace MUSIC_INFO;
 
 CMusicThumbLoader::CMusicThumbLoader() : CThumbLoader(1)
 {
+#ifndef __PLEX__
   m_database = new CMusicDatabase;
+#endif
 }
 
 CMusicThumbLoader::~CMusicThumbLoader()
 {
+#ifndef __PLEX__
   delete m_database;
+#endif
 }
 
 void CMusicThumbLoader::Initialize()
 {
+#ifndef __PLEX__
   m_database->Open();
+#endif
   m_albumArt.clear();
 }
 
@@ -52,7 +58,9 @@ void CMusicThumbLoader::OnLoaderStart()
 
 void CMusicThumbLoader::OnLoaderFinish()
 {
+#ifndef __PLEX__
   m_database->Close();
+#endif
   m_albumArt.clear();
 }
 
@@ -69,6 +77,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       return true; // no fallback
   }
 
+#ifndef __PLEX__
   if (!pItem->HasArt("fanart"))
   {
     if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetArtist().empty())
@@ -85,6 +94,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       m_database->Close();
     }
   }
+#endif
 
   if (!pItem->HasArt("thumb"))
     FillThumb(*pItem);
@@ -109,6 +119,7 @@ bool CMusicThumbLoader::FillThumb(CFileItem &item)
 
 bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
 {
+#ifndef __PLEX__
   CMusicInfoTag &tag = *item.GetMusicInfoTag();
   if (tag.GetDatabaseId() > -1 && !tag.GetType().empty())
   {
@@ -135,6 +146,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     m_database->Close();
   }
   return !item.GetArt().empty();
+#endif
 }
 
 bool CMusicThumbLoader::GetEmbeddedThumb(const std::string &path, EmbeddedArt &art)

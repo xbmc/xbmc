@@ -115,18 +115,24 @@ bool CThumbExtractor::DoWork()
 CVideoThumbLoader::CVideoThumbLoader() :
   CThumbLoader(1), CJobQueue(true), m_pStreamDetailsObs(NULL)
 {
+#ifndef __PLEX__
   m_database = new CVideoDatabase();
+#endif
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()
 {
   StopThread();
+#ifndef __PLEX__
   delete m_database;
+#endif
 }
 
 void CVideoThumbLoader::Initialize()
 {
+#ifndef __PLEX__
   m_database->Open();
+#endif
   m_showArt.clear();
 }
 
@@ -137,7 +143,9 @@ void CVideoThumbLoader::OnLoaderStart()
 
 void CVideoThumbLoader::OnLoaderFinish()
 {
+#ifndef __PLEX__
   m_database->Close();
+#endif
   m_showArt.clear();
 }
 
@@ -200,6 +208,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
+#ifndef __PLEX__
   m_database->Open();
 
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails() &&
@@ -224,6 +233,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       return true; // nothing else to be done
     }
   }
+#endif
+
 
   // if we have no art, look for it all
   map<string, string> artwork = pItem->GetArt();
@@ -274,7 +285,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
       AddJob(extract);
 
+#ifndef __PLEX__
       m_database->Close();
+#endif
       return true;
     }
   }
@@ -288,18 +301,23 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     CFileItem item(*pItem);
     CStdString path(item.GetPath());
+#ifndef __PLEX__
     if (URIUtils::IsInRAR(item.GetPath()))
       SetupRarOptions(item,path);
+#endif
     CThumbExtractor* extract = new CThumbExtractor(item,path,false);
     AddJob(extract);
   }
 
+#ifndef __PLEX__
   m_database->Close();
+#endif
   return true;
 }
 
 bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
 {
+#ifndef __PLEX__
   CVideoInfoTag &tag = *item.GetVideoInfoTag();
   if (tag.m_iDbId > -1 && !tag.m_type.IsEmpty())
   {
@@ -348,6 +366,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     }
     m_database->Close();
   }
+#endif
   return !item.GetArt().empty();
 }
 
