@@ -128,6 +128,7 @@ public:
   float GetTextWidth( const vecText &text );
   float GetCharWidth( character_t ch );
   float GetTextHeight(int numLines) const;
+  float GetTextBaseLine() const;
   float GetLineHeight() const;
 
   //! get font scale factor (rendered height / original height)

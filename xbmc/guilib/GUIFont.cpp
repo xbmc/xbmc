@@ -267,6 +267,12 @@ float CGUIFont::GetTextHeight(int numLines) const
   return m_font->GetTextHeight(m_lineSpacing, numLines) * g_graphicsContext.GetGUIScaleY();
 }
 
+float CGUIFont::GetTextBaseLine() const
+{
+  if (!m_font) return 0;
+  return m_font->GetTextBaseLine() * g_graphicsContext.GetGUIScaleY();
+}
+
 float CGUIFont::GetLineHeight() const
 {
   if (!m_font) return 0;

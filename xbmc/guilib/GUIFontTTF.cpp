@@ -250,20 +250,19 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   int cellDescender = std::min<int>(m_face->bbox.yMin, m_face->descender);
   int cellAscender  = std::max<int>(m_face->bbox.yMax, m_face->ascender);
 
-  /*
-   add on the strength of any border - we do this in non-bordered cases
-   as bordered fonts are done by first rendering the border and then the
-   main font - thus m_cellBaseLine needs to align in both cases
-   */
-  FT_Pos strength = FT_MulFix( m_face->units_per_EM, m_face->size->metrics.y_scale) / 12;
-  if (strength < 128)
-    strength = 128;
-
-  cellDescender -= strength;
-  cellAscender  += strength;
-
   if (border)
   {
+    /*
+     add on the strength of any border - the non-bordered font needs
+     aligning with the bordered font by utilising GetTextBaseLine()
+     */
+    FT_Pos strength = FT_MulFix( m_face->units_per_EM, m_face->size->metrics.y_scale) / 12;
+    if (strength < 128)
+      strength = 128;
+
+    cellDescender -= strength;
+    cellAscender  += strength;
+
     m_stroker = g_freeTypeLibrary.GetStroker();
     if (m_stroker)
       FT_Stroker_Set(m_stroker, strength, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
