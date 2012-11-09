@@ -183,14 +183,6 @@
 							<onclick>Plex.Powerdown()</onclick>
 							<visible>!Skin.HasSetting(ShowShutDown)</visible>
 						</item>
-						<!--
-						<item id="114">
-							<description>Sleep Display Button</description>
-							<label> $LOCALIZE[31964] </label>
-							<onclick>XBMC.SleepDisplay()</onclick>
-							<visible>!Skin.HasSetting(ShowSleep)</visible>
-						</item>
-						-->
 						<item id="8">
 							<description>Logout Button</description>
 							<label> $LOCALIZE[20126] </label>
@@ -246,7 +238,7 @@
 						</control>
 					</focusedlayout>
 					<content>
-						<item id="7">
+						<item id="8">
 							<description>Appearance Settings Button</description>
 							<label> $LOCALIZE[31601] </label>
 							<onclick>XBMC.ActivateWindow(19)</onclick>
@@ -266,17 +258,11 @@
 							<label> $LOCALIZE[31003] </label>
 							<onclick>XBMC.ActivateWindow(12)</onclick>
 						</item>
-						<!--
-						<item id="4">
-							<description>Programs Settings Button</description>
-							<label> $LOCALIZE[31004] </label>
-							<onclick>XBMC.ActivateWindow(13)</onclick>
-						</item>-->
 						<item id="5">
 							<description>System Settings Button</description>
 							<label> $LOCALIZE[31006] </label>
 							<onclick>XBMC.ActivateWindow(16)</onclick>
-						</item>
+						</item>						
 						<item id="6">
 							<description>Network Settings Button</description>
 							<label> $LOCALIZE[31602] </label>
@@ -287,13 +273,6 @@
 							<label> $LOCALIZE[31800] </label>
 							<onclick>XBMC.ActivateWindow(4)</onclick>
 						</item>
-						<!--
-						<item id="7">
-							<description>Developer Settings Button</description>
-							<label> Developer </label>
-							<onclick>XBMC.ActivateWindow(1002)</onclick>
-						</item>
-				  -->
 					</content>
 				</control>
 			</control>
@@ -1220,7 +1199,7 @@
 							</control>
 							<!-- movie when only this list is visible -->
 							<control type="group">
-								<visible>ListItem.Type(movie) + !Control.IsVisible(11000)</visible>								
+								<visible>ListItem.Type(movie) + !Control.IsVisible(11000)</visible>
 								<posy>102</posy>
 								<!-- in progress -->
 								<control type="image">
