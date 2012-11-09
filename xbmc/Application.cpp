@@ -773,6 +773,7 @@ bool CApplication::Create()
 
 bool CApplication::CreateGUI()
 {
+  m_renderGUI = true;
 #ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 

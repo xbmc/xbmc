@@ -41,6 +41,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_AppActive = true;
   m_AppFocused = true;
   m_ExitCode = EXITCODE_QUIT;
+  m_renderGUI = false;
 }
 
 CXBApplicationEx::~CXBApplicationEx()
@@ -75,14 +76,13 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
-INT CXBApplicationEx::Run(bool renderGUI)
+INT CXBApplicationEx::Run()
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
 
   unsigned int lastFrameTime = 0;
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
-  m_renderGUI = renderGUI;
 
 #ifdef XBMC_TRACK_EXCEPTIONS
   BYTE processExceptionCount = 0;
