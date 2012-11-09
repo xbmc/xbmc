@@ -4599,10 +4599,10 @@
 			<animation type="WindowOpen">
 				<effect type="fade" time="200"/>
 			</animation>
-			<animation type="WindowClose" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">
+			<animation type="WindowClose" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml)">
 				<effect type="fade" time="100"/>
 			</animation>
-			<animation effect="fade" time="300" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">WindowClose</animation>
+			<animation effect="fade" time="300" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml)">WindowClose</animation>
 			<control type="image">
 				<description>Settings Menu Arrows</description>
 				<include>SettingsCatLeftArrowDims</include>
@@ -4660,11 +4660,6 @@
 						<description>Appearance Settings Button</description>
 						<label> $LOCALIZE[31601] </label>
 						<onclick>XBMC.ReplaceWindow(19)</onclick>
-					</item>
-					<item id="8">
-						<description>Skin Settings Button</description>
-						<label>$LOCALIZE[31603] </label>
-						<onclick>XBMC.ReplaceWindow(1001)</onclick>
 					</item>
 					<item id="1">
 						<description>Video Settings Button</description>

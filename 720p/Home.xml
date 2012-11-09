@@ -246,11 +246,6 @@
 						</control>
 					</focusedlayout>
 					<content>
-						<item id="8">
-							<description>Skin Settings Button</description>
-							<label> $LOCALIZE[31603] </label>
-							<onclick>XBMC.ActivateWindow(1001)</onclick>
-						</item>
 						<item id="7">
 							<description>Appearance Settings Button</description>
 							<label> $LOCALIZE[31601] </label>
