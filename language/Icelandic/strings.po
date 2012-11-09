@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-10-16 13:06+0000\n"
+"PO-Revision-Date: 2012-11-02 17:07+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Icelandic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/is/)\n"
 "MIME-Version: 1.0\n"
@@ -3204,7 +3204,7 @@ msgstr "Haglél"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Þrumuveður"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3284,7 +3284,7 @@ msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "Lítið"
 
 msgctxt "#1439"
 msgid "and"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Óþekkt"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Úrkoma"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -5988,7 +5988,7 @@ msgstr "Fastur"
 
 msgctxt "#19015"
 msgid "Encryption"
-msgstr ""
+msgstr "Dulkóðun"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
@@ -6028,7 +6028,7 @@ msgstr "Útvarpsrásir"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
-msgstr ""
+msgstr "Næstu upptökur"
 
 msgctxt "#19026"
 msgid "Add timer..."
@@ -6048,7 +6048,7 @@ msgstr "Rás"
 
 msgctxt "#19030"
 msgid "Now"
-msgstr ""
+msgstr "Núna"
 
 msgctxt "#19031"
 msgid "Next"
@@ -6060,11 +6060,11 @@ msgstr ""
 
 msgctxt "#19033"
 msgid "Information"
-msgstr ""
+msgstr "Upplýsingar"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
-msgstr ""
+msgstr "Er nú þegar að taka upp þessa rás"
 
 msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
@@ -6076,7 +6076,7 @@ msgstr ""
 
 msgctxt "#19037"
 msgid "Show signal quality"
-msgstr ""
+msgstr "Sýna gæði merkis"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
@@ -6084,7 +6084,7 @@ msgstr ""
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr ""
+msgstr "Ertu viss um að þú viljir fela þessa rás?"
 
 msgctxt "#19040"
 msgid "Timer"
@@ -6476,7 +6476,7 @@ msgstr ""
 
 msgctxt "#19148"
 msgid "Channel"
-msgstr ""
+msgstr "Rás"
 
 msgctxt "#19149"
 msgid "Mo"
@@ -6520,7 +6520,7 @@ msgstr ""
 
 msgctxt "#19159"
 msgid "from"
-msgstr ""
+msgstr "Frá"
 
 msgctxt "#19160"
 msgid "to"
@@ -6600,7 +6600,7 @@ msgstr ""
 
 msgctxt "#19180"
 msgid "TV"
-msgstr ""
+msgstr "Sjónvarp"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
@@ -6692,7 +6692,7 @@ msgstr ""
 
 msgctxt "#19204"
 msgid "New channel"
-msgstr ""
+msgstr "Ný rás"
 
 msgctxt "#19205"
 msgid "Group management"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Sett"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Velja smámynd fyrir kvikmyndasett"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Flytja út leikaramyndir?"
@@ -8717,10 +8713,6 @@ msgstr "Hlustandi"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Hlustendur"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Velja aðdáendamynd fyrir kvikmyndasett"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10716,7 +10708,7 @@ msgstr ""
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "Sjónvarp"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"

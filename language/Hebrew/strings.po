@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-10-08 14:56+0000\n"
+"PO-Revision-Date: 2012-11-06 19:32+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -3204,7 +3204,7 @@ msgstr "גרגירים"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "רעמים"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3284,7 +3284,7 @@ msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "קטן"
 
 msgctxt "#1439"
 msgid "and"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "לא ידוע"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "משקעים"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -6348,7 +6348,7 @@ msgstr "גרסה"
 
 msgctxt "#19115"
 msgid "Address"
-msgstr ""
+msgstr "כתובת"
 
 msgctxt "#19116"
 msgid "Disksize"
@@ -6380,7 +6380,7 @@ msgstr ""
 
 msgctxt "#19123"
 msgid "Free to air channels only"
-msgstr ""
+msgstr "חינם לערוצי שידורים בלבד"
 
 msgctxt "#19124"
 msgid "Ignore present timers"
@@ -6464,7 +6464,7 @@ msgstr "קבוצות לא הוגדרו"
 
 msgctxt "#19145"
 msgid "Grouped"
-msgstr ""
+msgstr "בקבוצה"
 
 msgctxt "#19146"
 msgid "Groups"
@@ -6508,7 +6508,7 @@ msgstr "א'"
 
 msgctxt "#19156"
 msgid "from"
-msgstr ""
+msgstr "מ-"
 
 msgctxt "#19157"
 msgid "Next recording"
@@ -6520,11 +6520,11 @@ msgstr "הקלטה נוכחית"
 
 msgctxt "#19159"
 msgid "from"
-msgstr ""
+msgstr "מ-"
 
 msgctxt "#19160"
 msgid "to"
-msgstr ""
+msgstr "אל"
 
 msgctxt "#19162"
 msgid "Recording active"
@@ -6540,7 +6540,7 @@ msgstr ""
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr ""
+msgstr "החלף"
 
 msgctxt "#19166"
 msgid "PVR information"
@@ -6548,7 +6548,7 @@ msgstr ""
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
-msgstr ""
+msgstr "סרוק לצלמיות חסרות"
 
 msgctxt "#19168"
 msgid "Switch channel without pressing OK"
@@ -6600,7 +6600,7 @@ msgstr ""
 
 msgctxt "#19180"
 msgid "TV"
-msgstr ""
+msgstr "טלוויזיה"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
@@ -6636,7 +6636,7 @@ msgstr ""
 
 msgctxt "#19190"
 msgid "Minimized"
-msgstr ""
+msgstr "ממוזער"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6652,7 +6652,7 @@ msgstr ""
 
 msgctxt "#19194"
 msgid "Continue?"
-msgstr ""
+msgstr "להמשיך?"
 
 msgctxt "#19195"
 msgid "Client actions"
@@ -6692,11 +6692,11 @@ msgstr ""
 
 msgctxt "#19204"
 msgid "New channel"
-msgstr ""
+msgstr "ערוץ חדש"
 
 msgctxt "#19205"
 msgid "Group management"
-msgstr ""
+msgstr "ניהול קבוצות"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
@@ -6764,7 +6764,7 @@ msgstr ""
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
@@ -6900,7 +6900,7 @@ msgstr ""
 
 msgctxt "#19256"
 msgid "Stop recording"
-msgstr ""
+msgstr "עצור הקלטה"
 
 msgctxt "#19257"
 msgid "Lock channel"
@@ -7256,7 +7256,7 @@ msgstr ""
 
 msgctxt "#19635"
 msgid "Languages"
-msgstr ""
+msgstr "שפות"
 
 msgctxt "#19644"
 msgid "Leisure/Hobbies"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "מארזים"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "קבע תמונה ממוזערת למארז סרטים"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "לייצא תמונות ממוזערות לשחקנים"
@@ -8717,10 +8713,6 @@ msgstr "מאזין"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "מאזינים"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "הגדר פאנארט למארז סרטים"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10716,7 +10708,7 @@ msgstr ""
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "טלוויזיה"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"

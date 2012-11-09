@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-10-28 18:25+0000\n"
+"PO-Revision-Date: 2012-11-07 20:40+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -276,23 +276,23 @@ msgstr "VÁLT"
 
 msgctxt "#88"
 msgid "South"
-msgstr ""
+msgstr "Dél"
 
 msgctxt "#89"
 msgid "North"
-msgstr ""
+msgstr "Észak"
 
 msgctxt "#90"
 msgid "West"
-msgstr ""
+msgstr "Nyugat"
 
 msgctxt "#91"
 msgid "East"
-msgstr ""
+msgstr "Kelet"
 
 msgctxt "#92"
 msgid "Variable"
-msgstr ""
+msgstr "Változó"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -572,7 +572,7 @@ msgstr "Felszín"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr ""
+msgstr "Fájlműveletek  félbeszakítása"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -3104,7 +3104,7 @@ msgstr "AirPlay"
 
 msgctxt "#1275"
 msgid "Filter %s"
-msgstr ""
+msgstr "Szűrés: %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3184,7 +3184,7 @@ msgstr "szeles"
 
 msgctxt "#1413"
 msgid "Patches"
-msgstr ""
+msgstr "Foltok"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3204,11 +3204,11 @@ msgstr "Szitálás"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Viharos"
 
 msgctxt "#1419"
 msgid "Shallow"
-msgstr ""
+msgstr "Alacsony"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3228,107 +3228,107 @@ msgstr "Pára"
 
 msgctxt "#1424"
 msgid "Overcast"
-msgstr ""
+msgstr "Felhős"
 
 msgctxt "#1425"
 msgid "Pellets"
-msgstr ""
+msgstr "Eső"
 
 msgctxt "#1426"
 msgid "Hail"
-msgstr ""
+msgstr "Jégeső"
 
 msgctxt "#1427"
 msgid "Smoke"
-msgstr ""
+msgstr "Füst"
 
 msgctxt "#1428"
 msgid "Volcanic"
-msgstr ""
+msgstr "Vulkáni"
 
 msgctxt "#1429"
 msgid "Ash"
-msgstr ""
+msgstr "Hamu"
 
 msgctxt "#1430"
 msgid "Widespread"
-msgstr ""
+msgstr "Széleskörű"
 
 msgctxt "#1431"
 msgid "Dust"
-msgstr ""
+msgstr "Por"
 
 msgctxt "#1432"
 msgid "Sand"
-msgstr ""
+msgstr "Homok"
 
 msgctxt "#1433"
 msgid "Spray"
-msgstr ""
+msgstr "Permet"
 
 msgctxt "#1434"
 msgid "Whirls"
-msgstr ""
+msgstr "Forgószél"
 
 msgctxt "#1435"
 msgid "Sandstorm"
-msgstr ""
+msgstr "Homokvihar"
 
 msgctxt "#1436"
 msgid "Blowing"
-msgstr ""
+msgstr "Széllökés"
 
 msgctxt "#1437"
 msgid "Pellet"
-msgstr ""
+msgstr "-"
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "Alacsony"
 
 msgctxt "#1439"
 msgid "and"
-msgstr ""
+msgstr "és"
 
 msgctxt "#1440"
 msgid "Sleet"
-msgstr ""
+msgstr "Havas eső"
 
 msgctxt "#1441"
 msgid "with"
-msgstr ""
+msgstr "és"
 
 msgctxt "#1442"
 msgid "Chance"
-msgstr ""
+msgstr "Várható"
 
 msgctxt "#1443"
 msgid "of"
-msgstr ""
+msgstr "-"
 
 msgctxt "#1444"
 msgid "Funnel"
-msgstr ""
+msgstr "Tölcsér"
 
 msgctxt "#1445"
 msgid "Cloud"
-msgstr ""
+msgstr "Felhő"
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Ismeretlen"
 
 msgctxt "#1447"
 msgid "Squals"
-msgstr ""
+msgstr "Széllökések"
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Csapadék"
 
 msgctxt "#1449"
 msgid "Partial"
-msgstr ""
+msgstr "Részleges"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3340,11 +3340,11 @@ msgstr "Hossz"
 
 msgctxt "#2080"
 msgid "Empty list"
-msgstr ""
+msgstr "Üres lista"
 
 msgctxt "#2081"
 msgid "Went back to parent list because the active list has been emptied"
-msgstr ""
+msgstr "Visszaléptünk a szülő listához, mert az aktív lista kiürült"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3760,19 +3760,19 @@ msgstr "Az elem zárolva"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr ""
+msgstr "A videó médiatár képek frissítése"
 
 msgctxt "#12350"
 msgid "Processing %s"
-msgstr ""
+msgstr "Feldolgozás alatt: %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr ""
+msgstr "A videó médiatár képek gyorsítótára frissítést igényel."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
-msgstr ""
+msgstr "Letöltés nem szükséges"
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -3780,7 +3780,7 @@ msgstr "Zárolás újraaktiválása"
 
 msgctxt "#12354"
 msgid "Would you like to update it now?"
-msgstr ""
+msgstr "Akarod frissíteni ?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3816,7 +3816,7 @@ msgstr "Beállítások & Fájlkezelő"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr ""
+msgstr "Minden videóra alapértelmezettként beállít"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -4752,11 +4752,11 @@ msgstr "Hardveres gyorsítás engedélyezése (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
-msgstr ""
+msgstr "Következő videó automatikus lejátszása"
 
 msgctxt "#13434"
 msgid "Play only this"
-msgstr ""
+msgstr "Csak ezt játszd"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4804,23 +4804,23 @@ msgstr "Lejátszás szinkronizálása a megjelenítőhöz"
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr ""
+msgstr "Kép választása"
 
 msgctxt "#13512"
 msgid "Current art"
-msgstr ""
+msgstr "Jelenlegi kép"
 
 msgctxt "#13513"
 msgid "Remote art"
-msgstr ""
+msgstr "Távoli kép"
 
 msgctxt "#13514"
 msgid "Local art"
-msgstr ""
+msgstr "Helyi kép"
 
 msgctxt "#13515"
 msgid "No art"
-msgstr ""
+msgstr "Nincs kép"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5236,7 +5236,7 @@ msgstr "CD kiadása, ha a másolás kész"
 
 msgctxt "#14100"
 msgid "Stop ripping CD"
-msgstr ""
+msgstr "CD bemásolás megszakítása"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5940,7 +5940,7 @@ msgstr "Vagy használj szókapcsolatot a pontos találathoz, pl. \"Óz, a csodá
 
 msgctxt "#19003"
 msgid "Find similar programs"
-msgstr ""
+msgstr "Hasonló műsorok keresése"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6976,19 +6976,19 @@ msgstr "Látogasd meg az xbmc.org/pvr oldalt a részletekért."
 
 msgctxt "#19275"
 msgid "Conflict warning"
-msgstr ""
+msgstr "Ütközési figyelmeztetés"
 
 msgctxt "#19276"
 msgid "Conflict error"
-msgstr ""
+msgstr "Ütközési hiba"
 
 msgctxt "#19277"
 msgid "Recording conflict"
-msgstr ""
+msgstr "Felvételek ütközése"
 
 msgctxt "#19278"
 msgid "Recording error"
-msgstr ""
+msgstr "Felvételi hiba"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8032,7 +8032,7 @@ msgstr "UPnP"
 
 msgctxt "#20188"
 msgid "Announce library updates via UPnP"
-msgstr ""
+msgstr "Médiatár frissítések jelentése UPnP-n keresztül."
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Lemezgyűjtemény"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Lemezgyűjtemény bélyegkép"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Színész-bélyegképek exportálása?"
@@ -8717,10 +8713,6 @@ msgstr "Hallgató"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Hallgató"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Filmgyűjtemény fanart beállítása"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9188,15 +9180,15 @@ msgstr "Videó felett"
 
 msgctxt "#21467"
 msgid "%.1f to %.1f"
-msgstr ""
+msgstr "%.1f -tól %.1f -ig"
 
 msgctxt "#21468"
 msgid "%d to %d"
-msgstr ""
+msgstr "%d -tól %d -ig"
 
 msgctxt "#21469"
 msgid "%s to %s"
-msgstr ""
+msgstr "ettől: %s eddig: %s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9696,7 +9688,7 @@ msgstr "Fut"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr ""
+msgstr "Teletext méretezése 4:3 arányra"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9808,7 +9800,7 @@ msgstr "Weather.com (alap)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr ""
+msgstr "Időjárás adatok szolgáltatója"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -10560,7 +10552,7 @@ msgstr "Botkormány és gombkormány támogatás engedélyezése"
 
 msgctxt "#35101"
 msgid "Disable joystick when iMON is present"
-msgstr ""
+msgstr "Joystick letiltása iMON jelenlétében "
 
 msgctxt "#35500"
 msgid "Location"
@@ -10716,16 +10708,16 @@ msgstr "Indításkor/leállításkor"
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"
-msgstr ""
+msgstr "Erősítő (AVR)"
 
 msgctxt "#36039"
 msgid "TV and AVR device (explicit)"
-msgstr ""
+msgstr "TV és AVR eszköz"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr ""
+msgstr "Nem támogatott libCEC interfész verzió. A meglévő verzió (%x) alacsonyabb mint az XBMC által támogatott (%x)"

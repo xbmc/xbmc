@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-09-23 14:58+0000\n"
+"PO-Revision-Date: 2012-11-09 19:47+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Norwegian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/no/)\n"
 "MIME-Version: 1.0\n"
@@ -696,7 +696,7 @@ msgstr "Stemmer"
 
 msgctxt "#206"
 msgid "Cast"
-msgstr "Skuesp."
+msgstr "Rolleliste"
 
 msgctxt "#207"
 msgid "Plot"
@@ -2688,7 +2688,7 @@ msgstr "Trådløst nettverknavn (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr "Fjernkontroll"
+msgstr "Fjernstyring"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2836,7 +2836,7 @@ msgstr "Legg til %s kilde"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
-msgstr "Skriv inn stiene eller let etter plassering."
+msgstr "Skriv inn sti eller bla etter plassering."
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
@@ -2864,7 +2864,7 @@ msgstr "Rediger kilde"
 
 msgctxt "#1028"
 msgid "Edit %s source"
-msgstr "Rediger %s kilde"
+msgstr "Rediger %s-kilde"
 
 msgctxt "#1029"
 msgid "Enter the new label"
@@ -3204,7 +3204,7 @@ msgstr "kornete"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "lyn og torden"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3284,7 +3284,7 @@ msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "Liten"
 
 msgctxt "#1439"
 msgid "and"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Ukjent"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Nedbør"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -4804,7 +4804,7 @@ msgstr "Synkroniser avspilling til skjerm"
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr ""
+msgstr "Velg grafikk"
 
 msgctxt "#13512"
 msgid "Current art"
@@ -4840,7 +4840,7 @@ msgstr "%.1f sekunder"
 
 msgctxt "#13600"
 msgid "Apple remote"
-msgstr "Apple fjernkontroll"
+msgstr "Apple-fjernkontroll"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
@@ -5764,7 +5764,7 @@ msgstr "Sette"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Merk som sett"
+msgstr "Merk som «sett»"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
@@ -5920,11 +5920,11 @@ msgstr ""
 
 msgctxt "#17998"
 msgid "%i hours"
-msgstr ""
+msgstr "%i timer"
 
 msgctxt "#17999"
 msgid "%i days"
-msgstr ""
+msgstr "%i dager"
 
 msgctxt "#19000"
 msgid "Switch to channel"
@@ -5960,7 +5960,7 @@ msgstr ""
 
 msgctxt "#19008"
 msgid "Signal quality"
-msgstr ""
+msgstr "Signalkvalitet"
 
 msgctxt "#19009"
 msgid "SNR"
@@ -5988,7 +5988,7 @@ msgstr "Fikset"
 
 msgctxt "#19015"
 msgid "Encryption"
-msgstr ""
+msgstr "Kryptering"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
@@ -6004,31 +6004,31 @@ msgstr ""
 
 msgctxt "#19019"
 msgid "Channels"
-msgstr ""
+msgstr "Kanaler"
 
 msgctxt "#19020"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#19021"
 msgid "Radio"
-msgstr ""
+msgstr "Radio"
 
 msgctxt "#19022"
 msgid "Hidden"
-msgstr ""
+msgstr "Skjult"
 
 msgctxt "#19023"
 msgid "TV channels"
-msgstr ""
+msgstr "TV kanaler"
 
 msgctxt "#19024"
 msgid "Radio channels"
-msgstr ""
+msgstr "Radiokanaler"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
-msgstr ""
+msgstr "Planlagte opptak"
 
 msgctxt "#19026"
 msgid "Add timer..."
@@ -6044,11 +6044,11 @@ msgstr ""
 
 msgctxt "#19029"
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 msgctxt "#19030"
 msgid "Now"
-msgstr ""
+msgstr "Nå"
 
 msgctxt "#19031"
 msgid "Next"
@@ -6056,11 +6056,11 @@ msgstr "Neste"
 
 msgctxt "#19032"
 msgid "Timeline"
-msgstr ""
+msgstr "Tidslinje"
 
 msgctxt "#19033"
 msgid "Information"
-msgstr ""
+msgstr "Informasjon"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
@@ -6076,7 +6076,7 @@ msgstr ""
 
 msgctxt "#19037"
 msgid "Show signal quality"
-msgstr ""
+msgstr "Vis signalkvalitet"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
@@ -6084,7 +6084,7 @@ msgstr ""
 
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr ""
+msgstr "Er du sikker på at du vil skjule denne kanalen?"
 
 msgctxt "#19040"
 msgid "Timer"
@@ -6164,7 +6164,7 @@ msgstr ""
 
 msgctxt "#19059"
 msgid "Stop recording"
-msgstr ""
+msgstr "Stopp opptak"
 
 msgctxt "#19060"
 msgid "Delete timer"
@@ -6176,15 +6176,15 @@ msgstr ""
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
-msgstr ""
+msgstr "Sorteretter:Kanal"
 
 msgctxt "#19063"
 msgid "Go to begin"
-msgstr ""
+msgstr "Gå til begynnelsen"
 
 msgctxt "#19064"
 msgid "Go to end"
-msgstr ""
+msgstr "Gå til slutten"
 
 msgctxt "#19065"
 msgid "Default EPG window"
@@ -6216,39 +6216,39 @@ msgstr ""
 
 msgctxt "#19074"
 msgid "Active:"
-msgstr ""
+msgstr "Aktiv:"
 
 msgctxt "#19075"
 msgid "Name:"
-msgstr ""
+msgstr "Navn:"
 
 msgctxt "#19076"
 msgid "Folder:"
-msgstr ""
+msgstr "Mappe:"
 
 msgctxt "#19077"
 msgid "Radio:"
-msgstr ""
+msgstr "Radio:"
 
 msgctxt "#19078"
 msgid "Channel:"
-msgstr ""
+msgstr "Kanal:"
 
 msgctxt "#19079"
 msgid "Day:"
-msgstr ""
+msgstr "Dag:"
 
 msgctxt "#19080"
 msgid "Begin:"
-msgstr ""
+msgstr "Start:"
 
 msgctxt "#19081"
 msgid "End:"
-msgstr ""
+msgstr "Slutt:"
 
 msgctxt "#19082"
 msgid "Priority:"
-msgstr ""
+msgstr "Prioritet"
 
 msgctxt "#19083"
 msgid "Lifetime (days):"
@@ -6256,55 +6256,55 @@ msgstr ""
 
 msgctxt "#19084"
 msgid "First day:"
-msgstr ""
+msgstr "Første dag:"
 
 msgctxt "#19085"
 msgid "Unknown channel %u"
-msgstr ""
+msgstr "Ukjent kanal %u"
 
 msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
-msgstr ""
+msgstr "Man-__-__-__-__-__-__"
 
 msgctxt "#19087"
 msgid "__-Tu-__-__-__-__-__"
-msgstr ""
+msgstr "__-Tir-__-__-__-__-__"
 
 msgctxt "#19088"
 msgid "__-__-We-__-__-__-__"
-msgstr ""
+msgstr "__-__-Ons-__-__-__-__"
 
 msgctxt "#19089"
 msgid "__-__-__-Th-__-__-__"
-msgstr ""
+msgstr "__-__-__-Tor-__-__-__"
 
 msgctxt "#19090"
 msgid "__-__-__-__-Fr-__-__"
-msgstr ""
+msgstr "__-__-__-__-Fre-__-__"
 
 msgctxt "#19091"
 msgid "__-__-__-__-__-Sa-__"
-msgstr ""
+msgstr "__-__-__-__-__-Lør-__"
 
 msgctxt "#19092"
 msgid "__-__-__-__-__-__-Su"
-msgstr ""
+msgstr "__-__-__-__-__-__-Søn"
 
 msgctxt "#19093"
 msgid "Mo-Tu-We-Th-Fr-__-__"
-msgstr ""
+msgstr "Man-Tir-Ons-Tor-Fre-__-__"
 
 msgctxt "#19094"
 msgid "Mo-Tu-We-Th-Fr-Sa-__"
-msgstr ""
+msgstr "Man-Tir-Ons-Tor-Fre-Lør-__"
 
 msgctxt "#19095"
 msgid "Mo-Tu-We-Th-Fr-Sa-Su"
-msgstr ""
+msgstr "Man-Tir-Ons-Tor-Fre-Lør-Søn"
 
 msgctxt "#19096"
 msgid "__-__-__-__-__-Sa-Su"
-msgstr ""
+msgstr "__-__-__-__-__-Lør-Søn"
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
@@ -6312,7 +6312,7 @@ msgstr ""
 
 msgctxt "#19098"
 msgid "Warning"
-msgstr ""
+msgstr "Advarsel"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -6344,15 +6344,15 @@ msgstr ""
 
 msgctxt "#19114"
 msgid "Version"
-msgstr ""
+msgstr "Versjon"
 
 msgctxt "#19115"
 msgid "Address"
-msgstr ""
+msgstr "Adresse"
 
 msgctxt "#19116"
 msgid "Disksize"
-msgstr ""
+msgstr "Harddiskstørelse"
 
 msgctxt "#19117"
 msgid "Search for channels"
@@ -6476,7 +6476,7 @@ msgstr ""
 
 msgctxt "#19148"
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 msgctxt "#19149"
 msgid "Mo"
@@ -6484,35 +6484,35 @@ msgstr ""
 
 msgctxt "#19150"
 msgid "Tu"
-msgstr ""
+msgstr "Tir"
 
 msgctxt "#19151"
 msgid "We"
-msgstr ""
+msgstr "Ons"
 
 msgctxt "#19152"
 msgid "Th"
-msgstr ""
+msgstr "Tor"
 
 msgctxt "#19153"
 msgid "Fr"
-msgstr ""
+msgstr "Fre"
 
 msgctxt "#19154"
 msgid "Sa"
-msgstr ""
+msgstr "Lør"
 
 msgctxt "#19155"
 msgid "Su"
-msgstr ""
+msgstr "Søn"
 
 msgctxt "#19156"
 msgid "from"
-msgstr ""
+msgstr "fra"
 
 msgctxt "#19157"
 msgid "Next recording"
-msgstr ""
+msgstr "Neste opptak"
 
 msgctxt "#19158"
 msgid "Currently recording"
@@ -6520,11 +6520,11 @@ msgstr ""
 
 msgctxt "#19159"
 msgid "from"
-msgstr ""
+msgstr "fra"
 
 msgctxt "#19160"
 msgid "to"
-msgstr ""
+msgstr "til"
 
 msgctxt "#19162"
 msgid "Recording active"
@@ -6540,7 +6540,7 @@ msgstr ""
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr ""
+msgstr "Bytt"
 
 msgctxt "#19166"
 msgid "PVR information"
@@ -6600,7 +6600,7 @@ msgstr ""
 
 msgctxt "#19180"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
@@ -6636,7 +6636,7 @@ msgstr ""
 
 msgctxt "#19190"
 msgid "Minimized"
-msgstr ""
+msgstr "Minimert"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6664,11 +6664,11 @@ msgstr ""
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
-msgstr ""
+msgstr "Opptak startet: %s"
 
 msgctxt "#19198"
 msgid "Recording finished on: %s"
-msgstr ""
+msgstr "Opptak sluttet: %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
@@ -6900,7 +6900,7 @@ msgstr ""
 
 msgctxt "#19256"
 msgid "Stop recording"
-msgstr ""
+msgstr "Stopp opptak"
 
 msgctxt "#19257"
 msgid "Lock channel"
@@ -8552,11 +8552,11 @@ msgstr "Slå sammen TV-serier"
 
 msgctxt "#20413"
 msgid "Get fanart"
-msgstr "Hent FanArt"
+msgstr "Hent Fanart"
 
 msgctxt "#20414"
 msgid "Show Fanart in video and music libraries"
-msgstr "Vis FanArt i video- og musikkbibliotek"
+msgstr "Vis Fanart i video- og musikkbibliotek"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -8596,7 +8596,7 @@ msgstr "Usann"
 
 msgctxt "#20425"
 msgid "Fanart slideshow"
-msgstr "Bildefremvisning av FanArt"
+msgstr "Bildefremvisning av Fanart"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
@@ -8616,7 +8616,7 @@ msgstr "Separer"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "Eksporter miniatyrbilder og FanArt?"
+msgstr "Eksporter miniatyrbilder og Fanart?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
@@ -8634,33 +8634,29 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Samlinger"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Endre miniatyr"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Eksporter skuespiller bilder?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
-msgstr "Velg FanArt"
+msgstr "Velg Fanart"
 
 msgctxt "#20438"
 msgid "Local fanart"
-msgstr "Lokal FanArt"
+msgstr "Lokal Fanart"
 
 msgctxt "#20439"
 msgid "No fanart"
-msgstr "Ingen FanArt"
+msgstr "Ingen Fanart"
 
 msgctxt "#20440"
 msgid "Current fanart"
-msgstr "Nåværende FanArt"
+msgstr "Nåværende Fanart"
 
 msgctxt "#20441"
 msgid "Remote fanart"
-msgstr "Ekstern FanArt"
+msgstr "Ekstern Fanart"
 
 msgctxt "#20442"
 msgid "Change content"
@@ -8676,7 +8672,7 @@ msgstr "elementer innenfor denne stien?"
 
 msgctxt "#20445"
 msgid "Fanart"
-msgstr "FanArt"
+msgstr "Fanart"
 
 msgctxt "#20446"
 msgid "Locally stored information found."
@@ -8717,10 +8713,6 @@ msgstr "Lytter"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Lyttere"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Endre Fanart"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10716,7 +10708,7 @@ msgstr ""
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"

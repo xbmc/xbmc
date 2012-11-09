@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-09-28 11:40+0000\n"
+"PO-Revision-Date: 2012-11-02 17:07+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -276,19 +276,19 @@ msgstr "proměnlivý"
 
 msgctxt "#88"
 msgid "South"
-msgstr ""
+msgstr "Jih"
 
 msgctxt "#89"
 msgid "North"
-msgstr ""
+msgstr "Sever"
 
 msgctxt "#90"
 msgid "West"
-msgstr ""
+msgstr "Západ"
 
 msgctxt "#91"
 msgid "East"
-msgstr ""
+msgstr "Východ"
 
 msgctxt "#92"
 msgid "Variable"
@@ -572,7 +572,7 @@ msgstr "Motiv"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr ""
+msgstr "Zrušit operace se soubory"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -3104,7 +3104,7 @@ msgstr "AirPlay"
 
 msgctxt "#1275"
 msgid "Filter %s"
-msgstr ""
+msgstr "Filtr %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3204,7 +3204,7 @@ msgstr "kroupy"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Bouřky"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3228,7 +3228,7 @@ msgstr "Opar"
 
 msgctxt "#1424"
 msgid "Overcast"
-msgstr ""
+msgstr "Zamračeno"
 
 msgctxt "#1425"
 msgid "Pellets"
@@ -3236,11 +3236,11 @@ msgstr ""
 
 msgctxt "#1426"
 msgid "Hail"
-msgstr ""
+msgstr "Krupobití"
 
 msgctxt "#1427"
 msgid "Smoke"
-msgstr ""
+msgstr "Dým"
 
 msgctxt "#1428"
 msgid "Volcanic"
@@ -3256,15 +3256,15 @@ msgstr ""
 
 msgctxt "#1431"
 msgid "Dust"
-msgstr ""
+msgstr "Prach"
 
 msgctxt "#1432"
 msgid "Sand"
-msgstr ""
+msgstr "Písek"
 
 msgctxt "#1433"
 msgid "Spray"
-msgstr ""
+msgstr "Sprška"
 
 msgctxt "#1434"
 msgid "Whirls"
@@ -3272,7 +3272,7 @@ msgstr ""
 
 msgctxt "#1435"
 msgid "Sandstorm"
-msgstr ""
+msgstr "Písečná bouře"
 
 msgctxt "#1436"
 msgid "Blowing"
@@ -3284,15 +3284,15 @@ msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "Malá"
 
 msgctxt "#1439"
 msgid "and"
-msgstr ""
+msgstr "a"
 
 msgctxt "#1440"
 msgid "Sleet"
-msgstr ""
+msgstr "Plískanice"
 
 msgctxt "#1441"
 msgid "with"
@@ -3312,11 +3312,11 @@ msgstr ""
 
 msgctxt "#1445"
 msgid "Cloud"
-msgstr ""
+msgstr "Mrak"
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Neznámý"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Srážky"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -3340,7 +3340,7 @@ msgstr "Doba běhu"
 
 msgctxt "#2080"
 msgid "Empty list"
-msgstr ""
+msgstr "Prázdný seznam"
 
 msgctxt "#2081"
 msgid "Went back to parent list because the active list has been emptied"
@@ -3760,19 +3760,19 @@ msgstr "Položka uzamčena"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr ""
+msgstr "Aktualizuji grafiku v knihovně videa"
 
 msgctxt "#12350"
 msgid "Processing %s"
-msgstr ""
+msgstr "Zpracovávám %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr ""
+msgstr "Vyrovnávací paměť grafiky vaší knihovny videí vyžaduje aktualizaci."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
-msgstr ""
+msgstr "Žádné stahování není třeba."
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -3780,7 +3780,7 @@ msgstr "Znovu aktivovat zámek"
 
 msgctxt "#12354"
 msgid "Would you like to update it now?"
-msgstr ""
+msgstr "Přejete si nyní aktualizovat?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3816,7 +3816,7 @@ msgstr "Nastavení a správce souborů"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr ""
+msgstr "Nastavit jako výchozí pro všechna videa"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -4752,11 +4752,11 @@ msgstr "Aktivovat hardwarovou akceleraci (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
-msgstr ""
+msgstr "Přehrát následující video automaticky"
 
 msgctxt "#13434"
 msgid "Play only this"
-msgstr ""
+msgstr "Přehrát pouze zvolené video"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4804,23 +4804,23 @@ msgstr "Synchronizovat přehrávání k frekvenci obrazovky"
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr ""
+msgstr "Vybrat grafiku"
 
 msgctxt "#13512"
 msgid "Current art"
-msgstr ""
+msgstr "Současná grafika"
 
 msgctxt "#13513"
 msgid "Remote art"
-msgstr ""
+msgstr "Vzdálená grafika"
 
 msgctxt "#13514"
 msgid "Local art"
-msgstr ""
+msgstr "Místní grafika"
 
 msgctxt "#13515"
 msgid "No art"
-msgstr ""
+msgstr "Žádná grafika"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5236,7 +5236,7 @@ msgstr "Vysunout disk po dokončení získávání CD"
 
 msgctxt "#14100"
 msgid "Stop ripping CD"
-msgstr ""
+msgstr "Zastavit kopírování CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5940,7 +5940,7 @@ msgstr "nebo použijte uvozovky pro vyhledání přesné shody (např. \"Čarod�
 
 msgctxt "#19003"
 msgid "Find similar programs"
-msgstr ""
+msgstr "Najít podobné programy"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -8032,7 +8032,7 @@ msgstr "UPnP"
 
 msgctxt "#20188"
 msgid "Announce library updates via UPnP"
-msgstr ""
+msgstr "Oznamovat aktualizace knihovny skrze UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Sady"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Přiřadit náhled filmové sadě"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Exportovat náhledy herců?"
@@ -8717,10 +8713,6 @@ msgstr "Posluchač"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Posluchači"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Přiřadit fanart filmové sadě"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -9188,15 +9180,15 @@ msgstr "Nad obrazem"
 
 msgctxt "#21467"
 msgid "%.1f to %.1f"
-msgstr ""
+msgstr "%.1f do %.1f"
 
 msgctxt "#21468"
 msgid "%d to %d"
-msgstr ""
+msgstr "%d do %d"
 
 msgctxt "#21469"
 msgid "%s to %s"
-msgstr ""
+msgstr "%s do %s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9808,7 +9800,7 @@ msgstr "Weather.com (standardní)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr ""
+msgstr "Služba pro informace o počasí"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -10560,7 +10552,7 @@ msgstr "Povolit ovládání joystickem a gamepadem"
 
 msgctxt "#35101"
 msgid "Disable joystick when iMON is present"
-msgstr ""
+msgstr "Zakázat joystick při zjištění iMON"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10716,16 +10708,16 @@ msgstr "Při spuštění/zastavení"
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "Televize"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"
-msgstr ""
+msgstr "Zesilovač / AV přijímač"
 
 msgctxt "#36039"
 msgid "TV and AVR device (explicit)"
-msgstr ""
+msgstr "TV a AV přijímač (explicitně)"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr ""
+msgstr "Nepodporovaná verze rozhraní libCEC. %x je nižší než verze podporovaná XBMC (%x)"
