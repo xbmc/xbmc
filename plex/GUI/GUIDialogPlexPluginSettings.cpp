@@ -436,7 +436,7 @@ void CGUIDialogPlexPluginSettings::CreateControls()
       {
         pControl = new CGUIButtonControl(*pOriginalButton);
         if (!pControl) return;
-        ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
+        //((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y); FIXME
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
           ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
