@@ -58,6 +58,8 @@
 				<textcolor>Focused</textcolor>
 				<disabledcolor>Unfocused</disabledcolor>
 				<font>MediumDefaultFont</font>
+				<aligny>center</aligny>
+				<align>left</align>
 			</control>
 			<control type="radiobutton" id="8">
 				<description>default_radio_button</description>

@@ -464,7 +464,7 @@
 	<constant name="SettingsCategoryTextWidth">500</constant>
 	<include name="SettingsCatListDims">
 		<posx>105</posx>
-		<posy>65</posy>
+		<posy>117</posy>
 		<width>625</width>
 		<height>400</height>
 	</include>
