@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-23 14:22+0000\n"
+"PO-Revision-Date: 2012-11-07 19:27+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "Приховати кнопки головного меню"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "Дозволити власний фон"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "Шлях до фону:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -239,7 +239,7 @@ msgstr "Тексти"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "Приховувати фанарт у повноекранній візуалізації"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -451,7 +451,7 @@ msgstr "[B]НАЛАШТУВАННЯ НАДБУДОВ[/B][CR][CR]Керуванн
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B]НАЛАШТУВАННЯ ТБ[/B][CR][CR]Налаштування повноекранних відомостей · Керування параметрами EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -459,11 +459,11 @@ msgstr "[B]НАЛАШТУВАННЯ ПАРАМЕТРІВ СЛУЖБ[/B][CR][CR]�
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Довідка при першому запуску."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Ця вкладка означає, що збоку є меню із додатковими налаштуваннями розділу.  Для доступу до меню перейдіть вліво за допомогою пульта ДУ чи клавіатури або помістіть курсор миші над вкладкою. [CR][CR] ОК — закрити цей діалог. Він більше не з'явиться."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -471,43 +471,43 @@ msgstr "Виберіть профіль користувача XBMC,[CR]щоб �
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "Таймери запису"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "Запланований час"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "ТБ"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "Додати групу"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "Перейменувати групу"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "Видалити групу"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "Доступні[CR]групи"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "Група каналів"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "Таймер встановлено"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "Параметри каналів"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"

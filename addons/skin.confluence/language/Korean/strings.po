@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-05 14:56+0000\n"
+"PO-Revision-Date: 2012-10-29 00:37+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ko/)\n"
 "MIME-Version: 1.0\n"
@@ -459,11 +459,11 @@ msgstr "[B]서비스 설정[/B][CR][CR]UPnP 및 HTTP를 통한 XBMC 제어 설�
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "처음 실행 도움말...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "이 탭은 현재 섹션의 추가 옵션메뉴가 화면 가장자리에 숨어 있다는 것을 의미합니다.  메뉴에 접근하려면 리모컨 또는 키보드로 왼쪽으로 이동하거나 탭 위로 마우스를 가져가세요. [CR] [CR]\"확인\"을 누르면 대화상자가 닫히고 다시 표시되지 않습니다."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

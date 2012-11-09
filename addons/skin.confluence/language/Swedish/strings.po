@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-23 19:40+0000\n"
+"PO-Revision-Date: 2012-11-04 17:33+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -439,7 +439,7 @@ msgstr "[B]KONFIGURERA BILDINSTÄLLNINGAR[/B][CR][CR]Ange bildlistningsalternati
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange tre städer för  insamling av väderinformation"
+msgstr "[B]KONFIGURERA VÄDERINSTÄLLNINGAR[/B][CR][CR]Ange tre städer för insamling av väderinformation"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
@@ -451,7 +451,7 @@ msgstr "[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade tillägg · Visa
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]KONFIGURERA TV-INSTÄLNINGAR[/B][CR][CR]Ändra helskärmsinfo · Hantera EPG-datainställningar"
+msgstr "[B]KONFIGURERA TV-INSTÄLLNINGAR[/B][CR][CR]Ändra helskärmsinfo · Hantera EPG-datainställningar"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -459,11 +459,11 @@ msgstr "[B]KONFIGURERA SERVICEINSTÄLLNINGAR[/B][CR][CR]Ställ in kontroll av XB
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Förstagångshjälp..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Den här fliken innebär att det är en meny på sidan av det här fönstret som innehåller extra val för denna section. För att komma åt menyn, navigera till vänster med din fjärrkontroll eller tangentbord eller placera din muspekare över fliken.[CR][CR]Klicka \"Ok\" för att stänga denna dialog. Den kommer inte att visas igen."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

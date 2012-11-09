@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-02 15:20+0000\n"
+"PO-Revision-Date: 2012-11-01 12:29+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: German (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -459,11 +459,11 @@ msgstr "[B]KONFIGURIERE DIENSTE[/B][CR][CR]Richte Zugriff auf XBMC via UPnP und 
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Hilfe beim ersten Start...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Dieses Symbol zeigt an, dass ein Menü an der Seite des Fensters versteckt ist, welches weitere Optionen beinhaltet. Um es aufzurufen, navigieren Sie nach links oder zeigen Sie mit der Maus darauf.[CR][CR]Klicken Sie auf \"Ok\" um diesen Dialog zu schließen. Er wird nicht wieder angezeigt werden."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

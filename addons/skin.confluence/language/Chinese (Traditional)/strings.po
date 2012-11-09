@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-16 08:29+0000\n"
+"PO-Revision-Date: 2012-11-06 02:43+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -99,7 +99,7 @@ msgstr "正在播放"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "暫停"
+msgstr "已暫停"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -155,7 +155,7 @@ msgstr "目前的選擇"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "主介面選項"
+msgstr "首頁介面選項"
 
 msgctxt "#31102"
 msgid "Background"
@@ -167,7 +167,7 @@ msgstr "在圖片幻燈片秀中顯示\"已暫停\"狀態"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "在視窗中播放預告片[COLOR=grey3](只在視訊資訊對話框中)[/COLOR]"
+msgstr "在視窗中播放預告片[COLOR=grey3](只在影片資訊對話框中)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -175,7 +175,7 @@ msgstr "其他選項"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "隱藏視訊檔案名稱的媒體標示 [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "隱藏影片檔案名稱的媒體標示 [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -203,7 +203,7 @@ msgstr "顯示最近加入的專輯"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "顯示最近新增的視訊"
+msgstr "顯示最近新增的影片"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
@@ -219,7 +219,7 @@ msgstr "天氣頁面"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "在背景顯示正在播放的視訊"
+msgstr "在背景顯示正在播放的影片"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
@@ -227,7 +227,7 @@ msgstr "在背景顯示正在播放的視覺效果"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "在視訊資料庫中播放電視主題曲（TvTunes 附加元件）"
+msgstr "在影片資料庫中播放電視主題曲（TvTunes 附加元件）"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -267,7 +267,7 @@ msgstr "音樂播放工具列"
 
 msgctxt "#31141"
 msgid "Video OSD"
-msgstr "視訊播放工具列"
+msgstr "影片播放工具列"
 
 msgctxt "#31200"
 msgid "Shortcuts"
@@ -427,7 +427,7 @@ msgstr "[B]配置介面外觀[/B][CR][CR]修改佈景主題 · 選擇語言和�
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]配置視訊設定[/B][CR][CR]管理你的音樂資料庫 · 設定視訊播放選項 · 修改視訊清單選項[CR]設定字幕字型"
+msgstr "[B]配置視訊設定[/B][CR][CR]管理你的音樂資料庫 · 設定影片播放選項 · 修改影片清單選項[CR]設定字幕字型"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
@@ -459,11 +459,11 @@ msgstr "[B]配置服務設定[/B][CR][CR]設定透過 UPnP 和 HTTP 控製 XBMC 
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "第一次使用說明..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "這個標籤表示這個功能模組在這個視窗的側邊有提供額外選項的選單。你可以使用遙控器或鍵盤的左鍵或者是將滑鼠指標移動到這個標籤的範圍來存取這個選單。[CR][CR]按一下\"Ok\" 可以關閉這個對話框。它將不會再次出現。"
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -471,7 +471,7 @@ msgstr "選擇您的 XBMC 使用者設定檔[CR]登入並繼續"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "錄影計時器"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

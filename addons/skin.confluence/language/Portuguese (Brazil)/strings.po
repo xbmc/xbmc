@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-23 18:08+0000\n"
+"PO-Revision-Date: 2012-11-01 11:07+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr "Localização"
 
 msgctxt "#31028"
 msgid "Poster Wrap"
-msgstr "Vitrine"
+msgstr "Vitrine Poster"
 
 msgctxt "#31029"
 msgid "Fanart"
@@ -459,11 +459,11 @@ msgstr "[B]CONFIGURE AJUSTES SERVIÇOS[/B][CR][CR]Ajustes de controle do XBMC vi
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Executar ajuda primeiro..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Esta guia significa que existe um menu para o lado da janela que contém opções adicionais para esta seção. | Para acessar o menu, navegue para esquerda com seu controle remoto ou teclado ou aponte seu mouse sobre a guia.[CR][CR]Clique \"OK\" para fechar este diálogo. Ele não irá aparecer novamente."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-01 18:08+0000\n"
+"PO-Revision-Date: 2012-10-31 23:38+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -199,7 +199,7 @@ msgstr "Opciones"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Mostrar discos añadidos recientemente"
+msgstr "Mostrar últimos discos añadidos"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -227,7 +227,7 @@ msgstr "Mostrar visualización en el fondo"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Reproducir canciones de series en la librería de video (complemento TvTunes)"
+msgstr "Reproducir canciones de series en la librería de vídeo (complemento TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -247,7 +247,7 @@ msgstr "Add-on para letras"
 
 msgctxt "#31133"
 msgid "Subtitle Add-on"
-msgstr "Add-on para subtitulos"
+msgstr "Add-on para subtítulos"
 
 msgctxt "#31134"
 msgid "Home Page Videos Submenu"
@@ -287,7 +287,7 @@ msgstr "Encontrados"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr "Encuentra mas elementos"
+msgstr "Encuentra más elementos"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
@@ -427,11 +427,11 @@ msgstr "[B]Configura las opciones de APARIENCIA[/B][CR][CR]Cambia la skin - Camb
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]Configura las opciones de VIDEO[/B][CR][CR]Administra su videoteca - Ajusta reproducción de vídeol - Cambia opciones de listas de vídeo[CR]Configura fuentes de subtítulos"
+msgstr "[B]Configura las opciones de VÍDEO[/B][CR][CR]Administra su videoteca - Ajusta reproducción de vídeo - Cambia opciones de listas de vídeo[CR]Configura fuentes de subtítulos"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]Configura las opciones de MUSICA[/B][CR][CR]Administra tu biblioteca musical - Ajusta reproducción de música - Cambia opciones de listas de música[CR[Configura sumisión de canciones - Configura el karaoke"
+msgstr "[B]Configura las opciones de MÚSICA[/B][CR][CR]Administra tu biblioteca musical - Ajusta reproducción de música - Cambia opciones de listas de música[CR]Configura sumisión de canciones - Configura el karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
@@ -459,11 +459,11 @@ msgstr "[B]AJUSTES DEL SERVICIO[/B][CR][CR]Ajustes para controlar XBMC por UPnP 
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Ayuda para la primera vez..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Esta pestaña significa que hay un menú a un lado de esta ventana que contiene opciones adicionales para esta sección. Para acceder al menú, desplácese a la izquierda con el mando a distancia o el teclado o sitúe el puntero del ratón sobre la pestaña. [CR][CR] Haga clic en \"Aceptar\" para cerrar este cuadro de diálogo. No volverá a aparecer."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -531,11 +531,11 @@ msgstr "Pronóstico"
 
 msgctxt "#31906"
 msgid "Maps & Video"
-msgstr "Mapas y video"
+msgstr "Mapas y vídeo"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"
-msgstr "Probabilidada de precipitación"
+msgstr "Probabilidad de precipitación"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."

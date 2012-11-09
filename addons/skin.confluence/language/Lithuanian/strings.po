@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-14 11:07+0000\n"
+"PO-Revision-Date: 2012-11-09 05:44+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Lithuanian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/lt/)\n"
 "MIME-Version: 1.0\n"
@@ -187,7 +187,7 @@ msgstr "Įgalinti priskirtą foną"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Fono maršrutas"
+msgstr "Fono maršrutas:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -227,7 +227,7 @@ msgstr "Rodyti foninį \"Atkuriamasis\" vizualizacija"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Groti TV / serialų temų dainas vaizdo bibliotekoje (TvTunes priedai)"
+msgstr "Groti TV šou/serialų temų dainas vaizdo bibliotekoje (TvTunes priedas)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -291,7 +291,7 @@ msgstr "Rasti daugiau elementų"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr "Artėjantys epizodai"
+msgstr "Artimiausi epizodai"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -319,7 +319,7 @@ msgstr "Išnaudota atminties:"
 
 msgctxt "#31310"
 msgid "Track Number"
-msgstr "Takelio Num.:"
+msgstr "Takelio numeris"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
@@ -363,7 +363,7 @@ msgstr "Sąrašo opcijos"
 
 msgctxt "#31326"
 msgid "Created"
-msgstr "Sukurta"
+msgstr "Sukūrta"
 
 msgctxt "#31327"
 msgid "Resolution"
@@ -411,59 +411,59 @@ msgstr "Atsisiųsti subtitrus"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Numatytoji teminė išvaizda"
+msgstr "Kaip yra"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Teminė išvaizda pagal nutylėjimą šablonui be Kaps"
+msgstr "Be 'Kaps'"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Arial pagrindu"
+msgstr "Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B][COLOR=red]APIPAVIDALINIMO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną · Konfiguruoti failų sąrašą[CR][COLOR=red]ŽEMIAU PATEIKIAMI TRUMPINIŲ TOKIŲ KAIP[/COLOR][CR](DXVA, Replaygain, EXIF, Zeroconf, AirPlay, Prezentacija ir t.t...) paaiškinimai"
+msgstr "[B][COLOR=blue]APIPAVIDALINIMO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Pakeisti teminę išvaizdą · Nustatyti kalbą ir regioną · Konfiguruoti failų sąrašą"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B][COLOR=red]VIDEO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR]Tvarkyti video biblioteką · Nustatyti video atkūrimo opcijas · Nustatyti video sarašą[CR][COLOR=red]DXVA2[/COLOR] - aparatūrinis spartinimas (Direct-X) · Aparatūros video dekodavimas GPU(DXVA)[CR]gerokai sumažina CPU apkrovą kai kuriais atvejais žymiai pagerina vaizdo kokybę"
+msgstr "[B][COLOR=blue]VIDEO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti video biblioteką · Nustatyti video atkūrimo opcijas · Nustatyti video sarašą"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B][COLOR=red]MUZIKOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR]Tvarkyti audio biblioteką· Nustatyti audio atkūrimo opcijas · Nustatyti audio sarašą[CR]Nustatyti audio pridėjimą[CR][COLOR=red]ReplayGain[/COLOR] - funkcija, kuri garantuos skirtingo garsumo muzikos kūrinių grojimą[CR]vienodu lygiu"
+msgstr "[B][COLOR=blue]MUZIKOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti audio biblioteką· Nustatyti audio atkūrimo opcijas · Nustatyti audio sarašą[CR]Nustatyti audio pridėjimą"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B][COLOR=red]FOTO/PAVEIKSLĖLIŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR]Tvarkyti pavaikslėlių/nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją[CR][COLOR=red]EXIF[/COLOR] - tai nuotraukos faile saugoma papildoma informacija kurioje nurodyti visi[CR]fotografavimo parametrai: data, laikas, išlaikymas, diafragma ir t.t..."
+msgstr "[B][COLOR=blue]FOTO/PAVEIKSLĖLIŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti pavaikslėlių/nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B][COLOR=red]ORŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti trys Miestus gauti informacijai apie orus"
+msgstr "[B][COLOR=blue]ORŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti trys Miestus gauti informacijai apie orus"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B][COLOR=red]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR]Nustatyti ekrano kalibravimą · Nustatyti audio išėjimą · Nustatyti distancinį pultą[CR][COLOR=red]Master Lock[/COLOR] - leidžia nustatyti pagrindinį užrakto slaptažodį. Apriboja prieigą prie[CR]pasirinktų skyrių tokių kaip Programos ir Scenarijai, Failų tvarkyklė ir Nustatymai"
+msgstr "[B][COLOR=blue]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti ekrano kalibravimą · Nustatyti audio išėjimą · Nustatyti distancinį pultą"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B][COLOR=red]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR]Nustatyti parametrų valdymą · Nustatyti diegimą iš xbmc.org · Nustatyti priedų pakeitimą[CR][COLOR=red]Prezentacija[/COLOR] — visuomeninės komunikacijos forma, ko nors naujo, įdomaus, vertingo[CR]pristatymas visuomenei arba visuomenės grupei."
+msgstr "[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti parametrų valdymą · Nustatyti diegimą iš xbmc.org · Nustatyti priedų pakeitimą"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B][COLOR=red]KONFIGŪRUOTI TV NUSTATYMUS[/COLOR][/B][CR]Pakeisti viso ekrano informacija · Tvarkyti EPG duomenis[CR][COLOR=red]EPG[/COLOR] – Jūsų skaitmeninės televizijos kanalų gidas[CR][COLOR=red]OSD[/COLOR] – Daugiakalbis ekraninės grafikos meniu"
+msgstr "[B][COLOR=blue]KONFIGŪRUOTI TV NUSTATYMUS[/COLOR][/B][CR][CR]Pakeisti viso ekrano informacija · Tvarkyti EPG duomenis"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B][COLOR=red]TINKLO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR]XBMC sąrankos valdymas per UPnP ar HTTP · Konfigūruoti bendrą failų naudojimą[CR][COLOR=red]Zeroconf[/COLOR] - technologijų rinkinys katras automatiškai sukuria IP tinklą be konfigūracijos[CR]ar specialių serverių · [COLOR=red]AirPlay[/COLOR] - tai prieiga prie Jūsų muzikinių iTunes kolekcijų."
+msgstr "[B][COLOR=blue]TINKLO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]XBMC sąrankos valdymas per UPnP ar HTTP · Konfigūruoti bendrą failų naudojimą"
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Pagalba pirmam paleidimui..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Šis skirtukas reiškia, kad yra meniu iki šio lango, kuriame yra papildomų galimybių šioje skyrio pusėje. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba padėkite pelės žymeklį virš skirtuko.[CR][CR] Spauskite \"Gerai\" uždaryti šį langą. Jis daugiau nebus rodomas."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-25 14:04+0000\n"
+"PO-Revision-Date: 2012-10-30 13:27+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -459,11 +459,11 @@ msgstr "[B]HİZMET AYARLARINI YAPILANDIR[/B][CR][CR]UPnP ve HTTP üzerinden XBMC
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "İlk çalıştırma yardımı...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda yada klavyenizle yada fare imlecini sekmenin sol tarafına götürünüz. [CR][CR]Pencereyi kapatmak için \"Ok\" tuşuna basınız. Bir daha çıkmayacaktır."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

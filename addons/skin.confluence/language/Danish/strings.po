@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-29 21:10+0000\n"
+"PO-Revision-Date: 2012-11-01 12:51+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Ændrer din"
+msgstr "Ændre din"
 
 msgctxt "#31003"
 msgid "Power Options"
-msgstr "Strømstyring"
+msgstr "Strømstyringsindstillinger"
 
 msgctxt "#31004"
 msgid "Working..."
@@ -35,15 +35,15 @@ msgstr "Skjul information"
 
 msgctxt "#31006"
 msgid "View Options"
-msgstr "Se muligheder"
+msgstr "Vis muligheder"
 
 msgctxt "#31008"
 msgid "Fullscreen"
-msgstr "Fuld skærm"
+msgstr "Fuldskærm"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr "Total varighed"
+msgstr "Samlet varighed"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -59,7 +59,7 @@ msgstr "Side"
 
 msgctxt "#31025"
 msgid "Items"
-msgstr "Objekter"
+msgstr "Elementer"
 
 msgctxt "#31026"
 msgid "Misc Options"
@@ -79,7 +79,7 @@ msgstr "Fankunst"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
-msgstr "Billedeikoner"
+msgstr "Miniaturebilleder af billeder"
 
 msgctxt "#31032"
 msgid "Image Wrap"
@@ -99,7 +99,7 @@ msgstr "AFSPILLER"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "PAUSE"
+msgstr "PAUSERET"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -111,7 +111,7 @@ msgstr "SPOL TILBAGE"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
-msgstr "Standard til visualisering"
+msgstr "Visualiseringsforudindstillinger"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -119,11 +119,11 @@ msgstr "Sluttid"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Sorter: Stigende"
+msgstr "Sortering: Stigende"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Sorter: Faldende"
+msgstr "Sortering: Faldende"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -147,15 +147,15 @@ msgstr "Nuværende afspilningsliste"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Denne fil er stakket. Vælg den del du vil afspille fra."
+msgstr "Denne fil er stablet. Vælg den del du vil afspille fra."
 
 msgctxt "#31061"
 msgid "Current Selected"
-msgstr "Nuværende valgt"
+msgstr "Nuværende udvalgte"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Indstillinger til hovedsiden"
+msgstr "Startskærmsindstillinger"
 
 msgctxt "#31102"
 msgid "Background"
@@ -163,11 +163,11 @@ msgstr "Baggrund"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Vis \"PAUSE\" i  billedserier"
+msgstr "Vis \"PAUSERET\" i  billeddiasshow"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Afspil trailere i et vindue [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
+msgstr "Afspil trailere i et vindue [COLOR=grey3](Kun videoinformationsdialog)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -175,19 +175,19 @@ msgstr "Diverse indstillinger"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Skjul flagglæsning fra videofilnavne [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Skjul vigende læsning fra videofilnavne [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Skjul hovedsideknapper"
+msgstr "Skjul hovedmenuknapperne"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Aktiver Tilpasset Baggrund"
+msgstr "Aktiver brugerdefineret baggrund"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Baggrunds sti:"
+msgstr "Sti til baggrund:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -199,7 +199,7 @@ msgstr "Indstillinger"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Vis nyligt tilføjede album"
+msgstr "Vis nyligt tilføjne albummer"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -207,7 +207,7 @@ msgstr "Vis nyligt tilføjne videoer"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
-msgstr "Undermenu til hovedsiden"
+msgstr "Undermenu til programmer på startskærmen"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
@@ -223,11 +223,11 @@ msgstr "Vis \"Spiller nu\" i baggrunden for videoer"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Vis \"Spiller nu\" i baggrunden for visualisering"
+msgstr "Vis \"Spiller nu\" visualisering i baggrunden"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Afspil TV temasange i videobiblioteket (TvTunes add-on)"
+msgstr "Afspil tv-serie temasange i videobiblioteket (TvTunes add-on)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -239,27 +239,27 @@ msgstr "Sangtekster"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr "Gem Fanart i fuldskærms visualisering"
+msgstr "Skjul fankunst i fuldskærmsvisualisering"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Sangtekst tilføjelse"
+msgstr "Sangtekst add-on"
 
 msgctxt "#31133"
 msgid "Subtitle Add-on"
-msgstr "Undertekst tilføjelse"
+msgstr "Undertekst add-on"
 
 msgctxt "#31134"
 msgid "Home Page Videos Submenu"
-msgstr "Hjemmeside videoer undermenu"
+msgstr "Undermenu til videoer på startskærmen"
 
 msgctxt "#31135"
 msgid "Home Page Music Submenu"
-msgstr "Hjemmeside musik undermenu"
+msgstr "Undermenu til musik på startskærmen"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Submenu"
-msgstr "Hjemmeside billeder undermenu"
+msgstr "Undermenu til billeder på startskærmen"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -279,7 +279,7 @@ msgstr "Vælg din sang"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
-msgstr "Sangtekstkilde"
+msgstr "Sangtekstskilde"
 
 msgctxt "#31206"
 msgid "Found"
@@ -319,23 +319,23 @@ msgstr "Hukommelse i brug:"
 
 msgctxt "#31310"
 msgid "Track Number"
-msgstr "Spor nummer"
+msgstr "Spornummer"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "FANKUNST BILLEDE[CR][CR]IKKE TILGÆNGELIG[CR][CR]TRYK FOR AT VÆLGE"
+msgstr "Fankunstsbillede[CR][CR]Ikke tingængelig[CR][CR]Tryk på en knap for at vælge"
 
 msgctxt "#31312"
 msgid "Current Scraper"
-msgstr "Nuværende Scraper"
+msgstr "Nuværende scraper"
 
 msgctxt "#31313"
 msgid "Choose a Scraper"
-msgstr "Vælg en Scraper"
+msgstr "Vælg en scraper"
 
 msgctxt "#31314"
 msgid "Content Scanning Options"
-msgstr "Indstillinger til indholdsskanning"
+msgstr "Indholdsskanningsindstillinger"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
@@ -371,15 +371,15 @@ msgstr "Opløsning"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Nyligt tilføjet"
+msgstr "Nyligt tilføjne"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "Skjul baggrundsfankunst"
+msgstr "[B]Timeren startet![/B] [COLOR=grey2] - Systemet lukker ned om[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Klik på knappen for at afspille[CR][CR]Film trailer"
+msgstr "Klik på en knap for at afspille[CR][CR]Filmtrailer"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -407,7 +407,7 @@ msgstr "Film menu"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Sangtekster"
+msgstr "Hent undertekster"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -419,115 +419,115 @@ msgstr "Skinnets standard uden store bogstaver"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Arial baseret"
+msgstr "Baseret på Arial"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]SKIFT INDSTILLINGER TIL UDSEENDE[/B][CR][CR]Skift skin · Vælg sprog og region · Skift indstillinger til fil-listen[CR]Indstil pauseskærm"
+msgstr "[B]KONFIGURER UDSEENDESINDSTILLINGER[/B][CR][CR]Skift skin · Vælg sprog og region · Ændre fil oversigtsindstillinger[CR]Indstil en pauseskærm"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"
-msgstr "[B]SKIFT INDSTILLINGER TIL VIDEOER[/B][CR][CR]Håndter din videosamling"
+msgstr "[B]KONFIGURER VIDEOINDSTILLINGER[/B][CR][CR]Administrer dit videobibliotek · Vælg videoafspilningsindstillinger · Ændre video oversigtsindstillinger[CR]Vælg undertekstsskrifttyper"
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]SKIFT INDSTILLINGER TIL MUSIK[/B][CR][CR]Håndter din musiksamling"
+msgstr "[B]KONFIGURER MUSIKINDSTILLINGER[/B][CR][CR]Administrer dit musikbibliotek · Vælg musikafspilningsindstillinger · Ændre musik oversigtsindstillinger[CR]Opsæt sangindsendelse · Vælg karaokeindstillinger"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]SKIFT INDSTILLINGER TIL BILLEDER[/B][CR][CR]Vælg hvordan billeder vises · Konfigurer billedeserier"
+msgstr "[B]KONFIGURER BILLEDINSTILLINGER[/B][CR][CR]Ændre billed oversigstindstillinger · Konfigurer diasshow"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
-msgstr "[B]SKIFT INDSTILLINGER TIL VEJRSIDEN[/B][CR][CR]Du kan vælge tre byer, der skal hentes vejrudsigter for"
+msgstr "[B]KONFIGURER VEJRINDSTILLINGER[/B][CR][CR]Du kan vælge tre byer, der skal hentes vejrudsigter for"
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]SKIFT SYSTEMINDSTILLINGER[/B][CR][CR]Indstil og kalibrer skærmen · Indstil lydudgang · Indstil fjernbetjeninger[CR]Indstil strømstyring · Aktiver fejllogning · Indstil hovedlås"
+msgstr "[B]KONFIGURER SYSTEMINDSTILLINGER[/B][CR][CR]Indstil og kalibrer skærmene · Opsæt lydudgang · Opsæt fjernbetjeninger[CR]Opsæt strømstyringsindstillinger · Aktiver fejllogning · Opsæt hovedlås"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B]KONFIGURER ADD-ONS[/B][CR][CR]Administrere dine installerede Add-ons · Browse efter og installere Add-ons fra xbmc.org[CR]Ændre Add-on indstillinger"
+msgstr "[B]KONFIGURER ADD-ONS[/B][CR][CR]Administrer dine installerede add-ons · Søg efter og installer add-ons fra xbmc.org[CR]Ændre add-on indstillinger"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]KONFIGURERE TV INDSTILLINGER[/B][CR][CR]Skift fuldskærms info · Manage EPG data indstillinger"
+msgstr "[B]KONFIGURER TV INDSTILLINGER[/B][CR][CR]Ændre fuldskærmsinfo · Administrer EPG dataindstillinger"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]ÆNDRE INDSTILLINGER FOR TJENSTER[/B][CR][CR]Konfigurere kontrol med XBMC via UPnP og HTTP · Konfigurere fildeling[CR]Aktivere Zeroconf · Konfigurere AirPlay"
+msgstr "[B]KONFIGURER TJENESTEINDSTILLINGER[/B][CR][CR]Opsæt styring af XBMC ved hjælp af UPnP og HTTP · Konfigurer fildeling[CR]Aktiver Zeroconf · Konfigurer AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Prøv først og fremmest hjælp..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Dette faneblad betyder, at der er en menu i siden af dette vindue, som indeholder ekstra indstillinger til denne sektion.\nFor at få adgang til denne menu, skal du navigere til venstre  med din fjernbetjening eller tastatur. Du kan også placere din musemarkør henover fanebladet. [CR][CR]Tryk \"Ok\" for at lukke denne dialog. Den dukker ikke op igen."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Vælg din XBMC-brugerprofil[CR]for at logge ind og fortsætte"
+msgstr "Vælg din XBMC brugerprofil[CR]for at logge ind og fortsætte"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr "Optagelses Timer"
+msgstr "Optagelsestimere"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr "Planlagt Tid"
+msgstr "Planlagt tid"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr "Live TV"
+msgstr "TV"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "Tilføj Gruppe"
+msgstr "Tilføj gruppe"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr "Ændre Navn På Gruppe"
+msgstr "Omdøb gruppe"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr "Slet Gruppe"
+msgstr "Slet gruppe"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr "Tilgængelige[CR]Grupper"
+msgstr "Tilgængelige[CR]grupper"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr "Kanal Gruppe"
+msgstr "Kanalgruppe"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr "Sæt Timer"
+msgstr "Indstil timer"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr "Kanal Indstillinger"
+msgstr "Kanalindstillinger"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
-msgstr "36 timers prognose"
+msgstr "36 timers vejrudsigt"
 
 msgctxt "#31902"
 msgid "Hourly Forecast"
-msgstr "Prognose for næste time"
+msgstr "Vejrudsigten for næste time"
 
 msgctxt "#31903"
 msgid "Weekend Forecast"
-msgstr "Weekend prognose"
+msgstr "Vejrudsigten for weekenden"
 
 msgctxt "#31904"
 msgid "10 Day Forecast"
-msgstr "10 døgns prognose"
+msgstr "10 døgns vejrudsigt"
 
 msgctxt "#31905"
 msgid "Forecast"
-msgstr "Prognose"
+msgstr "Vejrudsigt"
 
 msgctxt "#31906"
 msgid "Maps & Video"
@@ -539,4 +539,4 @@ msgstr "Risiko for nedbør"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "Henter prognose oplysninger..."
+msgstr "Henter vejrudsigtsinfo..."

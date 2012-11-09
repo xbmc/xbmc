@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-02 17:19+0000\n"
+"PO-Revision-Date: 2012-10-29 22:35+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -459,11 +459,11 @@ msgstr "[B]НАСТРОЙКА ПАРАМЕТРОВ СЛУЖБ[/B][CR][CR]Нас�
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Сведения при первом запуске."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Эта вкладка означает, что сбоку окна есть меню с дополнительными настройками.  Чтобы получить доступ к меню, перейдите влево при помощи пульта ДУ или клавиатуры либо поместите курсор мыши над вкладкой. [CR][CR]Нажмите ОК, чтобы закрыть этот диалог. Он больше не будет отображаться."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
