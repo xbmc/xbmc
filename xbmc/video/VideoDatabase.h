@@ -763,6 +763,8 @@ protected:
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
+  void CleanupTags();
+
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
