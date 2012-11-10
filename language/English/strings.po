@@ -2324,11 +2324,11 @@ msgid "Enter number"
 msgstr ""
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr ""
 
 msgctxt "#613"
-msgid "Sample Frequency"
+msgid "Sample rate"
 msgstr ""
 
 #empty strings from id 614 to 619
