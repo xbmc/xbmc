@@ -45,7 +45,14 @@ CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float
         //Pass the modifier and key press information when sent from an EventServer Client
         m_modifiers = buttonCode & (MODIFIER_ALT | MODIFIER_CTRL | MODIFIER_RALT | MODIFIER_SHIFT | MODIFIER_SUPER);
         if(((buttonCode & KEY_ASCII)==KEY_ASCII))
+        {
             m_ascii = buttonCode & 0xFF;
+            //Convert Lowercase ascii to uppercase for VKey
+            if(0x61 <= m_ascii && m_ascii <= 0x7a)
+                m_vkey = buttonCode & ~0x20;//Get rid of bit
+            else
+                m_vkey = buttonCode & 0xFF;
+        }
         else
             m_vkey = buttonCode & 0xFF;
   }
@@ -174,9 +181,11 @@ float CKey::GetRepeat() const
 
 void CKey::SetFromService(bool fromService)
 {
-  if (fromService && (m_buttonCode & KEY_ASCII))
-    m_unicode = m_buttonCode - KEY_ASCII;
-    
+  if (fromService && (m_buttonCode & KEY_ASCII)) {
+    m_unicode = m_buttonCode & (unsigned short)~KEY_ASCII;
+    if(0x61 <= m_ascii && m_ascii <= 0x7a)
+        m_buttonCode &= ~0x20; //Need to get rid of this bit for correct processing in OnKey
+  }
   m_fromService = fromService;
 }
 
