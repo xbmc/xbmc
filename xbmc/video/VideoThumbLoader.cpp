@@ -339,23 +339,15 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     if (!item.HasArt("fanart") && tag.m_iIdShow >= 0)
     {
       ArtCache::const_iterator i = m_showArt.find(tag.m_iIdShow);
-      if (i != m_showArt.end())
-        item.AppendArt(i->second);
-      else
+      if (i == m_showArt.end())
       {
-        map<string, string> showArt, cacheArt;
-        if (m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt))
-        {
-          for (CGUIListItem::ArtMap::iterator i = showArt.begin(); i != showArt.end(); ++i)
-          {
-            if (i->first == "fanart")
-              cacheArt.insert(*i);
-            else
-              cacheArt.insert(make_pair("tvshow." + i->first, i->second));
-          }
-          item.AppendArt(cacheArt);
-        }
-        m_showArt.insert(make_pair(tag.m_iIdShow, cacheArt));
+        map<string, string> showArt;
+        m_database->GetArtForItem(tag.m_iIdShow, "tvshow", showArt);
+        i = m_showArt.insert(make_pair(tag.m_iIdShow, showArt)).first;
+      }
+      if (i != m_showArt.end())
+      {
+        item.AppendArt(i->second, "tvshow");
       }
     }
     m_database->Close();

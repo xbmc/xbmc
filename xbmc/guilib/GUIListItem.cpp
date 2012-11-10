@@ -136,10 +136,10 @@ void CGUIListItem::ClearArt()
   m_artFallbacks.clear();
 }
 
-void CGUIListItem::AppendArt(const ArtMap &art)
+void CGUIListItem::AppendArt(const ArtMap &art, const std::string &prefix)
 {
   for (ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
-    SetArt(i->first, i->second);
+    SetArt(prefix.empty() ? i->first : prefix + '.' + i->first, i->second);
 }
 
 std::string CGUIListItem::GetArt(const std::string &type) const

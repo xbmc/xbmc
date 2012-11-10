@@ -91,9 +91,10 @@ public:
 
   /*! \brief append artwork to an item
    \param art a type:url map for artwork
+   \param prefix a prefix for the art, if applicable.
    \sa GetArt
    */
-  void AppendArt(const ArtMap &art);
+  void AppendArt(const ArtMap &art, const std::string &prefix = "");
 
   /*! \brief set a fallback image for art
    \param from the type to fallback from

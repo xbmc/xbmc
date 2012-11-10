@@ -119,13 +119,14 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     else if (tag.GetType() == "song")
     { // no art for the song, try the album
       ArtCache::const_iterator i = m_albumArt.find(tag.GetAlbumId());
-      if (i != m_albumArt.end())
-        item.SetArt(i->second);
-      else
+      if (i == m_albumArt.end())
       {
-        if (m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork))
-          item.SetArt(artwork);
-        m_albumArt.insert(make_pair(tag.GetAlbumId(), artwork));
+        m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork);
+        i = m_albumArt.insert(make_pair(tag.GetAlbumId(), artwork)).first;
+      }
+      if (i != m_albumArt.end())
+      {
+        item.AppendArt(i->second, "album");
       }
     }
     if (tag.GetType() == "song" || tag.GetType() == "album")
