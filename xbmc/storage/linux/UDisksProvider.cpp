@@ -154,7 +154,8 @@ CMediaSource CUDiskDevice::ToMediaShare()
 
 bool CUDiskDevice::IsApproved()
 {
-  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && !m_FileSystem.Equals("swap")) && !m_MountPath.Equals("/")) || m_isOptical;
+  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && !m_FileSystem.Equals("swap")) 
+      && !m_MountPath.Equals("/") && !m_MountPath.Equals("/boot")) || m_isOptical;
 }
 
 #define BOOL2SZ(b) ((b) ? "true" : "false")
