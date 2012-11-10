@@ -50,8 +50,6 @@ bool CUDFFile::Open(const CURL& url)
 {
   CStdString strFName = url.GetHostName();
 
-  CURL::Decode(strFName);
-
   m_hFile = m_udfIsoReaderLocal.OpenFile((char*)strFName.c_str());
   if (m_hFile == INVALID_HANDLE_VALUE)
   {

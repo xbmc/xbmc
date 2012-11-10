@@ -44,7 +44,6 @@ bool CUDFDirectory::GetDirectory(const CStdString& strPath,
   CURL url(strPath);
 
   CStdString strDirectory = url.GetHostName();
-  CURL::Decode(strDirectory);
 
   udf25 udfIsoReader;
   udf_dir_t *dirp = udfIsoReader.OpenDir(strDirectory);
