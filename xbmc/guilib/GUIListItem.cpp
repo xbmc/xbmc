@@ -134,6 +134,11 @@ void CGUIListItem::SetArt(const ArtMap &art, bool setFallback /* = true */)
   SetInvalid();
 }
 
+void CGUIListItem::ClearArt()
+{
+  m_art.clear();
+}
+
 void CGUIListItem::AppendArt(const ArtMap &art)
 {
   for (ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
@@ -320,7 +325,7 @@ void CGUIListItem::Serialize(CVariant &value)
 void CGUIListItem::FreeIcons()
 {
   FreeMemory();
-  m_art.clear();
+  ClearArt();
   m_strIcon = "";
   SetInvalid();
 }

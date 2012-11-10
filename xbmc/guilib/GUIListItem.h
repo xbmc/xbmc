@@ -96,6 +96,11 @@ public:
    */
   void AppendArt(const ArtMap &art);
 
+  /*! \brief clear art on an item
+   \sa SetArt
+   */
+  void ClearArt();
+
   /*! \brief Get a particular art type for an item
    \param type type of art to fetch.
    \return the art URL, if available, else empty.
