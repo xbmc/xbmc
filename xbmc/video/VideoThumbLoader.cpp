@@ -248,7 +248,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         artwork.insert(make_pair(type, art));
       }
     }
-    pItem->SetArt(artwork);
+    SetArt(*pItem, artwork);
   }
 
   // thumbnails are special-cased due to auto-generation
@@ -298,6 +298,18 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   return true;
 }
 
+void CVideoThumbLoader::SetArt(CFileItem &item, const map<string, string> &artwork)
+{
+  item.SetArt(artwork);
+  if (artwork.find("thumb") == artwork.end())
+  { // set fallback for "thumb"
+    if (artwork.find("poster") != artwork.end())
+      item.SetArtFallback("thumb", "poster");
+    else if (artwork.find("poster") != artwork.end())
+      item.SetArtFallback("thumb", "banner");
+  }
+}
+
 bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
 {
   CVideoInfoTag &tag = *item.GetVideoInfoTag();
@@ -306,7 +318,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     map<string, string> artwork;
     m_database->Open();
     if (m_database->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
-      item.SetArt(artwork);
+      SetArt(item, artwork);
     else if (tag.m_type == "artist")
     { // we retrieve music video art from the music database (no backward compat)
       CMusicDatabase database;
