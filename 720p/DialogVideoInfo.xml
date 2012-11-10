@@ -20,7 +20,7 @@
 				<control type="group">
 					<posx>80</posx>
 					<posy>70</posy>
-					<visible>[!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)] + !Container.Content(episodes)</visible>
+					<visible>[!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)] + !Container.Content(episodes)</visible>
 					<!-- shadow -->
 					<control type="image">
 						<posy>-5</posy>
@@ -46,7 +46,7 @@
 						<width>244</width>
 						<height>366</height>
 						<texture background="true" diffuse="bigPosterMask.png">amt-blank-poster.png</texture>
-						<info>ListItem.Thumb</info>
+						<info>ListItem.Art(thumb)</info>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
 					<control type="image">
@@ -56,7 +56,7 @@
 						<width>244</width>
 						<height>366</height>
 						<texture flipy="true" diffuse="DiffuseMirror3.png">amt-blank-poster.png</texture>
-						<info>ListItem.Thumb</info>
+						<info>ListItem.Art(thumb)</info>
 						<aspectratio aligny="top">scale</aspectratio>
 					</control>
 				</control>
@@ -64,7 +64,7 @@
 				<control type="group">
 					<posx>50</posx>
 					<posy>200</posy>
-					<visible>[!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)] + Container.Content(episodes)</visible>
+					<visible>[!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)] + Container.Content(episodes)</visible>
 					<!-- shadow -->
 					<control type="image">
 						<posy>-5</posy>
@@ -90,7 +90,7 @@
 						<width>304</width>
 						<height>170</height>
 						<texture background="true" diffuse="bigPosterMask.png">amt-blank-poster.png</texture>
-						<info>ListItem.Thumb</info>
+						<info>ListItem.Art(thumb)</info>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
 					<control type="image">
@@ -100,7 +100,7 @@
 						<width>304</width>
 						<height>170</height>
 						<texture flipy="true" diffuse="DiffuseMirror3.png">amt-blank-poster.png</texture>
-						<info>ListItem.Thumb</info>
+						<info>ListItem.Art(thumb)</info>
 						<aspectratio aligny="top">scale</aspectratio>
 					</control>
 				</control>
@@ -453,7 +453,7 @@
 				<aspectratio>keep</aspectratio>
 				<bordertexture>Grey.png</bordertexture>
 				<bordersize>1</bordersize>
-				<info>Container(50).ListItem.Thumb</info>
+				<info>Container(50).ListItem.Art(thumb)</info>
 				<colordiffuse>ffcccccc</colordiffuse>
 				<visible>Control.HasFocus(50) + ![Container(50).OnNext | Container(50).OnPrevious]</visible>
 				<animation effect="fade" start="0" end="100" time="100" delay="100">Visible</animation>

@@ -44,7 +44,7 @@
 				<visible>ControlGroup(7001).HasFocus</visible>
 				<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
 				<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
-				<info background="true">Container(11000).ListItem.Property(fanart_image)</info>
+				<info background="true">Container(11000).ListItem.Art(fanart)</info>
 				<aspectratio>scale</aspectratio>
 				<posx>0</posx>
 				<posy>0</posy>
@@ -57,7 +57,7 @@
 				<visible>ControlGroup(7002).HasFocus</visible>
 				<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
 				<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
-				<info background="true">Container(11001).ListItem.Property(fanart_image)</info>
+				<info background="true">Container(11001).ListItem.Art(fanart)</info>
 				<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
 				<posx>0</posx>
 				<posy>0</posy>
@@ -70,7 +70,7 @@
 				<visible>ControlGroup(7004).HasFocus</visible>
 				<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
 				<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
-				<info background="true">Container(11002).ListItem.Property(fanart_image)</info>
+				<info background="true">Container(11002).ListItem.Art(fanart)</info>
 				<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
 				<posx>0</posx>
 				<posy>0</posy>
@@ -83,7 +83,7 @@
 				<visible>ControlGroup(7003).HasFocus</visible>
 				<animation effect="fade" end="50" time="300" delay="0">Visible</animation>
 				<animation effect="fade" end="0" time="0" delay="0">Hidden</animation>
-				<info background="true">Container(11003).ListItem.Thumb</info>
+				<info background="true">Container(11003).ListItem.Art(thumb)</info>
 				<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
 				<posx>0</posx>
 				<posy>0</posy>
@@ -95,7 +95,7 @@
 				<visible>ControlGroup(7005).HasFocus</visible>
 				<animation effect="fade" end="50" time="300" delay="0">Visible</animation>
 				<animation effect="fade" end="0" time="0" delay="0">Hidden</animation>
-				<info background="true">Container(11004).ListItem.Thumb</info>
+				<info background="true">Container(11004).ListItem.Art(thumb)</info>
 				<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
 				<posx>0</posx>
 				<posy>0</posy>
@@ -750,7 +750,7 @@
 								<posy>27</posy>
 								<width>140</width>
 								<height>140</height>
-								<info background="true">ListItem.Thumb</info>
+								<info background="true">ListItem.Art(thumb)</info>
 								<aspectratio aligny="top">keep</aspectratio>
 								<texture diffuse="bigSquareMask.png"/>
 								<bordertexture>bigSquareMask.png</bordertexture>
@@ -946,7 +946,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -990,7 +990,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 							</control>
 						</itemlayout>
@@ -1001,7 +1001,7 @@
 								<posy>27</posy>
 								<width>140</width>
 								<height>140</height>
-								<info background="true">ListItem.Thumb</info>
+								<info background="true">ListItem.Art(thumb)</info>
 								<aspectratio aligny="top">keep</aspectratio>
 								<texture diffuse="bigSquareMask.png"/>
 								<bordertexture>bigSquareMask.png</bordertexture>
@@ -1192,7 +1192,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -1216,7 +1216,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -1528,7 +1528,7 @@
 									<width>116</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<control type="image">
 									<posx>36</posx>
@@ -1772,7 +1772,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -1807,7 +1807,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 							</control>
 						</itemlayout>
@@ -1830,7 +1830,7 @@
 									<width>122</width>
 									<height>122</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -1889,7 +1889,7 @@
 									<width>122</width>
 									<height>122</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -2065,7 +2065,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -2080,7 +2080,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -2405,7 +2405,7 @@
 									<width>116</width>
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<control type="image">
 									<posx>36</posx>
@@ -2470,7 +2470,7 @@
 									<width>116</width>
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -2532,7 +2532,7 @@
 									<width>122</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -2573,7 +2573,7 @@
 									<width>122</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -2900,7 +2900,7 @@
 									<width>116</width>
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<control type="image">
 									<posx>36</posx>
@@ -2979,7 +2979,7 @@
 									<width>116</width>
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -3055,7 +3055,7 @@
 									<width>122</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -3111,7 +3111,7 @@
 									<width>122</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -3464,7 +3464,7 @@
 									<width>116</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<control type="label">
 									<posx>95</posx>
@@ -3491,7 +3491,7 @@
 									<width>122</width>
 									<height>122</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>

@@ -19,7 +19,7 @@
 				<include>TVSeasonsThumbPos</include>
 				<animation effect="rotatey" center="840" start="32" end="32" time="0" condition="true">Conditional</animation>
 				<include>MediaListSelectLongDelay</include>
-				<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 				<!-- shadow -->
 				<control type="image">
 					<description>Shadow Border</description>
@@ -33,7 +33,7 @@
 				<control type="image">
 					<description>Season Thumb</description>
 					<include>TVSeasonsSeasonThumbDims</include>
-					<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+					<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">stretch</aspectratio>
 					<visible>Control.IsVisible(57)</visible>
 				</control>
@@ -56,7 +56,7 @@
 				<control type="group">
 					<include>TVWideVisible</include>
 					<posy>187</posy>
-					<visible>!IsEmpty(ListItem.Banner) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<visible>!IsEmpty(ListItem.Art(banner)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					<!-- shadow -->
 					<control type="image">
 						<description>Shadow Border</description>
@@ -85,7 +85,7 @@
 						<posx>1</posx>
 						<width>660</width>
 						<height>122</height>
-						<texture diffuse="bannerMask.png">$INFO[ListItem.Banner]</texture>
+						<texture diffuse="bannerMask.png">$INFO[ListItem.Art(banner)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="center">scale</aspectratio>
 					</control>
 					<control type="label">
@@ -428,7 +428,7 @@
 				<animation effect="fade" start="0" end="100" time="300">Visible</animation>
 				<!-- big posters / thumbs, left side -->
 				<control type="group">
-					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					<control type="group">
 						<posx>12</posx>
 						<posy>64</posy>
@@ -454,7 +454,7 @@
 								<posx>5</posx>
 								<width>273</width>
 								<height>415</height>
-								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 							</control>
 						</control>
@@ -477,7 +477,7 @@
 								<posy>15</posy>
 								<width>420</width>
 								<height>240</height>
-								<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 							</control>
 						</control>
@@ -1180,9 +1180,9 @@
 						<posy>54</posy>
 						<width>226</width>
 						<height>136</height>
-						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					</control>
 					<control type="label">
 						<posx>160</posx>
@@ -1237,11 +1237,11 @@
 						<posy>51</posy>
 						<width>232</width>
 						<height>142</height>
-						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						<bordertexture border="10">frameOrange.png</bordertexture>
 						<bordersize>3</bordersize>
-						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					</control>
 					<control type="label">
 						<posx>163</posx>
@@ -1295,9 +1295,9 @@
 						<posy>54</posy>
 						<width>226</width>
 						<height>116</height>
-						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					</control>
 					<control type="label">
 						<posx>160</posx>
@@ -1340,11 +1340,11 @@
 						<posy>51</posy>
 						<width>232</width>
 						<height>122</height>
-						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="episodeMaskSmall.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						<bordertexture border="10">frameOrange.png</bordertexture>
 						<bordersize>3</bordersize>
-						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					</control>
 					<control type="label">
 						<posx>163</posx>

@@ -14,10 +14,10 @@
 				<posx>34</posx>
 				<posy>260</posy>
 				<control type="group">
-					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					<control type="image">
 						<include>MusicSongsCoverDims</include>
-						<info>ListItem.Thumb</info>
+						<info>ListItem.Art(thumb)</info>
 						<texture>DefaultAlbumCover.png</texture>
 						<aspectratio>stretch</aspectratio>
 						<bordertexture border="14">ThumbShadow.png</bordertexture>

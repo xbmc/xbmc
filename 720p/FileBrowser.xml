@@ -14,7 +14,7 @@
 					<description>Thumb</description>
 					<height>380</height>
 					<width>300</width>
-					<info>ListItem.Thumb</info>
+					<info>ListItem.Art(thumb)</info>
 					<aspectratio>keep</aspectratio>
 					<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
 					<bordersize>9</bordersize>
@@ -27,7 +27,7 @@
 					<aspectratio>keep</aspectratio>
 					<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
 					<bordersize>9</bordersize>
-					<visible>IsEmpty(ListItem.Thumb)</visible>
+					<visible>IsEmpty(ListItem.Art(thumb))</visible>
 				</control>-->
 				<control type="image">
 					<description>default pms Icon</description>

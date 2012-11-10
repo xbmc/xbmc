@@ -804,21 +804,21 @@
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info background="true">ListItem.Property(fanart_image)</info>
-					<visible>!IsEmpty(ListItem.Property(fanart_image)) + !Container.Content(plugincontent)</visible>
+					<info background="true">ListItem.Art(fanart)</info>
+					<visible>!IsEmpty(ListItem.Art(fanart)) + !Container.Content(plugincontent)</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="largeimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Art(fanart)) + !IsEmpty(FanArt.Image)</visible>
 					<info>FanArt.Image</info>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="largeimage">
 					<description>Clip background</description>
 					<include>FullScreenBGImage</include>
-					<info background="true">ListItem.Thumb</info>
+					<info background="true">ListItem.Art(thumb)</info>
 					<visible>Container.Content(clip)</visible>
 					<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
 				</control>
@@ -833,8 +833,8 @@
 					<posy>0</posy>
 					<width>1280</width>
 					<height>720</height>
-					<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+					<visible>!IsEmpty(ListItem.Art(fanart))</visible>
 					<fadetime>100</fadetime>
 				</control>
 			</control>
@@ -845,14 +845,14 @@
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
 					<info>FanArt.Image</info>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Art(fanart)) + !IsEmpty(FanArt.Image)</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="multiimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info background="true">ListItem.Property(fanart_image)</info>
-					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<info background="true">ListItem.Art(fanart)</info>
+					<visible>!IsEmpty(ListItem.Art(fanart))</visible>
 					<fadetime>100</fadetime>
 					<include>BackgroundFade</include>
 				</control>
@@ -863,14 +863,14 @@
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info>ListItem.Property(fanart_image)</info>
-					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<info>ListItem.Art(fanart)</info>
+					<visible>!IsEmpty(ListItem.Art(fanart))</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="multiimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Art(fanart)) + !IsEmpty(FanArt.Image)</visible>
 					<info background="true">FanArt.Image</info>
 					<fadetime>300</fadetime>
 					<include>BackgroundFade</include>
@@ -880,7 +880,7 @@
 				<description>Pictures Background Image</description>
 				<visible>Window.IsVisible(MyPictures)</visible>
 				<control type="group">
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Art(fanart)) + IsEmpty(FanArt.Image)</visible>
 					<include>BackgroundFade</include>
 					<control type="group">
 						<include>PicturesBGVisible</include>
@@ -902,14 +902,14 @@
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info>ListItem.Property(fanart_image)</info>
-					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<info>ListItem.Art(fanart)</info>
+					<visible>!IsEmpty(ListItem.Art(fanart))</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="largeimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Art(fanart)) + !IsEmpty(FanArt.Image)</visible>
 					<info>FanArt.Image</info>
 					<include>BackgroundFade</include>
 				</control>
@@ -920,14 +920,14 @@
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info>ListItem.Property(fanart_image)</info>
-					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<info>ListItem.Art(fanart)</info>
+					<visible>!IsEmpty(ListItem.Art(fanart))</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="largeimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Art(fanart)) + !IsEmpty(FanArt.Image)</visible>
 					<info>FanArt.Image</info>
 					<include>BackgroundFade</include>
 				</control>
@@ -938,13 +938,13 @@
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info>ListItem.Property(fanart_image)</info>
+					<info>ListItem.Art(fanart)</info>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="largeimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Art(fanart)) + !IsEmpty(FanArt.Image)</visible>
 					<info background="true">FanArt.Image</info>
 					<fadetime>200</fadetime>
 					<include>BackgroundFade</include>
@@ -1133,7 +1133,7 @@
 	<include name="NoThumbLabel">
 		<align>center</align>
 		<label>$LOCALIZE[20018]</label>
-		<visible>IsEmpty(ListItem.Thumb) + !Skin.HasSetting(HideNoThumbIcon)</visible>
+		<visible>IsEmpty(ListItem.Art(thumb)) + !Skin.HasSetting(HideNoThumbIcon)</visible>
 	</include>
 	<include name="InfoMessagePanelBG">
 		<texture border="20,13,15,0">InfoMessagePanel.png</texture>
@@ -1384,7 +1384,7 @@
 		<posy>3</posy>
 		<width>122</width>
 		<height>186</height>
-		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 	</include>
 	<include name="PanelStreamImageFocus">
@@ -1392,7 +1392,7 @@
 		<posy>0</posy>
 		<width>128</width>
 		<height>192</height>
-		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		<bordertexture border="10">frameOrange.png</bordertexture>
 		<bordersize>3</bordersize>
@@ -1497,7 +1497,7 @@
 				<posy>3</posy>
 				<width>122</width>
 				<height>122</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
@@ -1530,7 +1530,7 @@
 				<posy>0</posy>
 				<width>128</width>
 				<height>128</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<bordertexture border="10">frameOrange.png</bordertexture>
 				<bordersize>3</bordersize>
@@ -1565,7 +1565,7 @@
 				<posy>3</posy>
 				<width>122</width>
 				<height>122</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
@@ -1597,7 +1597,7 @@
 				<posy>0</posy>
 				<width>128</width>
 				<height>128</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<bordertexture border="10">frameOrange.png</bordertexture>
 				<bordersize>3</bordersize>
@@ -1641,7 +1641,7 @@
 				<posy>3</posy>
 				<width>122</width>
 				<height>122</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
@@ -1682,7 +1682,7 @@
 				<posy>0</posy>
 				<width>128</width>
 				<height>128</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<bordertexture border="10">frameOrange.png</bordertexture>
 				<bordersize>3</bordersize>
@@ -1726,7 +1726,7 @@
 				<posy>3</posy>
 				<width>122</width>
 				<height>122</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
@@ -1777,7 +1777,7 @@
 				<posy>3</posy>
 				<width>122</width>
 				<height>122</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
@@ -1825,7 +1825,7 @@
 				<posy>3</posy>
 				<width>234</width>
 				<height>110</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
@@ -1897,7 +1897,7 @@
 				<posy>0</posy>
 				<width>240</width>
 				<height>116</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<bordertexture border="10">frameOrange.png</bordertexture>
 				<bordersize>3</bordersize>
@@ -1951,7 +1951,7 @@
 				<posy>3</posy>
 				<width>234</width>
 				<height>110</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
@@ -1990,7 +1990,7 @@
 				<posy>0</posy>
 				<width>240</width>
 				<height>116</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				<bordertexture border="10">frameOrange.png</bordertexture>
 				<bordersize>3</bordersize>
@@ -2354,7 +2354,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
 			<visible>true</visible>
 			<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
 		</control>
@@ -2366,7 +2366,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio aligny="center">scale</aspectratio>
-			<texture background="true">$INFO[ListItem.Thumb]</texture>
+			<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<visible>true</visible>
 			<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
 		</control>
@@ -2377,7 +2377,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<aspectratio aligny="top">scale</aspectratio>
-			<texture background="true">$INFO[ListItem.Thumb]</texture>
+			<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 			<visible>true</visible>
 			<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
 		</control>
@@ -2668,12 +2668,12 @@
 	</include>
 	<include name="FanartOnTVProjectorScreen">
 		<control type="group">
-			<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+			<visible>!IsEmpty(ListItem.Art(fanart))</visible>
 			<include>MediaListSelectDelay</include>
 			<include>TVProjectScreenOverlay</include>
 			<control type="image">
 				<description>Fanart background</description>
-				<info>ListItem.Property(fanart_image)</info>
+				<info>ListItem.Art(fanart)</info>
 				<include>TVProjectScreenImage</include>
 			</control>
 		</control>
@@ -2853,9 +2853,9 @@
 	</include>
 	<!-- Little baby thumbs at the bottom -->
 	<include name="MediaPreviewThumbDetails">
-		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-		<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+		<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 	</include>
 	<include name="MediaPreviewThumb">
 		<posx>7.5</posx>
@@ -2930,7 +2930,7 @@
 		<colordiffuse>f0808080</colordiffuse>
 		<info>ListItem.Icon</info>
 		<aspectratio aligny="bottom">stretch</aspectratio>
-		<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+		<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 	</include>
 	<include name="ShowcaseFocusAnim">
 		<animation effect="zoom" tween="quadratic" start="100,100" end="120,120" center="225,150" time="600" delay="200">Focus</animation>
@@ -4938,7 +4938,7 @@
 				<posy>10</posy>
 				<width>128</width>
 				<height>140</height>
-				<info>ListItem.Thumb</info>
+				<info>ListItem.Art(thumb)</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
 			</control>
 			<control type="label">
@@ -4986,7 +4986,7 @@
 				<posy>10</posy>
 				<width>128</width>
 				<height>140</height>
-				<info>ListItem.Thumb</info>
+				<info>ListItem.Art(thumb)</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
 			</control>
 			<control type="label">

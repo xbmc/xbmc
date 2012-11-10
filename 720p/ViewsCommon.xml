@@ -55,7 +55,7 @@
 						<posy>-7</posy>
 						<width>237</width>
 						<height>355</height>
-						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
 					<!-- mirror -->
@@ -92,7 +92,7 @@
 						<posy>-55</posy>
 						<width>350</width>
 						<height>350</height>
-						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
 					</control>
 					<!-- mirror -->
@@ -249,8 +249,8 @@
 			<control type="largeimage">
 				<description>Clip background</description>
 				<include>FullScreenBGImage</include>
-				<info background="true">ListItem.Thumb</info>
-				<visible>!IsEmpty(ListItem.Thumb) + Container.Content(clip)</visible>
+				<info background="true">ListItem.Art(thumb)</info>
+				<visible>!IsEmpty(ListItem.Art(thumb)) + Container.Content(clip)</visible>
 				<animation effect="fade" start="0" end="6" time="0" condition="true">Conditional</animation>
 			</control>
 			<!-- main list -->
@@ -831,7 +831,7 @@
 					<posy>237</posy>
 					<!--<include>MediaListSelectDelay</include>-->
 					<control type="group">
-						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<visible>!IsEmpty(ListItem.Art(thumb)) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 						<posx>400</posx>
 						<posy>0</posy>
 						<!-- generic big thumb  -->
@@ -853,7 +853,7 @@
 							<width>238</width>
 							<height>360</height>
 							<fadetime>200</fadetime>
-							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						</control>
 						<!-- secondary screens - pms logo -->
@@ -891,7 +891,7 @@
 									<posx>53</posx>
 									<width>334</width>
 									<height>334</height>
-									<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+									<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								</control>
 							</control>
@@ -913,7 +913,7 @@
 									<posx>9</posx>
 									<width>238</width>
 									<height>234</height>
-									<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+									<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								</control>
 								<control type="group">
@@ -932,7 +932,7 @@
 										<posx>9</posx>
 										<width>400</width>
 										<height>234</height>
-										<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Property(Fanart_image)]</texture>
+										<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Art(fanart)]</texture>
 										<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 									</control>
 								</control>
@@ -970,7 +970,7 @@
 							<posx>-185</posx>
 							<posy>50</posy>
 							<visible>Container.Content(albums) | [Container.Content(plugincontent) + Container.Content(artists)] | [Window.IsActive(501) + !Container.Content(songs)] | [Container.Content(plugins) + !Window.IsActive(501)]</visible>
-							<visible>!IsEmpty(ListItem.Thumb)</visible>
+							<visible>!IsEmpty(ListItem.Art(thumb))</visible>
 							<control type="image">
 								<visible>[Container.Content(albums) | Container.Content(plugincontent) + Container.Content(artists) | Container.Content(songs)]</visible>
 								<posy>0</posy>
@@ -986,7 +986,7 @@
 								<posx>53</posx>
 								<width>334</width>
 								<height>334</height>
-								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -995,7 +995,7 @@
 								<posx>-43</posx>
 								<width>334</width>
 								<height>334</height>
-								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 							</control>
 						</control>
@@ -1039,7 +1039,7 @@
 									<posx>53</posx>
 									<width>334</width>
 									<height>334</height>
-									<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+									<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								</control>
 							</control>
@@ -1059,7 +1059,7 @@
 									<posx>-53</posx>
 									<width>550</width>
 									<height>208</height>
-									<texture background="true" diffuse="bannerMask.png">$INFO[ListItem.Thumb]</texture>
+									<texture background="true" diffuse="bannerMask.png">$INFO[ListItem.Art(thumb)]</texture>
 									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								</control>
 							</control>
@@ -1096,7 +1096,7 @@
 											<posx>9</posx>
 											<width>234</width>
 											<height>234</height>
-											<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+											<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 											<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 										</control>
 									</control>
@@ -1117,7 +1117,7 @@
 											<posx>9</posx>
 											<width>400</width>
 											<height>234</height>
-											<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Property(Fanart_image)]</texture>
+											<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Art(fanart)]</texture>
 											<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 										</control>
 									</control>
@@ -1187,7 +1187,7 @@
 								<posx>-43</posx>
 								<width>334</width>
 								<height>334</height>
-								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 								<visible>IsEmpty(ListItem.Plot)</visible>
 							</control>
@@ -1198,7 +1198,7 @@
 								<height>334</height>
 								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Icon]</texture>
 								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
-								<visible>IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Thumb)</visible>
+								<visible>IsEmpty(ListItem.Plot) + IsEmpty(ListItem.Art(thumb))</visible>
 							</control>
 							<control type="image">
 								<posx>-3</posx>
@@ -1216,7 +1216,7 @@
 								<posx>52</posx>
 								<width>334</width>
 								<height>334</height>
-								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
 							</control>
 							<!-- with plot -->
@@ -1225,7 +1225,7 @@
 								<posy>126</posy>
 								<width>436</width>
 								<height>230</height>
-								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
 								<visible>!Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
 							</control>
@@ -1249,7 +1249,7 @@
 								<posy>26</posy>
 								<width>436</width>
 								<height>230</height>
-								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
 							</control>
 							<control type="image">
@@ -1283,7 +1283,7 @@
 								<width>460</width>
 								<height>210</height>
 								<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-								<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Thumb]</texture>
+								<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 							</control>
 						</control>
 						<control type="group">
@@ -1305,7 +1305,7 @@
 								<width>460</width>
 								<height>210</height>
 								<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-								<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Thumb]</texture>
+								<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 							</control>
 						</control>
 						<!-- photos -->
@@ -1336,7 +1336,7 @@
 									<width>390</width>
 									<height>210</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 							</control>
 						</control>
@@ -1708,15 +1708,15 @@
 				<width>1280</width>
 				<height>720</height>
 				<aspectratio aligny="bottom">scale</aspectratio>
-				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+				<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
 				<visible>true</visible>
 				<animation effect="fade" start="0" end="3" time="0" condition="true">Conditional</animation>
 			</control>
 			<control type="largeimage">
 				<description>Clip background</description>
 				<include>FullScreenBGImage</include>
-				<info background="true">ListItem.Thumb</info>
-				<visible>!IsEmpty(ListItem.Thumb) + Container.Content(clip)</visible>
+				<info background="true">ListItem.Art(thumb)</info>
+				<visible>!IsEmpty(ListItem.Art(thumb)) + Container.Content(clip)</visible>
 				<animation effect="fade" start="0" end="4" time="0" condition="true">Conditional</animation>
 			</control>
 		</control>
@@ -2263,7 +2263,7 @@
 						<posy>77</posy>
 						<width>300</width>
 						<height>300</height>
-						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="bottom">scale</aspectratio>
 						<visible>IsEmpty(ListItem.Property(description))</visible>
 					</control>
@@ -2308,7 +2308,7 @@
 						<posy>97</posy>
 						<width>300</width>
 						<height>300</height>
-						<texture background="true" diffuse="bigPosterMask.png">$INFO[Listitem.Property(Fanart_Image)]</texture>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(fanart)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>-->
 					<!-- image when no plot -->
@@ -2328,7 +2328,7 @@
 						<posy>97</posy>
 						<width>300</width>
 						<height>300</height>
-						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						<visible>IsEmpty(ListItem.Property(description))</visible>
 					</control>
@@ -2565,7 +2565,7 @@
 					<width>1280</width>
 					<height>720</height>
 					<aspectratio aligny="top">scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Thumb]</texture>
+					<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 					<visible>true</visible>
 					<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
 				</control>
@@ -2577,7 +2577,7 @@
 					<width>1280</width>
 					<height>720</height>
 					<aspectratio aligny="top">scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Thumb]</texture>
+					<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 					<visible>true</visible>
 					<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
 				</control>
