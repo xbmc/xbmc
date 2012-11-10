@@ -348,6 +348,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       if (i != m_showArt.end())
       {
         item.AppendArt(i->second, "tvshow");
+        item.SetArtFallback("fanart", "tvshow.fanart");
       }
     }
     m_database->Close();

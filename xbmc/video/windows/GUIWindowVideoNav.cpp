@@ -294,11 +294,13 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
         {
           items.AppendArt(art, "tvshow");
+          items.SetArtFallback("fanart", "tvshow.fanart");
           if (node == NODE_TYPE_SEASONS)
-          {
-            CFileItem showItem;
-            showItem.SetArt(art);
-            items.SetArt("thumb", showItem.GetArt("thumb"));
+          { // set an art fallback for "thumb"
+            if (items.HasArt("tvshow.poster"))
+              items.SetArtFallback("thumb", "tvshow.poster");
+            else if (items.HasArt("tvshow.banner"))
+              items.SetArtFallback("thumb", "tvshow.banner");
           }
         }
 
@@ -319,10 +321,12 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
           CGUIListItem::ArtMap seasonArt;
           if (m_database.GetArtForItem(seasonID, "season", seasonArt))
           {
-            items.AppendArt(seasonArt, "season");
-            CFileItem seasonItem;
-            seasonItem.SetArt(seasonArt);
-            items.SetArt("thumb", seasonItem.GetArt("thumb"));
+            items.AppendArt(art, "season");
+            // set an art fallback for "thumb"
+            if (items.HasArt("season.poster"))
+              items.SetArtFallback("thumb", "season.poster");
+            else if (items.HasArt("season.banner"))
+              items.SetArtFallback("thumb", "season.banner");
           }
         }
         else
