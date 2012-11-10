@@ -80,7 +80,10 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       {
         string fanart = m_database->GetArtForItem(idArtist, "artist", "fanart");
         if (!fanart.empty())
-          pItem->SetArt("fanart", fanart);
+        {
+          pItem->SetArt("artist.fanart", fanart);
+          pItem->SetArtFallback("fanart", "artist.fanart");
+        }
       }
       m_database->Close();
     }
@@ -127,11 +130,18 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       if (i != m_albumArt.end())
       {
         item.AppendArt(i->second, "album");
+        for (map<string, string>::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
+          item.SetArtFallback(j->first, "album." + j->first);
       }
     }
     if (tag.GetType() == "song" || tag.GetType() == "album")
     { // fanart from the artist
-      item.SetArt("fanart", m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart"));
+      string fanart = m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
+      if (!fanart.empty())
+      {
+        item.SetArt("artist.fanart", fanart);
+        item.SetArtFallback("fanart", "artist.fanart");
+      }
     }
     m_database->Close();
   }
