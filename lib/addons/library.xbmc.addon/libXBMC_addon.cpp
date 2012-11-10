@@ -84,16 +84,15 @@ DLLEXPORT void XBMC_queue_notification(void *hdl, void* cb, const queue_msg_t ty
   ((CB_AddOnLib*)cb)->QueueNotification(((AddonCB*)hdl)->addonData, type, msg);
 }
 
-DLLEXPORT void XBMC_unknown_to_utf8(void *hdl, void* cb, string &str)
+DLLEXPORT char* XBMC_unknown_to_utf8(void *hdl, void* cb, const char* str)
 {
   if (cb == NULL)
-    return;
+    return NULL;
 
-  string buffer = ((CB_AddOnLib*)cb)->UnknownToUTF8(str.c_str());
-  str = buffer;
+  return ((CB_AddOnLib*)cb)->UnknownToUTF8(str);
 }
 
-DLLEXPORT const char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
+DLLEXPORT char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
 {
   if (cb == NULL)
     return "";
@@ -101,13 +100,21 @@ DLLEXPORT const char* XBMC_get_localized_string(void *hdl, void* cb, int dwCode)
   return ((CB_AddOnLib*)cb)->GetLocalizedString(((AddonCB*)hdl)->addonData, dwCode);
 }
 
-DLLEXPORT const char* XBMC_get_dvd_menu_language(void *hdl, void* cb)
+DLLEXPORT char* XBMC_get_dvd_menu_language(void *hdl, void* cb)
 {
   if (cb == NULL)
     return "";
 
   string buffer = ((CB_AddOnLib*)cb)->GetDVDMenuLanguage(((AddonCB*)hdl)->addonData);
   return strdup(buffer.c_str());
+}
+
+DLLEXPORT void XBMC_free_string(void* hdl, void* cb, char* str)
+{
+  if (cb == NULL)
+    return;
+
+  ((CB_AddOnLib*)cb)->FreeString(((AddonCB*)hdl)->addonData, str);
 }
 
 DLLEXPORT void* XBMC_open_file(void *hdl, void* cb, const char* strFileName, unsigned int flags)

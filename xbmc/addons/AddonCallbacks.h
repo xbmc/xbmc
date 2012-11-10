@@ -28,8 +28,9 @@ typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t logle
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
 typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
-typedef const char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
-typedef const char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
+typedef char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
+typedef char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
+typedef void (*AddOnFreeString)(const void* addonData, char* str);
 
 typedef void* (*AddOnOpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
 typedef void* (*AddOnOpenFileForWrite)(const void* addonData, const char* strFileName, bool bOverWrite);
@@ -59,6 +60,7 @@ typedef struct CB_AddOn
   AddOnUnknownToUTF8      UnknownToUTF8;
   AddOnGetLocalizedString GetLocalizedString;
   AddOnGetDVDMenuLanguage GetDVDMenuLanguage;
+  AddOnFreeString         FreeString;
 
   AddOnOpenFile           OpenFile;
   AddOnOpenFileForWrite   OpenFileForWrite;

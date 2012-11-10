@@ -46,6 +46,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
   m_callbacks->GetLocalizedString = GetLocalizedString;
   m_callbacks->GetDVDMenuLanguage = GetDVDMenuLanguage;
+  m_callbacks->FreeString         = FreeString;
 
   m_callbacks->OpenFile           = OpenFile;
   m_callbacks->OpenFileForWrite   = OpenFileForWrite;
@@ -234,12 +235,11 @@ char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
     g_charsetConverter.unknownToUTF8(strSource, string);
   else
     string = "";
-  char *buffer = (char*) malloc (string.length()+1);
-  strcpy(buffer, string.c_str());
+  char* buffer = strdup(string.c_str());
   return buffer;
 }
 
-const char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCode)
+char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCode)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper || g_application.m_bStop)
@@ -255,12 +255,11 @@ const char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long
   else
     string = g_localizeStrings.Get(dwCode).c_str();
 
-  char *buffer = (char*) malloc (string.length()+1);
-  strcpy(buffer, string.c_str());
+  char* buffer = strdup(string.c_str());
   return buffer;
 }
 
-const char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
+char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper)
@@ -268,9 +267,13 @@ const char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
 
   CStdString string = g_langInfo.GetDVDMenuLanguage();
 
-  char *buffer = (char*) malloc (string.length()+1);
-  strcpy(buffer, string.c_str());
+  char* buffer = strdup(string.c_str());
   return buffer;
+}
+
+void CAddonCallbacksAddon::FreeString(const void* addonData, char* str)
+{
+  delete[] str;
 }
 
 void* CAddonCallbacksAddon::OpenFile(const void* addonData, const char* strFileName, unsigned int flags)
