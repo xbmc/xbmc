@@ -189,6 +189,8 @@
       <up>IncreaseRating</up>
       <down>DecreaseRating</down>
       <back>LockPreset</back>
+      <pageplus>SkipNext</pageplus>
+      <pageminus>SkipPrevious</pageminus>
       <title>CodecInfo</title>
       <select>XBMC.ActivateWindow(VisualisationPresetList)</select>
       <menu>OSD</menu>
