@@ -182,10 +182,10 @@ public:
   virtual bool  CloseAudioStream(bool bWaitForBuffers);
   virtual bool  CloseVideoStream(bool bWaitForBuffers);
   virtual bool  CloseSubtitleStream(bool bKeepOverlays);
-  virtual bool  OpenAudioStream(int iStream, int source);
-  virtual bool  OpenVideoStream(int iStream, int source);
+  virtual bool  OpenAudioStream(int iStream, int source, bool reset = true);
+  virtual bool  OpenVideoStream(int iStream, int source, bool reset = true);
   virtual bool  OpenSubtitleStream(int iStream, int source); 
-  virtual void  OpenDefaultStreams();
+  virtual void  OpenDefaultStreams(bool reset = true);
   virtual bool  OpenDemuxStream();
   virtual bool  OpenInputStream();
   virtual bool  CheckPlayerInit(COMXCurrentStream& current, unsigned int source);

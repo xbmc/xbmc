@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-24 21:11+0000\n"
+"PO-Revision-Date: 2012-11-05 20:43+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -459,11 +459,11 @@ msgstr "[B]CONFIGUREER SERVICE-INSTELLINGEN[/B][CR][CR]Stel XBMC-beheer in via U
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Eerste sessie hulp..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Deze tab betekend dat er een menu met extra opties voor deze sectie aan de zijkant van het scherm beschikbaar is. Voor toegang tot het menu, navigeer naar links met de afstandsbediening of toetsenbord of ga met de muisaanwijzer naar de tab. \n[CR][CR]Klik \"Ok\" om het dialoogscherm te sluiten. Deze zal niet meer getoond worden. "
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -158,15 +158,19 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_queue_notification");
       if (XBMC_queue_notification == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_unknown_to_utf8 = (void (*)(void* HANDLE, void* CB, std::string &str))
+      XBMC_unknown_to_utf8 = (char* (*)(void* HANDLE, void* CB, const char* str))
         dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
       if (XBMC_unknown_to_utf8 == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_get_localized_string = (const char* (*)(void* HANDLE, void* CB, int dwCode))
+      XBMC_get_localized_string = (char* (*)(void* HANDLE, void* CB, int dwCode))
         dlsym(m_libXBMC_addon, "XBMC_get_localized_string");
       if (XBMC_get_localized_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-      XBMC_get_dvd_menu_language = (const char* (*)(void* HANDLE, void* CB))
+      XBMC_free_string = (void (*)(void* HANDLE, void* CB, char* str))
+        dlsym(m_libXBMC_addon, "XBMC_free_string");
+      if (XBMC_free_string == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      XBMC_get_dvd_menu_language = (char* (*)(void* HANDLE, void* CB))
         dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
       if (XBMC_get_dvd_menu_language == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -293,9 +297,10 @@ namespace ADDON
 
     /*!
      * @brief Translate a string with an unknown encoding to UTF8.
-     * @param sourceDest The string to translate.
+     * @param str The string to translate.
+     * @return The string translated to UTF8. Must be freed by calling FreeString() when done.
      */
-    void UnknownToUTF8(std::string &str)
+    char* UnknownToUTF8(const char* str)
     {
       return XBMC_unknown_to_utf8(m_Handle, m_Callbacks, str);
     }
@@ -303,9 +308,9 @@ namespace ADDON
     /*!
      * @brief Get a localised message.
      * @param dwCode The code of the message to get.
-     * @return The message. Needs to be freed when done.
+     * @return The message. Must be freed by calling FreeString() when done.
      */
-    const char* GetLocalizedString(int dwCode)
+    char* GetLocalizedString(int dwCode)
     {
       return XBMC_get_localized_string(m_Handle, m_Callbacks, dwCode);
     }
@@ -313,11 +318,20 @@ namespace ADDON
 
     /*!
      * @brief Get the DVD menu language.
-     * @return The language. Needs to be freed when done.
+     * @return The language. Must be freed by calling FreeString() when done.
      */
-    const char* GetDVDMenuLanguage()
+    char* GetDVDMenuLanguage()
     {
       return XBMC_get_dvd_menu_language(m_Handle, m_Callbacks);
+    }
+
+    /*!
+     * @brief Free the memory used by str
+     * @param str The string to free
+     */
+    void FreeString(char* str)
+    {
+      return XBMC_free_string(m_Handle, m_Callbacks, str);
     }
 
     /*!
@@ -527,9 +541,10 @@ namespace ADDON
     void (*XBMC_log)(void *HANDLE, void* CB, const addon_log_t loglevel, const char *msg);
     bool (*XBMC_get_setting)(void *HANDLE, void* CB, const char* settingName, void *settingValue);
     void (*XBMC_queue_notification)(void *HANDLE, void* CB, const queue_msg_t type, const char *msg);
-    void (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, std::string &str);
-    const char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
-    const char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
+    char* (*XBMC_unknown_to_utf8)(void *HANDLE, void* CB, const char* str);
+    char* (*XBMC_get_localized_string)(void *HANDLE, void* CB, int dwCode);
+    char* (*XBMC_get_dvd_menu_language)(void *HANDLE, void* CB);
+    void (*XBMC_free_string)(void *HANDLE, void* CB, char* str);
     void* (*XBMC_open_file)(void *HANDLE, void* CB, const char* strFileName, unsigned int flags);
     void* (*XBMC_open_file_for_write)(void *HANDLE, void* CB, const char* strFileName, bool bOverWrite);
     unsigned int (*XBMC_read_file)(void *HANDLE, void* CB, void* file, void* lpBuf, int64_t uiBufSize);

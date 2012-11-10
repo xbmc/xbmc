@@ -14,6 +14,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Omtrent so psigedelies soos sluimerskerm kan kom</summary>
     <summary lang="ar">حول الحصول على مهدء كشاشة التوقف</summary>
+    <summary lang="be">About as psychedelic as screensavers get</summary>
     <summary lang="bg">Колкото халюциногенен може да бъде един скрийнсейвър</summary>
     <summary lang="ca">Quant al més psicodèlic dels estalvis de pantalla</summary>
     <summary lang="cs">Nejdivočejší šetřič obrazovky všech dob</summary>
@@ -43,12 +44,13 @@
     <summary lang="ru">Самая психоделическая в мире заставка</summary>
     <summary lang="se">Ungefär så psykedelisk som en skärmsläckare kan bli</summary>
     <summary lang="sk">Tak psychodelický ako to len ide</summary>
-    <summary lang="sl">Najbolj psihadelični ohranjevalnik zaslona.</summary>
+    <summary lang="sl">Najbolj psihadelični ohranjevalnik zaslona</summary>
     <summary lang="sv">Ungefär så psykedelisk som en skärmsläckare kan bli</summary>
     <summary lang="uk">Настільки психоделічна наскільки можливо для заставки</summary>
     <summary lang="zh">最具迷幻效果的屏幕保护程序</summary>
     <description lang="af">Die is omtrent so psigedelies soos sluimerskerm kan kom. mogumbo het gedink sy Plasma beskermer was heel voor in die koor, maar die een sal jou maag selfs meer laat draai. Jy beter een van daardie vlug siekte sakke kry voor jy te lank na hierdie een staar.</description>
     <description lang="ar">هذا حول الحصول على مهدء كشاشة التوقف. اعتقد موغمبو أن شاشة توقف البلازمة خاصته في قمة الجدول, لكن هذا مقرف أكثر. الأفضل أن تجد أحد أكياس الغثيان قبل أن تنظر لهذا لوقت طويل.</description>
+    <description lang="be">This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
     <description lang="bg">Точно колкото може един скрийнсейвър. mogumbo смяташе, че неговият "Plasma saver" е върхът, но този е по-смущаващ. Препоръчвам Ви да вземете една торбичка/лиген, преди да зазяпате в скрийнсейвъра по-дълго отколкото трябва.</description>
     <description lang="ca">Aquest és probablement el més psicodèlic dels estalvis de pantalla. mogumbo va pensar que el seu estalvi Plasma estava al capdamunt, però aquest és més nauseabund. Serà millor que agafi una bossa per als marejos si ha d'estar molta estona mirant-lo.</description>
     <description lang="cs">Asi nejdivočejší šetřič obrazovky všech dob.  Použití plazmového šetřiče bývalo vrcholem, ale tento spořič je ještě více zneklidňující. Připravte si pytlíky na zvracení pokud se jej rozhodnete sledovat příliš dlouho.</description>
@@ -84,3 +86,4 @@
     <platform>linux osx</platform>
   </extension>
 </addon>
+

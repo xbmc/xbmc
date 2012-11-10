@@ -24,7 +24,7 @@
 
 ASAPCodec::ASAPCodec()
 {
-  m_CodecName = "ASAP";
+  m_CodecName = "asap";
 }
 
 ASAPCodec::~ASAPCodec()

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-09-25 18:34+0000\n"
+"PO-Revision-Date: 2012-10-30 13:45+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es_MX/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "Esconder Botones del Menú Principal"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "Activar Fondo Personalizado"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "Ruta del Fondo:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -451,7 +451,7 @@ msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Administrar tus Add-ons instalados · B
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B]CONFIGURAR AJUSTES DE TV[/B][CR][CR]Cambiar información de pantalla completa · Administrar ajustes de datos EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -459,11 +459,11 @@ msgstr "[B]CONFIGURAR AJUSTES DE SERVICIO[/B][CR][CR]Configuración de control d
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Ayuda de primera vez..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Esta pestaña significa que existe un menú al lado de esta ventana que contiene opciones extra para esta sección. Para acceder al menú, navegue a la izquierda con su control remoto o teclado, o posicione el puntero del ratón sobre la pestaña. [CR][CR] Presione \"Aceptar\" para cerrar este diálogo. No aparecerá nuevamente."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -471,7 +471,7 @@ msgstr "Selecciona tu Perfil XBMC[CR]para iniciar sesión y continuar"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "Temporizadores de Grabación"
 
 msgctxt "#31501"
 msgid "Scheduled Time"

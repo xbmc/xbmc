@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-10-17 22:01+0000\n"
+"PO-Revision-Date: 2012-11-06 02:06+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Bulgarian <xbmc-bg@freelists.org>\n"
 "MIME-Version: 1.0\n"
@@ -2340,7 +2340,7 @@ msgstr "Актуализирай библиотеката"
 
 msgctxt "#654"
 msgid "Show debug info"
-msgstr "Показвай инф. за дебъгване"
+msgstr "Показвай debug инф."
 
 msgctxt "#655"
 msgid "Browse for executable"
@@ -3204,7 +3204,7 @@ msgstr "Градушка"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Гръмотевични бури"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3284,7 +3284,7 @@ msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "Малка"
 
 msgctxt "#1439"
 msgid "and"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Непознат"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Валеж"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -3816,7 +3816,7 @@ msgstr "Настройки и управление на файловете"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr ""
+msgstr "Направи настройките стандарт за всеки видео файл"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -4308,7 +4308,7 @@ msgstr "Показвай RSS емисиите"
 
 msgctxt "#13306"
 msgid "Show parent folder items"
-msgstr "Показвай елемент за връщане към майчината директория"
+msgstr "Показвай елемент за връщане към родителската директория"
 
 msgctxt "#13307"
 msgid "Track naming template"
@@ -4376,7 +4376,7 @@ msgstr "Само десен"
 
 msgctxt "#13323"
 msgid "Enable karaoke support"
-msgstr "Активирай поддръжката на караоке"
+msgstr "Включи поддръжката на караоке"
 
 msgctxt "#13324"
 msgid "Background transparency"
@@ -5204,7 +5204,7 @@ msgstr "Набор от знаци"
 
 msgctxt "#14092"
 msgid "Debugging"
-msgstr "Дебъгване"
+msgstr "Debugging"
 
 msgctxt "#14093"
 msgid "Security"
@@ -6164,7 +6164,7 @@ msgstr ""
 
 msgctxt "#19059"
 msgid "Stop recording"
-msgstr ""
+msgstr "Край на запсиването"
 
 msgctxt "#19060"
 msgid "Delete timer"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Поредици"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Задай миниатюра за поредицата"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Изнасяне миниатюрите на актьорите?"
@@ -8717,10 +8713,6 @@ msgstr "Слушател"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Слушатели"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Задай fanart за поредицата"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10516,7 +10508,7 @@ msgstr "Докосване с 2 пръста/Задържане с 1 пръст 
 
 msgctxt "#35000"
 msgid "Peripherals"
-msgstr "Периферия"
+msgstr "Периферни"
 
 msgctxt "#35001"
 msgid "Generic HID device"
@@ -10716,7 +10708,7 @@ msgstr ""
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "Телевизия"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"

@@ -1424,12 +1424,27 @@ void CVideoDatabase::AddTagToItem(int idMovie, int idTag, const std::string &typ
   AddToLinkTable("taglinks", "idTag", idTag, "idMedia", idMovie, "media_type", type.c_str());
 }
 
-void CVideoDatabase::RemoveTagFromItem(int idMovie, int idTag, const std::string &type)
+void CVideoDatabase::RemoveTagFromItem(int idItem, int idTag, const std::string &type)
 {
   if (type.empty())
     return;
 
-  RemoveFromLinkTable("taglinks", "idTag", idTag, "idMedia", idMovie, "media_type", type.c_str());
+  RemoveFromLinkTable("taglinks", "idTag", idTag, "idMedia", idItem, "media_type", type.c_str());
+  CleanupTags();
+}
+
+void CVideoDatabase::RemoveTagsFromItem(int idItem, const std::string &type)
+{
+  if (type.empty())
+    return;
+
+  m_pDS2->exec(PrepareSQL("DELETE FROM taglinks WHERE idMedia=%d AND media_type='%s'", idItem, type.c_str()));
+  CleanupTags();
+}
+
+void CVideoDatabase::CleanupTags()
+{
+  m_pDS2->exec("DELETE FROM tag WHERE NOT EXISTS (SELECT 1 FROM taglinks WHERE taglinks.idTag = tag.idTag)");
 }
 
 //****Actors****
@@ -2979,14 +2994,7 @@ void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
     CStdString strSQL;
     strSQL = PrepareSQL("DELETE FROM taglinks WHERE idTag = %i AND media_type = '%s'", idTag, type.c_str());
     m_pDS->exec(strSQL.c_str());
-
-    // check if the tag is used for another media type as well before deleting it completely
-    strSQL = PrepareSQL("SELECT 1 FROM taglinks WHERE idTag = %i", idTag);
-    if (RunQuery(strSQL) <= 0)
-    {
-      strSQL = PrepareSQL("DELETE FROM tag WHERE idTag = %i", idTag);
-      m_pDS->exec(strSQL.c_str());
-    }
+    CleanupTags();
   }
   catch (...)
   {

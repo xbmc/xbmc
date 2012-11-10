@@ -159,7 +159,8 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
   }
   if (m_borderFont)
   {
-    float by = y;
+    // adjust so the baselines of the fonts align
+    float by = y + m_font->GetTextBaseLine() - m_borderFont->GetTextBaseLine();
     m_borderFont->Begin();
     for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
     {

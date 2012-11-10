@@ -500,13 +500,13 @@ namespace PVR
      * @param iClientId The ID of the client to get the menu entries for. Get the menu for the active channel if iClientId < 0.
      * @return True if the client has any menu hooks, false otherwise.
      */
-    bool HasMenuHooks(int iClientId);
+    bool HasMenuHooks(int iClientId, PVR_MENUHOOK_CAT cat);
 
     /*!
      * @brief Open selection and progress PVR actions.
      * @param iClientId The ID of the client to process the menu entries for. Process the menu entries for the active channel if iClientId < 0.
      */
-    void ProcessMenuHooks(int iClientID);
+    void ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat);
 
     //@}
 
@@ -559,7 +559,7 @@ namespace PVR
      * @param hooks The container to add the hooks to.
      * @return True if the hooks were added successfully (if any), false otherwise.
      */
-    bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
+    bool GetMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, PVR_MENUHOOKS *hooks);
 
     /*!
      * @brief Updates the backend information

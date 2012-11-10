@@ -14,6 +14,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Seker die tweede mees psigedeliese sluimerskerm ooit</summary>
     <summary lang="ar">ربما شاشة التوقف الثانية الأكثر هدوء على الإطلاق</summary>
+    <summary lang="be">Probably the second most psychedelic screensaver ever</summary>
     <summary lang="bg">Вероятно вторият най-халюциногенен скрийнсейвър</summary>
     <summary lang="ca">Probablement el segon estalvi de pantalla més psicodèlic mai creat</summary>
     <summary lang="cs">Pravděpodobně druhý nejdivočejší šetřič obrazovky všech dob</summary>
@@ -49,6 +50,7 @@
     <summary lang="zh">也许是排名第二的迷幻效果屏幕保护程序</summary>
     <description lang="af">Seker die tweede mees psigedeliese sluimerskerm wat bestaan. Verbeel jou net al daai kleure wat rond beweeg.</description>
     <description lang="ar">ربما شاشة التوقف الثانية الأكثر هدوء في الوجود. فقط حاول تصوير هذه الألوان المتحركة .</description>
+    <description lang="be">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="bg">Вероятно вторият по сила халюциногенен скрийнсейвър създаван някога. Просто се опитайте да съзрете всички тези цветове.</description>
     <description lang="ca">Probablement el segon estalvi de pantalla més psicodèlic que existeix. Intenti imaginar tots aquests colors movent-se.</description>
     <description lang="cs">Pravděpodobně druhý nejdivočejší šetřič obrazovky všech dob. Zkuste si představit všechny ty poletující barvy.</description>
@@ -85,3 +87,4 @@
     <platform>linux osx</platform>
   </extension>
 </addon>
+

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-22 20:44+0000\n"
+"PO-Revision-Date: 2012-10-29 19:06+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/el/)\n"
 "MIME-Version: 1.0\n"
@@ -375,11 +375,11 @@ msgstr "Προστέθηκαν Πρόσφατα"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Εφαρμογή χρονοδιακόπτη![/B] [COLOR=grey2] - Αυτόματος τερματισμός συστήματος σε[/COLOR]"
+msgstr "[B]Ορίστηκε χρονοδιακόπτης![/B] [COLOR=grey2] - Τερματισμός συστήματος σε[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Πιέστε το πλήκτρο για αναπαραγωγή[CR][CR]του Διαφημιστικού Ταινίας"
+msgstr "Πιέστε το πλήκτρο για αναπαραγωγή[CR][CR]του διαφημιστικού"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -459,11 +459,11 @@ msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΥΠΗΡΕΣΙΩΝ[/B][CR][CR]Χειρισμός �
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Αρχική βοήθεια...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "Αυτή η ετικέτα υποδεικνύει ότι υπάρχει ένα μενού στο πλάι αυτού του παραθύρου που περιέχει επιπλέον επιλογές για τον τομέα.  Για να το ανοίξετε, πιέστε το αντίστοιχο πλήκτρο κατεύθυνσης ή μετακινήστε το ποντίκι σας πάνω στην ετικέτα. [CR][CR]Πιέστε 'Επιλογή' για να κλείσετε αυτό το παράθυρο. Δε θα εμφανιστεί ξανά."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -483,15 +483,15 @@ msgstr "Live TV"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr "Προσθήκη γκρουπ"
+msgstr "Προσθήκη Γκρουπ"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr "Μετονομασία γκρουπ"
+msgstr "Μετονομασία Γκρουπ"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr "Διαγραφή γκρουπ"
+msgstr "Διαγραφή Γκρουπ"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
@@ -503,7 +503,7 @@ msgstr "Γκρουπ Καναλιών"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr "Ορίστηκε χρονοδιακόπτης"
+msgstr "Ορίστηκε Χρονοδιακόπτης"
 
 msgctxt "#31511"
 msgid "Channel Options"

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-10-18 13:46+0000\n"
+"PO-Revision-Date: 2012-11-02 17:07+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Afrikaans (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/af/)\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Lêer bestuurder"
+msgstr "Lêerbestuurder"
 
 msgctxt "#8"
 msgid "Weather"
@@ -52,7 +52,7 @@ msgstr "Weer"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "xbmc media sentrum"
+msgstr "xbmc mediasentrum"
 
 msgctxt "#11"
 msgid "Monday"
@@ -356,7 +356,7 @@ msgstr "Gepouseer"
 
 msgctxt "#113"
 msgid "Update failed"
-msgstr "Opdatering het gefaal"
+msgstr "Kon nie op datum bring nie"
 
 msgctxt "#114"
 msgid "Installation failed"
@@ -424,7 +424,7 @@ msgstr "Skyfievertoning"
 
 msgctxt "#130"
 msgid "System info"
-msgstr "Stelsel info"
+msgstr "Stelselinligting"
 
 msgctxt "#131"
 msgid "Display"
@@ -456,7 +456,7 @@ msgstr "Soek"
 
 msgctxt "#138"
 msgid "System Information"
-msgstr "Stelsel Informasie"
+msgstr "Stelselinligting"
 
 msgctxt "#139"
 msgid "Temperatures:"
@@ -476,7 +476,7 @@ msgstr "Tyd:"
 
 msgctxt "#143"
 msgid "Current:"
-msgstr "Huidiglik:"
+msgstr "Tans:"
 
 msgctxt "#144"
 msgid "Build:"
@@ -500,11 +500,11 @@ msgstr "DHCP"
 
 msgctxt "#149"
 msgid "MAC address"
-msgstr "MAC adres"
+msgstr "MAC-adres"
 
 msgctxt "#150"
 msgid "IP address"
-msgstr "IP adres"
+msgstr "IP-adres"
 
 msgctxt "#151"
 msgid "Link:"
@@ -512,11 +512,11 @@ msgstr "Skakel:"
 
 msgctxt "#152"
 msgid "Half duplex"
-msgstr "Half dupleks"
+msgstr "Half-dupleks"
 
 msgctxt "#153"
 msgid "Full duplex"
-msgstr "Vol dupleks"
+msgstr "Vol-dupleks"
 
 msgctxt "#154"
 msgid "Storage"
@@ -580,11 +580,11 @@ msgstr "Resolusie"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
-msgstr "Pas vertoon se verfris tempo aan om video te pas"
+msgstr "Pas vertoon se verfristempo aan om video te pas"
 
 msgctxt "#172"
 msgid "Release date"
-msgstr "Uitgee datum"
+msgstr "Uitgeedatum"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
@@ -608,7 +608,7 @@ msgstr "Durasie"
 
 msgctxt "#181"
 msgid "Select album"
-msgstr "Selekteer album"
+msgstr "Kies album"
 
 msgctxt "#182"
 msgid "Tracks"
@@ -636,11 +636,11 @@ msgstr "Geen albums gevind!"
 
 msgctxt "#188"
 msgid "Select all"
-msgstr "Selekteer almal"
+msgstr "Kies almal"
 
 msgctxt "#189"
 msgid "Scanning media info"
-msgstr "Deursoek media info"
+msgstr "Deursoek media-inligting"
 
 msgctxt "#190"
 msgid "Save"
@@ -660,7 +660,7 @@ msgstr "Deursoek"
 
 msgctxt "#194"
 msgid "Searching..."
-msgstr "Soek..."
+msgstr "Soek…"
 
 msgctxt "#195"
 msgid "No info found!"
@@ -668,7 +668,7 @@ msgstr "Geen inligting gevind!"
 
 msgctxt "#196"
 msgid "Select movie:"
-msgstr "Selekteer fliek:"
+msgstr "Kies fliek:"
 
 msgctxt "#197"
 msgid "Querying %s info"
@@ -676,11 +676,11 @@ msgstr "Vra %s info"
 
 msgctxt "#198"
 msgid "Loading movie details"
-msgstr "Laai fliek besonderhede"
+msgstr "Laai fliek-besonderhede"
 
 msgctxt "#199"
 msgid "Web interface"
-msgstr "Web koppelvlak"
+msgstr "Webkoppelvlak"
 
 msgctxt "#202"
 msgid "Tagline"
@@ -688,7 +688,7 @@ msgstr "Tagline"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Plot uitleg"
+msgstr "Plotuitleg"
 
 msgctxt "#205"
 msgid "Votes"
@@ -716,11 +716,11 @@ msgstr "Vorige"
 
 msgctxt "#213"
 msgid "Calibrate user interface..."
-msgstr "Kalibreer gebruiker koppelvlak..."
+msgstr "Kalibreer gebruikerskoppelvlak..."
 
 msgctxt "#214"
 msgid "Video calibration..."
-msgstr "Video kalibrasie..."
+msgstr "Videokalibrasie..."
 
 msgctxt "#215"
 msgid "Soften"
@@ -728,15 +728,15 @@ msgstr "Versag"
 
 msgctxt "#216"
 msgid "Zoom amount"
-msgstr "Zoem hoeveelheid"
+msgstr "Zoemhoeveelheid"
 
 msgctxt "#217"
 msgid "Pixel ratio"
-msgstr "Pixel verhouding"
+msgstr "Pixel-verhouding"
 
 msgctxt "#218"
 msgid "DVD drive"
-msgstr "DVD dryf"
+msgstr "DVD-dryf"
 
 msgctxt "#219"
 msgid "Please insert disc"
@@ -748,7 +748,7 @@ msgstr "Afgeleë saamdeel"
 
 msgctxt "#221"
 msgid "Network is not connected"
-msgstr "Netwerk is nie gekonnekteer"
+msgstr "Netwerk is nie gekonnekteer nie"
 
 msgctxt "#222"
 msgid "Cancel"
@@ -764,11 +764,11 @@ msgstr "Vertikale Skuif"
 
 msgctxt "#226"
 msgid "Test patterns..."
-msgstr "Toets patrone..."
+msgstr "Toetspatrone..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Soek audio CD snit name op vanaf freedb.org"
+msgstr "Soek audio-CD-snitname op vanaf freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
@@ -776,11 +776,11 @@ msgstr "Skommel speellys met laai"
 
 msgctxt "#229"
 msgid "HDD spindown time"
-msgstr "HDD afspin tyd"
+msgstr "HDD-afspintyd"
 
 msgctxt "#230"
 msgid "Video filters"
-msgstr "Video filters"
+msgstr "Videofilters"
 
 msgctxt "#231"
 msgid "None"
@@ -820,7 +820,7 @@ msgstr "Maak speellys skoon wanneer klaar"
 
 msgctxt "#240"
 msgid "Display Mode"
-msgstr "Vertoon modus"
+msgstr "Vertoonmodus"
 
 msgctxt "#241"
 msgid "Full Screen #%d"
@@ -832,7 +832,7 @@ msgstr "Gevenster"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Verfris tempo"
+msgstr "Verfristempo"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -860,7 +860,7 @@ msgstr "Visualisering"
 
 msgctxt "#251"
 msgid "Select destination directory"
-msgstr "Selekteer destinasie vouer"
+msgstr "Kies bestemmingvouer"
 
 msgctxt "#252"
 msgid "Output stereo to all speakers"
@@ -868,7 +868,7 @@ msgstr "Speel stereo na al die luidsprekers"
 
 msgctxt "#253"
 msgid "Number of channels"
-msgstr "Hoeveelheid kanale"
+msgstr "Aantal kanale"
 
 msgctxt "#254"
 msgid "- DTS capable receiver"
@@ -880,7 +880,7 @@ msgstr "CDDB"
 
 msgctxt "#256"
 msgid "Fetching CD information"
-msgstr "Haal CD informasie"
+msgstr "Haal CD-inligting"
 
 msgctxt "#257"
 msgid "Error"
@@ -888,7 +888,7 @@ msgstr "Fout"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Stel etiket lees in staat"
+msgstr "Stel etiketlees in staat"
 
 msgctxt "#259"
 msgid "Opening"
@@ -3204,7 +3204,7 @@ msgstr "Grains"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Donderstorms"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Presipitaat"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -6112,7 +6112,7 @@ msgstr ""
 
 msgctxt "#19046"
 msgid "New channel"
-msgstr ""
+msgstr "Nuwe kanaal"
 
 msgctxt "#19047"
 msgid "Programme info"
@@ -6164,7 +6164,7 @@ msgstr ""
 
 msgctxt "#19059"
 msgid "Stop recording"
-msgstr ""
+msgstr "Stop opname"
 
 msgctxt "#19060"
 msgid "Delete timer"
@@ -6460,7 +6460,7 @@ msgstr ""
 
 msgctxt "#19144"
 msgid "No groups defined"
-msgstr ""
+msgstr "Geen groepe gedefinieer"
 
 msgctxt "#19145"
 msgid "Grouped"
@@ -6476,7 +6476,7 @@ msgstr ""
 
 msgctxt "#19148"
 msgid "Channel"
-msgstr ""
+msgstr "Kanaal"
 
 msgctxt "#19149"
 msgid "Mo"
@@ -7316,7 +7316,7 @@ msgstr ""
 
 msgctxt "#19677"
 msgid "Detective/Thriller"
-msgstr ""
+msgstr "Fliek/Riller"
 
 msgctxt "#19678"
 msgid "Adventure/Western/War"
@@ -7328,7 +7328,7 @@ msgstr ""
 
 msgctxt "#19680"
 msgid "Comedy"
-msgstr ""
+msgstr "Komedie"
 
 msgctxt "#19681"
 msgid "Soap/Melodrama/Folkloric"
@@ -7336,7 +7336,7 @@ msgstr ""
 
 msgctxt "#19682"
 msgid "Romance"
-msgstr ""
+msgstr "Romanse"
 
 msgctxt "#19683"
 msgid "Serious/ClassicalReligion/Historical"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Stelle"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Stel filmstel duim"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Voer akteur duime uit?"
@@ -8717,10 +8713,6 @@ msgstr "Luisteraar"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Luisteraars"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Kies fliekstel aanhangerkuns"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10716,7 +10708,7 @@ msgstr ""
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-10-26 15:17+0000\n"
+"PO-Revision-Date: 2012-11-02 17:07+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Basque (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/eu/)\n"
 "MIME-Version: 1.0\n"
@@ -3204,7 +3204,7 @@ msgstr "Aleak"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Thunderstorms"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Ezezaguna"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Prezipitazioak"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -5984,7 +5984,7 @@ msgstr ""
 
 msgctxt "#19014"
 msgid "Fixed"
-msgstr ""
+msgstr "Konpondua"
 
 msgctxt "#19015"
 msgid "Encryption"
@@ -6692,11 +6692,11 @@ msgstr "Editatu katea"
 
 msgctxt "#19204"
 msgid "New channel"
-msgstr ""
+msgstr "Kate berria"
 
 msgctxt "#19205"
 msgid "Group management"
-msgstr ""
+msgstr "Talde kudeaketa"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
@@ -7020,7 +7020,7 @@ msgstr ""
 
 msgctxt "#19506"
 msgid "Romance"
-msgstr ""
+msgstr "Amodioa"
 
 msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Multzoa"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Ezarri film multzoaren iruditxoa"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Esportaut aktorearen iruditxoak?"
@@ -8717,10 +8713,6 @@ msgstr "Entzulea"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Entzuleak"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr ""
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10716,7 +10708,7 @@ msgstr ""
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "TB"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"

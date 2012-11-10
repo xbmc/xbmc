@@ -24,7 +24,7 @@
 
 ADPCMCodec::ADPCMCodec()
 {
-  m_CodecName = "ADPCM";
+  m_CodecName = "adpcm";
   m_adpcm = NULL;
   m_bIsPlaying = false;
 }

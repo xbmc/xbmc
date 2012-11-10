@@ -25,7 +25,7 @@
 
 PCMCodec::PCMCodec()
 {
-  m_CodecName = "PCM";
+  m_CodecName = "pcm";
   m_TotalTime = 0;
   m_SampleRate = 44100;
   m_Channels = 2;

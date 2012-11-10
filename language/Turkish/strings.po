@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-09-25 15:02+0000\n"
+"PO-Revision-Date: 2012-11-02 17:07+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -1568,11 +1568,11 @@ msgstr "%s yönünden %i %s"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
-msgstr ""
+msgstr "Optik disc sürücü bulunamadı"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr ""
+msgstr "Bu videoyu oynatabilmek için optik disk sürücüsüne ihtiyacınız var"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2724,15 +2724,15 @@ msgstr "İnternet erişimi"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr ""
+msgstr "Kütüphane Güncellemesi"
 
 msgctxt "#800"
 msgid "Music library needs to rescan art from tags"
-msgstr ""
+msgstr "Müzik kütüphanesi etiketlerden tekrar tarama yapmalıdır"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr ""
+msgstr "Şimdi tarama yapmak ister misiniz?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3204,7 +3204,7 @@ msgstr "Grains"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Gök gürültülü"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3284,7 +3284,7 @@ msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "Küçük"
 
 msgctxt "#1439"
 msgid "and"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Bilinmiyor"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -3324,7 +3324,7 @@ msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Düşen Yağış"
 
 msgctxt "#1449"
 msgid "Partial"
@@ -5952,11 +5952,11 @@ msgstr ""
 
 msgctxt "#19006"
 msgid "Receiving device"
-msgstr ""
+msgstr "Cihaz alınıyor"
 
 msgctxt "#19007"
 msgid "Device status"
-msgstr ""
+msgstr "Cihaz durumu"
 
 msgctxt "#19008"
 msgid "Signal quality"
@@ -5988,7 +5988,7 @@ msgstr "Sabit"
 
 msgctxt "#19015"
 msgid "Encryption"
-msgstr ""
+msgstr "Şifreleme"
 
 msgctxt "#19016"
 msgid "PVR Backend %i - %s"
@@ -6016,7 +6016,7 @@ msgstr "Radyo"
 
 msgctxt "#19022"
 msgid "Hidden"
-msgstr ""
+msgstr "Gizli"
 
 msgctxt "#19023"
 msgid "TV channels"
@@ -6028,19 +6028,19 @@ msgstr "Radyo kanalları"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
-msgstr ""
+msgstr "Gelecek kayıtlar"
 
 msgctxt "#19026"
 msgid "Add timer..."
-msgstr ""
+msgstr "Zamanlayıcı ekle..."
 
 msgctxt "#19027"
 msgid "No search results"
-msgstr ""
+msgstr "Arama sonucu yok"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr ""
+msgstr "EPG girişi yok"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -6056,23 +6056,23 @@ msgstr "Sonraki"
 
 msgctxt "#19032"
 msgid "Timeline"
-msgstr ""
+msgstr "Zaman aralığı"
 
 msgctxt "#19033"
 msgid "Information"
-msgstr ""
+msgstr "Bilgi"
 
 msgctxt "#19034"
 msgid "Already started recording on this channel"
-msgstr ""
+msgstr "Bu kanal kaydı zaten başlamış."
 
 msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
-msgstr ""
+msgstr "Bu kanal oynatılamaz. Detaylar için kayıt defterine bakınız."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
-msgstr ""
+msgstr "Bu kayıt oynatılamaz. Detaylar için kayıt defterine bakınız."
 
 msgctxt "#19037"
 msgid "Show signal quality"
@@ -6092,19 +6092,19 @@ msgstr "Zamanlayıcı"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr ""
+msgstr "Bu kayıdın ismini değiştirmek istediğinizden eminmisiniz?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr ""
+msgstr "Bu zamanlayıcının adını değiştirmek istediğinizden eminmisiniz?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr ""
+msgstr "Kayıt"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr ""
+msgstr "Lütfen ayarları kontrol ediniz yada detaylar için kayıt defterine bakınız."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
@@ -6116,19 +6116,19 @@ msgstr "Yeni kanal"
 
 msgctxt "#19047"
 msgid "Programme info"
-msgstr ""
+msgstr "Program bilgisi"
 
 msgctxt "#19048"
 msgid "Group management"
-msgstr ""
+msgstr "Grup yönetimi"
 
 msgctxt "#19049"
 msgid "Show channel"
-msgstr ""
+msgstr "Kanalı göster"
 
 msgctxt "#19050"
 msgid "Show visible channels"
-msgstr ""
+msgstr "Görünür kanalları göster"
 
 msgctxt "#19051"
 msgid "Show hidden channels"
@@ -6136,11 +6136,11 @@ msgstr "Gizlenen kanalları göster"
 
 msgctxt "#19052"
 msgid "Move channel to:"
-msgstr ""
+msgstr "Kanalı taşı:"
 
 msgctxt "#19053"
 msgid "Recording information"
-msgstr ""
+msgstr "Kayıt bilgisi"
 
 msgctxt "#19054"
 msgid "Hide channel"
@@ -6148,59 +6148,59 @@ msgstr "Kanalı gizle"
 
 msgctxt "#19055"
 msgid "No information available"
-msgstr ""
+msgstr "Bilgi yok"
 
 msgctxt "#19056"
 msgid "New timer"
-msgstr ""
+msgstr "Yeni zamanlayıcı"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr ""
+msgstr "Zamanlayıcıyı düzenle"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr ""
+msgstr "Zamanlayıcı etkin"
 
 msgctxt "#19059"
 msgid "Stop recording"
-msgstr ""
+msgstr "Kaydı durdur"
 
 msgctxt "#19060"
 msgid "Delete timer"
-msgstr ""
+msgstr "Zamanlayıcı sil"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr ""
+msgstr "Zamanlayıcı ekle"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
-msgstr ""
+msgstr "Sırala: Kanal"
 
 msgctxt "#19063"
 msgid "Go to begin"
-msgstr ""
+msgstr "Başa git"
 
 msgctxt "#19064"
 msgid "Go to end"
-msgstr ""
+msgstr "Sona git"
 
 msgctxt "#19065"
 msgid "Default EPG window"
-msgstr ""
+msgstr "Varsayılan EPG penceresi"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
-msgstr ""
+msgstr "Bu eylem zaten kayıt ediliyor"
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr ""
+msgstr "Bu kayıt silinemez. Detaylar için kayıt defterine bakınız."
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr ""
+msgstr "EPG"
 
 msgctxt "#19071"
 msgid "EPG update interval"
@@ -6216,15 +6216,15 @@ msgstr ""
 
 msgctxt "#19074"
 msgid "Active:"
-msgstr ""
+msgstr "Aktif:"
 
 msgctxt "#19075"
 msgid "Name:"
-msgstr ""
+msgstr "İsim:"
 
 msgctxt "#19076"
 msgid "Folder:"
-msgstr ""
+msgstr "Klasör:"
 
 msgctxt "#19077"
 msgid "Radio:"
@@ -6240,27 +6240,27 @@ msgstr "Gün:"
 
 msgctxt "#19080"
 msgid "Begin:"
-msgstr ""
+msgstr "Başla:"
 
 msgctxt "#19081"
 msgid "End:"
-msgstr ""
+msgstr "Son:"
 
 msgctxt "#19082"
 msgid "Priority:"
-msgstr ""
+msgstr "Öncelik:"
 
 msgctxt "#19083"
 msgid "Lifetime (days):"
-msgstr ""
+msgstr "Ömür (gün)"
 
 msgctxt "#19084"
 msgid "First day:"
-msgstr ""
+msgstr "İlk gün:"
 
 msgctxt "#19085"
 msgid "Unknown channel %u"
-msgstr ""
+msgstr "Bilinmeyen kanal %u"
 
 msgctxt "#19086"
 msgid "Mo-__-__-__-__-__-__"
@@ -6308,35 +6308,35 @@ msgstr "__-__-__-__-__-Ct-Pz"
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
-msgstr ""
+msgstr "Kayıt için isim girin"
 
 msgctxt "#19098"
 msgid "Warning"
-msgstr ""
+msgstr "Uyarı"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
-msgstr ""
+msgstr "Lütfen başka kanala geçiniz."
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
-msgstr ""
+msgstr "Kayıt için klasör adını girin"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr ""
+msgstr "Bir sonraki zamanlayıcı"
 
 msgctxt "#19107"
 msgid "at"
-msgstr ""
+msgstr "-"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr ""
+msgstr "Zamanlayıcı kaydedilemiyor. Detaylar için kayıt defterine bakınız."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr ""
+msgstr "Beklenmeyen bir hata oluştu. Daha sonra tekrar deneyin yada detaylar için kayıt defterine bakınız."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
@@ -6352,11 +6352,11 @@ msgstr "Adres"
 
 msgctxt "#19116"
 msgid "Disksize"
-msgstr ""
+msgstr "Diskboyutu"
 
 msgctxt "#19117"
 msgid "Search for channels"
-msgstr ""
+msgstr "Kanalları ara"
 
 msgctxt "#19118"
 msgid "Cannot use PVR functions while searching."
@@ -6364,7 +6364,7 @@ msgstr ""
 
 msgctxt "#19119"
 msgid "On which server you want to search?"
-msgstr ""
+msgstr "Hangi sunucuda arama yapmak istersiniz?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -6372,7 +6372,7 @@ msgstr ""
 
 msgctxt "#19121"
 msgid "Avoid repeats"
-msgstr ""
+msgstr "Tekrarları önle"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
@@ -6392,15 +6392,15 @@ msgstr ""
 
 msgctxt "#19126"
 msgid "Start time"
-msgstr ""
+msgstr "Başlangıç zamanı"
 
 msgctxt "#19127"
 msgid "End time"
-msgstr ""
+msgstr "Bitiiş zamanı"
 
 msgctxt "#19128"
 msgid "Start date"
-msgstr ""
+msgstr "Başlangıç tarihi"
 
 msgctxt "#19129"
 msgid "End date"
@@ -6456,7 +6456,7 @@ msgstr ""
 
 msgctxt "#19143"
 msgid "Group management"
-msgstr ""
+msgstr "Grup yönetimi"
 
 msgctxt "#19144"
 msgid "No groups defined"
@@ -6476,7 +6476,7 @@ msgstr ""
 
 msgctxt "#19148"
 msgid "Channel"
-msgstr ""
+msgstr "Kanal"
 
 msgctxt "#19149"
 msgid "Mo"
@@ -6696,7 +6696,7 @@ msgstr "Yeni kanal"
 
 msgctxt "#19205"
 msgid "Group management"
-msgstr ""
+msgstr "Grup yönetimi"
 
 msgctxt "#19206"
 msgid "Activate EPG:"
@@ -6900,7 +6900,7 @@ msgstr ""
 
 msgctxt "#19256"
 msgid "Stop recording"
-msgstr ""
+msgstr "Kaydı durdur"
 
 msgctxt "#19257"
 msgid "Lock channel"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Setler"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Film kümesi küçük resmini ayarla"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Aktör küçük resimlerini çıkart"
@@ -8717,10 +8713,6 @@ msgstr "Dinleyici"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Dinleyiciler"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Set movieset fanart"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -10716,7 +10708,7 @@ msgstr ""
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "TV"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"

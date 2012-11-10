@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-09-23 14:58+0000\n"
+"PO-Revision-Date: 2012-11-02 17:08+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: LANGUAGE\n"
 "MIME-Version: 1.0\n"
@@ -3204,7 +3204,7 @@ msgstr ""
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "Tempesti"
 
 msgctxt "#1419"
 msgid "Shallow"
@@ -3316,7 +3316,7 @@ msgstr ""
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Ma nafx"
 
 msgctxt "#1447"
 msgid "Squals"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr ""
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr ""
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr ""
@@ -8716,10 +8712,6 @@ msgstr ""
 
 msgctxt "#20455"
 msgid "Listeners"
-msgstr ""
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
 msgstr ""
 
 msgctxt "#20457"

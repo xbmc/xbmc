@@ -130,10 +130,14 @@ extern "C" void Render()
   if (globalPM)
   {
     globalPM->renderFrame();
-    unsigned preset;
-    globalPM->selectedPresetIndex(preset);
-    if (lastLoggedPresetIdx != preset) CLog::Log(LOGDEBUG,"PROJECTM - Changed preset to: %s",g_presets[preset]);
-    lastLoggedPresetIdx = preset;
+    if (g_presets)
+    {
+      unsigned preset;
+      globalPM->selectedPresetIndex(preset);
+      if (lastLoggedPresetIdx != preset)
+        CLog::Log(LOGDEBUG,"PROJECTM - Changed preset to: %s",g_presets[preset]);
+      lastLoggedPresetIdx = preset;
+    }
   }
 }
 

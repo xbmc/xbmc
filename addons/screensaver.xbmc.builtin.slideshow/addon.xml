@@ -7,6 +7,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Sluimerskerm wat prente vertoon as skyfievertoning</summary>
     <summary lang="ar">شاشة التوقف هي التي تعرض صورة تلقائيا</summary>
+    <summary lang="be">Screensaver that displays an image slideshow</summary>
     <summary lang="bg">Скрийнсейвър, изобразяващ слайдшоу от картини</summary>
     <summary lang="ca">Estalvi de pantalla que mostra una presentació de diapositives d'imatges</summary>
     <summary lang="cs">Spořič obrazovky promítající obrázky</summary>
@@ -36,7 +37,7 @@
     <summary lang="ro">Screensaver care afișează o prezentare de diapozitive</summary>
     <summary lang="ru">Заставка, показывающая слайд-шоу из изображений</summary>
     <summary lang="sk">Šetrič obrazovky zobrazujúci prezentáciu obrázkov</summary>
-    <summary lang="sl">Ohranjevalnik zaslona, ki predvaja slike</summary>
+    <summary lang="sl">Ohranjevalnik zaslona, ki prikazuje diaprojekcijo slik</summary>
     <summary lang="sq">Mbrojtës ekrani, që paraqet një shfaqje në seri ‘slideshow’ të imazheve</summary>
     <summary lang="sv">En skärmsläckare som visar ett bildspel</summary>
     <summary lang="uk">Заставка що відображує слайдшоу із зображень.</summary>
@@ -44,6 +45,7 @@
     <summary lang="zh_TW">顯示圖片幻燈秀的螢幕保護程式</summary>
     <description lang="af">Die Skyfievertoning sluimerskerm wys jou 'n skyfie vertoning met verskeie oorgang effekte. Dit kan gestel word om jou biblioteek se musiek of video aanhangerkuns, of 'n persoonlike lêer met prente te vertoon.</description>
     <description lang="ar">شاشة توقف العرض التلقائي ستظهر لك عرض تدريجي للصور باستخدام تأثيرات تحول مختلفة. ممكن أن تكون كونت لتعرض مكتبة الموسيقى أو الفيديو الخاصة بك, أو مجلد مخصص من الصور.</description>
+    <description lang="be">The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images</description>
     <description lang="bg">Скрийнсейвърът "Slideshow" изобразява слайдшоу от картини с разнообразни ефекти при прехода между отделните картини. Можете да зададете като източник на картини fanart от видео/музикалната си библиотеката или персонална папка с изображения.</description>
     <description lang="ca">El protector de pantalles Projecció mostrarà una projecció de diapositives utilitzant diferents efectes de transició. Es pot configurar per mostrar el fanart de les vostres biblioteques de música o un directori d'imatges personalitzat</description>
     <description lang="cs">Spořič obrazovky promítání Vám bude promítat zvolené obrázky s použitím různých přechodových efektů. Může být nastaven k zobrazování fanart z Vašich hudebních, či video knihoven, nebo vlastní složky obrázků.</description>
@@ -64,7 +66,7 @@
     <description lang="it">Il salvaschermo Slideshow mostra una presentazione di immagini usando diversi effetti di transizione. Può essere configurato per mostrare le fanart delle librerie musica o video, oppure una cartella di immagini specifica</description>
     <description lang="ja">The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images</description>
     <description lang="ko">슬라이드쇼 화면보호기는 다양한 화면 전환효과를 이용해 이미지 슬라이드쇼를 보여줍니다. 설정을 통해 음악, 비디오 팬아트나 사용자 폴더의 사진을 지정할 수 있습니다.</description>
-    <description lang="lt">Skaidrės ekrano užsklanda jums parodys skaidrių peržiūrą vaizdų, naudojant įvairius efektus. Jis gali būti konfigūruojamas, kad parodyti savo bibliotekos muzikos ar vaizdo fanart, arba pasirinktinį paveikslėlių aplanką</description>
+    <description lang="lt">Skaidrės ekrano užsklanda jums parodys skaidrių peržiūros vaizdus, naudojant įvairius efektus. Jis konfigūruojamas, kad rodyti Jusų bibliotekos muzikos ar vaizdo fanart, arba pasirinktinį paveikslėlių aplanką</description>
     <description lang="nl">De Diavoorstellingsschermbeveiliging zal u een diavoorstelling tonen met verschillende overgangseffecten. U kan muziek- of videofanart uit uw bibliotheek tonen of zelf een map opgeven die afbeeldingen bevat.</description>
     <description lang="no">Denne lysbilde skjermbeskytteren viser deg bilder med forskjellige overgangseffekter. Den kan konfigureres til å vise fanart fra musikk eller video bibloteket ditt, eller en mappe med bilder.</description>
     <description lang="pl">Ten wygaszacz ekranu to pokaz slajdów obrazów, przy użyciu różnych efektów przejść. Może być skonfigurowany tak, aby pokazywał fanart filmów, muzyki lub dowolny folder ze zdjęciami.</description>
@@ -73,7 +75,7 @@
     <description lang="ro">Screensaver de tip diapozitive va afișa imagini folosind diferite efecte de tranziție. Poate fi configurat să afișeze imagini fanart din mediateca audio sau video sau dintr-un dosar personalizat.</description>
     <description lang="ru">Эта заставка показывается слайд-шоу из изображений, используя различные эффекты переходов. Заставку можно настроить для показ фанарта для музыки и видео из вашей библиотеки мультимедиа или изображениям из заданной папки.</description>
     <description lang="sk">Tento šetrič vám ukáže prezentáciu obrázkov za použitia rôznych efektov prechodov. Môže byť nastavený na zobrazovanie vašej knižnice hudby alebo video fanartov, alebo vlastného priečinku s obrázkami.</description>
-    <description lang="sl">Predvajalnik slik prikaže diaprojekcijo slik z uporabo različnih učinkov prehoda. To je mogoče nastaviti tako, da pokažejo svoje knjižnice glasbe ali video fanart, ali mapo slik.</description>
+    <description lang="sl">Predvajalnik slik prikaže diaprojekcijo slik z uporabo različnih učinkov prehoda. To je mogoče nastaviti tako, da se prikažejo ozadja knjižnice glasbe ali videa alislike iz izbrane mape.</description>
     <description lang="sq">Mbrojtësi i ekranit ‘Slideshow’ do t'ju paraqesë një shfaqje në seri të imazheve, duke përdorur efekte të ndryshme tranzicioni. Mund të konfigurohet që të shfaqë sfonde të koleksiont të muzikës apo vidjove tuaja, ose imazhe nga një dosjeje e caktuar</description>
     <description lang="sv">Bildspel är en skärmsläckare som visar ett bildspel med olika övergångseffekter. Den kan ställas in för att visa din musik- eller video-fanart från biblioteket eller en utvald mapp med bilder.</description>
     <description lang="uk">Заставка Слайдшоу показує зображення по черзі, використовуючи різноманітні ефекти переходу. Заставка може бути налаштована на показ зображень з різних джерел: обкладинок відео фільмів, обкладинок музичних альбомів або будь-яких фото із вказаної користувачем папки.</description>
@@ -81,3 +83,4 @@
     <platform>all</platform>
   </extension>
 </addon>
+

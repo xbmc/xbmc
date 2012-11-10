@@ -30,7 +30,7 @@ using namespace XFILE;
 
 ModplugCodec::ModplugCodec()
 {
-  m_CodecName = "MOD";
+  m_CodecName = "mod";
   m_module = NULL;
 }
 

@@ -33,6 +33,7 @@
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "video/VideoDatabase.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
 
@@ -137,6 +138,11 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   }
   buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
   buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
+
+  if (pItem->HasPVRRecordingInfoTag() &&
+      g_PVRClients->HasMenuHooks(pItem->GetPVRRecordingInfoTag()->m_iClientId, PVR_MENUHOOK_RECORDING))
+    buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
+
   // Update sort by button
 //if (m_guiState->GetSortMethod()!=SORT_METHOD_NONE)
 //{

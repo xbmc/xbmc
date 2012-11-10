@@ -7,6 +7,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Sluimerskerm wat jou skerm swart maak.</summary>
     <summary lang="ar">شاشة التوقف التي تحول شاشتك لأسود</summary>
+    <summary lang="be">Screensaver that turns your screen black</summary>
     <summary lang="bg">Скрийнсейвър, който прави екрана черен</summary>
     <summary lang="ca">Estalvi de pantalla que posa la pantalla en negre</summary>
     <summary lang="cs">Šetřič obrazovky, který začerní Vaši obrazovku</summary>
@@ -44,6 +45,7 @@
     <summary lang="zh_TW">讓螢幕變全黑的螢幕保護程式</summary>
     <description lang="af">Die is 'n eenvoudige sluimerskerm wat jou skerm swart maak.</description>
     <description lang="ar">بلاك شاشة توقف بسيطة تحول شاشتك لأسود</description>
+    <description lang="be">Black is a simple screensaver that will turn your screen black.</description>
     <description lang="bg">"Black" е просто скрийнсейвър, който ще направи екрана Ви черен.</description>
     <description lang="ca">Black és un estalvi de pantalla simple que posarà la teva pantalla en negre.</description>
     <description lang="cs">Black je jednoduchý šetřič obrazovky, který začerní Vaši obrazovku.</description>
@@ -82,3 +84,4 @@
     <platform>all</platform>
   </extension>
 </addon>
+

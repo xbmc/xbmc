@@ -244,7 +244,7 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, uint32_t alig
   if (alignment & XBFONT_CENTER_Y)
     y -= m_font->GetLineHeight(m_lineSpacing);
 
-  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f) * g_graphicsContext.GetGUIScaleY());
+  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetTextHeight(1, 2) * g_graphicsContext.GetGUIScaleY());
 }
 
 float CGUIFont::GetTextWidth( const vecText &text )
@@ -265,6 +265,12 @@ float CGUIFont::GetTextHeight(int numLines) const
 {
   if (!m_font) return 0;
   return m_font->GetTextHeight(m_lineSpacing, numLines) * g_graphicsContext.GetGUIScaleY();
+}
+
+float CGUIFont::GetTextBaseLine() const
+{
+  if (!m_font) return 0;
+  return m_font->GetTextBaseLine() * g_graphicsContext.GetGUIScaleY();
 }
 
 float CGUIFont::GetLineHeight() const

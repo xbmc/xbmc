@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-10-02 17:06+0000\n"
+"PO-Revision-Date: 2012-11-04 09:53+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -276,23 +276,23 @@ msgstr "ПЕРЕМ."
 
 msgctxt "#88"
 msgid "South"
-msgstr ""
+msgstr "южный"
 
 msgctxt "#89"
 msgid "North"
-msgstr ""
+msgstr "северный"
 
 msgctxt "#90"
 msgid "West"
-msgstr ""
+msgstr "западный"
 
 msgctxt "#91"
 msgid "East"
-msgstr ""
+msgstr "восточный"
 
 msgctxt "#92"
 msgid "Variable"
-msgstr ""
+msgstr "переменный"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -572,7 +572,7 @@ msgstr "Обложка"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr ""
+msgstr "Отменить операции с файлами"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -1196,7 +1196,7 @@ msgstr "Аналоговый"
 
 msgctxt "#339"
 msgid "Optical/Coax"
-msgstr "Цифровой"
+msgstr "Оптический/коаксиальный"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1328,7 +1328,7 @@ msgstr "местами"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "преимущественно"
+msgstr "преимущ."
 
 msgctxt "#373"
 msgid "Sunny"
@@ -1368,7 +1368,7 @@ msgstr "немного"
 
 msgctxt "#382"
 msgid "Scattered"
-msgstr "местами"
+msgstr "одиночные"
 
 msgctxt "#383"
 msgid "Wind"
@@ -1388,7 +1388,7 @@ msgstr "ясно"
 
 msgctxt "#387"
 msgid "Clouds"
-msgstr "облачно"
+msgstr "облака"
 
 msgctxt "#388"
 msgid "Early"
@@ -1924,35 +1924,35 @@ msgstr "Вид: %s"
 
 msgctxt "#535"
 msgid "List"
-msgstr "список"
+msgstr "Список"
 
 msgctxt "#536"
 msgid "Icons"
-msgstr "значки"
+msgstr "Значки"
 
 msgctxt "#537"
 msgid "Big list"
-msgstr "широкий список"
+msgstr "Широкий список"
 
 msgctxt "#538"
 msgid "Big icons"
-msgstr "крупные значки"
+msgstr "Крупные значки"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "широкий"
+msgstr "Баннеры"
 
 msgctxt "#540"
 msgid "Big wide"
-msgstr "широкий крупн."
+msgstr "Широкий крупн."
 
 msgctxt "#541"
 msgid "Album icons"
-msgstr "значки альбомов"
+msgstr "Значки альбомов"
 
 msgctxt "#542"
 msgid "DVD icons"
-msgstr "значки DVD"
+msgstr "Значки DVD"
 
 msgctxt "#543"
 msgid "DVD"
@@ -1960,7 +1960,7 @@ msgstr "DVD"
 
 msgctxt "#544"
 msgid "Media info"
-msgstr "информация"
+msgstr "Информация"
 
 msgctxt "#545"
 msgid "Audio output device"
@@ -2312,11 +2312,11 @@ msgstr "Удалить из медиатеки"
 
 msgctxt "#647"
 msgid "Export video library"
-msgstr "Экспортировать видеотеку"
+msgstr "Экспортировать медиатеку видео"
 
 msgctxt "#648"
 msgid "Import video library"
-msgstr "Импортировать видеотеку"
+msgstr "Импортировать медиатеку видео"
 
 msgctxt "#649"
 msgid "Importing"
@@ -2328,7 +2328,7 @@ msgstr "Экспорт…"
 
 msgctxt "#651"
 msgid "Browse for library"
-msgstr "Укажите медиатеку"
+msgstr "Выберите медиатеку"
 
 msgctxt "#652"
 msgid "Years"
@@ -3104,7 +3104,7 @@ msgstr "AirPlay"
 
 msgctxt "#1275"
 msgid "Filter %s"
-msgstr ""
+msgstr "Фильтр %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3124,7 +3124,7 @@ msgstr "и"
 
 msgctxt "#1398"
 msgid "Freezing"
-msgstr "заморозки"
+msgstr "холодн."
 
 msgctxt "#1399"
 msgid "Late"
@@ -3184,7 +3184,7 @@ msgstr "ветрено"
 
 msgctxt "#1413"
 msgid "Patches"
-msgstr ""
+msgstr "местами"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3204,11 +3204,11 @@ msgstr "град"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr ""
+msgstr "грозы"
 
 msgctxt "#1419"
 msgid "Shallow"
-msgstr ""
+msgstr "низк."
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3228,107 +3228,107 @@ msgstr "туман"
 
 msgctxt "#1424"
 msgid "Overcast"
-msgstr ""
+msgstr "облачно"
 
 msgctxt "#1425"
 msgid "Pellets"
-msgstr ""
+msgstr "град"
 
 msgctxt "#1426"
 msgid "Hail"
-msgstr ""
+msgstr "град"
 
 msgctxt "#1427"
 msgid "Smoke"
-msgstr ""
+msgstr "дым"
 
 msgctxt "#1428"
 msgid "Volcanic"
-msgstr ""
+msgstr "вулканический"
 
 msgctxt "#1429"
 msgid "Ash"
-msgstr ""
+msgstr "пепел"
 
 msgctxt "#1430"
 msgid "Widespread"
-msgstr ""
+msgstr " повсеместн."
 
 msgctxt "#1431"
 msgid "Dust"
-msgstr ""
+msgstr "пыль"
 
 msgctxt "#1432"
 msgid "Sand"
-msgstr ""
+msgstr "песок"
 
 msgctxt "#1433"
 msgid "Spray"
-msgstr ""
+msgstr "моросящ. дождь"
 
 msgctxt "#1434"
 msgid "Whirls"
-msgstr ""
+msgstr "вихри"
 
 msgctxt "#1435"
 msgid "Sandstorm"
-msgstr ""
+msgstr "песчаная буря"
 
 msgctxt "#1436"
 msgid "Blowing"
-msgstr ""
+msgstr "летящ."
 
 msgctxt "#1437"
 msgid "Pellet"
-msgstr ""
+msgstr "град"
 
 msgctxt "#1438"
 msgid "Small"
-msgstr ""
+msgstr "Небольшие"
 
 msgctxt "#1439"
 msgid "and"
-msgstr ""
+msgstr "и"
 
 msgctxt "#1440"
 msgid "Sleet"
-msgstr ""
+msgstr "дождь со снегом"
 
 msgctxt "#1441"
 msgid "with"
-msgstr ""
+msgstr "и"
 
 msgctxt "#1442"
 msgid "Chance"
-msgstr ""
+msgstr "возможн."
 
 msgctxt "#1443"
 msgid "of"
-msgstr ""
+msgstr " "
 
 msgctxt "#1444"
 msgid "Funnel"
-msgstr ""
+msgstr "вихревое"
 
 msgctxt "#1445"
 msgid "Cloud"
-msgstr ""
+msgstr "облако"
 
 msgctxt "#1446"
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестно"
 
 msgctxt "#1447"
 msgid "Squals"
-msgstr ""
+msgstr "шквалы"
 
 msgctxt "#1448"
 msgid "Precipitation"
-msgstr ""
+msgstr "Осадки"
 
 msgctxt "#1449"
 msgid "Partial"
-msgstr ""
+msgstr "местами"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3340,11 +3340,11 @@ msgstr "Длительность"
 
 msgctxt "#2080"
 msgid "Empty list"
-msgstr ""
+msgstr "Пустой список"
 
 msgctxt "#2081"
 msgid "Went back to parent list because the active list has been emptied"
-msgstr ""
+msgstr "Открыт родительский список, поскольку активный список пуст"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3760,19 +3760,19 @@ msgstr "Заблокировано"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr ""
+msgstr "Обновление картинок медеатеки видео"
 
 msgctxt "#12350"
 msgid "Processing %s"
-msgstr ""
+msgstr "Обработка %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr ""
+msgstr "Кэш картинок медиатеки видео нуждается в обновлении."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
-msgstr ""
+msgstr "Загрузка файлов не требуется."
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -3780,7 +3780,7 @@ msgstr "Переустановить защиту"
 
 msgctxt "#12354"
 msgid "Would you like to update it now?"
-msgstr ""
+msgstr "Обновить сейчас?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3816,7 +3816,7 @@ msgstr "Настройки и менеджер файлов"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr ""
+msgstr "Установить по умолчанию для всех видеофайлов"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -4752,11 +4752,11 @@ msgstr "Включить аппаратное ускорение (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
-msgstr ""
+msgstr "Автоматически проигрывать следующий видеофайл"
 
 msgctxt "#13434"
 msgid "Play only this"
-msgstr ""
+msgstr "Проигрывать только этот файл"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4804,23 +4804,23 @@ msgstr "Синхронизировать видео с частотой дисп
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr ""
+msgstr "Картинки"
 
 msgctxt "#13512"
 msgid "Current art"
-msgstr ""
+msgstr "Текущая картинка"
 
 msgctxt "#13513"
 msgid "Remote art"
-msgstr ""
+msgstr "Удаленная картинка"
 
 msgctxt "#13514"
 msgid "Local art"
-msgstr ""
+msgstr "Локальная картинка"
 
 msgctxt "#13515"
 msgid "No art"
-msgstr ""
+msgstr "Без картинки"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5236,7 +5236,7 @@ msgstr "Извлекать CD по окончании оцифровки"
 
 msgctxt "#14100"
 msgid "Stop ripping CD"
-msgstr ""
+msgstr "Остановить оцифровку CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5940,7 +5940,7 @@ msgstr "или используйте словосочетания, чтобы �
 
 msgctxt "#19003"
 msgid "Find similar programs"
-msgstr ""
+msgstr "Найти похожие программы"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6108,7 +6108,7 @@ msgstr "Проверьте настройки или см. журнал."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Ни один клиент PVR не запущен. Дождитесь запуска клиентов PVR   или см. журнал."
+msgstr "Нет активных клиентов PVR. Дождитесь запуска клиентов PVR или см. журнал."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6976,19 +6976,19 @@ msgstr "Посетите xbmc.org/pvr для получения подробно
 
 msgctxt "#19275"
 msgid "Conflict warning"
-msgstr ""
+msgstr "Предупреждение о конфликте"
 
 msgctxt "#19276"
 msgid "Conflict error"
-msgstr ""
+msgstr "Ошибка из-за конфликта"
 
 msgctxt "#19277"
 msgid "Recording conflict"
-msgstr ""
+msgstr "Конфликт при записи"
 
 msgctxt "#19278"
 msgid "Recording error"
-msgstr ""
+msgstr "Ошибка записи"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8032,7 +8032,7 @@ msgstr "UPnP"
 
 msgctxt "#20188"
 msgid "Announce library updates via UPnP"
-msgstr ""
+msgstr "Объявлять об обновлении медиатеки по UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8064,11 +8064,11 @@ msgstr "Изменить инфоресурс"
 
 msgctxt "#20196"
 msgid "Export music library"
-msgstr "Экспортировать аудиотеку"
+msgstr "Экспортировать медиатеку музыки"
 
 msgctxt "#20197"
 msgid "Import music library"
-msgstr "Импортировать аудиотеку"
+msgstr "Импортировать медиатеку музыки"
 
 msgctxt "#20198"
 msgid "No artist found!"
@@ -8544,11 +8544,11 @@ msgstr "Трейлер"
 
 msgctxt "#20411"
 msgid "Flatten"
-msgstr "Без категорий"
+msgstr "Скрыть категории"
 
 msgctxt "#20412"
 msgid "Flatten TV shows"
-msgstr "Не объединять серии сериалов в сезоны"
+msgstr "Скрывать списки сезонов сериалов"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8634,10 +8634,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Киноциклы"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Выбрать эскиз киноцикла"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Экспортировать эскизы актеров?"
@@ -8717,10 +8713,6 @@ msgstr "Слушатель"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Слушателей"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Выбрать фанарт киноцикла"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -8824,7 +8816,7 @@ msgstr "Звуки интерфейса во время проигрывания
 
 msgctxt "#21371"
 msgid "Thumbnail"
-msgstr "эскизы"
+msgstr "Эскизы"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
@@ -9188,15 +9180,15 @@ msgstr "Над видео"
 
 msgctxt "#21467"
 msgid "%.1f to %.1f"
-msgstr ""
+msgstr "%.1f—%.1f"
 
 msgctxt "#21468"
 msgid "%d to %d"
-msgstr ""
+msgstr "%d—%d"
 
 msgctxt "#21469"
 msgid "%s to %s"
-msgstr ""
+msgstr "%s—%s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -9696,7 +9688,7 @@ msgstr "Запуск…"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr ""
+msgstr "Масштабировать телетекст до 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9808,7 +9800,7 @@ msgstr "Weather.com (стандартно)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr ""
+msgstr "Служба прогноза погоды"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -10560,7 +10552,7 @@ msgstr "Включить поддержку джойстика и геймпад
 
 msgctxt "#35101"
 msgid "Disable joystick when iMON is present"
-msgstr ""
+msgstr "Отключить джойстик при наличии iMON"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10716,16 +10708,16 @@ msgstr "При запуске/остановке"
 
 msgctxt "#36037"
 msgid "TV"
-msgstr ""
+msgstr "ТВ"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"
-msgstr ""
+msgstr "Усилитель/АВ-ресивер"
 
 msgctxt "#36039"
 msgid "TV and AVR device (explicit)"
-msgstr ""
+msgstr "ТВ и АВ-ресивер (явно)"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr ""
+msgstr "Неподдерживаемая версия интерфейса libCEC. %x меньше, чем версия, поддерживаемая XBMC (%x)"

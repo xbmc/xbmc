@@ -32,7 +32,7 @@ OGGCodec::OGGCodec() : m_callback(m_file)
   m_BitsPerSample = 0;
   m_DataFormat = AE_FMT_INVALID;
   m_Bitrate = 0;
-  m_CodecName = "OGG";
+  m_CodecName = "ogg";
   m_TimeOffset = 0.0;
   m_CurrentStream=0;
   m_TotalTime = 0;

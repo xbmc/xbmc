@@ -34,7 +34,7 @@ static const char * DEFAULT_SOUNDFONT_FILE = "special://masterprofile/timidity/s
 
 TimidityCodec::TimidityCodec()
 {
-  m_CodecName = "MID";
+  m_CodecName = "mid";
   m_mid = 0;
   m_iTrack = -1;
   m_iDataPos = -1;

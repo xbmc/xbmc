@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
 "POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-09 01:44+0000\n"
+"PO-Revision-Date: 2012-11-07 05:29+0000\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Thai (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/th/)\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr "ตัวเลือก ด้านพลังงาน"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "ดำเนินการอยู่..."
+msgstr "ทำงานอยู่..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -459,11 +459,11 @@ msgstr "[B]ปรับเปลี่ยนการตั้งค่าบร
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "ตัวช่วยในการเริ่มใช้งาน"
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "แท็บนี้มีเครื่องหมายที่แสดงว่า มีเมนูในด้านข้างของหน้าต่าง ซึ่งมีเมนูการปรับแต่งพิเศษสำหรับส่วนนี้ ในการเข้าถึงเมนูนี้, ให้เลื่อนลูกศรซ้ายด้วยรีโมทหรือคีย์บอร์ด หรือวางตัวชี้ของเมาท์เหนือแท็บนี้. [CR][CR]กด \"ตกลง\" เพื่อปิดกล่องโต้ตอบนี้. ซึ่งจะไม่แสดงขึ้นมาอีก."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

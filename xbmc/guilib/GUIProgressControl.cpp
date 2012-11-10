@@ -130,6 +130,7 @@ bool CGUIProgressControl::OnMessage(CGUIMessage& message)
 
 void CGUIProgressControl::SetPercentage(float fPercent)
 {
+  fPercent = std::max(0.0f, std::min(fPercent, 100.0f));
   if (m_fPercent != fPercent)
     SetInvalid();
   m_fPercent = fPercent;

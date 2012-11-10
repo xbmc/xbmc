@@ -1005,6 +1005,9 @@ void CGUISettings::Initialize()
   AddSeparator(pvrpa, "pvrparental.sep1");
   AddString(pvrpa, "pvrparental.pin", 19261, "", EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW, true);
   AddInt(pvrpa, "pvrparental.duration", 19260, 300, 5, 5, 1200, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+
+  CSettingsCategory* pvrc = AddCategory(SETTINGS_PVR, "pvrclient", 19279);
+  AddString(pvrc, "pvrclient.menuhook", 19280, "", BUTTON_CONTROL_STANDARD);
 }
 
 CGUISettings::~CGUISettings(void)

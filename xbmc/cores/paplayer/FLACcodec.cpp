@@ -31,7 +31,7 @@ FLACCodec::FLACCodec()
   m_DataFormat = AE_FMT_INVALID;
   m_TotalTime=0;
   m_Bitrate = 0;
-  m_CodecName = "FLAC";
+  m_CodecName = "flac";
 
   m_pFlacDecoder=NULL;
 

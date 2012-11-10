@@ -690,7 +690,7 @@ bool COMXPlayer::OpenDemuxStream()
   return true;
 }
 
-void COMXPlayer::OpenDefaultStreams()
+void COMXPlayer::OpenDefaultStreams(bool reset)
 {
   // bypass for DVDs. The DVD Navigator has already dictated which streams to open.
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -704,7 +704,7 @@ void COMXPlayer::OpenDefaultStreams()
   valid   = false;
   for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenVideoStream(it->id, it->source))
+    if(OpenVideoStream(it->id, it->source, reset))
       valid = true;;
   }
   if(!valid)
@@ -719,7 +719,7 @@ void COMXPlayer::OpenDefaultStreams()
 
   for(OMXSelectionStreams::iterator it = streams.begin(); it != streams.end() && !valid; ++it)
   {
-    if(OpenAudioStream(it->id, it->source))
+    if(OpenAudioStream(it->id, it->source, reset))
       valid = true;
   }
   if(!valid)
@@ -801,7 +801,7 @@ bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
     {
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX);
         m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-        OpenDefaultStreams();
+        OpenDefaultStreams(false);
         return true;
     }
 
@@ -2140,14 +2140,14 @@ void COMXPlayer::HandleMessages()
               m_dvd.iSelectedAudioStream = -1;
               CloseAudioStream(false);
               // TODO : check //CloseVideoStream(false);
-              m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+              m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
             }
           }
           else
           {
             CloseAudioStream(false);
             OpenAudioStream(st.id, st.source);
-            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true, true, true));
           }
         }
       }
@@ -2821,7 +2821,7 @@ void COMXPlayer::ToFFRW(int iSpeed)
   SetPlaySpeed(iSpeed * DVD_PLAYSPEED_NORMAL);
 }
 
-bool COMXPlayer::OpenAudioStream(int iStream, int source)
+bool COMXPlayer::OpenAudioStream(int iStream, int source, bool reset)
 {
   CLog::Log(LOGNOTICE, "Opening audio stream: %i source: %i", iStream, source);
 
@@ -2862,7 +2862,7 @@ bool COMXPlayer::OpenAudioStream(int iStream, int source)
     m_av_clock.SetSpeed(DVD_PLAYSPEED_NORMAL);
     m_av_clock.OMXSetSpeed(DVD_PLAYSPEED_NORMAL);
   }
-  else
+  else if (reset)
     m_player_audio.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
 
   /* store information about stream */
@@ -2881,7 +2881,7 @@ bool COMXPlayer::OpenAudioStream(int iStream, int source)
   return true;
 }
 
-bool COMXPlayer::OpenVideoStream(int iStream, int source)
+bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
 {
   CLog::Log(LOGNOTICE, "Opening video stream: %i source: %i", iStream, source);
 
@@ -2925,7 +2925,7 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source)
     m_av_clock.SetSpeed(DVD_PLAYSPEED_NORMAL);
     m_av_clock.OMXSetSpeed(DVD_PLAYSPEED_NORMAL);
   }
-  else
+  else if (reset)
     m_player_video.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
 
   unsigned flags = 0;

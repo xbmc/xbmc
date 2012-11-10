@@ -78,7 +78,7 @@ MP3Codec::MP3Codec()
   m_BitsPerSample = 0;
   m_TotalTime = 0;
   m_Bitrate = 0;
-  m_CodecName = "MP3";
+  m_CodecName = "mp3";
 
   // mp3 related
   m_CallAgainWithSameBuffer = false;
