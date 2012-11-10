@@ -40,6 +40,15 @@ CKey::CKey(uint32_t buttonCode, uint8_t leftTrigger, uint8_t rightTrigger, float
   m_rightThumbX = rightThumbX;
   m_rightThumbY = rightThumbY;
   m_repeat = repeat;
+  if(((buttonCode & KEY_ASCII)==KEY_ASCII) || ((buttonCode & KEY_VKEY)==KEY_VKEY))
+    {
+        //Pass the modifier and key press information when sent from an EventServer Client
+        m_modifiers = buttonCode & (MODIFIER_ALT | MODIFIER_CTRL | MODIFIER_RALT | MODIFIER_SHIFT | MODIFIER_SUPER);
+        if(((buttonCode & KEY_ASCII)==KEY_ASCII))
+            m_ascii = buttonCode & 0xFF;
+        else
+            m_vkey = buttonCode & 0xFF;
+  }
 }
 
 CKey::CKey(uint32_t buttonCode, unsigned int held)
