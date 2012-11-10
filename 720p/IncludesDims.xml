@@ -1281,9 +1281,9 @@
 	</include>
 	<include name="TVUnwatchedEpisodesDetailsImageDims">
 		<posx>568</posx>
-		<posy>15</posy>
-		<width>16</width>
-		<height>16</height>
+		<posy>14</posy>
+		<width>14</width>
+		<height>14</height>
 	</include>
 	<!-- TV Seasons -->
 	<include name="TVSeasonsThumbPos">

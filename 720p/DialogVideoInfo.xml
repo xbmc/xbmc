@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <window id="2003">
-	<defaultcontrol always="true">6</defaultcontrol>
+	<defaultcontrol always="true">10</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<coordinates>
 		<system>1</system>
@@ -163,22 +163,13 @@
 							<include>VideoInfoButton</include>
 						</control>
 						<control type="button" id="10">
-							<description>Thumb</description>
+							<description>Art</description>
 							<width>95</width>
 							<onright>12</onright>
 							<onleft>6</onleft>
-							<label>$LOCALIZE[31117]</label>
+							<label>$LOCALIZE[13511]</label>
 							<textoffsety>3</textoffsety>
 							<include>VideoInfoButton</include>
-						</control>
-						<control type="button" id="12">
-							<description>Fanart</description>
-							<width>95</width>
-							<onright>13</onright>
-							<onleft>10</onleft>
-							<textoffsety>3</textoffsety>
-							<include>VideoInfoFanart</include>
-							<visible>!Container.Content(episodes)</visible>
 						</control>
 						<control type="button" id="13">
 							<description>Banner</description>
@@ -413,7 +404,7 @@
 			<control type="textbox" id="4">
 				<description>Plot</description>
 				<width>500</width>
-				<height>238</height>
+				<height>218</height>
 				<info>ListItem.Plot</info>
 			</control>
 			<control type="list" id="50">
