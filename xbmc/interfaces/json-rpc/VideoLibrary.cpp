@@ -497,6 +497,10 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
 
   UpdateVideoTag(parameterObject, infos, artwork);
 
+  // we need to manually remove tags/taglinks for now because they aren't replaced
+  // due to scrapers not supporting them
+  videodatabase.RemoveTagsFromItem(id, "movie");
+
   if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
     return InternalError;
 
@@ -534,6 +538,10 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos, artwork);
+
+  // we need to manually remove tags/taglinks for now because they aren't replaced
+  // due to scrapers not supporting them
+  videodatabase.RemoveTagsFromItem(id, "tvshow");
 
   if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, seasonArt, id) <= 0)
     return InternalError;
@@ -619,6 +627,10 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos, artwork);
+
+  // we need to manually remove tags/taglinks for now because they aren't replaced
+  // due to scrapers not supporting them
+  videodatabase.RemoveTagsFromItem(id, "musicvideo");
 
   if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
     return InternalError;

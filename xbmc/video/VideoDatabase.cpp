@@ -1433,6 +1433,15 @@ void CVideoDatabase::RemoveTagFromItem(int idItem, int idTag, const std::string 
   CleanupTags();
 }
 
+void CVideoDatabase::RemoveTagsFromItem(int idItem, const std::string &type)
+{
+  if (type.empty())
+    return;
+
+  m_pDS2->exec(PrepareSQL("DELETE FROM taglinks WHERE idMedia=%d AND media_type='%s'", idItem, type.c_str()));
+  CleanupTags();
+}
+
 void CVideoDatabase::CleanupTags()
 {
   m_pDS2->exec("DELETE FROM tag WHERE NOT EXISTS (SELECT 1 FROM taglinks WHERE taglinks.idTag = tag.idTag)");
