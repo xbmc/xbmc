@@ -36,7 +36,7 @@ using namespace XFILE;
 
 SPCCodec::SPCCodec()
 {
-  m_CodecName = "SPC";
+  m_CodecName = "spc";
   m_szBuffer = NULL;
   m_pApuRAM = NULL;
   m_iDataPos = 0;

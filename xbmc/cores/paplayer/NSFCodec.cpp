@@ -26,7 +26,7 @@
 NSFCodec::NSFCodec()
 {
   m_iTrack = 0;
-  m_CodecName = "NSF";
+  m_CodecName = "nsf";
   m_nsf = NULL;
   m_bIsPlaying = false;
   m_szBuffer = NULL;

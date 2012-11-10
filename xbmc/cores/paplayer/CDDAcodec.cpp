@@ -39,7 +39,7 @@ CDDACodec::CDDACodec()
   m_DataFormat = AE_FMT_S16NE;
   m_TotalTime = 0;
   m_Bitrate = 0;
-  m_CodecName = "CDDA";
+  m_CodecName = "cdda";
 
   m_BufferSize=0;
   m_Buffer = new BYTE[MAX_BUFFER_SIZE];

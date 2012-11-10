@@ -24,7 +24,7 @@
 
 VGMCodec::VGMCodec()
 {
-  m_CodecName = "VGM";
+  m_CodecName = "vgm";
   m_vgm = 0;
   m_iDataPos = -1;
   m_DataFormat = AE_FMT_INVALID;

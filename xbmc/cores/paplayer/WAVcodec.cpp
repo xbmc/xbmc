@@ -53,7 +53,7 @@ WAVCodec::WAVCodec()
   m_iDataLen = 0;
   m_ChannelMask = 0;
   m_Bitrate = 0;
-  m_CodecName = "WAV";
+  m_CodecName = "wav";
 }
 
 WAVCodec::~WAVCodec()
