@@ -1505,7 +1505,8 @@ void CFileItem::SetFromSong(const CSong &song)
   m_lStartPartNumber = 1;
   SetProperty("item_start", song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
-  SetArt("thumb", song.strThumb);
+  if (!song.strThumb.empty())
+    SetArt("thumb", song.strThumb);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
