@@ -2394,6 +2394,9 @@ bool CApplication::OnKey(const CKey& key)
   // allow some keys to be processed while the screensaver is active
   if (WakeUpScreenSaverAndDPMS(processKey) && !processKey)
   {
+    // pass action to python screensaver window if present
+    if (iWin == WINDOW_SCREENSAVER)
+      OnAction(action);
     CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
     return true;
   }
