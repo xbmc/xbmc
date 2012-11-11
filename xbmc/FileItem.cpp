@@ -3024,7 +3024,7 @@ bool CFileItemList::UpdateItem(const CFileItem *item)
     CFileItemPtr pItem = m_items[i];
     if (pItem->IsSamePath(item))
     {
-      *pItem = *item;
+      pItem->UpdateInfo(*item);
       return true;
     }
   }
