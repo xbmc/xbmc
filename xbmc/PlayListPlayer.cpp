@@ -67,10 +67,13 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
   case GUI_MSG_NOTIFY_ALL:
     if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
-      // update our item if necessary
-      CPlayList &playlist = GetPlaylist(m_iCurrentPlayList);
-      CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
-      playlist.UpdateItem(item.get());
+      // update the items in our playlist(s) if necessary
+      for (int i = PLAYLIST_MUSIC; i != PLAYLIST_VIDEO; i++)
+      {
+        CPlayList &playlist = GetPlaylist(i);
+        CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
+        playlist.UpdateItem(item.get());
+      }
     }
     break;
   case GUI_MSG_PLAYBACK_STOPPED:
