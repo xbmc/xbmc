@@ -577,9 +577,9 @@ void CGUISettings::Initialize()
 #endif
   AddBool(in, "input.remoteaskeyboard", 21449, false);
 #if defined(TARGET_DARWIN_IOS)
-  AddBool(NULL, "input.enablemouse", 21369, true);
+  AddBool(NULL, "input.enablemouse", 21369, false);
 #else
-  AddBool(in, "input.enablemouse", 21369, true);
+  AddBool(in, "input.enablemouse", 21369, false);
 #endif
 #if defined(HAS_SDL_JOYSTICK)
   AddBool(in, "input.enablejoystick", 35100, true);
