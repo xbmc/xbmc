@@ -126,7 +126,7 @@ namespace XBMCAddon
       Control* GetControlById(int iControlId) throw (WindowException);
 
       SWIGHIDDENVIRTUAL void PulseActionEvent();
-      SWIGHIDDENVIRTUAL void WaitForActionEvent();
+      SWIGHIDDENVIRTUAL bool WaitForActionEvent(unsigned int milliseconds);
 #endif
 
     public:

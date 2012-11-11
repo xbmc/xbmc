@@ -371,13 +371,13 @@ namespace XBMCAddon
         m_actionEvent.Set();
     }
 
-    void Window::WaitForActionEvent()
+    bool Window::WaitForActionEvent(unsigned int milliseconds)
     {
       TRACE;
       // DO NOT MAKE THIS A DELAYED CALL!!!!
-      if (languageHook)
-        languageHook->waitForEvent(m_actionEvent);
+      bool ret = languageHook == NULL ? m_actionEvent.WaitMSec(milliseconds) : languageHook->waitForEvent(m_actionEvent,milliseconds);
       m_actionEvent.Reset();
+      return ret;
     }
 
     bool Window::OnAction(const CAction &action)
@@ -672,10 +672,16 @@ namespace XBMCAddon
 //            break;
 //          }
           languageHook->makePendingCalls(); // MakePendingCalls
+
+          bool stillWaiting;
+          do
           {
-            DelayedCallGuard dcguard(languageHook);            
-            WaitForActionEvent();
-          }
+            {
+              DelayedCallGuard dcguard(languageHook);            
+              stillWaiting = WaitForActionEvent(10) ? false : true;
+            }
+            languageHook->makePendingCalls();
+          } while (stillWaiting);
         }
       }
     }
