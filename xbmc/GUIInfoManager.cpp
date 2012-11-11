@@ -2949,8 +2949,9 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   else if (info.m_info == PLAYER_FINISH_TIME)
   {
     CDateTime time;
-    if (m_currentFile->HasEPGInfoTag())
-      time = m_currentFile->GetEPGInfoTag()->EndAsLocalTime();
+    CEpgInfoTag currentTag;
+    if (GetEpgInfoTag(currentTag))
+      time = currentTag.EndAsLocalTime();
     else
     {
       time = CDateTime::GetCurrentDateTime();
@@ -2961,8 +2962,9 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   else if (info.m_info == PLAYER_START_TIME)
   {
     CDateTime time;
-    if (m_currentFile->HasEPGInfoTag())
-      time = m_currentFile->GetEPGInfoTag()->StartAsLocalTime();
+    CEpgInfoTag currentTag;
+    if (GetEpgInfoTag(currentTag))
+      time = currentTag.StartAsLocalTime();
     else
     {
       time = CDateTime::GetCurrentDateTime();
@@ -5377,6 +5379,22 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<int, bool>& map)
   {
     if (GetBoolValue(it->first) != it->second)
       return true;
+  }
+  return false;
+}
+
+bool CGUIInfoManager::GetEpgInfoTag(CEpgInfoTag& tag) const
+{
+  if (m_currentFile->HasEPGInfoTag())
+  {
+    CEpgInfoTag* currentTag =  m_currentFile->GetEPGInfoTag();
+    while (currentTag && !currentTag->IsActive())
+      currentTag = currentTag->GetNextEvent().get();
+    if (currentTag)
+    {
+      tag = *currentTag;
+      return true;
+    }
   }
   return false;
 }
