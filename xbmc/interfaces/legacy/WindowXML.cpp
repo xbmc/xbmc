@@ -48,8 +48,8 @@ namespace XBMCAddon
      *  add behavior for a few more virtual functions that were unneccessary
      *  in the Window or WindowDialog.
      */
-#define checkedb(methcall) ( window ? xwin-> methcall : false )
-#define checkedv(methcall) { if (window) xwin-> methcall ; }
+#define checkedb(methcall) ( window.isNotNull() ? xwin-> methcall : false )
+#define checkedv(methcall) { if (window.isNotNull()) xwin-> methcall ; }
 
 
     // TODO: This should be done with template specialization

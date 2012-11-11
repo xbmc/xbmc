@@ -42,7 +42,7 @@ namespace XBMCAddon
     class InterceptorBase
     {
     protected:
-      Window* window;
+      AddonClass::Ref<Window> window;
       XbmcThreads::ThreadLocal<ref> upcallTls;
 
       InterceptorBase() : window(NULL) { upcallTls.set(NULL); }
@@ -63,9 +63,7 @@ namespace XBMCAddon
       bool up() { bool ret = (upcallTls.get() != NULL); upcallTls.set(NULL); return ret; }
     public:
 
-      // TODO: Add thread safety
-      void clear() { window = NULL; }
-      virtual ~InterceptorBase() {}
+      virtual ~InterceptorBase() { if (window.isNotNull()) { window->interceptorClear(); } }
 
       virtual CGUIWindow* get() = 0;
 
@@ -111,8 +109,8 @@ namespace XBMCAddon
      *  overloaded -> operator.
      */
 
-#define checkedb(methcall) ( window ? window-> methcall : false )
-#define checkedv(methcall) { if (window) window-> methcall ; }
+#define checkedb(methcall) ( window.isNotNull() ? window-> methcall : false )
+#define checkedv(methcall) { if (window.isNotNull()) window-> methcall ; }
 
     template <class P /* extends CGUIWindow*/> class Interceptor : 
       public P, public InterceptorBase
@@ -133,7 +131,7 @@ namespace XBMCAddon
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON constructing %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
 #endif
-        window = _window; 
+        window.reset(_window);
         P::SetLoadType(CGUIWindow::LOAD_ON_GUI_INIT);
       }
                     
@@ -146,7 +144,7 @@ namespace XBMCAddon
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON constructing %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
 #endif
-        window = _window;
+        window.reset(_window);
         P::SetLoadType(CGUIWindow::LOAD_ON_GUI_INIT);
       }
 

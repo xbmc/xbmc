@@ -26,6 +26,7 @@
 #include "utils/StdString.h"
 #include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/AddonClass.h"
+#include "interfaces/legacy/Window.h"
 #include "threads/ThreadLocal.h"
 
 namespace PythonBindings
@@ -105,6 +106,11 @@ namespace PythonBindings
   inline void prepareForReturn(XBMCAddon::AddonClass* c) { if(c) c->Acquire(); }
 
   inline void cleanForDealloc(XBMCAddon::AddonClass* c) { if(c) c->Release(); }
+
+  /**
+   * There is a Catch-22 in the destruction of a Window. This resolves that.
+   */
+  inline void cleanForDealloc(XBMCAddon::xbmcgui::Window* c) { if(c) { c->dispose(); c->Release(); } }
 
   /**
    * This method allows for conversion of the native api Type to the Python type
