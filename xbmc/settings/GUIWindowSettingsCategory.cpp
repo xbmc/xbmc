@@ -1080,11 +1080,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("myplex.signin"))
     {
-      int label = g_guiSettings.GetString("myplex.token").empty() ? 19002 : 19003;
+      int label = g_guiSettings.GetString("myplex.token").empty() ? 44002 : 44003;
 
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel(g_localizeStrings.Get(label));
-      //pSettingString->SetLabel(19003);
+      //pSettingString->SetLabel(44003);
     }
     else if (strSetting.Equals("plexmediaserver.address"))
     {
@@ -2106,8 +2106,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19011));
 
         // Change button to "sign out"
-        pControl->SetLabel(g_localizeStrings.Get(19003));
-        pSettingString->SetLabel(19003);
+        pControl->SetLabel(g_localizeStrings.Get(44003));
+        pSettingString->SetLabel(44003);
       }
       else
       {
@@ -2124,8 +2124,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19010));
 
       // Change the button to "sign in".
-      pControl->SetLabel(g_localizeStrings.Get(19002));
-      pSettingString->SetLabel(19002);
+      pControl->SetLabel(g_localizeStrings.Get(44002));
+      pSettingString->SetLabel(44002);
 
       // Nuke the password.
       g_guiSettings.SetString("myplex.password", "");

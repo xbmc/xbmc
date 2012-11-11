@@ -11744,45 +11744,6 @@ msgstr ""
 
 #empty strings from id 18105 to 18999
 
-msgctxt "#19000"
-msgid "Email"
-msgstr ""
-
-msgctxt "#19001"
-msgid "Password"
-msgstr ""
-
-msgctxt "#19002"
-msgid "Sign in"
-msgstr ""
-
-msgctxt "#19003"
-msgid "Sign out"
-msgstr ""
-
-#empty strings from id 19004 to 19009
-
-msgctxt "#19010"
-msgid "Not signed in"
-msgstr ""
-
-msgctxt "#19011"
-msgid "Signed in"
-msgstr ""
-
-msgctxt "#19012"
-msgid "Error signing in"
-msgstr ""
-
-#empty strings from id 19013 to 19019
-
-msgctxt "#19020"
-msgid "Shared Content"
-msgstr ""
-
-msgctxt "#19021"
-msgid "Queue"
-msgstr ""
 
 #empty strings from id 19022 to 20008
 
@@ -12223,4 +12184,40 @@ msgstr ""
 
 msgctxt "#43009"
 msgid "20 Mbps"
+msgstr ""
+
+msgctxt "#44000"
+msgid "Email"
+msgstr ""
+
+msgctxt "#44001"
+msgid "Password"
+msgstr ""
+
+msgctxt "#44002"
+msgid "Sign in"
+msgstr ""
+
+msgctxt "#44003"
+msgid "Sign out"
+msgstr ""
+
+msgctxt "#44010"
+msgid "Not signed in"
+msgstr ""
+
+msgctxt "#44011"
+msgid "Signed in"
+msgstr ""
+
+msgctxt "#44012"
+msgid "Error signing in"
+msgstr ""
+
+msgctxt "#44020"
+msgid "Shared Content"
+msgstr ""
+
+msgctxt "#44021"
+msgid "Queue"
 msgstr ""
