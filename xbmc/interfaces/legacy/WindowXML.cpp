@@ -377,12 +377,8 @@ namespace XBMCAddon
             {
               if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
               {
-                AddonClass::Ref<Control> inf(GetControlById(iControl));
-                if (inf.isNotNull())
-                {
-                  invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onClick,iControl));
-                  PulseActionEvent();
-                }
+                invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onClick,iControl));
+                PulseActionEvent();
                 return true;
               }
               else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
