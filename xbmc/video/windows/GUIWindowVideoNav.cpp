@@ -1106,7 +1106,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
-  if (item)
+  if (item && m_vecItems->GetContent() != "secondary")
   {
     if (m_vecItems->GetContent() == "movies")
       buttons.Add(CONTEXT_BUTTON_INFO, 13346);
