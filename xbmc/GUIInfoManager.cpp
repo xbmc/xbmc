@@ -4869,7 +4869,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
 
   /* PLEX */
   case LISTITEM_BANNER:
-      return item->GetProperty("banner_image").asString();
+      return item->GetArt(PLEX_ART_BANNER);
   case LISTITEM_THUMB0:
   case LISTITEM_THUMB1:
   case LISTITEM_THUMB2:
@@ -4877,7 +4877,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
   case LISTITEM_THUMB4:
       return item->GetArt(PLEX_ART_THUMB, info-LISTITEM_THUMB0);
   case LISTITEM_GRANDPARENT_THUMB:
-    return item->GetArt(PLEX_ART_GRANDPARENT_THUMB);
+    return item->GetArt(PLEX_ART_TVSHOW_THUMB);
   /* END PLEX */
 
   case LISTITEM_ICON:

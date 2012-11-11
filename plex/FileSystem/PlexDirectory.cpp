@@ -637,7 +637,7 @@ class PlexMediaNode
        // Grandparent thumb.
        string strGrandparentThumb = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("grandparentThumb"), MAX_THUMBNAIL_AGE, localServer);
        if (strGrandparentThumb.size() > 0)
-         pItem->SetArt(PLEX_ART_GRANDPARENT_THUMB, strGrandparentThumb);
+         pItem->SetArt(PLEX_ART_TVSHOW_THUMB, strGrandparentThumb);
        
        // Fanart.
        string strArt = CPlexDirectory::ProcessMediaElement(parentPath, el.Attribute("art"), MAX_FANART_AGE, localServer);
