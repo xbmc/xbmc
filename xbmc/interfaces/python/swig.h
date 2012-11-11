@@ -100,7 +100,8 @@ namespace PythonBindings
   inline void* retrieveApiInstance(const PyObject* pythonType, const char* expectedType, const char* methodNamespacePrefix,
                                    const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
-    return doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
+    return (pythonType == NULL) ? NULL :
+      doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
 
   inline void prepareForReturn(XBMCAddon::AddonClass* c) { if(c) c->Acquire(); }
