@@ -345,7 +345,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     }
 
     // Fall back to directory thumb?
-    if (strThumb.size() > 0 && pItem->HasArt(PLEX_ART_THUMB))
+    if (strThumb.size() > 0 && !pItem->HasArt(PLEX_ART_THUMB))
       pItem->SetArt(PLEX_ART_THUMB, strThumb);
 
     // Make sure sort label is lower case.
