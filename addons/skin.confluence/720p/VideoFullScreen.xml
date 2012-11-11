@@ -269,7 +269,7 @@
 					<font>font13</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[Player.StartTime(hh:mm:ss)]</label>
+					<label>$INFO[Player.StartTime(hh:mm)]</label>
 				</control>
 				<control type="progress" id="1">
 					<description>ProgressbarCache</description>
@@ -308,7 +308,7 @@
 					<font>font13</font>
 					<align>right</align>
 					<aligny>center</aligny>
-					<label>$INFO[Player.FinishTime(hh:mm:ss)]</label>
+					<label>$INFO[Player.FinishTime(hh:mm)]</label>
 				</control>
 			</control>
 		</control>
