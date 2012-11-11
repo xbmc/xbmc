@@ -56,7 +56,6 @@ public:
 
   virtual bool operator==(const CJob* job) const;
 
-  CStdString m_path; ///< path of video to extract thumb from
   CStdString m_target; ///< thumbpath
   CStdString m_listpath; ///< path used in fileitem list
   CFileItem  m_item;

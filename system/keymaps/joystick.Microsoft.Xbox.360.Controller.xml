@@ -1,280 +1,533 @@
-<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
+<!-- This file contains the mappings for a Microsoft Xbox 360 Controller to actions within XBMC    -->
+
 <!-- The <global> section is a fall through - they will only be used if the button is not          -->
 <!-- used in the current window's section.  Note that there is only handling                       -->
 <!-- for a single action per button at this stage.                                                 -->
-<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
-<!-- gamepads.                                                                                     -->
 
-<!-- The format is:                      -->
-<!--    <device>                         -->
-<!--      <button>action</button>        -->
-<!--    </device>                        -->
+<!-- The format of a mapping is:                 -->
+<!--    <device name="name">                     -->
+<!--      <button id="x">action</button>         -->
+<!--      <axis id="x" limit="y">action</axis>   -->
+<!--    </device>                                -->
 
-<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
-<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
-<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
-<!--    <universalremote>             -->
-<!--       <obc45>Stop</obc45>         -->
-<!--    </universalremote>            -->
+<!-- Note that the action can be a built-in function.           -->
+<!-- eg <button id="x">XBMC.ActivateWindow(Home)</button>       -->
+<!-- would automatically go to Home on the press of button 'x'. -->
 
-<!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
-<!-- would automatically go to My Music on the press of the B button. -->
+<!-- Joystick Name: Xbox 360 Wireless Receiver -->
 
-<!-- Joysticks / Gamepads:                                                                    -->
-<!--   See the sample PS3 controller configuration below for the format.                      -->
-<!--                                                                                          -->
-<!--  Joystick Name:                                                                          -->
-<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
-<!--   detected joysticks. The name used in the configuration should match the detected name. -->
-<!--                                                                                          -->
-<!--  Button Ids:                                                                             -->
-<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
-<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
-<!--                                                                                          -->
-<!--  Axis Ids / Analog Controls                                                              -->
-<!--   Coming soon.                                                                           -->
+<!-- Button Mappings:                    -->
+<!--                                     -->
+<!-- ID              Button              -->
+<!--                                     -->
+<!-- 1               A                   -->
+<!-- 2               B                   -->
+<!-- 3               X                   -->
+<!-- 4               Y                   -->
+<!-- 5               LB                  -->
+<!-- 6               RB                  -->
+<!-- 7               Start               -->
+<!-- 8               Guide               -->
+<!-- 9               Left Stick Button   -->
+<!-- 10              Right Stick Button  -->
+<!-- 11              D-Pad Up            -->
+<!-- 12              D-Pad Down          -->
+<!-- 13              D-Pad Left          -->
+<!-- 14              D-Pad Right         -->
+<!-- 15              Back                -->
+
+<!-- Axis Mappings:                   -->
+<!--                                  -->
+<!-- ID              Button           -->
+<!--                                  -->
+<!-- 1               Left Stick L/R   -->
+<!-- 2               Left Stick U/D   -->
+<!-- 3               Left Trigger     -->
+<!-- 4               Right Stick L/R  -->
+<!-- 5               Right Stick U/D  -->
+<!-- 6               Right Trigger    -->
+
 <keymap>
   <global>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="1">Select</button> <!-- A -->
-      <button id="2">Back</button> <!-- B -->
-      <button id="3"></button> <!-- X -->
-      <button id="4"></button> <!-- Y -->
-      <button id="5"></button> <!-- LB -->
-      <button id="6"></button> <!-- RB -->
-      <button id="7"></button> <!-- ? -->
-      <button id="8"></button> <!-- ? -->
-      <button id="9">XBMC.ActivateWindow(PlayerControls)</button>
-      <button id="10"/>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="1">Select</button>
+      <button id="2">Back</button>
+      <button id="3">FullScreen</button>
+      <button id="4">ContextMenu</button>
+      <button id="5">Info</button>
+      <button id="6">Highlight</button>
+      <button id="7">XBMC.ActivateWindow(shutdownmenu)</button>
+      <button id="8">XBMC.ActivateWindow(Home)</button>
       <button id="11">Up</button>
       <button id="12">Down</button>
       <button id="13">Left</button>
       <button id="14">Right</button>
-      <button id="15"></button>
-      <button id="16"></button>
-      <button id="17">PreviousMenu</button>
-      <axis limit="-1" id="5">VolumeUp</axis>
-      <axis limit="+1" id="5">VolumeDown</axis>
-      <axis limit="-1" id="4">AnalogSeekBack</axis>
-      <axis limit="+1" id="4">AnalogSeekForward</axis>
-      <axis limit="0" id="3">ScrollUp</axis>
-      <axis limit="0" id="6">ScrollDown</axis>
+      <button id="15">PreviousMenu</button>
+      <axis id="1" limit="-1">AnalogRewind</axis>
+      <axis id="1" limit="+1">AnalogFastForward</axis>
+      <axis id="2" limit="-1">ScrollUp</axis>
+      <axis id="2" limit="+1">ScrollDown</axis>
+      <axis id="3" limit="0">previousscene</axis>
+      <axis id="4" limit="-1">AnalogSeekBack</axis>
+      <axis id="4" limit="+1">AnalogSeekForward</axis>
+      <axis id="5" limit="-1">VolumeUp</axis>
+      <axis id="5" limit="+1">VolumeDown</axis>
+      <axis id="6" limit="0">nextscene</axis>
     </joystick>
   </global>
   <Home>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="3">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
   </Home>
   <MyFiles>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="5">Highlight</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="6">Highlight</button>
     </joystick>
   </MyFiles>
   <MyMusicPlaylist>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="3">Back</button>
-      <button id="5">Delete</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
+      <button id="3">Delete</button>
     </joystick>
   </MyMusicPlaylist>
   <MyMusicFiles>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Playlist</button>
       <button id="5">Queue</button>
     </joystick>
   </MyMusicFiles>
   <MyMusicLibrary>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Playlist</button>
-      <button id="5">Queue</button>
+      <button id="6">Queue</button>
     </joystick>
   </MyMusicLibrary>
   <FullscreenVideo>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">CodecInfo</button>
+      <button id="4">OSD</button>
       <button id="5">AspectRatio</button>
       <button id="6">Info</button>
-      <button id="9">OSD</button>
-      <button id="13">BigStepForward</button>
+      <button id="11">BigStepForward</button>
+      <button id="12">BigStepBack</button>
+      <button id="13">StepBack</button>
       <button id="14">StepForward</button>
-      <button id="15">BigStepBack</button>
-      <button id="16">StepBack</button>
-      <button id="17">SmallStepBack</button>
       <axis limit="0" id="3">AnalogRewind</axis>
       <axis limit="0" id="6">AnalogFastForward</axis>
     </joystick>
   </FullscreenVideo>
   <FullscreenInfo>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
       <button id="3">CodecInfo</button>
-      <button id="6">Back</button>
-      <button id="9">OSD</button>
+      <button id="4">OSD</button>
       <axis limit="0" id="3">AnalogRewind</axis>
       <axis limit="0" id="6">AnalogFastForward</axis>
     </joystick>
   </FullscreenInfo>
   <PlayerControls>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
     </joystick>
   </PlayerControls>
   <Visualisation>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">CodecInfo</button>
+      <button id="4">XBMC.ActivateWindow(MusicOSD)</button>
       <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
-      <button id="9">OSD</button>
-      <button id="13">NextPreset</button>
-      <button id="14">SkipNext</button>
-      <button id="15">PreviousPreset</button>
-      <button id="16">SkipPrevious</button>
+      <button id="11">SkipNext</button>
+      <button id="12">SkipPrevious</button>
+      <button id="13">PreviousPreset</button>
+      <button id="14">NextPreset</button>
       <axis limit="0" id="3">AnalogRewind</axis>
       <axis limit="0" id="6">AnalogFastForward</axis>
     </joystick>
   </Visualisation>
   <MusicOSD>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="19">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
       <button id="3">CodecInfo</button>
       <button id="6">Info</button>
     </joystick>
   </MusicOSD>
   <VisualisationSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="3">Back</button>
-      <button id="9">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
     </joystick>
   </VisualisationSettings>
   <VisualisationPresetList>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="3">Back</button>
-      <button id="5">Back</button>
-      <button id="9">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
     </joystick>
   </VisualisationPresetList>
   <SlideShow>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
       <button id="3">CodecInfo</button>
       <button id="4">ZoomNormal</button>
       <button id="5">Rotate</button>
       <button id="6">Info</button>
-      <button id="13">ZoomIn</button>
+      <button id="11">ZoomIn</button>
+      <button id="12">ZoomOut</button>
+      <button id="13">PreviousPicture</button>
       <button id="14">NextPicture</button>
-      <button id="15">ZoomOut</button>
-      <button id="16">PreviousPicture</button>
-      <button id="17">Stop</button>
     </joystick>
   </SlideShow>
   <ScreenCalibration>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="1">NextCalibration</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">ResetCalibration</button>
-      <button id="6">NextResolution</button>
+      <button id="11">NextResolution</button>
+      <button id="14">NextCalibration</button>
     </joystick>
   </ScreenCalibration>
   <GUICalibration>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="1">NextCalibration</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">ResetCalibration</button>
-      <button id="6">NextResolution</button>
+      <button id="11">NextResolution</button>
+      <button id="14">NextCalibration</button>
     </joystick>
   </GUICalibration>
   <VideoOSD>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="5">AspectRatio</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Stop</button>
-      <button id="9">OSD</button>
-      <button id="6">Info</button>
       <button id="3">CodecInfo</button>
+      <button id="4">OSD</button>
+      <button id="5">AspectRatio</button>
+      <button id="6">Info</button>
     </joystick>
   </VideoMenu>
   <OSDVideoSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="4"/>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
       <button id="5">AspectRatio</button>
-      <button id="19">Back</button>
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="4"/>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
       <button id="5">AspectRatio</button>
-      <button id="19">Back</button>
     </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="4"/>
-      <button id="5">Delete</button>
-      <button id="19">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
+      <button id="3">Delete</button>
     </joystick>
   </VideoBookmarks>
   <MyVideoLibrary>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Delete</button>
     </joystick>
   </MyVideoLibrary>
   <MyVideoFiles>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="5">Queue</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Playlist</button>
+      <button id="6">Queue</button>
     </joystick>
   </MyVideoFiles>
   <MyVideoPlaylist>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="5">Delete</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Back</button>
+      <button id="5">Delete</button>
     </joystick>
   </MyVideoPlaylist>
   <VirtualKeyboard>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Enter</button>
-      <button id="2">BackSpace</button>
-      <button id="5">Shift</button>
-      <button id="4">Symbols</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="3">Shift</button>
+      <button id="4">Enter</button>
+      <button id="6">Symbols</button>
+      <button id="15">BackSpace</button>
     </joystick>
   </VirtualKeyboard>
   <ContextMenu>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="6">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
     </joystick>
   </ContextMenu>
   <Scripts>
     <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
     </joystick>
   </Scripts>
   <NumericInput>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">BackSpace</button>
-      <button id="9">Enter</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="4">Enter</button>
+      <button id="15">BackSpace</button>
     </joystick>
   </NumericInput>
   <GamepadInput>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Stop</button>      <!-- Enter Password -->
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Stop</button>
     </joystick>
   </GamepadInput>
   <LockSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
     </joystick>
   </LockSettings>
   <ProfileSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="9">Back</button>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Back</button>
     </joystick>
   </ProfileSettings>
 </keymap>

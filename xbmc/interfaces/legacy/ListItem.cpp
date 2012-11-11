@@ -437,6 +437,7 @@ namespace XBMCAddon
       }
       else if (strcmpi(type,"pictures") == 0)
       {
+        bool pictureTagLoaded = false;
         for (Dictionary::const_iterator it = infoLabels.begin(); it != infoLabels.end(); it++)
         {
           CStdString key = it->first;
@@ -462,12 +463,11 @@ namespace XBMCAddon
             if (!exifkey.Left(5).Equals("exif:") || exifkey.length() < 6) continue;
             int info = CPictureInfoTag::TranslateString(exifkey.Mid(5));
             item->GetPictureInfoTag()->SetInfo(info, value);
+            pictureTagLoaded = true;
           }
-
-          // This should probably be set outside of the loop but since the original
-          //  implementation set it inside of the loop, I'll leave it that way. - Jim C.
-          item->GetPictureInfoTag()->SetLoaded(true);
         }
+        if (pictureTagLoaded)
+          item->GetPictureInfoTag()->SetLoaded(true);
       }
     } // end ListItem::setInfo
 

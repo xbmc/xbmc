@@ -1960,9 +1960,11 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
 
 bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
 {
+  CURL url(items.GetPath());
   return !(items.IsTuxBox()         || items.IsPlugin()  ||
            items.IsAddonsPath()     || items.IsRSS()     ||
-           items.IsInternetStream() || items.IsVideoDb());
+           items.IsInternetStream() || items.IsVideoDb() ||
+           url.GetProtocol() == "playlistvideo");
 }
 
 void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)

@@ -34,6 +34,7 @@ CDVDOverlayCodecSSA::CDVDOverlayCodecSSA() : CDVDOverlayCodec("SSA Subtitle Deco
   m_pOverlay = NULL;
   m_libass   = NULL;
   m_order    = 0;
+  m_output   = false;
 }
 
 CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA()
@@ -64,9 +65,6 @@ void CDVDOverlayCodecSSA::Dispose()
 
 int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
-  
   if(!pPacket)
     return OC_ERROR;
   
@@ -74,10 +72,13 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
   BYTE *data = pPacket->pData;
   int size = pPacket->iSize;
   double duration = pPacket->duration;
+  if(duration == DVD_NOPTS_VALUE)
+    duration = 0.0;
 
   if(strncmp((const char*)data, "Dialogue:", 9) == 0)
   {
     int    sh, sm, ss, sc, eh, em, es, ec;
+    double beg, end;
     size_t pos;
     CStdString      line, line2;
     CStdStringArray lines;
@@ -92,11 +93,8 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
                             , layer.get(), &sh, &sm, &ss, &sc, &eh,&em, &es, &ec) != 9)
         continue;
 
-      duration  = (eh*360000.0)+(em*6000.0)+(es*100.0)+ec;
-      if(pts == DVD_NOPTS_VALUE)
-        pts = duration;
-      duration -= (sh*360000.0)+(sm*6000.0)+(ss*100.0)+sc;
-      duration *= 10000;
+      end = 10000 * ((eh*360000.0)+(em*6000.0)+(es*100.0)+ec);
+      beg = 10000 * ((sh*360000.0)+(sm*6000.0)+(ss*100.0)+sc);
 
       pos = line.find_first_of(",", 0);
       pos = line.find_first_of(",", pos+1);
@@ -106,32 +104,39 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 
       line2.Format("%d,%s,%s", m_order++, layer.get(), line.Mid(pos+1));
 
-      if(!m_libass->DecodeDemuxPkt((char*)line2.c_str(), line2.length(), pts, duration))
-        continue;
+      m_libass->DecodeDemuxPkt((char*)line2.c_str(), line2.length(), beg, end - beg);
 
-      if(m_pOverlay == NULL)
-      {
-        m_pOverlay = new CDVDOverlaySSA(m_libass);
-        m_pOverlay->iPTSStartTime = pts;
-        m_pOverlay->iPTSStopTime  = pts + duration;
-      }
-
-      if(m_pOverlay->iPTSStopTime < pts + duration)
-        m_pOverlay->iPTSStopTime  = pts + duration;
+      /* setup time spanning all dialogs */
+      if(pts == DVD_NOPTS_VALUE || beg < pts)
+        pts = beg;
+      if(end - pts > duration)
+        duration = end - pts;
     }
   }
   else
+    m_libass->DecodeDemuxPkt((char*)data, size, pts, duration);
+
+  if(m_pOverlay)
   {
-    if(m_libass->DecodeDemuxPkt((char*)data, size, pts, duration))
-        m_pOverlay = new CDVDOverlaySSA(m_libass);
+    /* there will only ever be one active, so we 
+     * must always make sure any new one overlap
+     * include the full duration of the old one */
+    if(m_pOverlay->iPTSStopTime > pts + duration)
+      duration = m_pOverlay->iPTSStopTime - pts;
+    SAFE_RELEASE(m_pOverlay);
   }
 
+  m_pOverlay = new CDVDOverlaySSA(m_libass);
+  m_pOverlay->iPTSStartTime = pts;
+  m_pOverlay->iPTSStopTime  = pts + duration;
+  m_output = true;
   return OC_OVERLAY;
 }
 void CDVDOverlayCodecSSA::Reset()
 {
   Dispose();
   m_order  = 0;
+  m_output = false;
   m_libass = new CDVDSubtitlesLibass();
   m_libass->DecodeHeader((char *)m_hints.extradata, m_hints.extrasize);
 }
@@ -143,11 +148,10 @@ void CDVDOverlayCodecSSA::Flush()
 
 CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
 {
-  if(m_pOverlay)
+  if(m_output)
   {
-    CDVDOverlay* overlay = m_pOverlay;
-    m_pOverlay = NULL;
-    return overlay;
+    m_output = false;
+    return m_pOverlay->Acquire();
   }
   return NULL;
 }
