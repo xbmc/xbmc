@@ -687,25 +687,25 @@ void CGUISettings::Initialize()
 
   // video settings
   AddGroup(SETTINGS_VIDEOS, 3);
-  CSettingsCategory* vdl = AddCategory(SETTINGS_VIDEOS, "videolibrary", 14022);
+  //CSettingsCategory* vdl = AddCategory(SETTINGS_VIDEOS, "videolibrary", 14022);
   AddBool(NULL, "videolibrary.enabled", 418, true);
-  AddBool(vdl, "videolibrary.showunwatchedplots", 20369, true);
+  AddBool(NULL, "videolibrary.showunwatchedplots", 20369, true);
   AddBool(NULL, "videolibrary.seasonthumbs", 20382, true);
-  AddBool(vdl, "videolibrary.actorthumbs", 20402, true);
+  AddBool(NULL, "videolibrary.actorthumbs", 20402, true);
 
   map<int, int> flattenTVShowOptions;
   flattenTVShowOptions.insert(make_pair(20420, 0));
   flattenTVShowOptions.insert(make_pair(20421, 1));
   flattenTVShowOptions.insert(make_pair(20422, 2));
-  AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
+  AddInt(NULL, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
 
-  AddBool(vdl, "videolibrary.groupmoviesets", 20458, false);
-  AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
-  AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);
-  AddSeparator(vdl, "videolibrary.sep3");
-  AddString(vdl, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(vdl, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
-  AddString(vdl, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
+  AddBool(NULL, "videolibrary.groupmoviesets", 20458, false);
+  AddBool(NULL, "videolibrary.updateonstartup", 22000, false);
+  AddBool(NULL, "videolibrary.backgroundupdate", 22001, false);
+  AddSeparator(NULL, "videolibrary.sep3");
+  AddString(NULL, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(NULL, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
+  AddString(NULL, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
   CSettingsCategory* vp = AddCategory(SETTINGS_VIDEOS, "videoplayer", 14086);
 
