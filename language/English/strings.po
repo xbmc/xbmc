@@ -3258,9 +3258,9 @@ msgstr ""
 
 #empty strings from id 1261 to 1269
 
-msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr ""
+# msgctxt "#1270"
+# msgid "Allow XBMC to receive AirPlay content"
+# msgstr ""
 
 msgctxt "#1271"
 msgid "Device name"
@@ -5211,9 +5211,9 @@ msgstr ""
 
 #empty string with id 13601
 
-msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr ""
+# msgctxt "#13602"
+# msgid "Allow start of XBMC using the remote"
+# msgstr ""
 
 msgctxt "#13603"
 msgid "Sequence delay time"
