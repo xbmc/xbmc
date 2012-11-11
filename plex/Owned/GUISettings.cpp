@@ -934,6 +934,8 @@ void CGUISettings::Initialize()
   AddInt(laf, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
   AddInt(laf, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
+  AddBool(laf, "lookandfeel.enableglobalslideshow", 15150, true);
+
   AddSeparator(laf, "lookandfeel.sep2");
   AddBool(NULL, "lookandfeel.enablerssfeeds",13305,  false);
   AddString(NULL, "lookandfeel.rssedit", 21450, "", BUTTON_CONTROL_STANDARD);
