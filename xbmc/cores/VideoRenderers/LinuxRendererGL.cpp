@@ -1745,6 +1745,7 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
       
   // new video rect is capture size
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+  MarkDirty();
   syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
 
   //invert Y axis to get non-inverted image

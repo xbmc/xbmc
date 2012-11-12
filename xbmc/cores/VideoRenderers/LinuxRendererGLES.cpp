@@ -1316,6 +1316,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   // new video rect is thumbnail size
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+  MarkDirty();
   syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
   // clear framebuffer and invert Y axis to get non-inverted image
   glDisable(GL_BLEND);

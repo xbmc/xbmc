@@ -75,6 +75,10 @@ public:
    */
   void MarkDirty();
 
+  /*! \brief Mark a region as dirty, forcing a redraw at the next Render()
+   */
+  void MarkDirty(const CRect& rect);
+
   /*! \brief Get the current dirty region
    */
   CDirtyRegionList GetDirty() { return m_tracker.GetDirtyRegions(); }

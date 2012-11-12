@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "guilib/GraphicContext.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "settings/AdvancedSettings.h"
@@ -693,3 +694,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
   g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
   g_settings.m_currentVideoSettings.m_CustomVerticalShift = g_settings.m_fVerticalShift;
 }
+
+void CBaseRenderer::MarkDirty()
+{
+  g_windowManager.MarkDirty(m_destRect);
+}
+

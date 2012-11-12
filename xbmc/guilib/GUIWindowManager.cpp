@@ -520,6 +520,11 @@ void CGUIWindowManager::MarkDirty()
   m_tracker.MarkDirtyRegion(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
 }
 
+void CGUIWindowManager::MarkDirty(const CRect& rect)
+{
+  m_tracker.MarkDirtyRegion(rect);
+}
+
 void CGUIWindowManager::RenderPass()
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
