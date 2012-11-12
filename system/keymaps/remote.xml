@@ -508,6 +508,13 @@
       <back>Close</back>
     </remote>
   </Favourites>
+  <FullscreenLiveTV>
+    <remote>
+      <left>PreviousChannelGroup</left>
+      <right>NextChannelGroup</right>
+      <up>ChannelUp</up>
+      <down>ChannelDown</down>
+    </remote>
   <PVROSDChannels>
     <remote>
       <back>Close</back>
