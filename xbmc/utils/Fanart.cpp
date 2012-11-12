@@ -72,11 +72,6 @@ bool CFanart::Unpack()
       data.strImage = fanartThumb->GetText();
       data.strResolution = fanartThumb->Attribute("dim");
       data.strPreview = fanartThumb->Attribute("preview");
-      if (data.strPreview.IsEmpty())
-      { // could be due to an old version in db - use old hardcoded method for now
-        if (m_url.Equals("http://thetvdb.com/banners/"))
-          data.strPreview = "_cache/" + data.strImage;
-      }
       ParseColors(fanartThumb->Attribute("colors"), data.strColors);
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
