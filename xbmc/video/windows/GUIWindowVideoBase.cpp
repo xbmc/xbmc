@@ -71,6 +71,7 @@
 #include "URL.h"
 #include "utils/EdenVideoArtUpdater.h"
 #include "GUIInfoManager.h"
+#include "utils/GroupUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1787,7 +1788,9 @@ bool CGUIWindowVideoBase::Update(const CStdString &strDirectory, bool updateFilt
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
-  m_thumbLoader.Load(*m_unfilteredItems);
+  // might already be running from GetGroupedItems
+  if (!m_thumbLoader.IsLoading())
+    m_thumbLoader.Load(*m_vecItems);
 
   return true;
 }
@@ -1839,8 +1842,30 @@ bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items) const
            url.GetProtocol() == "playlistvideo");
 }
 
-void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
+void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
 {
+  CGUIMediaWindow::GetGroupedItems(items);
+
+  CQueryParams params;
+  CVideoDatabaseDirectory dir;
+  dir.GetQueryParams(items.GetPath(), params);
+  if (items.GetContent().Equals("movies") && params.GetSetId() <= 0 &&
+      CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath()) != NODE_TYPE_RECENTLY_ADDED_MOVIES &&
+      g_guiSettings.GetBool("videolibrary.groupmoviesets"))
+  {
+    CFileItemList groupedItems;
+    if (GroupUtils::Group(GroupBySet, items, groupedItems, GroupAttributeIgnoreSingleItems))
+    {
+      items.ClearItems();
+      items.Append(groupedItems);
+    }
+  }
+
+  // reload thumbs after filtering and grouping
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
+  m_thumbLoader.Load(items);
 }
 
 bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
