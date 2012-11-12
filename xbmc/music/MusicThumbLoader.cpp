@@ -147,6 +147,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
   }
   return !item.GetArt().empty();
 #endif
+  return false;
 }
 
 bool CMusicThumbLoader::GetEmbeddedThumb(const std::string &path, EmbeddedArt &art)
