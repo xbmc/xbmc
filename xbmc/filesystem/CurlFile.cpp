@@ -220,14 +220,9 @@ CCurlFile::CReadState::CReadState()
   m_bFirstLoop = true;
   m_headerdone = false;
 
-  /* PLEX */
-#ifdef TARGET_WINDOWS
-  ::shutdown(m_ticklePipe[0], 2);
-  ::close(m_ticklePipe[0]);
-  ::shutdown(m_ticklePipe[1], 2);
-  ::close(m_ticklePipe[1]);
+#ifndef TARGET_WINDOWS
+  ::pipe(m_ticklePipe);
 #endif
-  /* END PLEX */
 }
 
 CCurlFile::CReadState::~CReadState()
@@ -236,6 +231,15 @@ CCurlFile::CReadState::~CReadState()
 
   if(m_easyHandle)
     g_curlInterface.easy_release(&m_easyHandle, &m_multiHandle);
+
+  /* PLEX */
+#ifndef TARGET_WINDOWS
+  ::shutdown(m_ticklePipe[0], 2);
+  ::close(m_ticklePipe[0]);
+  ::shutdown(m_ticklePipe[1], 2);
+  ::close(m_ticklePipe[1]);
+#endif
+  /* END PLEX */
 }
 
 bool CCurlFile::CReadState::Seek(int64_t pos)
@@ -1420,7 +1424,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
 
         /* PLEX */
-#ifdef TARGET_WINDOWS
+#ifndef TARGET_WINDOWS
         // Add the tickle pipe
         FD_SET(m_ticklePipe[0], &fdread);
         if (m_ticklePipe[0] > maxfd)
@@ -1439,7 +1443,7 @@ bool CCurlFile::CReadState::FillBuffer(unsigned int want)
         }
 
         /* PLEX */
-#ifdef TARGET_WINDOWS
+#ifndef TARGET_WINDOWS
         // Read the byte from the tickle socket if there was one
         if (FD_ISSET(m_ticklePipe[0], &fdread))
         {
