@@ -440,7 +440,7 @@ public:
   bool IsSearchDir() const { return m_bIsSearchDir; }
 
   void SetSearchPrompt(const CStdString &prompt) { m_strSearchPrompt = prompt; }
-  bool GetSearchPrompt() const { return m_strSearchPrompt; }
+  CStdString GetSearchPrompt() const { return m_strSearchPrompt; }
 
   void SetIsSettingsDir(bool issettings) { m_bIsSettingsDir = issettings; }
   bool IsSettingsDir() const { return m_bIsSettingsDir; }
