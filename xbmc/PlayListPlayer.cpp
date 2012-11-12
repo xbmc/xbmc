@@ -302,6 +302,10 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     }
   }
 
+  // reset the start offset of this item
+  if (item->m_lStartOffset == STARTOFFSET_RESUME)
+    item->m_lStartOffset = 0;
+
   // TODO - move the above failure logic and the below success logic
   //        to callbacks instead so we don't rely on the return value
   //        of PlayFile()
