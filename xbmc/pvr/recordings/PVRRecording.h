@@ -125,6 +125,13 @@ namespace PVR
     void SetRecordingTimeFromUTC(CDateTime &recordingTime) { m_recordingTime = recordingTime; }
     void SetRecordingTimeFromLocalTime(CDateTime &recordingTime) { m_recordingTime = recordingTime.GetAsUTCDateTime(); }
 
+    /*!
+     * @brief Retrieve the recording title from the URL path
+     * @param url the URL for the recording
+     * @return Title of the recording
+     */
+    static CStdString GetTitleFromURL(const CStdString &url);
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
 
