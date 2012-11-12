@@ -32,6 +32,7 @@
 
 /* PLEX */
 #include "cores/VideoRenderers/LinuxRendererGL.h"
+#include "cores/VideoRenderers/WinRenderer.h"
 /* END PLEX */
 
 class CRenderCapture;
