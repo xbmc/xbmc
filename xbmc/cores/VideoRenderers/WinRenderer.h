@@ -176,6 +176,11 @@ public:
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   virtual unsigned int GetProcessorSize() { return m_processor.Size(); }
+  
+  /* PLEX */
+  virtual void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch) {};
+  /* END PLEX */
+  
 
 protected:
   virtual void Render(DWORD flags);
