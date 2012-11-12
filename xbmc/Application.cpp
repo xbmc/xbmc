@@ -4406,7 +4406,7 @@ void CApplication::UpdateFileState()
   }
   else
   {
-    if (IsPlayingVideo() || IsPlayingAudio())
+    if (IsPlaying())
     {
       if (m_progressTrackingItem->GetPath() == "")
       {
