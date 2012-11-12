@@ -1027,6 +1027,7 @@
 		F5ED8D931551FAEA00842059 /* BlurayDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED8D911551FAEA00842059 /* BlurayDirectory.cpp */; };
 		F5ED90C91553994800842059 /* XBMCTinyXML.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED90C71553994800842059 /* XBMCTinyXML.cpp */; };
 		F5ED90CC1553995B00842059 /* POUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ED90CA1553995B00842059 /* POUtils.cpp */; };
+		F5EDC4A91651A75700B852D8 /* GroupUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EDC4A71651A75700B852D8 /* GroupUtils.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -3231,6 +3232,8 @@
 		F5ED90C81553994800842059 /* XBMCTinyXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCTinyXML.h; sourceTree = "<group>"; };
 		F5ED90CA1553995B00842059 /* POUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = POUtils.cpp; sourceTree = "<group>"; };
 		F5ED90CB1553995B00842059 /* POUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POUtils.h; sourceTree = "<group>"; };
+		F5EDC4A71651A75700B852D8 /* GroupUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GroupUtils.cpp; sourceTree = "<group>"; };
+		F5EDC4A81651A75700B852D8 /* GroupUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5744,6 +5747,8 @@
 				F56C770C131EC153000AD0F6 /* GlobalsHandling.h */,
 				F56C770D131EC153000AD0F6 /* GLUtils.cpp */,
 				F56C770E131EC153000AD0F6 /* GLUtils.h */,
+				F5EDC4A71651A75700B852D8 /* GroupUtils.cpp */,
+				F5EDC4A81651A75700B852D8 /* GroupUtils.h */,
 				F56C773B131EC154000AD0F6 /* HTMLTable.cpp */,
 				F56C773C131EC154000AD0F6 /* HTMLTable.h */,
 				F56C773D131EC154000AD0F6 /* HTMLUtil.cpp */,
@@ -7637,6 +7642,7 @@
 				DF402A95164462FC001C56B8 /* swig.cpp in Sources */,
 				DF402A96164462FC001C56B8 /* XBPython.cpp in Sources */,
 				DF402A97164462FC001C56B8 /* XBPyThread.cpp in Sources */,
+				F5EDC4A91651A75700B852D8 /* GroupUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
