@@ -21,7 +21,12 @@ foreach(f ${PlexOwnedFiles})
 endforeach()
 
 get_property(ALL_SRCS GLOBAL PROPERTY SRCS_LIST)
-add_library(xbmc STATIC ${xbmc_SRCS} ${ALL_SRCS})
+
+set(SRCS ${xbmc_SRCS} ${ALL_SRCS})
+ADD_MSVC_PRECOMPILED_HEADER("pch.h" "win32/pch.cpp" SRCS)
+#ADD_MSVC_PRECOMPILED_HEADER("${root}/xbmc/win32/pch.h" "${root}/xbmc/win32/pch.cpp" ALL_SRCS)
+
+add_library(xbmc STATIC ${SRCS})
 add_dependencies(xbmc cpluff ffmpeg cximage)
 
 # reset this so we can use add_sources later on.

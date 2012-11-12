@@ -22,7 +22,11 @@ set(PLEX_VERSION_STRING_SHORT ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX
 set(XBMC_VERSION "Frodo")
 
 set(root ${PROJECT_SOURCE_DIR})
-set(dependdir ${root}/plex/Dependencies/laika-depends)
+if(NOT WIN32)
+  set(dependdir ${root}/plex/Dependencies/laika-depends)
+else()
+  set(dependdir ${root}/project/BuildDependencies)
+endif()
 set(plexdir ${root}/plex)
 message("-- Using dependency dir ${dependdir}")
 
@@ -52,32 +56,55 @@ endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")
-set(CMAKE_C_FLAGS_DEBUG "-g -O0")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+if(UNIX)
+  set(CMAKE_C_FLAGS_DEBUG "-g -O0")
+  set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+endif()
 
-add_definitions(
-#	-DAPI_DEBUG
-  -DNDEBUG=1
-  -DTARGET_POSIX
-  -D_LINUX
-  -D_REENTRANT
-  -D_FILE_DEFINED
-  -D__STDC_CONSTANT_MACROS
-  -DHAVE_CONFIG_H
-  -D_FILE_OFFSET_BITS=64
-  -D_LARGEFILE64_SOURCE
-  -D__PLEX__
-  -DPLEX_TARGET_NAME="PlexAlpha"
-  -DUSE_EXTERNAL_FFMPEG
-)
+# global definitions
+add_definitions(-DNDEBUG=1 -D__PLEX__ -DPLEX_TARGET_NAME="PlexAlpha")
 
-if(APPLE)
-    add_definitions(
-        -DTARGET_DARWIN
-        -DTARGET_DARWIN_OSX
-    )
-elseif(UNIX)
-    add_definitions(-DTARGET_LINUX)
+# Linux and OSX definitios
+if(UNIX)
+  add_definitions(
+    #	-DAPI_DEBUG
+    -DNDEBUG=1
+    -DTARGET_POSIX
+    -D_REENTRANT
+    -D_FILE_DEFINED
+    -D__STDC_CONSTANT_MACROS
+    -DHAVE_CONFIG_H
+    -D_FILE_OFFSET_BITS=64
+    -D_LARGEFILE64_SOURCE
+    -DUSE_EXTERNAL_FFMPEG
+    -D_LINUX
+  )
+  if(APPLE)
+    add_definitions(-DTARGET_DARWIN -DTARGET_DARWIN_OSX)
+  else(APPLE)
+    add_definitions(-DTARGET_LINUX -D_LINUX)
+  endif(APPLE)
+endif(UNIX)
+
+# windows specific
+if(WIN32)
+  add_definitions(
+    -DNDEBUG=1
+    -DTARGET_WINDOWS
+    -D_WINDOWS
+    -D_MSVC
+    -DWIN32
+    -D_WIN32_WINNT=0x0501
+    -DNTDDI_VERSION=0x05010300
+    -DNOMINMAX
+    -D_USE_32BIT_TIME_T
+    -DHAS_DX
+    -DD3D_DEBUG_INFO
+    -D__STDC_CONSTANT_MACROS
+    -D_SECURE_SCL=0
+    -D_HAS_ITERATOR_DEBUGGING=0
+    -D_CRT_SECURE_NO_WARNINGS
+  )
 endif()
 
 # We need to add these before we compile the dependencies,
@@ -93,7 +120,9 @@ include_directories(
 
 # MUST BE ADDED FIRST :)
 # This will download our dependency tree
-add_subdirectory(plex/Dependencies)
+if(NOT WIN32)
+  add_subdirectory(plex/Dependencies)
+endif()
 
 # Now check for available functions
 include(CMakeConfig.txt)
@@ -102,11 +131,34 @@ include(CMakeConfig.txt)
 # Note that we want to do this before we add all
 # our defines and includes, otherwise they will
 # carry over
-add_subdirectory(lib)
+if(NOT WIN32)
+  add_subdirectory(lib)
+endif()
+
+# Platfrom includes
+if(UNIX)
+  include_directories(${root}/xbmc/linux)
+endif(UNIX)
+
+if(APPLE)
+  include_directories(${root}/xbmc/osx)
+endif(APPLE)
+
+if(WIN32)
+  include_directories(${root}/xbmc/win32)
+  include_directories(
+    ${root}/lib/ffmpeg
+    ${root}/lib/ffmpeg/include-xbmc-win32
+    ${root}/lib/liblame/include
+    ${root}/lib/win32/pcre
+    ${root}/lib/win32
+  )
+endif()
 
 # Build the texturepacker
 add_subdirectory(tools/TexturePacker)
 
+# global includes
 include_directories(
   ${CMAKE_BINARY_DIR}/xbmc
 	${plexdir}
@@ -114,10 +166,8 @@ include_directories(
 	${plexdir}/Owned
 
 	${root}/xbmc
-	${root}/xbmc/osx
 	${root}/xbmc/utils
 	${root}
-	${root}/xbmc/linux
 	${root}/xbmc/cores/dvdplayer
 	${root}/xbmc/settings
 	${root}/lib

@@ -215,6 +215,31 @@ if(NOT APPLE)
     endif()
 endif()
 
+if(WIN32)
+  set(external_libs
+    bzip2
+    fontconfig
+    freetype246MT
+    glew32
+    glew32s
+    jpeg-static
+    libboost_date_time-vc100-mt
+    libboost_thread-vc100-mt
+    libiconv
+    liblzo2
+    libmicrohttpd.dll
+    libsamplerate-0
+    SDL
+    SDL_image
+    sqlite3
+    ssh
+    tinyxmlSTL
+    turbojpeg-static
+    yajl
+    zlib
+  )
+endif()
+
 set(non_link_libs
 	rtmp
 	plist
@@ -245,7 +270,7 @@ if(APPLE)
 
   # also add apple libstdc++
   list(APPEND system_libs stdc++)
-else()
+elseif(UNIX)
   # otherwise use our own version
   list(APPEND external_libs iconv)
 endif()
@@ -298,9 +323,11 @@ foreach(lib ${external_libs})
   plex_find_library(${lib} 0 1 ${dependdir}/lib 1)
 endforeach()
 
-foreach(lib ${non_link_libs})
-  plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
-endforeach()
+if(NOT WIN32)
+  foreach(lib ${non_link_libs})
+    plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
+  endforeach()
+endif()
 
 # find our system libs
 foreach(lib ${system_libs})

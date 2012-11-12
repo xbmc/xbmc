@@ -1,2 +1,6 @@
 find_all_sources(. cdrip_SRCS)
+if(WIN32)
+  list(REMOVE_ITEM cdrip_SRCS ./EncoderFFmpeg.cpp)
+  list(REMOVE_ITEM cdrip_SRCS ./EncoderFFmpeg.h)
+endif()
 add_sources(${cdrip_SRCS})

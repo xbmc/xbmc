@@ -26,7 +26,13 @@ add_library(ImageLib-${ARCH} MODULE
   $<TARGET_OBJECTS:cx_jasper>
 )
 
-target_link_libraries(ImageLib-${ARCH} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
+if(UNIX)
+  set(LIBS ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
+else()
+  set(LIBS ${CONFIG_LIBRARY_ZLIB} ${CONFIG_LIBRARY_TURBOJPEG-STATIC})
+endif()
+
+target_link_libraries(ImageLib-${ARCH} ${LIBS})
 if(APPLE)
   install(TARGETS ImageLib-${ARCH} DESTINATION ${RESOURCEPATH}/XBMC/system)
 elseif(UNIX)
