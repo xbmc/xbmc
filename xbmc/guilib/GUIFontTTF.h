@@ -96,7 +96,7 @@ protected:
   float GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end);
   float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
-  float GetTextBaseLine() const { return m_cellBaseLine; }
+  float GetTextBaseLine() const { return (float)m_cellBaseLine; }
   float GetLineHeight(float lineSpacing) const;
   float GetFontHeight() const { return m_height; }
 
