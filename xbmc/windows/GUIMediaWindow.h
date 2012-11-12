@@ -86,7 +86,9 @@ protected:
   virtual bool Refresh(bool clearCache = false);
   virtual void FormatAndSort(CFileItemList &items);
   virtual void OnPrepareFileItems(CFileItemList &items);
+  virtual void OnCacheFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);
+  virtual void GetGroupedItems(CFileItemList &items) { }
 
   void ClearFileItems();
   virtual void SortItems(CFileItemList &items);
@@ -123,7 +125,7 @@ protected:
                      which were not present in the original list
   \sa GetFilteredItems
   */
-  virtual bool GetAdvanceFilteredItems(CFileItemList &items, bool &hasNewItems);
+  virtual bool GetAdvanceFilteredItems(CFileItemList &items);
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection(const CStdString& strPath, int iDriveType);

@@ -2942,6 +2942,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\HTTPFile.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\GroupUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5748,6 +5751,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h">
       <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\GroupUtils.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
