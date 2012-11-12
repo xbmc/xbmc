@@ -3577,6 +3577,10 @@ void CVideoDatabase::SetArtForItem(int mediaId, const string &mediaType, const s
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
+    // don't set <foo>.<bar> art types - these are derivative types from parent items
+    if (artType.find('.') != string::npos)
+      return;
+
     CStdString sql = PrepareSQL("SELECT art_id FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())

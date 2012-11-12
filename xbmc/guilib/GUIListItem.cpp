@@ -119,25 +119,27 @@ void CGUIListItem::SetArt(const std::string &type, const std::string &url)
   }
 }
 
-void CGUIListItem::SetArt(const ArtMap &art, bool setFallback /* = true */)
+void CGUIListItem::SetArt(const ArtMap &art)
 {
   m_art = art;
-  // ensure that the fallback "thumb" is available
-  if (setFallback && m_art.find("thumb") == m_art.end())
-  {
-    if (HasArt("poster"))
-      m_art["thumb"] = m_art["poster"];
-    else if (HasArt("banner"))
-      m_art["thumb"] = m_art["banner"];
-  }
-  
   SetInvalid();
 }
 
-void CGUIListItem::AppendArt(const ArtMap &art)
+void CGUIListItem::SetArtFallback(const std::string &from, const std::string &to)
+{
+  m_artFallbacks[from] = to;
+}
+
+void CGUIListItem::ClearArt()
+{
+  m_art.clear();
+  m_artFallbacks.clear();
+}
+
+void CGUIListItem::AppendArt(const ArtMap &art, const std::string &prefix)
 {
   for (ArtMap::const_iterator i = art.begin(); i != art.end(); ++i)
-    SetArt(i->first, i->second);
+    SetArt(prefix.empty() ? i->first : prefix + '.' + i->first, i->second);
 }
 
 std::string CGUIListItem::GetArt(const std::string &type) const
@@ -145,6 +147,13 @@ std::string CGUIListItem::GetArt(const std::string &type) const
   ArtMap::const_iterator i = m_art.find(type);
   if (i != m_art.end())
     return i->second;
+  i = m_artFallbacks.find(type);
+  if (i != m_artFallbacks.end())
+  {
+    ArtMap::const_iterator j = m_art.find(i->second);
+    if (j != m_art.end())
+      return j->second;
+  }
   return "";
 }
 
@@ -155,8 +164,7 @@ const CGUIListItem::ArtMap &CGUIListItem::GetArt() const
 
 bool CGUIListItem::HasArt(const std::string &type) const
 {
-  ArtMap::const_iterator i = m_art.find(type);
-  return (i != m_art.end() && !i->second.empty());
+  return !GetArt(type).empty();
 }
 
 void CGUIListItem::SetIconImage(const CStdString& strIcon)
@@ -239,6 +247,7 @@ const CGUIListItem& CGUIListItem::operator =(const CGUIListItem& item)
   m_bIsFolder = item.m_bIsFolder;
   m_mapProperties = item.m_mapProperties;
   m_art = item.m_art;
+  m_artFallbacks = item.m_artFallbacks;
   SetInvalid();
   return *this;
 }
@@ -262,6 +271,12 @@ void CGUIListItem::Archive(CArchive &ar)
     }
     ar << (int)m_art.size();
     for (ArtMap::const_iterator i = m_art.begin(); i != m_art.end(); i++)
+    {
+      ar << i->first;
+      ar << i->second;
+    }
+    ar << (int)m_artFallbacks.size();
+    for (ArtMap::const_iterator i = m_artFallbacks.begin(); i != m_artFallbacks.end(); i++)
     {
       ar << i->first;
       ar << i->second;
@@ -298,6 +313,14 @@ void CGUIListItem::Archive(CArchive &ar)
       ar >> value;
       m_art.insert(make_pair(key, value));
     }
+    ar >> mapSize;
+    for (int i = 0; i < mapSize; i++)
+    {
+      std::string key, value;
+      ar >> key;
+      ar >> value;
+      m_artFallbacks.insert(make_pair(key, value));
+    }
   }
 }
 void CGUIListItem::Serialize(CVariant &value)
@@ -320,7 +343,7 @@ void CGUIListItem::Serialize(CVariant &value)
 void CGUIListItem::FreeIcons()
 {
   FreeMemory();
-  m_art.clear();
+  ClearArt();
   m_strIcon = "";
   SetInvalid();
 }

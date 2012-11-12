@@ -733,15 +733,7 @@ void CGUIDialogVideoInfo::OnGetArt()
     db.Close();
   }
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  // update the art - we need to call the map version of SetArt to force
-  // the thumb image to update in the case it's a fallback image
-  map<string, string> itemArt(m_movieItem->GetArt());
-  if (currentArt.find("thumb") == currentArt.end())
-  { // no "thumb" image, so make sure we reset the thumb fallback
-    itemArt.erase("thumb");
-  }
-  itemArt[type] = newThumb;
-  m_movieItem->SetArt(itemArt);
+  m_movieItem->SetArt(type, newThumb);
   if (m_movieItem->HasProperty("set_folder_thumb"))
   { // have a folder thumb to set as well
     VIDEO::CVideoInfoScanner::ApplyThumbToFolder(m_movieItem->GetProperty("set_folder_thumb").asString(), newThumb);
@@ -855,7 +847,7 @@ void CGUIDialogVideoInfo::PlayTrailer()
   *item.GetVideoInfoTag() = *m_movieItem->GetVideoInfoTag();
   item.GetVideoInfoTag()->m_streamDetails.Reset();
   item.GetVideoInfoTag()->m_strTitle.Format("%s (%s)",m_movieItem->GetVideoInfoTag()->m_strTitle.c_str(),g_localizeStrings.Get(20410));
-  item.SetArt("thumb", m_movieItem->GetArt("thumb"));
+  item.SetArt(m_movieItem->GetArt());
   item.GetVideoInfoTag()->m_iDbId = -1;
   item.GetVideoInfoTag()->m_iFileId = -1;
 

@@ -80,7 +80,10 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       {
         string fanart = m_database->GetArtForItem(idArtist, "artist", "fanart");
         if (!fanart.empty())
-          pItem->SetArt("fanart", fanart);
+        {
+          pItem->SetArt("artist.fanart", fanart);
+          pItem->SetArtFallback("fanart", "artist.fanart");
+        }
       }
       m_database->Close();
     }
@@ -119,18 +122,26 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     else if (tag.GetType() == "song")
     { // no art for the song, try the album
       ArtCache::const_iterator i = m_albumArt.find(tag.GetAlbumId());
-      if (i != m_albumArt.end())
-        item.SetArt(i->second);
-      else
+      if (i == m_albumArt.end())
       {
-        if (m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork))
-          item.SetArt(artwork);
-        m_albumArt.insert(make_pair(tag.GetAlbumId(), artwork));
+        m_database->GetArtForItem(tag.GetAlbumId(), "album", artwork);
+        i = m_albumArt.insert(make_pair(tag.GetAlbumId(), artwork)).first;
+      }
+      if (i != m_albumArt.end())
+      {
+        item.AppendArt(i->second, "album");
+        for (map<string, string>::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
+          item.SetArtFallback(j->first, "album." + j->first);
       }
     }
     if (tag.GetType() == "song" || tag.GetType() == "album")
     { // fanart from the artist
-      item.SetArt("fanart", m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart"));
+      string fanart = m_database->GetArtistArtForItem(tag.GetDatabaseId(), tag.GetType(), "fanart");
+      if (!fanart.empty())
+      {
+        item.SetArt("artist.fanart", fanart);
+        item.SetArtFallback("fanart", "artist.fanart");
+      }
     }
     m_database->Close();
   }
