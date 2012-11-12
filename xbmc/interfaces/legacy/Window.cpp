@@ -376,7 +376,8 @@ namespace XBMCAddon
       TRACE;
       // DO NOT MAKE THIS A DELAYED CALL!!!!
       bool ret = languageHook == NULL ? m_actionEvent.WaitMSec(milliseconds) : languageHook->waitForEvent(m_actionEvent,milliseconds);
-      m_actionEvent.Reset();
+      if (ret)
+        m_actionEvent.Reset();
       return ret;
     }
 
