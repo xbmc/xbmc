@@ -120,6 +120,8 @@ protected:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
 
+  void SetArt(CFileItem &item, const std::map<std::string, std::string> &artwork);
+
   IStreamDetailsObserver *m_pStreamDetailsObs;
   CVideoDatabase *m_database;
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;

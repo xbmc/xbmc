@@ -85,16 +85,28 @@ public:
 
   /*! \brief set artwork for an item
    \param art a type:url map for artwork
-   \param setFallback whether to set the "thumb" fallback, defaults to true.
    \sa GetArt
    */
-  void SetArt(const ArtMap &art, bool setFallback = true);
+  void SetArt(const ArtMap &art);
 
   /*! \brief append artwork to an item
    \param art a type:url map for artwork
+   \param prefix a prefix for the art, if applicable.
    \sa GetArt
    */
-  void AppendArt(const ArtMap &art);
+  void AppendArt(const ArtMap &art, const std::string &prefix = "");
+
+  /*! \brief set a fallback image for art
+   \param from the type to fallback from
+   \param to the type to fallback to
+   \sa SetArt
+   */
+  void SetArtFallback(const std::string &from, const std::string &to);
+
+  /*! \brief clear art on an item
+   \sa SetArt
+   */
+  void ClearArt();
 
   /*! \brief Get a particular art type for an item
    \param type type of art to fetch.
@@ -186,6 +198,7 @@ private:
   CStdString m_strLabel;      // text of column1
 
   ArtMap m_art;
+  ArtMap m_artFallbacks;
 };
 #endif
 

@@ -289,7 +289,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   {
     if (item.GetVideoInfoTag()->m_type == "season")
     { // clear out the art - we're really grabbing the info on the show here
-      item.SetArt(map<string, string>());
+      item.ClearArt();
     }
     item.SetPath(item.GetVideoInfoTag()->GetPath());
   }
