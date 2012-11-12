@@ -678,7 +678,7 @@ namespace XBMCAddon
           {
             {
               DelayedCallGuard dcguard(languageHook);            
-              stillWaiting = WaitForActionEvent(10) ? false : true;
+              stillWaiting = WaitForActionEvent(100) ? false : true;
             }
             languageHook->makePendingCalls();
           } while (stillWaiting);
