@@ -1,0 +1,2 @@
+; filename                          source of the file
+swig-2.0.7-win32.zip                http://mirrors.xbmc.org/build-deps/win32/

@@ -1,0 +1,2 @@
+; filename                          source of the file
+libnfs-1.3.0-win32.7z            http://mirrors.xbmc.org/build-deps/win32/

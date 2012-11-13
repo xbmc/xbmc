@@ -1,0 +1,2 @@
+; filename                                      mirror                                      source of the file
+mysql-connector-c-noinstall-6.0.2-win32.zip     http://mirrors.xbmc.org/build-deps/win32/   http://ftp.gwdg.de/pub/misc/mysql/Downloads/Connector-C/

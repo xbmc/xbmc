@@ -1,0 +1,12 @@
+--- /mingw/include/string.h.orig	2010-06-27 13:46:10.000000000 -0300
++++ /mingw/include/string.h	2010-06-27 14:01:04.000000000 -0300
+@@ -116,6 +116,9 @@
+ #endif /* _UWIN */
+ #endif /* _NO_OLDNAMES */
+ 
++#else
++int __cdecl __MINGW_NOTHROW strcasecmp (const char*, const char *);
++int  __cdecl __MINGW_NOTHROW strncasecmp (const char *, const char *, size_t);
+ #endif	/* Not __STRICT_ANSI__ */
+ 
+ #ifndef _WSTRING_DEFINED

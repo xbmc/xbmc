@@ -1,0 +1,2 @@
+; filename                          	mirror of the file									source of the file
+sqlite-3.7.12.1-win32.7z		   		http://mirrors.xbmc.org/build-deps/win32/			
