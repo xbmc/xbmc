@@ -31,8 +31,11 @@
 #include "OverlayRenderer.h"
 
 /* PLEX */
-#include "cores/VideoRenderers/LinuxRendererGL.h"
+#ifdef TARGET_WINDOWS
 #include "cores/VideoRenderers/WinRenderer.h"
+#else
+#include "cores/VideoRenderers/LinuxRendererGL.h"
+#endif
 /* END PLEX */
 
 class CRenderCapture;
