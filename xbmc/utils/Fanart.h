@@ -115,7 +115,6 @@ private:
   ///
   /// std::vector that stores all our fanart data
   std::vector<SFanartData> m_fanart;
-  CStdString m_url;
 };
 
 #endif

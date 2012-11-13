@@ -254,8 +254,13 @@ public class Helper
           File parent = curTemplateFile.getParentFile()
           // find the relative path to the convertTemplate
           File cwd = new File('.').getCanonicalFile()
-          String relative = cwd.toURI().relativize(convertTemplate.toURI()).getPath();
+          String relative = cwd.getAbsoluteFile().toURI().relativize(convertTemplate.getAbsoluteFile().toURI()).getPath()
           convertTemplate = new File(parent,relative)
+
+          // This is a fallback case which is hit occationally on OSX as a result
+          // of case mismatches between the two paths in the relativize call above.
+          if (!convertTemplate.exists())
+            convertTemplate = new File(parent,cur.toString())
         }
       }
 
@@ -373,8 +378,13 @@ public class Helper
              File parent = curTemplateFile.getParentFile()
              // find the relative path to the convertTemplate
              File cwd = new File('.').getCanonicalFile()
-             String relative = cwd.toURI().relativize(convertTemplate.toURI()).getPath();
+             String relative = cwd.getAbsoluteFile().toURI().relativize(convertTemplate.getAbsoluteFile().toURI()).getPath()
              convertTemplate = new File(parent,relative)
+
+             // This is a fallback case which is hit occationally on OSX as a result
+             // of case mismatches between the two paths in the relativize call above.
+             if (!convertTemplate.exists())
+               convertTemplate = new File(parent,cur.toString())
            }
          }
 

@@ -39,7 +39,6 @@ void CFanart::Pack()
   // Take our data and pack it into the m_xml string
   m_xml.Empty();
   TiXmlElement fanart("fanart");
-  fanart.SetAttribute("url", m_url.c_str());
   for (std::vector<SFanartData>::const_iterator it = m_fanart.begin(); it != m_fanart.end(); ++it)
   {
     TiXmlElement thumb("thumb");
@@ -59,24 +58,28 @@ bool CFanart::Unpack()
   doc.Parse(m_xml.c_str());
 
   m_fanart.clear();
-  m_url.Empty();
 
   TiXmlElement *fanart = doc.FirstChildElement("fanart");
   while (fanart)
   {
-    m_url = fanart->Attribute("url");
+    CStdString url = fanart->Attribute("url");
     TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
     while (fanartThumb)
     {
       SFanartData data;
-      data.strImage = fanartThumb->GetText();
-      data.strResolution = fanartThumb->Attribute("dim");
-      data.strPreview = fanartThumb->Attribute("preview");
-      if (data.strPreview.IsEmpty())
-      { // could be due to an old version in db - use old hardcoded method for now
-        if (m_url.Equals("http://thetvdb.com/banners/"))
-          data.strPreview = "_cache/" + data.strImage;
+      if (url.empty())
+      {
+        data.strImage = fanartThumb->GetText();
+        if (fanartThumb->Attribute("preview"))
+          data.strPreview = fanartThumb->Attribute("preview");
       }
+      else
+      {
+        data.strImage = URIUtils::AddFileToFolder(url, fanartThumb->GetText());
+        if (fanartThumb->Attribute("preview"))
+          data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
+      }
+      data.strResolution = fanartThumb->Attribute("dim");
       ParseColors(fanartThumb->Attribute("colors"), data.strColors);
       m_fanart.push_back(data);
       fanartThumb = fanartThumb->NextSiblingElement("thumb");
@@ -90,21 +93,16 @@ CStdString CFanart::GetImageURL(unsigned int index) const
 {
   if (index >= m_fanart.size())
     return "";
-  
-  if (m_url.IsEmpty())
-    return m_fanart[index].strImage;
-  return URIUtils::AddFileToFolder(m_url, m_fanart[index].strImage);
+
+  return m_fanart[index].strImage;
 }
 
 CStdString CFanart::GetPreviewURL(unsigned int index) const
 {
   if (index >= m_fanart.size())
     return "";
-  
-  CStdString thumb = !m_fanart[index].strPreview.IsEmpty() ? m_fanart[index].strPreview : m_fanart[index].strImage;
-  if (m_url.IsEmpty())
-    return thumb;
-  return URIUtils::AddFileToFolder(m_url, thumb);
+
+  return m_fanart[index].strPreview.empty() ? m_fanart[index].strImage : m_fanart[index].strPreview;
 }
 
 const CStdString CFanart::GetColor(unsigned int index) const

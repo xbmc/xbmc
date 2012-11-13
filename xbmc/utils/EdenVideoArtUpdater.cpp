@@ -76,7 +76,7 @@ void CEdenVideoArtUpdater::Process()
   handle->SetTitle(g_localizeStrings.Get(12349));
 
   // movies
-  db.GetMoviesByWhere("videodb://1/2/", CDatabase::Filter(), items, false);
+  db.GetMoviesByWhere("videodb://1/2/", CDatabase::Filter(), items);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];

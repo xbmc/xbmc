@@ -62,7 +62,7 @@ namespace XBMCAddon
     CGUIWindow* ProxyExistingWindowInterceptor::get() { TRACE; return cguiwindow; }
 
     Window::Window(const char* classname) throw (WindowException): 
-      AddonCallback(classname), window(NULL), iWindowId(-1),
+      AddonCallback(classname), isDisposed(false), window(NULL), iWindowId(-1),
       iOldWindowId(0), iCurrentControlId(3000), bModal(false), m_actionEvent(true),
       canPulse(true), existingWindow(false), destroyAfterDeInit(false)
     {
@@ -74,7 +74,7 @@ namespace XBMCAddon
      * This just creates a default window.
      */
     Window::Window(int existingWindowId) throw (WindowException) : 
-      AddonCallback("Window"), window(NULL), iWindowId(-1),
+      AddonCallback("Window"), isDisposed(false), window(NULL), iWindowId(-1),
       iOldWindowId(0), iCurrentControlId(3000), bModal(false), m_actionEvent(true),
       canPulse(false), existingWindow(true), destroyAfterDeInit(false)
     {
@@ -110,14 +110,19 @@ namespace XBMCAddon
 
     void Window::deallocating()
     {
-      TRACE;
-
       AddonCallback::deallocating();
 
-      // if !window then we've been here already
-      if (window)
+      dispose();
+    }
+
+    void Window::dispose()
+    {
+      TRACE;
+
+      CSingleLock lock(g_graphicsContext);
+      if (!isDisposed)
       {
-        CSingleLock lock(g_graphicsContext);
+        isDisposed = true;
 
         // no callbacks are possible any longer
         //   - this will be handled by the parent constructor
@@ -174,9 +179,6 @@ namespace XBMCAddon
         }
 
         vecControls.clear();
-
-        window->clear();
-        window = NULL;
       }
     }
 
@@ -369,13 +371,14 @@ namespace XBMCAddon
         m_actionEvent.Set();
     }
 
-    void Window::WaitForActionEvent()
+    bool Window::WaitForActionEvent(unsigned int milliseconds)
     {
       TRACE;
       // DO NOT MAKE THIS A DELAYED CALL!!!!
-      if (languageHook)
-        languageHook->waitForEvent(m_actionEvent);
-      m_actionEvent.Reset();
+      bool ret = languageHook == NULL ? m_actionEvent.WaitMSec(milliseconds) : languageHook->waitForEvent(m_actionEvent,milliseconds);
+      if (ret)
+        m_actionEvent.Reset();
+      return ret;
     }
 
     bool Window::OnAction(const CAction &action)
@@ -670,10 +673,16 @@ namespace XBMCAddon
 //            break;
 //          }
           languageHook->makePendingCalls(); // MakePendingCalls
+
+          bool stillWaiting;
+          do
           {
-            DelayedCallGuard dcguard(languageHook);            
-            WaitForActionEvent();
-          }
+            {
+              DelayedCallGuard dcguard(languageHook);            
+              stillWaiting = WaitForActionEvent(100) ? false : true;
+            }
+            languageHook->makePendingCalls();
+          } while (stillWaiting);
         }
       }
     }

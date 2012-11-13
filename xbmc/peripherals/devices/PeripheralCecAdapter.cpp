@@ -1598,8 +1598,6 @@ bool CPeripheralCecAdapterUpdateThread::SetInitialConfiguration(void)
 
   m_adapter->m_bIsReady = true;
 
-  // try to send an OSD string to the TV
-  m_adapter->m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
   // and let the gui know that we're done
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36000), strNotification);
 

@@ -23,6 +23,7 @@ SRCS=AlarmClock.cpp \
      fstrcmp.c \
      fft.cpp \
      GLUtils.cpp \
+     GroupUtils.cpp \
      HTMLTable.cpp \
      HTMLUtil.cpp \
      HttpHeader.cpp \

@@ -114,7 +114,7 @@ namespace XFILE
         videoUrl.AddOption(option, xsp);
         
         CDatabase::Filter dbfilter;
-        success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter, true);
+        success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter);
         db.Close();
 
         // if we retrieve a list of episodes and we didn't receive

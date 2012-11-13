@@ -77,6 +77,7 @@ namespace XBMCAddon
     class Window : public AddonCallback
     {
       friend class WindowDialogMixin;
+      bool isDisposed;
     protected:
 #ifndef SWIG
       InterceptorBase* window;
@@ -125,8 +126,7 @@ namespace XBMCAddon
       Control* GetControlById(int iControlId) throw (WindowException);
 
       SWIGHIDDENVIRTUAL void PulseActionEvent();
-      SWIGHIDDENVIRTUAL void WaitForActionEvent();
-
+      SWIGHIDDENVIRTUAL bool WaitForActionEvent(unsigned int milliseconds);
 #endif
 
     public:
@@ -144,6 +144,11 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool    IsDialog() const { TRACE; return false; };
       SWIGHIDDENVIRTUAL bool    IsModalDialog() const { TRACE; return false; };
       SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { TRACE; return false; };
+      SWIGHIDDENVIRTUAL void    dispose();
+
+      // This is called from the InterceptorBase destructor to prevent further
+      //  use of the interceptor from the window.
+      inline void interceptorClear() { Synchronize lock(*this); window = NULL; }
 #endif
 
       // callback takes a parameter

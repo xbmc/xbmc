@@ -422,6 +422,10 @@ void doClassMethodInfo(Node clazz, List initTypeCalls = null)
     Py${classNameAsVariable}_Type.tp_doc = ${Helper.hasDoc(clazz) ? (classNameAsVariable + '__doc__') : 'NULL' };
     Py${classNameAsVariable}_Type.tp_methods = ${classNameAsVariable}_methods;
 <%
+    if (doAsMapping)
+    {
+%>    Py${classNameAsVariable}_Type.tp_as_mapping = &${module.@name}_${classNameAsVariable}_as_mapping;
+<%  }
     Node baseclass = PythonTools.findValidBaseClass(clazz, module)
 
 %>    Py${classNameAsVariable}_Type.tp_base = ${baseclass ? ('&Py' + PythonTools.getClassNameAsVariable(baseclass) + '_Type') : "NULL"};

@@ -1035,6 +1035,7 @@
 		F5ED9A0C155EBDC000842059 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238E0D2626E600618676 /* CoreAudio.framework */; };
 		F5ED9A15155EBE0000842059 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		F5ED9BFB155EC77400842059 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
+		F5EDC48C1651A6F900B852D8 /* GroupUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EDC48A1651A6F900B852D8 /* GroupUtils.cpp */; };
 		F5F240EF110A4F76009126C6 /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F240EB110A4F76009126C6 /* CrystalHD.cpp */; };
 		F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
 		F5F245DA1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */; };
@@ -3243,6 +3244,8 @@
 		F5ED94AA155D7F8000842059 /* CoreAudioUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioUnit.h; path = CoreAudio/CoreAudioUnit.h; sourceTree = "<group>"; };
 		F5ED9507155D855200842059 /* CoreAudioGraph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioGraph.cpp; path = CoreAudio/CoreAudioGraph.cpp; sourceTree = "<group>"; };
 		F5ED9508155D855200842059 /* CoreAudioGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioGraph.h; path = CoreAudio/CoreAudioGraph.h; sourceTree = "<group>"; };
+		F5EDC48A1651A6F900B852D8 /* GroupUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GroupUtils.cpp; sourceTree = "<group>"; };
+		F5EDC48B1651A6F900B852D8 /* GroupUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupUtils.h; sourceTree = "<group>"; };
 		F5F240EB110A4F76009126C6 /* CrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CrystalHD.cpp; sourceTree = "<group>"; };
 		F5F240EC110A4F76009126C6 /* CrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrystalHD.h; sourceTree = "<group>"; };
 		F5F244631110DC6B009126C6 /* FileOperationJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperationJob.h; sourceTree = "<group>"; };
@@ -6144,6 +6147,8 @@
 				38B2BBD013131B4A00F83309 /* GlobalsHandling.h */,
 				18C1D22B13033F6A00CFFE59 /* GLUtils.cpp */,
 				18C1D22C13033F6A00CFFE59 /* GLUtils.h */,
+				F5EDC48A1651A6F900B852D8 /* GroupUtils.cpp */,
+				F5EDC48B1651A6F900B852D8 /* GroupUtils.h */,
 				E38E1E400D25F9FD00618676 /* HTMLTable.cpp */,
 				E38E1E410D25F9FD00618676 /* HTMLTable.h */,
 				E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */,
@@ -7694,6 +7699,7 @@
 				DF402A65164461B9001C56B8 /* swig.cpp in Sources */,
 				DF402A66164461B9001C56B8 /* XBPython.cpp in Sources */,
 				DF402A67164461B9001C56B8 /* XBPyThread.cpp in Sources */,
+				F5EDC48C1651A6F900B852D8 /* GroupUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

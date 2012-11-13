@@ -48,8 +48,8 @@ namespace XBMCAddon
      *  add behavior for a few more virtual functions that were unneccessary
      *  in the Window or WindowDialog.
      */
-#define checkedb(methcall) ( window ? xwin-> methcall : false )
-#define checkedv(methcall) { if (window) xwin-> methcall ; }
+#define checkedb(methcall) ( window.isNotNull() ? xwin-> methcall : false )
+#define checkedv(methcall) { if (window.isNotNull()) xwin-> methcall ; }
 
 
     // TODO: This should be done with template specialization
@@ -377,12 +377,8 @@ namespace XBMCAddon
             {
               if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
               {
-                AddonClass::Ref<Control> inf(GetControlById(iControl));
-                if (inf.isNotNull())
-                {
-                  invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onClick,iControl));
-                  PulseActionEvent();
-                }
+                invokeCallback(new CallbackFunction<WindowXML,int>(this,&WindowXML::onClick,iControl));
+                PulseActionEvent();
                 return true;
               }
               else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)

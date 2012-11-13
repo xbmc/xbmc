@@ -67,6 +67,7 @@ libs: $(PREFIX)/lib/xbmc/libxbmc.so
 	mkdir -p xbmc/lib/$(PLATFORM) images xbmc/assets/python2.6/lib/ xbmc/libs/$(PLATFORM) xbmc/obj/local/$(PLATFORM)
 	cp -fp $(SRCLIBS) xbmc/obj/local/$(PLATFORM)/
 	cp -fp $(PREFIX)/lib/xbmc/libxbmc.so xbmc/obj/local/$(PLATFORM)/
+	find `pwd`/xbmc/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find $(PREFIX)/lib/xbmc/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(PLATFORM)/ \;
 	find $(PREFIX)/lib/xbmc/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(PLATFORM)/ \;
 	cd xbmc/obj/local/$(PLATFORM)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@

@@ -863,12 +863,14 @@ void XBPython::PulseGlobalEvent()
   m_globalEvent.Set();
 }
 
-void XBPython::WaitForEvent(CEvent& hEvent)
+bool XBPython::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
 {
   // wait for either this event our our global event
   XbmcThreads::CEventGroup eventGroup(&hEvent, &m_globalEvent, NULL);
-  eventGroup.wait();
-  m_globalEvent.Reset();
+  CEvent* ret = eventGroup.wait(milliseconds);
+  if (ret)
+    m_globalEvent.Reset();
+  return ret == NULL ? false : true;
 }
 
 // execute script, returns -1 if script doesn't exist

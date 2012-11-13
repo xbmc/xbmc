@@ -209,6 +209,7 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "showtime",         PLAYER_SHOWTIME },
                                   { "showcodec",        PLAYER_SHOWCODEC },
                                   { "showinfo",         PLAYER_SHOWINFO },
+                                  { "title",            PLAYER_TITLE },
                                   { "muted",            PLAYER_MUTED },
                                   { "hasduration",      PLAYER_HASDURATION },
                                   { "passthrough",      PLAYER_PASSTHROUGH },
@@ -1445,6 +1446,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
       if (URIUtils::IsInArchive(strLabel))
         strLabel = URIUtils::GetParentPath(strLabel);
       strLabel = URIUtils::GetParentPath(strLabel);
+    }
+    break;
+  case PLAYER_TITLE:
+    {
+      if (g_application.IsPlayingVideo())
+        strLabel = GetLabel(VIDEOPLAYER_TITLE);
+      else
+        strLabel = GetLabel(MUSICPLAYER_TITLE);
     }
     break;
   case MUSICPLAYER_TITLE:
