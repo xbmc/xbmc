@@ -78,6 +78,10 @@ namespace XBMCAddon
     {
       friend class WindowDialogMixin;
       bool isDisposed;
+
+      void doAddControl(Control* pControl, CCriticalSection* gcontext, bool wait) throw (WindowException);
+      void doRemoveControl(Control* pControl, CCriticalSection* gcontext, bool wait) throw (WindowException);
+
     protected:
 #ifndef SWIG
       InterceptorBase* window;
