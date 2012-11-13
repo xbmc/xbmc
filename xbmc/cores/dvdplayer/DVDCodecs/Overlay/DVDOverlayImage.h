@@ -61,10 +61,46 @@ public:
 
   }
 
+  CDVDOverlayImage(const CDVDOverlayImage& src, int sub_x, int sub_y, int sub_w, int sub_h)
+  : CDVDOverlay(src)
+  {
+    palette = (uint32_t*)malloc(src.palette_colors * 4);
+    memcpy(palette, src.palette, src.palette_colors * 4);
+
+    palette_colors = src.palette_colors;
+    linesize       = sub_w;
+    x              = sub_x;
+    y              = sub_y;
+    width          = sub_w;
+    height         = sub_h;
+    source_width   = src.source_width;
+    source_height  = src.source_height;
+
+    data = (BYTE*)malloc(height*linesize);
+
+    BYTE* s = src.data_at(sub_x, sub_y);
+    BYTE* t = data;
+
+    for(int row = 0;row < sub_h; ++row)
+    {
+      memcpy(t, s, width);
+      s += src.linesize;
+      t += linesize;
+    }
+
+    SAFE_RELEASE(m_overlay);
+  }
+
   ~CDVDOverlayImage()
   {
     if(data) free(data);
     if(palette) free(palette);
+  }
+
+  BYTE* data_at(int sub_x, int sub_y) const
+  {
+    return &data[(sub_y - y)*linesize +
+                 (sub_x - x)];
   }
 
   BYTE*  data;
