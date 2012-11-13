@@ -58,6 +58,7 @@ namespace dbiplus
 #endif
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace VIDEO
 {
@@ -687,6 +688,8 @@ public:
   void RemoveTagsFromItem(int idItem, const std::string &type);
 
   virtual bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting);
+
+  CFileItem GetPreviousEpisodeNotWatched(CFileItemPtr& pItem);
 
 protected:
   friend class CEdenVideoArtUpdater;

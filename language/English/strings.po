@@ -9282,6 +9282,18 @@ msgctxt "#20464"
 msgid "Select %s"
 msgstr ""
 
+msgctxt "#20465"
+msgid "Check for previous unwatched episodes"
+msgstr ""
+
+msgctxt "#20466"
+msgid "Unwatched episodes found"
+msgstr ""
+
+msgctxt "#20467"
+msgid "Do you want to play the first unwatched episode?"
+msgstr ""
+
 #empty strings from id 20465 to 21329
 #up to 21329 is reserved for the video db !! !
 
