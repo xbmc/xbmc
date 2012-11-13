@@ -2103,7 +2103,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       if (MyPlexManager::Get().signIn())
       {
         // Change the status to show success.
-        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19011));
+        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
 
         // Change button to "sign out"
         pControl->SetLabel(g_localizeStrings.Get(44003));
@@ -2112,7 +2112,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       else
       {
         // Change the status to reflect an error.
-        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19012));
+        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44012));
       }
     }
     else
@@ -2121,7 +2121,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       MyPlexManager::Get().signOut();
 
       // Change the status to show success.
-      g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19010));
+      g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
 
       // Change the button to "sign in".
       pControl->SetLabel(g_localizeStrings.Get(44002));

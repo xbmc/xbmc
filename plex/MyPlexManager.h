@@ -304,7 +304,7 @@ class MyPlexManager
     string unamepassword;
 
     if (!username.empty() && !password.empty())
-      unamepassword = username + ":" + password;
+      unamepassword = CURL::Encode(username) + ":" + CURL::Encode(password) + "@";
     
     // Allow the environment variable to override the default, useful for debugging.
     if (getenv("MYPLEX_URL"))
