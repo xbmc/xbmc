@@ -1,4 +1,7 @@
 set(SRC md5.cpp SDL_anigif.cpp XBTFWriter.cpp XBMCTex.cpp ${root}/xbmc/guilib/XBTF.cpp)
+if(WIN32)
+  set(SRC ${SRC} Win32/dirent.c Win32/dirent.h)
+endif()
 include_directories(${root}/lib ${root}/xbmc ${CMAKE_BINARY_DIR}/xbmc ${root}/xbmc/linux)
 
 if(WIN32)
@@ -20,5 +23,6 @@ target_link_libraries(TexturePacker
 if(UNIX)
   target_link_libraries(TexturePacker ${CONFIG_LIBRARY_LZO2})
 else()
-  target_link_libraries(TexturePacker ${CONFIG_LIBRARY_LIBLZO2})
+  find_library(LIB_LZO lzo ${root}/lib/win32/liblzo)
+  target_link_libraries(TexturePacker ${LIB_LZO})
 endif()

@@ -127,14 +127,6 @@ endif()
 # Now check for available functions
 include(CMakeConfig.txt)
 
-# Now build auxilary xbmc libraries.
-# Note that we want to do this before we add all
-# our defines and includes, otherwise they will
-# carry over
-if(NOT WIN32)
-  add_subdirectory(lib)
-endif()
-
 # Platfrom includes
 if(UNIX)
   include_directories(${root}/xbmc/linux)
@@ -154,6 +146,13 @@ if(WIN32)
     ${root}/lib/win32
   )
 endif()
+
+# Now build auxilary xbmc libraries.
+# Note that we want to do this before we add all
+# our defines and includes, otherwise they will
+# carry over
+add_subdirectory(lib)
+
 
 # Build the texturepacker
 add_subdirectory(tools/TexturePacker)

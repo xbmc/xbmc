@@ -10,5 +10,7 @@ if(APPLE)
 endif(APPLE)
 
 
-add_subdirectory(cpluff)
-add_subdirectory(cximage-6.0)
+if(NOT WIN32)
+  add_subdirectory(cximage-6.0)
+  add_subdirectory(cpluff)
+endif()
