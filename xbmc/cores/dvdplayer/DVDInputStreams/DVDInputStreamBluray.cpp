@@ -32,7 +32,7 @@
 #include "filesystem/Directory.h"
 #include "DllLibbluray.h"
 #include "URL.h"
-#include "Geometry.h"
+#include "guilib/Geometry.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
