@@ -816,7 +816,7 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
   AddBool(vp, "Videoplayer.teletextscale", 23055, true);
 
-  CSettingsCategory* vid = AddCategory(SETTINGS_VIDEOS, "myvideos", 14081);
+  //CSettingsCategory* vid = AddCategory(SETTINGS_VIDEOS, "myvideos", 14081);
 
   map<int, int> myVideosSelectActions;
   myVideosSelectActions.insert(make_pair(22080, SELECT_ACTION_CHOOSE));
@@ -824,9 +824,9 @@ void CGUISettings::Initialize()
   myVideosSelectActions.insert(make_pair(13404, SELECT_ACTION_RESUME));
   myVideosSelectActions.insert(make_pair(22081, SELECT_ACTION_INFO));
 
-  AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
-  AddBool(vid, "myvideos.extractflags",20433, true);
-  AddBool(vid, "myvideos.replacelabels", 20419, true);
+  AddInt(NULL, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
+  AddBool(NULL, "myvideos.extractflags",20433, true);
+  AddBool(NULL, "myvideos.replacelabels", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);
 
   CSettingsCategory* sub = AddCategory(SETTINGS_VIDEOS, "subtitles", 287);
@@ -854,10 +854,10 @@ void CGUISettings::Initialize()
   subtitleAlignments.insert(make_pair(21465, SUBTITLE_ALIGN_TOP_OUTSIDE));
   AddInt(sub, "subtitles.align", 21460, SUBTITLE_ALIGN_MANUAL, subtitleAlignments, SPIN_CONTROL_TEXT);
 
-  CSettingsCategory* dvd = AddCategory(SETTINGS_VIDEOS, "dvds", 14087);
-  AddBool(dvd, "dvds.autorun", 14088, false);
-  AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(dvd, "dvds.automenu", 21882, false);
+  //CSettingsCategory* dvd = AddCategory(SETTINGS_VIDEOS, "dvds", 14087);
+  AddBool(NULL, "dvds.autorun", 14088, false);
+  AddInt(NULL, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(NULL, "dvds.automenu", 21882, false);
 
   AddDefaultAddon(NULL, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
   AddDefaultAddon(NULL, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);

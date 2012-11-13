@@ -1,11 +1,9 @@
 add_subdirectory(exports)
 
 find_all_sources(. dllloader_SRCS)
+list(REMOVE_ITEM dllloader_SRCS ./DllLoader-linux.cpp)
 if(UNIX)
   list(REMOVE_ITEM dllloader_SRCS ./Win32DllLoader.cpp)
-  if(APPLE)
-    list(REMOVE_ITEM dllloader_SRCS ./DllLoader-linux.cpp)
-  endif(APPLE)
 else()
   list(REMOVE_ITEM dllloader_SRCS ./DllLoader-linux.cpp)
   list(REMOVE_ITEM dllloader_SRCS ./ldt_keeper.c)
