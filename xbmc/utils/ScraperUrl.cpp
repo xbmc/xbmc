@@ -313,7 +313,7 @@ void CScraperUrl::GetThumbURLs(std::vector<CStdString> &thumbs, const std::strin
 {
   for (vector<SUrlEntry>::const_iterator iter = m_url.begin(); iter != m_url.end(); ++iter)
   {
-    if (iter->m_aspect == type || type.empty() || type == "thumb")
+    if (iter->m_aspect == type || type.empty() || type == "thumb" || iter->m_aspect.empty())
     {
       if ((iter->m_type == CScraperUrl::URL_TYPE_GENERAL && season == -1)
        || (iter->m_type == CScraperUrl::URL_TYPE_SEASON && iter->m_season == season))
