@@ -139,6 +139,18 @@ public:
   virtual void SetReplayGain(float factor) = 0;
 
   /**
+   * Gets the stream's volume amplification
+   * @return The volume amplification factor
+   */
+  virtual float GetAmplification() = 0;
+
+  /**
+   * Sets the stream's volume amplification
+   * @param The volume amplification factor
+   */
+  virtual void SetAmplification(float amplify) = 0;
+
+  /**
    * Returns the size of one audio frame in bytes (channelCount * resolution)
    * @return The size in bytes of one frame
   */

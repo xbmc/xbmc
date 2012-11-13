@@ -42,6 +42,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_delete          (false),
   m_volume          (1.0f ),
   m_rgain           (1.0f ),
+  m_amplify         (1.0f ),
   m_refillBuffer    (0    ),
   m_convertFn       (NULL ),
   m_ssrc            (NULL ),
