@@ -50,7 +50,7 @@
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined(TARGET_DARWIN)
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 #endif
 #include "addons/AddonCallbacks.h"
 #include "addons/AddonCallbacksGUI.h"

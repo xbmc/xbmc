@@ -33,9 +33,9 @@
 #include "input/KeyboardStat.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "XBMCHelper.h"
+#include "osx/XBMCHelper.h"
 #include "utils/SystemInfo.h"
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 #undef BOOL
 
 #import <SDL/SDL_video.h>

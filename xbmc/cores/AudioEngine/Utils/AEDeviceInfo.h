@@ -21,8 +21,8 @@
 
 #include <string>
 #include <vector>
-#include "AEAudioFormat.h"
-#include "Utils/AEChannelInfo.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 
 typedef std::vector<unsigned int     > AESampleRateList;
 typedef std::vector<enum AEDataFormat> AEDataFormatList;
