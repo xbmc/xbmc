@@ -112,24 +112,32 @@
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
+#ifndef __PLEX__
 #define HAVE_LIBCRYSTALHD 2
+#endif
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
 #define HAVE_LIBSSH
 #define HAS_LIBRTMP
+#ifndef __PLEX__
 #define HAVE_LIBBLURAY
+#endif
 #define HAS_ASAP_CODEC
 #define HAVE_YAJL_YAJL_VERSION_H
+#ifndef __PLEX__
 #define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM_NFS
+#endif
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAS_AIRTUNES
 #define HAVE_LIBCEC
 #define HAVE_LIBMP3LAME
 #define HAVE_LIBVORBISENC
+#ifndef __PLEX__
 #define HAS_MYSQL
 #define HAS_UPNP
+#endif
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
