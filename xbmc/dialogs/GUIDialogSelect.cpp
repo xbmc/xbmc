@@ -186,7 +186,12 @@ void CGUIDialogSelect::Add(const CFileItem* pItem)
 
 void CGUIDialogSelect::SetItems(CFileItemList* pList)
 {
-  m_vecList = pList;
+  // need to make internal copy of list to be sure dialog is owner of it
+  m_vecListInternal->Clear();
+  if (pList)
+    m_vecListInternal->Copy(*pList);
+
+  m_vecList = m_vecListInternal;
 }
 
 int CGUIDialogSelect::GetSelectedLabel() const
