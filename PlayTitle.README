@@ -1,0 +1,98 @@
+USER POINT OF VIEW
+
+I like to think of Optical disks having three file systems
+1) a udf (in iso form) or a native file system (in folder form)
+2) a menu driven file system (dvdnav for DVDs) and not yet implemented for 
+BluRays
+3) a title/chapter (mpls/?) file system
+
+and from the user point of view it contains 1 or more movies, episodes, 
+"extras" as well as menus (and sometimes extras buried in the menus) and some 
+computer mode apps
+
+I (and some others) like to keep the disc intact as the menus are occasionally 
+interesting and occasionally (rarely) the only way to play a movie.
+
+Fortunately (and why makemkv is useful) most of the times the interesting bits 
+constitute one and only one title, though a few DVDS use chapters to index TV 
+show episodes
+
+I would like to propose a mechanism that allows user to select one of three 
+choices
+
+1) play the menu ( I like XBMC's option to go straight to the main menu)
+2) play the main title (given the fact that we can't actually tell what it is 
+play the longest title)
+3) play a specific video (I have suggested a single title, though after some 
+work it should probably be a title/chapter pair)
+
+Given that I am a slow (and error-prone) typist I would like a mechanism to 
+reasonably automatically scrape and assign video information to the videos
+
+Method 1)
+	Create a database field that selects which video to play and a 
+mechanism to specify it in an nfo file.
+	In order to create the nfo file there needs to be some file system file 
+that the scanner can scrap.
+	I have found symlinks to be the easiest, though if one isn't interested 
+in the "specials" then tvshow/s1e1e2e3.iso works.
+	The only small difficulty I have with this is it is a 3 step process.
+		scan the files
+		edit the nfos
+		re-scan the files
+
+Method 2)
+	Encode in the file (name or contents) the specification for the video.
+	IF it is encoded in the contents (either as a test file or as a 
+symlink) it must contain information relative to either the file or parent 
+directory so that the movie/tvshow can be moved around in the physical file 
+system.
+	This has the advantage that it is easier for an external tool to 
+analyze the disc and create the files and they are playable outside of XBMC 
+(with appropriate scripts).
+
+
+IMPLEMENTATION
+
+Method 1)
+	I added a database field playTitle which is a single integer N, with 
+N=0 meaning to play the longest title, N>=100000 or absent use the menus 
+(eventually with BluRays) and otherwise play title N
+	This field is understood by DVDPlayer and passed to the InputStream (by 
+appending ?title=N to the filename as pointed out probably better as 
+playtitle:[urlencoded filename]/title=N or bluray: and dvdnav: or) though I 
+don't believe there can be any other URL with a title option inside the 
+filename at this point)
+	This option is interpreted by the InputStream and appropriate action 
+taken
+
+Method 2)
+	I essentially created two sets of new file types .TITNN.ISO (for DVD 
+and Bluray) and .TITNN (for DVD Folders - for BluRays the user can directly 
+access BDMV/NNNNN.mpls or index.bdmv, but they will lose the option to play 
+longest). This how I can play them directly in Linux.
+	The .TITNN.ISO is interpreted by DVDPlayer and the .TITNN is 
+interpreted by DVDInputStreamNavigator (courtesy of a previous implementation)
+	I did not add the implementation of getting longest title on DVD yet. 
+(as it turns out I have a metadata file in my library(file system) that has 
+this info so I scraped it and added it to the nfo file)
+
+
+OTHER POSSIBLE IMPLEMENTATIONS
+
+One of the issues is that one can't represent .../bluray.iso/BDMV/NNNNN.mpls in 
+a file system. One could decide to interpret that as 
+bluray://[.../bluray.iso/BDMV/NNNNN.mpls]/BDMV/NNNNN.mpls with the 
+understanding that .../bluray.iso/BDMV/NNNNN.mpls is a symlink to or an actual 
+.iso (or rars or zips or ...) but it is pretty ugly
+
+Using a file.url with a text content representing either an absolute or a 
+relative URL has some appeal but that is already taken (though maybe it could 
+be taken back) and I suspect it might be pretty hard to get right, but I'm sure 
+it would have other applications.
+
+A secondary/scrape-able NFO file say .nfoi (like elupus thought existed). The 
+scanner would scrape it as a file and allow it to set filename, pathname, 
+playTitle or whatever. There would need to be a database change to record the 
+original filename to be able to save the scraped data to a corresponding nfo 
+file. 
