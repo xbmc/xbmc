@@ -29,6 +29,7 @@
 #include "Utils/AEConvert.h"
 #include "Utils/AERemap.h"
 #include "Utils/AEBuffer.h"
+#include "Utils/AELimiter.h"
 
 class IAEPostProc;
 class CSoftAEStream : public IAEStream
@@ -65,10 +66,12 @@ public:
 
   virtual float             GetVolume       ()             { return m_volume; }
   virtual float             GetReplayGain   ()             { return m_rgain ; }
-  virtual float             GetAmplification()             { return m_amplify; }
+  virtual float             GetAmplification()             { return m_limiter.GetAmplification(); }
   virtual void              SetVolume       (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
   virtual void              SetReplayGain   (float factor) { m_rgain  = std::max( 0.0f, factor); }
-  virtual void              SetAmplification(float amplify){ m_amplify = amplify; }
+  virtual void              SetAmplification(float amplify){ m_limiter.SetAmplification(amplify); }
+
+  virtual float             RunLimiter(float* frame, int channels) { return m_limiter.Run(frame, channels); }
 
   virtual const unsigned int      GetFrameSize   () const  { return m_format.m_frameSize; }
   virtual const unsigned int      GetChannelCount() const  { return m_initChannelLayout.Count(); }
@@ -114,7 +117,6 @@ private:
   CAERemap                m_remap;         /* the remapper */
   float                   m_volume;        /* the volume level */
   float                   m_rgain;         /* replay gain level */
-  float                   m_amplify;       /* the volume amplification level */
   unsigned int            m_waterLevel;    /* the fill level to fall below before calling the data callback */
   unsigned int            m_refillBuffer;  /* how many frames that need to be buffered before we return any frames */
 
@@ -138,6 +140,7 @@ private:
   bool                m_paused;
   bool                m_autoStart;
   bool                m_draining;
+  CAELimiter          m_limiter;
 
   /* vizualization internals */
   CAERemap           m_vizRemap;

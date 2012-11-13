@@ -42,7 +42,6 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_delete          (false),
   m_volume          (1.0f ),
   m_rgain           (1.0f ),
-  m_amplify         (1.0f ),
   m_refillBuffer    (0    ),
   m_convertFn       (NULL ),
   m_ssrc            (NULL ),
@@ -198,6 +197,8 @@ void CSoftAEStream::Initialize()
     m_ssrcData.output_frames = m_format.m_frames * (long)std::ceil(m_ssrcData.src_ratio);
     m_ssrcData.end_of_input  = 0;
   }
+
+  m_limiter.SetSamplerate(AE.GetSampleRate());
 
   m_chLayoutCount = m_format.m_channelLayout.Count();
   m_valid = true;
