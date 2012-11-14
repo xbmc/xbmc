@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string id="30000">启用fanart.tv专辑图片</string>
+    <string id="30001">启用Last.fm专辑图片</string>
+    <string id="30002">专辑评论获取于</string>
+    <string id="30003">     首选语言</string>
+    <string id="30004">专辑评分获取于</string>
+    <string id="30005">专辑风格获取于</string>
+    <string id="30006">专辑心情获取于</string>
+    <string id="30007">专辑主题获取于</string>
+    <string id="30008">启用allmusic.com专辑图片</string>
+    <string id="30009">艺术图片</string>
+</strings>

@@ -3,7 +3,8 @@
     <string id="30000">Enable Fanart</string>
     <string id="30004">Enable Trailer (YouTube)</string>
     <string id="30001">Prefer Trailer from HD-Trailers.net</string>
-    <string id="30002">Preferred language</string>
-    <string id="30003">Get rating from</string>
+    <string id="30002">Preferred Language</string>
+    <string id="30003">Get Rating from</string>
     <string id="30005">Keep Original Title</string>
+    <string id="30006">Preferred Certification Country</string>
 </strings>
