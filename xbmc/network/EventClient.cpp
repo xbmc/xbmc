@@ -73,7 +73,7 @@ void CEventButtonState::Load()
       if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
       {
         m_iKeyCode = CButtonTranslator::TranslateKeyboardStringToKeysym( m_buttonName.c_str() );
-        m_unicode = 0xFDD0;
+        m_unicode = KEY_INVALID;
       }
       else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
       {
@@ -416,7 +416,7 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
     unicode = bcode;
   else if(flags & PTB_SDL)
   {
-    unicode = 0xFDD0;
+    unicode = KEY_INVALID;
     keycode = bcode;
   }
   else
