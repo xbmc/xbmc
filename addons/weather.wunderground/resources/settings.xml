@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-	<category label="30101">
-		<setting id="Location1" label="30111" type="action" action="RunScript($ID,Location1)" default=""/>
-		<setting id="Location2" label="30112" type="action" action="RunScript($ID,Location2)" enable="!eq( -1,)" default=""/>
-		<setting id="Location3" label="30113" type="action" action="RunScript($ID,Location3)" enable="!eq( -1,)" default=""/>
+	<category label="32101">
+		<setting id="Location1" label="32111" type="action" action="RunScript($ID,Location1)" default=""/>
+		<setting id="Location2" label="32112" type="action" action="RunScript($ID,Location2)" enable="!eq(-1,)" default=""/>
+		<setting id="Location3" label="32113" type="action" action="RunScript($ID,Location3)" enable="!eq(-1,)" default=""/>
 		<setting id="Location1id" type="text" visible="false" default=""/>
 		<setting id="Location2id" type="text" visible="false" default=""/>
 		<setting id="Location3id" type="text" visible="false" default=""/>
+	</category>
+	<category label="32102">
+		<setting id="Location1" label="32114" type="text" default=""/>
+		<setting id="Location1id" label="32117" type="text" subsetting="true" default=""/>
+		<setting type="sep"/>
+		<setting id="Location2" label="32115" type="text" enable="!eq(-3,)" default=""/>
+		<setting id="Location2id" label="32118" type="text" subsetting="true" enable="!eq(-3,)" default=""/>
+		<setting type="sep"/>
+		<setting id="Location3" label="32116" type="text" enable="!eq(-3,)" default=""/>
+		<setting id="Location3id" label="32119" type="text" subsetting="true" enable="!eq(-3,)" default=""/>
+		<setting type="sep"/>
+		<setting id="Zoom" label="32125" type="slider" option="int" range="1,100"  default="10"/>
+		<setting id="Animate" label="32126" type="bool" default="false"/>
+		<setting id="Weekend" label="32121" type="enum" lvalues="32122|32123|32124" default="0"/>
+		<setting type="sep"/>
+		<setting id="Debug" label="32120" type="bool" default="false"/>
 	</category>
 </settings>
