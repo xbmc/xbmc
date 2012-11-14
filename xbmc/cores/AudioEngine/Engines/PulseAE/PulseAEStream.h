@@ -53,8 +53,10 @@ public:
 
   virtual float GetVolume    ();
   virtual float GetReplayGain();
+  virtual float GetAmplification() { return 1.0f; }
   virtual void  SetVolume    (float volume);
   virtual void  SetReplayGain(float factor);
+  virtual void  SetAmplification(float amplify){}
   void SetMute(const bool muted);
 
   virtual const unsigned int      GetFrameSize   () const;
