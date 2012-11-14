@@ -295,6 +295,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
   case ACTION_NAV_BACK:
+  case ACTION_PREVIOUS_MENU:
     {
       if (!HasFocus()) return false;
 
