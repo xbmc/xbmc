@@ -33,6 +33,9 @@
 				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
 					<expression>last.fm</expression>
 				</RegExp>
+				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetTADBFMFallbackBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
+				</RegExp>
 				<expression>^$</expression>
 			</RegExp>
 			<RegExp input="$$11" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
@@ -52,7 +55,7 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="\1" dest="2">
+			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
 				<expression clear="yes">&quot; itemprop=&quot;description&quot;&gt;(.*?)div class=&quot;advertisement leaderboard&quot;&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -294,10 +297,13 @@
 			<RegExp input="" output="" dest="2">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="\1" dest="9">
+			<RegExp input="" output="" dest="4">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">&lt;h4&gt;photo gallery&lt;/h4&gt;(.*?)&lt;h4&gt;</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;thumb&gt;http://cps-static.rovicorp.com/3/JPG_1080/\1&lt;/thumb&gt;" dest="2">
+			<RegExp input="$$4" output="&lt;thumb&gt;http://cps-static.rovicorp.com/3/JPG_1080/\1&lt;/thumb&gt;" dest="2">
 				<expression repeat="yes" noclean="1">&lt;img src=&quot;http://cps-static.rovicorp.com/3/JPG_[^/]*/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -436,10 +442,10 @@
 	</GetAMGAlbumThemesByAMGID>
 	<ParseAMGAlbumThemes dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="\1" dest="9">
+			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">&lt;h4&gt;album themes&lt;/h4&gt;(.*?)&lt;/ul&gt;</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;theme&gt;\1&lt;/theme&gt;" dest="2">
+			<RegExp input="$$4" output="&lt;theme&gt;\1&lt;/theme&gt;" dest="2">
 				<expression repeat="yes" noclean="1">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />

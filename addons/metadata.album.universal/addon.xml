@@ -1,24 +1,29 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.album.universal"
        name="Universal Album Scraper"
-       version="1.2.2"
+       version="1.4.0"
        provider-name="Olympia, Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
     <import addon="metadata.common.last.fm" version="1.3.2"/>
     <import addon="metadata.common.allmusic.com" version="2.3.1"/>
     <import addon="metadata.common.musicbrainz.org" version="1.2.3"/>
-    <import addon="metadata.common.fanart.tv" version="1.0.1"/>
+    <import addon="metadata.common.fanart.tv" version="2.0.0"/>
     <import addon="metadata.common.amazon.de" version="1.0.0"/>
+    <import addon="metadata.common.theaudiodb.com" version="1.1.0"/>
   </requires>
   <extension point="xbmc.metadata.scraper.albums"
              language="en"
              library="albumuniversal.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Universal Scraper for Albums</summary>
+    <summary lang="zh">通用音乐专辑信息刮削器</summary>
     <description lang="en">This scraper collects information from the following supported sites: MusicBrainz, last.fm, allmusic.com and amazon.de, while grabs artwork from: fanart.tv, last.fm and allmusic.com. It can be set field by field that from which site you want that specific information.
 
 The initial search is always done on MusicBrainz. In case allmusic and/or amazon.de links are not added on the MusicBrainz site, fields from allmusic.com and/or amazon.de cannot be fetched (very easy to add those missing links though).</description>
+    <description lang="zh">本刮削器支持从以下网站获取信息：MusicBrainz、last.fm、allmusic.com和amazon.de，并从以下网站获取艺术图片：fanart.tv、last.fm和allmusic.com。你可以指定每一项内容的来源网站。
+
+初始结果总是先从MusicBrainz获取。如果MusicBrainz网站没有到allmusic和/或amazon.de的外部链接，则无法获取allmusic.com的/或amazon.de的信息（当然你能很容易地加入缺失的链接）。</description>
     <platform>all</platform>
   </extension>
 </addon>
