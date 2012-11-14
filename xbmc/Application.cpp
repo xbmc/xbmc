@@ -3231,8 +3231,6 @@ bool CApplication::ProcessEventServer(float frameTime)
         key = CKey(buttonSent.keycode, 0, 0, 0.0, 0.0, 0.0,  fAmount, frameTime);
       else if(buttonSent.keycode == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
         key = CKey(buttonSent.keycode, 0, 0, 0.0, 0.0, 0.0, -fAmount, frameTime);
-      else if(buttonSent.modifier != 0)
-        key = CKey(buttonSent.keycode,0,0,buttonSent.modifier,0);
       else
         key = CKey(buttonSent.keycode);
       key.SetFromService(true);
