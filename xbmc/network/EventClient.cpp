@@ -66,13 +66,14 @@ struct ButtonStateFinder
 /************************************************************************/
 void CEventButtonState::Load()
 {
-  if ( m_iKeyCode == 0 )
+  if ( m_iKeyCode == 0 && m_unicode == 0)
   {
     if ( (m_mapName.length() > 0) && (m_buttonName.length() > 0) )
     {
       if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
       {
-        m_iKeyCode = CButtonTranslator::TranslateKeyboardString( m_buttonName.c_str() );
+        m_iKeyCode = CButtonTranslator::TranslateKeyboardStringToKeysym( m_buttonName.c_str() );
+        m_unicode = 0xFDD0;
       }
       else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
       {
@@ -369,9 +370,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
   int psize = (int)packet->PayloadSize();
 
   string map, button;
-  unsigned short flags;
-  unsigned int bcode;
-  unsigned short amount;
+  unsigned short flags, amount, modifiers = 0;
+  unsigned int bcode, keycode = 0, unicode = 0;
 
   // parse the button code
   if(!extended)
@@ -384,6 +384,9 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
   else
   {
       if (!ParseUInt32(payload, psize, bcode))
+          return false;
+      // parse the button modifiers
+      if (!ParseUInt16(payload, psize, modifiers))
           return false;
   }
   // parse flags
@@ -405,13 +408,17 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
       return false;
   }
 
-  unsigned int keycode;
   if(flags & PTB_USE_NAME)
     keycode = 0;
   else if(flags & PTB_VKEY)
     keycode = bcode|KEY_VKEY;
   else if(flags & PTB_UNICODE)
-    keycode = bcode|ES_FLAG_UNICODE;
+    unicode = bcode;
+  else if(flags & PTB_SDL)
+  {
+    unicode = 0xFDD0;
+    keycode = bcode;
+  }
   else
     keycode = bcode;
 
@@ -434,6 +441,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
     CSingleLock lock(m_critSection);
 
     CEventButtonState state( keycode,
+                             modifiers,
+                             unicode,
                              map,
                              button,
                              famount,
@@ -499,6 +508,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
     if ( flags & PTB_DOWN )
     {
       m_currentButton.m_iKeyCode   = keycode;
+      m_currentButton.m_modifiers  = modifiers;
+      m_currentButton.m_unicode    = unicode;
       m_currentButton.m_mapName    = map;
       m_currentButton.m_buttonName = button;
       m_currentButton.m_fAmount    = famount;
@@ -515,6 +526,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet, bool extended)
       if((flags & PTB_USE_AMOUNT) && m_currentButton.m_fAmount > 0.0)
       {
         CEventButtonState state( m_currentButton.m_iKeyCode,
+                                 m_currentButton.m_modifiers,
+                                 m_currentButton.m_unicode,
                                  m_currentButton.m_mapName,
                                  m_currentButton.m_buttonName,
                                  0.0,
@@ -748,14 +761,16 @@ void CEventClient::FreePacketQueues()
   m_seqPackets.clear();
 }
 
-unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, float& amount)
+EC_button CEventClient::GetButtonCode(string& joystickName, bool& isAxis, float& amount)
 {
   CSingleLock lock(m_critSection);
-  unsigned int bcode = 0;
-
+  EC_button button;
+    
   if ( m_currentButton.Active() )
   {
-    bcode = m_currentButton.KeyCode();
+    button.keycode = m_currentButton.KeyCode();
+    button.modifier = m_currentButton.Modifiers();
+    button.unicode = m_currentButton.Unicode();
     joystickName = m_currentButton.JoystickName();
     isAxis = m_currentButton.Axis();
     amount = m_currentButton.Amount();
@@ -765,20 +780,30 @@ unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, flo
     else
     {
       if ( ! CheckButtonRepeat(m_currentButton.m_iNextRepeat) )
-        bcode = 0;
+      {
+        button.keycode = 0;
+        button.modifier = 0;
+        button.unicode = 0;
+      }
     }
-    return bcode;
+    return button;
   }
 
   if(m_buttonQueue.empty())
-    return 0;
-
+  {
+    button.keycode = 0;
+    button.modifier = 0;
+    button.unicode = 0;
+    return button;
+  }
 
   list<CEventButtonState> repeat;
   list<CEventButtonState>::iterator it;
-  for(it = m_buttonQueue.begin(); bcode == 0 && it != m_buttonQueue.end(); it++)
+  for(it = m_buttonQueue.begin(); (button.keycode | button.unicode) == 0 && it != m_buttonQueue.end(); it++)
   {
-    bcode        = it->KeyCode();
+    button.keycode = it->KeyCode();
+    button.modifier = it->Modifiers();
+    button.unicode = it->Unicode();
     joystickName = it->JoystickName();
     isAxis       = it->Axis();
     amount       = it->Amount();
@@ -791,7 +816,9 @@ unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, flo
       repeat.push_back(*it);
       if(skip)
       {
-        bcode = 0;
+        button.keycode = 0;
+        button.modifier = 0;
+        button.unicode = 0;
         continue;
       }
     }
@@ -799,7 +826,7 @@ unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, flo
 
   m_buttonQueue.erase(m_buttonQueue.begin(), it);
   m_buttonQueue.insert(m_buttonQueue.end(), repeat.begin(), repeat.end());
-  return bcode;
+  return button;
 }
 
 bool CEventClient::GetMousePos(float& x, float& y)
