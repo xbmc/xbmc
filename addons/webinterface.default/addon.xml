@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.1.0"
+  version="2.1.1"
   name="Default"
   provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.gui" version="3.00"/>
-    <import addon="xbmc.json" version="4.00"/>
+    <import addon="xbmc.json" version="5.0"/>
   </requires>
   <extension
     point="xbmc.gui.webinterface"/>

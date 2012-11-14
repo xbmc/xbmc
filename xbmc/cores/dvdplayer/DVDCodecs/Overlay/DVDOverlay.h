@@ -93,6 +93,14 @@ public:
     return count;
   }
 
+  /**
+   * static release function for use with boost shared ptr for example
+   */
+  static void Release(CDVDOverlay* ov)
+  {
+    ov->Release();
+  }
+
   bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }
 
   double iPTSStartTime;

@@ -21,7 +21,8 @@
  */
 
 #include "DVDInputStream.h"
-
+#include <list>
+#include <boost/shared_ptr.hpp>
 
 extern "C"
 {
@@ -107,7 +108,23 @@ protected:
   bool               m_title_playing;
   uint32_t           m_clip;
   bool m_navmode;
-  std::vector<CDVDOverlayImage*> m_overlays[2];
+
+  typedef boost::shared_ptr<CDVDOverlayImage> SOverlay;
+  typedef std::list<SOverlay>                 SOverlays;
+
+  struct SPlane
+  {
+    SOverlays o;
+    int       w;
+    int       h;
+
+    SPlane()
+    : w(0)
+    , h(0)
+    {}
+  };
+
+  SPlane m_planes[2];
   enum EHoldState {
     HOLD_NONE = 0,
     HOLD_HELD,

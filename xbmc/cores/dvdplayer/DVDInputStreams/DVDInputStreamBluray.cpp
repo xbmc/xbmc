@@ -32,6 +32,7 @@
 #include "filesystem/Directory.h"
 #include "DllLibbluray.h"
 #include "URL.h"
+#include "guilib/Geometry.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -627,109 +628,85 @@ static uint32_t build_rgba(const BD_PG_PALETTE_ENTRY &e)
 
 void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
 {
-
-  CDVDOverlayGroup* group   = new CDVDOverlayGroup();
-  group->bForced = true;
-
-  if(ov == NULL)
+#if(BD_OVERLAY_INTERFACE_VERSION >= 2)
+  if(ov == NULL || ov->cmd == BD_OVERLAY_CLOSE)
   {
     for(unsigned i = 0; i < 2; ++i)
-    {
-      for(std::vector<CDVDOverlayImage*>::iterator it = m_overlays[i].begin(); it != m_overlays[i].end(); ++it)
-        (*it)->Release();
-      m_overlays[i].clear();
-    }
-
+      m_planes[i].o.clear();
+    CDVDOverlayGroup* group   = new CDVDOverlayGroup();
+    group->bForced = true;
     m_player->OnDVDNavResult(group, 0);
     return;
   }
 
-  group->iPTSStartTime = (double) ov->pts;
-  group->iPTSStopTime  = 0;
-
   if (ov->plane > 1)
   {
     CLog::Log(LOGWARNING, "CDVDInputStreamBluray - Ignoring overlay with multiple planes");
-    group->Release();
     return;
   }
 
-  std::vector<CDVDOverlayImage*>& plane(m_overlays[ov->plane]);
+  SPlane& plane(m_planes[ov->plane]);
 
-  /* fixup existing overlays */
-  for(std::vector<CDVDOverlayImage*>::iterator it = plane.begin(); it != plane.end();)
+  if (ov->cmd == BD_OVERLAY_CLEAR)
   {
-    /* if it's fully outside we are done */
-    if(ov->x + ov->w <= (*it)->x
-    || ov->x         >= (*it)->x + (*it)->width
-    || ov->y + ov->h <= (*it)->y
-    || ov->y         >= (*it)->y + (*it)->height)
-    {
-      ++it;
-      continue;
-    }
-
-    int y1 = std::max<int>((*it)->y                , ov->y);
-    int y2 = std::min<int>((*it)->y + (*it)->height, ov->y + ov->h);
-    int x1 = std::max<int>((*it)->x                , ov->x);
-    int x2 = std::min<int>((*it)->x + (*it)->width , ov->x + ov->w);
-
-    /* if all should be cleared, delete */
-    if(x1 == (*it)->x
-    && x2 == (*it)->x + (*it)->width
-    && y1 == (*it)->y
-    && y2 == (*it)->y + (*it)->height)
-    {
-      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Delete(%d) %d-%dx%d-%d", ov->plane, x1, x2, y1, y2);
-      it = plane.erase(it);
-      continue;
-    }
-#if(1)
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Clearing(%d) %d-%dx%d-%d", ov->plane, x1, x2, y1, y2);
-
-    /* replace overlay with a new copy*/
-    CDVDOverlayImage* overlay = new CDVDOverlayImage(*(*it));
-    (*it)->Release();
-    (*it) = overlay;
-
-    /* any old hw overlay must be released */
-    SAFE_RELEASE(overlay->m_overlay);
-
-    /* clear out overlap */
-    y1 -= overlay->y;
-    y2 -= overlay->y;
-    x1 -= overlay->x;
-    x2 -= overlay->x;
-
-    /* find fully transparent */
-    int transp = 0;
-    for(; transp < overlay->palette_colors; ++transp)
-    {
-      if(((overlay->palette[transp] >> PIXEL_ASHIFT) & 0xff) == 0)
-        break;
-    }
-
-    if(transp == overlay->palette_colors)
-    {
-      CLog::Log(LOGERROR, "CDVDInputStreamBluray - failed to find transparent color");
-      continue;
-    }
-
-    for(int y = y1; y < y2; ++y)
-    {
-      BYTE* line = overlay->data + y * overlay->linesize;
-      for(int x = x1; x < x2; ++x)
-        line[x] = transp;
-    }
-    ++it;
-#endif
+    plane.o.clear();
+    return;
   }
 
+  if (ov->cmd == BD_OVERLAY_INIT)
+  {
+    plane.o.clear();
+    plane.w = ov->w;
+    plane.h = ov->h;
+    return;
+  }
+
+  if (ov->cmd == BD_OVERLAY_DRAW
+  ||  ov->cmd == BD_OVERLAY_WIPE)
+  {
+    CRect ovr(ov->x
+            , ov->y
+            , ov->x + ov->w
+            , ov->y + ov->h);
+
+    /* fixup existing overlays */
+    for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end();)
+    {
+      CRect old((*it)->x
+              , (*it)->y
+              , (*it)->x + (*it)->width
+              , (*it)->y + (*it)->height);
+
+      vector<CRect> rem = old.SubtractRect(ovr);
+
+      /* if no overlap we are done */
+      if(rem.size() == 1 && !(rem[0] != old))
+      {
+        it++;
+        continue;
+      }
+
+      SOverlays add;
+      for(vector<CRect>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
+      {
+        SOverlay overlay(new CDVDOverlayImage(*(*it)
+                                              , itr->x1
+                                              , itr->y1
+                                              , itr->Width()
+                                              , itr->Height())
+                      , std::ptr_fun(CDVDOverlay::Release));
+        add.push_back(overlay);
+      }
+
+      it = plane.o.erase(it);
+      plane.o.insert(it, add.begin(), add.end());
+    }
+  }
 
   /* uncompress and draw bitmap */
-  if (ov->img)
+  if (ov->img && ov->cmd == BD_OVERLAY_DRAW)
   {
-    CDVDOverlayImage* overlay = new CDVDOverlayImage();
+    SOverlay overlay(new CDVDOverlayImage(), std::ptr_fun(CDVDOverlay::Release));
 
     if (ov->palette)
     {
@@ -754,15 +731,27 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
     overlay->y        = ov->y;
     overlay->height   = ov->h;
     overlay->width    = ov->w;
-    plane.push_back(overlay);
+    overlay->source_height = plane.h;
+    overlay->source_width  = plane.w;
+    plane.o.push_back(overlay);
   }
 
-  for(unsigned i = 0; i < 2; ++i)
+  if(ov->cmd == BD_OVERLAY_FLUSH)
   {
-    for(std::vector<CDVDOverlayImage*>::iterator it = m_overlays[i].begin(); it != m_overlays[i].end(); ++it)
-      group->m_overlays.push_back((*it)->Acquire());
+    CDVDOverlayGroup* group   = new CDVDOverlayGroup();
+    group->bForced       = true;
+    group->iPTSStartTime = (double) ov->pts;
+    group->iPTSStopTime  = 0;
+
+    for(unsigned i = 0; i < 2; ++i)
+    {
+      for(SOverlays::iterator it = m_planes[i].o.begin(); it != m_planes[i].o.end(); ++it)
+        group->m_overlays.push_back((*it)->Acquire());
+    }
+
+    m_player->OnDVDNavResult(group, 0);
   }
-  m_player->OnDVDNavResult(group, 0);
+#endif
 }
 
 int CDVDInputStreamBluray::GetTotalTime()
@@ -928,7 +917,7 @@ bool CDVDInputStreamBluray::IsInMenu()
 {
   if(m_bd == NULL || !m_navmode)
     return false;
-  if(m_overlays[BD_OVERLAY_IG].size() > 0)
+  if(m_planes[BD_OVERLAY_IG].o.size() > 0)
     return true;
   return false;
 }

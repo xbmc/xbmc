@@ -38,6 +38,19 @@ namespace XBMCAddon
   namespace xbmcgui
   {
     /**
+     * Used in add/remove control. It only locks if it's given a 
+     * non-NULL CCriticalSection. It's given a NULL CCriticalSection
+     * when a function higher in the call stack already has a 
+     */
+    class MaybeLock
+    {
+      CCriticalSection* lock;
+    public:
+      inline MaybeLock(CCriticalSection* p_lock) : lock(p_lock) { if (lock) lock->lock(); }
+      inline ~MaybeLock() { if (lock) lock->unlock(); }
+    };
+
+    /**
      * Explicit template instantiation
      */
     template class Interceptor<CGUIWindow>;
@@ -538,13 +551,22 @@ namespace XBMCAddon
     void Window::removeControl(Control* pControl) throw (WindowException)
     {
       TRACE;
+      DelayedCallGuard dg(languageHook);
+      doRemoveControl(pControl,&g_graphicsContext,true);
+    }
+
+    void Window::doRemoveControl(Control* pControl, CCriticalSection* gcontext, bool wait) throw (WindowException)
+    {
+      TRACE;
       // type checking, object should be of type Control
       if(pControl == NULL)
         throw WindowException("Object should be of type Control");
 
-      CSingleLock lock(g_graphicsContext);
-      if(!ref(window)->GetControl(pControl->iControlId))
-        throw WindowException("Control does not exist in window");
+      {
+        MaybeLock mlock(gcontext);
+        if(!ref(window)->GetControl(pControl->iControlId))
+          throw WindowException("Control does not exist in window");
+      }
 
       // delete control from vecControls in window object
       std::vector<AddonClass::Ref<Control> >::iterator it = vecControls.begin();
@@ -559,7 +581,7 @@ namespace XBMCAddon
 
       CGUIMessage msg(GUI_MSG_REMOVE_CONTROL, 0, 0);
       msg.SetPointer(pControl->pGUIControl);
-      CApplicationMessenger::Get().SendGUIMessage(msg, iWindowId, true);
+      CApplicationMessenger::Get().SendGUIMessage(msg, iWindowId, wait);
 
       // initialize control to zero
       pControl->pGUIControl = NULL;
@@ -569,8 +591,11 @@ namespace XBMCAddon
 
     void Window::removeControls(std::vector<Control*> pControls) throw (WindowException)
     {
-      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); iter++)
-        removeControl(*iter);
+      TRACE;
+      DelayedCallGuard dg(languageHook);
+      int count = 1; int size = pControls.size();
+      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, iter++)
+        doRemoveControl(*iter,NULL, count == size);
     }
 
     long Window::getHeight()
@@ -690,6 +715,13 @@ namespace XBMCAddon
     void Window::addControl(Control* pControl) throw (WindowException)
     {
       TRACE;
+      DelayedCallGuard dg(languageHook);
+      doAddControl(pControl,&g_graphicsContext,true);
+    }
+
+    void Window::doAddControl(Control* pControl, CCriticalSection* gcontext, bool wait) throw (WindowException)
+    {
+      TRACE;
       if(pControl == NULL)
         throw WindowException("NULL Control passed to WindowBase::addControl");
 
@@ -697,12 +729,14 @@ namespace XBMCAddon
         throw WindowException("Control is already used");
 
       // lock xbmc GUI before accessing data from it
-      CSingleLock lock(g_graphicsContext);
       pControl->iParentId = iWindowId;
-      // assign control id, if id is already in use, try next id
-      // TODO: This is not thread safe
-      do pControl->iControlId = ++iCurrentControlId;
-      while (ref(window)->GetControl(pControl->iControlId));
+
+      {
+        MaybeLock mlock(gcontext);
+        // assign control id, if id is already in use, try next id
+        do pControl->iControlId = ++iCurrentControlId;
+        while (ref(window)->GetControl(pControl->iControlId));
+      }
 
       pControl->Create();
 
@@ -722,13 +756,17 @@ namespace XBMCAddon
       // This calls the CGUIWindow parent class to do the final add
       CGUIMessage msg(GUI_MSG_ADD_CONTROL, 0, 0);
       msg.SetPointer(pControl->pGUIControl);
-      CApplicationMessenger::Get().SendGUIMessage(msg, iWindowId, true);
+      CApplicationMessenger::Get().SendGUIMessage(msg, iWindowId, wait);
     }
 
     void Window::addControls(std::vector<Control*> pControls) throw (WindowException)
     {
-      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); iter++)
-        addControl(*iter);
+      TRACE;
+      DelayedCallGuard dg(languageHook);
+      CSingleLock lock(g_graphicsContext);
+      int count = 1; int size = pControls.size();
+      for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, iter++)
+        doAddControl(*iter,NULL, count == size);
     }
 
     Control* Window::getControl(int iControlId) throw (WindowException)
@@ -736,7 +774,6 @@ namespace XBMCAddon
       TRACE;
       return GetControlById(iControlId);
     }
-
 
     void Action::setFromCAction(const CAction& action)
     {
