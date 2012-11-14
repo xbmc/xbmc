@@ -342,6 +342,7 @@ public:
   CStdString GetThumbnailsFolder() const;
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
+  CStdString GetLibraryFolder() const;
   CStdString GetSourcesFile() const;
 
   CStdString GetSettingsFile() const;
