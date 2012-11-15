@@ -215,11 +215,13 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   if (strProtocol == "file" || strProtocol.IsEmpty()) return new CHDFile();
   else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "filereader") return new CFileReaderFile();
+
   if( g_application.getNetwork().IsAvailable() )
   {
     if (strProtocol == "http" ||  strProtocol == "https")
       return new CCurlFile();
     else if (strProtocol == "shout") return new CShoutcastFile();
+    else if (strProtocol == "pipe") return new CPipeFile();
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
