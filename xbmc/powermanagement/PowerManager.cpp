@@ -42,6 +42,8 @@
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
+#include "linux/SystemdUPowerSyscall.h"
+#include "linux/UPowerSyscall.h"
 #ifdef HAS_HAL
 #include "linux/HALPowerSyscall.h"
 #endif
@@ -69,10 +71,14 @@ void CPowerManager::Initialize()
 #if defined(__APPLE__)
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
-  if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
+  if (CConsoleUPowerSyscall::HasConsoleKitAndUPower())
     m_instance = new CConsoleUPowerSyscall();
   else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleDeviceKitPowerSyscall();
+  else if (CSystemdUPowerSyscall::HasSystemdAndUPower())
+    m_instance = new CSystemdUPowerSyscall();
+  else if (CUPowerSyscall::HasUPower())
+    m_instance = new CUPowerSyscall();
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();

@@ -1,5 +1,5 @@
-#pragma once
 /*
+ *      Copyright (C) 2012 Denis Yantarev
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
@@ -19,39 +19,25 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "system.h"
-#ifdef HAS_DBUS
-#include <dbus/dbus.h>
 
-class CDBusMessage
+#ifdef HAS_DBUS
+
+#include "UPowerSyscall.h"
+
+class CSystemdUPowerSyscall : public CUPowerSyscall
 {
 public:
-  CDBusMessage(const char *destination, const char *object, const char *interface, const char *method);
-  ~CDBusMessage();
-
-  bool AppendObjectPath(const char *object);
-  bool AppendArgument(const char *string);
-  bool AppendArgument(const bool b);
-  bool AppendArgument(const char **arrayString, unsigned int length);
-
-  DBusMessage *SendSystem();
-  DBusMessage *SendSession();
-
-  bool SendAsyncSystem();
-  bool SendAsyncSession();
-
-  DBusMessage *Send(DBusBusType type);
-  DBusMessage *Send(DBusConnection *con, DBusError *error);
+  CSystemdUPowerSyscall();
+  virtual bool Powerdown();
+  virtual bool Suspend();
+  virtual bool Hibernate();
+  virtual bool Reboot();
+  static bool HasSystemdAndUPower();  
+protected:
+  void UpdateCapabilities();
 private:
-
-  bool SendAsync(DBusBusType type);
-
-  void Close();
-  void PrepareArgument();
-
-  DBusMessage *m_message;
-  DBusMessage *m_reply;
-  DBusMessageIter m_args;
-  bool m_haveArgs;
+  static bool SystemdSetPowerState(const char *state);
+  static bool SystemdCheckCapability(const char *capability);
 };
+
 #endif
