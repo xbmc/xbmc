@@ -556,7 +556,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       CFileItemList queue;
       if (MyPlexManager::Get().getPlaylist(queue, "queue", true) && queue.Size() > 0)
       {
-        CFileItemPtr queue = CFileItemPtr(new CFileItem(g_localizeStrings.Get(19021)));
+        CFileItemPtr queue = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44021)));
         queue->SetProperty("type", "mixed");
         queue->SetProperty("typeNumber", PLEX_METADATA_MIXED);
         queue->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("queue"));
@@ -567,7 +567,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       // Add the shared content menu if needed.
       if (PlexLibrarySectionManager::Get().getNumSharedSections() > 0)
       {
-        CFileItemPtr shared = CFileItemPtr(new CFileItem(g_localizeStrings.Get(19020)));
+        CFileItemPtr shared = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44020)));
         shared->SetProperty("key", "plex://shared");
         shared->SetPath(shared->GetProperty("key").asString());
         newSections.push_back(shared);
