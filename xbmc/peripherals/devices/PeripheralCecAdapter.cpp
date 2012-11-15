@@ -1255,8 +1255,7 @@ int CPeripheralCecAdapter::CecLogMessage(void *cbParam, const cec_log_message me
 
 bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
 {
-  if ((strLocation.Left(18).Equals("peripherals://usb/") ||
-         strLocation.Left(18).Equals("peripherals://rpi/")) &&
+  if ((strLocation.Left(18).Equals("peripherals://cec/")) &&
        strLocation.Right(4).Equals(".dev"))
   {
     strLocation = strLocation.Right(strLocation.length() - 18);

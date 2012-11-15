@@ -31,8 +31,8 @@
 #include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
 
-#ifdef HAVE_CEC_RPI_API
-#include "bus/linux/PeripheralBusRPi.h"
+#if defined(HAVE_LIBCEC)
+#include "bus/virtual/PeripheralBusCEC.h"
 #endif
 
 #include "threads/SingleLock.h"
@@ -84,8 +84,8 @@ void CPeripherals::Initialise(void)
 #if defined(HAVE_PERIPHERAL_BUS_USB)
     m_busses.push_back(new CPeripheralBusUSB(this));
 #endif
-#ifdef HAVE_CEC_RPI_API
-    m_busses.push_back(new CPeripheralBusRPi(this));
+#if defined(HAVE_LIBCEC)
+    m_busses.push_back(new CPeripheralBusCEC(this));
 #endif
 
     /* initialise all known busses */
@@ -276,7 +276,8 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
 
   case PERIPHERAL_CEC:
 #if defined(HAVE_LIBCEC)
-    peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    if (bus.Type() == PERIPHERAL_BUS_CEC)
+      peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
 #else
     if (!m_bMissingLibCecWarningDisplayed)
     {
