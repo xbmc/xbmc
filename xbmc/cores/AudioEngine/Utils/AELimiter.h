@@ -45,7 +45,7 @@ class CAELimiter
 
     void SetSamplerate(int samplerate)
     {
-      m_samplerate = samplerate;
+      m_samplerate = (float)samplerate;
     }
 
     float Run(float* frame, int channels);
