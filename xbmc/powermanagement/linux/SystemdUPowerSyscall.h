@@ -1,5 +1,6 @@
 /*
- *      Copyright (C) 2005-2012 Team XBMC
+ *      Copyright (C) 2012 Denis Yantarev
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,25 +14,30 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
 #ifdef HAS_DBUS
 
 #include "UPowerSyscall.h"
-#include "DBusUtil.h"
 
-class CConsoleUPowerSyscall : public CUPowerSyscall
+class CSystemdUPowerSyscall : public CUPowerSyscall
 {
 public:
-  CConsoleUPowerSyscall();
+  CSystemdUPowerSyscall();
   virtual bool Powerdown();
+  virtual bool Suspend();
+  virtual bool Hibernate();
   virtual bool Reboot();
-  static bool HasConsoleKitAndUPower();
+  static bool HasSystemdAndUPower();  
+protected:
+  void UpdateCapabilities();
 private:
-  static bool ConsoleKitMethodCall(const char *method);
+  static bool SystemdSetPowerState(const char *state);
+  static bool SystemdCheckCapability(const char *capability);
 };
 
 #endif
