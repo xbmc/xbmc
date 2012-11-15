@@ -1623,7 +1623,8 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
+  if ((g_guiSettings.GetBool("filelists.allowfiledeletion") ||
+       m_vecItems->GetPath().Equals("special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
 }
