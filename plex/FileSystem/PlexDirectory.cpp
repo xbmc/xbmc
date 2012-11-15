@@ -66,7 +66,7 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog)
   m_timeout = 300;
   
   if (displayDialog)
-    m_flags = DIR_FLAG_DEFAULTS | DIR_FLAG_ALLOW_PROMPT;
+    m_flags |= DIR_FLAG_ALLOW_PROMPT;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog, bool repla
   m_timeout = timeout;
 
   if (displayDialog)
-    m_flags = DIR_FLAG_DEFAULTS | DIR_FLAG_ALLOW_PROMPT;
+    m_flags |= DIR_FLAG_ALLOW_PROMPT;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   while (m_downloadEvent.WaitMSec(100) == false)
   {
     // If enough time has passed, display the dialog.
-    if (XbmcThreads::SystemClockMillis() - time > 1000 && m_flags & DIR_FLAG_ALLOW_PROMPT)
+    if (XbmcThreads::SystemClockMillis() - time > 1000 && (m_flags & DIR_FLAG_ALLOW_PROMPT))
     {
       dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
