@@ -139,14 +139,14 @@ public:
   virtual void SetReplayGain(float factor) = 0;
 
   /**
-   * Gets the stream's volume amplification
-   * @return The volume amplification factor
+   * Gets the stream's volume amplification in linear units.
+   * @return The volume amplification factor between 1.0 and 1000.0
    */
   virtual float GetAmplification() = 0;
 
   /**
-   * Sets the stream's volume amplification
-   * @param The volume amplification factor
+   * Sets the stream's volume amplification in linear units.
+   * @param The volume amplification factor between 1.0 and 1000.0
    */
   virtual void SetAmplification(float amplify) = 0;
 
