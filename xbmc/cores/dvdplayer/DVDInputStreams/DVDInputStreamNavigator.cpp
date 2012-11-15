@@ -27,7 +27,7 @@
 #include "utils/log.h"
 #include "guilib/Geometry.h"
 #if defined(TARGET_DARWIN)
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 #endif
 
 #define HOLDMODE_NONE 0

@@ -22,11 +22,11 @@
 
 #include "CoreAudioAESound.h"
 
-#include "AEFactory.h"
-#include "AEAudioFormat.h"
 #include "CoreAudioAE.h"
-#include "Interfaces/AESound.h"
 #include "threads/SingleLock.h"
+#include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
 #include "cores/AudioEngine/Utils/AERemap.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"

@@ -72,7 +72,7 @@
 #endif
 #endif
 #if defined(TARGET_DARWIN_OSX)
-#include "XBMCHelper.h"
+#include "osx/XBMCHelper.h"
 #endif
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
