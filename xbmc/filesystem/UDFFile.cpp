@@ -48,11 +48,7 @@ CUDFFile::~CUDFFile()
 //*********************************************************************************************
 bool CUDFFile::Open(const CURL& url)
 {
-  CStdString strFName = url.GetHostName();
-
-  CURL::Decode(strFName);
-
-  m_hFile = m_udfIsoReaderLocal.OpenFile((char*)strFName.c_str());
+  m_hFile = m_udfIsoReaderLocal.OpenFile(url.GetHostName(), url.GetFileName());
   if (m_hFile == INVALID_HANDLE_VALUE)
   {
     m_bOpened = false;
@@ -106,29 +102,18 @@ int64_t CUDFFile::GetPosition()
 
 bool CUDFFile::Exists(const CURL& url)
 {
-  string strFName = "\\";
-  strFName += url.GetFileName();
-  for (int i = 0; i < (int)strFName.size(); ++i )
-  {
-    if (strFName[i] == '/') strFName[i] = '\\';
-  }
-  m_hFile = m_udfIsoReaderLocal.OpenFile((char*)strFName.c_str());
+  m_hFile = m_udfIsoReaderLocal.OpenFile(url.GetHostName(), url.GetFileName());
   if (m_hFile == INVALID_HANDLE_VALUE)
     return false;
 
   m_udfIsoReaderLocal.CloseFile(m_hFile);
+  m_hFile = INVALID_HANDLE_VALUE;
   return true;
 }
 
 int CUDFFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  string strFName = "\\";
-  strFName += url.GetFileName();
-  for (int i = 0; i < (int)strFName.size(); ++i )
-  {
-    if (strFName[i] == '/') strFName[i] = '\\';
-  }
-  m_hFile = m_udfIsoReaderLocal.OpenFile((char*)strFName.c_str());
+  m_hFile = m_udfIsoReaderLocal.OpenFile(url.GetHostName(), url.GetFileName());
   if (m_hFile != INVALID_HANDLE_VALUE)
   {
     buffer->st_size = m_udfIsoReaderLocal.GetFileSize(m_hFile);
