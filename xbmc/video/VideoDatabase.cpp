@@ -7543,7 +7543,7 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const CStdString& strSearch, C
   }
 }
 
-void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const set<int>* paths)
+void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const set<int>* paths, bool showProgress)
 {
   CGUIDialogProgress *progress=NULL;
   try
@@ -7579,7 +7579,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
     m_pDS->query(sql.c_str());
     if (m_pDS->num_rows() == 0) return;
 
-    if (!handle)
+    if (handle)
+    {
+      handle->SetTitle(g_localizeStrings.Get(700));
+      handle->SetText("");
+    }
+    else if (showProgress)
     {
       progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (progress)
@@ -7592,11 +7597,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const se
         progress->StartModal();
         progress->ShowProgressBar(true);
       }
-    }
-    else
-    {
-      handle->SetTitle(g_localizeStrings.Get(700));
-      handle->SetText("");
     }
 
     CStdString filesToDelete = "";
