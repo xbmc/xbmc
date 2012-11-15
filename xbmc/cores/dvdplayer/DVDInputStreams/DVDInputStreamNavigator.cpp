@@ -26,7 +26,7 @@
 #include "LangInfo.h"
 #include "utils/log.h"
 #include "guilib/Geometry.h"
-#include "URIUtils.h"
+#include "utils/URIUtils.h"
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif

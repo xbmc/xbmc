@@ -72,7 +72,7 @@
 #include "utils/EdenVideoArtUpdater.h"
 #include "GUIInfoManager.h"
 #include "utils/GroupUtils.h"
-#include "File.h"
+#include "filesystem/File.h"
 
 using namespace std;
 using namespace XFILE;
