@@ -37,9 +37,12 @@
 			<RegExp input="$$1" output="\1" dest="11">
 				<expression fixchars="1">&lt;content&gt;&lt;!\[CDATA\[(.*?)\]\]</expression>
 			</RegExp>
-			<RegExp input="$$11" output="$$12" dest="2">
+			<RegExp input="$$11" output="$$12" dest="6">
 				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetAMGFallbackBiographyByAMGID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
 					<expression>allmusic.com</expression>
+				</RegExp>
+				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetTADBFMFallbackBiographyByMBID&quot;&gt;$$9&lt;/chain&gt;" dest="12">
+					<expression>TheAudioDb.com</expression>
 				</RegExp>
 				<expression>^$</expression>
 			</RegExp>

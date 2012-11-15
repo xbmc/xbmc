@@ -365,6 +365,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
       {
         item.AppendArt(i->second, "tvshow");
         item.SetArtFallback("fanart", "tvshow.fanart");
+        item.SetArtFallback("tvshow.thumb", "tvshow.poster");
       }
     }
     m_database->Close();

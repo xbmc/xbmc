@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <string id="30000">启用HTBackdrops.com艺人同人画</string>
+    <string id="30001">启用allmusic.com艺人图片</string>
+    <string id="30002">启用last.fm艺人图片</string>
+    <string id="30003">启用HTBackdrops.com艺人图片</string>
+    <string id="30004">启用fanart.tv艺人同人画</string>
+    <string id="30005">启用fanart.tv艺人图片</string>
+    <string id="30006">艺人传记获取于</string>
+    <string id="30007">艺术图片</string>
+    <string id="30008">艺人唱片目录获取于</string>
+    <string id="30009">艺人类型获取于</string>
+    <string id="30010">艺人风格获取于</string>
+    <string id="30011">艺人生卒年月获取于</string>
+    <string id="30012">艺人心情获取于</string>
+    <string id="30014">艺人活跃期获取于</string>
+    <string id="30015">     首选语言</string>
+    <string id="30016">备选艺人传记获取于</string>
+    <string id="30017">备选艺人唱片目录获取于</string>
+    <string id="30018">备选艺人类型获取于</string>
+    <string id="30019">备选艺人风格获取于</string>
+    <string id="30020">备选艺人生卒年月获取于</string>
+    <string id="30021">备选</string>
+</strings>
