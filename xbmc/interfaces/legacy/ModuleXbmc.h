@@ -383,7 +383,7 @@ namespace XBMCAddon
      * audioSuspend() -- Suspend Audio engine.
      * 
      * example:
-     *   xbmc.AudioSuspend()
+     *   xbmc.audioSuspend()
      */
     void audioSuspend();
 
@@ -391,7 +391,7 @@ namespace XBMCAddon
      * audioResume() -- Resume Audio engine.
      * 
      * example:
-     *   xbmc.AudioResume()
+     *   xbmc.audioResume()
      */  
     void audioResume();
 
