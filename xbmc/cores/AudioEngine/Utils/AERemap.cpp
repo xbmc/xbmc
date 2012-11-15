@@ -193,7 +193,8 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
     normalize = true;
   else
   {
-    normalize = g_guiSettings.GetBool("audiooutput.normalizelevels");
+    //FIXME: guisetting is reversed, change the setting name after frodo
+    normalize = !g_guiSettings.GetBool("audiooutput.normalizelevels");
     CLog::Log(LOGDEBUG, "AERemap: Downmix normalization is %s", (normalize ? "enabled" : "disabled"));
   }
 
