@@ -19,9 +19,9 @@
  *
  */
 
-#include "Interfaces/AESound.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
+#include "cores/AudioEngine/Utils/AEWAVLoader.h"
 #include "threads/CriticalSection.h"
-#include "Utils/AEWAVLoader.h"
 
 class CCoreAudioAESound : public IAESound
 {

@@ -22,10 +22,10 @@
 #include <samplerate.h>
 #include <list>
 
-#include "AEAudioFormat.h"
 #include "CoreAudioRingBuffer.h"
 #include "ICoreAudioSource.h"
-#include "Interfaces/AEStream.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
 #include "cores/AudioEngine/Utils/AERemap.h"
 

@@ -295,11 +295,11 @@
 #endif
 
 #ifdef TARGET_DARWIN_OSX
-#include "CocoaInterface.h"
-#include "XBMCHelper.h"
+#include "osx/CocoaInterface.h"
+#include "osx/XBMCHelper.h"
 #endif
 #ifdef TARGET_DARWIN
-#include "DarwinUtils.h"
+#include "osx/DarwinUtils.h"
 #endif
 
 
