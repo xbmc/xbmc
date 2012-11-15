@@ -1238,3 +1238,5 @@ plex/Dependencies/laika-depends
 plex/Dependencies/*darwin-i686
 plex/build
 plex/build_xc
+
+*.autosave
