@@ -23,29 +23,18 @@
 #ifdef HAS_DBUS
 
 #include "UPowerSyscall.h"
-#include "DBusUtil.h"
 
-class CSystemdUPowerSyscall : public UPowerSyscall
+class CSystemdUPowerSyscall : public CUPowerSyscall
 {
 public:
   CSystemdUPowerSyscall();
-  virtual ~CSystemdUPowerSyscall();
-
   virtual bool Powerdown();
   virtual bool Suspend();
   virtual bool Hibernate();
   virtual bool Reboot();
-
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
-  virtual int  BatteryLevel();
-
-  virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
-
-  static bool HasSystemdAndUPower();
-  
+  static bool HasSystemdAndUPower();  
+protected:
+  void UpdateCapabilities();
 private:
   static bool SystemdSetPowerState(const char *state);
   static bool SystemdCheckCapability(const char *capability);

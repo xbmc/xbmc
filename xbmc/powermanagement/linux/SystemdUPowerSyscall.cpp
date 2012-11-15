@@ -27,12 +27,12 @@
 #ifdef HAS_DBUS
 #include "Application.h"
 
+// logind DBus interface specification:
+// http://www.freedesktop.org/wiki/Software/systemd/logind
+
 #define LOGIND_DEST  "org.freedesktop.login1"
 #define LOGIND_PATH  "/org/freedesktop/login1"
 #define LOGIND_IFACE "org.freedesktop.login1.Manager"
-
-// logind DBus interface epecification:
-// http://www.freedesktop.org/wiki/Software/systemd/logind
 
 CSystemdUPowerSyscall::CSystemdUPowerSyscall()
 {
@@ -67,7 +67,7 @@ void CSystemdUPowerSyscall::UpdateCapabilities()
   m_CanSuspend   = SystemdCheckCapability("CanSuspend");
 }
 
-bool CSystemdUPowerSyscall::HasConsoleKitAndUPower()
+bool CSystemdUPowerSyscall::HasSystemdAndUPower()
 {
   DBusConnection *con;
   DBusError error;
@@ -98,27 +98,28 @@ bool CSystemdUPowerSyscall::HasConsoleKitAndUPower()
 
 bool CSystemdUPowerSyscall::SystemdSetPowerState(const char *state)
 {
+  bool arg = false;
   CDBusMessage message(LOGIND_DEST, LOGIND_PATH, LOGIND_IFACE, state);
   // The user_interaction boolean parameters can be used to control
   // wether PolicyKit should interactively ask the user for authentication
   // credentials if it needs to.
-  message.AppendAttribute(false);
+  message.AppendArgument(arg);
   return message.SendSystem() != NULL;
 }
 
 bool CSystemdUPowerSyscall::SystemdCheckCapability(const char *capability)
 {
   bool result = false;
-  char *s;
+  char *arg;
   CDBusMessage message(LOGIND_DEST, LOGIND_PATH, LOGIND_IFACE, capability);
   DBusMessage *reply = message.SendSystem();
-  if(reply && dbus_message_get_args(reply, NULL, DBUS_TYPE_STRING, &s, DBUS_TYPE_INVALID))
+  if(reply && dbus_message_get_args(reply, NULL, DBUS_TYPE_STRING, &arg, DBUS_TYPE_INVALID))
   {
     // Returns one of "yes", "no" or "challenge". If "challenge" is
     // returned the operation is available, but only after authorization.
-    result = (strcmp(s, "yes") == 0);
+    result = (strcmp(arg, "yes") == 0);
   }
-  dbus_free(s);
+  dbus_free(arg);
   return result;
 }
 
