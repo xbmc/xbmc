@@ -65,6 +65,7 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   // reset our playback timing variables
   m_eof = false;
 
+#ifndef __PLEX__
   // get correct cache size
   unsigned int filecache = g_guiSettings.GetInt("cacheaudio.internet");
   if ( file.IsHD() )
@@ -75,7 +76,6 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
     filecache = g_guiSettings.GetInt("cacheaudio.lan");
 
   // create our codec
-#ifndef __PLEX__
   m_codec=CodecFactory::CreateCodecDemux(file.GetPath(), file.GetMimeType(), filecache * 1024);
 #else
   int totalData = 384*1024;
