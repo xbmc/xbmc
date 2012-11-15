@@ -380,7 +380,7 @@ namespace XBMCAddon
     bool startServer(int iTyp, bool bStart, bool bWait = false);
 
     /**
-     * AudioSuspend() -- Suspend Audio engine.
+     * audioSuspend() -- Suspend Audio engine.
      * 
      * example:
      *   xbmc.AudioSuspend()
@@ -388,7 +388,7 @@ namespace XBMCAddon
     void audioSuspend();
 
     /**
-     * AudioResume() -- Resume Audio engine.
+     * audioResume() -- Resume Audio engine.
      * 
      * example:
      *   xbmc.AudioResume()
