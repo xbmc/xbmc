@@ -39,22 +39,6 @@
 using namespace std;
 using namespace XFILE;
 
-static bool is_udf_iso_path(const char* filename)
-{
-  bool bResult = false;
-
-  const char* ptr = strcasestr(filename, ".iso");
-  if(ptr)
-  {
-    ptr += strlen(".iso");
-    if(*ptr == '/' && strlen(++ptr) > 0)
-    {
-      bResult = true;
-    }
-  }
-  return bResult;
-}
-
 void DllLibbluray::file_close(BD_FILE_H *file)
 {
   if (file)
@@ -99,8 +83,9 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
     BD_FILE_H *file = new BD_FILE_H;
 
     CStdString strFilename(filename);
-
-    if(is_udf_iso_path(filename))
+    CStdString strExtension(URIUtils::GetExtension(filename));
+    if(strExtension == ".iso"
+    || strExtension == ".img")
     {
       CURL::Encode(strFilename);
       strFilename.Format("udf://%s", strFilename);
@@ -174,12 +159,6 @@ BD_DIR_H *DllLibbluray::dir_open(const char* dirname)
     SDirState *st = new SDirState();
 
     CStdString strDirname(dirname);
-    if(is_udf_iso_path(dirname))
-    {
-      CURL::Encode(strDirname);
-      strDirname.Format("udf://%s", strDirname);
-      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening udf dir %s...", strDirname.c_str());
-    }
 
     if(!CDirectory::GetDirectory(strDirname, st->list))
     {

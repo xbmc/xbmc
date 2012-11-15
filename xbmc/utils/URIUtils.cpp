@@ -231,7 +231,8 @@ bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
 {
   return prot.Equals("zip")
       || prot.Equals("rar")
-      || prot.Equals("bluray");
+      || prot.Equals("bluray")
+      || prot.Equals("udf");
 }
 
 bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
