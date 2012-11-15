@@ -327,7 +327,9 @@ void CDVDAudio::SetVolume(float volume)
 
 void CDVDAudio::SetDynamicRangeCompression(long drc)
 {
-
+  CSingleLock lock (m_critSection);
+  if (m_pAudioStream)
+    m_pAudioStream->SetAmplification(powf(10.0f, (float)drc / 2000.0f));
 }
 
 float CDVDAudio::GetCurrentAttenuation()
