@@ -19,6 +19,8 @@
  *
  */
 
+#include <algorithm>
+
 class CAELimiter
 {
   private:
@@ -33,7 +35,7 @@ class CAELimiter
 
     void SetAmplification(float amplify)
     {
-      m_amplify = amplify;
+      m_amplify = std::max(std::min(amplify, 1000.0f), 1.0f);
     }
 
     float GetAmplification()
