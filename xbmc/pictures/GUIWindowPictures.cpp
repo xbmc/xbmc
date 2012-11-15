@@ -354,7 +354,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   pSlideShow->Select(strPicture);
 
   if (startSlideShow)
-    pSlideShow->StartSlideShow(false);
+    pSlideShow->StartSlideShow();
   else 
   {
     CVariant param;
