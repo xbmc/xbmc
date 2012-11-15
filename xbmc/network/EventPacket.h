@@ -205,7 +205,7 @@ namespace EVENTPACKET
     /************************************************************************/
     /* Payload format                                                       */
     /* %d - button code                                                     */
-    /* %i - button modifiers - only codes 0x01 ("KB"), 0x200, 0x400         */
+    /* %i - button modifiers - used with flags 0x01 ("KB"), 0x200, 0x400    */
     /* %i - flags 0x01 => use button map/name instead of code               */
     /*            0x02 => btn down                                          */
     /*            0x04 => btn up                                            */
