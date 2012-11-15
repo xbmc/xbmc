@@ -95,21 +95,22 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
 
 void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
 {
-  CFileItemList groups;
   CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
   if (!pSpin)
     return;
 
+  std::vector<CPVRChannelGroupPtr> group;
+  std::vector<CPVRChannelGroupPtr>::const_iterator it;
+
   /* tv groups */
-  g_PVRChannelGroups->GetTV()->GetGroupList(&groups);
-  for (int iGroupPtr = 0; iGroupPtr < groups.Size(); iGroupPtr++)
-    pSpin->AddLabel(groups[iGroupPtr]->GetLabel(), atoi(groups[iGroupPtr]->GetPath()));
+  group = g_PVRChannelGroups->GetTV()->GetMembers();
+  for (it = group.begin(); it != group.end(); ++it)
+    pSpin->AddLabel((*it)->GroupName(), (*it)->GroupID());
 
   /* radio groups */
-  groups.ClearItems();
-  g_PVRChannelGroups->GetRadio()->GetGroupList(&groups);
-  for (int iGroupPtr = 0; iGroupPtr < groups.Size(); iGroupPtr++)
-    pSpin->AddLabel(groups[iGroupPtr]->GetLabel(), atoi(groups[iGroupPtr]->GetPath()));
+  group = g_PVRChannelGroups->GetRadio()->GetMembers();
+  for (it = group.begin(); it != group.end(); ++it)
+    pSpin->AddLabel((*it)->GroupName(), (*it)->GroupID());
 
   pSpin->SetValue(m_searchFilter->m_iChannelGroup);
 }
