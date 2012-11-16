@@ -41,6 +41,7 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_RECORDINGS, CONTROL_BTNRECORDINGS, CONTROL_LIST_RECORDINGS)
 {
   m_strSelectedPath = "pvr://recordings/";
+  m_thumbLoader.SetNumOfWorkers(1);
 }
 
 void CGUIWindowPVRRecordings::UnregisterObservers(void)
@@ -399,4 +400,30 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
   }
 
   return bReturn;
+}
+
+void CGUIWindowPVRRecordings::BeforeUpdate(const CStdString &strDirectory)
+{
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+}
+
+void CGUIWindowPVRRecordings::AfterUpdate(CFileItemList& items)
+{
+  if (!items.IsEmpty())
+  {
+    CFileItemList files;
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr pItem = items[i];
+      if (!pItem->m_bIsFolder)
+        files.Add(pItem);
+    }
+
+    if (!files.IsEmpty())
+    {
+      files.SetPath(items.GetPath());
+      m_thumbLoader.Load(files);
+    }
+  }
 }

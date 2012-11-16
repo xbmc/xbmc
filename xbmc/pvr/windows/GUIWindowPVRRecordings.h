@@ -21,6 +21,7 @@
  */
 
 #include "GUIWindowPVRCommon.h"
+#include "video/VideoThumbLoader.h"
 #include "utils/Observer.h"
 
 namespace PVR
@@ -46,6 +47,10 @@ namespace PVR
     void UnregisterObservers(void);
     void ResetObservers(void);
 
+  protected:
+    virtual void BeforeUpdate(const CStdString &strDirectory);
+    virtual void AfterUpdate(CFileItemList& items);
+
   private:
     bool OnClickButton(CGUIMessage &message);
     bool OnClickList(CGUIMessage &message);
@@ -57,5 +62,6 @@ namespace PVR
     bool OnContextButtonMarkWatched(const CFileItemPtr &item, CONTEXT_BUTTON button);
 
     CStdString m_strSelectedPath;
+    CVideoThumbLoader m_thumbLoader;
   };
 }
