@@ -617,7 +617,7 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 
   // remove "filter" option
   if (m_dbUrl->HasOption("filter"))
-    m_dbUrl->AddOption("filter", "");
+    m_dbUrl->RemoveOption("filter");
 
   if (video)
     m_mediaType = ((CVideoDbUrl*)m_dbUrl)->GetItemType();

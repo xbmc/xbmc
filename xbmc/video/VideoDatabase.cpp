@@ -9327,7 +9327,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     }
     // remove the filter if it doesn't match the item type
     else
-      videoUrl.AddOption("filter", "");
+      videoUrl.RemoveOption("filter");
   }
 
   return true;
