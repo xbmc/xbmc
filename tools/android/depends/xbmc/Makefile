@@ -20,7 +20,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/ ;\
   --enable-neon --enable-gles --enable-debug \
   --disable-sdl --disable-x11 --disable-xrandr \
   --disable-optical-drive --disable-joystick \
-  --enable-shared-lib --disable-alsa
+  --enable-shared-lib --disable-alsa --enable-player=amlplayer
 
 
 all: $(SOURCE)/libxbmc.so
