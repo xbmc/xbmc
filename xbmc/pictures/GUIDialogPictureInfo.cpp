@@ -48,8 +48,8 @@ void CGUIDialogPictureInfo::SetPicture(CFileItem *item)
 
 void CGUIDialogPictureInfo::OnInitWindow()
 {
-  CGUIDialog::OnInitWindow();
   UpdatePictureInfo();
+  CGUIDialog::OnInitWindow();
 }
 
 bool CGUIDialogPictureInfo::OnAction(const CAction& action)
