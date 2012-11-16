@@ -22,6 +22,7 @@
 
 #include "GUIWindowPVRCommon.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoDatabase.h"
 #include "utils/Observer.h"
 
 namespace PVR
@@ -63,5 +64,6 @@ namespace PVR
 
     CStdString m_strSelectedPath;
     CVideoThumbLoader m_thumbLoader;
+    CVideoDatabase m_database;
   };
 }
