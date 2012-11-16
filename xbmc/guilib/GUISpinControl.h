@@ -67,9 +67,12 @@ public:
   void SetValue(int iValue);
   void SetValueFromLabel(const CStdString &label);
   void SetFloatValue(float fValue);
+  void SetStringValue(const std::string& strValue);
   int GetValue() const;
   float GetFloatValue() const;
+  std::string GetStringValue() const;
   void AddLabel(const std::string& strLabel, int iValue);
+  void AddLabel(const std::string& strLabel, const std::string& strValue);
   const std::string GetLabel() const;
   void SetReverse(bool bOnOff);
   int GetMaximum() const;
@@ -117,6 +120,7 @@ protected:
   float m_fInterval;
   std::vector<std::string> m_vecLabels;
   std::vector<int> m_vecValues;
+  std::vector<std::string> m_vecStrValues;
   CGUITexture m_imgspinUp;
   CGUITexture m_imgspinDown;
   CGUITexture m_imgspinUpFocus;
