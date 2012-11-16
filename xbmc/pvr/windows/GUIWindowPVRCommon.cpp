@@ -190,6 +190,7 @@ bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
 void CGUIWindowPVRCommon::OnWindowUnload(void)
 {
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
+  m_history = m_parent->m_history;
 }
 
 bool CGUIWindowPVRCommon::OnAction(const CAction &action)
