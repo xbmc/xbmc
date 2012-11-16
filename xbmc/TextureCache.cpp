@@ -151,15 +151,7 @@ CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS
       if (g_advancedSettings.m_useDDSFanart)
         AddJob(new CTextureDDSJob(path));
     }
-#if 0
-    /* PLEX */
-    // We're not going to give up just yet for PMS-sourced images. This will result in the texture
-    // cache downloading the image, which seems just as good as the background loader.
-    //
-    if (!PlexUtils::IsPlexMediaServer(url))
-      return path;
-    /* END PLEX */
-#endif
+    return path;
   }
   return "";
 }
