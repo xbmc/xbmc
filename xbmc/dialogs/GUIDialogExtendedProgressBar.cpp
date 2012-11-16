@@ -88,6 +88,7 @@ bool CGUIDialogExtendedProgressBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_iLastSwitchTime = XbmcThreads::SystemClockMillis();
+      m_iCurrentItem = 0;
       CGUIDialog::OnMessage(message);
 
       UpdateState(0);
