@@ -274,6 +274,7 @@
 		7C779E3F104A57E500F444C4 /* WinSystemOSXGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E2D104A57E500F444C4 /* WinSystemOSXGL.mm */; };
 		7C779E54104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */; };
 		7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
+		7C7CEAF1165629530059C9EB /* AELimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7CEAEF165629530059C9EB /* AELimiter.cpp */; };
 		7C84A59E12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */; };
 		7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */; };
 		7C89674613C03B22003631FE /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89674313C03B22003631FE /* InfoBool.cpp */; };
@@ -1614,6 +1615,8 @@
 		7C779E51104A58F900F444C4 /* GUIWindowTestPatternGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPatternGL.h; sourceTree = "<group>"; };
 		7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mysqldataset.cpp; sourceTree = "<group>"; };
 		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
+		7C7CEAEF165629530059C9EB /* AELimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AELimiter.cpp; sourceTree = "<group>"; };
+		7C7CEAF0165629530059C9EB /* AELimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AELimiter.h; sourceTree = "<group>"; };
 		7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SourcesDirectory.cpp; path = xbmc/filesystem/SourcesDirectory.cpp; sourceTree = SOURCE_ROOT; };
 		7C84A59D12FA3C1600CD1714 /* SourcesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SourcesDirectory.h; path = xbmc/filesystem/SourcesDirectory.h; sourceTree = SOURCE_ROOT; };
 		7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
@@ -4642,6 +4645,8 @@
 				DFB65FAA15373AE7006B8FF1 /* AEConvert.h */,
 				7C0B98A1154B79C30065A238 /* AEDeviceInfo.cpp */,
 				7C0B98A2154B79C30065A238 /* AEDeviceInfo.h */,
+				7C7CEAEF165629530059C9EB /* AELimiter.cpp */,
+				7C7CEAF0165629530059C9EB /* AELimiter.h */,
 				DFB65FAB15373AE7006B8FF1 /* AEPackIEC61937.cpp */,
 				DFB65FAC15373AE7006B8FF1 /* AEPackIEC61937.h */,
 				DFB65FAD15373AE7006B8FF1 /* AERemap.cpp */,
@@ -7700,6 +7705,7 @@
 				DF402A66164461B9001C56B8 /* XBPython.cpp in Sources */,
 				DF402A67164461B9001C56B8 /* XBPyThread.cpp in Sources */,
 				F5EDC48C1651A6F900B852D8 /* GroupUtils.cpp in Sources */,
+				7C7CEAF1165629530059C9EB /* AELimiter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

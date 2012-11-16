@@ -40,6 +40,7 @@
 		7C4458DB161E209100A905F6 /* Screenshot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C4458D9161E209100A905F6 /* Screenshot.cpp */; };
 		7C6EB586155E3EC80080368A /* ImageFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB584155E3EC80080368A /* ImageFile.cpp */; };
 		7C6EB708155F3B160080368A /* HTTPImageHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C6EB706155F3B160080368A /* HTTPImageHandler.cpp */; };
+		7C7CEB4B165629BF0059C9EB /* AELimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7CEB49165629BF0059C9EB /* AELimiter.cpp */; };
 		7C89627013B702F3003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89626E13B702F3003631FE /* GUIWindowScreensaverDim.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CC30DF2162925BE003E7579 /* MusicThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC30DF0162925BE003E7579 /* MusicThumbLoader.cpp */; };
@@ -1100,6 +1101,8 @@
 		7C6EB585155E3EC80080368A /* ImageFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFile.h; sourceTree = "<group>"; };
 		7C6EB706155F3B160080368A /* HTTPImageHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPImageHandler.cpp; sourceTree = "<group>"; };
 		7C6EB707155F3B160080368A /* HTTPImageHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPImageHandler.h; sourceTree = "<group>"; };
+		7C7CEB49165629BF0059C9EB /* AELimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AELimiter.cpp; sourceTree = "<group>"; };
+		7C7CEB4A165629BF0059C9EB /* AELimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AELimiter.h; sourceTree = "<group>"; };
 		7C89626E13B702F3003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
 		7C89626F13B702F3003631FE /* GUIWindowScreensaverDim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowScreensaverDim.h; sourceTree = "<group>"; };
 		7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
@@ -3648,6 +3651,8 @@
 				DFB662D115376810006B8FF1 /* AEConvert.h */,
 				7C0B9908154B80200065A238 /* AEDeviceInfo.cpp */,
 				7C0B9909154B80200065A238 /* AEDeviceInfo.h */,
+				7C7CEB49165629BF0059C9EB /* AELimiter.cpp */,
+				7C7CEB4A165629BF0059C9EB /* AELimiter.h */,
 				DFB662D215376810006B8FF1 /* AEPackIEC61937.cpp */,
 				DFB662D315376810006B8FF1 /* AEPackIEC61937.h */,
 				DFB662D415376810006B8FF1 /* AERemap.cpp */,
@@ -7643,6 +7648,7 @@
 				DF402A96164462FC001C56B8 /* XBPython.cpp in Sources */,
 				DF402A97164462FC001C56B8 /* XBPyThread.cpp in Sources */,
 				F5EDC4A91651A75700B852D8 /* GroupUtils.cpp in Sources */,
+				7C7CEB4B165629BF0059C9EB /* AELimiter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
