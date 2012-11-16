@@ -66,9 +66,9 @@ bool CGUIDialogPeripheralManager::OnAction(const CAction &action)
 
 void CGUIDialogPeripheralManager::OnInitWindow()
 {
-  CGUIWindow::OnInitWindow();
   m_iSelected = 0;
   Update();
+  CGUIDialog::OnInitWindow();
 }
 
 bool CGUIDialogPeripheralManager::OnClickList(CGUIMessage &message)
