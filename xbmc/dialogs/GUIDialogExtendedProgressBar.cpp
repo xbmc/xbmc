@@ -129,7 +129,7 @@ void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
 
     if (!m_handles.size())
     {
-      Close(true, 0, true, false);
+      Close(false, 0, true, false);
       return;
     }
 
