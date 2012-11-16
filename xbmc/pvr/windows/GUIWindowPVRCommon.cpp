@@ -869,3 +869,16 @@ bool CGUIWindowPVRCommon::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON bu
 
   return bReturn;
 }
+
+void CGUIWindowPVRCommon::ShowBusyItem(void)
+{
+  // FIXME: display a temporary entry so that the list can keep its focus
+  // busy_items has to be static, because m_viewControl holds the pointer to it
+  static CFileItemList busy_items;
+  if (busy_items.IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1040)));
+    busy_items.AddFront(pItem, 0);
+  }
+  m_parent->m_viewControl.SetItems(busy_items);
+}
