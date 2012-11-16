@@ -1697,6 +1697,49 @@ class PlexMediaPhoto : public PlexMediaNode
   }
 };
 
+class PlexServerNode : public PlexMediaNode
+{
+  virtual void DoBuildFileItem(CFileItemPtr &pItem, const string &parentPath, TiXmlElement &el)
+  {
+    pItem->m_bIsFolder = false;
+    pItem->SetLabel(GetLabel(el));
+
+    // Token
+    const char* token = el.Attribute("accessToken");
+    if (token)
+      pItem->SetProperty("accessToken", token);
+
+    const char* address = el.Attribute("address");
+    if (address)
+      pItem->SetProperty("address", address);
+
+    const char* port = el.Attribute("port");
+    if (port)
+      pItem->SetProperty("port", atoi(port));
+
+    const char* version = el.Attribute("version");
+    if (version)
+      pItem->SetProperty("version", version);
+
+    const char* localaddresses = el.Attribute("localAddresses");
+    if (localaddresses)
+      pItem->SetProperty("localAddresses", localaddresses);
+
+    const char* updatedAt = el.Attribute("updatedAt");
+    if (updatedAt)
+      pItem->SetProperty("updatedAt", atoi(updatedAt));
+
+    const char* owner = el.Attribute("sourceTitle");
+    if (owner)
+      pItem->SetProperty("owner", owner);
+
+    const char* owned = el.Attribute("owned");
+    if (owned)
+      pItem->SetProperty("owned", bool(atoi(owned)));
+  }
+
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 PlexMediaNode* PlexMediaNode::Create(TiXmlElement* element)
 {
@@ -1731,6 +1774,8 @@ PlexMediaNode* PlexMediaNode::Create(TiXmlElement* element)
     return new PlexMediaVideo();
   else if (name == "Provider")
     return new PlexMediaProvider();
+  else if (name == "Server")
+    return new PlexServerNode();
   else
     printf("ERROR: Unknown class [%s]\n", name.c_str());
 
