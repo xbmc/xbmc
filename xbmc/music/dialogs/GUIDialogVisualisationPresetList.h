@@ -38,6 +38,7 @@ public:
   virtual void FrameMove();
 
 protected:
+  virtual void OnInitWindow();
   void SetVisualisation(ADDON::CVisualisation *addon);
   void Update();
   ADDON::CVisualisation* m_viz; //TODO get rid
