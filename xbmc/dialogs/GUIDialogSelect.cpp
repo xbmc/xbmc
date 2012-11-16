@@ -330,8 +330,8 @@ void CGUIDialogSelect::OnInitWindow()
   SetupButton();
   CGUIDialogBoxBase::OnInitWindow();
 
-  if (m_iSelected >= 0)
-    m_viewControl.SetSelectedItem(m_iSelected);
+  // if m_iSelected < 0 focus first item
+  m_viewControl.SetSelectedItem(std::max(m_iSelected, 0));
 }
 
 void CGUIDialogSelect::OnWindowUnload()
