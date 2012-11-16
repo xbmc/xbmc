@@ -901,7 +901,6 @@ void CAMLPlayer::SetAudioStream(int SetAudioStream)
 void CAMLPlayer::SetAVDelay(float fValue)
 {
   CLog::Log(LOGDEBUG, "CAMLPlayer::SetAVDelay (%f)", fValue);
-#if !defined(TARGET_ANDROID)
   m_audio_delay = fValue * 1000.0;
 
   if (m_audio_streams.size() && m_dll->check_pid_valid(m_pid))
@@ -909,7 +908,6 @@ void CAMLPlayer::SetAVDelay(float fValue)
     CSingleLock lock(m_aml_csection);
     m_dll->audio_set_delay(m_pid, m_audio_delay);
   }
-#endif
 }
 
 float CAMLPlayer::GetAVDelay()
@@ -1664,48 +1662,43 @@ void CAMLPlayer::Process()
   if (m_log_level > 5)
     CLog::Log(LOGDEBUG, "CAMLPlayer::Process exit");
 }
-/*
-void CAMLPlayer::GetRenderFeatures(Features* renderFeatures)
+
+void CAMLPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
 {
-  renderFeatures->push_back(RENDERFEATURE_ZOOM);
-  renderFeatures->push_back(RENDERFEATURE_CONTRAST);
-  renderFeatures->push_back(RENDERFEATURE_BRIGHTNESS);
-  renderFeatures->push_back(RENDERFEATURE_STRETCH);
-  return;
+  renderFeatures.push_back(RENDERFEATURE_ZOOM);
+  renderFeatures.push_back(RENDERFEATURE_CONTRAST);
+  renderFeatures.push_back(RENDERFEATURE_BRIGHTNESS);
+  renderFeatures.push_back(RENDERFEATURE_STRETCH);
 }
 
-void CAMLPlayer::GetDeinterlaceMethods(Features* deinterlaceMethods)
+void CAMLPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
 {
-  deinterlaceMethods->push_back(VS_INTERLACEMETHOD_DEINTERLACE);
-  return;
+  deinterlaceMethods.push_back(VS_INTERLACEMETHOD_DEINTERLACE);
 }
 
-void CAMLPlayer::GetDeinterlaceModes(Features* deinterlaceModes)
+void CAMLPlayer::GetDeinterlaceModes(std::vector<int> &deinterlaceModes)
 {
-  deinterlaceModes->push_back(VS_DEINTERLACEMODE_AUTO);
-  return;
+  deinterlaceModes.push_back(VS_DEINTERLACEMODE_AUTO);
 }
 
-void CAMLPlayer::GetScalingMethods(Features* scalingMethods)
+void CAMLPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
 {
-  return;
 }
 
-void CAMLPlayer::GetAudioCapabilities(Features* audioCaps)
+void CAMLPlayer::GetAudioCapabilities(std::vector<int> &audioCaps)
 {
-  audioCaps->push_back(IPC_AUD_OFFSET);
-  audioCaps->push_back(IPC_AUD_SELECT_STREAM);
-  return;
+  audioCaps.push_back(IPC_AUD_SELECT_STREAM);
+  audioCaps.push_back(IPC_AUD_SELECT_OUTPUT);
+  audioCaps.push_back(IPC_AUD_OFFSET);
 }
 
-void CAMLPlayer::GetSubtitleCapabilities(Features* subCaps)
+void CAMLPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
 {
-  subCaps->push_back(IPC_SUBS_EXTERNAL);
-  subCaps->push_back(IPC_SUBS_OFFSET);
-  subCaps->push_back(IPC_SUBS_SELECT);
-  return;
+  subCaps.push_back(IPC_SUBS_EXTERNAL);
+  subCaps.push_back(IPC_SUBS_SELECT);
+  subCaps.push_back(IPC_SUBS_OFFSET);
 }
-*/
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -2367,43 +2360,5 @@ void CAMLPlayer::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, con
 {
   CAMLPlayer *player = (CAMLPlayer*)ctx;
   player->SetVideoRect(SrcRect, DestRect);
-}
-
-void CAMLPlayer::GetRenderFeatures(std::vector<int> &renderFeatures)
-{
-  renderFeatures.push_back(RENDERFEATURE_ZOOM);
-  renderFeatures.push_back(RENDERFEATURE_CONTRAST);
-  renderFeatures.push_back(RENDERFEATURE_BRIGHTNESS);
-  renderFeatures.push_back(RENDERFEATURE_STRETCH);
-}
-
-void CAMLPlayer::GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods)
-{
-  deinterlaceMethods.push_back(VS_INTERLACEMETHOD_DEINTERLACE);
-}
-
-void CAMLPlayer::GetDeinterlaceModes(std::vector<int> &deinterlaceModes)
-{
-  deinterlaceModes.push_back(VS_DEINTERLACEMODE_AUTO);
-}
-
-void CAMLPlayer::GetScalingMethods(std::vector<int> &scalingMethods)
-{
-}
-
-void CAMLPlayer::GetAudioCapabilities(std::vector<int> &audioCaps)
-{
-  audioCaps.push_back(IPC_AUD_SELECT_STREAM);
-  audioCaps.push_back(IPC_AUD_SELECT_OUTPUT);
-#if !defined(TARGET_ANDROID)
-  audioCaps.push_back(IPC_AUD_OFFSET);
-#endif
-}
-
-void CAMLPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
-{
-  subCaps.push_back(IPC_SUBS_EXTERNAL);
-  subCaps.push_back(IPC_SUBS_SELECT);
-  subCaps.push_back(IPC_SUBS_OFFSET);
 }
 
