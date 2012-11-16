@@ -227,7 +227,6 @@ void CGUIWindowSlideShow::Reset()
   m_bPlayingVideo = false;
   m_bErrorMessage = false;
   m_bReloadImage = false;
-  m_bScreensaver = false;
   m_Image[0].UnLoad();
   m_Image[0].Close();
   m_Image[1].UnLoad();
@@ -373,11 +372,10 @@ bool CGUIWindowSlideShow::InSlideShow() const
   return m_bSlideShow;
 }
 
-void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
+void CGUIWindowSlideShow::StartSlideShow()
 {
   m_bSlideShow = true;
   m_iDirection = 1;
-  m_bScreensaver = screensaver;
   if (m_slides->Size())
     AnnouncePlayerPlay(m_slides->Get(m_iCurrentSlide));
 }
@@ -679,12 +677,6 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
 
 bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
-  if (m_bScreensaver)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-
   switch (action.GetID())
   {
   case ACTION_SHOW_CODEC:

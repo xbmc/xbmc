@@ -71,7 +71,6 @@ namespace MUSIC_INFO
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
-#define TMSG_SLIDESHOW_SCREENSAVER  222
 
 #define TMSG_SHUTDOWN             300
 #define TMSG_POWERDOWN            301
@@ -181,7 +180,7 @@ public:
 
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(std::string filename);
-  void PictureSlideShow(std::string pathname, bool bScreensaver = false, bool addTBN = false);
+  void PictureSlideShow(std::string pathname, bool addTBN = false);
   void SetGUILanguage(const std::string &strLanguage);
   void Shutdown();
   void Powerdown();
