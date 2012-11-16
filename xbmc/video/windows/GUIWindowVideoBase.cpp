@@ -2296,6 +2296,7 @@ void CGUIWindowVideoBase::OnAssignContent(const CStdString &path)
 void CGUIWindowVideoBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
+#ifndef __PLEX__
   if (g_settings.m_videoNeedsUpdate == 63 && !g_application.IsVideoScanning() &&
       g_infoManager.GetLibraryBool(LIBRARY_HAS_VIDEO))
   {
@@ -2307,4 +2308,5 @@ void CGUIWindowVideoBase::OnInitWindow()
       g_settings.Save();
     }
   }
+#endif
 }
