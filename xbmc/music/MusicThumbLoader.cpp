@@ -45,6 +45,12 @@ void CMusicThumbLoader::Initialize()
   m_albumArt.clear();
 }
 
+void CMusicThumbLoader::Deinitialize()
+{
+  m_database->Close();
+  m_albumArt.clear();
+}
+
 void CMusicThumbLoader::OnLoaderStart()
 {
   Initialize();
@@ -52,8 +58,7 @@ void CMusicThumbLoader::OnLoaderStart()
 
 void CMusicThumbLoader::OnLoaderFinish()
 {
-  m_database->Close();
-  m_albumArt.clear();
+  Deinitialize();
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)

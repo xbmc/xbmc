@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "Artist.h"
 #include "Album.h"
+#include "MusicThumbLoader.h"
 
 using namespace std;
 using namespace XFILE;
@@ -43,12 +44,15 @@ using namespace MUSIC_INFO;
 CMusicInfoLoader::CMusicInfoLoader() : CBackgroundInfoLoader(1)
 {
   m_mapFileItems = new CFileItemList;
+
+  m_thumbLoader = new CMusicThumbLoader();
 }
 
 CMusicInfoLoader::~CMusicInfoLoader()
 {
   StopThread();
   delete m_mapFileItems;
+  delete m_thumbLoader;
 }
 
 void CMusicInfoLoader::OnLoaderStart()
@@ -71,6 +75,9 @@ void CMusicInfoLoader::OnLoaderStart()
     m_pProgressCallback->SetProgressMax(m_pVecItems->GetFileCount());
 
   m_musicDatabase.Open();
+
+  if (m_thumbLoader)
+    m_thumbLoader->Initialize();
 }
 
 bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
@@ -123,6 +130,10 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
   if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
     return false;
+
+  // Get thumb for item
+  if (m_thumbLoader)
+    m_thumbLoader->LoadItem(pItem);
 
   if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
     return true;
@@ -228,6 +239,9 @@ void CMusicInfoLoader::OnLoaderFinish()
     m_pVecItems->Save();
 
   m_musicDatabase.Close();
+
+  if (m_thumbLoader)
+    m_thumbLoader->Deinitialize();
 }
 
 void CMusicInfoLoader::UseCacheOnHD(const CStdString& strFileName)
