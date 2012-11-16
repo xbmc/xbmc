@@ -151,14 +151,6 @@ public:
   virtual void SetAmplification(float amplify) = 0;
 
   /**
-   * Runs the limiter over one frame
-   * @param pointer to the frame
-   * @param number of channels
-   * @return amplification factor that should be applied
-   */
-  virtual float RunLimiter(float* frame, int channels) = 0;
-
-  /**
    * Returns the size of one audio frame in bytes (channelCount * resolution)
    * @return The size in bytes of one frame
   */
