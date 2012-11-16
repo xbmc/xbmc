@@ -107,7 +107,7 @@ bool CMusicThumbLoader::FillThumb(CFileItem &item)
   CStdString thumb = GetCachedImage(item, "thumb");
   if (thumb.IsEmpty())
   {
-    thumb = item.GetUserMusicThumb();
+    thumb = item.GetUserMusicThumb(false, true);
     if (!thumb.IsEmpty())
       SetCachedImage(item, "thumb", thumb);
   }

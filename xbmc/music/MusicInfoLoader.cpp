@@ -131,22 +131,17 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
     return false;
 
-  // Get thumb for item
-  if (m_thumbLoader)
-    m_thumbLoader->LoadItem(pItem);
-
-  if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
-    return true;
-
+  if (!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded())
+  {
   // first check the cached item
   CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
   if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
   { // Query map if we previously cached the file on HD
     *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
     pItem->SetArt("thumb", mapItem->GetArt("thumb"));
-    return true;
   }
-
+    else
+    {
   CStdString strPath;
   URIUtils::GetDirectory(pItem->GetPath(), strPath);
   URIUtils::AddSlashAtEnd(strPath);
@@ -188,6 +183,12 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   }
 
   m_strPrevPath = strPath;
+    }
+  }
+
+  // Get thumb for item
+  m_thumbLoader->LoadItem(pItem);
+
   return true;
 }
 
