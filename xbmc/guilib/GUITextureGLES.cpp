@@ -75,8 +75,6 @@ void CGUITextureGLES::Begin(color_t color)
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
     glEnableVertexAttribArray(tex1Loc);
-
-    hasAlpha = true;
   }
   else
   {
