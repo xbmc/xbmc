@@ -75,9 +75,6 @@ class MyPlexManager
             g_guiSettings.SetString("myplex.token", strToken);
             g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19011));
             
-            // Kick off a scan.
-            scanAsync();
-            
             return true;
           }
         }
