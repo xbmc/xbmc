@@ -75,18 +75,16 @@ void CGUITextureGLES::Begin(color_t color)
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
     glEnableVertexAttribArray(tex1Loc);
-
-    hasAlpha = true;
   }
   else
   {
-    if ( hasAlpha )
+    if (m_col[0][0] == 255 && m_col[0][1] == 255 && m_col[0][2] == 255 && m_col[0][3] == 255)
     {
-      g_Windowing.EnableGUIShader(SM_TEXTURE);
+      g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
     }
     else
     {
-      g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
+      g_Windowing.EnableGUIShader(SM_TEXTURE);
     }
   }
 
