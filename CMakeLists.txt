@@ -127,6 +127,8 @@ endif()
 # Now check for available functions
 include(CMakeConfig.txt)
 
+include_directories(${root}/xbmc)
+
 # Platfrom includes
 if(UNIX)
   include_directories(${root}/xbmc/linux)
@@ -153,7 +155,6 @@ endif()
 # carry over
 add_subdirectory(lib)
 
-
 # Build the texturepacker
 add_subdirectory(tools/TexturePacker)
 
@@ -164,7 +165,6 @@ include_directories(
 	${plexdir}/Utility
 	${plexdir}/Owned
 
-	${root}/xbmc
 	${root}/xbmc/utils
 	${root}
 	${root}/xbmc/cores/dvdplayer
