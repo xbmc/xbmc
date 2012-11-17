@@ -783,11 +783,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI);
       }
     }
-    else if (strSetting.Equals("musicplayer.crossfade"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(true);
-    }
     else if (strSetting.Equals("musicplayer.crossfadealbumtracks"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
