@@ -1041,7 +1041,7 @@ void CSoftAE::Run()
         delete m_sink;
         m_sink = NULL;
       }
-      if (!m_playingStreams.empty() || !m_playing_sounds.empty() || m_sounds.empty())
+      if (!m_playingStreams.empty() || !m_playing_sounds.empty() || !m_sounds.empty())
         m_softSuspend = false;
       m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
     }
