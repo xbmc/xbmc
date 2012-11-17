@@ -26,8 +26,9 @@
 #include "LangInfo.h"
 #include "utils/log.h"
 #include "guilib/Geometry.h"
+#include "utils/URIUtils.h"
 #if defined(TARGET_DARWIN)
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 #endif
 
 #define HOLDMODE_NONE 0
@@ -63,7 +64,6 @@ CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
 
 bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content)
 {
-  char* strDVDFile;
   m_icurrentGroupId = 0;
   if (!CDVDInputStream::Open(strFile, "video/x-dvd-mpeg"))
     return false;
@@ -78,38 +78,29 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
   // libdvdnav is still able to play without, so strip them.
 
-  // stripping only works 100% correctly for absolute paths.
-  // relative paths are not expected here and wouldn't make sense, so it's safe to assume we'll have
-  // at least one path separator character.
-
-  strDVDFile = strdup(strFile);
-  int len = strlen(strDVDFile);
-
-  if(len >= 13  // +1 on purpose, to include a separator char before the searched string
-  && strncasecmp(strDVDFile + len - 12, "VIDEO_TS.IFO", 12) == 0)
-    strDVDFile[len - 13] = '\0';
-
-  len = strlen(strDVDFile);
-  if(len >= 9  // +1 on purpose, to include a separator char before the searched string
-  && strncasecmp(strDVDFile + len - 8, "VIDEO_TS", 8) == 0)
-    strDVDFile[len - 9] = '\0';
+  CStdString path = strFile;
+  if(URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
+    path = URIUtils::GetParentPath(path);
+  URIUtils::RemoveSlashAtEnd(path);
+  if(URIUtils::GetFileName(path) == "VIDEO_TS")
+    path = URIUtils::GetParentPath(path);
+  URIUtils::RemoveSlashAtEnd(path);
 
 #if defined(TARGET_DARWIN_OSX)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
-  strDVDFile = Cocoa_MountPoint2DeviceName(strDVDFile);
+  char* strDVDFile = Cocoa_MountPoint2DeviceName(strdup(path.c_str()));
+  path = strDVDFile;
+  free(strDVDFile);
 #endif
 
   // open up the DVD device
-  if (m_dll.dvdnav_open(&m_dvdnav, strDVDFile) != DVDNAV_STATUS_OK)
+  if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
   {
-    free(strDVDFile);
-
     CLog::Log(LOGERROR,"Error on dvdnav_open\n");
     Close();
     return false;
   }
-  free(strDVDFile);
 
   int region = g_guiSettings.GetInt("dvds.playerregion");
   int mask = 0;

@@ -22,7 +22,6 @@
 
 #include "CoreAudioAE.h"
 
-#include "MathUtils.h"
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -33,6 +32,7 @@
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/MathUtils.h"
 
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416

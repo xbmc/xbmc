@@ -175,6 +175,22 @@
       <axis limit="0" id="6">AnalogFastForward</axis>
     </joystick>
   </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (XBOX 360 For Windows)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="11">ChannelUp</button>
+      <button id="12">ChannelDown</button>
+      <button id="13">PreviousChannelGroup</button>
+      <button id="14">NextChannelGroup</button>
+    </joystick>
+  </FullscreenLiveTV>
   <FullscreenInfo>
     <joystick name="Xbox 360 Wireless Receiver">
       <altname>Controller (Gamepad for Xbox 360)</altname>

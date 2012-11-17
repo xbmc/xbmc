@@ -87,7 +87,7 @@ DLLEXPORT CAddonGUIWindow* GUI_Window_create(void *hdl, void *cb, const char *xm
   return new CAddonGUIWindow(hdl, cb, xmlFilename, defaultSkin, forceFallback, asDialog);
 }
 
-DLLEXPORT void GUI_Window_destroy(void *hdl, void* cb, CAddonGUIWindow* p)
+DLLEXPORT void GUI_Window_destroy(CAddonGUIWindow* p)
 {
   delete p;
 }

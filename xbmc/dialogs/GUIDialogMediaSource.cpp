@@ -366,7 +366,6 @@ void CGUIDialogMediaSource::OnPath(int item)
 
   CStdString path(m_paths->Get(item)->GetPath());
   CGUIKeyboardFactory::ShowAndGetInput(path, g_localizeStrings.Get(1021), false);
-  URIUtils::AddSlashAtEnd(path);
   m_paths->Get(item)->SetPath(path);
 
   if (!m_bNameChanged || m_name.IsEmpty())

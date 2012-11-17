@@ -72,6 +72,7 @@
 #include "utils/EdenVideoArtUpdater.h"
 #include "GUIInfoManager.h"
 #include "utils/GroupUtils.h"
+#include "filesystem/File.h"
 
 /* PLEX */
 #include "BackgroundMusicPlayer.h"
@@ -1128,6 +1129,22 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
     }
   }
 
+  CStdString ext = URIUtils::GetExtension(item->GetPath());
+  ext.ToLower();
+  if (ext == ".iso" ||  ext == ".img")
+  {
+    CURL url2("udf://");
+    url2.SetHostName(item->GetPath());
+    url2.SetFileName("BDMV/index.bdmv");
+    if (CFile::Exists(url2.Get()))
+    {
+      url2.SetFileName("");
+
+      CURL url("bluray://");
+      url.SetHostName(url2.Get());
+      return ShowPlaySelection(item, url.Get());
+    }
+  }
   return true;
 }
 
@@ -1689,7 +1706,8 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
+  if ((g_guiSettings.GetBool("filelists.allowfiledeletion") ||
+       m_vecItems->GetPath().Equals("special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
     CFileUtils::DeleteItem(item);
 }
@@ -1977,8 +1995,9 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
   CQueryParams params;
   CVideoDatabaseDirectory dir;
   dir.GetQueryParams(items.GetPath(), params);
+  VIDEODATABASEDIRECTORY::NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
   if (items.GetContent().Equals("movies") && params.GetSetId() <= 0 &&
-      CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath()) != NODE_TYPE_RECENTLY_ADDED_MOVIES &&
+      nodeType == NODE_TYPE_TITLE_MOVIES &&
       g_guiSettings.GetBool("videolibrary.groupmoviesets"))
   {
     CFileItemList groupedItems;

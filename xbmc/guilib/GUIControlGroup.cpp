@@ -645,6 +645,7 @@ void CGUIControlGroup::ClearAll()
     CGUIControl *control = *it;
     delete control;
   }
+  m_focusedControl = 0;
   m_children.clear();
   m_lookup.clear();
   SetInvalid();

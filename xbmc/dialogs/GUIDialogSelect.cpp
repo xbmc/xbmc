@@ -35,17 +35,16 @@ CGUIDialogSelect::CGUIDialogSelect(void)
   m_bButtonEnabled = false;
   m_buttonString = -1;
   m_useDetails = false;
-  m_vecListInternal = new CFileItemList;
+  m_vecList = new CFileItemList;
   m_selectedItems = new CFileItemList;
   m_multiSelection = false;
-  m_vecList = m_vecListInternal;
   m_iSelected = -1;
   m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogSelect::~CGUIDialogSelect(void)
 {
-  delete m_vecListInternal;
+  delete m_vecList;
   delete m_selectedItems;
 }
 
@@ -76,8 +75,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
         }
       }
 
-      m_vecListInternal->Clear();
-      m_vecList = m_vecListInternal;
+      m_vecList->Clear();
 
       m_buttonString = -1;
       SET_CONTROL_LABEL(CONTROL_BUTTON, "");
@@ -158,15 +156,14 @@ void CGUIDialogSelect::Reset()
   m_useDetails = false;
   m_multiSelection = false;
   m_iSelected = -1;
-  m_vecListInternal->Clear();
+  m_vecList->Clear();
   m_selectedItems->Clear();
-  m_vecList = m_vecListInternal;
 }
 
 void CGUIDialogSelect::Add(const CStdString& strLabel)
 {
   CFileItemPtr pItem(new CFileItem(strLabel));
-  m_vecListInternal->Add(pItem);
+  m_vecList->Add(pItem);
 }
 
 void CGUIDialogSelect::Add(const CFileItemList& items)
@@ -181,12 +178,15 @@ void CGUIDialogSelect::Add(const CFileItemList& items)
 void CGUIDialogSelect::Add(const CFileItem* pItem)
 {
   CFileItemPtr item(new CFileItem(*pItem));
-  m_vecListInternal->Add(item);
+  m_vecList->Add(item);
 }
 
 void CGUIDialogSelect::SetItems(CFileItemList* pList)
 {
-  m_vecList = pList;
+  // need to make internal copy of list to be sure dialog is owner of it
+  m_vecList->Clear();
+  if (pList)
+    m_vecList->Copy(*pList);
 }
 
 int CGUIDialogSelect::GetSelectedLabel() const
@@ -330,8 +330,8 @@ void CGUIDialogSelect::OnInitWindow()
   SetupButton();
   CGUIDialogBoxBase::OnInitWindow();
 
-  if (m_iSelected >= 0)
-    m_viewControl.SetSelectedItem(m_iSelected);
+  // if m_iSelected < 0 focus first item
+  m_viewControl.SetSelectedItem(std::max(m_iSelected, 0));
 }
 
 void CGUIDialogSelect::OnWindowUnload()

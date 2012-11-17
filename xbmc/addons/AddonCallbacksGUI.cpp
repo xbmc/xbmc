@@ -1523,7 +1523,7 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 
     while (m_bRunning && !g_application.m_bStop)
     {
-      g_windowManager.Process(CTimeUtils::GetFrameTime());
+      g_windowManager.ProcessRenderLoop();
     }
   }
   else // hide

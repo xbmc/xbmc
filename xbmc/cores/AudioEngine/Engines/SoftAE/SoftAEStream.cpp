@@ -198,6 +198,8 @@ void CSoftAEStream::Initialize()
     m_ssrcData.end_of_input  = 0;
   }
 
+  m_limiter.SetSamplerate(AE.GetSampleRate());
+
   m_chLayoutCount = m_format.m_channelLayout.Count();
   m_valid = true;
 }

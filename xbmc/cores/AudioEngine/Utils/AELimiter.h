@@ -1,8 +1,7 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2012 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2010-2012 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,28 +19,34 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include <algorithm>
 
-namespace ADDON
+class CAELimiter
 {
-  class CVisualisation;
-}
-class CFileItemList;
+  private:
+    float m_amplify;
+    float m_attenuation;
+    float m_samplerate;
+    int   m_holdcounter;
+    float m_increase;
 
-class CGUIDialogVisualisationPresetList :
-      public CGUIDialog
-{
-public:
-  CGUIDialogVisualisationPresetList(void);
-  virtual ~CGUIDialogVisualisationPresetList(void);
-  virtual bool OnMessage(CGUIMessage &message);
-  virtual void FrameMove();
+  public:
+    CAELimiter();
 
-protected:
-  virtual void OnInitWindow();
-  void SetVisualisation(ADDON::CVisualisation *addon);
-  void Update();
-  ADDON::CVisualisation* m_viz; //TODO get rid
-  CFileItemList* m_vecPresets;
-  unsigned m_currentPreset;
+    void SetAmplification(float amplify)
+    {
+      m_amplify = std::max(std::min(amplify, 1000.0f), 1.0f);
+    }
+
+    float GetAmplification()
+    {
+      return m_amplify;
+    }
+
+    void SetSamplerate(int samplerate)
+    {
+      m_samplerate = (float)samplerate;
+    }
+
+    float Run(float* frame, int channels);
 };

@@ -19,8 +19,8 @@
  *
  */
 
-#include "AEAudioFormat.h"
-#include "Interfaces/AE.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "ICoreAudioSource.h"
 
 class ICoreAudioAEHAL;

@@ -202,7 +202,7 @@ int CMusicInfoTag::GetYear() const
   return m_dwReleaseDate.wYear;
 }
 
-long CMusicInfoTag::GetDatabaseId() const
+int CMusicInfoTag::GetDatabaseId() const
 {
   return m_iDbId;
 }
@@ -628,6 +628,11 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_rating;
     ar << m_iTimesPlayed;
     ar << m_iAlbumId;
+    ar << m_iDbId;
+    ar << m_type;
+    ar << m_strLyrics;
+    ar << m_bCompilation;
+    ar << m_listeners;
   }
   else
   {
@@ -651,7 +656,12 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_rating;
     ar >> m_iTimesPlayed;
     ar >> m_iAlbumId;
- }
+    ar >> m_iDbId;
+    ar >> m_type;
+    ar >> m_strLyrics;
+    ar >> m_bCompilation;
+    ar >> m_listeners;
+  }
 }
 
 void CMusicInfoTag::Clear()

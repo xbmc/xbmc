@@ -1752,6 +1752,17 @@ CStdString CSettings::GetBookmarksThumbFolder() const
   return folder;
 }
 
+CStdString CSettings::GetLibraryFolder() const
+{
+  CStdString folder;
+  if (GetCurrentProfile().hasDatabases())
+    URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "library", folder);
+  else
+    URIUtils::AddFileToFolder(GetUserDataFolder(), "library", folder);
+
+  return folder;
+}
+
 CStdString CSettings::GetSourcesFile() const
 {
   CStdString folder;
@@ -1850,6 +1861,7 @@ void CSettings::CreateProfileFolders()
   }
   CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
+  CDirectory::Create(GetLibraryFolder());
 }
 
 static CProfile emptyProfile;

@@ -1362,7 +1362,7 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
     if (!frame)
       continue;
 
-    float volume = stream->GetVolume() * stream->GetReplayGain();
+    float volume = stream->GetVolume() * stream->GetReplayGain() * stream->RunLimiter(frame, channelCount);
     #ifdef __SSE__
     if (channelCount > 1)
       CAEUtil::SSEMulAddArray(dst, frame, volume, channelCount);

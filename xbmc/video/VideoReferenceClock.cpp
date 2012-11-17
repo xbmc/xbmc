@@ -33,7 +33,7 @@
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
 #elif defined(TARGET_DARWIN_OSX)
   #include <QuartzCore/CVDisplayLink.h>
-  #include "CocoaInterface.h"
+  #include "osx/CocoaInterface.h"
 #elif defined(TARGET_DARWIN_IOS)
   #include "windowing/WindowingFactory.h"
 #elif defined(_WIN32) && defined(HAS_DX)

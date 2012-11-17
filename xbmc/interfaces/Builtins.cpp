@@ -79,7 +79,7 @@
 
 #if defined(TARGET_DARWIN)
 #include "filesystem/SpecialProtocol.h"
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 #endif
 
 #ifdef HAS_CDDA_RIPPER

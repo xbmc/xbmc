@@ -80,7 +80,7 @@ public:
   void AddFromPath(const CStdString &strPath, bool bRecursive,
                    SORT_METHOD method=SORT_METHOD_LABEL, 
                    SortOrder order = SortOrderAscending, const CStdString &strExtensions="");
-  void StartSlideShow(bool screensaver=false);
+  void StartSlideShow();
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);  
@@ -128,7 +128,6 @@ private:
 
   bool m_bShuffled;
   bool m_bSlideShow;
-  bool m_bScreensaver;
   bool m_bPause;
   bool m_bPlayingVideo;
   bool m_bErrorMessage;

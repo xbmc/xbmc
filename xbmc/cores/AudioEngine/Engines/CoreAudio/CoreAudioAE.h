@@ -24,7 +24,7 @@
 
 #include "system.h"
 
-#include "Interfaces/AE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "ICoreAudioAEHAL.h"
 #include "ICoreAudioSource.h"
 #include "CoreAudioAEStream.h"

@@ -22,12 +22,13 @@
 #include <samplerate.h>
 #include <list>
 
-#include "AEAudioFormat.h"
 #include "CoreAudioRingBuffer.h"
 #include "ICoreAudioSource.h"
-#include "Interfaces/AEStream.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEConvert.h"
 #include "cores/AudioEngine/Utils/AERemap.h"
+#include "cores/AudioEngine/Utils/AELimiter.h"
 
 #if defined(TARGET_DARWIN_IOS)
 # include "CoreAudioAEHALIOS.h"
@@ -77,8 +78,12 @@ public:
 
   virtual float GetVolume();
   virtual float GetReplayGain();
+  virtual float GetAmplification() { return m_limiter.GetAmplification(); }
   virtual void  SetVolume(float volume);
   virtual void  SetReplayGain(float factor);
+  virtual void  SetAmplification(float amplify){ m_limiter.SetAmplification(amplify); }
+  
+  virtual float RunLimiter(float* frame, int channels) { return m_limiter.Run(frame, channels); }
 
   virtual const unsigned int      GetChannelCount() const;
   virtual const unsigned int      GetSampleRate() const;
@@ -129,6 +134,7 @@ private:
   CAERemap                m_remap;         /* the remapper */
   float                   m_volume;        /* the volume level */
   float                   m_rgain;         /* replay gain level */
+  CAELimiter              m_limiter;       /* volume amplification/limiter*/
   IAEStream               *m_slave;        /* slave aestream */
 
   CAEConvert::AEConvertToFn m_convertFn;

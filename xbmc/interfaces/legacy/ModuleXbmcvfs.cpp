@@ -84,7 +84,7 @@ namespace XBMCAddon
       CFileItemList items;
       CStdString strSource;
       strSource = path;
-      XFILE::CDirectory::GetDirectory(strSource, items);
+      XFILE::CDirectory::GetDirectory(strSource, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
 
       Tuple<std::vector<String>, std::vector<String> > ret;
       // initialize the Tuple to two values

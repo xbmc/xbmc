@@ -15,7 +15,7 @@
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
-#import "CocoaInterface.h"
+#import "osx/CocoaInterface.h"
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
@@ -25,7 +25,7 @@
 #import "storage/osx/DarwinStorageProvider.h"
 #undef BOOL
 
-#import "HotKeyController.h"
+#import "osx/HotKeyController.h"
 
 /* PLEX */
 #import "GUIUserMessages.h"

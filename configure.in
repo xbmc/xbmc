@@ -1385,7 +1385,7 @@ fi
 # libshairport for AirTunes
 USE_AIRTUNES=0
 if test "x$use_airtunes" != "xno"; then
-  AC_CHECK_HEADERS([shairport/shairport.h shairport/ao.h],,
+  AC_CHECK_HEADERS([shairport/shairport.h],,
    [if test "x$use_airtunes" = "xyes"; then
       AC_MSG_ERROR($libshairport_not_found)
     elif test "x$use_airtunes" != "xno"; then

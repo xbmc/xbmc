@@ -67,16 +67,6 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       }
     }
     break;
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-
-      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
-      SetVisualisation((CVisualisation*)msg.GetPointer());
-      return true;
-    }
-    break;
   case GUI_MSG_WINDOW_DEINIT:
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
@@ -120,6 +110,14 @@ void CGUIDialogVisualisationPresetList::FrameMove()
     }
   }
   CGUIDialog::FrameMove();
+}
+
+void CGUIDialogVisualisationPresetList::OnInitWindow()
+{
+  CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+  g_windowManager.SendMessage(msg);
+  SetVisualisation((CVisualisation*)msg.GetPointer());
+  CGUIDialog::OnInitWindow();
 }
 
 void CGUIDialogVisualisationPresetList::Update()

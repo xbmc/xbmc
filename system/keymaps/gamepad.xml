@@ -109,6 +109,14 @@
       <dpaddown>BigStepBack</dpaddown>
     </gamepad>
   </FullscreenVideo>
+  <FullscreenLiveTV>
+    <gamepad>
+      <dpadleft>PreviousChannelGroup</dpadleft>
+      <dpadright>NextChannelGroup</dpadright>
+      <dpadup>ChannelUp</dpadup>
+      <dpaddown>ChannelDown</dpaddown>
+    </gamepad>
+  </FullscreenLiveTV>
   <FullscreenInfo>
     <gamepad>
       <start>OSD</start>

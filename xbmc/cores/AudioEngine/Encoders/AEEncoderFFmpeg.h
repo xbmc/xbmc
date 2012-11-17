@@ -19,9 +19,9 @@
  *
  */
 
-#include "Interfaces/AEEncoder.h"
-#include "Utils/AERemap.h"
-#include "Utils/AEPackIEC61937.h"
+#include "cores/AudioEngine/Interfaces/AEEncoder.h"
+#include "cores/AudioEngine/Utils/AERemap.h"
+#include "cores/AudioEngine/Utils/AEPackIEC61937.h"
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict

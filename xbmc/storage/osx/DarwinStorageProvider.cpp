@@ -28,7 +28,7 @@
 #if defined(TARGET_DARWIN_OSX)
 #include <DiskArbitration/DiskArbitration.h>
 #endif
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 
 bool CDarwinStorageProvider::m_event = false;
 

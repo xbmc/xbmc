@@ -183,11 +183,11 @@ public:
   int64_t GetFileSize(HANDLE hFile);
   int64_t GetFilePosition(HANDLE hFile);
   int64_t Seek(HANDLE hFile, int64_t lOffset, int whence);
-  HANDLE OpenFile( const char* filename );
+  HANDLE OpenFile(  const char *isofile, const char* filename );
   long ReadFile(HANDLE fd, unsigned char *pBuffer, long lSize);
   void CloseFile(HANDLE hFile);
 
-  udf_dir_t *OpenDir( const char *subdir );
+  udf_dir_t *OpenDir( const char *isofile, const char *subdir );
   udf_dirent_t *ReadDir( udf_dir_t *dirp );
   int CloseDir( udf_dir_t *dirp );
 

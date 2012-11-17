@@ -88,6 +88,7 @@ bool CGUIDialogExtendedProgressBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_iLastSwitchTime = XbmcThreads::SystemClockMillis();
+      m_iCurrentItem = 0;
       CGUIDialog::OnMessage(message);
 
       UpdateState(0);
@@ -109,7 +110,6 @@ void CGUIDialogExtendedProgressBar::Process(unsigned int currentTime, CDirtyRegi
 
 void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
 {
-  bool   bNoItemsLeft(false);
   string strHeader;
   string strTitle;
   float  fProgress(-1.0f);
@@ -124,12 +124,18 @@ void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
       {
         delete m_handles.at(iPtr);
         m_handles.erase(m_handles.begin() + iPtr);
-
-        // current item deleted, back one
-        if ((int)m_iCurrentItem == iPtr && m_iCurrentItem > 0)
-          m_iCurrentItem--;
       }
     }
+
+    if (!m_handles.size())
+    {
+      Close(false, 0, true, false);
+      return;
+    }
+
+    // ensure the current item is in our range
+    if (m_iCurrentItem >= m_handles.size())
+      m_iCurrentItem = m_handles.size() - 1;
 
     // update the current item ptr
     if (currentTime > m_iLastSwitchTime &&
@@ -142,36 +148,22 @@ void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
         m_iCurrentItem = 0;
     }
 
-    if (m_iCurrentItem < m_handles.size())
+    CGUIDialogProgressBarHandle *handle = m_handles.at(m_iCurrentItem);
+    if (handle)
     {
-      CGUIDialogProgressBarHandle *handle = m_handles.at(m_iCurrentItem);
-      if (handle)
-      {
-        strTitle  = handle->Text();
-        strHeader = handle->Title();
-        fProgress = handle->Percentage();
-      }
-    }
-    else
-    {
-      bNoItemsLeft = true;
+      strTitle  = handle->Text();
+      strHeader = handle->Title();
+      fProgress = handle->Percentage();
     }
   }
 
-  if (bNoItemsLeft)
-  {
-    Close(true, 0, true, false);
-  }
-  else
-  {
-    SET_CONTROL_LABEL(CONTROL_LABELHEADER, strHeader);
-    SET_CONTROL_LABEL(CONTROL_LABELTITLE, strTitle);
+  SET_CONTROL_LABEL(CONTROL_LABELHEADER, strHeader);
+  SET_CONTROL_LABEL(CONTROL_LABELTITLE, strTitle);
 
-    if (fProgress > -1.0f)
-    {
-      SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
-      CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
-      if (pProgressCtrl) pProgressCtrl->SetPercentage(fProgress);
-    }
+  if (fProgress > -1.0f)
+  {
+    SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
+    CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
+    if (pProgressCtrl) pProgressCtrl->SetPercentage(fProgress);
   }
 }

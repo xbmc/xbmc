@@ -69,7 +69,6 @@ protected:
   bool m_multiSelection;
 
   CFileItemList* m_selectedItems;
-  CFileItemList* m_vecListInternal;
   CFileItemList* m_vecList;
   CGUIViewControl m_viewControl;
 };

@@ -464,28 +464,6 @@ uint64_t DVDFileSeekForce(BD_FILE bdfile, uint64_t offset, int64_t force_size)
   return offset;
 }
 
-int UDFSplitIsoFile(const char *fullFilename, char* iso, char* file)
-{
-  const char* filename = strcasestr(fullFilename, ".iso");
-  if(!filename)
-    return -1;
-
-  filename += strlen(".iso");
-  if(*filename != '/')
-    return -1;
-
-  size_t size = strlen(filename);
-  memcpy(file, filename, size);
-  file[size] = 0;
-
-  size = filename - fullFilename;
-  memcpy(iso, fullFilename,  filename - fullFilename);
-  iso[size] = 0;
-
-  return 0;
-}
-
-
 int udf25::UDFScanDirX( udf_dir_t *dirp )
 {
   char filename[ MAX_UDF_FILE_NAME_LEN ];
@@ -1190,15 +1168,11 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
   return result;
 }
 
-HANDLE udf25::OpenFile( const char* fullFilename )
+HANDLE udf25::OpenFile( const char* isoname, const char* filename )
 {
   uint64_t filesize;
   UDF_FILE file = NULL;
   BD_FILE bdfile = NULL;
-  char isoname[256], filename[256];
-
-  if(UDFSplitIsoFile(fullFilename, isoname, filename) !=0 )
-    return INVALID_HANDLE_VALUE;
 
   m_fp = file_open(isoname);
   if(m_fp)
@@ -1338,12 +1312,12 @@ int64_t udf25::GetFilePosition(HANDLE hFile)
   return bdfile->seek_pos;
 }
 
-udf_dir_t *udf25::OpenDir( const char *subdir )
+udf_dir_t *udf25::OpenDir(  const char *isofile, const char *subdir )
 {
   udf_dir_t *result;
   BD_FILE bd_file;
 
-  bd_file = (BD_FILE)OpenFile(subdir);
+  bd_file = (BD_FILE)OpenFile(isofile, subdir);
 
   if (bd_file == (BD_FILE)INVALID_HANDLE_VALUE)
   {
