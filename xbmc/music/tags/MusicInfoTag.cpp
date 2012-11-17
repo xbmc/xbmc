@@ -202,7 +202,7 @@ int CMusicInfoTag::GetYear() const
   return m_dwReleaseDate.wYear;
 }
 
-long CMusicInfoTag::GetDatabaseId() const
+int CMusicInfoTag::GetDatabaseId() const
 {
   return m_iDbId;
 }
