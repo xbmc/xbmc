@@ -2241,6 +2241,20 @@ bool CUtil::CanBindPrivileged()
 #endif //_LINUX
 }
 
+bool CUtil::ValidatePort(int port)
+{
+  // check that it's a valid port
+#ifdef _LINUX
+  if (!CUtil::CanBindPrivileged() && (port < 1024 || port > 65535))
+    return false;
+  else
+#endif
+  if (port <= 0 || port > 65535)
+    return false;
+
+  return true;
+}
+
 int CUtil::GetRandomNumber()
 {
 #ifdef TARGET_WINDOWS
