@@ -226,7 +226,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     //       think there's any decent way to deal with this, as the infinite loop may be an arbitrary
     //       number of playlists deep, eg playlist1 -> playlist2 -> playlist3 ... -> playlistn -> playlist1
     CStdString path = "special://videoplaylists/";
-    if (m_type.Equals("songs") || m_type.Equals("albums"))
+    if (m_type.Equals("songs") || m_type.Equals("albums") || m_type.Equals("artists"))
       path = "special://musicplaylists/";
     XFILE::CDirectory::GetDirectory(path, items, ".xsp", XFILE::DIR_FLAG_NO_FILE_DIRS);
     for (int i = 0; i < items.Size(); i++)
