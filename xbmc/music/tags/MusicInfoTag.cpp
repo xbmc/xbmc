@@ -123,11 +123,6 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
   if (this == &tag) return false;
   if (m_strURL != tag.m_strURL) return true;
   if (m_strTitle != tag.m_strTitle) return true;
-  for (unsigned int index = 0; index < m_artist.size(); index++)
-  {
-    if (tag.m_artist.at(index).compare(m_artist.at(index)) != 0)
-      return true;
-  }
   if (m_bCompilation != tag.m_bCompilation) return true;
   if (m_artist != tag.m_artist) return true;
   if (m_albumArtist != tag.m_albumArtist) return true;
