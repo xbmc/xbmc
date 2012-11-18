@@ -73,7 +73,7 @@ class MyPlexManager
             
             // Save the token.
             g_guiSettings.SetString("myplex.token", strToken);
-            g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19011));
+            g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
             
             return true;
           }
