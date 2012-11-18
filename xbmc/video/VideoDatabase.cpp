@@ -3075,12 +3075,15 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
 
   bool retVal = false;
 
+  CStreamDetails& details = tag.m_streamDetails;
+  details.Reset();
+
   auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
+  try
+  {
   CStdString strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
   pDS->query(strSQL);
 
-  CStreamDetails& details = tag.m_streamDetails;
-  details.Reset();
   while (!pDS->eof())
   {
     CStreamDetail::StreamType e = (CStreamDetail::StreamType)pDS->fv(1).get_asInt();
@@ -3125,6 +3128,11 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   }
 
   pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, tag.m_iFileId);
+  }
   details.DetermineBestStreams();
 
   if (details.GetVideoDuration() > 0)
