@@ -133,56 +133,56 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
   if (!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded())
   {
-  // first check the cached item
-  CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
-  if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
-  { // Query map if we previously cached the file on HD
-    *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
-    pItem->SetArt("thumb", mapItem->GetArt("thumb"));
-  }
+    // first check the cached item
+    CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
+    if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
+    { // Query map if we previously cached the file on HD
+      *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
+      pItem->SetArt("thumb", mapItem->GetArt("thumb"));
+    }
     else
     {
-  CStdString strPath;
-  URIUtils::GetDirectory(pItem->GetPath(), strPath);
-  URIUtils::AddSlashAtEnd(strPath);
-  if (strPath!=m_strPrevPath)
-  {
-    // The item is from another directory as the last one,
-    // query the database for the new directory...
-    m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
-    m_databaseHits++;
-  }
+      CStdString strPath;
+      URIUtils::GetDirectory(pItem->GetPath(), strPath);
+      URIUtils::AddSlashAtEnd(strPath);
+      if (strPath!=m_strPrevPath)
+      {
+        // The item is from another directory as the last one,
+        // query the database for the new directory...
+        m_musicDatabase.GetSongsByPath(strPath, m_songsMap);
+        m_databaseHits++;
+      }
 
-  CSong *song=NULL;
+      CSong *song=NULL;
 
-  if ((song=m_songsMap.Find(pItem->GetPath()))!=NULL)
-  {  // Have we loaded this item from database before
-    pItem->GetMusicInfoTag()->SetSong(*song);
-    pItem->SetArt("thumb", song->strThumb);
-  }
-  else if (pItem->IsMusicDb())
-  { // a music db item that doesn't have tag loaded - grab details from the database
-    XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
-    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
-    CSong song;
-    if (m_musicDatabase.GetSongById(param.GetSongId(), song))
-    {
-      pItem->GetMusicInfoTag()->SetSong(song);
-      pItem->SetArt("thumb", song.strThumb);
-    }
-  }
-  else if (g_guiSettings.GetBool("musicfiles.usetags") || pItem->IsCDDA())
-  { // Nothing found, load tag from file,
-    // always try to load cddb info
-    // get correct tag parser
-    auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
-    if (NULL != pLoader.get())
-      // get tag
-      pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());
-    m_tagReads++;
-  }
+      if ((song=m_songsMap.Find(pItem->GetPath()))!=NULL)
+      {  // Have we loaded this item from database before
+        pItem->GetMusicInfoTag()->SetSong(*song);
+        pItem->SetArt("thumb", song->strThumb);
+      }
+      else if (pItem->IsMusicDb())
+      { // a music db item that doesn't have tag loaded - grab details from the database
+        XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
+        XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
+        CSong song;
+        if (m_musicDatabase.GetSongById(param.GetSongId(), song))
+        {
+          pItem->GetMusicInfoTag()->SetSong(song);
+          pItem->SetArt("thumb", song.strThumb);
+        }
+      }
+      else if (g_guiSettings.GetBool("musicfiles.usetags") || pItem->IsCDDA())
+      { // Nothing found, load tag from file,
+        // always try to load cddb info
+        // get correct tag parser
+        auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
+        if (NULL != pLoader.get())
+          // get tag
+          pLoader->Load(pItem->GetPath(), *pItem->GetMusicInfoTag());
+        m_tagReads++;
+      }
 
-  m_strPrevPath = strPath;
+      m_strPrevPath = strPath;
     }
   }
 
