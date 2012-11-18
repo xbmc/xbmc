@@ -801,6 +801,6 @@ void CURL::SetOption(const CStdString &key, const CStdString &value)
 
 void CURL::RemoveOption(const CStdString &key)
 {
-  m_options.AddOption(key, "");
+  m_options.RemoveOption(key);
   SetOptions(m_options.GetOptionsString(true));
 }
