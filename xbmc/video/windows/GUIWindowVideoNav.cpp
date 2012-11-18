@@ -394,7 +394,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   LoadVideoInfo(items, m_database);
 }
 
-void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &database)
+void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &database, bool allowReplaceLabels)
 {
   // TODO: this could possibly be threaded as per the music info loading,
   //       we could also cache the info
@@ -421,7 +421,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
     setting is enabled.
     */
   const bool stackItems    = items.GetProperty("isstacked").asBoolean() || (StackingAvailable(items) && g_settings.m_videoStacking);
-  const bool replaceLabels = g_guiSettings.GetBool("myvideos.replacelabels");
+  const bool replaceLabels = allowReplaceLabels && g_guiSettings.GetBool("myvideos.replacelabels");
 
   CFileItemList dbItems;
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
