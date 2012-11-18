@@ -10,7 +10,6 @@ SRCS += LinuxTimezone.cpp
 SRCS += PosixMountProvider.cpp
 SRCS += XFileUtils.cpp
 SRCS += XHandle.cpp
-SRCS += XLCDproc.cpp
 SRCS += XMemUtils.cpp
 SRCS += XTimeUtils.cpp
 

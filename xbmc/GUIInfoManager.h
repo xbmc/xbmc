@@ -162,21 +162,6 @@ namespace INFO
 #define SYSTEM_HDD_LOCKSTATE        157
 #define SYSTEM_HDD_LOCKKEY          158
 #define SYSTEM_INTERNET_STATE       159
-#define LCD_PLAY_ICON               160
-#define LCD_PROGRESS_BAR            161
-#define LCD_CPU_TEMPERATURE         162
-#define LCD_GPU_TEMPERATURE         163
-#define LCD_HDD_TEMPERATURE         164
-#define LCD_FAN_SPEED               165
-#define LCD_DATE                    166
-#define LCD_TIME_21                 172 // Small bigfont
-#define LCD_TIME_22                 173
-#define LCD_TIME_W21                174 // Medum bigfont
-#define LCD_TIME_W22                175
-#define LCD_TIME_41                 176 // Big bigfont
-#define LCD_TIME_42                 177
-#define LCD_TIME_43                 178
-#define LCD_TIME_44                 179
 #define SYSTEM_ALARM_LESS_OR_EQUAL  180
 #define SYSTEM_PROFILECOUNT         181
 #define SYSTEM_ISFULLSCREEN         182
@@ -726,7 +711,6 @@ public:
   CStdString GetImage(int info, int contextWindow, CStdString *fallback = NULL);
 
   CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-  CStdString GetLcdTime( int _eInfo ) const;
   CStdString GetDate(bool bNumbersOnly = false);
   CStdString GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 

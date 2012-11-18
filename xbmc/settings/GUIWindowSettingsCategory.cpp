@@ -35,9 +35,6 @@
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
 #include "view/ViewDatabase.h"
-#ifdef HAS_LCD
-#include "utils/LCDFactory.h"
-#endif
 #include "PlayListPlayer.h"
 #include "addons/Skin.h"
 #include "guilib/GUIAudioManager.h"
@@ -1249,16 +1246,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#ifdef HAS_LCD
-  else if (strSetting.Equals("videoscreen.haslcd"))
-  {
-    g_lcd->Stop();
-    CLCDFactory factory;
-    delete g_lcd;
-    g_lcd = factory.Create();
-    g_lcd->Initialize();
-  }
-#endif
 #ifdef HAS_WEB_SERVER
   else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport"))
   {
