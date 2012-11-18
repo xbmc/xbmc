@@ -46,6 +46,7 @@ public:
   virtual void AddOption(const std::string &key, double value);
   virtual void AddOption(const std::string &key, bool value);
   virtual void AddOptions(const std::string &options);
+  virtual void RemoveOption(const std::string &key);
 
 protected:
   virtual bool parse() = 0;

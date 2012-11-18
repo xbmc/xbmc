@@ -46,7 +46,9 @@ std::string CUrlOptions::GetOptionsString(bool withLeadingSeperator /* = false *
     if (opt != m_options.begin())
       options += "&";
 
-    options += CURL::Encode(opt->first) + "=" + CURL::Encode(opt->second.asString());
+    options += CURL::Encode(opt->first);
+    if (!opt->second.empty())
+      options += "=" + CURL::Encode(opt->second.asString());
   }
 
   if (withLeadingSeperator && !options.empty())
@@ -68,11 +70,7 @@ void CUrlOptions::AddOption(const std::string &key, const std::string &value)
   if (key.empty())
     return;
 
-  UrlOptions::iterator option = m_options.find(key);
-  if (!value.empty())
-    m_options[key] = value;
-  else if (option != m_options.end())
-    m_options.erase(option);
+  m_options[key] = value;
 }
 
 void CUrlOptions::AddOption(const std::string &key, int value)
@@ -130,13 +128,12 @@ void CUrlOptions::AddOptions(const std::string &options)
     if (option->empty())
       continue;
 
-    // every option must have the format key=value
-    size_t pos = option->find('=');
-    if (pos == string::npos || pos == 0 || pos >= option->size() - 1)
-      continue;
+    string key, value;
 
-    string key = CURL::Decode(option->substr(0, pos));
-    string value = CURL::Decode(option->substr(pos + 1));
+    size_t pos = option->find('=');
+    key = CURL::Decode(option->substr(0, pos));
+    if (pos != string::npos)
+      value = CURL::Decode(option->substr(pos + 1));
 
     // the key cannot be empty
     if (!key.empty())
@@ -147,6 +144,16 @@ void CUrlOptions::AddOptions(const std::string &options)
 void CUrlOptions::AddOptions(const CUrlOptions &options)
 {
   m_options.insert(options.m_options.begin(), options.m_options.end());
+}
+
+void CUrlOptions::RemoveOption(const std::string &key)
+{
+  if (key.empty())
+    return;
+
+  UrlOptions::iterator option = m_options.find(key);
+  if (option != m_options.end())
+    m_options.erase(option);
 }
 
 bool CUrlOptions::HasOption(const std::string &key) const
