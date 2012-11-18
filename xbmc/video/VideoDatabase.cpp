@@ -3081,53 +3081,53 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
   try
   {
-  CStdString strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
-  pDS->query(strSQL);
+    CStdString strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
+    pDS->query(strSQL);
 
-  while (!pDS->eof())
-  {
-    CStreamDetail::StreamType e = (CStreamDetail::StreamType)pDS->fv(1).get_asInt();
-    switch (e)
+    while (!pDS->eof())
     {
-    case CStreamDetail::VIDEO:
+      CStreamDetail::StreamType e = (CStreamDetail::StreamType)pDS->fv(1).get_asInt();
+      switch (e)
       {
-        CStreamDetailVideo *p = new CStreamDetailVideo();
-        p->m_strCodec = pDS->fv(2).get_asString();
-        p->m_fAspect = pDS->fv(3).get_asFloat();
-        p->m_iWidth = pDS->fv(4).get_asInt();
-        p->m_iHeight = pDS->fv(5).get_asInt();
-        p->m_iDuration = pDS->fv(10).get_asInt();
-        details.AddStream(p);
-        retVal = true;
-        break;
+      case CStreamDetail::VIDEO:
+        {
+          CStreamDetailVideo *p = new CStreamDetailVideo();
+          p->m_strCodec = pDS->fv(2).get_asString();
+          p->m_fAspect = pDS->fv(3).get_asFloat();
+          p->m_iWidth = pDS->fv(4).get_asInt();
+          p->m_iHeight = pDS->fv(5).get_asInt();
+          p->m_iDuration = pDS->fv(10).get_asInt();
+          details.AddStream(p);
+          retVal = true;
+          break;
+        }
+      case CStreamDetail::AUDIO:
+        {
+          CStreamDetailAudio *p = new CStreamDetailAudio();
+          p->m_strCodec = pDS->fv(6).get_asString();
+          if (pDS->fv(7).get_isNull())
+            p->m_iChannels = -1;
+          else
+            p->m_iChannels = pDS->fv(7).get_asInt();
+          p->m_strLanguage = pDS->fv(8).get_asString();
+          details.AddStream(p);
+          retVal = true;
+          break;
+        }
+      case CStreamDetail::SUBTITLE:
+        {
+          CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+          p->m_strLanguage = pDS->fv(9).get_asString();
+          details.AddStream(p);
+          retVal = true;
+          break;
+        }
       }
-    case CStreamDetail::AUDIO:
-      {
-        CStreamDetailAudio *p = new CStreamDetailAudio();
-        p->m_strCodec = pDS->fv(6).get_asString();
-        if (pDS->fv(7).get_isNull())
-          p->m_iChannels = -1;
-        else
-          p->m_iChannels = pDS->fv(7).get_asInt();
-        p->m_strLanguage = pDS->fv(8).get_asString();
-        details.AddStream(p);
-        retVal = true;
-        break;
-      }
-    case CStreamDetail::SUBTITLE:
-      {
-        CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
-        p->m_strLanguage = pDS->fv(9).get_asString();
-        details.AddStream(p);
-        retVal = true;
-        break;
-      }
+
+      pDS->next();
     }
 
-    pDS->next();
-  }
-
-  pDS->close();
+    pDS->close();
   }
   catch (...)
   {
