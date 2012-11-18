@@ -4502,7 +4502,7 @@ msgid "Alarm!"
 msgstr ""
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
+msgid "Cancelled with %im%is left"
 msgstr ""
 
 #. minutes (left from countdown)
@@ -6103,7 +6103,7 @@ msgstr ""
 #empty string with id 16023
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr ""
 
 msgctxt "#16025"
