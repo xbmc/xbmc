@@ -54,4 +54,5 @@ ___wrap_fopen _fopen$UNIX2003
 ___wrap_fputs _fputs$UNIX2003
 ___wrap_read _read$UNIX2003
 ___wrap_write _write$UNIX2003
-
+___wrap_fstat _fstat$INODE64
+___wrap__stat _stat$INODE64
