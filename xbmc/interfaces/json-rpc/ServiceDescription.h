@@ -1080,8 +1080,8 @@ namespace JSONRPC
                   "\"mpaa\", \"cast\", \"country\", \"imdbnumber\", \"premiered\", \"productioncode\","
                   "\"runtime\", \"set\", \"showlink\", \"streamdetails\", \"top250\", \"votes\","
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
-                  "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"size\","
-                  "\"lastmodified\", \"mimetype\", \"watchedepisodes\", \"disc\" ]"
+                  "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
+                  "\"disc\", \"tag\", \"art\", \"size\", \"lastmodified\", \"mimetype\" ]"
       "}"
     "}",
     "\"List.Item.File\": {"
