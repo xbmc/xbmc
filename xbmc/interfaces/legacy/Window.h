@@ -127,7 +127,7 @@ namespace XBMCAddon
        * This is a helper method since getting
        *  a control by it's id is a common function
        */
-      Control* GetControlById(int iControlId) throw (WindowException);
+      Control* GetControlById(int iControlId, CCriticalSection* gc) throw (WindowException);
 
       SWIGHIDDENVIRTUAL void PulseActionEvent();
       SWIGHIDDENVIRTUAL bool WaitForActionEvent(unsigned int milliseconds);

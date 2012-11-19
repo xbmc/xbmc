@@ -3138,7 +3138,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     else
     {
       time = CDateTime::GetCurrentDateTime();
-      time -= CDateTimeSpan(0, 0, 0, GetPlayTime());
+      time -= CDateTimeSpan(0, 0, 0, (int)GetPlayTime());
     }
     return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
   }

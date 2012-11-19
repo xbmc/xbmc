@@ -2948,6 +2948,9 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AELimiter.cpp">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\test\TestUrlOptions.cpp">
+      <Filter>utils\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">

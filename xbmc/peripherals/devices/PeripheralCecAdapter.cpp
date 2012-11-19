@@ -1275,10 +1275,6 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   }
   bChanged |= SetSetting("physical_address", strPhysicalAddress);
 
-  // set the tv vendor override
-  m_configuration.tvVendor = config.tvVendor;
-  bChanged |= SetSetting("tv_vendor", (int)config.tvVendor);
-
   // set the devices to wake when starting
   m_configuration.wakeDevices = config.wakeDevices;
   bChanged |= WriteLogicalAddresses(config.wakeDevices, "wake_devices", "wake_devices_advanced");

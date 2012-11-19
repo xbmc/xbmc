@@ -978,23 +978,7 @@
       { "$ref": "List.Filter.Rule.Songs" }
     ]
   },
-  "List.Fields.All": {
-    "extends": "Item.Fields.Base",
-    "items": { "type": "string",
-      "enum": [ "title", "artist", "albumartist", "genre", "year", "rating",
-                "album", "track", "duration", "comment", "lyrics", "musicbrainztrackid",
-                "musicbrainzartistid", "musicbrainzalbumid", "musicbrainzalbumartistid",
-                "playcount", "fanart", "director", "trailer", "tagline", "plot",
-                "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
-                "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
-                "runtime", "set", "showlink", "streamdetails", "top250", "votes",
-                "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
-                "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
-                "disc", "tag", "art", "channel", "channeltype", "hidden", "locked",
-                "channelnumber", "starttime", "endtime" ]
-    }
-  },
-  "List.Item.All": {
+  "List.Item.Base": {
     "extends": [ "Video.Details.File", "Audio.Details.Media" ],
     "properties": {
       "id": { "$ref": "Library.Id" },
@@ -1032,7 +1016,28 @@
       "tvshowid": { "$ref": "Library.Id" },
       "watchedepisodes": { "type": "integer" },
       "disc": { "type": "integer" },
-      "tag": { "$ref": "Array.String" },
+      "tag": { "$ref": "Array.String" }
+    }
+  },
+  "List.Fields.All": {
+    "extends": "Item.Fields.Base",
+    "items": { "type": "string",
+      "enum": [ "title", "artist", "albumartist", "genre", "year", "rating",
+                "album", "track", "duration", "comment", "lyrics", "musicbrainztrackid",
+                "musicbrainzartistid", "musicbrainzalbumid", "musicbrainzalbumartistid",
+                "playcount", "fanart", "director", "trailer", "tagline", "plot",
+                "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
+                "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
+                "runtime", "set", "showlink", "streamdetails", "top250", "votes",
+                "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
+                "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
+                "disc", "tag", "art", "channel", "channeltype", "hidden", "locked",
+                "channelnumber", "starttime", "endtime" ]
+    }
+  },
+  "List.Item.All": {
+    "extends": "List.Item.Base",
+    "properties": {
       "channel": { "type": "string" },
       "channeltype": { "$ref": "PVR.Channel.Type" },
       "hidden": { "type": "boolean" },
@@ -1053,12 +1058,12 @@
                 "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
                 "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
-                "resume", "artistid", "albumid", "tvshowid", "setid", "size",
-                "lastmodified", "mimetype", "watchedepisodes", "disc" ]
+                "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
+                "disc", "tag", "art", "size", "lastmodified", "mimetype" ]
     }
   },
   "List.Item.File": {
-    "extends": "List.Item.All",
+    "extends": "List.Item.Base",
     "properties": {
       "file": { "type": "string", "required": true },
       "filetype": { "type": "string", "enum": [ "file", "directory" ], "required": true },

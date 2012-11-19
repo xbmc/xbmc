@@ -725,8 +725,10 @@ bool CVariant::empty() const
     return m_data.string->empty();
   else if (m_type == VariantTypeWideString)
     return m_data.wstring->empty();
-  else
+  else if (m_type == VariantTypeNull)
     return true;
+
+  return false;
 }
 
 void CVariant::clear()

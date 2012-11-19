@@ -1367,19 +1367,6 @@ int MysqlDataset::exec(const string &sql) {
   {
     qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
-  // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
-  else if ( ci_find(qry, "CREATE TRIGGER") != string::npos )
-  {
-    if ( (loc=ci_find(qry, "BEGIN ")) != string::npos )
-    {
-        qry.replace(loc, 6, "");
-    }
-
-    if ( (loc=ci_find(qry, " END")) != string::npos )
-    {
-        qry.replace(loc, 4, "");
-    }
-  }
 
   CLog::Log(LOGDEBUG,"Mysql execute: %s", qry.c_str());
 

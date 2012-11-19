@@ -111,7 +111,11 @@ namespace XFILE
           if (!playlist.SaveAsJson(xsp, !filter))
             return false;
         }
-        videoUrl.AddOption(option, xsp);
+
+        if (!xsp.empty())
+          videoUrl.AddOption(option, xsp);
+        else
+          videoUrl.RemoveOption(option);
         
         CDatabase::Filter dbfilter;
         success = db.GetSortedVideos(mediaType, videoUrl.ToString(), sorting, items, dbfilter);
@@ -140,7 +144,11 @@ namespace XFILE
           if (!playlist.SaveAsJson(xsp, !filter))
             return false;
         }
-        musicUrl.AddOption(option, xsp);
+
+        if (!xsp.empty())
+          musicUrl.AddOption(option, xsp);
+        else
+          musicUrl.RemoveOption(option);
 
         CDatabase::Filter dbfilter;
         success = db.GetAlbumsByWhere(musicUrl.ToString(), dbfilter, items, sorting);
@@ -165,7 +173,11 @@ namespace XFILE
           if (!playlist.SaveAsJson(xsp, !filter))
             return false;
         }
-        musicUrl.AddOption(option, xsp);
+
+        if (!xsp.empty())
+          musicUrl.AddOption(option, xsp);
+        else
+          musicUrl.RemoveOption(option);
 
         CDatabase::Filter dbfilter;
         success = db.GetArtistsNav(musicUrl.ToString(), items, !g_guiSettings.GetBool("musiclibrary.showcompilationartists"), -1, -1, -1, dbfilter, sorting);
@@ -195,7 +207,11 @@ namespace XFILE
           if (!songPlaylist.SaveAsJson(xsp, !filter))
             return false;
         }
-        musicUrl.AddOption(option, xsp);
+
+        if (!xsp.empty())
+          musicUrl.AddOption(option, xsp);
+        else
+          musicUrl.RemoveOption(option);
 
         CDatabase::Filter dbfilter;
         success = db.GetSongsByWhere(musicUrl.ToString(), dbfilter, items, sorting);
@@ -224,7 +240,11 @@ namespace XFILE
           if (!mvidPlaylist.SaveAsJson(xsp, !filter))
             return false;
         }
-        videoUrl.AddOption(option, xsp);
+
+        if (!xsp.empty())
+          videoUrl.AddOption(option, xsp);
+        else
+          videoUrl.RemoveOption(option);
         
         CFileItemList items2;
         success2 = db.GetSortedVideos(MediaTypeMusicVideo, videoUrl.ToString(), sorting, items2);

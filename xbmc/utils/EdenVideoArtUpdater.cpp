@@ -90,7 +90,8 @@ void CEdenVideoArtUpdater::Process()
     item->GetVideoInfoTag()->m_strPictureURL.Parse();
 
     map<string, string> artwork;
-    if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork))
+    if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork)
+        || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
       std::string type;
@@ -123,7 +124,8 @@ void CEdenVideoArtUpdater::Process()
     item->GetVideoInfoTag()->m_strPictureURL.Parse();
 
     map<string, string> artwork;
-    if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork))
+    if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork)
+        || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
       std::string type;
@@ -156,7 +158,8 @@ void CEdenVideoArtUpdater::Process()
     item->GetVideoInfoTag()->m_strPictureURL.Parse();
 
     map<string, string> artwork;
-    if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork))
+    if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork)
+        || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, false, "thumb");
       std::string type;
@@ -203,7 +206,8 @@ void CEdenVideoArtUpdater::Process()
       episode->GetVideoInfoTag()->m_strPictureURL.Parse();
 
       map<string, string> artwork;
-      if (!db.GetArtForItem(episode->GetVideoInfoTag()->m_iDbId, episode->GetVideoInfoTag()->m_type, artwork))
+      if (!db.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artwork)
+          || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
       {
         CStdString art = CVideoInfoScanner::GetImage(episode.get(), true, episode->GetVideoInfoTag()->m_basePath != episode->GetPath(), "thumb");
         if (!art.empty() && CacheTexture(art, cachedThumb))

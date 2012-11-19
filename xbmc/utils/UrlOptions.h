@@ -45,6 +45,7 @@ public:
   virtual void AddOption(const std::string &key, bool value);
   virtual void AddOptions(const std::string &options);
   virtual void AddOptions(const CUrlOptions &options);
+  virtual void RemoveOption(const std::string &key);
 
   virtual bool HasOption(const std::string &key) const;
   virtual bool GetOption(const std::string &key, CVariant &value) const;

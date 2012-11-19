@@ -3042,7 +3042,10 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
     return "";
 
   if (useFolder)
-    return URIUtils::AddFileToFolder(strFile, artFile);
+  {
+    if (!artFile.empty())
+      return URIUtils::AddFileToFolder(strFile, artFile);
+  }
   else
   {
     if (artFile.empty()) // old thumbnail matching

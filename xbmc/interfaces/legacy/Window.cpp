@@ -50,6 +50,15 @@ namespace XBMCAddon
       inline ~MaybeLock() { if (lock) lock->unlock(); }
     };
 
+    class SingleLockWithDelayGuard
+    {
+      DelayedCallGuard dcg;
+      CCriticalSection& lock;
+    public:
+      inline SingleLockWithDelayGuard(CCriticalSection& ccrit, LanguageHook* lh) : dcg(lh), lock(ccrit) { lock.lock(); }
+      inline ~SingleLockWithDelayGuard() { lock.unlock(); }
+    };
+
     /**
      * Explicit template instantiation
      */
@@ -80,7 +89,6 @@ namespace XBMCAddon
       canPulse(true), existingWindow(false), destroyAfterDeInit(false)
     {
       TRACE;
-      CSingleLock lock(g_graphicsContext);
     }
 
     /**
@@ -92,7 +100,7 @@ namespace XBMCAddon
       canPulse(false), existingWindow(true), destroyAfterDeInit(false)
     {
       TRACE;
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
 
       if (existingWindowId == -1)
       {
@@ -132,6 +140,7 @@ namespace XBMCAddon
     {
       TRACE;
 
+      // this is called from non-scripting-language callstacks. Don't use the delayed call guard.
       CSingleLock lock(g_graphicsContext);
       if (!isDisposed)
       {
@@ -232,7 +241,7 @@ namespace XBMCAddon
      * If we can't find any but the window has the controlId (in case of a not python window)
      * we create a new control with basic functionality
      */
-    Control* Window::GetControlById(int iControlId) throw (WindowException)
+    Control* Window::GetControlById(int iControlId, CCriticalSection* gc) throw (WindowException)
     {
       TRACE;
 
@@ -249,7 +258,7 @@ namespace XBMCAddon
       }
 
       // lock xbmc GUI before accessing data from it
-      CSingleLock lock(g_graphicsContext);
+      MaybeLock lock(gc);
 
       // check if control exists
       CGUIControl* pGUIControl = (CGUIControl*)ref(window)->GetControl(iControlId); 
@@ -529,19 +538,19 @@ namespace XBMCAddon
     Control* Window::getFocus() throw (WindowException)
     {
       TRACE;
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
 
       int iControlId = ref(window)->GetFocusedControlID();
       if(iControlId == -1)
         throw WindowException("No control in this window has focus");
-      lock.Leave();
-      return GetControlById(iControlId);
+      // Sine I'm already holding the lock theres no reason to give it to GetFocusedControlID
+      return GetControlById(iControlId,NULL);
     }
 
     long Window::getFocusId() throw (WindowException)
     {
       TRACE;
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       int iControlId = ref(window)->GetFocusedControlID();
       if(iControlId == -1)
         throw WindowException("No control in this window has focus");
@@ -622,14 +631,14 @@ namespace XBMCAddon
       if (res < RES_HDTV_1080i || res > RES_AUTORES)
         throw WindowException("Invalid resolution.");
 
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       ref(window)->SetCoordsRes(g_settings.m_ResInfo[res]);
     }
 
     void Window::setProperty(const char* key, const String& value)
     {
       TRACE;
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       CStdString lowerKey = key;
 
       ref(window)->SetProperty(lowerKey.ToLower(), value);
@@ -638,7 +647,7 @@ namespace XBMCAddon
     String Window::getProperty(const char* key)
     {
       TRACE;
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       CStdString lowerKey = key;
       std::string value = ref(window)->GetProperty(lowerKey.ToLower()).asString();
       return value.c_str();
@@ -648,7 +657,7 @@ namespace XBMCAddon
     {
       TRACE;
       if (!key) return;
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
 
       CStdString lowerKey = key;
       ref(window)->SetProperty(lowerKey.ToLower(), "");
@@ -657,7 +666,7 @@ namespace XBMCAddon
     void Window::clearProperties()
     {
       TRACE;
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       ref(window)->ClearProperties();
     }
 
@@ -762,8 +771,7 @@ namespace XBMCAddon
     void Window::addControls(std::vector<Control*> pControls) throw (WindowException)
     {
       TRACE;
-      DelayedCallGuard dg(languageHook);
-      CSingleLock lock(g_graphicsContext);
+      SingleLockWithDelayGuard gslock(g_graphicsContext,languageHook);
       int count = 1; int size = pControls.size();
       for (std::vector<Control*>::iterator iter = pControls.begin(); iter != pControls.end(); count++, iter++)
         doAddControl(*iter,NULL, count == size);
@@ -772,7 +780,8 @@ namespace XBMCAddon
     Control* Window::getControl(int iControlId) throw (WindowException)
     {
       TRACE;
-      return GetControlById(iControlId);
+      DelayedCallGuard dg(languageHook);
+      return GetControlById(iControlId,&g_graphicsContext);
     }
 
     void Action::setFromCAction(const CAction& action)

@@ -50,6 +50,7 @@ namespace ADDON
 
     ADDON_STATUS Create();
     virtual void Stop();
+    virtual bool CheckAPIVersion(void) { return true; }
     void Destroy();
 
     bool DllLoaded(void) const;
@@ -206,7 +207,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::Create()
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
   m_initialized = false;
 
-  if (!LoadDll())
+  if (!LoadDll() || !CheckAPIVersion())
     return ADDON_STATUS_PERMANENT_FAILURE;
 
   /* Allocate the helper function class to allow crosstalk over

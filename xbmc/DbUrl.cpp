@@ -130,6 +130,12 @@ void CDbUrl::AddOptions(const std::string &options)
   updateOptions();  
 }
 
+void CDbUrl::RemoveOption(const std::string &key)
+{
+  CUrlOptions::RemoveOption(key);
+  updateOptions(); 
+}
+
 bool CDbUrl::validateOption(const std::string &key, const CVariant &value)
 {
   if (key.empty())
