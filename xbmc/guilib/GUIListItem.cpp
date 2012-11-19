@@ -457,6 +457,11 @@ void CGUIListItem::AppendProperties(const CGUIListItem &item)
 }
 
 /* PLEX */
+bool CGUIListItem::HasArt(const string &type, int index) const
+{
+  return !GetArt(type, index).empty();
+}
+
 std::string CGUIListItem::GetArt(const string &type, int index) const
 {
   if (index == 0)
