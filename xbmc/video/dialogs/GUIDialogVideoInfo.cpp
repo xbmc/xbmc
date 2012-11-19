@@ -723,7 +723,7 @@ void CGUIDialogVideoInfo::OnGetArt()
   else if (CFile::Exists(result))
     newThumb = result;
   else // none
-    newThumb = "-"; // force local thumbs to be ignored
+    newThumb.clear();
 
   // update thumb in the database
   CVideoDatabase db;
