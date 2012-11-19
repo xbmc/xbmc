@@ -95,7 +95,18 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   }
 
   if (!pItem->HasArt("thumb"))
-    FillThumb(*pItem);
+  {
+    // Look for embedded art
+    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetCoverArtInfo().empty())
+    {
+      CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "music");
+      pItem->SetArt("thumb", thumb);
+    }
+    else
+    {
+      FillThumb(*pItem);
+    }
+  }
 
   return true;
 }
