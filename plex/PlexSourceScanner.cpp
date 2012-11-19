@@ -121,7 +121,7 @@ void CPlexSourceScanner::Process()
     if (remoteOwned == false && url.find("X-Plex-Token") == string::npos)
       PlexLibrarySectionManager::Get().addLocalSections(m_sources->uuid, sections);
     else
-      PlexLibrarySectionManager::Get().addRemoteOwnedSections(sections);
+      PlexLibrarySectionManager::Get().addRemoteOwnedSections(m_sources->uuid, sections);
     
     // Notify the UI.
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_REMOTE_SOURCES);
@@ -313,7 +313,7 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
   // Auto-add PMS sources
   VECSOURCES pmsSources;
   CFileItemList* fileItems = new CFileItemList();
-  CPlexDirectory plexDir;
+  CPlexDirectory plexDir(true, false);
   plexDir.SetTimeout(2);
   
   URIUtils::AddSlashAtEnd(strPlexPath);

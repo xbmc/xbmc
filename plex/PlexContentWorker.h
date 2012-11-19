@@ -93,7 +93,7 @@ class PlexContentWorker
     if (m_cancelled == false)
     {
       // Get the results.
-      CPlexDirectory dir;
+      CPlexDirectory dir(true, false);
       dir.GetDirectory(m_url, *m_results.get());
     }
 
