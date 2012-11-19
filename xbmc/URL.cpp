@@ -214,10 +214,10 @@ void CURL::Parse(const CStdString& strURL1)
       m_strWithoutOptions = strURL.substr(0,iOptions);
       /* END PLEX */
     }
-
-    /* PLEX */
-    m_strWithoutOptions = strURL;
-    /* END PLEX */
+    else
+      /* PLEX */
+      m_strWithoutOptions = strURL;
+      /* END PLEX */
   }
 
   int iSlash = strURL.Find("/", iPos);
