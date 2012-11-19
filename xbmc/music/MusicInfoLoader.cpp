@@ -200,39 +200,6 @@ void CMusicInfoLoader::OnLoaderFinish()
   // cleanup cache loaded from HD
   m_mapFileItems->Clear();
 
-  if (!m_bStop)
-  { // check for art
-    VECSONGS songs;
-    songs.reserve(m_pVecItems->Size());
-    for (int i = 0; i < m_pVecItems->Size(); ++i)
-    {
-      CFileItemPtr pItem = m_pVecItems->Get(i);
-      if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
-        continue;
-      if (pItem->HasMusicInfoTag() && pItem->GetMusicInfoTag()->Loaded())
-      {
-        CSong song(*pItem->GetMusicInfoTag());
-        song.strThumb = pItem->GetArt("thumb");
-        song.idSong = i; // for the lookup below
-        songs.push_back(song);
-      }
-    }
-    VECALBUMS albums;
-    CMusicInfoScanner::CategoriseAlbums(songs, albums);
-    CMusicInfoScanner::FindArtForAlbums(albums, m_pVecItems->GetPath());
-    for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
-    {
-      string albumArt = i->art["thumb"];
-      for (VECSONGS::iterator j = i->songs.begin(); j != i->songs.end(); ++j)
-      {
-        if (!j->strThumb.empty())
-          m_pVecItems->Get(j->idSong)->SetArt("thumb", j->strThumb);
-        else
-          m_pVecItems->Get(j->idSong)->SetArt("thumb", albumArt);
-      }
-    }
-  }
-
   // Save loaded items to HD
   if (!m_strCacheFileName.IsEmpty())
     SaveCache(m_strCacheFileName, *m_pVecItems);
