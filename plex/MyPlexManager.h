@@ -90,6 +90,8 @@ class MyPlexManager
   /// Sign out.
   void signOut()
   {
+    boost::mutex::scoped_lock lk(m_mutex);
+
     // Clear out the token.
     g_guiSettings.SetString("myplex.token", "");
     g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
@@ -99,6 +101,11 @@ class MyPlexManager
     vector<PlexServerPtr> servers;
     PlexServerManager::Get().setRemoteServers(servers);
     m_playlistCache.clear();
+
+    // clear some local variables
+    m_remoteServers.clear();
+    m_sectionThumbnails.clear();
+    m_sharedSections.clear();
     
     // Notify.
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
@@ -451,6 +458,5 @@ class MyPlexManager
   bool m_didFetchThumbs;
 
   map<string, PlexServerPtr> m_remoteServers;
-  map<string, PlexServerPtr> m_sharedServers;
   vector<CFileItemPtr> m_sharedSections;
 };

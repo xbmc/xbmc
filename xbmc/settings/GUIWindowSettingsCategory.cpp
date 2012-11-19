@@ -2098,6 +2098,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
         // Change button to "sign out"
         pControl->SetLabel(g_localizeStrings.Get(44003));
         pSettingString->SetLabel(44003);
+
+        // Make sure we scan when we have changed this status.
+        MyPlexManager::Get().scanAsync();
       }
       else
       {
