@@ -284,6 +284,8 @@ class MyPlexManager
               continue;
             }
           }
+
+          newRemoteServers[serverPtr->key()] = serverPtr;
         }
         else
         {
@@ -332,6 +334,8 @@ class MyPlexManager
         if (newRemoteServers.find(serverPair.first) != newRemoteServers.end())
         {
           PlexServerPtr serv = serverPair.second;
+
+          dprintf("MyPlexManager: Seems like we lost server %s", serv->name.c_str());
           PlexServerManager::Get().removeServer(serv->uuid, serv->name, serv->address, serv->port);
         }
       }
