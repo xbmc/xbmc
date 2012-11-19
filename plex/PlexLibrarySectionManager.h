@@ -63,9 +63,9 @@ class PlexLibrarySectionManager
   }
 
   /// Add remote owned sections.
-  void addRemoteOwnedSections(const vector<CFileItemPtr>& sections)
+  void addRemoteOwnedSections(const CStdString& uuid, const vector<CFileItemPtr>& sections)
   {
-    addSections(m_remoteOwnedSections, sections);
+    addSections(m_remoteOwnedSections[uuid], sections);
   }
   
   /// Add remote shared sections.
@@ -100,12 +100,15 @@ class PlexLibrarySectionManager
     }
     
     // Now add all the remote ones that we haven't already added (because we prefer local).
-    BOOST_FOREACH(key_section_pair pair, m_remoteOwnedSections)
+    BOOST_FOREACH(uuid_section_map_pair p, m_remoteOwnedSections)
     {
-      if (localSections.find(pair.first) == localSections.end())
+      BOOST_FOREACH(key_section_pair pair, p.second)
       {
-        dprintf(" -> Adding remote owned section: %s", pair.second->GetLabel().c_str());
-        sections.push_back(pair.second);
+        if (localSections.find(pair.first) == localSections.end())
+        {
+          dprintf(" -> Adding remote owned section: %s", pair.second->GetLabel().c_str());
+          sections.push_back(pair.second);
+        }
       }
     }
     
@@ -168,7 +171,7 @@ class PlexLibrarySectionManager
   map<string, CFileItemPtr> m_sharedSections;
   
   /// Remote owned sections from uuid://path to section.
-  map<string, CFileItemPtr> m_remoteOwnedSections;
+  map<string, map<string, CFileItemPtr> > m_remoteOwnedSections;
   
   /// Map of local sections, from uuid to a map of uuid://path to section.
   map<string, map<string, CFileItemPtr> > m_localSections;
