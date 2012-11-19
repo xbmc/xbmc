@@ -149,7 +149,14 @@ class MyPlexManager
     string request = GetBaseUrl(true) + "/pms/system/library/sections";
     return fetchList(request, list);
   }
-  
+
+  /// Return a list of all servers
+  bool getServers(CFileItemList& list)
+  {
+    string request = GetBaseUrl(true) + "/pms/servers.xml";
+    return fetchList(request, list);
+  }
+
   /// Do a background scan.
   void scanAsync()
   {
@@ -158,6 +165,61 @@ class MyPlexManager
       boost::thread t(boost::bind(&MyPlexManager::scan, this));
       t.detach();
     }
+  }
+
+  void scanSharedServer(PlexServerPtr server, CFileItemPtr serverItem)
+  {
+    server->incRef();
+    dprintf("Scanning shared host %s", server->name.c_str());
+    CStdString url;
+    url.Format("http://%s:%d/library/sections", server->address, server->port);
+
+    CFileItemList sections;
+    if (fetchList(url, sections, server->token))
+    {
+      for (int i=0; i < sections.Size(); i++)
+      {
+        CFileItemPtr section = sections[i];
+        section->SetProperty("machineIdentifier", server->uuid);
+        section->SetLabel2(serverItem->GetProperty("sourceTitle").asString());
+        section->SetProperty("sourceTitle", serverItem->GetProperty("sourceTitle").asString());
+        section->SetProperty("serverName", server->name);
+
+        /* Take the mutex so that we can get thumbnails and modify m_sharedSections here */
+        boost::mutex::scoped_lock lk(m_mutex);
+
+        CStdString path = CURL(section->GetPath()).GetUrlWithoutOptions() + "/";
+
+        if (m_sectionThumbnails.find(path) != m_sectionThumbnails.end())
+        {
+          vector<CStdString> thumbs = m_sectionThumbnails[path];
+          for (int i = 0; i < thumbs.size() ; i++)
+          {
+            dprintf("MyPlexManager: [%s] thumb%d = %s", path.c_str(), i, thumbs[i].c_str());
+            section->SetArt(PLEX_ART_THUMB, i, thumbs[i]);
+          }
+        }
+        else
+        {
+          dprintf("MyPlexManager: no thumbnails for section %s", path.c_str());
+        }
+        m_sharedSections.push_back(section);
+      }
+    }
+    server->decRef();
+
+    vector<CFileItemPtr> sharedSections;
+    {
+      /* Take the mutex so that we can copy sharedSections here */
+      boost::mutex::scoped_lock lk(m_mutex);
+      sharedSections = m_sharedSections;
+    }
+
+    PlexLibrarySectionManager::Get().addSharedSections(sharedSections);
+
+    /* Make sure the home window knows about it */
+    CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
+    g_windowManager.SendThreadMessage(msg2);
   }
   
   /// myPlex section scanner.
@@ -171,83 +233,122 @@ class MyPlexManager
       signIn();
       m_firstRun = false;
     }
-    
-    vector<CFileItemPtr>  sharedSections;
-    vector<CFileItemPtr>  ownedSections;
-    CFileItemList         sections;
-    set<string>           uuids;
-    vector<PlexServerPtr> servers;
+
+    m_didFetchThumbs = false;
+    CFileItemList servers;
+    map<string, PlexServerPtr> newRemoteServers;
     vector<PlexServerPtr> sharedServers;
-    
-    // Get the list of sections.
-    if (getSections(sections))
+
+    if (getServers(servers))
     {
-      for (int i=0; i<sections.Size(); i++)
       {
-        // Separate into owned and shared.
-        CFileItemPtr section = sections[i];
-        
-        // Make sure it has the token.
+        /* Clear the shared sections while holding the mutex */
+        boost::mutex::scoped_lock lk(m_mutex);
+        m_sharedSections.clear();
+        m_sectionThumbnails.clear();
+      }
+
+      for (int i=0; i<servers.Size(); i++)
+      {
+        CFileItemPtr server = servers[i];
+        dprintf("Server %s", server->GetLabel().c_str());
+
+        // Get token
         bool owned = false;
-        string token = section->GetProperty("accessToken").asString();
+        string token = server->GetProperty("accessToken").asString();
         if (token.empty())
         {
+          // This is probably our own server, just add our token to it
           token = g_guiSettings.GetString("myplex.token");
           owned = true;
         }
-        
-        // Add token to path and to fanart.
-        section->SetPath(addArgument(section->GetPath(), "X-Plex-Token=" + token));
-        //section->SetQuickFanart(addArgument(section->GetQuickFanart(), "X-Plex-Token=" + token));
-        
-        // Separate 'em into shared and owned.
-        if (section->GetProperty("owned") == "1")
+
+        if (server->HasProperty("owned"))
+          owned = server->GetProperty("owned").asBoolean();
+
+        CStdString uuid = server->GetProperty("uuid").asString();
+        CStdString address = server->GetProperty("address").asString();
+        CStdString name = server->GetLabel();
+        int port = server->GetProperty("port").asInteger();
+
+        PlexServerPtr serverPtr;
+        if (owned)
         {
-          ownedSections.push_back(section);
-          section->SetLabel2(section->GetProperty("serverName").asString());
+          if (!PlexServerManager::Get().getServerByUUID(uuid, serverPtr) && owned)
+          {
+            dprintf("MyPlexManager: Adding new server %s", uuid.c_str());
+            PlexServerManager::Get().addServer(uuid, name, address, port, token);
+            if (!PlexServerManager::Get().getServerByUUID(uuid, serverPtr))
+            {
+              dprintf("MyPlexManager: failed to add server %s", uuid.c_str());
+              continue;
+            }
+          }
         }
         else
         {
-          sharedSections.push_back(section);
-          section->SetLabel2(section->GetProperty("sourceTitle").asString());
-        }
-        
-        // If we own it and the server hasn't been added, do so now.
-        if (uuids.count(section->GetProperty("machineIdentifier").asString()) == 0)
-        {
-          string uuid = section->GetProperty("machineIdentifier").asString();
-          string name = section->GetProperty("serverName").asString();
-          string address = section->GetProperty("address").asString();
-          unsigned short port = boost::lexical_cast<unsigned short>(section->GetProperty("port").asString());
-          
-          PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, address, port, token));
-          
-          if (owned == true)
-            servers.push_back(server);
-          else
-            sharedServers.push_back(server);
-          
-          uuids.insert(uuid);
+          serverPtr = PlexServerPtr(new PlexServer(uuid, name, address, port, token));
+          sharedServers.push_back(serverPtr);
+
+          /* We have a shared server, that means that we need to fetch the thumbs for the
+           * shared server sections
+           * This is a bit stupid, but hey...
+           */
+          CFileItemList sections;
+          if (!m_didFetchThumbs && getSections(sections))
+          {
+            for (int i = 0; i < sections.Size(); i++)
+            {
+              CFileItemPtr section = sections[i];
+              CStdString path = section->GetPath();
+
+              vector<CStdString> thumbnails;
+              for (int t=0; t < 4; t++)
+              {
+                if (section->HasArt(PLEX_ART_THUMB, t))
+                  thumbnails.push_back(section->GetArt(PLEX_ART_THUMB, t));
+              }
+
+              if (thumbnails.size() > 0)
+              {
+                boost::mutex::scoped_lock lk(m_mutex);
+                m_sectionThumbnails[path] = thumbnails;
+                dprintf("Added %ld thumbnails for %s", thumbnails.size(), path.c_str());
+              }
+            }
+          }
+
+          m_didFetchThumbs = true;
+
+          /* Scan this host async */
+          boost::thread t(boost::bind(&MyPlexManager::scanSharedServer, this, serverPtr, server));
+          t.detach();
         }
       }
-      
-      PlexServerManager::Get().setRemoteServers(servers);
+
+      /* Check for servers that are removed */
+      BOOST_FOREACH(key_server_pair serverPair, m_remoteServers)
+      {
+        if (newRemoteServers.find(serverPair.first) != newRemoteServers.end())
+        {
+          PlexServerPtr serv = serverPair.second;
+          PlexServerManager::Get().removeServer(serv->uuid, serv->name, serv->address, serv->port);
+        }
+      }
+
+      m_remoteServers = newRemoteServers;
       PlexServerManager::Get().setSharedServers(sharedServers);
     }
-    
+
     // Get the queue.
     CFileItemList queue;
     getPlaylist(queue, "queue");
-    
-    // Add the sections.
-    PlexLibrarySectionManager::Get().addRemoteOwnedSections(ownedSections);
-    PlexLibrarySectionManager::Get().addSharedSections(sharedSections);
-    
+
     // Notify.
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
     g_windowManager.SendThreadMessage(msg2);
   }
-  
+    
  protected:
   
   /// Constructor.
@@ -266,19 +367,27 @@ class MyPlexManager
   }                              
                                 
   /// Fetch a list from myPlex.
-  bool fetchList(const string& url, CFileItemList& list)
+  bool fetchList(const string& url, CFileItemList& list, const CStdString& token="")
   {
-    if (g_guiSettings.GetString("myplex.token").empty() == false)
+    CStdString ourToken = token;
+
+    if (ourToken.empty() == true)
     {
-      // Add the token to the request.
-      string request = url;
-      request += "?X-Plex-Token=" + g_guiSettings.GetString("myplex.token");
-      
-      CPlexDirectory plexDir(true, false);
-      return plexDir.GetDirectory(request, list);
+      ourToken = g_guiSettings.GetString("myplex.token");
     }
-    
-    return false;
+
+    if (ourToken.empty() == true)
+    {
+      dprintf("MyPlexManager: no token for %s", url.c_str());
+      return false;
+    }
+
+    // Add the token to the request.
+    string request = url;
+    request += "?X-Plex-Token=" + ourToken;
+
+    CPlexDirectory plexDir(true, false);
+    return plexDir.GetDirectory(request, list);
   }
 
   /// Utility method for myPlex to setup request headers.
@@ -332,4 +441,12 @@ class MyPlexManager
   bool          m_firstRun;
   map<string, PlaylistCacheEntryPtr> m_playlistCache;
   boost::mutex  m_mutex;
+
+  /* thumbnails */
+  map<string, vector<CStdString> > m_sectionThumbnails;
+  bool m_didFetchThumbs;
+
+  map<string, PlexServerPtr> m_remoteServers;
+  map<string, PlexServerPtr> m_sharedServers;
+  vector<CFileItemPtr> m_sharedSections;
 };
