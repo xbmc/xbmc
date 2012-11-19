@@ -1741,7 +1741,10 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
     if (pItem->m_bIsFolder)
     {
       CURL itemUrl(pItem->GetPath());
-      itemUrl.SetOption("filter", filterOption);
+      if (!filterOption.empty())
+        itemUrl.SetOption("filter", filterOption);
+      else
+        itemUrl.RemoveOption("filter");
       pItem->SetPath(itemUrl.Get());
     }
   }
