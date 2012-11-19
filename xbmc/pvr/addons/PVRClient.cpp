@@ -257,24 +257,26 @@ bool CPVRClient::IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, c
   return (version >= myMinVersion && minVersion <= myVersion);
 }
 
+bool CPVRClient::CheckAPIVersion(void)
+{
+  /* check the API version */
+  AddonVersion minVersion = AddonVersion(XBMC_PVR_MIN_API_VERSION);
+  try { m_apiVersion = AddonVersion(m_pStruct->GetPVRAPIVersion()); }
+  catch (exception &e) { LogException(e, "GetPVRAPIVersion()"); return false;  }
+
+  if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
+  {
+    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. XBMC minimum API version = '%s', add-on API version '%s'", Name().c_str(), minVersion.c_str(), m_apiVersion.c_str());
+    return false;
+  }
+
+  return true;
+}
+
 bool CPVRClient::GetAddonProperties(void)
 {
   CStdString strHostName, strBackendName, strConnectionString, strFriendlyName, strBackendVersion;
   PVR_ADDON_CAPABILITIES addonCapabilities;
-
-  /* check the API version */
-  AddonVersion minVersion = AddonVersion("0.0.0");
-  try { m_apiVersion = AddonVersion(m_pStruct->GetPVRAPIVersion()); }
-  catch (exception &e) { LogException(e, "GetPVRAPIVersion()"); return false;  }
-
-  try { minVersion = AddonVersion(m_pStruct->GetMininumPVRAPIVersion()); }
-  catch (exception &e) { LogException(e, "GetMininumPVRAPIVersion()"); return false;  }
-
-  if (!IsCompatibleAPIVersion(minVersion, m_apiVersion))
-  {
-    CLog::Log(LOGERROR, "PVR - Add-on '%s' is using an incompatible API version. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
-    return false;
-  }
 
   /* get the capabilities */
   try

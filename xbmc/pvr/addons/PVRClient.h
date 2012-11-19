@@ -512,6 +512,12 @@ namespace PVR
     static bool IsCompatibleAPIVersion(const ADDON::AddonVersion &minVersion, const ADDON::AddonVersion &version);
 
     /*!
+     * @brief Request the API version from the add-on, and check if it's compatible
+     * @return True when compatible, false otherwise.
+     */
+    bool CheckAPIVersion(void);
+
+    /*!
      * @brief Reset the signal quality data to the initial values.
      */
     void ResetQualityData(PVR_SIGNAL_STATUS &qualityInfo);
