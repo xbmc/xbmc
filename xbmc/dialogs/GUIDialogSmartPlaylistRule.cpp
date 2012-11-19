@@ -30,6 +30,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
+#include "utils/LabelFormatter.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -213,10 +214,40 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     videodatabase.GetWritersNav(basePath, items, type);
     iLabel = 20417;
   }
-  else if (m_rule.m_field == FieldTvShowTitle)
+  else if (m_rule.m_field == FieldTvShowTitle ||
+          (m_type.Equals("tvshows") && m_rule.m_field == FieldTitle))
   {
-    videodatabase.GetTvShowsNav("videodb://2/2/",items);
+    videodatabase.GetTvShowsNav(basePath + "2/", items);
     iLabel = 20343;
+  }
+  else if (m_rule.m_field == FieldTitle)
+  {
+    if (m_type.Equals("songs"))
+    {
+      database.GetSongsNav("musicdb://4/", items, -1, -1, -1);
+      iLabel = 134;
+    }
+    else if (m_type.Equals("movies"))
+    {
+      videodatabase.GetMoviesNav(basePath + "2/", items);
+      iLabel = 20342;
+    }
+    else if (m_type.Equals("episodes"))
+    {
+      videodatabase.GetEpisodesNav(basePath + "2/-1/-1/", items);
+      // we need to replace the db label (<season>x<episode> <title>) with the title only
+      CLabelFormatter format("%T", "");
+      for (int i = 0; i < items.Size(); i++)
+        format.FormatLabel(items[i].get());
+      iLabel = 20360;
+    }
+    else if (m_type.Equals("musicvideos"))
+    {
+      videodatabase.GetMusicVideosNav(basePath + "2/", items);
+      iLabel = 20389;
+    }
+    else
+      assert(false);
   }
   else if (m_rule.m_field == FieldPlaylist)
   {
