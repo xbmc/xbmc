@@ -2103,7 +2103,9 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
     CFileItemPtr pItem = m_vecItems->Get(index);
     // if the item is a folder we need to copy the path of
     // the filtered item to be able to keep the applied filters
-    if (pItem->m_bIsFolder)
+    /* PLEX */
+    if (pItem->m_bIsFolder && (filterOption.empty() == false))
+    /* END PLEX */
     {
       CURL itemUrl(pItem->GetPath());
       itemUrl.SetOption("filter", filterOption);
@@ -2132,7 +2134,7 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
       }
     }
   }
-  
+
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(currentItemPath);
