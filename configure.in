@@ -843,7 +843,7 @@ if test "x$have_builtin_sync_val_compare_and_swap" = "xyes"; then
 fi
 
 # Add top source directory for all builds so we can use config.h
-INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
+INCLUDES="-I\$(abs_top_srcdir) $INCLUDES" 
 
 # Check inotify availability
 AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
