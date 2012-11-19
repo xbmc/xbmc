@@ -301,6 +301,22 @@ public:
     updateBestServer();
     dump();
   }
+
+  bool getServerByUUID(const CStdString& uuid, PlexServerPtr& server)
+  {
+    boost::recursive_mutex::scoped_lock lk(m_mutex);
+
+    BOOST_FOREACH(key_server_pair pair, m_servers)
+    {
+      if (pair.second->uuid == uuid)
+      {
+        server = pair.second;
+        return true;
+      }
+    }
+
+    return false;
+  }
   
  private:
   
