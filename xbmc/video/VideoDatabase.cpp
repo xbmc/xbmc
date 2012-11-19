@@ -309,16 +309,9 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE seasons ( idSeason integer primary key, idShow integer, season integer)");
     m_pDS->exec("CREATE INDEX ix_seasons ON seasons (idShow, season)");
 
-    CLog::Log(LOGINFO, "create art table and triggers");
+    CLog::Log(LOGINFO, "create art table");
     m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
     m_pDS->exec("CREATE INDEX ix_art ON art(media_id, media_type(20), type(20))");
-    m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; END");
-    m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; END");
-    m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; END");
-    m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; END");
-    m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; END");
-    m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; END");
-    m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
 
     CLog::Log(LOGINFO, "create tag table");
     m_pDS->exec("CREATE TABLE tag (idTag integer primary key, strTag text)");
@@ -329,6 +322,35 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_1 ON taglinks (idTag, media_type(20), idMedia)");
     m_pDS->exec("CREATE UNIQUE INDEX ix_taglinks_2 ON taglinks (idMedia, media_type(20), idTag)");
     m_pDS->exec("CREATE INDEX ix_taglinks_3 ON taglinks (media_type(20))");
+
+    CLog::Log(LOGINFO, "create deletion triggers");
+    m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; "
+                "DELETE FROM taglinks WHERE idMedia=old.idMovie AND media_type='movie'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; "
+                "DELETE FROM taglinks WHERE idMedia=old.idShow AND media_type='tvshow'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
+                "DELETE FROM taglinks WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_tag AFTER DELETE ON taglinks FOR EACH ROW BEGIN "
+                "DELETE FROM tag WHERE idTag=old.idTag AND idTag NOT IN (SELECT DISTINCT idTag FROM taglinks); "
+                "END");
 
     // we create views last to ensure all indexes are rolled in
     CreateViews();
@@ -1431,7 +1453,6 @@ void CVideoDatabase::RemoveTagFromItem(int idItem, int idTag, const std::string 
     return;
 
   RemoveFromLinkTable("taglinks", "idTag", idTag, "idMedia", idItem, "media_type", type.c_str());
-  CleanupTags();
 }
 
 void CVideoDatabase::RemoveTagsFromItem(int idItem, const std::string &type)
@@ -1440,12 +1461,6 @@ void CVideoDatabase::RemoveTagsFromItem(int idItem, const std::string &type)
     return;
 
   m_pDS2->exec(PrepareSQL("DELETE FROM taglinks WHERE idMedia=%d AND media_type='%s'", idItem, type.c_str()));
-  CleanupTags();
-}
-
-void CVideoDatabase::CleanupTags()
-{
-  m_pDS2->exec("DELETE FROM tag WHERE NOT EXISTS (SELECT 1 FROM taglinks WHERE taglinks.idTag = tag.idTag)");
 }
 
 //****Actors****
@@ -2995,7 +3010,6 @@ void CVideoDatabase::DeleteTag(int idTag, VIDEODB_CONTENT_TYPE mediaType)
     CStdString strSQL;
     strSQL = PrepareSQL("DELETE FROM taglinks WHERE idTag = %i AND media_type = '%s'", idTag, type.c_str());
     m_pDS->exec(strSQL.c_str());
-    CleanupTags();
   }
   catch (...)
   {
@@ -4205,6 +4219,44 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
           m_pDS->exec(PrepareSQL("delete from art where art_id=%d", i->art_id));
       }
     }
+  }
+  if (iVersion < 73)
+  {
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_movie");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_tvshow");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_musicvideo");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_episode");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_season");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_set");
+    m_pDS->exec("DROP TRIGGER IF EXISTS delete_person");
+
+    m_pDS->exec("CREATE TRIGGER delete_movie AFTER DELETE ON movie FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idMovie AND media_type='movie'; "
+                "DELETE FROM taglinks WHERE idMedia=old.idMovie AND media_type='movie'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idShow AND media_type='tvshow'; "
+                "DELETE FROM taglinks WHERE idMedia=old.idShow AND media_type='tvshow'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_musicvideo AFTER DELETE ON musicvideo FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idMVideo AND media_type='musicvideo'; "
+                "DELETE FROM taglinks WHERE idMedia=old.idMVideo AND media_type='musicvideo'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_episode AFTER DELETE ON episode FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idEpisode AND media_type='episode'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_season AFTER DELETE ON seasons FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idSeason AND media_type='season'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN "
+                "DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); "
+                "END");
+    m_pDS->exec("CREATE TRIGGER delete_tag AFTER DELETE ON taglinks FOR EACH ROW BEGIN "
+                "DELETE FROM tag WHERE idTag=old.idTag AND idTag NOT IN (SELECT DISTINCT idTag FROM taglinks); "
+                "END");
   }
   // always recreate the view after any table change
   CreateViews();
