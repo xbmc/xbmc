@@ -120,6 +120,8 @@ void CPlexSourceScanner::Process()
     // Add the sections, but only if they're local (be extra safe).
     if (remoteOwned == false && url.find("X-Plex-Token") == string::npos)
       PlexLibrarySectionManager::Get().addLocalSections(m_sources->uuid, sections);
+    else
+      PlexLibrarySectionManager::Get().addRemoteOwnedSections(sections);
     
     // Notify the UI.
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_REMOTE_SOURCES);
