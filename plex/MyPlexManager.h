@@ -92,7 +92,7 @@ class MyPlexManager
   {
     // Clear out the token.
     g_guiSettings.SetString("myplex.token", "");
-    g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(19010));
+    g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44010));
     
     // Remove all the myPlex sections, clear the queue.
     PlexLibrarySectionManager::Get().removeRemoteSections();
