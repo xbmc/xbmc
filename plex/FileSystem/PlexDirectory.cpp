@@ -542,6 +542,8 @@ class PlexMediaNode
    static PlexMediaNode* Create(TiXmlElement* element);
 
    virtual ~PlexMediaNode() {}
+
+   virtual bool needKey() { return true; }
   
    CFileItemPtr BuildFileItem(const CURL& url, TiXmlElement& el, bool localServer)
    {
@@ -561,7 +563,7 @@ class PlexMediaNode
      DoBuildFileItem(pItem, string(parentPath), el);
 
      // If we don't a key *or* media items, get out.
-     if (strlen(key)== 0 && pItem->m_mediaItems.empty() == true)
+     if (needKey() && (strlen(key)== 0 && pItem->m_mediaItems.empty() == true))
        return CFileItemPtr();
      
      // Parent path.
@@ -1699,10 +1701,15 @@ class PlexMediaPhoto : public PlexMediaNode
 
 class PlexServerNode : public PlexMediaNode
 {
+
+  virtual bool needKey() { return false; }
+
   virtual void DoBuildFileItem(CFileItemPtr &pItem, const string &parentPath, TiXmlElement &el)
   {
     pItem->m_bIsFolder = false;
     pItem->SetLabel(GetLabel(el));
+
+    dprintf("Parsing server node %s", pItem->GetLabel().c_str());
 
     // Token
     const char* token = el.Attribute("accessToken");
@@ -1729,13 +1736,18 @@ class PlexServerNode : public PlexMediaNode
     if (updatedAt)
       pItem->SetProperty("updatedAt", atoi(updatedAt));
 
-    const char* owner = el.Attribute("sourceTitle");
-    if (owner)
-      pItem->SetProperty("owner", owner);
+    const char* sourceTitle = el.Attribute("sourceTitle");
+    if (sourceTitle)
+      pItem->SetProperty("sourceTitle", sourceTitle);
 
     const char* owned = el.Attribute("owned");
     if (owned)
       pItem->SetProperty("owned", bool(atoi(owned)));
+
+    const char* uuid = el.Attribute("machineIdentifier");
+    if (uuid)
+      pItem->SetProperty("uuid", uuid);
+
   }
 
 };
