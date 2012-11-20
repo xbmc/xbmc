@@ -98,6 +98,8 @@ install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMP
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media)
 
-# To finish it all off
-add_custom_target(bundle COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -P ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake DEPENDS ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake)
-
+if(NOT PLEX_SKIP_BUNDLING STREQUAL "1")
+  install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+else()
+  message("-- Skipping bundling ${PLEX_SKIP_BUNDLING}")
+endif()
