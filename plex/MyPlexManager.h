@@ -21,6 +21,7 @@
 #include "FileSystem/PlexDirectory.h"
 #include "PlexLibrarySectionManager.h"
 #include "PlexServerManager.h"
+#include "xbmc/Util.h"
 
 using namespace std;
 using namespace XFILE;
@@ -228,6 +229,20 @@ class MyPlexManager
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
     g_windowManager.SendThreadMessage(msg2);
   }
+
+  void testLocalAddress(PlexServerPtr localServer)
+  {
+    if (localServer->reachable())
+    {
+      /* We default to 32400 and we shouldn't need a token */
+      dprintf("MyPlexManager: Adding local address %s to server %s", localServer->address.c_str(), localServer->name.c_str());
+      PlexServerManager::Get().addServer(localServer->uuid, localServer->name, localServer->address, 32400);
+    }
+    else
+    {
+      dprintf("MyPlexManager: Couldn't reach %s for server %s, will not use it.", localServer->address.c_str(), localServer->name.c_str());
+    }
+  }
   
   /// myPlex section scanner.
   void scan()
@@ -281,14 +296,30 @@ class MyPlexManager
         PlexServerPtr serverPtr;
         if (owned)
         {
-          if (!PlexServerManager::Get().getServerByUUID(uuid, serverPtr) && owned)
+          if (!PlexServerManager::Get().getServerByKey(uuid, address, port, serverPtr))
           {
-            dprintf("MyPlexManager: Adding new server %s", uuid.c_str());
+            dprintf("MyPlexManager: Adding new server %s", name.c_str());
             PlexServerManager::Get().addServer(uuid, name, address, port, token);
-            if (!PlexServerManager::Get().getServerByUUID(uuid, serverPtr))
+            PlexServerManager::Get().getServerByKey(uuid, address, port, serverPtr);
+          }
+
+          /* Check for localAddresses */
+          if (server->HasProperty("localAddresses"))
+          {
+            CStdString localAddresses = server->GetProperty("localAddresses").asString();
+            dprintf("MyPlexManager: localAddresses = %s", localAddresses.c_str());
+            vector<CStdString> addresses;
+            CUtil::SplitParams(localAddresses, addresses);
+            PlexServerPtr localServerPtr;
+
+            BOOST_FOREACH(CStdString address, addresses)
             {
-              dprintf("MyPlexManager: failed to add server %s", uuid.c_str());
-              continue;
+              if (!PlexServerManager::Get().getServerByKey(uuid, address, 32400, localServerPtr))
+              {
+                localServerPtr = PlexServerPtr(new PlexServer(uuid, name, address, 32400, ""));
+                boost::thread t(boost::bind(&MyPlexManager::testLocalAddress, this, localServerPtr));
+                t.detach();
+              }
             }
           }
 

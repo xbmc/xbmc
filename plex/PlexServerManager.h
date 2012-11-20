@@ -302,13 +302,15 @@ public:
     dump();
   }
 
-  bool getServerByUUID(const CStdString& uuid, PlexServerPtr& server)
+  bool getServerByKey(const CStdString& uuid, const CStdString& address, int port, PlexServerPtr& server)
   {
     boost::recursive_mutex::scoped_lock lk(m_mutex);
 
+    PlexServer tmpServer(uuid, "", address, port, "");
+
     BOOST_FOREACH(key_server_pair pair, m_servers)
     {
-      if (pair.second->uuid == uuid)
+      if (pair.second->key() == tmpServer.key())
       {
         server = pair.second;
         return true;
