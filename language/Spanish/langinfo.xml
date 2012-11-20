@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language locale="es">
 	<charsets>
 		<gui>CP1252</gui>
@@ -12,7 +12,15 @@
 	</dvd>
 
 	<regions>
-	<region name="España" locale="ES">
+	<region name="España (12 horas)" locale="ES">
+  	  	<dateshort>D/M/YYYY</dateshort>
+  	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+		<time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+  	  	<tempunit>C</tempunit>
+  	  	<speedunit>kmh</speedunit>
+		<timezone>CEST</timezone>
+	</region>
+	<region name="España (24 horas)" locale="ES">
   	  	<dateshort>D/M/YYYY</dateshort>
   	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
   	  	<time symbolAM="" symbolPM="">H:mm:ss</time>
@@ -20,7 +28,15 @@
   	  	<speedunit>kmh</speedunit>
 		<timezone>CEST</timezone>
 	</region>
-	<region name="Canarias" locale="ES">
+	<region name="Canarias (12 horas)" locale="ES">
+  	  	<dateshort>D/M/YYYY</dateshort>
+  	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+		<time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
+  	  	<tempunit>C</tempunit>
+  	  	<speedunit>kmh</speedunit>
+		<timezone>GMT</timezone>
+	</region>
+	<region name="Canarias (24 horas)" locale="ES">
   	  	<dateshort>D/M/YYYY</dateshort>
   	  	<datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
   	  	<time symbolAM="" symbolPM="">H:mm:ss</time>
