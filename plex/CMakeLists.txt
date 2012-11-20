@@ -87,7 +87,9 @@ else()
   install(TARGETS Plex DESTINATION ${BINPATH} COMPONENT RUNTIME)
 endif()
 
-install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+install(CODE "
+  execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh \"${RESOURCEPATH}\" \"${ROOTDIR}\" \"\${CMAKE_INSTALL_PREFIX}\")
+")
 
 # Replace some XBMC files in the output
 install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Splash.png)")
@@ -95,12 +97,7 @@ install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html)
 install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media)
-if(NOT DEFINED PLEX_SIGN_BINARY)
-  set(PLEX_SIGN_BINARY 0)
-endif()
-if(${PLEX_SIGN_BINARY} EQUAL 1)
-  if(APPLE)
-    install(CODE "message(\"Signing binary: \${CMAKE_INSTALL_PREFIX}/Plex.app\")")
-    install(CODE "execute_process(COMMAND codesign --force --sign \"Developer ID Application: Plex Inc.\" -r ${plexdir}/Resources/requirement.bin \${CMAKE_INSTALL_PREFIX}/Plex.app)")
-  endif()
-endif()
+
+# To finish it all off
+add_custom_target(bundle COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -P ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake DEPENDS ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake)
+
