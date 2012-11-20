@@ -2108,7 +2108,10 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
     /* END PLEX */
     {
       CURL itemUrl(pItem->GetPath());
-      itemUrl.SetOption("filter", filterOption);
+      if (!filterOption.empty())
+        itemUrl.SetOption("filter", filterOption);
+      else
+        itemUrl.RemoveOption("filter");
       pItem->SetPath(itemUrl.Get());
     }
   }

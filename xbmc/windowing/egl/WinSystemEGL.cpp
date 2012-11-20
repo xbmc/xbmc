@@ -383,7 +383,8 @@ bool CWinSystemEGL::PresentRenderImpl(const CDirtyRegionList &dirty)
 
 void CWinSystemEGL::SetVSyncImpl(bool enable)
 {
-  if (!m_egl->SetVSync(m_display, enable))
+  m_iVSyncMode = enable;
+  if (!m_egl->SetVSync(m_display, m_iVSyncMode))
     CLog::Log(LOGERROR, "%s,Could not set egl vsync", __FUNCTION__);
 }
 
