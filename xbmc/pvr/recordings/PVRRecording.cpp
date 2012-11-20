@@ -56,6 +56,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strChannelName    = recording.strChannelName;
   m_genre             = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
   m_playCount         = recording.iPlayCount;
+  m_resumePoint.timeInSeconds = recording.iLastPlayedPosition;
+  m_resumePoint.totalTimeInSeconds = recording.iDuration;
   m_strIconPath       = recording.strIconPath;
   m_strThumbnailPath  = recording.strThumbnailPath;
   m_strFanartPath     = recording.strFanartPath;
@@ -166,18 +168,10 @@ void CPVRRecording::UpdateMetadata(void)
     }
   }
 
-  if ((g_PVRClients->SupportsLastPlayedPosition(m_iClientId)))
+  if (!g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
   {
-    int iPosition = g_PVRClients->GetRecordingLastPlayedPosition(*this);
-    if (iPosition > 0)
-    {
-      m_resumePoint.timeInSeconds      = iPosition;
-      m_resumePoint.totalTimeInSeconds = (double)GetDuration();
-    }
-  }
-  else if (!m_bGotMetaData && db.Open())
-  {
-    db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
+    if (!m_bGotMetaData && db.Open())
+      db.GetResumeBookMark(m_strFileNameAndPath, m_resumePoint);
   }
 
   m_bGotMetaData = true;
@@ -191,6 +185,12 @@ bool CPVRRecording::IncrementPlayCount()
 bool CPVRRecording::SetLastPlayedPosition(int lastplayedposition)
 {
   PVR_ERROR error;
+
+  CBookmark bookmark;
+  bookmark.timeInSeconds = lastplayedposition;
+  bookmark.totalTimeInSeconds = (double)GetDuration();
+  m_resumePoint = bookmark;
+
   if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId) &&
       !g_PVRClients->SetRecordingLastPlayedPosition(*this, lastplayedposition, &error))
   {
@@ -245,6 +245,12 @@ void CPVRRecording::Update(const CPVRRecording &tag)
 
   if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
     m_playCount       = tag.m_playCount;
+
+  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
+  {
+    m_resumePoint.timeInSeconds = tag.m_resumePoint.timeInSeconds;
+    m_resumePoint.totalTimeInSeconds = tag.m_resumePoint.totalTimeInSeconds;
+  }
 
   CStdString strShow;
   strShow.Format("%s - ", g_localizeStrings.Get(20364).c_str());
