@@ -2103,9 +2103,7 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
     CFileItemPtr pItem = m_vecItems->Get(index);
     // if the item is a folder we need to copy the path of
     // the filtered item to be able to keep the applied filters
-    /* PLEX */
-    if (pItem->m_bIsFolder && (filterOption.empty() == false))
-    /* END PLEX */
+    if (pItem->m_bIsFolder)
     {
       CURL itemUrl(pItem->GetPath());
       if (!filterOption.empty())
