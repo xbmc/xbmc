@@ -42,25 +42,25 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 {
   Reset();
 
-  m_strRecordingId    = recording.strRecordingId;
-  m_strTitle          = recording.strTitle;
-  m_iClientId         = iClientId;
-  m_recordingTime     = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
-  m_duration          = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
-  m_iPriority         = recording.iPriority;
-  m_iLifetime         = recording.iLifetime;
-  m_strDirectory      = recording.strDirectory;
-  m_strPlot           = recording.strPlot;
-  m_strPlotOutline    = recording.strPlotOutline;
-  m_strStreamURL      = recording.strStreamURL;
-  m_strChannelName    = recording.strChannelName;
-  m_genre             = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
-  m_playCount         = recording.iPlayCount;
-  m_resumePoint.timeInSeconds = recording.iLastPlayedPosition;
+  m_strRecordingId                 = recording.strRecordingId;
+  m_strTitle                       = recording.strTitle;
+  m_iClientId                      = iClientId;
+  m_recordingTime                  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
+  m_duration                       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
+  m_iPriority                      = recording.iPriority;
+  m_iLifetime                      = recording.iLifetime;
+  m_strDirectory                   = recording.strDirectory;
+  m_strPlot                        = recording.strPlot;
+  m_strPlotOutline                 = recording.strPlotOutline;
+  m_strStreamURL                   = recording.strStreamURL;
+  m_strChannelName                 = recording.strChannelName;
+  m_genre                          = StringUtils::Split(CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+  m_playCount                      = recording.iPlayCount;
+  m_resumePoint.timeInSeconds      = recording.iLastPlayedPosition;
   m_resumePoint.totalTimeInSeconds = recording.iDuration;
-  m_strIconPath       = recording.strIconPath;
-  m_strThumbnailPath  = recording.strThumbnailPath;
-  m_strFanartPath     = recording.strFanartPath;
+  m_strIconPath                    = recording.strIconPath;
+  m_strThumbnailPath               = recording.strThumbnailPath;
+  m_strFanartPath                  = recording.strFanartPath;
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
