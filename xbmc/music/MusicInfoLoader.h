@@ -22,6 +22,7 @@
 #include "MusicDatabase.h"
 
 class CFileItemList;
+class CMusicThumbLoader;
 
 namespace MUSIC_INFO
 {
@@ -48,5 +49,6 @@ protected:
   CMusicDatabase m_musicDatabase;
   unsigned int m_databaseHits;
   unsigned int m_tagReads;
+  CMusicThumbLoader *m_thumbLoader;
 };
 }
