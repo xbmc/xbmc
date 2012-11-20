@@ -187,6 +187,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   addonRecording.iDuration      = xbmcRecording.GetDuration();
   addonRecording.iPriority      = xbmcRecording.m_iPriority;
   addonRecording.iLifetime      = xbmcRecording.m_iLifetime;
+  addonRecording.iPlayCount     = xbmcRecording.m_iRecPlayCount;
   strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(), sizeof(addonRecording.strDirectory) - 1);
   strncpy(addonRecording.strStreamURL, xbmcRecording.m_strStreamURL.c_str(), sizeof(addonRecording.strStreamURL) - 1);
   strncpy(addonRecording.strIconPath, xbmcRecording.m_strIconPath.c_str(), sizeof(addonRecording.strIconPath) - 1);
