@@ -172,8 +172,8 @@
 					<visible>!Container.Content(secondary)</visible>
 					<posy>454</posy>
 					<posx>10</posx>
-					<onup>19010</onup>
-					<ondown>19000</ondown>
+					<onup>19000</onup>
+					<ondown>19010</ondown>
 					<onleft>-</onleft>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
