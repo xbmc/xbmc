@@ -12,13 +12,18 @@
 #include "video/windows/GUIWindowVideoNav.h"
 
 #define FILTER_LIST     19000
-
 #define FILTER_BUTTON   19001
+#define FILTER_RADIO_BUTTON 19002
+#define FILTER_SPIN_CONTROL 19003
+
+#define SORT_LIST       19010
 
 class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
 {
-  public:
-    void OnInitWindow();
+  protected:
+    bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+    void BuildFilters(const CStdString &url, int type);
+    bool FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list);
 };
 
 #endif // GUIWINDOWMEDIAFILTERVIEW_H

@@ -1630,7 +1630,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
           m_history.AddPathFront(strPath);
           m_history.AddPathFront("");
 
-          //m_history.DumpPathHistory();
+          m_history.DumpPathHistory();
           return ;
         }
       }
@@ -1645,7 +1645,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
   else
     m_history.ClearPathHistory();
 
-  //m_history.DumpPathHistory();
+  m_history.DumpPathHistory();
 }
 
 // \brief Override if you want to change the default behavior, what is done

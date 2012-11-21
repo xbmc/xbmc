@@ -938,8 +938,6 @@ class PlexMediaNode
      return "";
    }
 
-protected:
-
   int TypeStringToNumber(const CStdString& type)
   {
     if (type == "show")
@@ -1425,6 +1423,10 @@ class PlexMediaDirectory : public PlexMediaNode
     SetProperty(pItem, el, "sourceTitle");
     SetProperty(pItem, el, "address");
     SetProperty(pItem, el, "port");
+
+    /* Filter stuff */
+    SetProperty(pItem, el, "filterType");
+    SetProperty(pItem, el, "filter");
   }
 };
 
@@ -1712,33 +1714,16 @@ class PlexServerNode : public PlexMediaNode
     dprintf("Parsing server node %s", pItem->GetLabel().c_str());
 
     // Token
-    const char* token = el.Attribute("accessToken");
-    if (token)
-      pItem->SetProperty("accessToken", token);
-
-    const char* address = el.Attribute("address");
-    if (address)
-      pItem->SetProperty("address", address);
+    SetProperty(pItem, el, "accessToken");
+    SetProperty(pItem, el, "address");
+    SetProperty(pItem, el, "version");
+    SetProperty(pItem, el, "localAddresses");
+    SetProperty(pItem, el, "updatedAt");
+    SetProperty(pItem, el, "sourceTitle");
 
     const char* port = el.Attribute("port");
     if (port)
       pItem->SetProperty("port", atoi(port));
-
-    const char* version = el.Attribute("version");
-    if (version)
-      pItem->SetProperty("version", version);
-
-    const char* localaddresses = el.Attribute("localAddresses");
-    if (localaddresses)
-      pItem->SetProperty("localAddresses", localaddresses);
-
-    const char* updatedAt = el.Attribute("updatedAt");
-    if (updatedAt)
-      pItem->SetProperty("updatedAt", atoi(updatedAt));
-
-    const char* sourceTitle = el.Attribute("sourceTitle");
-    if (sourceTitle)
-      pItem->SetProperty("sourceTitle", sourceTitle);
 
     const char* owned = el.Attribute("owned");
     if (owned)
@@ -1837,6 +1822,7 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
         {
           items.SetContent(type);
           gotType = true;
+          items.SetProperty("typeNumber", mediaNode->TypeStringToNumber(pType));
         }
       }
 
