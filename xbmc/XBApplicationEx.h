@@ -55,6 +55,9 @@ public:
   INT Run();
   VOID Destroy();
 
+  unsigned long long m_totalFrames;
+  unsigned int m_benchmarkTimer;
+  unsigned int m_firstFrameTime;
 private:
 };
 

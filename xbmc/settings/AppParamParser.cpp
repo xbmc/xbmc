@@ -92,6 +92,7 @@ void CAppParamParser::DisplayHelp()
   printf("Usage: xbmc [OPTION]... [FILE]...\n\n");
   printf("Arguments:\n");
   printf("  -d <n>\t\tdelay <n> seconds before starting\n");
+  printf("  --benchmark=n\t\tEnable meaningless benchmark mode. Run for <n> msec then display the number of frames rendered\n");
   printf("  -fs\t\t\tRuns XBMC in full screen\n");
   printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
   printf("\t\t\tmanager and supporting applications. For example, that\n");
@@ -137,6 +138,13 @@ void CAppParamParser::ParseArg(const CStdString &arg)
     m_testmode = true;
   else if (arg.substr(0, 11) == "--settings=")
     g_advancedSettings.AddSettingsFile(arg.substr(11));
+  else if (arg.substr(0, 12) == "--benchmark=")
+  {
+    unsigned int benchmark_time = atoi(arg.substr(12).c_str());
+    if (benchmark_time)
+      g_application.SetBenchmarkTimer(benchmark_time);
+  }
+
   else if (arg.length() != 0 && arg[0] != '-')
   {
     if (m_testmode)
