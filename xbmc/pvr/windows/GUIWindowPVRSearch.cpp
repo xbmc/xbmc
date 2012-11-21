@@ -101,7 +101,7 @@ void CGUIWindowPVRSearch::UpdateData(bool bUpdateSelectedFile /* = true */)
   CSingleLock graphicsLock(g_graphicsContext);
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
-  m_parent->m_viewControl.Clear();
+  ShowBusyItem();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
 
