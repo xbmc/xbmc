@@ -61,16 +61,24 @@ target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRA
 
 
 # find all image files in the skin
-file(GLOB MEDIA_IMAGES ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
+file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
+file(GLOB MEDIA_IMAGES_PLEX ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
 # Build the packed textures
 add_custom_command(
-  OUTPUT Textures.xbt
-  COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.mediastream/Media
-  MAIN_DEPENDENCY ${MEDIA_IMAGES}
+  OUTPUT Textures_MediaStream.xbt
+  COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
+  MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
   DEPENDS TexturePacker
 )
-add_custom_target(CompressTextures ALL DEPENDS Textures.xbt)
+add_custom_command(
+  OUTPUT Textures_Plex.xbt
+  COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
+  MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX}
+  DEPENDS TexturePacker
+)
+
+add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
 
 
 # Set some variables we need to configure the CMakeCompleteBundle file
@@ -96,7 +104,8 @@ install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Sp
 install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html)")
 install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media RENAME Textures.xbt)
 
 if(NOT PLEX_SKIP_BUNDLING STREQUAL "1")
   install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)

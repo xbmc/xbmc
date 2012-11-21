@@ -16,7 +16,7 @@ SYNC="rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *
 SYNCSKIN="rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *.png --exclude *.jpg --exclude *.bat --exclude Media* --exclude .git*"
 
 # rsync command for including everything but the skins
-ADDONSYNC="rsync -aq --exclude .DS_Store* --exclude skin.confluence --exclude skin.touched --exclude skin.mediastream"
+ADDONSYNC="rsync -aq --exclude .DS_Store* --exclude skin.confluence --exclude skin.touched --exclude skin.mediastream --exclude skin.plex"
 
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/XBMC"
 mkdir -p "$TARGET_BUILD_DIR/$TARGET_NAME/XBMC/addons"
