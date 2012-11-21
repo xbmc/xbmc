@@ -396,7 +396,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         }
         else
         {
-          int autoCloseTime = g_guiSettings.GetBool("pvrplayback.switchautoclose") ? 1500 : 0;
+          int autoCloseTime = g_guiSettings.GetBool("pvrplayback.confirmchannelswitch") ? 0 : g_guiSettings.GetInt("pvrplayback.channelentrytimeout");
           CStdString strChannel;
           strChannel.Format("%i", action.GetID() - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
