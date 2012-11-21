@@ -52,7 +52,8 @@ CGraphicContext::CGraphicContext(void) :
   m_Resolution(RES_INVALID),
   /*m_windowResolution,*/
   m_guiScaleX(1.0f),
-  m_guiScaleY(1.0f)
+  m_guiScaleY(1.0f),
+  m_groupTransformSize(0)
   /*,m_cameras, */
   /*m_origins, */
   /*m_clipRegions,*/

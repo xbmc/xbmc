@@ -171,16 +171,17 @@ public:
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   inline unsigned int AddGUITransform()
   {
-    unsigned int size = m_groupTransform.size();
     m_groupTransform.push(m_guiTransform);
-    UpdateFinalTransform(m_groupTransform.top());
-    return size;
+    m_groupTransformSize++;
+    UpdateFinalTransform(m_guiTransform);
+    return m_groupTransformSize - 1;
   }
   inline TransformMatrix AddTransform(const TransformMatrix &matrix)
   {
-    ASSERT(m_groupTransform.size());
-    TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
+    ASSERT(m_groupTransformSize);
+    TransformMatrix absoluteMatrix = m_groupTransformSize ? m_groupTransform.top() * matrix : matrix;
     m_groupTransform.push(absoluteMatrix);
+    m_groupTransformSize++;
     UpdateFinalTransform(absoluteMatrix);
     return absoluteMatrix;
   }
@@ -188,20 +189,24 @@ public:
   {
     // TODO: We only need to add it to the group transform as other transforms may be added on top of this one later on
     //       Once all transforms are cached then this can be removed and UpdateFinalTransform can be called directly
-    ASSERT(m_groupTransform.size());
+    ASSERT(m_groupTransformSize);
     m_groupTransform.push(matrix);
+    m_groupTransformSize++;
     UpdateFinalTransform(m_groupTransform.top());
   }
   inline unsigned int RemoveTransform()
   {
-    ASSERT(m_groupTransform.size());
-    if (m_groupTransform.size())
+    ASSERT(m_groupTransformSize);
+    if (m_groupTransformSize)
+    {
       m_groupTransform.pop();
-    if (m_groupTransform.size())
+      m_groupTransformSize--;
+    }
+    if (m_groupTransformSize)
       UpdateFinalTransform(m_groupTransform.top());
     else
       UpdateFinalTransform(TransformMatrix());
-    return m_groupTransform.size();
+    return m_groupTransformSize;
   }
 
   CRect generateAABB(const CRect &rect) const;
@@ -232,7 +237,7 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
-
+  unsigned int m_groupTransformSize;
   CRect m_scissors;
 };
 
