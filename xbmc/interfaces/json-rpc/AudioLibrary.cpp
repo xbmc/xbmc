@@ -658,6 +658,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &paramete
 
   std::set<std::string> checkProperties;
   checkProperties.insert("genreid");
+  checkProperties.insert("artistid");
   std::set<std::string> additionalProperties;
   if (!CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     return OK;
@@ -677,6 +678,18 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &paramete
         item->SetProperty("genreid", genreidObj);
       }
     }
+    if (additionalProperties.find("artistid") != additionalProperties.end())
+    {
+      std::vector<int> artistids;
+      if (musicdatabase.GetArtistsByAlbum(item->GetMusicInfoTag()->GetDatabaseId(), true, artistids))
+      {
+        CVariant artistidObj(CVariant::VariantTypeArray);
+        for (std::vector<int>::const_iterator artistid = artistids.begin(); artistid != artistids.end(); artistid++)
+          artistidObj.push_back(*artistid);
+
+        item->SetProperty("artistid", artistidObj);
+      }
+    }
   }
 
   return OK;
@@ -689,6 +702,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
 
   std::set<std::string> checkProperties;
   checkProperties.insert("genreid");
+  checkProperties.insert("artistid");
   std::set<std::string> additionalProperties;
   if (!CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     return OK;
@@ -706,6 +720,18 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
           genreidObj.push_back(*genreid);
 
         item->SetProperty("genreid", genreidObj);
+      }
+    }
+    if (additionalProperties.find("artistid") != additionalProperties.end())
+    {
+      std::vector<int> artistids;
+      if (musicdatabase.GetArtistsBySong(item->GetMusicInfoTag()->GetDatabaseId(), true, artistids))
+      {
+        CVariant artistidObj(CVariant::VariantTypeArray);
+        for (std::vector<int>::const_iterator artistid = artistids.begin(); artistid != artistids.end(); artistid++)
+          artistidObj.push_back(*artistid);
+
+        item->SetProperty("artistid", artistidObj);
       }
     }
   }

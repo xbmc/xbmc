@@ -423,7 +423,7 @@ namespace JSONRPC
                   "\"theme\", \"mood\", \"style\", \"type\", \"albumlabel\","
                   "\"rating\", \"year\", \"musicbrainzalbumid\","
                   "\"musicbrainzalbumartistid\", \"fanart\", \"thumbnail\","
-                  "\"playcount\", \"genreid\" ]"
+                  "\"playcount\", \"genreid\", \"artistid\" ]"
       "}"
     "}",
     "\"Audio.Fields.Song\": {"
@@ -434,7 +434,7 @@ namespace JSONRPC
                   "\"lyrics\", \"musicbrainztrackid\", \"musicbrainzartistid\","
                   "\"musicbrainzalbumid\", \"musicbrainzalbumartistid\","
                   "\"playcount\", \"fanart\", \"thumbnail\", \"file\","
-                  "\"albumid\", \"lastplayed\", \"disc\", \"genreid\" ]"
+                  "\"albumid\", \"lastplayed\", \"disc\", \"genreid\", \"artistid\" ]"
       "}"
     "}",
     "\"Audio.Details.Base\": {"
@@ -452,7 +452,8 @@ namespace JSONRPC
         "\"rating\": { \"type\": \"integer\" },"
         "\"musicbrainzalbumid\": { \"type\": \"string\" },"
         "\"musicbrainzalbumartistid\": { \"type\": \"string\" },"
-        "\"genreid\": { \"$ref\": \"Array.Integer\" }"
+        "\"genreid\": { \"$ref\": \"Array.Integer\" },"
+        "\"artistid\": { \"$ref\": \"Array.Integer\" }"
       "}"
     "}",
     "\"Audio.Details.Artist\": {"
