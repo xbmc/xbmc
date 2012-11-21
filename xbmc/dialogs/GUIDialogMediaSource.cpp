@@ -97,6 +97,8 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         OnOK();
       else if (iControl == CONTROL_CANCEL)
         OnCancel();
+      else
+        break;
       return true;
     }
     break;

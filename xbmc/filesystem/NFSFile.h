@@ -50,7 +50,12 @@ class DllLibNfs;
 class CNfsConnection : public CCriticalSection
 {     
 public:
-  typedef std::map<struct nfsfh  *, unsigned int> tFileKeepAliveMap;  
+  struct keepAliveStruct
+  {
+    std::string exportPath;
+    uint64_t refreshCounter;
+  };
+  typedef std::map<struct nfsfh  *, struct keepAliveStruct> tFileKeepAliveMap;  
 
   struct contextTimeout
   {
@@ -83,12 +88,13 @@ public:
   bool HandleDyLoad();//loads the lib if needed
   //adds the filehandle to the keep alive list or resets
   //the timeout for this filehandle if already in list
-  void resetKeepAlive(struct nfsfh  *_pFileHandle);
+  void resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
   //removes file handle from keep alive list
   void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);  
   
   const CStdString& GetConnectedIp() const {return m_resolvedHostName;}
   const CStdString& GetConnectedExport() const {return m_exportPath;}
+  const CStdString  GetContextMapId() const {return m_hostName + m_exportPath;}
 
 private:
   struct nfs_context *m_pNfsContext;//current nfs context
@@ -105,13 +111,14 @@ private:
   DllLibNfs *m_pLibNfs;//the lib
   std::list<CStdString> m_exportList;//list of exported pathes of current connected servers
   CCriticalSection keepAliveLock;
+  CCriticalSection openContextLock;
  
   void clearMembers();
   struct nfs_context *getContextFromMap(const CStdString &exportname);
   int  getContextForExport(const CStdString &exportname);//get context for given export and add to open contexts map - sets m_pNfsContext (my return a already mounted cached context)
   void destroyOpenContexts();
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
-  void keepAlive(struct nfsfh  *_pFileHandle);
+  void keepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
 };
 
 extern CNfsConnection gNfsConnection;
@@ -148,7 +155,8 @@ namespace XFILE
     bool IsValidFile(const CStdString& strFileName);
     int64_t m_fileSize;
     struct nfsfh  *m_pFileHandle;
-    struct nfs_context *m_pNfsContext;//current nfs context    
+    struct nfs_context *m_pNfsContext;//current nfs context
+    std::string m_exportPath;
   };
 }
 #endif // FILENFS_H_

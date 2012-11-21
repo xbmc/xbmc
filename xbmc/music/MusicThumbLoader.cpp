@@ -51,6 +51,14 @@ void CMusicThumbLoader::Initialize()
   m_albumArt.clear();
 }
 
+void CMusicThumbLoader::Deinitialize()
+{
+#ifndef __PLEX__
+  m_database->Close();
+#endif
+  m_albumArt.clear();
+}
+
 void CMusicThumbLoader::OnLoaderStart()
 {
   Initialize();
@@ -58,10 +66,7 @@ void CMusicThumbLoader::OnLoaderStart()
 
 void CMusicThumbLoader::OnLoaderFinish()
 {
-#ifndef __PLEX__
-  m_database->Close();
-#endif
-  m_albumArt.clear();
+  Deinitialize();
 }
 
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
@@ -100,19 +105,36 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 #endif
 
   if (!pItem->HasArt("thumb"))
-    FillThumb(*pItem);
+  {
+    // Look for embedded art
+    if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetCoverArtInfo().empty())
+    {
+      // The item has got embedded art but user thumbs overrule, so check for those first
+      if (!FillThumb(*pItem, false)) // Check for user thumbs but ignore folder thumbs
+      {
+        // No user thumb, use embedded art
+        CStdString thumb = CTextureCache::GetWrappedImageURL(pItem->GetPath(), "music");
+        pItem->SetArt("thumb", thumb);
+      }
+    }
+    else
+    {
+      // Check for user thumbs
+      FillThumb(*pItem, true);
+    }
+  }
 
   return true;
 }
 
-bool CMusicThumbLoader::FillThumb(CFileItem &item)
+bool CMusicThumbLoader::FillThumb(CFileItem &item, bool folderThumbs /* = true */)
 {
   if (item.HasArt("thumb"))
     return true;
   CStdString thumb = GetCachedImage(item, "thumb");
   if (thumb.IsEmpty())
   {
-    thumb = item.GetUserMusicThumb();
+    thumb = item.GetUserMusicThumb(false, folderThumbs);
     if (!thumb.IsEmpty())
       SetCachedImage(item, "thumb", thumb);
   }

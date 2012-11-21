@@ -40,6 +40,8 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
 {
   // first see if this is already an ip address
   unsigned long address = inet_addr(strHostName.c_str());
+  strIpAddress.Empty();
+
   if (address != INADDR_NONE)
   {
     strIpAddress.Format("%d.%d.%d.%d", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );

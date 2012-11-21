@@ -22,6 +22,7 @@
 
 class CSong;
 class CAlbum;
+class CArtist;
 
 #include <vector>
 #include <string>
@@ -124,6 +125,7 @@ public:
   void SetTrackAndDiskNumber(int iTrackAndDisc);
   void SetDuration(int iSec);
   void SetLoaded(bool bOnOff = true);
+  void SetArtist(const CArtist& artist);
   void SetAlbum(const CAlbum& album);
   void SetSong(const CSong& song);
   void SetMusicBrainzTrackID(const CStdString& strTrackID);
