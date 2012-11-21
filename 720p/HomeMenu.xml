@@ -158,7 +158,7 @@
 					<item id="6">
 						<description>Preferences</description>
 						<label>$LOCALIZE[31955]</label>
-						<onclick>XBMC.ActivateWindow(1001)</onclick>
+						<onclick>XBMC.ActivateWindow(appearancesettings)</onclick>
 					</item>
 					<item id="7">
 						<description>Search</description>

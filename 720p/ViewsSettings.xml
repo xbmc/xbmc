@@ -40,7 +40,7 @@
 					<posx>-1</posx>
 					<posy>-1</posy>
 					<width>677</width>
-					<height>402</height>
+					<height>452</height>
 					<texture>transparent.png</texture>
 					<bordertexture border="10">border-black.png</bordertexture>
 					<bordersize>1</bordersize>
@@ -49,7 +49,7 @@
 				</control>
 				<control type="image">
 					<width>675</width>
-					<height>400</height>
+					<height>450</height>
 					<texture border="10">base-rounded.png</texture>
 					<colordiffuse>FF000000</colordiffuse>
 					<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
@@ -69,11 +69,11 @@
 	<!-- variables for page titles -->
 	<variable name="SettingsPageTitles">
 		<value condition="Window.IsActive(appearancesettings)">$LOCALIZE[480]</value>
-		<value condition="Window.IsActive(videosettings)">$LOCALIZE[157]</value>
+		<value condition="Window.IsActive(videossettings)">$LOCALIZE[31001]</value>
 		<value condition="Window.IsActive(musicsettings)">$LOCALIZE[2]</value>
 		<value condition="Window.IsActive(picturessettings)">$LOCALIZE[1]</value>
-		<value condition="Window.IsActive(systemsettings)">$LOCALIZE[13000]</value>
-		<value condition="Window.IsActive(1001)">Skin</value>
+		<value condition="Window.IsActive(systemsettings)">$LOCALIZE[13000]</value>		
+		<value condition="Window.IsActive(skinsettings)">Skin</value>
 	</variable>
 	<!-- categories menu (top) -->
 	<include name="SettingsCategoryMenu">
@@ -155,21 +155,21 @@
 					</control>
 				</focusedlayout>
 				<content>
+				<item id="1">
+					<description>Video Settings Button</description>
+					<label> $LOCALIZE[31001] </label>
+					<onclick>XBMC.ReplaceWindow(17)</onclick>
+				</item>
 					<item id="7">
 						<description>Appearance Settings Button</description>
 						<label> $LOCALIZE[31601] </label>
 						<onclick>XBMC.ReplaceWindow(19)</onclick>
 					</item>
-					<item id="8">
+					<!--><item id="8">
 						<description>Skin Settings Button</description>
 						<label> $LOCALIZE[31603] </label>
 						<onclick>XBMC.ReplaceWindow(1001)</onclick>
-					</item>
-					<item id="1">
-						<description>Video Settings Button</description>
-						<label> $LOCALIZE[31001] </label>
-						<onclick>XBMC.ReplaceWindow(17)</onclick>
-					</item>
+					</item>-->
 					<item id="2">
 						<description>Music Settings Button</description>
 						<label> $LOCALIZE[31002] </label>
@@ -256,7 +256,10 @@
 			<control type="spincontrolex" id="9">
 				<textoffsetx>20</textoffsetx>
 			</control>
-			<control type="scrollbar" id="61">
+			<control type="scrollbar" id="61">	
+				<posy>60</posy>			
+				<posx>732</posx>
+				<height>410</height>
 				<onup>61</onup>
 				<ondown>61</ondown>
 			</control>
