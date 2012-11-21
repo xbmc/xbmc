@@ -160,6 +160,7 @@
 				<control type="grouplist" id="19000">					
 					<visible>!Container.Content(secondary)</visible>
 					<posy>154</posy>
+					<posx>10</posx>
 					<onup>19000</onup>
 					<ondown>19010</ondown>
 					<onleft>-</onleft>
@@ -170,6 +171,7 @@
 				<control type="grouplist" id="19010">					
 					<visible>!Container.Content(secondary)</visible>
 					<posy>454</posy>
+					<posx>10</posx>
 					<onup>19010</onup>
 					<ondown>19000</ondown>
 					<onleft>-</onleft>
@@ -178,15 +180,16 @@
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19001">
-					<textoffsetx>20</textoffsetx>
+					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
 				</control>
 				<control type="radiobutton" id="19002">
-					<textoffsetx>20</textoffsetx>
+					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
+					<include>leftMenuRadioButton</include>
 				</control>
 				<control type="spincontrolex" id="19003">
-					<textoffsetx>20</textoffsetx>
+					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
 				</control>
 			</control>
