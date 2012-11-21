@@ -92,7 +92,7 @@ bool CCoreAudioAEHALOSX::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
   if (!m_audioGraph)
     return false;
 
-  AudioChannelLayoutTag layout = g_LayoutMap[ g_guiSettings.GetInt("audiooutput.channellayout") ];
+  AudioChannelLayoutTag layout = g_LayoutMap[ g_guiSettings.GetInt("audiooutput.channels") ];
   // force optical/coax to 2.0 output channels
   if (!m_Passthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
     layout = g_LayoutMap[1];
