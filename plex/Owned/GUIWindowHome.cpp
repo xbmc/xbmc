@@ -75,10 +75,12 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
   // Create the worker. We're not going to destroy it because whacking it on exit can cause problems.
   m_workerManager = new PlexContentWorkerManager();
+  m_loadingThread = new CFanLoadingThread(this);
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
 {
+  m_loadingThread->StopThread();
 }
 
 bool CGUIWindowHome::OnAction(const CAction &action)
@@ -126,9 +128,10 @@ bool CGUIWindowHome::OnAction(const CAction &action)
           CStdString path = pFileItem->GetPath();
           if (path.empty())
             path = pFileItem->GetLabel();
-          m_pendingSelectItemKey = path;
           m_lastSelectedItemKey.clear();
-          m_contentLoadTimer.StartZero();
+
+          dprintf("Started to load the side car");
+          m_loadingThread->LoadFanWithDelay(path);
         }
       }
     }
@@ -668,9 +671,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       // Reload if needed.
       if (KeyHaveFanout(m_lastSelectedItemKey))
       {
-        m_pendingSelectItemKey = m_lastSelectedItemKey;
         m_lastSelectedItemKey.clear();
-        m_contentLoadTimer.StartZero();
+        m_loadingThread->LoadFanWithDelay(m_lastSelectedItemKey);
       }
       else
       {
@@ -769,14 +771,32 @@ void CGUIWindowHome::HideAllLists()
   }
 }
 
-void CGUIWindowHome::Render()
+
+void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
 {
-  if (m_pendingSelectItemKey.empty() == false && m_contentLoadTimer.IsRunning() && m_contentLoadTimer.GetElapsedMilliseconds() > 300)
+  boost::mutex::scoped_lock lk(m_mutex);
+
+  m_key = key;
+  m_loadTimer.Start();
+  m_delay = delay;
+
+  if (!IsRunning())
+    Create(true);
+}
+
+void CFanLoadingThread::Process()
+{
+  while (!m_bStop)
   {
-    UpdateContentForSelectedItem(m_pendingSelectItemKey);
-    m_pendingSelectItemKey.clear();
-    m_contentLoadTimer.Stop();
+    {
+      boost::mutex::scoped_lock lk(m_mutex);
+      if (m_key.empty() == false && m_loadTimer.IsRunning() && m_loadTimer.GetElapsedMilliseconds() > m_delay)
+      {
+        m_window->UpdateContentForSelectedItem(m_key);
+        m_loadTimer.Stop();
+        m_key.clear();
+      }
+    }
+    Sleep(150);
   }
-  
-  CGUIWindow::Render();
 }

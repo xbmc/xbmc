@@ -38,6 +38,22 @@
 #define CONTENT_LIST_FANART            12000
 
 class PlexContentWorkerManager;
+class CGUIWindowHome;
+
+class CFanLoadingThread : public CThread
+{
+  public:
+    CFanLoadingThread(CGUIWindowHome *window) : CThread("Fan Loading Thread") { m_window = window; }
+    void Process();
+    void LoadFanWithDelay(const CStdString& key, int delay = 300);
+
+  private:
+    CStopWatch m_loadTimer;
+    CStdString m_key;
+    CGUIWindowHome *m_window;
+    boost::mutex m_mutex;
+    int m_delay;
+};
 
 class CGUIWindowHome : public CGUIWindow,
                        public PlexContentPlayerMixin
@@ -45,14 +61,13 @@ class CGUIWindowHome : public CGUIWindow,
 public:
   CGUIWindowHome(void);
   virtual ~CGUIWindowHome(void);
-  
+  virtual void UpdateContentForSelectedItem(const std::string& key);
+
 private:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnPopupMenu();
   virtual bool CheckTimer(const CStdString& strExisting, const CStdString& strNew, int title, int line1, int line2);
-  virtual void UpdateContentForSelectedItem(const std::string& key);
-  virtual void Render();
   void HideAllLists();
   virtual void SaveStateBeforePlay(CGUIBaseContainer* container);
 
@@ -62,9 +77,6 @@ private:
   bool KeyHaveFanout(const CStdString& key);
   
   std::string m_lastSelectedItemKey;
-  std::string m_pendingSelectItemKey;
-  
-  CStopWatch m_contentLoadTimer;
   
   std::map<int, std::string> m_idToSectionUrlMap;
   std::map<int, int>         m_idToSectionTypeMap;
@@ -78,4 +90,6 @@ private:
   CGUIListItemPtr            m_applicationChannelItem;
   
   PlexContentWorkerManager*  m_workerManager;
+  CFanLoadingThread*         m_loadingThread;
 };
+
