@@ -2378,7 +2378,7 @@ bool CApplication::OnKey(const CKey& key)
   g_Mouse.SetActive(false);
 
   // get the current active window
-  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  int iWin = GetActiveWindowID();
 
   // this will be checked for certain keycodes that need
   // special handling if the screensaver is active
@@ -2398,14 +2398,8 @@ bool CApplication::OnKey(const CKey& key)
     return true;
   }
 
-  // change this if we have a dialog up
-  if (g_windowManager.HasModalDialog())
-  {
-    iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
-  }
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
   { // fullscreen info dialog - special case
-    action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
     if (!key.IsAnalogButton())
       CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen info action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
@@ -2416,28 +2410,20 @@ bool CApplication::OnKey(const CKey& key)
     // fallthrough to the main window
     iWin = WINDOW_FULLSCREEN_VIDEO;
   }
+
+  if (iWin == WINDOW_FULLSCREEN_LIVETV)
+  {
+    // check for PVR specific keymaps in only the LIVETV window (no fallback)
+    action = CButtonTranslator::GetInstance().GetAction(iWin, key, false);
+
+    // if no PVR specific action/mapping is found, fall back to FULLSCREEN_VIDEO
+    if (action.GetID() == 0)
+      iWin = WINDOW_FULLSCREEN_VIDEO;
+  }
+
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
-    // current active window is full screen video.
-    if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
-    {
-      // if player is in some sort of menu, (ie DVDMENU) map buttons differently
-      action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
-    }
-    else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
-    {
-      // check for PVR specific keymaps in FULLSCREEN_VIDEO window
-      action = CButtonTranslator::GetInstance().GetAction(WINDOW_FULLSCREEN_LIVETV, key, false);
-
-      // if no PVR specific action/mapping is found, fall back to default
-      if (action.GetID() == 0)
-        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-    }
-    else
-    {
-      // in any other case use the fullscreen window section of keymap.xml to map key->action
-      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-    }
+    action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   else
   {
@@ -3311,9 +3297,16 @@ int CApplication::GetActiveWindowID(void)
   if (g_windowManager.HasModalDialog())
     iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
 
-  // If the window is FullScreenVideo check if we're in a DVD menu
-  if (iWin == WINDOW_FULLSCREEN_VIDEO && g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
-    iWin = WINDOW_VIDEO_MENU;
+  // If the window is FullScreenVideo check for special cases
+  if (iWin == WINDOW_FULLSCREEN_VIDEO)
+  {
+    // check if we're in a DVD menu
+    if(g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
+      iWin = WINDOW_VIDEO_MENU;
+    // check for LiveTV and switch to it's virtual window
+    else if (g_PVRManager.IsStarted() && g_application.CurrentFileItem().HasPVRChannelInfoTag())
+      iWin = WINDOW_FULLSCREEN_LIVETV;
+  }
 
   // Return the window id
   return iWin;
