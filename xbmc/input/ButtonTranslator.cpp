@@ -49,6 +49,12 @@ typedef struct
   int action;
 } ActionMapping;
 
+typedef struct
+{
+  int origin;
+  int target;
+} WindowMapping;
+
 static const ActionMapping actions[] =
 {
         {"left"              , ACTION_MOVE_LEFT },
@@ -357,6 +363,12 @@ static const ActionMapping mousecommands[] =
   { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
   { "mousedrag",   ACTION_MOUSE_DRAG },
   { "mousemove",   ACTION_MOUSE_MOVE }
+};
+
+static const WindowMapping fallbackWindows[] =
+{
+  { WINDOW_FULLSCREEN_LIVETV,          WINDOW_FULLSCREEN_VIDEO },
+  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO }
 };
 
 #ifdef WIN32
@@ -888,14 +900,35 @@ void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
     windowList.push_back(windows[index].name);
 }
 
+int CButtonTranslator::GetFallbackWindow(int windowID)
+{
+  for (unsigned int index = 0; index < sizeof(fallbackWindows) / sizeof(fallbackWindows[0]); ++index)
+  {
+    if (fallbackWindows[index].origin == windowID)
+      return fallbackWindows[index].target;
+  }
+  return -1;
+}
+
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
 {
   CStdString strAction;
   // try to get the action from the current window
   int actionID = GetActionCode(window, key, strAction);
-  // if it's invalid, try to get it from the global map
-  if (actionID == 0 && fallback)
-    actionID = GetActionCode( -1, key, strAction);
+
+  // if it's invalid, try to get it from a fallback window or the global map
+  if (actionID == 0 && fallback) {
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+    {
+      actionID = GetActionCode( fallbackWindow, key, strAction);
+      if (!key.IsAnalogButton())
+        CLog::Log(LOGDEBUG, "%s: %i pressed in window %s, no mapping found, trying to find a fallback action in window %s", __FUNCTION__, (int) key.GetButtonCode(), TranslateWindow(window).c_str(), TranslateWindow(fallbackWindow).c_str());
+    }
+    // still no valid actionID? use global map
+    if (actionID == 0)
+      actionID = GetActionCode( -1, key, strAction);
+  }
   // Now fill our action structure
   CAction action(actionID, strAction, key);
   return action;

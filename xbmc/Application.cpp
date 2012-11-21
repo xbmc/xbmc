@@ -2398,34 +2398,7 @@ bool CApplication::OnKey(const CKey& key)
     return true;
   }
 
-  if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
-  { // fullscreen info dialog - special case
-
-    if (!key.IsAnalogButton())
-      CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen info action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
-
-    if (OnAction(action))
-      return true;
-
-    // fallthrough to the main window
-    iWin = WINDOW_FULLSCREEN_VIDEO;
-  }
-
-  if (iWin == WINDOW_FULLSCREEN_LIVETV)
-  {
-    // check for PVR specific keymaps in only the LIVETV window (no fallback)
-    action = CButtonTranslator::GetInstance().GetAction(iWin, key, false);
-
-    // if no PVR specific action/mapping is found, fall back to FULLSCREEN_VIDEO
-    if (action.GetID() == 0)
-      iWin = WINDOW_FULLSCREEN_VIDEO;
-  }
-
-  if (iWin == WINDOW_FULLSCREEN_VIDEO)
-  {
-    action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-  }
-  else
+  if (iWin != WINDOW_FULLSCREEN_VIDEO)
   {
     // current active window isnt the fullscreen window
     // just use corresponding section from keymap.xml
