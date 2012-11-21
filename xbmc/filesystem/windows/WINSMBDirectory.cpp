@@ -199,7 +199,6 @@ bool CWINSMBDirectory::Exists(const char* strPath)
   CStdString strReplaced=GetLocal(strPath);
   CStdStringW strWReplaced;
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
-  // this will fail on shares, needs a subdirectory inside a share
   DWORD attributes = GetFileAttributesW(strWReplaced);
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
