@@ -90,6 +90,7 @@
 		<width>230</width>
 		<height>26</height>
 		<align>right</align>
+		<onright>777</onright>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>34</textoffsetx>
 		<font>Condensed-17</font>
@@ -128,11 +129,10 @@
 		<radioheight>14</radioheight>
 		<radiowidth>20</radiowidth>
 	</include>
-	<!-- all hardcoded menus here are just dummy examples and will become obsolete once the real dynamic menu will become available -->
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
-			<visible>![Container.Content(Seasons) | Container.Content(episodes)] + !Container.Content(secondary)</visible>
+			<visible>!Container.Content(secondary)</visible>
 			<include>leftMenuInitSlide</include>
 			<include>leftMenuSlide</include>
 			<include>leftMenuBg</include>
@@ -146,254 +146,48 @@
 				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
 			</control>	
 			<control type="group" id="1300">
-				<visible allowhiddenfocus="false">![Container.Content(Seasons) | Container.Content(episodes)] + !Container.Content(secondary)</visible>
+				<visible allowhiddenfocus="false">!Container.Content(secondary)</visible>
 				<posx>-253</posx>
 				<posy>0</posy>
 				<width>253</width>
 				<height>650</height>
 				<onup>-</onup>
-				<ondown>9100</ondown>
+				<ondown>19000</ondown>
 				<onright>777</onright>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
-				<control type="grouplist" id="9100">
-					<visible>![Container.Content(Seasons) | Container.Content(episodes)] + !Container.Content(secondary)</visible>
+				<!-- new filters list -->
+				<control type="grouplist" id="19000">					
+					<visible>!Container.Content(secondary)</visible>
 					<posy>154</posy>
-					<onup>-</onup>
-					<ondown>9100</ondown>
+					<onup>19000</onup>
+					<ondown>19010</ondown>
 					<onleft>-</onleft>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
-					<!-- FILTERS-->
-					<control type="label" id="9001">
-						<label>FILTERS</label>
-						<include>leftMenuTitle</include>
-					</control>
-					<control type="radiobutton" id="9080">
-						<description>Unwatched</description>
-						<label>Unwatched</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-						<include>leftMenuRadioButton</include>
-					</control>
-					<control type="radiobutton" id="9006">
-						<description>Genre</description>
-						<label>Genre: Drama</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-						<include>leftMenuRadioButton</include>
-					</control>
-					<control type="radiobutton" id="9090">
-						<label>Year: 2011</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-						<include>leftMenuRadioButton</include>
-					</control>
-					<control type="radiobutton" id="9096">
-						<label>Director</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-						<include>leftMenuRadioButton</include>
-					</control>
-					<control type="radiobutton" id="9097">
-						<label>Actor</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-						<include>leftMenuRadioButton</include>
-					</control>
-					<control type="label" id="9055">
-						<label>-</label>
-						<include>leftMenuSpacing</include>
-					</control>
-					<!-- SORTING -->
-					<control type="label" id="9099">
-						<label>SORTING</label>
-						<include>leftMenuTitle</include>
-					</control>
-					<!-- list -->
-					<control type="button" id="9019">
-						<label>Name</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-					</control>
-					<control type="button" id="9074">
-						<label>Date Released</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-					</control>
-					<control type="button" id="9056">
-						<label>Date Added</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-					</control>
-					<control type="button" id="9057">
-						<label>Rating</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormat</include>
-					</control>
 				</control>
-				<control type="grouplist" id="9100">
-					<visible>[Container.Content(Seasons) | Container.Content(episodes)]</visible>
-					<posy>80</posy>
-					<onup>9100</onup>
-					<ondown>9100</ondown>
+				<!-- new sort list -->
+				<control type="grouplist" id="19010">					
+					<visible>!Container.Content(secondary)</visible>
+					<posy>454</posy>
+					<onup>19010</onup>
+					<ondown>19000</ondown>
 					<onleft>-</onleft>
 					<onright>777</onright>
-					<itemgap>30</itemgap>
-					<!-- ACTIONS -->
-					<control type="button" id="9080">
-						<label>Play</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormatPreplay</include>
-					</control>
-					<control type="button" id="9006">
-						<label>Rate</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormatPreplay</include>
-					</control>
-					<control type="button" id="9090">
-						<label>Recommend</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormatPreplay</include>
-					</control>
-					<control type="button" id="9096">
-						<label>Share</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormatPreplay</include>
-					</control>
-					<control type="button" id="9097">
-						<label>Watched</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormatPreplay</include>
-					</control>
-					<control type="button" id="9098">
-						<label>Unwatched</label>
-						<onclick>-</onclick>
-						<include>leftMenuFormatPreplay</include>
-					</control>
+					<itemgap>0</itemgap>
 				</control>
-				<control type="grouplist">
-					<visible>[Container.Content(Seasons) | Container.Content(episodes)]</visible>
-					<posy>80</posy>
-					<posx>255</posx>
-					<width>74</width>
-					<aligny>top</aligny>
-					<orientation>vertical</orientation>
-					<itemgap>30</itemgap>
-					<!-- Play -->
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-play.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>!Control.HasFocus(9080)</visible>
-					</control>
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-play.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>orange</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>Control.HasFocus(9080)</visible>
-					</control>
-					<!-- Rate -->
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-rate.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>!Control.HasFocus(9006)</visible>
-					</control>
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-rate.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>orange</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>Control.HasFocus(9006)</visible>
-					</control>
-					<!-- Recommend -->
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-recommend.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>!Control.HasFocus(9090)</visible>
-					</control>
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-recommend.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>orange</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>Control.HasFocus(9090)</visible>
-					</control>
-					<!-- Share -->
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-share.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>!Control.HasFocus(9096)</visible>
-					</control>
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-share.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>orange</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>Control.HasFocus(9096)</visible>
-					</control>
-					<!-- Watched -->
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-watched.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>!Control.HasFocus(9097)</visible>
-					</control>
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-watched.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>orange</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>Control.HasFocus(9097)</visible>
-					</control>
-					<!-- Unwatched -->
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-unwatched.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>FF999999</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>!Control.HasFocus(9098)</visible>
-					</control>
-					<control type="image">
-						<width>74</width>
-						<height>24</height>
-						<texture>b-unwatched.png</texture>
-						<aspectratio align="center" aligny="center">keep</aspectratio>
-						<colordiffuse>orange</colordiffuse>
-						<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-						<visible>Control.HasFocus(9098)</visible>
-					</control>
+				<!-- filters buttons -->
+				<control type="button" id="19001">
+					<textoffsetx>20</textoffsetx>
+					<include>leftMenuFormat</include>
+				</control>
+				<control type="radiobutton" id="19002">
+					<textoffsetx>20</textoffsetx>
+					<include>leftMenuFormat</include>
+				</control>
+				<control type="spincontrolex" id="19003">
+					<textoffsetx>20</textoffsetx>
+					<include>leftMenuFormat</include>
 				</control>
 			</control>
 		</control>
