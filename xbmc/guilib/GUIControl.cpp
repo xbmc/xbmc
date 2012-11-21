@@ -58,7 +58,8 @@ CGUIControl::CGUIControl()
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
-: m_hitRect(posX, posY, posX + width, posY + height)
+: m_hitRect(posX, posY, posX + width, posY + height),
+  m_cachedRenderRegion(0,0,0,0)
 {
   m_posX = posX;
   m_posY = posY;
@@ -161,9 +162,13 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // update our render region
-  m_renderRegion = g_graphicsContext.generateAABB(CalcRenderRegion());
+  CRect region(CalcRenderRegion());
+  if (region != m_cachedRenderRegion)
+  {
+    m_cachedRenderRegion = region;
+    m_renderRegion = g_graphicsContext.generateAABB(m_cachedRenderRegion);
+  }
 }
-
 // the main render routine.
 // 1. set the animation transform
 // 2. if visible, paint
