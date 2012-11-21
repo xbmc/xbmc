@@ -133,6 +133,9 @@ public:
   bool GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<long>& songs);
   bool GetArtistsBySong(int idSong, bool includeFeatured, std::vector<long>& artists);
 
+  bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
+  bool GetGenresBySong(int idSong, std::vector<int>& genres);
+
   bool GetTop100(const CStdString& strBaseDir, CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
   bool GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItemList& item);

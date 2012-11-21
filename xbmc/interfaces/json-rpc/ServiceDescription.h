@@ -423,7 +423,7 @@ namespace JSONRPC
                   "\"theme\", \"mood\", \"style\", \"type\", \"albumlabel\","
                   "\"rating\", \"year\", \"musicbrainzalbumid\","
                   "\"musicbrainzalbumartistid\", \"fanart\", \"thumbnail\","
-                  "\"playcount\" ]"
+                  "\"playcount\", \"genreid\" ]"
       "}"
     "}",
     "\"Audio.Fields.Song\": {"
@@ -434,7 +434,7 @@ namespace JSONRPC
                   "\"lyrics\", \"musicbrainztrackid\", \"musicbrainzartistid\","
                   "\"musicbrainzalbumid\", \"musicbrainzalbumartistid\","
                   "\"playcount\", \"fanart\", \"thumbnail\", \"file\","
-                  "\"albumid\", \"lastplayed\", \"disc\" ]"
+                  "\"albumid\", \"lastplayed\", \"disc\", \"genreid\" ]"
       "}"
     "}",
     "\"Audio.Details.Base\": {"
@@ -451,7 +451,8 @@ namespace JSONRPC
         "\"year\": { \"type\": \"integer\" },"
         "\"rating\": { \"type\": \"integer\" },"
         "\"musicbrainzalbumid\": { \"type\": \"string\" },"
-        "\"musicbrainzalbumartistid\": { \"type\": \"string\" }"
+        "\"musicbrainzalbumartistid\": { \"type\": \"string\" },"
+        "\"genreid\": { \"$ref\": \"Array.Integer\" }"
       "}"
     "}",
     "\"Audio.Details.Artist\": {"
@@ -1059,7 +1060,7 @@ namespace JSONRPC
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
                   "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
                   "\"disc\", \"tag\", \"art\", \"channel\", \"channeltype\", \"hidden\", \"locked\","
-                  "\"channelnumber\", \"starttime\", \"endtime\" ]"
+                  "\"channelnumber\", \"starttime\", \"endtime\", \"genreid\" ]"
       "}"
     "}",
     "\"List.Item.All\": {"
@@ -1086,7 +1087,7 @@ namespace JSONRPC
                   "\"runtime\", \"set\", \"showlink\", \"streamdetails\", \"top250\", \"votes\","
                   "\"firstaired\", \"season\", \"episode\", \"showtitle\", \"thumbnail\", \"file\","
                   "\"resume\", \"artistid\", \"albumid\", \"tvshowid\", \"setid\", \"watchedepisodes\","
-                  "\"disc\", \"tag\", \"art\", \"size\", \"lastmodified\", \"mimetype\" ]"
+                  "\"disc\", \"tag\", \"art\", \"size\", \"lastmodified\", \"mimetype\", \"genreid\" ]"
       "}"
     "}",
     "\"List.Item.File\": {"
