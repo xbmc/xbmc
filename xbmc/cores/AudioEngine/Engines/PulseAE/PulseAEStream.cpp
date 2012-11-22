@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
+#include "settings/AdvancedSettings.h"
 
 static const char *StreamStateToString(pa_stream_state s)
 {
@@ -153,6 +154,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   }
   pa_format_info_set_rate         (info[0], m_SampleSpec.rate);
   pa_format_info_set_channels     (info[0], m_SampleSpec.channels);
+  pa_format_info_set_channel_map  (info[0], &map);
   pa_format_info_set_sample_format(info[0], m_SampleSpec.format);
   m_Stream = pa_stream_new_extended(m_Context, "audio stream", info, 1, NULL);
   pa_format_info_free(info[0]);
@@ -172,8 +174,19 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   pa_stream_set_write_callback(m_Stream, CPulseAEStream::StreamRequestCallback, this);
   pa_stream_set_latency_update_callback(m_Stream, CPulseAEStream::StreamLatencyUpdateCallback, this);
   pa_stream_set_underflow_callback(m_Stream, CPulseAEStream::StreamUnderflowCallback, this);
-
+  
   int flags = PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE;
+  if (g_advancedSettings.m_audioPALatency != 0 )
+  {
+    static int32_t latency_msec = 100;
+    pa_buffer_attr buffer_attr;
+    latency_msec = (int32_t) g_advancedSettings.m_audioPALatency;
+    buffer_attr.maxlength = (uint32_t) -1;
+    buffer_attr.prebuf = (uint32_t) -1;
+    buffer_attr.fragsize = buffer_attr.tlength = pa_usec_to_bytes(latency_msec * PA_USEC_PER_MSEC, &m_SampleSpec);
+    flags |= PA_STREAM_ADJUST_LATENCY;
+  }
+
   if (options && AESTREAM_FORCE_RESAMPLE)
     flags |= PA_STREAM_VARIABLE_RATE;
 
