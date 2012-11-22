@@ -436,7 +436,8 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   m_streams.push_back(stream);
   streamLock.Leave();
 
-  Stop();
+  if ((options & AESTREAM_PAUSED) == 0)
+    Stop();
 
   // reinit the engine if pcm format changes or always on raw format
   if (m_Initialized && ( m_lastStreamFormat != dataFormat ||
@@ -444,18 +445,21 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
                          m_lastSampleRate != sampleRate ||
                          COREAUDIO_IS_RAW(dataFormat)))
   {
+    Stop();
     Deinitialize();
     m_Initialized = OpenCoreAudio(sampleRate, COREAUDIO_IS_RAW(dataFormat), dataFormat);
     m_lastStreamFormat = dataFormat;
     m_lastChLayoutCount = channelLayout.Count();
     m_lastSampleRate = sampleRate;
+    Start();
   }
 
   /* if the stream was not initialized, do it now */
   if (!stream->IsValid())
     stream->Initialize();
 
-  Start();
+  if ((options & AESTREAM_PAUSED) == 0)  
+    Start();
 
   m_streamsPlaying = true;
 
