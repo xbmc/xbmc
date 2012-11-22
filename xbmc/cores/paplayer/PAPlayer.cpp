@@ -47,6 +47,17 @@ CAEChannelInfo ICodec::GetChannelInfo()
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
 
+// WORKAROUND FOR FRODO RELEASE - TODO FIXME after Frodo!
+// AE/CA doesn't handle raw2pcm and back switches with PAPlayer
+// and slaved streams very well. So in that case we need to force
+// disable passthrough.
+// keyword for this workaround in this file is FORCEDISABLECA
+#if defined(TARGET_DARWIN)
+static bool bSupportsAC3Out = false;
+static bool bSupportsDTSOut = false;
+static bool bSupportsAACOut = false;
+#endif
+
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer              (callback),
   CThread              ("PAPlayer"),
@@ -62,6 +73,16 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_FileItem           (new CFileItem())
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
+// FORCEDISABLECA
+#if defined(TARGET_DARWIN)
+  bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
+  bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
+  bSupportsAACOut = g_guiSettings.GetBool("audiooutput.passthroughaac");
+  g_guiSettings.SetBool("audiooutput.ac3passthrough", false);
+  g_guiSettings.SetBool("audiooutput.dtspassthrough", false);
+  g_guiSettings.SetBool("audiooutput.passthroughaac", false); 
+#endif
+  
 }
 
 PAPlayer::~PAPlayer()
@@ -73,6 +94,13 @@ PAPlayer::~PAPlayer()
   /* wait for the thread to terminate */
   StopThread(true);//true - wait for end of thread
   delete m_FileItem;
+// FORCEDISABLECA
+#if defined(TARGET_DARWIN)
+  g_guiSettings.SetBool("audiooutput.ac3passthrough", bSupportsAC3Out);
+  g_guiSettings.SetBool("audiooutput.dtspassthrough", bSupportsDTSOut);
+  g_guiSettings.SetBool("audiooutput.passthroughaac", bSupportsAACOut); 
+#endif
+  
 }
 
 bool PAPlayer::HandlesType(const CStdString &type)
