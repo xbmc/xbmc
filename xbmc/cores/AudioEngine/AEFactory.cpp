@@ -197,6 +197,32 @@ void CAEFactory::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
     AE->EnumerateOutputDevices(devices, passthrough);
 }
 
+void CAEFactory::VerifyOutputDevice(std::string &device, bool passthrough)
+{
+  AEDeviceList devices;
+  EnumerateOutputDevices(devices, passthrough);
+  std::string firstDevice;
+
+  for (AEDeviceList::const_iterator deviceIt = devices.begin(); deviceIt != devices.end(); deviceIt++)
+  {
+    std::string currentDevice = deviceIt->second;
+    /* remember the first device so we can default to it if required */
+    if (firstDevice.empty())
+      firstDevice = deviceIt->second;
+
+    if (deviceIt->second == device)
+      return;
+    else if (deviceIt->first == device)
+    {
+      device = deviceIt->second;
+      return;
+    }
+  }
+
+  /* if the device wasnt found, set it to the first viable output */
+  device = firstDevice;
+}
+
 std::string CAEFactory::GetDefaultDevice(bool passthrough)
 {
   if(AE)

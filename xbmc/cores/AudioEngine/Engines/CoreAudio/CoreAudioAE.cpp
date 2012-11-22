@@ -142,7 +142,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   // on iOS devices we set fixed to two channels.
   m_stdChLayout = AE_CH_LAYOUT_2_0;
 #if defined(TARGET_DARWIN_OSX)
-  switch (g_guiSettings.GetInt("audiooutput.channellayout"))
+  switch (g_guiSettings.GetInt("audiooutput.channels"))
   {
     default:
     case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* do not allow 1_0 output */
@@ -310,7 +310,7 @@ void CCoreAudioAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.dtspassthrough"    ||
-      setting == "audiooutput.channellayout"     ||
+      setting == "audiooutput.channels"     ||
       setting == "audiooutput.multichannellpcm")
   {
     // only reinit the engine if we not
