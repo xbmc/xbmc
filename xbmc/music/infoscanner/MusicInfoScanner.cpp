@@ -762,7 +762,8 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
   {
     CFileItem album(path, true);
     albumArt = album.GetUserMusicThumb(true);
-    albums[0].art["thumb"] = albumArt;
+    if (!albumArt.empty())
+      albums[0].art["thumb"] = albumArt;
   }
   for (VECALBUMS::iterator i = albums.begin(); i != albums.end(); ++i)
   {
@@ -806,7 +807,8 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const CStdString &pa
         albumArt = CTextureCache::GetWrappedImageURL(art->strFileName, "music");
     }
 
-    album.art["thumb"] = albumArt;
+    if (!albumArt.empty())
+      album.art["thumb"] = albumArt;
 
     if (singleArt)
     { //if singleArt then we can clear the artwork for all songs
