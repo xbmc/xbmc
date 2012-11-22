@@ -44,74 +44,93 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
   CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl *)GetControl(FILTER_RADIO_BUTTON);
   radioButton->SetVisible(false);
 
-  CGUISpinControlEx* spinControl = (CGUISpinControlEx *)GetControl(FILTER_SPIN_CONTROL);
-  spinControl->SetVisible(false);
-
-
   /* Fetch Filters */
   CFileItemList filterItems;
   FetchFilterSortList(baseUrl, "filters", type, filterItems);
-  int startId = -100;
+  std::map<CStdString, CPlexFilterPtr> newFilters;
 
   for(int i = 0; i < filterItems.Size(); i++)
   {
     CFileItemPtr item = filterItems.Get(i);
-    if (!item)
-      break;
+    CPlexFilterPtr filter;
+    CStdString filterName = item->GetProperty("filter").asString();
+    if (m_filters.find(filterName) == m_filters.end())
+      /* No such filter yet */
+      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), filterName, item->GetProperty("filterType").asString(), item->GetProperty("key").asString()));
+    else
+      filter = m_filters[filterName];
 
-    CStdString filterType = item->GetProperty("filterType").asString();
-    if (filterType == "string")
-    {
-      CGUIButtonControl* filterButton = new CGUIButtonControl(*originalButton);
-      filterButton->SetLabel(item->GetLabel());
-      filterButton->SetVisible(true);
-      filterButton->AllocResources();
-      filterButton->SetID(startId + i);
-      filterGroup->AddControl(filterButton);
-    }
-    else if (filterType == "boolean")
-    {
-      CGUIRadioButtonControl* filterRButton = new CGUIRadioButtonControl(*radioButton);
-      filterRButton->SetLabel(item->GetLabel());
-      filterRButton->SetVisible(true);
-      filterRButton->AllocResources();
-      filterRButton->SetID(startId + i);
-      filterGroup->AddControl(filterRButton);
-    }
-    else if (filterType == "integer")
-    {
-      CGUISpinControlEx* filterSpin = new CGUISpinControlEx(*spinControl);
-      //filterSpin->SetLabel(item->GetLabel());
-      filterSpin->SetVisible(true);
-      filterSpin->AllocResources();
-      filterSpin->SetID(startId + i);
-      filterGroup->AddControl(filterSpin);
-    }
+    newFilters[filterName] = filter;
+    filterGroup->AddControl(filter->NewFilterControl(filter->IsBooleanType() ? radioButton : originalButton, FILTER_BUTTONS_START + i));
   }
 
+  m_filters = newFilters;
+
   /* Fetch sorts */
+  newFilters.clear();
   CFileItemList sortItems;
   FetchFilterSortList(baseUrl, "sorts", type, sortItems);
-  startId = -200;
 
   for(int i = 0; i < sortItems.Size(); i++)
   {
-    CFileItemPtr item = sortItems.Get(i);
-    if (!item)
-      break;
+    CFileItemPtr item = filterItems.Get(i);
+    CPlexFilterPtr filter;
+    CStdString sortName = item->GetProperty("key").asString();
+    if (m_sorts.find(sortName) == m_sorts.end())
+      /* No such filter yet */
+      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), sortName, item->GetProperty("filterType").asString(), item->GetProperty("key").asString()));
+    else
+      filter = m_sorts[sortName];
 
-    CGUIButtonControl* sortButton = new CGUIButtonControl(*originalButton);
-    sortButton->SetLabel(item->GetLabel());
-    sortButton->SetVisible(true);
-    sortButton->AllocResources();
-    sortButton->SetID(startId + i);
-
-    sortGroup->AddControl(sortButton);
+    newFilters[sortName] = filter;
+    sortGroup->AddControl(filter->NewFilterControl(filter->IsBooleanType() ? radioButton : originalButton, SORT_BUTTONS_START + i));
   }
+
+  m_sorts = newFilters;
 
 }
 
-bool CGUIWindowMediaFilterView::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
+typedef pair<CStdString, CPlexFilterPtr> name_filter_pair;
+
+bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
+{
+  bool ret = CGUIWindowVideoNav::OnMessage(message);
+
+  switch(message.GetMessage())
+  {
+    case GUI_MSG_CLICKED:
+    {
+      bool update = false;
+      int ctrlId = message.GetSenderId();
+      dprintf("Clicked with CtrlID = %d", ctrlId);
+      if (ctrlId < 0 && ctrlId >= -100)
+      {
+        BOOST_FOREACH(name_filter_pair pr, m_filters)
+        {
+          if (pr.second->GetControlID() == ctrlId)
+          {
+            dprintf("Clicked filter %s", pr.second->GetFilterName().c_str());
+            if (!pr.second->GetFilterValue().empty())
+            {
+              m_appliedFilters.push_back(pr.second->GetFilterValue());
+              update = true;
+            }
+          }
+        }
+
+        if (update)
+          Update(m_baseUrl, true);
+      }
+      else
+      {
+      }
+    }
+  }
+
+  return ret;
+}
+
+bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool updateFilterPath)
 {
   bool ret;
   CFileItemList tmpItems;
@@ -123,24 +142,28 @@ bool CGUIWindowMediaFilterView::GetDirectory(const CStdString &strDirectory, CFi
   {
     if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "secondary")
     {
-      CLog::Log(LOGDEBUG, "Found a PlexMediaServer Filter directory, going to default to load /all");
-
       CStdString url;
       url = PlexUtils::AppendPathToURL(strDirectory, "all");
 
-      /* Since we are fucking around with which directory that will be loaded
-       * we need to reset these variables. Not pretty, but working */
+      if (m_appliedFilters.size() > 0)
+      {
+        CStdString optionList = StringUtils::Join(m_appliedFilters, "&");
+        url += "?" + optionList;
+      }
+
+      m_baseUrl = strDirectory;
+
+      ret = CGUIWindowVideoNav::Update(url, updateFilterPath);
+
+      /* Kill the history */
       m_history.ClearPathHistory();
       m_startDirectory = url;
 
-      ret = CGUIWindowVideoNav::GetDirectory(url, items);
       if (ret)
       {
-        /* Now load the filters */
         int type = 1;
-        if (items.HasProperty("typeNumber"))
-          type = items.GetProperty("typeNumber").asInteger();
-
+        if (m_vecItems->HasProperty("typeNumber"))
+          type = m_vecItems->GetProperty("typeNumber").asInteger();
         BuildFilters(strDirectory, type);
       }
 
@@ -148,5 +171,5 @@ bool CGUIWindowMediaFilterView::GetDirectory(const CStdString &strDirectory, CFi
     }
   }
 
-  return CGUIWindowVideoNav::GetDirectory(strDirectory, items);
+  return CGUIWindowVideoNav::Update(strDirectory, updateFilterPath);
 }
