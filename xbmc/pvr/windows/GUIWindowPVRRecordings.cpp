@@ -208,7 +208,7 @@ void CGUIWindowPVRRecordings::UpdateData(bool bUpdateSelectedFile /* = true */)
   else
     m_strSelectedPath = m_parent->m_vecItems->GetPath();
 
-  m_parent->m_viewControl.Clear();
+  ShowBusyItem();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
   m_parent->m_vecItems->SetPath(m_strSelectedPath);

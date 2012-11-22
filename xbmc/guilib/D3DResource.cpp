@@ -342,8 +342,10 @@ bool CD3DEffect::CreateEffect()
   {
     CStdString error;
     error.assign((const char*)pError->GetBufferPointer(), pError->GetBufferSize());
-    CLog::Log(LOGERROR, "%s", error.c_str());
+    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): %s", error.c_str());
   }
+  else
+    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): call to D3DXCreateEffect() failed with %l", hr);
   return false;
 }
 

@@ -97,24 +97,28 @@ bool CWINFileSMB::Open(const CURL& url)
 
 bool CWINFileSMB::Exists(const CURL& url)
 {
-  struct __stat64 buffer;
-  if(url.GetFileName() == url.GetShareName())
-    return false;
   CStdString strFile = GetLocal(url);
   URIUtils::RemoveSlashAtEnd(strFile);
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  if(_wstat64(strWFile.c_str(), &buffer) == 0)
+  DWORD attributes = GetFileAttributesW(strWFile.c_str());
+  if(attributes != INVALID_FILE_ATTRIBUTES)
     return true;
 
-  if(errno == ENOENT)
+  DWORD err = GetLastError();
+  if(err != ERROR_ACCESS_DENIED)
     return false;
 
   XFILE::CWINSMBDirectory smb;
   if(smb.ConnectToShare(url) == false)
     return false;
 
-  return (_wstat64(strWFile.c_str(), &buffer) == 0);
+  attributes = GetFileAttributesW(strWFile.c_str());
+
+  if(attributes == INVALID_FILE_ATTRIBUTES)
+    return false;
+
+  return true;
 }
 
 int CWINFileSMB::Stat(struct __stat64* buffer)
