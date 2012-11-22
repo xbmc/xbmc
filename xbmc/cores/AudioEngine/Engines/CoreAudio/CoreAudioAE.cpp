@@ -431,9 +431,8 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   CLog::Log(LOGINFO, "CCoreAudioAE::MakeStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat), sampleRate, encodedSamplerate, ((std::string)channelInfo).c_str());
 
-  CSingleLock streamLock(m_streamLock);
-  //bool wasEmpty = m_streams.empty();
   CCoreAudioAEStream *stream = new CCoreAudioAEStream(dataFormat, sampleRate, encodedSamplerate, channelLayout, options);
+  CSingleLock streamLock(m_streamLock);
   m_streams.push_back(stream);
   streamLock.Leave();
 
