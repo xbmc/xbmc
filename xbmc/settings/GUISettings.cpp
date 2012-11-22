@@ -470,7 +470,7 @@ void CGUISettings::Initialize()
   map<int,int> channelLayout;
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100+layout, layout));
-  AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+  AddInt(ao, "audiooutput.channels", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.normalizelevels", 346, true);
   AddBool(ao, "audiooutput.stereoupmix", 252, false);
 
@@ -1354,10 +1354,35 @@ void CGUISettings::GetSettingsGroup(CSettingsCategory* cat, vecSettings &setting
 
 void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)
 { // load our stuff...
+  bool updated = false;
+
   for (mapIter it = settingsMap.begin(); it != settingsMap.end(); it++)
   {
     LoadFromXML(pRootElement, it, hideSettings);
   }
+
+  // check if we are updating to Frodo and need to update from
+  // audiooutput.channellayout to audiooutput.channels
+  TiXmlNode *channelNode = pRootElement->FirstChild("audiooutput");
+  if (channelNode != NULL)
+  {
+    channelNode = channelNode->FirstChild("channellayout");
+    CSettingInt* channels = (CSettingInt*)GetSetting("audiooutput.channels");
+    if (channelNode != NULL && channelNode->FirstChild() != NULL && channels != NULL)
+    {
+      channels->FromString(channelNode->FirstChild()->ValueStr());
+      if (channels->GetData() < AE_CH_LAYOUT_MAX - 1)
+        channels->SetData(channels->GetData() + 1);
+
+      // let's just reset the audiodevice settings as well
+      std::string audiodevice = GetString("audiooutput.audiodevice");
+      CAEFactory::VerifyOutputDevice(audiodevice, false);
+      SetString("audiooutput.audiodevice", audiodevice.c_str());
+
+      updated = true;
+    }
+  }
+
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
   // FIXME: Check if the hardware supports it (if possible ;)
@@ -1401,6 +1426,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     {
       timezone = g_timezone.GetOSConfiguredTimezone();
       SetString("locale.timezone", timezone);
+      updated = true;
     }
     g_timezone.SetTimezone(timezone);
   }
@@ -1417,6 +1443,9 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     g_langInfo.SetSubtitleLanguage(streamLanguage);
   else
     g_langInfo.SetSubtitleLanguage("");
+
+  if (updated)
+    g_settings.Save();
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
