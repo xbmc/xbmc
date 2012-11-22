@@ -129,6 +129,16 @@
 		<radioheight>14</radioheight>
 		<radiowidth>20</radiowidth>
 	</include>
+	<include name="leftMenuSortingButton">
+		<description>sorting radio button</description>
+		<textureradiofocus>arrow-big-up.png</textureradiofocus>
+		<textureradionofocus flipy="true">arrow-big-up.png</textureradionofocus>
+		<align>right</align>
+		<aligny>center</aligny>
+		<pulseonselect>false</pulseonselect>
+		<radioheight>14</radioheight>
+		<radiowidth>20</radiowidth>
+	</include>
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
 		<control type="group">
@@ -191,6 +201,12 @@
 				<control type="spincontrolex" id="19003">
 					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
+				</control>
+				<!-- sorting buttons -->
+				<control type="radiobutton" id="19011">
+					<textoffsetx>30</textoffsetx>
+					<include>leftMenuFormat</include>
+					<include>leftMenuSortingButton</include>
 				</control>
 			</control>
 		</control>
