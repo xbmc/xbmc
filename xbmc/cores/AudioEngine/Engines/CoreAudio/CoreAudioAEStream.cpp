@@ -490,7 +490,10 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
         if (m_volume <= m_fadeTarget)
           m_fadeRunning = false;
       }
-
+    }
+    
+    if (m_volume < 1.0f)
+    {
 #ifdef __SSE__
       CAEUtil::SSEMulArray(floatBuffer, m_volume, samples);
 #else
