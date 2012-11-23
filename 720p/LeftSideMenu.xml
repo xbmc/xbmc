@@ -90,9 +90,24 @@
 		<width>230</width>
 		<height>26</height>
 		<align>right</align>
-		<onright>777</onright>
 		<textoffsety>5</textoffsety>
 		<textoffsetx>34</textoffsetx>
+		<font>Condensed-17</font>
+		<shadowcolor>ff222222</shadowcolor>
+		<textcolor>FFCCCCCC</textcolor>
+		<focusedcolor>orangeLight</focusedcolor>
+		<texturefocus>-</texturefocus>
+		<texturenofocus>-</texturenofocus>
+		<animation type="Conditional" condition="true">
+			<effect type="fade" start="0" end="100"/>
+		</animation>
+	</include>
+	<include name="leftSubMenuFormat">
+		<width>260</width>
+		<height>26</height>
+		<align>left</align>
+		<textoffsety>5</textoffsety>
+		<textoffsetx>10</textoffsetx>
 		<font>Condensed-17</font>
 		<shadowcolor>ff222222</shadowcolor>
 		<textcolor>FFCCCCCC</textcolor>
@@ -129,6 +144,16 @@
 		<radioheight>14</radioheight>
 		<radiowidth>20</radiowidth>
 	</include>
+	<include name="leftSubMenuRadioButton">
+		<description>default radio button</description>
+		<textureradiofocus>left-menu-ticked-icon.png</textureradiofocus>
+		<textureradionofocus>-</textureradionofocus>
+		<align>right</align>
+		<aligny>center</aligny>
+		<pulseonselect>false</pulseonselect>
+		<radioheight>14</radioheight>
+		<radiowidth>20</radiowidth>
+	</include>
 	<include name="leftMenuSortingButton">
 		<description>sorting radio button</description>
 		<textureradiofocus>arrow-big-up.png</textureradiofocus>
@@ -154,7 +179,8 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-search-field-bg.png</texture>
 				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
-			</control>	
+			</control>
+			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary)</visible>
 				<posx>-253</posx>
@@ -166,24 +192,12 @@
 				<onright>777</onright>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
-				<!-- new filters list -->
-				<control type="grouplist" id="19000">					
-					<visible>!Container.Content(secondary)</visible>
+				<!-- filters list -->
+				<control type="grouplist" id="19000">
 					<posy>154</posy>
 					<posx>10</posx>
 					<onup>-</onup>
 					<ondown>19010</ondown>
-					<onleft>-</onleft>
-					<onright>777</onright>
-					<itemgap>0</itemgap>
-				</control>
-				<!-- new sort list -->
-				<control type="grouplist" id="19010">					
-					<visible>!Container.Content(secondary)</visible>
-					<posy>454</posy>
-					<posx>10</posx>
-					<onup>19000</onup>
-					<ondown>-</ondown>
 					<onleft>-</onleft>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
@@ -202,13 +216,102 @@
 					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
 				</control>
+				<!-- sorting list -->
+				<control type="grouplist" id="19010">
+					<posy>454</posy>
+					<posx>10</posx>
+					<onup>19000</onup>
+					<ondown>-</ondown>
+					<onleft>-</onleft>
+					<onright>777</onright>
+					<itemgap>0</itemgap>
+				</control>
 				<!-- sorting buttons -->
 				<control type="radiobutton" id="19011">
 					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
 					<include>leftMenuSortingButton</include>
 				</control>
-			</control>
+				<!-- filters sub-menu -->
+				<control type="group">
+					<visible allowhiddenfocus="false">true</visible>
+					<animation effect="fade" time="300">Visible</animation>
+					<animation effect="fade" time="100">Hidden</animation>
+					<posx>360</posx>
+					<posy>160</posy>
+					<!-- sub-list backgrounds -->
+					<control type="group">
+						<control type="image">
+							<description>Background</description>
+							<width>292</width>
+							<height>420</height>
+							<include>DialogBG</include>
+						</control>
+						<control type="image">
+							<description>Title bg</description>
+							<width>292</width>
+							<height>50</height>
+							<include>DialogHeaderBG</include>
+							<visible>Control.IsVisible(19021)</visible>
+						</control>
+						<control type="image">
+							<description>Title bg bottom border</description>
+							<width>290</width>
+							<include>DialogHeaderBorder</include>
+						</control>
+						<control type="image">
+							<description>Background border</description>
+							<width>294</width>
+							<height>422</height>
+							<include>DialogBorder</include>
+						</control>
+						<control type="image">
+							<description>Dialog arrow</description>
+							<posx>-14</posx>
+							<posy>100</posy>
+							<include>ArrowBlackLeft</include>
+						</control>
+					</control>	
+					<!-- sub-list -->
+					<control type="group" id="1400">
+						<visible allowhiddenfocus="false">true</visible>
+						<posy>24</posy>
+						<!-- sub-list title -->
+						<control type="label" id="19029">
+							<description>Heading</description>
+							<width>300</width>
+							<include>DialogHeading</include>
+							<label>FILTERS</label>
+						</control>
+						<control type="grouplist" id="19020">
+							<width>300</width>
+							<height>340</height>
+							<posy>40</posy>
+							<posx>10</posx>
+							<onup>19020</onup>
+							<ondown>19020</ondown>
+							<onleft>19000</onleft>
+							<onright>-</onright>
+							<itemgap>5</itemgap>
+							<pagecontrol>61</pagecontrol>
+							<scrolltime>350</scrolltime>
+						</control>
+						<!-- sub-list buttons -->
+						<control type="radiobutton" id="19021">
+							<textoffsetx>10</textoffsetx>
+							<include>leftSubMenuFormat</include>
+						</control>
+						<control type="scrollbar" id="61">
+							<description>Scroll Bar</description>
+							<posx>265</posx>
+							<posy>33</posy>
+							<width>24</width>
+							<height>310</height>
+							<showonepage>true</showonepage>
+						</control>
+					</control>			
+				</control>
+			</control>			
 		</control>
 	</include>
 </includes>
