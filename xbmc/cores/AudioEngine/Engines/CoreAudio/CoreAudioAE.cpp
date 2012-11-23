@@ -142,7 +142,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   // on iOS devices we set fixed to two channels.
   m_stdChLayout = AE_CH_LAYOUT_2_0;
 #if defined(TARGET_DARWIN_OSX)
-  switch (g_guiSettings.GetInt("audiooutput.channellayout"))
+  switch (g_guiSettings.GetInt("audiooutput.channels"))
   {
     default:
     case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* do not allow 1_0 output */
@@ -310,7 +310,7 @@ void CCoreAudioAE::OnSettingsChange(const std::string& setting)
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.dtspassthrough"    ||
-      setting == "audiooutput.channellayout"     ||
+      setting == "audiooutput.channels"     ||
       setting == "audiooutput.multichannellpcm")
   {
     // only reinit the engine if we not
@@ -431,13 +431,13 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   CLog::Log(LOGINFO, "CCoreAudioAE::MakeStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat), sampleRate, encodedSamplerate, ((std::string)channelInfo).c_str());
 
-  CSingleLock streamLock(m_streamLock);
-  //bool wasEmpty = m_streams.empty();
   CCoreAudioAEStream *stream = new CCoreAudioAEStream(dataFormat, sampleRate, encodedSamplerate, channelLayout, options);
+  CSingleLock streamLock(m_streamLock);
   m_streams.push_back(stream);
   streamLock.Leave();
 
-  Stop();
+  if ((options & AESTREAM_PAUSED) == 0)
+    Stop();
 
   // reinit the engine if pcm format changes or always on raw format
   if (m_Initialized && ( m_lastStreamFormat != dataFormat ||
@@ -445,18 +445,21 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
                          m_lastSampleRate != sampleRate ||
                          COREAUDIO_IS_RAW(dataFormat)))
   {
+    Stop();
     Deinitialize();
     m_Initialized = OpenCoreAudio(sampleRate, COREAUDIO_IS_RAW(dataFormat), dataFormat);
     m_lastStreamFormat = dataFormat;
     m_lastChLayoutCount = channelLayout.Count();
     m_lastSampleRate = sampleRate;
+    Start();
   }
 
   /* if the stream was not initialized, do it now */
   if (!stream->IsValid())
     stream->Initialize();
 
-  Start();
+  if ((options & AESTREAM_PAUSED) == 0)  
+    Start();
 
   m_streamsPlaying = true;
 
