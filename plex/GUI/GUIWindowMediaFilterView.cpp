@@ -41,12 +41,18 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
   sortGroup->ClearAll();
 
   CGUIButtonControl* originalButton = (CGUIButtonControl*)GetControl(FILTER_BUTTON);
+  if (!originalButton)
+    return;
   originalButton->SetVisible(false);
 
   CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl*)GetControl(FILTER_RADIO_BUTTON);
+  if (!radioButton)
+    return;
   radioButton->SetVisible(false);
 
   CGUIRadioButtonControl* sortButton = (CGUIRadioButtonControl*)GetControl(SORT_RADIO_BUTTON);
+  if (!sortButton)
+    return;
   sortButton->SetVisible(false);
 
   /* Fetch Filters */
