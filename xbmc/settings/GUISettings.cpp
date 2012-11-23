@@ -1383,6 +1383,17 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     }
   }
 
+  // and fix the videoscreen.screenmode if necessary
+  std::string screenmode = GetString("videoscreen.screenmode");
+  // in Eden there was no character ("i" or "p") indicating interlaced/progressive
+  // at the end so we just add a "p" and assume progressive
+  if (screenmode.size() == 20)
+  {
+    screenmode += "p";
+    SetString("videoscreen.screenmode", screenmode.c_str());
+    updated = true;
+  }
+
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
   // FIXME: Check if the hardware supports it (if possible ;)
