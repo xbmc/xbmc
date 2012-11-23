@@ -13,6 +13,7 @@
 #include "guilib/GUISpinControlEx.h"
 #include "plex/PlexUtils.h"
 #include "plex/FileSystem/PlexDirectory.h"
+#include "GUIUserMessages.h"
 
 bool CGUIWindowMediaFilterView::FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list)
 {
@@ -65,6 +66,7 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
 
     newFilters[filterName] = filter;
     filterGroup->AddControl(filter->NewFilterControl(filter->IsBooleanType() ? radioButton : originalButton, FILTER_BUTTONS_START + i));
+    dprintf("FILTER: adding %s to filterGroup", filter->GetFilterName().c_str());
   }
 
   m_filters = newFilters;
@@ -143,6 +145,19 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
       if (update)
         Update(m_baseUrl, true, false);
     }
+    case GUI_MSG_LOAD_SKIN:
+    {
+      if (IsActive())
+        m_returningFromSkinLoad = true;
+    }
+      break;
+    case GUI_MSG_WINDOW_INIT:
+    {
+      if (m_returningFromSkinLoad)
+        Update(m_baseUrl, true);
+      m_returningFromSkinLoad = false;
+    }
+      break;
   }
 
   return ret;

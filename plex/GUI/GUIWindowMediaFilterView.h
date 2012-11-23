@@ -102,7 +102,7 @@ typedef boost::shared_ptr<CPlexFilter> CPlexFilterPtr;
 class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
 {    
   public:
-    CGUIWindowMediaFilterView() : CGUIWindowVideoNav(), m_appliedSort(""), m_sortDirectionAsc(true) {};
+    CGUIWindowMediaFilterView() : CGUIWindowVideoNav(), m_appliedSort(""), m_sortDirectionAsc(true), m_returningFromSkinLoad(false) {};
     bool OnMessage(CGUIMessage &message);
   protected:
     bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
@@ -117,6 +117,7 @@ class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
     std::map<CStdString, std::string> m_appliedFilters;
     CStdString m_appliedSort;
     bool m_sortDirectionAsc;
+    bool m_returningFromSkinLoad;
 };
 
 #endif // GUIWINDOWMEDIAFILTERVIEW_H
