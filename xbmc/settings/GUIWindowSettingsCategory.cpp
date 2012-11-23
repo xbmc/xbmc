@@ -922,6 +922,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(false);
     }
     else if (strSetting.Equals("screensaver.preview")           ||
+             strSetting.Equals("screensaver.time")              ||
              strSetting.Equals("screensaver.usedimonpause")     ||
              strSetting.Equals("screensaver.usemusicvisinstead"))
     {
