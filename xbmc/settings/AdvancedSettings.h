@@ -375,6 +375,7 @@ class CAdvancedSettings
     bool m_bEnableViewRestrictions;
     bool m_bEnableKeyboardBacklightControl;
     bool m_bEnablePlexTokensInLogs;
+    bool m_bCollapseSingleSeason;
     /* END PLEX */
 };
 

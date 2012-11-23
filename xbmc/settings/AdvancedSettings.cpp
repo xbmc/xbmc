@@ -339,6 +339,7 @@ void CAdvancedSettings::Initialize()
   /* Use Union and 1000ms by default */
   m_guiAlgorithmDirtyRegions = 1;
   m_guiDirtyRegionNoFlipTimeout = 1000;
+  m_bCollapseSingleSeason = true;
   /* END PLEX */
 
 
@@ -1079,6 +1080,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetBoolean(pRootElement, "enableviewrestrictions", m_bEnableViewRestrictions);
   XMLUtils::GetBoolean(pRootElement, "enablekeyboardbacklightcontrol", m_bEnableKeyboardBacklightControl);
   XMLUtils::GetBoolean(pRootElement, "enableplextokensinlogs", m_bEnablePlexTokensInLogs);
+  XMLUtils::GetBoolean(pRootElement, "collapsesingleseason", m_bCollapseSingleSeason);
   /* END PLEX */
 
   // load in the GUISettings overrides:

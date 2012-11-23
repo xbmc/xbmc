@@ -14,6 +14,7 @@
 #include "plex/PlexUtils.h"
 #include "plex/FileSystem/PlexDirectory.h"
 #include "GUIUserMessages.h"
+#include "AdvancedSettings.h"
 
 bool CGUIWindowMediaFilterView::FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list)
 {
@@ -215,6 +216,7 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
       /* Kill the history */
       m_history.ClearPathHistory();
       m_history.AddPath(m_baseUrl);
+
       m_startDirectory = url;
 
       if (ret && updateFilters)
@@ -226,6 +228,15 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
       }
 
       return ret;
+    }
+    else if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "seasons")
+    {
+      if (tmpItems.Size() == 1 && g_advancedSettings.m_bCollapseSingleSeason)
+      {
+        CFileItemPtr season = tmpItems.Get(0);
+        CStdString url = season->GetPath();
+        return CGUIWindowVideoNav::Update(url, updateFilterPath);
+      }
     }
   }
 
