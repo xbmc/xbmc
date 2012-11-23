@@ -57,12 +57,14 @@ bool CXRandR::Query(bool force)
 
   m_outputs.clear();
   // query all screens
+  // we are happy if at least one screen returns results
+  bool success = false;
   for(unsigned int screennum=0; screennum<m_numScreens; ++screennum)
   {
-    if(!Query(force, screennum))
-      return false;
+    if(Query(force, screennum))
+      success = true;
   }
-  return true;
+  return success;
 }
 
 bool CXRandR::Query(bool force, int screennum)
@@ -70,7 +72,7 @@ bool CXRandR::Query(bool force, int screennum)
   CStdString cmd;
   cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
-  cmd.append("-q --screen %d", screennum);
+  cmd.AppendFormat(" -q --screen %d", screennum);
 
   FILE* file = popen(cmd.c_str(),"r");
   if (!file)
