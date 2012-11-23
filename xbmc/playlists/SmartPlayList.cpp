@@ -693,9 +693,20 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     case OPERATOR_DOES_NOT_CONTAIN:
       negate = " NOT"; operatorString = " LIKE '%%%s%%'"; break;
     case OPERATOR_EQUALS:
-      operatorString = " LIKE '%s'"; break;
+      if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
+        operatorString = " = %s";
+      else
+        operatorString = " LIKE '%s'";
+      break;
     case OPERATOR_DOES_NOT_EQUAL:
-      negate = " NOT"; operatorString = " LIKE '%s'"; break;
+      if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
+        operatorString = " != %s";
+      else
+      {
+        negate = " NOT";
+        operatorString = " LIKE '%s'";
+      }
+      break;
     case OPERATOR_STARTS_WITH:
       operatorString = " LIKE '%s%%'"; break;
     case OPERATOR_ENDS_WITH:
