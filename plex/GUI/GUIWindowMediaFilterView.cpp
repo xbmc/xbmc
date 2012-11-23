@@ -221,8 +221,6 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
 
       /* Kill the history */
       m_history.ClearPathHistory();
-      m_history.AddPath(m_baseUrl);
-
       m_startDirectory = url;
 
       if (ret && updateFilters)
@@ -237,6 +235,7 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
     }
     else if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "seasons")
     {
+      m_history.AddPath(m_baseUrl);
       if (tmpItems.Size() == 1 && g_advancedSettings.m_bCollapseSingleSeason)
       {
         CFileItemPtr season = tmpItems.Get(0);
