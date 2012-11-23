@@ -40,7 +40,7 @@ class CPlexFilter
 
     CGUIButtonControl* NewFilterControl(CGUIButtonControl *parent, int id)
     {
-      if (IsBooleanType())
+      if (IsBooleanType() || m_filterType.empty())
         m_filterControl = new CGUIRadioButtonControl(*(CGUIRadioButtonControl*)parent);
       else
         m_filterControl = new CGUIButtonControl(*parent);
@@ -100,10 +100,12 @@ class CPlexFilter
 typedef boost::shared_ptr<CPlexFilter> CPlexFilterPtr;
 
 class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
-{
+{    
   public:
+    CGUIWindowMediaFilterView() : CGUIWindowVideoNav(), m_appliedSort(""), m_sortDirectionAsc(true) {};
     bool OnMessage(CGUIMessage &message);
   protected:
+    bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
     bool Update(const CStdString &strDirectory, bool updateFilterPath);
     void BuildFilters(const CStdString &url, int type);
     bool FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list);
@@ -112,7 +114,9 @@ class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
     std::map<CStdString, CPlexFilterPtr> m_filters;
     std::map<CStdString, CPlexFilterPtr> m_sorts;
     CStdString m_baseUrl;
-    std::vector<std::string> m_appliedFilters;
+    std::map<CStdString, std::string> m_appliedFilters;
+    CStdString m_appliedSort;
+    bool m_sortDirectionAsc;
 };
 
 #endif // GUIWINDOWMEDIAFILTERVIEW_H

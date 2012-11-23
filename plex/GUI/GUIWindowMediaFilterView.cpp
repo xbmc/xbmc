@@ -38,11 +38,14 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
   filterGroup->ClearAll();
   sortGroup->ClearAll();
 
-  CGUIButtonControl* originalButton = (CGUIButtonControl *)GetControl(FILTER_BUTTON);
+  CGUIButtonControl* originalButton = (CGUIButtonControl*)GetControl(FILTER_BUTTON);
   originalButton->SetVisible(false);
 
-  CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl *)GetControl(FILTER_RADIO_BUTTON);
+  CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl*)GetControl(FILTER_RADIO_BUTTON);
   radioButton->SetVisible(false);
+
+  CGUIRadioButtonControl* sortButton = (CGUIRadioButtonControl*)GetControl(SORT_RADIO_BUTTON);
+  sortButton->SetVisible(false);
 
   /* Fetch Filters */
   CFileItemList filterItems;
@@ -56,7 +59,7 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
     CStdString filterName = item->GetProperty("filter").asString();
     if (m_filters.find(filterName) == m_filters.end())
       /* No such filter yet */
-      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), filterName, item->GetProperty("filterType").asString(), item->GetProperty("key").asString()));
+      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), filterName, item->GetProperty("filterType").asString(), item->GetProperty("unprocessedKey").asString()));
     else
       filter = m_filters[filterName];
 
@@ -73,17 +76,17 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
 
   for(int i = 0; i < sortItems.Size(); i++)
   {
-    CFileItemPtr item = filterItems.Get(i);
+    CFileItemPtr item = sortItems.Get(i);
     CPlexFilterPtr filter;
-    CStdString sortName = item->GetProperty("key").asString();
+    CStdString sortName = item->GetProperty("unprocessedKey").asString();
     if (m_sorts.find(sortName) == m_sorts.end())
       /* No such filter yet */
-      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), sortName, item->GetProperty("filterType").asString(), item->GetProperty("key").asString()));
+      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), sortName, "", sortName));
     else
       filter = m_sorts[sortName];
 
     newFilters[sortName] = filter;
-    sortGroup->AddControl(filter->NewFilterControl(filter->IsBooleanType() ? radioButton : originalButton, SORT_BUTTONS_START + i));
+    sortGroup->AddControl(filter->NewFilterControl(sortButton, SORT_BUTTONS_START + i));
   }
 
   m_sorts = newFilters;
@@ -103,27 +106,42 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
       bool update = false;
       int ctrlId = message.GetSenderId();
       dprintf("Clicked with CtrlID = %d", ctrlId);
-      if (ctrlId < 0 && ctrlId >= -100)
+      if (ctrlId < 0 && ctrlId >= FILTER_BUTTONS_START)
       {
         BOOST_FOREACH(name_filter_pair pr, m_filters)
         {
           if (pr.second->GetControlID() == ctrlId)
           {
             dprintf("Clicked filter %s", pr.second->GetFilterName().c_str());
+
+            /* Clear this filter first */
+            if (m_appliedFilters.find(pr.second->GetFilterName()) != m_appliedFilters.end())
+              m_appliedFilters.erase(pr.second->GetFilterName());
+
             if (!pr.second->GetFilterValue().empty())
-            {
-              m_appliedFilters.push_back(pr.second->GetFilterValue());
-              update = true;
-            }
+              m_appliedFilters[pr.second->GetFilterName()] = pr.second->GetFilterValue();
+
+            update = true;
           }
         }
-
-        if (update)
-          Update(m_baseUrl, true);
       }
-      else
+      else if (ctrlId < FILTER_BUTTONS_START && ctrlId >= SORT_BUTTONS_START)
       {
+        m_appliedSort.clear();
+
+        BOOST_FOREACH(name_filter_pair pr, m_sorts)
+        {
+          if (pr.second->GetControlID() == ctrlId)
+          {
+            m_appliedSort = pr.second->GetFilterName();
+            m_sortDirectionAsc = ((CGUIRadioButtonControl*)pr.second->GetFilterControl())->IsSelected();
+            update = true;
+          }
+        }
       }
+
+      if (update)
+        Update(m_baseUrl, true, false);
     }
   }
 
@@ -131,6 +149,11 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
 }
 
 bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool updateFilterPath)
+{
+  return Update(strDirectory, updateFilterPath, true);
+}
+
+bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
 {
   bool ret;
   CFileItemList tmpItems;
@@ -147,8 +170,24 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
 
       if (m_appliedFilters.size() > 0)
       {
-        CStdString optionList = StringUtils::Join(m_appliedFilters, "&");
+        vector<string> filterValues;
+        pair<CStdString, string> stpair;
+        BOOST_FOREACH(stpair, m_appliedFilters)
+          filterValues.push_back(stpair.second);
+
+        CStdString optionList = StringUtils::Join(filterValues, "&");
         url += "?" + optionList;
+      }
+
+      if (!m_appliedSort.empty())
+      {
+        CStdString sortStr;
+        sortStr.Format("sort=%s:%s", m_appliedSort, m_sortDirectionAsc ? "asc" : "desc");
+
+        if (url.Find('?') != -1)
+          url += "&" + sortStr;
+        else
+          url += "?" + sortStr;
       }
 
       m_baseUrl = strDirectory;
@@ -159,7 +198,7 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
       m_history.ClearPathHistory();
       m_startDirectory = url;
 
-      if (ret)
+      if (ret && updateFilters)
       {
         int type = 1;
         if (m_vecItems->HasProperty("typeNumber"))
