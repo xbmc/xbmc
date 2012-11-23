@@ -68,6 +68,7 @@ class CPlexFilter
     bool IsActive() const { return !m_currentValue.empty(); }
 
     CStdString GetFilterName() const { return m_filterName; }
+    CStdString GetFilterString() const { return m_filterString; }
 
     int GetControlID() const
     {

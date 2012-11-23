@@ -15,6 +15,7 @@
 #include "plex/FileSystem/PlexDirectory.h"
 #include "GUIUserMessages.h"
 #include "AdvancedSettings.h"
+#include "guilib/GUILabelControl.h"
 
 bool CGUIWindowMediaFilterView::FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list)
 {
@@ -118,6 +119,10 @@ void CGUIWindowMediaFilterView::PopulateSublist(CPlexFilterPtr filter)
   if (!radioButton)
     return;
   radioButton->SetVisible(false);
+
+  CGUILabelControl* headerLabel = (CGUILabelControl*)GetControl(FILTER_SUBLIST_LABEL);
+  if (headerLabel)
+    headerLabel->SetLabel(filter->GetFilterString());
 
   for (int i = 0; i < sublist.Size(); i++)
   {
