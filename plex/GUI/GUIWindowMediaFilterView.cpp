@@ -147,12 +147,15 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
     }
     case GUI_MSG_LOAD_SKIN:
     {
+      /* This is called BEFORE the skin is reloaded, so let's save this event to be handled
+       * in WINDOW_INIT instead */
       if (IsActive())
         m_returningFromSkinLoad = true;
     }
       break;
     case GUI_MSG_WINDOW_INIT:
     {
+      /* If this is a reload event we must make sure to get the filters back */
       if (m_returningFromSkinLoad)
         Update(m_baseUrl, true);
       m_returningFromSkinLoad = false;
@@ -211,6 +214,7 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
 
       /* Kill the history */
       m_history.ClearPathHistory();
+      m_history.AddPath(m_baseUrl);
       m_startDirectory = url;
 
       if (ret && updateFilters)
