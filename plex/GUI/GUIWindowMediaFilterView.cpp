@@ -67,7 +67,7 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
     CStdString filterName = item->GetProperty("filter").asString();
     if (m_filters.find(filterName) == m_filters.end())
       /* No such filter yet */
-      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), filterName, item->GetProperty("filterType").asString(), item->GetProperty("unprocessedKey").asString()));
+      filter = CPlexFilterPtr(new CPlexFilter(item->GetLabel(), filterName, item->GetProperty("filterType").asString(), item->GetProperty("key").asString()));
     else
       filter = m_filters[filterName];
 
@@ -102,6 +102,44 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
 
 }
 
+void CGUIWindowMediaFilterView::PopulateSublist(CPlexFilterPtr filter)
+{
+  CFileItemList sublist;
+  if (!filter->GetSublist(sublist))
+    return;
+
+  CGUIControlGroupList* list = (CGUIControlGroupList*)GetControl(FILTER_SUBLIST);
+  if (!list)
+    return;
+
+  list->ClearAll();
+
+  CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl*)GetControl(FILTER_SUBLIST_BUTTON);
+  if (!radioButton)
+    return;
+  radioButton->SetVisible(false);
+
+  for (int i = 0; i < sublist.Size(); i++)
+  {
+    CFileItemPtr item = sublist.Get(i);
+    CGUIRadioButtonControl* sublistItem = new CGUIRadioButtonControl(*radioButton);
+    sublistItem->SetLabel(item->GetLabel());
+    sublistItem->SetVisible(true);
+    sublistItem->AllocResources();
+    sublistItem->SetID(FILTER_SUBLIST_BUTTONS_START + i);
+
+    list->AddControl(sublistItem);
+  }
+
+  SET_CONTROL_VISIBLE(FILTER_SUBLIST);
+}
+
+void CGUIWindowMediaFilterView::OnInitWindow()
+{
+  CGUIWindowVideoNav::OnInitWindow();
+  SET_CONTROL_HIDDEN(FILTER_SUBLIST);
+}
+
 typedef pair<CStdString, CPlexFilterPtr> name_filter_pair;
 
 bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
@@ -123,14 +161,21 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
           {
             dprintf("Clicked filter %s", pr.second->GetFilterName().c_str());
 
-            /* Clear this filter first */
-            if (m_appliedFilters.find(pr.second->GetFilterName()) != m_appliedFilters.end())
-              m_appliedFilters.erase(pr.second->GetFilterName());
+            if (pr.second->IsBooleanType())
+            {
+              /* Clear this filter first */
+              if (m_appliedFilters.find(pr.second->GetFilterName()) != m_appliedFilters.end())
+                m_appliedFilters.erase(pr.second->GetFilterName());
 
-            if (!pr.second->GetFilterValue().empty())
-              m_appliedFilters[pr.second->GetFilterName()] = pr.second->GetFilterValue();
+              if (!pr.second->GetFilterValue().empty())
+                m_appliedFilters[pr.second->GetFilterName()] = pr.second->GetFilterValue();
 
-            update = true;
+              update = true;
+            }
+            else
+            {
+              PopulateSublist(pr.second);
+            }
           }
         }
       }

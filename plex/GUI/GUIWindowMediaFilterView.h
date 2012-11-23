@@ -20,11 +20,16 @@
 #define FILTER_RADIO_BUTTON 19002
 #define FILTER_SPIN_CONTROL 19003
 
+#define FILTER_SUBLIST 19020
+#define FILTER_SUBLIST_BUTTON 19021
+#define FILTER_SUBLIST_LABEL 19029
+
 #define SORT_LIST       19010
 #define SORT_RADIO_BUTTON 19011
 
 #define FILTER_BUTTONS_START -100
 #define SORT_BUTTONS_START -200
+#define FILTER_SUBLIST_BUTTONS_START -300
 
 class CPlexFilter
 {
@@ -43,7 +48,9 @@ class CPlexFilter
       if (IsBooleanType() || m_filterType.empty())
         m_filterControl = new CGUIRadioButtonControl(*(CGUIRadioButtonControl*)parent);
       else
+      {
         m_filterControl = new CGUIButtonControl(*parent);
+      }
 
       m_filterControl->SetLabel(m_filterString);
       m_filterControl->AllocResources();
@@ -88,13 +95,32 @@ class CPlexFilter
       return filterStr;
     }
 
+    bool GetSublist(CFileItemList& sublist)
+    {
+      /* FIXME: needs to be made ASync? */
+      if (m_sublist.Size() == 0)
+        if (!FetchSublist())
+          return false;
+
+      sublist.Copy(m_sublist);
+      return true;
+    }
+
   private:
+    bool FetchSublist()
+    {
+      CPlexDirectory dir;
+      return dir.GetDirectory(m_key, m_sublist);
+    }
+
     CGUIButtonControl* m_filterControl;
     CStdString m_filterName;
     CStdString m_filterString;
     CStdString m_filterType;
     std::vector<std::string> m_currentValue;
     CStdString m_key;
+
+    CFileItemList m_sublist;
 };
 
 typedef boost::shared_ptr<CPlexFilter> CPlexFilterPtr;
@@ -109,6 +135,8 @@ class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
     bool Update(const CStdString &strDirectory, bool updateFilterPath);
     void BuildFilters(const CStdString &url, int type);
     bool FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list);
+    void PopulateSublist(CPlexFilterPtr filter);
+    void OnInitWindow();
 
   private:
     std::map<CStdString, CPlexFilterPtr> m_filters;
