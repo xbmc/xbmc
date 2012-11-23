@@ -355,7 +355,7 @@ void CMusicInfoScanner::Stop()
   if (m_bCanInterrupt)
     m_musicDatabase.Interupt();
 
-  StopThread();
+  StopThread(false);
 }
 
 static void OnDirectoryScanned(const CStdString& strDirectory)
