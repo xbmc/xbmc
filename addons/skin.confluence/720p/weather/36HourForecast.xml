@@ -1,8 +1,19 @@
 <includes>
-	<include name="Weather+36HourForcast">
+	<include name="Weather36HourForcast">
 		<control type="group">
 			<visible>StringCompare(Window.Property(Weather.CurrentView),36hour)</visible>
 			<include>VisibleFadeEffect</include>
+			<control type="button" id="997">
+				<description>Hidden Button for focus</description>
+				<posx>-600</posx>
+				<posy>-20</posy>
+				<width>1</width>
+				<height>1</height>
+				<texturenofocus>-</texturenofocus>
+				<texturefocus>-</texturefocus>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+			</control>
 			<control type="label">
 				<description>header label</description>
 				<posx>20</posx>
@@ -65,19 +76,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.1.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.1.Temperature),[B] ,[/B]]$INFO[System.TemperatureUnits]</label>
-					</control>
-					<control type="label">
-						<posx>590</posx>
-						<posy>35</posy>
-						<width>390</width>
-						<height>20</height>
-						<font>font12</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.1.DaylightTitle)][/COLOR] $INFO[Window.Property(36Hour.1.DaylightTime)]</label>
+						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.1.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.1.Temperature),[B] ,[/B]]</label>
 					</control>
 					<control type="label">
 						<posx>590</posx>
@@ -89,19 +88,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>right</align>
 						<aligny>center</aligny>
-						<label>$INFO[Window.Property(36Hour.1.Precipitation),[COLOR=grey2]$LOCALIZE[33022] :[/COLOR][B] ,%[/B]]</label>
-					</control>
-					<control type="label">
-						<posx>590</posx>
-						<posy>85</posy>
-						<width>390</width>
-						<height>20</height>
-						<font>font12</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>$INFO[Window.Property(36Hour.1.Outlook),[COLOR=grey2]$LOCALIZE[33030] :[/COLOR]]</label>
+						<label>$INFO[Window.Property(36Hour.1.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
 						<posx>0</posx>
@@ -154,19 +141,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.2.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.2.Temperature),[B] ,[/B]]$INFO[System.TemperatureUnits]</label>
-					</control>
-					<control type="label">
-						<posx>590</posx>
-						<posy>35</posy>
-						<width>390</width>
-						<height>20</height>
-						<font>font12</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.2.DaylightTitle)][/COLOR] $INFO[Window.Property(36Hour.2.DaylightTime)]</label>
+						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.2.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.2.Temperature),[B] ,[/B]]</label>
 					</control>
 					<control type="label">
 						<posx>590</posx>
@@ -178,19 +153,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>right</align>
 						<aligny>center</aligny>
-						<label>$INFO[Window.Property(36Hour.2.Precipitation),[COLOR=grey2]$LOCALIZE[33022] :[/COLOR][B] ,%[/B]]</label>
-					</control>
-					<control type="label">
-						<posx>590</posx>
-						<posy>85</posy>
-						<width>390</width>
-						<height>20</height>
-						<font>font12</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>$INFO[Window.Property(36Hour.2.Outlook),[COLOR=grey2]$LOCALIZE[33030] :[/COLOR]]</label>
+						<label>$INFO[Window.Property(36Hour.2.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
 						<posx>0</posx>
@@ -243,19 +206,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.3.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.3.Temperature),[B] ,[/B]]$INFO[System.TemperatureUnits]</label>
-					</control>
-					<control type="label">
-						<posx>590</posx>
-						<posy>35</posy>
-						<width>390</width>
-						<height>20</height>
-						<font>font12</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.3.DaylightTitle)][/COLOR] $INFO[Window.Property(36Hour.3.DaylightTime)]</label>
+						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.3.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.3.Temperature),[B] ,[/B]]</label>
 					</control>
 					<control type="label">
 						<posx>590</posx>
@@ -267,19 +218,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>right</align>
 						<aligny>center</aligny>
-						<label>$INFO[Window.Property(36Hour.3.Precipitation),[COLOR=grey2]$LOCALIZE[33022] :[/COLOR][B] ,%[/B]]</label>
-					</control>
-					<control type="label">
-						<posx>590</posx>
-						<posy>85</posy>
-						<width>390</width>
-						<height>20</height>
-						<font>font12</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>selected</selectedcolor>
-						<align>right</align>
-						<aligny>center</aligny>
-						<label>$INFO[Window.Property(36Hour.3.Outlook),[COLOR=grey2]$LOCALIZE[33030] :[/COLOR]]</label>
+						<label>$INFO[Window.Property(36Hour.3.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
 						<posx>0</posx>

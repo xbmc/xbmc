@@ -11,11 +11,11 @@
 	<include file="IncludesHomeRecentlyAdded.xml" />
 	<include file="IncludesHomeMenuItems.xml" />
 	<include file="IncludesBackgroundBuilding.xml" />
-	<include file="weather+\10DayForecast.xml" />
-	<include file="weather+\36HourForecast.xml" />
-	<include file="weather+\WeekendForecast.xml" />
-	<include file="weather+\HourlyForecast.xml" />
-	<include file="weather+\MapsVideo.xml" />
+	<include file="weather\10DayForecast.xml" />
+	<include file="weather\36HourForecast.xml" />
+	<include file="weather\WeekendForecast.xml" />
+	<include file="weather\HourlyForecast.xml" />
+	<include file="weather\MapAlerts.xml" />
 
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
