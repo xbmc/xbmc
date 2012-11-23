@@ -93,12 +93,6 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   if (m_directoryStatus == UNLOADED)
   {
     LoadDirectory();
-    /* PLEX
-     * Don't run the AllocResources call until we actually have something
-     * to show
-     */
-    return;
-    /* END PLEX */
   }
 
   if (!m_bAllocated)
@@ -213,7 +207,7 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
       sort(m_files.begin(), m_files.end());
 
     // Mark the directory as loaded, and make sure we fade to the next image right away.
-    m_directoryStatus = READY;
+    m_directoryStatus = LOADED;
     m_expireTimer = true;
 
     if (m_image.GetFileName().IsEmpty())
