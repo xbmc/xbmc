@@ -130,8 +130,8 @@ bool CGUIWindowHome::OnAction(const CAction &action)
             path = pFileItem->GetLabel();
           m_lastSelectedItemKey.clear();
 
-          dprintf("Started to load the side car");
-          m_loadingThread->LoadFanWithDelay(path);
+          if (KeyHaveFanout(path))
+            m_loadingThread->LoadFanWithDelay(path);
         }
       }
     }
@@ -208,7 +208,7 @@ bool CGUIWindowHome::KeyHaveFanout(const CStdString& key)
     return false;
 
   /* Channels has a ID less than 4 and sections greater than 1000 */
-  if (id <= 4 || id > 1000)
+  if (id <= 4 || id >= 1000)
     return true;
 
   return false;
@@ -671,8 +671,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       // Reload if needed.
       if (KeyHaveFanout(m_lastSelectedItemKey))
       {
-        m_lastSelectedItemKey.clear();
         m_loadingThread->LoadFanWithDelay(m_lastSelectedItemKey);
+        m_lastSelectedItemKey.clear();
       }
       else
       {
@@ -775,6 +775,8 @@ void CGUIWindowHome::HideAllLists()
 void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
 {
   boost::mutex::scoped_lock lk(m_mutex);
+
+  dprintf("FanLoader: started to load fan with key: %s", key.c_str());
 
   m_key = key;
   m_loadTimer.Start();
