@@ -147,13 +147,14 @@
 	</include>
 	<include name="leftMenuSortingButton">
 		<description>sorting radio button</description>
-		<textureradiofocus>arrow-big-up.png</textureradiofocus>
-		<textureradionofocus flipy="true">arrow-big-up.png</textureradionofocus>
+		<textureradiofocus>arrow-big-up-orange.png</textureradiofocus>
+		<textureradionofocus flipy="true">arrow-big-up-gray.png</textureradionofocus>		
+		<textureradioon>arrow-big-up-orange.png</textureradioon>
 		<align>right</align>
 		<aligny>center</aligny>
 		<pulseonselect>false</pulseonselect>
 		<radioheight>14</radioheight>
-		<radiowidth>20</radiowidth>
+		<radiowidth>16</radiowidth>
 	</include>
 	<!-- Library menu -->
 	<include name="LeftSideMenu">
