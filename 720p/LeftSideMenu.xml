@@ -183,6 +183,14 @@
 				<onright>-</onright>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
+				<!-- filters list title -->
+				<control type="label" id="19009">
+					<description>Title</description>
+					<posy>110</posy>
+					<posx>253</posx>
+					<include>leftMenuTitle</include>
+					<label>FILTERS</label>
+				</control>
 				<!-- filters list -->
 				<control type="grouplist" id="19000">
 					<posy>154</posy>
@@ -207,6 +215,13 @@
 				<control type="spincontrolex" id="19003">
 					<textoffsetx>30</textoffsetx>
 					<include>leftMenuFormat</include>
+				<!-- sorting list title -->
+				<control type="label" id="19019">
+					<description>Title</description>
+					<posy>420</posy>
+					<posx>253</posx>
+					<label>SORTING</label>
+					<include>leftMenuTitle</include>
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
