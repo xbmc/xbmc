@@ -58,16 +58,7 @@
 				<height>17</height>
 				<aspectratio>scale</aspectratio>
 				<texture flipx="true">left-menu-indicator-arrow.png</texture>
-				<visible>!ControlGroup(1300).HasFocus</visible>
-			</control>
-			<control type="image">
-				<posy>680</posy>
-				<posx>30</posx>
-				<width>12</width>
-				<height>17</height>
-				<aspectratio>scale</aspectratio>
-				<texture>left-menu-indicator-arrow.png</texture>
-				<visible>ControlGroup(1300).HasFocus</visible>
+				<animation effect="rotate" end="-180" center="36,689" time="500" condition="ControlGroup(1300).HasFocus">Conditional</animation>
 			</control>
 		</control>
 	</include>
