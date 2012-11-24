@@ -105,7 +105,7 @@
 				<posx>198</posx>
 				<width>1400</width>
 				<height>0</height>
-				<label>$LOCALIZE[31606] $VAR[SettingsPageTitles]</label>
+				<label>$LOCALIZE[31606]  $VAR[SettingsPageTitles]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>CondensedBold-36</font>
