@@ -105,7 +105,7 @@
 				<posx>198</posx>
 				<width>1400</width>
 				<height>0</height>
-				<label>$LOCALIZE[31606]  $VAR[SettingsPageTitles]</label>
+				<label>$LOCALIZE[31606] $VAR[SettingsPageTitles]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>CondensedBold-36</font>
@@ -157,12 +157,12 @@
 				<content>
 				<item id="1">
 					<description>Video Settings Button</description>
-					<label> $LOCALIZE[31001] </label>
+					<label>$LOCALIZE[31001]</label>
 					<onclick>XBMC.ReplaceWindow(17)</onclick>
 				</item>
 					<item id="7">
 						<description>Appearance Settings Button</description>
-						<label> $LOCALIZE[31601] </label>
+						<label>$LOCALIZE[31601]</label>
 						<onclick>XBMC.ReplaceWindow(19)</onclick>
 					</item>
 					<!--><item id="8">
@@ -172,17 +172,17 @@
 					</item>-->
 					<item id="2">
 						<description>Music Settings Button</description>
-						<label> $LOCALIZE[31002] </label>
+						<label>$LOCALIZE[31002]</label>
 						<onclick>XBMC.ReplaceWindow(15)</onclick>
 					</item>
 					<item id="3">
 						<description>Pictures Settings Button</description>
-						<label> $LOCALIZE[31003] </label>
+						<label>$LOCALIZE[31003]</label>
 						<onclick>XBMC.ReplaceWindow(12)</onclick>
 					</item>
 					<item id="8">
 						<description>System Settings Button</description>
-						<label> $LOCALIZE[31006] </label>
+						<label>$LOCALIZE[31006]</label>
 						<onclick>XBMC.ReplaceWindow(16)</onclick>
 					</item>
 				</content>
