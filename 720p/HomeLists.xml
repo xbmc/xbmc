@@ -228,7 +228,7 @@
 					</control>
 					<!-- infos -->
 					<control type="group">
-						<posy>235</posy>
+						<posy>255</posy>
 						<posx>34</posx>
 						<control type="label">
 							<width>300</width>
@@ -263,7 +263,7 @@
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
 						<control type="textbox">
-							<posy>107</posy>
+							<posy>90</posy>
 							<width>315</width>
 							<height>298</height>
 							<label>$VAR[HomeListItemFullInfoPlot]</label>
