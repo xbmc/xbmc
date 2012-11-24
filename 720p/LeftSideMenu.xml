@@ -64,7 +64,7 @@
 	</include>
 	<include name="leftMenuTitle">
 		<textoffsety>5</textoffsety>
-		<textoffsetx>60</textoffsetx>
+		<textoffsetx>20</textoffsetx>
 		<font>Condensed-26</font>
 		<height>55</height>
 		<textcolor>FFCCCCCC</textcolor>
@@ -72,7 +72,7 @@
 		<texturenofocus>-</texturenofocus>
 		<animation effect="fade" start="100" end="100" time="0" condition="true">Conditional</animation>
 		<align>right</align>
-		<width>278</width>
+		<width>253</width>
 	</include>
 	<include name="leftMenuSpacing">
 		<height>45</height>
@@ -125,7 +125,7 @@
 			<effect type="fade" start="0" end="100"/>
 		</animation>
 	</include>
-	<include name="leftMenuRadioButton">
+	<include name="leftMenuFilterRadioButton">
 		<description>default radio button</description>
 		<textureradiofocus>left-menu-ticked-icon.png</textureradiofocus>
 		<textureradionofocus>-</textureradionofocus>
@@ -171,19 +171,18 @@
 				<aspectratio>keep</aspectratio>
 				<texture>left-menu-search-field-bg.png</texture>
 				<visible>![Container.Content(Seasons) | Container.Content(episodes)]</visible>
-			</control>
+			</control>			
 			<!-- filters & sorting menu -->
 			<control type="group" id="1300">
 				<visible allowhiddenfocus="false">!Container.Content(secondary)</visible>
 				<posx>-253</posx>
-				<posy>0</posy>
+				<posy>30</posy>
 				<width>253</width>
 				<height>650</height>
-				<onup>-</onup>
 				<ondown>19000</ondown>
-				<onright>-</onright>
 				<orientation>vertical</orientation>
 				<scrolltime>150</scrolltime>
+				<!-- FILTERS -->
 				<!-- filters list title -->
 				<control type="label" id="19009">
 					<description>Title</description>
@@ -194,28 +193,24 @@
 				</control>
 				<!-- filters list -->
 				<control type="grouplist" id="19000">
-					<posy>154</posy>
-					<posx>10</posx>
-					<onup>-</onup>
+					<posy>175</posy>
+					<posx>15</posx>
 					<ondown>19010</ondown>
-					<onleft>-</onleft>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 				</control>
 				<!-- filters buttons -->
 				<control type="button" id="19001">
-					<textoffsetx>30</textoffsetx>
+					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
 					<onclick>ActivateWindow(162)</onclick>
 				</control>
 				<control type="radiobutton" id="19002">
-					<textoffsetx>30</textoffsetx>
+					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
-					<include>leftMenuRadioButton</include>
+					<include>leftMenuFilterRadioButton</include>
 				</control>
-				<control type="spincontrolex" id="19003">
-					<textoffsetx>30</textoffsetx>
-					<include>leftMenuFormat</include>
+				<!-- SORTING -->
 				<!-- sorting list title -->
 				<control type="label" id="19019">
 					<description>Title</description>
@@ -226,11 +221,9 @@
 				</control>
 				<!-- sorting list -->
 				<control type="grouplist" id="19010">
-					<posy>454</posy>
+					<posy>485</posy>
 					<posx>10</posx>
 					<onup>19000</onup>
-					<ondown>-</ondown>
-					<onleft>-</onleft>
 					<onright>777</onright>
 					<itemgap>0</itemgap>
 				</control>
