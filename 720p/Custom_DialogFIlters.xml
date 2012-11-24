@@ -6,7 +6,7 @@
 		<!-- filters sub-menu -->
 		<control type="group">
 			<visible>Control.IsVisible(19020)</visible>
-			<posx>360</posx>
+			<posx>350</posx>
 			<posy>160</posy>
 			<!-- sub-list backgrounds -->
 			<control type="group">
@@ -35,7 +35,7 @@
 				</control>
 				<control type="image">
 					<description>Dialog arrow</description>
-					<posx>-15</posx>
+					<posx>-14</posx>
 					<posy>100</posy>
 					<include>ArrowBlackLeft</include>
 				</control>
