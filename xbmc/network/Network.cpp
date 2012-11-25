@@ -28,6 +28,9 @@
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#ifdef HAS_JSONRPC
+#include "interfaces/json-rpc/JSONRPC.h"
+#endif
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -284,6 +287,11 @@ void CNetwork::StartServices()
 #ifdef HAS_TIME_SERVER
   g_application.StartTimeServer();
 #endif
+
+#ifdef HAS_JSONRPC
+  JSONRPC::CJSONRPC::Initialize();
+#endif
+
 #ifdef HAS_WEB_SERVER
   if (!g_application.StartWebServer())
     CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
