@@ -392,22 +392,24 @@
   "Audio.Fields.Album": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
+      "description": "Requesting the genreid and/or artistid field will result in increased response times",
       "enum": [ "title", "description", "artist", "genre",
                 "theme", "mood", "style", "type", "albumlabel",
                 "rating", "year", "musicbrainzalbumid",
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
-                "playcount", "genreid", "artistid" ]
+                "playcount", "genreid", "artistid", "displayartist" ]
     }
   },
   "Audio.Fields.Song": {
     "extends": "Item.Fields.Base",
     "items": { "type": "string",
+      "description": "Requesting the genreid and/or artistid field will result in increased response times",
       "enum": [ "title", "artist", "albumartist", "genre", "year",
                 "rating", "album", "track", "duration", "comment",
                 "lyrics", "musicbrainztrackid", "musicbrainzartistid",
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
-                "playcount", "fanart", "thumbnail", "file",
-                "albumid", "lastplayed", "disc", "genreid", "artistid" ]
+                "playcount", "fanart", "thumbnail", "file", "albumid",
+                "lastplayed", "disc", "genreid", "artistid", "displayartist" ]
     }
   },
   "Audio.Details.Base": {
@@ -426,7 +428,8 @@
       "musicbrainzalbumid": { "type": "string" },
       "musicbrainzalbumartistid": { "type": "string" },
       "genreid": { "$ref": "Array.Integer" },
-      "artistid": { "$ref": "Array.Integer" }
+      "artistid": { "$ref": "Array.Integer" },
+      "displayartist": { "type" : "string" }
     }
   },
   "Audio.Details.Artist": {
@@ -1034,7 +1037,7 @@
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
                 "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
                 "disc", "tag", "art", "channel", "channeltype", "hidden", "locked",
-                "channelnumber", "starttime", "endtime", "genreid" ]
+                "channelnumber", "starttime", "endtime", "genreid", "displayartist" ]
     }
   },
   "List.Item.All": {
@@ -1061,7 +1064,8 @@
                 "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
                 "resume", "artistid", "albumid", "tvshowid", "setid", "watchedepisodes",
-                "disc", "tag", "art", "size", "lastmodified", "mimetype", "genreid" ]
+                "disc", "tag", "art", "size", "lastmodified", "mimetype", "genreid",
+                "displayartist" ]
     }
   },
   "List.Item.File": {
