@@ -490,6 +490,7 @@ Helper.getInsertNodes(module, 'begin').each { %>${Helper.unescape(it)}<% }
 #include <string>
 #include "interfaces/python/LanguageHook.h"
 #include "interfaces/python/swig.h"
+#include "interfaces/python/PyContext.h"
 
 <%
 Helper.getInsertNodes(module, 'header').each { %>${Helper.unescape(it)}<% }
@@ -563,6 +564,7 @@ namespace PythonBindings
         ${Helper.getOutConversion(param.@type,'result',it,['result' : 'py' + param.@name, 'api' : param.@name])}<%
         }
 %>
+        XBMCAddon::Python::PyContext pyContext;
         PyObject_CallMethod(self,(char*)"${Helper.callingName(it)}",(char*)"(${paramFormatStr})"<%
           params.each {
              %>, py${it.@name} <%
