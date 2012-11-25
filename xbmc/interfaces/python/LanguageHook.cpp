@@ -25,6 +25,7 @@
 
 #include "interfaces/legacy/AddonUtils.h"
 #include "utils/GlobalsHandling.h"
+#include "PyContext.h"
 
 namespace XBMCAddon
 {
@@ -39,12 +40,6 @@ namespace XBMCAddon
     // vtab instantiation
     LanguageHook::~LanguageHook() { }
 
-    struct MutableInteger
-    {
-      MutableInteger() : value(0) {}
-      int value;
-    };
-
     void LanguageHook::makePendingCalls()
     {
       PythonCallbackHandler::makePendingCalls();
@@ -53,59 +48,13 @@ namespace XBMCAddon
     void LanguageHook::delayedCallOpen()
     {
       TRACE;
-
-      // TODO: add a check for null of _save. If it's not null there's 
-      //  a problem.
-
-      MutableInteger* count = tlsCount.get();
-      if (count == NULL)
-      {
-        count = new MutableInteger();
-        tlsCount.set(count);
-      }
-
-      // increment the count
-      count->value++;
-      int curlevel = count->value;
-      if (curlevel == 1)
-      {
-        PyThreadState* _save;
-        // this macro sets _save
-        Py_UNBLOCK_THREADS
-        pyThreadStateTls.set(_save);
-      }
+      PyGILLock::releaseGil();
     }
 
     void LanguageHook::delayedCallClose()
     {
       TRACE;
-
-      // here we ASSUME that the open was called.
-      MutableInteger* count = tlsCount.get();
-      count->value--;
-      int curlevel = count->value;
-
-      // this is a hack but ...
-      if (curlevel < 0)
-      {
-        CLog::Log(LOGERROR, "PythonCallbackHandler delay has closed more than opened");
-        count->value = 0;
-      }
-
-      if (curlevel == 0)
-      {
-        PyThreadState* _save = pyThreadStateTls.get();
-        if (_save != NULL)
-        {
-          Py_BLOCK_THREADS
-        }
-        _save = NULL;
-        pyThreadStateTls.set(_save);
-
-        // clear the tlsCount
-        tlsCount.set(NULL);
-        delete count;
-      }
+      PyGILLock::acquireGil();
     }
 
     LanguageHook* LanguageHook::getInstance() 
