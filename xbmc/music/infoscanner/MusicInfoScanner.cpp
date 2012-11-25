@@ -165,8 +165,6 @@ void CMusicInfoScanner::Process()
     bool bCanceled;
     if (m_scanType == 1) // load album info
     {
-      if (m_handle)
-        m_handle->SetTitle(g_localizeStrings.Get(21885));
       int iCurrentItem = 1;
       for (set<CAlbum>::iterator it=m_albumsToScan.begin();it != m_albumsToScan.end();++it)
       {
@@ -185,9 +183,6 @@ void CMusicInfoScanner::Process()
     }
     if (m_scanType == 2) // load artist info
     {
-      if (m_handle)
-        m_handle->SetTitle(g_localizeStrings.Get(21886));
-
       int iCurrentItem=1;
       for (set<CArtist>::iterator it=m_artistsToScan.begin();it != m_artistsToScan.end();++it)
       {
@@ -918,7 +913,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 
   if (m_handle)
   {
-    m_handle->SetTitle(g_localizeStrings.Get(21885));
+    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321), info->Name().c_str()));
     m_handle->SetText(strArtist+" - "+strAlbum);
   }
 
@@ -1152,7 +1147,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
 
   if (m_handle)
   {
-    m_handle->SetTitle(g_localizeStrings.Get(21886));
+    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20320), info->Name().c_str()));
     m_handle->SetText(strArtist);
   }
 
