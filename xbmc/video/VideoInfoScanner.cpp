@@ -189,7 +189,7 @@ namespace VIDEO
     if (m_bCanInterrupt)
       m_database.Interupt();
 
-    StopThread();
+    StopThread(false);
   }
 
   void CVideoInfoScanner::CleanDatabase(CGUIDialogProgressBarHandle* handle /*= NULL */, const set<int>* paths /*= NULL */, bool showProgress /*= true */)
@@ -1863,7 +1863,7 @@ namespace VIDEO
     MOVIELIST movielist;
     CVideoInfoDownloader imdb(scraper);
     int returncode = imdb.FindMovie(videoName, movielist, progress);
-    if (returncode < 0 || (returncode == 0 && !DownloadFailed(progress)))
+    if (returncode < 0 || (returncode == 0 && (m_bStop || !DownloadFailed(progress))))
     { // scraper reported an error, or we had an error and user wants to cancel the scan
       m_bStop = true;
       return -1; // cancelled

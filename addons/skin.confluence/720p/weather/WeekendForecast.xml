@@ -1,8 +1,19 @@
 <includes>
-	<include name="Weather+WeekendForcast">
+	<include name="WeatherWeekendForcast">
 		<control type="group">
 			<visible>StringCompare(Window.Property(Weather.CurrentView),weekend)</visible>
 			<include>VisibleFadeEffect</include>
+			<control type="button" id="998">
+				<description>Hidden Button for focus</description>
+				<posx>-600</posx>
+				<posy>-20</posy>
+				<width>1</width>
+				<height>1</height>
+				<texturenofocus>-</texturenofocus>
+				<texturefocus>-</texturefocus>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+			</control>
 			<control type="label">
 				<description>header label</description>
 				<posx>20</posx>
@@ -45,7 +56,7 @@
 						<textcolor>blue</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$LOCALIZE[16]</label>
+						<label>$INFO[Window.Property(Weekend.2.LongDay)] - $INFO[Window.Property(Weekend.2.ShortDate)]</label>
 					</control>
 					<control type="image">
 						<posx>10</posx>
@@ -65,7 +76,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[COLOR=grey2]$LOCALIZE[393][CR][/COLOR]$INFO[Window.Property(Weekend.2.HighTemperature),[B] ,[/B]]$INFO[System.TemperatureUnits]</label>
+						<label>[COLOR=grey2]$LOCALIZE[393][CR][/COLOR]$INFO[Window.Property(Weekend.2.HighTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="label">
 						<posx>140</posx>
@@ -77,7 +88,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[COLOR=grey2]$LOCALIZE[391][CR][/COLOR]$INFO[Window.Property(Weekend.2.LowTemperature),[B] ,[/B]]$INFO[System.TemperatureUnits]</label>
+						<label>[COLOR=grey2]$LOCALIZE[391][CR][/COLOR]$INFO[Window.Property(Weekend.2.LowTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
 						<posx>240</posx>
@@ -87,11 +98,11 @@
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
-						<label>$INFO[Window.Property(Weekend.2.Humidity),[COLOR=grey2]$LOCALIZE[406] :[/COLOR][B] ,%[/B]][CR]$INFO[Window.Property(Weekend.2.UV),[COLOR=grey2]$LOCALIZE[403] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.2.Wind),[COLOR=grey2]$LOCALIZE[404] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.2.Sunrise),[COLOR=grey2]$LOCALIZE[33027] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.2.Sunset),[COLOR=grey2]$LOCALIZE[33028] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.2.Precipitation),[COLOR=grey2]$LOCALIZE[33021] :[/COLOR][B] ,%[/B]]</label>
+						<label>$INFO[Window.Property(Weekend.2.Humidity),[COLOR=grey2]$LOCALIZE[406] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.2.ShortWindDirection),[COLOR=grey2]$LOCALIZE[404] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.2.Precipitation),[COLOR=grey2]$LOCALIZE[33021] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="label">
 						<posx>0</posx>
-						<posy>180</posy>
+						<posy>170</posy>
 						<width>590</width>
 						<height>20</height>
 						<font>font12</font>
@@ -99,18 +110,18 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$INFO[Window.Property(Weekend.2.Outlook),[COLOR=grey2]$LOCALIZE[33030] :[/COLOR]]</label>
+						<label>$INFO[Window.Property(Weekend.2.Outlook),[COLOR=grey2]$LOCALIZE[33030]: [/COLOR]]</label>
 					</control>
 					<control type="textbox">
 						<posx>0</posx>
-						<posy>200</posy>
+						<posy>210</posy>
 						<width>590</width>
 						<height>70</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
-						<label>$INFO[Window.Property(Weekend.2.Forecast),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]]</label>
+						<label>$INFO[Window.Property(Weekend.2.LongOutlookDay),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]][CR]</label>
 					</control>
 					<control type="image">
 						<posx>0</posx>
@@ -132,7 +143,7 @@
 						<textcolor>blue</textcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$LOCALIZE[17]</label>
+						<label>$INFO[Window.Property(Weekend.3.LongDay)] - $INFO[Window.Property(Weekend.3.ShortDate)]</label>
 					</control>
 					<control type="image">
 						<posx>10</posx>
@@ -152,7 +163,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[COLOR=grey2]$LOCALIZE[393][CR][/COLOR]$INFO[Window.Property(Weekend.3.HighTemperature),[B] ,[/B]]$INFO[System.TemperatureUnits]</label>
+						<label>[COLOR=grey2]$LOCALIZE[393][CR][/COLOR]$INFO[Window.Property(Weekend.3.HighTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="label">
 						<posx>140</posx>
@@ -164,7 +175,7 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>[COLOR=grey2]$LOCALIZE[391][CR][/COLOR]$INFO[Window.Property(Weekend.3.LowTemperature),[B] ,[/B]]$INFO[System.TemperatureUnits]</label>
+						<label>[COLOR=grey2]$LOCALIZE[391][CR][/COLOR]$INFO[Window.Property(Weekend.3.LowTemperature),[B] ,[/B]]</label>
 					</control>
 					<control type="textbox">
 						<posx>240</posx>
@@ -174,11 +185,11 @@
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
-						<label>$INFO[Window.Property(Weekend.3.Humidity),[COLOR=grey2]$LOCALIZE[406] :[/COLOR][B] ,%[/B]][CR]$INFO[Window.Property(Weekend.3.UV),[COLOR=grey2]$LOCALIZE[403] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.3.Wind),[COLOR=grey2]$LOCALIZE[404] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.3.Sunrise),[COLOR=grey2]$LOCALIZE[33027] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.3.Sunset),[COLOR=grey2]$LOCALIZE[33028] :[/COLOR][B] ,[/B]][CR]$INFO[Window.Property(Weekend.3.Precipitation),[COLOR=grey2]$LOCALIZE[33021] :[/COLOR][B] ,%[/B]]</label>
+						<label>$INFO[Window.Property(Weekend.3.Humidity),[COLOR=grey2]$LOCALIZE[406] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.3.ShortWindDirection),[COLOR=grey2]$LOCALIZE[404] :[/COLOR][B] ,[/B]][CR][CR]$INFO[Window.Property(Weekend.3.Precipitation),[COLOR=grey2]$LOCALIZE[33021] :[/COLOR][B] ,[/B]]</label>
 					</control>
 					<control type="label">
 						<posx>0</posx>
-						<posy>180</posy>
+						<posy>170</posy>
 						<width>590</width>
 						<height>20</height>
 						<font>font12</font>
@@ -186,18 +197,18 @@
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>$INFO[Window.Property(Weekend.3.Outlook),[COLOR=grey2]$LOCALIZE[33030] :[/COLOR]]</label>
+						<label>$INFO[Window.Property(Weekend.3.Outlook),[COLOR=grey2]$LOCALIZE[33030]: [/COLOR]]</label>
 					</control>
 					<control type="textbox">
 						<posx>0</posx>
-						<posy>200</posy>
+						<posy>210</posy>
 						<width>590</width>
 						<height>70</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
 						<align>center</align>
-						<label>$INFO[Window.Property(Weekend.3.Forecast),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]]</label>
+						<label>$INFO[Window.Property(Weekend.3.LongOutlookDay),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]][CR]</label>
 					</control>
 				</control>
 			</control>

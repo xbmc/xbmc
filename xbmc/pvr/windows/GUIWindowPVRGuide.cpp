@@ -270,7 +270,7 @@ void CGUIWindowPVRGuide::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
-  ShowBusyItem();
+  m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
 
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)

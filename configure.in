@@ -2376,7 +2376,6 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/Goom/Makefile \
     xbmc/visualizations/OpenGLSpectrum/Makefile \
     xbmc/visualizations/WaveForm/Makefile \
-    xbmc/visualizations/iTunes/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
     lib/addons/library.xbmc.gui/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \

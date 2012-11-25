@@ -128,7 +128,8 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
       if ((media == "video" && items[i]->HasVideoInfoTag()) ||
           (media == "music" && items[i]->HasMusicInfoTag()) ||
           (media == "picture" && items[i]->HasPictureInfoTag()) ||
-           media == "files")
+           media == "files" ||
+           URIUtils::IsUPnP(items.GetPath()))
       {
         if (items[i]->m_bIsFolder)
           filteredDirectories.Add(items[i]);
@@ -212,7 +213,8 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const CStdString &method, ITransp
     return InvalidParams;
 
   CFileItemPtr item = items.Get(file);
-  FillFileItem(item, *item.get(), parameterObject["media"].asString());
+  if (!URIUtils::IsUPnP(file))
+    FillFileItem(item, *item.get(), parameterObject["media"].asString());
 
   // Check if the "properties" list exists
   // and make sure it contains the "file"

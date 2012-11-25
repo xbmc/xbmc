@@ -9702,7 +9702,11 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr ""
 
-#empty strings from id 21457 to 21459
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr ""
+
+#empty strings from id 21458 to 21459
 
 msgctxt "#21460"
 msgid "Subtitle location"

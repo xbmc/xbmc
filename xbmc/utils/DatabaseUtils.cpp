@@ -487,7 +487,7 @@ bool DatabaseUtils::GetSelectFields(const Fields &fields, MediaType mediaType, F
 
     if (GetField(*it, mediaType, DatabaseQueryPartSelect).empty())
     {
-      CLog::Log(LOGWARNING, "DatabaseUtils::GetSortFieldList: unknown field %d", *it);
+      CLog::Log(LOGDEBUG, "DatabaseUtils::GetSortFieldList: unknown field %d", *it);
       continue;
     }
     selectFields.push_back(*it);

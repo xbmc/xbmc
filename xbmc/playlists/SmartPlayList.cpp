@@ -91,7 +91,7 @@ static const translateField fields[] = {
   { "season",            FieldSeason,                  SortBySeason,                   CSmartPlaylistRule::NUMERIC_FIELD,    20373 },
   { "episode",           FieldEpisodeNumber,           SortByEpisodeNumber,            CSmartPlaylistRule::NUMERIC_FIELD,    20359 },
   { "numepisodes",       FieldNumberOfEpisodes,        SortByNumberOfEpisodes,         CSmartPlaylistRule::NUMERIC_FIELD,    20360 },
-  { "numwatched",        FieldNumberOfWatchedEpisodes, SortByNumberOfWatchedEpisodes,  CSmartPlaylistRule::NUMERIC_FIELD,    21441 },
+  { "numwatched",        FieldNumberOfWatchedEpisodes, SortByNumberOfWatchedEpisodes,  CSmartPlaylistRule::NUMERIC_FIELD,    21457 },
   { "videoresolution",   FieldVideoResolution,         SortByVideoResolution,          CSmartPlaylistRule::NUMERIC_FIELD,    21443 },
   { "videocodec",        FieldVideoCodec,              SortByVideoCodec,               CSmartPlaylistRule::TEXTIN_FIELD,     21445 },
   { "videoaspect",       FieldVideoAspectRatio,        SortByVideoAspectRatio,         CSmartPlaylistRule::NUMERIC_FIELD,    21374 },
@@ -693,9 +693,20 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
     case OPERATOR_DOES_NOT_CONTAIN:
       negate = " NOT"; operatorString = " LIKE '%%%s%%'"; break;
     case OPERATOR_EQUALS:
-      operatorString = " LIKE '%s'"; break;
+      if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
+        operatorString = " = %s";
+      else
+        operatorString = " LIKE '%s'";
+      break;
     case OPERATOR_DOES_NOT_EQUAL:
-      negate = " NOT"; operatorString = " LIKE '%s'"; break;
+      if (GetFieldType(m_field) == NUMERIC_FIELD || GetFieldType(m_field) == SECONDS_FIELD)
+        operatorString = " != %s";
+      else
+      {
+        negate = " NOT";
+        operatorString = " LIKE '%s'";
+      }
+      break;
     case OPERATOR_STARTS_WITH:
       operatorString = " LIKE '%s%%'"; break;
     case OPERATOR_ENDS_WITH:
@@ -891,6 +902,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
         query = GetField(FieldId, strType) + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetField(m_field, strType) + parameter + ")";
       else if ((m_field == FieldLastPlayed || m_field == FieldDateAdded) && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
         query = GetField(m_field, strType) + " IS NULL OR " + GetField(m_field, strType) + parameter;
+      else if (m_field == FieldPlaycount)
+        query = "CASE WHEN COALESCE(" + GetField(FieldNumberOfEpisodes, strType) + " - " + GetField(FieldNumberOfWatchedEpisodes, strType) + ", 0) > 0 THEN 0 ELSE 1 END " + parameter;
     }
     else if (strType == "episodes")
     {
@@ -925,7 +938,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CDatabase &db, const CStdStr
       query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE strSubtitleLanguage " + parameter + ")";
     else if (m_field == FieldVideoAspectRatio)
       query = table + ".idFile" + negate + " IN (SELECT DISTINCT idFile FROM streamdetails WHERE fVideoAspect " + parameter + ")";
-    if (m_field == FieldPlaycount && strType != "songs" && strType != "albums")
+    if (m_field == FieldPlaycount && strType != "songs" && strType != "albums" && strType != "tvshows")
     { // playcount IS stored as NULL OR number IN video db
       if ((m_operator == OPERATOR_EQUALS && it->Equals("0")) ||
           (m_operator == OPERATOR_DOES_NOT_EQUAL && !it->Equals("0")) ||
