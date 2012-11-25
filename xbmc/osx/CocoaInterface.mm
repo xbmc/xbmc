@@ -373,21 +373,6 @@ void Cocoa_ShowMouse()
 }
 
 //---------------------------------------------------------------------------------
-void SetMenuBarVisible2(bool visible)
-{
-  if(visible)
-  {
-    [[NSApplication sharedApplication]
-      setPresentationOptions:   NSApplicationPresentationDefault];
-  }
-  else
-  {
-    [[NSApplication sharedApplication]
-      setPresentationOptions:   NSApplicationPresentationHideMenuBar |
-                                NSApplicationPresentationHideDock];
-  }
-}
-
 static char strVersion[32];
 
 const char* Cocoa_GetAppVersion()
