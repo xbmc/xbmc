@@ -18,33 +18,36 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#include "Monitor.h"
-
 namespace XBMCAddon
 {
-  namespace xbmc
+  namespace Python
   {
-    Monitor::Monitor() : AddonCallback("Monitor") 
+    /**
+     * These classes should NOT be used with 'new'. They are expected to reside 
+     *  as stack instances and they act as "Guard" classes that track the
+     *  current context.
+     */
+    class PyContext
     {
-      if (languageHook)
-      {
-        Id = languageHook->getAddonId();
-        languageHook->registerMonitorCallback(this);
-      }
-    }
+    protected:
+    public:
+      PyContext();
+      ~PyContext();
+    };
 
-    Monitor::~Monitor()
-    { 
-      deallocating();
-      DelayedCallGuard dg(languageHook);
-      // we're shutting down so unregister me.
-      if (languageHook)
-      {
-        DelayedCallGuard dc;
-        languageHook->unregisterMonitorCallback(this);
-      }
-    }
+    /**
+     * This class supports recursive locking of the GIL. It assumes that
+     * all Python GIL manipulation is done through this class so that it 
+     * can monitor the current owner.
+     */
+    class PyGILLock
+    {
+    public:
+      static void releaseGil();
+      static void acquireGil();
+
+      inline PyGILLock() { releaseGil(); }
+      inline ~PyGILLock() { acquireGil(); }
+    };
   }
 }
-

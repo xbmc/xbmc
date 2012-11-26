@@ -8726,7 +8726,27 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr ""
 
-#empty strings from id 20317 to 20323
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr ""
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr ""
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr ""
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr ""
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr ""
+
+#empty strings from id 20322 to 20323
 
 msgctxt "#20324"
 msgid "Play part..."

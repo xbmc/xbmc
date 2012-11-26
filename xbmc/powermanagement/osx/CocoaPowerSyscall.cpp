@@ -239,10 +239,6 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   else if (m_OnResume)
   {
     callback->OnWake();
-#if !defined(TARGET_DARWIN_IOS)
-    if (g_Windowing.IsFullScreen())
-      Cocoa_HideDock();
-#endif
     m_OnResume = false;
   } 
   

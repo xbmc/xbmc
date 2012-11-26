@@ -2951,6 +2951,9 @@
     <ClCompile Include="..\..\xbmc\utils\test\TestUrlOptions.cpp">
       <Filter>utils\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\PyContext.cpp">
+      <Filter>interfaces\python</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5763,6 +5766,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Utils\AELimiter.h">
       <Filter>cores\AudioEngine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\PyContext.h">
+      <Filter>interfaces\python</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

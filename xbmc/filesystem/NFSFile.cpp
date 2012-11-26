@@ -140,7 +140,7 @@ void CNfsConnection::destroyOpenContexts()
   m_openContextMap.clear();
 }
 
-struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportname)
+struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportname, bool forceCacheHit/* = false*/)
 {
   struct nfs_context *pRet = NULL;
   CSingleLock lock(openContextLock);
@@ -150,9 +150,9 @@ struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportna
   {
     //check if context has timed out already
     uint64_t now = XbmcThreads::SystemClockMillis();
-    if((now - it->second.lastAccessedTime) < CONTEXT_TIMEOUT)
+    if((now - it->second.lastAccessedTime) < CONTEXT_TIMEOUT || forceCacheHit)
     {
-      //its not timedout yet
+      //its not timedout yet or caller wants the cached entry regardless of timeout
       //refresh access time of that
       //context and return it
       CLog::Log(LOGDEBUG, "NFS: Refreshing context for %s, old: %"PRId64", new: %"PRId64, exportname.c_str(), it->second.lastAccessedTime, now);
@@ -383,7 +383,10 @@ void CNfsConnection::keepAlive(std::string _exportPath, struct nfsfh  *_pFileHan
   uint64_t offset = 0;
   char buffer[32];
   // this also refreshs the last accessed time for the context
-  struct nfs_context *pContext = getContextFromMap(_exportPath);
+  // true forces a cachehit regardless the context is timedout
+  // on this call we are sure its not timedout even if the last accessed
+  // time suggests it.
+  struct nfs_context *pContext = getContextFromMap(_exportPath, true);
   
   if (!pContext)// this should normally never happen - paranoia
     pContext = m_pNfsContext;

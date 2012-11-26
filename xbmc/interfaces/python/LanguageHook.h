@@ -47,8 +47,6 @@ namespace XBMCAddon
     {
       LanguageHook() : XBMCAddon::LanguageHook("Python::LanguageHook")  {  }
 
-      XbmcThreads::ThreadLocal<PyThreadState> pyThreadStateTls;
-      XbmcThreads::ThreadLocal<MutableInteger> tlsCount;
     public:
 
       virtual ~LanguageHook();

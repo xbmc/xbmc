@@ -167,6 +167,7 @@
 		DFAB04C113F8385F00B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04BF13F8385F00B70BFB /* InertialScrollingHandler.cpp */; };
 		DFAB4C0F15FCCB4300E1BAF6 /* TagLibVFSStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4C0B15FCCB4300E1BAF6 /* TagLibVFSStream.cpp */; };
 		DFAB4C1015FCCB4300E1BAF6 /* TagLoaderTagLib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB4C0D15FCCB4300E1BAF6 /* TagLoaderTagLib.cpp */; };
+		DFB02E0816629E1900F37752 /* PyContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB02E0616629E1900F37752 /* PyContext.cpp */; };
 		DFB25D00163D3DA9006C4A48 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD02E15FCE62E00E10810 /* Addon.cpp */; };
 		DFB25D01163D3DA9006C4A48 /* AddonCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD03215FCE62E00E10810 /* AddonCallback.cpp */; };
 		DFB25D02163D3DA9006C4A48 /* AddonClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF1AD03615FCE62E00E10810 /* AddonClass.cpp */; };
@@ -1404,6 +1405,8 @@
 		DFAB4C0C15FCCB4300E1BAF6 /* TagLibVFSStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLibVFSStream.h; sourceTree = "<group>"; };
 		DFAB4C0D15FCCB4300E1BAF6 /* TagLoaderTagLib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TagLoaderTagLib.cpp; sourceTree = "<group>"; };
 		DFAB4C0E15FCCB4300E1BAF6 /* TagLoaderTagLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TagLoaderTagLib.h; sourceTree = "<group>"; };
+		DFB02E0616629E1900F37752 /* PyContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PyContext.cpp; path = python/PyContext.cpp; sourceTree = "<group>"; };
+		DFB02E0716629E1900F37752 /* PyContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PyContext.h; path = python/PyContext.h; sourceTree = "<group>"; };
 		DFB6628B15376810006B8FF1 /* AEAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAudioFormat.h; sourceTree = "<group>"; };
 		DFB6628C15376810006B8FF1 /* AEFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEFactory.cpp; sourceTree = "<group>"; };
 		DFB6628D15376810006B8FF1 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
@@ -3446,6 +3449,8 @@
 				F502C099160F420700C96C76 /* CallbackHandler.h */,
 				F502C09A160F420700C96C76 /* LanguageHook.cpp */,
 				F502C09B160F420700C96C76 /* LanguageHook.h */,
+				DFB02E0616629E1900F37752 /* PyContext.cpp */,
+				DFB02E0716629E1900F37752 /* PyContext.h */,
 				F502C09C160F421600C96C76 /* swig.cpp */,
 				F502C09D160F421600C96C76 /* swig.h */,
 				F502C09E160F421600C96C76 /* XBPython.cpp */,
@@ -7649,6 +7654,7 @@
 				DF402A97164462FC001C56B8 /* XBPyThread.cpp in Sources */,
 				F5EDC4A91651A75700B852D8 /* GroupUtils.cpp in Sources */,
 				7C7CEB4B165629BF0059C9EB /* AELimiter.cpp in Sources */,
+				DFB02E0816629E1900F37752 /* PyContext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
