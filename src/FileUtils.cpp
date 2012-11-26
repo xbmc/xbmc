@@ -450,7 +450,12 @@ std::string FileUtils::toUnixPathSeparators(const std::string& str)
 std::string FileUtils::tempPath()
 {
 #ifdef PLATFORM_UNIX
-	return "/tmp";
+	std::string tmpDir(notNullString(getenv("TMPDIR")));
+	if (tmpDir.empty())
+	{
+		tmpDir = "/tmp";
+	}
+	return tmpDir;
 #else
 	char buffer[MAX_PATH+1];
 	GetTempPath(MAX_PATH+1,buffer);

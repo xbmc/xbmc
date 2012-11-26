@@ -6,4 +6,5 @@ class TestFileUtils
 		void testDirName();
 		void testIsRelative();
 		void testSymlinkFileExists();
+		void testStandardDirs();
 };

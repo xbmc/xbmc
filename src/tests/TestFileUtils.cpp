@@ -33,11 +33,18 @@ void TestFileUtils::testSymlinkFileExists()
 #endif
 }
 
+void TestFileUtils::testStandardDirs()
+{
+	std::string tmpDir = FileUtils::tempPath();
+	TEST_COMPARE(FileUtils::fileExists(tmpDir.data()), true);
+}
+
 int main(int,char**)
 {
 	TestList<TestFileUtils> tests;
 	tests.addTest(&TestFileUtils::testDirName);
 	tests.addTest(&TestFileUtils::testIsRelative);
 	tests.addTest(&TestFileUtils::testSymlinkFileExists);
+	tests.addTest(&TestFileUtils::testStandardDirs);
 	return TestUtils::runTest(tests);
 }
