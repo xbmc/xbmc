@@ -5,7 +5,6 @@
 	<controls>
 		<!-- filters sub-menu -->
 		<control type="group">
-			<visible>Control.IsVisible(19020)</visible>
 			<posx>350</posx>
 			<posy>160</posy>
 			<!-- sub-list backgrounds -->
@@ -42,7 +41,6 @@
 			</control>	
 			<!-- sub-list -->
 			<control type="group" id="1400">
-				<visible allowhiddenfocus="false">Control.IsVisible(19020)</visible>
 				<posy>24</posy>
 				<!-- sub-list title -->
 				<control type="label" id="19029">
