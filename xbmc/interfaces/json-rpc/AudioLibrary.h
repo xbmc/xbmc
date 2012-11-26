@@ -19,9 +19,13 @@
  *
  */
 
+#include <set>
+
 #include "utils/StdString.h"
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
+
+class CMusicDatabase;
 
 namespace JSONRPC
 {
@@ -49,10 +53,15 @@ namespace JSONRPC
     static JSONRPC_STATUS Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static bool FillFileItem(const CStdString &strFilename, CFileItem &item);
+    static bool FillFileItem(const CStdString &strFilename, CFileItem &item, const CVariant &parameterObject = CVariant(CVariant::VariantTypeArray));
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
+
+    static JSONRPC_STATUS GetAdditionalAlbumDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase);
+    static JSONRPC_STATUS GetAdditionalSongDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase);
 
   private:
     static void FillAlbumItem(const CAlbum &album, const CStdString &path, CFileItemPtr &item);
+    
+    static bool CheckForAdditionalProperties(const CVariant &properties, const std::set<std::string> &checkProperties, std::set<std::string> &foundProperties);
   };
 }
