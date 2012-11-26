@@ -40,6 +40,7 @@
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
 #include "music/MusicThumbLoader.h"
+#include "filesystem/Directory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -416,6 +417,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   CStdString result;
   bool flip=false;
   VECSOURCES sources(g_settings.m_musicSources);
+  AddItemPathToFileBrowserSources(sources, *m_albumItem);
   g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), result, &flip))
     return;   // user cancelled
@@ -578,3 +580,20 @@ CFileItemPtr CGUIDialogMusicInfo::GetCurrentListItem(int offset)
   return m_albumItem;
 }
 
+void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item)
+{
+  CStdString itemDir;
+
+  if (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == "song")
+    itemDir = URIUtils::GetParentPath(item.GetMusicInfoTag()->GetURL());
+  else
+    itemDir = item.GetPath();
+
+  if (!itemDir.IsEmpty() && CDirectory::Exists(itemDir))
+  {
+    CMediaSource itemSource;
+    itemSource.strName = g_localizeStrings.Get(36041);
+    itemSource.strPath = itemDir;
+    sources.push_back(itemSource);
+  }
+}
