@@ -703,6 +703,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
   std::set<std::string> checkProperties;
   checkProperties.insert("genreid");
   checkProperties.insert("artistid");
+  checkProperties.insert("albumartistid");
   std::set<std::string> additionalProperties;
   if (!CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     return OK;
@@ -732,6 +733,18 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
           artistidObj.push_back(*artistid);
 
         item->SetProperty("artistid", artistidObj);
+      }
+    }
+    if (additionalProperties.find("albumartistid") != additionalProperties.end() && item->GetMusicInfoTag()->GetAlbumId() > 0)
+    {
+      std::vector<int> albumartistids;
+      if (musicdatabase.GetArtistsByAlbum(item->GetMusicInfoTag()->GetAlbumId(), true, albumartistids))
+      {
+        CVariant albumartistidObj(CVariant::VariantTypeArray);
+        for (std::vector<int>::const_iterator albumartistid = albumartistids.begin(); albumartistid != albumartistids.end(); albumartistid++)
+          albumartistidObj.push_back(*albumartistid);
+
+        item->SetProperty("albumartistid", albumartistidObj);
       }
     }
   }
