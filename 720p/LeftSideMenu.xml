@@ -93,22 +93,6 @@
 			<effect type="fade" start="0" end="100"/>
 		</animation>
 	</include>
-	<include name="leftSubMenuFormat">
-		<width>260</width>
-		<height>26</height>
-		<align>left</align>
-		<textoffsety>5</textoffsety>
-		<textoffsetx>10</textoffsetx>
-		<font>Condensed-17</font>
-		<shadowcolor>ff222222</shadowcolor>
-		<textcolor>FFCCCCCC</textcolor>
-		<focusedcolor>orangeLight</focusedcolor>
-		<texturefocus>-</texturefocus>
-		<texturenofocus>-</texturenofocus>
-		<animation type="Conditional" condition="true">
-			<effect type="fade" start="0" end="100"/>
-		</animation>
-	</include>
 	<include name="leftMenuFormatPreplay">
 		<width>230</width>
 		<height>24</height>
@@ -136,14 +120,19 @@
 		<radiowidth>20</radiowidth>
 	</include>
 	<include name="leftSubMenuRadioButton">
-		<description>default radio button</description>
-		<textureradiofocus>left-menu-ticked-icon.png</textureradiofocus>
-		<textureradionofocus>-</textureradionofocus>
-		<align>right</align>
+		<width>258</width>
+		<height>26</height>
+		<align>left</align>
 		<aligny>center</aligny>
-		<pulseonselect>false</pulseonselect>
-		<radioheight>14</radioheight>
-		<radiowidth>20</radiowidth>
+		<textoffsetx>10</textoffsetx>
+		<font>Condensed-17</font>
+		<shadowcolor>ff222222</shadowcolor>
+		<textcolor>FFCCCCCC</textcolor>
+		<focusedcolor>orangeLight</focusedcolor>
+		<texturefocus border="5">black-bottom-grey.png</texturefocus>
+		<texturenofocus border="5">-</texturenofocus>
+		<radioposx>265</radioposx>
+		<radioheight>26</radioheight>
 	</include>
 	<include name="leftMenuSortingButton">
 		<description>sorting radio button</description>

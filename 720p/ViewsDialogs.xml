@@ -12,7 +12,7 @@
 	</include>
 	<include name="DialogBG">
 		<include>BlackRounded</include>
-		<animation effect="fade" start="0" end="75" time="0" condition="true">Conditional</animation>
+		<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
 	</include>
 	<include name="DialogBGContextMenu">
 		<texture border="30">bg-dialog-context-menu.png</texture>
