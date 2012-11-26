@@ -233,10 +233,14 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
   bool ret;
   CFileItemList tmpItems;
   CPlexDirectory dir(true, true);
-  tmpItems.SetPath(strDirectory);
+
+  CStdString containerUrl(strDirectory);
+  /* we just request the header to see if this is a "secondary" list */
+  containerUrl+="?X-Plex-Container-Start=0&X-Plex-Container-Size=1";
+  tmpItems.SetPath(containerUrl);
 
   /* Ok this is kind of wastefull */
-  if (dir.GetDirectory(strDirectory, tmpItems))
+  if (dir.GetDirectory(containerUrl, tmpItems))
   {
     if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "secondary")
     {
@@ -286,7 +290,7 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
     else if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "seasons")
     {
       m_history.AddPath(m_baseUrl);
-      if (tmpItems.Size() == 1 && g_advancedSettings.m_bCollapseSingleSeason)
+      if (tmpItems.GetProperty("totalSize").asInteger() == 1 && g_advancedSettings.m_bCollapseSingleSeason)
       {
         CFileItemPtr season = tmpItems.Get(0);
         CStdString url = season->GetPath();
