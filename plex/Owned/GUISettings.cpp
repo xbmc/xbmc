@@ -507,8 +507,8 @@ void CGUISettings::Initialize()
   map<int,int> channelLayout;
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100+layout, layout));
-  AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
-  AddBool(ao, "audiooutput.normalizelevels", 346, false);
+  AddInt(ao, "audiooutput.channels", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+  AddBool(ao, "audiooutput.normalizelevels", 346, true);
   AddBool(ao, "audiooutput.stereoupmix", 252, false);
 
 #if defined(TARGET_DARWIN_IOS)
@@ -555,7 +555,7 @@ void CGUISettings::Initialize()
   guimode.insert(make_pair(34121, AE_SOUND_IDLE  ));
   guimode.insert(make_pair(34122, AE_SOUND_ALWAYS));
   guimode.insert(make_pair(34123, AE_SOUND_OFF   ));
-  AddInt(ao, "audiooutput.guisoundmode", 34120, AE_SOUND_IDLE, guimode, SPIN_CONTROL_TEXT);
+  AddInt(NULL, "audiooutput.guisoundmode", 34120, AE_SOUND_ALWAYS, guimode, SPIN_CONTROL_TEXT);
 #endif
 
   CSettingsCategory* in = AddCategory(SETTINGS_SYSTEM, "input", 14094);
