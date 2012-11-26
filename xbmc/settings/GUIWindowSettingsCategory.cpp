@@ -1804,7 +1804,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("services.esport"))
   {
 #ifdef HAS_EVENT_SERVER
+#ifndef __PLEX__
     ValidatePortNumber(pSettingControl, "9777", "9777");
+#else
+    ValidatePortNumber(pSettingControl, "9778", "9778");
+#endif
     //restart eventserver without asking user
     if (g_application.StopEventServer(true, false))
     {

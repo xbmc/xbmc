@@ -13,7 +13,11 @@ using namespace std;
 XBMCHelper* gp_xbmchelper;
 eRemoteMode g_mode = DEFAULT_MODE;
 std::string g_server_address="localhost";
+#ifndef __PLEX__
 int         g_server_port = 9777;
+#else
+int         g_server_port = 9778;
+#endif
 std::string g_app_path = "";
 std::string g_app_home = "";
 double g_universal_timeout = 0.500;
@@ -72,7 +76,7 @@ void ReadConfig()
 #ifndef __PLEX__
   strFile += "/Library/Application Support/XBMC/XBMCHelper.conf";
 #else
-  strFile += "/Library/Application Support/+"+ std::string(PLEX_TARGET_NAME) +"/XBMCHelper.conf";
+  strFile += "/Library/Application Support/+"+ std::string(PLEX_TARGET_NAME) +"/PlexHelper.conf";
 #endif
   
 	// Open file.
@@ -96,7 +100,11 @@ void ReadConfig()
 	int argc = args.size() + 1;
 	char** argv = new char*[argc + 1];
 	int i = 0;
+#ifndef __PLEX__
 	argv[i++] = (char*)"XBMCHelper";
+#else
+  argv[i++] = (char*)"PlexHelper";
+#endif
   
 	for (vector<string>::iterator it = args.begin(); it != args.end(); ){
     //fixup the arguments, here: remove '"' like bash would normally do
@@ -121,7 +129,11 @@ void ParseOptions(int argc, char** argv)
   //set the defaults
 	bool readExternal = false;
   g_server_address = "localhost";
+#ifndef __PLEX__
   g_server_port = 9777;
+#else
+  g_server_port = 9778;
+#endif
   g_mode = DEFAULT_MODE;
   g_app_path = "";
   g_app_home = "";
