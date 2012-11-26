@@ -214,9 +214,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
       CDateTime start(program[i].starttime);
       CDateTime end(program[i].endtime);
       CDateTimeSpan runtime = end - start;
-      tag->m_strRuntime       = StringUtils::SecondsToTimeString(runtime.GetSeconds() +
-                                                                 runtime.GetMinutes() * 60 +
-                                                                 runtime.GetHours() * 3600);
+      tag->m_duration         = runtime.GetSeconds() + runtime.GetMinutes() * 60 + runtime.GetHours() * 3600;
       tag->m_iSeason          = 0; // So XBMC treats the content as an episode and displays tag information.
       tag->m_iEpisode         = 0;
 
