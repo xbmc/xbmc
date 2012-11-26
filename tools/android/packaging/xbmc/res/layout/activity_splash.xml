@@ -30,7 +30,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="-35dp"
-            android:visibility="invisible" />
+            android:progress="50"
+            android:progressDrawable="@drawable/progresscolor" />
 
         <TextView
             android:id="@+id/textView1"
