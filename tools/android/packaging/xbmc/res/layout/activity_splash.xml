@@ -29,7 +29,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="-35dp" />
+            android:layout_marginTop="-35dp"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/textView1"
