@@ -483,6 +483,20 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     m_dirCacheType = DIR_CACHE_NEVER;
   }
 
+  const char *pVal = root->Attribute("size");
+  if (pVal && *pVal != 0)
+    items.SetProperty("size", atoi(pVal));
+
+  pVal = root->Attribute("totalSize");
+  if (pVal && *pVal != 0)
+    items.SetProperty("totalSize", atoi(pVal));
+
+  pVal = root->Attribute("offset");
+  if (pVal && *pVal != 0)
+    items.SetProperty("offset", atoi(pVal));
+
+  dprintf("totalSize for %s is %d", items.GetPath().c_str(), items.GetProperty("totalSize").asInteger());
+
   return true;
 }
 
@@ -765,10 +779,10 @@ class PlexMediaNode
      if (pRoot && pVersion)
      {
        string url = CPlexDirectory::ProcessUrl(parentPath, pRoot, false);
-/*
        CacheMediaThumb(pItem, &el, url, "contentRating", pVersion);
-       CacheMediaThumb(pItem, &el, url, "studio", pVersion);*/
+       CacheMediaThumb(pItem, &el, url, "studio", pVersion);
      }
+
 
      return pItem;
    }
@@ -801,14 +815,6 @@ class PlexMediaNode
        
          string url = theURL.Get();
 
-#if 0
-         // See if it exists (fasttrack) or queue it for download.
-         string localFile = CFileItem::GetCachedPlexMediaServerThumb(url);
-         if (CFile::Exists(localFile))
-           mediaItem->SetProperty("mediaTag::" + attr, localFile);
-         else if (url.find("plexapp.com") == string::npos)
-           mediaItem->SetProperty("cache$mediaTag::" + attr, url);
-#endif
          /* Fire up the async fetcher and hopefully we will have it done by the time
           * we need to show it */
          PlexUtils::CacheImageUrlAsync(url);
@@ -861,6 +867,13 @@ class PlexMediaNode
        return el.Attribute("track");
 
      return "";
+   }
+
+   void SetPropertyForceInt(const CFileItemPtr& item, const TiXmlElement& el, const string& attrName)
+   {
+     const char* pVal = el.Attribute(attrName.c_str());
+     if (pVal && *pVal != 0)
+       item->SetProperty(attrName, atoi(pVal));
    }
 
    void SetProperty(const CFileItemPtr& item, const TiXmlElement& el, const string& attrName, const string& propertyName="")
@@ -1257,7 +1270,6 @@ class PlexMediaNodeLibrary : public PlexMediaNode
           string url = pRoot ? CPlexDirectory::ProcessUrl(parentPath, pRoot, false) : "";
           string version = pVersion ? pVersion : ""; 
           
-          /*
           CacheMediaThumb(theMediaItem, media, url, "aspectRatio", version);
           CacheMediaThumb(theMediaItem, media, url, "audioChannels", version);
           CacheMediaThumb(theMediaItem, media, url, "audioCodec", version);
@@ -1275,7 +1287,6 @@ class PlexMediaNodeLibrary : public PlexMediaNode
             CacheMediaThumb(theMediaItem, &el, url, "studio", version);
           else
             CacheMediaThumb(theMediaItem, parent, url, "grandparentStudio", version, "studio");
-          */
 
         }
           
@@ -1427,6 +1438,7 @@ class PlexMediaDirectory : public PlexMediaNode
     /* Filter stuff */
     SetProperty(pItem, el, "filterType");
     SetProperty(pItem, el, "filter");
+
   }
 };
 
