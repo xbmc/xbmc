@@ -232,8 +232,11 @@ namespace XBMCAddon
       }
 
       if (item->HasVideoInfoTag())
-        return item->GetVideoInfoTag()->m_strRuntime;
-
+      {
+        std::ostringstream oss;
+        oss << item->GetVideoInfoTag()->GetDuration() / 60;
+        return oss.str();
+      }
       return "0";
     }
 
@@ -334,7 +337,7 @@ namespace XBMCAddon
           else if (key == "originaltitle")
             item->GetVideoInfoTag()->m_strOriginalTitle = value;
           else if (key == "duration")
-            item->GetVideoInfoTag()->m_strRuntime = value;
+            item->GetVideoInfoTag()->m_duration = CVideoInfoTag::GetDurationFromMinuteString(value);
           else if (key == "studio")
             item->GetVideoInfoTag()->m_studio = StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);            
           else if (key == "tagline")
