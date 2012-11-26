@@ -2365,6 +2365,21 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
         details.GetSubtitleLanguage(i).c_str()));
     }
 
+    // update the runtime information, if empty
+    if (details.GetVideoDuration())
+    {
+      vector< pair<string, int> > tables;
+      tables.push_back(make_pair("movie", VIDEODB_ID_RUNTIME));
+      tables.push_back(make_pair("episode", VIDEODB_ID_EPISODE_RUNTIME));
+      tables.push_back(make_pair("musicvideo", VIDEODB_ID_MUSICVIDEO_RUNTIME));
+      for (vector< pair<string, int> >::iterator i = tables.begin(); i != tables.end(); ++i)
+      {
+        CStdString sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''",
+                                    i->first.c_str(), i->second, details.GetVideoDuration(), idFile, i->second);
+        m_pDS->exec(sql);
+      }
+    }
+
     CommitTransaction();
   }
   catch (...)
@@ -3150,7 +3165,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   details.DetermineBestStreams();
 
   if (details.GetVideoDuration() > 0)
-    tag.m_strRuntime.Format("%i", details.GetVideoDuration() / 60 );
+    tag.m_duration = details.GetVideoDuration();
 
   return retVal;
 }
@@ -4257,6 +4272,29 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->exec("CREATE TRIGGER delete_tag AFTER DELETE ON taglinks FOR EACH ROW BEGIN "
                 "DELETE FROM tag WHERE idTag=old.idTag AND idTag NOT IN (SELECT DISTINCT idTag FROM taglinks); "
                 "END");
+  }
+  if (iVersion < 74)
+  { // update the runtime columns
+    vector< pair<string, int> > tables;
+    tables.push_back(make_pair("movie", VIDEODB_ID_RUNTIME));
+    tables.push_back(make_pair("episode", VIDEODB_ID_EPISODE_RUNTIME));
+    tables.push_back(make_pair("mvideo", VIDEODB_ID_MUSICVIDEO_RUNTIME));
+    for (vector< pair<string, int> >::iterator i = tables.begin(); i != tables.end(); ++i)
+    {
+      CStdString sql = PrepareSQL("select id%s,c%02d from %s where c%02d != ''", i->first.c_str(), i->second, (i->first=="mvideo")?"musicvideo":i->first.c_str(), i->second);
+      m_pDS->query(sql.c_str());
+      vector< pair<int, int> > videos;
+      while (!m_pDS->eof())
+      {
+        int duration = CVideoInfoTag::GetDurationFromMinuteString(m_pDS->fv(1).get_asString());
+        if (duration)
+          videos.push_back(make_pair(m_pDS->fv(0).get_asInt(), duration));
+        m_pDS->next();
+      }
+      m_pDS->close();
+      for (vector< pair<int, int> >::iterator j = videos.begin(); j != videos.end(); ++j)
+        m_pDS->exec(PrepareSQL("update %s set c%02d=%d where id%s=%d", (i->first=="mvideo")?"musicvideo":i->first.c_str(), i->second, j->second, i->first.c_str(), j->first));
+    }
   }
   // always recreate the view after any table change
   CreateViews();

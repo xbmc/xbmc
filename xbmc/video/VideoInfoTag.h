@@ -77,6 +77,17 @@ public:
     return m_strFileNameAndPath;
   };
 
+  /*! \brief retrieve the duration in seconds.
+   Prefers the duration from stream details if available.
+   */
+  unsigned int GetDuration() const;
+
+  /*! \brief get the duration in seconds from a minute string
+   \param runtime the runtime string from a scraper or similar
+   \return the time in seconds, if decipherable.
+   */
+  static unsigned int GetDurationFromMinuteString(const std::string &runtime);
+
   CStdString m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   std::vector<std::string> m_director;
@@ -97,7 +108,6 @@ public:
   CStdString m_strSet;
   int m_iSetId;
   std::vector<std::string> m_tags;
-  CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;
   CStdString m_strIMDBNumber;
@@ -136,6 +146,7 @@ public:
   CBookmark m_resumePoint;
   CDateTime m_dateAdded;
   CStdString m_type;
+  int m_duration; ///< duration in seconds
 
 private:
   /* \brief Parse our native XML format for video info.

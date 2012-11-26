@@ -615,7 +615,7 @@
   "Video.Details.File": {
     "extends": "Video.Details.Item",
     "properties": {
-      "runtime": { "type": "string" },
+      "runtime": { "type": "integer", "description": "Runtime in seconds" },
       "director": { "$ref": "Array.String" },
       "streamdetails": { "$ref": "Video.Streams" },
       "resume": { "$ref": "Video.Resume" }

@@ -889,7 +889,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "playcount"))
     details.m_playCount = (int)parameterObject["playcount"].asInteger();
   if (ParameterNotNull(parameterObject, "runtime"))
-    details.m_strRuntime = parameterObject["runtime"].asString();
+    details.m_duration = (int)parameterObject["runtime"].asInteger();
   if (ParameterNotNull(parameterObject, "director"))
     CopyStringArray(parameterObject["director"], details.m_director);
   if (ParameterNotNull(parameterObject, "studio"))

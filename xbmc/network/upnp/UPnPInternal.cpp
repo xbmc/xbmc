@@ -286,13 +286,10 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     object.m_MiscInfo.last_time = tag.m_lastPlayed.GetAsDBDate();
     object.m_MiscInfo.play_count = tag.m_playCount;
     if (resource) {
+        resource->m_Duration = tag.GetDuration();
         if (tag.HasStreamDetails()) {
             const CStreamDetails &details = tag.m_streamDetails;
-            resource->m_Duration = details.GetVideoDuration();
             resource->m_Resolution = NPT_String::FromInteger(details.GetVideoWidth()) + "x" + NPT_String::FromInteger(details.GetVideoHeight());
-        }
-        else {
-            resource->m_Duration = 60*atoi(tag.m_strRuntime.c_str());
         }
     }
 
@@ -667,7 +664,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     if(resource)
     {
       if (resource->m_Duration)
-        tag.m_strRuntime.Format("%d",resource->m_Duration/60);
+        tag.m_duration = resource->m_Duration;
       if (object.m_MiscInfo.last_position > 0 )
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;

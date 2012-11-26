@@ -167,7 +167,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    */
   tag->m_genre            = StringUtils::Split(GetValue(m_dll->proginfo_category(program)), g_advancedSettings.m_videoItemSeparator); // e.g. Sports
   tag->m_strAlbum         = GetValue(m_dll->proginfo_chansign(program)); // e.g. TV3
-  tag->m_strRuntime       = StringUtils::SecondsToTimeString(m_dll->proginfo_length_sec(program));
+  tag->m_duration         = m_dll->proginfo_length_sec(program);
   
   SetSeasonAndEpisode(program, &tag->m_iSeason, &tag->m_iEpisode);
 
