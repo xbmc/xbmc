@@ -139,24 +139,7 @@ retry:
   
   if (file.HasVideoInfoTag())
   {
-    std::vector<CStdString> tokens;
-    CUtil::Tokenize(file.GetVideoInfoTag()->m_strRuntime, tokens, ":");
-    int nHours = 0;
-    int nMinutes = 0;
-    int nSeconds = 0;
-    
-    if (tokens.size() == 2)
-    {
-      nMinutes = atoi(tokens[0].c_str());
-      nSeconds = atoi(tokens[1].c_str());
-    }
-    else if (tokens.size() == 3)
-    {
-      nHours = atoi(tokens[0].c_str());
-      nMinutes = atoi(tokens[1].c_str());
-      nSeconds = atoi(tokens[2].c_str());
-    }
-    m_totalTime = (nHours * 3600) + (nMinutes * 60) + nSeconds;
+    m_totalTime = file.GetVideoInfoTag()->GetDuration();
   }
   
   Create();

@@ -928,27 +928,6 @@ class PlexMediaNode
        item->SetProperty(propName, pVal);
    }
 
-   string BuildDurationString(const string& duration)
-   {
-     if (duration.size() > 0)
-     {
-       int seconds = boost::lexical_cast<int>(duration)/1000;
-       int hours = seconds/3600;
-       int minutes = (seconds / 60) % 60;
-       seconds = seconds % 60;
-
-       CStdString std;
-       if (hours > 0)
-         std.Format("%d:%02d:%02d", hours, minutes, seconds);
-       else
-         std.Format("%d:%02d", minutes, seconds);
-
-       return std;
-     }
-
-     return "";
-   }
-
   int TypeStringToNumber(const CStdString& type)
   {
     if (type == "show")
@@ -1214,7 +1193,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         // Duration.
         const char* pDuration = el.Attribute("duration");
         if (pDuration && strlen(pDuration) > 0)
-          theVideoInfo.m_strRuntime = BuildDurationString(pDuration);
+          theVideoInfo.m_duration = atoi(pDuration);
 
         // Viewed.
         theVideoInfo.m_playCount = viewCount;
@@ -1346,7 +1325,7 @@ class PlexMediaDirectory : public PlexMediaNode
 
     // Duration.
     if (el.Attribute("duration"))
-      tag.m_strRuntime = BuildDurationString(el.Attribute("duration"));
+      tag.m_duration = atoi(el.Attribute("duration"));
 
     CFileItemPtr newItem(new CFileItem(tag));
     newItem->m_bIsFolder = true;
@@ -1533,21 +1512,7 @@ class PlexMediaVideo : public PlexMediaNode
 
     const char* pDuration = el.Attribute("duration");
     if (pDuration && strlen(pDuration) > 0)
-    {
-      string duration = pDuration;
-      int seconds = boost::lexical_cast<int>(duration)/1000;
-      int hours = seconds/3600;
-      int minutes = (seconds / 60) % 60;
-      seconds = seconds % 60;
-
-      CStdString std;
-      if (hours > 0)
-        std.Format("%d:%02d:%02d", hours, minutes, seconds);
-      else
-        std.Format("%d:%02d", minutes, seconds);
-
-      videoInfo.m_strRuntime = std;
-    }
+      videoInfo.m_duration = atoi(pDuration);
 
     // Path to the track itself.
     CURL url2(pItem->GetPath());
