@@ -16,6 +16,8 @@
 #include "GUIUserMessages.h"
 #include "AdvancedSettings.h"
 #include "guilib/GUILabelControl.h"
+#include "GUI/GUIDialogFilterSort.h"
+#include "GUIWindowManager.h"
 
 bool CGUIWindowMediaFilterView::FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list)
 {
@@ -103,48 +105,6 @@ void CGUIWindowMediaFilterView::BuildFilters(const CStdString& baseUrl, int type
 
 }
 
-void CGUIWindowMediaFilterView::PopulateSublist(CPlexFilterPtr filter)
-{
-  CFileItemList sublist;
-  if (!filter->GetSublist(sublist))
-    return;
-
-  CGUIControlGroupList* list = (CGUIControlGroupList*)GetControl(FILTER_SUBLIST);
-  if (!list)
-    return;
-
-  list->ClearAll();
-
-  CGUIRadioButtonControl* radioButton = (CGUIRadioButtonControl*)GetControl(FILTER_SUBLIST_BUTTON);
-  if (!radioButton)
-    return;
-  radioButton->SetVisible(false);
-
-  CGUILabelControl* headerLabel = (CGUILabelControl*)GetControl(FILTER_SUBLIST_LABEL);
-  if (headerLabel)
-    headerLabel->SetLabel(filter->GetFilterString());
-
-  for (int i = 0; i < sublist.Size(); i++)
-  {
-    CFileItemPtr item = sublist.Get(i);
-    CGUIRadioButtonControl* sublistItem = new CGUIRadioButtonControl(*radioButton);
-    sublistItem->SetLabel(item->GetLabel());
-    sublistItem->SetVisible(true);
-    sublistItem->AllocResources();
-    sublistItem->SetID(FILTER_SUBLIST_BUTTONS_START + i);
-
-    list->AddControl(sublistItem);
-  }
-
-  SET_CONTROL_VISIBLE(FILTER_SUBLIST);
-}
-
-void CGUIWindowMediaFilterView::OnInitWindow()
-{
-  CGUIWindowVideoNav::OnInitWindow();
-  SET_CONTROL_HIDDEN(FILTER_SUBLIST);
-}
-
 typedef pair<CStdString, CPlexFilterPtr> name_filter_pair;
 
 bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
@@ -179,7 +139,14 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
             }
             else
             {
-              PopulateSublist(pr.second);
+              CGUIDialogFilterSort *dialog = (CGUIDialogFilterSort *)g_windowManager.GetWindow(WINDOW_DIALOG_FILTER_SORT);
+              if (!dialog)
+                break;
+              dialog->SetFilter(pr.second);
+              m_openFilter = pr.second;
+              dialog->DoModal();
+
+              break;
             }
           }
         }
@@ -202,6 +169,8 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
       if (update)
         Update(m_baseUrl, true, false);
     }
+      break;
+
     case GUI_MSG_LOAD_SKIN:
     {
       /* This is called BEFORE the skin is reloaded, so let's save this event to be handled
@@ -210,12 +179,35 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
         m_returningFromSkinLoad = true;
     }
       break;
+
     case GUI_MSG_WINDOW_INIT:
     {
       /* If this is a reload event we must make sure to get the filters back */
       if (m_returningFromSkinLoad)
         Update(m_baseUrl, true);
       m_returningFromSkinLoad = false;
+    }
+      break;
+
+    case GUI_MSG_UPDATE_FILTERS:
+    {
+      if (m_openFilter)
+      {
+        if (m_appliedFilters.find(m_openFilter->GetFilterName()) != m_appliedFilters.end())
+          m_appliedFilters.erase(m_openFilter->GetFilterName());
+
+        if (!m_openFilter->GetFilterValue().empty())
+          m_appliedFilters[m_openFilter->GetFilterName()] = m_openFilter->GetFilterValue();
+      }
+      if (!m_appliedFilters.empty())
+      {
+        /* This sucks, but "ok" */
+        BOOST_FOREACH(name_filter_pair p, m_filters)
+        {
+          p.second->SetFilterUrl(GetFilterUrl(p.second->GetFilterName()));
+        }
+      }
+      Update(m_baseUrl, true, false);
     }
       break;
   }
@@ -226,6 +218,25 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
 bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool updateFilterPath)
 {
   return Update(strDirectory, updateFilterPath, true);
+}
+
+CStdString CGUIWindowMediaFilterView::GetFilterUrl(const CStdString exclude) const
+{
+  CStdString url;
+  if (m_appliedFilters.size() > 0)
+  {
+    vector<string> filterValues;
+    pair<CStdString, string> stpair;
+    BOOST_FOREACH(stpair, m_appliedFilters)
+    {
+      if (!stpair.first.Equals(exclude))
+        filterValues.push_back(stpair.second);
+    }
+
+    CStdString optionList = StringUtils::Join(filterValues, "&");
+    url = "?" + optionList;
+  }
+  return url;
 }
 
 bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
@@ -239,24 +250,23 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
   containerUrl+="?X-Plex-Container-Start=0&X-Plex-Container-Size=1";
   tmpItems.SetPath(containerUrl);
 
-  /* Ok this is kind of wastefull */
+  /* A bit stupidity here, but we need to request the container twice. Fortunately it's really fast
+   * to do it with the offset stuff above */
   if (dir.GetDirectory(containerUrl, tmpItems))
   {
     if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "secondary")
     {
+      if (!m_baseUrl.Equals(strDirectory))
+      {
+        m_baseUrl = strDirectory;
+        m_appliedFilters.clear();
+        m_filters.clear();
+        m_sorts.clear();
+      }
+
       CStdString url;
       url = PlexUtils::AppendPathToURL(strDirectory, "all");
-
-      if (m_appliedFilters.size() > 0)
-      {
-        vector<string> filterValues;
-        pair<CStdString, string> stpair;
-        BOOST_FOREACH(stpair, m_appliedFilters)
-          filterValues.push_back(stpair.second);
-
-        CStdString optionList = StringUtils::Join(filterValues, "&");
-        url += "?" + optionList;
-      }
+      url += GetFilterUrl();
 
       if (!m_appliedSort.empty())
       {
@@ -269,7 +279,6 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
           url += "?" + sortStr;
       }
 
-      m_baseUrl = strDirectory;
 
       ret = CGUIWindowVideoNav::Update(url, updateFilterPath);
 

@@ -10,6 +10,7 @@
 // Dialogs.
 #define WINDOW_DIALOG_RATING              10200
 #define WINDOW_DIALOG_TIMER               10201
+#define WINDOW_DIALOG_FILTER_SORT         10202
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40
@@ -31,6 +32,8 @@
 
 // Send when a search helper has finished.
 #define GUI_MSG_SEARCH_HELPER_COMPLETE GUI_MSG_USER + 47
+
+#define GUI_MSG_UPDATE_FILTERS GUI_MSG_USER + 48
 
 typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
 

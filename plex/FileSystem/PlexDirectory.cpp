@@ -495,8 +495,6 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   if (pVal && *pVal != 0)
     items.SetProperty("offset", atoi(pVal));
 
-  dprintf("totalSize for %s is %d", items.GetPath().c_str(), items.GetProperty("totalSize").asInteger());
-
   return true;
 }
 
