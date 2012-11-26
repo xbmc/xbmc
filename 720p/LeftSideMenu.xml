@@ -203,7 +203,6 @@
 				<control type="button" id="19001">
 					<textoffsetx>35</textoffsetx>
 					<include>leftMenuFormat</include>
-					<onclick>ActivateWindow(162)</onclick>
 				</control>
 				<control type="radiobutton" id="19002">
 					<textoffsetx>35</textoffsetx>

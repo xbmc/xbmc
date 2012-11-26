@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<window id="162" type="dialog">
+<window id="10202" type="dialog">
 	<defaultcontrol always="true">19020</defaultcontrol>
 	<include>DialogFadeInOut</include>
 	<controls>
