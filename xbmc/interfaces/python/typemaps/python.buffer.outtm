@@ -1,5 +1,6 @@
+<%
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,31 +19,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-%module xbmcvfs
-
-%{
-#include "interfaces/legacy/ModuleXbmcvfs.h"
-#include "interfaces/legacy/File.h"
-#include "interfaces/legacy/Stat.h"
-#include "utils/log.h"
-
-using namespace XBMCAddon;
-using namespace xbmcvfs;
-
-#if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#endif
-
-%}
-
-%include "interfaces/legacy/File.h"
-
-%rename ("st_atime") XBMCAddon::xbmcvfs::Stat::atime;
-%rename ("st_mtime") XBMCAddon::xbmcvfs::Stat::mtime;
-%rename ("st_ctime") XBMCAddon::xbmcvfs::Stat::ctime;
-%include "interfaces/legacy/Stat.h"
-
-%rename ("delete") XBMCAddon::xbmcvfs::deleteFile;
-%include "interfaces/legacy/ModuleXbmcvfs.h"
-
+%>
+<%
+    boolean ispointer = swigTypeParser.SwigType_ispointer(type)
+    String accessor = ispointer ? '->' : '.'
+%>
+    ${result} = PyByteArray_FromStringAndSize((char*)${api}${accessor}curPosition(),${api}${accessor}remaining());
