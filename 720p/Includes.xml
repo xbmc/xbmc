@@ -9,6 +9,7 @@
 	<include file="ViewsPhoto.xml"/>
 	<include file="ViewsMovieTV.xml"/>
 	<include file="ViewsClip.xml"/>
+	<include file="ViewsSharedContent.xml"/>
 	<include file="ViewsPreplay.xml"/>
 	<include file="ViewNowPlaying.xml"/>
 	<include file="ViewsSettings.xml"/>
