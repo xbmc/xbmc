@@ -39,7 +39,7 @@ class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
     void BuildFilters(const CStdString &url, int type);
     bool FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list);
     void PopulateSublist(CPlexFilterPtr filter);
-    CStdString GetFilterUrl(const CStdString exclude="") const;
+    CStdString GetFilterUrl(const CStdString& exclude="", const CStdString& baseUrl="") const;
 
   private:
     std::map<CStdString, CPlexFilterPtr> m_filters;

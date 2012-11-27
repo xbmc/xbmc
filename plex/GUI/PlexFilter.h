@@ -137,7 +137,17 @@ class CPlexFilter
     bool FetchSublist()
     {
       CPlexDirectory dir;
-      return dir.GetDirectory(m_key + m_filterUrl, m_sublist);
+      CStdString url(m_key);
+
+      if (!m_filterUrl.empty())
+      {
+        if (url.Find('?') == -1)
+          url += m_filterUrl;
+        else
+          url += "&" + m_filterUrl.substr(1);
+      }
+
+      return dir.GetDirectory(url, m_sublist);
     }
 
     CGUIButtonControl* m_filterControl;

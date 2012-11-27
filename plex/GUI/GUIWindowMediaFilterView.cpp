@@ -217,9 +217,10 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
   return Update(strDirectory, updateFilterPath, true);
 }
 
-CStdString CGUIWindowMediaFilterView::GetFilterUrl(const CStdString exclude) const
+CStdString CGUIWindowMediaFilterView::GetFilterUrl(const CStdString& exclude, const CStdString& baseUrl) const
 {
-  CStdString url;
+  CStdString url(baseUrl);
+
   if (m_appliedFilters.size() > 0)
   {
     vector<string> filterValues;
@@ -231,7 +232,10 @@ CStdString CGUIWindowMediaFilterView::GetFilterUrl(const CStdString exclude) con
     }
 
     CStdString optionList = StringUtils::Join(filterValues, "&");
-    url = "?" + optionList;
+    if (url.Find('?') == -1)
+      url += "?" + optionList;
+    else
+      url += "&" + optionList;
   }
   return url;
 }
@@ -244,7 +248,11 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
 
   CStdString containerUrl(strDirectory);
   /* we just request the header to see if this is a "secondary" list */
-  containerUrl+="?X-Plex-Container-Start=0&X-Plex-Container-Size=1";
+  CStdString offset ="X-Plex-Container-Start=0&X-Plex-Container-Size=1";
+  if (containerUrl.Find('?') == -1)
+    containerUrl += "?" + offset;
+  else
+    containerUrl += "&" + offset;
   tmpItems.SetPath(containerUrl);
 
   /* A bit stupidity here, but we need to request the container twice. Fortunately it's really fast
@@ -263,7 +271,7 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
 
       CStdString url;
       url = PlexUtils::AppendPathToURL(strDirectory, "all");
-      url += GetFilterUrl();
+      url = GetFilterUrl("", url);
 
       if (!m_appliedSort.empty())
       {
