@@ -44,11 +44,28 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/CharsetConverter.h"
 #include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace TagLib;
 using namespace MUSIC_INFO;
+
+class TagStringHandler : public ID3v2::Latin1StringHandler
+{
+public:
+  TagStringHandler() {}
+  virtual ~TagStringHandler() {}
+  virtual String parse(const ByteVector &data) const
+  {
+    CStdString strSource(data.data(), data.size());
+    CStdString strUTF8;
+    g_charsetConverter.unknownToUTF8(strSource, strUTF8);
+    return String(strUTF8, String::UTF8);
+  }
+};
+
+static const TagStringHandler StringHandler;
 
 CTagLoaderTagLib::CTagLoaderTagLib()
 {
@@ -84,6 +101,7 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
     return false;
   }
   
+  ID3v2::Tag::setLatin1StringHandler(&StringHandler);
   TagLib::File*              file = NULL;
   TagLib::APE::File*         apeFile = NULL;
   TagLib::ASF::File*         asfFile = NULL;
