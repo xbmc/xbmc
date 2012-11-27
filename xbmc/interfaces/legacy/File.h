@@ -25,6 +25,7 @@
 #include "AddonString.h"
 #include "AddonClass.h"
 #include "LanguageHook.h"
+#include "commons/Buffer.h"
 
 namespace XBMCAddon
 {
@@ -54,19 +55,19 @@ namespace XBMCAddon
 
       inline ~File() { delete file; }
 
-#ifndef SWIG
       /**
        * read(bytes)
        * 
        * bytes : how many bytes to read [opt]- if not set it will read the whole fi
+       *
+       * returns: bytearray
        * 
        * example:
        *  f = xbmcvfs.File(file)
        *  b = f.read()
        *  f.close()
        */
-      unsigned long read(void* buffer, unsigned long numBytes = 0);
-#endif
+      XbmcCommons::Buffer read(unsigned long numBytes = 0);
 
       /**
        * write(buffer)
@@ -78,7 +79,7 @@ namespace XBMCAddon
        *  result = f.write(buffer)
        *  f.close()
        */
-      bool write(const char* file);
+      long write(XbmcCommons::Buffer& buffer);
 
       /**
        * size()

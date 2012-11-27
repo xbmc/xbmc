@@ -1,3 +1,4 @@
+<%
 /*
  *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
@@ -18,31 +19,12 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-%module xbmcvfs
-
-%{
-#include "interfaces/legacy/ModuleXbmcvfs.h"
-#include "interfaces/legacy/File.h"
-#include "interfaces/legacy/Stat.h"
-#include "utils/log.h"
-
-using namespace XBMCAddon;
-using namespace xbmcvfs;
-
-#if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#endif
-
-%}
-
-%include "interfaces/legacy/File.h"
-
-%rename ("st_atime") XBMCAddon::xbmcvfs::Stat::atime;
-%rename ("st_mtime") XBMCAddon::xbmcvfs::Stat::mtime;
-%rename ("st_ctime") XBMCAddon::xbmcvfs::Stat::ctime;
-%include "interfaces/legacy/Stat.h"
-
-%rename ("delete") XBMCAddon::xbmcvfs::deleteFile;
-%include "interfaces/legacy/ModuleXbmcvfs.h"
-
+%>
+<%
+    matcher = type =~ /shared_ptr<\((.*)\)>/
+    itype = matcher[0][1]
+    pointertype = swigTypeParser.SwigType_makepointer(itype)
+    int seq = sequence.increment()
+%>
+    ${swigTypeParser.SwigType_str(swigTypeParser.SwigType_ltype(pointertype))} entry${seq} = ${api}.get();
+    ${helper.getOutConversion(pointertype,'result',method,[ 'api' : 'entry' + seq, 'sequence' : sequence ])}

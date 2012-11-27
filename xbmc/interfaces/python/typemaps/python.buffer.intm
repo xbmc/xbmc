@@ -1,3 +1,4 @@
+<%
 /*
  *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
@@ -18,31 +19,21 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-%module xbmcvfs
-
-%{
-#include "interfaces/legacy/ModuleXbmcvfs.h"
-#include "interfaces/legacy/File.h"
-#include "interfaces/legacy/Stat.h"
-#include "utils/log.h"
-
-using namespace XBMCAddon;
-using namespace xbmcvfs;
-
-#if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
-#pragma GCC diagnostic ignored "-Wstrict-aliasing"
-#endif
-
-%}
-
-%include "interfaces/legacy/File.h"
-
-%rename ("st_atime") XBMCAddon::xbmcvfs::Stat::atime;
-%rename ("st_mtime") XBMCAddon::xbmcvfs::Stat::mtime;
-%rename ("st_ctime") XBMCAddon::xbmcvfs::Stat::ctime;
-%include "interfaces/legacy/Stat.h"
-
-%rename ("delete") XBMCAddon::xbmcvfs::deleteFile;
-%include "interfaces/legacy/ModuleXbmcvfs.h"
-
+%>
+    if (PyString_Check(${slarg}))
+    {
+      const char* str = PyString_AsString(${slarg});
+      size_t size = (size_t)PyString_Size(${slarg});
+      ${api}.allocate(size);
+      ${api}.put(str,size);
+      ${api}.flip(); // prepare the buffer for reading from
+    }
+    else if (PyByteArray_Check(${slarg}))
+    {
+      size_t size = PyByteArray_Size(${slarg});
+      ${api}.allocate(size);
+      ${api}.put(PyByteArray_AsString(${slarg}),size);
+      ${api}.flip(); // prepare the buffer for reading from
+    }
+    else
+      throw XBMCAddon::WrongTypeException("argument \"%s\" for \"%s\" must be a string or a bytearray", "${api}", "${method.@name}");
