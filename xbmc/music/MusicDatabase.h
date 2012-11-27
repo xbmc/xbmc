@@ -128,10 +128,13 @@ public:
   bool GetAlbumFromSong(int idSong, CAlbum &album);
   bool GetAlbumFromSong(const CSong &song, CAlbum &album);
   
-  bool GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<long>& albums);
-  bool GetArtistsByAlbum(int idAlbum, bool includeFeatured, std::vector<long>& artists);
-  bool GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<long>& songs);
-  bool GetArtistsBySong(int idSong, bool includeFeatured, std::vector<long>& artists);
+  bool GetAlbumsByArtist(int idArtist, bool includeFeatured, std::vector<int>& albums);
+  bool GetArtistsByAlbum(int idAlbum, bool includeFeatured, std::vector<int>& artists);
+  bool GetSongsByArtist(int idArtist, bool includeFeatured, std::vector<int>& songs);
+  bool GetArtistsBySong(int idSong, bool includeFeatured, std::vector<int>& artists);
+
+  bool GetGenresByAlbum(int idAlbum, std::vector<int>& genres);
+  bool GetGenresBySong(int idSong, std::vector<int>& genres);
 
   bool GetTop100(const CStdString& strBaseDir, CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
@@ -278,7 +281,7 @@ protected:
   std::map<CStdString, CAlbum> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 30; };
+  virtual int GetMinVersion() const { return 31; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddSong(const CSong& song, bool bCheck = true, int idAlbum = -1);
@@ -350,7 +353,8 @@ private:
     song_iKarNumber,
     song_iKarDelay,
     song_strKarEncoding,
-    song_bCompilation
+    song_bCompilation,
+    song_strAlbumArtists
   } SongFields;
 
   // Fields should be ordered as they
