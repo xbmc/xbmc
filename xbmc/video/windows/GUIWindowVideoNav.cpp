@@ -1167,7 +1167,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       else
       { // SEASON, SET
         map<string, string> currentArt;
-#ifndef __PLEX__ FIXME!
+#ifndef __PLEX__ //FIXME!
         artType = CGUIDialogVideoInfo::ChooseArtType(*m_vecItems->Get(itemNumber), currentArt);
         if (artType.empty())
           return false;
