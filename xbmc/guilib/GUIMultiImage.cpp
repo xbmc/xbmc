@@ -202,7 +202,12 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
 
     // Randomize or sort our images if necessary
     if (m_randomized)
+    {
+      /* PLEX */
+      std::srand(std::time(0));
+      /* END PLEX */
       random_shuffle(m_files.begin(), m_files.end());
+    }
     else
       sort(m_files.begin(), m_files.end());
 
@@ -296,7 +301,12 @@ void CGUIMultiImage::OnDirectoryLoaded()
 {
   // Randomize or sort our images if necessary
   if (m_randomized)
+  {
+    /* PLEX */
+    std::srand(std::time(0));
+    /* END PLEX */
     random_shuffle(m_files.begin(), m_files.end());
+  }
   else
     sort(m_files.begin(), m_files.end());
 
