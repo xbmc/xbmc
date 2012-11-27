@@ -521,6 +521,14 @@ AC_ARG_ENABLE([external-ffmpeg],
   [use_external_ffmpeg=$use_external_libraries])
 
 ### End of external library options
+### PVR addons specific
+AC_ARG_ENABLE([pvraddons-with-dependencies],
+  [AS_HELP_STRING([--enable-pvraddons-with-dependencies],
+  [enable build of pvr addons with dependencies (default is no) 'Linux only'])],
+  [use_pvraddons_with_deps=$enableval],
+  [use_pvraddons_with_deps=no])
+
+### End PVR addons specific
 
 if test "x$host_vendor" != "xapple"; then
   DEFAULT_COMPILE_FLAGS="-fPIC -DPIC -D_REENTRANT"
@@ -2766,12 +2774,16 @@ XB_CONFIG_MODULE([pvr-addons], [
    if test "$USE_EXTERNAL_FFMPEG" = 1; then
       PVR_EXT_FFMPEG="--enable-external-ffmpeg"
    fi
+   if test "$use_pvraddons_with_deps" = "yes"; then
+      ADDONS_WITH_DEPS="--enable-addons-with-dependencies"
+   fi
   ./configure \
     --prefix="${prefix}" \
     --host=$host_alias \
     --build=$build_alias \
     --target=$target_alias \
     $PVR_EXT_FFMPEG \
+    $ADDONS_WITH_DEPS \
     CC="$CC" \
     CXX="$CXX" \
     CFLAGS="$CFLAGS" \
