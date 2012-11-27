@@ -360,8 +360,9 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
   else
   {
     bool mounted = device->m_isMounted;
-
-    if (!mounted && g_advancedSettings.m_handleMounting)
+    /* make sure to not silently remount ejected usb thumb drives
+       that user wants to eject, but make sure to mount blurays */
+    if (!mounted && g_advancedSettings.m_handleMounting && device->m_isOptical)
       device->Mount();
 
     device->Update();

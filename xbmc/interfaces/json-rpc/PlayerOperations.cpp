@@ -37,6 +37,7 @@
 #include "filesystem/File.h"
 #include "PartyModeManager.h"
 #include "epg/EpgInfoTag.h"
+#include "music/MusicDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -125,7 +126,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
         }
         else
         {
-          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem))
+          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem, parameterObject))
           {
             tmpItem = CFileItem(*g_infoManager.GetCurrentSongTag());
             tmpItem.SetPath(g_application.CurrentFileItem().GetPath());
@@ -137,7 +138,10 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
       else
         fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
 
-      if (player == Video && !IsPVRChannel())
+      if (IsPVRChannel())
+        break;
+
+      if (player == Video)
       {
         bool additionalInfo = false;
         for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
@@ -174,6 +178,16 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
 
             videodatabase.Close();
           }
+        }
+      }
+      else if (player == Audio)
+      {
+        if (fileItem->IsMusicDb())
+        {
+          CMusicDatabase musicdb;
+          CFileItemList items;
+          items.Add(fileItem);
+          CAudioLibrary::GetAdditionalSongDetails(parameterObject, items, musicdb);
         }
       }
       break;

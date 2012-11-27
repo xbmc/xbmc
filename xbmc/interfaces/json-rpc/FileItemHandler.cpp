@@ -164,6 +164,12 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       result[field] = item->m_dateTime.GetAsLocalizedDateTime();
       return true;
     }
+
+    if (item->HasProperty(field))
+    {
+      result[field] = item->GetProperty(field);
+      return true;
+    }
   }
 
   return false;
