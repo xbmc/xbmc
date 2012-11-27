@@ -25,7 +25,7 @@
 		</control>
 	</include>
 	<include name="MovieTVTitle">
-		<posy>290</posy>
+		<posy>288</posy>
 		<posx>105</posx>
 		<width>180</width>
 		<height>30</height>
@@ -70,6 +70,14 @@
 					<include>MovieTVUnwatchedOverlay</include>
 				</itemlayout>
 				<focusedlayout width="223" height="315">
+					<!--<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>208</width>
+						<height>317</height>
+						<include>BlackRounded</include>
+						<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+					</control>-->
 					<include>MovieTVPoster</include>
 					<control type="label">
 						<include>MovieTVTitle</include>
