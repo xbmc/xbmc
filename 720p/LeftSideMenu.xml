@@ -178,7 +178,6 @@
 					<posy>110</posy>
 					<posx>253</posx>
 					<include>leftMenuTitle</include>
-					<label>FILTERS</label>
 				</control>
 				<!-- filters list -->
 				<control type="grouplist" id="19000">
@@ -204,7 +203,6 @@
 					<description>Title</description>
 					<posy>420</posy>
 					<posx>253</posx>
-					<label>SORTING</label>
 					<include>leftMenuTitle</include>
 				</control>
 				<!-- sorting list -->
