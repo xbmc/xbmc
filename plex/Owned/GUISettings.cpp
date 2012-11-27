@@ -579,11 +579,11 @@ void CGUISettings::Initialize()
 #if defined(TARGET_DARWIN_IOS)
   AddBool(NULL, "input.enablemouse", 21369, false);
 #else
-  AddBool(in, "input.enablemouse", 21369, false);
+  AddBool(NULL, "input.enablemouse", 21369, false);
 #endif
 #if defined(HAS_SDL_JOYSTICK)
-  AddBool(in, "input.enablejoystick", 35100, true);
-  AddBool(in, "input.disablejoystickwithimon", 35101, true);
+  AddBool(NULL, "input.enablejoystick", 35100, true);
+  AddBool(NULL, "input.disablejoystickwithimon", 35101, true);
   GetSetting("input.disablejoystickwithimon")->SetVisible(false);
 #endif
 
