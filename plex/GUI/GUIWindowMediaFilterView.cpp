@@ -199,14 +199,11 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
         if (!m_openFilter->GetFilterValue().empty())
           m_appliedFilters[m_openFilter->GetFilterName()] = m_openFilter->GetFilterValue();
       }
-      if (!m_appliedFilters.empty())
-      {
-        /* This sucks, but "ok" */
-        BOOST_FOREACH(name_filter_pair p, m_filters)
-        {
-          p.second->SetFilterUrl(GetFilterUrl(p.second->GetFilterName()));
-        }
-      }
+
+      /* This sucks, but "ok" */
+      BOOST_FOREACH(name_filter_pair p, m_filters)
+        p.second->SetFilterUrl(GetFilterUrl(p.second->GetFilterName()));
+
       Update(m_baseUrl, true, false);
     }
       break;
