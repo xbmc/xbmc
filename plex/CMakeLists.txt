@@ -102,6 +102,7 @@ install(CODE "
 # Replace some XBMC files in the output
 install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Splash.png)")
 install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html)")
+install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/XBMC/tools/darwin/runtime COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt)

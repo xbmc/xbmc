@@ -1,4 +1,7 @@
 find_all_sources(. osx_SRCS)
 list(REMOVE_ITEM osx_SRCS ./CoreAudioSoundManager.cpp)
-list(REMOVE_ITEM osx_SRCS ./IOSEAGLView.mm ./IOSExternalTouchController.mm ./IOSScreenManager.mm)
+list(REMOVE_ITEM osx_SRCS ./IOSEAGLView.mm)
+list(REMOVE_ITEM osx_SRCS ./IOSExternalTouchController.mm)
+list(REMOVE_ITEM osx_SRCS ./IOSScreenManager.mm)
+list(REMOVE_ITEM osx_SRCS ./XBMCHelper.cpp)
 add_sources(${osx_SRCS})

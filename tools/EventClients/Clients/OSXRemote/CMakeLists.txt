@@ -18,9 +18,3 @@ target_link_libraries(PlexHelper
 )
 
 install(TARGETS PlexHelper DESTINATION Plex.app/Contents/Resources/XBMC/tools/darwin/runtime)
-
-install(
-  FILES ${root}/tools/darwin/runtime/org.xbmc.helper.plist
-  DESTINATION Plex.app/Contents/Resources/XBMC/tools/darwin/runtime
-  RENAME com.plexapp.helper.plist
-)

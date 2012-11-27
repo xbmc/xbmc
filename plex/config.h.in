@@ -173,3 +173,6 @@
 #cmakedefine HAVE_SDL @HAVE_SDL@
 
 #define LIRC_DEVICE "@LIRC_DEVICE@"
+
+/* SDL JOYSTICK */
+#define HAS_SDL_JOYSTICK 1

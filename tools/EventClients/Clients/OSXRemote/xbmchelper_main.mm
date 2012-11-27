@@ -76,7 +76,7 @@ void ReadConfig()
 #ifndef __PLEX__
   strFile += "/Library/Application Support/XBMC/XBMCHelper.conf";
 #else
-  strFile += "/Library/Application Support/+"+ std::string(PLEX_TARGET_NAME) +"/PlexHelper.conf";
+  strFile += "/Library/Application Support/"+ std::string(PLEX_TARGET_NAME) +"/PlexHelper.conf";
 #endif
   
 	// Open file.

@@ -1,3 +1,4 @@
+#ifndef __PLEX__
 #ifndef __XBMCHELPER_H__
 #define __XBMCHELPER_H__
 
@@ -71,5 +72,6 @@ private:
   static XBMCHelper* smp_instance;
 };
 
+#endif
 #endif
 #endif
