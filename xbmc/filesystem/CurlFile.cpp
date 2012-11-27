@@ -464,8 +464,10 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // resolves. Unfortunately, c-ares does not yet support IPv6.
   g_curlInterface.easy_setopt(h, CURLOPT_NOSIGNAL, TRUE);
 
+#ifndef __PLEX__ // We actually need to read the data even if we fail
   // not interested in failed requests
   g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
+#endif
 
   // enable support for icecast / shoutcast streams
   m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
@@ -827,6 +829,14 @@ bool CCurlFile::Service(const CStdString& strURL, CStdString& strHTML)
       return true;
     }
   }
+  /* PLEX */
+  else if (m_httpresponse == 500 && !m_state->m_httpheader.GetValue("X-Plex-Protocol").IsEmpty())
+  {
+    /* Additional debug data? */
+    CLog::Log(LOGDEBUG, "CURL: Failed with 500 on a Plex Server, reading data");
+    ReadData(strHTML);
+  }
+  /* END PLEX */
   Close();
   return false;
 }

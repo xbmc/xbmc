@@ -12255,3 +12255,30 @@ msgstr ""
 msgctxt "#44031"
 msgid "SORTING"
 msgstr ""
+
+#### These are error strings shown from channels
+#### errorcode + 50000
+msgctxt "#52000"
+msgid "Unable to play media"
+msgstr ""
+
+msgctxt "#52001"
+msgid "This media is not currently available"
+msgstr ""
+
+msgctxt "#52002"
+msgid "This media has expired"
+msgstr ""
+
+msgctxt "#52003"
+msgid "This live media has not yet started"
+msgstr ""
+
+msgctxt "#52004"
+msgid "You are not authorized to access this media"
+msgstr ""
+
+msgctxt "#52005"
+msgid "This media is geoblocked and can't be accessed from your current location."
+msgstr ""
+#### end error strings

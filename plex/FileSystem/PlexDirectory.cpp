@@ -42,6 +42,7 @@
 #include "PlexUtils.h"
 #include "TextureCache.h"
 #include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -205,7 +206,26 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
 
   // See if we suceeded.
   if (m_bSuccess == false)
+  {
+    if (!m_data.IsEmpty())
+    {
+      TiXmlDocument doc;
+      doc.Parse(m_data.c_str());
+      TiXmlElement* eRoot = doc.RootElement();
+      if (eRoot != 0)
+      {
+        const char *code = eRoot->Attribute("code");
+        const char *status = eRoot->Attribute("status");
+        if (code && status)
+        {
+          int errCode = atoi(code);
+          /* We got an error from the plugin */
+          CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(52000), g_localizeStrings.Get(50000 + errCode), "", "");
+        }
+      }
+    }
     return false;
+  }
 
   // See if we're supposed to parse the results or not.
   if (m_bParseResults == false)
