@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 <includes>
 	<include name="SharedContentMainBG">
+		<include>BGSharedContent</include>
 		<control type="grouplist">
 			<orientation>horizontal</orientation>
 			<itemgap>0</itemgap>
 			<posx>0</posx>
 			<posy>49</posy>
 			<visible>!Container.OnNext + !Container.OnPrevious</visible>
-			<animation effect="fade" start="0" end="80" time="400" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
-			<animation effect="fade" start="0" end="80" time="2000" delay="0">WindowOpen</animation>
-			<animation effect="fade" start="0" end="80" time="400" delay="0">Visible</animation>
-			<animation effect="fade" start="80" end="0" time="0">Hidden</animation>
+			<animation effect="fade" start="0" end="100" time="400" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+			<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+			<animation effect="fade" start="0" end="100" time="400" delay="0">Visible</animation>
+			<animation effect="fade" start="100" end="0" time="0">Hidden</animation>
 			<control type="image">
 				<width max="500">auto</width>
 				<height>336</height>
@@ -72,10 +73,10 @@
 			<posx>0</posx>
 			<posy>385</posy>
 			<visible>!Container.OnNext + !Container.OnPrevious</visible>
-			<animation effect="fade" start="0" end="80" time="400" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
-			<animation effect="fade" start="0" end="80" time="2000" delay="0">WindowOpen</animation>
-			<animation effect="fade" start="0" end="80" time="400" delay="0">Visible</animation>
-			<animation effect="fade" start="80" end="0" time="0">Hidden</animation>
+			<animation effect="fade" start="0" end="100" time="400" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+			<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+			<animation effect="fade" start="0" end="100" time="400" delay="0">Visible</animation>
+			<animation effect="fade" start="100" end="0" time="0">Hidden</animation>
 			<control type="image">
 				<width max="500">auto</width>
 				<height>336</height>
@@ -132,6 +133,10 @@
 			</control>
 		</control>
 		<include>BGOverlay</include>
+		<control type="group">
+			<include>BGGrainy</include>
+			<animation effect="fade" start="0" end="80" time="0" condition="true">Conditional</animation>
+		</control>
 	</include>
 	<include name="SharedContent">
 		<include>SharedContentMainBG</include>

@@ -17,6 +17,14 @@
 			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 		</control>
 	</include>
+	<include name="BGSharedContent">
+		<control type="largeimage">
+			<include>FullScreenScaled</include>
+			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+			<texture background="true">bg-myplex.png</texture>
+		</control>
+	</include>
 	<include name="BGHomeList">
 		<include>FullScreenScaled</include>
 		<fadetime>400</fadetime>
