@@ -186,6 +186,14 @@ bool CGUIWindowMediaFilterView::OnMessage(CGUIMessage &message)
       if (m_returningFromSkinLoad)
         Update(m_baseUrl, true);
       m_returningFromSkinLoad = false;
+
+      CGUILabelControl *lbl = (CGUILabelControl*)GetControl(FILTER_LABEL);
+      if (lbl)
+        lbl->SetLabel(g_localizeStrings.Get(44030));
+
+      lbl = (CGUILabelControl*)GetControl(SORT_LABEL);
+      if (lbl)
+        lbl->SetLabel(g_localizeStrings.Get(44031));
     }
       break;
 

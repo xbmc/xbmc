@@ -20,13 +20,14 @@
 #define FILTER_RADIO_BUTTON 19002
 #define FILTER_SPIN_CONTROL 19003
 
-
 #define SORT_LIST       19010
 #define SORT_RADIO_BUTTON 19011
 
 #define FILTER_BUTTONS_START -100
 #define SORT_BUTTONS_START -200
 
+#define FILTER_LABEL 19009
+#define SORT_LABEL 19019
 
 class CGUIWindowMediaFilterView : public CGUIWindowVideoNav
 {    

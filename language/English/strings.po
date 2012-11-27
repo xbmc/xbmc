@@ -12247,3 +12247,11 @@ msgstr ""
 msgctxt "#44021"
 msgid "Queue"
 msgstr ""
+
+msgctxt "#44030"
+msgid "FILTERS"
+msgstr ""
+
+msgctxt "#44031"
+msgid "SORTING"
+msgstr ""
