@@ -1003,7 +1003,7 @@ bool Cocoa_Proxy_Enabled(const char* protocol)
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
   @try
   {
-    NSString* protocolEnabled = [[[NSString stringWithCString:protocol] uppercaseString] stringByAppendingString:@"Enable"];
+    NSString* protocolEnabled = [[[NSString stringWithUTF8String:protocol] uppercaseString] stringByAppendingString:@"Enable"];
     return ([[proxyDict objectForKey:protocolEnabled] boolValue]);
   }
   @finally
@@ -1020,7 +1020,7 @@ const char* Cocoa_Proxy_Host(const char* protocol)
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
   @try
   {
-    NSString* protocolProxy = [[[NSString stringWithCString:protocol] uppercaseString] stringByAppendingString:@"Proxy"];
+    NSString* protocolProxy = [[[NSString stringWithUTF8String:protocol] uppercaseString] stringByAppendingString:@"Proxy"];
     NSHost* host = [NSHost hostWithName:(NSString*)[proxyDict objectForKey:protocolProxy]];
     if (host)
       return [[host address] UTF8String];
@@ -1037,7 +1037,7 @@ const char* Cocoa_Proxy_Port(const char* protocol)
   NSDictionary* proxyDict = (NSDictionary*)SCDynamicStoreCopyProxies(NULL);
   @try
   {
-    NSString* protocolPort = [[[NSString stringWithCString:protocol] uppercaseString] stringByAppendingString:@"Port"];
+    NSString* protocolPort = [[[NSString stringWithUTF8String:protocol] uppercaseString] stringByAppendingString:@"Port"];
     return [[NSString stringWithFormat:@"%i", [[proxyDict objectForKey:protocolPort] intValue]] UTF8String];
   }
   @finally
@@ -1061,7 +1061,7 @@ const char* Cocoa_Proxy_Password(const char* protocol)
 
 void Cocoa_LaunchApp(const char* appToLaunch)
 {
-  NSString* appPath = [NSString stringWithCString:appToLaunch];
+  NSString* appPath = [NSString stringWithUTF8String:appToLaunch];
   if ([[NSWorkspace sharedWorkspace] launchApplication:appPath])
   {
     // Don't quit when running dashboard
@@ -1094,7 +1094,7 @@ void Cocoa_LaunchApp(const char* appToLaunch)
 
 void Cocoa_LaunchAutomatorWorkflow(const char* wflowToLaunch)
 {
-	NSString* path = [NSString stringWithCString:wflowToLaunch];
+  NSString* path = [NSString stringWithUTF8String:wflowToLaunch];
 	if ([path rangeOfString:@".workflow/"].location == NSNotFound) return;
 	[[NSWorkspace sharedWorkspace] openFile:path withApplication:@"Automator Runner"];
 	[NSApp terminate:nil];
@@ -1109,7 +1109,7 @@ void Cocoa_LaunchFrontRow()
 const char* Cocoa_GetAppIcon(const char *applicationPath)
 {
   // Check for info.plist inside the bundle
-  NSString* appPath = [NSString stringWithCString:applicationPath];
+  NSString* appPath = [NSString stringWithUTF8String:applicationPath];
   NSDictionary* appPlist = [NSDictionary dictionaryWithContentsOfFile:[appPath stringByAppendingPathComponent:@"Contents/Info.plist"]];
   if (!appPlist) return NULL;
   
@@ -1162,8 +1162,8 @@ bool Cocoa_IsWflowBundle(const char* filePath)
 #ifdef WORKING
 const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName)
 {
-  NSString* bundlePath = [NSString stringWithCString:_bundlePath];
-	NSString* iconName = [NSString stringWithCString:_iconName];
+  NSString* bundlePath = [NSString stringWithUTF8String:_bundlePath];
+  NSString* iconName = [NSString stringWithUTF8String:_iconName];
 	NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
 	NSString* iconPath = [bundle pathForResource:iconName ofType:@"icns"];
 	NSString* bundleIdentifier = [bundle bundleIdentifier];

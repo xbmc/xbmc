@@ -999,7 +999,7 @@ int CHTTP::Open(const string& strURL, const char* verb, const char* pData, bool 
   }
   if (pData)
   {
-    sprintf(szHTTPHEADER + strlen(szHTTPHEADER), "Content-Length: %d\r\n\r\n", strlen(pData));
+    sprintf(szHTTPHEADER + strlen(szHTTPHEADER), "Content-Length: %ld\r\n\r\n", strlen(pData));
     strcat(szHTTPHEADER, pData);
   }
 
@@ -1245,7 +1245,7 @@ void CHTTP::ParseHeaders()
 
 void CHTTP::ParseHeader(string::size_type start, string::size_type colon, string::size_type end)
 {
-  CLog::Log(LOGDEBUG, "CHTTP::ParseHeader(start=%d, colon=%d, end=%d)", start, colon, end);
+  CLog::Log(LOGDEBUG, "CHTTP::ParseHeader(start=%ld, colon=%ld, end=%ld)", start, colon, end);
 
   // If colon or end are 0, bail
   if (colon == 0 || end == 0)
