@@ -49,6 +49,13 @@
 #include "PlexLibrarySectionManager.h"
 #include "threads/SingleLock.h"
 #include "PlexUtils.h"
+#include "video/VideoInfoTag.h"
+
+#include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogVideoInfo.h"
+
+#include "plex/PlexMediaServerQueue.h"
 
 using namespace std;
 using namespace XFILE;
@@ -437,6 +444,70 @@ bool CGUIWindowHome::OnPopupMenu()
     if (pControl->GetSelectedItemID() == 1)
     {
       g_alarmClock.Start ("plex_quit_timer", 5, "ShutDown", false);      
+    }
+  }
+  else if (controlId == CONTENT_LIST_ON_DECK || controlId == CONTENT_LIST_RECENTLY_ADDED)
+  {
+    CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(controlId);
+    CGUIListItemPtr item = container->GetListItem(0);
+    if (item->IsFileItem())
+    {
+      bool updateFanOut = false;
+      CFileItemPtr fileItem = boost::static_pointer_cast<CFileItem>(item);
+      CContextButtons buttons;
+      int type = (int)fileItem->GetProperty("typeNumber").asInteger();
+
+      if (type == PLEX_METADATA_EPISODE)
+        buttons.Add(CONTEXT_BUTTON_INFO, 20352);
+      else if (type == PLEX_METADATA_MOVIE)
+        buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+
+      if (((fileItem->IsRemoteSharedPlexMediaServerLibrary() == false) &&
+          (fileItem->GetProperty("HasWatchedState").asBoolean() == true)) ||
+          fileItem->HasProperty("ratingKey"))
+      {
+        CStdString viewOffset = item->GetProperty("viewOffset").asString();
+
+        if (fileItem->GetVideoInfoTag()->m_playCount > 0 || viewOffset.size() > 0)
+          buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104);
+        if (fileItem->GetVideoInfoTag()->m_playCount == 0 || viewOffset.size() > 0)
+          buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);
+      }
+
+      int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+
+      if (choice == CONTEXT_BUTTON_INFO)
+      {
+        CGUIDialogVideoInfo* pDlgInfo = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
+
+        if (!pDlgInfo) return false;
+
+        pDlgInfo->SetMovie(fileItem);
+        pDlgInfo->DoModal();
+
+        if (pDlgInfo->NeedRefresh() == false)
+          return false;
+
+        return true;
+      }
+      else if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
+      {
+        PlexMediaServerQueue::Get().onUnviewed(fileItem);
+        updateFanOut = true;
+      }
+      else if (choice == CONTEXT_BUTTON_MARK_WATCHED)
+      {
+        PlexMediaServerQueue::Get().onViewed(fileItem);
+        updateFanOut = true;
+      }
+
+      if (updateFanOut)
+      {
+        CStdString key(m_lastSelectedItemKey);
+        m_lastSelectedItemKey.clear();
+        UpdateContentForSelectedItem(key);
+      }
+
     }
   }
   return false;
