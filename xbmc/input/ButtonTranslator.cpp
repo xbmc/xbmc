@@ -49,6 +49,12 @@ typedef struct
   int action;
 } ActionMapping;
 
+typedef struct
+{
+  int origin;
+  int target;
+} WindowMapping;
+
 static const ActionMapping actions[] =
 {
         {"left"              , ACTION_MOVE_LEFT },
@@ -357,6 +363,12 @@ static const ActionMapping mousecommands[] =
   { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
   { "mousedrag",   ACTION_MOUSE_DRAG },
   { "mousemove",   ACTION_MOUSE_MOVE }
+};
+
+static const WindowMapping fallbackWindows[] =
+{
+  { WINDOW_FULLSCREEN_LIVETV,          WINDOW_FULLSCREEN_VIDEO },
+  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO }
 };
 
 #ifdef WIN32
@@ -886,6 +898,16 @@ void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
   windowList.reserve(size);
   for (unsigned int index = 0; index < size; index++)
     windowList.push_back(windows[index].name);
+}
+
+int CButtonTranslator::GetFallbackWindow(int windowID)
+{
+  for (unsigned int index = 0; index < sizeof(fallbackWindows) / sizeof(fallbackWindows[0]); ++index)
+  {
+    if (fallbackWindows[index].origin == windowID)
+      return fallbackWindows[index].target;
+  }
+  return -1;
 }
 
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
