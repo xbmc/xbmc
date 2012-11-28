@@ -49,6 +49,12 @@ typedef struct
   int action;
 } ActionMapping;
 
+typedef struct
+{
+  int origin;
+  int target;
+} WindowMapping;
+
 static const ActionMapping actions[] =
 {
         {"left"              , ACTION_MOVE_LEFT },
@@ -357,6 +363,12 @@ static const ActionMapping mousecommands[] =
   { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
   { "mousedrag",   ACTION_MOUSE_DRAG },
   { "mousemove",   ACTION_MOUSE_MOVE }
+};
+
+static const WindowMapping fallbackWindows[] =
+{
+  { WINDOW_FULLSCREEN_LIVETV,          WINDOW_FULLSCREEN_VIDEO },
+  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO }
 };
 
 #ifdef WIN32
@@ -775,23 +787,23 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
   }
 }
 
-bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& action, CStdString& strAction, bool &fullrange)
+bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& actionID, CStdString& strAction, bool &fullrange, bool fallback)
 {
-  bool found = false;
+  fullrange = false;
 
+  // resolve the correct JoystickMap
   map<string, JoystickMap>::iterator it;
   map<string, JoystickMap> *jmap;
 
-  fullrange = false;
   if (inputType == JACTIVE_AXIS)
     jmap = &m_joystickAxisMap;
   else if (inputType == JACTIVE_BUTTON)
     jmap = &m_joystickButtonMap;
   else if (inputType == JACTIVE_HAT)
-  	jmap = &m_joystickHatMap;
+    jmap = &m_joystickHatMap;
   else
   {
-    CLog::Log(LOGERROR, "Error reading joystick input type");
+    CLog::Log(LOGERROR, "Error reading joystick input type '%i'", (int) inputType);
     return false;
   }
 
@@ -800,73 +812,63 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
     return false;
 
   JoystickMap wmap = it->second;
-  JoystickMap::iterator it2;
+
+  // try to get the action from the current window
+  actionID = GetActionCode(window, wmap, strAction, fullrange);
+
+  // if it's invalid, try to get it from a fallback window or the global map
+  if (actionID == 0 && fallback) {
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      actionID = GetActionCode(fallbackWindow, wmap, strAction, fullrange);
+    // still no valid actionID? use global map
+    if (actionID == 0)
+      actionID = GetActionCode(-1, wmap, strAction, fullrange);
+  }
+
+  return (actionID > 0);
+}
+
+/*
+ * Translates a joystick input to an action code
+ */
+int CButtonTranslator::GetActionCode(int window, const JoystickMap &wmap, CStdString &strAction, bool &fullrange) const
+{
+  JoystickMap::const_iterator it = wmap.find(window);
   map<int, string> windowbmap;
-  map<int, string> globalbmap;
-  map<int, string>::iterator it3;
+  map<int, string>::iterator it2;
+  int action = 0;
+  bool found = false;
 
-  it2 = wmap.find(window);
+  if (it == wmap.end())
+    return action;
 
-  // first try local window map
-  if (it2!=wmap.end())
+  windowbmap = it->second;
+  it2 = windowbmap.find(id);
+  if (it2 != windowbmap.end())
   {
-    windowbmap = it2->second;
-    it3 = windowbmap.find(id);
-    if (it3 != windowbmap.end())
-    {
-      strAction = (it3->second).c_str();
-      found = true;
-    }
-    it3 = windowbmap.find(abs(id)|0xFFFF0000);
-    if (it3 != windowbmap.end())
-    {
-      strAction = (it3->second).c_str();
-      found = true;
-      fullrange = true;
-    }
-    // Hats joystick
-    it3 = windowbmap.find(id|0xFFF00000);
-    if (it3 != windowbmap.end())
-    {
-      strAction = (it3->second).c_str();
-      found = true;
-    }
+    strAction = (it2->second).c_str();
+    found = true;
   }
 
-  // if not found, try global map
-  if (!found)
+  it2 = windowbmap.find(abs(id)|0xFFFF0000);
+  if (it2 != windowbmap.end())
   {
-    it2 = wmap.find(-1);
-    if (it2 != wmap.end())
-    {
-      globalbmap = it2->second;
-      it3 = globalbmap.find(id);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-      }
-      it3 = globalbmap.find(abs(id)|0xFFFF0000);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-        fullrange = true;
-      }
-      it3 = globalbmap.find(id|0xFFF00000);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-      }
-    }
+    strAction = (it2->second).c_str();
+    found = true;
+    fullrange = true;
   }
 
-  // translated found action
+  // Hats joystick
+  it2 = windowbmap.find(id|0xFFF00000);
+  if (it2 != windowbmap.end())
+    strAction = (it2->second).c_str();
+    found = true;
+  }
+
   if (found)
-    return TranslateActionString(strAction.c_str(), action);
-
-  return false;
+    TranslateActionString(strAction.c_str(), action);
+  return action;
 }
 #endif
 
@@ -888,19 +890,43 @@ void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
     windowList.push_back(windows[index].name);
 }
 
+int CButtonTranslator::GetFallbackWindow(int windowID)
+{
+  for (unsigned int index = 0; index < sizeof(fallbackWindows) / sizeof(fallbackWindows[0]); ++index)
+  {
+    if (fallbackWindows[index].origin == windowID)
+      return fallbackWindows[index].target;
+  }
+  return -1;
+}
+
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
 {
   CStdString strAction;
   // try to get the action from the current window
   int actionID = GetActionCode(window, key, strAction);
-  // if it's invalid, try to get it from the global map
-  if (actionID == 0 && fallback)
-    actionID = GetActionCode( -1, key, strAction);
+
+  // if it's invalid, try to get it from a fallback window or the global map
+  if (actionID == 0 && fallback) {
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+    {
+      actionID = GetActionCode(fallbackWindow, key, strAction);
+      if (!key.IsAnalogButton())
+        CLog::Log(LOGDEBUG, "%s: %i pressed in window %s, no mapping found, trying to find a fallback action in window %s", __FUNCTION__, (int) key.GetButtonCode(), TranslateWindow(window).c_str(), TranslateWindow(fallbackWindow).c_str());
+    }
+    // still no valid actionID? use global map
+    if (actionID == 0)
+      actionID = GetActionCode(-1, key, strAction);
+  }
   // Now fill our action structure
   CAction action(actionID, strAction, key);
   return action;
 }
 
+/*
+ * Translates a keyboard input to an action code
+ */
 int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction) const
 {
   uint32_t code = key.GetButtonCode();

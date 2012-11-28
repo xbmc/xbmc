@@ -93,8 +93,9 @@ public:
 #endif
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   bool TranslateJoystickString(int window, const char* szDevice, int id,
-                               short inputType, int& action, CStdString& strAction,
-                               bool &fullrange);
+                               short inputType, int& actionID, CStdString& strAction,
+                               bool &fullrange,
+                               bool fallback = true);
 #endif
 
 private:
@@ -106,6 +107,8 @@ private:
   std::list<CStdString> m_deviceList;
 
   int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
+  int GetActionCode(int window, const JoystickMap &wmap, CStdString &strAction, bool &fullrange) const
+  int GetFallbackWindow(int windowID);
 
   static uint32_t TranslateGamepadString(const char *szButton);
   static uint32_t TranslateRemoteString(const char *szButton);
