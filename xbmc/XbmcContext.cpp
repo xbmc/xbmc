@@ -50,6 +50,9 @@ namespace XBMC
   Context::~Context()
   {
     // cleanup
+    /* PLEX */
+    CThread::SetLogger(NULL);
+    /* END PLEX */
     delete impl->loggerImpl;
 
     delete impl;
