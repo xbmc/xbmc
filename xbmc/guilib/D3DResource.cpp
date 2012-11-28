@@ -345,7 +345,7 @@ bool CD3DEffect::CreateEffect()
     CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): %s", error.c_str());
   }
   else
-    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): call to D3DXCreateEffect() failed with %l", hr);
+    CLog::Log(LOGERROR, "CD3DEffect::CreateEffect(): call to D3DXCreateEffect() failed with %" PRId32, hr);
   return false;
 }
 
