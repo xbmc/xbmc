@@ -45,4 +45,5 @@ private:
 
   bool m_recentlyAddedRunning;
   int m_cumulativeUpdateFlag;
+  bool m_dbUpdating;
 };
