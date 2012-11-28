@@ -65,7 +65,7 @@ namespace JSONRPC
     static JSONRPC_STATUS Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static bool FillFileItem(const CStdString &strFilename, CFileItem &item);
+    static bool FillFileItem(const CStdString &strFilename, CFileItemPtr &item, const CVariant &parameterObject = CVariant(CVariant::VariantTypeArray));
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
 
   private:

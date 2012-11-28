@@ -107,36 +107,32 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
     case Video:
     case Audio:
     {
-      if (g_application.CurrentFileItem().GetLabel().empty())
+      fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+      if (fileItem->GetLabel().empty())
       {
-        CFileItem tmpItem = g_application.CurrentFileItem();
         if (IsPVRChannel())
         {
           CPVRChannelPtr currentChannel;
           if (g_PVRManager.GetCurrentChannel(currentChannel))
-            tmpItem = CFileItem(*currentChannel.get());
+            fileItem = CFileItemPtr(new CFileItem(*currentChannel.get()));
         }
         else if (player == Video)
         {
-          if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), tmpItem))
+          if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
           {
-            tmpItem = CFileItem(*g_infoManager.GetCurrentMovieTag());
-            tmpItem.SetPath(g_application.CurrentFileItem().GetPath());
+            fileItem = CFileItemPtr(new CFileItem(*g_infoManager.GetCurrentMovieTag()));
+            fileItem->SetPath(g_application.CurrentFileItem().GetPath());
           }
         }
         else
         {
-          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem, parameterObject))
+          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
           {
-            tmpItem = CFileItem(*g_infoManager.GetCurrentSongTag());
-            tmpItem.SetPath(g_application.CurrentFileItem().GetPath());
+            fileItem = CFileItemPtr(new CFileItem(*g_infoManager.GetCurrentSongTag()));
+            fileItem->SetPath(g_application.CurrentFileItem().GetPath());
           }
         }
-
-        fileItem = CFileItemPtr(new CFileItem(tmpItem));
       }
-      else
-        fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
 
       if (IsPVRChannel())
         break;
