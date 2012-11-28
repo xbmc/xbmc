@@ -701,7 +701,7 @@ JSONRPC_STATUS CVideoLibrary::Clean(const CStdString &method, ITransportLayer *t
   return ACK;
 }
 
-bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
+bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CVideoDatabase videodatabase;
   if (strFilename.empty() || !videodatabase.Open())
@@ -711,7 +711,7 @@ bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
   if (!videodatabase.LoadVideoInfo(strFilename, details))
     return false;
 
-  item.SetFromVideoInfoTag(details);
+  item->SetFromVideoInfoTag(details);
   return true;
 }
 
@@ -727,11 +727,11 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   int musicVideoID = (int)parameterObject["musicvideoid"].asInteger(-1);
 
   bool success = false;
-  CFileItem fileItem;
+  CFileItemPtr fileItem(new CFileItem());
   if (FillFileItem(file, fileItem))
   {
     success = true;
-    list.Add(CFileItemPtr(new CFileItem(fileItem)));
+    list.Add(fileItem);
   }
 
   if (movieID > 0)

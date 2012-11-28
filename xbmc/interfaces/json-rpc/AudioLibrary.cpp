@@ -557,7 +557,7 @@ JSONRPC_STATUS CAudioLibrary::Clean(const CStdString &method, ITransportLayer *t
   return ACK;
 }
 
-bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
+bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CMusicDatabase musicdatabase;
   if (strFilename.empty() || !musicdatabase.Open())
@@ -570,10 +570,10 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item,
     if (!musicdatabase.GetAlbumInfo(albumid, album, NULL))
       return false;
 
-    item.SetFromAlbum(album);
+    item->SetFromAlbum(album);
 
     CFileItemList items;
-    items.Add(CFileItemPtr(&item));
+    items.Add(item);
     if (GetAdditionalAlbumDetails(parameterObject, items, musicdatabase) != OK)
       return false;
   }
@@ -583,10 +583,10 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item,
     if (!musicdatabase.GetSongByFileName(strFilename, song))
       return false;
 
-    item.SetFromSong(song);
+    item->SetFromSong(song);
 
     CFileItemList items;
-    items.Add(CFileItemPtr(&item));
+    items.Add(item);
     if (GetAdditionalSongDetails(parameterObject, items, musicdatabase) != OK)
       return false;
   }
@@ -606,11 +606,11 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   int genreID = (int)parameterObject["genreid"].asInteger(-1);
 
   bool success = false;
-  CFileItem fileItem;
+  CFileItemPtr fileItem(new CFileItem());
   if (FillFileItem(file, fileItem, parameterObject))
   {
     success = true;
-    list.Add(CFileItemPtr(new CFileItem(fileItem)));
+    list.Add(fileItem);
   }
 
   if (artistID != -1 || albumID != -1 || genreID != -1)
