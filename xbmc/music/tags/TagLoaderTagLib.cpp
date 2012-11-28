@@ -55,6 +55,7 @@ using namespace TagLib;
 #endif
 using namespace MUSIC_INFO;
 
+#ifndef __PLEX__
 class TagStringHandler : public ID3v2::Latin1StringHandler
 {
 public:
@@ -70,6 +71,7 @@ public:
 };
 
 static const TagStringHandler StringHandler;
+#endif
 
 CTagLoaderTagLib::CTagLoaderTagLib()
 {
