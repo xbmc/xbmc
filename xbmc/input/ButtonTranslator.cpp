@@ -789,96 +789,77 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 
 bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& action, CStdString& strAction, bool &fullrange)
 {
-  bool found = false;
-
-  map<string, JoystickMap>::iterator it;
-  map<string, JoystickMap> *jmap;
-
   fullrange = false;
+
+  // resolve the correct JoystickMap
+  map<string, JoystickMap> *jmap;
   if (inputType == JACTIVE_AXIS)
     jmap = &m_joystickAxisMap;
   else if (inputType == JACTIVE_BUTTON)
     jmap = &m_joystickButtonMap;
   else if (inputType == JACTIVE_HAT)
-  	jmap = &m_joystickHatMap;
+    jmap = &m_joystickHatMap;
   else
   {
-    CLog::Log(LOGERROR, "Error reading joystick input type");
+    CLog::Log(LOGERROR, "Error reading joystick input type '%i'", (int) inputType);
     return false;
   }
 
-  it = jmap->find(szDevice);
+  map<string, JoystickMap>::iterator it = jmap->find(szDevice);
   if (it==jmap->end())
     return false;
 
   JoystickMap wmap = it->second;
-  JoystickMap::iterator it2;
-  map<int, string> windowbmap;
-  map<int, string> globalbmap;
-  map<int, string>::iterator it3;
 
-  it2 = wmap.find(window);
+  // try to get the action from the current window
+  action = GetActionCode(window, id, wmap, strAction, fullrange);
 
-  // first try local window map
-  if (it2!=wmap.end())
+  // if it's invalid, try to get it from the global map
+  if (action == 0)
+    action = GetActionCode(-1, id, wmap, strAction, fullrange);
+
+  return (action > 0);
+}
+
+/*
+ * Translates a joystick input to an action code
+ */
+int CButtonTranslator::GetActionCode(int window, int id, const JoystickMap &wmap, CStdString &strAction, bool &fullrange) const
+{
+  int action = 0;
+  bool found = false;
+
+  JoystickMap::const_iterator it = wmap.find(window);
+  if (it != wmap.end())
   {
-    windowbmap = it2->second;
-    it3 = windowbmap.find(id);
-    if (it3 != windowbmap.end())
+    const map<int, string> &windowbmap = it->second;
+    map<int, string>::const_iterator it2 = windowbmap.find(id);
+    if (it2 != windowbmap.end())
     {
-      strAction = (it3->second).c_str();
+      strAction = (it2->second).c_str();
       found = true;
     }
-    it3 = windowbmap.find(abs(id)|0xFFFF0000);
-    if (it3 != windowbmap.end())
+
+    it2 = windowbmap.find(abs(id)|0xFFFF0000);
+    if (it2 != windowbmap.end())
     {
-      strAction = (it3->second).c_str();
+      strAction = (it2->second).c_str();
       found = true;
       fullrange = true;
     }
+
     // Hats joystick
-    it3 = windowbmap.find(id|0xFFF00000);
-    if (it3 != windowbmap.end())
+    it2 = windowbmap.find(id|0xFFF00000);
+    if (it2 != windowbmap.end())
     {
-      strAction = (it3->second).c_str();
+      strAction = (it2->second).c_str();
       found = true;
     }
   }
 
-  // if not found, try global map
-  if (!found)
-  {
-    it2 = wmap.find(-1);
-    if (it2 != wmap.end())
-    {
-      globalbmap = it2->second;
-      it3 = globalbmap.find(id);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-      }
-      it3 = globalbmap.find(abs(id)|0xFFFF0000);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-        fullrange = true;
-      }
-      it3 = globalbmap.find(id|0xFFF00000);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-      }
-    }
-  }
-
-  // translated found action
   if (found)
-    return TranslateActionString(strAction.c_str(), action);
-
-  return false;
+    TranslateActionString(strAction.c_str(), action);
+  return action;
 }
 #endif
 
