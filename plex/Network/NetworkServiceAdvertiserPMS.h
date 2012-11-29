@@ -17,6 +17,7 @@
 #include "NetworkServiceAdvertiser.h"
 #include "Preferences.h"
 #include "Serializable.h"
+#include "GUIInfoManager.h"
 
 #ifdef _WIN32
 extern int getUpdatedAt();
@@ -85,7 +86,7 @@ class NetworkServiceAdvertiserPMS : public NetworkServiceAdvertiser,
   {
     headers["Name"] = GetMachineName();
     headers["Port"] = "32400";
-    headers["Version"] = Cocoa_GetAppVersion();
+    headers["Version"] = g_infoManager.GetVersion();
     headers["Updated-At"] = lexical_cast<string>(getUpdatedAt());
   }
   

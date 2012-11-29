@@ -44,6 +44,8 @@
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 
+#include "GUIInfoManager.h"
+
 using namespace std;
 using namespace XFILE;
 
@@ -1896,7 +1898,7 @@ void CPlexDirectory::Process()
   }
 
   // Set request headers.
-  m_http.SetRequestHeader("X-Plex-Version", Cocoa_GetAppVersion());
+  m_http.SetRequestHeader("X-Plex-Version", g_infoManager.GetVersion());
   m_http.SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
 
   // Only send headers if we're NOT going to the node.

@@ -847,11 +847,6 @@ void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void*
   CFRelease(doc);
 }
 
-const char* Cocoa_GetAppVersion()
-{
-  return [(NSString*)[[NSBundle mainBundle] objectForInfoDictionaryKey:(id)kCFBundleVersionKey] UTF8String];
-}
-
 void* Cocoa_GetDisplayPort()
 {
   //NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();

@@ -23,6 +23,8 @@
 #include "PlexServerManager.h"
 #include "xbmc/Util.h"
 
+#include "GUIInfoManager.h"
+
 using namespace std;
 using namespace XFILE;
 
@@ -439,7 +441,7 @@ class MyPlexManager
     http.SetRequestHeader("Content-Type", "application/xml");
     http.SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
     http.SetRequestHeader("X-Plex-Product", "Plex Media Center");
-    http.SetRequestHeader("X-Plex-Version", Cocoa_GetAppVersion());
+    http.SetRequestHeader("X-Plex-Version", g_infoManager.GetVersion());
     http.SetRequestHeader("X-Plex-Provides", "player");
     http.SetRequestHeader("X-Plex-Platform", Cocoa_GetMachinePlatform());
     http.SetRequestHeader("X-Plex-Platform-Version", Cocoa_GetMachinePlatformVersion());

@@ -11,6 +11,7 @@
 #include "NetworkServiceAdvertiser.h"
 #include "CocoaUtils.h"
 #include "PlexUtils.h"
+#include "GUIInfoManager.h"
 
 /////////////////////////////////////////////////////////////////////////////
 class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
@@ -29,9 +30,9 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
     headers["Name"] = PlexUtils::GetHostName();
     headers["Port"] = g_guiSettings.GetString("services.webserverport");
 #ifndef _WIN32
-    headers["Version"] = Cocoa_GetAppVersion();
+    headers["Version"] = g_infoManager.GetVersion();
 #endif
-    headers["Product"] = "Plex/Nine (eden)";
+    headers["Product"] = "Plex Media Center (frodo)";
   }
   
   /// For subclasses to fill in.
