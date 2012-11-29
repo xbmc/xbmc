@@ -269,6 +269,7 @@
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
+      <backspace>Fullscreen</backspace>
       <return>OSD</return>
       <enter>OSD</enter>
       <m>OSD</m>
