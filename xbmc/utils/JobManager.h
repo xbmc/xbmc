@@ -304,6 +304,14 @@ private:
   void RemoveWorker(const CJobWorker *worker);
   unsigned int GetMaxWorkers(CJob::PRIORITY priority) const;
 
+  /*! \brief skips over any paused jobs of given priority.
+   Moves any paused jobs at the front of the queue to the back of the
+   queue, allowing unpaused jobs to continue processing.
+   \param priority the priority queue to consider.
+   \return true if an unpaused job is available, false if no unpaused jobs are available.
+   */
+  bool SkipPausedJobs(CJob::PRIORITY priority);
+
   unsigned int m_jobCounter;
 
   typedef std::deque<CWorkItem>    JobQueue;
