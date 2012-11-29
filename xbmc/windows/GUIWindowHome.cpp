@@ -33,7 +33,8 @@ using namespace ANNOUNCEMENT;
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), 
                                        m_recentlyAddedRunning(false),
-                                       m_cumulativeUpdateFlag(0)
+                                       m_cumulativeUpdateFlag(0),
+                                       m_dbUpdating(false)
 {
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
@@ -77,31 +78,37 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
 
   CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
 
-  if (flag & VideoLibrary)
+  // we are only interested in library changes
+  if ((flag & (VideoLibrary | AudioLibrary)) == 0)
+    return;
+
+  if (strcmp(message, "OnScanStarted") == 0 ||
+      strcmp(message, "OnCleanStarted") == 0)
   {
-    if ((strcmp(message, "OnUpdate") == 0) ||
-        (strcmp(message, "OnRemove") == 0))
-    {
-      if (data.isMember("playcount"))
-        ra_flag |= Totals;
-    }
-    else if (strcmp(message, "OnScanFinished") == 0)
-    {
-      ra_flag |= (Video | Totals);
-    }
+    m_dbUpdating = true;
+    return;
   }
-  else if (flag & AudioLibrary)
+
+  if (strcmp(message, "OnScanFinished") == 0 ||
+      strcmp(message, "OnCleanFinished") == 0)
+    m_dbUpdating = false;
+
+  // we are in an update/clean
+  if (m_dbUpdating)
+    return;
+
+  bool onUpdate = strcmp(message, "OnUpdate") == 0;
+  // always update Totals except on an OnUpdate with no playcount update
+  if (!onUpdate || data.isMember("playcount"))
+    ra_flag |= Totals;
+
+  // always update the full list except on an OnUpdate
+  if (!onUpdate)
   {
-    if ((strcmp(message, "OnUpdate") == 0) ||
-        (strcmp(message, "OnRemove") == 0))
-    {
-      if (data.isMember("playcount"))
-        ra_flag |= Totals;
-    }
-    else if (strcmp(message, "OnScanFinished") == 0)
-    {
-      ra_flag |= ( Audio | Totals );
-    }
+    if (flag & VideoLibrary)
+      ra_flag |= Video;
+    else if (flag & AudioLibrary)
+      ra_flag |= Audio;
   }
 
   CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);

@@ -35,6 +35,7 @@
 #include "threads/SingleLock.h"
 using namespace XFILE;
 using namespace std;
+#include <limits.h>
 #include <nfsc/libnfs-raw-mount.h>
 #include <nfsc/libnfs-raw-nfs.h>
 

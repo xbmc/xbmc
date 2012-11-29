@@ -258,17 +258,14 @@ CJob *CJobManager::PopJob()
   {
     if (m_jobQueue[priority].size() && m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
     {
-      CWorkItem job = m_jobQueue[priority].front();
-
       // skip adding any paused types
-      if (priority <= CJob::PRIORITY_LOW)
-      {
-        std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), job.m_job->GetType());
-        if (i != m_pausedTypes.end())
-          return NULL;
-      }
+      if (!SkipPausedJobs((CJob::PRIORITY)priority))
+        return NULL;
 
+      // pop the job off the queue
+      CWorkItem job = m_jobQueue[priority].front();
       m_jobQueue[priority].pop_front();
+
       // add to the processing vector
       m_processing.push_back(job);
       job.m_job->m_callback = this;
@@ -300,6 +297,31 @@ bool CJobManager::IsPaused(const std::string &pausedType)
   CSingleLock lock(m_section);
   std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), pausedType);
   return (i != m_pausedTypes.end());
+}
+
+bool CJobManager::SkipPausedJobs(CJob::PRIORITY priority)
+{
+  if (priority > CJob::PRIORITY_LOW)
+    return true;
+
+  // find the first unpaused job
+  JobQueue::iterator first_job = m_jobQueue[priority].begin();
+  for (; first_job != m_jobQueue[priority].end(); ++first_job)
+  {
+    std::vector<std::string>::iterator i = find(m_pausedTypes.begin(), m_pausedTypes.end(), first_job->m_job->GetType());
+    if (i == m_pausedTypes.end())
+      break; // found a job that can be performed
+  }
+  if (first_job == m_jobQueue[priority].end())
+    return false; // no jobs ready to go
+
+  // shunt all the paused ones to the back of the queue
+  for (JobQueue::iterator i = m_jobQueue[priority].begin(); i != first_job; i++)
+  {
+    m_jobQueue[priority].push_back(*i);
+    m_jobQueue[priority].pop_front();
+  }
+  return true;
 }
 
 int CJobManager::IsProcessing(const std::string &pausedType)

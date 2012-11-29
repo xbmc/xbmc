@@ -451,7 +451,6 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
     m_lastStreamFormat = dataFormat;
     m_lastChLayoutCount = channelLayout.Count();
     m_lastSampleRate = sampleRate;
-    Start();
   }
 
   /* if the stream was not initialized, do it now */

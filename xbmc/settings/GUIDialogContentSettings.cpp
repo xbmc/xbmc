@@ -167,11 +167,10 @@ void CGUIDialogContentSettings::CreateSettings()
     break;
   case CONTENT_MUSICVIDEOS:
     {
-      AddBool(1,20346,&m_bScanRecursive, m_bShowScanSettings);
-      AddBool(2,20330,&m_bUseDirNames, m_bShowScanSettings);
-      AddBool(3,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
-      AddBool(4,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
-      AddBool(5,20432,&m_bNoUpdate, m_bShowScanSettings);
+      AddBool(1,20330,&m_bUseDirNames, m_bShowScanSettings);
+      AddBool(2,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
+      AddBool(3,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
+      AddBool(4,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
     break;
   case CONTENT_ALBUMS:
