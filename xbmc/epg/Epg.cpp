@@ -500,10 +500,6 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bF
   /* get the last update time from the database */
   CDateTime lastScanTime = GetLastScanTime();
 
-  /* force an update for TV channels when we don't have any data every 60 seconds */
-  if (m_tags.empty() && !bUpdate && ChannelID() > 0 && !Channel()->IsRadio())
-    iUpdateTime = 60;
-
   if (!bForceUpdate)
   {
     /* check if we have to update */
