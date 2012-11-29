@@ -200,6 +200,7 @@ bool CVideoDatabase::CreateTables()
     {
       CStdString column;
       if ( i == VIDEODB_ID_EPISODE_SEASON || i == VIDEODB_ID_EPISODE_EPISODE || i == VIDEODB_ID_EPISODE_BOOKMARK)
+        // why as varchar? columns are defined as INT in 'SDbTableOffsets DbEpisodeOffsets'
         column.Format(",c%02d varchar(24)", i);
       else
         column.Format(",c%02d text", i);
@@ -1223,6 +1224,9 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
     UpdateFileDateAdded(idFile, strFilenameAndPath);
 
     CStdString strSQL=PrepareSQL("insert into episode (idEpisode, idFile, idShow) values (NULL, %i, %i)", idFile, idShow);
+
+    CLog::Log(LOGDEBUG, "%s : strSQL == %s", __FUNCTION__, strSQL.c_str());
+
     m_pDS->exec(strSQL.c_str());
     return (int)m_pDS->lastinsertid();
   }
@@ -2202,6 +2206,9 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
     sql += PrepareSQL(" where idEpisode=%i", idEpisode);
+
+    CLog::Log(LOGDEBUG, "%s : strSQL == %s", __FUNCTION__, sql.c_str());
+
     m_pDS->exec(sql.c_str());
     CommitTransaction();
 
@@ -3478,6 +3485,58 @@ void CVideoDatabase::GetCast(const CStdString &table, const CStdString &table_id
   {
     CLog::Log(LOGERROR, "%s(%s,%s,%i) failed", __FUNCTION__, table.c_str(), table_id.c_str(), type_id);
   }
+}
+
+// Get tvshow's previously broadcasted unwatched episodes
+CFileItem CVideoDatabase::GetPreviousEpisodeNotWatched(CFileItemPtr& pItem)
+{
+    /*
+    CStdString strSQL = PrepareSQL("select episodeview.c%02d
+                        from episodeview
+                        where idShow = %i
+                        and (c%02d < %i or (c%02d = %i and c%02d < %i))
+                        and (playCount <1 or playCount isNull)
+                        order by CAST (c%02d as INT) asc, CAST (c%02d as INT) asc
+                        limit 1",
+                        VIDEODB_ID_EPISODE_BASEPATH,
+                        pItem->GetVideoInfoTag()->m_iIdShow,
+                        VIDEODB_ID_EPISODE_SEASON,
+                        pItem->GetVideoInfoTag()->m_iSeason,
+                        VIDEODB_ID_EPISODE_SEASON,
+                        pItem->GetVideoInfoTag()->m_iSeason,
+                        VIDEODB_ID_EPISODE_EPISODE,
+                        pItem->GetVideoInfoTag()->m_iEpisode,
+                        VIDEODB_ID_EPISODE_SEASON,
+                        VIDEODB_ID_EPISODE_EPISODE);
+                        */
+    // select unwatched
+    // filter on older seasons, this season but with older episodes, not played yet
+    // need to cast as INT because the column type is VARCHAR... why? column is defined as INT in 'SDbTableOffsets DbEpisodeOffsets'
+    CStdString strSQL = PrepareSQL("select episodeview.c%02d from episodeview where idShow = %i and (c%02d < %i or (c%02d = %i and c%02d < %i)) and (playCount <1 or playCount isNull) order by CAST (c%02d as INT) asc, CAST (c%02d as INT) asc limit 1", VIDEODB_ID_EPISODE_BASEPATH, pItem->GetVideoInfoTag()->m_iIdShow, VIDEODB_ID_EPISODE_SEASON, pItem->GetVideoInfoTag()->m_iSeason, VIDEODB_ID_EPISODE_SEASON, pItem->GetVideoInfoTag()->m_iSeason, VIDEODB_ID_EPISODE_EPISODE, pItem->GetVideoInfoTag()->m_iEpisode, VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE);
+
+    CLog::Log(LOGDEBUG, "%s strSQL: %s", __FUNCTION__, strSQL.c_str());
+
+    // execute query
+    m_pDS->query(strSQL.c_str());
+    CStdString strPath = "";
+    // if there are rows returned
+    if (!m_pDS->eof())
+    {
+        strPath = m_pDS->fv(PrepareSQL("episodeview.c%02d",VIDEODB_ID_EPISODE_BASEPATH)).get_asString();
+        CLog::Log(LOGDEBUG, "%s : First unseen episode = %s", __FUNCTION__, strPath.c_str());
+
+    //no rows returned
+    } else {
+        CLog::Log(LOGDEBUG, "%s : All previous episodes are watched", __FUNCTION__);
+        //strPath = "";
+    }
+    //close dataset
+    m_pDS->close();
+
+    bool bIsFolder = false;
+    CFileItem item(strPath, bIsFolder);
+
+    return item;
 }
 
 /// \brief GetVideoSettings() obtains any saved video settings for the current file.
