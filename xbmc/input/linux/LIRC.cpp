@@ -134,7 +134,8 @@ void CRemoteControl::Initialize()
   
   m_lastInitAttempt = now;
   addr.sun_family = AF_UNIX;
-  strcpy(addr.sun_path, m_deviceName.c_str());
+  strncpy(addr.sun_path, m_deviceName.c_str(), sizeof(addr.sun_path) - 1);
+  addr.sun_path[sizeof(addr.sun_path) - 1] = '\0';
 
   CLog::Log(LOGINFO, "LIRC %s: using: %s", __FUNCTION__, addr.sun_path);
 
@@ -223,14 +224,17 @@ bool CRemoteControl::CheckDevice() {
   int bufsize = sizeof(struct inotify_event) + PATH_MAX;
   char buf[bufsize];
   int ret = read(m_inotify_fd, buf, bufsize);
-  for (int i = 0; i + (int)sizeof(struct inotify_event) <= ret;) {
-    struct inotify_event* e = (struct inotify_event*)(buf+i);
-    if (e->mask & IN_DELETE_SELF) {
-      CLog::Log(LOGDEBUG, "LIRC device removed, disconnecting...");
-      Disconnect();
-      return false;
+  if (ret >= 0)
+  {
+    for (size_t i = 0; i + sizeof(struct inotify_event) <= (size_t)ret;) {
+      struct inotify_event* e = (struct inotify_event*)(buf+i);
+      if (e->mask & IN_DELETE_SELF) {
+        CLog::Log(LOGDEBUG, "LIRC device removed, disconnecting...");
+        Disconnect();
+        return false;
+      }
+      i += sizeof(struct inotify_event)+e->len;
     }
-    i += sizeof(struct inotify_event)+e->len;
   }
 #endif
   return true;

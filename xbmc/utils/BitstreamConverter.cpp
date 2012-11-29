@@ -535,7 +535,10 @@ void CBitstreamConverter::Close(void)
       m_sps_pps_context.sps_pps_data = NULL;
     }
     if(m_convertBuffer)
+    {
       free(m_convertBuffer);
+      m_convertBuffer = NULL;
+    }
     m_convertSize       = 0;
   }
 

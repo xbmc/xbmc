@@ -159,7 +159,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 
     if (iOffset == -1 && j != m_ExFiles.end())  // grab from list
     {
-      for( ArchiveList_struct* pIterator = j->second.first; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
+      for( ArchiveList_struct* pIterator = j->second.first; pIterator; pIterator = pIterator->next)
       {
         CStdString strName;
 
@@ -258,7 +258,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   CStdString strCompare = strPathInRar;
   if (!URIUtils::HasSlashAtEnd(strCompare) && !strCompare.IsEmpty())
     strCompare += '/';
-  for( pIterator = pFileList; pIterator  ; pIterator ? pIterator = pIterator->next : NULL)
+  for( pIterator = pFileList; pIterator; pIterator = pIterator->next )
   {
     CStdString strDirDelimiter = (pIterator->item.HostOS==3 ? "/":"\\"); // win32 or unix paths?
     CStdString strName;

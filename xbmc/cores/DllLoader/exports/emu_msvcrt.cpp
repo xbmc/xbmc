@@ -1328,7 +1328,8 @@ extern "C"
       if (d == EOF)
         return -1;
 
-      dll_fseek(stream, -1, SEEK_CUR);
+      if (dll_fseek(stream, -1, SEEK_CUR)!=0)
+        return -1;
       if (c != d)
       {
         CLog::Log(LOGWARNING, "%s: c != d",  __FUNCTION__);
@@ -1336,7 +1337,10 @@ extern "C"
         if (d != c)
           CLog::Log(LOGERROR, "%s: Write failed!",  __FUNCTION__);
         else
-          dll_fseek(stream, -1, SEEK_CUR);
+        {
+          if (dll_fseek(stream, -1, SEEK_CUR)!=0)
+            return -1;
+        }
       }
       return d;
     }

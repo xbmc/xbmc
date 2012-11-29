@@ -296,7 +296,7 @@ static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDe
     FriBidiChar* visual = (FriBidiChar*) malloc((len + 1) * sizeof(FriBidiChar));
     FriBidiLevel* levels = (FriBidiLevel*) malloc((len + 1) * sizeof(FriBidiLevel));
 
-    if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
+    if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, levels))
     {
       // Removes bidirectional marks
       len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
