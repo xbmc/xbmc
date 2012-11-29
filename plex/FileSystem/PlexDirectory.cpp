@@ -6,6 +6,7 @@
  */
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string.hpp>
 #include "boost/foreach.hpp"
 #include <tinyxml.h>
@@ -56,6 +57,8 @@ using namespace XFILE;
 bool Cocoa_IsHostLocal(const string& host);
 
 CFileItemListPtr CPlexDirectory::g_filterList;
+std::vector<CStdString> g_homeVideoMap;
+boost::mutex g_homeVideoMapMutex;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog)
@@ -516,6 +519,9 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   pVal = root->Attribute("offset");
   if (pVal && *pVal != 0)
     items.SetProperty("offset", atoi(pVal));
+
+  if (IsHomeVideoSection(strPath))
+    items.SetProperty("HomeVideoSection", true);
 
   return true;
 }
@@ -1438,6 +1444,14 @@ class PlexMediaDirectory : public PlexMediaNode
     SetProperty(pItem, el, "filterType");
     SetProperty(pItem, el, "filter");
 
+    /* We need to track these sections, ugly as it might be */
+    SetProperty(pItem, el, "agent");
+    if (pItem->HasProperty("agent") &&
+        pItem->GetProperty("agent").asString() == "com.plexapp.agents.none")
+    {
+      CPlexDirectory::AddHomeVideoSection(CPlexDirectory::ProcessUrl(parentPath, el.Attribute("key"), true));
+    }
+
   }
 };
 
@@ -2046,3 +2060,30 @@ string CPlexDirectory::ProcessUrl(const string& parent, const string& url, bool 
   return finalURL;
 }
 
+bool CPlexDirectory::IsHomeVideoSection(const CStdString &url)
+{
+  boost::mutex::scoped_lock lk(g_homeVideoMapMutex);
+
+  CURL cu(url);
+
+  bool found = false;
+  BOOST_FOREACH(CStdString k, g_homeVideoMap)
+  {
+    if (boost::starts_with(cu.GetUrlWithoutOptions(), k))
+      found = true;
+  }
+
+  return found;
+}
+
+void CPlexDirectory::AddHomeVideoSection(const CStdString &url)
+{
+  if (IsHomeVideoSection(url))
+    return;
+
+  boost::mutex::scoped_lock lk(g_homeVideoMapMutex);
+
+  CURL cu(url);
+
+  g_homeVideoMap.push_back(cu.GetUrlWithoutOptions());
+}

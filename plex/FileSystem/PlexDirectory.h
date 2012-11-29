@@ -55,6 +55,9 @@ class CPlexDirectory : public IDirectory,
   static std::string BuildImageURL(const std::string& parentURL, const std::string& imageURL, bool local);
   
   static CFileItemListPtr GetFilterList() { return g_filterList; }
+
+  static bool IsHomeVideoSection(const CStdString& url);
+  static void AddHomeVideoSection(const CStdString& url);
   
  protected:
   

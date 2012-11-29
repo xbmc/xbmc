@@ -278,7 +278,11 @@ bool CGUIWindowMediaFilterView::Update(const CStdString &strDirectory, bool upda
       }
 
       CStdString url;
-      url = PlexUtils::AppendPathToURL(strDirectory, "all");
+      if (tmpItems.GetProperty("HomeVideoSection").asBoolean())
+        url = PlexUtils::AppendPathToURL(strDirectory, "folder");
+      else
+        url = PlexUtils::AppendPathToURL(strDirectory, "all");
+
       url = GetFilterUrl("", url);
 
       if (!m_appliedSort.empty())
