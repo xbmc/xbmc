@@ -405,7 +405,9 @@ CUPnPServer::Announce(AnnouncementFlag flag, const char *sender, const char *mes
                 CVideoDatabase db;
                 if (!db.Open()) return;
                 int show_id = db.GetTvShowForEpisode(item_id);
+                int season_id = db.GetSeasonForEpisode(item_id);
                 UpdateContainer(StringUtils::Format("videodb://2/2/%d/", show_id));
+                UpdateContainer(StringUtils::Format("videodb://2/2/%d/%d/?tvshowid=%d", show_id, season_id, show_id));
                 UpdateContainer("videodb://5/");
             }
             else if(item_type == "tvshow") {
