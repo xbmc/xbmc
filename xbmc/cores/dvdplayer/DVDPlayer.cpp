@@ -1100,9 +1100,9 @@ void CDVDPlayer::Process()
       continue;
     }
 
-    // always yield to players if they have data
-    if((m_dvdPlayerAudio.HasData() || m_CurrentAudio.id < 0)
-    && (m_dvdPlayerVideo.HasData() || m_CurrentVideo.id < 0))
+    // always yield to players if they have data levels > 50 percent
+    if((m_dvdPlayerAudio.GetLevel() > 50 || m_CurrentAudio.id < 0)
+    && (m_dvdPlayerVideo.GetLevel() > 50 || m_CurrentVideo.id < 0))
       Sleep(0);
 
     DemuxPacket* pPacket = NULL;
