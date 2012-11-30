@@ -55,6 +55,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonInstaller.h"
@@ -1953,6 +1954,25 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (strSetting.Equals("audiooutput.audiodevice"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+
+      if (m_AnalogAudioSinkMap.size() > 2)
+      {
+        CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        pDialog->Reset();
+        pDialog->SetHeading(545);
+        std::map<CStdString,CStdString>::iterator it;
+        for (it = m_AnalogAudioSinkMap.begin(); it != m_AnalogAudioSinkMap.end(); ++it)
+        {
+          if (it->first.Find("Error") < 0)
+            pDialog->Add(it->first);
+        }
+        pDialog->DoModal();
+        int selection = pDialog->GetSelectedLabel();
+        if (selection >= 0)
+        {
+          pControl->SetValueFromLabel(pDialog->GetSelectedLabelText());
+        }
+      }
 #if defined(TARGET_DARWIN)
       // save the sinkname - since we don't have sinks on osx
       // we need to get the fitting sinkname for the device label from the
@@ -1968,6 +1988,24 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      if (m_DigitalAudioSinkMap.size() > 2)
+      {
+        CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        pDialog->Reset();
+        pDialog->SetHeading(546);
+        std::map<CStdString,CStdString>::iterator it;
+        for (it = m_DigitalAudioSinkMap.begin(); it != m_DigitalAudioSinkMap.end(); ++it)
+        {
+          if (it->first.Find("Error") < 0)
+            pDialog->Add(it->first);
+        }
+        pDialog->DoModal();
+        int selection = pDialog->GetSelectedLabel();
+        if (selection >= 0)
+        {
+          pControl->SetValueFromLabel(pDialog->GetSelectedLabelText());
+        }
+      }
       g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
     }
 #endif
