@@ -23,6 +23,7 @@
 
 #include "PulseAESound.h"
 #include "AEFactory.h"
+#include "Utils/AEUtil.h"
 #include "utils/log.h"
 #include "MathUtils.h"
 #include "StringUtils.h"
@@ -81,7 +82,7 @@ bool CPulseAESound::Initialize()
 
   m_maxVolume     = CAEFactory::GetEngine()->GetVolume();
   m_volume        = 1.0f;
-  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_volume * m_maxVolume));
+  pa_volume_t paVolume = CAEUtil::PercentToPulseVolume((double)(m_volume * m_maxVolume));
   pa_cvolume_set(&m_chVolume, m_sampleSpec.channels, paVolume);
 
   pa_threaded_mainloop_lock(m_mainLoop);

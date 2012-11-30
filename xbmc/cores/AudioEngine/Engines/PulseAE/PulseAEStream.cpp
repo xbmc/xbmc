@@ -24,6 +24,7 @@
 #include "PulseAEStream.h"
 #include "AEFactory.h"
 #include "Utils/AEUtil.h"
+#include "Utils/AEUtil.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
@@ -138,7 +139,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   m_MaxVolume     = CAEFactory::GetEngine()->GetVolume();
   m_Volume        = 1.0f;
-  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
+  pa_volume_t paVolume = CAEUtil::PercentToPulseVolume((double)(m_Volume * m_MaxVolume));
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
 
 #if PA_CHECK_VERSION(1,0,0)
@@ -419,7 +420,7 @@ void CPulseAEStream::SetVolume(float volume)
   if (volume > 0.f)
   {
     m_Volume = volume;
-    pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
+    pa_volume_t paVolume = CAEUtil::PercentToPulseVolume((double)(m_Volume * m_MaxVolume));
 
     pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   } 
