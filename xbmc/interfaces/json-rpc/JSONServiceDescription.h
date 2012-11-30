@@ -359,7 +359,7 @@ namespace JSONRPC
      schema description
      \return Version of the json schema description
      */
-    static int GetVersion();
+    static const char* GetVersion();
 
     /*!
      \brief Prints the json schema description into the given result object
