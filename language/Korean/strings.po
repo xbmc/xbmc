@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-05 03:31+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ko/)\n"
 "MIME-Version: 1.0\n"
@@ -289,10 +289,6 @@ msgstr "서"
 msgctxt "#91"
 msgid "East"
 msgstr "동"
-
-msgctxt "#92"
-msgid "Variable"
-msgstr ""
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -2203,12 +2199,12 @@ msgid "Enter number"
 msgstr "번호 입력"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "비트/샘플"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "샘플 주파수"
+msgid "Sample rate"
+msgstr "샘플레이트"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -3182,10 +3178,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "바람"
 
-msgctxt "#1413"
-msgid "Patches"
-msgstr ""
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "뇌우"
@@ -3230,17 +3222,9 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "흐림"
 
-msgctxt "#1425"
-msgid "Pellets"
-msgstr ""
-
 msgctxt "#1426"
 msgid "Hail"
 msgstr "우박"
-
-msgctxt "#1427"
-msgid "Smoke"
-msgstr ""
 
 msgctxt "#1428"
 msgid "Volcanic"
@@ -3250,53 +3234,17 @@ msgctxt "#1429"
 msgid "Ash"
 msgstr "재"
 
-msgctxt "#1430"
-msgid "Widespread"
-msgstr ""
-
 msgctxt "#1431"
 msgid "Dust"
-msgstr ""
+msgstr "먼지"
 
 msgctxt "#1432"
 msgid "Sand"
-msgstr ""
-
-msgctxt "#1433"
-msgid "Spray"
-msgstr ""
-
-msgctxt "#1434"
-msgid "Whirls"
-msgstr ""
-
-msgctxt "#1435"
-msgid "Sandstorm"
-msgstr ""
-
-msgctxt "#1436"
-msgid "Blowing"
-msgstr ""
-
-msgctxt "#1437"
-msgid "Pellet"
-msgstr ""
+msgstr "모래"
 
 msgctxt "#1438"
 msgid "Small"
 msgstr "낮음"
-
-msgctxt "#1439"
-msgid "and"
-msgstr ""
-
-msgctxt "#1440"
-msgid "Sleet"
-msgstr ""
-
-msgctxt "#1441"
-msgid "with"
-msgstr ""
 
 msgctxt "#1442"
 msgid "Chance"
@@ -3306,21 +3254,13 @@ msgctxt "#1443"
 msgid "of"
 msgstr " "
 
-msgctxt "#1444"
-msgid "Funnel"
-msgstr ""
-
 msgctxt "#1445"
 msgid "Cloud"
-msgstr ""
+msgstr "구름"
 
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "알수없음"
-
-msgctxt "#1447"
-msgid "Squals"
-msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -3344,7 +3284,7 @@ msgstr "빈 목록"
 
 msgctxt "#2081"
 msgid "Went back to parent list because the active list has been emptied"
-msgstr ""
+msgstr "현재 목록이 비었으므로 상위 목록으로 이동함"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -4171,7 +4111,7 @@ msgid "Alarm!"
 msgstr "알람!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
+msgid "Cancelled with %im%is left"
 msgstr "%i 분 %i 초를 남겨두고 취소됨"
 
 msgctxt "#13213"
@@ -5679,8 +5619,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (반전)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "취소중..."
+msgid "Cancelling..."
+msgstr "취소하는 중..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -6550,10 +6490,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "없는 아이콘 검색"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "확인을 누르지 않고 채널 변경"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "비디오 정보 상자 숨기기"
@@ -6989,6 +6925,18 @@ msgstr "녹화 충동"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "녹화 에러"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "클라이언트 설정"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "클라이언트 설정"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "확인을 눌러 채널 전환 확인"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8197,6 +8145,26 @@ msgstr "비디오 - 라이브러리"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "정렬기준: 아이디"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "%s로 영화 검색중"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "%s로 뮤직 비디오 검색중"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "%s로 TV 쇼 검색중"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "%s로 아티스트 검색중"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "%s로 앨범 검색중"
 
 msgctxt "#20324"
 msgid "Play part..."

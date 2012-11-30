@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-07 06:47+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Thai (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/th/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "ป้อนหมายเลข"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "บิต/อัตราสุ่ม"
+msgid "Bits/sample"
+msgstr "บิต/แซมเปิล"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "ความถี่อัตราสุ่ม"
+msgid "Sample rate"
+msgstr "อัตรา แซมเปิล"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "ปลุก!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "ยกเลิกเวลาที่เหลือ %im%is "
+msgid "Cancelled with %im%is left"
+msgstr "ยกเลิก โดย %im%is แล้ว"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,8 +5679,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (inverted)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "กำลังยกเลิก"
+msgid "Cancelling..."
+msgstr "กำลังยกเลิก.."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "สแกนหาไอคอนที่ไม่มี"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "เปลี่ยนช่องโดยไม่ต้องกด ตกลง"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "ซ่อนกล่องแสดงข้อมูลวิดีโอ"
@@ -6989,6 +6985,18 @@ msgstr "ความขัดแย้ง ในการบันทึก"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "ข้อผิดพลาด ในการบันทึก"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "ระบุลูกข่าย"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "ตั้งค่า การระบุลูกข่าย"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "ยืนยันการเปลี่ยนช่อง โดยการกด ตกลง"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "เรียงลำดับ: ไอดี"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "สแกนภาพยนตร์โดยใช้ %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "สแกนวิดิโอเพลงโดยใช้ %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "สแกนรายการทีวีโดยใช้ %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "สแกนศิลปินโดยใช้ %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "สแกนอัลบั้มโดยใช้ %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "ส่วนที่เล่น"
@@ -9153,6 +9181,10 @@ msgstr "แคชเต็มไปก่อนจะถึงปริมาณ
 msgctxt "#21456"
 msgid "External storage"
 msgstr "แหล่งเก็บข้อมูลภายนอก"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "จำนวนตอนที่ดูแล้ว"
 
 msgctxt "#21460"
 msgid "Subtitle location"

@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-06 20:20+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -1172,11 +1172,11 @@ msgstr "Error comprimiendo la base de datos"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "¿Quieres limpiar la biblioteca?"
+msgstr "¿Quieres limpiar la base de datos de la colección?"
 
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Limpiar la biblioteca..."
+msgstr "Limpiar la base de datos de la colección..."
 
 msgctxt "#335"
 msgid "Start"
@@ -1556,7 +1556,7 @@ msgstr "Sin caché"
 
 msgctxt "#432"
 msgid "Remove movie from library"
-msgstr "Eliminar película de la base de datos"
+msgstr "Eliminar película de la colección"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
@@ -1892,7 +1892,7 @@ msgstr "Añadir a lista de reproducción"
 
 msgctxt "#527"
 msgid "Manually add to library"
-msgstr "Añadir manualmente a biblioteca"
+msgstr "Añadir manualmente a la colección"
 
 msgctxt "#528"
 msgid "Enter title"
@@ -2203,11 +2203,11 @@ msgid "Enter number"
 msgstr "Introducir número"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "Bits/Muestreo"
 
 msgctxt "#613"
-msgid "Sample Frequency"
+msgid "Sample rate"
 msgstr "Frecuencia de muestreo"
 
 msgctxt "#620"
@@ -2308,15 +2308,15 @@ msgstr "Es necesario descomprimir un archivos grande. ¿Continuar?"
 
 msgctxt "#646"
 msgid "Remove from library"
-msgstr "Eliminar de la base de datos"
+msgstr "Eliminar de la colección"
 
 msgctxt "#647"
 msgid "Export video library"
-msgstr "Exportar la biblioteca de vídeo"
+msgstr "Exportar la base de datos de la colección de vídeo"
 
 msgctxt "#648"
 msgid "Import video library"
-msgstr "Importar la biblioteca de vídeo"
+msgstr "Importar la base de datos de la colección de vídeo"
 
 msgctxt "#649"
 msgid "Importing"
@@ -2328,7 +2328,7 @@ msgstr "Exportando"
 
 msgctxt "#651"
 msgid "Browse for library"
-msgstr "Explorar la biblioteca"
+msgstr "Explorar para la colección"
 
 msgctxt "#652"
 msgid "Years"
@@ -2336,7 +2336,7 @@ msgstr "Años"
 
 msgctxt "#653"
 msgid "Update library"
-msgstr "Actualizar la biblioteca"
+msgstr "Actualizar la colección"
 
 msgctxt "#654"
 msgid "Show debug info"
@@ -2376,7 +2376,7 @@ msgstr "Éste archivo ya no está disponible"
 
 msgctxt "#663"
 msgid "Would you like to remove it from the library?"
-msgstr "¿Le gustaría eliminarlo de la biblioteca?"
+msgstr "¿Le gustaría eliminarlo de la colección?"
 
 msgctxt "#664"
 msgid "Browse for Script"
@@ -2388,11 +2388,11 @@ msgstr "Nivel de compresión"
 
 msgctxt "#700"
 msgid "Cleaning up library"
-msgstr "Limpiar la biblioteca"
+msgstr "Limpiar la colección"
 
 msgctxt "#701"
 msgid "Removing old songs from the library"
-msgstr "Eliminando canciones antiguas de la biblioteca"
+msgstr "Eliminando canciones antiguas de la colección"
 
 msgctxt "#702"
 msgid "This path has been scanned before"
@@ -2536,7 +2536,7 @@ msgstr "No se ha explorado información para esta vista"
 
 msgctxt "#746"
 msgid "Please turn off library mode"
-msgstr "Por favor desactive el modo biblioteca"
+msgstr "Por favor desactive el modo colección"
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -2724,11 +2724,11 @@ msgstr "Acceso a internet"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr "Actualizar biblioteca"
+msgstr "Actualización de Colección"
 
 msgctxt "#800"
 msgid "Music library needs to rescan art from tags"
-msgstr "La biblioteca de música necesita reescanear portadas desde las etiquetas"
+msgstr "La colección de música necesita re-escanear portadas desde las etiquetas"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
@@ -3504,7 +3504,7 @@ msgstr "Música/Archivos"
 
 msgctxt "#10502"
 msgid "Music/Library"
-msgstr "Música/Biblioteca"
+msgstr "Música/Colección"
 
 msgctxt "#10503"
 msgid "Playlist editor"
@@ -3544,7 +3544,7 @@ msgstr "Info. sistema"
 
 msgctxt "#10516"
 msgid "Music - Library"
-msgstr "Música - Biblioteca"
+msgstr "Música - Colección"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
@@ -3760,7 +3760,7 @@ msgstr "Elemento bloqueado"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr "Actualizando librería de arte de vídeo"
+msgstr "Actualizando arte de la colección de vídeo"
 
 msgctxt "#12350"
 msgid "Processing %s"
@@ -3768,7 +3768,7 @@ msgstr "Procesando %s"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr "El caché de arte en su librería de vídeo necesita actualizarse."
+msgstr "El caché de arte en su colección de vídeo necesita actualizarse."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "¡Alarma!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Cancelada antes de %im%is"
+msgid "Cancelled with %im%is left"
+msgstr "Cancelada con %im%is restantes"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4480,7 +4480,7 @@ msgstr "Información del álbum"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Explorar todo para la BD"
+msgstr "Explorar todo para la base de datos de la colección"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -4956,7 +4956,7 @@ msgstr "Cambiar el código del área 3"
 
 msgctxt "#14022"
 msgid "Library"
-msgstr "Biblioteca"
+msgstr "Colección"
 
 msgctxt "#14023"
 msgid "No TV"
@@ -5256,7 +5256,7 @@ msgstr "Contraseña"
 
 msgctxt "#15100"
 msgid "Library"
-msgstr "Biblioteca"
+msgstr "Colección"
 
 msgctxt "#15101"
 msgid "Database"
@@ -5679,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (Invertido)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Cancelando..."
 
 msgctxt "#16025"
@@ -5708,7 +5708,7 @@ msgstr "Modo fiesta abortado."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "No hay canciones coincidentes en la base de datos."
+msgstr "No hay canciones coincidentes en la colección."
 
 msgctxt "#16032"
 msgid "Could not initialize database."
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Escanear por iconos ausentes"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Cambiar de canal sin presionar OK"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Ocultar la caja de información de vídeo"
@@ -6989,6 +6985,18 @@ msgstr "Conflicto de grabaciones"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Error de grabación"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Específico del cliente"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Opciones del cliente"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Confirmar el cambio de canal pulsando OK"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8032,7 +8040,7 @@ msgstr "UPnP"
 
 msgctxt "#20188"
 msgid "Announce library updates via UPnP"
-msgstr "Anunciar actualizaciones de la biblioteca via UPnP"
+msgstr "Anunciar actualizaciones de la colección via UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8064,11 +8072,11 @@ msgstr "Cambiar scraper"
 
 msgctxt "#20196"
 msgid "Export music library"
-msgstr "Exportar la biblioteca de música"
+msgstr "Exportar la base de datos de la colección de música"
 
 msgctxt "#20197"
 msgid "Import music library"
-msgstr "Importar la biblioteca de música"
+msgstr "Importar la base de datos de la colección de música"
 
 msgctxt "#20198"
 msgid "No artist found!"
@@ -8192,11 +8200,31 @@ msgstr "Atenuar LCD al pausar"
 
 msgctxt "#20314"
 msgid "Videos - Library"
-msgstr "Vídeos - Biblioteca"
+msgstr "Vídeos - Colección"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Ordenar por: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Analizando las películas usando %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Analizando los videoclips usando %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Analizando los programas de TV usando %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Analizando los artistas usando %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Analizando la música usando %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8268,7 +8296,7 @@ msgstr "¿Deseas eliminar todos los elementos de"
 
 msgctxt "#20341"
 msgid "this path from the XBMC library?"
-msgstr "esta ruta de la base de datos?"
+msgstr "esta ruta de la base de datos de la colección de XBMC?"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -8352,11 +8380,11 @@ msgstr "Cargando detalles del episodio"
 
 msgctxt "#20362"
 msgid "Remove episode from library"
-msgstr "Eliminar episodio de biblioteca"
+msgstr "Eliminar episodio de colección"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
-msgstr "Eliminar serie de TV de la biblioteca"
+msgstr "Eliminar serie de TV de la colección"
 
 msgctxt "#20364"
 msgid "TV show"
@@ -8472,7 +8500,7 @@ msgstr "Videoclip"
 
 msgctxt "#20392"
 msgid "Remove music video from library"
-msgstr "Eliminar videoclip de la biblioteca"
+msgstr "Eliminar videoclip de la colección"
 
 msgctxt "#20393"
 msgid "Music video information"
@@ -8624,7 +8652,7 @@ msgstr "¿Sobrescribir archivos antiguos?"
 
 msgctxt "#20432"
 msgid "Exclude path from library updates"
-msgstr "Excluir ruta de actualizaciones de biblioteca"
+msgstr "Excluir ruta de actualizaciones de la colección"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
@@ -8868,7 +8896,7 @@ msgstr "Habilitar barras de desplazamiento"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Convertir el filtro mostrado en una opción de la biblioteca de vídeo"
+msgstr "Convertir el filtro mostrado en una opción de la colección de vídeo"
 
 msgctxt "#21385"
 msgid "Open"
@@ -9153,6 +9181,10 @@ msgstr "Caché llena antes de alcanzar la cantidad necesaria para reproducción 
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Almacenamiento externo"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Contador de episodios vistos"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9488,11 +9520,11 @@ msgstr "Nacido/Formado"
 
 msgctxt "#22000"
 msgid "Update library on startup"
-msgstr "Actualizar la biblioteca en el arranque"
+msgstr "Actualizar la colección en el arranque"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
-msgstr "Ocultar el progreso de actualización de la biblioteca"
+msgstr "Ocultar el progreso de actualización de la colección"
 
 msgctxt "#22002"
 msgid "- DNS suffix"
@@ -10052,7 +10084,7 @@ msgstr "Seleccione elemento a reproducir"
 
 msgctxt "#29800"
 msgid "Library Mode"
-msgstr "Modo Biblioteca"
+msgstr "Modo Colección"
 
 msgctxt "#29801"
 msgid "QWERTY keyboard"

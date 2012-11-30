@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-02 17:07+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "Digite número"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bits/Amostra"
+msgid "Bits/sample"
+msgstr "Bits/amostragem"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Frequência de amostra"
+msgid "Sample rate"
+msgstr "Taxa de amostragem"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "Alarme!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Cancelado restando %im%is"
+msgid "Cancelled with %im%is left"
+msgstr "Cancelado com %im %i ainda faltando "
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4460,7 +4460,7 @@ msgstr "Informações de filmes"
 
 msgctxt "#13347"
 msgid "Queue item"
-msgstr "Adicionar item"
+msgstr "Item para Fila"
 
 msgctxt "#13348"
 msgid "Search IMDb..."
@@ -5679,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Sincronização plana"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Cancelando..."
 
 msgctxt "#16025"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Escanear por ícones faltantes"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "trocar canal sem pressionar OK"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Ocultar box com informações de vídeo"
@@ -6989,6 +6985,18 @@ msgstr "Conflito ao gravar"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Erro gravando"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Cliente específico"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Ajustes de cliente específico"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Confirme a troca de canais pressionando ok"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Ordenar por: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Buscando filmes com %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Buscando videoclipes com %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Buscando seriados com %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Buscando artistas com %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Buscando músicas com %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Reproduzir parte..."
@@ -9153,6 +9181,10 @@ msgstr "Cache cheio antes de chegar a quantidade necessária para reprodução c
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Armazenamento externo"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Contagem de episódios assistidos"
 
 msgctxt "#21460"
 msgid "Subtitle location"

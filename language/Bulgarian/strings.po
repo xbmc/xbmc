@@ -1,13 +1,13 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-06 02:06+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Bulgarian <xbmc-bg@freelists.org>\n"
+"Language-Team: Bulgarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/bg/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -273,26 +273,6 @@ msgstr "ССЗ"
 msgctxt "#87"
 msgid "VAR"
 msgstr "Променливa"
-
-msgctxt "#88"
-msgid "South"
-msgstr ""
-
-msgctxt "#89"
-msgid "North"
-msgstr ""
-
-msgctxt "#90"
-msgid "West"
-msgstr ""
-
-msgctxt "#91"
-msgid "East"
-msgstr ""
-
-msgctxt "#92"
-msgid "Variable"
-msgstr ""
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -569,10 +549,6 @@ msgstr "Има диск"
 msgctxt "#166"
 msgid "Skin"
 msgstr "Облик"
-
-msgctxt "#167"
-msgid "Cancel file operations"
-msgstr ""
 
 msgctxt "#169"
 msgid "Resolution"
@@ -872,7 +848,7 @@ msgstr "Брой на каналите"
 
 msgctxt "#254"
 msgid "- DTS capable receiver"
-msgstr "- приемник поддържащ DTS"
+msgstr "- приемникът ми поддържа DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -1048,19 +1024,19 @@ msgstr "Отметки"
 
 msgctxt "#299"
 msgid "- AAC capable receiver"
-msgstr "- приемник поддържащ AAC"
+msgstr "- приемникът ми поддържа AAC"
 
 msgctxt "#300"
 msgid "- MP1 capable receiver"
-msgstr "- приемник поддържащ MP1"
+msgstr "- приемникът ми поддържа MP1"
 
 msgctxt "#301"
 msgid "- MP2 capable receiver"
-msgstr "- приемник поддържащ MP2"
+msgstr "- приемникът ми поддържа MP2"
 
 msgctxt "#302"
 msgid "- MP3 capable receiver"
-msgstr "- приемник поддържащ MP3"
+msgstr "- приемникът ми поддържа MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1228,15 +1204,15 @@ msgstr "Усили звука при смесване за намаляване 
 
 msgctxt "#347"
 msgid "- DTS-HD capable receiver"
-msgstr "- приемник поддържащ DTS-HD"
+msgstr "- приемникът ми поддържа DTS-HD"
 
 msgctxt "#348"
 msgid "- Multichannel LPCM capable receiver"
-msgstr "- приемник поддържащ Multichannel LPCM"
+msgstr "- приемникът ми поддържа Multichannel LPCM"
 
 msgctxt "#349"
 msgid "- TrueHD capable receiver"
-msgstr "- приемник поддържащ TrueHD"
+msgstr "- приемникът ми поддържа TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1296,7 +1272,7 @@ msgstr "Сорт. по: Файл"
 
 msgctxt "#364"
 msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- приемник поддържащ Dolby Digital (AC3)"
+msgstr "- приемникът ми поддържа Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1568,11 +1544,11 @@ msgstr "от \"%s\" (%i%s)"
 
 msgctxt "#435"
 msgid "No optical disc drive detected"
-msgstr ""
+msgstr "Няма оптично устройство"
 
 msgctxt "#436"
 msgid "You need an optical disc drive to play this video"
-msgstr ""
+msgstr "Имате нужда от оптично устройство за това видео"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2202,14 +2178,6 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Въведете номер"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bits/Sample"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Sample Frequency"
-
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Аудио CD-та"
@@ -2233,10 +2201,6 @@ msgstr "Добави номера на песента"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Всички песни на"
-
-msgctxt "#626"
-msgid "In progress TV shows"
-msgstr ""
 
 msgctxt "#629"
 msgid "View mode"
@@ -2724,15 +2688,11 @@ msgstr "Интернет достъп"
 
 msgctxt "#799"
 msgid "Library Update"
-msgstr ""
-
-msgctxt "#800"
-msgid "Music library needs to rescan art from tags"
-msgstr ""
+msgstr "Опресняване библиотека"
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr ""
+msgstr "Искате ли да сканирате сега?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3102,10 +3062,6 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
-msgctxt "#1275"
-msgid "Filter %s"
-msgstr ""
-
 msgctxt "#1300"
 msgid "Custom audio device"
 msgstr "Друго аудио устройство"
@@ -3154,10 +3110,6 @@ msgctxt "#1405"
 msgid "in"
 msgstr "в"
 
-msgctxt "#1406"
-msgid "the"
-msgstr ""
-
 msgctxt "#1407"
 msgid "Vicinity"
 msgstr "Околността"
@@ -3182,10 +3134,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "ветровито"
 
-msgctxt "#1413"
-msgid "Patches"
-msgstr ""
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "Гръмотевична буря"
@@ -3206,10 +3154,6 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Гръмотевични бури"
 
-msgctxt "#1419"
-msgid "Shallow"
-msgstr ""
-
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "Умерено"
@@ -3226,109 +3170,29 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Мъгла"
 
-msgctxt "#1424"
-msgid "Overcast"
-msgstr ""
-
-msgctxt "#1425"
-msgid "Pellets"
-msgstr ""
-
-msgctxt "#1426"
-msgid "Hail"
-msgstr ""
-
-msgctxt "#1427"
-msgid "Smoke"
-msgstr ""
-
-msgctxt "#1428"
-msgid "Volcanic"
-msgstr ""
-
-msgctxt "#1429"
-msgid "Ash"
-msgstr ""
-
-msgctxt "#1430"
-msgid "Widespread"
-msgstr ""
-
-msgctxt "#1431"
-msgid "Dust"
-msgstr ""
-
-msgctxt "#1432"
-msgid "Sand"
-msgstr ""
-
-msgctxt "#1433"
-msgid "Spray"
-msgstr ""
-
-msgctxt "#1434"
-msgid "Whirls"
-msgstr ""
-
-msgctxt "#1435"
-msgid "Sandstorm"
-msgstr ""
-
-msgctxt "#1436"
-msgid "Blowing"
-msgstr ""
-
-msgctxt "#1437"
-msgid "Pellet"
-msgstr ""
-
 msgctxt "#1438"
 msgid "Small"
 msgstr "Малка"
 
 msgctxt "#1439"
 msgid "and"
-msgstr ""
-
-msgctxt "#1440"
-msgid "Sleet"
-msgstr ""
+msgstr "и"
 
 msgctxt "#1441"
 msgid "with"
-msgstr ""
+msgstr "с"
 
 msgctxt "#1442"
 msgid "Chance"
-msgstr ""
-
-msgctxt "#1443"
-msgid "of"
-msgstr ""
-
-msgctxt "#1444"
-msgid "Funnel"
-msgstr ""
-
-msgctxt "#1445"
-msgid "Cloud"
-msgstr ""
+msgstr "Вероятност"
 
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Непознат"
 
-msgctxt "#1447"
-msgid "Squals"
-msgstr ""
-
 msgctxt "#1448"
 msgid "Precipitation"
 msgstr "Валеж"
-
-msgctxt "#1449"
-msgid "Partial"
-msgstr ""
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3337,14 +3201,6 @@ msgstr "\"Приспиване\" на екрана при бездействие
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Времетраене"
-
-msgctxt "#2080"
-msgid "Empty list"
-msgstr ""
-
-msgctxt "#2081"
-msgid "Went back to parent list because the active list has been emptied"
-msgstr ""
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3760,19 +3616,15 @@ msgstr "Заключен елемент"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr ""
-
-msgctxt "#12350"
-msgid "Processing %s"
-msgstr ""
+msgstr "Актуализиране кеша на картинкиите от видео библиотеката"
 
 msgctxt "#12351"
 msgid "The art cache in your video library needs updating."
-msgstr ""
+msgstr "Необходимо е актуализиране на кеша на картинките от видео библиотеката."
 
 msgctxt "#12352"
 msgid "No downloading is needed."
-msgstr ""
+msgstr "Не е необходимо сваляне."
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -3780,7 +3632,7 @@ msgstr "Реактивирай заключването"
 
 msgctxt "#12354"
 msgid "Would you like to update it now?"
-msgstr ""
+msgstr "Да бъде ли актуализиран сега?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3944,11 +3796,11 @@ msgstr "Изключване на системата"
 
 msgctxt "#13017"
 msgid "Inhibit idle shutdown"
-msgstr ""
+msgstr "Забрани изключване при бездействие"
 
 msgctxt "#13018"
 msgid "Allow idle shutdown"
-msgstr ""
+msgstr "Разреши изключване при бездействие"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -4171,7 +4023,7 @@ msgid "Alarm!"
 msgstr "Аларма!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
+msgid "Cancelled with %im%is left"
 msgstr "Прекъснат е %im%is предварително"
 
 msgctxt "#13213"
@@ -4752,11 +4604,11 @@ msgstr "Разреши хардуерното ускорение (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
-msgstr ""
+msgstr "Автоматично възпроизвеждане на следващото видео"
 
 msgctxt "#13434"
 msgid "Play only this"
-msgstr ""
+msgstr "Възпроизведи само това"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4804,27 +4656,27 @@ msgstr "Съгласувай честотата на обновяване на �
 
 msgctxt "#13511"
 msgid "Choose art"
-msgstr ""
+msgstr "Изберете картинка"
 
 msgctxt "#13512"
 msgid "Current art"
-msgstr ""
+msgstr "Текуща картинка"
 
 msgctxt "#13513"
 msgid "Remote art"
-msgstr ""
+msgstr "Отдалечена картинка"
 
 msgctxt "#13514"
 msgid "Local art"
-msgstr ""
+msgstr "Локална картинка"
 
 msgctxt "#13515"
 msgid "No art"
-msgstr ""
+msgstr "Без картинка"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
-msgstr "Пауза при проомя на честота за обновяване"
+msgstr "Пауза при промя на честота за обновяване"
 
 msgctxt "#13551"
 msgid "Off"
@@ -5236,7 +5088,7 @@ msgstr "Отваряне на CD устройствоте след приклю�
 
 msgctxt "#14100"
 msgid "Stop ripping CD"
-msgstr ""
+msgstr "Спиране извличането на диска"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5679,7 +5531,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (inverted)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Отказване..."
 
 msgctxt "#16025"
@@ -5904,7 +5756,7 @@ msgstr "Software Blend"
 
 msgctxt "#16325"
 msgid "Auto - ION Optimized"
-msgstr ""
+msgstr "Автоматично оптимизиране - ION"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5932,27 +5784,19 @@ msgstr "Превключи на канал"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
-msgstr ""
+msgstr "Разделете думите за търсене с И, ИЛИ"
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
-msgstr ""
+msgstr "или използвайте фрази за пълно съвпадение"
 
 msgctxt "#19003"
 msgid "Find similar programs"
-msgstr ""
-
-msgctxt "#19004"
-msgid "Importing EPG from clients"
-msgstr ""
-
-msgctxt "#19005"
-msgid "PVR stream information"
-msgstr ""
+msgstr "Намиране на подобни програми"
 
 msgctxt "#19006"
 msgid "Receiving device"
-msgstr ""
+msgstr "Приемащо устройство"
 
 msgctxt "#19007"
 msgid "Device status"
@@ -5962,26 +5806,6 @@ msgctxt "#19008"
 msgid "Signal quality"
 msgstr "Качество на сигнала"
 
-msgctxt "#19009"
-msgid "SNR"
-msgstr ""
-
-msgctxt "#19010"
-msgid "BER"
-msgstr ""
-
-msgctxt "#19011"
-msgid "UNC"
-msgstr ""
-
-msgctxt "#19012"
-msgid "PVR Backend"
-msgstr ""
-
-msgctxt "#19013"
-msgid "Free to air"
-msgstr ""
-
 msgctxt "#19014"
 msgid "Fixed"
 msgstr "Фиксирана"
@@ -5990,17 +5814,9 @@ msgctxt "#19015"
 msgid "Encryption"
 msgstr "Шифроване"
 
-msgctxt "#19016"
-msgid "PVR Backend %i - %s"
-msgstr ""
-
 msgctxt "#19017"
 msgid "TV recordings"
 msgstr "Записи от ТВ"
-
-msgctxt "#19018"
-msgid "Default folder for PVR thumbnails"
-msgstr ""
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6016,7 +5832,7 @@ msgstr "Радио"
 
 msgctxt "#19022"
 msgid "Hidden"
-msgstr ""
+msgstr "Скрит"
 
 msgctxt "#19023"
 msgid "TV channels"
@@ -6032,15 +5848,11 @@ msgstr "Бъдещи записи"
 
 msgctxt "#19026"
 msgid "Add timer..."
-msgstr ""
+msgstr "Добави таймер"
 
 msgctxt "#19027"
 msgid "No search results"
-msgstr ""
-
-msgctxt "#19028"
-msgid "No EPG entries"
-msgstr ""
+msgstr "Няма резултати от търсенето"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -6068,7 +5880,7 @@ msgstr "Каналът вече се записва"
 
 msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
-msgstr ""
+msgstr "Каналът не може да бъде възпроизведен. Проверете лога."
 
 msgctxt "#19036"
 msgid "This recording cannot be played. Check the log for details."
@@ -6078,13 +5890,9 @@ msgctxt "#19037"
 msgid "Show signal quality"
 msgstr "Показвай качеството на сигнала"
 
-msgctxt "#19038"
-msgid "Not supported by the PVR backend."
-msgstr ""
-
 msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
-msgstr ""
+msgstr "Да скрия ли канала?"
 
 msgctxt "#19040"
 msgid "Timer"
@@ -6096,7 +5904,7 @@ msgstr "Наистина ли желаете да \nпреименувате з�
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr ""
+msgstr "Да преименувам ли таймера?"
 
 msgctxt "#19043"
 msgid "Recording"
@@ -6104,11 +5912,7 @@ msgstr "Записване"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr ""
-
-msgctxt "#19045"
-msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr ""
+msgstr "Проверете конфигурацията или лога за детайли."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6116,15 +5920,15 @@ msgstr "Нов канал"
 
 msgctxt "#19047"
 msgid "Programme info"
-msgstr ""
+msgstr "Програма инфо"
 
 msgctxt "#19048"
 msgid "Group management"
-msgstr ""
+msgstr "Управление на групи"
 
 msgctxt "#19049"
 msgid "Show channel"
-msgstr ""
+msgstr "Покажи канал"
 
 msgctxt "#19050"
 msgid "Show visible channels"
@@ -6136,7 +5940,7 @@ msgstr "Показвай скритите канали"
 
 msgctxt "#19052"
 msgid "Move channel to:"
-msgstr ""
+msgstr "Премести канала в:"
 
 msgctxt "#19053"
 msgid "Recording information"
@@ -6160,7 +5964,7 @@ msgstr "Редактирай таймера"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr ""
+msgstr "Таймер включен"
 
 msgctxt "#19059"
 msgid "Stop recording"
@@ -6186,10 +5990,6 @@ msgctxt "#19064"
 msgid "Go to end"
 msgstr "Oтиди в края"
 
-msgctxt "#19065"
-msgid "Default EPG window"
-msgstr ""
-
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr "Събитието вече се записва"
@@ -6198,25 +5998,13 @@ msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
 msgstr "Записът не може да бъде изтрит.\nПроверете дневника за подробности."
 
-msgctxt "#19069"
-msgid "EPG"
-msgstr ""
-
-msgctxt "#19071"
-msgid "EPG update interval"
-msgstr ""
-
-msgctxt "#19072"
-msgid "Do not store the EPG in the database"
-msgstr ""
-
 msgctxt "#19073"
 msgid "Delay channel switch"
 msgstr "Забавяне на превключването"
 
 msgctxt "#19074"
 msgid "Active:"
-msgstr ""
+msgstr "Активен:"
 
 msgctxt "#19075"
 msgid "Name:"
@@ -6308,7 +6096,7 @@ msgstr "__-__-__-__-__-съ-нед"
 
 msgctxt "#19097"
 msgid "Enter the name for the recording"
-msgstr ""
+msgstr "Въведете име за записа"
 
 msgctxt "#19098"
 msgid "Warning"
@@ -6320,27 +6108,19 @@ msgstr "Моля, превключете на друг канал"
 
 msgctxt "#19104"
 msgid "Enter the name of the folder for the recording"
-msgstr ""
+msgstr "Въведете името на папката за записа"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr ""
-
-msgctxt "#19107"
-msgid "at"
-msgstr ""
+msgstr "Следващ таймер"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr ""
+msgstr "Незапазен таймер. Проверете лога за детайли."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr ""
-
-msgctxt "#19111"
-msgid "PVR backend error. Check the log for details."
-msgstr ""
+msgstr "Неочаквана грешка. Опитайте по-късно или проверете лога за детайли."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6352,59 +6132,43 @@ msgstr "Адрес"
 
 msgctxt "#19116"
 msgid "Disksize"
-msgstr ""
+msgstr "Размер на диска"
 
 msgctxt "#19117"
 msgid "Search for channels"
 msgstr "Търсене за канали"
 
-msgctxt "#19118"
-msgid "Cannot use PVR functions while searching."
-msgstr ""
-
 msgctxt "#19119"
 msgid "On which server you want to search?"
-msgstr ""
+msgstr "На кой сървър желаете да търсите?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr ""
+msgstr "Клиентски номер"
 
 msgctxt "#19121"
 msgid "Avoid repeats"
-msgstr ""
+msgstr "Избягване на повторения"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr ""
-
-msgctxt "#19123"
-msgid "Free to air channels only"
-msgstr ""
-
-msgctxt "#19124"
-msgid "Ignore present timers"
-msgstr ""
-
-msgctxt "#19125"
-msgid "Ignore present recordings"
-msgstr ""
+msgstr "Този таймер записва. Да го изтрия ли?"
 
 msgctxt "#19126"
 msgid "Start time"
-msgstr ""
+msgstr "Време на започване"
 
 msgctxt "#19127"
 msgid "End time"
-msgstr ""
+msgstr "Време на приключване"
 
 msgctxt "#19128"
 msgid "Start date"
-msgstr ""
+msgstr "Дата на започване"
 
 msgctxt "#19129"
 msgid "End date"
-msgstr ""
+msgstr "Дата на приключване"
 
 msgctxt "#19130"
 msgid "Minimum duration"
@@ -6416,27 +6180,19 @@ msgstr "Макс. продължителност"
 
 msgctxt "#19132"
 msgid "Include unknown genres"
-msgstr ""
+msgstr "Включително непознати жанрове"
 
 msgctxt "#19133"
 msgid "Search string"
-msgstr ""
-
-msgctxt "#19134"
-msgid "Include description"
-msgstr ""
-
-msgctxt "#19135"
-msgid "Case sensitive"
-msgstr ""
+msgstr "Низ за търсене"
 
 msgctxt "#19136"
 msgid "Channel unavailable"
-msgstr ""
+msgstr "Каналът е недостъпен"
 
 msgctxt "#19137"
 msgid "No groups defined"
-msgstr ""
+msgstr "Няма дефинирани групи"
 
 msgctxt "#19138"
 msgid "Please create a group first"
@@ -6452,27 +6208,23 @@ msgstr "Група"
 
 msgctxt "#19142"
 msgid "Search guide"
-msgstr ""
+msgstr "Ръководство за търсене"
 
 msgctxt "#19143"
 msgid "Group management"
-msgstr ""
+msgstr "Управление на групи"
 
 msgctxt "#19144"
 msgid "No groups defined"
-msgstr ""
+msgstr "Няма дефинирани групи"
 
 msgctxt "#19145"
 msgid "Grouped"
-msgstr ""
+msgstr "Групиран"
 
 msgctxt "#19146"
 msgid "Groups"
 msgstr "Групи"
-
-msgctxt "#19147"
-msgid "The PVR backend does not support this action. Check the log for details."
-msgstr ""
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6512,11 +6264,11 @@ msgstr "от"
 
 msgctxt "#19157"
 msgid "Next recording"
-msgstr ""
+msgstr "Следващ запис"
 
 msgctxt "#19158"
 msgid "Currently recording"
-msgstr ""
+msgstr "В момента записва"
 
 msgctxt "#19159"
 msgid "from"
@@ -6528,7 +6280,7 @@ msgstr "до"
 
 msgctxt "#19162"
 msgid "Recording active"
-msgstr ""
+msgstr "Запис активен"
 
 msgctxt "#19163"
 msgid "Recordings"
@@ -6538,33 +6290,9 @@ msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
 msgstr "Записът не може да бъде започнат.\nПроверете дневника за подробности."
 
-msgctxt "#19165"
-msgid "Switch"
-msgstr ""
-
-msgctxt "#19166"
-msgid "PVR information"
-msgstr ""
-
 msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Сканирай за липсващи икони"
-
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Превключване на канлите без натискане на бутона \"ОК\""
-
-msgctxt "#19169"
-msgid "Hide video information box"
-msgstr ""
-
-msgctxt "#19170"
-msgid "Timeout when starting playback"
-msgstr ""
-
-msgctxt "#19171"
-msgid "Start playback minimized"
-msgstr ""
 
 msgctxt "#19172"
 msgid "Instant recording duration"
@@ -6577,14 +6305,6 @@ msgstr "Стандартен приоритет на записите"
 msgctxt "#19174"
 msgid "Default recording lifetime"
 msgstr "Стандартен срок за съхранение на записите"
-
-msgctxt "#19175"
-msgid "Margin at the start of a recording"
-msgstr ""
-
-msgctxt "#19176"
-msgid "Margin at the end of a recording"
-msgstr ""
 
 msgctxt "#19177"
 msgid "Playback"
@@ -6606,29 +6326,9 @@ msgctxt "#19181"
 msgid "Menu/OSD"
 msgstr "Меню/OSD"
 
-msgctxt "#19182"
-msgid "Days to display in the EPG"
-msgstr ""
-
 msgctxt "#19184"
 msgid "Channel information duration"
 msgstr "Показвай инф. за канала в продължение на"
-
-msgctxt "#19185"
-msgid "Reset the PVR database"
-msgstr ""
-
-msgctxt "#19186"
-msgid "All data in the PVR database is being erased"
-msgstr ""
-
-msgctxt "#19187"
-msgid "Reset the EPG database"
-msgstr ""
-
-msgctxt "#19188"
-msgid "EPG is being reset"
-msgstr ""
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
@@ -6636,47 +6336,27 @@ msgstr "При стартиране продължи от последно гл�
 
 msgctxt "#19190"
 msgid "Minimized"
-msgstr ""
-
-msgctxt "#19191"
-msgid "PVR service"
-msgstr ""
-
-msgctxt "#19192"
-msgid "None of the connected PVR backends supports scanning for channels."
-msgstr ""
+msgstr "Минимизиран"
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr ""
+msgstr "Сканирането на канали не може да започне. Проверете лога."
 
 msgctxt "#19194"
 msgid "Continue?"
-msgstr ""
+msgstr "Продължи?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr ""
-
-msgctxt "#19196"
-msgid "PVR client specific actions"
-msgstr ""
+msgstr "Клиентски действия"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
-msgstr ""
-
-msgctxt "#19198"
-msgid "Recording finished on: %s"
-msgstr ""
+msgstr "Записът стартиран на: %s"
 
 msgctxt "#19199"
 msgid "Channel manager"
 msgstr "Диспечер на каналите"
-
-msgctxt "#19200"
-msgid "EPG source:"
-msgstr ""
 
 msgctxt "#19201"
 msgid "Channel name:"
@@ -6696,11 +6376,7 @@ msgstr "Нов канал"
 
 msgctxt "#19205"
 msgid "Group management"
-msgstr ""
-
-msgctxt "#19206"
-msgid "Activate EPG:"
-msgstr ""
+msgstr "Управление на групи"
 
 msgctxt "#19207"
 msgid "Group:"
@@ -6710,10 +6386,6 @@ msgctxt "#19208"
 msgid "Enter the name of the new channel"
 msgstr "Въведете име на новия канал"
 
-msgctxt "#19209"
-msgid "XBMC virtual backend"
-msgstr ""
-
 msgctxt "#19210"
 msgid "Client"
 msgstr "Клиент"
@@ -6721,22 +6393,6 @@ msgstr "Клиент"
 msgctxt "#19211"
 msgid "Delete channel"
 msgstr "Изтрий канала"
-
-msgctxt "#19212"
-msgid "This list contains changes"
-msgstr ""
-
-msgctxt "#19213"
-msgid "Select backend"
-msgstr ""
-
-msgctxt "#19214"
-msgid "Enter a valid URL for the new channel"
-msgstr ""
-
-msgctxt "#19215"
-msgid "The PVR backend does not support timers."
-msgstr ""
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6758,25 +6414,13 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr "Канали в"
 
-msgctxt "#19221"
-msgid "Synchronise channel groups with backends"
-msgstr ""
-
-msgctxt "#19222"
-msgid "EPG"
-msgstr ""
-
-msgctxt "#19223"
-msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr ""
-
 msgctxt "#19224"
 msgid "Recording aborted"
-msgstr ""
+msgstr "Записът прекратен"
 
 msgctxt "#19225"
 msgid "Recording scheduled"
-msgstr ""
+msgstr "Запис по график"
 
 msgctxt "#19226"
 msgid "Recording started"
@@ -6792,15 +6436,7 @@ msgstr "Изтрит е запис"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr ""
-
-msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
-msgstr ""
-
-msgctxt "#19231"
-msgid "Always use the channel order from the backend(s)"
-msgstr ""
+msgstr "Скривай OSD за канала при превключване на каналите"
 
 msgctxt "#19232"
 msgid "Clear search results"
@@ -6808,51 +6444,19 @@ msgstr "Изчисти резултатите от търсенето"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr ""
-
-msgctxt "#19234"
-msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr ""
-
-msgctxt "#19235"
-msgid "PVR manager is starting up"
-msgstr ""
+msgstr "Уведомяване при обновяване на таймер"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
-msgstr ""
+msgstr "Зареждане на канал от клиент"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr ""
+msgstr "Зареждане на таймери от клиенти"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
-msgstr ""
-
-msgctxt "#19239"
-msgid "Starting background threads"
-msgstr ""
-
-msgctxt "#19240"
-msgid "No PVR add-on enabled"
-msgstr ""
-
-msgctxt "#19241"
-msgid "The PVR manager has been enabled without any"
-msgstr ""
-
-msgctxt "#19242"
-msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr ""
-
-msgctxt "#19243"
-msgid "in order to use the PVR functionality."
-msgstr ""
-
-msgctxt "#19244"
-msgid "Backend idle time"
-msgstr ""
+msgstr "Зареждане на записи от клиенти"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
@@ -6872,27 +6476,7 @@ msgstr "Всеки ден в (ЧЧ:ММ:СС) часа"
 
 msgctxt "#19249"
 msgid "Filter channels"
-msgstr ""
-
-msgctxt "#19250"
-msgid "Loading EPG from database"
-msgstr ""
-
-msgctxt "#19251"
-msgid "Update EPG information"
-msgstr ""
-
-msgctxt "#19252"
-msgid "Schedule EPG update for this channel?"
-msgstr ""
-
-msgctxt "#19253"
-msgid "EPG update scheduled for channel"
-msgstr ""
-
-msgctxt "#19254"
-msgid "EPG update failed for channel"
-msgstr ""
+msgstr "Филтриране на канали"
 
 msgctxt "#19255"
 msgid "Start recording"
@@ -6914,10 +6498,6 @@ msgctxt "#19259"
 msgid "Parental control"
 msgstr "Родителски контрол"
 
-msgctxt "#19260"
-msgid "Unlock duration"
-msgstr ""
-
 msgctxt "#19261"
 msgid "Change PIN"
 msgstr "Променете кода"
@@ -6938,14 +6518,6 @@ msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "Въведеният коде е неправилен."
 
-msgctxt "#19266"
-msgid "Parental locked"
-msgstr ""
-
-msgctxt "#19267"
-msgid "Parental locked:"
-msgstr ""
-
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
 msgstr "Без етикети тип \"Няма налична информация\""
@@ -6958,41 +6530,33 @@ msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Всички записи"
 
-msgctxt "#19271"
-msgid "No PVR add-ons could be found"
-msgstr ""
-
-msgctxt "#19272"
-msgid "You need a tuner, backend software, and an"
-msgstr ""
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr ""
-
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr ""
+msgstr "За да научите повече посетете www.xbmc.org/pvr"
 
 msgctxt "#19275"
 msgid "Conflict warning"
-msgstr ""
+msgstr "ВНИМАНИЕ: Конфликт"
 
 msgctxt "#19276"
 msgid "Conflict error"
-msgstr ""
+msgstr "Конфликт"
 
 msgctxt "#19277"
 msgid "Recording conflict"
-msgstr ""
+msgstr "Конфликт при записването"
 
 msgctxt "#19278"
 msgid "Recording error"
-msgstr ""
+msgstr "Грешка при записването"
 
-msgctxt "#19499"
-msgid "Other/Unknown"
-msgstr ""
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Специфични за клиента"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Настройки, специфични за клиента"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
@@ -7038,10 +6602,6 @@ msgctxt "#19517"
 msgid "News/Weather Report"
 msgstr "Новини/Прогноза за времето"
 
-msgctxt "#19518"
-msgid "News Magazine"
-msgstr ""
-
 msgctxt "#19519"
 msgid "Documentary"
 msgstr "Докуметален"
@@ -7050,22 +6610,6 @@ msgctxt "#19520"
 msgid "Discussion/Interview/Debate"
 msgstr "Дискусии/Интервюта/Дебати"
 
-msgctxt "#19532"
-msgid "Show/Game Show"
-msgstr ""
-
-msgctxt "#19533"
-msgid "Game Show/Quiz/Contest"
-msgstr ""
-
-msgctxt "#19534"
-msgid "Variety Show"
-msgstr ""
-
-msgctxt "#19535"
-msgid "Talk Show"
-msgstr ""
-
 msgctxt "#19548"
 msgid "Sports"
 msgstr "Спорт"
@@ -7073,10 +6617,6 @@ msgstr "Спорт"
 msgctxt "#19549"
 msgid "Special Event"
 msgstr "Специални събития"
-
-msgctxt "#19550"
-msgid "Sport Magazine"
-msgstr ""
 
 msgctxt "#19551"
 msgid "Football"
@@ -7114,22 +6654,6 @@ msgctxt "#19559"
 msgid "Martial Sports"
 msgstr "Бойни спортове"
 
-msgctxt "#19564"
-msgid "Children's/Youth Programmes"
-msgstr ""
-
-msgctxt "#19565"
-msgid "Pre-school Children's Programmes"
-msgstr ""
-
-msgctxt "#19566"
-msgid "Entertainment Programmes for 6 to 14"
-msgstr ""
-
-msgctxt "#19567"
-msgid "Entertainment Programmes for 10 to 16"
-msgstr ""
-
 msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
 msgstr "Информационни/Образователни/Училищни програми"
@@ -7166,14 +6690,6 @@ msgctxt "#19596"
 msgid "Arts/Culture"
 msgstr "Изкуства/Култура"
 
-msgctxt "#19597"
-msgid "Performing Arts"
-msgstr ""
-
-msgctxt "#19598"
-msgid "Fine Arts"
-msgstr ""
-
 msgctxt "#19599"
 msgid "Religion"
 msgstr "Религия"
@@ -7190,22 +6706,6 @@ msgctxt "#19602"
 msgid "Film/Cinema"
 msgstr "Филм/Кино"
 
-msgctxt "#19603"
-msgid "Experimental Film/Video"
-msgstr ""
-
-msgctxt "#19604"
-msgid "Broadcasting/Press"
-msgstr ""
-
-msgctxt "#19605"
-msgid "New Media"
-msgstr ""
-
-msgctxt "#19606"
-msgid "Arts/Culture Magazines"
-msgstr ""
-
 msgctxt "#19607"
 msgid "Fashion"
 msgstr "Мода"
@@ -7213,14 +6713,6 @@ msgstr "Мода"
 msgctxt "#19612"
 msgid "Social/Political/Economics"
 msgstr "Социални/Политически/Икономически"
-
-msgctxt "#19613"
-msgid "Magazines/Reports/Documentary"
-msgstr ""
-
-msgctxt "#19614"
-msgid "Economics/Social Advisory"
-msgstr ""
 
 msgctxt "#19615"
 msgid "Remarkable People"
@@ -7250,10 +6742,6 @@ msgctxt "#19633"
 msgid "Social/Spiritual Sciences"
 msgstr "Социални/Духовни науки"
 
-msgctxt "#19634"
-msgid "Further Education"
-msgstr ""
-
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Езици"
@@ -7265,14 +6753,6 @@ msgstr "Отдих/Хоби"
 msgctxt "#19645"
 msgid "Tourism/Travel"
 msgstr "Туризъм/Пътешествия"
-
-msgctxt "#19646"
-msgid "Handicraft"
-msgstr ""
-
-msgctxt "#19647"
-msgid "Motoring"
-msgstr ""
 
 msgctxt "#19648"
 msgid "Fitness &amp; Health"
@@ -7289,26 +6769,6 @@ msgstr "Рекламиране/Пазаруване"
 msgctxt "#19651"
 msgid "Gardening"
 msgstr "Градинарство"
-
-msgctxt "#19660"
-msgid "Special Characteristics"
-msgstr ""
-
-msgctxt "#19661"
-msgid "Original Language"
-msgstr ""
-
-msgctxt "#19662"
-msgid "Black &amp; White"
-msgstr ""
-
-msgctxt "#19663"
-msgid "Unpublished"
-msgstr ""
-
-msgctxt "#19664"
-msgid "Live Broadcast"
-msgstr ""
 
 msgctxt "#19676"
 msgid "Drama"
@@ -8032,7 +7492,7 @@ msgstr "UPnP"
 
 msgctxt "#20188"
 msgid "Announce library updates via UPnP"
-msgstr ""
+msgstr "Обявяване актуализациите на библиотеката чрез UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8077,26 +7537,6 @@ msgstr "Не е намерен артист!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Свалянето на информация за артист се провали"
-
-msgctxt "#20240"
-msgid "Android music"
-msgstr ""
-
-msgctxt "#20241"
-msgid "Android videos"
-msgstr ""
-
-msgctxt "#20242"
-msgid "Android pictures"
-msgstr ""
-
-msgctxt "#20243"
-msgid "Android photos"
-msgstr ""
-
-msgctxt "#20244"
-msgid "Android Apps"
-msgstr ""
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -8197,6 +7637,26 @@ msgstr "Видео - Библиотека"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Сорт. по: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Сканиране на филмите чрез \"%s\""
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Сканиране на музикалните видеа чрез \"%s\""
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Сканиране на ТВ Сериали чрез \"%s\""
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Сканиране на артистите чрез \"%s\""
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Сканиране на албумите чрез \"%s\""
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8722,30 +8182,6 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Групирай филмите в поредици"
 
-msgctxt "#20459"
-msgid "Tags"
-msgstr ""
-
-msgctxt "#20460"
-msgid "Add %s"
-msgstr ""
-
-msgctxt "#20461"
-msgid "Remove %s"
-msgstr ""
-
-msgctxt "#20462"
-msgid "New tag..."
-msgstr ""
-
-msgctxt "#20463"
-msgid "A tag with the name '%s' already exists."
-msgstr ""
-
-msgctxt "#20464"
-msgid "Select %s"
-msgstr ""
-
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Показвай скритите папки и файлове"
@@ -9150,9 +8586,9 @@ msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Запълванена е преди да се кешират достатъчно данни за непрекъснато възпроизвеждане."
 
-msgctxt "#21456"
-msgid "External storage"
-msgstr ""
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Брой гледани епизода"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9177,18 +8613,6 @@ msgstr "Върха на видеото"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "Над видеото"
-
-msgctxt "#21467"
-msgid "%.1f to %.1f"
-msgstr ""
-
-msgctxt "#21468"
-msgid "%d to %d"
-msgstr ""
-
-msgctxt "#21469"
-msgid "%s to %s"
-msgstr ""
 
 msgctxt "#21800"
 msgid "File name"
@@ -9412,7 +8836,7 @@ msgstr "Разреши контролирането на XBMC чрез UPnP"
 
 msgctxt "#21882"
 msgid "Attempt to skip introduction before DVD menu"
-msgstr "Прескачане на интрото преди менюто на DVD-тата"
+msgstr "Пропускане на интрото преди менюто на DVD-тата"
 
 msgctxt "#21883"
 msgid "Saved music"
@@ -9686,10 +9110,6 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Изпълнява се"
 
-msgctxt "#23055"
-msgid "Scale Teletext to 4:3"
-msgstr ""
-
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Активен е външен плейър"
@@ -9770,10 +9190,6 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Услуги"
 
-msgctxt "#24019"
-msgid "PVR clients"
-msgstr ""
-
 msgctxt "#24020"
 msgid "Configure"
 msgstr "Конфигурация"
@@ -9800,7 +9216,7 @@ msgstr "Weather.com (стандартно)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr ""
+msgstr "Услуга за метеорологична информация"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -9896,7 +9312,7 @@ msgstr "Лиценз:"
 
 msgctxt "#24054"
 msgid "Changelog"
-msgstr "Дневник с промени"
+msgstr "Дневник на промените"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -9920,7 +9336,7 @@ msgstr "Автоматично актуализиране"
 
 msgctxt "#24064"
 msgid "Add-on enabled"
-msgstr "Включена е добавка"
+msgstr "Добавката е включена"
 
 msgctxt "#24065"
 msgid "Add-on updated"
@@ -10016,11 +9432,11 @@ msgstr "Желаете ли добавката да бъде свалена?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
-msgstr ""
+msgstr "Зареждането на облика не е възможно"
 
 msgctxt "#24103"
 msgid "Skin is missing some files"
-msgstr ""
+msgstr "Липсват някои файлове от облика"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10037,10 +9453,6 @@ msgstr "Избор измежду всички заглавия..."
 msgctxt "#25003"
 msgid "Show bluray menus"
 msgstr "Показвай менютата на BluRay дискове"
-
-msgctxt "#25004"
-msgid "Play main title: %d"
-msgstr ""
 
 msgctxt "#25005"
 msgid "Title: %d"
@@ -10104,7 +9516,7 @@ msgstr "Сваляй в"
 
 msgctxt "#33011"
 msgid "Search duration"
-msgstr ""
+msgstr "Търсене продължителност"
 
 msgctxt "#33012"
 msgid "Short"
@@ -10546,14 +9958,6 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Не ползвай персоналната клавишна карта за устройството"
 
-msgctxt "#35100"
-msgid "Enable joystick and gamepad support"
-msgstr ""
-
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr ""
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Място"
@@ -10604,15 +10008,15 @@ msgstr "Адаптерът не може да бъде отворен"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
-msgstr "Включи устройствата, когато стартирам XBMC"
+msgstr "При стартиране на XBMC включи:"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr "Изключи устройствата, когато спирам XBMC"
+msgstr "При излизане от/спиране на XBMC изключи:"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr "Сложи устройствата в режим \"Изчакване\" при активен скрийнсейвър"
+msgstr "Задай режим \"Изчакване\" за устройствата при активен скрийнсейвър"
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
@@ -10644,7 +10048,7 @@ msgstr "Свързаност с HDMI устройство"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr "Определяне на XBMC като активния изтоник при стартиране"
+msgstr "При стартиране на XBMC активирай източника (превключи на XBMC)"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
@@ -10668,11 +10072,7 @@ msgstr "Изпращай команда \"неактивен източник\" 
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
-
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
+msgstr "При активен режим \"Изчакване\" за компютъра задай режима и за усройствата"
 
 msgctxt "#36028"
 msgid "Ignore"
@@ -10680,23 +10080,19 @@ msgstr "Игнорирай"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr "Когато телевизорът е изключен"
+msgstr "При изключване на телевизора"
 
 msgctxt "#36030"
 msgid "Connection lost"
 msgstr "Връзката пропадна"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
-
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Портът е зает. Само една програма може да има достъп до CEC адаптора"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
-msgstr ""
+msgstr "Пауза при превключване на друг източник"
 
 msgctxt "#36035"
 msgid "Always"
@@ -10704,20 +10100,20 @@ msgstr "Винаги"
 
 msgctxt "#36036"
 msgid "On start/stop"
-msgstr ""
+msgstr "При пускане/спиране"
 
 msgctxt "#36037"
 msgid "TV"
-msgstr "Телевизия"
+msgstr "Телевизора"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"
-msgstr ""
+msgstr "Усилвателя / AVR"
 
 msgctxt "#36039"
 msgid "TV and AVR device (explicit)"
-msgstr ""
+msgstr "Телевизора и AVR (изрично)"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr ""
+msgstr "Версията на libCEC интерфейса не се поддържа. %x е по-стара от необходимата %x"

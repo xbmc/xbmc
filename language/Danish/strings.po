@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-02 17:07+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "Indtast tal"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "Bits/Sample"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Sample frekvens"
+msgid "Sample rate"
+msgstr "Samplingsfrekvens"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -4171,7 +4171,7 @@ msgid "Alarm!"
 msgstr "Alarm!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
+msgid "Cancelled with %im%is left"
 msgstr "Annulleret med %im%is tilbage"
 
 msgctxt "#13213"
@@ -5679,8 +5679,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (inverted)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Afbryder..."
+msgid "Cancelling..."
+msgstr "Annullerer..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Skanner efter manglende ikoner"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Skift kanal uden at trykke ok"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Gem video informations boks"
@@ -6989,6 +6985,14 @@ msgstr "Optagelseskonfikt"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Optagelsesfejl"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Klient specifik"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Klient specifikke indstillinger"
 
 msgctxt "#19499"
 msgid "Other/Unknown"

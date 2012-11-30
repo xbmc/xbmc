@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-02 17:07+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -289,10 +289,6 @@ msgstr "Západ"
 msgctxt "#91"
 msgid "East"
 msgstr "Východ"
-
-msgctxt "#92"
-msgid "Variable"
-msgstr ""
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -2203,11 +2199,11 @@ msgid "Enter number"
 msgstr "Zadejte číslo"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bitů/Vzorek"
+msgid "Bits/sample"
+msgstr "Bitů/vzorek"
 
 msgctxt "#613"
-msgid "Sample Frequency"
+msgid "Sample rate"
 msgstr "Vzorkovací frekvence"
 
 msgctxt "#620"
@@ -3182,10 +3178,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "větrno"
 
-msgctxt "#1413"
-msgid "Patches"
-msgstr ""
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "bouřka"
@@ -3205,10 +3197,6 @@ msgstr "kroupy"
 msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "Bouřky"
-
-msgctxt "#1419"
-msgid "Shallow"
-msgstr ""
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3230,10 +3218,6 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Zamračeno"
 
-msgctxt "#1425"
-msgid "Pellets"
-msgstr ""
-
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Krupobití"
@@ -3241,18 +3225,6 @@ msgstr "Krupobití"
 msgctxt "#1427"
 msgid "Smoke"
 msgstr "Dým"
-
-msgctxt "#1428"
-msgid "Volcanic"
-msgstr ""
-
-msgctxt "#1429"
-msgid "Ash"
-msgstr ""
-
-msgctxt "#1430"
-msgid "Widespread"
-msgstr ""
 
 msgctxt "#1431"
 msgid "Dust"
@@ -3266,21 +3238,9 @@ msgctxt "#1433"
 msgid "Spray"
 msgstr "Sprška"
 
-msgctxt "#1434"
-msgid "Whirls"
-msgstr ""
-
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Písečná bouře"
-
-msgctxt "#1436"
-msgid "Blowing"
-msgstr ""
-
-msgctxt "#1437"
-msgid "Pellet"
-msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
@@ -3294,22 +3254,6 @@ msgctxt "#1440"
 msgid "Sleet"
 msgstr "Plískanice"
 
-msgctxt "#1441"
-msgid "with"
-msgstr ""
-
-msgctxt "#1442"
-msgid "Chance"
-msgstr ""
-
-msgctxt "#1443"
-msgid "of"
-msgstr ""
-
-msgctxt "#1444"
-msgid "Funnel"
-msgstr ""
-
 msgctxt "#1445"
 msgid "Cloud"
 msgstr "Mrak"
@@ -3318,17 +3262,9 @@ msgctxt "#1446"
 msgid "Unknown"
 msgstr "Neznámý"
 
-msgctxt "#1447"
-msgid "Squals"
-msgstr ""
-
 msgctxt "#1448"
 msgid "Precipitation"
 msgstr "Srážky"
-
-msgctxt "#1449"
-msgid "Partial"
-msgstr ""
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3344,7 +3280,7 @@ msgstr "Prázdný seznam"
 
 msgctxt "#2081"
 msgid "Went back to parent list because the active list has been emptied"
-msgstr ""
+msgstr "Navráceno na rodičovský seznam, protože aktivní byl vyprázdněn"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -4171,8 +4107,8 @@ msgid "Alarm!"
 msgstr "Budíček."
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Zrušeno %im%is před spuštěním"
+msgid "Cancelled with %im%is left"
+msgstr "Zrušeno. Zbývalo: %im%is"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,8 +5615,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (opačný)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Ruší se..."
+msgid "Cancelling..."
+msgstr "Ruším..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -6550,10 +6486,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Vyhledat chybějící ikonky"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Přepínat kanály bez stisku tlačítka OK"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Skrýt rámček s informacemi o videu"
@@ -6976,19 +6908,31 @@ msgstr "Prosím navštivte xbmc.org/pvr pro více informací."
 
 msgctxt "#19275"
 msgid "Conflict warning"
-msgstr ""
+msgstr "Upozornění o konfliktu"
 
 msgctxt "#19276"
 msgid "Conflict error"
-msgstr ""
+msgstr "Chyba konfliktu"
 
 msgctxt "#19277"
 msgid "Recording conflict"
-msgstr ""
+msgstr "Konflikt při nahrávaní"
 
 msgctxt "#19278"
 msgid "Recording error"
-msgstr ""
+msgstr "Chyba při nahrávaní"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Specifické pro klienta"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Specifická nastavení klienta"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Potvrzovat přepnutí kanálu stiskem OK"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8142,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Řazení: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Prohledávám filmy pomocí %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Prohledávám hudební videa pomocí %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Prohledávám televizní pořady pomocí %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Prohledávám umělce pomocí %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Prohledávám alba pomocí %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Přehrát část..."
@@ -9154,6 +9118,10 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr "Externí úložiště"
 
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Počet shlédnutých epizod."
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Umístění titulků"
@@ -9688,7 +9656,7 @@ msgstr "Běží"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr ""
+msgstr "Škálovat teletext na 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
