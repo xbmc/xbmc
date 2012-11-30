@@ -2,7 +2,7 @@ include ../Makefile.include
 DEPS= ../Makefile.include Makefile 0001-packaging-only-advertise-a-single-platform-for-compa.patch
 
 LIBNAME=xbmc-pvr-addons
-VERSION=d2abadfd7b093c417051ad5bc767c40d3c6337ae
+VERSION=252fbbeaa1b2615ec21204756f5db8309b144da8
 GIT_DIR=$(TARBALLS_LOCATION)/$(LIBNAME).git
 BASE_URL=git://github.com/opdenkamp/$(LIBNAME).git
 DYLIB=$(PLATFORM)/addons/pvr.demo/.libs/libpvrdemo-addon.so
