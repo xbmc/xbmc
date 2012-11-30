@@ -4535,6 +4535,7 @@ bool CApplication::ToggleDPMS(bool manual)
 
 bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false */)
 {
+  bool result;
 
 #ifdef HAS_LCD
     // turn on lcd backlight
@@ -4551,10 +4552,19 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
     // (DPMS came first), activate screensaver now.
     ToggleDPMS(false);
     ResetScreenSaverTimer();
-    return !m_bScreenSave || WakeUpScreenSaver(bPowerOffKeyPressed);
+    result = !m_bScreenSave || WakeUpScreenSaver(bPowerOffKeyPressed);
   }
   else
-    return WakeUpScreenSaver(bPowerOffKeyPressed);
+    result = WakeUpScreenSaver(bPowerOffKeyPressed);
+
+  if(result)
+  {
+    // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
+    CVariant data(bPowerOffKeyPressed);
+    CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
+  }
+
+  return result;
 }
 
 bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
@@ -4588,10 +4598,6 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     m_bScreenSave = false;
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
-
-    // allow listeners to ignore the deactivation if it preceeds a powerdown/suspend etc
-    CVariant data(bPowerOffKeyPressed);
-    CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
 
     if (m_screenSaver->ID() == "visualization")
     {
