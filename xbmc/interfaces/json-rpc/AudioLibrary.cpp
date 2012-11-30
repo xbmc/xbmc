@@ -117,7 +117,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransp
     param["properties"] = CVariant(CVariant::VariantTypeArray);
   param["properties"].append("artist");
 
-  HandleFileItem("artistid", false, "artistdetails", items[0], parameterObject, param["properties"], result, false);
+  HandleFileItem("artistid", false, "artistdetails", items[0], param, param["properties"], result, false);
   return OK;
 }
 
