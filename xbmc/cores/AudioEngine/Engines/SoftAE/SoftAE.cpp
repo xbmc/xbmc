@@ -1017,34 +1017,8 @@ void CSoftAE::Run()
         restart = true;
     }
 
-    if (m_playingStreams.empty() && m_playing_sounds.empty() && m_streams.empty() && 
-       !m_softSuspend && !g_advancedSettings.m_streamSilence)
-    {
-      m_softSuspend = true;
-      m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
-    }
-
-    unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
-
-    /* idle while in Suspend() state until Resume() called */
-    /* idle if nothing to play and user hasn't enabled     */
-    /* continuous streaming (silent stream) in as.xml      */
-    while ((m_isSuspended || (m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
-            m_running     && !m_reOpen      && !restart)
-    {
-      if (m_sink)
-      {
-        /* take the sink lock */
-        CExclusiveLock sinkLock(m_sinkLock);
-        //m_sink->Drain(); TODO: implement
-        m_sink->Deinitialize();
-        delete m_sink;
-        m_sink = NULL;
-      }
-      if (!m_playingStreams.empty() || !m_playing_sounds.empty() || !m_sounds.empty())
-        m_softSuspend = false;
-      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
-    }
+    /* Handle idle or forced suspend */
+    ProcessSuspend();
 
     /* if we are told to restart */
     if (m_reOpen || restart || !m_sink)
@@ -1403,5 +1377,53 @@ inline void CSoftAE::RemoveStream(StreamList &streams, CSoftAEStream *stream)
 
   if (streams == m_playingStreams)
     m_streamsPlaying = !m_playingStreams.empty();
+}
+
+inline void CSoftAE::ProcessSuspend()
+{
+  bool sinkIsSuspended = false;
+
+  if (m_playingStreams.empty() && m_playing_sounds.empty() && 
+     !m_softSuspend && !g_advancedSettings.m_streamSilence)
+  {
+    m_softSuspend = true;
+    m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+  }
+
+  unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
+
+  /* idle while in Suspend() state until Resume() called */
+  /* idle if nothing to play and user hasn't enabled     */
+  /* continuous streaming (silent stream) in as.xml      */
+  while ((m_isSuspended || (m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
+          m_running     && !m_reOpen)
+  {
+    if (m_sink && !sinkIsSuspended)
+    {
+      /* put the sink in Suspend mode */
+      CExclusiveLock sinkLock(m_sinkLock);
+      if (!m_sink->SoftSuspend())
+      {
+        sinkIsSuspended = false; //sink cannot be suspended
+        m_softSuspend   = false; //break suspend loop
+        break;
+      }
+      else
+        sinkIsSuspended = true; //sink has suspended processing
+      sinkLock.Leave();
+    }
+
+    /* idle for platform-defined time */
+    m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
+
+    /* check if we need to resume for stream or sound */
+    if (!m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
+    {
+      m_reOpen = !m_sink->SoftResume(); // sink returns false if it requires reinit
+      sinkIsSuspended = false; //sink processing data
+      m_softSuspend   = false; //break suspend loop
+      break;
+    }
+  }
 }
 
