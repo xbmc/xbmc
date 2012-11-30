@@ -1,14 +1,14 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.0
+# Addon version: 2.1.1
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-29 19:06+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/el/)\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Αλλαγή"
 
 msgctxt "#31003"
 msgid "Power Options"
-msgstr "Επιλογές Λειτουργίας"
+msgstr "Επιλογές Ενέργειας"
 
 msgctxt "#31004"
 msgid "Working..."
@@ -63,7 +63,7 @@ msgstr "Αντικείμενα"
 
 msgctxt "#31026"
 msgid "Misc Options"
-msgstr "Διάφορες επιλογές"
+msgstr "Διάφορες Επιλογές"
 
 msgctxt "#31027"
 msgid "Location"
@@ -115,7 +115,7 @@ msgstr "Προρυθμίσεις Οπτικοποιητή"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Χρόνος λήξης"
+msgstr "Χρόνος Λήξης"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
@@ -155,7 +155,7 @@ msgstr "Τρέχουσα Επιλογή"
 
 msgctxt "#31101"
 msgid "Home screen options"
-msgstr "Επιλογές αρχικής οθόνης"
+msgstr "Επιλογές Αρχικής Οθόνης"
 
 msgctxt "#31102"
 msgid "Background"
@@ -199,19 +199,19 @@ msgstr "Επιλογές"
 
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr "Εμφάνιση των πρόσφατα προστιθέμενων άλμπουμ"
+msgstr "Εμφάνιση Άλμπουμ που Προστέθηκαν Πρόσφατα"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "Εμφάνιση των πρόσφατα προστιθέμενων βίντεο"
+msgstr "Εμφάνιση Βίντεο που Προστέθηκαν Πρόσφατα"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
-msgstr "Υπομενού Εφαρμογών αρχικής οθόνης"
+msgstr "Υπομενού Εφαρμογών Αρχικής Οθόνης"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Απόκρυψη Fanart υποβάθρου"
+msgstr "Απόκρυψη Fanart Υποβάθρου"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -219,15 +219,15 @@ msgstr "Σελίδα Καιρού"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Εμφάνιση ως υπόβαθρο το βίντεο που \"Τώρα Εκτελείται\""
+msgstr "Υπόβαθρο το βίντεο που \"Τώρα Εκτελείται\""
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Εμφάνιση ως υπόβαθρο η οπτικοποίηση που \"Τώρα Εκτελείται\""
+msgstr "Υπόβαθρο η οπτικοποίηση που \"Τώρα Εκτελείται\""
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Αναπαραγωγή τραγουδιών σειρών (πρόσθετο TvTunes)"
+msgstr "Αναπαραγωγή μουσικής σειρών στη συλλογή (πρόσθετο TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -247,19 +247,19 @@ msgstr "Πρόσθετο στίχων"
 
 msgctxt "#31133"
 msgid "Subtitle Add-on"
-msgstr "Πρόσθετο υποτίτλων"
+msgstr "Πρόσθετο Υποτίτλων"
 
 msgctxt "#31134"
 msgid "Home Page Videos Submenu"
-msgstr "Υπομενού Βίντεο αρχικής οθόνης"
+msgstr "Υπομενού Βίντεο Αρχικής Οθόνης"
 
 msgctxt "#31135"
 msgid "Home Page Music Submenu"
-msgstr "Υπομενού Μουσικής αρχικής οθόνης"
+msgstr "Υπομενού Μουσικής Αρχικής Οθόνης"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Submenu"
-msgstr "Υπομενού Εικόνων αρχικής οθόνης"
+msgstr "Υπομενού Εικόνων Αρχικής Οθόνης"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -275,11 +275,11 @@ msgstr "Συντομεύσεις"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Επιλογή τραγουδιού"
+msgstr "Επιλογή Τραγουδιού"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
-msgstr "Προέλευση στίχων"
+msgstr "Πηγή Στίχων"
 
 msgctxt "#31206"
 msgid "Found"
@@ -287,7 +287,7 @@ msgstr "Βρέθηκαν"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr "Εύρεση περισσότερων"
+msgstr "Εύρεση Περισσότερων"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
@@ -295,11 +295,11 @@ msgstr "Επερχόμενα Επεισόδια"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Τρέχουσα θερμοκρασία"
+msgstr "Τρέχουσα Θερμοκρασία"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Τελευταία ενημέρωση"
+msgstr "Τελευταία Ενημέρωση"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -311,19 +311,19 @@ msgstr "Απόκρυψη Fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
-msgstr "Λεπτομέρειες ταινίας"
+msgstr "Λεπτομέρειες Ταινίας"
 
 msgctxt "#31309"
 msgid "Memory Used:"
-msgstr "Χρήση μνήμης:"
+msgstr "Χρήση Μνήμης:"
 
 msgctxt "#31310"
 msgid "Track Number"
-msgstr "Αριθμός κομματιού"
+msgstr "Αριθμός Κομματιού"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Εικόνα Fanart[CR][CR]Μη διαθέσιμη[CR][CR] Πιέστε το πλήκτρο για να θέσετε"
+msgstr "Εικόνα Fanart[CR][CR]Μη διαθέσιμη[CR][CR] Πιέστε το πλήκτρο για να ορίσετε"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -339,19 +339,19 @@ msgstr "Επιλογές Σάρωσης Περιεχομένου"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Ορισμός διαδρομής Fanart"
+msgstr "Ορισμός Διαδρομής Fanart"
 
 msgctxt "#31319"
 msgid "Selected Profile"
-msgstr "Επιλεγμένο προφίλ"
+msgstr "Επιλεγμένο Προφίλ"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Τελευταία είσοδος"
+msgstr "Τελευταία Είσοδος"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"
-msgstr "Επιλογέας τραγουδιού Karaoke"
+msgstr "Επιλογή Τραγουδιού Karaoke"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -403,11 +403,11 @@ msgstr "Πίσω"
 
 msgctxt "#31355"
 msgid "Movie menu"
-msgstr "Μενού ταινίας"
+msgstr "Μενού Ταινιών"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Λήψη υποτίτλων"
+msgstr "Λήψη Υποτίτλων"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -431,7 +431,7 @@ msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΒΙΝΤΕΟ[/B][CR][CR]Διαχείριση τη�
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΜΟΥΣΙΚΗΣ[/B][CR][CR]Διαχείριση της συλλογής τραγουδιών · Ρύθμιση αναπαραγωγής μουσικής · Επιλογές καταλόγου μουσικής[CR]Ρύθμιση υποβολής τραγουδιού · Επιλογές karaoke"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΜΟΥΣΙΚΗΣ[/B][CR][CR]Διαχείριση της μουσικής συλλογής · Ρύθμιση αναπαραγωγής μουσικής · Επιλογές καταλόγου μουσικής[CR]Ρύθμιση υποβολής τραγουδιού · Επιλογές karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
@@ -443,7 +443,7 @@ msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΚΑΙΡΟΥ[/B][CR][CR]Ορισμός τριών 
 
 msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
-msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΣΥΣΤΗΜΑΤΟΣ[/B][CR][CR]Διαμόρφωση και βαθμονόμηση οθονών · Ρύθμιση εξόδου ήχου · Εγκατάσταση τηλεχειριστηρίων · Ρύθμιση εξοικονόμησης ενέργειας · Ενεργοποίηση καταγραφής σφαλμάτων (debug) · Ρύθμιση κεντρικού κλειδώματος"
+msgstr "[B]ΡΥΘΜΙΣΕΙΣ ΣΥΣΤΗΜΑΤΟΣ[/B][CR][CR]Διαμόρφωση και βαθμονόμηση οθονών · Ρύθμιση εξόδου ήχου · Τηλεχειριστήρια · Εξοικονόμηση ενέργειας · Καταγραφή σφαλμάτων (debug) · Κεντρικό κλείδωμα"
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
@@ -463,7 +463,7 @@ msgstr "Αρχική βοήθεια...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Αυτή η ετικέτα υποδεικνύει ότι υπάρχει ένα μενού στο πλάι αυτού του παραθύρου που περιέχει επιπλέον επιλογές για τον τομέα.  Για να το ανοίξετε, πιέστε το αντίστοιχο πλήκτρο κατεύθυνσης ή μετακινήστε το ποντίκι σας πάνω στην ετικέτα. [CR][CR]Πιέστε 'Επιλογή' για να κλείσετε αυτό το παράθυρο. Δε θα εμφανιστεί ξανά."
+msgstr "Αυτή η ετικέτα υποδεικνύει ότι υπάρχει ένα μενού στο πλάι του παραθύρου που περιέχει επιπλέον επιλογές.  Για να το ανοίξετε, πιέστε το αντίστοιχο πλήκτρο κατεύθυνσης ή μετακινήστε το ποντίκι σας πάνω στην ετικέτα. [CR][CR]Πιέστε 'Επιλογή' για να κλείσει αυτό το παράθυρο. Δε θα εμφανιστεί ξανά."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -529,10 +529,6 @@ msgctxt "#31905"
 msgid "Forecast"
 msgstr "Πρόγνωση"
 
-msgctxt "#31906"
-msgid "Maps & Video"
-msgstr "Χάρτες & Βίντεο"
-
 msgctxt "#31908"
 msgid "Chance of Precipitation"
 msgstr "Πιθανότητα Υετού"
@@ -540,3 +536,7 @@ msgstr "Πιθανότητα Υετού"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Ανάκτηση πρόγνωσης καιρού..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Χάρτης & Προειδοποιήσεις"

@@ -1,14 +1,14 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.0
+# Addon version: 2.1.1
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-11-02 05:20+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -451,7 +451,7 @@ msgstr "[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők 
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]TV BEÁLLÍTÁSOK[/B][CR][CR]Teljesképernyős infó · Elektronikus Programújság beállítások"
+msgstr "[B]TV BEÁLLÍTÁSOK[/B][CR][CR]Teljesképernyős infó · Elektronikus Programújság (EPG) beállítások"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -459,11 +459,11 @@ msgstr "[B]SZOLGÁLTATÁSOK BEÁLLÍTÁSA[/B][CR][CR]XBMC UPNP-n és HTTP-n�
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr "Első indításkor segítség"
+msgstr "Segítség első indításkor..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Ez a fül azt jelzi hogy oldalt van egy menü, extra opciókkal ehhez a tartalomhoz.  A menühöz hozzáférhetsz ha az egérmutatót a fül fölé viszed, vagy a bal nyilat megnyomod a távirányítón. [CR][CR]Nyomj \"OK\" gombot a szöveg bezárásához. Nem fog mégegyszer megjelenni."
+msgstr "Ez a fül azt jelzi hogy oldalt van egy menü, extra opciókkal az adott tartalomhoz.  A menühöz hozzáférhetsz ha az egérmutatót a fül fölé viszed, vagy a bal nyilat megnyomod a távirányítón. [CR][CR]Nyomj \"OK\" gombot a szöveg bezárásához. Nem fog mégegyszer megjelenni."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -529,10 +529,6 @@ msgctxt "#31905"
 msgid "Forecast"
 msgstr "Előrejelzés"
 
-msgctxt "#31906"
-msgid "Maps & Video"
-msgstr "Térképek & Videó"
-
 msgctxt "#31908"
 msgid "Chance of Precipitation"
 msgstr "Csapadék esélye"
@@ -540,3 +536,7 @@ msgstr "Csapadék esélye"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Előrejelzési információ letöltése..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Térkép & Riasztások"
