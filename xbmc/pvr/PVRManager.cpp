@@ -275,16 +275,19 @@ bool CPVRManager::SetWakeupCommand(void)
   {
     time_t iWakeupTime;
     const CDateTime nextEvent = m_timers->GetNextEventTime();
-    nextEvent.GetAsTime(iWakeupTime);
-
-    CStdString strExecCommand;
-    strExecCommand.Format("%s %d", strWakeupCommand, iWakeupTime);
-
-    const int iReturn = system(strExecCommand.c_str());
-    if (iReturn != 0)
-      CLog::Log(LOGERROR, "%s - failed to execute wakeup command '%s': %s (%d)", __FUNCTION__, strExecCommand.c_str(), strerror(iReturn), iReturn);
-
-    return iReturn == 0;
+    if (nextEvent.IsValid())
+    {
+      nextEvent.GetAsTime(iWakeupTime);
+        
+      CStdString strExecCommand;
+      strExecCommand.Format("%s %d", strWakeupCommand, iWakeupTime);
+        
+      const int iReturn = system(strExecCommand.c_str());
+      if (iReturn != 0)
+        CLog::Log(LOGERROR, "%s - failed to execute wakeup command '%s': %s (%d)", __FUNCTION__, strExecCommand.c_str(), strerror(iReturn), iReturn);
+        
+      return iReturn == 0;
+    }
   }
 
   return false;
