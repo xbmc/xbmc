@@ -685,7 +685,7 @@ CDateTime CPVRTimers::GetNextEventTime(void) const
       const CDateTimeSpan oneDay(1,0,0,0);
       dailywakeuptime += oneDay;
     }
-    if (dailywakeuptime < wakeuptime)
+    if (!wakeuptime.IsValid() || dailywakeuptime < wakeuptime)
       wakeuptime = dailywakeuptime;
   }
 

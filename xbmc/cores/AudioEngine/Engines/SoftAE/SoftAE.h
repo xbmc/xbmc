@@ -120,6 +120,8 @@ private:
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
 
+  inline void ProcessSuspend(); /* enter suspend state if nothing to play and sink allows */
+
   inline void GetDeviceFriendlyName(std::string &device);
 
   IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough, std::string &device);
@@ -133,9 +135,10 @@ private:
   bool m_stereoUpmix;
 
   /* internal vars */
-  bool             m_running, m_reOpen, m_isSuspended;
-  bool             m_softSuspend;      /* latches after last stream or sound played for timer below */
-  unsigned int     m_softSuspendTimer; /* time in milliseconds to hold sink open before soft suspend */
+  bool             m_running, m_reOpen;
+  bool             m_isSuspended;      /* engine suspended by external function to release audio context */
+  bool             m_softSuspend;      /* latches after last stream or sound played for timer below for idle */
+  unsigned int     m_softSuspendTimer; /* time in milliseconds to hold sink open before soft suspend for idle */
   CEvent           m_reOpenEvent;
   CEvent           m_wake;
 

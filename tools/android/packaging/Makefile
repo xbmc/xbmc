@@ -42,8 +42,9 @@ multi: x86 arm
 
 package: extras
 	@cp images/xbmcapp-debug-skeleton.apk images/xbmcapp-debug-$(PLATFORM)-unaligned.apk
-	@javac xbmc/src/org/xbmc/xbmc/xbmc.java
-	@$(DX) --dex --output=xbmc/classes.dex xbmc/src/org/xbmc/xbmc/
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/*.java
+	@javac -classpath $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar:xbmc/obj -d xbmc/obj -sourcepath xbmc/src xbmc/src/org/xbmc/xbmc/*.java
+	@$(DX) --dex --output=xbmc/classes.dex xbmc/obj
 	@cd xbmc; zip -r -q ../images/xbmcapp-debug-$(PLATFORM)-unaligned.apk lib/$(PLATFORM) assets classes.dex
 	@jarsigner -keystore ~/.android/debug.keystore -storepass android images/xbmcapp-debug-$(PLATFORM)-unaligned.apk androiddebugkey
 	@$(SDKROOT)/tools/zipalign -f 4 images/xbmcapp-debug-$(PLATFORM)-unaligned.apk $(XBMCROOT)/xbmcapp-$(PLATFORM)-debug.apk
@@ -54,12 +55,14 @@ extras: libs
 	rm -rf xbmc/assets/python2.6/lib/
 	mkdir -p xbmc/assets xbmc/res xbmc/assets/python2.6/lib/
 	cp -rfp $(PREFIX)/share/xbmc/* ./xbmc/assets
+	find `pwd`/xbmc/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/xbmc/assets/system/ -name "*.so" -exec rm {} \;
 	find `pwd`/xbmc/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
 	cp -rfp $(PREFIX)/lib/python2.6 xbmc/assets/python2.6/lib/
+	cp -rfp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
 	cd xbmc/assets/python2.6/lib/python2.6/; rm -rf test config lib-dynload
 	mkdir -p tmp/res; $(AAPT) c -S xbmc/res -C tmp/res; cp -r -n xbmc/res tmp/ || true
-	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/xbmcapp-debug-skeleton.apk
+	$(AAPT) p -f -I $(SDKROOT)/platforms/$(SDK_PLATFORM)/android.jar -S tmp/res/ -M xbmc/AndroidManifest.xml -F images/xbmcapp-debug-skeleton.apk -J xbmc/src
 	@rm -rf tmp/
 
 libs: $(PREFIX)/lib/xbmc/libxbmc.so
@@ -67,7 +70,6 @@ libs: $(PREFIX)/lib/xbmc/libxbmc.so
 	mkdir -p xbmc/lib/$(PLATFORM) images xbmc/assets/python2.6/lib/ xbmc/libs/$(PLATFORM) xbmc/obj/local/$(PLATFORM)
 	cp -fp $(SRCLIBS) xbmc/obj/local/$(PLATFORM)/
 	cp -fp $(PREFIX)/lib/xbmc/libxbmc.so xbmc/obj/local/$(PLATFORM)/
-	find `pwd`/xbmc/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find $(PREFIX)/lib/xbmc/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(PLATFORM)/ \;
 	find $(PREFIX)/lib/xbmc/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(PLATFORM)/ \;
 	cd xbmc/obj/local/$(PLATFORM)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@

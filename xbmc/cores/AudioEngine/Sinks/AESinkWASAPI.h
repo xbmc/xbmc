@@ -43,6 +43,8 @@ public:
     virtual double       GetCacheTime                ();
     virtual double       GetCacheTotal               ();
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames, bool hasAudio);
+    virtual bool         SoftSuspend                 ();
+    virtual bool         SoftResume                  ();
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
@@ -70,6 +72,7 @@ private:
 
     bool                m_running;
     bool                m_initialized;
+    bool                m_isSuspended;    /* sink is in a suspended state - release audio device */
     bool                m_isDirty;        /* sink output failed - needs re-init or new device */
 
     unsigned int        m_uiBufferLen;    /* wasapi endpoint buffer size, in frames */

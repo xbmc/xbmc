@@ -387,7 +387,7 @@ void CZeroconfAvahi::addService(tServiceMap::mapped_type fp_service_info, AvahiC
   {
     if ((ret = avahi_entry_group_add_service_strlst(fp_service_info->mp_group, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, AvahiPublishFlags(0),
                                              fp_service_info->m_name.c_str(),
-                                             fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, fp_service_info->mp_txt) < 0))
+                                             fp_service_info->m_type.c_str(), NULL, NULL, fp_service_info->m_port, fp_service_info->mp_txt)) < 0)
     {
       if (ret == AVAHI_ERR_COLLISION)
       {

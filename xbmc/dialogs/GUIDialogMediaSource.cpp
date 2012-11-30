@@ -165,8 +165,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
 {
-  VECSOURCES* pShares=NULL;
-
+  VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
   if (pShares)
   {
     for (unsigned int i=0;i<pShares->size();++i)
@@ -175,7 +174,6 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
         return ShowAndEditMediaSource(type,(*pShares)[i]);
     }
   }
-
   return false;
 }
 

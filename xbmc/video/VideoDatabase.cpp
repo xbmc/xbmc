@@ -6433,6 +6433,16 @@ int CVideoDatabase::GetTvShowForEpisode(int idEpisode)
   return false;
 }
 
+int CVideoDatabase::GetSeasonForEpisode(int idEpisode)
+{
+  char column[5];
+  sprintf(column, "c%0d", VIDEODB_ID_EPISODE_SEASON);
+  CStdString id = GetSingleValue("episode", column, PrepareSQL("idEpisode=%i", idEpisode));
+  if (id.IsEmpty())
+    return -1;
+  return atoi(id.c_str());
+}
+
 bool CVideoDatabase::HasContent()
 {
   return (HasContent(VIDEODB_CONTENT_MOVIES) ||
