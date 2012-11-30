@@ -35,6 +35,7 @@
       <xs:enumeration value="osx"/>
       <xs:enumeration value="wingl"/>
       <xs:enumeration value="windx"/>
+      <xs:enumeration value="android"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="platformList">
