@@ -1,16 +1,20 @@
 include ../Makefile.include
-DEPS= ../Makefile.include Makefile
+DEPS= ../Makefile.include Makefile 0001-packaging-only-advertise-a-single-platform-for-compa.patch
 
 LIBNAME=xbmc-pvr-addons
-VERSION=ef09a31abc3e67778d91583dd05ce8455865b2d6
+VERSION=d2abadfd7b093c417051ad5bc767c40d3c6337ae
 GIT_DIR=$(TARBALLS_LOCATION)/$(LIBNAME).git
 BASE_URL=git://github.com/opdenkamp/$(LIBNAME).git
 DYLIB=$(PLATFORM)/addons/pvr.demo/.libs/libpvrdemo-addon.so
 #tell git to use the addons repo rather than xbmc's repo
 export GIT_DIR
 export GIT_WORK_TREE=$(PLATFORM)
+
+#mysql_config is remarkably useless. Help configure find the right one.
+export MYSQL_CONFIG=$(PREFIX)/bin/mysql_config
+
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST)
+CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-addons-with-dependencies
 
 all: .installed-$(PLATFORM)
 
@@ -26,6 +30,7 @@ $(GIT_DIR)/current/$(VERSION): $(GIT_DIR)/HEAD $(DEPS)
 $(PLATFORM)/bootstrap: $(GIT_DIR)/current/$(VERSION)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	git checkout $(VERSION) -- .
+	cd $(PLATFORM); patch -p1 < ../0001-packaging-only-advertise-a-single-platform-for-compa.patch
 
 $(PLATFORM)/configure: $(PLATFORM)/bootstrap
 	cd $(PLATFORM); ./bootstrap
