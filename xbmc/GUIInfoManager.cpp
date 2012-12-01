@@ -4494,7 +4494,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       }
       else if (item->HasVideoInfoTag())
       {
-        duration.Format("%d", item->GetVideoInfoTag()->GetDuration() / 60);
+        if (item->GetVideoInfoTag()->GetDuration() > 0)
+          duration.Format("%d", item->GetVideoInfoTag()->GetDuration() / 60);
       }
       else if (item->HasMusicInfoTag())
       {
