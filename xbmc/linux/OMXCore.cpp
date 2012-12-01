@@ -63,8 +63,13 @@ COMXCoreTunel::COMXCoreTunel()
   m_src_port            = 0;
   m_dst_port            = 0;
   m_portSettingsChanged = false;
+  m_tunnel_set          = false;
   m_DllOMX              = new DllOMX();
-  m_DllOMXOpen          = m_DllOMX->Load();
+
+  if(m_DllOMX)
+    m_DllOMXOpen        = m_DllOMX->Load();
+  else
+    m_DllOMXOpen        = false;
 
   pthread_mutex_init(&m_lock, NULL);
 }
@@ -98,12 +103,14 @@ void COMXCoreTunel::Initialize(COMXCoreComponent *src_component, unsigned int sr
   m_dst_port    = dst_port;
 }
 
+bool COMXCoreTunel::IsInitialized()
+{
+  return m_tunnel_set;
+}
+
 OMX_ERRORTYPE COMXCoreTunel::Flush()
 {
-  if(!m_DllOMXOpen)
-    return OMX_ErrorUndefined;
-
-  if(!m_src_component || !m_dst_component)
+  if(!m_DllOMXOpen || !m_src_component || !m_dst_component || !m_tunnel_set || !IsInitialized())
     return OMX_ErrorUndefined;
 
   Lock();
@@ -145,7 +152,7 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
   if(!m_DllOMXOpen)
     return OMX_ErrorUndefined;
 
-  if(!m_src_component || !m_dst_component)
+  if(!m_src_component || !m_dst_component || !IsInitialized())
     return OMX_ErrorUndefined;
 
   Lock();
@@ -194,6 +201,8 @@ OMX_ERRORTYPE COMXCoreTunel::Deestablish(bool noWait)
           m_dst_component->GetName().c_str(), m_dst_port, (int)omx_err);
     }
   }
+
+  m_tunnel_set = false;
 
   UnLock();
 
@@ -275,6 +284,8 @@ OMX_ERRORTYPE COMXCoreTunel::Establish(bool portSettingsChanged)
     UnLock();
     return OMX_ErrorUndefined;
   }
+
+  m_tunnel_set = true;
 
   if(m_src_component->GetComponent())
   {
@@ -365,11 +376,11 @@ COMXCoreComponent::COMXCoreComponent()
   m_output_buffer_count = 0;
   m_flush_input         = false;
   m_flush_output        = false;
+  m_resource_error      = false;
 
   m_eos                 = false;
 
   m_exit = false;
-  m_DllOMXOpen = false;
 
   pthread_mutex_init(&m_omx_input_mutex, NULL);
   pthread_mutex_init(&m_omx_output_mutex, NULL);
@@ -382,6 +393,11 @@ COMXCoreComponent::COMXCoreComponent()
   m_omx_output_use_buffers = false;
 
   m_DllOMX = new DllOMX();
+
+  if(m_DllOMX)
+    m_DllOMXOpen = m_DllOMX->Load();
+  else
+    m_DllOMXOpen = false;
 
   pthread_mutex_init(&m_lock, NULL);
 }
@@ -399,6 +415,8 @@ COMXCoreComponent::~COMXCoreComponent()
 
   pthread_mutex_destroy(&m_lock);
 
+  if(m_DllOMXOpen)
+    m_DllOMX->Unload();
   delete m_DllOMX;
 }
 
@@ -414,6 +432,9 @@ void COMXCoreComponent::UnLock()
 
 void COMXCoreComponent::TransitionToStateLoaded()
 {
+  if(!m_handle)
+    return;
+
   if(GetState() == OMX_StateExecuting)
     SetStateForComponent(OMX_StatePause);
 
@@ -507,6 +528,9 @@ void COMXCoreComponent::FlushAll()
 
 void COMXCoreComponent::FlushInput()
 {
+  if(!m_handle)
+    return;
+
   Lock();
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -525,6 +549,9 @@ void COMXCoreComponent::FlushInput()
 
 void COMXCoreComponent::FlushOutput()
 {
+  if(!m_handle)
+    return;
+
   Lock();
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -843,15 +870,12 @@ OMX_ERRORTYPE COMXCoreComponent::FreeOutputBuffers()
 
 OMX_ERRORTYPE COMXCoreComponent::DisableAllPorts()
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
-
-  if(!m_handle)
-  {
-    UnLock();
-    return OMX_ErrorUndefined;
-  }
 
   OMX_INDEXTYPE idxTypes[] = {
     OMX_IndexParamAudioInit,
@@ -1077,18 +1101,14 @@ OMX_ERRORTYPE COMXCoreComponent::WaitForCommand(OMX_U32 command, OMX_U32 nData2,
 
 OMX_ERRORTYPE COMXCoreComponent::SetStateForComponent(OMX_STATETYPE state)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
   
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_STATETYPE state_actual = OMX_StateMax;
 
-  if(!m_handle)
-  {
-    UnLock();
-    return OMX_ErrorUndefined;
-  }
-
-  OMX_GetState(m_handle, &state_actual);
   if(state == state_actual)
   {
     UnLock();
@@ -1127,24 +1147,23 @@ OMX_ERRORTYPE COMXCoreComponent::SetStateForComponent(OMX_STATETYPE state)
 
 OMX_STATETYPE COMXCoreComponent::GetState()
 {
+  if(!m_handle)
+    return (OMX_STATETYPE)0;
+
   Lock();
 
   OMX_STATETYPE state;
 
-  if(m_handle)
-  {
-    OMX_GetState(m_handle, &state);
-    UnLock();
-    return state;
-  }
-
+  OMX_GetState(m_handle, &state);
   UnLock();
-
-  return (OMX_STATETYPE)0;
+  return state;
 }
 
 OMX_ERRORTYPE COMXCoreComponent::SetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR paramStruct)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err;
@@ -1163,6 +1182,9 @@ OMX_ERRORTYPE COMXCoreComponent::SetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR 
 
 OMX_ERRORTYPE COMXCoreComponent::GetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR paramStruct)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err;
@@ -1181,6 +1203,9 @@ OMX_ERRORTYPE COMXCoreComponent::GetParameter(OMX_INDEXTYPE paramIndex, OMX_PTR 
 
 OMX_ERRORTYPE COMXCoreComponent::SetConfig(OMX_INDEXTYPE configIndex, OMX_PTR configStruct)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err;
@@ -1199,6 +1224,9 @@ OMX_ERRORTYPE COMXCoreComponent::SetConfig(OMX_INDEXTYPE configIndex, OMX_PTR co
 
 OMX_ERRORTYPE COMXCoreComponent::GetConfig(OMX_INDEXTYPE configIndex, OMX_PTR configStruct)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err;
@@ -1217,6 +1245,9 @@ OMX_ERRORTYPE COMXCoreComponent::GetConfig(OMX_INDEXTYPE configIndex, OMX_PTR co
 
 OMX_ERRORTYPE COMXCoreComponent::SendCommand(OMX_COMMANDTYPE cmd, OMX_U32 cmdParam, OMX_PTR cmdParamData)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err;
@@ -1235,6 +1266,9 @@ OMX_ERRORTYPE COMXCoreComponent::SendCommand(OMX_COMMANDTYPE cmd, OMX_U32 cmdPar
 
 OMX_ERRORTYPE COMXCoreComponent::EnablePort(unsigned int port,  bool wait)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -1276,6 +1310,9 @@ OMX_ERRORTYPE COMXCoreComponent::EnablePort(unsigned int port,  bool wait)
 
 OMX_ERRORTYPE COMXCoreComponent::DisablePort(unsigned int port, bool wait)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -1317,6 +1354,9 @@ OMX_ERRORTYPE COMXCoreComponent::DisablePort(unsigned int port, bool wait)
 
 OMX_ERRORTYPE COMXCoreComponent::UseEGLImage(OMX_BUFFERHEADERTYPE** ppBufferHdr, OMX_U32 nPortIndex, OMX_PTR pAppPrivate, void* eglImage)
 {
+  if(!m_handle)
+    return OMX_ErrorUndefined;
+
   Lock();
 
   OMX_ERRORTYPE omx_err;
@@ -1337,11 +1377,10 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
 {
   OMX_ERRORTYPE omx_err;
 
-  if(!m_DllOMX->Load())
+  if(!m_DllOMXOpen)
     return false;
 
-  m_DllOMXOpen = true;
-
+  m_resource_error = false;
   m_componentName = component_name;
   
   m_callbacks.EventHandler    = &COMXCoreComponent::DecoderEventHandlerCallback;
@@ -1397,19 +1436,21 @@ bool COMXCoreComponent::Initialize( const std::string &component_name, OMX_INDEX
   return true;
 }
 
+bool COMXCoreComponent::IsInitialized()
+{
+  return (m_handle != NULL);
+}
+
 bool COMXCoreComponent::Deinitialize()
 {
   OMX_ERRORTYPE omx_err;
-
-  if(!m_DllOMXOpen)
-    return false;
 
   m_exit = true;
 
   m_flush_input   = true;
   m_flush_output  = true;
 
-  if(m_handle)
+  if(m_handle && m_DllOMXOpen)
   {
 
     FlushAll();
@@ -1427,15 +1468,12 @@ bool COMXCoreComponent::Deinitialize()
     }  
 
     m_handle = NULL;
-
   }
 
-  m_DllOMXOpen    = false;
-  m_DllOMX->Unload();
-
-  m_input_port    = 0;
-  m_output_port   = 0;
-  m_componentName = "";
+  m_input_port      = 0;
+  m_output_port     = 0;
+  m_componentName   = "";
+  m_resource_error  = false;
 
   return true;
 }
@@ -1639,12 +1677,14 @@ OMX_ERRORTYPE COMXCoreComponent::DecoderEventHandler(
         break;
         case OMX_ErrorInsufficientResources:
           CLog::Log(LOGERROR, "%s::%s %s - OMX_ErrorInsufficientResources, insufficient resources\n", CLASSNAME, __func__, ctx->GetName().c_str());
+          ctx->m_resource_error = true;
         break;
         case OMX_ErrorFormatNotDetected:
           CLog::Log(LOGERROR, "%s::%s %s - OMX_ErrorFormatNotDetected, cannot parse input stream\n", CLASSNAME, __func__, ctx->GetName().c_str());
         break;
         case OMX_ErrorPortUnpopulated:
-          CLog::Log(LOGERROR, "%s::%s %s - OMX_ErrorPortUnpopulated port %d, cannot parse input stream\n", CLASSNAME, __func__, ctx->GetName().c_str(), (int)nData2);
+          if(ctx->GetName() != std::string("OMX.broadcom.audio_mixer"))
+            CLog::Log(LOGERROR, "%s::%s %s - OMX_ErrorPortUnpopulated port %d, cannot parse input stream\n", CLASSNAME, __func__, ctx->GetName().c_str(), (int)nData2);
         break;
         case OMX_ErrorStreamCorrupt:
           CLog::Log(LOGERROR, "%s::%s %s - OMX_ErrorStreamCorrupt, Bitstream corrupt\n", CLASSNAME, __func__, ctx->GetName().c_str());
