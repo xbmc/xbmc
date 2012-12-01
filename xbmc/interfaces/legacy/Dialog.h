@@ -35,7 +35,9 @@ namespace XBMCAddon
   namespace xbmcgui
   {
     /**
+     * <pre>
      * Dialog class (Duh!)
+     * </pre>
      */
     class Dialog : public AddonClass
     {
@@ -45,6 +47,7 @@ namespace XBMCAddon
       virtual ~Dialog();
 
       /**
+       * <pre>
        * yesno(heading, line1[, line2, line3]) -- Show a dialog 'YES/NO'.
        * 
        * heading        : string or unicode - dialog heading.
@@ -59,6 +62,7 @@ namespace XBMCAddon
        * example:
        *   - dialog = xbmcgui.Dialog()
        *   - ret = dialog.yesno('XBMC', 'Do you want to exit this script?')\n
+       * </pre>
        */
       bool yesno(const String& heading, const String& line1, 
                  const String& line2 = emptyString,
@@ -67,6 +71,7 @@ namespace XBMCAddon
                  const String& yeslabel = emptyString) throw (WindowException);
 
       /**
+       * <pre>
        * select(heading, list) -- Show a select dialog.
        * 
        * heading        : string or unicode - dialog heading.
@@ -78,10 +83,12 @@ namespace XBMCAddon
        * example:
        *   - dialog = xbmcgui.Dialog()
        *   - ret = dialog.select('Choose a playlist', ['Playlist #1', 'Playlist #2, 'Playlist #3'])\n
+       * </pre>
        */
       int select(const String& heading, const std::vector<String>& list, int autoclose=0) throw (WindowException);
 
       /**
+       * <pre>
        * ok(heading, line1[, line2, line3]) -- Show a dialog 'OK'.
        * 
        * heading        : string or unicode - dialog heading.
@@ -94,12 +101,14 @@ namespace XBMCAddon
        * example:
        *   - dialog = xbmcgui.Dialog()
        *   - ok = dialog.ok('XBMC', 'There was an error.')\n
+       * </pre>
        */
       bool ok(const String& heading, const String& line1, 
               const String& line2 = emptyString,
               const String& line3 = emptyString) throw (WindowException);
 
       /**
+       * <pre>
        * browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default, enableMultiple]) -- Show a 'Browse' dialog.
        * 
        * type           : integer - the type of browse dialog.
@@ -128,6 +137,7 @@ namespace XBMCAddon
        * example:
        *   - dialog = xbmcgui.Dialog()
        *   - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, False, 'special://masterprofile/script_data/XBMC Lyrics')
+       * </pre>
        */
       Alternative<String, std::vector<String> > browse(int type, const String& heading, const String& s_shares,
                           const String& mask = emptyString, bool useThumbs = false, 
@@ -135,6 +145,7 @@ namespace XBMCAddon
                           bool enableMultiple = false) throw (WindowException);
  
       /**
+       * <pre>
        * browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) -- Show a 'Browse' dialog.
        * 
        * type           : integer - the type of browse dialog.
@@ -158,6 +169,7 @@ namespace XBMCAddon
        * example:
        *   - dialog = xbmcgui.Dialog()
        *   - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'special://masterprofile/script_data/XBMC Lyrics')\n
+       * </pre>
        */
       String browseSingle(int type, const String& heading, const String& shares,
                           const String& mask = emptyString, bool useThumbs = false, 
@@ -165,6 +177,7 @@ namespace XBMCAddon
                           const String& defaultt = emptyString ) throw (WindowException);
 
       /**
+       * <pre>
        * browse(type, heading, shares[, mask, useThumbs, treatAsFolder, default]) -- Show a 'Browse' dialog.
        * 
        * type           : integer - the type of browse dialog.
@@ -186,6 +199,7 @@ namespace XBMCAddon
        * example:
        *   - dialog = xbmcgui.Dialog()
        *   - fn = dialog.browseMultiple(2, 'XBMC', 'files', '', False, False, 'special://masterprofile/script_data/XBMC Lyrics')\n
+       * </pre>
        */
       std::vector<String> browseMultiple(int type, const String& heading, const String& shares,
                                          const String& mask = emptyString, bool useThumbs = false, 
@@ -194,6 +208,7 @@ namespace XBMCAddon
 
 
       /**
+       * <pre>
        * numeric(type, heading[, default]) -- Show a 'Numeric' dialog.
        * 
        * type           : integer - the type of numeric dialog.
@@ -212,13 +227,16 @@ namespace XBMCAddon
        * example:
        *   - dialog = xbmcgui.Dialog()
        *   - d = dialog.numeric(1, 'Enter date of birth')\n
+       * </pre>
        */
       String numeric(int type, const String& heading, const String& defaultt = emptyString);
       
     };
 
     /**
+     * <pre>
      * DialogProgress class (Duh!)
+     * </pre>
      */
     class DialogProgress : public AddonClass
     {
@@ -234,6 +252,7 @@ namespace XBMCAddon
 
 
       /**
+       * <pre>
        * create(heading[, line1, line2, line3]) -- Create and show a progress dialog.
        * 
        * heading        : string or unicode - dialog heading.
@@ -246,12 +265,14 @@ namespace XBMCAddon
        * example:
        *   - pDialog = xbmcgui.DialogProgress()
        *   - pDialog.create('XBMC', 'Initializing script...')
+       * </pre>
        */
       void create(const String& heading, const String& line1 = emptyString, 
                   const String& line2 = emptyString,
                   const String& line3 = emptyString) throw (WindowException);
 
       /**
+       * <pre>
        * update(percent[, line1, line2, line3]) -- Update's the progress dialog.
        * 
        * percent        : integer - percent complete. (0:100)
@@ -263,24 +284,29 @@ namespace XBMCAddon
        * 
        * example:
        *   - pDialog.update(25, 'Importing modules...')
+       * </pre>
        */
       void update(int percent, const String& line1 = emptyString, 
                   const String& line2 = emptyString,
                   const String& line3 = emptyString) throw (WindowException);
 
       /**
+       * <pre>
        * close() -- Close the progress dialog.
        * 
        * example:
        *   - pDialog.close()
+       * </pre>
        */
       void close();
 
       /**
+       * <pre>
        * iscanceled() -- Returns True if the user pressed cancel.
        * 
        * example:
        *   - if (pDialog.iscanceled()): return
+       * </pre>
        */
       bool iscanceled();
     };

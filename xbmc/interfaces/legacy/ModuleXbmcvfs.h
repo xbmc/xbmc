@@ -31,6 +31,7 @@ namespace XBMCAddon
   namespace xbmcvfs
   {
     /**
+     * <pre>
      * copy(source, destination) -- copy file to destination, returns true/false.
      * 
      * source          : file to copy.
@@ -38,21 +39,25 @@ namespace XBMCAddon
      * 
      * example:
      *   success = xbmcvfs.copy(source, destination)
+     * </pre>
      */
     bool copy(const String& strSource, const String& strDestnation);
 
     /**
+     * <pre>
      * delete(file)
      * 
      * file        : file to dele
      * 
      * example:
      *   xbmcvfs.delete(file)
+     * </pre>
      */
     // delete a file
     bool deleteFile(const String& file);
 
     /**
+     * <pre>
      * rename(file, newFileName)
      * 
      * file        : file to reana
@@ -60,60 +65,71 @@ namespace XBMCAddon
      * 
      * example:
      *   success = xbmcvfs.rename(file,newFileName)
+     * </pre>
      */
     // rename a file
     bool rename(const String& file, const String& newFile);
 
     /**
+     * <pre>
      * exists(path)
      * 
      * path        : file or fold
      * 
      * example:
      *   success = xbmcvfs.exists(path)
+     * </pre>
      */
     // check for a file or folder existance, mimics Pythons os.path.exists()
     bool exists(const String& path);
 
     /**
+     * <pre>
      * mkdir(path) -- Create a folder.
      * 
      * path        : folder
      * 
      * example:
      *  - success = xbmcvfs.mkdir(path)
+     * </pre>
      */
     // make a directory
     bool mkdir(const String& path);
 
     /**
+     * <pre>
      * mkdirs(path) -- Create folder(s) - it will create all folders in the path.
      * 
      * path        : folder
      * 
      * example:
      *  - success = xbmcvfs.mkdirs(path)
+     * </pre>
      */
     // make all directories along the path
     bool mkdirs(const String& path);
 
     /**
+     * <pre>
      * rmdir(path) -- Remove a folder.
      * 
      * path        : folder
      * 
      * example:
      *  - success = xbmcvfs.rmdir(path)\n
+     * </pre>
      */
     bool rmdir(const String& path, bool force = false);
 
     /**
+     * <pre>
      * listdir(path) -- lists content of a folder.
      * 
      * path        : folder
      * 
      * example:
      *  - dirs, files = xbmcvfs.listdir(path)
+     * </pre>
      */
     Tuple<std::vector<String>, std::vector<String> > listdir(const String& path);
   }

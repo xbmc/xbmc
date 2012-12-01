@@ -37,32 +37,42 @@ namespace XBMCAddon
       inline virtual ~RenderCapture() { g_renderManager.ReleaseRenderCapture(m_capture); }
 
       /**
+       * <pre>
        * getWidth() -- returns width of captured image.
+       * </pre>
        */
       inline int getWidth() { return m_capture->GetWidth(); }
 
       /**
+       * <pre>
        * getHeight() -- returns height of captured image.
+       * </pre>
        */
       inline int getHeight() { return m_capture->GetHeight(); }
 
       /**
+       * <pre>
        * getCaptureState() -- returns processing state of capture request.
        *
        * The returned value could be compared against the following constants:
        * xbmc.CAPTURE_STATE_WORKING  : Capture request in progress.
        * xbmc.CAPTURE_STATE_DONE     : Capture request done. The image could be retrieved with getImage()
        * xbmc.CAPTURE_STATE_FAILED   : Capture request failed.
+       * </pre>
        */
       inline int getCaptureState() { return m_capture->GetUserState(); }
 
       /**
+       * <pre>
        * getAspectRatio() -- returns aspect ratio of currently displayed video.
+       * </pre>
        */
       inline float getAspectRatio() { return g_renderManager.GetAspectRatio(); }
 
       /**
+       * <pre>
        * getImageFormat() -- returns format of captured image: 'BGRA' or 'RGBA'.
+       * </pre>
        */
       inline const char* getImageFormat()
       {
@@ -75,9 +85,11 @@ namespace XBMCAddon
       // data. A memory buffer type. Then a typemap needs to be defined
       // for that type.
       /**
+       * <pre>
        * getImage() -- returns captured image as a bytearray.
        * 
        * The size of the image is getWidth() * getHeight() * 4
+       * </pre>
        */
 //      PyObject* RenderCapture_GetImage(RenderCapture *self, PyObject *args)
 //      {
@@ -92,6 +104,7 @@ namespace XBMCAddon
 //      }
 
       /**
+       * <pre>
        * capture(width, height [, flags]) -- issue capture request.
        * 
        * width    : Width capture image should be rendered to
@@ -101,6 +114,7 @@ namespace XBMCAddon
        * The value for 'flags' could be or'ed from the following constants:
        * xbmc.CAPTURE_FLAG_CONTINUOUS    : after a capture is done, issue a new capture request immediately
        * xbmc.CAPTURE_FLAG_IMMEDIATELY   : read out immediately when capture() is called, this can cause a busy wait
+       * </pre>
        */
       inline void capture(int width, int height, int flags = 0)
       {
@@ -108,11 +122,13 @@ namespace XBMCAddon
       }
 
       /**
+       * <pre>
        * waitForCaptureStateChangeEvent([msecs]) -- wait for capture state change event.
        * 
        * msecs     : Milliseconds to wait. Waits forever if not specified.
        * 
        * The method will return 1 if the Event was triggered. Otherwise it will return 0.
+       * </pre>
        */
       inline int waitForCaptureStateChangeEvent(unsigned int msecs = 0)
       {

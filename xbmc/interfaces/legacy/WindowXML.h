@@ -51,8 +51,10 @@ namespace XBMCAddon
     protected:
 #ifndef SWIG
       /**
+       * <pre>
        * This helper retrieves the next available id. It is doesn't
        *  assume that the global lock is already being held.
+       * </pre>
        */
       static int lockingGetNextAvailalbeWindowId() throw (WindowException);
 
@@ -116,6 +118,7 @@ namespace XBMCAddon
     };
 
     /**
+     * <pre>
      * Ideally what we want here is a Dialog/Media Window. The problem is that these
      *  are two orthogonal discriminations of CGUIWindow and there wasn't a previous
      *  accounting for this possibility through the use of making CGUIWindow a 
@@ -129,6 +132,7 @@ namespace XBMCAddon
      * jmarshall says that this class has no reason to inherit from CGUIMediaWindow.
      *  At some point this entire hierarchy needs to be reworked. The XML handling
      *  routines should be put in a mixin.
+     * </pre>
      */
     class WindowXMLDialog : public WindowXML, private WindowDialogMixin
     {

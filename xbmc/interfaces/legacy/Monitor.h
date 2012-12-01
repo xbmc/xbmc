@@ -29,9 +29,11 @@ namespace XBMCAddon
   namespace xbmc
   {
     /**
+     * <pre>
      * Monitor class.
      * 
      * Monitor() -- Creates a new Monitor to notify addon about changes.
+     * </pre>
      */
     class Monitor : public AddonCallback
     {
@@ -48,39 +50,49 @@ namespace XBMCAddon
 #endif
 
       /**
+       * <pre>
        * onSettingsChanged() -- onSettingsChanged method.
        * 
        * Will be called when addon settings are changed
+       * </pre>
        */
       virtual void    onSettingsChanged() { TRACE; }
 
       /**
+       * <pre>
        * onScreensaverActivated() -- onScreensaverActivated method.
        * 
        * Will be called when screensaver kicks in
+       * </pre>
        */
       virtual void    onScreensaverActivated() { TRACE; }
 
       /**
+       * <pre>
        * onScreensaverDeactivated() -- onScreensaverDeactivated method.
        * 
        * Will be called when screensaver goes off
+       * </pre>
        */
       virtual void    onScreensaverDeactivated() { TRACE; }
 
       /**
+       * <pre>
        * onDatabaseUpdated(database) -- onDatabaseUpdated method.
        * 
        * database - video/music as stri
        * 
        * Will be called when database gets updated and return video or music to indicate which DB has been changed
+       * </pre>
        */
       virtual void    onDatabaseUpdated(const String database) { TRACE; }
 
       /**
+       * <pre>
        * onAbortRequested() -- onAbortRequested method.
        * 
        * Will be called when XBMC requests Abort
+       * </pre>
        */
       virtual void    onAbortRequested() { TRACE; }
 

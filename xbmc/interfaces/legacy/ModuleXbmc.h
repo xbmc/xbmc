@@ -39,6 +39,7 @@ namespace XBMCAddon
 #endif
 
     /**
+     * <pre>
      * log(msg[, level]) -- Write a string to XBMC's log file and the debug window.
      *     msg            : string - text to output.
      *     level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)
@@ -54,35 +55,43 @@ namespace XBMCAddon
      *           
      *           example:
      *             - xbmc.output(msg='This is a test string.', level=xbmc.LOGDEBUG));
+     * </pre>
      */
     void log(const char* msg, int level = lLOGNOTICE);
 
     /**
+     * <pre>
      * Shutdown() -- Shutdown the xbox.
      *
      * example:
      *  - xbmc.shutdown()
+     * </pre>
      */
     void shutdown();
 
     /**
+     * <pre>
      * restart() -- Restart the xbox.
      * example:
      *  - xbmc.restart()
+     * </pre>
      */
     void restart();
 
     /**
+     * <pre>
      * executescript(script) -- Execute a python script.
      * 
      * script         : string - script filename to execute.
      * 
      * example:
      *   - xbmc.executescript('special://home/scripts/update.py')
+     * </pre>
      */
     void executescript(const char* script);
 
     /**
+     * <pre>
      * executebuiltin(function) -- Execute a built in XBMC function.
      * 
      * function       : string - builtin function to execute.
@@ -91,15 +100,19 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')
+     * </pre>
      */
     void executebuiltin(const char* function, bool wait = false);
 
     /**
+     * <pre>
      * executehttpapi(httpcommand) -- Not implemented anymore.
+     * </pre>
      */
     String executehttpapi(const char* httpcommand);
 
     /**
+     * <pre>
      * executeJSONRPC(jsonrpccommand) -- Execute an JSONRPC command.
      * 
      * jsonrpccommand    : string - jsonrpc command to execute.
@@ -108,10 +121,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - response = xbmc.executeJSONRPC('{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Introspect\", \"id\": 1 }')
+     * </pre>
      */
     String executeJSONRPC(const char* jsonrpccommand);
 
     /**
+     * <pre>
      * sleep(time) -- Sleeps for 'time' msec.
      * 
      * time           : integer - number of msec to sleep.
@@ -123,10 +138,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmc.sleep(2000) # sleeps for 2 seconds
+     * </pre>
      */
     void sleep(long timemillis);
 
     /**
+     * <pre>
      * getLocalizedString(id) -- Returns a localized 'unicode string'.
      * 
      * id             : integer - id# for string you want to localize.
@@ -136,36 +153,44 @@ namespace XBMCAddon
      * 
      * example:
      *   - locstr = xbmc.getLocalizedString(6)
+     * </pre>
      */
     String getLocalizedString(int id);
 
     /**
+     * <pre>
      * getSkinDir() -- Returns the active skin directory as a string.
      * 
      * *Note, This is not the full path like 'special://home/addons/MediaCenter', but only 'MediaCenter'.
      * 
      * example:
      *   - skindir = xbmc.getSkinDir()
+     * </pre>
      */
     String getSkinDir();
 
     /**
+     * <pre>
      * getLanguage() -- Returns the active language as a string.
      * 
      * example:
      *   - language = xbmc.getLanguage()
+     * </pre>
      */
     String getLanguage();
 
     /**
+     * <pre>
      * getIPAddress() -- Returns the current ip address as a string.
      * 
      * example:
      *   - ip = xbmc.getIPAddress()
+     * </pre>
      */
     String getIPAddress();
 
     /**
+     * <pre>
      * getDVDState() -- Returns the dvd state as an integer.
      * 
      * return values are:
@@ -176,18 +201,22 @@ namespace XBMCAddon
      * 
      * example:
      *   - dvdstate = xbmc.getDVDState()
+     * </pre>
      */
     long getDVDState();
 
     /**
+     * <pre>
      * getFreeMem() -- Returns the amount of free memory in MB as an integer.
      * 
      * example:
      *   - freemem = xbmc.getFreeMem()
+     * </pre>
      */
     long getFreeMem();
 
     /**
+     * <pre>
      * getInfoLabel(infotag) -- Returns an InfoLabel as a string.
      * 
      * infotag        : string - infoTag for value you want returned.
@@ -196,10 +225,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - label = xbmc.getInfoLabel('Weather.Conditions')
+     * </pre>
      */
     String getInfoLabel(const char* cLine);
 
     /**
+     * <pre>
      * getInfoImage(infotag) -- Returns a filename including path to the InfoImage's
      *                          thumbnail as a string.
      * 
@@ -209,30 +240,36 @@ namespace XBMCAddon
      * 
      * example:
      *   - filename = xbmc.getInfoImage('Weather.Conditions')
+     * </pre>
      */
     String getInfoImage(const char * infotag);
 
     /**
+     * <pre>
      * playSFX(filename) -- Plays a wav file by filename
      * 
      * filename       : string - filename of the wav file to play.
      * 
      * example:
      *   - xbmc.playSFX('special://xbmc/scripts/dingdong.wav')
+     * </pre>
      */
     void playSFX(const char* filename);
 
     /**
+     * <pre>
      * enableNavSounds(yesNo) -- Enables/Disables nav sounds
      * 
      * yesNo          : integer - enable (True) or disable (False) nav sounds
      * 
      * example:
      *   - xbmc.enableNavSounds(True)
+     * </pre>
      */
     void enableNavSounds(bool yesNo);
 
     /**
+     * <pre>
      * getCondVisibility(condition) -- Returns True (1) or False (0) as a bool.
      * 
      * condition      : string - condition to check.
@@ -244,28 +281,34 @@ namespace XBMCAddon
      * 
      * example:
      *   - visible = xbmc.getCondVisibility('[Control.IsVisible(41) + !Control.IsVisible(12)]')
+     * </pre>
      */
     bool getCondVisibility(const char *condition);
 
     /**
+     * <pre>
      * getGlobalIdleTime() -- Returns the elapsed idle time in seconds as an integer.
      * 
      * example:
      *   - t = xbmc.getGlobalIdleTime()
+     * </pre>
      */
     int getGlobalIdleTime();
 
     /**
+     * <pre>
      * getCacheThumbName(path) -- Returns a thumb cache filename.
      * 
      * path           : string or unicode - path to file
      * 
      * example:
      *   - thumb = xbmc.getCacheThumbName('f:\\\\videos\\\\movie.avi')
+     * </pre>
      */
     String getCacheThumbName(const String& path);
 
     /**
+     * <pre>
      * makeLegalFilename(filename[, fatX]) -- Returns a legal filename or path as a string.
      * 
      * filename       : string or unicode - filename/path to make legal
@@ -279,10 +322,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - filename = xbmc.makeLegalFilename('F:\\Trailers\\Ice Age: The Meltdown.avi')
+     * </pre>
      */
     String makeLegalFilename(const String& filename,bool fatX = true);
 
     /**
+     * <pre>
      * translatePath(path) -- Returns the translated path.
      * 
      * path           : string or unicode - Path to format
@@ -293,10 +338,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - fpath = xbmc.translatePath('special://masterprofile/script_data')
+     * </pre>
      */
     String translatePath(const String& path);
 
     /**
+     * <pre>
      * getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year string if available.
      * 
      * path           : string or unicode - String to clean
@@ -304,10 +351,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - title, year = xbmc.getCleanMovieTitle('/path/to/moviefolder/test.avi', True)
+     * </pre>
      */
     Tuple<String,String> getCleanMovieTitle(const String& path, bool usefoldername = false);
 
     /**
+     * <pre>
      * validatePath(path) -- Returns the validated path.
      * 
      * path           : string or unicode - Path to format
@@ -317,10 +366,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - fpath = xbmc.validatePath(somepath)
+     * </pre>
      */
     String validatePath(const String& path);
 
     /**
+     * <pre>
      * getRegion(id) -- Returns your regions setting as a string for the specified id.
      * 
      * id             : string - id of setting to return
@@ -331,10 +382,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - date_long_format = xbmc.getRegion('datelong')
+     * </pre>
      */
     String getRegion(const char* id);
 
     /**
+     * <pre>
      * getSupportedMedia(media) -- Returns the supported file types for the specific media as a string.
      * 
      * media          : string - media type
@@ -347,10 +400,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - mTypes = xbmc.getSupportedMedia('video')
+     * </pre>
      */
     String getSupportedMedia(const char* mediaType);
 
     /**
+     * <pre>
      * skinHasImage(image) -- Returns True if the image file exists in the skin.
      * 
      * image          : string - image filename
@@ -361,10 +416,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - exists = xbmc.skinHasImage('ButtonFocusedTexture.png')
+     * </pre>
      */
     bool skinHasImage(const char* image);
 
     /**
+     * <pre>
      * startServer(typ, bStart, bWait) -- start or stop a server.
      * 
      * typ          : integer - use SERVER_* constants
@@ -376,22 +433,27 @@ namespace XBMCAddon
      * returnValue  : bool - True or False
      * example:
      *   - xbmc.startServer(xbmc.SERVER_AIRPLAYSERVER, False)
+     * </pre>
      */
     bool startServer(int iTyp, bool bStart, bool bWait = false);
 
     /**
+     * <pre>
      * audioSuspend() -- Suspend Audio engine.
      * 
      * example:
      *   xbmc.audioSuspend()
+     * </pre>
      */
     void audioSuspend();
 
     /**
+     * <pre>
      * audioResume() -- Resume Audio engine.
      * 
      * example:
      *   xbmc.audioResume()
+     * </pre>
      */  
     void audioResume();
 

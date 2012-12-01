@@ -57,12 +57,16 @@ namespace XBMCAddon
       double getRating();
 
       /**
+       * <pre>
        * getPlayCount() -- returns a integer.
+       * </pre>
        */
       int getPlayCount();
 
       /**
+       * <pre>
        * getLastPlayed() -- returns a string.
+       * </pre>
        */
       String getLastPlayed();
       String getOriginalTitle();
