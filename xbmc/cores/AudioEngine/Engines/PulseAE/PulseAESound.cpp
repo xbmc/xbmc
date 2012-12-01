@@ -22,6 +22,7 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAESound.h"
+#include "PulseAE.h"
 #include "AEFactory.h"
 #include "Utils/AEUtil.h"
 #include "utils/log.h"
@@ -138,7 +139,11 @@ void CPulseAESound::Play()
     pa_operation_unref(m_op);
   m_maxVolume     = CAEFactory::GetEngine()->GetVolume();
   pa_volume_t  paVolume = CAEUtil::PercentToPulseVolume((double)(m_volume * m_maxVolume));
-  m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, paVolume, NULL, NULL);
+  std::string m_outputDevice = CPulseAE::GetAudioDevice(false);
+  if (m_outputDevice == "default")
+    m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, paVolume, NULL, NULL);
+  else
+    m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), m_outputDevice.c_str(), paVolume, NULL, NULL);   
   pa_threaded_mainloop_unlock(m_mainLoop);
 }
 
