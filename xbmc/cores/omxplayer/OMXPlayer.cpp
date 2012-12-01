@@ -597,6 +597,7 @@ retry:
 
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
@@ -1162,9 +1163,9 @@ void COMXPlayer::Process()
         continue;
       }
 
-      // always yield to players if they have data
-      if((m_player_audio.HasData() || m_CurrentAudio.id < 0)
-      && (m_player_video.HasData() || m_CurrentVideo.id < 0))
+      // always yield to players if they have data levels > 50 percent
+      if((m_player_audio.GetLevel() > 50 || m_CurrentAudio.id < 0)
+      && (m_player_video.GetLevel() > 50 || m_CurrentVideo.id < 0))
         Sleep(0);
 
       DemuxPacket* pPacket = NULL;
@@ -1222,7 +1223,16 @@ void COMXPlayer::Process()
           Sleep(100);
           continue;
         }
+        else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+        {
+          CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
+          if (pStream->IsEOF())
+            break;
  
+          Sleep(100);
+          continue;
+        }
+
         // make sure we tell all players to finish it's data
         if(m_CurrentAudio.inited)
           m_player_audio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
