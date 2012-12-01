@@ -2714,10 +2714,15 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 ], [$DISABLE_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
+  if test "$host_vendor" = "apple"; then
+    TEMPCFLAGS="${CFLAGS} -fgnu89-inline";
+  else
+    TEMPCFLAGS="$CFLAGS";
+  fi
   ./configure \
     CC="$CC" \
     CXX="$CXX" \
-    CFLAGS="$CFLAGS" \ 
+    CFLAGS="$TEMPCFLAGS" \ 
     CXXFLAGS="$CXXFLAGS" \
     `if test "$host_vendor" = "apple"; then echo --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib; fi` \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \

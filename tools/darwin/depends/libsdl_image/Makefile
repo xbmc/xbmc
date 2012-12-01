@@ -2,7 +2,7 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=SDL_image
-VERSION=1.2.7
+VERSION=1.2.12
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
