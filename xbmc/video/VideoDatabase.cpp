@@ -4301,6 +4301,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   return true;
 }
 
+int CVideoDatabase::GetMinVersion() const
+{
+  return 74;
+}
+
 bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
 {
   SScanSettings settings;

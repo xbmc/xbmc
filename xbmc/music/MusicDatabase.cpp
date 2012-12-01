@@ -3739,6 +3739,11 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   return true;
 }
 
+int CMusicDatabase::GetMinVersion() const
+{
+  return 31;
+}
+
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
 {
   try
