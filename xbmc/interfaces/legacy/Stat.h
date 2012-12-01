@@ -30,7 +30,6 @@ namespace XBMCAddon
   namespace xbmcvfs
   {
     /**
-     * <pre>
      * Stat(path) -- Get file or file system status.
      * 
      * path        : file or folder
@@ -38,7 +37,6 @@ namespace XBMCAddon
      * example:
      *   st = xbmcvfs.Stat(path)
      *   modified = st.st_mtime()
-     * </pre>
      */
     class Stat : public AddonClass
     {

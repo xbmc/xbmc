@@ -69,97 +69,80 @@ namespace XBMCAddon
       }
 
       /**
-       * <pre>
        * getLabel() -- Returns the listitem label.
        * 
        * example:
        *   - label = self.list.getSelectedItem().getLabel()
-       * </pre>
        */
       String getLabel();
 
       /**
-       * <pre>
        * getLabel2() -- Returns the listitem label.
        * 
        * example:
        *   - label = self.list.getSelectedItem().getLabel2()
-       * </pre>
        */
       String getLabel2();
 
       /**
-       * <pre>
        * setLabel(label) -- Sets the listitem's label.
        * 
        * label          : string or unicode - text string.
        * 
        * example:
        *   - self.list.getSelectedItem().setLabel('Casino Royale')
-       * </pre>
        */
       void setLabel(const String& label);
 
       /**
-       * <pre>
        * setLabel2(label) -- Sets the listitem's label2.
        * 
        * label          : string or unicode - text string.
        * 
        * example:
        *   - self.list.getSelectedItem().setLabel2('Casino Royale')
-       * </pre>
        */
       void setLabel2(const String& label);
 
       /**
-       * <pre>
        * setIconImage(icon) -- Sets the listitem's icon image.
        * 
        * icon            : string - image filename.
        * 
        * example:
        *   - self.list.getSelectedItem().setIconImage('emailread.png')
-       * </pre>
        */
       void setIconImage(const String& iconImage);
 
       /**
-       * <pre>
        * setThumbnailImage(thumbFilename) -- Sets the listitem's thumbnail image.
        * 
        * thumb           : string - image filename.
        * 
        * example:
        *   - self.list.getSelectedItem().setThumbnailImage('emailread.png')
-       * </pre>
        */
       void setThumbnailImage(const String& thumbFilename);
 
       /**
-       * <pre>
        * select(selected) -- Sets the listitem's selected status.
        * 
        * selected        : bool - True=selected/False=not selected
        * 
        * example:
        *   - self.list.getSelectedItem().select(True)
-       * </pre>
        */
       void select(bool selected);
 
       /**
-       * <pre>
        * isSelected() -- Returns the listitem's selected status.
        * 
        * example:
        *   - is = self.list.getSelectedItem().isSelected()
-       * </pre>
        */
       bool isSelected();
 
       /**
-       * <pre>
        * setInfo(type, infoLabels) -- Sets the listitem's infoLabels.
        * 
        * type              : string - type of media(video/music/pictures).
@@ -233,12 +216,10 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.list.getSelectedItem().setInfo('video', { 'Genre': 'Comedy' })\n
-       * </pre>
        */
       void setInfo(const char* type, const Dictionary& infoLabels);
 
       /**
-       * <pre>
        * addStreamInfo(type, values) -- Add a stream with details.
        * 
        * type              : string - type of stream(video/audio/subtitle).
@@ -261,12 +242,10 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.list.getSelectedItem().addStreamInfo('video', { 'Codec': 'h264', 'Width' : 1280 })
-       * </pre>
        */
       void addStreamInfo(const char* cType, const Dictionary& dictionary);
 
       /**
-       * <pre>
        * addContextMenuItems([(label, action,)*], replaceItems) -- Adds item(s) to the context menu for media lists.
        * 
        * items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.
@@ -281,12 +260,10 @@ namespace XBMCAddon
        * 
        * example:
        *   - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])\n
-       * </pre>
        */
       void addContextMenuItems(const std::vector<Tuple<String,String> >& items, bool replaceItems = false) throw (ListItemException);
 
       /**
-       * <pre>
        * setProperty(key, value) -- Sets a listitem property, similar to an infolabel.
        * 
        * key            : string - property name.
@@ -303,12 +280,10 @@ namespace XBMCAddon
        * example:
        *   - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')
        *   - self.list.getSelectedItem().setProperty('StartOffset', '256.4')
-       * </pre>
        */
       void setProperty(const char * key, const String& value);
 
       /**
-       * <pre>
        * getProperty(key) -- Returns a listitem property as a string, similar to an infolabel.
        * 
        * key            : string - property name.
@@ -319,12 +294,10 @@ namespace XBMCAddon
        * 
        * example:
        *   - AspectRatio = self.list.getSelectedItem().getProperty('AspectRatio')
-       * </pre>
        */
       String getProperty(const char* key);
 
       /**
-       * <pre>
        * addContextMenuItems([(label, action,)*], replaceItems) -- Adds item(s) to the context menu for media lists.
        * 
        * items               : list - [(label, action,)*] A list of tuples consisting of label and action pairs.
@@ -339,12 +312,10 @@ namespace XBMCAddon
        * 
        * example:
        *   - listitem.addContextMenuItems([('Theater Showtimes', 'XBMC.RunScript(special://home/scripts/showtimes/default.py,Iron Man)',)])
-       * </pre>
        */
       //    void addContextMenuItems();
 
       /**
-       * <pre>
        * setPath(path) -- Sets the listitem's path.
        * 
        * path           : string or unicode - path, activated when item is clicked.
@@ -353,39 +324,30 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.list.getSelectedItem().setPath(path='ActivateWindow(Weather)')
-       * </pre>
        */
       void setPath(const String& path);
 
       /**
-       * <pre>
        * setMimeType(mimetype) -- Sets the listitem's mimetype if known.
        * 
        * mimetype           : string or unicode - mimetype.
        * 
        * *If known prehand, this can avoid xbmc doing HEAD requests to http servers to figure out file type.
-       * </pre>
        */
       void setMimeType(const String& mimetype);
 
       /**
-       * <pre>
        * getdescription() -- Returns the description of this PlayListItem.
-       * </pre>
        */
       String getdescription();
       
       /**
-       * <pre>
        * getduration() -- Returns the duration of this PlayListItem
-       * </pre>
        */
       String getduration();
 
       /**
-       * <pre>
        * getfilename() -- Returns the filename of this PlayListItem.
-       * </pre>
        */
       String getfilename();
 

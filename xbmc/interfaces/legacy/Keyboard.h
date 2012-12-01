@@ -34,7 +34,6 @@ namespace XBMCAddon
     XBMCCOMMONS_STANDARD_EXCEPTION(KeyboardException);
 
     /**
-     * <pre>
      * Keyboard class.
      * 
      * Keyboard([default, heading, hidden]) -- Creates a new Keyboard object with default text
@@ -52,7 +51,6 @@ namespace XBMCAddon
      *   - kb.doModal()
      *   - if (kb.isConfirmed()):
      *   -   text = kb.getText()
-     * </pre>
      */
     class Keyboard : public AddonClass
     {
@@ -66,57 +64,48 @@ namespace XBMCAddon
       virtual ~Keyboard();
 
       /**
-       * <pre>
        * doModal([autoclose]) -- Show keyboard and wait for user action.
        * 
        * autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)
        * 
        * example:
        *   - kb.doModal(30000)
-       * </pre>
        */
       void doModal(int autoclose = 0) throw (KeyboardException);
 
       // setDefault() Method
       /**
-       * <pre>
        * setDefault(default) -- Set the default text entry.
        * 
        * default        : string - default text entry.
        * 
        * example:
        *   - kb.setDefault('password')
-       * </pre>
        */
       void setDefault(const String& line = emptyString) throw (KeyboardException);
 
       /**
-       * <pre>
        * setHiddenInput(hidden) -- Allows hidden text entry.
        * 
        * hidden        : boolean - True for hidden text entry.
        * example:
        *   - kb.setHiddenInput(True)
-       * </pre>
        */
       void setHiddenInput(bool hidden = false) throw (KeyboardException);
 
       // setHeading() Method
       /**
-       * <pre>
        * setHeading(heading) -- Set the keyboard heading.
        * 
        * heading        : string - keyboard heading.
        * 
        * example:
        *   - kb.setHeading('Enter password')
-       * </pre>
        */
       void setHeading(const String& heading) throw (KeyboardException);
 
       // getText() Method
       /**
-       * <pre>
        * getText() -- Returns the user input as a string.
        * 
        * *Note, This will always return the text entry even if you cancel the keyboard.
@@ -124,18 +113,15 @@ namespace XBMCAddon
        * 
        * example:
        *   - text = kb.getText()
-       * </pre>
        */
       String getText() throw (KeyboardException);
 
       // isConfirmed() Method
       /**
-       * <pre>
        * isConfirmed() -- Returns False if the user cancelled the input.
        * 
        * example:
        *   - if (kb.isConfirmed()):
-       * </pre>
        */
       bool isConfirmed() throw (KeyboardException);
 

@@ -46,7 +46,6 @@ namespace XBMCAddon
       inline int getPlayListId() const { return iPlayList; }
 
       /**
-       * <pre>
        * add(url[, listitem, index]) -- Adds a new file to the playlist.
        * 
        * url            : string or unicode - filename or url to add.
@@ -62,68 +61,51 @@ namespace XBMCAddon
        *   - listitem = xbmcgui.ListItem('Ironman', thumbnailImage='F:\\\\movies\\\\Ironman.tbn')
        *   - listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
        *   - playlist.add(url=video, listitem=listitem, index=7)\n
-       * </pre>
        */
       void add(const String& url, XBMCAddon::xbmcgui::ListItem* listitem = NULL, int index = -1);
 
       /**
-       * <pre>
        * load(filename) -- Load a playlist.
        * 
        * clear current playlist and copy items from the file to this Playlist
        * filename can be like .pls or .m3u ...
        * returns False if unable to load playlist
-       * </pre>
        */
       bool load(const char* filename) throw (PlayListException);
 
       /**
-       * <pre>
        * remove(filename) -- remove an item with this filename from the playlist.
-       * </pre>
        */
       void remove(const char* filename);
 
       /**
-       * <pre>
        * clear() -- clear all items in the playlist.
-       * </pre>
        */
       void clear();
 
       /**
-       * <pre>
        * size() -- returns the total number of PlayListItems in this playlist.
-       * </pre>
        */
       int size();
 
       /**
-       * <pre>
        * shuffle() -- shuffle the playlist.
-       * </pre>
        */
       void shuffle();
 
       /**
-       * <pre>
        * unshuffle() -- unshuffle the playlist.
-       * </pre>
        */
       void unshuffle();
 
       /**
-       * <pre>
        * getposition() -- returns the position of the current song in this playlist.
-       * </pre>
        */
       int getposition();
 
       /**
-       * <pre>
        * retrieve the item at the given position. A negative index means from the ending 
        * rather than from the start.
-       * </pre>
        */
       XBMCAddon::xbmcgui::ListItem* operator[](long i) throw (PlayListException);
     };

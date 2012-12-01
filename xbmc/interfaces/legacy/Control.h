@@ -43,7 +43,6 @@ namespace XBMCAddon
   {
 
     /**
-     * <pre>
      * Parent for control classes. The problem here is that Python uses 
      * references to this class in a dynamic typing way. For example,
      * you will find this type of python code frequently:
@@ -74,7 +73,6 @@ namespace XBMCAddon
      * TODO:This later solution should be implemented for future scripting 
      * languages while the former will remain as deprecated functionality 
      * for Python.
-     * </pre>
      */
     // We don't need the SWIGHIDDENVIRTUAL since this is not a director.
     class Control : public AddonClass
@@ -141,12 +139,10 @@ namespace XBMCAddon
       virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) DECL_UNIMP2("Control",WindowException);
 
       /**
-       * <pre>
        * getId() -- Returns the control's current id as an integer.
        * 
        * example:
        *   - id = self.button.getId()\n
-       * </pre>
        */
       virtual int getId() { return iControlId; }
 
@@ -156,67 +152,56 @@ namespace XBMCAddon
 
       // hack this because it returns a tuple
       /**
-       * <pre>
        * getPosition() -- Returns the control's current position as a x,y integer tuple.
        * 
        * example:
        *   - pos = self.button.getPosition()
-       * </pre>
        */
       virtual std::vector<int> getPosition();
       virtual int getX() { return dwPosX; }
       virtual int getY() { return dwPosY; }
 
       /**
-       * <pre>
        * getHeight() -- Returns the control's current height as an integer.
        * 
        * example:
        *   - height = self.button.getHeight()
-       * </pre>
        */
       virtual int getHeight() { return dwHeight; }
 
       // getWidth() Method
       /**
-       * <pre>
        * getWidth() -- Returns the control's current width as an integer.
        * 
        * example:
        *   - width = self.button.getWidth()
-       * </pre>
        */
       virtual int getWidth() { return dwWidth; }
 
       // setEnabled() Method
       /**
-       * <pre>
        * setEnabled(enabled) -- Set's the control's enabled/disabled state.
        * 
        * enabled        : bool - True=enabled / False=disabled.
        * 
        * example:
        *   - self.button.setEnabled(False)\n
-       * </pre>
        */
       virtual void setEnabled(bool enabled);
 
       // setVisible() Method
       /**
-       * <pre>
        * setVisible(visible) -- Set's the control's visible/hidden state.
        * 
        * visible        : bool - True=visible / False=hidden.
        * 
        * example:
        *   - self.button.setVisible(False)
-       * </pre>
        */
       virtual void setVisible(bool visible);
 
       // setVisibleCondition() Method
       /**
-       * <pre>
        * setVisibleCondition(visible[,allowHiddenFocus]) -- Set's the control's visible condition.
        *     Allows XBMC to control the visible status of the control.
        * 
@@ -227,13 +212,11 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.setVisibleCondition('[Control.IsVisible(41) + !Control.IsVisible(12)]', True)\n
-       * </pre>
        */
       virtual void setVisibleCondition(const char* visible, bool allowHiddenFocus = false);
 
       // setEnableCondition() Method
       /**
-       * <pre>
        * setEnableCondition(enable) -- Set's the control's enabled condition.
        *     Allows XBMC to control the enabled status of the control.
        * 
@@ -243,13 +226,11 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.setEnableCondition('System.InternetState')
-       * </pre>
        */
       virtual void setEnableCondition(const char* enable);
 
       // setAnimations() Method
       /**
-       * <pre>
        * setAnimations([(event, attr,)*]) -- Set's the control's animations.
        * 
        * [(event,attr,)*] : list - A list of tuples consisting of event and attributes pairs.
@@ -260,13 +241,11 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0',)])\n
-       * </pre>
        */
       virtual void setAnimations(const std::vector< Tuple<String,String> >& eventAttr) throw (WindowException);
 
       // setPosition() Method
       /**
-       * <pre>
        * setPosition(x, y) -- Set's the controls position.
        * 
        * x              : integer - x coordinate of control.
@@ -276,39 +255,33 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.setPosition(100, 250)\n
-       * </pre>
        */
       virtual void setPosition(long x, long y);
 
       // setWidth() Method
       /**
-       * <pre>
        * setWidth(width) -- Set's the controls width.
        * 
        * width          : integer - width of control.
        * 
        * example:
        *   - self.image.setWidth(100)
-       * </pre>
        */
       virtual void setWidth(long width);
 
       // setHeight() Method
       /**
-       * <pre>
        * setHeight(height) -- Set's the controls height.
        * 
        * height         : integer - height of control.
        * 
        * example:
        *   - self.image.setHeight(100)
-       * </pre>
        */
       virtual void setHeight(long height);
 
       // setNavigation() Method
       /**
-       * <pre>
        * setNavigation(up, down, left, right) -- Set's the controls navigation.
        * 
        * up             : control object - control to navigate to on up.
@@ -324,7 +297,6 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.setNavigation(self.button1, self.button2, self.button3, self.button4)
-       * </pre>
        */
       virtual void setNavigation(const Control* up, const Control* down,
                                  const Control* left, const Control* right) 
@@ -332,7 +304,6 @@ namespace XBMCAddon
 
       // controlUp() Method
       /**
-       * <pre>
        * controlUp(control) -- Set's the controls up navigation.
        * 
        * control        : control object - control to navigate to on up.
@@ -344,13 +315,11 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.controlUp(self.button1)
-       * </pre>
        */
       virtual void controlUp(const Control* up) throw (WindowException);
 
       // controlDown() Method
       /**
-       * <pre>
        * controlDown(control) -- Set's the controls down navigation.
        * 
        * control        : control object - control to navigate to on down.
@@ -362,13 +331,11 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.controlDown(self.button1)
-       * </pre>
        */
       virtual void controlDown(const Control* control) throw (WindowException);
 
       // controlLeft() Method
       /**
-       * <pre>
        * controlLeft(control) -- Set's the controls left navigation.
        * 
        * control        : control object - control to navigate to on left.
@@ -380,13 +347,11 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.controlLeft(self.button1)
-       * </pre>
        */
       virtual void controlLeft(const Control* control) throw (WindowException);
 
       // controlRight() Method
       /**
-       * <pre>
        * controlRight(control) -- Set's the controls right navigation.
        * 
        * control        : control object - control to navigate to on right.
@@ -398,7 +363,6 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.controlRight(self.button1)\n
-       * </pre>
        */
       virtual void controlRight(const Control* control) throw (WindowException);
 
@@ -419,13 +383,11 @@ namespace XBMCAddon
     };
 
     /**
-     * <pre>
      * ControlSpin class.
      * 
      *  - Not working yet -.
      * 
      * you can't create this object, it is returned by objects like ControlTextBox and ControlList.
-     * </pre>
      */
     class ControlSpin : public Control
     {
@@ -433,11 +395,9 @@ namespace XBMCAddon
       virtual ~ControlSpin();
 
       /**
-       * <pre>
        * setTextures(up, down, upFocus, downFocus) -- Set's textures for this control.
        * 
        * texture are image files that are used for example in the skin
-       * </pre>
        */
       virtual void setTextures(const char* up, const char* down, 
                                const char* upFocus, 
@@ -459,7 +419,6 @@ namespace XBMCAddon
     };
 
     /**
-     * <pre>
      * ControlLabel class.
      * 
      * ControlLabel(x, y, width, height, label[, font, textColor, 
@@ -479,7 +438,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.label = xbmcgui.ControlLabel(100, 250, 125, 75, 'Status', angle=45)\n
-     * </pre>
      */
     class ControlLabel : public Control
     {
@@ -493,24 +451,20 @@ namespace XBMCAddon
       virtual ~ControlLabel();
 
       /**
-       * <pre>
        * getLabel() -- Returns the text value for this label.
        * 
        * example:
        *   - label = self.label.getLabel()\n
-       * </pre>
        */
       virtual String getLabel() throw(UnimplementedException);
 
       /**
-       * <pre>
        * setLabel(label) -- Set's text for this label.
        * 
        * label          : string or unicode - text string.
        * 
        * example:
        *   - self.label.setLabel('Status')
-       * </pre>
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -536,7 +490,6 @@ namespace XBMCAddon
 
     // ControlEdit class
     /**
-     * <pre>
      * ControlEdit class.
      * 
      * ControlEdit(x, y, width, height, label[, font, textColor, 
@@ -561,7 +514,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.edit = xbmcgui.ControlEdit(100, 250, 125, 75, 'Status')
-     * </pre>
      */
     class ControlEdit : public Control
     {
@@ -575,14 +527,12 @@ namespace XBMCAddon
 
       // setLabel() Method
       /**
-       * <pre>
        * setLabel(label) -- Set's text heading for this edit control.
        * 
        * label          : string or unicode - text string.
        * 
        * example:
        *   - self.edit.setLabel('Status')\n
-       * </pre>
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -594,36 +544,30 @@ namespace XBMCAddon
 
       // getLabel() Method
       /**
-       * <pre>
        * getLabel() -- Returns the text heading for this edit control.
        * 
        * example:
        *   - label = self.edit.getLabel()
-       * </pre>
        */
       virtual String getLabel() throw(UnimplementedException);
 
       // setText() Method
       /**
-       * <pre>
        * setText(value) -- Set's text value for this edit control.
        * 
        * value          : string or unicode - text string.
        * 
        * example:
        *   - self.edit.setText('online')\n
-       * </pre>
        */
       virtual void setText(const String& text) throw(UnimplementedException);
 
       // getText() Method
       /**
-       * <pre>
        * getText() -- Returns the text value for this edit control.
        * 
        * example:
        *   - value = self.edit.getText()
-       * </pre>
        */
       virtual String getText() throw(UnimplementedException);
 
@@ -644,7 +588,6 @@ namespace XBMCAddon
     };
 
     /**
-     * <pre>
      * ControlList class.
      * 
      * ControlList(x, y, width, height[, font, textColor, buttonTexture, buttonFocusTexture,
@@ -675,7 +618,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.cList = xbmcgui.ControlList(100, 250, 200, 250, 'font14', space=5)
-     * </pre>
      */
     class ControlList : public Control 
     {
@@ -691,42 +633,35 @@ namespace XBMCAddon
       virtual ~ControlList();
 
       /**
-       * <pre>
        * addItem(item) -- Add a new item to this list control.
        * 
        * item               : string, unicode or ListItem - item to add.
        * 
        * example:
        *   - cList.addItem('Reboot XBMC')
-       * </pre>
        */
       virtual void addItemStream(const String& fileOrUrl, bool sendMessage = true) throw(UnimplementedException,WindowException);
       virtual void addListItem(const XBMCAddon::xbmcgui::ListItem* listitem, bool sendMessage = true) throw(UnimplementedException,WindowException);
 
       /**
-       * <pre>
        * selectItem(item) -- Select an item by index number.
        * 
        * item               : integer - index number of the item to select.
        * 
        * example:
        *   - cList.selectItem(12)
-       * </pre>
        */
       virtual void selectItem(long item) throw(UnimplementedException);
 
       /**
-       * <pre>
        * reset() -- Clear all ListItems in this control list.
        * 
        * example:
        *   - cList.reset()\n
-       * </pre>
        */
       virtual void reset() throw (UnimplementedException);
 
       /**
-       * <pre>
        * getSpinControl() -- returns the associated ControlSpin object.
        * 
        * *Note, Not working completely yet -
@@ -735,24 +670,20 @@ namespace XBMCAddon
        * 
        * example:
        *   - ctl = cList.getSpinControl()
-       * </pre>
        */
       virtual Control* getSpinControl() throw (UnimplementedException);
 
       /**
-       * <pre>
        * getSelectedPosition() -- Returns the position of the selected item as an integer.
        * 
        * *Note, Returns -1 for empty lists.
        * 
        * example:
        *   - pos = cList.getSelectedPosition()
-       * </pre>
        */
       virtual long getSelectedPosition() throw (UnimplementedException);
 
       /**
-       * <pre>
        * getSelectedItem() -- Returns the selected item as a ListItem object.
        * 
        * *Note, Same as getSelectedPosition(), but instead of an integer a ListItem object
@@ -761,14 +692,12 @@ namespace XBMCAddon
        * 
        * example:
        *   - item = cList.getSelectedItem()
-       * </pre>
        */
       virtual XBMCAddon::xbmcgui::ListItem* getSelectedItem() throw (UnimplementedException);
 
 
       // setImageDimensions() method
       /**
-       * <pre>
        * setImageDimensions(imageWidth, imageHeight) -- Sets the width/height of items icon or thumbnail.
        * 
        * imageWidth         : [opt] integer - width of items icon or thumbnail.
@@ -776,86 +705,72 @@ namespace XBMCAddon
        * 
        * example:
        *   - cList.setImageDimensions(18, 18)\n
-       * </pre>
        */
       virtual void setImageDimensions(long imageWidth,long imageHeight) throw (UnimplementedException);
 
       // setItemHeight() method
       /**
-       * <pre>
        * setItemHeight(itemHeight) -- Sets the height of items.
        * 
        * itemHeight         : integer - height of items.
        * 
        * example:
        *   - cList.setItemHeight(25)
-       * </pre>
        */
       virtual void setItemHeight(long height) throw (UnimplementedException);
 
       // setSpace() method
       /**
-       * <pre>
        * setSpace(space) -- Set's the space between items.
        * 
        * space              : [opt] integer - space between items.
        * 
        * example:
        *   - cList.setSpace(5)
-       * </pre>
        */
       virtual void setSpace(int space) throw (UnimplementedException);
 
       // setPageControlVisible() method
       /**
-       * <pre>
        * setPageControlVisible(visible) -- Sets the spin control's visible/hidden state.
        * 
        * visible            : boolean - True=visible / False=hidden.
        * 
        * example:
        *   - cList.setPageControlVisible(True)
-       * </pre>
        */
       virtual void setPageControlVisible(bool visible) throw(UnimplementedException);
 
       // size() method
       /**
-       * <pre>
        * size() -- Returns the total number of items in this list control as an integer.
        * 
        * example:
        *   - cnt = cList.size()
-       * </pre>
        */
       virtual long size() throw (UnimplementedException);
 
 
       // getItemHeight() Method
       /**
-       * <pre>
        * getItemHeight() -- Returns the control's current item height as an integer.
        * 
        * example:
        *   - item_height = self.cList.getItemHeight()\n
-       * </pre>
        */
       virtual long getItemHeight() throw(UnimplementedException);
 
       // getSpace() Method
       /**
-       * <pre>
        * getSpace() -- Returns the control's space between items as an integer.
        * 
        * example:
        *   - gap = self.cList.getSpace()\n
-       * </pre>
        */
       virtual long getSpace() throw (UnimplementedException);
 
       // getListItem() method
       /**
-       * <pre>
        * getListItem(index) -- Returns a given ListItem in this List.
        * 
        * index           : integer - index number of item to return.
@@ -864,12 +779,10 @@ namespace XBMCAddon
        * 
        * example:
        *   - listitem = cList.getListItem(6)\n
-       * </pre>
        */
       virtual XBMCAddon::xbmcgui::ListItem* getListItem(int index) throw (UnimplementedException,WindowException);
 
       /**
-       * <pre>
        * setStaticContent(items) -- Fills a static list with a list of listitems.
        * 
        * items                : List - list of listitems to add.
@@ -878,7 +791,6 @@ namespace XBMCAddon
        * 
        * example:
        *   - cList.setStaticContent(items=listitems)\n
-       * </pre>
        */
       virtual void setStaticContent(const ListItemList* items) throw (UnimplementedException);
 
@@ -916,7 +828,6 @@ namespace XBMCAddon
 
     // ControlFadeLabel class
     /**
-     * <pre>
      * ControlFadeLabel class.
      * Control that scroll's labl
      * 
@@ -936,7 +847,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.fadelabel = xbmcgui.ControlFadeLabel(100, 250, 200, 50, textColor='0xFFFFFFFF')
-     * </pre>
      */
     class ControlFadeLabel : public Control
     {
@@ -948,24 +858,20 @@ namespace XBMCAddon
 
       // addLabel() Method
       /**
-       * <pre>
        * addLabel(label) -- Add a label to this control for scrolling.
        * 
        * label          : string or unicode - text string.
        * 
        * example:
        *   - self.fadelabel.addLabel('This is a line of text that can scroll.')
-       * </pre>
        */
        virtual void addLabel(const String& label) throw (UnimplementedException);
 
       /**
-       * <pre>
        * reset() -- Clear this fade label.
        * 
        * example:
        *   - self.fadelabel.reset()\n
-       * </pre>
        */
       virtual void reset() throw (UnimplementedException);
 
@@ -982,7 +888,6 @@ namespace XBMCAddon
     };
 
     /**
-     * <pre>
      * ControlTextBox class.
      * 
      * ControlTextBox(x, y, width, height[, font, textColor])
@@ -1000,7 +905,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.textbox = xbmcgui.ControlTextBox(100, 250, 300, 300, textColor='0xFFFFFFFF')
-     * </pre>
      */
     class ControlTextBox : public Control
     {
@@ -1011,38 +915,32 @@ namespace XBMCAddon
 
       // SetText() Method
       /**
-       * <pre>
        * setText(text) -- Set's the text for this textbox.
        * 
        * text           : string or unicode - text string.
        * 
        * example:
        *   - self.textbox.setText('This is a line of text that can wrap.')
-       * </pre>
        */
       virtual void setText(const String& text) throw(UnimplementedException);
 
       // reset() Method
       /**
-       * <pre>
        * reset() -- Clear's this textbox.
        * 
        * example:
        *   - self.textbox.reset()\n
-       * </pre>
        */
       virtual void reset() throw(UnimplementedException);
 
       // scroll() Method
       /**
-       * <pre>
        * scroll(position) -- Scrolls to the given position.
        * 
        * id           : integer - position to scroll to.
        * 
        * example:
        *   - self.textbox.scroll(10)
-       * </pre>
        */
       virtual void scroll(long id) throw(UnimplementedException);
 
@@ -1058,7 +956,6 @@ namespace XBMCAddon
 
     // ControlImage class
     /**
-     * <pre>
      * ControlImage class.
      * 
      * ControlImage(x, y, width, height, filename[, aspectRatio, colorDiffuse])
@@ -1077,7 +974,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.image = xbmcgui.ControlImage(100, 250, 125, 75, aspectRatio=2)
-     * </pre>
      */
     class ControlImage : public Control
     {
@@ -1087,26 +983,22 @@ namespace XBMCAddon
                    const char* colorDiffuse = NULL);
 
       /**
-       * <pre>
        * setImage(filename) -- Changes the image.
        * 
        * filename       : string - image filename.
        * 
        * example:
        *   - self.image.setImage('special://home/scripts/test.png')
-       * </pre>
        */
       virtual void setImage(const char* imageFilename) throw (UnimplementedException);
 
       /**
-       * <pre>
        * setColorDiffuse(colorDiffuse) -- Changes the images color.
        * 
        * colorDiffuse   : hexString - (example, '0xC0FF0000' (red tint))
        * 
        * example:
        *   - self.image.setColorDiffuse('0xC0FF0000')
-       * </pre>
        */
       virtual void setColorDiffuse(const char* hexString) throw (UnimplementedException);
 
@@ -1132,7 +1024,6 @@ namespace XBMCAddon
                       const char* textureoverlay = NULL);
 
       /**
-       * <pre>
        * setPercent(percent) -- Sets the percentage of the progressbar to show.
        * 
        * percent       : float - percentage of the bar to show.
@@ -1141,17 +1032,14 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.progress.setPercent(60)
-       * </pre>
        */
       virtual void setPercent(float pct) throw (UnimplementedException);
 
       /**
-       * <pre>
        * getPercent() -- Returns a float of the percent of the progress.
        * 
        * example:
        *   - print self.progress.getValue()
-       * </pre>
        */
        virtual float getPercent() throw (UnimplementedException);
 
@@ -1171,7 +1059,6 @@ namespace XBMCAddon
 
     // ControlButton class
     /**
-     * <pre>
      * ControlButton class.
      * 
      * ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, textOffsetX, textOffsetY,
@@ -1200,7 +1087,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.button = xbmcgui.ControlButton(100, 250, 200, 50, 'Status', font='font14')
-     * </pre>
      */
     class ControlButton : public Control
     {
@@ -1216,7 +1102,6 @@ namespace XBMCAddon
 
       // setLabel() Method
       /**
-       * <pre>
        * setLabel([label, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's this buttons text attributes.
        * 
        * label          : [opt] string or unicode - text string.
@@ -1232,7 +1117,6 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.button.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')
-       * </pre>
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -1244,36 +1128,30 @@ namespace XBMCAddon
 
       // setDisabledColor() Method
       /**
-       * <pre>
        * setDisabledColor(disabledColor) -- Set's this buttons disabled color.
        * 
        * disabledColor  : hexstring - color of disabled button's label. (e.g. '0xFFFF3300')
        * 
        * example:
        *   - self.button.setDisabledColor('0xFFFF3300')
-       * </pre>
        */
       virtual void setDisabledColor(const char* color) throw (UnimplementedException);
 
       // getLabel() Method
       /**
-       * <pre>
        * getLabel() -- Returns the buttons label as a unicode string.
        * 
        * example:
        *   - label = self.button.getLabel()
-       * </pre>
        */
       virtual String getLabel() throw (UnimplementedException);
 
       // getLabel2() Method
       /**
-       * <pre>
        * getLabel2() -- Returns the buttons label2 as a unicode string.
        * 
        * example:
        *   - label = self.button.getLabel2()
-       * </pre>
        */
       virtual String getLabel2() throw (UnimplementedException);
 #ifndef SWIG
@@ -1301,7 +1179,6 @@ namespace XBMCAddon
 
     // ControlCheckMark class
     /**
-     * <pre>
      * ControlCheckMark class.
      * 
      * ControlCheckMark(x, y, width, height, label[, focusTexture, noFocusTexture,
@@ -1327,7 +1204,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.checkmark = xbmcgui.ControlCheckMark(100, 250, 200, 50, 'Status', font='font14')
-     * </pre>
      */
     class ControlCheckMark : public Control
     {
@@ -1341,31 +1217,26 @@ namespace XBMCAddon
 
       // getSelected() Method
       /**
-       * <pre>
        * getSelected() -- Returns the selected status for this checkmark as a bool.
        * 
        * example:
        *   - selected = self.checkmark.getSelected()
-       * </pre>
        */
       virtual bool getSelected() throw (UnimplementedException);
 
       // setSelected() Method
       /**
-       * <pre>
        * setSelected(isOn) -- Sets this checkmark status to on or off.
        * 
        * isOn           : bool - True=selected (on) / False=not selected (off)
        * 
        * example:
        *   - self.checkmark.setSelected(True)
-       * </pre>
        */
       virtual void setSelected(bool selected) throw (UnimplementedException);
 
       // setLabel() Method
       /**
-       * <pre>
        * setLabel(label[, font, textColor, disabledColor]) -- Set's this controls text attributes.
        * 
        * label          : string or unicode - text string.
@@ -1375,7 +1246,6 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.checkmark.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300')
-       * </pre>
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -1387,14 +1257,12 @@ namespace XBMCAddon
 
       // setDisabledColor() Method
       /**
-       * <pre>
        * setDisabledColor(disabledColor) -- Set's this controls disabled color.
        * 
        * disabledColor  : hexstring - color of disabled checkmark's label. (e.g. '0xFFFF3300')
        * 
        * example:
        *   - self.checkmark.setDisabledColor('0xFFFF3300')
-       * </pre>
        */
       virtual void setDisabledColor(const char* color) throw (UnimplementedException);
 
@@ -1419,7 +1287,6 @@ namespace XBMCAddon
 
     // ControlGroup class
     /**
-     * <pre>
      * ControlGroup class.
      * 
      * ControlGroup(x, y, width, height
@@ -1430,7 +1297,6 @@ namespace XBMCAddon
      * height         : integer - height of control.
      * example:
      *   - self.group = xbmcgui.ControlGroup(100, 250, 125, 75)
-     * </pre>
      */
     class ControlGroup : public Control 
     {
@@ -1460,7 +1326,6 @@ namespace XBMCAddon
 
       // setSelected() Method
       /**
-       * <pre>
        * setSelected(selected) -- Sets the radio buttons's selected status.
        * 
        * selected            : bool - True=selected (on) / False=not selected (off)
@@ -1470,24 +1335,20 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.radiobutton.setSelected(True)
-       * </pre>
        */
       virtual void setSelected(bool selected) throw (UnimplementedException);
 
       // isSelected() Method
       /**
-       * <pre>
        * isSelected() -- Returns the radio buttons's selected status.
        * 
        * example:
        *   - is = self.radiobutton.isSelected()\n
-       * </pre>
        */
       virtual bool isSelected() throw (UnimplementedException);
 
       // setLabel() Method
       /**
-       * <pre>
        * setLabel(label[, font, textColor, disabledColor, shadowColor, focusedColor]) -- Set's the radio buttons text attributes.
        * 
        * label          : string or unicode - text string.
@@ -1502,7 +1363,6 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.radiobutton.setLabel('Status', 'font14', '0xFFFFFFFF', '0xFFFF3300', '0xFF000000')
-       * </pre>
        */
       virtual void setLabel(const String& label = emptyString, 
                             const char* font = NULL,
@@ -1514,7 +1374,6 @@ namespace XBMCAddon
 
       // setRadioDimension() Method
       /**
-       * <pre>
        * setRadioDimension(x, y, width, height) -- Sets the radio buttons's radio texture's position and size.
        * 
        * x                   : integer - x coordinate of radio texture.
@@ -1527,7 +1386,6 @@ namespace XBMCAddon
        * 
        * example:
        *   - self.radiobutton.setRadioDimension(x=100, y=5, width=20, height=20)
-       * </pre>
        */
       virtual void setRadioDimension(long x, long y, long width, long height) throw (UnimplementedException);
 
@@ -1556,7 +1414,6 @@ namespace XBMCAddon
     };
 	
     /**
-     * <pre>
      * ControlSlider class.
      * 
      * ControlSlider(x, y, width, height[, textureback, texture, texturefocus])
@@ -1574,7 +1431,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - self.slider = xbmcgui.ControlSlider(100, 250, 350, 40)
-     * </pre>
      */
     class ControlSlider : public Control
     {
@@ -1585,22 +1441,18 @@ namespace XBMCAddon
                     const char* texturefocus = NULL);
 
       /**
-       * <pre>
        * getPercent() -- Returns a float of the percent of the slider.
        * 
        * example:
        *   - print self.slider.getPercent()
-       * </pre>
        */
       virtual float getPercent() throw (UnimplementedException);
 
       /**
-       * <pre>
        * setPercent(50) -- Sets the percent of the slider.
        * 
        * example:
        * self.slider.setPercent(50)
-       * </pre>
        */
       virtual void setPercent(float pct) throw (UnimplementedException);
 

@@ -33,13 +33,11 @@ namespace XBMCAddon
   {
 
     /**
-     * <pre>
      * File class.
      * 
      * 'w' - opt open for write
      * example:
      *  f = xbmcvfs.File(file, ['w'])
-     * </pre>
      */
     class File : public AddonClass
     {
@@ -58,7 +56,6 @@ namespace XBMCAddon
 
 #ifndef SWIG
       /**
-       * <pre>
        * read(bytes)
        * 
        * bytes : how many bytes to read [opt]- if not set it will read the whole fi
@@ -67,13 +64,11 @@ namespace XBMCAddon
        *  f = xbmcvfs.File(file)
        *  b = f.read()
        *  f.close()
-       * </pre>
        */
       unsigned long read(void* buffer, unsigned long numBytes = 0);
 #endif
 
       /**
-       * <pre>
        * write(buffer)
        * 
        * buffer : buffer to write to fi
@@ -82,24 +77,20 @@ namespace XBMCAddon
        *  f = xbmcvfs.File(file, 'w', True)
        *  result = f.write(buffer)
        *  f.close()
-       * </pre>
        */
       bool write(const char* file);
 
       /**
-       * <pre>
        * size()
        * 
        * example:
        *  f = xbmcvfs.File(file)
        *  s = f.size()
        *  f.close()
-       * </pre>
        */
       inline long long size() { DelayedCallGuard dg(languageHook); return file->GetLength(); }
 
       /**
-       * <pre>
        * seek()
        * 
        * FilePosition : position in the file
@@ -108,18 +99,15 @@ namespace XBMCAddon
        *  f = xbmcvfs.File(file)
        *  result = f.seek(8129, 0)
        *  f.close()
-       * </pre>
        */
       inline long long seek(long long seekBytes, int iWhence) { DelayedCallGuard dg(languageHook); return file->Seek(seekBytes,iWhence); }
 
       /**
-       * <pre>
        * close()
        * 
        * example:
        *  f = xbmcvfs.File(file)
        *  f.close()
-       * </pre>
        */
       inline void close() { DelayedCallGuard dg(languageHook); file->Close(); }
 

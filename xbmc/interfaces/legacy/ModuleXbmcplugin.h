@@ -34,7 +34,6 @@ namespace XBMCAddon
   namespace xbmcplugin
   {
     /**
-     * <pre>
      * addDirectoryItem(handle, url, listitem [,isFolder, totalItems]) -- Callback function to pass directory contents back to XBMC.
      *  - Returns a bool for successful completion.
      * 
@@ -49,13 +48,11 @@ namespace XBMCAddon
      * 
      * example:
      *   - if not xbmcplugin.addDirectoryItem(int(sys.argv[1]), 'F:\\\\Trailers\\\\300.mov', listitem, totalItems=50): break
-     * </pre>
      */
     bool addDirectoryItem(int handle, const String& url, const XBMCAddon::xbmcgui::ListItem* listitem,
                           bool isFolder = false, int totalItems = 0);
 
     /**
-     * <pre>
      * addDirectoryItems(handle, items [,totalItems]) -- Callback function to pass directory contents back to XBMC as a list.
      *  - Returns a bool for successful completion.
      * 
@@ -68,14 +65,12 @@ namespace XBMCAddon
      * 
      * example:
      *   - if not xbmcplugin.addDirectoryItems(int(sys.argv[1]), [(url, listitem, False,)]: raise
-     * </pre>
      */
     bool addDirectoryItems(int handle, 
                            const std::vector<Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool> >& items, 
                            int totalItems = 0);
 
     /**
-     * <pre>
      * endOfDirectory(handle[, succeeded, updateListing, cacheToDisc]) -- Callback function to tell XBMC that the end of the directory listing in a virtualPythonFolder module is reached.
      * 
      * handle           : integer - handle the plugin was started with.
@@ -85,13 +80,11 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
-     * </pre>
      */
     void endOfDirectory(int handle, bool succeeded = true, bool updateListing = false, 
                         bool cacheToDisc = true);
 
     /**
-     * <pre>
      * setResolvedUrl(handle, succeeded, listitem) -- Callback function to tell XBMC that the file plugin has been resolved to a url
      * 
      * handle           : integer - handle the plugin was started with.
@@ -100,12 +93,10 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
-     * </pre>
      */
     void setResolvedUrl(int handle, bool succeeded, const XBMCAddon::xbmcgui::ListItem* listitem);
 
     /**
-     * <pre>
      * addSortMethod(handle, sortMethod, label2) -- Adds a sorting method for the media list.
      * 
      * handle      : integer - handle the plugin was started with.
@@ -118,12 +109,10 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_TITLE)
-     * </pre>
      */
     void addSortMethod(int handle, int sortMethod, const String& label2Mask = emptyString);
 
     /**
-     * <pre>
      * getSetting(handle, id) -- Returns the value of a setting as a string.
      * 
      * handle    : integer - handle the plugin was started with.
@@ -133,12 +122,10 @@ namespace XBMCAddon
      * 
      * example:
      *   - apikey = xbmcplugin.getSetting(int(sys.argv[1]), 'apikey')
-     * </pre>
      */
     String getSetting(int handle, const char* id);
 
     /**
-     * <pre>
      * setSetting(handle, id, value) -- Sets a plugin setting for the current running plugin.
      * 
      * handle    : integer - handle the plugin was started with.
@@ -147,12 +134,10 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.setSetting(int(sys.argv[1]), id='username', value='teamxbmc')
-     * </pre>
      */
     void setSetting(int handle, const String& id, const String& value);
 
     /**
-     * <pre>
      * setContent(handle, content) -- Sets the plugins content.
      * 
      * handle      : integer - handle the plugin was started with.
@@ -162,12 +147,10 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.setContent(int(sys.argv[1]), 'movies')
-     * </pre>
      */
     void setContent(int handle, const char* content);
 
     /**
-     * <pre>
      * setPluginCategory(handle, category) -- Sets the plugins name for skins to display.
      * 
      * handle      : integer - handle the plugin was started with.
@@ -175,12 +158,10 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.setPluginCategory(int(sys.argv[1]), 'Comedy')
-     * </pre>
      */
     void setPluginCategory(int handle, const String& category);
 
     /**
-     * <pre>
      * setPluginFanart(handle, image, color1, color2, color3) -- Sets the plugins fanart and color for skins to display.
      * 
      * handle      : integer - handle the plugin was started with.
@@ -191,7 +172,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/addons/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')\n
-     * </pre>
      */
     void setPluginFanart(int handle, const char* image = NULL, 
                          const char* color1 = NULL,
@@ -199,7 +179,6 @@ namespace XBMCAddon
                          const char* color3 = NULL);
 
     /**
-     * <pre>
      * setProperty(handle, key, value) -- Sets a container property for this plugin.
      * 
      * handle      : integer - handle the plugin was started with.
@@ -210,7 +189,6 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcplugin.setProperty(int(sys.argv[1]), 'Emulator', 'M.A.M.E.')\n
-     * </pre>
      */
     void setProperty(int handle, const char* key, const String& value);
 

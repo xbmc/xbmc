@@ -26,7 +26,6 @@ namespace XBMCAddon
   namespace xbmcgui
   {
     /**
-     * <pre>
      * lock() -- Lock the gui until xbmcgui.unlock() is called.
      * 
      * *Note, This will improve performance when doing a lot of gui manipulation at once.
@@ -34,37 +33,30 @@ namespace XBMCAddon
      * 
      * example:
      *   - xbmcgui.lock()
-     * </pre>
      */
     void lock();
 
     /**
-     * <pre>
      * unlock() -- Unlock the gui from a lock() call.
      * 
      * example:
      *   - xbmcgui.unlock()
-     * </pre>
      */
     void unlock();
 
     /**
-     * <pre>
      * getCurrentWindowId() -- Returns the id for the current 'active' window as an integer.
      * 
      * example:
      *   - wid = xbmcgui.getCurrentWindowId()
-     * </pre>
      */
     long getCurrentWindowId();
 
     /**
-     * <pre>
      * getCurrentWindowDialogId() -- Returns the id for the current 'active' dialog as an integer.
      * 
      * example:
      *   - wid = xbmcgui.getCurrentWindowDialogId()
-     * </pre>
      */
     long getCurrentWindowDialogId();
 
