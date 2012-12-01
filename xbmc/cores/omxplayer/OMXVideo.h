@@ -59,6 +59,7 @@ public:
   void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
   int GetInputBufferSize();
   void WaitCompletion();
+  bool BadState() { return m_omx_decoder.BadState(); };
 protected:
   // Video format
   bool              m_drop_state;

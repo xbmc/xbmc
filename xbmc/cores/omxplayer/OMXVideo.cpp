@@ -87,8 +87,7 @@ COMXVideo::COMXVideo()
 
 COMXVideo::~COMXVideo()
 {
-  if (m_is_open)
-    Close();
+  Close();
 }
 
 bool COMXVideo::SendDecoderConfig()
@@ -145,8 +144,7 @@ bool COMXVideo::NaluFormatStartCodes(enum CodecID codec, uint8_t *in_extradata, 
 
 bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, bool hdmi_clock_sync)
 {
-  if(m_is_open)
-    Close();
+  Close();
 
   OMX_ERRORTYPE omx_err   = OMX_ErrorNone;
   std::string decoder_name;
@@ -638,6 +636,9 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
 
   */
 
+  if(m_omx_decoder.BadState())
+    return false;
+
   CLog::Log(LOGDEBUG,
     "%s::%s - decoder_component(0x%p), input_port(0x%x), output_port(0x%x) deinterlace %d hdmiclocksync %d\n",
     CLASSNAME, __func__, m_omx_decoder.GetComponent(), m_omx_decoder.GetInputPort(), m_omx_decoder.GetOutputPort(),
@@ -712,10 +713,11 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
   if( m_drop_state )
     return true;
 
-  if (pData || iSize > 0)
+  unsigned int demuxer_bytes = (unsigned int)iSize;
+  uint8_t *demuxer_content = pData;
+
+  if (demuxer_content && demuxer_bytes > 0)
   {
-    unsigned int demuxer_bytes = (unsigned int)iSize;
-    uint8_t *demuxer_content = pData;
 
     while(demuxer_bytes)
     {

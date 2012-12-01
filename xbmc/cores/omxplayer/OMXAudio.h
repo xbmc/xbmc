@@ -61,7 +61,6 @@ public:
   float GetCacheTotal();
   COMXAudio();
   bool Initialize(AEAudioFormat format, std::string& device, OMXClock *clock, CDVDStreamInfo &hints, bool bUsePassthrough, bool bUseHWDecode);
-  bool Initialize(AEAudioFormat format, std::string& device);
   ~COMXAudio();
 
   unsigned int AddPackets(const void* data, unsigned int len);
@@ -84,7 +83,6 @@ public:
 
   void Process();
 
-  bool SetClock(OMXClock *clock);
   void SetCodingType(AEDataFormat dataFormat);
   static bool CanHWDecode(CodecID codec);
 
@@ -94,6 +92,8 @@ public:
   void PrintDTS(OMX_AUDIO_PARAM_DTSTYPE *dtsparam);
   unsigned int SyncDTS(BYTE* pData, unsigned int iSize);
   unsigned int SyncAC3(BYTE* pData, unsigned int iSize);
+
+  bool BadState() { return !m_Initialized; };
 
 private:
   IAudioCallback* m_pCallback;
@@ -111,7 +111,6 @@ private:
   unsigned int  m_BitsPerSample;
   COMXCoreComponent *m_omx_clock;
   OMXClock       *m_av_clock;
-  bool          m_external_clock;
   bool          m_first_frame;
   bool          m_LostSync;
   int           m_SampleRate;

@@ -1144,6 +1144,13 @@ void COMXPlayer::Process()
       // update application with our state
       UpdateApplication(1000);
 
+      // OMX emergency exit
+      if(HasAudio() && m_player_audio.BadState())
+      {
+        m_bAbortRequest = true;
+        break;
+      }
+
       if (CheckDelayedChannelEntry())
         continue;
 
