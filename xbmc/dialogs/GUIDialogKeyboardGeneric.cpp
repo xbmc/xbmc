@@ -144,11 +144,11 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
     uint8_t b = action.GetID() & 0xFF;
     if (b == XBMCVK_HOME)
     {
-      MoveCursor(-GetCursorPos());
+      SetCursorPos(0);
     }
     else if (b == XBMCVK_END)
     {
-      MoveCursor(m_strEdit.GetLength() - GetCursorPos());
+      SetCursorPos(m_strEdit.GetLength());
     }
     else if (b == XBMCVK_LEFT)
     {
@@ -286,7 +286,7 @@ void CGUIDialogKeyboardGeneric::SetText(const CStdString& aTextString)
   m_strEdit.Empty();
   g_charsetConverter.utf8ToW(aTextString, m_strEdit);
   UpdateLabel();
-  MoveCursor(m_strEdit.size());
+  SetCursorPos(m_strEdit.size());
 }
 
 CStdString CGUIDialogKeyboardGeneric::GetText() const
@@ -539,10 +539,15 @@ void CGUIDialogKeyboardGeneric::OnDeinitWindow(int nextWindowID)
 
 void CGUIDialogKeyboardGeneric::MoveCursor(int iAmount)
 {
+  SetCursorPos(GetCursorPos() + iAmount);
+}
+
+void CGUIDialogKeyboardGeneric::SetCursorPos(int iPos)
+{
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
   {
-    pEdit->SetCursorPos(pEdit->GetCursorPos() + iAmount);
+    pEdit->SetCursorPos(iPos);
   }
 }
 
