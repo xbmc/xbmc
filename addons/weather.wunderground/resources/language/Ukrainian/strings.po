@@ -1,14 +1,14 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 0.0.9
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-28 15:38+0000\n"
-"PO-Revision-Date: 2012-05-29 13:04+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -17,18 +17,18 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgctxt "#30101"
-msgid "Location Setup"
-msgstr "Налаштування місцевості"
+msgctxt "#32121"
+msgid "Weekend"
+msgstr "Вихідні"
 
-msgctxt "#30111"
-msgid "Change location 1"
-msgstr "Місцевість 1"
+msgctxt "#32510"
+msgid "Warning"
+msgstr "Увага"
 
-msgctxt "#30112"
-msgid "Change location 2"
-msgstr "Місцевість 2"
+msgctxt "#32514"
+msgid "Outlook"
+msgstr "Спостереження"
 
-msgctxt "#30113"
-msgid "Change location 3"
-msgstr "Місцевість 3"
+msgctxt "#32515"
+msgid "Forecast"
+msgstr "Прогноз"

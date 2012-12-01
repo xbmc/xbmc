@@ -4,6 +4,11 @@
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBArtistThumbsByID>
+	<GetTADBArtistThumbsByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistThumbs&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBArtistThumbsByMBID>
 	<ParseTADBArtistThumbs dest="5" clearbuffers="no">
 		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="" output="" dest="13">
@@ -21,6 +26,11 @@
 			<expression noclean="1" />
 		</RegExp>
 	</GetTADBArtistFanartsByID>
+	<GetTADBArtistFanartsByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBArtistFanarts&quot; cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBArtistFanartsByMBID>
 	<ParseTADBArtistFanarts dest="5" clearbuffers="no">
 		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="" output="" dest="13">
@@ -251,6 +261,11 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetTADBAlbumThumbsByID>
+	<GetTADBAlbumThumbsByMBID dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseTADBAlbumThumbs&quot; cache=&quot;tadb-\1-album.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/album-mb.php?i=\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTADBAlbumThumbsByMBID>
 	<ParseTADBAlbumThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="2">

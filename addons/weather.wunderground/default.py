@@ -556,16 +556,24 @@ def properties(data,loc):
         zoom = '10.0'
     url = data['satellite']['image_url_ir4'].replace('width=300&height=300','width=640&height=360').replace('radius=75','radius=%i' % int(1000/int(zoom.rstrip('0').rstrip('.,'))))
     log('map url: %s' % url)
-    req = urllib2.urlopen(url)
-    response = req.read()
-    req.close()
-    timestamp = time.strftime('%Y%m%d%H%M%S')
-    mapfile = xbmc.translatePath('special://profile/addon_data/%s/map/%s-%s.png' % (__addonid__,locid,timestamp))
-    tmpmap = open(mapfile, 'wb')
-    tmpmap.write(response)
-    tmpmap.close()
-    log('satellite image downloaded')
-    set_property('MapPath', mapdir)
+    try:
+        req = urllib2.urlopen(url)
+        response = req.read()
+        req.close()
+        log('satellite image downloaded')
+    except:
+        response = ''
+        log('satellite image downloaded failed')
+    if response != '':
+        timestamp = time.strftime('%Y%m%d%H%M%S')
+        mapfile = xbmc.translatePath('special://profile/addon_data/%s/map/%s-%s.png' % (__addonid__,locid,timestamp))
+        try:
+            tmpmap = open(mapfile, 'wb')
+            tmpmap.write(response)
+            tmpmap.close()
+            set_property('MapPath', mapdir)
+        except:
+            log('failed to save satellite image')
 
 log('version %s started: %s' % (__version__, sys.argv))
 log('lang: %s'    % LANGUAGE)
