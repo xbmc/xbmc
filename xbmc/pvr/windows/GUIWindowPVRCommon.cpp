@@ -618,7 +618,10 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
 
   CStdString stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
   if (stream == "")
-    return false;
+  {
+    CApplicationMessenger::Get().PlayFile(*item, false);
+    return true;
+  }
 
   /* Isolate the folder from the filename */
   size_t found = stream.find_last_of("/");
