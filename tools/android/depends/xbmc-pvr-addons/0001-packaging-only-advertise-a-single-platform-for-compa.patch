@@ -1,0 +1,1756 @@
+From 5492a063c4fbe3936293fe3314b586b4eae45f30 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Sat, 1 Dec 2012 01:12:25 -0500
+Subject: [PATCH 1/2] packaging: only advertise a single platform for
+ compatibility.
+
+A binary addon by definition only works on 1 platform. By filling this in at
+build-time, it will make the add-ons easier to distribute via repositories,
+because the platform string will sort out which repositories/add-ons to grab.
+
+This is part of a quick effort to get Frodo bin-addon distribution up and
+running. Each platform will have its own repository, so there's no need to try
+to bundle various platforms into a single zip.
+
+This was done blindly for osx/ios. For this to go in, we'll definitely need
+sign-offs from osx/ios/windows devs. Also, windows will need to do some manual
+operations here to fill in the platform and move it to the correct addon.xml.
+---
+ .gitignore                                         |  1 +
+ addons/pvr.argustv/addon/addon.xml                 | 83 ------------------
+ addons/pvr.argustv/addon/addon.xml.in              | 83 ++++++++++++++++++
+ addons/pvr.demo/addon/addon.xml                    | 23 -----
+ addons/pvr.demo/addon/addon.xml.in                 | 23 +++++
+ addons/pvr.dvbviewer/addon/addon.xml               | 87 -------------------
+ addons/pvr.dvbviewer/addon/addon.xml.in            | 87 +++++++++++++++++++
+ addons/pvr.hts/addon/addon.xml                     | 97 ----------------------
+ addons/pvr.hts/addon/addon.xml.in                  | 97 ++++++++++++++++++++++
+ addons/pvr.mediaportal.tvserver/addon/addon.xml    | 94 ---------------------
+ addons/pvr.mediaportal.tvserver/addon/addon.xml.in | 94 +++++++++++++++++++++
+ addons/pvr.mythtv.cmyth/addon/addon.xml            | 85 -------------------
+ addons/pvr.mythtv.cmyth/addon/addon.xml.in         | 85 +++++++++++++++++++
+ addons/pvr.nextpvr/addon/addon.xml                 | 93 ---------------------
+ addons/pvr.nextpvr/addon/addon.xml.in              | 93 +++++++++++++++++++++
+ addons/pvr.njoy/addon/addon.xml                    | 20 -----
+ addons/pvr.njoy/addon/addon.xml.in                 | 20 +++++
+ addons/pvr.vdr.vnsi/addon/addon.xml                | 89 --------------------
+ addons/pvr.vdr.vnsi/addon/addon.xml.in             | 89 ++++++++++++++++++++
+ addons/pvr.vuplus/addon/addon.xml                  | 87 -------------------
+ addons/pvr.vuplus/addon/addon.xml.in               | 87 +++++++++++++++++++
+ configure.ac                                       | 28 ++++++-
+ 22 files changed, 785 insertions(+), 760 deletions(-)
+ delete mode 100644 addons/pvr.argustv/addon/addon.xml
+ create mode 100644 addons/pvr.argustv/addon/addon.xml.in
+ delete mode 100644 addons/pvr.demo/addon/addon.xml
+ create mode 100644 addons/pvr.demo/addon/addon.xml.in
+ delete mode 100644 addons/pvr.dvbviewer/addon/addon.xml
+ create mode 100644 addons/pvr.dvbviewer/addon/addon.xml.in
+ delete mode 100644 addons/pvr.hts/addon/addon.xml
+ create mode 100644 addons/pvr.hts/addon/addon.xml.in
+ delete mode 100644 addons/pvr.mediaportal.tvserver/addon/addon.xml
+ create mode 100644 addons/pvr.mediaportal.tvserver/addon/addon.xml.in
+ delete mode 100644 addons/pvr.mythtv.cmyth/addon/addon.xml
+ create mode 100644 addons/pvr.mythtv.cmyth/addon/addon.xml.in
+ delete mode 100644 addons/pvr.nextpvr/addon/addon.xml
+ create mode 100644 addons/pvr.nextpvr/addon/addon.xml.in
+ delete mode 100644 addons/pvr.njoy/addon/addon.xml
+ create mode 100644 addons/pvr.njoy/addon/addon.xml.in
+ delete mode 100644 addons/pvr.vdr.vnsi/addon/addon.xml
+ create mode 100644 addons/pvr.vdr.vnsi/addon/addon.xml.in
+ delete mode 100644 addons/pvr.vuplus/addon/addon.xml
+ create mode 100644 addons/pvr.vuplus/addon/addon.xml.in
+
+diff --git a/.gitignore b/.gitignore
+index acd0ed5..af669ba 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -59,3 +59,4 @@ lib/jsoncpp/project/VS2010Express/Debug
+ lib/jsoncpp/project/VS2010Express/Release
+ addons/*/addon/*.so
+ addons/*/addon/*.dll
++addons/*/addon/addon.xml
+diff --git a/addons/pvr.argustv/addon/addon.xml b/addons/pvr.argustv/addon/addon.xml
+deleted file mode 100644
+index 7a255fa..0000000
+--- a/addons/pvr.argustv/addon/addon.xml
++++ /dev/null
+@@ -1,83 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.argustv"
+-  version="1.6.150.144"
+-  name="ARGUS TV client"
+-  provider-name="Fred Hoogduin, Marcel Groothuis">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_ArgusTV.pvr"
+-    library_osx="XBMC_ArgusTV.pvr"
+-    library_wingl="XBMC_ArgusTV_win32.dll"
+-    library_windx="XBMC_ArgusTV_win32.dll"
+-    library_android="libXBMC_ArgusTV.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="cs">Rozhraní XBMC pro ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="de">XBMC frontend für ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="el">Frontend του XBMC για το ARGUS TV PVR http://www.argus-tv.com/</summary>
+-    <summary lang="en">XBMC frontend for the ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="es">Frontend de XBMC para ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="es_AR">Frontend de XBMC para ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="hu">XBMC ARGUS TV előtér-kiszolgáló http://www.argus-tv.com//</summary>
+-    <summary lang="ko">ARGUS TV PVR을 위한 XBMC 프론트엔드 http://www.argus-tv.com//</summary>
+-    <summary lang="mk">XBMC интерфејс за ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="nl">XBMC frontend voor het ARGUS-TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="pl">Interfejs XBMC dla ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="pt">Frontend XBMC para ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="pt_BR">XBMC frontend para o ARGUS TV PVR http://www.argus-tv.com/</summary>
+-    <summary lang="ru">Интерфейс XBMC для ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="sk">XBMC rozhranie pre ARGUS TV PVR http://www.argus-tv.com//</summary>
+-    <summary lang="sv">XBMC frontend för ARGUS TV PVR http://www.argus-tv.com/</summary>
+-    <summary lang="zh">XBMC的ARGUS TV PVR前端 http://www.argus-tv.com//</summary>
+-    <description lang="cs">Rozhraní ARGUS TV PVR. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače.</description>
+-    <description lang="de">ARGUS TV PVR frontend. Unterstützt Streaming von TV &amp; Aufnahmen, Abspielen von Radiokanälen, EPG und Aufnahmepläne.</description>
+-    <description lang="el">Frontend για το ARGUS TV PVR. Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου, EPG και προγραμματισμό.</description>
+-    <description lang="en">ARGUS TV PVR frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and schedules.</description>
+-    <description lang="es">Frontend de ARGUS TV PVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y temporizadores.</description>
+-    <description lang="es_AR">Frontend de ARGUS TV PVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y temporizadores.</description>
+-    <description lang="hu">ARGUS TV PVR előtér-kiszolgáló. Élő adások, felvételek és rádió csatornák sugárzásának támogatása EPG-vel és időzítéssel.</description>
+-    <description lang="ko">ARGUS TV PVR 프론트엔드. 라이브 TV 스트리밍과 녹화, 라디오 청취, EPG와 예약 지원.</description>
+-    <description lang="mk">ARGUS TV PVR интерфејс. Подржува стриминг на Live TV &amp; Снимки, слушање на радио канали, EPG и планирања.</description>
+-    <description lang="nl">ARGUS TV PVR frontend. Ondersteunt het bekijken van Live TV en opnames, het beluisteren van radio zenders, het tonen van de EPG en het inplannen/beheren van nieuwe opnames (Timers).</description>
+-    <description lang="pl">Interfejs ARGUS TV PVR. Obsługuje strumieniowe przesyłanie TV na żywo oraz nagrań, słuchanie kanałów radiowych, EPG i harmonogramy.</description>
+-    <description lang="pt">Frontend ARGUS TV PVR. Suporta transmissão de TV em directo e Gravações, audição de estações de Rádio, EPG e agendamentos.</description>
+-    <description lang="pt_BR">ARGUS TV PVR frontend. Suporta streaming de TV ao vivo &amp; Gravações, sintoniza rádios, EPG e agendamento.</description>
+-    <description lang="ru">Интерфейс для ARGUS TV PVR. Поддерживает просмотр потокового ТВ и видеозаписей, прослушивание радиоканалов и работу с электронным телегидом и расписаниями.</description>
+-    <description lang="sk">ARGUS TV PVR rozhranie. Podporuje streamovanie živého TV vysielania a nahrávok, počúvanie rozhlasových kanálov, EPG a plánovače.</description>
+-    <description lang="sv">ARGUS TV PVR frontend. Stödjer strömmning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler, EPG och schemaläggning.</description>
+-    <description lang="zh">ARGUS TV PVR前端支持直播电视和节目录制、收听广播频道、电子节目表及计划任务功能。</description>
+-    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="ca">Això és programari inestable! Els autors no són en absolut responsables d'enregistraments fallist, temporitzadors incorrectes, hores tudades, o qualsevol altra efecte indesitjable...</disclaimer>
+-    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
+-    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser.</disclaimer>
+-    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
+-    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
+-    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="es">¡Este software es aún inestable! Los autores no son responsables en forma alguna por grabaciones fallidas, temporizaciones incorrectas, tiempo perdido o ningún otro efecto no deseado.</disclaimer>
+-    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
+-    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
+-    <disclaimer lang="fi">Tämä on epävakaa ohjelma! Ohjelman kirjoittavat eivät vastaa millään tavalla epäonnistuneista nauhoituksista, ajastimen väärästä toiminnasta, hukatusta ajasta tai muista ei-halutuista tapahtumista.</disclaimer>
+-    <disclaimer lang="fr">Logiciel en cours d'élaboration ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries défectueuses, temps perdu ou autres effets indésirables..</disclaimer>
+-    <disclaimer lang="he">זוהי תוכנה לא יציבה! היוצרים אינם אחראים לכשלון בהקלטה, תזמונים לא נכונים, שעות מבוזבזות או כל השפעות בלתי רצויות אחרות.</disclaimer>
+-    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
+-    <disclaimer lang="is">Þetta er óstöðugur hugbúnaður! Höfundarnir eru á engann hátt ábyrgir fyrir misheppnuðum upptökum, röngum upptökutímum, klukkustundum sem að fóru í súginn eða nokkrum öðrum óæskilegum áhrifum.</disclaimer>
+-    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
+-    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
+-    <disclaimer lang="nl">Deze software is niet 100% stabiel! De auteurs zijn op geen enkele wijze aansprakelijk voor mislukte opnames, verspilde tijd, of enig ander ongewild neveneffect..</disclaimer>
+-    <disclaimer lang="no">Dette er ustabil programvare! Skaperen har ikke på noen måte ansvar for feilede opptak, feile timere, bortkastede timer, eller andre uønskede effekter..</disclaimer>
+-    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
+-    <disclaimer lang="pt">Este software é instável! Os autores não são de forma alguma responsáveis por gravações falhadas, temporizadores incorrectos, horas desperdiçadas, ou qualquer outro tipo de efeitos indesejáveis..</disclaimer>
+-    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis</disclaimer>
+-    <disclaimer lang="ru">Это нестабильная программа! Авторы не несут ответственности за неудачные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты.</disclaimer>
+-    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
+-    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
+-    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
+-    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.argustv/addon/addon.xml.in b/addons/pvr.argustv/addon/addon.xml.in
+new file mode 100644
+index 0000000..1cf1740
+--- /dev/null
++++ b/addons/pvr.argustv/addon/addon.xml.in
+@@ -0,0 +1,83 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.argustv"
++  version="1.6.150.144"
++  name="ARGUS TV client"
++  provider-name="Fred Hoogduin, Marcel Groothuis">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_ArgusTV.pvr"
++    library_osx="XBMC_ArgusTV.pvr"
++    library_wingl="XBMC_ArgusTV_win32.dll"
++    library_windx="XBMC_ArgusTV_win32.dll"
++    library_android="libXBMC_ArgusTV.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="cs">Rozhraní XBMC pro ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="de">XBMC frontend für ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="el">Frontend του XBMC για το ARGUS TV PVR http://www.argus-tv.com/</summary>
++    <summary lang="en">XBMC frontend for the ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="es">Frontend de XBMC para ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="es_AR">Frontend de XBMC para ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="hu">XBMC ARGUS TV előtér-kiszolgáló http://www.argus-tv.com//</summary>
++    <summary lang="ko">ARGUS TV PVR을 위한 XBMC 프론트엔드 http://www.argus-tv.com//</summary>
++    <summary lang="mk">XBMC интерфејс за ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="nl">XBMC frontend voor het ARGUS-TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="pl">Interfejs XBMC dla ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="pt">Frontend XBMC para ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="pt_BR">XBMC frontend para o ARGUS TV PVR http://www.argus-tv.com/</summary>
++    <summary lang="ru">Интерфейс XBMC для ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="sk">XBMC rozhranie pre ARGUS TV PVR http://www.argus-tv.com//</summary>
++    <summary lang="sv">XBMC frontend för ARGUS TV PVR http://www.argus-tv.com/</summary>
++    <summary lang="zh">XBMC的ARGUS TV PVR前端 http://www.argus-tv.com//</summary>
++    <description lang="cs">Rozhraní ARGUS TV PVR. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače.</description>
++    <description lang="de">ARGUS TV PVR frontend. Unterstützt Streaming von TV &amp; Aufnahmen, Abspielen von Radiokanälen, EPG und Aufnahmepläne.</description>
++    <description lang="el">Frontend για το ARGUS TV PVR. Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου, EPG και προγραμματισμό.</description>
++    <description lang="en">ARGUS TV PVR frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and schedules.</description>
++    <description lang="es">Frontend de ARGUS TV PVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y temporizadores.</description>
++    <description lang="es_AR">Frontend de ARGUS TV PVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y temporizadores.</description>
++    <description lang="hu">ARGUS TV PVR előtér-kiszolgáló. Élő adások, felvételek és rádió csatornák sugárzásának támogatása EPG-vel és időzítéssel.</description>
++    <description lang="ko">ARGUS TV PVR 프론트엔드. 라이브 TV 스트리밍과 녹화, 라디오 청취, EPG와 예약 지원.</description>
++    <description lang="mk">ARGUS TV PVR интерфејс. Подржува стриминг на Live TV &amp; Снимки, слушање на радио канали, EPG и планирања.</description>
++    <description lang="nl">ARGUS TV PVR frontend. Ondersteunt het bekijken van Live TV en opnames, het beluisteren van radio zenders, het tonen van de EPG en het inplannen/beheren van nieuwe opnames (Timers).</description>
++    <description lang="pl">Interfejs ARGUS TV PVR. Obsługuje strumieniowe przesyłanie TV na żywo oraz nagrań, słuchanie kanałów radiowych, EPG i harmonogramy.</description>
++    <description lang="pt">Frontend ARGUS TV PVR. Suporta transmissão de TV em directo e Gravações, audição de estações de Rádio, EPG e agendamentos.</description>
++    <description lang="pt_BR">ARGUS TV PVR frontend. Suporta streaming de TV ao vivo &amp; Gravações, sintoniza rádios, EPG e agendamento.</description>
++    <description lang="ru">Интерфейс для ARGUS TV PVR. Поддерживает просмотр потокового ТВ и видеозаписей, прослушивание радиоканалов и работу с электронным телегидом и расписаниями.</description>
++    <description lang="sk">ARGUS TV PVR rozhranie. Podporuje streamovanie živého TV vysielania a nahrávok, počúvanie rozhlasových kanálov, EPG a plánovače.</description>
++    <description lang="sv">ARGUS TV PVR frontend. Stödjer strömmning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler, EPG och schemaläggning.</description>
++    <description lang="zh">ARGUS TV PVR前端支持直播电视和节目录制、收听广播频道、电子节目表及计划任务功能。</description>
++    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="ca">Això és programari inestable! Els autors no són en absolut responsables d'enregistraments fallist, temporitzadors incorrectes, hores tudades, o qualsevol altra efecte indesitjable...</disclaimer>
++    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
++    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser.</disclaimer>
++    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
++    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
++    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="es">¡Este software es aún inestable! Los autores no son responsables en forma alguna por grabaciones fallidas, temporizaciones incorrectas, tiempo perdido o ningún otro efecto no deseado.</disclaimer>
++    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
++    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
++    <disclaimer lang="fi">Tämä on epävakaa ohjelma! Ohjelman kirjoittavat eivät vastaa millään tavalla epäonnistuneista nauhoituksista, ajastimen väärästä toiminnasta, hukatusta ajasta tai muista ei-halutuista tapahtumista.</disclaimer>
++    <disclaimer lang="fr">Logiciel en cours d'élaboration ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries défectueuses, temps perdu ou autres effets indésirables..</disclaimer>
++    <disclaimer lang="he">זוהי תוכנה לא יציבה! היוצרים אינם אחראים לכשלון בהקלטה, תזמונים לא נכונים, שעות מבוזבזות או כל השפעות בלתי רצויות אחרות.</disclaimer>
++    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
++    <disclaimer lang="is">Þetta er óstöðugur hugbúnaður! Höfundarnir eru á engann hátt ábyrgir fyrir misheppnuðum upptökum, röngum upptökutímum, klukkustundum sem að fóru í súginn eða nokkrum öðrum óæskilegum áhrifum.</disclaimer>
++    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
++    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
++    <disclaimer lang="nl">Deze software is niet 100% stabiel! De auteurs zijn op geen enkele wijze aansprakelijk voor mislukte opnames, verspilde tijd, of enig ander ongewild neveneffect..</disclaimer>
++    <disclaimer lang="no">Dette er ustabil programvare! Skaperen har ikke på noen måte ansvar for feilede opptak, feile timere, bortkastede timer, eller andre uønskede effekter..</disclaimer>
++    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
++    <disclaimer lang="pt">Este software é instável! Os autores não são de forma alguma responsáveis por gravações falhadas, temporizadores incorrectos, horas desperdiçadas, ou qualquer outro tipo de efeitos indesejáveis..</disclaimer>
++    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis</disclaimer>
++    <disclaimer lang="ru">Это нестабильная программа! Авторы не несут ответственности за неудачные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты.</disclaimer>
++    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
++    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
++    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
++    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.demo/addon/addon.xml b/addons/pvr.demo/addon/addon.xml
+deleted file mode 100644
+index 78bd3c6..0000000
+--- a/addons/pvr.demo/addon/addon.xml
++++ /dev/null
+@@ -1,23 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.demo"
+-  version="1.6.0"
+-  name="PVR Demo Client"
+-  provider-name="Pulse-Eight Ltd.">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_Demo.pvr"
+-	library_osx="XBMC_Demo.pvr"
+-    library_wingl="XBMC_Demo_win32.dll"
+-    library_windx="XBMC_Demo_win32.dll"
+-    library_android="libXBMC_Demo.so" />
+-  <extension point="xbmc.addon.metadata">
+-    <summary>Demo PVR Client</summary>
+-    <description>Demo PVR Client</description>
+-    <disclaimer>Just contains stubs</disclaimer>
+-    <platform>linux wingl windx</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.demo/addon/addon.xml.in b/addons/pvr.demo/addon/addon.xml.in
+new file mode 100644
+index 0000000..d44b26f
+--- /dev/null
++++ b/addons/pvr.demo/addon/addon.xml.in
+@@ -0,0 +1,23 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.demo"
++  version="1.6.0"
++  name="PVR Demo Client"
++  provider-name="Pulse-Eight Ltd.">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_Demo.pvr"
++	library_osx="XBMC_Demo.pvr"
++    library_wingl="XBMC_Demo_win32.dll"
++    library_windx="XBMC_Demo_win32.dll"
++    library_android="libXBMC_Demo.so" />
++  <extension point="xbmc.addon.metadata">
++    <summary>Demo PVR Client</summary>
++    <description>Demo PVR Client</description>
++    <disclaimer>Just contains stubs</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.dvbviewer/addon/addon.xml b/addons/pvr.dvbviewer/addon/addon.xml
+deleted file mode 100644
+index 54baebe..0000000
+--- a/addons/pvr.dvbviewer/addon/addon.xml
++++ /dev/null
+@@ -1,87 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.dvbviewer"
+-  version="1.6.1.7"
+-  name="DVBViewer Client"
+-  provider-name="jdembski, A600">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_dvbviewer.pvr"
+-    library_osx="XBMC_dvbviewer.pvr"
+-    library_wingl="XBMC_dvbviewer_win32.dll"
+-    library_windx="XBMC_dvbviewer_win32.dll"
+-    library_android="libXBMC_dvbviewer.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="cs">Rozhraní XBMC pro DVBViewer</summary>
+-    <summary lang="da">XBMC's frontend til DVBViewer</summary>
+-    <summary lang="de">XBMC's Frontend für DVBViewer</summary>
+-    <summary lang="el">Frontend του XBMC για το DVBViewer</summary>
+-    <summary lang="en">XBMC's frontend for DVBViewer</summary>
+-    <summary lang="es">Frontend de XBMC para DVBViewer</summary>
+-    <summary lang="es_AR">Frontend de XBMC para DVBViewer</summary>
+-    <summary lang="fr">Client XBMC pour DVBViewer</summary>
+-    <summary lang="he">ממשק קדמי של XBMC עבור DVBViewer</summary>
+-    <summary lang="hu">XBMC DVBViwer előtér-kiszolgáló</summary>
+-    <summary lang="ko">DVBViewer XBMC 프론트엔드</summary>
+-    <summary lang="mk">XBMC's интерфејс за DVBViewer</summary>
+-    <summary lang="pl">Intarfejs XBMC dla DVBViewer</summary>
+-    <summary lang="pt">Frontend XBMC para DVBViewer</summary>
+-    <summary lang="pt_BR">XBMC's frontend para DVBViewer</summary>
+-    <summary lang="ru">Фронтэнд XBMC для DVBViewer</summary>
+-    <summary lang="sk">XBMC rozhranie pre DVBViewer</summary>
+-    <summary lang="sv">XBMC's frontend för DVBViewer</summary>
+-    <summary lang="zh">XBMC 的 DVBViewer 前端</summary>
+-    <description lang="cs">Rozhraní služby nahrávek DVBViewer. Podporuje proudové vysílání živého vysílání, nahrávky a EPG. Pro zpracování výstupu XML z webového rozhraní RS používá knihovnu xmlParser, kterou vyvinul Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Za to mnohokrát děkujeme.&#10;</description>
+-    <description lang="da">DVBViewer Recording Service frontend; Understøtter streaming af LiveTV, Timere, Optagelser og EPG. For parsing af XML output fra RS webinterface bruges der xmlParser biblioteket der er udviklet af Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Mange tak for dette!\n</description>
+-    <description lang="de">DVBViewer Aufnahme Service Frontend; Unterstützt Streamen von LiveTV, Timer, Aufnahmen &amp; EPG. Für das Parsen der XML Ausgabe vom RS Web Interface nutzt es die xmlParser Bibliothek, entwickelt von Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Vielen Dank dafür!&#10;</description>
+-    <description lang="el">Frontend για την Υπηρεσία Εγγραφών του DVBViewer. Υποστηρίζει ροές Live TV, Χρονοδιακόπτες, Εγγραφές &amp; EPG. Για την ανάλυση του XML αρχείου εξόδου από την RS διεπαφή ιστού χρησιμοποιείται η βιβλιοθήκη xmlParser που αναπτύχθηκε από τον Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Θερμές ευχαριστίες για αυτό!&#10;</description>
+-    <description lang="en">DVBViewer Recording Service frontend; supporting streaming of LiveTV, Timers, Recordings &amp; EPG. For parsing the XML output from the RS webinterface it uses the xmlParser library developed by Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Many thanks for this!&#10;</description>
+-    <description lang="es">Frontend del Servicio de Grabaciones de DVBViewer; soportando transmisión de TV en Vivo, Temporizadores, Grabaciones y Guía de Programas. Para analizar la salida XML de la interfaz Web RS usa la librería xmlParser desarrollada por Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html).⏎&#10;</description>
+-    <description lang="es_AR">Frontend del Servicio de Grabaciones de DVBViewer; soportando transmisión de TV en Vivo, Temporizadores, Grabaciones y Guía de Programas. Para analizar la salida XML de la interfaz Web RS usa la librería xmlParser desarrollada por Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). ¡Mucas gracias por esto!⏎&#10;</description>
+-    <description lang="fr">Client pour le Service d'Enregistrement DVBViewer; supporte la diffusion de la TV en direct, les programmations, les enregistrements et l'EPG. Utilise la librairie xmlParser développée par Frank Vanden Berghen pour l'interprétation de la sortie XML de l'interface web du SE (http://www.applied-mathematics.net/tools/xmlParser.html).&#10;</description>
+-    <description lang="he">נגן DVB ממשק קידמי של שרת הקלטה;תומך בהזרמת שידורים חיים של טלויזיה,מתזמני הקלטות ולוחות שידורים.לניתוח פלט של XML ממשק אינטרנט RS משתמש בסיפרית xmlPreser שפותחה ע"י פראנק ודן ברגן (http://www.applied-mathematics.net/tools/xmlParser.html).הרבה תודה על כך!⏎&#10;</description>
+-    <description lang="hu">DVBViwer felvétel szolgáltatás előtér-kiszolgáló, ami támogatja az élő TV adások sugárzását, időzítések hozzáadását, felvételek készítését és EPG adatok kezelését.&#10;</description>
+-    <description lang="ko">DVBViewer 녹화 서비스 프론트엔드; 라이브 TV 스트리밍, 녹화, EPG 지원. RS 웹인터페이스에서 XML을 추출하기 위해 Frank Vanden Berghen이 개발한 xmlParser를 이용합니다 (http://www.applied-mathematics.net/tools/xmlParser.html). Many thanks for this!&#10;</description>
+-    <description lang="mk">DVBViewer Recording Service frontend; supporting streaming of LiveTV, Timers, Recordings &amp; EPG. For parsing the XML output from the RS webinterface it uses the xmlParser library developed by Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Many thanks for this!&#10;</description>
+-    <description lang="pl">Interfejs usługi nagrań DVBViwer; wspiera strumieniowe oglądanie TV na żywo, wyłączniki czasowe, nagrywanie oraz EPG.  Do parsowania XML wyjście z interfejsu WWW RS wykorzystuje bibliotekę XMLParser opracowaną przez Franka Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Wielkie dzięki za to!&#10;</description>
+-    <description lang="pt">Frontend para o serviço de gravação DVBViewer; permite transmissão ao vivo de LiveTV, temporizadores, gravações e EPG. Para análise do XML emitido da webinterface RS, é utilizada a biblioteca xmlParser de Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Mil obrigados por isso!&#10;</description>
+-    <description lang="pt_BR">DVBViewer frontend Serviço de gravações, suporta streaming de  TV ao Vivo, Agendamentos, Gravações e EPG. Para analisar a saída XML do RS webinterface ele usa a biblioteca XmlParser desenvolvido por Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Muito obrigado por isso!&#10;</description>
+-    <description lang="ru">Фронтэнд сервиса записи DVBViewer; поддерживает потоковое вещание ТВ, таймеры, запись и ЕПГ. Для разбора XML-вывода RS-интерфейса использует библиотеку xmlParser, написанную Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). За что благодарим его!⏎&#10;</description>
+-    <description lang="sk">Rozhranie pre spoluprácu s nahrávacou službou aplikácie DVBViewer; podporuje streamovanie živej televízie, časovače, nahrávky a EPG. Na získavanie dát zo XML výstupu z RS webového rozhrania používa knižnicu xmlParser, ktorú vyvinul Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Za to mu veľmi ďakujeme!&#10;</description>
+-    <description lang="sv">DVBViewer inspelningsservice-frontend; stödjer strömmning av direktsänd TV, timers, inspelningar &amp; EPG. För analysering av XML-utdata från RS-webbgränssnitt använder det xmlParser-biblioteket utvecklat av Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Många tack för detta!&#10;</description>
+-    <description lang="zh">DVBViewer Recording Service 前端; 支持直播电视的流媒体转发，定时器，录像及电子节目表。RS web 接口的 XML 结果解析采用 xmlParser 库，由 Frank Vanden Berghen 开发(http://www.applied-mathematics.net/tools/xmlParser.html)。感谢作者！&#10;</description>
+-    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="ca">Això és programari inestable! Els autors no són en absolut responsables d'enregistraments fallist, temporitzadors incorrectes, hores tudades, o qualsevol altra efecte indesitjable...</disclaimer>
+-    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
+-    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser.</disclaimer>
+-    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
+-    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
+-    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="es">¡Este software es aún inestable! Los autores no son responsables en forma alguna por grabaciones fallidas, temporizaciones incorrectas, tiempo perdido o ningún otro efecto no deseado.</disclaimer>
+-    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
+-    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
+-    <disclaimer lang="fi">Tämä on epävakaa ohjelma! Ohjelman kirjoittavat eivät vastaa millään tavalla epäonnistuneista nauhoituksista, ajastimen väärästä toiminnasta, hukatusta ajasta tai muista ei-halutuista tapahtumista.</disclaimer>
+-    <disclaimer lang="fr">Logiciel en cours d'élaboration ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries défectueuses, temps perdu ou autres effets indésirables..</disclaimer>
+-    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
+-    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
+-    <disclaimer lang="is">Þetta er óstöðugur hugbúnaður! Höfundarnir eru á engann hátt ábyrgir fyrir misheppnuðum upptökum, röngum upptökutímum, klukkustundum sem að fóru í súginn eða nokkrum öðrum óæskilegum áhrifum.</disclaimer>
+-    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
+-    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
+-    <disclaimer lang="nl">Deze software is niet 100% stabiel! De auteurs zijn op geen enkele wijze aansprakelijk voor mislukte opnames, verspilde tijd, of enig ander ongewild neveneffect..</disclaimer>
+-    <disclaimer lang="no">Dette er ustabil programvare! Skaperen har ikke på noen måte ansvar for feilede opptak, feile timere, bortkastede timer, eller andre uønskede effekter..</disclaimer>
+-    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
+-    <disclaimer lang="pt">Este é um software instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, outro qualquer efeito não desejado...</disclaimer>
+-    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis</disclaimer>
+-    <disclaimer lang="ru">Это тестовая программа! Авторы не несут ответственности за неудачные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты..</disclaimer>
+-    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
+-    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
+-    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
+-    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.dvbviewer/addon/addon.xml.in b/addons/pvr.dvbviewer/addon/addon.xml.in
+new file mode 100644
+index 0000000..00db96e
+--- /dev/null
++++ b/addons/pvr.dvbviewer/addon/addon.xml.in
+@@ -0,0 +1,87 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.dvbviewer"
++  version="1.6.1.7"
++  name="DVBViewer Client"
++  provider-name="jdembski, A600">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_dvbviewer.pvr"
++    library_osx="XBMC_dvbviewer.pvr"
++    library_wingl="XBMC_dvbviewer_win32.dll"
++    library_windx="XBMC_dvbviewer_win32.dll"
++    library_android="libXBMC_dvbviewer.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="cs">Rozhraní XBMC pro DVBViewer</summary>
++    <summary lang="da">XBMC's frontend til DVBViewer</summary>
++    <summary lang="de">XBMC's Frontend für DVBViewer</summary>
++    <summary lang="el">Frontend του XBMC για το DVBViewer</summary>
++    <summary lang="en">XBMC's frontend for DVBViewer</summary>
++    <summary lang="es">Frontend de XBMC para DVBViewer</summary>
++    <summary lang="es_AR">Frontend de XBMC para DVBViewer</summary>
++    <summary lang="fr">Client XBMC pour DVBViewer</summary>
++    <summary lang="he">ממשק קדמי של XBMC עבור DVBViewer</summary>
++    <summary lang="hu">XBMC DVBViwer előtér-kiszolgáló</summary>
++    <summary lang="ko">DVBViewer XBMC 프론트엔드</summary>
++    <summary lang="mk">XBMC's интерфејс за DVBViewer</summary>
++    <summary lang="pl">Intarfejs XBMC dla DVBViewer</summary>
++    <summary lang="pt">Frontend XBMC para DVBViewer</summary>
++    <summary lang="pt_BR">XBMC's frontend para DVBViewer</summary>
++    <summary lang="ru">Фронтэнд XBMC для DVBViewer</summary>
++    <summary lang="sk">XBMC rozhranie pre DVBViewer</summary>
++    <summary lang="sv">XBMC's frontend för DVBViewer</summary>
++    <summary lang="zh">XBMC 的 DVBViewer 前端</summary>
++    <description lang="cs">Rozhraní služby nahrávek DVBViewer. Podporuje proudové vysílání živého vysílání, nahrávky a EPG. Pro zpracování výstupu XML z webového rozhraní RS používá knihovnu xmlParser, kterou vyvinul Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Za to mnohokrát děkujeme.&#10;</description>
++    <description lang="da">DVBViewer Recording Service frontend; Understøtter streaming af LiveTV, Timere, Optagelser og EPG. For parsing af XML output fra RS webinterface bruges der xmlParser biblioteket der er udviklet af Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Mange tak for dette!\n</description>
++    <description lang="de">DVBViewer Aufnahme Service Frontend; Unterstützt Streamen von LiveTV, Timer, Aufnahmen &amp; EPG. Für das Parsen der XML Ausgabe vom RS Web Interface nutzt es die xmlParser Bibliothek, entwickelt von Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Vielen Dank dafür!&#10;</description>
++    <description lang="el">Frontend για την Υπηρεσία Εγγραφών του DVBViewer. Υποστηρίζει ροές Live TV, Χρονοδιακόπτες, Εγγραφές &amp; EPG. Για την ανάλυση του XML αρχείου εξόδου από την RS διεπαφή ιστού χρησιμοποιείται η βιβλιοθήκη xmlParser που αναπτύχθηκε από τον Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Θερμές ευχαριστίες για αυτό!&#10;</description>
++    <description lang="en">DVBViewer Recording Service frontend; supporting streaming of LiveTV, Timers, Recordings &amp; EPG. For parsing the XML output from the RS webinterface it uses the xmlParser library developed by Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Many thanks for this!&#10;</description>
++    <description lang="es">Frontend del Servicio de Grabaciones de DVBViewer; soportando transmisión de TV en Vivo, Temporizadores, Grabaciones y Guía de Programas. Para analizar la salida XML de la interfaz Web RS usa la librería xmlParser desarrollada por Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html).⏎&#10;</description>
++    <description lang="es_AR">Frontend del Servicio de Grabaciones de DVBViewer; soportando transmisión de TV en Vivo, Temporizadores, Grabaciones y Guía de Programas. Para analizar la salida XML de la interfaz Web RS usa la librería xmlParser desarrollada por Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). ¡Mucas gracias por esto!⏎&#10;</description>
++    <description lang="fr">Client pour le Service d'Enregistrement DVBViewer; supporte la diffusion de la TV en direct, les programmations, les enregistrements et l'EPG. Utilise la librairie xmlParser développée par Frank Vanden Berghen pour l'interprétation de la sortie XML de l'interface web du SE (http://www.applied-mathematics.net/tools/xmlParser.html).&#10;</description>
++    <description lang="he">נגן DVB ממשק קידמי של שרת הקלטה;תומך בהזרמת שידורים חיים של טלויזיה,מתזמני הקלטות ולוחות שידורים.לניתוח פלט של XML ממשק אינטרנט RS משתמש בסיפרית xmlPreser שפותחה ע"י פראנק ודן ברגן (http://www.applied-mathematics.net/tools/xmlParser.html).הרבה תודה על כך!⏎&#10;</description>
++    <description lang="hu">DVBViwer felvétel szolgáltatás előtér-kiszolgáló, ami támogatja az élő TV adások sugárzását, időzítések hozzáadását, felvételek készítését és EPG adatok kezelését.&#10;</description>
++    <description lang="ko">DVBViewer 녹화 서비스 프론트엔드; 라이브 TV 스트리밍, 녹화, EPG 지원. RS 웹인터페이스에서 XML을 추출하기 위해 Frank Vanden Berghen이 개발한 xmlParser를 이용합니다 (http://www.applied-mathematics.net/tools/xmlParser.html). Many thanks for this!&#10;</description>
++    <description lang="mk">DVBViewer Recording Service frontend; supporting streaming of LiveTV, Timers, Recordings &amp; EPG. For parsing the XML output from the RS webinterface it uses the xmlParser library developed by Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Many thanks for this!&#10;</description>
++    <description lang="pl">Interfejs usługi nagrań DVBViwer; wspiera strumieniowe oglądanie TV na żywo, wyłączniki czasowe, nagrywanie oraz EPG.  Do parsowania XML wyjście z interfejsu WWW RS wykorzystuje bibliotekę XMLParser opracowaną przez Franka Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Wielkie dzięki za to!&#10;</description>
++    <description lang="pt">Frontend para o serviço de gravação DVBViewer; permite transmissão ao vivo de LiveTV, temporizadores, gravações e EPG. Para análise do XML emitido da webinterface RS, é utilizada a biblioteca xmlParser de Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Mil obrigados por isso!&#10;</description>
++    <description lang="pt_BR">DVBViewer frontend Serviço de gravações, suporta streaming de  TV ao Vivo, Agendamentos, Gravações e EPG. Para analisar a saída XML do RS webinterface ele usa a biblioteca XmlParser desenvolvido por Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Muito obrigado por isso!&#10;</description>
++    <description lang="ru">Фронтэнд сервиса записи DVBViewer; поддерживает потоковое вещание ТВ, таймеры, запись и ЕПГ. Для разбора XML-вывода RS-интерфейса использует библиотеку xmlParser, написанную Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). За что благодарим его!⏎&#10;</description>
++    <description lang="sk">Rozhranie pre spoluprácu s nahrávacou službou aplikácie DVBViewer; podporuje streamovanie živej televízie, časovače, nahrávky a EPG. Na získavanie dát zo XML výstupu z RS webového rozhrania používa knižnicu xmlParser, ktorú vyvinul Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Za to mu veľmi ďakujeme!&#10;</description>
++    <description lang="sv">DVBViewer inspelningsservice-frontend; stödjer strömmning av direktsänd TV, timers, inspelningar &amp; EPG. För analysering av XML-utdata från RS-webbgränssnitt använder det xmlParser-biblioteket utvecklat av Frank Vanden Berghen (http://www.applied-mathematics.net/tools/xmlParser.html). Många tack för detta!&#10;</description>
++    <description lang="zh">DVBViewer Recording Service 前端; 支持直播电视的流媒体转发，定时器，录像及电子节目表。RS web 接口的 XML 结果解析采用 xmlParser 库，由 Frank Vanden Berghen 开发(http://www.applied-mathematics.net/tools/xmlParser.html)。感谢作者！&#10;</description>
++    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="ca">Això és programari inestable! Els autors no són en absolut responsables d'enregistraments fallist, temporitzadors incorrectes, hores tudades, o qualsevol altra efecte indesitjable...</disclaimer>
++    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
++    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser.</disclaimer>
++    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
++    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
++    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="es">¡Este software es aún inestable! Los autores no son responsables en forma alguna por grabaciones fallidas, temporizaciones incorrectas, tiempo perdido o ningún otro efecto no deseado.</disclaimer>
++    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
++    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
++    <disclaimer lang="fi">Tämä on epävakaa ohjelma! Ohjelman kirjoittavat eivät vastaa millään tavalla epäonnistuneista nauhoituksista, ajastimen väärästä toiminnasta, hukatusta ajasta tai muista ei-halutuista tapahtumista.</disclaimer>
++    <disclaimer lang="fr">Logiciel en cours d'élaboration ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries défectueuses, temps perdu ou autres effets indésirables..</disclaimer>
++    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
++    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
++    <disclaimer lang="is">Þetta er óstöðugur hugbúnaður! Höfundarnir eru á engann hátt ábyrgir fyrir misheppnuðum upptökum, röngum upptökutímum, klukkustundum sem að fóru í súginn eða nokkrum öðrum óæskilegum áhrifum.</disclaimer>
++    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
++    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
++    <disclaimer lang="nl">Deze software is niet 100% stabiel! De auteurs zijn op geen enkele wijze aansprakelijk voor mislukte opnames, verspilde tijd, of enig ander ongewild neveneffect..</disclaimer>
++    <disclaimer lang="no">Dette er ustabil programvare! Skaperen har ikke på noen måte ansvar for feilede opptak, feile timere, bortkastede timer, eller andre uønskede effekter..</disclaimer>
++    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
++    <disclaimer lang="pt">Este é um software instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, outro qualquer efeito não desejado...</disclaimer>
++    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis</disclaimer>
++    <disclaimer lang="ru">Это тестовая программа! Авторы не несут ответственности за неудачные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты..</disclaimer>
++    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
++    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
++    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
++    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.hts/addon/addon.xml b/addons/pvr.hts/addon/addon.xml
+deleted file mode 100644
+index e31882b..0000000
+--- a/addons/pvr.hts/addon/addon.xml
++++ /dev/null
+@@ -1,97 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.hts"
+-  version="1.6.0"
+-  name="Tvheadend HTSP Client"
+-  provider-name="Lars Op den Kamp, Team XBMC">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_Tvheadend.pvr"
+-    library_osx="XBMC_Tvheadend.pvr"
+-    library_wingl="XBMC_Tvheadend_win32.dll"
+-    library_windx="XBMC_Tvheadend_win32.dll"
+-    library_android="libXBMC_Tvheadend.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="be">XBMC's frontend for Tvheadend</summary>
+-    <summary lang="cs">Rozhraní XBMC pro Tvheadend</summary>
+-    <summary lang="da">XBMC's frontend til Tvheadend</summary>
+-    <summary lang="de">XBMC's Zugang zu Tvheadend</summary>
+-    <summary lang="el">Το frontend του XBMC για το Tvheadend</summary>
+-    <summary lang="en">XBMC's frontend for Tvheadend</summary>
+-    <summary lang="es">Interfaz XBMC para Tvheadend</summary>
+-    <summary lang="es_AR">Interfaz XBMC para Tvheadend</summary>
+-    <summary lang="fi">XBMC:n Tvheadend-tuki</summary>
+-    <summary lang="fr">Enregistreur Vidéo XBMC pour Tvheadend</summary>
+-    <summary lang="he">ממשק קדמי XBMC עבורTvheadend</summary>
+-    <summary lang="hu">XBMC TVHeadend előtér-kiszolgáló</summary>
+-    <summary lang="it">Frontend di XBMC per Tvheadend</summary>
+-    <summary lang="ko">Tvheadend 을 위한 XBMC 프론트엔드</summary>
+-    <summary lang="lt">XBMC sąsaja skirta Tvheadend</summary>
+-    <summary lang="mk">XBMC's frontend for Tvheadend</summary>
+-    <summary lang="nl">XBMC's frontend voor Tvheadend</summary>
+-    <summary lang="pl">Interfejs XBMC dla Tvheadend</summary>
+-    <summary lang="pt">Frontend XBMC para Tvheadend</summary>
+-    <summary lang="pt_BR">XBMC frontend para Tvheadend</summary>
+-    <summary lang="ru">Интерфейс XBMC для Tvheadend</summary>
+-    <summary lang="sk">XBMC rozhranie pre Tvheadend</summary>
+-    <summary lang="sl">XBMC-jev vmesnik za Tvheadend</summary>
+-    <summary lang="sv">XBMC's frontend för Tvheadend</summary>
+-    <summary lang="zh">XBMC的Tvheadend前端</summary>
+-    <description lang="be">Tvheadend frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
+-    <description lang="cs">Rozhraní Tvheadend. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače.</description>
+-    <description lang="da">Tvheadend frontend; understøtter streaming af live tv og optagelser, EPG og timere</description>
+-    <description lang="de">Erlaubt die Wiedergabe von Live TV und Aufnahmen mittels Tvheadend auf XBMC. Desweiteren werden EPG und Timer unterstützt.</description>
+-    <description lang="el">Frontend για το Tvheadend. Υποστηρίζει ροές Live TV &amp; Εγγραφές, EPG, Χρονοδιακόπτες</description>
+-    <description lang="en">Tvheadend frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
+-    <description lang="es">Interfaz Tvheadend; soporta la reproducción de TV en vivo, grabación, guía de programación, temporizadores</description>
+-    <description lang="es_AR">Interfaz Tvheadend; soporta la reproducción de TV en vivo, grabación, guía de programación, temporizadores</description>
+-    <description lang="fi">Tvheadend; tukee reaaliaikaisen television ja nauhoituksien streamausta, EPGtä ja nauhoituksien ajastusta.</description>
+-    <description lang="fr">Enregistreur Vidéo pourTvheadend supportant la lecture en continu du direct télévision et des enregistrements, les guides de programme TV, les minuteries</description>
+-    <description lang="he">ממשק קדמיTvheadend:תומך בטלוויזיה חיה והקלטות. לוחות שידורים,והקלטה מתוזמנת.</description>
+-    <description lang="hu">TVHeadend előtér-kiszolgáló. Élő adások és felvételek sugárzásának támogatása EPG-vel és időzítéssel</description>
+-    <description lang="it">Frontend di Tvheadend; supporta lo streaming di Live TV &amp; Registrazione, EPG, Timers</description>
+-    <description lang="ko">Tvheadend 프론트엔드; TV 시청 &amp; 녹화, EPG, 타이머 지원</description>
+-    <description lang="lt">Tvheadend sąsaja remia transliacijos Live TV &amp; Įrašus, EPG, Laikmačiai</description>
+-    <description lang="mk">Tvheadend frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
+-    <description lang="nl">Tvheadend frontend, het ondersteunen streaming van Live TV &amp; Recordings, EPG, Timers</description>
+-    <description lang="pl">Warstwa prezentacji Tvheadend; wspiera TV na żywo i nagrywanie, EPG oraz liczniki czasu</description>
+-    <description lang="pt">Frontend Tvheadend; suporta transmissão de TV em Directo e Gravações, EPG, Temporizadores</description>
+-    <description lang="pt_BR">Tvheadend; suporta streaming de Tv ao Vivo e gravações, EPG, Agendamentos.</description>
+-    <description lang="ru">Интерфейс для Tvheadend. Поддерживает просмотр и запись ТВ, EPG и таймеры</description>
+-    <description lang="sk">Rozhranie pre Tvheadend; je podporované streamovanie živého televízneho vysielania a nahrávok, EPG, časovačov</description>
+-    <description lang="sl">Vmesnik za Tvheadend; podpira pretakanje televizije v živo &amp; posnetkov, EPG, časovnike</description>
+-    <description lang="sv">Tvheadend frontend; stödjer strömning av direktsänd TV &amp; inspelningar, EPG, Timers</description>
+-    <description lang="zh">Tvheadend前端，支持直播电视播放和录制、电子节目单、定时器</description>
+-    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
+-    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser.</disclaimer>
+-    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
+-    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
+-    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="es">¡Este software es inestable! Los autores no se responsabilizan de grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado...</disclaimer>
+-    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
+-    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
+-    <disclaimer lang="fi">Tämä on epävakaa ohjelma! Ohjelman kirjoittavat eivät vastaa millään tavalla epäonnistuneista nauhoituksista, ajastimen väärästä toiminnasta, hukatusta ajasta tai muista ei-halutuista tapahtumista.</disclaimer>
+-    <disclaimer lang="fr">Ce programme est instable ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, des minuteries inexactes, du temps perdu ou tous autres effets indésirables.</disclaimer>
+-    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
+-    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
+-    <disclaimer lang="is">Þetta er óstöðugur hugbúnaður! Höfundarnir eru á engann hátt ábyrgir fyrir misheppnuðum upptökum, röngum upptökutímum, klukkustundum sem að fóru í súginn eða nokkrum öðrum óæskilegum áhrifum.</disclaimer>
+-    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
+-    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
+-    <disclaimer lang="nl">Dit is onstabiel software! De auteurs zijn op geen enkele wijze verantwoordelijk voor de mislukte opnames, onjuiste timers, verspilde uren, of een andere ongewenste effecten ..</disclaimer>
+-    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające liczniki czasu, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
+-    <disclaimer lang="pt">Este software é instável! Os autores não são de forma alguma responsáveis por gravações falhadas, temporizadores incorrectos, horas desperdiçadas, ou qualquer outro tipo de efeitos indesejáveis..</disclaimer>
+-    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis...</disclaimer>
+-    <disclaimer lang="ru">Это нестабильная программа! Авторы не несут ответственности за неудачную запись, неправильные таймеры, потраченное время и другие нежелательные последствия.</disclaimer>
+-    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
+-    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
+-    <disclaimer lang="sv">Detta är ostabil programvara! Upphovsmännen är inte ansvariga för felaktiga inspelningar, inkorrekta timers, slösad tid eller andra oönskade effekter..</disclaimer>
+-    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.hts/addon/addon.xml.in b/addons/pvr.hts/addon/addon.xml.in
+new file mode 100644
+index 0000000..a7702cb
+--- /dev/null
++++ b/addons/pvr.hts/addon/addon.xml.in
+@@ -0,0 +1,97 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.hts"
++  version="1.6.0"
++  name="Tvheadend HTSP Client"
++  provider-name="Lars Op den Kamp, Team XBMC">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_Tvheadend.pvr"
++    library_osx="XBMC_Tvheadend.pvr"
++    library_wingl="XBMC_Tvheadend_win32.dll"
++    library_windx="XBMC_Tvheadend_win32.dll"
++    library_android="libXBMC_Tvheadend.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="be">XBMC's frontend for Tvheadend</summary>
++    <summary lang="cs">Rozhraní XBMC pro Tvheadend</summary>
++    <summary lang="da">XBMC's frontend til Tvheadend</summary>
++    <summary lang="de">XBMC's Zugang zu Tvheadend</summary>
++    <summary lang="el">Το frontend του XBMC για το Tvheadend</summary>
++    <summary lang="en">XBMC's frontend for Tvheadend</summary>
++    <summary lang="es">Interfaz XBMC para Tvheadend</summary>
++    <summary lang="es_AR">Interfaz XBMC para Tvheadend</summary>
++    <summary lang="fi">XBMC:n Tvheadend-tuki</summary>
++    <summary lang="fr">Enregistreur Vidéo XBMC pour Tvheadend</summary>
++    <summary lang="he">ממשק קדמי XBMC עבורTvheadend</summary>
++    <summary lang="hu">XBMC TVHeadend előtér-kiszolgáló</summary>
++    <summary lang="it">Frontend di XBMC per Tvheadend</summary>
++    <summary lang="ko">Tvheadend 을 위한 XBMC 프론트엔드</summary>
++    <summary lang="lt">XBMC sąsaja skirta Tvheadend</summary>
++    <summary lang="mk">XBMC's frontend for Tvheadend</summary>
++    <summary lang="nl">XBMC's frontend voor Tvheadend</summary>
++    <summary lang="pl">Interfejs XBMC dla Tvheadend</summary>
++    <summary lang="pt">Frontend XBMC para Tvheadend</summary>
++    <summary lang="pt_BR">XBMC frontend para Tvheadend</summary>
++    <summary lang="ru">Интерфейс XBMC для Tvheadend</summary>
++    <summary lang="sk">XBMC rozhranie pre Tvheadend</summary>
++    <summary lang="sl">XBMC-jev vmesnik za Tvheadend</summary>
++    <summary lang="sv">XBMC's frontend för Tvheadend</summary>
++    <summary lang="zh">XBMC的Tvheadend前端</summary>
++    <description lang="be">Tvheadend frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
++    <description lang="cs">Rozhraní Tvheadend. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače.</description>
++    <description lang="da">Tvheadend frontend; understøtter streaming af live tv og optagelser, EPG og timere</description>
++    <description lang="de">Erlaubt die Wiedergabe von Live TV und Aufnahmen mittels Tvheadend auf XBMC. Desweiteren werden EPG und Timer unterstützt.</description>
++    <description lang="el">Frontend για το Tvheadend. Υποστηρίζει ροές Live TV &amp; Εγγραφές, EPG, Χρονοδιακόπτες</description>
++    <description lang="en">Tvheadend frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
++    <description lang="es">Interfaz Tvheadend; soporta la reproducción de TV en vivo, grabación, guía de programación, temporizadores</description>
++    <description lang="es_AR">Interfaz Tvheadend; soporta la reproducción de TV en vivo, grabación, guía de programación, temporizadores</description>
++    <description lang="fi">Tvheadend; tukee reaaliaikaisen television ja nauhoituksien streamausta, EPGtä ja nauhoituksien ajastusta.</description>
++    <description lang="fr">Enregistreur Vidéo pourTvheadend supportant la lecture en continu du direct télévision et des enregistrements, les guides de programme TV, les minuteries</description>
++    <description lang="he">ממשק קדמיTvheadend:תומך בטלוויזיה חיה והקלטות. לוחות שידורים,והקלטה מתוזמנת.</description>
++    <description lang="hu">TVHeadend előtér-kiszolgáló. Élő adások és felvételek sugárzásának támogatása EPG-vel és időzítéssel</description>
++    <description lang="it">Frontend di Tvheadend; supporta lo streaming di Live TV &amp; Registrazione, EPG, Timers</description>
++    <description lang="ko">Tvheadend 프론트엔드; TV 시청 &amp; 녹화, EPG, 타이머 지원</description>
++    <description lang="lt">Tvheadend sąsaja remia transliacijos Live TV &amp; Įrašus, EPG, Laikmačiai</description>
++    <description lang="mk">Tvheadend frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers</description>
++    <description lang="nl">Tvheadend frontend, het ondersteunen streaming van Live TV &amp; Recordings, EPG, Timers</description>
++    <description lang="pl">Warstwa prezentacji Tvheadend; wspiera TV na żywo i nagrywanie, EPG oraz liczniki czasu</description>
++    <description lang="pt">Frontend Tvheadend; suporta transmissão de TV em Directo e Gravações, EPG, Temporizadores</description>
++    <description lang="pt_BR">Tvheadend; suporta streaming de Tv ao Vivo e gravações, EPG, Agendamentos.</description>
++    <description lang="ru">Интерфейс для Tvheadend. Поддерживает просмотр и запись ТВ, EPG и таймеры</description>
++    <description lang="sk">Rozhranie pre Tvheadend; je podporované streamovanie živého televízneho vysielania a nahrávok, EPG, časovačov</description>
++    <description lang="sl">Vmesnik za Tvheadend; podpira pretakanje televizije v živo &amp; posnetkov, EPG, časovnike</description>
++    <description lang="sv">Tvheadend frontend; stödjer strömning av direktsänd TV &amp; inspelningar, EPG, Timers</description>
++    <description lang="zh">Tvheadend前端，支持直播电视播放和录制、电子节目单、定时器</description>
++    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
++    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser.</disclaimer>
++    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
++    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
++    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="es">¡Este software es inestable! Los autores no se responsabilizan de grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado...</disclaimer>
++    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
++    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
++    <disclaimer lang="fi">Tämä on epävakaa ohjelma! Ohjelman kirjoittavat eivät vastaa millään tavalla epäonnistuneista nauhoituksista, ajastimen väärästä toiminnasta, hukatusta ajasta tai muista ei-halutuista tapahtumista.</disclaimer>
++    <disclaimer lang="fr">Ce programme est instable ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, des minuteries inexactes, du temps perdu ou tous autres effets indésirables.</disclaimer>
++    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
++    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
++    <disclaimer lang="is">Þetta er óstöðugur hugbúnaður! Höfundarnir eru á engann hátt ábyrgir fyrir misheppnuðum upptökum, röngum upptökutímum, klukkustundum sem að fóru í súginn eða nokkrum öðrum óæskilegum áhrifum.</disclaimer>
++    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
++    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
++    <disclaimer lang="nl">Dit is onstabiel software! De auteurs zijn op geen enkele wijze verantwoordelijk voor de mislukte opnames, onjuiste timers, verspilde uren, of een andere ongewenste effecten ..</disclaimer>
++    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające liczniki czasu, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
++    <disclaimer lang="pt">Este software é instável! Os autores não são de forma alguma responsáveis por gravações falhadas, temporizadores incorrectos, horas desperdiçadas, ou qualquer outro tipo de efeitos indesejáveis..</disclaimer>
++    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis...</disclaimer>
++    <disclaimer lang="ru">Это нестабильная программа! Авторы не несут ответственности за неудачную запись, неправильные таймеры, потраченное время и другие нежелательные последствия.</disclaimer>
++    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
++    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
++    <disclaimer lang="sv">Detta är ostabil programvara! Upphovsmännen är inte ansvariga för felaktiga inspelningar, inkorrekta timers, slösad tid eller andra oönskade effekter..</disclaimer>
++    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.mediaportal.tvserver/addon/addon.xml b/addons/pvr.mediaportal.tvserver/addon/addon.xml
+deleted file mode 100644
+index 30464dc..0000000
+--- a/addons/pvr.mediaportal.tvserver/addon/addon.xml
++++ /dev/null
+@@ -1,94 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.mediaportal.tvserver"
+-  version="1.6.3.117"
+-  name="MediaPortal PVR Client"
+-  provider-name="Marcel Groothuis">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_Mediaportal.pvr"
+-    library_osx="XBMC_Mediaportal.pvr"
+-    library_wingl="XBMC_Mediaportal_win32.dll"
+-    library_windx="XBMC_Mediaportal_win32.dll"
+-    library_android="libXBMC_Mediaportal.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="be">XBMC frontend for the MediaPortal TV Server (ffmpeg + tsreader version)</summary>
+-    <summary lang="ca">Frontal XBMC pel servidor de TV MediaPortal (versió ffmpeg + tsreader)</summary>
+-    <summary lang="cs">Rozhraní XBMC pro televizní server MediaPortal (verze ffmpeg + tsreader)</summary>
+-    <summary lang="da">XBMC frontend til MediaPortal TV server (ffmpeg + tsreader version)</summary>
+-    <summary lang="de">XBMC-Frontend für MediaPortal TV Server (ffmpeg- und tsreader-Version)</summary>
+-    <summary lang="el">Frontend του XBMC για το διακομιστή MediaPortal TV (έκδοση ffmpeg + tsreader)</summary>
+-    <summary lang="en">XBMC frontend for the MediaPortal TV Server (ffmpeg + tsreader version)</summary>
+-    <summary lang="es">Interfaz XBMC para el MediaPortal TV Server (versión ffmpeg + tsreader)</summary>
+-    <summary lang="es_AR">Interfaz XBMC para el MediaPortal TV Server (versión ffmpeg + tsreader)</summary>
+-    <summary lang="fr">Applicatif XBMC pour le serveur TV de MediaPortal (version ffmpeg + tsreader)</summary>
+-    <summary lang="he">ממשק משתמש XBMC לשרת טלוויזיה MediaPortal (גרסת ffmpeg + tsreader )</summary>
+-    <summary lang="hu">XBMC Médiaportal előtér-kiszolgáló (ffmpeg + tsreader)</summary>
+-    <summary lang="ko">MediaPortal TV Server (ffmpeg + tsreader version) 을 위한 XBMC 프론트엔드</summary>
+-    <summary lang="lt">XBMC sąsaja MediaPortal TV serverio (ffmpeg + tsreader versija)</summary>
+-    <summary lang="mk">XBMC интерфејс за MediaPortal TV Server (ffmpeg + tsreader верзија)</summary>
+-    <summary lang="nl">XBMC frontend voor de Mediaportal TV Server (ffmmpeg + tsreader versie)</summary>
+-    <summary lang="pl">Interfejs XBMC dla serwera MediaPortal TV  (wersja ffmpeg + tsreader)</summary>
+-    <summary lang="pt">Frontend XBMC para o MediaPortal TV Server (ffmpeg + versão tsreader)</summary>
+-    <summary lang="pt_BR">XBMC Frontend para Servidor de TV MediaPortal (ffmpeg + versão tsreader)</summary>
+-    <summary lang="ru">Интерфейс XBMC для ТВ-сервера MediaPortal (версия ffmpeg + tsreader)</summary>
+-    <summary lang="sk">XBMC rozhranie pre MediaPortal TV server (verzia ffmpeg + tsreader)</summary>
+-    <summary lang="sl">XBMC-jev vmesnik za MediaPortal TV strežnik (ffmpeg + tsreader)</summary>
+-    <summary lang="sv">XBMC frontend för MediaPortal TV-server (ffmpeg + tsreader versionen)</summary>
+-    <summary lang="zh">XBMC的MediaPortal TV服务器前端（ffmpeg + tsreader版）</summary>
+-    <description lang="be">MediaPortal TV Server frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers. This addon combines the former ffmpeg and tsreader addons.</description>
+-    <description lang="ca">Frontal XMBC de TV MediaPortal. Suporta el flux de TV en directe i enregistraments, escoltes de canals de radio, EPG i temporitzadors. Aquest afegitó combina els anteriors afegitons de ffmpg i tsreader.</description>
+-    <description lang="cs">Rozhraní pro televizní server MediaPortal. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače. Toto rozšíření kombinuje rozšíření ffmpeg a tsreader.</description>
+-    <description lang="da">MediaPortal TV server frontend; understøtter streaming af TV &amp; optagelser, Radiokanaler, EPG og timere. Dette add-on kombinerer de gamle ffmpeg og tsreader add-ons.</description>
+-    <description lang="de">Erlaubt die Wiedergabe von Live TV und Aufnahmen mittels MediaPortal TV Server auf XBMC. Desweiteren werden Radiokanäle, EPG und Timer unterstützt. Dieses Addon vereint die ehemaligen ffmpeg- und tsreader-Addons.</description>
+-    <description lang="el">Frontend για το διακομιστή MediaPortal TV. Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου, EPG και Χρονοδιακόπτες. Αυτό το πρόσθετο συνδυάζει τα προηγούμενα πρόσθετα ffmpeg και tsreader.</description>
+-    <description lang="en">MediaPortal TV Server frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers. This addon combines the former ffmpeg and tsreader addons.</description>
+-    <description lang="es">Interfaz MediaPortal TV Server. Soporta transmisión de TV en vivo y grabaciones, escuchar canales de radio, EPG y temporizadores. Este complemento combina los anteriores ffmpeg y tsreader.</description>
+-    <description lang="es_AR">Interfaz MediaPortal TV Server. Soporta transmisión de TV en vivo y grabaciones, escuchar canales de radio, EPG y temporizadores. Este complemento combina los anteriores ffmpeg y tsreader.</description>
+-    <description lang="fr">Applicatif Serveur TV MediaPortal. Il supporte la lecture en continu de direct télévision et enregistrement, l'écoute de radios, guide de programmes et minuteries. Cette extension combine les existants ffmpeg et tsreader.</description>
+-    <description lang="he">ממשק משתמש לשרת טלוויזיה MediaPortal.תומך בהזרמת שידורי טלוויזיה ורדיו חיים והקלטתם,לוח שידורים ומתזמני הקלטות.תוסף זה משלב בתוכו את התוספים של ffmpeg וtsreader.</description>
+-    <description lang="hu">Médiaportal előtér-kiszolgáló. Élő adások, felvételek,és rádió adások sugárzásának támogatása EPG-vel és időzítéssel. Ez a kiegészítő egyesíti az ffmpeg, és a tsreader kiegészítőket.</description>
+-    <description lang="ko">MediaPortal TV Server 프론트엔드. TV 시청 &amp; 녹화, 라디오 채널 청취, EPG 및 타이머 지원. 이 추가기능은 이전의 ffmpeg 과 tsreader 추가기능을 합친 것입니다.</description>
+-    <description lang="lt">MediaPortal TV Serverio sąsaja. Palaiko transliacijos Live TV &amp; Įrašus , klausytis radijo kanalus, EPG ir laikmačius. Šis priedas vienija buvusius ffmpeg ir TSreader priedus.</description>
+-    <description lang="mk">MediaPortal TV Server frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers. This addon combines the former ffmpeg and tsreader addons.</description>
+-    <description lang="nl">MediaPortal TV Server frontend. Ondersteunt het bekijken van Live TV en opnames, het luisteren van radio zenders, het tonen van de EPG en het inplannen/beheren van nieuwe opnames (Timers). Deze addon combineert de voorgaande "ffmpeg" en "tsreader" addons.</description>
+-    <description lang="pl">Interfejs serwera TV MediaPortal. Wspiera strumieniowanie TV na żywo i nagrywanie, słuchanie radia, EPG oraz wyłączniki czasu. Ten dodatek łączy dodatki ffmpeg i tsreader. </description>
+-    <description lang="pt">Frontend para o MediaPortal TV Server. Suporta transmissão de TV em Directo e Gravações, ouvir estações de Rádio, EPG e Temporizadores. Este addon combina os antigos addons ffmpeg e tsreader.</description>
+-    <description lang="pt_BR">Servidor Frontend de TV  do MediaPortal. Suporta streaming de TV ao Vivo e Gravações, escutar canais de rádio, EPG e Agendamentos. Este addon combina ffmpeg e tsreader</description>
+-    <description lang="ru">Интерфейс XBMC для ТВ-сервера MediaPortal. Поддерживает просмотр и запись ТВ, прослушивание радио, EPG и таймеры. Это дополнение заменяет старые дополнения ffmpeg и tsreader.</description>
+-    <description lang="sk">Rozhranie pre MediaPortal TV server. Podporuje streamovanie živého televízneho vysielania a nahrávok, počúvanie rozhlasových kanálov, EPG a časovače. Tento doplnok zlučuje dohromady bývalé doplnky ffmpeg a tsreader.</description>
+-    <description lang="sl">Vmesnik za MediaPortal TV strežnik. Podpira pretakanje televizije v živo &amp; posnetkov, poslušanje radia, EPG in časovnike. Ta dodatek združuje prejšnja dodatka ffmpeg in tsreader.</description>
+-    <description lang="sv">MediaPortal TV-server frontend. Stödjer strömning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler, EPG och timers. Detta tillägg kombinerar dom tidigare ffmpeg och tsreader tilläggen. </description>
+-    <description lang="zh">MediaPortal TV服务器前端，支持直播电视播放和录制、收听电台、电子节目单和定时器。这个插件结合了这前的ffmpeg和tsreader插件。</description>
+-    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="ca">Això és programari inestable! Els autors no són en absolut responsables d'enregistraments fallist, temporitzadors incorrectes, hores tudades, o qualsevol altra efecte indesitjable...</disclaimer>
+-    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
+-    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser..</disclaimer>
+-    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
+-    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
+-    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="es">¡Este es un software inestable! Los autores no son de ninguna manera responsables de las grabaciones fallidas o incorrectas, las temporizadores perdidas, ni otros efectos no deseables..</disclaimer>
+-    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
+-    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
+-    <disclaimer lang="fr">Cet applicatif est instable ! Les auteurs ne sont en aucun cas responsables d'échec d'enregistrements, minuteries erronées, temps perdu et autres résultats indésirables..</disclaimer>
+-    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
+-    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
+-    <disclaimer lang="it">Questo software non è stabile! Gli autori non sono responsabili per registrazioni fallite, timer non corretti, ore perse, o altri effetti indesiderati...</disclaimer>
+-    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
+-    <disclaimer lang="nl">Deze software is niet 100% stabiel! De auteurs zijn op geen enkele wijze aansprakelijk voor mislukte opnames, verspilde tijd, of enig ander ongewild neveneffect..</disclaimer>
+-    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
+-    <disclaimer lang="pt">Este é um software instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, ou qualquer outro efeito não desejado...</disclaimer>
+-    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáves por falhas de gravações, agendamentos incorretos, ou quaisquer outros efeitos indesejados.</disclaimer>
+-    <disclaimer lang="ru">Это нестабильная программа! Авторы не несут ответственности за неудачную запись, неправильные таймеры, потраченное время и другие нежелательные последствия.</disclaimer>
+-    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
+-    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
+-    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
+-    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.mediaportal.tvserver/addon/addon.xml.in b/addons/pvr.mediaportal.tvserver/addon/addon.xml.in
+new file mode 100644
+index 0000000..4fa58aa
+--- /dev/null
++++ b/addons/pvr.mediaportal.tvserver/addon/addon.xml.in
+@@ -0,0 +1,94 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.mediaportal.tvserver"
++  version="1.6.3.117"
++  name="MediaPortal PVR Client"
++  provider-name="Marcel Groothuis">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_Mediaportal.pvr"
++    library_osx="XBMC_Mediaportal.pvr"
++    library_wingl="XBMC_Mediaportal_win32.dll"
++    library_windx="XBMC_Mediaportal_win32.dll"
++    library_android="libXBMC_Mediaportal.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="be">XBMC frontend for the MediaPortal TV Server (ffmpeg + tsreader version)</summary>
++    <summary lang="ca">Frontal XBMC pel servidor de TV MediaPortal (versió ffmpeg + tsreader)</summary>
++    <summary lang="cs">Rozhraní XBMC pro televizní server MediaPortal (verze ffmpeg + tsreader)</summary>
++    <summary lang="da">XBMC frontend til MediaPortal TV server (ffmpeg + tsreader version)</summary>
++    <summary lang="de">XBMC-Frontend für MediaPortal TV Server (ffmpeg- und tsreader-Version)</summary>
++    <summary lang="el">Frontend του XBMC για το διακομιστή MediaPortal TV (έκδοση ffmpeg + tsreader)</summary>
++    <summary lang="en">XBMC frontend for the MediaPortal TV Server (ffmpeg + tsreader version)</summary>
++    <summary lang="es">Interfaz XBMC para el MediaPortal TV Server (versión ffmpeg + tsreader)</summary>
++    <summary lang="es_AR">Interfaz XBMC para el MediaPortal TV Server (versión ffmpeg + tsreader)</summary>
++    <summary lang="fr">Applicatif XBMC pour le serveur TV de MediaPortal (version ffmpeg + tsreader)</summary>
++    <summary lang="he">ממשק משתמש XBMC לשרת טלוויזיה MediaPortal (גרסת ffmpeg + tsreader )</summary>
++    <summary lang="hu">XBMC Médiaportal előtér-kiszolgáló (ffmpeg + tsreader)</summary>
++    <summary lang="ko">MediaPortal TV Server (ffmpeg + tsreader version) 을 위한 XBMC 프론트엔드</summary>
++    <summary lang="lt">XBMC sąsaja MediaPortal TV serverio (ffmpeg + tsreader versija)</summary>
++    <summary lang="mk">XBMC интерфејс за MediaPortal TV Server (ffmpeg + tsreader верзија)</summary>
++    <summary lang="nl">XBMC frontend voor de Mediaportal TV Server (ffmmpeg + tsreader versie)</summary>
++    <summary lang="pl">Interfejs XBMC dla serwera MediaPortal TV  (wersja ffmpeg + tsreader)</summary>
++    <summary lang="pt">Frontend XBMC para o MediaPortal TV Server (ffmpeg + versão tsreader)</summary>
++    <summary lang="pt_BR">XBMC Frontend para Servidor de TV MediaPortal (ffmpeg + versão tsreader)</summary>
++    <summary lang="ru">Интерфейс XBMC для ТВ-сервера MediaPortal (версия ffmpeg + tsreader)</summary>
++    <summary lang="sk">XBMC rozhranie pre MediaPortal TV server (verzia ffmpeg + tsreader)</summary>
++    <summary lang="sl">XBMC-jev vmesnik za MediaPortal TV strežnik (ffmpeg + tsreader)</summary>
++    <summary lang="sv">XBMC frontend för MediaPortal TV-server (ffmpeg + tsreader versionen)</summary>
++    <summary lang="zh">XBMC的MediaPortal TV服务器前端（ffmpeg + tsreader版）</summary>
++    <description lang="be">MediaPortal TV Server frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers. This addon combines the former ffmpeg and tsreader addons.</description>
++    <description lang="ca">Frontal XMBC de TV MediaPortal. Suporta el flux de TV en directe i enregistraments, escoltes de canals de radio, EPG i temporitzadors. Aquest afegitó combina els anteriors afegitons de ffmpg i tsreader.</description>
++    <description lang="cs">Rozhraní pro televizní server MediaPortal. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače. Toto rozšíření kombinuje rozšíření ffmpeg a tsreader.</description>
++    <description lang="da">MediaPortal TV server frontend; understøtter streaming af TV &amp; optagelser, Radiokanaler, EPG og timere. Dette add-on kombinerer de gamle ffmpeg og tsreader add-ons.</description>
++    <description lang="de">Erlaubt die Wiedergabe von Live TV und Aufnahmen mittels MediaPortal TV Server auf XBMC. Desweiteren werden Radiokanäle, EPG und Timer unterstützt. Dieses Addon vereint die ehemaligen ffmpeg- und tsreader-Addons.</description>
++    <description lang="el">Frontend για το διακομιστή MediaPortal TV. Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου, EPG και Χρονοδιακόπτες. Αυτό το πρόσθετο συνδυάζει τα προηγούμενα πρόσθετα ffmpeg και tsreader.</description>
++    <description lang="en">MediaPortal TV Server frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers. This addon combines the former ffmpeg and tsreader addons.</description>
++    <description lang="es">Interfaz MediaPortal TV Server. Soporta transmisión de TV en vivo y grabaciones, escuchar canales de radio, EPG y temporizadores. Este complemento combina los anteriores ffmpeg y tsreader.</description>
++    <description lang="es_AR">Interfaz MediaPortal TV Server. Soporta transmisión de TV en vivo y grabaciones, escuchar canales de radio, EPG y temporizadores. Este complemento combina los anteriores ffmpeg y tsreader.</description>
++    <description lang="fr">Applicatif Serveur TV MediaPortal. Il supporte la lecture en continu de direct télévision et enregistrement, l'écoute de radios, guide de programmes et minuteries. Cette extension combine les existants ffmpeg et tsreader.</description>
++    <description lang="he">ממשק משתמש לשרת טלוויזיה MediaPortal.תומך בהזרמת שידורי טלוויזיה ורדיו חיים והקלטתם,לוח שידורים ומתזמני הקלטות.תוסף זה משלב בתוכו את התוספים של ffmpeg וtsreader.</description>
++    <description lang="hu">Médiaportal előtér-kiszolgáló. Élő adások, felvételek,és rádió adások sugárzásának támogatása EPG-vel és időzítéssel. Ez a kiegészítő egyesíti az ffmpeg, és a tsreader kiegészítőket.</description>
++    <description lang="ko">MediaPortal TV Server 프론트엔드. TV 시청 &amp; 녹화, 라디오 채널 청취, EPG 및 타이머 지원. 이 추가기능은 이전의 ffmpeg 과 tsreader 추가기능을 합친 것입니다.</description>
++    <description lang="lt">MediaPortal TV Serverio sąsaja. Palaiko transliacijos Live TV &amp; Įrašus , klausytis radijo kanalus, EPG ir laikmačius. Šis priedas vienija buvusius ffmpeg ir TSreader priedus.</description>
++    <description lang="mk">MediaPortal TV Server frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers. This addon combines the former ffmpeg and tsreader addons.</description>
++    <description lang="nl">MediaPortal TV Server frontend. Ondersteunt het bekijken van Live TV en opnames, het luisteren van radio zenders, het tonen van de EPG en het inplannen/beheren van nieuwe opnames (Timers). Deze addon combineert de voorgaande "ffmpeg" en "tsreader" addons.</description>
++    <description lang="pl">Interfejs serwera TV MediaPortal. Wspiera strumieniowanie TV na żywo i nagrywanie, słuchanie radia, EPG oraz wyłączniki czasu. Ten dodatek łączy dodatki ffmpeg i tsreader. </description>
++    <description lang="pt">Frontend para o MediaPortal TV Server. Suporta transmissão de TV em Directo e Gravações, ouvir estações de Rádio, EPG e Temporizadores. Este addon combina os antigos addons ffmpeg e tsreader.</description>
++    <description lang="pt_BR">Servidor Frontend de TV  do MediaPortal. Suporta streaming de TV ao Vivo e Gravações, escutar canais de rádio, EPG e Agendamentos. Este addon combina ffmpeg e tsreader</description>
++    <description lang="ru">Интерфейс XBMC для ТВ-сервера MediaPortal. Поддерживает просмотр и запись ТВ, прослушивание радио, EPG и таймеры. Это дополнение заменяет старые дополнения ffmpeg и tsreader.</description>
++    <description lang="sk">Rozhranie pre MediaPortal TV server. Podporuje streamovanie živého televízneho vysielania a nahrávok, počúvanie rozhlasových kanálov, EPG a časovače. Tento doplnok zlučuje dohromady bývalé doplnky ffmpeg a tsreader.</description>
++    <description lang="sl">Vmesnik za MediaPortal TV strežnik. Podpira pretakanje televizije v živo &amp; posnetkov, poslušanje radia, EPG in časovnike. Ta dodatek združuje prejšnja dodatka ffmpeg in tsreader.</description>
++    <description lang="sv">MediaPortal TV-server frontend. Stödjer strömning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler, EPG och timers. Detta tillägg kombinerar dom tidigare ffmpeg och tsreader tilläggen. </description>
++    <description lang="zh">MediaPortal TV服务器前端，支持直播电视播放和录制、收听电台、电子节目单和定时器。这个插件结合了这前的ffmpeg和tsreader插件。</description>
++    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="ca">Això és programari inestable! Els autors no són en absolut responsables d'enregistraments fallist, temporitzadors incorrectes, hores tudades, o qualsevol altra efecte indesitjable...</disclaimer>
++    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
++    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser..</disclaimer>
++    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
++    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
++    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="es">¡Este es un software inestable! Los autores no son de ninguna manera responsables de las grabaciones fallidas o incorrectas, las temporizadores perdidas, ni otros efectos no deseables..</disclaimer>
++    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
++    <disclaimer lang="es_MX">¡Esto es software inestable! Los autores no son de ninguna manera responsables por grabaciones fallidas, temporizadores incorrectos, horas perdidas o cualquier otro efecto no deseado...</disclaimer>
++    <disclaimer lang="fr">Cet applicatif est instable ! Les auteurs ne sont en aucun cas responsables d'échec d'enregistrements, minuteries erronées, temps perdu et autres résultats indésirables..</disclaimer>
++    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
++    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
++    <disclaimer lang="it">Questo software non è stabile! Gli autori non sono responsabili per registrazioni fallite, timer non corretti, ore perse, o altri effetti indesiderati...</disclaimer>
++    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
++    <disclaimer lang="nl">Deze software is niet 100% stabiel! De auteurs zijn op geen enkele wijze aansprakelijk voor mislukte opnames, verspilde tijd, of enig ander ongewild neveneffect..</disclaimer>
++    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
++    <disclaimer lang="pt">Este é um software instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, ou qualquer outro efeito não desejado...</disclaimer>
++    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáves por falhas de gravações, agendamentos incorretos, ou quaisquer outros efeitos indesejados.</disclaimer>
++    <disclaimer lang="ru">Это нестабильная программа! Авторы не несут ответственности за неудачную запись, неправильные таймеры, потраченное время и другие нежелательные последствия.</disclaimer>
++    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
++    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
++    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
++    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.mythtv.cmyth/addon/addon.xml b/addons/pvr.mythtv.cmyth/addon/addon.xml
+deleted file mode 100644
+index edcb47f..0000000
+--- a/addons/pvr.mythtv.cmyth/addon/addon.xml
++++ /dev/null
+@@ -1,85 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.mythtv.cmyth"
+-  version="1.6.5.0"
+-  name="MythTV cmyth PVR Client"
+-  provider-name="Christian Fetzer, Jean-Luc Barrière, Tonny Petersen">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_MythTV_cmyth.pvr"
+-    library_osx="XBMC_MythTV_cmyth.pvr"
+-    library_wingl="XBMC_MythTV_cmyth_win32.dll"
+-    library_windx="XBMC_MythTV_cmyth_win32.dll"
+-    library_android="libXBMC_MythTV_cmyth.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="be">XBMC frontend for MythTV (using libcmyth)</summary>
+-    <summary lang="cs">Rozhraní XBMC pro MythTV (používající libcmyth)</summary>
+-    <summary lang="da">XBMC frontend til MythTV (bruger libcmyth)</summary>
+-    <summary lang="de">XBMC's Zugang zu MythTV (benutzt libcmyth)</summary>
+-    <summary lang="el">Frontend του XBMC για το MythTV (με χρήση του libcmyth)</summary>
+-    <summary lang="en">XBMC frontend for MythTV (using libcmyth)</summary>
+-    <summary lang="es">Front-end de XBMC para MythTV (usando libcmyth)</summary>
+-    <summary lang="es_AR">Front-end de XBMC para MythTV (usando libcmyth)</summary>
+-    <summary lang="fr">Applicatif XBMC pour MythTV (utilise libcmyth)</summary>
+-    <summary lang="he">ממשק משתמש XBMC לMythTV (משתמש בlibcmyth)</summary>
+-    <summary lang="hu">XBMC MythTV előtér-kiszolgáló (libcmyth használatával)</summary>
+-    <summary lang="it">Frontend di XBMC per MythTV (utilizzando libcmyth)</summary>
+-    <summary lang="ko">MythTV XBMC 프론트엔드 (libcmyth 사용)</summary>
+-    <summary lang="lt">XBMC sąsaja į MythTV (naudojant libcmyth)</summary>
+-    <summary lang="mk">XBMC интерфејс за MythTV (со користење libcmyth)</summary>
+-    <summary lang="pl">Interfejs XBMC dla MythTV (przy użyciu libcmyth)</summary>
+-    <summary lang="pt">Frontend XBMC para MythTV (usando libcmyth)</summary>
+-    <summary lang="pt_BR">XBMC frontend para MythTV (usando libcmyth)</summary>
+-    <summary lang="ru">Фронтэнд XBMC для MythTV (с использованием libcmyth)</summary>
+-    <summary lang="sk">XBMC rozhranie pre MythTV (používa knižnicu 'libcmyth')</summary>
+-    <summary lang="sv">XBMC gränssnitt till MythTV (via libcmyth)</summary>
+-    <summary lang="zh">XBMC的MythTV前端（使用libcmyth）</summary>
+-    <description lang="be">MythTV frontend (up to MythTV 0.26). Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers.</description>
+-    <description lang="cs">Rozhraní MythTV (do verze MythTV 0.26). Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia a EPG, a časovače.</description>
+-    <description lang="da">MythTV frontend (op til MythTV 0.26) Understøtter streaming af Live TV &amp; Optagelser, Radiokanaler, EPG samt tidsplaner.</description>
+-    <description lang="de">MythTV Frontend (bis zu MythTV 0.26). Unterstützt das Streamen von Live TV &amp; Aufnahmen, Hören von Radiokanälen, EPG und Timer.</description>
+-    <description lang="el">Frontend για το MythTV (έως το MythTV 0.26). Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου, EPG και Χρονοδιακόπτες.</description>
+-    <description lang="en">MythTV frontend (up to MythTV 0.26). Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers.</description>
+-    <description lang="es">Front-end de MythTV (hasta MythTV 0.26). Soporte de transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y Temporizadores. </description>
+-    <description lang="es_AR">Front-end de MythTV (hasta MythTV 0.26). Soporte de transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y Temporizadores. </description>
+-    <description lang="fr">Applicatif MythTV (jusqu'à la version 0.26). Permet la diffusion de la télévision en direct, des enregistrements, des stations de radios, ainsi que le guide des programmes et les minuteries.</description>
+-    <description lang="he">ממשק קדמי MythTV (עד MythTV 0.26). תומך בשידור ממשק טלוויזיה והקלטה, האזנה לערוצי רדיו, לוח שידורים ותזמוני הקלטה.</description>
+-    <description lang="hu">MythTV előtér-kiszolgáló (MythTv 0.26 verzióig). Élő adások, felvételek,és rádió adások sugárzásának támogatása EPG-vel és időzítéssel.</description>
+-    <description lang="ko">MythTV 프론트엔드 (up to MythTV 0.26). 라이브 TV 스트리밍, 녹화, 라디오 채널 청취, EPG, 예약 지원.</description>
+-    <description lang="lt">MythTV sąsaja (kelias iki MythTV 0.26). Palaiko duomenų srautams pritaikyta(-as) Live TV &amp; Recordings</description>
+-    <description lang="mk">MythTV интерфејс (се до MythTV 0.26). Подржува стриминг на Live TV &amp; Снимки, слушање на радио канали, EPG и тајмери.</description>
+-    <description lang="pl">Interfejs MythTV (do MythTV 0.26). Obsługuje strumieniowe przesyłanie na żywo TV &amp; nagrań, słuchanie kanałów radiowych, EPG i wyłączniki czasowe.</description>
+-    <description lang="pt">Frontend MythTV (até MythTV 0.26). Permite transmissão ao vivo de Live Tv e gravações, ouvir estações de rádio, EPG e temporizadores.</description>
+-    <description lang="pt_BR">MythTV frontend (up para MythTV 0.26). Suporta streaming de TV ao Vivo &amp; Gravações, Escutar canais de rádios, EPG e Agendamentos.</description>
+-    <description lang="ru">Фронтэнд MythTV (вплоть до MythTV 0.26). Поддерживает поточное ТВ и записи, прослушивание радио-каналов, ЕПГ и таймеры.</description>
+-    <description lang="sk">MythTV rozhranie (až do verzie MythTV 0.26). Podporuje streamovanie živého TV vysielania a nahrávok, počúvanie rozhlasových kanálov, EPG a časovače.</description>
+-    <description lang="sv">MythTV frontend (upp till MythTV 0.26). Stödjer strömmning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler, EPG och timers.</description>
+-    <description lang="zh">MythTV 前端 ( MythTV 0.26 及之后版本) 。支持直播电视和录像节目的流媒体转发，收听广播频道, 电子节目表及定时器功能。</description>
+-    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
+-    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
+-    <disclaimer lang="da">Denne software er ustabil. Udviklerne er på ingen måde ansvarlige for mislykkede optagelser, fejlagtige tidsindstillinger, spildte timer eller andre uhensigtsmæssigheder.</disclaimer>
+-    <disclaimer lang="de">Dies ist instabile Software! Die Autoren sind in keiner Weise verantwortlich für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewünschte Effekte.</disclaimer>
+-    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα.</disclaimer>
+-    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
+-    <disclaimer lang="es">¡Este software es inestable! Los autores no son en ningún caso responsables por grabaciones fallidas, temporizadores incorrectos, horas desperdiciadas o cualquier otro efecto indeseable.</disclaimer>
+-    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
+-    <disclaimer lang="fr">Ce logiciel est en cours de développement. Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries erronées, temps perdu et autres effets indésirables.</disclaimer>
+-    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
+-    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
+-    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
+-    <disclaimer lang="ko">완성되지 않은 소프트웨어입니다. 개발자는 녹화와 예약의 실패, 시간 허비나 다른 의도하지 않은 결과에 대한 책임을 지지 않습니다. </disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsako už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt rekomenduoja/siūlo testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
+-    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
+-    <disclaimer lang="pt">Este software é instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, horas perdidas ou outro qualquer efeito não desejado...</disclaimer>
+-    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outro efeito indesejado.</disclaimer>
+-    <disclaimer lang="ru">Это тестовая программа! Авторы не несут никакой ответственности за испорченные записи, неверные таймеры, потраченное время и за прочие нежелательные эффекты.</disclaimer>
+-    <disclaimer lang="sk">Toto nie je stabilný software! Autori nie sú zodpovední za zlýhané nahrávky, nesprávne časovače, premrhané hodiny a iné nežiadúce efekty.</disclaimer>
+-    <disclaimer lang="sv">Denna mjukvara är instabil! Utvecklarna är inte ansvariga för misslyckade inspelingar, felaktiga timers, bortkastade timmar eller några andra olyckliga effekter.</disclaimer>
+-    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.mythtv.cmyth/addon/addon.xml.in b/addons/pvr.mythtv.cmyth/addon/addon.xml.in
+new file mode 100644
+index 0000000..92c420e
+--- /dev/null
++++ b/addons/pvr.mythtv.cmyth/addon/addon.xml.in
+@@ -0,0 +1,85 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.mythtv.cmyth"
++  version="1.6.5.0"
++  name="MythTV cmyth PVR Client"
++  provider-name="Christian Fetzer, Jean-Luc Barrière, Tonny Petersen">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_MythTV_cmyth.pvr"
++    library_osx="XBMC_MythTV_cmyth.pvr"
++    library_wingl="XBMC_MythTV_cmyth_win32.dll"
++    library_windx="XBMC_MythTV_cmyth_win32.dll"
++    library_android="libXBMC_MythTV_cmyth.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="be">XBMC frontend for MythTV (using libcmyth)</summary>
++    <summary lang="cs">Rozhraní XBMC pro MythTV (používající libcmyth)</summary>
++    <summary lang="da">XBMC frontend til MythTV (bruger libcmyth)</summary>
++    <summary lang="de">XBMC's Zugang zu MythTV (benutzt libcmyth)</summary>
++    <summary lang="el">Frontend του XBMC για το MythTV (με χρήση του libcmyth)</summary>
++    <summary lang="en">XBMC frontend for MythTV (using libcmyth)</summary>
++    <summary lang="es">Front-end de XBMC para MythTV (usando libcmyth)</summary>
++    <summary lang="es_AR">Front-end de XBMC para MythTV (usando libcmyth)</summary>
++    <summary lang="fr">Applicatif XBMC pour MythTV (utilise libcmyth)</summary>
++    <summary lang="he">ממשק משתמש XBMC לMythTV (משתמש בlibcmyth)</summary>
++    <summary lang="hu">XBMC MythTV előtér-kiszolgáló (libcmyth használatával)</summary>
++    <summary lang="it">Frontend di XBMC per MythTV (utilizzando libcmyth)</summary>
++    <summary lang="ko">MythTV XBMC 프론트엔드 (libcmyth 사용)</summary>
++    <summary lang="lt">XBMC sąsaja į MythTV (naudojant libcmyth)</summary>
++    <summary lang="mk">XBMC интерфејс за MythTV (со користење libcmyth)</summary>
++    <summary lang="pl">Interfejs XBMC dla MythTV (przy użyciu libcmyth)</summary>
++    <summary lang="pt">Frontend XBMC para MythTV (usando libcmyth)</summary>
++    <summary lang="pt_BR">XBMC frontend para MythTV (usando libcmyth)</summary>
++    <summary lang="ru">Фронтэнд XBMC для MythTV (с использованием libcmyth)</summary>
++    <summary lang="sk">XBMC rozhranie pre MythTV (používa knižnicu 'libcmyth')</summary>
++    <summary lang="sv">XBMC gränssnitt till MythTV (via libcmyth)</summary>
++    <summary lang="zh">XBMC的MythTV前端（使用libcmyth）</summary>
++    <description lang="be">MythTV frontend (up to MythTV 0.26). Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers.</description>
++    <description lang="cs">Rozhraní MythTV (do verze MythTV 0.26). Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia a EPG, a časovače.</description>
++    <description lang="da">MythTV frontend (op til MythTV 0.26) Understøtter streaming af Live TV &amp; Optagelser, Radiokanaler, EPG samt tidsplaner.</description>
++    <description lang="de">MythTV Frontend (bis zu MythTV 0.26). Unterstützt das Streamen von Live TV &amp; Aufnahmen, Hören von Radiokanälen, EPG und Timer.</description>
++    <description lang="el">Frontend για το MythTV (έως το MythTV 0.26). Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου, EPG και Χρονοδιακόπτες.</description>
++    <description lang="en">MythTV frontend (up to MythTV 0.26). Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers.</description>
++    <description lang="es">Front-end de MythTV (hasta MythTV 0.26). Soporte de transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y Temporizadores. </description>
++    <description lang="es_AR">Front-end de MythTV (hasta MythTV 0.26). Soporte de transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio, Guía Electrónica de Programas (EPG) y Temporizadores. </description>
++    <description lang="fr">Applicatif MythTV (jusqu'à la version 0.26). Permet la diffusion de la télévision en direct, des enregistrements, des stations de radios, ainsi que le guide des programmes et les minuteries.</description>
++    <description lang="he">ממשק קדמי MythTV (עד MythTV 0.26). תומך בשידור ממשק טלוויזיה והקלטה, האזנה לערוצי רדיו, לוח שידורים ותזמוני הקלטה.</description>
++    <description lang="hu">MythTV előtér-kiszolgáló (MythTv 0.26 verzióig). Élő adások, felvételek,és rádió adások sugárzásának támogatása EPG-vel és időzítéssel.</description>
++    <description lang="ko">MythTV 프론트엔드 (up to MythTV 0.26). 라이브 TV 스트리밍, 녹화, 라디오 채널 청취, EPG, 예약 지원.</description>
++    <description lang="lt">MythTV sąsaja (kelias iki MythTV 0.26). Palaiko duomenų srautams pritaikyta(-as) Live TV &amp; Recordings</description>
++    <description lang="mk">MythTV интерфејс (се до MythTV 0.26). Подржува стриминг на Live TV &amp; Снимки, слушање на радио канали, EPG и тајмери.</description>
++    <description lang="pl">Interfejs MythTV (do MythTV 0.26). Obsługuje strumieniowe przesyłanie na żywo TV &amp; nagrań, słuchanie kanałów radiowych, EPG i wyłączniki czasowe.</description>
++    <description lang="pt">Frontend MythTV (até MythTV 0.26). Permite transmissão ao vivo de Live Tv e gravações, ouvir estações de rádio, EPG e temporizadores.</description>
++    <description lang="pt_BR">MythTV frontend (up para MythTV 0.26). Suporta streaming de TV ao Vivo &amp; Gravações, Escutar canais de rádios, EPG e Agendamentos.</description>
++    <description lang="ru">Фронтэнд MythTV (вплоть до MythTV 0.26). Поддерживает поточное ТВ и записи, прослушивание радио-каналов, ЕПГ и таймеры.</description>
++    <description lang="sk">MythTV rozhranie (až do verzie MythTV 0.26). Podporuje streamovanie živého TV vysielania a nahrávok, počúvanie rozhlasových kanálov, EPG a časovače.</description>
++    <description lang="sv">MythTV frontend (upp till MythTV 0.26). Stödjer strömmning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler, EPG och timers.</description>
++    <description lang="zh">MythTV 前端 ( MythTV 0.26 及之后版本) 。支持直播电视和录像节目的流媒体转发，收听广播频道, 电子节目表及定时器功能。</description>
++    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
++    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
++    <disclaimer lang="da">Denne software er ustabil. Udviklerne er på ingen måde ansvarlige for mislykkede optagelser, fejlagtige tidsindstillinger, spildte timer eller andre uhensigtsmæssigheder.</disclaimer>
++    <disclaimer lang="de">Dies ist instabile Software! Die Autoren sind in keiner Weise verantwortlich für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewünschte Effekte.</disclaimer>
++    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα.</disclaimer>
++    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects.</disclaimer>
++    <disclaimer lang="es">¡Este software es inestable! Los autores no son en ningún caso responsables por grabaciones fallidas, temporizadores incorrectos, horas desperdiciadas o cualquier otro efecto indeseable.</disclaimer>
++    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
++    <disclaimer lang="fr">Ce logiciel est en cours de développement. Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries erronées, temps perdu et autres effets indésirables.</disclaimer>
++    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
++    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
++    <disclaimer lang="it">Questo software è instabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timers incorretti, ore perse, o qualsiasi altro effetto indesiderato.</disclaimer>
++    <disclaimer lang="ko">완성되지 않은 소프트웨어입니다. 개발자는 녹화와 예약의 실패, 시간 허비나 다른 의도하지 않은 결과에 대한 책임을 지지 않습니다. </disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsako už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt rekomenduoja/siūlo testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
++    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
++    <disclaimer lang="pt">Este software é instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, horas perdidas ou outro qualquer efeito não desejado...</disclaimer>
++    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outro efeito indesejado.</disclaimer>
++    <disclaimer lang="ru">Это тестовая программа! Авторы не несут никакой ответственности за испорченные записи, неверные таймеры, потраченное время и за прочие нежелательные эффекты.</disclaimer>
++    <disclaimer lang="sk">Toto nie je stabilný software! Autori nie sú zodpovední za zlýhané nahrávky, nesprávne časovače, premrhané hodiny a iné nežiadúce efekty.</disclaimer>
++    <disclaimer lang="sv">Denna mjukvara är instabil! Utvecklarna är inte ansvariga för misslyckade inspelingar, felaktiga timers, bortkastade timmar eller några andra olyckliga effekter.</disclaimer>
++    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.nextpvr/addon/addon.xml b/addons/pvr.nextpvr/addon/addon.xml
+deleted file mode 100644
+index 3b35962..0000000
+--- a/addons/pvr.nextpvr/addon/addon.xml
++++ /dev/null
+@@ -1,93 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.nextpvr"
+-  version="1.6.1.0"
+-  name="NextPVR PVR Client"
+-  provider-name="Graeme Blackley">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_NextPVR.pvr"
+-    library_osx="XBMC_NextPVR.pvr"
+-    library_wingl="XBMC_NextPVR_win32.dll"
+-    library_windx="XBMC_NextPVR_win32.dll"
+-    library_android="libXBMC_NextPVR.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="be">XBMC frontend for the NextPVR</summary>
+-    <summary lang="ca">Frontal XBMC pel NextPVR</summary>
+-    <summary lang="cs">Rozhraní XBMC pro NextPVR</summary>
+-    <summary lang="da">XBMC frontend til NextPVR</summary>
+-    <summary lang="de">XBMC-Frontend für NextPVR</summary>
+-    <summary lang="el">Frontend του XBMC για το NextPVR</summary>
+-    <summary lang="en">XBMC frontend for the NextPVR</summary>
+-    <summary lang="es">Front-end de XBMC para NextPVR</summary>
+-    <summary lang="es_AR">Front-end de XBMC para NextPVR</summary>
+-    <summary lang="fr">Applicatif XBMC pour l'enregistreur NextPVR</summary>
+-    <summary lang="he">ממשק קדמי XBMC עבור NextPVR</summary>
+-    <summary lang="hu">XBMC NextPVR előtér-kiszolgáló</summary>
+-    <summary lang="ko">NextPVR을 위한 XBMC 프론트엔드</summary>
+-    <summary lang="lt">XBMC sąsaja dėl/su NextPVR</summary>
+-    <summary lang="mk">XBMC интерфејс за NextPVR</summary>
+-    <summary lang="nl">XBMC frontend voor de NextPVR</summary>
+-    <summary lang="pl">Interfejs XBMC dla NextPVR</summary>
+-    <summary lang="pt">Frontend XBMC para NextPVR</summary>
+-    <summary lang="pt_BR">XBMC Frontend para o NextPVR</summary>
+-    <summary lang="ru">Интерфейс XBMC для NextPVR</summary>
+-    <summary lang="sk">XBMC rozhranie pre NextPVR</summary>
+-    <summary lang="sl">XBMC-jev vmesnik za NextPVR</summary>
+-    <summary lang="sv">XBMC-frontend för NextPVR</summary>
+-    <summary lang="zh">XBMC的NextPVR前端</summary>
+-    <description lang="be">NextPVR frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels and EPG.</description>
+-    <description lang="ca">Frontal NextPVR. Suporta fluxes de TV en directe i enregistraments, escoltes de ràdiio i EPG.</description>
+-    <description lang="cs">Rozhraní NextPVR. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia a EPG.</description>
+-    <description lang="da">NextPVR frontend; understøtter streaming af TV &amp; optagelser, radio kanaler og EPG.</description>
+-    <description lang="de">Erlaubt die Wiedergabe von Live TV und Aufnahmen mittels NextPVR auf XBMC. Desweiteren werden Radio-Kanäle und EPG unterstützt.</description>
+-    <description lang="el">Frontend για το NextPVR. Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου και EPG.</description>
+-    <description lang="en">NextPVR frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels and EPG.</description>
+-    <description lang="es">Front-end de NextPVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio y Guía Electrónica de Programas (EPG).</description>
+-    <description lang="es_AR">Front-end de NextPVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio y Guía Electrónica de Programas (EPG).</description>
+-    <description lang="fr">Applicatif XBMC pour NextPVR. Supporte la lecture en continu de direct TV et l'enregistrement, l'écoute de radios et les guides de programmes.</description>
+-    <description lang="he"> ממשק קדמי NextPVR.תומך בשידורים חיים והקלטות של טלוויזיה ורדיו ולוחות שידורים</description>
+-    <description lang="hu">NextPVR előtér-kiszolgáló. Élő adások, felvételek és rádió csatornák sugárzásának támogatása EPG-vel</description>
+-    <description lang="ko">NextPVR 프론트엔드. 라이브 TV 스트리밍과 녹화, 라디오 청취, EPG를 지원합니다.</description>
+-    <description lang="lt">NextPVR sąsaja remia transliacijos Live TV &amp; Įrašus, klausytis radijo kanalus per EPG</description>
+-    <description lang="mk">NextPVR интерфејс. Подржува стриминг на Live TV и снимања, слушање радио канали и ЕПГ</description>
+-    <description lang="nl">NextPVR frontend. Ondersteunt streaming van Live TV &amp; Recordings, het luisteren naar Radio kanalen en EPG.</description>
+-    <description lang="pl">Warstwa prezentacji NextPVR. Wspiera strumieniowanie TV na żywo i nagrywanie, słuchanie radia oraz EPG.</description>
+-    <description lang="pt">Frontend NextPVR. Suporta transmissão de Live TV e Gravações, ouvir estações de Rádio e EPG.</description>
+-    <description lang="pt_BR">NextPVR Frontend. Suporta streaming de TV ao Vivo e Gravações, ouvir canais de rádio e EPG.</description>
+-    <description lang="ru">Интерфейс для NextPVR. Поддерживает просмотр и запись ТВ, прослушивание радио и EPG.</description>
+-    <description lang="sk">NextPVR rozhranie. Podporuje streamovanie živého televízneho vysielania a nahrávok, počúvanie rozhlasových kanálov a EPG.</description>
+-    <description lang="sl">Vmesnik za NextPVR; podpira pretakanje televizije v živo &amp; posnetkov, poslušanje radia in EPG.</description>
+-    <description lang="sv">NextPVR-frontend. Stödjer strömning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler och EPG.</description>
+-    <description lang="zh">Tvheadend前端，支持直播电视播放和录制、收听电台和电子节目单</description>
+-    <disclaimer lang="be">This is a work in progress. Use at your own risk.</disclaimer>
+-    <disclaimer lang="ca">Això és un treball en curs. Utilitzau baix la vostra responsabilitat.</disclaimer>
+-    <disclaimer lang="cs">Práce na tomto rozhraní stále probíhají. Používejte na vlastní nebezpečí.</disclaimer>
+-    <disclaimer lang="da">Dette er igangværende arbejde. Benyttelse er på eget ansvar.</disclaimer>
+-    <disclaimer lang="de">Befindet sich noch in Entwicklung. Benutzung auf eigene Gefahr!</disclaimer>
+-    <disclaimer lang="el">Έργο υπό ανάπτυξη. Χρησιμοποιήστε το υπ' ευθύνη σας.</disclaimer>
+-    <disclaimer lang="en">This is a work in progress. Use at your own risk.</disclaimer>
+-    <disclaimer lang="es">Este es un trabajo en desarrollo. Úsalo bajo tu responsabilidad.</disclaimer>
+-    <disclaimer lang="es_AR">Este es un trabajo en desarrollo. Usarlo bajo propio riesgo.</disclaimer>
+-    <disclaimer lang="es_MX">Este es un trabajo en curso. Úsalo bajo tu propio riesgo.</disclaimer>
+-    <disclaimer lang="fr">Logiciel en cours d'élaboration. À utiliser à vos risques et périls.</disclaimer>
+-    <disclaimer lang="he">פרויקט זה הנו בתהליך מתמשך.השתמש על אחריותך בלבד.</disclaimer>
+-    <disclaimer lang="hu">Fejlesztés alatt! A saját felelősségére használja!</disclaimer>
+-    <disclaimer lang="ko">아직 개발 진행중입니다. 부족한 부분이 있을 수 있습니다.</disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">Ова е работа која се извршува. Користи на сопствен ризик.</disclaimer>
+-    <disclaimer lang="nl">Hier wordt aan gewerkt, Gebruik op eigen risico.</disclaimer>
+-    <disclaimer lang="pl">Ten projekt jest w trakcie realizacji. Używasz na własne ryzyko.</disclaimer>
+-    <disclaimer lang="pt">Isto é um projecto em curso. Use-o por sua conta e risco.</disclaimer>
+-    <disclaimer lang="pt_BR">Este é um trabalho em progresso. Use a seu próprio risco</disclaimer>
+-    <disclaimer lang="ru">Разработка программы не окончена. Используйте на свой страх и риск.</disclaimer>
+-    <disclaimer lang="sk">Práca na tomto rozhraní stále prebieha. Používajte ho preto na vlastné riziko.</disclaimer>
+-    <disclaimer lang="sl">Dodatek je še v izdelavi. Uporaba na lastno odgovornost.</disclaimer>
+-    <disclaimer lang="sv">Detta är ett pågående arbete. Använd på egen risk.</disclaimer>
+-    <disclaimer lang="zh">此插件仍在开发中，请自行把握试用风险。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.nextpvr/addon/addon.xml.in b/addons/pvr.nextpvr/addon/addon.xml.in
+new file mode 100644
+index 0000000..e582eab
+--- /dev/null
++++ b/addons/pvr.nextpvr/addon/addon.xml.in
+@@ -0,0 +1,93 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.nextpvr"
++  version="1.6.1.0"
++  name="NextPVR PVR Client"
++  provider-name="Graeme Blackley">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_NextPVR.pvr"
++    library_osx="XBMC_NextPVR.pvr"
++    library_wingl="XBMC_NextPVR_win32.dll"
++    library_windx="XBMC_NextPVR_win32.dll"
++    library_android="libXBMC_NextPVR.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="be">XBMC frontend for the NextPVR</summary>
++    <summary lang="ca">Frontal XBMC pel NextPVR</summary>
++    <summary lang="cs">Rozhraní XBMC pro NextPVR</summary>
++    <summary lang="da">XBMC frontend til NextPVR</summary>
++    <summary lang="de">XBMC-Frontend für NextPVR</summary>
++    <summary lang="el">Frontend του XBMC για το NextPVR</summary>
++    <summary lang="en">XBMC frontend for the NextPVR</summary>
++    <summary lang="es">Front-end de XBMC para NextPVR</summary>
++    <summary lang="es_AR">Front-end de XBMC para NextPVR</summary>
++    <summary lang="fr">Applicatif XBMC pour l'enregistreur NextPVR</summary>
++    <summary lang="he">ממשק קדמי XBMC עבור NextPVR</summary>
++    <summary lang="hu">XBMC NextPVR előtér-kiszolgáló</summary>
++    <summary lang="ko">NextPVR을 위한 XBMC 프론트엔드</summary>
++    <summary lang="lt">XBMC sąsaja dėl/su NextPVR</summary>
++    <summary lang="mk">XBMC интерфејс за NextPVR</summary>
++    <summary lang="nl">XBMC frontend voor de NextPVR</summary>
++    <summary lang="pl">Interfejs XBMC dla NextPVR</summary>
++    <summary lang="pt">Frontend XBMC para NextPVR</summary>
++    <summary lang="pt_BR">XBMC Frontend para o NextPVR</summary>
++    <summary lang="ru">Интерфейс XBMC для NextPVR</summary>
++    <summary lang="sk">XBMC rozhranie pre NextPVR</summary>
++    <summary lang="sl">XBMC-jev vmesnik za NextPVR</summary>
++    <summary lang="sv">XBMC-frontend för NextPVR</summary>
++    <summary lang="zh">XBMC的NextPVR前端</summary>
++    <description lang="be">NextPVR frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels and EPG.</description>
++    <description lang="ca">Frontal NextPVR. Suporta fluxes de TV en directe i enregistraments, escoltes de ràdiio i EPG.</description>
++    <description lang="cs">Rozhraní NextPVR. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia a EPG.</description>
++    <description lang="da">NextPVR frontend; understøtter streaming af TV &amp; optagelser, radio kanaler og EPG.</description>
++    <description lang="de">Erlaubt die Wiedergabe von Live TV und Aufnahmen mittels NextPVR auf XBMC. Desweiteren werden Radio-Kanäle und EPG unterstützt.</description>
++    <description lang="el">Frontend για το NextPVR. Υποστηρίζει ροές Live TV &amp; Εγγραφές, ακρόαση Ραδιοφώνου και EPG.</description>
++    <description lang="en">NextPVR frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels and EPG.</description>
++    <description lang="es">Front-end de NextPVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio y Guía Electrónica de Programas (EPG).</description>
++    <description lang="es_AR">Front-end de NextPVR. Soporta transmisiones de TV en Vivo y Grabaciones, escuchar canales de Radio y Guía Electrónica de Programas (EPG).</description>
++    <description lang="fr">Applicatif XBMC pour NextPVR. Supporte la lecture en continu de direct TV et l'enregistrement, l'écoute de radios et les guides de programmes.</description>
++    <description lang="he"> ממשק קדמי NextPVR.תומך בשידורים חיים והקלטות של טלוויזיה ורדיו ולוחות שידורים</description>
++    <description lang="hu">NextPVR előtér-kiszolgáló. Élő adások, felvételek és rádió csatornák sugárzásának támogatása EPG-vel</description>
++    <description lang="ko">NextPVR 프론트엔드. 라이브 TV 스트리밍과 녹화, 라디오 청취, EPG를 지원합니다.</description>
++    <description lang="lt">NextPVR sąsaja remia transliacijos Live TV &amp; Įrašus, klausytis radijo kanalus per EPG</description>
++    <description lang="mk">NextPVR интерфејс. Подржува стриминг на Live TV и снимања, слушање радио канали и ЕПГ</description>
++    <description lang="nl">NextPVR frontend. Ondersteunt streaming van Live TV &amp; Recordings, het luisteren naar Radio kanalen en EPG.</description>
++    <description lang="pl">Warstwa prezentacji NextPVR. Wspiera strumieniowanie TV na żywo i nagrywanie, słuchanie radia oraz EPG.</description>
++    <description lang="pt">Frontend NextPVR. Suporta transmissão de Live TV e Gravações, ouvir estações de Rádio e EPG.</description>
++    <description lang="pt_BR">NextPVR Frontend. Suporta streaming de TV ao Vivo e Gravações, ouvir canais de rádio e EPG.</description>
++    <description lang="ru">Интерфейс для NextPVR. Поддерживает просмотр и запись ТВ, прослушивание радио и EPG.</description>
++    <description lang="sk">NextPVR rozhranie. Podporuje streamovanie živého televízneho vysielania a nahrávok, počúvanie rozhlasových kanálov a EPG.</description>
++    <description lang="sl">Vmesnik za NextPVR; podpira pretakanje televizije v živo &amp; posnetkov, poslušanje radia in EPG.</description>
++    <description lang="sv">NextPVR-frontend. Stödjer strömning av direktsänd TV &amp; inspelningar, lyssna på radiokanaler och EPG.</description>
++    <description lang="zh">Tvheadend前端，支持直播电视播放和录制、收听电台和电子节目单</description>
++    <disclaimer lang="be">This is a work in progress. Use at your own risk.</disclaimer>
++    <disclaimer lang="ca">Això és un treball en curs. Utilitzau baix la vostra responsabilitat.</disclaimer>
++    <disclaimer lang="cs">Práce na tomto rozhraní stále probíhají. Používejte na vlastní nebezpečí.</disclaimer>
++    <disclaimer lang="da">Dette er igangværende arbejde. Benyttelse er på eget ansvar.</disclaimer>
++    <disclaimer lang="de">Befindet sich noch in Entwicklung. Benutzung auf eigene Gefahr!</disclaimer>
++    <disclaimer lang="el">Έργο υπό ανάπτυξη. Χρησιμοποιήστε το υπ' ευθύνη σας.</disclaimer>
++    <disclaimer lang="en">This is a work in progress. Use at your own risk.</disclaimer>
++    <disclaimer lang="es">Este es un trabajo en desarrollo. Úsalo bajo tu responsabilidad.</disclaimer>
++    <disclaimer lang="es_AR">Este es un trabajo en desarrollo. Usarlo bajo propio riesgo.</disclaimer>
++    <disclaimer lang="es_MX">Este es un trabajo en curso. Úsalo bajo tu propio riesgo.</disclaimer>
++    <disclaimer lang="fr">Logiciel en cours d'élaboration. À utiliser à vos risques et périls.</disclaimer>
++    <disclaimer lang="he">פרויקט זה הנו בתהליך מתמשך.השתמש על אחריותך בלבד.</disclaimer>
++    <disclaimer lang="hu">Fejlesztés alatt! A saját felelősségére használja!</disclaimer>
++    <disclaimer lang="ko">아직 개발 진행중입니다. 부족한 부분이 있을 수 있습니다.</disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">Ова е работа која се извршува. Користи на сопствен ризик.</disclaimer>
++    <disclaimer lang="nl">Hier wordt aan gewerkt, Gebruik op eigen risico.</disclaimer>
++    <disclaimer lang="pl">Ten projekt jest w trakcie realizacji. Używasz na własne ryzyko.</disclaimer>
++    <disclaimer lang="pt">Isto é um projecto em curso. Use-o por sua conta e risco.</disclaimer>
++    <disclaimer lang="pt_BR">Este é um trabalho em progresso. Use a seu próprio risco</disclaimer>
++    <disclaimer lang="ru">Разработка программы не окончена. Используйте на свой страх и риск.</disclaimer>
++    <disclaimer lang="sk">Práca na tomto rozhraní stále prebieha. Používajte ho preto na vlastné riziko.</disclaimer>
++    <disclaimer lang="sl">Dodatek je še v izdelavi. Uporaba na lastno odgovornost.</disclaimer>
++    <disclaimer lang="sv">Detta är ett pågående arbete. Använd på egen risk.</disclaimer>
++    <disclaimer lang="zh">此插件仍在开发中，请自行把握试用风险。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.njoy/addon/addon.xml b/addons/pvr.njoy/addon/addon.xml
+deleted file mode 100644
+index a372a1a..0000000
+--- a/addons/pvr.njoy/addon/addon.xml
++++ /dev/null
+@@ -1,20 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.njoy"
+-  version="1.6.1.0"
+-  name="Njoy N7 PVR Client"
+-  provider-name="Team XBMC">
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_osx="XBMC_Njoy.pvr"
+-    library_linux="XBMC_Njoy.pvr"
+-    library_wingl="XBMC_njoy_win32.dll"
+-    library_windx="XBMC_njoy_win32.dll"
+-    library_android="libXBMC_njoy.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary></summary>
+-    <description></description>
+-    <platform>linux osx wingl windx</platform>
+-  </extension>
+-</addon>
+-
+diff --git a/addons/pvr.njoy/addon/addon.xml.in b/addons/pvr.njoy/addon/addon.xml.in
+new file mode 100644
+index 0000000..9e72aec
+--- /dev/null
++++ b/addons/pvr.njoy/addon/addon.xml.in
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.njoy"
++  version="1.6.1.0"
++  name="Njoy N7 PVR Client"
++  provider-name="Team XBMC">
++  <extension
++    point="xbmc.pvrclient"
++    library_osx="XBMC_Njoy.pvr"
++    library_linux="XBMC_Njoy.pvr"
++    library_wingl="XBMC_njoy_win32.dll"
++    library_windx="XBMC_njoy_win32.dll"
++    library_android="libXBMC_njoy.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary></summary>
++    <description></description>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
++
+diff --git a/addons/pvr.vdr.vnsi/addon/addon.xml b/addons/pvr.vdr.vnsi/addon/addon.xml
+deleted file mode 100644
+index 0190eef..0000000
+--- a/addons/pvr.vdr.vnsi/addon/addon.xml
++++ /dev/null
+@@ -1,89 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.vdr.vnsi"
+-  version="1.6.0"
+-  name="VDR VNSI Client"
+-  provider-name="FernetMenta, Team XBMC">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_VDR_vnsi.pvr"
+-    library_osx="XBMC_VDR_vnsi.pvr"
+-    library_wingl="XBMC_VDR_vnsi_WIN32.dll"
+-    library_windx="XBMC_VDR_vnsi_WIN32.dll"
+-    library_android="libXBMC_VDR_vnsi.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="be">PVR client to connect VDR to XBMC over the VNSI interface</summary>
+-    <summary lang="cs">Klient PVR pro spojení VDR do XBMC skrze rozhraní VNSI</summary>
+-    <summary lang="da">PVR klient til at forbinde VDR til XBMC over VNSI grænsefladen</summary>
+-    <summary lang="de">Programm um XBMC mit VDR über die VNSI-Schnittstelle zu verbinden</summary>
+-    <summary lang="el">Πελάτης PVR για σύνδεση του VDR στο XBMC διαμέσου του VNSI</summary>
+-    <summary lang="en">PVR client to connect VDR to XBMC over the VNSI interface</summary>
+-    <summary lang="es">Cliente PVR para conectar VDR a XBMC sobre la interfaz VNSI</summary>
+-    <summary lang="es_AR">Cliente PVR para conectar VDR a XBMC sobre la interfaz VNSI</summary>
+-    <summary lang="fr">Client d'enregistrement connectant l'Enregistreur de Disque Vidéo à XBMC via l'interface d'enregistrement de flux réseau vidéo</summary>
+-    <summary lang="he">קליינט PVR לחיבור VDR ל XBMC ע״י ממשק VNSI</summary>
+-    <summary lang="hu">PVR ügyfél a VDR és az XBMC VNSI interfészen keresztüli csatlakoztatásához </summary>
+-    <summary lang="ko">PVR client to connect VDR to XBMC over the VNSI interface</summary>
+-    <summary lang="lt">PVR kliento prisijungimas VDR prie XBMC per VNSI sąsaja</summary>
+-    <summary lang="mk">PVR клиент за поврзување со XBMC преку VNSI интерфејс</summary>
+-    <summary lang="nl">PVR client VDR verbinding te maken met XBMC op de VNSI-interface</summary>
+-    <summary lang="pl">Klient PVR do podłączenia VDR do XBMC przez interfejs VNSI</summary>
+-    <summary lang="pt">Cliente PVR para ligar VDR ao XBMC através da interface VNSI</summary>
+-    <summary lang="pt_BR">Cliente PVR para conectar VDR ao XBMC sobre interface VNSI</summary>
+-    <summary lang="ru">PVR клиент для подключения VDR к XBMC через интерфейс VNSI</summary>
+-    <summary lang="sk">PVR klientská aplikácia na pripojenie VDR servera do XBMC prostredníctvom rozhrania VNSI</summary>
+-    <summary lang="sl">Odjemalec PVR za povezavo VDR in XBMC preko vmesnika VNSI</summary>
+-    <summary lang="sv">PVR-klient för att ansluta VDR till XBMC över VNSI-gränsnittet</summary>
+-    <summary lang="zh">让XBMC通过VNSI界面与VDR连接的PVR客户端</summary>
+-    <description lang="be">VDR frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers over the VNSI plugin</description>
+-    <description lang="cs">Rozhraní VDR. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače skrze modul VNSI</description>
+-    <description lang="da">VDR frontend; understøtter streaming af TV &amp; optagelser, EPG, timere over VNSI add-on</description>
+-    <description lang="de">Erlaubt das wiedergeben von Live TV und Aufnahmen mittels VDR auf XBMC. Des weiteren werden EPG, Kanalsuche und Timer unterstützt.</description>
+-    <description lang="el">Frontend για το VDR. Υποστηρίζει ροές Live TV &amp; Εγγραφές, Χρονοδιακόπτες διαμέσου του plugin VNSI</description>
+-    <description lang="en">VDR frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers over the VNSI plugin</description>
+-    <description lang="es">Front-end VDR, soporte de streaming de televisión en vivo y grabaciones, EPG, temporizador con el plugin VNSI</description>
+-    <description lang="es_AR">Front-end VDR, soporte de streaming de televisión en vivo y grabaciones, EPG, temporizador con el plugin VNSI</description>
+-    <description lang="fr">Applicatif d'Enregistreur de Disque Vidéo. Il Supporte la lecture en continu de flux direct télévision et l'enregistrement, les guides de programmes, les minuteries via les routines d'enregistrement de flux réseau vidéo</description>
+-    <description lang="he">ממשק קדמי של VDR;תומך בזרימת שידורי טלוויזיה חיה והקלטה,רשימות שידורים ומתזמני הקלטות דרך תוסף VNSI </description>
+-    <description lang="hu">VDR előtér-kiszolgáló. Élő adások és felvételek sugárzásának támogatása EPG-vel és időzítéssel a VNSI kiegészítőn keresztül</description>
+-    <description lang="ko">VDR 프론트엔드; TV 시청 &amp; 녹화, EPG, VNSI 플러그인을 통한 타이머 지원</description>
+-    <description lang="lt">VDR sąsaja, remti transliacijos Live TV &amp; įrašai, EPG, Laikmačiai ir VNSI įskiepiai</description>
+-    <description lang="mk">VDR интерфејс; подржува стриминг на Live TV и снимки, EPG тајмери преку VNSI додаток</description>
+-    <description lang="nl">VDR frontend, het ondersteunen streaming van Live TV &amp; Recordings, EPG, Timers over de VNSI plugin</description>
+-    <description lang="pl">Interfejs VDR; wspiera strumieniowanie TV na żywo i nagrywanie, EPG, wyłączniki czasowe przez plugin VNSI</description>
+-    <description lang="pt">Frontend VDR; suporta transmissão de Live TV e Gravações, EPG e Temporizadores através do plugin VNSI</description>
+-    <description lang="pt_BR">VDR Frontend; suporta streaming de TV ao vivo e gravações, EPG, agendamentos sobre o plugin VNSI</description>
+-    <description lang="ru">VDR фронтэнд; поддерживает потоковое TV, запись, ЕПГ, таймеры через VNSI плагин</description>
+-    <description lang="sk">VDR rozhranie; je podporované streamovanie živého televízneho vysielania a nahrávok, EPG, časovačov prostredníctvom modulu VNSI</description>
+-    <description lang="sl">Vmesnik za VDR; podpira pretakanje televizije v živo &amp; posnetkov, EPG, časovnike preko vtičnika VNSI</description>
+-    <description lang="sv">VDR frontend; stödjer strömning av direktsänd TV &amp; inspelningar, EPG, timers över VNSI-tillägget</description>
+-    <description lang="zh">VDR前端，通过VNSI插件支持直播电视播放和录制、电子节目单、定时器</description>
+-    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
+-    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser..</disclaimer>
+-    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
+-    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
+-    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="es">¡Este software es aún inestable! Los autores no son responsables en forma alguna por grabaciones fallidas, temporizaciones incorrectas, tiempo perdido o ningún otro efecto no deseado.</disclaimer>
+-    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
+-    <disclaimer lang="fr">Applicatif en cours de réalisation ! Les auteurs ne sont en aucun cas responsables d'enregistrements défaillants, de minuteries erronées, de temps perdu ou tout autre effet indésirable..</disclaimer>
+-    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
+-    <disclaimer lang="it">Questo programma non è stabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timer non corretti, ore perse, o altri effetti indesiderati..</disclaimer>
+-    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">Ова е нестабилен софтвер! Ауторите не се во никој случај одговорни за неуспешни снимања, грешни тајмери, други непосакувани ефекти...</disclaimer>
+-    <disclaimer lang="nl">Dit is onstabiel software! De auteurs zijn op geen enkele wijze verantwoordelijk voor de mislukte opnames, onjuiste timers, verspilde uren, of een andere ongewenste effecten ..</disclaimer>
+-    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
+-    <disclaimer lang="pt">Este software é instável! Os autores não são responsáveis por falhas na gravação, temporizadores incorrectos, horas perdidas ou outro qualquer efeito não desejado... </disclaimer>
+-    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsábeis por gravações com falhas, agendamentos incorretos, tempo dispendido, ou quaisquer outros efeitos indesejáveis...</disclaimer>
+-    <disclaimer lang="ru">Это тестовая программа! Авторы не несут никакой ответственности за испорченные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты..</disclaimer>
+-    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
+-    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
+-    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller någon annan oönskad effekt..</disclaimer>
+-    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.vdr.vnsi/addon/addon.xml.in b/addons/pvr.vdr.vnsi/addon/addon.xml.in
+new file mode 100644
+index 0000000..5cd0c17
+--- /dev/null
++++ b/addons/pvr.vdr.vnsi/addon/addon.xml.in
+@@ -0,0 +1,89 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.vdr.vnsi"
++  version="1.6.0"
++  name="VDR VNSI Client"
++  provider-name="FernetMenta, Team XBMC">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_VDR_vnsi.pvr"
++    library_osx="XBMC_VDR_vnsi.pvr"
++    library_wingl="XBMC_VDR_vnsi_WIN32.dll"
++    library_windx="XBMC_VDR_vnsi_WIN32.dll"
++    library_android="libXBMC_VDR_vnsi.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="be">PVR client to connect VDR to XBMC over the VNSI interface</summary>
++    <summary lang="cs">Klient PVR pro spojení VDR do XBMC skrze rozhraní VNSI</summary>
++    <summary lang="da">PVR klient til at forbinde VDR til XBMC over VNSI grænsefladen</summary>
++    <summary lang="de">Programm um XBMC mit VDR über die VNSI-Schnittstelle zu verbinden</summary>
++    <summary lang="el">Πελάτης PVR για σύνδεση του VDR στο XBMC διαμέσου του VNSI</summary>
++    <summary lang="en">PVR client to connect VDR to XBMC over the VNSI interface</summary>
++    <summary lang="es">Cliente PVR para conectar VDR a XBMC sobre la interfaz VNSI</summary>
++    <summary lang="es_AR">Cliente PVR para conectar VDR a XBMC sobre la interfaz VNSI</summary>
++    <summary lang="fr">Client d'enregistrement connectant l'Enregistreur de Disque Vidéo à XBMC via l'interface d'enregistrement de flux réseau vidéo</summary>
++    <summary lang="he">קליינט PVR לחיבור VDR ל XBMC ע״י ממשק VNSI</summary>
++    <summary lang="hu">PVR ügyfél a VDR és az XBMC VNSI interfészen keresztüli csatlakoztatásához </summary>
++    <summary lang="ko">PVR client to connect VDR to XBMC over the VNSI interface</summary>
++    <summary lang="lt">PVR kliento prisijungimas VDR prie XBMC per VNSI sąsaja</summary>
++    <summary lang="mk">PVR клиент за поврзување со XBMC преку VNSI интерфејс</summary>
++    <summary lang="nl">PVR client VDR verbinding te maken met XBMC op de VNSI-interface</summary>
++    <summary lang="pl">Klient PVR do podłączenia VDR do XBMC przez interfejs VNSI</summary>
++    <summary lang="pt">Cliente PVR para ligar VDR ao XBMC através da interface VNSI</summary>
++    <summary lang="pt_BR">Cliente PVR para conectar VDR ao XBMC sobre interface VNSI</summary>
++    <summary lang="ru">PVR клиент для подключения VDR к XBMC через интерфейс VNSI</summary>
++    <summary lang="sk">PVR klientská aplikácia na pripojenie VDR servera do XBMC prostredníctvom rozhrania VNSI</summary>
++    <summary lang="sl">Odjemalec PVR za povezavo VDR in XBMC preko vmesnika VNSI</summary>
++    <summary lang="sv">PVR-klient för att ansluta VDR till XBMC över VNSI-gränsnittet</summary>
++    <summary lang="zh">让XBMC通过VNSI界面与VDR连接的PVR客户端</summary>
++    <description lang="be">VDR frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers over the VNSI plugin</description>
++    <description lang="cs">Rozhraní VDR. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače skrze modul VNSI</description>
++    <description lang="da">VDR frontend; understøtter streaming af TV &amp; optagelser, EPG, timere over VNSI add-on</description>
++    <description lang="de">Erlaubt das wiedergeben von Live TV und Aufnahmen mittels VDR auf XBMC. Des weiteren werden EPG, Kanalsuche und Timer unterstützt.</description>
++    <description lang="el">Frontend για το VDR. Υποστηρίζει ροές Live TV &amp; Εγγραφές, Χρονοδιακόπτες διαμέσου του plugin VNSI</description>
++    <description lang="en">VDR frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers over the VNSI plugin</description>
++    <description lang="es">Front-end VDR, soporte de streaming de televisión en vivo y grabaciones, EPG, temporizador con el plugin VNSI</description>
++    <description lang="es_AR">Front-end VDR, soporte de streaming de televisión en vivo y grabaciones, EPG, temporizador con el plugin VNSI</description>
++    <description lang="fr">Applicatif d'Enregistreur de Disque Vidéo. Il Supporte la lecture en continu de flux direct télévision et l'enregistrement, les guides de programmes, les minuteries via les routines d'enregistrement de flux réseau vidéo</description>
++    <description lang="he">ממשק קדמי של VDR;תומך בזרימת שידורי טלוויזיה חיה והקלטה,רשימות שידורים ומתזמני הקלטות דרך תוסף VNSI </description>
++    <description lang="hu">VDR előtér-kiszolgáló. Élő adások és felvételek sugárzásának támogatása EPG-vel és időzítéssel a VNSI kiegészítőn keresztül</description>
++    <description lang="ko">VDR 프론트엔드; TV 시청 &amp; 녹화, EPG, VNSI 플러그인을 통한 타이머 지원</description>
++    <description lang="lt">VDR sąsaja, remti transliacijos Live TV &amp; įrašai, EPG, Laikmačiai ir VNSI įskiepiai</description>
++    <description lang="mk">VDR интерфејс; подржува стриминг на Live TV и снимки, EPG тајмери преку VNSI додаток</description>
++    <description lang="nl">VDR frontend, het ondersteunen streaming van Live TV &amp; Recordings, EPG, Timers over de VNSI plugin</description>
++    <description lang="pl">Interfejs VDR; wspiera strumieniowanie TV na żywo i nagrywanie, EPG, wyłączniki czasowe przez plugin VNSI</description>
++    <description lang="pt">Frontend VDR; suporta transmissão de Live TV e Gravações, EPG e Temporizadores através do plugin VNSI</description>
++    <description lang="pt_BR">VDR Frontend; suporta streaming de TV ao vivo e gravações, EPG, agendamentos sobre o plugin VNSI</description>
++    <description lang="ru">VDR фронтэнд; поддерживает потоковое TV, запись, ЕПГ, таймеры через VNSI плагин</description>
++    <description lang="sk">VDR rozhranie; je podporované streamovanie živého televízneho vysielania a nahrávok, EPG, časovačov prostredníctvom modulu VNSI</description>
++    <description lang="sl">Vmesnik za VDR; podpira pretakanje televizije v živo &amp; posnetkov, EPG, časovnike preko vtičnika VNSI</description>
++    <description lang="sv">VDR frontend; stödjer strömning av direktsänd TV &amp; inspelningar, EPG, timers över VNSI-tillägget</description>
++    <description lang="zh">VDR前端，通过VNSI插件支持直播电视播放和录制、电子节目单、定时器</description>
++    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
++    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser..</disclaimer>
++    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
++    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
++    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="es">¡Este software es aún inestable! Los autores no son responsables en forma alguna por grabaciones fallidas, temporizaciones incorrectas, tiempo perdido o ningún otro efecto no deseado.</disclaimer>
++    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
++    <disclaimer lang="fr">Applicatif en cours de réalisation ! Les auteurs ne sont en aucun cas responsables d'enregistrements défaillants, de minuteries erronées, de temps perdu ou tout autre effet indésirable..</disclaimer>
++    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
++    <disclaimer lang="it">Questo programma non è stabile! Gli autori non sono in alcun modo responsabili per registrazioni fallite, timer non corretti, ore perse, o altri effetti indesiderati..</disclaimer>
++    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt siūlo/rekomenduoja testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">Ова е нестабилен софтвер! Ауторите не се во никој случај одговорни за неуспешни снимања, грешни тајмери, други непосакувани ефекти...</disclaimer>
++    <disclaimer lang="nl">Dit is onstabiel software! De auteurs zijn op geen enkele wijze verantwoordelijk voor de mislukte opnames, onjuiste timers, verspilde uren, of een andere ongewenste effecten ..</disclaimer>
++    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
++    <disclaimer lang="pt">Este software é instável! Os autores não são responsáveis por falhas na gravação, temporizadores incorrectos, horas perdidas ou outro qualquer efeito não desejado... </disclaimer>
++    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsábeis por gravações com falhas, agendamentos incorretos, tempo dispendido, ou quaisquer outros efeitos indesejáveis...</disclaimer>
++    <disclaimer lang="ru">Это тестовая программа! Авторы не несут никакой ответственности за испорченные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты..</disclaimer>
++    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
++    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
++    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller någon annan oönskad effekt..</disclaimer>
++    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/addons/pvr.vuplus/addon/addon.xml b/addons/pvr.vuplus/addon/addon.xml
+deleted file mode 100644
+index de63263..0000000
+--- a/addons/pvr.vuplus/addon/addon.xml
++++ /dev/null
+@@ -1,87 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<addon
+-  id="pvr.vuplus"
+-  version="1.6.3.4"
+-  name="VU+ / Enigma2 Client"
+-  provider-name="Joerg Dembski">
+-  <requires>
+-    <c-pluff version="0.1"/>
+-  </requires>
+-  <extension
+-    point="xbmc.pvrclient"
+-    library_linux="XBMC_vuplus.pvr"
+-    library_osx="XBMC_vuplus.pvr"
+-    library_wingl="XBMC_vuplus_win32.dll"
+-    library_windx="XBMC_vuplus_win32.dll"
+-    library_android="libXBMC_vuplus.so"/>
+-  <extension point="xbmc.addon.metadata">
+-    <summary lang="be">XBMC's frontend for VU+ / Enigma2 based settop boxes</summary>
+-    <summary lang="cs">Rozhraní XBMC pro VU+ / přijímače založené na Enigma2</summary>
+-    <summary lang="da">XBMC's frontend til VU+ / Enigma2 baseret på settop bokse</summary>
+-    <summary lang="de">XBMCs Oberfläche für VU+ / Enigma2-basierte Settop-Boxen</summary>
+-    <summary lang="el">Frontend του XBMC για αποκωδικοποιητές (settop box) τύπου VU+ / Enigma2</summary>
+-    <summary lang="en">XBMC's frontend for VU+ / Enigma2 based settop boxes</summary>
+-    <summary lang="es">XBMC frontend para decodificadores equipados con VU+/Enigma2</summary>
+-    <summary lang="es_AR">XBMC frontend para decodificadores equipados con VU+/Enigma2</summary>
+-    <summary lang="fr">Applicatif XBMC pour les enregistreurs VU+/Enigma2</summary>
+-    <summary lang="hu">XBMC VU+ és Enigma2 előtér-kiszolgáló settop boxokhoz </summary>
+-    <summary lang="ko">VU+ / Enigma2 베이스 셋탑박스를 위한 XBMC 프론트엔드</summary>
+-    <summary lang="lt">XBMC sąsaja(-os) VU + / Enigma2 rinkinių priedų pagrindu</summary>
+-    <summary lang="mk">XBMC's интерфејс за VU+ / Enigma2 базирани звучници</summary>
+-    <summary lang="no">XBMC's frontend for VU+ / Enigma2 baserte settop bokser</summary>
+-    <summary lang="pl">Interfejs XBMC dla urządzeń typu VU+ / Enigma2 </summary>
+-    <summary lang="pt">Frontend XBMC para caixas settop baseadas em VU+ / Enigma2</summary>
+-    <summary lang="pt_BR">XBMC frontend para VU+/Enigma2 settop boxes</summary>
+-    <summary lang="ru">Фронтэнд XBMC для тюнеров, основанных на VU+ /Enigma2</summary>
+-    <summary lang="sk">Rozhranie XBMC pre spoluprácu s prijímačmi VU+ / Enigma2</summary>
+-    <summary lang="sl">XBMC-jev vmesnik za sprejemnike VU+ / Enigma2</summary>
+-    <summary lang="sv">XBMC Frontend för VU+/Enigma2 baserade dekodrar</summary>
+-    <summary lang="zh">XBMC基于VU+/Enigma2的机顶盒的前端</summary>
+-    <description lang="be">VU+ frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers.</description>
+-    <description lang="cs">Rozhraní WU+. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače.</description>
+-    <description lang="da">VU+ frontend; understøtter streaming af TV &amp; optagelser, EPG og timere.</description>
+-    <description lang="de">VU+ -Oberfläche; Unterstützt Streaming von Livefernsehen &amp; Aufnahmen, EPG, Timer.</description>
+-    <description lang="el">Frontend για το VU+. Υποστηρίζει ροές Live TV &amp; Εγγραφές, EPG, Χρονοδιακόπτες.</description>
+-    <description lang="en">VU+ frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers.</description>
+-    <description lang="es">VU+ frontend; soporta TV en vivo, grabaciones, guía de programación (EPG) y temporizadores.</description>
+-    <description lang="es_AR">VU+ frontend; soporta TV en vivo, grabaciones, guía de programación (EPG) y temporizadores.</description>
+-    <description lang="fr">Applicatif VU+. Supporte la lecture en continu de direct télévision et son enregistrement, guide de programme, minuteurs.</description>
+-    <description lang="hu">VU+ előtér-kiszolgáló. Élő adások és felvételek sugárzásának támogatása EPG-vel és időzítéssel.</description>
+-    <description lang="ko">VU+ 프론트엔드; TV 시청 &amp; 녹화, EPG, 타이머 지원</description>
+-    <description lang="lt">TPB + sąsaja, remti transliacijos Live TV &amp; įrašai, EPG, Laikmačiai.</description>
+-    <description lang="mk">VU+ интерфејс;подржува стриминг на Live TV &amp; Recordings, EPG, Timers.</description>
+-    <description lang="no">VU+ frontend; støtte for Live TV  &amp; Opptak, EPG, Timere.</description>
+-    <description lang="pl">Interfejs VU+; wspiera strumieniowanie TV na żywo i nagrywania, EPG oraz wyłączniki czasowe.</description>
+-    <description lang="pt">Frontend VU+ ; suporta transmissão de TV em Directo e Gravações, EPG, Temporizadores.</description>
+-    <description lang="pt_BR">VU+ frontend; suporta streaming de TV ao Vivo e Gravalçoes, EPG, agendamentos.</description>
+-    <description lang="ru">VU+ фронтэнд; поддерживает потоковое TV, запись, ЕПГ, таймеры.</description>
+-    <description lang="sk">VU+ rozhranie; je podporované streamovanie živého televízneho vysielania a nahrávok, EPG, časovačov.</description>
+-    <description lang="sl">Vmesnik za VU+; podpira pretakanje televizije v živo in posnetkov, EPG, časovnike.</description>
+-    <description lang="sv">VU+ frontend; stödjer strömning av direktsänd TV &amp; inspelningar, EPG, timers.</description>
+-    <description lang="zh">VU+前端，支持直播电视播放和录制、电子节目单、定时器</description>
+-    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
+-    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser..</disclaimer>
+-    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
+-    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
+-    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+-    <disclaimer lang="es">¡Este es un software inestable! Los autores no son de ninguna manera responsables de las grabaciones fallidas o incorrectas, las temporizadores perdidas, ni otros efectos no deseables..</disclaimer>
+-    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
+-    <disclaimer lang="fr">Logiciel en cours d'élaboration ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries défectueuses, temps perdu ou autres effets indésirables..</disclaimer>
+-    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
+-    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
+-    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
+-    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt rekomenduoja/siūlo testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
+-    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
+-    <disclaimer lang="no">Dette er ustabil programvare! Skaperen har ikke på noen måte ansvar for feilede opptak, feile timere, bortkastede timer, eller andre uønskede effekter..</disclaimer>
+-    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
+-    <disclaimer lang="pt">Este software é instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, horas perdidas ou outro qualquer efeito não desejado...</disclaimer>
+-    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis</disclaimer>
+-    <disclaimer lang="ru">Это тестовая программа! Авторы не несут ответственности за неудачные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты..</disclaimer>
+-    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
+-    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
+-    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
+-    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
+-    <platform>all</platform>
+-  </extension>
+-</addon>
+diff --git a/addons/pvr.vuplus/addon/addon.xml.in b/addons/pvr.vuplus/addon/addon.xml.in
+new file mode 100644
+index 0000000..667dd7d
+--- /dev/null
++++ b/addons/pvr.vuplus/addon/addon.xml.in
+@@ -0,0 +1,87 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<addon
++  id="pvr.vuplus"
++  version="1.6.3.4"
++  name="VU+ / Enigma2 Client"
++  provider-name="Joerg Dembski">
++  <requires>
++    <c-pluff version="0.1"/>
++  </requires>
++  <extension
++    point="xbmc.pvrclient"
++    library_linux="XBMC_vuplus.pvr"
++    library_osx="XBMC_vuplus.pvr"
++    library_wingl="XBMC_vuplus_win32.dll"
++    library_windx="XBMC_vuplus_win32.dll"
++    library_android="libXBMC_vuplus.so"/>
++  <extension point="xbmc.addon.metadata">
++    <summary lang="be">XBMC's frontend for VU+ / Enigma2 based settop boxes</summary>
++    <summary lang="cs">Rozhraní XBMC pro VU+ / přijímače založené na Enigma2</summary>
++    <summary lang="da">XBMC's frontend til VU+ / Enigma2 baseret på settop bokse</summary>
++    <summary lang="de">XBMCs Oberfläche für VU+ / Enigma2-basierte Settop-Boxen</summary>
++    <summary lang="el">Frontend του XBMC για αποκωδικοποιητές (settop box) τύπου VU+ / Enigma2</summary>
++    <summary lang="en">XBMC's frontend for VU+ / Enigma2 based settop boxes</summary>
++    <summary lang="es">XBMC frontend para decodificadores equipados con VU+/Enigma2</summary>
++    <summary lang="es_AR">XBMC frontend para decodificadores equipados con VU+/Enigma2</summary>
++    <summary lang="fr">Applicatif XBMC pour les enregistreurs VU+/Enigma2</summary>
++    <summary lang="hu">XBMC VU+ és Enigma2 előtér-kiszolgáló settop boxokhoz </summary>
++    <summary lang="ko">VU+ / Enigma2 베이스 셋탑박스를 위한 XBMC 프론트엔드</summary>
++    <summary lang="lt">XBMC sąsaja(-os) VU + / Enigma2 rinkinių priedų pagrindu</summary>
++    <summary lang="mk">XBMC's интерфејс за VU+ / Enigma2 базирани звучници</summary>
++    <summary lang="no">XBMC's frontend for VU+ / Enigma2 baserte settop bokser</summary>
++    <summary lang="pl">Interfejs XBMC dla urządzeń typu VU+ / Enigma2 </summary>
++    <summary lang="pt">Frontend XBMC para caixas settop baseadas em VU+ / Enigma2</summary>
++    <summary lang="pt_BR">XBMC frontend para VU+/Enigma2 settop boxes</summary>
++    <summary lang="ru">Фронтэнд XBMC для тюнеров, основанных на VU+ /Enigma2</summary>
++    <summary lang="sk">Rozhranie XBMC pre spoluprácu s prijímačmi VU+ / Enigma2</summary>
++    <summary lang="sl">XBMC-jev vmesnik za sprejemnike VU+ / Enigma2</summary>
++    <summary lang="sv">XBMC Frontend för VU+/Enigma2 baserade dekodrar</summary>
++    <summary lang="zh">XBMC基于VU+/Enigma2的机顶盒的前端</summary>
++    <description lang="be">VU+ frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers.</description>
++    <description lang="cs">Rozhraní WU+. Podporuje proudové vysílání živého vysílání a nahrávek, poslech kanálů rádia, EPG, a časovače.</description>
++    <description lang="da">VU+ frontend; understøtter streaming af TV &amp; optagelser, EPG og timere.</description>
++    <description lang="de">VU+ -Oberfläche; Unterstützt Streaming von Livefernsehen &amp; Aufnahmen, EPG, Timer.</description>
++    <description lang="el">Frontend για το VU+. Υποστηρίζει ροές Live TV &amp; Εγγραφές, EPG, Χρονοδιακόπτες.</description>
++    <description lang="en">VU+ frontend; supporting streaming of Live TV &amp; Recordings, EPG, Timers.</description>
++    <description lang="es">VU+ frontend; soporta TV en vivo, grabaciones, guía de programación (EPG) y temporizadores.</description>
++    <description lang="es_AR">VU+ frontend; soporta TV en vivo, grabaciones, guía de programación (EPG) y temporizadores.</description>
++    <description lang="fr">Applicatif VU+. Supporte la lecture en continu de direct télévision et son enregistrement, guide de programme, minuteurs.</description>
++    <description lang="hu">VU+ előtér-kiszolgáló. Élő adások és felvételek sugárzásának támogatása EPG-vel és időzítéssel.</description>
++    <description lang="ko">VU+ 프론트엔드; TV 시청 &amp; 녹화, EPG, 타이머 지원</description>
++    <description lang="lt">TPB + sąsaja, remti transliacijos Live TV &amp; įrašai, EPG, Laikmačiai.</description>
++    <description lang="mk">VU+ интерфејс;подржува стриминг на Live TV &amp; Recordings, EPG, Timers.</description>
++    <description lang="no">VU+ frontend; støtte for Live TV  &amp; Opptak, EPG, Timere.</description>
++    <description lang="pl">Interfejs VU+; wspiera strumieniowanie TV na żywo i nagrywania, EPG oraz wyłączniki czasowe.</description>
++    <description lang="pt">Frontend VU+ ; suporta transmissão de TV em Directo e Gravações, EPG, Temporizadores.</description>
++    <description lang="pt_BR">VU+ frontend; suporta streaming de TV ao Vivo e Gravalçoes, EPG, agendamentos.</description>
++    <description lang="ru">VU+ фронтэнд; поддерживает потоковое TV, запись, ЕПГ, таймеры.</description>
++    <description lang="sk">VU+ rozhranie; je podporované streamovanie živého televízneho vysielania a nahrávok, EPG, časovačov.</description>
++    <description lang="sl">Vmesnik za VU+; podpira pretakanje televizije v živo in posnetkov, EPG, časovnike.</description>
++    <description lang="sv">VU+ frontend; stödjer strömning av direktsänd TV &amp; inspelningar, EPG, timers.</description>
++    <description lang="zh">VU+前端，支持直播电视播放和录制、电子节目单、定时器</description>
++    <disclaimer lang="be">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="cs">Tento software není stabilní. Autoři nejsou žádným způsobem zodpovědní za selhání při nahrávání, neplatné časovače, ztracený čas, či jakékoliv jiné nežádoucí události...</disclaimer>
++    <disclaimer lang="da">Dette er ustabilt software! Ophavsmændene er på ingen måde ansvarlige for fejlede optagelser, fejlagtige timere, spildte timer, eller andre uønskede konsekvenser..</disclaimer>
++    <disclaimer lang="de">Diese Software ist noch in der Entwicklung! Die Autoren sind nicht für fehlgeschlagene Aufnahmen, falsche Timer, verschwendete Zeit oder andere ungewollte Effekte verantwortlich.</disclaimer>
++    <disclaimer lang="el">Ασταθές πρόγραμμα! Οι δημιουργοί δεν είναι σε καμία περίπτωση υπεύθυνοι για αποτυχημένες εγγραφές, λανθασμένους χρονοδιακόπτες, χαμένες ώρες, ή κάθε είδους ανεπιθύμητα αποτελέσματα..</disclaimer>
++    <disclaimer lang="en">This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
++    <disclaimer lang="es">¡Este es un software inestable! Los autores no son de ninguna manera responsables de las grabaciones fallidas o incorrectas, las temporizadores perdidas, ni otros efectos no deseables..</disclaimer>
++    <disclaimer lang="es_AR">¡Este software es inestable! Los autores no se responsabilizan por grabaciones fallidas, temporizadores incorrectos, horas perdidas, o cualquier otro efecto no deseado..</disclaimer>
++    <disclaimer lang="fr">Logiciel en cours d'élaboration ! Les auteurs ne sont en aucun cas responsables de l'échec des enregistrements, minuteries défectueuses, temps perdu ou autres effets indésirables..</disclaimer>
++    <disclaimer lang="he">זוהי תוכנה בלתי יציבה!מחברי התכנה אינם אחראים להקלטות כושלות,מתזמני הקלטות שגויים,שעות מבוזבזות,או כל תוצאה בלתי רצויה...</disclaimer>
++    <disclaimer lang="hu">Ez nem stabil szoftver! A készítők nem vállalnak felelősséget, a hibás felvételért, rossz időzítésért, elvesztegetett időért...</disclaimer>
++    <disclaimer lang="ko">이 소프트웨어는 불안정합니다! 제작자는 녹화 실패, 부정확한 타이머, 시간 낭비 및 기타 예상하지 못한 결과에 대해 책임지지 않습니다..</disclaimer>
++    <disclaimer lang="lt">Tai yra nestabili programinė įranga! Autorius jokiu būdu neatsakingas už nepavykusius įrašus, neteisingus laikmačius, iššvaistytas valandas, ar nutikus kitiems nepageidaujamiems poveikiams ...[COLOR=red](xbmc.lt rekomenduoja/siūlo testuojant šį priedą persijungti į Anglų [orinali] kalbą)[/COLOR]</disclaimer>
++    <disclaimer lang="mk">Ова е нестабилен софтвер! Авторите на ниту еден начин не одговараат за неуспешни снимки, неточни тајмери, потрошени часови, или било кои други несакани ефекти.</disclaimer>
++    <disclaimer lang="no">Dette er ustabil programvare! Skaperen har ikke på noen måte ansvar for feilede opptak, feile timere, bortkastede timer, eller andre uønskede effekter..</disclaimer>
++    <disclaimer lang="pl">To oprogramowanie jest niestabilne! Autorzy w żaden sposób nie odpowiadają za nieudane nagrania, źle działające wyłączniki czasowe, stracone godziny czy też jakiekolwiek inne niepożądane efekty.</disclaimer>
++    <disclaimer lang="pt">Este software é instável! Os autores não se responsabilizam por falhas nas gravações, temporizadores incorrectos, horas perdidas ou outro qualquer efeito não desejado...</disclaimer>
++    <disclaimer lang="pt_BR">Este é um software instável! Os autores não são responsáveis por falhas nas gravações, agendamentos incorretos, horas dispendidas, ou quaisquer outros efeitos indesejáveis</disclaimer>
++    <disclaimer lang="ru">Это тестовая программа! Авторы не несут ответственности за неудачные записи, неверные таймеры, потраченное время и прочие нежелательные эффекты..</disclaimer>
++    <disclaimer lang="sk">Tento softvér nie je stabilný! Autori nenesú žiadnu zodpovednosť za chybné nahrávky vysielania, nesprávne časovače alebo iné neželané udalosti spôsobené týmto softvérom..</disclaimer>
++    <disclaimer lang="sl">To je nestabilna programska oprema! Avtorji niso odgovorni za neuspela snemanja, nepravilne časovnike, zapravljen čas in katerikoli drug neželen učinek...</disclaimer>
++    <disclaimer lang="sv">Detta är ostabil mjukvara! Upphovsmännen är inte ansvariga för misslyckade inspelningar, inkorrekta timers, bortslösade timmar, eller några andra oönskade effekter..</disclaimer>
++    <disclaimer lang="zh">这是不稳定版的软件！作者不对录制失败、错误定时造成时间浪费或其它不良影响负责。</disclaimer>
++    <platform>@OS@</platform>
++  </extension>
++</addon>
+diff --git a/configure.ac b/configure.ac
+index 7df7c2d..9cc4963 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -94,8 +94,22 @@ case "${host}" in
+     OS="linux"
+     ARCHITECTURE="i486"
+     ;;
++  arm-apple-darwin*)
++    OS="ios"
++    HOST_CXXFLAGS="-dynamiclib -single_module -undefined dynamic_lookup"
++    host_os_osx="yes"
++    ARCH_DEFINES="-DTARGET_POSIX -DTARGET_DARWIN -D_LINUX"
++    DYN_LIB_EXT="dylib"
++    ;;
++  x86_64-apple-darwin*)
++    OS="osx64"
++    HOST_CXXFLAGS="-dynamiclib -single_module -undefined dynamic_lookup"
++    host_os_osx="yes"
++    ARCH_DEFINES="-DTARGET_POSIX -DTARGET_DARWIN -D_LINUX"
++    DYN_LIB_EXT="dylib"
++    ;;
+   *-apple-darwin*)
+-    OS="darwin"
++    OS="osx32"
+     HOST_CXXFLAGS="-dynamiclib -single_module -undefined dynamic_lookup"
+     host_os_osx="yes"
+     ARCH_DEFINES="-DTARGET_POSIX -DTARGET_DARWIN -D_LINUX"
+@@ -258,6 +272,16 @@ AC_CONFIG_FILES([Makefile \
+                  addons/pvr.njoy/Makefile \
+                  addons/pvr.vuplus/Makefile \
+                  addons/pvr.vdr.vnsi/Makefile \
+-                 addons/pvr.mythtv.cmyth/Makefile])
++                 addons/pvr.mythtv.cmyth/Makefile \
++                 addons/pvr.argustv/addon/addon.xml
++                 addons/pvr.demo/addon/addon.xml
++                 addons/pvr.dvbviewer/addon/addon.xml
++                 addons/pvr.hts/addon/addon.xml
++                 addons/pvr.mediaportal.tvserver/addon/addon.xml
++                 addons/pvr.mythtv.cmyth/addon/addon.xml
++                 addons/pvr.nextpvr/addon/addon.xml
++                 addons/pvr.njoy/addon/addon.xml
++                 addons/pvr.vdr.vnsi/addon/addon.xml
++                 addons/pvr.vuplus/addon/addon.xml])
+ 
+ AC_OUTPUT
+-- 
+1.8.0
+
