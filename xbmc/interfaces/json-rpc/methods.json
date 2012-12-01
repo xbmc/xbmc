@@ -20,11 +20,18 @@
   },
   "JSONRPC.Version": {
     "type": "method",
-    "description": "Retrieve the jsonrpc protocol version",
+    "description": "Retrieve the JSON-RPC protocol version.",
     "transport": "Response",
     "permission": "ReadData",
     "params": [],
-    "returns": "string"
+    "returns": {
+      "type": "object",
+      "properties": {
+        "major": { "type": "integer", "minimum": 0, "required" true, "description": "Bumped on backwards incompatible changes to the API definition" },
+        "minor": { "type": "integer", "minimum": 0, "required" true, "description": "Bumped on backwards compatible additions/changes to the API definition" },
+        "patch": { "type": "integer", "minimum": 0, "required" true, "description": "Bumped on any changes to the internal implementation but not to the API definition" }
+      }
+    }
   },
   "JSONRPC.Permission": {
     "type": "method",
