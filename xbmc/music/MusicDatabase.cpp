@@ -245,7 +245,7 @@ void CMusicDatabase::CreateViews()
               "  idAlbumInfo, strMoods, strStyles, strThemes,"
               "  strReview, strLabel, strType, strImage, iRating, "
               "  bCompilation, "
-              "  sum(song.iTimesPlayed) AS iTimesPlayed "
+              "  MIN(song.iTimesPlayed) AS iTimesPlayed "
               "FROM album "
               "  LEFT OUTER JOIN albuminfo ON"
               "    album.idAlbum=albuminfo.idAlbum"
@@ -3741,7 +3741,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
 int CMusicDatabase::GetMinVersion() const
 {
-  return 31;
+  return 32;
 }
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, vector<pair<int,int> > &songIDs)
