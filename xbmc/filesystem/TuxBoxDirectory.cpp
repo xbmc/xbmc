@@ -60,23 +60,20 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   CURL url(strRoot);
   CStdString strFilter;
   CStdString protocol = url.GetProtocol();
-  CStdString strOptions = url.GetOptions();
   url.SetProtocol("http");
   bool bIsBouquet=false;
 
-  int ipoint = strOptions.Find("?path=");
-  if (ipoint >=0)
+  if (url.HasOption("path"))
   {
     // send Zap!
-    return g_tuxbox.ZapToUrl(url, strOptions, ipoint);
+    return g_tuxbox.ZapToUrl(url, url.GetOption("path"));
   }
   else
   {
-    ipoint = strOptions.Find("&reference=");
-    if (ipoint >=0 || enigma2)
+    if (url.HasOption("reference") || enigma2)
     {
       //List reference
-      strFilter = strOptions.Right((strOptions.size()-(ipoint+11)));
+      strFilter = url.GetOption("reference");
       bIsBouquet = false; //On Empty is Bouquet
       if (enigma2)
       {
@@ -86,14 +83,15 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           strFilter = "e2"; // Disable Bouquets for Enigma2
 
         GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
-        url.SetOptions("");
-        url.SetFileName(strBQRequest);
       }
+      url.SetOptions("");
+      url.SetFileName(strBQRequest);
     }
   }
   if(strFilter.IsEmpty())
   {
-    url.SetOptions(strBQRequest);
+    url.SetOptions("");
+    url.SetFileName(strBQRequest);
     bIsBouquet = true;
   }
   //Open

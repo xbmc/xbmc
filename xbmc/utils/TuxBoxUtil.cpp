@@ -169,11 +169,6 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
   items.m_idepth =1;
   // Get Options
   strOptions = url.GetOptions();
-  // Detect Port
-  if (url.GetPort()!=0 && url.GetPort()!=80)
-    strPort.Format(":%i",url.GetPort());
-  else
-    strPort = "";
 
   if (!pRootElement)
   {
@@ -203,8 +198,18 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
             CFileItemPtr pItem(new CFileItem);
             pItem->m_bIsFolder = true;
             pItem->SetLabel(strItemName);
-            url.SetOptions("/"+strOptions+"&reference="+strItemPath);
-            pItem->SetPath("tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+url.GetOptions());
+            {
+              CURL fileUrl;
+              fileUrl.SetProtocol("tuxbox");
+              fileUrl.SetUserName(url.GetUserName());
+              fileUrl.SetPassword(url.GetPassWord());
+              fileUrl.SetHostName(url.GetHostName());
+              if (url.GetPort() != 0 && url.GetPort() != 80)
+                fileUrl.SetPort(url.GetPort());
+              fileUrl.SetOptions(url.GetOptions());
+              fileUrl.SetOption("reference", strItemPath);
+              pItem->SetPath(fileUrl.Get());
+            }
             items.Add(pItem);
             //DEBUG Log
             CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
@@ -223,12 +228,6 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
   items.m_idepth = 1;
-
-  //Detect Port
-  if (url.GetPort()!=0 && url.GetPort()!=80)
-    strPort.Format(":%i",url.GetPort());
-  else
-    strPort = "";
 
   if (!pRootElement)
   {
@@ -252,7 +251,15 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
       CStdString strItemName = pIt->FirstChild()->Value();
       pItem->m_bIsFolder = true;
       pItem->SetLabel(strItemName);
-      pItem->SetPath("tuxbox://"+url.GetHostName()+strPort+"/"+strItemName+"/");
+      {
+        CURL fileUrl;
+        fileUrl.SetProtocol("tuxbox");
+        fileUrl.SetHostName(url.GetHostName());
+        if (url.GetPort() != 0 && url.GetPort() != 80)
+          fileUrl.SetPort(url.GetPort());
+        fileUrl.SetFileName(strItemName + "/");
+        pItem->SetPath(fileUrl.Get());
+      }
       items.Add(pItem);
       pNode = pNode->NextSiblingElement("e2bouquet");
     }
@@ -267,12 +274,6 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
   TiXmlNode *pIt = NULL;
   TiXmlNode *pIta = NULL;
   items.m_idepth =2;
-
-  //Detect Port
-  if (url.GetPort()!=0 && url.GetPort()!=80)
-    strPort.Format(":%i",url.GetPort());
-  else
-    strPort = "";
 
   if (!pRootElement)
   {
@@ -319,7 +320,18 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     pbItem->m_bIsFolder = false;
                     pbItem->SetLabel(strItemName);
                     pbItem->SetLabelPreformated(true);
-                    pbItem->SetPath("tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts");
+                    {
+                      CURL fileUrl;
+                      fileUrl.SetProtocol("tuxbox");
+                      fileUrl.SetUserName(url.GetUserName());
+                      fileUrl.SetPassword(url.GetPassWord());
+                      fileUrl.SetHostName(url.GetHostName());
+                      if (url.GetPort() != 0 && url.GetPort() != 80)
+                        fileUrl.SetPort(url.GetPort());
+                      fileUrl.SetFileName("cgi-bin/zapTo");
+                      fileUrl.SetOption("path", strItemPath+".ts");
+                      pbItem->SetPath(fileUrl.Get());
+                    }
                     pbItem->SetArt("thumb", GetPicon(strItemName)); //Set Picon Image
 
                     //DEBUG Log
@@ -380,7 +392,14 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
           CFileItemPtr pbItem(new CFileItem);
           pbItem->m_bIsFolder = false;
           pbItem->SetLabel(strItemName);
-          pbItem->SetPath("http://"+url.GetHostName()+":8001/"+strItemPath);
+          {
+            CURL fileUrl;
+            fileUrl.SetProtocol("http");
+            fileUrl.SetHostName(url.GetHostName());
+            fileUrl.SetPort(8001);
+            fileUrl.SetFileName(strItemPath);
+            pbItem->SetPath(fileUrl.Get());
+          }
           pbItem->SetMimeType("video/mpeg2");
           items.Add(pbItem);
           CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
@@ -393,26 +412,26 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
   }
   return true;
 }
-bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
+bool CTuxBoxUtil::ZapToUrl(CURL url, const CStdString &pathOption)
 {
   // send Zap
   CStdString strZapUrl, strPostUrl, strZapName, strFilter;
   //Extract the ZAP to Service String
-  strFilter = strOptions.Right((strOptions.size()-(ipoint+6)));
   //Remove the ".ts"
-  strFilter = strFilter.Left(strFilter.size()-3);
+  strFilter = pathOption.Left(pathOption.size()-3);
   //Get the Service Name
-  strZapName = url.GetFileNameWithoutPath();
 
-  // Detect Port and Create ZAP URL
-  if (url.GetPort()!=0 && url.GetPort()!=80)
-    strZapUrl.Format("http://%s:%s@%s:%i",url.GetUserName().c_str(),url.GetPassWord().c_str(),url.GetHostName().c_str(),url.GetPort());
-  else
-    strZapUrl.Format("http://%s:%s@%s",url.GetUserName().c_str(),url.GetPassWord().c_str(),url.GetHostName().c_str());
-  strPostUrl.Format("/cgi-bin/zapTo?path=%s",strFilter.c_str());
-
-  //Set Zap URL
-  CURL urlx(strZapUrl);
+  // Create ZAP URL
+  CURL urlx;
+  urlx.SetProtocol("http");
+  urlx.SetUserName(url.GetUserName());
+  urlx.SetPassword(url.GetPassWord());
+  urlx.SetHostName(url.GetHostName());
+  if (url.GetPort() != 0 && url.GetPort() != 80)
+    urlx.SetPort(url.GetPort());
+  CURL postUrl(urlx);
+  postUrl.SetFileName("cgi-bin/zapTo");
+  postUrl.SetOption("path", strFilter);
 
   //Check Recording State!
   if(GetHttpXML(urlx,"boxstatus"))
@@ -442,11 +461,10 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
 
   //Send ZAP Command
   CCurlFile http;
-  if(http.Open(strZapUrl+strPostUrl))
+  if(http.Open(postUrl))
   {
     //DEBUG LOG
-    CLog::Log(LOGDEBUG, "%s - Zapped to: %s (%s)", __FUNCTION__,strZapName.c_str(),strZapUrl.c_str());
-    CLog::Log(LOGDEBUG, "%s - Zap String: %s", __FUNCTION__,strPostUrl.c_str());
+    CLog::Log(LOGDEBUG, "%s - Zapped to: %s", __FUNCTION__,postUrl.Get().c_str());
 
     //Request StreamInfo
     GetHttpXML(urlx,"streaminfo");
@@ -510,10 +528,9 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
   if (strOptions.IsEmpty())
     return false;
 
-  int ipoint = strOptions.Find("?path=");
-  if (ipoint >=0)
+  if (url.HasOption("path"))
   {
-    if(ZapToUrl(url, strOptions, ipoint))
+    if(ZapToUrl(url, url.GetOption("path")))
     {
       //Check VideoSubChannels
       if(GetHttpXML(url,"currentservicedata")) //Update Currentservicedata
@@ -523,9 +540,8 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
         if(GetVideoSubChannels(strVideoSubChannelName,strVideoSubChannelPID ))
         {
           // new videosubchannel selected! settings options to new video zap id
-          strOptions = "?path="+strVideoSubChannelPID+".ts";
           // zap again now to new videosubchannel
-          if(ZapToUrl(url, strOptions, ipoint))
+          if(ZapToUrl(url, strVideoSubChannelPID + ".ts"))
           {
             vVideoSubChannel.mode = true;
             vVideoSubChannel.current_name = strVideoSubChannelName;
@@ -560,7 +576,13 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       else
         strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
 
-      strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),g_advancedSettings.m_iTuxBoxStreamtsPort,strVideoStream.c_str());
+      CURL streamURL;
+      streamURL.SetProtocol("http");
+      streamURL.SetUserName(url.GetUserName());
+      streamURL.SetPassword(url.GetPassWord());
+      streamURL.SetHostName(url.GetHostName());
+      streamURL.SetPort(g_advancedSettings.m_iTuxBoxStreamtsPort);
+      streamURL.SetFileName(strVideoStream.c_str());
 
       if (!g_tuxbox.sZapstream.initialized)
         g_tuxbox.InitZapstream(strPath);
@@ -577,7 +599,8 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
               CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
           }
         }
-        strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort);
+        streamURL.SetFileName("");
+        streamURL.SetPort(g_advancedSettings.m_iTuxBoxZapstreamPort);
       }
 
       if (g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
@@ -596,7 +619,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.GetVideoInfoTag()->m_strTitle = strTitle; // VIDEOPLAYER_TITLE: current_event_details     (Film beschreibung)
       items.GetVideoInfoTag()->m_duration = iDuration; //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
 
-      items.SetPath(strStreamURL);
+      items.SetPath(streamURL.Get());
       items.m_iDriveType = url.GetPort(); // Dirty Hack! But i need to hold the Port ;)
       items.SetLabel(items.GetLabel()); // VIDEOPLAYER_DIRECTOR: service_name (Program Name)
       items.SetLabel2(sCurSrvData.current_event_description); // current_event_description (Film Name)
