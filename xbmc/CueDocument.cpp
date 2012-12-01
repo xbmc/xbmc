@@ -357,13 +357,17 @@ int CCueDocument::ExtractNumericInfo(const CStdString &info)
 ////////////////////////////////////////////////////////////////////////////////////
 bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
 {
+  CLog::Log(LOGDEBUG, "%s strPath = '%s'", __FUNCTION__, strPath.c_str());
+  CLog::Log(LOGDEBUG, "%s strBase = '%s'", __FUNCTION__, strBase.c_str());
   CStdString strDirectory;
   URIUtils::GetDirectory(strBase, strDirectory);
+  CLog::Log(LOGDEBUG, "%s strDirectory = '%s'", __FUNCTION__, strDirectory.c_str());
 
-  CStdString strFilename = strPath;
-  URIUtils::GetFileName(strFilename);
+  CStdString strFilename = URIUtils::GetFileName(strPath);
+  CLog::Log(LOGDEBUG, "%s strFilename = '%s'", __FUNCTION__, strFilename.c_str());
 
   URIUtils::AddFileToFolder(strDirectory, strFilename, strPath);
+  CLog::Log(LOGDEBUG, "%s strPath = '%s'", __FUNCTION__, strPath.c_str());
 
   // i *hate* windows
   if (!CFile::Exists(strPath))
@@ -375,6 +379,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
       if (items[i]->GetPath().Equals(strPath))
       {
         strPath = items[i]->GetPath();
+        CLog::Log(LOGDEBUG, "%s strPath = '%s'", __FUNCTION__, strPath.c_str());
         return true;
       }
     }
