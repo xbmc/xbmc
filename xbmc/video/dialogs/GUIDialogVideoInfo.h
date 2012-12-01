@@ -42,6 +42,7 @@ public:
   virtual bool HasListItems() const { return true; };
 
   static std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
+  static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
 protected:
   virtual void OnInitWindow();
   void Update();

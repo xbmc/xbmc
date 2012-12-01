@@ -11415,3 +11415,7 @@ msgstr ""
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr ""
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr ""
