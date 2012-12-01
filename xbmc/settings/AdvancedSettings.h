@@ -276,6 +276,7 @@ class CAdvancedSettings
     int m_iEpgCleanupInterval;      // seconds
     int m_iEpgActiveTagCheckInterval; // seconds
     int m_iEpgRetryInterruptedUpdateInterval; // seconds
+    int m_bEpgUpdateEmptyTagsInterval; // seconds
     bool m_bEpgDisplayUpdatePopup;
     bool m_bEpgDisplayIncrementalUpdatePopup;
 
