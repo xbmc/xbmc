@@ -22,7 +22,7 @@
 namespace JSONRPC
 {
   const char* const JSONRPC_SERVICE_ID          = "http://www.xbmc.org/jsonrpc/ServiceDescription.json";
-  const int         JSONRPC_SERVICE_VERSION     = 5;
+  const char* const JSONRPC_SERVICE_VERSION     = "6.0.0";
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON-RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
@@ -1269,11 +1269,18 @@ namespace JSONRPC
     "}",
     "\"JSONRPC.Version\": {"
       "\"type\": \"method\","
-      "\"description\": \"Retrieve the jsonrpc protocol version\","
+      "\"description\": \"Retrieve the JSON-RPC protocol version.\","
       "\"transport\": \"Response\","
       "\"permission\": \"ReadData\","
       "\"params\": [],"
-      "\"returns\": \"string\""
+      "\"returns\": {"
+        "\"type\": \"object\","
+        "\"properties\": {"
+          "\"major\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on backwards incompatible changes to the API definition\" },"
+          "\"minor\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on backwards compatible additions/changes to the API definition\" },"
+          "\"patch\": { \"type\": \"integer\", \"minimum\": 0, \"required\": true, \"description\": \"Bumped on any changes to the internal implementation but not to the API definition\" }"
+        "}"
+      "}"
     "}",
     "\"JSONRPC.Permission\": {"
       "\"type\": \"method\","
