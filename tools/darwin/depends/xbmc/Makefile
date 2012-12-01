@@ -14,7 +14,6 @@ export PATH:=$(TOOLCHAIN)/bin:$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --enable-upnp \
   --enable-gtest \
-  --disable-rsxs \
   PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig \
   PYTHON=$(PREFIX)/bin/python
 
