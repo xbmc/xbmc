@@ -136,7 +136,9 @@ void CPulseAESound::Play()
   /* we only keep the most recent operation as it is the only one needed for IsPlaying to function */
   if (m_op)
     pa_operation_unref(m_op);
-  m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, PA_VOLUME_INVALID, NULL, NULL);
+  m_maxVolume     = CAEFactory::GetEngine()->GetVolume();
+  pa_volume_t  paVolume = CAEUtil::PercentToPulseVolume((double)(m_volume * m_maxVolume));
+  m_op = pa_context_play_sample(m_context, m_pulseName.c_str(), NULL, paVolume, NULL, NULL);
   pa_threaded_mainloop_unlock(m_mainLoop);
 }
 
