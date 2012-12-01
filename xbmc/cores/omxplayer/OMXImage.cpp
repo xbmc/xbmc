@@ -830,6 +830,9 @@ bool COMXImage::Decode(unsigned width, unsigned height)
 
   m_omx_tunnel_decode.Deestablish();
 
+  if(m_omx_decoder.BadState())
+    return false;
+
   return true;
 }
 
@@ -1006,6 +1009,9 @@ bool COMXImage::Encode(unsigned char *buffer, int size, unsigned width, unsigned
     CLog::Log(LOGERROR, "%s::%s m_omx_encoder.GetParameter result(0x%x)\n", CLASSNAME, __func__, omx_err);
     return false;
   }
+
+  if(m_omx_encoder.BadState())
+    return false;
 
   return true;
 }
