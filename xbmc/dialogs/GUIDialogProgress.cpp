@@ -121,7 +121,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_CANCEL_BUTTON && m_bCanCancel)
+      if (iControl == CONTROL_CANCEL_BUTTON && m_bCanCancel && !m_bCanceled)
       {
         string strHeading = m_strHeading;
         strHeading.append(" : ");
