@@ -34,7 +34,7 @@
 #include "threads/SingleLock.h"
 #include "settings/GUISettings.h"
 #if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
-#include "cores/amlplayer/AMLUtils.h"
+#include "utils/AMLUtils.h"
 #endif
 
 #define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)

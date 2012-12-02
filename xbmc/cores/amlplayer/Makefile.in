@@ -3,7 +3,6 @@
 INCLUDES += -I$(prefix)/include/amlplayer
 
 SRCS = AMLPlayer.cpp
-SRCS+= AMLUtils.cpp
 SRCS+= FileURLProtocol.cpp
 
 LIB  = amlplayer.a
@@ -13,4 +12,3 @@ LIB  = amlplayer.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-

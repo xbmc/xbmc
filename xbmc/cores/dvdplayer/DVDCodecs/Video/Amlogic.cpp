@@ -26,9 +26,9 @@
 
 #include "Application.h"
 #include "cores/dvdplayer/DVDClock.h"
-#include "cores/amlplayer/AMLUtils.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "settings/Settings.h"
+#include "utils/AMLUtils.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 

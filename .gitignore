@@ -591,6 +591,8 @@ lib/cmyth/Makefile
 /xbmc/cores/amlplayer/Makefile
 /xbmc/cores/omxplayer/Makefile
 
+/xbmc/utils/Makefile
+
 # /lib/ffmpeg/
 /lib/ffmpeg/config.h
 /lib/ffmpeg/config.err

@@ -54,7 +54,7 @@
 #include "settings/VideoSettings.h"
 
 // amlogic libplayer
-#include "AMLUtils.h"
+#include "utils/AMLUtils.h"
 #include "DllLibamplayer.h"
 
 struct AMLChapterInfo

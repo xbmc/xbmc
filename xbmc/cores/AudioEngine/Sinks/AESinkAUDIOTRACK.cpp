@@ -23,8 +23,8 @@
 #include "Utils/AERingBuffer.h"
 #include "android/activity/XBMCApp.h"
 #include "utils/log.h"
-#if defined(HAS_AMLPLAYER)
-#include "cores/amlplayer/AMLUtils.h"
+#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
+#include "utils/AMLUtils.h"
 #endif
 
 #include <jni.h>
