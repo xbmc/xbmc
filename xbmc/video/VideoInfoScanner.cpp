@@ -115,7 +115,17 @@ namespace VIDEO
          * occurs.
          */
         CStdString directory = *m_pathsToScan.begin();
-        if (!DoScan(directory))
+        if (!CDirectory::Exists(directory))
+        {
+          /*
+           * Note that this will skip clean (if m_bClean is enabled) if the directory really
+           * doesn't exist rather than a NAS being switched off.  A manual clean from settings
+           * will still pick up and remove it though.
+           */
+          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan%s.", __FUNCTION__, directory.c_str(), m_bClean ? " and clean" : "");
+          m_pathsToScan.erase(m_pathsToScan.begin());
+        }
+        else if (!DoScan(directory))
           bCancelled = true;
       }
 
