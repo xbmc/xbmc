@@ -30,6 +30,7 @@ public:
 
   bool AppendObjectPath(const char *object);
   bool AppendArgument(const char *string);
+  bool AppendArgument(const bool b);
   bool AppendArgument(const char **arrayString, unsigned int length);
 
   DBusMessage *SendSystem();
