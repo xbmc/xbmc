@@ -943,6 +943,9 @@ bool COMXPlayer::WaitForPausedThumbJobs(int timeout_ms)
 
 void COMXPlayer::Process()
 {
+  bool bOmxWaitVideo = false;
+  bool bOmxWaitAudio = false;
+
   //bool bAEStopped = false;
 
   if(!m_av_clock.OMXInitialize(false, false))
@@ -1235,9 +1238,15 @@ void COMXPlayer::Process()
 
         // make sure we tell all players to finish it's data
         if(m_CurrentAudio.inited)
+        {
           m_player_audio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+          bOmxWaitAudio = true;
+        }
         if(m_CurrentVideo.inited)
+        {
           m_player_video.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+          bOmxWaitVideo = true;
+        }
         if(m_CurrentSubtitle.inited)
           m_player_subtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
         m_CurrentAudio.inited    = false;
@@ -1259,12 +1268,12 @@ void COMXPlayer::Process()
         }
 
         // wait for omx components to finish
-        if(HasVideo() && !m_player_video.IsEOS())
+        if(bOmxWaitVideo && !m_player_video.IsEOS())
         {
           Sleep(100);
           continue;
         }
-        if(HasAudio() && !m_player_audio.IsEOS())
+        if(bOmxWaitAudio && !m_player_audio.IsEOS())
         {
           Sleep(100);
           continue;
