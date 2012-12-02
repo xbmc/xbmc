@@ -684,6 +684,12 @@ void CWinSystemX11::NotifyXRREvent()
   XOutput *out = g_xrandr.GetOutput(currentOutput);
   XMode   mode = g_xrandr.GetCurrentMode(currentOutput);
 
+  if (out)
+    CLog::Log(LOGDEBUG, "%s - current output: %s, mode: %s, refresh: %.3f", __FUNCTION__
+             , out->name.c_str(), mode.id.c_str(), mode.hz);
+  else
+    CLog::Log(LOGWARNING, "%s - output name not set", __FUNCTION__);
+
   RESOLUTION_INFO res;
   unsigned int i;
   bool found(false);
