@@ -24,6 +24,7 @@
 #include "Amlogic.h"
 #include "DynamicDll.h"
 
+#include "Application.h"
 #include "cores/dvdplayer/DVDClock.h"
 #include "cores/amlplayer/AMLUtils.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -1695,6 +1696,14 @@ void CAmlogic::Process()
       // we sleep if the call fails or does a timeout.
       if (m_dll->codec_poll_cntl(&am_private->vcodec) <= 0)
         Sleep(10);
+
+      if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying())
+      {
+        if (g_application.m_pPlayer->IsPaused())
+          PauseResume(1);
+        else
+          PauseResume(2);
+      }
 
       cur_pts = get_pts_video();
       if (m_cur_pts != cur_pts)
