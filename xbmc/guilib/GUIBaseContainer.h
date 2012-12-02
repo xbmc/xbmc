@@ -37,7 +37,24 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
  \brief
  */
 
-class CGUIBaseContainer : public CGUIControl
+class IGUIContainer : public CGUIControl
+{
+protected:
+  VIEW_TYPE m_type;
+  CStdString m_label;
+public:
+  IGUIContainer(int parentID, int controlID, float posX, float posY, float width, float height);
+  virtual bool IsContainer() const { return true; };
+
+  VIEW_TYPE GetType() const { return m_type; };
+  const CStdString &GetLabel() const { return m_label; };
+  void SetType(VIEW_TYPE type, const CStdString &label);
+
+  virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const = 0;
+  virtual CStdString GetLabel(int info) const                                  = 0;
+};
+
+class CGUIBaseContainer : public IGUIContainer
 {
 public:
   CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems);
@@ -74,15 +91,10 @@ public:
   void LoadContent(TiXmlElement *content);
   void SetDefaultControl(int id, bool always) { m_staticDefaultItem = id; m_staticDefaultAlways = always; };
 
-  VIEW_TYPE GetType() const { return m_type; };
-  const CStdString &GetLabel() const { return m_label; };
-  void SetType(VIEW_TYPE type, const CStdString &label);
-
-  virtual bool IsContainer() const { return true; };
-  CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
+  virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
 
   virtual bool GetCondition(int condition, int data) const;
-  CStdString GetLabel(int info) const;
+  virtual CStdString GetLabel(int info) const;
 
   void SetStaticContent(const std::vector<CGUIListItemPtr> &items, bool forceUpdate = true);
   
@@ -157,9 +169,6 @@ protected:
   void UpdateScrollOffset(unsigned int currentTime);
 
   CScroller m_scroller;
-
-  VIEW_TYPE m_type;
-  CStdString m_label;
 
   bool m_staticContent;
   bool m_staticDefaultAlways;
