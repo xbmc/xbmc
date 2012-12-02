@@ -49,6 +49,13 @@ bool CDBusMessage::AppendArgument(const char *string)
   return dbus_message_iter_append_basic(&m_args, DBUS_TYPE_STRING, &string);
 }
 
+bool CDBusMessage::AppendArgument(const bool b)
+{
+  dbus_bool_t arg = (b == true);
+  PrepareArgument();
+  return dbus_message_iter_append_basic(&m_args, DBUS_TYPE_BOOLEAN, &arg);
+}
+
 bool CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
 {
   PrepareArgument();
