@@ -262,6 +262,9 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
       tag->m_iClientId         = channel->GetPVRChannelInfoTag()->ClientID();
       tag->m_bIsRadio          = channel->GetPVRChannelInfoTag()->IsRadio();
       tag->m_iChannelNumber    = channel->GetPVRChannelInfoTag()->ChannelNumber();
+
+      // Update channel pointer from above values
+      tag->UpdateChannel();
     }
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day > 10)
