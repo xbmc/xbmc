@@ -1331,14 +1331,6 @@ int CGUIEPGGridContainer::GetSelectedItem() const
   return 0;
 }
 
-CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset) const
-{
-  if (!m_epgItemsPtr.size())
-    return CGUIListItemPtr();
-
-  return m_item->item;
-}
-
 CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
 {
   if (!m_channelItems.size())

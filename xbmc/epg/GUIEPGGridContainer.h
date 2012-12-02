@@ -78,7 +78,6 @@ namespace EPG
     void LoadLayout(TiXmlElement *layout);
     void LoadContent(TiXmlElement *content);
 
-    CGUIListItemPtr GetListItem(int offset) const;
     virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const;
     virtual CStdString GetLabel(int info) const;
 
