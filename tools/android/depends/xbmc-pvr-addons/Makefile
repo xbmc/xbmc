@@ -1,5 +1,5 @@
 include ../Makefile.include
-DEPS= ../Makefile.include Makefile 0001-packaging-only-advertise-a-single-platform-for-compa.patch
+DEPS= ../Makefile.include Makefile
 
 LIBNAME=xbmc-pvr-addons
 VERSION=252fbbeaa1b2615ec21204756f5db8309b144da8
@@ -30,7 +30,6 @@ $(GIT_DIR)/current/$(VERSION): $(GIT_DIR)/HEAD $(DEPS)
 $(PLATFORM)/bootstrap: $(GIT_DIR)/current/$(VERSION)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	git checkout $(VERSION) -- .
-	cd $(PLATFORM); patch -p1 < ../0001-packaging-only-advertise-a-single-platform-for-compa.patch
 
 $(PLATFORM)/configure: $(PLATFORM)/bootstrap
 	cd $(PLATFORM); ./bootstrap
