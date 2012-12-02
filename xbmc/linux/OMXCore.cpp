@@ -118,7 +118,7 @@ OMX_ERRORTYPE COMXCoreTunel::Flush()
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   if(m_src_component->GetComponent())
   {
-    omx_err = OMX_SendCommand(m_src_component->GetComponent(), OMX_CommandFlush, m_src_port, NULL);
+    omx_err = m_src_component->SendCommand(OMX_CommandFlush, m_src_port, NULL);
     if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState)
     {
       CLog::Log(LOGERROR, "COMXCoreTunel::Flush - Error flush  port %d on component %s omx_err(0x%08x)", 
@@ -128,7 +128,7 @@ OMX_ERRORTYPE COMXCoreTunel::Flush()
 
   if(m_dst_component->GetComponent())
   {
-    omx_err = OMX_SendCommand(m_dst_component->GetComponent(), OMX_CommandFlush, m_dst_port, NULL);
+    omx_err = m_dst_component->SendCommand(OMX_CommandFlush, m_dst_port, NULL);
     if(omx_err != OMX_ErrorNone && omx_err != OMX_ErrorSameState)
     {
       CLog::Log(LOGERROR, "COMXCoreTunel::Flush - Error flush port %d on component %s omx_err(0x%08x)", 
