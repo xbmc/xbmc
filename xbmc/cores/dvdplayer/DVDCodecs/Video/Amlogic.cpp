@@ -1714,19 +1714,8 @@ void CAmlogic::Process()
         m_ready_event.Set();
 
         double app_pts = GetPlayerPtsSeconds();
-        double pts_error = (double)cur_pts/PTS_FREQ - app_pts;
-
-        double offset = 0.0;
-        if ((fabs(pts_error) > 0.10) && fabs(m_app_pts - app_pts) > 0.05)
-        {
-          offset = (double)am_private->video_rate / UNIT_FREQ;
-          //CLog::Log(LOGDEBUG, "CAmlogic::SetDropState, offset(%f), pts_error(%f), %f",
-          //  offset, pts_error, fabs(m_app_pts - app_pts));
-        }
-        // little trick here, if we get told to drop,
-        // we set pts_pcrscr to current pts clock + 1 frame duration,
-        // else just the current pts clock.
-        SyncToPlayerPtsSeconds(offset);
+        if (fabs((double)cur_pts/PTS_FREQ - app_pts) > 0.10)
+          SyncToPlayerPtsSeconds(0.0);
       }
     }
     else
