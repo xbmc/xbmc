@@ -901,16 +901,7 @@ void CGUIEPGGridContainer::ChannelScroll(int amount)
 void CGUIEPGGridContainer::ProgrammesScroll(int amount)
 {
   // increase or decrease the horizontal offset
-  int offset = m_blockOffset + amount;
-
-  if (offset > m_blocks - m_blocksPerPage)
-  {
-    offset = m_blocks - m_blocksPerPage;
-  }
-
-  if (offset < 0) offset = 0;
-
-  ScrollToBlockOffset(offset);
+  ScrollToBlockOffset(m_blockOffset + amount);
 }
 
 bool CGUIEPGGridContainer::MoveChannel(bool direction, bool wrapAround)
@@ -1471,6 +1462,9 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
 
 void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
 {
+  // make sure offset is in valid range
+  offset = std::max(0, std::min(offset, m_blocks - m_blocksPerPage));
+
   float size = m_blockSize;
   int range = m_blocksPerPage / 1;
 
