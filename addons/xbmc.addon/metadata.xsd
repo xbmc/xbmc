@@ -33,8 +33,12 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="linux"/>
       <xs:enumeration value="osx"/>
+      <xs:enumeration value="osx64"/>
+      <xs:enumeration value="osx32"/>
+      <xs:enumeration value="ios"/>
       <xs:enumeration value="wingl"/>
       <xs:enumeration value="windx"/>
+      <xs:enumeration value="android"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="platformList">

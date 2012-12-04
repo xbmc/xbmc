@@ -1,13 +1,13 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-09 07:04+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
-"Language-Team: Chinese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh/)\n"
+"Language-Team: Chinese (Simple) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2203,11 +2203,11 @@ msgid "Enter number"
 msgstr "请输入序号"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "采样位数"
 
 msgctxt "#613"
-msgid "Sample Frequency"
+msgid "Sample rate"
 msgstr "采样率"
 
 msgctxt "#620"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "响铃！"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "闹铃取消，剩余%i分%i秒。"
+msgid "Cancelled with %im%is left"
+msgstr "已取消，剩余%i分%i秒"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "场内插值法（反向）"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "取消中..."
 
 msgctxt "#16025"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "扫描缺失图标"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "切换频道无需按确定"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "隐藏视频信息框"
@@ -6989,6 +6985,18 @@ msgstr "录制冲突"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "录制错误"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "客户端相关"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "客户端相关设定"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "按确定确认频道切换"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "排序：标签"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "以%s扫描电影"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "以%s扫描音乐"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "以%s扫描剧集"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "以%s扫描艺人"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "以%s扫描专辑"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "分段播放..."
@@ -9153,6 +9181,10 @@ msgstr "缓存在达到连续播放所需数量之前已满"
 msgctxt "#21456"
 msgid "External storage"
 msgstr "外部存储器"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "已看集数"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -10216,11 +10248,11 @@ msgstr "%s 天"
 
 msgctxt "#33049"
 msgid "Alert"
-msgstr "提醒"
+msgstr "警报"
 
 msgctxt "#33050"
 msgid "Alerts"
-msgstr "提醒"
+msgstr "警报"
 
 msgctxt "#33051"
 msgid "Choose Your"

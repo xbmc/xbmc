@@ -651,7 +651,13 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
 #elif defined(_WIN32) && defined(HAS_DX)
       if (platforms[i] == "windx")
 #elif defined(TARGET_DARWIN_OSX)
-      if (platforms[i] == "osx")
+// Remove this after Frodo and add an architecture filter
+// in addition to platform.
+#if defined(__x86_64__)
+      if (platforms[i] == "osx64" || platforms[i] == "osx")
+#else
+      if (platforms[i] == "osx32" || platforms[i] == "osx")
+#endif
 #elif defined(TARGET_DARWIN_IOS)
       if (platforms[i] == "ios")
 #endif

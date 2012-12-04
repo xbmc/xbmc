@@ -21,4 +21,6 @@
     <string id="30019">Fallback to Artist Styles from</string>
     <string id="30020">Fallback to Artist Life-Span from</string>
     <string id="30021">Fallbacks</string>
+    <string id="30022">Enable Artist Thumbs from theaudiodb.com</string>
+    <string id="30023">Enable Artist Fanarts from theaudiodb.com</string>
 </strings>

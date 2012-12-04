@@ -1,14 +1,14 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.0
+# Addon version: 2.1.1
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-29 12:44+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Portuguese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Processando..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Ocultar Informação"
+msgstr "Ocultar Info"
 
 msgctxt "#31006"
 msgid "View Options"
@@ -115,27 +115,27 @@ msgstr "Pré-selecções de visualização"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "Tempo para terminar"
+msgstr "Termina às"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Orientação: Ascendente"
+msgstr "Orientar: Ascendente"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Orientação: Descendente"
+msgstr "Orientar: Descendente"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "Abrir lista de reprodução"
+msgstr "Abrir Lista Reprodução"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Guardar lista de reprodução"
+msgstr "Guardar Lista Reprodução"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "Fechar lista de reprodução"
+msgstr "Fechar Lista Reprodução"
 
 msgctxt "#31058"
 msgid "System music files"
@@ -143,7 +143,7 @@ msgstr "Ficheiros de música do sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Lista de reprodução actual"
+msgstr "Lista de Reprodução actual"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
@@ -167,7 +167,7 @@ msgstr "Mostrar \"Pausado\" ao Apresentar Slides"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Reproduzir trailers numa janela [COLOR=grey3](Só janela de info de vídeo)[/COLOR]"
+msgstr "Reproduzir trailers numa janela [COLOR=grey3](só na janela de info de vídeo)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -183,11 +183,11 @@ msgstr "Ocultar botões do Menu Principal"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr "Ativar ecrã de fundo personalizado."
+msgstr "Activar ecrã de fundo personalizado."
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr "Caminho do ecrã de fundo:"
+msgstr "Localização do ecrã de fundo:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -215,7 +215,7 @@ msgstr "Ocultar Fanart de fundo"
 
 msgctxt "#31122"
 msgid "Weather Page"
-msgstr "Página meteorológica"
+msgstr "Página Meteorológica"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -227,7 +227,7 @@ msgstr "Mostrar visualização \"A reproduzir\" em fundo"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Tocar música de genérico na biblioteca de vídeo (com o Add-on TvTunes)"
+msgstr "Tocar música de genérico na biblioteca de vídeo (Add-on TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -359,7 +359,7 @@ msgstr "Transmitido a"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "Opções da lista de reprodução"
+msgstr "Opções da Lista Reprodução"
 
 msgctxt "#31326"
 msgid "Created"
@@ -379,7 +379,7 @@ msgstr "[B]Temporizador activado![/B] [COLOR=grey2] - Sistema vai desligar-se em
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
-msgstr "Clique no botão para reproduzir o[CR][CR]trailer do filme"
+msgstr "Clique no botão para reproduzir [CR][CR]o trailer do filme"
 
 msgctxt "#31331"
 msgid "Album Details"
@@ -407,7 +407,7 @@ msgstr "Menu do filme"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Transferir legenda"
+msgstr "Transferir Legendas"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -431,7 +431,7 @@ msgstr "[B]CONFIGURAÇÕES DE VÍDEO[/B][CR][CR]Gerir Biblioteca de Vídeo · Op
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURAÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Opções de reprodução de música · Opções de listagem de música[CR]Definir submissão de músicas · Opções de karaoke"
+msgstr "[B]CONFIGURAÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Opções de reprodução de música · Opções de listagem de música[CR]Definir envio de músicas · Opções de karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
@@ -451,11 +451,11 @@ msgstr "[B]CONFIGURAR ADD-ONS[/B][CR][CR]Gerir Add-ons instalados · Procurar e 
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]CONFIGURAR DEFINIÇÕES DE TV[/B][CR][CR]Alterar informações em ecrã inteiro · Definir definições de dados do EPG"
+msgstr "[B]CONFIGURAR DEFINIÇÕES DE TV[/B][CR][CR]Alterar informações em ecrã inteiro · Gerir definições de dados do EPG"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr "[B]CONFIGURAR SERVIÇOS E DEFINIÇÕES[/B][CR][CR]Configurar controlo do XBMC via UPnP e HTTP · Configurar partilha de ficheiros[CR]Activar Configuração Zero · Configurar AirPlay"
+msgstr "[B]CONFIGURAR SERVIÇOS[/B][CR][CR]Configurar controlo do XBMC via UPnP e HTTP · Configurar partilha de ficheiros[CR]Activar ZeroConf · Configurar AirPlay"
 
 msgctxt "#31411"
 msgid "First run help...."
@@ -463,23 +463,23 @@ msgstr "Ajuda de primeira inicialização..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Este tabulador siginifica que existe um menu fora do local desta janela que contem opções extra para esta secção. Para aceder ao menu, navegue para a esquerda com o controlo remoto ou teclado, ou então coloque o rato sobre a tabulação. [CR][CR] Clique \"OK\" para fechar este dialogo. Não irá ser exibido novamente"
+msgstr "Este tabulador indica que existe um menu lateral, nesta janela, que contém mais opções para esta secção. Para aceder ao menu, navegue para a esquerda com o controlo remoto ou teclado, ou então coloque o rato sobre a tabulação. [CR][CR] Clique \"OK\" para fechar esta caixa, que não irá ser exibida novamente."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Escolha o seu perfil de utilizador do XBMC[CR]para se ligar e prosseguir"
+msgstr "Escolha o seu perfil de utilizador do XBMC[CR]para iniciar sessão e prosseguir"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr "Tempos de Gravação"
+msgstr "Temporizadores de Gravação"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr "Tempo programado"
+msgstr "Tempo Agendado"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr "TV ao vivo"
+msgstr "TV ao Vivo"
 
 msgctxt "#31503"
 msgid "Add Group"
@@ -507,7 +507,7 @@ msgstr "Definir temporizador."
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr "Opções de canal"
+msgstr "Opções do canal"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -529,10 +529,6 @@ msgctxt "#31905"
 msgid "Forecast"
 msgstr "Previsão"
 
-msgctxt "#31906"
-msgid "Maps & Video"
-msgstr "Mapas e vídeo"
-
 msgctxt "#31908"
 msgid "Chance of Precipitation"
 msgstr "Possibilidade de chuva"
@@ -540,3 +536,7 @@ msgstr "Possibilidade de chuva"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Recebendo previsões meteorológicas..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Mapa e Alertas"

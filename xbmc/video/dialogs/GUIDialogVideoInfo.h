@@ -53,6 +53,7 @@ public:
 #else
   std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
 #endif
+  static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
 protected:
   virtual void OnInitWindow();
   void Update();

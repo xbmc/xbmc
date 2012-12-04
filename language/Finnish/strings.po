@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-02 19:07+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -572,7 +572,7 @@ msgstr "Ulkoasu"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr ""
+msgstr "Peru tiedostotoimenpiteet"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -2202,14 +2202,6 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Anna numero"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bittiä/Näyte"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Näytteenottotaajuus"
-
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Ääni-CD-levyt"
@@ -3182,10 +3174,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "tuulista"
 
-msgctxt "#1413"
-msgid "Patches"
-msgstr ""
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "ukkosmyrskyä"
@@ -3226,14 +3214,6 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "utua"
 
-msgctxt "#1424"
-msgid "Overcast"
-msgstr ""
-
-msgctxt "#1425"
-msgid "Pellets"
-msgstr ""
-
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Rakeita"
@@ -3242,17 +3222,9 @@ msgctxt "#1427"
 msgid "Smoke"
 msgstr "Savua"
 
-msgctxt "#1428"
-msgid "Volcanic"
-msgstr ""
-
 msgctxt "#1429"
 msgid "Ash"
 msgstr "Tuhkaa"
-
-msgctxt "#1430"
-msgid "Widespread"
-msgstr ""
 
 msgctxt "#1431"
 msgid "Dust"
@@ -3262,26 +3234,6 @@ msgctxt "#1432"
 msgid "Sand"
 msgstr "Hiekkaa"
 
-msgctxt "#1433"
-msgid "Spray"
-msgstr ""
-
-msgctxt "#1434"
-msgid "Whirls"
-msgstr ""
-
-msgctxt "#1435"
-msgid "Sandstorm"
-msgstr ""
-
-msgctxt "#1436"
-msgid "Blowing"
-msgstr ""
-
-msgctxt "#1437"
-msgid "Pellet"
-msgstr ""
-
 msgctxt "#1438"
 msgid "Small"
 msgstr "Pieni"
@@ -3290,10 +3242,6 @@ msgctxt "#1439"
 msgid "and"
 msgstr "ja"
 
-msgctxt "#1440"
-msgid "Sleet"
-msgstr ""
-
 msgctxt "#1441"
 msgid "with"
 msgstr "ja"
@@ -3301,10 +3249,6 @@ msgstr "ja"
 msgctxt "#1442"
 msgid "Chance"
 msgstr "Tsäänssit"
-
-msgctxt "#1443"
-msgid "of"
-msgstr ""
 
 msgctxt "#1444"
 msgid "Funnel"
@@ -3317,10 +3261,6 @@ msgstr "Pilvi"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Tuntematon"
-
-msgctxt "#1447"
-msgid "Squals"
-msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -4169,10 +4109,6 @@ msgstr "Käynnistetty, hälytys %i minuutin kuluttua"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Hälytys!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "peruutettu, %im%is jäljellä"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5678,10 +5614,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Synk. parilliset"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Peruutetaan..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Anna esittäjän nimi"
@@ -6550,10 +6482,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Hae puuttuvat kuvakkeet"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Vaihda kanavaa ilman OK-näppäintä"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Piilota videon tietolaatikko"
@@ -6961,14 +6889,6 @@ msgstr "* Kaikki nauhoitukset"
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
 msgstr "PVR-lisäosia ei löytynyt"
-
-msgctxt "#19272"
-msgid "You need a tuner, backend software, and an"
-msgstr ""
-
-msgctxt "#19273"
-msgid "add-on for the backend to be able to use PVR."
-msgstr ""
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."

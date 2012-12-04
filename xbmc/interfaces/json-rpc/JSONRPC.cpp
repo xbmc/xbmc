@@ -27,6 +27,7 @@
 #include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 using namespace ANNOUNCEMENT;
@@ -98,7 +99,7 @@ void CJSONRPC::Initialize()
     CJSONServiceDescription::AddNotification(JSONRPC_SERVICE_NOTIFICATIONS[index]);
   
   m_initialized = true;
-  CLog::Log(LOGINFO, "JSONRPC: Successfully initialized");
+  CLog::Log(LOGINFO, "JSONRPC v%s: Successfully initialized", CJSONServiceDescription::GetVersion());
 }
 
 JSONRPC_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
@@ -110,7 +111,21 @@ JSONRPC_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *t
 
 JSONRPC_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
-  result["version"] = CJSONServiceDescription::GetVersion();
+  result["version"]["major"] = 0;
+  result["version"]["minor"] = 0;
+  result["version"]["patch"] = 0;
+
+  const char* version = CJSONServiceDescription::GetVersion();
+  if (version != NULL)
+  {
+    vector<string> parts = StringUtils::Split(version, ".");
+    if (parts.size() > 0)
+      result["version"]["major"] = (int)strtol(parts[0].c_str(), NULL, 10);
+    if (parts.size() > 1)
+      result["version"]["minor"] = (int)strtol(parts[1].c_str(), NULL, 10);
+    if (parts.size() > 2)
+      result["version"]["patch"] = (int)strtol(parts[2].c_str(), NULL, 10);
+  }
 
   return OK;
 }

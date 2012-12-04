@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-05 22:07+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "Wprowadź numer"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "Bitów/Próbkę"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Próbkowanie"
+msgid "Sample rate"
+msgstr "częstotliwość próbkowania"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -3264,7 +3264,7 @@ msgstr "Piasek"
 
 msgctxt "#1433"
 msgid "Spray"
-msgstr ""
+msgstr "Mżawka"
 
 msgctxt "#1434"
 msgid "Whirls"
@@ -3304,7 +3304,7 @@ msgstr "szanse"
 
 msgctxt "#1443"
 msgid "of"
-msgstr ""
+msgstr "z"
 
 msgctxt "#1444"
 msgid "Funnel"
@@ -4169,10 +4169,6 @@ msgstr "Rozpoczęto, alarm za %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Anulowano na %im%is do końca"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,8 +5675,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (odwrócony)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Anulowanie..."
+msgid "Cancelling..."
+msgstr "Anulowanie ..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -6024,7 +6020,7 @@ msgstr "Kanały TV"
 
 msgctxt "#19024"
 msgid "Radio channels"
-msgstr "K"
+msgstr "Kanały radiowe"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
@@ -6326,10 +6322,6 @@ msgctxt "#19106"
 msgid "Next timer on"
 msgstr "Następny licznik czasu "
 
-msgctxt "#19107"
-msgid "at"
-msgstr ""
-
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
 msgstr "Zapisanie Timera niemożliwe. Sprawdź plik log"
@@ -6549,10 +6541,6 @@ msgstr "Informacja PVR"
 msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Skanuj w poszukiwaniu ikon"
-
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Przełączaj kanały bez potwierdzania"
 
 msgctxt "#19169"
 msgid "Hide video information box"
@@ -6989,6 +6977,18 @@ msgstr "Konflikt nagrywania"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Błąd nagrywania"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Specyfikacja klienta"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Ustawienia specyficzne klienta"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Potwierdź przełączanie kanałów przyciskiem OK"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8198,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Sortuj: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Przeszukuję filmy używając %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Przeszukuję teledyski używając %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Przeszukuję seriale tv używając %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Przeszukuję artystów używając %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Przeszukuje albumy używając %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Odtwarzaj część..."
@@ -9153,6 +9173,10 @@ msgstr "Bufor wypełniany zanim osiągnie wymagany poziom do ciągłego odtwarza
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Nośnik zewnętrzny"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Licznik obejrzanych epizodów"
 
 msgctxt "#21460"
 msgid "Subtitle location"

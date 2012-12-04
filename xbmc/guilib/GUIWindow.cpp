@@ -159,6 +159,10 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
     return false;
   }
 
+  // we must create copy of root element as we will manipulate it when resolving includes
+  // and we don't want original root element to change
+  pRootElement = (TiXmlElement*)pRootElement->Clone();
+
   // set the scaling resolution so that any control creation or initialisation can
   // be done with respect to the correct aspect ratio
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
@@ -260,6 +264,7 @@ bool CGUIWindow::Load(TiXmlElement* pRootElement)
 
   m_windowLoaded = true;
   OnWindowLoaded();
+  delete pRootElement;
   return true;
 }
 

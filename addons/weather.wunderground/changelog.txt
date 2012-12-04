@@ -1,3 +1,6 @@
+v1.0.2
+- better error handling
+
 v1.0.1
 - fix encoding issues
 

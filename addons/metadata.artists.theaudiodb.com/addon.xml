@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.artists.theaudiodb.com"
+       name="TheAudioDb Artist Scraper"
+       version="1.0.2"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+    <import addon="metadata.common.fanart.tv" version="1.1.0"/>
+    <import addon="metadata.common.theaudiodb.com" version="1.1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper.artists"
+             language="en"
+             library="tadb.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">TheAudioDb Artist Scraper</summary>
+    <description lang="en">TheAudioDB.com is a community driven database of audio releases. It is our aim to be the most simple, easy to use and accurate source for Music metadata on the web. We also provide an API to access our repository of data so it can be used in many popular HTPC and Mobile apps to give you the best possible audio experience without the hassle.</description>
+    <platform>all</platform>
+  </extension>
+</addon>

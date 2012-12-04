@@ -1,3 +1,12 @@
+[B]1.6.1[/B]
+Language files update from Transifex
+
+[B]1.6.0[/B]
+Re-enable fanart.tv scraping by default
+
+[B]1.5.0[/B]
+Added: Scraping album thumbs from theaudiodb.com
+
 [B]1.4.0[/B]
 Added back fanart.tv scraping via JSON API. Still off by default.
 

@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-07 19:22+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -1348,7 +1348,7 @@ msgstr "дощ"
 
 msgctxt "#377"
 msgid "Light"
-msgstr "невеликий"
+msgstr "невелик."
 
 msgctxt "#378"
 msgid "AM"
@@ -1940,7 +1940,7 @@ msgstr "Великі піктограми"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "Широкий"
+msgstr "Банери"
 
 msgctxt "#540"
 msgid "Big wide"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "Уведіть номер"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "Біт/семпл"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Частота семплування"
+msgid "Sample rate"
+msgstr "Частота семплів"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -3124,7 +3124,7 @@ msgstr "і"
 
 msgctxt "#1398"
 msgid "Freezing"
-msgstr "заморозки"
+msgstr "холодн."
 
 msgctxt "#1399"
 msgid "Late"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "НАГАДУВАННЯ!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Скасовано за %i хв. %i с. до спрацювання"
+msgid "Cancelled with %im%is left"
+msgstr "Скасовано: залишилось  %i хв. і %i с."
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4800,7 +4800,7 @@ msgstr "Дуже висока (повільно!)"
 
 msgctxt "#13510"
 msgid "Sync playback to display"
-msgstr "Синхронізувати відео з частотою дисплею"
+msgstr "Синхронізувати відео зі частотою дисплею"
 
 msgctxt "#13511"
 msgid "Choose art"
@@ -5196,7 +5196,7 @@ msgstr "Шрифт текстових субтитрів"
 
 msgctxt "#14090"
 msgid "International"
-msgstr "Мова[CR]та стандарти"
+msgstr "Мовні[CR]налаштування"
 
 msgctxt "#14091"
 msgid "Character set"
@@ -5679,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (зворотній)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Скасування…"
 
 msgctxt "#16025"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Знайти відсутні значки"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Переключати канали без натискання ОК"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Приховувати вікно відомостей про відео"
@@ -6564,7 +6560,7 @@ msgstr "Затримка початку відтворення"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
-msgstr "Згорнути на початку відтворення"
+msgstr "Відкривати канали у вікні"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
@@ -6989,6 +6985,18 @@ msgstr "Конфлікт при запису"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Помилка запису"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Клієнтськ."
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Налаштування клієнта"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Підтверджувати переключення каналів натисканням ОК"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Сорт. за ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Сканування фільмів за допомогою %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Сканування муз. кліпів за допомогою %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Сканування серіалів за допомогою %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Сканування виконавців за допомогою %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Сканування альбомів за допомогою %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Відтворити частину…"
@@ -8548,7 +8576,7 @@ msgstr "Без категорій"
 
 msgctxt "#20412"
 msgid "Flatten TV shows"
-msgstr "Не об'єднувати серії серіалів у сезони"
+msgstr "Приховувати списки сезонів серіалів"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -9153,6 +9181,10 @@ msgstr "Об'єму кешу недостатньо для безперервн�
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Зовнішній накопичувач"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Кількість переглянутих серій"
 
 msgctxt "#21460"
 msgid "Subtitle location"

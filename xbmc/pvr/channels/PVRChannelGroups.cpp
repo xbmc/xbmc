@@ -242,11 +242,15 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   // load group members
   for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); it++)
   {
-    (*it)->Load();
+    // load only user defined groups, as internal group is already loaded
+    if (!(*it)->IsInternalGroup())
+    {
+      (*it)->Load();
 
-    // remove empty groups when sync with backend is enabled
-    if (bSyncWithBackends && !(*it)->IsInternalGroup() && (*it)->Size() == 0)
-      emptyGroups.push_back(*it);
+      // remove empty groups when sync with backend is enabled
+      if (bSyncWithBackends && (*it)->Size() == 0)
+        emptyGroups.push_back(*it);
+    }
   }
 
   for (std::vector<CPVRChannelGroupPtr>::iterator it = emptyGroups.begin(); it != emptyGroups.end(); it++)

@@ -243,6 +243,15 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vec
   return newPath;
 }
 
+CStdString CMultiPathDirectory::ConstructMultiPath(const std::set<CStdString> &setPaths)
+{
+  CStdString newPath = "multipath://";
+  for (std::set<CStdString>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
+    AddToMultiPath(newPath, *path);
+
+  return newPath;
+}
+
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());

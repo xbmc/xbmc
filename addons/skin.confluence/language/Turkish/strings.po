@@ -1,14 +1,14 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.0
+# Addon version: 2.1.1
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-30 13:27+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -163,7 +163,7 @@ msgstr "Arka Plan"
 
 msgctxt "#31103"
 msgid "Show \"Paused\" in picture slide show"
-msgstr "Resim slayt gösterisinde \"DURAKLATILDI\"yı göster"
+msgstr "Resim slayt gösterisinde \"Duraklatıldı\"yı göster"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
@@ -463,7 +463,7 @@ msgstr "İlk çalıştırma yardımı...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda yada klavyenizle yada fare imlecini sekmenin sol tarafına götürünüz. [CR][CR]Pencereyi kapatmak için \"Ok\" tuşuna basınız. Bir daha çıkmayacaktır."
+msgstr "Bu sekme bu bölüm için ekstra özellikleri içeren bir menüye, bu pencerenin kenarından ulaşılabileceğini belirtir. Menüye ulaşmak için, uzaktan kumanda, klavye yada fare imlecini sekmenin sol tarafına götürünüz. [CR][CR]Pencereyi kapatmak için \"Ok\" tuşuna basınız. Bu bildiri bir daha çıkmayacaktır."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -529,10 +529,6 @@ msgctxt "#31905"
 msgid "Forecast"
 msgstr "Hava Tahmini"
 
-msgctxt "#31906"
-msgid "Maps & Video"
-msgstr "Video ve Haritalar"
-
 msgctxt "#31908"
 msgid "Chance of Precipitation"
 msgstr "Yağış Olasılığı"
@@ -540,3 +536,7 @@ msgstr "Yağış Olasılığı"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Hava tahmini bilgisi getiriliyor..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Harita ve Uyarılar"

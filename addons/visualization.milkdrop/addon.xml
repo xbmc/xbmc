@@ -19,6 +19,7 @@
     <summary lang="el">Το MilkDrop σας ταξιδεύει μέσα στα ηχητικά κύματα που ακούτε</summary>
     <summary lang="en">MilkDrop takes you flying through the soundwaves you're hearing</summary>
     <summary lang="es">MilkDrop te lleva volando a través de las ondas que estás escuchando</summary>
+    <summary lang="es_AR">MilkDrop te lleva volando a través de las ondas que estás escuchando</summary>
     <summary lang="es_MX">MilkDrop the lleva volando a través de las ondas de sonido que estás escuchando</summary>
     <summary lang="et">MilkDrop viib sind lennates läbi helilainete mida kuulad</summary>
     <summary lang="fi">MilkDrop lennättää sinut ääniaaltojen läpi</summary>
@@ -32,10 +33,11 @@
     <summary lang="ja">MilkDrop - 音楽の波の上を飛ぶ</summary>
     <summary lang="ko">MilkDrop은 사운드웨이브 속으로 날아가는듯한 효과를 보여줍니다.</summary>
     <summary lang="lt">MilkDrop nukelia Jus i nuostabu skrydi virs debesu, istiesu fantastisku garsu gausa</summary>
+    <summary lang="mk">MilkDrop ве прелетува преку брановите на музиката која ја слушате</summary>
     <summary lang="nl">Met MilkDrop vliegt u mee door de soundwaves die je hoort</summary>
     <summary lang="no">MilkDrop tar deg med på en flyreise gjennom lydbølgene du hører</summary>
     <summary lang="pl">MilkDrop zabiera Cię w niesamowity lot w chmurach aktualnie słuchanych dźwięków</summary>
-    <summary lang="pt">Com o MilkDrop, você vai voar através das ondas sonoras que está a ouvir</summary>
+    <summary lang="pt">O MilkDrop leva-o num voo através das ondas sonoras que está a ouvir</summary>
     <summary lang="pt_BR">O MilkDrop leva-o a voar nas ondas sonoras que está a ouvir</summary>
     <summary lang="ro">MilkDrop vă face să zburați printre undele audio pe care le auziți</summary>
     <summary lang="ru">Milkdrop отправит вас в полёт через звуковые волны, которые вы слышите</summary>
@@ -55,6 +57,7 @@
     <description lang="el">Το MilkDrop ήταν αρχικά ένα "plug-in" μουσικών οπτικοποιήσεων του Winamp. Καθώς παίζετε τη μουσική σας, το MilkDrop σας ταξιδεύει μέσα στα πραγματικά ηχητικά κύματα που ακούτε, και χρησιμοποιεί ανίχνευση ρυθμού για να ενεργοποιήσει ένα πλήθος ψυχεδελικών εφέ, δημιουργώντας ένα πλούσιο οπτικό ταξίδι μέσα στον ήχο.</description>
     <description lang="en">MilkDrop was originally a music visualizer "plug-in" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound.</description>
     <description lang="es">MilkDrop era originalmente un plug-in visualizador de música para Winamp. Mientras escuchas música, MilkDrop te lleva volando a través de las ondas que estás escuchando, y utiliza la detección del ritmo para activar una gran cantidad de efectos psicodélicos, creando una rica experiencia visual a través del sonido.</description>
+    <description lang="es_AR">MilkDrop era originalmente un plug-in visualizador de música para Winamp. Mientras escuchas música, MilkDrop te lleva volando a través de las ondas que estás escuchando, y utiliza la detección del ritmo para activar una gran cantidad de efectos psicodélicos, creando una rica experiencia visual a través del sonido.</description>
     <description lang="es_MX">MilkDrop originalmente fue un "plug-in" visualizador de música para el reproductor de música Winamp. Mientras escuchas tu músuca, MilkDrop te lleva volando a través de las ondas de sonido que estás escuchando en ese momento, y usa detección de ritmo para desencadenar múltiples efectos psicodélicos, creando un rico recorrido visual a través del sonido.</description>
     <description lang="et">MilkDrop oli algselt muusika visuaal plugin Winamp'ile. Muusikat kuulates viib MilkDrop sind lennates läbi reaalsete helilainete mida kuulad. MilkDrop kasutab rütmituvastust, et päästa valla tohutu hulk psühhedeelseid efekte luues visuaalidest rikka teekonna läbi heli.</description>
     <description lang="fi">MilkDrop oli alunperin Winampin visualisaattorilisäosa. Kuunnellessasi musiikkia MilkDrop lennättää sinut kuulemiesi ääniaaltojen läpi ja käyttää tahdintunnistusta lukemattomien psykedeelisten tehosteiden toistamiseen, luoden visuaalisen matkan musiikin läpi.</description>
@@ -68,6 +71,7 @@
     <description lang="ja">MilkDrop は元々 Winamp 音楽プレーヤーのビジュアライザープラグインでした。音楽を再生すると、音楽にあわせた波の上を飛んでいるような視覚効果が現れ、ビート検出により無数のサイケデリックな効果が生まれ、音による視覚的体験を生み出します。</description>
     <description lang="ko">MilkDrop는 원래 윈앰프의 음악 시각화 플러그인입니다. 음악을 들으면서 사운드 웨이브로 날아가는듯한 효과를 보여주며 비트 감지를 해서 다양한 싸이키데릭한 효과를 만들어 풍부한 시각적 경험을 하게합니다.</description>
     <description lang="lt">MilkDrop vizualizacija, gauta is Winamp. Klausantis muzikos, MilkDrop nukelia jus i nuostabu skrydi virs debesu, naudojamas ritmo aptikimas, kuris sinchronizuoja muzikos vaizdo efektus.</description>
+    <description lang="mk">MilkDrop беше визуализација допонување на Winamp music player. Како што ја слушате музиката, MilkDrop ве прелетува преку актуелните музички бранови, и користи детекција на битот за да покрене myriad психоделични ефекти, креирајќи богато визуелно патување низ звукот.</description>
     <description lang="nl">Milkdrop was oorspronkelijk een muziekvisualisatieplug-in voor de Winamp-muziekspeler. Terwijl u uw muziek beluistert vliegt Milkdrop u door de soundwaves die u op dat moment hoort. Op basis van de beat produceert het een veelvoud aan psychedelische effecten.</description>
     <description lang="no">MilkDrop var orginalt en musikk visualiserings "plug-in" til Winamp musikk spiller. Mens du lytter til musikk, tar MilkDrop deg med på en flytur gjennom de faktiske lydbølgene du hører og bruker (beat detection) for å skape en hau med psykadeliske effekter som skaper en rik visuell ferd gjennom lyd.</description>
     <description lang="pl">MilkDrop jest wizualizacją pochodzącą z odtwarzacza Winamp. W czasie słuchania muzyki, MilkDrop zabiera użytkownika w niesamowity lot pomiędzy aktualnie odtwarzanymi falami dźwiękowymi, używając detekcji beatu, która synchronizuje efekty wizualne z muzyką.</description>
@@ -82,4 +86,5 @@
     <platform>windx</platform>
   </extension>
 </addon>
+
 

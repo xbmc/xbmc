@@ -52,6 +52,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void SetControlLabel(int id, const CStdString &label);
     void OnShift();
     void MoveCursor(int iAmount);
+    void SetCursorPos(int iPos);
     int GetCursorPos() const;
     void OnSymbols();
     void OnIPAddress();

@@ -1267,6 +1267,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       VECSOURCES sources=g_settings.m_videoSources;
       g_mediaManager.GetLocalDrives(sources);
       CStdString result;
+      CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, *item);
       if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources,
                                                   g_localizeStrings.Get(13511), result))
       {
@@ -1464,6 +1465,7 @@ void CGUIWindowVideoNav::OnChooseFanart(const CFileItem &videoItem)
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
   g_mediaManager.GetLocalDrives(sources);
+  CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, item);
   bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
     return;

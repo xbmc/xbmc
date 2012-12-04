@@ -47,6 +47,7 @@
 #include "music/MusicDatabase.h"
 #include "URL.h"
 #include "video/VideoThumbLoader.h"
+#include "filesystem/Directory.h"
 
 /* PLEX */
 #include "filesystem/StackDirectory.h"
@@ -783,6 +784,7 @@ void CGUIDialogVideoInfo::OnGetArt()
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
+  AddItemPathToFileBrowserSources(sources, *m_movieItem);
   g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result))
     return;   // user cancelled
@@ -880,6 +882,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
 
   CStdString result;
   VECSOURCES sources(g_settings.m_videoSources);
+  AddItemPathToFileBrowserSources(sources, item);
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
@@ -960,6 +963,30 @@ std::string CGUIDialogVideoInfo::GetThumbnail() const
   return m_movieItem->GetArt("thumb");
 }
 
+void CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item)
+{
+  if (!item.HasVideoInfoTag())
+    return;
+
+  CStdString itemDir = item.GetVideoInfoTag()->m_basePath;
+
+  //season
+  if (itemDir.IsEmpty())
+    itemDir = item.GetVideoInfoTag()->GetPath();
+
+  CFileItem itemTmp(itemDir, false);
+  if (itemTmp.IsVideo())
+    itemDir = URIUtils::GetParentPath(itemDir);
+
+  if (!itemDir.IsEmpty() && CDirectory::Exists(itemDir))
+  {
+    CMediaSource itemSource;
+    itemSource.strName = g_localizeStrings.Get(36041);
+    itemSource.strPath = itemDir;
+    sources.push_back(itemSource);
+  }
+}
+
 /* PLEX */
 string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& currentCachedMedia, int label)
 {
@@ -1023,17 +1050,4 @@ string CGUIDialogVideoInfo::OnGetMedia(const string& mediaType, const string& cu
   bool local = Cocoa_IsHostLocal(finalURL.GetHostName());
   return CPlexDirectory::BuildImageURL(url, finalURL.Get(), local);
 }
-
-#if 0
-bool CGUIDialogVideoInfo::AsyncDownloadMedia(const string& remoteFile, const string& localFile)
-{
-  CStdString tempFile = "special://temp/media_download.jpg";
-  CAsyncFileCopy downloader;
-  bool success = downloader.Copy(remoteFile, tempFile, g_localizeStrings.Get(13413));
-  CPicture::CacheImage(tempFile, localFile);
-  CFile::Delete(tempFile);
-
-  return success;
-}
-#endif
 /* END PLEX */

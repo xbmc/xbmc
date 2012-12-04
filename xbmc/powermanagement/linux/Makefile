@@ -1,7 +1,9 @@
 SRCS=ConsoleDeviceKitPowerSyscall.cpp \
      ConsoleUPowerSyscall.cpp \
      HALPowerSyscall.cpp \
-     
+     UPowerSyscall.cpp \
+     SystemdUPowerSyscall.cpp
+
 LIB=powermanagement_linux.a
 
 include ../../../Makefile.include

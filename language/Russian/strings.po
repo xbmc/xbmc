@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-04 09:53+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "Введите номер"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Бит/частота"
+msgid "Bits/sample"
+msgstr "Бит/сэмпл"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Частота дискретизации"
+msgid "Sample rate"
+msgstr "Частота сэмплов"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -3192,7 +3192,7 @@ msgstr "гроза"
 
 msgctxt "#1415"
 msgid "Drizzle"
-msgstr "дождь"
+msgstr "изморось"
 
 msgctxt "#1416"
 msgid "Foggy"
@@ -3212,7 +3212,7 @@ msgstr "низк."
 
 msgctxt "#1420"
 msgid "Moderate"
-msgstr "умеренный"
+msgstr "умеренн."
 
 msgctxt "#1421"
 msgid "Very High"
@@ -3228,7 +3228,7 @@ msgstr "туман"
 
 msgctxt "#1424"
 msgid "Overcast"
-msgstr "облачно"
+msgstr "пасмурно"
 
 msgctxt "#1425"
 msgid "Pellets"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "НАПОМИНАНИЕ!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Отменено за %i мин. %i с. до срабатывания"
+msgid "Cancelled with %im%is left"
+msgstr "Отменено: осталось %i мин. %i с."
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4512,7 +4512,7 @@ msgstr "Выбрать эскиз исполнителя"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
-msgstr "Создавать эскизы"
+msgstr "Автоматически создавать эскизы"
 
 msgctxt "#13361"
 msgid "Enable voice"
@@ -5679,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (обратный)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Отмена…"
 
 msgctxt "#16025"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Искать недостающие значки"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Переключать канал без нажатия OK"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Скрыть окно сведений о видео"
@@ -6564,7 +6560,7 @@ msgstr "Задержка начала воспроизведения"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
-msgstr "Свернуть при начале воспроизведения"
+msgstr "Открывать каналы в окне"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
@@ -6989,6 +6985,18 @@ msgstr "Конфликт при записи"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Ошибка записи"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Клиентск."
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Настройки клиента"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Подтверждать переключение каналов нажатием ОК"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Сорт. по ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Сканирование фильмов с помощью %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Сканирование муз. клипов с помощью %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Сканирование сериалов с помощью %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Сканирование исполнителей с помощью %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Сканирование альбомов с помощью %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Играть часть…"
@@ -8600,7 +8628,7 @@ msgstr "Слайд-шоу фанартов"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
-msgstr "Экспортировать одним файлом или разделять"
+msgstr "Экспортировать в одну папку или разделять"
 
 msgctxt "#20427"
 msgid "files per entry?"
@@ -8608,7 +8636,7 @@ msgstr "на отдельные файлы для каждой записи?"
 
 msgctxt "#20428"
 msgid "Single file"
-msgstr "Одним файлом"
+msgstr "В одну папку"
 
 msgctxt "#20429"
 msgid "Separate"
@@ -9153,6 +9181,10 @@ msgstr "Объем кэша недостаточен для непрерывно
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Внешнее хранилище"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Кол-во просмотренных серий"
 
 msgctxt "#21460"
 msgid "Subtitle location"

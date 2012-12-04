@@ -32,7 +32,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "utils/StringUtils.h"
 
-#include "../addons/include/xbmc_pvr_types.h" // TODO extract the epg specific stuff
+#include "../addons/include/xbmc_epg_types.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -45,7 +45,8 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
     m_bUpdatePending(false),
     m_iEpgID(iEpgID),
     m_strName(strName),
-    m_strScraperName(strScraperName)
+    m_strScraperName(strScraperName),
+    m_bUpdateLastScanTime(false)
 {
   CPVRChannelPtr empty;
   m_pvrChannel = empty;
@@ -59,7 +60,8 @@ CEpg::CEpg(CPVRChannelPtr channel, bool bLoadedFromDb /* = false */) :
     m_iEpgID(channel->EpgID()),
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
-    m_pvrChannel(channel)
+    m_pvrChannel(channel),
+    m_bUpdateLastScanTime(false)
 {
 }
 
@@ -68,7 +70,8 @@ CEpg::CEpg(void) :
     m_bTagsChanged(false),
     m_bLoaded(false),
     m_bUpdatePending(false),
-    m_iEpgID(0)
+    m_iEpgID(0),
+    m_bUpdateLastScanTime(false)
 {
   CPVRChannelPtr empty;
   m_pvrChannel = empty;
@@ -330,35 +333,30 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
 bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */, bool bSort /* = true */)
 {
   CEpgInfoTagPtr infoTag;
-  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+  map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.find(tag.StartAsUTC());
+  bool bNewTag(false);
+  if (it != m_tags.end())
   {
-    CSingleLock lock(m_critSection);
-    map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.find(tag.StartAsUTC());
-    bool bNewTag(false);
-    if (it != m_tags.end())
-    {
-      infoTag = it->second;
-    }
-    else
-    {
-      /* create a new tag if no tag with this ID exists */
-      infoTag = CEpgInfoTagPtr(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : StringUtils::EmptyString));
-      infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
-      m_tags.insert(make_pair(tag.StartAsUTC(), infoTag));
-      bNewTag = true;
-    }
-
-    infoTag->Update(tag, bNewTag);
-    infoTag->m_epg          = this;
-    infoTag->m_pvrChannel   = m_pvrChannel;
+    infoTag = it->second;
+  }
+  else
+  {
+    /* create a new tag if no tag with this ID exists */
+    infoTag = CEpgInfoTagPtr(new CEpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : StringUtils::EmptyString));
+    infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
+    m_tags.insert(make_pair(tag.StartAsUTC(), infoTag));
+    bNewTag = true;
   }
 
-  if (bUpdateDatabase)
-    bReturn = infoTag->Persist();
-  else
-    bReturn = true;
+  infoTag->Update(tag, bNewTag);
+  infoTag->m_epg          = this;
+  infoTag->m_pvrChannel   = m_pvrChannel;
 
-  return bReturn;
+  if (bUpdateDatabase)
+    m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(infoTag->UniqueBroadcastID(), infoTag));
+
+  return true;
 }
 
 bool CEpg::Load(void)
@@ -395,64 +393,29 @@ bool CEpg::Load(void)
 
 bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
 {
-  bool bReturn(false);
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
-
-  if (epg.m_tags.size() > 0)
-  {
-    if (bStoreInDb)
-    {
-      if (!database || !database->IsOpen())
-      {
-        CLog::Log(LOGERROR, "EPG -%s - could not open the database", __FUNCTION__);
-        return bReturn;
-      }
-      database->BeginTransaction();
-    }
-
-    {
-      CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSection);
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory before merging", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory before merging", __FUNCTION__, m_tags.size());
 #endif
-      /* copy over tags */
-      for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
-        UpdateEntry(*it->second, bStoreInDb, false);
+  /* copy over tags */
+  for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); it++)
+    UpdateEntry(*it->second, bStoreInDb, false);
 
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
 #endif
-      FixOverlappingEvents(bStoreInDb);
+  FixOverlappingEvents(bStoreInDb);
 
 #if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after fixing", __FUNCTION__, m_tags.size());
+  CLog::Log(LOGDEBUG, "EPG - %s - %zu entries in memory after fixing", __FUNCTION__, m_tags.size());
 #endif
-      /* update the last scan time of this table */
-      m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
-
-      SetChanged();
-    }
-    /* persist changes */
-    if (bStoreInDb)
-    {
-      bReturn = database->CommitTransaction();
-      if (bReturn)
-        Persist(true);
-    }
-    else
-      bReturn = true;
-  }
-  else
-  {
-    if (bStoreInDb)
-      bReturn = Persist(true);
-    else
-      bReturn = true;
-  }
+  /* update the last scan time of this table */
+  m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
+  m_bUpdateLastScanTime = true;
 
   NotifyObservers(ObservableMessageEpg);
 
-  return bReturn;
+  return true;
 }
 
 CDateTime CEpg::GetLastScanTime(void)
@@ -500,9 +463,9 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bF
   /* get the last update time from the database */
   CDateTime lastScanTime = GetLastScanTime();
 
-  /* force an update for TV channels when we don't have any data every 60 seconds */
+  /* enforce advanced settings update interval override for TV Channels with no EPG data */
   if (m_tags.empty() && !bUpdate && ChannelID() > 0 && !Channel()->IsRadio())
-    iUpdateTime = 60;
+    iUpdateTime = g_advancedSettings.m_bEpgUpdateEmptyTagsInterval;
 
   if (!bForceUpdate)
   {
@@ -566,52 +529,48 @@ int CEpg::Get(CFileItemList &results, const EpgSearchFilter &filter) const
   return results.Size() - iInitialSize;
 }
 
-bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
+bool CEpg::Persist(void)
 {
-  if (g_guiSettings.GetBool("epg.ignoredbforclient"))
+  if (g_guiSettings.GetBool("epg.ignoredbforclient") || !NeedsSave())
     return true;
 
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+#if EPG_DEBUGGING
+  CLog::Log(LOGDEBUG, "persist table '%s' (#%d) changed=%d deleted=%d", Name().c_str(), m_iEpgID, m_changedTags.size(), m_deletedTags.size());
+#endif
 
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
   if (!database || !database->IsOpen())
   {
     CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
     return false;
   }
 
-  CEpg epgCopy;
   {
     CSingleLock lock(m_critSection);
-    epgCopy = *this;
-    m_bChanged     = false;
-    m_bTagsChanged = false;
-  }
-
-  database->BeginTransaction();
-
-  if (epgCopy.m_iEpgID <= 0 || epgCopy.m_bChanged)
-  {
-    int iId = database->Persist(epgCopy);
-    if (iId > 0)
+    if (m_iEpgID <= 0 || m_bChanged)
     {
-      epgCopy.m_iEpgID   = iId;
-      epgCopy.m_bChanged = false;
-      if (m_iEpgID != epgCopy.m_iEpgID)
-      {
-        CSingleLock lock(m_critSection);
-        m_iEpgID = epgCopy.m_iEpgID;
-      }
+      int iId = database->Persist(*this, m_iEpgID > 0);
+      if (iId > 0)
+        m_iEpgID = iId;
     }
+
+    for (std::map<int, CEpgInfoTagPtr>::iterator it = m_deletedTags.begin(); it != m_deletedTags.end(); it++)
+      database->Delete(*it->second);
+
+    for (std::map<int, CEpgInfoTagPtr>::iterator it = m_changedTags.begin(); it != m_changedTags.end(); it++)
+      it->second->Persist(false);
+
+    if (m_bUpdateLastScanTime)
+      database->PersistLastEpgScanTime(m_iEpgID, true);
+
+    m_deletedTags.clear();
+    m_changedTags.clear();
+    m_bChanged            = false;
+    m_bTagsChanged        = false;
+    m_bUpdateLastScanTime = false;
   }
 
-  bool bReturn(true);
-
-  if (bUpdateLastScanTime)
-    bReturn = database->PersistLastEpgScanTime(epgCopy.m_iEpgID);
-
-  database->CommitTransaction();
-
-  return bReturn;
+  return database->CommitInsertQueries();
 }
 
 CDateTime CEpg::GetFirstDate(void) const
@@ -666,16 +625,6 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 {
   bool bReturn(true);
   CEpgInfoTagPtr previousTag, currentTag;
-  CEpgDatabase *database(NULL);
-  if (bUpdateDb)
-  {
-    database = g_EpgContainer.GetDatabase();
-    if (!database || !database->IsOpen())
-    {
-      CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
-      return false;
-    }
-  }
 
   for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it != m_tags.end() ? it++ : it)
   {
@@ -690,7 +639,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     {
       // delete the current tag. it's completely overlapped
       if (bUpdateDb)
-        bReturn &= database->Delete(*currentTag);
+        m_deletedTags.insert(make_pair<int, CEpgInfoTagPtr>(currentTag->UniqueBroadcastID(), currentTag));
 
       if (m_nowActiveStart == it->first)
         m_nowActiveStart.SetValid(false);
@@ -702,7 +651,7 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
     {
       currentTag->SetStartFromUTC(previousTag->EndAsUTC());
       if (bUpdateDb)
-        bReturn &= currentTag->Persist();
+        m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(currentTag->UniqueBroadcastID(), currentTag));
 
       previousTag = it->second;
     }
@@ -722,8 +671,8 @@ bool CEpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 
       if (bUpdateDb)
       {
-        bReturn &= currentTag->Persist();
-        bReturn &= previousTag->Persist();
+        m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(currentTag->UniqueBroadcastID(), currentTag));
+        m_changedTags.insert(make_pair<int, CEpgInfoTagPtr>(previousTag->UniqueBroadcastID(), previousTag));
       }
 
       previousTag = it->second;
@@ -781,47 +730,6 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   }
 
   return bGrabSuccess;
-}
-
-bool CEpg::PersistTags(void) const
-{
-  bool bReturn = false;
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
-
-  if (!database || !database->IsOpen())
-  {
-    CLog::Log(LOGERROR, "EPG - %s - could not load the database", __FUNCTION__);
-    return bReturn;
-  }
-
-  CDateTime first = GetFirstDate();
-  CDateTime last = GetLastDate();
-
-  time_t iStart(0), iEnd(0);
-  if (first.IsValid())
-    first.GetAsTime(iStart);
-  if (last.IsValid())
-    last.GetAsTime(iEnd);
-  database->Delete(*this, iStart, iEnd);
-
-  if (m_tags.size() > 0)
-  {
-    for (map<CDateTime, CEpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); it++)
-    {
-      if (!it->second->Persist())
-      {
-        CLog::Log(LOGERROR, "EPG - failed to persist epg tag %d", it->second->UniqueBroadcastID());
-        bReturn = false;
-      }
-    }
-  }
-  else
-  {
-    /* Return true if we have no tags, so that no error is logged */
-    bReturn = true;
-  }
-
-  return bReturn;
 }
 
 //@}
@@ -986,4 +894,10 @@ size_t CEpg::Size(void) const
 {
   CSingleLock lock(m_critSection);
   return m_tags.size();
+}
+
+bool CEpg::NeedsSave(void) const
+{
+  CSingleLock lock(m_critSection);
+  return !m_changedTags.empty() || !m_deletedTags.empty() || m_bChanged;
 }

@@ -1,14 +1,14 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.0
+# Addon version: 2.1.1
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:52+0000\n"
-"PO-Revision-Date: 2012-10-28 23:31+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Estonian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/et/)\n"
 "MIME-Version: 1.0\n"
@@ -183,11 +183,11 @@ msgstr "Peida peamenüü nupud"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
-msgstr ""
+msgstr "Kasuta kohandatud taustapilti"
 
 msgctxt "#31110"
 msgid "Background path:"
-msgstr ""
+msgstr "Taustapildi asukoht:"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -239,7 +239,7 @@ msgstr "Laulutekst"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr ""
+msgstr "Peida fännikunst täisekraanivaates"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -451,7 +451,7 @@ msgstr "[B]KONFIGUREERI LISAMOODULEID[/B][CR][CR]Halda enda lisamooduleid · Sir
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr ""
+msgstr "[B]SEADISTA TV SEADEID[/B][CR][CR]Muuda täisekraani infot · Halda EPG andmete seadeid"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -459,11 +459,11 @@ msgstr "[B]KONFIGUREERI TEENUSE SEADEID[/B][CR][CR]Seadista XBMC uhtimine UPnP j
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr ""
+msgstr "Esimese kasutuse abi...."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr ""
+msgstr "See märge näitab, et selle akna taga on peidus lisaseadete menüü.  Menüü nägemiseks vajutage puldil või klaviatuuril vasakut noolt või suunake hiir selle märke kohale. [CR][CR]Vajutage dialoogi sulgemiseks \"Ok\". See ei avane uuesti."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -471,43 +471,43 @@ msgstr "Vali enda XBMC profiil[CR]ja jätka"
 
 msgctxt "#31500"
 msgid "Recording Timers"
-msgstr ""
+msgstr "Salvestamise ajastused"
 
 msgctxt "#31501"
 msgid "Scheduled Time"
-msgstr ""
+msgstr "Plaanitud aeg"
 
 msgctxt "#31502"
 msgid "Live TV"
-msgstr ""
+msgstr "Live TV"
 
 msgctxt "#31503"
 msgid "Add Group"
-msgstr ""
+msgstr "Lisa grupp"
 
 msgctxt "#31504"
 msgid "Rename Group"
-msgstr ""
+msgstr "Nimeta grupp ümber"
 
 msgctxt "#31505"
 msgid "Delete Group"
-msgstr ""
+msgstr "Kustuta grupp"
 
 msgctxt "#31506"
 msgid "Available[CR]Groups"
-msgstr ""
+msgstr "Olemasolevad[CR]grupid"
 
 msgctxt "#31509"
 msgid "Channel Group"
-msgstr ""
+msgstr "Kanali grupp"
 
 msgctxt "#31510"
 msgid "Timer Set"
-msgstr ""
+msgstr "Ajastuse seade"
 
 msgctxt "#31511"
 msgid "Channel Options"
-msgstr ""
+msgstr "Kanali valik"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -528,10 +528,6 @@ msgstr "Kümne päeva prognoos"
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Ilmateade"
-
-msgctxt "#31906"
-msgid "Maps & Video"
-msgstr "Kaardid ja videod"
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"

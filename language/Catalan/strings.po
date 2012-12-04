@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-02 17:07+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -276,23 +276,23 @@ msgstr "VAR"
 
 msgctxt "#88"
 msgid "South"
-msgstr ""
+msgstr "Sud"
 
 msgctxt "#89"
 msgid "North"
-msgstr ""
+msgstr "Nord"
 
 msgctxt "#90"
 msgid "West"
-msgstr ""
+msgstr "Oest"
 
 msgctxt "#91"
 msgid "East"
-msgstr ""
+msgstr "Est"
 
 msgctxt "#92"
 msgid "Variable"
-msgstr ""
+msgstr "Variable"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -572,7 +572,7 @@ msgstr "Pell"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr ""
+msgstr "Cancel·la les operacions de fitxer"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -2203,12 +2203,8 @@ msgid "Enter number"
 msgstr "Introduïu el número"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "Bits/Mostra"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Freqüència de mostreig"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -3104,7 +3100,7 @@ msgstr "AirPlay"
 
 msgctxt "#1275"
 msgid "Filter %s"
-msgstr ""
+msgstr "Filtre %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3184,7 +3180,7 @@ msgstr "ventós"
 
 msgctxt "#1413"
 msgid "Patches"
-msgstr ""
+msgstr "Pedaços"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3208,7 +3204,7 @@ msgstr "Tempestes"
 
 msgctxt "#1419"
 msgid "Shallow"
-msgstr ""
+msgstr "Superficial"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3228,59 +3224,43 @@ msgstr "Boira"
 
 msgctxt "#1424"
 msgid "Overcast"
-msgstr ""
-
-msgctxt "#1425"
-msgid "Pellets"
-msgstr ""
+msgstr "Cobert"
 
 msgctxt "#1426"
 msgid "Hail"
-msgstr ""
+msgstr "Calamarsa"
 
 msgctxt "#1427"
 msgid "Smoke"
-msgstr ""
+msgstr "Fum"
 
 msgctxt "#1428"
 msgid "Volcanic"
-msgstr ""
+msgstr "Volcànic"
 
 msgctxt "#1429"
 msgid "Ash"
-msgstr ""
+msgstr "Cendra"
 
 msgctxt "#1430"
 msgid "Widespread"
-msgstr ""
+msgstr "Estès"
 
 msgctxt "#1431"
 msgid "Dust"
-msgstr ""
+msgstr "Pols"
 
 msgctxt "#1432"
 msgid "Sand"
-msgstr ""
-
-msgctxt "#1433"
-msgid "Spray"
-msgstr ""
+msgstr "Sorra"
 
 msgctxt "#1434"
 msgid "Whirls"
-msgstr ""
+msgstr "Remolins"
 
 msgctxt "#1435"
 msgid "Sandstorm"
-msgstr ""
-
-msgctxt "#1436"
-msgid "Blowing"
-msgstr ""
-
-msgctxt "#1437"
-msgid "Pellet"
-msgstr ""
+msgstr "Tempesta de sorra"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3288,39 +3268,31 @@ msgstr "Petit"
 
 msgctxt "#1439"
 msgid "and"
-msgstr ""
+msgstr "i"
 
 msgctxt "#1440"
 msgid "Sleet"
-msgstr ""
+msgstr "Aiguaneu"
 
 msgctxt "#1441"
 msgid "with"
-msgstr ""
+msgstr "amb"
 
 msgctxt "#1442"
 msgid "Chance"
-msgstr ""
+msgstr "Oportunitat"
 
 msgctxt "#1443"
 msgid "of"
-msgstr ""
-
-msgctxt "#1444"
-msgid "Funnel"
-msgstr ""
+msgstr "de"
 
 msgctxt "#1445"
 msgid "Cloud"
-msgstr ""
+msgstr "Núvol"
 
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Desconegut"
-
-msgctxt "#1447"
-msgid "Squals"
-msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -3328,7 +3300,7 @@ msgstr "Precipitació"
 
 msgctxt "#1449"
 msgid "Partial"
-msgstr ""
+msgstr "Parcial"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3340,11 +3312,7 @@ msgstr "Temps d'execució"
 
 msgctxt "#2080"
 msgid "Empty list"
-msgstr ""
-
-msgctxt "#2081"
-msgid "Went back to parent list because the active list has been emptied"
-msgstr ""
+msgstr "Llista buida"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3758,21 +3726,13 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Element bloquejat"
 
-msgctxt "#12349"
-msgid "Updating video library art"
-msgstr ""
-
 msgctxt "#12350"
 msgid "Processing %s"
-msgstr ""
-
-msgctxt "#12351"
-msgid "The art cache in your video library needs updating."
-msgstr ""
+msgstr "S'està processant %s"
 
 msgctxt "#12352"
 msgid "No downloading is needed."
-msgstr ""
+msgstr "No es necessita descarregar res."
 
 msgctxt "#12353"
 msgid "Reactivate lock"
@@ -3780,7 +3740,7 @@ msgstr "Reactiva el bloqueig"
 
 msgctxt "#12354"
 msgid "Would you like to update it now?"
-msgstr ""
+msgstr "Voleu actualitzar-lo ara?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3816,7 +3776,7 @@ msgstr "Configuració i gestor de fitxers"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr ""
+msgstr "Establir com a predeterminat per a tots els vídeos"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -4169,10 +4129,6 @@ msgstr "Iniciada, alarma en %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarma!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Cancel·lat quan quedava %im%is"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4752,11 +4708,11 @@ msgstr "Permet l'acceleració per maquinari (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
-msgstr ""
+msgstr "Reprodueix el següent vídeo automàticament"
 
 msgctxt "#13434"
 msgid "Play only this"
-msgstr ""
+msgstr "Reprodueix només aquest"
 
 msgctxt "#13500"
 msgid "A/V sync method"
@@ -4801,26 +4757,6 @@ msgstr "Molt alt (lent)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sync playback to display"
-
-msgctxt "#13511"
-msgid "Choose art"
-msgstr ""
-
-msgctxt "#13512"
-msgid "Current art"
-msgstr ""
-
-msgctxt "#13513"
-msgid "Remote art"
-msgstr ""
-
-msgctxt "#13514"
-msgid "Local art"
-msgstr ""
-
-msgctxt "#13515"
-msgid "No art"
-msgstr ""
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5233,10 +5169,6 @@ msgstr "Reprodueix"
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Expulsa el disc quan s'hagi completat l'extracció del CD"
-
-msgctxt "#14100"
-msgid "Stop ripping CD"
-msgstr ""
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5678,10 +5610,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (invertit)"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "S'està cancel·lant..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Introduïu el nom de l'artista"
@@ -5940,7 +5868,7 @@ msgstr "o utilitzeu frases per trobar coincidències exactes com \"El mag d'Oz\"
 
 msgctxt "#19003"
 msgid "Find similar programs"
-msgstr ""
+msgstr "Cerca programes similars"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
@@ -6550,10 +6478,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Escaneja les icones que falten"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Canvia de canal sense prémer OK"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Amaga la caixa d'informació de vídeo"
@@ -6976,19 +6900,19 @@ msgstr "Per favor visiteu xbmc.org/pvr per saber més."
 
 msgctxt "#19275"
 msgid "Conflict warning"
-msgstr ""
+msgstr "Avís de conflicte"
 
 msgctxt "#19276"
 msgid "Conflict error"
-msgstr ""
+msgstr "Error de conflicte"
 
 msgctxt "#19277"
 msgid "Recording conflict"
-msgstr ""
+msgstr "Conflicte d'enregistrament"
 
 msgctxt "#19278"
 msgid "Recording error"
-msgstr ""
+msgstr "Error d'enregistrament"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8030,10 +7954,6 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
-msgctxt "#20188"
-msgid "Announce library updates via UPnP"
-msgstr ""
-
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Enable auto scrolling for plot & review"
@@ -8308,7 +8228,7 @@ msgstr "vots"
 
 msgctxt "#20351"
 msgid "TV show information"
-msgstr "TV show information"
+msgstr "Informació de sèrie de TV"
 
 msgctxt "#20352"
 msgid "Episode information"
@@ -8316,7 +8236,7 @@ msgstr "Informació de l'episodi"
 
 msgctxt "#20353"
 msgid "Loading TV show details"
-msgstr "Loading TV show details"
+msgstr "Carregant detalls del programa de TV"
 
 msgctxt "#20354"
 msgid "Fetching episode guide"
@@ -8328,7 +8248,7 @@ msgstr "Loading info for episodes in directory"
 
 msgctxt "#20356"
 msgid "Select TV show:"
-msgstr "Select TV show:"
+msgstr "Seleccioneu un programa de TV:"
 
 msgctxt "#20357"
 msgid "Enter the TV show name"
@@ -8356,11 +8276,11 @@ msgstr "Remove episode from library"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
-msgstr "Remove TV show from library"
+msgstr "Eliminar programa de TV de la biblioteca"
 
 msgctxt "#20364"
 msgid "TV show"
-msgstr "Serie de TV"
+msgstr "Sèrie de TV"
 
 msgctxt "#20365"
 msgid "Episode plot"
@@ -8412,7 +8332,7 @@ msgstr "Títol original"
 
 msgctxt "#20377"
 msgid "Refresh TV show information"
-msgstr "Refresh TV show information"
+msgstr "Actualitzar informació del programa de TV"
 
 msgctxt "#20378"
 msgid "Refresh info for all episodes?"
@@ -8420,7 +8340,7 @@ msgstr "Refresh info for all episodes?"
 
 msgctxt "#20379"
 msgid "Selected folder contains a single TV show"
-msgstr "Selected folder contains a single TV show"
+msgstr "La carpeta seleccionada conté un únic programa de TV"
 
 msgctxt "#20380"
 msgid "Exclude selected folder from scans"
@@ -8440,11 +8360,11 @@ msgstr "Selected folder contains a single video"
 
 msgctxt "#20384"
 msgid "Link to TV show"
-msgstr "Link to TV show"
+msgstr "Enllaçar a programa de TV"
 
 msgctxt "#20385"
 msgid "Remove link to TV show"
-msgstr "Remove link to TV show"
+msgstr "Eliminar enllaç a programa de TV"
 
 msgctxt "#20386"
 msgid "Recently added movies"
@@ -9178,18 +9098,6 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr "Above video"
 
-msgctxt "#21467"
-msgid "%.1f to %.1f"
-msgstr ""
-
-msgctxt "#21468"
-msgid "%d to %d"
-msgstr ""
-
-msgctxt "#21469"
-msgid "%s to %s"
-msgstr ""
-
 msgctxt "#21800"
 msgid "File name"
 msgstr "Nom del fitxer"
@@ -9686,10 +9594,6 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "S'està executant"
 
-msgctxt "#23055"
-msgid "Scale Teletext to 4:3"
-msgstr ""
-
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Reproductor extern activat"
@@ -9800,7 +9704,7 @@ msgstr "Weather.com (estàndard)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr ""
+msgstr "Servei d'infromació meteorològica"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -10552,7 +10456,7 @@ msgstr "Activa el suport de manaments de joc"
 
 msgctxt "#35101"
 msgid "Disable joystick when iMON is present"
-msgstr ""
+msgstr "Desactivar el joystick quan estigui present l'iMON"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10710,14 +10614,6 @@ msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
 
-msgctxt "#36038"
-msgid "Amplifier / AVR device"
-msgstr ""
-
-msgctxt "#36039"
-msgid "TV and AVR device (explicit)"
-msgstr ""
-
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr ""
+msgstr "La versió d'interfície de libCEC no està suportada. %x és menor que la versió que XBMC suporta (%x)"

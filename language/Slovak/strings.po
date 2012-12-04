@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-02 17:08+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,11 +2203,11 @@ msgid "Enter number"
 msgstr "Zadaj číslo"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bitov/Vzorka"
+msgid "Bits/sample"
+msgstr "Bitov/vzorku"
 
 msgctxt "#613"
-msgid "Sample Frequency"
+msgid "Sample rate"
 msgstr "Vzorkovacia frekvencia"
 
 msgctxt "#620"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "Budík!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Zrušené (zostávalo %im%is)"
+msgid "Cancelled with %im%is left"
+msgstr "Zrušené. Zostávalo: %im%is"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,8 +5679,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (Opačný)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Prerušujem..."
+msgid "Cancelling..."
+msgstr "Prebieha rušenie..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Vyhľadávať položky s chýbajúcimi ikonami"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Prepnúť kanál bez stlačenia tlačidla OK"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Skryť panel s informáciami o videu"
@@ -6989,6 +6985,18 @@ msgstr "Konflikt pri nahrávaní"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Chyba pri nahrávaní"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Špecifické pre klienta"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Nastavenia špecifické pre klienta"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Potvrďte prepínače kanálov stlačením tlačidla OK"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Zoradiť podľa: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Skenujú sa filmy pomocou %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Skenujú sa hudobné videá pomocou %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Skenujú sa televízne relácie pomocou %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Skenujú sa umelci pomocou %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Skenujú sa umelci pomocou %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Hrať časť..."
@@ -9153,6 +9181,10 @@ msgstr "Medzipamäť plná pred dosiahnutím potrebného množstva pre nepretrž
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Externé úložisko"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Počet pozretých epizód"
 
 msgctxt "#21460"
 msgid "Subtitle location"

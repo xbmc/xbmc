@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-07 20:40+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -340,11 +340,11 @@ msgstr "Diavetítés"
 
 msgctxt "#109"
 msgid "Create thumbs"
-msgstr "Bélyegképek létrehozása"
+msgstr "Miniképek létrehozása"
 
 msgctxt "#110"
 msgid "Create thumbnails"
-msgstr "Bélyegképek létrehozása"
+msgstr "Miniképek létrehozása"
 
 msgctxt "#111"
 msgid "Shortcuts"
@@ -1396,7 +1396,7 @@ msgstr "Hajnalban"
 
 msgctxt "#389"
 msgid "Shower"
-msgstr "zápor"
+msgstr "Zápor"
 
 msgctxt "#390"
 msgid "Flurries"
@@ -1492,7 +1492,7 @@ msgstr "Nincs ismertető ehhez az albumhoz"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
-msgstr "Bélyegkép letöltése..."
+msgstr "Minikép letöltése..."
 
 msgctxt "#416"
 msgid "Not available"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "Szám megadása"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bitszám/minta"
+msgid "Bits/sample"
+msgstr "Bit/minta"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Mintavételi frekvencia"
+msgid "Sample rate"
+msgstr "Mintavételi gyakoriság"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2716,7 +2716,7 @@ msgstr "Folyamatos ismétlés késleltetése (ms)"
 
 msgctxt "#797"
 msgid "Maximum number of clients"
-msgstr "Kliensek maximális száma"
+msgstr "Ügyfelek maximális száma"
 
 msgctxt "#798"
 msgid "Internet access"
@@ -2928,7 +2928,7 @@ msgstr "Program kiegészítők"
 
 msgctxt "#1044"
 msgid "Set plugin thumb"
-msgstr "Kiegészítő bélyegkép beállítás"
+msgstr "Kiegészítő minikép beállítása"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -2960,7 +2960,7 @@ msgstr "Webcím megadása"
 
 msgctxt "#1200"
 msgid "SMB client"
-msgstr "SMB kliens"
+msgstr "SMB ügyfél"
 
 msgctxt "#1202"
 msgid "Workgroup"
@@ -3180,7 +3180,7 @@ msgstr "-val/-vel"
 
 msgctxt "#1412"
 msgid "windy"
-msgstr "szeles"
+msgstr "Szeles"
 
 msgctxt "#1413"
 msgid "Patches"
@@ -3816,7 +3816,7 @@ msgstr "Beállítások & Fájlkezelő"
 
 msgctxt "#12376"
 msgid "Set as default for all videos"
-msgstr "Minden videóra alapértelmezettként beállít"
+msgstr "Beállítás alapértelmezettként"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "Ébresztés!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Megszakítva, %i perc %i mp volt még hátra"
+msgid "Cancelled with %im%is left"
+msgstr "Megszakítva %iperc és %imp hátralévő idővel"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4344,11 +4344,11 @@ msgstr "Zeneszámok egymásbakeverése"
 
 msgctxt "#13315"
 msgid "Regenerate thumbnails"
-msgstr "Bélyegképek újragenerálása"
+msgstr "Miniképek újragenerálása"
 
 msgctxt "#13316"
 msgid "Recursive thumbnails"
-msgstr "Rekurzív bélyegképek"
+msgstr "Rekurzív miniképek"
 
 msgctxt "#13317"
 msgid "View slideshow"
@@ -4496,7 +4496,7 @@ msgstr "Alacsony minőségű pixel-árnyékoló"
 
 msgctxt "#13356"
 msgid "Hardware overlays"
-msgstr "Hardveres képréteg átfedések"
+msgstr "Hardveres képréteg-átfedések"
 
 msgctxt "#13357"
 msgid "High quality pixel shader"
@@ -4508,11 +4508,11 @@ msgstr "Elem lejátszása"
 
 msgctxt "#13359"
 msgid "Set artist thumb"
-msgstr "Előadó bélyegkép"
+msgstr "Előadó minikép"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
-msgstr "Automatikus bélyegkép generálás"
+msgstr "Automatikus minikép generálás"
 
 msgctxt "#13361"
 msgid "Enable voice"
@@ -4640,7 +4640,7 @@ msgstr "Folytatás"
 
 msgctxt "#13405"
 msgid "Get thumb"
-msgstr "Bélyegkép"
+msgstr "Minikép"
 
 msgctxt "#13406"
 msgid "Picture information"
@@ -4908,11 +4908,11 @@ msgstr "Játék könyvtár"
 
 msgctxt "#14010"
 msgid "Auto switch to thumbs based on"
-msgstr "Automatikus váltás bélyegképekre a következő alapján"
+msgstr "Automatikus váltás miniképekre a következő alapján"
 
 msgctxt "#14011"
 msgid "Enable auto switching to thumbs view"
-msgstr "Automatikus váltás bélyegképek nézetre"
+msgstr "Automatikus váltás miniképek nézetre"
 
 msgctxt "#14012"
 msgid "- Use large icons"
@@ -4928,15 +4928,15 @@ msgstr "- Százalék"
 
 msgctxt "#14015"
 msgid "No files and at least one thumb"
-msgstr "Nincs fájl, de minimum egy bélyegkép"
+msgstr "Nincs fájl, de minimum egy minikép"
 
 msgctxt "#14016"
 msgid "At least one file and thumb"
-msgstr "Minimum egy fájl és bélyegkép"
+msgstr "Minimum egy fájl és minikép"
 
 msgctxt "#14017"
 msgid "Percentage of thumbs"
-msgstr "Bélyegképek mérete"
+msgstr "Miniképek mérete"
 
 msgctxt "#14018"
 msgid "View options"
@@ -5084,7 +5084,7 @@ msgstr "Filmszemcsézet (grain) hatás"
 
 msgctxt "#14059"
 msgid "Search for thumbnails on remote shares"
-msgstr "Bélyegképek keresése távoli megosztásokon"
+msgstr "Miniképek keresése távoli megosztásokon"
 
 msgctxt "#14060"
 msgid "Unknown type cache - Internet"
@@ -5360,7 +5360,7 @@ msgstr "Finomított Hang/Kép szinkronizáció"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
-msgstr "Fájlnevek elrejtése bélyegkép nézetben"
+msgstr "Fájlnevek elrejtése minikép nézetben"
 
 msgctxt "#15216"
 msgid "Play in party mode"
@@ -5679,8 +5679,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (fordított)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Megszakítás..."
+msgid "Cancelling..."
+msgstr "Megszakítás alatt..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -5944,7 +5944,7 @@ msgstr "Hasonló műsorok keresése"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "EPG információ beolvasása a kliensekkel"
+msgstr "EPG információ beolvasása a TV ügyfelekkel"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -6000,7 +6000,7 @@ msgstr "TV felvételek"
 
 msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
-msgstr "PVR bélyegképek alapértelmezett mappája"
+msgstr "PVR miniképek alapértelmezett mappája"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6108,7 +6108,7 @@ msgstr "Kérlek nézd meg a beállításokat, vagy a naplót a részletekért."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Nincs PVR kliens elindítva. Várj az indulásra vagy nézd meg a naplót a részletekért."
+msgstr "Nincs PVR ügyfél elindítva. Várj az indulásra vagy nézd meg a naplót a részletekért."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6368,7 +6368,7 @@ msgstr "Melyik kiszolgálón akarsz keresni ?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr "Kliens száma"
+msgstr "TV ügyfelek száma"
 
 msgctxt "#19121"
 msgid "Avoid repeats"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Hiányzó ikonok keresése"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Csatornaváltás az OK megnyomása nélkül"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "A videó információs doboz elrejtése"
@@ -6656,11 +6652,11 @@ msgstr "Folytatás?"
 
 msgctxt "#19195"
 msgid "Client actions"
-msgstr "Kliens műveletek"
+msgstr "Ügyfél műveletek"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "PVR klienssel kapcsolatos műveletek"
+msgstr "PVR ügyféllel kapcsolatos műveletek"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6716,7 +6712,7 @@ msgstr "XBMC virtuális háttér-kiszolgáló"
 
 msgctxt "#19210"
 msgid "Client"
-msgstr "Kliens"
+msgstr "Ügyfél"
 
 msgctxt "#19211"
 msgid "Delete channel"
@@ -6820,15 +6816,15 @@ msgstr "A PVR kezelő elindul"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
-msgstr "Csatornák betöltése a kliensekkel"
+msgstr "Csatornák betöltése a PVR ügyfelekkel"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr "Időzítők betöltése a kliensekkel"
+msgstr "Időzítők betöltése a PVR ügyfelekkel"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
-msgstr "Felvételek betöltése a kliensekkel"
+msgstr "Felvételek betöltése a PVR ügyfelekkel"
 
 msgctxt "#19239"
 msgid "Starting background threads"
@@ -6989,6 +6985,18 @@ msgstr "Felvételek ütközése"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Felvételi hiba"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "PVR ügyfélhez kapcsolódó"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "PVR ügyfélhez kapcsolódó beállítások"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Csatornaváltások megerősítése az OK billentyűvel"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -7400,23 +7408,23 @@ msgstr "Játszáslista szerint"
 
 msgctxt "#20015"
 msgid "Remote thumb"
-msgstr "Letölthető bélyegkép"
+msgstr "Letölthető minikép"
 
 msgctxt "#20016"
 msgid "Current thumb"
-msgstr "Jelenlegi bélyegkép"
+msgstr "Jelenlegi minikép"
 
 msgctxt "#20017"
 msgid "Local thumb"
-msgstr "Helyi bélyegkép"
+msgstr "Helyi minikép"
 
 msgctxt "#20018"
 msgid "No thumb"
-msgstr "Nincs bélyegkép"
+msgstr "Nincs minikép"
 
 msgctxt "#20019"
 msgid "Choose thumbnail"
-msgstr "Bélyegkép választása"
+msgstr "Minikép választása"
 
 msgctxt "#20023"
 msgid "Conflict"
@@ -7508,11 +7516,11 @@ msgstr "Belépés mester-módba"
 
 msgctxt "#20055"
 msgid "Allmusic.com thumb"
-msgstr "Allmusic.com bélyegkép"
+msgstr "Allmusic.com minikép"
 
 msgctxt "#20057"
 msgid "Remove thumbnail"
-msgstr "Bélyegkép eltávolítása"
+msgstr "Minikép eltávolítása"
 
 msgctxt "#20058"
 msgid "Add profile..."
@@ -7728,7 +7736,7 @@ msgstr "UPnP beállítások"
 
 msgctxt "#20111"
 msgid "Autostart UPnP client"
-msgstr "UPnP kliens automatikus indítása"
+msgstr "UPnP ügyfél automatikus indítása"
 
 msgctxt "#20112"
 msgid "Last login: %s"
@@ -8124,15 +8132,15 @@ msgstr "Első bejelentkezés, profilod szerkesztése"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
-msgstr "HTS Tvheadend TV kliens"
+msgstr "HTS Tvheadend PVR ügyfél"
 
 msgctxt "#20257"
 msgid "VDR Streamdev client"
-msgstr "VDR Streamdev TV kliens"
+msgstr "VDR Streamdev PVR ügyfél"
 
 msgctxt "#20258"
 msgid "MythTV client"
-msgstr "MythTV kliens"
+msgstr "MythTV PVR ügyfél"
 
 msgctxt "#20259"
 msgid "Network Filesystem (NFS)"
@@ -8197,6 +8205,26 @@ msgstr "Videók - Médiatár"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "ID szerint"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Filmek keresése a %s használatával"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Zenevideók keresése a %s használatával"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Sorozatok keresése a %s használatával"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Előadók keresése a %s használatával"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Albumok keresése a %s használatával"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -8388,7 +8416,7 @@ msgstr "* Elrejtve, spoiler-védelem miatt *"
 
 msgctxt "#20371"
 msgid "Set season thumb"
-msgstr "Évad bélyegkép beállítása"
+msgstr "Évad minikép beállítása"
 
 msgctxt "#20372"
 msgid "Season image"
@@ -8432,7 +8460,7 @@ msgstr "Egyediek"
 
 msgctxt "#20382"
 msgid "Automatically grab season thumbs"
-msgstr "Évad bélyegképek automatikus letöltése"
+msgstr "Évad miniképek automatikus letöltése"
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
@@ -8512,11 +8540,11 @@ msgstr "Videóklip lejátszása"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Színész bélyegképek letöltése médiatárhoz való hozzáadáskor"
+msgstr "Színész miniképek letöltése médiatárhoz való hozzáadáskor"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
-msgstr "Színész bélyegkép beállítás"
+msgstr "Színész minikép beállítás"
 
 msgctxt "#20405"
 msgid "Remove episode bookmark"
@@ -8616,7 +8644,7 @@ msgstr "Külön-külön"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "Bélyegképek és fanartképek exportálása?"
+msgstr "Miniképek és fanartképek exportálása?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
@@ -8628,7 +8656,7 @@ msgstr "Elérési út kihagyása a médiatár-frissítésekor"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Média információk és bélyegképek kinyerése"
+msgstr "Média információk és miniképek kinyerése"
 
 msgctxt "#20434"
 msgid "Sets"
@@ -8636,7 +8664,7 @@ msgstr "Lemezgyűjtemény"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
-msgstr "Színész-bélyegképek exportálása?"
+msgstr "Színész-miniképek exportálása?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
@@ -8752,7 +8780,7 @@ msgstr "Rejtett fájlok és mappák megjelenítése"
 
 msgctxt "#21331"
 msgid "TuxBox client"
-msgstr "TuxBox kliens"
+msgstr "TuxBox PVR ügyfél"
 
 msgctxt "#21332"
 msgid "WARNING: Target TuxBox device is in recording-mode!"
@@ -8816,7 +8844,7 @@ msgstr "Navigációs hangok lejátszás közben"
 
 msgctxt "#21371"
 msgid "Thumbnail"
-msgstr "Bélyegkép"
+msgstr "Minikép"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
@@ -9153,6 +9181,10 @@ msgstr "A gyorsítótár még azelőtt megtelt, hogy elegendő lett volna a foly
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Külső tár"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Már látott részek száma"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9772,7 +9804,7 @@ msgstr "Szolgáltatások"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "PVR kliensek"
+msgstr "PVR ügyfelek"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9800,7 +9832,7 @@ msgstr "Weather.com (alap)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr "Időjárás adatok szolgáltatója"
+msgstr "Időjárásadatok szolgáltatója"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"

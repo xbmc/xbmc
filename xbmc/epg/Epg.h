@@ -246,10 +246,9 @@ namespace EPG
 
     /*!
      * @brief Persist this table in the database.
-     * @param bUpdateLastScanTime True to update the last scan time in the db, false otherwise.
      * @return True if the table was persisted, false otherwise.
      */
-    bool Persist(bool bUpdateLastScanTime = false);
+    bool Persist(void);
 
     /*!
      * @brief Get the start time of the first entry in this table.
@@ -298,6 +297,8 @@ namespace EPG
     CEpgInfoTagPtr GetPreviousEvent(const CEpgInfoTag& tag) const;
 
     size_t Size(void) const;
+
+    bool NeedsSave(void) const;
   protected:
     CEpg(void);
 
@@ -309,12 +310,6 @@ namespace EPG
      * @return True if the update was successful, false otherwise.
      */
     bool UpdateFromScraper(time_t start, time_t end);
-
-    /*!
-     * @brief Persist all tags in this container.
-     * @return True if all tags were persisted, false otherwise.
-     */
-    bool PersistTags(void) const;
 
     /*!
      * @brief Fix overlapping events from the tables.
@@ -348,6 +343,8 @@ namespace EPG
     bool IsRemovableTag(const EPG::CEpgInfoTag &tag) const;
 
     std::map<CDateTime, CEpgInfoTagPtr> m_tags;
+    std::map<int, CEpgInfoTagPtr>       m_changedTags;
+    std::map<int, CEpgInfoTagPtr>       m_deletedTags;
     bool                                m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
     bool                                m_bTagsChanged;    /*!< true when any tags are changed and not persisted, false otherwise */
     bool                                m_bLoaded;         /*!< true when the initial entries have been loaded */
@@ -362,5 +359,6 @@ namespace EPG
     PVR::CPVRChannelPtr                 m_pvrChannel;      /*!< the channel this EPG belongs to */
 
     CCriticalSection                    m_critSection;     /*!< critical section for changes in this table */
+    bool                                m_bUpdateLastScanTime;
   };
 }

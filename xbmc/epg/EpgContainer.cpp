@@ -136,6 +136,9 @@ void CEpgContainer::Start(void)
   m_iNextEpgUpdate  = 0;
   m_iNextEpgActiveTagCheck = 0;
 
+  LoadFromDB();
+  CheckPlayingEvents();
+
   Create();
   SetPriority(-1);
   CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
@@ -165,9 +168,15 @@ void CEpgContainer::Notify(const Observable &obs, const ObservableMessage msg)
 
 void CEpgContainer::LoadFromDB(void)
 {
+  if (m_bLoaded || m_bIgnoreDbForClient)
+    return;
+
+  if (!m_database.IsOpen())
+    m_database.Open();
+
   bool bLoaded(true);
   unsigned int iCounter(0);
-  if (!m_bIgnoreDbForClient && m_database.IsOpen())
+  if (m_database.IsOpen())
   {
     ShowProgressDialog(false);
 
@@ -196,13 +205,15 @@ bool CEpgContainer::PersistAll(void)
 {
   bool bReturn(true);
   CSingleLock lock(m_critSection);
-  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end(); it++)
+  for (map<unsigned int, CEpg *>::iterator it = m_epgs.begin(); it != m_epgs.end() && !m_bStop; it++)
   {
     CEpg *epg = it->second;
-    lock.Leave();
-    if (epg)
-      bReturn &= epg->Persist(false);
-    lock.Enter();
+    if (epg && epg->NeedsSave())
+    {
+      lock.Leave();
+      bReturn &= epg->Persist();
+      lock.Enter();
+    }
   }
 
   return bReturn;
@@ -210,16 +221,9 @@ bool CEpgContainer::PersistAll(void)
 
 void CEpgContainer::Process(void)
 {
-  time_t iNow       = 0;
-
+  time_t iNow(0), iLastSave(0);
   bool bUpdateEpg(true);
   bool bHasPendingUpdates(false);
-
-  if (!m_bLoaded)
-  {
-    LoadFromDB();
-    CheckPlayingEvents();
-  }
 
   while (!m_bStop && !g_application.m_bStop)
   {
@@ -252,6 +256,13 @@ void CEpgContainer::Process(void)
     /* check for updated active tag */
     if (!m_bStop)
       CheckPlayingEvents();
+
+    /* check for changes that need to be saved every 60 seconds */
+    if (iNow - iLastSave > 60)
+    {
+      PersistAll();
+      iLastSave = iNow;
+    }
 
     Sleep(1000);
   }
@@ -306,6 +317,7 @@ CEpg *CEpgContainer::CreateChannelEpg(CPVRChannelPtr channel)
 
   WaitForUpdateFinish(true);
   CSingleLock lock(m_critSection);
+  LoadFromDB();
 
   CEpg *epg(NULL);
   if (channel->EpgID() > 0)

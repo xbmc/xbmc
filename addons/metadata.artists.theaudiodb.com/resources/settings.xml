@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <setting label="30005" type="bool" id="fanarttvthumbs" default="false"/>
+    <setting label="30004" type="bool" id="fanarttvfanart" default="false"/>
+</settings>

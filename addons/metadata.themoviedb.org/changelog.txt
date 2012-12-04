@@ -1,3 +1,12 @@
+[B]3.7.0[/B]
+- updated: out factored studio and country scraping to common library
+
+[B]3.6.1[/B]
+- updated: Scraper name
+
+[B]3.6.0[/B]
+- updated: out factored tagline scraping to common library
+
 [B]3.5.0[/B]
 - added: aspect tag and reorder languages according to the alphabet
 

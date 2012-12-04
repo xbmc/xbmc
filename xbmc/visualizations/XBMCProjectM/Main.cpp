@@ -363,7 +363,8 @@ bool InitProjectM()
     else
     {
       //If it is the first run or a newly chosen preset pack we choose a random preset as first
-      globalPM->selectPreset((rand() % (globalPM->getPlaylistSize())));
+      if (globalPM->getPlaylistSize())
+        globalPM->selectPreset((rand() % (globalPM->getPlaylistSize())));
     }
     return true;
   }

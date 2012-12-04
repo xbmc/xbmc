@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-04 17:46+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,11 +2203,11 @@ msgid "Enter number"
 msgstr "Ange nummer"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bitar/Sampling"
+msgid "Bits/sample"
+msgstr "Bits/sampling"
 
 msgctxt "#613"
-msgid "Sample Frequency"
+msgid "Sample rate"
 msgstr "Samplingsfrekvens"
 
 msgctxt "#620"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "Alarm!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Avbruten med %im%is kvar"
+msgid "Cancelled with %im%is left"
+msgstr "Avbröt med %im%is kvar"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (Inverted)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Avbryter..."
 
 msgctxt "#16025"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Skanna efter saknade ikoner"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Byt kanal utan att trycka OK"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Dölj videoinformationsruta"
@@ -6989,6 +6985,18 @@ msgstr "Inspelningskonflikt"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Inspelningsfel"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Klientspecifik"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Klientspecifika inställningar"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Bekräfta kanalbyte genom att trycka OK"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Sort: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Skannar filmer med %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Skannar musik med %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Skannar tvserier med %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Skannar artister med %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Skannar album med %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Spela del..."
@@ -9153,6 +9181,10 @@ msgstr "Buffert fylldes innan tillräcklig mängd som krävs för kontinuerlig u
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Extern lagring"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Sedda avsnittsräkning"
 
 msgctxt "#21460"
 msgid "Subtitle location"

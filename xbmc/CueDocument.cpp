@@ -360,8 +360,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
   CStdString strDirectory;
   URIUtils::GetDirectory(strBase, strDirectory);
 
-  CStdString strFilename = strPath;
-  URIUtils::GetFileName(strFilename);
+  CStdString strFilename = URIUtils::GetFileName(strPath);
 
   URIUtils::AddFileToFolder(strDirectory, strFilename, strPath);
 

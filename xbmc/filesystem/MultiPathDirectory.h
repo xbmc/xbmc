@@ -20,6 +20,7 @@
  */
 
 #include "IDirectory.h"
+#include <set>
 
 namespace XFILE
 {
@@ -38,6 +39,7 @@ public:
   static bool GetPaths(const CStdString& strPath, std::vector<CStdString>& vecPaths);
   static bool HasPath(const CStdString& strPath, const CStdString& strPathToFind);
   static CStdString ConstructMultiPath(const std::vector<CStdString> &vecPaths);
+  static CStdString ConstructMultiPath(const std::set<CStdString> &setPaths);
 
 private:
   void MergeItems(CFileItemList &items);

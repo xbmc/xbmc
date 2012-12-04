@@ -179,7 +179,7 @@ public class Splash extends Activity {
 				mSplash.mProgress.setVisibility(View.INVISIBLE);
 				break;
 			case Caching:
-				mSplash.mTextView.setText("Initializing the Xbmc cache...");
+				mSplash.mTextView.setText("Preparing for first run. Please wait...");
 				mSplash.mProgress.setVisibility(View.VISIBLE);
 				mSplash.mProgress.setProgress(values[0]);
 				break;

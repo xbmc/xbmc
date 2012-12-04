@@ -7,7 +7,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Sluimerskerm wat jou skerm swart maak.</summary>
     <summary lang="ar">شاشة التوقف التي تحول شاشتك لأسود</summary>
-    <summary lang="be">Screensaver that turns your screen black</summary>
+    <summary lang="be">Ахоўнік экрану што робіць экран чорным</summary>
     <summary lang="bg">Скрийнсейвър, който прави екрана черен</summary>
     <summary lang="ca">Estalvi de pantalla que posa la pantalla en negre</summary>
     <summary lang="cs">Šetřič obrazovky, který začerní Vaši obrazovku</summary>
@@ -16,6 +16,7 @@
     <summary lang="el">Προφύλαξη οθόνης που αμαυρώνει την οθόνη σας</summary>
     <summary lang="en">Screensaver that turns your screen black</summary>
     <summary lang="es">Un salvapantallas que pone la pantalla en negro</summary>
+    <summary lang="es_AR">Un protector de pantalla que pone la pantalla en negro</summary>
     <summary lang="es_MX">Protector de pantalla que obscurece la pantalla</summary>
     <summary lang="et">Ekraanisäästja, mis muudab ekraani mustaks</summary>
     <summary lang="fi">Tyhjä ruutu</summary>
@@ -29,6 +30,7 @@
     <summary lang="ja">画面を黒くするスクリーンセーバー</summary>
     <summary lang="ko">화면을 검게하는 화면보호기</summary>
     <summary lang="lt">Ekrano užsklanda, kuri paverčia jūsų ekraną juodu fonu</summary>
+    <summary lang="mk">Заштита на екран која го прави екранот црн</summary>
     <summary lang="nl">Schermbeveiliging die uw scherm op zwart zet</summary>
     <summary lang="no">Skjermsparer som gjør skjermen din svart</summary>
     <summary lang="pl">Wygaszacz ekranu wyświetlający czarny ekran</summary>
@@ -54,6 +56,7 @@
     <description lang="el">Η Black είναι μία απλή προφύλαξη οθόνης που αμαυρώνει την οθόνη σας.</description>
     <description lang="en">Black is a simple screensaver that will turn your screen black.</description>
     <description lang="es">Black es un sencillo salvapantallas que pone la pantalla en negro.</description>
+    <description lang="es_AR">Black es un sencillo protector de pantalla que pone la pantalla en negro.</description>
     <description lang="es_MX">Black es un simple protector de pantalla que la obscurece.</description>
     <description lang="et">Must on lihtne ekraanisäästja, mis muudab sinu ekraani mustaks.</description>
     <description lang="fi">Black on yksinkertainen näytönsäästäjä, joka muuttaa ruudun mustaksi.</description>
@@ -67,6 +70,7 @@
     <description lang="ja">画面を暗く黒くするだけの、シンプルなスクリーンセーバーです</description>
     <description lang="ko">블랙 화면보호기는 화면을 검게 만들어줍니다.</description>
     <description lang="lt">Black yra paprasta ekrano užsklanda, kuri pavers jūsų ekraną juodu fonu.</description>
+    <description lang="mk">Црна е едноставна заштита на екран која екранот го прави црн.</description>
     <description lang="nl">Black is een eenvoudige schermbeveiliging die uw scherm op zwart zet.</description>
     <description lang="no">Black er en enkel skjermsparer som gjør skjermen din svart.</description>
     <description lang="pl">Ten wygaszacz ekranu wyświetla czarny ekran. Staraj się używać go na wyświetlaczach CRT i unikaj na LCD.</description>
@@ -84,4 +88,5 @@
     <platform>all</platform>
   </extension>
 </addon>
+
 

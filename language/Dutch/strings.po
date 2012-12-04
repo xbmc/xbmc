@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-05 20:22+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -572,7 +572,7 @@ msgstr "Skin"
 
 msgctxt "#167"
 msgid "Cancel file operations"
-msgstr "Annuleer bestands bewerkingen"
+msgstr "Annuleer bestandsbewerkingen"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -2202,14 +2202,6 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Voer nummer in"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bits/Sample"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Sample frequentie"
-
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Muziek CD's"
@@ -3230,10 +3222,6 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Bewolking"
 
-msgctxt "#1425"
-msgid "Pellets"
-msgstr ""
-
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Hagel"
@@ -3264,11 +3252,7 @@ msgstr "Zand"
 
 msgctxt "#1433"
 msgid "Spray"
-msgstr ""
-
-msgctxt "#1434"
-msgid "Whirls"
-msgstr ""
+msgstr "Spray"
 
 msgctxt "#1435"
 msgid "Sandstorm"
@@ -3277,10 +3261,6 @@ msgstr "Zandstorm"
 msgctxt "#1436"
 msgid "Blowing"
 msgstr "Waaien"
-
-msgctxt "#1437"
-msgid "Pellet"
-msgstr ""
 
 msgctxt "#1438"
 msgid "Small"
@@ -3317,10 +3297,6 @@ msgstr "Wolk"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Onbekend"
-
-msgctxt "#1447"
-msgid "Squals"
-msgstr ""
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -3760,7 +3736,7 @@ msgstr "Item vergrendeld"
 
 msgctxt "#12349"
 msgid "Updating video library art"
-msgstr "De afbeeldingen voor de video bibliotheek worden geupdate"
+msgstr "De afbeeldingen voor de video-bibliotheek worden geupdate"
 
 msgctxt "#12350"
 msgid "Processing %s"
@@ -4169,10 +4145,6 @@ msgstr "Gestart, alarm over %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Gestopt met nog %im%is te gaan"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,7 +5651,7 @@ msgid "Bob (inverted)"
 msgstr "Synchroniseer even"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Annuleren..."
 
 msgctxt "#16025"
@@ -6092,11 +6064,11 @@ msgstr "Geplande opname"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr "Hernoem opname?"
+msgstr "Weet u zeker dat u deze opname wilt hernoemen?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr "Hernoem geplande opname?"
+msgstr "Weet u zeker dat u deze geplande opname wilt hernoemen?"
 
 msgctxt "#19043"
 msgid "Recording"
@@ -6108,7 +6080,7 @@ msgstr "Controleer de instellingen van de server"
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Geen PVR clients beschikbaar"
+msgstr "Geen PVR-clients beschikbaar"
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6116,7 +6088,7 @@ msgstr "Nieuw kanaal"
 
 msgctxt "#19047"
 msgid "Programme info"
-msgstr "Programma info"
+msgstr "Programma-info"
 
 msgctxt "#19048"
 msgid "Group management"
@@ -6140,7 +6112,7 @@ msgstr "Verplaats kanaal naar:"
 
 msgctxt "#19053"
 msgid "Recording information"
-msgstr "Opname informatie"
+msgstr "Opname-informatie"
 
 msgctxt "#19054"
 msgid "Hide channel"
@@ -6200,15 +6172,15 @@ msgstr "Kon de opname niet verwijderen"
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr "TV gids"
+msgstr "TV-gids"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "TV gids update interval"
+msgstr "Vernieuwingsinterval van TV-gids"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "TV gids niet opslaan in de database"
+msgstr "TV-gids niet opslaan in de database"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -6550,10 +6522,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Zoek missende iconen"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Wijzig kanaal zonder op OK te drukken"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Verberg video lengte informatie"
@@ -6608,7 +6576,7 @@ msgstr "Menu/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
-msgstr "Weergegeven dagen in de TV gids"
+msgstr "Weergegeven dagen in de TV-gids"
 
 msgctxt "#19184"
 msgid "Channel information duration"
@@ -6616,19 +6584,19 @@ msgstr "Kanaal info tijd"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr "Wis TV database"
+msgstr "Wis TV-database"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "Alle gegevens in de TV database worden gewist"
+msgstr "Alle gegevens in de TV-database worden gewist"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Wis TV gids en lees nieuwe in"
+msgstr "Wis TV-gids en lees nieuwe in"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr "TV gids wordt gewist"
+msgstr "TV-gids wordt gewist"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
@@ -9772,7 +9740,7 @@ msgstr "Processen"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "PVR clients"
+msgstr "PVR-clients"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -10720,4 +10688,4 @@ msgstr "TV and AVR apparaat (expliciet)"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "Niet ondersteunde libCEC interface versie. %x is lager dan de versie die XBMC ondersteund (%x)"
+msgstr "Niet-ondersteunde libCEC-interfaceversie. %x is lager dan de versie die XBMC ondersteunt (%x)"

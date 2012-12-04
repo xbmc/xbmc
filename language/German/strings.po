@@ -1,11 +1,11 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-ALPHA7
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
 "Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-11-02 17:07+0000\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: XBMC Translation Team\n"
 "Language-Team: German (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -2203,12 +2203,12 @@ msgid "Enter number"
 msgstr "Nummer eingeben"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "Bits/Sample"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Sample Frequenz"
+msgid "Sample rate"
+msgstr "Abtastrate"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2236,7 +2236,7 @@ msgstr "Alle Titel von"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "Angefangene Serien"
+msgstr "Begonnene Serien"
 
 msgctxt "#629"
 msgid "View mode"
@@ -4171,8 +4171,8 @@ msgid "Alarm!"
 msgstr "Alarm!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Deaktiviert. Restzeit war %im%is."
+msgid "Cancelled with %im%is left"
+msgstr "Abgebrochen, %im%is fehlen noch."
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5679,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (Invertiert)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Abbrechen..."
 
 msgctxt "#16025"
@@ -6550,10 +6550,6 @@ msgctxt "#19167"
 msgid "Scan for missing icons"
 msgstr "Suche fehlende Symbole"
 
-msgctxt "#19168"
-msgid "Switch channel without pressing OK"
-msgstr "Kanalwechsel ohne Bestätigung (OK)"
-
 msgctxt "#19169"
 msgid "Hide video information box"
 msgstr "Verstecke Videoinformationsbox"
@@ -6989,6 +6985,18 @@ msgstr "Aufnahme Konflikt"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Aufnahmefehler"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Clientspezifisch"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Clientspezifische Einstellungen"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Kanalwechsel durch Drücken von OK bestätigen"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8198,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Sortiert nach ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Durchsuche Filme mit %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Durchsuche Musikvideos mit %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Durchsuche Serien mit %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Durchsuche Interpreten mit %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Durchsuche Alben mit %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Einzelteil spielen..."
@@ -9120,7 +9148,7 @@ msgstr "Audio Sprache"
 
 msgctxt "#21448"
 msgid "Subtitle language"
-msgstr "Untertitlesprache"
+msgstr "Untertitelsprache"
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
@@ -9153,6 +9181,10 @@ msgstr "Cache gefüllt bevor ausreichende Datenmenge für ruckelfreie Wiedergabe
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Externer Speicher"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Anzahl gesehener Episoden"
 
 msgctxt "#21460"
 msgid "Subtitle location"

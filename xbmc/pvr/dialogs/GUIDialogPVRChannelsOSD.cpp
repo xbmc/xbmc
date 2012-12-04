@@ -64,8 +64,11 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      g_PVRManager.SetPlayingGroup(m_group);
-      SetLastSelectedItem(m_group->GroupID());
+      if (m_group)
+      {
+        g_PVRManager.SetPlayingGroup(m_group);
+        SetLastSelectedItem(m_group->GroupID());
+      }
       Clear();
     }
     break;

@@ -87,6 +87,51 @@
 		</RegExp>
 	</ParseFallbackTMDBPlot>
 
+	<GetTMDBTaglineByIdChain clearbuffers="no" dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression clear="yes" noclean="1" />
+			</RegExp>
+			<RegExp input="$$8" output="&lt;url function=&quot;ParseTMDBTagline&quot; cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetTMDBTaglineByIdChain>
+	<GetTMDBLangTaglineByIdChain clearbuffers="no" dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression clear="yes" noclean="1" />
+			</RegExp>
+			<RegExp input="$$8" output="&lt;url function=&quot;ParseTMDBTagline&quot; cache=&quot;tmdb-$INFO[tmdbtaglinelanguage]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[tmdbtaglinelanguage]&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetTMDBLangTaglineByIdChain>
+	<ParseTMDBTagline dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression clear="yes" fixchars="1">&quot;tagline&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBTagline&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;http://api.themoviedb.org/3/movie/$$8?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=en&lt;/url&gt;" dest="2">
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="2">
+				<expression>(.+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTMDBTagline>
+	<ParseFallbackTMDBTagline dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="2">
+				<expression clear="yes" fixchars="1">&quot;tagline&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFallbackTMDBTagline>
+
 	<GetTMDBSetByIdChain dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBSet&quot; cache=&quot;tmdb-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="5">
@@ -223,6 +268,46 @@
 		</RegExp>
 	</ParseTMDBRating>
 
+	<GetTMDBStudioByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBStudio&quot; cache=&quot;tmdb-en-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=en&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetTMDBStudioByIdChain>
+	<ParseTMDBStudio dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression clear="yes" noclean="1">&quot;production_companies&quot;:\[([^\]]*)</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="2">
+				<expression trim="1" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTMDBStudio>
+
+	<GetTMDBCountryByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBCountry&quot; cache=&quot;tmdb-en-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=en&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetTMDBCountryByIdChain>
+	<ParseTMDBCountry dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression clear="yes" noclean="1">&quot;production_countries&quot;:\[([^\]]*)</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;country&gt;\1&lt;/country&gt;" dest="2">
+				<expression trim="1" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTMDBCountry>
+
 	<GetTMDBTrailerByIdChain dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTrailer&quot; cache=&quot;tmdb-trailer-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1/trailers?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="5">
@@ -351,7 +436,7 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">&quot;posters&quot;:\[\{([^\]]*)</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot;preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="9">
+			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="9">
 				<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$9" output="$$12" dest="2+">
@@ -377,7 +462,7 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">&quot;posters&quot;:\[\{([^\]]*)</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot;preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="9">
+			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="9">
 				<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$9" output="$$12" dest="2+">
@@ -403,7 +488,7 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">&quot;posters&quot;:\[\{([^\]]*)</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot;preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="9">
+			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="9">
 				<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBAllThumbs&quot; cache=&quot;tmdb-images-$$8.json&quot;&gt;http://api.themoviedb.org/3/movie/$$8/images?api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="2">
@@ -420,7 +505,7 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">&quot;posters&quot;:\[\{([^\]]*)</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot;preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="2">
+			<RegExp input="$$7" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;http://cf2.imgobject.com/t/p/w500\1&quot;&gt;http://cf2.imgobject.com/t/p/original\1&lt;/thumb&gt;" dest="2">
 				<expression repeat="yes" noclean="1">&quot;file_path&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1">(.+)</expression>

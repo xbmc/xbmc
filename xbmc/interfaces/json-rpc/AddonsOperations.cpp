@@ -26,10 +26,12 @@
 #include "addons/PluginSource.h"
 #include "ApplicationMessenger.h"
 #include "TextureCache.h"
+#include "filesystem/File.h"
 
 using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
+using namespace XFILE;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -220,12 +222,11 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
     else if (field == "fanart" || field == "thumbnail")
     {
       CStdString url = addonInfo[field].asString();
+      // We need to check the existence of fanart and thumbnails as the addon simply
+      // holds where the art will be, not whether it exists.
       bool needsRecaching;
       CStdString image = CTextureCache::Get().CheckCachedImage(url, false, needsRecaching);
-      if (image.empty())
-        image = CTextureCache::Get().CacheImage(url);
-
-      if (!image.empty())
+      if (!image.empty() || CFile::Exists(url))
         object[field] = CTextureCache::Get().GetWrappedImageURL(url);
       else
         object[field] = "";

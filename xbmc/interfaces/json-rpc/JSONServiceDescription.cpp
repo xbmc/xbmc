@@ -1638,7 +1638,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
   return AddEnum(name, enums, CVariant::VariantTypeInteger);
 }
 
-int CJSONServiceDescription::GetVersion()
+const char* CJSONServiceDescription::GetVersion()
 {
   return JSONRPC_SERVICE_VERSION;
 }

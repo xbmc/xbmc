@@ -14,7 +14,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="af">Seker die tweede mees psigedeliese sluimerskerm ooit</summary>
     <summary lang="ar">ربما شاشة التوقف الثانية الأكثر هدوء على الإطلاق</summary>
-    <summary lang="be">Probably the second most psychedelic screensaver ever</summary>
+    <summary lang="be">Напэўна, другі найбольш псіхадэлічны ахоўнік экрану</summary>
     <summary lang="bg">Вероятно вторият най-халюциногенен скрийнсейвър</summary>
     <summary lang="ca">Probablement el segon estalvi de pantalla més psicodèlic mai creat</summary>
     <summary lang="cs">Pravděpodobně druhý nejdivočejší šetřič obrazovky všech dob</summary>
@@ -23,6 +23,7 @@
     <summary lang="el">Πιθανότατα η δεύτερη πιο ψυχεδελική προφύλαξη οθόνης που έγινε ποτέ</summary>
     <summary lang="en">Probably the second most psychedelic screensaver ever</summary>
     <summary lang="es">Probablemente el segundo salvapantallas más psicodélico jamás creado</summary>
+    <summary lang="es_AR">Probablemente el segundo protector de pantalla más psicodélico jamás creado</summary>
     <summary lang="es_MX">Probablemente el segundo protector de pantalla más psicodélico</summary>
     <summary lang="et">Arvatavasti teine kõige psühhedeelsem ekraanisäästja, mis iial tehtud</summary>
     <summary lang="fi">Todennäköisesti toiseksi psykedeelisin näytönsäästäjä koskaan</summary>
@@ -35,10 +36,11 @@
     <summary lang="ja">世界で2番目にサイケなスクリーンセーバー</summary>
     <summary lang="ko">아마도 지금까지 두번째로 가장 환상적인 화면보호기</summary>
     <summary lang="lt">Tikriausiai antra labiausiai psichodeline ekrano uzsklanda pasaulyje.</summary>
+    <summary lang="mk">Можеби втора нај психоделична заштита на екран</summary>
     <summary lang="nl">Waarschijnlijk de op één na meest psychedelische schermbeveiliging ooit</summary>
     <summary lang="no">Helt sikkert den nest psykadeliske skjermsparern som fins</summary>
     <summary lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie</summary>
-    <summary lang="pt">Provavelmente, o segundo melhor protector de ecrã psicadélico de sempre.</summary>
+    <summary lang="pt">Este é, provavelmente, o segundo melhor protector de ecrã psicadélico de sempre.</summary>
     <summary lang="pt_BR">Provavelmente o segundo protetor de tela mais psicodélico</summary>
     <summary lang="ro">Probabil al doilea cel mai năucitor screensaver care a existat vreodată</summary>
     <summary lang="ru">Наверное, вторая из самых психоделических заставок в мире</summary>
@@ -59,6 +61,7 @@
     <description lang="el">Πιθανότατα η δεύτερη πιο ψυχεδελική προφύλαξη οθόνης που υπάρχει. Απλά προσπαθήστε να φανταστείτε όλα αυτά τα χρώματα σε κίνηση.</description>
     <description lang="en">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="es">Probablemente el segundo salvapantallas más psicodélico que existe. Intente imaginarse todos esos colores moviéndose.</description>
+    <description lang="es_AR">Probablemente el segundo protector de pantalla más psicodélico que existe. Solo intente imaginarse todos esos colores moviéndose.</description>
     <description lang="es_MX">Probablemente el segundo protector de pantallas más psicodélico.  Solo trate de captar todos los colores moviéndose alrededor.</description>
     <description lang="et">Arvatavasti ajaloo teine kõige psühhedeelsem ekraanisäästja. Püüa lihtsalt kujutleda kõiki neid värve, mis ringi liiguvad.</description>
     <description lang="fi">Todennäköisesti toiseksi psykedeelisin olemassa oleva näytönsäästäjä. Kuvittelepa vain kaikki nuo värit lentelemässä ympäriinsä.</description>
@@ -71,10 +74,11 @@
     <description lang="ja">Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="ko">아마도 존재하는 두번째로 가장 환상적인 화면보호기. 모든 색깔들이 움직이는 것을 상상해보세요.</description>
     <description lang="lt">Turbut antra labiausiai psichodeline ekrano uzsklanda pasaulyje. Isbandykite ja ir pamatysite judanciu spalvu svente.</description>
+    <description lang="mk">Можеби втора нај психоделична заштита на екран. Само обидете се да ги согледате сите тие бои кои се движат.</description>
     <description lang="nl">Waarschlijnlijk de op één na meest psychedelische schermbeveliging ooit. Probeer u het voor te stellen: al die kleuren die door elkaar lopen.</description>
     <description lang="no">Helt sikkert den nest psykadeliske skjermsparern i verden. Bare prøv å fårestill deg alle de fargene som beveger seg rundt.</description>
     <description lang="pl">Prawdopodobnie drugi, najbardziej psychodeliczny wygaszacz na świecie. Spróbuj i zobacz ferię poruszających się barw.</description>
-    <description lang="pt">Provavelmente, o segundo melhor protector de ecrã psicadélico de sempre. Experimente-o e veja todas as cores movendo-se livremente.</description>
+    <description lang="pt">É, provavelmente, o segundo melhor protector de ecrã psicadélico de sempre. Experimente-o e veja todas as cores em movimento livre.</description>
     <description lang="pt_BR">Provavelmente, o segundo mais psicodélico screensaver existente.  Experimente-a para ver todas as cores moverem-se livremente.</description>
     <description lang="ro">Probabil al doilea cel mai năucitor screensaver care a existat vreodată. Doar încercați să vă imaginați toate acele culori mișcându-se.</description>
     <description lang="ru">Просто попробуйте представить себе все цвета в движении.</description>
@@ -87,4 +91,5 @@
     <platform>linux osx</platform>
   </extension>
 </addon>
+
 
