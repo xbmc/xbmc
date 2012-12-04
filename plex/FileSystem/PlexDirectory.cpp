@@ -841,10 +841,6 @@ class PlexMediaNode
        
          string url = theURL.Get();
 
-         /* Fire up the async fetcher and hopefully we will have it done by the time
-          * we need to show it */
-         PlexUtils::CacheImageUrlAsync(url);
-
          /* FIXME: attr here might be wrong? */
          mediaItem->SetArt(attr, url);
        }
