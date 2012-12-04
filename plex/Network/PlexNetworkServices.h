@@ -40,7 +40,7 @@ public:
     {
       string name = param->first;
       string value = param->second;
-      CLog::CLog().Log(LOGINFO, "%s -> %s", param->first.c_str(), param->second.c_str());
+      CLog().Log(LOGINFO, "%s -> %s", param->first.c_str(), param->second.c_str());
     }
     
     // Scan the host.
