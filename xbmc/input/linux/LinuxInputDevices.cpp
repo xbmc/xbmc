@@ -782,7 +782,7 @@ void CLinuxInputDevice::SetupKeyboardAutoRepeat(int fd)
 {
   bool enable = true;
 
-#if defined(HAS_AMLPLAYER)
+#if defined(HAS_AMLPLAYER) || defined(HAS_LIBAMCODEC)
   // ignore the native aml driver named 'key_input',
   //  it is the dedicated power key handler (am_key_input)
   if (strncmp(m_deviceName, "key_input", strlen("key_input")) == 0)
