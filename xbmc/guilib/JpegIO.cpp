@@ -246,23 +246,51 @@ CJpegIO::~CJpegIO()
 
 void CJpegIO::Close()
 {
-  delete [] m_inputBuff;
+  free(m_inputBuff);
+  m_inputBuffSize = 0;
 }
 
 bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned int miny, bool read)
 {
+  Close();
+
   m_texturePath = texturePath;
-  unsigned int imgsize = 0;
 
   XFILE::CFile file;
-  if (file.Open(m_texturePath.c_str(), 0))
+  if (file.Open(m_texturePath.c_str(), READ_TRUNCATED))
   {
-    imgsize = (unsigned int)file.GetLength();
-    m_inputBuff = new unsigned char[imgsize];
-    m_inputBuffSize = file.Read(m_inputBuff, imgsize);
+    unsigned int filesize = (unsigned int)file.GetLength();
+    unsigned int chunksize = filesize, maxchunksize = filesize;
+    if (!chunksize)
+    { // no size information, so try reading chunked
+      chunksize = std::max(65536U, (unsigned int)file.GetChunkSize());
+      maxchunksize = std::max(chunksize, 2048*1024U); // max 2MB
+    }
+    unsigned int total = 0, amount = 0;
+    while (true)
+    {
+      if (!amount)
+      { // (re)alloc
+        m_inputBuffSize += chunksize;
+        m_inputBuff = (unsigned char *)realloc(m_inputBuff, m_inputBuffSize);
+        if (!m_inputBuff)
+        {
+          CLog::Log(LOGERROR, "%s unable to allocate buffer of size %u", __FUNCTION__, m_inputBuffSize);
+          return false;
+        }
+        amount = chunksize;
+        chunksize = std::min(chunksize*2, maxchunksize);
+      }
+      unsigned int read = file.Read(m_inputBuff + total, amount);
+      amount -= read;
+      total  += read;
+      if (!read || total == filesize)
+        break;
+    }
+    m_inputBuffSize = total;
     file.Close();
 
-    if ((imgsize != m_inputBuffSize) || (m_inputBuffSize == 0))
+    if (m_inputBuffSize == 0)
       return false;
   }
   else
