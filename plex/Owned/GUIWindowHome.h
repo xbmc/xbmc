@@ -46,12 +46,14 @@ class CFanLoadingThread : public CThread
     CFanLoadingThread(CGUIWindowHome *window) : CThread("Fan Loading Thread") { m_window = window; }
     void Process();
     void LoadFanWithDelay(const CStdString& key, int delay = 300);
+    void CancelCurrent();
 
   private:
     CStopWatch m_loadTimer;
     CStdString m_key;
     CGUIWindowHome *m_window;
     boost::mutex m_mutex;
+    boost::condition_variable m_wakeMe;
     int m_delay;
 };
 
@@ -75,6 +77,7 @@ private:
   void RestoreSelectedMenuItem();
   int  LookupIDFromKey(const std::string& key);
   bool KeyHaveFanout(const CStdString& key);
+  CFileItem* CurrentFileItem() const;
   
   std::string m_lastSelectedItemKey;
   

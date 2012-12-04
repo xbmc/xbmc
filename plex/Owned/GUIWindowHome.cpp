@@ -24,6 +24,7 @@
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include <list>
 #include <map>
@@ -132,6 +133,8 @@ bool CGUIWindowHome::OnAction(const CAction &action)
           // OK, let's load it after a delay.
           CFileItem* pFileItem = (CFileItem* )pItem.get();
           m_workerManager->cancelPending();
+          m_loadingThread->CancelCurrent();
+
           CStdString path = pFileItem->GetPath();
           if (path.empty())
             path = pFileItem->GetLabel();
@@ -151,30 +154,40 @@ bool CGUIWindowHome::OnAction(const CAction &action)
 bool CGUIWindowHome::SaveSelectedMenuItem()
 {
   bool changed = false;
-  
-  CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
-  if (pControl)
-  {
-    CGUIListItemPtr item = pControl->GetListItem(0);
-    if (item->IsFileItem())
-    {
-      CFileItem* fileItem = (CFileItem* )item.get();
-      
-      CStdString path = fileItem->GetPath();
-      if (path.empty())
-        /* No path, means that this is a static item from the skin, store the label instead */
-        path = fileItem->GetLabel();
 
-      // See if it's changed.
-      if (m_lastSelectedItemKey != path)
-        changed = true;
-      
-      // Save the current selection.
-      m_lastSelectedItemKey = path;
-    }
+  CFileItem* fileItem = CurrentFileItem();
+
+  if (fileItem)
+  {
+    CStdString path = fileItem->GetPath();
+    if (path.empty())
+      /* No path, means that this is a static item from the skin, store the label instead */
+      path = fileItem->GetLabel();
+
+    // See if it's changed.
+    if (m_lastSelectedItemKey != path)
+      changed = true;
+
+    // Save the current selection.
+    dprintf("Saved open item %s", path.c_str());
+    m_lastSelectedItemKey = path;
   }
   
   return changed;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItem* CGUIWindowHome::CurrentFileItem() const
+{
+  CFileItem* returnVal;
+  CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
+  if (pControl)
+  {
+    CGUIListItemPtr listItem = pControl->GetListItem(0);
+    if (listItem->IsFileItem())
+      returnVal = (CFileItem*)listItem.get();
+  }
+  return returnVal;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +196,12 @@ void CGUIWindowHome::RestoreSelectedMenuItem()
   CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
   if (pControl && m_lastSelectedItemKey.empty() == false)
   {
+    CFileItem* fItem = CurrentFileItem();
+    if (fItem->GetPath() == m_lastSelectedItemKey)
+    {
+      dprintf("Already focused on %s", m_lastSelectedItemKey.c_str());
+      return;
+    }
     int selectionItem = -1;
     
     // Figure out the ID with the selected key.
@@ -651,6 +670,9 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       m_idToSectionUrlMap.clear();
       m_idToSectionTypeMap.clear();
 
+      if (m_lastSelectedItemKey.empty())
+        SaveSelectedMenuItem();
+
       // Now add the new ones.
       bool itemStillExists = false;
       int id = 1000;
@@ -701,10 +723,20 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
         newItem->m_iprogramCount = id++;
 
+        if (newItem->GetPath() == m_lastSelectedItemKey ||
+            (newItem->GetPath().empty() && newItem->GetLabel() == m_lastSelectedItemKey))
+          itemStillExists = true;
+
         newList.push_back(newItem);
-        
-        // See if it matches the selected item.
-        if (newItem->GetPath() == m_lastSelectedItemKey)
+      }
+
+      /* Maybe it's a channel? */
+      if (!itemStillExists)
+      {
+        if (m_lastSelectedItemKey == m_musicChannelItem->GetLabel() ||
+            m_lastSelectedItemKey == m_photoChannelItem->GetLabel() ||
+            m_lastSelectedItemKey == m_videoChannelItem->GetLabel() ||
+            m_lastSelectedItemKey == m_applicationChannelItem->GetLabel())
           itemStillExists = true;
       }
       
@@ -731,6 +763,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       if (itemStillExists == false)
       {
         // Whack the right hand side.
+        dprintf("We don't have %s", m_lastSelectedItemKey.c_str());
         HideAllLists();
         m_workerManager->cancelPending();
         m_contentLists.clear();
@@ -842,6 +875,15 @@ void CGUIWindowHome::HideAllLists()
   }
 }
 
+void CFanLoadingThread::CancelCurrent()
+{
+  boost::mutex::scoped_lock lk(m_mutex);
+  m_key.clear();
+  m_loadTimer.Stop();
+
+  if (IsRunning())
+    m_wakeMe.notify_one();
+}
 
 void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
 {
@@ -855,21 +897,30 @@ void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
 
   if (!IsRunning())
     Create(true);
+  else
+    m_wakeMe.notify_one();
 }
 
 void CFanLoadingThread::Process()
 {
   while (!m_bStop)
   {
+    boost::mutex::scoped_lock lk(m_mutex);
+    if (m_key.empty() == false)
     {
-      boost::mutex::scoped_lock lk(m_mutex);
-      if (m_key.empty() == false && m_loadTimer.IsRunning() && m_loadTimer.GetElapsedMilliseconds() > m_delay)
+      if(m_loadTimer.IsRunning() && m_loadTimer.GetElapsedMilliseconds() > m_delay)
       {
         m_window->UpdateContentForSelectedItem(m_key);
         m_loadTimer.Stop();
         m_key.clear();
       }
+      else
+      {
+        boost::system_time const tmout = boost::get_system_time() + boost::posix_time::milliseconds(m_delay - m_loadTimer.GetElapsedMilliseconds());
+        m_wakeMe.timed_wait(lk, tmout);
+      }
     }
-    Sleep(150);
+    else
+      m_wakeMe.wait(lk);
   }
 }
