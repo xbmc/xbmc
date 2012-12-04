@@ -1370,6 +1370,7 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
   m_zoom           = -1;
   m_contrast       = -1;
   m_brightness     = -1;
+  m_vbufsize = 500000 * 2;
 
 
   am_packet_init(&am_private->am_pkt);
@@ -1622,9 +1623,9 @@ int CAmlogic::Decode(unsigned char *pData, size_t size, double dts, double pts)
     m_old_pictcnt = m_cur_pictcnt;
     rtn = VC_PICTURE;
     // we got a new pict, try and keep hw buffered demux above 2 seconds.
-    // this, combined with the above 1 second check,
-    // keeps hw buffered demux between 1 and 2 seconds.
-    if (GetTimeSize() < 2.0)
+    // this, combined with the above 1 second check, keeps hw buffered demux between 1 and 2 seconds.
+    // we also check to make sure we keep from filling hw buffer.
+    if (GetTimeSize() < 2.0 && GetDataSize() < m_vbufsize/2)
       rtn |= VC_BUFFER;
   }
 /*
@@ -1654,7 +1655,8 @@ bool CAmlogic::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 int CAmlogic::GetDataSize()
 {
   struct buf_status vbuf ={0};
-  m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf);
+  if (m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
+    m_vbufsize = vbuf.size;
 
   return vbuf.data_len;
 }
@@ -1688,7 +1690,7 @@ void CAmlogic::Process()
   SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
   while (!m_bStop)
   {
-    int64_t cur_pts = 0;
+    int64_t pts_video = 0;
     if (am_private->am_pkt.lastpts > 0)
     {
       // this is a blocking poll that returns every vsync.
@@ -1705,16 +1707,16 @@ void CAmlogic::Process()
           PauseResume(2);
       }
 
-      cur_pts = get_pts_video();
-      if (m_cur_pts != cur_pts)
+      pts_video = get_pts_video();
+      if (m_cur_pts != pts_video)
       {
         // other threads look at these, do them first
-        m_cur_pts = cur_pts;
+        m_cur_pts = pts_video;
         m_cur_pictcnt++;
         m_ready_event.Set();
 
         double app_pts = GetPlayerPtsSeconds();
-        if (fabs((double)cur_pts/PTS_FREQ - app_pts) > 0.10)
+        if (fabs((double)pts_video/PTS_FREQ - app_pts) > 0.10)
           SyncToPlayerPtsSeconds(0.0);
       }
     }
