@@ -28,9 +28,11 @@
 #include <Python.h>
 
 #include "interfaces/legacy/LanguageHook.h"
-#include "interfaces/python/CallbackHandler.h"
 #include "threads/ThreadLocal.h"
 #include "threads/Event.h"
+
+#include <set>
+#include <map>
 
 namespace XBMCAddon
 {
@@ -45,9 +47,16 @@ namespace XBMCAddon
      */
     class LanguageHook : public XBMCAddon::LanguageHook
     {
-      LanguageHook() : XBMCAddon::LanguageHook("Python::LanguageHook")  {  }
+      PyInterpreterState* m_interp;
+      CCriticalSection crit;
+      std::set<AddonClass*> currentObjects;
+
+      static std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> > hooks;
 
     public:
+
+      inline LanguageHook(PyInterpreterState* interp) : 
+        XBMCAddon::LanguageHook("Python::LanguageHook"), m_interp(interp)  {  }
 
       virtual ~LanguageHook();
 
@@ -78,7 +87,16 @@ namespace XBMCAddon
       virtual void unregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
       virtual bool waitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
-      static LanguageHook* getInstance();
+      static AddonClass::Ref<LanguageHook> getIfExists(PyInterpreterState* interp);
+      static bool oneHasRegisteredClass(AddonClass* obj);
+
+      void registerAddonClass(AddonClass* obj);
+      void unregisterAddonClass(AddonClass* obj);
+      bool hasRegisteredClass(AddonClass* obj);
+      inline bool hasRegisteredClasses() { Synchronize l(*this); return currentObjects.size() > 0; }
+
+      void unregisterMe();
+      void registerMe();
     };
   }
 }

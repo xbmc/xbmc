@@ -21,6 +21,7 @@
 
 
 #include "LanguageHook.h"
+#include "CallbackHandler.h"
 #include "XBPython.h"
 
 #include "interfaces/legacy/AddonUtils.h"
@@ -33,15 +34,19 @@ namespace XBMCAddon
   {
     static AddonClass::Ref<LanguageHook> instance;
 
-    static CCriticalSection ccrit;
-    static bool isInited = false;
-    static xbmcutil::InitFlag flag(isInited);
+    static CCriticalSection hooksMutex;
+    std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> > LanguageHook::hooks;
 
     // vtab instantiation
-    LanguageHook::~LanguageHook() { }
+    LanguageHook::~LanguageHook()
+    {
+      TRACE;
+      XBMCAddon::LanguageHook::deallocating();
+    }
 
     void LanguageHook::makePendingCalls()
     {
+      TRACE;
       PythonCallbackHandler::makePendingCalls();
     }
 
@@ -57,21 +62,37 @@ namespace XBMCAddon
       PyGILLock::acquireGil();
     }
 
-    LanguageHook* LanguageHook::getInstance() 
+    void LanguageHook::registerMe()
     {
-      if (!isInited) // in this case we're being called from a static initializer
-      {
-        if (instance.isNull())
-          instance = new LanguageHook();
-      }
-      else
-      {
-        CSingleLock lock (ccrit);
-        if (instance.isNull())
-          instance = new LanguageHook();
-      }
+      TRACE;
+      CSingleLock lock(hooksMutex);
+      hooks[m_interp] = AddonClass::Ref<LanguageHook>(this);
+    }
 
-      return instance.get();
+    void LanguageHook::unregisterMe()
+    {
+      TRACE;
+      CSingleLock lock(hooksMutex);
+      hooks.erase(m_interp);
+    }
+
+    AddonClass::Ref<LanguageHook> LanguageHook::getIfExists(PyInterpreterState* interp)
+    {
+      TRACE;
+      CSingleLock lock(hooksMutex);
+      std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> >::iterator iter = hooks.find(interp);
+      return iter == hooks.end() ? AddonClass::Ref<LanguageHook>(NULL) : AddonClass::Ref<LanguageHook>(iter->second);
+    }
+
+    bool LanguageHook::oneHasRegisteredClass(AddonClass* obj)
+    {
+      for (std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> >::iterator iter = hooks.begin();
+           iter != hooks.end(); iter++)
+      {
+        if ((iter->second)->hasRegisteredClass(obj))
+          return true;
+      }
+      return false;
     }
 
     /**
@@ -88,11 +109,13 @@ namespace XBMCAddon
      */
     XBMCAddon::CallbackHandler* LanguageHook::getCallbackHandler()
     { 
+      TRACE;
       return new PythonCallbackHandler();
     }
 
     String LanguageHook::getAddonId()
     {
+      TRACE;
       const char* id = NULL;
 
       // Get a reference to the main module
@@ -108,6 +131,7 @@ namespace XBMCAddon
 
     String LanguageHook::getAddonVersion()
     {
+      TRACE;
       // Get a reference to the main module
       // and global dictionary
       PyObject* main_module = PyImport_AddModule((char*)"__main__");
@@ -119,14 +143,36 @@ namespace XBMCAddon
       return version;
     }
 
-    void LanguageHook::registerPlayerCallback(IPlayerCallback* player) { g_pythonParser.RegisterPythonPlayerCallBack(player); }
-    void LanguageHook::unregisterPlayerCallback(IPlayerCallback* player) { g_pythonParser.UnregisterPythonPlayerCallBack(player); }
-    void LanguageHook::registerMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { g_pythonParser.RegisterPythonMonitorCallBack(monitor); }
-    void LanguageHook::unregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
+    void LanguageHook::registerPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
+    void LanguageHook::unregisterPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
+    void LanguageHook::registerMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.RegisterPythonMonitorCallBack(monitor); }
+    void LanguageHook::unregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
 
     bool LanguageHook::waitForEvent(CEvent& hEvent, unsigned int milliseconds)
     { 
+      TRACE;
       return g_pythonParser.WaitForEvent(hEvent,milliseconds);
+    }
+
+    void LanguageHook::registerAddonClass(AddonClass* obj)
+    {
+      TRACE;
+      Synchronize l(*this);
+      currentObjects.insert(obj);
+    }
+
+    void LanguageHook::unregisterAddonClass(AddonClass* obj)
+    {
+      TRACE;
+      Synchronize l(*this);
+      currentObjects.erase(obj);
+    }
+
+    bool LanguageHook::hasRegisteredClass(AddonClass* obj)
+    {
+      TRACE;
+      Synchronize l(*this);
+      return currentObjects.find(obj) != currentObjects.end();
     }
   }
 }

@@ -158,6 +158,9 @@ void XBPyThread::Process()
   // swap in my thread state
   PyThreadState_Swap(state);
 
+  XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> languageHook(new XBMCAddon::Python::LanguageHook(state->interp));
+  languageHook->registerMe();
+
   m_pExecuter->InitializeInterpreter(addon);
 
   CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
@@ -369,8 +372,26 @@ void XBPyThread::Process()
   m_pExecuter->DeInitializeInterpreter();
 
   Py_EndInterpreter(state);
-  PyThreadState_Swap(NULL);
 
+  // This is a total hack. Python doesn't necessarily release
+  // all of the objects associated with the interpreter when
+  // you end the interpreter. As a result there are objects 
+  // managed by the windowing system that still receive events
+  // until python decides to clean them up. Python will eventually
+  // clean them up on the creation or ending of a subsequent
+  // interpreter. So we are going to keep creating and ending
+  // interpreters until we have no more python objects hanging
+  // around.
+  while (languageHook->hasRegisteredClasses())
+  {
+    PyThreadState* tmpstate = Py_NewInterpreter();
+    Py_EndInterpreter(tmpstate);
+  }
+
+  // unregister the language hook prior to ending the interpreter
+  languageHook->unregisterMe();
+
+  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 }
 

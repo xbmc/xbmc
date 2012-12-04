@@ -28,6 +28,7 @@
 #include "interfaces/legacy/AddonClass.h"
 #include "interfaces/legacy/Window.h"
 #include "threads/ThreadLocal.h"
+#include "LanguageHook.h"
 
 namespace PythonBindings
 {
@@ -104,14 +105,44 @@ namespace PythonBindings
       doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
 
-  inline void prepareForReturn(XBMCAddon::AddonClass* c) { if(c) c->Acquire(); }
+  inline void prepareForReturn(XBMCAddon::AddonClass* c) 
+  {
+    TRACE;
+    if(c) { 
+      c->Acquire(); 
+      PyThreadState* state = PyThreadState_Get();
+      XBMCAddon::Python::LanguageHook::getIfExists(state->interp)->registerAddonClass(c);
+    }
+  }
 
-  inline void cleanForDealloc(XBMCAddon::AddonClass* c) { if(c) c->Release(); }
+  inline void cleanForDealloc(XBMCAddon::AddonClass* c) 
+  { 
+    TRACE;
+    if(c){
+      PyThreadState* state = PyThreadState_Get();
+      XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> lh = 
+        XBMCAddon::Python::LanguageHook::getIfExists(state->interp);
+      if (lh.isNotNull()) lh->unregisterAddonClass(c);
+      c->Release();
+    }
+  }
 
   /**
    * There is a Catch-22 in the destruction of a Window. This resolves that.
    */
-  inline void cleanForDealloc(XBMCAddon::xbmcgui::Window* c) { if(c) { c->dispose(); c->Release(); } }
+  inline void cleanForDealloc(XBMCAddon::xbmcgui::Window* c) 
+  {
+    TRACE;
+    if(c) 
+    { 
+      PyThreadState* state = PyThreadState_Get();
+      XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> lh = 
+        XBMCAddon::Python::LanguageHook::getIfExists(state->interp);
+      if (lh.isNotNull()) lh->unregisterAddonClass(c);
+      c->dispose();
+      c->Release(); 
+    } 
+  }
 
   /**
    * This method allows for conversion of the native api Type to the Python type

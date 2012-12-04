@@ -202,7 +202,8 @@ namespace PythonBindings
                               const char* methodNamespacePrefix, const char* methodNameForErrorString) throw (XBMCAddon::WrongTypeException)
   {
     if (pythonType == NULL || pythonType->magicNumber != XBMC_PYTHON_TYPE_MAGIC_NUMBER)
-      throw XBMCAddon::WrongTypeException("Non api type passed in place of the expected type \"%s.\"",expectedType);
+      throw XBMCAddon::WrongTypeException("Non api type passed to \"%s\" in place of the expected type \"%s.\"",
+                                          methodNameForErrorString, expectedType);
     if (!isParameterRightType(typeInfo->swigType,expectedType,methodNamespacePrefix))
     {
       // maybe it's a child class
