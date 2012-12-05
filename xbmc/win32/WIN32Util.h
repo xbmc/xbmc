@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -50,7 +49,7 @@ public:
   static CStdString URLEncode(const CURL &url);
   static CStdString GetLocalPath(const CStdString &strPath);
   static char FirstDriveFromMask (ULONG unitmask);
-  static int GetDriveStatus(const CStdString &strPath);
+  static int GetDriveStatus(const CStdString &strPath, bool bStatusEx=false);
   static bool PowerManagement(PowerState State);
   static int BatteryLevel();
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
@@ -61,6 +60,7 @@ public:
   static CStdString CWIN32Util::GetSystemPath();
   static CStdString GetProfilePath();
   static CStdString UncToSmb(const CStdString &strPath);
+  static CStdString SmbToUnc(const CStdString &strPath);
   static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');
@@ -73,6 +73,7 @@ public:
 #endif
   static BOOL IsCurrentUserLocalAdministrator();
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
+  static std::string GetFirstOpticalDrive();
   static bool IsAudioCD(const CStdString& strPath);
   static CStdString GetDiskLabel(const CStdString& strPath);
 

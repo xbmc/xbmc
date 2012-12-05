@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -71,7 +70,11 @@
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
 #endif
-
+#if defined(TARGET_ANDROID)
+#include "android/loader/AndroidDyload.h"
+#elif !defined(_WIN32)
+#include <dlfcn.h>
+#endif
 using namespace std;
 using namespace XFILE;
 
@@ -168,10 +171,21 @@ extern "C" void __stdcall init_emu_environ()
     dll_putenv(string("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
   }
+
+#if defined(TARGET_ANDROID)
+  string apkPath = getenv("XBMC_ANDROID_APK");
+  apkPath += "/assets/python2.6";
+  dll_putenv(string("PYTHONHOME=" + apkPath).c_str());
+  dll_putenv("PYTHONOPTIMIZE=");
+  dll_putenv("PYTHONNOUSERSITE=1");
+  dll_putenv("PYTHONPATH=");
+#else
+  dll_putenv("PYTHONOPTIMIZE=1");
+#endif
+
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
-  dll_putenv("PYTHONOPTIMIZE=1");
   //dll_putenv("PYTHONDUMPREFS=1");
   //dll_putenv("THREADDEBUG=1");
   //dll_putenv("PYTHONMALLOCSTATS=1");
@@ -192,9 +206,9 @@ extern "C" void __stdcall init_emu_environ()
 extern "C" void __stdcall update_emu_environ()
 {
   // Use a proxy, if the GUI was configured as such
-  if (g_guiSettings.GetBool("network.usehttpproxy") &&
-      g_guiSettings.GetString("network.httpproxyserver") &&
-      g_guiSettings.GetString("network.httpproxyport"))
+  if (g_guiSettings.GetBool("network.usehttpproxy")
+      && !g_guiSettings.GetString("network.httpproxyserver").empty()
+      && !g_guiSettings.GetString("network.httpproxyport").empty())
   {
     CStdString strProxy;
     if (g_guiSettings.GetString("network.httpproxyusername") &&
@@ -440,6 +454,18 @@ extern "C"
   {
     not_implement("msvcrt.dll fake function _popen(...) called\n"); //warning
     return NULL;
+  }
+
+  void *dll_dlopen(const char *filename, int flag)
+  {
+#if defined(TARGET_ANDROID)
+    CAndroidDyload temp;
+    return temp.Open(filename);
+#elif !defined(_WIN32)
+    return dlopen(filename, flag);
+#else
+    return NULL;
+#endif
   }
 
   int dll_pclose(FILE *stream)
@@ -816,6 +842,12 @@ extern "C"
       URIUtils::GetExtension(url.GetFileName(),strMask);
       url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
     }
+    else if (url.GetFileName().Find("*") != string::npos)
+    {
+      CStdString strReplaced = url.GetFileName();
+      strReplaced.Replace("*","");
+      url.SetFileName(strReplaced);
+    }
     int iDirSlot=0; // locate next free directory
     while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
@@ -825,8 +857,6 @@ extern "C"
       CURL url2(url.GetFileName());
       url = url2;
     }
-    CStdString fName = url.GetFileName();
-    url.SetFileName("");
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
@@ -1163,7 +1193,7 @@ extern "C"
   FILE* dll_fopen(const char* filename, const char* mode)
   {
     FILE* file = NULL;
-#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if defined(_LINUX) && !defined(TARGET_DARWIN) && !defined(__FreeBSD__) && !defined(__ANDROID__)
     if (strcmp(filename, MOUNTED) == 0
     ||  strcmp(filename, MNTTAB) == 0)
     {
@@ -1271,7 +1301,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
       return fseek(stream, offset, origin);
 #else
       return fseeko64(stream, offset, origin);
@@ -1336,7 +1366,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
       return ftello(stream);
 #else
       return ftello64(stream);
@@ -1382,7 +1412,7 @@ extern "C"
       CLog::Log(LOGWARNING, "msvcrt.dll: dll_telli64 called, TODO: add 'int64 -> long' type checking");      //warning
 #ifndef _LINUX
       return (__int64)tell(fd);
-#elif defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#elif defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
       return lseek(fd, 0, SEEK_CUR);
 #else
       return lseek64(fd, 0, SEEK_CUR);
@@ -1462,9 +1492,6 @@ extern "C"
       return 0;
     else
       return ferror(stream);
-
-    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
-    return -1;
   }
 
   int dllvprintf(const char *format, va_list va)
@@ -1559,7 +1586,7 @@ extern "C"
     int ret;
 
     ret = dll_fgetpos64(stream, &tmpPos);
-#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
     *pos = (fpos_t)tmpPos;
 #else
     pos->__pos = (off_t)tmpPos.__pos;
@@ -1572,7 +1599,7 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
       *pos = pFile->GetPosition();
 #else
       pos->__pos = pFile->GetPosition();
@@ -1594,7 +1621,7 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
 #else
       if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
@@ -1611,7 +1638,7 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
-#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
       return fsetpos(stream, pos);
 #else
       return fsetpos64(stream, pos);
@@ -1627,7 +1654,7 @@ extern "C"
     if (fd >= 0)
     {
       fpos64_t tmpPos;
-#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if !defined(_LINUX) || defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
       tmpPos= *pos;
 #else
       tmpPos.__pos = (off64_t)(pos->__pos);
@@ -1739,6 +1766,8 @@ extern "C"
   int dll_stati64(const char *path, struct _stati64 *buffer)
   {
     struct __stat64 a;
+    memset(&a, 0, sizeof(a));
+
     if(dll_stat64(path, &a) == 0)
     {
       CUtil::Stat64ToStatI64(buffer, &a);
@@ -2079,10 +2108,17 @@ extern "C"
   }
 
 #ifdef _LINUX
+#if defined(__ANDROID__)
+  volatile int * __cdecl dll_errno(void)
+  {
+    return &errno;
+  }
+#else
   int * __cdecl dll_errno(void)
   {
     return &errno;
   }
+#endif
 
   int __cdecl dll_ioctl(int fd, unsigned long int request, va_list va)
   {

@@ -15,7 +15,6 @@
 				<viewtype label="535">list</viewtype>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<visible>![Window.IsVisible(VideoLibrary) + Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)]</visible>
 				<itemlayout height="40" width="580">
 					<control type="image">
 						<posx>0</posx>
@@ -207,7 +206,7 @@
 					<height>540</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture background="true">$VAR[PosterThumb]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
 				</control>
@@ -218,7 +217,7 @@
 					<height>524</height>
 					<aspectratio aligny="top">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
-					<texture diffuse="diffuse_mirror3.png" flipy="true" background="true">$INFO[ListItem.Icon]</texture>
+					<texture diffuse="diffuse_mirror3.png" flipy="true" background="true">$VAR[PosterThumb]</texture>
 				</control>
 			</control>
 		</control>
@@ -240,7 +239,7 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>
-				<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + [!Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)]" height="186" width="216">
+				<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(TVShows) + !Container.Content(Sets)" height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -283,7 +282,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + [!Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)]" height="186" width="216">
+				<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(TVShows) + !Container.Content(Sets)" height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -326,7 +325,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</focusedlayout>
-				<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]" height="279" width="216">
+				<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Sets)" height="279" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -334,7 +333,7 @@
 						<height>240</height>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<texture background="true">$VAR[PosterThumb]</texture>
 					</control>
 					<control type="label">
 						<posx>108</posx>
@@ -357,7 +356,7 @@
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]" height="276" width="216">
+				<focusedlayout condition="Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Sets)" height="276" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
@@ -365,7 +364,7 @@
 						<height>240</height>
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<texture background="true">$VAR[PosterThumb]</texture>
 					</control>
 					<control type="label">
 						<posx>108</posx>
@@ -412,7 +411,7 @@
 			<visible>Control.IsVisible(505)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="panel" id="505">
-				<visible>!Container.Content(LiveTV) + !Container.Content(Movies) + !Container.Content(Episodes) + !Container.Content(Seasons) + !Container.Content(MusicVideos) + !Container.Content(Addons) + !Skin.HasSetting(TVShowsUsePosters)</visible>
+				<visible>Container.Content(TVShows) | Container.Content(Files)</visible>
 				<posx>95</posx>
 				<posy>80</posy>
 				<width>1080</width>
@@ -433,7 +432,7 @@
 						<height>105</height>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<texture background="true">$VAR[BannerThumb]</texture>
 					</control>
 					<control type="image">
 						<posx>500</posx>
@@ -452,7 +451,7 @@
 						<height>105</height>
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<texture background="true">$VAR[BannerThumb]</texture>
 					</control>
 					<control type="image">
 						<posx>500</posx>

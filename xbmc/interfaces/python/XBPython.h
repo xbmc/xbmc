@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -37,11 +37,18 @@ typedef struct {
 }PyElem;
 
 class LibraryLoader;
-class CPythonMonitor;
+
+namespace XBMCAddon
+{
+  namespace xbmc
+  {
+    class Monitor;
+  }
+}
 
 typedef std::vector<PyElem> PyList;
 typedef std::vector<PVOID> PlayerCallbackList;
-typedef std::vector<PVOID> MonitorCallbackList;
+typedef std::vector<XBMCAddon::xbmc::Monitor*> MonitorCallbackList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 
 class XBPython : 
@@ -64,8 +71,8 @@ public:
   virtual void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
   void RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
-  void RegisterPythonMonitorCallBack(CPythonMonitor* pCallback);
-  void UnregisterPythonMonitorCallBack(CPythonMonitor* pCallback);
+  void RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback);
+  void UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback);
   void OnSettingsChanged(const CStdString &strings);
   void OnScreensaverActivated();
   void OnScreensaverDeactivated();
@@ -78,7 +85,7 @@ public:
   void Process();
 
   void PulseGlobalEvent();
-  void WaitForEvent(CEvent& hEvent);
+  bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
   int ScriptsSize();
   int GetPythonScriptId(int scriptPosition);
@@ -128,7 +135,6 @@ private:
   ThreadIdentifier  m_ThreadId;
   bool              m_bInitialized;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
-  HMODULE           m_hModule;
   unsigned int      m_endtime;
 
   //Vector with list of threads used for running scripts

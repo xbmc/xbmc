@@ -1,0 +1,253 @@
+<window>
+	<defaultcontrol always="true">11</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>780</posx>
+		<posy>30</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>480</width>
+				<height>660</height>
+				<texture border="40">DialogBack2.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>390</posx>
+				<posy>15</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>2</onleft>
+				<onright>2</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>400</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>430</width>
+				<height>40</height>
+				<font>font12_title</font>
+				<label>$LOCALIZE[19222] - $INFO[VideoPlayer.ChannelName]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>Selected item's date</description>
+				<posx>40</posx>
+				<posy>60</posy>
+				<width>430</width>
+				<height>30</height>
+				<font>font11</font>
+				<textcolor>grey2</textcolor>
+				<label>$INFO[Container(11).ListItem.StartDate]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="list" id="11">
+				<posx>30</posx>
+				<posy>100</posy>
+				<width>410</width>
+				<height>490</height>
+				<onleft>60</onleft>
+				<onright>60</onright>
+				<onup>11</onup>
+				<ondown>11</ondown>
+				<viewtype label="535">list</viewtype>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="35" width="410">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>410</width>
+						<height>30</height>
+						<texture border="5">button-nofocus.png</texture>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>100</width>
+						<height>30</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.StartTime]</label>
+					</control>
+					<control type="image">
+						<posx>120</posx>
+						<posy>5</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
+					</control>
+					<control type="image">
+						<posx>120</posx>
+						<posy>5</posy>
+						<width>20</width>
+						<height>20</height>
+						<texture>PVR-HasTimer.png</texture>
+						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
+					</control>
+					<control type="label">
+						<posx>400</posx>
+						<posy>0</posy>
+						<width>300</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>![ListItem.IsRecording | ListItem.HasTimer]</visible>
+					</control>
+					<control type="label">
+						<posx>400</posx>
+						<posy>0</posy>
+						<width>250</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>ListItem.IsRecording | ListItem.HasTimer</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout height="35" width="410">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>410</width>
+						<height>30</height>
+						<texture border="5">button-nofocus.png</texture>
+						<visible>!Control.HasFocus(11)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>410</width>
+						<height>30</height>
+						<texture border="5">button-focus2.png</texture>
+						<visible>Control.HasFocus(11)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>100</width>
+						<height>30</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.StartTime]</label>
+					</control>
+					<control type="image">
+						<posx>120</posx>
+						<posy>5</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
+					</control>
+					<control type="image">
+						<posx>120</posx>
+						<posy>5</posy>
+						<width>20</width>
+						<height>20</height>
+						<texture>PVR-HasTimer.png</texture>
+						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
+					</control>
+					<control type="label">
+						<posx>400</posx>
+						<posy>0</posy>
+						<width>300</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>![ListItem.IsRecording | ListItem.HasTimer]</visible>
+					</control>
+					<control type="label">
+						<posx>400</posx>
+						<posy>0</posy>
+						<width>250</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<visible>ListItem.IsRecording | ListItem.HasTimer</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>440</posx>
+				<posy>100</posy>
+				<width>25</width>
+				<height>490</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>11</onleft>
+				<onright>11</onright>
+				<ondown>61</ondown>
+				<onup>61</onup>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<description>Page Count Label</description>
+				<posx>450</posx>
+				<posy>610</posy>
+				<width>400</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
+				<include>Window_OpenClose_Animation</include>		
+			</control>
+		</control>
+	</controls>
+</window>

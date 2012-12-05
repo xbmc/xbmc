@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -80,6 +79,17 @@ private:
 class CSysInfo : public CInfoLoader
 {
 public:
+  enum WindowsVersion
+  {
+    WindowsVersionUnknown = -1, // Undetected, unsupported Windows version or OS in not Windows
+    WindowsVersionWinXP,        // Windows XP, Windows Server 2003 (R2), Windows Home Server
+    WindowsVersionVista,        // Windows Vista, Windows Server 2008
+    WindowsVersionWin7,         // Windows 7, Windows Server 2008 R2
+    WindowsVersionWin8,         // Windows 8, Windows Server 2012
+    /* Insert new Windows versions here, when they'll be known */
+    WindowsVersionFuture = 100  // Future Windows version, not known to code
+  };
+
   CSysInfo(void);
   virtual ~CSysInfo();
 
@@ -105,8 +115,16 @@ public:
   bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
   bool IsVistaOrHigher();
+  static bool IsWindowsVersion(WindowsVersion ver);
+  static bool IsWindowsVersionAtLeast(WindowsVersion ver);
+  static WindowsVersion GetWindowsVersion();
+  static bool IsOS64bit();
   static CStdString GetKernelVersion();
-  CStdString GetXBVerInfo();
+  CStdString GetCPUModel();
+  CStdString GetCPUBogoMips();
+  CStdString GetCPUHardware();
+  CStdString GetCPURevision();
+  CStdString GetCPUSerial();
   bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
@@ -118,6 +136,7 @@ protected:
 
 private:
   CSysData m_info;
+  static WindowsVersion m_WinVer;
   void Reset();
 };
 

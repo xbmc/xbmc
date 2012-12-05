@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -221,14 +220,9 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       if (music)
         nDuration = music->GetDuration();
       if (movie)
-      {
-        if (movie->m_streamDetails.GetVideoDuration() > 0)
-          nDuration = movie->m_streamDetails.GetVideoDuration();
-        else if (!movie->m_strRuntime.IsEmpty())
-          nDuration = StringUtils::TimeStringToSeconds(movie->m_strRuntime);
-      }
+        nDuration = movie->GetDuration();
       if (nDuration > 0)
-        value = StringUtils::SecondsToTimeString(nDuration);
+        value = StringUtils::SecondsToTimeString(nDuration, (nDuration >= 3600) ? TIME_FORMAT_H_MM_SS : TIME_FORMAT_MM_SS);
       else if (item->m_dwSize > 0)
         value = StringUtils::SizeToString(item->m_dwSize);
     }
@@ -329,9 +323,8 @@ void CLabelFormatter::SplitMask(unsigned int label, const CStdString &mask)
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match
     m_staticContent[label].push_back(work.Left(findStart));
-    char* lp_tmp = reg.GetReplaceString("\\1");
-    m_dynamicContent[label].push_back(CMaskString("", *lp_tmp, ""));
-    free(lp_tmp);
+    m_dynamicContent[label].push_back(CMaskString("", 
+          reg.GetReplaceString("\\1")[0], ""));
     work = work.Mid(findStart + reg.GetFindLen());
   }
   m_staticContent[label].push_back(work);
@@ -353,16 +346,11 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match for a pre/postfixed string
     // send anything
-    char *s1 = reg.GetReplaceString("\\1");
-    char *s2 = reg.GetReplaceString("\\2");
-    char *s4 = reg.GetReplaceString("\\4");
-    char *s5 = reg.GetReplaceString("\\5");
-    SplitMask(label, work.Left(findStart) + s1);
-    m_dynamicContent[label].push_back(CMaskString(s2, *s4, s5));
-    free(s1);
-    free(s2);
-    free(s4);
-    free(s5);
+    SplitMask(label, work.Left(findStart) + reg.GetReplaceString("\\1").c_str());
+    m_dynamicContent[label].push_back(CMaskString(
+            reg.GetReplaceString("\\2"),
+            reg.GetReplaceString("\\4")[0],
+            reg.GetReplaceString("\\5")));
     work = work.Mid(findStart + reg.GetFindLen());
   }
   SplitMask(label, work);

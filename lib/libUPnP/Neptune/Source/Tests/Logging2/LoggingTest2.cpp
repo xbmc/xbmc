@@ -46,8 +46,9 @@ main(int, char**)
     for (;;) {
         NPT_System::Sleep(NPT_TimeInterval(1.0f));
         for (unsigned int i=0; i<sizeof(loggers)/sizeof(loggers[0]); i++) {
+            NPT_LoggerReference logger = { loggers[i], "test" };
             int level = NPT_System::GetRandomInteger()%800;
-            NPT_LOG_L2(loggers[i], level, "hello from logger %d, level %d", i, level);
+            NPT_LOG_L2(logger, level, "hello from logger %d, level %d", i, level);
         }
     }
 

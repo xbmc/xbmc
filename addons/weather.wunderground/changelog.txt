@@ -1,9 +1,79 @@
+v1.0.2
+- better error handling
+
+v1.0.1
+- fix encoding issues
+
+v1.0.0
+- bump version for frodo
+- added .po language files
+
+v0.1.12
+- updated wunderground api module
+
+v0.1.11
+- added spanish translation
+- avoid crashes on api error responses
+- fix invalid humidity value
+
+v0.1.10
+- add 'L' weather alert severity
+- filter invalid response code
+- don't add beaufort unit to windspeeds
+- fix default zoom level
+- fixed windspeed for uk based locations in 36 hour and weekend forecast
+- localize AM/PM strings
+- made animated maps optional
+
+v0.1.9
+- fixed json error when no files are found
+- fix 36 hour heading and temp (again)
+- better detection of systems that use AM/PM time format
+- provide windspeeds in beaufort for systems that use it
+
+v0.1.8
+- fixed escape slashes in path
+
+v0.1.7
+- clear alert properties when there are no alerts
+- delete chached images when weather location is changed
+
+v0.1.6
+- fix 36 hour heading and temp for certain languages
+- provide 3 day weekend forecast
+- keep 4 hours worth of satellite images to create an animation
+
+v0.1.5
+- fixed weather icon location
+- fixed temp unit for hourly feels like
+
+v0.1.4
+- fetch satellite image instead of radar
+
+v0.1.3
+- disabled yesterdays weather and animated radar images (we don't have free access to that data)
+- added static radar image
+
+v0.1.2
+- bug fixes
+
+v0.1.1
+- beta release
+
+v0.1.0
+- wait for thread to finish before setting properties
+
 v0.0.9
-- clear 7 day labels not 6
-- save only the actual location code
+- implement threading
+- added wundermap support
 
 v0.0.8
-- fix error if no internet connection is available when searching for a location
+- use ascii strings for location search
+- added advanced configuration
+- added debug logging
+- added Current.Location window property
+- moved api code to a separate module (other weather addons can use it fetch wunderground data)
+- localize weather data
 
 v0.0.7
 - fix: import error on Windows with non/extended-ascii profile paths

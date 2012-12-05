@@ -8,7 +8,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,9 +22,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -144,7 +143,7 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetID(void) const;
-  void SetID(int id) { m_controlID = id; };
+  virtual void SetID(int id) { m_controlID = id; };
   virtual bool HasID(int id) const;
   virtual bool HasVisibleID(int id) const;
   int GetParentID() const;
@@ -199,7 +198,10 @@ public:
   int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };
   int GetControlIdRight() const { return m_actionRight.GetNavigation(); };
   int GetControlIdBack() const { return m_actionBack.GetNavigation(); };
-  virtual int GetNextControl(int direction) const;
+  bool GetNavigationAction(int direction, CGUIAction& action) const;
+  /*! \brief  Start navigating in given direction.
+   */
+  bool Navigate(int direction);
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
@@ -271,6 +273,7 @@ public:
     GUICONTAINER_LIST,
     GUICONTAINER_WRAPLIST,
     GUICONTAINER_FIXEDLIST,
+    GUICONTAINER_EPGGRID,
     GUICONTAINER_PANEL
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }

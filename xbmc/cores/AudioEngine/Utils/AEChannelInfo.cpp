@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -189,12 +188,31 @@ bool CAEChannelInfo::operator!=(const CAEChannelInfo& rhs)
   return !(*this == rhs);
 }
 
-void CAEChannelInfo::operator+=(const enum AEChannel rhs)
+CAEChannelInfo& CAEChannelInfo::operator+=(const enum AEChannel& rhs)
 {
   ASSERT(m_channelCount < AE_CH_MAX);
   ASSERT(rhs > AE_CH_NULL && rhs < AE_CH_MAX);
 
   m_channels[m_channelCount++] = rhs;
+  return *this;
+}
+
+CAEChannelInfo& CAEChannelInfo::operator-=(const enum AEChannel& rhs)
+{
+  ASSERT(rhs > AE_CH_NULL && rhs < AE_CH_MAX);
+
+  unsigned int i = 0;
+  while(i < m_channelCount && m_channels[i] != rhs)
+    i++;
+  if (i >= m_channelCount)
+    return *this; // Channel not found
+
+  for(; i < m_channelCount-1; i++)
+    m_channels[i] = m_channels[i+1];
+
+  m_channels[i] = AE_CH_NULL;
+  m_channelCount--;
+  return *this;
 }
 
 const enum AEChannel CAEChannelInfo::operator[](unsigned int i) const

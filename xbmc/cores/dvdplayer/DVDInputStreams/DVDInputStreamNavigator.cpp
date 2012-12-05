@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDInputStreamNavigator.h"
-#include "Util.h"
 #include "utils/LangCodeExpander.h"
 #include "../DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
@@ -28,9 +26,9 @@
 #include "LangInfo.h"
 #include "utils/log.h"
 #include "guilib/Geometry.h"
-#include "filesystem/IFile.h"
+#include "utils/URIUtils.h"
 #if defined(TARGET_DARWIN)
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 #endif
 
 #define HOLDMODE_NONE 0
@@ -52,6 +50,11 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IDVDPlayer* player) : CDVDInp
   m_iTitle = m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
   m_iTime = m_iTotalTime = 0;
+  m_bEOF = false;
+  m_icurrentGroupId = 0;
+  m_lastevent = DVDNAV_NOP;
+
+  memset(m_lastblock, 0, sizeof(m_lastblock));
 }
 
 CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
@@ -61,7 +64,6 @@ CDVDInputStreamNavigator::~CDVDInputStreamNavigator()
 
 bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& content)
 {
-  char* strDVDFile;
   m_icurrentGroupId = 0;
   if (!CDVDInputStream::Open(strFile, "video/x-dvd-mpeg"))
     return false;
@@ -76,38 +78,29 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   // libdvdcss fails if the file path contains VIDEO_TS.IFO or VIDEO_TS/VIDEO_TS.IFO
   // libdvdnav is still able to play without, so strip them.
 
-  // stripping only works 100% correctly for absolute paths.
-  // relative paths are not expected here and wouldn't make sense, so it's safe to assume we'll have
-  // at least one path separator character.
-
-  strDVDFile = strdup(strFile);
-  int len = strlen(strDVDFile);
-
-  if(len >= 13  // +1 on purpose, to include a separator char before the searched string
-  && strncasecmp(strDVDFile + len - 12, "VIDEO_TS.IFO", 12) == 0)
-    strDVDFile[len - 13] = '\0';
-
-  len = strlen(strDVDFile);
-  if(len >= 9  // +1 on purpose, to include a separator char before the searched string
-  && strncasecmp(strDVDFile + len - 8, "VIDEO_TS", 8) == 0)
-    strDVDFile[len - 9] = '\0';
+  CStdString path = strFile;
+  if(URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
+    path = URIUtils::GetParentPath(path);
+  URIUtils::RemoveSlashAtEnd(path);
+  if(URIUtils::GetFileName(path) == "VIDEO_TS")
+    path = URIUtils::GetParentPath(path);
+  URIUtils::RemoveSlashAtEnd(path);
 
 #if defined(TARGET_DARWIN_OSX)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
-  strDVDFile = Cocoa_MountPoint2DeviceName(strDVDFile);
+  char* strDVDFile = Cocoa_MountPoint2DeviceName(strdup(path.c_str()));
+  path = strDVDFile;
+  free(strDVDFile);
 #endif
 
   // open up the DVD device
-  if (m_dll.dvdnav_open(&m_dvdnav, strDVDFile) != DVDNAV_STATUS_OK)
+  if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
   {
-    free(strDVDFile);
-
     CLog::Log(LOGERROR,"Error on dvdnav_open\n");
     Close();
     return false;
   }
-  free(strDVDFile);
 
   int region = g_guiSettings.GetInt("dvds.playerregion");
   int mask = 0;
@@ -265,7 +258,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   if (!m_dvdnav) return -1;
 
   int result;
-  int len;
+  int len = 2048;
   int iNavresult = NAVRESULT_NOP;
 
   // m_tempbuffer will be used for anything that isn't a normal data block
@@ -315,6 +308,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
         // user input to make menus and other interactive stills work.
         // A length of 0xff means an indefinite still which has to be skipped
         // indirectly by some user interaction.
+        m_holdmode = HOLDMODE_NONE;
         iNavresult = m_pDVDPlayer->OnDVDNavResult(buf, DVDNAV_STILL_FRAME);
 
         /* if user didn't care for action, just skip it */
@@ -1271,9 +1265,6 @@ int CDVDInputStreamNavigator::ConvertAudioStreamId_ExternalToXBMC(int id)
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
-
-  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
-  return -1;
 }
 
 int CDVDInputStreamNavigator::ConvertSubtitleStreamId_XBMCToExternal(int id)
@@ -1345,7 +1336,4 @@ int CDVDInputStreamNavigator::ConvertSubtitleStreamId_ExternalToXBMC(int id)
     // non VTS_DOMAIN, only one stream is available
     return 0;
   }
-
-  CLog::Log(LOGWARNING, "%s - no stream found %d", __FUNCTION__, id);
-  return -1;
 }

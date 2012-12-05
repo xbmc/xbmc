@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -62,7 +61,7 @@ void CGUIViewControl::SetParentWindow(int window)
   m_parentWindow = window;
 }
 
-void CGUIViewControl::SetCurrentView(int viewMode)
+void CGUIViewControl::SetCurrentView(int viewMode, bool bRefresh /* = false */)
 {
   // grab the previous control
   CGUIControl *previousView = NULL;
@@ -99,7 +98,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
     (*view)->SetVisible(false);
   pNewView->SetVisible(true);
 
-  if (pNewView == previousView)
+  if (!bRefresh && pNewView == previousView)
     return; // no need to actually update anything (other than visibility above)
 
 //  CLog::Log(LOGDEBUG,"SetCurrentView: Oldview: %i, Newview :%i", m_currentView, viewMode);
@@ -124,8 +123,9 @@ void CGUIViewControl::SetCurrentView(int viewMode)
     g_windowManager.SendMessage(msg);
   }
 
-  // Update our view control
-  UpdateViewAsControl(((CGUIBaseContainer *)pNewView)->GetLabel());
+  // Update our view control only if we are not in the TV Window
+  if (m_parentWindow != WINDOW_PVR)
+    UpdateViewAsControl(((CGUIBaseContainer *)pNewView)->GetLabel());
 }
 
 void CGUIViewControl::SetItems(CFileItemList &items)

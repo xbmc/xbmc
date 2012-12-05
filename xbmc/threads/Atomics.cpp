@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,32 +13,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "Atomics.h"
-
-// the only safe way to be absolutly sure that
-// gcc intrinsics are present when using an unknown GCC
-#if defined(__GNUC__) && defined(__GNUC_MINOR__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 4))
-  #define HAS_GCC_INTRINSICS
-#elif defined(TARGET_DARWIN)
-  // safe under darwin gcc-4.2, llvm-gcc-4.2 and clang
-  #define HAS_GCC_INTRINSICS
-#elif defined(TARGET_FREEBSD)
-  // safe under freebsd gcc-4.2 and clang
-  #define HAS_GCC_INTRINSICS
-#endif
+#include "system.h"
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
 long cas(volatile long *pAddr, long expectedVal, long swapVal)
 {
-#if defined(HAS_GCC_INTRINSICS)
+#if defined(HAS_BUILTIN_SYNC_VAL_COMPARE_AND_SWAP)
   return(__sync_val_compare_and_swap(pAddr, expectedVal, swapVal));
 #elif defined(__ppc__) || defined(__powerpc__) // PowerPC
   unsigned int prev;
@@ -160,7 +148,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 ///////////////////////////////////////////////////////////////////////////
 long AtomicIncrement(volatile long* pAddr)
 {
-#if defined(HAS_GCC_INTRINSICS)
+#if defined(HAS_BUILTIN_SYNC_ADD_AND_FETCH)
   return __sync_add_and_fetch(pAddr, 1);
 
 #elif defined(__ppc__) || defined(__powerpc__) // PowerPC
@@ -177,7 +165,7 @@ long AtomicIncrement(volatile long* pAddr)
     : "cc", "xer", "memory");
   return val;
 
-#elif defined(__arm__)
+#elif defined(__arm__) && !defined(__ARM_ARCH_5__)
   register long val;
   asm volatile (
     "dmb      ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
@@ -238,7 +226,7 @@ long AtomicIncrement(volatile long* pAddr)
 ///////////////////////////////////////////////////////////////////////////
 long AtomicAdd(volatile long* pAddr, long amount)
 {
-#if defined(HAS_GCC_INTRINSICS)
+#if defined(HAS_BUILTIN_SYNC_ADD_AND_FETCH)
   return __sync_add_and_fetch(pAddr, amount);
 
 #elif defined(__ppc__) || defined(__powerpc__) // PowerPC
@@ -255,7 +243,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
     : "cc", "memory");
   return val;
 
-#elif defined(__arm__)
+#elif defined(__arm__) && !defined(__ARM_ARCH_5__)
   register long val;
   asm volatile (
     "dmb      ish           \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
@@ -316,7 +304,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
 ///////////////////////////////////////////////////////////////////////////
 long AtomicDecrement(volatile long* pAddr)
 {
-#if defined(HAS_GCC_INTRINSICS)
+#if defined(HAS_BUILTIN_SYNC_SUB_AND_FETCH)
   return __sync_sub_and_fetch(pAddr, 1);
 
 #elif defined(__ppc__) || defined(__powerpc__) // PowerPC
@@ -394,7 +382,7 @@ long AtomicDecrement(volatile long* pAddr)
 ///////////////////////////////////////////////////////////////////////////
 long AtomicSubtract(volatile long* pAddr, long amount)
 {
-#if defined(HAS_GCC_INTRINSICS)
+#if defined(HAS_BUILTIN_SYNC_SUB_AND_FETCH)
   return __sync_sub_and_fetch(pAddr, amount);
 
 #elif defined(__ppc__) || defined(__powerpc__) // PowerPC

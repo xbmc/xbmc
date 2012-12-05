@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -89,12 +88,21 @@ static const winEndpointsToAEDeviceType winEndpoints[EndpointFormFactor_enum_cou
   {"Unknown - ",                AE_DEVTYPE_PCM},
 };
 
+// implemented in AESinkWASAPI.cpp
+extern CStdStringA localWideToUtf(LPCWSTR wstr);
+
 static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)
 {
   DSDevice dev;
   std::list<DSDevice> &enumerator = *static_cast<std::list<DSDevice>*>(lpContext);
 
-  dev.name = std::string(lpcstrDescription);
+  int bufSize = MultiByteToWideChar(CP_ACP, 0, lpcstrDescription, -1, NULL, 0);
+  CStdStringW strW (L"", bufSize);
+  if ( bufSize == 0 || MultiByteToWideChar(CP_ACP, 0, lpcstrDescription, -1, strW.GetBuf(bufSize), bufSize) != bufSize )
+    strW.clear();
+  strW.RelBuf();
+
+  dev.name = localWideToUtf(strW);
 
   dev.lpGuid = lpGuid;
 
@@ -130,7 +138,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   LPGUID deviceGUID = NULL;
   RPC_CSTR wszUuid  = NULL;
-  HRESULT hr;
+  HRESULT hr = E_FAIL;
   std::list<DSDevice> DSDeviceList;
   std::string deviceFriendlyName;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
@@ -553,9 +561,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       goto failed;
     }
 
-    std::wstring strRawFriendlyName(varName.pwszVal);
-    std::string strFriendlyName = std::string(strRawFriendlyName.begin(), strRawFriendlyName.end());
-
+    std::string strFriendlyName = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
@@ -567,8 +573,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       goto failed;
     }
 
-    std::wstring strRawDevName(varName.pwszVal);
-    std::string strDevName = std::string(strRawDevName.begin(), strRawDevName.end());
+    std::string strDevName = localWideToUtf(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
@@ -588,13 +593,14 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
     IAudioClient *pClient;
     hr = pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&pClient);
     if (FAILED(hr))
-      {
-        CLog::Log(LOGERROR, __FUNCTION__": Activate device failed (%s)", WASAPIErrToStr(hr));
-      }
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Activate device failed (%s)", WASAPIErrToStr(hr));
+      goto failed;
+    }
 
     //hr = pClient->GetMixFormat(&pwfxex);
     hr = pProperty->GetValue(PKEY_AudioEngine_DeviceFormat, &varName);
-    if (SUCCEEDED(hr))
+    if (SUCCEEDED(hr) && varName.blob.cbSize > 0)
     {
       WAVEFORMATEX* smpwfxex = (WAVEFORMATEX*)varName.blob.pBlobData;
       deviceInfo.m_channels = layoutsByChCount[std::min(smpwfxex->nChannels, (WORD) 2)];
@@ -604,7 +610,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
     }
     else
     {
-      CLog::Log(LOGERROR, __FUNCTION__": GetMixFormat failed (%s)", WASAPIErrToStr(hr));
+      CLog::Log(LOGERROR, __FUNCTION__": Getting DeviceFormat failed (%s)", WASAPIErrToStr(hr));
     }
     pClient->Release();
 
@@ -644,8 +650,9 @@ void CAESinkDirectSound::CheckPlayStatus()
   if (!(status & DSBSTATUS_PLAYING) && m_CacheLen != 0) // If we have some data, see if we can start playback
   {
     HRESULT hr = m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
-    dserr2str(hr);
     CLog::Log(LOGDEBUG,__FUNCTION__ ": Resuming Playback");
+    if (FAILED(hr))
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to play the DirectSound buffer: %s", dserr2str(hr));
   }
 }
 

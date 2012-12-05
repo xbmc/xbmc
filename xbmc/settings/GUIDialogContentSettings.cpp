@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,6 +30,8 @@
 #include "interfaces/Builtins.h"
 #include "filesystem/AddonsDirectory.h"
 #include "dialogs/GUIDialogKaiToast.h"
+
+#include <climits>
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -60,7 +61,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_scrapers.clear();
-      m_lastSelected.clear();
       m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
@@ -112,15 +112,6 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
   }
   return CGUIDialogSettings::OnMessage(message);
-}
-
-void CGUIDialogContentSettings::OnWindowLoaded()
-{
-  // save our current scraper (if any)
-  m_lastSelected.clear();
-  m_lastSelected[m_content] = m_scraper;
-  FillContentTypes();
-  CGUIDialogSettings::OnWindowLoaded();
 }
 
 void CGUIDialogContentSettings::SetupPage()
@@ -176,8 +167,10 @@ void CGUIDialogContentSettings::CreateSettings()
     break;
   case CONTENT_MUSICVIDEOS:
     {
-      AddBool(1,20346,&m_bScanRecursive, m_bShowScanSettings);
-      AddBool(2,20432,&m_bNoUpdate, m_bShowScanSettings);
+      AddBool(1,20330,&m_bUseDirNames, m_bShowScanSettings);
+      AddBool(2,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
+      AddBool(3,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
+      AddBool(4,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
     break;
   case CONTENT_ALBUMS:
@@ -231,6 +224,11 @@ void CGUIDialogContentSettings::OnCancel()
 
 void CGUIDialogContentSettings::OnInitWindow()
 {
+  m_lastSelected.clear();
+  // save our current scraper (if any)
+  if (m_scraper)
+    m_lastSelected[m_content] = m_scraper;
+  FillContentTypes();
   m_bNeedSave = false;
   CGUIDialogSettings::OnInitWindow();
 }
@@ -321,7 +319,7 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItemPtr item(new CFileItem((*iter)->Name()));
     item->SetPath((*iter)->ID());
-    item->SetThumbnailImage((*iter)->Icon());
+    item->SetArt("thumb", (*iter)->Icon());
     if (m_scraper && (*iter)->ID() == m_scraper->ID())
     {
       item->Select(true);
@@ -398,7 +396,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
 
   dialog->m_bScanRecursive = (settings.recurse > 0 && !settings.parent_name) || (settings.recurse > 1 && settings.parent_name);
   dialog->m_bUseDirNames   = settings.parent_name;
-  dialog->m_bExclude       = settings.exclude; 
+  dialog->m_bExclude       = settings.exclude;
   dialog->m_bSingleItem    = settings.parent_name_root;
   dialog->m_bNoUpdate      = settings.noupdate;
   dialog->m_bNeedSave = false;
@@ -412,7 +410,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       scraper.reset();
       settings.exclude = dialog->m_bExclude;
     }
-    else 
+    else
     {
       settings.exclude = false;
       settings.noupdate = dialog->m_bNoUpdate;
@@ -447,9 +445,24 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       }
       else if (content == CONTENT_MUSICVIDEOS)
       {
-        settings.parent_name = false;
-        settings.parent_name_root = false;
-        settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
+        if (dialog->m_bUseDirNames)
+        {
+          settings.parent_name = true;
+          settings.parent_name_root = false;
+          settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 1;
+
+          if (dialog->m_bSingleItem)
+          {
+            settings.parent_name_root = true;
+            settings.recurse = 0;
+          }
+        }
+        else
+         {
+           settings.parent_name = false;
+           settings.parent_name_root = false;
+           settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
+         }
       }
     }
   }

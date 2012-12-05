@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -169,12 +168,12 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   else if(name == "thumbnail")
   {
     if(item_child->GetText() && IsPathToThumbnail(item_child->GetText()))
-      item->SetThumbnailImage(item_child->GetText());
+      item->SetArt("thumb", item_child->GetText());
     else
     {
       const char * url = item_child->Attribute("url");
       if(url && IsPathToThumbnail(url))
-        item->SetThumbnailImage(url);
+        item->SetArt("thumb", url);
     }
   }
   else if (name == "title")
@@ -264,9 +263,9 @@ static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement
   {
     const char * url = item_child->Attribute("href");
     if(url)
-      item->SetThumbnailImage(url);
+      item->SetArt("thumb", url);
     else
-      item->SetThumbnailImage(text);
+      item->SetArt("thumb", text);
   }
   else if(name == "summary")
     vtag->m_strPlot = text;
@@ -275,7 +274,7 @@ static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement
   else if(name == "author")
     vtag->m_writingCredits.push_back(text);
   else if(name == "duration")
-    vtag->m_strRuntime = text;
+    vtag->m_duration = StringUtils::TimeStringToSeconds(text);
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 }
@@ -360,9 +359,9 @@ static void ParseItemVoddler(CFileItem* item, SResources& resources, TiXmlElemen
   {
     const char* url = element->Attribute("url");
     if(url)
-      item->SetProperty("fanart_image", url);
+      item->SetArt("fanart", url);
     else if(IsPathToThumbnail(text))
-      item->SetProperty("fanart_image", text);
+      item->SetArt("fanart", text);
   }
 }
 
@@ -372,13 +371,13 @@ static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement*
   CStdString text = element->GetText();
 
   if     (name == "image")
-    item->SetThumbnailImage(text);
+    item->SetArt("thumb", text);
   else if(name == "user_agent")
     item->SetProperty("boxee:user_agent", text);
   else if(name == "content_type")
     item->SetMimeType(text);
   else if(name == "runtime")
-    vtag->m_strRuntime = text;
+    vtag->m_duration = StringUtils::TimeStringToSeconds(text);
   else if(name == "episode")
     vtag->m_iEpisode = atoi(text);
   else if(name == "season")
@@ -406,9 +405,9 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
   else if(name == "userrating")
     vtag->m_fRating = (float)atof(text.c_str());
   else if(name == "duration")
-    vtag->m_strRuntime = StringUtils::SecondsToTimeString(atoi(text));
+    vtag->m_duration = atoi(text);
   else if(name == "durationstr")
-    vtag->m_strRuntime = text;
+    vtag->m_duration = StringUtils::TimeStringToSeconds(text);
 }
 
 static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const CStdString& name, const CStdString& xmlns, const CStdString& path)
@@ -562,8 +561,8 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   {
     CVideoInfoTag* vtag = item->GetVideoInfoTag();
 
-    if(item->HasProperty("duration")    && vtag->m_strRuntime.IsEmpty())
-      vtag->m_strRuntime = item->GetProperty("duration").asString();
+    if(item->HasProperty("duration")    && !vtag->GetDuration())
+      vtag->m_duration = StringUtils::TimeStringToSeconds(item->GetProperty("duration").asString());
 
     if(item->HasProperty("description") && vtag->m_strPlot.IsEmpty())
       vtag->m_strPlot = item->GetProperty("description").asString();
@@ -577,8 +576,8 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
         vtag->m_strPlotOutline = vtag->m_strPlot;
     }
 
-    if(!vtag->m_strRuntime.IsEmpty())
-      item->SetLabel2(vtag->m_strRuntime);
+    if(!vtag->GetDuration())
+      item->SetLabel2(StringUtils::SecondsToTimeString(vtag->GetDuration()));
   }
 }
 
@@ -630,6 +629,9 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     ParseItem(item.get(), child, path);
 
     item->SetProperty("isrss", "1");
+    // Use channel image if item doesn't have one
+    if (!item->HasArt("thumb") && items.HasArt("thumb"))
+      item->SetArt("thumb", items.GetArt("thumb"));
 
     if (!item->GetPath().IsEmpty())
       items.Add(item);

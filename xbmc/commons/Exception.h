@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,12 +28,19 @@
 //---------------------------------------------------------
 #include "ilog.h"
 
+#ifdef __GNUC__
+// The 'this' pointer counts as a parameter on member methods.
+#define XBMCCOMMONS_ATTRIB_EXCEPTION_FORMAT __attribute__((format(printf,2,3)))
+#else
+#define XBMCCOMMONS_ATTRIB_EXCEPTION_FORMAT
+#endif
+
 #define XBMCCOMMONS_COPYVARARGS(fmt) va_list argList; va_start(argList, fmt); Set(fmt, argList); va_end(argList)
 #define XBMCCOMMONS_STANDARD_EXCEPTION(E) \
   class E : public XbmcCommons::Exception \
   { \
   public: \
-    inline E(const char* message,...) : Exception(#E) { XBMCCOMMONS_COPYVARARGS(message); } \
+    inline E(const char* message,...) XBMCCOMMONS_ATTRIB_EXCEPTION_FORMAT : Exception(#E) { XBMCCOMMONS_COPYVARARGS(message); } \
     \
     inline E(const E& other) : Exception(other) {} \
   }
@@ -56,7 +62,7 @@ namespace XbmcCommons
   protected:
     static ILogger* logger;
 
-	inline Exception(const char* classname_) : classname(classname_) { }
+    inline Exception(const char* classname_) : classname(classname_) { }
     inline Exception(const char* classname_, const char* message_) : classname(classname_), message(message_) { }
     inline Exception(const Exception& other) : classname(other.classname), message(other.message) { }
 
@@ -73,11 +79,13 @@ namespace XbmcCommons
      * This message can be called from the constructor of subclasses.
      * It will set the message and log the throwing.
      */
-    inline void SetMessage(const char* fmt, ...)
+    inline void SetMessage(const char* fmt, ...) XBMCCOMMONS_ATTRIB_EXCEPTION_FORMAT
     {
       // calls 'set'
       XBMCCOMMONS_COPYVARARGS(fmt);
     }
+
+    inline void setClassname(const char* cn) { classname = cn; }
 
   public:
     virtual ~Exception();

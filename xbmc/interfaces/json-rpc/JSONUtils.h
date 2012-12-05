@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,7 +23,9 @@
 #include <stdlib.h>
 
 #include "JSONRPCUtils.h"
+#include "utils/SortUtils.h"
 #include "interfaces/IAnnouncer.h"
+#include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/JSONVariantParser.h"
 
@@ -70,6 +71,127 @@ namespace JSONRPC
     }
 
   protected:
+    static void HandleLimits(const CVariant &parameterObject, CVariant &result, int size, int &start, int &end)
+    {
+      if (size < 0)
+        size = 0;
+    
+      start = (int)parameterObject["limits"]["start"].asInteger();
+      end   = (int)parameterObject["limits"]["end"].asInteger();
+      end = (end <= 0 || end > size) ? size : end;
+      start = start > end ? end : start;
+
+      result["limits"]["start"] = start;
+      result["limits"]["end"]   = end;
+      result["limits"]["total"] = size;
+    }
+
+    static bool ParseSorting(const CVariant &parameterObject, SortBy &sortBy, SortOrder &sortOrder, SortAttribute &sortAttributes)
+    {
+      CStdString method = parameterObject["sort"]["method"].asString();
+      CStdString order = parameterObject["sort"]["order"].asString();
+      method.ToLower();
+      order.ToLower();
+
+      sortAttributes = SortAttributeNone;
+      if (parameterObject["sort"]["ignorearticle"].asBoolean())
+        sortAttributes = SortAttributeIgnoreArticle;
+      else
+        sortAttributes = SortAttributeNone;
+
+      if (order.Equals("ascending"))
+        sortOrder = SortOrderAscending;
+      else if (order.Equals("descending"))
+        sortOrder = SortOrderDescending;
+      else
+        return false;
+
+      if (method.Equals("none"))
+        sortBy = SortByNone;
+      else if (method.Equals("label"))
+        sortBy = SortByLabel;
+      else if (method.Equals("date"))
+        sortBy = SortByDate;
+      else if (method.Equals("size"))
+        sortBy = SortBySize;
+      else if (method.Equals("file"))
+        sortBy = SortByFile;
+      else if (method.Equals("path"))
+        sortBy = SortByPath;
+      else if (method.Equals("drivetype"))
+        sortBy = SortByDriveType;
+      else if (method.Equals("title"))
+        sortBy = SortByTitle;
+      else if (method.Equals("track"))
+        sortBy = SortByTrackNumber;
+      else if (method.Equals("time"))
+        sortBy = SortByTime;
+      else if (method.Equals("artist"))
+        sortBy = SortByArtist;
+      else if (method.Equals("album"))
+        sortBy = SortByAlbum;
+      else if (method.Equals("albumtype"))
+        sortBy = SortByAlbumType;
+      else if (method.Equals("genre"))
+        sortBy = SortByGenre;
+      else if (method.Equals("country"))
+        sortBy = SortByCountry;
+      else if (method.Equals("year"))
+        sortBy = SortByYear;
+      else if (method.Equals("rating"))
+        sortBy = SortByRating;
+      else if (method.Equals("votes"))
+        sortBy = SortByVotes;
+      else if (method.Equals("top250"))
+        sortBy = SortByTop250;
+      else if (method.Equals("programcount"))
+        sortBy = SortByProgramCount;
+      else if (method.Equals("playlist"))
+        sortBy = SortByPlaylistOrder;
+      else if (method.Equals("episode"))
+        sortBy = SortByEpisodeNumber;
+      else if (method.Equals("season"))
+        sortBy = SortBySeason;
+      else if (method.Equals("totalepisodes"))
+        sortBy = SortByNumberOfEpisodes;
+      else if (method.Equals("watchedepisodes"))
+        sortBy = SortByNumberOfWatchedEpisodes;
+      else if (method.Equals("tvshowstatus"))
+        sortBy = SortByTvShowStatus;
+      else if (method.Equals("tvshowtitle"))
+        sortBy = SortByTvShowTitle;
+      else if (method.Equals("sorttitle"))
+        sortBy = SortBySortTitle;
+      else if (method.Equals("productioncode"))
+        sortBy = SortByProductionCode;
+      else if (method.Equals("mpaa"))
+        sortBy = SortByMPAA;
+      else if (method.Equals("studio"))
+        sortBy = SortByStudio;
+      else if (method.Equals("dateadded"))
+        sortBy = SortByDateAdded;
+      else if (method.Equals("lastplayed"))
+        sortBy = SortByLastPlayed;
+      else if (method.Equals("playcount"))
+        sortBy = SortByPlaycount;
+      else if (method.Equals("listeners"))
+        sortBy = SortByListeners;
+      else if (method.Equals("bitrate"))
+        sortBy = SortByBitrate;
+      else if (method.Equals("random"))
+        sortBy = SortByRandom;
+      else
+        return false;
+
+      return true;
+    }
+
+    static void ParseLimits(const CVariant &parameterObject, int &limitStart, int &limitEnd)
+    {
+      limitStart = (int)parameterObject["limits"]["start"].asInteger();
+      limitEnd = (int)parameterObject["limits"]["end"].asInteger();
+    }
+  
     /*!
      \brief Checks if the given object contains a parameter
      \param parameterObject Object to check for a parameter
@@ -263,7 +385,10 @@ namespace JSONRPC
       }
 
       if (jsonObject.size() == 1)
-        jsonObject = jsonObject[0];
+      {
+        CVariant jsonType = jsonObject[0];
+        jsonObject = jsonType;
+      }
     }
 
     static inline const char *ValueTypeToString(CVariant::VariantType valueType)
@@ -391,6 +516,26 @@ namespace JSONRPC
       stringArray.clear();
       for (CVariant::const_iterator_array it = jsonStringArray.begin_array(); it != jsonStringArray.end_array(); it++)
         stringArray.push_back(it->asString());
+    }
+
+    static bool GetXspFiltering(const CStdString &type, const CVariant &filter, CStdString &xsp)
+    {
+      if (type.empty() || !filter.isObject())
+        return false;
+
+      CVariant xspObj(CVariant::VariantTypeObject);
+      xspObj["type"] = type;
+
+      if (filter.isMember("field"))
+      {
+        xspObj["rules"]["and"] = CVariant(CVariant::VariantTypeArray);
+        xspObj["rules"]["and"].push_back(filter);
+      }
+      else
+        xspObj["rules"] = filter;
+
+      CSmartPlaylist playlist;
+      return playlist.Load(xspObj) && playlist.SaveAsJson(xsp, false);
     }
   };
 }

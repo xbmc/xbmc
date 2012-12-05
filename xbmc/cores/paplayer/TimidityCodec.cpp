@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,13 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "TimidityCodec.h"
+#include "URL.h"
 #include "../DllLoader/LibraryLoader.h"
 #include "../DllLoader/SoLoader.h"
 #include "../DllLoader/DllLoader.h"
@@ -34,11 +34,12 @@ static const char * DEFAULT_SOUNDFONT_FILE = "special://masterprofile/timidity/s
 
 TimidityCodec::TimidityCodec()
 {
-  m_CodecName = "MID";
+  m_CodecName = "mid";
   m_mid = 0;
   m_iTrack = -1;
   m_iDataPos = -1;
   m_loader = NULL;
+  memset(&m_dll, 0, sizeof(m_dll));
 }
 
 TimidityCodec::~TimidityCodec()

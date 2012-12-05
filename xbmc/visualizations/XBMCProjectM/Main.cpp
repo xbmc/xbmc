@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2007-2010 Team XBMC
+ *      Copyright (C) 2007-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -78,7 +77,7 @@ bool g_UserPackFolder;
 char lastPresetDir[1024];
 bool lastLockStatus;
 int lastPresetIdx;
-int lastLoggedPresetIdx;
+unsigned int lastLoggedPresetIdx;
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
@@ -131,10 +130,14 @@ extern "C" void Render()
   if (globalPM)
   {
     globalPM->renderFrame();
-    unsigned preset;
-    globalPM->selectedPresetIndex(preset);
-    if (lastLoggedPresetIdx != preset) CLog::Log(LOGDEBUG,"PROJECTM - Changed preset to: %s",g_presets[preset]);
-    lastLoggedPresetIdx = preset;
+    if (g_presets)
+    {
+      unsigned preset;
+      globalPM->selectedPresetIndex(preset);
+      if (lastLoggedPresetIdx != preset)
+        CLog::Log(LOGDEBUG,"PROJECTM - Changed preset to: %s",g_presets[preset]);
+      lastLoggedPresetIdx = preset;
+    }
   }
 }
 
@@ -360,7 +363,8 @@ bool InitProjectM()
     else
     {
       //If it is the first run or a newly chosen preset pack we choose a random preset as first
-      globalPM->selectPreset((rand() % (globalPM->getPlaylistSize())));
+      if (globalPM->getPlaylistSize())
+        globalPM->selectPreset((rand() % (globalPM->getPlaylistSize())));
     }
     return true;
   }
@@ -381,6 +385,10 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
 
   if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file
   {
+    if (!globalPM)
+    {
+      return ADDON_STATUS_UNKNOWN;
+    }
     if (strcmp((char*)value, "0") == 0)
     {
       strcpy((char*)id, "lastpresetfolder");

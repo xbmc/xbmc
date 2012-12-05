@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -50,8 +49,8 @@ namespace XFILE
     
     virtual ILiveTVInterface * GetLiveTV()                     { return (ILiveTVInterface *)this; }
     
-    virtual bool NextChannel();
-    virtual bool PrevChannel();
+    virtual bool NextChannel(bool bPreview = false); // TODO bPreview is not implemented
+    virtual bool PrevChannel(bool bPreview = false); // TODO bPreview is not implemented
     virtual bool SelectChannel(unsigned int uiChannel);
     
   protected:

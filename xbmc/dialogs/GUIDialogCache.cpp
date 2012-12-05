@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
  
 #include "threads/SystemClock.h"
 #include "GUIDialogCache.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/LocalizeStrings.h"
@@ -56,7 +55,7 @@ void CGUIDialogCache::Close(bool bForceClose)
   // we cannot wait for the app thread to process the close message
   // as this might happen during player startup which leads to a deadlock
   if (m_pDlg->IsDialogRunning())
-    g_application.getApplicationMessenger().Close(m_pDlg,bForceClose,false);
+    CApplicationMessenger::Get().Close(m_pDlg,bForceClose,false);
 
   //Set stop, this will kill this object, when thread stops  
   CThread::m_bStop = true;

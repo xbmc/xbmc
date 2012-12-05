@@ -2,7 +2,7 @@
 #define NETWORK_LINUX_H_
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -70,12 +69,7 @@ public:
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
-#if defined(TARGET_DARWIN_IOS)
-   // on iOS, overwrite the GetFirstConnectedInterface and requery
-   // the interface list if no connected device is found
-   // this fixes a bug when no network is available after first start of xbmc after reboot
    virtual CNetworkInterface* GetFirstConnectedInterface(void);        
-#endif
     
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void);

@@ -9,14 +9,14 @@ Terminal=false
 Type=Application
 Categories=AudioVideo;Video;Player;TV;
 
-Actions=Fullscreen;Standalone
+Actions=Fullscreen;Standalone;
 
 [Desktop Action Fullscreen]
 Name=Open in fullscreen
 Exec=xbmc -fs
-OnlyShowIn=Unity
+OnlyShowIn=Unity;
 
 [Desktop Action Standalone]
 Name=Open in standalone mode
-Exect=xbmc --standalone
-OnlyShowIn=Unity
+Exec=xbmc --standalone
+OnlyShowIn=Unity;

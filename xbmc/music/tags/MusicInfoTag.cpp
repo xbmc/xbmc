@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "MusicInfoTag.h"
 #include "music/Album.h"
+#include "music/Artist.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
@@ -108,6 +108,12 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_iDbId = tag.m_iDbId;
   m_type = tag.m_type;
   m_iAlbumId = tag.m_iAlbumId;
+  m_iTrackGain = tag.m_iTrackGain;
+  m_iAlbumGain = tag.m_iAlbumGain;
+  m_fTrackPeak = tag.m_fTrackPeak;
+  m_fAlbumPeak = tag.m_fAlbumPeak;
+  m_iHasGainInfo = tag.m_iHasGainInfo;
+
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   m_coverArt = tag.m_coverArt;
   return *this;
@@ -118,11 +124,6 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
   if (this == &tag) return false;
   if (m_strURL != tag.m_strURL) return true;
   if (m_strTitle != tag.m_strTitle) return true;
-  for (unsigned int index = 0; index < m_artist.size(); index++)
-  {
-    if (tag.m_artist.at(index).compare(m_artist.at(index)) != 0)
-      return true;
-  }
   if (m_bCompilation != tag.m_bCompilation) return true;
   if (m_artist != tag.m_artist) return true;
   if (m_albumArtist != tag.m_albumArtist) return true;
@@ -182,7 +183,7 @@ const std::vector<std::string>& CMusicInfoTag::GetAlbumArtist() const
   return m_albumArtist;
 }
 
-const std::vector<std::string> CMusicInfoTag::GetGenre() const
+const std::vector<std::string>& CMusicInfoTag::GetGenre() const
 {
   return m_genre;
 }
@@ -197,7 +198,7 @@ int CMusicInfoTag::GetYear() const
   return m_dwReleaseDate.wYear;
 }
 
-long CMusicInfoTag::GetDatabaseId() const
+int CMusicInfoTag::GetDatabaseId() const
 {
   return m_iDbId;
 }
@@ -252,6 +253,31 @@ bool CMusicInfoTag::GetCompilation() const
 const EmbeddedArtInfo &CMusicInfoTag::GetCoverArtInfo() const
 {
   return m_coverArt;
+}
+
+int CMusicInfoTag::GetReplayGainTrackGain() const
+{
+  return m_iTrackGain;
+}
+
+int CMusicInfoTag::GetReplayGainAlbumGain() const
+{
+  return m_iAlbumGain;
+}
+
+float CMusicInfoTag::GetReplayGainTrackPeak() const
+{
+  return m_fTrackPeak;
+}
+
+float CMusicInfoTag::GetReplayGainAlbumPeak() const
+{
+  return m_fAlbumPeak;
+}
+
+int CMusicInfoTag::HasReplayGainInfo() const
+{
+  return m_iHasGainInfo;
 }
 
 void CMusicInfoTag::SetURL(const CStdString& strURL)
@@ -455,11 +481,46 @@ void CMusicInfoTag::SetCoverArtInfo(size_t size, const std::string &mimeType)
   m_coverArt.set(size, mimeType);
 }
 
+void CMusicInfoTag::SetReplayGainTrackGain(int trackGain)
+{
+  m_iTrackGain = trackGain;
+  m_iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
+}
+
+void CMusicInfoTag::SetReplayGainAlbumGain(int albumGain)
+{
+  m_iAlbumGain = albumGain;
+  m_iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
+}
+
+void CMusicInfoTag::SetReplayGainTrackPeak(float trackPeak)
+{
+  m_fTrackPeak = trackPeak;
+  m_iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
+}
+
+void CMusicInfoTag::SetReplayGainAlbumPeak(float albumPeak)
+{
+  m_fAlbumPeak = albumPeak;
+  m_iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
+}
+
+void CMusicInfoTag::SetArtist(const CArtist& artist)
+{
+  SetArtist(artist.strArtist);
+  SetAlbumArtist(artist.strArtist);
+  SetGenre(artist.genre);
+  m_iDbId = artist.idArtist;
+  m_type = "artist";
+  m_bLoaded = true;
+}
+
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   SetArtist(album.artist);
   SetAlbumId(album.idAlbum);
   SetAlbum(album.strAlbum);
+  SetTitle(album.strAlbum);
   SetAlbumArtist(album.artist);
   SetGenre(album.genre);
   SetRating('0' + album.iRating);
@@ -467,6 +528,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
   SetReleaseDate(stTime);
+  m_iTimesPlayed = album.iTimesPlayed;
   m_iDbId = album.idAlbum;
   m_type = "album";
   m_bLoaded = true;
@@ -501,17 +563,18 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_iAlbumId = song.iAlbumId;
 }
 
-void CMusicInfoTag::Serialize(CVariant& value)
+void CMusicInfoTag::Serialize(CVariant& value) const
 {
-  /* TODO:
-     All the StringUtils::Join() calls can be removed once backwards-compatibility to
-     JSON-RPC v4 can be broken */
   value["url"] = m_strURL;
   value["title"] = m_strTitle;
-  value["artist"] = StringUtils::Join(m_artist, " / ");
+  if (m_type.compare("artist") == 0 && m_artist.size() == 1)
+    value["artist"] = m_artist[0];
+  else
+    value["artist"] = m_artist;
+  value["displayartist"] = StringUtils::Join(m_artist, g_advancedSettings.m_musicItemSeparator);
   value["album"] = m_strAlbum;
-  value["albumartist"] = StringUtils::Join(m_albumArtist, " / ");
-  value["genre"] = StringUtils::Join(m_genre, " / ");
+  value["albumartist"] = m_albumArtist;
+  value["genre"] = m_genre;
   value["duration"] = m_iDuration;
   value["track"] = GetTrackNumber();
   value["disc"] = GetDiscNumber();
@@ -572,6 +635,11 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_rating;
     ar << m_iTimesPlayed;
     ar << m_iAlbumId;
+    ar << m_iDbId;
+    ar << m_type;
+    ar << m_strLyrics;
+    ar << m_bCompilation;
+    ar << m_listeners;
   }
   else
   {
@@ -595,7 +663,12 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_rating;
     ar >> m_iTimesPlayed;
     ar >> m_iAlbumId;
- }
+    ar >> m_iDbId;
+    ar >> m_type;
+    ar >> m_strLyrics;
+    ar >> m_bCompilation;
+    ar >> m_listeners;
+  }
 }
 
 void CMusicInfoTag::Clear()
@@ -624,6 +697,11 @@ void CMusicInfoTag::Clear()
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
   m_iAlbumId = -1;
   m_coverArt.clear();
+  m_iTrackGain = 0;
+  m_iAlbumGain = 0;
+  m_fTrackPeak = 0.0f;
+  m_fAlbumPeak = 0.0f;
+  m_iHasGainInfo = 0;
 }
 
 void CMusicInfoTag::AppendArtist(const CStdString &artist)

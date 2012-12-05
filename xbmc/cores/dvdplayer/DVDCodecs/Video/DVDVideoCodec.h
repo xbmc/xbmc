@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -214,6 +213,7 @@ public:
     FILTER_DEINTERLACE_ANY     =  0xf,  /* use any deinterlace mode */
     FILTER_DEINTERLACE_FLAGGED = 0x10,  /* only deinterlace flagged frames */
     FILTER_DEINTERLACE_HALFED  = 0x20,  /* do half rate deinterlacing */
+    FILTER_ROTATE              = 0x40,  /* rotate image according to the codec hints */
   };
 
   /*

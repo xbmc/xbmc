@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -46,6 +45,12 @@ private:
   static unsigned int Float_S32LE (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_S32BE (float   *data, const unsigned int samples, uint8_t *dest);
   static unsigned int Float_DOUBLE(float   *data, const unsigned int samples, uint8_t *dest);
+
+  static unsigned int S32LE_Float_Neon (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int S32BE_Float_Neon (uint8_t *data, const unsigned int samples, float   *dest);
+  static unsigned int Float_S32LE_Neon (float   *data, const unsigned int samples, uint8_t *dest);
+  static unsigned int Float_S32BE_Neon (float   *data, const unsigned int samples, uint8_t *dest);
+
 public:
   typedef unsigned int (*AEConvertToFn)(uint8_t *data, const unsigned int samples, float   *dest);
   typedef unsigned int (*AEConvertFrFn)(float   *data, const unsigned int samples, uint8_t *dest);

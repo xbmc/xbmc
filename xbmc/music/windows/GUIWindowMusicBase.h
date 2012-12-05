@@ -6,7 +6,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,9 +20,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,6 +31,7 @@
 #include "music/infoscanner/MusicInfoScraper.h"
 #include "PlayListPlayer.h"
 #include "music/MusicInfoLoader.h"
+#include "music/MusicThumbLoader.h"
 
 /*!
  \ingroup windows
@@ -46,6 +46,7 @@ public:
   CGUIWindowMusicBase(int id, const CStdString &xmlFile);
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
   virtual bool OnBack(int actionID);
 
   void OnInfo(CFileItem *pItem, bool bShowInfo = false);
@@ -71,6 +72,9 @@ protected:
   void OnRipCD();
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual CStdString GetStartFolder(const CStdString &dir);
+
+  virtual bool CheckFilterAdvanced(CFileItemList &items) const;
+  virtual bool CanContainFilter(const CStdString &strDirectory) const;
 
   // new methods
   virtual void PlayItem(int iItem);

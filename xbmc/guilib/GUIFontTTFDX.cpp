@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -181,7 +180,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   // There might be data to copy from the previous texture
   if ((newSpeedupTexture && m_speedupTexture) || (newTexture && m_texture))
   {
-    if (m_speedupTexture)
+    if (m_speedupTexture && newSpeedupTexture)
     {
       m_speedupTexture->GetSurfaceLevel(0, &pSource);
       newSpeedupTexture->GetSurfaceLevel(0, &pTarget);
@@ -260,7 +259,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   return pNewTexture;
 }
 
-bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
+bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
@@ -272,12 +271,8 @@ bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
     texture->GetSurfaceLevel(0, &target);
 
   RECT sourcerect = { 0, 0, bitmap.width, bitmap.rows };
-  RECT targetrect;
-  targetrect.top = m_posY + ch->offsetY;
-  targetrect.left = m_posX + bitGlyph->left;
-  targetrect.bottom = targetrect.top + bitmap.rows;
-  targetrect.right = targetrect.left + bitmap.width;
-  
+  RECT targetrect = { x1, y1, x2, y2 };
+
   HRESULT hr = D3DXLoadSurfaceFromMemory( target, NULL, &targetrect,
                                           bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect,
                                           D3DX_FILTER_NONE, 0x00000000);

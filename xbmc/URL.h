@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,13 +14,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "utils/StdString.h"
+#include "utils/UrlOptions.h"
 
 #ifdef _WIN32
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
@@ -71,7 +71,16 @@ public:
   static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path
   static void Decode(CStdString& strURLData);
   static void Encode(CStdString& strURLData);
+  static std::string Decode(const std::string& strURLData);
+  static std::string Encode(const std::string& strURLData);
   static CStdString TranslateProtocol(const CStdString& prot);
+
+  void GetOptions(std::map<CStdString, CStdString> &options) const;
+  bool HasOption(const CStdString &key) const;
+  bool GetOption(const CStdString &key, CStdString &value) const;
+  CStdString GetOption(const CStdString &key) const;
+  void SetOption(const CStdString &key, const CStdString &value);
+  void RemoveOption(const CStdString &key);
 
 protected:
   int m_iPort;
@@ -85,4 +94,5 @@ protected:
   CStdString m_strFileType;
   CStdString m_strOptions;
   CStdString m_strProtocolOptions;
+  CUrlOptions m_options;
 };

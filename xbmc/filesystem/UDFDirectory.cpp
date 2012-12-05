@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -39,16 +38,26 @@ CUDFDirectory::~CUDFDirectory(void)
 bool CUDFDirectory::GetDirectory(const CStdString& strPath,
                                  CFileItemList &items)
 {
-  CStdString strRoot = strPath;
+  CStdString strRoot, strSub;
+  CURL url;
+  if(strPath.Left(6) == "udf://")
+  {
+    url.Parse(strPath);
+    CURL url(strPath);
+  }
+  else
+  {
+    url.SetProtocol("udf");
+    url.SetHostName(strPath);
+  }
+  strRoot  = url.Get();
+  strSub   = url.GetFileName();
+
   URIUtils::AddSlashAtEnd(strRoot);
-
-  CURL url(strPath);
-
-  CStdString strDirectory = url.GetHostName();
-  CURL::Decode(strDirectory);
+  URIUtils::AddSlashAtEnd(strSub);
 
   udf25 udfIsoReader;
-  udf_dir_t *dirp = udfIsoReader.OpenDir(strDirectory);
+  udf_dir_t *dirp = udfIsoReader.OpenDir(url.GetHostName(), strSub);
 
   if (dirp == NULL)
     return false;

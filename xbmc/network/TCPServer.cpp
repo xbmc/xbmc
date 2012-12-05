@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -135,6 +134,7 @@ void CTCPServer::Process()
           char buffer[RECEIVEBUFFER] = {};
           int  nread = 0;
           nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
+          bool close = false;
           if (nread > 0)
           {
             std::string response;
@@ -158,8 +158,12 @@ void CTCPServer::Process()
             if (response.size() <= 0)
               m_connections[i]->PushBuffer(this, buffer, nread);
 
+            close = m_connections[i]->Closing();
           }
-          if (nread <= 0)
+          else
+            close = true;
+
+          if (close)
           {
             CLog::Log(LOGINFO, "JSONRPC Server: Disconnection detected");
             m_connections[i]->Disconnect();
@@ -604,9 +608,7 @@ CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket)
 
 CTCPServer::CWebSocketClient::CWebSocketClient(const CWebSocketClient& client)
 {
-  Copy(client);
-
-  m_websocket = client.m_websocket; // TODO
+  *this = client;
 }
 
 CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket, const CTCPClient& client)
@@ -625,7 +627,7 @@ CTCPServer::CWebSocketClient& CTCPServer::CWebSocketClient::operator=(const CWeb
 {
   Copy(client);
 
-  m_websocket = client.m_websocket; // TODO
+  m_websocket = client.m_websocket;
 
   return *this;
 }

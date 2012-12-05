@@ -5,6 +5,7 @@ SRCS=Application.cpp \
      BackgroundInfoLoader.cpp \
      CueDocument.cpp \
      DatabaseManager.cpp \
+     DbUrl.cpp \
      DynamicDll.cpp \
      Favourites.cpp \
      FileItem.cpp \
@@ -36,10 +37,6 @@ SRCS=Application.cpp \
      XbmcContext.cpp \
 
 LIB=xbmc.a
-
-ifneq (@USE_LIBXBMC@,1)
-SRCS += main.cpp
-endif
 
 DISTCLEAN_FILES=DllPaths_generated.h
 

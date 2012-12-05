@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "VideoLibrary.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
+#include "TextureCache.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
@@ -33,12 +33,53 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLaye
   if (!videodatabase.Open())
     return InternalError;
 
-  CFileItemList items;
-  JSONRPC_STATUS ret = OK;
-  if ((ret = GetVideos(MediaTypeMovie, "videodb://1/2/", parameterObject, items, result, videodatabase)) == OK)
-    ret = GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
+  SortDescription sorting;
+  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return InvalidParams;
 
-  return ret;
+  CVideoDbUrl videoUrl;
+  videoUrl.FromString("videodb://1/2/");
+  int genreID = -1, year = -1, setID = 0;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  else if (filter.isMember("genre"))
+    videoUrl.AddOption("genre", filter["genre"].asString());
+  else if (filter.isMember("year"))
+    year = (int)filter["year"].asInteger();
+  else if (filter.isMember("actor"))
+    videoUrl.AddOption("actor", filter["actor"].asString());
+  else if (filter.isMember("director"))
+    videoUrl.AddOption("director", filter["director"].asString());
+  else if (filter.isMember("studio"))
+    videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isMember("country"))
+    videoUrl.AddOption("country", filter["country"].asString());
+  else if (filter.isMember("setid"))
+    setID = (int)filter["setid"].asInteger();
+  else if (filter.isMember("set"))
+    videoUrl.AddOption("set", filter["set"].asString());
+  else if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("movies", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
+
+  // setID must not be -1 otherwise GetMoviesNav() will return sets
+  if (setID < 0)
+    setID = 0;
+
+  CFileItemList items;
+  if (!videodatabase.GetMoviesNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, setID, -1, sorting))
+    return InvalidParams;
+
+  return GetAdditionalMovieDetails(parameterObject, items, result, videodatabase, false);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -52,6 +93,16 @@ JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITranspo
   CVideoInfoTag infos;
   if (!videodatabase.GetMovieInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
+
+  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
+  {
+    CStdString fieldValue = itr->asString();
+    if (fieldValue == "streamdetails")
+    {
+      videodatabase.GetStreamDetails(infos);
+      break;
+    }
+  }
 
   HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
   return OK;
@@ -91,7 +142,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITran
   if (!videodatabase.GetMoviesNav("videodb://1/2/", items, -1, -1, -1, -1, -1, -1, id))
     return InternalError;
 
-  return GetAdditionalMovieDetails(parameterObject["movies"], items, result["setdetails"]["items"], videodatabase);
+  return GetAdditionalMovieDetails(parameterObject["movies"], items, result["setdetails"], videodatabase, true);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -100,16 +151,45 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
   if (!videodatabase.Open())
     return InternalError;
 
+  SortDescription sorting;
+  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
+  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
+    return InvalidParams;
+
+  CVideoDbUrl videoUrl;
+  videoUrl.FromString("videodb://2/2/");
+  int genreID = -1, year = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  else if (filter.isMember("genre"))
+    videoUrl.AddOption("genre", filter["genre"].asString());
+  else if (filter.isMember("year"))
+    year = (int)filter["year"].asInteger();
+  else if (filter.isMember("actor"))
+    videoUrl.AddOption("actor", filter["actor"].asString());
+  else if (filter.isMember("studio"))
+    videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("tvshows", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
+
   CFileItemList items;
-  JSONRPC_STATUS ret = OK;
-  if ((ret = GetVideos(MediaTypeTvShow, "videodb://2/2/", parameterObject, items, result, videodatabase)) != OK)
-    return ret;
+  if (!videodatabase.GetTvShowsNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, sorting))
+    return InvalidParams;
 
   bool additionalInfo = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast")
+    if (fieldValue == "cast" || fieldValue == "tag")
       additionalInfo = true;
   }
 
@@ -124,7 +204,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLay
     size = (int)items.GetProperty("total").asInteger();
   HandleFileItemList("tvshowid", true, "tvshows", items, parameterObject, result, size, false);
 
-  return ret;
+  return OK;
 }
 
 JSONRPC_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -154,7 +234,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLay
   CStdString strPath;
   strPath.Format("videodb://2/2/%i/", tvshowID);
   CFileItemList items;
-  if (!videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID))
+  if (!videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID, false))
     return InternalError;
 
   HandleFileItemList(NULL, false, "seasons", items, parameterObject, result);
@@ -174,14 +254,47 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLa
 
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
   int season   = (int)parameterObject["season"].asInteger();
-
+  
   CStdString strPath;
   strPath.Format("videodb://2/2/%i/%i/", tvshowID, season);
-  CFileItemList items;
-  if (!videodatabase.GetEpisodesNav(strPath, items, -1, -1, -1, -1, tvshowID, season, sorting))
-    return InternalError;
 
-  return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase);
+  CVideoDbUrl videoUrl;
+  videoUrl.FromString(strPath);
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("genreid"))
+    videoUrl.AddOption("genreid", (int)filter["genreid"].asInteger());
+  else if (filter.isMember("genre"))
+    videoUrl.AddOption("genre", filter["genre"].asString());
+  else if (filter.isMember("year"))
+    videoUrl.AddOption("year", (int)filter["year"].asInteger());
+  else if (filter.isMember("actor"))
+    videoUrl.AddOption("actor", filter["actor"].asString());
+  else if (filter.isMember("director"))
+    videoUrl.AddOption("director", filter["director"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("episodes", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
+
+  if (tvshowID <= 0 && (season > 0 || videoUrl.HasOption("genreid") || videoUrl.HasOption("genre") || videoUrl.HasOption("actor")))
+    return InvalidParams;
+
+  if (tvshowID > 0)
+  {
+    videoUrl.AddOption("tvshowid", tvshowID);
+    if (season >= 0)
+      videoUrl.AddOption("season", season);
+  }
+
+  CFileItemList items;
+  if (!videodatabase.GetEpisodesByWhere(videoUrl.ToString(), CDatabase::Filter(), items, false, sorting))
+    return InvalidParams;
+
+  return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase, false);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -195,6 +308,16 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITrans
   CVideoInfoTag infos;
   if (!videodatabase.GetEpisodeInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
+
+  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
+  {
+    CStdString fieldValue = itr->asString();
+    if (fieldValue == "streamdetails")
+    {
+      videodatabase.GetStreamDetails(infos);
+      break;
+    }
+  }
 
   CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
   // We need to set the correct base path to get the valid fanart
@@ -220,14 +343,38 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITranspor
   if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
     return InvalidParams;
 
-  int artistID = (int)parameterObject["artistid"].asInteger();
-  int albumID  = (int)parameterObject["albumid"].asInteger();
+  CVideoDbUrl videoUrl;
+  videoUrl.FromString("videodb://3/2/");
+  int genreID = -1, year = -1;
+  const CVariant &filter = parameterObject["filter"];
+  if (filter.isMember("artist"))
+    videoUrl.AddOption("artist", filter["artist"].asString());
+  else if (filter.isMember("genreid"))
+    genreID = (int)filter["genreid"].asInteger();
+  else if (filter.isMember("genre"))
+    videoUrl.AddOption("genre", filter["genre"].asString());
+  else if (filter.isMember("year"))
+    year = (int)filter["year"].asInteger();
+  else if (filter.isMember("director"))
+    videoUrl.AddOption("director", filter["director"].asString());
+  else if (filter.isMember("studio"))
+    videoUrl.AddOption("studio", filter["studio"].asString());
+  else if (filter.isMember("tag"))
+    videoUrl.AddOption("tag", filter["tag"].asString());
+  else if (filter.isObject())
+  {
+    CStdString xsp;
+    if (!GetXspFiltering("musicvideos", filter, xsp))
+      return InvalidParams;
+
+    videoUrl.AddOption("xsp", xsp);
+  }
 
   CFileItemList items;
-  if (!videodatabase.GetMusicVideosNav("videodb://3/2/", items, -1, -1, artistID, -1, -1, albumID, sorting))
+  if (!videodatabase.GetMusicVideosNav(videoUrl.ToString(), items, genreID, year, -1, -1, -1, -1, -1, sorting))
     return InternalError;
 
-  return GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase);
+  return GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase, false);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -241,6 +388,16 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITr
   CVideoInfoTag infos;
   if (!videodatabase.GetMusicVideoInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
+
+  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
+  {
+    CStdString fieldValue = itr->asString();
+    if (fieldValue == "streamdetails")
+    {
+      videodatabase.GetStreamDetails(infos);
+      break;
+    }
+  }
 
   HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
   return OK;
@@ -256,7 +413,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, I
   if (!videodatabase.GetRecentlyAddedMoviesNav("videodb://4/", items))
     return InternalError;
 
-  return GetAdditionalMovieDetails(parameterObject, items, result, videodatabase);
+  return GetAdditionalMovieDetails(parameterObject, items, result, videodatabase, true);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -269,7 +426,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method,
   if (!videodatabase.GetRecentlyAddedEpisodesNav("videodb://5/", items))
     return InternalError;
 
-  return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase);
+  return GetAdditionalEpisodeDetails(parameterObject, items, result, videodatabase, true);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -282,7 +439,7 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &meth
   if (!videodatabase.GetRecentlyAddedMusicVideosNav("videodb://6/", items))
     return InternalError;
 
-  return GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase);
+  return GetAdditionalMusicVideoDetails(parameterObject, items, result, videodatabase, true);
 }
 
 JSONRPC_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -346,6 +503,10 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
 
   UpdateVideoTag(parameterObject, infos, artwork);
 
+  // we need to manually remove tags/taglinks for now because they aren't replaced
+  // due to scrapers not supporting them
+  videodatabase.RemoveTagsFromItem(id, "movie");
+
   if (videodatabase.SetDetailsForMovie(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
     return InternalError;
 
@@ -357,6 +518,7 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
   }
 
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 
@@ -375,13 +537,17 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
-  std::map<int, std::string> seasonArt;
+  std::map<int, std::map<std::string, std::string> > seasonArt;
   videodatabase.GetTvShowSeasonArt(infos.m_iDbId, seasonArt);
 
   int playcount = infos.m_playCount;
   CDateTime lastPlayed = infos.m_lastPlayed;
 
   UpdateVideoTag(parameterObject, infos, artwork);
+
+  // we need to manually remove tags/taglinks for now because they aren't replaced
+  // due to scrapers not supporting them
+  videodatabase.RemoveTagsFromItem(id, "tvshow");
 
   if (videodatabase.SetDetailsForTvShow(infos.m_strFileNameAndPath, infos, artwork, seasonArt, id) <= 0)
     return InternalError;
@@ -394,6 +560,7 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
   }
 
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 
@@ -439,6 +606,7 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
   }
 
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 
@@ -466,6 +634,10 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
 
   UpdateVideoTag(parameterObject, infos, artwork);
 
+  // we need to manually remove tags/taglinks for now because they aren't replaced
+  // due to scrapers not supporting them
+  videodatabase.RemoveTagsFromItem(id, "musicvideo");
+
   if (videodatabase.SetDetailsForMusicVideo(infos.m_strFileNameAndPath, infos, artwork, id) <= 0)
     return InternalError;
 
@@ -477,6 +649,7 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed.IsValid() ? infos.m_lastPlayed : CDateTime::GetCurrentDateTime());
   }
 
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 
@@ -509,7 +682,7 @@ JSONRPC_STATUS CVideoLibrary::Scan(const CStdString &method, ITransportLayer *tr
   else
     cmd.Format("updatelibrary(video, %s)", directory.c_str());
 
-  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;
 }
 
@@ -524,17 +697,17 @@ JSONRPC_STATUS CVideoLibrary::Export(const CStdString &method, ITransportLayer *
       parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false",
       parameterObject["options"]["actorthumbs"].asBoolean() ? "true" : "false");
 
-  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
+  CApplicationMessenger::Get().ExecBuiltIn(cmd);
   return ACK;
 }
 
 JSONRPC_STATUS CVideoLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().ExecBuiltIn("cleanlibrary(video)");
+  CApplicationMessenger::Get().ExecBuiltIn("cleanlibrary(video)");
   return ACK;
 }
 
-bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
+bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CVideoDatabase videodatabase;
   if (strFilename.empty() || !videodatabase.Open())
@@ -544,7 +717,7 @@ bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
   if (!videodatabase.LoadVideoInfo(strFilename, details))
     return false;
 
-  item = CFileItem(details);
+  item->SetFromVideoInfoTag(details);
   return true;
 }
 
@@ -560,11 +733,11 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   int musicVideoID = (int)parameterObject["musicvideoid"].asInteger(-1);
 
   bool success = false;
-  CFileItem fileItem;
+  CFileItemPtr fileItem(new CFileItem());
   if (FillFileItem(file, fileItem))
   {
     success = true;
-    list.Add(CFileItemPtr(new CFileItem(fileItem)));
+    list.Add(fileItem);
   }
 
   if (movieID > 0)
@@ -600,93 +773,98 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   return success;
 }
 
-JSONRPC_STATUS CVideoLibrary::GetVideos(MediaType mediaType, const CStdString &strBaseDir, const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase)
-{
-  SortDescription sorting;
-  ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
-  if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
-    return InvalidParams;
-
-  return videodatabase.GetSortedVideos(mediaType, strBaseDir, sorting, items) ? OK : InternalError;
-}
-
-JSONRPC_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase)
+JSONRPC_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit /* = true */)
 {
   if (!videodatabase.Open())
     return InternalError;
 
   bool additionalInfo = false;
+  bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume")
+    if (fieldValue == "cast" || fieldValue == "showlink" || fieldValue == "tag")
       additionalInfo = true;
+    else if (fieldValue == "streamdetails")
+      streamdetails = true;
   }
 
-  if (additionalInfo)
+  if (additionalInfo || streamdetails)
   {
     for (int index = 0; index < items.Size(); index++)
-      videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+    {
+      if (additionalInfo)
+        videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      if (streamdetails)
+        videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
+    }
   }
 
   int size = items.Size();
-  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+  if (!limit && items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
     size = (int)items.GetProperty("total").asInteger();
-  HandleFileItemList("movieid", true, "movies", items, parameterObject, result, size, false);
+  HandleFileItemList("movieid", true, "movies", items, parameterObject, result, size, limit);
 
   return OK;
 }
 
-JSONRPC_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase)
+JSONRPC_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit /* = true */)
 {
   if (!videodatabase.Open())
     return InternalError;
 
   bool additionalInfo = false;
+  bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "resume")
+    if (fieldValue == "cast")
       additionalInfo = true;
+    else if (fieldValue == "streamdetails")
+      streamdetails = true;
   }
 
-  if (additionalInfo)
+  if (additionalInfo || streamdetails)
   {
     for (int index = 0; index < items.Size(); index++)
-      videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+    {
+      if (additionalInfo)
+        videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      if (streamdetails)
+        videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
+    }
   }
   
   int size = items.Size();
-  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+  if (!limit && items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
     size = (int)items.GetProperty("total").asInteger();
-  HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result, size, false);
+  HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result, size, limit);
 
   return OK;
 }
 
-JSONRPC_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase)
+JSONRPC_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result, CVideoDatabase &videodatabase, bool limit /* = true */)
 {
   if (!videodatabase.Open())
     return InternalError;
 
-  bool additionalInfo = false;
+  bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
-    CStdString fieldValue = itr->asString();
-    if (fieldValue == "resume")
-      additionalInfo = true;
+    if (itr->asString() == "streamdetails")
+      streamdetails = true;
   }
 
-  if (additionalInfo)
+  if (streamdetails)
   {
     for (int index = 0; index < items.Size(); index++)
-      videodatabase.GetMusicVideoInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
   }
-  
+
   int size = items.Size();
-  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
+  if (!limit && items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
     size = (int)items.GetProperty("total").asInteger();
-  HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result, size, false);
+  HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result, size, limit);
 
   return OK;
 }
@@ -705,6 +883,8 @@ JSONRPC_STATUS CVideoLibrary::RemoveVideo(const CVariant &parameterObject)
     videodatabase.DeleteEpisode((int)parameterObject["episodeid"].asInteger());
   else if (parameterObject.isMember("musicvideoid"))
     videodatabase.DeleteMusicVideo((int)parameterObject["musicvideoid"].asInteger());
+
+  CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
 
@@ -715,7 +895,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "playcount"))
     details.m_playCount = (int)parameterObject["playcount"].asInteger();
   if (ParameterNotNull(parameterObject, "runtime"))
-    details.m_strRuntime = parameterObject["runtime"].asString();
+    details.m_duration = (int)parameterObject["runtime"].asInteger();
   if (ParameterNotNull(parameterObject, "director"))
     CopyStringArray(parameterObject["director"], details.m_director);
   if (ParameterNotNull(parameterObject, "studio"))
@@ -771,11 +951,22 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "episodeguide"))
     details.m_strEpisodeGuide = parameterObject["episodeguide"].asString();
   if (ParameterNotNull(parameterObject, "set"))
-    CopyStringArray(parameterObject["set"], details.m_set);
+    details.m_strSet = parameterObject["set"].asString();
   if (ParameterNotNull(parameterObject, "showlink"))
     CopyStringArray(parameterObject["showlink"], details.m_showLink);
   if (ParameterNotNull(parameterObject, "thumbnail"))
     artwork["thumb"] = parameterObject["thumbnail"].asString();
   if (ParameterNotNull(parameterObject, "fanart"))
     artwork["fanart"] = parameterObject["fanart"].asString();
+  if (ParameterNotNull(parameterObject, "tag"))
+    CopyStringArray(parameterObject["tag"], details.m_tags);
+  if (ParameterNotNull(parameterObject, "art"))
+  {
+    CVariant art = parameterObject["art"];
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    {
+      if (!artIt->second.asString().empty())
+        artwork[artIt->first] = CTextureCache::UnwrapImageURL(artIt->second.asString());
+    }
+  }
 }

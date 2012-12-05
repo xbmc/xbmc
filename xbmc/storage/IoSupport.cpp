@@ -67,74 +67,6 @@
 
 PVOID CIoSupport::m_rawXferBuffer;
 
-HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
-{
-#ifdef HAS_DVD_DRIVE
-#ifdef _WIN32
-  return CWIN32Util::EjectTray(cDriveLetter);
-#else
-  CLibcdio *c_cdio = CLibcdio::GetInstance();
-  char* dvdDevice = c_cdio->GetDeviceFileName();
-  m_isoReader.Reset();
-  int nRetries=2;
-  while (nRetries-- > 0)
-  {
-    CdIo_t* cdio = c_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
-    if (cdio)
-    {
-      c_cdio->cdio_eject_media(&cdio);
-      c_cdio->cdio_destroy(cdio);
-    }
-    else
-      break;
-  }
-#endif
-#endif
-  return S_OK;
-}
-
-HRESULT CIoSupport::CloseTray()
-{
-#ifdef HAS_DVD_DRIVE
-#if defined(TARGET_DARWIN)
-  // FIXME...
-#elif defined(__FreeBSD__)
-  // NYI
-#elif defined(_LINUX)
-  char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
-  if (strlen(dvdDevice) != 0)
-  {
-    int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
-    if (fd >= 0)
-    {
-      ioctl(fd, CDROMCLOSETRAY, 0);
-      close(fd);
-    }
-  }
-#elif defined(_WIN32)
-  return CWIN32Util::CloseTray();
-#endif
-#endif
-  return S_OK;
-}
-
-DWORD CIoSupport::GetTrayState()
-{
-#if defined(_LINUX) || defined(_WIN32)
-  return g_mediaManager.GetDriveStatus();
-#else
-  return DRIVE_NOT_READY;
-#endif
-}
-
-HRESULT CIoSupport::ToggleTray()
-{
-  if (GetTrayState() == TRAY_OPEN || GetTrayState() == DRIVE_OPEN)
-    return CloseTray();
-  else
-    return EjectTray();
-}
-
 HANDLE CIoSupport::OpenCDROM()
 {
   HANDLE hDevice = 0;
@@ -235,12 +167,13 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 
   for (int i = 0; i < 5; i++)
   {
-    SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN);
-
-    if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
+    if (SetFilePointer(hDevice, Displacement.u.LowPart, &Displacement.u.HighPart, FILE_BEGIN) != (DWORD)-1)
     {
-      memcpy(lpczBuffer, m_rawXferBuffer, dwSectorSize);
-      return dwRead;
+      if (ReadFile(hDevice, m_rawXferBuffer, dwSectorSize, &dwRead, NULL))
+      {
+        memcpy(lpczBuffer, m_rawXferBuffer, dwSectorSize);
+        return dwRead;
+      }
     }
   }
 
@@ -351,35 +284,3 @@ VOID CIoSupport::CloseCDROM(HANDLE hDevice)
   CloseHandle(hDevice);
 }
 
-VOID CIoSupport::GetXbePath(char* szDest)
-{
-
-#if WIN32
-  wchar_t szAppPathW[MAX_PATH] = L"";
-  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW)/sizeof(szAppPathW[0]) - 1);
-  CStdStringW strPathW = szAppPathW;
-  CStdString strPath;
-  g_charsetConverter.wToUTF8(strPathW,strPath);
-  strncpy(szDest,strPath.c_str(),strPath.length()+1);
-#elif defined(TARGET_DARWIN)
-  int      result = -1;
-  char     given_path[2*MAXPATHLEN];
-  uint32_t path_size = 2*MAXPATHLEN;
-
-  result = _NSGetExecutablePath(given_path, &path_size);
-  if (result == 0)
-    realpath(given_path, szDest);
-#else
-  /* Get our PID and build the name of the link in /proc */
-  pid_t pid = getpid();
-  char linkname[64]; /* /proc/<pid>/exe */
-  snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
-
-  /* Now read the symbolic link */
-  char buf[1024];
-  int ret = readlink(linkname, buf, 1024);
-  buf[ret] = 0;
-	
-  strcpy(szDest, buf);
-#endif
-}

@@ -138,6 +138,41 @@ TestHttpGet(const char* arg, ShowMode mode)
 }
 #endif
 
+#define TEST_TIMEOUTS
+#if defined(TEST_TIMEOUTS)
+/*----------------------------------------------------------------------
+|       TestHttpTimeouts
++---------------------------------------------------------------------*/
+static void 
+TestHttpTimeouts(const char* arg)
+{
+    NPT_HttpUrl url(arg);
+    NPT_HttpRequest request(url, NPT_HTTP_METHOD_GET);
+    NPT_HttpClient client;
+    NPT_HttpResponse* response;
+
+    NPT_Debug("### TIMEOUTS START ###\n");
+    client.SetTimeouts(10000, 10000, 10000);
+    NPT_TimeStamp before, after;
+    NPT_System::GetCurrentTimeStamp(before);
+    NPT_Result result = client.SendRequest(request, response);
+    NPT_Debug("SendRequest returned %d (%s)\n", result, NPT_ResultText(result));
+    NPT_System::GetCurrentTimeStamp(after);
+    NPT_Debug("time elapsed: %d ms\n", (after-before).ToMillis());
+
+    client.SetTimeouts(5000, 5000, 5000);
+    NPT_System::GetCurrentTimeStamp(before);
+    result = client.SendRequest(request, response);
+    NPT_Debug("SendRequest returned %d (%s)\n", result, NPT_ResultText(result));
+    NPT_System::GetCurrentTimeStamp(after);
+    NPT_Debug("time elapsed: %d ms\n", (after-before).ToMillis());
+
+    NPT_Debug("--- TIMEOUTS END ---\n");
+
+    delete response;
+}
+#endif
+
 #define TEST_CHUNKED
 #if defined(TEST_CHUNKED)
 /*----------------------------------------------------------------------
@@ -273,6 +308,10 @@ main(int argc, char** argv)
 
 #if defined(TEST_POST)
     TestHttpPost(argv[1]);
+#endif
+
+#if defined(TEST_TIMEOUTS)
+    TestHttpTimeouts(argv[1]);
 #endif
 
 #if defined(WIN32) && defined(_DEBUG)

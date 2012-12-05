@@ -94,6 +94,12 @@
       <backslash>ToggleFullScreen</backslash>
       <home>FirstPage</home>
       <end>LastPage</end>
+      <!-- PVR windows -->
+      <e>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</e>
+      <h>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</h>
+      <j>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</j>
+      <k>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</k>
+      <b>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</b>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
@@ -129,16 +135,16 @@
       <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
       <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
       <f8>Mute</f8>                       <!-- MCE mute -->
-      <g mod="ctrl">OSD</g>               <!-- MCE Guide -->
+      <g mod="ctrl">ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</g>  <!-- MCE Guide -->
       <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
       <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
       <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
-      <m mod="ctrl,shift">PlayerControl(ShowVideoMenu)</m> <!-- MCE DVD menu -->
+      <m mod="ctrl,shift">PlayerControl(ShowVideoMenu)</m>         <!-- MCE DVD menu -->
+      <o mod="ctrl">ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</o>  <!-- MCE Recorded TV -->
+      <t mod="ctrl">ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</t>  <!-- MCE Live TV  -->
+      <t mod="ctrl,shift">ActivateWindow(MyPVR)</t>                <!-- MCE My TV -->
+      <a mod="ctrl">ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</a>  <!-- MCE My Radio -->
       <!-- MCE keypresses without an obvious use in XBMC -->
-      <o mod="ctrl">Notification(MCEKeypress, Recorded TV, 3)</o>
-      <t mod="ctrl">Notification(MCEKeypress, Live TV, 3)</t>
-      <t mod="ctrl,shift">Notification(MCEKeypress, My TV, 3)</t>
-      <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
     </keyboard>
@@ -159,6 +165,13 @@
       <backspace>Backspace</backspace>
     </keyboard>
   </VirtualKeyboard>
+  <MyTV>
+    <keyboard>
+      <delete>Delete</delete>
+      <m>Move</m>
+      <r>Rename</r>
+    </keyboard>
+  </MyTV>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>
@@ -220,6 +233,7 @@
       <down>BigStepBack</down>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
+      <c>Playlist</c>
       <v>XBMC.ActivateWindow(Teletext)</v>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
@@ -255,9 +269,10 @@
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
-      <return>ActivateWindow(MusicOSD)</return>
-      <enter>ActivateWindow(MusicOSD)</enter>
-      <m>ActivateWindow(MusicOSD)</m>
+      <backspace>Fullscreen</backspace>
+      <return>OSD</return>
+      <enter>OSD</enter>
+      <m>OSD</m>
       <i>Info</i>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>ActivateWindow(VisualisationSettings)</v>
@@ -269,6 +284,8 @@
       <o>CodecInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>
+      <g>XBMC.ActivateWindow(PVROSDGuide)</g>
+      <c>XBMC.ActivateWindow(PVROSDChannels)</c>
     </keyboard>
   </Visualisation>
   <MusicOSD>
@@ -458,6 +475,54 @@
       <v>Back</v>
     </keyboard>
   </Teletext>
+  <Favourites>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </Favourites>
+  <NumericInput>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </NumericInput>
+  <FullscreenLiveTV>
+    <keyboard>
+      <left>PreviousChannelGroup</left>
+      <right>NextChannelGroup</right>
+      <up>ChannelUp</up>
+      <down>ChannelDown</down>
+    </keyboard>
+  </FullscreenLiveTV>
+  <PVROSDChannels>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+      <c>Close</c>
+    </keyboard>
+  </PVROSDChannels>
+  <PVROSDGuide>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </PVROSDGuide>
+  <PVROSDDirector>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </PVROSDDirector>
+  <PVROSDCutter>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </PVROSDCutter>
+  <MyTVSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </MyTVSettings>
   <FileBrowser>
     <keyboard>
       <space>Highlight</space>

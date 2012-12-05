@@ -1,3 +1,32 @@
+[B]3.7.0[/B]
+- updated: out factored studio and country scraping to common library
+
+[B]3.6.1[/B]
+- updated: Scraper name
+
+[B]3.6.0[/B]
+- updated: out factored tagline scraping to common library
+
+[B]3.5.0[/B]
+- added: aspect tag and reorder languages according to the alphabet
+
+[B]3.4.1[/B]
+- updated chinese translation
+
+[B]3.4.0[/B]
+- added: prefer trailer language according to the selected language
+
+[B]3.3.0[/B]
+- updated: improve CreateSearchUrl according to TMDb API changes
+
+[B]3.2.0[/B]
+- fixed: keep Originaltitle
+- fixed: &'s needs double escaping
+- added: option to scrape certification from selected country
+
+[B]3.1.0[/B]
+- updated: factored out title scraping to common library
+
 [B]3.0.9[/B]
 - fixed: missing language parameter name in NfoUrl
 

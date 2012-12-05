@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,6 +28,11 @@ struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
 class CAction;
+
+namespace PVR
+{
+  class CPVRChannel;
+}
 
 class IPlayerCallback
 {
@@ -67,6 +71,24 @@ public:
 class CFileItem;
 class CRect;
 
+enum IPlayerAudioCapabilities
+{
+  IPC_AUD_ALL,
+  IPC_AUD_OFFSET,
+  IPC_AUD_AMP,
+  IPC_AUD_SELECT_STREAM,
+  IPC_AUD_OUTPUT_STEREO,
+  IPC_AUD_SELECT_OUTPUT
+};
+
+enum IPlayerSubtitleCapabilities
+{
+  IPC_SUBS_ALL,
+  IPC_SUBS_SELECT,
+  IPC_SUBS_EXTERNAL,
+  IPC_SUBS_OFFSET
+};
+
 class IPlayer
 {
 public:
@@ -80,6 +102,7 @@ public:
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(){ return true;}
   virtual bool IsPlaying() const { return false;}
+  virtual bool CanPause() { return true; };
   virtual void Pause() = 0;
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() const = 0;
@@ -135,8 +158,14 @@ public:
 
   virtual float GetActualFPS() { return 0.0f; };
   virtual void SeekTime(int64_t iTime = 0){};
-  virtual int64_t GetTime(){ return 0;};
-  virtual int GetTotalTime(){ return 0;};
+  /*!
+   \brief current time in milliseconds
+   */
+  virtual int64_t GetTime() { return 0; }
+  /*!
+   \brief total time in milliseconds
+   */
+  virtual int64_t GetTotalTime() { return 0; }
   virtual int GetAudioBitrate(){ return 0;}
   virtual int GetVideoBitrate(){ return 0;}
   virtual int GetSourceBitrate(){ return 0;}
@@ -169,6 +198,34 @@ public:
   virtual bool SetPlayerState(CStdString state) { return false;};
   
   virtual CStdString GetPlayingTitle() { return ""; };
+
+  virtual bool SwitchChannel(const PVR::CPVRChannel &channel) { return false; }
+
+  /*!
+   \brief If the player uses bypass mode, define its rendering capabilities
+   */
+  virtual void GetRenderFeatures(std::vector<int> &renderFeatures) {};
+  /*!
+   \brief If the player uses bypass mode, define its deinterlace algorithms
+   */
+  virtual void GetDeinterlaceMethods(std::vector<int> &deinterlaceMethods) {};
+  /*!
+   \brief If the player uses bypass mode, define how deinterlace is set
+   */
+  virtual void GetDeinterlaceModes(std::vector<int> &deinterlaceModes) {};
+  /*!
+   \brief If the player uses bypass mode, define its scaling capabilities
+   */
+  virtual void GetScalingMethods(std::vector<int> &scalingMethods) {};
+  /*!
+   \brief define the audio capabilities of the player (default=all)
+   */
+
+  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
+  /*!
+   \brief define the subtitle capabilities of the player
+   */
+  virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
 
 protected:
   IPlayerCallback& m_callback;

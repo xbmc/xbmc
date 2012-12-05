@@ -1,19 +1,18 @@
 # XBMC Media Center language file
-# Translators:
-#   <cutsickass@yahoo.com>, 2012.
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-05-10 10:48+0000\n"
-"Last-Translator: CutSickAss <cutsickass@yahoo.com>\n"
-"Language-Team: Greek\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Greek (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: el_GR\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: el\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -275,6 +274,26 @@ msgctxt "#87"
 msgid "VAR"
 msgstr "ΔΙΑΦ"
 
+msgctxt "#88"
+msgid "South"
+msgstr "Νότιος"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Βόρειος"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Δυτικός"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Ανατολικός"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Μεταβλητός"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Προβολή: Αυτόματη"
@@ -369,7 +388,7 @@ msgstr "Επιβεβαίωση αντιγραφής"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "Επιβεβαίωση μετακίνησης"
+msgstr "Επιβεβαίωση μεταφοράς αρχείου"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
@@ -389,7 +408,7 @@ msgstr "Διαγραφή αυτών των αρχείων; - Τα αρχεία �
 
 msgctxt "#126"
 msgid "Status"
-msgstr "Λειτουργία"
+msgstr "Κατάσταση"
 
 msgctxt "#127"
 msgid "Objects"
@@ -550,6 +569,10 @@ msgstr "Υπάρχει δίσκος"
 msgctxt "#166"
 msgid "Skin"
 msgstr "Κέλυφος"
+
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Ακύρωση λειτουργιών αρχείων"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -749,7 +772,7 @@ msgstr "Αναζήτηση ονομάτων μουσικών κομματιών 
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
-msgstr "Ανακάτεμα λίστας αναπαραγωγής κατά τη φόρτωση"
+msgstr "Ανακάτεμα λίστας αναπ/γής κατά τη φόρτωση"
 
 msgctxt "#229"
 msgid "HDD spindown time"
@@ -793,7 +816,7 @@ msgstr "Μεγέθυνση"
 
 msgctxt "#239"
 msgid "Clear playlist on finish"
-msgstr "Εκκαθάριση λίστας αναπαραγωγής στη λήξη"
+msgstr "Εκκαθάριση λίστας αναπ/γής στη λήξη"
 
 msgctxt "#240"
 msgid "Display Mode"
@@ -809,7 +832,7 @@ msgstr "Σε παράθυρο"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Ανανέωση βαθμολογίας"
+msgstr "Ρυθμός Ανανέωσης"
 
 msgctxt "#244"
 msgid "Full screen"
@@ -1061,7 +1084,7 @@ msgstr "Αρχική γλώσσα ροής"
 
 msgctxt "#309"
 msgid "User Interface language"
-msgstr "Γλώσσα Περιβάλλοντος Εργασίας Χρήστη"
+msgstr "Γλώσσα Περιβάλλοντος Εργασίας"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1253,7 +1276,7 @@ msgstr "Όλα τα άλμπουμ"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "Πρόσφατα άλμπουμ"
+msgstr "Άλμπουμ που προστέθηκαν πρόσφατα"
 
 msgctxt "#360"
 msgid "Screensaver"
@@ -1405,7 +1428,7 @@ msgstr "Επιλογή τοποθεσίας"
 
 msgctxt "#397"
 msgid "Refresh time"
-msgstr "Ανανέωση χρόνου"
+msgstr "Χρόνος ανανέωσης"
 
 msgctxt "#398"
 msgid "Temperature units"
@@ -1542,6 +1565,14 @@ msgstr "Να διαγραφεί '%s';"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "Από %s με ένταση %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Δεν εντοπίστηκε μονάδα οπτικού δίσκου"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Απαιτείται μονάδα οπτικού δίσκου για να αναπαραχθεί αυτό το βίντεο"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1693,7 +1724,7 @@ msgstr "Μουσική & βίντεο"
 
 msgctxt "#477"
 msgid "Unable to load playlist"
-msgstr "Αδυναμία φόρτωσης της λίστας αναπαραγωγής"
+msgstr "Αδυναμία φόρτωσης της λίστας αναπ/γής"
 
 msgctxt "#478"
 msgid "OSD"
@@ -1753,7 +1784,7 @@ msgstr "Εύρος στάθμης γενικού ήχου"
 
 msgctxt "#495"
 msgid "Upsample videos to GUI resolution"
-msgstr "Αύξηση δειγματοληψίας ανάλυσης σε γραφικό περιβάλλον (GUI)"
+msgstr "Αύξηση δειγματοληψίας ανάλυσης σε αυτή του γραφικού περιβάλλοντος (GUI)"
 
 msgctxt "#496"
 msgid "Calibration"
@@ -1825,7 +1856,7 @@ msgstr "Είδος"
 
 msgctxt "#517"
 msgid "Recently played albums"
-msgstr "Πρόσφατα εκτελεσθέντα άλμπουμ"
+msgstr "Πρόσφατα αναπαραχθέντα άλμπουμ"
 
 msgctxt "#518"
 msgid "Launch"
@@ -1849,15 +1880,15 @@ msgstr "Εναλλαγή πολυμέσων"
 
 msgctxt "#524"
 msgid "Select playlist"
-msgstr "Επιλογή λίστας αναπαραγωγής"
+msgstr "Επιλογή λίστας αναπ/γής"
 
 msgctxt "#525"
 msgid "New playlist..."
-msgstr "Νέα λίστα αναπαραγωγής..."
+msgstr "Νέα λίστα αναπ/γής..."
 
 msgctxt "#526"
 msgid "Add to playlist"
-msgstr "Προσθήκη στη λίστα αναπαραγωγής"
+msgstr "Προσθήκη στη λίστα αναπ/γής"
 
 msgctxt "#527"
 msgid "Manually add to library"
@@ -1929,7 +1960,7 @@ msgstr "DVD"
 
 msgctxt "#544"
 msgid "Media info"
-msgstr "Πληροφορίες"
+msgstr "Πληροφορίες Πολυμέσων"
 
 msgctxt "#545"
 msgid "Audio output device"
@@ -1969,7 +2000,7 @@ msgstr "Κομμάτι"
 
 msgctxt "#555"
 msgid "Time"
-msgstr "Χρόνος"
+msgstr "Ώρα"
 
 msgctxt "#556"
 msgid "Title"
@@ -2065,7 +2096,7 @@ msgstr "Μέθοδος ταξινόμησης"
 
 msgctxt "#582"
 msgid "View mode"
-msgstr "Λειτουργία Προβολής"
+msgstr "Τύπος Προβολής"
 
 msgctxt "#583"
 msgid "Remember views for different folders"
@@ -2081,7 +2112,7 @@ msgstr "Φθίνουσα"
 
 msgctxt "#586"
 msgid "Edit playlist"
-msgstr "Επεξεργασία λίστας αναπαραγωγής"
+msgstr "Επεξεργασία λίστας αναπ/γής"
 
 msgctxt "#587"
 msgid "Filter"
@@ -2089,11 +2120,11 @@ msgstr "Φίλτρο"
 
 msgctxt "#588"
 msgid "Cancel party mode"
-msgstr "Ακύρωση Party Mode"
+msgstr "Ακύρωση λειτουργίας party"
 
 msgctxt "#589"
 msgid "Party mode"
-msgstr "Party Mode"
+msgstr "Λειτουργία party"
 
 msgctxt "#590"
 msgid "Random"
@@ -2172,12 +2203,12 @@ msgid "Enter number"
 msgstr "Εισαγωγή αριθμού"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bits/Sample"
+msgid "Bits/sample"
+msgstr "Bits/δείγμα"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Συχνότητα δειγματοληψίας"
+msgid "Sample rate"
+msgstr "Ρυθμός δειγματοληψίας"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2203,9 +2234,13 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "Όλα τα τραγούδια"
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Σειρές σε εξέλιξη"
+
 msgctxt "#629"
 msgid "View mode"
-msgstr "Λειτουργία προβολής"
+msgstr "Τύπος Προβολής"
 
 msgctxt "#630"
 msgid "Normal"
@@ -2297,7 +2332,7 @@ msgstr "Αναζήτηση συλλογής"
 
 msgctxt "#652"
 msgid "Years"
-msgstr "Έτη"
+msgstr "Έτος"
 
 msgctxt "#653"
 msgid "Update library"
@@ -2313,7 +2348,7 @@ msgstr "Αναζήτηση εκτελέσιμου"
 
 msgctxt "#656"
 msgid "Browse for playlist"
-msgstr "Αναζήτηση λίστας αναπαραγωγής"
+msgstr "Αναζήτηση λίστας αναπ/γής"
 
 msgctxt "#657"
 msgid "Browse for folder"
@@ -2645,7 +2680,7 @@ msgstr "Απενεργοποίηση Διασύνδεσης"
 
 msgctxt "#788"
 msgid "Network interface disabled successfully."
-msgstr "Η Διασύνδεση δικτύου απενεργοποιήθηκε επιτυχώς."
+msgstr "Η διασύνδεση δικτύου απενεργοποιήθηκε επιτυχώς."
 
 msgctxt "#789"
 msgid "Wireless network name (ESSID)"
@@ -2686,6 +2721,18 @@ msgstr "Μέγιστος αριθμός πελατών"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Πρόσβαση στο Διαδίκτυο"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Ενημέρωση Συλλογής"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "Η μουσική συλλογή πρέπει να ξανασαρώσει για εικόνες από τις ετικέτες"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Να γίνει σάρωση τώρα;"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3031,34 +3078,6 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Εφαρμογές & εικόνες & βίντεο"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Αυτόματος εντοπισμός"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Αυτόματος εντοπισμός συστήματος"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Ψευδώνυμο"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Επιβεβαίωση σύνδεσης"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Αποστολή ονόματος και κωδικού πρόσβασης χρήστη (FTP)"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Χρονικό διάστημα ping"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Επιθυμείτε να συνδεθείτε στο σύστημα που εντοπίστηκε;"
-
 msgctxt "#1259"
 msgid "Zeroconf"
 msgstr "Zeroconf"
@@ -3082,6 +3101,10 @@ msgstr "- Χρήση προστασίας με κωδικό"
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Φίλτρο %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3160,8 +3183,8 @@ msgid "windy"
 msgstr "θυελλώδης"
 
 msgctxt "#1413"
-msgid "drizzle"
-msgstr "ασθενής βροχή"
+msgid "Patches"
+msgstr "Σποραδικές"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3180,12 +3203,12 @@ msgid "Grains"
 msgstr "Κόκκοι"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "Καταιγίδες (με κεραυνούς)"
+msgid "Thunderstorms"
+msgstr "Καταιγίδες"
 
 msgctxt "#1419"
-msgid "T-Showers"
-msgstr "Μπόρες (με κεραυνούς)"
+msgid "Shallow"
+msgstr "Ρηχό"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3203,6 +3226,110 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Υγρά αχλή"
 
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "Νεφελώδης"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Χιονόνερο"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Χαλάζι"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Καπνός"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Ηφαιστειακή"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Στάχτη"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Εκτεταμένο"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Σκόνη"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Άμμος"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Ψιχάλα"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Δίνες"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Αμμοθύελλα"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Άνεμος"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Χιονόνερο"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Μικρό"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "και"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Χιονόνερο"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "με"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "Πιθανότητα"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "από"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "Χωνί"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Σύννεφο"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Μπουρίνι"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Υετός"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "Μερικώς"
+
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr "Απενεργοποίηση οθόνης κατά την αναμονή"
@@ -3210,6 +3337,14 @@ msgstr "Απενεργοποίηση οθόνης κατά την αναμονή
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Διάρκεια"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Άδεια λίστα"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Επιστροφή στην αρχική λίστα γιατί η ενεργή λίστα είναι άδεια"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3361,7 +3496,7 @@ msgstr "Άνοιγμα ροής"
 
 msgctxt "#10500"
 msgid "Music/Playlist"
-msgstr "Μουσική/Λίστα αναπαραγωγής"
+msgstr "Μουσική/Λίστα Αναπαραγωγής"
 
 msgctxt "#10501"
 msgid "Music/Files"
@@ -3373,7 +3508,7 @@ msgstr "Μουσική/Συλλογή"
 
 msgctxt "#10503"
 msgid "Playlist editor"
-msgstr "Επεξεργασία λίστας αναπαραγωγής"
+msgstr "Επεξεργασία λίστας αναπ/γής"
 
 msgctxt "#10504"
 msgid "Top 100 songs"
@@ -3623,9 +3758,29 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Το αντικείμενο κλειδώθηκε"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Ενημέρωση εικόνων συλλογής βίντεο"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Επεξεργασία %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "Οι εικόνες της συλλογής βίντεο χρειάζονται ενημέρωση."
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Δεν απαιτείται λήψη αρχείων."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Επανενεργοποίηση κλειδώματος"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Να γίνει ενημέρωση τώρα;"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3633,11 +3788,11 @@ msgstr "Αλλαγή κλειδώματος"
 
 msgctxt "#12357"
 msgid "Source lock"
-msgstr "Πηγαίο κλείδωμα"
+msgstr "Κλείδωμα πηγής"
 
 msgctxt "#12358"
 msgid "Password entry was blank. Try again."
-msgstr "Το πεδίο του κωδικού πρόσβασης ήταν κενό. Ξαναπροσπαθήστε."
+msgstr "Το πεδίο του κωδικού ήταν κενό. Δοκιμάστε ξανά."
 
 msgctxt "#12360"
 msgid "Master lock"
@@ -3660,8 +3815,8 @@ msgid "Settings & file manager"
 msgstr "Ρυθμίσεις & διαχείριση αρχείων"
 
 msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Ορισμός ως προεπιλογή για όλες τις ταινίες"
+msgid "Set as default for all videos"
+msgstr "Ορισμός ως προεπιλογή για όλα τα βίντεο"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3787,6 +3942,14 @@ msgctxt "#13016"
 msgid "Power off System"
 msgstr "Απενεργοποίηση συστήματος"
 
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Αποτροπή τερματισμού λόγω αδράνειας"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Να επιτρέπεται τερματισμός λόγω αδράνειας"
+
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr "Είναι ενεργή άλλη συνεδρία, ίσως μέσω ssh;"
@@ -3853,7 +4016,7 @@ msgstr "Θέλετε να διατηρήσετε αυτή την ανάλυση;
 
 msgctxt "#13112"
 msgid "High quality upscaling"
-msgstr "Υψηλή ποιότητα ανακλιμακοθέτησης"
+msgstr "Υψηλής ποιότητας Upscaling"
 
 msgctxt "#13113"
 msgid "Disabled"
@@ -3889,7 +4052,7 @@ msgstr "VDPAU"
 
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
-msgstr "VDPAU HQ Upscaling επίπεδο"
+msgstr "VDPAU HQ επίπεδο Upscaling"
 
 msgctxt "#13122"
 msgid "VDPAU Studio level color conversion"
@@ -4008,7 +4171,7 @@ msgid "Alarm!"
 msgstr "Συναγερμός!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
+msgid "Cancelled with %im%is left"
 msgstr "Ακυρώθηκε με %im%is να απομένουν"
 
 msgctxt "#13213"
@@ -4365,7 +4528,7 @@ msgstr "Ένταση"
 
 msgctxt "#13377"
 msgid "Default view mode"
-msgstr "Προεπιλεγμένη κατάσταση προβολής"
+msgstr "Προεπιλεγμένος τύπος προβολής"
 
 msgctxt "#13378"
 msgid "Default brightness"
@@ -4409,11 +4572,11 @@ msgstr "Πρότυπο ονομασίας κομματιού (δεξιά πλε�
 
 msgctxt "#13388"
 msgid "Preset"
-msgstr "Προκαθορισμένο"
+msgstr "Προρύθμιση"
 
 msgctxt "#13389"
 msgid "There are no presets available\nfor this visualization"
-msgstr "Δεν υπάρχουν διαθέσιμα προκαθορισμένα\nγι' αυτή την οπτικοποίηση"
+msgstr "Δεν υπάρχουν διαθέσιμες προρυθμίσεις\nγι' αυτή την οπτικοποίηση"
 
 msgctxt "#13390"
 msgid "There are no settings available\nfor this visualization"
@@ -4485,7 +4648,7 @@ msgstr "Πληροφορίες εικόνας"
 
 msgctxt "#13407"
 msgid "%s presets"
-msgstr "%s προκαθορισμένα"
+msgstr "%s προρυθμίσεις"
 
 msgctxt "#13408"
 msgid "(IMDb user rating)"
@@ -4587,6 +4750,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Έγκριση επιτάχυνσης υλικού (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Αναπαραγωγή του επόμενου βίντεο αυτόματα"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Αναπαραγωγή μόνο αυτού"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Μέθοδος συγχρονισμού A/V"
@@ -4630,6 +4801,26 @@ msgstr "Πραγματικά υψηλή (αργή!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Συγχρονισμός αναπαραγωγής ήχου με οθόνη"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Επιλογή εικόνων"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Τρέχουσα εικόνα"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Απομακρυσμένες εικόνες"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Τοπική εικόνα"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Καμία εικόνα"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4693,7 +4884,7 @@ msgstr "Σκόρπισμα"
 
 msgctxt "#14003"
 msgid "Downloading playlist file..."
-msgstr "Λήψη αρχείου λίστας αναπαραγωγής..."
+msgstr "Λήψη αρχείου λίστας αναπ/γής..."
 
 msgctxt "#14004"
 msgid "Downloading streams list..."
@@ -4709,7 +4900,7 @@ msgstr "Αποτυχία λήψης λίστας ροής πολυμέσων"
 
 msgctxt "#14007"
 msgid "Downloading playlist file failed"
-msgstr "Αποτυχία λήψης αρχείου λίστας αναπαραγωγής"
+msgstr "Αποτυχία λήψης αρχείου λίστας αναπ/γής"
 
 msgctxt "#14009"
 msgid "Games directory"
@@ -4981,7 +5172,7 @@ msgstr "Εμφάνιση πληροφοριών εικόνας (EXIF)"
 
 msgctxt "#14083"
 msgid "Use a fullscreen window rather than true fullscreen"
-msgstr "Χρήση του μεγιστοποιημένου παραθύρου αντί της πλήρους οθόνης"
+msgstr "Χρήση μεγιστοποιημένου παραθύρου αντί πλήρους οθόνης"
 
 msgctxt "#14084"
 msgid "Queue songs on selection"
@@ -5013,7 +5204,7 @@ msgstr "Κωδικοποίηση χαρακτήρων"
 
 msgctxt "#14092"
 msgid "Debugging"
-msgstr "Εντοπισμός σφαλμάτων"
+msgstr "Καταγραφή σφαλμάτων"
 
 msgctxt "#14093"
 msgid "Security"
@@ -5042,6 +5233,10 @@ msgstr "Αναπαραγωγή"
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Εξαγωγή του δίσκου μετά την αντιγραφή του CD"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Διακοπή αντιγραφής CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5169,7 +5364,7 @@ msgstr "Απόκρυψη ονομάτων αρχείων στην προβολή
 
 msgctxt "#15216"
 msgid "Play in party mode"
-msgstr "Εκτέλεση σε Party Mode"
+msgstr "Εκτέλεση σε λειτουργία party"
 
 msgctxt "#15217"
 msgid "Submit songs to Libre.fm"
@@ -5325,7 +5520,7 @@ msgstr "Εισάγετε μία ετικέτα για να βρείτε παρό
 
 msgctxt "#15283"
 msgid "Tracks recently listened by %name%"
-msgstr "Κομμάτια που ακούστηκαν πρόσφατα από τον %name%"
+msgstr "Κομμάτια που ακούστηκαν πρόσφατα από %name%"
 
 msgctxt "#15284"
 msgid "Listen to %name%'s recommendations Last.fm radio"
@@ -5401,7 +5596,7 @@ msgstr "Δεν βρέθηκε η ομάδα εργασίας"
 
 msgctxt "#15310"
 msgid "Opening multi-path source"
-msgstr "Άνοιγμα πηγής multi-path"
+msgstr "Άνοιγμα πηγής πολλαπλών διαδρομών"
 
 msgctxt "#15311"
 msgid "Path:"
@@ -5441,7 +5636,7 @@ msgstr "Εισάγετε το όνομα του άλμπουμ"
 
 msgctxt "#16012"
 msgid "Enter the playlist name"
-msgstr "Εισάγετε το όνομα της λίστας αναπαραγωγής"
+msgstr "Εισάγετε το όνομα της λίστας αναπ/γής"
 
 msgctxt "#16013"
 msgid "Enter new filename"
@@ -5484,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (αντιστροφή)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Ακύρωση..."
 
 msgctxt "#16025"
@@ -5509,7 +5704,7 @@ msgstr "Για λεπτομέρειες ελέγξτε το αρχείο κατ�
 
 msgctxt "#16030"
 msgid "Party mode aborted."
-msgstr "Το Party Mode απορρίφθηκε."
+msgstr "Η λειτουργία party ακυρώθηκε."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
@@ -5529,7 +5724,7 @@ msgstr "Απέτυχε η λήψη τραγουδιών από τη βάση δ�
 
 msgctxt "#16035"
 msgid "Party mode playlist"
-msgstr "Λίστα αναπαραγωγής σε Party Mode"
+msgstr "Λίστα αναπ/γής σε λειτουργία party"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
@@ -5569,11 +5764,11 @@ msgstr "Προβληθέντα"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Επισήμανση ως προβληθέντα"
+msgstr "Επισήμανση ως προβληθέν"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
-msgstr "Επισήμανση ως μη προβληθέντα"
+msgstr "Επισήμανση ως μη προβληθέν"
 
 msgctxt "#16105"
 msgid "Edit title"
@@ -5669,7 +5864,7 @@ msgstr "Αντίστροφη Telecine"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimized"
-msgstr "Lanczos3 βελτιστοποιημένη"
+msgstr "Lanczos3 βελτιστοποιημένο"
 
 msgctxt "#16316"
 msgid "Auto"
@@ -5707,17 +5902,1457 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Blend λογισμικού"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Αυτόματο - Βελτιστοποίηση ION"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Μετα-επεξεργασία"
 
 msgctxt "#17500"
 msgid "Display sleep timeout"
-msgstr "Προβολή λήξης χρόνου αναστολής"
+msgstr "Εμφάνιση του χρονικού ορίου αναστολής"
+
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MByte"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i ώρες"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i ημέρες"
 
 msgctxt "#19000"
 msgid "Switch to channel"
-msgstr "Αλλαγή καναλιού"
+msgstr "Μετάβαση στο κανάλι"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Χωρίστε τους όρους αναζήτησης χρησιμοποιώντας AND, OR και/ή NOT."
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "ή χρησιμοποιήστε φράσεις για ακριβείς αντιστοιχίες, όπως \"The wizard of Oz\"."
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Εύρεση παρόμοιων προγραμμάτων"
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "Εισαγωγή EPG από τους πελάτες"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "Πληροφορίες ροής PVR"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Συσκευή λήψης"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Κατάσταση συσκευής"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Ποιότητα σήματος"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR Backend"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "Ελεύθερα κανάλια"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Σταθερή"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Κρυπτογράφηση"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR Backend %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "Τηλεοπτικές εγγραφές"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "Προεπιλεγμένος φάκελος για μικρογραφίες PVR"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Κανάλια"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "Τηλεόραση"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Ραδιόφωνο"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Κρυφά"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "Τηλεοπτικά κανάλια"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Ραδιοφωνικοί σταθμοί"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Επερχόμενες εγγραφές"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Προσθήκη χρονοδιακόπτη..."
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Κανένα αποτέλεσμα αναζήτησης"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "Καμία καταχώριση EPG"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Κανάλι"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Τώρα"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Μετά"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Χρονοδιάγραμμα"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Πληροφορίες"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Ήδη ξεκίνησε η εγγραφή σε αυτό το κανάλι"
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "Αδύνατη η αναπαραγωγή αυτού του καναλιού.[CR]Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Αδύνατη η αναπαραγωγή αυτής της εγγραφής.[CR]Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Εμφάνιση ποιότητας σήματος"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "Δεν υποστηρίζεται από το PVR backend."
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Σίγουρα επιθυμείτε να κρύψετε αυτό το κανάλι;"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Χρονοδιακόπτης"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Είστε σίγουροι ότι θέλετε να μετονομάσετε αυτήν την εγγραφή;"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "Είστε σίγουροι ότι θέλετε να μετονομάσετε αυτό το χρονοδιακόπτη;"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Εγγραφή"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Ελέγξτε τις ρυθμίσεις σας ή το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "Δεν ξεκίνησε κανένας πελάτης PVR ακόμη. Περιμένετε να ξεκινήσουν ή ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Νέο κανάλι"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Πληροφορίες προγράμματος"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Διαχείριση γκρουπ"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Εμφάνιση καναλιού"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Εμφάνιση φανερών καναλιών"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Εμφάνιση κρυφών καναλιών"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Μετακίνηση καναλιού σε:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Πληροφορίες εγγραφής"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Απόκρυψη καναλιού"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Μη διαθέσιμες πληροφορίες"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Νέος χρονοδιακόπτης"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Ρύθμιση χρονοδιακόπτη"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Ενεργοποιήθηκε ο χρονοδιακόπτης"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Διακοπή εγγραφής"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Διαγραφή χρονοδιακόπτη"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Προσθήκη χρονοδιακόπτη"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Ταξ.: Κανάλι"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Μετάβαση στην αρχή"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Μετάβαση στο τέλος"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Προεπιλεγμένο παράθυρο EPG"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Γίνεται ήδη εγγραφή αυτού του γεγονότος"
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Αυτή η εγγραφή δεν ήταν δυνατό να διαγραφεί. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "Χρονικό διάστημα ενημέρωσης EPG"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Να μην αποθηκεύεται το EPG στη βάση δεδομένων"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Καθυστέρηση αλλαγής καναλιού"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Ενεργό:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Όνομα:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Φάκελος:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Ραδιόφωνο:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Κανάλι:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Ημέρα:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Έναρξη:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Λήξη:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Προτεραιότητα:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Χρόνος ζωής (ημέρες):"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Πρώτη ημέρα:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Άγνωστο κανάλι %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Δε-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Τρ-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Τε-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Πε-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Πα-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Σα-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Κυ"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Δε-Τρ-Τε-Πε-Πα-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Δε-Τρ-Τε-Πε-Πα-Σα-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Δε-Τρ-Τε-Πε-Πα-Σα-Κυ"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Σα-Κυ"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Εισάγετε τίτλο για την εγγραφή"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Προσοχή"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Πηγαίνετε σε άλλο κανάλι."
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Εισάγετε το όνομα του φακέλου για την εγγραφή"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Επόμενος χρονοδιακόπτης την/το"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "στις"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Δεν ήταν δυνατόν να αποθηκευθεί ο χρονοδιακόπτης. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Προέκυψε ένα αναπάντεχο σφάλμα. Δοκιμάστε ξανά αργότερα ή ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "Σφάλμα του PVR backend. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Έκδοση"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Διεύθυνση"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "ΜέγεθοςΔίσκου"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Αναζήτηση καναλιών"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "Δε γίνεται να χρησιμοποιηθούν οι λειτουργίες PVR κατά την αναζήτηση."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "Σε ποιο διακομιστή επιθυμείτε να κάνετε αναζήτηση;"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Αριθμός Πελάτη"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Αποφυγή επαναλήψεων"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Ο χρονοδιακόπτης ακόμη είναι σε εγγραφή. Είστε σίγουροι ότι θέλετε να τον διαγράψετε;"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Ελεύθερα κανάλια μόνο"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Να αγνοηθούν οι τρέχοντες χρονοδιακόπτες"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Να αγνοηθούν οι τρέχουσες εγγραφές"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Από ώρα"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Έως ώρα"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Από ημέρα"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Έως ημέρα"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Ελάχιστη διάρκεια"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Μέγιστη διάρκεια"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Να συμπεριληφθούν άγνωστα είδη"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Όρος αναζήτησης"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Να συμπεριληφθεί η περιγραφή"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Με διάκριση πεζών-κεφαλαίων"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Μη διαθέσιμο κανάλι"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Κανένα ορισμένο γκρουπ"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Δημιουργήστε πρώτα ένα γκρουπ"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Όνομα του νέου γκρουπ"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Γκρουπ"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Οδηγός αναζήτησης"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Διαχείριση γκρουπ"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Κανένα ορισμένο γκρουπ"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Σε γκρουπ"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Γκρουπ"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "Το PVR backend δεν υποστηρίζει αυτήν την ενέργεια. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Κανάλι"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Δε"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Τρ"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Τε"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Πε"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Πα"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Σα"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Κυ"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "από"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Επόμενη εγγραφή"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Τρέχουσα εγγραφή"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "από"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "έως"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Εγγραφή ενεργή"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Εγγραφές"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Δεν είναι δυνατή η έναρξη εγγραφής. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Μετάβαση"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "Πληροφορίες PVR"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Σάρωση για εικονίδια που λείπουν"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Απόκρυψη παραθύρου πληροφοριών βίντεο"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Χρονικό όριο κατά την έναρξη αναπαραγωγής"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "Εκκίνηση αναπαραγωγής σε ελαχιστοποίηση"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Διάρκεια άμεσης εγγραφής"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Προεπιλεγμένη προτεραιότητα εγγραφής"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Προεπιλεγμένος χρόνος ζωής εγγραφής"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Περιθώριο στην αρχή μίας εγγραφής"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Περιθώριο στο τέλος μιας εγγραφής"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Αναπαραγωγή"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Εμφάνιση πληροφοριών καναλιού κατά το ζάπινγκ"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Αυτόματη απόκρυψη πληροφοριών καναλιού"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "Τηλεόραση"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Μενού/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Ημέρες που θα εμφανίζονται στο EPG"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "Διάρκεια πληροφοριών καναλιού"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Επαναφορά της βάσης δεδομένων PVR"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "Διαγράφονται όλα τα στοιχεία στη βάση δεδομένων του PVR"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "Επαναφορά της βάσης δεδομένων EPG"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "Γίνεται επαναφορά της βάσης δεδομένων EPG"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Συνέχεια του τελευταίου καναλιού κατά την εκκίνηση"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "Ελαχιστοποιημένο"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "Υπηρεσία PVR"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Κανένα από τα συνδεδεμένα PVR backend δεν υποστηρίζει σάρωση για κανάλια."
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Η σάρωση καναλιών δεν μπορεί να ξεκινήσει. Ελέγξτε το αρχείο καταγραφής για λεπτομέρειες."
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Συνέχεια;"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Ενέργειες πελάτη"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "Ειδικές ενέργειες πελάτη PVR"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Η εγγραφή ξεκίνησε στις: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Η εγγραφή τελείωσε στις: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Διαχείριση καναλιών"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "Πηγή EPG:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Όνομα καναλιού:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Εικονίδιο καναλιού:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Ρύθμιση καναλιού"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Νέο κανάλι"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Διαχείριση γκρουπ"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Ενεργοποίηση EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Γκρουπ:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Εισάγετε το όνομα του νέου καναλιού"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "Εικονικό backend XBMC"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "Πελάτης"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Διαγραφή καναλιού"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Αυτή η λίστα περιέχει αλλαγές"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Επιλογή backend"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Εισάγετε μία έγκυρη διεύθυνση URL για το νέο κανάλι"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "Το PVR backend δεν υποστηρίζει χρονοδιακόπτες."
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Όλοι οι ραδιοφωνικοί σταθμοί"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Όλα τα τηλεοπτικά κανάλια"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Φανερά"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Κανάλι εκτός γκρουπ"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Κανάλια σε"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Συγχρονισμός γκρουπ καναλιών με τα backend"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Δεν ήταν δυνατό να ενεργοποιηθεί κανένα πρόσθετο PVR. Ελέγξτε τις ρυθμίσεις σας ή το αρχείο καταγραφής για περισσότερες πληροφορίες."
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Η εγγραφή ακυρώθηκε"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Προγραμματίστηκε η εγγραφή"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Η εγγραφή ξεκίνησε"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Η εγγραφή ολοκληρώθηκε"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Η εγγραφή διεγράφη"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Κλείσιμο του OSD του καναλιού κατά το ζάπινγκ"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "Αποτροπή ενημερώσεων EPG κατά την αναπαραγωγή τηλεόρασης"
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "Πάντα να χρησιμοποιείται η διάταξη των καναλιών από τα backend"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Εκκαθάριση αποτελεσμάτων αναζήτησης"
+
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr "Εμφάνιση ειδοποίησης κατά τις ενημερώσεις χρονοδιακοπτών"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr "Χρήση αριθμών καναλιών backend (δουλεύει μόνο με 1 ενεργό πρόσθετο PVR)"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "Ξεκινά ο διαχειριστής PVR"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Φορτώνονται κανάλια από τους πελάτες"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "Φορτώνονται χρονοδιακόπτες από τους πελάτες"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Φορτώνονται εγγραφές από τους πελάτες"
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr "Εκκίνηση νημάτων παρασκηνίου"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Δεν υπάρχει ενεργό πρόσθετο PVR"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "Ο διαχειριστής PVR ενεργοποιήθηκε χωρίς κανένα"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "ενεργό πρόσθετο PVR. Ενεργοποιήστε τουλάχιστον ένα"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "προκειμένου να χρησιμοποιήσετε τη λειτουργία PVR."
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "Χρόνος αδράνειας backend"
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Ορισμός εντολής αφύπνισης (cmd [timestamp])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Αφύπνιση πριν την εγγραφή"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Καθημερινή αφύπνιση"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Ώρα καθημερινής αφύπνισης (ΩΩ:λλ:δδ)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "Φιλτράρισμα καναλιών"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "Φορτώνεται το EPG από τη βάση δεδομένων"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "Ενημέρωση πληροφοριών EPG"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "Να προγραμματιστεί ενημέρωση EPG για αυτό το κανάλι;"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "Προγραμματίστηκε ενημέρωση EPG για το κανάλι"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "Απέτυχε η ενημέρωση EPG για το κανάλι"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Εκκίνηση εγγραφής"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Διακοπή εγγραφής"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Κλείδωμα καναλιού"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Ξεκλείδωμα καναλιού"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Γονικός έλεγχος"
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Διάρκεια ξεκλειδώματος"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Αλλαγή PIN"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Γονικός έλεγχος. Εισάγετε το PIN:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Κλειδωμένο κανάλι. Εισάγετε το PIN:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Λανθασμένο PIN"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "Το PIN που εισάγατε είναι λανθασμένο."
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Γονικό κλείδωμα"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Γονικό κλείδωμα:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "Να μην εμφανίζονται ετικέτες για 'μη διαθέσιμες πληροφορίες'"
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Να μην εμφανίζονται ειδοποιήσεις 'απώλειας σύνδεσης'"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Όλες οι εγγραφές"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "Δε βρέθηκαν πρόσθετα PVR"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "Χρειάζεστε ένα δέκτη (tuner), ένα backend, και ένα"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "πρόσθετο προκειμένου το backend να κάνει χρήση του PVR."
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Επισκεφθείτε το xbmc.org/pvr για να μάθετε περισσότερα."
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Προειδοποίηση διένεξης"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Σφάλμα διένεξης"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Διένεξη εγγραφής"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Σφάλμα εγγραφής"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Ρυθμίσεις πελάτη"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Ειδικές ρυθμίσεις πελάτη"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Επιβεβαίωση αλλαγής καναλιού πιέζοντας 'Επιλογή'"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Άλλο/Άγνωστο"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Ταινία/Δράμα"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Αστυνομικό/Θρίλερ"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Περιπέτεια/Γουέστερν/Πολεμικό"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Επιστημονική Φαντασία/Φαντασία/Τρόμου"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Κωμωδία"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Σαπουνόπερα/Μελόδραμα/Φολκλορικό"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Ρομαντική"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Σοβαρή/Κλασική/Θρησκευτική/Ιστορική Ταινία/Δράμα"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Πορνό/Δράμα"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Ειδήσεις/Επικαιρότητα"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Ειδήσεις/Δελτίο Καιρού"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Ειδησεογραφικό Περιοδικό"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Ντοκυμαντέρ"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Συζήτηση/Συνέντευξη/Ντιμπέιτ"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Σόου/Τηλεπαιχνίδι"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "Τηλεπαιχνίδι/Κουίζ/Διαγωνισμός"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Βαριετέ"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Τοκ Σόου"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Αθλητικά"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Ειδική Εκδήλωση"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Αθλητικό Περιοδικό"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Ποδόσφαιρο"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Τένις/Σκουός"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Ομαδικά Αθλήματα"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Αθλήματα"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Μηχανοκίνητος Αθλητισμός"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Θαλάσσια Σπορ"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Χειμερινά Αθλήματα"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Ιππασία"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Πολεμικές Τέχνες"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Παιδικά/Νεανικά Προγράμματα"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Προσχολικής Ηλικίας Προγράμματα"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Ψυχαγωγικά Προγράμματα για 6 έως 14"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Ψυχαγωγικά Προγράμματα για 10 έως 16"
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr "Ενημερωτικό/Εκπαιδευτικό/Σχολικό Πρόγραμμα"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "Καρτούν/Μαριονέτες"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Μουσική/Μπαλέτο/Χορός"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Ροκ/Ποπ"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Σοβαρή/Κλασική Μουσική"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "Λαϊκή/Παραδοσιακή Μουσική"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Μιούζικαλ/Όπερα"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Μπαλέτο"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Τέχνη/Πολιτισμός"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Τέχνες του Θεάματος"
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Καλές Τέχνες"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Θρησκεία"
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr "Λαϊκή Κουλτούρα/Παραδοσιακές Τέχνες"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Λογοτεχνία"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Φιλμ/Σινεμά"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "Πειραματικός Κινηματογράφος/Βίντεο"
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "Εκπομπή/Εφημερίδες"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Νέα Μέσα"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "Περιοδικά Τέχνης/Πολιτισμού"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Μόδα"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Κοινωνία/Πολιτική/Οικονομία"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Περιοδικά/Εκθέσεις/Ντοκυμαντέρ"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Οικονομική/Κοινωνική Συμβουλευτική"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "Αξιοσημείωτοι Άνθρωποι"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "Εκπαίδευση/Επιστήμη/Γεγονότα"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "Φύση/Ζώα/Περιβάλλον"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Τεχνολογία/Φυσικές Επιστήμες"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Ιατρική/Φυσιολογία/Ψυχολογία"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "Ξένες Χώρες/Αποστολές"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "Κοινωνικές/Πνευματικές Επιστήμες"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Περαιτέρω Εκπαίδευση"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Γλώσσες"
+
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "Αναψυχή/Χόμπυ"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Τουρισμός/Ταξίδια"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Χειροτεχνία"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Μηχανοκίνηση"
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr "Φυσική Κατάσταση &amp; Υγεία"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Μαγειρική"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Διαφημιστικά/Αγορές"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Κηπουρική"
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr "Ειδικά Χαρακτηριστικά"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Αρχική Γλώσσα"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Μαύρο &amp; Άσπρο"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Αδημοσίευτο"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "Ζωντανή Μετάδοση"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Δράμα"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Αστυνομικό/Θρίλερ"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Περιπέτεια/Γουέστερν/Πολεμικό"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Επιστημονική Φαντασία/Φαντασία/Τρόμου"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Κωμωδία"
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Σαπουνόπερα/Μελόδραμα/Φολκλορικό"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Ρομαντική"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "Σοβαρή/Κλασική/Θρησκευτική/Ιστορική"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Πορνό"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -5741,7 +7376,7 @@ msgstr "Φάκελος στιγμιότυπων"
 
 msgctxt "#20006"
 msgid "Playlists folder"
-msgstr "Φάκελος λίστας αναπαραγωγής"
+msgstr "Φάκελος λιστών αναπ/γής"
 
 msgctxt "#20007"
 msgid "Recordings"
@@ -5769,7 +7404,7 @@ msgstr "Να εκτελεστεί το παιχνίδι;"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "Ταξ.: Λίστα αναπαραγωγής"
+msgstr "Ταξ.: Λίστα αναπ/γής"
 
 msgctxt "#20015"
 msgid "Remote thumb"
@@ -5953,7 +7588,7 @@ msgstr "και ότι το νέο όνομα είναι έγκυρο"
 
 msgctxt "#20074"
 msgid "MPAA rating"
-msgstr "Αξιολόγ. MPAA"
+msgstr "Καταλληλότητα"
 
 msgctxt "#20075"
 msgid "Enter master lock code"
@@ -6403,6 +8038,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Αναγγελία ενημερώσεων της συλλογής μέσω UPnP"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Ενεργοποίηση αυτόματης κύλισης για πλοκή & κριτική"
@@ -6446,6 +8085,26 @@ msgstr "Δεν βρέθηκε ο καλλιτέχνης!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Αποτυχία λήψης πληροφοριών καλλιτέχνη"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Μουσική Android"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Βίντεο Android"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Εικόνες Android"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Φωτογραφίες Android"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Εφαρμογές Android"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -6546,6 +8205,26 @@ msgstr "Βίντεο - Συλλογή"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Ταξ.: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Σάρωση ταινιών με %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Σάρωση μουσικών βίντεο με %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Σάρωση τηλ. σειρών με %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Σάρωση καλλιτεχνών με %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Σάρωση άλμπουμ με %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -6789,7 +8468,7 @@ msgstr "Ο επιλεγμένος φάκελος περιέχει μόνο έν�
 
 msgctxt "#20384"
 msgid "Link to TV show"
-msgstr "Σύνδεσμος σε τηλεοπτική σειρά"
+msgstr "Σύνδεση με τηλεοπτική σειρά"
 
 msgctxt "#20385"
 msgid "Remove link to TV show"
@@ -6797,11 +8476,11 @@ msgstr "Αφαίρεση συνδέσμου από τηλεοπτική σειρ
 
 msgctxt "#20386"
 msgid "Recently added movies"
-msgstr "Πρόσφατα εισαχθείσες ταινίες"
+msgstr "Ταινίες που προστέθηκαν πρόσφατα"
 
 msgctxt "#20387"
 msgid "Recently added episodes"
-msgstr "Πρόσφατα εισαχθέντα επεισόδια"
+msgstr "Επεισόδια που προστέθηκαν πρόσφατα"
 
 msgctxt "#20388"
 msgid "Studios"
@@ -6813,7 +8492,7 @@ msgstr "Μουσικά βίντεο"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
-msgstr "Πρόσφατα εισαχθέντα μουσικά βίντεο"
+msgstr "Μουσικά βίντεο που προστέθηκαν πρόσφατα"
 
 msgctxt "#20391"
 msgid "Music video"
@@ -6893,7 +8572,7 @@ msgstr "Διαφημιστικό"
 
 msgctxt "#20411"
 msgid "Flatten"
-msgstr "Ενιαία λίστα (Flatten)"
+msgstr "Ενιαία λίστα"
 
 msgctxt "#20412"
 msgid "Flatten TV shows"
@@ -6983,10 +8662,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Ομάδες Ταινιών"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Ορισμός μικρογραφίας ομάδας"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Εξαγωγή μικρογραφιών ηθοποιού;"
@@ -7067,10 +8742,6 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr "Ακροατές"
 
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Ορισμός fanart ομάδας ταινιών"
-
 msgctxt "#20457"
 msgid "Movie set"
 msgstr "Ομάδα Ταινιών"
@@ -7078,6 +8749,30 @@ msgstr "Ομάδα Ταινιών"
 msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Ομαδοποίηση ταινιών"
+
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Ετικέτες"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Προσθήκη %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Αφαίρεση %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Νέα ετικέτα..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "Υπάρχει ήδη μία ετικέτα με το όνομα '%s'."
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Επιλογή %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7097,7 +8792,7 @@ msgstr "Η ροή πολυμέσων θα σταματήσει!"
 
 msgctxt "#21334"
 msgid "Zap to channel: %s failed!"
-msgstr "Η αλλαγή καναλιού: %s απέτυχε!"
+msgstr "Η μετάβαση στο κανάλι: %s απέτυχε!"
 
 msgctxt "#21335"
 msgid "Are you sure to start the stream?"
@@ -7141,7 +8836,7 @@ msgstr "Παράκαμψη γραμματοσειρών υποτίτλων ASS/S
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
-msgstr "Ενεργοποίηση ποντικιού και υποστήριξης οθόνης αφής"
+msgstr "Ενεργοποίηση ποντικιού και υποστήριξη οθόνης αφής"
 
 msgctxt "#21370"
 msgid "Play navigation sounds during media playback"
@@ -7189,7 +8884,7 @@ msgstr "Ενεργοποίηση 1080i"
 
 msgctxt "#21381"
 msgid "Enter name of new playlist"
-msgstr "Εισαγωγή ονόματος για τη νέα λίστα αναπαραγωγής"
+msgstr "Εισαγωγή ονόματος για τη νέα λίστα αναπ/γής"
 
 msgctxt "#21382"
 msgid "Show \"Add source\" buttons in file lists"
@@ -7257,7 +8952,7 @@ msgstr "Υψηλή ποιότητα (Σκίαση pixel v2)"
 
 msgctxt "#21398"
 msgid "Enable playlist at startup"
-msgstr "Ενεργοποίηση λίστας αναπαραγωγής κατά την εκκίνηση"
+msgstr "Ενεργοποίηση λίστας αναπ/γής κατά την εκκίνηση"
 
 msgctxt "#21399"
 msgid "Use tween animations"
@@ -7327,10 +9022,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Προεπιλεγμένο scraper μουσικών βίντεο"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Ενεργοποίηση εναλλακτικής βάσει της γλώσσας του scraper"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Ρυθμίσεις"
@@ -7349,7 +9040,7 @@ msgstr "Τιμή για αντιστοίχιση"
 
 msgctxt "#21421"
 msgid "Smart playlist rule"
-msgstr "Κανόνας έξυπνης λίστας αναπαραγωγής"
+msgstr "Κανόνας έξυπνης λίστας αναπ/γής"
 
 msgctxt "#21422"
 msgid "Match items where"
@@ -7393,11 +9084,11 @@ msgstr "φθίνουσα"
 
 msgctxt "#21432"
 msgid "Edit smart playlist"
-msgstr "Επεξεργασία έξυπνης λίστας αναπαραγωγής"
+msgstr "Επεξεργασία έξυπνης λίστας αναπ/γής"
 
 msgctxt "#21433"
 msgid "Name of the playlist"
-msgstr "Όνομα λίστας αναπαραγωγής"
+msgstr "Όνομα λίστας αναπ/γής"
 
 msgctxt "#21434"
 msgid "Find items where"
@@ -7413,7 +9104,7 @@ msgstr "%i αντικείμενα"
 
 msgctxt "#21437"
 msgid "New smart playlist..."
-msgstr "Νέα έξυπνη λίστα αναπαραγωγής..."
+msgstr "Νέα έξυπνη λίστα αναπ/γής..."
 
 msgctxt "#21438"
 msgid "%c Drive"
@@ -7421,7 +9112,7 @@ msgstr "%c Δίσκος"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"
-msgstr "Επεξεργασία κανόνων Party Mode"
+msgstr "Επεξεργασία κανόνων λειτουργίας party"
 
 msgctxt "#21440"
 msgid "Home folder"
@@ -7487,6 +9178,14 @@ msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Η λανθάνουσα μνήμη γέμισε πριν φθάσει το απαιτούμενο μέγεθος για συνεχόμενη αναπαραγωγή"
 
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Εξωτερικός χώρος αποθήκευσης"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Πλήθος προβληθέντων επεισοδίων"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Θέση υποτίτλου"
@@ -7510,6 +9209,18 @@ msgstr "Πάνω πλευρά του βίντεο"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "Πάνω από το βίντεο"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f με %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d με %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s με %s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -7797,7 +9508,7 @@ msgstr "Πέθανε"
 
 msgctxt "#21898"
 msgid "Years active"
-msgstr "Έτη ενεργής σταδιοδρομίας"
+msgstr "Έτη σταδιοδρομίας"
 
 msgctxt "#21899"
 msgid "Label"
@@ -8007,6 +9718,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Εκτελείται"
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Προσαρμογή Teletext σε 4:3"
+
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Ενεργός εξωτερικός αναπαραγωγέας"
@@ -8087,9 +9802,13 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Υπηρεσίες"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "Πελάτες PVR"
+
 msgctxt "#24020"
 msgid "Configure"
-msgstr "Ρύθμιση"
+msgstr "Διαμόρφωση"
 
 msgctxt "#24021"
 msgid "Disable"
@@ -8110,6 +9829,10 @@ msgstr "Καιρός"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (βασική)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Υπηρεσία για καιρικές πληροφορίες"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -8293,7 +10016,7 @@ msgstr "Κλείδωμα διαχειριστή πρόσθετων"
 
 msgctxt "#24094"
 msgid "(current)"
-msgstr "(τρέχων)"
+msgstr "(τρέχoν)"
 
 msgctxt "#24095"
 msgid "(blacklisted)"
@@ -8322,6 +10045,14 @@ msgstr "Για να χρησιμοποιήσετε αυτή τη λειτουρ�
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Επιθυμείτε να κατεβάσετε αυτό το πρόσθετο;"
+
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "Αδυναμία φόρτωσης κελύφους"
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "Λείπουν κάποια αρχεία από το κέλυφος"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -8533,7 +10264,7 @@ msgstr "Έλεγχος"
 
 msgctxt "#33053"
 msgid "Configure the"
-msgstr "Ρύθμιση"
+msgstr "Διαμορφώστε τις"
 
 msgctxt "#33054"
 msgid "Seasons"
@@ -8557,7 +10288,7 @@ msgstr "Προβολή"
 
 msgctxt "#33059"
 msgid "Configure the"
-msgstr "Ρύθμιση"
+msgstr "Διαμορφώστε τα"
 
 msgctxt "#33060"
 msgid "Power"
@@ -8841,11 +10572,19 @@ msgstr "Keymap για χρήση με αυτή τη συσκευή"
 
 msgctxt "#35008"
 msgid "Keymap enabled"
-msgstr "Ενεργοποιημένο Keymap"
+msgstr "Ενεργοποίηση Keymap"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Να μη γίνει χρήση του προσωπικού keymap για αυτή τη συσκευή"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Ενεργοποίηση υποστήριξης χειριστηρίων και gamepad"
+
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
+msgstr "Απενεργοποίηση χειριστηρίου κατά την παρουσία iMON"
 
 msgctxt "#35500"
 msgid "Location"
@@ -8915,10 +10654,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Ο προσαρμογέας CEC δεν εκκίνησε. Ελέγξτε τις ρυθμίσεις σας."
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Μη υποστηριζόμενη έκδοση libCEC. Η %d είναι μεγαλύτερη από την έκδοση που το XBMC υποστηρίζει (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Αριθμός θύρας HDMI"
@@ -8929,7 +10664,7 @@ msgstr "Συνδεδεμένη"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "O προσαρμογέας εντοπίσθηκε, αλλά η libCEC δεν είναι διαθέσιμη"
+msgstr "Ο προσαρμογέας CEC δεν εκκίνησε: η libCEC δεν εντοπίστηκε στο σύστημά σας."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -8965,29 +10700,56 @@ msgstr "Αποστολή εντολής 'ανενεργή πηγή' κατά τ�
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Συσκευές σε κατάσταση αναμονής όταν τίθεται και ο Η/Υ σε αυτήν"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Αυτή η συσκευή χρειάζεται συντήρηση"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Αγνόηση"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Όταν η τηλεόραση είναι κλειστή"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Απώλεια σύνδεσης"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "Αυτός ο χρήστης δεν έχει άδεια για να ανοίξει τον προσαρμογέα CEC"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Η θύρα είναι απασχολημένη. Μόνο ένα πρόγραμμα μπορεί να έχει πρόσβαση στον προσαρμογέα CEC"
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "Παύση αναπαραγωγής κατά τη μετάβαση σε άλλη πηγή"
+
+msgctxt "#36035"
+msgid "Always"
+msgstr "Πάντα"
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "Στην έναρξη/διακοπή"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "Τηλεόραση"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Ενισχυτής / Συσκευή AVR"
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "Τηλεόραση και συσκευή AVR (ρητά)"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Μη υποστηριζόμενη έκδοση libCEC. Η %x είναι μικρότερη από την έκδοση που το XBMC υποστηρίζει (%x)"

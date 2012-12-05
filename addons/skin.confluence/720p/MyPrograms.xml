@@ -1,6 +1,7 @@
-<window id="1">
+<window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<onload condition="!Skin.HasSetting(FirstTimeRun)">ActivateWindow(1112)</onload>
 	<views>50,51,500,550,551</views>
 	<controls>
 		<include>CommonBackground</include>
@@ -89,10 +90,19 @@
 					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
 				<control type="edit" id="19">
+					<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
 					<description>Filter</description>
 					<textwidth>230</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>587</label>
+				</control>
+				<control type="radiobutton" id="20">
+					<visible>Container.CanFilterAdvanced</visible>
+					<description>Filter</description>
+					<include>ButtonCommonValues</include>
+					<label>587</label>
+					<onclick>right</onclick>
+					<onclick>Filter</onclick>
 				</control>
 				<include>CommonNowPlaying_Controls</include>
 			</control>

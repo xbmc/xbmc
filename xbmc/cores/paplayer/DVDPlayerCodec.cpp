@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDPlayerCodec.h"
-#include "Util.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
@@ -30,6 +28,7 @@
 #include "cores/dvdplayer/DVDCodecs/DVDFactoryCodec.h"
 #include "utils/log.h"
 #include "settings/GUISettings.h"
+#include "URL.h"
 
 #include "AudioDecoder.h"
 
@@ -39,6 +38,7 @@ DVDPlayerCodec::DVDPlayerCodec()
   m_pDemuxer = NULL;
   m_pInputStream = NULL;
   m_pAudioCodec = NULL;
+  m_nAudioStream = -1;
   m_audioPos = 0;
   m_pPacket = NULL;
   m_decoded = NULL;;

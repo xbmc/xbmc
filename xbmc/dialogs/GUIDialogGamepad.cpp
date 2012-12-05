@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -45,7 +44,11 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
   if ((action.GetButtonCode() >= KEY_BUTTON_A &&
        action.GetButtonCode() <= KEY_BUTTON_RIGHT_TRIGGER) ||
       (action.GetButtonCode() >= KEY_BUTTON_DPAD_UP &&
-       action.GetButtonCode() <= KEY_BUTTON_DPAD_RIGHT))
+       action.GetButtonCode() <= KEY_BUTTON_DPAD_RIGHT) ||
+      (action.GetID() >= ACTION_MOVE_LEFT &&
+       action.GetID() <= ACTION_MOVE_DOWN) ||
+      action.GetID() == ACTION_PLAYER_PLAY
+     )
   {
     switch (action.GetButtonCode())
     {
@@ -61,7 +64,18 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     case KEY_BUTTON_DPAD_DOWN : m_strUserInput += "D"; break;
     case KEY_BUTTON_DPAD_LEFT : m_strUserInput += "L"; break;
     case KEY_BUTTON_DPAD_RIGHT : m_strUserInput += "R"; break;
-    default : return true; break;
+    default:
+      switch (action.GetID())
+      {
+        case ACTION_MOVE_LEFT:   m_strUserInput += "L"; break;
+        case ACTION_MOVE_RIGHT:  m_strUserInput += "R"; break;
+        case ACTION_MOVE_UP:     m_strUserInput += "U"; break;
+        case ACTION_MOVE_DOWN:   m_strUserInput += "D"; break;
+        case ACTION_PLAYER_PLAY: m_strUserInput += "P"; break;
+        default:
+          return true;
+      }
+      break;
     }
 
     CStdString strHiddenInput(m_strUserInput);
@@ -81,7 +95,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     Close();
     return true;
   }
-  else if (action.GetButtonCode() == KEY_BUTTON_START)
+  else if (action.GetButtonCode() == KEY_BUTTON_START || action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bConfirmed = false;
     m_bCanceled = false;

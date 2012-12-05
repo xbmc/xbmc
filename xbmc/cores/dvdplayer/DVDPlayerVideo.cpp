@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,7 +34,6 @@
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
-#include "../../Util.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDPerformanceCounter.h"
 #include "DVDCodecs/DVDCodecs.h"
@@ -140,6 +138,9 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_started = false;
   m_iVideoDelay = 0;
   m_iSubtitleDelay = 0;
+  m_FlipTimeStamp = 0.0;
+  m_iLateFrames = 0;
+  m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
@@ -149,8 +150,17 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
+  m_bCalcFrameRate = false;
+  m_fStableFrameRate = 0.0;
+  m_iFrameRateCount = 0;
+  m_bAllowDrop = false;
+  m_iFrameRateErr = 0;
+  m_iFrameRateLength = 0;
   m_bFpsInvalid = false;
   m_bAllowFullscreen = false;
+  m_droptime = 0.0;
+  m_dropbase = 0.0;
+  m_autosync = 1;
   memset(&m_output, 0, sizeof(m_output));
 }
 
@@ -224,7 +234,7 @@ void CDVDPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_bFpsInvalid = (hint.fpsrate == 0 || hint.fpsscale == 0);
 
   m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
-                     g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+                     g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF;
   ResetFrameRateCalc();
 
   m_iDroppedRequest = 0;
@@ -528,6 +538,9 @@ void CDVDPlayerVideo::Process()
           mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
       }
 
+      if (!g_renderManager.Supports(RENDERFEATURE_ROTATION))
+        mFilters |= CDVDVideoCodec::FILTER_ROTATE;
+
       mFilters = m_pVideoCodec->SetFilters(mFilters);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
@@ -536,7 +549,7 @@ void CDVDPlayerVideo::Process()
       if(m_pVideoCodec->GetConvergeCount() > 0)
       {
         m_packets.push_back(DVDMessageListItem(pMsg, 0));
-        if(m_packets.size() > m_pVideoCodec->GetConvergeCount() 
+        if(m_packets.size() > m_pVideoCodec->GetConvergeCount()
         || m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
           m_packets.pop_front();
       }
@@ -607,7 +620,7 @@ void CDVDPlayerVideo::Process()
               m_iNrOfPicturesNotToSkip--;
             }
 
-            // validate picture timing, 
+            // validate picture timing,
             // if both dts/pts invalid, use pts calulated from picture.iDuration
             // if pts invalid use dts, else use picture.pts as passed
             if (picture.dts == DVD_NOPTS_VALUE && picture.pts == DVD_NOPTS_VALUE)
@@ -792,7 +805,12 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
 
       if (m_pOverlayCodecCC)
       {
-        m_pOverlayCodecCC->Decode(data, size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
+        DemuxPacket packet;
+        packet.pData = data;
+        packet.iSize = size;
+        packet.pts = DVD_NOPTS_VALUE;
+        packet.dts = DVD_NOPTS_VALUE;
+        m_pOverlayCodecCC->Decode(&packet);
 
         CDVDOverlay* overlay;
         while((overlay = m_pOverlayCodecCC->GetOverlay()) != NULL)
@@ -1121,7 +1139,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format))
+    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->format, pPicture->extended_format, m_hints.orientation))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
@@ -1285,8 +1303,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
   else
   {
-    m_droptime = 0.0f;
-    m_dropbase = 0.0f;
+    m_droptime = 0.0;
+    m_dropbase = 0.0;
   }
 
   // set fieldsync if picture is interlaced

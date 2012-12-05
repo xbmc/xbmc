@@ -122,12 +122,16 @@ void CDaapClient::StatusCallback(DAAP_SClient *pClient, DAAP_Status status, int 
   {
     case DAAP_STATUS_connecting:
       CLog::Log(LOGINFO, "CDaapClient::Callback - Connecting");
+      break;
     case DAAP_STATUS_downloading:
       CLog::Log(LOGINFO, "CDaapClient::Callback - Downlading");
+      break;
     case DAAP_STATUS_idle:
       CLog::Log(LOGINFO, "CDaapClient::Callback - Idle");
+      break;
     default:
       CLog::Log(LOGINFO, "CDaapClient::Callback - Status %d", status);
+      break;
   }
 }
 

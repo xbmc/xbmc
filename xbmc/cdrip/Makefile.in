@@ -1,15 +1,15 @@
-SRCS=CDDARipJob.cpp \
-     CDDARipper.cpp \
-     Encoder.cpp \
-     EncoderFFmpeg.cpp \
-     EncoderFlac.cpp \
-     EncoderWav.cpp
+SRCS  = CDDARipJob.cpp
+SRCS += CDDARipper.cpp
+SRCS += Encoder.cpp
+SRCS += EncoderFFmpeg.cpp
+SRCS += EncoderFlac.cpp
+SRCS += EncoderWav.cpp
 
 ifeq (@HAVE_LIBMP3LAME@,1)
-SRCS+=EncoderLame.cpp
+SRCS += EncoderLame.cpp
 endif
 ifeq (@HAVE_LIBVORBISENC@,1)
-SRCS+=EncoderVorbis.cpp
+SRCS += EncoderVorbis.cpp
 endif
 
 LIB=cdrip.a

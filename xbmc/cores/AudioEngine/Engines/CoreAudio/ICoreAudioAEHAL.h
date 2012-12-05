@@ -14,14 +14,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "AEAudioFormat.h"
-#include "Interfaces/AE.h"
+#include "cores/AudioEngine/AEAudioFormat.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "ICoreAudioSource.h"
 
 class ICoreAudioAEHAL;
@@ -32,12 +31,12 @@ class CAUOutputDevice;
  */
 class ICoreAudioAEHAL
 {
-protected:  
+protected:
   ICoreAudioAEHAL() {}
   virtual ~ICoreAudioAEHAL() {}
 
 public:
-  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device) = 0;
+  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume) = 0;
   virtual void   Deinitialize() = 0;
   virtual void   EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
   //virtual CAUOutputDevice *DestroyUnit(CAUOutputDevice *outputUnit);

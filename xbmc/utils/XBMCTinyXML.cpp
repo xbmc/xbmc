@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -30,20 +30,18 @@ CXBMCTinyXML::CXBMCTinyXML()
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
-: TiXmlDocument()
+: TiXmlDocument(documentName)
 {
-  LoadFile(documentName);
 }
 
 CXBMCTinyXML::CXBMCTinyXML(const CStdString &documentName)
-: TiXmlDocument()
+: TiXmlDocument(documentName)
 {
-  LoadFile(documentName);
 }
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
 {
-  return TiXmlDocument::LoadFile(encoding);
+  return LoadFile(value, encoding);
 }
 
 bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
@@ -91,6 +89,7 @@ bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 {
   CStdString data("");
   char buf[BUFFER_SIZE];
+  memset(buf, 0, BUFFER_SIZE);
   int result;
   while ((result = fread(buf, 1, BUFFER_SIZE, f)) > 0)
     data.append(buf, result);

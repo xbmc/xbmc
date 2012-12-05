@@ -13,21 +13,18 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "AESinkFactory.h"
 #include "Interfaces/AESink.h"
-#include "utils/SystemInfo.h"
-#include "utils/log.h"
-#include "settings/AdvancedSettings.h"
-
 #if defined(TARGET_WINDOWS)
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"
+#elif defined(TARGET_ANDROID)
+  #include "Sinks/AESinkAUDIOTRACK.h"
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
     #include "Sinks/AESinkALSA.h"
@@ -39,6 +36,10 @@
 #include "Sinks/AESinkProfiler.h"
 #include "Sinks/AESinkNULL.h"
 
+#include "settings/AdvancedSettings.h"
+#include "utils/SystemInfo.h"
+#include "utils/log.h"
+
 void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 {
   int pos = device.find_first_of(':');
@@ -47,19 +48,20 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
     driver = device.substr(0, pos);
     std::transform(driver.begin(), driver.end(), driver.begin(), ::toupper);
 
-    /* check that it is a valid driver name */
+    // check that it is a valid driver name
     if (
-#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+#if defined(TARGET_WINDOWS)
+        driver == "WASAPI"      ||
+        driver == "DIRECTSOUND" ||
+#elif defined(TARGET_ANDROID)
+        driver == "AUDIOTRACK"  ||
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
         driver == "ALSA"        ||
   #endif
         driver == "OSS"         ||
-#elif defined(TARGET_WINDOWS)
-        driver == "WASAPI"      ||
-        driver == "DIRECTSOUND" ||
 #endif
-        driver == "PROFILER"
-        )
+        driver == "PROFILER")
       device = device.substr(pos + 1, device.length() - pos - 1);
     else
       driver.clear();
@@ -81,13 +83,12 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
   } \
   sink->Deinitialize(); \
   delete sink; \
+  sink = NULL; \
 }
 
 IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredFormat, bool rawPassthrough)
 {
-#if !defined(TARGET_DARWIN)
-
-  /* extract the driver from the device string if it exists */
+  // extract the driver from the device string if it exists
   std::string driver;
   ParseDevice(device, driver);
 
@@ -100,41 +101,30 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 
 
 #if defined(TARGET_WINDOWS)
-
-  if ((driver.empty() && g_sysinfo.IsVistaOrHigher() || driver == "WASAPI") && !g_advancedSettings.m_audioForceDirectSound)
+  if ((driver.empty() && g_sysinfo.IsVistaOrHigher() ||
+    driver == "WASAPI") && !g_advancedSettings.m_audioForceDirectSound)
     TRY_SINK(WASAPI)
   else
-    TRY_SINK(DirectSound) /* Always fall back to DirectSound */
+    TRY_SINK(DirectSound) // always fall back to DirectSound
+
+#elif defined(TARGET_ANDROID)
+  if (driver.empty() || driver == "AUDIOTRACK")
+    TRY_SINK(AUDIOTRACK)
 
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-
   #if defined(HAS_ALSA)
   if (driver.empty() || driver == "ALSA")
     TRY_SINK(ALSA)
   #endif
+
   if (driver.empty() || driver == "OSS")
     TRY_SINK(OSS)
+#endif
 
-  /* no need to try others as both will have been attempted if driver is empty */
-  if (driver.empty())
-    TRY_SINK(NULL);
-
-  /* if we failed to get a sink, try to open one of the others */
-  #if defined(HAS_ALSA)
-  if (driver != "ALSA")
-      TRY_SINK(ALSA)
-  #endif
-  if (driver != "OSS")
-    TRY_SINK(OSS)
-
-#endif /* defined TARGET_WINDOWS || defined TARGET_LINUX || defined TARGET_FREEBSD */
-
-  //Complete failure.
+  // complete failure.
   TRY_SINK(NULL);
 
-#endif /* defined TARGET_DARWIN */
-
-  /* should never get here */
+  // should never get here
   ASSERT(false);
   return NULL;
 }
@@ -149,19 +139,18 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
 
 void CAESinkFactory::EnumerateEx(AESinkInfoList &list)
 {
-
-#if defined(HAS_ALSA)
-  ENUMERATE_SINK(ALSA);
-#endif
-
-#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-  ENUMERATE_SINK(OSS);
-#endif
-
 #if defined(TARGET_WINDOWS)
+  ENUMERATE_SINK(DirectSound);
   if (g_sysinfo.IsVistaOrHigher() && !g_advancedSettings.m_audioForceDirectSound)
     ENUMERATE_SINK(WASAPI);
+#elif defined(TARGET_ANDROID)
+    ENUMERATE_SINK(AUDIOTRACK);
+#elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  #if defined(HAS_ALSA)
+    ENUMERATE_SINK(ALSA);
+  #endif
 
-  ENUMERATE_SINK(DirectSound);
+    ENUMERATE_SINK(OSS);
 #endif
+
 }

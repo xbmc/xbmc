@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -462,9 +461,9 @@ void CGUISpinControl::Render()
     bool arrowsOnRight(0 != (m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X)));
 
     if (arrowsOnRight)
-      RenderText(m_posX - space - textWidth, textWidth);
+      RenderText(m_posX - space - textWidth, m_posY, textWidth, m_height);
     else
-      RenderText(m_posX + m_imgspinDown.GetWidth() + m_imgspinUp.GetWidth() + space, textWidth);
+      RenderText(m_posX + m_imgspinDown.GetWidth() + m_imgspinUp.GetWidth() + space, m_posY, textWidth, m_height);
 
     // set our hit rectangle for MouseOver events
     m_hitRect = m_label.GetRenderRect();
@@ -472,9 +471,9 @@ void CGUISpinControl::Render()
   CGUIControl::Render();
 }
 
-void CGUISpinControl::RenderText(float posX, float width)
+void CGUISpinControl::RenderText(float posX, float posY, float width, float height)
 {
-  m_label.SetMaxRect(posX, m_posY, width, m_height);
+  m_label.SetMaxRect(posX, posY, width, height);
   m_label.SetColor(GetTextColor());
   m_label.Render();
 }

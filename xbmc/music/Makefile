@@ -3,7 +3,9 @@ SRCS=Album.cpp \
      GUIViewStateMusic.cpp \
      LastFmManager.cpp \
      MusicDatabase.cpp \
+     MusicDbUrl.cpp \
      MusicInfoLoader.cpp \
+     MusicThumbLoader.cpp \
      Song.cpp \
      spotyXBMC/Addon.music.spotify.cpp \
      spotyXBMC/Logger.cpp \

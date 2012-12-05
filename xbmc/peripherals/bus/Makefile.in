@@ -1,18 +1,22 @@
-SRCS=PeripheralBus.cpp
+SRCS  = PeripheralBus.cpp
 
 ifeq (@USE_LIBUDEV@,1)
-SRCS+=linux/PeripheralBusUSBLibUdev.cpp
+SRCS += linux/PeripheralBusUSBLibUdev.cpp
 endif
 
 ifeq (@USE_LIBUSB@,1)
-SRCS+=linux/PeripheralBusUSBLibUSB.cpp
+SRCS += linux/PeripheralBusUSBLibUSB.cpp
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
-SRCS+=osx/PeripheralBusUSB.cpp
+SRCS += osx/PeripheralBusUSB.cpp
 endif
 
-LIB=peripheral-bus.a
+ifeq (@USE_CEC_RPI_API@,1)
+SRCS += linux/PeripheralBusRPi.cpp
+endif
 
-include ../../../Makefile.include
+LIB = peripheral-bus.a
+
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

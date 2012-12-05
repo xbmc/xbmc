@@ -67,7 +67,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="4">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="4">OSD</button>
       <button id="1">Info</button>
       <button id="2">Play</button>
       <button id="3">Stop</button>
@@ -101,7 +101,16 @@
       <hat    id="1" position="down">BigStepBack</hat>
     </joystick>
   </FullscreenVideo>
-  
+
+  <FullscreenLiveTV>
+    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
+      <hat    id="1" position="left">PreviousChannelGroup</hat>
+      <hat    id="1" position="right">NextChannelGroup</hat>
+      <hat    id="1" position="up">ChannelUp</hat>
+      <hat    id="1" position="down">ChannelDown</hat>
+    </joystick>
+  </FullscreenLiveTV>
+
   <VideoOSD>
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>

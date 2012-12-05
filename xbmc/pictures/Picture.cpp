@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,24 +13,30 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#include "system.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 
 #include "Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "filesystem/CurlFile.h"
 #include "DllImageLib.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "DllSwScale.h"
 #include "guilib/JpegIO.h"
 #include "guilib/Texture.h"
+#if defined(HAS_OMXPLAYER)
+#include "cores/omxplayer/OMXImage.h"
+#endif
 
 using namespace XFILE;
 
@@ -39,6 +45,15 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   CLog::Log(LOGDEBUG, "cached image '%s' size %dx%d", thumbFile.c_str(), width, height);
   if (URIUtils::GetExtension(thumbFile).Equals(".jpg"))
   {
+#if defined(HAS_OMXPLAYER)
+    COMXImage *omxImage = new COMXImage();
+    if (omxImage && omxImage->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
+    {
+      delete omxImage;
+      return true;
+    }
+    delete omxImage;
+#endif
     CJpegIO jpegImage;
     if (jpegImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
       return true;
@@ -89,8 +104,8 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
   uint32_t max_height = g_advancedSettings.m_imageRes;
   if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
   { // a separate fanart resolution is specified - check if the image is exactly equal to this res
-    if (width == (unsigned int)g_advancedSettings.m_fanartRes * 16/9 && height == (unsigned int)g_advancedSettings.m_fanartRes)
-    { // special case for fanart res
+    if (width * 9 == height * 16 && height >= g_advancedSettings.m_fanartRes)
+    { // special case for 16x9 images larger than the fanart res
       max_height = g_advancedSettings.m_fanartRes;
     }
   }
@@ -105,6 +120,7 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
 
     dest_width = std::min(width, dest_width);
     dest_height = std::min(height, dest_height);
+
     // create a buffer large enough for the resulting image
     GetScale(width, height, dest_width, dest_height);
     uint32_t *buffer = new uint32_t[dest_width * dest_height];
@@ -150,18 +166,18 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
     int x = i % num_across;
     int y = i / num_across;
     // load in the image
-    CTexture texture;
     unsigned int width = tile_width - 2*tile_gap, height = tile_height - 2*tile_gap;
-    if (texture.LoadFromFile(files[i], width, height, g_guiSettings.GetBool("pictures.useexifrotation")) && texture.GetWidth() && texture.GetHeight())
+    CBaseTexture *texture = CTexture::LoadFromFile(files[i], width, height, g_guiSettings.GetBool("pictures.useexifrotation"));
+    if (texture && texture->GetWidth() && texture->GetHeight())
     {
-      GetScale(texture.GetWidth(), texture.GetHeight(), width, height);
+      GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
       uint32_t *scaled = new uint32_t[width * height];
-      if (ScaleImage(texture.GetPixels(), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(),
+      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
                      (uint8_t *)scaled, width, height, width * 4))
       {
-        if (!texture.GetOrientation() || OrientateImage(scaled, width, height, texture.GetOrientation()))
+        if (!texture->GetOrientation() || OrientateImage(scaled, width, height, texture->GetOrientation()))
         {
           // drop into the texture
           unsigned int posX = x*tile_width + (tile_width - width)/2;
@@ -177,6 +193,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
         }
       }
       delete[] scaled;
+      delete texture;
     }
   }
   // now save to a file
@@ -205,9 +222,9 @@ bool CPicture::ScaleImage(uint8_t *in_pixels, unsigned int in_width, unsigned in
                                                          SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   uint8_t *src[] = { in_pixels, 0, 0, 0 };
-  int     srcStride[] = { in_pitch, 0, 0, 0 };
+  int     srcStride[] = { (int)in_pitch, 0, 0, 0 };
   uint8_t *dst[] = { out_pixels , 0, 0, 0 };
-  int     dstStride[] = { out_pitch, 0, 0, 0 };
+  int     dstStride[] = { (int)out_pitch, 0, 0, 0 };
 
   if (context)
   {

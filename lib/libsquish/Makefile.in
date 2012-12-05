@@ -12,11 +12,6 @@ SRCS= \
   squish.cpp
 
 CXXFLAGS+=-I.
-ifeq ($(findstring powerpc,$(ARCH)),powerpc)
-  CXXFLAGS+=-DSQUISH_USE_ALTIVEC=1 -maltivec
-else ifeq ($(findstring x86,$(ARCH)), x86)
-  CXXFLAGS+=-DSQUISH_USE_SSE=2 -msse2
-endif
 
 LIB=libsquish.a
 
@@ -24,17 +19,17 @@ ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_LIB=libsquish-native.so
 CLEAN_FILES+=$(NATIVE_LIB)
 
-ifeq ($(findstring osx,$(ARCH)),osx)
-NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
+NATIVE_ARCH=@DARWIN_NATIVE_ARCH@
 endif
 
 all: $(LIB) $(NATIVE_LIB)
 # TexturePacker links to libsquish and needs to run on build system, so make a native flavor.
 $(NATIVE_LIB): $(SRCS)
-ifeq ($(findstring osx,$(ARCH)),osx)
-	g++ $(NATIVE_ARCH) -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
+	g++ $(NATIVE_ARCH) -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
 else
-	g++ -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
+	g++ -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
 endif
 endif
 

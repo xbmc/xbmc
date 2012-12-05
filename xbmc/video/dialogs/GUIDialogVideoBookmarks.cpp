@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,6 +40,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -57,6 +57,7 @@ CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
     : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")
 {
   m_vecItems = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogVideoBookmarks::~CGUIDialogVideoBookmarks()
@@ -193,7 +194,7 @@ void CGUIDialogVideoBookmarks::Update()
       bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
 
     CFileItemPtr item(new CFileItem(bookmarkTime));
-    item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);
+    item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);

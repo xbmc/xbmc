@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Icelandic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/is/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: is\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -969,6 +970,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "Ekkert fannst"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Tungumál hljóðs"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Tungumál texta"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Þýðingartextar"
@@ -995,7 +1004,7 @@ msgstr "Hljóð"
 
 msgctxt "#293"
 msgid "Browse for subtitles"
-msgstr "Þýðingartextar"
+msgstr "Sækja þýðingartexta"
 
 msgctxt "#294"
 msgid "Create bookmark"
@@ -1044,6 +1053,14 @@ msgstr "Virkt"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Ekki önnur hver lína"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Upprunalegt tungumál straums"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Tungumál notendaviðmóts"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1184,6 +1201,18 @@ msgstr "Ár"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Magna hljóðstyrk við endurblöndun"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD móttakari"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Multichannel LPCM móttakari"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD móttakari"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1711,7 +1740,7 @@ msgstr "- Nota stór tákn"
 
 msgctxt "#492"
 msgid "Resize VobSubs"
-msgstr "Breyta stærð skjátexta"
+msgstr "Breyta stærð VobSub þýðingartexta"
 
 msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
@@ -2140,14 +2169,6 @@ msgstr "Afrita lag"
 msgctxt "#611"
 msgid "Enter number"
 msgstr "Sláðu inn númer"
-
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bitar/úrtak"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Tíðni"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2623,7 +2644,7 @@ msgstr "Þráðlaust net nafn (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "fjarstýring"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -3001,37 +3022,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Forrit & myndir & myndefni"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Sjálfvirk uppgötvun"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Sjálfvirk uppgötvun kerfa"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Gælunafn"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Biðja um tengingu"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Senda FTP notandanafn og lykilorð"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Ping millibil"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Viltu tengjast uppgötvuðu kerfi?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3051,7 +3044,7 @@ msgstr "- Nota lykilorð"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3103,7 +3096,7 @@ msgstr "í"
 
 msgctxt "#1406"
 msgid "the"
-msgstr ""
+msgstr "the"
 
 msgctxt "#1407"
 msgid "Vicinity"
@@ -3129,10 +3122,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "vindasamt"
 
-msgctxt "#1413"
-msgid "drizzle"
-msgstr "úði"
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "Þrumuveður"
@@ -3150,12 +3139,8 @@ msgid "Grains"
 msgstr "Haglél"
 
 msgctxt "#1418"
-msgid "T-Storms"
+msgid "Thunderstorms"
 msgstr "Þrumuveður"
-
-msgctxt "#1419"
-msgid "T-Showers"
-msgstr "Þrumuskúrir"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3172,6 +3157,18 @@ msgstr "Vindasamt"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "Mistur"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Lítið"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Óþekkt"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Úrkoma"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3283,7 +3280,7 @@ msgstr "Vafri"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
+msgstr "Myndefni"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3291,7 +3288,7 @@ msgstr "Myndefni/Spilunarlisti"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr ""
+msgstr "Innskráningarskermur"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3299,7 +3296,7 @@ msgstr "Stillingar - Notendur"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr ""
+msgstr "Viðbóta viðmót"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3628,10 +3625,6 @@ msgstr "Vinsamlega sláðu inn aðal kóða"
 msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Stillingar og  skráarsýsl"
-
-msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Setja sem sjálfgefið fyrir allar myndir"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3977,10 +3970,6 @@ msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Vakna!"
 
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Slökkt með %im%is eftir"
-
 msgctxt "#13213"
 msgid "%2.0fm"
 msgstr "%2.0fm"
@@ -3995,7 +3984,7 @@ msgstr "Leita að þýðingartextum í RAR skrám"
 
 msgctxt "#13250"
 msgid "Browse for subtitle..."
-msgstr "Leita eftir þýðingartexta..."
+msgstr "Sækja þýðingartexta..."
 
 msgctxt "#13251"
 msgid "Move item"
@@ -4411,7 +4400,7 @@ msgstr "Myndstillingar"
 
 msgctxt "#13396"
 msgid "Audio and subtitle settings"
-msgstr "Hljóð og texta stillingar"
+msgstr "Hljóð og þýðingartexta stillingar"
 
 msgctxt "#13397"
 msgid "Enable subtitles"
@@ -4999,19 +4988,15 @@ msgstr "Orkusparnaður"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Aflestur"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Aðgerð við innsetningu hljóðgeisladisks"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
-
-msgctxt "#14099"
-msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Spila"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5453,10 +5438,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (Umsnúinn)"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Hætti við..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Sláðu inn nafn listamanns"
@@ -5685,9 +5666,281 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Sýna biðtíma"
 
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i dagar"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Skipta yfir á rás"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Fastur"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Dulkóðun"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "Sjónvarpsupptökur"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Rásir"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "Sjónvarp"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Útvarp"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Falið"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "Sjónvarpsrásir"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Útvarpsrásir"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Næstu upptökur"
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Engar leitarniðurstöður"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Rás"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Núna"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Næst"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Upplýsingar"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Er nú þegar að taka upp þessa rás"
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Sýna gæði merkis"
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Ertu viss um að þú viljir fela þessa rás?"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Teljari"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Ertu viss um að þú viljir endurnefna upptökuna?"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Upptaka"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Ný rás"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Upplýsingar um dagskrárlið"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Sýna rás"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Sýna sýnilegar rásir"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Sýna faldar rásir"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Upplýsingar um upptöku"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Engar upplýsingar tiltækar"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Hætta upptöku"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Raða eftir: Rás"
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Virkt:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Útvarp:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Rás:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Dagur:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Byrja:"
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Útgáfa"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Vistfang"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Diskstærð"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Leita að rásum"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Upphafstími"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Lokatími"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Upphafsdagestning"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Lokadagsetning"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Leitarstrengur"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Sýna lýsingu"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Leitarvél"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Rás"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Mán"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Þri"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Mið"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Fim"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Fös"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Lau"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Sun"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "Frá"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "Frá"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Upptökur"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Spila"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "Sjónvarp"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Ný rás"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Hefja upptöku"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Stöðva upptöku"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Læsa rás"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Opna rás"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Tungumál"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6371,7 +6624,7 @@ msgstr "Bíddu Aðeins"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6539,7 +6792,7 @@ msgstr "Veldu staðsetningu"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
+msgstr "Kvikmyndir eru í möppu sem stemma við heiti myndar"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -6707,7 +6960,7 @@ msgstr "* Falið til að spilla ekki söguþræði *"
 
 msgctxt "#20371"
 msgid "Set season thumb"
-msgstr "Velja smámynd fyrir þáttaröð\n"
+msgstr "Velja smámynd fyrir þáttaröð"
 
 msgctxt "#20372"
 msgid "Season image"
@@ -6953,10 +7206,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Sett"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Velja smámynd fyrir kvikmyndasett"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Flytja út leikaramyndir?"
@@ -7037,10 +7286,6 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr "Hlustendur"
 
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Velja aðdáendamynd fyrir kvikmyndasett"
-
 msgctxt "#20457"
 msgid "Movie set"
 msgstr "Kvikmyndasett"
@@ -7099,7 +7344,7 @@ msgstr "Fjarlægja samnýtingu"
 
 msgctxt "#21366"
 msgid "Subtitle folder"
-msgstr "Sérsniðin mappa fyrir þýðingartexta"
+msgstr "Mappa fyrir þýðingartexta"
 
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
@@ -7107,7 +7352,7 @@ msgstr "Kvikmynda og auka mappa fyrir þýðingartexta"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr "Hunsa ASS/SSA skjátexta leturgerð"
+msgstr "Hunsa leturgerð ASS/SSA þýðingartexta"
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
@@ -7296,10 +7541,6 @@ msgstr "Sjálfgefin sjónvarpsþáttaskafa"
 msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Sjálfgefin tónlistarmyndbandaskafa"
-
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Virkja varasköfu út frá tungumáli"
 
 msgctxt "#21417"
 msgid "- Settings"
@@ -8263,7 +8504,7 @@ msgstr "Læsa viðbótarstjóra"
 
 msgctxt "#24094"
 msgid "(current)"
-msgstr "(núna)"
+msgstr "(núverandi)"
 
 msgctxt "#24095"
 msgid "(blacklisted)"
@@ -8299,27 +8540,27 @@ msgstr "Tilkynningar"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Fela útlend"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Velja úr öllum titlum ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Sýna bluray valmyndir"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Spila aðalefni: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Titill: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Velja hlut til að spila"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8709,6 +8950,22 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "Spila notendaviðmóts hljóð"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Aðeins þegar afspilun er stöðvuð"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Alltaf"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Aldrei"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Finn ekki næsta hlut til að spila"
@@ -8743,23 +9000,7 @@ msgstr "Athugaðu hljóðstillingar"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
-
-msgctxt "#34405"
-msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
-
-msgctxt "#34406"
-msgid "2 finger swipe left for backspace"
-msgstr ""
-
-msgctxt "#34407"
-msgid "1 finger single tap for enter"
-msgstr ""
-
-msgctxt "#34408"
-msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Nota hreyfingar til að stjórna XBMC:"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8799,7 +9040,7 @@ msgstr "Lyklavörpun virk"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Ekki nota breytta inntaksstillingu fyrir þetta tæki"
 
 msgctxt "#35500"
 msgid "Location"
@@ -8869,10 +9110,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Fann ekki CEC tengispjald."
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Þessi útgáfa af libcec er ekki studd. %d er hærri en útgáfan sem XBMC styður (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI gátt"
@@ -8891,57 +9128,16 @@ msgstr "Nota tungumál sjónvarps"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
-
-msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr ""
-
-msgctxt "#36021"
-msgid "Physical address (overrules HDMI port)"
-msgstr ""
-
-msgctxt "#36022"
-msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "Tengt við HDMI tæki"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Uppsetning uppfærð"
 
-msgctxt "#36024"
-msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgctxt "#36035"
+msgid "Always"
+msgstr "Alltaf"
 
-msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
-
-msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
-
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
-
-msgctxt "#36028"
-msgid "Ignore"
-msgstr ""
-
-msgctxt "#36029"
-msgid "When the TV is switched off"
-msgstr ""
-
-msgctxt "#36030"
-msgid "Connection lost"
-msgstr ""
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
-
+msgctxt "#36037"
+msgid "TV"
+msgstr "Sjónvarp"

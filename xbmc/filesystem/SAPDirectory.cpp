@@ -29,7 +29,7 @@
 #include "utils/TimeUtils.h"
 #include "URL.h"
 #if defined(TARGET_DARWIN)
-#include "OSXGNUReplacements.h" // strnlen
+#include "osx/OSXGNUReplacements.h" // strnlen
 #endif
 #ifdef __FreeBSD__
 #include "freebsd/FreeBSDGNUReplacements.h"

@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="2" type="folder" visible="Library.HasContent(TVShows)">
   <label>20343</label>
   <path>videodb://2/2</path>
-  <icon>DefaultTVShowTitle.png</icon>
+  <icon>DefaultTVShows.png</icon>
 </node>

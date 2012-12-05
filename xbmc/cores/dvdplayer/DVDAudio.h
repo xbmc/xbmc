@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,6 +25,7 @@
 #endif
 #include "threads/CriticalSection.h"
 #include "PlatformDefs.h"
+#include <queue>
 
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 class IAEStream;
@@ -47,13 +47,33 @@ extern "C" {
 #endif
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
+
+class CPTSOutputQueue
+{
+private:
+  typedef struct {double pts; double timestamp; double duration;} TPTSItem;
+  TPTSItem m_current;
+  std::queue<TPTSItem> m_queue;
+  CCriticalSection m_sync;
+
+public:
+  CPTSOutputQueue();
+  void Add(double pts, double delay, double duration);
+  void Flush();
+  double Current();
+};
+
 class CSingleLock;
+class IAudioCallback;
 
 class CDVDAudio
 {
 public:
   CDVDAudio(volatile bool& bStop);
   ~CDVDAudio();
+
+  void RegisterAudioCallback(IAudioCallback* pCallback);
+  void UnRegisterAudioCallback();
 
   void SetVolume(float fVolume);
   void SetDynamicRangeCompression(long drc);
@@ -65,6 +85,8 @@ public:
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
+  double GetPlayingPts() { return m_time.Current(); }
+  void   SetPlayingPts(double pts);
   double GetCacheTime();  // returns total amount of data cached in audio output at this time
   double GetCacheTotal(); // returns total amount the audio device can buffer
   void Flush();
@@ -76,6 +98,7 @@ public:
 
   IAEStream *m_pAudioStream;
 protected:
+  CPTSOutputQueue m_time;
   DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
   BYTE* m_pBuffer; // should be [m_dwPacketSize]
   DWORD m_iBufferSize;
@@ -90,6 +113,7 @@ protected:
   bool m_bPaused;
 
   volatile bool& m_bStop;
+  IAudioCallback* m_pAudioCallback; //the viz audio callback
   //counter that will go from 0 to m_iSpeed-1 and reset, data will only be output when speedstep is 0
   //int m_iSpeedStep;
 };

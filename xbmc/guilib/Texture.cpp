@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -32,6 +31,14 @@
 #include "filesystem/File.h"
 #include "osx/DarwinUtils.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "URL.h"
+#include "filesystem/AndroidAppFile.h"
+#endif
+
+#if defined(HAS_OMXPLAYER)
+#include "xbmc/cores/omxplayer/OMXImage.h"
+#endif
 
 /************************************************************************/
 /*                                                                      */
@@ -44,24 +51,6 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
   Allocate(width, height, format);
 }
 
-CBaseTexture::CBaseTexture(const CBaseTexture &copy)
-{
-  m_imageWidth = copy.m_imageWidth;
-  m_imageHeight = copy.m_imageHeight;
-  m_textureWidth = copy.m_textureWidth;
-  m_textureHeight = copy.m_textureHeight;
-  m_format = copy.m_format;
-  m_orientation = copy.m_orientation;
-  m_hasAlpha = copy.m_hasAlpha;
-  m_pixels = NULL;
-  m_loadedToGPU = false;
-  if (copy.m_pixels)
-  {
-    m_pixels = new unsigned char[GetPitch() * GetRows()];
-    memcpy(m_pixels, copy.m_pixels, GetPitch() * GetRows());
-  }
-}
-
 CBaseTexture::~CBaseTexture()
 {
   delete[] m_pixels;
@@ -69,8 +58,8 @@ CBaseTexture::~CBaseTexture()
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
+  m_imageWidth = m_originalWidth = width;
+  m_imageHeight = m_originalHeight = height;
   m_format = format;
   m_orientation = 0;
 
@@ -81,15 +70,27 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
     while (GetPitch() < g_Windowing.GetMinDXTPitch())
       m_textureWidth += GetBlockSize();
 
+#if !defined(TARGET_RASPBERRY_PI)
   if (!g_Windowing.SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
   {
     m_textureWidth = PadPow2(m_textureWidth);
     m_textureHeight = PadPow2(m_textureHeight);
   }
+#endif
   if (m_format & XB_FMT_DXT_MASK)
   { // DXT textures must be a multiple of 4 in width and height
     m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
     m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
+  }
+  else
+  {
+    // align all textures so that they have an even width
+    // in some circumstances when we downsize a thumbnail
+    // which has an uneven number of pixels in width
+    // we crash in CPicture::ScaleImage in ffmpegs swscale
+    // because it tries to access beyond the source memory
+    // (happens on osx and ios)
+    m_textureWidth = ((m_textureWidth + 1) / 2) * 2;
   }
 
   // check for max texture size
@@ -173,8 +174,33 @@ void CBaseTexture::ClampToEdge()
 
 CBaseTexture *CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int idealWidth, unsigned int idealHeight, bool autoRotate)
 {
+#if defined(TARGET_ANDROID)
+  CURL url(texturePath);
+  if (url.GetProtocol() == "androidapp")
+  {
+    XFILE::CFileAndroidApp file;
+    if (file.Open(url))
+    {
+      unsigned int imgsize = (unsigned int)file.GetLength();
+      unsigned char* inputBuff = new unsigned char[imgsize];
+      unsigned int inputBuffSize = file.Read(inputBuff, imgsize);
+      file.Close();
+      if (inputBuffSize != imgsize)
+      {
+        delete [] inputBuff;
+        return NULL;
+      }
+      CTexture *texture = new CTexture();
+      unsigned int width = file.GetIconWidth();
+      unsigned int height = file.GetIconHeight();
+      texture->LoadFromMemory(width, height, width*4, XB_FMT_RGBA8, true, inputBuff);
+      delete [] inputBuff;
+      return texture;
+    }
+  }
+#endif
   CTexture *texture = new CTexture();
-  if (texture->LoadFromFile(texturePath, idealWidth, idealHeight, autoRotate, NULL, NULL))
+  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, autoRotate))
     return texture;
   delete texture;
   return NULL;
@@ -189,9 +215,75 @@ CBaseTexture *CBaseTexture::LoadFromFileInMemory(unsigned char *buffer, size_t b
   return NULL;
 }
 
-bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
-                                bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
+bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool autoRotate)
 {
+#if defined(HAS_OMXPLAYER)
+  if (URIUtils::GetExtension(texturePath).Equals(".jpg") || 
+      URIUtils::GetExtension(texturePath).Equals(".tbn") 
+      /*|| URIUtils::GetExtension(texturePath).Equals(".png")*/)
+  {
+    COMXImage omx_image;
+
+    if(omx_image.ReadFile(texturePath))
+    {
+      if(omx_image.Decode(omx_image.GetWidth(), omx_image.GetHeight()))
+      {
+        Allocate(omx_image.GetDecodedWidth(), omx_image.GetDecodedHeight(), XB_FMT_A8R8G8B8);
+
+        if(!m_pixels)
+        {
+          CLog::Log(LOGERROR, "Texture manager (OMX) out of memory");
+          omx_image.Close();
+          return false;
+        }
+
+        m_originalWidth  = omx_image.GetOriginalWidth();
+        m_originalHeight = omx_image.GetOriginalHeight();
+
+        m_hasAlpha = omx_image.IsAlpha();
+
+        if (autoRotate && omx_image.GetOrientation())
+          m_orientation = omx_image.GetOrientation() - 1;
+
+        if(m_textureWidth != omx_image.GetDecodedWidth() || m_textureHeight != omx_image.GetDecodedHeight())
+        {
+          unsigned int imagePitch = GetPitch(m_imageWidth);
+          unsigned int imageRows = GetRows(m_imageHeight);
+          unsigned int texturePitch = GetPitch(m_textureWidth);
+
+          unsigned char *src = omx_image.GetDecodedData();
+          unsigned char *dst = m_pixels;
+          for (unsigned int y = 0; y < imageRows; y++)
+          {
+            memcpy(dst, src, imagePitch);
+            src += imagePitch;
+            dst += texturePitch;
+          }
+        }
+        else
+        {
+          if(omx_image.GetDecodedData())
+          {
+            int size = ( ( GetPitch() * GetRows() ) > omx_image.GetDecodedSize() ) ?
+                             omx_image.GetDecodedSize() : ( GetPitch() * GetRows() );
+
+            memcpy(m_pixels, (unsigned char *)omx_image.GetDecodedData(), size);
+          }
+        }
+
+        omx_image.Close();
+
+        return true;
+      }
+      else
+      {
+        omx_image.Close();
+      }
+    }
+    // this limits the sizes of jpegs we failed to decode
+    omx_image.ClampLimits(maxWidth, maxHeight);
+  }
+#endif
   if (URIUtils::GetExtension(texturePath).Equals(".dds"))
   { // special case for DDS images
     CDDSImage image;
@@ -240,11 +332,6 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
     return false;
   }
-
-  if (originalWidth)
-    *originalWidth = image.originalwidth;
-  if (originalHeight)
-    *originalHeight = image.originalheight;
 
   LoadFromImage(image, autoRotate);
   dll.ReleaseImage(&image);
@@ -308,6 +395,8 @@ void CBaseTexture::LoadFromImage(ImageInfo &image, bool autoRotate)
   Allocate(image.width, image.height, XB_FMT_A8R8G8B8);
   if (autoRotate && image.exifInfo.Orientation)
     m_orientation = image.exifInfo.Orientation - 1;
+  m_originalWidth = image.originalwidth;
+  m_originalHeight = image.originalheight;
 
   unsigned int dstPitch = GetPitch();
   unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
@@ -351,8 +440,8 @@ void CBaseTexture::LoadFromImage(ImageInfo &image, bool autoRotate)
 
 bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
+  m_imageWidth = m_originalWidth = width;
+  m_imageHeight = m_originalHeight = height;
   m_format = format;
   m_hasAlpha = hasAlpha;
   Update(width, height, pitch, format, pixels, false);

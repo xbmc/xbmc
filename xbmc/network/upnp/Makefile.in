@@ -1,0 +1,22 @@
+ifeq (@USE_UPNP@, 1)
+INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaConnect \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaRenderer \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
+          -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Extras \
+          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
+          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
+
+SRCS= UPnP.cpp \
+      UPnPRenderer.cpp \
+      UPnPServer.cpp \
+      UPnPInternal.cpp
+
+LIB=upnp.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
+endif
+

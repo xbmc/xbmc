@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,8 +24,8 @@
 #include "system.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
-#include "filesystem/FileFactory.h"
-#include "filesystem/IFile.h"
+#include "filesystem/File.h"
+#include "URL.h"
 #include <samplerate.h>
 
 #include "AEConvert.h"
@@ -40,37 +39,40 @@ typedef struct
 } WAVE_CHUNK;
 
 CAEWAVLoader::CAEWAVLoader() :
-  m_valid       (false),
-  m_sampleRate  (0    ),
-  m_channelCount(0    ),
-  m_frameCount  (0    ),
-  m_sampleCount (0    ),
-  m_samples     (NULL )
+  m_valid             (false),
+  m_sampleRate        (0    ),
+  m_outputSampleRate  (0    ),
+  m_frameCount        (0    ),
+  m_outputFrameCount  (0    ),
+  m_sampleCount       (0    ),
+  m_outputSampleCount (0    ),
+  m_samples           (NULL ),
+  m_outputSamples     (NULL )
 {
 }
 
 CAEWAVLoader::~CAEWAVLoader()
 {
-  DeInitialize();
+  UnLoad();
 }
 
-bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resampleRate /* = 0 */)
+bool CAEWAVLoader::Load(const std::string &filename)
 {
-  DeInitialize();
+  UnLoad();
+
   m_filename = filename;
 
-  XFILE::IFile *file = XFILE::CFileFactory::CreateLoader(m_filename);
-  if (!file)
+  XFILE::CFile file;
+  if (!file.Open(m_filename))
   {
     CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Failed to create loader: %s", m_filename.c_str());
     return false;
   }
 
   struct __stat64 st;
-  if (!file->Open(CStdString(m_filename)) || file->Stat(&st) < 0)
+  if (file.Stat(&st) < 0)
   {
     CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Failed to stat file: %s", m_filename.c_str());
-    delete file;
     return false;
   }
 
@@ -86,7 +88,7 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
   uint16_t bitsPerSample;
 
   WAVE_CHUNK chunk;
-  while (file->Read(&chunk, sizeof(chunk)) == sizeof(chunk))
+  while (file.Read(&chunk, sizeof(chunk)) == sizeof(chunk))
   {
     chunk.chunksize = Endian_SwapLE32(chunk.chunksize);
 
@@ -103,14 +105,13 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
       if (chunk.chunksize > st.st_size - 8)
       {
         CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Corrupt WAV header: %s", m_filename.c_str());
-        file->Close();
-        delete file;
+        file.Close();
         return false;
       }
 
       /* we only support WAVE files */
       char format[4];
-      if (file->Read(&format, 4) != 4)
+      if (file.Read(&format, 4) != 4)
         break;
       isWAVE = memcmp(format, "WAVE", 4) == 0;
       if (!isWAVE)
@@ -123,43 +124,50 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
       if (chunk.chunksize < 16)
         break;
       uint16_t format;
-      if (file->Read(&format, sizeof(format)) != sizeof(format))
+      if (file.Read(&format, sizeof(format)) != sizeof(format))
         break;
       format = Endian_SwapLE16(format);
       if (format != WAVE_FORMAT_PCM)
         break;
 
       uint16_t channelCount;
-      if (file->Read(&channelCount , 2) != 2)
+      if (file.Read(&channelCount , 2) != 2)
         break;
-      if (file->Read(&sampleRate   , 4) != 4)
+      if (file.Read(&sampleRate   , 4) != 4)
         break;
-      if (file->Read(&byteRate     , 4) != 4)
+      if (file.Read(&byteRate     , 4) != 4)
         break;
-      if (file->Read(&blockAlign   , 2) != 2)
+      if (file.Read(&blockAlign   , 2) != 2)
         break;
-      if (file->Read(&bitsPerSample, 2) != 2)
+      if (file.Read(&bitsPerSample, 2) != 2)
         break;
 
-      m_channelCount = Endian_SwapLE16(channelCount );
+      channelCount = Endian_SwapLE16(channelCount);
+      /* TODO: support > 2 channel count */
+      if (channelCount > 2)
+        break;
+
+      static AEChannel layouts[][3] = {
+        {AE_CH_FC, AE_CH_NULL},
+        {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
+      };
+
+      m_channels     = layouts[channelCount - 1];
       m_sampleRate   = Endian_SwapLE32(sampleRate   );
       byteRate       = Endian_SwapLE32(byteRate     );
       blockAlign     = Endian_SwapLE16(blockAlign   );
       bitsPerSample  = Endian_SwapLE16(bitsPerSample);
-
-      if (m_channelCount > 2)
-        break;
-      isPCM = true;
+      isPCM          = true;
 
       if (chunk.chunksize > 16)
-        file->Seek(chunk.chunksize - 16, SEEK_CUR);
+        file.Seek(chunk.chunksize - 16, SEEK_CUR);
     }
     /* if we have the PCM info and its the DATA section */
     else if (isPCM && !isDATA && memcmp(chunk.chunk_id, "data", 4) == 0)
     {
        unsigned int bytesPerSample = bitsPerSample >> 3;
        m_sampleCount = chunk.chunksize / bytesPerSample;
-       m_frameCount  = m_sampleCount / m_channelCount;
+       m_frameCount  = m_sampleCount / m_channels.Count();
        isDATA        = m_frameCount > 0;
 
        /* get the conversion function */
@@ -171,145 +179,186 @@ bool CAEWAVLoader::Initialize(const std::string &filename, unsigned int resample
          case 32: convertFn = CAEConvert::ToFloat(AE_FMT_S32LE); break;
          default:
            CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Unsupported data format in wav: %s", m_filename.c_str());
-           file->Close();
-           delete file;
+           file.Close();
            return false;
        }
 
        /* read in each sample */
-       unsigned int s;
-       m_samples = (float*)_aligned_malloc(sizeof(float) * m_sampleCount, 16);
-       uint8_t *raw = (uint8_t *)_aligned_malloc(bytesPerSample, 16);
-       for (s = 0; s < m_sampleCount; ++s)
+       unsigned int size = bytesPerSample * m_sampleCount;
+       m_samples    = (float*   )_aligned_malloc(sizeof(float) * m_sampleCount, 16);
+       uint8_t *raw = (uint8_t *)_aligned_malloc(size, 16);
+       if (file.Read(raw, size) != size)
        {
-         if (file->Read(raw, bytesPerSample) != bytesPerSample)
-         {
-           CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
-           _aligned_free(m_samples);
-           _aligned_free(raw);
-           m_samples = NULL;
-           file->Close();
-           delete file;
-           return false;
-         }
-
-         /* convert the sample to float */
-         convertFn(raw, 1, &m_samples[s]);
+         CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - WAV data shorter then expected: %s", m_filename.c_str());
+         _aligned_free(m_samples);
+         _aligned_free(raw);
+         m_samples = NULL;
+         file.Close();
+         return false;
        }
+
+       /* convert the samples to float */
+       convertFn(raw, m_sampleCount, m_samples);
        _aligned_free(raw);
     }
     else
     {
       /* skip any unknown sections */
-      file->Seek(chunk.chunksize, SEEK_CUR);
+      file.Seek(chunk.chunksize, SEEK_CUR);
     }
   }
 
   if (!isRIFF || !isWAVE || !isFMT || !isPCM || !isDATA || m_sampleCount == 0)
   {
     CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Invalid, or un-supported WAV file: %s", m_filename.c_str());
-    file->Close();
-    delete file;
+    file.Close();
     return false;
   }
 
   /* close the file as we have the samples now */
-  file->Close();
-  delete file;
+  file.Close();
 
-  /* if we got here, the file was valid and we have the data but it may need re-sampling still */
-  if (resampleRate != 0 && m_sampleRate != resampleRate)
-  {
-    unsigned int space = (unsigned int)((((float)m_sampleCount / (float)m_sampleRate) * (float)resampleRate) * 2.0f);
-    SRC_DATA data;
-    data.data_in       = m_samples;
-    data.input_frames  = m_frameCount;
-    data.data_out      = (float*)_aligned_malloc(sizeof(float) * space, 16);
-    data.output_frames = space / m_channelCount;
-    data.src_ratio     = (double)resampleRate / (double)m_sampleRate;
-#ifdef TARGET_DARWIN_IOS
-    if (src_simple(&data, SRC_SINC_FASTEST, m_channelCount) != 0)
-#else
-    if (src_simple(&data, SRC_SINC_MEDIUM_QUALITY, m_channelCount) != 0)
-#endif
-    {
-      CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Failed to resample audio: %s", m_filename.c_str());
-      _aligned_free(data.data_out);
-      _aligned_free(m_samples);
-      m_samples = NULL;
-      return false;
-    }
-
-    /* reassign m_samples */
-    _aligned_free(m_samples);
-    m_samples     = data.data_out;
-    m_frameCount  = data.output_frames_gen;
-    m_sampleCount = data.output_frames_gen * m_channelCount;
-    m_sampleRate  = resampleRate;
-  }
+  m_outputChannels     = m_channels;
+  m_outputSampleRate   = m_sampleRate;
+  m_outputSamples      = m_samples;
+  m_outputSampleCount  = m_sampleCount;
+  m_outputFrameCount   = m_frameCount;
 
   CLog::Log(LOGINFO, "CAEWAVLoader::Initialize - Sound Loaded: %s", m_filename.c_str());
   m_valid = true;
   return true;
 }
 
-void CAEWAVLoader::DeInitialize()
+bool CAEWAVLoader::Initialize(unsigned int resampleRate, CAEChannelInfo channelLayout, enum AEStdChLayout stdChLayout/* = AE_CH_LAYOUT_INVALID */)
 {
-  _aligned_free(m_samples);
-  m_samples      = NULL;
-  m_frameCount   = 0;
-  m_channelCount = 0;
-}
-
-bool CAEWAVLoader::Remap(CAEChannelInfo to, enum AEStdChLayout stdChLayout/* = AE_CH_LAYOUT_INVALID */)
-{
-  /* FIXME: add support for multichannel files */
-  if (m_channelCount > 2)
+  if (!m_valid)
+  {
+    CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - File has not been loaded");
     return false;
+  }
 
-  static AEChannel layouts[][3] = {
-    {AE_CH_FC, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
-  };
+  DeInitialize();
 
-  CAERemap remap;
-  if (!remap.Initialize(layouts[m_channelCount - 1], to, false, false, stdChLayout))
-    return false;
+  /* if the sample rates do not match */
+  if (m_sampleRate != resampleRate)
+  {
+    unsigned int space = (unsigned int)((((float)m_sampleCount / (float)m_sampleRate) * (float)resampleRate) * 2.0f);
+    SRC_DATA data;
+    data.data_in       = m_samples;
+    data.input_frames  = m_frameCount;
+    data.data_out      = (float*)_aligned_malloc(sizeof(float) * space, 16);
+    data.output_frames = space / m_channels.Count();
+    data.src_ratio     = (double)resampleRate / (double)m_sampleRate;
+#ifdef TARGET_DARWIN_IOS
+    if (src_simple(&data, SRC_SINC_FASTEST, m_channels.Count()) != 0)
+#else
+    if (src_simple(&data, SRC_SINC_MEDIUM_QUALITY, m_channels.Count()) != 0)
+#endif
+    {
+      CLog::Log(LOGERROR, "CAEWAVLoader::Initialize - Failed to resample audio: %s", m_filename.c_str());
+      _aligned_free(data.data_out);
+      return false;
+    }
 
-  float *remapped = (float*)_aligned_malloc(sizeof(float) * m_frameCount * to.Count(), 16);
-  remap.Remap(m_samples, remapped, m_frameCount);
+    if (m_outputSamples != m_samples)
+      _aligned_free(m_outputSamples);
 
-  _aligned_free(m_samples);
-  m_samples      = remapped;
-  m_sampleCount  = m_frameCount * to.Count();
-  m_channelCount = to.Count();
+    m_outputSamples     = data.data_out;
+    m_outputFrameCount  = data.output_frames_gen;
+    m_outputSampleCount = data.output_frames_gen * m_channels.Count();
+    m_outputSampleRate  = resampleRate;
+  }
+  else
+  {
+    m_outputSamples     = m_samples;
+    m_outputFrameCount  = m_frameCount;
+    m_outputSampleCount = m_sampleCount;
+    m_outputSampleRate  = m_sampleRate;
+  }
+
+  /* if the channel layouts do not match */
+  if (m_channels != channelLayout)
+  {
+    CAERemap remap;
+    if (!remap.Initialize(m_channels, channelLayout, false, false, stdChLayout))
+      return false;
+
+    /* adjust the output format parameters */
+    m_outputSampleCount = m_outputFrameCount * channelLayout.Count();
+    m_outputChannels    = channelLayout;
+
+    float *remapped = (float*)_aligned_malloc(sizeof(float) * m_outputSampleCount, 16);
+    remap.Remap(m_outputSamples, remapped, m_outputFrameCount);
+
+    /* assign the remapped buffer */
+    if (m_outputSamples != m_samples)
+      _aligned_free(m_outputSamples);
+    m_outputSamples = remapped;
+  }
 
   return true;
 }
 
-unsigned int CAEWAVLoader::GetChannelCount()
+void CAEWAVLoader::UnLoad()
 {
-  return m_channelCount;
+  DeInitialize();
+
+  _aligned_free(m_samples);
+  m_samples     = NULL;
+  m_sampleCount = 0;
+  m_frameCount  = 0;
+  m_channels.Reset();
+
+  m_outputSamples     = NULL;
+  m_outputSampleCount = 0;
+  m_outputFrameCount  = 0;
+  m_outputChannels.Reset();
+}
+
+void CAEWAVLoader::DeInitialize()
+{
+  /* only free m_outputSamples if it is a seperate buffer */
+  if (m_outputSamples != m_samples)
+    _aligned_free(m_outputSamples);
+
+  m_outputSamples      = m_samples;
+  m_outputSampleCount  = m_sampleCount;
+  m_outputFrameCount   = m_frameCount;
+  m_outputChannels     = m_channels;
+}
+
+CAEChannelInfo CAEWAVLoader::GetChannelLayout()
+{
+  return m_outputChannels;
 }
 
 unsigned int CAEWAVLoader::GetSampleRate()
 {
-  return m_sampleRate;
+  return m_outputSampleRate;
 }
 
 unsigned int CAEWAVLoader::GetSampleCount()
 {
-  return m_sampleCount;
+  return m_outputSampleCount;
 }
 
 unsigned int CAEWAVLoader::GetFrameCount()
 {
-  return m_frameCount;
+  return m_outputFrameCount;
 }
 
 float* CAEWAVLoader::GetSamples()
 {
-  if (!m_valid || m_samples == NULL) return NULL;
-  return m_samples;
+  if (!m_valid || m_outputSamples == NULL)
+    return NULL;
+
+  return m_outputSamples;
 }
 
+bool CAEWAVLoader::IsCompatible(const unsigned int sampleRate, const CAEChannelInfo &channelInfo)
+{
+  return (
+    m_outputSampleRate == sampleRate &&
+    m_outputChannels   == channelInfo
+  );
+}

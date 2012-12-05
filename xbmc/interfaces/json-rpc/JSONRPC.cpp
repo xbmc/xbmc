@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,8 +24,10 @@
 #include "ServiceDescription.h"
 #include "input/ButtonTranslator.h"
 #include "interfaces/AnnouncementManager.h"
+#include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 using namespace ANNOUNCEMENT;
@@ -41,9 +42,46 @@ void CJSONRPC::Initialize()
     return;
 
   // Add some types/enums at runtime
-  vector<string> inputActions;
-  CButtonTranslator::GetActions(inputActions);
-  CJSONServiceDescription::AddEnum("Input.Action", inputActions);
+  vector<string> enumList;
+  CButtonTranslator::GetActions(enumList);
+  CJSONServiceDescription::AddEnum("Input.Action", enumList);
+
+  enumList.clear();
+  CButtonTranslator::GetWindows(enumList);
+  CJSONServiceDescription::AddEnum("GUI.Window", enumList);
+
+  // filter-related enums
+  vector<string> smartplaylistList;
+  CSmartPlaylist::GetAvailableOperators(smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Operators", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("movies", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Movies", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("tvshows", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.TVShows", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("episodes", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Episodes", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("musicvideos", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.MusicVideos", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("artists", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Artists", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("albums", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Albums", smartplaylistList);
+
+  smartplaylistList.clear();
+  CSmartPlaylist::GetAvailableFields("songs", smartplaylistList);
+  CJSONServiceDescription::AddEnum("List.Filter.Fields.Songs", smartplaylistList);
 
   unsigned int size = sizeof(JSONRPC_SERVICE_TYPES) / sizeof(char*);
 
@@ -61,7 +99,7 @@ void CJSONRPC::Initialize()
     CJSONServiceDescription::AddNotification(JSONRPC_SERVICE_NOTIFICATIONS[index]);
   
   m_initialized = true;
-  CLog::Log(LOGINFO, "JSONRPC: Sucessfully initialized");
+  CLog::Log(LOGINFO, "JSONRPC v%s: Successfully initialized", CJSONServiceDescription::GetVersion());
 }
 
 JSONRPC_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
@@ -73,7 +111,21 @@ JSONRPC_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *t
 
 JSONRPC_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
-  result["version"] = CJSONServiceDescription::GetVersion();
+  result["version"]["major"] = 0;
+  result["version"]["minor"] = 0;
+  result["version"]["patch"] = 0;
+
+  const char* version = CJSONServiceDescription::GetVersion();
+  if (version != NULL)
+  {
+    vector<string> parts = StringUtils::Split(version, ".");
+    if (parts.size() > 0)
+      result["version"]["major"] = (int)strtol(parts[0].c_str(), NULL, 10);
+    if (parts.size() > 1)
+      result["version"]["minor"] = (int)strtol(parts[1].c_str(), NULL, 10);
+    if (parts.size() > 2)
+      result["version"]["patch"] = (int)strtol(parts[2].c_str(), NULL, 10);
+  }
 
   return OK;
 }
@@ -116,6 +168,9 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const CStdString &method, ITransportLa
     if ((notifications["Player"].isNull() && (oldFlags & Player)) ||
         (notifications["Player"].isBoolean() && notifications["Player"].asBoolean()))
       flags |= Player;
+    if ((notifications["Playlist"].isNull() && (oldFlags & Playlist)) ||
+        (notifications["Playlist"].isBoolean() && notifications["Playlist"].asBoolean()))
+      flags |= Playlist;
     if ((notifications["GUI"].isNull() && (oldFlags & GUI)) ||
         (notifications["GUI"].isBoolean() && notifications["GUI"].asBoolean()))
       flags |= GUI;
@@ -131,6 +186,9 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const CStdString &method, ITransportLa
     if ((notifications["Application"].isNull() && (oldFlags & Other)) ||
         (notifications["Application"].isBoolean() && notifications["Application"].asBoolean()))
       flags |= Application;
+    if ((notifications["Input"].isNull() && (oldFlags & Input)) ||
+        (notifications["Input"].isBoolean() && notifications["Input"].asBoolean()))
+      flags |= Input;
     if ((notifications["Other"].isNull() && (oldFlags & Other)) ||
         (notifications["Other"].isBoolean() && notifications["Other"].asBoolean()))
       flags |= Other;

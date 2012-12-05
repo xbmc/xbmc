@@ -53,11 +53,12 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libmysqlclient-dev, libnfs-dev, libogg-dev, libpcre3-dev, libplist-dev,
   libpng12-dev | libpng-dev, libpostproc-dev, libpulse-dev, librtmp-dev,
   libsamplerate-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
-  libshairport-dev, libsmbclient-dev, libsqlite3-dev, libssl-dev,
+  libshairport-dev, libsmbclient-dev, libsqlite3-dev, libssh-dev, libssl-dev,
   libswscale-dev, libtinyxml-dev, libtool, libudev-dev, libusb-dev, libva-dev,
   libvdpau-dev, libvorbis-dev, libxinerama-dev, libxmu-dev, libxrandr-dev,
   libxt-dev, libyajl-dev, lsb-release, nasm [!amd64], python-dev,
-  python-support, unzip, yasm, zip, zlib1g-dev, libcap-dev
+  python-support, unzip, yasm, zip, zlib1g-dev, libcap-dev, swig, taglib(>= 1.8),
+  default-jre
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache
@@ -98,7 +99,9 @@ Tip: by adding -j<number> to the make command, you describe how many
 
     $ make -j2
 
-.3  $ make install
+.3  $ make -C lib/addons/script.module.pil
+
+.4  $ make install
 
 This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
 
@@ -110,6 +113,45 @@ Tip: To override the location that XBMC is installed, use PREFIX=<path>.
 For example.
 
     $ make install DESTDIR=$HOME/xbmc
+
+-----------------------------------------------------------------------------
+4.1. Test Suite
+-----------------------------------------------------------------------------
+XBMC has a test suite which uses the Google C++ Testing Framework. The
+framework is provided directly in XBMC's source tree and has very little
+requirements in order to build and run. See the README file for the framework
+at 'lib/gtest/README' for specific requirements.
+
+To compile and run XBMC's test suite, the configure option '--enable-gtest'
+has to be explicitely set during the configure stage. Once configured, to
+build the testsuite, type the following.
+
+    $ make check
+
+To compile the test suite without running it, type the following.
+
+    $ make testsuite
+
+The test suite program can be run manually as well. The name of the test suite
+program is 'xbmc-test' and will build in the XBMC source tree. To bring up the
+'help' notes for the program, type the following.
+
+    $ ./xbmc-test --gtest_help
+
+The most useful options are,
+
+  --gtest_list_tests
+      List the names of all tests instead of running them. The name of
+      TEST(Foo, Bar) is "Foo.Bar".
+  --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
+      Run only the tests whose name matches one of the positive patterns but
+      none of the negative patterns. '?' matches any single character; '*'
+      matches any substring; ':' separates two patterns.
+
+NOTE: If the '--enable-gtest' option is not set during the configure
+stage, the make targets 'check,' 'testsuite,' and 'testframework' will
+simply show a message saying the framework has not been configured, and then
+silently succeed (i.e. it will not return an error).
 
 -----------------------------------------------------------------------------
 5. How to run

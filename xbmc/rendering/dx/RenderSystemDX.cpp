@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -55,7 +54,10 @@ static HMODULE             g_D3D9ExHandle;
 
 static bool LoadD3D9Ex()
 {
-  g_Direct3DCreate9Ex = (LPDIRECT3DCREATE9EX)GetProcAddress( GetModuleHandle("d3d9.dll"), "Direct3DCreate9Ex" );
+  HMODULE hD3d9Dll =  GetModuleHandle("d3d9.dll");
+  if (!hD3d9Dll)
+    return false;
+  g_Direct3DCreate9Ex = (LPDIRECT3DCREATE9EX)GetProcAddress(hD3d9Dll, "Direct3DCreate9Ex" );
   if(g_Direct3DCreate9Ex == NULL)
     return false;
   return true;
@@ -620,7 +622,7 @@ bool CRenderSystemDX::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
-  DWORD oldStatus = m_nDeviceStatus;
+  HRESULT oldStatus = m_nDeviceStatus;
   if (m_useD3D9Ex)
   {
     m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->CheckDeviceState(m_hDeviceWnd);

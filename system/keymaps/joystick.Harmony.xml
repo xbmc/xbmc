@@ -172,6 +172,14 @@
       <!-- F6		-->      <button id="94">ShowSubtitles</button>
     </joystick>
   </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="Harmony">
+      <!-- up       	-->      <button id="1">ChannelUp</button>
+      <!-- down      	-->      <button id="2">ChannelDown</button>
+      <!-- left       	-->      <button id="3">PreviousChannelGroup</button>
+      <!-- right      	-->      <button id="4">NextChannelGroup</button>
+    </joystick>
+  </FullscreenLiveTV>
   <FullscreenInfo>
     <joystick name="Harmony">
       <!-- Info  	-->      <button id="31">Back</button>
@@ -188,7 +196,7 @@
       <!-- minus      	-->      <button id="2">DecreaseRating</button>
       <!-- left       	-->      <button id="3">PreviousPreset</button>
       <!-- right      	-->      <button id="4">NextPreset</button>
-      <!-- menu       	-->      <button id="6">XBMC.ActivateWindow(MusicOSD)</button>
+      <!-- menu       	-->      <button id="6">OSD</button>
       <!-- Prev		-->      <button id="32">LockPreset</button>
       <!-- Info  	-->      <button id="31">Info</button>
       <!-- F8		-->      <button id="96">XBMC.ActivateWindow(VisualisationPresetList)</button>

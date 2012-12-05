@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,6 +33,8 @@
 #include "settings/Settings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "Application.h"
+#include "interfaces/AnnouncementManager.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -76,7 +77,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     if (context == PARTYMODECONTEXT_UNKNOWN)
     {
       //get it from the xsp file
-      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("mixed"));
+      m_bIsVideo = (m_type.Equals("video") || m_type.Equals("musicvideos") || m_type.Equals("mixed"));
     }
 
     if (m_type.Equals("mixed"))
@@ -113,11 +114,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     {
       set<CStdString> playlists;
       if ( playlistLoaded )
-      {
         m_strCurrentFilterMusic = playlist.GetWhereClause(db, playlists);
-        if (!m_strCurrentFilterMusic.empty())
-          m_strCurrentFilterMusic = "WHERE " + m_strCurrentFilterMusic;
-      }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterMusic.c_str());
       m_iMatchingSongs = (int)db.GetSongIDs(m_strCurrentFilterMusic, songIDs);
@@ -146,11 +143,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     {
       set<CStdString> playlists;
       if ( playlistLoaded )
-      {
         m_strCurrentFilterVideo = playlist.GetWhereClause(db, playlists);
-        if (!m_strCurrentFilterVideo.empty())
-          m_strCurrentFilterVideo = "WHERE " + m_strCurrentFilterVideo;
-      }
 
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[%s]", m_strCurrentFilterVideo.c_str());
       m_iMatchingSongs += (int)db.GetMusicVideoIDs(m_strCurrentFilterVideo, songIDs2);
@@ -214,6 +207,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   // done
   m_bEnabled = true;
+  Announce();
   return true;
 }
 
@@ -222,6 +216,7 @@ void CPartyModeManager::Disable()
   if (!IsEnabled())
     return;
   m_bEnabled = false;
+  Announce();
   CLog::Log(LOGINFO,"PARTY MODE MANAGER: Party mode disabled.");
 }
 
@@ -559,6 +554,17 @@ int CPartyModeManager::GetRandomSongs()
   return m_iRandomSongs;
 }
 
+PartyModeContext CPartyModeManager::GetType() const
+{
+  if (!IsEnabled())
+    return PARTYMODECONTEXT_UNKNOWN;
+
+  if (m_bIsVideo)
+    return PARTYMODECONTEXT_VIDEO;
+
+  return PARTYMODECONTEXT_MUSIC;
+}
+
 void CPartyModeManager::ClearState()
 {
   m_iLastUserSong = -1;
@@ -594,8 +600,8 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
     vector<pair<int,int> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
-    CStdString sqlWhereMusic = "where songview.idSong in (";
-    CStdString sqlWhereVideo = "idMVideo in (";
+    CStdString sqlWhereMusic = "songview.idSong IN (";
+    CStdString sqlWhereVideo = "idMVideo IN (";
 
     for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
@@ -614,7 +620,7 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
       sqlWhereMusic[sqlWhereMusic.size() - 1] = ')'; // replace the last comma with closing bracket
       CMusicDatabase database;
       database.Open();
-      database.GetSongsByWhere("", sqlWhereMusic, items);
+      database.GetSongsByWhere("musicdb://4/", sqlWhereMusic, items);
     }
     if (sqlWhereVideo.size() > 19)
     {
@@ -644,7 +650,7 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
   if (m_history.size())
   {
     if (m_strCurrentFilterMusic.IsEmpty())
-      historyWhereMusic = "where songview.idSong not in (";
+      historyWhereMusic = "songview.idSong not in (";
     else
       historyWhereMusic = m_strCurrentFilterMusic + " and songview.idSong not in (";
     if (m_strCurrentFilterVideo.IsEmpty())
@@ -673,7 +679,7 @@ void CPartyModeManager::AddToHistory(int type, int songID)
 {
   while (m_history.size() >= m_songsInHistory && m_songsInHistory)
     m_history.erase(m_history.begin());
-  m_history.push_back(make_pair<int,int>(type,songID));
+  m_history.push_back(make_pair(type,songID));
 }
 
 void CPartyModeManager::GetRandomSelection(vector< pair<int,int> >& in, unsigned int number, vector< pair<int,int> >& out)
@@ -695,4 +701,16 @@ bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT
   if (context == PARTYMODECONTEXT_MUSIC)
     return !m_bIsVideo;
   return true; // unknown, but we're enabled
+}
+
+void CPartyModeManager::Announce()
+{
+  if (g_application.IsPlaying())
+  {
+    CVariant data;
+    
+    data["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+    data["property"]["partymode"] = m_bEnabled;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+  }
 }

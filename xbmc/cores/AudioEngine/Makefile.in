@@ -19,8 +19,7 @@ endif
 CXXFLAGS += -D__STDC_LIMIT_MACROS
 
 SRCS  = AEFactory.cpp
-SRCS += AESinkFactory.cpp
-SRCS += Sinks/AESinkNULL.cpp
+
 ifeq ($(findstring osx,@ARCH@),osx)
 SRCS += Engines/CoreAudio/CoreAudioAE.cpp
 SRCS += Engines/CoreAudio/CoreAudioAEHAL.cpp
@@ -35,17 +34,26 @@ SRCS += Engines/CoreAudio/CoreAudioMixMap.cpp
 SRCS += Engines/CoreAudio/CoreAudioStream.cpp
 SRCS += Engines/CoreAudio/CoreAudioUnit.cpp
 else
-SRCS += Sinks/AESinkALSA.cpp
-SRCS += Sinks/AESinkOSS.cpp
+
+SRCS += AESinkFactory.cpp
+SRCS += Sinks/AESinkNULL.cpp
 SRCS += Sinks/AESinkProfiler.cpp
 
 SRCS += Engines/SoftAE/SoftAE.cpp
 SRCS += Engines/SoftAE/SoftAEStream.cpp
 SRCS += Engines/SoftAE/SoftAESound.cpp
 
+ifeq (@USE_ANDROID@,1)
+SRCS += Sinks/AESinkAUDIOTRACK.cpp
+else
+SRCS += Sinks/AESinkALSA.cpp
+SRCS += Sinks/AESinkOSS.cpp
+ifeq (@USE_PULSE@,1)
 SRCS += Engines/PulseAE/PulseAE.cpp
 SRCS += Engines/PulseAE/PulseAEStream.cpp
 SRCS += Engines/PulseAE/PulseAESound.cpp
+endif
+endif
 endif
 
 SRCS += Utils/AEChannelInfo.cpp
@@ -59,6 +67,7 @@ SRCS += Utils/AEBitstreamPacker.cpp
 SRCS += Utils/AEWAVLoader.cpp
 SRCS += Utils/AEELDParser.cpp
 SRCS += Utils/AEDeviceInfo.cpp
+SRCS += Utils/AELimiter.cpp
 
 SRCS += Encoders/AEEncoderFFmpeg.cpp
 

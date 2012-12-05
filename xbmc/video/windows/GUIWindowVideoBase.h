@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,16 +15,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "windows/GUIMediaWindow.h"
 #include "video/VideoDatabase.h"
 #include "PlayListPlayer.h"
-#include "ThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver, public IStreamDetailsObserver
 {
@@ -50,7 +49,10 @@ public:
 
 
   /*! \brief Show the resume menu for this item (if it has a resume bookmark)
-   If a resume bookmark is found, we set the item's m_lStartOffset to STARTOFFSET_RESUME
+   If a resume bookmark is found, we set the item's m_lStartOffset to STARTOFFSET_RESUME.
+   Note that we do this in favour of setting the resume point, as we need additional
+   information from the database (in particular, the playerState) when resuming some items
+   (eg ISO/VIDEO_TS).
    \param item item to check for a resume bookmark
    \return true if an option was chosen, false if the resume menu was cancelled.
    */
@@ -77,15 +79,19 @@ public:
    \param item selected item
    \return string containing the resume position or an empty string if there is no resume position
    */
-  static CStdString GetResumeString(CFileItem item);
+  static CStdString GetResumeString(const CFileItem &item);
 
 protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
+  virtual void OnInitWindow();
   virtual void UpdateButtons();
-  virtual bool Update(const CStdString &strDirectory);
+  virtual bool Update(const CStdString &strDirectory, bool updateFilterPath = true);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void OnItemLoaded(CFileItem* pItem) {};
-  virtual void OnPrepareFileItems(CFileItemList &items);
+  virtual void GetGroupedItems(CFileItemList &items);
+
+  virtual bool CheckFilterAdvanced(CFileItemList &items) const;
+  virtual bool CanContainFilter(const CStdString &strDirectory) const;
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);

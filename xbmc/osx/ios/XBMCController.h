@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,7 +28,7 @@
 
 @class IOSEAGLView;
 
-@interface XBMCController : UIViewController
+@interface XBMCController : UIViewController <UIGestureRecognizerDelegate>
 {
   UIWindow *m_window;
   IOSEAGLView  *m_glView;
@@ -38,8 +37,6 @@
   /* Touch handling */
   CGSize screensize;
   CGPoint lastGesturePoint;
-  CGFloat lastPinchScale;
-  CGFloat currentPinchScale;  
   CGFloat screenScale;
   bool touchBeginSignaled;
   int  m_screenIdx;
@@ -50,8 +47,6 @@
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
-@property CGFloat lastPinchScale;
-@property CGFloat currentPinchScale;
 @property CGFloat screenScale;
 @property bool touchBeginSignaled;
 @property int  m_screenIdx;
@@ -71,8 +66,11 @@
 - (void) setFramebuffer;
 - (bool) presentFramebuffer;
 - (CGSize) getScreenSize;
+- (CGFloat) getScreenScale:(UIScreen *)screen;
 - (UIInterfaceOrientation) getOrientation;
 - (void) createGestureRecognizers;
+- (void) activateKeyboard:(UIView *)view;
+- (void) deactivateKeyboard:(UIView *)view;
 
 - (void) disableSystemSleep;
 - (void) enableSystemSleep;

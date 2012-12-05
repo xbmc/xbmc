@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -116,6 +115,50 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
       }
     }
   }
+}
+
+void CGUIListGroup::EnlargeWidth(float difference)
+{
+  // Alters the width of the controls that have an ID of 1
+  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  {
+    CGUIControl *child = *it;
+    if (child->GetID() >= 1 && child->GetID() <= 14)
+    {
+      if (child->GetID() == 1) // label
+      {
+        child->SetWidth(child->GetWidth() + difference - 10);
+        child->SetVisible(child->GetWidth() > 10); ///
+      }
+      else
+      {
+        child->SetWidth(child->GetWidth() + difference);
+      }
+    }
+  }
+  SetInvalid();
+}
+
+void CGUIListGroup::EnlargeHeight(float difference)
+{
+  // Alters the width of the controls that have an ID of 1
+  for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  {
+    CGUIControl *child = *it;
+    if (child->GetID() >= 1 && child->GetID() <= 14)
+    {
+      if (child->GetID() == 1) // label
+      {
+        child->SetHeight(child->GetHeight() + difference);
+        child->SetVisible(child->GetHeight() > 10); ///
+      }
+      else
+      {
+        child->SetHeight(child->GetHeight() + difference);
+      }
+    }
+  }
+  SetInvalid();
 }
 
 void CGUIListGroup::SetInvalid()

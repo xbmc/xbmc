@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "system.h"
@@ -47,7 +46,14 @@
 #include "input/SDLJoystick.h"
 #endif
 
+#if defined(HAS_FILESYSTEM_RAR)
+#include "filesystem/RarManager.h"
+#endif
+#include "filesystem/ZipManager.h"
 
+#ifdef TARGET_RASPBERRY_PI
+#include "linux/RBP.h"
+#endif
 
   CGUISettings       g_guiSettings;
   CSettings          g_settings;
@@ -80,3 +86,13 @@
   CAlarmClock        g_alarmClock;
   PLAYLIST::CPlayListPlayer g_playlistPlayer;
   CApplication       g_application;
+
+#ifdef TARGET_RASPBERRY_PI
+  CRBP               g_RBP;
+#endif
+
+#ifdef HAS_FILESYSTEM_RAR
+  CRarManager g_RarManager;
+#endif
+  CZipManager g_ZipManager;
+

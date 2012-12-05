@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -61,23 +60,20 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   CURL url(strRoot);
   CStdString strFilter;
   CStdString protocol = url.GetProtocol();
-  CStdString strOptions = url.GetOptions();
   url.SetProtocol("http");
   bool bIsBouquet=false;
 
-  int ipoint = strOptions.Find("?path=");
-  if (ipoint >=0)
+  if (url.HasOption("path"))
   {
     // send Zap!
-    return g_tuxbox.ZapToUrl(url, strOptions, ipoint);
+    return g_tuxbox.ZapToUrl(url, url.GetOption("path"));
   }
   else
   {
-    ipoint = strOptions.Find("&reference=");
-    if (ipoint >=0 || enigma2)
+    if (url.HasOption("reference") || enigma2)
     {
       //List reference
-      strFilter = strOptions.Right((strOptions.size()-(ipoint+11)));
+      strFilter = url.GetOption("reference");
       bIsBouquet = false; //On Empty is Bouquet
       if (enigma2)
       {
@@ -87,14 +83,15 @@ bool CTuxBoxDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           strFilter = "e2"; // Disable Bouquets for Enigma2
 
         GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
-        url.SetOptions("");
-        url.SetFileName(strBQRequest);
       }
+      url.SetOptions("");
+      url.SetFileName(strBQRequest);
     }
   }
   if(strFilter.IsEmpty())
   {
-    url.SetOptions(strBQRequest);
+    url.SetOptions("");
+    url.SetFileName(strBQRequest);
     bIsBouquet = true;
   }
   //Open

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -38,7 +37,7 @@ CGUIAction::CGUIAction(int controlID)
   SetNavigation(controlID);
 }
 
-bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) const
+bool CGUIAction::ExecuteActions(int controlID, int parentID) const
 {
   if (m_actions.size() == 0) return false;
   bool retval = false;
@@ -47,21 +46,7 @@ bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) con
   {
     if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition))
     {
-      if (StringUtils::IsInteger(it->action))
-      {
-        CGUIMessage msg(GUI_MSG_MOVE, parentID, controlID, direction);
-        if (parentID)
-        {
-          CGUIWindow *pWindow = g_windowManager.GetWindow(parentID);
-          if (pWindow)
-          {
-            retval |= pWindow->OnMessage(msg);
-            continue;
-          }
-        }
-        retval |= g_windowManager.SendMessage(msg);
-      }
-      else
+      if (!StringUtils::IsInteger(it->action))
       {
         CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID);
         msg.SetStringParam(it->action);

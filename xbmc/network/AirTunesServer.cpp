@@ -35,7 +35,8 @@
 #include "ApplicationMessenger.h"
 #include "filesystem/PipeFile.h"
 #include "Application.h"
-#include "cores/paplayer/BXAcodec.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxBXA.h"
+#include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -43,6 +44,7 @@
 #include "utils/Variant.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/EndianSwap.h"
+#include "URL.h"
 
 #include <map>
 #include <string>
@@ -87,7 +89,7 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
     tag.SetTitle(metadata["minm"]);//title
   if(metadata["asar"].length())    
     tag.SetArtist(metadata["asar"]);//artist
-  g_infoManager.SetCurrentSongTag(tag);
+  CApplicationMessenger::Get().SetCurrentSongTag(tag);
 }
 
 void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int size)
@@ -159,9 +161,9 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   pipe->OpenForWrite(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   pipe->SetOpenThreashold(300);
 
-  BXA_FmtHeader header;
+  Demux_BXA_FmtHeader header;
   strncpy(header.fourcc, "BXA ", 4);
-  header.type = BXA_PACKET_TYPE_FMT;
+  header.type = BXA_PACKET_TYPE_FMT_DEMUX;
   header.bitsPerSample = bits;
   header.channels = channels;
   header.sampleRate = samplerate;
@@ -171,24 +173,24 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
     return 0;
 
   ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMessage(tMsg, true);
 
   CFileItem item;
   item.SetPath(pipe->GetName());
   item.SetMimeType("audio/x-xbmc-pcm");
 
   ThreadMessage tMsg2 = { TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VISUALISATION, 0 };
-  g_application.getApplicationMessenger().SendMessage(tMsg2, true);
+  CApplicationMessenger::Get().SendMessage(tMsg2, true);
 
-  g_application.getApplicationMessenger().PlayFile(item);
+  CApplicationMessenger::Get().PlayFile(item);
 
   return "XBMC-AirTunes";//session
 }
 
 void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *session, float volume)
 {
-  //volume from -144 - 0
-  float volPercent = 1 - volume/-144;
+  //volume from -30 - 0 - -144 means mute
+  float volPercent = volume < -30.0f ? 0 : 1 - volume/-30;
   g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
 }
 
@@ -234,7 +236,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
 #endif
   {
     ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
 }
@@ -327,9 +329,9 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   device->pipe->OpenForWrite(XFILE::PipesManager::GetInstance().GetUniquePipeName());
   device->pipe->SetOpenThreashold(300);
 
-  BXA_FmtHeader header;
+  Demux_BXA_FmtHeader header;
   strncpy(header.fourcc, "BXA ", 4);
-  header.type = BXA_PACKET_TYPE_FMT;
+  header.type = BXA_PACKET_TYPE_FMT_DEMUX;
   header.bitsPerSample = format->bits;
   header.channels = format->channels;
   header.sampleRate = format->rate;
@@ -339,7 +341,7 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
     return 0;
 
   ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  CApplicationMessenger::Get().SendMessage(tMsg, true);
 
   CFileItem item;
   item.SetPath(device->pipe->GetName());
@@ -354,10 +356,7 @@ ao_device* CAirTunesServer::AudioOutputFunctions::ao_open_live(int driver_id, ao
   if (ao_get_option(option, "name"))
     item.GetMusicInfoTag()->SetTitle(ao_get_option(option, "name"));
 
-  ThreadMessage tMsg2 = { TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VISUALISATION, 0 };
-  g_application.getApplicationMessenger().SendMessage(tMsg2, true);
-
-  g_application.getApplicationMessenger().PlayFile(item);
+  CApplicationMessenger::Get().PlayFile(item);
 
   return (ao_device*) device;
 }
@@ -380,7 +379,7 @@ int CAirTunesServer::AudioOutputFunctions::ao_close(ao_device *device)
 #endif
   {
     ThreadMessage tMsg = { TMSG_MEDIA_STOP };
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    CApplicationMessenger::Get().SendMessage(tMsg, true);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
 
@@ -667,8 +666,10 @@ bool CAirTunesServer::Initialize(const CStdString &password)
     ao.ao_append_option = AudioOutputFunctions::ao_append_option;
     ao.ao_free_options = AudioOutputFunctions::ao_free_options;
     ao.ao_get_option = AudioOutputFunctions::ao_get_option;
+#ifdef HAVE_STRUCT_AUDIOOUTPUT_AO_SET_METADATA
     ao.ao_set_metadata = AudioOutputFunctions::ao_set_metadata;    
     ao.ao_set_metadata_coverart = AudioOutputFunctions::ao_set_metadata_coverart;        
+#endif
     struct printfPtr funcPtr;
     funcPtr.extprintf = shairport_log;
 

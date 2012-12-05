@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -98,7 +97,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
 
   // There must be a "Upgrade" header with the value "websocket"
   value = header.getValue(WS_HEADER_UPGRADE_LC);
-  if (value == NULL || strcmp(value, WS_HEADER_UPGRADE_VALUE) != 0)
+  if (value == NULL || strnicmp(value, WS_HEADER_UPGRADE_VALUE, strlen(WS_HEADER_UPGRADE_VALUE)) != 0)
   {
     CLog::Log(LOGINFO, "WebSocket [RFC6455]: invalid \"%s\" received", WS_HEADER_UPGRADE);
     return true;

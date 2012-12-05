@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -71,43 +70,15 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
     if (m_pOverlayCodec)
     {
-      double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
-      double duration = pPacket->duration;
-      int result = m_pOverlayCodec->Decode(pPacket->pData, pPacket->iSize, pts, duration);
+      int result = m_pOverlayCodec->Decode(pPacket);
 
       if(result == OC_OVERLAY)
       {
         CDVDOverlay* overlay;
+
         while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
         {
           overlay->iGroupId = pPacket->iGroupId;
-
-          // we assume pts is better than what
-          // decoder gives us, only take duration
-          // from decoder if available
-          if(overlay->iPTSStopTime > overlay->iPTSStartTime)
-            duration = overlay->iPTSStopTime - overlay->iPTSStartTime;
-          else if(pPacket->duration != DVD_NOPTS_VALUE)
-            duration = pPacket->duration;
-          else
-            duration = 0.0;
-
-          if     (pPacket->pts != DVD_NOPTS_VALUE)
-            pts = pPacket->pts;
-          else if(pPacket->dts != DVD_NOPTS_VALUE)
-            pts = pPacket->dts;
-          else
-            pts = overlay->iPTSStartTime;
-
-          overlay->iPTSStartTime = pts;
-          if(duration)
-            overlay->iPTSStopTime = pts + duration;
-          else
-          {
-            overlay->iPTSStopTime = 0;
-            overlay->replace = true;
-          }
-
           m_pOverlayContainer->Add(overlay);
           overlay->Release();
         }
@@ -186,6 +157,7 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
       CloseStream(false);
       return false;
     }
+    m_pSubtitleFileParser->Reset();
     return true;
   }
 
@@ -223,15 +195,22 @@ void CDVDPlayerSubtitle::Process(double pts)
     if(pts == DVD_NOPTS_VALUE)
       return;
 
-    if (pts < m_lastPts)
+    if (pts + DVD_SEC_TO_TIME(1) < m_lastPts)
+    {
       m_pOverlayContainer->Clear();
+      m_pSubtitleFileParser->Reset();
+    }
 
     if(m_pOverlayContainer->GetSize() >= 5)
       return;
 
     CDVDOverlay* pOverlay = m_pSubtitleFileParser->Parse(pts);
-    if (pOverlay)
+    // add all overlays which fit the pts
+    while(pOverlay)
+    {
       m_pOverlayContainer->Add(pOverlay);
+      pOverlay = m_pSubtitleFileParser->Parse(pts);
+    }
 
     m_lastPts = pts;
   }

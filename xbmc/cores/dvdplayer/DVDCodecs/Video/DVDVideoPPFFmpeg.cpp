@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,6 +27,7 @@ CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
   m_pMode = m_pContext = NULL;
   m_pSource = m_pTarget = NULL;
   m_iInitWidth = m_iInitHeight = 0;
+  m_deinterlace = false;
   memset(&m_FrameBuffer, 0, sizeof(DVDVideoPicture));
 }
 CDVDVideoPPFFmpeg::~CDVDVideoPPFFmpeg()

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,6 +31,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "TextureDatabase.h"
+#include "URL.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -91,20 +91,25 @@ CStdString CRepository::FetchChecksum(const CStdString& url)
 {
   CSingleLock lock(m_critSection);
   CFile file;
-  file.Open(url);
-  CStdString checksum;
   try
   {
-    char* temp = new char[(size_t)file.GetLength()+1];
-    file.Read(temp,file.GetLength());
-    temp[file.GetLength()] = 0;
-    checksum = temp;
-    delete[] temp;
+    if (file.Open(url))
+    {    
+      // we intentionally avoid using file.GetLength() for 
+      // Transfer-Encoding: chunked servers.
+      std::stringstream str;
+      char temp[1024];
+      int read;
+      while ((read=file.Read(temp, sizeof(temp))) > 0)
+        str.write(temp, read);
+      return str.str();
+    }
+    return "";
   }
   catch (...)
   {
+    return "";
   }
-  return checksum;
 }
 
 CStdString CRepository::GetAddonHash(const AddonPtr& addon)
@@ -144,8 +149,7 @@ VECADDONS CRepository::Parse()
     file = url.Get();
   }
 
-  doc.LoadFile(file);
-  if (doc.RootElement())
+  if (doc.LoadFile(file) && doc.RootElement())
   {
     CAddonMgr::Get().AddonsFromRepoXML(doc.RootElement(), result);
     for (IVECADDONS i = result.begin(); i != result.end(); ++i)

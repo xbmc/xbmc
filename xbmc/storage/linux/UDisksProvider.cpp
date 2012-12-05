@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "UDisksProvider.h"
@@ -155,7 +154,8 @@ CMediaSource CUDiskDevice::ToMediaShare()
 
 bool CUDiskDevice::IsApproved()
 {
-  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && !m_FileSystem.Equals("swap")) && !m_MountPath.Equals("/")) || m_isOptical;
+  return (m_isFileSystem && m_isMounted && m_UDI.length() > 0 && (m_FileSystem.length() > 0 && !m_FileSystem.Equals("swap")) 
+      && !m_MountPath.Equals("/") && !m_MountPath.Equals("/boot")) || m_isOptical;
 }
 
 #define BOOL2SZ(b) ((b) ? "true" : "false")
@@ -360,8 +360,9 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
   else
   {
     bool mounted = device->m_isMounted;
-
-    if (!mounted && g_advancedSettings.m_handleMounting)
+    /* make sure to not silently remount ejected usb thumb drives
+       that user wants to eject, but make sure to mount blurays */
+    if (!mounted && g_advancedSettings.m_handleMounting && device->m_isOptical)
       device->Mount();
 
     device->Update();

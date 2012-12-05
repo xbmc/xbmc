@@ -1,0 +1,93 @@
+diff -ru mysql-5.1.55.org/client/mysql.cc mysql-5.1.55/client/mysql.cc
+--- mysql-5.1.55.org/client/mysql.cc	2011-01-25 16:04:37.000000000 +0100
++++ mysql-5.1.55/client/mysql.cc	2011-11-15 20:17:00.000000000 +0100
+@@ -97,6 +97,7 @@
+ #include <conio.h>
+ #elif !defined(__NETWARE__)
+ #include <readline/readline.h>
++#include <readline/history.h>
+ #define HAVE_READLINE
+ #endif
+   //int vidattr(long unsigned int attrs);	// Was missing in sun curses
+@@ -1045,14 +1046,16 @@
+ } HIST_ENTRY; 
+ #endif
+ 
++#if !defined(__ANDROID__)
+ extern "C" int add_history(const char *command); /* From readline directory */
+ extern "C" int read_history(const char *command);
+ extern "C" int write_history(const char *command);
+ extern "C" HIST_ENTRY *history_get(int num);
+ extern "C" int history_length;
++static void fix_history(String *final_command);
++#endif
+ static int not_in_history(const char *line);
+ static void initialize_readline (char *name);
+-static void fix_history(String *final_command);
+ #endif
+ 
+ static COMMANDS *find_command(char *name,char cmd_name);
+Only in mysql-5.1.55/client: mysql.cc~
+diff -ru mysql-5.1.55.org/config/ac-macros/readline.m4 mysql-5.1.55/config/ac-macros/readline.m4
+--- mysql-5.1.55.org/config/ac-macros/readline.m4	2011-01-25 16:04:51.000000000 +0100
++++ mysql-5.1.55/config/ac-macros/readline.m4	2011-11-15 20:17:54.000000000 +0100
+@@ -4,6 +4,7 @@
+ 	    [
+ 		#include "stdio.h"
+ 		#include "readline/readline.h"
++		#include "readline/history.h"
+ 	    ],
+ 	    [ 
+ 		HIST_ENTRY entry;
+Only in mysql-5.1.55/config/ac-macros: readline.m4~
+diff -ru mysql-5.1.55.org/include/my_dir.h mysql-5.1.55/include/my_dir.h
+--- mysql-5.1.55.org/include/my_dir.h	2011-01-25 16:04:48.000000000 +0100
++++ mysql-5.1.55/include/my_dir.h	2011-11-15 20:15:46.000000000 +0100
+@@ -35,9 +35,15 @@
+ #define MY_S_ISUID	S_ISUID /* set user id on execution */
+ #define MY_S_ISGID	S_ISGID /* set group id on execution */
+ #define MY_S_ISVTX	S_ISVTX /* save swapped text even after use */
++#if defined(__ANDROID__)
++#define MY_S_IREAD      S_IRUSR /* read permission, owner */
++#define MY_S_IWRITE     S_IWUSR /* write permission, owner */
++#define MY_S_IEXEC     S_IEXEC /* execute/search permission, owner */
++#else
+ #define MY_S_IREAD	S_IREAD /* read permission, owner */
+ #define MY_S_IWRITE	S_IWRITE	/* write permission, owner */
+ #define MY_S_IEXEC	S_IEXEC /* execute/search permission, owner */
++#endif
+ 
+ #define MY_S_ISDIR(m)	(((m) & MY_S_IFMT) == MY_S_IFDIR)
+ #define MY_S_ISCHR(m)	(((m) & MY_S_IFMT) == MY_S_IFCHR)
+Only in mysql-5.1.55/include: my_dir.h~
+diff -ru mysql-5.1.55.org/include/my_global.h mysql-5.1.55/include/my_global.h
+--- mysql-5.1.55.org/include/my_global.h	2011-11-15 20:14:37.000000000 +0100
++++ mysql-5.1.55/include/my_global.h	2011-11-15 20:15:13.000000000 +0100
+@@ -979,6 +979,10 @@
+ typedef unsigned char	uchar;	/* Short for unsigned char */
+ #endif
+ 
++#ifndef HAVE_USHORT
++typedef unsigned short ushort;
++#endif
++
+ #ifndef HAVE_INT8
+ typedef signed char int8;       /* Signed integer >= 8  bits */
+ #endif
+Only in mysql-5.1.55/include: my_global.h~
+diff -ru mysql-5.1.55.org/mysys/my_gethwaddr.c mysql-5.1.55/mysys/my_gethwaddr.c
+--- mysql-5.1.55.org/mysys/my_gethwaddr.c	2011-01-25 16:04:35.000000000 +0100
++++ mysql-5.1.55/mysys/my_gethwaddr.c	2011-11-15 20:19:11.000000000 +0100
+@@ -66,7 +66,11 @@
+ 
+ #include <net/if.h>
+ #include <sys/ioctl.h>
++#ifdef __ANDROID__
++#include <net/if_ether.h>
++#else
+ #include <net/ethernet.h>
++#endif
+ 
+ my_bool my_gethwaddr(uchar *to)
+ {
+Only in mysql-5.1.55/mysys: my_gethwaddr.c~

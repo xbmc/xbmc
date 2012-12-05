@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,7 @@
 #include <map>
 #include "guilib/Resolution.h"
 #include "addons/IAddon.h"
+#include "utils/Observer.h"
 
 class TiXmlNode;
 class TiXmlElement;
@@ -130,6 +130,15 @@ class TiXmlElement;
 #define APM_HIPOWER_STANDBY 2
 #define APM_LOPOWER_STANDBY 3
 
+#define GUIDE_VIEW_CHANNEL          0
+#define GUIDE_VIEW_NOW              1
+#define GUIDE_VIEW_NEXT             2
+#define GUIDE_VIEW_TIMELINE         3
+
+#define START_LAST_CHANNEL_OFF      0
+#define START_LAST_CHANNEL_MIN      1
+#define START_LAST_CHANNEL_ON       2
+
 #define SETTINGS_TYPE_BOOL      1
 #define SETTINGS_TYPE_FLOAT     2
 #define SETTINGS_TYPE_INT       3
@@ -139,20 +148,21 @@ class TiXmlElement;
 #define SETTINGS_TYPE_PATH      7
 #define SETTINGS_TYPE_ADDON     8
 
-#define CHECKMARK_CONTROL           1
-#define SPIN_CONTROL_FLOAT          2
-#define SPIN_CONTROL_INT            3
-#define SPIN_CONTROL_INT_PLUS       4
-#define SPIN_CONTROL_TEXT           5
-#define EDIT_CONTROL_INPUT          6
-#define EDIT_CONTROL_HIDDEN_INPUT   7
-#define EDIT_CONTROL_NUMBER_INPUT   8
-#define EDIT_CONTROL_IP_INPUT       9
-#define EDIT_CONTROL_MD5_INPUT     10
-#define BUTTON_CONTROL_STANDARD    11
-#define BUTTON_CONTROL_MISC_INPUT  12
-#define BUTTON_CONTROL_PATH_INPUT  13
-#define SEPARATOR_CONTROL          14
+#define CHECKMARK_CONTROL                      1
+#define SPIN_CONTROL_FLOAT                     2
+#define SPIN_CONTROL_INT                       3
+#define SPIN_CONTROL_INT_PLUS                  4
+#define SPIN_CONTROL_TEXT                      5
+#define EDIT_CONTROL_INPUT                     6
+#define EDIT_CONTROL_HIDDEN_INPUT              7
+#define EDIT_CONTROL_NUMBER_INPUT              8
+#define EDIT_CONTROL_IP_INPUT                  9
+#define EDIT_CONTROL_MD5_INPUT                10
+#define BUTTON_CONTROL_STANDARD               11
+#define BUTTON_CONTROL_MISC_INPUT             12
+#define BUTTON_CONTROL_PATH_INPUT             13
+#define SEPARATOR_CONTROL                     14
+#define EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW 15
 
 #define REPLAY_GAIN_NONE 0
 #define REPLAY_GAIN_ALBUM 1
@@ -162,6 +172,12 @@ class TiXmlElement;
 #define SYNC_DISCON 0
 #define SYNC_SKIPDUP 1
 #define SYNC_RESAMPLE 2
+
+//adjust refreshrate options
+#define ADJUST_REFRESHRATE_OFF            0
+#define ADJUST_REFRESHRATE_ALWAYS         1
+#define ADJUST_REFRESHRATE_ON_STARTSTOP   2
+
 
 //resampler quality
 #define RESAMPLE_LOW 0
@@ -301,11 +317,11 @@ public:
   virtual CStdString ToString() const;
 
   void SetData(int iData)
-  { 
+  {
     if (m_entries.empty())
     {
       m_iData = iData;
-      if (m_iData < m_iMin) m_iData = m_iMin; 
+      if (m_iData < m_iMin) m_iData = m_iMin;
       if (m_iData > m_iMax) m_iData = m_iMax;
     }
     else
@@ -443,7 +459,7 @@ private:
 
 typedef std::vector<CSetting *> vecSettings;
 
-class CGUISettings
+class CGUISettings : public Observable
 {
 public:
   CGUISettings();
@@ -503,9 +519,9 @@ public:
   void Clear();
 
 private:
-  typedef std::map<CStdString, CSetting*>::iterator mapIter;
-  typedef std::map<CStdString, CSetting*>::const_iterator constMapIter;
-  std::map<CStdString, CSetting*> settingsMap;
+  typedef std::map<std::string, CSetting*>::iterator mapIter;
+  typedef std::map<std::string, CSetting*>::const_iterator constMapIter;
+  std::map<std::string, CSetting*> settingsMap;
   std::vector<CSettingsGroup *> settingsGroups;
   void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
 };

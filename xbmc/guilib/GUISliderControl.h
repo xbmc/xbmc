@@ -9,7 +9,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,9 +23,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -52,6 +51,11 @@ class CGUISliderControl :
       public CGUIControl
 {
 public:
+  typedef enum {
+    RangeSelectorLower = 0,
+    RangeSelectorUpper = 1
+  } RangeSelector;
+
   CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType);
   virtual ~CGUISliderControl(void);
   virtual CGUISliderControl *Clone() const { return new CGUISliderControl(*this); };
@@ -66,13 +70,18 @@ public:
   virtual void SetRange(int iStart, int iEnd);
   virtual void SetFloatRange(float fStart, float fEnd);
   virtual bool OnMessage(CGUIMessage& message);
+  bool ProcessSelector(CGUITexture &nib, unsigned int currentTime, float fScaleY, RangeSelector selector);
+  void SetRangeSelection(bool rangeSelection);
+  bool GetRangeSelection() { return m_rangeSelection; }
+  void SetRangeSelector(RangeSelector selector);
+  void SwitchRangeSelector();
   void SetInfo(int iInfo);
-  void SetPercentage(int iPercent);
-  int GetPercentage() const;
-  void SetIntValue(int iValue);
-  int GetIntValue() const;
-  void SetFloatValue(float fValue);
-  float GetFloatValue() const;
+  void SetPercentage(int iPercent, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
+  int GetPercentage(RangeSelector selector = RangeSelectorLower) const;
+  void SetIntValue(int iValue, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
+  int GetIntValue(RangeSelector selector = RangeSelectorLower) const;
+  void SetFloatValue(float fValue, RangeSelector selector = RangeSelectorLower, bool updateCurrent = false);
+  float GetFloatValue(RangeSelector selector = RangeSelectorLower) const;
   void SetIntInterval(int iInterval);
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
@@ -84,29 +93,34 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();
   virtual void Move(int iNumSteps);
-  virtual void SetFromPosition(const CPoint &point);
+  virtual void SetFromPosition(const CPoint &point, bool guessSelector = false);
   /*! \brief Get the current position of the slider as a proportion
    \return slider position in the range [0,1]
    */
-  float GetProportion() const;
+  float GetProportion(RangeSelector selector = RangeSelectorLower) const;
   
   /*! \brief Send a click message (and/or action) to the app in response to a slider move
    */
   void SendClick();
 
   CGUITexture m_guiBackground;
-  CGUITexture m_guiMid;
-  CGUITexture m_guiMidFocus;
+  CGUITexture m_guiSelectorLower;
+  CGUITexture m_guiSelectorUpper;
+  CGUITexture m_guiSelectorLowerFocus;
+  CGUITexture m_guiSelectorUpperFocus;
   int m_iType;
 
-  int m_iPercent;
+  bool m_rangeSelection;
+  RangeSelector m_currentSelector;
 
-  int m_iValue;
+  int m_percentValues[2];
+
+  int m_intValues[2];
   int m_iStart;
   int m_iInterval;
   int m_iEnd;
 
-  float m_fValue;
+  float m_floatValues[2];
   float m_fStart;
   float m_fInterval;
   float m_fEnd;

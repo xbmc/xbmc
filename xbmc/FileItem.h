@@ -5,7 +5,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,9 +19,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -30,7 +29,7 @@
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
 #include "XBDateTime.h"
-#include "SortFileItem.h"
+#include "utils/SortUtils.h"
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
@@ -43,6 +42,16 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
+namespace EPG
+{
+  class CEpgInfoTag;
+}
+namespace PVR
+{
+  class CPVRChannel;
+  class CPVRRecording;
+  class CPVRTimerInfoTag;
+}
 class CPictureInfoTag;
 
 class CAlbum;
@@ -76,6 +85,10 @@ public:
   CFileItem(const CGenre& genre);
   CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   CFileItem(const CVideoInfoTag& movie);
+  CFileItem(const EPG::CEpgInfoTag& tag);
+  CFileItem(const PVR::CPVRChannel& channel);
+  CFileItem(const PVR::CPVRRecording& record);
+  CFileItem(const PVR::CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
@@ -86,7 +99,7 @@ public:
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual void ToSortable(SortItem &sortable);
   virtual bool IsFileItem() const { return true; };
 
@@ -113,6 +126,7 @@ public:
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsBDFile() const;
   bool IsRAR() const;
+  bool IsAPK() const;
   bool IsZIP() const;
   bool IsCBZ() const;
   bool IsCBR() const;
@@ -132,6 +146,10 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
+  bool IsEPG() const;
+  bool IsPVRChannel() const;
+  bool IsPVRRecording() const;
+  bool IsPVRTimer() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -146,8 +164,10 @@ public:
   bool IsHDHomeRun() const;
   bool IsSlingbox() const;
   bool IsVTP() const;
+  bool IsPVR() const;
   bool IsLiveTV() const;
   bool IsRSS() const;
+  bool IsAndroidApp() const;
 
   void RemoveExtension();
   void CleanString();
@@ -186,6 +206,54 @@ public:
     return m_videoInfoTag;
   }
 
+  inline bool HasEPGInfoTag() const
+  {
+    return m_epgInfoTag != NULL;
+  }
+
+  EPG::CEpgInfoTag* GetEPGInfoTag();
+
+  inline const EPG::CEpgInfoTag* GetEPGInfoTag() const
+  {
+    return m_epgInfoTag;
+  }
+
+  inline bool HasPVRChannelInfoTag() const
+  {
+    return m_pvrChannelInfoTag != NULL;
+  }
+
+  PVR::CPVRChannel* GetPVRChannelInfoTag();
+
+  inline const PVR::CPVRChannel* GetPVRChannelInfoTag() const
+  {
+    return m_pvrChannelInfoTag;
+  }
+
+  inline bool HasPVRRecordingInfoTag() const
+  {
+    return m_pvrRecordingInfoTag != NULL;
+  }
+
+  PVR::CPVRRecording* GetPVRRecordingInfoTag();
+
+  inline const PVR::CPVRRecording* GetPVRRecordingInfoTag() const
+  {
+    return m_pvrRecordingInfoTag;
+  }
+
+  inline bool HasPVRTimerInfoTag() const
+  {
+    return m_pvrTimerInfoTag != NULL;
+  }
+
+  PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag();
+
+  inline const PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag() const
+  {
+    return m_pvrTimerInfoTag;
+  }
+
   inline bool HasPictureInfoTag() const
   {
     return m_pictureInfoTag != NULL;
@@ -205,6 +273,24 @@ public:
    */
   CStdString GetLocalFanart() const;
 
+  /*! \brief Assemble the filename of a particular piece of local artwork for an item.
+             No file existence check is typically performed.
+   \param artFile the art file to search for.
+   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \return the path to the local artwork.
+   \sa FindLocalArt
+   */
+  CStdString GetLocalArt(const std::string &artFile, bool useFolder = false) const;
+
+  /*! \brief Assemble the filename of a particular piece of local artwork for an item,
+             and check for file existence.
+   \param artFile the art file to search for.
+   \param useFolder whether to look in the folder for the art file. Defaults to false.
+   \return the path to the local artwork if it exists, empty otherwise.
+   \sa GetLocalArt
+   */
+  CStdString FindLocalArt(const std::string &artFile, bool useFolder) const;
+
   // Gets the .tbn file associated with this item
   CStdString GetTBNFile() const;
   // Gets the folder image associated with this item (defaults to folder.jpg)
@@ -221,13 +307,8 @@ public:
    */
   CStdString GetBaseMoviePath(bool useFolderNames) const;
 
-#ifdef UNIT_TESTING
-  static bool testGetBaseMoviePath();
-#endif
-
   // Gets the user thumb, if it exists
-  CStdString GetUserVideoThumb() const;
-  CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
+  CStdString GetUserMusicThumb(bool alwaysCheckRemote = false, bool fallbackToFolder = false) const;
 
   /*! \brief Get the path where we expect local metadata to reside.
    For a folder, this is just the existing path (eg tvshow folder)
@@ -272,6 +353,24 @@ public:
 
   bool IsAlbum() const;
 
+  /*! \brief Sets details using the information from the CVideoInfoTag object
+   Sets the videoinfotag and uses its information to set the label and path.
+   \param video video details to use and set
+   */
+  void SetFromVideoInfoTag(const CVideoInfoTag &video);
+  /*! \brief Sets details using the information from the CAlbum object
+   Sets the album in the music info tag and uses its information to set the
+   label and album-specific properties.
+   \param album album details to use and set
+   */
+  void SetFromAlbum(const CAlbum &album);
+  /*! \brief Sets details using the information from the CSong object
+   Sets the song in the music info tag and uses its information to set the
+   label, path, song-specific properties and artwork.
+   \param song song details to use and set
+   */
+  void SetFromSong(const CSong &song);
+
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
@@ -299,6 +398,10 @@ private:
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
+  EPG::CEpgInfoTag* m_epgInfoTag;
+  PVR::CPVRChannel* m_pvrChannelInfoTag;
+  PVR::CPVRRecording* m_pvrRecordingInfoTag;
+  PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
 };
@@ -376,6 +479,14 @@ public:
   bool Copy  (const CFileItemList& item);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SortOrder sortOrder);
+  /* \brief Sorts the items based on the given sorting options
+
+  In contrast to Sort (see above) this does not change the internal
+  state by storing the sorting method and order used and therefore
+  will always execute the sorting even if the list of items has
+  already been sorted with the same options before.
+  */
+  void Sort(SortDescription sortDescription);
   void Randomize();
   void FillInDefaultIcons();
   int GetFolderCount() const;

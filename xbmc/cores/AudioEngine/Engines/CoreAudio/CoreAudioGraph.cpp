@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -52,11 +51,11 @@ CCoreAudioGraph::~CCoreAudioGraph()
 }
 
 bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
-  AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag)
+  AudioDeviceID deviceId, bool allowMixing, AudioChannelLayoutTag layoutTag, float initVolume)
 {
-  AudioStreamBasicDescription fmt;
-  AudioStreamBasicDescription inputFormat;
-  AudioStreamBasicDescription outputFormat;
+  AudioStreamBasicDescription fmt = {0};
+  AudioStreamBasicDescription inputFormat = {0};
+  AudioStreamBasicDescription outputFormat = {0};
 
   m_deviceId = deviceId;
   m_allowMixing = allowMixing;
@@ -88,6 +87,7 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   if (!m_audioUnit->Open(m_audioGraph,
     kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
     return false;
+  m_audioUnit->SetBus(GetFreeBus());
 
   m_audioUnit->GetFormatDesc(format, &inputFormat, &fmt);
 
@@ -96,6 +96,8 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
 
   if (!m_audioUnit->SetCurrentDevice(deviceId))
     return false;
+
+  SetCurrentVolume(initVolume);
 
   if (allowMixing)
   {
@@ -236,18 +238,6 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
     }
   }
 
-/*
-// WTF is this an why is it in CoreAudioAEHALOSX ?
-#ifdef TAGRGET_IOS
-  if (!m_audioUnit->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
-  {
-    CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
-      "Error setting Device Output Stream Format %s",
-      StreamDescriptionToString(inputFormat, formatString));
-  }
-#endif
-*/
-
   ret = AUGraphUpdate(m_audioGraph, NULL);
   if (ret)
   {
@@ -259,18 +249,18 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   AudioStreamBasicDescription inputDesc_end, outputDesc_end;
   m_audioUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
   m_audioUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kInputBus);
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: audioUnit, Input Stream Format  %s",
     StreamDescriptionToString(inputDesc_end, formatString));
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: audioUnit, Output Stream Format %s",
     StreamDescriptionToString(outputDesc_end, formatString));
 
   if (m_mixerUnit)
   {
     m_mixerUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
     m_mixerUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kOutputBus);
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: mixerUnit, Input Stream Format  %s",
       StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: mixerUnit, Output Stream Format %s",
       StreamDescriptionToString(outputDesc_end, formatString));
   }
 
@@ -278,9 +268,9 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format,
   {
     m_inputUnit->GetFormat(&inputDesc_end, kAudioUnitScope_Input, kOutputBus);
     m_inputUnit->GetFormat(&outputDesc_end, kAudioUnitScope_Output, kOutputBus);
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Input Stream Format  %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: inputUnit, Input Stream Format  %s",
       StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGINFO, "CCoreAudioGraph::Open: Output Stream Format %s",
+    CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: inputUnit, Output Stream Format %s",
       StreamDescriptionToString(outputDesc_end, formatString));
   }
 
@@ -315,6 +305,7 @@ bool CCoreAudioGraph::Close()
     CAUOutputDevice *d = m_auUnitList.front();
     m_auUnitList.pop_front();
     ReleaseBus(d->GetBus());
+    d->SetInputSource(NULL);
     d->Close();
     delete d;
   }
@@ -488,9 +479,9 @@ CAUOutputDevice *CCoreAudioGraph::CreateUnit(AEAudioFormat &format)
   if (!m_audioUnit || !m_mixerUnit)
     return NULL;
 
-  AudioStreamBasicDescription fmt;
-  AudioStreamBasicDescription inputFormat;
-  AudioStreamBasicDescription outputFormat;
+  AudioStreamBasicDescription fmt = {0};
+  AudioStreamBasicDescription inputFormat = {0};
+  AudioStreamBasicDescription outputFormat = {0};
 
   int busNumber = GetFreeBus();
   if (busNumber == INVALID_BUS)
@@ -578,7 +569,7 @@ int CCoreAudioGraph::GetMixerChannelOffset(int busNumber)
     return 0;
 
   int offset = 0;
-  AudioStreamBasicDescription fmt;
+  AudioStreamBasicDescription fmt = {0};
 
   for (int i = 0; i < busNumber; i++)
   {

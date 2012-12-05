@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Romanian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ro\n"
-"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1))\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -969,6 +970,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "Nu s-au găsit rezultate."
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Limba audio preferată"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Limba preferată pentru subtitrare"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Subtitrări"
@@ -1044,6 +1053,14 @@ msgstr "Activat"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Non-intercalat"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Limba originală pentru fluxul video"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Limba interfață utilizator"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1184,6 +1201,18 @@ msgstr "An"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Amplifică volumul când numărul de canale este micșorat"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- Receptor capabil DTS-HD"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Receptor multicanal capabil LPCM "
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- Receptor capabil TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1512,6 +1541,14 @@ msgstr "Sigur eliminați '%s'?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "Dinspre %s cu %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Nu a fost găsit nici un disc optic."
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Este necesar un disc optic pentru a reproduce acest video."
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2141,14 +2178,6 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Introduceți număr"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Biți/Eșantion"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Frecvență de eșantionare"
-
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "CD-uri audio"
@@ -2623,7 +2652,7 @@ msgstr "Nume rețea fără fir (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "Telecomandă"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2656,6 +2685,10 @@ msgstr "Număr maxim de clienți"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Acces la Internet"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Dorești să efectuezi scanarea acum?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3001,37 +3034,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programe, imagini și video"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Detectare automată"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Detectează automat sistemul"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Pseudonim"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Întreabă pentru conectare"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Trimite utilizator și parolă FTP"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Interval ping"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Doriți să vă conectați cu sistemul detectat automat?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Neconfigurat"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3051,7 +3056,7 @@ msgstr "- Folosește protecție prin parolă"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3103,7 +3108,7 @@ msgstr "în"
 
 msgctxt "#1406"
 msgid "the"
-msgstr ""
+msgstr " "
 
 msgctxt "#1407"
 msgid "Vicinity"
@@ -3129,10 +3134,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "mult vânt"
 
-msgctxt "#1413"
-msgid "drizzle"
-msgstr "burniță"
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "furtună cu trăznete"
@@ -3150,12 +3151,8 @@ msgid "Grains"
 msgstr "picățele"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "furtuni"
-
-msgctxt "#1419"
-msgid "T-Showers"
-msgstr "averse"
+msgid "Thunderstorms"
+msgstr "furtuni(cu trăznete)"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3172,6 +3169,18 @@ msgstr "mult vânt"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "ceață"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Mică"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Necunoscut"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Precipitație"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3629,10 +3638,6 @@ msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Setări și gestionar de fișiere"
 
-msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Setează ca implicit pentru toate filmele"
-
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
 msgstr "Vor fi resetate toate valorile salvate anterior."
@@ -3976,10 +3981,6 @@ msgstr "Pornit, alarmă în %i minute"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarmă!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Anulat cu %i m și %i s rămase"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4999,19 +5000,19 @@ msgstr "Reducere consum"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "copie în mp3"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Pornirea unui CD Audio "
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "Start"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Evacuarea discului când procesul de copiere s-a încheiat"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5453,10 +5454,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (inversat)"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Renunțare..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Introduceți nume artist"
@@ -5688,6 +5685,214 @@ msgstr "Timp de așteptare repaus ecran"
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Comută pe canalul"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Calitatea semnalului"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "Necodificat"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Fixă"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "Înregistrări TV"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Canale"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "Canale TV"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Canale Radio"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Canal"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Acum"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Următorul"
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "Acest canal nu poate fi reprodus. Verifică log-ul pentru detalii."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Această înregistrare nu poate fi reprodusă.  Verifică log-ul pentru detalii."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Arată calitatea semnalului."
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Ești sigur că vrei să ascunzi acest canal?"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Canal nou"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Arată canal"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Arată canale vizibile"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Arată canale ascunse"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Mută canal la:"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Du-te la sfârșit"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Activ:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Nume:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Fișier:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Radio:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Canal:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Zi:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Prioritate:"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Prima zi:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Canal necunoscut %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Lu-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Ma-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Mi-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Jo-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Vi-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Sâ-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Du"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Lu-Ma-Mi-Jo-Vi-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Lu-Ma-Mi-Jo-Vi-Sâ-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Lu-Ma-Mi-Jo-Vi-Sâ-Du"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Sâ-Du"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "la"
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Versiune"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Adresă"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Căutare canale"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Număr client"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Canal"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Înregistrări"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Redare"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Canal nou"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6371,7 +6576,7 @@ msgstr "Vă rugăm așteptați"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6953,10 +7158,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Seturi"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Alege miniatură set de filme"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Exportare miniaturi actor?"
@@ -7036,10 +7237,6 @@ msgstr "Ascultător"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Ascultători"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Alege fundal set de filme"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -7296,10 +7493,6 @@ msgstr "Catalog (scraper) implicit pentru seriale tv"
 msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Catalog (scraper) implicit pentru videoclipuri"
-
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Activează revenire bazată pe limbă catalog"
 
 msgctxt "#21417"
 msgid "- Settings"
@@ -8299,27 +8492,27 @@ msgstr "Notificări"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Ascunde ce este străin"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Alege din toate titlurile ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Arată meniul bluray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Start titlu principal:%d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Titlu: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Alege articolul pentru redare"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8709,6 +8902,22 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "Reda sunetele de ghidate"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Doar când redarea s-a oprit"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Întotdeauna"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Niciodată"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Următorul element de redat nu poate fi găsit"
@@ -8743,23 +8952,23 @@ msgstr "Verificați setările audio"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Utilizează gesturi pentru navigare"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "Treceți cu degetul spre stânga,la dreapta,sus,jos pentru cursor"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Treceți cu 2 degete spre stânga pentru stergere"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "O apăsare rapidă cu 1 deget pentru enter"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "O apăsare rapidă cu 2 degete sau o apăsare lungă cu 1 deget pentru meniul contextual"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8799,7 +9008,7 @@ msgstr "Hartă de taste activată"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Nu folosi maparea tastelor pentru acest dispozitiv"
 
 msgctxt "#35500"
 msgid "Location"
@@ -8869,10 +9078,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Adaptorul CEC nu poate fi detectat."
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Versiune interfață libcec nesuportată. %d este mai mare decât versiunea pe care XBMC o suportă (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Număr port HDMI"
@@ -8891,57 +9096,36 @@ msgstr "Folosește setările de limbă ale televizorului"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Conectarea la dispozitivul HDMI"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "La inițializare XBMC va fi sursa activă"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Adresa fizică (anulează portul HDMI)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "Portul COM (lasă gol dacă nu este folosit) "
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Configurația a fost actualizată"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Noua configurație nu a putut fi inițializată. Vă rugăm verificați setările."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Trimite comanda 'sursă inactivă' când se oprește XBMC"
 
-msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgctxt "#36035"
+msgid "Always"
+msgstr "Întotdeauna"
 
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
-
-msgctxt "#36028"
-msgid "Ignore"
-msgstr ""
-
-msgctxt "#36029"
-msgid "When the TV is switched off"
-msgstr ""
-
-msgctxt "#36030"
-msgid "Connection lost"
-msgstr ""
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
-
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"

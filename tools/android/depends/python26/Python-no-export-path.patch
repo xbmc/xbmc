@@ -1,0 +1,12 @@
+diff -ruN Makefile.pre.in Makefile.pre.in
+--- Makefile.pre.in	2012-07-12 17:52:37.072234980 -0400
++++ Makefile.pre.in	2012-07-13 15:45:36.522185303 -0400
+@@ -912,8 +912,6 @@
+ $(srcdir)/Lib/$(PLATDIR):
+ 	mkdir $(srcdir)/Lib/$(PLATDIR)
+ 	cp $(srcdir)/Lib/plat-generic/regen $(srcdir)/Lib/$(PLATDIR)/regen
+-	export PATH; PATH="`pwd`:$$PATH"; \
+-	export PYTHONPATH; PYTHONPATH="`pwd`/Lib"; \
+ 	export DYLD_FRAMEWORK_PATH; DYLD_FRAMEWORK_PATH="`pwd`"; \
+ 	export EXE; EXE="$(BUILDEXE)"; \
+ 	cd $(srcdir)/Lib/$(PLATDIR); $(RUNSHARED) ./regen

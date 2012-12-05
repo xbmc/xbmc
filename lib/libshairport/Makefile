@@ -46,6 +46,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p0 < ../008-add-missing-libs.patch
 	cd $(SOURCE); patch -p0 < ../009_fix_ipv6.patch
 	cd $(SOURCE); patch -p0 < ../010_handle_metadata.patch
+	cd $(SOURCE); patch -p0 < ../011_fix_ipv4_fallback.patch
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 

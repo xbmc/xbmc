@@ -5,6 +5,7 @@
 #include <windows.h>
 #else
 #include <memory.h>
+#include <cstring>
 #endif
 #include "JpegParse.h"
 #include "libexif.h"

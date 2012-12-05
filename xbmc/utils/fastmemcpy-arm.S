@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  */
 
-#if defined(__arm__)
+#if defined(__arm__) && !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN_IOS)
 #if defined(__ARM_NEON__)
 
         .text

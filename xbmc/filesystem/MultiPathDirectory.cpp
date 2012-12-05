@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -161,7 +160,7 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
 
 bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>& vecPaths)
 {
-  vecPaths.empty();
+  vecPaths.clear();
   CStdString strPath1 = strPath;
 
   // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
@@ -244,6 +243,15 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vec
   return newPath;
 }
 
+CStdString CMultiPathDirectory::ConstructMultiPath(const std::set<CStdString> &setPaths)
+{
+  CStdString newPath = "multipath://";
+  for (std::set<CStdString>::const_iterator path = setPaths.begin(); path != setPaths.end(); ++path)
+    AddToMultiPath(newPath, *path);
+
+  return newPath;
+}
+
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
@@ -307,12 +315,12 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
             items.Size(), XbmcThreads::SystemClockMillis() - time);
 }
 
-bool CMultiPathDirectory::SupportsFileOperations(const CStdString &strPath)
+bool CMultiPathDirectory::SupportsWriteFileOperations(const CStdString &strPath)
 {
   vector<CStdString> paths;
   GetPaths(strPath, paths);
   for (unsigned int i = 0; i < paths.size(); ++i)
-    if (CUtil::SupportsFileOperations(paths[i]))
+    if (CUtil::SupportsWriteFileOperations(paths[i]))
       return true;
   return false;
 }

@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,17 +24,19 @@ namespace ANNOUNCEMENT
 {
   enum AnnouncementFlag
   {
-    Player        = 0x01,
-    GUI           = 0x02,
-    System        = 0x04,
-    VideoLibrary  = 0x08,
-    AudioLibrary  = 0x10,
-    Application   = 0x20,
-    Input         = 0x40,
-    Other         = 0x80
+    Player        = 0x001,
+    Playlist      = 0x002,
+    GUI           = 0x004,
+    System        = 0x008,
+    VideoLibrary  = 0x010,
+    AudioLibrary  = 0x020,
+    Application   = 0x040,
+    Input         = 0x080,
+    PVR           = 0x100,
+    Other         = 0x200
   };
 
-  #define ANNOUNCE_ALL (Player | GUI | System | VideoLibrary | AudioLibrary | Application | Input | Other)
+  #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | ANNOUNCEMENT::PVR | Other)
 
   /*!
     \brief Returns a string representation for the 
@@ -49,6 +50,8 @@ namespace ANNOUNCEMENT
     {
     case Player:
       return "Player";
+    case Playlist:
+      return "Playlist";
     case GUI:
       return "GUI";
     case System:
@@ -61,6 +64,8 @@ namespace ANNOUNCEMENT
       return "Application";
     case Input:
       return "Input";
+    case PVR:
+      return "PVR";
     case Other:
       return "Other";
     default:

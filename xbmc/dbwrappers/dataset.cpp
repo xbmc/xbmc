@@ -75,24 +75,6 @@ string Database::prepare(const char *format, ...)
   return result;
 }
 
-string Database::vprepare(const char *format, va_list args)
-{
-  char *p = NULL;
-  string result = "";
-
-  vsprintf(p, format, args);
-
-  if ( p )
-  {
-    result = p;
-    free(p);
-  }
-
-  return result;
-}
-
-
-
 //************* Dataset implementation ***************
 
 Dataset::Dataset() {

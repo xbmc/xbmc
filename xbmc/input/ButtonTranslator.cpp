@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,6 +48,12 @@ typedef struct
   const char* name;
   int action;
 } ActionMapping;
+
+typedef struct
+{
+  int origin;
+  int target;
+} WindowMapping;
 
 static const ActionMapping actions[] =
 {
@@ -98,7 +103,8 @@ static const ActionMapping actions[] =
         {"nextcalibration"   , ACTION_CALIBRATE_SWAP_ARROWS},
         {"resetcalibration"  , ACTION_CALIBRATE_RESET},
         {"analogmove"        , ACTION_ANALOG_MOVE},
-        {"rotate"            , ACTION_ROTATE_PICTURE},
+        {"rotate"            , ACTION_ROTATE_PICTURE_CW},
+        {"rotateccw"         , ACTION_ROTATE_PICTURE_CCW},
         {"close"             , ACTION_NAV_BACK}, // backwards compatibility
         {"subtitledelayminus", ACTION_SUBTITLE_DELAY_MIN},
         {"subtitledelay"     , ACTION_SUBTITLE_DELAY},
@@ -189,6 +195,7 @@ static const ActionMapping actions[] =
         {"jumpsms7"          , ACTION_JUMP_SMS7},
         {"jumpsms8"          , ACTION_JUMP_SMS8},
         {"jumpsms9"          , ACTION_JUMP_SMS9},
+        {"filter"            , ACTION_FILTER},
         {"filterclear"       , ACTION_FILTER_CLEAR},
         {"filtersms2"        , ACTION_FILTER_SMS2},
         {"filtersms3"        , ACTION_FILTER_SMS3},
@@ -209,6 +216,12 @@ static const ActionMapping actions[] =
         {"decreasepar"       , ACTION_DECREASE_PAR},
         {"volampup"          , ACTION_VOLAMP_UP},
         {"volampdown"        , ACTION_VOLAMP_DOWN},
+
+        // PVR actions
+        {"channelup"             , ACTION_CHANNEL_UP},
+        {"channeldown"           , ACTION_CHANNEL_DOWN},
+        {"previouschannelgroup"  , ACTION_PREVIOUS_CHANNELGROUP},
+        {"nextchannelgroup"      , ACTION_NEXT_CHANNELGROUP},
 
         // Mouse actions
         {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
@@ -234,6 +247,21 @@ static const ActionMapping windows[] =
         {"music"                    , WINDOW_MUSIC},
         {"video"                    , WINDOW_VIDEOS},
         {"videos"                   , WINDOW_VIDEO_NAV},
+        {"tv"                       , WINDOW_PVR}, // backward compat
+        {"pvr"                      , WINDOW_PVR},
+        {"pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO},
+        {"pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO},
+        {"pvrtimersetting"          , WINDOW_DIALOG_PVR_TIMER_SETTING},
+        {"pvrgroupmanager"          , WINDOW_DIALOG_PVR_GROUP_MANAGER},
+        {"pvrchannelmanager"        , WINDOW_DIALOG_PVR_CHANNEL_MANAGER},
+        {"pvrguidesearch"           , WINDOW_DIALOG_PVR_GUIDE_SEARCH},
+        {"pvrchannelscan"           , WINDOW_DIALOG_PVR_CHANNEL_SCAN},
+        {"pvrupdateprogress"        , WINDOW_DIALOG_PVR_UPDATE_PROGRESS},
+        {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
+        {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
+        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
+        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
+        {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
@@ -247,12 +275,15 @@ static const ActionMapping windows[] =
         {"networksettings"          , WINDOW_SETTINGS_SERVICE}, // backward compat
         {"servicesettings"          , WINDOW_SETTINGS_SERVICE},
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
+        {"pvrsettings"              , WINDOW_SETTINGS_MYPVR},
+        {"tvsettings"               , WINDOW_SETTINGS_MYPVR},  // backward compat
         {"scripts"                  , WINDOW_PROGRAMS}, // backward compat
         {"videofiles"               , WINDOW_VIDEO_FILES},
         {"videolibrary"             , WINDOW_VIDEO_NAV},
         {"videoplaylist"            , WINDOW_VIDEO_PLAYLIST},
         {"loginscreen"              , WINDOW_LOGIN_SCREEN},
         {"profiles"                 , WINDOW_SETTINGS_PROFILES},
+        {"skinsettings"             , WINDOW_SKIN_SETTINGS},
         {"addonbrowser"             , WINDOW_ADDON_BROWSER},
         {"yesnodialog"              , WINDOW_DIALOG_YES_NO},
         {"progressdialog"           , WINDOW_DIALOG_PROGRESS},
@@ -265,7 +296,6 @@ static const ActionMapping windows[] =
         {"numericinput"             , WINDOW_DIALOG_NUMERIC},
         {"gamepadinput"             , WINDOW_DIALOG_GAMEPAD},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
-        {"musicscan"                , WINDOW_DIALOG_MUSIC_SCAN},
         {"mutebug"                  , WINDOW_DIALOG_MUTE_BUG},
         {"playercontrols"           , WINDOW_DIALOG_PLAYER_CONTROLS},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
@@ -282,8 +312,6 @@ static const ActionMapping windows[] =
         {"profilesettings"          , WINDOW_DIALOG_PROFILE_SETTINGS},
         {"locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS},
         {"contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS},
-        {"videoscan"                , WINDOW_DIALOG_VIDEO_SCAN},
-        {"favourites"               , WINDOW_DIALOG_FAVOURITES},
         {"songinformation"          , WINDOW_DIALOG_SONG_INFO},
         {"smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR},
         {"smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE},
@@ -306,6 +334,7 @@ static const ActionMapping windows[] =
         {"movieinformation"         , WINDOW_DIALOG_VIDEO_INFO},
         {"textviewer"               , WINDOW_DIALOG_TEXT_VIEWER},
         {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
+        {"fullscreenlivetv"         , WINDOW_FULLSCREEN_LIVETV}, // virtual window/keymap section for PVR specific bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
         {"visualisation"            , WINDOW_VISUALISATION},
         {"slideshow"                , WINDOW_SLIDESHOW},
         {"filestackingdialog"       , WINDOW_DIALOG_FILESTACKING},
@@ -320,7 +349,9 @@ static const ActionMapping windows[] =
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM},
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
-        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS}};
+        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
+        {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS},
+        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER}};
 
 static const ActionMapping mousecommands[] =
 {
@@ -332,6 +363,12 @@ static const ActionMapping mousecommands[] =
   { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
   { "mousedrag",   ACTION_MOUSE_DRAG },
   { "mousemove",   ACTION_MOUSE_MOVE }
+};
+
+static const WindowMapping fallbackWindows[] =
+{
+  { WINDOW_FULLSCREEN_LIVETV,          WINDOW_FULLSCREEN_VIDEO },
+  { WINDOW_DIALOG_FULLSCREEN_INFO,     WINDOW_FULLSCREEN_VIDEO }
 };
 
 #ifdef WIN32
@@ -752,96 +789,84 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 
 bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& action, CStdString& strAction, bool &fullrange)
 {
-  bool found = false;
-
-  map<string, JoystickMap>::iterator it;
-  map<string, JoystickMap> *jmap;
-
   fullrange = false;
+
+  // resolve the correct JoystickMap
+  map<string, JoystickMap> *jmap;
   if (inputType == JACTIVE_AXIS)
     jmap = &m_joystickAxisMap;
   else if (inputType == JACTIVE_BUTTON)
     jmap = &m_joystickButtonMap;
   else if (inputType == JACTIVE_HAT)
-  	jmap = &m_joystickHatMap;
+    jmap = &m_joystickHatMap;
   else
   {
-    CLog::Log(LOGERROR, "Error reading joystick input type");
+    CLog::Log(LOGERROR, "Error reading joystick input type '%i'", (int) inputType);
     return false;
   }
 
-  it = jmap->find(szDevice);
+  map<string, JoystickMap>::iterator it = jmap->find(szDevice);
   if (it==jmap->end())
     return false;
 
   JoystickMap wmap = it->second;
-  JoystickMap::iterator it2;
-  map<int, string> windowbmap;
-  map<int, string> globalbmap;
-  map<int, string>::iterator it3;
 
-  it2 = wmap.find(window);
+  // try to get the action from the current window
+  action = GetActionCode(window, id, wmap, strAction, fullrange);
 
-  // first try local window map
-  if (it2!=wmap.end())
+  // if it's invalid, try to get it from a fallback window or the global map
+  if (action == 0)
   {
-    windowbmap = it2->second;
-    it3 = windowbmap.find(id);
-    if (it3 != windowbmap.end())
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      action = GetActionCode(fallbackWindow, id, wmap, strAction, fullrange);
+    // still no valid action? use global map
+    if (action == 0)
+      action = GetActionCode(-1, id, wmap, strAction, fullrange);
+  }
+
+  return (action > 0);
+}
+
+/*
+ * Translates a joystick input to an action code
+ */
+int CButtonTranslator::GetActionCode(int window, int id, const JoystickMap &wmap, CStdString &strAction, bool &fullrange) const
+{
+  int action = 0;
+  bool found = false;
+
+  JoystickMap::const_iterator it = wmap.find(window);
+  if (it != wmap.end())
+  {
+    const map<int, string> &windowbmap = it->second;
+    map<int, string>::const_iterator it2 = windowbmap.find(id);
+    if (it2 != windowbmap.end())
     {
-      strAction = (it3->second).c_str();
+      strAction = (it2->second).c_str();
       found = true;
     }
-    it3 = windowbmap.find(abs(id)|0xFFFF0000);
-    if (it3 != windowbmap.end())
+
+    it2 = windowbmap.find(abs(id)|0xFFFF0000);
+    if (it2 != windowbmap.end())
     {
-      strAction = (it3->second).c_str();
+      strAction = (it2->second).c_str();
       found = true;
       fullrange = true;
     }
+
     // Hats joystick
-    it3 = windowbmap.find(id|0xFFF00000);
-    if (it3 != windowbmap.end())
+    it2 = windowbmap.find(id|0xFFF00000);
+    if (it2 != windowbmap.end())
     {
-      strAction = (it3->second).c_str();
+      strAction = (it2->second).c_str();
       found = true;
     }
   }
 
-  // if not found, try global map
-  if (!found)
-  {
-    it2 = wmap.find(-1);
-    if (it2 != wmap.end())
-    {
-      globalbmap = it2->second;
-      it3 = globalbmap.find(id);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-      }
-      it3 = globalbmap.find(abs(id)|0xFFFF0000);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-        fullrange = true;
-      }
-      it3 = globalbmap.find(id|0xFFF00000);
-      if (it3 != globalbmap.end())
-      {
-        strAction = (it3->second).c_str();
-        found = true;
-      }
-    }
-  }
-
-  // translated found action
   if (found)
-    return TranslateActionString(strAction.c_str(), action);
-
-  return false;
+    TranslateActionString(strAction.c_str(), action);
+  return action;
 }
 #endif
 
@@ -852,6 +877,25 @@ void CButtonTranslator::GetActions(std::vector<std::string> &actionList)
   actionList.reserve(size);
   for (unsigned int index = 0; index < size; index++)
     actionList.push_back(actions[index].name);
+}
+
+void CButtonTranslator::GetWindows(std::vector<std::string> &windowList)
+{
+  unsigned int size = sizeof(windows) / sizeof(ActionMapping);
+  windowList.clear();
+  windowList.reserve(size);
+  for (unsigned int index = 0; index < size; index++)
+    windowList.push_back(windows[index].name);
+}
+
+int CButtonTranslator::GetFallbackWindow(int windowID)
+{
+  for (unsigned int index = 0; index < sizeof(fallbackWindows) / sizeof(fallbackWindows[0]); ++index)
+  {
+    if (fallbackWindows[index].origin == windowID)
+      return fallbackWindows[index].target;
+  }
+  return -1;
 }
 
 CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
@@ -1151,13 +1195,17 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("pageminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
   else if (strButton.Equals("mute")) buttonCode = XINPUT_IR_REMOTE_MUTE;
   else if (strButton.Equals("recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton.Equals("livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
+  else if (strButton.Equals("liveradio")) buttonCode = XINPUT_IR_REMOTE_LIVE_RADIO;
+  else if (strButton.Equals("epgsearch")) buttonCode = XINPUT_IR_REMOTE_EPG_SEARCH;
   else if (strButton.Equals("star")) buttonCode = XINPUT_IR_REMOTE_STAR;
   else if (strButton.Equals("hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
   else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
   else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_ENTER;
   else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
+  else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
   else if (strButton.Equals("red")) buttonCode = XINPUT_IR_REMOTE_RED;
   else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;

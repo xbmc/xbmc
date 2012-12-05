@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -132,7 +131,7 @@ void CWinRenderer::SelectRenderMethod()
   {
     CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA2 processor");
     m_renderMethod = RENDER_DXVA;
-    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format, m_extended_format))
+    if (!m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
     {
       CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
       m_processor.Close();
@@ -147,7 +146,7 @@ void CWinRenderer::SelectRenderMethod()
     {
       case RENDER_METHOD_DXVA:
         m_renderMethod = RENDER_DXVA;
-        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format, m_extended_format))
+        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_iFlags, m_format, m_extended_format))
             break;
         else
         {
@@ -211,7 +210,7 @@ bool CWinRenderer::UpdateRenderMethod()
   return true;
 }
 
-bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
   if(m_sourceWidth  != width
   || m_sourceHeight != height)
@@ -226,7 +225,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   }
 
   m_fps = fps;
-  m_flags = flags;
+  m_iFlags = flags;
   m_format = format;
   m_extended_format = extended_format;
 
@@ -864,7 +863,7 @@ void CWinRenderer::Stage1()
       m_colorShader->Render(m_sourceRect, m_destRect,
                             g_settings.m_currentVideoSettings.m_Contrast,
                             g_settings.m_currentVideoSettings.m_Brightness,
-                            m_flags,
+                            m_iFlags,
                             (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
   }
   else
@@ -882,7 +881,7 @@ void CWinRenderer::Stage1()
     m_colorShader->Render(srcRect, rtRect,
                           g_settings.m_currentVideoSettings.m_Contrast,
                           g_settings.m_currentVideoSettings.m_Brightness,
-                          m_flags,
+                          m_iFlags,
                           (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer]);
 
     // Restore the render target
@@ -927,7 +926,10 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
   CRect saveSize = m_destRect;
+  saveRotatedCoords();//backup current m_rotatedDestCoords
+
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+  syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
 
   LPDIRECT3DSURFACE9 oldSurface;
   pD3DDevice->GetRenderTarget(0, &oldSurface);
@@ -946,6 +948,7 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
   oldSurface->Release();
 
   m_destRect = saveSize;
+  restoreRotatedCoords();//restores the previous state of the rotated dest coords
 
   return succeeded;
 }
@@ -1032,6 +1035,16 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
 
   if(feature == RENDERFEATURE_CONTRAST)
     return true;
+
+  if (feature == RENDERFEATURE_STRETCH         ||
+      feature == RENDERFEATURE_NONLINSTRETCH   ||
+      feature == RENDERFEATURE_CROP            ||
+      feature == RENDERFEATURE_ZOOM            ||
+      feature == RENDERFEATURE_VERTICAL_SHIFT  ||
+      feature == RENDERFEATURE_PIXEL_RATIO     ||
+      feature == RENDERFEATURE_POSTPROCESS)
+    return true;
+
 
   return false;
 }

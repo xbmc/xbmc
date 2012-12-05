@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -203,33 +202,29 @@ bool CLocalizeStrings::Load(const CStdString& strPathName, const CStdString& str
   if (bLoadFallback)
     LoadStr2Mem(strPathName, SOURCE_LANGUAGE, encoding);
 
-  CStdString encoding_thisfile = "ISO-8859-1";
-  // we have ANSI encoding for LocalizeStrings.cpp therefore we need to use this encoding
-  // when we add the degree strings
-
   // fill in the constant strings
   m_strings[20022].strTranslated = "";
-  m_strings[20027].strTranslated = ToUTF8(encoding_thisfile, "°F");
-  m_strings[20028].strTranslated = ToUTF8(encoding_thisfile, "K");
-  m_strings[20029].strTranslated = ToUTF8(encoding_thisfile, "°C");
-  m_strings[20030].strTranslated = ToUTF8(encoding_thisfile, "°Ré");
-  m_strings[20031].strTranslated = ToUTF8(encoding_thisfile, "°Ra");
-  m_strings[20032].strTranslated = ToUTF8(encoding_thisfile, "°Rø");
-  m_strings[20033].strTranslated = ToUTF8(encoding_thisfile, "°De");
-  m_strings[20034].strTranslated = ToUTF8(encoding_thisfile, "°N");
+  m_strings[20027].strTranslated = "Â°F";
+  m_strings[20028].strTranslated = "K";
+  m_strings[20029].strTranslated = "Â°C";
+  m_strings[20030].strTranslated = "Â°RÃ©";
+  m_strings[20031].strTranslated = "Â°Ra";
+  m_strings[20032].strTranslated = "Â°RÃ¸";
+  m_strings[20033].strTranslated = "Â°De";
+  m_strings[20034].strTranslated = "Â°N";
 
-  m_strings[20200].strTranslated = ToUTF8(encoding_thisfile, "km/h");
-  m_strings[20201].strTranslated = ToUTF8(encoding_thisfile, "m/min");
-  m_strings[20202].strTranslated = ToUTF8(encoding_thisfile, "m/s");
-  m_strings[20203].strTranslated = ToUTF8(encoding_thisfile, "ft/h");
-  m_strings[20204].strTranslated = ToUTF8(encoding_thisfile, "ft/min");
-  m_strings[20205].strTranslated = ToUTF8(encoding_thisfile, "ft/s");
-  m_strings[20206].strTranslated = ToUTF8(encoding_thisfile, "mph");
-  m_strings[20207].strTranslated = ToUTF8(encoding_thisfile, "kts");
-  m_strings[20208].strTranslated = ToUTF8(encoding_thisfile, "Beaufort");
-  m_strings[20209].strTranslated = ToUTF8(encoding_thisfile, "inch/s");
-  m_strings[20210].strTranslated = ToUTF8(encoding_thisfile, "yard/s");
-  m_strings[20211].strTranslated = ToUTF8(encoding_thisfile, "Furlong/Fortnight");
+  m_strings[20200].strTranslated = "km/h";
+  m_strings[20201].strTranslated = "m/min";
+  m_strings[20202].strTranslated = "m/s";
+  m_strings[20203].strTranslated = "ft/h";
+  m_strings[20204].strTranslated = "ft/min";
+  m_strings[20205].strTranslated = "ft/s";
+  m_strings[20206].strTranslated = "mph";
+  m_strings[20207].strTranslated = "kts";
+  m_strings[20208].strTranslated = "Beaufort";
+  m_strings[20209].strTranslated = "inch/s";
+  m_strings[20210].strTranslated = "yard/s";
+  m_strings[20211].strTranslated = "Furlong/Fortnight";
 
   return true;
 }

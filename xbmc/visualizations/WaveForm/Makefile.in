@@ -1,15 +1,17 @@
 ARCH=@ARCH@
 CXXFLAGS=-fPIC
 
+ifeq (@USE_ANDROID@,1)
+SLIB = @abs_top_srcdir@/system/libvisWaveform.so
+else
 SLIB = @abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
+endif
 
 ifeq (@USE_OPENGLES@,1)
   DEFINES += -DHAS_GLES=2
   INCLUDES+= -I@abs_top_srcdir@/xbmc/visualizations/EGLHelpers
   OBJS  = Main_gles.o
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisMatrixGLES.o
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisGUIShader.o
-  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/VisShader.o
+  OBJS += @abs_top_srcdir@/xbmc/visualizations/EGLHelpers/eglhelpers.a
   ifeq ($(findstring osx,$(ARCH)), osx)
     LDFLAGS += -framework OpenGLES
   else

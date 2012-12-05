@@ -74,10 +74,11 @@ public:
   virtual void avfilter_inout_free(AVFilterInOut **inout)=0;
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)=0;
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, void *log_ctx)=0;
-  virtual int avfilter_poll_frame(AVFilterLink *link)=0;
-  virtual int avfilter_request_frame(AVFilterLink *link)=0;
+#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
-  virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h)=0;
+#else
+  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags)=0;
+#endif
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad)=0;
   virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags)=0;
@@ -133,10 +134,11 @@ public:
   {
     return ::avfilter_graph_config(graphctx, log_ctx);
   }
-  virtual int avfilter_poll_frame(AVFilterLink *link) { return ::avfilter_poll_frame(link); }
-  virtual int avfilter_request_frame(AVFilterLink *link) { return ::avfilter_request_frame(link); }
+#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int flags) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, flags); }
-  virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h) { return ::avfilter_get_video_buffer(link, perms, w, h); }
+#else
+  virtual int av_buffersrc_add_frame(AVFilterContext *buffer_filter, AVFrame* frame, int flags) { return ::av_buffersrc_add_frame(buffer_filter, frame, flags); }
+#endif
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
   virtual int av_buffersink_get_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **bufref, int flags) { return ::av_buffersink_get_buffer_ref(buffer_sink, bufref, flags); }
@@ -145,7 +147,9 @@ public:
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
+#if !defined(TARGET_DARWIN)
     CLog::Log(LOGDEBUG, "DllAvFilter: Using libavfilter system library");
+#endif
     return true;
   }
   virtual void Unload() {}
@@ -168,10 +172,11 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_METHOD1(void, avfilter_inout_free_dont_call, (AVFilterInOut **p1))
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avfilter_graph_parse_dont_call, AVFilterGraph *, const char *, AVFilterInOut **, AVFilterInOut **, void *)
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avfilter_graph_config_dont_call, AVFilterGraph *, void *)
-  DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_poll_frame, AVFilterLink *)
-  DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_request_frame, AVFilterLink*)
+#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
   DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
-  DEFINE_METHOD4(AVFilterBufferRef*, avfilter_get_video_buffer, (AVFilterLink *p1, int p2, int p3, int p4))
+#else
+  DEFINE_METHOD3(int, av_buffersrc_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
+#endif
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
   DEFINE_METHOD4(int, avfilter_link, (AVFilterContext *p1, unsigned p2, AVFilterContext *p3, unsigned p4))
   DEFINE_FUNC_ALIGNED3(int                , __cdecl, av_buffersink_get_buffer_ref, AVFilterContext *, AVFilterBufferRef **, int);
@@ -190,10 +195,11 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
     RESOLVE_METHOD_RENAME(avfilter_inout_free, avfilter_inout_free_dont_call)
     RESOLVE_METHOD_RENAME(avfilter_graph_parse, avfilter_graph_parse_dont_call)
     RESOLVE_METHOD_RENAME(avfilter_graph_config, avfilter_graph_config_dont_call)
-    RESOLVE_METHOD(avfilter_poll_frame)
-    RESOLVE_METHOD(avfilter_request_frame)
+#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
     RESOLVE_METHOD(av_vsrc_buffer_add_frame)
-    RESOLVE_METHOD(avfilter_get_video_buffer)
+#else
+    RESOLVE_METHOD(av_buffersrc_add_frame)
+#endif
     RESOLVE_METHOD(avfilter_unref_buffer)
     RESOLVE_METHOD(avfilter_link)
     RESOLVE_METHOD(av_buffersink_get_buffer_ref)

@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -148,7 +147,7 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   pInLayout = NULL;
 
   std::string strInLayout;
-  CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: Source Stream Layout: %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::CreateMixMap: Source Stream Layout: %s",
     CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)sourceLayout, strInLayout));
 
   // Get User-Configured (XBMC) Speaker Configuration
@@ -156,7 +155,7 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   guiLayout.mChannelLayoutTag = layoutTag;
   CCoreAudioChannelLayout userLayout(guiLayout);
   std::string strUserLayout;
-  CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: User-Configured Speaker Layout: %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::CreateMixMap: User-Configured Speaker Layout: %s",
     CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)userLayout, strUserLayout));
 
   // Get OS-Configured (Audio MIDI Setup) Speaker Configuration (Channel Layout)
@@ -171,7 +170,7 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
   //  deviceLayout.CopyLayout(guiLayout);
 
   std::string strOutLayout;
-  CLog::Log(LOGINFO, "CCoreAudioGraph::CreateMixMap: Output Device Layout: %s",
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::CreateMixMap: Output Device Layout: %s",
     CCoreAudioChannelLayout::ChannelLayoutToString(*(AudioChannelLayout*)deviceLayout, strOutLayout));
 
   // TODO:
@@ -212,23 +211,17 @@ bool CCoreAudioMixMap::SetMixingMatrix(CAUMatrixMixer *mixerUnit,
 
   // Configure the mixing matrix
   Float32* val = (Float32*)*mixMap;
-  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: Loading matrix mixer configuration");
   for (UInt32 i = 0; i < inputFormat->mChannelsPerFrame; ++i)
   {
     val = (Float32*)*mixMap + i*m_deviceChannels;
     for (UInt32 j = 0; j < fmt->mChannelsPerFrame; ++j)
     {
-      OSStatus ret = AudioUnitSetParameter(mixerUnit->GetUnit(),
+      AudioUnitSetParameter(mixerUnit->GetUnit(),
         kMatrixMixerParam_Volume, kAudioUnitScope_Global, ( (i + channelOffset) << 16 ) | j, *val++, 0);
-      if (!ret)
-      {
-        CLog::Log(LOGINFO, "CCoreAudioGraph::Open: \t[%d][%d][%0.1f]",
-          (int)i + channelOffset, (int)j, *(val-1));
-      }
     }
   }
 
-  CLog::Log(LOGINFO, "CCoreAudioGraph::Open: "
+  CLog::Log(LOGDEBUG, "CCoreAudioGraph::Open: "
     "Mixer Output Format: %d channels, %0.1f kHz, %d bits, %d bytes per frame",
     (int)fmt->mChannelsPerFrame, fmt->mSampleRate / 1000.0f, (int)fmt->mBitsPerChannel, (int)fmt->mBytesPerFrame);
 

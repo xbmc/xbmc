@@ -62,6 +62,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;mysqlclient.lib;%(AdditionalDependencies)</AdditionalDependencies>

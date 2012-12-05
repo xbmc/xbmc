@@ -2,10 +2,18 @@ include ../Makefile.include
 
 SOURCE=../../../../
 
+ifeq ($(DARWIN), ios)
+include ../Makefile.buildtools
+export USE_TEXTUREPACKER_NATIVE_ROOT=$(TOOLCHAIN)
+else
+export USE_TEXTUREPACKER_NATIVE_ROOT=$(PREFIX)
+endif
+
 # configuration settings
 export PATH:=$(TOOLCHAIN)/bin:$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) \
-  --disable-rsxs \
+  --enable-upnp \
+  --enable-gtest \
   PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig \
   PYTHON=$(PREFIX)/bin/python
 

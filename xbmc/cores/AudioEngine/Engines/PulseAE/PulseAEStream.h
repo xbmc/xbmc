@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -43,6 +42,7 @@ public:
 
   virtual bool IsPaused     ();
   virtual bool IsDraining   ();
+  virtual bool IsDrained    ();
   virtual bool IsDestroyed  ();
   virtual bool IsBuffering() { return false; }
 
@@ -53,8 +53,10 @@ public:
 
   virtual float GetVolume    ();
   virtual float GetReplayGain();
+  virtual float GetAmplification() { return 1.0f; }
   virtual void  SetVolume    (float volume);
   virtual void  SetReplayGain(float factor);
+  virtual void  SetAmplification(float amplify){}
   void SetMute(const bool muted);
 
   virtual const unsigned int      GetFrameSize   () const;

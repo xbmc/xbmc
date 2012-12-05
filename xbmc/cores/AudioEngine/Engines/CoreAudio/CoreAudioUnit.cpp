@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,10 +25,6 @@
 #include "utils/log.h"
 
 #include <AudioToolbox/AUGraph.h>
-
-// AudioHardwareGetProperty and friends are deprecated,
-// turn off the warning spew.
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 CCoreAudioUnit::CCoreAudioUnit() :
   m_pSource         (NULL         ),
@@ -47,7 +42,7 @@ CCoreAudioUnit::~CCoreAudioUnit()
   Close();
 }
 
-bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
+bool CCoreAudioUnit::Open(AUGraph audioGraph, AudioComponentDescription desc)
 {
   if (m_audioUnit)
     Close();
@@ -56,7 +51,7 @@ bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
 
   m_Initialized = false;
 
-  ret = AUGraphNewNode(audioGraph, &desc, 0, NULL, &m_audioNode);
+  ret = AUGraphAddNode(audioGraph, &desc, &m_audioNode);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
@@ -64,7 +59,7 @@ bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
     return false;
   }
 
-  ret = AUGraphGetNodeInfo(audioGraph, m_audioNode, 0, 0, 0, &m_audioUnit);
+  ret = AUGraphNodeInfo(audioGraph, m_audioNode, 0, &m_audioUnit);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioGraph::Open: "
@@ -80,12 +75,10 @@ bool CCoreAudioUnit::Open(AUGraph audioGraph, ComponentDescription desc)
 
 bool CCoreAudioUnit::Open(AUGraph audioGraph, OSType type, OSType subType, OSType manufacturer)
 {
-  ComponentDescription desc;
+  AudioComponentDescription desc = {0};
   desc.componentType = type;
   desc.componentSubType = subType;
   desc.componentManufacturer = manufacturer;
-  desc.componentFlags = 0;
-  desc.componentFlagsMask = 0;
 
   return Open(audioGraph, desc);
 }
@@ -99,7 +92,7 @@ void CCoreAudioUnit::Close()
     SetInputSource(NULL);
 
   Stop();
-
+ 
   if (m_busNumber != INVALID_BUS)
   {
     OSStatus ret = AUGraphDisconnectNodeInput(m_audioGraph, m_audioNode, m_busNumber);
@@ -110,7 +103,7 @@ void CCoreAudioUnit::Close()
     }
 
     ret = AUGraphRemoveNode(m_audioGraph, m_audioNode);
-    if (ret)
+    if (ret != noErr)
     {
       CLog::Log(LOGERROR, "CCoreAudioUnit::Close: "
         "Unable to remove AudioUnit. Error = %s", GetError(ret).c_str());
@@ -133,7 +126,7 @@ bool CCoreAudioUnit::GetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScop
   UInt32 size = sizeof(AudioStreamBasicDescription);
   OSStatus ret = AudioUnitGetProperty(m_audioUnit,
     kAudioUnitProperty_StreamFormat, scope, bus, pDesc, &size);
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetFormat: "
       "Unable to get AudioUnit format. Bus : %d Scope : %d : Error = %s",
@@ -150,7 +143,7 @@ bool CCoreAudioUnit::SetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScop
 
   OSStatus ret = AudioUnitSetProperty(m_audioUnit,
     kAudioUnitProperty_StreamFormat, scope, bus, pDesc, sizeof(AudioStreamBasicDescription));
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetFormat: "
       "Unable to set AudioUnit format. Bus : %d Scope : %d : Error = %s",
@@ -167,7 +160,7 @@ bool CCoreAudioUnit::SetMaxFramesPerSlice(UInt32 maxFrames)
 
   OSStatus ret = AudioUnitSetProperty(m_audioUnit,
     kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFrames, sizeof(UInt32));
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetMaxFramesPerSlice: "
       "Unable to set AudioUnit max frames per slice. Error = %s", GetError(ret).c_str());
@@ -185,7 +178,7 @@ bool CCoreAudioUnit::GetSupportedChannelLayouts(AudioChannelLayoutList* pLayouts
   Boolean writable = false;
   OSStatus ret = AudioUnitGetPropertyInfo(m_audioUnit,
     kAudioUnitProperty_SupportedChannelLayoutTags, kAudioUnitScope_Input, 0, &propSize, &writable);
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetSupportedChannelLayouts: "
       "Unable to retrieve supported channel layout property info. Error = %s", GetError(ret).c_str());
@@ -195,7 +188,7 @@ bool CCoreAudioUnit::GetSupportedChannelLayouts(AudioChannelLayoutList* pLayouts
   AudioChannelLayoutTag* pSuppLayouts = new AudioChannelLayoutTag[layoutCount];
   ret = AudioUnitGetProperty(m_audioUnit,
     kAudioUnitProperty_SupportedChannelLayoutTags, kAudioUnitScope_Output, 0, pSuppLayouts, &propSize);
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetSupportedChannelLayouts: "
       "Unable to retrieve supported channel layouts. Error = %s", GetError(ret).c_str());
@@ -226,7 +219,7 @@ bool CCoreAudioUnit::SetRenderProc()
   callbackInfo.inputProcRefCon = this; // Pointer to be returned in the callback proc
   OSStatus ret = AudioUnitSetProperty(m_audioUnit, kAudioUnitProperty_SetRenderCallback,
     kAudioUnitScope_Input, 0, &callbackInfo, sizeof(AURenderCallbackStruct));
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetRenderProc: "
       "Unable to set AudioUnit render callback. Error = %s", GetError(ret).c_str());
@@ -234,9 +227,6 @@ bool CCoreAudioUnit::SetRenderProc()
   }
 
   m_renderProc = RenderCallback;
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetRenderProc: "
-    "Set RenderProc %p for unit %p", m_renderProc, m_audioUnit);
 
   return true;
 }
@@ -246,20 +236,19 @@ bool CCoreAudioUnit::RemoveRenderProc()
   if (!m_audioUnit || !m_renderProc)
     return false;
 
+  AudioUnitInitialize(m_audioUnit);
+
   AURenderCallbackStruct callbackInfo;
   callbackInfo.inputProc = nil;
   callbackInfo.inputProcRefCon = nil;
   OSStatus ret = AudioUnitSetProperty(m_audioUnit, kAudioUnitProperty_SetRenderCallback,
     kAudioUnitScope_Input, 0, &callbackInfo, sizeof(AURenderCallbackStruct));
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::RemoveRenderProc: "
       "Unable to remove AudioUnit render callback. Error = %s", GetError(ret).c_str());
     return false;
   }
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::RemoveRenderProc: "
-    "Remove RenderProc %p for unit %p", m_renderProc, m_audioUnit);
 
   m_renderProc = NULL;
   Sleep(100);
@@ -367,7 +356,7 @@ float CCoreAudioUnit::GetLatency()
   OSStatus ret = AudioUnitGetProperty(m_audioUnit,
     kAudioUnitProperty_Latency, kAudioUnitScope_Global, 0, &latency, &size);
 
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetLatency: "
       "Unable to set AudioUnit latency. Error = %s", GetError(ret).c_str());
@@ -416,7 +405,7 @@ bool CAUOutputDevice::SetCurrentDevice(AudioDeviceID deviceId)
 
   OSStatus ret = AudioUnitSetProperty(m_audioUnit, kAudioOutputUnitProperty_CurrentDevice,
     kAudioUnitScope_Global, kOutputBus, &deviceId, sizeof(AudioDeviceID));
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetCurrentDevice: "
       "Unable to set current device. Error = %s", GetError(ret).c_str());
@@ -424,9 +413,6 @@ bool CAUOutputDevice::SetCurrentDevice(AudioDeviceID deviceId)
   }
 
   m_DeviceId = deviceId;
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetCurrentDevice: "
-    "Current device 0x%08x", (uint)m_DeviceId);
 
   return true;
 }
@@ -445,7 +431,7 @@ bool CAUOutputDevice::GetChannelMap(CoreAudioChannelList* pChannelMap)
   SInt32* pMap = new SInt32[channels];
   OSStatus ret = AudioUnitGetProperty(m_audioUnit,
     kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, &size);
-  if (ret)
+  if (ret != noErr)
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetInputChannelMap: "
       "Unable to retrieve AudioUnit input channel map. Error = %s", GetError(ret).c_str());
   else
@@ -470,7 +456,7 @@ bool CAUOutputDevice::SetChannelMap(CoreAudioChannelList* pChannelMap)
 
   OSStatus ret = AudioUnitSetProperty(m_audioUnit,
     kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, size);
-  if (ret)
+  if (ret != noErr)
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetBufferFrameSize: "
       "Unable to get current device's buffer size. Error = %s", GetError(ret).c_str());
   delete[] pMap;
@@ -485,7 +471,7 @@ Float32 CAUOutputDevice::GetCurrentVolume()
   Float32 volPct = 0.0f;
   OSStatus ret = AudioUnitGetParameter(m_audioUnit,
     kHALOutputParam_Volume, kAudioUnitScope_Global, 0, &volPct);
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetCurrentVolume: "
       "Unable to get AudioUnit volume. Error = %s", GetError(ret).c_str());
@@ -501,7 +487,7 @@ bool CAUOutputDevice::SetCurrentVolume(Float32 vol)
 
   OSStatus ret = AudioUnitSetParameter(m_audioUnit, kHALOutputParam_Volume,
     kAudioUnitScope_Global, 0, vol, 0);
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetCurrentVolume: "
       "Unable to set AudioUnit volume. Error = %s", GetError(ret).c_str());
@@ -520,7 +506,7 @@ UInt32 CAUOutputDevice::GetBufferFrameSize()
 
   OSStatus ret = AudioUnitGetProperty(m_audioUnit,
     kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input, 0, &bufferSize, &size);
-  if (ret)
+  if (ret != noErr)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetBufferFrameSize: "
       "Unable to get current device's buffer size. Error = %s", GetError(ret).c_str());
@@ -542,10 +528,10 @@ bool CAUOutputDevice::EnableInputOuput()
   if (hasio)
   {
     UInt32 enable;
-    enable = 1;
+    enable = 0;
     ret =  AudioUnitSetProperty(m_audioUnit,
       kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, kInputBus, &enable, sizeof(enable));
-    if (ret)
+    if (ret != noErr)
     {
       CLog::Log(LOGERROR, "CAUOutputDevice::EnableInputOuput:: "
         "Unable to enable input on bus 1. Error = %s", GetError(ret).c_str());
@@ -555,7 +541,7 @@ bool CAUOutputDevice::EnableInputOuput()
     enable = 1;
     ret = AudioUnitSetProperty(m_audioUnit,
       kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, kOutputBus, &enable, sizeof(enable));
-    if (ret)
+    if (ret != noErr)
     {
       CLog::Log(LOGERROR, "CAUOutputDevice::EnableInputOuput:: "
         "Unable to disable output on bus 0. Error = %s", GetError(ret).c_str());
@@ -571,17 +557,22 @@ bool CAUOutputDevice::GetPreferredChannelLayout(CCoreAudioChannelLayout& layout)
   if (!m_DeviceId)
     return false;
 
-  UInt32 propertySize = 0;
-  Boolean writable = false;
-  OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false,
-    kAudioDevicePropertyPreferredChannelLayout, &propertySize, &writable);
-  if (ret)
+  AudioObjectPropertyAddress propertyAddress; 
+  propertyAddress.mScope    = kAudioDevicePropertyScopeOutput; 
+  propertyAddress.mElement  = 0;
+  propertyAddress.mSelector = kAudioDevicePropertyPreferredChannelLayout; 
+  if (!AudioObjectHasProperty(m_DeviceId, &propertyAddress)) 
     return false;
 
-  void* pBuf = malloc(propertySize);
-  ret = AudioDeviceGetProperty(m_DeviceId, 0, false,
-    kAudioDevicePropertyPreferredChannelLayout, &propertySize, pBuf);
-  if (ret)
+  UInt32 propertySize = 0;
+  OSStatus ret = AudioObjectGetPropertyDataSize(m_DeviceId, &propertyAddress, 0, NULL, &propertySize); 
+  if (ret != noErr)
+    CLog::Log(LOGERROR, "CAUOutputDevice::GetPreferredChannelLayout: "
+      "Unable to retrieve preferred channel layout size. Error = %s", GetError(ret).c_str());
+
+  void *pBuf = malloc(propertySize);
+  ret = AudioObjectGetPropertyData(m_DeviceId, &propertyAddress, 0, NULL, &propertySize, pBuf); 
+  if (ret != noErr)
     CLog::Log(LOGERROR, "CAUOutputDevice::GetPreferredChannelLayout: "
       "Unable to retrieve preferred channel layout. Error = %s", GetError(ret).c_str());
   else

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -36,8 +35,6 @@
 
 using namespace XFILE;
 using namespace std;
-
-CZipManager g_ZipManager;
 
 CZipManager::CZipManager()
 {
@@ -85,7 +82,6 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     return false;
   }
 
-  SZipEntry ze;
   unsigned int hdr;
   mFile.Read(&hdr, 4);
   if( Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
@@ -171,6 +167,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   char temp[CHDR_SIZE];
   while (mFile.GetPosition() < cdirOffset + cdirSize)
   {
+    SZipEntry ze;
     mFile.Read(temp,CHDR_SIZE);
     readCHeader(temp, ze);
     if (ze.header != ZIP_CENTRAL_HEADER)
@@ -188,9 +185,16 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
 
-    // Save the current position
-    int64_t savePos = mFile.GetPosition();
+    // Jump after central file header extra field and file comment
+    mFile.Seek(ze.eclength + ze.clength,SEEK_CUR);
 
+    items.push_back(ze);
+  }
+
+  /* go through list and figure out file header lengths */
+  for(vector<SZipEntry>::iterator it = items.begin(); it != items.end(); ++it)
+  {
+    SZipEntry& ze = *it;
     // Go to the local file header to get the extra field length
     // !! local header extra field length != central file header extra field length !!
     mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
@@ -200,10 +204,6 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length
     ze.offset = ze.lhdrOffset + LHDR_SIZE + ze.flength + ze.elength;
 
-    // Jump after central file header extra field and file comment
-    mFile.Seek(savePos + ze.eclength + ze.clength,SEEK_SET);
-	
-    items.push_back(ze);
   }
 
   mZipMap.insert(make_pair(strFile,items));

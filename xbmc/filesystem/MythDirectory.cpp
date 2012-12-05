@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -142,7 +141,7 @@ bool CMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
       if (!icon.IsEmpty())
       {
         url.SetFileName("files/channels/" + URIUtils::GetFileName(icon)); // e.g. files/channels/tv3.jpg
-        item->SetThumbnailImage(url.Get());
+        item->SetArt("thumb", url.Get());
       }
 
       items.Add(item);
@@ -215,9 +214,7 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
       CDateTime start(program[i].starttime);
       CDateTime end(program[i].endtime);
       CDateTimeSpan runtime = end - start;
-      tag->m_strRuntime       = StringUtils::SecondsToTimeString(runtime.GetSeconds() +
-                                                                 runtime.GetMinutes() * 60 +
-                                                                 runtime.GetHours() * 3600);
+      tag->m_duration         = runtime.GetSeconds() + runtime.GetMinutes() * 60 + runtime.GetHours() * 3600;
       tag->m_iSeason          = 0; // So XBMC treats the content as an episode and displays tag information.
       tag->m_iEpisode         = 0;
 
@@ -330,9 +327,9 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
   if (type != TV_SHOWS)
   {
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%K", "%J"));
+      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556, LABEL_MASKS("%K", "%J"));
     else
-      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551 /* Name */, LABEL_MASKS("%K", "%J"));
+      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556, LABEL_MASKS("%K", "%J"));
   }
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
 
@@ -639,7 +636,7 @@ bool CMythDirectory::IsTvShow(const cmyth_proginfo_t program)
   return !IsMovie(program);
 }
 
-bool CMythDirectory::SupportsFileOperations(const CStdString& strPath)
+bool CMythDirectory::SupportsWriteFileOperations(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString filename = url.GetFileName();

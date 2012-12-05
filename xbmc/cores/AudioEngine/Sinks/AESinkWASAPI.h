@@ -14,9 +14,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -44,6 +43,8 @@ public:
     virtual double       GetCacheTime                ();
     virtual double       GetCacheTotal               ();
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames, bool hasAudio);
+    virtual bool         SoftSuspend                 ();
+    virtual bool         SoftResume                  ();
     static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
@@ -71,8 +72,10 @@ private:
 
     bool                m_running;
     bool                m_initialized;
+    bool                m_isSuspended;    /* sink is in a suspended state - release audio device */
     bool                m_isDirty;        /* sink output failed - needs re-init or new device */
 
     unsigned int        m_uiBufferLen;    /* wasapi endpoint buffer size, in frames */
     double              m_avgTimeWaiting; /* time between next buffer of data from SoftAE and driver call for data */
+    double              m_sinkLatency;    /* time in seconds of total duration of the two WASAPI buffers */
 };

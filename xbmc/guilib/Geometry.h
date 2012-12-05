@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,8 @@
 #else
 #define XBMC_FORCE_INLINE
 #endif
+
+#include <vector>
 #include <algorithm>
 
 class CPoint
@@ -153,6 +154,65 @@ public:
   {
     return Width() * Height();
   };
+
+  std::vector<CRect> SubtractRect(CRect splitterRect)
+  {
+    std::vector<CRect> newRectaglesList;
+    CRect intersection = splitterRect.Intersect(*this);
+
+    if (!intersection.IsEmpty())
+    {
+      CRect add;
+
+      // add rect above intersection if not empty
+      add = CRect(x1, y1, x2, intersection.y1);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
+
+      // add rect below intersection if not empty
+      add = CRect(x1, intersection.y2, x2, y2);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
+
+      // add rect left intersection if not empty
+      add = CRect(x1, intersection.y1, intersection.x1, intersection.y2);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
+
+      // add rect right intersection if not empty
+      add = CRect(intersection.x2, intersection.y1, x2, intersection.y2);
+      if (!add.IsEmpty())
+        newRectaglesList.push_back(add);
+    }
+    else
+    {
+      newRectaglesList.push_back(*this);
+    }
+
+    return newRectaglesList;
+  }
+
+  std::vector<CRect> SubtractRects(std::vector<CRect> intersectionList)
+  {
+    std::vector<CRect> fragmentsList;
+    fragmentsList.push_back(*this);
+
+    for (std::vector<CRect>::iterator splitter = intersectionList.begin(); splitter != intersectionList.end(); ++splitter)
+    {
+      std::vector<CRect> toAddList;
+
+      for (std::vector<CRect>::iterator fragment = fragmentsList.begin(); fragment != fragmentsList.end(); ++fragment)
+      {
+        std::vector<CRect> newFragmentsList = fragment->SubtractRect(*splitter);
+        toAddList.insert(toAddList.end(), newFragmentsList.begin(), newFragmentsList.end());
+      }
+
+      fragmentsList.clear();
+      fragmentsList.insert(fragmentsList.end(), toAddList.begin(), toAddList.end());
+    }
+
+    return fragmentsList;
+  }
 
   bool operator !=(const CRect &rect) const
   {

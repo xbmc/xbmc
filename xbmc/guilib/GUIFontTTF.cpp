@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -85,7 +84,7 @@ public:
     if (FT_New_Face( m_library, CSpecialProtocol::TranslatePath(filename).c_str(), 0, &face ))
       return NULL;
 
-    unsigned int ydpi = GetDPI();
+    unsigned int ydpi = 72; // 72 points to the inch is the freetype default
     unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
 
     // we set our screen res currently to 96dpi in both directions (windows default)
@@ -124,11 +123,6 @@ public:
     assert(stroker);
     FT_Stroker_Done(stroker);
   }
-
-  unsigned int GetDPI() const
-  {
-    return 72; // default dpi, matches what XPR fonts used to use for sizing
-  };
 
 private:
   FT_Library   m_library;
@@ -197,7 +191,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
   m_maxChars = CHAR_CHUNK;
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
-  m_posY = -(int)m_cellHeight;
+  m_posY = -(int)GetTextureLineHeight();
   m_textureHeight = 0;
 }
 
@@ -235,44 +229,52 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   if (!m_face)
     return false;
 
-  // grab the maximum cell height and width
-  unsigned int m_cellWidth = m_face->bbox.xMax - m_face->bbox.xMin;
-  m_cellHeight = std::max<unsigned int>(m_face->bbox.yMax - m_face->bbox.yMin, m_face->ascender - m_face->descender);
-  m_cellBaseLine = std::max<unsigned int>(m_face->bbox.yMax, m_face->ascender);
+  /*
+   the values used are described below
+
+      XBMC coords                                     Freetype coords
+
+                0  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  bbox.yMax, ascender
+                        A                 \
+                       A A                |
+                      A   A               |
+                      AAAAA  pppp   cellAscender
+                      A   A  p   p        |
+                      A   A  p   p        |
+   m_cellBaseLine  _ _A_ _A_ pppp_ _ _ _ _/_ _ _ _ _  0, base line.
+                             p            \
+                             p      cellDescender
+     m_cellHeight  _ _ _ _ _ p _ _ _ _ _ _/_ _ _ _ _  bbox.yMin, descender
+
+   */
+  int cellDescender = std::min<int>(m_face->bbox.yMin, m_face->descender);
+  int cellAscender  = std::max<int>(m_face->bbox.yMax, m_face->ascender);
 
   if (border)
   {
-    m_stroker = g_freeTypeLibrary.GetStroker();
-
+    /*
+     add on the strength of any border - the non-bordered font needs
+     aligning with the bordered font by utilising GetTextBaseLine()
+     */
     FT_Pos strength = FT_MulFix( m_face->units_per_EM, m_face->size->metrics.y_scale) / 12;
     if (strength < 128)
       strength = 128;
-    m_cellHeight += 2*strength;
 
+    cellDescender -= strength;
+    cellAscender  += strength;
+
+    m_stroker = g_freeTypeLibrary.GetStroker();
     if (m_stroker)
       FT_Stroker_Set(m_stroker, strength, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
   }
 
+  // scale to pixel sizing, rounding so that maximal extent is obtained
+  float scaler  = height / m_face->units_per_EM;
+  cellDescender = MathUtils::round_int(cellDescender * scaler - 0.5f);   // round down
+  cellAscender  = MathUtils::round_int(cellAscender  * scaler + 0.5f);   // round up
 
-  unsigned int ydpi = g_freeTypeLibrary.GetDPI();
-  unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
-
-  m_cellWidth *= (unsigned int)(height * xdpi);
-  m_cellWidth /= (72 * m_face->units_per_EM);
-
-  m_cellHeight *= (unsigned int)(height * ydpi);
-  m_cellHeight /= (72 * m_face->units_per_EM);
-
-  m_cellBaseLine *= (unsigned int)(height * ydpi);
-  m_cellBaseLine /= (72 * m_face->units_per_EM);
-
-  // increment for good measure to give space in our texture
-  m_cellWidth++;
-  m_cellHeight+=2;
-  m_cellBaseLine++;
-
-//  CLog::Log(LOGDEBUG, "%s Scaled size of font %s (%f): width = %i, height = %i, lineheight = %li",
-//    __FUNCTION__, strFilename.c_str(), height, m_cellWidth, m_cellHeight, m_face->size->metrics.height / 64);
+  m_cellBaseLine = cellAscender;
+  m_cellHeight   = cellAscender - cellDescender;
 
   m_height = height;
 
@@ -296,7 +298,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
-  m_posY = -(int)m_cellHeight;
+  m_posY = -(int)GetTextureLineHeight();
 
   // cache the ellipses width
   Character *ellipse = GetCharacter(L'.');
@@ -327,7 +329,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
 
   // calculate sizing information
   float startX = 0;
-  float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f*(m_cellHeight-2) : 0;  // vertical centering
+  float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f*m_cellHeight : 0;  // vertical centering
 
   if ( alignment & (XBFONT_RIGHT | XBFONT_CENTER_X) )
   {
@@ -434,7 +436,7 @@ float CGUIFontTTFBase::GetCharWidthInternal(character_t ch)
 
 float CGUIFontTTFBase::GetTextHeight(float lineSpacing, int numLines) const
 {
-  return (float)(numLines - 1) * GetLineHeight(lineSpacing) + (m_cellHeight - 2); // -2 as we increment this for space in our texture
+  return (float)(numLines - 1) * GetLineHeight(lineSpacing) + m_cellHeight;
 }
 
 float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
@@ -442,6 +444,13 @@ float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
   if (m_face)
     return lineSpacing * m_face->size->metrics.height / 64.0f;
   return 0.0f;
+}
+
+unsigned int CGUIFontTTFBase::spacing_between_characters_in_texture = 1;
+
+unsigned int CGUIFontTTFBase::GetTextureLineHeight() const
+{
+  return m_cellHeight + spacing_between_characters_in_texture;
 }
 
 CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
@@ -571,14 +580,14 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   if (m_posX + bitGlyph->left + bitmap.width > (int)m_textureWidth)
   { // no space - gotta drop to the next line (which means creating a new texture and copying it across)
     m_posX = 0;
-    m_posY += m_cellHeight;
+    m_posY += GetTextureLineHeight();
     if (bitGlyph->left < 0)
       m_posX += -bitGlyph->left;
 
-    if(m_posY + m_cellHeight >= m_textureHeight)
+    if(m_posY + GetTextureLineHeight() >= m_textureHeight)
     {
       // create the new larger texture
-      unsigned int newHeight = m_posY + m_cellHeight;
+      unsigned int newHeight = m_posY + GetTextureLineHeight();
       // check for max height
       if (newHeight > g_Windowing.GetMaxTextureSize())
       {
@@ -608,7 +617,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   // set the character in our table
   ch->letterAndStyle = (style << 16) | letter;
   ch->offsetX = (short)bitGlyph->left;
-  ch->offsetY = (short)max((short)m_cellBaseLine - bitGlyph->top, 0);
+  ch->offsetY = (short)m_cellBaseLine - bitGlyph->top;
   ch->left = (float)m_posX + ch->offsetX;
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
@@ -618,9 +627,14 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
   {
-    CopyCharToTexture(bitGlyph, ch);
+    // ensure our rect will stay inside the texture (it *should* but we need to be certain)
+    unsigned int x1 = max(m_posX + ch->offsetX, 0);
+    unsigned int y1 = max(m_posY + ch->offsetY, 0);
+    unsigned int x2 = min(x1 + bitmap.width, m_textureWidth);
+    unsigned int y2 = min(y1 + bitmap.rows, m_textureHeight);
+    CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
   }
-  m_posX += 1 + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
+  m_posX += spacing_between_characters_in_texture + (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance);
   m_numChars++;
 
   m_textureScaleX = 1.0f / m_textureWidth;

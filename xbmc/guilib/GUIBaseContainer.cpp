@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -51,7 +50,6 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_pageControl = 0;
   m_orientation = orientation;
   m_analogScrollCount = 0;
-  m_lastItem = NULL;
   m_staticContent = false;
   m_staticUpdateTime = 0;
   m_staticDefaultItem = -1;
@@ -60,6 +58,8 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_layout = NULL;
   m_focusedLayout = NULL;
   m_cacheItems = preloadItems;
+  m_scrollItemsPerFrame = 0.0f;
+  m_type = VIEW_TYPE_NONE;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
@@ -119,9 +119,9 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
       CGUIListItemPtr item = m_items[itemNo];
       // render our item
       if (m_orientation == VERTICAL)
-        ProcessItem(origin.x, pos, item.get(), focused, currentTime, dirtyregions);
+        ProcessItem(origin.x, pos, item, focused, currentTime, dirtyregions);
       else
-        ProcessItem(pos, origin.y, item.get(), focused, currentTime, dirtyregions);
+        ProcessItem(pos, origin.y, item, focused, currentTime, dirtyregions);
     }
     // increment our position
     pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
@@ -133,7 +133,7 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
-void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItemPtr& item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (!m_focusedLayout || !m_layout) return;
 
@@ -163,7 +163,7 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItem *item, 
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+      item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
     }
     m_lastItem = item;
   }
@@ -177,9 +177,9 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItem *item, 
       item->SetLayout(layout);
     }
     if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+      item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
     if (item->GetLayout())
-      item->GetLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+      item->GetLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
   }
 
   g_graphicsContext.RestoreOrigin();
@@ -285,6 +285,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     OnJumpLetter((char)(action.GetID() & 0xff));
     return true;
   }
+  // stop the timer on any other action
+  m_matchTimer.Stop();
 
   switch (action.GetID())
   {
@@ -293,26 +295,44 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
   case ACTION_NAV_BACK:
+  case ACTION_PREVIOUS_MENU:
     {
       if (!HasFocus()) return false;
+
       if (action.GetHoldTime() > HOLD_TIME_START &&
         ((m_orientation == VERTICAL && (action.GetID() == ACTION_MOVE_UP || action.GetID() == ACTION_MOVE_DOWN)) ||
          (m_orientation == HORIZONTAL && (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
         float speed = std::min(1.0f, (float)(action.GetHoldTime() - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
-        unsigned int itemsPerFrame = 1;
-        if (m_lastHoldTime) // number of rows/10 items/second max speed
-          itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (CTimeUtils::GetFrameTime() - m_lastHoldTime)));
+        unsigned int frameDuration = std::min(CTimeUtils::GetFrameTime() - m_lastHoldTime, 50u); // max 20fps
+
+        // maximal scroll rate is at least 30 items per second, and at most (item_rows/7) items per second
+        //  i.e. timed to take 7 seconds to traverse the list at full speed.
+        // minimal scroll rate is at least 10 items per second
+        float maxSpeed = std::max(frameDuration * 0.001f * 30, frameDuration * 0.001f * GetRows() / 7);
+        float minSpeed = frameDuration * 0.001f * 10;
+        m_scrollItemsPerFrame += std::max(minSpeed, speed*maxSpeed); // accelerate to max speed
         m_lastHoldTime = CTimeUtils::GetFrameTime();
-        if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_UP)
-          while (itemsPerFrame--) MoveUp(false);
-        else
-          while (itemsPerFrame--) MoveDown(false);
+
+        if(m_scrollItemsPerFrame < 1.0f)//not enough hold time accumulated for one step
+          return false;
+
+        while (m_scrollItemsPerFrame >= 1)
+        {
+          if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_UP)
+            MoveUp(false);
+          else
+            MoveDown(false);
+          m_scrollItemsPerFrame--;
+        }
         return true;
       }
       else
       {
-        m_lastHoldTime = 0;
+        //if HOLD_TIME_START is reached we need
+        //a sane initial value for calculating m_scrollItemsPerPage
+        m_lastHoldTime = CTimeUtils::GetFrameTime();
+        m_scrollItemsPerFrame = 0.0f;
         return CGUIControl::OnAction(action);
       }
     }
@@ -504,7 +524,7 @@ void CGUIBaseContainer::OnPrevLetter()
   }
 }
 
-void CGUIBaseContainer::OnJumpLetter(char letter)
+void CGUIBaseContainer::OnJumpLetter(char letter, bool skip /*=false*/)
 {
   if (m_matchTimer.GetElapsedMilliseconds() < letter_match_timeout)
     m_match.push_back(letter);
@@ -519,7 +539,8 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
 
   // find the current letter we're focused on
   unsigned int offset = CorrectOffset(GetOffset(), GetCursor());
-  for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
+  unsigned int i      = (offset + ((skip) ? 1 : 0)) % m_items.size();
+  do
   {
     CGUIListItemPtr item = m_items[i];
     if (0 == strnicmp(SortUtils::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
@@ -527,12 +548,13 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
       SelectItem(i);
       return;
     }
-  }
+    i = (i+1) % m_items.size();
+  } while (i != offset);
   // no match found - repeat with a single letter
   if (m_match.size() > 1)
   {
     m_match.clear();
-    OnJumpLetter(letter);
+    OnJumpLetter(letter, true);
   }
 }
 
@@ -701,7 +723,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
       if (selected >= 0 && selected < (int)m_items.size())
       {
         CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[selected]);
-        item->GetClickActions().Execute(GetID(), GetParentID());
+        item->GetClickActions().ExecuteActions(GetID(), GetParentID());
       }
       return true;
     }
@@ -735,7 +757,7 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
   if (bOnOff != HasFocus())
   {
     SetInvalid();
-    m_lastItem = NULL;
+    m_lastItem.reset();
   }
   CGUIControl::SetFocus(bOnOff);
 }
@@ -764,7 +786,9 @@ void CGUIBaseContainer::ValidateOffset()
 
 void CGUIBaseContainer::AllocResources()
 {
+  CGUIControl::AllocResources();
   CalculateLayout();
+  UpdateStaticItems(true);
   if (m_staticDefaultItem != -1) // select default item
     SelectStaticItemById(m_staticDefaultItem);
 }
@@ -827,38 +851,50 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     SelectItem(itemIndex);
   }
 
+  UpdateStaticItems();
+}
+
+void CGUIBaseContainer::UpdateStaticItems(bool refreshItems)
+{
   if (m_staticContent)
   { // update our item list with our new content, but only add those items that should
     // be visible.  Save the previous item and keep it if we are adding that one.
-    CGUIListItem *lastItem = m_lastItem;
+    std::vector<CGUIListItemPtr> items;
+    int reselect = -1;
     int selected = GetSelectedItem();
     CGUIListItem* selectedItem = (selected >= 0 && (unsigned int)selected < m_items.size()) ? m_items[selected].get() : NULL;
-    Reset();
-    bool updateItems = false;
+    bool updateItemsProperties = false;
     if (!m_staticUpdateTime)
       m_staticUpdateTime = CTimeUtils::GetFrameTime();
     if (CTimeUtils::GetFrameTime() - m_staticUpdateTime > 1000)
     {
       m_staticUpdateTime = CTimeUtils::GetFrameTime();
-      updateItems = true;
+      updateItemsProperties = true;
     }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
       CGUIStaticItemPtr staticItem = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
       if (staticItem->UpdateVisibility(GetParentID()))
-        MarkDirtyRegion();
+        refreshItems = true;
       if (staticItem->IsVisible())
       {
-        m_items.push_back(staticItem);
-        if (staticItem.get() == lastItem)
-          m_lastItem = lastItem;
+        items.push_back(staticItem);
         // if item is selected and it changed position, re-select it
-        if (staticItem.get() == selectedItem && selected != (int)m_items.size() - 1)
-          SelectItem(m_items.size() - 1);
+        if (staticItem.get() == selectedItem && selected != (int)items.size() - 1)
+          reselect = items.size() - 1;
       }
       // update any properties
-      if (updateItems)
+      if (updateItemsProperties)
         staticItem->UpdateProperties(GetParentID());
+    }
+    if (refreshItems)
+    {
+      Reset();
+      m_items = items;
+      SetPageControlRange();
+      if (reselect >= 0 && reselect < (int)m_items.size())
+        SelectItem(reselect);
+      SetInvalid();
     }
     UpdateScrollByLetter();
   }
@@ -975,7 +1011,6 @@ void CGUIBaseContainer::Reset()
 {
   m_wasReset = true;
   m_items.clear();
-  m_lastItem = NULL;
 }
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
@@ -1015,16 +1050,17 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
     }
     item = item->NextSiblingElement("item");
   }
-  SetStaticContent(items);
+  SetStaticContent(items, false);
 }
 
-void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
+void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items, bool forceUpdate /* = true */)
 {
   m_staticContent = true;
   m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
-  UpdateVisibility();
+  if (forceUpdate)
+    UpdateStaticItems(true);
 }
 
 void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)

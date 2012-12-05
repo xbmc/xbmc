@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -77,6 +76,12 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "HTSPDirectory.h"
 #endif
+#ifdef HAS_PVRCLIENTS
+#include "PVRDirectory.h"
+#endif
+#if defined(TARGET_ANDROID)
+#include "APKDirectory.h"
+#endif
 #include "ZipDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
@@ -102,6 +107,9 @@
 #endif
 #ifdef HAVE_LIBBLURAY
 #include "BlurayDirectory.h"
+#endif
+#if defined(TARGET_ANDROID)
+#include "AndroidAppDirectory.h"
 #endif
 
 using namespace XFILE;
@@ -135,6 +143,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 #endif
   if (strProtocol == "udf") return new CUDFDirectory();
   if (strProtocol == "plugin") return new CPluginDirectory();
+#if defined(TARGET_ANDROID)
+  if (strProtocol == "apk") return new CAPKDirectory();
+#endif
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") 
   {
@@ -197,6 +208,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM_HTSP
     if (strProtocol == "htsp") return new CHTSPDirectory();
 #endif
+#ifdef HAS_PVRCLIENTS
+    if (strProtocol == "pvr") return new CPVRDirectory();
+#endif
 #ifdef HAS_ZEROCONF
     if (strProtocol == "zeroconf") return new CZeroconfDirectory();
 #endif
@@ -208,6 +222,9 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 #endif
 #ifdef HAVE_LIBBLURAY
       if (strProtocol == "bluray") return new CBlurayDirectory();
+#endif
+#if defined(TARGET_ANDROID)
+      if (strProtocol == "androidapp") return new CAndroidAppDirectory();
 #endif
   }
 

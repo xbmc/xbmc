@@ -30,14 +30,18 @@
 #endif // _MSC_VER > 1000
 
 #include <iostream>
-#include "IFile.h"
 #include "utils/StdString.h"
+#include "IFileTypes.h"
+#include "PlatformDefs.h"
 
 class BitstreamStats;
 class CURL;
 
 namespace XFILE
 {
+
+class IFile;
+
 class IFileCallback
 {
 public:
@@ -75,10 +79,11 @@ public:
   int Write(const void* lpBuf, int64_t uiBufSize);
   void Flush();
   int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  int64_t GetPosition();
+  int Truncate(int64_t iSize);
+  int64_t GetPosition() const;
   int64_t GetLength();
   void Close();
-  int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
+  int GetChunkSize();
 
   // will return a size, that is aligned to chunk size
   // but always greater or equal to the file's chunk size
@@ -90,7 +95,7 @@ public:
       return minimum;
   }
 
-  bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
+  bool SkipNext();
   BitstreamStats* GetBitstreamStats() { return m_bitStreamStats; }
 
   int IoControl(EIoControl request, void* param);

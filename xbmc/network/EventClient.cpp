@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -393,11 +392,13 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
       return false;
   }
 
-  unsigned short keycode;
+  unsigned int keycode;
   if(flags & PTB_USE_NAME)
     keycode = 0;
   else if(flags & PTB_VKEY)
     keycode = bcode|KEY_VKEY;
+  else if(flags & PTB_UNICODE)
+    keycode = bcode|ES_FLAG_UNICODE;
   else
     keycode = bcode;
 
@@ -734,10 +735,10 @@ void CEventClient::FreePacketQueues()
   m_seqPackets.clear();
 }
 
-unsigned short CEventClient::GetButtonCode(string& joystickName, bool& isAxis, float& amount)
+unsigned int CEventClient::GetButtonCode(string& joystickName, bool& isAxis, float& amount)
 {
   CSingleLock lock(m_critSection);
-  unsigned short bcode = 0;
+  unsigned int bcode = 0;
 
   if ( m_currentButton.Active() )
   {

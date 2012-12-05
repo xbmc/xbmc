@@ -1,4 +1,4 @@
-<window id="4">
+<window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
@@ -128,45 +128,45 @@
 						<icon>-</icon>
 					</item>
 					<item id="3">
+						<label>31502</label>
+						<label2>31409</label2>
+						<onclick>ActivateWindow(PVRSettings)</onclick>
+						<icon>special://skin/backgrounds/tv.jpg</icon>
+					</item>
+					<item id="4">
 						<label>2</label>
 						<label2>31402</label2>
 						<onclick>ActivateWindow(MusicSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="4">
+					<item id="5">
 						<label>1</label>
 						<label2>31403</label2>
 						<onclick>ActivateWindow(PicturesSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="5">
+					<item id="6">
 						<label>8</label>
 						<label2>31404</label2>
 						<onclick>ActivateWindow(WeatherSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="6">
+					<item id="7">
 						<label>24001</label>
 						<label2>31408</label2>
 						<onclick>ActivateWindow(AddonBrowser)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="7">
+					<item id="8">
 						<label>14036</label>
-						<label2>31409</label2>
+						<label2>31410</label2>
 						<onclick>ActivateWindow(ServiceSettings)</onclick>
 						<icon>-</icon>
 					</item>
-					<item id="8">
+					<item id="9">
 						<label>13000</label>
 						<label2>31406</label2>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
-						<icon>-</icon>
-					</item>
-					<item id="9">
-						<label>166</label>
-						<label2>31407</label2>
-						<onclick>ActivateWindow(1111)</onclick>
 						<icon>-</icon>
 					</item>
 				</content>

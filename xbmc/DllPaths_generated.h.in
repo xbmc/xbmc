@@ -2,7 +2,7 @@
 #define DLL_PATHS_GENERATED_H_
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -16,9 +16,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,7 +28,6 @@
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib-@ARCH@.so"
 #define DLL_PATH_LIBEXIF       "special://xbmcbin/system/libexif-@ARCH@.so"
-#define DLL_PATH_LIBID3TAG     "special://xbmcbin/system/libid3tag-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"

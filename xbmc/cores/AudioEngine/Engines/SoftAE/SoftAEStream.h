@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -30,6 +29,7 @@
 #include "Utils/AEConvert.h"
 #include "Utils/AERemap.h"
 #include "Utils/AEBuffer.h"
+#include "Utils/AELimiter.h"
 
 class IAEPostProc;
 class CSoftAEStream : public IAEStream
@@ -66,8 +66,12 @@ public:
 
   virtual float             GetVolume       ()             { return m_volume; }
   virtual float             GetReplayGain   ()             { return m_rgain ; }
+  virtual float             GetAmplification()             { return m_limiter.GetAmplification(); }
   virtual void              SetVolume       (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
   virtual void              SetReplayGain   (float factor) { m_rgain  = std::max( 0.0f, factor); }
+  virtual void              SetAmplification(float amplify){ m_limiter.SetAmplification(amplify); }
+
+  virtual float             RunLimiter(float* frame, int channels) { return m_limiter.Run(frame, channels); }
 
   virtual const unsigned int      GetFrameSize   () const  { return m_format.m_frameSize; }
   virtual const unsigned int      GetChannelCount() const  { return m_initChannelLayout.Count(); }
@@ -136,6 +140,7 @@ private:
   bool                m_paused;
   bool                m_autoStart;
   bool                m_draining;
+  CAELimiter          m_limiter;
 
   /* vizualization internals */
   CAERemap           m_vizRemap;

@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -28,6 +27,9 @@
 #include <cmath>
 #include "MatrixGLES.h"
 #include "utils/log.h"
+#if defined(__ARM_NEON__)
+#include "utils/CPUInfo.h"
+#endif
 
 CMatrixGLES g_matrices;
 
@@ -43,6 +45,9 @@ CMatrixGLES::CMatrixGLES()
   }
   m_matrixMode = (EMATRIXMODE)-1;
   m_pMatrix    = NULL;
+#if defined(__ARM_NEON__)
+  m_has_neon = (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON) == CPU_FEATURE_NEON;
+#endif
 }
 
 CMatrixGLES::~CMatrixGLES()
@@ -236,20 +241,19 @@ inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* ds
     : "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11" //clobber
     );
 }
+#endif
 void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
 {
   if (m_pMatrix)
   {
-    GLfloat m[16];
-    Matrix4Mul(m_pMatrix, matrix, m);
-  }
-}
-
-#else
-void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
-{
-  if (m_pMatrix)
-  {
+#if defined(__ARM_NEON__)
+    if (m_has_neon)
+    {
+      GLfloat m[16];
+      Matrix4Mul(m_pMatrix, matrix, m);
+      return;
+    }
+#endif
     GLfloat a = (matrix[0]  * m_pMatrix[0]) + (matrix[1]  * m_pMatrix[4]) + (matrix[2]  * m_pMatrix[8])  + (matrix[3]  * m_pMatrix[12]);
     GLfloat b = (matrix[0]  * m_pMatrix[1]) + (matrix[1]  * m_pMatrix[5]) + (matrix[2]  * m_pMatrix[9])  + (matrix[3]  * m_pMatrix[13]);
     GLfloat c = (matrix[0]  * m_pMatrix[2]) + (matrix[1]  * m_pMatrix[6]) + (matrix[2]  * m_pMatrix[10]) + (matrix[3]  * m_pMatrix[14]);
@@ -272,7 +276,6 @@ void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
     m_pMatrix[3] = d;  m_pMatrix[7] = h;  m_pMatrix[11] = l;  m_pMatrix[15] = p;
   }
 }
-#endif
 
 // gluLookAt implementation taken from Mesa3D
 void CMatrixGLES::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx, GLfloat centery, GLfloat centerz, GLfloat upx, GLfloat upy, GLfloat upz)

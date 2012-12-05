@@ -84,7 +84,7 @@ bool Addon_music_spotify::GetPlaylists(CFileItemList& items) {
 				CFileItemPtr pItem(new CFileItem(playlistShare));
 				SxThumb* thumb = ps->getPlaylist(i)->getThumb();
 				if (thumb != NULL)
-					pItem->SetThumbnailImage(thumb->getPath());
+					pItem->SetArt("thumb",thumb->getPath());
 				pItem->SetProperty("fanart_image", Settings::getInstance()->getFanart());
 				items.Add(pItem);
 			}

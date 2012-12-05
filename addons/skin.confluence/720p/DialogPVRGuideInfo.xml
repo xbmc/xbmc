@@ -1,0 +1,226 @@
+<window>
+	<defaultcontrol always="true">7</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>20</posx>
+		<posy>30</posy>
+		<origin x="275" y="30">![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</origin>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>730</width>
+				<height>660</height>
+				<texture border="40">DialogBack2.png</texture>
+				<visible>Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)</visible>
+			</control>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>730</width>
+				<height>660</height>
+				<texture border="40">DialogBack.png</texture>
+				<visible>![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</visible>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>650</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>650</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[19047]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>640</posx>
+				<posy>15</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<onup>10</onup>
+				<ondown>10</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="label">
+				<description>Title label</description>
+				<posx>40</posx>
+				<posy>70</posy>
+				<width>650</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$INFO[ListItem.Title]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="group">
+				<control type="group">
+					<posx>40</posx>
+					<posy>120</posy>
+					<control type="label">
+						<description>Time description</description>
+						<posx>170</posx>
+						<posy>0</posy>
+						<width>170</width>
+						<height>25</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>blue</textcolor>
+						<label>$LOCALIZE[142]</label>
+					</control>
+					<control type="label">
+						<description>Time value</description>
+						<posx>180</posx>
+						<posy>0</posy>
+						<width>470</width>
+						<height>25</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.StartTime] - $INFO[ListItem.EndTime] ($INFO[ListItem.StartDate])</label>
+					</control>
+					<control type="label">
+						<description>Duration</description>
+						<posx>170</posx>
+						<posy>35</posy>
+						<width>170</width>
+						<height>25</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>blue</textcolor>
+						<label>$LOCALIZE[180]:</label>
+					</control>
+					<control type="label">
+						<description>Duration value</description>
+						<posx>180</posx>
+						<posy>35</posy>
+						<width>470</width>
+						<height>25</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.Duration]</label>
+					</control>
+					<control type="label">
+						<description>Channel Name</description>
+						<posx>170</posx>
+						<posy>70</posy>
+						<width>170</width>
+						<height>25</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>blue</textcolor>
+						<label>$LOCALIZE[19148]:</label>
+					</control>
+					<control type="fadelabel">
+						<description>Channel Value</description>
+						<posx>180</posx>
+						<posy>70</posy>
+						<width>470</width>
+						<height>25</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.ChannelName]</label>
+					</control>
+					<control type="label">
+						<description>Genre</description>
+						<posx>170</posx>
+						<posy>105</posy>
+						<width>170</width>
+						<height>25</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>blue</textcolor>
+						<label>$LOCALIZE[135]:</label>
+					</control>
+					<control type="label">
+						<description>Genre value</description>
+						<posx>180</posx>
+						<posy>105</posy>
+						<width>470</width>
+						<label fallback="161">$INFO[ListItem.Genre]</label>
+						<align>left</align>
+						<font>font13</font>
+						<scroll>true</scroll>
+					</control>
+				</control>
+				<control type="textbox" id="400">
+					<description>Plot value</description>
+					<posx>40</posx>
+					<posy>275</posy>
+					<width>650</width>
+					<height>295</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<pagecontrol>-</pagecontrol>
+					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
+					<label fallback="161">$INFO[ListItem.Plot]</label>
+				</control>
+				<control type="grouplist" id="9000">
+					<posx>40</posx>
+					<posy>590</posy>
+					<width>640</width>
+					<height>40</height>
+					<itemgap>5</itemgap>
+					<align>center</align>
+					<orientation>horizontal</orientation>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>60</onup>
+					<ondown>60</ondown>
+					<control type="button" id="5">
+						<description>Switch to Channel</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>19165</label>
+					</control>
+					<control type="button" id="6">
+						<description>Record</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>-</label>
+					</control>
+					<control type="button" id="7">
+						<description>OK</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>186</label>
+					</control>
+				</control>
+			</control>
+		</control>
+		<include>SideBladeRight</include>
+	</controls>
+</window>

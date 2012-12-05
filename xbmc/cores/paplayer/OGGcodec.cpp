@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,20 +13,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "OGGcodec.h"
-#include "music/tags/OggTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-
-using namespace MUSIC_INFO;
+#include "music/tags/TagLoaderTagLib.h"
 
 OGGCodec::OGGCodec() : m_callback(m_file)
 {
@@ -35,12 +32,12 @@ OGGCodec::OGGCodec() : m_callback(m_file)
   m_BitsPerSample = 0;
   m_DataFormat = AE_FMT_INVALID;
   m_Bitrate = 0;
-  m_CodecName = "OGG";
+  m_CodecName = "ogg";
   m_TimeOffset = 0.0;
   m_CurrentStream=0;
   m_TotalTime = 0;
-  m_VorbisFile.datasource = NULL;
   m_inited = false;
+  memset(&m_VorbisFile, 0, sizeof(m_VorbisFile));
 }
 
 OGGCodec::~OGGCodec()
@@ -136,13 +133,8 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   vorbis_comment* pComments=m_dll.ov_comment(&m_VorbisFile, m_CurrentStream);
   if (pComments)
   {
-    COggTag oggTag;
-    for (int i=0; i < pComments->comments; ++i)
-    {
-      CStdString strTag=pComments->user_comments[i];
-      oggTag.ParseTagEntry(strTag);
-    }
-    m_replayGain=oggTag.GetReplayGain();
+    CTagLoaderTagLib tagLoaderTagLib;
+    tagLoaderTagLib.Load(strFile, m_tag);
   }
 
   //  Seek to the logical bitstream to play

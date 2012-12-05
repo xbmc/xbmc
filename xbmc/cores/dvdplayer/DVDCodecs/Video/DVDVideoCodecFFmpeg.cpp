@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -137,6 +136,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
+  m_iOrientation = 0;
   m_bSoftware = false;
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
@@ -263,6 +263,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // if we don't do this, then some codecs seem to fail.
   m_pCodecContext->coded_height = hints.height;
   m_pCodecContext->coded_width = hints.width;
+  m_pCodecContext->bits_per_coded_sample = hints.bitsperpixel;
 
   if( hints.extradata && hints.extrasize > 0 )
   {
@@ -365,6 +366,24 @@ unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
 
   if(m_pHardware)
     return 0;
+
+  if(flags & FILTER_ROTATE)
+  {
+    switch(m_iOrientation)
+    {
+      case 90:
+        m_filters_next += "transpose=1";
+        break;
+      case 180:
+        m_filters_next += "vflip,hflip";
+        break;
+      case 270:  
+        m_filters_next += "transpose=2";
+        break;
+      default:
+        break;
+      }
+  }
 
   if(flags & FILTER_DEINTERLACE_YADIF)
   {
@@ -473,7 +492,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     m_iLastKeyframe = 300;
 
   /* h264 doesn't always have keyframes + won't output before first keyframe anyway */
-  if(m_pCodecContext->codec_id == CODEC_ID_H264)
+  if(m_pCodecContext->codec_id == CODEC_ID_H264
+  || m_pCodecContext->codec_id == CODEC_ID_SVQ3)
     m_started = true;
 
   if(m_pHardware == NULL)
@@ -776,10 +796,18 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
+#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
+#else
+    result = m_dllAvFilter.av_buffersrc_add_frame(m_pFilterIn, frame, 0);
+#endif
     if (result < 0)
     {
+#if LIBAVFILTER_VERSION_INT < AV_VERSION_INT(3,0,0)
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_vsrc_buffer_add_frame");
+#else
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersrc_add_frame");
+#endif
       return VC_ERROR;
     }
   }
@@ -792,7 +820,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if ((frames = m_dllAvFilter.av_buffersink_poll_frame(m_pFilterOut)) < 0)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - avfilter_poll_frame");
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_buffersink_poll_frame");
     return VC_ERROR;
   }
 

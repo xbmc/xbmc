@@ -7,7 +7,7 @@ CALL dlextract.bat libbluray %FILES%
 
 cd %TMP_PATH%
 
-xcopy libbluray-0.2.2-win32\project\BuildDependencies\include\libbluray "%CUR_PATH%\include\libbluray" /E /Q /I /Y
-copy libbluray-0.2.2-win32\system\players\dvdplayer\libbluray.dll "%XBMC_PATH%\system\players\dvdplayer\" /Y
+del libbluray-0.2.3-win32\how_to_build.txt
+xcopy libbluray-0.2.3-win32\* "%XBMC_PATH%\" /E /Q /I /Y
 
 cd %LOC_PATH%

@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -36,8 +35,8 @@
 #elif defined(TARGET_LINUX)   && defined(HAS_GLES) && defined(HAVE_X11)
 #include "X11/WinSystemX11GLES.h"
 
-#elif defined(TARGET_LINUX) && defined(HAS_GLES) && defined(HAS_EGL)
-#include "egl/WinSystemGLES.h"
+#elif defined(TARGET_LINUX)   && defined(HAS_GLES) && defined(HAS_EGL)
+#include "egl/WinSystemEGL.h"
 
 #elif defined(TARGET_FREEBSD)   && defined(HAS_GL)   && defined(HAVE_X11)
 #include "X11/WinSystemX11GL.h"

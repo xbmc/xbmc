@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
  
@@ -39,7 +38,7 @@ typedef unsigned char BYTE;
 
 #include "osx/DarwinUtils.h"
 
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 
 #if defined(TARGET_DARWIN_OSX)
 OSStatus SendAppleEventToSystemProcess(AEEventID eventToSendID)
@@ -240,10 +239,6 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   else if (m_OnResume)
   {
     callback->OnWake();
-#if !defined(TARGET_DARWIN_IOS)
-    if (g_Windowing.IsFullScreen())
-      Cocoa_HideDock();
-#endif
     m_OnResume = false;
   } 
   

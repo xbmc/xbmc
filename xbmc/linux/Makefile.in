@@ -1,23 +1,27 @@
-ARCH=@ARCH@
+CXXFLAGS += -fPIC
 
-CXXFLAGS+=-fPIC
+SRCS  = ConvUtils.cpp
+SRCS += DBusUtil.cpp
+SRCS += DBusMessage.cpp
+SRCS += DBusReserve.cpp
+SRCS += HALManager.cpp
+SRCS += LinuxResourceCounter.cpp
+SRCS += LinuxTimezone.cpp
+SRCS += PosixMountProvider.cpp
+SRCS += XFileUtils.cpp
+SRCS += XHandle.cpp
+SRCS += XLCDproc.cpp
+SRCS += XMemUtils.cpp
+SRCS += XTimeUtils.cpp
 
-SRCS=ConvUtils.cpp \
-     DBusUtil.cpp \
-     DBusMessage.cpp \
-     DBusReserve.cpp \
-     HALManager.cpp \
-     LinuxResourceCounter.cpp \
-     LinuxTimezone.cpp \
-     PosixMountProvider.cpp \
-     XFileUtils.cpp \
-     XHandle.cpp \
-     XLCDproc.cpp \
-     XMemUtils.cpp \
-     XTimeUtils.cpp \
+SRCS += RBP.cpp
 
-LIB=linux.a
+ifeq (@USE_OMXLIB@,1)
+SRCS += OMXClock.cpp
+SRCS += OMXCore.cpp
+endif
+
+LIB = linux.a
 
 include @abs_top_srcdir@/Makefile.include
-
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

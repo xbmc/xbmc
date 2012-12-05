@@ -1,21 +1,20 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  This library is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 #include "system.h"
@@ -149,6 +148,7 @@ CDecoder::CDecoder()
   m_config          = 0;
   m_context         = 0;
   m_hwaccel         = (vaapi_context*)calloc(1, sizeof(vaapi_context));
+  memset(m_surfaces, 0, sizeof(*m_surfaces));
 }
 
 CDecoder::~CDecoder()
@@ -185,7 +185,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   {
     /* reget call */
     for(; it != m_surfaces_free.end(); it++)
-    {    
+    {
       if((*it)->m_id == surface)
       {
         wrapper = it->get();
@@ -194,10 +194,10 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
         break;
       }
     }
-    if(it == m_surfaces_free.end())
+    if(!wrapper)
     {
       CLog::Log(LOGERROR, "VAAPI - unable to find requested surface");
-      return -1;      
+      return -1; 
     }
   }
   else

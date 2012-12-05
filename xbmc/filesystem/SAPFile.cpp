@@ -20,6 +20,7 @@
 #include "SAPFile.h"
 #include "SAPDirectory.h"
 #include "threads/SingleLock.h"
+#include "URL.h"
 
 #include <sys/stat.h>
 #include <vector>

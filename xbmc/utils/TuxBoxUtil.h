@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -154,7 +153,7 @@ class CTuxBoxUtil
     bool ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
     bool ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild);
     bool ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild);
-    bool ZapToUrl(CURL url, CStdString strOptions, int ipoint);
+    bool ZapToUrl(CURL url, const CStdString &pathOption);
     bool StreamInformations(TiXmlElement *pRootElement);
     bool CurrentServiceData(TiXmlElement *pRootElement);
     bool BoxStatus(TiXmlElement *pRootElement);

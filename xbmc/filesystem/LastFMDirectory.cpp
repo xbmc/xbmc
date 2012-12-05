@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -76,18 +75,21 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
 
   while (!m_Downloaded)
   {
-    m_dlgProgress->Progress();
-
-    if (m_dlgProgress->IsCanceled())
+    if (m_dlgProgress)
     {
-      m_http.Cancel();
-      thread.StopThread();
-      m_dlgProgress->Close();
-      return false;
+      m_dlgProgress->Progress();
+
+      if (m_dlgProgress->IsCanceled())
+      {
+        m_http.Cancel();
+        thread.StopThread();
+        m_dlgProgress->Close();
+        return false;
+      }
     }
   }
 
-  if (!m_dlgProgress->IsCanceled() && m_Error)
+  if (m_dlgProgress && !m_dlgProgress->IsCanceled() && m_Error)
   {
     if (m_dlgProgress) m_dlgProgress->Close();
     SetErrorDialog(257, 15280, 0, 0);
@@ -104,7 +106,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
     return false;
   }
 
-  m_dlgProgress->Close();
+  if (m_dlgProgress) m_dlgProgress->Close();
 
   return true;
 }
@@ -220,15 +222,16 @@ bool CLastFMDirectory::ParseArtistList(CStdString url, CFileItemList &items)
     if (!count) count = pEntry->FirstChild("match");
     if (!count && pEntry->Attribute("count"))
       countstr = pEntry->Attribute("count");
-    else
+    else if (count)
       countstr = count->FirstChild()->Value();
+    
     if (name)
       namestr = name->FirstChild()->Value();
     else
       namestr = pEntry->Attribute("name");
 
 
-    if (namestr)
+    if (namestr && countstr)
       AddListEntry(namestr, NULL, countstr, NULL, NULL,
           "lastfm://xbmc/artist/" + (CStdString)namestr + "/", items);
 
@@ -344,7 +347,7 @@ bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
     if (!count) count = pEntry->FirstChild("match");
     if (!count && pEntry->Attribute("count"))
       countstr = pEntry->Attribute("count");
-    else if (count->FirstChild())
+    else if (count && count->FirstChild())
       countstr = count->FirstChild()->Value();
 
     if (name && name->FirstChild())
@@ -352,7 +355,7 @@ bool CLastFMDirectory::ParseTagList(CStdString url, CFileItemList &items)
     else
       namestr = pEntry->Attribute("name");
 
-    if (namestr)
+    if (namestr && countstr)
     {
       AddListEntry(namestr, NULL, countstr, NULL, NULL,
           "lastfm://xbmc/tag/" + (CStdString)namestr + "/", items);
@@ -388,14 +391,14 @@ bool CLastFMDirectory::ParseTrackList(CStdString url, CFileItemList &items)
     if (name)
     {
       if (artist)
-        AddListEntry((name) ? name->FirstChild()->Value() : NULL,
-            (artist) ? artist->FirstChild()->Value() : NULL,
+        AddListEntry(name->FirstChild()->Value(),
+            artist->FirstChild()->Value(),
             (count) ? count->FirstChild()->Value() : ((date) ? date->FirstChild()->Value() : NULL),
             (date) ? date->Attribute("uts") : NULL,
             NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
       else
         // no artist in xml, assuming we're retrieving track list for the artist in m_objname...
-        AddListEntry((name) ? name->FirstChild()->Value() : NULL,
+        AddListEntry(name->FirstChild()->Value(),
             m_objname.c_str(),
             (count) ? count->FirstChild()->Value() : NULL,
             NULL, NULL, "lastfm://xbmc/artist/" + m_objname + "/", items);

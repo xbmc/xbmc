@@ -1,4 +1,4 @@
-<window id="2009">
+<window>
 	<controls>
 		<control type="karvisualisation" id="1">
 			<description>visualisation</description>

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,6 +36,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_PLAY_DISC,
                       CONTEXT_BUTTON_RESUME_DISC,
                       CONTEXT_BUTTON_RIP_CD,
+                      CONTEXT_BUTTON_CANCEL_RIP_CD,
                       CONTEXT_BUTTON_RIP_TRACK,
                       CONTEXT_BUTTON_EJECT_DISC,
                       CONTEXT_BUTTON_EJECT_DRIVE,
@@ -80,7 +80,7 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_SCAN,
                       CONTEXT_BUTTON_STOP_SCANNING,
                       CONTEXT_BUTTON_SET_ARTIST_THUMB,
-                      CONTEXT_BUTTON_SET_SEASON_THUMB,
+                      CONTEXT_BUTTON_SET_SEASON_ART,
                       CONTEXT_BUTTON_NOW_PLAYING,
                       CONTEXT_BUTTON_CANCEL_PARTYMODE,
                       CONTEXT_BUTTON_MARK_WATCHED,
@@ -100,10 +100,30 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_SCRIPT_SETTINGS,
                       CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM,
                       CONTEXT_BUTTON_LASTFM_UNBAN_ITEM,
-                      CONTEXT_BUTTON_SET_MOVIESET_THUMB,
-                      CONTEXT_BUTTON_SET_MOVIESET_FANART,
+                      CONTEXT_BUTTON_HIDE,
+                      CONTEXT_BUTTON_SHOW_HIDDEN,
+                      CONTEXT_BUTTON_ADD,
+                      CONTEXT_BUTTON_ACTIVATE,
+                      CONTEXT_BUTTON_START_RECORD,
+                      CONTEXT_BUTTON_STOP_RECORD,
+                      CONTEXT_BUTTON_GROUP_MANAGER,
+                      CONTEXT_BUTTON_CHANNEL_MANAGER,
+                      CONTEXT_BUTTON_FILTER,
+                      CONTEXT_BUTTON_SET_MOVIESET_ART,
+                      CONTEXT_BUTTON_BEGIN,
+                      CONTEXT_BUTTON_END,
+                      CONTEXT_BUTTON_FIND,
                       CONTEXT_BUTTON_DELETE_PLUGIN,
+                      CONTEXT_BUTTON_SORTASC,
+                      CONTEXT_BUTTON_SORTBY,
+                      CONTEXT_BUTTON_SORTBY_CHANNEL,
+                      CONTEXT_BUTTON_SORTBY_NAME,
+                      CONTEXT_BUTTON_SORTBY_DATE,
+                      CONTEXT_BUTTON_MENU_HOOKS,
                       CONTEXT_BUTTON_PLAY_AND_QUEUE,
+                      CONTEXT_BUTTON_PLAY_ONLY_THIS,
+                      CONTEXT_BUTTON_UPDATE_EPG,
+                      CONTEXT_BUTTON_RECORD_ITEM,
                       CONTEXT_BUTTON_TAGS_ADD_ITEMS,
                       CONTEXT_BUTTON_TAGS_REMOVE_ITEMS,
                       CONTEXT_BUTTON_USER1,
@@ -164,13 +184,16 @@ protected:
   virtual float GetHeight() const;
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
+  virtual void OnDeinitWindow(int nextWindowID);
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
   static void ClearDefault(const CStdString &strType);
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 
 private:
+  float m_coordX, m_coordY;
+  /// \brief Stored size of background image (height or width depending on grouplist orientation)
+  float m_backgroundImageSize;
   int m_clickedButton;
   CContextButtons m_buttons;
 };

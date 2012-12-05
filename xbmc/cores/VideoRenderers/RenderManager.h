@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -66,7 +65,7 @@ public:
   void SetViewMode(int iViewMode);
 
   // Functions called from mplayer
-  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
+  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation);
   bool IsConfigured();
 
   int AddVideoPicture(DVDVideoPicture& picture);
@@ -130,6 +129,8 @@ public:
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };
+
+  void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
 
 protected:
   void Render(bool clear, DWORD flags, DWORD alpha);

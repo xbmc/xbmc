@@ -1,6 +1,9 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7} = {C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPlatinum", "libPlatinum.vcxproj", "{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
 EndProject
@@ -44,8 +47,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visDirectxSpectrum", "..\..
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodplug_2010", "..\..\lib\libmodplug\libmodplug_2010.vcxproj", "{C15B374E-7126-48FF-B618-A375D7B17FCF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libapetag", "..\..\lib\libapetag\libapetag.vcxproj", "{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libRTV", "..\..\lib\libRTV\libRTV.vcxproj", "{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visWaveform", "..\..\xbmc\visualizations\WaveForm\Waveform.vcxproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
@@ -57,8 +58,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmad_dll", "..\..\lib\libmad\msvc++\libmad.vcxproj", "{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvgmstream_dll", "..\..\lib\vgmstream\win32\win32.vcxproj", "{3600E1C5-FECA-468C-83F3-FE467DBE2A66}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libid3tag_dll", "..\..\lib\libid3tag\libid3tag\msvc++\libid3tag.vcxproj", "{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libadpcm_dll", "..\..\lib\xbadpcm\adpcm.vcxproj", "{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}"
 EndProject
@@ -72,6 +71,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmp3lame_dll", "..\..\lib
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhdhomerun_dll", "..\..\lib\libhdhomerun\hdhomerun\hdhomerun.vcxproj", "{1E2FB608-3DD2-4021-A598-90008FA6DE85}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_addon", "..\..\lib\addons\library.xbmc.addon\project\VS2010Express\libXBMC_addon.vcxproj", "{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_gui", "..\..\lib\addons\library.xbmc.gui\project\VS2010Express\libXBMC_gui.vcxproj", "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMC_pvr", "..\..\lib\addons\library.xbmc.pvr\project\VS2010Express\libXBMC_pvr.vcxproj", "{6D8C91F8-992F-4C83-9DE3-485D64EF8420}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XbmcCommons", "XbmcCommons.vcxproj", "{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XbmcThreads", "XbmcThreads.vcxproj", "{034B1D02-CA92-455D-8866-DB95BEE49C10}"
@@ -79,10 +84,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XbmcThreads", "XbmcThreads.
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17} = {87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gtest", "..\..\lib\gtest\msvc\gtest.vcxproj", "{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (DirectX)|Win32 = Debug (DirectX)|Win32
 		Debug (OpenGL)|Win32 = Debug (OpenGL)|Win32
+		Debug Testsuite|Win32 = Debug Testsuite|Win32
 		Release (DirectX)|Win32 = Release (DirectX)|Win32
 		Release (OpenGL)|Win32 = Release (OpenGL)|Win32
 	EndGlobalSection
@@ -91,6 +99,8 @@ Global
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (OpenGL)|Win32.ActiveCfg = Debug (OpenGL)|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (OpenGL)|Win32.Build.0 = Debug (OpenGL)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Testsuite|Win32.ActiveCfg = Debug Testsuite|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug Testsuite|Win32.Build.0 = Debug Testsuite|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (DirectX)|Win32.ActiveCfg = Release (DirectX)|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (DirectX)|Win32.Build.0 = Release (DirectX)|Win32
 		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (OpenGL)|Win32.ActiveCfg = Release (OpenGL)|Win32
@@ -99,6 +109,8 @@ Global
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -107,6 +119,8 @@ Global
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug (OpenGL)|Win32.ActiveCfg = Debug (OpenGL)|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug (OpenGL)|Win32.Build.0 = Debug (OpenGL)|Win32
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug Testsuite|Win32.ActiveCfg = Debug (DirectX)|Win32
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug Testsuite|Win32.Build.0 = Debug (DirectX)|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release (DirectX)|Win32.ActiveCfg = Release (DirectX)|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release (DirectX)|Win32.Build.0 = Release (DirectX)|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release (OpenGL)|Win32.ActiveCfg = Release (OpenGL)|Win32
@@ -115,6 +129,8 @@ Global
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{00700E12-A63B-4E54-B962-4011A90584BD}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{00700E12-A63B-4E54-B962-4011A90584BD}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -123,6 +139,8 @@ Global
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -130,6 +148,8 @@ Global
 		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{5E479372-4F34-426D-AA1E-9879E94C105D}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{5E479372-4F34-426D-AA1E-9879E94C105D}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -137,6 +157,8 @@ Global
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -145,6 +167,8 @@ Global
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -153,6 +177,8 @@ Global
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -161,6 +187,8 @@ Global
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -169,6 +197,8 @@ Global
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -177,6 +207,8 @@ Global
 		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{3843C3D4-E5A6-4030-87EC-E7EE57242106}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -185,6 +217,8 @@ Global
 		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{88E7E431-3752-4D58-BCD2-A7E6A1B74247}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -193,6 +227,8 @@ Global
 		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{145287C8-24EA-42FE-8D7D-C13D5E4B054C}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -201,6 +237,8 @@ Global
 		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -209,6 +247,8 @@ Global
 		{783701E9-4A65-4505-97B0-39E580AA680D}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{783701E9-4A65-4505-97B0-39E580AA680D}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{783701E9-4A65-4505-97B0-39E580AA680D}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{783701E9-4A65-4505-97B0-39E580AA680D}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{783701E9-4A65-4505-97B0-39E580AA680D}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{783701E9-4A65-4505-97B0-39E580AA680D}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{783701E9-4A65-4505-97B0-39E580AA680D}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{783701E9-4A65-4505-97B0-39E580AA680D}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -217,6 +257,8 @@ Global
 		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{44BF83C4-F73A-4093-A29A-11B9016318C4}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -225,6 +267,8 @@ Global
 		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{8735F1ED-317D-4F7A-A512-B2BF9DAEA25A}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -233,6 +277,8 @@ Global
 		{96798038-06CE-4382-BD5B-F9C366724DEB}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{96798038-06CE-4382-BD5B-F9C366724DEB}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{96798038-06CE-4382-BD5B-F9C366724DEB}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{96798038-06CE-4382-BD5B-F9C366724DEB}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{96798038-06CE-4382-BD5B-F9C366724DEB}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{96798038-06CE-4382-BD5B-F9C366724DEB}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{96798038-06CE-4382-BD5B-F9C366724DEB}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{96798038-06CE-4382-BD5B-F9C366724DEB}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -241,6 +287,8 @@ Global
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Debug (DirectX)|Win32.Build.0 = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Debug (OpenGL)|Win32.ActiveCfg = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Debug (OpenGL)|Win32.Build.0 = Release (DLL)|Win32
+		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Debug Testsuite|Win32.ActiveCfg = Release (DLL)|Win32
+		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Debug Testsuite|Win32.Build.0 = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release (DirectX)|Win32.ActiveCfg = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release (DirectX)|Win32.Build.0 = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release (OpenGL)|Win32.ActiveCfg = Release (DLL)|Win32
@@ -248,6 +296,8 @@ Global
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (DirectX)|Win32.ActiveCfg = Debug (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (OpenGL)|Win32.ActiveCfg = Debug (DirectX)|Win32
+		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug Testsuite|Win32.ActiveCfg = Debug (DirectX)|Win32
+		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug Testsuite|Win32.Build.0 = Debug (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (DirectX)|Win32.ActiveCfg = Release (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (DirectX)|Win32.Build.0 = Release (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (OpenGL)|Win32.ActiveCfg = Release (DirectX)|Win32
@@ -255,22 +305,18 @@ Global
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{BDD2CB99-93C5-4A70-ACBF-396FFB961AD3}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{DD4818AE-7E35-40B7-A6A0-0FF83AA1C916}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -279,6 +325,8 @@ Global
 		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
 		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug (OpenGL)|Win32.ActiveCfg = Debug (OpenGL)|Win32
 		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug (OpenGL)|Win32.Build.0 = Debug (OpenGL)|Win32
+		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug Testsuite|Win32.ActiveCfg = Debug (DirectX)|Win32
+		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug Testsuite|Win32.Build.0 = Debug (DirectX)|Win32
 		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release (DirectX)|Win32.ActiveCfg = Release (DirectX)|Win32
 		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release (DirectX)|Win32.Build.0 = Release (DirectX)|Win32
 		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release (OpenGL)|Win32.ActiveCfg = Release (OpenGL)|Win32
@@ -287,6 +335,8 @@ Global
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -295,6 +345,8 @@ Global
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -303,6 +355,8 @@ Global
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -311,22 +365,18 @@ Global
 		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{3600E1C5-FECA-468C-83F3-FE467DBE2A66}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -335,6 +385,8 @@ Global
 		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{17238C64-04D6-4B51-B205-4A5A84ADB9FA}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -343,6 +395,8 @@ Global
 		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{FB3AB83A-C37A-4636-87FD-827F8506A8FC}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -351,6 +405,8 @@ Global
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -359,6 +415,8 @@ Global
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (DirectX)|Win32.ActiveCfg = ReleaseNASM|Win32
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (DirectX)|Win32.Build.0 = ReleaseNASM|Win32
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (OpenGL)|Win32.ActiveCfg = ReleaseNASM|Win32
@@ -367,14 +425,45 @@ Global
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{2DCEA60B-4EBC-4DB7-9FBD-297C1EFD95D7}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{6D8C91F8-992F-4C83-9DE3-485D64EF8420}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{87DA0A1E-3F33-4927-A5E5-2D58F2C58E17}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
@@ -383,10 +472,18 @@ Global
 		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
 		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Debug Testsuite|Win32.Build.0 = Debug|Win32
 		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{034B1D02-CA92-455D-8866-DB95BEE49C10}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
+		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}.Debug Testsuite|Win32.Build.0 = Debug|Win32
+		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

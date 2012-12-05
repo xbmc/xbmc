@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "system.h" //HAS_ZEROCONF define
@@ -184,7 +183,8 @@ CZeroconfBrowser::ZeroconfService::ZeroconfService():m_port(0){}
 
 CZeroconfBrowser::ZeroconfService::ZeroconfService(const CStdString& fcr_name, const CStdString& fcr_type, const CStdString& fcr_domain):
   m_name(fcr_name),
-  m_domain(fcr_domain)
+  m_domain(fcr_domain),
+  m_port(0)
 {
   SetType(fcr_type);
 }

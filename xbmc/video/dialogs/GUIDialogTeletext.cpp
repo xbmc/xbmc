@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -113,15 +112,26 @@ void CGUIDialogTeletext::Render()
 
 void CGUIDialogTeletext::OnInitWindow()
 {
+  float left, right, top, bottom;
+
   teletextFadeAmount  = 0;
   m_bClose            = false;
   m_windowLoaded      = true;
 
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
-  float left = g_graphicsContext.ScaleFinalXCoord(0, 0);
-  float right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth, 0);
-  float top = g_graphicsContext.ScaleFinalYCoord(0, 0);
-  float bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
+  if (g_guiSettings.GetBool("videoplayer.teletextscale"))
+  {
+    /* Fixed aspect ratio to 4:3 for teletext */
+    left = g_graphicsContext.ScaleFinalXCoord((float)(m_coordsRes.iWidth-m_coordsRes.iHeight*4/3)/2, 0);
+    right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth-left, 0);
+  }
+  else
+  { 
+    left = g_graphicsContext.ScaleFinalXCoord(0, 0);
+    right = g_graphicsContext.ScaleFinalXCoord((float)m_coordsRes.iWidth, 0);
+  }
+  top = g_graphicsContext.ScaleFinalYCoord(0, 0);
+  bottom = g_graphicsContext.ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
 
   m_vertCoords.SetRect(left,
                        top,

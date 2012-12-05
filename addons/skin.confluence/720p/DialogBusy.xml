@@ -1,4 +1,4 @@
-<window id="136">
+<window>
 	<animation effect="fade" time="100">WindowOpen</animation>
 	<animation effect="fade" time="200">WindowClose</animation>
 	<coordinates>
@@ -9,13 +9,13 @@
 	<controls>
 		<control type="group">
 			<posx>1070</posx>
-			<posy>638</posy>
+			<posy>640</posy>
 			<control type="image">
 				<description>background image</description>
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>200</width>
-				<height>72</height>
+				<height>70</height>
 				<texture border="20">OverlayDialogBackground.png</texture>
 			</control>
 			<control type="image">
@@ -38,6 +38,13 @@
 				<aligny>center</aligny>
 				<label>$LOCALIZE[31004]</label>
 				<font>font12</font>
+			</control>
+			<control type="progress" id="10">
+				<description>Progressbar</description>
+				<posx>20</posx>
+				<posy>53</posy>
+				<width>160</width>
+				<height>8</height>
 			</control>
 		</control>
 	</controls>

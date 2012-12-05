@@ -32,35 +32,17 @@
 #include "PlatformDefs.h" // for __stat64
 #endif
 
-#include "URL.h"
-
 #include <stdio.h>
 #include <stdint.h>
 #include <sys/stat.h>
 
+#include "utils/StdString.h"
+#include "IFileTypes.h"
+
+class CURL;
+
 namespace XFILE
 {
-
-struct SNativeIoControl
-{
-  int   request;
-  void* param;
-};
-
-struct SCacheStatus
-{
-  uint64_t forward;  /**< number of bytes cached forward of current position */
-  unsigned maxrate;  /**< maximum number of bytes per second cache is allowed to fill */
-  unsigned currate;  /**< average read rate from source file since last position change */
-  bool     full;     /**< is the cache full */
-};
-
-typedef enum {
-  IOCTRL_NATIVE        = 1, /**< SNativeIoControl structure, containing what should be passed to native ioctrl */
-  IOCTRL_SEEK_POSSIBLE = 2, /**< return 0 if known not to work, 1 if it should work */
-  IOCTRL_CACHE_STATUS  = 3, /**< SCacheStatus structure */
-  IOCTRL_CACHE_SETRATE = 4, /**< unsigned int with speed limit for caching in bytes per second */
-} EIoControl;
 
 class IFile
 {
@@ -81,6 +63,7 @@ public:
   virtual int64_t GetPosition() = 0;
   virtual int64_t GetLength() = 0;
   virtual void Flush() { }
+  virtual int Truncate(int64_t size) { return -1;};
 
   /* Returns the minium size that can be read from input stream.   *
    * For example cdrom access where access could be sector based.  *
@@ -107,16 +90,11 @@ public:
   IFile *m_pNewFileImp;
   CURL  *m_pNewUrl;
 
-  CRedirectException() : m_pNewFileImp(NULL), m_pNewUrl(NULL) { }
+  CRedirectException();
   
-  CRedirectException(IFile *pNewFileImp, CURL *pNewUrl=NULL) 
-  : m_pNewFileImp(pNewFileImp)
-  , m_pNewUrl(pNewUrl) 
-  { }
+  CRedirectException(IFile *pNewFileImp, CURL *pNewUrl=NULL);
 };
 
 }
 
 #endif // !defined(AFX_IFILE_H__7EE73AC7_36BC_4822_93FF_44F3B0C766F6__INCLUDED_)
-
-

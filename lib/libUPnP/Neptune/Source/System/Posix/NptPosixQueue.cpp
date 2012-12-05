@@ -62,8 +62,6 @@ NPT_PosixQueue::NPT_PosixQueue(NPT_Cardinal max_items) :
     m_PushersWaitingCount(0),
     m_PoppersWaitingCount(0)
 {
-    NPT_LOG_FINER("NPT_PosixQueue::NPT_PosixQueue");
-
     pthread_mutex_init(&m_Mutex, NULL);
     pthread_cond_init(&m_CanPushCondition, NULL);
     pthread_cond_init(&m_CanPopCondition, NULL);
@@ -138,7 +136,7 @@ NPT_PosixQueue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
 
         // wake up any thread that may be waiting to pop
         if (m_PoppersWaitingCount) { 
-            pthread_cond_signal(&m_CanPopCondition);
+            pthread_cond_broadcast(&m_CanPopCondition);
         }
     }
 
@@ -203,12 +201,12 @@ NPT_PosixQueue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
     
     // wake up any thread that my be waiting to push
     if (m_MaxItems && (result == NPT_SUCCESS) && m_PushersWaitingCount) {
-        pthread_cond_signal(&m_CanPushCondition);
+        pthread_cond_broadcast(&m_CanPushCondition);
     }
 
     // unlock the mutex
     pthread_mutex_unlock(&m_Mutex);
-
+ 
     return result;
 }
 
@@ -282,7 +280,7 @@ NPT_PosixQueue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
 NPT_GenericQueue*
 NPT_GenericQueue::CreateInstance(NPT_Cardinal max_items)
 {
-    NPT_LOG_FINER_1("NPT_GenericQueue::CreateInstance - queue max_items = %ld", max_items);
+    NPT_LOG_FINER_1("queue max_items = %ld", max_items);
     return new NPT_PosixQueue(max_items);
 }
 

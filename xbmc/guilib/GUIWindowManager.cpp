@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,7 @@
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "GUIPassword.h"
 #include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
@@ -183,17 +183,17 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
   }
   // push back all the windows if there are more than one covered by this class
   CSingleLock lock(g_graphicsContext);
-  for (int i = 0; i < pWindow->GetIDRange(); i++)
+  const vector<int>& idRange = pWindow->GetIDRange();
+  for (vector<int>::const_iterator idIt = idRange.begin(); idIt != idRange.end() ; idIt++)
   {
-    WindowMap::iterator it = m_mapWindows.find(pWindow->GetID() + i);
+    WindowMap::iterator it = m_mapWindows.find(*idIt);
     if (it != m_mapWindows.end())
     {
       CLog::Log(LOGERROR, "Error, trying to add a second window with id %u "
-                          "to the window manager",
-                pWindow->GetID());
+                          "to the window manager", *idIt);
       return;
     }
-    m_mapWindows.insert(pair<int, CGUIWindow *>(pWindow->GetID() + i, pWindow));
+    m_mapWindows.insert(pair<int, CGUIWindow *>(*idIt, pWindow));
   }
 }
 
@@ -342,7 +342,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().ActivateWindow(iWindowID, params, swappingWindows);
+    CApplicationMessenger::Get().ActivateWindow(iWindowID, params, swappingWindows);
   }
   else
   {
@@ -518,6 +518,11 @@ void CGUIWindowManager::Process(unsigned int currentTime)
 void CGUIWindowManager::MarkDirty()
 {
   m_tracker.MarkDirtyRegion(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+}
+
+void CGUIWindowManager::MarkDirty(const CRect& rect)
+{
+  m_tracker.MarkDirtyRegion(rect);
 }
 
 void CGUIWindowManager::RenderPass()
@@ -855,7 +860,7 @@ void CGUIWindowManager::LoadNotOnDemandWindows()
   for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
-    if (!pWindow ->GetLoadOnDemand())
+    if (pWindow->GetLoadType() == CGUIWindow::LOAD_ON_GUI_INIT)
     {
       pWindow->FreeResources(true);
       pWindow->Initialize();
@@ -869,7 +874,8 @@ void CGUIWindowManager::UnloadNotOnDemandWindows()
   for (WindowMap::iterator it = m_mapWindows.begin(); it != m_mapWindows.end(); it++)
   {
     CGUIWindow *pWindow = (*it).second;
-    if (!pWindow->GetLoadOnDemand())
+    if (pWindow->GetLoadType() == CGUIWindow::LOAD_ON_GUI_INIT ||
+        pWindow->GetLoadType() == CGUIWindow::KEEP_IN_MEMORY)
     {
       pWindow->FreeResources(true);
     }
@@ -970,7 +976,7 @@ void CGUIWindowManager::CloseWindowSync(CGUIWindow *window, int nextWindowID /*=
 {
   window->Close(false, nextWindowID);
   while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-    g_windowManager.ProcessRenderLoop(true);
+    ProcessRenderLoop(true);
 }
 
 #ifdef _DEBUG

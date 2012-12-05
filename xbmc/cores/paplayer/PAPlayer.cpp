@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,16 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "PAPlayer.h"
 #include "CodecFactory.h"
-#include "GUIInfoManager.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
@@ -65,14 +62,14 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_audioCallback      (NULL ),
   m_FileItem           (new CFileItem())
 {
-  m_playerGUIData.m_codec[20] = 0;
+  memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
 }
 
 PAPlayer::~PAPlayer()
 {
   if (!m_isPaused)
     SoftStop(true, true);
-  CloseAllStreams(false);  
+  CloseAllStreams(false);
 
   /* wait for the thread to terminate */
   StopThread(true);//true - wait for end of thread
@@ -120,7 +117,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
         {
-          lock.Leave();	  
+          lock.Leave();
           wait = true;
           Sleep(1);
           lock.Enter();
@@ -158,7 +155,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     lock.Enter();
 
     /* be sure they have faded out */
-    while(wait)
+    while(wait && !CAEFactory::IsSuspended())
     {
       wait = false;
       for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
@@ -166,7 +163,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
         StreamInfo* si = *itt;
         if (si->m_stream && si->m_stream->IsFading())
         {
-          lock.Leave();	  
+          lock.Leave();
           wait = true;
           Sleep(1);
           lock.Enter();
@@ -191,7 +188,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 {
   if (!fade) 
   {
-    CExclusiveLock lock(m_streamsLock);    
+    CExclusiveLock lock(m_streamsLock);
     while(!m_streams.empty())
     {
       StreamInfo* si = m_streams.front();
@@ -254,9 +251,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     #define MAX_SKIP_XFADE_TIME     0000
   }
 
-  if (m_streams.size() > 1 || !m_defaultCrossfadeMS)
+  if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
-    CloseAllStreams();
+    CloseAllStreams(!m_isPaused);
+    m_isPaused = false; // Make sure to reset the pause state
   }
 
   if (!QueueNextFileEx(file, false))
@@ -638,7 +636,7 @@ inline void PAPlayer::ProcessStreams(double &delay, double &buffer)
         si->m_stream->UnRegisterAudioCallback();
       }
 
-      si->m_playNextTriggered = true;      
+      si->m_playNextTriggered = true;
     }
   }
 }
@@ -786,11 +784,13 @@ void PAPlayer::Pause()
   {
     m_isPaused = false;
     SoftStart();
+    m_callback.OnPlayBackResumed();
   }
   else
   {
     m_isPaused = true;    
     SoftStop(true, false);
+    m_callback.OnPlayBackPaused();
   }
 }
 
@@ -844,9 +844,9 @@ int64_t PAPlayer::GetTotalTime64()
   return total;
 }
 
-int PAPlayer::GetTotalTime()
+int64_t PAPlayer::GetTotalTime()
 {
-  return (int)m_playerGUIData.m_totalTime;
+  return m_playerGUIData.m_totalTime;
 }
 
 int PAPlayer::GetCacheLevel() const
@@ -914,7 +914,10 @@ void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 
 float PAPlayer::GetPercentage()
 {
-  return m_playerGUIData.m_time * 100.0f / m_playerGUIData.m_totalTime;
+  if (m_playerGUIData.m_totalTime > 0)
+    return m_playerGUIData.m_time * 100.0f / m_playerGUIData.m_totalTime;
+
+  return 0.0f;
 }
 
 bool PAPlayer::SkipNext()

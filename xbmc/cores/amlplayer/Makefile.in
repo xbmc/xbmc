@@ -1,0 +1,16 @@
+.PHONY: compile
+
+INCLUDES += -I$(prefix)/include/amlplayer
+
+SRCS = AMLPlayer.cpp
+SRCS+= AMLUtils.cpp
+SRCS+= FileURLProtocol.cpp
+
+LIB  = amlplayer.a
+
+@abs_top_srcdir@/system/advancedsettings.xml: $(LIB)
+	cp -f amlplayer_advancedsettings.xml $@
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+

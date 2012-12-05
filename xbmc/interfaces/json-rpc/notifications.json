@@ -22,9 +22,9 @@
     "description": "Playback of a media item has been stopped. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
-      { "name": "data", "type": "object", "required": true, 
+      { "name": "data", "type": "object", "required": true,
         "properties": {
-          "item": { "$ref": "Player.Notifications.Item" },
+          "item": { "$ref": "Notifications.Item" },
           "end": { "type": "boolean", "required": true, "description": "Whether the player has reached the end of the playable item(s) or not" }
         }
       }
@@ -45,10 +45,66 @@
     "description": "The playback position has been changed. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
-      { "name": "data", "type": "object", "required": true, 
+      { "name": "data", "type": "object", "required": true,
         "properties": {
-          "item": { "$ref": "Player.Notifications.Item" },
+          "item": { "$ref": "Notifications.Item" },
           "player": { "$ref": "Player.Notifications.Player.Seek", "required": true }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Player.OnPropertyChanged": {
+    "type": "notification",
+    "description": "A property of the playing items has changed.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "property": { "$ref": "Player.Property.Value" },
+          "player": { "$ref": "Player.Notifications.Player", "required": true }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Playlist.OnAdd": {
+    "type": "notification",
+    "description": "A playlist item has been added.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "playlistid": { "$ref": "Playlist.Id", "required": true },
+          "item": { "$ref": "Notifications.Item" },
+          "position": { "$ref": "Playlist.Position" }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Playlist.OnRemove": {
+    "type": "notification",
+    "description": "A playlist item has been removed.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "playlistid": { "$ref": "Playlist.Id", "required": true },
+          "position": { "$ref": "Playlist.Position" }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Playlist.OnClear": {
+    "type": "notification",
+    "description": "A playlist item has been cleared.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true,
+        "properties": {
+          "playlistid": { "$ref": "Playlist.Id", "required": true }
         }
       }
     ],
@@ -82,9 +138,36 @@
     ],
     "returns": null
   },
+  "AudioLibrary.OnScanStarted": {
+    "type": "notification",
+    "description": "An audio library scan has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
   "AudioLibrary.OnScanFinished": {
     "type": "notification",
     "description": "Scanning the audio library has been finished.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "AudioLibrary.OnCleanStarted": {
+    "type": "notification",
+    "description": "An audio library clean operation has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "AudioLibrary.OnCleanFinished": {
+    "type": "notification",
+    "description": "The audio library has been cleaned.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "null", "required": true }
@@ -120,9 +203,36 @@
     ],
     "returns": null
   },
+  "VideoLibrary.OnScanStarted": {
+    "type": "notification",
+    "description": "A video library scan has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
   "VideoLibrary.OnScanFinished": {
     "type": "notification",
     "description": "Scanning the video library has been finished.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "VideoLibrary.OnCleanStarted": {
+    "type": "notification",
+    "description": "A video library clean operation has started.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "null", "required": true }
+    ],
+    "returns": null
+  },
+  "VideoLibrary.OnCleanFinished": {
+    "type": "notification",
+    "description": "The video library has been cleaned.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "null", "required": true }
@@ -195,7 +305,8 @@
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
         "properties": {
-          "type": { "type": "string", "enum": [ "keyboard", "time", "date", "ip", "password", "number", "seconds" ], "required": true },
+          "type": { "type": "string", "enum": [ "keyboard", "time", "date", "ip", "password", "numericpassword", "number", "seconds" ], "required": true },
+          "value": { "type": "string", "required": true },
           "title": { "type": "string" }
         }
       }

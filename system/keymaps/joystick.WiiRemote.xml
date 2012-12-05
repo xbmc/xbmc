@@ -100,6 +100,12 @@
       <button id="11">AspectRatio</button>
     </joystick>
   </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="WiiRemote">
+      <button id="3">ChannelDown</button>
+      <button id="4">ChannelUp</button>
+    </joystick>
+  </FullscreenLiveTV>
   <FullscreenInfo>
     <joystick name="WiiRemote">
       <button id="5">CodecInfo</button>
@@ -111,7 +117,7 @@
       <button id="2">Stop</button>
       <button id="3">SkipNext</button>
       <button id="4">SkipPrevious</button>
-      <button id="5">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="5">OSD</button>
       <button id="6">Info</button>
       <button id="8">XBMC.ActivateWindow(music)</button>
       <button id="10">IncreaseRating</button>

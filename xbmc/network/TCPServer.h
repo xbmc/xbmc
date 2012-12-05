@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -71,6 +70,7 @@ namespace JSONRPC
       virtual void Disconnect();
 
       virtual bool IsNew() const { return m_new; }
+      virtual bool Closing() const { return false; }
 
       SOCKET           m_socket;
       sockaddr_storage m_cliaddr;
@@ -101,6 +101,7 @@ namespace JSONRPC
       virtual void Disconnect();
 
       virtual bool IsNew() const { return m_websocket == NULL; }
+      virtual bool Closing() const { return m_websocket != NULL && m_websocket->GetState() == WebSocketStateClosed; }
 
     private:
       CWebSocket *m_websocket;

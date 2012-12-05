@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,19 +13,16 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIWindowAddonBrowser.h"
 #include "addons/AddonManager.h"
 #include "addons/Repository.h"
-#include "dialogs/GUIDialogContextMenu.h"
 #include "GUIDialogAddonInfo.h"
 #include "GUIDialogAddonSettings.h"
-#include "dialogs/GUIDialogKeyboard.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -106,7 +103,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bAddonForeignFilter = !g_settings.m_bAddonForeignFilter;
         g_settings.Save();
-        Update(m_vecItems->GetPath());
+        Refresh();
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -237,7 +234,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
                                            g_localizeStrings.Get(24066),""))
       {
         if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID").asString()))
-          Update(m_vecItems->GetPath());
+          Refresh();
       }
       return true;
     }
@@ -354,12 +351,12 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   item->SetLabelPreformated(true);
 }
 
-bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
+bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!CGUIMediaWindow::Update(strDirectory))
+  if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
   m_thumbLoader.Load(*m_vecItems);
@@ -474,7 +471,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStd
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
     return 2;
   }
-  if (!multipleSelection && dialog->GetSelectedLabel() == -1)
+  if (!dialog->IsConfirmed())
     return 0;
   addonIDs.clear();
   const CFileItemList& list = dialog->GetSelectedItems();

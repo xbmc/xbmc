@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,9 +25,13 @@
 #include "TextureDatabase.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
+#include "pvr/PVRDatabase.h"
+#include "epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
 
 using namespace std;
+using namespace EPG;
+using namespace PVR;
 
 CDatabaseManager &CDatabaseManager::Get()
 {
@@ -51,10 +54,15 @@ void CDatabaseManager::Initialize(bool addonsOnly)
   if (addonsOnly)
     return;
   CLog::Log(LOGDEBUG, "%s, updating databases...", __FUNCTION__);
+
+  // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
+  //       before CVideoDatabase.
   { CViewDatabase db; UpdateDatabase(db); }
   { CTextureDatabase db; UpdateDatabase(db); }
   { CMusicDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseMusic); }
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
+  { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
+  { CEpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
 }
 

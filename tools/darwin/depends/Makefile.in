@@ -1,6 +1,9 @@
 include Makefile.include
 
-BUILDTOOLS = gas-preprocessor help2man m4 autoconf automake libtool pkg-config yasm cmake sed tar dpkg
+BUILDTOOLS = gas-preprocessor help2man m4 autoconf automake libtool pkg-config yasm cmake sed tar dpkg swig
+ifeq ($(DARWIN), ios)
+BUILDTOOLS+= liblzo2-native libjpeg-turbo-native libpng-native libtiff-native libsdl-native libsdl_image-native
+endif
 
 SUBDIRS := \
 	Backrow pcre expat gettext readline sqlite3 \
@@ -14,7 +17,7 @@ SUBDIRS := \
 	libgpg-error libgcrypt afpfs-ng \
 	libplist libshairport libcec tinyxml \
         samba python26 distribute distutilscross \
-	mysqlclient boost \
+	mysqlclient boost taglib xbmc-pvr-addons \
 
 ifeq ($(DARWIN), ios)
   EXCLUDED = libcec libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image

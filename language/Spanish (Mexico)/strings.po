@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es_MX\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -969,6 +970,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "No se encontraron resultados"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Lenguaje de audio preferido"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Lenguaje de subtítulos preferido"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Subtítulos"
@@ -1044,6 +1053,14 @@ msgstr "Activado"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "No-Interpolado"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Lenguaje original del flujo"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Lenguage de interfase de usuario"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1184,6 +1201,18 @@ msgstr "Año"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Realzar volumen al hacer downmix"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- Receptor DTS-HD"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Receptor LPCM Multicanal"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- Receptor TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1512,6 +1541,14 @@ msgstr "¿Eliminar realmente '%s'?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "Del %s a %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Unidad de disco óptico no detectada"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Necesitas una unidad de disco óptico para reproducir este video"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2141,14 +2178,6 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Introducir número"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bits/Muestra"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Frecuencia de muestreo"
-
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "CDs de audio"
@@ -2172,6 +2201,10 @@ msgstr "Incluir número de pista"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Todas las canciones de"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Series de TV en progreso"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2623,7 +2656,7 @@ msgstr "Nombre de la red inalámbrica (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "Control remoto"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2656,6 +2689,18 @@ msgstr "Número máximo de clientes"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Accesso a Internet"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Actualización de Biblioteca"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "La biblioteca de música necesita re escanear el arte desde los tags"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "¿Desea escanear ahora?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3001,37 +3046,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programas, imágenes y video"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Autodetección"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Autodetectar sistema"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Nickname"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Preguntar antes de conectar"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Enviar usuario y contraseña FTP"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Intervalo de Ping"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "¿Desea conectar al sistema autodetectado?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3051,7 +3068,7 @@ msgstr "- Usar contraseña"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3129,10 +3146,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "ventoso"
 
-msgctxt "#1413"
-msgid "drizzle"
-msgstr "llovizna"
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "Tormenta Eléctrica"
@@ -3150,11 +3163,7 @@ msgid "Grains"
 msgstr "Granos"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "T. Eléctricas"
-
-msgctxt "#1419"
-msgid "T-Showers"
+msgid "Thunderstorms"
 msgstr "Tormentas"
 
 msgctxt "#1420"
@@ -3173,6 +3182,66 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "Niebla"
 
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Volcánico"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Ceniza"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Polvo"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Arena"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Tormenta de Arena"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Soplando"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Chico"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "y"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "con"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "Probabilidad"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "de"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Nube"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Desconocido"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Precipitación"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "Parcial"
+
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr "Apagar pantalla cuando esté desocupado"
@@ -3180,6 +3249,10 @@ msgstr "Apagar pantalla cuando esté desocupado"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Duración:"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Lista vacía"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3283,7 +3356,7 @@ msgstr "Navegador Web"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
+msgstr "Videos"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3291,7 +3364,7 @@ msgstr "Vídeos/Lista de reproducción"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr ""
+msgstr "Pantalla de inicio"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3299,7 +3372,7 @@ msgstr "Configuración - Perfiles"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr ""
+msgstr "Navegador de Add-ons"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3593,6 +3666,14 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Elemento Bloqueado"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Actualizando arte de biblioteca de video"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Procesando %s"
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Reactivar Bloqueo"
@@ -3628,10 +3709,6 @@ msgstr "¡Por favor, introduzca un Código Maestro Válido!"
 msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Configuración y Archivos"
-
-msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Asignar por defecto para todas las Películas"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3756,6 +3833,14 @@ msgstr "Acción del boton de Encendido"
 msgctxt "#13016"
 msgid "Power off System"
 msgstr "Apagar sistema"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Inhibir Apagado cuando se encuentre Inactivo"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Permitir Apagado cuando se encuentre Inactivo"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -3976,10 +4061,6 @@ msgstr "Iniciada, alarma en %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "¡Alarma!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Cancelada antes de %im%is"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4557,6 +4638,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Permitir aceleración por HW (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Reproducir el siguiente video automáticamente"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Reproducir sólo esto"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Método de sincron. de A/V"
@@ -4600,6 +4689,26 @@ msgstr "Realmente alta(lento!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sincronizar reproducción con la pantalla"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Elegir Arte"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Arte Actual"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Arte Remoto"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Arte Local"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "No hay Arte"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4999,19 +5108,19 @@ msgstr "Ahorro de energía"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Rip"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Acción al insertar CD de Audio"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "Play"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Expulsar disco al terminar la extracción del CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5453,10 +5562,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (Invertido)"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Cancelando..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Introduzca el nombre del intérprete"
@@ -5677,6 +5782,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Auto - Optimizado para ION"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-procesado"
@@ -5685,9 +5794,793 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Mostrar cuenta atrás para el reposo"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MByte"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i horas"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i días"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Cambiar a canal"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Separa las palabras de búsqueda utilizando AND, OR y/o NOT."
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "o usa frases para encontrar un resultado exacto, como \"El mago de Oz\"."
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "Importar EPG desde clientes"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "Información del flujo PVR"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Recibiendo dispositivo"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Estado del dispositivo"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Calidad de señal"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR Backend"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Fijo"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Encriptación"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR Backend %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "Grabaciones de TV"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "Carpeta predeterminada para miniaturas de PVR"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Canales"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Ocultos"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "Canales TV"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Canales Radio"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Grabaciones futuras"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Agregar timer..."
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "No se encontraron resultados"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "No hay entradas EPG"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Canal"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Ahora"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Siguiente"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Línea de Tiempo"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Información"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Ya ha comenzado la grabación de este canal"
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "El canal no puede ser reproducido.  Verifica el log para detalles."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "La grabación no puede ser reproducida. Verifica el log para detalles."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Mostrar calidad de señal"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "No soportado por el backend del PVR"
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Esta seguro de ocultar este canal?"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Temporizador"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "¿Esta seguro que quiere renombrar esta grabación?"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "¿Esta seguro que quiere renombrar este temporizador?"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Grabación"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Por favor revise su configuración o revise los detalles en el log"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Nuevo canal"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Información del programa"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Administración de grupos"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Mostrar canal"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Mostrar canales visibles"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Mostrar canales ocultos"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Mover canal a:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Información de grabación"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Ocultar canal"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "No hay información disponible"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Nuevo temporizador"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Editar temporizador"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Temporizador activado"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Detener grabación"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Eliminar temporizador"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Agregar temporizador"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Ordenar por: Canal"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Ir al principio"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Ir al final"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Ventana EPG por Defecto"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "El evento ya está siendo grabado."
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Esta grabación no pudo ser eliminada. Revise los detalles en el log."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "No guardar la EPG en la base de datos."
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Demorar cambio de canal"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Activo:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Nombre:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Carpeta:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Radio:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Canal:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Día:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Inicio:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Fin:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Prioridad:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Tiempo de vida (días):"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Primer día:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Canal desconocido %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Lu-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Ma-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Mi-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Ju-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Vi-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Sa-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Do"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Lu-Ma-Mi-Ju-Vi-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Lu-Ma-Mi-Ju-Vi-Sa-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Lu-Ma-Mi-Ju-Vi-Sa-Do"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Sa-Do"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Nombre de la grabación:"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Warning"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Favor de cambiar a otro canal."
+
+msgctxt "#19107"
+msgid "at"
+msgstr "en"
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Error inesperado. Intente más tarde o verifique el log para detalles."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "Error del backend PVR.  Verificar log para detalles."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Versión"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Dirección"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Tamaño del disco"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Buscar canales"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "No se pueden usar las funciones del PVR mientras se esta buscando."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "¿En qué servidor quiere buscar?"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Número de cliente"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Evitar repeticiones"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Ignorar temporizadores presentes"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Ignorar grabaciones presentes"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Tiempo de inicio"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Tiempo de término"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Fecha de inicio"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Fecha de término"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Duración mínima"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Duración máxima"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Cadena de búsqueda"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Incluir descripción"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Canal no disponible"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "No hay grupos definidos"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Por favor cree un grupo primero"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Nombre del nuevo grupo"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Grupo"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Guía de búsqueda"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Administración de grupos"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "No hay grupos definidos"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Agrupado"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Grupos"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Canal"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Lu"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Ma"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Mi"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Ju"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Vi"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Sa"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Do"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "desde"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Próxima grabación"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Actualmente en grabación"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "desde"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "para"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Grabaciones"
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Cambiar"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "Información de PVR"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "Empezar reproducción minimizado"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Duración de grabación instantánea"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Prioridad de grabación por defecto"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Reproducir"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Nuevo canal"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Administración de grupos"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Seleccionar backend"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Ingresa un URL válido para el nuevo canal"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "El PVR backend no soporta timers."
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Todos los canales de radio"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Todos los canales de TV"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Visible"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Canales desagrupados"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Canales en"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Sincronizar el grupo de canales con los backends"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "No se pudo activar el add-on de PVR. Revisa la configuración o el log para más información."
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Grabación abortada"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Grabación programada"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Grabación iniciada"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Grabación completada"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Grabación eliminada"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Cerrar OSD del canal después de cambiar canales"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "Evitar actualizaciones de EPG mientras se reproduce TV"
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "Siempre usar el orden de canales del backend"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Limpiar resultados de búsqueda"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "Manejador de PVR iniciando"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Cargando canales de los clientes"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "Cargando timers de los clientes"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Cargando grabaciones de los clientes"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Detener grabación"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Error de grabación"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Comedia"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Romantico"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "Revistas de Arte/Cultura"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Moda"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Social/Política/Economía"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Revistas/Reportes/Documentales"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Economía/Consejos Sociales"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "Personas Destacadas"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "Educación/Ciencia/Actual"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "Naturaleza/Animales/Medio Ambiente"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Tecnología/Ciencias Naturales"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Medicina/Fisiología/Psicología"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "Países Extranjeros/Expediciones"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "Social/Ciencias Espirituales"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Idiomas"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Cocina"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Comedia"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Romantico"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Adultos"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6371,7 +7264,7 @@ msgstr "Espere por favor"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6539,7 +7432,7 @@ msgstr "Buscar destino"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
+msgstr "Las películas estan en carpetas separadas que coinciden con el título de la película"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -6953,10 +7846,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Sets"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Set movieset thumb"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Exportar miniaturas de actores?"
@@ -7037,17 +7926,29 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr "Listeners"
 
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Set movieset fanart"
-
 msgctxt "#20457"
 msgid "Movie set"
 msgstr "Movie set"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr ""
+msgstr "Agrupar películas en conjuntos"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Agregar %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Eliminar %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Nueva etiqueta..."
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Seleccionar %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7297,10 +8198,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Scraper de vídeo musical por defecto"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Habilitar vuelta atrás basada en lenguaje de Scraper"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Configuración"
@@ -7456,6 +8353,10 @@ msgstr "Cache lleno"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "El cache se llenó antes de alcanzar la cantidad requerida para reproducción continua"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Almacenamiento externo"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -8057,6 +8958,10 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Servicios"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "Clientes PVR"
+
 msgctxt "#24020"
 msgid "Configure"
 msgstr "Configure"
@@ -8299,27 +9204,27 @@ msgstr "Notificaciones"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Ocultar foráneo"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Seleccionar de todos los títulos ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Mostrar menus de bluray"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Reproducir título principal: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Título: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Seleccionar ítem de reproducción"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8643,27 +9548,27 @@ msgstr "Detectada nueva conexión"
 
 msgctxt "#34000"
 msgid "Lame"
-msgstr ""
+msgstr "Lame"
 
 msgctxt "#34001"
 msgid "Vorbis"
-msgstr ""
+msgstr "Vorbis"
 
 msgctxt "#34002"
 msgid "Wav"
-msgstr ""
+msgstr "Wav"
 
 msgctxt "#34003"
 msgid "DXVA2"
-msgstr ""
+msgstr "DXVA2"
 
 msgctxt "#34004"
 msgid "VAAPI"
-msgstr ""
+msgstr "VAAPI"
 
 msgctxt "#34005"
 msgid "Flac"
-msgstr ""
+msgstr "Flac"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -8709,6 +9614,22 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "Reproducir sonidos de la GUI"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Sólo cuando la reproducción este detenida"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Siempre"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Nunca"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "No se encuentra el próximo item"
@@ -8743,23 +9664,23 @@ msgstr "Verifique su configuracion de sonido"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Usar gestos para navegación:"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "Pasar 1 dedo a la izquierda, derecha, arriba o abajo para cursores"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Pasar 2 dedos a la izquierda para retroceso"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "Un sólo toque con 1 dedo para ingresar"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Un sólo toque con 2 dedos o una pulsaci1 finger long pressn larga de 1 dedo para menú de contexto"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8799,7 +9720,7 @@ msgstr "Keymap activado"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "No usar el keymap personalizado para este dispositivo"
 
 msgctxt "#35500"
 msgid "Location"
@@ -8869,10 +9790,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "No se pudo detectar adaptador CEC."
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Versión de interface libcec no soportada. %d es mayor que la versión soportada por XBMC (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "puerto HDMI"
@@ -8891,57 +9808,40 @@ msgstr "Usar configuración de idioma de la TV"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Conectar dispositivo HDMI"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Hcer XBMC la fuente activa al iniciar"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Dirección física (invalida el puerto HDMI)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "Puerto COM (dejar vacío a menos de ser necesario)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Configuración actualizada"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Fallo al actualizar configuración. Favor de revisarla."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "Enviar comando 'fuente inactiva' al detener XBMC"
 
-msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgctxt "#36035"
+msgid "Always"
+msgstr "Siempre"
 
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"
 
-msgctxt "#36028"
-msgid "Ignore"
-msgstr ""
-
-msgctxt "#36029"
-msgid "When the TV is switched off"
-msgstr ""
-
-msgctxt "#36030"
-msgid "Connection lost"
-msgstr ""
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
-
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Versión de interfaz libCEC no soportada. %x es menor a la versión soportada por XBMC (%x)"

@@ -75,6 +75,8 @@ static av_always_inline av_const int16_t av_clip_int16_arm(int a)
     return x;
 }
 
+/* Android fix. See: http://patches.libav.org/patch/3525/ */
+#if !defined(ANDROID)
 #define av_clip_uintp2 av_clip_uintp2_arm
 static av_always_inline av_const unsigned av_clip_uintp2_arm(int a, int p)
 {
@@ -82,7 +84,7 @@ static av_always_inline av_const unsigned av_clip_uintp2_arm(int a, int p)
     __asm__ ("usat %0, %2, %1" : "=r"(x) : "r"(a), "i"(p));
     return x;
 }
-
+#endif
 
 #else /* HAVE_ARMV6 */
 

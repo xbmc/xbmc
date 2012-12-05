@@ -493,4 +493,29 @@ NPT_Zip::Inflate(const NPT_DataBuffer& in,
     return MapError(err);
 }
 
+
+/*----------------------------------------------------------------------
+|   NPT_Zip::Deflate
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_Zip::Deflate(NPT_File& in,
+                 NPT_File& out,
+                 int       compression_level,
+                 Format    format /* = ZLIB */)
+{
+    // check parameters
+    if (compression_level < NPT_ZIP_COMPRESSION_LEVEL_DEFAULT ||
+        compression_level > NPT_ZIP_COMPRESSION_LEVEL_MAX) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+    
+    NPT_InputStreamReference input;
+    NPT_CHECK(in.GetInputStream(input));
+    NPT_OutputStreamReference output;
+    NPT_CHECK(out.GetOutputStream(output));
+    
+    NPT_ZipDeflatingInputStream deflating_stream(input, compression_level, format);
+    return NPT_StreamToStreamCopy(deflating_stream, *output.AsPointer());
+}
+
 #endif // NPT_CONFIG_ENABLE_ZIP

@@ -1,0 +1,26 @@
+diff -ru afpfs-ng-0.8.1/configure.ac afpfs-ng-0.8.1+iPhone/configure.ac
+--- afpfs-ng-0.8.1/configure.ac	2008-03-08 16:23:12.000000000 +0000
++++ afpfs-ng-0.8.1+iPhone/configure.ac	2010-10-24 05:26:15.000000000 +0000
+@@ -50,21 +50,6 @@
+ 	case $host in
+ 		*-*-darwin*) 
+ 		AC_MSG_CHECKING([for correct gcrypt version])
+-		AC_RUN_IFELSE(
+-			[AC_LANG_PROGRAM([
+-				#include <gcrypt.h>
+-				#include <stdio.h>],[
+-				char*p= GCRYPT_VERSION;
+-				unsigned int vers;
+-				vers=atoi(p)*10000;
+-				p=strchr(p,'.')+1;
+-				vers+=atoi(p)*100;
+-				p=strchr(p,'.')+1;
+-				vers+=atoi(p);
+-				if (vers<10400) return 1;
+-			])],
+-			[AC_MSG_RESULT([yes])],
+-			[AC_MSG_ERROR([version is < 1.4.0])])
+ 		AM_CONDITIONAL(HAVE_LIBGCRYPT, true)
+ 		AC_DEFINE([HAVE_LIBGCRYPT], [1] )
+ 		;;
+

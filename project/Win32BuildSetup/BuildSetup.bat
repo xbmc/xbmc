@@ -159,7 +159,6 @@ IF %comp%==vs2010 (
 
   Echo .svn>exclude.txt
   Echo CVS>>exclude.txt
-  Echo .so>>exclude.txt
   Echo Thumbs.db>>exclude.txt
   Echo Desktop.ini>>exclude.txt
   Echo dsstdfx.bin>>exclude.txt
@@ -213,6 +212,12 @@ IF %comp%==vs2010 (
   TITLE XBMC for Windows Build Script
 
   IF EXIST exclude.txt del exclude.txt  > NUL
+  del /s /q /f BUILD_WIN32\Xbmc\*.so  > NUL
+  del /s /q /f BUILD_WIN32\Xbmc\*.h  > NUL
+  del /s /q /f BUILD_WIN32\Xbmc\*.cpp  > NUL
+  del /s /q /f BUILD_WIN32\Xbmc\*.exp  > NUL
+  del /s /q /f BUILD_WIN32\Xbmc\*.lib  > NUL
+  
   ECHO ------------------------------------------------------------
   ECHO Build Succeeded!
   GOTO NSIS_EXE

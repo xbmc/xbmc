@@ -83,7 +83,7 @@
       <AdditionalIncludeDirectories>..\zlib\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;MNG_SUPPORT_DISPLAY;MNG_SUPPORT_READ;MNG_SUPPORT_WRITE;MNG_ACCESS_CHUNKS;MNG_STORE_CHUNKS;_CRT_SECURE_NO_DEPRECATE;MNG_ERROR_TELLTALE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>$(Configuration)\vs2010\mng.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(Configuration)\vs2010\</AssemblerListingLocation>
       <ObjectFileName>$(Configuration)\vs2010\</ObjectFileName>
@@ -91,6 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -158,7 +159,7 @@
       <AdditionalIncludeDirectories>..\zlib\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;MNG_SUPPORT_DISPLAY;MNG_SUPPORT_READ;MNG_SUPPORT_WRITE;MNG_ACCESS_CHUNKS;MNG_STORE_CHUNKS;_CRT_SECURE_NO_DEPRECATE;MNG_ERROR_TELLTALE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>$(Configuration)\vs2010\mng.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(Configuration)\vs2010\</AssemblerListingLocation>

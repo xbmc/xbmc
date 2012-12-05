@@ -164,6 +164,7 @@ main(int /*argc*/, char** /*argv*/)
     CHECK(c_array.Contains(o));
     A* a66 = new A(66, 'b');
     CHECK(!c_array.Contains(a66));
+    delete a66;
 
     A** ai = c_array.Find(NPT_ObjectComparator<A*>(o));
     CHECK(ai);

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -109,10 +108,14 @@ class CAdvancedSettings
     bool m_audioForceDirectSound;
     bool m_audioAudiophile;
     bool m_allChannelStereo;
+    bool m_streamSilence;
     int m_audioSinkBufferDurationMsec;
     CStdString m_audioTranscodeTo;
     float m_limiterHold;
     float m_limiterRelease;
+
+    bool  m_omxHWAudioDecode;
+    bool  m_omxDecodeStartWithValidFrame;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -175,18 +178,15 @@ class CAdvancedSettings
     int m_lcdScrolldelay;
     CStdString m_lcdHostName;
 
-    int m_autoDetectPingTime;
-
     int m_songInfoDuration;
-    int m_busyDialogDelay;
     int m_logLevel;
     int m_logLevelHint;
     CStdString m_cddbAddress;
-    
+
     //airtunes + airplay
     bool m_logEnableAirtunes;
     int m_airTunesPort;
-    int m_airPlayPort;    
+    int m_airPlayPort;
 
     bool m_handleMounting;
 
@@ -213,8 +213,8 @@ class CAdvancedSettings
     bool m_playlistAsFolders;
     bool m_detectAsUdf;
 
-    int m_fanartRes; ///< \brief the maximal resolution to cache fanart at (assumes 16x9)
-    int m_imageRes;  ///< \brief the maximal resolution to cache images at (assumes 16x9)
+    unsigned int m_fanartRes; ///< \brief the maximal resolution to cache fanart at (assumes 16x9)
+    unsigned int m_imageRes;  ///< \brief the maximal resolution to cache images at (assumes 16x9)
     /*! \brief the maximal size to cache thumbs at, assuming square
      Used for actual thumbs (eg bookmark thumbs, picture thumbs) rather than cover art which uses m_imageRes instead
      */
@@ -230,7 +230,6 @@ class CAdvancedSettings
     bool m_bFTPThumbs;
 
     CStdString m_musicThumbs;
-    CStdString m_dvdThumbs;
     CStdString m_fanartImages;
 
     bool m_bMusicLibraryHideAllItems;
@@ -247,7 +246,6 @@ class CAdvancedSettings
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
     int m_iVideoLibraryRecentlyAddedItems;
-    bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
@@ -273,6 +271,15 @@ class CAdvancedSettings
 
     int m_iMythMovieLength;         // minutes
 
+    int m_iEpgLingerTime;           // minutes
+    int m_iEpgUpdateCheckInterval;  // seconds
+    int m_iEpgCleanupInterval;      // seconds
+    int m_iEpgActiveTagCheckInterval; // seconds
+    int m_iEpgRetryInterruptedUpdateInterval; // seconds
+    int m_bEpgUpdateEmptyTagsInterval; // seconds
+    bool m_bEpgDisplayUpdatePopup;
+    bool m_bEpgDisplayIncrementalUpdatePopup;
+
     // EDL Commercial Break
     bool m_bEdlMergeShortCommBreaks;
     int m_iEdlMaxCommBreakLength;   // seconds
@@ -290,7 +297,7 @@ class CAdvancedSettings
 
     bool m_fullScreen;
     bool m_startFullScreen;
-	bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
+    bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
     bool m_canWindowed;
     bool m_splashImage;
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
@@ -321,15 +328,26 @@ class CAdvancedSettings
     CStdString m_gpuTempCmd;
     int m_bgInfoLoaderMaxThreads;
 
+    /* PVR/TV related advanced settings */
+    int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
+    int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
+    bool m_bPVRShowEpgInfoOnEpgItemSelect; /*!< @brief when selecting an EPG fileitem, show the EPG info dialog if this setting is true. start playback on the selected channel if false */
+    int m_iPVRMinVideoCacheLevel;      /*!< @brief cache up to this level in the video buffer buffer before resuming playback if the buffers run dry */
+    int m_iPVRMinAudioCacheLevel;      /*!< @brief cache up to this level in the audio buffer before resuming playback if the buffers run dry */
+    bool m_bPVRCacheInDvdPlayer; /*!< @brief true to use "CACHESTATE_PVR" in CDVDPlayer (default) */
+
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate
 
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
+    DatabaseSettings m_databaseTV;    // advanced tv database setup
+    DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
 
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
     int  m_guiDirtyRegionNoFlipTimeout;
+    unsigned int m_addonPackageFolderSize;
 
     unsigned int m_cacheMemBufferSize;
 
@@ -342,6 +360,8 @@ class CAdvancedSettings
 
     float GetDisplayLatency(float refreshrate);
     bool m_initialized;
+
+    void SetDebugMode(bool debug);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

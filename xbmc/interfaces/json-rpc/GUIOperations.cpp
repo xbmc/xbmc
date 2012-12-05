@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,16 +13,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIOperations.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "interfaces/Builtins.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/AddonManager.h"
 #include "settings/GUISettings.h"
@@ -51,6 +52,21 @@ JSONRPC_STATUS CGUIOperations::GetProperties(const CStdString &method, ITranspor
   return OK;
 }
 
+JSONRPC_STATUS CGUIOperations::ActivateWindow(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVariant params = parameterObject["parameters"];
+  std::string cmd = "ActivateWindow(" + parameterObject["window"].asString();
+  for (CVariant::iterator_array param = params.begin_array(); param != params.end_array(); param++)
+  {
+    if (param->isString() && !param->empty())
+      cmd += "," + param->asString();
+  }
+  cmd += ")";
+  CBuiltins::Execute(cmd);
+
+  return ACK;
+}
+
 JSONRPC_STATUS CGUIOperations::ShowNotification(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   string image = parameterObject["image"].asString();
@@ -76,7 +92,7 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const CStdString &method, ITranspor
        parameterObject["fullscreen"].asString().compare("toggle") == 0) ||
       (parameterObject["fullscreen"].isBoolean() &&
        parameterObject["fullscreen"].asBoolean() != g_application.IsFullScreen()))
-    g_application.getApplicationMessenger().SendAction(CAction(ACTION_SHOW_GUI));
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_SHOW_GUI));
   else if (!parameterObject["fullscreen"].isBoolean() && !parameterObject["fullscreen"].isString())
     return InvalidParams;
 

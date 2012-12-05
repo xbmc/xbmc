@@ -14,6 +14,7 @@
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\Timer.cpp" />
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadImpl.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadImpl.cpp" />
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadImpl.cpp" />
@@ -22,6 +23,7 @@
     <ClCompile Include="..\..\xbmc\threads\platform\win\Win32Exception.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
+    <ClInclude Include="..\..\xbmc\threads\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\threads\Atomics.h" />
@@ -91,6 +93,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">XbmcThreadsd</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XbmcThreads</TargetName>
   </PropertyGroup>

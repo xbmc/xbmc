@@ -1,19 +1,18 @@
 # XBMC Media Center language file
-# Translators:
-# Roman Miroshnychenko <romanvm@yandex.ru>, 2012.
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-05-12 23:25+0000\n"
-"Last-Translator: Roman Miroshnychenko <romanvm@yandex.ru>\n"
-"Language-Team: Russian\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -45,7 +44,7 @@ msgstr "XBMC SVN"
 
 msgctxt "#7"
 msgid "File manager"
-msgstr "Файл-менеджер"
+msgstr "Менеджер файлов"
 
 msgctxt "#8"
 msgid "Weather"
@@ -273,7 +272,27 @@ msgstr "ССЗ"
 
 msgctxt "#87"
 msgid "VAR"
-msgstr "Перем."
+msgstr "ПЕРЕМ."
+
+msgctxt "#88"
+msgid "South"
+msgstr "южный"
+
+msgctxt "#89"
+msgid "North"
+msgstr "северный"
+
+msgctxt "#90"
+msgid "West"
+msgstr "западный"
+
+msgctxt "#91"
+msgid "East"
+msgstr "восточный"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "переменный"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -385,7 +404,7 @@ msgstr "Переместить файлы?"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "Удалить файлы? Восстановление будет невозможно!"
+msgstr "Удалить файлы? Их нельзя будет восстановить!"
 
 msgctxt "#126"
 msgid "Status"
@@ -551,6 +570,10 @@ msgctxt "#166"
 msgid "Skin"
 msgstr "Обложка"
 
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Отменить операции с файлами"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Разрешение"
@@ -609,7 +632,7 @@ msgstr "ОК"
 
 msgctxt "#187"
 msgid "No albums found!"
-msgstr "Альбомы не найдены!"
+msgstr "Альбомы не найдены"
 
 msgctxt "#188"
 msgid "Select all"
@@ -681,7 +704,7 @@ msgstr "Сюжет"
 
 msgctxt "#208"
 msgid "Play"
-msgstr "Проиграть"
+msgstr "Воспроизвести"
 
 msgctxt "#209"
 msgid "Next"
@@ -721,7 +744,7 @@ msgstr "Вставьте диск"
 
 msgctxt "#220"
 msgid "Remote share"
-msgstr "Удаленный ресурс"
+msgstr "Удалённый ресурс"
 
 msgctxt "#221"
 msgid "Network is not connected"
@@ -745,7 +768,7 @@ msgstr "Тестовые шаблоны…"
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
-msgstr "Искать имена треков аудио-CD на freedb.org"
+msgstr "Искать названия композиций аудио-CD на freedb.org"
 
 msgctxt "#228"
 msgid "Shuffle playlist on load"
@@ -793,7 +816,7 @@ msgstr "Увеличение"
 
 msgctxt "#239"
 msgid "Clear playlist on finish"
-msgstr "Очищать плейлист после проигрывания"
+msgstr "Очищать плейлист после воспроизведения"
 
 msgctxt "#240"
 msgid "Display Mode"
@@ -865,7 +888,7 @@ msgstr "Ошибка"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Читать информацию из тэгов"
+msgstr "Считывать информацию из тегов"
 
 msgctxt "#259"
 msgid "Opening"
@@ -1173,7 +1196,7 @@ msgstr "Аналоговый"
 
 msgctxt "#339"
 msgid "Optical/Coax"
-msgstr "Цифровой"
+msgstr "Оптический/коаксиальный"
 
 msgctxt "#340"
 msgid "Various artists"
@@ -1181,7 +1204,7 @@ msgstr "Различные исполнители"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "Проиграть диск"
+msgstr "Воспроизвести диск"
 
 msgctxt "#342"
 msgid "Movies"
@@ -1233,7 +1256,7 @@ msgstr "Черный экран"
 
 msgctxt "#354"
 msgid "Matrix trails"
-msgstr "Следы \"Матрицы\""
+msgstr "Следы «Матрицы»"
 
 msgctxt "#355"
 msgid "Screensaver time"
@@ -1305,7 +1328,7 @@ msgstr "местами"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "преимущественно"
+msgstr "преимущ."
 
 msgctxt "#373"
 msgid "Sunny"
@@ -1345,7 +1368,7 @@ msgstr "немного"
 
 msgctxt "#382"
 msgid "Scattered"
-msgstr "местами"
+msgstr "одиночные"
 
 msgctxt "#383"
 msgid "Wind"
@@ -1365,7 +1388,7 @@ msgstr "ясно"
 
 msgctxt "#387"
 msgid "Clouds"
-msgstr "облачно"
+msgstr "облака"
 
 msgctxt "#388"
 msgid "Early"
@@ -1543,6 +1566,14 @@ msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "%s, %i %s"
 
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Оптический привод не обнаружен"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Для проигрывания этого видео нужен оптический привод"
+
 msgctxt "#437"
 msgid "Removable disk"
 msgstr "Съемный диск"
@@ -1601,19 +1632,19 @@ msgstr "Количество знакомест в строке"
 
 msgctxt "#451"
 msgid "Row 1 address"
-msgstr "Адрес 1-ой строки"
+msgstr "Адрес 1-й строки"
 
 msgctxt "#452"
 msgid "Row 2 address"
-msgstr "Адрес 2-ой строки"
+msgstr "Адрес 2-й строки"
 
 msgctxt "#453"
 msgid "Row 3 address"
-msgstr "Адрес 3-ой строки"
+msgstr "Адрес 3-й строки"
 
 msgctxt "#454"
 msgid "Row 4 address"
-msgstr "Адрес 4-ой строки"
+msgstr "Адрес 4-й строки"
 
 msgctxt "#455"
 msgid "Rows"
@@ -1713,7 +1744,7 @@ msgstr "Параметры аудио"
 
 msgctxt "#482"
 msgid "About XBMC"
-msgstr "О XBMC"
+msgstr "Об XBMC"
 
 msgctxt "#485"
 msgid "Delete album"
@@ -1733,7 +1764,7 @@ msgstr "Повтор папки"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "Проигрывать следующий файл автоматически"
+msgstr "Воспроизводить следующий файл автоматически"
 
 msgctxt "#491"
 msgid "- Use big icons"
@@ -1909,7 +1940,7 @@ msgstr "Крупные значки"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "Широкий"
+msgstr "Баннеры"
 
 msgctxt "#540"
 msgid "Big wide"
@@ -1965,7 +1996,7 @@ msgstr "Размер"
 
 msgctxt "#554"
 msgid "Track"
-msgstr "№ трека"
+msgstr "Трек"
 
 msgctxt "#555"
 msgid "Time"
@@ -2089,11 +2120,11 @@ msgstr "Фильтр"
 
 msgctxt "#588"
 msgid "Cancel party mode"
-msgstr "Отключить режим \"party\""
+msgstr "Отключить режим \"Вечеринка\""
 
 msgctxt "#589"
 msgid "Party mode"
-msgstr "Режим \"party\""
+msgstr "Режим \"Вечеринка\""
 
 msgctxt "#590"
 msgid "Random"
@@ -2165,19 +2196,19 @@ msgstr "Путь для оцифровки CD не задан"
 
 msgctxt "#610"
 msgid "Rip audio track"
-msgstr "Оцифровать аудиотрек"
+msgstr "Оцифровать звуковую дорожку"
 
 msgctxt "#611"
 msgid "Enter number"
 msgstr "Введите номер"
 
 msgctxt "#612"
-msgid "Bits/Sample"
+msgid "Bits/sample"
 msgstr "Бит/сэмпл"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Частота сэмплирования"
+msgid "Sample rate"
+msgstr "Частота сэмплов"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2202,6 +2233,10 @@ msgstr "Добавить номер трека"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Все песни"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Просматриваемые сериалы"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2245,7 +2280,7 @@ msgstr "Режим \"Replay Gain\""
 
 msgctxt "#639"
 msgid "Use track levels"
-msgstr "По уровням трека"
+msgstr "По уровням композиции"
 
 msgctxt "#640"
 msgid "Use album levels"
@@ -2277,11 +2312,11 @@ msgstr "Удалить из медиатеки"
 
 msgctxt "#647"
 msgid "Export video library"
-msgstr "Экспортировать видео медиатеку"
+msgstr "Экспортировать медиатеку видео"
 
 msgctxt "#648"
 msgid "Import video library"
-msgstr "Импортировать видео медиатеку"
+msgstr "Импортировать медиатеку видео"
 
 msgctxt "#649"
 msgid "Importing"
@@ -2293,7 +2328,7 @@ msgstr "Экспорт…"
 
 msgctxt "#651"
 msgid "Browse for library"
-msgstr "Укажите медиатеку"
+msgstr "Выберите медиатеку"
 
 msgctxt "#652"
 msgid "Years"
@@ -2337,7 +2372,7 @@ msgstr "Укажите папку для экспорта"
 
 msgctxt "#662"
 msgid "This file is no longer available."
-msgstr "Этот файл больше не доступен."
+msgstr "Этот файл больше недоступен."
 
 msgctxt "#663"
 msgid "Would you like to remove it from the library?"
@@ -2687,6 +2722,18 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr "Доступ[CR]в Интернет"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Обновление медиатеки"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "Требуется сканирование картинок из тэгов музыкальных файлов"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Сканировать сейчас?"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Неправильный номер порта."
@@ -2725,7 +2772,7 @@ msgstr "Возможно, сеть не подключена."
 
 msgctxt "#1004"
 msgid "Would you like to add it anyway?"
-msgstr "Все равно добавить?"
+msgstr "Всё равно добавить?"
 
 msgctxt "#1006"
 msgid "IP address"
@@ -2793,11 +2840,11 @@ msgstr "Введите путь или укажите расположение �
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
-msgstr "Введите имя медиа-источника."
+msgstr "Введите название медиаисточника"
 
 msgctxt "#1023"
 msgid "Browse for new share"
-msgstr "Укажите новый ресурс"
+msgstr "Выберите новый ресурс"
 
 msgctxt "#1024"
 msgid "Browse"
@@ -2853,15 +2900,15 @@ msgstr "Избранное"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Видео дополнения"
+msgstr "Видеодополнения"
 
 msgctxt "#1038"
 msgid "Music Add-ons"
-msgstr "Музыкальные дополнения"
+msgstr "Аудиодополнения"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "Фото дополнения"
+msgstr "Фотодополнения"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -3031,34 +3078,6 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Программы, фото и видео"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Автоопределение"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Автоопределение системы"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Псевдоним"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Запрашивать разрешение на подключение"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Использовать логин и пароль для FTP"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Интервал опроса"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Подключиться к найденной системе?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
 msgstr "Zeroconf"
@@ -3073,7 +3092,7 @@ msgstr "Разрешить XBMC получать содержимое AirPlay"
 
 msgctxt "#1271"
 msgid "Device name"
-msgstr "Имя устройства"
+msgstr "Название устройства"
 
 msgctxt "#1272"
 msgid "- Use password protection"
@@ -3083,9 +3102,13 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Фильтр %s"
+
 msgctxt "#1300"
 msgid "Custom audio device"
-msgstr "Другое аудио устройство"
+msgstr "Другое аудиоустройство"
 
 msgctxt "#1301"
 msgid "Custom passthrough device"
@@ -3101,7 +3124,7 @@ msgstr "и"
 
 msgctxt "#1398"
 msgid "Freezing"
-msgstr "заморозки"
+msgstr "холодн."
 
 msgctxt "#1399"
 msgid "Late"
@@ -3160,8 +3183,8 @@ msgid "windy"
 msgstr "ветрено"
 
 msgctxt "#1413"
-msgid "drizzle"
-msgstr "дождь"
+msgid "Patches"
+msgstr "местами"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3169,7 +3192,7 @@ msgstr "гроза"
 
 msgctxt "#1415"
 msgid "Drizzle"
-msgstr "дождь"
+msgstr "изморось"
 
 msgctxt "#1416"
 msgid "Foggy"
@@ -3180,16 +3203,16 @@ msgid "Grains"
 msgstr "град"
 
 msgctxt "#1418"
-msgid "T-Storms"
+msgid "Thunderstorms"
 msgstr "грозы"
 
 msgctxt "#1419"
-msgid "T-Showers"
-msgstr "Ливни с грозами"
+msgid "Shallow"
+msgstr "низк."
 
 msgctxt "#1420"
 msgid "Moderate"
-msgstr "умеренный"
+msgstr "умеренн."
 
 msgctxt "#1421"
 msgid "Very High"
@@ -3203,6 +3226,110 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "туман"
 
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "пасмурно"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "град"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "град"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "дым"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "вулканический"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "пепел"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr " повсеместн."
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "пыль"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "песок"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "моросящ. дождь"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "вихри"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "песчаная буря"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "летящ."
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "град"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Небольшие"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "и"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "дождь со снегом"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "и"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "возможн."
+
+msgctxt "#1443"
+msgid "of"
+msgstr " "
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "вихревое"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "облако"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Неизвестно"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "шквалы"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Осадки"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "местами"
+
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr "Выключать экран во время простоя"
@@ -3210,6 +3337,14 @@ msgstr "Выключать экран во время простоя"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Длительность"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Пустой список"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Открыт родительский список, поскольку активный список пуст"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3237,7 +3372,7 @@ msgstr "Фото"
 
 msgctxt "#10003"
 msgid "File manager"
-msgstr "Файл-менеджер"
+msgstr "Менеджер файлов"
 
 msgctxt "#10004"
 msgid "Settings"
@@ -3525,7 +3660,7 @@ msgstr "c"
 
 msgctxt "#12321"
 msgid "Ok"
-msgstr "Ок"
+msgstr "ОК"
 
 msgctxt "#12322"
 msgid "*"
@@ -3623,9 +3758,29 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Заблокировано"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Обновление картинок медеатеки видео"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Обработка %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "Кэш картинок медиатеки видео нуждается в обновлении."
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Загрузка файлов не требуется."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Переустановить защиту"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Обновить сейчас?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3657,11 +3812,11 @@ msgstr "Введите правильный код защиты"
 
 msgctxt "#12373"
 msgid "Settings & file manager"
-msgstr "Настройки и файл-менеджер"
+msgstr "Настройки и менеджер файлов"
 
 msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Установить для всех фильмов"
+msgid "Set as default for all videos"
+msgstr "Установить по умолчанию для всех видеофайлов"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3787,9 +3942,17 @@ msgctxt "#13016"
 msgid "Power off System"
 msgstr "Выключить систему"
 
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Запретить отключение по неактивности"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Разрешить отключение по неактивности"
+
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
-msgstr "Проверьте, не активна ли другая сессия (напр., SSH)."
+msgstr "Проверьте, не активен ли другой сеанс (напр., SSH)."
 
 msgctxt "#13021"
 msgid "Mounted removable harddrive"
@@ -4008,8 +4171,8 @@ msgid "Alarm!"
 msgstr "НАПОМИНАНИЕ!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Отменено за %i мин. %i с. до срабатывания"
+msgid "Cancelled with %im%is left"
+msgstr "Отменено: осталось %i мин. %i с."
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4149,7 +4312,7 @@ msgstr "Показывать значок родительской папки"
 
 msgctxt "#13307"
 msgid "Track naming template"
-msgstr "Шаблон для имени трека"
+msgstr "Шаблон именования треков"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
@@ -4289,7 +4452,7 @@ msgstr "Циклически"
 
 msgctxt "#13345"
 msgid "Switch LED off on playback"
-msgstr "Выключать индикатор при проигрывании"
+msgstr "Выключать индикатор при воспроизведении"
 
 msgctxt "#13346"
 msgid "Movie information"
@@ -4341,7 +4504,7 @@ msgstr "Пикс. шейдер высок. качества"
 
 msgctxt "#13358"
 msgid "Play item"
-msgstr "Проиграть объект"
+msgstr "Воспроизвести объект"
 
 msgctxt "#13359"
 msgid "Set artist thumb"
@@ -4349,7 +4512,7 @@ msgstr "Выбрать эскиз исполнителя"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
-msgstr "Создавать эскизы"
+msgstr "Автоматически создавать эскизы"
 
 msgctxt "#13361"
 msgid "Enable voice"
@@ -4425,7 +4588,7 @@ msgstr "Открыть/закрыть"
 
 msgctxt "#13392"
 msgid "Use visualization if playing audio"
-msgstr "Включить визуализацию при проигрывании музыки"
+msgstr "Включить визуализацию при воспроизведении музыки"
 
 msgctxt "#13393"
 msgid "Calculate size"
@@ -4465,7 +4628,7 @@ msgstr "Выбрать %s"
 
 msgctxt "#13402"
 msgid "Show track position"
-msgstr "Показать позицию трека"
+msgstr "Показать положение трека"
 
 msgctxt "#13403"
 msgid "Clear default"
@@ -4505,7 +4668,7 @@ msgstr "Минимальная скорость вентиляторов"
 
 msgctxt "#13412"
 msgid "Play from here"
-msgstr "Проигрывать отсюда"
+msgstr "Воспроизвести отсюда"
 
 msgctxt "#13413"
 msgid "Downloading"
@@ -4587,6 +4750,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Включить аппаратное ускорение (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Автоматически проигрывать следующий видеофайл"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Проигрывать только этот файл"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Синхронизация А/В"
@@ -4630,6 +4801,26 @@ msgstr "Очень высокое (медленно!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Синхронизировать видео с частотой дисплея"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Картинки"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Текущая картинка"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Удаленная картинка"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Локальная картинка"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Без картинки"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4833,7 +5024,7 @@ msgstr "Ограничение скорости интернет-соедине�
 
 msgctxt "#14043"
 msgid "- Shutdown while playing"
-msgstr "- Выключать во время проигрывания"
+msgstr "- Выключать при воспроизведении"
 
 msgctxt "#14044"
 msgid "%i min"
@@ -4957,7 +5148,7 @@ msgstr "Добавить в \"Избранное\""
 
 msgctxt "#14077"
 msgid "Remove from favourites"
-msgstr "Удалить из \"Избранного\""
+msgstr "Удалить из \"\"Избранного\""
 
 msgctxt "#14078"
 msgid "- Colours"
@@ -5037,11 +5228,15 @@ msgstr "Действие при вставке CD"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr "Проиграть"
+msgstr "Воспроизвести"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "Извлекать CD по окончании оцифровки"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "Остановить оцифровку CD"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5157,7 +5352,7 @@ msgstr "Подключение через %i с."
 
 msgctxt "#15213"
 msgid "Play using..."
-msgstr "Проиграть с помощью…"
+msgstr "Воспроизвести с помощью…"
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronization"
@@ -5169,7 +5364,7 @@ msgstr "Скрывать имена файлов в режиме эскизов"
 
 msgctxt "#15216"
 msgid "Play in party mode"
-msgstr "Играть в режиме \"party\""
+msgstr "Воспроизводить в режиме \"Вечеринка\""
 
 msgctxt "#15217"
 msgid "Submit songs to Libre.fm"
@@ -5209,7 +5404,7 @@ msgstr "Поиск похожих исполнителей…"
 
 msgctxt "#15254"
 msgid "Search similar tags..."
-msgstr "Поиск похожих тэгов…"
+msgstr "Поиск похожих тегов…"
 
 msgctxt "#15255"
 msgid "Your profile (%name%)"
@@ -5217,23 +5412,23 @@ msgstr "Ваш профиль (%name%)"
 
 msgctxt "#15256"
 msgid "Overall top tags"
-msgstr "Общий топ тэгов"
+msgstr "Общий топ тегов"
 
 msgctxt "#15257"
 msgid "Top artists for tag %name%"
-msgstr "Топ исполнителей по тэгу %name%"
+msgstr "Топ исполнителей по тегу %name%"
 
 msgctxt "#15258"
 msgid "Top albums for tag %name%"
-msgstr "Топ альбомов по тэгу %name%"
+msgstr "Топ альбомов по тегу %name%"
 
 msgctxt "#15259"
 msgid "Top tracks for tag %name%"
-msgstr "Топ треков по тэгу %name%"
+msgstr "Топ треков по тегу %name%"
 
 msgctxt "#15260"
 msgid "Listen to tag %name% Last.fm radio"
-msgstr "Слушать треки по тэгу %name% на Last.fm"
+msgstr "Слушать треки по тегу %name% на Last.fm"
 
 msgctxt "#15261"
 msgid "Similar artists as %name%"
@@ -5249,7 +5444,7 @@ msgstr "Топ треков %name%"
 
 msgctxt "#15264"
 msgid "Top %name% tags"
-msgstr "Топ тэгов %name%"
+msgstr "Топ тегов %name%"
 
 msgctxt "#15265"
 msgid "Biggest fans of %name%"
@@ -5309,11 +5504,11 @@ msgstr "Слушать любимые треки %name% на Last.fm"
 
 msgctxt "#15279"
 msgid "Retrieving list from Last.fm..."
-msgstr "Получение списка от Last.fm…"
+msgstr "Получение списка с Last.fm…"
 
 msgctxt "#15280"
 msgid "Can't retrieve list from Last.fm..."
-msgstr "Не удается получить список от Last.fm…"
+msgstr "Не удаётся получить список с Last.fm…"
 
 msgctxt "#15281"
 msgid "Enter an artist name to find related ones"
@@ -5321,7 +5516,7 @@ msgstr "Введите имя исполнителя для поиска пох�
 
 msgctxt "#15282"
 msgid "Enter a tag name to find similar ones"
-msgstr "Введите название тэга для поиска похожих"
+msgstr "Введите название тега для поиска похожих"
 
 msgctxt "#15283"
 msgid "Tracks recently listened by %name%"
@@ -5333,11 +5528,11 @@ msgstr "Слушать рекомендации %name% на Last.fm"
 
 msgctxt "#15285"
 msgid "Top tags for user %name%"
-msgstr "Топ тэгов пользователя %name%"
+msgstr "Топ тегов пользователя %name%"
 
 msgctxt "#15287"
 msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Добавить этот трек к вашим любимым трекам?"
+msgstr "Добавить этот трек в любимые?"
 
 msgctxt "#15288"
 msgid "Do you want to ban the current track?"
@@ -5349,7 +5544,7 @@ msgstr "Добавлено к вашим любимым трекам: \"%s\"."
 
 msgctxt "#15290"
 msgid "Could not add '%s' to your loved tracks."
-msgstr "Не удалось добавить \"%s\" к вашим любимым трекам."
+msgstr "Не удалось добавить \"%s\" к любимым трекам."
 
 msgctxt "#15291"
 msgid "Banned: '%s'."
@@ -5377,7 +5572,7 @@ msgstr "Разблокировать"
 
 msgctxt "#15297"
 msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Удалить этот трек из ваших любимых треков?"
+msgstr "Удалить этот трек из списка любимых?"
 
 msgctxt "#15298"
 msgid "Do you want to un-ban this track?"
@@ -5421,7 +5616,7 @@ msgstr "Проигрыватель"
 
 msgctxt "#16004"
 msgid "Play media from disc"
-msgstr "Проиграть файл с диска"
+msgstr "Воспроизвести файл с диска"
 
 msgctxt "#16008"
 msgid "Enter new title"
@@ -5484,7 +5679,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (обратный)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "Отмена…"
 
 msgctxt "#16025"
@@ -5493,11 +5688,11 @@ msgstr "Введите имя исполнителя"
 
 msgctxt "#16026"
 msgid "Playback failed"
-msgstr "Проигрывание плейлиста прервано"
+msgstr "Воспроизведение плейлиста прервано"
 
 msgctxt "#16027"
 msgid "One or more items failed to play."
-msgstr "Не удалось проиграть как минимум один файл."
+msgstr "Не удалось воспроизвести как минимум один файл."
 
 msgctxt "#16028"
 msgid "Enter value"
@@ -5509,7 +5704,7 @@ msgstr "Для получения доп. сведений просмотрит�
 
 msgctxt "#16030"
 msgid "Party mode aborted."
-msgstr "Режим \"party\" отключен."
+msgstr "Режим \"Вечеринка\" отключен."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
@@ -5529,7 +5724,7 @@ msgstr "Не удалось получить песни из базы данны
 
 msgctxt "#16035"
 msgid "Party mode playlist"
-msgstr "Плейлист режима \"party\""
+msgstr "Плейлист режима \"Вечеринка\""
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
@@ -5557,7 +5752,7 @@ msgstr "Вкл."
 
 msgctxt "#16100"
 msgid "All Videos"
-msgstr "Все видео"
+msgstr "Всё видео"
 
 msgctxt "#16101"
 msgid "Unwatched"
@@ -5707,6 +5902,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Blend (программный)"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Авто - оптимизировано для ION"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Постобработка"
@@ -5715,9 +5914,1445 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Переход дисплея в спящий режим через"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "\"%i МБ"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i ч."
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i дн."
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Переключиться на канал"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Разделяйте слова в поисковом запросе с помощью AND, OR и/или NOT."
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "или используйте словосочетания, чтобы найти точное совпадение, например \"Волшебник из страны Оз\"."
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Найти похожие программы"
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "Импорт данных EPG от клиентов"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "Информация о PVR-потоке"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Приемное устройство"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Состояние устройства"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Качество сигнала"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "Сервер PVR"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "Без шифрования"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Фиксированн."
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Шифрование"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "Сервер PVR %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "Записи ТВ"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "Папка по умолчанию для эскизов PVR"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Каналы"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Радио"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Скрытый"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "Телеканалы"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Радиостанции"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Предстоящие записи"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Добавить таймер…"
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Ничего не найдено"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "Нет записей EPG"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Канал"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Сейчас"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Далее"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Расписание"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Сведения"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Этот канал уже записывается"
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "Не удается проиграть канал. См. журнал"
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Не удается проиграть запись. См. журнал."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Отображать качество сигнала"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "Не поддерживается сервером PVR ."
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Скрыть этот канал?"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Таймер"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Переименовать эту запись?"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "Переименовать этот таймер?"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Запись"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Проверьте настройки или см. журнал."
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "Нет активных клиентов PVR. Дождитесь запуска клиентов PVR или см. журнал."
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Новый канал"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Сведения о канале"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Управление группами"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Показать канал"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Отображать видимые каналы"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Отображать скрытые каналы"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Переместить канал:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Сведения о записи"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Скрыть канал"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Сведения недоступны"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Новый таймер"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Изменить таймер"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Таймер включен"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Остановить запись"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Удалить таймер"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Добавить таймер"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Сортировать по каналам"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "В начало"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "В конец"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Окно EPG по умолчанию"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Это событие уже записывается"
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Не удалось удалить запись. См. журнал."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "Интервал обновления EPG"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Не сохранять EPG в базе данных"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Задержка переключения каналов"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Включен:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Имя:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Папка:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Радио:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Канал:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "День:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Начало:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Конец:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Приоритет:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Срок хранения (дней):"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Первый день:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Неизвестный канал %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Пн-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Вт-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Ср-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Чт-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Пт-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Сб-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Вс"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Пн-Вт-Ср-Чт-Пт-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Пн-Вт-Ср-Чт-Пт-Сб-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Пн-Вт-Ср-Чт-Пт-Сб-Вс"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Сб-Вс"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Введите имя записи"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Предупреждение"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Переключитесь на другой канал."
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Введите имя папки для записи"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Следующий таймер:"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "в"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Не удалось сохранить таймер. См. журнал."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Неизвестная ошибка. Повторите попытку или см. журнал."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "Ошибка сервера PVR . См. журнал."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Версия"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Адрес"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Размер диска"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Поиск каналов"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "Невозможно использовать функции PVR во время поиска."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "Выберите сервер для поиска"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Номер клиента"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Избегать повторений"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Производится запись по этому таймеру. Действительно удалить его?"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Только открытые каналы"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Игнорировать существующие таймеры"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Игнорировать существующие записи"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Время начала"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Время окончания"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Дата начала"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Дата окончания"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Мин. длительность"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Макс. длительность"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Включая неизвестные жанры"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Поисковая строка"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Искать в описании"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "С учетом регистра"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Канал недоступен"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Группы не заданы"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Сначала создайте группу"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Имя новой группы"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Группа"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Поиск в программе"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Управление группами"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Группы не заданы"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Группы"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Группы"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "Сервер PVR не поддерживает это действие. См. журнал."
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Канал"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Пн"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Вт"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Ср"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Чт"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Пт"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Сб"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Вс"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "из"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Следующая запись"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Ведется запись"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "с"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "по"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Запись активна"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Записи"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Не удается начать запись. См. журнал."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Переключить"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "Сведения PVR"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Искать недостающие значки"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Скрыть окно сведений о видео"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Задержка начала воспроизведения"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "Открывать каналы в окне"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Длительность быстрой записи"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Приоритет записи по умолчанию"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Срок хранения по умолчанию"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Интервал в начале записи"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Интервал в конце записи"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Воспроизведение"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Отображать сведения о канале при переключении"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Автоматически скрывать сведения о канале"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Меню/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Количество дней в EPG"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "Длительность показа сведений о канале"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Очистить базу данных PVR"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "Все сведения в базе данных PVR будут удалены"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "Очистить базу данных EPG"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "Очистка базы данных EPG…"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Продолжить с последнего канала при запуске"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "Свернуто"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "Служба PVR"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Подключенные серверы PVR не поддерживают сканирование каналов."
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Не удается начать сканирование каналов. См. журнал."
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Продолжить?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Операции клиентов"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "Операции клиентов PVR"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Время начала записи: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Время окончания записи: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Управление каналами"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "Источник EPG:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Название канала:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Значок канала:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Изменить канал"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Новый канал"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Управление группами"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Включение EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Группа:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Введите название нового канала"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "Виртуальный сервер XBMC"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "Клиент"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Удалить канал"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Этот список содержит изменения"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Выберите сервер"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Введите правильный URL нового канала"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "Сервер PVR не поддерживает таймеры."
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Все радиостанции"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Все телеканалы"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Видимые"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Несгруппированные каналы"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Каналы в"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Синхронизировать группы каналов с серверами"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Не удалось включить дополнения PVR. См. журнал."
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Запись отменена"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Запись запланирована"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Запись начата"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Запись завершена"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Запись удалена"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Закрывать OSD после переключения каналов"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "Отключить обновление EPG во время воспроизведения ТВ-потока"
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "Всегда использовать порядок каналов с серверов"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Очистить результаты поиска"
+
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr "Уведомлять о обновлении таймеров"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr "Использовать номера каналов с сервера (только для 1 дополнения PVR)"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "Менеджер PVR запускается…"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Загрузка каналов с клиентов"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "Загрузка таймеров с клиентов"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Загрузка записей с клиентов"
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr "Запуск фоновых процессов"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Нет включенных дополнений PVR"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "Менеджер PVR включен без"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "активных дополнений PVR. Включите по крайней мере одно дополнение"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "для использования функций PVR"
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "Время простоя сервера PVR"
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Команда пробуждения (cmd [время])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Пробуждение перед записью за"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Ежедневное пробуждение"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Время ежедневного пробуждения (ЧЧ:ММ:СС)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "Фильтровать каналы"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "Загрузка EPG из базы данных"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "Обновление данных EPG"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "Запланировать обновление EPG для этого канала?"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "Обновление EPG запланировано для канала"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "Не удалось обновить EPG для канала"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Начать запись"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Остановить запись"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Заблокировать канал"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Разблокировать канал"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Родительский[CR]контроль"
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Период разблокирования"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Изменить код"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Родительский контроль. Введите код:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Канал заблокирован. Введите код:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Неверный код"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "Введен неверный код"
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Родительская блокировка"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Родительская блокировка:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "Не отображать метки \"Сведения недоступны\""
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Не отображать сообщения \"Соединение потеряно\""
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Все записи"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "Не найдено дополнений PVR"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "Для использования функций PVR необходим тюнер,"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "серверное ПО и соответствующее дополнение."
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Посетите xbmc.org/pvr для получения подробностей."
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Предупреждение о конфликте"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Ошибка из-за конфликта"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Конфликт при записи"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Ошибка записи"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Клиентск."
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Настройки клиента"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Подтверждать переключение каналов нажатием ОК"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Другое/неизвестно"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Фильм/драма"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Детектив/триллер"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Приключения/вестерн/боевик"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Фантастика/фэнтези/ужасы"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Комедия"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Мелодрама/фольклор"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Романтика"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Классика/религия/Исторический фильм/драма"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Для взрослых/драма"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Новости/события"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Новости/погода"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Выпуск новостей"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Документальный"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Обсуждения/интервью/дебаты"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Шоу/игровое шоу"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "Игровое шоу/викторина/конкурс"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Эстрадный концерт"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Ток-шоу"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Спорт"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Специально событие"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Спортивный выпуск"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Футбол"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Теннис/сквош"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Командные виды спорта"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Атлетика"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Автомотоспорт"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Водный спорт"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Зимние виды спорта"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Конный спорт"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Единоборства"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Программы для детей и юношества"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Детские дошкольные передачи"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Развлекательные передачи от 6 до 14"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Развлекательные передачи от 10 до 16"
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr "Информация/обучение/для школьников"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "Мультфильмы"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Музыка/балет/танцы"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Рок/поп"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Серьезная/классическая музыка"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "Народная/традиционная музыка"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Музыка/опера"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Балет"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Искусство/культура"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Выступления"
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Изящные искусства"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Религия"
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr "Поп-культура/традиционные искусства"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Литература"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Кино"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "Экспериментальное кино/видео"
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "Вещание/пресса"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Новые СМИ"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "Передачи о культуре и искусстве"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Мода"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Общество/политика/экономика"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Журналы/репортажи/документалистика"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Экономические и социальные советы"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "Замечательные люди"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "Образование/наука/факты"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "Природа/животные/экология"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Наука и техника"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Медицина/физиология/психология"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "Зарубежные страны/путешествия"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "Общественные и духовные науки"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Последипломное обучение"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Языки"
+
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "Досук/хобби"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Туризм/путешествия"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Ремесла"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Авто-мото"
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr "Фитнес и здоровье"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Кулинария"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Реклама и шоппинг"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Сад и огород"
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr "Особые характеристики"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Оригинальный язык"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Ч/Б"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Неопубликованное"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "Прямая трансляция"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Драма"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Детектив/триллер"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Приключения/вестерн/боевик"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Фантастика/фэнтези/ужасы"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Комедия"
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Мелодрама/фольклор"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Романтика"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "Классика/религия/история"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Для взрослых"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -5801,7 +7436,7 @@ msgstr "Сканировать новое"
 
 msgctxt "#20025"
 msgid "Scan all"
-msgstr "Сканировать все"
+msgstr "Сканировать всё"
 
 msgctxt "#20026"
 msgid "Region"
@@ -5829,7 +7464,7 @@ msgstr "Заблокировать разделы \"Программы\" и \"С
 
 msgctxt "#20042"
 msgid "Lock file manager"
-msgstr "Заблокировать \"Файл-менеджер\""
+msgstr "Заблокировать \"Менеджер файлов\""
 
 msgctxt "#20043"
 msgid "Lock settings"
@@ -5977,7 +7612,7 @@ msgstr "Использовать анимацию"
 
 msgctxt "#20080"
 msgid "Disable RSS during music"
-msgstr "Отключить RSS-ленту во время воспроизведения музыки"
+msgstr "Отключить RSS-ленту при воспроизведении музыки"
 
 msgctxt "#20081"
 msgid "Enable shortcut buttons"
@@ -6053,7 +7688,7 @@ msgstr "Запрос данных для альбома…"
 
 msgctxt "#20099"
 msgid "Can't rip CD or track while playing from CD"
-msgstr "Невозможно оцифровывать во время проигрывания"
+msgstr "Во время воспроизведения оцифровка невозможна"
 
 msgctxt "#20100"
 msgid "Master lock code and settings"
@@ -6213,7 +7848,7 @@ msgstr "в порт %i, слот %i"
 
 msgctxt "#20140"
 msgid "Lock screensaver"
-msgstr "Заблокировать хранитель экрана"
+msgstr "Заблокировать заставку"
 
 msgctxt "#20141"
 msgid "Set"
@@ -6373,7 +8008,7 @@ msgstr "Caps Lock"
 
 msgctxt "#20180"
 msgid "Symbols"
-msgstr "Символы"
+msgstr "Симв."
 
 msgctxt "#20181"
 msgid "Backspace"
@@ -6402,6 +8037,10 @@ msgstr "Подождите…"
 msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
+
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Объявлять об обновлении медиатеки по UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6433,11 +8072,11 @@ msgstr "Изменить инфоресурс"
 
 msgctxt "#20196"
 msgid "Export music library"
-msgstr "Экспортировать музыкальную медиатеку"
+msgstr "Экспортировать медиатеку музыки"
 
 msgctxt "#20197"
 msgid "Import music library"
-msgstr "Импортировать музыкальную медиатеку"
+msgstr "Импортировать медиатеку музыки"
 
 msgctxt "#20198"
 msgid "No artist found!"
@@ -6446,6 +8085,26 @@ msgstr "Исполнитель не найден."
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Не удалось загрузить сведения об исполнителе"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Музыка Android"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Видео Android"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Картинки Android"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Фото Android"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Приложения Android"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -6529,7 +8188,7 @@ msgstr "Создать новую папку"
 
 msgctxt "#20310"
 msgid "Dim LCD on playback"
-msgstr "Затемнять LCD-экран при проигрывании"
+msgstr "Затемнять LCD-экран при воспроизведении"
 
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
@@ -6546,6 +8205,26 @@ msgstr "Видео - Медиатека"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Сорт. по ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Сканирование фильмов с помощью %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Сканирование муз. клипов с помощью %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Сканирование сериалов с помощью %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Сканирование исполнителей с помощью %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Сканирование альбомов с помощью %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -6673,7 +8352,7 @@ msgstr "Получение расписания серий…"
 
 msgctxt "#20355"
 msgid "Loading info for episodes in directory"
-msgstr "Загрузка сведений о сериях в папке…"
+msgstr "Загрузка сведений об серий в папке…"
 
 msgctxt "#20356"
 msgid "Select TV show:"
@@ -6893,11 +8572,11 @@ msgstr "Трейлер"
 
 msgctxt "#20411"
 msgid "Flatten"
-msgstr "Без категорий"
+msgstr "Скрыть категории"
 
 msgctxt "#20412"
 msgid "Flatten TV shows"
-msgstr "Не объединять серии сериалов в сезоны"
+msgstr "Скрывать списки сезонов сериалов"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -6949,7 +8628,7 @@ msgstr "Слайд-шоу фанартов"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
-msgstr "Экспортировать одним файлом или разделять"
+msgstr "Экспортировать в одну папку или разделять"
 
 msgctxt "#20427"
 msgid "files per entry?"
@@ -6957,7 +8636,7 @@ msgstr "на отдельные файлы для каждой записи?"
 
 msgctxt "#20428"
 msgid "Single file"
-msgstr "Одним файлом"
+msgstr "В одну папку"
 
 msgctxt "#20429"
 msgid "Separate"
@@ -6982,10 +8661,6 @@ msgstr "Извлекать метаданные из медиафайлов"
 msgctxt "#20434"
 msgid "Sets"
 msgstr "Киноциклы"
-
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Выбрать эскиз киноцикла"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -7057,7 +8732,7 @@ msgstr "серия"
 
 msgctxt "#20453"
 msgid "episodes"
-msgstr "серий"
+msgstr "серии"
 
 msgctxt "#20454"
 msgid "Listener"
@@ -7067,10 +8742,6 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr "Слушателей"
 
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Выбрать фанарт киноцикла"
-
 msgctxt "#20457"
 msgid "Movie set"
 msgstr "Киноцикл"
@@ -7078,6 +8749,30 @@ msgstr "Киноцикл"
 msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Объединять фильмы в циклы"
+
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Теги"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Добавить %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Удалить %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Новый тег..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "Тег с именем '%s' уже существует."
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Выбрать %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7221,7 +8916,7 @@ msgstr "Тишина"
 
 msgctxt "#21389"
 msgid "Enable custom background"
-msgstr "Разрешить выбор фоновых изображений"
+msgstr "Использовать собственный фон"
 
 msgctxt "#21390"
 msgid "Power management level"
@@ -7253,7 +8948,7 @@ msgstr "Глава"
 
 msgctxt "#21397"
 msgid "High quality pixel shader v2"
-msgstr "Качественные пиксельные шейдеры в. 2"
+msgstr "Качеств. пиксельные шейдеры в. 2"
 
 msgctxt "#21398"
 msgid "Enable playlist at startup"
@@ -7326,10 +9021,6 @@ msgstr "Инфоресурс для сериалов по умолчанию"
 msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Инфоресурс для клипов по умолчанию"
-
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Использовать язык инфоресурса при недоступности основного"
 
 msgctxt "#21417"
 msgid "- Settings"
@@ -7421,7 +9112,7 @@ msgstr "Диск %c"
 
 msgctxt "#21439"
 msgid "Edit party mode rules"
-msgstr "Изменить правила режима \"party\""
+msgstr "Изменить правила режима \"Вечеринка\""
 
 msgctxt "#21440"
 msgid "Home folder"
@@ -7487,6 +9178,14 @@ msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Объем кэша недостаточен для непрерывного проигрывания"
 
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Внешнее хранилище"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Кол-во просмотренных серий"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Расположение субтитров"
@@ -7510,6 +9209,18 @@ msgstr "Сверху видео"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "Над видео"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f—%.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d—%d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s—%s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -8007,17 +9718,21 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Запуск…"
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Масштабировать телетекст до 4:3"
+
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Активирован внешний проигрыватель"
 
 msgctxt "#23101"
 msgid "Click OK to terminate the player"
-msgstr "Нажмите ОК, чтобы закрыть проигрыватель"
+msgstr "Нажмите ОК для закрытия проигрывателя"
 
 msgctxt "#23104"
 msgid "Click OK when playback has ended"
-msgstr "Нажмите ОК, когда проигрывание завершится"
+msgstr "Нажмите ОК по завершении проигрывания"
 
 msgctxt "#24000"
 msgid "Add-on"
@@ -8087,6 +9802,10 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Службы"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "Клиенты PVR"
+
 msgctxt "#24020"
 msgid "Configure"
 msgstr "Настроить"
@@ -8110,6 +9829,10 @@ msgstr "Погода"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (стандартно)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Служба прогноза погоды"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -8197,7 +9920,7 @@ msgstr "Версия:"
 
 msgctxt "#24052"
 msgid "Disclaimer"
-msgstr "Соглашение"
+msgstr "Уведомление"
 
 msgctxt "#24053"
 msgid "License:"
@@ -8323,6 +10046,14 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Загрузить это дополнение?"
 
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "Не удается загрузить обложку"
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "В обложке отсутствуют некоторые файлы"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Уведомления"
@@ -8377,7 +10108,7 @@ msgstr "Загрузить"
 
 msgctxt "#33004"
 msgid "Download & play"
-msgstr "Загрузить и проиграть"
+msgstr "Загрузить и воспроизвести"
 
 msgctxt "#33005"
 msgid "Download & save"
@@ -8597,11 +10328,11 @@ msgstr "Варианты фона"
 
 msgctxt "#33070"
 msgid "Custom background"
-msgstr "Свой фон"
+msgstr "Собственный фон"
 
 msgctxt "#33071"
 msgid "Custom backgrounds"
-msgstr "Свои фоны"
+msgstr "Собственные фоны"
 
 msgctxt "#33072"
 msgid "View Readme"
@@ -8847,6 +10578,14 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Не использовать пользовательскую раскладку для этого устройства"
 
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Включить поддержку джойстика и геймпада"
+
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
+msgstr "Отключить джойстик при наличии iMON"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Расположение"
@@ -8915,10 +10654,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "Не удалось инициализировать адаптер CEC. Проверьте настройки."
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Неподдерживаемая версия интерфейса libCEC. %d выше, чем версия, поддерживаемая XBMC (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "Номер порта HDMI"
@@ -8929,7 +10664,7 @@ msgstr "Подключено"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "Адаптер найден, но libCEC недоступен"
+msgstr "Не удалось инициализировать адаптер CEC: libCEC не найден."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -8957,37 +10692,64 @@ msgstr "Конфигурация обновлена"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr "Не удалось задать новую конфигурацию. Проверьте настройки."
+msgstr "Не удалось применить новую конфигурацию. Проверьте настройки."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr "Посылать команду \"источник неактивен\" при выходе из XBMC"
+msgstr "Отправлять команду \"источник неактивен\" при выходе из XBMC"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Переводить устройства в спящий режим вместе с ПК"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Устройству требует обслуживания"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Игнорировать"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "При выключении телевизора"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Соединение потеряно"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "У текущего пользователя недостаточно прав для подключения к адаптеру CEC"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "Порт занят. Только одна программа может использовать адаптер CEC"
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "Приостанавливать проигрывание при переключении источников"
+
+msgctxt "#36035"
+msgid "Always"
+msgstr "Всегда"
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "При запуске/остановке"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "ТВ"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Усилитель/АВ-ресивер"
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "ТВ и АВ-ресивер (явно)"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Неподдерживаемая версия интерфейса libCEC. %x меньше, чем версия, поддерживаемая XBMC (%x)"

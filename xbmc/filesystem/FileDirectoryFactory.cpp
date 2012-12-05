@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,6 +33,9 @@
 #endif
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
+#endif
+#if defined(TARGET_ANDROID)
+#include "APKDirectory.h"
 #endif
 #include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
@@ -111,6 +113,29 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
   if (pItem->IsRSS())
     return new CRSSDirectory();
 
+#endif
+#if defined(TARGET_ANDROID)
+  if (strExtension.Equals(".apk"))
+  {
+    CStdString strUrl;
+    URIUtils::CreateArchivePath(strUrl, "apk", strPath, "");
+
+    CFileItemList items;
+    CDirectory::GetDirectory(strUrl, items, strMask);
+    if (items.Size() == 0) // no files
+      pItem->m_bIsFolder = true;
+    else if (items.Size() == 1 && items[0]->m_idepth == 0)
+    {
+      // one STORED file - collapse it down
+      *pItem = *items[0];
+    }
+    else
+    { // compressed or more than one file -> create a apk dir
+      pItem->SetPath(strUrl);
+      return new CAPKDirectory;
+    }
+    return NULL;
+  }
 #endif
   if (strExtension.Equals(".zip"))
   {

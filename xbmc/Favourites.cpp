@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,16 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "Favourites.h"
 #include "filesystem/File.h"
 #include "Util.h"
-#include "guilib/Key.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
@@ -80,7 +78,7 @@ bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
       {
         CFileItemPtr item(new CFileItem(name));
         item->SetPath(favourite->FirstChild()->Value());
-        if (thumb) item->SetThumbnailImage(thumb);
+        if (thumb) item->SetArt("thumb", thumb);
         items.Add(item);
       }
     }
@@ -102,8 +100,8 @@ bool CFavourites::Save(const CFileItemList &items)
     const CFileItemPtr item = items[i];
     TiXmlElement favNode("favourite");
     favNode.SetAttribute("name", item->GetLabel().c_str());
-    if (item->HasThumbnail())
-      favNode.SetAttribute("thumb", item->GetThumbnailImage().c_str());
+    if (item->HasArt("thumb"))
+      favNode.SetAttribute("thumb", item->GetArt("thumb").c_str());
     TiXmlText execute(item->GetPath());
     favNode.InsertEndChild(execute);
     rootNode->InsertEndChild(favNode);
@@ -133,7 +131,7 @@ bool CFavourites::AddOrRemove(CFileItem *item, int contextWindow)
     CFileItemPtr favourite(new CFileItem(item->GetLabel()));
     if (item->GetLabel().IsEmpty())
       favourite->SetLabel(CUtil::GetTitleFromPath(item->GetPath(), item->m_bIsFolder));
-    favourite->SetThumbnailImage(item->GetThumbnailImage());
+    favourite->SetArt("thumb", item->GetArt("thumb"));
     favourite->SetPath(executePath);
     items.Add(favourite);
   }

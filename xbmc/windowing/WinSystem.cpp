@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,6 +34,7 @@ CWinSystemBase::CWinSystemBase()
   m_bFullScreen = false;
   m_nScreen = 0;
   m_bBlankOtherDisplay = false;
+  m_fRefreshRate = 0.0f;
 }
 
 CWinSystemBase::~CWinSystemBase()
@@ -45,7 +45,7 @@ CWinSystemBase::~CWinSystemBase()
 bool CWinSystemBase::InitWindowSystem()
 {
   UpdateResolutions();
-
+  g_settings.ApplyCalibrations();
   return true;
 }
 
@@ -63,6 +63,8 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   newRes.fPixelRatio = 1.0f;
   newRes.iWidth = width;
   newRes.iHeight = height;
+  newRes.iScreenWidth = width;
+  newRes.iScreenHeight = height;
   newRes.strMode.Format("%dx%d", width, height);
   if (refreshRate > 1)
     newRes.strMode.Format("%s @ %.2f%s - Full Screen", newRes.strMode, refreshRate, dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
@@ -79,6 +81,8 @@ void CWinSystemBase::UpdateResolutions()
     window.iWidth = 720;
   if (window.iHeight == 0)
     window.iHeight = 480;
+  window.iScreenWidth  = window.iWidth;
+  window.iScreenHeight = window.iHeight;
   if (window.iSubtitles == 0)
     window.iSubtitles = (int)(0.965 * window.iHeight);
   window.fPixelRatio = 1.0f;
@@ -90,6 +94,8 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
   window.iWidth = width;
   window.iHeight = height;
+  window.iScreenWidth = width;
+  window.iScreenHeight = height;
   window.iSubtitles = (int)(0.965 * window.iHeight);
   g_graphicsContext.ResetOverscan(window);
 }
@@ -105,21 +111,25 @@ int CWinSystemBase::DesktopResolution(int screen)
 
 static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addindex)
 {
-  int width = g_settings.m_ResInfo[addindex].iWidth;
-  int height = g_settings.m_ResInfo[addindex].iHeight;
+  int width  = g_settings.m_ResInfo[addindex].iScreenWidth;
+  int height = g_settings.m_ResInfo[addindex].iScreenHeight;
+  int interlaced = g_settings.m_ResInfo[addindex].dwFlags & D3DPRESENTFLAG_INTERLACED;
 
   for (unsigned int idx = 0; idx < resolutions.size(); idx++)
-    if (resolutions[idx].width == width && resolutions[idx].height == height)
+    if (   resolutions[idx].width == width
+        && resolutions[idx].height == height
+        && resolutions[idx].interlaced == interlaced)
       return; // already taken care of.
 
-  RESOLUTION_WHR res = {width, height, addindex};
+  RESOLUTION_WHR res = {width, height, interlaced, (int)addindex};
   resolutions.push_back(res);
 }
 
-static bool resSortPredicate (RESOLUTION_WHR i, RESOLUTION_WHR j)
+static bool resSortPredicate(RESOLUTION_WHR i, RESOLUTION_WHR j)
 {
   return (    i.width < j.width
-          || (i.width == j.width && i.height < j.height));
+          || (i.width == j.width && i.height < j.height)
+          || (i.width == j.width && i.height == j.height && i.interlaced != j.interlaced) );
 }
 
 vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
@@ -139,31 +149,29 @@ vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
 static void AddRefreshRate(vector<REFRESHRATE> &refreshrates, unsigned int addindex)
 {
   float RefreshRate = g_settings.m_ResInfo[addindex].fRefreshRate;
-  bool Interlaced = ((g_settings.m_ResInfo[addindex].dwFlags & D3DPRESENTFLAG_INTERLACED) == D3DPRESENTFLAG_INTERLACED);
 
   for (unsigned int idx = 0; idx < refreshrates.size(); idx++)
-    if (   refreshrates[idx].RefreshRate == RefreshRate
-        && refreshrates[idx].Interlaced  == Interlaced )
+    if (   refreshrates[idx].RefreshRate == RefreshRate)
       return; // already taken care of.
 
-  REFRESHRATE rr = {RefreshRate, Interlaced, addindex};
+  REFRESHRATE rr = {RefreshRate, (int)addindex};
   refreshrates.push_back(rr);
 }
 
-static bool rrSortPredicate (REFRESHRATE i, REFRESHRATE j)
+static bool rrSortPredicate(REFRESHRATE i, REFRESHRATE j)
 {
-  return (   (i.RefreshRate < j.RefreshRate)
-          || (i.RefreshRate == j.RefreshRate && !i.Interlaced));
+  return (i.RefreshRate < j.RefreshRate);
 }
 
-vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height)
+vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height, uint32_t dwFlags)
 {
   vector<REFRESHRATE> refreshrates;
 
   for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
     if (   g_settings.m_ResInfo[idx].iScreen == screen
-        && g_settings.m_ResInfo[idx].iWidth  == width
-        && g_settings.m_ResInfo[idx].iHeight == height)
+        && g_settings.m_ResInfo[idx].iScreenWidth  == width
+        && g_settings.m_ResInfo[idx].iScreenHeight == height
+        && (g_settings.m_ResInfo[idx].dwFlags & D3DPRESENTFLAG_INTERLACED) == (dwFlags & D3DPRESENTFLAG_INTERLACED))
       AddRefreshRate(refreshrates, idx);
 
   // Can't assume a sort order

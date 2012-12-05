@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "system.h"
@@ -83,7 +82,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
   m_pInfo->submodule = NULL;
 
-  if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
+  if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create() == ADDON_STATUS_OK)
   {
     // Start the visualisation
     CStdString strFile = URIUtils::GetFileName(g_application.CurrentFile());
@@ -211,12 +210,16 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       if ( action == VIS_ACTION_UPDATE_TRACK && param )
       {
         const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
+        CStdString artist(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator));
+        CStdString albumArtist(StringUtils::Join(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
+        CStdString genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
+        
         VisTrack track;
         track.title       = tag->GetTitle().c_str();
-        track.artist      = StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
+        track.artist      = artist.c_str();
         track.album       = tag->GetAlbum().c_str();
-        track.albumArtist = StringUtils::Join(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
-        track.genre       = StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str();
+        track.albumArtist = albumArtist.c_str();
+        track.genre       = genre.c_str();
         track.comment     = tag->GetComment().c_str();
         track.lyrics      = tag->GetLyrics().c_str();
         track.trackNumber = tag->GetTrackNumber();

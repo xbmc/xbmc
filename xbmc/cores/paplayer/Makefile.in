@@ -2,43 +2,40 @@ ARCH=@ARCH@
 
 .PHONY: compile
 
-CFLAGS+=-DHAS_ALSA
-
-SRCS=ADPCMCodec.cpp \
-     AudioDecoder.cpp \
-     BXAcodec.cpp \
-     CDDAcodec.cpp \
-     CodecFactory.cpp \
-     DVDPlayerCodec.cpp \
-     FLACcodec.cpp \
-     ModplugCodec.cpp \
-     MP3codec.cpp \
-     NSFCodec.cpp \
-     OggCallback.cpp \
-     OGGcodec.cpp \
-     PAPlayer.cpp \
-     PCMCodec.cpp \
-     ReplayGain.cpp \
-     SIDCodec.cpp \
-     TimidityCodec.cpp \
-     VGMCodec.cpp \
-     WAVcodec.cpp \
-     YMCodec.cpp \
-
-ifeq (@USE_ASAP_CODEC@,1)
-  SRCS+=ASAPCodec.cpp
+ifneq ($(findstring osx,$(ARCH)), osx)
+CFLAGS += -DHAS_ALSA
+CXXFLAGS += -DHAS_ALSA
 endif
 
-ifneq ($(findstring osx,$(ARCH)), osx)
-  CXXFLAGS+=-DHAS_ALSA
+SRCS  = ADPCMCodec.cpp
+SRCS += AudioDecoder.cpp
+SRCS += CDDAcodec.cpp
+SRCS += CodecFactory.cpp
+SRCS += DVDPlayerCodec.cpp
+SRCS += FLACcodec.cpp
+SRCS += ModplugCodec.cpp
+SRCS += MP3codec.cpp
+SRCS += NSFCodec.cpp
+SRCS += OggCallback.cpp
+SRCS += OGGcodec.cpp
+SRCS += PAPlayer.cpp
+SRCS += PCMCodec.cpp
+SRCS += SIDCodec.cpp
+SRCS += TimidityCodec.cpp
+SRCS += VGMCodec.cpp
+SRCS += WAVcodec.cpp
+SRCS += YMCodec.cpp
+
+ifeq (@USE_ASAP_CODEC@,1)
+SRCS += ASAPCodec.cpp
 endif
 
 ifneq ($(ARCH), arm)
-  CXXFLAGS+=-DHAS_SPC_CODEC
-  SRCS+=SPCCodec.cpp
+CXXFLAGS += -DHAS_SPC_CODEC
+SRCS += SPCCodec.cpp
 endif
 
-LIB=paplayer.a
+LIB = paplayer.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

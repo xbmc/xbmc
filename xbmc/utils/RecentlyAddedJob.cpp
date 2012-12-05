@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,6 +32,8 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "music/MusicThumbLoader.h"
+#include "video/VideoThumbLoader.h"
 
 #define NUM_ITEMS 10
 
@@ -53,6 +54,8 @@ bool CRecentlyAddedJob::UpdateVideo()
   int            i = 0;
   CFileItemList  items;
   CVideoDatabase videodatabase;
+  CVideoThumbLoader loader;
+  loader.Initialize();
   
   videodatabase.Open();
 
@@ -70,15 +73,15 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMovie." + value + ".Rating"      , strRating);
       home->SetProperty("LatestMovie." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
       home->SetProperty("LatestMovie." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
-      home->SetProperty("LatestMovie." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
+      home->SetProperty("LatestMovie." + value + ".RunningTime" , item->GetVideoInfoTag()->GetDuration() / 60);
       home->SetProperty("LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMovie." + value + ".Trailer"     , item->GetVideoInfoTag()->m_strTrailer);
 
-      if (!item->HasThumbnail())
-        m_thumbLoader.LoadItem(item.get());
+      if (!item->HasArt("thumb"))
+        loader.LoadItem(item.get());
 
-      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
-      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetProperty("fanart_image"));
+      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetArt("thumb"));
+      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetArt("fanart"));
     }
   } 
   for (; i < NUM_ITEMS; ++i)
@@ -124,17 +127,17 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
 
-      if (!item->HasThumbnail())
-        m_thumbLoader.LoadItem(item.get());
+      if (!item->HasArt("thumb"))
+        loader.LoadItem(item.get());
 
       std::string seasonThumb;
       if (item->GetVideoInfoTag()->m_iIdSeason > 0)
         seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, "season", "thumb");
 
-      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetThumbnailImage());
-      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetProperty("tvshowthumb"));
+      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
+      home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
       home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
-      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetProperty("fanart_image"));
+      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
     }
   } 
   for (; i < NUM_ITEMS; ++i)
@@ -169,15 +172,15 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMusicVideo." + value + ".Title"       , item->GetLabel());
       home->SetProperty("LatestMusicVideo." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
       home->SetProperty("LatestMusicVideo." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
-      home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
+      home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->GetDuration() / 60);
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator));
 
-      if (!item->HasThumbnail())
-        m_thumbLoader.LoadItem(item.get());
+      if (!item->HasArt("thumb"))
+        loader.LoadItem(item.get());
 
-      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetThumbnailImage());
-      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetProperty("fanart_image"));
+      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetArt("thumb"));
+      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetArt("fanart"));
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -211,10 +214,11 @@ bool CRecentlyAddedJob::UpdateMusic()
   CFileItemList  musicItems;
   CMusicDatabase musicdatabase;
   CMusicThumbLoader loader;
+  loader.Initialize();
   
   musicdatabase.Open();
   
-  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", musicItems, NUM_ITEMS))
+  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://4/", musicItems, NUM_ITEMS))
   {
     long idAlbum = -1;
     CStdString strAlbumThumb;
@@ -237,8 +241,8 @@ bool CRecentlyAddedJob::UpdateMusic()
 
         if (loader.LoadItem(item.get()))
         {
-          strAlbumThumb = item->GetThumbnailImage();
-          strAlbumFanart = item->GetProperty("fanart_image").asString();
+          strAlbumThumb = item->GetArt("thumb");
+          strAlbumFanart = item->GetArt("fanart");
         }
       }
 

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -304,6 +303,14 @@ private:
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker *worker);
   unsigned int GetMaxWorkers(CJob::PRIORITY priority) const;
+
+  /*! \brief skips over any paused jobs of given priority.
+   Moves any paused jobs at the front of the queue to the back of the
+   queue, allowing unpaused jobs to continue processing.
+   \param priority the priority queue to consider.
+   \return true if an unpaused job is available, false if no unpaused jobs are available.
+   */
+  bool SkipPausedJobs(CJob::PRIORITY priority);
 
   unsigned int m_jobCounter;
 

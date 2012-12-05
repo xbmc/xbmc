@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -155,7 +154,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format);
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual bool         AddVideoPicture(DVDVideoPicture* picture);
@@ -239,7 +238,6 @@ protected:
 
   // clear colour for "black" bars
   DWORD                m_clearColour;
-  unsigned int         m_flags;
   ERenderFormat        m_format;
   unsigned int         m_extended_format;
 

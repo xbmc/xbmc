@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  *
  * Note: parts of this code comes from libdvdread.
@@ -184,11 +183,11 @@ public:
   int64_t GetFileSize(HANDLE hFile);
   int64_t GetFilePosition(HANDLE hFile);
   int64_t Seek(HANDLE hFile, int64_t lOffset, int whence);
-  HANDLE OpenFile( const char* filename );
+  HANDLE OpenFile(  const char *isofile, const char* filename );
   long ReadFile(HANDLE fd, unsigned char *pBuffer, long lSize);
   void CloseFile(HANDLE hFile);
 
-  udf_dir_t *OpenDir( const char *subdir );
+  udf_dir_t *OpenDir( const char *isofile, const char *subdir );
   udf_dirent_t *ReadDir( udf_dir_t *dirp );
   int CloseDir( udf_dir_t *dirp );
 

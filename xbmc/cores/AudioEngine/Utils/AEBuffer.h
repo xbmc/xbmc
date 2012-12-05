@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -132,8 +131,12 @@ public:
   #endif
     if (dst)
       memcpy(dst, m_buffer, size);
-    memmove(m_buffer, m_buffer + size, m_bufferSize - size);
-    m_bufferPos -= size;
+    // we can just reset m_bufferPos
+    // if there is nothing else inside.
+    if ((m_bufferPos != size) && size <= m_bufferPos)
+      memmove(m_buffer, m_buffer + size, m_bufferSize - size);
+    if (size <= m_bufferPos)
+      m_bufferPos -= size;
   }
 
   /* cursor methods */

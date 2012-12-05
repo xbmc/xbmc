@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,7 +24,6 @@
 
 #include "Autorun.h"
 #include "Application.h"
-#include "Util.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
@@ -34,7 +32,6 @@
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
@@ -139,6 +136,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     return false;
   }
 
+  // Sorting necessary for easier HDDVD handling
+  vecItems.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+
   bool bAllowVideo = true;
 //  bool bAllowPictures = true;
   bool bAllowMusic = true;
@@ -152,6 +152,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   // is this a root folder we have to check the content to determine a disc type
   if( bRoot )
   {
+    CStdString hddvdname = "";
+    CFileItemPtr phddvdItem;
+
     // check root folders next, for normal structured dvd's
     for (int i = 0; i < vecItems.Size(); i++)
     {
@@ -201,6 +204,115 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           return true;
         }
 
+        // Check if the current foldername indicates a HD DVD structure (default is "HVDVD_TS").
+        // Most HD DVD will also include an "ADV_OBJ" folder for advanced content. This folder should be handled first.
+        // ToDo: for the time beeing, the DVD autorun settings are used to determine if the HD DVD should be started automatically.
+        CFileItemList items, sitems;
+        
+        // Advanced Content HD DVD (most discs?)
+        if (name.Equals("ADV_OBJ"))
+        {
+          CLog::Log(LOGINFO,"HD DVD: Checking for playlist.");
+          // find playlist file
+          CDirectory::GetDirectory(pItem->GetPath(), items, "*.xpl");
+          if (items.Size())
+          {
+            // HD DVD Standard says the highest numbered playlist has to be handled first.
+            CLog::Log(LOGINFO,"HD DVD: Playlist found. Set filetypes to *.xpl for external player.");
+            items.Sort(SORT_METHOD_LABEL, SortOrderDescending);
+            phddvdItem = pItem; 
+            hddvdname = URIUtils::GetFileName(items[0]->GetPath());
+            CLog::Log(LOGINFO,"HD DVD: %s", items[0]->GetPath().c_str());
+          }
+        }
+
+        // Standard Content HD DVD (few discs?)
+        if (name.Equals("HVDVD_TS") && bAllowVideo
+        && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
+        {
+          if (hddvdname == "")
+          {
+            CLog::Log(LOGINFO,"HD DVD: Checking for ifo.");
+            // find Video Manager or Title Set Information
+            CDirectory::GetDirectory(pItem->GetPath(), items, "HV*.ifo");
+            if (items.Size())
+            {
+              // HD DVD Standard says the lowest numbered ifo has to be handled first.
+              CLog::Log(LOGINFO,"HD DVD: IFO found. Set filename to HV* and filetypes to *.ifo for external player.");
+              items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+              phddvdItem = pItem; 
+              hddvdname = URIUtils::GetFileName(items[0]->GetPath());
+              CLog::Log(LOGINFO,"HD DVD: %s",items[0]->GetPath().c_str());
+            }
+          }
+          // Find and sort *.evo files for internal playback.
+          // While this algorithm works for all of my HD DVDs, it may fail on other discs. If there are very large extras which are
+          // alphabetically before the main movie they will be sorted to the top of the playlist and get played first.
+          CDirectory::GetDirectory(pItem->GetPath(), items, "*.evo");
+          if (items.Size())
+          {
+            // Sort *.evo files in alphabetical order.
+            items.Sort(SORT_METHOD_LABEL, SortOrderAscending);
+            int64_t asize = 0;
+            int ecount = 0;
+            // calculate average size of elements above 1gb
+            for (int j = 0; j < items.Size(); j++)
+              if (items[j]->m_dwSize > 1000000000)
+              {
+                ecount++;
+                asize = asize + items[j]->m_dwSize;
+              }
+            asize = asize / ecount;
+            // Put largest files in alphabetical order to top of new list.
+            for (int j = 0; j < items.Size(); j++)
+              if (items[j]->m_dwSize >= asize)
+                sitems.Add (items[j]);
+            // Sort *.evo files by size.
+            items.Sort(SORT_METHOD_SIZE, SortOrderDescending);
+            // Add other files with descending size to bottom of new list.
+            for (int j = 0; j < items.Size(); j++)
+              if (items[j]->m_dwSize < asize)
+                sitems.Add (items[j]);
+            // Replace list with optimized list.
+            items.Clear();
+            items.Copy (sitems);
+            sitems.Clear();
+          }
+          if (hddvdname != "")
+          {
+            CFileItem item(URIUtils::AddFileToFolder(phddvdItem->GetPath(), hddvdname), false);
+            item.SetLabel(g_mediaManager.GetDiskLabel(strDrive));
+            item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId(strDrive);
+
+            if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+            item.m_lStartOffset = STARTOFFSET_RESUME;
+
+            // get playername
+            CStdString hddvdplayer = CPlayerCoreFactory::GetPlayerName(CPlayerCoreFactory::GetDefaultPlayer(item));
+            
+            // Single *.xpl or *.ifo files require an external player to handle playback.
+            // If no matching rule was found, DVDPlayer will be default player.
+            if (hddvdplayer != "DVDPlayer")
+            {
+              CLog::Log(LOGINFO,"HD DVD: External singlefile playback initiated: %s",hddvdname.c_str());
+              g_application.PlayFile(item, false);
+              bPlaying = true;
+              return true;
+            } else
+              CLog::Log(LOGINFO,"HD DVD: No external player found. Fallback to internal one.");
+          }
+
+          //  internal *.evo playback.
+          CLog::Log(LOGINFO,"HD DVD: Internal multifile playback initiated.");
+          g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+          g_playlistPlayer.SetShuffle (PLAYLIST_VIDEO, false);
+          g_playlistPlayer.Add(PLAYLIST_VIDEO, items);
+          g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+          g_playlistPlayer.Play(0);
+          bPlaying = true;
+          return true;
+        }
+				
         // Video CDs can have multiple file formats. First we need to determine which one is used on the CD
         CStdString strExt;
         if (name.Equals("MPEGAV"))

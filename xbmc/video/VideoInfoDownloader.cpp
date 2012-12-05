@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,30 +13,40 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "VideoInfoDownloader.h"
-#include "Util.h"
 #include "utils/XMLUtils.h"
 #include "utils/RegExp.h"
 #include "NfoFile.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogOK.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
 using namespace std;
+using namespace VIDEO;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)
 #endif
+
+CVideoInfoDownloader::CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) :
+  CThread("CVideoInfoDownloader"), m_state(DO_NOTHING), m_found(0), m_info(scraper)
+{
+  m_http = new XFILE::CCurlFile;
+}
+
+CVideoInfoDownloader::~CVideoInfoDownloader()
+{
+  delete m_http;
+}
 
 // return value: 0 = we failed, -1 = we failed and reported an error, 1 = success
 int CVideoInfoDownloader::InternalFindMovie(const CStdString &strMovie,
@@ -45,7 +55,7 @@ int CVideoInfoDownloader::InternalFindMovie(const CStdString &strMovie,
 {
   try
   {
-    movielist = m_info->FindMovie(m_http, strMovie, cleanChars);
+    movielist = m_info->FindMovie(*m_http, strMovie, cleanChars);
   }
   catch (const ADDON::CScraperError &sce)
   {
@@ -62,7 +72,7 @@ void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
     CGUIDialogOK *pdlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     pdlg->SetHeading(sce.Title());
     pdlg->SetLine(0, sce.Message());
-    g_application.getApplicationMessenger().DoModal(pdlg, WINDOW_DIALOG_OK);
+    CApplicationMessenger::Get().DoModal(pdlg, WINDOW_DIALOG_OK);
   }
 }
 
@@ -178,7 +188,7 @@ bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
     return true;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(m_http, url, true/*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(*m_http, url, true/*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
@@ -213,7 +223,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
     return true;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(m_http, url, false/*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(*m_http, url, false/*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
@@ -248,14 +258,14 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
     return true;
   }
   else  // unthreaded
-    return !(movieDetails = m_info->GetEpisodeList(m_http, url)).empty();
+    return !(movieDetails = m_info->GetEpisodeList(*m_http, url)).empty();
 }
 
 void CVideoInfoDownloader::CloseThread()
 {
-  m_http.Cancel();
+  m_http->Cancel();
   StopThread();
-  m_http.Reset();
+  m_http->Reset();
   m_state = DO_NOTHING;
   m_found = 0;
 }

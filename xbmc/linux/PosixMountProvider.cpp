@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "PosixMountProvider.h"
@@ -56,8 +55,10 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
       if (reMount.RegFind(line) != -1)
       {
         bool accepted = false;
-        char* mount = reMount.GetReplaceString("\\1");
-        char* fs    = reMount.GetReplaceString("\\2");
+        std::string mountStr = reMount.GetReplaceString("\\1");
+        std::string fsStr    = reMount.GetReplaceString("\\2");
+        const char* mount = mountStr.c_str();
+        const char* fs    = fsStr.c_str();
 
         // Here we choose which filesystems are approved
         if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0
@@ -73,9 +74,6 @@ void CPosixMountProvider::GetDrives(VECSOURCES &drives)
 
         if(accepted)
           result.push_back(mount);
-
-        free(fs);
-        free(mount);
       }
     }
     pclose(pipe);
