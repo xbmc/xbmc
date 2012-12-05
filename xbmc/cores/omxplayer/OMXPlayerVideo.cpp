@@ -195,8 +195,8 @@ bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
-  m_av_clock->HasVideo(false);
   m_omxVideo.Close();
+  m_av_clock->HasVideo(false);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
 
@@ -714,6 +714,7 @@ bool OMXPlayerVideo::OpenDecoder()
   // use aspect in stream always
   m_fForcedAspectRatio = m_hints.aspect;
 
+
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
 
@@ -743,9 +744,11 @@ bool OMXPlayerVideo::OpenDecoder()
       m_av_clock->SetRefreshRate(m_fFrameRate);
   }
 
+  m_av_clock->OMXStateExecute(false);
   m_av_clock->HasVideo(bVideoDecoderOpen);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
+
   return bVideoDecoderOpen;
 }
 

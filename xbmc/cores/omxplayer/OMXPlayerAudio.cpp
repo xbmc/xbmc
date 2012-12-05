@@ -386,8 +386,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
       if(CodecChange())
       {
-        CloseDecoder();
-
         m_DecoderOpen = OpenDecoder();
         if(!m_DecoderOpen)
           return false;
@@ -437,8 +435,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
   {
     if(CodecChange())
     {
-      CloseDecoder();
-
       m_DecoderOpen = OpenDecoder();
       if(!m_DecoderOpen)
         return false;
@@ -722,8 +718,15 @@ bool OMXPlayerAudio::OpenDecoder()
   m_passthrough = false;
   m_hw_decode   = false;
 
-  m_av_clock->Lock();
-  m_av_clock->OMXStop(false);
+  bool bSendParent = true;
+
+  if(m_DecoderOpen)
+  {
+    WaitCompletion();
+    m_omxAudio.Deinitialize();
+    m_DecoderOpen = false;
+    bSendParent = true;
+  }
 
   /* setup audi format for audio render */
   m_format.m_sampleRate    = m_hints.samplerate;
@@ -737,6 +740,9 @@ bool OMXPlayerAudio::OpenDecoder()
     device = "hdmi";
   else
     device = "local";
+
+  m_av_clock->Lock();
+  m_av_clock->OMXStop(false);
 
   bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, device, m_av_clock, m_hints, m_passthrough, m_hw_decode);
 
@@ -754,9 +760,18 @@ bool OMXPlayerAudio::OpenDecoder()
       m_codec_name.c_str(), m_nChannels, m_hints.samplerate, m_hints.bitspersample);
   }
 
+  m_av_clock->OMXStateExecute(false);
   m_av_clock->HasAudio(bAudioRenderOpen);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
+
+  m_started = false;
+
+  // TODO : Send FLUSH to parent, only if we had a valid open codec. 
+  // this is just a workaround to get the omx video decoder happy again
+  // This situation happens, for example where we have in the stream an audio codec change
+  if(bSendParent)
+    m_messageParent.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 
   return bAudioRenderOpen;
 }
@@ -765,8 +780,8 @@ void OMXPlayerAudio::CloseDecoder()
 {
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
-  m_av_clock->HasAudio(false);
   m_omxAudio.Deinitialize();
+  m_av_clock->HasAudio(false);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
 

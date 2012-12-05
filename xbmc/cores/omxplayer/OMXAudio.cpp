@@ -312,7 +312,9 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   std::string componentName = "";
 
   componentName = "OMX.broadcom.audio_render";
-  m_omx_render = new COMXCoreComponent();
+
+  if(!m_omx_render)
+    m_omx_render = new COMXCoreComponent();
   if(!m_omx_render)
   {
     CLog::Log(LOGERROR, "COMXAudio::Initialize error allocate OMX.broadcom.audio_render\n");
@@ -552,8 +554,6 @@ bool COMXAudio::Initialize(AEAudioFormat format, std::string& device, OMXClock *
   CLog::Log(LOGDEBUG, "COMXAudio::Initialize device %s passthrough %d hwdecode %d", 
       device.c_str(), m_Passthrough, m_HWDecode);
 
-  m_av_clock->OMXStateExecute(false);
-
   return true;
 }
 
@@ -569,7 +569,15 @@ bool COMXAudio::Deinitialize()
 
   m_omx_tunnel_clock.Deestablish();
   if(!m_Passthrough)
-    m_omx_tunnel_mixer.Deestablish();
+  {
+    // workaround for the strange BCM mixer component
+    if(m_omx_mixer.GetState() == OMX_StateExecuting)
+      m_omx_mixer.SetStateForComponent(OMX_StatePause);
+    if(m_omx_mixer.GetState() != OMX_StateIdle)
+      m_omx_mixer.SetStateForComponent(OMX_StateIdle);
+    m_omx_mixer.DisableAllPorts();
+    m_omx_tunnel_mixer.Deestablish(true);
+  }
   m_omx_tunnel_decoder.Deestablish();
 
   m_omx_decoder.FlushInput();
@@ -800,7 +808,7 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
 
       m_last_pts = pts;
 
-      CLog::Log(LOGDEBUG, "ADec : setStartTime %f\n", (float)val / DVD_TIME_BASE);
+      CLog::Log(LOGDEBUG, "COMXAudio::Decode ADec : setStartTime %f\n", (float)val / DVD_TIME_BASE);
       m_av_clock->AudioStart(false);
     }
     else
@@ -1156,6 +1164,8 @@ void COMXAudio::WaitCompletion()
     Sleep(50);
     nTimeOut -= 50;
   }
+
+  m_omx_render->ResetEos();
 
   return;
 }

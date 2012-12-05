@@ -644,8 +644,6 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
     CLASSNAME, __func__, m_omx_decoder.GetComponent(), m_omx_decoder.GetInputPort(), m_omx_decoder.GetOutputPort(),
     m_deinterlace, m_hdmi_clock_sync);
 
-  m_av_clock->OMXStateExecute(false);
-
   m_first_frame   = true;
   return true;
 }
@@ -689,6 +687,7 @@ void COMXVideo::Close()
   m_video_codec_name  = "";
   m_deinterlace       = false;
   m_first_frame       = true;
+  m_av_clock          = NULL;
 }
 
 void COMXVideo::SetDropState(bool bDrop)
@@ -718,7 +717,6 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
 
   if (demuxer_content && demuxer_bytes > 0)
   {
-
     while(demuxer_bytes)
     {
       // 500ms timeout
@@ -747,7 +745,7 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
       if(m_av_clock->VideoStart())
       {
         omx_buffer->nFlags = OMX_BUFFERFLAG_STARTTIME;
-        CLog::Log(LOGDEBUG, "VDec : setStartTime %f\n", (float)val / DVD_TIME_BASE);
+        CLog::Log(LOGDEBUG, "OMXVideo::Decode VDec : setStartTime %f\n", (float)val / DVD_TIME_BASE);
         m_av_clock->VideoStart(false);
       }
       else
@@ -1001,6 +999,8 @@ void COMXVideo::WaitCompletion()
     Sleep(50);
     nTimeOut -= 50;
   }
+
+  m_omx_render.ResetEos();
 
   return;
 }
