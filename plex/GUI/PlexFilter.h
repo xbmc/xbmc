@@ -97,20 +97,54 @@ class CPlexFilter
       return true;
     }
 
+    void UpdateLabel()
+    {
+      CStdString newLabel(m_filterString);
+      if (m_currentValue.size() > 0)
+      {
+        newLabel = "[B]" + m_filterString;
+
+        CStdString primaryKey = m_currentValue[0];
+        CFileItemList list;
+        if (GetSublist(list))
+        {
+          for (int i = 0; i < list.Size(); i ++)
+          {
+            CFileItemPtr item = list.Get(i);
+            if (item->GetProperty("unprocessedKey").asString() == primaryKey)
+            {
+              newLabel += ": " + item->GetLabel();
+              break;
+            }
+          }
+          if (m_currentValue.size() > 1)
+          {
+            CStdString plusStr;
+            plusStr.Format("(+%d)", m_currentValue.size() - 1);
+            newLabel += " " + plusStr;
+          }
+        }
+        newLabel += "[/B]";
+      }
+      m_filterControl->SetLabel(newLabel);
+    }
+
     void AddCurrentValue(const CStdString& value)
     {
-
       m_currentValue.push_back(value);
+      UpdateLabel();
     }
 
     void ClearCurrentValue()
     {
       m_currentValue.clear();
+      UpdateLabel();
     }
 
     void RemoveCurrentValue(const CStdString& value)
     {
       m_currentValue.erase(std::remove(m_currentValue.begin(), m_currentValue.end(), value), m_currentValue.end());
+      UpdateLabel();
     }
 
     void SetFilterUrl(const CStdString& filterUrl)
