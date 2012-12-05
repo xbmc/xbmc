@@ -27,6 +27,7 @@
 #include "GUIInfoManager.h"
 #include "video/VideoThumbLoader.h"
 #include "Util.h"
+#include "cores/AudioEngine/AEFactory.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -533,6 +534,13 @@ CAMLPlayer::CAMLPlayer(IPlayerCallback &callback)
   // for external subtitles
   m_dvdOverlayContainer = new CDVDOverlayContainer;
   m_dvdPlayerSubtitle = new CDVDPlayerSubtitle(m_dvdOverlayContainer);
+
+  // Suspend AE temporarily so exclusive or hog-mode sinks
+  // don't block external player's access to audio device
+  if (!CAEFactory::Suspend())
+  {
+    CLog::Log(LOGNOTICE,"%s: Failed to suspend AudioEngine before launching external player", __FUNCTION__);
+  }
 }
 
 CAMLPlayer::~CAMLPlayer()
@@ -542,6 +550,12 @@ CAMLPlayer::~CAMLPlayer()
   delete m_dvdPlayerSubtitle;
   delete m_dvdOverlayContainer;
   delete m_dll, m_dll = NULL;
+
+  // Resume AE processing of XBMC native audio
+  if (!CAEFactory::Resume())
+  {
+    CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player",__FUNCTION__);
+  }
 }
 
 bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
