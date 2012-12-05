@@ -78,6 +78,7 @@ public:
   bool forced_aspect; // aspect is forced from container
   int orientation; // orientation of the video in degress counter clockwise
   int bitsperpixel;
+  int pid;
 
   // AUDIO
   int channels;
