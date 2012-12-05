@@ -229,7 +229,7 @@ namespace PythonBindings
     if(c) { 
       c->Acquire(); 
       PyThreadState* state = PyThreadState_Get();
-      XBMCAddon::Python::LanguageHook::getIfExists(state->interp)->registerAddonClassInstance(c);
+      XBMCAddon::Python::LanguageHook::GetIfExists(state->interp)->RegisterAddonClassInstance(c);
     }
   }
 
@@ -238,8 +238,8 @@ namespace PythonBindings
     if(c){
       PyThreadState* state = PyThreadState_Get();
       XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> lh = 
-        XBMCAddon::Python::LanguageHook::getIfExists(state->interp);
-      if (lh.isNotNull()) lh->unregisterAddonClassInstance(c);
+        XBMCAddon::Python::LanguageHook::GetIfExists(state->interp);
+      if (lh.isNotNull()) lh->UnregisterAddonClassInstance(c);
       return true;
     }
     return false;

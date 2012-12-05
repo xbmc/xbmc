@@ -50,7 +50,7 @@ namespace XBMCAddon
       if (languageHook)
       {
         DelayedCallGuard dc(languageHook);
-        languageHook->registerPlayerCallback(this);
+        languageHook->RegisterPlayerCallback(this);
       }
     }
 
@@ -62,7 +62,7 @@ namespace XBMCAddon
       if (languageHook)
       {
         DelayedCallGuard dc(languageHook);
-        languageHook->unregisterPlayerCallback(this);
+        languageHook->UnregisterPlayerCallback(this);
       }
     }
 

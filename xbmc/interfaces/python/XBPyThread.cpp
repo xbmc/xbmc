@@ -160,7 +160,7 @@ void XBPyThread::Process()
   PyThreadState_Swap(state);
 
   XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> languageHook(new XBMCAddon::Python::LanguageHook(state->interp));
-  languageHook->registerMe();
+  languageHook->RegisterMe();
 
   m_pExecuter->InitializeInterpreter(addon);
 
@@ -384,20 +384,20 @@ void XBPyThread::Process()
   // interpreters until we have no more python objects hanging
   // around.
   int countLimit;
-  for (countLimit = 0; languageHook->hasRegisteredAddonClasses() && countLimit < 10; countLimit++)
+  for (countLimit = 0; languageHook->HasRegisteredAddonClasses() && countLimit < 10; countLimit++)
   {
     PyThreadState* tmpstate = Py_NewInterpreter();
     Py_EndInterpreter(tmpstate);
   }
 
   // If necessary and successfull, debug log the results.
-  if (countLimit > 0 && !languageHook->hasRegisteredAddonClasses())
+  if (countLimit > 0 && !languageHook->HasRegisteredAddonClasses())
     CLog::Log(LOGDEBUG,"It took %d Py_NewInterpreter/Py_EndInterpreter calls"
               " to clean up the classes leftover from running \"%s.\"",
               countLimit,m_source);
 
   // If not successful, produce an error message detailing what's been left behind
-  if (languageHook->hasRegisteredAddonClasses())
+  if (languageHook->HasRegisteredAddonClasses())
   {
     CStdString message;
     message.Format("The python script \"%s\" has left several "
@@ -405,14 +405,14 @@ void XBPyThread::Process()
                    m_source);
 
     { XBMCAddon::AddonClass::Synchronize l(*(languageHook.get()));
-      std::set<XBMCAddon::AddonClass*>& acs = languageHook->getRegisteredAddonClasses();
+      std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
       bool firstTime = true;
       for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin();
            iter != acs.end(); iter++)
       {
         if (!firstTime) message += ",";
         else firstTime = false;
-        message += (*iter)->getClassname().c_str();
+        message += (*iter)->GetClassname().c_str();
       }
     }
     
@@ -420,7 +420,7 @@ void XBPyThread::Process()
   }
 
   // unregister the language hook
-  languageHook->unregisterMe();
+  languageHook->UnregisterMe();
 
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();

@@ -60,9 +60,9 @@ namespace XBMCAddon
 
       virtual ~LanguageHook();
 
-      virtual void delayedCallOpen();
-      virtual void delayedCallClose();
-      virtual void makePendingCalls();
+      virtual void DelayedCallOpen();
+      virtual void DelayedCallClose();
+      virtual void MakePendingCalls();
       
       /**
        * PythonCallbackHandler expects to be instantiated PER AddonClass instance
@@ -76,31 +76,31 @@ namespace XBMCAddon
        * See PythonCallbackHandler for more details
        * See PythonCallbackHandler::PythonCallbackHandler for more details
        */
-      virtual XBMCAddon::CallbackHandler* getCallbackHandler();
+      virtual XBMCAddon::CallbackHandler* GetCallbackHandler();
 
-      virtual String getAddonId();
-      virtual String getAddonVersion();
+      virtual String GetAddonId();
+      virtual String GetAddonVersion();
 
-      virtual void registerPlayerCallback(IPlayerCallback* player);
-      virtual void unregisterPlayerCallback(IPlayerCallback* player);
-      virtual void registerMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
-      virtual void unregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
-      virtual bool waitForEvent(CEvent& hEvent, unsigned int milliseconds);
+      virtual void RegisterPlayerCallback(IPlayerCallback* player);
+      virtual void UnregisterPlayerCallback(IPlayerCallback* player);
+      virtual void RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
+      virtual void UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
+      virtual bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
-      static AddonClass::Ref<LanguageHook> getIfExists(PyInterpreterState* interp);
-      static bool isAddonClassInstanceRegistered(AddonClass* obj);
+      static AddonClass::Ref<LanguageHook> GetIfExists(PyInterpreterState* interp);
+      static bool IsAddonClassInstanceRegistered(AddonClass* obj);
 
-      void registerAddonClassInstance(AddonClass* obj);
-      void unregisterAddonClassInstance(AddonClass* obj);
-      bool hasRegisteredAddonClassInstance(AddonClass* obj);
-      inline bool hasRegisteredAddonClasses() { Synchronize l(*this); return currentObjects.size() > 0; }
+      void RegisterAddonClassInstance(AddonClass* obj);
+      void UnregisterAddonClassInstance(AddonClass* obj);
+      bool HasRegisteredAddonClassInstance(AddonClass* obj);
+      inline bool HasRegisteredAddonClasses() { Synchronize l(*this); return currentObjects.size() > 0; }
 
       // You should hold the lock on the LanguageHook itself if you're
       // going to do anything with the set that gets returned.
-      inline std::set<AddonClass*>& getRegisteredAddonClasses() { return currentObjects; }
+      inline std::set<AddonClass*>& GetRegisteredAddonClasses() { return currentObjects; }
 
-      void unregisterMe();
-      void registerMe();
+      void UnregisterMe();
+      void RegisterMe();
     };
   }
 }

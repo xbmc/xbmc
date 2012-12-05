@@ -44,39 +44,39 @@ namespace XBMCAddon
       XBMCAddon::LanguageHook::deallocating();
     }
 
-    void LanguageHook::makePendingCalls()
+    void LanguageHook::MakePendingCalls()
     {
       TRACE;
       PythonCallbackHandler::makePendingCalls();
     }
 
-    void LanguageHook::delayedCallOpen()
+    void LanguageHook::DelayedCallOpen()
     {
       TRACE;
       PyGILLock::releaseGil();
     }
 
-    void LanguageHook::delayedCallClose()
+    void LanguageHook::DelayedCallClose()
     {
       TRACE;
       PyGILLock::acquireGil();
     }
 
-    void LanguageHook::registerMe()
+    void LanguageHook::RegisterMe()
     {
       TRACE;
       CSingleLock lock(hooksMutex);
       hooks[m_interp] = AddonClass::Ref<LanguageHook>(this);
     }
 
-    void LanguageHook::unregisterMe()
+    void LanguageHook::UnregisterMe()
     {
       TRACE;
       CSingleLock lock(hooksMutex);
       hooks.erase(m_interp);
     }
 
-    AddonClass::Ref<LanguageHook> LanguageHook::getIfExists(PyInterpreterState* interp)
+    AddonClass::Ref<LanguageHook> LanguageHook::GetIfExists(PyInterpreterState* interp)
     {
       TRACE;
       CSingleLock lock(hooksMutex);
@@ -84,12 +84,12 @@ namespace XBMCAddon
       return iter == hooks.end() ? AddonClass::Ref<LanguageHook>(NULL) : AddonClass::Ref<LanguageHook>(iter->second);
     }
 
-    bool LanguageHook::isAddonClassInstanceRegistered(AddonClass* obj)
+    bool LanguageHook::IsAddonClassInstanceRegistered(AddonClass* obj)
     {
       for (std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> >::iterator iter = hooks.begin();
            iter != hooks.end(); iter++)
       {
-        if ((iter->second)->hasRegisteredAddonClassInstance(obj))
+        if ((iter->second)->HasRegisteredAddonClassInstance(obj))
           return true;
       }
       return false;
@@ -107,13 +107,13 @@ namespace XBMCAddon
      * See PythonCallbackHandler for more details
      * See PythonCallbackHandler::PythonCallbackHandler for more details
      */
-    XBMCAddon::CallbackHandler* LanguageHook::getCallbackHandler()
+    XBMCAddon::CallbackHandler* LanguageHook::GetCallbackHandler()
     { 
       TRACE;
       return new PythonCallbackHandler();
     }
 
-    String LanguageHook::getAddonId()
+    String LanguageHook::GetAddonId()
     {
       TRACE;
       const char* id = NULL;
@@ -129,7 +129,7 @@ namespace XBMCAddon
       return id;
     }
 
-    String LanguageHook::getAddonVersion()
+    String LanguageHook::GetAddonVersion()
     {
       TRACE;
       // Get a reference to the main module
@@ -143,32 +143,32 @@ namespace XBMCAddon
       return version;
     }
 
-    void LanguageHook::registerPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
-    void LanguageHook::unregisterPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
-    void LanguageHook::registerMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.RegisterPythonMonitorCallBack(monitor); }
-    void LanguageHook::unregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
+    void LanguageHook::RegisterPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
+    void LanguageHook::UnregisterPlayerCallback(IPlayerCallback* player) { TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
+    void LanguageHook::RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.RegisterPythonMonitorCallBack(monitor); }
+    void LanguageHook::UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { TRACE; g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
 
-    bool LanguageHook::waitForEvent(CEvent& hEvent, unsigned int milliseconds)
+    bool LanguageHook::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
     { 
       TRACE;
       return g_pythonParser.WaitForEvent(hEvent,milliseconds);
     }
 
-    void LanguageHook::registerAddonClassInstance(AddonClass* obj)
+    void LanguageHook::RegisterAddonClassInstance(AddonClass* obj)
     {
       TRACE;
       Synchronize l(*this);
       currentObjects.insert(obj);
     }
 
-    void LanguageHook::unregisterAddonClassInstance(AddonClass* obj)
+    void LanguageHook::UnregisterAddonClassInstance(AddonClass* obj)
     {
       TRACE;
       Synchronize l(*this);
       currentObjects.erase(obj);
     }
 
-    bool LanguageHook::hasRegisteredAddonClassInstance(AddonClass* obj)
+    bool LanguageHook::HasRegisteredAddonClassInstance(AddonClass* obj)
     {
       TRACE;
       Synchronize l(*this);

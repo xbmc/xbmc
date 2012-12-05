@@ -101,8 +101,8 @@ namespace XBMCAddon
     AddonClass(const char* classname);
     virtual ~AddonClass();
 
-    inline const String& getClassname() const { return classname; }
-    inline LanguageHook* getLanguageHook() { return languageHook; }
+    inline const String& GetClassname() const { return classname; }
+    inline LanguageHook* GetLanguageHook() { return languageHook; }
 
     /**
      * This method should be called while holding a Synchronize

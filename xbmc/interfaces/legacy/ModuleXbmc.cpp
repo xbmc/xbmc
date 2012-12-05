@@ -155,7 +155,7 @@ namespace XBMCAddon
           ::Sleep(nextSleep);
         }
         if (lh != NULL)
-          lh->makePendingCalls();
+          lh->MakePendingCalls();
       }
     }
 
