@@ -24,7 +24,7 @@ SRCS += DVDVideoCodecOpenMax.cpp
 endif
 
 ifeq (@USE_LIBAMCODEC@,1)
-SRCS += Amlogic.cpp
+SRCS += AMLCodec.cpp
 SRCS += DVDVideoCodecAmlogic.cpp
 INCLUDES += -I$(prefix)/include/amlplayer
 endif

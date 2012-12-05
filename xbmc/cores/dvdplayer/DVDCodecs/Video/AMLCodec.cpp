@@ -21,7 +21,7 @@
 
 #include "system.h"
 
-#include "Amlogic.h"
+#include "AMLCodec.h"
 #include "DynamicDll.h"
 
 #include "Application.h"

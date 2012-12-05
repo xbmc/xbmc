@@ -22,7 +22,7 @@
 #include "DVDVideoCodecAmlogic.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
-#include "Amlogic.h"
+#include "AMLCodec.h"
 #include "video/VideoThumbLoader.h"
 #include "utils/log.h"
 
