@@ -55,7 +55,11 @@ can be downloaded from http://www.crystax.net/en/android/ndk
 [NOTICE] Compiling XBMC for Android requires at least Crystax Android NDK
          Revision 7b. Crystax Android NDK Revision 7 and earlier do not work
          properly for our cause. The corresponding Crystax NDK version
-         is android-ndk-r7-crystax-5. Do not use the standard Android NDK.
+         is android-ndk-r7-crystax-5.beta3 Do not use the standard Android NDK.
+
+[NOTICE] We previously used android-ndk-r7-crystax-5.beta2, but it produced
+         binaries that would NOT run on Jellybean 4.2. At this time,
+         android-ndk-r7-crystax-5.beta3 is required.
          
 After downloading the SDK and NDK extract the files contained in the
 archives to your harddisk.
