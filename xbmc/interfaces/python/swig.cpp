@@ -19,7 +19,9 @@
  *
  */
 
-#include "interfaces/python/swig.h"
+#include "LanguageHook.h"
+#include "swig.h"
+
 #include <string>
 
 namespace PythonBindings
@@ -215,6 +217,86 @@ namespace PythonBindings
                                  methodNameForErrorString,expectedType,typeInfo->swigType);
     }
     return ((PyHolder*)pythonType)->pSelf;
+  }
+
+  /**
+   * This method is a helper for the generated API. It's called prior to any API
+   * class constructor being returned from the generated code to Python
+   */
+  void prepareForReturn(XBMCAddon::AddonClass* c)
+  {
+    TRACE;
+    if(c) { 
+      c->Acquire(); 
+      PyThreadState* state = PyThreadState_Get();
+      XBMCAddon::Python::LanguageHook::getIfExists(state->interp)->registerAddonClassInstance(c);
+    }
+  }
+
+  static bool handleInterpRegistrationForClean(XBMCAddon::AddonClass* c)
+  {
+    if(c){
+      PyThreadState* state = PyThreadState_Get();
+      XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> lh = 
+        XBMCAddon::Python::LanguageHook::getIfExists(state->interp);
+      if (lh.isNotNull()) lh->unregisterAddonClassInstance(c);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * This method is a helper for the generated API. It's called prior to any API
+   * class destructor being dealloc-ed from the generated code from Python
+   */
+  void cleanForDealloc(XBMCAddon::AddonClass* c) 
+  { 
+    TRACE;
+    if (handleInterpRegistrationForClean(c))
+      c->Release();
+  }
+
+  /**
+   * This method is a helper for the generated API. It's called prior to any API
+   * class destructor being dealloc-ed from the generated code from Python
+   *
+   * There is a Catch-22 in the destruction of a Window. 'dispose' needs to be
+   * called on destruction but cannot be called from the destructor.
+   * This overrides the default cleanForDealloc to resolve that.
+   */
+  void cleanForDealloc(XBMCAddon::xbmcgui::Window* c) 
+  {
+    TRACE;
+    if (handleInterpRegistrationForClean(c))
+    { 
+      c->dispose();
+      c->Release(); 
+    } 
+  }
+
+  /**
+   * This method allows for conversion of the native api Type to the Python type
+   *
+   * NOTE: swigTypeString must be in the data segment. That is, it should be an explicit string since
+   * the const char* is stored in a PyHolder struct and never deleted.
+   */
+  PyObject* makePythonInstance(void* api, PyTypeObject* typeObj, TypeInfo* typeInfo, bool incrementRefCount)
+  {
+    // null api types result in Py_None
+    if (!api)
+    {
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+
+    PyHolder* self = (PyHolder*)typeObj->tp_alloc(typeObj,0);
+    if (!self) return NULL;
+    self->magicNumber = XBMC_PYTHON_TYPE_MAGIC_NUMBER;
+    self->typeInfo = typeInfo;
+    self->pSelf = api;
+    if (incrementRefCount)
+      Py_INCREF((PyObject*)self);
+    return (PyObject*)self;
   }
 
 }

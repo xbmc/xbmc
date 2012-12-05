@@ -84,12 +84,12 @@ namespace XBMCAddon
       return iter == hooks.end() ? AddonClass::Ref<LanguageHook>(NULL) : AddonClass::Ref<LanguageHook>(iter->second);
     }
 
-    bool LanguageHook::oneHasRegisteredClass(AddonClass* obj)
+    bool LanguageHook::isAddonClassInstanceRegistered(AddonClass* obj)
     {
       for (std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> >::iterator iter = hooks.begin();
            iter != hooks.end(); iter++)
       {
-        if ((iter->second)->hasRegisteredClass(obj))
+        if ((iter->second)->hasRegisteredAddonClassInstance(obj))
           return true;
       }
       return false;
@@ -154,21 +154,21 @@ namespace XBMCAddon
       return g_pythonParser.WaitForEvent(hEvent,milliseconds);
     }
 
-    void LanguageHook::registerAddonClass(AddonClass* obj)
+    void LanguageHook::registerAddonClassInstance(AddonClass* obj)
     {
       TRACE;
       Synchronize l(*this);
       currentObjects.insert(obj);
     }
 
-    void LanguageHook::unregisterAddonClass(AddonClass* obj)
+    void LanguageHook::unregisterAddonClassInstance(AddonClass* obj)
     {
       TRACE;
       Synchronize l(*this);
       currentObjects.erase(obj);
     }
 
-    bool LanguageHook::hasRegisteredClass(AddonClass* obj)
+    bool LanguageHook::hasRegisteredAddonClassInstance(AddonClass* obj)
     {
       TRACE;
       Synchronize l(*this);

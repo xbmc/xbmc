@@ -42,6 +42,7 @@
 
 #include "XBPyThread.h"
 #include "XBPython.h"
+#include "LanguageHook.h"
 
 #include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/CallbackHandler.h"
@@ -382,13 +383,43 @@ void XBPyThread::Process()
   // interpreter. So we are going to keep creating and ending
   // interpreters until we have no more python objects hanging
   // around.
-  while (languageHook->hasRegisteredClasses())
+  int countLimit;
+  for (countLimit = 0; languageHook->hasRegisteredAddonClasses() && countLimit < 10; countLimit++)
   {
     PyThreadState* tmpstate = Py_NewInterpreter();
     Py_EndInterpreter(tmpstate);
   }
 
-  // unregister the language hook prior to ending the interpreter
+  // If necessary and successfull, debug log the results.
+  if (countLimit > 0 && !languageHook->hasRegisteredAddonClasses())
+    CLog::Log(LOGDEBUG,"It took %d Py_NewInterpreter/Py_EndInterpreter calls"
+              " to clean up the classes leftover from running \"%s.\"",
+              countLimit,m_source);
+
+  // If not successful, produce an error message detailing what's been left behind
+  if (languageHook->hasRegisteredAddonClasses())
+  {
+    CStdString message;
+    message.Format("The python script \"%s\" has left several "
+                   "classes in memory that should have been cleaned up. The classes include: ",
+                   m_source);
+
+    { XBMCAddon::AddonClass::Synchronize l(*(languageHook.get()));
+      std::set<XBMCAddon::AddonClass*>& acs = languageHook->getRegisteredAddonClasses();
+      bool firstTime = true;
+      for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin();
+           iter != acs.end(); iter++)
+      {
+        if (!firstTime) message += ",";
+        else firstTime = false;
+        message += (*iter)->getClassname().c_str();
+      }
+    }
+    
+    CLog::Log(LOGERROR, "%s", message.c_str());
+  }
+
+  // unregister the language hook
   languageHook->unregisterMe();
 
   PyThreadState_Swap(NULL);

@@ -51,7 +51,7 @@ namespace XBMCAddon
       {
         // make sure the interpreter is still active.
         AddonClass::Ref<XBMCAddon::Python::LanguageHook> lh(XBMCAddon::Python::LanguageHook::getIfExists(state->interp));
-        if (lh.isNotNull() && lh->hasRegisteredClass(obj))
+        if (lh.isNotNull() && lh->hasRegisteredAddonClassInstance(obj) && lh.get() == obj->getLanguageHook())
           return true;
       }
       return false;
@@ -72,7 +72,7 @@ namespace XBMCAddon
 
       // we also want to remove the callback if the language hook no longer exists.
       //   this is a belt-and-suspenders cleanup mechanism
-      return ! XBMCAddon::Python::LanguageHook::oneHasRegisteredClass(obj);
+      return ! XBMCAddon::Python::LanguageHook::isAddonClassInstanceRegistered(obj);
     }
   }
 }

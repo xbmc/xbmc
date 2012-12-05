@@ -88,12 +88,16 @@ namespace XBMCAddon
       virtual bool waitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
       static AddonClass::Ref<LanguageHook> getIfExists(PyInterpreterState* interp);
-      static bool oneHasRegisteredClass(AddonClass* obj);
+      static bool isAddonClassInstanceRegistered(AddonClass* obj);
 
-      void registerAddonClass(AddonClass* obj);
-      void unregisterAddonClass(AddonClass* obj);
-      bool hasRegisteredClass(AddonClass* obj);
-      inline bool hasRegisteredClasses() { Synchronize l(*this); return currentObjects.size() > 0; }
+      void registerAddonClassInstance(AddonClass* obj);
+      void unregisterAddonClassInstance(AddonClass* obj);
+      bool hasRegisteredAddonClassInstance(AddonClass* obj);
+      inline bool hasRegisteredAddonClasses() { Synchronize l(*this); return currentObjects.size() > 0; }
+
+      // You should hold the lock on the LanguageHook itself if you're
+      // going to do anything with the set that gets returned.
+      inline std::set<AddonClass*>& getRegisteredAddonClasses() { return currentObjects; }
 
       void unregisterMe();
       void registerMe();
