@@ -634,7 +634,7 @@ retry:
   SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   m_av_clock.Reset();
-  m_av_clock.OMXReset();
+  //m_av_clock.OMXReset();
   m_dvd.Clear();
   m_iChannelEntryTimeOut = 0;
 
@@ -757,8 +757,8 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
     CloseTeletextStream(true);
   */
 
-  m_av_clock.OMXStop();
-  m_av_clock.OMXReset();
+  //m_av_clock.OMXStop();
+  //m_av_clock.OMXReset();
 }
 
 bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
@@ -956,8 +956,8 @@ void COMXPlayer::Process()
   if(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
     m_av_clock.HDMIClockSync();
 
-  m_av_clock.OMXStateExecute();
-  m_av_clock.OMXStart();
+  //m_av_clock.OMXStateExecute();
+  //m_av_clock.OMXStart();
 
   //CLog::Log(LOGDEBUG, "COMXPlayer: Thread started");
 
@@ -3643,7 +3643,7 @@ bool COMXPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
-  double pts = m_av_clock.OMXMediaTime();
+  double pts = m_av_clock.OMXMediaTime(false);
 
   m_player_subtitle.GetCurrentSubtitle(strSubtitle, pts - m_player_video.GetSubtitleDelay());
 
