@@ -15,8 +15,9 @@
 #define FILTER_SUBLIST_BUTTONS_START -300
 
 #include "guilib/GUIDialog.h"
-#include "GUI/PlexFilter.h"
+#include "Utility/PlexFilter.h"
 #include "FileItem.h"
+#include "Utility/PlexFilterHelper.h"
 #include <map>
 
 class CGUIDialogFilterSort : public CGUIDialog
@@ -25,6 +26,7 @@ class CGUIDialogFilterSort : public CGUIDialog
     CGUIDialogFilterSort();
 
     void SetFilter(CPlexFilterPtr filter);
+    void SetFilterHelper(CPlexFilterHelper* helper) { m_helper = helper; }
     void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = "");
     bool OnMessage(CGUIMessage &message);
 
@@ -32,6 +34,7 @@ class CGUIDialogFilterSort : public CGUIDialog
     CPlexFilterPtr m_filter;
     std::map<int, CGUIRadioButtonControl*> m_filterIdMap;
     std::map<int, CFileItemPtr> m_itemIdMap;
+    CPlexFilterHelper* m_helper;
 };
 
 #endif // GUIDIALOGFILTERSORT_H

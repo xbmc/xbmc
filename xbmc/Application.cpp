@@ -348,7 +348,7 @@
 #include "plex/GUI/GUIWindowNowPlaying.h"
 #include "plex/GUI/GUIWindowPlexSearch.h"
 #include "plex/Utility/BackgroundMusicPlayer.h"
-#include "plex/GUI/GUIWindowMediaFilterView.h"
+#include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
 /* END PLEX */
 
@@ -1427,8 +1427,8 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowPlexSearch);         // window id = 51
     g_windowManager.Add(new CGUIDialogRating);                 // window id = 200
     g_windowManager.Add(new CGUIDialogTimer);                 // window id = 201
-    g_windowManager.Add(new CGUIWindowMediaFilterView);     // Replacing VideoNav
     g_windowManager.Add(new CGUIDialogFilterSort);
+    g_windowManager.Add(new CGUIPlexMediaWindow);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */

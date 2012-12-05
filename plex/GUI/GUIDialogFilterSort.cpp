@@ -82,6 +82,9 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
           m_filter->RemoveCurrentValue(item->GetProperty("unprocessedKey").asString());
         }
 
+        if (m_helper)
+          m_helper->ApplyFilterFromDialog(m_filter);
+
         CGUIMessage msg(GUI_MSG_UPDATE_FILTERS, GetID(), WINDOW_VIDEO_NAV);
         g_windowManager.SendThreadMessage(msg);
       }
