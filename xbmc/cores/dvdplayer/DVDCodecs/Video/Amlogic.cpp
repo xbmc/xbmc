@@ -150,6 +150,8 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
 
 // missing tags
 #define CODEC_TAG_VC_1  (0x312D4356)
+#define CODEC_TAG_RV30  (0x30335652)
+#define CODEC_TAG_RV40  (0x30345652)
 
 #define RW_WAIT_TIME    (20 * 1000) // 20ms
 
@@ -329,7 +331,7 @@ static vformat_t codecid_to_vformat(enum CodecID id)
       break;
   }
 
-  CLog::Log(LOGDEBUG, "codecid_to_vformat, format(%d), id(%d)", format, (int)id);
+  CLog::Log(LOGDEBUG, "codecid_to_vformat, id(%d) -> vformat(%d)", (int)id, format);
   return format;
 }
 
@@ -382,9 +384,11 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
       dec_type = VIDEO_DEC_FORMAT_H264;
       break;
     case CODEC_ID_RV30:
+    case CODEC_TAG_RV30:
       dec_type = VIDEO_DEC_FORMAT_REAL_8;
       break;
     case CODEC_ID_RV40:
+    case CODEC_TAG_RV40:
       dec_type = VIDEO_DEC_FORMAT_REAL_9;
       break;
     case CODEC_ID_H264:
@@ -399,7 +403,7 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
       dec_type = VIDEO_DEC_FORMAT_WMV3;
       break;
     case CODEC_ID_VC1:
-    //case CODEC_TAG_VC_1:
+    case CODEC_TAG_VC_1:
     case CODEC_TAG_WVC1:
     case CODEC_TAG_WMVA:
       dec_type = VIDEO_DEC_FORMAT_WVC1;
@@ -412,7 +416,7 @@ static vdec_type_t codec_tag_to_vdec_type(unsigned int codec_tag)
       break;
   }
 
-  CLog::Log(LOGDEBUG, "codec_tag_to_vdec_type, dec_type(%d), codec_tag(%d)", dec_type, codec_tag);
+  CLog::Log(LOGDEBUG, "codec_tag_to_vdec_type, codec_tag(%d) -> vdec_type(%d)", codec_tag, dec_type);
   return dec_type;
 }
 
@@ -540,6 +544,9 @@ int check_avbuffer_enough(am_private_t *para, am_packet_t *pkt)
 
 int write_av_packet(am_private_t *para, am_packet_t *pkt)
 {
+  //CLog::Log(LOGDEBUG, "write_av_packet, pkt->isvalid(%d), pkt->data(%p), pkt->data_size(%d)",
+  //  pkt->isvalid, pkt->data, pkt->data_size);
+
     int write_bytes = 0, len = 0, ret;
     unsigned char *buf;
     int size;
@@ -1381,8 +1388,8 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
   am_private->video_height     = hints.height;
   am_private->video_codec_id   = hints.codec;
   am_private->video_codec_tag  = hints.codec_tag;
-  //am_private->video_pid      = hints.idphysical;
-  am_private->video_pid        = -1;
+  am_private->video_pid        = hints.pid;
+  //am_private->video_pid        = 0;
 
   AVRational video_ratio       = m_dll->av_d2q(1, SHRT_MAX);
   //if (!hints.forced_aspect)
@@ -1412,11 +1419,16 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
     am_private->video_rotation_degree = 3;
   // handle extradata
   am_private->video_format      = codecid_to_vformat(hints.codec);
-  if (am_private->video_format != VFORMAT_MPEG12)
+  switch (am_private->video_format)
   {
-    am_private->extrasize       = hints.extrasize;
-    am_private->extradata       = (uint8_t*)malloc(hints.extrasize);
-    memcpy(am_private->extradata, hints.extradata, hints.extrasize);
+    default:
+      am_private->extrasize       = hints.extrasize;
+      am_private->extradata       = (uint8_t*)malloc(hints.extrasize);
+      memcpy(am_private->extradata, hints.extradata, hints.extrasize);
+      break;
+    case VFORMAT_REAL:
+    case VFORMAT_MPEG12:
+      break;
   }
 
   if (am_private->stream_type == AM_STREAM_ES && am_private->video_codec_tag != 0)
@@ -1464,9 +1476,12 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
       am_private->vcodec.am_sysinfo.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
       break;
     case VFORMAT_REAL:
+      am_private->stream_type = AM_STREAM_RM;
+      am_private->vcodec.stream_type = STREAM_TYPE_RM;
+      am_private->vcodec.am_sysinfo.ratio = 0x100;
+      am_private->vcodec.am_sysinfo.ratio64 = 0;
       {
-        static unsigned short tbl[9];
-        am_private->vcodec.am_sysinfo.ratio = 0x100;
+        static unsigned short tbl[9] = {0};
         if (VIDEO_DEC_FORMAT_REAL_8 == am_private->video_codec_type)
         {
           am_private->vcodec.am_sysinfo.extra = am_private->extradata[1] & 7;
@@ -1481,8 +1496,6 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
         }
         am_private->vcodec.am_sysinfo.param = &tbl;
       }
-      am_private->stream_type = AM_STREAM_RM;
-      am_private->vcodec.stream_type = STREAM_TYPE_RM;
       break;
     case VFORMAT_VC1:
       // vc1 is extension id, from 0xfd55 to 0xfd5f according to ffmpeg
@@ -1494,7 +1507,7 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
   int ret = m_dll->codec_init(&am_private->vcodec);
   if (ret != CODEC_ERROR_NONE)
   {
-    CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder codec init failed, ret=-0x%x", -ret);
+    CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder codec init failed, ret=0x%x", -ret);
     return false;
   }
 
@@ -1655,7 +1668,7 @@ bool CAmlogic::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 int CAmlogic::GetDataSize()
 {
   struct buf_status vbuf ={0};
-  if (m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
+  if (am_private->vcodec.handle && m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
     m_vbufsize = vbuf.size;
 
   return vbuf.data_len;
@@ -1691,7 +1704,7 @@ void CAmlogic::Process()
   while (!m_bStop)
   {
     int64_t pts_video = 0;
-    if (am_private->am_pkt.lastpts > 0)
+    if (am_private->vcodec.handle && am_private->am_pkt.lastpts > 0)
     {
       // this is a blocking poll that returns every vsync.
       // since we are running at a higher priority, make sure
