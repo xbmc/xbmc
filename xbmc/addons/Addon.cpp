@@ -32,6 +32,7 @@
 #include "freebsd/FreeBSDGNUReplacements.h"
 #endif
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include <vector>
@@ -313,6 +314,13 @@ AddonPtr CAddon::Clone(const AddonPtr &self) const
 
 bool CAddon::MeetsVersion(const AddonVersion &version) const
 {
+  // if the addon is one of xbmc's extension point definitions (addonid starts with "xbmc.")
+  // and the minversion is "0.0.0" i.e. no <backwards-compatibility> tag has been specified
+  // we need to assume that the current version is not backwards-compatible and therefore check against the actual version
+  if (StringUtils::StartsWith(m_props.id, "xbmc.") &&
+     (strlen(m_props.minversion.c_str()) == 0 || StringUtils::EqualsNoCase(m_props.minversion.c_str(), "0.0.0")))
+    return m_props.version == version;
+
   return m_props.minversion <= version && version <= m_props.version;
 }
 
