@@ -86,8 +86,8 @@
 			<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 			<textureslidernib>ScrollBarNib.png</textureslidernib>
 			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-			<onleft>3</onleft>
-			<onright>3</onright>
+			<onleft>5</onleft>
+			<onright>5</onright>
 			<ondown>60</ondown>
 			<onup>60</onup>
 			<showonepage>false</showonepage>
