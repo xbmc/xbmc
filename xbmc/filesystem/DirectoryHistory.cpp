@@ -85,6 +85,8 @@ void CDirectoryHistory::AddPath(const CStdString& strPath, const CStdString &str
   item.m_strPath = strPath;
   item.m_strFilterPath = strFilterPath;
   m_vecPathHistory.push_back(item);
+
+  CLog::Log(LOGDEBUG, "HISTORY added %s", strPath.c_str());
 }
 
 void CDirectoryHistory::AddPathFront(const CStdString& strPath, const CStdString &strFilterPath /* = "" */)
@@ -123,7 +125,7 @@ void CDirectoryHistory::DumpPathHistory()
   // debug log
   CLog::Log(LOGDEBUG,"Current m_vecPathHistory:");
   for (int i = 0; i < (int)m_vecPathHistory.size(); ++i)
-    CLog::Log(LOGDEBUG, "  %02i.[%s; %s]", i, m_vecPathHistory[i].m_strPath.c_str(), m_vecPathHistory[i].m_strFilterPath.c_str());
+    CLog::Log(LOGDEBUG, "HISTORY  %02i.[%s; %s]", i, m_vecPathHistory[i].m_strPath.c_str(), m_vecPathHistory[i].m_strFilterPath.c_str());
 }
 
 CStdString CDirectoryHistory::preparePath(const CStdString &strDirectory, bool tolower /* = true */)

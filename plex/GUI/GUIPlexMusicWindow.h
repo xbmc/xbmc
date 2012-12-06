@@ -23,10 +23,10 @@ class CGUIPlexMusicWindow : public CGUIWindowMusicSongs
   protected:
     bool Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters);
     bool Update(const CStdString &strDirectory, bool updateFilterPath);
+    void BuildFilters(const CStdString& strDirectory);
 
   private:
     CPlexFilterHelper m_filterHelper;
-    CStdString m_baseUrl;
     bool m_returningFromSkinLoad;
 };
 

@@ -42,7 +42,7 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
       }
 
       if (update)
-        Update(m_baseUrl, true, false);
+        Update(m_filterHelper.GetSectionUrl(), true, false);
     }
       break;
 
@@ -59,7 +59,9 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
     {
       /* If this is a reload event we must make sure to get the filters back */
       if (m_returningFromSkinLoad)
-        Update(m_baseUrl, true);
+        Update(m_filterHelper.GetSectionUrl(), true);
+      else
+        BuildFilter(m_filterHelper.GetSectionUrl());
       m_returningFromSkinLoad = false;
 
       CGUILabelControl *lbl = (CGUILabelControl*)GetControl(FILTER_LABEL);
@@ -74,13 +76,24 @@ bool CGUIPlexMediaWindow::OnMessage(CGUIMessage &message)
 
     case GUI_MSG_UPDATE_FILTERS:
     {
-      Update(m_baseUrl, true, false);
+      Update(m_filterHelper.GetSectionUrl(), true, false);
       break;
     }
 
   }
 
   return ret;
+}
+
+void CGUIPlexMediaWindow::BuildFilter(const CStdString& strDirectory)
+{
+  if (strDirectory.empty())
+    return;
+
+  int type = 0;
+  if (m_vecItems->HasProperty("typeNumber"))
+    type = m_vecItems->GetProperty("typeNumber").asInteger();
+  m_filterHelper.BuildFilters(strDirectory, type);
 }
 
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath)
@@ -90,32 +103,24 @@ bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilt
 
 bool CGUIPlexMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPath, bool updateFilters)
 {
-
-  /* If we changed view we need to make sure that we clear filters before we ask for the new URL */
-  if (strDirectory != m_baseUrl)
-  {
-    m_baseUrl = strDirectory;
-    m_filterHelper.ClearFilters();
-  }
-
-  bool changedUrl;
-  CStdString newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, changedUrl);
+  bool isSecondary;
+  CStdString newUrl = m_filterHelper.GetRealDirectoryUrl(strDirectory, isSecondary);
 
   bool ret = CGUIWindowVideoNav::Update(newUrl, updateFilterPath);
 
-  if (changedUrl)
+  if (isSecondary)
   {
     /* Kill the history */
     m_history.ClearPathHistory();
+    m_history.AddPath(newUrl);
     m_startDirectory = newUrl;
 
     if (updateFilters)
-    {
-      int type = 0;
-      if (m_vecItems->HasProperty("typeNumber"))
-        type = m_vecItems->GetProperty("typeNumber").asInteger();
-      m_filterHelper.BuildFilters(m_baseUrl, type);
-    }
+      BuildFilter(m_filterHelper.GetSectionUrl());
+  }
+  else
+  {
+    m_history.AddPath(newUrl);
   }
 
   return ret;

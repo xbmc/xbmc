@@ -202,14 +202,19 @@ void CPlexFilterHelper::ClearFilters()
   m_sorts.clear();
 }
 
-CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& strDirectory, bool& changed)
+CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& url_, bool& secondary)
 {
   CFileItemList tmpItems;
   CPlexDirectory dir(true, true);
+  CStdString strDirectory(url_);
 
-  changed = false;
+  secondary = false;
+
+  if (m_mapToSection == strDirectory)
+    strDirectory = m_sectionUrl;
 
   CStdString containerUrl(strDirectory);
+
   /* we just request the header to see if this is a "secondary" list */
   CStdString offset ="X-Plex-Container-Start=0&X-Plex-Container-Size=1";
   if (containerUrl.Find('?') == -1)
@@ -224,6 +229,12 @@ CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& strDirectory
   {
     if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "secondary")
     {
+      if (m_sectionUrl != strDirectory)
+      {
+        m_sectionUrl = strDirectory;
+        ClearFilters();
+      }
+
       CStdString url;
       if (tmpItems.GetProperty("HomeVideoSection").asBoolean())
         url = PlexUtils::AppendPathToURL(strDirectory, "folder");
@@ -243,16 +254,18 @@ CStdString CPlexFilterHelper::GetRealDirectoryUrl(const CStdString& strDirectory
           url += "?" + sortStr;
       }
 
-      changed = true;
+      /* Save this */
+      m_mapToSection = url;
+
+      secondary = true;
       return url;
     }
-    else if (tmpItems.IsPlexMediaServer() && tmpItems.GetContent() == "seasons")
+    else if (tmpItems.IsPlexMediaServer() && (tmpItems.GetContent() == "seasons" || tmpItems.GetContent() == "albums"))
     {
       if (tmpItems.GetProperty("totalSize").asInteger() == 1 && g_advancedSettings.m_bCollapseSingleSeason)
       {
         CFileItemPtr season = tmpItems.Get(0);
         CStdString url = season->GetPath();
-        changed = true;
         return url;
       }
     }

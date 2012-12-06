@@ -34,7 +34,7 @@ class CPlexFilterHelper
       m_mediaWindow = mediaWindow;
     }
 
-    CStdString GetRealDirectoryUrl(const CStdString& strDirectory, bool& changed);
+    CStdString GetRealDirectoryUrl(const CStdString& strDirectory, bool& secondary);
     void ClearFilters();
     bool FetchFilterSortList(const CStdString& url, const CStdString& filterSort, int type, CFileItemList& list);
     void BuildFilters(const CStdString& baseUrl, int type=1);
@@ -48,6 +48,9 @@ class CPlexFilterHelper
 
     int GetWindowID() const { return m_mediaWindow->GetID(); }
 
+    void SetSectionUrl(const CStdString& url) { m_sectionUrl = url; }
+    CStdString GetSectionUrl() const { return m_sectionUrl; }
+
   private:
     std::map<CStdString, CPlexFilterPtr> m_filters;
     std::map<CStdString, CPlexFilterPtr> m_sorts;
@@ -56,6 +59,9 @@ class CPlexFilterHelper
     bool m_sortDirectionAsc;
     CPlexFilterPtr m_openFilter;
     int m_filterType;
+
+    CStdString m_sectionUrl;
+    CStdString m_mapToSection;
 
     CGUIMediaWindow* m_mediaWindow;
 };
