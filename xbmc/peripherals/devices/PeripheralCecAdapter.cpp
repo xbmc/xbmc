@@ -131,6 +131,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bActiveSourcePending     = false;
   m_bStandbyPending          = false;
   m_bActiveSourceBeforeStandby = false;
+  m_bOnPlayReceived          = false;
 
   m_currentButton.iButton    = 0;
   m_currentButton.iDuration  = 0;
@@ -204,6 +205,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   {
     CSingleLock lock(m_critSection);
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
+    m_bOnPlayReceived = false;
   }
   else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
   {
@@ -212,7 +214,9 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     {
       CSingleLock lock(m_critSection);
       bActivateSource = (m_configuration.bActivateSource &&
+          !m_bOnPlayReceived &&
           (!m_preventActivateSourceOnPlay.IsValid() || CDateTime::GetCurrentDateTime() - m_preventActivateSourceOnPlay > CDateTimeSpan(0, 0, 0, CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP)));
+      m_bOnPlayReceived = true;
     }
     if (bActivateSource)
       ActivateSource();
