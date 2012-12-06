@@ -38,7 +38,7 @@ using namespace PVR;
 CPVRRecordings::CPVRRecordings(void) :
     m_bIsUpdating(false)
 {
-    m_thumbLoader.SetNumOfWorkers(1); 
+
 }
 
 void CPVRRecordings::UpdateFromClients(void)
@@ -427,7 +427,6 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
 bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   bool bSuccess(false);
-  CFileItemList files;
 
   {
     CSingleLock lock(m_critSection);
@@ -440,19 +439,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     {
       strFileName.erase(0, 10);
       GetSubDirectories(strFileName, &items, true);
-      GetContents(strFileName, &files);
       bSuccess = true;
-    }
-  }
-
-  if(bSuccess)
-  {
-    for (int i = 0; i < files.Size(); i++)
-    {
-      CFileItemPtr pFileItem = files.Get(i);
-      CFileItemPtr pThumbItem = items.Get(pFileItem->GetPath());
-      if (!pThumbItem->HasArt("thumb"))
-        m_thumbLoader.LoadItem(pThumbItem.get());
     }
   }
 
