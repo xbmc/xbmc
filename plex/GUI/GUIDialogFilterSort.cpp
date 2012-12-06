@@ -74,13 +74,9 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
         CGUIRadioButtonControl *filterCtrl = m_filterIdMap[senderId];
         CFileItemPtr item = m_itemIdMap[senderId];
         if (filterCtrl->IsSelected())
-        {
           m_filter->AddCurrentValue(item->GetProperty("unprocessedKey").asString());
-        }
         else
-        {
           m_filter->RemoveCurrentValue(item->GetProperty("unprocessedKey").asString());
-        }
 
         if (m_helper)
           m_helper->ApplyFilterFromDialog(m_filter);
