@@ -3,7 +3,7 @@ DEPS= ../Makefile.include android.patch Makefile
 
 # lib name, version
 LIBNAME=libcec
-VERSION=1.5.2
+VERSION=2.0.5
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -11,7 +11,7 @@ ARCHIVE=$(SOURCE).tar.gz
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) \
           ac_cv_search_dlopen=yes
 
-LIBDYLIB=$(PLATFORM)/src/lib/.libs/libcec.so.1.0.5
+LIBDYLIB=$(PLATFORM)/src/lib/.libs/libcec.so.2.0.0
 
 all: .installed-$(PLATFORM)
 

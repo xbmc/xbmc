@@ -379,13 +379,12 @@ bool CPeripheralCecAdapter::OpenConnection(void)
     libcec_configuration config;
     if (m_cecAdapter->GetCurrentConfiguration(&config))
     {
-      // send wakeup commands
-      if (!config.wakeDevices.IsEmpty())
-        m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
-
-      // make xbmc the active source
-      if (config.bActivateSource == 1)
-        m_cecAdapter->SetActiveSource();
+      // wake devices
+      for (uint8_t iDevice = CECDEVICE_TV; iDevice < CECDEVICE_BROADCAST; iDevice++)
+      {
+        if ((config.bActivateSource == 0 || iDevice != CECDEVICE_TV) && config.wakeDevices.IsSet((cec_logical_address)iDevice))
+          m_cecAdapter->PowerOnDevices((cec_logical_address)iDevice);
+      }
 
       // update the local configuration
       CSingleLock lock(m_critSection);
