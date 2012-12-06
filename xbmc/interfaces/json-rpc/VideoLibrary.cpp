@@ -495,6 +495,10 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
   if (!videodatabase.GetMovieInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
 
+  // get stream details
+  videodatabase.GetStreamDetails(infos);
+
+  // get artwork
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
@@ -534,6 +538,7 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const CStdString &method, ITransp
   if (!videodatabase.GetTvShowInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
 
+  // get artwork
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
@@ -587,6 +592,10 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
     return InvalidParams;
   }
 
+  // get stream details
+  videodatabase.GetStreamDetails(infos);
+
+  // get artwork
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
@@ -626,6 +635,10 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
     return InvalidParams;
   }
 
+  // get stream details
+  videodatabase.GetStreamDetails(infos);
+
+  // get artwork
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
 
