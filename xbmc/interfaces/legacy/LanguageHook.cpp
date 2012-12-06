@@ -33,19 +33,19 @@ namespace XBMCAddon
   static bool threadLocalInitilialized = false;
   static xbmcutil::InitFlag initer(threadLocalInitilialized);
 
-  void LanguageHook::setLanguageHook(LanguageHook* languageHook)
+  void LanguageHook::SetLanguageHook(LanguageHook* languageHook)
   {
     TRACE;
     languageHook->Acquire();
     addonLanguageHookTls.set(languageHook);
   }
 
-  LanguageHook* LanguageHook::getLanguageHook()
+  LanguageHook* LanguageHook::GetLanguageHook()
   {
     return threadLocalInitilialized ? addonLanguageHookTls.get() : NULL;
   }
 
-  void LanguageHook::clearLanguageHook()
+  void LanguageHook::ClearLanguageHook()
   {
     LanguageHook* lh = addonLanguageHookTls.get();
     addonLanguageHookTls.set(NULL);

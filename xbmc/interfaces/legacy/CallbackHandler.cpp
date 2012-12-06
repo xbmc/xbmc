@@ -84,7 +84,7 @@ namespace XBMCAddon
       AddonClass::Ref<AsynchCallbackMessage> p(*iter);
 
       // only call when we are in the right thread state
-      if(p->handler->isThreadStateOk())
+      if(p->handler->isStateOk(p->cb->getObject()))
       {
         // remove it from the queue. No matter what we're done with
         //  this. Even if it doesn't execute for some reason.
@@ -140,7 +140,7 @@ namespace XBMCAddon
     {
       AddonClass::Ref<AsynchCallbackMessage> p(*iter);
 
-      if(p->handler->shouldRemoveCallback(userData))
+      if(p->handler->shouldRemoveCallback(p->cb->getObject(),userData))
       {
 #ifdef ENABLE_TRACE_API
         CLog::Log(LOGDEBUG,"%sNEWADDON removing callback 0x%lx for PyThreadState 0x%lx from queue", _tg.getSpaces(),(long)(p->cb.get()) ,(long)userData);
