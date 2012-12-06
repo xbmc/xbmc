@@ -29,6 +29,15 @@ class PlexAsyncUrlResolver
     return self;
   }
 
+  static PlexAsyncUrlResolverPtr ResolveFirst(const CFileItem& item)
+  {
+    PlexAsyncUrlResolverPtr self = PlexAsyncUrlResolverPtr(new PlexAsyncUrlResolver(item));
+    boost::thread t(boost::bind(&PlexAsyncUrlResolver::ProcessFirst, self.get(), self));
+    t.detach();
+
+    return self;
+  }
+
   PlexAsyncUrlResolver(const CFileItem& item)
     : m_item(item)
     , m_bSuccess(true)
@@ -46,6 +55,11 @@ class PlexAsyncUrlResolver
   }
 
   CFileItem& GetFinalItem()
+  {
+    return *(m_finalItem.get());
+  }
+
+  CFileItemPtr GetFinalItemPtr()
   {
     return m_finalItem;
   }
@@ -66,6 +80,31 @@ class PlexAsyncUrlResolver
   }
 
  protected:
+
+  void ProcessFirst(PlexAsyncUrlResolverPtr me)
+  {
+    CStdString url = m_item.GetProperty("key").asString();
+    if (m_bStop == false)
+    {
+      CFileItemList list;
+      CPlexDirectory dir(true, false);
+
+      if (dir.GetDirectory(url, list))
+      {
+        if (list.Size() > 0 && m_bStop == false)
+        {
+          m_finalItem = list.Get(0);
+        }
+      }
+      else
+      {
+        m_bSuccess = false;
+        m_bStop = true;
+      }
+    }
+
+    m_downloadEvent.Set();
+  }
 
   void Process(PlexAsyncUrlResolverPtr me)
   {
@@ -119,7 +158,7 @@ class PlexAsyncUrlResolver
             if (finalFile->GetProperty("indirect").asInteger() == 1)
             {
               m_indirect = true;
-              m_finalItem = *finalFile.get();
+              m_finalItem = finalFile;
             }
 
             g_application.CurrentFileItem().SetPath(finalFile->GetPath());
@@ -147,7 +186,7 @@ class PlexAsyncUrlResolver
   bool       m_bSuccess;
   bool       m_bStop;
   CStdString m_finalPath;
-  CFileItem  m_finalItem;
+  CFileItemPtr  m_finalItem;
   bool       m_indirect;
   CFileItem  m_item;
   PlexAsyncUrlResolverPtr m_me;

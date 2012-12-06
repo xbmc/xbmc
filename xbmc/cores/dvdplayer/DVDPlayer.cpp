@@ -4617,18 +4617,22 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
   }
 
   CFileItem item = m_item;
-  if(g_application.CurrentFileItem().IsPlexMediaServerLibrary())
   {
-    CPlexDirectory dir(true, false);
-    CFileItemList items;
-    dir.GetDirectory(g_application.CurrentFileItem().GetProperty("key").asString(), items);
+    PlexAsyncUrlResolverPtr resolver = PlexAsyncUrlResolver::ResolveFirst(item);
+    // Wait for it to complete.
+    for (bool done = false; done == false && m_bAbortRequest == false; )
+      done = resolver->WaitForCompletion(100);
 
-    if (items.Size() == 1)
+    // If we cancelled, stop it.
+    if (m_bAbortRequest == true && resolver->Success() == false)
     {
-      // Save it.
-      m_itemWithDetails = items[0];
-      item = *(items[0]);
+      resolver->Cancel();
+      m_bAbortRequest = true;
+      return false;
     }
+
+    item = resolver->GetFinalItem();
+    m_itemWithDetails = resolver->GetFinalItemPtr();
   }
 
   // See if we need to resolve an indirect item.
