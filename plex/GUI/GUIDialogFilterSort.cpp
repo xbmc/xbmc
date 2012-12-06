@@ -85,7 +85,7 @@ bool CGUIDialogFilterSort::OnMessage(CGUIMessage &message)
         if (m_helper)
           m_helper->ApplyFilterFromDialog(m_filter);
 
-        CGUIMessage msg(GUI_MSG_UPDATE_FILTERS, GetID(), WINDOW_VIDEO_NAV);
+        CGUIMessage msg(GUI_MSG_UPDATE_FILTERS, GetID(), m_helper->GetWindowID());
         g_windowManager.SendThreadMessage(msg);
       }
     }

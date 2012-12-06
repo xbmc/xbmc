@@ -46,6 +46,8 @@ class CPlexFilterHelper
 
     CStdString GetFilterUrl(const CStdString& exclude="", const CStdString& baseUrl="") const;
 
+    int GetWindowID() const { return m_mediaWindow->GetID(); }
+
   private:
     std::map<CStdString, CPlexFilterPtr> m_filters;
     std::map<CStdString, CPlexFilterPtr> m_sorts;

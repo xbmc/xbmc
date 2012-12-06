@@ -350,6 +350,7 @@
 #include "plex/Utility/BackgroundMusicPlayer.h"
 #include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
+#include "plex/GUI/GUIPlexMusicWindow.h"
 /* END PLEX */
 
 using namespace std;
@@ -1383,8 +1384,10 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogMediaFilter);
 
     g_windowManager.Add(new CGUIWindowMusicPlayList);
+#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowMusicSongs);
     g_windowManager.Add(new CGUIWindowMusicNav);
+#endif
     g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);
 
     /* Load PVR related Windows and Dialogs */
@@ -1429,6 +1432,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogTimer);                 // window id = 201
     g_windowManager.Add(new CGUIDialogFilterSort);
     g_windowManager.Add(new CGUIPlexMediaWindow);
+    g_windowManager.Add(new CGUIPlexMusicWindow);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
