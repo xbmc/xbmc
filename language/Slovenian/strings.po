@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -8412,7 +8412,7 @@ msgstr "Skrij zgodbo neogledanih posnetkov"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
-msgstr "* Skrito zaradi skrivanja zgodbe *"
+msgstr "* Skrito zaradi razkrivanja zgodbe *"
 
 msgctxt "#20371"
 msgid "Set season thumb"
@@ -10753,3 +10753,7 @@ msgstr "TV in naprava AVR (eksplicitno)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Nepodprta različica libCEC. %x je nižja, kot jo podpira XBMC (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Mapa posnetka"

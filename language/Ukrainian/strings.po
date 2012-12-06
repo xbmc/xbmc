@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6988,7 +6988,7 @@ msgstr "Помилка запису"
 
 msgctxt "#19279"
 msgid "Client specific"
-msgstr "Клієнтськ."
+msgstr "Клієнт"
 
 msgctxt "#19280"
 msgid "Client specific settings"
@@ -10212,7 +10212,7 @@ msgstr "Відомості"
 
 msgctxt "#33030"
 msgid "Outlook"
-msgstr "Спостереження"
+msgstr "Очікується"
 
 msgctxt "#33031"
 msgid "Coverflow"
