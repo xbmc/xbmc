@@ -30,7 +30,7 @@
 #if defined(HAS_SKIN_TOUCHED) && defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
 #define DEFAULT_SKIN          "skin.touched"
 #else
-#define DEFAULT_SKIN          "skin.mediastream"
+#define DEFAULT_SKIN          "skin.plex"
 #endif
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
 #ifdef MID
