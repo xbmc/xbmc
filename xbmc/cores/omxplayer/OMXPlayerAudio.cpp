@@ -718,7 +718,7 @@ bool OMXPlayerAudio::OpenDecoder()
   m_passthrough = false;
   m_hw_decode   = false;
 
-  bool bSendParent = true;
+  bool bSendParent = false;
 
   if(m_DecoderOpen)
   {
