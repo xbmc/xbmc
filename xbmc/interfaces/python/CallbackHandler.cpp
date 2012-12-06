@@ -20,6 +20,7 @@
  */
 
 #include "CallbackHandler.h"
+#include "LanguageHook.h"
 
 namespace XBMCAddon
 {
@@ -42,10 +43,18 @@ namespace XBMCAddon
      * Now we are answering the question as to whether or not we are in the
      *  PyThreadState that we were in when we started.
      */
-    bool PythonCallbackHandler::isThreadStateOk()
+    bool PythonCallbackHandler::isStateOk(AddonClass* obj)
     {
       TRACE;
-      return objectThreadState == PyThreadState_Get();
+      PyThreadState* state = PyThreadState_Get();
+      if (objectThreadState == state)
+      {
+        // make sure the interpreter is still active.
+        AddonClass::Ref<XBMCAddon::Python::LanguageHook> lh(XBMCAddon::Python::LanguageHook::GetIfExists(state->interp));
+        if (lh.isNotNull() && lh->HasRegisteredAddonClassInstance(obj) && lh.get() == obj->GetLanguageHook())
+          return true;
+      }
+      return false;
     }
 
     /**
@@ -55,10 +64,15 @@ namespace XBMCAddon
      * TODO: This is a stupid way to get this information back to the handler.
      *  there should be a more language neutral means.
      */
-    bool PythonCallbackHandler::shouldRemoveCallback(void* threadState)
+    bool PythonCallbackHandler::shouldRemoveCallback(AddonClass* obj, void* threadState)
     {
       TRACE;
-      return threadState == objectThreadState;
+      if (threadState == objectThreadState)
+        return true;
+
+      // we also want to remove the callback if the language hook no longer exists.
+      //   this is a belt-and-suspenders cleanup mechanism
+      return ! XBMCAddon::Python::LanguageHook::IsAddonClassInstanceRegistered(obj);
     }
   }
 }

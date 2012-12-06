@@ -44,8 +44,8 @@ namespace XBMCAddon
        *  handling callbacks in the appropriate thread.
        */
       PythonCallbackHandler();
-      virtual bool isThreadStateOk();
-      virtual bool shouldRemoveCallback(void* threadState);
+      virtual bool isStateOk(AddonClass* obj);
+      virtual bool shouldRemoveCallback(AddonClass* obj, void* threadState);
     };
   }
 }
