@@ -4616,9 +4616,23 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     }
   }
 
-  // See if we need to resolve an indirect item.
-  bool isIndirect = (m_item.GetProperty("indirect").asInteger() == 1);
   CFileItem item = m_item;
+  if(g_application.CurrentFileItem().IsPlexMediaServerLibrary())
+  {
+    CPlexDirectory dir(true, false);
+    CFileItemList items;
+    dir.GetDirectory(g_application.CurrentFileItem().GetProperty("key").asString(), items);
+
+    if (items.Size() == 1)
+    {
+      // Save it.
+      m_itemWithDetails = items[0];
+      item = *(items[0]);
+    }
+  }
+
+  // See if we need to resolve an indirect item.
+  bool isIndirect = (item.GetProperty("indirect").asInteger() == 1);
 
   while (isIndirect)
   {
@@ -4638,7 +4652,7 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     }
 
     // Suck the data out of the resolver and see if it's indirect as well.
-    m_item.SetPath(resolver->GetFinalPath());
+    item.SetPath(resolver->GetFinalPath());
     isIndirect = resolver->IsIndirect();
 
     // If we ran into an indirect, copy the full item, since it might have
@@ -4648,10 +4662,11 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
       item = resolver->GetFinalItem();
   }
 
-  m_mimetype = m_item.GetMimeType();
-  m_filename = m_item.GetPath();
+  m_mimetype = item.GetMimeType();
+  m_filename = item.GetPath();
+  m_item = item;
 
-  if (m_item.IsPlexWebkit())
+  if (item.IsPlexWebkit())
   {
     // Get the hostname of the best server
     PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
@@ -4662,7 +4677,7 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     //
     if (Cocoa_IsHostLocal(serverHost) == true)
     {
-      CApplicationMessenger::Get().RestartWithNewPlayer(0, m_item.GetPath());
+      CApplicationMessenger::Get().RestartWithNewPlayer(0, item.GetPath());
       m_bFileOpenComplete = true;
       return false;
     }
@@ -4686,22 +4701,12 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
   // Get details on the item we're playing.
   else if (g_application.CurrentFileItem().IsPlexMediaServerLibrary())
   {
-    CPlexDirectory plex;
-    CFileItemList items;
-    plex.GetDirectory(g_application.CurrentFileItem().GetProperty("key").asString(), items);
-
-    if (items.Size() == 1)
-    {
-      // Save it.
-      m_itemWithDetails = items[0];
-    }
-
     CURL mediaURL(m_filename);
 
     int quality = 0;
     bool transcode = false;
 
-    if (m_item.IsRemotePlexMediaServerLibrary() == true && g_guiSettings.GetInt("myplex.remoteplexquality") != -1)
+    if (item.IsRemotePlexMediaServerLibrary() == true && g_guiSettings.GetInt("myplex.remoteplexquality") != -1)
     {
       // This is a remote transcode.
       transcode = true;
