@@ -429,6 +429,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_hidingSub(false),
       m_vobsubToDisplay(-1),
       m_bFileOpenComplete(false),
+      m_readRate(0),
       /* END PLEX */
       m_ready(true)
 {
@@ -811,9 +812,9 @@ bool CDVDPlayer::OpenDemuxStream()
     int numSeconds = g_guiSettings.GetInt("cache.seconds");
     int totalData = (bitrate / 8) * numSeconds;
 
-    // At least 256 KB as a floor.
-    if (totalData/1024 < 256)
-      totalData = 1024 * 256;
+    // At least 1024 KB as a floor.
+    if (totalData/1024 < 1024)
+      totalData = 1024 * 1024;
 
     // At most 15MB as a ceiling.
     if (totalData/1024 > 15*1024)
@@ -836,7 +837,13 @@ bool CDVDPlayer::OpenDemuxStream()
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if(len > 0 && tim > 0)
-    m_pInputStream->SetReadRate(len * 1000 / tim);
+    //m_pInputStream->SetReadRate(len * 1000 / tim);
+  {
+    //cap to intital read rate to 40 megabits/second if less than average bitrate * 1.25
+    m_readRate = std::min((unsigned int)((len * 1000 / tim) * 1.25), (unsigned int) (40000000 / 8));
+    m_pInputStream->SetReadRate(m_readRate);
+  }
+  /* END PLEX */
 
   return true;
 }
@@ -1288,6 +1295,10 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+    /* PLEX */
+    UpdateReadRate();
+    /* END PLEX */
 
     if (CheckDelayedChannelEntry())
       continue;
@@ -4728,6 +4739,18 @@ int CDVDPlayer::GetSubtitlePlexID()
 {
   SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this));
   return stream.plexID;
+}
+
+void CDVDPlayer::UpdateReadRate()
+{
+  unsigned int bytespersecond = (GetVideoBitrate() + GetAudioBitrate()) / 8;
+  if (bytespersecond > m_readRate)
+  {
+    //if current bitrate * 1.25 is over 40 Mbs then cap at at max of actual bitrate or 40 Mb/s whichever is greater
+    //otherwise set read rate to current bitrate * 1.25
+    m_readRate = std::min((unsigned int)(bytespersecond * 1.25), std::max((unsigned int) bytespersecond, (unsigned int) (40000000 / 8)));
+    m_pInputStream->SetReadRate(m_readRate);
+  }
 }
 
 /* END PLEX */

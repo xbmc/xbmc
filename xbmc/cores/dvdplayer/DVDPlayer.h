@@ -570,4 +570,8 @@ protected:
     return part;
   }
 
+  unsigned int m_readRate;
+  void UpdateReadRate();
+  /* END PLEX */
+
 };
