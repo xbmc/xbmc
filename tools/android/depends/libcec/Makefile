@@ -3,7 +3,7 @@ DEPS= ../Makefile.include android.patch Makefile
 
 # lib name, version
 LIBNAME=libcec
-VERSION=2.0.5
+VERSION=2.0.5-2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
