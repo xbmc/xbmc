@@ -1,3 +1,10 @@
+v1.0.4
+- replace some html chars in the api response
+
+v1.0.3
+- added fanart image
+- mapping for new languages supported by xbmc
+
 v1.0.2
 - better error handling
 
