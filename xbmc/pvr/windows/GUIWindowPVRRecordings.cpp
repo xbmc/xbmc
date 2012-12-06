@@ -32,8 +32,8 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
-#include "video/VideoDatabase.h"
 #include "pvr/addons/PVRClients.h"
+#include "video/windows/GUIWindowVideoNav.h"
 
 using namespace PVR;
 
@@ -41,6 +41,7 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_RECORDINGS, CONTROL_BTNRECORDINGS, CONTROL_LIST_RECORDINGS)
 {
   m_strSelectedPath = "pvr://recordings/";
+  m_thumbLoader.SetNumOfWorkers(1);
 }
 
 void CGUIWindowPVRRecordings::UnregisterObservers(void)
@@ -399,4 +400,57 @@ bool CGUIWindowPVRRecordings::OnContextButtonMarkWatched(const CFileItemPtr &ite
   }
 
   return bReturn;
+}
+
+void CGUIWindowPVRRecordings::BeforeUpdate(const CStdString &strDirectory)
+{
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+}
+
+void CGUIWindowPVRRecordings::AfterUpdate(CFileItemList& items)
+{
+  if (!items.IsEmpty())
+  {
+    CFileItemList files;
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr pItem = items[i];
+      if (!pItem->m_bIsFolder)
+        files.Add(pItem);
+    }
+
+    if (!files.IsEmpty())
+    {
+      files.SetPath(items.GetPath());
+      if(m_database.Open())
+      {
+        if (g_PVRRecordings->HasAllRecordingsPathExtension(files.GetPath()))
+        {
+          // Build a map of all files belonging to common subdirectories and call
+          // LoadVideoInfo for each item list
+          typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
+          typedef std::map<CStdString, CFileItemListPtr> DirectoryMap;
+
+          DirectoryMap directory_map;
+          for (int i = 0; i < files.Size(); i++)
+          {
+            CStdString strDirectory = URIUtils::GetDirectory(files[i]->GetPath());
+            DirectoryMap::iterator it = directory_map.find(strDirectory);
+            if (it == directory_map.end())
+              it = directory_map.insert(std::make_pair(
+                  strDirectory, CFileItemListPtr(new CFileItemList(strDirectory)))).first;
+            it->second->Add(files[i]);
+          }
+
+          for (DirectoryMap::iterator it = directory_map.begin(); it != directory_map.end(); it++)
+            CGUIWindowVideoNav::LoadVideoInfo(*it->second, m_database, false);
+        }
+        else
+          CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
+        m_database.Close();
+      }
+      m_thumbLoader.Load(files);
+    }
+  }
 }
