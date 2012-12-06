@@ -457,6 +457,14 @@ msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]CONFIGURAR PARÁMETROS DO SERVIZO[/B][CR][CR]Configurar o control de XBMC vía UPnP e HTTP · Configurar compartición de arquivos[CR]Activar Zeroconf · Configurar AirPlay"
 
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "Axuda da primeira execución..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
+msgstr "Esta lapela significa que existe un menú deshabilitado nesta xanela que contén máis opción para esta sección. Para acceder ó menú, ir a esquerda co control remoto o teclado ou move o punteiro do rato até a lapela. [CR][CR]Preme en \"Feito\" para pechar a caixa de dialogo. Non aparecera máis."
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selecione o seu perfíl de usuario de XBMC[CR]para ingresar e continuar"
@@ -528,3 +536,7 @@ msgstr "Probabilidades de chuvia"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Colleitando información da predición..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Mapas e Alertas"

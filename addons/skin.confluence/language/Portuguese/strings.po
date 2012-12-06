@@ -431,7 +431,7 @@ msgstr "[B]CONFIGURAÇÕES DE VÍDEO[/B][CR][CR]Gerir Biblioteca de Vídeo · Op
 
 msgctxt "#31402"
 msgid "[B]CONFIGURE MUSIC SETTINGS[/B][CR][CR]Manage your music library · Set music playback options · Change music listing options[CR]Setup song submission · Set karaoke options"
-msgstr "[B]CONFIGURAÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Opções de reprodução de música · Opções de listagem de música[CR]Definir envio de músicas · Opções de karaoke"
+msgstr "[B]CONFIGURAÇÕES DE MÚSICA[/B][CR][CR]Gerir Biblioteca de Música · Opções de reprodução · Opções de listagem[CR]Definir envio de músicas · Opções de karaoke"
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"

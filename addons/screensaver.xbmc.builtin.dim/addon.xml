@@ -52,7 +52,7 @@
     <description lang="bg">Скрийнсейвърът "Dim" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca">L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>
     <description lang="cs">Jednoduchý spořič obrazovky Ztmavení ztmaví (začerní) vaši obrazovku podle nastavitelné hodnoty mezi 20 a 100%.</description>
-    <description lang="da">Dæmpningspauseskærmen er en simpel pauseskærm, der dæmper(toner ud) din skærm til en valgfri værdi mellem 20 og 100%.</description>
+    <description lang="da">Dæmpningspauseskærmen er en simpel pauseskærm, der dæmper (udtoner) din skærm til en valgfri værdi mellem 20 og 100%.</description>
     <description lang="de">Der Dimmer-Bildschirmschoner ist ein einfacher Bildschirmschoner, welcher den Bildschirm auf einen benutzerdefinierten Wert zwischen 20 und 100% abdunkelt.</description>
     <description lang="el">Η προφύλαξη οθόνης Dim είναι μία απλή προφύλαξη η οποία σκιάζει την οθόνη σας σε μία τιμή που μπορεί να ρυθμιστεί μεταξύ 20 και 100%.</description>
     <description lang="en">The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
@@ -90,5 +90,3 @@
     <platform>all</platform>
   </extension>
 </addon>
-
-

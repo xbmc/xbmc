@@ -536,3 +536,7 @@ msgstr "Kans Op Neerslag"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Weersvoorspelling ophalen..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Kaart & Waarschuwingen"
