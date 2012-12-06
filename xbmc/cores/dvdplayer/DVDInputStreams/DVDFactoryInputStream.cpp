@@ -50,22 +50,26 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 
   if(item.IsDVDImage())
   {
+#ifdef HAVE_LIBBLURAY
     CURL url("udf://");
     url.SetHostName(file);
     url.SetFileName("BDMV/index.bdmv");
     if(XFILE::CFile::Exists(url.Get()))
         return new CDVDInputStreamBluray(pPlayer);
-    else
-        return new CDVDInputStreamNavigator(pPlayer);
+#endif
+
+    return new CDVDInputStreamNavigator(pPlayer);
   }
 
 #ifdef HAS_DVD_DRIVE
   if(file.compare(g_mediaManager.TranslateDevicePath("")) == 0)
   {
+#ifdef HAVE_LIBBLURAY
     if(XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV/index.bdmv")))
         return new CDVDInputStreamBluray(pPlayer);
-    else
-        return new CDVDInputStreamNavigator(pPlayer);
+#endif
+
+    return new CDVDInputStreamNavigator(pPlayer);
   }
 #endif
 
