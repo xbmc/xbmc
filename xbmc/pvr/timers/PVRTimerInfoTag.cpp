@@ -42,7 +42,7 @@ using namespace EPG;
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 {
-  m_strTitle           = StringUtils::EmptyString;
+  m_strTitle           = g_localizeStrings.Get(19056); // New Timer
   m_strDirectory       = "/";
   m_strSummary         = StringUtils::EmptyString;
   m_iClientId          = g_PVRClients->GetFirstConnectedClientID();
