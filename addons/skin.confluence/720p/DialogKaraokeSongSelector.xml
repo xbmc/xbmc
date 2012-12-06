@@ -1,4 +1,4 @@
-<window type="dialog" id="143">
+<window type="dialog">
 	<animation effect="slide" start="0,-40" end="0,0" time="100">WindowOpen</animation>
 	<animation effect="slide" start="0,0" end="0,-40" delay="400" time="100">WindowClose</animation>
 	<controls>

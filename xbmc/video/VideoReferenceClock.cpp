@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "system.h"
@@ -34,9 +33,9 @@
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
 #elif defined(TARGET_DARWIN_OSX)
   #include <QuartzCore/CVDisplayLink.h>
-  #include "CocoaInterface.h"
+  #include "osx/CocoaInterface.h"
 #elif defined(TARGET_DARWIN_IOS)
-  #include "WindowingFactory.h"
+  #include "windowing/WindowingFactory.h"
 #elif defined(_WIN32) && defined(HAS_DX)
   #pragma comment (lib,"d3d9.lib")
   #if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up there is no dxerr9 anymore
@@ -116,9 +115,29 @@ CVideoReferenceClock::CVideoReferenceClock() : CThread("CVideoReferenceClock")
   m_UseVblank = false;
   m_Started.Reset();
 
+  m_CurrTime = 0;
+  m_LastIntTime = 0;
+  m_CurrTimeFract = 0.0;
+  m_LastRefreshTime = 0;
+  m_fineadjust = 0.0;
+  m_RefreshRate = 0;
+  m_PrevRefreshRate = 0;
+  m_MissedVblanks = 0;
+  m_RefreshChanged = 0;
+  m_VblankTime = 0;
+
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
+  m_glXWaitVideoSyncSGI = NULL;
+  m_glXGetVideoSyncSGI = NULL;
   m_Dpy = NULL;
+  m_vInfo = NULL;
+  m_Window = 0;
+  m_Context = NULL;
+  m_pixmap = None;
+  m_glPixmap = None;
+  m_RREventBase = 0;
   m_UseNvSettings = true;
+  m_bIsATI = false;
 #endif
 }
 

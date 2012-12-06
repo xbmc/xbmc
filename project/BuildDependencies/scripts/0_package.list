@@ -5,7 +5,10 @@
 ; -> sqlite-3.7.12.1-win32\project\BuildDependencies\lib\sqlite3.lib
 ; -> sqlite-3.7.12.1-win32\system\sqlite3.dll
 ; -> ...
+doxygen-1.8.2-win32
 sqlite-3.7.12.1-win32
 libnfs-1.3.0-win32
 libshairplay-d689c6-win32
 libjpeg-turbo-1.2.0-win32
+libbluray-0.2.3-win32
+taglib-1.8beta-win32

@@ -9,7 +9,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,20 +23,21 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIImage.h"
 #include "utils/Stopwatch.h"
+#include "utils/Job.h"
+#include "threads/CriticalSection.h"
 
 /*!
  \ingroup controls
  \brief
  */
-class CGUIMultiImage : public CGUIControl
+class CGUIMultiImage : public CGUIControl, public IJobCallback
 {
 public:
   CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd);
@@ -63,6 +64,22 @@ public:
 
 protected:
   void LoadDirectory();
+  void OnDirectoryLoaded();
+  void CancelLoading();
+
+  enum DIRECTORY_STATUS { UNLOADED = 0, LOADING, LOADED, READY };
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+
+  class CMultiImageJob : public CJob
+  {
+  public:
+    CMultiImageJob(const CStdString &path);
+    virtual bool DoWork();
+    virtual const char *GetType() const { return "multiimage"; };
+
+    std::vector<CStdString> m_files;
+    CStdString              m_path;
+  };
 
   CGUIInfoLabel m_texturePath;
   CStdString m_currentPath;
@@ -74,9 +91,12 @@ protected:
   bool m_loop;
 
   bool m_bDynamicResourceAlloc;
-  bool m_directoryLoaded;
   std::vector<CStdString> m_files;
 
   CGUIImage m_image;
+
+  CCriticalSection m_section;
+  DIRECTORY_STATUS m_directoryStatus;
+  unsigned int m_jobID;
 };
 #endif

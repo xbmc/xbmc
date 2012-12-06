@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,7 @@
 #include "WAVcodec.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #if defined(WIN32)
 #include <mmreg.h>
@@ -49,10 +49,11 @@ WAVCodec::WAVCodec()
   m_Channels = 0;
   m_BitsPerSample = 0;
   m_DataFormat = AE_FMT_INVALID;
-  m_iDataStart=0;
-  m_iDataLen=0;
+  m_iDataStart = 0;
+  m_iDataLen = 0;
+  m_ChannelMask = 0;
   m_Bitrate = 0;
-  m_CodecName = "WAV";
+  m_CodecName = "wav";
 }
 
 WAVCodec::~WAVCodec()
@@ -270,4 +271,17 @@ int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool WAVCodec::CanInit()
 {
   return true;
+}
+
+CAEChannelInfo WAVCodec::GetChannelInfo()
+{
+  static enum AEChannel map[2][3] = {
+    {AE_CH_FC, AE_CH_NULL},
+    {AE_CH_FL, AE_CH_FR  , AE_CH_NULL}
+  };
+
+  if (m_Channels > 2)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }

@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Serbian (Cyrillic) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sr_RS/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sr_RS\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -205,74 +206,6 @@ msgctxt "#62"
 msgid "Dec"
 msgstr "дец"
 
-msgctxt "#71"
-msgid "N"
-msgstr ""
-
-msgctxt "#72"
-msgid "NNE"
-msgstr ""
-
-msgctxt "#73"
-msgid "NE"
-msgstr ""
-
-msgctxt "#74"
-msgid "ENE"
-msgstr ""
-
-msgctxt "#75"
-msgid "E"
-msgstr ""
-
-msgctxt "#76"
-msgid "ESE"
-msgstr ""
-
-msgctxt "#77"
-msgid "SE"
-msgstr ""
-
-msgctxt "#78"
-msgid "SSE"
-msgstr ""
-
-msgctxt "#79"
-msgid "S"
-msgstr ""
-
-msgctxt "#80"
-msgid "SSW"
-msgstr ""
-
-msgctxt "#81"
-msgid "SW"
-msgstr ""
-
-msgctxt "#82"
-msgid "WSW"
-msgstr ""
-
-msgctxt "#83"
-msgid "W"
-msgstr ""
-
-msgctxt "#84"
-msgid "WNW"
-msgstr ""
-
-msgctxt "#85"
-msgid "NW"
-msgstr ""
-
-msgctxt "#86"
-msgid "NNW"
-msgstr ""
-
-msgctxt "#87"
-msgid "VAR"
-msgstr ""
-
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Приказ: Аутом."
@@ -332,14 +265,6 @@ msgstr "Пречице"
 msgctxt "#112"
 msgid "Paused"
 msgstr "Паузирано"
-
-msgctxt "#113"
-msgid "Update failed"
-msgstr ""
-
-msgctxt "#114"
-msgid "Installation failed"
-msgstr ""
 
 msgctxt "#115"
 msgid "Copy"
@@ -653,10 +578,6 @@ msgctxt "#198"
 msgid "Loading movie details"
 msgstr "Учитавање података о филму"
 
-msgctxt "#199"
-msgid "Web interface"
-msgstr ""
-
 msgctxt "#202"
 msgid "Tagline"
 msgstr "Tagline"
@@ -733,10 +654,6 @@ msgctxt "#224"
 msgid "Speed"
 msgstr "Брзина"
 
-msgctxt "#225"
-msgid "Vertical Shift"
-msgstr ""
-
 msgctxt "#226"
 msgid "Test patterns..."
 msgstr "Испробај шаблон..."
@@ -792,30 +709,6 @@ msgstr "Увеличање"
 msgctxt "#239"
 msgid "Clear playlist on finish"
 msgstr "Поништи списак по завршетку"
-
-msgctxt "#240"
-msgid "Display Mode"
-msgstr ""
-
-msgctxt "#241"
-msgid "Full Screen #%d"
-msgstr ""
-
-msgctxt "#242"
-msgid "Windowed"
-msgstr ""
-
-msgctxt "#243"
-msgid "Refresh Rate"
-msgstr ""
-
-msgctxt "#244"
-msgid "Full screen"
-msgstr ""
-
-msgctxt "#245"
-msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr ""
 
 msgctxt "#247"
 msgid "Scripts"
@@ -1457,10 +1350,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "Макс."
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr ""
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "Избриши податке о албуму"
@@ -1508,10 +1397,6 @@ msgstr "Уклони филм из библиотеке"
 msgctxt "#433"
 msgid "Really remove '%s'?"
 msgstr "Заиста желите да уклоните „%s“?"
-
-msgctxt "#434"
-msgid "From %s at %i %s"
-msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2015,15 +1900,7 @@ msgstr "Путања"
 
 msgctxt "#574"
 msgid "Country"
-msgstr ""
-
-msgctxt "#575"
-msgid "In progress"
-msgstr ""
-
-msgctxt "#576"
-msgid "Times played"
-msgstr ""
+msgstr "Држава"
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -2140,14 +2017,6 @@ msgstr "Рипуј музичку нумеру"
 msgctxt "#611"
 msgid "Enter number"
 msgstr "Унесите број"
-
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr ""
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr ""
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2316,10 +2185,6 @@ msgstr "Желите ли ово да уклоните из библиотеке
 msgctxt "#664"
 msgid "Browse for Script"
 msgstr "Потражи скрипту"
-
-msgctxt "#665"
-msgid "Compression level"
-msgstr ""
 
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -2621,10 +2486,6 @@ msgctxt "#789"
 msgid "Wireless network name (ESSID)"
 msgstr "Име бежичне мреже (ESSID)"
 
-msgctxt "#790"
-msgid "Remote control"
-msgstr ""
-
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
 msgstr "Дозволи програмима на овом систему да управљају XBMC-ом"
@@ -2668,14 +2529,6 @@ msgstr "Исправан опсег прикључака је од 1 до 65535"
 msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr "Исправан опсег прикључака је од 1024 до 65535"
-
-msgctxt "#998"
-msgid "Add Music..."
-msgstr ""
-
-msgctxt "#999"
-msgid "Add Videos..."
-msgstr ""
 
 msgctxt "#1000"
 msgid "- Preview"
@@ -3001,57 +2854,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Програми, слике и филмови"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Аутом. откривање"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Аутом. откривање система"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Надимак"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Питај за повезивање"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Пошаљи FTP корисничко име и лозинку"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Интервал пробног сигнала"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Желите ли да се повежете са аутом. откривањем система?"
-
-msgctxt "#1259"
-msgid "Zeroconf"
-msgstr ""
-
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
 msgstr "Огласи ове услуге осталим системима путем Zeroconf"
-
-msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr ""
-
-msgctxt "#1271"
-msgid "Device name"
-msgstr ""
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr ""
-
-msgctxt "#1273"
-msgid "AirPlay"
-msgstr ""
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3101,10 +2906,6 @@ msgctxt "#1405"
 msgid "in"
 msgstr "у"
 
-msgctxt "#1406"
-msgid "the"
-msgstr ""
-
 msgctxt "#1407"
 msgid "Vicinity"
 msgstr "близини"
@@ -3129,10 +2930,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "ветровито"
 
-msgctxt "#1413"
-msgid "drizzle"
-msgstr "ромињање"
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "олуја"
@@ -3150,28 +2947,16 @@ msgid "Grains"
 msgstr "град"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "олује"
+msgid "Thunderstorms"
+msgstr "грмљавина"
 
-msgctxt "#1419"
-msgid "T-Showers"
-msgstr "пљускови са грмљавином"
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Непознато"
 
-msgctxt "#1420"
-msgid "Moderate"
-msgstr ""
-
-msgctxt "#1421"
-msgid "Very High"
-msgstr ""
-
-msgctxt "#1422"
-msgid "Windy"
-msgstr ""
-
-msgctxt "#1423"
-msgid "Mist"
-msgstr ""
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Обилне падавине"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3184,10 +2969,6 @@ msgstr "Трајање"
 msgctxt "#2100"
 msgid "Script failed! : %s"
 msgstr "Скрипта је „пукла“! : %s"
-
-msgctxt "#2101"
-msgid "Newer version needed - See log"
-msgstr ""
 
 msgctxt "#4501"
 msgid "Enable LCD/VFD"
@@ -3283,7 +3064,7 @@ msgstr "Читач интернет страна"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
+msgstr "Филмови"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3291,15 +3072,11 @@ msgstr "Филмови/Списак за реп."
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr ""
+msgstr "Екран за пријаву"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
 msgstr "Поставке - Профили"
-
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr ""
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3629,10 +3406,6 @@ msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Поставке и упр. датотекама"
 
-msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Постави као подразумевано за све филмове"
-
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
 msgstr "Ово ће поништити претходно сачуване вредности"
@@ -3680,10 +3453,6 @@ msgstr "дана"
 msgctxt "#12394"
 msgid "Total uptime"
 msgstr "Укупно време"
-
-msgctxt "#12395"
-msgid "Battery level"
-msgstr ""
 
 msgctxt "#12600"
 msgid "Weather"
@@ -3753,10 +3522,6 @@ msgctxt "#13015"
 msgid "Power button action"
 msgstr "Акција дугмета за укључивање"
 
-msgctxt "#13016"
-msgid "Power off System"
-msgstr ""
-
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr "Да ли је друга сесија активна, можда путем ssh?"
@@ -3780,10 +3545,6 @@ msgstr "Управљачка палица је прикључена"
 msgctxt "#13025"
 msgid "Joystick unplugged"
 msgstr "Управљачка палица је раскачена"
-
-msgctxt "#13050"
-msgid "Running low on battery"
-msgstr ""
 
 msgctxt "#13100"
 msgid "Flicker filter"
@@ -3976,18 +3737,6 @@ msgstr "Покренуто, аларм за %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Аларм!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Отказано при %iмин. %iсек. до краја"
-
-msgctxt "#13213"
-msgid "%2.0fm"
-msgstr ""
-
-msgctxt "#13214"
-msgid "%2.0fs"
-msgstr ""
 
 msgctxt "#13249"
 msgid "Search for subtitles in RARs"
@@ -4473,10 +4222,6 @@ msgctxt "#13411"
 msgid "Minimum fan speed"
 msgstr "Минимална брзина вентилатора"
 
-msgctxt "#13412"
-msgid "Play from here"
-msgstr ""
-
 msgctxt "#13413"
 msgid "Downloading"
 msgstr "Преузимање"
@@ -4529,34 +4274,6 @@ msgctxt "#13425"
 msgid "Allow hardware acceleration (VDPAU)"
 msgstr "Broadcom Crystal HD"
 
-msgctxt "#13426"
-msgid "Allow hardware acceleration (VAAPI)"
-msgstr ""
-
-msgctxt "#13427"
-msgid "Allow hardware acceleration (DXVA2)"
-msgstr ""
-
-msgctxt "#13428"
-msgid "Allow hardware acceleration (CrystalHD)"
-msgstr ""
-
-msgctxt "#13429"
-msgid "Allow hardware acceleration (VDADecoder)"
-msgstr ""
-
-msgctxt "#13430"
-msgid "Allow hardware acceleration (OpenMax)"
-msgstr ""
-
-msgctxt "#13431"
-msgid "Pixel Shaders"
-msgstr ""
-
-msgctxt "#13432"
-msgid "Allow hardware acceleration (VideoToolbox)"
-msgstr ""
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V начин синхрон."
@@ -4601,21 +4318,9 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Синхронизуј репродукцију према приказу"
 
-msgctxt "#13550"
-msgid "Pause during refresh rate change"
-msgstr ""
-
 msgctxt "#13551"
 msgid "Off"
-msgstr ""
-
-msgctxt "#13552"
-msgid "%.1f Second"
-msgstr ""
-
-msgctxt "#13553"
-msgid "%.1f Seconds"
-msgstr ""
+msgstr "Искљ."
 
 msgctxt "#13600"
 msgid "Apple remote"
@@ -4997,21 +4702,9 @@ msgctxt "#14095"
 msgid "Power saving"
 msgstr "Уштеда енергије"
 
-msgctxt "#14096"
-msgid "Rip"
-msgstr ""
-
-msgctxt "#14097"
-msgid "Audio CD Insert Action"
-msgstr ""
-
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
-
-msgctxt "#14099"
-msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Репродукуј"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5453,10 +5146,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (обратно)"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Отказивање..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Унеси име извођача"
@@ -5501,29 +5190,13 @@ msgctxt "#16035"
 msgid "Party mode playlist"
 msgstr "Списак за реп. режима журке"
 
-msgctxt "#16036"
-msgid "De-interlace (Half)"
-msgstr ""
-
-msgctxt "#16037"
-msgid "Deinterlace video"
-msgstr ""
-
-msgctxt "#16038"
-msgid "Deinterlace method"
-msgstr ""
-
 msgctxt "#16039"
 msgid "Off"
-msgstr ""
+msgstr "Искљ."
 
 msgctxt "#16040"
 msgid "Auto"
-msgstr ""
-
-msgctxt "#16041"
-msgid "On"
-msgstr ""
+msgstr "Аутом."
 
 msgctxt "#16100"
 msgid "All Videos"
@@ -5653,34 +5326,6 @@ msgctxt "#16318"
 msgid "Temporal/Spatial (Half)"
 msgstr "Временски/просторни (половично)"
 
-msgctxt "#16319"
-msgid "DXVA"
-msgstr ""
-
-msgctxt "#16320"
-msgid "DXVA Bob"
-msgstr ""
-
-msgctxt "#16321"
-msgid "DXVA Best"
-msgstr ""
-
-msgctxt "#16322"
-msgid "Spline36"
-msgstr ""
-
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr ""
-
-msgctxt "#16324"
-msgid "Software Blend"
-msgstr ""
-
-msgctxt "#16400"
-msgid "Post-processing"
-msgstr ""
-
 msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Време након ког ће екран прећи у стање спавања"
@@ -5688,6 +5333,22 @@ msgstr "Време након ког ће екран прећи у стање с
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Пребаци на канал"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Следеће"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Снимци"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Репродукција"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Избор Језика"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6389,10 +6050,6 @@ msgctxt "#20192"
 msgid "Download additional information during updates"
 msgstr "Преузми додатне податке приликом ажурирања"
 
-msgctxt "#20193"
-msgid "Default service for album information"
-msgstr ""
-
 msgctxt "#20194"
 msgid "Default service for artist information"
 msgstr "Подразумевани даваоц података о музици"
@@ -6440,30 +6097,6 @@ msgstr "WebDAV сервер (HTTPS)"
 msgctxt "#20255"
 msgid "First logon, edit your profile"
 msgstr "Измените ваш профил приликом првог пријављивања"
-
-msgctxt "#20256"
-msgid "HTS Tvheadend client"
-msgstr ""
-
-msgctxt "#20257"
-msgid "VDR Streamdev client"
-msgstr ""
-
-msgctxt "#20258"
-msgid "MythTV client"
-msgstr ""
-
-msgctxt "#20259"
-msgid "Network Filesystem (NFS)"
-msgstr ""
-
-msgctxt "#20260"
-msgid "Secure Shell (SSH/SFTP)"
-msgstr ""
-
-msgctxt "#20261"
-msgid "Apple Filing Protocol (AFP)"
-msgstr ""
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -6536,10 +6169,6 @@ msgstr "на подразумеване вредности."
 msgctxt "#20328"
 msgid "Browse for destination"
 msgstr "Потражи одредиште"
-
-msgctxt "#20329"
-msgid "Movies are in separate folders that match the movie title"
-msgstr ""
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -6725,10 +6354,6 @@ msgctxt "#20375"
 msgid "Unassign content"
 msgstr "Неодређен садржај"
 
-msgctxt "#20376"
-msgid "Original title"
-msgstr ""
-
 msgctxt "#20377"
 msgid "Refresh TV show information"
 msgstr "Освежи податке TV серије"
@@ -6889,10 +6514,6 @@ msgctxt "#20417"
 msgid "Writer"
 msgstr "Сценариста"
 
-msgctxt "#20419"
-msgid "Replace file names with library titles"
-msgstr ""
-
 msgctxt "#20420"
 msgid "Never"
 msgstr "Никада"
@@ -6952,10 +6573,6 @@ msgstr "Извези сличице и податке филма"
 msgctxt "#20434"
 msgid "Sets"
 msgstr "Поставке сцене"
-
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Постави слике са снимања филма"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -7017,38 +6634,6 @@ msgctxt "#20450"
 msgid "Would you like to continue scanning?"
 msgstr "Желите ли да наставите анализирање?"
 
-msgctxt "#20451"
-msgid "Countries"
-msgstr ""
-
-msgctxt "#20452"
-msgid "episode"
-msgstr ""
-
-msgctxt "#20453"
-msgid "episodes"
-msgstr ""
-
-msgctxt "#20454"
-msgid "Listener"
-msgstr ""
-
-msgctxt "#20455"
-msgid "Listeners"
-msgstr ""
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr ""
-
-msgctxt "#20457"
-msgid "Movie set"
-msgstr ""
-
-msgctxt "#20458"
-msgid "Group movies in sets"
-msgstr ""
-
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Прикажи скривене датотеке и фасцикле"
@@ -7104,10 +6689,6 @@ msgstr "Фасцикла са титловима"
 msgctxt "#21367"
 msgid "Movie & alternate subtitle directory"
 msgstr "Фасцикла филмова и алтернативних титлова"
-
-msgctxt "#21368"
-msgid "Override ASS/SSA subtitles fonts"
-msgstr ""
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
@@ -7297,10 +6878,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Подраз. добављач података за музичке спотове"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Омогући преузимање на основу језика добављача података"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Поставке"
@@ -7436,50 +7013,6 @@ msgstr "Даљински управљач шаље кôдове тастатур
 msgctxt "#21450"
 msgid "- Edit"
 msgstr "- Уреди"
-
-msgctxt "#21451"
-msgid "Internet connection required."
-msgstr ""
-
-msgctxt "#21452"
-msgid "Get More..."
-msgstr ""
-
-msgctxt "#21453"
-msgid "Root filesystem"
-msgstr ""
-
-msgctxt "#21454"
-msgid "Cache full"
-msgstr ""
-
-msgctxt "#21455"
-msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr ""
-
-msgctxt "#21461"
-msgid "Fixed"
-msgstr ""
-
-msgctxt "#21462"
-msgid "Bottom of video"
-msgstr ""
-
-msgctxt "#21463"
-msgid "Below video"
-msgstr ""
-
-msgctxt "#21464"
-msgid "Top of video"
-msgstr ""
-
-msgctxt "#21465"
-msgid "Above video"
-msgstr ""
 
 msgctxt "#21800"
 msgid "File name"
@@ -7789,10 +7322,6 @@ msgctxt "#22002"
 msgid "- DNS suffix"
 msgstr "- DNS суфикс"
 
-msgctxt "#22003"
-msgid "%2.3fs"
-msgstr ""
-
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
 msgstr "Успорено за: %2.3f сек."
@@ -7933,26 +7462,6 @@ msgctxt "#22043"
 msgid "black/white"
 msgstr "црно/бело"
 
-msgctxt "#22079"
-msgid "Default select action"
-msgstr ""
-
-msgctxt "#22080"
-msgid "Choose"
-msgstr ""
-
-msgctxt "#22081"
-msgid "Show Information"
-msgstr ""
-
-msgctxt "#22082"
-msgid "More..."
-msgstr ""
-
-msgctxt "#22083"
-msgid "Play all"
-msgstr ""
-
 msgctxt "#23049"
 msgid "Teletext not available"
 msgstr "Телетекст није доступан"
@@ -8001,10 +7510,6 @@ msgctxt "#24002"
 msgid "Add-on options"
 msgstr "Опције додатног прог."
 
-msgctxt "#24003"
-msgid "Add-on Information"
-msgstr ""
-
 msgctxt "#24005"
 msgid "Media sources"
 msgstr "Додатак"
@@ -8031,31 +7536,27 @@ msgstr "Спремиште додатног прог."
 
 msgctxt "#24012"
 msgid "Subtitles"
-msgstr ""
+msgstr "Титлови"
 
 msgctxt "#24013"
 msgid "Lyrics"
-msgstr ""
-
-msgctxt "#24014"
-msgid "TV information"
-msgstr ""
+msgstr "Текстови песама"
 
 msgctxt "#24015"
 msgid "Music video information"
-msgstr ""
+msgstr "Подаци о музичком споту"
 
 msgctxt "#24016"
 msgid "Album information"
-msgstr ""
+msgstr "Подаци о албуму"
 
 msgctxt "#24017"
 msgid "Artist information"
-msgstr ""
+msgstr "Подаци о извођачу"
 
 msgctxt "#24018"
 msgid "Services"
-msgstr ""
+msgstr "Избор Сервиса"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -8089,74 +7590,6 @@ msgctxt "#24031"
 msgid "Error loading settings"
 msgstr "Грешка приликом учитавања подешавања"
 
-msgctxt "#24032"
-msgid "All Add-ons"
-msgstr ""
-
-msgctxt "#24033"
-msgid "Get Add-ons"
-msgstr ""
-
-msgctxt "#24034"
-msgid "Check for updates"
-msgstr ""
-
-msgctxt "#24035"
-msgid "Force refresh"
-msgstr ""
-
-msgctxt "#24036"
-msgid "Change log"
-msgstr ""
-
-msgctxt "#24037"
-msgid "Uninstall"
-msgstr ""
-
-msgctxt "#24038"
-msgid "Install"
-msgstr ""
-
-msgctxt "#24039"
-msgid "Disabled Add-ons"
-msgstr ""
-
-msgctxt "#24040"
-msgid "(Clear the current setting)"
-msgstr ""
-
-msgctxt "#24041"
-msgid "Install from zip file"
-msgstr ""
-
-msgctxt "#24042"
-msgid "Downloading %i%%"
-msgstr ""
-
-msgctxt "#24043"
-msgid "Available Updates"
-msgstr ""
-
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr ""
-
-msgctxt "#24045"
-msgid "Add-on does not have the correct structure"
-msgstr ""
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr ""
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr ""
-
-msgctxt "#24048"
-msgid "Rollback"
-msgstr ""
-
 msgctxt "#24050"
 msgid "Available Add-ons"
 msgstr "Доступни додатни програми"
@@ -8172,10 +7605,6 @@ msgstr "Одрицање:"
 msgctxt "#24053"
 msgid "License:"
 msgstr "Лиценца:"
-
-msgctxt "#24054"
-msgid "Changelog"
-msgstr ""
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -8213,14 +7642,6 @@ msgctxt "#24067"
 msgid "Currently downloading Add-ons"
 msgstr "Тренутно преузимам додатне програме"
 
-msgctxt "#24068"
-msgid "Update available"
-msgstr ""
-
-msgctxt "#24069"
-msgid "Update"
-msgstr ""
-
 msgctxt "#24070"
 msgid "Add-on could not be loaded."
 msgstr "Додатни програм није употребљив"
@@ -8243,11 +7664,7 @@ msgstr "Поновно покретање је неопходно"
 
 msgctxt "#24075"
 msgid "Disable"
-msgstr ""
-
-msgctxt "#24076"
-msgid "Add-on Required"
-msgstr ""
+msgstr "Онемогући додатни прог."
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
@@ -8264,62 +7681,6 @@ msgstr "Закључај управљач додатног прог."
 msgctxt "#24094"
 msgid "(current)"
 msgstr "Омогући хардверско убрзање (CrystalHD)"
-
-msgctxt "#24095"
-msgid "(blacklisted)"
-msgstr ""
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr ""
-
-msgctxt "#24097"
-msgid "Would you like to disable it on your system?"
-msgstr ""
-
-msgctxt "#24098"
-msgid "Broken"
-msgstr ""
-
-msgctxt "#24099"
-msgid "Would you like to switch to this skin?"
-msgstr ""
-
-msgctxt "#24100"
-msgid "To use this feature you must download an Add-on:"
-msgstr ""
-
-msgctxt "#24101"
-msgid "Would you like to download this Add-on?"
-msgstr ""
-
-msgctxt "#25000"
-msgid "Notifications"
-msgstr ""
-
-msgctxt "#25001"
-msgid "Hide foreign"
-msgstr ""
-
-msgctxt "#25002"
-msgid "Select from all titles ..."
-msgstr ""
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr ""
-
-msgctxt "#25004"
-msgid "Play main title: %d"
-msgstr ""
-
-msgctxt "#25005"
-msgid "Title: %d"
-msgstr ""
-
-msgctxt "#25006"
-msgid "Select playback item"
-msgstr ""
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8372,10 +7733,6 @@ msgstr "Копирање"
 msgctxt "#33010"
 msgid "Set download directory"
 msgstr "Постави фасциклу за преузимање"
-
-msgctxt "#33011"
-msgid "Search duration"
-msgstr ""
 
 msgctxt "#33012"
 msgid "Short"
@@ -8621,26 +7978,6 @@ msgctxt "#33083"
 msgid "Enable custom script button"
 msgstr "Омогући прилагођени тастер за сјруоту"
 
-msgctxt "#33100"
-msgid "Failed to start"
-msgstr ""
-
-msgctxt "#33101"
-msgid "Webserver"
-msgstr ""
-
-msgctxt "#33102"
-msgid "Event Server"
-msgstr ""
-
-msgctxt "#33103"
-msgid "Remote communication server"
-msgstr ""
-
-msgctxt "#33200"
-msgid "Detected New Connection"
-msgstr ""
-
 msgctxt "#34000"
 msgid "Lame"
 msgstr "Lame"
@@ -8656,14 +7993,6 @@ msgstr "Wav"
 msgctxt "#34003"
 msgid "DXVA2"
 msgstr "DXVA"
-
-msgctxt "#34004"
-msgid "VAAPI"
-msgstr ""
-
-msgctxt "#34005"
-msgid "Flac"
-msgstr ""
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -8709,239 +8038,26 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
-msgctxt "#34201"
-msgid "Can't find a next item to play"
-msgstr ""
+msgctxt "#34122"
+msgid "Always"
+msgstr "Увек"
 
-msgctxt "#34202"
-msgid "Can't find a previous item to play"
-msgstr ""
-
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr ""
-
-msgctxt "#34301"
-msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-
-msgctxt "#34400"
-msgid "Video Rendering"
-msgstr ""
-
-msgctxt "#34401"
-msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr ""
-
-msgctxt "#34403"
-msgid "Check your audiosettings"
-msgstr ""
-
-msgctxt "#34404"
-msgid "Use gestures for navigation:"
-msgstr ""
-
-msgctxt "#34405"
-msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
-
-msgctxt "#34406"
-msgid "2 finger swipe left for backspace"
-msgstr ""
-
-msgctxt "#34407"
-msgid "1 finger single tap for enter"
-msgstr ""
-
-msgctxt "#34408"
-msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
-
-msgctxt "#35000"
-msgid "Peripherals"
-msgstr ""
-
-msgctxt "#35001"
-msgid "Generic HID device"
-msgstr ""
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr ""
-
-msgctxt "#35003"
-msgid "Generic disk"
-msgstr ""
-
-msgctxt "#35004"
-msgid "There are no settings available\nfor this peripheral."
-msgstr ""
-
-msgctxt "#35005"
-msgid "New device configured"
-msgstr ""
-
-msgctxt "#35006"
-msgid "Device removed"
-msgstr ""
-
-msgctxt "#35007"
-msgid "Keymap to use for this device"
-msgstr ""
-
-msgctxt "#35008"
-msgid "Keymap enabled"
-msgstr ""
-
-msgctxt "#35009"
-msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgctxt "#34123"
+msgid "Never"
+msgstr "Никада"
 
 msgctxt "#35500"
 msgid "Location"
-msgstr ""
-
-msgctxt "#35501"
-msgid "Class"
-msgstr ""
+msgstr "Локација"
 
 msgctxt "#35502"
 msgid "Name"
-msgstr ""
-
-msgctxt "#35503"
-msgid "Vendor"
-msgstr ""
-
-msgctxt "#35504"
-msgid "Product ID"
-msgstr ""
-
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr ""
-
-msgctxt "#36001"
-msgid "Pulse-Eight Nyxboard"
-msgstr ""
-
-msgctxt "#36002"
-msgid "Switch to keyboard side command"
-msgstr ""
-
-msgctxt "#36003"
-msgid "Switch to remote side command"
-msgstr ""
-
-msgctxt "#36004"
-msgid "Press \"user\" button command"
-msgstr ""
-
-msgctxt "#36005"
-msgid "Enable switch side commands"
-msgstr ""
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr ""
-
-msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr ""
-
-msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr ""
-
-msgctxt "#36009"
-msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
-
-msgctxt "#36011"
-msgid "Could not detect the CEC com port. Set it up manually."
-msgstr ""
-
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr ""
-
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr ""
-
-msgctxt "#36015"
-msgid "HDMI port number"
-msgstr ""
+msgstr "Име"
 
 msgctxt "#36016"
 msgid "Connected"
-msgstr ""
+msgstr "Повезано"
 
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr ""
-
-msgctxt "#36018"
-msgid "Use the TV's language setting"
-msgstr ""
-
-msgctxt "#36019"
-msgid "Connected to HDMI device"
-msgstr ""
-
-msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr ""
-
-msgctxt "#36021"
-msgid "Physical address (overrules HDMI port)"
-msgstr ""
-
-msgctxt "#36022"
-msgid "COM port (leave empty unless needed)"
-msgstr ""
-
-msgctxt "#36023"
-msgid "Configuration updated"
-msgstr ""
-
-msgctxt "#36024"
-msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
-
-msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
-
-msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
-
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
-
-msgctxt "#36028"
-msgid "Ignore"
-msgstr ""
-
-msgctxt "#36029"
-msgid "When the TV is switched off"
-msgstr ""
-
-msgctxt "#36030"
-msgid "Connection lost"
-msgstr ""
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
-
+msgctxt "#36035"
+msgid "Always"
+msgstr "Увек"

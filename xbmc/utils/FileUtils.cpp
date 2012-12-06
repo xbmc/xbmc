@@ -1,7 +1,7 @@
 #include "FileUtils.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
 #include "JobManager.h"
@@ -57,7 +57,7 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
   URIUtils::RemoveSlashAtEnd(strFileAndPath);
   CStdString strFileName = URIUtils::GetFileName(strFileAndPath);
   CStdString strPath = strFile.Left(strFileAndPath.size() - strFileName.size());
-  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
+  if (CGUIKeyboardFactory::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
   {
     strPath += strFileName;
     CLog::Log(LOGINFO,"FileUtils: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());

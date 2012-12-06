@@ -1,0 +1,66 @@
+<window id="1112" type="dialog">
+	<defaultcontrol always="true">100</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture border="120,0,0,0">hint-overlay.png</texture>
+		</control>
+		<control type="image">
+			<posx>120</posx>
+			<posy>300</posy>
+			<width>64</width>
+			<height>64</height>
+			<texture>arrow-big-left.png</texture>
+		</control>
+		<control type="image">
+			<posx>190</posx>
+			<posy>100</posy>
+			<width>2</width>
+			<height>512</height>
+			<texture>separator_vertical.png</texture>
+		</control>
+		<control type="label">
+			<posx>240</posx>
+			<posy>150</posy>
+			<width>680</width>
+			<height>60</height>
+			<font>font35_title</font>
+			<textcolor>blue</textcolor>
+			<align>left</align>
+			<aligny>center</aligny>
+			<label>31411</label>
+		</control>
+		<control type="textbox">
+			<posx>240</posx>
+			<posy>240</posy>
+			<width>680</width>
+			<height>250</height>
+			<font>font14</font>
+			<textcolor>white</textcolor>
+			<align>left</align>
+			<label>31412</label>
+		</control>
+		<control type="button" id="100">
+			<description>OK button</description>
+			<posx>720</posx>
+			<posy>500</posy>
+			<width>200</width>
+			<height>40</height>
+			<label>12321</label>
+			<font>font12_title</font>
+			<textcolor>white</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<align>center</align>
+			<onclick>Skin.Setbool(FirstTimeRun)</onclick>
+			<onclick>back</onclick>
+			<onleft>100</onleft>
+			<onright>100</onright>
+			<onup>100</onup>
+			<ondown>100</ondown>
+		</control>
+	</controls>
+</window>

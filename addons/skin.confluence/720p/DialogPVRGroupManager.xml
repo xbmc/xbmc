@@ -1,0 +1,433 @@
+<window>
+	<defaultcontrol always="true">29</defaultcontrol>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsVisible(FileBrowser)</visible>
+			<animation effect="slide" start="1150,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="1150,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<control type="image">
+				<posx>130</posx>
+				<posy>0</posy>
+				<width>1150</width>
+				<height>720</height>
+				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>180</posx>
+				<posy>0</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="group">
+				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<control type="label">
+					<description>header label</description>
+					<posx>160</posx>
+					<posy>40</posy>
+					<width>1080</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>19143</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="group">
+					<description>Group list</description>
+					<posx>160</posx>
+					<posy>80</posy>
+					<control type="label">
+						<description>name label</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>340</width>
+						<height>70</height>
+						<font>font13</font>
+						<label>31506</label>
+						<align>center</align>
+						<aligny>center</aligny>
+						<textcolor>blue</textcolor>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>75</posy>
+						<width>340</width>
+						<height>460</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="list" id="13">
+						<posx>5</posx>
+						<posy>80</posy>
+						<width>330</width>
+						<height>450</height>
+						<onup>13</onup>
+						<ondown>13</ondown>
+						<onleft>29</onleft>
+						<onright>73</onright>
+						<pagecontrol>73</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
+							</control>
+							<control type="label">
+								<posx>10</posx>
+								<posy>0</posy>
+								<width>310</width>
+								<height>40</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
+								<visible>!Control.HasFocus(13)</visible>
+							</control>
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-focus2.png</texture>
+								<visible>Control.HasFocus(13)</visible>
+							</control>
+							<control type="label">
+								<posx>10</posx>
+								<posy>0</posy>
+								<width>310</width>
+								<height>40</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<info>ListItem.Label</info>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="73">
+						<posx>340</posx>
+						<posy>75</posy>
+						<width>25</width>
+						<height>460</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>13</onleft>
+						<onright>11</onright>
+						<ondown>73</ondown>
+						<onup>73</onup>
+						<showonepage>false</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+				</control>
+				<control type="group">
+					<description>Channels list</description>
+					<posx>525</posx>
+					<posy>80</posy>
+					<control type="label" id="21">
+						<description>name label</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>340</width>
+						<height>70</height>
+						<font>font13</font>
+						<align>center</align>
+						<aligny>center</aligny>
+						<textcolor>blue</textcolor>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>75</posy>
+						<width>340</width>
+						<height>460</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="list" id="11">
+						<posx>5</posx>
+						<posy>85</posy>
+						<width>330</width>
+						<height>450</height>
+						<onup>11</onup>
+						<ondown>11</ondown>
+						<onleft>73</onleft>
+						<onright>71</onright>
+						<pagecontrol>71</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
+							</control>
+							<control type="image">
+								<width>32</width>
+								<height>32</height>
+								<posx>5</posx>
+								<posy>4</posy>
+								<texture>$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<posx>40</posx>
+								<posy>0</posy>
+								<width>280</width>
+								<height>40</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+							</control>
+						</itemlayout>
+						<focusedlayout height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
+								<visible>!Control.HasFocus(11)</visible>
+							</control>
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-focus2.png</texture>
+								<visible>Control.HasFocus(11)</visible>
+							</control>
+							<control type="image">
+								<width>32</width>
+								<height>32</height>
+								<posx>5</posx>
+								<posy>4</posy>
+								<texture>$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<posx>40</posx>
+								<posy>0</posy>
+								<width>280</width>
+								<height>40</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="71">
+						<posx>340</posx>
+						<posy>75</posy>
+						<width>25</width>
+						<height>460</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>11</onleft>
+						<onright>12</onright>
+						<ondown>71</ondown>
+						<onup>71</onup>
+						<showonepage>false</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+				</control>
+				<control type="group">
+					<description>Grouped Channels list</description>
+					<posx>890</posx>
+					<posy>80</posy>
+					<control type="label" id="22">
+						<description>name label</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>340</width>
+						<height>70</height>
+						<font>font13</font>
+						<align>center</align>
+						<aligny>center</aligny>
+						<textcolor>blue</textcolor>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>75</posy>
+						<width>340</width>
+						<height>460</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="list" id="12">
+						<posx>5</posx>
+						<posy>85</posy>
+						<width>330</width>
+						<height>450</height>
+						<onup>12</onup>
+						<ondown>12</ondown>
+						<onleft>71</onleft>
+						<onright>72</onright>
+						<pagecontrol>72</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
+							</control>
+							<control type="image">
+								<width>32</width>
+								<height>32</height>
+								<posx>5</posx>
+								<posy>4</posy>
+								<texture>$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<posx>40</posx>
+								<posy>0</posy>
+								<width>280</width>
+								<height>40</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+							</control>
+						</itemlayout>
+						<focusedlayout height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
+								<visible>!Control.HasFocus(12)</visible>
+							</control>
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>330</width>
+								<height>40</height>
+								<texture border="5">button-focus2.png</texture>
+								<visible>Control.HasFocus(12)</visible>
+							</control>
+							<control type="image">
+								<width>32</width>
+								<height>32</height>
+								<posx>5</posx>
+								<posy>4</posy>
+								<texture>$INFO[ListItem.Icon]</texture>
+							</control>
+							<control type="label">
+								<posx>40</posx>
+								<posy>0</posy>
+								<width>280</width>
+								<height>40</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="72">
+						<posx>340</posx>
+						<posy>75</posy>
+						<width>25</width>
+						<height>460</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>12</onleft>
+						<onright>26</onright>
+						<ondown>72</ondown>
+						<onup>72</onup>
+						<showonepage>false</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+				</control>
+				<control type="grouplist" id="9000">
+					<posx>160</posx>
+					<posy>660</posy>
+					<width>1080</width>
+					<height>40</height>
+					<itemgap>2</itemgap>
+					<align>center</align>
+					<orientation>horizontal</orientation>
+					<onleft>72</onleft>
+					<onright>13</onright>
+					<onup>9000</onup>
+					<ondown>9000</ondown>
+					<control type="button" id="26">
+						<description>Add Group</description>
+						<width>230</width>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>31503</label>
+					</control>
+					<control type="button" id="27">
+						<description>Rename Group</description>
+						<width>230</width>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>31504</label>
+					</control>
+					<control type="button" id="28">
+						<description>Delete Group</description>
+						<width>230</width>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>31505</label>
+					</control>
+					<control type="button" id="29">
+						<description>OK</description>
+						<width>230</width>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>186</label>
+					</control>
+				</control>
+			</control>
+		</control>
+		<include>SideBladeRight</include>
+		<include>Clock</include>
+
+		<control type="label" id="20">
+			<description>Fake Label used to pass on name label</description>
+			<visible>false</visible>
+		</control>
+	</controls>
+</window>

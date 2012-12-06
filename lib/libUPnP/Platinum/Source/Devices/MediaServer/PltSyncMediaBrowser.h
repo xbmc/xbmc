@@ -2,7 +2,7 @@
 |
 |   Platinum - Synchronous Media Browser
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -30,6 +31,10 @@
 | http://www.gnu.org/licenses/gpl-2.0.html
 |
 ****************************************************************/
+
+/** @file
+ UPnP AV Media Controller synchronous implementation.
+ */
 
 #ifndef _PLT_SYNC_MEDIA_BROWSER_
 #define _PLT_SYNC_MEDIA_BROWSER_
@@ -113,7 +118,7 @@ protected:
                           NPT_Int32                index, 
                           NPT_Int32                count,
                           bool                     browse_metadata = false,
-                          const char*              filter = "*", 
+                          const char*              filter = "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,searchable,childCount", // explicitely specify res otherwise WMP won't return a URL!
                           const char*              sort = "");
 private:
     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
@@ -123,7 +128,7 @@ private:
     NPT_Lock<PLT_DeviceMap>              m_MediaServers;
     PLT_MediaContainerChangesListener*   m_ContainerListener;
     bool                                 m_UseCache;
-    PLT_MediaCache                       m_Cache;
+    PLT_MediaCache<PLT_MediaObjectListReference,NPT_String> m_Cache;
 };
 
 /*----------------------------------------------------------------------

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -71,7 +70,7 @@ namespace XFILE
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
       void SetReferer(CStdString referer)                        { m_referer = referer; }
       void SetCookie(CStdString cookie)                          { m_cookie = cookie; }
-      void SetMimeType(CStdString mimetype)                      { SetRequestHeader("Content-Type", m_mimetype); }
+      void SetMimeType(CStdString mimetype)                      { SetRequestHeader("Content-Type", mimetype); }
       void SetRequestHeader(CStdString header, CStdString value);
       void SetRequestHeader(CStdString header, long value);
 
@@ -124,9 +123,9 @@ namespace XFILE
       void SetCommonOptions(CReadState* state);
       void SetRequestHeaders(CReadState* state);
       void SetCorrectHeaders(CReadState* state);
-      bool Service(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
+      bool Service(const CStdString& strURL, CStdString& strHTML);
 
-    private:
+    protected:
       CReadState*     m_state;
       unsigned int    m_bufferSize;
 
@@ -142,7 +141,6 @@ namespace XFILE
       CStdString      m_postdata;
       CStdString      m_referer;
       CStdString      m_cookie;
-      CStdString      m_mimetype;
       CStdString      m_username;
       CStdString      m_password;
       CStdString      m_httpauth;
@@ -154,6 +152,7 @@ namespace XFILE
       bool            m_seekable;
       bool            m_multisession;
       bool            m_skipshout;
+      bool            m_postdataset;
 
       CRingBuffer     m_buffer;           // our ringhold buffer
       char *          m_overflowBuffer;   // in the rare case we would overflow the above buffer
@@ -166,6 +165,8 @@ namespace XFILE
 
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
+
+      long            m_httpresponse;
   };
 }
 

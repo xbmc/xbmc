@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,6 +36,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonInstaller.h"
+#include "Application.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -53,6 +53,7 @@ CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
     : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml")
 {
   m_item = CFileItemPtr(new CFileItem);
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogAddonInfo::~CGUIDialogAddonInfo(void)
@@ -120,6 +121,16 @@ default:
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogAddonInfo::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_SHOW_INFO)
+  {
+    Close();
+    return true;
+  }
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogAddonInfo::OnInitWindow()
 {
   UpdateControls();
@@ -138,11 +149,13 @@ void CGUIDialogAddonInfo::UpdateControls()
     GrabRollbackVersions();
 
   // TODO: System addons should be able to be disabled
-  bool canDisable = isInstalled && !isSystem && !m_localAddon->IsInUse();
+  // TODO: the following line will have to be changed later, when the PVR add-ons are no longer part of our source tree
+  bool isPVR = isInstalled && m_localAddon->Type() == ADDON_PVRDLL;
+  bool canDisable = isInstalled && (!isSystem || isPVR) && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, (canDisable || canInstall) && !isPVR);
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, canDisable);
@@ -208,9 +221,15 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
   if (!m_localAddon.get())
     return;
 
+  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   CAddonDatabase database;
   database.Open();
   database.DisableAddon(m_localAddon->ID(), !enable);
+  database.Close();
+
+  if (m_localAddon->Type() == ADDON_PVRDLL && enable)
+    g_application.StartPVRManager();
+
   SetItem(m_item);
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,22 +13,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "AddonInstaller.h"
 #include "Service.h"
 #include "utils/log.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
-#include "Application.h"
+#include "ApplicationMessenger.h"
 #include "Favourites.h"
 #include "utils/JobManager.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -39,6 +40,7 @@
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "URL.h"
 
 using namespace std;
 using namespace XFILE;
@@ -84,6 +86,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
     if (i != m_downloadJobs.end())
       m_downloadJobs.erase(i);
+    PrunePackageCache();
   }
   lock.Leave();
 
@@ -329,6 +332,12 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
         return false;
       }
     }
+    // prevent infinite loops
+    if (dep && dep->ID() == addon->ID())
+    {
+      CLog::Log(LOGERROR, "Addon %s depends on itself, ignoring", addon->ID().c_str());
+      return false;
+    }
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     // TODO: should we assume that installed deps are OK?
     if (dep && !CheckDependencies(dep))
@@ -379,6 +388,76 @@ bool CAddonInstaller::HasJob(const CStdString& ID) const
 {
   CSingleLock lock(m_critSection);
   return m_downloadJobs.find(ID) != m_downloadJobs.end();
+}
+
+void CAddonInstaller::PrunePackageCache()
+{
+  std::map<CStdString,CFileItemList*> packs;
+  int64_t size = EnumeratePackageFolder(packs);
+  int64_t limit = g_advancedSettings.m_addonPackageFolderSize*1024*1024;
+  if (size < limit)
+    return;
+
+  // Prune packages
+  // 1. Remove the largest packages, leaving at least 2 for each add-on
+  CFileItemList items;
+  for (std::map<CStdString,CFileItemList*>::const_iterator it  = packs.begin();
+                                                          it != packs.end();++it)
+  {
+    it->second->Sort(SORT_METHOD_LABEL,SortOrderDescending);
+    for (int j=2;j<it->second->Size();++j)
+      items.Add(CFileItemPtr(new CFileItem(*it->second->Get(j))));
+  }
+  items.Sort(SORT_METHOD_SIZE,SortOrderDescending);
+  int i=0;
+  while (size > limit && i < items.Size())
+  {
+    size -= items[i]->m_dwSize;
+    CFileUtils::DeleteItem(items[i++],true);
+  }
+
+  if (size > limit)
+  {
+    // 2. Remove the oldest packages (leaving least 1 for each add-on)
+    items.Clear();
+    for (std::map<CStdString,CFileItemList*>::iterator it  = packs.begin();
+                                                       it != packs.end();++it)
+    {
+      if (it->second->Size() > 1)
+        items.Add(CFileItemPtr(new CFileItem(*it->second->Get(1))));
+    }
+    items.Sort(SORT_METHOD_DATE,SortOrderAscending);
+    i=0;
+    while (size > limit && i < items.Size())
+    {
+      size -= items[i]->m_dwSize;
+      CFileUtils::DeleteItem(items[i++],true);
+    }
+  }
+  // clean up our mess
+  for (std::map<CStdString,CFileItemList*>::iterator it  = packs.begin();
+                                                     it != packs.end();++it)
+    delete it->second;
+}
+
+int64_t CAddonInstaller::EnumeratePackageFolder(std::map<CStdString,CFileItemList*>& result)
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("special://home/addons/packages/",items,".zip",DIR_FLAG_NO_FILE_DIRS);
+  int64_t size=0;
+  for (int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+    size += items[i]->m_dwSize;
+    CStdString pack,dummy;
+    AddonVersion::SplitFileName(pack,dummy,items[i]->GetLabel());
+    if (result.find(pack) == result.end())
+      result[pack] = new CFileItemList;
+    result[pack]->Add(CFileItemPtr(new CFileItem(*items[i])));
+  }
+
+  return size;
 }
 
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
@@ -467,7 +546,7 @@ bool CAddonInstallJob::OnPreInstall()
   // check whether this is an active skin - we need to unload it if so
   if (g_guiSettings.GetString("lookandfeel.skin") == m_addon->ID())
   {
-    g_application.getApplicationMessenger().ExecBuiltIn("UnloadSkin", true);
+    CApplicationMessenger::Get().ExecBuiltIn("UnloadSkin", true);
     return true;
   }
 
@@ -572,13 +651,16 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
         toast->ResetTimer();
         toast->Close(true);
       }
-      g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
+      CApplicationMessenger::Get().ExecBuiltIn("ReloadSkin");
     }
   }
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    // regrab from manager to have the correct path set
+    AddonPtr addon; 
+    CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
     if (service)
       service->Start();
   }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -88,6 +87,11 @@
 #define XINPUT_IR_REMOTE_GREEN          252
 #define XINPUT_IR_REMOTE_YELLOW         253
 #define XINPUT_IR_REMOTE_BLUE           254
+#define XINPUT_IR_REMOTE_PLAYLIST       255
+#define XINPUT_IR_REMOTE_GUIDE          256
+
+#define XINPUT_IR_REMOTE_LIVE_RADIO     248
+#define XINPUT_IR_REMOTE_EPG_SEARCH     246
 
 typedef struct _XINPUT_IR_REMOTE
 {

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,6 +24,7 @@
 #include "PlayListPlayer.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
@@ -83,7 +83,7 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
 void CAppParamParser::DisplayVersion()
 {
   printf("XBMC Media Center %s\n", g_infoManager.GetVersion().c_str());
-  printf("Copyright (C) 2005-2011 Team XBMC - http://www.xbmc.org\n");
+  printf("Copyright (C) 2005-2012 Team XBMC - http://www.xbmc.org\n");
   exit(0);
 }
 
@@ -156,5 +156,5 @@ void CAppParamParser::PlayPlaylist()
   }
 
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
-  g_application.getApplicationMessenger().SendMessage(tMsg, false);
+  CApplicationMessenger::Get().SendMessage(tMsg, false);
 }

@@ -1,0 +1,238 @@
+<includes>
+	<include name="Weather36HourForcast">
+		<control type="group">
+			<visible>StringCompare(Window.Property(Weather.CurrentView),36hour)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="button" id="997">
+				<description>Hidden Button for focus</description>
+				<posx>-600</posx>
+				<posy>-20</posy>
+				<width>1</width>
+				<height>1</height>
+				<texturenofocus>-</texturenofocus>
+				<texturefocus>-</texturefocus>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>20</posx>
+				<posy>13</posy>
+				<width>610</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>31901</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<posx>0</posx>
+				<posy>200</posy>
+				<width>600</width>
+				<height>30</height>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[31909]</label>
+				<visible>IsEmpty(Window.Property(36Hour.IsFetched))</visible>
+			</control>
+			<control type="group">
+				<posx>20</posx>
+				<posy>50</posy>
+				<visible>!IsEmpty(Window.Property(36Hour.IsFetched))</visible>
+				<include>VisibleFadeEffect</include>
+				<control type="group">
+					<posx>0</posx>
+					<posy>0</posy>
+					<control type="label">
+						<posx>0</posx>
+						<posy>5</posy>
+						<width>600</width>
+						<height>30</height>
+						<font>font13_title</font>
+						<textcolor>blue</textcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(36Hour.1.Heading)]</label>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>10</posy>
+						<width>120</width>
+						<height>110</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[Window.Property(36Hour.1.OutlookIcon)]</texture>
+					</control>
+					<control type="label">
+						<posx>120</posx>
+						<posy>40</posy>
+						<width>100</width>
+						<height>40</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.1.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.1.Temperature),[B] ,[/B]]</label>
+					</control>
+					<control type="label">
+						<posx>590</posx>
+						<posy>60</posy>
+						<width>390</width>
+						<height>20</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(36Hour.1.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
+					</control>
+					<control type="textbox">
+						<posx>0</posx>
+						<posy>110</posy>
+						<width>590</width>
+						<height>70</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<label>$INFO[Window.Property(36hour.1.Forecast),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]]</label>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>180</posy>
+						<width>650</width>
+						<height>4</height>
+						<texture>separator.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>185</posy>
+					<control type="label">
+						<posx>0</posx>
+						<posy>5</posy>
+						<width>600</width>
+						<height>30</height>
+						<font>font13_title</font>
+						<textcolor>blue</textcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(36Hour.2.Heading)]</label>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>10</posy>
+						<width>120</width>
+						<height>110</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[Window.Property(36Hour.2.OutlookIcon)]</texture>
+					</control>
+					<control type="label">
+						<posx>120</posx>
+						<posy>40</posy>
+						<width>100</width>
+						<height>40</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.2.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.2.Temperature),[B] ,[/B]]</label>
+					</control>
+					<control type="label">
+						<posx>590</posx>
+						<posy>60</posy>
+						<width>390</width>
+						<height>20</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(36Hour.2.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
+					</control>
+					<control type="textbox">
+						<posx>0</posx>
+						<posy>110</posy>
+						<width>590</width>
+						<height>70</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<label>$INFO[Window.Property(36hour.2.Forecast),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]]</label>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>180</posy>
+						<width>650</width>
+						<height>4</height>
+						<texture>separator.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>370</posy>
+					<control type="label">
+						<posx>0</posx>
+						<posy>5</posy>
+						<width>600</width>
+						<height>30</height>
+						<font>font13_title</font>
+						<textcolor>blue</textcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(36Hour.3.Heading)]</label>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>10</posy>
+						<width>120</width>
+						<height>110</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[Window.Property(36Hour.3.OutlookIcon)]</texture>
+					</control>
+					<control type="label">
+						<posx>120</posx>
+						<posy>40</posy>
+						<width>100</width>
+						<height>40</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>[COLOR=grey2]$INFO[Window.Property(36Hour.3.TemperatureHeading)][CR][/COLOR]$INFO[Window.Property(36Hour.3.Temperature),[B] ,[/B]]</label>
+					</control>
+					<control type="label">
+						<posx>590</posx>
+						<posy>60</posy>
+						<width>390</width>
+						<height>20</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[Window.Property(36Hour.3.ChancePrecipitation),[COLOR=grey2]$LOCALIZE[31908] :[/COLOR][B] ,[/B]]</label>
+					</control>
+					<control type="textbox">
+						<posx>0</posx>
+						<posy>110</posy>
+						<width>590</width>
+						<height>70</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<label>$INFO[Window.Property(36hour.3.Forecast),[COLOR=grey2]$LOCALIZE[31905]: [/COLOR]]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

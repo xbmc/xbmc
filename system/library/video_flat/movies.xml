@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="1" type="folder" visible="Library.HasContent(Movies)">
   <label>342</label>
   <path>videodb://1/2</path>
-  <icon>DefaultMovieTitle.png</icon>
+  <icon>DefaultMovies.png</icon>
 </node>

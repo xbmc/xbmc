@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -97,9 +96,14 @@ void CURL::Parse(const CStdString& strURL1)
     // example: filename /foo/bar.zip/alice.rar/bob.avi
     // This should turn into zip://rar:///foo/bar.zip/alice.rar/bob.avi
     iPos = 0;
+    bool is_apk = (strURL.Find(".apk/", iPos) > 0);
     while (1)
     {
-      iPos = strURL.Find(".zip/", iPos);
+      if (is_apk)
+        iPos = strURL.Find(".apk/", iPos);
+      else
+        iPos = strURL.Find(".zip/", iPos);
+
       int extLen = 3;
       if (iPos < 0)
       {
@@ -119,8 +123,16 @@ void CURL::Parse(const CStdString& strURL1)
 #endif
         {
           Encode(archiveName);
-          CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
-          *this = c;
+          if (is_apk)
+          {
+            CURL c((CStdString)"apk" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            *this = c;
+          }
+          else
+          {
+            CURL c((CStdString)"zip" + "://" + archiveName + '/' + strURL.Right(strURL.size() - iPos - 1));
+            *this = c;
+          }
           return;
         }
       }
@@ -157,18 +169,24 @@ void CURL::Parse(const CStdString& strURL1)
   int iEnd = strURL.length();
   const char* sep = NULL;
 
+  //TODO fix all Addon paths
   CStdString strProtocol2 = GetTranslatedProtocol();
   if(m_strProtocol.Equals("rss") ||
      m_strProtocol.Equals("rar") ||
      m_strProtocol.Equals("addons") ||
-     m_strProtocol.Equals("image"))
+     m_strProtocol.Equals("image") ||
+     m_strProtocol.Equals("videodb") ||
+     m_strProtocol.Equals("musicdb") ||
+     m_strProtocol.Equals("androidapp"))
     sep = "?";
   else
   if(strProtocol2.Equals("http")
     || strProtocol2.Equals("https")
     || strProtocol2.Equals("plugin")
+    || strProtocol2.Equals("addons")
     || strProtocol2.Equals("hdhomerun")
     || strProtocol2.Equals("rtsp")
+    || strProtocol2.Equals("apk")
     || strProtocol2.Equals("zip"))
     sep = "?;#|";
   else if(strProtocol2.Equals("ftp")
@@ -190,6 +208,7 @@ void CURL::Parse(const CStdString& strURL1)
       else
         m_strOptions = strURL.substr(iOptions);
       iEnd = iOptions;
+      m_options.AddOptions(m_strOptions);
     }
   }
 
@@ -291,6 +310,7 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("sources") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
+    || m_strProtocol.CompareNoCase("pvr") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")
@@ -364,11 +384,13 @@ void CURL::SetProtocol(const CStdString& strProtocol)
 void CURL::SetOptions(const CStdString& strOptions)
 {
   m_strOptions.Empty();
+  m_options.Clear();
   if( strOptions.length() > 0)
   {
     if( strOptions[0] == '?' || strOptions[0] == '#' || strOptions[0] == ';' || strOptions.Find("xml") >=0 )
     {
       m_strOptions = strOptions;
+      m_options.AddOptions(m_strOptions);
     }
     else
       CLog::Log(LOGWARNING, "%s - Invalid options specified for url %s", __FUNCTION__, strOptions.c_str());
@@ -454,7 +476,10 @@ const CStdString& CURL::GetProtocolOptions() const
 const CStdString CURL::GetFileNameWithoutPath() const
 {
   // *.zip and *.rar store the actual zip/rar path in the hostname of the url
-  if ((m_strProtocol == "rar" || m_strProtocol == "zip") && m_strFileName.IsEmpty())
+  if ((m_strProtocol == "rar"  || 
+       m_strProtocol == "zip"  ||
+       m_strProtocol == "apk") &&
+       m_strFileName.IsEmpty())
     return URIUtils::GetFileName(m_strHostName);
 
   // otherwise, we've already got the filepath, so just grab the filename portion
@@ -707,6 +732,20 @@ void CURL::Encode(CStdString& strURLData)
   strURLData = strResult;
 }
 
+std::string CURL::Decode(const std::string& strURLData)
+{
+  CStdString url = strURLData;
+  Decode(url);
+  return url;
+}
+
+std::string CURL::Encode(const std::string& strURLData)
+{
+  CStdString url = strURLData;
+  Encode(url);
+  return url;
+}
+
 CStdString CURL::TranslateProtocol(const CStdString& prot)
 {
   if (prot == "shout"
@@ -723,3 +762,45 @@ CStdString CURL::TranslateProtocol(const CStdString& prot)
   return prot;
 }
 
+void CURL::GetOptions(std::map<CStdString, CStdString> &options) const
+{
+  CUrlOptions::UrlOptions optionsMap = m_options.GetOptions();
+  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); option++)
+    options[option->first] = option->second.asString();
+}
+
+bool CURL::HasOption(const CStdString &key) const
+{
+  return m_options.HasOption(key);
+}
+
+bool CURL::GetOption(const CStdString &key, CStdString &value) const
+{
+  CVariant valueObj;
+  if (!m_options.GetOption(key, valueObj))
+    return false;
+
+  value = valueObj.asString();
+  return true;
+}
+
+CStdString CURL::GetOption(const CStdString &key) const
+{
+  CStdString value;
+  if (!GetOption(key, value))
+    return "";
+
+  return value;
+}
+
+void CURL::SetOption(const CStdString &key, const CStdString &value)
+{
+  m_options.AddOption(key, value);
+  SetOptions(m_options.GetOptionsString(true));
+}
+
+void CURL::RemoveOption(const CStdString &key)
+{
+  m_options.RemoveOption(key);
+  SetOptions(m_options.GetOptionsString(true));
+}

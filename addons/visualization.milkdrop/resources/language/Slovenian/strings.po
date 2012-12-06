@@ -5,25 +5,17 @@
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC-Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-28 15:15+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Slovenian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sl\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)\n"
-
-msgctxt "Addon Summary"
-msgid "MilkDrop takes you flying through the soundwaves you're hearing"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "MilkDrop was originally a music visualizer \"plug-in\" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound."
-msgstr ""
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 msgctxt "#30000"
 msgid "Automatic Blend Time"
@@ -31,7 +23,7 @@ msgstr "Samodejen čas prelivanja"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Čas med predlogami"
+msgstr "Čas med prednastavitvami"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -39,7 +31,7 @@ msgstr "Dodaten naključen čas"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Vključi anisotropično filtriranje"
+msgstr "Vključi anizotropno filtriranje"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
@@ -63,27 +55,27 @@ msgstr "Vključi stereo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Paket predlog"
+msgstr "Paket prednastavitev"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Uporabniška mapa s predlogami        "
+msgstr "Uporabniška mapa s prednastavitvami"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Način mešanja predlog"
+msgstr "Način mešanja prednastavitev"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "WA51 predloge"
+msgstr "Prednastavitve WA51"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Winamp predloge"
+msgstr "Prednastavitve Winamp"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Uporabniško določena mapa s predlogami"
+msgstr "Uporabniško določena mapa s prednastavitvami"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

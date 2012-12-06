@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -254,6 +253,9 @@ CStdString CTextureDatabase::GetTextureForPath(const CStdString &url, const CStd
     if (NULL == m_pDB.get()) return "";
     if (NULL == m_pDS.get()) return "";
 
+    if (url.empty())
+      return "";
+
     CStdString sql = PrepareSQL("select texture from path where url='%s' and type='%s'", url.c_str(), type.c_str());
     m_pDS->query(sql.c_str());
 
@@ -278,6 +280,9 @@ void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString
   {
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
+
+    if (url.empty())
+      return;
 
     CStdString sql = PrepareSQL("select id from path where url='%s' and type='%s'", url.c_str(), type.c_str());
     m_pDS->query(sql.c_str());

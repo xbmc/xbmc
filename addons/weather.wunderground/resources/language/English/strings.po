@@ -1,13 +1,13 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 0.0.9
+# Addon version: 1.0.1
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC-Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-28 15:38+0000\n"
+"POT-Creation-Date: 2012-09-23 21:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE\n"
@@ -17,32 +17,140 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-msgctxt "Addon Summary"
-msgid "Weather forecast from wunderground.com"
+msgctxt "#32101"
+msgid "Location setup"
 msgstr ""
 
-msgctxt "Addon Description"
-msgid "Weather forecast provided by Weather Underground (http://www.wunderground.com/)"
+msgctxt "#32102"
+msgid "Advanced options"
 msgstr ""
 
-msgctxt "Addon Disclaimer"
-msgid "Use of this add-on implies that you have agreed to the Terms of Service located at http://www.wunderground.com/weather/api/d/terms.html"
+#empty strings from id 32103 to 32110
+
+msgctxt "#32111"
+msgid "Location 1"
 msgstr ""
 
-msgctxt "#30101"
-msgid "Location Setup"
+msgctxt "#32112"
+msgid "Location 2"
 msgstr ""
 
-#empty strings from id 30102 to 30110
-
-msgctxt "#30111"
-msgid "Change location 1"
+msgctxt "#32113"
+msgid "Location 3"
 msgstr ""
 
-msgctxt "#30112"
-msgid "Change location 2"
+msgctxt "#32114"
+msgid "Location 1 display name"
 msgstr ""
 
-msgctxt "#30113"
-msgid "Change location 3"
+msgctxt "#32115"
+msgid "Location 2 display name"
+msgstr ""
+
+msgctxt "#32116"
+msgid "Location 3 display name"
+msgstr ""
+
+msgctxt "#32117"
+msgid "Location 1 id"
+msgstr ""
+
+msgctxt "#32118"
+msgid "Location 2 id"
+msgstr ""
+
+msgctxt "#32119"
+msgid "Location 3 id"
+msgstr ""
+
+msgctxt "#32120"
+msgid "Enable logging"
+msgstr ""
+
+msgctxt "#32121"
+msgid "Weekend"
+msgstr ""
+
+msgctxt "#32122"
+msgid "Saturday/Sunday"
+msgstr ""
+
+msgctxt "#32123"
+msgid "Friday/Saturday"
+msgstr ""
+
+msgctxt "#32124"
+msgid "Thursday/Friday"
+msgstr ""
+
+msgctxt "#32125"
+msgid "Map zoom level"
+msgstr ""
+
+msgctxt "#32126"
+msgid "Animated map"
+msgstr ""
+
+#empty strings from id 32127 to 32500
+
+msgctxt "#32501"
+msgid "New Moon"
+msgstr ""
+
+msgctxt "#32502"
+msgid "Waxing Crescent"
+msgstr ""
+
+msgctxt "#32503"
+msgid "First Quarter"
+msgstr ""
+
+msgctxt "#32504"
+msgid "Waxing Gibbous"
+msgstr ""
+
+msgctxt "#32505"
+msgid "Full Moon"
+msgstr ""
+
+msgctxt "#32506"
+msgid "Waning Gibbous"
+msgstr ""
+
+msgctxt "#32507"
+msgid "Last Quarter"
+msgstr ""
+
+msgctxt "#32508"
+msgid "Waning Crescent"
+msgstr ""
+
+#empty string with id 32509
+
+msgctxt "#32510"
+msgid "Warning"
+msgstr ""
+
+msgctxt "#32511"
+msgid "Watch"
+msgstr ""
+
+msgctxt "#32512"
+msgid "Advisory"
+msgstr ""
+
+msgctxt "#32513"
+msgid "Statement"
+msgstr ""
+
+msgctxt "#32514"
+msgid "Outlook"
+msgstr ""
+
+msgctxt "#32515"
+msgid "Forecast"
+msgstr ""
+
+msgctxt "#32516"
+msgid "Synopsis"
 msgstr ""

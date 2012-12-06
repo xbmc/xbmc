@@ -1,12 +1,13 @@
-<window id="107">
+<window>
 	<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<coordinates>
 		<posx>860</posx>
-		<posy>630</posy>
+		<posy>640</posy>
 	</coordinates>
 	<controls>
 		<control type="group">
+			<animation effect="slide" start="0,0" end="-190,0" time="200" condition="Window.IsVisible(BusyDialog)">conditional</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>

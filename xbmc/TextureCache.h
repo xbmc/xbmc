@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,7 @@
 #include "TextureDatabase.h"
 #include "threads/Event.h"
 
+class CURL;
 class CBaseTexture;
 
 /*!
@@ -87,12 +87,22 @@ public:
 
    \param image url of the image to cache
    \param texture [out] the loaded image
+   \param details [out] details of the cached image
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
-  CStdString CacheImage(const CStdString &url, CBaseTexture **texture = NULL);
+  CStdString CacheImage(const CStdString &url, CBaseTexture **texture = NULL, CTextureDetails *details = NULL);
 
-  /*! \brief Check whether an image is cached
+  /*! \brief Cache an image to image cache if not already cached, returning the image details.
+   \param image url of the image to cache.
+   \param details [out] the image details.
+   \return true if the image is in the cache, false otherwise.
+   \sa CTextureCacheJob::CacheTexture
+   */
+  bool CacheImage(const CStdString &image, CTextureDetails &details);
+
+  /*! \brief Check whether an image is in the cache
+   Note: If the image url won't normally be cached (eg a skin image) this function will return false.
    \param image url of the image
    \return true if the image is cached, false otherwise
    \sa ClearCachedImage
@@ -127,6 +137,19 @@ public:
   static CStdString GetWrappedImageURL(const CStdString &image, const CStdString &type = "", const CStdString &options = "");
   static CStdString GetWrappedThumbURL(const CStdString &image);
 
+  /*! \brief Unwrap an image://<url_encoded_path> style URL
+   Such urls are used for art over the webserver or other users of the VFS
+   \param image url of the image
+   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
+   */
+  static CStdString UnwrapImageURL(const CStdString &image);
+
+  /*! \brief check whether an image:// URL may be cached
+   \param url the URL to the image
+   \return true if the given URL may be cached, false otherwise
+   */
+  static bool CanCacheImageURL(const CURL &url);
+
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
    \param image url of the original image
@@ -137,23 +160,18 @@ public:
 
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image
-   \param destination url of the destination image
+   \param destination url of the destination image, excluding extension.
+   \param overwrite whether to overwrite the destination if it exists (TODO: Defaults to false)
    \return true if we successfully exported the file, false otherwise.
    */
-  bool Export(const CStdString &image, const CStdString &destination);
+  bool Export(const CStdString &image, const CStdString &destination, bool overwrite);
+  bool Export(const CStdString &image, const CStdString &destination); // TODO: BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 private:
   // private construction, and no assignements; use the provided singleton methods
   CTextureCache();
   CTextureCache(const CTextureCache&);
   CTextureCache const& operator=(CTextureCache const&);
   virtual ~CTextureCache();
-
-  /*! \brief Unwrap an image://<url_encoded_path> style URL
-   Such urls are used for art over the webserver or other users of the VFS
-   \param image url of the image
-   \return the unwrapped URL, or the original URL if unwrapping is inappropriate.
-   */
-  static CStdString UnwrapImageURL(const CStdString &image);
 
   /*! \brief Check if the given image is a cached image
    \param image url of the image
@@ -163,12 +181,12 @@ private:
 
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image
-   \param cacheHash [out] set to the hash of the cached image if it needs checking
+   \param details [out] the details of the texture.
    \param trackUsage whether this call should track usage of the image (defaults to false)
    \return cached url of this image, empty if none exists
-   \sa ClearCachedImage
+   \sa ClearCachedImage, CTextureDetails
    */
-  CStdString GetCachedImage(const CStdString &image, CStdString &cacheHash, bool trackUsage = false);
+  CStdString GetCachedImage(const CStdString &image, CTextureDetails &details, bool trackUsage = false);
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture

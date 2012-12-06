@@ -367,8 +367,8 @@ extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *
     {
       if (c<iAudioDataLength)
       {
-        if(pAudioData[c] > y)
-          y = (int)(pAudioData[c] * (INT16_MAX+.5f));
+        if((int)(pAudioData[c] * (INT16_MAX)) > y)
+          y = (int)(pAudioData[c] * (INT16_MAX));
       }
       else
         continue;

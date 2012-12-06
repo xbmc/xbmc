@@ -1,0 +1,12 @@
+.SUFFIXES : .m .mm
+
+SRCS  = main.cpp
+
+ifeq ($(findstring osx,@ARCH@),osx)
+SRCS += osx/SDLMain.mm
+endif
+
+LIB=main.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.mm,%.P,$(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS))))

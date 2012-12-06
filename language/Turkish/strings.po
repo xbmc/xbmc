@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: tr\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -272,6 +273,22 @@ msgstr "KKB"
 msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Güney"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Kuzey"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Batı"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Doğu"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -969,6 +986,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "Hiçbir sonuç bulunamadı"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Tercih edilen ses dili"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Tercih edilen altyazı dili"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Altyazılar"
@@ -1044,6 +1069,14 @@ msgstr "Aktif"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Non-interleaved"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Orijinal akış dili"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Kullanıcı Arabirimi dili"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1184,6 +1217,18 @@ msgstr "Yıl"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Downmix yaparken ses seviyesini yükselt"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD destekli alıcı"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Çok Kanallı LPCM destekli alıcı"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD destekli alıcı"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1512,6 +1557,14 @@ msgstr "'%s' gerçekten kaldırılsın mı?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "%s yönünden %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Optik disc sürücü bulunamadı"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Bu videoyu oynatabilmek için optik disk sürücüsüne ihtiyacınız var"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2141,14 +2194,6 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Numara gir"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bits/Sample"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Sample Frequency"
-
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Ses CD'leri"
@@ -2657,6 +2702,18 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr "İnternet erişimi"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Kütüphane Güncellemesi"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "Müzik kütüphanesi etiketlerden tekrar tarama yapmalıdır"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Şimdi tarama yapmak ister misiniz?"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "Geçersiz port numarası girildi"
@@ -3001,34 +3058,6 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programlar & resimler & video"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Otomatik algılama"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Otomatik sistem algılama"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Takma isim"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Bağlanmak için sor"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "FTP kullanıcı adını ve parolasını gönder"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Ping süresi"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Otomatik olarak tanımlanan sisteme bağlanmak ister misiniz?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
 msgstr "Zeroconf"
@@ -3129,10 +3158,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "rüzgarlı"
 
-msgctxt "#1413"
-msgid "drizzle"
-msgstr "çiseleyen"
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "Gök gürültülü sağanak"
@@ -3150,12 +3175,8 @@ msgid "Grains"
 msgstr "Grains"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "T-Storms"
-
-msgctxt "#1419"
-msgid "T-Showers"
-msgstr "T-Showers"
+msgid "Thunderstorms"
+msgstr "Gök gürültülü"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3172,6 +3193,18 @@ msgstr "Rüzgarlı"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "Sisli"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Küçük"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Bilinmiyor"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Düşen Yağış"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3629,10 +3662,6 @@ msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Ayarlar ve dosya yöneticisi"
 
-msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Tüm videolar için varsayılan olarak ayarla"
-
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
 msgstr "Bu işlem önceki kayıtları silecek"
@@ -3976,10 +4005,6 @@ msgstr "Alarm Aktif: %idk"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "%idk:%isn kala iptal edildi"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5454,7 +5479,7 @@ msgid "Bob (inverted)"
 msgstr "Bob (inverted)"
 
 msgctxt "#16024"
-msgid "Canceling..."
+msgid "Cancelling..."
 msgstr "İptal ediliyor..."
 
 msgctxt "#16025"
@@ -5677,6 +5702,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Otomatik - ION İçin İyileştirilmiş"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-processing"
@@ -5685,9 +5714,1021 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Görüntü uyku zaman aşımı"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MByte"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i saat"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i gün"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Kanal değiştir"
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "EPG istemcilerden alınıyor"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "PVR akış bilgisi"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Cihaz alınıyor"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Cihaz durumu"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Sinyal kalitesi"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR Arka Uç"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Sabit"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Şifreleme"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR Arka Uç %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "TV kayıtları"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "PVR küçük resimleri için varsayılan klasör"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Kanallar"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radyo"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Gizli"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "TV kanalları"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Radyo kanalları"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Gelecek kayıtlar"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Zamanlayıcı ekle..."
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Arama sonucu yok"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "EPG girişi yok"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Kanal"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Şimdi"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Sonraki"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Zaman aralığı"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Bilgi"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Bu kanal kaydı zaten başlamış."
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "Bu kanal oynatılamaz. Detaylar için kayıt defterine bakınız."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Bu kayıt oynatılamaz. Detaylar için kayıt defterine bakınız."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Sinyal kalitesini göster"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "PVR Arka Uç tarafından desteklenmiyor."
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Bu kanalı gizlemek istediğinize emin misiniz?"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Zamanlayıcı"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Bu kayıdın ismini değiştirmek istediğinizden eminmisiniz?"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "Bu zamanlayıcının adını değiştirmek istediğinizden eminmisiniz?"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Kayıt"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Lütfen ayarları kontrol ediniz yada detaylar için kayıt defterine bakınız."
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "PVR istemcileri henüz başlamadı. PVR istemcilerinin başlamasını bekleyin veya detaylar için günlük dosyasına bakın. "
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Yeni kanal"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Program bilgisi"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Grup yönetimi"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Kanalı göster"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Görünür kanalları göster"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Gizlenen kanalları göster"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Kanalı taşı:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Kayıt bilgisi"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Kanalı gizle"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Bilgi yok"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Yeni zamanlayıcı"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Zamanlayıcıyı düzenle"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Zamanlayıcı etkin"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Kaydı durdur"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Zamanlayıcı sil"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Zamanlayıcı ekle"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Sırala: Kanal"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Başa git"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Sona git"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Varsayılan EPG penceresi"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Bu eylem zaten kayıt ediliyor"
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Bu kayıt silinemez. Detaylar için kayıt defterine bakınız."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "EPG güncelleştirme aralığı"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "EPG bilgisini veritabanında saklama"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Kanal değiştirme gecikmesi"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Aktif:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "İsim:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Klasör:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Radyo:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Kanal:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Gün:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Başla:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Son:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Öncelik:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Ömür (gün)"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "İlk gün:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Bilinmeyen kanal %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Pt-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Sa-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Ça-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Pe-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Cu-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Ct-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Pz"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Pt-Sa-Ça-Pe-Cu-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Pt-Sa-Ça-Pe-Cu-Ct-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Pt-Sa-Ça-Pe-Cu-Ct-Pz"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Ct-Pz"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Kayıt için isim girin"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Uyarı"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Lütfen başka kanala geçiniz."
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Kayıt için klasör adını girin"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Bir sonraki zamanlayıcı"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "-"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Zamanlayıcı kaydedilemiyor. Detaylar için kayıt defterine bakınız."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Beklenmeyen bir hata oluştu. Daha sonra tekrar deneyin yada detaylar için kayıt defterine bakınız."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR arka uç hatası. Detaylar için günlük dosyasına bakın."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Versiyon"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Adres"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Diskboyutu"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Kanalları ara"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "Arama yaparken PVR fonksiyonlarını kullanamazsınız."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "Hangi sunucuda arama yapmak istersiniz?"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "İstemci numarası"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Tekrarları önle"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Başlangıç zamanı"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Bitiiş zamanı"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Başlangıç tarihi"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Bitiş tarihi"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Bilinmeyen tarzları dahil et"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Arama dizesi"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Açıklamayı dahil et"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Büyük küçük harf duyarlı"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Kanal kullanılamıyor"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Grup tanımlanmamış"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Lütfen önce bir grup oluşturun"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Yeni grubun adı"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Grup"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Grup yönetimi"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Grup tanımlanmamış"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Gruplanmış"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Gruplar"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "PVR arka uç bu eylemi desteklemiyor. Detaylar için günlük dosyasına bakın."
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Kanal"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Pt"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Sa"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Ça"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Pe"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Cu"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Ct"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Pz"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Kayıtlar"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Kayıt başlatılamadı. Detaylar için günlük dosyasına bakın."
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR bilgisi"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Eksik simgeler için tara"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Video bilgisi kutusunu gizle"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Varsayılan kayıt önceliği"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Varsayılan kayıt ömrü"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Oynatım"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Kanalları değiştirirken kanal bilgisini göster"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Kanal bilgisini otomatik gizle"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Menü/OSD"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "PVR veritabanını sıfırla"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "PVR veritabanındaki bütün veri siliniyor"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "EPG veritabanını sıfırla"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "EPG sıfırlanıyor"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR hizmeti"
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Kanal tarama başlatılamıyor. Ayrıntılar için günlük dosyasına bakın."
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Kanal yöneticisi"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG kaynağı"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Kanal adı:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Kanal simgesi:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Kanalı düzenle"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Yeni kanal"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Grup yönetimi"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "EPG'yi etkinleştir:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Grup:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Yeni kanalın adını girin"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "İstemci"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Kanalı sil"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Yeni kanal için geçerli bir URL girin"
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Bütün radyo kanalları"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Bütün TV kanalları"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Gruplanmamış kanallar"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Kayıt durduruldu"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Kayıt zamanlandı"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Kayıt başladı"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Kayıt tamamlandı"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Kayıt silindi"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Arama sonuçlarını temizle"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "İstemcilerden kanallar yükleniyor"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Kayıtlar istemcilerden yükleniyor"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Hiçbir PVR eklentisi etkin değil"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "PVR yöneticisi hiçbir PVR eklentisi olmadan"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "etkinleştirildi. PVR işlevselliğini kullanabilmek için"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "en azından bir eklenti etkinleştirin."
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "Arka uç boşta kalma süresi"
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Uyandırma komutu ayarla (cmd [timestamp])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Kayıttan önce uyan"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Günlük uyanma"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Günlük uyanma zamanı (HH:MM:SS)"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "EPG veritabanından yükleniyor"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "EPG bilgisini güncelle"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "Kanal için EPG güncelleme başarısız"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Kaydı durdur"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Kanalı kilitle"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Kanal kilidini aç"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Ebeveyn denetimi"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "PİN'i değiştir"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Ebeveyn denetimi. PİN'i girin:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Kanal kilitli. PİN'i girin:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Yanlış PİN"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "Girilen PİN numarası yanlış."
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Ebeveyn kilitli"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Ebeveyn kilitli:"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Bütün kayıtlar"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "İstemciye özel"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "İstemciye özel ayarlar"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Diğer/Bilinmeyen"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Film/Drama"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Dedektif/Gerilim"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Macera/Western/Savaş"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Bilim Kurgu/Fantastik/Korku"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Komedi"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Ciddi/Klasik/Dini/Tarihsel Film/Drama"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Haberler/Güncel Olaylar"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Haber/Hava Durumu Raporu"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Belgesel"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Spor"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Özel Etkinlik"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Futbol"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Tenis/Squash"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Takım Sporları"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Atletizm"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Motor Sporları"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Su Sporları"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Kış Sporları"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Binicilik"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Dövüş Sporları"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Okul Öncesi Çocuk Programları"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Müzik/Bale/Dans"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rock/Pop"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Ciddi/Klasik Müzik"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Müzikal/Opera"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Bale"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Sanat/Kültür"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Sahne Sanatları"
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Güzel Sanatlar"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Edebiyat"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Film/Sinema"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Moda"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Sosyal/Siyaset/Ekonomi"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Ekonomi/Sosyal Danışma"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "Eğitim/Bilim/Olgusal"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "Doğa/Hayvanlar/Çevre"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Teknoloji/Fen Bilimleri"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Tıp/Fizyoloji/Psikoloji"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Diller"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Turizm/Seyahat"
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr "Spor ve Sağlık"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Siyah ve Beyaz"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Drama"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Dedektif/Gerilim"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Macera/Western/Savaş"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Bilim Kurgu/Fantastik/Korku"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Komedi"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6417,6 +7458,18 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Sanatçı bilgisi indirilemedi"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Android müzik"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Android videolar"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Android resimler"
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "Partiye devam! (videolar)"
@@ -6953,10 +8006,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Setler"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Film kümesi küçük resmini ayarla"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Aktör küçük resimlerini çıkart"
@@ -7036,10 +8085,6 @@ msgstr "Dinleyici"
 msgctxt "#20455"
 msgid "Listeners"
 msgstr "Dinleyiciler"
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Set movieset fanart"
 
 msgctxt "#20457"
 msgid "Movie set"
@@ -7297,10 +8342,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Varsayılan müzik video scraper"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Scraper diline dayalı başvurmayı etkinleştir"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Ayarlar"
@@ -7456,6 +8497,10 @@ msgstr "Önbellek dolu"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Önbellek sürekli oynatma için gerekli miktara ulaşamadan doldu"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Harici depolama"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -7977,6 +9022,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Çalışıyor"
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Teletext'i 4:3'e ölçeklendir"
+
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Harici Oynatıcı Etkin"
@@ -8056,6 +9105,10 @@ msgstr "Sanatçı bilgisi"
 msgctxt "#24018"
 msgid "Services"
 msgstr "Hizmetler"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR istemcileri"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -8299,27 +9352,27 @@ msgstr "Bildirimler"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Yabancıları gizle"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Bütün başlıklardan seç ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Bluray menülerini göster"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Ana başlığı çal: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Başlık: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Çalınacak öğeyi seç"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8709,6 +9762,22 @@ msgctxt "#34110"
 msgid "7.1"
 msgstr "7.1"
 
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "Grafik kullanıcı arabirimi seslerini çal"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Sadece kayıttan yürütme durduğunda"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Her zaman"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Hiçbir zaman"
+
 msgctxt "#34201"
 msgid "Can't find a next item to play"
 msgstr "Çalınacak sonraki öğeyi bulamıyor"
@@ -8743,23 +9812,23 @@ msgstr "Ses ayarlarınızı denetleyin"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Gezinti için herektleri kullan"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "İmleçler için 1 parmakla sola,sağa,yukarı,aşağıya kaydır"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "Backspace için 2 parmakla sola kaydır"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "Enter için 1 parmakla tek dokunma"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "Kısayol menüsü için 2 parmakla tek dokunma veya 1 parmakla uzun bas"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8869,10 +9938,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "CEC bağdaştırıcısı algılanamadı."
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Desteklenmeyen libcec arabirim sürümü. %d is greater than the version XBMC supports (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI port numarası"
@@ -8917,31 +9982,10 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "XBMC durdurulunca 'etkin olmayan kaynak' komutu yolla"
 
-msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgctxt "#36035"
+msgid "Always"
+msgstr "Her zaman"
 
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
-
-msgctxt "#36028"
-msgid "Ignore"
-msgstr ""
-
-msgctxt "#36029"
-msgid "When the TV is switched off"
-msgstr ""
-
-msgctxt "#36030"
-msgid "Connection lost"
-msgstr ""
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
-
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"

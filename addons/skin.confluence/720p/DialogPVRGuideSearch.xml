@@ -1,0 +1,456 @@
+<window>
+	<defaultcontrol always="true">9</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>210</posx>
+		<posy>65</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>865</width>
+			<height>605</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>785</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>785</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$LOCALIZE[19142]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>selected</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<visible>!pvr.IsPlayingRadio</visible>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>775</posx>
+			<posy>15</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>3</onleft>
+			<onright>3</onright>
+			<onup>3</onup>
+			<ondown>3</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+		<control type="label">
+			<description>Search string</description>
+			<posx>30</posx>
+			<posy>60</posy>
+			<width>320</width>
+			<height>40</height>
+			<font>font12caps</font>
+			<label>$LOCALIZE[19133]</label>
+			<align>left</align>
+			<aligny>center</aligny>
+			<textcolor>blue</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="image">
+			<posx>30</posx>
+			<posy>100</posy>
+			<width>800</width>
+			<height>50</height>
+			<aspectratio>stretch</aspectratio>
+			<texture border="20">KeyboardEditArea.png</texture>
+		</control>
+		<control type="edit" id="9">
+			<description>Search string</description>
+			<posx>35</posx>
+			<posy>105</posy>
+			<width>790</width>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>left</align>
+			<onleft>9</onleft>
+			<onright>9</onright>
+			<onup>26</onup>
+			<ondown>10</ondown>
+		</control>
+		<control type="textbox">
+			<description>Search help</description>
+			<posx>30</posx>
+			<posy>155</posy>
+			<width>800</width>
+			<height>70</height>
+			<align>left</align>
+			<font>font12</font>
+			<textcolor>grey2</textcolor>
+			<label>$LOCALIZE[19001] $LOCALIZE[19002]</label>
+		</control>
+		<control type="group">
+			<posx>30</posx>
+			<posy>230</posy>
+			<control type="radiobutton" id="10">
+				<description>Include Description</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<height>35</height>
+				<width>400</width>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>19134</label>
+				<onleft>12</onleft>
+				<onright>12</onright>
+				<onup>9</onup>
+				<ondown>11</ondown>
+			</control>
+			<control type="radiobutton" id="11">
+				<description>Case Sensitive</description>
+				<posx>0</posx>
+				<posy>35</posy>
+				<height>35</height>
+				<width>400</width>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>19135</label>
+				<onleft>13</onleft>
+				<onright>13</onright>
+				<onup>10</onup>
+				<ondown>14</ondown>
+			</control>
+			<control type="edit" id="14">
+				<description>Start Date</description>
+				<posx>0</posx>
+				<posy>70</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19128</label>
+				<onright>16</onright>
+				<onleft>16</onleft>
+				<onup>11</onup>
+				<ondown>15</ondown>
+			</control>
+			<control type="edit" id="15">
+				<description>Stop Date</description>
+				<posx>0</posx>
+				<posy>105</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19129</label>
+				<onright>17</onright>
+				<onleft>17</onleft>
+				<onup>14</onup>
+				<ondown>18</ondown>
+			</control>
+			<control type="spincontrolex" id="18">
+				<description>Genre</description>
+				<posx>0</posx>
+				<posy>140</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>515</label>
+				<onright>19</onright>
+				<onleft>19</onleft>
+				<onup>15</onup>
+				<ondown>20</ondown>
+			</control>
+			<control type="radiobutton" id="20">
+				<description>Include unknown Genres</description>
+				<posx>0</posx>
+				<posy>175</posy>
+				<height>35</height>
+				<width>400</width>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<pulseonselect>no</pulseonselect>
+				<label>19132</label>
+				<onleft>21</onleft>
+				<onright>21</onright>
+				<onup>18</onup>
+				<ondown>22</ondown>
+			</control>
+			<control type="radiobutton" id="22">
+				<description>FTA only</description>
+				<posx>0</posx>
+				<posy>210</posy>
+				<height>35</height>
+				<width>400</width>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<pulseonselect>no</pulseonselect>
+				<label>19123</label>
+				<onleft>23</onleft>
+				<onright>23</onright>
+				<onup>20</onup>
+				<ondown>24</ondown>
+			</control>
+			<control type="radiobutton" id="24">
+				<description>Ignore Timers</description>
+				<posx>0</posx>
+				<posy>245</posy>
+				<height>35</height>
+				<width>400</width>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<pulseonselect>no</pulseonselect>
+				<label>19124</label>
+				<onleft>27</onleft>
+				<onright>27</onright>
+				<onup>22</onup>
+				<ondown>26</ondown>
+			</control>
+		</control>
+		<control type="group">
+			<posx>440</posx>
+			<posy>230</posy>
+			<control type="spincontrolex" id="12">
+				<description>Min Duration</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19130</label>
+				<onright>10</onright>
+				<onleft>10</onleft>
+				<onup>9</onup>
+				<ondown>13</ondown>
+			</control>
+			<control type="spincontrolex" id="13">
+				<description>Max Duration</description>
+				<posx>0</posx>
+				<posy>35</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19131</label>
+				<onright>11</onright>
+				<onleft>11</onleft>
+				<onup>12</onup>
+				<ondown>16</ondown>
+			</control>
+			<control type="edit" id="16">
+				<description>Start time</description>
+				<posx>0</posx>
+				<posy>70</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19126</label>
+				<onright>14</onright>
+				<onleft>14</onleft>
+				<onup>13</onup>
+				<ondown>17</ondown>
+			</control>
+			<control type="edit" id="17">
+				<description>Stop time</description>
+				<posx>0</posx>
+				<posy>105</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19127</label>
+				<onright>15</onright>
+				<onleft>15</onleft>
+				<onup>16</onup>
+				<ondown>19</ondown>
+			</control>
+			<control type="radiobutton" id="19">
+				<description>avoid repeats</description>
+				<posx>0</posx>
+				<posy>140</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<pulseonselect>no</pulseonselect>
+				<label>19121</label>
+				<onright>18</onright>
+				<onleft>18</onleft>
+				<onup>17</onup>
+				<ondown>21</ondown>
+			</control>
+			<control type="spincontrolex" id="21">
+				<description>Groups</description>
+				<posx>0</posx>
+				<posy>175</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19141</label>
+				<onright>20</onright>
+				<onleft>20</onleft>
+				<onup>19</onup>
+				<ondown>23</ondown>
+			</control>
+			<control type="spincontrolex" id="23">
+				<description>Channels</description>
+				<posx>0</posx>
+				<posy>210</posy>
+				<width>400</width>
+				<height>35</height>
+				<font>font12</font>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<label>19148</label>
+				<onleft>22</onleft>
+				<onright>22</onright>
+				<onup>21</onup>
+				<ondown>27</ondown>
+			</control>
+			<control type="radiobutton" id="27">
+				<description>Ignore Recordings</description>
+				<posx>0</posx>
+				<posy>245</posy>
+				<height>35</height>
+				<width>400</width>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<shadowcolor>black</shadowcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texturefocus border="5">button-focus2.png</texturefocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
+				<pulseonselect>no</pulseonselect>
+				<label>19125</label>
+				<onleft>24</onleft>
+				<onright>24</onright>
+				<onup>23</onup>
+				<ondown>26</ondown>
+			</control>
+		</control>
+		<control type="group" id="9000">
+			<posy>540</posy>
+			<posx>125</posx>
+			<control type="button" id="28">
+				<description>Defaults Button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<label>409</label>
+				<onleft>26</onleft>
+				<onright>25</onright>
+				<onup>24</onup>
+				<ondown>9</ondown>
+			</control>
+			<control type="button" id="25">
+				<description>Cancel Button</description>
+				<posx>210</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<label>222</label>
+				<onleft>28</onleft>
+				<onright>26</onright>
+				<onup>27</onup>
+				<ondown>9</ondown>
+			</control>
+			<control type="button" id="26">
+				<description>Search Button</description>
+				<posx>420</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<label>137</label>
+				<onleft>25</onleft>
+				<onright>28</onright>
+				<onup>27</onup>
+				<ondown>9</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

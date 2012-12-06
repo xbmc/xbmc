@@ -1,0 +1,150 @@
+# XBMC Media Center language file
+# Addon Name: Weather Underground
+# Addon id: weather.wunderground
+# Addon version: 1.0.2
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Bulgarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/bg/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32101"
+msgid "Location setup"
+msgstr "Локации"
+
+msgctxt "#32102"
+msgid "Advanced options"
+msgstr "Допълнителни"
+
+msgctxt "#32111"
+msgid "Location 1"
+msgstr "Място 1"
+
+msgctxt "#32112"
+msgid "Location 2"
+msgstr "Място 2"
+
+msgctxt "#32113"
+msgid "Location 3"
+msgstr "Място 3"
+
+msgctxt "#32114"
+msgid "Location 1 display name"
+msgstr "Име за място 1"
+
+msgctxt "#32115"
+msgid "Location 2 display name"
+msgstr "Име за място 2"
+
+msgctxt "#32116"
+msgid "Location 3 display name"
+msgstr "Име за място 3"
+
+msgctxt "#32117"
+msgid "Location 1 id"
+msgstr "Идентификато на място 1"
+
+msgctxt "#32118"
+msgid "Location 2 id"
+msgstr "Идентификато на място 2"
+
+msgctxt "#32119"
+msgid "Location 3 id"
+msgstr "Идентификато на място 3"
+
+msgctxt "#32120"
+msgid "Enable logging"
+msgstr "Включи воденето на дневник"
+
+msgctxt "#32121"
+msgid "Weekend"
+msgstr "Уикенд"
+
+msgctxt "#32122"
+msgid "Saturday/Sunday"
+msgstr "събота/неделя"
+
+msgctxt "#32123"
+msgid "Friday/Saturday"
+msgstr "петък/събота"
+
+msgctxt "#32124"
+msgid "Thursday/Friday"
+msgstr "четвъртък/петък"
+
+msgctxt "#32125"
+msgid "Map zoom level"
+msgstr "Увеличение на картата (мащабиране)"
+
+msgctxt "#32126"
+msgid "Animated map"
+msgstr "Анимиране на картата"
+
+msgctxt "#32501"
+msgid "New Moon"
+msgstr "Новолуние"
+
+msgctxt "#32502"
+msgid "Waxing Crescent"
+msgstr "Нарастващ полумесец"
+
+msgctxt "#32503"
+msgid "First Quarter"
+msgstr "Първа четвърт"
+
+msgctxt "#32504"
+msgid "Waxing Gibbous"
+msgstr "Наближаваща пълнолуние"
+
+msgctxt "#32505"
+msgid "Full Moon"
+msgstr "Пълнолуние"
+
+msgctxt "#32506"
+msgid "Waning Gibbous"
+msgstr "Намаляваща луна"
+
+msgctxt "#32507"
+msgid "Last Quarter"
+msgstr "Последна четвърт"
+
+msgctxt "#32508"
+msgid "Waning Crescent"
+msgstr "Намаляващ полумесец"
+
+msgctxt "#32510"
+msgid "Warning"
+msgstr "Внимание"
+
+msgctxt "#32511"
+msgid "Watch"
+msgstr "Гледай"
+
+msgctxt "#32512"
+msgid "Advisory"
+msgstr "Съвет"
+
+msgctxt "#32513"
+msgid "Statement"
+msgstr "Доклад"
+
+msgctxt "#32514"
+msgid "Outlook"
+msgstr "Перспектива"
+
+msgctxt "#32515"
+msgid "Forecast"
+msgstr "Прогноза"
+
+msgctxt "#32516"
+msgid "Synopsis"
+msgstr "Резюме"

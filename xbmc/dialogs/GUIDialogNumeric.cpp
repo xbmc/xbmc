@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -49,6 +48,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
   m_block = 0;
   memset(&m_datetime, 0, sizeof(SYSTEMTIME));
   m_dirty = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogNumeric::~CGUIDialogNumeric(void)
@@ -72,7 +72,7 @@ void CGUIDialogNumeric::OnInitWindow()
     data["type"] = "ip";
     break;
   case INPUT_PASSWORD:
-    data["type"] = "password";
+    data["type"] = "numericpassword";
     break;
   case INPUT_NUMBER:
     data["type"] = "number";
@@ -89,6 +89,7 @@ void CGUIDialogNumeric::OnInitWindow()
   if (control != NULL)
     data["title"] = control->GetDescription();
 
+  data["value"] = GetOutput();
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
 }
 
@@ -337,6 +338,8 @@ void CGUIDialogNumeric::FrameMove()
 
 void CGUIDialogNumeric::OnNumber(unsigned int num)
 {
+  ResetAutoClose();
+
   if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
     m_number += num + '0';
@@ -585,21 +588,35 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const CStdString &initial)
     SetMode(mode, (void*)&initial);
 }
 
-void CGUIDialogNumeric::GetOutput(void *output)
+void CGUIDialogNumeric::GetOutput(void *output) const
 {
   if (!output) return;
   if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS || m_mode == INPUT_DATE)
     memcpy(output, &m_datetime, sizeof(m_datetime));
-  if (m_mode == INPUT_IP_ADDRESS)
+  else if (m_mode == INPUT_IP_ADDRESS)
   {
     CStdString *ipaddress = (CStdString *)output;
     ipaddress->Format("%d.%d.%d.%d", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
   }
-  if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
+  else if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
     CStdString *number = (CStdString *)output;
     *number = m_number;
   }
+}
+
+CStdString CGUIDialogNumeric::GetOutput() const
+{
+  CStdString output;
+  if (m_mode == INPUT_DATE)
+    output.Format("%02i/%02i/%04i", m_datetime.wDay, m_datetime.wMonth, m_datetime.wYear);
+  else if (m_mode == INPUT_TIME)
+    output.Format("%i:%02i", m_datetime.wHour, m_datetime.wMinute);
+  else if (m_mode == INPUT_TIME_SECONDS)
+    output.Format("%i:%02i", m_datetime.wMinute, m_datetime.wSecond);
+  else
+    GetOutput(&output);
+  return output;
 }
 
 bool CGUIDialogNumeric::ShowAndGetSeconds(CStdString &timeString, const CStdString &heading)
@@ -661,16 +678,19 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStr
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading)
+bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading, unsigned int iAutoCloseTimeoutMs /* = 0 */)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( strHeading );
 
   pDialog->SetMode(INPUT_NUMBER, (void *)&strInput);
+  if (iAutoCloseTimeoutMs)
+    pDialog->SetAutoClose(iAutoCloseTimeoutMs);
+
   pDialog->DoModal();
 
-  if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
+  if (!pDialog->IsAutoClosed() && (!pDialog->IsConfirmed() || pDialog->IsCanceled()))
     return false;
   pDialog->GetOutput(&strInput);
   return true;

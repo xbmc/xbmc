@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,28 +13,26 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
 #include "MediaManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "IoSupport.h"
 #include "URL.h"
-#include "Util.h"
 #include "utils/URIUtils.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
+#include "utils/CharsetConverter.h"
 #endif
 #include "guilib/GUIWindowManager.h"
 #ifdef HAS_DVD_DRIVE
-#include "cdioSupport.h"
 #ifndef _WIN32
 // TODO: switch all ports to use auto sources
 #include "DetectDVDType.h"
+#include "filesystem/iso9660.h"
 #endif
 #endif
 #include "Autorun.h"
@@ -56,8 +54,14 @@
 
 #if defined(TARGET_DARWIN)
 #include "osx/DarwinStorageProvider.h"
+#elif defined(TARGET_ANDROID)
+#include "android/AndroidStorageProvider.h"
+#elif defined(TARGET_FREEBSD)
+#include "linux/LinuxStorageProvider.h"
 #elif defined(_LINUX)
 #include "linux/LinuxStorageProvider.h"
+#include <sys/ioctl.h>
+#include <linux/cdrom.h>
 #elif _WIN32
 #include "windows/Win32StorageProvider.h"
 #endif
@@ -89,6 +93,8 @@ void CMediaManager::Initialize()
   {
     #if defined(TARGET_DARWIN)
       m_platformStorage = new CDarwinStorageProvider();
+    #elif defined(TARGET_ANDROID)
+      m_platformStorage = new CAndroidStorageProvider();
     #elif defined(_LINUX)
       m_platformStorage = new CLinuxStorageProvider();
     #elif _WIN32
@@ -96,7 +102,7 @@ void CMediaManager::Initialize()
     #endif
   }
 #ifdef HAS_DVD_DRIVE
-  strFirstAvailDrive = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+  m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
 #endif
   m_platformStorage->Initialize();
 }
@@ -201,13 +207,17 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     locations.push_back(share);
 #endif// HAS_FILESYSTEM_NFS
 
+#ifdef HAS_UPNP
     share.strPath = "upnp://";
     share.strName = "UPnP Devices";
     locations.push_back(share);
-
+#endif
+    
+#ifdef HAS_ZEROCONF
     share.strPath = "zeroconf://";
     share.strName = "Zeroconf Browser";
     locations.push_back(share);
+#endif
   }
 }
 
@@ -224,7 +234,7 @@ bool CMediaManager::HasLocation(const CStdString& path) const
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == path)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, path))
       return true;
   }
 
@@ -236,7 +246,7 @@ bool CMediaManager::RemoveLocation(const CStdString& path)
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == path)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, path))
     {
       // prompt for sources, remove, cancel,
       m_locations.erase(m_locations.begin()+i);
@@ -251,7 +261,7 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
 {
   for (unsigned int i=0;i<m_locations.size();++i)
   {
-    if (m_locations[i].path == oldPath)
+    if (URIUtils::CompareWithoutSlashAtEnd(m_locations[i].path, oldPath))
     {
       m_locations[i].path = newPath;
       return SaveSources();
@@ -304,7 +314,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
   if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
-    strDevice = strFirstAvailDrive;
+    strDevice = m_strFirstAvailDrive;
 #endif
 
 #ifdef _WIN32
@@ -365,6 +375,15 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
   if (pInfo != NULL && pInfo->IsAudio(1))
     return true;
 #endif
+#endif
+  return false;
+}
+
+bool CMediaManager::HasOpticalDrive()
+{
+#ifdef HAS_DVD_DRIVE
+  if (!m_strFirstAvailDrive.IsEmpty())
+    return true;
 #endif
   return false;
 }
@@ -463,12 +482,13 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
     return "";
 
   CStdString strDevice = TranslateDevicePath(devicePath);
-  char cVolumenName[128];
-  char cFSName[128];
+  WCHAR cVolumenName[128];
+  WCHAR cFSName[128];
   URIUtils::AddSlashAtEnd(strDevice);
-  if(GetVolumeInformation(strDevice.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
+  if(GetVolumeInformationW(CStdStringW(strDevice).c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
-  return CStdString(cVolumenName).TrimRight(" ");
+  g_charsetConverter.wToUTF8(cVolumenName, strDevice);
+  return strDevice.TrimRight(" ");
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
@@ -612,11 +632,83 @@ bool CMediaManager::Eject(CStdString mountpath)
   return m_platformStorage->Eject(mountpath);
 }
 
+void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
+{
+#ifdef HAS_DVD_DRIVE
+#ifdef TARGET_WINDOWS
+  CWIN32Util::EjectTray(cDriveLetter);
+#else
+  CLibcdio *c_cdio = CLibcdio::GetInstance();
+  char* dvdDevice = c_cdio->GetDeviceFileName();
+  m_isoReader.Reset();
+  int nRetries=3;
+  while (nRetries-- > 0)
+  {
+    CdIo_t* cdio = c_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
+    if (cdio)
+    {
+      c_cdio->cdio_eject_media(&cdio);
+      c_cdio->cdio_destroy(cdio);
+    }
+    else
+      break;
+  }
+#endif
+#endif
+}
+
+void CMediaManager::CloseTray(const char cDriveLetter)
+{
+#ifdef HAS_DVD_DRIVE
+#if defined(TARGET_DARWIN)
+  // FIXME...
+#elif defined(__FreeBSD__)
+  // NYI
+#elif defined(_LINUX)
+  char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+  if (strlen(dvdDevice) != 0)
+  {
+    int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
+    if (fd >= 0)
+    {
+      ioctl(fd, CDROMCLOSETRAY, 0);
+      close(fd);
+    }
+  }
+#elif defined(TARGET_WINDOWS)
+  CWIN32Util::CloseTray(cDriveLetter);
+#endif
+#endif
+}
+
+void CMediaManager::ToggleTray(const char cDriveLetter)
+{
+#ifdef HAS_DVD_DRIVE
+#if defined(TARGET_WINDOWS)
+  CWIN32Util::ToggleTray(cDriveLetter);
+#else
+  if (GetDriveStatus() == TRAY_OPEN || GetDriveStatus() == DRIVE_OPEN)
+    CloseTray();
+  else
+    EjectTray();
+#endif
+#endif
+}
+
 void CMediaManager::ProcessEvents()
 {
   CSingleLock lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
+#if defined(HAS_DVD_DRIVE) && defined(TARGET_DARWIN_OSX)
+    // darwins GetFirstOpticalDeviceFileName only gives us something
+    // when a disc is inserted
+    // so we have to refresh m_strFirstAvailDrive when this happens after Initialize
+    // was called (e.x. the disc was inserted after the start of xbmc)
+    // else TranslateDevicePath wouldn't give the correct device
+    m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
+#endif
+    
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
     g_windowManager.SendThreadMessage(msg);
   }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +32,7 @@ using namespace XbmcThreads;
 // Helper classes
 //=============================================================================
 
-class waiter
+class waiter : public IRunnable
 {
   CEvent& event;
 public:
@@ -43,7 +42,7 @@ public:
 
   waiter(CEvent& o, bool& flag) : event(o), result(flag), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     result = event.Wait();
@@ -51,7 +50,7 @@ public:
   }
 };
 
-class timed_waiter
+class timed_waiter : public IRunnable
 {
   CEvent& event;
   unsigned int waitTime;
@@ -62,7 +61,7 @@ public:
 
   timed_waiter(CEvent& o, int& flag, int waitTimeMillis) : event(o), waitTime(waitTimeMillis), result(flag), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     result = 0;
@@ -71,7 +70,7 @@ public:
   }
 };
 
-class group_wait
+class group_wait : public IRunnable
 {
   CEventGroup& event;
   int timeout;
@@ -82,7 +81,7 @@ public:
   group_wait(CEventGroup& o) : event(o), timeout(-1), result(NULL), waiting(false) {}
   group_wait(CEventGroup& o, int timeout_) : event(o), timeout(timeout_), result(NULL), waiting(false) {}
 
-  void operator()()
+  void Run()
   {
     waiting = true;
     if (timeout == -1)
@@ -95,25 +94,25 @@ public:
 
 //=============================================================================
 
-TEST(TestEventCase)
+TEST(TestEvent, General)
 {
   CEvent event;
   bool result = false;
   waiter w1(event,result);
   thread waitThread(w1);
 
-  CHECK(waitForWaiters(event,1,10000));
+  EXPECT_TRUE(waitForWaiters(event,1,10000));
 
-  CHECK(!result);
+  EXPECT_TRUE(!result);
 
   event.Set();
 
-  CHECK(waitThread.timed_join(10000));
+  EXPECT_TRUE(waitThread.timed_join(10000));
 
-  CHECK(result);
+  EXPECT_TRUE(result);
 }
 
-TEST(TestEvent2WaitsCase)
+TEST(TestEvent, TwoWaits)
 {
   CEvent event;
   bool result1 = false;
@@ -123,56 +122,56 @@ TEST(TestEvent2WaitsCase)
   thread waitThread1(w1);
   thread waitThread2(w2);
 
-  CHECK(waitForWaiters(event,2,10000));
+  EXPECT_TRUE(waitForWaiters(event,2,10000));
 
-  CHECK(!result1);
-  CHECK(!result2);
+  EXPECT_TRUE(!result1);
+  EXPECT_TRUE(!result2);
 
   event.Set();
 
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
-  CHECK(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
 
-  CHECK(result1);
-  CHECK(result2);
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(result2);
 
 }
 
-TEST(TestEventTimedWaitsCase)
+TEST(TestEvent, TimedWaits)
 {
   CEvent event;
   int result1 = 10;
   timed_waiter w1(event,result1,100);
   thread waitThread1(w1);
 
-  CHECK(waitForWaiters(event,1,10000));
+  EXPECT_TRUE(waitForWaiters(event,1,10000));
 
-  CHECK(result1 == 0);
+  EXPECT_TRUE(result1 == 0);
 
   event.Set();
 
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
 
-  CHECK(result1 == 1);
+  EXPECT_TRUE(result1 == 1);
 }
 
-TEST(TestEventTimedWaitsTimeoutCase)
+TEST(TestEvent, TimedWaitsTimeout)
 {
   CEvent event;
   int result1 = 10;
   timed_waiter w1(event,result1,50);
   thread waitThread1(w1);
 
-  CHECK(waitForWaiters(event,1,100));
+  EXPECT_TRUE(waitForWaiters(event,1,100));
 
-  CHECK(result1 == 0);
+  EXPECT_TRUE(result1 == 0);
 
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
 
-  CHECK(result1 == -1);
+  EXPECT_TRUE(result1 == -1);
 }
 
-TEST(TestEventGroupCase)
+TEST(TestEvent, Group)
 {
   CEvent event1;
   CEvent event2;
@@ -186,40 +185,40 @@ TEST(TestEventGroupCase)
   waiter w2(event2,result2);
   group_wait w3(group);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
 
-  CHECK(waitForWaiters(event1,1,10000));
-  CHECK(waitForWaiters(event2,1,10000));
-  CHECK(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(event1,1,10000));
+  EXPECT_TRUE(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitForWaiters(group,1,10000));
 
-  CHECK(!result1);
-  CHECK(!result2);
+  EXPECT_TRUE(!result1);
+  EXPECT_TRUE(!result2);
 
-  CHECK(w3.waiting);
-  CHECK(w3.result == NULL);
+  EXPECT_TRUE(w3.waiting);
+  EXPECT_TRUE(w3.result == NULL);
 
   event1.Set();
 
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
-  CHECK(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
   SleepMillis(10);
 
-  CHECK(result1);
-  CHECK(!w1.waiting);
-  CHECK(!result2);
-  CHECK(w2.waiting);
-  CHECK(!w3.waiting);
-  CHECK(w3.result == &event1);
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(!w1.waiting);
+  EXPECT_TRUE(!result2);
+  EXPECT_TRUE(w2.waiting);
+  EXPECT_TRUE(!w3.waiting);
+  EXPECT_TRUE(w3.result == &event1);
 
   event2.Set();
 
-  CHECK(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
 
 }
 
-TEST(TestEventGroupLimitedGroupScopeCase)
+TEST(TestEvent, GroupLimitedGroupScope)
 {
   CEvent event1;
   CEvent event2;
@@ -234,32 +233,32 @@ TEST(TestEventGroupLimitedGroupScopeCase)
     waiter w2(event2,result2);
     group_wait w3(group);
 
-    thread waitThread1(ref(w1));
-    thread waitThread2(ref(w2));
-    thread waitThread3(ref(w3));
+    thread waitThread1(w1);
+    thread waitThread2(w2);
+    thread waitThread3(w3);
 
-    CHECK(waitForWaiters(event1,1,10000));
-    CHECK(waitForWaiters(event2,1,10000));
-    CHECK(waitForWaiters(group,1,10000));
+    EXPECT_TRUE(waitForWaiters(event1,1,10000));
+    EXPECT_TRUE(waitForWaiters(event2,1,10000));
+    EXPECT_TRUE(waitForWaiters(group,1,10000));
 
-    CHECK(!result1);
-    CHECK(!result2);
+    EXPECT_TRUE(!result1);
+    EXPECT_TRUE(!result2);
 
-    CHECK(w3.waiting);
-    CHECK(w3.result == NULL);
+    EXPECT_TRUE(w3.waiting);
+    EXPECT_TRUE(w3.result == NULL);
 
     event1.Set();
 
-    CHECK(waitThread1.timed_join(MILLIS(10000)));
-    CHECK(waitThread3.timed_join(MILLIS(10000)));
+    EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+    EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
     SleepMillis(10);
 
-    CHECK(result1);
-    CHECK(!w1.waiting);
-    CHECK(!result2);
-    CHECK(w2.waiting);
-    CHECK(!w3.waiting);
-    CHECK(w3.result == &event1);
+    EXPECT_TRUE(result1);
+    EXPECT_TRUE(!w1.waiting);
+    EXPECT_TRUE(!result2);
+    EXPECT_TRUE(w2.waiting);
+    EXPECT_TRUE(!w3.waiting);
+    EXPECT_TRUE(w3.result == &event1);
   }
 
   event2.Set();
@@ -267,7 +266,7 @@ TEST(TestEventGroupLimitedGroupScopeCase)
   SleepMillis(50); // give thread 2 a chance to exit
 }
 
-TEST(TestEvent2GroupsCase)
+TEST(TestEvent, TwoGroups)
 {
   CEvent event1;
   CEvent event2;
@@ -283,94 +282,94 @@ TEST(TestEvent2GroupsCase)
   group_wait w3(group1);
   group_wait w4(group2);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
-  thread waitThread4(ref(w4));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
+  thread waitThread4(w4);
 
-  CHECK(waitForWaiters(event1,1,10000));
-  CHECK(waitForWaiters(event2,1,10000));
-  CHECK(waitForWaiters(group1,1,10000));
-  CHECK(waitForWaiters(group2,1,10000));
+  EXPECT_TRUE(waitForWaiters(event1,1,10000));
+  EXPECT_TRUE(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitForWaiters(group1,1,10000));
+  EXPECT_TRUE(waitForWaiters(group2,1,10000));
 
-  CHECK(!result1);
-  CHECK(!result2);
+  EXPECT_TRUE(!result1);
+  EXPECT_TRUE(!result2);
 
-  CHECK(w3.waiting);
-  CHECK_EQUAL(w3.result,(void*)NULL);
-  CHECK(w4.waiting);
-  CHECK_EQUAL(w4.result,(void*)NULL);
+  EXPECT_TRUE(w3.waiting);
+  EXPECT_EQ(w3.result,(void*)NULL);
+  EXPECT_TRUE(w4.waiting);
+  EXPECT_EQ(w4.result,(void*)NULL);
 
   event1.Set();
 
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
-  CHECK(waitThread3.timed_join(MILLIS(10000)));
-  CHECK(waitThread4.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread4.timed_join(MILLIS(10000)));
   SleepMillis(10);
 
-  CHECK(result1);
-  CHECK(!w1.waiting);
-  CHECK(!result2);
-  CHECK(w2.waiting);
-  CHECK(!w3.waiting);
-  CHECK(w3.result == &event1);
-  CHECK(!w4.waiting);
-  CHECK(w4.result == &event1);
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(!w1.waiting);
+  EXPECT_TRUE(!result2);
+  EXPECT_TRUE(w2.waiting);
+  EXPECT_TRUE(!w3.waiting);
+  EXPECT_TRUE(w3.result == &event1);
+  EXPECT_TRUE(!w4.waiting);
+  EXPECT_TRUE(w4.result == &event1);
 
   event2.Set();
 
-  CHECK(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
 }
 
-TEST(TestEventAutoResetBehavior)
+TEST(TestEvent, AutoResetBehavior)
 {
   CEvent event;
 
-  CHECK(!event.WaitMSec(1));
+  EXPECT_TRUE(!event.WaitMSec(1));
 
   event.Set(); // event will remain signaled if there are no waits
 
-  CHECK(event.WaitMSec(1));
+  EXPECT_TRUE(event.WaitMSec(1));
 }
 
-TEST(TestEventManualResetCase)
+TEST(TestEvent, ManualReset)
 {
   CEvent event(true);
   bool result = false;
   waiter w1(event,result);
   thread waitThread(w1);
 
-  CHECK(waitForWaiters(event,1,10000));
+  EXPECT_TRUE(waitForWaiters(event,1,10000));
 
-  CHECK(!result);
+  EXPECT_TRUE(!result);
 
   event.Set();
 
-  CHECK(waitThread.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread.timed_join(MILLIS(10000)));
 
-  CHECK(result);
+  EXPECT_TRUE(result);
 
   // with manual reset, the state should remain signaled
-  CHECK(event.WaitMSec(1));
+  EXPECT_TRUE(event.WaitMSec(1));
 
   event.Reset();
 
-  CHECK(!event.WaitMSec(1));
+  EXPECT_TRUE(!event.WaitMSec(1));
 }
 
-TEST(TestEventInitValCase)
+TEST(TestEvent, InitVal)
 {
   CEvent event(false,true);
-  CHECK(event.WaitMSec(50));
+  EXPECT_TRUE(event.WaitMSec(50));
 }
 
-TEST(TestEventSimpleTimeoutCase)
+TEST(TestEvent, SimpleTimeout)
 {
   CEvent event;
-  CHECK(!event.WaitMSec(50));
+  EXPECT_TRUE(!event.WaitMSec(50));
 }
 
-TEST(TestEventGroupChildSet)
+TEST(TestEvent, GroupChildSet)
 {
   CEvent event1(true);
   CEvent event2;
@@ -385,27 +384,27 @@ TEST(TestEventGroupChildSet)
   waiter w2(event2,result2);
   group_wait w3(group);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
 
-  CHECK(waitForWaiters(event2,1,10000));
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
-  CHECK(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
   SleepMillis(10);
 
-  CHECK(result1);
-  CHECK(!result2);
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(!result2);
 
-  CHECK(!w3.waiting);
-  CHECK(w3.result == &event1);
+  EXPECT_TRUE(!w3.waiting);
+  EXPECT_TRUE(w3.result == &event1);
 
   event2.Set();
 
-  CHECK(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
 }
 
-TEST(TestEventGroupChildSet2)
+TEST(TestEvent, GroupChildSet2)
 {
   CEvent event1(true,true);
   CEvent event2;
@@ -419,27 +418,27 @@ TEST(TestEventGroupChildSet2)
   waiter w2(event2,result2);
   group_wait w3(group);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
-  thread waitThread3(ref(w3));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
+  thread waitThread3(w3);
 
-  CHECK(waitForWaiters(event2,1,10000));
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
-  CHECK(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
   SleepMillis(10);
 
-  CHECK(result1);
-  CHECK(!result2);
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(!result2);
 
-  CHECK(!w3.waiting);
-  CHECK(w3.result == &event1);
+  EXPECT_TRUE(!w3.waiting);
+  EXPECT_TRUE(w3.result == &event1);
 
   event2.Set();
 
-  CHECK(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
 }
 
-TEST(TestEventGroupWaitResetsChild)
+TEST(TestEvent, GroupWaitResetsChild)
 {
   CEvent event1;
   CEvent event2;
@@ -448,24 +447,24 @@ TEST(TestEventGroupWaitResetsChild)
 
   group_wait w3(group);
 
-  thread waitThread3(ref(w3));
+  thread waitThread3(w3);
 
-  CHECK(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(group,1,10000));
 
-  CHECK(w3.waiting);
-  CHECK(w3.result == NULL);
+  EXPECT_TRUE(w3.waiting);
+  EXPECT_TRUE(w3.result == NULL);
 
   event2.Set();
 
-  CHECK(waitThread3.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));
 
-  CHECK(!w3.waiting);
-  CHECK(w3.result == &event2);
+  EXPECT_TRUE(!w3.waiting);
+  EXPECT_TRUE(w3.result == &event2);
   // event2 should have been reset.
-  CHECK(event2.WaitMSec(1) == false); 
+  EXPECT_TRUE(event2.WaitMSec(1) == false);
 }
 
-TEST(TestEventGroupTimedWait)
+TEST(TestEvent, GroupTimedWait)
 {
   CEvent event1;
   CEvent event2;
@@ -477,54 +476,54 @@ TEST(TestEventGroupTimedWait)
   waiter w1(event1,result1);
   waiter w2(event2,result2);
 
-  thread waitThread1(ref(w1));
-  thread waitThread2(ref(w2));
+  thread waitThread1(w1);
+  thread waitThread2(w2);
 
-  CHECK(waitForWaiters(event1,1,10000));
-  CHECK(waitForWaiters(event2,1,10000));
+  EXPECT_TRUE(waitForWaiters(event1,1,10000));
+  EXPECT_TRUE(waitForWaiters(event2,1,10000));
 
-  CHECK(group.wait(20) == NULL); // waited ... got nothing
+  EXPECT_TRUE(group.wait(20) == NULL); // waited ... got nothing
 
   group_wait w3(group,50);
-  thread waitThread3(ref(w3));
+  thread waitThread3(w3);
 
-  CHECK(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(group,1,10000));
 
-  CHECK(!result1);
-  CHECK(!result2);
+  EXPECT_TRUE(!result1);
+  EXPECT_TRUE(!result2);
 
-  CHECK(w3.waiting);
-  CHECK(w3.result == NULL);
+  EXPECT_TRUE(w3.waiting);
+  EXPECT_TRUE(w3.result == NULL);
 
   // this should end given the wait is for only 50 millis
-  CHECK(waitThread3.timed_join(MILLIS(100)));
+  EXPECT_TRUE(waitThread3.timed_join(MILLIS(100)));
 
-  CHECK(!w3.waiting);
-  CHECK(w3.result == NULL);
+  EXPECT_TRUE(!w3.waiting);
+  EXPECT_TRUE(w3.result == NULL);
 
   group_wait w4(group,50);
-  thread waitThread4(ref(w4));
+  thread waitThread4(w4);
 
-  CHECK(waitForWaiters(group,1,10000));
+  EXPECT_TRUE(waitForWaiters(group,1,10000));
 
-  CHECK(w4.waiting);
-  CHECK(w4.result == NULL);
+  EXPECT_TRUE(w4.waiting);
+  EXPECT_TRUE(w4.result == NULL);
 
   event1.Set();
 
-  CHECK(waitThread1.timed_join(MILLIS(10000)));
-  CHECK(waitThread4.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread4.timed_join(MILLIS(10000)));
   SleepMillis(10);
 
-  CHECK(result1);
-  CHECK(!result2);
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(!result2);
 
-  CHECK(!w4.waiting);
-  CHECK(w4.result == &event1);
+  EXPECT_TRUE(!w4.waiting);
+  EXPECT_TRUE(w4.result == &event1);
 
   event2.Set();
 
-  CHECK(waitThread2.timed_join(MILLIS(10000)));
+  EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
 }
 
 #define TESTNUM 100000l
@@ -533,7 +532,7 @@ TEST(TestEventGroupTimedWait)
 CEvent* g_event = NULL;
 volatile long g_mutex;
 
-class mass_waiter
+class mass_waiter : public IRunnable
 {
 public:
   CEvent& event;
@@ -543,7 +542,7 @@ public:
 
   mass_waiter() : event(*g_event), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     AtomicGuard g(&g_mutex);
@@ -552,7 +551,7 @@ public:
   }
 };
 
-class poll_mass_waiter
+class poll_mass_waiter : public IRunnable
 {
 public:
   CEvent& event;
@@ -562,7 +561,7 @@ public:
 
   poll_mass_waiter() : event(*g_event), waiting(false) {}
   
-  void operator()()
+  void Run()
   {
     waiting = true;
     AtomicGuard g(&g_mutex);
@@ -576,37 +575,37 @@ template <class W> void RunMassEventTest(boost::shared_array<W>& m, bool canWait
   boost::shared_array<thread> t;
   t.reset(new thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i] = thread(ref(m[i]));
+    t[i] = thread(m[i]);
 
-  CHECK(waitForThread(g_mutex,NUMTHREADS,10000));
+  EXPECT_TRUE(waitForThread(g_mutex,NUMTHREADS,10000));
   if (canWaitOnEvent)
   {
-    CHECK(waitForWaiters(*g_event,NUMTHREADS,10000));
+    EXPECT_TRUE(waitForWaiters(*g_event,NUMTHREADS,10000));
   }
 
   SleepMillis(100);// give them a little more time
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
-    CHECK(m[i].waiting);
+    EXPECT_TRUE(m[i].waiting);
   }
 
   g_event->Set();
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
-    CHECK(t[i].timed_join(MILLIS(10000)));
+    EXPECT_TRUE(t[i].timed_join(MILLIS(10000)));
   }
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
-    CHECK(!m[i].waiting);
-    CHECK(m[i].result);
+    EXPECT_TRUE(!m[i].waiting);
+    EXPECT_TRUE(m[i].result);
   }
 }
 
 
-TEST(TestMassEvent)
+TEST(TestMassEvent, General)
 {
   g_event = new CEvent();
 
@@ -617,7 +616,7 @@ TEST(TestMassEvent)
   delete g_event;
 }
 
-TEST(TestMassEventPolling)
+TEST(TestMassEvent, Polling)
 {
   g_event = new CEvent(true); // polling needs to avoid the auto-reset
 

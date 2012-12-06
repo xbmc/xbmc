@@ -1,0 +1,178 @@
+# XBMC Media Center language file
+# Addon Name: Confluence
+# Addon id: skin.confluence
+# Addon version: 2.1.1
+# Addon Provider: Jezz_X, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Vietnamese (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "#31000"
+msgid "Change Your"
+msgstr "Thay Dổi"
+
+msgctxt "#31003"
+msgid "Power Options"
+msgstr "??? lựa chọn"
+
+msgctxt "#31004"
+msgid "Working..."
+msgstr "Dang /làm..."
+
+msgctxt "#31005"
+msgid "Hide Information"
+msgstr "Trốn Thông Tin"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "Xem ???"
+
+msgctxt "#31008"
+msgid "Fullscreen"
+msgstr "Toàn Màn Hình"
+
+msgctxt "#31009"
+msgid "Total Duration"
+msgstr "Tổng Số Thời Gian"
+
+msgctxt "#31022"
+msgid "Music - Files"
+msgstr "Nhạc - Files"
+
+msgctxt "#31023"
+msgid "Playing"
+msgstr "Đang chơi"
+
+msgctxt "#31024"
+msgid "Page"
+msgstr "Trang"
+
+msgctxt "#31026"
+msgid "Misc Options"
+msgstr "Lựa chọn khác"
+
+msgctxt "#31033"
+msgid "Info"
+msgstr "Thông Tin"
+
+msgctxt "#31040"
+msgid "Now Playing"
+msgstr "Đang chơi"
+
+msgctxt "#31042"
+msgid "PLAYING"
+msgstr "ĐANG CHƠI"
+
+msgctxt "#31043"
+msgid "PAUSED"
+msgstr "ĐÃ DỪNG"
+
+msgctxt "#31045"
+msgid "REWIND"
+msgstr "Quay Lại"
+
+msgctxt "#31049"
+msgid "End Time"
+msgstr "Giờ Hết"
+
+msgctxt "#31055"
+msgid "Open playlist"
+msgstr "Mở Playlist"
+
+msgctxt "#31057"
+msgid "Close playlist"
+msgstr "Dóng Playlist"
+
+msgctxt "#31058"
+msgid "System music files"
+msgstr "Tệp nhạc hệ thống"
+
+msgctxt "#31059"
+msgid "Current playlist"
+msgstr "Danh sách hiện tại"
+
+msgctxt "#31060"
+msgid "This file is stacked, select the part you want to play from."
+msgstr "Tệp này đã bị chia cắt, chọn phần bạn muốn chơi."
+
+msgctxt "#31061"
+msgid "Current Selected"
+msgstr "Chọn lựa hiện tại"
+
+msgctxt "#31101"
+msgid "Home screen options"
+msgstr "Lựa chọn màn hình chính"
+
+msgctxt "#31102"
+msgid "Background"
+msgstr "Hình nền"
+
+msgctxt "#31103"
+msgid "Show \"Paused\" in picture slide show"
+msgstr "Hiển thị \"Đã dừng\" ở trình diễn ảnh"
+
+msgctxt "#31108"
+msgid "Hide Main Menu Buttons"
+msgstr "Ẩn nút Màn Hình Chính"
+
+msgctxt "#31111"
+msgid "Hide"
+msgstr "Giấu"
+
+msgctxt "#31122"
+msgid "Weather Page"
+msgstr "Thời Tiết"
+
+msgctxt "#31128"
+msgid "Lyrics"
+msgstr "Lời Bài Hát"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Lời Bài Hát (Addon?)"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Phụ Dề (Addon?)"
+
+msgctxt "#31203"
+msgid "Choose Your Song"
+msgstr "Chọn Bài Hát"
+
+msgctxt "#31206"
+msgid "Found"
+msgstr "Tìm Rồi"
+
+msgctxt "#31207"
+msgid "Find More Items"
+msgstr "Tìm Thêm"
+
+msgctxt "#31328"
+msgid "Recently Added"
+msgstr "Mới Bỏ Vào"
+
+msgctxt "#31352"
+msgid "Stop"
+msgstr "Ngừng"
+
+msgctxt "#31354"
+msgid "Rewind"
+msgstr "Quay Lại"
+
+msgctxt "#31901"
+msgid "36 Hour Forecast"
+msgstr "Thời Tiết - 36 Tiếng"
+
+msgctxt "#31904"
+msgid "10 Day Forecast"
+msgstr "Thời Tiết - 10 Ngày"

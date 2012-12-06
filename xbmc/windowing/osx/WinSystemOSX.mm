@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,7 @@
 
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
+#define BOOL XBMC_BOOL
 #include "WinSystemOSX.h"
 #include "WinEventsOSX.h"
 #include "Application.h"
@@ -34,9 +33,9 @@
 #include "input/KeyboardStat.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "XBMCHelper.h"
+#include "osx/XBMCHelper.h"
 #include "utils/SystemInfo.h"
-#include "CocoaInterface.h"
+#include "osx/CocoaInterface.h"
 #undef BOOL
 
 #import <SDL/SDL_video.h>
@@ -154,6 +153,17 @@ static NSWindow* blankingWindows[MAX_DISPLAYS];
 void* CWinSystemOSX::m_lastOwnedContext = 0;
 
 //------------------------------------------------------------------------------------------
+CRect CGRectToCRect(CGRect cgrect)
+{
+  CRect crect = CRect(
+    cgrect.origin.x,
+    cgrect.origin.y,
+    cgrect.origin.x + cgrect.size.width,
+    cgrect.origin.y + cgrect.size.height);
+  return crect;
+}
+
+//------------------------------------------------------------------------------------------
 Boolean GetDictionaryBoolean(CFDictionaryRef theDict, const void* key)
 {
         // get a boolean from the dictionary
@@ -214,17 +224,17 @@ void SetMenuBarVisible(bool visible)
 {
   if(visible)
   {
-    [[NSApplication sharedApplication] 
-      setPresentationOptions:   NSApplicationPresentationDefault];  
+    [[NSApplication sharedApplication]
+      setPresentationOptions:   NSApplicationPresentationDefault];
   }
   else
   {
-    [[NSApplication sharedApplication] 
-      setPresentationOptions:   NSApplicationPresentationHideMenuBar | 
-                                NSApplicationPresentationHideDock];  
+    [[NSApplication sharedApplication]
+      setPresentationOptions:   NSApplicationPresentationHideMenuBar |
+                                NSApplicationPresentationHideDock];
   }
 }
-//---------------------------------------------------------------------------------        
+//---------------------------------------------------------------------------------
 CGDirectDisplayID GetDisplayID(int screen_index)
 {
   CGDirectDisplayID displayArray[MAX_DISPLAYS];
@@ -239,7 +249,7 @@ CGDirectDisplayID GetDisplayIDFromScreen(NSScreen *screen)
 {
   NSDictionary* screenInfo = [screen deviceDescription];
   NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-  
+
   return (CGDirectDisplayID)[screenID longValue];
 }
 
@@ -262,13 +272,13 @@ void BlankOtherDisplays(int screen_index)
 {
   int i;
   int numDisplays = [[NSScreen screens] count];
-  
+
   // zero out blankingWindows for debugging
   for (i=0; i<MAX_DISPLAYS; i++)
   {
     blankingWindows[i] = 0;
   }
-  
+
   // Blank.
   for (i=0; i<numDisplays; i++)
   {
@@ -277,20 +287,20 @@ void BlankOtherDisplays(int screen_index)
       // Get the size.
       NSScreen* pScreen = [[NSScreen screens] objectAtIndex:i];
       NSRect    screenRect = [pScreen frame];
-          
+
       // Build a blanking window.
       screenRect.origin = NSZeroPoint;
       blankingWindows[i] = [[NSWindow alloc] initWithContentRect:screenRect
         styleMask:NSBorderlessWindowMask
         backing:NSBackingStoreBuffered
-        defer:NO 
+        defer:NO
         screen:pScreen];
-                                            
+
       [blankingWindows[i] setBackgroundColor:[NSColor blackColor]];
       [blankingWindows[i] setLevel:CGShieldingWindowLevel()];
       [blankingWindows[i] makeKeyAndOrderFront:nil];
     }
-  } 
+  }
 }
 
 void UnblankDisplays(void)
@@ -323,7 +333,7 @@ CGDisplayFadeReservationToken DisplayFadeToBlack(bool fade)
 
 void DisplayFadeFromBlack(CGDisplayFadeReservationToken fade_token, bool fade)
 {
-  if (fade_token != kCGDisplayFadeReservationInvalidToken) 
+  if (fade_token != kCGDisplayFadeReservationInvalidToken)
   {
     if (fade)
       CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
@@ -421,19 +431,19 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
 {
   if ( screenIdx >= (signed)[[NSScreen screens] count])
     return NULL;
-    
+
   Boolean stretched;
   Boolean interlaced;
   Boolean safeForHardware;
   Boolean televisionoutput;
   int w, h, bitsperpixel;
   double rate;
-  RESOLUTION_INFO res;   
-  
+  RESOLUTION_INFO res;
+
   CLog::Log(LOGDEBUG, "GetMode looking for suitable mode with %d x %d @ %f Hz on display %d\n", width, height, refreshrate, screenIdx);
 
   CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(screenIdx));
-  
+
   if (NULL == displayModes)
   {
     CLog::Log(LOGERROR, "GetMode - no displaymodes found!");
@@ -450,13 +460,13 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
     safeForHardware = GetDictionaryBoolean(displayMode, kCGDisplayModeIsSafeForHardware);
     televisionoutput = GetDictionaryBoolean(displayMode, kCGDisplayModeIsTelevisionOutput);
     w = GetDictionaryInt(displayMode, kCGDisplayWidth);
-    h = GetDictionaryInt(displayMode, kCGDisplayHeight);      
+    h = GetDictionaryInt(displayMode, kCGDisplayHeight);
     rate = GetDictionaryDouble(displayMode, kCGDisplayRefreshRate);
 
 
-    if ((bitsperpixel == 32)      && 
-        (safeForHardware == YES)  && 
-        (stretched == NO)         && 
+    if ((bitsperpixel == 32)      &&
+        (safeForHardware == YES)  &&
+        (stretched == NO)         &&
         (interlaced == NO)        &&
         (w == width)              &&
         (h == height)             &&
@@ -471,7 +481,7 @@ CFDictionaryRef GetMode(int width, int height, double refreshrate, int screenIdx
 }
 
 //---------------------------------------------------------------------------------
-static void DisplayReconfigured(CGDirectDisplayID display, 
+static void DisplayReconfigured(CGDirectDisplayID display,
   CGDisplayChangeSummaryFlags flags, void* userData)
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)userData;
@@ -482,9 +492,12 @@ static void DisplayReconfigured(CGDirectDisplayID display,
   {
     // pre/post-reconfiguration changes
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
+    if (res == RES_INVALID)
+      return;
+
     NSScreen* pScreen = nil;
     unsigned int screenIdx = g_settings.m_ResInfo[res].iScreen;
-    
+
     if ( screenIdx < [[NSScreen screens] count] )
     {
         pScreen = [[NSScreen screens] objectAtIndex:screenIdx];
@@ -511,6 +524,8 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
   m_glContext = 0;
   m_SDLSurface = NULL;
   m_osx_events = NULL;
+  m_obscured   = false;
+  m_obscured_timecheck = XbmcThreads::SystemClockMillis() + 1000;
   m_use_system_screensaver = true;
   // check runtime, we only allow this on 10.5+
   m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
@@ -527,10 +542,10 @@ bool CWinSystemOSX::InitWindowSystem()
   // set repeat to 10ms to ensure repeat time < frame time
   // so that hold times can be reliably detected
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
-  
+
   if (!CWinSystemBase::InitWindowSystem())
     return false;
-  
+
   m_osx_events = new CWinEventsOSX();
 
   if (m_can_display_switch)
@@ -556,7 +571,7 @@ bool CWinSystemOSX::InitWindowSystem()
 }
 
 bool CWinSystemOSX::DestroyWindowSystem()
-{  
+{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   [center removeObserver:(windowDidMoveNoteClass*)m_windowDidMove name:NSWindowDidMoveNotification object:nil];
   [center removeObserver:(windowDidReSizeNoteClass*)m_windowDidReSize name:NSWindowDidResizeNotification object:nil];
@@ -590,7 +605,7 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   // Enable vertical sync to avoid any tearing.
-  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
+  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 
   m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL | SDL_RESIZABLE);
   if (!m_SDLSurface)
@@ -602,7 +617,7 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   NSView* view = [cur_context view];
   if (!view)
     return false;
-  
+
   // if we are not starting up windowed, then hide the initial SDL window
   // so we do not see it flash before the fade-out and switch to fullscreen.
   if (g_guiSettings.m_LookAndFeelResolution != RES_WINDOW)
@@ -610,7 +625,7 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 
   // disassociate view from context
   [cur_context clearDrawable];
-  
+
   // release the context
   if (m_lastOwnedContext == cur_context)
   {
@@ -618,12 +633,12 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
     [ cur_context clearDrawable ];
     [ cur_context release ];
   }
-  
+
   // create a new context
   NSOpenGLContext* new_context = (NSOpenGLContext*)CreateWindowedContext(nil);
   if (!new_context)
     return false;
-  
+
   // associate with current view
   [new_context setView:view];
   [new_context makeCurrentContext];
@@ -645,17 +660,17 @@ bool CWinSystemOSX::DestroyWindow()
 {
   return true;
 }
-    
+
 extern "C" void SDL_SetWidthHeight(int w, int h);
 bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   if (!m_glContext)
     return false;
-  
+
   NSOpenGLContext* context = [NSOpenGLContext currentContext];
   NSView* view;
   NSWindow* window;
-  
+
   view = [context view];
   if (view && (newWidth > 0) && (newHeight > 0))
   {
@@ -675,33 +690,36 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   SDL_SetWidthHeight(newWidth, newHeight);
 
   [context makeCurrentContext];
-  
+
   m_nWidth = newWidth;
   m_nHeight = newHeight;
   m_glContext = context;
-  
+
   return true;
 }
 
 static bool needtoshowme = true;
 
 bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
-{  
-  static NSWindow* windowedFullScreenwindow = NULL;  
+{
+  static NSWindow* windowedFullScreenwindow = NULL;
   static NSScreen* last_window_screen = NULL;
   static NSPoint last_window_origin;
   static NSView* last_view = NULL;
   static NSSize last_view_size;
   static NSPoint last_view_origin;
   bool was_fullscreen = m_bFullScreen;
+  static int lastDisplayNr = res.iScreen;
   NSOpenGLContext* cur_context;
-  
+
   // Fade to black to hide resolution-switching flicker and garbage.
   CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
-  
+
   // If we're already fullscreen then we must be moving to a different display.
+  // or if we are still on the same display - it might be only a refreshrate/resolution
+  // change request.
   // Recurse to reset fullscreen mode and then continue.
-  if (was_fullscreen && fullScreen)
+  if (was_fullscreen && fullScreen && lastDisplayNr != res.iScreen)
   {
     needtoshowme = false;
     ShowHideNSWindow([last_view window], needtoshowme);
@@ -709,15 +727,34 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     CWinSystemOSX::SetFullScreen(false, window, blankOtherDisplays);
     needtoshowme = true;
   }
-  
+
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
   cur_context = [NSOpenGLContext currentContext];
+  
+  //handle resolution/refreshrate switching early here
+  if (m_bFullScreen)
+  {
+    if (m_can_display_switch)
+    {
+      // send pre-configuration change now and do not
+      //  wait for switch videomode callback. This gives just
+      //  a little more advanced notice of the display pre-change.
+      if (g_guiSettings.GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF)
+        CheckDisplayChanging(kCGDisplayBeginConfigurationFlag);
+
+      // switch videomode
+      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
+      lastDisplayNr = res.iScreen;
+    }
+  }
+
+  //no context? done.
   if (!cur_context)
   {
-    DisplayFadeFromBlack(fade_token, needtoshowme);  
+    DisplayFadeFromBlack(fade_token, needtoshowme);
     return false;
   }
 
@@ -728,23 +765,11 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [windowedFullScreenwindow release];
     windowedFullScreenwindow = NULL;
   }
-  
+
   if (m_bFullScreen)
   {
     // FullScreen Mode
     NSOpenGLContext* newContext = NULL;
-
-    if (m_can_display_switch)
-    {
-      // send pre-configuration change now and do not
-      //  wait for switch videomode callback. This gives just
-      //  a little more advanced notice of the display pre-change.
-      if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-        CheckDisplayChanging(kCGDisplayBeginConfigurationFlag);
-
-      // switch videomode
-      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
-    }
 
     // Save info about the windowed context so we can restore it when returning to windowed.
     last_view = [cur_context view];
@@ -752,29 +777,29 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     last_view_origin = [last_view frame].origin;
     last_window_screen = [[last_view window] screen];
     last_window_origin = [[last_view window] frame].origin;
-   
+
     if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
       // This is Cocca Windowed FullScreen Mode
-      // Get the screen rect of our current display      
+      // Get the screen rect of our current display
       NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
       NSRect    screenRect = [pScreen frame];
-      
+
       // remove frame origin offset of orginal display
       screenRect.origin = NSZeroPoint;
-      
+
       // make a new window to act as the windowedFullScreen
       windowedFullScreenwindow = [[NSWindow alloc] initWithContentRect:screenRect
         styleMask:NSBorderlessWindowMask
         backing:NSBackingStoreBuffered
-        defer:NO 
+        defer:NO
         screen:pScreen];
-                                              
+
       [windowedFullScreenwindow setBackgroundColor:[NSColor blackColor]];
       [windowedFullScreenwindow makeKeyAndOrderFront:nil];
-      
+
       // make our window the same level as the rest to enable cmd+tab switching
-      [windowedFullScreenwindow setLevel:NSNormalWindowLevel]; 
+      [windowedFullScreenwindow setLevel:NSNormalWindowLevel];
       // this will make our window topmost and hide all system messages
       //[windowedFullScreenwindow setLevel:CGShieldingWindowLevel()];
 
@@ -784,21 +809,21 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       // expand the mouse bounds in SDL view to fullscreen
       [ last_view setFrameOrigin:NSMakePoint(0.0, 0.0)];
       [ last_view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
-          
+
       NSView* blankView = [[NSView alloc] init];
       [windowedFullScreenwindow setContentView:blankView];
       [windowedFullScreenwindow setContentSize:NSMakeSize(m_nWidth, m_nHeight)];
       [windowedFullScreenwindow update];
       [blankView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
-      
+
       // Obtain windowed pixel format and create a new context.
       newContext = (NSOpenGLContext*)CreateWindowedContext((void* )cur_context);
       [newContext setView:blankView];
-      
+
       // Hide the menu bar.
       if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
         SetMenuBarVisible(false);
-          
+
       // Blank other displays if requested.
       if (blankOtherDisplays)
         BlankOtherDisplays(res.iScreen);
@@ -816,13 +841,13 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       newContext = (NSOpenGLContext*)CreateFullScreenContext(res.iScreen, (void*)cur_context);
       if (!newContext)
         return false;
-      
+
       // clear the current context
       [NSOpenGLContext clearCurrentContext];
-              
+
       // set fullscreen
       [newContext setFullScreen];
-      
+
       // Capture the display before going fullscreen.
       if (blankOtherDisplays == true)
         CGCaptureAllDisplays();
@@ -836,7 +861,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     // Hide the mouse.
     [NSCursor hide];
-    
+
     // Release old context if we created it.
     if (m_lastOwnedContext == cur_context)
     {
@@ -844,7 +869,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [ cur_context clearDrawable ];
       [ cur_context release ];
     }
-    
+
     // activate context
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
@@ -854,9 +879,9 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // Windowed Mode
     // exit fullscreen
     [cur_context clearDrawable];
-    
+
     [NSCursor unhide];
-    
+
     // Show menubar.
     if (GetDisplayID(res.iScreen) == kCGDirectMainDisplay)
       SetMenuBarVisible(true);
@@ -865,7 +890,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     {
       // restore the windowed window level
       [[last_view window] setLevel:NSNormalWindowLevel];
-      
+
       // Get rid of the new window we created.
       if (windowedFullScreenwindow != NULL)
       {
@@ -874,7 +899,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
           [windowedFullScreenwindow release];
         windowedFullScreenwindow = NULL;
       }
-      
+
       // Unblank.
       // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
       //if (blankOtherDisplays)
@@ -885,12 +910,12 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       // release displays
       CGReleaseAllDisplays();
     }
-    
+
     // create our new context (sharing with the current one)
     NSOpenGLContext* newContext = (NSOpenGLContext*)CreateWindowedContext((void* )cur_context);
     if (!newContext)
       return false;
-    
+
     // Assign view from old context, move back to original screen.
     [newContext setView:last_view];
     [[last_view window] setFrameOrigin:last_window_origin];
@@ -899,7 +924,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [ last_view setFrameOrigin:last_view_origin ];
     // done with restoring windowed window, don't set last_view to NULL as we can lose it under dual displays.
     //last_window_screen = NULL;
-    
+
     // Release the fullscreen context.
     if (m_lastOwnedContext == cur_context)
     {
@@ -907,13 +932,13 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [ cur_context clearDrawable ];
       [ cur_context release ];
     }
-    
+
     // Activate context.
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
   }
 
-  DisplayFadeFromBlack(fade_token, needtoshowme);  
+  DisplayFadeFromBlack(fade_token, needtoshowme);
 
   ShowHideNSWindow([last_view window], needtoshowme);
   // need to make sure SDL tracks any window size changes
@@ -931,21 +956,21 @@ void CWinSystemOSX::UpdateResolutions()
   double fps;
 
   // first screen goes into the current desktop mode
-  GetScreenResolution(&w, &h, &fps, 0);  
+  GetScreenResolution(&w, &h, &fps, 0);
   UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, fps);
-  
+
   // see resolution.h enum RESOLUTION for how the resolutions
   // have to appear in the g_settings.m_ResInfo vector
   // add the desktop resolutions of the other screens
   for(int i = 1; i < GetNumScreens(); i++)
   {
-    RESOLUTION_INFO res;      
+    RESOLUTION_INFO res;
     // get current resolution of screen i
-    GetScreenResolution(&w, &h, &fps, i);      
+    GetScreenResolution(&w, &h, &fps, i);
     UpdateDesktopResolution(res, i, w, h, fps);
     g_settings.m_ResInfo.push_back(res);
   }
-  
+
   if (m_can_display_switch)
   {
     // now just fill in the possible reolutions for the attached screens
@@ -959,7 +984,7 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
 {
   if (!pixFmt)
     return nil;
-    
+
   NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
     shareContext:(NSOpenGLContext*)shareCtx];
 
@@ -971,7 +996,7 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
   //  the cache size by issuing the following calls right after you create
   //  the OpenGL context.  The default cache size is 16."    --ryan.
   //
-  
+
   #ifndef GLI_ARRAY_FUNC_CACHE_MAX
   #define GLI_ARRAY_FUNC_CACHE_MAX 284
   #endif
@@ -986,7 +1011,7 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
       CGLSetParameter(ctx, (CGLContextParameter)GLI_SUBMIT_FUNC_CACHE_MAX, &cache_max);
       CGLSetParameter(ctx, (CGLContextParameter)GLI_ARRAY_FUNC_CACHE_MAX, &cache_max);
   }
-  
+
   // End Wisdom from Apple Engineer section. --ryan.
   return newContext;
 }
@@ -1007,7 +1032,7 @@ void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
   };
 
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
-  
+
   newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
     shareContext:(NSOpenGLContext*)shareCtx];
   [pixFmt release];
@@ -1053,11 +1078,11 @@ void* CWinSystemOSX::CreateFullScreenContext(int screen_index, void* shareCtx)
     NSOpenGLPFAScreenMask, (NSOpenGLPixelFormatAttribute)CGDisplayIDToOpenGLDisplayMask(displayID),
     (NSOpenGLPixelFormatAttribute)0
   };
-  
+
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
   if (!pixFmt)
     return nil;
-    
+
   NSOpenGLContext* newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
     shareContext:(NSOpenGLContext*)shareCtx];
   [pixFmt release];
@@ -1071,23 +1096,23 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenI
   if (screenIdx >= GetNumScreens())
     return;
   CGDirectDisplayID display_id = (CGDirectDisplayID)GetDisplayID(screenIdx);
-  
+
   NSOpenGLContext* context = [NSOpenGLContext currentContext];
   if (context)
   {
     NSView* view;
-  
+
     view = [context view];
     if (view)
     {
       NSWindow* window;
       window = [view window];
       if (window)
-        display_id = GetDisplayIDFromScreen( [window screen] );      
+        display_id = GetDisplayIDFromScreen( [window screen] );
     }
   }
-  CGDisplayModeRef mode  = CGDisplayCopyDisplayMode(display_id);  
-  *w = CGDisplayModeGetWidth(mode); 
+  CGDisplayModeRef mode  = CGDisplayCopyDisplayMode(display_id);
+  *w = CGDisplayModeGetWidth(mode);
   *h = CGDisplayModeGetHeight(mode);
   *fps = CGDisplayModeGetRefreshRate(mode);
   CGDisplayModeRelease(mode);
@@ -1100,7 +1125,7 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenI
 
 void CWinSystemOSX::EnableVSync(bool enable)
 {
-  // OpenGL Flush synchronised with vertical retrace                       
+  // OpenGL Flush synchronised with vertical retrace
   GLint swapInterval = enable ? 1 : 0;
   [[NSOpenGLContext currentContext] setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
 }
@@ -1112,7 +1137,7 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   if( screenIdx >= GetNumScreens())
     return false;
 
-  boolean_t match = false;    
+  boolean_t match = false;
   CFDictionaryRef dispMode = NULL;
   // Figure out the screen size. (default to main screen)
   CGDirectDisplayID display_id = GetDisplayID(screenIdx);
@@ -1142,7 +1167,7 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   CGConfigureDisplayMode(cfg, display_id, dispMode);
   CGError err = CGCompleteDisplayConfiguration(cfg, kCGConfigureForAppOnly);
   CGDisplayRelease(display_id);
-  
+
   Cocoa_CVDisplayLinkUpdate();
 
   return (err == kCGErrorSuccess);
@@ -1161,12 +1186,12 @@ void CWinSystemOSX::FillInVideoModes()
     Boolean televisionoutput;
     int w, h, bitsperpixel;
     double refreshrate;
-    RESOLUTION_INFO res;   
+    RESOLUTION_INFO res;
 
     CFArrayRef displayModes = CGDisplayAvailableModes(GetDisplayID(disp));
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
     CLog::Log(LOGNOTICE, "Display %i has name %s", disp, [dispName UTF8String]);
-    
+
     if (NULL == displayModes)
       continue;
 
@@ -1180,13 +1205,13 @@ void CWinSystemOSX::FillInVideoModes()
       safeForHardware = GetDictionaryBoolean(displayMode, kCGDisplayModeIsSafeForHardware);
       televisionoutput = GetDictionaryBoolean(displayMode, kCGDisplayModeIsTelevisionOutput);
 
-      if ((bitsperpixel == 32)      && 
-          (safeForHardware == YES)  && 
-          (stretched == NO)         && 
+      if ((bitsperpixel == 32)      &&
+          (safeForHardware == YES)  &&
+          (stretched == NO)         &&
           (interlaced == NO))
       {
         w = GetDictionaryInt(displayMode, kCGDisplayWidth);
-        h = GetDictionaryInt(displayMode, kCGDisplayHeight);      
+        h = GetDictionaryInt(displayMode, kCGDisplayHeight);
         refreshrate = GetDictionaryDouble(displayMode, kCGDisplayRefreshRate);
         if ((int)refreshrate == 0)  // LCD display?
         {
@@ -1194,7 +1219,7 @@ void CWinSystemOSX::FillInVideoModes()
           refreshrate = 60.0;
         }
         CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
-        
+
         UpdateDesktopResolution(res, disp, w, h, refreshrate);
 
         // overwrite the mode str because  UpdateDesktopResolution adds a
@@ -1222,10 +1247,142 @@ bool CWinSystemOSX::FlushBuffer(void)
   return true;
 }
 
+bool CWinSystemOSX::IsObscured(void)
+{
+  // check once a second if we are obscured.
+  unsigned int now_time = XbmcThreads::SystemClockMillis();
+  if (m_obscured_timecheck > now_time)
+    return m_obscured;
+  else
+    m_obscured_timecheck = now_time + 1000;
+
+  NSOpenGLContext* cur_context = [NSOpenGLContext currentContext];
+  NSView* view = [cur_context view];
+  if (!view)
+  {
+    // sanity check, we should always have a view
+    m_obscured = true;
+    return m_obscured;
+  }
+
+  NSWindow *window = [view window];
+  if (!window)
+  {
+    // sanity check, we should always have a window
+    m_obscured = true;
+    return m_obscured;
+  }
+
+  if ([window isVisible] == NO)
+  {
+    // not visable means the window is not showing.
+    // this should never really happen as we are always visable
+    // even when minimized in dock.
+    m_obscured = true;
+    return m_obscured;
+  }
+
+  // check if we are minimized (to an icon in the Dock).
+  if ([window isMiniaturized] == YES)
+  {
+    m_obscured = true;
+    return m_obscured;
+  }
+
+  // check if we are showing on the active workspace.
+  if ([window isOnActiveSpace] == NO)
+  {
+    m_obscured = true;
+    return m_obscured;
+  }
+
+  // default to false before we start parsing though the windows.
+  // if we are are obscured by any windows, then set true.
+  m_obscured = false;
+
+  CGWindowListOption opts;
+  opts = kCGWindowListOptionOnScreenAboveWindow | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);  if (!windowIDs)
+    return m_obscured;
+
+  CFArrayRef windowDescs = CGWindowListCreateDescriptionFromArray(windowIDs);
+  if (!windowDescs)
+  {
+    CFRelease(windowIDs);
+    return m_obscured;
+  }
+
+  CGRect bounds = NSRectToCGRect([window frame]);
+  // kCGWindowBounds measures the origin as the top-left corner of the rectangle
+  //  relative to the top-left corner of the screen.
+  // NSWindow’s frame property measures the origin as the bottom-left corner
+  //  of the rectangle relative to the bottom-left corner of the screen.
+  // convert bounds from NSWindow to CGWindowBounds here.
+  bounds.origin.y = [[window screen] frame].size.height - bounds.origin.y - bounds.size.height;
+
+  std::vector<CRect> partialOverlaps;
+  CRect ourBounds = CGRectToCRect(bounds);
+
+  for (CFIndex idx=0; idx < CFArrayGetCount(windowDescs); idx++)
+  {
+    // walk the window list of windows that are above us and are not desktop elements
+    CFDictionaryRef windowDictionary = (CFDictionaryRef)CFArrayGetValueAtIndex(windowDescs, idx);
+
+    // skip the Dock window, it actually covers the entire screen.
+    CFStringRef ownerName = (CFStringRef)CFDictionaryGetValue(windowDictionary, kCGWindowOwnerName);
+    if (CFStringCompare(ownerName, CFSTR("Dock"), 0) == kCFCompareEqualTo)
+      continue;
+
+    // Shades is a tool for dimming the screen. It also claims to cover
+    // the whole XBMC window and therefore would make the framerate limiter
+    // kicking in. Unfortunatly even the alpha of this window is 1.0 so
+    // we have to check the ownerName.
+    if (CFStringCompare(ownerName, CFSTR("Shades"), 0) == kCFCompareEqualTo)
+      continue;
+
+    CFDictionaryRef rectDictionary = (CFDictionaryRef)CFDictionaryGetValue(windowDictionary, kCGWindowBounds);
+    if (!rectDictionary)
+      continue;
+
+    CGRect windowBounds;
+    if (CGRectMakeWithDictionaryRepresentation(rectDictionary, &windowBounds))
+    {
+      if (CGRectContainsRect(windowBounds, bounds))
+      {
+        // if the windowBounds completely encloses our bounds, we are obscured.
+        m_obscured = true;
+        break;
+      }
+
+      // handle overlaping windows above us that combine
+      // to obscure by collecting any partial overlaps,
+      // then subtract them from our bounds and check
+      // for any remaining area.
+      CRect intersection = CGRectToCRect(windowBounds);
+      intersection.Intersect(ourBounds);
+      if (!intersection.IsEmpty())
+        partialOverlaps.push_back(intersection);
+    }
+  }
+
+  if (!m_obscured)
+  {
+    std::vector<CRect> rects = ourBounds.SubtractRects(partialOverlaps);
+    // they got us covered
+    if (rects.size() == 0)
+      m_obscured = true;
+  }
+
+  CFRelease(windowDescs);
+  CFRelease(windowIDs);
+
+  return m_obscured;
+}
+
 void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  
+
   if (m_bFullScreen && bGaining)
   {
     // find the window
@@ -1233,7 +1390,7 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
     if (context)
     {
       NSView* view;
-    
+
       view = [context view];
       if (view)
       {
@@ -1264,7 +1421,7 @@ void CWinSystemOSX::ShowOSMouse(bool show)
 bool CWinSystemOSX::Minimize()
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  
+
   [[NSApplication sharedApplication] miniaturizeAll:nil];
 
   [pool release];
@@ -1274,7 +1431,7 @@ bool CWinSystemOSX::Minimize()
 bool CWinSystemOSX::Restore()
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  
+
   [[NSApplication sharedApplication] unhide:nil];
 
   [pool release];
@@ -1284,9 +1441,9 @@ bool CWinSystemOSX::Restore()
 bool CWinSystemOSX::Hide()
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  
+
   [[NSApplication sharedApplication] hide:nil];
-  
+
   [pool release];
   return true;
 }
@@ -1305,7 +1462,7 @@ void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
   {
     CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
     IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-      kIOPMAssertionLevelOn, reasonForActivity, &assertionID); 
+      kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
   }
   else if (assertionID != 0)
   {
@@ -1324,6 +1481,11 @@ void CWinSystemOSX::ResetOSScreensaver()
 {
   // allow os screensaver only if we are fullscreen
   EnableSystemScreenSaver(!m_bFullScreen);
+}
+
+bool CWinSystemOSX::EnableFrameLimiter()
+{
+  return IsObscured();
 }
 
 void CWinSystemOSX::Register(IDispResource *resource)
@@ -1354,7 +1516,7 @@ bool CWinSystemOSX::Show(bool raise)
   {
     [[NSApplication sharedApplication] unhideWithoutActivation];
   }
-      
+
   [pool release];
   return true;
 }

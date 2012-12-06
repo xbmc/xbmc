@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "ScreenSaver.h"
 #include "settings/Settings.h"
 #include "windowing/WindowingFactory.h"
+
+#ifdef HAS_PYTHON
+#include "interfaces/python/XBPython.h"
+#include "utils/AlarmClock.h"
+
+// What sound does a python screensaver make?
+#define PYTHON_ALARM "sssssscreensaver"
+
+#define PYTHON_SCRIPT_TIMEOUT 5 // seconds
+#endif
 
 namespace ADDON
 {
@@ -32,6 +41,17 @@ namespace ADDON
 
 bool CScreenSaver::CreateScreenSaver()
 {
+#ifdef HAS_PYTHON
+  if (URIUtils::GetExtension(LibPath()).Equals(".py", false))
+  {
+    // Don't allow a previously-scheduled alarm to kill our new screensaver
+    g_alarmClock.Stop(PYTHON_ALARM, true);
+
+    if (!g_pythonParser.StopScript(LibPath()))
+      g_pythonParser.evalFile(LibPath(), AddonPtr(new CScreenSaver(Props())));
+    return true;
+  }
+#endif
  // pass it the screen width,height
  // and the name of the screensaver
   int iWidth = g_graphicsContext.GetWidth();
@@ -52,7 +72,7 @@ bool CScreenSaver::CreateScreenSaver()
   m_pInfo->presets    = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   m_pInfo->profile    = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
 
-  if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create())
+  if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create() == ADDON_STATUS_OK)
     return true;
 
   return false;
@@ -78,6 +98,13 @@ void CScreenSaver::GetInfo(SCR_INFO *info)
 
 void CScreenSaver::Destroy()
 {
+#ifdef HAS_PYTHON
+  if (URIUtils::GetExtension(LibPath()).Equals(".py", false))
+  {
+    g_alarmClock.Start(PYTHON_ALARM, PYTHON_SCRIPT_TIMEOUT, "StopScript(" + LibPath() + ")", true, false);
+    return;
+  }
+#endif
   // Release what was allocated in method CScreenSaver::CreateScreenSaver.
   if (m_pInfo)
   {

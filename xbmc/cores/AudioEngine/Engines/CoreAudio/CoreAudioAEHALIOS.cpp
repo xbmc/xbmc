@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,7 +23,7 @@
 
 #include "CoreAudioAEHALIOS.h"
 
-#include "AEUtil.h"
+#include "xbmc/cores/AudioEngine/Utils/AEUtil.h"
 #include "AEFactory.h"
 #include "CoreAudioAE.h"
 #include "utils/log.h"
@@ -45,7 +44,6 @@ AudioComponentInstance CIOSCoreAudioHardware::FindAudioDevice(std::string search
     return 0;
 
   AudioComponentInstance defaultDevice = GetDefaultOutputDevice();
-  CLog::Log(LOGDEBUG, "CIOSCoreAudioHardware::FindAudioDevice: Returning default device [0x%04x].", (uint32_t)defaultDevice);
 
   return defaultDevice;
 }
@@ -229,8 +227,6 @@ bool CCoreAudioUnit::SetRenderProc()
 
   m_renderProc = RenderCallback;
 
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetRenderProc: Set RenderProc 0x%08x for unit 0x%08x.", (unsigned int)m_renderProc, (unsigned int)m_audioUnit);
-
   return true;
 }
 
@@ -250,8 +246,6 @@ bool CCoreAudioUnit::RemoveRenderProc()
     CLog::Log(LOGERROR, "CCoreAudioUnit::RemoveRenderProc: Unable to remove AudioUnit render callback. Error = %s", GetError(ret).c_str());
     return false;
   }
-
-  CLog::Log(LOGDEBUG, "CCoreAudioUnit::RemoveRenderProc: Remove RenderProc 0x%08x for unit 0x%08x.", (unsigned int)m_renderProc, (unsigned int)m_audioUnit);
 
   m_renderProc = NULL;
 
@@ -575,7 +569,7 @@ bool CAUMultiChannelMixer::SetCurrentVolume(Float32 vol)
   if (!m_audioUnit)
     return false;
 
-  OSStatus ret = AudioUnitSetParameter(m_audioUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, kInputBus, vol, 0);
+  OSStatus ret = AudioUnitSetParameter(m_audioUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, kOutputBus, vol, 0);
   if (ret)
   {
     CLog::Log(LOGERROR, "CAUMultiChannelMixer::SetCurrentVolume: Unable to set Mixer volume. Error = %s", GetError(ret).c_str());
@@ -607,7 +601,7 @@ CCoreAudioGraph::~CCoreAudioGraph()
   Close();
 }
 
-bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing)
+bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, float initVolume)
 {
   OSStatus ret;
 
@@ -776,6 +770,8 @@ bool CCoreAudioGraph::Open(ICoreAudioSource *pSource, AEAudioFormat &format, boo
     CLog::Log(LOGERROR, "CCoreAudioGraph::Open: Error initialize graph. Error = %s", GetError(ret).c_str());
     return false;
   }
+
+  SetCurrentVolume(initVolume);
 
   UInt32 bufferFrames = m_audioUnit->GetBufferFrameSize();
 
@@ -1100,6 +1096,7 @@ m_Initialized       (false  ),
 m_Passthrough       (false  ),
 m_allowMixing       (false  ),
 m_encoded           (false  ),
+m_initVolume        (1.0f   ),
 m_NumLatencyFrames  (0      ),
 m_OutputBufferIndex (0      )
 {
@@ -1125,9 +1122,9 @@ bool CCoreAudioAEHALIOS::InitializePCM(ICoreAudioSource *pSource, AEAudioFormat 
   if (!m_audioGraph)
     return false;
 
-  if (!m_audioGraph->Open(pSource, format, allowMixing))
+  if (!m_audioGraph->Open(pSource, format, allowMixing, m_initVolume))
   {
-    CLog::Log(LOGDEBUG, "CCoreAudioAEHALIOS::Initialize: Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
+    CLog::Log(LOGERROR, "CCoreAudioAEHALIOS::Initialize: Unable to initialize audio due a missconfiguration. Try 2.0 speaker configuration.");
     return false;
   }
 
@@ -1146,7 +1143,7 @@ bool CCoreAudioAEHALIOS::InitializePCMEncoded(ICoreAudioSource *pSource, AEAudio
   return true;
 }
 
-bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device)
+bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume)
 {
   m_ae = (CCoreAudioAE *)ae;
 
@@ -1158,6 +1155,7 @@ bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
   m_encoded             = false;
   m_OutputBufferIndex   = 0;
   m_rawDataFormat       = rawDataFormat;
+  m_initVolume          = initVolume;
 
   if (format.m_channelLayout.Count() == 0)
   {
@@ -1183,7 +1181,7 @@ bool CCoreAudioAEHALIOS::Initialize(ICoreAudioSource *ae, bool passThrough, AEAu
     bool configured = false;
     if (m_Passthrough)
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioAEHALIOS::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
+      CLog::Log(LOGERROR, "CCoreAudioAEHALIOS::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
       configured = InitializePCMEncoded(ae, format);
     }
     else
@@ -1253,8 +1251,6 @@ void CCoreAudioAEHALIOS::Deinitialize()
 
   m_Initialized = false;
   m_Passthrough = false;
-
-  CLog::Log(LOGINFO, "CCoreAudioAEHALIOS::Deinitialize: Audio device has been closed.");
 }
 
 void CCoreAudioAEHALIOS::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)

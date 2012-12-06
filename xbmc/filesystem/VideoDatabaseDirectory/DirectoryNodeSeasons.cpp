@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DirectoryNodeSeasons.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
@@ -92,8 +92,14 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
   if (bFlatten)
   { // flatten if one season or flatten always
     items.Clear();
-    bSuccess=videodatabase.GetEpisodesNav(BuildPath()+"-2/",items,params.GetGenreId(),params.GetYear(),params.GetActorId(),params.GetDirectorId(),params.GetTvShowId());
-    items.SetPath(BuildPath()+"-2/");
+
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(BuildPath()))
+      return false;
+  
+    videoUrl.AppendPath("-2/");
+    bSuccess=videodatabase.GetEpisodesNav(videoUrl.ToString(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetTvShowId());
+    items.SetPath(videoUrl.ToString());
   }
 
   videodatabase.Close();

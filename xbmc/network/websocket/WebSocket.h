@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
  
@@ -123,7 +122,7 @@ public:
   WebSocketState GetState() { return m_state; }
 
   virtual bool Handshake(const char* data, size_t length, std::string &response) = 0;
-  virtual const CWebSocketMessage* Handle(const char *buffer, size_t length, bool &send); // TODO
+  virtual const CWebSocketMessage* Handle(const char *buffer, size_t length, bool &send);
   virtual const CWebSocketMessage* Send(WebSocketFrameOpcode opcode, const char* data = NULL, uint32_t length = 0);
   virtual const CWebSocketFrame* Ping(const char* data = NULL) const = 0;
   virtual const CWebSocketFrame* Pong(const char* data = NULL) const = 0;

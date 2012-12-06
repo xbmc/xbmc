@@ -42,9 +42,12 @@ extern "C" {
 
 #include "version.h"
 #include "crypto.h"
-#include "os_port.h"
 #include "crypto_misc.h"
 
+#define SSL_PROTOCOL_MIN_VERSION    0x31   /* TLS v1.0 */
+#define SSL_PROTOCOL_MINOR_VERSION  0x02   /* TLS v1.1 */
+#define SSL_PROTOCOL_VERSION_MAX    0x32   /* TLS v1.1 */
+#define SSL_PROTOCOL_VERSION1_1     0x32   /* TLS v1.1 */
 #define SSL_RANDOM_SIZE             32
 #define SSL_SECRET_SIZE             48
 #define SSL_FINISHED_HASH_SIZE      12
@@ -62,6 +65,7 @@ extern "C" {
 #define SSL_SESSION_RESUME          0x0008
 #define SSL_IS_CLIENT               0x0010
 #define SSL_HAS_CERT_REQ            0x0020
+#define SSL_SENT_CLOSE_NOTIFY       0x0040
 
 /* some macros to muck around with flag bits */
 #define SET_SSL_FLAG(A)             (ssl->flag |= A)
@@ -132,13 +136,16 @@ typedef struct
     time_t conn_time;
     uint8_t session_id[SSL_SESSION_ID_SIZE];
     uint8_t master_secret[SSL_SECRET_SIZE];
-} SSL_SESS;
+} SSL_SESSION;
 
-typedef struct
+typedef struct _SSL_CERT /* GBG: added */
 {
     uint8_t *buf;
     int size;
+    struct _SSL_CERT* next; /* GBG: added */
 } SSL_CERT;
+
+typedef X509_CTX SSL_X509_CERT;
 
 typedef struct
 {
@@ -160,6 +167,8 @@ struct _SSL
     uint8_t record_type;
     uint8_t cipher;
     uint8_t sess_id_size;
+    uint8_t version;
+    uint8_t client_version;
     int16_t next_state;
     int16_t hs_status;
     DISPOSABLE_CTX *dc;         /* temporary data which we'll get rid of soon */
@@ -176,7 +185,7 @@ struct _SSL
     struct _SSL_CTX *ssl_ctx;           /* back reference to a clnt/svr ctx */
 #ifndef CONFIG_SSL_SKELETON_MODE
     uint16_t session_index;
-    SSL_SESS *session;
+    SSL_SESSION *session;
 #endif
 #ifdef CONFIG_SSL_CERT_VERIFICATION
     X509_CTX *x509_ctx;
@@ -195,17 +204,18 @@ typedef struct _SSL SSL;
 struct _SSL_CTX
 {
     uint32_t options;
-    uint8_t chain_length;
+    /* GBG: removed - uint8_t chain_length; */
     RSA_CTX *rsa_ctx;
 #ifdef CONFIG_SSL_CERT_VERIFICATION
-    CA_CERT_CTX *ca_cert_ctx;
+    /* GBG: removed CA_CERT_CTX *ca_cert_ctx; */
+    X509_CTX* ca_certs; /* GBG: added */
 #endif
     SSL *head;
     SSL *tail;
-    SSL_CERT certs[CONFIG_SSL_MAX_CERTS];
+    SSL_CERT* certs; /* GBG: modified */
 #ifndef CONFIG_SSL_SKELETON_MODE
     uint16_t num_sessions;
-    SSL_SESS **ssl_sessions;
+    SSL_SESSION **ssl_sessions;
 #endif
 #ifdef CONFIG_SSL_CTX_MUTEXING
     SSL_CTX_MUTEX_TYPE mutex;
@@ -229,7 +239,7 @@ int send_packet(SSL *ssl, uint8_t protocol,
         const uint8_t *in, int length);
 int do_svr_handshake(SSL *ssl, int handshake_type, uint8_t *buf, int hs_len);
 int do_clnt_handshake(SSL *ssl, int handshake_type, uint8_t *buf, int hs_len);
-int process_finished(SSL *ssl, int hs_len);
+int process_finished(SSL *ssl, uint8_t *buf, int hs_len);
 int process_sslv23_client_hello(SSL *ssl);
 int send_alert(SSL *ssl, int error_code);
 int send_finished(SSL *ssl);
@@ -247,7 +257,7 @@ int pkcs12_decode(SSL_CTX *ssl_ctx, SSLObjLoader *ssl_obj, const char *password)
 int load_key_certs(SSL_CTX *ssl_ctx);
 #ifdef CONFIG_SSL_CERT_VERIFICATION
 int add_cert_auth(SSL_CTX *ssl_ctx, const uint8_t *buf, int len);
-void remove_ca_certs(CA_CERT_CTX *ca_cert_ctx);
+/* GBG: removed - void remove_ca_certs(CA_CERT_CTX *ca_cert_ctx); */
 #endif
 #ifdef CONFIG_SSL_ENABLE_CLIENT
 int do_client_connect(SSL *ssl);
@@ -278,10 +288,10 @@ void DISPLAY_BYTES(SSL *ssl, const char *format,/* win32 has no variadic macros 
 int process_certificate(SSL *ssl, X509_CTX **x509_ctx);
 #endif
 
-SSL_SESS *ssl_session_update(int max_sessions, 
-        SSL_SESS *ssl_sessions[], SSL *ssl,
+SSL_SESSION *ssl_session_update(int max_sessions, 
+        SSL_SESSION *ssl_sessions[], SSL *ssl,
         const uint8_t *session_id);
-void kill_ssl_session(SSL_SESS **ssl_sessions, SSL *ssl);
+void kill_ssl_session(SSL_SESSION **ssl_sessions, SSL *ssl);
 
 #ifdef __cplusplus
 }

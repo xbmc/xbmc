@@ -1,46 +1,150 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 0.0.9
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC-Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-28 15:38+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: German (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Addon Summary"
-msgid "Weather forecast from wunderground.com"
-msgstr ""
+msgctxt "#32101"
+msgid "Location setup"
+msgstr "Standort Setup"
 
-msgctxt "Addon Description"
-msgid "Weather forecast provided by Weather Underground (http://www.wunderground.com/)"
-msgstr ""
+msgctxt "#32102"
+msgid "Advanced options"
+msgstr "Erweiterte Optionen"
 
-msgctxt "Addon Disclaimer"
-msgid "Use of this add-on implies that you have agreed to the Terms of Service located at http://www.wunderground.com/weather/api/d/terms.html"
-msgstr ""
+msgctxt "#32111"
+msgid "Location 1"
+msgstr "Standort 1"
 
-msgctxt "#30101"
-msgid "Location Setup"
-msgstr "Orte"
+msgctxt "#32112"
+msgid "Location 2"
+msgstr "Standort 2"
 
-msgctxt "#30111"
-msgid "Change location 1"
-msgstr "Ort 1"
+msgctxt "#32113"
+msgid "Location 3"
+msgstr "Standort 3"
 
-msgctxt "#30112"
-msgid "Change location 2"
-msgstr "Ort 2"
+msgctxt "#32114"
+msgid "Location 1 display name"
+msgstr "Standort 1 Anzeigename"
 
-msgctxt "#30113"
-msgid "Change location 3"
-msgstr "Ort 3"
+msgctxt "#32115"
+msgid "Location 2 display name"
+msgstr "Standort 2 Anzeigename"
+
+msgctxt "#32116"
+msgid "Location 3 display name"
+msgstr "Standort 3 Anzeigename"
+
+msgctxt "#32117"
+msgid "Location 1 id"
+msgstr "Standort 1 ID"
+
+msgctxt "#32118"
+msgid "Location 2 id"
+msgstr "Standort 2 ID"
+
+msgctxt "#32119"
+msgid "Location 3 id"
+msgstr "Standort 3 ID"
+
+msgctxt "#32120"
+msgid "Enable logging"
+msgstr "Aktiviere Protokollierung"
+
+msgctxt "#32121"
+msgid "Weekend"
+msgstr "Wochenende"
+
+msgctxt "#32122"
+msgid "Saturday/Sunday"
+msgstr "Samstag/Sonntag"
+
+msgctxt "#32123"
+msgid "Friday/Saturday"
+msgstr "Freitag/Samstag"
+
+msgctxt "#32124"
+msgid "Thursday/Friday"
+msgstr "Donnerstag/Freitag"
+
+msgctxt "#32125"
+msgid "Map zoom level"
+msgstr "Karten Zoomlevel"
+
+msgctxt "#32126"
+msgid "Animated map"
+msgstr "Animierte Karte"
+
+msgctxt "#32501"
+msgid "New Moon"
+msgstr "Neumond"
+
+msgctxt "#32502"
+msgid "Waxing Crescent"
+msgstr "Erstes Viertel"
+
+msgctxt "#32503"
+msgid "First Quarter"
+msgstr "Erstes Quartal"
+
+msgctxt "#32504"
+msgid "Waxing Gibbous"
+msgstr "Zweites Viertel"
+
+msgctxt "#32505"
+msgid "Full Moon"
+msgstr "Vollmond"
+
+msgctxt "#32506"
+msgid "Waning Gibbous"
+msgstr "Drittes Viertel"
+
+msgctxt "#32507"
+msgid "Last Quarter"
+msgstr "Letztes Quartal"
+
+msgctxt "#32508"
+msgid "Waning Crescent"
+msgstr "Letztes Viertel"
+
+msgctxt "#32510"
+msgid "Warning"
+msgstr "Achtung"
+
+msgctxt "#32511"
+msgid "Watch"
+msgstr "Beobachte"
+
+msgctxt "#32512"
+msgid "Advisory"
+msgstr "Beratung"
+
+msgctxt "#32513"
+msgid "Statement"
+msgstr "Bericht"
+
+msgctxt "#32514"
+msgid "Outlook"
+msgstr "Outlook"
+
+msgctxt "#32515"
+msgid "Forecast"
+msgstr "Prognose"
+
+msgctxt "#32516"
+msgid "Synopsis"
+msgstr "Synopsis"

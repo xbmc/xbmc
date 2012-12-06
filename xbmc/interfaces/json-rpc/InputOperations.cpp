@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "InputOperations.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
@@ -32,45 +32,16 @@
 
 using namespace JSONRPC;
 
-CCriticalSection CInputOperations::m_critSection;
-CKey CInputOperations::m_key(KEY_INVALID);
-
-CKey CInputOperations::GetKey()
-{
-  CSingleLock lock(m_critSection);
-  CKey currentKey = m_key;
-  m_key = CKey(KEY_INVALID);
-  return currentKey;
-}
-
 //TODO the breakage of the screensaver should be refactored
 //to one central super duper place for getting rid of
 //1 million dupes
 bool CInputOperations::handleScreenSaver()
 {
-  bool screenSaverBroken = false; //true if screensaver was active and we did reset him
-
   g_application.ResetScreenSaver();
-  
-  if(g_application.IsInScreenSaver())
-  {
-    g_application.WakeUpScreenSaverAndDPMS();
-    screenSaverBroken = true;
-  }
-  return screenSaverBroken;
-}
+  if (g_application.WakeUpScreenSaverAndDPMS())
+    return true;
 
-JSONRPC_STATUS CInputOperations::SendKey(uint32_t keyCode, bool unicode /* = false */)
-{
-  if (keyCode == KEY_INVALID)
-    return InternalError;
-
-  CSingleLock lock(m_critSection);
-  if (unicode)
-    m_key = CKey(0, (wchar_t)keyCode, 0, 0, 0);
-  else
-    m_key = CKey(keyCode | KEY_VKEY);
-  return ACK;
+  return false;
 }
 
 JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /* = true */, bool waitResult /* = false */)
@@ -79,7 +50,7 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
   {
     g_application.ResetSystemIdleTimer();
     g_audioManager.PlayActionSound(actionID);
-    g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_INVALID, waitResult);
+    CApplicationMessenger::Get().SendAction(CAction(actionID), WINDOW_INVALID, waitResult);
   }
   return ACK;
 }
@@ -87,25 +58,21 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
-    g_application.getApplicationMessenger().ActivateWindow(windowID, std::vector<CStdString>(), false);
+    CApplicationMessenger::Get().ActivateWindow(windowID, std::vector<CStdString>(), false);
 
   return ACK;
 }
 
 JSONRPC_STATUS CInputOperations::SendText(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  std::string text = parameterObject["text"].asString();
-  if (text.empty())
-    return InvalidParams;
-
   CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
   if (!window)
     return InternalError;
 
   CGUIMessage msg(GUI_MSG_SET_TEXT, 0, 0);
-  msg.SetLabel(text);
+  msg.SetLabel(parameterObject["text"].asString());
   msg.SetParam1(parameterObject["done"].asBoolean() ? 1 : 0);
-  g_application.getApplicationMessenger().SendGUIMessage(msg, window->GetID());
+  CApplicationMessenger::Get().SendGUIMessage(msg, window->GetID());
   return ACK;
 }
 
@@ -120,32 +87,32 @@ JSONRPC_STATUS CInputOperations::ExecuteAction(const CStdString &method, ITransp
 
 JSONRPC_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendKey(XBMCVK_LEFT);
+  return SendAction(ACTION_MOVE_LEFT);
 }
 
 JSONRPC_STATUS CInputOperations::Right(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendKey(XBMCVK_RIGHT);
+  return SendAction(ACTION_MOVE_RIGHT);
 }
 
 JSONRPC_STATUS CInputOperations::Down(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendKey(XBMCVK_DOWN);
+  return SendAction(ACTION_MOVE_DOWN);
 }
 
 JSONRPC_STATUS CInputOperations::Up(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendKey(XBMCVK_UP);
+  return SendAction(ACTION_MOVE_UP);
 }
 
 JSONRPC_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendKey(XBMCVK_RETURN);
+  return SendAction(ACTION_SELECT_ITEM);
 }
 
 JSONRPC_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendKey(XBMCVK_BACK);
+  return SendAction(ACTION_NAV_BACK);
 }
 
 JSONRPC_STATUS CInputOperations::ContextMenu(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

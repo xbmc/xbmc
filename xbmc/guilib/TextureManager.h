@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -124,9 +123,11 @@ public:
   void RemoveTexturePath(const CStdString &texturePath); ///< Remove a path from the paths to check when loading media
 
   void FreeUnusedTextures(); ///< Free textures (called from app thread only)
+  void ReleaseHwTexture(unsigned int texture);
 protected:
   std::vector<CTextureMap*> m_vecTextures;
   std::vector<CTextureMap*> m_unusedTextures;
+  std::vector<unsigned int> m_unusedHwTextures;
   typedef std::vector<CTextureMap*>::iterator ivecTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundle m_TexBundle[2];

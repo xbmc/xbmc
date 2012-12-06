@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Arabic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ar\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -39,7 +40,7 @@ msgstr "الإعدادات"
 
 msgctxt "#6"
 msgid "XBMC SVN"
-msgstr ""
+msgstr "XBMC النسخة المستقرة"
 
 msgctxt "#7"
 msgid "File manager"
@@ -207,67 +208,67 @@ msgstr "ديسمبر"
 
 msgctxt "#71"
 msgid "N"
-msgstr "N"
+msgstr "شمال"
 
 msgctxt "#72"
 msgid "NNE"
-msgstr "NNE"
+msgstr "شمال/شمال شرقي"
 
 msgctxt "#73"
 msgid "NE"
-msgstr "NE"
+msgstr "شمال شرقي"
 
 msgctxt "#74"
 msgid "ENE"
-msgstr "ENE"
+msgstr "شرق/شمال شرقي"
 
 msgctxt "#75"
 msgid "E"
-msgstr "E"
+msgstr "شرق"
 
 msgctxt "#76"
 msgid "ESE"
-msgstr "ESE"
+msgstr "شرق/جنوب شرقي"
 
 msgctxt "#77"
 msgid "SE"
-msgstr "SE"
+msgstr "جنوب شرقي"
 
 msgctxt "#78"
 msgid "SSE"
-msgstr "SSE"
+msgstr "جنوب/جنوب شرقي"
 
 msgctxt "#79"
 msgid "S"
-msgstr "S"
+msgstr "جنوب"
 
 msgctxt "#80"
 msgid "SSW"
-msgstr "SSW"
+msgstr "جنوب/جنوب غربي"
 
 msgctxt "#81"
 msgid "SW"
-msgstr "SW"
+msgstr "جنوب غربي"
 
 msgctxt "#82"
 msgid "WSW"
-msgstr "WSW"
+msgstr "غرب/جنوب غربي"
 
 msgctxt "#83"
 msgid "W"
-msgstr "W"
+msgstr "غرب"
 
 msgctxt "#84"
 msgid "WNW"
-msgstr "WNW"
+msgstr "غرب/شمال غربي"
 
 msgctxt "#85"
 msgid "NW"
-msgstr "NW"
+msgstr "شمال غربي"
 
 msgctxt "#86"
 msgid "NNW"
-msgstr "NNW"
+msgstr "شمال/شمال غربي"
 
 msgctxt "#87"
 msgid "VAR"
@@ -547,7 +548,7 @@ msgstr "القرص الحالي"
 
 msgctxt "#166"
 msgid "Skin"
-msgstr "الخلفيات"
+msgstr "الغلاف"
 
 msgctxt "#169"
 msgid "Resolution"
@@ -751,7 +752,7 @@ msgstr "خلط قائمة التشغيل على التحميل"
 
 msgctxt "#229"
 msgid "HDD spindown time"
-msgstr "HDD وقت نسج"
+msgstr "وقت راحة الهاردسك"
 
 msgctxt "#230"
 msgid "Video filters"
@@ -969,6 +970,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "لا توجد نتائج"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "لغة الصوت المفضلة"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "لغة الترجمة المفضلة"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "الترجمات"
@@ -1044,6 +1053,14 @@ msgstr "ممكن"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "غير معشق"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "مجرى اللغة الأصلي"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "لغة واجهة المستخدم"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1184,6 +1201,18 @@ msgstr "السنة"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "دفع مستوى الصوت على downmix"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "مستقبل - DTS-HD مؤهل"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "مستقبل قنوات LPCM مستقبل مؤهل"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "مستقبل HD حقيقي مؤهل"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1513,6 +1542,14 @@ msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "%s في %i %s من"
 
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "لم يتم العثور على محرك قرص ضوئي"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "تحتاج لحرك أقراص ضوئية لتشغيل هذا الفيديو"
+
 msgctxt "#437"
 msgid "Removable disk"
 msgstr "القرص قابل للإزالة"
@@ -1671,7 +1708,7 @@ msgstr "OSD"
 
 msgctxt "#479"
 msgid "Skin & language"
-msgstr "الخلفية واللغة"
+msgstr "الغلاف واللغة"
 
 msgctxt "#480"
 msgid "Appearance"
@@ -2141,14 +2178,6 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "إدخال رقم"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "عينه/فئات"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "عينة التردد"
-
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "قرص الصوت"
@@ -2172,6 +2201,10 @@ msgstr "تضمين رقم المسار"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "كل الأغاني من"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "عروض TV قيد التشغيل"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2587,15 +2620,15 @@ msgstr "لاتشفير"
 
 msgctxt "#781"
 msgid "WEP"
-msgstr ""
+msgstr "WEP"
 
 msgctxt "#782"
 msgid "WPA"
-msgstr ""
+msgstr "WPA"
 
 msgctxt "#783"
 msgid "WPA2"
-msgstr ""
+msgstr "WPA2"
 
 msgctxt "#784"
 msgid "Applying network interface settings. Please wait."
@@ -2623,7 +2656,7 @@ msgstr "اسم الشبكة اللاسلكية (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "تحكم عن بعد"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2643,11 +2676,11 @@ msgstr "سماح برامج على أنظمة أخرى للتحكم على XBMC"
 
 msgctxt "#795"
 msgid "Initial repeat delay (ms)"
-msgstr ""
+msgstr "تكرار تأخير أولي(ms)"
 
 msgctxt "#796"
 msgid "Continuous repeat delay (ms)"
-msgstr ""
+msgstr "نكرار تأخير مستمر(ms)"
 
 msgctxt "#797"
 msgid "Maximum number of clients"
@@ -2656,6 +2689,18 @@ msgstr "الحد الأقصى لعدد من العملاء"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "الوصول إلى الإنترنت"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "تحديق المكتبة"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "مكتبة الموسيقى تحتاج لإعادة مسح الفن من العلامات"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "هل ترغب بالمسح الان؟"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3001,37 +3046,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "البرامج والصور والفيديو"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "تحديد الهوية تلقائي"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "الكشف التلقائي عن نظام"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "كنية"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "طلب للاتصال"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "FTP إرسال اسم المستخدم وكلمة السر الخاصة للـ"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Ping تأخير"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "هل ترغب في الاتصال إلى نظام الكشف التلقائي؟"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3039,7 +3056,7 @@ msgstr "أعلن هذه الخدمات لأنظمة أخرى عبر Zeroconf"
 
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
-msgstr ""
+msgstr "السماح لـXBMC استقبال مضمون البث"
 
 msgctxt "#1271"
 msgid "Device name"
@@ -3051,7 +3068,7 @@ msgstr "-- استخدام حماية كلمة المرور"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "البث"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3129,10 +3146,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "عاصفة"
 
-msgctxt "#1413"
-msgid "drizzle"
-msgstr "رذاذ"
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "عواصف رعدية"
@@ -3147,19 +3160,15 @@ msgstr "ضباب"
 
 msgctxt "#1417"
 msgid "Grains"
-msgstr ""
+msgstr "حبيبات"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr ""
-
-msgctxt "#1419"
-msgid "T-Showers"
-msgstr ""
+msgid "Thunderstorms"
+msgstr ":عواصف رعدية"
 
 msgctxt "#1420"
 msgid "Moderate"
-msgstr ""
+msgstr "متوسط"
 
 msgctxt "#1421"
 msgid "Very High"
@@ -3172,6 +3181,18 @@ msgstr "عاصفة"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "ضباب"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "صغير"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "غير معروف"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "هطول"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3283,7 +3304,7 @@ msgstr "متصفح ويب"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
+msgstr "الفيديو"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3291,7 +3312,7 @@ msgstr "فيديو / قائمة التشغيل"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr ""
+msgstr "شاشة الدخول"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3299,7 +3320,7 @@ msgstr "إعدادات ملف المستخدم -"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr ""
+msgstr "ملحق المتصفح"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3629,10 +3650,6 @@ msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "إعدادت إدارة الملف"
 
-msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "تعيين افتراضيا على جميع الأفلام"
-
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
 msgstr "هذا سوف تعيين أية قيم تم حفظها سابقا"
@@ -3757,6 +3774,14 @@ msgctxt "#13016"
 msgid "Power off System"
 msgstr "إيقاف تشغيل النظام ​​"
 
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "منع إغلاق الخامل"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "سماح إغلاق الخامل"
+
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
 msgstr "هل جلسة العمل الأخرى نشطة, ربما خلال ssh?"
@@ -3795,7 +3820,7 @@ msgstr "اسمح للسواقه الاختيار (يتطلب إعادة تشغي
 
 msgctxt "#13105"
 msgid "Vertical blank sync"
-msgstr ""
+msgstr "مزامنة رأسية فارغة"
 
 msgctxt "#13106"
 msgid "Disabled"
@@ -3823,7 +3848,7 @@ msgstr "هل ترغب في الحفاظ على هذه الدقة؟"
 
 msgctxt "#13112"
 msgid "High quality upscaling"
-msgstr ""
+msgstr "رفع مستوى جودة عالية"
 
 msgctxt "#13113"
 msgid "Disabled"
@@ -3843,27 +3868,27 @@ msgstr "طريقة التوسيع"
 
 msgctxt "#13117"
 msgid "Bicubic"
-msgstr ""
+msgstr "Bicubic"
 
 msgctxt "#13118"
 msgid "Lanczos"
-msgstr ""
+msgstr "Lanczos"
 
 msgctxt "#13119"
 msgid "Sinc"
-msgstr ""
+msgstr "Sinc"
 
 msgctxt "#13120"
 msgid "VDPAU"
-msgstr ""
+msgstr "VDPAU"
 
 msgctxt "#13121"
 msgid "VDPAU HQ Upscaling level"
-msgstr ""
+msgstr "رفع مستوى VDPAU HQ"
 
 msgctxt "#13122"
 msgid "VDPAU Studio level color conversion"
-msgstr ""
+msgstr "تحويل لون مستوى استوديو VDPAU "
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -3875,7 +3900,7 @@ msgstr "معطلة "
 
 msgctxt "#13132"
 msgid "Blank displays"
-msgstr ""
+msgstr "عرض فارغ"
 
 msgctxt "#13140"
 msgid "Active connections detected!"
@@ -3895,15 +3920,15 @@ msgstr "تغير نمط أبل البعيد؟"
 
 msgctxt "#13145"
 msgid "If you are currently using the Apple Remote to control"
-msgstr ""
+msgstr "إذا كنت تستخدم حاليا ابل للتحكم عن بعد"
 
 msgctxt "#13146"
 msgid "XBMC, changing this setting might affect your ability"
-msgstr ""
+msgstr "XBMC, تغيير هذا الإعداد قد يؤثر بقدرتك"
 
 msgctxt "#13147"
 msgid "to continue controlling it. Do you want to proceed?"
-msgstr ""
+msgstr "لمتابعة التحكم به. هل تريد المتابعة؟"
 
 msgctxt "#13159"
 msgid "Subnet mask"
@@ -3939,7 +3964,7 @@ msgstr "تاريخ تثبيت القرص القلب:"
 
 msgctxt "#13174"
 msgid "HDD power cycle count:"
-msgstr ""
+msgstr "عد دورة قوة HDD"
 
 msgctxt "#13200"
 msgid "Profiles"
@@ -3976,10 +4001,6 @@ msgstr "بدأ, المنبه في %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "المنبه!"
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "ألغي مع %im%is متبقيه"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4455,7 +4476,7 @@ msgstr "معلومات الصورة"
 
 msgctxt "#13407"
 msgid "%s presets"
-msgstr ""
+msgstr "%sالنسب المئوية المسبقة"
 
 msgctxt "#13408"
 msgid "(IMDb user rating)"
@@ -4495,11 +4516,11 @@ msgstr "كشف تلقائيا"
 
 msgctxt "#13417"
 msgid "Basic shaders (ARB)"
-msgstr ""
+msgstr "(ARB) تظليل أساسي"
 
 msgctxt "#13418"
 msgid "Advanced shaders (GLSL)"
-msgstr ""
+msgstr "(GLSL) تظليل متقدم"
 
 msgctxt "#13419"
 msgid "Software"
@@ -4511,7 +4532,7 @@ msgstr "إزالة بأمان"
 
 msgctxt "#13421"
 msgid "VDPAU"
-msgstr ""
+msgstr "VDPAU"
 
 msgctxt "#13422"
 msgid "Start slideshow here"
@@ -4523,7 +4544,7 @@ msgstr "تذكر هذا المسار"
 
 msgctxt "#13424"
 msgid "Use pixel buffer objects"
-msgstr ""
+msgstr "استخدم مواضيع البكسل العازلة"
 
 msgctxt "#13425"
 msgid "Allow hardware acceleration (VDPAU)"
@@ -4551,7 +4572,7 @@ msgstr "تمكين تسارع (OpenMax)"
 
 msgctxt "#13431"
 msgid "Pixel Shaders"
-msgstr ""
+msgstr "مظلل البيكسل"
 
 msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
@@ -4567,19 +4588,19 @@ msgstr "ساعة الصوت"
 
 msgctxt "#13502"
 msgid "Video clock (Drop/Dupe audio)"
-msgstr ""
+msgstr "ساعة الفيديو(صوت سقوط/خداع)"
 
 msgctxt "#13503"
 msgid "Video clock (Resample audio)"
-msgstr ""
+msgstr "ساعة الفيديو(إعادة تشكيل الصوت)"
 
 msgctxt "#13504"
 msgid "Maximum resample amount (%)"
-msgstr ""
+msgstr "أقصى كمية إعادة التشكيل (%)"
 
 msgctxt "#13505"
 msgid "Resample quality"
-msgstr ""
+msgstr "إعادة تشكيل الجودة"
 
 msgctxt "#13506"
 msgid "Low(fast)"
@@ -4627,7 +4648,7 @@ msgstr "تمكين تشغيل XBMC بواسطة الريموت"
 
 msgctxt "#13603"
 msgid "Sequence delay time"
-msgstr ""
+msgstr "تسلسل تأخير الوقت"
 
 msgctxt "#13610"
 msgid "Disabled"
@@ -4651,7 +4672,7 @@ msgstr "خطأ ريموت أبل"
 
 msgctxt "#13621"
 msgid "Apple Remote support could be enabled."
-msgstr ""
+msgstr "تحكمابل عن بعد قد يكون مفعل"
 
 msgctxt "#14000"
 msgid "Stack"
@@ -4963,7 +4984,7 @@ msgstr "توليف"
 
 msgctxt "#14087"
 msgid "DVDs"
-msgstr ""
+msgstr "DVDs"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
@@ -4999,19 +5020,19 @@ msgstr "توفير الطاقة"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "مزق"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "إدراج قرص صوتي"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "تشغيل"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "إخراج القرص المدمج عند الإنتهاء من النسخ"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5063,7 +5084,7 @@ msgstr "أصوات التنقل"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "الخلفية الافتراضي"
+msgstr "الغلاف الافتراضي"
 
 msgctxt "#15111"
 msgid "- Theme"
@@ -5155,7 +5176,7 @@ msgstr "Libre.fm كلمة مرور"
 
 msgctxt "#15220"
 msgid "Libre.fm"
-msgstr ""
+msgstr "Libre.fm"
 
 msgctxt "#15221"
 msgid "Song submission"
@@ -5303,7 +5324,7 @@ msgstr "Last.fm التوصيات في اذاعة %name%'s استمع الى"
 
 msgctxt "#15285"
 msgid "Top tags for user %name%"
-msgstr ""
+msgstr "أعلى كلمات دلالية للمستخدم %name%"
 
 msgctxt "#15287"
 msgid "Do you want to add the current track to your loved tracks?"
@@ -5453,10 +5474,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "بوب مزدوج"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "يلغي..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "أدخل اسم الفنان"
@@ -5503,15 +5520,15 @@ msgstr "قائمة تشغيل وضع الطرف "
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr ""
+msgstr "تشابك(نصف)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr ""
+msgstr "تشابك فيديو"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
-msgstr ""
+msgstr " تشابك طريقة"
 
 msgctxt "#16039"
 msgid "Off"
@@ -5579,115 +5596,1359 @@ msgstr "فشل في حذف ملف واحد على الأقل"
 
 msgctxt "#16300"
 msgid "Video scaling method"
-msgstr ""
+msgstr "فيديو طريقة تصوير"
 
 msgctxt "#16301"
 msgid "Nearest neighbour"
-msgstr ""
+msgstr "أقرب جار"
 
 msgctxt "#16302"
 msgid "Bilinear"
-msgstr ""
+msgstr "ثنائي"
 
 msgctxt "#16303"
 msgid "Bicubic"
-msgstr ""
+msgstr "Bicubic"
 
 msgctxt "#16304"
 msgid "Lanczos2"
-msgstr ""
+msgstr "Lanczos2"
 
 msgctxt "#16305"
 msgid "Lanczos3"
-msgstr ""
+msgstr "Lanczos3"
 
 msgctxt "#16306"
 msgid "Sinc8"
-msgstr ""
+msgstr "Sinc8"
 
 msgctxt "#16307"
 msgid "Bicubic (software)"
-msgstr ""
+msgstr "Bicubic (برنامج)"
 
 msgctxt "#16308"
 msgid "Lanczos (software)"
-msgstr ""
+msgstr "Lanczos (برنامج)"
 
 msgctxt "#16309"
 msgid "Sinc (software)"
-msgstr ""
+msgstr "Sinc (برنامج)"
 
 msgctxt "#16310"
 msgid "Temporal"
-msgstr ""
+msgstr "مؤقت"
 
 msgctxt "#16311"
 msgid "Temporal/Spatial"
-msgstr ""
+msgstr "مؤقت/مكاني"
 
 msgctxt "#16312"
 msgid "(VDPAU)Noise Reduction"
-msgstr ""
+msgstr "(VDPAU)تخفيض الإزعاج"
 
 msgctxt "#16313"
 msgid "(VDPAU)Sharpness"
-msgstr ""
+msgstr "(VDPAU)حدة"
 
 msgctxt "#16314"
 msgid "Inverse Telecine"
-msgstr ""
+msgstr "مواقع تصوير معكوسة"
 
 msgctxt "#16315"
 msgid "Lanczos3 optimized"
-msgstr ""
+msgstr "Lanczos3 أمثل"
 
 msgctxt "#16316"
 msgid "Auto"
-msgstr ""
+msgstr "التلقائية"
 
 msgctxt "#16317"
 msgid "Temporal (Half)"
-msgstr ""
+msgstr "مؤقت(نصف)"
 
 msgctxt "#16318"
 msgid "Temporal/Spatial (Half)"
-msgstr ""
+msgstr "مؤقت/مكاني(نصف)"
 
 msgctxt "#16319"
 msgid "DXVA"
-msgstr ""
+msgstr "DXVA"
 
 msgctxt "#16320"
 msgid "DXVA Bob"
-msgstr ""
+msgstr "DXVA تمايل"
 
 msgctxt "#16321"
 msgid "DXVA Best"
-msgstr ""
+msgstr "DXVA ممتاز"
 
 msgctxt "#16322"
 msgid "Spline36"
-msgstr ""
+msgstr "شريحة36"
 
 msgctxt "#16323"
 msgid "Spline36 optimized"
-msgstr ""
+msgstr "شريحة36 مثالية"
 
 msgctxt "#16324"
 msgid "Software Blend"
-msgstr ""
+msgstr "برنامج مزج"
+
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "ION محسن الي"
 
 msgctxt "#16400"
 msgid "Post-processing"
-msgstr ""
+msgstr "ما بعد المعالجة"
 
 msgctxt "#17500"
 msgid "Display sleep timeout"
-msgstr ""
+msgstr "عرض مهلة النوم"
+
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i ميغابايت"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i ساعات"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i أيام"
 
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "تبديل الى القناة"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "افصل كلمات البحث باستخدام و, أو أو ليس"
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "أو استخدم عبارات لايجاد توافق معين, مثل \"ساحر Oz\"."
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "استيراد EPG من العملاء"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "مسار معلومات PVR"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "جهاز استقبال"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "حالة الجهاز"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "جودة الإشارة"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr " خلفية PVR"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "مجاني"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "صالح"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "تشفير"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "تسجيلات TV"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "مصدر افتراضي لصور PVR مصغرة"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "محطات"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "إذاعة"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "مخفي"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "محطات TV"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "محطات الإذاغة"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "تسجيلات قادمة"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "إضافة مؤقت..."
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "لا يوجد نتائج بحث"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "لا يوجد مقالات EPG"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "محطة"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "الان"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "التالي"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "جدول الزمن"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "معلومة"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "بدء التسجيل على هذه المحطة"
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "لا يمكن تشغيل هذه المحطة. افحص السجل للتفاصيل."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "لا يمكن تشغيل هذا التسجيل. افحص السجل للتفاصيل."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "عرض جودة الإشارة"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "غير مدعوم من PVr"
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "هل أنت متأكد تريد إخفاء هذه المحطة؟"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "مؤقت"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "هل أنت متأكد تريد إعادة تسمية هذا التسجيل؟"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "هل أنت متأكد تريد إعادة تسمية هذا المؤقت؟"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "تسجيل"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "يرجى فحص ترتيبك أو فحص السجل للتفاصيل"
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "لم يبدأ عملاء PVR بعد. انتظر حتى يبدأ عملاء PVR أو افحص السجل للتفاصيل"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "محطة جديدة"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "معلومات البرنامج"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "إدارة مجموعة"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "عرض محطة"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "عرض محطات مرئية"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "عرض محطات مخفية"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "نقل المحطة إلى:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "معلومات التسجيل"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "إخفاء محطة"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "لايوجد معلومات متوفرة"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "مؤقت جديد"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "تحرير المؤقت"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "تمكين المؤقت"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "إيقاف التسجيل"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "حذف مؤقت"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "إضافة مؤقت"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "فرز حسب: المحطة"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "ذهاب للبداية"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "ذهاب للنهاية"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "نافذة EPG افتراضية"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "هذا الحدث مسجل أساسا."
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "لا يمكن كشف هذا التسجيل. افحص السجل للتفاصيل."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "مدة تحديث EPG"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "لا تفرز الـEPG في قاعدة البيانات"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "تفعيل:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "اسم"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "مجلد:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "إذاعة:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "محطة:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "يوم:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "بدء:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "نهاية:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "أولوية:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "حياى (أيام):"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "اليوم الأول:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "محطة غير معروفة %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "الإثنين-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Tu-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-نحن-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Th-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-الجمعة-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-السبت-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-الأحد"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "الإثنين-الثلاثاء-الأربعاء-الخميس-الجمعة-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "الإثنين-الثلاثاء-الأربعاء-الخميس-الجمعة-السبت-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "الإثنين-الثلاثاء-الأربعاء-الخميس-الجمعة-السبت-الأحد"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-السبت-الأحد"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "أدخل اسم التسجيل"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "تحذير"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "انتقل لمحطة أخرى"
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "أدخل اسم مجلد التسجيل"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "المؤقت التالي يعمل"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "في"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "لم يتم حفظ المؤقت. افحص السجل للتفاصيل"
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "حدث خطأ غير متوقع. حاول لاحقا أو افحص السجل للتفاصيل."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR خطأ خلفية. افحص السجل للتفاصيل."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "إصدار"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "عنوان"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "حجم القرص"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "بحث عن محطات"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "لا يمكن استخدام وظائف PVR خلال البحث"
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "على أي مخدم تريد البحث"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "رقم العميل"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "تفادا الإعادات"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "هذا المؤقت لا يزال يسجل. هل أنت متأكد بأنك تريد حذف هذا المؤقت؟"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "للقنوات المجانية فقط"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "تجاهل التوقيت الحالي"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "تجاهل التسجيلات الحالية"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "وقت البدء"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "وقت الانتهاء"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "تاريخ البدء"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "تاريخ الانتهاء"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "أقصر مدة"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "أقصى مدة"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "شمل أنواع غير معروفة"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "صف البحث"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "شمل وصف"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "حالة حساسة"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "محطة غير متوفرة"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "لا يوجد مجموعات معرفة"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "الرجاء انشاء مجموعة أولا"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "اسم المجموعة الجديدة"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "مجموعة"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "دليل البحث"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "إدارة المجموعة"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "لا يوجد مجموعات معرفة"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "جمع"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "مجموعات"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "خلفية PVR لا تدعم هذا الإجراء. غفحص السجل للتفاصيل."
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "محطة"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "الإثنين"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Tu"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "نحن"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Th"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "الجمعة"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "السبت"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "الأحد"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "من "
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "التسجيل التالي"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "يسجل حاليا"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "من "
+
+msgctxt "#19160"
+msgid "to"
+msgstr "إلى"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "التسجيل فعال"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "التسجيلات"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "لا يمكنك تشغيل التسجيل. افحص السجل للتفاصيل"
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "غير"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "معلومات PVR"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "بحث عن أيقونات مفقودة"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "إخفاء صندوق معلومات الفيديو"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "بدأ التشغيل مصغرا"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "مدة التسجيل الفوري"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "اولوية التسجيل الافتراضية"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "عمر التسجيل الافتراضي"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "الهامش عند بدأ التسجيل"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "الهامش عند انتهاء التسجيل"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "توليف"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "اظهار معلومات القناة عند تغيير القنوات"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "أخف معلومات المحطة تلقائيا"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "شريط التشغيل"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "الايام الظاهرة في دليل القنوات"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "مدة ظهور معلوات القناة"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "تم مسح كل البيانات في قاعدة بيانات PVR"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "اعادة تعيين بيانات دليل القنوات EPG"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "يتم استعادة دليل القنوات"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "الرجوع لآخر قناة عند بداية التشغيل"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "تصغير"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "خدمة تسجيل الفيديو"
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "لا يمكن بدء مسح المحطة. افحص السجل للتفاصيل."
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "متابعة؟"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "مدير القنوات"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "مصدر دليل القنوات"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "اسم القناة"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "ايقونة القناة"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "تعديل القناة"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "قناة جديدة"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "ادارة المجموعة"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "تفعيل EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "مجموعة"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "ادخل اسم القناة الجديدة"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "خلفية XBMC ظاهرية"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "عميل"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "حذف القناة"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "هذه القائمة تحوي تغييرات"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "تحديد خلفية"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "ادخل عنوان (URL) للقناة الجديدة"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "خلفية PVR لا تدعم المؤقت."
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "كل محطات الإذاعة"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "كل محطات TV"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "مرئي"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "محطات مجمعة"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "القنوات في"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "مزامنة مجموعات المحطات مع الخلفيات"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "دليل القنوات EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "قد لا تتوفر إضافة PVR. افحص إعداداتك أو السجل لمزيد من المعلومات."
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "تم ايقاف التسجيل"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "تم جدولة التسجيل"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "بدأ التسجيل"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "اكتمل التسجيل"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "حذف التسجيل"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "اغلق معلومات القناة بعد الانتقال اليها"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "منع تحديث دليل القنوات EPG  خلال مشاهدة التلفاز "
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "دائما إبدأ ترتيب المحكة من الخلفية(الخلفيات)"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "مسح نتائج البحث"
+
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr "عرض ملاحظة عن تحديث المؤقت"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr "استخدام أرقام محطات خلفية ( تمكين ملحق PVR عند تشغيل 1 فقط)"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "مدير PVR يبدأ العمل"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "تحميل محطات من العملاء"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "تحميل مؤقت من العملاء"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "تحميل تسجيلات من العملاء"
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr "بدء مواضيع الخلفية"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "لا يوجد إضافة PVR ممكنة"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "تم تمكين مدير PVR  بدو أي"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "تمكين إضافة PVR. تمكين إضاقة واحدة على الأقل"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "بناء على استخدام وظائف PVR."
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "وقت الخمول "
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "ضبط أمر الاستيقاظ (cmd [timestamp])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "استيقظ قبل التسجيل"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "تأخير الاستيقاظ"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "تأخير وقت الاستيقاظ (HH:MM:SS)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "تصفية القنوات"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "تحميل EPG من قاعدة البيانات"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "تحديث معلومات EPG"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "جدول تحديث EPG لهذه القناة"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "جدول تحديث EPG لقناة"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "فشل تحديث EPG القناة"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "بدء التسجيل"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "وقف التسجيل"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "قفل محطة"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "فتح محطة"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "تحكم الأهل"
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "فتح مدة"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "تغيير PIN"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "تحكم الأهل. أدخل PIN:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "قناة مقفلة. أدخل PIN:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "PIN غير صحيح"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "رقم PIN المدخل غير صحيح."
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "مقفول ضد الاطفال"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "قفل الاطفال:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "لا تظهر مربعات \"لا يوجد معلومات متوفرة\""
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "لا تظهر تحذيرات \"فقد الاتصال\""
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* كل التسجيلات"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "لم يتم العثور على أي إضافات PVR. "
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "تحتاج معدل, برنامج خلفية, و"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "إضافة للخلفية لتكون قادر على استخدام PVR"
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "الرجاء زيارة xbmc.org/pvr لمعرفة المزيد"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "اخر/غير معلوم"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "فيلم/دراما"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "تحري/حماس"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "مغامرة/أفلام الغرب الأمريكي/حرب"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "خيال علمي/خيالي/ رعب"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "كوميدي"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "رومانسي"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "جدي/كلاسيكي/ديني/فيلم تاريخي/دراما"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "فيلم/دراما راشد"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "اخبار/ تقارير الطقس"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "مجلة الاخبار"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "وثائقي"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "مناقشة/مقابلة/مناظرة"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "عرض/عرض العاب"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "عرض العاب/اسئلة/مـسابقة"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "برنامج منوعات"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "برنامج حديث"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "الرياضة"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "حدث خاص"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "مجلة الرياضة"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "كرة القدم"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "تينيس/سكواتش"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "فرق رياضية"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "ألعاب رياضية"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "رياضة محركات"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "رياضة مائية"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "رياضات الشتاء"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "رياضة الدفاع عن النفس"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "أطفال/برامج صغار"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "برامج مسلية للاعمار 6 الى 14"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "برامج مسلية للاعمار 10 الى 16"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "موسيقى/باليه/رقص"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "روك/بوب"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "موسيقى تقليدية/كلاسيكية"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "اغاني شعبية/فـلكلور"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "موسيقي/اوبيرا"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "باليه"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "فنون/ثقافة"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "فنون استعراضية"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "الدين"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "ادب"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "فيلم سينمائي"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "مجلات فنون/ثقافة"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "الموضة"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "علوم الطبيعع/التكنولوجيا"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "لغات"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "سياحة/سفر"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "طبخ"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "إعلان/تسوق"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "غير منشور"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "دراما"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "تحري/حماس"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "مغامرة/أفلام الغرب الأمريكي/حرب"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "خيال علمي/خيالي/رعب"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "كوميدي"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "رومانسي"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "راشد"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -5935,7 +7196,7 @@ msgstr "اطلب رمز القفل الرئيسي عند بداية التشغي
 
 msgctxt "#20077"
 msgid "Skin settings"
-msgstr "إعدادات الخلفية"
+msgstr "إعدادات الغلاف"
 
 msgctxt "#20078"
 msgid "- no link set -"
@@ -6355,7 +7616,7 @@ msgstr "مسافة"
 
 msgctxt "#20183"
 msgid "Reload skin"
-msgstr "إعادة تحميل الخلفية"
+msgstr "إعادة تحميل الغلاف"
 
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"
@@ -6371,7 +7632,7 @@ msgstr "الرجاء الانتظار"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6417,6 +7678,26 @@ msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "فشل تحميل معلومات الفنان"
 
+msgctxt "#20240"
+msgid "Android music"
+msgstr "موسيقى أندرويد"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "فيديوهات أندرويد"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "صور أندرويد"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "صور أندرويد"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "تطبيقات أندرويد"
+
 msgctxt "#20250"
 msgid "Party on! (videos)"
 msgstr "هناك طرفا! (فيديو)"
@@ -6431,39 +7712,39 @@ msgstr "ملء أكواب (فيديو)"
 
 msgctxt "#20253"
 msgid "WebDAV server (HTTP)"
-msgstr ""
+msgstr "WebDAV مخدم(HTTP)"
 
 msgctxt "#20254"
 msgid "WebDAV server (HTTPS)"
-msgstr ""
+msgstr "WebDAV مخدم(HTTPS)"
 
 msgctxt "#20255"
 msgid "First logon, edit your profile"
-msgstr ""
+msgstr "الدخول الأول, حرر ملفك الشخصي"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
-msgstr ""
+msgstr "HTS Tv العميل الأخير"
 
 msgctxt "#20257"
 msgid "VDR Streamdev client"
-msgstr ""
+msgstr "VDR Streamdev عميل"
 
 msgctxt "#20258"
 msgid "MythTV client"
-msgstr ""
+msgstr "MythTV عميل"
 
 msgctxt "#20259"
 msgid "Network Filesystem (NFS)"
-msgstr ""
+msgstr "ملفات نظام الشبكة (NFS)"
 
 msgctxt "#20260"
 msgid "Secure Shell (SSH/SFTP)"
-msgstr ""
+msgstr "هيكل امن (SSH/SFTP)"
 
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
-msgstr ""
+msgstr "بروتوكول إيداع ابل (AFP)"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -6483,7 +7764,7 @@ msgstr "هل تريد أن تتخطى وتذهب؟"
 
 msgctxt "#20304"
 msgid "RSS Feed"
-msgstr ""
+msgstr "تعليق RSS"
 
 msgctxt "#20307"
 msgid "Secondary DNS"
@@ -6539,7 +7820,7 @@ msgstr "استعراض للموقع"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
+msgstr "الأفلام موجودة في مجلدات منفصلة التي تتطابق مع عنوان الفيلم"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -6953,10 +8234,6 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "تعيينات"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "تعيين مصغرات الفيديو"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "تصدير مصغرات الفنانين؟"
@@ -7037,17 +8314,37 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr "المستمعين"
 
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "تعيين خلفية الفلم Fanart"
-
 msgctxt "#20457"
 msgid "Movie set"
 msgstr "تعيين الفلم"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr ""
+msgstr "ضع الأفلام في مجموعات"
+
+msgctxt "#20459"
+msgid "Tags"
+msgstr "علامات"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "إضافة %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "إزالة %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "علامة جديدة"
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "علامة بالاسم '%s' موجود أصلا."
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "تحديد %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7223,7 +8520,7 @@ msgstr "الفصل"
 
 msgctxt "#21397"
 msgid "High quality pixel shader v2"
-msgstr ""
+msgstr "مظلل البيكسل بجودة علية v2"
 
 msgctxt "#21398"
 msgid "Enable playlist at startup"
@@ -7296,10 +8593,6 @@ msgstr "كاشط البرنامج التلفزيوني الافتراضي"
 msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "كاشط الموسيقى الافتراضي"
-
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "تمكين الاحتياطية على أساس اللغة المكشطة"
 
 msgctxt "#21417"
 msgid "- Settings"
@@ -7447,15 +8740,19 @@ msgstr "احصل على المزيد من..."
 
 msgctxt "#21453"
 msgid "Root filesystem"
-msgstr ""
+msgstr "جذر ملف نظام"
 
 msgctxt "#21454"
 msgid "Cache full"
-msgstr ""
+msgstr "ذاكرة التخزين المؤقت ممتلئة"
 
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
+msgstr "امتلاء الذاكرة الؤقتة قبل الوصول لحجم التشغيل المطلوب"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "تخزين خارجي"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -7499,7 +8796,7 @@ msgstr "تاريخ/وقت الملف"
 
 msgctxt "#21804"
 msgid "Slide index"
-msgstr ""
+msgstr "مؤشر شريحة"
 
 msgctxt "#21805"
 msgid "Resolution"
@@ -7515,7 +8812,7 @@ msgstr "أسود/أبيض اللون"
 
 msgctxt "#21808"
 msgid "JPEG process"
-msgstr ""
+msgstr "عملية JPEG "
 
 msgctxt "#21820"
 msgid "Date/Time"
@@ -7563,7 +8860,7 @@ msgstr "وقت التعرض"
 
 msgctxt "#21831"
 msgid "Exposure bias"
-msgstr ""
+msgstr "كشف انحياز"
 
 msgctxt "#21832"
 msgid "Exposure mode"
@@ -7679,7 +8976,7 @@ msgstr "البلد"
 
 msgctxt "#21876"
 msgid "Original Tx Reference"
-msgstr ""
+msgstr "إشارة TX أصلية"
 
 msgctxt "#21877"
 msgid "Date created"
@@ -7695,7 +8992,7 @@ msgstr "رمز البلد"
 
 msgctxt "#21880"
 msgid "Reference service"
-msgstr ""
+msgstr "خدمة إشارة"
 
 msgctxt "#21881"
 msgid "Allow control of XBMC via UPnP"
@@ -7787,19 +9084,19 @@ msgstr "إخفاء تحديث المكتبة  في الخلفية"
 
 msgctxt "#22002"
 msgid "- DNS suffix"
-msgstr ""
+msgstr "لاحقة DNS"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr ""
+msgstr "%2.3fs"
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr ""
+msgstr "متأخر بـ: %2.3fs"
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr ""
+msgstr "متقدم بـ: %2.3fs"
 
 msgctxt "#22006"
 msgid "Subtitle offset"
@@ -7811,7 +9108,7 @@ msgstr "مزود OpenGL:"
 
 msgctxt "#22008"
 msgid "OpenGL renderer:"
-msgstr ""
+msgstr "عارض GL مفتوح"
 
 msgctxt "#22009"
 msgid "OpenGL version:"
@@ -7955,7 +9252,7 @@ msgstr "تشغيل الكل"
 
 msgctxt "#23049"
 msgid "Teletext not available"
-msgstr ""
+msgstr "قناة المعلومات غير متاحة"
 
 msgctxt "#23050"
 msgid "Activate Teletext"
@@ -7963,11 +9260,11 @@ msgstr "تنشيط النص"
 
 msgctxt "#23051"
 msgid "Part %i"
-msgstr ""
+msgstr "جزء %i"
 
 msgctxt "#23052"
 msgid "Buffering %i bytes"
-msgstr ""
+msgstr "تخزين %i بايت"
 
 msgctxt "#23053"
 msgid "Stopping"
@@ -8056,6 +9353,10 @@ msgstr "معلومات الفنان"
 msgctxt "#24018"
 msgid "Services"
 msgstr "الخدمات"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "عملاء PVR"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -8283,7 +9584,7 @@ msgstr "غير صالحة"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "سكين تريد استبداله؟"
+msgstr "هل تريد التحويل الى هذا الغلاف؟"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
@@ -8293,33 +9594,41 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "هل تريد تحميل هذا الملحق؟"
 
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "لايمكن تحميل الغلاف"
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "بعض ملفات الغلاف مفقودة"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "الإشعارات"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "غخفاء الغريب"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "حدد من جميع العناوين,,,"
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "اظهار قوائم البلوراي"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "عنوان التشغيل الرئيسي: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "عنوان:%d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "تحديد موضوع تشغيل"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8615,11 +9924,11 @@ msgstr "هذا الملف ينتمي إلى كشط. حدد نقطة التشغي
 
 msgctxt "#33082"
 msgid "Path to script"
-msgstr ""
+msgstr "مسار للنص"
 
 msgctxt "#33083"
 msgid "Enable custom script button"
-msgstr ""
+msgstr "تمكين زر تخصيص نصي"
 
 msgctxt "#33100"
 msgid "Failed to start"
@@ -8639,31 +9948,31 @@ msgstr "خادم الدخول عن بعد"
 
 msgctxt "#33200"
 msgid "Detected New Connection"
-msgstr ""
+msgstr "كشف اتصال جديد "
 
 msgctxt "#34000"
 msgid "Lame"
-msgstr ""
+msgstr "ضعيف"
 
 msgctxt "#34001"
 msgid "Vorbis"
-msgstr ""
+msgstr "Vorbis"
 
 msgctxt "#34002"
 msgid "Wav"
-msgstr ""
+msgstr "Wav"
 
 msgctxt "#34003"
 msgid "DXVA2"
-msgstr ""
+msgstr "DXVA2"
 
 msgctxt "#34004"
 msgid "VAAPI"
-msgstr ""
+msgstr "VAAPI"
 
 msgctxt "#34005"
 msgid "Flac"
-msgstr ""
+msgstr "Flac"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -8671,43 +9980,59 @@ msgstr "إعداد المكبر"
 
 msgctxt "#34101"
 msgid "2.0"
-msgstr ""
+msgstr "2.0"
 
 msgctxt "#34102"
 msgid "2.1"
-msgstr ""
+msgstr "2.1"
 
 msgctxt "#34103"
 msgid "3.0"
-msgstr ""
+msgstr "3.0"
 
 msgctxt "#34104"
 msgid "3.1"
-msgstr ""
+msgstr "3.1"
 
 msgctxt "#34105"
 msgid "4.0"
-msgstr ""
+msgstr "4.0"
 
 msgctxt "#34106"
 msgid "4.1"
-msgstr ""
+msgstr "4.1"
 
 msgctxt "#34107"
 msgid "5.0"
-msgstr ""
+msgstr "5.0"
 
 msgctxt "#34108"
 msgid "5.1"
-msgstr ""
+msgstr "5.1"
 
 msgctxt "#34109"
 msgid "7.0"
-msgstr ""
+msgstr "7.0"
 
 msgctxt "#34110"
 msgid "7.1"
-msgstr ""
+msgstr "7.1"
+
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "تشغيل أصوات GUI"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "عند توقف إعادة التشغيل فقط"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "دائما"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "أبداً"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -8719,47 +10044,47 @@ msgstr "لا يمكن العثور على العنصر السابق للتشغي
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
-msgstr ""
+msgstr "فشل تشغيل zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
+msgstr "هل تم تنصيب خدمة ابل بونجور؟ راجع السجل لمزيد من المعلومات."
 
 msgctxt "#34400"
 msgid "Video Rendering"
-msgstr ""
+msgstr "عرض فيديو"
 
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
+msgstr "فشل تهيئة منقي/محجم الفيديو, الفشل عائد لتحجيم ثنائي"
 
 msgctxt "#34402"
 msgid "Failed to initialize audio device"
-msgstr ""
+msgstr "فشل تهيئة جهاز الصوت"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
-msgstr ""
+msgstr "فحص إعدادات الصوت الخاصة بك"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "استخدام إشارات للملاحة:"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "1 حركة الإصبع يسار, يمين, فوق, تحت للمؤشرات"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "2 حركة الإصبع يسار للحذف"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "1 نقرة إصبع للإدخال"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "2 نقرة إصبع أو 1 ضغطة طويلة لقائمة السياق"
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8791,15 +10116,19 @@ msgstr "تم إزالة الجهاز"
 
 msgctxt "#35007"
 msgid "Keymap to use for this device"
-msgstr ""
+msgstr "خارطة مفاتيح للاستخدام لهذا الجهاز"
 
 msgctxt "#35008"
 msgid "Keymap enabled"
-msgstr ""
+msgstr "خارطة المفاتيح ممكنة"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "لا تستخدم تخصيص خارطة المفاتيح لهذا الجهاز"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "تمكين دعم المقود و لوحة اللعب"
 
 msgctxt "#35500"
 msgid "Location"
@@ -8821,30 +10150,6 @@ msgctxt "#35504"
 msgid "Product ID"
 msgstr "معرف المنتج"
 
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr ""
-
-msgctxt "#36001"
-msgid "Pulse-Eight Nyxboard"
-msgstr ""
-
-msgctxt "#36002"
-msgid "Switch to keyboard side command"
-msgstr ""
-
-msgctxt "#36003"
-msgid "Switch to remote side command"
-msgstr ""
-
-msgctxt "#36004"
-msgid "Press \"user\" button command"
-msgstr ""
-
-msgctxt "#36005"
-msgid "Enable switch side commands"
-msgstr ""
-
 msgctxt "#36006"
 msgid "Could not open the adapter"
 msgstr "لم يتمكن من فتح المحول"
@@ -8863,15 +10168,11 @@ msgstr "وضع الأجهزة في وضع الاستعداد عند تنشيط �
 
 msgctxt "#36011"
 msgid "Could not detect the CEC com port. Set it up manually."
-msgstr ""
+msgstr "لا يمكن كشف مدخل كوم الـCEC. قم بإعداده يدويا."
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr ""
-
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr ""
+msgstr "لا يمكن تهيئة محول الـCEC. يرجى فحص إعداداتك."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -8883,7 +10184,7 @@ msgstr "متصل"
 
 msgctxt "#36017"
 msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr "غير متوفر libcec تم العثور على الارتباط, ولكن"
+msgstr "غير قادر على بدأ CEC adapter: مكتبة libCEC غير موجودة على النظام"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -8891,57 +10192,68 @@ msgstr "استخدام إعدادات لغة للتلفزيون"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "تم الربط بجهاز عبر HDMI"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
-
-msgctxt "#36021"
-msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "اجعل XBMC مصدر نشط عند البدء"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "مدخل COM (دعه فارغ ما لم يلزم)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "تم تحديث التكوين"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "تعيين تكوين جديدة. يرجى التحقق من إعدادات"
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "أرسل أمر مصدر غير نشط عند توقف XBMC"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "ضع الأجهزة في وضع الإستعداد عند وضع الحاسب في وضع الإستعداد"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "هذا الجهاز يحتاج إلى خدمة"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "تجاهل"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "عند اغلاق التلفاز"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "انقطع الإتصال"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "هذا المستخدم ليس لديه تصريح لفتح محول الـCEC"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "المدخل مشغول. برنامج واحد فقط يمكنه الوضول لمحول الـCEC"
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "أوقف التشغيل مؤقتا عند التبديل لمصدر اخر"
+
+msgctxt "#36035"
+msgid "Always"
+msgstr "دائما"
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "إبدأ/توقف"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"

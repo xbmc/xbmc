@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,6 +23,12 @@
 #include "utils/StdString.h"
 #include "PlatformDefs.h"
 #include <math.h>
+
+#ifdef TARGET_WINDOWS
+#if _M_IX86_FP>0 && !defined(__SSE__)
+#define __SSE__
+#endif
+#endif
 
 #ifdef __SSE__
 #include <xmmintrin.h>

@@ -1,46 +1,150 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 0.0.9
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC-Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-28 15:38+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Swedish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sv\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Addon Summary"
-msgid "Weather forecast from wunderground.com"
-msgstr ""
+msgctxt "#32101"
+msgid "Location setup"
+msgstr "Platsinställningar"
 
-msgctxt "Addon Description"
-msgid "Weather forecast provided by Weather Underground (http://www.wunderground.com/)"
-msgstr ""
+msgctxt "#32102"
+msgid "Advanced options"
+msgstr "Avancerade val"
 
-msgctxt "Addon Disclaimer"
-msgid "Use of this add-on implies that you have agreed to the Terms of Service located at http://www.wunderground.com/weather/api/d/terms.html"
-msgstr ""
+msgctxt "#32111"
+msgid "Location 1"
+msgstr "Plats 1"
 
-msgctxt "#30101"
-msgid "Location Setup"
-msgstr "Platsinställning"
+msgctxt "#32112"
+msgid "Location 2"
+msgstr "Plats 2"
 
-msgctxt "#30111"
-msgid "Change location 1"
-msgstr "Ändra plats 1"
+msgctxt "#32113"
+msgid "Location 3"
+msgstr "Plats 3"
 
-msgctxt "#30112"
-msgid "Change location 2"
-msgstr "Ändra plats 2"
+msgctxt "#32114"
+msgid "Location 1 display name"
+msgstr "Plats 1 visningsnamn"
 
-msgctxt "#30113"
-msgid "Change location 3"
-msgstr "Ändra plats 3"
+msgctxt "#32115"
+msgid "Location 2 display name"
+msgstr "Plats 2 visningsnamn"
+
+msgctxt "#32116"
+msgid "Location 3 display name"
+msgstr "Plats 3 visningsnamn"
+
+msgctxt "#32117"
+msgid "Location 1 id"
+msgstr "Plats 1 id"
+
+msgctxt "#32118"
+msgid "Location 2 id"
+msgstr "Plats 2 id"
+
+msgctxt "#32119"
+msgid "Location 3 id"
+msgstr "Plats 3 id"
+
+msgctxt "#32120"
+msgid "Enable logging"
+msgstr "Aktivera loggning"
+
+msgctxt "#32121"
+msgid "Weekend"
+msgstr "Helg"
+
+msgctxt "#32122"
+msgid "Saturday/Sunday"
+msgstr "Lördag/Söndag"
+
+msgctxt "#32123"
+msgid "Friday/Saturday"
+msgstr "Fredag/Lördag"
+
+msgctxt "#32124"
+msgid "Thursday/Friday"
+msgstr "Torsdag/Fredag"
+
+msgctxt "#32125"
+msgid "Map zoom level"
+msgstr "Kartzoomnivå"
+
+msgctxt "#32126"
+msgid "Animated map"
+msgstr "Animerad karta"
+
+msgctxt "#32501"
+msgid "New Moon"
+msgstr "Nymåne"
+
+msgctxt "#32502"
+msgid "Waxing Crescent"
+msgstr "Tilltagande månskära"
+
+msgctxt "#32503"
+msgid "First Quarter"
+msgstr "Första kvarteret"
+
+msgctxt "#32504"
+msgid "Waxing Gibbous"
+msgstr "Andra kvarteret"
+
+msgctxt "#32505"
+msgid "Full Moon"
+msgstr "Fullmåne"
+
+msgctxt "#32506"
+msgid "Waning Gibbous"
+msgstr "Tredje kvarteret"
+
+msgctxt "#32507"
+msgid "Last Quarter"
+msgstr "Sista kvarteret"
+
+msgctxt "#32508"
+msgid "Waning Crescent"
+msgstr "Avtagande månskära"
+
+msgctxt "#32510"
+msgid "Warning"
+msgstr "Varning"
+
+msgctxt "#32511"
+msgid "Watch"
+msgstr "Betrakta"
+
+msgctxt "#32512"
+msgid "Advisory"
+msgstr "Rådgivande"
+
+msgctxt "#32513"
+msgid "Statement"
+msgstr "Uttalande"
+
+msgctxt "#32514"
+msgid "Outlook"
+msgstr "Utsikt"
+
+msgctxt "#32515"
+msgid "Forecast"
+msgstr "Prognos"
+
+msgctxt "#32516"
+msgid "Synopsis"
+msgstr "Sammanfattning"

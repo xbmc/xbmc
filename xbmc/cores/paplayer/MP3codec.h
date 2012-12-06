@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,14 +15,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "CachingCodec.h"
-#include "music/tags/MusicInfoTagLoaderMP3.h"
 #include "../dvdplayer/DVDCodecs/Audio/DllLibMad.h"
 
 enum madx_sig {
@@ -66,6 +64,16 @@ public:
   virtual CAEChannelInfo GetChannelInfo();
 
 private:
+  // VBR helpers
+  static unsigned int IsID3v2Header(unsigned char* pBuf, size_t bufLen);
+  virtual int         ReadDuration();
+  bool                ReadLAMETagInfo(unsigned char *p);
+  int                 IsMp3FrameHeader(unsigned long head);
+  int64_t             GetByteOffset(float fTime);
+  int64_t             GetTimeOffset(int64_t iBytes);
+  void                SetOffsets(int iSeekOffsets, const float *offsets);
+//  void SetDuration(float fDuration) { m_fTotalDuration = fDuration; };
+//  float GetDuration() const { return m_fTotalDuration; };
 
   /* TODO decoder functions */
   virtual int Decode(int *out_len);
@@ -80,9 +88,7 @@ private:
   int Read(int size, bool init = false);
 
   /* TODO decoder vars */
-  int m_BytesDecoded;
   bool m_HaveData;
-  unsigned int m_formatdata[8];
   unsigned char  flushcnt;
 
   madx_house mxhouse;
@@ -111,7 +117,11 @@ private:
   unsigned int m_Formatdata[8];
 
   // Seeking helpers
-  MUSIC_INFO::CVBRMP3SeekHelper m_seekInfo;
+  float        m_fTotalDuration;
+  int          m_iSeekOffsets;
+  float       *m_SeekOffset;
+  int          m_iFirstSample;
+  int          m_iLastSample;
 
   // Gapless playback
   bool m_IgnoreFirst;     // Ignore first samples if this is true (for gapless playback)

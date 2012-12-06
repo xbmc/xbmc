@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  *
  * Note: parts of this code comes from libdvdread.
@@ -129,11 +128,9 @@ static int UDFPartition( uint8_t *data, uint16_t *Flags, uint16_t *Number,
 
 static int UDFLogVolume( uint8_t *data, char *VolumeDescriptor )
 {
-  uint32_t lbsize, MT_L, N_PM;
+  uint32_t lbsize;
   Unicodedecode(&data[84], 128, VolumeDescriptor);
   lbsize = GETN4(212);  /* should be 2048 */
-  MT_L = GETN4(264);    /* should be 6 */
-  N_PM = GETN4(268);    /* should be 1 */
   if (lbsize != DVD_VIDEO_LB_LEN) return 1;
   return 0;
 }
@@ -391,7 +388,7 @@ static int file_seek(CFile* fp, int blocks)
   pos = fp->Seek((off64_t)blocks * (off64_t)DVD_VIDEO_LB_LEN, SEEK_SET);
 
   if(pos < 0) {
-    return pos;
+    return (int) pos;
   }
   /* assert pos % DVD_VIDEO_LB_LEN == 0 */
   return (int) (pos / DVD_VIDEO_LB_LEN);
@@ -422,7 +419,7 @@ static int file_read(CFile* fp, void *buffer, int blocks, int flags)
       /* Nothing more to read.  Return all of the whole blocks, if any.
        * Adjust the file position back to the previous block boundary. */
       size_t bytes = (size_t)blocks * DVD_VIDEO_LB_LEN - len;
-      off_t over_read = -(bytes % DVD_VIDEO_LB_LEN);
+      off_t over_read = -(off_t)(bytes % DVD_VIDEO_LB_LEN);
       /*off_t pos =*/ fp->Seek(over_read, SEEK_CUR);
       /* should have pos % 2048 == 0 */
       return (int) (bytes / DVD_VIDEO_LB_LEN);
@@ -466,28 +463,6 @@ uint64_t DVDFileSeekForce(BD_FILE bdfile, uint64_t offset, int64_t force_size)
   bdfile->seek_pos = offset;
   return offset;
 }
-
-int UDFSplitIsoFile(const char *fullFilename, char* iso, char* file)
-{
-  const char* filename = strcasestr(fullFilename, ".iso");
-  if(!filename)
-    return -1;
-
-  filename += strlen(".iso");
-  if(*filename != '/')
-    return -1;
-
-  size_t size = strlen(filename);
-  memcpy(file, filename, size);
-  file[size] = 0;
-
-  size = filename - fullFilename;
-  memcpy(iso, fullFilename,  filename - fullFilename);
-  iso[size] = 0;
-
-  return 0;
-}
-
 
 int udf25::UDFScanDirX( udf_dir_t *dirp )
 {
@@ -1193,15 +1168,11 @@ UDF_FILE udf25::UDFFindFile( const char* filename, uint64_t *filesize )
   return result;
 }
 
-HANDLE udf25::OpenFile( const char* fullFilename )
+HANDLE udf25::OpenFile( const char* isoname, const char* filename )
 {
   uint64_t filesize;
   UDF_FILE file = NULL;
   BD_FILE bdfile = NULL;
-  char isoname[256], filename[256];
-
-  if(UDFSplitIsoFile(fullFilename, isoname, filename) !=0 )
-    return INVALID_HANDLE_VALUE;
 
   m_fp = file_open(isoname);
   if(m_fp)
@@ -1236,7 +1207,7 @@ long udf25::ReadFile(HANDLE hFile, unsigned char *pBuffer, long lSize)
   if( bdfile == NULL || pBuffer == NULL )
     return -1;
 
-  seek_sector = bdfile->seek_pos / DVD_VIDEO_LB_LEN;
+  seek_sector =(unsigned int) (bdfile->seek_pos / DVD_VIDEO_LB_LEN);
   seek_byte   = bdfile->seek_pos % DVD_VIDEO_LB_LEN;
 
   numsec = ( ( seek_byte + lSize ) / DVD_VIDEO_LB_LEN ) +
@@ -1341,12 +1312,12 @@ int64_t udf25::GetFilePosition(HANDLE hFile)
   return bdfile->seek_pos;
 }
 
-udf_dir_t *udf25::OpenDir( const char *subdir )
+udf_dir_t *udf25::OpenDir(  const char *isofile, const char *subdir )
 {
   udf_dir_t *result;
   BD_FILE bd_file;
 
-  bd_file = (BD_FILE)OpenFile(subdir);
+  bd_file = (BD_FILE)OpenFile(isofile, subdir);
 
   if (bd_file == (BD_FILE)INVALID_HANDLE_VALUE)
   {
@@ -1363,7 +1334,7 @@ udf_dir_t *udf25::OpenDir( const char *subdir )
 
   result->dir_location = UDFFileBlockPos(bd_file->file, 0);
   result->dir_current  = UDFFileBlockPos(bd_file->file, 0);
-  result->dir_length   = bd_file->filesize;
+  result->dir_length   = (uint32_t) bd_file->filesize;
   UDFFreeFile(bd_file->file);
   free(bd_file);
 

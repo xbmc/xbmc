@@ -1,4 +1,4 @@
-﻿<window id="2006">
+﻿<window>
 	<defaultcontrol>-</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
@@ -16,9 +16,9 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<texture background="true">$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+			<texture background="true">$INFO[Player.Art(fanart)]</texture>
 			<colordiffuse>AAFFFFFF</colordiffuse>
-			<visible>!IsEmpty(MusicPlayer.Property(Fanart_Image)) + !Skin.HasSetting(HideVisualizationFanart)</visible>
+			<visible>!IsEmpty(Player.Art(fanart)) + !Skin.HasSetting(HideVisualizationFanart)</visible>
 			<fadetime>600</fadetime>
 		</control>
 		<!-- media infos -->
@@ -87,14 +87,14 @@
 				<posy>250r</posy>
 				<width>300</width>
 				<height>230</height>
-				<info>MusicPlayer.Cover</info>
+				<texture fallback="DefaultAlbumCover.png">$INFO[Player.Art(thumb)]</texture>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<bordertexture border="8">ThumbShadow.png</bordertexture>
 				<bordersize>8</bordersize>
 			</control>
 			<control type="group">
 				<posx>330</posx>
-				<posy>175r</posy>
+				<posy>185r</posy>
 				<control type="label" id="1">
 					<description>Heading label</description>
 					<posx>0</posx>
@@ -185,7 +185,7 @@
 			</control>
 			<control type="group">
 				<posx>330</posx>
-				<posy>85r</posy>
+				<posy>95r</posy>
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -237,7 +237,7 @@
 				<posy>10</posy>
 				<label>-</label>
 				<align>left</align>
-				<label>$INFO[musicplayer.Codec,$LOCALIZE[21446]: ,]$INFO[musicplayer.Bitrate, · $LOCALIZE[623]: ,kbps]$INFO[musicplayer.bitspersample, · $LOCALIZE[612]: ,bit]$INFO[musicplayer.Samplerate, · $LOCALIZE[613]: ,kHz]$INFO[musicplayer.Channels, · $LOCALIZE[21444]: ]</label>
+				<label>$INFO[musicplayer.Codec,$LOCALIZE[21446]: ,]$INFO[musicplayer.Bitrate, · $LOCALIZE[623]: ,kbps]$INFO[musicplayer.bitspersample, · $LOCALIZE[612]: ,]$INFO[musicplayer.Samplerate, · $LOCALIZE[613]: ,kHz]$INFO[musicplayer.Channels, · $LOCALIZE[21444]: ]</label>
 				<font>font12</font>
 			</control>
 			<control type="label">
@@ -246,7 +246,7 @@
 				<posy>40</posy>
 				<label>-</label>
 				<align>left</align>
-				<label>$INFO[Visualisation.Name] [I][COLOR=orange]($LOCALIZE[20166])[/COLOR][/I] · fps: $INFO[System.FPS]</label>
+				<label>$INFO[Visualisation.Name,, [I][COLOR=orange]($LOCALIZE[20166])[/COLOR][/I] · ]fps: $INFO[System.FPS]</label>
 				<font>font12</font>
 				<visible>Visualisation.Locked</visible>
 			</control>
@@ -256,7 +256,7 @@
 				<posy>40</posy>
 				<label>-</label>
 				<align>left</align>
-				<label>$INFO[Visualisation.Name] · fps: $INFO[System.FPS]</label>
+				<label>$INFO[Visualisation.Name,, · ]fps: $INFO[System.FPS]</label>
 				<font>font12</font>
 				<visible>!Visualisation.Locked</visible>
 			</control>
@@ -266,7 +266,7 @@
 				<posy>70</posy>
 				<label>-</label>
 				<align>left</align>
-				<label>$LOCALIZE[13388]: $INFO[Visualisation.Preset]</label>
+				<label>$INFO[Visualisation.Preset,$LOCALIZE[13388]: ]</label>
 				<font>font12</font>
 			</control>
 		</control>

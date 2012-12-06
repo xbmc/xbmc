@@ -128,6 +128,17 @@
       <axis limit="0" id="6">AnalogFastForward</axis>
     </joystick>
   </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="13">ChannelUp</button>
+      <button id="14">NextChannelGroup</button>
+      <button id="15">ChannelDown</button>
+      <button id="16">PreviousChannelGroup</button>
+    </joystick>
+  </FullscreenLiveTV>
   <FullscreenInfo>
     <joystick name="Microsoft Xbox Controller S">
       <altname>Mad Catz MicroCON</altname>
@@ -158,7 +169,7 @@
       <button id="3">CodecInfo</button>
       <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="6">Info</button>
-      <button id="9">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="9">OSD</button>
       <button id="13">NextPreset</button>
       <button id="14">SkipNext</button>
       <button id="15">PreviousPreset</button>

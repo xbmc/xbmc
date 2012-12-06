@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -36,6 +35,8 @@ CRegExp::CRegExp(bool caseless)
 
   m_bMatched    = false;
   m_iMatchCount = 0;
+
+  memset(m_iOvector, 0, sizeof(m_iOvector));
 }
 
 CRegExp::CRegExp(const CRegExp& re)
@@ -148,7 +149,7 @@ int CRegExp::GetCaptureTotal()
   return c;
 }
 
-char* CRegExp::GetReplaceString( const char* sReplaceExp )
+std::string CRegExp::GetReplaceString( const char* sReplaceExp )
 {
   char *src = (char *)sReplaceExp;
   char *buf;
@@ -157,8 +158,7 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
   size_t len;
 
   if( sReplaceExp == NULL || !m_bMatched )
-    return NULL;
-
+    return std::string();
 
   // First compute the length of the string
   int replacelen = 0;
@@ -189,7 +189,7 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
   // Now allocate buf
   buf = (char *)malloc((replacelen + 1)*sizeof(char));
   if( buf == NULL )
-    return NULL;
+    return std::string();
 
   char* sReplaceStr = buf;
 
@@ -223,7 +223,10 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
     }
   }
 
-  return sReplaceStr;
+  std::string replaceStr(sReplaceStr);
+  free(sReplaceStr);
+
+  return replaceStr;
 }
 
 std::string CRegExp::GetMatch(int iSub /* = 0 */)

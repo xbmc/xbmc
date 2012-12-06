@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -39,8 +38,8 @@
 #include "video/VideoInfoScanner.h"
 #include "addons/Scraper.h"
 #include "guilib/GUIWindowManager.h"
-#include "Application.h"
-#include "dialogs/GUIDialogKeyboard.h"
+#include "ApplicationMessenger.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
@@ -48,6 +47,8 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
+#include "Util.h"
+#include "URL.h"
 
 using namespace std;
 using namespace ADDON;
@@ -88,7 +89,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      FreeControls();
       FreeSections();
     }
     break;
@@ -98,7 +98,7 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       bool bCloseDialog = false;
 
       if (iControl == ID_BUTTON_DEFAULT)
-        SetDefaults();
+        SetDefaultSettings();
       else if (iControl != ID_BUTTON_OK)
         bCloseDialog = ShowVirtualKeyboard(iControl);
 
@@ -149,27 +149,30 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
 {
   if (action.GetID() == ACTION_DELETE_ITEM)
   {
-    int iControl = GetFocusedControl()->GetID();
-    int controlId = CONTROL_START_SETTING;
-    const TiXmlElement* setting = GetFirstSetting();
-    UpdateFromControls();
-    while (setting)
+    CGUIControl* pControl = GetFocusedControl();
+    if (pControl)
     {
-      if (controlId == iControl)
+      int iControl = pControl->GetID();
+      int controlId = CONTROL_START_SETTING;
+      const TiXmlElement* setting = GetFirstSetting();
+      UpdateFromControls();
+      while (setting)
       {
-        const char* id = setting->Attribute("id");
-        const char* value = setting->Attribute("default");
-        m_settings[id] = value;
-        CreateControls();
-        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
-        OnMessage(msg);
-        return true;
+        if (controlId == iControl)
+        {
+          const char* id = setting->Attribute("id");
+          const char* value = setting->Attribute("default");
+          m_settings[id] = value;
+          CreateControls();
+          CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
+          OnMessage(msg);
+          return true;
+        }
+        setting = setting->NextSiblingElement("setting");
+        controlId++;
       }
-      setting = setting->NextSiblingElement("setting");
-      controlId++;
     }
   }
-
   return CGUIDialogBoxBase::OnAction(action);
 }
 
@@ -249,7 +252,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (bEncoded)
             CURL::Decode(value);
 
-          if (CGUIDialogKeyboard::ShowAndGetInput(value, label, true, bHidden))
+          if (CGUIKeyboardFactory::ShowAndGetInput(value, label, true, bHidden))
           {
             // if hidden hide input
             if (bHidden)
@@ -280,6 +283,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             pDlg->SetHeading(label.c_str());
             pDlg->Reset();
 
+            int selected = -1;
             vector<CStdString> valuesVec;
             if (setting->Attribute("values"))
               CUtil::Tokenize(setting->Attribute("values"), valuesVec, "|");
@@ -288,10 +292,12 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               CUtil::Tokenize(setting->Attribute("lvalues"), valuesVec, "|");
               for (unsigned int i = 0; i < valuesVec.size(); i++)
               {
-                CStdString value = m_addon->GetString(atoi(valuesVec[i]));
-                if (value.IsEmpty())
-                  value = g_localizeStrings.Get(atoi(valuesVec[i]));
-                valuesVec[i] = value;
+                if (i == (unsigned int)atoi(value))
+                  selected = i;
+                CStdString localized = m_addon->GetString(atoi(valuesVec[i]));
+                if (localized.IsEmpty())
+                  localized = g_localizeStrings.Get(atoi(valuesVec[i]));
+                valuesVec[i] = localized;
               }
             }
             else if (source)
@@ -302,15 +308,18 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             for (unsigned int i = 0; i < valuesVec.size(); i++)
             {
               pDlg->Add(valuesVec[i]);
-              if (valuesVec[i].Equals(value))
+              if (selected == (int)i || (selected < 0 && valuesVec[i].Equals(value)))
                 pDlg->SetSelected(i); // FIXME: the SetSelected() does not select "i", it always defaults to the first position
             }
             pDlg->DoModal();
             int iSelected = pDlg->GetSelectedLabel();
             if (iSelected >= 0)
             {
-              value = valuesVec[iSelected];
-              ((CGUIButtonControl*) control)->SetLabel2(value);
+              if (setting->Attribute("lvalues"))
+                value.Format("%i", iSelected);
+              else
+                value = valuesVec[iSelected];
+              ((CGUIButtonControl*) control)->SetLabel2(valuesVec[iSelected]);
             }
           }
         }
@@ -408,7 +417,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             action.Replace("$ID", m_addon->ID());
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
-            g_application.getApplicationMessenger().ExecBuiltIn(action);
+            CApplicationMessenger::Get().ExecBuiltIn(action);
           }
         }
         else if (strcmp(type, "date") == 0)
@@ -541,7 +550,7 @@ void CGUIDialogAddonSettings::SaveSettings(void)
 
 void CGUIDialogAddonSettings::FreeSections()
 {
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
   if (group)
   {
     group->FreeResources();
@@ -549,6 +558,7 @@ void CGUIDialogAddonSettings::FreeSections()
   }
   m_settings.clear();
   m_buttonValues.clear();
+  FreeControls();
 }
 
 void CGUIDialogAddonSettings::FreeControls()
@@ -682,7 +692,6 @@ void CGUIDialogAddonSettings::CreateControls()
       {
         pControl = new CGUIButtonControl(*pOriginalButton);
         if (!pControl) return;
-        ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
         {
@@ -702,6 +711,18 @@ void CGUIDialogAddonSettings::CreateControls()
           {
             if (isAddonSetting)
               ((CGUIButtonControl *)pControl)->SetLabel2(GetAddonNames(value));
+            else if (strcmpi(type, "select") == 0 && !lvalues.empty())
+            {
+              vector<string> valuesVec = StringUtils::Split(lvalues, "|");
+              int selected = atoi(value.c_str());
+              if (selected >= 0 && selected < (int)valuesVec.size())
+              {
+                CStdString label = m_addon->GetString(atoi(valuesVec[selected].c_str()));
+                if (label.empty())
+                  label = g_localizeStrings.Get(atoi(valuesVec[selected].c_str()));
+                ((CGUIButtonControl *)pControl)->SetLabel2(label);
+              }
+            }
             else
               ((CGUIButtonControl *)pControl)->SetLabel2(value);
           }
@@ -1079,7 +1100,7 @@ CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting
 }
 
 // Go over all the settings and set their default values
-void CGUIDialogAddonSettings::SetDefaults()
+void CGUIDialogAddonSettings::SetDefaultSettings()
 {
   if(!m_addon)
     return;
@@ -1162,4 +1183,16 @@ CStdString CGUIDialogAddonSettings::GetCurrentID() const
   if (m_addon)
     return m_addon->ID();
   return "";
+}
+
+int CGUIDialogAddonSettings::GetDefaultLabelID(int controlId) const
+{
+  if (controlId == ID_BUTTON_OK)
+    return 186;
+  else if (controlId == ID_BUTTON_CANCEL)
+    return 222;
+  else if (controlId == ID_BUTTON_DEFAULT)
+    return 409;
+
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }

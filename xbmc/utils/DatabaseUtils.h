@@ -53,7 +53,6 @@ typedef enum {
   FieldBitrate,
   FieldListeners,
   FieldPlaylist,
-  FieldSet,
   FieldRandom,
 
   // fields retrievable from the database
@@ -87,11 +86,13 @@ typedef enum {
   FieldCountry,
   FieldMPAA,
   FieldTop250,
+  FieldSet,
   FieldNumberOfEpisodes,
   FieldNumberOfWatchedEpisodes,
   FieldWriter,
   FieldAirDate,
   FieldEpisodeNumber,
+  FieldUniqueId,
   FieldSeason,
   FieldEpisodeNumberSpecialSort,
   FieldSeasonSpecialSort,
@@ -110,7 +111,14 @@ typedef enum {
   FieldAudioLanguage,
   FieldSubtitleLanguage,
   FieldProductionCode,
-  FieldTag
+  FieldTag,
+  FieldChannelName,
+  FieldInstruments,
+  FieldBiography,
+  FieldBorn,
+  FieldBandFormed,
+  FieldDisbanded,
+  FieldDied
 } Field;
 
 typedef std::set<Field> Fields;

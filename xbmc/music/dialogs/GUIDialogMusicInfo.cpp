@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogMusicInfo.h"
 #include "guilib/GUIWindowManager.h"
-#include "Util.h"
 #include "guilib/GUIImage.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
@@ -41,6 +39,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "TextureCache.h"
+#include "music/MusicThumbLoader.h"
 
 using namespace std;
 using namespace XFILE;
@@ -62,6 +61,7 @@ CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
 {
   m_bRefresh = false;
   m_albumSongs = new CFileItemList;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogMusicInfo::~CGUIDialogMusicInfo(void)
@@ -145,6 +145,16 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogMusicInfo::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_SHOW_INFO)
+  {
+    Close();
+    return true;
+  }
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
 {
   m_album = album;
@@ -174,7 +184,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
       if (artwork.find("thumb") != artwork.end())
         m_albumItem->SetProperty("artistthumb", artwork["thumb"]);
       if (artwork.find("fanart") != artwork.end())
-        m_albumItem->SetProperty("fanart_image",artwork["fanart"]);
+        m_albumItem->SetArt("fanart",artwork["fanart"]);
     }
   }
   m_hasUpdatedThumb = false;
@@ -227,9 +237,9 @@ void CGUIDialogMusicInfo::SetDiscography()
     long idAlbum = database.GetAlbumByName(item->GetLabel(),m_artist.strArtist);
 
     if (idAlbum != -1) // we need this slight stupidity to get correct case for the album name
-      item->SetThumbnailImage(database.GetArtForItem(idAlbum, "album", "thumb"));
+      item->SetArt("thumb", database.GetArtForItem(idAlbum, "album", "thumb"));
     else
-      item->SetThumbnailImage("DefaultAlbumCover.png");
+      item->SetArt("thumb", "DefaultAlbumCover.png");
 
     m_albumSongs->Add(item);
   }
@@ -291,7 +301,7 @@ void CGUIDialogMusicInfo::Update()
   {
     CGUIImage* pImageControl = (CGUIImage*)pControl;
     pImageControl->FreeResources();
-    pImageControl->SetFileName(m_albumItem->GetThumbnailImage());
+    pImageControl->SetFileName(m_albumItem->GetArt("thumb"));
   }
 
   // disable the GetThumb button if the user isn't allowed it
@@ -344,10 +354,10 @@ void CGUIDialogMusicInfo::OnGetThumb()
   CFileItemList items;
 
   // Current thumb
-  if (CFile::Exists(m_albumItem->GetThumbnailImage()))
+  if (CFile::Exists(m_albumItem->GetArt("thumb")))
   {
     CFileItemPtr item(new CFileItem("thumb://Current", false));
-    item->SetThumbnailImage(m_albumItem->GetThumbnailImage());
+    item->SetArt("thumb", m_albumItem->GetArt("thumb"));
     item->SetLabel(g_localizeStrings.Get(20016));
     items.Add(item);
   }
@@ -364,7 +374,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
     CStdString strItemPath;
     strItemPath.Format("thumb://Remote%i", i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
-    item->SetThumbnailImage(thumbs[i]);
+    item->SetArt("thumb", thumbs[i]);
     item->SetIconImage("DefaultPicture.png");
     item->SetLabel(g_localizeStrings.Get(20015));
     
@@ -388,7 +398,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   if (CFile::Exists(localThumb))
   {
     CFileItemPtr item(new CFileItem("thumb://Local", false));
-    item->SetThumbnailImage(localThumb);
+    item->SetArt("thumb", localThumb);
     item->SetLabel(g_localizeStrings.Get(20017));
     items.Add(item);
   }
@@ -434,7 +444,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
     db.Close();
   }
 
-  m_albumItem->SetThumbnailImage(newThumb);
+  m_albumItem->SetArt("thumb", newThumb);
   m_hasUpdatedThumb = true;
 
   // tell our GUI to completely reload all controls (as some of them
@@ -451,10 +461,10 @@ void CGUIDialogMusicInfo::OnGetFanart()
 {
   CFileItemList items;
 
-  if (m_albumItem->HasProperty("fanart_image"))
+  if (m_albumItem->HasArt("fanart"))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
-    itemCurrent->SetThumbnailImage(m_albumItem->GetProperty("fanart_image").asString());
+    itemCurrent->SetArt("thumb", m_albumItem->GetArt("fanart"));
     itemCurrent->SetLabel(g_localizeStrings.Get(20440));
     items.Add(itemCurrent);
   }
@@ -466,7 +476,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
     strItemPath.Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     CStdString thumb = m_artist.fanart.GetPreviewURL(i);
-    item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(thumb));
+    item->SetArt("thumb", CTextureCache::GetWrappedThumbURL(thumb));
     item->SetIconImage("DefaultPicture.png");
     item->SetLabel(g_localizeStrings.Get(20441));
 
@@ -485,7 +495,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   if (!strLocal.IsEmpty())
   {
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
-    itemLocal->SetThumbnailImage(strLocal);
+    itemLocal->SetArt("thumb", strLocal);
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
 
     // TODO: Do we need to clear the cached image?
@@ -535,10 +545,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
     db.Close();
   }
 
-  if (!result.empty())
-    m_albumItem->SetProperty("fanart_image",result);
-  else
-    m_albumItem->ClearProperty("fanart_image");
+  m_albumItem->SetArt("fanart", result);
   m_hasUpdatedThumb = true;
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

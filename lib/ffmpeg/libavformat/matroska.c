@@ -90,6 +90,7 @@ const CodecMime ff_mkv_mime_tags[] = {
     {"image/tiff"                 , CODEC_ID_TIFF},
     {"application/x-truetype-font", CODEC_ID_TTF},
     {"application/x-font"         , CODEC_ID_TTF},
+    {"application/vnd.ms-opentype", CODEC_ID_OTF},
 
     {""                           , CODEC_ID_NONE}
 };

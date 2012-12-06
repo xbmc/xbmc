@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,9 +40,9 @@ class CCoreAudioGraph
 public:
   CCoreAudioGraph();
   ~CCoreAudioGraph();
-  
+
   bool             Open(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID deviceId,
-                     bool allowMixing, AudioChannelLayoutTag layoutTag);
+                     bool allowMixing, AudioChannelLayoutTag layoutTag, float initVolume);
   bool             Close();
   bool             Start();
   bool             Stop();
@@ -59,11 +58,11 @@ public:
 
 private:
   AUGraph           m_audioGraph;
-  
+
   CAUOutputDevice  *m_inputUnit;
   CAUOutputDevice  *m_audioUnit;
   CAUMatrixMixer   *m_mixerUnit;
-  
+
   int               m_reservedBusNumber[MAX_CONNECTION_LIMIT];
   bool              m_initialized;
   AudioDeviceID     m_deviceId;

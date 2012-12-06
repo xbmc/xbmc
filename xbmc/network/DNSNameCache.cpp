@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DNSNameCache.h"
-#include "Application.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -42,6 +40,8 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
 {
   // first see if this is already an ip address
   unsigned long address = inet_addr(strHostName.c_str());
+  strIpAddress.Empty();
+
   if (address != INADDR_NONE)
   {
     strIpAddress.Format("%d.%d.%d.%d", (address & 0xFF), (address & 0xFF00) >> 8, (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24 );
@@ -69,8 +69,8 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
           strIpAddress = nmb_ip;
       }
     }
+    pclose(fp);
   }
-  pclose(fp);
 
   if (!strIpAddress.IsEmpty())
   {

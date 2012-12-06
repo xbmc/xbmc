@@ -111,6 +111,14 @@
       <!-- FlickDown  -->      <button id="88">BigStepBack</button>
     </joystick>
   </FullscreenVideo>
+  <FullscreenLiveTV>
+    <joystick name="AppleRemote">
+      <button id="3">ChannelDown</button>
+      <button id="4">ChannelUp</button>
+      <!-- pageup     -->      <button id="13">ChannelUp</button>
+      <!-- pagedown   -->      <button id="14">ChannelDown</button>
+    </joystick>
+  </FullscreenLiveTV>
   <Visualisation>
     <joystick name="AppleRemote">
       <button id="1">VolumeUp</button>
@@ -119,7 +127,7 @@
       <button id="4">SkipNext</button>
       <button id="5">Pause</button>
       <button id="6">Fullscreen</button>
-      <button id="7">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="7">OSD</button>
       <button id="8">Stop</button>
       <!-- SwipeLeft  -->      <button id="80">SkipPrevious</button>
       <!-- SwipeRight -->      <button id="81">SkipNext</button>

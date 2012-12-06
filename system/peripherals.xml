@@ -9,23 +9,54 @@
     <setting key="key_power" value="XBMC.ShutDown()" label="13015" order="6" />
   </peripheral>
 
-  <peripheral vendor_product="2548:1001" bus="usb" name="Pulse-Eight CEC Adapter" mapTo="cec">
+  <peripheral vendor_product="2708:1001" bus="rpi" name="Raspberry Pi CEC Adapter" mapTo="cec">
     <setting key="enabled" type="bool" value="1" label="305" order="1" />
     <setting key="activate_source" type="bool" value="1" label="36020" order="2" />
-    <setting key="wake_devices" type="string" value="0" label="36007" order="3" />
-    <setting key="standby_devices" type="string" value="0" label="36008" order="4" />
-    <setting key="cec_standby_screensaver" type="bool" value="1" label="36009" order="5" />
-    <setting key="standby_pc_on_tv_standby" type="enum" value="13011" label="36029" order="6" lvalues="36028|13005|13011" />
-    <setting key="standby_tv_on_pc_standby" type="bool" value="1" label="36026" order="7" />
-    <setting key="send_inactive_source" type="bool" value="1" label="36025" order="8" />
+    <setting key="wake_devices" type="enum" value="36037" label="36007" lvalues="36037|36038|36039|231" order="3" />
+    <setting key="standby_devices" type="enum" value="36037" label="36008" lvalues="36037|36038|36039|231" order="4" />
+    <setting key="send_inactive_source" type="bool" value="1" label="36025" order="5" />
+    <setting key="cec_standby_screensaver" type="bool" value="0" label="36009" order="7" />
+    <setting key="standby_pc_on_tv_standby" type="enum" value="13011" label="36029" order="7" lvalues="36028|13005|13011" />
+    <setting key="standby_tv_on_pc_standby" type="bool" value="1" label="36026" order="8" />
     <setting key="use_tv_menu_language" type="bool" value="1" label="36018" order="9" />
-    <setting key="physical_address" type="string" label="36021" value="0" order="10" />
-    <setting key="cec_hdmi_port" type="int" value="1" min="1" max="15" label="36015" order="11" />
-    <setting key="connected_device" type="int" label="36019" value="0" min="0" max="15" step="1" order="12" />
-    <setting key="port" type="string" value="" label="36022" order="13" />
 
     <setting key="tv_vendor" type="int" value="0" configurable="0" />
     <setting key="device_name" type="string" value="XBMC" configurable="0" />
     <setting key="device_type" type="int" value="1" configurable="0" />
+    <setting key="physical_address" type="string" label="36021" value="0" configurable="0" />
+    <setting key="cec_hdmi_port" type="int" value="1" label="36015" configurable="0" />
+    <setting key="connected_device" type="int" label="36019" value="0" configurable="0" />
+    <setting key="port" type="string" value="" label="36022" configurable="0" />
+    <setting key="wake_devices_advanced" type="string" value="" configurable="0" />
+    <setting key="standby_devices_advanced" type="string" value="" configurable="0" />
+    <setting key="double_tap_timeout_ms" type="int" min="0" value="2000" configurable="0" />
+  </peripheral>
+
+  <peripheral vendor_product="2548:1001,2548:1002" bus="usb" name="Pulse-Eight CEC Adapter" mapTo="cec">
+    <setting key="enabled" type="bool" value="1" label="305" order="1" />
+    <setting key="activate_source" type="bool" value="1" label="36020" order="2" />
+    <setting key="wake_devices" type="enum" value="36037" label="36007" lvalues="36037|36038|36039|231" order="3" />
+    <setting key="standby_devices" type="enum" value="36037" label="36008" lvalues="36037|36038|36039|231" order="4" />
+    <setting key="send_inactive_source" type="bool" value="1" label="36025" order="5" />
+    <setting key="cec_standby_screensaver" type="bool" value="0" label="36009" order="6" />
+    <setting key="standby_pc_on_tv_standby" type="enum" value="13011" label="36029" order="7" lvalues="36028|13005|13011" />
+    <setting key="standby_tv_on_pc_standby" type="bool" value="1" label="36026" order="8" />
+    <setting key="use_tv_menu_language" type="bool" value="1" label="36018" order="9" />
+    <setting key="pause_playback_on_deactivate" type="bool" value="1" label="36033" order="10" />
+    <setting key="connected_device" type="enum" label="36019" value="36037" lvalues="36037|36038" order="11" />
+    <setting key="cec_hdmi_port" type="int" value="1" min="1" max="15" label="36015" order="12" />
+    <setting key="physical_address" type="string" label="36021" value="0" order="13" />
+    <setting key="port" type="string" value="" label="36022" order="14" />
+
+    <setting key="tv_vendor" type="int" value="0" configurable="0" />
+    <setting key="device_name" type="string" value="XBMC" configurable="0" />
+    <setting key="device_type" type="int" value="1" configurable="0" />
+    <setting key="wake_devices_advanced" type="string" value="" configurable="0" />
+    <setting key="standby_devices_advanced" type="string" value="" configurable="0" />
+    <setting key="double_tap_timeout_ms" type="int" min="0" value="2000" configurable="0" />
+  </peripheral>
+
+  <peripheral vendor_product="15C2:32,15C2:33,15C2:34,15C2:35,15C2:36,15C2:37,15C2:38,15C2:39,15C2:3A,15C2:3B,15C2:3C,15C2:3D,15C2:3E,15C2:3F,15C2:41,15C2:42,15C2:43,15C2:44,15C2:45,15C2:46" bus="usb" name="iMON HID device" mapTo="imon">
+    <setting key="do_not_use_custom_keymap" type="bool" value="1" label="35009" order="1" configurable="0"/>
   </peripheral>
 </peripherals>

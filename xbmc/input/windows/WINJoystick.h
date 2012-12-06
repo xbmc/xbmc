@@ -14,14 +14,14 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
 #include <vector>
 #include <string>
+#include "threads/CriticalSection.h"
 
 #define JACTIVE_BUTTON 0x00000001
 #define JACTIVE_AXIS   0x00000002
@@ -85,6 +85,7 @@ private:
   uint8_t m_ActiveFlags;
   uint32_t m_lastPressTicks;
   uint32_t m_lastTicks;
+  CCriticalSection m_critSection;
 
   LPDIRECTINPUT8  m_pDI;
   std::vector<LPDIRECTINPUTDEVICE8> m_pJoysticks;

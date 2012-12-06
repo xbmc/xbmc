@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -64,21 +63,6 @@ typedef struct stDVDAudioFrame
   bool              passthrough;
 } DVDAudioFrame;
 
-class CPTSOutputQueue
-{
-private:
-  typedef struct {double pts; double timestamp; double duration;} TPTSItem;
-  TPTSItem m_current;
-  std::queue<TPTSItem> m_queue;
-  CCriticalSection m_sync;
-
-public:
-  CPTSOutputQueue();
-  void Add(double pts, double delay, double duration);
-  void Flush();
-  double Current();
-};
-
 class CPTSInputQueue
 {
 private:
@@ -100,6 +84,9 @@ public:
   bool OpenStream(CDVDStreamInfo &hints);
   void OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec);
   void CloseStream(bool bWaitForBuffers);
+
+  void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
+  void UnRegisterAudioCallback()                        { m_dvdAudio.UnRegisterAudioCallback(); }
 
   void SetSpeed(int speed);
   void Flush();
@@ -129,7 +116,7 @@ public:
   CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
-  double GetCurrentPts()                            { return m_ptsOutput.Current(); }
+  double GetCurrentPts()                            { return m_dvdAudio.GetPlayingPts(); }
 
   bool IsStalled()                                  { return m_stalled;  }
   bool IsPassthrough() const;
@@ -147,8 +134,19 @@ protected:
   double m_audioClock;
 
   // data for audio decoding
-  struct
+  struct PacketStatus
   {
+    PacketStatus()
+    {
+        msg = NULL;
+        Release();
+    }
+
+   ~PacketStatus()
+    {
+        Release();
+    }
+
     CDVDMsgDemuxerPacket*  msg;
     BYTE*                  data;
     int                    size;
@@ -156,6 +154,7 @@ protected:
 
     void Attach(CDVDMsgDemuxerPacket* msg2)
     {
+      if(msg) msg->Release();
       msg = msg2;
       msg->Acquire();
       DemuxPacket* p = msg->GetPacket();

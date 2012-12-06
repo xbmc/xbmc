@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,14 +15,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "DVDOverlay.h"
 #include "PlatformDefs.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemux.h"
 
 #include <string>
 
@@ -60,7 +60,7 @@ public:
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(BYTE* data, int size, double pts, double duration) = 0;
+  virtual int Decode(DemuxPacket *pPacket) = 0;
 
   /*
    * Reset the decoder.
@@ -84,6 +84,15 @@ public:
    * return codecs name
    */
   virtual const char* GetName() { return m_codecName.c_str(); }
+  
+protected:
+  /*
+   * Adapts startTime, stopTIme from the subtitle stream (which is relative to stream pts)
+   * so that it returns the absolute start and stop timestamps.
+   * replace - will be set to true if the overlay should replace the former overlay
+   * offset - optional - offset will be added to start and stoptime
+   */
+  static void GetAbsoluteTimes(double &starttime, double &stoptime, DemuxPacket *pkt, bool &replace, double offset = 0.0);
 
 private:
   std::string m_codecName;

@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 //-----------------------------------------------------------------------
@@ -29,17 +29,43 @@
 //
 //------------------------------------------------------------------------
 
-#ifndef __STRINGUTILS_H_
-#define __STRINGUTILS_H_
+#include <vector>
+#include <stdint.h>
+#include <string>
 
 #include "XBDateTime.h"
 #include "utils/StdString.h"
-#include <vector>
-#include <stdint.h>
 
 class StringUtils
 {
 public:
+  /*! \brief Get a formatted string similar to sprintf
+
+  Beware that this does not support directly passing in
+  std::string objects. You need to call c_str() to pass
+  the const char* buffer representing the value of the
+  std::string object.
+
+  \param fmt Format of the resulting string
+  \param ... variable number of value type arguments
+  \return Formatted string
+  */
+  static std::string Format(const char *fmt, ...);
+  static std::string FormatV(const char *fmt, va_list args);
+  static void ToUpper(std::string &str);
+  static void ToLower(std::string &str);
+  static bool EqualsNoCase(const std::string &str1, const std::string &str2);
+  static std::string Left(const std::string &str, size_t count);
+  static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
+  static std::string Right(const std::string &str, size_t count);
+  static std::string& Trim(std::string &str);
+  static std::string& TrimLeft(std::string &str);
+  static std::string& TrimRight(std::string &str);
+  static int Replace(std::string &str, char oldChar, char newChar);
+  static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
+  static bool StartsWith(const std::string &str, const std::string &str2, bool useCase = false);
+  static bool EndsWith(const std::string &str, const std::string &str2, bool useCase = false);
+
   static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
   static CStdString JoinString(const CStdStringArray &strings, const CStdString& delimiter);
   static CStdString Join(const std::vector<std::string> &strings, const CStdString& delimiter);
@@ -93,5 +119,3 @@ public:
 private:
   static CStdString m_lastUUID;
 };
-
-#endif

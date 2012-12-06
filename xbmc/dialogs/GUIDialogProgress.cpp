@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -122,7 +121,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_CANCEL_BUTTON && m_bCanCancel)
+      if (iControl == CONTROL_CANCEL_BUTTON && m_bCanCancel && !m_bCanceled)
       {
         string strHeading = m_strHeading;
         strHeading.append(" : ");
@@ -199,15 +198,9 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
     g_windowManager.SendThreadMessage(msg, GetID());
 }
 
-void CGUIDialogProgress::SetHeading(const string& strLine)
+int CGUIDialogProgress::GetDefaultLabelID(int controlId) const
 {
-  m_strHeading = strLine;
-  CGUIDialogBoxBase::SetHeading(m_strHeading);
+  if (controlId == CONTROL_CANCEL_BUTTON)
+    return 222;
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }
-
-void CGUIDialogProgress::SetHeading(int iString)
-{
-  m_strHeading = g_localizeStrings.Get(iString);
-  CGUIDialogBoxBase::SetHeading(m_strHeading);
-}
-

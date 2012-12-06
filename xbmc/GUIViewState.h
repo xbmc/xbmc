@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,15 +15,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "utils/LabelFormatter.h"
-#include "SortFileItem.h"
-#include "guilib/GUIBaseContainer.h"
+#include "utils/SortUtils.h"
 #include "MediaSource.h"
 
 class CViewState; // forward
@@ -73,7 +71,17 @@ protected:
    \param thumb the skin image to use as the icon
    */
   void AddAddonsSource(const CStdString &content, const CStdString &label, const CStdString& thumb);
+#if defined(TARGET_ANDROID)
+  void AddAndroidSource(const CStdString &content, const CStdString &label, const CStdString& thumb);
+#endif
   void AddLiveTVSources();
+
+  /*! \brief Add the sort order defined in a smartplaylist
+   Defaults to SORT_METHOD_PLAYLIST_ORDER if no order is defined.
+   \param items the list of items for the view state.
+   \param label_mask the label masks for formatting items.
+   */
+  void AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks);
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);

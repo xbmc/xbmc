@@ -1,6 +1,6 @@
 <scraperfunctions>
 	<GetFanartTvArtistThumbsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistThumbs&quot; cache=&quot;fanarttv-artistimages-\1.xml&quot;&gt;http://fanart.tv/webservice/artist/ed4b784f97227358b31ca4dd966a04f1/\1/xml/&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistThumbs&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;http://api.fanart.tv/webservice/artist/ed4b784f97227358b31ca4dd966a04f1/\1/json/&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetFanartTvArtistThumbsByMBID>
@@ -9,15 +9,21 @@
 			<RegExp input="" output="" dest="13">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&lt;artistthumb id=&quot;[^&quot;]*&quot; url=&quot;([^&quot;]*)</expression>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;artistthumb&quot;:\[(.*?)\],&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="13">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:&quot;\d*&quot;,&quot;url&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseFanartTvArtistThumbs>
 
 	<GetFanartTvArtistFanartsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistFanarts&quot; cache=&quot;fanarttv-artistimages-\1.xml&quot;&gt;http://fanart.tv/webservice/artist/ed4b784f97227358b31ca4dd966a04f1/\1/xml/&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistFanarts&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;http://api.fanart.tv/webservice/artist/ed4b784f97227358b31ca4dd966a04f1/\1/json/&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetFanartTvArtistFanartsByMBID>
@@ -29,8 +35,14 @@
 			<RegExp input="" output="" dest="14">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="14">
-				<expression repeat="yes" noclean="1">&lt;artistbackground id=&quot;[^&quot;]*&quot; url=&quot;([^&quot;]*)</expression>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;artistbackground&quot;:\[(.*?)\],&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="14">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:&quot;\d*&quot;,&quot;url&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<RegExp input="$$14" output="\1" dest="13">
 				<expression noclean="1">(.+)</expression>
@@ -40,7 +52,7 @@
 	</ParseFanartTvArtistFanarts>
 
 	<GetFanartTvAlbumThumbsByMBID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvAlbumThumbs&quot; cache=&quot;fanarttv-albumimages-\1.xml&quot;&gt;http://fanart.tv/webservice/album/ed4b784f97227358b31ca4dd966a04f1/\1/xml/&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvAlbumThumbs&quot; cache=&quot;fanarttv-albumimages-\1.json&quot;&gt;http://api.fanart.tv/webservice/album/ed4b784f97227358b31ca4dd966a04f1/\1/json/&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1" />
 		</RegExp>
 	</GetFanartTvAlbumThumbsByMBID>
@@ -49,8 +61,14 @@
 			<RegExp input="" output="" dest="13">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="13">
-				<expression repeat="yes" noclean="1">&lt;albumcover id=&quot;[^&quot;]*&quot; url=&quot;([^&quot;]*)</expression>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;albumcover&quot;:\[(.*?)\]\}</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;\1/preview&quot;&gt;\1&lt;/thumb&gt;" dest="13">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:&quot;\d*&quot;,&quot;url&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>

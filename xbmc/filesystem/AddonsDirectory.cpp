@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,7 +30,9 @@
 #include "addons/PluginSource.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
+#include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
+#include "URL.h"
 
 using namespace ADDON;
 
@@ -144,7 +145,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
             item->m_bIsFolder = true;
             CStdString thumb = GetIcon((TYPE)i);
             if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
-              item->SetThumbnailImage(thumb);
+              item->SetArt("thumb", thumb);
             items.Add(item);
             break;
           }
@@ -200,6 +201,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
 void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemList &items, bool reposAsFolders)
 {
+  CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   items.ClearItems();
   for (unsigned i=0; i < addons.size(); i++)
   {
@@ -212,6 +214,9 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
+    else if ((addon->Type() == ADDON_PVRDLL) && (CStdString(pItem->GetProperty("Addon.Path").asString()).Left(xbmcPath.size()).Equals(xbmcPath)))
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24023));
+
     if (!addon->Props().broken.IsEmpty())
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
     if (addon2 && addon2->Version() < addon->Version())
@@ -246,14 +251,14 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
 
   if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
     item->SetLabel2(addon->Version().c_str());
-  item->SetThumbnailImage(addon->Icon());
+  item->SetArt("thumb", addon->Icon());
   item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
   if (!addon->FanArt().IsEmpty() && 
       (URIUtils::IsInternetStream(addon->FanArt()) || 
        CFile::Exists(addon->FanArt())))
   {
-    item->SetProperty("fanart_image", addon->FanArt());
+    item->SetArt("fanart", addon->FanArt());
   }
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
   return item;
@@ -294,10 +299,19 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
 
   for (unsigned i=0; i<addons.size(); i++)
   {
-    if (addons[i]->Type() == ADDON_PLUGIN)
-      items.Add(FileItemFromAddon(addons[i], "plugin://", true));
-    else
-      items.Add(FileItemFromAddon(addons[i], "script://", false));
+    CFileItemPtr item(FileItemFromAddon(addons[i], 
+                      addons[i]->Type()==ADDON_PLUGIN?"plugin://":"script://",
+                      addons[i]->Type() == ADDON_PLUGIN));
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    if (plugin->ProvidesSeveral())
+    {
+      CURL url = item->GetAsUrl();
+      CStdString opt;
+      opt.Format("?content_type=%s",content.c_str());
+      url.SetOptions(opt);
+      item->SetPath(url.Get());
+    }
+    items.Add(item);
   }
 
   items.Add(GetMoreItem(content));

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,36 +31,6 @@
 
 using namespace XFILE;
 using namespace std;
-
-class CUrlOptions
-  : public map<CStdString, CStdString>
-{
-public:
-  CUrlOptions(const CStdString& data)
-  {
-    vector<CStdString> options;
-    CUtil::Tokenize(data, options, "&");
-    for(vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
-    {
-      CStdString name, value;
-      size_t pos = it->find_first_of('=');
-      if(pos != CStdString::npos)
-      {
-        name = it->substr(0, pos);
-        value = it->substr(pos+1);
-      }
-      else
-      {
-        name = *it;
-        value = "";
-      }
-
-      CURL::Decode(name);
-      CURL::Decode(value);
-      insert(value_type(name, value));
-    }
-  }
-};
 
 // -------------------------------------------
 // ------------------ File -------------------
@@ -127,14 +96,11 @@ bool CHomeRunFile::Open(const CURL &url)
 
   m_pdll->device_set_tuner_from_str(m_device, url.GetFileName().c_str());
 
-  CUrlOptions options(url.GetOptions().Mid(1));
-  CUrlOptions::iterator it;
+  if(url.HasOption("channel"))
+    m_pdll->device_set_tuner_channel(m_device, url.GetOption("channel").c_str());
 
-  if( (it = options.find("channel")) != options.end() )
-    m_pdll->device_set_tuner_channel(m_device, it->second.c_str());
-
-  if( (it = options.find("program")) != options.end() )
-    m_pdll->device_set_tuner_program(m_device, it->second.c_str());
+  if(url.HasOption("program"))
+    m_pdll->device_set_tuner_program(m_device, url.GetOption("program").c_str());
 
   // start streaming from selected device and tuner
   if( m_pdll->device_stream_start(m_device) <= 0 )

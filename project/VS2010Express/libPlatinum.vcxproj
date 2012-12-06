@@ -50,7 +50,26 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)libPlatinumd.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -67,7 +86,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Platinum\Source\Extras;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -82,6 +101,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHash.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMimeType.h" />
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltProtocolInfo.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\Platinum.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltAction.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltArgument.h" />
@@ -91,20 +113,16 @@
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDatagramStream.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceData.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.h" />
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDownloader.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltEvent.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttp.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpClientTask.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServer.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerListener.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.h" />
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltLeaks.h" />
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltService.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdp.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdpListener.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStateVariable.h" />
-    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStreamPump.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\PltSvnVersion.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltTaskManager.h" />
     <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltThreadTask.h" />
@@ -169,6 +187,9 @@
     <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHash.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixEnvironment.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixTime.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltAction.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltArgument.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltConstants.cpp" />
@@ -177,23 +198,22 @@
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDatagramStream.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceData.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.cpp" />
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDownloader.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltEvent.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttp.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpClientTask.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServer.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltIconsData.cpp" />
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltLeaks.cpp" />
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMimeType.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltProtocolInfo.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltService.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdp.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStateVariable.cpp" />
-    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStreamPump.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltTaskManager.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltThreadTask.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltUPnP.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp" />
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\ContentDirectorySCPD.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltDidl.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltFileMediaServer.cpp" />
@@ -239,7 +259,6 @@
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptXml.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptZip.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdSockets.cpp" />
-    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixFile.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcEnvironment.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcFile.cpp" />
     <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Debug.cpp" />

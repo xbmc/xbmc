@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -139,7 +138,11 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height, bool fullScreen
   g_matrices.MatrixMode(MM_PROJECTION);
   g_matrices.LoadIdentity();
 
+#ifdef TARGET_RASPBERRY_PI
+  g_matrices.Ortho(0.0f, width-1, height-1, 0.0f, +1.0f, 1.0f);
+#else
   g_matrices.Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+#endif
 
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.LoadIdentity();
@@ -373,6 +376,7 @@ void CRenderSystemGLES::ApplyStateBlock()
   glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);  
+  glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)

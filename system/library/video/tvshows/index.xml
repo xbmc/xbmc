@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <node order="2" visible="Library.HasContent(TVShows)">
   <label>20343</label>
   <icon>DefaultTVShows.png</icon>

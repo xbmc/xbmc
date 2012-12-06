@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,9 +34,17 @@
 #include "video/VideoDatabase.h"
 #include "AudioLibrary.h"
 #include "GUIInfoManager.h"
+#include "filesystem/File.h"
+#include "PartyModeManager.h"
+#include "epg/EpgInfoTag.h"
+#include "music/MusicDatabase.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
+using namespace PVR;
 
 JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -100,30 +107,35 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
     case Video:
     case Audio:
     {
-      if (g_application.CurrentFileItem().GetLabel().empty())
+      fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+      if (fileItem->GetLabel().empty())
       {
-        CFileItem tmpItem = g_application.CurrentFileItem();
-        if (player == Video)
+        if (IsPVRChannel())
         {
-          if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), tmpItem))
+          CPVRChannelPtr currentChannel;
+          if (g_PVRManager.GetCurrentChannel(currentChannel))
+            fileItem = CFileItemPtr(new CFileItem(*currentChannel.get()));
+        }
+        else if (player == Video)
+        {
+          if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
           {
-            tmpItem = CFileItem(*g_infoManager.GetCurrentMovieTag());
-            tmpItem.SetPath(g_application.CurrentFileItem().GetPath());
+            fileItem = CFileItemPtr(new CFileItem(*g_infoManager.GetCurrentMovieTag()));
+            fileItem->SetPath(g_application.CurrentFileItem().GetPath());
           }
         }
         else
         {
-          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem))
+          if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
           {
-            tmpItem = CFileItem(*g_infoManager.GetCurrentSongTag());
-            tmpItem.SetPath(g_application.CurrentFileItem().GetPath());
+            fileItem = CFileItemPtr(new CFileItem(*g_infoManager.GetCurrentSongTag()));
+            fileItem->SetPath(g_application.CurrentFileItem().GetPath());
           }
         }
-
-        fileItem = CFileItemPtr(new CFileItem(tmpItem));
       }
-      else
-        fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+
+      if (IsPVRChannel())
+        break;
 
       if (player == Video)
       {
@@ -164,6 +176,16 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
           }
         }
       }
+      else if (player == Audio)
+      {
+        if (fileItem->IsMusicDb())
+        {
+          CMusicDatabase musicdb;
+          CFileItemList items;
+          items.Add(fileItem);
+          CAudioLibrary::GetAdditionalSongDetails(parameterObject, items, musicdb);
+        }
+      }
       break;
     }
 
@@ -184,7 +206,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
       return FailedToExecute;
   }
 
-  HandleFileItem("id", true, "item", fileItem, parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("id", !IsPVRChannel(), "item", fileItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 
@@ -195,12 +217,15 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransport
   {
     case Video:
     case Audio:
+      if (g_application.m_pPlayer && !g_application.m_pPlayer->CanPause())
+        return FailedToExecute;
+      
       if (parameterObject["play"].isString())
         CBuiltins::Execute("playercontrol(play)");
       else
       {
         if (parameterObject["play"].asBoolean() == g_application.IsPaused())
-          g_application.getApplicationMessenger().MediaPause();
+          CApplicationMessenger::Get().MediaPause();
       }
       result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
       return OK;
@@ -230,7 +255,7 @@ JSONRPC_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP));
+      CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP));
       return ACK;
 
     case Picture:
@@ -291,6 +316,9 @@ JSONRPC_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer
   {
     case Video:
     case Audio:
+      if (g_application.m_pPlayer && !g_application.m_pPlayer->CanSeek())
+        return FailedToExecute;
+      
       if (parameterObject["value"].isObject())
         g_application.SeekTime(ParseTimeInSeconds(parameterObject["value"]));
       else if (IsType(parameterObject["value"], NumberValue))
@@ -324,96 +352,36 @@ JSONRPC_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer
   }
 }
 
-JSONRPC_STATUS CPlayerOperations::MoveLeft(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::Move(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  std::string direction = parameterObject["direction"].asString();
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Picture:
-      SendSlideshowAction(ACTION_MOVE_LEFT);
+      if (direction == "left")
+        SendSlideshowAction(ACTION_MOVE_LEFT);
+      else if (direction == "right")
+        SendSlideshowAction(ACTION_MOVE_RIGHT);
+      else if (direction == "up")
+        SendSlideshowAction(ACTION_MOVE_UP);
+      else if (direction == "down")
+        SendSlideshowAction(ACTION_MOVE_DOWN);
+      else
+        return InvalidParams;
+
       return ACK;
 
     case Video:
     case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
+      if (direction == "left" || direction == "up")
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_PREV_ITEM));
+      else if (direction == "right" || direction == "down")
+        CApplicationMessenger::Get().SendAction(CAction(ACTION_NEXT_ITEM));
+      else
+        return InvalidParams;
 
-JSONRPC_STATUS CPlayerOperations::MoveRight(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_MOVE_RIGHT);
       return ACK;
 
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::MoveDown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_MOVE_DOWN);
-      return ACK;
-
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::MoveUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_MOVE_UP);
-      return ACK;
-
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::ZoomOut(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_ZOOM_OUT);
-      return ACK;
-
-    case Video:
-    case Audio:
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::ZoomIn(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Picture:
-      SendSlideshowAction(ACTION_ZOOM_IN);
-      return ACK;
-
-    case Video:
-    case Audio:
     case None:
     default:
       return FailedToExecute;
@@ -422,10 +390,25 @@ JSONRPC_STATUS CPlayerOperations::ZoomIn(const CStdString &method, ITransportLay
 
 JSONRPC_STATUS CPlayerOperations::Zoom(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
+  CVariant zoom = parameterObject["zoom"];
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Picture:
-      SendSlideshowAction(ACTION_ZOOM_LEVEL_NORMAL + ((int)parameterObject["value"].asInteger() - 1));
+      if (zoom.isInteger())
+        SendSlideshowAction(ACTION_ZOOM_LEVEL_NORMAL + ((int)zoom.asInteger() - 1));
+      else if (zoom.isString())
+      {
+        std::string strZoom = zoom.asString();
+        if (strZoom == "in")
+          SendSlideshowAction(ACTION_ZOOM_IN);
+        else if (strZoom == "out")
+          SendSlideshowAction(ACTION_ZOOM_OUT);
+        else
+          return InvalidParams;
+      }
+      else
+        return InvalidParams;
+
       return ACK;
 
     case Video:
@@ -441,7 +424,10 @@ JSONRPC_STATUS CPlayerOperations::Rotate(const CStdString &method, ITransportLay
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Picture:
-      SendSlideshowAction(ACTION_ROTATE_PICTURE);
+      if (parameterObject["value"].asString().compare("clockwise") == 0)
+        SendSlideshowAction(ACTION_ROTATE_PICTURE_CW);
+      else
+        SendSlideshowAction(ACTION_ROTATE_PICTURE_CCW);
       return ACK;
 
     case Video:
@@ -476,7 +462,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
     {
       case PLAYLIST_MUSIC:
       case PLAYLIST_VIDEO:
-        g_application.getApplicationMessenger().MediaPlay(playlistid, (int)parameterObject["item"]["position"].asInteger());
+        CApplicationMessenger::Get().MediaPlay(playlistid, (int)parameterObject["item"]["position"].asInteger());
         OnPlaylistChanged();
         break;
 
@@ -492,6 +478,29 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
     bool random = (optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
                   (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean());
     return StartSlideshow(parameterObject["item"]["path"].asString(), parameterObject["item"]["recursive"].asBoolean(), random);
+  }
+  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("partymode"))
+  {
+    if (g_partyModeManager.IsEnabled())
+      g_partyModeManager.Disable();
+    CApplicationMessenger::Get().ExecBuiltIn("playercontrol(partymode(" + parameterObject["item"]["partymode"].asString() + "))");
+    return ACK;
+  }
+  else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("channelid"))
+  {
+    if (!g_PVRManager.IsStarted())
+      return FailedToExecute;
+
+    CPVRChannelGroupsContainer *channelGroupContainer = g_PVRChannelGroups;
+    if (channelGroupContainer == NULL)
+      return FailedToExecute;
+
+    CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["item"]["channelid"].asInteger());
+    if (channel == NULL)
+      return InvalidParams;
+
+    CApplicationMessenger::Get().MediaPlay(CFileItem(*channel.get()));
+    return ACK;
   }
   else
   {
@@ -540,7 +549,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
             list[0]->m_lStartOffset = (int)(ParseTimeInSeconds(optionResume) * 75.0);
         }
 
-        g_application.getApplicationMessenger().MediaPlay(list);
+        CApplicationMessenger::Get().MediaPlay(list);
       }
 
       return ACK;
@@ -552,55 +561,55 @@ JSONRPC_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer
   return InvalidParams;
 }
 
-JSONRPC_STATUS CPlayerOperations::GoPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Video:
-    case Audio:
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_PREV_ITEM));
-      return ACK;
-
-    case Picture:
-      SendSlideshowAction(ACTION_PREV_PICTURE);
-      return ACK;
-
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
-JSONRPC_STATUS CPlayerOperations::GoNext(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  switch (GetPlayer(parameterObject["playerid"]))
-  {
-    case Video:
-    case Audio:
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_NEXT_ITEM));
-      return ACK;
-
-    case Picture:
-      SendSlideshowAction(ACTION_NEXT_PICTURE);
-      return ACK;
-
-    case None:
-    default:
-      return FailedToExecute;
-  }
-}
-
 JSONRPC_STATUS CPlayerOperations::GoTo(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int position = (int)parameterObject["position"].asInteger();
+  CVariant to = parameterObject["to"];
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerPlay(position);
+      if (to.isString())
+      {
+        std::string strTo = to.asString();
+        int actionID;
+        if (strTo == "previous")
+          actionID = ACTION_PREV_ITEM;
+        else if (strTo == "next")
+          actionID = ACTION_NEXT_ITEM;
+        else
+          return InvalidParams;
+
+        CApplicationMessenger::Get().SendAction(CAction(actionID));
+      }
+      else if (to.isInteger())
+      {
+        if (IsPVRChannel())
+          CApplicationMessenger::Get().SendAction(CAction(ACTION_CHANNEL_SWITCH, (float)to.asInteger()));
+        else
+          CApplicationMessenger::Get().PlayListPlayerPlay((int)to.asInteger());
+      }
+      else
+        return InvalidParams;
       break;
 
     case Picture:
+      if (to.isString())
+      {
+        std::string strTo = to.asString();
+        int actionID;
+        if (strTo == "previous")
+          actionID = ACTION_PREV_PICTURE;
+        else if (strTo == "next")
+          actionID = ACTION_NEXT_PICTURE;
+        else
+          return InvalidParams;
+
+        SendSlideshowAction(actionID);
+      }
+      else
+        return FailedToExecute;
+      break;
+
     case None:
     default:
       return FailedToExecute;
@@ -610,23 +619,56 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const CStdString &method, ITransportLayer
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CGUIWindowSlideShow *slideshow = NULL;
+  CVariant shuffle = parameterObject["shuffle"];
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), true);
-      OnPlaylistChanged();
+    {
+      if (IsPVRChannel())
+        return FailedToExecute;
+
+      int playlistid = GetPlaylist(GetPlayer(parameterObject["playerid"]));
+      if (g_playlistPlayer.IsShuffled(playlistid))
+      {
+        if ((shuffle.isBoolean() && !shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+        {
+          CApplicationMessenger::Get().PlayListPlayerShuffle(playlistid, false);
+          OnPlaylistChanged();
+        }
+      }
+      else
+      {
+        if ((shuffle.isBoolean() && shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+        {
+          CApplicationMessenger::Get().PlayListPlayerShuffle(playlistid, true);
+          OnPlaylistChanged();
+        }
+      }
       break;
+    }
 
     case Picture:
       slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-      if (slideshow && !slideshow->IsShuffled())
-        slideshow->Shuffle();
-      else if (!slideshow)
+      if (slideshow == NULL)
         return FailedToExecute;
+      if (slideshow->IsShuffled())
+      {
+        if ((shuffle.isBoolean() && !shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+          return FailedToExecute;
+      }
+      else
+      {
+        if ((shuffle.isBoolean() && shuffle.asBoolean()) ||
+            (shuffle.isString() && shuffle.asString() == "toggle"))
+          slideshow->Shuffle();
+      }
       break;
 
     default:
@@ -635,32 +677,89 @@ JSONRPC_STATUS CPlayerOperations::Shuffle(const CStdString &method, ITransportLa
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetRepeat(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerShuffle(GetPlaylist(GetPlayer(parameterObject["playerid"])), false);
+    {
+      if (IsPVRChannel())
+        return FailedToExecute;
+
+      REPEAT_STATE repeat = REPEAT_NONE;
+      int playlistid = GetPlaylist(GetPlayer(parameterObject["playerid"]));
+      if (parameterObject["repeat"].asString() == "cycle")
+      {
+        REPEAT_STATE repeatPrev = g_playlistPlayer.GetRepeat(playlistid);
+        repeat = repeatPrev;
+        if (repeatPrev == REPEAT_NONE)
+          repeat = REPEAT_ALL;
+        else if (repeatPrev == REPEAT_ALL)
+          repeat = REPEAT_ONE;
+        else
+          repeat = REPEAT_NONE;
+      }
+      else
+        repeat = (REPEAT_STATE)ParseRepeatState(parameterObject["repeat"]);
+
+      CApplicationMessenger::Get().PlayListPlayerRepeat(playlistid, repeat);
       OnPlaylistChanged();
       break;
+    }
 
     case Picture:
     default:
       return FailedToExecute;
   }
+
   return ACK;
 }
 
-JSONRPC_STATUS CPlayerOperations::Repeat(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSONRPC_STATUS CPlayerOperations::SetPartymode(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  switch (GetPlayer(parameterObject["playerid"]))
+  PlayerType player = GetPlayer(parameterObject["playerid"]);
+  switch (player)
   {
     case Video:
     case Audio:
-      g_application.getApplicationMessenger().PlayListPlayerRepeat(GetPlaylist(GetPlayer(parameterObject["playerid"])), (REPEAT_STATE)ParseRepeatState(parameterObject["state"]));
-      OnPlaylistChanged();
+    {
+      if (IsPVRChannel())
+        return FailedToExecute;
+
+      bool change = false;
+      PartyModeContext context = PARTYMODECONTEXT_UNKNOWN;
+      std::string strContext;
+      if (player == Video)
+      {
+        context = PARTYMODECONTEXT_VIDEO;
+        strContext = "video";
+      }
+      else if (player == Audio)
+      {
+        context = PARTYMODECONTEXT_MUSIC;
+        strContext = "music";
+      }
+
+      bool toggle = parameterObject["partymode"].isString();
+      if (g_partyModeManager.IsEnabled())
+      {
+        if (g_partyModeManager.GetType() != context)
+          return InvalidParams;
+
+        if (toggle || parameterObject["partymode"].asBoolean() == false)
+          change = true;
+      }
+      else
+      {
+        if (toggle || parameterObject["partymode"].asBoolean() == true)
+          change = true;
+      }
+
+      if (change)
+        CApplicationMessenger::Get().ExecBuiltIn("playercontrol(partymode(" + strContext + "))");
       break;
+    }
 
     case Picture:
     default:
@@ -782,9 +881,9 @@ int CPlayerOperations::GetActivePlayers()
 {
   int activePlayers = 0;
 
-  if (g_application.IsPlayingVideo())
+  if (g_application.IsPlayingVideo() || g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRecording())
     activePlayers |= Video;
-  if (g_application.IsPlayingAudio())
+  if (g_application.IsPlayingAudio() || g_PVRManager.IsPlayingRadio())
     activePlayers |= Audio;
   if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
     activePlayers |= Picture;
@@ -859,14 +958,14 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string path, bool re
 
   CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
   msg.SetStringParam(path);
-  g_application.getApplicationMessenger().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
+  CApplicationMessenger::Get().SendGUIMessage(msg, WINDOW_SLIDESHOW, true);
 
   return ACK;
 }
 
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
-  g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_SLIDESHOW);
+  CApplicationMessenger::Get().SendAction(CAction(actionID), WINDOW_SLIDESHOW);
 }
 
 void CPlayerOperations::OnPlaylistChanged()
@@ -908,6 +1007,12 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
+        if (IsPVRChannel())
+        {
+          result = false;
+          break;
+        }
+
         result = g_partyModeManager.IsEnabled();
         break;
 
@@ -947,8 +1052,20 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        MillisecondsToTimeObject((int)(g_application.GetTime() * 1000.0), result);
+      {
+        int ms = 0;
+        if (!IsPVRChannel())
+          ms = (int)(g_application.GetTime() * 1000.0);
+        else
+        {
+          EPG::CEpgInfoTag epg;
+          if (GetCurrentEpg(epg))
+            ms = epg.Progress() * 1000;
+        }
+
+        MillisecondsToTimeObject(ms, result);
         break;
+      }
 
       case Picture:
         MillisecondsToTimeObject(0, result);
@@ -965,8 +1082,19 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        result = g_application.GetPercentage();
+      {
+        if (!IsPVRChannel())
+          result = g_application.GetPercentage();
+        else
+        {
+          EPG::CEpgInfoTag epg;
+          if (GetCurrentEpg(epg))
+            result = epg.ProgressPercentage();
+          else
+            result = 0;
+        }
         break;
+      }
 
       case Picture:
         slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -986,8 +1114,20 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        MillisecondsToTimeObject((int)(g_application.GetTotalTime() * 1000.0), result);
+      {
+        int ms = 0;
+        if (!IsPVRChannel())
+          ms = (int)(g_application.GetTotalTime() * 1000.0);
+        else
+        {
+          EPG::CEpgInfoTag epg;
+          if (GetCurrentEpg(epg))
+            ms = epg.GetDuration() * 1000;
+        }
+        
+        MillisecondsToTimeObject(ms, result);
         break;
+      }
 
       case Picture:
         MillisecondsToTimeObject(0, result);
@@ -1008,7 +1148,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        if (g_playlistPlayer.GetCurrentPlaylist() == playlist)
+        if (!IsPVRChannel() && g_playlistPlayer.GetCurrentPlaylist() == playlist)
           result = g_playlistPlayer.GetCurrentSong();
         else
           result = -1;
@@ -1033,6 +1173,12 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
+        if (IsPVRChannel())
+        {
+          result = "off";
+          break;
+        }
+
         switch (g_playlistPlayer.GetRepeat(playlist))
         {
         case REPEAT_ONE:
@@ -1060,6 +1206,12 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
+        if (IsPVRChannel())
+        {
+          result = false;
+          break;
+        }
+
         result = g_playlistPlayer.IsShuffled(playlist);
         break;
 
@@ -1100,7 +1252,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        result = true;
+        result = !IsPVRChannel();
         break;
 
       case Picture:
@@ -1161,7 +1313,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
       case Video:
       case Audio:
       case Picture:
-        result = true;
+        result = !IsPVRChannel();
         break;
 
       default:
@@ -1175,7 +1327,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
     {
       case Video:
       case Audio:
-        result = true;
+        result = !IsPVRChannel();
         break;
 
       case Picture:
@@ -1325,6 +1477,8 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         break;
     }
   }
+  else if (property.Equals("live"))
+    result = IsPVRChannel();
   else
     return InvalidParams;
 
@@ -1360,4 +1514,24 @@ double CPlayerOperations::ParseTimeInSeconds(const CVariant &time)
   }
 
   return seconds;
+}
+
+bool CPlayerOperations::IsPVRChannel()
+{
+  return g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio();
+}
+
+bool CPlayerOperations::GetCurrentEpg(EPG::CEpgInfoTag &epg)
+{
+  if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
+    return false;
+
+  CPVRChannelPtr currentChannel;
+  if (!g_PVRManager.GetCurrentChannel(currentChannel))
+    return false;
+
+  if (!currentChannel->GetEPGNow(epg))
+    return false;
+
+  return true;
 }

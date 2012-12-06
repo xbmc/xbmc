@@ -1,0 +1,304 @@
+TOC
+1. Introduction
+2. Installing and setting up the Android environment
+3. Getting the source code
+4. Installing the required Ubuntu packages
+5. How to compile
+6. Installing XBMC in an Android system
+7. Running and debugging XBMC in an Android system
+8. Architecture
+9. Useful Commands
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+We currently recommend Ubuntu Natty (11.04) or later. Current work has been
+done here. Additionally, building from OSX Snow Leopard is working.
+
+NOTE TO NEW USERS: All lines that are prefixed with the '#'
+character are commands that need to be typed into a terminal window /
+console (similar to the command prompt for Windows). Note that the '#'
+character itself should NOT be typed as part of the command.
+
+-----------------------------------------------------------------------------
+2. Installing the required Ubuntu packages
+-----------------------------------------------------------------------------
+These are the minimum packages necessary for building XBMC. Non-Ubuntu
+users will need to get the equivalents.
+
+   # sudo apt-get install build-essential default-jdk git curl autoconf \
+       unzip zip zlib1g-dev gawk gperf cmake
+
+If you run a 64bit operating system you will also need to get ia32-libs
+
+   # sudo apt-get install ia32-libs
+
+
+-----------------------------------------------------------------------------
+3. Installing and setting up the Android environment
+-----------------------------------------------------------------------------
+
+To develop XBMC for Android the Android SDK and NDK are required.
+Because the Android NDK is lacking support for wide characters (wchar_t)
+which XBMC relies on for Unicode implementation, a third-party NDK
+from Crystax is being used.
+
+--------------------------------------------------------------------
+3.1. Getting the Android SDK and NDK
+--------------------------------------------------------------------
+
+To get the Android SDK, go to http://developer.android.com/sdk and
+download the latest version for your operating system. The Crystax NDK
+can be downloaded from http://www.crystax.net/en/android/ndk
+
+[NOTICE] Compiling XBMC for Android requires at least Crystax Android NDK
+         Revision 7b. Crystax Android NDK Revision 7 and earlier do not work
+         properly for our cause. The corresponding Crystax NDK version
+         is android-ndk-r7-crystax-5. Do not use the standard Android NDK.
+         
+After downloading the SDK and NDK extract the files contained in the
+archives to your harddisk.
+
+Make sure you have a recent JRE and JDK installed otherwise the
+Android SDK will not work.
+
+--------------------------------------------------------------------
+3.2. Installing Android SDK packages
+--------------------------------------------------------------------
+
+After having extracted the Android SDK to <android-sdk> you need to
+install some android packages using the Android SDK Manager:
+
+   # cd <android-sdk>/tools
+   # ./android update sdk -u -t platform,platform-tool
+
+--------------------------------------------------------------------
+3.3. Setup the Android toolchain
+--------------------------------------------------------------------
+
+To be able to compile XBMC and the libraries it depends on for the
+Android platform you first need to setup an Android toolchain using
+the Android NDK which you earlier extracted to <android-ndk>. The
+following commands will create a toolchain suitable for the most
+common scenario.
+The --install-dir option (and therefore the <android-toolchain> value)
+specifies where the resulting toolchain should be installed (your choice).
+
+   # cd <android-ndk>
+   # ls platforms
+   # cd build/tools
+   # ./make-standalone-toolchain.sh --ndk-dir=../../ \
+     --install-dir=<android-toolchain>/android-9 --platform=android-9
+
+ATTENTION FOR X86 BUILDS - THIS DOES NOT APPLY TO 99% OF BUILDS:
+If you want to build for the x86 platform there is a flaw in the mentioned
+NDK. See http://code.google.com/p/android/issues/detail?id=19851 which results
+in linker errors mentioning "sigsetjmp and siglongjmp".
+In that case you have to download the libc.tar.bz2 from that google issue
+entry:
+
+http://android.googlecode.com/issues/attachment?aid=198510003000&name=libc.tar.bz2&token=6uNpHc1v8ixmVOTq3y6-ohUfb0o%3A1341156659947
+
+And extract it to <android-toolchain>/android-<x>/sysroot/usr/lib/ and overwrite
+the libc.so there. (where <android-toolchain>/android-<x>/ is the path you have given on the
+--install-dir option above)
+
+--------------------------------------------------------------------
+3.4. Create a (new) debug key to sign debug APKs
+--------------------------------------------------------------------
+
+  All packages must be signed. The following command will generate a
+  self-signed debug key. If the result is a cryptic error, it
+  probably just means a debug key already existed, no cause for alarm.
+
+  # keytool -genkey -keystore ~/.android/debug.keystore -v -alias \
+      androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -keypass \
+      android -storepass android -keyalg RSA -keysize 2048 -validity 10000
+
+-----------------------------------------------------------------------------
+4. Getting the source code
+-----------------------------------------------------------------------------
+
+   # cd $HOME
+   # git clone git://github.com/xbmc/xbmc.git xbmc-android
+   # cd xbmc-android
+   # git submodule update --init addons/skin.touched
+
+-----------------------------------------------------------------------------
+5. How to compile
+-----------------------------------------------------------------------------
+
+Compiling XBMC for Android consists of compiling the libraries XBMC depends
+on with the Android toolchain and creating an Android Application Package
+(APK) which can be installed in an Android system.
+
+--------------------------------------------------------------------
+5.1. Building dependencies
+--------------------------------------------------------------------
+
+   # cd $HOME/xbmc-android/tools/android/depends
+   # ./bootstrap
+   # ./configure --help
+
+   Run configure with the correct settings for you local configuration.
+
+   Anyone working on the dependencies themselves will want to set the
+   environment variables specified in ~/.bashrc or similar, to avoid
+   having to input these with each configure. 
+
+   # make -j <jobs>
+
+   This build was designed to be massively parallel. Don't be afraid to
+   give it a 'make -j20' or so.
+
+   Verify that all deps built correctly (it will tell you so) before
+   continuing. You will get crazy build errors otherwise.
+
+--------------------------------------------------------------------
+5.2. Building XBMC
+--------------------------------------------------------------------
+
+   # cd $HOME/xbmc-android
+   # make -C tools/android/depends/xbmc
+
+   After the first build (assuming bootstrap and configure are successful),
+   subsequent builds can be run with a simple 'make' and 'make apk'.
+
+-----------------------------------------------------------------------------
+6. Installing XBMC in an Android system
+-----------------------------------------------------------------------------
+
+To install XBMC through the previously built APK in an Android system you can
+either install it on a real device (smartphone/tablet/...) running Android
+ >= 2.3.x.
+
+--------------------------------------------------------------------
+6.1. Installing XBMC on the Android device
+--------------------------------------------------------------------
+
+Make sure your Android device is connected to your computer through
+USB. Furthermore you have to enable the following option in your
+device's Android settings:
+
+  - Applications
+    [X] Unknown sources
+
+   # cd $HOME/xbmc-android/tools/android/packaging
+   # adb devices
+   # adb -s <device-id> install -r images/xbmcapp-debug.apk
+      
+The <device-id> can be retrieved from the list returned by the
+"adb devices" command and is the first value in the row representing
+your device.
+
+-----------------------------------------------------------------------------
+7. Running and debugging XBMC in an Android system
+-----------------------------------------------------------------------------
+
+After installing XBMC's APK in an Android system you can start it using its
+Launcher icon in Android's Application Launcher.
+
+--------------------------------------------------------------------
+7.1. Debugging XBMC
+--------------------------------------------------------------------
+
+To be able to see what is happening while running XBMC you first need
+to enable USB debugging in your Android settings (this is already done
+when using the emulator):
+
+  - Applications
+    [X] Unknown sources
+     -  Development
+      [X] USB debugging
+
+To access the log output of your Android system run (the -s parameter
+and the <device-id> may not be needed when using the Android emulator)
+
+  # adb -s <device-id> logcat
+
+
+--------------------------------------------------------------------
+7.2. GDB
+--------------------------------------------------------------------
+
+GDB can be used to debug, though the support is rather primitive. Rather than
+using gdb directly, you will need to use ndk-gdb which wraps it. Do NOT trust
+the -p/--project switches, as of ndk7b they do not work. Instead you will need
+to cd to tools/android/packaging/xbmc and execute it from there.
+
+  # ndk-gdb --start --delay=0
+
+This will open the installed version of XBMC and break. The warnings can be
+ignored as we have setup the appropriate paths already.
+
+--------------------------------------------------------------------
+8. Architecture
+--------------------------------------------------------------------
+
+During the early days of the android port, xbmc was launched via a stub lib
+that then dlopen'd libxbmc. This was done to get around bionic's poor handling
+of shared libs. We now compile everything into libxbmc itself so that it has
+no runtime dependencies beyond system libs. Done this way, we're able to launch
+into libxbmc directly.
+
+But we still hit Bionic's loader's deficiencies when we dlopen a lib. There are
+two main issues to overcome for loading:
+
+1. Bionic imports all symbols for a lib as soon as it is loaded, and it will
+refuse to open a lib if it has a single unresolved symbol
+
+2. It does not search recursively during the resolve. So if liba depends on
+libb, dlopen'ing liba will _not_ pull in missing symbols from libb. This is
+particularly nasty considering #1.
+
+To work-around these problems we use our own recursive loader in place of
+dlopen. This loader mimics expected behavior. Using the example above, loading
+libb before liba will mean that everything will resolve correctly.
+
+Additionally, Android does not use versioned solibs. libfoo.so.1 which is
+typical on linux would not be found by the loader. This means that we must
+strip the SONAME and NEEDED values out of the libs as well as changing the
+filenames themselves. The cleaner solution would be to patch libtool/cmake/etc
+to not add versioning in the first place. For now, we use the brute-force
+approach of modifying the binary and blanking out the versions.
+
+See here for more info:
+http://www.bernawebdesign.ch/byteblog/2011/11/23/creating-non-versioned-shared-libraries-for-android/
+
+As a final gotcha, all libs must be in the form of ^lib.*so$ with no
+exceptions (they won't even install otherwise), and the soname must match.
+So we have to do some renaming to get some of our self-built libs loaded.
+
+Development:
+Typical android native activities are built with ndk-build which is a wrapper
+around Make. It would be a nightmare to port our entire buildsystem over, so
+instead we build as usual then package ourselves. It may be beneficial to use
+ndk-build to do the actual packaging, but for now its behavior is emulated.
+
+ABI:
+Presently we are targeting armv7a+neon for arm, and i686 for x86. Note that x86
+builds successfully but has not been tested.
+
+--------------------------------------------------------------------
+9. Useful Commands
+--------------------------------------------------------------------
+
+Below are a few helpful commands when building/debugging. These assume that pwd
+is 'tools/android/packaging' and that the proper sdk/ndk paths are set.
+
+-Install a new build over the existing one
+  # adb -e install -r images/xbmcapp-debug.apk
+
+-Launch XBMC on the emulator without the GUI
+  # adb shell am start -a android.intent.action.MAIN -n org.xbmc.xbmc/android.app.NativeActivity
+
+-Kill a misbehaving XBMC
+  # adb shell ps | grep org.xbmc | awk '{print $2}' | xargs adb shell kill
+
+-Filter logcat messages by a specific tag (e.g. "XBMC")
+  # adb logcat -s XBMC:V
+  
+-Enable CheckJNI (BEFORE starting the application)
+  # adb shell setprop debug.checkjni 1
+  

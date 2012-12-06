@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -24,12 +23,11 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-
-using namespace MUSIC_INFO;
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 SIDCodec::SIDCodec()
 {
-  m_CodecName = "SID";
+  m_CodecName = "sid";
   m_sid = 0;
   m_iTrack = -1;
   m_iDataPos = -1;
@@ -77,6 +75,7 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_SampleRate = 48000;
   m_BitsPerSample = 16;
   m_TotalTime = 4*60*1000;
+  m_DataFormat = AE_FMT_S16NE;
 
   return true;
 }
@@ -142,4 +141,16 @@ int SIDCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 bool SIDCodec::CanInit()
 {
   return m_dll.CanLoad();
+}
+
+CAEChannelInfo SIDCodec::GetChannelInfo()
+{
+  static enum AEChannel map[1][2] = {
+    {AE_CH_FC, AE_CH_NULL}
+  };
+
+  if (m_Channels > 1)
+    return CAEUtil::GuessChLayout(m_Channels);
+
+  return CAEChannelInfo(map[m_Channels - 1]);
 }

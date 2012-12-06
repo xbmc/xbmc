@@ -1,6 +1,6 @@
-SRCS=DummyVideoPlayer.cpp \
+SRCS = DummyVideoPlayer.cpp
 
-LIB=cores.a
+LIB = cores.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

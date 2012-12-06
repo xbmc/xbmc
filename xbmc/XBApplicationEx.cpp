@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,12 @@
 #else
 #define MEASURE_FUNCTION
 #endif
+#include "commons/Exception.h"
+
+// Put this here for easy enable and disable
+#ifndef _DEBUG
+#define XBMC_TRACK_EXCEPTIONS
+#endif
 
 CXBApplicationEx::CXBApplicationEx()
 {
@@ -35,6 +41,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_AppActive = true;
   m_AppFocused = true;
   m_ExitCode = EXITCODE_QUIT;
+  m_renderGUI = false;
 }
 
 CXBApplicationEx::~CXBApplicationEx()
@@ -69,18 +76,18 @@ VOID CXBApplicationEx::Destroy()
 }
 
 /* Function that runs the application */
-INT CXBApplicationEx::Run(bool renderGUI)
+INT CXBApplicationEx::Run()
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
 
-  BYTE processExceptionCount = 0;
-  BYTE frameMoveExceptionCount = 0;
-  BYTE renderExceptionCount = 0;
   unsigned int lastFrameTime = 0;
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-#ifndef _DEBUG
+#ifdef XBMC_TRACK_EXCEPTIONS
+  BYTE processExceptionCount = 0;
+  BYTE frameMoveExceptionCount = 0;
+  BYTE renderExceptionCount = 0;
   const BYTE MAX_EXCEPTION_COUNT = 10;
 #endif
 
@@ -93,17 +100,27 @@ INT CXBApplicationEx::Run(bool renderGUI)
     //-----------------------------------------
     // Animate and render a frame
     //-----------------------------------------
-#ifndef _DEBUG
+#ifdef XBMC_TRACK_EXCEPTIONS
     try
     {
 #endif
       lastFrameTime = XbmcThreads::SystemClockMillis();
       Process();
       //reset exception count
+#ifdef XBMC_TRACK_EXCEPTIONS
       processExceptionCount = 0;
 
-#ifndef _DEBUG
-
+    }
+    catch (const XbmcCommons::UncheckedException &e)
+    {
+      e.LogThrowMessage("CApplication::Process()");
+      processExceptionCount++;
+      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
+      if (processExceptionCount > MAX_EXCEPTION_COUNT)
+      {
+        CLog::Log(LOGERROR, "CApplication::Process(), too many exceptions");
+        throw;
+      }
     }
     catch (...)
     {
@@ -118,16 +135,26 @@ INT CXBApplicationEx::Run(bool renderGUI)
     }
 #endif
     // Frame move the scene
-#ifndef _DEBUG
+#ifdef XBMC_TRACK_EXCEPTIONS
     try
     {
 #endif
-      if (!m_bStop) FrameMove(true, renderGUI);
+      if (!m_bStop) FrameMove(true, m_renderGUI);
       //reset exception count
+#ifdef XBMC_TRACK_EXCEPTIONS
       frameMoveExceptionCount = 0;
 
-#ifndef _DEBUG
-
+    }
+    catch (const XbmcCommons::UncheckedException &e)
+    {
+      e.LogThrowMessage("CApplication::FrameMove()");
+      frameMoveExceptionCount++;
+      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
+      if (frameMoveExceptionCount > MAX_EXCEPTION_COUNT)
+      {
+        CLog::Log(LOGERROR, "CApplication::FrameMove(), too many exceptions");
+        throw;
+      }
     }
     catch (...)
     {
@@ -143,23 +170,32 @@ INT CXBApplicationEx::Run(bool renderGUI)
 #endif
 
     // Render the scene
-#ifndef _DEBUG
+#ifdef XBMC_TRACK_EXCEPTIONS
     try
     {
 #endif
-      if (renderGUI && !m_bStop) Render();
-      else if (!renderGUI)
+      if (m_renderGUI && !m_bStop) Render();
+      else if (!m_renderGUI)
       {
         frameTime = XbmcThreads::SystemClockMillis() - lastFrameTime;
         if(frameTime < noRenderFrameTime)
           Sleep(noRenderFrameTime - frameTime);
       }
-
+#ifdef XBMC_TRACK_EXCEPTIONS
       //reset exception count
       renderExceptionCount = 0;
 
-#ifndef _DEBUG
-
+    }
+    catch (const XbmcCommons::UncheckedException &e)
+    {
+      e.LogThrowMessage("CApplication::Render()");
+      renderExceptionCount++;
+      //MAX_EXCEPTION_COUNT exceptions in a row? -> bail out
+      if (renderExceptionCount > MAX_EXCEPTION_COUNT)
+      {
+        CLog::Log(LOGERROR, "CApplication::Render(), too many exceptions");
+        throw;
+      }
     }
     catch (...)
     {

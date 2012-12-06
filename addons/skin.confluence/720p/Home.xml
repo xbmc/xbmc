@@ -1,4 +1,4 @@
-<window id="0">
+<window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
 	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
@@ -40,7 +40,7 @@
 				<width>130</width>
 				<height>295</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<texture>$INFO[MusicPlayer.Cover]</texture>
+				<texture fallback="DefaultAlbumCover.png">$INFO[Player.Art(thumb)]</texture>
 				<bordertexture border="8">ThumbBorder.png</bordertexture>
 				<bordersize>5</bordersize>
 			</control>
@@ -84,6 +84,150 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
+		<!-- LiveTV Info -->
+		<control type="group">
+			<posx>490r</posx>
+			<posy>70</posy>
+			<visible>Container(9000).HasFocus(12) + [PVR.IsRecording | PVR.HasNonRecordingTimer]</visible>
+			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
+			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(Favourites)">conditional</animation>
+			<control type="group">
+				<animation effect="slide" start="0,0" end="0,100" time="0" condition="PVR.IsRecording">conditional</animation>
+				<visible>PVR.HasNonRecordingTimer</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>-5</posy>
+					<width>490</width>
+					<height>90</height>
+					<texture>gradient.png</texture>
+				</control>
+				<control type="image">
+					<posx>400</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>80</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true" fallback="DefaultVideoCover.png">$INFO[PVR.NextRecordingChannelIcon]</texture>
+					<bordertexture border="8">ThumbBorder.png</bordertexture>
+					<bordersize>4</bordersize>
+				</control>
+				<control type="image">
+					<posx>365</posx>
+					<posy>5</posy>
+					<width>25</width>
+					<height>25</height>
+					<aspectratio>keep</aspectratio>
+					<texture>PVR-HasTimer.png</texture>
+				</control>
+				<control type="label">
+					<description>Next Timer Header label</description>
+					<posx>355</posx>
+					<posy>5</posy>
+					<height>25</height>
+					<width>400</width>
+					<label>$LOCALIZE[19157]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NextRecordingDateTime</description>
+					<posx>390</posx>
+					<posy>30</posy>
+					<height>25</height>
+					<width>400</width>
+					<label>$INFO[PVR.NextRecordingDateTime,$LOCALIZE[19126] - ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<scroll>true</scroll>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NextRecordingTitle Channel</description>
+					<posx>390</posx>
+					<posy>50</posy>
+					<height>25</height>
+					<width>800</width>
+					<label>$INFO[PVR.NextRecordingTitle][COLOR=grey]$INFO[PVR.NextRecordingChannel, - [COLOR=blue]([/COLOR],[COLOR=blue])[/COLOR]][/COLOR]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
+				</control>
+			</control>
+			<control type="group">
+				<visible>PVR.IsRecording</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>-5</posy>
+					<width>490</width>
+					<height>90</height>
+					<texture>gradient.png</texture>
+				</control>
+				<control type="image">
+					<posx>400</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>80</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true" fallback="DefaultVideoCover.png">$INFO[PVR.NowRecordingChannelIcon]</texture>
+					<bordertexture border="8">ThumbBorder.png</bordertexture>
+					<bordersize>4</bordersize>
+				</control>
+				<control type="image">
+					<posx>360</posx>
+					<posy>5</posy>
+					<width>30</width>
+					<height>25</height>
+					<aspectratio>keep</aspectratio>
+					<texture>PVR-IsRecording.png</texture>
+				</control>
+				<control type="label">
+					<description>Is Recording Header label</description>
+					<posx>350</posx>
+					<posy>5</posy>
+					<height>25</height>
+					<width>400</width>
+					<label>$LOCALIZE[19158]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NextRecordingDateTime</description>
+					<posx>390</posx>
+					<posy>30</posy>
+					<height>25</height>
+					<width>400</width>
+					<label>$INFO[PVR.NowRecordingDateTime,$LOCALIZE[19126] - ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<scroll>true</scroll>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NextRecordingTitle Channel</description>
+					<posx>390</posx>
+					<posy>50</posy>
+					<height>30</height>
+					<width>800</width>
+					<label>$INFO[PVR.NowRecordingTitle][COLOR=grey]$INFO[PVR.NowRecordingChannel, - [COLOR=blue]([/COLOR],[COLOR=blue])[/COLOR]][/COLOR]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
+				</control>
+			</control>
+		</control>
 		<!-- Video Info -->
 		<control type="group">
 			<posx>0</posx>
@@ -92,7 +236,47 @@
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="group">
-				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes)</visible>
+				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(LiveTV)</visible>
+				<control type="image">
+					<description>Cover image</description>
+					<posx>20</posx>
+					<posy>45</posy>
+					<width>150</width>
+					<height>300</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
+					<bordertexture border="8">ThumbBorder.png</bordertexture>
+					<bordersize>5</bordersize>
+				</control>
+				<control type="label">
+					<description>Title label</description>
+					<posx>190</posx>
+					<posy>285</posy>
+					<height>30</height>
+					<width>1000</width>
+					<label>$INFO[VideoPlayer.Title]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Time Label</description>
+					<posx>190</posx>
+					<posy>310</posy>
+					<height>30</height>
+					<width>300</width>
+					<label>$INFO[Player.Time]$INFO[Player.Duration,[COLOR=blue] / [/COLOR]]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+			<control type="group">
+				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<control type="image">
 					<description>Cover image</description>
 					<posx>20</posx>
@@ -100,9 +284,22 @@
 					<width>120</width>
 					<height>300</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
+				</control>
+				<control type="label">
+					<description>Channel label</description>
+					<posx>160</posx>
+					<posy>265</posy>
+					<height>25</height>
+					<width>660</width>
+					<label>$INFO[VideoPlayer.ChannelName]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
 					<description>Title label</description>
@@ -140,7 +337,7 @@
 					<width>120</width>
 					<height>300</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
 				</control>
@@ -193,7 +390,7 @@
 					<width>180</width>
 					<height>120</height>
 					<aspectratio>scale</aspectratio>
-					<texture>$INFO[VideoPlayer.Cover]</texture>
+					<texture fallback="DefaultVideoCover.png">$INFO[Player.Art(thumb)]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
 					<bordersize>5</bordersize>
 				</control>
@@ -320,93 +517,175 @@
 					<texture flipy="true" border="0,5,0,0">HomeSubNF.png</texture>
 					<colordiffuse>CCFFFFFF</colordiffuse>
 				</control>
-				<control type="button" id="601">
-					<posx>10</posx>
-					<posy>2</posy>
-					<width>30</width>
-					<height>30</height>
-					<label>-</label>
-					<texturefocus>OSDPrevTrackFO.png</texturefocus>
-					<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
-					<onleft>608</onleft>
-					<onright>602</onright>
-					<onup>9003</onup>
-					<ondown>9000</ondown>
-					<onclick>XBMC.PlayerControl(Previous)</onclick>
+				<control type="group">
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
+					<control type="button" id="601">
+						<posx>10</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDPrevTrackFO.png</texturefocus>
+						<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
+						<onleft>608</onleft>
+						<onright>602</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Previous)</onclick>
+					</control>
+					<control type="button" id="602">
+						<posx>40</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDRewindFO.png</texturefocus>
+						<texturenofocus>OSDRewindNF.png</texturenofocus>
+						<onleft>601</onleft>
+						<onright>603</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Rewind)</onclick>
+					</control>
+					<control type="togglebutton" id="603">
+						<posx>70</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDPauseFO.png</texturefocus>
+						<texturenofocus>OSDPauseNF.png</texturenofocus>
+						<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+						<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+						<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+						<onleft>602</onleft>
+						<onright>604</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Play)</onclick>
+					</control>
+					<control type="button" id="604">
+						<posx>100</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDStopFO.png</texturefocus>
+						<texturenofocus>OSDStopNF.png</texturenofocus>
+						<onleft>603</onleft>
+						<onright>605</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>down</onclick>
+						<onclick>XBMC.PlayerControl(Stop)</onclick>
+					</control>
+					<control type="button" id="605">
+						<posx>130</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDForwardFO.png</texturefocus>
+						<texturenofocus>OSDForwardNF.png</texturenofocus>
+						<onleft>604</onleft>
+						<onright>606</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Forward)</onclick>
+					</control>
+					<control type="button" id="606">
+						<posx>160</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDNextTrackFO.png</texturefocus>
+						<texturenofocus>OSDNextTrackNF.png</texturenofocus>
+						<onleft>605</onleft>
+						<onright>607</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Next)</onclick>
+					</control>
 				</control>
-				<control type="button" id="602">
-					<posx>40</posx>
-					<posy>2</posy>
-					<width>30</width>
-					<height>30</height>
-					<label>-</label>
-					<texturefocus>OSDRewindFO.png</texturefocus>
-					<texturenofocus>OSDRewindNF.png</texturenofocus>
-					<onleft>601</onleft>
-					<onright>603</onright>
-					<onup>9003</onup>
-					<ondown>9000</ondown>
-					<onclick>XBMC.PlayerControl(Rewind)</onclick>
-				</control>
-				<control type="togglebutton" id="603">
-					<posx>70</posx>
-					<posy>2</posy>
-					<width>30</width>
-					<height>30</height>
-					<label>-</label>
-					<texturefocus>OSDPauseFO.png</texturefocus>
-					<texturenofocus>OSDPauseNF.png</texturenofocus>
-					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
-					<alttexturefocus>OSDPlayFO.png</alttexturefocus>
-					<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
-					<onleft>602</onleft>
-					<onright>604</onright>
-					<onup>9003</onup>
-					<ondown>9000</ondown>
-					<onclick>XBMC.PlayerControl(Play)</onclick>
-				</control>
-				<control type="button" id="604">
-					<posx>100</posx>
-					<posy>2</posy>
-					<width>30</width>
-					<height>30</height>
-					<label>-</label>
-					<texturefocus>OSDStopFO.png</texturefocus>
-					<texturenofocus>OSDStopNF.png</texturenofocus>
-					<onleft>603</onleft>
-					<onright>605</onright>
-					<onup>9003</onup>
-					<ondown>9000</ondown>
-					<onclick>down</onclick>
-					<onclick>XBMC.PlayerControl(Stop)</onclick>
-				</control>
-				<control type="button" id="605">
-					<posx>130</posx>
-					<posy>2</posy>
-					<width>30</width>
-					<height>30</height>
-					<label>-</label>
-					<texturefocus>OSDForwardFO.png</texturefocus>
-					<texturenofocus>OSDForwardNF.png</texturenofocus>
-					<onleft>604</onleft>
-					<onright>606</onright>
-					<onup>9003</onup>
-					<ondown>9000</ondown>
-					<onclick>XBMC.PlayerControl(Forward)</onclick>
-				</control>
-				<control type="button" id="606">
-					<posx>160</posx>
-					<posy>2</posy>
-					<width>30</width>
-					<height>30</height>
-					<label>-</label>
-					<texturefocus>OSDNextTrackFO.png</texturefocus>
-					<texturenofocus>OSDNextTrackNF.png</texturenofocus>
-					<onleft>605</onleft>
-					<onright>607</onright>
-					<onup>9003</onup>
-					<ondown>9000</ondown>
-					<onclick>XBMC.PlayerControl(Next)</onclick>
+				<control type="group" id="600">
+					<visible>VideoPlayer.Content(LiveTV)</visible>
+					<control type="button" id="601">
+						<posx>10</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDChannelUPFO.png</texturefocus>
+						<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+						<onleft>608</onleft>
+						<onright>602</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Previous)</onclick>
+					</control>
+					<control type="button" id="602">
+						<posx>40</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDChannelDownFO.png</texturefocus>
+						<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+						<onleft>601</onleft>
+						<onright>603</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Next)</onclick>
+					</control>
+					<control type="button" id="603">
+						<posx>70</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDStopFO.png</texturefocus>
+						<texturenofocus>OSDStopNF.png</texturenofocus>
+						<onleft>602</onleft>
+						<onright>604</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>down</onclick>
+						<onclick>XBMC.PlayerControl(Stop)</onclick>
+					</control>
+					<control type="togglebutton" id="604">
+						<posx>100</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDPauseFO.png</texturefocus>
+						<texturenofocus>OSDPauseNF.png</texturenofocus>
+						<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+						<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+						<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+						<onleft>603</onleft>
+						<onright>606</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(Play)</onclick>
+						<enable>Player.PauseEnabled</enable>
+						<animation effect="fade" start="100" end="30" time="100" condition="!Player.PauseEnabled">Conditional</animation>
+					</control>
+					<control type="button" id="606">
+						<posx>160</posx>
+						<posy>2</posy>
+						<width>30</width>
+						<height>30</height>
+						<label>-</label>
+						<texturefocus>OSDRecordOffFO.png</texturefocus>
+						<texturenofocus>OSDRecordOffNF.png</texturenofocus>
+						<onleft>604</onleft>
+						<onright>607</onright>
+						<onup>9003</onup>
+						<ondown>9000</ondown>
+						<onclick>XBMC.PlayerControl(record)</onclick>
+					</control>
 				</control>
 			</control>
 			<control type="radiobutton" id="607">
@@ -495,6 +774,13 @@
 					<include>HomeSubMenuPlayDisc</include> <!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9014">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9014</onleft>
+					<onright>9014</onright>
+					<visible>Container(9000).HasFocus(12)</visible>
+					<include>HomeSubMenuLiveTV</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9015">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9013</onleft>
 					<onright>9013</onright>
@@ -609,9 +895,16 @@
 					<item id="4">
 						<label>1</label>
 						<onclick>ActivateWindow(Pictures)</onclick>
-						<icon>special://skin/backgrounds/pictures.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
+						<icon>-</icon>
+						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoPicturesButton)</visible>
+					</item>
+					<item id="12">
+						<label>31502</label>
+						<onclick>ActivateWindow(PVR)</onclick>
+						<icon>-</icon>
+						<thumb>-</thumb>
+						<visible>System.GetBool(pvrmanager.enabled)</visible>
 					</item>
 					<item id="2">
 						<label>3</label>
@@ -644,7 +937,8 @@
 					</item>
 					<item id="1">
 						<label>0</label>
-						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
+						<onclick condition="!System.Platform.Android">ActivateWindow(Programs,Addons,return)</onclick>
+						<onclick condition="System.Platform.Android">ActivateWindow(Programs)</onclick>
 						<icon>-</icon>
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,15 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "system.h"
 #include "Network.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "libscrobbler/lastfmscrobbler.h"
 #include "libscrobbler/librefmscrobbler.h"
 #include "utils/RssReader.h"
@@ -94,12 +94,12 @@ bool in_ether (const char *bufp, unsigned char *addr)
 
 CNetwork::CNetwork()
 {
-   g_application.getApplicationMessenger().NetworkMessage(SERVICES_UP, 0);
+  CApplicationMessenger::Get().NetworkMessage(SERVICES_UP, 0);
 }
 
 CNetwork::~CNetwork()
 {
-   g_application.getApplicationMessenger().NetworkMessage(SERVICES_DOWN, 0);
+  CApplicationMessenger::Get().NetworkMessage(SERVICES_DOWN, 0);
 }
 
 int CNetwork::ParseHex(char *str, unsigned char *addr)

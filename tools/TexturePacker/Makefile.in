@@ -9,17 +9,25 @@ CXXFLAGS+= \
   -I@abs_top_srcdir@/xbmc \
   -I@abs_top_srcdir@/xbmc/linux
 
+RPATH=-Wl,-rpath=$(NATIVE_ROOT_PATH)/lib
+
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
 ifdef NATIVE_ROOT_PATH
-ifeq ($(findstring osx,@ARCH@),osx)
+ifeq ($(findstring Darwin,$(shell uname -s)),Darwin)
 DEFINES += -DTARGET_DARWIN
-NATIVE_ARCH=$(shell echo $(CXXFLAGS) | grep x86_64 >/dev/null && echo -m64 || echo -m32)
+NATIVE_ARCH=@DARWIN_NATIVE_ARCH@
+RPATH=
 endif
-CXXFLAGS+= -I$(NATIVE_ROOT_PATH)/include
-LIBS    += -L$(NATIVE_ROOT_PATH)/lib
+NATIVE_CXXFLAGS+= -I. \
+                  -I$(NATIVE_ROOT_PATH)/include \
+                  -I@abs_top_srcdir@/lib \
+                  -I@abs_top_srcdir@/xbmc \
+                  -I@abs_top_srcdir@/xbmc/linux
+NATIVE_LIBS    += -L$(NATIVE_ROOT_PATH)/lib
 endif
-LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
+NATIVE_LIBS    += -lSDL_image -lSDL -llzo2
+NATIVE_LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
 else
 LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish
 endif
@@ -41,13 +49,13 @@ all: $(TARGET)
 
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 # TexturePacker run native on build system, build it with native tools
-$(TARGET): $(SRCS)
-	g++ $(DEFINES) $(NATIVE_ARCH) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
+$(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
+	g++ $(DEFINES) $(NATIVE_ARCH) $(NATIVE_CXXFLAGS) $(SRCS) $(NATIVE_LIBS) $(RPATH) -o $(TARGET)
 clean:
 	rm -f $(TARGET)
 else
 include @abs_top_srcdir@/Makefile.include
 
-$(TARGET): $(SRCS)
+$(TARGET): $(SRCS) @abs_top_srcdir@/xbmc/guilib/XBTF.h
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(SRCS) $(LDFLAGS) $(LIBS) -o $(TARGET)
 endif

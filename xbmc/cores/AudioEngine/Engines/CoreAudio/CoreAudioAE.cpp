@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,6 @@
 
 #include "CoreAudioAE.h"
 
-#include "MathUtils.h"
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
@@ -34,6 +32,7 @@
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/MathUtils.h"
 
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416
@@ -41,13 +40,17 @@
 CCoreAudioAE::CCoreAudioAE() :
   m_Initialized        (false         ),
   m_callbackRunning    (false         ),
+  m_lastStreamFormat   (AE_FMT_INVALID),
+  m_lastChLayoutCount  (0             ),
+  m_lastSampleRate     (0             ),
   m_chLayoutCount      (0             ),
   m_rawPassthrough     (false         ),
   m_volume             (1.0f          ),
   m_volumeBeforeMute   (1.0f          ),
   m_muted              (false         ),
   m_soundMode          (AE_SOUND_OFF  ),
-  m_streamsPlaying     (false         )
+  m_streamsPlaying     (false         ),
+  m_isSuspended        (false         )
 {
   HAL = new CCoreAudioAEHAL;
 }
@@ -91,7 +94,7 @@ bool CCoreAudioAE::Initialize()
 
   Deinitialize();
 
-  bool ret = OpenCoreAudio();
+  bool ret = OpenCoreAudio(44100, false, AE_FMT_FLOAT);
 
   Start();
 
@@ -124,13 +127,13 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   /* override the sample rate based on the oldest stream if there is one */
   if (!m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
-  streamLock.Leave();
 
   if (forceRaw)
     m_rawPassthrough = true;
   else
     m_rawPassthrough = !m_streams.empty() && m_streams.front()->IsRaw();
-
+  streamLock.Leave();
+    
   if (m_rawPassthrough)
     CLog::Log(LOGINFO, "CCoreAudioAE::OpenCoreAudio - RAW passthrough enabled");
 
@@ -139,7 +142,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   // on iOS devices we set fixed to two channels.
   m_stdChLayout = AE_CH_LAYOUT_2_0;
 #if defined(TARGET_DARWIN_OSX)
-  switch (g_guiSettings.GetInt("audiooutput.channellayout"))
+  switch (g_guiSettings.GetInt("audiooutput.channels"))
   {
     default:
     case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* do not allow 1_0 output */
@@ -155,6 +158,9 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
     case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
 #endif
+  // force optical/coax to 2.0 output channels
+  if (!m_rawPassthrough && g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+    m_stdChLayout = AE_CH_LAYOUT_2_0;
 
   // setup the desired format
   m_format.m_channelLayout = CAEChannelInfo(m_stdChLayout);
@@ -211,7 +217,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
   AEAudioFormat initformat = m_format;
 
   // initialize audio hardware
-  m_Initialized = HAL->Initialize(this, m_rawPassthrough, initformat, rawDataFormat, m_outputDevice);
+  m_Initialized = HAL->Initialize(this, m_rawPassthrough, initformat, rawDataFormat, m_outputDevice, m_volume);
 
   unsigned int bps         = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   m_chLayoutCount          = m_format.m_channelLayout.Count();
@@ -284,11 +290,9 @@ void CCoreAudioAE::Deinitialize()
   */
 
   HAL->Deinitialize();
-
-  CLog::Log(LOGINFO, "CCoreAudioAE::Deinitialize: Audio device has been closed.");
 }
 
-void CCoreAudioAE::OnSettingsChange(std::string setting)
+void CCoreAudioAE::OnSettingsChange(const std::string& setting)
 {
   if (setting == "audiooutput.dontnormalizelevels")
   {
@@ -306,10 +310,14 @@ void CCoreAudioAE::OnSettingsChange(std::string setting)
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.dtspassthrough"    ||
-      setting == "audiooutput.channellayout"     ||
+      setting == "audiooutput.channels"     ||
       setting == "audiooutput.multichannellpcm")
   {
-    Initialize();
+    // only reinit the engine if we not
+    // suspended (resume will initialize
+    // us again in that case)
+    if (!m_isSuspended)
+      Initialize();
   }
 }
 
@@ -363,7 +371,7 @@ void CCoreAudioAE::SetVolume(float volume)
   // we need this because m_volume is init'ed via
   // SetVolume and need to also init m_volumeBeforeMute.
   if (!m_muted)
-    m_volumeBeforeMute = volume;  
+    m_volumeBeforeMute = volume;
 
   HAL->SetVolume(m_volume);
 }
@@ -373,7 +381,7 @@ void CCoreAudioAE::SetMute(const bool enabled)
   m_muted = enabled;
   if(m_muted)
   {
-    m_volumeBeforeMute = m_volume;  
+    m_volumeBeforeMute = m_volume;
     SetVolume(VOLUME_MINIMUM);
   }
   else
@@ -387,13 +395,18 @@ bool CCoreAudioAE::IsMuted()
   return m_muted;
 }
 
+bool CCoreAudioAE::IsSuspended()
+{
+  return m_isSuspended;
+}
+
 void CCoreAudioAE::SetSoundMode(const int mode)
 {
   m_soundMode = mode;
-  
+
   /* stop all currently playing sounds if they are being turned off */
   if (mode == AE_SOUND_OFF || (mode == AE_SOUND_IDLE && m_streamsPlaying))
-    StopAllSounds();  
+    StopAllSounds();
 }
 
 bool CCoreAudioAE::SupportsRaw()
@@ -409,36 +422,45 @@ CCoreAudioAEHAL* CCoreAudioAE::GetHAL()
 IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options)
 {
+  // if we are suspended we don't
+  // want anyone to mess with us
+  if (m_isSuspended)
+    return NULL;
+
   CAEChannelInfo channelInfo(channelLayout);
   CLog::Log(LOGINFO, "CCoreAudioAE::MakeStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat), sampleRate, encodedSamplerate, ((std::string)channelInfo).c_str());
 
-  CSingleLock streamLock(m_streamLock);
-  //bool wasEmpty = m_streams.empty();
   CCoreAudioAEStream *stream = new CCoreAudioAEStream(dataFormat, sampleRate, encodedSamplerate, channelLayout, options);
+  CSingleLock streamLock(m_streamLock);
   m_streams.push_back(stream);
   streamLock.Leave();
 
-  Stop();
+  if ((options & AESTREAM_PAUSED) == 0)
+    Stop();
 
-  if (COREAUDIO_IS_RAW(dataFormat))
+  // reinit the engine if pcm format changes or always on raw format
+  if (m_Initialized && ( m_lastStreamFormat != dataFormat ||
+                         m_lastChLayoutCount != channelLayout.Count() ||
+                         m_lastSampleRate != sampleRate ||
+                         COREAUDIO_IS_RAW(dataFormat)))
   {
+    Stop();
     Deinitialize();
-    m_Initialized = OpenCoreAudio(sampleRate, true, dataFormat);
-  }
-  else if (/* wasEmpty || */ m_rawPassthrough)
-  {
-    Deinitialize();
-    m_Initialized = OpenCoreAudio(sampleRate);
+    m_Initialized = OpenCoreAudio(sampleRate, COREAUDIO_IS_RAW(dataFormat), dataFormat);
+    m_lastStreamFormat = dataFormat;
+    m_lastChLayoutCount = channelLayout.Count();
+    m_lastSampleRate = sampleRate;
   }
 
   /* if the stream was not initialized, do it now */
   if (!stream->IsValid())
     stream->Initialize();
 
-  Start();
+  if ((options & AESTREAM_PAUSED) == 0)  
+    Start();
 
-  m_streamsPlaying = true;  
+  m_streamsPlaying = true;
 
   return stream;
 }
@@ -469,9 +491,10 @@ IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
   m_streamsPlaying = !m_streams.empty();
 
   streamLock.Leave();
-  
-  // When we have been in passthrough mode, reinit the hardware to come back to anlog out
-  if (/*m_streams.empty() || */ m_rawPassthrough)
+
+  // When we have been in passthrough mode and are not suspended,
+  // reinit the hardware to come back to anlog out
+  if (/*m_streams.empty() || */ m_rawPassthrough && !m_isSuspended)
   {
     CLog::Log(LOGINFO, "CCoreAudioAE::FreeStream Reinit, no streams left" );
     Initialize();
@@ -482,7 +505,7 @@ IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
 
 void CCoreAudioAE::PlaySound(IAESound *sound)
 {
-  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying))
+  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying) || m_isSuspended)
     return;
 
   float *samples = ((CCoreAudioAESound*)sound)->GetSamples();
@@ -516,6 +539,11 @@ void CCoreAudioAE::StopSound(IAESound *sound)
 
 IAESound *CCoreAudioAE::MakeSound(const std::string& file)
 {
+  // we don't make sounds
+  // when suspended
+  if (m_isSuspended)
+    return NULL;
+
   CSingleLock soundLock(m_soundLock);
 
   // first check if we have the file cached
@@ -603,6 +631,9 @@ void CCoreAudioAE::GarbageCollect()
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
+  if (m_isSuspended)
+    return;
+
   HAL->EnumerateOutputDevices(devices, passthrough);
 }
 
@@ -622,6 +653,28 @@ void CCoreAudioAE::Stop()
   HAL->Stop();
 }
 
+bool CCoreAudioAE::Suspend()
+{
+  CLog::Log(LOGDEBUG, "CCoreAudioAE::Suspend - Suspending AE processing");
+  m_isSuspended = true;
+  // stop all gui sounds
+  StopAllSounds();
+  // stop the CA thread
+  Stop();
+
+  return true;
+}
+
+bool CCoreAudioAE::Resume()
+{
+  // fire up the engine again
+  bool ret = Initialize();
+  CLog::Log(LOGDEBUG, "CCoreAudioAE::Resume - Resuming AE processing");
+  m_isSuspended = false;
+
+  return ret;
+}
+
 //***********************************************************************************************
 // Rendering Methods
 //***********************************************************************************************
@@ -635,7 +688,7 @@ OSStatus CCoreAudioAE::OnRender(AudioUnitRenderActionFlags *actionFlags,
   //int size = frames * HAL->m_BytesPerFrame;
 
   for (UInt32 i = 0; i < ioData->mNumberBuffers; i++)
-    bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);	
+    bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
 
   if (!m_Initialized)
   {

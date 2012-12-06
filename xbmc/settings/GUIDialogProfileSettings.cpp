@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,18 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIDialogProfileSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "dialogs/GUIDialogContextMenu.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogKeyboard.h"
-#include "dialogs/GUIDialogGamepad.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "GUIDialogLockSettings.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIWindowManager.h"
@@ -146,7 +142,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
   // check and update anything that needs it
   if (setting.id == 1)
   {
-    if (CGUIDialogKeyboard::ShowAndGetInput(m_strName,g_localizeStrings.Get(20093),false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(m_strName,g_localizeStrings.Get(20093),false))
     {
       m_bNeedSave = true;
       SET_CONTROL_LABEL(1000,m_strName);
@@ -161,12 +157,12 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
     if (!m_strThumb.IsEmpty())
     {
       CFileItemPtr item(new CFileItem("thumb://Current", false));
-      item->SetThumbnailImage(m_strThumb);
+      item->SetArt("thumb", m_strThumb);
       item->SetLabel(g_localizeStrings.Get(20016));
       items.Add(item);
     }
     CFileItemPtr item(new CFileItem("thumb://None", false));
-    item->SetThumbnailImage(m_strDefaultImage);
+    item->SetArt("thumb", m_strDefaultImage);
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
     if (CGUIDialogFileBrowser::ShowAndGetImage(items,shares,g_localizeStrings.Get(1030),strThumb) &&
@@ -276,7 +272,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_strDirectory.Empty();
     dialog->m_strThumb.Empty();
     // prompt for a name
-    if (!CGUIDialogKeyboard::ShowAndGetInput(dialog->m_strName,g_localizeStrings.Get(20093),false) || dialog->m_strName.IsEmpty())
+    if (!CGUIKeyboardFactory::ShowAndGetInput(dialog->m_strName,g_localizeStrings.Get(20093),false) || dialog->m_strName.IsEmpty())
       return false;
     // create a default path
     CStdString defaultDir = URIUtils::AddFileToFolder("profiles",CUtil::MakeLegalFileName(dialog->m_strName));
@@ -385,7 +381,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     profile->setDatabases((dialog->m_iDbMode & 2) == 2);
     profile->setSources((dialog->m_iSourcesMode & 2) == 2);
     profile->SetLocks(dialog->m_locks);
-    
+
     g_settings.SaveProfiles(PROFILES_FILE);
     return true;
   }

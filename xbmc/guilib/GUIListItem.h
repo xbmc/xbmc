@@ -9,7 +9,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,9 +23,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -46,6 +45,8 @@ class CVariant;
 class CGUIListItem
 {
 public:
+  typedef std::map<std::string, std::string> ArtMap;
+
   enum GUIIconOverlay { ICON_OVERLAY_NONE = 0,
                         ICON_OVERLAY_RAR,
                         ICON_OVERLAY_ZIP,
@@ -73,25 +74,59 @@ public:
   void SetIconImage(const CStdString& strIcon);
   const CStdString& GetIconImage() const;
 
-  void SetThumbnailImage(const CStdString& strThumbnail);
-  const CStdString& GetThumbnailImage() const;
-
   void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
   CStdString GetOverlayImage() const;
 
+  /*! \brief Set a particular art type for an item
+   \param type type of art to set.
+   \param url the url of the art.
+   */
+  void SetArt(const std::string &type, const std::string &url);
+
   /*! \brief set artwork for an item
-   Sets thumb and fanart image
-   \param map a type:url map for artwork
+   \param art a type:url map for artwork
    \sa GetArt
    */
-  void SetArt(const std::map<std::string, std::string> &art);
+  void SetArt(const ArtMap &art);
+
+  /*! \brief append artwork to an item
+   \param art a type:url map for artwork
+   \param prefix a prefix for the art, if applicable.
+   \sa GetArt
+   */
+  void AppendArt(const ArtMap &art, const std::string &prefix = "");
+
+  /*! \brief set a fallback image for art
+   \param from the type to fallback from
+   \param to the type to fallback to
+   \sa SetArt
+   */
+  void SetArtFallback(const std::string &from, const std::string &to);
+
+  /*! \brief clear art on an item
+   \sa SetArt
+   */
+  void ClearArt();
+
+  /*! \brief Get a particular art type for an item
+   \param type type of art to fetch.
+   \return the art URL, if available, else empty.
+   */
+  std::string GetArt(const std::string &type) const;
 
   /*! \brief get artwork for an item
    Retrieves artwork in a type:url map
    \return a type:url map for artwork
    \sa SetArt
    */
-  std::map<std::string, std::string> GetArt() const;
+  const ArtMap &GetArt() const;
+
+  /*! \brief Check whether an item has a particular piece of art
+   Equivalent to !GetArt(type).empty()
+   \param type type of art to set.
+   \return true if the item has that art set, false otherwise.
+   */
+  bool HasArt(const std::string &type) const;
 
   void SetSortLabel(const CStdString &label);
   void SetSortLabel(const CStdStringW &label);
@@ -101,7 +136,6 @@ public:
   bool IsSelected() const;
 
   bool HasIcon() const;
-  bool HasThumbnail() const;
   bool HasOverlay() const;
   virtual bool IsFileItem() const { return false; };
 
@@ -142,7 +176,6 @@ public:
 
 protected:
   CStdString m_strLabel2;     // text of column2
-  CStdString m_strThumbnailImage; // filename of thumbnail
   CStdString m_strIcon;      // filename of icon
   GUIIconOverlay m_overlayIcon; // type of overlay icon
 
@@ -163,6 +196,9 @@ protected:
 private:
   CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting
   CStdString m_strLabel;      // text of column1
+
+  ArtMap m_art;
+  ArtMap m_artFallbacks;
 };
 #endif
 

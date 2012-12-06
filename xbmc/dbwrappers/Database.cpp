@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "Database.h"
-#include "Util.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Crc32.h"
@@ -28,9 +26,11 @@
 #include "filesystem/File.h"
 #include "utils/AutoPtrHandle.h"
 #include "utils/log.h"
+#include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "sqlitedataset.h"
 #include "DatabaseManager.h"
+#include "DbUrl.h"
 
 #ifdef HAS_MYSQL
 #include "mysqldataset.h"
@@ -40,6 +40,65 @@ using namespace AUTOPTR;
 using namespace dbiplus;
 
 #define MAX_COMPRESS_COUNT 20
+
+void CDatabase::Filter::AppendField(const std::string &strField)
+{
+  if (strField.empty())
+    return;
+
+  if (fields.empty() || fields == "*")
+    fields = strField;
+  else
+    fields += ", " + strField;
+}
+
+void CDatabase::Filter::AppendJoin(const std::string &strJoin)
+{
+  if (strJoin.empty())
+    return;
+
+  if (join.empty())
+    join = strJoin;
+  else
+    join += " " + strJoin;
+}
+
+void CDatabase::Filter::AppendWhere(const std::string &strWhere, bool combineWithAnd /* = true */)
+{
+  if (strWhere.empty())
+    return;
+
+  if (where.empty())
+    where = strWhere;
+  else
+  {
+    where = "(" + where + ") ";
+    where += combineWithAnd ? "AND" : "OR";
+    where += " (" + strWhere + ")";
+  }
+}
+
+void CDatabase::Filter::AppendOrder(const std::string &strOrder)
+{
+  if (strOrder.empty())
+    return;
+
+  if (order.empty())
+    order = strOrder;
+  else
+    order += ", " + strOrder;
+}
+
+void CDatabase::Filter::AppendGroup(const std::string &strGroup)
+{
+  if (strGroup.empty())
+    return;
+
+  if (group.empty())
+    group = strGroup;
+  else
+    group += ", " + strGroup;
+}
 
 CDatabase::CDatabase(void)
 {
@@ -145,6 +204,11 @@ CStdString CDatabase::GetSingleValue(const CStdString &strTable, const CStdStrin
   return GetSingleValue(query, m_pDS);
 }
 
+CStdString CDatabase::GetSingleValue(const CStdString &query)
+{
+  return GetSingleValue(query, m_pDS);
+}
+
 bool CDatabase::DeleteValues(const CStdString &strTable, const CStdString &strWhereClause /* = CStdString() */)
 {
   bool bReturn = true;
@@ -223,7 +287,7 @@ bool CDatabase::QueueInsertQuery(const CStdString &strQuery)
 
 bool CDatabase::CommitInsertQueries()
 {
-  bool bReturn = false;
+  bool bReturn = true;
 
   if (m_bMultiWrite)
   {
@@ -232,10 +296,10 @@ bool CDatabase::CommitInsertQueries()
       m_bMultiWrite = false;
       m_pDS2->post();
       m_pDS2->clear_insert_sql();
-      bReturn = true;
     }
     catch(...)
     {
+      bReturn = false;
       CLog::Log(LOGERROR, "%s - failed to execute queries",
           __FUNCTION__);
     }
@@ -291,7 +355,8 @@ void CDatabase::InitSettings(DatabaseSettings &dbSettings)
 #endif
   {
     dbSettings.type = "sqlite3";
-    dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
+    if (dbSettings.host.IsEmpty())
+      dbSettings.host = CSpecialProtocol::TranslatePath(g_settings.GetDatabaseFolder());
   }
 
   // use separate, versioned database
@@ -488,6 +553,8 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
+  else 
+    CLog::Log(LOGNOTICE, "Running database version %s", dbName.c_str());
   return true;
 }
 
@@ -623,3 +690,36 @@ bool CDatabase::UpdateVersionNumber()
   return true;
 }
 
+bool CDatabase::BuildSQL(const CStdString &strQuery, const Filter &filter, CStdString &strSQL)
+{
+  strSQL = strQuery;
+
+  if (!filter.join.empty())
+    strSQL += filter.join;
+  if (!filter.where.empty())
+    strSQL += " WHERE " + filter.where;
+  if (!filter.group.empty())
+    strSQL += " GROUP BY " + filter.group;
+  if (!filter.order.empty())
+    strSQL += " ORDER BY " + filter.order;
+  if (!filter.limit.empty())
+    strSQL += " LIMIT " + filter.limit;
+
+  return true;
+}
+
+bool CDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl)
+{
+  SortDescription sorting;
+  return BuildSQL(strBaseDir, strQuery, filter, strSQL, dbUrl, sorting);
+}
+
+bool CDatabase::BuildSQL(const CStdString &strBaseDir, const CStdString &strQuery, Filter &filter, CStdString &strSQL, CDbUrl &dbUrl, SortDescription &sorting /* = SortDescription() */)
+{
+  // parse the base path to get additional filters
+  dbUrl.Reset();
+  if (!dbUrl.FromString(strBaseDir) || !GetFilter(dbUrl, filter, sorting))
+    return false;
+
+  return BuildSQL(strQuery, filter, strSQL);
+}

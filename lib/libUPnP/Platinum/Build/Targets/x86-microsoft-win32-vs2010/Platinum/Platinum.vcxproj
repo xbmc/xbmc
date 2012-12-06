@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{568611D3-AFA7-4294-99C1-E9AED0D8057E}</ProjectGuid>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <RootNamespace>Platinum</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Neptune\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Extras;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\Source\Devices\MediaConnect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)Platinum.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)Platinum.lib</OutputFile>
+    </Lib>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Neptune\Source\Core;..\..\..\..\Source\Platinum;..\..\..\..\Source\Core;..\..\..\..\Source\Extras;..\..\..\..\Source\Devices\MediaServer;..\..\..\..\Source\Devices\MediaRenderer;..\..\..\..\Source\Devices\MediaConnect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(OutDir)Platinum.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)Platinum.lib</OutputFile>
+    </Lib>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\Core\PltAction.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltArgument.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltConstants.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltCtrlPoint.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltCtrlPointTask.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltDatagramStream.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltDeviceData.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltDeviceHost.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltEvent.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltHttp.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltHttpClientTask.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltHttpServer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltHttpServerTask.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltIconsData.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltMimeType.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltProtocolInfo.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltService.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltSsdp.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltStateVariable.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltTaskManager.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltThreadTask.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Core\PltUPnP.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\ContentDirectorySCPD.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\PltDidl.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\PltFileMediaServer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\PltMediaBrowser.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\PltMediaCache.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\PltMediaItem.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\PltMediaServer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaRenderer\AVTransportSCPD.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaRenderer\RdrConnectionManagerSCPD.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnect.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaConnect\PltXbox360.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltDownloader.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltFrameBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltFrameServer.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltFrameStream.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltLeaks.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltMetadataHandler.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltRingBufferStream.cpp" />
+    <ClCompile Include="..\..\..\..\Source\Extras\PltStreamPump.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Source\Core\PltMimeType.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltProtocolInfo.h" />
+    <ClInclude Include="..\..\..\..\Source\Platinum\Platinum.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltAction.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltArgument.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltConstants.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltCtrlPoint.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltCtrlPointTask.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltDatagramStream.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltDeviceData.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltDeviceHost.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltEvent.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltHttp.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltHttpClientTask.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltHttpServer.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltHttpServerListener.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltHttpServerTask.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltService.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltSsdp.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltSsdpListener.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltStateVariable.h" />
+    <ClInclude Include="..\..\..\..\Source\Platinum\PltSvnVersion.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltTaskManager.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltThreadTask.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltUPnP.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltUPnPHelper.h" />
+    <ClInclude Include="..\..\..\..\Source\Platinum\PltVersion.h" />
+    <ClInclude Include="..\..\..\..\Source\Core\PltXmlHelper.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltDidl.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltFileMediaServer.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltMediaBrowser.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltMediaBrowserListener.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltMediaCache.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltMediaItem.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltMediaServer.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaServer\PltSyncMediaBrowser.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaRenderer\PltMediaController.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaRenderer\PltMediaControllerListener.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaRenderer\PltMediaRenderer.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnect.h" />
+    <ClInclude Include="..\..\..\..\Source\Devices\MediaConnect\PltXbox360.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltDownloader.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltFrameBuffer.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltFrameServer.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltFrameStream.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltLeaks.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltMetadataHandler.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltRingBufferStream.h" />
+    <ClInclude Include="..\..\..\..\Source\Extras\PltStreamPump.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

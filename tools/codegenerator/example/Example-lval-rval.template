@@ -1,0 +1,18 @@
+<%
+import SwigTypeParser
+%>
+Module Name: ${module.@name}
+<%
+module.function.each { functionNode ->
+%>
+  function: ${functionNode.@name}
+<%
+  functionNode.parm.eachWithIndex { param, index ->
+%>
+    parameter ${index}= name:${param.@name}, type:${param.@type}<% if (param.@value) { %>, default value: ${param.@value} <% } %>
+                 type:${SwigTypeParser.SwigType_str(param.@type)}
+                 lvalue-type:${SwigTypeParser.SwigType_lstr(param.@type)}
+<%
+   }
+}
+%>

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +22,7 @@
 #include "XBDateTime.h"
 #include "Util.h"
 #include "utils/Variant.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 
@@ -65,7 +65,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << CStdString(m_exifInfo.CameraMake);
     ar << CStdString(m_exifInfo.CameraModel);
     ar << m_exifInfo.CCDWidth;
-    ar << CStdString(m_exifInfo.Comments);
+    ar << GetInfo(SLIDE_EXIF_COMMENT); // Store and restore the comment charset converted
     ar << CStdString(m_exifInfo.Description);
     ar << CStdString(m_exifInfo.DateTime);
     for (int i = 0; i < 10; i++)
@@ -129,6 +129,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     GetStringFromArchive(ar, m_exifInfo.CameraModel, sizeof(m_exifInfo.CameraModel));
     ar >> m_exifInfo.CCDWidth;
     GetStringFromArchive(ar, m_exifInfo.Comments, sizeof(m_exifInfo.Comments));
+    m_exifInfo.CommentsCharset = EXIF_COMMENT_CHARSET_CONVERTED; // Store and restore the comment charset converted
     GetStringFromArchive(ar, m_exifInfo.Description, sizeof(m_exifInfo.Description));
     GetStringFromArchive(ar, m_exifInfo.DateTime, sizeof(m_exifInfo.DateTime));
     for (int i = 0; i < 10; i++)
@@ -186,13 +187,13 @@ void CPictureInfoTag::Archive(CArchive& ar)
   }
 }
 
-void CPictureInfoTag::Serialize(CVariant& value)
+void CPictureInfoTag::Serialize(CVariant& value) const
 {
   value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
   value["cameramake"] = CStdString(m_exifInfo.CameraMake);
   value["cameramodel"] = CStdString(m_exifInfo.CameraModel);
   value["ccdwidth"] = m_exifInfo.CCDWidth;
-  value["comments"] = CStdString(m_exifInfo.Comments);
+  value["comments"] = GetInfo(SLIDE_EXIF_COMMENT); // Charset conversion
   value["description"] = CStdString(m_exifInfo.Description);
   value["datetime"] = CStdString(m_exifInfo.DateTime);
   for (int i = 0; i < 10; i++)
@@ -303,10 +304,24 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
     break;
   case SLIDE_COMMENT:
   case SLIDE_EXIF_COMMENT:
-    value = m_exifInfo.Comments;
+    // The charset used for the UserComment is stored in CommentsCharset:
+    // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
+    if (m_exifInfo.CommentsCharset == EXIF_COMMENT_CHARSET_UNICODE)
+    {
+      g_charsetConverter.ucs2ToUTF8(CStdString16((uint16_t*)m_exifInfo.Comments), value);
+    }
+    else
+    {
+      // Ascii doesn't need to be converted (EXIF_COMMENT_CHARSET_ASCII)
+      // Archived data is already converted (EXIF_COMMENT_CHARSET_CONVERTED)
+      // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
+      // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
+      value = m_exifInfo.Comments;
+    }
     break;
   case SLIDE_EXIF_DATE_TIME:
-    if (m_exifInfo.DateTime && strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
+  case SLIDE_EXIF_DATE:
+    if (strlen(m_exifInfo.DateTime) >= 19 && m_exifInfo.DateTime[0] != ' ')
     {
       CStdString dateTime = m_exifInfo.DateTime;
       int year  = atoi(dateTime.Mid(0, 4).c_str());
@@ -316,7 +331,10 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
       int min   = atoi(dateTime.Mid(14,2).c_str());
       int sec   = atoi(dateTime.Mid(17,2).c_str());
       CDateTime date(year, month, day, hour, min, sec);
-      value = date.GetAsLocalizedDateTime();
+      if(SLIDE_EXIF_DATE_TIME == info)
+          value = date.GetAsLocalizedDateTime();
+      else
+          value = date.GetAsLocalizedDate();
     }
     break;
   case SLIDE_EXIF_DESCRIPTION:
@@ -512,6 +530,7 @@ int CPictureInfoTag::TranslateString(const CStdString &info)
   else if (info.Equals("colour")) return SLIDE_COLOUR;
   else if (info.Equals("process")) return SLIDE_PROCESS;
   else if (info.Equals("exiftime")) return SLIDE_EXIF_DATE_TIME;
+  else if (info.Equals("exifdate")) return SLIDE_EXIF_DATE;
   else if (info.Equals("exifdescription")) return SLIDE_EXIF_DESCRIPTION;
   else if (info.Equals("cameramake")) return SLIDE_EXIF_CAMERA_MAKE;
   else if (info.Equals("cameramodel")) return SLIDE_EXIF_CAMERA_MODEL;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -168,7 +167,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    */
   tag->m_genre            = StringUtils::Split(GetValue(m_dll->proginfo_category(program)), g_advancedSettings.m_videoItemSeparator); // e.g. Sports
   tag->m_strAlbum         = GetValue(m_dll->proginfo_chansign(program)); // e.g. TV3
-  tag->m_strRuntime       = StringUtils::SecondsToTimeString(m_dll->proginfo_length_sec(program));
+  tag->m_duration         = m_dll->proginfo_length_sec(program);
   
   SetSeasonAndEpisode(program, &tag->m_iSeason, &tag->m_iEpisode);
 
@@ -236,7 +235,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
     if (!chanicon.IsEmpty())
     {
       url.SetFileName("files/channels/" + URIUtils::GetFileName(chanicon)); // e.g. files/channels/tv3.jpg
-      item.SetThumbnailImage(url.Get());
+      item.SetArt("thumb", url.Get());
     }
   }
   else
@@ -247,7 +246,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
     if (m_dll->proginfo_rec_status(program) == RS_RECORDED)
     {
       url.SetFileName("files/" + URIUtils::GetFileName(GetValue(m_dll->proginfo_pathname(program))) + ".png");
-      item.SetThumbnailImage(url.Get());
+      item.SetArt("thumb", url.Get());
     }
   }
 }
@@ -514,7 +513,7 @@ cmyth_conn_t CMythSession::GetControl()
   if (!m_control)
   {
     if (!m_dll->IsLoaded())
-      return false;
+      return NULL;
 
     m_control = m_dll->conn_connect_ctrl((char*)m_hostname.c_str(), m_port, 16*1024, 4096);
     if (!m_control)
@@ -528,7 +527,7 @@ cmyth_database_t CMythSession::GetDatabase()
   if (!m_database)
   {
     if (!m_dll->IsLoaded())
-      return false;
+      return NULL;
 
     m_database = m_dll->database_init((char*)m_hostname.c_str(), (char*)MYTH_DEFAULT_DATABASE,
                                       (char*)m_username.c_str(), (char*)m_password.c_str());

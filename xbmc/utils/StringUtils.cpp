@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 //-----------------------------------------------------------------------
@@ -33,12 +32,13 @@
 #include "StringUtils.h"
 #include "utils/RegExp.h"
 #include "utils/fstrcmp.h"
-#include "LangInfo.h"
 #include <locale>
 
 #include <math.h>
 #include <sstream>
 #include <time.h>
+
+#define FORMAT_BLOCK_SIZE 2048 // # of bytes to increment per try
 
 using namespace std;
 
@@ -47,6 +47,172 @@ const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-
 /* empty string for use in returns by ref */
 const CStdString StringUtils::EmptyString = "";
 CStdString StringUtils::m_lastUUID = "";
+
+string StringUtils::Format(const char *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  string str = FormatV(fmt, args);
+  va_end(args);
+
+  return str;
+}
+
+string StringUtils::FormatV(const char *fmt, va_list args)
+{
+  if (fmt == NULL)
+    return "";
+
+  int size = FORMAT_BLOCK_SIZE;
+  va_list argCopy;
+
+  char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+  if (cstr == NULL)
+    return "";
+
+  while (1) 
+  {
+    va_copy(argCopy, args);
+
+    int nActual = vsnprintf(cstr, size, fmt, argCopy);
+    va_end(argCopy);
+
+    if (nActual > -1 && nActual < size) // We got a valid result
+    {
+      string str(cstr, nActual);
+      free(cstr);
+      return str;
+    }
+    if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
+      size = nActual + 1;
+    else                                // Let's try to double the size (glibc 2.0)
+      size *= 2;
+
+    char *new_cstr = reinterpret_cast<char*>(realloc(cstr, sizeof(char) * size));
+    if (new_cstr == NULL)
+    {
+      free(cstr);
+      return "";
+    }
+
+    cstr = new_cstr;
+  }
+
+  return "";
+}
+
+void StringUtils::ToUpper(string &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::toupper);
+}
+
+void StringUtils::ToLower(string &str)
+{
+  transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
+{
+  string tmp1 = str1;
+  string tmp2 = str2;
+  ToLower(tmp1);
+  ToLower(tmp2);
+  
+  return tmp1.compare(tmp2) == 0;
+}
+
+string StringUtils::Left(const string &str, size_t count)
+{
+  count = max((size_t)0, min(count, str.size()));
+  return str.substr(0, count);
+}
+
+string StringUtils::Mid(const string &str, size_t first, size_t count /* = string::npos */)
+{
+  if (first + count > str.size())
+    count = str.size() - first;
+  
+  if (first > str.size())
+    return string();
+  
+  ASSERT(first + count <= str.size());
+  
+  return str.substr(first, count);
+}
+
+string StringUtils::Right(const string &str, size_t count)
+{
+  count = max((size_t)0, min(count, str.size()));
+  return str.substr(str.size() - count);
+}
+
+std::string& StringUtils::Trim(std::string &str)
+{
+  TrimLeft(str);
+  return TrimRight(str);
+}
+
+std::string& StringUtils::TrimLeft(std::string &str)
+{
+  str.erase(str.begin(), ::find_if(str.begin(), str.end(), ::not1(::ptr_fun<int, int>(::isspace))));
+  return str;
+}
+
+std::string& StringUtils::TrimRight(std::string &str)
+{
+  str.erase(::find_if(str.rbegin(), str.rend(), ::not1(::ptr_fun<int, int>(::isspace))).base(), str.end());
+  return str;
+}
+
+int StringUtils::Replace(string &str, char oldChar, char newChar)
+{
+  int replacedChars = 0;
+  for (string::iterator it = str.begin(); it != str.end(); it++)
+  {
+    if (*it == oldChar)
+    {
+      *it = newChar;
+      replacedChars++;
+    }
+  }
+  
+  return replacedChars;
+}
+
+int StringUtils::Replace(std::string &str, const std::string &oldStr, const std::string &newStr)
+{
+  int replacedChars = 0;
+  size_t index = 0;
+  
+  while (index < str.size() && (index = str.find(oldStr, index)) != string::npos)
+  {
+    str.replace(index, oldStr.size(), newStr);
+    index += newStr.size();
+    replacedChars++;
+  }
+  
+  return replacedChars;
+}
+
+bool StringUtils::StartsWith(const std::string &str, const std::string &str2, bool useCase /* = false */)
+{
+  std::string left = StringUtils::Left(str, str2.size());
+  
+  if (useCase)
+    return left.compare(str2) == 0;
+
+  return StringUtils::EqualsNoCase(left, str2);
+}
+
+bool StringUtils::EndsWith(const std::string &str, const std::string &str2, bool useCase /* = false */)
+{
+  std::string right = StringUtils::Right(str, str2.size());
+  
+  if (useCase)
+    return right.compare(str2) == 0;
+
+  return StringUtils::EqualsNoCase(right, str2);
+}
 
 void StringUtils::JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result)
 {
@@ -103,7 +269,7 @@ int StringUtils::SplitString(const CStdString& input, const CStdString& delimite
     newPos = input.Find (delimiter, iPos + sizeS2);
   }
 
-  // numFound is the number of delimeters which is one less
+  // numFound is the number of delimiters which is one less
   // than the number of substrings
   unsigned int numFound = positions.size();
   if (iMaxStrings > 0 && numFound >= iMaxStrings)
@@ -156,12 +322,12 @@ vector<string> StringUtils::Split(const CStdString& input, const CStdString& del
   return strArray;
 }
 
-// returns the number of occurences of strFind in strInput.
+// returns the number of occurrences of strFind in strInput.
 int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFind)
 {
   int pos = strInput.Find(strFind, 0);
   int numfound = 0;
-  while (pos > 0)
+  while (pos >= 0)
   {
     numfound++;
     pos = strInput.Find(strFind, pos + 1);
@@ -251,17 +417,20 @@ int StringUtils::DateStringToYYYYMMDD(const CStdString &dateString)
 
 long StringUtils::TimeStringToSeconds(const CStdString &timeString)
 {
-  if(timeString.Right(4).Equals(" min"))
+  CStdString strCopy(timeString);
+  strCopy.TrimLeft(" \n\r\t");
+  strCopy.TrimRight(" \n\r\t");
+  if(strCopy.Right(4).Equals(" min"))
   {
     // this is imdb format of "XXX min"
-    return 60 * atoi(timeString.c_str());
+    return 60 * atoi(strCopy.c_str());
   }
   else
   {
     CStdStringArray secs;
-    StringUtils::SplitString(timeString, ":", secs);
+    StringUtils::SplitString(strCopy, ":", secs);
     int timeInSecs = 0;
-    for (unsigned int i = 0; i < secs.size(); i++)
+    for (unsigned int i = 0; i < 3 && i < secs.size(); i++)
     {
       timeInSecs *= 60;
       timeInSecs += atoi(secs[i]);
@@ -295,13 +464,13 @@ bool StringUtils::IsNaturalNumber(const CStdString& str)
 {
   size_t i = 0, n = 0;
   // allow whitespace,digits,whitespace
-  while (i < str.size() && isspace(str[i]))
+  while (i < str.size() && isspace((unsigned char) str[i]))
     i++;
-  while (i < str.size() && isdigit(str[i]))
+  while (i < str.size() && isdigit((unsigned char) str[i]))
   {
     i++; n++;
   }
-  while (i < str.size() && isspace(str[i]))
+  while (i < str.size() && isspace((unsigned char) str[i]))
     i++;
   return i == str.size() && n > 0;
 }
@@ -310,15 +479,15 @@ bool StringUtils::IsInteger(const CStdString& str)
 {
   size_t i = 0, n = 0;
   // allow whitespace,-,digits,whitespace
-  while (i < str.size() && isspace(str[i]))
+  while (i < str.size() && isspace((unsigned char) str[i]))
     i++;
   if (i < str.size() && str[i] == '-')
     i++;
-  while (i < str.size() && isdigit(str[i]))
+  while (i < str.size() && isdigit((unsigned char) str[i]))
   {
     i++; n++;
   }
-  while (i < str.size() && isspace(str[i]))
+  while (i < str.size() && isspace((unsigned char) str[i]))
     i++;
   return i == str.size() && n > 0;
 }
@@ -338,6 +507,7 @@ bool StringUtils::Test()
   ret |= !IsNaturalNumber("120 h");
   ret |= !IsNaturalNumber(" ");
   ret |= !IsNaturalNumber("");
+  ret |= !IsNaturalNumber("ייטט");
 
   ret |= IsInteger("10");
   ret |= IsInteger(" -10");
@@ -350,6 +520,7 @@ bool StringUtils::Test()
   ret |= !IsInteger("120 h");
   ret |= !IsInteger(" ");
   ret |= !IsInteger("");
+  ret |= !IsInteger("ייטט");
 
   return ret;
 }
@@ -536,8 +707,8 @@ size_t StringUtils::utf8_strlen(const char *s)
   size_t length = 0;
   while (*s)
   {
-		if ((*s++ & 0xC0) != 0x80)
-			length++;
-	}
-	return length;
+    if ((*s++ & 0xC0) != 0x80)
+      length++;
+  }
+  return length;
 }

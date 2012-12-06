@@ -53,6 +53,17 @@ const int NPT_ERROR_FILE_ALREADY_EXISTS   = NPT_ERROR_BASE_FILE - 7;
 const int NPT_ERROR_FILE_NOT_ENOUGH_SPACE = NPT_ERROR_BASE_FILE - 8;
 const int NPT_ERROR_DIRECTORY_NOT_EMPTY   = NPT_ERROR_BASE_FILE - 9;
 
+/**
+ * File open modes.
+ * Use a combination of these flags to indicate how a file should be opened 
+ * Note all combinations of flags are valid or meaningful:
+ * If NPT_FILE_OPEN_MODE_WRITE is not set, then NPT_FILE_OPEN_MODE_CREATE, 
+ * NPT_FILE_OPEN_MODE_TRUNCATE and NPT_FILE_OPEN_MODE_APPEND are ignored.
+ * If NPT_FILE_OPEN_MODE_APPEND is set, then NPT_FILE_OPEN_MODE_CREATE is
+ * automatically implied whether it is set or not.
+ * NPT_FILE_OPEN_MODE_CREATE and NPT_FILE_OPEN_MODE_TRUNCATE imply each
+ * other (if one is set, the other one is automatically implied)
+ */
 const unsigned int NPT_FILE_OPEN_MODE_READ       = 0x01;
 const unsigned int NPT_FILE_OPEN_MODE_WRITE      = 0x02;
 const unsigned int NPT_FILE_OPEN_MODE_CREATE     = 0x04;
@@ -90,12 +101,12 @@ struct NPT_FileInfo
     NPT_FileInfo() : m_Type(FILE_TYPE_NONE), m_Size(0), m_AttributesMask(0), m_Attributes(0) {}
     
     // members
-    FileType        m_Type;
-    NPT_UInt64      m_Size;
-    NPT_Flags       m_AttributesMask;
-    NPT_Flags       m_Attributes;
-    NPT_TimeStamp   m_Created;
-    NPT_TimeStamp   m_Modified;
+    FileType      m_Type;
+    NPT_UInt64    m_Size;
+    NPT_Flags     m_AttributesMask;
+    NPT_Flags     m_Attributes;
+    NPT_TimeStamp m_CreationTime;
+    NPT_TimeStamp m_ModificationTime;
 };
 
 /*----------------------------------------------------------------------
@@ -105,7 +116,7 @@ class NPT_FilePath
 {
 public:
     // class members
-    static const NPT_String Separator;
+    static const char* const Separator;
 
     // class methods
     static NPT_String BaseName(const char* path, bool with_extension = true);
@@ -146,16 +157,15 @@ public:
     static NPT_Result GetRoots(NPT_List<NPT_String>& roots);
     static NPT_Result GetSize(const char* path, NPT_LargeSize &size);
     static NPT_Result GetInfo(const char* path, NPT_FileInfo* info = NULL);
-    static NPT_Result GetCount(const char* path, NPT_Cardinal& count);
     static bool       Exists(const char* path) { return NPT_SUCCEEDED(GetInfo(path)); }
-    static NPT_Result Remove(const char* path, bool recursively = false);
+    static NPT_Result Remove(const char* path, bool recurse = false);
     static NPT_Result RemoveFile(const char* path);
     static NPT_Result RemoveDir(const char* path);
-    static NPT_Result RemoveDir(const char* path, bool recursively);
+    static NPT_Result RemoveDir(const char* path, bool force_if_not_empty);
     static NPT_Result Rename(const char* from_path, const char* to_path);
     static NPT_Result ListDir(const char* path, NPT_List<NPT_String>& entries, NPT_Ordinal start = 0, NPT_Cardinal count = 0);
     static NPT_Result CreateDir(const char* path);
-    static NPT_Result CreateDir(const char* path, bool recursively);
+    static NPT_Result CreateDir(const char* path, bool create_intermediate_dirs);
     static NPT_Result GetWorkingDir(NPT_String& path);
     static NPT_Result Load(const char* path, NPT_DataBuffer& buffer, NPT_FileInterface::OpenMode mode = NPT_FILE_OPEN_MODE_READ);
     static NPT_Result Load(const char* path, NPT_String& data, NPT_FileInterface::OpenMode mode = NPT_FILE_OPEN_MODE_READ);
@@ -174,7 +184,6 @@ public:
     NPT_Result          GetInfo(NPT_FileInfo& info);
     NPT_Result          ListDir(NPT_List<NPT_String>& entries);
     NPT_Result          Rename(const char* path);
-    NPT_Result          GetCount(NPT_Cardinal& count);
     
     // NPT_FileInterface methods
     NPT_Result Open(OpenMode mode) {
@@ -198,6 +207,23 @@ protected:
     NPT_FileInterface* m_Delegate;
     NPT_String         m_Path;
     bool               m_IsSpecial;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_FileDateComparator
++---------------------------------------------------------------------*/
+class NPT_FileDateComparator {
+public: 
+    NPT_FileDateComparator(const char* directory) : m_Directory(directory) {}
+    NPT_Int32 operator()(const NPT_String& file1, const NPT_String& file2) const {
+        NPT_FileInfo info1, info2;
+        if (NPT_FAILED(NPT_File::GetInfo(NPT_FilePath::Create(m_Directory, file1), &info1))) return -1;
+        if (NPT_FAILED(NPT_File::GetInfo(NPT_FilePath::Create(m_Directory, file2), &info2))) return -1;
+        return (info1.m_ModificationTime == info2.m_ModificationTime) ? 0 : (info1.m_ModificationTime < info2.m_ModificationTime ? -1 : 1);
+    }
+    
+private:
+    NPT_String m_Directory;
 };
 
 #endif // _NPT_FILE_H_ 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -149,7 +148,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         {
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
-            double Size = atof(reSize.GetReplaceString("\\1"));
+            double Size = atof(reSize.GetReplaceString("\\1").c_str());
             CStdString strUnit = reSize.GetReplaceString("\\2");
 
             if (strUnit == "K")
@@ -163,7 +162,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           }
           else if (reSizeNginx.RegFind(strBuffer.c_str()) >= 0)
           {
-            double Size = atof(reSizeNginx.GetReplaceString("\\1"));
+            double Size = atof(reSizeNginx.GetReplaceString("\\1").c_str());
             CStdString strUnit = reSizeNginx.GetReplaceString("\\2");
 
             if (strUnit == "K")

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #if !defined(__arm__)
@@ -373,39 +372,7 @@ void Cocoa_ShowMouse()
   [NSCursor unhide];
 }
 
-void Cocoa_HideDock()
-{
-  // Find which display we are on
-  NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  if (context)
-  {
-    NSView* view;
-
-    view = [context view];
-    if (view)
-    {
-      NSWindow* window;
-      window = [view window];
-      if (window)
-      {
-        NSDictionary* screenInfo = [[window screen] deviceDescription];
-        NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-        if (kCGDirectMainDisplay == (CGDirectDisplayID)[screenID longValue])
-        {
-          CStdString tmp_str;
-
-          // keep the dock hidden using applescriptif on main screen with the dock.
-          tmp_str = "tell application \"System Events\" \n";
-          tmp_str += "keystroke \"d\" using {command down, option down} \n";
-          tmp_str += "end tell \n";
-          
-          Cocoa_DoAppleScript( tmp_str.c_str() );
-        }
-      }
-    }
-  }
-}
-
+//---------------------------------------------------------------------------------
 static char strVersion[32];
 
 const char* Cocoa_GetAppVersion()

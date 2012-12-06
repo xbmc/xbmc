@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -42,6 +41,7 @@ public:
   virtual void   SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   virtual float  GetVolume()             { return m_volume      ; }
 
+  bool         IsCompatible();
   unsigned int GetSampleCount();
 
   /* ReleaseSamples must be called for each time GetSamples has been called */
@@ -49,7 +49,7 @@ public:
   void           ReleaseSamples();
 private:
   CCriticalSection m_critSection;
-  std::string       m_filename;
+  std::string      m_filename;
   CAEWAVLoader     m_wavLoader;
   float            m_volume;
   int              m_inUse;

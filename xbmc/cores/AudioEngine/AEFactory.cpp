@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "system.h"
@@ -43,6 +42,10 @@ IAE *CAEFactory::GetEngine()
 
 bool CAEFactory::LoadEngine()
 {
+#if defined(TARGET_RASPBERRY_PI)
+  return true;
+#endif
+
   bool loaded = false;
 
   std::string engine;
@@ -100,6 +103,12 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
       return false;
   }
 
+  if (AE && !AE->CanInit())
+  {
+    delete AE;
+    AE = NULL;
+  }
+
   return AE != NULL;
 }
 
@@ -128,6 +137,31 @@ bool CAEFactory::StartEngine()
   delete AE;
   AE = NULL;
   return false;
+}
+
+bool CAEFactory::Suspend()
+{
+  if(AE)
+    return AE->Suspend();
+
+  return false;
+}
+
+bool CAEFactory::Resume()
+{
+  if(AE)
+    return AE->Resume();
+
+  return false;
+}
+
+bool CAEFactory::IsSuspended()
+{
+  if(AE)
+    return AE->IsSuspended();
+
+  /* No engine to process audio */
+  return true;
 }
 
 /* engine wrapping */
@@ -161,6 +195,32 @@ void CAEFactory::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
   if(AE)
     AE->EnumerateOutputDevices(devices, passthrough);
+}
+
+void CAEFactory::VerifyOutputDevice(std::string &device, bool passthrough)
+{
+  AEDeviceList devices;
+  EnumerateOutputDevices(devices, passthrough);
+  std::string firstDevice;
+
+  for (AEDeviceList::const_iterator deviceIt = devices.begin(); deviceIt != devices.end(); deviceIt++)
+  {
+    std::string currentDevice = deviceIt->second;
+    /* remember the first device so we can default to it if required */
+    if (firstDevice.empty())
+      firstDevice = deviceIt->second;
+
+    if (deviceIt->second == device)
+      return;
+    else if (deviceIt->first == device)
+    {
+      device = deviceIt->second;
+      return;
+    }
+  }
+
+  /* if the device wasnt found, set it to the first viable output */
+  device = firstDevice;
 }
 
 std::string CAEFactory::GetDefaultDevice(bool passthrough)

@@ -44,7 +44,7 @@ Two methods exist to install the required Ubuntu packages:
 
 For Ubuntu (all versions >= 7.04):
 
-   # sudo apt-get install git-core build-essential gawk pmount libtool nasm yasm automake cmake gperf zip unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libfribidi-dev liblzo2-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound2-dev python-sqlite libglew-dev libcurl3 libcurl4-gnutls-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbisenc2 libsmbclient-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev libmpeg3-dev libflac-dev libiso9660-dev libass-dev libssl-dev fp-compiler gdc libmpeg2-4-dev libmicrohttpd-dev libmodplug-dev libssh-dev gettext cvs python-dev libyajl-dev libboost-thread-dev libplist-dev libusb-dev libudev-dev libtinyxml-dev libcap-dev
+   # sudo apt-get install git-core build-essential gawk pmount libtool nasm yasm automake cmake gperf zip unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libfribidi-dev liblzo2-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound2-dev python-sqlite libglew-dev libcurl3 libcurl4-gnutls-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbisenc2 libsmbclient-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev libmpeg3-dev libflac-dev libiso9660-dev libass-dev libssl-dev fp-compiler gdc libmpeg2-4-dev libmicrohttpd-dev libmodplug-dev libssh-dev gettext cvs python-dev libyajl-dev libboost-thread-dev libplist-dev libusb-dev libudev-dev libtinyxml-dev libcap-dev curl swig default-jre
 
 For >= 10.10:
    # sudo apt-get install autopoint libltdl-dev
@@ -57,6 +57,20 @@ In this case you will have to manually compile the latest version.
    # ./configure --disable-ipv6 --without-libidn --disable-ldap --prefix=/usr
    # make
    # sudo make install
+
+For >= 12.10
+   # sudo apt-get install libtag1-dev
+
+For <= 12.04
+
+We need a new version of taglib than what is available. We supply a Makefile in
+lib/taglib to make it easy to install into /usr/local.
+
+   # make -C lib/taglib
+   # sudo make -C lib/taglib install
+
+Unless you are proficient with how linux libraries and versions work, do not
+try to provide it yourself, as you will likely mess up for other programs.
 
 --------------------------------------------------------------
 3.2. Use a single command to get all build dependencies
@@ -96,6 +110,11 @@ sudo apt-get install distcc
 
 -----------------------------------------------------------------------------
 4. How to compile
+-----------------------------------------------------------------------------
+See README.linux
+
+-----------------------------------------------------------------------------
+4.1. Test Suite
 -----------------------------------------------------------------------------
 See README.linux
 

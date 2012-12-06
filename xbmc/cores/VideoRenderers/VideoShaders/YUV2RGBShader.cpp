@@ -120,9 +120,9 @@ void CalculateYUVMatrix(TransformMatrix &matrix
 
   if(format == RENDER_FMT_YUV420P10)
   {
-    matrix *= TransformMatrix::CreateScaler(65535.0 / 1023.0
-                                          , 65535.0 / 1023.0
-                                          , 65535.0 / 1023.0);
+    matrix *= TransformMatrix::CreateScaler(65535.0f / 1023.0f
+                                          , 65535.0f / 1023.0f
+                                          , 65535.0f / 1023.0f);
   }
 }
 

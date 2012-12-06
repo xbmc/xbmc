@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2006-2010 Team XBMC
+ *      Copyright (C) 2006-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -92,6 +91,14 @@ public:
     long count = AtomicDecrement(&m_references);
     if (count == 0) delete this;
     return count;
+  }
+
+  /**
+   * static release function for use with boost shared ptr for example
+   */
+  static void Release(CDVDOverlay* ov)
+  {
+    ov->Release();
   }
 
   bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }

@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -51,6 +50,7 @@ extern HWND g_hWnd;
 
 CJoystick::CJoystick()
 {
+  CSingleLock lock(m_critSection);
   Reset(true);
   m_joystickEnabled = false;
   m_NumAxes = 0;
@@ -74,6 +74,7 @@ CJoystick::~CJoystick()
 
 void CJoystick::ReleaseJoysticks()
 {
+  CSingleLock lock(m_critSection);
   // Unacquire the device one last time just in case
   // the app tried to exit while the device is still acquired.
   for(std::vector<LPDIRECTINPUTDEVICE8>::iterator it = m_pJoysticks.begin(); it != m_pJoysticks.end(); ++it)
@@ -183,6 +184,7 @@ void CJoystick::Initialize()
 
   // clear old joystick names
   ReleaseJoysticks();
+  CSingleLock lock(m_critSection);
 
   if( FAILED( hr = DirectInput8Create( GetModuleHandle( NULL ), DIRECTINPUT_VERSION, IID_IDirectInput8, ( VOID** )&m_pDI, NULL ) ) )
   {

@@ -1,45 +1,25 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.0
+# Addon version: 2.1.1
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:52+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Polish (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr "Confluence autorstwa Jezz_X"
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr "Confluence jest domyślną skórą dla XBMC 9.11 i nowszych. To kombinacja wielu popularnych pomysłów i próba zawarcia tego co w nich najlepsze w skórze, która będzie łatwa do opanowania dla początkującego użytkownika."
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr "Confluence jest domyślną skórą XBMC. Jej usunięcie może powodować problemy."
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr "Zmień"
-
-msgctxt "#31001"
-msgid "Love"
-msgstr "Lubię"
-
-msgctxt "#31002"
-msgid "Hate"
-msgstr "Nie lubię"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -57,25 +37,13 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr "Zobacz opcje"
 
-msgctxt "#31007"
-msgid "Plugins"
-msgstr "Wtyczki"
-
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr "Pełny ekran"
 
 msgctxt "#31009"
 msgid "Total Duration"
-msgstr ""
-
-msgctxt "#31020"
-msgid "Recently Added"
-msgstr "Ostatnio dodane"
-
-msgctxt "#31021"
-msgid "Video - Files"
-msgstr "Wideo - pliki"
+msgstr "Całkowity czas trwania"
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -83,7 +51,7 @@ msgstr "Muzyka - pliki"
 
 msgctxt "#31023"
 msgid "Playing"
-msgstr "Otwarzam"
+msgstr "Odtwarzam"
 
 msgctxt "#31024"
 msgid "Page"
@@ -108,10 +76,6 @@ msgstr "Plakaty"
 msgctxt "#31029"
 msgid "Fanart"
 msgstr "Fanart"
-
-msgctxt "#31030"
-msgid "Full list"
-msgstr "Pełna lista"
 
 msgctxt "#31031"
 msgid "Pic Thumbs"
@@ -144,14 +108,6 @@ msgstr "PRZEWIŃ"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "COFNIJ"
-
-msgctxt "#31046"
-msgid "Audio Properties"
-msgstr "Właściwości audio"
-
-msgctxt "#31047"
-msgid "Current Preset"
-msgstr "Obecny efekt"
 
 msgctxt "#31048"
 msgid "Visualization Presets"
@@ -226,12 +182,12 @@ msgid "Hide Main Menu Buttons"
 msgstr "Ukryj przyciski głównego menu"
 
 msgctxt "#31109"
-msgid "Media backgrounds"
-msgstr "Tła ekranu głównego"
+msgid "Enable Custom Background"
+msgstr "Włącz własne tło"
 
 msgctxt "#31110"
-msgid "Edit Background for Media Type"
-msgstr "Edytuj tło dla"
+msgid "Background path:"
+msgstr "ścieżka do tła"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -241,21 +197,9 @@ msgctxt "#31112"
 msgid "Options"
 msgstr "Opcje"
 
-msgctxt "#31113"
-msgid "Single Image"
-msgstr "Pojedynczy obraz"
-
-msgctxt "#31114"
-msgid "Multi Image"
-msgstr "Wiele obrazów"
-
-msgctxt "#31115"
-msgid "Customizer"
-msgstr "Modyfikacja"
-
 msgctxt "#31116"
 msgid "Show Recently added Albums"
-msgstr ""
+msgstr "Pokaż ostatnio dodane albumy"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -269,17 +213,9 @@ msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr "Ukryj tło fanartu"
 
-msgctxt "#31120"
-msgid "BUTTON LABEL"
-msgstr "ETYKIETA PRZYCISKU"
-
 msgctxt "#31122"
 msgid "Weather Page"
 msgstr "Strona pogody"
-
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr "Użyj plakatów zamiast banerów dla seriali"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -295,11 +231,15 @@ msgstr "Odtwarzaj motyw TV w bibliotece wideo (wtyczka TvTunes)"
 
 msgctxt "#31127"
 msgid "TvTunes"
-msgstr ""
+msgstr "TvTunes"
 
 msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Teksty piosenek"
+
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr "Ukryj Fanart podczas wizualizacji pełnoekranowej"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -333,21 +273,9 @@ msgctxt "#31200"
 msgid "Shortcuts"
 msgstr "Skróty"
 
-msgctxt "#31201"
-msgid "Categories"
-msgstr "Kategorie"
-
-msgctxt "#31202"
-msgid "Show Cast"
-msgstr "Pokaż obsadę"
-
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr "Wybierz swoją piosenkę"
-
-msgctxt "#31204"
-msgid "Section Links"
-msgstr "Linki sekcji"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -355,15 +283,15 @@ msgstr "Źródło tekstów piosenek"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr ""
+msgstr "Znaleziono"
 
 msgctxt "#31207"
 msgid "Find More Items"
-msgstr ""
+msgstr "Znajdź więcej pozycji"
 
 msgctxt "#31208"
 msgid "Upcoming Episodes"
-msgstr ""
+msgstr "Nadchodzące odcinki"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -373,25 +301,9 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Ostatnia aktualizacja"
 
-msgctxt "#31302"
-msgid "Menu"
-msgstr "Menu"
-
 msgctxt "#31303"
 msgid "Data provider"
 msgstr "Dostawca danych"
-
-msgctxt "#31304"
-msgid "Picture"
-msgstr "Zdjęcia"
-
-msgctxt "#31305"
-msgid "No Disc Media Detected"
-msgstr "Nie wykryto płyty"
-
-msgctxt "#31306"
-msgid "Eject"
-msgstr "Wysuń"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -425,17 +337,9 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr "Opcje skanowania zawartości"
 
-msgctxt "#31315"
-msgid "Basic"
-msgstr "Podstawowe"
-
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr "Wskaż ścieżkę fanartu"
-
-msgctxt "#31318"
-msgid "Small Fanart"
-msgstr "Mały fanart"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -452,14 +356,6 @@ msgstr "Wybór piosenki karaoke"
 msgctxt "#31322"
 msgid "Aired"
 msgstr "Emisja"
-
-msgctxt "#31323"
-msgid "Latest Movies"
-msgstr "Najnowsze filmy"
-
-msgctxt "#31324"
-msgid "Latest Episodes"
-msgstr "Najnowsze odcinki"
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -549,25 +445,69 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr "[B]KONFIGURUJ USTAWIENIA SYSTEMU[/B][CR][CR]Ustawienia wyświetlania · Wyjście audio · Zdalne sterowania[CR]Opcje zasilania · Debugging · Blokady"
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr "[B]KONFIGURUJ USTAWIENIA SKÓRY[/B][CR][CR]Ustawienia skóry · Pozycje menu głównego[CR]Tła skóry"
-
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGURUJ USTAWIENIA WTYCZEK[/B][CR][CR]Zarządzaj wtyczkami · Przeglądaj i instaluj wtyczki[CR]Ustawienia wtyczek"
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr "[B]Skonfiguruj opcje TV[/B][CR][CR]Zmień pełnoekranowe informacje · Zarządzaj ustawieniami EPG"
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
-msgstr ""
+msgstr "[B]KONFIGURUJ USTAWIENIA USŁUG[/B][CR][CR]Ustaw kontrolę XBMC za pomocą UPnP i HTTP · Ustaw współdzielenie plików[CR]Włącz Zeroconf · Ustaw AirPlay"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "Najpierw skorzystaj z pomocy..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
+msgstr "Ta zakładka oznacza iż za krawędzią tego okna jest menu, które zawiera dodatkowe opcje dla tej sekcji. Aby dostać się do tego menu, skieruj się w lewo przy pomocy pilota, klawiszy lub umieść myszkę nad zakładką. [CR] [CR] Kliknij \"OK\" by zamknąć to okno. Nie pojawi się ono ponownie."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Wybierz profil użytkownika"
 
-msgctxt "#31900"
-msgid "Weather Maps"
-msgstr "Mapy pogody"
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr "Czasy nagrywania"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Zaplanowany czas"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "Telewizja"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Dodaj grupę"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Zmień nazwę grupy"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Usuń grupę"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Dostępne[CR]Grupy"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Grupa kanałów"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Ustawienia zegara"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Opcje kanałów"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -589,14 +529,6 @@ msgctxt "#31905"
 msgid "Forecast"
 msgstr "Pogoda"
 
-msgctxt "#31906"
-msgid "Maps & Video"
-msgstr "Mapy i wideo"
-
-msgctxt "#31907"
-msgid "Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]"
-msgstr "Pogoda wideo [COLOR=grey2](na pełnym ekranie)[/COLOR]"
-
 msgctxt "#31908"
 msgid "Chance of Precipitation"
 msgstr "Możliwość opadów"
@@ -604,3 +536,7 @@ msgstr "Możliwość opadów"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Prognozuję pogodę..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Mapa i alarmy"

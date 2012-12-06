@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "OGGFileDirectory.h"
-#include "music/tags/OggTag.h"
+#include "cores/paplayer/OggCallback.h"
+#include "File.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -36,6 +36,23 @@ COGGFileDirectory::~COGGFileDirectory(void)
 
 int COGGFileDirectory::GetTrackCount(const CStdString& strPath)
 {
-  COggTag tag;
-  return tag.GetStreamCount(strPath);
+  if (!m_dll.Load())
+    return 0;
+  
+  CFile file;
+  if (!file.Open(strPath))
+    return 0;
+  
+  COggCallback callback(file);
+  ov_callbacks oggIOCallbacks = callback.Get(strPath);
+  OggVorbis_File vf;
+  //  open ogg file with decoder
+  if (m_dll.ov_open_callbacks(&callback, &vf, NULL, 0, oggIOCallbacks)!=0)
+    return 0;
+  
+  int iStreams=m_dll.ov_streams(&vf);
+  
+  m_dll.ov_clear(&vf);
+  
+  return iStreams;
 }

@@ -1,4 +1,4 @@
-<window id="2001">
+<window>
 	<defaultcontrol always="true">5</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
@@ -72,7 +72,7 @@
 						<posy>0</posy>
 						<width>675</width>
 						<height>380</height>
-						<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+						<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>4</bordersize>
 						<aspectratio>keep</aspectratio>

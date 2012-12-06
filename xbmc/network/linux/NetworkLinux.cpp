@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,10 @@
   #include <linux/if.h>
   #include <linux/wireless.h>
   #include <linux/sockios.h>
+#endif
+#ifdef TARGET_ANDROID
+#include "android/bionic_supplement/bionic_supplement.h"
+#include "sys/system_properties.h"
 #endif
 #include <errno.h>
 #include <resolv.h>
@@ -318,10 +321,10 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
    return m_interfaces;
 }
 
-#if defined(TARGET_DARWIN_IOS)
-// on iOS, overwrite the GetFirstConnectedInterface and requery
+// Overwrite the GetFirstConnectedInterface and requery
 // the interface list if no connected device is found
-// this fixes a bug when no network is available after first start of xbmc after reboot
+// this fixes a bug when no network is available after first start of xbmc
+// and the interface comes up during runtime
 CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 {
     CNetworkInterface *pNetIf=CNetwork::GetFirstConnectedInterface();
@@ -329,7 +332,7 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
     // no connected Interfaces found? - requeryInterfaceList
     if (!pNetIf)
     {
-        CLog::Log(LOGDEBUG,"%s no connected if found - requery if list",__FUNCTION__);        
+        CLog::Log(LOGDEBUG,"%s no connected interface found - requery list",__FUNCTION__);        
         queryInterfaceList();        
         //retry finding a connected if
         pNetIf = CNetwork::GetFirstConnectedInterface();
@@ -337,7 +340,6 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
     
     return pNetIf;
 }
-#endif
 
 
 void CNetworkLinux::GetMacAddress(CStdString interfaceName, char rawMac[6])
@@ -475,12 +477,24 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
     }
     pclose(pipe);
   } 
+#elif defined(TARGET_ANDROID)
+  char nameserver[PROP_VALUE_MAX];
+
+  if (__system_property_get("net.dns1",nameserver))
+    result.push_back(nameserver);
+  if (__system_property_get("net.dns2",nameserver))
+    result.push_back(nameserver);
+  if (__system_property_get("net.dns3",nameserver))
+    result.push_back(nameserver);
+
+  if (!result.size())
+       CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #else
    res_init();
 
    for (int i = 0; i < _res.nscount; i ++)
    {
-      CStdString ns = inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[0])->sin_addr);
+      CStdString ns = inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[i])->sin_addr);
       result.push_back(ns);
    }
 #endif
@@ -489,6 +503,7 @@ std::vector<CStdString> CNetworkLinux::GetNameServers(void)
 
 void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 {
+#if !defined(__ANDROID__)
    FILE* fp = fopen("/etc/resolv.conf", "w");
    if (fp != NULL)
    {
@@ -502,6 +517,7 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
    {
       // TODO:
    }
+#endif
 }
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)

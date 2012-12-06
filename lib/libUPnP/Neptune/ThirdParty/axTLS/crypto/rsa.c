@@ -37,6 +37,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
+#include "os_port.h"
 #include "crypto.h"
 
 void RSA_priv_key_new(RSA_CTX **ctx, 
@@ -88,7 +89,7 @@ void RSA_pub_key_new(RSA_CTX **ctx,
     *ctx = (RSA_CTX *)calloc(1, sizeof(RSA_CTX));
     rsa_ctx = *ctx;
     rsa_ctx->bi_ctx = bi_ctx;
-    rsa_ctx->num_octets = (mod_len & 0xFFF0);
+    rsa_ctx->num_octets = mod_len;
     rsa_ctx->m = bi_import(bi_ctx, modulus, mod_len);
     bi_set_mod(bi_ctx, rsa_ctx->m, BIGINT_M_OFFSET);
     rsa_ctx->e = bi_import(bi_ctx, pub_exp, pub_len);

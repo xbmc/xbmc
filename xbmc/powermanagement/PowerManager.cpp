@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -39,9 +38,13 @@
 
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaPowerSyscall.h"
+#elif defined(TARGET_ANDROID)
+#include "android/AndroidPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
+#include "linux/SystemdUPowerSyscall.h"
+#include "linux/UPowerSyscall.h"
 #ifdef HAS_HAL
 #include "linux/HALPowerSyscall.h"
 #endif
@@ -68,11 +71,17 @@ void CPowerManager::Initialize()
 {
 #if defined(TARGET_DARWIN)
   m_instance = new CCocoaPowerSyscall();
+#elif defined(TARGET_ANDROID)
+  m_instance = new CAndroidPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
-  if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
+  if (CConsoleUPowerSyscall::HasConsoleKitAndUPower())
     m_instance = new CConsoleUPowerSyscall();
   else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleDeviceKitPowerSyscall();
+  else if (CSystemdUPowerSyscall::HasSystemdAndUPower())
+    m_instance = new CSystemdUPowerSyscall();
+  else if (CUPowerSyscall::HasUPower())
+    m_instance = new CUPowerSyscall();
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();

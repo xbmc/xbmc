@@ -13,18 +13,16 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
 #include "system.h"
-#include "WinEvents.h"
 #include "WinEventsIOS.h"
-#include "XBMC_vkeys.h"
+#include "input/XBMC_vkeys.h"
 #include "Application.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "threads/CriticalSection.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
@@ -53,22 +51,18 @@ void CWinEventsIOS::MessagePush(XBMC_Event *newEvent)
 bool CWinEventsIOS::MessagePump()
 {
   bool ret = false;
-  bool gotEvent = false;
-  XBMC_Event pumpEvent;
+  std::vector<XBMC_Event> copy_events;
 
-  CSingleLock lock(g_inputCond);
-  for (vector<XBMC_Event>::iterator it = events.begin(); it!=events.end(); ++it)
+  { // double-buffered events to avoid constant locking for OnEvent().
+    CSingleLock lock(g_inputCond);
+    copy_events = events;
+    events.clear();
+  }  
+  
+  for (vector<XBMC_Event>::iterator it = copy_events.begin(); it!=copy_events.end(); ++it)
   {
-    memcpy(&pumpEvent, (XBMC_Event *)&*it, sizeof(XBMC_Event));
-    events.erase (events.begin(),events.begin()+1);
-    gotEvent = true;
-    break;
-  }
-  lock.Leave();
-
-  if (gotEvent)
-  {
-    if (pumpEvent.type == XBMC_USEREVENT)
+    XBMC_Event *pumpEvent = (XBMC_Event *)&*it;
+    if (pumpEvent->type == XBMC_USEREVENT)
     {
       // On ATV2, we push in events as a XBMC_USEREVENT,
       // the jbutton.which will be the keyID to translate using joystick.AppleRemote.xml
@@ -76,18 +70,18 @@ bool CWinEventsIOS::MessagePump()
       std::string joystickName = "AppleRemote";
       bool isAxis = false;
       float fAmount = 1.0;
-      unsigned char wKeyID = pumpEvent.jbutton.which;
-      unsigned int holdTime = pumpEvent.jbutton.holdTime;
+      unsigned char wKeyID = pumpEvent->jbutton.which;
+      unsigned int holdTime = pumpEvent->jbutton.holdTime;
 
       CLog::Log(LOGDEBUG,"CWinEventsIOS: Button press keyID = %i", wKeyID);
       ret |= g_application.ProcessJoystickEvent(joystickName, wKeyID, isAxis, fAmount, holdTime);
     }
     else
-      ret |= g_application.OnEvent(pumpEvent);
+      ret |= g_application.OnEvent(*it);
 
 //on ios touch devices - unfocus controls on finger lift
 #if !defined(TARGET_DARWIN_IOS_ATV2)
-    if (pumpEvent.type == XBMC_MOUSEBUTTONUP)
+    if (pumpEvent->type == XBMC_MOUSEBUTTONUP)
     {
       g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
     }

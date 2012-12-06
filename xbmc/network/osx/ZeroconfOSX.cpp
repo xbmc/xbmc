@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -74,7 +73,7 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
   {
     //txt map to dictionary
     CFDataRef txtData = NULL;
-    CFMutableDictionaryRef txtDict = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);    
+    CFMutableDictionaryRef txtDict = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     for(std::map<std::string, std::string>::const_iterator it = txt.begin(); it != txt.end(); ++it)
     {
       CFStringRef key = CFStringCreateWithCString (NULL,

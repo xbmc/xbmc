@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,7 +28,7 @@
 #include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__)
+#if !defined(TARGET_DARWIN) && !defined(__FreeBSD__) && !defined(__ANDROID__)
 #include <sys/vfs.h>
 #else
 #include <sys/param.h>
@@ -37,6 +36,14 @@
 #endif
 #include <dirent.h>
 #include <errno.h>
+
+#if defined(__ANDROID__)
+#include <sys/file.h>
+#include <sys/statfs.h>
+
+/* from android header: note: this corresponds to the kernel's statfs64 type */
+//typedef struct statfs statfs64;
+#endif
 
 #include "storage/cdioSupport.h"
 
@@ -60,7 +67,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   strPath.Replace("\\","/");
 
   // if the file name is a directory then we add a * to look for all files in this directory
-#if defined(TARGET_DARWIN) || defined(__FreeBSD__)
+#if defined(TARGET_DARWIN) || defined(__FreeBSD__) || defined(__ANDROID__)
   DIR *testDir = opendir(strPath.c_str());
 #else
   DIR *testDir = opendir(szPath);
@@ -97,7 +104,13 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
     return(INVALID_HANDLE_VALUE);
 
   struct dirent **namelist = NULL;
+#if defined(__ANDROID__)
+  // android is more strict with the sort function. Let's hope it is implemented correctly.
+  typedef int (*sortFunc)(const struct dirent ** a, const struct dirent **b);
+  int n = scandir(strDir, &namelist, 0, (sortFunc)alphasort);
+#else
   int n = scandir(strDir, &namelist, 0, alphasort);
+#endif
 
   CXHandle *pHandle = new CXHandle(CXHandle::HND_FIND_FILE);
     pHandle->m_FindFileDir = strDir;
@@ -440,20 +453,29 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
   int64_t bytesRead = 1;
   int64_t bytesWritten = 1;
 
-  while (bytesRead > 0 && bytesWritten > 0)
+  if (sf != -1 && df != -1)
   {
-    bytesRead = read(sf, buf, sizeof(buf));
-    if (bytesRead > 0)
-      bytesWritten = write(df, buf, bytesRead);
+    while (bytesRead > 0 && bytesWritten > 0)
+    {
+      bytesRead = read(sf, buf, sizeof(buf));
+      if (bytesRead > 0)
+        bytesWritten = write(df, buf, bytesRead);
+    }
+  }
+  else
+  {
+    bytesRead = -1;
+    bytesWritten = -1;
   }
 
   // Done
-  close(sf);
-  close(df);
+  if (sf != -1)  
+    close(sf);
+  if (df != -1)
+    close(df);
 
   if (bytesRead == -1 || bytesWritten == -1)
     return 0;
-
   return 1;
 }
 
@@ -575,9 +597,16 @@ BOOL GetDiskFreeSpaceEx(
   )
 
 {
+#if defined(__ANDROID__)
+  struct statfs fsInfo;
+  // is 64-bit on android
+  if (statfs(CSpecialProtocol::TranslatePath(lpDirectoryName), &fsInfo) != 0)
+    return false;
+#else
   struct statfs64 fsInfo;
   if (statfs64(CSpecialProtocol::TranslatePath(lpDirectoryName), &fsInfo) != 0)
     return false;
+#endif
 
   if (lpFreeBytesAvailable)
     lpFreeBytesAvailable->QuadPart =  (ULONGLONG)fsInfo.f_bavail * (ULONGLONG)fsInfo.f_bsize;
@@ -620,7 +649,10 @@ BOOL SetEndOfFile(HANDLE hFile)
 #else
   off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
 #endif
-  return (ftruncate(hFile->fd, currOff) == 0);
+  if (currOff >= 0)
+    return (ftruncate(hFile->fd, currOff) == 0);
+
+  return false;
 }
 
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable)

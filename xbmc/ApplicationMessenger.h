@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,6 +27,8 @@
 #include "threads/Event.h"
 #include <boost/shared_ptr.hpp>
 
+#include "PlatformDefs.h"
+
 #include <queue>
 
 class CFileItem;
@@ -35,6 +36,12 @@ class CFileItemList;
 class CGUIDialog;
 class CGUIWindow;
 class CGUIMessage;
+class CVideoInfoTag;
+
+namespace MUSIC_INFO
+{
+  class CMusicInfoTag;
+}
 
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
@@ -60,10 +67,10 @@ class CGUIMessage;
 #define TMSG_PLAYLISTPLAYER_REMOVE 219
 #define TMSG_PLAYLISTPLAYER_SWAP 223
 #define TMSG_PLAYLISTPLAYER_REPEAT 224
+#define TMSG_UPDATE_CURRENT_ITEM 225
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
-#define TMSG_SLIDESHOW_SCREENSAVER  222
 
 #define TMSG_SHUTDOWN             300
 #define TMSG_POWERDOWN            301
@@ -78,8 +85,8 @@ class CGUIMessage;
 #define TMSG_TOGGLEFULLSCREEN     310
 #define TMSG_SETLANGUAGE          311
 #define TMSG_RENDERER_FLUSH       312
-
-#define TMSG_HTTPAPI              400
+#define TMSG_INHIBITIDLESHUTDOWN  313
+#define TMSG_LOADPROFILE          314
 
 #define TMSG_NETWORKMESSAGE         500
 
@@ -91,12 +98,16 @@ class CGUIMessage;
 #define TMSG_GUI_ACTION               607
 #define TMSG_GUI_INFOLABEL            608
 #define TMSG_GUI_INFOBOOL             609
-#define TMSG_GUI_MESSAGE              610
+#define TMSG_GUI_ADDON_DIALOG         610
+#define TMSG_GUI_MESSAGE              611
 
 #define TMSG_CALLBACK             800
 
 #define TMSG_VOLUME_SHOW          900
 #define TMSG_SPLASH_MESSAGE       901
+
+#define TMSG_DISPLAY_SETUP      1000
+#define TMSG_DISPLAY_DESTROY    1001
 
 typedef struct
 {
@@ -129,9 +140,12 @@ struct ThreadMessageCallback
 
 class CApplicationMessenger
 {
-
 public:
-  ~CApplicationMessenger();
+  /*!
+   \brief The only way through which the global instance of the CApplicationMessenger should be accessed.
+   \return the global instance.
+   */
+  static CApplicationMessenger& Get();
 
   void Cleanup();
   // if a message has to be send to the gui, use MSG_TYPE_WINDOW instead
@@ -144,7 +158,7 @@ public:
   void MediaPlay(const CFileItem &item);
   void MediaPlay(const CFileItemList &item, int song = 0);
   void MediaPlay(int playlistid, int song = -1);
-  void MediaStop();
+  void MediaStop(bool bWait = true);
   void MediaPause();
   void MediaRestart(bool bWait);
 
@@ -166,7 +180,7 @@ public:
 
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(std::string filename);
-  void PictureSlideShow(std::string pathname, bool bScreensaver = false, bool addTBN = false);
+  void PictureSlideShow(std::string pathname, bool addTBN = false);
   void SetGUILanguage(const std::string &strLanguage);
   void Shutdown();
   void Powerdown();
@@ -176,14 +190,22 @@ public:
   void Restart();
   void RestartApp();
   void Reset();
+  void InhibitIdleShutdown(bool inhibit);
   void SwitchToFullscreen(); //
   void Minimize(bool wait = false);
   void ExecOS(const CStdString command, bool waitExit = false);
   void UserEvent(int code);
+  //! \brief Set the tag for the currently playing song
+  void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag& tag);
+  //! \brief Set the tag for the currently playing video
+  void SetCurrentVideoTag(const CVideoInfoTag& tag);
+  //! \brief Set the currently currently item
+  void SetCurrentItem(const CFileItem& item);
+
+  void LoadProfile(unsigned int idx);
 
   CStdString GetResponse();
   int SetResponse(CStdString response);
-  void HttpApi(std::string cmd, bool wait = false);
   void ExecBuiltIn(const CStdString &command, bool wait = false);
 
   void NetworkMessage(DWORD dwMessage, DWORD dwParam = 0);
@@ -209,15 +231,21 @@ public:
 
   void SetSplashMessage(const CStdString& message);
   void SetSplashMessage(int stringID);
+  
+  bool SetupDisplay();
+  bool DestroyDisplay();
 
 private:
+  // private construction, and no assignements; use the provided singleton methods
+  CApplicationMessenger();
+  CApplicationMessenger(const CApplicationMessenger&);
+  CApplicationMessenger const& operator=(CApplicationMessenger const&);
+  virtual ~CApplicationMessenger();
   void ProcessMessage(ThreadMessage *pMsg);
-
 
   std::queue<ThreadMessage*> m_vecMessages;
   std::queue<ThreadMessage*> m_vecWindowMessages;
   CCriticalSection m_critSection;
   CCriticalSection m_critBuffer;
   CStdString bufferResponse;
-
 };

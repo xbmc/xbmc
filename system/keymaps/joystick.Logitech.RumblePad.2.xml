@@ -63,6 +63,16 @@
     </joystick>
   </FullscreenVideo>
 
+  <FullscreenLiveTV>
+    <joystick name="Logitech Logitech Cordless RumblePad 2">
+      <altname>Logitech Cordless RumblePad 2</altname>
+      <hat    id="1" position="left">PreviousChannelGroup</hat>
+      <hat    id="1" position="right">NextChannelGroup</hat>
+      <hat    id="1" position="up">ChannelUp</hat>
+      <hat    id="1" position="down">ChannelDown</hat>
+    </joystick>
+  </FullscreenLiveTV>
+
   <Visualisation>
     <joystick name="Logitech Logitech Cordless RumblePad 2">
       <altname>Logitech Cordless RumblePad 2</altname>
@@ -71,7 +81,7 @@
       <button id="4">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="5">Rewind</button>
       <button id="6">FastForward</button>
-      <button id="10">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="10">OSD</button>
 
       <hat    id="1" position="left">SkipPrevious</hat>
       <hat    id="1" position="right">SkipNext</hat>

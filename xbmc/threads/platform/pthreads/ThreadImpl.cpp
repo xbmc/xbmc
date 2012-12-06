@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2011 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,14 +13,17 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <limits.h>
+#if defined(TARGET_ANDROID)
+#include <unistd.h>
+#else
 #include <sys/syscall.h>
+#endif
 #include <sys/resource.h>
 #include <string.h>
 #ifdef __FreeBSD__
@@ -38,8 +41,10 @@ void CThread::SpawnThread(unsigned stacksize)
 {
   pthread_attr_t attr;
   pthread_attr_init(&attr);
+#if !defined(TARGET_ANDROID) // http://code.google.com/p/android/issues/detail?id=7808
   if (stacksize > PTHREAD_STACK_MIN)
     pthread_attr_setstacksize(&attr, stacksize);
+#endif
   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
   if (pthread_create(&m_ThreadId, &attr, (void*(*)(void*))staticThread, this) != 0)
   {
@@ -60,6 +65,8 @@ void CThread::SetThreadInfo()
 #else
   m_ThreadOpaque.LwpId = pthread_getthreadid_np();
 #endif
+#elif defined(TARGET_ANDROID)
+  m_ThreadOpaque.LwpId = gettid();
 #else
   m_ThreadOpaque.LwpId = syscall(SYS_gettid);
 #endif
@@ -70,10 +77,29 @@ void CThread::SetThreadInfo()
 #endif
 #endif
     
-  // start thread with nice level of appication
-  int appNice = getpriority(PRIO_PROCESS, getpid());
-  if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
-    if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+#ifdef RLIMIT_NICE
+  // get user max prio
+  struct rlimit limit;
+  int userMaxPrio;
+  if (getrlimit(RLIMIT_NICE, &limit) == 0)
+  {
+    userMaxPrio = limit.rlim_cur - 20;
+    if (userMaxPrio < 0)
+      userMaxPrio = 0;
+  }
+  else
+    userMaxPrio = 0;
+
+  // if the user does not have an entry in limits.conf the following
+  // call will fail
+  if (userMaxPrio > 0)
+  {
+    // start thread with nice level of appication
+    int appNice = getpriority(PRIO_PROCESS, getpid());
+    if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
+      if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+  }
+#endif
 }
 
 ThreadIdentifier CThread::GetCurrentThreadId()
@@ -129,6 +155,9 @@ bool CThread::SetPriority(const int iPriority)
     if (getrlimit(RLIMIT_NICE, &limit) == 0)
     {
       userMaxPrio = limit.rlim_cur - 20;
+      // is a user has no entry in limits.conf rlim_cur is zero
+      if (userMaxPrio < 0)
+        userMaxPrio = 0;
     }
     else
       userMaxPrio = 0;

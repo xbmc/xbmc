@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -100,45 +99,47 @@ void CSMB::Init()
     // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
     char smb_conf[MAX_PATH];
-    sprintf(smb_conf, "%s/.smb", getenv("HOME"));
-    mkdir(smb_conf, 0755);
-    sprintf(smb_conf, "%s/.smb/smb.conf", getenv("HOME"));
-    FILE* f = fopen(smb_conf, "w");
-    if (f != NULL)
+    snprintf(smb_conf, sizeof(smb_conf), "%s/.smb", getenv("HOME"));
+    if (mkdir(smb_conf, 0755) == 0)
     {
-      fprintf(f, "[global]\n");
-
-      // make sure we're not acting like a server
-      fprintf(f, "\tpreferred master = no\n");
-      fprintf(f, "\tlocal master = no\n");
-      fprintf(f, "\tdomain master = no\n");
-
-      // use the weaker LANMAN password hash in order to be compatible with older servers
-      fprintf(f, "\tclient lanman auth = yes\n");
-      fprintf(f, "\tlanman auth = yes\n");
-
-      fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
-      fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
-
-      // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
-      // if no WINS server has been specified the wins method will be ignored.
-      if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+      snprintf(smb_conf, sizeof(smb_conf), "%s/.smb/smb.conf", getenv("HOME"));
+      FILE* f = fopen(smb_conf, "w");
+      if (f != NULL)
       {
-        fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
-        fprintf(f, "\tname resolve order = bcast wins host\n");
+        fprintf(f, "[global]\n");
+
+        // make sure we're not acting like a server
+        fprintf(f, "\tpreferred master = no\n");
+        fprintf(f, "\tlocal master = no\n");
+        fprintf(f, "\tdomain master = no\n");
+
+        // use the weaker LANMAN password hash in order to be compatible with older servers
+        fprintf(f, "\tclient lanman auth = yes\n");
+        fprintf(f, "\tlanman auth = yes\n");
+
+        fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
+        fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
+
+        // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
+        // if no WINS server has been specified the wins method will be ignored.
+        if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
+        {
+          fprintf(f, "\twins server = %s\n", g_guiSettings.GetString("smb.winsserver").c_str());
+          fprintf(f, "\tname resolve order = bcast wins host\n");
+        }
+        else
+          fprintf(f, "\tname resolve order = bcast host\n");
+
+        // use user-configured charset. if no charset is specified,
+        // samba tries to use charset 850 but falls back to ASCII in case it is not available
+        if (g_advancedSettings.m_sambadoscodepage.length() > 0)
+          fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
+
+        // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
+        if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
+          fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
+        fclose(f);
       }
-      else
-        fprintf(f, "\tname resolve order = bcast host\n");
-
-      // use user-configured charset. if no charset is specified,
-      // samba tries to use charset 850 but falls back to ASCII in case it is not available
-      if (g_advancedSettings.m_sambadoscodepage.length() > 0)
-        fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
-
-      // if no workgroup string is specified, samba will use the default value 'WORKGROUP'
-      if ( g_guiSettings.GetString("smb.workgroup").length() > 0 )
-        fprintf(f, "\tworkgroup = %s\n", g_guiSettings.GetString("smb.workgroup").c_str());
-      fclose(f);
     }
 #endif
 
@@ -562,6 +563,25 @@ int CSmbFile::Stat(const CURL& url, struct __stat64* buffer)
   buffer->st_ctime = tmpBuffer.st_ctime;
 
   return iResult;
+}
+
+int CSmbFile::Truncate(int64_t size)
+{
+  if (m_fd == -1) return 0;
+/* 
+ * This would force us to be dependant on SMBv3.2 which is GPLv3
+ * This is only used by the TagLib writers, which are not currently in use
+ * So log and warn until we implement TagLib writing & can re-implement this better.
+  CSingleLock lock(smb); // Init not called since it has to be "inited" by now
+
+#if defined(TARGET_ANDROID)
+  int iResult = 0;
+#else
+  int iResult = smbc_ftruncate(m_fd, size);
+#endif
+*/
+  CLog::Log(LOGWARNING, "%s - Warning(smbc_ftruncate called and not implemented)", __FUNCTION__);
+  return 0;
 }
 
 unsigned int CSmbFile::Read(void *lpBuf, int64_t uiBufSize)

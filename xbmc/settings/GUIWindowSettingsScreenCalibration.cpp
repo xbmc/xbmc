@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -117,6 +116,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      g_settings.UpdateCalibrations();
       g_settings.Save();
       g_graphicsContext.SetCalibrating(false);
       g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
@@ -352,12 +352,12 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   // set the label control correctly
   CStdString strText;
   if (g_Windowing.IsFullScreen())
-    strText.Format("%ix%i@%.2f - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth,
-      g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight, g_settings.m_ResInfo[m_Res[m_iCurRes]].fRefreshRate,
+    strText.Format("%ix%i@%.2f - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenWidth,
+      g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenHeight, g_settings.m_ResInfo[m_Res[m_iCurRes]].fRefreshRate,
       g_localizeStrings.Get(244).c_str(), strStatus.c_str());
   else
-    strText.Format("%ix%i - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iWidth,
-      g_settings.m_ResInfo[m_Res[m_iCurRes]].iHeight,
+    strText.Format("%ix%i - %s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenWidth,
+      g_settings.m_ResInfo[m_Res[m_iCurRes]].iScreenHeight,
       g_localizeStrings.Get(242).c_str(), strStatus.c_str());
 
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);

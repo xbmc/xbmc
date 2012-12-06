@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -78,5 +77,27 @@ public:
     Drain the sink
    */
   virtual void Drain() {};
+
+  /*
+    Indicates if sink can handle volume control.
+  */
+  virtual bool  HasVolume() {return false;};
+
+  /*
+    This method sets the volume control, volume ranges from 0.0 to 1.0.
+  */
+  virtual void  SetVolume(float volume) {};
+
+  /*
+    Requests sink to prepare itself for a suspend state
+    @return false if sink cannot be suspended
+  */
+  virtual bool SoftSuspend() {return false;};
+
+  /*
+    Notify sink to prepare to resume processing after suspend state
+    @return false if sink must be reinitialized
+  */
+  virtual bool SoftResume() {return false;};
 };
 

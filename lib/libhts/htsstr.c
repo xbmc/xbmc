@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef __APPLE__
-#include "OSXGNUReplacements.h"
+#include "osx/OSXGNUReplacements.h"
 #elif defined(_MSC_VER)
 #include "msvc.h"
 #endif

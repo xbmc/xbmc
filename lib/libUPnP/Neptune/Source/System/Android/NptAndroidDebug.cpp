@@ -12,7 +12,8 @@
 /*----------------------------------------------------------------------
 |       includes
 +---------------------------------------------------------------------*/
-#include <cutils/logd.h>
+#include <android/log.h>
+#include <stdio.h>
 
 #include "NptConfig.h"
 #include "NptDefs.h"

@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -108,7 +107,7 @@ public:
   /**
    * Returns true if the is stream has finished draining
    */
-  virtual bool IsDrained() { return true; } /*FIXME: this should = 0 when done */
+  virtual bool IsDrained() = 0;
   
   /**
    * Flush all buffers dropping the audio data
@@ -138,6 +137,18 @@ public:
    * @param factor The replay gain factor
    */
   virtual void SetReplayGain(float factor) = 0;
+
+  /**
+   * Gets the stream's volume amplification in linear units.
+   * @return The volume amplification factor between 1.0 and 1000.0
+   */
+  virtual float GetAmplification() = 0;
+
+  /**
+   * Sets the stream's volume amplification in linear units.
+   * @param The volume amplification factor between 1.0 and 1000.0
+   */
+  virtual void SetAmplification(float amplify) = 0;
 
   /**
    * Returns the size of one audio frame in bytes (channelCount * resolution)

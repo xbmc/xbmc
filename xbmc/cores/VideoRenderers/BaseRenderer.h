@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -56,8 +55,17 @@ enum ERENDERFEATURE
   RENDERFEATURE_CONTRAST,
   RENDERFEATURE_NOISE,
   RENDERFEATURE_SHARPNESS,
-  RENDERFEATURE_NONLINSTRETCH
+  RENDERFEATURE_NONLINSTRETCH,
+  RENDERFEATURE_ROTATION,
+  RENDERFEATURE_STRETCH,
+  RENDERFEATURE_CROP,
+  RENDERFEATURE_ZOOM,
+  RENDERFEATURE_VERTICAL_SHIFT,
+  RENDERFEATURE_PIXEL_RATIO,
+  RENDERFEATURE_POSTPROCESS
 };
+
+typedef void (*RenderUpdateCallBackFn)(const void *ctx, const CRect &SrcRect, const CRect &DestRect);
 
 struct DVDVideoPicture;
 
@@ -77,8 +85,12 @@ public:
 
   virtual unsigned int GetProcessorSize() { return 0; }
 
+  virtual bool Supports(ERENDERFEATURE feature) { return false; }
+
   // Supported pixel formats, can be called before configure
   std::vector<ERenderFormat> SupportedFormats()  { return std::vector<ERenderFormat>(); }
+
+  virtual void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
 
 protected:
   void       ChooseBestResolution(float fps);
@@ -90,12 +102,33 @@ protected:
   void       CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   void       ManageDisplay();
 
+  virtual void       ReorderDrawPoints();//might be overwritten (by egl e.x.)
+  void       saveRotatedCoords();//saves the current state of m_rotatedDestCoords
+  void       syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
+  void       restoreRotatedCoords();//restore the current state of m_rotatedDestCoords from saveRotatedCoords 
+  void       MarkDirty();
+
   RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;
   unsigned int m_sourceHeight;
   float m_sourceFrameRatio;
   float m_fps;
 
+  unsigned int m_renderOrientation; // orientation of the video in degress counter clockwise
+  unsigned int m_oldRenderOrientation; // orientation of the previous frame
+  // for drawing the texture with glVertex4f (holds all 4 corner points of the destination rect
+  // with correct orientation based on m_renderOrientation
+  // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
+  CPoint m_rotatedDestCoords[4];
+  CPoint m_savedRotatedDestCoords[4];//saved points from saveRotatedCoords call
+
   CRect m_destRect;
+  CRect m_oldDestRect; // destrect of the previous frame
   CRect m_sourceRect;
+
+  // rendering flags
+  unsigned m_iFlags;
+
+  const void* m_RenderUpdateCallBackCtx;
+  RenderUpdateCallBackFn m_RenderUpdateCallBackFn;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,15 +15,14 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <string>
 #include "utils/BitstreamStats.h"
-#include "filesystem/IFile.h"
+#include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
 
@@ -40,6 +39,7 @@ enum DVDStreamType
   DVDSTREAM_TYPE_HTSP   = 8,
   DVDSTREAM_TYPE_MPLS   = 10,
   DVDSTREAM_TYPE_BLURAY = 11,
+  DVDSTREAM_TYPE_PVRMANAGER = 12,
 };
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
@@ -49,6 +49,12 @@ enum DVDStreamType
 
 class CPoint;
 
+namespace PVR
+{
+  class CPVRChannel;
+  typedef boost::shared_ptr<PVR::CPVRChannel> CPVRChannelPtr;
+}
+
 class CDVDInputStream
 {
 public:
@@ -56,10 +62,17 @@ public:
   {
     public:
     virtual ~IChannel() {};
-    virtual bool NextChannel() = 0;
-    virtual bool PrevChannel() = 0;
-    virtual bool SelectChannel(unsigned int channel) = 0;
+    virtual bool NextChannel(bool preview = false) = 0;
+    virtual bool PrevChannel(bool preview = false) = 0;
+    virtual bool SelectChannelByNumber(unsigned int channel) = 0;
+    virtual bool SelectChannel(const PVR::CPVRChannel &channel) { return false; };
+    virtual bool GetSelectedChannel(PVR::CPVRChannelPtr&) { return false; };
     virtual bool UpdateItem(CFileItem& item) = 0;
+    virtual bool CanRecord() = 0;
+    virtual bool IsRecording() = 0;
+    virtual bool Record(bool bOnOff) = 0;
+    virtual bool CanPause() = 0;
+    virtual bool CanSeek() = 0;
   };
 
   class IDisplayTime
@@ -129,6 +142,7 @@ public:
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
+  virtual void ResetScanTimeout(unsigned int iTimeoutMs) { }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should

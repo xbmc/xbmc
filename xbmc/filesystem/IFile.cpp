@@ -19,6 +19,7 @@
 */
 
 #include "IFile.h"
+#include "URL.h"
 #include <cstring>
 #include <errno.h>
 
@@ -87,4 +88,14 @@ bool IFile::ReadString(char *szLine, int iLineLength)
     }
   }
   return true;
+}
+
+CRedirectException::CRedirectException() : 
+  m_pNewFileImp(NULL), m_pNewUrl(NULL)
+{
+}
+
+CRedirectException::CRedirectException(IFile *pNewFileImp, CURL *pNewUrl) :
+  m_pNewFileImp(pNewFileImp), m_pNewUrl(pNewUrl) 
+{
 }

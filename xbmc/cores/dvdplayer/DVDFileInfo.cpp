@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -186,9 +185,10 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, CTextureDetails &deta
         int iDecoderState = VC_ERROR;
         DVDVideoPicture picture;
 
+        memset(&picture, 0, sizeof(picture));
+
         // num streams * 80 frames, should get a valid frame, if not abort.
-        int packetsToTry = 80;
-        int abort_index = pDemuxer->GetNrOfStreams() * packetsToTry;
+        int abort_index = pDemuxer->GetNrOfStreams() * 80;
         do
         {
           pPacket = pDemuxer->Read();
@@ -375,8 +375,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
     {
       CStreamDetailAudio *p = new CStreamDetailAudio();
       p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
-      if (stream->language)
-        p->m_strLanguage = stream->language;
+      p->m_strLanguage = stream->language;
       pDemux->GetStreamCodecName(iStream, p->m_strCodec);
       details.AddStream(p);
       retVal = true;
@@ -384,13 +383,10 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDInputStream *pInputStream, CDVDDem
 
     else if (stream->type == STREAM_SUBTITLE)
     {
-      if (stream->language)
-      {
-        CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
-        p->m_strLanguage = stream->language;
-        details.AddStream(p);
-        retVal = true;
-      }
+      CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+      p->m_strLanguage = stream->language;
+      details.AddStream(p);
+      retVal = true;
     }
   }  /* for iStream */
 

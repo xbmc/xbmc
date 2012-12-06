@@ -45,6 +45,8 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 3.0 Install Xcode
 -----------------------------------------------------------------------------
+See point 3.0a below for an updated list of supported Xcode/osx constellations!!!
+
 Install latest Xcode (4.3.2 or 3.2.6 as of the writing). You can download it from 
 
 1. Apple's site after registration at http://developer.apple.com/tools/download (Xcode 3.2.6)
@@ -59,6 +61,18 @@ Xcode 4.3.x only runs on 10.7.x (Lion).
 
 The preferred iOS SDK Version is 4.3 (when using Xcode 3.2.6) or 5.1 (when using
 Xcode 4.3.x).
+
+-----------------------------------------------------------------------------
+3.0a Supported Xcode and OSX constellations
+-----------------------------------------------------------------------------
+As far as we know the compilation for ios and atv2 should work with the following
+constellations of Xcode and osx versions (to be updated once we know more):
+
+1. XCode 3.2.6 against iOS SDK 4.3 on 10.6.x (Snow Leopard)
+2. XCode 4.3.x against iOS SDK 4.3 and 5.1 on 10.7.x (Lion)
+3. XCode 4.5.1 against iOS SDK 4.3, 5.1 and 6.0 on 10.7.x (Lion) and 10.8.x (ML)
+3.a Building against iOS SDK 6.0 will only allow to run on targets with iOS 5.1 and below.
+    There is no support for devices running iOS 6.0 for now!
 
 -----------------------------------------------------------------------------
 3.1 Install Cross libs and runtime environment
@@ -80,6 +94,7 @@ from the step 3.1.
  $ make -C tools/darwin/depends/xbmc
  $ make clean
  $ make xcode_depends
+ $ make -C lib/addons/script.module.pil
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode

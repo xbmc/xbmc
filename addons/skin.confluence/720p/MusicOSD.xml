@@ -1,4 +1,4 @@
-<window id="120">
+<window>
 	<defaultcontrol always="true">602</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
@@ -29,7 +29,7 @@
 		<control type="slider" id="87">
 			<description>Seek Slider</description>
 			<posx>430</posx>
-			<posy>72r</posy>
+			<posy>82r</posy>
 			<width>720</width>
 			<height>16</height>
 			<onup>702</onup>
@@ -43,14 +43,14 @@
 		</control>
 		<control type="group" id="100">
 			<posx>325</posx>
-			<posy>50r</posy>
+			<posy>60r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
 			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>210</label>
 				<font>-</font>
 				<texturefocus>OSDPrevTrackFO.png</texturefocus>
@@ -62,10 +62,10 @@
 				<onclick>PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="601">
-				<posx>45</posx>
+				<posx>55</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31354</label>
 				<font>-</font>
 				<texturefocus>OSDRewindFO.png</texturefocus>
@@ -77,10 +77,10 @@
 				<onclick>PlayerControl(Rewind)</onclick>
 			</control>
 			<control type="togglebutton" id="602">
-				<posx>90</posx>
+				<posx>110</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31351</label>
 				<altlabel>208</altlabel>
 				<font>-</font>
@@ -96,10 +96,10 @@
 				<onclick>PlayerControl(Play)</onclick>
 			</control>
 			<control type="button" id="603">
-				<posx>135</posx>
+				<posx>165</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31352</label>
 				<font>-</font>
 				<texturefocus>OSDStopFO.png</texturefocus>
@@ -111,10 +111,10 @@
 				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="button" id="604">
-				<posx>180</posx>
+				<posx>220</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31353</label>
 				<font>-</font>
 				<texturefocus>OSDForwardFO.png</texturefocus>
@@ -126,10 +126,10 @@
 				<onclick>PlayerControl(Forward)</onclick>
 			</control>
 			<control type="button" id="605">
-				<posx>225</posx>
+				<posx>275</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>209</label>
 				<font>-</font>
 				<texturefocus>OSDNextTrackFO.png</texturefocus>
@@ -141,10 +141,10 @@
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
 			<control type="button" id="606">
-				<posx>270</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
 				<font>-</font>
 				<texturefocus>-</texturefocus>
@@ -156,64 +156,64 @@
 				<ondown>1000</ondown>
 			</control>
 			<control type="image">
-				<posx>270</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<texture>OSDRepeatNF.png</texture>
 				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
 				<visible>!Control.HasFocus(606)</visible>
 			</control>
 			<control type="image">
-				<posx>270</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<texture>OSDRepeatFO.png</texture>
 				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
 				<visible>Control.HasFocus(606)</visible>
 			</control>
 			<control type="image">
-				<posx>270</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<texture>OSDRepeatOneNF.png</texture>
 				<visible>Playlist.IsRepeatOne</visible>
 				<visible>!Control.HasFocus(606)</visible>
 			</control>
 			<control type="image">
-				<posx>270</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<texture>OSDRepeatOneFO.png</texture>
 				<visible>Playlist.IsRepeatOne</visible>
 				<visible>Control.HasFocus(606)</visible>
 			</control>
 			<control type="image">
-				<posx>270</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<texture>OSDRepeatAllNF.png</texture>
 				<visible>Playlist.IsRepeat</visible>
 				<visible>!Control.HasFocus(606)</visible>
 			</control>
 			<control type="image">
-				<posx>270</posx>
+				<posx>330</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<texture>OSDRepeatAllFO.png</texture>
 				<visible>Playlist.IsRepeat</visible>
 				<visible>Control.HasFocus(606)</visible>
 			</control>
 			<control type="togglebutton" id="607">
-				<posx>315</posx>
+				<posx>385</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>$LOCALIZE[590]$INFO[Playlist.Random, : ]</label>
 				<font>-</font>
 				<texturefocus>OSDRandomOffFO.png</texturefocus>
@@ -229,15 +229,15 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>250r</posx>
-			<posy>50r</posy>
+			<posx>300r</posx>
+			<posy>60r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
 			<control type="togglebutton" id="701">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31128</label>
 				<font>-</font>
 				<texturefocus>OSDLyricsFO.png</texturefocus>
@@ -256,10 +256,10 @@
 				<usealttexture>IsEmpty(Skin.String(LyricScript_Path))</usealttexture>
 			</control>
 			<control type="button" id="500">
-				<posx>45</posx>
+				<posx>55</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>12006</label>
 				<font>-</font>
 				<texturefocus>OSDVizFO.png</texturefocus>
@@ -270,10 +270,10 @@
 				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="702">
-				<posx>90</posx>
+				<posx>110</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>$LOCALIZE[250] $LOCALIZE[21417]</label>
 				<font>-</font>
 				<texturefocus>OSDPresetSettingsFO.png</texturefocus>
@@ -285,10 +285,10 @@
 				<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
 			</control>
 			<control type="button" id="703">
-				<posx>135</posx>
+				<posx>165</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>31048</label>
 				<font>-</font>
 				<texturefocus>OSDPreFO.png</texturefocus>
@@ -300,14 +300,14 @@
 				<onclick>ActivateWindow(122)</onclick>
 			</control>
 			<control type="button" id="704">
-				<posx>180</posx>
+				<posx>220</posx>
 				<posy>0</posy>
-				<width>45</width>
-				<height>45</height>
+				<width>55</width>
+				<height>55</height>
 				<label>264</label>
 				<font>-</font>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>703</onleft>
 				<onright>600</onright>
 				<onup>1000</onup>

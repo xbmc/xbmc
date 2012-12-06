@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,18 +15,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "guilib/GUIDialog.h"
-#include "guilib/GUIListItem.h"
-#include "ThumbLoader.h"
-#include "video/VideoDatabase.h"
-
-class CFileItem;
+#include "FileItem.h"
 
 class CGUIDialogVideoInfo :
       public CGUIDialog
@@ -35,16 +30,21 @@ public:
   CGUIDialogVideoInfo(void);
   virtual ~CGUIDialogVideoInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
   void SetMovie(const CFileItem *item);
   bool NeedRefresh() const;
   bool RefreshAll() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 
-  const CStdString &GetThumbnail() const;
+  std::string GetThumbnail() const;
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_movieItem; }
   const CFileItemList& CurrentDirectory() const { return *m_castList; };
   virtual bool HasListItems() const { return true; };
+
+  static std::string ChooseArtType(const CFileItem &item, std::map<std::string, std::string> &currentArt);
+  static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
 protected:
+  virtual void OnInitWindow();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
 
@@ -54,7 +54,7 @@ protected:
   void DoSearch(CStdString& strSearch, CFileItemList& items);
   void OnSearchItemFound(const CFileItem* pItem);
   void Play(bool resume = false);
-  void OnGetThumb();
+  void OnGetArt();
   void OnGetFanart();
   void PlayTrailer();
 
@@ -64,6 +64,4 @@ protected:
   bool m_bRefresh;
   bool m_bRefreshAll;
   bool m_hasUpdatedThumb;
-  CGUIDialogProgress* m_dlgProgress;
-  CVideoThumbLoader m_loader;
 };

@@ -1,0 +1,138 @@
+# XBMC Media Center language file
+# Addon Name: Weather Underground
+# Addon id: weather.wunderground
+# Addon version: 1.0.2
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "#32101"
+msgid "Location setup"
+msgstr "Nastavení umístění"
+
+msgctxt "#32102"
+msgid "Advanced options"
+msgstr "Pokročilé možnosti"
+
+msgctxt "#32111"
+msgid "Location 1"
+msgstr "Umístění 1"
+
+msgctxt "#32112"
+msgid "Location 2"
+msgstr "Umístění 2"
+
+msgctxt "#32113"
+msgid "Location 3"
+msgstr "Umístění 3"
+
+msgctxt "#32114"
+msgid "Location 1 display name"
+msgstr "Zobrazovaný název umístění 1"
+
+msgctxt "#32115"
+msgid "Location 2 display name"
+msgstr "Zobrazovaný název umístění 2"
+
+msgctxt "#32116"
+msgid "Location 3 display name"
+msgstr "Zobrazovaný název umístění 3"
+
+msgctxt "#32117"
+msgid "Location 1 id"
+msgstr "ID umístění 1"
+
+msgctxt "#32118"
+msgid "Location 2 id"
+msgstr "ID umístění 2"
+
+msgctxt "#32119"
+msgid "Location 3 id"
+msgstr "ID umístění 3"
+
+msgctxt "#32120"
+msgid "Enable logging"
+msgstr "Povolit záznam"
+
+msgctxt "#32121"
+msgid "Weekend"
+msgstr "Víkend"
+
+msgctxt "#32122"
+msgid "Saturday/Sunday"
+msgstr "Sobota/Neděle"
+
+msgctxt "#32123"
+msgid "Friday/Saturday"
+msgstr "Pátek/Sobota"
+
+msgctxt "#32124"
+msgid "Thursday/Friday"
+msgstr "Čtvrtek/Pátek"
+
+msgctxt "#32125"
+msgid "Map zoom level"
+msgstr "Uroveň přiblížení mapy"
+
+msgctxt "#32126"
+msgid "Animated map"
+msgstr "Animovaná mapa"
+
+msgctxt "#32501"
+msgid "New Moon"
+msgstr "Novoluní"
+
+msgctxt "#32502"
+msgid "Waxing Crescent"
+msgstr "Dorůstající srpek"
+
+msgctxt "#32503"
+msgid "First Quarter"
+msgstr "První čtvrť"
+
+msgctxt "#32504"
+msgid "Waxing Gibbous"
+msgstr "Dorůstající měsíc"
+
+msgctxt "#32505"
+msgid "Full Moon"
+msgstr "Úplněk"
+
+msgctxt "#32506"
+msgid "Waning Gibbous"
+msgstr "Couvající měsíc"
+
+msgctxt "#32507"
+msgid "Last Quarter"
+msgstr "Poslední čtvrť"
+
+msgctxt "#32508"
+msgid "Waning Crescent"
+msgstr "Couvající srpek"
+
+msgctxt "#32510"
+msgid "Warning"
+msgstr "Upozornění"
+
+msgctxt "#32512"
+msgid "Advisory"
+msgstr "Doporučení"
+
+msgctxt "#32514"
+msgid "Outlook"
+msgstr "Výhled"
+
+msgctxt "#32515"
+msgid "Forecast"
+msgstr "Předpověď"

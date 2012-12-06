@@ -2,7 +2,7 @@
 |
 |   Platinum - AV Media Item
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -17,7 +17,8 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
-| 
+| licensing@plutinosoft.com
+|  
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,6 +32,10 @@
 |
 ****************************************************************/
 
+/** @file
+ UPnP AV Media Object reprensentation.
+ */
+
 #ifndef _PLT_MEDIA_ITEM_H_
 #define _PLT_MEDIA_ITEM_H_
 
@@ -39,15 +44,14 @@
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
 #include "PltHttp.h"
-
-/*----------------------------------------------------------------------
-|   forward declarations
-+---------------------------------------------------------------------*/
-class PLT_MediaServer;
+#include "PltProtocolInfo.h"
 
 /*----------------------------------------------------------------------
 |   typedefs
 +---------------------------------------------------------------------*/
+/**
+ The PLT_ObjectClass struct is used to assign a type to a PLT_MediaObject.
+ */
 typedef struct { 
     NPT_String type;
     NPT_String friendly_name;
@@ -86,16 +90,16 @@ typedef struct {
     PLT_PersonRoles artists;
     PLT_PersonRoles actors;
     PLT_PersonRoles authors;
-    NPT_String      producer;
-    NPT_String      director;
-    NPT_String      publisher;
-    NPT_String      contributor; // should match m_Creator (dc:creator)
+    NPT_String      producer; //TODO: can be multiple
+    PLT_PersonRoles directors;
+    NPT_String      publisher; //TODO: can be multiple
+    NPT_String      contributor; // should match m_Creator (dc:creator) //TODO: can be multiple
 } PLT_PeopleInfo;
 
 typedef struct {
-    NPT_List<NPT_String> genre;
-    NPT_String album;
-    NPT_String playlist; // dc:title of the playlist item the content belongs too
+    NPT_List<NPT_String> genres;
+    NPT_String album; //TODO: can be multiple
+    NPT_String playlist; // dc:title of the playlist item the content belongs too //TODO: can be multiple
 } PLT_AffiliationInfo;
 
 typedef struct {
@@ -104,98 +108,49 @@ typedef struct {
     NPT_String icon_uri;
     NPT_String region;
     NPT_String rating;
-    NPT_String rights;
+    NPT_String rights; //TODO: can be multiple
     NPT_String date;
     NPT_String language;
 } PLT_Description;
 
 typedef struct {
-    NPT_String album_art_uri;
-    NPT_String album_art_uri_dlna_profile;
+    NPT_String uri;
+    NPT_String dlna_profile;
+} PLT_AlbumArtInfo;
+
+typedef struct {
+    NPT_List<PLT_AlbumArtInfo> album_arts;
     NPT_String artist_discography_uri;
     NPT_String lyrics_uri;
-    NPT_List<NPT_String> relation; // dc:relation
+    NPT_List<NPT_String> relations; // dc:relation
 } PLT_ExtraInfo;
 
 typedef struct {
     NPT_UInt32 dvdregioncode;
     NPT_UInt32 original_track_number;
     NPT_String toc;
-    NPT_String user_annotation;
+    NPT_String user_annotation; //TODO: can be multiple
+    NPT_UInt32 last_position;
+    NPT_String last_time;
+    NPT_Int32  play_count;
 } PLT_MiscInfo;
 
 typedef struct {
-    int         total;
-    int         used;
-    int         free;
-    int         max_partition;
-    NPT_String  medium;
+    NPT_UInt64 total;
+    NPT_UInt64 used;
+    NPT_UInt64 free;
+    NPT_UInt64 max_partition;
+    NPT_UInt64 medium;
 } PLT_StorageInfo;
 
 typedef struct {
     NPT_String program_title;
     NPT_String series_title;
-    int        episode_number;
+    NPT_UInt32 episode_number;
 } PLT_RecordedInfo;
 
 /*----------------------------------------------------------------------
-|   PLT_ProtocolInfo class
-+---------------------------------------------------------------------*/
-class PLT_ProtocolInfo
-{
-public:
-    class FieldEntry {
-    public:
-        FieldEntry(const char* key, const char* value) :
-          m_Key(key), m_Value(value) {}
-        NPT_String m_Key;
-        NPT_String m_Value;
-    };
-
-    PLT_ProtocolInfo();
-    PLT_ProtocolInfo(const char* protocol_info);
-    PLT_ProtocolInfo(const char* protocol,
-                     const char* mask,
-                     const char* content_type,
-                     const char* extra);
-    const NPT_String& GetProtocol()     const { return m_Protocol;  }
-    const NPT_String& GetMask()         const { return m_Mask; }
-    const NPT_String& GetContentType()  const { return m_ContentType;  }
-    const NPT_String& GetExtra()        const { return m_Extra; }
-
-    const NPT_String& GetDLNA_PN()      const { return m_DLNA_PN; }
-
-    bool IsValid() { return m_Valid; }
-    NPT_String ToString() const;
-
-    bool Match(const PLT_ProtocolInfo& other) const;
-
-private:
-    NPT_Result ValidateField(const char*  val, 
-                        const char*  valid_chars, 
-                        NPT_Cardinal num_chars = 0); // 0 means variable number of chars
-    NPT_Result ParseExtra(NPT_List<FieldEntry>& entries);
-    NPT_Result ValidateExtra();
-
-private:
-    NPT_String m_Protocol;
-    NPT_String m_Mask;
-    NPT_String m_ContentType;
-    NPT_String m_Extra;
-
-    NPT_String m_DLNA_PN;
-    NPT_String m_DLNA_OP;
-    NPT_String m_DLNA_PS;
-    NPT_String m_DLNA_CI;
-    NPT_String m_DLNA_FLAGS;
-    NPT_String m_DLNA_MAXSP;
-
-    NPT_List<FieldEntry> m_DLNA_OTHER;
-    bool       m_Valid;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_MediaItemResource class
+|   PLT_MediaItemResource
 +---------------------------------------------------------------------*/
 class PLT_MediaItemResource
 {
@@ -217,31 +172,31 @@ public:
 };
 
 /*----------------------------------------------------------------------
-|   PLT_MediaObject class
+|   PLT_MediaObject
 +---------------------------------------------------------------------*/
+/**
+ The PLT_MediaObject class is any data entity that can be returned by a
+ ContentDirectory Service from a browsing or searching action. This is the
+ base class from which PLT_MediaItem and PLT_MediaContainer derive.
+ */
 class PLT_MediaObject
 {
-public:
+protected:
+    NPT_IMPLEMENT_DYNAMIC_CAST(PLT_MediaObject)
+
     PLT_MediaObject() {}
+
+public:
     virtual ~PLT_MediaObject() {}
 
     bool IsContainer() { return m_ObjectClass.type.StartsWith("object.container"); }
 
-    static const char* GetMimeType(const NPT_String& filename, 
-                                   const PLT_HttpRequestContext* context = NULL);
-    static const char* GetMimeTypeFromExtension(const NPT_String& extension, 
-                                                const PLT_HttpRequestContext* context = NULL);
-    static NPT_String  GetProtocolInfo(const char* filename, 
-                                       bool with_dlna_extension = true, 
-                                       const PLT_HttpRequestContext* context = NULL);
-	static NPT_String  GetMimeTypeFromProtocolInfo(const char* protocol_info);
     static const char* GetUPnPClass(const char* filename, 
                                     const PLT_HttpRequestContext* context = NULL);
-    static const char* GetDlnaExtension(const char* mime_type, 
-                                        const PLT_HttpRequestContext* context = NULL);
 
     virtual NPT_Result Reset();
-    virtual NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
+    virtual NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
+    virtual NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
     virtual NPT_Result FromDidl(NPT_XmlElementNode* entry);
 
 public:
@@ -277,31 +232,46 @@ public:
 };
 
 /*----------------------------------------------------------------------
-|   PLT_MediaItem class
+|   PLT_MediaItem
 +---------------------------------------------------------------------*/
+/**
+ The PLT_MediaItem class represents a first-level class derived directly from
+ PLT_MediaObject. It most often represents a single piece of AV data. 
+ */
 class PLT_MediaItem : public PLT_MediaObject
 {
 public:
+    NPT_IMPLEMENT_DYNAMIC_CAST_D(PLT_MediaItem, PLT_MediaObject)
+
     PLT_MediaItem();
     virtual ~PLT_MediaItem();
 
     // PLT_MediaObject methods
-    NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
+    NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
+    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
     NPT_Result FromDidl(NPT_XmlElementNode* entry);
 };
 
 /*----------------------------------------------------------------------
-|   PLT_MediaContainer class
+|   PLT_MediaContainer
 +---------------------------------------------------------------------*/
+/**
+ The PLT_MediaContainer class represents a first-level class derived directly
+ from PLT_MediaObject. A PLT_MediaContainer represents a collection of 
+ PLT_MediaObject instances.
+ */
 class PLT_MediaContainer : public PLT_MediaObject
 {
 public:
+    NPT_IMPLEMENT_DYNAMIC_CAST_D(PLT_MediaContainer, PLT_MediaObject)
+
     PLT_MediaContainer();
     virtual ~PLT_MediaContainer();
 
     // PLT_MediaObject methods
     NPT_Result Reset();
-    NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);
+    NPT_Result ToDidl(const NPT_String& filter, NPT_String& didl);
+    NPT_Result ToDidl(NPT_UInt64 mask, NPT_String& didl);
     NPT_Result FromDidl(NPT_XmlElementNode* entry);
 
 public:
@@ -311,12 +281,16 @@ public:
     bool m_Searchable;
 
     /* container info related */
-    NPT_Int32 m_ChildrenCount;    
+    NPT_Int32  m_ChildrenCount;    
+    NPT_UInt32 m_ContainerUpdateID;
 };
 
 /*----------------------------------------------------------------------
-|   PLT_MediaObjectList class
+|   PLT_MediaObjectList
 +---------------------------------------------------------------------*/
+/**
+ The PLT_MediaObjectList class is a list of PLT_MediaObject instances.
+ */
 class PLT_MediaObjectList : public NPT_List<PLT_MediaObject*>
 {
 public:
@@ -329,6 +303,5 @@ protected:
 
 typedef NPT_Reference<PLT_MediaObjectList> PLT_MediaObjectListReference;
 typedef NPT_Reference<PLT_MediaObject> PLT_MediaObjectReference;
-
 
 #endif /* _PLT_MEDIA_ITEM_H_ */

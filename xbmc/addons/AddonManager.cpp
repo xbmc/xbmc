@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "AddonManager.h"
@@ -31,12 +30,15 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
-#include "dialogs/GUIDialogYesNo.h"
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
+#endif
+#ifdef HAS_PVRCLIENTS
+#include "DllPVRClient.h"
+#include "pvr/addons/PVRClient.h"
 #endif
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
@@ -45,8 +47,12 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+#include "Util.h"
 
 using namespace std;
+using namespace PVR;
 
 namespace ADDON
 {
@@ -108,6 +114,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CScraper(props));
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
+    case ADDON_PVRDLL:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -116,7 +123,16 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in screensaver
           return AddonPtr(new CAddon(props));
         }
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+        if (type == ADDON_SCREENSAVER)
+        { // Python screensaver
+          CStdString library = CAddonMgr::Get().GetExtValue(props->configuration, "@library");
+          if (URIUtils::GetExtension(library).Equals(".py", false))
+            return AddonPtr(new CScreenSaver(props));
+        }
+#if defined(TARGET_ANDROID)                                                                                                                                                      
+          if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_android")) && value.empty())                                                                
+            break;                                                                                                                                                                 
+ #elif defined(_LINUX) && !defined(TARGET_DARWIN)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
           break;
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
@@ -133,6 +149,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         {
 #if defined(HAS_VISUALISATION)
           return AddonPtr(new CVisualisation(props));
+#endif
+        }
+        else if (type == ADDON_PVRDLL)
+        {
+#ifdef HAS_PVRCLIENTS
+          return AddonPtr(new CPVRClient(props));
 #endif
         }
         else
@@ -381,9 +403,26 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
-    AddonPtr addon(Factory(exts[i]));
-    if (addon && m_database.IsAddonDisabled(addon->ID()) != enabled)
-      addons.push_back(addon);
+    const cp_extension_t *props = exts[i];
+    if (m_database.IsAddonDisabled(props->plugin->identifier) != enabled)
+    {
+      // get a pointer to a running pvrclient if it's already started, or we won't be able to change settings
+      if (TranslateType(props->ext_point_id) == ADDON_PVRDLL &&
+          enabled &&
+          g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(props->plugin->identifier, pvrAddon))
+        {
+          addons.push_back(pvrAddon);
+          continue;
+        }
+      }
+
+      AddonPtr addon(Factory(props));
+      if (addon)
+        addons.push_back(addon);
+    }
   }
   m_cpluff->release_info(m_cp_context, exts);
   return addons.size() > 0;
@@ -397,10 +436,21 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)
   {
-    addon = GetAddonFromDescriptor(cpaddon);
+    addon = GetAddonFromDescriptor(cpaddon, type==ADDON_UNKNOWN?"":TranslateType(type));
     m_cpluff->release_info(m_cp_context, cpaddon);
-    if (addon.get() && enabledOnly && m_database.IsAddonDisabled(addon->ID()))
-      return false;
+
+    if (addon && addon.get())
+    {
+      if (enabledOnly && m_database.IsAddonDisabled(addon->ID()))
+        return false;
+
+      if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
+      {
+        AddonPtr pvrAddon;
+        if (g_PVRClients->GetClient(addon->ID(), pvrAddon))
+          addon = pvrAddon;
+      }
+    }
     return NULL != addon.get();
   }
   if (cpaddon)
@@ -488,15 +538,25 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
 
 void CAddonMgr::FindAddons()
 {
-  CSingleLock lock(m_critSection);
-  if (m_cpluff && m_cp_context)
-    m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_cpluff && m_cp_context)
+    {
+      m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+      SetChanged();
+    }
+  }
+  NotifyObservers(ObservableMessageAddons);
 }
 
 void CAddonMgr::RemoveAddon(const CStdString& ID)
 {
   if (m_cpluff && m_cp_context)
+  {
     m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
+    SetChanged();
+    NotifyObservers(ObservableMessageAddons);
+  }
 }
 
 const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
@@ -553,6 +613,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
+    case ADDON_PVRDLL:
+      return AddonPtr(new CPVRClient(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     default:
@@ -580,14 +642,22 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
     {
       if (platforms[i] == "all")
         return true;
-#if defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_ANDROID)
+      if (platforms[i] == "android")
+#elif defined(_LINUX) && !defined(TARGET_DARWIN)
       if (platforms[i] == "linux")
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
       if (platforms[i] == "wingl")
 #elif defined(_WIN32) && defined(HAS_DX)
       if (platforms[i] == "windx")
 #elif defined(TARGET_DARWIN_OSX)
-      if (platforms[i] == "osx")
+// Remove this after Frodo and add an architecture filter
+// in addition to platform.
+#if defined(__x86_64__)
+      if (platforms[i] == "osx64" || platforms[i] == "osx")
+#else
+      if (platforms[i] == "osx32" || platforms[i] == "osx")
+#endif
 #elif defined(TARGET_DARWIN_IOS)
       if (platforms[i] == "ios")
 #endif
@@ -652,7 +722,8 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStd
   return true;
 }
 
-AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
+AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
+                                           const CStdString& type)
 {
   if (!info)
     return AddonPtr();
@@ -668,7 +739,8 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
   // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
   for (unsigned int i = 0; i < info->num_extensions; ++i)
   {
-    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id))
+    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id) &&
+        (type.empty() || 0 == strcmp(type.c_str(), info->extensions[i].ext_point_id)))
     { // note that Factory takes care of whether or not we have platform support
       return Factory(&info->extensions[i]);
     }

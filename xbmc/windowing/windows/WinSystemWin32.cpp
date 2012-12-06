@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -29,8 +28,6 @@
 
 #ifdef _WIN32
 #include <tpcshrd.h>
-
-HWND g_hWnd = NULL;
 
 CWinSystemWin32::CWinSystemWin32()
 : CWinSystemBase()
@@ -69,37 +66,6 @@ bool CWinSystemWin32::DestroyWindowSystem()
 {
   RestoreDesktopResolution(m_nScreen);
   return true;
-}
-
-bool CWinSystemWin32::IsSystemScreenSaverEnabled()
-{
-  // Check if system screen saver is enabled
-  // We are checking registry due to bug with SPI_GETSCREENSAVEACTIVE
-  HKEY hKeyScreenSaver = NULL;
-  long lReturn = NULL;
-  long lScreenSaver = NULL;
-  DWORD dwData = NULL;
-  bool result = false;
-
-  lReturn = RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Control Panel\\Desktop"),0,KEY_QUERY_VALUE,&hKeyScreenSaver);
-  if(lReturn == ERROR_SUCCESS)
-  {
-    lScreenSaver = RegQueryValueEx(hKeyScreenSaver,TEXT("SCRNSAVE.EXE"),NULL,NULL,NULL,&dwData);
-
-    // ScreenSaver is active
-    if(lScreenSaver == ERROR_SUCCESS)
-       result = true;
-  }
-  RegCloseKey(hKeyScreenSaver);
-
-  return result;
-}
-
-void CWinSystemWin32::EnableSystemScreenSaver(bool bEnable)
-{
-  SystemParametersInfo(SPI_SETSCREENSAVEACTIVE,bEnable,0,0);
-  if(!bEnable)
-    SetThreadExecutionState(ES_DISPLAY_REQUIRED|ES_CONTINUOUS);
 }
 
 bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
@@ -146,12 +112,15 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   SetProp(hWnd, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>(dwHwndTabletProperty));
 
   // setup our touch pointers
-  PtrGetGestureInfo = (pGetGestureInfo) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "GetGestureInfo" );
-  PtrSetGestureConfig = (pSetGestureConfig) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "SetGestureConfig" );
-  PtrCloseGestureInfoHandle = (pCloseGestureInfoHandle) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "CloseGestureInfoHandle" );
+  HMODULE hUser32 = GetModuleHandleA( "user32" );
+  if (hUser32)
+  {
+    PtrGetGestureInfo = (pGetGestureInfo) GetProcAddress( hUser32, "GetGestureInfo" );
+    PtrSetGestureConfig = (pSetGestureConfig) GetProcAddress( hUser32, "SetGestureConfig" );
+    PtrCloseGestureInfoHandle = (pCloseGestureInfoHandle) GetProcAddress( hUser32, "CloseGestureInfoHandle" );
+  }
 
   m_hWnd = hWnd;
-  g_hWnd = hWnd;
   m_hDC = GetDC(m_hWnd);
 
   m_bWindowCreated = true;
@@ -189,8 +158,6 @@ bool CWinSystemWin32::CreateBlankWindows()
 
   // We need as many blank windows as there are screens (minus 1)
   int BlankWindowsCount = m_MonitorsInfo.size() -1;
-
-  m_hBlankWindows.reserve(BlankWindowsCount);
 
   for (int i=0; i < BlankWindowsCount; i++)
   {
@@ -303,6 +270,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   {
     // save position of windowed mode
     WINDOWINFO wi;
+    wi.cbSize = sizeof(WINDOWINFO);
     GetWindowInfo(m_hWnd, &wi);
     m_nLeft = wi.rcClient.left;
     m_nTop = wi.rcClient.top;
@@ -419,6 +387,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   }
 
   WINDOWINFO wi;
+  wi.cbSize = sizeof (WINDOWINFO);
   GetWindowInfo(m_hWnd, &wi);
   RECT wr = wi.rcWindow;
 
@@ -570,6 +539,8 @@ void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
     if (g_settings.m_ResInfo[i].iScreen      == res.iScreen &&
         g_settings.m_ResInfo[i].iWidth       == res.iWidth &&
         g_settings.m_ResInfo[i].iHeight      == res.iHeight &&
+        g_settings.m_ResInfo[i].iScreenWidth == res.iScreenWidth &&
+        g_settings.m_ResInfo[i].iScreenHeight== res.iScreenHeight &&
         g_settings.m_ResInfo[i].fRefreshRate == res.fRefreshRate &&
         g_settings.m_ResInfo[i].dwFlags      == res.dwFlags)
       return; // already have this resolution
@@ -701,8 +672,8 @@ bool CWinSystemWin32::Show(bool raise)
   UpdateWindow(m_hWnd);
   if (raise)
   {
-    SetForegroundWindow(g_hWnd);
-    SetFocus(g_hWnd);
+    SetForegroundWindow(m_hWnd);
+    SetFocus(m_hWnd);
   }
   return true;
 }

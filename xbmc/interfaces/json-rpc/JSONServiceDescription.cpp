@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,17 +30,19 @@
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "GUIOperations.h"
+#include "AddonsOperations.h"
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
 #include "ApplicationOperations.h"
+#include "PVROperations.h"
 
 using namespace std;
 using namespace JSONRPC;
 
-std::map<std::string, CVariant> CJSONServiceDescription::m_notifications = std::map<std::string, CVariant>();
+map<string, CVariant> CJSONServiceDescription::m_notifications = map<string, CVariant>();
 CJSONServiceDescription::CJsonRpcMethodMap CJSONServiceDescription::m_actionMap;
-std::map<std::string, JSONSchemaTypeDefinition> CJSONServiceDescription::m_types = std::map<std::string, JSONSchemaTypeDefinition>();
+map<string, JSONSchemaTypeDefinitionPtr> CJSONServiceDescription::m_types = map<string, JSONSchemaTypeDefinitionPtr>();
 CJSONServiceDescription::IncompleteSchemaDefinitionMap CJSONServiceDescription::m_incompleteDefinitions = CJSONServiceDescription::IncompleteSchemaDefinitionMap();
 
 JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
@@ -63,24 +64,15 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.Stop",                                  CPlayerOperations::Stop },
   { "Player.SetSpeed",                              CPlayerOperations::SetSpeed },
   { "Player.Seek",                                  CPlayerOperations::Seek },
-
-  { "Player.MoveLeft",                              CPlayerOperations::MoveLeft },
-  { "Player.MoveRight",                             CPlayerOperations::MoveRight },
-  { "Player.MoveDown",                              CPlayerOperations::MoveDown },
-  { "Player.MoveUp",                                CPlayerOperations::MoveUp },
-
-  { "Player.ZoomOut",                               CPlayerOperations::ZoomOut },
-  { "Player.ZoomIn",                                CPlayerOperations::ZoomIn },
+  { "Player.Move",                                  CPlayerOperations::Move },
   { "Player.Zoom",                                  CPlayerOperations::Zoom },
   { "Player.Rotate",                                CPlayerOperations::Rotate },
   
   { "Player.Open",                                  CPlayerOperations::Open },
-  { "Player.GoPrevious",                            CPlayerOperations::GoPrevious },
-  { "Player.GoNext",                                CPlayerOperations::GoNext },
   { "Player.GoTo",                                  CPlayerOperations::GoTo },
-  { "Player.Shuffle",                               CPlayerOperations::Shuffle },
-  { "Player.UnShuffle",                             CPlayerOperations::UnShuffle },
-  { "Player.Repeat",                                CPlayerOperations::Repeat },
+  { "Player.SetShuffle",                            CPlayerOperations::SetShuffle },
+  { "Player.SetRepeat",                             CPlayerOperations::SetRepeat },
+  { "Player.SetPartymode",                          CPlayerOperations::SetPartymode },
   
   { "Player.SetAudioStream",                        CPlayerOperations::SetAudioStream },
   { "Player.SetSubtitle",                           CPlayerOperations::SetSubtitle },
@@ -98,6 +90,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Files
   { "Files.GetSources",                             CFileOperations::GetRootDirectory },
   { "Files.GetDirectory",                           CFileOperations::GetDirectory },
+  { "Files.GetFileDetails",                         CFileOperations::GetFileDetails },
   { "Files.PrepareDownload",                        CFileOperations::PrepareDownload },
   { "Files.Download",                               CFileOperations::Download },
 
@@ -147,11 +140,27 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Scan",                            CVideoLibrary::Scan },
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
+  
+// Addon operations
+  { "Addons.GetAddons",                             CAddonsOperations::GetAddons },
+  { "Addons.GetAddonDetails",                       CAddonsOperations::GetAddonDetails },
+  { "Addons.SetAddonEnabled",                       CAddonsOperations::SetAddonEnabled },
+  { "Addons.ExecuteAddon",                          CAddonsOperations::ExecuteAddon },
 
 // GUI operations
   { "GUI.GetProperties",                            CGUIOperations::GetProperties },
+  { "GUI.ActivateWindow",                           CGUIOperations::ActivateWindow },
   { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
   { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
+
+// PVR operations
+  { "PVR.GetProperties",                            CPVROperations::GetProperties },
+  { "PVR.GetChannelGroups",                         CPVROperations::GetChannelGroups },
+  { "PVR.GetChannelGroupDetails",                   CPVROperations::GetChannelGroupDetails },
+  { "PVR.GetChannels",                              CPVROperations::GetChannels },
+  { "PVR.GetChannelDetails",                        CPVROperations::GetChannelDetails },
+  { "PVR.Record",                                   CPVROperations::Record },
+  { "PVR.Scan",                                     CPVROperations::Scan },
 
 // System operations
   { "System.GetProperties",                         CSystemOperations::GetProperties },
@@ -188,17 +197,16 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 };
 
 JSONSchemaTypeDefinition::JSONSchemaTypeDefinition()
-  : missingReference(""),
+  : missingReference(""), referencedTypeSet(false),
     type(AnyValue), minimum(-std::numeric_limits<double>::max()), maximum(std::numeric_limits<double>::max()),
     exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
     minLength(-1), maxLength(-1),
     minItems(0), maxItems(0), uniqueItems(false),
-    hasAdditionalProperties(false), additionalProperties(NULL)
+    hasAdditionalProperties(false)
 { }
 
 bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* = false */)
 {
-  bool isReferenceType = false;
   bool hasReference = false;
 
   // Check if the type of the parameter defines a json reference
@@ -208,8 +216,8 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     // Get the name of the referenced type
     std::string refType = value["$ref"].asString();
     // Check if the referenced type exists
-    JSONSchemaTypeDefinition *referencedType = CJSONServiceDescription::GetType(refType);
-    if (refType.length() <= 0 || referencedType == NULL)
+    JSONSchemaTypeDefinitionPtr referencedTypeDef = CJSONServiceDescription::GetType(refType);
+    if (refType.length() <= 0 || referencedTypeDef.get() == NULL)
     {
       CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s references an unknown type %s", name.c_str(), refType.c_str());
       missingReference = refType;
@@ -217,16 +225,14 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     }
     
     std::string typeName = name;
-    *this = *referencedType;
+    *this = *referencedTypeDef;
     if (!typeName.empty())
       name = typeName;
+    referencedType = referencedTypeDef;
     hasReference = true;
   }
   else if (value.isMember("id") && value["id"].isString())
-  {
     ID = GetString(value["id"], "");
-    isReferenceType = true;
-  }
 
   // Check if the "required" field has been defined
   optional = value.isMember("required") && value["required"].isBoolean() ? !value["required"].asBoolean() : true;
@@ -272,16 +278,16 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
       std::string extendsName = GetString(value["extends"], "");
       if (!extendsName.empty())
       {
-        JSONSchemaTypeDefinition *referencedType = CJSONServiceDescription::GetType(extendsName);
-        if (referencedType == NULL)
+        JSONSchemaTypeDefinitionPtr extendedTypeDef = CJSONServiceDescription::GetType(extendsName);
+        if (extendedTypeDef.get() == NULL)
         {
           CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s extends an unknown type %s", name.c_str(), extendsName.c_str());
           missingReference = extendsName;
           return false;
         }
 
-        type = referencedType->type;
-        extends.push_back(*referencedType);
+        type = extendedTypeDef->type;
+        extends.push_back(extendedTypeDef);
       }
     }
     else if (value["extends"].isArray())
@@ -292,8 +298,8 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
         std::string extendsName = GetString(value["extends"][extendsIndex], "");
         if (!extendsName.empty())
         {
-          JSONSchemaTypeDefinition *referencedType = CJSONServiceDescription::GetType(extendsName);
-          if (referencedType == NULL)
+          JSONSchemaTypeDefinitionPtr extendedTypeDef = CJSONServiceDescription::GetType(extendsName);
+          if (extendedTypeDef.get() == NULL)
           {
             extends.clear();
             CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s extends an unknown type %s", name.c_str(), extendsName.c_str());
@@ -302,15 +308,15 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
           }
 
           if (extendsIndex == 0)
-            extendedType = referencedType->type;
-          else if (extendedType != referencedType->type)
+            extendedType = extendedTypeDef->type;
+          else if (extendedType != extendedTypeDef->type)
           {
             extends.clear();
             CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s extends multiple JSON schema types of mismatching types", name.c_str());
             return false;
           }
 
-          extends.push_back(*referencedType);
+          extends.push_back(extendedTypeDef);
         }
       }
 
@@ -342,20 +348,20 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
         // of the current property into it, parse it
         // recursively and add its default value
         // to the current type's default value
-        JSONSchemaTypeDefinition propertyType;
-        propertyType.name = itr->first;
-        if (!propertyType.Parse(itr->second))
+        JSONSchemaTypeDefinitionPtr propertyType = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
+        propertyType->name = itr->first;
+        if (!propertyType->Parse(itr->second))
         {
-          missingReference = propertyType.missingReference;
+          missingReference = propertyType->missingReference;
           return false;
         }
-        defaultValue[itr->first] = propertyType.defaultValue;
+        defaultValue[itr->first] = propertyType->defaultValue;
         properties.add(propertyType);
       }
     }
 
     hasAdditionalProperties = true;
-    additionalProperties = new JSONSchemaTypeDefinition();
+    additionalProperties = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
     if (value.isMember("additionalProperties"))
     {
       if (value["additionalProperties"].isBoolean())
@@ -363,8 +369,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
         hasAdditionalProperties = value["additionalProperties"].asBoolean();
         if (!hasAdditionalProperties)
         {
-          delete additionalProperties;
-          additionalProperties = NULL;
+          additionalProperties.reset();
         }
       }
       else if (value["additionalProperties"].isObject() && !value["additionalProperties"].isNull())
@@ -373,8 +378,7 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
         {
           missingReference = additionalProperties->missingReference;
           hasAdditionalProperties = false;
-          delete additionalProperties;
-          additionalProperties = NULL;
+          additionalProperties.reset();
           
           CLog::Log(LOGDEBUG, "JSONRPC: Invalid additionalProperties schema definition in type %s", name.c_str());
           return false;
@@ -405,13 +409,13 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
       // If it is an object, there is only one schema for it
       if (value["additionalItems"].isObject())
       {
-        JSONSchemaTypeDefinition additionalItem;
-        if (additionalItem.Parse(value["additionalItems"]))
+        JSONSchemaTypeDefinitionPtr additionalItem = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
+        if (additionalItem->Parse(value["additionalItems"]))
           additionalItems.push_back(additionalItem);
         else
         {
           CLog::Log(LOGDEBUG, "Invalid \"additionalItems\" value for type %s", name.c_str());
-          missingReference = additionalItem.missingReference;
+          missingReference = additionalItem->missingReference;
           return false;
         }
       }
@@ -420,14 +424,14 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
       {
         for (unsigned int itemIndex = 0; itemIndex < value["additionalItems"].size(); itemIndex++)
         {
-          JSONSchemaTypeDefinition additionalItem;
+          JSONSchemaTypeDefinitionPtr additionalItem = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
 
-          if (additionalItem.Parse(value["additionalItems"][itemIndex]))
+          if (additionalItem->Parse(value["additionalItems"][itemIndex]))
             additionalItems.push_back(additionalItem);
           else
           {
             CLog::Log(LOGDEBUG, "Invalid \"additionalItems\" value (item %d) for type %s", itemIndex, name.c_str());
-            missingReference = additionalItem.missingReference;
+            missingReference = additionalItem->missingReference;
             return false;
           }
         }
@@ -447,11 +451,11 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     {
       if (value["items"].isObject())
       {
-        JSONSchemaTypeDefinition item;
-        if (!item.Parse(value["items"]))
+        JSONSchemaTypeDefinitionPtr item = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
+        if (!item->Parse(value["items"]))
         {
           CLog::Log(LOGDEBUG, "Invalid item definition in \"items\" for type %s", name.c_str());
-          missingReference = item.missingReference;
+          missingReference = item->missingReference;
           return false;
         }
         items.push_back(item);
@@ -462,11 +466,11 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
       {
         for (CVariant::const_iterator_array itemItr = value["items"].begin_array(); itemItr != value["items"].end_array(); itemItr++)
         {
-          JSONSchemaTypeDefinition item;
-          if (!item.Parse(*itemItr))
+          JSONSchemaTypeDefinitionPtr item = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
+          if (!item->Parse(*itemItr))
           {
             CLog::Log(LOGDEBUG, "Invalid item definition in \"items\" array for type %s", name.c_str());
-            missingReference = item.missingReference;
+            missingReference = item->missingReference;
             return false;
           }
           items.push_back(item);
@@ -571,18 +575,18 @@ bool JSONSchemaTypeDefinition::Parse(const CVariant &value, bool isParameter /* 
     }
   }
 
-  if (isReferenceType)
-    CJSONServiceDescription::addReferenceTypeDefinition(*this);
-
   return true;
 }
 
-JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &outputValue, CVariant &errorData) const
+JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &outputValue, CVariant &errorData)
 {
   if (!name.empty())
     errorData["name"] = name;
   SchemaValueTypeToJson(type, errorData["type"]);
   CStdString errorMessage;
+
+  if (referencedType != NULL && !referencedTypeSet)
+    Set(referencedType);
 
   // Let's check the type of the provided parameter
   if (!IsType(value, type))
@@ -607,7 +611,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
     {
       CVariant dummyError;
       CVariant testOutput = outputValue;
-      if (unionTypes.at(unionIndex).Check(value, testOutput, dummyError) == OK)
+      if (unionTypes.at(unionIndex)->Check(value, testOutput, dummyError) == OK)
       {
         ok = true;
         outputValue = testOutput;
@@ -630,12 +634,12 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
   {
     for (unsigned int extendsIndex = 0; extendsIndex < extends.size(); extendsIndex++)
     {
-      JSONRPC_STATUS status = extends.at(extendsIndex).Check(value, outputValue, errorData);
+      JSONRPC_STATUS status = extends.at(extendsIndex)->Check(value, outputValue, errorData);
 
       if (status != OK)
       {
-        CLog::Log(LOGDEBUG, "JSONRPC: Value does not match extended type %s of type %s", extends.at(extendsIndex).ID.c_str(), name.c_str());
-        errorMessage.Format("value does not match extended type %s", extends.at(extendsIndex).ID.c_str(), name.c_str());
+        CLog::Log(LOGDEBUG, "JSONRPC: Value does not match extended type %s of type %s", extends.at(extendsIndex)->ID.c_str(), name.c_str());
+        errorMessage.Format("value does not match extended type %s", extends.at(extendsIndex)->ID.c_str(), name.c_str());
         errorData["message"] = errorMessage.c_str();
         return status;
       }
@@ -666,13 +670,13 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
       outputValue = value;
     else if (items.size() == 1)
     {
-      JSONSchemaTypeDefinition itemType = items.at(0);
+      JSONSchemaTypeDefinitionPtr itemType = items.at(0);
 
       // Loop through all array elements
       for (unsigned int arrayIndex = 0; arrayIndex < value.size(); arrayIndex++)
       {
         CVariant temp;
-        JSONRPC_STATUS status = itemType.Check(value[arrayIndex], temp, errorData["property"]);
+        JSONRPC_STATUS status = itemType->Check(value[arrayIndex], temp, errorData["property"]);
         outputValue.push_back(temp);
         if (status != OK)
         {
@@ -708,7 +712,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
       unsigned int arrayIndex;
       for (arrayIndex = 0; arrayIndex < min(items.size(), (size_t)value.size()); arrayIndex++)
       {
-        JSONRPC_STATUS status = items.at(arrayIndex).Check(value[arrayIndex], outputValue[arrayIndex], errorData["property"]);
+        JSONRPC_STATUS status = items.at(arrayIndex)->Check(value[arrayIndex], outputValue[arrayIndex], errorData["property"]);
         if (status != OK)
         {
           CLog::Log(LOGDEBUG, "JSONRPC: Array element at index %u does not match with items schema in type %s", arrayIndex, name.c_str());
@@ -727,7 +731,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
           for (unsigned int additionalIndex = 0; additionalIndex < additionalItems.size(); additionalIndex++)
           {
             CVariant dummyError;
-            if (additionalItems.at(additionalIndex).Check(value[arrayIndex], outputValue[arrayIndex], dummyError) == OK)
+            if (additionalItems.at(additionalIndex)->Check(value[arrayIndex], outputValue[arrayIndex], dummyError) == OK)
             {
               ok = true;
               break;
@@ -776,23 +780,22 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant &value, CVariant &
     JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesIterator;
     for (propertiesIterator = properties.begin(); propertiesIterator != propertiesEnd; propertiesIterator++)
     {
-      if (value.isMember(propertiesIterator->second.name))
+      if (value.isMember(propertiesIterator->second->name))
       {
-        JSONRPC_STATUS status = propertiesIterator->second.Check(value[propertiesIterator->second.name], outputValue[propertiesIterator->second.name], errorData["property"]);
+        JSONRPC_STATUS status = propertiesIterator->second->Check(value[propertiesIterator->second->name], outputValue[propertiesIterator->second->name], errorData["property"]);
         if (status != OK)
         {
-          CLog::Log(LOGDEBUG, "JSONRPC: Invalid property \"%s\" in type %s", propertiesIterator->second.name.c_str(), name.c_str());
+          CLog::Log(LOGDEBUG, "JSONRPC: Invalid property \"%s\" in type %s", propertiesIterator->second->name.c_str(), name.c_str());
           return status;
         }
         handled++;
       }
-      else if (propertiesIterator->second.optional)
-        outputValue[propertiesIterator->second.name] = propertiesIterator->second.defaultValue;
+      else if (propertiesIterator->second->optional)
+        outputValue[propertiesIterator->second->name] = propertiesIterator->second->defaultValue;
       else
       {
-        CLog::Log(LOGDEBUG, "JSONRPC: Missing property \"%s\" in type %s", propertiesIterator->second.name.c_str(), name.c_str());
-        errorData["property"]["name"] = propertiesIterator->second.name.c_str();
-        errorData["property"]["type"] = SchemaValueTypeToString(propertiesIterator->second.type);
+        errorData["property"]["name"] = propertiesIterator->second->name.c_str();
+        errorData["property"]["type"] = SchemaValueTypeToString(propertiesIterator->second->type);
         errorData["message"] = "Missing property";
         return InvalidParams;
       }
@@ -957,13 +960,13 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
   {
     if (extends.size() == 1)
     {
-      output["extends"] = extends.at(0).ID;
+      output["extends"] = extends.at(0)->ID;
     }
     else if (extends.size() > 1)
     {
       output["extends"] = CVariant(CVariant::VariantTypeArray);
       for (unsigned int extendsIndex = 0; extendsIndex < extends.size(); extendsIndex++)
-        output["extends"].append(extends.at(extendsIndex).ID);
+        output["extends"].append(extends.at(extendsIndex)->ID);
     }
     else if (unionTypes.size() > 0)
     {
@@ -971,7 +974,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
       for (unsigned int unionIndex = 0; unionIndex < unionTypes.size(); unionIndex++)
       {
         CVariant unionOutput = CVariant(CVariant::VariantTypeObject);
-        unionTypes.at(unionIndex).Print(false, false, false, printDescriptions, unionOutput);
+        unionTypes.at(unionIndex)->Print(false, false, false, printDescriptions, unionOutput);
         output["type"].append(unionOutput);
       }
     }
@@ -1024,7 +1027,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
     {
       if (items.size() == 1)
       {
-        items.at(0).Print(false, false, false, printDescriptions, output["items"]);
+        items.at(0)->Print(false, false, false, printDescriptions, output["items"]);
       }
       else if (items.size() > 1)
       {
@@ -1032,7 +1035,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
         for (unsigned int itemIndex = 0; itemIndex < items.size(); itemIndex++)
         {
           CVariant item = CVariant(CVariant::VariantTypeObject);
-          items.at(itemIndex).Print(false, false, false, printDescriptions, item);
+          items.at(itemIndex)->Print(false, false, false, printDescriptions, item);
           output["items"].append(item);
         }
       }
@@ -1044,7 +1047,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
 
       if (additionalItems.size() == 1)
       {
-        additionalItems.at(0).Print(false, false, false, printDescriptions, output["additionalItems"]);
+        additionalItems.at(0)->Print(false, false, false, printDescriptions, output["additionalItems"]);
       }
       else if (additionalItems.size() > 1)
       {
@@ -1052,7 +1055,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
         for (unsigned int addItemIndex = 0; addItemIndex < additionalItems.size(); addItemIndex++)
         {
           CVariant item = CVariant(CVariant::VariantTypeObject);
-          additionalItems.at(addItemIndex).Print(false, false, false, printDescriptions, item);
+          additionalItems.at(addItemIndex)->Print(false, false, false, printDescriptions, item);
           output["additionalItems"].append(item);
         }
       }
@@ -1072,7 +1075,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
         JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesIterator;
         for (propertiesIterator = properties.begin(); propertiesIterator != propertiesEnd; propertiesIterator++)
         {
-          propertiesIterator->second.Print(false, false, true, printDescriptions, output["properties"][propertiesIterator->first]);
+          propertiesIterator->second->Print(false, false, true, printDescriptions, output["properties"][propertiesIterator->first]);
         }
       }
 
@@ -1084,14 +1087,47 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
   }
 }
 
-JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap()
+void JSONSchemaTypeDefinition::Set(const JSONSchemaTypeDefinitionPtr typeDefinition)
 {
-  m_propertiesmap = std::map<std::string, JSONSchemaTypeDefinition>();
+  if (typeDefinition.get() == NULL)
+    return;
+
+  string origName = name;
+  string origDescription = description;
+  bool origOptional = optional;
+  CVariant origDefaultValue = defaultValue;
+  JSONSchemaTypeDefinitionPtr referencedTypeDef = referencedType;
+
+  // set all the values from the given type definition
+  *this = *typeDefinition;
+
+  // restore the original values
+  if (!origName.empty())
+    name = origName;
+
+  if (!origDescription.empty())
+    description = origDescription;
+
+  if (!origOptional)
+    optional = origOptional;
+
+  if (!origDefaultValue.isNull())
+    defaultValue = origDefaultValue;
+
+  if (referencedTypeDef.get() != NULL)
+    referencedType = referencedTypeDef;
+
+  referencedTypeSet = true;
 }
 
-void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(const JSONSchemaTypeDefinition &property)
+JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap()
 {
-  CStdString name = property.name;
+  m_propertiesmap = std::map<std::string, JSONSchemaTypeDefinitionPtr>();
+}
+
+void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(JSONSchemaTypeDefinitionPtr property)
+{
+  CStdString name = property->name;
   name = name.ToLower();
   m_propertiesmap[name] = property;
 }
@@ -1117,7 +1153,8 @@ unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
 }
 
 JsonRpcMethod::JsonRpcMethod()
-  : missingReference(""), method(NULL)
+  : missingReference(""), method(NULL),
+    returns(new JSONSchemaTypeDefinition())
 { }
 
 bool JsonRpcMethod::Parse(const CVariant &value)
@@ -1168,10 +1205,10 @@ bool JsonRpcMethod::Parse(const CVariant &value)
 
       // Parse the parameter and add it to the list
       // of defined parameters
-      JSONSchemaTypeDefinition param;
+      JSONSchemaTypeDefinitionPtr param = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
       if (!parseParameter(parameter, param))
       {
-        missingReference = param.missingReference;
+        missingReference = param->missingReference;
         return false;
       }
       parameters.push_back(param);
@@ -1181,7 +1218,7 @@ bool JsonRpcMethod::Parse(const CVariant &value)
   // Parse the return value of the method
   if (!parseReturn(value))
   {
-    missingReference = returns.missingReference;
+    missingReference = returns->missingReference;
     return false;
   }
 
@@ -1232,12 +1269,12 @@ JSONRPC_STATUS JsonRpcMethod::Check(const CVariant &requestParameters, ITranspor
   return MethodNotFound;
 }
 
-bool JsonRpcMethod::parseParameter(const CVariant &value, JSONSchemaTypeDefinition &parameter)
+bool JsonRpcMethod::parseParameter(const CVariant &value, JSONSchemaTypeDefinitionPtr parameter)
 {
-  parameter.name = GetString(value["name"], "");
+  parameter->name = GetString(value["name"], "");
 
   // Parse the type and default value of the parameter
-  return parameter.Parse(value, true);
+  return parameter->Parse(value, true);
 }
 
 bool JsonRpcMethod::parseReturn(const CVariant &value)
@@ -1245,34 +1282,34 @@ bool JsonRpcMethod::parseReturn(const CVariant &value)
   // Only parse the "returns" definition if there is one
   if (!value.isMember("returns"))
   {
-    returns.type = NullValue;
+    returns->type = NullValue;
     return true;
   }
   
   // If the type of the return value is defined as a simple string we can parse it directly
   if (value["returns"].isString())
-    return CJSONServiceDescription::parseJSONSchemaType(value["returns"], returns.unionTypes, returns.type, missingReference);
+    return CJSONServiceDescription::parseJSONSchemaType(value["returns"], returns->unionTypes, returns->type, missingReference);
   
   // otherwise we have to parse the whole type definition
-  if (!returns.Parse(value["returns"]))
+  if (!returns->Parse(value["returns"]))
   {
-    missingReference = returns.missingReference;
+    missingReference = returns->missingReference;
     return false;
   }
   
   return true;
 }
 
-JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData)
+JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, JSONSchemaTypeDefinitionPtr type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData)
 {
   // Let's check if the parameter has been provided
-  if (ParameterExists(requestParameters, type.name, position))
+  if (ParameterExists(requestParameters, type->name, position))
   {
     // Get the parameter
-    CVariant parameterValue = GetParameter(requestParameters, type.name, position);
+    CVariant parameterValue = GetParameter(requestParameters, type->name, position);
 
     // Evaluate the type of the parameter
-    JSONRPC_STATUS status = type.Check(parameterValue, outputParameters[type.name], errorData["stack"]);
+    JSONRPC_STATUS status = type->Check(parameterValue, outputParameters[type->name], errorData["stack"]);
     if (status != OK)
       return status;
 
@@ -1281,13 +1318,13 @@ JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, 
   }
   // If the parameter has not been provided but is optional
   // we can use its default value
-  else if (type.optional)
-    outputParameters[type.name] = type.defaultValue;
+  else if (type->optional)
+    outputParameters[type->name] = type->defaultValue;
   // The parameter is required but has not been provided => invalid
   else
   {
-    errorData["stack"]["name"] = type.name;
-    SchemaValueTypeToJson(type.type, errorData["stack"]["type"]);
+    errorData["stack"]["name"] = type->name;
+    SchemaValueTypeToJson(type->type, errorData["stack"]["type"]);
     errorData["stack"]["message"] = "Missing parameter";
     return InvalidParams;
   }
@@ -1430,25 +1467,30 @@ bool CJSONServiceDescription::AddType(const std::string &jsonType)
   // Make sure the "id" attribute is correctly populated
   descriptionObject[typeName]["id"] = typeName;
 
-  JSONSchemaTypeDefinition globalType;
-  globalType.name = typeName;
+  JSONSchemaTypeDefinitionPtr globalType = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
+  globalType->name = typeName;
+  globalType->ID = typeName;
+  CJSONServiceDescription::addReferenceTypeDefinition(globalType);
 
-  if (!globalType.Parse(descriptionObject[typeName]))
+  if (!globalType->Parse(descriptionObject[typeName]))
   {
     CLog::Log(LOGERROR, "JSONRPC: Could not parse type \"%s\"", typeName.c_str());
-    if (!globalType.missingReference.empty())
+    CJSONServiceDescription::removeReferenceTypeDefinition(typeName);
+    if (!globalType->missingReference.empty())
     {
       IncompleteSchemaDefinition incomplete;
       incomplete.Schema = modJsonType;
       incomplete.Type = SchemaDefinitionType;
       
-      IncompleteSchemaDefinitionMap::iterator iter = m_incompleteDefinitions.find(globalType.missingReference);
+      IncompleteSchemaDefinitionMap::iterator iter = m_incompleteDefinitions.find(globalType->missingReference);
       if (iter == m_incompleteDefinitions.end())
-        m_incompleteDefinitions[globalType.missingReference] = std::vector<IncompleteSchemaDefinition>();
+        m_incompleteDefinitions[globalType->missingReference] = std::vector<IncompleteSchemaDefinition>();
       
-      CLog::Log(LOGINFO, "JSONRPC: Adding type \"%s\" to list of incomplete definitions (waiting for \"%s\")", typeName.c_str(), globalType.missingReference.c_str());
-      m_incompleteDefinitions[globalType.missingReference].push_back(incomplete);
+      CLog::Log(LOGINFO, "JSONRPC: Adding type \"%s\" to list of incomplete definitions (waiting for \"%s\")", typeName.c_str(), globalType->missingReference.c_str());
+      m_incompleteDefinitions[globalType->missingReference].push_back(incomplete);
     }
+
+    globalType.reset();
     
     return false;
   }
@@ -1509,8 +1551,8 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
       values.size() == 0)
     return false;
 
-  JSONSchemaTypeDefinition definition;
-  definition.ID = name;
+  JSONSchemaTypeDefinitionPtr definition = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
+  definition->ID = name;
 
   std::vector<CVariant::VariantType> types;
   bool autoType = false;
@@ -1526,7 +1568,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
     else if (type != CVariant::VariantTypeConstNull && type != values[index].type())
       return false;
   }
-  definition.enums.insert(definition.enums.begin(), values.begin(), values.end());
+  definition->enums.insert(definition->enums.begin(), values.begin(), values.end());
 
   int schemaType = (int)AnyValue;
   for (unsigned int index = 0; index < types.size(); index++)
@@ -1566,12 +1608,12 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
     else
       schemaType |= (int)currentType;
   }
-  definition.type = (JSONSchemaType)schemaType;
+  definition->type = (JSONSchemaType)schemaType;
   
   if (defaultValue.type() == CVariant::VariantTypeConstNull)
-    definition.defaultValue = definition.enums.at(0);
+    definition->defaultValue = definition->enums.at(0);
   else
-    definition.defaultValue = defaultValue;
+    definition->defaultValue = defaultValue;
 
   addReferenceTypeDefinition(definition);
 
@@ -1596,7 +1638,7 @@ bool CJSONServiceDescription::AddEnum(const std::string &name, const std::vector
   return AddEnum(name, enums, CVariant::VariantTypeInteger);
 }
 
-int CJSONServiceDescription::GetVersion()
+const char* CJSONServiceDescription::GetVersion()
 {
   return JSONRPC_SERVICE_VERSION;
 }
@@ -1605,7 +1647,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
   bool printDescriptions /* = true */, bool printMetadata /* = false */, bool filterByTransport /* = true */,
   const std::string &filterByName /* = "" */, const std::string &filterByType /* = "" */, bool printReferences /* = true */)
 {
-  std::map<std::string, JSONSchemaTypeDefinition> types;
+  std::map<std::string, JSONSchemaTypeDefinitionPtr> types;
   CJsonRpcMethodMap methods;
   std::map<std::string, CVariant> notifications;
 
@@ -1647,7 +1689,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
     }
     else if (filterByType == "type")
     {
-      std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator = m_types.find(name);
+      std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIterator = m_types.find(name);
       if (typeIterator != m_types.end())
         types[typeIterator->first] = typeIterator->second;
       else
@@ -1670,8 +1712,8 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
       std::vector<std::string> referencedTypes;
 
       // Loop through all printed types to get all referenced types
-      std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator;
-      std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIteratorEnd = types.end();
+      std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIterator;
+      std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIteratorEnd = types.end();
       for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
         getReferencedTypes(typeIterator->second, referencedTypes);
 
@@ -1688,7 +1730,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
 
       for (unsigned int index = 0; index < referencedTypes.size(); index++)
       {
-        std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator = m_types.find(referencedTypes.at(index));
+        std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIterator = m_types.find(referencedTypes.at(index));
         if (typeIterator != m_types.end())
           types[typeIterator->first] = typeIterator->second;
       }
@@ -1706,12 +1748,12 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
   result["version"] = JSONRPC_SERVICE_VERSION;
   result["description"] = JSONRPC_SERVICE_DESCRIPTION;
 
-  std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator;
-  std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIteratorEnd = types.end();
+  std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIterator;
+  std::map<std::string, JSONSchemaTypeDefinitionPtr>::const_iterator typeIteratorEnd = types.end();
   for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
   {
     CVariant currentType = CVariant(CVariant::VariantTypeObject);
-    typeIterator->second.Print(false, true, true, printDescriptions, currentType);
+    typeIterator->second->Print(false, true, true, printDescriptions, currentType);
 
     result["types"][typeIterator->first] = currentType;
   }
@@ -1748,11 +1790,11 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
     for (unsigned int paramIndex = 0; paramIndex < methodIterator->second.parameters.size(); paramIndex++)
     {
       CVariant param = CVariant(CVariant::VariantTypeObject);
-      methodIterator->second.parameters.at(paramIndex).Print(true, false, true, printDescriptions, param);
+      methodIterator->second.parameters.at(paramIndex)->Print(true, false, true, printDescriptions, param);
       currentMethod["params"].append(param);
     }
 
-    methodIterator->second.returns.Print(false, false, false, printDescriptions, currentMethod["returns"]);
+    methodIterator->second.returns->Print(false, false, false, printDescriptions, currentMethod["returns"]);
 
     result["methods"][methodIterator->second.name] = currentMethod;
   }
@@ -1775,16 +1817,16 @@ JSONRPC_STATUS CJSONServiceDescription::CheckCall(const char* const method, cons
   return MethodNotFound;
 }
 
-JSONSchemaTypeDefinition* CJSONServiceDescription::GetType(const std::string &identification)
+JSONSchemaTypeDefinitionPtr CJSONServiceDescription::GetType(const std::string &identification)
 {
-  std::map<std::string, JSONSchemaTypeDefinition>::iterator iter = m_types.find(identification);
+  std::map<std::string, JSONSchemaTypeDefinitionPtr>::iterator iter = m_types.find(identification);
   if (iter == m_types.end())
-    return NULL;
+    return JSONSchemaTypeDefinitionPtr();
   
-  return &(iter->second);
+  return iter->second;
 }
 
-bool CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinition>& typeDefinitions, JSONSchemaType &schemaType, std::string &missingReference)
+bool CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinitionPtr>& typeDefinitions, JSONSchemaType &schemaType, std::string &missingReference)
 {
   missingReference.clear();
   schemaType = AnyValue;
@@ -1796,15 +1838,15 @@ bool CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::ve
     // to handle a union type
     for (unsigned int typeIndex = 0; typeIndex < value.size(); typeIndex++)
     {
-      JSONSchemaTypeDefinition definition;
+      JSONSchemaTypeDefinitionPtr definition = JSONSchemaTypeDefinitionPtr(new JSONSchemaTypeDefinition());
       // If the type is a string try to parse it
       if (value[typeIndex].isString())
-        definition.type = StringToSchemaValueType(value[typeIndex].asString());
+        definition->type = StringToSchemaValueType(value[typeIndex].asString());
       else if (value[typeIndex].isObject())
       {
-        if (!definition.Parse(value[typeIndex]))
+        if (!definition->Parse(value[typeIndex]))
         {
-          missingReference = definition.missingReference;
+          missingReference = definition->missingReference;
           CLog::Log(LOGERROR, "JSONRPC: Invalid type schema in union type definition");
           return false;
         }
@@ -1815,9 +1857,9 @@ bool CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::ve
         return false;
       }
 
-      definition.optional = false;
+      definition->optional = false;
       typeDefinitions.push_back(definition);
-      parsedType |= definition.type;
+      parsedType |= definition->type;
     }
 
     // If the type has not been set yet set it to "any"
@@ -1836,25 +1878,25 @@ bool CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::ve
   return false;
 }
 
-void CJSONServiceDescription::addReferenceTypeDefinition(const JSONSchemaTypeDefinition &typeDefinition)
+void CJSONServiceDescription::addReferenceTypeDefinition(JSONSchemaTypeDefinitionPtr typeDefinition)
 {
   // If the given json value is no object or does not contain an "id" field
   // of type string it is no valid type definition
-  if (typeDefinition.ID.empty())
+  if (typeDefinition->ID.empty())
     return;
 
   // If the id has already been defined we ignore the type definition
-  if (m_types.find(typeDefinition.ID) != m_types.end())
+  if (m_types.find(typeDefinition->ID) != m_types.end())
     return;
 
   // Add the type to the list of type definitions
-  m_types[typeDefinition.ID] = typeDefinition;
+  m_types[typeDefinition->ID] = typeDefinition;
   
-  IncompleteSchemaDefinitionMap::iterator iter = m_incompleteDefinitions.find(typeDefinition.ID);
+  IncompleteSchemaDefinitionMap::iterator iter = m_incompleteDefinitions.find(typeDefinition->ID);
   if (iter == m_incompleteDefinitions.end())
     return;
     
-  CLog::Log(LOGINFO, "JSONRPC: Resolving incomplete types/methods referencing %s", typeDefinition.ID.c_str());
+  CLog::Log(LOGINFO, "JSONRPC: Resolving incomplete types/methods referencing %s", typeDefinition->ID.c_str());
   for (unsigned int index = 0; index < iter->second.size(); index++)
   {
     if (iter->second[index].Type == SchemaDefinitionType)
@@ -1863,50 +1905,60 @@ void CJSONServiceDescription::addReferenceTypeDefinition(const JSONSchemaTypeDef
       AddMethod(iter->second[index].Schema, iter->second[index].Method);
   }
   
-  m_incompleteDefinitions.erase(typeDefinition.ID);
+  m_incompleteDefinitions.erase(typeDefinition->ID);
 }
 
-void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes)
+void CJSONServiceDescription::removeReferenceTypeDefinition(const std::string &typeID)
+{
+  if (typeID.empty())
+    return;
+
+  map<string, JSONSchemaTypeDefinitionPtr>::iterator type = m_types.find(typeID);
+  if (type != m_types.end())
+    m_types.erase(type);
+}
+
+void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionPtr type, std::vector<std::string> &referencedTypes)
 {
   // If the current type is a referenceable object, we can add it to the list
-  if (type.ID.size() > 0)
+  if (type->ID.size() > 0)
   {
     for (unsigned int index = 0; index < referencedTypes.size(); index++)
     {
       // The referenceable object has already been added to the list so we can just skip it
-      if (type.ID == referencedTypes.at(index))
+      if (type->ID == referencedTypes.at(index))
         return;
     }
 
-    referencedTypes.push_back(type.ID);
+    referencedTypes.push_back(type->ID);
   }
 
   // If the current type is an object we need to check its properties
-  if (HasType(type.type, ObjectValue))
+  if (HasType(type->type, ObjectValue))
   {
     JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator iter;
-    JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator iterEnd = type.properties.end();
-    for (iter = type.properties.begin(); iter != iterEnd; iter++)
+    JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator iterEnd = type->properties.end();
+    for (iter = type->properties.begin(); iter != iterEnd; iter++)
       getReferencedTypes(iter->second, referencedTypes);
   }
   // If the current type is an array we need to check its items
-  if (HasType(type.type, ArrayValue))
+  if (HasType(type->type, ArrayValue))
   {
     unsigned int index;
-    for (index = 0; index < type.items.size(); index++)
-      getReferencedTypes(type.items.at(index), referencedTypes);
+    for (index = 0; index < type->items.size(); index++)
+      getReferencedTypes(type->items.at(index), referencedTypes);
 
-    for (index = 0; index < type.additionalItems.size(); index++)
-      getReferencedTypes(type.additionalItems.at(index), referencedTypes);
+    for (index = 0; index < type->additionalItems.size(); index++)
+      getReferencedTypes(type->additionalItems.at(index), referencedTypes);
   }
 
   // If the current type extends others type we need to check those types
-  for (unsigned int index = 0; index < type.extends.size(); index++)
-    getReferencedTypes(type.extends.at(index), referencedTypes);
+  for (unsigned int index = 0; index < type->extends.size(); index++)
+    getReferencedTypes(type->extends.at(index), referencedTypes);
 
   // If the current type is a union type we need to check those types
-  for (unsigned int index = 0; index < type.unionTypes.size(); index++)
-    getReferencedTypes(type.unionTypes.at(index), referencedTypes);
+  for (unsigned int index = 0; index < type->unionTypes.size(); index++)
+    getReferencedTypes(type->unionTypes.at(index), referencedTypes);
 }
 
 CJSONServiceDescription::CJsonRpcMethodMap::CJsonRpcMethodMap()

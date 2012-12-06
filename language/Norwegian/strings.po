@@ -1,19 +1,18 @@
 # XBMC Media Center language file
-# Translators:
-#   <thomas.amland@gmail.com>, 2012.
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
-"PO-Revision-Date: 2012-05-16 10:16+0000\n"
-"Last-Translator: takoi <thomas.amland@gmail.com>\n"
-"Language-Team: Norwegian\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Norwegian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/no/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: no\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -274,6 +273,26 @@ msgstr "NNV"
 msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Sør"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Nord"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Vest"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Øst"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Variabel"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -551,6 +570,10 @@ msgctxt "#166"
 msgid "Skin"
 msgstr "Skall"
 
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Avbryt filoperasjoner"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Oppløsning"
@@ -673,7 +696,7 @@ msgstr "Stemmer"
 
 msgctxt "#206"
 msgid "Cast"
-msgstr "Skuesp."
+msgstr "Rolleliste"
 
 msgctxt "#207"
 msgid "Plot"
@@ -973,11 +996,11 @@ msgstr "Ingen resultater funnet"
 
 msgctxt "#285"
 msgid "Preferred audio language"
-msgstr ""
+msgstr "Foretrukket språk for lyd"
 
 msgctxt "#286"
 msgid "Preferred subtitle language"
-msgstr ""
+msgstr "Foretrukket språk for teksting"
 
 msgctxt "#287"
 msgid "Subtitles"
@@ -985,7 +1008,7 @@ msgstr "Undertekster"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Font"
+msgstr "Skrift"
 
 msgctxt "#289"
 msgid "- Size"
@@ -1057,11 +1080,11 @@ msgstr "Ikke-innfelt"
 
 msgctxt "#308"
 msgid "Original stream's language"
-msgstr ""
+msgstr "Originalspråk"
 
 msgctxt "#309"
 msgid "User Interface language"
-msgstr ""
+msgstr "Språk i brukergrensesnitt"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1205,15 +1228,15 @@ msgstr "Øk volumet ved nedmiks"
 
 msgctxt "#347"
 msgid "- DTS-HD capable receiver"
-msgstr ""
+msgstr "DTS-HD-kompatibel forsterker"
 
 msgctxt "#348"
 msgid "- Multichannel LPCM capable receiver"
-msgstr ""
+msgstr "Flerkanal LPCM-kompatibel forsterker"
 
 msgctxt "#349"
 msgid "- TrueHD capable receiver"
-msgstr ""
+msgstr "TrueHD-kompatibel forsterker"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1542,6 +1565,14 @@ msgstr "Er du sikker på at du vil slette '%s'?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "Fra %s, %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Ingen optisk diskstasjon funnet"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "Du trenger en optisk diskstasjon for å spille av denne videoen"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -2171,13 +2202,9 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Skriv inn nummer"
 
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bits/Sample"
-
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Samplingsfrekvens"
+msgid "Sample rate"
+msgstr "Samplingsrate"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2202,6 +2229,10 @@ msgstr "Inkluder spornummer"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Alle sanger fra"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "TV-serier som pågår"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2653,7 +2684,7 @@ msgstr "Trådløst nettverknavn (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "Fjernstyring"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2686,6 +2717,14 @@ msgstr "Maksimalt antall klienter"
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Internettilgang"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Bibliotekoppdatering"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Ønsker du å skanne nå?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -2789,7 +2828,7 @@ msgstr "Legg til %s kilde"
 
 msgctxt "#1021"
 msgid "Enter the paths or browse for the media locations."
-msgstr "Skriv inn stiene eller let etter plassering."
+msgstr "Skriv inn sti eller bla etter plassering."
 
 msgctxt "#1022"
 msgid "Enter a name for this media Source."
@@ -2817,7 +2856,7 @@ msgstr "Rediger kilde"
 
 msgctxt "#1028"
 msgid "Edit %s source"
-msgstr "Rediger %s kilde"
+msgstr "Rediger %s-kilde"
 
 msgctxt "#1029"
 msgid "Enter the new label"
@@ -3031,37 +3070,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programmer & bilder & video"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Autooppdagelse"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Autooppdag system"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Kallenavn"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Spør om det skal kobles til"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "Send FTP brukernavn og passord"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Ping-intervall"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Ønsker du å koble til det oppdagede systemet?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3077,11 +3088,15 @@ msgstr "Enhetsnavn"
 
 msgctxt "#1272"
 msgid "- Use password protection"
-msgstr ""
+msgstr "Bruk passord"
 
 msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Filter %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3133,7 +3148,7 @@ msgstr "i"
 
 msgctxt "#1406"
 msgid "the"
-msgstr ""
+msgstr "the"
 
 msgctxt "#1407"
 msgid "Vicinity"
@@ -3159,10 +3174,6 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "vind"
 
-msgctxt "#1413"
-msgid "drizzle"
-msgstr "yr"
-
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "lyn og torden"
@@ -3180,12 +3191,8 @@ msgid "Grains"
 msgstr "kornete"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "tordenvær"
-
-msgctxt "#1419"
-msgid "T-Showers"
-msgstr "tordenvær"
+msgid "Thunderstorms"
+msgstr "lyn og torden"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3202,6 +3209,66 @@ msgstr "vind"
 msgctxt "#1423"
 msgid "Mist"
 msgstr "disig"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Hagl"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Røyk"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Vulkansk"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Aske"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Støv"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Sand"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Sandstorm"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Blåser"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Liten"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "og"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "med"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "Sjanse"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Sky"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Ukjent"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Nedbør"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3313,7 +3380,7 @@ msgstr "Nettleser"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
+msgstr "Videoer"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
@@ -3321,7 +3388,7 @@ msgstr "Videoer/Spilleliste"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr ""
+msgstr "Innloggingsskjerm"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3329,7 +3396,7 @@ msgstr "Innstillinger - Profiler"
 
 msgctxt "#10040"
 msgid "Addon browser"
-msgstr ""
+msgstr "Tilleggsutforsker"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
@@ -3660,7 +3727,7 @@ msgid "Settings & file manager"
 msgstr "Innstillinger & filbehandler"
 
 msgctxt "#12376"
-msgid "Set as default for all movies"
+msgid "Set as default for all videos"
 msgstr "Sett som standard for alle videoer"
 
 msgctxt "#12377"
@@ -3786,6 +3853,14 @@ msgstr "Av/på-knapp funksjon"
 msgctxt "#13016"
 msgid "Power off System"
 msgstr "Slå av system"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Ikke tillat avslutning ved inaktivitet"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Tillat avlutning ved inaktivitet"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -4007,10 +4082,6 @@ msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
 
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Avbrutt med %im%is igjen"
-
 msgctxt "#13213"
 msgid "%2.0fm"
 msgstr "%2.0fm"
@@ -4133,7 +4204,7 @@ msgstr "Hastighetskontroll for vifte"
 
 msgctxt "#13303"
 msgid "- Fonts"
-msgstr "- Fonter"
+msgstr "- Skrift"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4631,6 +4702,10 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Synkroniser avspilling til skjerm"
 
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Velg grafikk"
+
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
 msgstr "Pause under endring av oppdateringsfrekvens"
@@ -4649,7 +4724,7 @@ msgstr "%.1f sekunder"
 
 msgctxt "#13600"
 msgid "Apple remote"
-msgstr "Apple fjernkontroll"
+msgstr "Apple-fjernkontroll"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
@@ -4833,7 +4908,7 @@ msgstr "Båndbreddebegrensning"
 
 msgctxt "#14043"
 msgid "- Shutdown while playing"
-msgstr "- Skru av maskin under spilling"
+msgstr "- Skru av maskin under avspilling"
 
 msgctxt "#14044"
 msgid "%i min"
@@ -5013,7 +5088,7 @@ msgstr "Tegnsett"
 
 msgctxt "#14092"
 msgid "Debugging"
-msgstr "Debugging"
+msgstr "Feilsøking"
 
 msgctxt "#14093"
 msgid "Security"
@@ -5029,19 +5104,19 @@ msgstr "Strømsparing"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Ripp"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Lyd CD innsatt hendelse"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "Spill"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "Løs ut CD når rippingen er ferdig"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5093,7 +5168,7 @@ msgstr "Navigasjonslyder"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "Standard for skinnet"
+msgstr "Standard"
 
 msgctxt "#15111"
 msgid "- Theme"
@@ -5483,10 +5558,6 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (invertert)"
 
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Avbryter..."
-
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Skriv inn artistnavn"
@@ -5537,23 +5608,23 @@ msgstr "De-interlace (Halve)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr ""
+msgstr "Deinterlace video"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
-msgstr ""
+msgstr "Deinterlacemetode"
 
 msgctxt "#16039"
 msgid "Off"
-msgstr ""
+msgstr "Av"
 
 msgctxt "#16040"
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
 msgctxt "#16041"
 msgid "On"
-msgstr ""
+msgstr "På"
 
 msgctxt "#16100"
 msgid "All Videos"
@@ -5569,7 +5640,7 @@ msgstr "Sette"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Merk som sett"
+msgstr "Merk som «sett»"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
@@ -5705,7 +5776,11 @@ msgstr "Spline36 optimert"
 
 msgctxt "#16324"
 msgid "Software Blend"
-msgstr ""
+msgstr "Software Blend"
+
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Auto - optimalisert for ION"
 
 msgctxt "#16400"
 msgid "Post-processing"
@@ -5715,9 +5790,937 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Slå av skjerm etter"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MByte"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i timer"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i dager"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Bytt til kanal"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Sepparer søkeordene med AND, OR og/eller NOT."
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "eller bruk uttrykk for å finne eksakte treff, slik som \"Trollmannen fra Oz\"."
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "Importerer EPG fra klienter"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "PVR-strøminformasjon"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Mottaksenhet"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Enhetsstatus"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Signalkvalitet"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Fast"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Kryptering"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "TV-opptak"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "Standard mappe for PVR miniatyrbiler"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Kanaler"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Skjult"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "TV-kanaler"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Radiokanaler"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Planlagte opptak"
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Ingen søkeresultater"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "Ingen EPG-oppføringer"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Kanal"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Nå"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Neste"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Tidslinje"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Informasjon"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Har allerede startet opptak på denne kanalen."
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "Denne kanalen kan ikke vises. Sjekk loggen for detaljer."
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Dette opptaket kan ikke spilles av. Sjekk loggen for detaljer."
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Vis signalkvalitet"
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Er du sikker på at du vil skjule denne kanalen?"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Er du sikker på at du vil gi nytt navn til dette opptaket?"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Tar opp"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Vennlisgst sjekk innstillingene eller sjekk loggen for detaljer"
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "Ingen PVR-klienter har blitt startet enda. Vent til PVR-kienter har startet eller sjekk loggen for detaljer."
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Ny kanal"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Programinfo"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Vis kanal"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Vis synlige kanaler"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Vis skjulte kanaler"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Flytt kanal til:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Opptaksinformasjon"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Skjul kanal"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Ingen informasjon tilgjengelig"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Stopp opptak"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Sorter etter: Kanal"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Gå til begynnelsen"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Gå til slutten"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Standard EPG-vindu"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Denne hendelsen blir allerede tatt opp"
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Dette opptaket kunne ikke slettes. Sjekk logg for detaljer."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "Oppdateringsfrekvens"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Ikke lagre EPG-informasjon i databasen"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Utsett kanalbytte"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Aktiv:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Navn:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Mappe:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Radio:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Kanal:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Dag:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Start:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Slutt:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Prioritet"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Første dag:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Ukjent kanal %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Man-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Tir-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Ons-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Tor-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Fre-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Lør-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Søn"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Man-Tir-Ons-Tor-Fre-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Man-Tir-Ons-Tor-Fre-Lør-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Man-Tir-Ons-Tor-Fre-Lør-Søn"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Lør-Søn"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Skriv inn navn for opptaket"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Advarsel"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Vennligst bytt til en annen kanal"
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Skriv inn mappenavnet for opptaket"
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "En uventet feil oppstod. Prøv igjen senere eller sjekk logg for detaljer."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Versjon"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Adresse"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Harddiskstørelse"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Søk etter kanaler"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "Kan ikke bruke PVR-funksjoner når søk pågår."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "På hvilken tjener ønsker du å søke?"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Klientnummer"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Unngå gjentagelser"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Starttid"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Sluttid"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Startdato"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Sluttdato"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Mimimumsvarighet"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Maksimumsvarighet"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Inkluder ukjente sjangre"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Søkestreng"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Inkluder beskrivelse"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Kanal utilgjengelig"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Ingen grupper definert"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Vennligst opprett gruppe først"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Navn på ny gruppe"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Gruppe"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Søkeguide"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Ingen grupper definert"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Gruppert"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Grupper"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Kanal"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Tir"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Ons"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Tor"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Fre"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Lør"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Søn"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "fra"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Neste opptak"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "fra"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "til"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Opptak aktivt"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Opptak"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Kan ikke starte opptak. Sjekk logg for detaljer."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Bytt"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR-informasjon"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Skann etter manglende ikoner"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Skjul videoinformasjonsboks"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "Start avspilling minimert"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Standard opptaksprioritet"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Margin i begynnelsen av opptak"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Margin i slutten av opptak"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Avspilling"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Vis kanalinformsjon når kanal byttes"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Automatisk skjul kanalinformasjon"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Meny/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Dager som skal vises i EPG"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "Varighet for kanalinformasjon"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Tilbakestill PVR-databasen"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "Alle data i PVR-databasen blir slettet"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "Tilbakestill EPG-databasen"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "EPG blir tilbakestilt"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "Minimert"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR-tjeneste"
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "Kanalskann kan ikke starte. Sjekk logg for detaljer."
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Fortsette?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Klienthandlinger"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Opptak startet: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Opptak sluttet: %s"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG-kilde:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Kanalnavn:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Kanalikon:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Endre kanal"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Ny kanal"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Aktiver EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Gruppe:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Skriv inn navn på den nye kanalen"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "Klient"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Slett kanal"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Denne listen inneholder endringer"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Synlig"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Ugrupperte kanaler"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Kanaler i"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Opptak avbrutt"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Opptak planlagt"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Opptak startet"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Opptak ferdig"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Opptak slettet"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Lukk kanal-OSD etter kanalbytte"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "Hindre EPG-oppdateringer når en TV-strøm spilles"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Fjern søkeresultat"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Laster kanaler fra klienter"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Laster opptak fra klienter"
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr "Starter bakgrunnstråder"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Daglig oppvåkning"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "Filtrer kanaler"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "Laster EPG fra database"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "Oppdater EPG-informasjon"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "Planlegg EPG-oppdatering for denne kanalen?"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "EPG-oppdatering planlagt for kanal"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "EPG-oppdatering feilet for kanal"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Start opptak"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Stopp opptak"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Lås kanal"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Lås opp kanal"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Foreldrekontrol"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "Endre PIN"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Foreldrekontroll. Skriv inn PIN"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Kanal låst. Skriv inn PIN:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Feil PIN"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "Innskrevet PIN-nummer var feil."
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Ikke vis 'tilkobling brutt' advarsler"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Alle opptak"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "Ingen PVR-tillegg ble funnet"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Klient"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Klientspesifikke innstillinger"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Annet/Ukjent"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Komedie"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Romantikk"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentar"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Sport"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Fotball"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Tennis/Squash"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Lagsport"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Motorsport"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Vannsport"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Vintersport"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Riding"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Kampsport"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Barne- og ungdomsprogram"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Underholdningsprogram for 6 til 14"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Underholdningsprogram for 10 til 16"
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr "Informasjons-/Undervisnings-/Skoleprogram"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "Tegneserier/Dukker"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Musikk/Ballett/Dans"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rock/Pop"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "Tradisjonell- og folkemusikk"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Musikal/Opera"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Ballett"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Religion"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Teknologi/Naturvitenskap"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Voksenopplæring"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Velg språk"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Turisme/Reise"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Matlaging"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Hage"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Upublisert"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "Live-sendinger"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Komedie"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Romantikk"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6385,7 +7388,7 @@ msgstr "Mellomrom"
 
 msgctxt "#20183"
 msgid "Reload skin"
-msgstr "Last skinn på ny"
+msgstr "Last skall på ny"
 
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"
@@ -6413,7 +7416,7 @@ msgstr "Egendefinert"
 
 msgctxt "#20191"
 msgid "Enable debug logging"
-msgstr "Aktiver feilsøkingslogging"
+msgstr "Aktiver feilsøkingslogg"
 
 msgctxt "#20192"
 msgid "Download additional information during updates"
@@ -6569,7 +7572,7 @@ msgstr "Bla etter mål"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr ""
+msgstr "Filmene er i separate mapper som matcher filmtittelen"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -6901,11 +7904,11 @@ msgstr "Slå sammen TV-serier"
 
 msgctxt "#20413"
 msgid "Get fanart"
-msgstr "Hent FanArt"
+msgstr "Hent Fanart"
 
 msgctxt "#20414"
 msgid "Show Fanart in video and music libraries"
-msgstr "Vis FanArt i video- og musikkbibliotek"
+msgstr "Vis Fanart i video- og musikkbibliotek"
 
 msgctxt "#20415"
 msgid "Scanning for new content"
@@ -6945,7 +7948,7 @@ msgstr "Usann"
 
 msgctxt "#20425"
 msgid "Fanart slideshow"
-msgstr "Bildefremvisning av FanArt"
+msgstr "Bildefremvisning av Fanart"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
@@ -6965,7 +7968,7 @@ msgstr "Separer"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "Eksporter miniatyrbilder og FanArt?"
+msgstr "Eksporter miniatyrbilder og Fanart?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
@@ -6983,33 +7986,29 @@ msgctxt "#20434"
 msgid "Sets"
 msgstr "Samlinger"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Endre miniatyr"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
 msgstr "Eksporter skuespiller bilder?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
-msgstr "Velg FanArt"
+msgstr "Velg Fanart"
 
 msgctxt "#20438"
 msgid "Local fanart"
-msgstr "Lokal FanArt"
+msgstr "Lokal Fanart"
 
 msgctxt "#20439"
 msgid "No fanart"
-msgstr "Ingen FanArt"
+msgstr "Ingen Fanart"
 
 msgctxt "#20440"
 msgid "Current fanart"
-msgstr "Nåværende FanArt"
+msgstr "Nåværende Fanart"
 
 msgctxt "#20441"
 msgid "Remote fanart"
-msgstr "Ekstern FanArt"
+msgstr "Ekstern Fanart"
 
 msgctxt "#20442"
 msgid "Change content"
@@ -7025,7 +8024,7 @@ msgstr "elementer innenfor denne stien?"
 
 msgctxt "#20445"
 msgid "Fanart"
-msgstr "FanArt"
+msgstr "Fanart"
 
 msgctxt "#20446"
 msgid "Locally stored information found."
@@ -7061,23 +8060,31 @@ msgstr "episoder"
 
 msgctxt "#20454"
 msgid "Listener"
-msgstr ""
+msgstr "Lytter"
 
 msgctxt "#20455"
 msgid "Listeners"
-msgstr ""
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Lytter"
+msgstr "Lyttere"
 
 msgctxt "#20457"
 msgid "Movie set"
-msgstr "Lyttere"
+msgstr "Filmsamling"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr ""
+msgstr "Grupper filmer i sett"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Legg til %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Fjern %s"
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Merk %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7137,7 +8144,7 @@ msgstr "Film & alternativ mappe for undertekst"
 
 msgctxt "#21368"
 msgid "Override ASS/SSA subtitles fonts"
-msgstr ""
+msgstr "Overstyr ASS/SSA-skrift"
 
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
@@ -7327,10 +8334,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Standardskraper for musikkvideo"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Aktiver fallback basert på skraper-språk"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Innstillinger"
@@ -7481,11 +8484,15 @@ msgstr "Rotfilsystem"
 
 msgctxt "#21454"
 msgid "Cache full"
-msgstr ""
+msgstr "Fullt mellomlager"
 
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
+msgstr "Mellomlageret ble fylt før det var nok data for kontinuerlig avspilling"
+
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Ekstern lagring"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -7493,7 +8500,7 @@ msgstr "Plassering av undertittel"
 
 msgctxt "#21461"
 msgid "Fixed"
-msgstr "Fikset"
+msgstr "Fast"
 
 msgctxt "#21462"
 msgid "Bottom of video"
@@ -7909,7 +8916,7 @@ msgstr "Direct3D versjon:"
 
 msgctxt "#22030"
 msgid "Font"
-msgstr "Font"
+msgstr "Skrift"
 
 msgctxt "#22031"
 msgid "- Size"
@@ -8086,6 +9093,10 @@ msgstr "Artistinformasjon"
 msgctxt "#24018"
 msgid "Services"
 msgstr "Tjenester"
+
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR-klienter"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -8277,7 +9288,7 @@ msgstr "Deaktivere"
 
 msgctxt "#24076"
 msgid "Add-on Required"
-msgstr ""
+msgstr "Tillegg behøves"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
@@ -8317,11 +9328,19 @@ msgstr "Ønsker du å bytte til dette skallet nå?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
-msgstr ""
+msgstr "For å benytte denne funksjonen må du laste ned et Tillegg"
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr ""
+msgstr "Vil du laste ned dette Tillegget?"
+
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "Kan ikke laste skall"
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "Skallet mangler filer"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -8329,27 +9348,27 @@ msgstr "Varslinger"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Skjul utenlandske"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Velg fra alle titler ..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Vis bluray menyer"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Spill hovedspor: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Spor: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Velg avspillingsobjekt"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8669,7 +9688,7 @@ msgstr "Remote communication server"
 
 msgctxt "#33200"
 msgid "Detected New Connection"
-msgstr ""
+msgstr "Oppdaget ny tilkobling"
 
 msgctxt "#34000"
 msgid "Lame"
@@ -8741,19 +9760,19 @@ msgstr "7.1"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr ""
+msgstr "Spill grensesnittlyder"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"
-msgstr ""
+msgstr "Kun når avspilling er stoppet"
 
 msgctxt "#34122"
 msgid "Always"
-msgstr ""
+msgstr "Alltid"
 
 msgctxt "#34123"
 msgid "Never"
-msgstr ""
+msgstr "Aldri"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -8765,229 +9784,220 @@ msgstr "Kan ikke finne tidligere ting å spille"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
-msgstr ""
+msgstr "Feilet ved start av zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
+msgstr "Er Apples Bonjour tjeneste installert? Se i logg for mer info."
 
 msgctxt "#34400"
 msgid "Video Rendering"
-msgstr ""
+msgstr "Video Rendering"
 
 msgctxt "#34401"
 msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
+msgstr "Feilet ved initiering av videofilter/skalerere, går tilbake til bilineær skalering"
 
 msgctxt "#34402"
 msgid "Failed to initialize audio device"
-msgstr ""
+msgstr "Feilet ved initiering av lydenhet"
 
 msgctxt "#34403"
 msgid "Check your audiosettings"
-msgstr ""
+msgstr "Sjekk dine lydinnstillinger"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Bruk bevegelser for navigering:"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "1-finger sveip venstre,høyre,opp,ned for markører"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "2-finger sveip venstre for tilbaketasten"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "1-finger enkeltpek for enter"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "2-finger enkeltpek eller 1-finger langt pek for kontekstmeny"
 
 msgctxt "#35000"
 msgid "Peripherals"
-msgstr ""
+msgstr "Tilbehør"
 
 msgctxt "#35001"
 msgid "Generic HID device"
-msgstr ""
+msgstr "Generisk HID-enhet"
 
 msgctxt "#35002"
 msgid "Generic network adapter"
-msgstr ""
+msgstr "Generisk nettverksadapter"
 
 msgctxt "#35003"
 msgid "Generic disk"
-msgstr ""
+msgstr "Generisk drev"
 
 msgctxt "#35004"
 msgid "There are no settings available\nfor this peripheral."
-msgstr ""
+msgstr "Det er ingen innstillinger tilgjengelig\nfor dette tilbehøret."
 
 msgctxt "#35005"
 msgid "New device configured"
-msgstr ""
+msgstr "Ny enhet konfigurert"
 
 msgctxt "#35006"
 msgid "Device removed"
-msgstr ""
+msgstr "Enhet fjernet"
 
 msgctxt "#35007"
 msgid "Keymap to use for this device"
-msgstr ""
+msgstr "Tastekart for denne enheten"
 
 msgctxt "#35008"
 msgid "Keymap enabled"
-msgstr ""
+msgstr "Tastekart påslått"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Ikke benytt egendefingert tastekart for denne enheten"
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Aktiver joystick- og gamepadstøtte"
 
 msgctxt "#35500"
 msgid "Location"
-msgstr ""
+msgstr "Lokasjon"
 
 msgctxt "#35501"
 msgid "Class"
-msgstr ""
+msgstr "Klasse"
 
 msgctxt "#35502"
 msgid "Name"
-msgstr ""
+msgstr "Navn"
 
 msgctxt "#35503"
 msgid "Vendor"
-msgstr ""
+msgstr "Leverandør"
 
 msgctxt "#35504"
 msgid "Product ID"
-msgstr ""
+msgstr "Produkt-id"
 
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adapter"
-msgstr ""
+msgstr "Pulse-Eight CEC adapter"
 
 msgctxt "#36001"
 msgid "Pulse-Eight Nyxboard"
-msgstr ""
+msgstr "Pulse-Eight Nyxboard"
 
 msgctxt "#36002"
 msgid "Switch to keyboard side command"
-msgstr ""
+msgstr "Endre til tastaturside-kommando"
 
 msgctxt "#36003"
 msgid "Switch to remote side command"
-msgstr ""
+msgstr "Endre til fjernkontrollside-kommando"
 
 msgctxt "#36004"
 msgid "Press \"user\" button command"
-msgstr ""
+msgstr "Trykk \"bruker\" knappen-kommando"
 
 msgctxt "#36005"
 msgid "Enable switch side commands"
-msgstr ""
+msgstr "Slå på endre side-kommandoer"
 
 msgctxt "#36006"
 msgid "Could not open the adapter"
-msgstr ""
+msgstr "Kunne ikke åpne adapteret"
 
 msgctxt "#36007"
 msgid "Devices to power on when starting XBMC"
-msgstr ""
+msgstr "Enheter å slå på når XBMC starter"
 
 msgctxt "#36008"
 msgid "Devices to power off when stopping XBMC"
-msgstr ""
+msgstr "Enheter å slå av når XBMS slutter"
 
 msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
-
-msgctxt "#36011"
-msgid "Could not detect the CEC com port. Set it up manually."
-msgstr ""
-
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr ""
-
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr ""
+msgstr "Sett enheter i strømsparing når skjermbeskytteren aktiveres"
 
 msgctxt "#36015"
 msgid "HDMI port number"
-msgstr ""
+msgstr "HDMI port nummer"
 
 msgctxt "#36016"
 msgid "Connected"
-msgstr ""
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr ""
+msgstr "Tilkoblet"
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
-msgstr ""
+msgstr "Bruk TV'ens språkinnstillinger"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "Tilkoblet HDMI-enhet"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Gjør XBMC til aktiv kilde ved oppstart"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Fysisk adresse (overstyrer HDMI-port)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "COM-port (la være tom hvis den ikke er nødvendig)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Konfigurasjon oppdatert"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Fikk ikke satt ny konfigurasjon. Vennligst sjekk innstillingene."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
-
-msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
-
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
+msgstr "Send 'inaktiv kilde'-kommando når XBMC slutter"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorer"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Når TV-en er avslått"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "Tilkoblingen ble brutt"
 
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "Pause avspilling ved bytte til annen kilde"
 
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgctxt "#36035"
+msgid "Always"
+msgstr "Alltid"
 
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "Ved start/stopp"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Forsterker / AVR-enhet"

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,7 +26,19 @@
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
 
+#include "utils/CharsetConverter.h"
+
 #define ROUND(x) (float)(MathUtils::round_int(x))
+
+CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */, float pos /* = 0 */,
+  int speed /* = defaultSpeed */, const CStdString &scrollSuffix /* = " | " */)
+{
+    initialWait = wait;
+    initialPos = pos;
+    SetSpeed(speed ? speed : defaultSpeed);
+    g_charsetConverter.utf8ToW(scrollSuffix, suffix);
+    Reset();
+}
 
 float CScrollInfo::GetPixelsPerFrame()
 {
@@ -233,7 +244,7 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, uint32_t alig
   if (alignment & XBFONT_CENTER_Y)
     y -= m_font->GetLineHeight(m_lineSpacing);
 
-  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f) * g_graphicsContext.GetGUIScaleY());
+  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetTextHeight(1, 2) * g_graphicsContext.GetGUIScaleY());
 }
 
 float CGUIFont::GetTextWidth( const vecText &text )
@@ -254,6 +265,12 @@ float CGUIFont::GetTextHeight(int numLines) const
 {
   if (!m_font) return 0;
   return m_font->GetTextHeight(m_lineSpacing, numLines) * g_graphicsContext.GetGUIScaleY();
+}
+
+float CGUIFont::GetTextBaseLine() const
+{
+  if (!m_font) return 0;
+  return m_font->GetTextBaseLine() * g_graphicsContext.GetGUIScaleY();
 }
 
 float CGUIFont::GetLineHeight() const

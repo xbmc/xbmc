@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,6 +26,11 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StdString.h"
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#elif defined(TARGET_WINDOWS)
+#include "win32/WIN32Util.h"
+#endif
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
 #define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
@@ -119,6 +123,11 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), levelNames[loglevel]);
 
+//print to adb
+#if defined(TARGET_ANDROID) && defined(_DEBUG)
+  CXBMCApp::android_printf("%s%s",strPrefix.c_str(), strData.c_str());
+#endif
+
     fputs(strPrefix.c_str(), m_file);
     fputs(strData.c_str(), m_file);
     fflush(m_file);
@@ -136,6 +145,13 @@ bool CLog::Init(const char* path)
 
     strLogFile.Format("%sxbmc.log", path);
     strLogFileOld.Format("%sxbmc.old.log", path);
+
+#if defined(TARGET_WINDOWS)
+    // the appdata folder might be redirected to an unc share
+    // convert smb to unc path that stat and fopen can handle it
+    strLogFile = CWIN32Util::SmbToUnc(strLogFile);
+    strLogFileOld = CWIN32Util::SmbToUnc(strLogFileOld);
+#endif
 
     struct stat64 info;
     if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&
@@ -205,7 +221,18 @@ int CLog::GetLogLevel()
 void CLog::OutputDebugString(const std::string& line)
 {
 #if defined(_DEBUG) || defined(PROFILE)
-  ::OutputDebugString(line.c_str());
+#if defined(TARGET_WINDOWS)
+  // we can't use charsetconverter here as it's initialized later than CLog and deinitialized early
+  int bufSize = MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, NULL, 0);
+  CStdStringW wstr (L"", bufSize);
+  if ( MultiByteToWideChar(CP_UTF8, 0, line.c_str(), -1, wstr.GetBuf(bufSize), bufSize) == bufSize )
+  {
+    wstr.RelBuf();
+    ::OutputDebugStringW(wstr.c_str());
+  }
+  else
+#endif // TARGET_WINDOWS
+    ::OutputDebugString(line.c_str());
   ::OutputDebugString("\n");
 #endif
 }

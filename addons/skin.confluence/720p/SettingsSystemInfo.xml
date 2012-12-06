@@ -1,4 +1,4 @@
-<window id="7">
+<window>
 	<defaultcontrol always="true">95</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
@@ -145,6 +145,21 @@
 					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 					<pulseonselect>false</pulseonselect>
 					<label>13281</label>
+				</control>
+				<control type="button" id="99">
+					<description>Button PVR</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>19191</label>
 				</control>
 			</control>
 			<control type="image">

@@ -72,7 +72,7 @@ bool CWINFileSMB::Open(const CURL& url)
 
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
+  m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
 
   if (!m_hFile.isValid())
   {
@@ -81,10 +81,10 @@ bool CWINFileSMB::Open(const CURL& url)
 
     XFILE::CWINSMBDirectory smb;
     smb.ConnectToShare(url);
-    m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
+    m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!m_hFile.isValid())
     {
-      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
+      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file %s Error: %d", strFile.c_str(), GetLastError());
       return false;
     }
   }
@@ -97,24 +97,28 @@ bool CWINFileSMB::Open(const CURL& url)
 
 bool CWINFileSMB::Exists(const CURL& url)
 {
-  struct __stat64 buffer;
-  if(url.GetFileName() == url.GetShareName())
-    return false;
   CStdString strFile = GetLocal(url);
   URIUtils::RemoveSlashAtEnd(strFile);
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  if(_wstat64(strWFile.c_str(), &buffer) == 0)
+  DWORD attributes = GetFileAttributesW(strWFile.c_str());
+  if(attributes != INVALID_FILE_ATTRIBUTES)
     return true;
 
-  if(errno == ENOENT)
+  DWORD err = GetLastError();
+  if(err != ERROR_ACCESS_DENIED)
     return false;
 
   XFILE::CWINSMBDirectory smb;
   if(smb.ConnectToShare(url) == false)
     return false;
 
-  return (_wstat64(strWFile.c_str(), &buffer) == 0);
+  attributes = GetFileAttributesW(strWFile.c_str());
+
+  if(attributes == INVALID_FILE_ATTRIBUTES)
+    return false;
+
+  return true;
 }
 
 int CWINFileSMB::Stat(struct __stat64* buffer)
@@ -318,4 +322,25 @@ void CWINFileSMB::Flush()
 int CWINFileSMB::IoControl(EIoControl request, void* param)
 {
   return -1;
+}
+
+int CWINFileSMB::Truncate(int64_t size)
+{
+  int fd;
+  HANDLE hFileDup;
+  if (0 == DuplicateHandle(GetCurrentProcess(), (HANDLE)m_hFile, GetCurrentProcess(), &hFileDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - DuplicateHandle()");
+    return -1;
+  }
+
+  fd = _open_osfhandle((intptr_t)((HANDLE)hFileDup), 0);
+  if (fd == -1)
+  {
+    CLog::Log(LOGERROR, "CWINFileSMB Stat: fd == -1");
+    return -1;
+  }
+  int result = _chsize_s(fd, (long) size);
+  _close(fd);
+  return result;
 }

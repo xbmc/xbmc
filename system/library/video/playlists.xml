@@ -1,4 +1,5 @@
-<node order="8" type="folder">
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="21" type="folder">
   <label>136</label>
   <icon>DefaultVideoPlaylists.png</icon>
   <path>special://videoplaylists/</path>

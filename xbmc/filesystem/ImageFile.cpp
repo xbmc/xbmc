@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -61,12 +60,10 @@ bool CImageFile::Exists(const CURL& url)
     return CFile::Exists(cachedFile);
 
   // need to check if the original can be cached on demand and that the file exists 
-  if (!url.GetUserName().IsEmpty())
-    return false; // not in the cache, and can't be cached on demand
+  if (!CTextureCache::CanCacheImageURL(url))
+    return false;
 
-  CStdString image = url.GetHostName();
-  CURL::Decode(image);
-  return CFile::Exists(image);
+  return CFile::Exists(url.GetHostName());
 }
 
 int CImageFile::Stat(const CURL& url, struct __stat64* buffer)

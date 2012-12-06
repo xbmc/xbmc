@@ -6,7 +6,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,9 +20,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -85,7 +84,7 @@ public:
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
 
-  void SetStaticContent(const std::vector<CGUIListItemPtr> &items);
+  void SetStaticContent(const std::vector<CGUIListItemPtr> &items, bool forceUpdate = true);
   
   /*! \brief Set the offset of the first item in the container from the container's position
    Useful for lists/panels where the focused item may be larger than the non-focused items and thus
@@ -101,7 +100,7 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
 
-  virtual void ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void ProcessItem(float posX, float posY, CGUIListItemPtr& item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -124,6 +123,7 @@ protected:
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   virtual void OnFocus();
+  void UpdateStaticItems(bool refreshItems = false);
 
   int ScrollCorrectionRange() const;
   inline float Size() const;
@@ -142,7 +142,7 @@ protected:
 
   std::vector< CGUIListItemPtr > m_items;
   typedef std::vector<CGUIListItemPtr> ::iterator iItems;
-  CGUIListItem *m_lastItem;
+  CGUIListItemPtr m_lastItem;
 
   int m_pageControl;
 
@@ -178,7 +178,7 @@ protected:
   bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
   void OnPrevLetter();
-  void OnJumpLetter(char letter);
+  void OnJumpLetter(char letter, bool skip = false);
   void OnJumpSMS(int letter);
   std::vector< std::pair<int, CStdString> > m_letterOffsets;
 
@@ -207,6 +207,7 @@ private:
   // letter match searching
   CStopWatch m_matchTimer;
   CStdString m_match;
+  float m_scrollItemsPerFrame;
 
   static const int letter_match_timeout = 1000;
 };

@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Hungarian (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hu\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -273,6 +274,26 @@ msgctxt "#87"
 msgid "VAR"
 msgstr "VÁLT"
 
+msgctxt "#88"
+msgid "South"
+msgstr "Dél"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Észak"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Nyugat"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Kelet"
+
+msgctxt "#92"
+msgid "Variable"
+msgstr "Változó"
+
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "Nézet: Auto"
@@ -319,11 +340,11 @@ msgstr "Diavetítés"
 
 msgctxt "#109"
 msgid "Create thumbs"
-msgstr "Bélyegképek létrehozása"
+msgstr "Miniképek létrehozása"
 
 msgctxt "#110"
 msgid "Create thumbnails"
-msgstr "Bélyegképek létrehozása"
+msgstr "Miniképek létrehozása"
 
 msgctxt "#111"
 msgid "Shortcuts"
@@ -549,13 +570,17 @@ msgctxt "#166"
 msgid "Skin"
 msgstr "Felszín"
 
+msgctxt "#167"
+msgid "Cancel file operations"
+msgstr "Fájlműveletek  félbeszakítása"
+
 msgctxt "#169"
 msgid "Resolution"
 msgstr "Felbontás"
 
 msgctxt "#170"
 msgid "Adjust display refresh rate to match video"
-msgstr "Képfrissítésfrekvencia igazítása a film-képkockasebességhez"
+msgstr "Képfrissítési frekvencia igazítása a filmhez"
 
 msgctxt "#172"
 msgid "Release date"
@@ -969,6 +994,14 @@ msgctxt "#284"
 msgid "No results found"
 msgstr "Nincs találat"
 
+msgctxt "#285"
+msgid "Preferred audio language"
+msgstr "Elsődleges nyelv"
+
+msgctxt "#286"
+msgid "Preferred subtitle language"
+msgstr "Elsődleges felirat"
+
 msgctxt "#287"
 msgid "Subtitles"
 msgstr "Feliratok"
@@ -1007,7 +1040,7 @@ msgstr "Könyvjelzők törlése"
 
 msgctxt "#297"
 msgid "Audio offset"
-msgstr "Hang csúsztatás"
+msgstr "Hang eltolás"
 
 msgctxt "#298"
 msgid "Bookmarks"
@@ -1044,6 +1077,14 @@ msgstr "Engedélyezve"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "Nem interleave típusú"
+
+msgctxt "#308"
+msgid "Original stream's language"
+msgstr "Eredeti nyelv"
+
+msgctxt "#309"
+msgid "User Interface language"
+msgstr "Kezelőfelület nyelve"
 
 msgctxt "#312"
 msgid "(0=auto)"
@@ -1185,6 +1226,18 @@ msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Csatornalekeverésnél hangerő emelése"
 
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD képes erősítő"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Többcsatornás-LPCM képes erősítő"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD képes erősítő"
+
 msgctxt "#350"
 msgid "Programs"
 msgstr "Programok"
@@ -1267,35 +1320,35 @@ msgstr "Cím"
 
 msgctxt "#370"
 msgid "Thunderstorms"
-msgstr "viharok, villámok"
+msgstr "Viharos"
 
 msgctxt "#371"
 msgid "Partly"
-msgstr "részben"
+msgstr "Részben"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "többnyire"
+msgstr "Többnyire"
 
 msgctxt "#373"
 msgid "Sunny"
-msgstr "napos"
+msgstr "Napos"
 
 msgctxt "#374"
 msgid "Cloudy"
-msgstr "felhős"
+msgstr "Felhős"
 
 msgctxt "#375"
 msgid "Snow"
-msgstr "havazás"
+msgstr "Havazás"
 
 msgctxt "#376"
 msgid "Rain"
-msgstr "eső"
+msgstr "Eső"
 
 msgctxt "#377"
 msgid "Light"
-msgstr "enyhe"
+msgstr "Enyhe"
 
 msgctxt "#378"
 msgid "AM"
@@ -1307,71 +1360,71 @@ msgstr "délután"
 
 msgctxt "#380"
 msgid "Showers"
-msgstr "zivatar"
+msgstr "Zivatar"
 
 msgctxt "#381"
 msgid "Few"
-msgstr "helyenként"
+msgstr "Helyenként"
 
 msgctxt "#382"
 msgid "Scattered"
-msgstr "elszórtan"
+msgstr "Elszórtan"
 
 msgctxt "#383"
 msgid "Wind"
-msgstr "szél"
+msgstr "Szél"
 
 msgctxt "#384"
 msgid "Strong"
-msgstr "erős"
+msgstr "Erős"
 
 msgctxt "#385"
 msgid "Fair"
-msgstr "szép idő"
+msgstr "Szép idő"
 
 msgctxt "#386"
 msgid "Clear"
-msgstr "tiszta"
+msgstr "Tiszta"
 
 msgctxt "#387"
 msgid "Clouds"
-msgstr "felhők"
+msgstr "Felhők"
 
 msgctxt "#388"
 msgid "Early"
-msgstr "hajnalban"
+msgstr "Hajnalban"
 
 msgctxt "#389"
 msgid "Shower"
-msgstr "zápor"
+msgstr "Zápor"
 
 msgctxt "#390"
 msgid "Flurries"
-msgstr "szélroham"
+msgstr "Széllökések"
 
 msgctxt "#391"
 msgid "Low"
-msgstr "alacsony"
+msgstr "Alacsony"
 
 msgctxt "#392"
 msgid "Medium"
-msgstr "közepes"
+msgstr "Közepes"
 
 msgctxt "#393"
 msgid "High"
-msgstr "magas"
+msgstr "Magas"
 
 msgctxt "#394"
 msgid "Fog"
-msgstr "ködös"
+msgstr "Köd"
 
 msgctxt "#395"
 msgid "Haze"
-msgstr "párás"
+msgstr "Pára"
 
 msgctxt "#396"
 msgid "Select location"
-msgstr "Területválasztás"
+msgstr "Hely kiválasztása"
 
 msgctxt "#397"
 msgid "Refresh time"
@@ -1439,7 +1492,7 @@ msgstr "Nincs ismertető ehhez az albumhoz"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
-msgstr "Bélyegkép letöltése..."
+msgstr "Minikép letöltése..."
 
 msgctxt "#416"
 msgid "Not available"
@@ -1495,7 +1548,7 @@ msgstr "Helyezze be a következő lemezt:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "Rendezés: DVD alapján"
+msgstr "DVD# szerint"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1512,6 +1565,14 @@ msgstr "Biztos el akarod távolítani a '%s'-t?"
 msgctxt "#434"
 msgid "From %s at %i %s"
 msgstr "irány: %s, seb.: %i %s"
+
+msgctxt "#435"
+msgid "No optical disc drive detected"
+msgstr "Optikai meghajtó nem található"
+
+msgctxt "#436"
+msgid "You need an optical disc drive to play this video"
+msgstr "A videó lejátszásához optikai meghajtó szükséges"
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1767,7 +1828,7 @@ msgstr "Médiainformáció betöltése fájlokból..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Rendezés: Használat alapján"
+msgstr "Használat alapján"
 
 msgctxt "#510"
 msgid "Enable visualizations"
@@ -1915,7 +1976,7 @@ msgstr "Nincs életrajz ehhez az előadóhoz"
 
 msgctxt "#548"
 msgid "Downmix multichannel audio to stereo"
-msgstr "A dekódolt többcsatornás hangok lekeverése sztereóra"
+msgstr "A többcsatornás hangok lekeverése sztereóra"
 
 msgctxt "#550"
 msgid "Sort by: %s"
@@ -2142,12 +2203,12 @@ msgid "Enter number"
 msgstr "Szám megadása"
 
 msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "Bitszám/minta"
+msgid "Bits/sample"
+msgstr "Bit/minta"
 
 msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "Mintavételi frekvencia"
+msgid "Sample rate"
+msgstr "Mintavételi gyakoriság"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2172,6 +2233,10 @@ msgstr "Zene számának bevonása"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "Minden zeneszám a(z)"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Folyamatban lévő sorozatok"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2399,7 +2464,7 @@ msgstr "0 és 255 közötti számokkal."
 
 msgctxt "#726"
 msgid "Changes not saved. Continue without saving?"
-msgstr "A változtatások nincsenek elmentve. Folytatás?"
+msgstr "A változtatások nincsenek elmentve. Folytatás mentés nélkül?"
 
 msgctxt "#727"
 msgid "Web server"
@@ -2623,7 +2688,7 @@ msgstr "Vezetéknélküli hálózat neve (ESSID)"
 
 msgctxt "#790"
 msgid "Remote control"
-msgstr ""
+msgstr "Távirányító"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2651,11 +2716,23 @@ msgstr "Folyamatos ismétlés késleltetése (ms)"
 
 msgctxt "#797"
 msgid "Maximum number of clients"
-msgstr "Kliensek maximális száma"
+msgstr "Ügyfelek maximális száma"
 
 msgctxt "#798"
 msgid "Internet access"
 msgstr "Internet elérés"
+
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Zenetár frissítése"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "A zenegyűjteményt újra át kell vizsgálni"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "Most akarod az átvizsgálást indítani?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -2851,7 +2928,7 @@ msgstr "Program kiegészítők"
 
 msgctxt "#1044"
 msgid "Set plugin thumb"
-msgstr "Kiegészítő bélyegkép beállítás"
+msgstr "Kiegészítő minikép beállítása"
 
 msgctxt "#1045"
 msgid "Add-on settings"
@@ -2883,7 +2960,7 @@ msgstr "Webcím megadása"
 
 msgctxt "#1200"
 msgid "SMB client"
-msgstr "SMB kliens"
+msgstr "SMB ügyfél"
 
 msgctxt "#1202"
 msgid "Workgroup"
@@ -3001,37 +3078,9 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "Programok & képek & videó"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "Automatikus felismerés"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "Automatikus rendszerfelismerés"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "Becenév"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "Kérdés csatlakozás előtt"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "FTP felhasználónév és jelszó elküldése"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "Ping gyakoriság"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "Kapcsolódás az automatikusan felismert rendszerhez?"
-
 msgctxt "#1259"
 msgid "Zeroconf"
-msgstr ""
+msgstr "Zeroconf"
 
 msgctxt "#1260"
 msgid "Announce these services to other systems via Zeroconf"
@@ -3051,7 +3100,11 @@ msgstr "- Jelszavas védelem használata"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr ""
+msgstr "AirPlay"
+
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "Szűrés: %s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -3063,7 +3116,7 @@ msgstr "Egyedi hangtovábbító eszköz megadása"
 
 msgctxt "#1396"
 msgid "Drifting"
-msgstr "viharos"
+msgstr "Viharos"
 
 msgctxt "#1397"
 msgid "and"
@@ -3071,31 +3124,31 @@ msgstr "és"
 
 msgctxt "#1398"
 msgid "Freezing"
-msgstr "fagyos"
+msgstr "Fagyos"
 
 msgctxt "#1399"
 msgid "Late"
-msgstr "éjjel"
+msgstr "Késői"
 
 msgctxt "#1400"
 msgid "Isolated"
-msgstr "helyi"
+msgstr "Helyi"
 
 msgctxt "#1401"
 msgid "Thundershowers"
-msgstr "záporok"
+msgstr "Zivatar"
 
 msgctxt "#1402"
 msgid "Thunder"
-msgstr "villámok"
+msgstr "Villámlás"
 
 msgctxt "#1403"
 msgid "Sun"
-msgstr "napos"
+msgstr "Napos"
 
 msgctxt "#1404"
 msgid "Heavy"
-msgstr "erős"
+msgstr "Erős"
 
 msgctxt "#1405"
 msgid "in"
@@ -3107,19 +3160,19 @@ msgstr "-"
 
 msgctxt "#1407"
 msgid "Vicinity"
-msgstr "környéken"
+msgstr "Környéken"
 
 msgctxt "#1408"
 msgid "Ice"
-msgstr "jég"
+msgstr "Jég"
 
 msgctxt "#1409"
 msgid "Crystals"
-msgstr "kristályok"
+msgstr "Kristályok"
 
 msgctxt "#1410"
 msgid "Calm"
-msgstr "nyugodt"
+msgstr "Nyugodt"
 
 msgctxt "#1411"
 msgid "with"
@@ -3127,51 +3180,155 @@ msgstr "-val/-vel"
 
 msgctxt "#1412"
 msgid "windy"
-msgstr "szeles"
+msgstr "Szeles"
 
 msgctxt "#1413"
-msgid "drizzle"
-msgstr "szitáló"
+msgid "Patches"
+msgstr "Foltok"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
-msgstr "vihar"
+msgstr "Vihar"
 
 msgctxt "#1415"
 msgid "Drizzle"
-msgstr "szemerkél"
+msgstr "Szemerkél"
 
 msgctxt "#1416"
 msgid "Foggy"
-msgstr "ködös"
+msgstr "Ködös"
 
 msgctxt "#1417"
 msgid "Grains"
-msgstr "szitálás"
+msgstr "Szitálás"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr "viharok"
+msgid "Thunderstorms"
+msgstr "Viharos"
 
 msgctxt "#1419"
-msgid "T-Showers"
-msgstr "viharos esőzések"
+msgid "Shallow"
+msgstr "Alacsony"
 
 msgctxt "#1420"
 msgid "Moderate"
-msgstr "enyhe"
+msgstr "Enyhe"
 
 msgctxt "#1421"
 msgid "Very High"
-msgstr "nagyon magas"
+msgstr "Nagyon magas"
 
 msgctxt "#1422"
 msgid "Windy"
-msgstr "szeles"
+msgstr "Szeles"
 
 msgctxt "#1423"
 msgid "Mist"
-msgstr "köd"
+msgstr "Pára"
+
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "Felhős"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Eső"
+
+msgctxt "#1426"
+msgid "Hail"
+msgstr "Jégeső"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "Füst"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Vulkáni"
+
+msgctxt "#1429"
+msgid "Ash"
+msgstr "Hamu"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Széleskörű"
+
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Por"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Homok"
+
+msgctxt "#1433"
+msgid "Spray"
+msgstr "Permet"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Forgószél"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Homokvihar"
+
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Széllökés"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "-"
+
+msgctxt "#1438"
+msgid "Small"
+msgstr "Alacsony"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "és"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Havas eső"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "és"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "Várható"
+
+msgctxt "#1443"
+msgid "of"
+msgstr "-"
+
+msgctxt "#1444"
+msgid "Funnel"
+msgstr "Tölcsér"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Felhő"
+
+msgctxt "#1446"
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Széllökések"
+
+msgctxt "#1448"
+msgid "Precipitation"
+msgstr "Csapadék"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "Részleges"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3180,6 +3337,14 @@ msgstr "Kijelző altatása üresjárat esetén"
 msgctxt "#2050"
 msgid "Runtime"
 msgstr "Hossz"
+
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Üres lista"
+
+msgctxt "#2081"
+msgid "Went back to parent list because the active list has been emptied"
+msgstr "Visszaléptünk a szülő listához, mert az aktív lista kiürült"
 
 msgctxt "#2100"
 msgid "Script failed! : %s"
@@ -3593,9 +3758,29 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Az elem zárolva"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "A videó médiatár képek frissítése"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "Feldolgozás alatt: %s"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "A videó médiatár képek gyorsítótára frissítést igényel."
+
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Letöltés nem szükséges"
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Zárolás újraaktiválása"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Akarod frissíteni ?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3630,8 +3815,8 @@ msgid "Settings & file manager"
 msgstr "Beállítások & Fájlkezelő"
 
 msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr "Alapértelmezettként minden filmre"
+msgid "Set as default for all videos"
+msgstr "Beállítás alapértelmezettként"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3756,6 +3941,14 @@ msgstr "Be(ki)kapcsoló gomb művelet"
 msgctxt "#13016"
 msgid "Power off System"
 msgstr "Gép kikapcsolása"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Véletlen leállítás megakadályozása"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Véletlen leállítás engedélyezése"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -3978,8 +4171,8 @@ msgid "Alarm!"
 msgstr "Ébresztés!"
 
 msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr "Megszakítva, %i perc %i mp volt még hátra"
+msgid "Cancelled with %im%is left"
+msgstr "Megszakítva %iperc és %imp hátralévő idővel"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4015,7 +4208,7 @@ msgstr "Hardver:"
 
 msgctxt "#13271"
 msgid "CPU Usage:"
-msgstr "Terhelés:"
+msgstr "CPU Terhelés:"
 
 msgctxt "#13274"
 msgid "Connected, but no DNS is available."
@@ -4151,11 +4344,11 @@ msgstr "Zeneszámok egymásbakeverése"
 
 msgctxt "#13315"
 msgid "Regenerate thumbnails"
-msgstr "Bélyegképek újragenerálása"
+msgstr "Miniképek újragenerálása"
 
 msgctxt "#13316"
 msgid "Recursive thumbnails"
-msgstr "Rekurzív bélyegképek"
+msgstr "Rekurzív miniképek"
 
 msgctxt "#13317"
 msgid "View slideshow"
@@ -4303,7 +4496,7 @@ msgstr "Alacsony minőségű pixel-árnyékoló"
 
 msgctxt "#13356"
 msgid "Hardware overlays"
-msgstr "Hardveres képréteg átfedések"
+msgstr "Hardveres képréteg-átfedések"
 
 msgctxt "#13357"
 msgid "High quality pixel shader"
@@ -4315,11 +4508,11 @@ msgstr "Elem lejátszása"
 
 msgctxt "#13359"
 msgid "Set artist thumb"
-msgstr "Előadó bélyegkép"
+msgstr "Előadó minikép"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
-msgstr "Automatikus bélyegkép generálás"
+msgstr "Automatikus minikép generálás"
 
 msgctxt "#13361"
 msgid "Enable voice"
@@ -4447,7 +4640,7 @@ msgstr "Folytatás"
 
 msgctxt "#13405"
 msgid "Get thumb"
-msgstr "Bélyegkép"
+msgstr "Minikép"
 
 msgctxt "#13406"
 msgid "Picture information"
@@ -4557,6 +4750,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Hardveres gyorsítás engedélyezése (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Következő videó automatikus lejátszása"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "Csak ezt játszd"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "Hang/Kép szinkron ehhez"
@@ -4600,6 +4801,26 @@ msgstr "Nagyon magas(lassú!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Lejátszás szinkronizálása a megjelenítőhöz"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Kép választása"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Jelenlegi kép"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Távoli kép"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Helyi kép"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Nincs kép"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -4687,11 +4908,11 @@ msgstr "Játék könyvtár"
 
 msgctxt "#14010"
 msgid "Auto switch to thumbs based on"
-msgstr "Automatikus váltás bélyegképekre a következő alapján"
+msgstr "Automatikus váltás miniképekre a következő alapján"
 
 msgctxt "#14011"
 msgid "Enable auto switching to thumbs view"
-msgstr "Automatikus váltás bélyegképek nézetre"
+msgstr "Automatikus váltás miniképek nézetre"
 
 msgctxt "#14012"
 msgid "- Use large icons"
@@ -4707,15 +4928,15 @@ msgstr "- Százalék"
 
 msgctxt "#14015"
 msgid "No files and at least one thumb"
-msgstr "Nincs fájl, de minimum egy bélyegkép"
+msgstr "Nincs fájl, de minimum egy minikép"
 
 msgctxt "#14016"
 msgid "At least one file and thumb"
-msgstr "Minimum egy fájl és bélyegkép"
+msgstr "Minimum egy fájl és minikép"
 
 msgctxt "#14017"
 msgid "Percentage of thumbs"
-msgstr "Bélyegképek mérete"
+msgstr "Miniképek mérete"
 
 msgctxt "#14018"
 msgid "View options"
@@ -4863,7 +5084,7 @@ msgstr "Filmszemcsézet (grain) hatás"
 
 msgctxt "#14059"
 msgid "Search for thumbnails on remote shares"
-msgstr "Bélyegképek keresése távoli megosztásokon"
+msgstr "Miniképek keresése távoli megosztásokon"
 
 msgctxt "#14060"
 msgid "Unknown type cache - Internet"
@@ -4907,7 +5128,7 @@ msgstr "Változások érvényesítése?"
 
 msgctxt "#14070"
 msgid "Apply changes now"
-msgstr "Változások azonnali érvényesítése"
+msgstr "Változások érvényesítése"
 
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
@@ -4999,19 +5220,23 @@ msgstr "Energiakezelés"
 
 msgctxt "#14096"
 msgid "Rip"
-msgstr ""
+msgstr "Másolat"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr ""
+msgstr "Zene CD beillesztésekor"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
+msgstr "Lejátszás"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "CD kiadása, ha a másolás kész"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "CD bemásolás megszakítása"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5135,7 +5360,7 @@ msgstr "Finomított Hang/Kép szinkronizáció"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
-msgstr "Fájlnevek elrejtése bélyegkép nézetben"
+msgstr "Fájlnevek elrejtése minikép nézetben"
 
 msgctxt "#15216"
 msgid "Play in party mode"
@@ -5454,8 +5679,8 @@ msgid "Bob (inverted)"
 msgstr "Bob (fordított)"
 
 msgctxt "#16024"
-msgid "Canceling..."
-msgstr "Megszakítás..."
+msgid "Cancelling..."
+msgstr "Megszakítás alatt..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -5677,6 +5902,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Auto - ION-ra optimalizálva"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Videó minőségjavítás (post processing)"
@@ -5685,9 +5914,1445 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Alvó üzemmódig hátralévő idő kijelzése"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MByte"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i óra"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i nap"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Csatornára váltás"
+
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Keresőszavak elválasztása az ÉS, VAGY, NOT szavakkal."
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "Vagy használj szókapcsolatot a pontos találathoz, pl. \"Óz, a csodák csodája\"."
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Hasonló műsorok keresése"
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "EPG információ beolvasása a TV ügyfelekkel"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "PVR adatfolyam információ"
+
+msgctxt "#19006"
+msgid "Receiving device"
+msgstr "Vevőeszköz"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Készülék állapota"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "Jelminőség"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR háttér-kiszolgáló"
+
+msgctxt "#19013"
+msgid "Free to air"
+msgstr "Szabadon fogható"
+
+msgctxt "#19014"
+msgid "Fixed"
+msgstr "Rögzített"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Titkosítás"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR háttér-kiszolgáló %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "TV felvételek"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "PVR miniképek alapértelmezett mappája"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Csatornák"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Rádió"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Rejtett"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "TV csatornák"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Rádió csatornák"
+
+msgctxt "#19025"
+msgid "Upcoming recordings"
+msgstr "Következő felvételek"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "Időzítő hozzáadása"
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Nincs keresési eredmény"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "Nincs EPG bejegyzés"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Csatorna"
+
+msgctxt "#19030"
+msgid "Now"
+msgstr "Most"
+
+msgctxt "#19031"
+msgid "Next"
+msgstr "Következő"
+
+msgctxt "#19032"
+msgid "Timeline"
+msgstr "Idősor"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Információ"
+
+msgctxt "#19034"
+msgid "Already started recording on this channel"
+msgstr "Felvétel elkezdődött a csatornáról"
+
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "Csatorna nem nézhető, nézd meg a naplót a részletekért"
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "Felvétel nem játszható le, nézd meg a naplót a részletekért"
+
+msgctxt "#19037"
+msgid "Show signal quality"
+msgstr "Jelminőség mutatása"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "Nem támogatja a PVR háttér-kiszolgáló."
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "Elrejted ezt a csatornát?"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Időzítő"
+
+msgctxt "#19041"
+msgid "Are you sure you want to rename this recording?"
+msgstr "Átnevezed ezt a felvételt?"
+
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "Átnevezed ezt az időzítést?"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Felvétel"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "Kérlek nézd meg a beállításokat, vagy a naplót a részletekért."
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "Nincs PVR ügyfél elindítva. Várj az indulásra vagy nézd meg a naplót a részletekért."
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Új csatorna"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Program infó"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Csoportkezelés"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "Csatorna mutatása"
+
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Látható csatornák mutatása"
+
+msgctxt "#19051"
+msgid "Show hidden channels"
+msgstr "Rejtett csatornák mutatása"
+
+msgctxt "#19052"
+msgid "Move channel to:"
+msgstr "Csatornák mozgatása ide:"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Felvétel információ"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Csatorna elrejtése"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Nincs információ"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Új időzítés"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Időzítés szerkesztése"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Időzítő engedélyezése"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Felvétel megállítása"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Időzítő törlése"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Időzítő hozzáadása"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Csatorna szerint"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Ugrás az elejére"
+
+msgctxt "#19064"
+msgid "Go to end"
+msgstr "Ugrás a végére"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "Alapértelmezett EPG ablak"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "Ez az esemény már felvétel alatt van."
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Ez a felvétel nem törölhető. Nézd meg a naplót a részletekért."
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "EPG frissítési időköz"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Az EPG adatok ne legyenek tárolva az adatbázisban"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Csatornaváltás késleltetése"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Aktív:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "Név:"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Mappa:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Rádió:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Csatorna:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Nap:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Kezdés:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Befejezés:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Prioritás:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Élettartam (nap):"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "Első nap:"
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "Ismeretlen csatorna %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Hé-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Ke-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Sze-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Cs-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Pé-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Szo-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Va"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "Hé-Ke-Sze-Cs-Pé-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "Hé-Ke-Sze-Cs-Pé-Szo-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "Hé-Ke-Sze-Cs-Pé-Szo-Va"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-Szo-Va"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "Add meg a felvétel nevét"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "Kérlek válts át egy másik csatornára."
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Add meg a felvételek mappájának nevét"
+
+msgctxt "#19106"
+msgid "Next timer on"
+msgstr "Következő időzítő dátum: "
+
+msgctxt "#19107"
+msgid "at"
+msgstr ", idő:"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Az időzítés nem menthető. Nézd meg a naplót a részletekért."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Ismeretlen hiba történt. Próbáld később, vagy nézd meg a naplót a részletekért."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR háttér-kiszolgáló hiba. Nézd meg a naplót a részletekért."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Verzió"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Cím"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Lemezméret"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Csatornák keresése"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "A PVR funkciók nem használhatók keresés közben."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "Melyik kiszolgálón akarsz keresni ?"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "TV ügyfelek száma"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Ismétlések kerülése"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Az időzített felvétel még fut. Biztos hogy törlöd ezt az időzítőt ?"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Csak a szabadon fogható csatornák"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "A jelenlegi időzítők figyelmen kívül hagyása"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "A jelenlegi felvételek figyelmen kívül hagyása"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Kezdési időpont"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Befejezési időpont"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Kezdési dátum"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Befejezési dátum"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Minimális időtartam"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Maximális időtartam"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Ismeretlen műfajok belefoglalása"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Szöveg keresése"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Leírás belefoglalása"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Kis- és nagybetűk megkülönböztetése"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "A csatorna nem elérhető"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Nincsenek csoportok létrehozva"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Kérlek előbb hozz létre csoportokat"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Az új csoport neve"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Csoport"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Keresés a műsorújságban"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Csoportkezelés"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Nincsenek csoportok létrehozva"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Csoportba foglalva"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Csoportok"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "A PVR háttér-kiszolgáló nem támogatja ezt a műveletet. Nézd meg a naplót a részletekért."
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Csatorna"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Hé"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Ke"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Sze"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Cs"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Pé"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Szo"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Va"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "ettől a naptól:"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Következő felvétel"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Jelenleg felvétel alatt"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "ettől:"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "eddig:"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Felvétel folyamatban"
+
+msgctxt "#19163"
+msgid "Recordings"
+msgstr "Felvételek"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "A felvétel nem indítható el. Nézd meg a naplót a részletekért."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Váltás"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR információ"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Hiányzó ikonok keresése"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "A videó információs doboz elrejtése"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Időkorlát a lejátszás indításához"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "A lejátszás indítása minimalizálva"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Azonnali felvétel hossza"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Alapértelmezett felvétel fontosság"
+
+msgctxt "#19174"
+msgid "Default recording lifetime"
+msgstr "Alapértelmezett felvétel élettartam"
+
+msgctxt "#19175"
+msgid "Margin at the start of a recording"
+msgstr "Ráhagyás a műsor kezdete előtt"
+
+msgctxt "#19176"
+msgid "Margin at the end of a recording"
+msgstr "Ráhagyás a műsor befejezése után"
+
+msgctxt "#19177"
+msgid "Playback"
+msgstr "Lejátszás"
+
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "Csatornainformáció mutatása váltáskor"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Csatornainformáció automatikus elrejtése"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Menü/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Az EPG-ben mutatott napok száma"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "Csatornainformáció időtartama"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "PVR adatbázis törlése"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "A PVR adatbázisban minden adat törlésre kerül."
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "EPG adatbázis törlése"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "Az EPG adatbázis törlődik"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Az utolsó csatorna folytatása bekapcsoláskor"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "Minimalizált"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR szolgáltatás"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Egyik csatlakoztatott PVR háttér-kiszolgáló sem támogatja a csatornakeresést."
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "A csatornakeresés nem indítható el. Nézd meg a naplót a részletekért."
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Folytatás?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Ügyfél műveletek"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "PVR ügyféllel kapcsolatos műveletek"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Felvétel elkezdődött ekkor: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Felvétel befejeződött ekkor: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Csatornakezelő"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG forrás:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Csatornanév:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Csatorna ikon:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Csatorna szerkesztése"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Új csatorna"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Csoportkezelő"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Aktív EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Csoport:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Add meg az új csatorna nevét"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "XBMC virtuális háttér-kiszolgáló"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "Ügyfél"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Csatorna törlése"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Ez a lista változtatásokat tartalmaz"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Háttér-kiszolgáló kiválasztása"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Adj meg egy érvényes URL címet az új csatornának"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "A PVR háttér-kiszolgáló nem támogatja az időzítést"
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Minden rádió csatorna"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Minden TV csatorna"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Látható"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Csoportosítatlan csatornák"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Csatornák ebben a csoportban:"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Csatornacsoportok szinkronizálása a háttér-kiszolgálóval"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Nem lehetett egy PVR kiegészítőt sem engedélyezni. Ellenőrizd a beállításokat, vagy a naplót a részletekért."
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "A felvétel megszakadt"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Felvétel időzítve lett"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Felvétel elindult"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Felvétel befejeződött"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Felvétel törlődött"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "A csatorna OSD bezárása csatornaváltáskor"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "EPG frissítések szüneteltetése TV nézéskor"
+
+msgctxt "#19231"
+msgid "Always use the channel order from the backend(s)"
+msgstr "Mindig a háttér-kiszolgálón lévő csatornasorrend használata "
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Keresési eredmények törlése"
+
+msgctxt "#19233"
+msgid "Display a notification on timer updates"
+msgstr "Értesítés megjelenítése időzítő frissítésekor"
+
+msgctxt "#19234"
+msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr "A háttér-kiszolgáló csatornaszámozásának használata (1 PVR kiegészítővel)"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "A PVR kezelő elindul"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "Csatornák betöltése a PVR ügyfelekkel"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "Időzítők betöltése a PVR ügyfelekkel"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "Felvételek betöltése a PVR ügyfelekkel"
+
+msgctxt "#19239"
+msgid "Starting background threads"
+msgstr "A háttér végrehajtási szálak elindítása"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "Nincs PVR kiegészítő engedélyezve"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "A PVR kezelő, PVR kiegészítő nélkül lett"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "engedélyezve. Engedélyezz legalább egy"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "kiegészítőt, a működés érdekében."
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "Háttér-kiszolgáló üresjárat idő"
+
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Ébresztő parancs beállítása (parancs[időbélyeg])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Gép felébresztése felvétel előtt ennyivel"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "Ébresztés naponta"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Ébresztés naponta ekkor (ÓÓ:PP:MM)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "Csatornák szűrése"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "EPG adat betöltése az adatbázisból"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "EPG információ frissítése"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "EPG frissítés ütemezése ehhez a csatornához?"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "EPG frissítés ütemezve ehhez a csatornához:"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "EPG frissítés sikertelen ehhez a csatornához:"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Felvétel indítása"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Felvétel leállítása"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "Csatorna zárolása"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Csatornazár feloldása"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "Szülői felügyelet"
+
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "Gyerekzár oldásának időtartama"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "PIN kód megváltoztatása"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "Szülői felügyelet. Add meg a PIN kódot:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "Zárolt csatorna. Add meg a PIN kódot:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "Hibás PIN kód"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "A megadott PIN szám hibás volt."
+
+msgctxt "#19266"
+msgid "Parental locked"
+msgstr "Gyerekzár alatt"
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Gyerekzár alatt:"
+
+msgctxt "#19268"
+msgid "Do not show 'no information available' labels"
+msgstr "A 'nincs információ' felirat elrejtése"
+
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "A 'kapcsolat megszakadt' figyelmeztetés elrejtése"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* Minden felvétel"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "Nem található PVR kiegészítő"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "A PVR használatához szükség van egy TV kártyára,"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "egy háttér-kiszolgálóra és egy PVR kiegészítőre. "
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "Látogasd meg az xbmc.org/pvr oldalt a részletekért."
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Ütközési figyelmeztetés"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Ütközési hiba"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Felvételek ütközése"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Felvételi hiba"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "PVR ügyfélhez kapcsolódó"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "PVR ügyfélhez kapcsolódó beállítások"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Csatornaváltások megerősítése az OK billentyűvel"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Más/Ismeretlen"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "Film/Dráma"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "Krimi/Thriller"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "Kaland/Western/Háborús"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Sci-Fi/Fantasy/Horror"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "Vígjáték"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Szappanopera/Melodráma/Folklór"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "Romantikus"
+
+msgctxt "#19507"
+msgid "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Sorozat/Klasszikus/Vallás/Történelmi/Dráma"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "Felnőtt/Dráma"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "Hírek/Aktualitások"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Hírek/Időjárásjelentés"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "Hírmagazin"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentum"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Beszélgetés/Interjú/Vita"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "Show/Játék show"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "Játék show/Kvíz/Verseny"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "Revü"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Beszélgetős műsor"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "Sport"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "Különleges esemény"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "Sport magazin"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "Labdarúgás"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "Tenisz/Squash"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Csapatsport"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "Atlétika"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "Motorsport"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Vízisport"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Téli sport"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "Lovas"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "Harci sport"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Gyerek/Ifjúsági program"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Óvodás program"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "Szórakoztató program 6-14 éveseknek"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "Szórakoztató program 10-16 éveseknek"
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr "Információs/Oktató/Iskolai program"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "Animációs/Báb"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Zene/Balett/Tánc"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rock/Pop"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Komolyzenei"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "Népzene/Hagyományos zene"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "Musical/Opera"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "Ballet"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "Művészet/Kultúra"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Előadó-művészet"
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "Képzőművészet"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Vallás"
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr "Pop kultúra/Hagyományos művészetek"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "Irodalom"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "Film/Mozi"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "Kísérleti film/Videó"
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "Közvetítés/Sajtó"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "Új média"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "Művészeti/Kulturális magazin"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "Divat"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "Szociális/Politikai/Gazdasági"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "Magazinok/Riportok/Dokumentumfilm"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "Gazdasági/Szociális tanácsadó"
+
+msgctxt "#19615"
+msgid "Remarkable People"
+msgstr "Híres emberek"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "Oktatás/Tudomány/Tényfeltáró"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "Természet/Állatok/Környezet"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "Technika/Természettudományi"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "Orvosi/Élettani/Pszichológiai"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "Idegen országok/Felfedező utak"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "Szociális/Lélek tudományok"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "Továbbtanulás"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Nyelvek"
+
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "Szabadidő/Hobbi"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "Turizmus/Utazás"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "Kézművesség"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "Autózás"
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr "Fitnesz &amp; Egészség"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "Főzés"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "Hirdetés/Vásárlás"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "Kertészkedés"
+
+msgctxt "#19660"
+msgid "Special Characteristics"
+msgstr "Különleges jellemzők"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Eredeti nyelv"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "Fekete &amp; Fehér"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Kiadatlan"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "Élő közvetítés"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "Dráma"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "Bűnügyi/Thriller"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "Kaland/Western/Háborús"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "Sci-fi/Fantasy/Horror"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "Vígjáték"
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "Szappanopera/Melodráma/Folklor"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "Romantikus"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "Sorozat/Klasszikus vallási/Történelmi"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "Felnőtt"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -5739,27 +7404,27 @@ msgstr "Játék futtatása?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "Rendezés: Lista"
+msgstr "Játszáslista szerint"
 
 msgctxt "#20015"
 msgid "Remote thumb"
-msgstr "Letölthető bélyegkép"
+msgstr "Letölthető minikép"
 
 msgctxt "#20016"
 msgid "Current thumb"
-msgstr "Jelenlegi bélyegkép"
+msgstr "Jelenlegi minikép"
 
 msgctxt "#20017"
 msgid "Local thumb"
-msgstr "Helyi bélyegkép"
+msgstr "Helyi minikép"
 
 msgctxt "#20018"
 msgid "No thumb"
-msgstr "Nincs bélyegkép"
+msgstr "Nincs minikép"
 
 msgctxt "#20019"
 msgid "Choose thumbnail"
-msgstr "Bélyegkép választása"
+msgstr "Minikép választása"
 
 msgctxt "#20023"
 msgid "Conflict"
@@ -5851,11 +7516,11 @@ msgstr "Belépés mester-módba"
 
 msgctxt "#20055"
 msgid "Allmusic.com thumb"
-msgstr "Allmusic.com bélyegkép"
+msgstr "Allmusic.com minikép"
 
 msgctxt "#20057"
 msgid "Remove thumbnail"
-msgstr "Bélyegkép eltávolítása"
+msgstr "Minikép eltávolítása"
 
 msgctxt "#20058"
 msgid "Add profile..."
@@ -6071,7 +7736,7 @@ msgstr "UPnP beállítások"
 
 msgctxt "#20111"
 msgid "Autostart UPnP client"
-msgstr "UPnP kliens automatikus indítása"
+msgstr "UPnP ügyfél automatikus indítása"
 
 msgctxt "#20112"
 msgid "Last login: %s"
@@ -6371,7 +8036,11 @@ msgstr "Kérem várjon"
 
 msgctxt "#20187"
 msgid "UPnP"
-msgstr ""
+msgstr "UPnP"
+
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Médiatár frissítések jelentése UPnP-n keresztül."
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6391,11 +8060,11 @@ msgstr "Médiaadatok frissítésekor kiegészítő információk letöltése"
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr "Alapértelmezett leolvasó az album információkhoz"
+msgstr "Alapértelmezett leolvasó album információkhoz"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Alapértelmezett leolvasó az előadó információkhoz"
+msgstr "Alapértelmezett leolvasó előadó információkhoz"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -6416,6 +8085,26 @@ msgstr "Előadó nem található!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "Előadóinformáció letöltése sikertelen"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Android zene"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Android videók"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Android képek"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Android fotók"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Adnroid programok"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -6443,15 +8132,15 @@ msgstr "Első bejelentkezés, profilod szerkesztése"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
-msgstr "HTS Tvheadend TV kliens"
+msgstr "HTS Tvheadend PVR ügyfél"
 
 msgctxt "#20257"
 msgid "VDR Streamdev client"
-msgstr "VDR Streamdev TV kliens"
+msgstr "VDR Streamdev PVR ügyfél"
 
 msgctxt "#20258"
 msgid "MythTV client"
-msgstr "MythTV kliens"
+msgstr "MythTV PVR ügyfél"
 
 msgctxt "#20259"
 msgid "Network Filesystem (NFS)"
@@ -6516,6 +8205,26 @@ msgstr "Videók - Médiatár"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "ID szerint"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Filmek keresése a %s használatával"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Zenevideók keresése a %s használatával"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Sorozatok keresése a %s használatával"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Előadók keresése a %s használatával"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Albumok keresése a %s használatával"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -6707,7 +8416,7 @@ msgstr "* Elrejtve, spoiler-védelem miatt *"
 
 msgctxt "#20371"
 msgid "Set season thumb"
-msgstr "Évad bélyegkép beállítása"
+msgstr "Évad minikép beállítása"
 
 msgctxt "#20372"
 msgid "Season image"
@@ -6751,7 +8460,7 @@ msgstr "Egyediek"
 
 msgctxt "#20382"
 msgid "Automatically grab season thumbs"
-msgstr "Évad bélyegképek automatikus letöltése"
+msgstr "Évad miniképek automatikus letöltése"
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
@@ -6831,11 +8540,11 @@ msgstr "Videóklip lejátszása"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Színész bélyegképek letöltése médiatárhoz való hozzáadáskor"
+msgstr "Színész miniképek letöltése médiatárhoz való hozzáadáskor"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
-msgstr "Színész bélyegkép beállítás"
+msgstr "Színész minikép beállítás"
 
 msgctxt "#20405"
 msgid "Remove episode bookmark"
@@ -6935,7 +8644,7 @@ msgstr "Külön-külön"
 
 msgctxt "#20430"
 msgid "Export thumbnails and fanart?"
-msgstr "Bélyegképek és fanartképek exportálása?"
+msgstr "Miniképek és fanartképek exportálása?"
 
 msgctxt "#20431"
 msgid "Overwrite old files?"
@@ -6947,19 +8656,15 @@ msgstr "Elérési út kihagyása a médiatár-frissítésekor"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Média információk és bélyegképek kinyerése"
+msgstr "Média információk és miniképek kinyerése"
 
 msgctxt "#20434"
 msgid "Sets"
 msgstr "Lemezgyűjtemény"
 
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr "Lemezgyűjtemény bélyegkép"
-
 msgctxt "#20436"
 msgid "Export actor thumbs?"
-msgstr "Színész-bélyegképek exportálása?"
+msgstr "Színész-miniképek exportálása?"
 
 msgctxt "#20437"
 msgid "Choose fanart"
@@ -7037,10 +8742,6 @@ msgctxt "#20455"
 msgid "Listeners"
 msgstr "Hallgató"
 
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr "Filmgyűjtemény fanart beállítása"
-
 msgctxt "#20457"
 msgid "Movie set"
 msgstr "Filmgyűjtemény"
@@ -7049,13 +8750,37 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Filmek csoportosítása készletekbe"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Címkék"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "Hozzáadás: %s"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Törlés: %s"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "Új címke..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "A '%s' nevű címke már létezik"
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Választás: %s"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "Rejtett fájlok és mappák megjelenítése"
 
 msgctxt "#21331"
 msgid "TuxBox client"
-msgstr "TuxBox kliens"
+msgstr "TuxBox PVR ügyfél"
 
 msgctxt "#21332"
 msgid "WARNING: Target TuxBox device is in recording-mode!"
@@ -7119,7 +8844,7 @@ msgstr "Navigációs hangok lejátszás közben"
 
 msgctxt "#21371"
 msgid "Thumbnail"
-msgstr "Bélyegkép"
+msgstr "Minikép"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
@@ -7297,10 +9022,6 @@ msgctxt "#21415"
 msgid "Default music video scraper"
 msgstr "Alapértelmezett videóklip leolvasó"
 
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr "Helyettesítés engedélyezése a leolvasó nyelve alapján"
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- Beállítások"
@@ -7457,6 +9178,14 @@ msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "A gyorsítótár még azelőtt megtelt, hogy elegendő lett volna a folyamatos lejátszáshoz"
 
+msgctxt "#21456"
+msgid "External storage"
+msgstr "Külső tár"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Már látott részek száma"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Felirat helye"
@@ -7480,6 +9209,18 @@ msgstr "Videó tetején"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "Videó felett"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f -tól %.1f -ig"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d -tól %d -ig"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "ettől: %s eddig: %s"
 
 msgctxt "#21800"
 msgid "File name"
@@ -7977,6 +9718,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Fut"
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Teletext méretezése 4:3 arányra"
+
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "Külső lejátszó aktív"
@@ -8057,6 +9802,10 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "Szolgáltatások"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR ügyfelek"
+
 msgctxt "#24020"
 msgid "Configure"
 msgstr "Beállítás"
@@ -8080,6 +9829,10 @@ msgstr "Időjárás"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (alap)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Időjárásadatok szolgáltatója"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -8293,33 +10046,41 @@ msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "Szeretnéd letölteni ezt a kiegészítőt?"
 
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "A felszín nem betölthető"
+
+msgctxt "#24103"
+msgid "Skin is missing some files"
+msgstr "A felszínhez hiányoznak fájlok"
+
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "Értesítések"
 
 msgctxt "#25001"
 msgid "Hide foreign"
-msgstr ""
+msgstr "Idegen nyelvű rejtése"
 
 msgctxt "#25002"
 msgid "Select from all titles ..."
-msgstr ""
+msgstr "Választás a teljes tartalomból..."
 
 msgctxt "#25003"
 msgid "Show bluray menus"
-msgstr ""
+msgstr "Bluray menü mutatása"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr ""
+msgstr "Főcím lejátszása: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
-msgstr ""
+msgstr "Cím: %d"
 
 msgctxt "#25006"
 msgid "Select playback item"
-msgstr ""
+msgstr "Lejátszandó elem kiválasztása"
 
 msgctxt "#29800"
 msgid "Library Mode"
@@ -8643,27 +10404,27 @@ msgstr "Új kapcsolatot észleltem"
 
 msgctxt "#34000"
 msgid "Lame"
-msgstr ""
+msgstr "Lame"
 
 msgctxt "#34001"
 msgid "Vorbis"
-msgstr ""
+msgstr "Vorbis"
 
 msgctxt "#34002"
 msgid "Wav"
-msgstr ""
+msgstr "Wav"
 
 msgctxt "#34003"
 msgid "DXVA2"
-msgstr ""
+msgstr "DXVA2"
 
 msgctxt "#34004"
 msgid "VAAPI"
-msgstr ""
+msgstr "VAAPI"
 
 msgctxt "#34005"
 msgid "Flac"
-msgstr ""
+msgstr "Flac"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
@@ -8671,43 +10432,59 @@ msgstr "Hangfalkiépítés"
 
 msgctxt "#34101"
 msgid "2.0"
-msgstr ""
+msgstr "2.0"
 
 msgctxt "#34102"
 msgid "2.1"
-msgstr ""
+msgstr "2.1"
 
 msgctxt "#34103"
 msgid "3.0"
-msgstr ""
+msgstr "3.0"
 
 msgctxt "#34104"
 msgid "3.1"
-msgstr ""
+msgstr "3.1"
 
 msgctxt "#34105"
 msgid "4.0"
-msgstr ""
+msgstr "4.0"
 
 msgctxt "#34106"
 msgid "4.1"
-msgstr ""
+msgstr "4.1"
 
 msgctxt "#34107"
 msgid "5.0"
-msgstr ""
+msgstr "5.0"
 
 msgctxt "#34108"
 msgid "5.1"
-msgstr ""
+msgstr "5.1"
 
 msgctxt "#34109"
 msgid "7.0"
-msgstr ""
+msgstr "7.0"
 
 msgctxt "#34110"
 msgid "7.1"
-msgstr ""
+msgstr "7.1"
+
+msgctxt "#34120"
+msgid "Play GUI sounds"
+msgstr "GUI hangok lejátszása"
+
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Csak ha nincs lejátszás"
+
+msgctxt "#34122"
+msgid "Always"
+msgstr "Mindig"
+
+msgctxt "#34123"
+msgid "Never"
+msgstr "Soha"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
@@ -8743,23 +10520,23 @@ msgstr "Ellenőrizd a hangbeállításokat"
 
 msgctxt "#34404"
 msgid "Use gestures for navigation:"
-msgstr ""
+msgstr "Gesztusok használata a navigációhoz"
 
 msgctxt "#34405"
 msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
+msgstr "1 ujjhúzás jobbra,balra, fent, lent"
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr ""
+msgstr "2 ujjhúzás jobbra : vissza"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
-msgstr ""
+msgstr "1 ujjütés a belépéshez"
 
 msgctxt "#34408"
 msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
+msgstr "2 ujjütés, vagy 1 ujj hosszan a menübeállításhoz."
 
 msgctxt "#35000"
 msgid "Peripherals"
@@ -8799,7 +10576,15 @@ msgstr "Billentyűzetkiosztás engedélyezve"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
-msgstr ""
+msgstr "Ne használj saját billentyűkiosztást ehhez az eszközhöz."
+
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "Botkormány és gombkormány támogatás engedélyezése"
+
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
+msgstr "Joystick letiltása iMON jelenlétében "
 
 msgctxt "#35500"
 msgid "Location"
@@ -8869,10 +10654,6 @@ msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
 msgstr "A CEC adapter nem található."
 
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr "Nem támogatott libcec csatoló verzió. %d nagyobb mint amit az XBMC támogat (%d)"
-
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI csatlakozó száma"
@@ -8891,57 +10672,84 @@ msgstr "A TV nyelvi beállításainak használata"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr ""
+msgstr "HDMI eszközhöz csatlakoztatva"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
-msgstr ""
+msgstr "Az XBMC az aktív forrás a kezdésnél"
 
 msgctxt "#36021"
 msgid "Physical address (overrules HDMI port)"
-msgstr ""
+msgstr "Fizikai cím (felülírja a HDMI portot)"
 
 msgctxt "#36022"
 msgid "COM port (leave empty unless needed)"
-msgstr ""
+msgstr "COM port (üres ha nincs használatban)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr ""
+msgstr "Konfiguráció frissítve"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
+msgstr "Az új konfiguráció sikertelen volt, kérlek ellenőrizd a beállításaidat."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
+msgstr "'inaktív forrás' parancs küldése XBMC leállításakor"
 
 msgctxt "#36026"
 msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
+msgstr "Eszközök altatása a PC altatásakor"
 
 msgctxt "#36027"
 msgid "This device needs servicing"
-msgstr ""
+msgstr "Ez az eszköz karbantartást igényel"
 
 msgctxt "#36028"
 msgid "Ignore"
-msgstr ""
+msgstr "Mellőzés"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"
-msgstr ""
+msgstr "Amikor a TV ki van kapcsolva"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr ""
+msgstr "A kapcsolat megszakadt"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
+msgstr "A felhasználó nem nem rendelkezik engedéllyel a CEC adapterhez"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
+msgstr "A port foglalt. Csak egy program kezelheti a CEC adaptert"
 
+msgctxt "#36033"
+msgid "Pause playback when switching to another source"
+msgstr "Lejátszás szüneteltetése másik forrásra való váltáskor"
+
+msgctxt "#36035"
+msgid "Always"
+msgstr "Mindig"
+
+msgctxt "#36036"
+msgid "On start/stop"
+msgstr "Indításkor/leállításkor"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Erősítő (AVR)"
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "TV és AVR eszköz"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Nem támogatott libCEC interfész verzió. A meglévő verzió (%x) alacsonyabb mint az XBMC által támogatott (%x)"

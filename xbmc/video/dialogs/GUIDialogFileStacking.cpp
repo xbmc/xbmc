@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -53,19 +52,6 @@ bool CGUIDialogFileStacking::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
       m_iSelectedFile = -1;
-      if (GetControl(STACK_LIST))
-      { // have the new stack list instead - fill it up
-        SendMessage(GUI_MSG_LABEL_RESET, GetID(), STACK_LIST);
-        for (int i = 0; i < m_iNumberOfFiles; i++)
-        {
-          CStdString label;
-          label.Format(g_localizeStrings.Get(23051).c_str(), i+1);
-          CFileItemPtr item(new CFileItem(label));
-          m_stackItems->Add(item);
-        }
-        CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), STACK_LIST, 0, 0, m_stackItems);
-        OnMessage(msg);
-      }
       return true;
     }
     break;
@@ -96,4 +82,23 @@ int CGUIDialogFileStacking::GetSelectedFile() const
 void CGUIDialogFileStacking::SetNumberOfFiles(int iFiles)
 {
   m_iNumberOfFiles = iFiles;
+}
+
+void CGUIDialogFileStacking::OnInitWindow()
+{
+  if (GetControl(STACK_LIST))
+  { 
+    // have the new stack list instead - fill it up
+    SendMessage(GUI_MSG_LABEL_RESET, GetID(), STACK_LIST);
+    for (int i = 0; i < m_iNumberOfFiles; i++)
+    {
+      CStdString label;
+      label.Format(g_localizeStrings.Get(23051).c_str(), i+1);
+      CFileItemPtr item(new CFileItem(label));
+      m_stackItems->Add(item);
+    }
+    CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), STACK_LIST, 0, 0, m_stackItems);
+    OnMessage(msg);
+  }
+  CGUIDialog::OnInitWindow();
 }

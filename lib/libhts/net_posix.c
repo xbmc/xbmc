@@ -23,7 +23,7 @@
 #ifndef SOL_TCP
 #define SOL_TCP IPPROTO_TCP
 #endif
-#include "OSXGNUReplacements.h"
+#include "osx/OSXGNUReplacements.h"
 #elif defined(__FreeBSD__)
 #ifndef SOL_TCP
 #define SOL_TCP IPPROTO_TCP

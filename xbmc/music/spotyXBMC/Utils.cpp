@@ -82,7 +82,7 @@ namespace addon_music_spotify {
     path.Format("musicdb://3/%s#%i", album->getUri(), discNumber);
     const CFileItemPtr pItem(new CFileItem(path, outAlbum));
     if (album->hasThumb())
-      pItem->SetThumbnailImage(album->getThumb()->getPath());
+      pItem->SetArt("thumb",album->getThumb()->getPath());
     pItem->SetProperty("fanart_image", *album->getFanart());
     return pItem;
   }
@@ -113,7 +113,7 @@ namespace addon_music_spotify {
     outSong.albumArtist = StringUtils::Split(track->getAlbumArtistName(), g_advancedSettings.m_musicItemSeparator);
     const CFileItemPtr pItem(new CFileItem(outSong));
     if (track->hasThumb())
-      pItem->SetThumbnailImage(track->getThumb()->getPath());
+      pItem->SetArt("thumb",track->getThumb()->getPath());
     pItem->SetProperty("fanart_image", *track->getFanart());
     return pItem;
   }
@@ -136,7 +136,7 @@ namespace addon_music_spotify {
     pItem->GetMusicInfoTag()->SetArtist(artist->getArtistName());
 
     if (artist->hasThumb())
-      pItem->SetThumbnailImage(artist->getThumb()->getPath());
+      pItem->SetArt("thumb",artist->getThumb()->getPath());
 
     pItem->SetIconImage("DefaultArtist.png");
     pItem->SetProperty("fanart_image", *artist->getFanart());

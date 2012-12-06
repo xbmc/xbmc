@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -53,6 +52,12 @@ protected:
   virtual ~IAE() {}
 
   /**
+   * Returns true when it should be possible to initialize this engine, if it returns false
+   * CAEFactory can possibly fall back to a different one
+   */
+  virtual bool CanInit() { return true; }
+
+  /**
    * Initializes the AudioEngine, called by CFactory when it is time to initialize the audio engine.
    * Do not call this directly, CApplication will call this when it is ready
    */
@@ -62,12 +67,34 @@ public:
    * Called when the application needs to terminate the engine
    */
   virtual void Shutdown() { }
+
+  /**
+   * Suspends output and de-initializes sink
+   * Used to avoid conflicts with external players or to reduce power consumption
+   * @return True if successful
+   */
+  virtual bool Suspend() = 0;
+
+  /**
+   * Resumes output and re-initializes sink
+   * Used to resume output from Suspend() state above
+   * @return True if successful
+   */
+  virtual bool Resume() = 0;
+
+  /**
+   * Get the current Suspend() state
+   * Used by players to determine if audio is being processed
+   * Default is true so players drop audio or pause if engine unloaded
+   * @return True if processing suspended
+   */
+  virtual bool IsSuspended() {return true;}
   
   /**
    * Callback to alert the AudioEngine of setting changes
    * @param setting The name of the setting that was changed
    */
-  virtual void OnSettingsChange(std::string setting) {}
+  virtual void OnSettingsChange(const std::string& setting) {}
 
   /**
    * Returns the current master volume level of the AudioEngine

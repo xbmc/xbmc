@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -47,9 +46,11 @@
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
 #include "RenderFormats.h"
+#include "xbmc/Application.h"
 
 #if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
+#include "utils/CPUInfo.h"
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
 #include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
@@ -87,6 +88,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   }
 
   m_renderMethod = RENDER_GLSL;
+  m_oldRenderMethod = m_renderMethod;
   m_renderQuality = RQ_SINGLEPASS;
   m_iFlags = 0;
   m_format = RENDER_FMT_NONE;
@@ -146,7 +148,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
   {
     CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
-     // create the yuv textures    
+     // create the yuv textures
     LoadShaders();
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
@@ -155,13 +157,14 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
     m_bValidated = true;
     return true;
   }
-  return false;  
+  return false;
 }
 
-bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;
+  m_renderOrientation = orientation;
 
   // Save the flags.
   m_iFlags = flags;
@@ -185,6 +188,17 @@ bool CLinuxRendererGLES::Configure(unsigned int width, unsigned int height, unsi
     m_buffers[i].image.flags = 0;
 
   m_iLastRenderBuffer = -1;
+
+  m_RenderUpdateCallBackFn = NULL;
+  m_RenderUpdateCallBackCtx = NULL;
+  if ((m_format == RENDER_FMT_BYPASS) && g_application.GetCurrentPlayer())
+  {
+    g_application.m_pPlayer->GetRenderFeatures(m_renderFeatures);
+    g_application.m_pPlayer->GetDeinterlaceMethods(m_deinterlaceMethods);
+    g_application.m_pPlayer->GetDeinterlaceModes(m_deinterlaceModes);
+    g_application.m_pPlayer->GetScalingMethods(m_scalingMethods);
+  }
+
   return true;
 }
 
@@ -396,14 +410,12 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     ManageDisplay();
     ManageTextures();
-    g_graphicsContext.BeginPaint();
+    // if running bypass, then the player might need the src/dst rects
+    // for sizing video playback on a layer other than the gles layer.
+    if (m_RenderUpdateCallBackFn)
+      (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
 
-    // RENDER_BYPASS means we are rendering video
-    // outside the control of gles and on a different
-    // graphics plane that is under the gles layer.
-    // Clear a hole where video would appear so we do not see
-    // background images that have already been rendered. 
-    g_graphicsContext.SetScissors(m_destRect);
+    g_graphicsContext.BeginPaint();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -411,7 +423,6 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClear(GL_COLOR_BUFFER_BIT);
 
     g_graphicsContext.EndPaint();
-    glFinish();
     return;
   }
 
@@ -477,9 +488,6 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
 
   g_graphicsContext.EndPaint();
-#if !defined(TARGET_DARWIN)
-  glFinish();
-#endif
 }
 
 void CLinuxRendererGLES::FlipPage(int source)
@@ -695,6 +703,13 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGLES::CreateYV12Texture;
     m_textureDelete = &CLinuxRendererGLES::DeleteYV12Texture;
   }
+
+  if (m_oldRenderMethod != m_renderMethod)
+  {
+    CLog::Log(LOGDEBUG, "CLinuxRendererGLES: Reorder drawpoints due to method change from %i to %i", m_oldRenderMethod, m_renderMethod);
+    ReorderDrawPoints();
+    m_oldRenderMethod = m_renderMethod;
+  }
 }
 
 void CLinuxRendererGLES::UnInit()
@@ -723,6 +738,26 @@ void CLinuxRendererGLES::UnInit()
   m_bValidated = false;
   m_bImageReady = false;
   m_bConfigured = false;
+  m_RenderUpdateCallBackFn = NULL;
+  m_RenderUpdateCallBackCtx = NULL;
+}
+
+inline void CLinuxRendererGLES::ReorderDrawPoints()
+{
+
+  CBaseRenderer::ReorderDrawPoints();//call base impl. for rotating the points
+
+  //corevideo is flipped in y
+  if(m_renderMethod & RENDER_CVREF)
+  {
+    CPoint tmp;
+    tmp = m_rotatedDestCoords[0];
+    m_rotatedDestCoords[0] = m_rotatedDestCoords[3];
+    m_rotatedDestCoords[3] = tmp;
+    tmp = m_rotatedDestCoords[1];
+    m_rotatedDestCoords[1] = m_rotatedDestCoords[2];
+    m_rotatedDestCoords[2] = tmp;
+  }
 }
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
@@ -846,11 +881,12 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glEnableVertexAttribArray(Vloc);
 
   // Setup vertex position values
-  m_vert[0][0] = m_vert[3][0] = m_destRect.x1;
-  m_vert[0][1] = m_vert[1][1] = m_destRect.y1;
-  m_vert[1][0] = m_vert[2][0] = m_destRect.x2;
-  m_vert[2][1] = m_vert[3][1] = m_destRect.y2;
-  m_vert[0][2] = m_vert[1][2] = m_vert[2][2] = m_vert[3][2] = 0.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    m_vert[i][0] = m_rotatedDestCoords[i].x;
+    m_vert[i][1] = m_rotatedDestCoords[i].y;
+    m_vert[i][2] = 0.0f;// set z to 0
+  }
 
   // Setup texture coordinates
   for (int i=0; i<3; i++)
@@ -1111,12 +1147,13 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y1;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y2;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates
   tex[0][0] = tex[3][0] = planes[0].rect.x1;
@@ -1175,12 +1212,13 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y2;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y1;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates
   tex[0][0] = tex[3][0] = 0;
@@ -1239,12 +1277,13 @@ void CLinuxRendererGLES::RenderCoreVideoRef(int index, int field)
   glEnableVertexAttribArray(colLoc);
 
   // Set vertex coordinates
-  ver[0][0] = ver[3][0] = m_destRect.x1;
-  ver[0][1] = ver[1][1] = m_destRect.y2;
-  ver[1][0] = ver[2][0] = m_destRect.x2;
-  ver[2][1] = ver[3][1] = m_destRect.y1;
-  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+  for(int i = 0; i < 4; i++)
+  {
+    ver[i][0] = m_rotatedDestCoords[i].x;
+    ver[i][1] = m_rotatedDestCoords[i].y;
+    ver[i][2] = 0.0f;// set z to 0
+    ver[i][3] = 1.0f;
+  }
 
   // Set texture coordinates (corevideo is flipped in y)
   tex[0][0] = tex[3][0] = 0;
@@ -1273,10 +1312,12 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   // save current video rect
   CRect saveSize = m_destRect;
+  saveRotatedCoords();//backup current m_rotatedDestCoords
 
   // new video rect is thumbnail size
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
-
+  MarkDirty();
+  syncDestRectToRotatedPoints();//syncs the changed destRect to m_rotatedDestCoords
   // clear framebuffer and invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
 
@@ -1308,6 +1349,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   // restore original video rect
   m_destRect = saveSize;
+  restoreRotatedCoords();//restores the previous state of the rotated dest coords
 
   return true;
 }
@@ -1343,20 +1385,25 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
     }
 
 #if defined(__ARM_NEON__)
-    yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],
-      m_sourceWidth, m_sourceHeight, im->stride[0], im->stride[1], m_sourceWidth * 4);
-#else
-    m_sw_context = m_dllSwScale->sws_getCachedContext(m_sw_context,
-      im->width, im->height, PIX_FMT_YUV420P,
-      im->width, im->height, PIX_FMT_RGBA,
-      SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
-    uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
-    int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
-    uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
-    int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
-    m_dllSwScale->sws_scale(m_sw_context, src, srcStride, 0, im->height, dst, dstStride);
+    if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
+    {
+      yuv420_2_rgb8888_neon(m_rgbBuffer, im->plane[0], im->plane[2], im->plane[1],
+        m_sourceWidth, m_sourceHeight, im->stride[0], im->stride[1], m_sourceWidth * 4);
+    }
+    else
 #endif
+    {
+      m_sw_context = m_dllSwScale->sws_getCachedContext(m_sw_context,
+        im->width, im->height, PIX_FMT_YUV420P,
+        im->width, im->height, PIX_FMT_RGBA,
+        SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+      uint8_t *src[]  = { im->plane[0], im->plane[1], im->plane[2], 0 };
+      int srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
+      uint8_t *dst[]  = { m_rgbBuffer, 0, 0, 0 };
+      int dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
+      m_dllSwScale->sws_scale(m_sw_context, src, srcStride, 0, im->height, dst, dstStride);
+    }
   }
 
   bool deinterlacing;
@@ -1379,7 +1426,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
 
       LoadPlane( fields[FIELD_BOT][0], GL_RGBA, buf.flipindex
                , im->width, im->height >> 1
-               , m_sourceWidth*8, m_rgbBuffer + m_sourceWidth*4);      
+               , m_sourceWidth*8, m_rgbBuffer + m_sourceWidth*4);
     }
     else
     {
@@ -1428,7 +1475,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
       LoadPlane( fields[FIELD_TOP][2], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
-      
+
       // Load Odd U & V Fields
       LoadPlane( fields[FIELD_BOT][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
@@ -1574,9 +1621,9 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         else
           CLog::Log(LOGDEBUG,  "GL: Creating RGB NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);  
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      } 
+      }
       else
       {
         if(m_renderMethod & RENDER_POT)
@@ -1780,15 +1827,22 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 {
+  // Player controls render, let it dictate available render features
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_renderFeatures.begin(),m_renderFeatures.end(), feature);
+    return itr != m_renderFeatures.end();
+  }
+
   if(feature == RENDERFEATURE_BRIGHTNESS)
     return false;
-  
+
   if(feature == RENDERFEATURE_CONTRAST)
     return false;
 
   if(feature == RENDERFEATURE_GAMMA)
     return false;
-  
+
   if(feature == RENDERFEATURE_NOISE)
     return false;
 
@@ -1797,6 +1851,16 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
 
   if (feature == RENDERFEATURE_NONLINSTRETCH)
     return false;
+
+  if (feature == RENDERFEATURE_STRETCH         ||
+      feature == RENDERFEATURE_CROP            ||
+      feature == RENDERFEATURE_ZOOM            ||
+      feature == RENDERFEATURE_VERTICAL_SHIFT  ||
+      feature == RENDERFEATURE_PIXEL_RATIO     ||
+      feature == RENDERFEATURE_POSTPROCESS     ||
+      feature == RENDERFEATURE_ROTATION)
+    return true;
+
 
   return false;
 }
@@ -1808,6 +1872,13 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
 
 bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
 {
+  // Player controls render, let it dictate available deinterlace modes
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_deinterlaceModes.begin(),m_deinterlaceModes.end(), mode);
+    return itr != m_deinterlaceModes.end();
+  }
+
   if (mode == VS_DEINTERLACEMODE_OFF)
     return true;
 
@@ -1826,6 +1897,13 @@ bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
 
 bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 {
+  // Player controls render, let it dictate available deinterlace methods
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_deinterlaceMethods.begin(),m_deinterlaceMethods.end(), method);
+    return itr != m_deinterlaceMethods.end();
+  }
+
   if(m_renderMethod & RENDER_OMXEGL)
     return false;
 
@@ -1849,6 +1927,13 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 
 bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 {
+  // Player controls render, let it dictate available scaling methods
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    Features::iterator itr = std::find(m_scalingMethods.begin(),m_scalingMethods.end(), method);
+    return itr != m_scalingMethods.end();
+  }
+
   if(method == VS_SCALINGMETHOD_NEAREST
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
@@ -1858,6 +1943,15 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 
 EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
 {
+  // Player controls render, let it pick the auto-deinterlace method
+  if((m_renderMethod & RENDER_BYPASS))
+  {
+    if (m_deinterlaceMethods.size())
+      return ((EINTERLACEMETHOD)m_deinterlaceMethods[0]);
+    else
+      return VS_INTERLACEMETHOD_NONE;
+  }
+
   if(m_renderMethod & RENDER_OMXEGL)
     return VS_INTERLACEMETHOD_NONE;
 
@@ -1890,5 +1984,5 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
 }
 #endif
 
-
 #endif
+

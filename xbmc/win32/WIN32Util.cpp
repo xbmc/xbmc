@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -107,14 +106,16 @@ CStdString CWIN32Util::URLEncode(const CURL &url)
   return flat;
 }
 
-int CWIN32Util::GetDriveStatus(const CStdString &strPath)
+int CWIN32Util::GetDriveStatus(const CStdString &strPath, bool bStatusEx)
 {
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
   ULONG ulChanges=0;
   DWORD dwBytesReturned;
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
-  byte DataBuf[16];  //Buffer for holding data to/from drive.
+  byte DataBuf[8];  //Buffer for holding data to/from drive.
+
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting status for drive %s.", strPath.c_str());
 
   hDevice = CreateFile( strPath.c_str(),                  // drive
                         0,                                // no access to the drive
@@ -126,9 +127,11 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 
   if (hDevice == INVALID_HANDLE_VALUE)                    // cannot open the drive
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile for %s.", strPath.c_str());
     return -1;
   }
 
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting media status for drive %s.", strPath.c_str());
   iResult = DeviceIoControl((HANDLE) hDevice,             // handle to device
                              IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode
                              NULL,                        // lpInBuffer
@@ -143,6 +146,10 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   if(iResult == 1)
     return 2;
 
+  // don't request the tray status as we often doesn't need it
+  if(!bStatusEx)
+    return 0;
+
   hDevice = CreateFile( strPath.c_str(),
                         GENERIC_READ | GENERIC_WRITE,
                         FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -153,6 +160,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 
   if (hDevice == INVALID_HANDLE_VALUE)
   {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile2 for %s.", strPath.c_str());
     return -1;
   }
 
@@ -163,8 +171,8 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   sptd_sb.sptd.CdbLength=10;
   sptd_sb.sptd.SenseInfoLength=MAX_SENSE_LEN;
   sptd_sb.sptd.DataIn=SCSI_IOCTL_DATA_IN;
-  sptd_sb.sptd.DataTransferLength=8;
-  sptd_sb.sptd.TimeOutValue=108000;
+  sptd_sb.sptd.DataTransferLength=sizeof(DataBuf);
+  sptd_sb.sptd.TimeOutValue=2;
   sptd_sb.sptd.DataBuffer=(PVOID)&(DataBuf);
   sptd_sb.sptd.SenseInfoOffset=sizeof(SCSI_PASS_THROUGH_DIRECT);
 
@@ -185,9 +193,11 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   sptd_sb.sptd.Cdb[14]=0;
   sptd_sb.sptd.Cdb[15]=0;
 
+  ZeroMemory(DataBuf, 8);
   ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
 
   //Send the command to drive
+  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting tray status for drive %s.", strPath.c_str());
   iResult = DeviceIoControl((HANDLE) hDevice,
                             IOCTL_SCSI_PASS_THROUGH_DIRECT,
                             (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
@@ -207,6 +217,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
     else
       return 2; // tray closed, media present
   }
+  CLog::Log(LOGERROR, __FUNCTION__": Could not determine tray status %d", GetLastError());
   return -1;
 }
 
@@ -468,6 +479,17 @@ CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
   return strRetPath;
 }
 
+CStdString CWIN32Util::SmbToUnc(const CStdString &strPath)
+{
+  CStdString strRetPath(strPath);
+  if(strRetPath.Left(6).Equals("smb://"))
+  {
+    strRetPath.Replace("smb://","\\\\");
+    strRetPath.Replace("/","\\");
+  }
+  return strRetPath;
+}
+
 void CWIN32Util::ExtendDllPath()
 {
   CStdStringW strEnvW;
@@ -493,7 +515,7 @@ void CWIN32Util::ExtendDllPath()
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
   BOOL bRet= FALSE;
-  DWORD dwReq;
+  DWORD dwReq = 0;
   char cDL = cDriveLetter;
   if( !cDL )
   {
@@ -513,7 +535,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
       ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
   {
     DWORD dwDummy;
-    dwReq = (GetDriveStatus(strVolFormat) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
+    dwReq = (GetDriveStatus(strVolFormat, true) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
     bRet = DeviceIoControl( hDrive, dwReq, NULL, 0, NULL, 0, &dwDummy, NULL);
     CloseHandle( hDrive );
   }
@@ -544,7 +566,7 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
 
-  if(GetDriveStatus(strVolFormat) != 1)
+  if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
   else
     return S_OK;
@@ -564,7 +586,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   CStdString strVolFormat;
   strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
 
-  if(GetDriveStatus(strVolFormat) == 1)
+  if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
   else
     return S_OK;
@@ -873,6 +895,17 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     } while( wcslen( pcBuffer + iPos ) > 0 );
     delete[] pcBuffer;
   }
+}
+
+std::string CWIN32Util::GetFirstOpticalDrive()
+{
+  VECSOURCES vShare;
+  std::string strdevice = "\\\\.\\";
+  CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    return strdevice.append(vShare.front().strPath);
+  else
+    return "";
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)

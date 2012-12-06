@@ -109,6 +109,14 @@
       <dpaddown>BigStepBack</dpaddown>
     </gamepad>
   </FullscreenVideo>
+  <FullscreenLiveTV>
+    <gamepad>
+      <dpadleft>PreviousChannelGroup</dpadleft>
+      <dpadright>NextChannelGroup</dpadright>
+      <dpadup>ChannelUp</dpadup>
+      <dpaddown>ChannelDown</dpaddown>
+    </gamepad>
+  </FullscreenLiveTV>
   <FullscreenInfo>
     <gamepad>
       <start>OSD</start>
@@ -130,7 +138,7 @@
       <Y>XBMC.ActivateWindow(VisualisationPresetList)</Y>
       <black>CodecInfo</black>
       <white>Info</white>
-      <start>XBMC.ActivateWindow(MusicOSD)</start>
+      <start>OSD</start>
       <back>LockPreset</back>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>

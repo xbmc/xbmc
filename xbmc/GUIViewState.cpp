@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,13 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "GUIViewState.h"
+#include "pvr/windows/GUIViewStatePVR.h"
 #include "addons/GUIViewStateAddonBrowser.h"
 #include "music/GUIViewStateMusic.h"
 #include "video/GUIViewStateVideo.h"
@@ -29,7 +29,6 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "GUIPassword.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,8 +44,16 @@
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/TextureManager.h"
 
+#if defined(TARGET_ANDROID)
+#include "filesystem/AndroidAppDirectory.h"
+#endif
+
+#define PROPERTY_SORT_ORDER         "sort.order"
+#define PROPERTY_SORT_ASCENDING     "sort.ascending"
+
 using namespace std;
 using namespace ADDON;
+using namespace PVR;
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSOURCES CGUIViewState::m_sources;
@@ -74,7 +81,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     return new CGUIViewStateMusicSearch(items);
 
   if (items.IsSmartPlayList() || url.GetProtocol() == "upnp" ||
-      (url.GetProtocol() == "library" && items.GetProperty("library.filter").asBoolean()))
+      items.GetProperty("library.filter").asBoolean())
   {
     if (items.GetContent() == "songs" ||
         items.GetContent() == "albums" ||
@@ -102,6 +109,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (items.GetPath() == "special://musicplaylists/")
     return new CGUIViewStateWindowMusicSongs(items);
 
+  if (url.GetProtocol() == "androidapp")
+    return new CGUIViewStateWindowPrograms(items);
+
   if (windowId==WINDOW_MUSIC_NAV)
     return new CGUIViewStateWindowMusicNav(items);
 
@@ -122,6 +132,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
+
+  if (windowId==WINDOW_PVR)
+    return new CGUIViewStatePVR(items);
 
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
@@ -235,11 +248,14 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 
 void CGUIViewState::AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks)
 {
+  for (size_t i = 0; i < m_sortMethods.size(); ++i)
+    if (m_sortMethods[i].m_sortMethod == sortMethod)
+      return;
+
   SORT_METHOD_DETAILS sort;
   sort.m_sortMethod=sortMethod;
   sort.m_buttonLabel=buttonLabel;
   sort.m_labelMasks=labelmasks;
-
   m_sortMethods.push_back(sort);
 }
 
@@ -371,6 +387,25 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
   }
 }
 
+#if defined(TARGET_ANDROID)
+void CGUIViewState::AddAndroidSource(const CStdString &content, const CStdString &label, const CStdString &thumb)
+{
+  CFileItemList items;
+  XFILE::CAndroidAppDirectory apps;
+  if (apps.GetDirectory(content, items))
+  {
+    CMediaSource source;
+    source.strPath = "androidapp://sources/" + content + "/";
+    source.strName = label;
+    if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
+      source.m_strThumbnailImage = thumb;
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    source.m_ignore = true;
+    m_sources.push_back(source);
+  }
+}
+#endif
+
 void CGUIViewState::AddLiveTVSources()
 {
   VECSOURCES *sources = g_settings.GetSourcesFromType("video");
@@ -440,6 +475,32 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
       g_settings.Save();
   }
 }
+
+void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)
+{
+  SORT_METHOD sortMethod = SORT_METHOD_PLAYLIST_ORDER;
+  int         sortLabel = 559;
+  SortOrder   sortOrder = SortOrderAscending;
+  if (items.HasProperty(PROPERTY_SORT_ORDER))
+  {
+    SortBy sortBy = (SortBy)items.GetProperty(PROPERTY_SORT_ORDER).asInteger();
+    if (sortBy != SortByNone)
+    {
+      sortMethod = SortUtils::TranslateOldSortMethod(sortBy, g_guiSettings.GetBool("filelists.ignorethewhensorting"));
+      if (sortMethod == SORT_METHOD_NONE)
+        sortMethod = SORT_METHOD_PLAYLIST_ORDER;
+      else
+      {
+        sortLabel = SortUtils::GetSortLabel(sortBy);
+        sortOrder = items.GetProperty(PROPERTY_SORT_ASCENDING).asBoolean() ? SortOrderAscending : SortOrderDescending;
+      }
+    }
+  }
+  AddSortMethod(sortMethod, sortLabel, label_masks);
+  SetSortMethod(sortMethod);
+  SetSortOrder(sortOrder);
+}
+
 
 CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGUIViewState(items)
 {

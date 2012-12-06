@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -27,14 +26,18 @@
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
+#include "guilib/GUIWindowManager.h"
+#include "Application.h"
 
 using namespace ANNOUNCEMENT;
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), 
                                        m_recentlyAddedRunning(false),
-                                       m_cumulativeUpdateFlag(0)
+                                       m_cumulativeUpdateFlag(0),
+                                       m_dbUpdating(false)
 {
   m_updateRA = (Audio | Video | Totals);
+  m_loadType = KEEP_IN_MEMORY;
   
   CAnnouncementManager::AddAnnouncer(this);
 }
@@ -42,6 +45,19 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
 CGUIWindowHome::~CGUIWindowHome(void)
 {
   CAnnouncementManager::RemoveAnnouncer(this);
+}
+
+bool CGUIWindowHome::OnAction(const CAction &action)
+{
+  static unsigned int min_hold_time = 1000;
+  if (action.GetID() == ACTION_NAV_BACK &&
+      action.GetHoldTime() < min_hold_time &&
+      g_application.IsPlaying())
+  {
+    g_application.SwitchToFullScreen();
+    return true;
+  }
+  return CGUIWindow::OnAction(action);
 }
 
 void CGUIWindowHome::OnInitWindow()
@@ -62,40 +78,41 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
 
   CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
 
-  if (flag & VideoLibrary)
+  // we are only interested in library changes
+  if ((flag & (VideoLibrary | AudioLibrary)) == 0)
+    return;
+
+  if (strcmp(message, "OnScanStarted") == 0 ||
+      strcmp(message, "OnCleanStarted") == 0)
   {
-    if ((strcmp(message, "OnUpdate") == 0) ||
-        (strcmp(message, "OnRemove") == 0))
-    {
-      if (data.isMember("playcount"))
-        ra_flag |= Totals;
-    }
-    else if (strcmp(message, "OnScanFinished") == 0)
-    {
-      ra_flag |= (Video | Totals);
-    }
-  }
-  else if (flag & AudioLibrary)
-  {
-    if ((strcmp(message, "OnUpdate") == 0) ||
-        (strcmp(message, "OnRemove") == 0))
-    {
-      if (data.isMember("playcount"))
-        ra_flag |= Totals;
-    }
-    else if (strcmp(message, "OnScanFinished") == 0)
-    {
-      ra_flag |= ( Audio | Totals );
-    }
+    m_dbUpdating = true;
+    return;
   }
 
-  // add the job immediatedly if the home window is active
-  // otherwise defer it to the next initialisation
+  if (strcmp(message, "OnScanFinished") == 0 ||
+      strcmp(message, "OnCleanFinished") == 0)
+    m_dbUpdating = false;
 
-  if (IsActive())
-    AddRecentlyAddedJobs(ra_flag);
-  else
-    m_updateRA |= ra_flag;
+  // we are in an update/clean
+  if (m_dbUpdating)
+    return;
+
+  bool onUpdate = strcmp(message, "OnUpdate") == 0;
+  // always update Totals except on an OnUpdate with no playcount update
+  if (!onUpdate || data.isMember("playcount"))
+    ra_flag |= Totals;
+
+  // always update the full list except on an OnUpdate
+  if (!onUpdate)
+  {
+    if (flag & VideoLibrary)
+      ra_flag |= Video;
+    else if (flag & AudioLibrary)
+      ra_flag |= Audio;
+  }
+
+  CGUIMessage reload(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_REFRESH_THUMBS, ra_flag);
+  g_windowManager.SendThreadMessage(reload, GetID());
 }
 
 void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
@@ -155,10 +172,13 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   case GUI_MSG_NOTIFY_ALL:
     if (message.GetParam1() == GUI_MSG_WINDOW_RESET || message.GetParam1() == GUI_MSG_REFRESH_THUMBS)
     {
+      int updateRA = (message.GetSenderId() == GetID()) ? message.GetParam2() : (Video | Audio | Totals);
+
       if (IsActive())
-        AddRecentlyAddedJobs(Video | Audio | Totals);
+        AddRecentlyAddedJobs(updateRA);
       else
-        m_updateRA |= (Video | Audio | Totals);
+        m_updateRA |= updateRA;
+
       return true;
     }
     break;

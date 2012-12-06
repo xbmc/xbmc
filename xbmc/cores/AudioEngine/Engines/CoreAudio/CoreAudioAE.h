@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,7 +24,7 @@
 
 #include "system.h"
 
-#include "Interfaces/AE.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "ICoreAudioAEHAL.h"
 #include "ICoreAudioSource.h"
 #include "CoreAudioAEStream.h"
@@ -68,12 +67,16 @@ protected:
   // Give the HAL access to the engine
   friend class CCoreAudioAEHAL;
   CCoreAudioAEHAL  *HAL;
-  
+
 public:
   virtual void      Shutdown();
 
   virtual bool      Initialize();
-  virtual void      OnSettingsChange(std::string setting);
+  virtual void      OnSettingsChange(const std::string& setting);
+
+  virtual bool      Suspend(); /* Suspend output and de-initialize "hog-mode" sink for external players and power savings */
+  virtual bool      Resume();  /* Resume ouput and re-initialize sink after Suspend() above */
+  virtual bool      IsSuspended(); /* Returns true if in Suspend mode - used by players */
 
   unsigned int      GetSampleRate();
   unsigned int      GetEncodedSampleRate();
@@ -88,19 +91,19 @@ public:
   virtual void      SetMute(const bool enabled);
   virtual bool      IsMuted();
   virtual void      SetSoundMode(const int mode);
-  
+
 
   virtual bool      SupportsRaw();
-  
+
   CCoreAudioAEHAL*  GetHAL();
-  
+
   // returns a new stream for data in the specified format
-  virtual IAEStream* MakeStream(enum AEDataFormat dataFormat, 
+  virtual IAEStream* MakeStream(enum AEDataFormat dataFormat,
     unsigned int sampleRate,unsigned int encodedSamplerate,
     CAEChannelInfo channelLayout, unsigned int options = 0);
-  
+
   virtual IAEStream* FreeStream(IAEStream *stream);
-    
+
   // returns a new sound object
   virtual IAESound* MakeSound(const std::string& file);
   void              StopAllSounds();
@@ -114,17 +117,17 @@ public:
 
   virtual void      EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
 
-  virtual OSStatus  Render(AudioUnitRenderActionFlags* actionFlags, 
-    const AudioTimeStamp* pTimeStamp, UInt32 busNumber, 
+  virtual OSStatus  Render(AudioUnitRenderActionFlags* actionFlags,
+    const AudioTimeStamp* pTimeStamp, UInt32 busNumber,
     UInt32 frameCount, AudioBufferList* pBufList);
-  
+
 
 private:
   CCriticalSection  m_callbackLock;
   CCriticalSection  m_streamLock;
   CCriticalSection  m_soundLock;
   CCriticalSection  m_soundSampleLock;
-  
+
   // currently playing sounds
   typedef struct {
     CCoreAudioAESound *owner;
@@ -139,30 +142,33 @@ private:
   StreamList        m_streams;
   SoundList         m_sounds;
   SoundStateList    m_playing_sounds;
-  
+
   // Prevent multiple init/deinit
   bool              m_Initialized;
   bool              m_callbackRunning;
-    
+
   AEAudioFormat     m_format;
+  enum AEDataFormat m_lastStreamFormat;
+  unsigned int      m_lastChLayoutCount;
+  unsigned int      m_lastSampleRate;
   unsigned int      m_chLayoutCount;
   bool              m_rawPassthrough;
 
   enum AEStdChLayout m_stdChLayout;
-  
-  bool              OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false,
-                      enum AEDataFormat rawDataFormat = AE_FMT_AC3);
+
+  bool              OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AEDataFormat rawDataFormat);
   void              Deinitialize();
   void              Start();
   void              Stop();
 
-  OSStatus          OnRender(AudioUnitRenderActionFlags *actionFlags, 
-                      const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, 
+  OSStatus          OnRender(AudioUnitRenderActionFlags *actionFlags,
+                      const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
                       UInt32 inNumberFrames, AudioBufferList *ioData);
 
   float             m_volume;
-  float             m_volumeBeforeMute;  
+  float             m_volumeBeforeMute;
   bool              m_muted;
   int               m_soundMode;
-  bool              m_streamsPlaying;  
+  bool              m_streamsPlaying;
+  bool              m_isSuspended;
 };

@@ -1,6 +1,7 @@
-<window id="500">
+<window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
+	<onload condition="!Skin.HasSetting(FirstTimeRun)">ActivateWindow(1112)</onload>
 	<views>50,51,506</views>
 	<controls>
 		<include>CommonBackground</include>

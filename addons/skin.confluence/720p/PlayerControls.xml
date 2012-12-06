@@ -1,5 +1,5 @@
-<window type="dialog" id="114">
-	<defaultcontrol always="true">603</defaultcontrol>
+<window type="dialog">
+	<defaultcontrol always="true">100</defaultcontrol>
 	<include>dialogeffect</include>
 	<visible>Player.HasMedia + Window.IsActive(PlayerControls) + !Window.IsActive(FullscreenVideo) + !Window.IsActive(Visualisation)</visible>
 	<coordinates>
@@ -18,6 +18,8 @@
 		<control type="group" id="100">
 			<posx>25</posx>
 			<posy>162</posy>
+			<defaultcontrol always="true">603</defaultcontrol>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -31,6 +33,7 @@
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Previous)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="601">
 				<posx>40</posx>
@@ -45,6 +48,7 @@
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="togglebutton" id="603">
 				<posx>80</posx>
@@ -62,6 +66,7 @@
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Play)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="602">
 				<posx>120</posx>
@@ -77,6 +82,7 @@
 				<ondown>200</ondown>
 				<onclick>down</onclick>
 				<onclick>XBMC.PlayerControl(Stop)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="604">
 				<posx>160</posx>
@@ -91,6 +97,7 @@
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Forward)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="605">
 				<posx>200</posx>
@@ -105,6 +112,7 @@
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Next)</onclick>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="button" id="606">
 				<posx>240</posx>
@@ -112,8 +120,8 @@
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>605</onleft>
 				<onright>607</onright>
 				<onup>300</onup>
@@ -121,6 +129,7 @@
 				<onclick>XBMC.PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="group">
 				<animation effect="slide" start="0,0" end="40,0" time="0" condition="!Player.HasAudio">Conditional</animation>
@@ -137,6 +146,7 @@
 					<onright>608</onright>
 					<onup>100</onup>
 					<ondown>100</ondown>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
 					<posx>325</posx>
@@ -146,6 +156,7 @@
 					<texture>OSDRepeatNF.png</texture>
 					<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
 					<visible>!Control.HasFocus(607)</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
 					<posx>325</posx>
@@ -155,6 +166,7 @@
 					<texture>OSDRepeatFO.png</texture>
 					<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
 					<visible>Control.HasFocus(607)</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
 					<posx>325</posx>
@@ -164,6 +176,7 @@
 					<texture>OSDRepeatOneNF.png</texture>
 					<visible>Playlist.IsRepeatOne</visible>
 					<visible>!Control.HasFocus(607)</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
 					<posx>325</posx>
@@ -173,6 +186,7 @@
 					<texture>OSDRepeatOneFO.png</texture>
 					<visible>Playlist.IsRepeatOne</visible>
 					<visible>Control.HasFocus(607)</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
 					<posx>325</posx>
@@ -182,6 +196,7 @@
 					<texture>OSDRepeatAllNF.png</texture>
 					<visible>Playlist.IsRepeat</visible>
 					<visible>!Control.HasFocus(607)</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="image">
 					<posx>325</posx>
@@ -191,6 +206,7 @@
 					<texture>OSDRepeatAllFO.png</texture>
 					<visible>Playlist.IsRepeat</visible>
 					<visible>Control.HasFocus(607)</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="togglebutton" id="608">
 					<posx>365</posx>
@@ -208,6 +224,7 @@
 					<onright>609</onright>
 					<onup>100</onup>
 					<ondown>100</ondown>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="togglebutton" id="609">
 					<posx>405</posx>
@@ -231,7 +248,132 @@
 					<altclick>XBMC.RunScript($INFO[Skin.String(LyricScript_Path)])</altclick>
 					<usealttexture>IsEmpty(Skin.String(LyricScript_Path))</usealttexture>
 					<visible>Player.HasAudio</visible>
+					<visible>!VideoPlayer.Content(LiveTV)</visible>
 				</control>
+			</control>
+		</control>
+		<control type="group" id="100">
+			<posx>25</posx>
+			<posy>162</posy>
+			<defaultcontrol always="true">700</defaultcontrol>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
+			<control type="button" id="701">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDRewindFO.png</texturefocus>
+				<texturenofocus>OSDRewindNF.png</texturenofocus>
+				<onleft>706</onleft>
+				<onright>702</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>XBMC.PlayerControl(Rewind)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+				<enable>Player.SeekEnabled</enable>
+				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
+			</control>
+			<control type="button" id="702">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDStopFO.png</texturefocus>
+				<texturenofocus>OSDStopNF.png</texturenofocus>
+				<onleft>701</onleft>
+				<onright>703</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>down</onclick>
+				<onclick>XBMC.PlayerControl(Stop)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="togglebutton" id="703">
+				<posx>80</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDPauseFO.png</texturefocus>
+				<texturenofocus>OSDPauseNF.png</texturenofocus>
+				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
+				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
+				<onleft>702</onleft>
+				<onright>704</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>XBMC.PlayerControl(Play)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+				<enable>false</enable>
+				<enable>Player.PauseEnabled</enable>
+				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
+			</control>
+			<control type="button" id="704">
+				<posx>120</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDForwardFO.png</texturefocus>
+				<texturenofocus>OSDForwardNF.png</texturenofocus>
+				<onleft>703</onleft>
+				<onright>700</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>XBMC.PlayerControl(Forward)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+				<enable>Player.SeekEnabled</enable>
+				<animation effect="fade" start="100" end="50" time="100" condition="true">Conditional</animation>
+			</control>
+			<control type="button" id="700">
+				<posx>200</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onleft>704</onleft>
+				<onright>705</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>XBMC.PlayerControl(Previous)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="705">
+				<posx>240</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onleft>700</onleft>
+				<onright>706</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>XBMC.PlayerControl(Next)</onclick>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="button" id="706">
+				<posx>280</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
+				<onleft>705</onleft>
+				<onright>701</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>XBMC.PlayerControl(record)</onclick>
+				<enable>Player.CanRecord</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 		</control>
 		<!-- Music Info -->

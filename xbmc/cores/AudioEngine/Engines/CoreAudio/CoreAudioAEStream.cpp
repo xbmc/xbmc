@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -133,6 +132,7 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
   m_vizRemapBuffer                = (uint8_t *)_aligned_malloc(m_vizRemapBufferSize,16);
 
   m_isRaw                         = COREAUDIO_IS_RAW(dataFormat);
+  m_limiter.SetSamplerate(AE.GetSampleRate());
 }
 
 CCoreAudioAEStream::~CCoreAudioAEStream()
@@ -144,12 +144,12 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
 
   InternalFlush();
 
-  _aligned_free(m_convertBuffer);
-  //_aligned_free(m_resampleBuffer);
-  _aligned_free(m_remapBuffer);
-  _aligned_free(m_vizRemapBuffer);
+  _aligned_free(m_convertBuffer); m_convertBuffer = NULL;
+  //_aligned_free(m_resampleBuffer); m_resampleBuffer = NULL;
+  _aligned_free(m_remapBuffer); m_remapBuffer = NULL;
+  _aligned_free(m_vizRemapBuffer); m_vizRemapBuffer = NULL;
 
-  delete m_Buffer;
+  delete m_Buffer; m_Buffer = NULL;
 
   /*
   if (m_resample)
@@ -402,12 +402,10 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     adddata = (uint8_t *)m_remapBuffer;
     channelsInBuffer = m_OutputFormat.m_channelLayout.Count();
   }
-  
+
   // upmix the ouput to output channels
   if ( (!m_isRaw || m_rawDataFormat == AE_FMT_LPCM) && (m_chLayoutCountOutput > channelsInBuffer) )
   {
-    frames = addsize / m_StreamFormat.m_frameSize;
-
     CheckOutputBufferSize((void **)&m_upmixBuffer, &m_upmixBufferSize, frames * m_chLayoutCountOutput  * sizeof(float));
     Upmix(adddata, channelsInBuffer, m_upmixBuffer, m_chLayoutCountOutput, frames, m_OutputFormat.m_dataFormat);
     adddata = m_upmixBuffer;
@@ -416,7 +414,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
   unsigned int total_ms_sleep = 0;
   unsigned int room = m_Buffer->GetWriteSize();
-  while (addsize > room && !m_paused && total_ms_sleep < 200)
+  while (addsize > room && !m_paused && total_ms_sleep < 100)
   {
     // we got deleted
     if (!m_valid || !m_Buffer || m_draining )
@@ -453,15 +451,15 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   if (!m_isRaw)
   {
     float *floatBuffer   = (float *)buffer;
-    unsigned int samples = readsize / m_OutputBytesPerSample;        
+    unsigned int samples = readsize / m_OutputBytesPerSample;
+    unsigned int frames         = samples / m_chLayoutCountOutput;
 
     // we have a frame, if we have a viz we need to hand the data to it.
-    // Keep in mind that our buffer is already in output format. 
-    // So we remap output format to viz format !!!  
+    // Keep in mind that our buffer is already in output format.
+    // So we remap output format to viz format !!!
     if (m_OutputFormat.m_dataFormat == AE_FMT_FLOAT)
     {
       // TODO : Why the hell is vizdata limited ?
-      unsigned int frames         = samples / m_chLayoutCountOutput;
       unsigned int samplesClamped = (samples > 512) ? 512 : samples;
       if (samplesClamped)
       {
@@ -490,7 +488,10 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
         if (m_volume <= m_fadeTarget)
           m_fadeRunning = false;
       }
-
+    }
+    
+    if (m_volume < 1.0f)
+    {
 #ifdef __SSE__
       CAEUtil::SSEMulArray(floatBuffer, m_volume, samples);
 #else
@@ -498,6 +499,24 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
         floatBuffer[i] *= m_volume;
 #endif
       CAEUtil::ClampArray(floatBuffer, samples);
+    }
+    // apply volume amplification by using the sogt limiter
+    // TODO - maybe reinvent the coreaudio compressor for this after frodo
+    else if (GetAmplification() != 1.0f)
+    {
+      for(unsigned int i = 0; i < frames; i++)
+      {
+        int frameIdx = i*m_chLayoutCountOutput;
+        float amplification = RunLimiter(&floatBuffer[frameIdx], m_chLayoutCountOutput);
+        float *frameStart = &floatBuffer[frameIdx];
+#ifdef __SSE___
+        CAEUtil::SSEMulArray(frameStart, amplification, m_chLayoutCountOutput);
+#else
+        for(unsigned int n = 0; n < m_chLayoutCountOutput; n++)
+          frameStart[n] *= amplification;
+#endif
+        
+      }
     }
   }
 
@@ -751,7 +770,7 @@ OSStatus CCoreAudioAEStream::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   if (!m_valid || m_delete || !m_Buffer || m_firstInput || m_paused)
   {
   	for (UInt32 i = 0; i < ioData->mNumberBuffers; i++)
-      bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);	
+      bzero(ioData->mBuffers[i].mData, ioData->mBuffers[i].mDataByteSize);
     if (ioActionFlags)
       *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
     m_firstInput = false;

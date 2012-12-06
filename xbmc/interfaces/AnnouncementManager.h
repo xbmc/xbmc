@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,15 +14,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "IAnnouncer.h"
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
+#include "utils/GlobalsHandling.h"
 #include <vector>
 
 namespace ANNOUNCEMENT
@@ -30,6 +30,14 @@ namespace ANNOUNCEMENT
   class CAnnouncementManager
   {
   public:
+
+     class Globals
+     {
+     public:
+       CCriticalSection m_critSection;
+       std::vector<IAnnouncer *> m_announcers;
+     };
+
     static void AddAnnouncer(IAnnouncer *listener);
     static void RemoveAnnouncer(IAnnouncer *listener);
     static void Announce(AnnouncementFlag flag, const char *sender, const char *message);
@@ -37,7 +45,7 @@ namespace ANNOUNCEMENT
     static void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item);
     static void Announce(AnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data);
   private:
-    static std::vector<IAnnouncer *> m_announcers;
-    static CCriticalSection m_critSection;
   };
 }
+
+XBMC_GLOBAL_REF(ANNOUNCEMENT::CAnnouncementManager::Globals,g_announcementManager_globals);

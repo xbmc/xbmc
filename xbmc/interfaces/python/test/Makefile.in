@@ -1,0 +1,10 @@
+SRCS=	\
+	TestSwig.cpp
+
+LIB=pythonSwigTest.a
+
+INCLUDES += -I../../../../lib/gtest/include
+INCLUDES += @PYTHON_CPPFLAGS@
+
+include ../../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -1,17 +1,18 @@
 # XBMC Media Center language file
+# XBMC-core v12.0-BETA1
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.core-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:46+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Hindi (Devanagiri) (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: hi\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#0"
 msgid "Programs"
@@ -205,74 +206,6 @@ msgctxt "#62"
 msgid "Dec"
 msgstr "देक"
 
-msgctxt "#71"
-msgid "N"
-msgstr ""
-
-msgctxt "#72"
-msgid "NNE"
-msgstr ""
-
-msgctxt "#73"
-msgid "NE"
-msgstr ""
-
-msgctxt "#74"
-msgid "ENE"
-msgstr ""
-
-msgctxt "#75"
-msgid "E"
-msgstr ""
-
-msgctxt "#76"
-msgid "ESE"
-msgstr ""
-
-msgctxt "#77"
-msgid "SE"
-msgstr ""
-
-msgctxt "#78"
-msgid "SSE"
-msgstr ""
-
-msgctxt "#79"
-msgid "S"
-msgstr ""
-
-msgctxt "#80"
-msgid "SSW"
-msgstr ""
-
-msgctxt "#81"
-msgid "SW"
-msgstr ""
-
-msgctxt "#82"
-msgid "WSW"
-msgstr ""
-
-msgctxt "#83"
-msgid "W"
-msgstr ""
-
-msgctxt "#84"
-msgid "WNW"
-msgstr ""
-
-msgctxt "#85"
-msgid "NW"
-msgstr ""
-
-msgctxt "#86"
-msgid "NNW"
-msgstr ""
-
-msgctxt "#87"
-msgid "VAR"
-msgstr ""
-
 msgctxt "#98"
 msgid "View: Auto"
 msgstr "द्रिस्तिकों: ऑटो"
@@ -441,14 +374,6 @@ msgctxt "#139"
 msgid "Temperatures:"
 msgstr "तापमान: "
 
-msgctxt "#140"
-msgid "CPU:"
-msgstr ""
-
-msgctxt "#141"
-msgid "GPU:"
-msgstr ""
-
 msgctxt "#142"
 msgid "Time:"
 msgstr "वक्त:"
@@ -457,45 +382,9 @@ msgctxt "#143"
 msgid "Current:"
 msgstr "वर्तमाना:"
 
-msgctxt "#144"
-msgid "Build:"
-msgstr ""
-
-msgctxt "#145"
-msgid "Network:"
-msgstr ""
-
-msgctxt "#146"
-msgid "Type:"
-msgstr ""
-
-msgctxt "#147"
-msgid "Static"
-msgstr ""
-
-msgctxt "#148"
-msgid "DHCP"
-msgstr ""
-
-msgctxt "#149"
-msgid "MAC address"
-msgstr ""
-
 msgctxt "#150"
 msgid "IP address"
-msgstr ""
-
-msgctxt "#151"
-msgid "Link:"
-msgstr ""
-
-msgctxt "#152"
-msgid "Half duplex"
-msgstr ""
-
-msgctxt "#153"
-msgid "Full duplex"
-msgstr ""
+msgstr "IP पता"
 
 msgctxt "#154"
 msgid "Storage"
@@ -733,10 +622,6 @@ msgctxt "#224"
 msgid "Speed"
 msgstr "गति"
 
-msgctxt "#225"
-msgid "Vertical Shift"
-msgstr ""
-
 msgctxt "#226"
 msgid "Test patterns..."
 msgstr "अभ्यासें टेस्ट पत्तेर्न्स..."
@@ -765,30 +650,6 @@ msgctxt "#232"
 msgid "Point"
 msgstr "पॉइंट"
 
-msgctxt "#233"
-msgid "Linear"
-msgstr ""
-
-msgctxt "#234"
-msgid "Anisotropic"
-msgstr ""
-
-msgctxt "#235"
-msgid "Quincunx"
-msgstr ""
-
-msgctxt "#236"
-msgid "Gaussian cubic"
-msgstr ""
-
-msgctxt "#237"
-msgid "Minification"
-msgstr ""
-
-msgctxt "#238"
-msgid "Magnification"
-msgstr ""
-
 msgctxt "#239"
 msgid "Clear playlist on finish"
 msgstr "खत्म परा सफा प्लेलिस्ट"
@@ -812,10 +673,6 @@ msgstr "तरोताजा करना की डरा"
 msgctxt "#244"
 msgid "Full screen"
 msgstr "पूर्ण स्क्रीन "
-
-msgctxt "#245"
-msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr ""
 
 msgctxt "#247"
 msgid "Scripts"
@@ -845,14 +702,6 @@ msgctxt "#253"
 msgid "Number of channels"
 msgstr "मर्गें की संख्या"
 
-msgctxt "#254"
-msgid "- DTS capable receiver"
-msgstr ""
-
-msgctxt "#255"
-msgid "CDDB"
-msgstr ""
-
 msgctxt "#256"
 msgid "Fetching CD information"
 msgstr "CD की सुकाना धुंद रहा है"
@@ -876,10 +725,6 @@ msgstr "शौत्कास्त"
 msgctxt "#261"
 msgid "Waiting for start..."
 msgstr "प्रस्थान रोका देना रहा है..."
-
-msgctxt "#262"
-msgid "Scripts output"
-msgstr ""
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
@@ -981,10 +826,6 @@ msgctxt "#289"
 msgid "- Size"
 msgstr "- अकारण"
 
-msgctxt "#290"
-msgid "Dynamic range compression"
-msgstr ""
-
 msgctxt "#291"
 msgid "Video"
 msgstr "विडियो"
@@ -1013,18 +854,6 @@ msgctxt "#298"
 msgid "Bookmarks"
 msgstr "प्रस्थ स्मरति"
 
-msgctxt "#299"
-msgid "- AAC capable receiver"
-msgstr ""
-
-msgctxt "#300"
-msgid "- MP1 capable receiver"
-msgstr ""
-
-msgctxt "#301"
-msgid "- MP2 capable receiver"
-msgstr ""
-
 msgctxt "#302"
 msgid "- MP3 capable receiver"
 msgstr "- MP3 कापबले रिसीवर"
@@ -1044,10 +873,6 @@ msgstr "एनाब्लेद"
 msgctxt "#306"
 msgid "Non-interleaved"
 msgstr "नॉन-इन्तेर्लेअवेद"
-
-msgctxt "#312"
-msgid "(0=auto)"
-msgstr ""
 
 msgctxt "#313"
 msgid "Cleaning database"
@@ -1241,10 +1066,6 @@ msgctxt "#363"
 msgid "Sort by: File"
 msgstr "द्वारा क्रमबद्ध करें: फ़ाइल"
 
-msgctxt "#364"
-msgid "- Dolby Digital (AC3) capable receiver"
-msgstr ""
-
 msgctxt "#365"
 msgid "Sort by: Name"
 msgstr "द्वारा क्रमबद्ध करें: नाम"
@@ -1256,10 +1077,6 @@ msgstr "द्वारा क्रमबद्ध करें: वर्ष"
 msgctxt "#367"
 msgid "Sort by: Rating"
 msgstr "इसके द्वारा सॉर्ट करें: रेटिंग"
-
-msgctxt "#368"
-msgid "IMDb"
-msgstr ""
 
 msgctxt "#369"
 msgid "Title"
@@ -1457,10 +1274,6 @@ msgctxt "#419"
 msgid "High"
 msgstr "हाई"
 
-msgctxt "#420"
-msgid "HDMI"
-msgstr ""
-
 msgctxt "#422"
 msgid "Delete album info"
 msgstr "एलबम जानकारी मिटाएँ"
@@ -1497,10 +1310,6 @@ msgctxt "#430"
 msgid "Sort by: DVD#"
 msgstr "इसके द्वारा सॉर्ट करें: डीवीडी #"
 
-msgctxt "#431"
-msgid "No cache"
-msgstr ""
-
 msgctxt "#432"
 msgid "Remove movie from library"
 msgstr "लाइब्रेरी से फिल्म निकालें"
@@ -1508,10 +1317,6 @@ msgstr "लाइब्रेरी से फिल्म निकालें
 msgctxt "#433"
 msgid "Really remove '%s'?"
 msgstr "वास्तव में '% s' को दूर?"
-
-msgctxt "#434"
-msgid "From %s at %i %s"
-msgstr ""
 
 msgctxt "#437"
 msgid "Removable disk"
@@ -1528,10 +1333,6 @@ msgstr "कैश"
 msgctxt "#440"
 msgid "Harddisk"
 msgstr "हार्ड डिस्क"
-
-msgctxt "#441"
-msgid "UDF"
-msgstr ""
 
 msgctxt "#442"
 msgid "Local network"
@@ -1551,15 +1352,11 @@ msgstr "ऑडियो"
 
 msgctxt "#446"
 msgid "DVD"
-msgstr ""
+msgstr "DVD"
 
 msgctxt "#447"
 msgid "Autorun media"
 msgstr "ऑटो चलाने मीडिया"
-
-msgctxt "#448"
-msgid "LCD"
-msgstr ""
 
 msgctxt "#449"
 msgid "Enabled"
@@ -1597,17 +1394,9 @@ msgctxt "#457"
 msgid "Switch view"
 msgstr "दृश्य स्विच करें"
 
-msgctxt "#459"
-msgid "Subs"
-msgstr ""
-
 msgctxt "#460"
 msgid "Audio stream"
 msgstr "ऑडियो स्ट्रीम"
-
-msgctxt "#461"
-msgid "[active]"
-msgstr ""
 
 msgctxt "#462"
 msgid "Subtitle"
@@ -1625,10 +1414,6 @@ msgctxt "#465"
 msgid "Contrast"
 msgstr "कंट्रास्ट"
 
-msgctxt "#466"
-msgid "Gamma"
-msgstr ""
-
 msgctxt "#467"
 msgid "Type"
 msgstr "टाइप"
@@ -1637,17 +1422,9 @@ msgctxt "#468"
 msgid "Move the bar to change the OSD position"
 msgstr "बार स्थानांतरित करने के ओएसडी स्थिति को बदलने"
 
-msgctxt "#469"
-msgid "OSD position"
-msgstr ""
-
 msgctxt "#470"
 msgid "Credits"
 msgstr "क्रेडिट्स"
-
-msgctxt "#471"
-msgid "Modchip"
-msgstr ""
 
 msgctxt "#474"
 msgid "Off"
@@ -1664,10 +1441,6 @@ msgstr "संगीत और वीडियो"
 msgctxt "#477"
 msgid "Unable to load playlist"
 msgstr "प्लेलिस्ट में लोड करने में असमर्थ"
-
-msgctxt "#478"
-msgid "OSD"
-msgstr ""
 
 msgctxt "#479"
 msgid "Skin & language"
@@ -1708,10 +1481,6 @@ msgstr "अगले गीत स्वतः प्ले"
 msgctxt "#491"
 msgid "- Use big icons"
 msgstr "- बड़े चिह्नों का प्रयोग करें"
-
-msgctxt "#492"
-msgid "Resize VobSubs"
-msgstr ""
 
 msgctxt "#493"
 msgid "Advanced options (Experts Only!)"
@@ -1913,10 +1682,6 @@ msgctxt "#547"
 msgid "No biography for this artist"
 msgstr "इस कलाकार के लिए कोई जीवनी"
 
-msgctxt "#548"
-msgid "Downmix multichannel audio to stereo"
-msgstr ""
-
 msgctxt "#550"
 msgid "Sort by: %s"
 msgstr "द्वारा क्रमबद्ध करें:% s"
@@ -1956,10 +1721,6 @@ msgstr "एल्बम"
 msgctxt "#559"
 msgid "Playlist"
 msgstr "प्लेलिस्ट"
-
-msgctxt "#560"
-msgid "ID"
-msgstr ""
 
 msgctxt "#561"
 msgid "File"
@@ -2020,10 +1781,6 @@ msgstr "देश"
 msgctxt "#575"
 msgid "In progress"
 msgstr "प्रगति में"
-
-msgctxt "#576"
-msgid "Times played"
-msgstr ""
 
 msgctxt "#580"
 msgid "Sort direction"
@@ -2113,10 +1870,6 @@ msgctxt "#603"
 msgid "Extreme"
 msgstr "चरम"
 
-msgctxt "#604"
-msgid "Constant bitrate"
-msgstr ""
-
 msgctxt "#605"
 msgid "Ripping..."
 msgstr "तेजस्वी ..."
@@ -2140,14 +1893,6 @@ msgstr "ऑडियो ट्रैक रिप"
 msgctxt "#611"
 msgid "Enter number"
 msgstr "संख्या दर्ज"
-
-msgctxt "#612"
-msgid "Bits/Sample"
-msgstr "बिट्स / नमूना"
-
-msgctxt "#613"
-msgid "Sample Frequency"
-msgstr "नमूना आवृत्ति"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -2221,14 +1966,6 @@ msgctxt "#640"
 msgid "Use album levels"
 msgstr "एलबम के स्तर का प्रयोग करें"
 
-msgctxt "#641"
-msgid "PreAmp Level - Replay gained files"
-msgstr ""
-
-msgctxt "#642"
-msgid "PreAmp Level - Non replay gained files"
-msgstr ""
-
 msgctxt "#643"
 msgid "Avoid clipping on replay gained files"
 msgstr "पुनरावृत्ति पर क्लिपिंग बचें फ़ाइलें प्राप्त"
@@ -2293,10 +2030,6 @@ msgctxt "#658"
 msgid "Song information"
 msgstr "सांग जानकारी"
 
-msgctxt "#659"
-msgid "Non-linear stretch"
-msgstr ""
-
 msgctxt "#660"
 msgid "Volume amplification"
 msgstr "वॉल्यूम प्रवर्धन "
@@ -2345,14 +2078,6 @@ msgctxt "#708"
 msgid "Use an HTTP proxy server to access the internet"
 msgstr "एक HTTP प्रॉक्सी सर्वर का प्रयोग करें इंटरनेट एक्सेस"
 
-msgctxt "#711"
-msgid "Internet Protocol (IP)"
-msgstr ""
-
-msgctxt "#712"
-msgid "Invalid port specified. Value must be between 1 and 65535."
-msgstr ""
-
 msgctxt "#713"
 msgid "HTTP proxy"
 msgstr "HTTP प्रॉक्सी."
@@ -2361,53 +2086,13 @@ msgctxt "#715"
 msgid "- Assignment"
 msgstr "- असाइनमेंट"
 
-msgctxt "#716"
-msgid "Automatic (DHCP)"
-msgstr ""
-
-msgctxt "#717"
-msgid "Manual (Static)"
-msgstr ""
-
-msgctxt "#719"
-msgid "- IP address"
-msgstr ""
-
-msgctxt "#720"
-msgid "- Netmask"
-msgstr ""
-
-msgctxt "#721"
-msgid "- Default gateway"
-msgstr ""
-
-msgctxt "#722"
-msgid "- DNS server"
-msgstr ""
-
 msgctxt "#723"
 msgid "Save & restart"
 msgstr "सहेजें और पुनर्प्रारंभ करें"
 
-msgctxt "#724"
-msgid "Invalid address specified. Value must be AAA.BBB.CCC.DDD"
-msgstr ""
-
-msgctxt "#725"
-msgid "with numbers between 0 and 255."
-msgstr ""
-
 msgctxt "#726"
 msgid "Changes not saved. Continue without saving?"
 msgstr "सहेजे नहीं गए परिवर्तन. बचत के बिना जारी रखें?"
-
-msgctxt "#727"
-msgid "Web server"
-msgstr ""
-
-msgctxt "#728"
-msgid "FTP server"
-msgstr ""
 
 msgctxt "#730"
 msgid "- Port"
@@ -2585,18 +2270,6 @@ msgctxt "#780"
 msgid "No encryption"
 msgstr "कोई एन्क्रिप्शन"
 
-msgctxt "#781"
-msgid "WEP"
-msgstr ""
-
-msgctxt "#782"
-msgid "WPA"
-msgstr ""
-
-msgctxt "#783"
-msgid "WPA2"
-msgstr ""
-
 msgctxt "#784"
 msgid "Applying network interface settings. Please wait."
 msgstr "नेटवर्क इंटरफेस सेटिंग्स लागू. कृपया प्रतीक्षा करें."
@@ -2620,10 +2293,6 @@ msgstr "नेटवर्क इंटरफेस सफलतापूर्�
 msgctxt "#789"
 msgid "Wireless network name (ESSID)"
 msgstr "वायरलेस नेटवर्क नाम (ESSID)"
-
-msgctxt "#790"
-msgid "Remote control"
-msgstr ""
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
@@ -2660,22 +2329,6 @@ msgstr "इंटरनेट का उपयोग"
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "अवैध पोर्ट संख्या दर्ज"
-
-msgctxt "#851"
-msgid "Valid port range is 1-65535"
-msgstr ""
-
-msgctxt "#852"
-msgid "Valid port range is 1024-65535"
-msgstr ""
-
-msgctxt "#998"
-msgid "Add Music..."
-msgstr ""
-
-msgctxt "#999"
-msgid "Add Videos..."
-msgstr ""
 
 msgctxt "#1000"
 msgid "- Preview"
@@ -2881,10 +2534,6 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr "वेब पता दर्ज करें"
 
-msgctxt "#1200"
-msgid "SMB client"
-msgstr ""
-
 msgctxt "#1202"
 msgid "Workgroup"
 msgstr "कार्यसमूह"
@@ -2896,10 +2545,6 @@ msgstr "डिफ़ॉल्ट उपयोगकर्ता नाम"
 msgctxt "#1204"
 msgid "Default password"
 msgstr "डिफ़ॉल्ट पासवर्ड"
-
-msgctxt "#1207"
-msgid "WINS server"
-msgstr ""
 
 msgctxt "#1208"
 msgid "Mount SMB shares"
@@ -3001,641 +2646,61 @@ msgctxt "#1235"
 msgid "Programs & pictures & video"
 msgstr "प्रोग्राम्स और तस्वीरें और वीडियो"
 
-msgctxt "#1250"
-msgid "Auto-detection"
-msgstr "ऑटो का पता लगाने"
-
-msgctxt "#1251"
-msgid "Auto-detect system"
-msgstr "स्वत: पता लगाने के लिए प्रणाली"
-
-msgctxt "#1252"
-msgid "Nickname"
-msgstr "उपनाम"
-
-msgctxt "#1254"
-msgid "Ask to connect"
-msgstr "से कनेक्ट पूछें"
-
-msgctxt "#1255"
-msgid "Send FTP user and password"
-msgstr "एफ़टीपी उपयोगकर्ता और पासवर्ड भेजें"
-
-msgctxt "#1256"
-msgid "Ping interval"
-msgstr "पिंग अंतराल"
-
-msgctxt "#1257"
-msgid "Would you like to connect to the auto-detected system?"
-msgstr "क्या आप प्रणाली ऑटो का पता लगाया करने के लिए कनेक्ट करना चाहेंगे?"
-
-msgctxt "#1259"
-msgid "Zeroconf"
-msgstr ""
-
-msgctxt "#1260"
-msgid "Announce these services to other systems via Zeroconf"
-msgstr ""
-
-msgctxt "#1270"
-msgid "Allow XBMC to receive AirPlay content"
-msgstr ""
-
-msgctxt "#1271"
-msgid "Device name"
-msgstr ""
-
-msgctxt "#1272"
-msgid "- Use password protection"
-msgstr ""
-
-msgctxt "#1273"
-msgid "AirPlay"
-msgstr ""
-
-msgctxt "#1300"
-msgid "Custom audio device"
-msgstr ""
-
-msgctxt "#1301"
-msgid "Custom passthrough device"
-msgstr ""
-
-msgctxt "#1396"
-msgid "Drifting"
-msgstr ""
-
-msgctxt "#1397"
-msgid "and"
-msgstr ""
-
-msgctxt "#1398"
-msgid "Freezing"
-msgstr ""
-
-msgctxt "#1399"
-msgid "Late"
-msgstr ""
-
-msgctxt "#1400"
-msgid "Isolated"
-msgstr ""
-
-msgctxt "#1401"
-msgid "Thundershowers"
-msgstr ""
-
-msgctxt "#1402"
-msgid "Thunder"
-msgstr ""
-
 msgctxt "#1403"
 msgid "Sun"
-msgstr ""
-
-msgctxt "#1404"
-msgid "Heavy"
-msgstr ""
-
-msgctxt "#1405"
-msgid "in"
-msgstr ""
-
-msgctxt "#1406"
-msgid "the"
-msgstr ""
-
-msgctxt "#1407"
-msgid "Vicinity"
-msgstr ""
-
-msgctxt "#1408"
-msgid "Ice"
-msgstr ""
-
-msgctxt "#1409"
-msgid "Crystals"
-msgstr ""
-
-msgctxt "#1410"
-msgid "Calm"
-msgstr ""
-
-msgctxt "#1411"
-msgid "with"
-msgstr ""
-
-msgctxt "#1412"
-msgid "windy"
-msgstr ""
-
-msgctxt "#1413"
-msgid "drizzle"
-msgstr ""
-
-msgctxt "#1414"
-msgid "Thunderstorm"
-msgstr ""
-
-msgctxt "#1415"
-msgid "Drizzle"
-msgstr ""
-
-msgctxt "#1416"
-msgid "Foggy"
-msgstr ""
-
-msgctxt "#1417"
-msgid "Grains"
-msgstr ""
+msgstr "सुन"
 
 msgctxt "#1418"
-msgid "T-Storms"
-msgstr ""
-
-msgctxt "#1419"
-msgid "T-Showers"
-msgstr ""
-
-msgctxt "#1420"
-msgid "Moderate"
-msgstr ""
-
-msgctxt "#1421"
-msgid "Very High"
-msgstr ""
-
-msgctxt "#1422"
-msgid "Windy"
-msgstr ""
-
-msgctxt "#1423"
-msgid "Mist"
-msgstr ""
+msgid "Thunderstorms"
+msgstr "गरज"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
 msgstr "जब नींद निष्क्रिय प्रदर्शित रखो"
 
-msgctxt "#2050"
-msgid "Runtime"
-msgstr ""
-
-msgctxt "#2100"
-msgid "Script failed! : %s"
-msgstr ""
-
-msgctxt "#2101"
-msgid "Newer version needed - See log"
-msgstr ""
-
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr ""
-
-msgctxt "#10000"
-msgid "Home"
-msgstr ""
-
 msgctxt "#10001"
 msgid "Programs"
-msgstr ""
+msgstr "करिअक्रम"
 
 msgctxt "#10002"
 msgid "Pictures"
-msgstr ""
+msgstr "चित्र"
 
 msgctxt "#10003"
 msgid "File manager"
-msgstr ""
+msgstr "File मेनेजर "
 
 msgctxt "#10004"
 msgid "Settings"
-msgstr ""
+msgstr "सेट्टिंग"
 
 msgctxt "#10005"
 msgid "Music"
-msgstr ""
+msgstr "संगीतें"
 
 msgctxt "#10006"
 msgid "Videos"
-msgstr ""
-
-msgctxt "#10007"
-msgid "System information"
-msgstr ""
-
-msgctxt "#10008"
-msgid "Settings - General"
-msgstr ""
-
-msgctxt "#10009"
-msgid "Settings - Screen"
-msgstr ""
-
-msgctxt "#10010"
-msgid "Settings - Appearance - GUI Calibration"
-msgstr ""
-
-msgctxt "#10011"
-msgid "Settings - Videos - Screen Calibration"
-msgstr ""
-
-msgctxt "#10012"
-msgid "Settings - Pictures"
-msgstr ""
-
-msgctxt "#10013"
-msgid "Settings - Programs"
-msgstr ""
-
-msgctxt "#10014"
-msgid "Settings - Weather"
-msgstr ""
-
-msgctxt "#10015"
-msgid "Settings - Music"
-msgstr ""
-
-msgctxt "#10016"
-msgid "Settings - System"
-msgstr ""
-
-msgctxt "#10017"
-msgid "Settings - Videos"
-msgstr ""
-
-msgctxt "#10018"
-msgid "Settings - Network"
-msgstr ""
-
-msgctxt "#10019"
-msgid "Settings - Appearance"
-msgstr ""
+msgstr "विडियो"
 
 msgctxt "#10020"
 msgid "Scripts"
-msgstr ""
-
-msgctxt "#10021"
-msgid "Web Browser"
-msgstr ""
+msgstr "अलेक्हें"
 
 msgctxt "#10025"
 msgid "Videos"
-msgstr ""
-
-msgctxt "#10028"
-msgid "Videos/Playlist"
-msgstr ""
-
-msgctxt "#10029"
-msgid "Login screen"
-msgstr ""
-
-msgctxt "#10034"
-msgid "Settings - Profiles"
-msgstr ""
-
-msgctxt "#10040"
-msgid "Addon browser"
-msgstr ""
-
-msgctxt "#10100"
-msgid "Yes/No dialog"
-msgstr ""
-
-msgctxt "#10101"
-msgid "Progress dialog"
-msgstr ""
-
-msgctxt "#10210"
-msgid "Looking for subtitles..."
-msgstr ""
-
-msgctxt "#10211"
-msgid "Looking for or caching subtitles..."
-msgstr ""
-
-msgctxt "#10212"
-msgid "terminating"
-msgstr ""
-
-msgctxt "#10213"
-msgid "buffering"
-msgstr ""
-
-msgctxt "#10214"
-msgid "Opening stream"
-msgstr ""
-
-msgctxt "#10500"
-msgid "Music/Playlist"
-msgstr ""
-
-msgctxt "#10501"
-msgid "Music/Files"
-msgstr ""
-
-msgctxt "#10502"
-msgid "Music/Library"
-msgstr ""
-
-msgctxt "#10503"
-msgid "Playlist editor"
-msgstr ""
-
-msgctxt "#10504"
-msgid "Top 100 songs"
-msgstr ""
-
-msgctxt "#10505"
-msgid "Top 100 albums"
-msgstr ""
+msgstr "विडियो"
 
 msgctxt "#10506"
 msgid "Programs"
-msgstr ""
-
-msgctxt "#10507"
-msgid "Configuration"
-msgstr ""
-
-msgctxt "#10508"
-msgid "Weather forecast"
-msgstr ""
-
-msgctxt "#10509"
-msgid "Network gaming"
-msgstr ""
-
-msgctxt "#10510"
-msgid "Extensions"
-msgstr ""
+msgstr "करिअक्रम"
 
 msgctxt "#10511"
 msgid "System info"
-msgstr ""
-
-msgctxt "#10516"
-msgid "Music - Library"
-msgstr ""
-
-msgctxt "#10517"
-msgid "Now Playing - Music"
-msgstr ""
-
-msgctxt "#10522"
-msgid "Now Playing - Videos"
-msgstr ""
-
-msgctxt "#10523"
-msgid "Album info"
-msgstr ""
-
-msgctxt "#10524"
-msgid "Movie info"
-msgstr ""
-
-msgctxt "#12000"
-msgid "Select dialog"
-msgstr ""
-
-msgctxt "#12001"
-msgid "Music/Info"
-msgstr ""
-
-msgctxt "#12002"
-msgid "Dialog OK"
-msgstr ""
-
-msgctxt "#12003"
-msgid "Videos/Info"
-msgstr ""
-
-msgctxt "#12004"
-msgid "Scripts/Info"
-msgstr ""
-
-msgctxt "#12005"
-msgid "Fullscreen video"
-msgstr ""
-
-msgctxt "#12006"
-msgid "Audio visualization"
-msgstr ""
-
-msgctxt "#12008"
-msgid "File stacking dialog"
-msgstr ""
-
-msgctxt "#12009"
-msgid "Rebuild index..."
-msgstr ""
-
-msgctxt "#12010"
-msgid "Return to music window"
-msgstr ""
-
-msgctxt "#12011"
-msgid "Return to videos window"
-msgstr ""
-
-msgctxt "#12021"
-msgid "Start from beginning"
-msgstr ""
-
-msgctxt "#12022"
-msgid "Resume from %s"
-msgstr ""
-
-msgctxt "#12310"
-msgid "0"
-msgstr ""
-
-msgctxt "#12311"
-msgid "1"
-msgstr ""
-
-msgctxt "#12312"
-msgid "2"
-msgstr ""
-
-msgctxt "#12313"
-msgid "3"
-msgstr ""
-
-msgctxt "#12314"
-msgid "4"
-msgstr ""
-
-msgctxt "#12315"
-msgid "5"
-msgstr ""
-
-msgctxt "#12316"
-msgid "6"
-msgstr ""
-
-msgctxt "#12317"
-msgid "7"
-msgstr ""
-
-msgctxt "#12318"
-msgid "8"
-msgstr ""
-
-msgctxt "#12319"
-msgid "9"
-msgstr ""
-
-msgctxt "#12320"
-msgid "c"
-msgstr ""
-
-msgctxt "#12321"
-msgid "Ok"
-msgstr ""
-
-msgctxt "#12322"
-msgid "*"
-msgstr ""
-
-msgctxt "#12325"
-msgid "Locked! Enter code..."
-msgstr ""
-
-msgctxt "#12326"
-msgid "Enter password"
-msgstr ""
-
-msgctxt "#12327"
-msgid "Enter master code"
-msgstr ""
-
-msgctxt "#12328"
-msgid "Enter unlock code"
-msgstr ""
-
-msgctxt "#12329"
-msgid "or press C to cancel"
-msgstr ""
-
-msgctxt "#12330"
-msgid "Enter gamepad button combo and"
-msgstr ""
-
-msgctxt "#12331"
-msgid "press OK, or Back to cancel"
-msgstr ""
-
-msgctxt "#12332"
-msgid "Set lock"
-msgstr ""
-
-msgctxt "#12333"
-msgid "Unlock"
-msgstr ""
-
-msgctxt "#12334"
-msgid "Reset lock"
-msgstr ""
-
-msgctxt "#12335"
-msgid "Remove lock"
-msgstr ""
-
-msgctxt "#12337"
-msgid "Numeric password"
-msgstr ""
-
-msgctxt "#12338"
-msgid "Gamepad button combo"
-msgstr ""
-
-msgctxt "#12339"
-msgid "Full-text password"
-msgstr ""
-
-msgctxt "#12340"
-msgid "Enter new password"
-msgstr ""
-
-msgctxt "#12341"
-msgid "Re-Enter new password"
-msgstr ""
-
-msgctxt "#12342"
-msgid "Incorrect password,"
-msgstr ""
-
-msgctxt "#12343"
-msgid "retries left "
-msgstr ""
-
-msgctxt "#12344"
-msgid "Passwords entered did not match."
-msgstr ""
-
-msgctxt "#12345"
-msgid "Access denied"
-msgstr ""
-
-msgctxt "#12346"
-msgid "Password retry limit exceeded."
-msgstr ""
-
-msgctxt "#12347"
-msgid "The system will now shut off."
-msgstr ""
-
-msgctxt "#12348"
-msgid "Item locked"
-msgstr ""
-
-msgctxt "#12353"
-msgid "Reactivate lock"
-msgstr ""
-
-msgctxt "#12356"
-msgid "Change lock"
-msgstr ""
-
-msgctxt "#12357"
-msgid "Source lock"
-msgstr ""
-
-msgctxt "#12358"
-msgid "Password entry was blank. Try again."
-msgstr ""
+msgstr "सिस्टम की सुकाना "
 
 msgctxt "#12360"
 msgid "Master lock"
 msgstr "मास्टर ताला"
-
-msgctxt "#12362"
-msgid "Shutdown system if Master Lock retries exceeded"
-msgstr ""
-
-msgctxt "#12367"
-msgid "Master code is not valid"
-msgstr ""
-
-msgctxt "#12368"
-msgid "Please enter a valid master code"
-msgstr ""
-
-msgctxt "#12373"
-msgid "Settings & file manager"
-msgstr ""
-
-msgctxt "#12376"
-msgid "Set as default for all movies"
-msgstr ""
-
-msgctxt "#12377"
-msgid "This will reset any previously saved values"
-msgstr ""
 
 msgctxt "#12378"
 msgid "Amount of time to display each image"
@@ -3645,81 +2710,17 @@ msgctxt "#12379"
 msgid "Use pan and zoom effects"
 msgstr "पैन और ज़ूम प्रभाव का उपयोग करें"
 
-msgctxt "#12383"
-msgid "12 hour clock"
-msgstr ""
-
-msgctxt "#12384"
-msgid "24 hour clock"
-msgstr ""
-
-msgctxt "#12385"
-msgid "Day/Month"
-msgstr ""
-
-msgctxt "#12386"
-msgid "Month/Day"
-msgstr ""
-
-msgctxt "#12390"
-msgid "System uptime"
-msgstr ""
-
-msgctxt "#12391"
-msgid "Minutes"
-msgstr ""
-
-msgctxt "#12392"
-msgid "Hours"
-msgstr ""
-
-msgctxt "#12393"
-msgid "Days"
-msgstr ""
-
-msgctxt "#12394"
-msgid "Total uptime"
-msgstr ""
-
-msgctxt "#12395"
-msgid "Battery level"
-msgstr ""
-
 msgctxt "#12600"
 msgid "Weather"
 msgstr "मौसम"
 
 msgctxt "#12900"
 msgid "Screensaver"
-msgstr ""
-
-msgctxt "#12901"
-msgid "Fullscreen OSD"
-msgstr ""
+msgstr "स्क्रीनसेवर"
 
 msgctxt "#13000"
 msgid "System"
 msgstr "प्रणाली"
-
-msgctxt "#13001"
-msgid "Immediate HD spindown"
-msgstr ""
-
-msgctxt "#13002"
-msgid "Video only"
-msgstr ""
-
-msgctxt "#13003"
-msgid "- Delay"
-msgstr ""
-
-msgctxt "#13004"
-msgid "- Minimum file duration"
-msgstr ""
-
-msgctxt "#13005"
-msgid "Shutdown"
-msgstr ""
 
 msgctxt "#13008"
 msgid "Shutdown function"
@@ -3729,141 +2730,17 @@ msgctxt "#13009"
 msgid "Quit"
 msgstr "छोड़ो"
 
-msgctxt "#13010"
-msgid "Hibernate"
-msgstr ""
-
-msgctxt "#13011"
-msgid "Suspend"
-msgstr ""
-
-msgctxt "#13012"
-msgid "Exit"
-msgstr ""
-
-msgctxt "#13013"
-msgid "Reboot"
-msgstr ""
-
-msgctxt "#13014"
-msgid "Minimize"
-msgstr ""
-
-msgctxt "#13015"
-msgid "Power button action"
-msgstr ""
-
-msgctxt "#13016"
-msgid "Power off System"
-msgstr ""
-
-msgctxt "#13020"
-msgid "Is another session active, perhaps over ssh?"
-msgstr ""
-
-msgctxt "#13021"
-msgid "Mounted removable harddrive"
-msgstr ""
-
-msgctxt "#13022"
-msgid "Unsafe device removal"
-msgstr ""
-
-msgctxt "#13023"
-msgid "Successfully removed device"
-msgstr ""
-
-msgctxt "#13024"
-msgid "Joystick plugged"
-msgstr ""
-
-msgctxt "#13025"
-msgid "Joystick unplugged"
-msgstr ""
-
-msgctxt "#13050"
-msgid "Running low on battery"
-msgstr ""
-
-msgctxt "#13100"
-msgid "Flicker filter"
-msgstr ""
-
-msgctxt "#13101"
-msgid "Let driver choose (requires restart)"
-msgstr ""
-
 msgctxt "#13105"
 msgid "Vertical blank sync"
 msgstr "अनुलंब रिक्त सिंक"
 
 msgctxt "#13106"
 msgid "Disabled"
-msgstr ""
-
-msgctxt "#13107"
-msgid "Enabled during video playback"
-msgstr ""
-
-msgctxt "#13108"
-msgid "Always enabled"
-msgstr ""
-
-msgctxt "#13109"
-msgid "Test & apply resolution"
-msgstr ""
-
-msgctxt "#13110"
-msgid "Save resolution?"
-msgstr ""
-
-msgctxt "#13111"
-msgid "Would you like to keep this resolution?"
-msgstr ""
-
-msgctxt "#13112"
-msgid "High quality upscaling"
-msgstr ""
+msgstr "विकलांग"
 
 msgctxt "#13113"
 msgid "Disabled"
-msgstr ""
-
-msgctxt "#13114"
-msgid "Enabled for SD content"
-msgstr ""
-
-msgctxt "#13115"
-msgid "Always enabled"
-msgstr ""
-
-msgctxt "#13116"
-msgid "Upscaling method"
-msgstr ""
-
-msgctxt "#13117"
-msgid "Bicubic"
-msgstr ""
-
-msgctxt "#13118"
-msgid "Lanczos"
-msgstr ""
-
-msgctxt "#13119"
-msgid "Sinc"
-msgstr ""
-
-msgctxt "#13120"
-msgid "VDPAU"
-msgstr ""
-
-msgctxt "#13121"
-msgid "VDPAU HQ Upscaling level"
-msgstr ""
-
-msgctxt "#13122"
-msgid "VDPAU Studio level color conversion"
-msgstr ""
+msgstr "विकलांग"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -3871,243 +2748,27 @@ msgstr "खाली अन्य प्रदर्शित करता ह�
 
 msgctxt "#13131"
 msgid "Disabled"
-msgstr ""
-
-msgctxt "#13132"
-msgid "Blank displays"
-msgstr ""
-
-msgctxt "#13140"
-msgid "Active connections detected!"
-msgstr ""
-
-msgctxt "#13141"
-msgid "If you proceed, you might not be able to control XBMC"
-msgstr ""
-
-msgctxt "#13142"
-msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr ""
-
-msgctxt "#13144"
-msgid "Change Apple Remote mode?"
-msgstr ""
-
-msgctxt "#13145"
-msgid "If you are currently using the Apple Remote to control"
-msgstr ""
-
-msgctxt "#13146"
-msgid "XBMC, changing this setting might affect your ability"
-msgstr ""
-
-msgctxt "#13147"
-msgid "to continue controlling it. Do you want to proceed?"
-msgstr ""
-
-msgctxt "#13159"
-msgid "Subnet mask"
-msgstr ""
-
-msgctxt "#13160"
-msgid "Gateway"
-msgstr ""
-
-msgctxt "#13161"
-msgid "Primary DNS"
-msgstr ""
-
-msgctxt "#13162"
-msgid "Initialize failed"
-msgstr ""
-
-msgctxt "#13170"
-msgid "Never"
-msgstr ""
-
-msgctxt "#13171"
-msgid "Immediately"
-msgstr ""
-
-msgctxt "#13172"
-msgid "After %i secs"
-msgstr ""
-
-msgctxt "#13173"
-msgid "HDD install date:"
-msgstr ""
-
-msgctxt "#13174"
-msgid "HDD power cycle count:"
-msgstr ""
-
-msgctxt "#13200"
-msgid "Profiles"
-msgstr ""
-
-msgctxt "#13201"
-msgid "Delete profile '%s'?"
-msgstr ""
-
-msgctxt "#13204"
-msgid "Last loaded profile:"
-msgstr ""
-
-msgctxt "#13205"
-msgid "Unknown"
-msgstr ""
-
-msgctxt "#13206"
-msgid "Overwrite"
-msgstr ""
-
-msgctxt "#13208"
-msgid "Alarm clock"
-msgstr ""
-
-msgctxt "#13209"
-msgid "Alarm clock interval (in minutes)"
-msgstr ""
-
-msgctxt "#13210"
-msgid "Started, alarm in %im"
-msgstr ""
-
-msgctxt "#13211"
-msgid "Alarm!"
-msgstr ""
-
-msgctxt "#13212"
-msgid "Canceled with %im%is left"
-msgstr ""
-
-msgctxt "#13213"
-msgid "%2.0fm"
-msgstr ""
-
-msgctxt "#13214"
-msgid "%2.0fs"
-msgstr ""
-
-msgctxt "#13249"
-msgid "Search for subtitles in RARs"
-msgstr ""
-
-msgctxt "#13250"
-msgid "Browse for subtitle..."
-msgstr ""
-
-msgctxt "#13251"
-msgid "Move item"
-msgstr ""
-
-msgctxt "#13252"
-msgid "Move item here"
-msgstr ""
-
-msgctxt "#13253"
-msgid "Cancel move"
-msgstr ""
-
-msgctxt "#13270"
-msgid "Hardware:"
-msgstr ""
-
-msgctxt "#13271"
-msgid "CPU Usage:"
-msgstr ""
-
-msgctxt "#13274"
-msgid "Connected, but no DNS is available."
-msgstr ""
-
-msgctxt "#13275"
-msgid "Hard Disk"
-msgstr ""
-
-msgctxt "#13276"
-msgid "DVD-ROM"
-msgstr ""
+msgstr "विकलांग"
 
 msgctxt "#13277"
 msgid "Storage"
-msgstr ""
+msgstr "संन्कायाना"
 
 msgctxt "#13278"
 msgid "Default"
-msgstr ""
+msgstr "डिफ़ॉल्ट"
 
 msgctxt "#13279"
 msgid "Network"
-msgstr ""
+msgstr "नेटवर्क"
 
 msgctxt "#13280"
 msgid "Video"
-msgstr ""
-
-msgctxt "#13281"
-msgid "Hardware"
-msgstr ""
-
-msgctxt "#13283"
-msgid "Operating system:"
-msgstr ""
-
-msgctxt "#13284"
-msgid "CPU speed:"
-msgstr ""
-
-msgctxt "#13286"
-msgid "Video encoder:"
-msgstr ""
-
-msgctxt "#13287"
-msgid "Screen resolution:"
-msgstr ""
-
-msgctxt "#13292"
-msgid "A/V cable:"
-msgstr ""
-
-msgctxt "#13294"
-msgid "DVD region:"
-msgstr ""
-
-msgctxt "#13295"
-msgid "Internet:"
-msgstr ""
-
-msgctxt "#13296"
-msgid "Connected"
-msgstr ""
-
-msgctxt "#13297"
-msgid "Not connected. Check network settings."
-msgstr ""
-
-msgctxt "#13299"
-msgid "Target temperature"
-msgstr ""
-
-msgctxt "#13300"
-msgid "Fan speed"
-msgstr ""
-
-msgctxt "#13301"
-msgid "Auto temperature control"
-msgstr ""
-
-msgctxt "#13302"
-msgid "Fan speed override"
-msgstr ""
+msgstr "विडियो"
 
 msgctxt "#13303"
 msgid "- Fonts"
 msgstr "- फ़ॉन्ट्स"
-
-msgctxt "#13304"
-msgid "Enable flipping bi-directional strings"
-msgstr ""
 
 msgctxt "#13305"
 msgid "Show RSS news feeds"
@@ -4121,305 +2782,45 @@ msgctxt "#13307"
 msgid "Track naming template"
 msgstr "टेम्पलेट नामकरण ट्रैक"
 
-msgctxt "#13308"
-msgid "Do you wish to reboot your system"
-msgstr ""
-
-msgctxt "#13309"
-msgid "instead of just XBMC?"
-msgstr ""
-
-msgctxt "#13310"
-msgid "Zoom effect"
-msgstr ""
-
-msgctxt "#13311"
-msgid "Float effect"
-msgstr ""
-
-msgctxt "#13312"
-msgid "Black bar reduction"
-msgstr ""
-
-msgctxt "#13313"
-msgid "Restart"
-msgstr ""
-
 msgctxt "#13314"
 msgid "Crossfade between songs"
 msgstr "गीतों के बीच क्रॉस - फीका"
-
-msgctxt "#13315"
-msgid "Regenerate thumbnails"
-msgstr ""
-
-msgctxt "#13316"
-msgid "Recursive thumbnails"
-msgstr ""
-
-msgctxt "#13317"
-msgid "View slideshow"
-msgstr ""
-
-msgctxt "#13318"
-msgid "Recursive slideshow"
-msgstr ""
-
-msgctxt "#13319"
-msgid "Randomize"
-msgstr ""
-
-msgctxt "#13320"
-msgid "Stereo"
-msgstr ""
-
-msgctxt "#13321"
-msgid "Left only"
-msgstr ""
-
-msgctxt "#13322"
-msgid "Right only"
-msgstr ""
 
 msgctxt "#13323"
 msgid "Enable karaoke support"
 msgstr "कराओके समर्थन सक्षम करें"
 
-msgctxt "#13324"
-msgid "Background transparency"
-msgstr ""
-
-msgctxt "#13325"
-msgid "Foreground transparency"
-msgstr ""
-
-msgctxt "#13326"
-msgid "A/V delay"
-msgstr ""
-
 msgctxt "#13327"
 msgid "Karaoke"
 msgstr "कराओके"
 
-msgctxt "#13328"
-msgid "%s not found"
-msgstr ""
-
-msgctxt "#13329"
-msgid "Error opening %s"
-msgstr ""
-
-msgctxt "#13330"
-msgid "Unable to load %s"
-msgstr ""
-
-msgctxt "#13331"
-msgid "Error: Out of memory"
-msgstr ""
-
-msgctxt "#13332"
-msgid "Move up"
-msgstr ""
-
-msgctxt "#13333"
-msgid "Move down"
-msgstr ""
-
-msgctxt "#13334"
-msgid "Edit label"
-msgstr ""
-
-msgctxt "#13335"
-msgid "Make default"
-msgstr ""
-
-msgctxt "#13336"
-msgid "Remove button"
-msgstr ""
-
-msgctxt "#13340"
-msgid "Leave as is"
-msgstr ""
-
-msgctxt "#13341"
-msgid "Green"
-msgstr ""
-
-msgctxt "#13342"
-msgid "Orange"
-msgstr ""
-
-msgctxt "#13343"
-msgid "Red"
-msgstr ""
-
-msgctxt "#13344"
-msgid "Cycle"
-msgstr ""
-
-msgctxt "#13345"
-msgid "Switch LED off on playback"
-msgstr ""
-
 msgctxt "#13346"
 msgid "Movie information"
-msgstr ""
-
-msgctxt "#13347"
-msgid "Queue item"
-msgstr ""
-
-msgctxt "#13348"
-msgid "Search IMDb..."
-msgstr ""
-
-msgctxt "#13349"
-msgid "Scan for new content"
-msgstr ""
-
-msgctxt "#13350"
-msgid "Now playing..."
-msgstr ""
+msgstr "मूवी जानकारी"
 
 msgctxt "#13351"
 msgid "Album information"
-msgstr ""
-
-msgctxt "#13352"
-msgid "Scan item to library"
-msgstr ""
-
-msgctxt "#13353"
-msgid "Stop scanning"
-msgstr ""
+msgstr "एल्बम जानकारी"
 
 msgctxt "#13354"
 msgid "Render method"
-msgstr ""
-
-msgctxt "#13355"
-msgid "Low quality pixel shader"
-msgstr ""
-
-msgctxt "#13356"
-msgid "Hardware overlays"
-msgstr ""
-
-msgctxt "#13357"
-msgid "High quality pixel shader"
-msgstr ""
-
-msgctxt "#13358"
-msgid "Play item"
-msgstr ""
-
-msgctxt "#13359"
-msgid "Set artist thumb"
-msgstr ""
+msgstr "विधि सौंपनेवाला"
 
 msgctxt "#13360"
 msgid "Automatically generate thumbnails"
 msgstr "स्वचालित रूप से थंबनेल उत्पन्न"
 
-msgctxt "#13361"
-msgid "Enable voice"
-msgstr ""
-
-msgctxt "#13375"
-msgid "Enable device"
-msgstr ""
-
-msgctxt "#13376"
-msgid "Volume"
-msgstr ""
-
-msgctxt "#13377"
-msgid "Default view mode"
-msgstr ""
-
-msgctxt "#13378"
-msgid "Default brightness"
-msgstr ""
-
-msgctxt "#13379"
-msgid "Default contrast"
-msgstr ""
-
-msgctxt "#13380"
-msgid "Default gamma"
-msgstr ""
-
-msgctxt "#13381"
-msgid "Resume video"
-msgstr ""
-
-msgctxt "#13382"
-msgid "Voice mask - Port 1"
-msgstr ""
-
-msgctxt "#13383"
-msgid "Voice mask - Port 2"
-msgstr ""
-
-msgctxt "#13384"
-msgid "Voice mask - Port 3"
-msgstr ""
-
-msgctxt "#13385"
-msgid "Voice mask - Port 4"
-msgstr ""
-
-msgctxt "#13386"
-msgid "Use time based seeking"
-msgstr ""
-
 msgctxt "#13387"
 msgid "Track naming template - right"
 msgstr "ट्रैक नामकरण टेम्पलेट - ठीक है"
-
-msgctxt "#13388"
-msgid "Preset"
-msgstr ""
-
-msgctxt "#13389"
-msgid "There are no presets available\nfor this visualization"
-msgstr ""
-
-msgctxt "#13390"
-msgid "There are no settings available\nfor this visualization"
-msgstr ""
-
-msgctxt "#13391"
-msgid "Eject/Load"
-msgstr ""
 
 msgctxt "#13392"
 msgid "Use visualization if playing audio"
 msgstr "दृश्य का प्रयोग करें अगर ऑडियो खेल"
 
-msgctxt "#13393"
-msgid "Calculate size"
-msgstr ""
-
-msgctxt "#13394"
-msgid "Calculating folder size"
-msgstr ""
-
-msgctxt "#13395"
-msgid "Video settings"
-msgstr ""
-
-msgctxt "#13396"
-msgid "Audio and subtitle settings"
-msgstr ""
-
-msgctxt "#13397"
-msgid "Enable subtitles"
-msgstr ""
-
 msgctxt "#13398"
 msgid "Shortcuts"
-msgstr ""
+msgstr "लघु पाथें "
 
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
@@ -4429,58 +2830,6 @@ msgctxt "#13400"
 msgid "Crossfade between songs on the same album"
 msgstr "गीतों के बीच एक ही एलबम पर पार - फीका"
 
-msgctxt "#13401"
-msgid "Browse for %s"
-msgstr ""
-
-msgctxt "#13402"
-msgid "Show track position"
-msgstr ""
-
-msgctxt "#13403"
-msgid "Clear default"
-msgstr ""
-
-msgctxt "#13404"
-msgid "Resume"
-msgstr ""
-
-msgctxt "#13405"
-msgid "Get thumb"
-msgstr ""
-
-msgctxt "#13406"
-msgid "Picture information"
-msgstr ""
-
-msgctxt "#13407"
-msgid "%s presets"
-msgstr ""
-
-msgctxt "#13408"
-msgid "(IMDb user rating)"
-msgstr ""
-
-msgctxt "#13409"
-msgid "Top 250"
-msgstr ""
-
-msgctxt "#13410"
-msgid "Tune in on Last.fm"
-msgstr ""
-
-msgctxt "#13411"
-msgid "Minimum fan speed"
-msgstr ""
-
-msgctxt "#13412"
-msgid "Play from here"
-msgstr ""
-
-msgctxt "#13413"
-msgid "Downloading"
-msgstr ""
-
 msgctxt "#13414"
 msgid "Include artists who appear only on compilations"
 msgstr "कलाकारों को जो केवल संकलन पर दिखाई देते हैं शामिल"
@@ -4489,237 +2838,33 @@ msgctxt "#13415"
 msgid "Render method"
 msgstr "विधि सौंपनेवाला"
 
-msgctxt "#13416"
-msgid "Auto detect"
-msgstr ""
-
-msgctxt "#13417"
-msgid "Basic shaders (ARB)"
-msgstr ""
-
-msgctxt "#13418"
-msgid "Advanced shaders (GLSL)"
-msgstr ""
-
-msgctxt "#13419"
-msgid "Software"
-msgstr ""
-
-msgctxt "#13420"
-msgid "Remove safely"
-msgstr ""
-
-msgctxt "#13421"
-msgid "VDPAU"
-msgstr ""
-
-msgctxt "#13422"
-msgid "Start slideshow here"
-msgstr ""
-
-msgctxt "#13423"
-msgid "Remember for this path"
-msgstr ""
-
-msgctxt "#13424"
-msgid "Use pixel buffer objects"
-msgstr ""
-
-msgctxt "#13425"
-msgid "Allow hardware acceleration (VDPAU)"
-msgstr ""
-
-msgctxt "#13426"
-msgid "Allow hardware acceleration (VAAPI)"
-msgstr ""
-
-msgctxt "#13427"
-msgid "Allow hardware acceleration (DXVA2)"
-msgstr ""
-
-msgctxt "#13428"
-msgid "Allow hardware acceleration (CrystalHD)"
-msgstr ""
-
-msgctxt "#13429"
-msgid "Allow hardware acceleration (VDADecoder)"
-msgstr ""
-
-msgctxt "#13430"
-msgid "Allow hardware acceleration (OpenMax)"
-msgstr ""
-
-msgctxt "#13431"
-msgid "Pixel Shaders"
-msgstr ""
-
-msgctxt "#13432"
-msgid "Allow hardware acceleration (VideoToolbox)"
-msgstr ""
-
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V सिंक विधि"
 
-msgctxt "#13501"
-msgid "Audio clock"
-msgstr ""
-
-msgctxt "#13502"
-msgid "Video clock (Drop/Dupe audio)"
-msgstr ""
-
-msgctxt "#13503"
-msgid "Video clock (Resample audio)"
-msgstr ""
-
-msgctxt "#13504"
-msgid "Maximum resample amount (%)"
-msgstr ""
-
-msgctxt "#13505"
-msgid "Resample quality"
-msgstr ""
-
-msgctxt "#13506"
-msgid "Low(fast)"
-msgstr ""
-
 msgctxt "#13507"
 msgid "Medium"
-msgstr ""
+msgstr "मध्यम"
 
 msgctxt "#13508"
 msgid "High"
-msgstr ""
-
-msgctxt "#13509"
-msgid "Really high(slow!)"
-msgstr ""
+msgstr "उच्च"
 
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "सिंक प्लेबैक करने के लिए प्रदर्शन"
 
-msgctxt "#13550"
-msgid "Pause during refresh rate change"
-msgstr ""
-
 msgctxt "#13551"
 msgid "Off"
-msgstr ""
-
-msgctxt "#13552"
-msgid "%.1f Second"
-msgstr ""
-
-msgctxt "#13553"
-msgid "%.1f Seconds"
-msgstr ""
-
-msgctxt "#13600"
-msgid "Apple remote"
-msgstr ""
-
-msgctxt "#13602"
-msgid "Allow start of XBMC using the remote"
-msgstr ""
-
-msgctxt "#13603"
-msgid "Sequence delay time"
-msgstr ""
+msgstr "से"
 
 msgctxt "#13610"
 msgid "Disabled"
-msgstr ""
+msgstr "विकलांग"
 
 msgctxt "#13611"
 msgid "Standard"
-msgstr ""
-
-msgctxt "#13612"
-msgid "Universal Remote"
-msgstr ""
-
-msgctxt "#13613"
-msgid "Multi Remote (Harmony)"
-msgstr ""
-
-msgctxt "#13620"
-msgid "Apple Remote Error"
-msgstr ""
-
-msgctxt "#13621"
-msgid "Apple Remote support could be enabled."
-msgstr ""
-
-msgctxt "#14000"
-msgid "Stack"
-msgstr ""
-
-msgctxt "#14001"
-msgid "Unstack"
-msgstr ""
-
-msgctxt "#14003"
-msgid "Downloading playlist file..."
-msgstr ""
-
-msgctxt "#14004"
-msgid "Downloading streams list..."
-msgstr ""
-
-msgctxt "#14005"
-msgid "Parsing streams list..."
-msgstr ""
-
-msgctxt "#14006"
-msgid "Downloading streams list failed"
-msgstr ""
-
-msgctxt "#14007"
-msgid "Downloading playlist file failed"
-msgstr ""
-
-msgctxt "#14009"
-msgid "Games directory"
-msgstr ""
-
-msgctxt "#14010"
-msgid "Auto switch to thumbs based on"
-msgstr ""
-
-msgctxt "#14011"
-msgid "Enable auto switching to thumbs view"
-msgstr ""
-
-msgctxt "#14012"
-msgid "- Use large icons"
-msgstr ""
-
-msgctxt "#14013"
-msgid "- Switch based on"
-msgstr ""
-
-msgctxt "#14014"
-msgid "- Percentage"
-msgstr ""
-
-msgctxt "#14015"
-msgid "No files and at least one thumb"
-msgstr ""
-
-msgctxt "#14016"
-msgid "At least one file and thumb"
-msgstr ""
-
-msgctxt "#14017"
-msgid "Percentage of thumbs"
-msgstr ""
-
-msgctxt "#14018"
-msgid "View options"
-msgstr ""
+msgstr "मानक"
 
 msgctxt "#14019"
 msgid "Change area code 1"
@@ -4737,209 +2882,21 @@ msgctxt "#14022"
 msgid "Library"
 msgstr "पुस्तकालय"
 
-msgctxt "#14023"
-msgid "No TV"
-msgstr ""
-
-msgctxt "#14024"
-msgid "Enter the nearest large town"
-msgstr ""
-
-msgctxt "#14025"
-msgid "Video/Audio/DVD cache - Harddisk"
-msgstr ""
-
-msgctxt "#14026"
-msgid "Video cache - DVD-ROM"
-msgstr ""
-
-msgctxt "#14027"
-msgid "- Local Network"
-msgstr ""
-
-msgctxt "#14028"
-msgid "- Internet"
-msgstr ""
-
-msgctxt "#14030"
-msgid "Audio cache - DVD-ROM"
-msgstr ""
-
-msgctxt "#14031"
-msgid "- Local Network"
-msgstr ""
-
-msgctxt "#14032"
-msgid "- Internet"
-msgstr ""
-
-msgctxt "#14034"
-msgid "DVD cache - DVD-ROM"
-msgstr ""
-
-msgctxt "#14035"
-msgid "- Local Network"
-msgstr ""
-
 msgctxt "#14036"
 msgid "Services"
 msgstr "सेवाएँ"
-
-msgctxt "#14038"
-msgid "Network settings changed"
-msgstr ""
-
-msgctxt "#14039"
-msgid "XBMC requires to restart to change your"
-msgstr ""
-
-msgctxt "#14040"
-msgid "network setup.  Would you like to restart now?"
-msgstr ""
-
-msgctxt "#14041"
-msgid "Internet connection bandwidth limitation"
-msgstr ""
-
-msgctxt "#14043"
-msgid "- Shutdown while playing"
-msgstr ""
-
-msgctxt "#14044"
-msgid "%i min"
-msgstr ""
-
-msgctxt "#14045"
-msgid "%i sec"
-msgstr ""
-
-msgctxt "#14046"
-msgid "%i ms"
-msgstr ""
-
-msgctxt "#14047"
-msgid "%i %%"
-msgstr ""
-
-msgctxt "#14048"
-msgid "%i kbps"
-msgstr ""
-
-msgctxt "#14049"
-msgid "%i kb"
-msgstr ""
-
-msgctxt "#14050"
-msgid "%i.0 dB"
-msgstr ""
-
-msgctxt "#14051"
-msgid "Time format"
-msgstr ""
-
-msgctxt "#14052"
-msgid "Date format"
-msgstr ""
-
-msgctxt "#14053"
-msgid "GUI filters"
-msgstr ""
-
-msgctxt "#14055"
-msgid "Use background scanning"
-msgstr ""
-
-msgctxt "#14056"
-msgid "Stop scan"
-msgstr ""
-
-msgctxt "#14057"
-msgid "Not possible while scanning for media info"
-msgstr ""
-
-msgctxt "#14058"
-msgid "Film grain effect"
-msgstr ""
-
-msgctxt "#14059"
-msgid "Search for thumbnails on remote shares"
-msgstr ""
 
 msgctxt "#14060"
 msgid "Unknown type cache - Internet"
 msgstr "अज्ञात प्रकार कैश - इंटरनेट"
 
-msgctxt "#14061"
-msgid "Auto"
-msgstr ""
-
-msgctxt "#14062"
-msgid "Enter username for"
-msgstr ""
-
-msgctxt "#14063"
-msgid "Date & time"
-msgstr ""
-
-msgctxt "#14064"
-msgid "Set date"
-msgstr ""
-
-msgctxt "#14065"
-msgid "Set time"
-msgstr ""
-
-msgctxt "#14066"
-msgid "Enter the time in 24 hour HH:MM format"
-msgstr ""
-
-msgctxt "#14067"
-msgid "Enter the date in DD/MM/YYYY format"
-msgstr ""
-
-msgctxt "#14068"
-msgid "Enter the IP address"
-msgstr ""
-
-msgctxt "#14069"
-msgid "Apply these settings now?"
-msgstr ""
-
-msgctxt "#14070"
-msgid "Apply changes now"
-msgstr ""
-
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
 msgstr "फ़ाइल का नाम बदलने और विलोपन की अनुमति दें"
 
-msgctxt "#14074"
-msgid "Set timezone"
-msgstr ""
-
-msgctxt "#14075"
-msgid "Use daylight saving time"
-msgstr ""
-
-msgctxt "#14076"
-msgid "Add to favourites"
-msgstr ""
-
-msgctxt "#14077"
-msgid "Remove from favourites"
-msgstr ""
-
 msgctxt "#14078"
 msgid "- Colours"
-msgstr ""
-
-msgctxt "#14079"
-msgid "Timezone country"
-msgstr ""
-
-msgctxt "#14080"
-msgid "Timezone"
-msgstr ""
+msgstr "- रंगीन"
 
 msgctxt "#14081"
 msgid "File lists"
@@ -4961,10 +2918,6 @@ msgctxt "#14086"
 msgid "Playback"
 msgstr "प्लेबैक"
 
-msgctxt "#14087"
-msgid "DVDs"
-msgstr ""
-
 msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr "डीवीडी स्वचालित रूप से चलायें"
@@ -4985,10 +2938,6 @@ msgctxt "#14092"
 msgid "Debugging"
 msgstr "डिबगिंग"
 
-msgctxt "#14093"
-msgid "Security"
-msgstr ""
-
 msgctxt "#14094"
 msgid "Input devices"
 msgstr "इनपुट डिवाइस"
@@ -4997,85 +2946,25 @@ msgctxt "#14095"
 msgid "Power saving"
 msgstr "बिजली बचाने के"
 
-msgctxt "#14096"
-msgid "Rip"
-msgstr ""
-
-msgctxt "#14097"
-msgid "Audio CD Insert Action"
-msgstr ""
-
 msgctxt "#14098"
 msgid "Play"
-msgstr ""
-
-msgctxt "#14099"
-msgid "Eject disc when CD ripping is complete"
-msgstr ""
+msgstr "खेलना"
 
 msgctxt "#15015"
 msgid "Remove"
-msgstr ""
-
-msgctxt "#15016"
-msgid "Games"
-msgstr ""
-
-msgctxt "#15019"
-msgid "Add"
-msgstr ""
-
-msgctxt "#15052"
-msgid "Password"
-msgstr ""
+msgstr "हटाना"
 
 msgctxt "#15100"
 msgid "Library"
-msgstr ""
-
-msgctxt "#15101"
-msgid "Database"
-msgstr ""
-
-msgctxt "#15102"
-msgid "* All albums"
-msgstr ""
-
-msgctxt "#15103"
-msgid "* All artists"
-msgstr ""
-
-msgctxt "#15104"
-msgid "* All songs"
-msgstr ""
-
-msgctxt "#15105"
-msgid "* All genres"
-msgstr ""
-
-msgctxt "#15107"
-msgid "Buffering..."
-msgstr ""
+msgstr "पुस्तकालय"
 
 msgctxt "#15108"
 msgid "Navigation sounds"
 msgstr "नेविगेशन लगता है"
 
-msgctxt "#15109"
-msgid "Skin default"
-msgstr ""
-
 msgctxt "#15111"
 msgid "- Theme"
 msgstr "- विषय"
-
-msgctxt "#15112"
-msgid "Default theme"
-msgstr ""
-
-msgctxt "#15200"
-msgid "Last.fm"
-msgstr ""
 
 msgctxt "#15201"
 msgid "Submit songs to Last.fm"
@@ -5089,58 +2978,6 @@ msgctxt "#15203"
 msgid "Last.fm password"
 msgstr "Last.fm पासवर्ड"
 
-msgctxt "#15204"
-msgid "Unable to handshake: sleeping..."
-msgstr ""
-
-msgctxt "#15205"
-msgid "Please update XBMC"
-msgstr ""
-
-msgctxt "#15206"
-msgid "Bad authorization: Check username and password"
-msgstr ""
-
-msgctxt "#15207"
-msgid "Connected"
-msgstr ""
-
-msgctxt "#15208"
-msgid "Not connected"
-msgstr ""
-
-msgctxt "#15209"
-msgid "Submit interval %i"
-msgstr ""
-
-msgctxt "#15210"
-msgid "Cached %i songs"
-msgstr ""
-
-msgctxt "#15211"
-msgid "Submitting..."
-msgstr ""
-
-msgctxt "#15212"
-msgid "Submitting in %i secs"
-msgstr ""
-
-msgctxt "#15213"
-msgid "Play using..."
-msgstr ""
-
-msgctxt "#15214"
-msgid "Use smoothed A/V synchronization"
-msgstr ""
-
-msgctxt "#15215"
-msgid "Hide file names in thumbs view"
-msgstr ""
-
-msgctxt "#15216"
-msgid "Play in party mode"
-msgstr ""
-
 msgctxt "#15217"
 msgid "Submit songs to Libre.fm"
 msgstr "Libre.fm के लिए गाने सबमिट"
@@ -5153,10 +2990,6 @@ msgctxt "#15219"
 msgid "Libre.fm password"
 msgstr "Libre.fm पासवर्ड"
 
-msgctxt "#15220"
-msgid "Libre.fm"
-msgstr ""
-
 msgctxt "#15221"
 msgid "Song submission"
 msgstr "सांग प्रस्तुत"
@@ -5165,797 +2998,49 @@ msgctxt "#15250"
 msgid "Submit Last.fm radio to Last.fm"
 msgstr "Last.fm के लिए Last.fm रेडियो सबमिट"
 
-msgctxt "#15251"
-msgid "Connecting to Last.fm..."
-msgstr ""
-
-msgctxt "#15252"
-msgid "Selecting station..."
-msgstr ""
-
-msgctxt "#15253"
-msgid "Search similar artists..."
-msgstr ""
-
-msgctxt "#15254"
-msgid "Search similar tags..."
-msgstr ""
-
-msgctxt "#15255"
-msgid "Your profile (%name%)"
-msgstr ""
-
-msgctxt "#15256"
-msgid "Overall top tags"
-msgstr ""
-
-msgctxt "#15257"
-msgid "Top artists for tag %name%"
-msgstr ""
-
-msgctxt "#15258"
-msgid "Top albums for tag %name%"
-msgstr ""
-
-msgctxt "#15259"
-msgid "Top tracks for tag %name%"
-msgstr ""
-
-msgctxt "#15260"
-msgid "Listen to tag %name% Last.fm radio"
-msgstr ""
-
-msgctxt "#15261"
-msgid "Similar artists as %name%"
-msgstr ""
-
-msgctxt "#15262"
-msgid "Top %name% albums"
-msgstr ""
-
-msgctxt "#15263"
-msgid "Top %name% tracks"
-msgstr ""
-
-msgctxt "#15264"
-msgid "Top %name% tags"
-msgstr ""
-
-msgctxt "#15265"
-msgid "Biggest fans of %name%"
-msgstr ""
-
-msgctxt "#15266"
-msgid "Listen to %name% fans Last.fm radio"
-msgstr ""
-
-msgctxt "#15267"
-msgid "Listen to %name% similar artists Last.fm radio"
-msgstr ""
-
-msgctxt "#15268"
-msgid "Top artists for user %name%"
-msgstr ""
-
-msgctxt "#15269"
-msgid "Top albums for user %name%"
-msgstr ""
-
-msgctxt "#15270"
-msgid "Top tracks for user %name%"
-msgstr ""
-
-msgctxt "#15271"
-msgid "Friends of user %name%"
-msgstr ""
-
-msgctxt "#15272"
-msgid "Neighbours of user %name%"
-msgstr ""
-
-msgctxt "#15273"
-msgid "Weekly artist chart for %name%"
-msgstr ""
-
-msgctxt "#15274"
-msgid "Weekly album chart for %name%"
-msgstr ""
-
-msgctxt "#15275"
-msgid "Weekly track chart for %name%"
-msgstr ""
-
-msgctxt "#15276"
-msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr ""
-
-msgctxt "#15277"
-msgid "Listen to %name%'s personal Last.fm radio"
-msgstr ""
-
-msgctxt "#15278"
-msgid "Listen to %name%'s mix Last.fm radio"
-msgstr ""
-
-msgctxt "#15279"
-msgid "Retrieving list from Last.fm..."
-msgstr ""
-
-msgctxt "#15280"
-msgid "Can't retrieve list from Last.fm..."
-msgstr ""
-
-msgctxt "#15281"
-msgid "Enter an artist name to find related ones"
-msgstr ""
-
-msgctxt "#15282"
-msgid "Enter a tag name to find similar ones"
-msgstr ""
-
-msgctxt "#15283"
-msgid "Tracks recently listened by %name%"
-msgstr ""
-
-msgctxt "#15284"
-msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr ""
-
-msgctxt "#15285"
-msgid "Top tags for user %name%"
-msgstr ""
-
-msgctxt "#15287"
-msgid "Do you want to add the current track to your loved tracks?"
-msgstr ""
-
-msgctxt "#15288"
-msgid "Do you want to ban the current track?"
-msgstr ""
-
-msgctxt "#15289"
-msgid "Added to your loved tracks: '%s'."
-msgstr ""
-
-msgctxt "#15290"
-msgid "Could not add '%s' to your loved tracks."
-msgstr ""
-
-msgctxt "#15291"
-msgid "Banned: '%s'."
-msgstr ""
-
-msgctxt "#15292"
-msgid "Could not ban '%s'."
-msgstr ""
-
-msgctxt "#15293"
-msgid "Tracks recently loved by %name%"
-msgstr ""
-
-msgctxt "#15294"
-msgid "Tracks recently banned by %name%"
-msgstr ""
-
-msgctxt "#15295"
-msgid "Remove from loved tracks"
-msgstr ""
-
-msgctxt "#15296"
-msgid "Un-ban"
-msgstr ""
-
-msgctxt "#15297"
-msgid "Do you want to remove this track from your loved tracks?"
-msgstr ""
-
-msgctxt "#15298"
-msgid "Do you want to un-ban this track?"
-msgstr ""
-
-msgctxt "#15300"
-msgid "Path not found or invalid"
-msgstr ""
-
-msgctxt "#15301"
-msgid "Could not connect to network server"
-msgstr ""
-
-msgctxt "#15302"
-msgid "No servers found"
-msgstr ""
-
-msgctxt "#15303"
-msgid "Workgroup not found"
-msgstr ""
-
-msgctxt "#15310"
-msgid "Opening multi-path source"
-msgstr ""
-
-msgctxt "#15311"
-msgid "Path:"
-msgstr ""
-
 msgctxt "#16000"
 msgid "General"
 msgstr "सामान्य"
 
-msgctxt "#16002"
-msgid "Internet lookup"
-msgstr ""
-
-msgctxt "#16003"
-msgid "Player"
-msgstr ""
-
-msgctxt "#16004"
-msgid "Play media from disc"
-msgstr ""
-
-msgctxt "#16008"
-msgid "Enter new title"
-msgstr ""
-
-msgctxt "#16009"
-msgid "Enter the movie name"
-msgstr ""
-
-msgctxt "#16010"
-msgid "Enter the profile name"
-msgstr ""
-
-msgctxt "#16011"
-msgid "Enter the album name"
-msgstr ""
-
-msgctxt "#16012"
-msgid "Enter the playlist name"
-msgstr ""
-
-msgctxt "#16013"
-msgid "Enter new filename"
-msgstr ""
-
-msgctxt "#16014"
-msgid "Enter folder name"
-msgstr ""
-
-msgctxt "#16015"
-msgid "Enter directory"
-msgstr ""
-
-msgctxt "#16016"
-msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
-msgstr ""
-
-msgctxt "#16017"
-msgid "Enter search string"
-msgstr ""
-
 msgctxt "#16018"
 msgid "None"
-msgstr ""
-
-msgctxt "#16019"
-msgid "Auto select"
-msgstr ""
-
-msgctxt "#16020"
-msgid "De-interlace"
-msgstr ""
-
-msgctxt "#16021"
-msgid "Bob"
-msgstr ""
-
-msgctxt "#16022"
-msgid "Bob (inverted)"
-msgstr ""
-
-msgctxt "#16024"
-msgid "Canceling..."
-msgstr ""
-
-msgctxt "#16025"
-msgid "Enter the artist name"
-msgstr ""
-
-msgctxt "#16026"
-msgid "Playback failed"
-msgstr ""
-
-msgctxt "#16027"
-msgid "One or more items failed to play."
-msgstr ""
-
-msgctxt "#16028"
-msgid "Enter value"
-msgstr ""
-
-msgctxt "#16029"
-msgid "Check the log file for details."
-msgstr ""
-
-msgctxt "#16030"
-msgid "Party mode aborted."
-msgstr ""
-
-msgctxt "#16031"
-msgid "No matching songs in the library."
-msgstr ""
-
-msgctxt "#16032"
-msgid "Could not initialize database."
-msgstr ""
-
-msgctxt "#16033"
-msgid "Could not open database."
-msgstr ""
-
-msgctxt "#16034"
-msgid "Could not get songs from database."
-msgstr ""
-
-msgctxt "#16035"
-msgid "Party mode playlist"
-msgstr ""
-
-msgctxt "#16036"
-msgid "De-interlace (Half)"
-msgstr ""
-
-msgctxt "#16037"
-msgid "Deinterlace video"
-msgstr ""
-
-msgctxt "#16038"
-msgid "Deinterlace method"
-msgstr ""
+msgstr "कोई नहीं"
 
 msgctxt "#16039"
 msgid "Off"
-msgstr ""
-
-msgctxt "#16040"
-msgid "Auto"
-msgstr ""
-
-msgctxt "#16041"
-msgid "On"
-msgstr ""
-
-msgctxt "#16100"
-msgid "All Videos"
-msgstr ""
-
-msgctxt "#16101"
-msgid "Unwatched"
-msgstr ""
-
-msgctxt "#16102"
-msgid "Watched"
-msgstr ""
-
-msgctxt "#16103"
-msgid "Mark as watched"
-msgstr ""
-
-msgctxt "#16104"
-msgid "Mark as unwatched"
-msgstr ""
-
-msgctxt "#16105"
-msgid "Edit title"
-msgstr ""
-
-msgctxt "#16200"
-msgid "Operation was aborted"
-msgstr ""
-
-msgctxt "#16201"
-msgid "Copy failed"
-msgstr ""
-
-msgctxt "#16202"
-msgid "Failed to copy at least one file"
-msgstr ""
-
-msgctxt "#16203"
-msgid "Move failed"
-msgstr ""
-
-msgctxt "#16204"
-msgid "Failed to move at least one file"
-msgstr ""
-
-msgctxt "#16205"
-msgid "Delete failed"
-msgstr ""
-
-msgctxt "#16206"
-msgid "Failed to delete at least one file"
-msgstr ""
-
-msgctxt "#16300"
-msgid "Video scaling method"
-msgstr ""
-
-msgctxt "#16301"
-msgid "Nearest neighbour"
-msgstr ""
-
-msgctxt "#16302"
-msgid "Bilinear"
-msgstr ""
-
-msgctxt "#16303"
-msgid "Bicubic"
-msgstr ""
-
-msgctxt "#16304"
-msgid "Lanczos2"
-msgstr ""
-
-msgctxt "#16305"
-msgid "Lanczos3"
-msgstr ""
-
-msgctxt "#16306"
-msgid "Sinc8"
-msgstr ""
-
-msgctxt "#16307"
-msgid "Bicubic (software)"
-msgstr ""
-
-msgctxt "#16308"
-msgid "Lanczos (software)"
-msgstr ""
-
-msgctxt "#16309"
-msgid "Sinc (software)"
-msgstr ""
-
-msgctxt "#16310"
-msgid "Temporal"
-msgstr ""
-
-msgctxt "#16311"
-msgid "Temporal/Spatial"
-msgstr ""
-
-msgctxt "#16312"
-msgid "(VDPAU)Noise Reduction"
-msgstr ""
-
-msgctxt "#16313"
-msgid "(VDPAU)Sharpness"
-msgstr ""
-
-msgctxt "#16314"
-msgid "Inverse Telecine"
-msgstr ""
-
-msgctxt "#16315"
-msgid "Lanczos3 optimized"
-msgstr ""
-
-msgctxt "#16316"
-msgid "Auto"
-msgstr ""
-
-msgctxt "#16317"
-msgid "Temporal (Half)"
-msgstr ""
-
-msgctxt "#16318"
-msgid "Temporal/Spatial (Half)"
-msgstr ""
-
-msgctxt "#16319"
-msgid "DXVA"
-msgstr ""
-
-msgctxt "#16320"
-msgid "DXVA Bob"
-msgstr ""
-
-msgctxt "#16321"
-msgid "DXVA Best"
-msgstr ""
-
-msgctxt "#16322"
-msgid "Spline36"
-msgstr ""
-
-msgctxt "#16323"
-msgid "Spline36 optimized"
-msgstr ""
-
-msgctxt "#16324"
-msgid "Software Blend"
-msgstr ""
+msgstr "से"
 
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "वीडियो पोस्ट - प्रसंस्करण"
 
-msgctxt "#17500"
-msgid "Display sleep timeout"
-msgstr ""
+msgctxt "#19031"
+msgid "Next"
+msgstr "अगला"
 
-msgctxt "#19000"
-msgid "Switch to channel"
-msgstr ""
+msgctxt "#19177"
+msgid "Playback"
+msgstr "प्लेबैक"
 
 msgctxt "#20000"
 msgid "Saved music folder"
 msgstr "सहेजे गए संगीत फ़ोल्डर"
 
-msgctxt "#20001"
-msgid "Use external DVD player"
-msgstr ""
-
-msgctxt "#20002"
-msgid "External DVD player"
-msgstr ""
-
-msgctxt "#20003"
-msgid "Trainers folder"
-msgstr ""
-
 msgctxt "#20004"
 msgid "Screenshot folder"
 msgstr "स्क्रीनशॉट फ़ोल्डर"
-
-msgctxt "#20006"
-msgid "Playlists folder"
-msgstr ""
-
-msgctxt "#20007"
-msgid "Recordings"
-msgstr ""
-
-msgctxt "#20008"
-msgid "Screenshots"
-msgstr ""
-
-msgctxt "#20009"
-msgid "Use XBMC"
-msgstr ""
-
-msgctxt "#20011"
-msgid "Music playlists"
-msgstr ""
-
-msgctxt "#20012"
-msgid "Video playlists"
-msgstr ""
-
-msgctxt "#20013"
-msgid "Do you wish to launch the game?"
-msgstr ""
-
-msgctxt "#20014"
-msgid "Sort by: Playlist"
-msgstr ""
-
-msgctxt "#20015"
-msgid "Remote thumb"
-msgstr ""
-
-msgctxt "#20016"
-msgid "Current thumb"
-msgstr ""
-
-msgctxt "#20017"
-msgid "Local thumb"
-msgstr ""
-
-msgctxt "#20018"
-msgid "No thumb"
-msgstr ""
-
-msgctxt "#20019"
-msgid "Choose thumbnail"
-msgstr ""
-
-msgctxt "#20023"
-msgid "Conflict"
-msgstr ""
-
-msgctxt "#20024"
-msgid "Scan new"
-msgstr ""
-
-msgctxt "#20025"
-msgid "Scan all"
-msgstr ""
 
 msgctxt "#20026"
 msgid "Region"
 msgstr "क्षेत्र"
 
-msgctxt "#20037"
-msgid "Summary"
-msgstr ""
-
-msgctxt "#20038"
-msgid "Lock music window"
-msgstr ""
-
-msgctxt "#20039"
-msgid "Lock videos window"
-msgstr ""
-
-msgctxt "#20040"
-msgid "Lock pictures window"
-msgstr ""
-
-msgctxt "#20041"
-msgid "Lock programs & scripts windows"
-msgstr ""
-
-msgctxt "#20042"
-msgid "Lock file manager"
-msgstr ""
-
-msgctxt "#20043"
-msgid "Lock settings"
-msgstr ""
-
-msgctxt "#20044"
-msgid "Start fresh"
-msgstr ""
-
-msgctxt "#20045"
-msgid "Enter master mode"
-msgstr ""
-
-msgctxt "#20046"
-msgid "Leave master mode"
-msgstr ""
-
-msgctxt "#20047"
-msgid "Create profile '%s'?"
-msgstr ""
-
-msgctxt "#20048"
-msgid "Start with fresh settings"
-msgstr ""
-
-msgctxt "#20049"
-msgid "Best available"
-msgstr ""
-
-msgctxt "#20050"
-msgid "Auto-switch between 16x9 and 4x3"
-msgstr ""
-
-msgctxt "#20051"
-msgid "Treat stacked files as single file"
-msgstr ""
-
-msgctxt "#20052"
-msgid "Caution"
-msgstr ""
-
-msgctxt "#20053"
-msgid "Left master mode"
-msgstr ""
-
-msgctxt "#20054"
-msgid "Entered master mode"
-msgstr ""
-
-msgctxt "#20055"
-msgid "Allmusic.com thumb"
-msgstr ""
-
-msgctxt "#20057"
-msgid "Remove thumbnail"
-msgstr ""
-
-msgctxt "#20058"
-msgid "Add profile..."
-msgstr ""
-
-msgctxt "#20059"
-msgid "Query info for all albums"
-msgstr ""
-
 msgctxt "#20060"
 msgid "Media info"
-msgstr ""
-
-msgctxt "#20061"
-msgid "Separate"
-msgstr ""
-
-msgctxt "#20062"
-msgid "Shares with default"
-msgstr ""
-
-msgctxt "#20063"
-msgid "Shares with default (read only)"
-msgstr ""
-
-msgctxt "#20064"
-msgid "Copy default"
-msgstr ""
-
-msgctxt "#20065"
-msgid "Profile picture"
-msgstr ""
-
-msgctxt "#20066"
-msgid "Lock preferences"
-msgstr ""
-
-msgctxt "#20067"
-msgid "Edit profile"
-msgstr ""
-
-msgctxt "#20068"
-msgid "Profile lock"
-msgstr ""
-
-msgctxt "#20069"
-msgid "Could not create folder"
-msgstr ""
-
-msgctxt "#20070"
-msgid "Profile directory"
-msgstr ""
-
-msgctxt "#20071"
-msgid "Start with fresh media sources"
-msgstr ""
-
-msgctxt "#20072"
-msgid "Make sure the selected folder is writable"
-msgstr ""
-
-msgctxt "#20073"
-msgid "and that the new folder name is valid"
-msgstr ""
-
-msgctxt "#20074"
-msgid "MPAA rating"
-msgstr ""
-
-msgctxt "#20075"
-msgid "Enter master lock code"
-msgstr ""
+msgstr "मीडिया की जानकारी"
 
 msgctxt "#20076"
 msgid "Ask for master lock code on startup"
 msgstr "स्टार्टअप पर मास्टर लॉक कोड के लिए पूछें"
-
-msgctxt "#20077"
-msgid "Skin settings"
-msgstr ""
-
-msgctxt "#20078"
-msgid "- no link set -"
-msgstr ""
-
-msgctxt "#20079"
-msgid "Enable animations"
-msgstr ""
-
-msgctxt "#20080"
-msgid "Disable RSS during music"
-msgstr ""
-
-msgctxt "#20081"
-msgid "Enable shortcut buttons"
-msgstr ""
-
-msgctxt "#20082"
-msgid "Show programs in main menu"
-msgstr ""
 
 msgctxt "#20083"
 msgid "Show music info"
@@ -5965,413 +3050,25 @@ msgctxt "#20084"
 msgid "Show weather info"
 msgstr "मौसम की जानकारी दिखाएँ"
 
-msgctxt "#20085"
-msgid "Show system info"
-msgstr ""
-
-msgctxt "#20086"
-msgid "Show available disc space C: E: F:"
-msgstr ""
-
-msgctxt "#20087"
-msgid "Show available disc space E: F: G:"
-msgstr ""
-
-msgctxt "#20088"
-msgid "Weather info"
-msgstr ""
-
-msgctxt "#20089"
-msgid "Drive space free"
-msgstr ""
-
-msgctxt "#20090"
-msgid "Enter the name of an existing share"
-msgstr ""
-
-msgctxt "#20091"
-msgid "Lock code"
-msgstr ""
-
-msgctxt "#20092"
-msgid "Load profile"
-msgstr ""
-
-msgctxt "#20093"
-msgid "Profile name"
-msgstr ""
-
-msgctxt "#20094"
-msgid "Media sources"
-msgstr ""
-
-msgctxt "#20095"
-msgid "Enter profile lock code"
-msgstr ""
-
-msgctxt "#20096"
-msgid "Login screen"
-msgstr ""
-
-msgctxt "#20097"
-msgid "Fetching album info"
-msgstr ""
-
-msgctxt "#20098"
-msgid "Fetching info for album"
-msgstr ""
-
-msgctxt "#20099"
-msgid "Can't rip CD or track while playing from CD"
-msgstr ""
-
 msgctxt "#20100"
 msgid "Master lock code and settings"
 msgstr "मास्टर ताला कोड और सेटिंग्स"
-
-msgctxt "#20101"
-msgid "Entering master lock code always enables master mode"
-msgstr ""
-
-msgctxt "#20102"
-msgid "or copy from default?"
-msgstr ""
-
-msgctxt "#20103"
-msgid "Save changes to profile?"
-msgstr ""
-
-msgctxt "#20104"
-msgid "Old settings found."
-msgstr ""
-
-msgctxt "#20105"
-msgid "Do you want to use them?"
-msgstr ""
-
-msgctxt "#20106"
-msgid "Old media sources found."
-msgstr ""
-
-msgctxt "#20107"
-msgid "Separate (locked)"
-msgstr ""
-
-msgctxt "#20108"
-msgid "Root"
-msgstr ""
 
 msgctxt "#20109"
 msgid "- Zoom"
 msgstr "- ज़ूम"
 
-msgctxt "#20110"
-msgid "UPnP settings"
-msgstr ""
-
-msgctxt "#20111"
-msgid "Autostart UPnP client"
-msgstr ""
-
-msgctxt "#20112"
-msgid "Last login: %s"
-msgstr ""
-
-msgctxt "#20113"
-msgid "Never logged on"
-msgstr ""
-
-msgctxt "#20114"
-msgid "Profile %i / %i"
-msgstr ""
-
-msgctxt "#20115"
-msgid "User login / Select a profile"
-msgstr ""
-
-msgctxt "#20116"
-msgid "Use lock on login screen"
-msgstr ""
-
-msgctxt "#20117"
-msgid "Invalid lock code."
-msgstr ""
-
-msgctxt "#20118"
-msgid "This requires the master lock to be set."
-msgstr ""
-
-msgctxt "#20119"
-msgid "Would you like to set it now?"
-msgstr ""
-
-msgctxt "#20120"
-msgid "Loading program information"
-msgstr ""
-
-msgctxt "#20121"
-msgid "Party on!"
-msgstr ""
-
-msgctxt "#20122"
-msgid "True"
-msgstr ""
-
-msgctxt "#20123"
-msgid "Mixing drinks"
-msgstr ""
-
-msgctxt "#20124"
-msgid "Filling glasses"
-msgstr ""
-
-msgctxt "#20125"
-msgid "Logged on as"
-msgstr ""
-
-msgctxt "#20126"
-msgid "Log off"
-msgstr ""
-
-msgctxt "#20128"
-msgid "Go to root"
-msgstr ""
-
-msgctxt "#20129"
-msgid "Weave"
-msgstr ""
-
-msgctxt "#20130"
-msgid "Weave (inverted)"
-msgstr ""
-
-msgctxt "#20131"
-msgid "Blend"
-msgstr ""
-
-msgctxt "#20132"
-msgid "Restart video"
-msgstr ""
-
-msgctxt "#20133"
-msgid "Edit network location"
-msgstr ""
-
-msgctxt "#20134"
-msgid "Remove network location"
-msgstr ""
-
-msgctxt "#20135"
-msgid "Do you want to scan the folder?"
-msgstr ""
-
-msgctxt "#20136"
-msgid "Memory unit"
-msgstr ""
-
-msgctxt "#20137"
-msgid "Memory unit mounted"
-msgstr ""
-
-msgctxt "#20138"
-msgid "Unable to mount memory unit"
-msgstr ""
-
-msgctxt "#20139"
-msgid "In port %i, slot %i"
-msgstr ""
-
-msgctxt "#20140"
-msgid "Lock screensaver"
-msgstr ""
-
-msgctxt "#20141"
-msgid "Set"
-msgstr ""
-
 msgctxt "#20142"
 msgid "Username"
-msgstr ""
-
-msgctxt "#20143"
-msgid "Enter password for"
-msgstr ""
-
-msgctxt "#20144"
-msgid "Shutdown timer"
-msgstr ""
-
-msgctxt "#20145"
-msgid "Shutdown interval (in minutes)"
-msgstr ""
-
-msgctxt "#20146"
-msgid "Started, shutdown in %im"
-msgstr ""
-
-msgctxt "#20147"
-msgid "Shutdown in 30 minutes"
-msgstr ""
-
-msgctxt "#20148"
-msgid "Shutdown in 60 minutes"
-msgstr ""
-
-msgctxt "#20149"
-msgid "Shutdown in 120 minutes"
-msgstr ""
-
-msgctxt "#20150"
-msgid "Custom shutdown timer"
-msgstr ""
-
-msgctxt "#20151"
-msgid "Cancel shutdown timer"
-msgstr ""
-
-msgctxt "#20152"
-msgid "Lock preferences for %s"
-msgstr ""
-
-msgctxt "#20153"
-msgid "Browse..."
-msgstr ""
-
-msgctxt "#20154"
-msgid "Summary information"
-msgstr ""
-
-msgctxt "#20155"
-msgid "Storage information"
-msgstr ""
-
-msgctxt "#20156"
-msgid "Hard disk information"
-msgstr ""
-
-msgctxt "#20157"
-msgid "DVD-ROM information"
-msgstr ""
-
-msgctxt "#20158"
-msgid "Network information"
-msgstr ""
-
-msgctxt "#20159"
-msgid "Video information"
-msgstr ""
-
-msgctxt "#20160"
-msgid "Hardware information"
-msgstr ""
-
-msgctxt "#20161"
-msgid "Total"
-msgstr ""
-
-msgctxt "#20162"
-msgid "Used"
-msgstr ""
-
-msgctxt "#20163"
-msgid "of"
-msgstr ""
-
-msgctxt "#20164"
-msgid "Locking not supported"
-msgstr ""
-
-msgctxt "#20165"
-msgid "Not locked"
-msgstr ""
-
-msgctxt "#20166"
-msgid "Locked"
-msgstr ""
-
-msgctxt "#20167"
-msgid "Frozen"
-msgstr ""
-
-msgctxt "#20168"
-msgid "Requires reset"
-msgstr ""
-
-msgctxt "#20169"
-msgid "Week"
-msgstr ""
-
-msgctxt "#20170"
-msgid "Line"
-msgstr ""
-
-msgctxt "#20171"
-msgid "Windows network (SMB)"
-msgstr ""
-
-msgctxt "#20172"
-msgid "XBMSP server"
-msgstr ""
-
-msgctxt "#20173"
-msgid "FTP server"
-msgstr ""
-
-msgctxt "#20174"
-msgid "iTunes music share (DAAP)"
-msgstr ""
-
-msgctxt "#20175"
-msgid "UPnP server"
-msgstr ""
+msgstr "उपयोगकर्ता नाम"
 
 msgctxt "#20176"
 msgid "Show video info"
 msgstr "वीडियो जानकारी दिखाएँ"
 
-msgctxt "#20177"
-msgid "Done"
-msgstr ""
-
-msgctxt "#20178"
-msgid "Shift"
-msgstr ""
-
-msgctxt "#20179"
-msgid "Caps Lock"
-msgstr ""
-
-msgctxt "#20180"
-msgid "Symbols"
-msgstr ""
-
-msgctxt "#20181"
-msgid "Backspace"
-msgstr ""
-
-msgctxt "#20182"
-msgid "Space"
-msgstr ""
-
-msgctxt "#20183"
-msgid "Reload skin"
-msgstr ""
-
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"
 msgstr "EXIF जानकारी का उपयोग कर चित्रों घुमाएँ"
-
-msgctxt "#20185"
-msgid "Use poster view styles for TV shows"
-msgstr ""
-
-msgctxt "#20186"
-msgid "Please wait"
-msgstr ""
-
-msgctxt "#20187"
-msgid "UPnP"
-msgstr ""
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -6379,7 +3076,7 @@ msgstr "साजिश और समीक्षा के लिए ऑटो 
 
 msgctxt "#20190"
 msgid "Custom"
-msgstr ""
+msgstr "रिवाज"
 
 msgctxt "#20191"
 msgid "Enable debug logging"
@@ -6397,10 +3094,6 @@ msgctxt "#20194"
 msgid "Default service for artist information"
 msgstr "कलाकार जानकारी के लिए डिफ़ॉल्ट सेवा"
 
-msgctxt "#20195"
-msgid "Change scraper"
-msgstr ""
-
 msgctxt "#20196"
 msgid "Export music library"
 msgstr "निर्यात संगीत पुस्तकालय"
@@ -6409,717 +3102,49 @@ msgctxt "#20197"
 msgid "Import music library"
 msgstr "संगीत पुस्तकालय आयात"
 
-msgctxt "#20198"
-msgid "No artist found!"
-msgstr ""
-
-msgctxt "#20199"
-msgid "Downloading artist info failed"
-msgstr ""
-
-msgctxt "#20250"
-msgid "Party on! (videos)"
-msgstr ""
-
-msgctxt "#20251"
-msgid "Mixing drinks (videos)"
-msgstr ""
-
-msgctxt "#20252"
-msgid "Filling glasses (videos)"
-msgstr ""
-
-msgctxt "#20253"
-msgid "WebDAV server (HTTP)"
-msgstr ""
-
-msgctxt "#20254"
-msgid "WebDAV server (HTTPS)"
-msgstr ""
-
-msgctxt "#20255"
-msgid "First logon, edit your profile"
-msgstr ""
-
-msgctxt "#20256"
-msgid "HTS Tvheadend client"
-msgstr ""
-
-msgctxt "#20257"
-msgid "VDR Streamdev client"
-msgstr ""
-
-msgctxt "#20258"
-msgid "MythTV client"
-msgstr ""
-
-msgctxt "#20259"
-msgid "Network Filesystem (NFS)"
-msgstr ""
-
-msgctxt "#20260"
-msgid "Secure Shell (SSH/SFTP)"
-msgstr ""
-
-msgctxt "#20261"
-msgid "Apple Filing Protocol (AFP)"
-msgstr ""
-
-msgctxt "#20300"
-msgid "Web server directory (HTTP)"
-msgstr ""
-
-msgctxt "#20301"
-msgid "Web server directory (HTTPS)"
-msgstr ""
-
-msgctxt "#20302"
-msgid "Unable to write to folder:"
-msgstr ""
-
-msgctxt "#20303"
-msgid "Do you want to skip and proceed?"
-msgstr ""
-
-msgctxt "#20304"
-msgid "RSS Feed"
-msgstr ""
-
-msgctxt "#20307"
-msgid "Secondary DNS"
-msgstr ""
-
-msgctxt "#20308"
-msgid "DHCP server:"
-msgstr ""
-
-msgctxt "#20309"
-msgid "Make new folder"
-msgstr ""
-
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr ""
-
-msgctxt "#20311"
-msgid "Unknown or onboard (protected)"
-msgstr ""
-
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr ""
-
-msgctxt "#20314"
-msgid "Videos - Library"
-msgstr ""
-
-msgctxt "#20316"
-msgid "Sort by: ID"
-msgstr ""
-
-msgctxt "#20324"
-msgid "Play part..."
-msgstr ""
-
-msgctxt "#20325"
-msgid "Calibration reset"
-msgstr ""
-
-msgctxt "#20326"
-msgid "This will reset the calibration values for %s"
-msgstr ""
-
-msgctxt "#20327"
-msgid "to it's default values."
-msgstr ""
-
-msgctxt "#20328"
-msgid "Browse for destination"
-msgstr ""
-
-msgctxt "#20329"
-msgid "Movies are in separate folders that match the movie title"
-msgstr ""
-
-msgctxt "#20330"
-msgid "Use folder names for lookups"
-msgstr ""
-
 msgctxt "#20331"
 msgid "File"
-msgstr ""
-
-msgctxt "#20332"
-msgid "Use file or folder names in lookups?"
-msgstr ""
-
-msgctxt "#20333"
-msgid "Set content"
-msgstr ""
-
-msgctxt "#20334"
-msgid "Folder"
-msgstr ""
-
-msgctxt "#20335"
-msgid "Look for content recursively?"
-msgstr ""
-
-msgctxt "#20336"
-msgid "Unlock sources"
-msgstr ""
-
-msgctxt "#20337"
-msgid "Actor"
-msgstr ""
-
-msgctxt "#20338"
-msgid "Movie"
-msgstr ""
-
-msgctxt "#20339"
-msgid "Director"
-msgstr ""
-
-msgctxt "#20340"
-msgid "Do you want to remove all items within"
-msgstr ""
-
-msgctxt "#20341"
-msgid "this path from the XBMC library?"
-msgstr ""
+msgstr "फ़ाइल"
 
 msgctxt "#20342"
 msgid "Movies"
-msgstr ""
-
-msgctxt "#20343"
-msgid "TV shows"
-msgstr ""
-
-msgctxt "#20344"
-msgid "This directory contains"
-msgstr ""
-
-msgctxt "#20345"
-msgid "Run automated scan"
-msgstr ""
-
-msgctxt "#20346"
-msgid "Scan recursively"
-msgstr ""
-
-msgctxt "#20347"
-msgid "as"
-msgstr ""
-
-msgctxt "#20348"
-msgid "Directors"
-msgstr ""
-
-msgctxt "#20349"
-msgid "No video files found in this path!"
-msgstr ""
-
-msgctxt "#20350"
-msgid "votes"
-msgstr ""
-
-msgctxt "#20351"
-msgid "TV show information"
-msgstr ""
-
-msgctxt "#20352"
-msgid "Episode information"
-msgstr ""
-
-msgctxt "#20353"
-msgid "Loading TV show details"
-msgstr ""
-
-msgctxt "#20354"
-msgid "Fetching episode guide"
-msgstr ""
-
-msgctxt "#20355"
-msgid "Loading info for episodes in directory"
-msgstr ""
-
-msgctxt "#20356"
-msgid "Select TV show:"
-msgstr ""
-
-msgctxt "#20357"
-msgid "Enter the TV show name"
-msgstr ""
-
-msgctxt "#20358"
-msgid "Season %i"
-msgstr ""
-
-msgctxt "#20359"
-msgid "Episode"
-msgstr ""
-
-msgctxt "#20360"
-msgid "Episodes"
-msgstr ""
-
-msgctxt "#20361"
-msgid "Loading episode details"
-msgstr ""
-
-msgctxt "#20362"
-msgid "Remove episode from library"
-msgstr ""
-
-msgctxt "#20363"
-msgid "Remove TV show from library"
-msgstr ""
-
-msgctxt "#20364"
-msgid "TV show"
-msgstr ""
-
-msgctxt "#20365"
-msgid "Episode plot"
-msgstr ""
-
-msgctxt "#20366"
-msgid "* All seasons"
-msgstr ""
-
-msgctxt "#20367"
-msgid "Hide watched"
-msgstr ""
-
-msgctxt "#20368"
-msgid "Prod code"
-msgstr ""
+msgstr "सिनेमा"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
 msgstr "उन्वात्चेद मदों के लिए साजिश दिखाएँ"
 
-msgctxt "#20370"
-msgid "* Hidden to prevent spoilers *"
-msgstr ""
-
-msgctxt "#20371"
-msgid "Set season thumb"
-msgstr ""
-
-msgctxt "#20372"
-msgid "Season image"
-msgstr ""
-
-msgctxt "#20373"
-msgid "Season"
-msgstr ""
-
-msgctxt "#20374"
-msgid "Downloading movie information"
-msgstr ""
-
-msgctxt "#20375"
-msgid "Unassign content"
-msgstr ""
-
-msgctxt "#20376"
-msgid "Original title"
-msgstr ""
-
-msgctxt "#20377"
-msgid "Refresh TV show information"
-msgstr ""
-
-msgctxt "#20378"
-msgid "Refresh info for all episodes?"
-msgstr ""
-
-msgctxt "#20379"
-msgid "Selected folder contains a single TV show"
-msgstr ""
-
-msgctxt "#20380"
-msgid "Exclude selected folder from scans"
-msgstr ""
-
-msgctxt "#20381"
-msgid "Specials"
-msgstr ""
-
-msgctxt "#20382"
-msgid "Automatically grab season thumbs"
-msgstr ""
-
-msgctxt "#20383"
-msgid "Selected folder contains a single video"
-msgstr ""
-
-msgctxt "#20384"
-msgid "Link to TV show"
-msgstr ""
-
-msgctxt "#20385"
-msgid "Remove link to TV show"
-msgstr ""
-
-msgctxt "#20386"
-msgid "Recently added movies"
-msgstr ""
-
-msgctxt "#20387"
-msgid "Recently added episodes"
-msgstr ""
-
-msgctxt "#20388"
-msgid "Studios"
-msgstr ""
-
-msgctxt "#20389"
-msgid "Music videos"
-msgstr ""
-
-msgctxt "#20390"
-msgid "Recently added music videos"
-msgstr ""
-
-msgctxt "#20391"
-msgid "Music video"
-msgstr ""
-
-msgctxt "#20392"
-msgid "Remove music video from library"
-msgstr ""
-
 msgctxt "#20393"
 msgid "Music video information"
 msgstr "संगीत वीडियो की जानकारी"
-
-msgctxt "#20394"
-msgid "Loading music video information"
-msgstr ""
-
-msgctxt "#20395"
-msgid "Mixed"
-msgstr ""
-
-msgctxt "#20396"
-msgid "Go to albums by artist"
-msgstr ""
-
-msgctxt "#20397"
-msgid "Go to album"
-msgstr ""
-
-msgctxt "#20398"
-msgid "Play song"
-msgstr ""
-
-msgctxt "#20399"
-msgid "Go to music videos from album"
-msgstr ""
-
-msgctxt "#20400"
-msgid "Go to music videos by artist"
-msgstr ""
-
-msgctxt "#20401"
-msgid "Play music video"
-msgstr ""
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
 msgstr "अभिनेता थंबनेल डाउनलोड जब पुस्तकालय को जोड़ने"
 
-msgctxt "#20403"
-msgid "Set actor thumb"
-msgstr ""
-
-msgctxt "#20405"
-msgid "Remove episode bookmark"
-msgstr ""
-
-msgctxt "#20406"
-msgid "Set episode bookmark"
-msgstr ""
-
-msgctxt "#20407"
-msgid "Scraper settings"
-msgstr ""
-
-msgctxt "#20408"
-msgid "Downloading music video information"
-msgstr ""
-
-msgctxt "#20409"
-msgid "Downloading TV show information"
-msgstr ""
-
-msgctxt "#20410"
-msgid "Trailer"
-msgstr ""
-
-msgctxt "#20411"
-msgid "Flatten"
-msgstr ""
-
 msgctxt "#20412"
 msgid "Flatten TV shows"
 msgstr "टीवी शो समतल"
-
-msgctxt "#20413"
-msgid "Get fanart"
-msgstr ""
-
-msgctxt "#20414"
-msgid "Show Fanart in video and music libraries"
-msgstr ""
-
-msgctxt "#20415"
-msgid "Scanning for new content"
-msgstr ""
-
-msgctxt "#20416"
-msgid "First aired"
-msgstr ""
-
-msgctxt "#20417"
-msgid "Writer"
-msgstr ""
-
-msgctxt "#20419"
-msgid "Replace file names with library titles"
-msgstr ""
-
-msgctxt "#20420"
-msgid "Never"
-msgstr ""
-
-msgctxt "#20421"
-msgid "If only one season"
-msgstr ""
-
-msgctxt "#20422"
-msgid "Always"
-msgstr ""
-
-msgctxt "#20423"
-msgid "Has trailer"
-msgstr ""
-
-msgctxt "#20424"
-msgid "False"
-msgstr ""
-
-msgctxt "#20425"
-msgid "Fanart slideshow"
-msgstr ""
-
-msgctxt "#20426"
-msgid "Export to a single file or separate"
-msgstr ""
-
-msgctxt "#20427"
-msgid "files per entry?"
-msgstr ""
-
-msgctxt "#20428"
-msgid "Single file"
-msgstr ""
-
-msgctxt "#20429"
-msgid "Separate"
-msgstr ""
-
-msgctxt "#20430"
-msgid "Export thumbnails and fanart?"
-msgstr ""
-
-msgctxt "#20431"
-msgid "Overwrite old files?"
-msgstr ""
-
-msgctxt "#20432"
-msgid "Exclude path from library updates"
-msgstr ""
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
 msgstr "निकालें थंबनेल और वीडियो जानकारी"
 
-msgctxt "#20434"
-msgid "Sets"
-msgstr ""
-
-msgctxt "#20435"
-msgid "Set movieset thumb"
-msgstr ""
-
-msgctxt "#20436"
-msgid "Export actor thumbs?"
-msgstr ""
-
-msgctxt "#20437"
-msgid "Choose fanart"
-msgstr ""
-
-msgctxt "#20438"
-msgid "Local fanart"
-msgstr ""
-
-msgctxt "#20439"
-msgid "No fanart"
-msgstr ""
-
-msgctxt "#20440"
-msgid "Current fanart"
-msgstr ""
-
-msgctxt "#20441"
-msgid "Remote fanart"
-msgstr ""
-
-msgctxt "#20442"
-msgid "Change content"
-msgstr ""
-
-msgctxt "#20443"
-msgid "Do you want to refresh info for all"
-msgstr ""
-
-msgctxt "#20444"
-msgid "items within this path?"
-msgstr ""
-
-msgctxt "#20445"
-msgid "Fanart"
-msgstr ""
-
-msgctxt "#20446"
-msgid "Locally stored information found."
-msgstr ""
-
-msgctxt "#20447"
-msgid "Ignore and refresh from internet?"
-msgstr ""
-
-msgctxt "#20448"
-msgid "Could not download information"
-msgstr ""
-
-msgctxt "#20449"
-msgid "Unable to connect to remote server"
-msgstr ""
-
-msgctxt "#20450"
-msgid "Would you like to continue scanning?"
-msgstr ""
-
-msgctxt "#20451"
-msgid "Countries"
-msgstr ""
-
-msgctxt "#20452"
-msgid "episode"
-msgstr ""
-
-msgctxt "#20453"
-msgid "episodes"
-msgstr ""
-
-msgctxt "#20454"
-msgid "Listener"
-msgstr ""
-
-msgctxt "#20455"
-msgid "Listeners"
-msgstr ""
-
-msgctxt "#20456"
-msgid "Set movieset fanart"
-msgstr ""
-
-msgctxt "#20457"
-msgid "Movie set"
-msgstr ""
-
-msgctxt "#20458"
-msgid "Group movies in sets"
-msgstr ""
-
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "दिखाएँ छुपी फ़ाइलें और निर्देशिका"
-
-msgctxt "#21331"
-msgid "TuxBox client"
-msgstr ""
-
-msgctxt "#21332"
-msgid "WARNING: Target TuxBox device is in recording-mode!"
-msgstr ""
-
-msgctxt "#21333"
-msgid "The stream will be stopped!"
-msgstr ""
-
-msgctxt "#21334"
-msgid "Zap to channel: %s failed!"
-msgstr ""
-
-msgctxt "#21335"
-msgid "Are you sure to start the stream?"
-msgstr ""
-
-msgctxt "#21336"
-msgid "Connecting to: %s"
-msgstr ""
-
-msgctxt "#21337"
-msgid "TuxBox device"
-msgstr ""
-
-msgctxt "#21359"
-msgid "Add media share..."
-msgstr ""
 
 msgctxt "#21360"
 msgid "Share video and music libraries through UPnP"
 msgstr "शेयर और UPnP के माध्यम से वीडियो संगीत पुस्तकालयों"
 
-msgctxt "#21364"
-msgid "Edit media share"
-msgstr ""
-
-msgctxt "#21365"
-msgid "Remove media share"
-msgstr ""
-
 msgctxt "#21366"
 msgid "Subtitle folder"
 msgstr "उपशीर्षक फ़ोल्डर"
 
-msgctxt "#21367"
-msgid "Movie & alternate subtitle directory"
-msgstr ""
-
-msgctxt "#21368"
-msgid "Override ASS/SSA subtitles fonts"
-msgstr ""
-
 msgctxt "#21369"
 msgid "Enable mouse and Touch Screen support"
 msgstr "माउस सक्षम"
-
-msgctxt "#21370"
-msgid "Play navigation sounds during media playback"
-msgstr ""
-
-msgctxt "#21371"
-msgid "Thumbnail"
-msgstr ""
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
@@ -7129,305 +3154,25 @@ msgctxt "#21373"
 msgid "Video output"
 msgstr "वीडियो आउटपुट"
 
-msgctxt "#21374"
-msgid "Video aspect"
-msgstr ""
-
 msgctxt "#21375"
 msgid "Normal"
-msgstr ""
-
-msgctxt "#21376"
-msgid "Letterbox"
-msgstr ""
-
-msgctxt "#21377"
-msgid "Widescreen"
-msgstr ""
-
-msgctxt "#21378"
-msgid "Enable 480p"
-msgstr ""
-
-msgctxt "#21379"
-msgid "Enable 720p"
-msgstr ""
-
-msgctxt "#21380"
-msgid "Enable 1080i"
-msgstr ""
-
-msgctxt "#21381"
-msgid "Enter name of new playlist"
-msgstr ""
+msgstr "सामान्य"
 
 msgctxt "#21382"
 msgid "Show \"Add source\" buttons in file lists"
 msgstr "दिखाएँ फ़ाइल सूची में बटन \"स्रोत\" जोड़ें"
 
-msgctxt "#21383"
-msgid "Enable scrollbars"
-msgstr ""
-
-msgctxt "#21384"
-msgid "Make watched filtering a toggle in video library"
-msgstr ""
-
 msgctxt "#21385"
 msgid "Open"
-msgstr ""
-
-msgctxt "#21386"
-msgid "Acoustic management level"
-msgstr ""
-
-msgctxt "#21387"
-msgid "Fast"
-msgstr ""
-
-msgctxt "#21388"
-msgid "Quiet"
-msgstr ""
+msgstr "खुला है"
 
 msgctxt "#21389"
 msgid "Enable custom background"
 msgstr "कस्टम पृष्ठभूमि सक्षम"
 
-msgctxt "#21390"
-msgid "Power management level"
-msgstr ""
-
-msgctxt "#21391"
-msgid "High power"
-msgstr ""
-
-msgctxt "#21392"
-msgid "Low power"
-msgstr ""
-
-msgctxt "#21393"
-msgid "High standby"
-msgstr ""
-
-msgctxt "#21394"
-msgid "Low standby"
-msgstr ""
-
-msgctxt "#21395"
-msgid "Unable to cache files bigger than 4GB"
-msgstr ""
-
-msgctxt "#21396"
-msgid "Chapter"
-msgstr ""
-
-msgctxt "#21397"
-msgid "High quality pixel shader v2"
-msgstr ""
-
-msgctxt "#21398"
-msgid "Enable playlist at startup"
-msgstr ""
-
-msgctxt "#21399"
-msgid "Use tween animations"
-msgstr ""
-
-msgctxt "#21400"
-msgid "contains"
-msgstr ""
-
-msgctxt "#21401"
-msgid "does not contain"
-msgstr ""
-
-msgctxt "#21402"
-msgid "is"
-msgstr ""
-
-msgctxt "#21403"
-msgid "is not"
-msgstr ""
-
-msgctxt "#21404"
-msgid "starts with"
-msgstr ""
-
-msgctxt "#21405"
-msgid "ends with"
-msgstr ""
-
-msgctxt "#21406"
-msgid "greater than"
-msgstr ""
-
-msgctxt "#21407"
-msgid "less than"
-msgstr ""
-
-msgctxt "#21408"
-msgid "after"
-msgstr ""
-
-msgctxt "#21409"
-msgid "before"
-msgstr ""
-
-msgctxt "#21410"
-msgid "in the last"
-msgstr ""
-
-msgctxt "#21411"
-msgid "not in the last"
-msgstr ""
-
-msgctxt "#21412"
-msgid "Scrapers"
-msgstr ""
-
-msgctxt "#21413"
-msgid "Default movie scraper"
-msgstr ""
-
-msgctxt "#21414"
-msgid "Default tvshow scraper"
-msgstr ""
-
-msgctxt "#21415"
-msgid "Default music video scraper"
-msgstr ""
-
-msgctxt "#21416"
-msgid "Enable fallback based on scraper language"
-msgstr ""
-
 msgctxt "#21417"
 msgid "- Settings"
 msgstr "- सेटिंग्स"
-
-msgctxt "#21418"
-msgid "Multilingual"
-msgstr ""
-
-msgctxt "#21419"
-msgid "No scrapers present"
-msgstr ""
-
-msgctxt "#21420"
-msgid "Value to match"
-msgstr ""
-
-msgctxt "#21421"
-msgid "Smart playlist rule"
-msgstr ""
-
-msgctxt "#21422"
-msgid "Match items where"
-msgstr ""
-
-msgctxt "#21423"
-msgid "New rule..."
-msgstr ""
-
-msgctxt "#21424"
-msgid "Items must match"
-msgstr ""
-
-msgctxt "#21425"
-msgid "all of the rules"
-msgstr ""
-
-msgctxt "#21426"
-msgid "one or more of the rules"
-msgstr ""
-
-msgctxt "#21427"
-msgid "Limit to"
-msgstr ""
-
-msgctxt "#21428"
-msgid "No limit"
-msgstr ""
-
-msgctxt "#21429"
-msgid "Order by"
-msgstr ""
-
-msgctxt "#21430"
-msgid "ascending"
-msgstr ""
-
-msgctxt "#21431"
-msgid "descending"
-msgstr ""
-
-msgctxt "#21432"
-msgid "Edit smart playlist"
-msgstr ""
-
-msgctxt "#21433"
-msgid "Name of the playlist"
-msgstr ""
-
-msgctxt "#21434"
-msgid "Find items where"
-msgstr ""
-
-msgctxt "#21435"
-msgid "Edit"
-msgstr ""
-
-msgctxt "#21436"
-msgid "%i items"
-msgstr ""
-
-msgctxt "#21437"
-msgid "New smart playlist..."
-msgstr ""
-
-msgctxt "#21438"
-msgid "%c Drive"
-msgstr ""
-
-msgctxt "#21439"
-msgid "Edit party mode rules"
-msgstr ""
-
-msgctxt "#21440"
-msgid "Home folder"
-msgstr ""
-
-msgctxt "#21441"
-msgid "Watched count"
-msgstr ""
-
-msgctxt "#21442"
-msgid "Episode title"
-msgstr ""
-
-msgctxt "#21443"
-msgid "Video resolution"
-msgstr ""
-
-msgctxt "#21444"
-msgid "Audio channels"
-msgstr ""
-
-msgctxt "#21445"
-msgid "Video codec"
-msgstr ""
-
-msgctxt "#21446"
-msgid "Audio codec"
-msgstr ""
-
-msgctxt "#21447"
-msgid "Audio language"
-msgstr ""
-
-msgctxt "#21448"
-msgid "Subtitle language"
-msgstr ""
 
 msgctxt "#21449"
 msgid "Remote control sends keyboard presses"
@@ -7437,345 +3182,33 @@ msgctxt "#21450"
 msgid "- Edit"
 msgstr "- संपादित करें"
 
-msgctxt "#21451"
-msgid "Internet connection required."
-msgstr ""
-
 msgctxt "#21452"
 msgid "Get More..."
 msgstr "और जाओ ..."
 
-msgctxt "#21453"
-msgid "Root filesystem"
-msgstr ""
-
-msgctxt "#21454"
-msgid "Cache full"
-msgstr ""
-
-msgctxt "#21455"
-msgid "Cache filled before reaching required amount for continous playback"
-msgstr ""
-
-msgctxt "#21460"
-msgid "Subtitle location"
-msgstr ""
-
-msgctxt "#21461"
-msgid "Fixed"
-msgstr ""
-
-msgctxt "#21462"
-msgid "Bottom of video"
-msgstr ""
-
-msgctxt "#21463"
-msgid "Below video"
-msgstr ""
-
-msgctxt "#21464"
-msgid "Top of video"
-msgstr ""
-
-msgctxt "#21465"
-msgid "Above video"
-msgstr ""
-
-msgctxt "#21800"
-msgid "File name"
-msgstr ""
-
-msgctxt "#21801"
-msgid "File path"
-msgstr ""
-
-msgctxt "#21802"
-msgid "File size"
-msgstr ""
-
-msgctxt "#21803"
-msgid "File date/time"
-msgstr ""
-
-msgctxt "#21804"
-msgid "Slide index"
-msgstr ""
-
 msgctxt "#21805"
 msgid "Resolution"
-msgstr ""
+msgstr "संकल्प"
 
 msgctxt "#21806"
 msgid "Comment"
-msgstr ""
-
-msgctxt "#21807"
-msgid "Colour/B&W"
-msgstr ""
-
-msgctxt "#21808"
-msgid "JPEG process"
-msgstr ""
-
-msgctxt "#21820"
-msgid "Date/Time"
-msgstr ""
-
-msgctxt "#21821"
-msgid "Description"
-msgstr ""
-
-msgctxt "#21822"
-msgid "Camera make"
-msgstr ""
-
-msgctxt "#21823"
-msgid "Camera model"
-msgstr ""
-
-msgctxt "#21824"
-msgid "EXIF comment"
-msgstr ""
-
-msgctxt "#21825"
-msgid "Firmware"
-msgstr ""
-
-msgctxt "#21826"
-msgid "Aperture"
-msgstr ""
-
-msgctxt "#21827"
-msgid "Focal length"
-msgstr ""
-
-msgctxt "#21828"
-msgid "Focus distance"
-msgstr ""
-
-msgctxt "#21829"
-msgid "Exposure"
-msgstr ""
-
-msgctxt "#21830"
-msgid "Exposure time"
-msgstr ""
-
-msgctxt "#21831"
-msgid "Exposure bias"
-msgstr ""
-
-msgctxt "#21832"
-msgid "Exposure mode"
-msgstr ""
-
-msgctxt "#21833"
-msgid "Flash used"
-msgstr ""
-
-msgctxt "#21834"
-msgid "White-balance"
-msgstr ""
-
-msgctxt "#21835"
-msgid "Light source"
-msgstr ""
-
-msgctxt "#21836"
-msgid "Metering mode"
-msgstr ""
-
-msgctxt "#21837"
-msgid "ISO"
-msgstr ""
-
-msgctxt "#21838"
-msgid "Digital zoom"
-msgstr ""
-
-msgctxt "#21839"
-msgid "CCD width"
-msgstr ""
-
-msgctxt "#21840"
-msgid "GPS latitude"
-msgstr ""
-
-msgctxt "#21841"
-msgid "GPS longitude"
-msgstr ""
-
-msgctxt "#21842"
-msgid "GPS altitude"
-msgstr ""
-
-msgctxt "#21843"
-msgid "Orientation"
-msgstr ""
-
-msgctxt "#21860"
-msgid "Supplemental categories"
-msgstr ""
-
-msgctxt "#21861"
-msgid "Keywords"
-msgstr ""
-
-msgctxt "#21862"
-msgid "Caption"
-msgstr ""
-
-msgctxt "#21863"
-msgid "Author"
-msgstr ""
-
-msgctxt "#21864"
-msgid "Headline"
-msgstr ""
-
-msgctxt "#21865"
-msgid "Special instructions"
-msgstr ""
-
-msgctxt "#21866"
-msgid "Category"
-msgstr ""
-
-msgctxt "#21867"
-msgid "Byline"
-msgstr ""
-
-msgctxt "#21868"
-msgid "Byline title"
-msgstr ""
-
-msgctxt "#21869"
-msgid "Credit"
-msgstr ""
-
-msgctxt "#21870"
-msgid "Source"
-msgstr ""
-
-msgctxt "#21871"
-msgid "Copyright notice"
-msgstr ""
-
-msgctxt "#21872"
-msgid "Object name"
-msgstr ""
-
-msgctxt "#21873"
-msgid "City"
-msgstr ""
-
-msgctxt "#21874"
-msgid "State"
-msgstr ""
+msgstr "टिप्पणी"
 
 msgctxt "#21875"
 msgid "Country"
-msgstr ""
-
-msgctxt "#21876"
-msgid "Original Tx Reference"
-msgstr ""
-
-msgctxt "#21877"
-msgid "Date created"
-msgstr ""
-
-msgctxt "#21878"
-msgid "Copyright flag"
-msgstr ""
-
-msgctxt "#21879"
-msgid "Country code"
-msgstr ""
-
-msgctxt "#21880"
-msgid "Reference service"
-msgstr ""
+msgstr "देश"
 
 msgctxt "#21881"
 msgid "Allow control of XBMC via UPnP"
 msgstr "XBMC के UPnP के माध्यम से नियंत्रण की अनुमति दें"
 
-msgctxt "#21882"
-msgid "Attempt to skip introduction before DVD menu"
-msgstr ""
-
 msgctxt "#21883"
 msgid "Saved music"
 msgstr "सहेजे गए संगीत"
 
-msgctxt "#21884"
-msgid "Query info for all artists"
-msgstr ""
-
-msgctxt "#21885"
-msgid "Downloading album information"
-msgstr ""
-
-msgctxt "#21886"
-msgid "Downloading artist information"
-msgstr ""
-
-msgctxt "#21887"
-msgid "Biography"
-msgstr ""
-
-msgctxt "#21888"
-msgid "Discography"
-msgstr ""
-
-msgctxt "#21889"
-msgid "Searching artist"
-msgstr ""
-
-msgctxt "#21890"
-msgid "Select artist"
-msgstr ""
-
 msgctxt "#21891"
 msgid "Artist information"
-msgstr ""
-
-msgctxt "#21892"
-msgid "Instruments"
-msgstr ""
-
-msgctxt "#21893"
-msgid "Born"
-msgstr ""
-
-msgctxt "#21894"
-msgid "Formed"
-msgstr ""
-
-msgctxt "#21895"
-msgid "Themes"
-msgstr ""
-
-msgctxt "#21896"
-msgid "Disbanded"
-msgstr ""
-
-msgctxt "#21897"
-msgid "Died"
-msgstr ""
-
-msgctxt "#21898"
-msgid "Years active"
-msgstr ""
-
-msgctxt "#21899"
-msgid "Label"
-msgstr ""
-
-msgctxt "#21900"
-msgid "Born/Formed"
-msgstr ""
+msgstr "कलाकार जानकारी"
 
 msgctxt "#22000"
 msgid "Update library on startup"
@@ -7785,81 +3218,9 @@ msgctxt "#22001"
 msgid "Hide progress of library updates"
 msgstr "पुस्तकालय अद्यतन की प्रगति छुपाएँ"
 
-msgctxt "#22002"
-msgid "- DNS suffix"
-msgstr ""
-
-msgctxt "#22003"
-msgid "%2.3fs"
-msgstr ""
-
-msgctxt "#22004"
-msgid "Delayed by: %2.3fs"
-msgstr ""
-
-msgctxt "#22005"
-msgid "Ahead by: %2.3fs"
-msgstr ""
-
-msgctxt "#22006"
-msgid "Subtitle offset"
-msgstr ""
-
-msgctxt "#22007"
-msgid "OpenGL vendor:"
-msgstr ""
-
-msgctxt "#22008"
-msgid "OpenGL renderer:"
-msgstr ""
-
-msgctxt "#22009"
-msgid "OpenGL version:"
-msgstr ""
-
-msgctxt "#22010"
-msgid "GPU temperature:"
-msgstr ""
-
-msgctxt "#22011"
-msgid "CPU temperature:"
-msgstr ""
-
-msgctxt "#22012"
-msgid "Total memory"
-msgstr ""
-
-msgctxt "#22013"
-msgid "Profile data"
-msgstr ""
-
 msgctxt "#22014"
 msgid "Use dim if paused during video playback"
 msgstr "मंद का प्रयोग करें अगर वीडियो प्लेबैक के दौरान रोके गए"
-
-msgctxt "#22015"
-msgid "All recordings"
-msgstr ""
-
-msgctxt "#22016"
-msgid "By title"
-msgstr ""
-
-msgctxt "#22017"
-msgid "By group"
-msgstr ""
-
-msgctxt "#22018"
-msgid "Live channels"
-msgstr ""
-
-msgctxt "#22019"
-msgid "Recordings by title"
-msgstr ""
-
-msgctxt "#22020"
-msgid "Guide"
-msgstr ""
 
 msgctxt "#22021"
 msgid "Allowed error in aspect ratio to minimize black bars"
@@ -7868,14 +3229,6 @@ msgstr "पहलू अनुपात में रख सकते त्र�
 msgctxt "#22022"
 msgid "Show video files in listings"
 msgstr "लिस्टिंग में वीडियो फ़ाइलों को दिखाएँ"
-
-msgctxt "#22023"
-msgid "DirectX vendor:"
-msgstr ""
-
-msgctxt "#22024"
-msgid "Direct3D version:"
-msgstr ""
 
 msgctxt "#22030"
 msgid "Font"
@@ -7893,14 +3246,6 @@ msgctxt "#22033"
 msgid "- Charset"
 msgstr "- वर्ण सेट"
 
-msgctxt "#22034"
-msgid "Export karaoke titles as HTML"
-msgstr ""
-
-msgctxt "#22035"
-msgid "Export karaoke titles as CSV"
-msgstr ""
-
 msgctxt "#22036"
 msgid "Import karaoke titles..."
 msgstr "आयात कराओके खिताब ..."
@@ -7913,81 +3258,13 @@ msgctxt "#22038"
 msgid "Export karaoke titles..."
 msgstr "कराओके खिताब निर्यात ..."
 
-msgctxt "#22039"
-msgid "Enter song number"
-msgstr ""
-
-msgctxt "#22040"
-msgid "white/green"
-msgstr ""
-
-msgctxt "#22041"
-msgid "white/red"
-msgstr ""
-
-msgctxt "#22042"
-msgid "white/blue"
-msgstr ""
-
-msgctxt "#22043"
-msgid "black/white"
-msgstr ""
-
 msgctxt "#22079"
 msgid "Default select action"
 msgstr "डिफ़ॉल्ट का चयन करें कार्रवाई"
 
-msgctxt "#22080"
-msgid "Choose"
-msgstr ""
-
-msgctxt "#22081"
-msgid "Show Information"
-msgstr ""
-
-msgctxt "#22082"
-msgid "More..."
-msgstr ""
-
-msgctxt "#22083"
-msgid "Play all"
-msgstr ""
-
-msgctxt "#23049"
-msgid "Teletext not available"
-msgstr ""
-
 msgctxt "#23050"
 msgid "Activate Teletext"
 msgstr "टेली - पाठ सक्रिय करें"
-
-msgctxt "#23051"
-msgid "Part %i"
-msgstr ""
-
-msgctxt "#23052"
-msgid "Buffering %i bytes"
-msgstr ""
-
-msgctxt "#23053"
-msgid "Stopping"
-msgstr ""
-
-msgctxt "#23054"
-msgid "Running"
-msgstr ""
-
-msgctxt "#23100"
-msgid "External Player Active"
-msgstr ""
-
-msgctxt "#23101"
-msgid "Click OK to terminate the player"
-msgstr ""
-
-msgctxt "#23104"
-msgid "Click OK when playback has ended"
-msgstr ""
 
 msgctxt "#24000"
 msgid "Add-on"
@@ -7997,37 +3274,17 @@ msgctxt "#24001"
 msgid "Add-ons"
 msgstr "ऐड - ऑन"
 
-msgctxt "#24002"
-msgid "Add-on options"
-msgstr ""
-
-msgctxt "#24003"
-msgid "Add-on Information"
-msgstr ""
-
-msgctxt "#24005"
-msgid "Media sources"
-msgstr ""
-
 msgctxt "#24007"
 msgid "Movie information"
 msgstr "मूवी जानकारी"
 
 msgctxt "#24008"
 msgid "Screensaver"
-msgstr ""
-
-msgctxt "#24009"
-msgid "Script"
-msgstr ""
+msgstr "स्क्रीनसेवर"
 
 msgctxt "#24010"
 msgid "Visualization"
-msgstr ""
-
-msgctxt "#24011"
-msgid "Add-on repository"
-msgstr ""
+msgstr "कल्पना"
 
 msgctxt "#24012"
 msgid "Subtitles"
@@ -8055,139 +3312,19 @@ msgstr "कलाकार जानकारी"
 
 msgctxt "#24018"
 msgid "Services"
-msgstr ""
-
-msgctxt "#24020"
-msgid "Configure"
-msgstr ""
-
-msgctxt "#24021"
-msgid "Disable"
-msgstr ""
-
-msgctxt "#24022"
-msgid "Enable"
-msgstr ""
-
-msgctxt "#24023"
-msgid "Add-on disabled"
-msgstr ""
+msgstr "सेवाएँ"
 
 msgctxt "#24027"
 msgid "Weather"
 msgstr "मौसम"
 
-msgctxt "#24028"
-msgid "Weather.com (standard)"
-msgstr ""
-
-msgctxt "#24030"
-msgid "This Add-on can not be configured"
-msgstr ""
-
-msgctxt "#24031"
-msgid "Error loading settings"
-msgstr ""
-
-msgctxt "#24032"
-msgid "All Add-ons"
-msgstr ""
-
 msgctxt "#24033"
 msgid "Get Add-ons"
 msgstr "ऐड - ऑन"
 
-msgctxt "#24034"
-msgid "Check for updates"
-msgstr ""
-
-msgctxt "#24035"
-msgid "Force refresh"
-msgstr ""
-
-msgctxt "#24036"
-msgid "Change log"
-msgstr ""
-
-msgctxt "#24037"
-msgid "Uninstall"
-msgstr ""
-
-msgctxt "#24038"
-msgid "Install"
-msgstr ""
-
-msgctxt "#24039"
-msgid "Disabled Add-ons"
-msgstr ""
-
-msgctxt "#24040"
-msgid "(Clear the current setting)"
-msgstr ""
-
 msgctxt "#24041"
 msgid "Install from zip file"
 msgstr "ज़िप फ़ाइल से स्थापित"
-
-msgctxt "#24042"
-msgid "Downloading %i%%"
-msgstr ""
-
-msgctxt "#24043"
-msgid "Available Updates"
-msgstr ""
-
-msgctxt "#24044"
-msgid "Dependencies not met"
-msgstr ""
-
-msgctxt "#24045"
-msgid "Add-on does not have the correct structure"
-msgstr ""
-
-msgctxt "#24046"
-msgid "%s is used by the following installed add-on(s)"
-msgstr ""
-
-msgctxt "#24047"
-msgid "This add-on cannot be uninstalled"
-msgstr ""
-
-msgctxt "#24048"
-msgid "Rollback"
-msgstr ""
-
-msgctxt "#24050"
-msgid "Available Add-ons"
-msgstr ""
-
-msgctxt "#24051"
-msgid "Version:"
-msgstr ""
-
-msgctxt "#24052"
-msgid "Disclaimer"
-msgstr ""
-
-msgctxt "#24053"
-msgid "License:"
-msgstr ""
-
-msgctxt "#24054"
-msgid "Changelog"
-msgstr ""
-
-msgctxt "#24059"
-msgid "Would you like to enable this Add-on?"
-msgstr ""
-
-msgctxt "#24060"
-msgid "Would you like to disable this Add-on?"
-msgstr ""
-
-msgctxt "#24061"
-msgid "Add-on update available!"
-msgstr ""
 
 msgctxt "#24062"
 msgid "Enabled Add-ons"
@@ -8197,751 +3334,18 @@ msgctxt "#24063"
 msgid "Auto update"
 msgstr "ऑटो अद्यतन"
 
-msgctxt "#24064"
-msgid "Add-on enabled"
-msgstr ""
-
-msgctxt "#24065"
-msgid "Add-on updated"
-msgstr ""
-
-msgctxt "#24066"
-msgid "Cancel Add-on download?"
-msgstr ""
-
-msgctxt "#24067"
-msgid "Currently downloading Add-ons"
-msgstr ""
-
-msgctxt "#24068"
-msgid "Update available"
-msgstr ""
-
-msgctxt "#24069"
-msgid "Update"
-msgstr ""
-
-msgctxt "#24070"
-msgid "Add-on could not be loaded."
-msgstr ""
-
-msgctxt "#24071"
-msgid "An unknown error has occurred."
-msgstr ""
-
-msgctxt "#24072"
-msgid "Settings required"
-msgstr ""
-
-msgctxt "#24073"
-msgid "Could not connect"
-msgstr ""
-
-msgctxt "#24074"
-msgid "Needs to restart"
-msgstr ""
-
-msgctxt "#24075"
-msgid "Disable"
-msgstr ""
-
-msgctxt "#24076"
-msgid "Add-on Required"
-msgstr ""
-
-msgctxt "#24080"
-msgid "Try to reconnect?"
-msgstr ""
-
-msgctxt "#24089"
-msgid "Add-on restarts"
-msgstr ""
-
-msgctxt "#24090"
-msgid "Lock Add-on manager"
-msgstr ""
-
-msgctxt "#24094"
-msgid "(current)"
-msgstr ""
-
-msgctxt "#24095"
-msgid "(blacklisted)"
-msgstr ""
-
-msgctxt "#24096"
-msgid "Add-on has been marked as broken in repository."
-msgstr ""
-
-msgctxt "#24097"
-msgid "Would you like to disable it on your system?"
-msgstr ""
-
-msgctxt "#24098"
-msgid "Broken"
-msgstr ""
-
-msgctxt "#24099"
-msgid "Would you like to switch to this skin?"
-msgstr ""
-
-msgctxt "#24100"
-msgid "To use this feature you must download an Add-on:"
-msgstr ""
-
-msgctxt "#24101"
-msgid "Would you like to download this Add-on?"
-msgstr ""
-
 msgctxt "#25000"
 msgid "Notifications"
 msgstr "अधिसूचनाएं"
-
-msgctxt "#25001"
-msgid "Hide foreign"
-msgstr ""
-
-msgctxt "#25002"
-msgid "Select from all titles ..."
-msgstr ""
-
-msgctxt "#25003"
-msgid "Show bluray menus"
-msgstr ""
-
-msgctxt "#25004"
-msgid "Play main title: %d"
-msgstr ""
-
-msgctxt "#25005"
-msgid "Title: %d"
-msgstr ""
-
-msgctxt "#25006"
-msgid "Select playback item"
-msgstr ""
-
-msgctxt "#29800"
-msgid "Library Mode"
-msgstr ""
-
-msgctxt "#29801"
-msgid "QWERTY keyboard"
-msgstr ""
-
-msgctxt "#29802"
-msgid "Passthrough Audio in use"
-msgstr ""
-
-msgctxt "#33001"
-msgid "Trailer quality"
-msgstr ""
-
-msgctxt "#33002"
-msgid "Stream"
-msgstr ""
-
-msgctxt "#33003"
-msgid "Download"
-msgstr ""
-
-msgctxt "#33004"
-msgid "Download & play"
-msgstr ""
-
-msgctxt "#33005"
-msgid "Download & save"
-msgstr ""
-
-msgctxt "#33006"
-msgid "Today"
-msgstr ""
-
-msgctxt "#33007"
-msgid "Tomorrow"
-msgstr ""
-
-msgctxt "#33008"
-msgid "Saving"
-msgstr ""
-
-msgctxt "#33009"
-msgid "Copying"
-msgstr ""
-
-msgctxt "#33010"
-msgid "Set download directory"
-msgstr ""
-
-msgctxt "#33011"
-msgid "Search duration"
-msgstr ""
-
-msgctxt "#33012"
-msgid "Short"
-msgstr ""
-
-msgctxt "#33013"
-msgid "Long"
-msgstr ""
-
-msgctxt "#33014"
-msgid "Use DVD player instead of regular player"
-msgstr ""
-
-msgctxt "#33015"
-msgid "Ask for download before playing video"
-msgstr ""
-
-msgctxt "#33016"
-msgid "Clips"
-msgstr ""
-
-msgctxt "#33017"
-msgid "Restart plugin to enable"
-msgstr ""
-
-msgctxt "#33018"
-msgid "Tonight"
-msgstr ""
-
-msgctxt "#33019"
-msgid "Tomorrow Night"
-msgstr ""
-
-msgctxt "#33020"
-msgid "Condition"
-msgstr ""
-
-msgctxt "#33021"
-msgid "Precipitation"
-msgstr ""
-
-msgctxt "#33022"
-msgid "Precip"
-msgstr ""
-
-msgctxt "#33023"
-msgid "Humid"
-msgstr ""
-
-msgctxt "#33024"
-msgid "Feels"
-msgstr ""
-
-msgctxt "#33025"
-msgid "Observed"
-msgstr ""
-
-msgctxt "#33026"
-msgid "Departure from normal"
-msgstr ""
-
-msgctxt "#33027"
-msgid "Sunrise"
-msgstr ""
-
-msgctxt "#33028"
-msgid "Sunset"
-msgstr ""
-
-msgctxt "#33029"
-msgid "Details"
-msgstr ""
-
-msgctxt "#33030"
-msgid "Outlook"
-msgstr ""
-
-msgctxt "#33031"
-msgid "Coverflow"
-msgstr ""
-
-msgctxt "#33032"
-msgid "Translate text"
-msgstr ""
-
-msgctxt "#33033"
-msgid "Map list %s category"
-msgstr ""
-
-msgctxt "#33034"
-msgid "36 Hour"
-msgstr ""
-
-msgctxt "#33035"
-msgid "Maps"
-msgstr ""
-
-msgctxt "#33036"
-msgid "Hourly"
-msgstr ""
-
-msgctxt "#33037"
-msgid "Weekend"
-msgstr ""
-
-msgctxt "#33038"
-msgid "%s day"
-msgstr ""
-
-msgctxt "#33049"
-msgid "Alert"
-msgstr ""
-
-msgctxt "#33050"
-msgid "Alerts"
-msgstr ""
-
-msgctxt "#33051"
-msgid "Choose Your"
-msgstr ""
-
-msgctxt "#33052"
-msgid "Check"
-msgstr ""
-
-msgctxt "#33053"
-msgid "Configure the"
-msgstr ""
-
-msgctxt "#33054"
-msgid "Seasons"
-msgstr ""
-
-msgctxt "#33055"
-msgid "Use your"
-msgstr ""
-
-msgctxt "#33056"
-msgid "Watch your"
-msgstr ""
-
-msgctxt "#33057"
-msgid "Listen to"
-msgstr ""
-
-msgctxt "#33058"
-msgid "View your"
-msgstr ""
-
-msgctxt "#33059"
-msgid "Configure the"
-msgstr ""
-
-msgctxt "#33060"
-msgid "Power"
-msgstr ""
-
-msgctxt "#33061"
-msgid "Menu"
-msgstr ""
-
-msgctxt "#33062"
-msgid "Play the"
-msgstr ""
-
-msgctxt "#33063"
-msgid "Options"
-msgstr ""
-
-msgctxt "#33065"
-msgid "Editor"
-msgstr ""
-
-msgctxt "#33066"
-msgid "About your"
-msgstr ""
-
-msgctxt "#33067"
-msgid "Star rating"
-msgstr ""
 
 msgctxt "#33068"
 msgid "Background"
 msgstr "पृष्ठभूमि"
 
-msgctxt "#33069"
-msgid "Backgrounds"
-msgstr ""
-
-msgctxt "#33070"
-msgid "Custom background"
-msgstr ""
-
-msgctxt "#33071"
-msgid "Custom backgrounds"
-msgstr ""
-
-msgctxt "#33072"
-msgid "View Readme"
-msgstr ""
-
-msgctxt "#33073"
-msgid "View Changelog"
-msgstr ""
-
-msgctxt "#33074"
-msgid "This version of %s requires an"
-msgstr ""
-
-msgctxt "#33075"
-msgid "XBMC revision of %s or greater to run."
-msgstr ""
-
-msgctxt "#33076"
-msgid "Please update XBMC."
-msgstr ""
-
-msgctxt "#33077"
-msgid "No data found!"
-msgstr ""
-
-msgctxt "#33078"
-msgid "Next page"
-msgstr ""
-
-msgctxt "#33079"
-msgid "Love"
-msgstr ""
-
-msgctxt "#33080"
-msgid "Hate"
-msgstr ""
-
-msgctxt "#33081"
-msgid "This file is stacked, select the part you want to play from."
-msgstr ""
-
-msgctxt "#33082"
-msgid "Path to script"
-msgstr ""
-
-msgctxt "#33083"
-msgid "Enable custom script button"
-msgstr ""
-
-msgctxt "#33100"
-msgid "Failed to start"
-msgstr ""
-
-msgctxt "#33101"
-msgid "Webserver"
-msgstr ""
-
-msgctxt "#33102"
-msgid "Event Server"
-msgstr ""
-
-msgctxt "#33103"
-msgid "Remote communication server"
-msgstr ""
-
-msgctxt "#33200"
-msgid "Detected New Connection"
-msgstr ""
-
-msgctxt "#34000"
-msgid "Lame"
-msgstr ""
-
-msgctxt "#34001"
-msgid "Vorbis"
-msgstr ""
-
-msgctxt "#34002"
-msgid "Wav"
-msgstr ""
-
-msgctxt "#34003"
-msgid "DXVA2"
-msgstr ""
-
-msgctxt "#34004"
-msgid "VAAPI"
-msgstr ""
-
-msgctxt "#34005"
-msgid "Flac"
-msgstr ""
-
 msgctxt "#34100"
 msgid "Speaker Configuration"
 msgstr "वक्ता विन्यास"
 
-msgctxt "#34101"
-msgid "2.0"
-msgstr ""
-
-msgctxt "#34102"
-msgid "2.1"
-msgstr ""
-
-msgctxt "#34103"
-msgid "3.0"
-msgstr ""
-
-msgctxt "#34104"
-msgid "3.1"
-msgstr ""
-
-msgctxt "#34105"
-msgid "4.0"
-msgstr ""
-
-msgctxt "#34106"
-msgid "4.1"
-msgstr ""
-
-msgctxt "#34107"
-msgid "5.0"
-msgstr ""
-
-msgctxt "#34108"
-msgid "5.1"
-msgstr ""
-
-msgctxt "#34109"
-msgid "7.0"
-msgstr ""
-
-msgctxt "#34110"
-msgid "7.1"
-msgstr ""
-
-msgctxt "#34201"
-msgid "Can't find a next item to play"
-msgstr ""
-
-msgctxt "#34202"
-msgid "Can't find a previous item to play"
-msgstr ""
-
-msgctxt "#34300"
-msgid "Failed to start zeroconf"
-msgstr ""
-
-msgctxt "#34301"
-msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr ""
-
-msgctxt "#34400"
-msgid "Video Rendering"
-msgstr ""
-
-msgctxt "#34401"
-msgid "Failed to init video filters/scalers, falling back to bilinear scaling"
-msgstr ""
-
-msgctxt "#34402"
-msgid "Failed to initialize audio device"
-msgstr ""
-
-msgctxt "#34403"
-msgid "Check your audiosettings"
-msgstr ""
-
-msgctxt "#34404"
-msgid "Use gestures for navigation:"
-msgstr ""
-
-msgctxt "#34405"
-msgid "1 finger swipe left,right,up,down for cursors"
-msgstr ""
-
-msgctxt "#34406"
-msgid "2 finger swipe left for backspace"
-msgstr ""
-
-msgctxt "#34407"
-msgid "1 finger single tap for enter"
-msgstr ""
-
-msgctxt "#34408"
-msgid "2 finger single tap or 1 finger long press for contextmenu"
-msgstr ""
-
-msgctxt "#35000"
-msgid "Peripherals"
-msgstr ""
-
-msgctxt "#35001"
-msgid "Generic HID device"
-msgstr ""
-
-msgctxt "#35002"
-msgid "Generic network adapter"
-msgstr ""
-
-msgctxt "#35003"
-msgid "Generic disk"
-msgstr ""
-
-msgctxt "#35004"
-msgid "There are no settings available\nfor this peripheral."
-msgstr ""
-
-msgctxt "#35005"
-msgid "New device configured"
-msgstr ""
-
-msgctxt "#35006"
-msgid "Device removed"
-msgstr ""
-
-msgctxt "#35007"
-msgid "Keymap to use for this device"
-msgstr ""
-
-msgctxt "#35008"
-msgid "Keymap enabled"
-msgstr ""
-
-msgctxt "#35009"
-msgid "Do not use the custom keymap for this device"
-msgstr ""
-
-msgctxt "#35500"
-msgid "Location"
-msgstr ""
-
-msgctxt "#35501"
-msgid "Class"
-msgstr ""
-
 msgctxt "#35502"
 msgid "Name"
-msgstr ""
-
-msgctxt "#35503"
-msgid "Vendor"
-msgstr ""
-
-msgctxt "#35504"
-msgid "Product ID"
-msgstr ""
-
-msgctxt "#36000"
-msgid "Pulse-Eight CEC adapter"
-msgstr ""
-
-msgctxt "#36001"
-msgid "Pulse-Eight Nyxboard"
-msgstr ""
-
-msgctxt "#36002"
-msgid "Switch to keyboard side command"
-msgstr ""
-
-msgctxt "#36003"
-msgid "Switch to remote side command"
-msgstr ""
-
-msgctxt "#36004"
-msgid "Press \"user\" button command"
-msgstr ""
-
-msgctxt "#36005"
-msgid "Enable switch side commands"
-msgstr ""
-
-msgctxt "#36006"
-msgid "Could not open the adapter"
-msgstr ""
-
-msgctxt "#36007"
-msgid "Devices to power on when starting XBMC"
-msgstr ""
-
-msgctxt "#36008"
-msgid "Devices to power off when stopping XBMC"
-msgstr ""
-
-msgctxt "#36009"
-msgid "Put devices in standby mode when activating screensaver"
-msgstr ""
-
-msgctxt "#36011"
-msgid "Could not detect the CEC com port. Set it up manually."
-msgstr ""
-
-msgctxt "#36012"
-msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr ""
-
-msgctxt "#36013"
-msgid "Unsupported libCEC interface version. %d is greater than the version XBMC supports (%d)"
-msgstr ""
-
-msgctxt "#36015"
-msgid "HDMI port number"
-msgstr ""
-
-msgctxt "#36016"
-msgid "Connected"
-msgstr ""
-
-msgctxt "#36017"
-msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
-msgstr ""
-
-msgctxt "#36018"
-msgid "Use the TV's language setting"
-msgstr ""
-
-msgctxt "#36019"
-msgid "Connected to HDMI device"
-msgstr ""
-
-msgctxt "#36020"
-msgid "Make XBMC the active source when starting"
-msgstr ""
-
-msgctxt "#36021"
-msgid "Physical address (overrules HDMI port)"
-msgstr ""
-
-msgctxt "#36022"
-msgid "COM port (leave empty unless needed)"
-msgstr ""
-
-msgctxt "#36023"
-msgid "Configuration updated"
-msgstr ""
-
-msgctxt "#36024"
-msgid "Failed to set the new configuration. Please check your settings."
-msgstr ""
-
-msgctxt "#36025"
-msgid "Send 'inactive source' command when stopping XBMC"
-msgstr ""
-
-msgctxt "#36026"
-msgid "Put devices in standby mode when putting the PC in standby"
-msgstr ""
-
-msgctxt "#36027"
-msgid "This device needs servicing"
-msgstr ""
-
-msgctxt "#36028"
-msgid "Ignore"
-msgstr ""
-
-msgctxt "#36029"
-msgid "When the TV is switched off"
-msgstr ""
-
-msgctxt "#36030"
-msgid "Connection lost"
-msgstr ""
-
-msgctxt "#36031"
-msgid "This user does not have permissions to open the CEC adapter"
-msgstr ""
-
-msgctxt "#36032"
-msgid "The port is busy. Only one program can access the CEC adapter"
-msgstr ""
-
+msgstr "नाम"

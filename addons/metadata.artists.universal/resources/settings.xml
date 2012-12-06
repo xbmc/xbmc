@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
   <category label="128">
-      <setting label="30006" type="labelenum" values="last.fm|None" id="biogsource" default="last.fm"/>
+      <setting label="30006" type="labelenum" values="last.fm|TheAudioDb.com|None" id="biogsource" default="last.fm"/>
       <setting label="30015" type="labelenum" values="en|de|es|fr|it|jp|pl|pt|ru|sv|tr|zh" id="lastfmlanguage" default="en" visible="eq(-1,0)"/>
       <setting type="sep"/>
       <setting label="30008" type="labelenum" values="last.fm|MusicBrainz|allmusic.com|None" id="discogsource" default="MusicBrainz"/>
@@ -14,7 +14,7 @@
   </category>
 
   <category label="30021">
-      <setting label="30016" type="labelenum" values="last.fm|None" id="biogfbsource" default="None"/>
+      <setting label="30016" type="labelenum" values="last.fm|TheAudioDb.com|None" id="biogfbsource" default="None"/>
       <setting label="30015" type="labelenum" values="en|de|es|fr|it|jp|pl|pt|ru|sv|tr|zh" id="lastfmlanguage" default="en" visible="eq(-1,0)"/>
       <setting type="sep"/>
       <setting label="30017" type="labelenum" values="last.fm|MusicBrainz|None" id="discogfbsource" default="None" visible="false"/>
@@ -26,11 +26,13 @@
   <category label="30007">
     <setting type="lsep" label="Thumb Sources"/>
     <setting label="30005" type="bool" id="fanarttvthumbs" default="true"/>
+    <setting label="30022" type="bool" id="tadbthumbs" default="true"/>
     <setting label="30003" type="bool" id="htbthumbs" default="true"/>
     <setting label="30002" type="bool" id="lastfmartistthumbs" default="true"/>
     <setting label="30001" type="bool" id="allmusicartistthumbs" default="true"/>
     <setting type="lsep" label="Fanart Sources"/>
     <setting label="30004" type="bool" id="fanarttvfanart" default="true"/>
+    <setting label="30023" type="bool" id="tadbfanart" default="true"/>
     <setting label="30000" type="bool" id="htbfanart" default="true"/>
   </category>
 

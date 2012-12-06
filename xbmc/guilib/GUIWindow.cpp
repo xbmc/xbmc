@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,6 +40,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIAudioManager.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "utils/Variant.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -53,13 +53,12 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
   SetID(id);
   SetProperty("xmlfile", xmlFile);
-  m_idRange = 1;
   m_lastControlID = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
-  m_loadOnDemand = true;
+  m_loadType = LOAD_EVERY_TIME;
   m_closing = false;
   m_active = false;
   m_renderOrder = 0;
@@ -69,10 +68,13 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_manualRunActions = false;
   m_exclusiveMouseControl = 0;
   m_clearBackground = 0xff000000; // opaque black -> always clear
+  m_windowXMLRootElement = NULL;
 }
 
 CGUIWindow::~CGUIWindow(void)
-{}
+{
+  delete m_windowXMLRootElement;
+}
 
 bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 {
@@ -87,7 +89,21 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
+  const char* strLoadType;
+  switch (m_loadType)
+  {
+  case LOAD_ON_GUI_INIT:
+    strLoadType = "LOAD_ON_GUI_INIT";
+    break;
+  case KEEP_IN_MEMORY:
+    strLoadType = "KEEP_IN_MEMORY";
+    break;
+  case LOAD_EVERY_TIME:
+  default:
+    strLoadType = "LOAD_EVERY_TIME";
+    break;
+  }
+  CLog::Log(LOGINFO, "Loading skin file: %s, load type: %s", strFileName.c_str(), strLoadType);
   
   // Find appropriate skin folder + resolution to load from
   CStdString strPath;
@@ -114,20 +130,29 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
 bool CGUIWindow::LoadXML(const CStdString &strPath, const CStdString &strLowerPath)
 {
-  CXBMCTinyXML xmlDoc;
-  if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
+  // load window xml if we don't have it stored yet
+  if (!m_windowXMLRootElement)
   {
-    CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    SetID(WINDOW_INVALID);
-    return false;
+    CXBMCTinyXML xmlDoc;
+    if ( !xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(CStdString(strPath).ToLower()) && !xmlDoc.LoadFile(strLowerPath))
+    {
+      CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+      SetID(WINDOW_INVALID);
+      return false;
+    }
+    m_windowXMLRootElement = (TiXmlElement*)xmlDoc.RootElement()->Clone();
   }
+  else
+    CLog::Log(LOGDEBUG, "Using already stored xml root node for %s", strPath.c_str());
 
-  return Load(xmlDoc);
+  return Load(m_windowXMLRootElement);
 }
 
-bool CGUIWindow::Load(CXBMCTinyXML &xmlDoc)
+bool CGUIWindow::Load(TiXmlElement* pRootElement)
 {
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (!pRootElement)
+    return false;
+  
   if (strcmpi(pRootElement->Value(), "window"))
   {
     CLog::Log(LOGERROR, "file : XML file doesnt contain <window>");
@@ -138,8 +163,8 @@ bool CGUIWindow::Load(CXBMCTinyXML &xmlDoc)
   // be done with respect to the correct aspect ratio
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
 
-  // Resolve any includes that may be present
-  g_SkinInfo->ResolveIncludes(pRootElement);
+  // Resolve any includes that may be present and save conditions used to do it
+  g_SkinInfo->ResolveIncludes(pRootElement, &m_xmlIncludeConditions);
   // now load in the skin file
   SetDefaults();
 
@@ -301,6 +326,12 @@ void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregi
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
   if (size != g_graphicsContext.RemoveTransform())
     CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
+
+  // check if currently focused control can have it
+  // and fallback to default control if not
+  CGUIControl* focusedControl = GetFocusedControl();
+  if (focusedControl && !focusedControl->CanFocus())
+    SET_CONTROL_FOCUS(m_defaultControl, 0);
 }
 
 void CGUIWindow::DoRender()
@@ -359,13 +390,13 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
   OnMessage(msg);
 }
 
-void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
+void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/, bool bWait /* = true */)
 {
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().Close(this, forceClose, true, nextWindowID, enableSound);
+    CApplicationMessenger::Get().Close(this, forceClose, bWait, nextWindowID, enableSound);
   }
   else
     Close_Internal(forceClose, nextWindowID, enableSound);
@@ -499,6 +530,13 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+  case GUI_MSG_WINDOW_LOAD:
+    {
+      Initialize();
+      return true;
+    }
+    break;
+      
   case GUI_MSG_WINDOW_INIT:
     {
       CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
@@ -663,6 +701,11 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   return SendControlMessage(message);
 }
 
+bool CGUIWindow::NeedXMLReload()
+{
+  return !m_windowLoaded || g_infoManager.ConditionsChangedValues(m_xmlIncludeConditions);
+}
+
 void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CSingleLock lock(g_graphicsContext);
@@ -671,13 +714,22 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  // load skin xml fil
-  CStdString xmlFile = GetProperty("xmlfile").asString();
-  bool bHasPath=false;
-  if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
-    bHasPath = true;
-  if (xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
-    Load(xmlFile,bHasPath);
+  // use forceLoad to determine if xml file needs loading
+  forceLoad |= NeedXMLReload() || (m_loadType == LOAD_EVERY_TIME);
+
+  // if window is loaded and load is forced we have to free window resources first
+  if (m_windowLoaded && forceLoad)
+    FreeResources(true);
+
+  if (forceLoad)
+  {
+    CStdString xmlFile = GetProperty("xmlfile").asString();
+    if (xmlFile.size())
+    {
+      bool bHasPath = xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1;
+      Load(xmlFile,bHasPath);
+    }
+  }
 
   int64_t slend;
   slend = CurrentHostCounter();
@@ -689,7 +741,13 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
-  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
+  if (forceLoad)
+    CLog::Log(LOGDEBUG,"Alloc resources: %.2fms  (%.2f ms skin load)", 1000.f * (end - start) / freq, 1000.f * (slend - start) / freq);
+  else
+  {
+    CLog::Log(LOGDEBUG,"Window %s was already loaded", GetProperty("xmlfile").c_str());
+    CLog::Log(LOGDEBUG,"Alloc resources: %.2fm", 1000.f * (end - start) / freq);
+  }
 #endif
   m_bAllocated = true;
 }
@@ -700,7 +758,12 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   CGUIControlGroup::FreeResources();
   //g_TextureManager.Dump();
   // unload the skin
-  if (m_loadOnDemand || forceUnload) ClearAll();
+  if (m_loadType == LOAD_EVERY_TIME || forceUnload) ClearAll();
+  if (forceUnload)
+  {
+    delete m_windowXMLRootElement;
+    m_windowXMLRootElement = NULL;
+  }
 }
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
@@ -721,7 +784,18 @@ bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
-  return Load(GetProperty("xmlfile").asString());
+  if(!NeedXMLReload())
+    return true;
+  if(g_application.IsCurrentThread())
+    AllocResources();
+  else
+  {
+    // if not app thread, send gui msg via app messenger
+    // and wait for results, so windowLoaded flag would be updated
+    CGUIMessage msg(GUI_MSG_WINDOW_LOAD, 0, 0);
+    CApplicationMessenger::Get().SendGUIMessage(msg, GetID(), true);
+  }
+  return m_windowLoaded;
 }
 
 void CGUIWindow::SetInitialVisibility()
@@ -848,7 +922,13 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   while (control)
   { // grab the next control direction
     moveHistory.push_back(nextControl);
-    nextControl = control->GetNextControl(moveAction);
+    CGUIAction action;
+    if (!control->GetNavigationAction(moveAction, action))
+      return false;
+    action.ExecuteActions(nextControl, GetParentID());
+    nextControl = action.GetNavigation();
+    if (!nextControl) // 0 isn't valid control id
+      return false;
     // check our history - if the nextControl is in it, we can't focus it
     for (unsigned int i = 0; i < moveHistory.size(); i++)
     {
@@ -909,13 +989,13 @@ bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param
   return OnMessage(msg);
 }
 
-#ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
+#ifdef _DEBUG
   CLog::Log(LOGDEBUG, "%s for window %u", __FUNCTION__, GetID());
   CGUIControlGroup::DumpTextureUse();
-}
 #endif
+}
 
 void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 {
@@ -966,12 +1046,12 @@ void CGUIWindow::SetRunActionsManually()
 
 void CGUIWindow::RunLoadActions()
 {
-  m_loadActions.Execute(GetID(), GetParentID());
+  m_loadActions.ExecuteActions(GetID(), GetParentID());
 }
 
 void CGUIWindow::RunUnloadActions()
 {
-  m_unloadActions.Execute(GetID(), GetParentID());
+  m_unloadActions.ExecuteActions(GetID(), GetParentID());
 }
 
 void CGUIWindow::ClearBackground()
@@ -980,4 +1060,21 @@ void CGUIWindow::ClearBackground()
   color_t color = m_clearBackground;
   if (color)
     g_graphicsContext.Clear(color);
+}
+
+void CGUIWindow::SetID(int id)
+{
+  CGUIControlGroup::SetID(id);
+  m_idRange.clear();
+  m_idRange.push_back(id);
+}
+
+bool CGUIWindow::HasID(int controlID) const
+{
+  for (std::vector<int>::const_iterator it = m_idRange.begin(); it != m_idRange.end() ; it++)
+  {
+    if (controlID == *it)
+      return true;
+  }
+  return false;
 }

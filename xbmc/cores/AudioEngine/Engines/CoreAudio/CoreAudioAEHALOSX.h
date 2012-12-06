@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -47,6 +46,7 @@ protected:
   bool              m_allowMixing;
   bool              m_encoded;
   AEDataFormat      m_rawDataFormat;
+  float             m_initVolume;
 public:
   unsigned int      m_NumLatencyFrames;
   unsigned int      m_OutputBufferIndex;
@@ -58,7 +58,7 @@ public:
   virtual bool  InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, AudioDeviceID outputDevice);
   virtual bool  InitializePCMEncoded(ICoreAudioSource *pSource, AEAudioFormat &format, AudioDeviceID outputDevice);
   virtual bool  InitializeEncoded(AudioDeviceID outputDevice, AEAudioFormat &format);
-  virtual bool  Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device);
+  virtual bool  Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume);
   virtual void  Deinitialize();
   virtual void  EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual void  SetDirectInput(ICoreAudioSource *pSource, AEAudioFormat &format);

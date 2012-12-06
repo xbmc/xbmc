@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -42,6 +41,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "Autorun.h"
+#include "interfaces/AnnouncementManager.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3
@@ -257,18 +257,18 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
     m_dlgProgress->Close();
 }
 
-bool CGUIWindowPictures::Update(const CStdString &strDirectory)
+bool CGUIWindowPictures::Update(const CStdString &strDirectory, bool updateFilterPath /* = true */)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  if (!CGUIMediaWindow::Update(strDirectory))
+  if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
-  m_vecItems->SetThumbnailImage("");
+  m_vecItems->SetArt("thumb", "");
   if (g_guiSettings.GetBool("pictures.generatethumbs"))
     m_thumbLoader.Load(*m_vecItems);
-  m_vecItems->SetThumbnailImage(CPictureThumbLoader::GetCachedImage(*m_vecItems, "thumb"));
+  m_vecItems->SetArt("thumb", CPictureThumbLoader::GetCachedImage(*m_vecItems, "thumb"));
 
   return true;
 }
@@ -354,7 +354,14 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   pSlideShow->Select(strPicture);
 
   if (startSlideShow)
-    pSlideShow->StartSlideShow(false);
+    pSlideShow->StartSlideShow();
+  else 
+  {
+    CVariant param;
+    param["player"]["speed"] = 1;
+    param["player"]["playerid"] = PLAYLIST_PICTURE;
+    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", pSlideShow->GetCurrentSlide(), param);
+  }
 
   m_slideShowStarted = true;
   g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
@@ -456,13 +463,15 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
-      if (item)
+      if (item && !item->GetPath().Left(14).Equals("addons://more/"))
       {
         if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
           buttons.Add(CONTEXT_BUTTON_INFO, 24003); // Add-on info
         if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
+        {
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
-        buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+          buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
+        }
         if (item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_RECURSIVE_SLIDESHOW, 13318);     // Recursive Slideshow
 
@@ -477,9 +486,11 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-
-      buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
-      buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+      else
+      {
+        buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
+        buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
+      }
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);

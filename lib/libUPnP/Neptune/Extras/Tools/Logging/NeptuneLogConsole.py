@@ -37,6 +37,8 @@ class LogRecord:
             parts.append('['+self.headers['Level']+']')
         if 'Logger' in keys:
             parts.append(self.headers['Logger'])
+        if 'TimeStamp' in keys:
+            parts.append(self.headers['TimeStamp'])
         if 'Source-File' in keys:
             if 'Source-Line' in keys:
                 parts.append(self.headers['Source-File']+':'+self.headers['Source-Line'])

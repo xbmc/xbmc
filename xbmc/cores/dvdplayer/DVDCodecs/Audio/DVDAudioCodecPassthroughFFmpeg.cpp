@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -157,7 +156,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   muxer.m_WroteHeader = m_dllAvFormat.avformat_write_header(muxer.m_pFormat, NULL) == 0;
   if (!muxer.m_WroteHeader)
   {
-    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::SetupMuxer - Failed to write the frame header");
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to write the frame header");
     return false;
   }
 
@@ -190,7 +189,7 @@ void CDVDAudioCodecPassthroughFFmpeg::WriteFrame(Muxer &muxer, uint8_t *pData, i
 
   muxer.m_Consumed += iSize;
   if (m_dllAvFormat.av_write_frame(muxer.m_pFormat, &pkt) < 0)
-    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::WriteFrame - Failed to write the frame data");
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::WriteFrame - Failed to write the frame data");
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetMuxerData(Muxer &muxer, uint8_t** dst)
@@ -310,7 +309,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   // TODO - some soundcards do support other sample rates, but they are quite uncommon
   if( hints.samplerate > 0 && hints.samplerate != 48000 )
   {
-    CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to sample rate not being 48000");
+    CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Open - disabled passthrough due to sample rate not being 48000");
     return false;
   }
 
@@ -465,11 +464,7 @@ int CDVDAudioCodecPassthroughFFmpeg::GetChannels()
 {
   //Can't return correct channels here as this is used to keep sync.
   //should probably have some other way to find out this
-  switch(m_codec)
-  {
-    default:
-      return 2;
-  }
+  return 2;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetSampleRate()
@@ -642,9 +637,5 @@ CAEChannelInfo CDVDAudioCodecPassthroughFFmpeg::GetChannelMap()
     {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
   };
 
-  switch(m_codec)
-  {
-    default:
-      return map[0];
-  }
+  return map[0];
 }

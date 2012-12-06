@@ -1,39 +1,29 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.0
+# Addon version: 2.1.1
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
-"Project-Id-Version: xbmc.skin.confluence-Frodo\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: 2012-05-04 12:52+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgctxt "Addon Summary"
-msgid "Confluence skin by Jezz_X. (XBMC's default skin)"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use."
-msgstr ""
-
-msgctxt "Addon Disclaimer"
-msgid "Confluence is the default skin for XBMC, removing it may cause issues"
-msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #Misc labels
 
 msgctxt "#31000"
 msgid "Change Your"
 msgstr ""
+
+#empty strings from id 31001 to 31002
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -51,6 +41,8 @@ msgctxt "#31006"
 msgid "View Options"
 msgstr ""
 
+#empty string with id 31007
+
 msgctxt "#31008"
 msgid "Fullscreen"
 msgstr ""
@@ -59,7 +51,7 @@ msgctxt "#31009"
 msgid "Total Duration"
 msgstr ""
 
-#empty strings from id 31010 to 31019
+#empty strings from id 31010 to 31021
 
 msgctxt "#31022"
 msgid "Music - Files"
@@ -95,6 +87,8 @@ msgctxt "#31029"
 msgid "Fanart"
 msgstr ""
 
+#empty string with id 31030
+
 msgctxt "#31031"
 msgid "Pic Thumbs"
 msgstr ""
@@ -107,8 +101,8 @@ msgctxt "#31033"
 msgid "Info"
 msgstr ""
 
-#Extra labels
 #empty strings from id 31034 to 31039
+#Extra labels
 
 msgctxt "#31040"
 msgid "Now Playing"
@@ -132,6 +126,8 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr ""
 
+#empty strings from id 31046 to 31047
+
 msgctxt "#31048"
 msgid "Visualization Presets"
 msgstr ""
@@ -148,8 +144,8 @@ msgctxt "#31051"
 msgid "Sort: Descending"
 msgstr ""
 
-#Playlist Editor labels
 #empty strings from id 31052 to 31054
+#Playlist Editor labels
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -179,8 +175,8 @@ msgctxt "#31061"
 msgid "Current Selected"
 msgstr ""
 
-#Skin Settings labels
 #empty strings from id 31062 to 31100
+#Skin Settings labels
 
 msgctxt "#31101"
 msgid "Home screen options"
@@ -228,6 +224,8 @@ msgctxt "#31112"
 msgid "Options"
 msgstr ""
 
+#empty strings from id 31113 to 31115
+
 msgctxt "#31116"
 msgid "Show Recently added Albums"
 msgstr ""
@@ -244,15 +242,13 @@ msgctxt "#31119"
 msgid "Hide Background Fanart"
 msgstr ""
 
-#empty string with id 31121
+#empty strings from id 31120 to 31121
 
 msgctxt "#31122"
 msgid "Weather Page"
 msgstr ""
 
-msgctxt "#31123"
-msgid "Use \"Posters\" instead of \"Banners\" for TV Shows"
-msgstr ""
+#empty string with id 31123
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
@@ -310,16 +306,20 @@ msgctxt "#31141"
 msgid "Video OSD"
 msgstr ""
 
-#Script labels
 #empty strings from id 31142 to 31199
+#Script labels
 
 msgctxt "#31200"
 msgid "Shortcuts"
 msgstr ""
 
+#empty strings from id 31201 to 31202
+
 msgctxt "#31203"
 msgid "Choose Your Song"
 msgstr ""
+
+#empty string with id 31204
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -337,8 +337,8 @@ msgctxt "#31208"
 msgid "Upcoming Episodes"
 msgstr ""
 
-#Extra labels
 #empty strings from id 31209 to 31299
+#Extra labels
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -348,9 +348,13 @@ msgctxt "#31301"
 msgid "Last Updated"
 msgstr ""
 
+#empty string with id 31302
+
 msgctxt "#31303"
 msgid "Data provider"
 msgstr ""
+
+#empty strings from id 31304 to 31306
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -384,11 +388,13 @@ msgctxt "#31314"
 msgid "Content Scanning Options"
 msgstr ""
 
-#empty string with id 31316
+#empty strings from id 31315 to 31316
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
 msgstr ""
+
+#empty string with id 31318
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -405,6 +411,8 @@ msgstr ""
 msgctxt "#31322"
 msgid "Aired"
 msgstr ""
+
+#empty strings from id 31323 to 31324
 
 msgctxt "#31325"
 msgid "Playlist Options"
@@ -434,8 +442,8 @@ msgctxt "#31331"
 msgid "Album Details"
 msgstr ""
 
-#Video and Music OSD Labels
 #empty strings from id 31332 to 31350
+#Video and Music OSD Labels
 
 msgctxt "#31351"
 msgid "Pause"
@@ -475,8 +483,8 @@ msgctxt "#31392"
 msgid "Arial based"
 msgstr ""
 
-#Description Labels
 #empty strings from id 31393 to 31399
+#Description Labels
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
@@ -504,26 +512,81 @@ msgctxt "#31406"
 msgid "[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock"
 msgstr ""
 
-msgctxt "#31407"
-msgid "[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds"
-msgstr ""
+#empty string with id 31407
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr ""
 
 msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr ""
+
+msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr ""
 
-#empty strings from id 31410 to 31420
+msgctxt "#31411"
+msgid "First run help...."
+msgstr ""
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
+msgstr ""
+
+#empty strings from id 31413 to 31420
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr ""
 
+#empty strings from id 31422 to 31499
+#PVR labels
+
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr ""
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr ""
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr ""
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr ""
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr ""
+
+#empty strings from id 31507 to 31508
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr ""
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr ""
+
+#empty strings from id 31512 to 31900
 #Weather plugin
-#empty strings from id 31422 to 31899
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -545,9 +608,7 @@ msgctxt "#31905"
 msgid "Forecast"
 msgstr ""
 
-msgctxt "#31906"
-msgid "Maps & Video"
-msgstr ""
+#empty strings from id 31906 to 31907
 
 msgctxt "#31908"
 msgid "Chance of Precipitation"
@@ -555,4 +616,8 @@ msgstr ""
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
+msgstr ""
+
+msgctxt "#31910"
+msgid "Map & Alerts"
 msgstr ""

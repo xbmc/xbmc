@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,8 +22,11 @@
 #include "TextureManager.h"
 #include "filesystem/Directory.h"
 #include "utils/URIUtils.h"
+#include "utils/JobManager.h"
 #include "FileItem.h"
+#include "settings/Settings.h"
 #include "Key.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -41,7 +43,8 @@ CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float po
   m_loop = loop;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
-  m_directoryLoaded = false;
+  m_directoryStatus = UNLOADED;
+  m_jobID = 0;
 }
 
 CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
@@ -53,15 +56,17 @@ CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
   m_randomized = from.m_randomized;
   m_loop = from.m_loop;
   m_bDynamicResourceAlloc=false;
-  m_directoryLoaded = false;
+  m_directoryStatus = UNLOADED;
   if (m_texturePath.IsConstant())
     m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   ControlType = GUICONTROL_MULTI_IMAGE;
+  m_jobID = 0;
 }
 
 CGUIMultiImage::~CGUIMultiImage(void)
 {
+  CancelLoading();
 }
 
 void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
@@ -77,13 +82,14 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   }
 
   // we are either delayed or visible, so we can allocate our resources
-  if (!m_directoryLoaded)
-  {
+  if (m_directoryStatus == UNLOADED)
     LoadDirectory();
-    m_image.SetFileName(m_files.size() ? m_files[0] : "");
-  }
+
   if (!m_bAllocated)
     AllocResources();
+
+  if (m_directoryStatus == LOADED)
+    OnDirectoryLoaded();
 }
 
 void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
@@ -101,7 +107,7 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
     {
       // a new path - set our current path and tell ourselves to load our directory
       m_currentPath = texturePath;
-      m_directoryLoaded = false;
+      CancelLoading();
     }
   }
 }
@@ -109,7 +115,7 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
 void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // Set a viewport so that we don't render outside the defined area
-  if (!m_files.empty() && g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
+  if (m_directoryStatus == READY && !m_files.empty())
   {
     unsigned int nextImage = m_currentImage + 1;
     if (nextImage >= m_files.size())
@@ -131,7 +137,10 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
         m_imageTimer.StartZero();
       }
     }
+  }
 
+  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
+  {
     if (m_image.SetColorDiffuse(m_diffuseColor))
       MarkDirtyRegion();
 
@@ -145,9 +154,7 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
 
 void CGUIMultiImage::Render()
 {
-  if (!m_files.empty())
-    m_image.Render();
-
+  m_image.Render();
   CGUIControl::Render();
 }
 
@@ -172,24 +179,16 @@ void CGUIMultiImage::AllocResources()
   FreeResources();
   CGUIControl::AllocResources();
 
-  if (!m_directoryLoaded)
+  if (m_directoryStatus == UNLOADED)
     LoadDirectory();
-
-  // Load in the current image, and reset our timer
-  m_currentImage = 0;
-  m_imageTimer.StartZero();
-
-  // and re-randomize if our control has been reallocated
-  if (m_randomized)
-    random_shuffle(m_files.begin(), m_files.end());
-
-  m_image.SetFileName(m_files.size() ? m_files[0] : "");
 }
 
 void CGUIMultiImage::FreeResources(bool immediately)
 {
   m_image.FreeResources(immediately);
   m_currentImage = 0;
+  CancelLoading();
+  m_files.clear();
   CGUIControl::FreeResources(immediately);
 }
 
@@ -217,39 +216,35 @@ void CGUIMultiImage::SetAspectRatio(const CAspectRatio &ratio)
 
 void CGUIMultiImage::LoadDirectory()
 {
-  // Load any images from our texture bundle first
+  // clear current stuff out
   m_files.clear();
 
   // don't load any images if our path is empty
   if (m_currentPath.IsEmpty()) return;
 
-  // check to see if we have a single image or a folder of images
+  /* Check the fast cases:
+   1. Picture extension
+   2. Cached picture (in case an extension is not present)
+   3. Bundled folder
+   */
   CFileItem item(m_currentPath, false);
-  if (item.IsPicture())
-  {
+  if (item.IsPicture() || CTextureCache::Get().HasCachedImage(m_currentPath))
     m_files.push_back(m_currentPath);
-  }
-  else
-  { // folder of images
+  else // bundled folder?
     g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);
-
-    // Load in our images from the directory specified
-    // m_currentPath is relative (as are all skin paths)
-    CStdString realPath = g_TextureManager.GetTexturePath(m_currentPath, true);
-    if (realPath.IsEmpty() && m_files.empty())
-      return;
-
-    URIUtils::AddSlashAtEnd(realPath);
-    CFileItemList items;
-    CDirectory::GetDirectory(realPath, items);
-    for (int i=0; i < items.Size(); i++)
-    {
-      CFileItemPtr pItem = items[i];
-      if (pItem->IsPicture())
-        m_files.push_back(pItem->GetPath());
-    }
+  if (!m_files.empty())
+  { // found - nothing more to do
+    OnDirectoryLoaded();
+    return;
   }
+  // slow(er) checks necessary - do them in the background
+  CSingleLock lock(m_section);
+  m_directoryStatus = LOADING;
+  m_jobID = CJobManager::GetInstance().AddJob(new CMultiImageJob(m_currentPath), this, CJob::PRIORITY_NORMAL);
+}
 
+void CGUIMultiImage::OnDirectoryLoaded()
+{
   // Randomize or sort our images if necessary
   if (m_randomized)
     random_shuffle(m_files.begin(), m_files.end());
@@ -257,8 +252,28 @@ void CGUIMultiImage::LoadDirectory()
     sort(m_files.begin(), m_files.end());
 
   // flag as loaded - no point in constantly reloading them
-  m_directoryLoaded = true;
+  m_directoryStatus = READY;
   m_imageTimer.StartZero();
+  m_currentImage = 0;
+  m_image.SetFileName(m_files.empty() ? "" : m_files[0]);
+}
+
+void CGUIMultiImage::CancelLoading()
+{
+  CSingleLock lock(m_section);
+  if (m_directoryStatus == LOADING)
+    CJobManager::GetInstance().CancelJob(m_jobID);
+  m_directoryStatus = UNLOADED;
+}
+
+void CGUIMultiImage::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  CSingleLock lock(m_section);
+  if (m_directoryStatus == LOADING && strncmp(job->GetType(), "multiimage", 10) == 0)
+  {
+    m_files = ((CMultiImageJob *)job)->m_files;
+    m_directoryStatus = LOADED;
+  }
 }
 
 void CGUIMultiImage::SetInfo(const CGUIInfoLabel &info)
@@ -271,4 +286,38 @@ void CGUIMultiImage::SetInfo(const CGUIInfoLabel &info)
 CStdString CGUIMultiImage::GetDescription() const
 {
   return m_image.GetDescription();
+}
+
+CGUIMultiImage::CMultiImageJob::CMultiImageJob(const CStdString &path)
+  : m_path(path)
+{
+}
+
+bool CGUIMultiImage::CMultiImageJob::DoWork()
+{
+  // check to see if we have a single image or a folder of images
+  CFileItem item(m_path, false);
+  if (item.IsPicture() || item.GetMimeType().Left(6).Equals("image/"))
+  {
+    m_files.push_back(m_path);
+  }
+  else
+  {
+    // Load in images from the directory specified
+    // m_path is relative (as are all skin paths)
+    CStdString realPath = g_TextureManager.GetTexturePath(m_path, true);
+    if (realPath.IsEmpty())
+      return true;
+
+    URIUtils::AddSlashAtEnd(realPath);
+    CFileItemList items;
+    CDirectory::GetDirectory(realPath, items, g_settings.m_pictureExtensions + "|.tbn|.dds", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
+    for (int i=0; i < items.Size(); i++)
+    {
+      CFileItem* pItem = items[i].get();
+      if (pItem && (pItem->IsPicture() || pItem->GetMimeType().Left(6).Equals("image/")))
+        m_files.push_back(pItem->GetPath());
+    }
+  }
+  return true;
 }

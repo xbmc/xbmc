@@ -3,7 +3,7 @@
 |   Platinum - Test UPnP A/V MediaServer
 |
 |
-| Copyright (c) 2004-2008, Plutinosoft, LLC.
+| Copyright (c) 2004-2010, Plutinosoft, LLC.
 | All rights reserved.
 | http://www.plutinosoft.com
 |
@@ -18,6 +18,7 @@
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
+| licensing@plutinosoft.com
 | 
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,15 +43,12 @@
 
 NPT_SET_LOCAL_LOGGER("platinum.media.server.file.test")
 
-//#define BROADCAST_TEST 1
-
 /*----------------------------------------------------------------------
 |   globals
 +---------------------------------------------------------------------*/
 struct Options {
     const char* path;
     const char* friendly_name;
-    bool        broadcast;
     NPT_UInt32  port;
 } Options;
 
@@ -62,7 +60,6 @@ PrintUsageAndExit()
 {
     fprintf(stderr, "usage: FileMediaServerTest [-f <friendly_name>] [-p <port>] [-b] <path>\n");
     fprintf(stderr, "-f : optional upnp device friendly name\n");
-    fprintf(stderr, "-b : optional upnp device broadcast mode\n");
     fprintf(stderr, "-p : optional http port\n");
     fprintf(stderr, "<path> : local path to serve\n");
     exit(1);
@@ -79,7 +76,6 @@ ParseCommandLine(char** args)
     /* default values */
     Options.path     = NULL;
     Options.friendly_name = NULL;
-    Options.broadcast = false;
     Options.port = 0;
 
     while ((arg = *args++)) {
@@ -90,8 +86,6 @@ ParseCommandLine(char** args)
                 fprintf(stderr, "ERROR: invalid argument\n");
                 PrintUsageAndExit();
             }
-        } else if (!strcmp(arg, "-b")) {
-            Options.broadcast = true;
         } else if (Options.path == NULL) {
             Options.path = arg;
         } else {
@@ -113,11 +107,16 @@ ParseCommandLine(char** args)
 int
 main(int /* argc */, char** argv)
 {
+    // setup Neptune logging
+    NPT_LogManager::GetDefault().Configure("plist:.level=INFO;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=42");
+
     /* parse command line */
     ParseCommandLine(argv+1);
-    
-    PLT_UPnP upnp(1900, !Options.broadcast);
 
+	/* for DLNA faster testing */
+	//PLT_Constants::GetInstance().m_DefaultDeviceLease = 30.;
+    
+    PLT_UPnP upnp;
     PLT_DeviceHostReference device(
         new PLT_FileMediaServer(
             Options.path, 
@@ -137,8 +136,6 @@ main(int /* argc */, char** argv)
     device->m_ModelName = "Platinum File Media Server";
     device->m_Manufacturer = "Plutinosoft";
     device->m_ManufacturerURL = "http://www.plutinosoft.com/";
-
-    if (Options.broadcast) device->SetBroadcast(true);
 
     upnp.AddDevice(device);
     NPT_String uuid = device->GetUUID();

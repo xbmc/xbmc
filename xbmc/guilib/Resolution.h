@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -34,19 +33,23 @@ typedef int DisplayMode;
 enum RESOLUTION {
   RES_INVALID        = -1,
   RES_HDTV_1080i     =  0,
-  RES_HDTV_720p      =  1,
-  RES_HDTV_480p_4x3  =  2,
-  RES_HDTV_480p_16x9 =  3,
-  RES_NTSC_4x3       =  4,
-  RES_NTSC_16x9      =  5,
-  RES_PAL_4x3        =  6,
-  RES_PAL_16x9       =  7,
-  RES_PAL60_4x3      =  8,
-  RES_PAL60_16x9     =  9,
-  RES_AUTORES        = 10,
-  RES_WINDOW         = 11,
-  RES_DESKTOP        = 12,          // Desktop resolution for primary screen
-  RES_CUSTOM         = 12 + 1,      // Desktop resolution for screen #2
+  RES_HDTV_720pSBS   =  1,
+  RES_HDTV_720pTB    =  2,
+  RES_HDTV_1080pSBS  =  3,
+  RES_HDTV_1080pTB   =  4,
+  RES_HDTV_720p      =  5,
+  RES_HDTV_480p_4x3  =  6,
+  RES_HDTV_480p_16x9 =  7,
+  RES_NTSC_4x3       =  8,
+  RES_NTSC_16x9      =  9,
+  RES_PAL_4x3        = 10,
+  RES_PAL_16x9       = 11,
+  RES_PAL60_4x3      = 12,
+  RES_PAL60_16x9     = 13,
+  RES_AUTORES        = 14,
+  RES_WINDOW         = 15,
+  RES_DESKTOP        = 16,          // Desktop resolution for primary screen
+  RES_CUSTOM         = 16 + 1,      // Desktop resolution for screen #2
 //                     ...
 //                     12 + N - 1   // Desktop resolution for screen N
 //                     12 + N       // First additional resolution, in a N screen configuration.
@@ -85,6 +88,8 @@ struct RESOLUTION_INFO
   int iScreen;
   int iWidth;
   int iHeight;
+  int iScreenWidth;
+  int iScreenHeight;
   int iSubtitles;
   uint32_t dwFlags;
   float fPixelRatio;
@@ -97,6 +102,8 @@ public:
   {
     iWidth = width;
     iHeight = height;
+    iScreenWidth = width;
+    iScreenHeight = height;
     fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
     strMode = mode;
     bFullScreen = true;
@@ -111,6 +118,7 @@ public:
   {
     Overscan = res.Overscan; bFullScreen = res.bFullScreen;
     iScreen = res.iScreen; iWidth = res.iWidth; iHeight = res.iHeight;
+    iScreenWidth = res.iScreenWidth; iScreenHeight = res.iScreenHeight;
     iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
     fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
     strMode = res.strMode; strOutput = res.strOutput; strId = res.strId;

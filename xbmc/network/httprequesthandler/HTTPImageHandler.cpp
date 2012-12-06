@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -38,9 +37,7 @@ int CHTTPImageHandler::HandleHTTPRequest(const HTTPRequest &request)
     m_path = request.url.substr(7);
 
     XFILE::CImageFile imageFile;
-    if (imageFile.Exists(m_path) ||
-       // temporary workaround for music images until they are integrated into CTextureCache and therefore CImageFile
-       (m_path.Left(10) == "special://" && m_path.Right(4) == ".tbn" && XFILE::CFile::Exists(m_path)))
+    if (imageFile.Exists(m_path))
     {
       m_responseCode = MHD_HTTP_OK;
       m_responseType = HTTPFileDownload;

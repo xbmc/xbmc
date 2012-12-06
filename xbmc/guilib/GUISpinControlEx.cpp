@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -149,11 +148,11 @@ void CGUISpinControlEx::SetSpinPosition(float spinPosX)
   SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
 }
 
-void CGUISpinControlEx::RenderText(float posX, float width)
+void CGUISpinControlEx::RenderText(float posX, float posY, float width, float height)
 {
   const float spaceWidth = 10;
   // check our limits from the button control
   float x = std::max(m_buttonControl.m_label.GetRenderRect().x2 + spaceWidth, posX);
   m_label.SetScrolling(HasFocus());
-  CGUISpinControl::RenderText(x, width + posX - x);
+  CGUISpinControl::RenderText(x, m_buttonControl.GetYPosition(), width + posX - x, m_buttonControl.GetHeight());
 }

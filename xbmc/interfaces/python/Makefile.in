@@ -1,9 +1,25 @@
-SRCS=XBPython.cpp \
-     XBPyThread.cpp
+INCLUDES=-I../../.. -I. -I../../ -I../../linux -I../../../guilib -I.
 
-LIB=python.a
+ifeq (@USE_DOXYGEN@,1)
+DOXYGEN=@DOXYGEN_EXE@
+endif
 
-INCLUDES+= @PYTHON_CPPFLAGS@
+TOPDIR = @abs_top_srcdir@
+INTERFACES_DIR = @abs_top_srcdir@/xbmc/interfaces
+JAVA=@JAVA_EXE@
+SWIG=@SWIG_EXE@
+LIB=python_binding.a
+all: $(LIB)
 
-include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(pathsubst %.S,,$(SRCS))))
+include ../../../codegenerator.mk
+
+SRCS=	CallbackHandler.cpp LanguageHook.cpp \
+	XBPyThread.cpp XBPython.cpp swig.cpp PyContext.cpp \
+	$(GENERATED)
+
+INCLUDES += @PYTHON_CPPFLAGS@
+.SECONDARY: $(GENERATED)
+
+include ../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+

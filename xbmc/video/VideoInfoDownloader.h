@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -42,8 +41,8 @@ typedef std::vector<CScraperUrl> MOVIELIST;
 class CVideoInfoDownloader : public CThread
 {
 public:
-  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) : CThread("CVideoInfoDownloader"), m_info(scraper) {}
-  virtual ~CVideoInfoDownloader() {}
+  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper);
+  virtual ~CVideoInfoDownloader();
 
   // threaded lookup functions
 
@@ -56,7 +55,7 @@ public:
   int FindMovie(const CStdString& strMovie, MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
-  bool GetEpisodeList(const CScraperUrl& url, EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
+  bool GetEpisodeList(const CScraperUrl& url, VIDEO::EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
 
   static void ShowErrorDialog(const ADDON::CScraperError &sce);
 
@@ -67,15 +66,15 @@ protected:
                       GET_EPISODE_LIST = 3,
                       GET_EPISODE_DETAILS = 4 };
 
-  XFILE::CCurlFile m_http;
-  CStdString        m_strMovie;
-  MOVIELIST         m_movieList;
-  CVideoInfoTag     m_movieDetails;
-  CScraperUrl       m_url;
-  EPISODELIST       m_episode;
-  LOOKUP_STATE      m_state;
-  int               m_found;
-  ADDON::ScraperPtr m_info;
+  XFILE::CCurlFile*   m_http;
+  CStdString          m_strMovie;
+  MOVIELIST           m_movieList;
+  CVideoInfoTag       m_movieDetails;
+  CScraperUrl         m_url;
+  VIDEO::EPISODELIST  m_episode;
+  LOOKUP_STATE        m_state;
+  int                 m_found;
+  ADDON::ScraperPtr   m_info;
 
   // threaded stuff
   void Process();

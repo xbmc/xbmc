@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,9 +34,9 @@ public:
     SUBTITLE
   };
 
-  CStreamDetail(StreamType type) : m_eType(type) {};
+  CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {};
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual bool IsWorseThan(CStreamDetail *that) { return true; };
 
   const StreamType m_eType;
@@ -52,7 +51,7 @@ class CStreamDetailVideo : public CStreamDetail
 public:
   CStreamDetailVideo();
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual bool IsWorseThan(CStreamDetail *that);
 
   int m_iWidth;
@@ -67,7 +66,7 @@ class CStreamDetailAudio : public CStreamDetail
 public:
   CStreamDetailAudio();
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual bool IsWorseThan(CStreamDetail *that);
 
   int m_iChannels;
@@ -80,7 +79,7 @@ class CStreamDetailSubtitle : public CStreamDetail
 public:
   CStreamDetailSubtitle();
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
   virtual bool IsWorseThan(CStreamDetail *that);
 
   CStdString m_strLanguage;
@@ -121,7 +120,7 @@ public:
   void DetermineBestStreams(void);
 
   virtual void Archive(CArchive& ar);
-  virtual void Serialize(CVariant& value);
+  virtual void Serialize(CVariant& value) const;
 
   // Language to use for "best" subtitle stream
   CStdString m_strLanguage;

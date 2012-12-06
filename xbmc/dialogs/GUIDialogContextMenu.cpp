@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,8 +22,6 @@
 #include "GUIDialogContextMenu.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
 #include "Autorun.h"
@@ -44,6 +41,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "video/windows/GUIWindowVideoBase.h"
+#include "URL.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -72,9 +70,12 @@ void CContextButtons::Add(unsigned int button, int label)
   push_back(pair<unsigned int, CStdString>(button, g_localizeStrings.Get(label)));
 }
 
-CGUIDialogContextMenu::CGUIDialogContextMenu(void):CGUIDialog(WINDOW_DIALOG_CONTEXT_MENU, "DialogContextMenu.xml")
+CGUIDialogContextMenu::CGUIDialogContextMenu(void)
+  : CGUIDialog(WINDOW_DIALOG_CONTEXT_MENU, "DialogContextMenu.xml")
 {
   m_clickedButton = -1;
+  m_backgroundImageSize = 0;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogContextMenu::~CGUIDialogContextMenu(void)
@@ -185,12 +186,12 @@ void CGUIDialogContextMenu::SetupButtons()
       if (pGroupList->GetOrientation() == VERTICAL)
       {
         // keep gap between bottom edges of grouplist and background image
-        pControl->SetHeight(pControl->GetHeight() - pGroupList->Size() + pGroupList->GetHeight());
+        pControl->SetHeight(m_backgroundImageSize - pGroupList->Size() + pGroupList->GetHeight());
       }
       else
       {
         // keep gap between right edges of grouplist and background image
-        pControl->SetWidth(pControl->GetWidth() - pGroupList->Size() + pGroupList->GetWidth());
+        pControl->SetWidth(m_backgroundImageSize - pGroupList->Size() + pGroupList->GetWidth());
       }
     }
 #if PRE_SKIN_VERSION_11_COMPATIBILITY
@@ -337,7 +338,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
       else
       {
         ADDON::AddonPtr plugin;
-        if (ADDON::CAddonMgr::Get().GetAddon(url.GetHostName(), plugin, ADDON::ADDON_PLUGIN))
+        if (ADDON::CAddonMgr::Get().GetAddon(url.GetHostName(), plugin))
         if (plugin->HasSettings())
           buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
       }
@@ -409,11 +410,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false); // resume
 
   case CONTEXT_BUTTON_EJECT_DISC:
-#ifdef _WIN32
-    CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
-#else
-    CIoSupport::ToggleTray();
-#endif
+    g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
 #endif
     return true;
   default:
@@ -496,14 +493,14 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (!share->m_strThumbnailImage.IsEmpty())
       {
         CFileItemPtr current(new CFileItem("thumb://Current", false));
-        current->SetThumbnailImage(share->m_strThumbnailImage);
+        current->SetArt("thumb", share->m_strThumbnailImage);
         current->SetLabel(g_localizeStrings.Get(20016));
         items.Add(current);
       }
-      else if (item->HasThumbnail())
+      else if (item->HasArt("thumb"))
       { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
         CFileItemPtr current(new CFileItem("thumb://Current", false));
-        current->SetThumbnailImage(item->GetThumbnailImage());
+        current->SetArt("thumb", item->GetArt("thumb"));
         current->SetLabel(g_localizeStrings.Get(20016));
         items.Add(current);
       }
@@ -512,7 +509,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (XFILE::CFile::Exists(folderThumb))
       {
         CFileItemPtr local(new CFileItem("thumb://Local", false));
-        local->SetThumbnailImage(folderThumb);
+        local->SetArt("thumb", folderThumb);
         local->SetLabel(g_localizeStrings.Get(20017));
         items.Add(local);
       }
@@ -657,7 +654,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
     }
     else
     {
-      if (!testShare.strPath.Equals(item->GetPath()))
+      if (!URIUtils::CompareWithoutSlashAtEnd(testShare.strPath, item->GetPath()))
         continue;
     }
     // paths match, what about share name - only match the leftmost
@@ -672,15 +669,39 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
 
 void CGUIDialogContextMenu::OnWindowLoaded()
 {
+  m_coordX = m_posX;
+  m_coordY = m_posY;
+  
+  const CGUIControlGroupList* pGroupList = NULL;
+  const CGUIControl* pControl = GetControl(GROUP_LIST);
+  if (pControl && pControl->GetControlType() == GUICONTROL_GROUPLIST)
+    pGroupList = (CGUIControlGroupList*)pControl;
+
+  pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
+  if (pControl && pGroupList)
+  {
+    if (pGroupList->GetOrientation() == VERTICAL)
+      m_backgroundImageSize = pControl->GetHeight();
+    else
+      m_backgroundImageSize = pControl->GetWidth();
+  }
+
   CGUIDialog::OnWindowLoaded();
-  SetInitialVisibility();
-  SetupButtons();
 }
 
-void CGUIDialogContextMenu::OnWindowUnload()
+void CGUIDialogContextMenu::OnDeinitWindow(int nextWindowID)
 {
+  //we can't be sure that controls are removed on window unload
+  //we have to remove them to be sure that they won't stay for next use of context menu
+  for (unsigned int i = 0; i < m_buttons.size(); i++)
+  {
+    const CGUIControl *control = GetControl(BUTTON_START + i);
+    if (control)
+      RemoveControl(control);
+  }
+
   m_buttons.clear();
-  CGUIDialog::OnWindowUnload();
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)
@@ -747,6 +768,8 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const CContextButtons &choices)
   {
     pMenu->m_buttons = choices;
     pMenu->Initialize();
+    pMenu->SetInitialVisibility();
+    pMenu->SetupButtons();
     pMenu->PositionAtCurrentFocus();
     pMenu->DoModal();
     return pMenu->m_clickedButton;
@@ -764,7 +787,7 @@ void CGUIDialogContextMenu::PositionAtCurrentFocus()
     {
       CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f)
                    + window->GetRenderPosition();
-      SetPosition(m_posX + pos.x - GetWidth() * 0.5f, m_posY + pos.y - GetHeight() * 0.5f);
+      SetPosition(m_coordX + pos.x - GetWidth() * 0.5f, m_coordY + pos.y - GetHeight() * 0.5f);
       return;
     }
   }

@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -61,13 +60,13 @@ class CCoreAudioUnit
 public:
   CCoreAudioUnit();
   virtual ~CCoreAudioUnit();
-  
+
   virtual bool Open(AUGraph audioGraph, AudioComponentDescription desc);
   virtual bool Open(AUGraph audioGraph, OSType type, OSType subType, OSType manufacturer);
   virtual void Close();
   virtual bool SetInputSource(ICoreAudioSource* pSource);
   virtual bool IsInitialized() {return m_Initialized;}
-  virtual bool GetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);    
+  virtual bool GetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);
   virtual bool SetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);
   virtual bool SetMaxFramesPerSlice(UInt32 maxFrames);
   virtual void GetFormatDesc(AEAudioFormat format, AudioStreamBasicDescription *streamDesc);
@@ -83,11 +82,11 @@ public:
 protected:
   bool SetRenderProc();
   bool RemoveRenderProc();
-  static OSStatus RenderCallback(void *inRefCon, 
-                                 AudioUnitRenderActionFlags *ioActionFlags, 
-                                 const AudioTimeStamp *inTimeStamp, 
-                                 UInt32 inBusNumber, 
-                                 UInt32 inNumberFrames, 
+  static OSStatus RenderCallback(void *inRefCon,
+                                 AudioUnitRenderActionFlags *ioActionFlags,
+                                 const AudioTimeStamp *inTimeStamp,
+                                 UInt32 inBusNumber,
+                                 UInt32 inNumberFrames,
                                  AudioBufferList *ioData);
   ICoreAudioSource*   m_pSource;
   AudioUnit           m_audioUnit;
@@ -104,7 +103,7 @@ public:
   CAUOutputDevice();
   virtual ~CAUOutputDevice();
   UInt32 GetBufferFrameSize();
-  
+
   /*
   Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);
@@ -117,13 +116,13 @@ class CAUMultiChannelMixer : public CAUOutputDevice
 public:
   CAUMultiChannelMixer();
   virtual ~CAUMultiChannelMixer();
-  
+
   UInt32 GetInputBusCount();
   bool SetInputBusFormat(UInt32 busCount, AudioStreamBasicDescription *pFormat);
   bool SetInputBusCount(UInt32 busCount);
   UInt32 GetOutputBusCount();
   bool SetOutputBusCount(UInt32 busCount);
-    
+
   Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);
 };
@@ -132,23 +131,23 @@ class CCoreAudioGraph
 {
 private:
   AUGraph           m_audioGraph;
-  
+
   CAUOutputDevice  *m_audioUnit;
   CAUMultiChannelMixer   *m_mixerUnit;
   CAUOutputDevice  *m_inputUnit;
-  
+
   int m_reservedBusNumber[MAX_CONNECTION_LIMIT];
   bool              m_initialized;
   bool              m_allowMixing;
-  
+
   typedef std::list<CAUOutputDevice*> AUUnitList;
   AUUnitList        m_auUnitList;
-  
+
 public:
   CCoreAudioGraph();
   ~CCoreAudioGraph();
-  
-  bool Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing);
+
+  bool Open(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing, float initVolume);
   bool Close();
   bool Start();
   bool Stop();
@@ -174,17 +173,18 @@ protected:
   bool              m_allowMixing;
   bool              m_encoded;
   AEDataFormat      m_rawDataFormat;
+  float             m_initVolume;
 public:
   unsigned int      m_NumLatencyFrames;
   unsigned int      m_OutputBufferIndex;
   CCoreAudioAE     *m_ae;
-  
+
   CCoreAudioAEHALIOS();
   virtual ~CCoreAudioAEHALIOS();
-  
+
   virtual bool   InitializePCM(ICoreAudioSource *pSource, AEAudioFormat &format, bool allowMixing);
   virtual bool   InitializePCMEncoded(ICoreAudioSource *pSource, AEAudioFormat &format);
-  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device);
+  virtual bool   Initialize(ICoreAudioSource *ae, bool passThrough, AEAudioFormat &format, AEDataFormat rawDataFormat, std::string &device, float initVolume);
   virtual void   Deinitialize();
   virtual void   EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual void   SetDirectInput(ICoreAudioSource *pSource, AEAudioFormat &format);

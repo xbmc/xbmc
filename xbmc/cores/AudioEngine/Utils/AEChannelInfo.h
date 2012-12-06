@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -81,7 +80,8 @@ public:
   CAEChannelInfo& operator=(const enum AEStdChLayout rhs);
   bool operator==(const CAEChannelInfo& rhs);
   bool operator!=(const CAEChannelInfo& rhs);
-  void operator+=(const enum AEChannel rhs);
+  CAEChannelInfo& operator+=(const enum AEChannel& rhs);
+  CAEChannelInfo& operator-=(const enum AEChannel& rhs);
   const enum AEChannel operator[](unsigned int i) const;
   operator std::string();
 

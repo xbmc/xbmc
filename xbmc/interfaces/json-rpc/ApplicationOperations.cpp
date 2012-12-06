@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -85,7 +84,7 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITran
   else
     return InvalidParams;
 
-  g_application.getApplicationMessenger().ShowVolumeBar(up);
+  CApplicationMessenger::Get().ShowVolumeBar(up);
 
   return GetPropertyValue("volume", result);
 }
@@ -94,7 +93,7 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransp
 {
   if ((parameterObject["mute"].isString() && parameterObject["mute"].asString().compare("toggle") == 0) ||
       (parameterObject["mute"].isBoolean() && parameterObject["mute"].asBoolean() != g_application.IsMuted()))
-    g_application.getApplicationMessenger().SendAction(CAction(ACTION_MUTE));
+    CApplicationMessenger::Get().SendAction(CAction(ACTION_MUTE));
   else if (!parameterObject["mute"].isBoolean() && !parameterObject["mute"].isString())
     return InvalidParams;
 
@@ -103,7 +102,7 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const CStdString &method, ITransp
 
 JSONRPC_STATUS CApplicationOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().Quit();
+  CApplicationMessenger::Get().Quit();
   return ACK;
 }
 

@@ -11,7 +11,7 @@
 
   <rules name="system rules">
     <rule name="rtv" protocols="rtv" player="DVDPlayer" />
-    <rule name="hdhomerun/myth/rtmp/mms/udp" protocols="hdhomerun|myth|cmyth|rtmp|mms|mmsh|udp" player="DVDPlayer" />
+    <rule name="hdhomerun/myth/mms/udp" protocols="hdhomerun|myth|cmyth|mms|mmsh|udp" player="DVDPlayer" />
     <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />
 
     <!-- dvdplayer can play standard rtsp streams -->
@@ -19,19 +19,21 @@
 
     <!-- Internet streams -->
     <rule name="streams" internetstream="true">
-      <rule name="flv/aacp/sdp" mimetypes="video/x-flv|video-flv|audio/aacp|application/sdp" player="DVDPlayer" />
+      <rule name="aacp/sdp" mimetypes="audio/aacp|application/sdp" player="DVDPlayer" />
       <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
     </rule>
 
     <!-- DVDs -->
-    <rule name="dvd" dvd="true" player="videodefaultdvdplayer" />
-    <rule name="dvdfile" dvdfile="true" player="videodefaultdvdplayer" />
-    <rule name="dvdimage" dvdimage="true" player="videodefaultdvdplayer" />
+    <rule name="dvd" dvd="true" player="DVDPlayer" />
+    <rule name="dvdimage" dvdimage="true" player="DVDPlayer" />
 
     <!-- Only dvdplayer can handle these normally -->
     <rule name="sdp/asf" filetypes="sdp|asf" player="DVDPlayer" />
 
     <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
     <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
+
+    <!-- pvr radio channels should be played by dvdplayer because they need buffering -->
+    <rule name="radio" filetypes="pvr" filename=".*/radio/.*" player="DVDPlayer" />
   </rules>
 </playercorefactory>

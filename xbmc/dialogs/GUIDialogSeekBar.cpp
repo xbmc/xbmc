@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,13 @@
 #include "guilib/GUISliderControl.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
+#include "utils/TimeUtils.h"
+#include "FileItem.h"
+#include "settings/GUISettings.h"
 #include "utils/SeekHandler.h"
+
+#define SEEK_BAR_DISPLAY_TIME 2000L
+#define SEEK_BAR_SEEK_TIME     500L
 
 #define POPUP_SEEK_SLIDER       401
 #define POPUP_SEEK_LABEL        402
@@ -31,7 +36,7 @@
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
     : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekBar.xml")
 {
-  m_loadOnDemand = false;    // the application class handles our resources
+  m_loadType = LOAD_ON_GUI_INIT;    // the application class handles our resources
 }
 
 CGUIDialogSeekBar::~CGUIDialogSeekBar(void)

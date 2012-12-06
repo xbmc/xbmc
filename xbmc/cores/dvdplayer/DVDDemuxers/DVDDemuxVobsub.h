@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -53,7 +52,7 @@ private:
   {
   public:
     CStream(CDVDDemuxVobsub* parent)
-      : m_parent(parent)
+      : m_discard(AVDISCARD_NONE), m_parent(parent)
     {}
     virtual void      SetDiscard(AVDiscard discard) { m_discard = discard; }
     virtual AVDiscard GetDiscard()                  { return m_discard; }
@@ -75,11 +74,6 @@ private:
   std::vector<STimestamp>            m_Timestamps;
   std::vector<STimestamp>::iterator  m_Timestamp;
   std::vector<CStream*> m_Streams;
-
-  int m_width;
-  int m_height;
-  int m_left;
-  int m_top;
 
   typedef struct SState
   {

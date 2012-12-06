@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -51,6 +50,7 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_glWindow = 0;
   m_wmWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
+  m_minimized = false;
   m_dpyLostTime = 0;
 
   XSetErrorHandler(XErrorHandler);
@@ -132,11 +132,12 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   if(!SetFullScreen(fullScreen, res, false))
     return false;
 
-  CTexture iconTexture;
-  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
+  CBaseTexture* iconTexture = CTexture::LoadFromFile("special://xbmc/media/icon.png");
 
-  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), 32, iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+  if (iconTexture)
+    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture->GetPixels(), iconTexture->GetWidth(), iconTexture->GetHeight(), 32, iconTexture->GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
   SDL_WM_SetCaption("XBMC Media Center", NULL);
+  delete iconTexture;
 
   // register XRandR Events
 #if defined(HAS_XRANDR)
@@ -268,6 +269,8 @@ void CWinSystemX11::UpdateResolutions()
       RESOLUTION_INFO res;
       res.iWidth  = mode.w;
       res.iHeight = mode.h;
+      res.iScreenWidth  = mode.w;
+      res.iScreenHeight = mode.h;
       if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
         res.fPixelRatio = ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
       else
@@ -282,7 +285,7 @@ void CWinSystemX11::UpdateResolutions()
       res.fRefreshRate = mode.hz;
       res.bFullScreen  = true;
 
-      if ((float)mode.w / (float)mode.h >= 1.59)
+      if (mode.h > 0 && ((float)mode.w / (float)mode.h >= 1.59))
         res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
       else
         res.dwFlags = 0;
@@ -440,6 +443,8 @@ void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
     g_graphicsContext.ToggleFullScreenRoot();
+
+  m_minimized = !bActivated;
 }
 bool CWinSystemX11::Minimize()
 {
@@ -448,6 +453,7 @@ bool CWinSystemX11::Minimize()
     g_graphicsContext.ToggleFullScreenRoot();
 
   SDL_WM_IconifyWindow();
+  m_minimized = true;
   return true;
 }
 bool CWinSystemX11::Restore()
@@ -464,6 +470,7 @@ bool CWinSystemX11::Show(bool raise)
 {
   XMapWindow(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
+  m_minimized = false;
   return true;
 }
 
@@ -544,6 +551,11 @@ int CWinSystemX11::XErrorHandler(Display* dpy, XErrorEvent* error)
             buf, error->type, error->serial, (int)error->error_code, (int)error->request_code, (int)error->minor_code);
 
   return 0;
+}
+
+bool CWinSystemX11::EnableFrameLimiter()
+{
+  return m_minimized;
 }
 
 #endif

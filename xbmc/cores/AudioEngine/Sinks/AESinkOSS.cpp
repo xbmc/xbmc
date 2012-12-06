@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,7 +30,7 @@
 
 #include <sys/ioctl.h>
 
-#if defined(OSS4) || defined(__FreeBSD__)
+#if defined(OSS4) || defined(TARGET_FREEBSD)
   #include <sys/soundcard.h>
 #else
   #include <linux/soundcard.h>
@@ -101,10 +100,10 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
 #ifdef __linux__
   /* try to open in exclusive mode first (no software mixing) */
   m_fd = open(device.c_str(), O_WRONLY | O_EXCL, 0);
-  if (!m_fd)
+  if (m_fd == -1)
 #endif
     m_fd = open(device.c_str(), O_WRONLY, 0);
-  if (!m_fd)
+  if (m_fd == -1)
   {
     CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to open the audio device: %s", device.c_str());
     return false;
@@ -239,46 +238,34 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
-#ifndef OSS4
-#ifndef __FreeBSD__
-  int mask = 0;
-  for (unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
-    switch (format.m_channelLayout[i])
-    {
-      case AE_CH_FL:
-      case AE_CH_FR:
-        mask |= DSP_BIND_FRONT;
-        break;
-
-      case AE_CH_BL:
-      case AE_CH_BR:
-        mask |= DSP_BIND_SURR;
-        break;
-
-      case AE_CH_FC:
-      case AE_CH_LFE:
-        mask |= DSP_BIND_CENTER_LFE;
-        break;
-
-      default:
-        break;
-    }
-
-  /* try to set the channel mask, not all cards support this */
-  if (ioctl(m_fd, SNDCTL_DSP_BIND_CHANNEL, &mask) == -1)
+  /* find the number we need to open to access the channels we need */
+  bool found = false;
+  int oss_ch = 0;
+  for (int ch = format.m_channelLayout.Count(); ch < 9; ++ch)
   {
-    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set the channel mask");
-    /* get the configured channel mask */
-    if (ioctl(m_fd, SNDCTL_DSP_GETCHANNELMASK, &mask) == -1)
+    oss_ch = ch;
+    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= (int)format.m_channelLayout.Count())
     {
-      /* as not all cards support this so we just assume stereo if it fails */
-      CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to get the channel mask, assuming stereo");
-      mask = DSP_BIND_FRONT;
+      found = true;
+      break;
     }
   }
-#endif
-#else /* OSS4 */
+
+  if (!found)
+    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to access the number of channels required, falling back");
+
+#if defined(TARGET_FREEBSD)
+  /* fix hdmi 8 channels order */
+  if (!AE_IS_RAW(format.m_dataFormat) && 8 == oss_ch)
+  {
+    unsigned long long order = 0x0000000087346521ULL;
+
+    if (ioctl(m_fd, SNDCTL_DSP_SET_CHNORDER, &order) == -1)
+      CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to set the channel order");
+  }
+#elif defined(OSS4)
   unsigned long long order = 0;
+
   for (unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
     switch (format.m_channelLayout[i])
     {
@@ -303,24 +290,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, std::string &device)
       order = CHNORDER_NORMAL;
     }
   }
-
 #endif
-
-  /* find the number we need to open to access the channels we need */
-  bool found = false;
-  int oss_ch = 0;
-  for (int ch = format.m_channelLayout.Count(); ch < 9; ++ch)
-  {
-    oss_ch = ch;
-    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= (int)format.m_channelLayout.Count())
-    {
-      found = true;
-      break;
-    }
-  }
-
-  if (!found)
-    CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to access the number of channels required, falling back");
 
   int tmp = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelLayout.Count() * OSS_FRAMES;
   int pos = 0;
@@ -364,7 +334,7 @@ void CAESinkOSS::Deinitialize()
 {
   Stop();
 
-  if (m_fd)
+  if (m_fd != -1)
     close(m_fd);
 }
 
@@ -413,16 +383,19 @@ bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const std::string devi
 void CAESinkOSS::Stop()
 {
 #ifdef SNDCTL_DSP_RESET
-  if (m_fd)
+  if (m_fd != -1)
     ioctl(m_fd, SNDCTL_DSP_RESET, NULL);
 #endif
 }
 
 double CAESinkOSS::GetDelay()
 {
+  if (m_fd == -1)
+    return 0.0;
+  
   int delay;
   if (ioctl(m_fd, SNDCTL_DSP_GETODELAY, &delay) == -1)
-    return 0.0f;
+    return 0.0;
 
   return (double)delay / (m_format.m_frameSize * m_format.m_sampleRate);
 }
@@ -430,11 +403,17 @@ double CAESinkOSS::GetDelay()
 unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
   int size = frames * m_format.m_frameSize;
+  if (m_fd == -1)
+  {
+    CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");
+    return INT_MAX;
+  }
+
   int wrote = write(m_fd, data, size);
   if (wrote < 0)
   {
     CLog::Log(LOGERROR, "CAESinkOSS::AddPackets - Failed to write");
-    return frames;
+    return INT_MAX;
   }
 
   return wrote / m_format.m_frameSize;
@@ -442,7 +421,7 @@ unsigned int CAESinkOSS::AddPackets(uint8_t *data, unsigned int frames, bool has
 
 void CAESinkOSS::Drain()
 {
-  if (!m_fd)
+  if (m_fd == -1)
     return;
 
   // ???
@@ -515,8 +494,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list)
     }
     list.push_back(info);
   }
-
-  close(mixerfd);
 #endif
+  close(mixerfd);
 }
 

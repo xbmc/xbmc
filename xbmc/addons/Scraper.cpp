@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 #include "Scraper.h"
@@ -39,11 +38,15 @@
 #include "video/VideoDatabase.h"
 #include "music/Album.h"
 #include "music/Artist.h"
+#include "Util.h"
+#include "URL.h"
+
 #include <sstream>
 
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
+using namespace VIDEO;
 
 namespace ADDON
 {
@@ -808,10 +811,14 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
     {
       EPISODE ep;
       TiXmlElement *pxeLink = pxeMovie->FirstChildElement("url");
-      if (pxeLink && XMLUtils::GetInt(pxeMovie, "season", ep.key.first) &&
-        XMLUtils::GetInt(pxeMovie, "epnum", ep.key.second))
+      CStdString strEpNum;
+      if (pxeLink && XMLUtils::GetInt(pxeMovie, "season", ep.iSeason) &&
+        XMLUtils::GetString(pxeMovie, "epnum", strEpNum))
       {
         CScraperUrl &scurlEp(ep.cScraperUrl);
+        int dot = strEpNum.Find(".");
+        ep.iEpisode = atoi(strEpNum.c_str());
+        ep.iSubepisode = (dot > -1) ? atoi(strEpNum.Mid(dot + 1).c_str()) : 0;
         if (!XMLUtils::GetString(pxeMovie, "title", scurlEp.strTitle))
             scurlEp.strTitle = g_localizeStrings.Get(416);
         XMLUtils::GetString(pxeMovie, "id", scurlEp.strId);

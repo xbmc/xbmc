@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,7 +22,6 @@
 #include "GUIDialogVideoSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIPassword.h"
-#include "Util.h"
 #include "utils/MathUtils.h"
 #include "settings/GUISettings.h"
 #ifdef HAS_VIDEO_PLAYBACK
@@ -33,8 +31,10 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "settings/Settings.h"
 #include "addons/Skin.h"
+#include "pvr/PVRManager.h"
 
 using namespace std;
+using namespace PVR;
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
@@ -76,20 +76,18 @@ void CGUIDialogVideoSettings::CreateSettings()
   // create our settings
   {
     vector<pair<int, int> > entries;
-    entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
-    entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
-    entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
 
-    /* remove unsupported methods */
-    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
-    {
-      if(g_renderManager.Supports((EDEINTERLACEMODE)it->first))
-        it++;
-      else
-        it = entries.erase(it);
-    }
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_OFF))
+      entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
 
-    AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_DeinterlaceMode, entries);
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_AUTO))
+      entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
+
+    if (g_renderManager.Supports(VS_DEINTERLACEMODE_FORCE))
+      entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
+
+    if (entries.size())
+      AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_DeinterlaceMode, entries);
   }
   {
     vector<pair<int, int> > entries;
@@ -111,6 +109,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , 16314));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BOB                   , 16320));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BEST                  , 16321));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO_ION                   , 16325));
 
     /* remove unsupported methods */
     for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
@@ -121,9 +120,12 @@ void CGUIDialogVideoSettings::CreateSettings()
         it = entries.erase(it);
     }
 
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
-    if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
-      EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
+    if (entries.size() > 1)
+    {
+      AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+      if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
+        EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
+    }
   }
   {
     vector<pair<int, int> > entries;
@@ -155,15 +157,21 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_settings.m_currentVideoSettings.m_ScalingMethod, entries);
   }
-  AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
+  if (g_renderManager.Supports(RENDERFEATURE_CROP))
+    AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
+  if (g_renderManager.Supports(RENDERFEATURE_STRETCH) || g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
   {
     const int entries[] = {630, 631, 632, 633, 634, 635, 636 };
     AddSpin(VIDEO_SETTINGS_VIEW_MODE, 629, &g_settings.m_currentVideoSettings.m_ViewMode, 7, entries);
   }
-  AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
-  AddSlider(VIDEO_SETTINGS_VERTICAL_SHIFT, 225, &g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.01f, 2.0f, FormatFloat);
-  AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
-  AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &g_settings.m_currentVideoSettings.m_PostProcess);
+  if (g_renderManager.Supports(RENDERFEATURE_ZOOM))
+    AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_VERTICAL_SHIFT))
+    AddSlider(VIDEO_SETTINGS_VERTICAL_SHIFT, 225, &g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.01f, 2.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_PIXEL_RATIO))
+    AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_POSTPROCESS))
+    AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &g_settings.m_currentVideoSettings.m_PostProcess);
 
 #ifdef HAS_VIDEO_PLAYBACK
   if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
@@ -241,6 +249,9 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   {
     EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, g_settings.m_currentVideoSettings.m_DeinterlaceMode != VS_DEINTERLACEMODE_OFF);
   }
+
+  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
+    g_PVRManager.TriggerSaveChannelSettings();
 }
 
 CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -56,7 +55,7 @@ void CGUIInfoBool::Parse(const CStdString &expression, int context)
   }
 }
 
-void CGUIInfoBool::Update(const CGUIListItem *item)
+void CGUIInfoBool::Update(const CGUIListItem *item /*= NULL*/)
 {
   if (m_info)
     m_value = g_infoManager.GetBoolValue(m_info, item);
@@ -128,18 +127,18 @@ CGUIInfoLabel::CGUIInfoLabel()
 {
 }
 
-CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback, int context)
+CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback /*= ""*/, int context /*= 0*/)
 {
   SetLabel(label, fallback, context);
 }
 
-void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback, int context)
+void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback, int context /*= 0*/)
 {
   m_fallback = fallback;
   Parse(label, context);
 }
 
-CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback) const
+CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdString *fallback /*= NULL*/) const
 {
   CStdString label;
   for (unsigned int i = 0; i < m_info.size(); i++)
@@ -165,7 +164,7 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, CStdStri
   return label;
 }
 
-CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback) const
+CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImages, CStdString *fallback /*= NULL*/) const
 {
   if (!item->IsFileItem()) return "";
   CStdString label;
@@ -341,7 +340,7 @@ void CGUIInfoLabel::Parse(const CStdString &label, int context)
     m_info.push_back(CInfoPortion(0, work, ""));
 }
 
-CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix, bool escaped)
+CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix, bool escaped /*= false */)
 {
   m_info = info;
   m_prefix = prefix;
@@ -365,7 +364,7 @@ CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
   return label;
 }
 
-CStdString CGUIInfoLabel::GetLabel(const CStdString &label, int contextWindow, bool preferImage)
+CStdString CGUIInfoLabel::GetLabel(const CStdString &label, int contextWindow /*= 0*/, bool preferImage /*= false */)
 { // translate the label
   CGUIInfoLabel info(label, "", contextWindow);
   return info.GetLabel(contextWindow, preferImage);

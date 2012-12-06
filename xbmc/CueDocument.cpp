@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -277,18 +276,14 @@ CStdString CCueDocument::GetMediaTitle()
 ////////////////////////////////////////////////////////////////////////////////////
 bool CCueDocument::ReadNextLine(CStdString &szLine)
 {
-  char *pos;
   // Read the next line.
   while (m_file.ReadString(m_szBuffer, 1023)) // Bigger than MAX_PATH_SIZE, for usage with relax!
   {
-    // Remove the white space at the beginning of the line.
-    pos = m_szBuffer;
-    while (pos && (*pos == ' ' || *pos == '\t' || *pos == '\r' || *pos == '\n')) pos++;
-    if (pos)
-    {
-      szLine = pos;
+    // Remove the white space at the beginning and end of the line.
+    szLine = m_szBuffer;
+    szLine.Trim();
+    if (!szLine.empty())
       return true;
-    }
     // If we are here, we have an empty line so try the next line
   }
   return false;
@@ -365,8 +360,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
   CStdString strDirectory;
   URIUtils::GetDirectory(strBase, strDirectory);
 
-  CStdString strFilename = strPath;
-  URIUtils::GetFileName(strFilename);
+  CStdString strFilename = URIUtils::GetFileName(strPath);
 
   URIUtils::AddFileToFolder(strDirectory, strFilename, strPath);
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 //-----------------------------------------------------------------------------
@@ -31,9 +30,9 @@
 
 #ifdef HAS_DVD_DRIVE
 
+#include <taglib/id3v1genres.h>
 #include "cddb.h"
 #include "network/DNSNameCache.h"
-#include "music/tags/Id3Tag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -47,7 +46,6 @@
 #include <netdb.h>
 
 using namespace std;
-using namespace MUSIC_INFO;
 using namespace MEDIA_DETECT;
 using namespace AUTOPTR;
 using namespace CDDB;
@@ -491,7 +489,7 @@ void Xcddb::parseData(const char *buffer)
   // the data contained on those lines should be concatenated
   char *line;
   const char trenner[3] = {'\n', '\r', '\0'};
-  line = strtok((char*)buffer, trenner); // skip first line
+  strtok((char*)buffer, trenner); // skip first line
   while ((line = strtok(0, trenner)))
   {
     // Lines that begin with # are comments, should be ignored
@@ -575,8 +573,8 @@ void Xcddb::parseData(const char *buffer)
           strGenre.TrimLeft(' ');
           if (StringUtils::IsNaturalNumber(strGenre))
           {
-            CID3Tag tag;
-            m_strGenre=tag.ParseMP3Genre(strGenre);
+            int iGenre = strtol(strGenre, NULL, 10);
+            m_strGenre = TagLib::ID3v1::genre(iGenre).to8Bit(true);
           }
         }
       }

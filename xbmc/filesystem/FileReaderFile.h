@@ -20,6 +20,7 @@
 */
 
 #include "File.h"
+#include "IFile.h"
 
 namespace XFILE
 {

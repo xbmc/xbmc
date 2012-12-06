@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2012 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
+*  along with XBMC; see the file COPYING.  If not, see
+*  <http://www.gnu.org/licenses/>.
 *
 */
 
@@ -25,6 +24,7 @@
 #include "WinEvents.h"
 #include "WinEventsSDL.h"
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "guilib/GUIWindowManager.h"
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
@@ -35,7 +35,7 @@
 #include "osx/CocoaInterface.h"
 #endif
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(__APPLE__) && !defined(__ANDROID__)
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
 #include "input/XBMC_keysym.h"
@@ -222,7 +222,8 @@ bool CWinEventsSDL::MessagePump()
     switch(event.type)
     {
       case SDL_QUIT:
-        if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
+        if (!g_application.m_bStop) 
+          CApplicationMessenger::Get().Quit();
         break;
 
 #ifdef HAS_SDL_JOYSTICK
@@ -402,7 +403,7 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
     {
     case SDLK_q:  // CMD-q to quit
       if (!g_application.m_bStop)
-        g_application.getApplicationMessenger().Quit();
+        CApplicationMessenger::Get().Quit();
       return true;
 
     case SDLK_f: // CMD-f to toggle fullscreen
@@ -415,7 +416,7 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
     case SDLK_m: // CMD-m to minimize
-      g_application.getApplicationMessenger().Minimize();
+      CApplicationMessenger::Get().Minimize();
       return true;
 
     default:

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,9 +14,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -190,9 +189,6 @@ public:
   bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
 
-  // for scanning
-  bool m_bMyMusicIsScanning;
-
   CVideoSettings m_defaultVideoSettings;
   CVideoSettings m_currentVideoSettings;
 
@@ -215,8 +211,6 @@ public:
 
   int iAdditionalSubtitleDirectoryChecked;
 
-  int m_HttpApiBroadcastPort;
-  int m_HttpApiBroadcastLevel;
   float m_fVolumeLevel;        // float 0.0 - 1.0 range
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
@@ -335,6 +329,7 @@ public:
   int GetCurrentProfileId() const;
 
   std::vector<RESOLUTION_INFO> m_ResInfo;
+  std::vector<RESOLUTION_INFO> m_Calibrations;
 
   // utility functions for user data folders
 
@@ -347,6 +342,7 @@ public:
   CStdString GetThumbnailsFolder() const;
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
+  CStdString GetLibraryFolder() const;
   CStdString GetSourcesFile() const;
 
   CStdString GetSettingsFile() const;
@@ -381,6 +377,9 @@ public:
   static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
+
+  void ApplyCalibrations();
+  void UpdateCalibrations();
 protected:
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);

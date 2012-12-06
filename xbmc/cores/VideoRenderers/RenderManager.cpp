@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,6 +30,7 @@
 #include "utils/log.h"
 
 #include "Application.h"
+#include "ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
@@ -227,7 +227,7 @@ CStdString CXBMCRenderManager::GetVSyncState()
   return state;
 }
 
-bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format)
+bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format, unsigned int orientation)
 {
   /* make sure any queued frame was fully presented */
   double timeout = m_presenttime + 0.1;
@@ -247,13 +247,13 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     return false;
   }
 
-  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format, extended_format);
+  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format, extended_format, orientation);
   if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
     {
       lock.Leave();
-      g_application.getApplicationMessenger().SwitchToFullscreen();
+      CApplicationMessenger::Get().SwitchToFullscreen();
       lock.Enter();
     }
     m_pRenderer->Update(false);
@@ -372,7 +372,7 @@ bool CXBMCRenderManager::Flush()
   {
     ThreadMessage msg = {TMSG_RENDERER_FLUSH};
     m_flushEvent.Reset();
-    g_application.getApplicationMessenger().SendMessage(msg, false);
+    CApplicationMessenger::Get().SendMessage(msg, false);
     if (!m_flushEvent.WaitMSec(1000))
     {
       CLog::Log(LOGERROR, "%s - timed out waiting for renderer to flush", __FUNCTION__);
@@ -645,6 +645,12 @@ float CXBMCRenderManager::GetMaximumFPS()
     fps = 1000.0f;
 
   return fps;
+}
+
+void CXBMCRenderManager::RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn)
+{
+  if (m_pRenderer)
+    m_pRenderer->RegisterRenderUpdateCallBack(ctx, fn);
 }
 
 void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)

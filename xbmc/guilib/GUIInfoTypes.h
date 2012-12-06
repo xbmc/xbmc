@@ -9,7 +9,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,9 +23,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -75,8 +74,25 @@ public:
   CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "", int context = 0);
 
   void SetLabel(const CStdString &label, const CStdString &fallback, int context = 0);
+
+  /*!
+   \brief Gets a label (or image) for a given window context from the info manager.
+   \param contextWindow the context in which to evaluate the expression.
+   \param preferImage caller is specifically wanting an image rather than a label. Defaults to false.
+   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
+   \return label (or image).
+   */  
   CStdString GetLabel(int contextWindow, bool preferImage = false, CStdString *fallback = NULL) const;
+
+  /*!
+   \brief Gets a label (or image) for a given listitem from the info manager.
+   \param item listitem in question.
+   \param preferImage caller is specifically wanting an image rather than a label. Defaults to false.
+   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
+   \return label (or image).
+   */
   CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false, CStdString *fallback = NULL) const;
+
   bool IsConstant() const;
   bool IsEmpty() const;
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +32,7 @@
 #include "Application.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
-#include "GUIDialogKeyboard.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "GUIUserMessages.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -44,6 +43,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "URL.h"
 
 using namespace XFILE;
 
@@ -71,6 +71,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_thumbLoader.SetObserver(this);
   m_flipEnabled = false;
   m_multipleSelection = false;
+  m_loadType = KEEP_IN_MEMORY;
 }
 
 CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
@@ -246,7 +247,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       else if (message.GetSenderId() == CONTROL_NEWFOLDER)
       {
         CStdString strInput;
-        if (CGUIDialogKeyboard::ShowAndGetInput(strInput,g_localizeStrings.Get(119),false))
+        if (CGUIKeyboardFactory::ShowAndGetInput(strInput,g_localizeStrings.Get(119),false))
         {
           CStdString strPath;
           URIUtils::AddFileToFolder(m_vecItems->GetPath(),strInput,strPath);
@@ -945,10 +946,11 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
         g_mediaManager.SetLocationPath(strOldPath,newPath);
         for (unsigned int i=0;i<shares.size();++i)
         {
-          if (shares[i].strPath.Equals(strOldPath))//getPath().Equals(strOldPath))
+          if (URIUtils::CompareWithoutSlashAtEnd(shares[i].strPath, strOldPath))//getPath().Equals(strOldPath))
           {
             shares[i].strName = newPath;
             shares[i].strPath = newPath;//setPath(newPath);
+            URIUtils::RemoveSlashAtEnd(shares[i].strName);
             break;
           }
         }
@@ -975,7 +977,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 
       for (unsigned int i=0;i<m_shares.size();++i)
       {
-        if (m_shares[i].strPath.Equals(m_selectedPath) && !m_shares[i].m_ignore) // getPath().Equals(m_selectedPath))
+        if (URIUtils::CompareWithoutSlashAtEnd(m_shares[i].strPath, m_selectedPath) && !m_shares[i].m_ignore) // getPath().Equals(m_selectedPath))
         {
           m_shares.erase(m_shares.begin()+i);
           break;

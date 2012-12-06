@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2011 Team XBMC
+ *      Copyright (C) 2011-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -51,7 +50,12 @@ class DllLibNfs;
 class CNfsConnection : public CCriticalSection
 {     
 public:
-  typedef std::map<struct nfsfh  *, unsigned int> tFileKeepAliveMap;  
+  struct keepAliveStruct
+  {
+    std::string exportPath;
+    uint64_t refreshCounter;
+  };
+  typedef std::map<struct nfsfh  *, struct keepAliveStruct> tFileKeepAliveMap;  
 
   struct contextTimeout
   {
@@ -84,12 +88,13 @@ public:
   bool HandleDyLoad();//loads the lib if needed
   //adds the filehandle to the keep alive list or resets
   //the timeout for this filehandle if already in list
-  void resetKeepAlive(struct nfsfh  *_pFileHandle);
+  void resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
   //removes file handle from keep alive list
   void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);  
   
   const CStdString& GetConnectedIp() const {return m_resolvedHostName;}
   const CStdString& GetConnectedExport() const {return m_exportPath;}
+  const CStdString  GetContextMapId() const {return m_hostName + m_exportPath;}
 
 private:
   struct nfs_context *m_pNfsContext;//current nfs context
@@ -106,13 +111,14 @@ private:
   DllLibNfs *m_pLibNfs;//the lib
   std::list<CStdString> m_exportList;//list of exported pathes of current connected servers
   CCriticalSection keepAliveLock;
+  CCriticalSection openContextLock;
  
   void clearMembers();
-  struct nfs_context *getContextFromMap(const CStdString &exportname);
+  struct nfs_context *getContextFromMap(const CStdString &exportname, bool forceCacheHit = false);
   int  getContextForExport(const CStdString &exportname);//get context for given export and add to open contexts map - sets m_pNfsContext (my return a already mounted cached context)
   void destroyOpenContexts();
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
-  void keepAlive(struct nfsfh  *_pFileHandle);
+  void keepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
 };
 
 extern CNfsConnection gNfsConnection;
@@ -134,6 +140,8 @@ namespace XFILE
     virtual int64_t GetLength();
     virtual int64_t GetPosition();
     virtual int Write(const void* lpBuf, int64_t uiBufSize);
+    virtual int Truncate(int64_t iSize);
+
     //implement iocontrol for seek_possible for preventing the stat in File class for
     //getting this info ...
     virtual int IoControl(EIoControl request, void* param){ if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};    
@@ -147,7 +155,8 @@ namespace XFILE
     bool IsValidFile(const CStdString& strFileName);
     int64_t m_fileSize;
     struct nfsfh  *m_pFileHandle;
-    struct nfs_context *m_pNfsContext;//current nfs context    
+    struct nfs_context *m_pNfsContext;//current nfs context
+    std::string m_exportPath;
   };
 }
 #endif // FILENFS_H_

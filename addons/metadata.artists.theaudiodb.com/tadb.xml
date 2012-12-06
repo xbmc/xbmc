@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.1" date="2012-07-10">
+	<CreateArtistSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/search.php?s=$$4&lt;/url&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="4">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">(.+)(?:%20Ft%2e|%20Feat%2e|%20Ft\.|%20Feat\.|%20and%20)</expression>
+			</RegExp>
+			<RegExp input="$$6" output="\1" dest="4">
+				<expression>(.+)</expression>
+			</RegExp>
+			<expression/>
+		</RegExp>
+	</CreateArtistSearchUrl>
+	<GetArtistSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url cache=&quot;tadb-\1-artist.json&quot;&gt;http://www.theaudiodb.com/api/v1/json/58424d43204d6564696120/artist.php?i=\1&lt;/url&gt;&lt;/entity&gt;" dest="9">
+				<expression repeat="yes" noclean="1">idArtist&quot;:&quot;([^&quot;]*)&quot;,&quot;strArtist&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$9" output="\1" dest="5">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistSearchResults>
+	<GetArtistDetails dest="3" clearbuffers="no">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<!--MBID - Artist-->
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression noclean="1">strMusicBrainzID&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<!--TADBID - Artist-->
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression noclean="1">idArtist&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$8" conditional="fanarttvthumbs" output="&lt;chain function=&quot;GetFanartTvArtistThumbsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$8" conditional="fanarttvfanart" output="&lt;chain function=&quot;GetFanartTvArtistFanartsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;chain function=&quot;GetTADBArtistThumbsByID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;chain function=&quot;GetTADBArtistFanartsByID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;chain function=&quot;GetTADBBiographyByID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;chain function=&quot;GetTADBLifeSpanByID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;chain function=&quot;GetTADBArtistGenresByID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;chain function=&quot;GetTADBDiscographyByID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistDetails>
+</scraper>

@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -173,7 +172,7 @@ bool CLibraryDirectory::Exists(const char* strPath)
 CStdString CLibraryDirectory::GetNode(const CStdString &path)
 {
   CURL url(path);
-  CStdString libDir = URIUtils::AddFileToFolder(g_settings.GetDatabaseFolder(), url.GetHostName() + "/");
+  CStdString libDir = URIUtils::AddFileToFolder(g_settings.GetLibraryFolder(), url.GetHostName() + "/");
   if (!CDirectory::Exists(libDir))
     libDir = URIUtils::AddFileToFolder("special://xbmc/system/library/", url.GetHostName() + "/");
 

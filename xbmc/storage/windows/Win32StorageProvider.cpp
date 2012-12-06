@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 #include "Win32StorageProvider.h"
@@ -24,8 +23,9 @@
 #include "filesystem/SpecialProtocol.h"
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 
-bool CWin32StorageProvider::event = false;
+bool CWin32StorageProvider::xbevent = false;
 
 void CWin32StorageProvider::Initialize()
 {
@@ -34,6 +34,8 @@ void CWin32StorageProvider::Initialize()
   CWIN32Util::GetDrivesByType(vShare, DVD_DRIVES);
   if(!vShare.empty())
     g_mediaManager.SetHasOpticalDrive(true);
+  else
+    CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
 
   // Can be removed once the StorageHandler supports optical media
   VECSOURCES::const_iterator it;
@@ -60,6 +62,11 @@ void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   CWIN32Util::GetDrivesByType(removableDrives, REMOVABLE_DRIVES, true);
 }
 
+std::string CWin32StorageProvider::GetFirstOpticalDeviceFileName()
+{
+  return CWIN32Util::GetFirstOpticalDrive();
+}
+
 bool CWin32StorageProvider::Eject(CStdString mountpath)
 {
   if (!mountpath.IsEmpty())
@@ -76,8 +83,8 @@ std::vector<CStdString> CWin32StorageProvider::GetDiskUsage()
 
 bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
-  bool b = event;
-  event = false;
+  bool b = xbevent;
+  xbevent = false;
   return b;
 }
 
@@ -88,6 +95,7 @@ CDetectDisc::CDetectDisc(const CStdString &strPath, const bool bautorun)
 
 bool CDetectDisc::DoWork()
 {
+  CLog::Log(LOGDEBUG, "%s: Optical media found in drive %s", __FUNCTION__, m_strPath.c_str());
   CMediaSource share;
   share.strPath = m_strPath;
   share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);

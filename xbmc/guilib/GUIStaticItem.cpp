@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,9 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -50,7 +49,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     CGUIControlFactory::GetActions(item, "onclick", m_clickActions);
     SetLabel(label.GetLabel(parentID));
     SetLabel2(label2.GetLabel(parentID));
-    SetThumbnailImage(thumb.GetLabel(parentID, true));
+    SetArt("thumb", thumb.GetLabel(parentID, true));
     SetIconImage(icon.GetLabel(parentID, true));
     if (!label.IsConstant())  m_info.push_back(make_pair(label, "label"));
     if (!label2.IsConstant()) m_info.push_back(make_pair(label2, "label2"));
@@ -83,7 +82,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     SetLabel(CGUIInfoLabel::GetLabel(label, parentID));
     SetPath(item->FirstChild()->Value());
     SetLabel2(CGUIInfoLabel::GetLabel(label2, parentID));
-    SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, parentID, true));
+    SetArt("thumb", CGUIInfoLabel::GetLabel(thumb, parentID, true));
     SetIconImage(CGUIInfoLabel::GetLabel(icon, parentID, true));
     m_iprogramCount = id ? atoi(id) : 0;
   }
@@ -102,7 +101,7 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     else if (name.Equals("label2"))
       SetLabel2(value);
     else if (name.Equals("thumb"))
-      SetThumbnailImage(value);
+      SetArt("thumb", value);
     else if (name.Equals("icon"))
       SetIconImage(value);
     else
