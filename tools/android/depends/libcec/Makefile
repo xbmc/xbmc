@@ -29,9 +29,9 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/src/lib install
-	rm -f $(PREFIX)/lib/libcec.la $(PREFIX)/lib/libcec.so $(PREFIX)/lib/libcec.so.1
-	mv -f $(PREFIX)/lib/libcec.so.1.0.5 $(PREFIX)/lib/libcec.so
-	$(RPL) -e "libcec.so.1" "libcec.so\x00\x00" $(PREFIX)/lib/libcec.so
+	rm -f $(PREFIX)/lib/libcec.la $(PREFIX)/lib/libcec.so $(PREFIX)/lib/libcec.so.2
+	mv -f $(PREFIX)/lib/libcec.so.2.0.0 $(PREFIX)/lib/libcec.so
+	$(RPL) -e "libcec.so.2" "libcec.so\x00\x00" $(PREFIX)/lib/libcec.so
 	-$(READELF) --dynamic $(PREFIX)/lib/libcec.so | grep ibrary
 	touch $@
 
