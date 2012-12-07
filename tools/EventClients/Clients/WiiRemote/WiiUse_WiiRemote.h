@@ -21,6 +21,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 //#include <math.h>
+#include <unistd.h>
 #ifdef DEB_PACK
 #include <xbmc/xbmcclient.h>
 #else
