@@ -62,6 +62,8 @@ private:
   CEvent             m_wake;
   CEvent             m_inited;
   volatile bool      m_draining;
+  bool               m_passthrough;
+
   double             m_audiotrackbuffer_sec;
   double             m_audiotrack_empty_sec;
 };
