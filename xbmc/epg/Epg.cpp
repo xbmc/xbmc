@@ -901,3 +901,11 @@ bool CEpg::NeedsSave(void) const
   CSingleLock lock(m_critSection);
   return !m_changedTags.empty() || !m_deletedTags.empty() || m_bChanged;
 }
+
+bool CEpg::IsValid(void) const
+{
+  CSingleLock lock(m_critSection);
+  if (ScraperName() == "client")
+    return Channel().get() != NULL;
+  return true;
+}
