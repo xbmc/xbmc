@@ -1,8 +1,4 @@
 <advancedsettings>
-  <video>
-    <defaultplayer>amlplayer</defaultplayer>
-  </video>
-
   <hidesettings>
     <setting>lookandfeel.soundskin</setting>
     <setting>videoplayer.rendermethod</setting>
