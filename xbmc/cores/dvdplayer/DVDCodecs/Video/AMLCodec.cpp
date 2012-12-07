@@ -99,7 +99,7 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
   DEFINE_METHOD2(int, codec_set_cntl_avthresh,  (codec_para_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, codec_set_cntl_syncthresh,(codec_para_t *p1, unsigned int p2))
 
-  DEFINE_METHOD2(int, codec_audio_set_delay, (codec_para_t *p1, int p2))
+  DEFINE_METHOD2(int, codec_audio_set_delay,    (codec_para_t *p1, int p2))
 
   DEFINE_METHOD4(int, h263vld,                  (unsigned char *p1, unsigned char *p2, int p3, int p4))
   DEFINE_METHOD1(int, decodeble_h263,           (unsigned char *p1))
