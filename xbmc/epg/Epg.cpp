@@ -773,7 +773,7 @@ const CStdString &CEpg::ConvertGenreIdToString(int iID, int iSubID)
       iLabelId = (iSubID <= 3) ? 19660 + iSubID : 19660;
       break;
     case EPG_EVENT_CONTENTMASK_USERDEFINED:
-      iLabelId = (iSubID <= 3) ? 19676 + iSubID : 19676;
+      iLabelId = (iSubID <= 8) ? 19676 + iSubID : 19676;
       break;
     default:
       break;
