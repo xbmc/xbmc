@@ -48,6 +48,7 @@ CGUIDialogNumeric::CGUIDialogNumeric(void)
   m_block = 0;
   memset(&m_datetime, 0, sizeof(SYSTEMTIME));
   m_dirty = false;
+  m_bOverWrite = false;
   m_loadType = KEEP_IN_MEMORY;
 }
 
@@ -208,7 +209,11 @@ void CGUIDialogNumeric::OnBackSpace()
   if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   { // just go back one character
     if (!m_number.IsEmpty())
+    {
       m_number.Delete(m_number.GetLength() - 1);
+      if(m_bOverWrite)
+        m_dirty = true;
+    }
   }
   else if (m_mode == INPUT_IP_ADDRESS)
   {
@@ -342,7 +347,18 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
 
   if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
   {
-    m_number += num + '0';
+    if (m_bOverWrite)
+    {
+      if (m_dirty)
+        m_number += num + '0';
+      else
+      {
+        m_number = num + '0';
+        m_dirty = true;
+      }
+    }
+    else
+      m_number += num + '0';
   }
   else if (m_mode == INPUT_TIME)
   {
@@ -509,7 +525,7 @@ void CGUIDialogNumeric::OnNumber(unsigned int num)
   }
 }
 
-void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
+void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial, bool bOverWrite = true)
 {
   m_mode = mode;
   m_block = 0;
@@ -542,7 +558,10 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, void *initial)
     }
   }
   else if (m_mode == INPUT_NUMBER || m_mode == INPUT_PASSWORD)
+  {
+    m_bOverWrite = bOverWrite;
     m_number = *(CStdString *)initial;
+  }
 }
 
 void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const CStdString &initial)

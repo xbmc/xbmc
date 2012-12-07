@@ -42,7 +42,7 @@ public:
   static bool ShowAndVerifyInput(CStdString& strPassword, const CStdString& strHeading, bool bGetUserInput);
 
   void SetHeading(const CStdString &strHeading);
-  void SetMode(INPUT_MODE mode, void *initial);
+  void SetMode(INPUT_MODE mode, void *initial, bool bOverWrite /* = true */);
   void SetMode(INPUT_MODE mode, const CStdString &initial);
   void GetOutput(void *output) const;
   CStdString GetOutput() const;
@@ -74,5 +74,6 @@ protected:
   unsigned int m_block;             // for time, date, and IP methods.
   unsigned int m_lastblock;
   bool m_dirty;                     // true if the current block has been changed.
+  bool m_bOverWrite;                // true rewrites current value
   CStdString m_number;              ///< for number or password input
 };
