@@ -12,7 +12,7 @@ bool IsPlexMediaServer(const CStdString& strFile);
 bool IsPlexWebKit(const CStdString& strFile);
 bool IsStack(const CStdString& strFile);
 std::string AppendPathToURL(const std::string& baseURL, const std::string& relativePath);
-__int64_t Size(const CStdString& strFileName);
+int64_t Size(const CStdString& strFileName);
 std::string CacheImageUrl(const std::string& url);
 std::string CacheImageUrlAsync(const std::string &url);
 }
@@ -21,13 +21,18 @@ std::string CacheImageUrlAsync(const std::string &url);
 
 bool Cocoa_IsHostLocal(const std::string& host);
 
-struct timezone
+#include <sys/timeb.h>
+#ifndef gettimeofday
+static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 {
-  int  tz_minuteswest; /* minutes W of Greenwich */
-  int  tz_dsttime;     /* type of dst correction */
-};
- 
-int gettimeofday(struct timeval *tv, struct timezone *tz);
+  struct timeb t;
+  ftime( &t );
+  tv->tv_sec = t.time;
+  tv->tv_usec = t.millitm * 1000;
+  return 0;
+}
+#define gettimeofday(TV, TZ) _private_gettimeofday((TV), (TZ))
+#endif
 
 #ifndef usleep
 typedef unsigned int useconds_t;

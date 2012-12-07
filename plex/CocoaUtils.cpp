@@ -15,12 +15,6 @@
 #ifndef __APPLE__
 
 using namespace std;
-
-const char* Cocoa_GetAppVersion()
-{
-  return APPLICATION_VERSION;
-}
-
 #ifdef _WIN32
 string Cocoa_GetLanguage()
 {

@@ -1,5 +1,8 @@
 add_subdirectory(libsquish)
 add_subdirectory(libhts)
+if(WIN32)
+  add_subdirectory(win32)
+endif()
 
 # build our external projects
 set(CMAKE_SHARED_MODULE_PREFIX "")

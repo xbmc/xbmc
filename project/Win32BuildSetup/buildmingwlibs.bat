@@ -2,7 +2,7 @@
 rem batch file to compile mingw libs via BuildSetup
 
 rem set M$ env
-call "%VS100COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+call "D:\Code\visual studio\VC\bin\vcvars32.bat"
 
 rem check for mingw env
 IF EXIST ..\BuildDependencies\msys\bin\sh.exe (

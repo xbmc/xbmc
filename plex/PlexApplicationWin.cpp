@@ -8,17 +8,17 @@
  */
 
 #include "PlexApplicationWin.h"
-#include "winsparkle.h"
+//#include "winsparkle.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 PlexApplicationWin::PlexApplicationWin()
 {	
-  win_sparkle_set_appcast_url("http://www.plexapp.com/appcast/win/plex.xml");
-  win_sparkle_init();
+  //win_sparkle_set_appcast_url("http://www.plexapp.com/appcast/win/plex.xml");
+  //win_sparkle_init();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 PlexApplicationWin::~PlexApplicationWin()
 {
-  win_sparkle_cleanup();
+  //win_sparkle_cleanup();
 }

@@ -38,13 +38,15 @@ if(NOT APPLE)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtilsPlus.mm)
 endif(NOT APPLE)
 
-if(NOT WINDOWS)
+if(NOT WIN32)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
   list(REMOVE_ITEM plex_SRCS ./PlexApplicationWin.cpp)
-endif(NOT WINDOWS)
+endif(NOT WIN32)
 
 get_property(PLEX_MODULE_SRCS GLOBAL PROPERTY SRCS_LIST)
 set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
+
+ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
 if(APPLE)
   add_executable(Plex MACOSX_BUNDLE ${PLEX_ALL_SRCS})
@@ -64,21 +66,23 @@ target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRA
 file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
 file(GLOB MEDIA_IMAGES_PLEX ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
-# Build the packed textures
-add_custom_command(
-  OUTPUT Textures_MediaStream.xbt
-  COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
-  MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
-  DEPENDS TexturePacker
-)
-add_custom_command(
-  OUTPUT Textures_Plex.xbt
-  COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
-  MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX}
-  DEPENDS TexturePacker
-)
+if(NOT WIN32)
+  # Build the packed textures
+  add_custom_command(
+    OUTPUT Textures_MediaStream.xbt
+    COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
+    MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
+    DEPENDS TexturePacker
+  )
+  add_custom_command(
+    OUTPUT Textures_Plex.xbt
+    COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
+    MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX}
+    DEPENDS TexturePacker
+  )
 
-add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
+  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
+endif()
 
 
 # Set some variables we need to configure the CMakeCompleteBundle file
@@ -105,8 +109,13 @@ install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html)
 install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/XBMC/tools/darwin/runtime COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media RENAME Textures.xbt)
+if(NOT WIN32)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media RENAME Textures.xbt)
+else()
+  install(FILES ${MEDIA_IMAGES_PLEX} DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media)
+  install(FILES ${MEDIA_IMAGES_MEDIASTREAM} DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media)
+endif()
 
 if(NOT PLEX_SKIP_BUNDLING STREQUAL "1")
   install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)

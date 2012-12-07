@@ -9,7 +9,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string.hpp>
 #include "boost/foreach.hpp"
-#include <tinyxml.h>
+#include "utils/XBMCTinyXML.h"
 
 #include "PlexMediaPart.h"
 

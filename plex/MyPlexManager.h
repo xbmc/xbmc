@@ -9,7 +9,7 @@
 #include <boost/thread/mutex.hpp>
 #include <string>
 #include <vector>
-#include <tinyxml.h>
+#include "utils/XBMCTinyXML.h"
 
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"

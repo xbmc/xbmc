@@ -13,6 +13,10 @@ foreach(dir ${subdirs})
 	add_subdirectory(${dir})
 endforeach()
 
+if(WIN32)
+  add_subdirectory(win32)
+endif()
+
 set(PlexOwnedFiles BackgroundInfoLoader.cpp)
 
 find_all_sources(. xbmc_SRCS)

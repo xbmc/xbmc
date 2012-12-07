@@ -1,6 +1,6 @@
 # vim: setlocal syntax=cmake:
 
-set(CMAKE_REQUIRED_INCLUDES "${dependdir}/include")
+set(CMAKE_REQUIRED_INCLUDES ${dependdir}/include ${root}/lib/ffmpeg)
 
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
@@ -173,7 +173,8 @@ if(APPLE)
 endif()
 
 #### libraries we want to link to
-set(external_libs 
+if(NOT WIN32)
+  set(external_libs
 	ssh
 	lzo2
 	pcre
@@ -186,76 +187,85 @@ set(external_libs
 	samplerate
 	microhttpd
 	yajl
-  jpeg
+        jpeg
 	crypto
 	SDL
 	SDL_mixer
-  SDL_image
+        SDL_image
 	tinyxml
 	boost_thread
 	boost_system
 	z
-  GLEW
+        GLEW
   
-  # ffmpeg libraries
-  avcodec
-  avutil
-  avformat
-  avfilter
-  avdevice
-  postproc
-  swscale
-  swresample
-)
-
-if(NOT APPLE)
-    if(UNIX)
-        list(APPEND external_libs GL)
-        list(APPEND external_libs X11)
-    endif()
+        # ffmpeg libraries
+        avcodec
+        avutil
+        avformat
+        avfilter
+        avdevice
+        postproc
+        swscale
+        swresample
+  )
+else()
+  if(NOT APPLE)
+      if(UNIX)
+          list(APPEND external_libs GL)
+          list(APPEND external_libs X11)
+      endif()
+  endif()
 endif()
 
 if(WIN32)
-  set(external_libs
-    bzip2
-    fontconfig
-    freetype246MT
-    glew32
-    glew32s
-    jpeg-static
-    libboost_date_time-vc100-mt
-    libboost_thread-vc100-mt
-    libiconv
-    liblzo2
-    libmicrohttpd.dll
-    libsamplerate-0
-    SDL
-    SDL_image
-    sqlite3
-    ssh
-    tinyxmlSTL
-    turbojpeg-static
+  set(system_libs
+    D3dx9
+    DInput8
+    DSound
+    winmm
+    Mpr
+    Iphlpapi
+    PowrProf
+    setupapi
+    dwmapi
     yajl
-    zlib
+    dxguid
+    DxErr
+  )
+
+  set(external_libs
+    tinyxmlSTLd
+    libfribidi
+    libiconv
+    turbojpeg-static
+    libmicrohttpd.dll
+    ssh
+    freetype246MT
+    sqlite3
+    liblzo2
+    libboost_thread-vc100-mt-s-1_46_1
+    libboost_system-vc100-mt-s-1_46_1
+    dnssd
+    libcdio.dll
   )
 endif()
 
 set(non_link_libs
-	rtmp
-	plist
-	shairport
-	curl
-	FLAC
-	modplug
-	vorbis
-	vorbisfile
-	vorbisenc
-	ogg
-	ass
-	mad
-	mpeg2
+  rtmp
+  plist
+  shairport
+  curl
+  FLAC
+  modplug
+  vorbis
+  vorbisfile
+  vorbisenc
+  ogg
+  ass
+  mad
+  mpeg2
   bluray
-  png
+´ png
   tiff
 )
 
