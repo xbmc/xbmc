@@ -1668,7 +1668,7 @@ bool CAmlogic::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 int CAmlogic::GetDataSize()
 {
   struct buf_status vbuf ={0};
-  if (am_private->vcodec.handle && m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
+  if (m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
     m_vbufsize = vbuf.size;
 
   return vbuf.data_len;
@@ -1704,7 +1704,7 @@ void CAmlogic::Process()
   while (!m_bStop)
   {
     int64_t pts_video = 0;
-    if (am_private->vcodec.handle && am_private->am_pkt.lastpts > 0)
+    if (am_private->am_pkt.lastpts > 0)
     {
       // this is a blocking poll that returns every vsync.
       // since we are running at a higher priority, make sure
