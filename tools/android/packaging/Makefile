@@ -5,9 +5,10 @@ OBJS = libcurl.so \
   libafpclient.so  \
   libshairport.so libplist.so \
   libxbogg.so libxbvorbis.so libxbvorbisfile.so libxbFLAC.so libxbmpeg2.so \
-  libxbmpeg2convert.so
+  libxbmpeg2convert.so libnfs.so
 
 PLATFORM_OBJS =
+EXCLUDED_ADDONS = screensaver.rsxs.euphoria visualization.dxspectrum visualization.milkdrop visualization.projectm
 
 XBMCROOT = $(shell cd $(CURDIR)/../../..; pwd)
 COPYDIRS = system addons language media
@@ -58,6 +59,7 @@ extras: libs
 	find `pwd`/xbmc/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/xbmc/assets/system/ -name "*.so" -exec rm {} \;
 	find `pwd`/xbmc/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
+	cd xbmc/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 	cp -rfp $(PREFIX)/lib/python2.6 xbmc/assets/python2.6/lib/
 	cp -rfp $(XBMCROOT)/media/Splash.png xbmc/res/drawable/splash.png
 	cd xbmc/assets/python2.6/lib/python2.6/; rm -rf test config lib-dynload

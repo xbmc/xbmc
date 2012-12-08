@@ -82,6 +82,22 @@ void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
   m_currentSubwindow = window;
 }
 
+bool CGUIWindowPVR::Update(const CStdString &strDirectory, bool updateFilterPath)
+{
+  CGUIWindowPVRCommon *view = GetActiveView();
+
+  if(view)
+    view->BeforeUpdate(strDirectory);
+
+  if(!CGUIMediaWindow::Update(strDirectory))
+    return false;
+
+  if(view)
+    view->AfterUpdate(*m_unfilteredItems);
+
+  return true;
+}
+
 void CGUIWindowPVR::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CGUIWindowPVRCommon *view = GetActiveView();

@@ -89,10 +89,13 @@ protected:
 
   DllBcmHost                m_DllBcmHost;
   bool                      m_send_eos;
+  bool                      m_bad_state;
 
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+
+  void HandlePlayspeed(bool bDropPacket);
 private:
 public:
   OMXPlayerAudio(OMXClock *av_clock, CDVDMessageQueue& parent);
@@ -126,5 +129,7 @@ public:
   void SetSpeed(int iSpeed);
   int  GetAudioBitrate();
   std::string GetPlayerInfo();
+
+  bool BadState() { return m_bad_state; }
 };
 #endif

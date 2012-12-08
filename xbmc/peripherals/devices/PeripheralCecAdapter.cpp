@@ -130,6 +130,8 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bDeviceRemoved           = false;
   m_bActiveSourcePending     = false;
   m_bStandbyPending          = false;
+  m_bActiveSourceBeforeStandby = false;
+  m_bOnPlayReceived          = false;
 
   m_currentButton.iButton    = 0;
   m_currentButton.iDuration  = 0;
@@ -180,19 +182,30 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     // this will also power off devices when we're the active source
     {
       CSingleLock lock(m_critSection);
-      m_bGoingToStandby = false;
+      m_bGoingToStandby = true;
     }
     StopThread();
   }
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
   {
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
-    ReopenConnection();
+    if (ReopenConnection())
+    {
+      bool bActivate(false);
+      {
+        CSingleLock lock(m_critSection);
+        bActivate = m_bActiveSourceBeforeStandby;
+        m_bActiveSourceBeforeStandby = false;
+      }
+      if (bActivate)
+        ActivateSource();
+    }
   }
   else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
   {
     CSingleLock lock(m_critSection);
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
+    m_bOnPlayReceived = false;
   }
   else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
   {
@@ -201,7 +214,9 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     {
       CSingleLock lock(m_critSection);
       bActivateSource = (m_configuration.bActivateSource &&
+          !m_bOnPlayReceived &&
           (!m_preventActivateSourceOnPlay.IsValid() || CDateTime::GetCurrentDateTime() - m_preventActivateSourceOnPlay > CDateTimeSpan(0, 0, 0, CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP)));
+      m_bOnPlayReceived = true;
     }
     if (bActivateSource)
       ActivateSource();
@@ -364,13 +379,12 @@ bool CPeripheralCecAdapter::OpenConnection(void)
     libcec_configuration config;
     if (m_cecAdapter->GetCurrentConfiguration(&config))
     {
-      // send wakeup commands
-      if (!config.wakeDevices.IsEmpty())
-        m_cecAdapter->PowerOnDevices(CECDEVICE_BROADCAST);
-
-      // make xbmc the active source
-      if (config.bActivateSource == 1)
-        m_cecAdapter->SetActiveSource();
+      // wake devices
+      for (uint8_t iDevice = CECDEVICE_TV; iDevice < CECDEVICE_BROADCAST; iDevice++)
+      {
+        if ((config.bActivateSource == 0 || iDevice != CECDEVICE_TV) && config.wakeDevices.IsSet((cec_logical_address)iDevice))
+          m_cecAdapter->PowerOnDevices((cec_logical_address)iDevice);
+      }
 
       // update the local configuration
       CSingleLock lock(m_critSection);
@@ -391,6 +405,7 @@ void CPeripheralCecAdapter::Process(void)
     m_iExitCode = EXITCODE_QUIT;
     m_bGoingToStandby = false;
     m_bIsRunning = true;
+    m_bActiveSourceBeforeStandby = false;
   }
 
   CAnnouncementManager::AddAnnouncer(this);
@@ -424,6 +439,9 @@ void CPeripheralCecAdapter::Process(void)
                            !m_bDeviceRemoved &&
                            (!m_bGoingToStandby || GetSettingBool("standby_tv_on_pc_standby")) &&
                            GetSettingBool("enabled");
+
+    if (m_bGoingToStandby)
+      m_bActiveSourceBeforeStandby = m_cecAdapter->IsLibCECActiveSource();
   }
 
   if (bSendStandbyCommands)
@@ -1669,7 +1687,7 @@ void CPeripheralCecAdapter::OnDeviceRemoved(void)
   m_bDeviceRemoved = true;
 }
 
-void CPeripheralCecAdapter::ReopenConnection(void)
+bool CPeripheralCecAdapter::ReopenConnection(void)
 {
   // stop running thread
   {
@@ -1684,7 +1702,7 @@ void CPeripheralCecAdapter::ReopenConnection(void)
   ResetMembers();
 
   // reopen the connection
-  InitialiseFeature(FEATURE_CEC);
+  return InitialiseFeature(FEATURE_CEC);
 }
 
 void CPeripheralCecAdapter::ActivateSource(void)

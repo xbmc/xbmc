@@ -45,7 +45,7 @@ namespace XBMCAddon
     {
       // if there is a LanguageHook, it should be set already.
       if (languageHook != NULL)
-        setHandler(languageHook->getCallbackHandler());
+        setHandler(languageHook->GetCallbackHandler());
     }
     virtual ~AddonCallback();
 

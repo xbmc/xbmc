@@ -26,9 +26,11 @@
     <summary lang="eu">XBMC taldean Web Interfazea. (XBMC-ren lehenetsiriko web interfazea)</summary>
     <summary lang="fi">Team XBMC:n WWW-käyttöliittymä. (XBMC:n oletus WWW-käyttöliittymä)</summary>
     <summary lang="fr">Interface Web de l'équipe d'XBMC. (Interface Web par défaut d'XBMC)</summary>
+    <summary lang="gl">Interface web da equipa de XBMC. (Interface web predefinida de XBMC)</summary>
     <summary lang="he">צוות XBMC ממשק אינטרנט. (ממשק האינטרנט ברירת המחדל של XBMC)</summary>
     <summary lang="hu">Az XBMC csapat Webes kezelőfelülete (XBMC alapértelmezett webes kezelőfelülete)</summary>
     <summary lang="it">Interfaccia Web del Team XBMC. (Interfaccia web di default per XBMC)</summary>
+    <summary lang="ja">Team XBMC Web Interface. (XBMC's default web interface)</summary>
     <summary lang="ko">Team XBMC 웹 인터페이스. (XBMC 기본 웹 인터페이스)</summary>
     <summary lang="lt">Komandos XBMC Web sąsaja.(XBMC numatytoji žiniatinklio sąsaja)</summary>
     <summary lang="mk">Веб интерфејс на  XBMC тимот. (XBMC's подразбирачки веб интерфејс)</summary>
@@ -61,9 +63,11 @@
     <description lang="eu">XBMC-ren lehenetsiriko web interfazea. Erresoluzio guztietako gailentzat diseinatua</description>
     <description lang="fi">Oletus WWW-käyttöliittymä XBMC:lle. Suunniteltu käytettäväksi kaiken kokoisilla laitteilla.</description>
     <description lang="fr">Interface Web par défaut d'XBMC; Adaptée aux dispositifs de toutes résolutions</description>
+    <description lang="gl">Interface web predefinida para XBMC, deseñada para dispositivos de todas as resolucións</description>
     <description lang="he">ממשק האינטרנט ברירת המחדל עבור XBMC; תוכנן עבור מכשירים בכל הרזולוציות</description>
     <description lang="hu">Az XBMC alapértelmezett webes kezelőfelülete; Minden felbontásra alkalmas</description>
     <description lang="it">Interfaccia Web di default per XMBC; Realizzata per periferiche con qualunque risoluzione</description>
+    <description lang="ja">Default web interface for XBMC; Designed for devices of all resolutions</description>
     <description lang="ko">XBMC 기본 웹 인터페이스; 모든 해상도의 기기를 위해 디자인 됨</description>
     <description lang="lt">Numatytoji XBMC Web sąsaja skirta visų rezoliucijų prietaisams</description>
     <description lang="mk">Подразбирачки веб интерфејс за XBMC; Дизајниран за уреди со сите резолуции</description>
@@ -84,5 +88,3 @@
     <platform>all</platform>
   </extension>
 </addon>
-
-

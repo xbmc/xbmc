@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -704,7 +704,7 @@ msgstr "Handling"
 
 msgctxt "#208"
 msgid "Play"
-msgstr "Spill"
+msgstr "Spill av"
 
 msgctxt "#209"
 msgid "Next"
@@ -1204,7 +1204,7 @@ msgstr "Diverse artister"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "Spill plate"
+msgstr "Spill av plate"
 
 msgctxt "#342"
 msgid "Movies"
@@ -1764,7 +1764,7 @@ msgstr "Gjenta mapper"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "Spill automatisk av neste fil"
+msgstr "Spill av neste sang automatisk"
 
 msgctxt "#491"
 msgid "- Use big icons"
@@ -4128,7 +4128,7 @@ msgstr "Harddisk"
 
 msgctxt "#13276"
 msgid "DVD-ROM"
-msgstr "DVD spiller"
+msgstr "DVD-ROM"
 
 msgctxt "#13277"
 msgid "Storage"
@@ -4576,7 +4576,7 @@ msgstr "Minimum viftehastighet"
 
 msgctxt "#13412"
 msgid "Play from here"
-msgstr "Spill herfra"
+msgstr "Spill av herfra"
 
 msgctxt "#13413"
 msgid "Downloading"
@@ -4658,9 +4658,13 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Tillat maskinvareakselerasjon (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Spill av neste video automatisk"
+
 msgctxt "#13500"
 msgid "A/V sync method"
-msgstr "A/V synkmetode"
+msgstr "Synkroniseringsmetode"
 
 msgctxt "#13501"
 msgid "Audio clock"
@@ -4705,6 +4709,18 @@ msgstr "Synkroniser avspilling til skjerm"
 msgctxt "#13511"
 msgid "Choose art"
 msgstr "Velg grafikk"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Gjeldende"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Ekstern"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Ingen"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5072,7 +5088,7 @@ msgstr "DVD-er"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
-msgstr "Spill DVD-er automatisk"
+msgstr "Spill av DVD-er automatisk"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
@@ -5112,7 +5128,7 @@ msgstr "Lyd CD innsatt hendelse"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr "Spill"
+msgstr "Spill av"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
@@ -5232,7 +5248,7 @@ msgstr "Sender om %i sekunder"
 
 msgctxt "#15213"
 msgid "Play using..."
-msgstr "Spill med..."
+msgstr "Spill av med..."
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronization"
@@ -5496,7 +5512,7 @@ msgstr "Spiller"
 
 msgctxt "#16004"
 msgid "Play media from disc"
-msgstr "Spill media fra plate"
+msgstr "Spill av media fra plate"
 
 msgctxt "#16008"
 msgid "Enter new title"
@@ -7552,7 +7568,7 @@ msgstr "Sorter etter: ID"
 
 msgctxt "#20324"
 msgid "Play part..."
-msgstr "Spill del..."
+msgstr "Spill av del..."
 
 msgctxt "#20325"
 msgid "Calibration reset"
@@ -7848,7 +7864,7 @@ msgstr "Gå til album"
 
 msgctxt "#20398"
 msgid "Play song"
-msgstr "Spill sang"
+msgstr "Spill av sang"
 
 msgctxt "#20399"
 msgid "Go to music videos from album"
@@ -7860,11 +7876,11 @@ msgstr "Gå til musikkvideoer av artist"
 
 msgctxt "#20401"
 msgid "Play music video"
-msgstr "Spill musikkvideo"
+msgstr "Spill av musikkvideo"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Hent bilder for skuespiller automatisk når en legger til i bibliotek"
+msgstr "Last ned bilder av skuespiller automatisk"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
@@ -7980,7 +7996,7 @@ msgstr "Ekskluder sti fra biblioteksoppdateringer"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Ekstraher miniatyrer og videoinformasjon"
+msgstr "Hent ut miniatyrer og videoinformasjon"
 
 msgctxt "#20434"
 msgid "Sets"
@@ -8500,7 +8516,7 @@ msgstr "Plassering av undertittel"
 
 msgctxt "#21461"
 msgid "Fixed"
-msgstr "Fast"
+msgstr "Låst"
 
 msgctxt "#21462"
 msgid "Bottom of video"
@@ -8988,7 +9004,7 @@ msgstr "Mer..."
 
 msgctxt "#22083"
 msgid "Play all"
-msgstr "Spill alle"
+msgstr "Spill av alle"
 
 msgctxt "#23049"
 msgid "Teletext not available"
@@ -9013,6 +9029,10 @@ msgstr "Stopper"
 msgctxt "#23054"
 msgid "Running"
 msgstr "Kjører"
+
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Skaler tekst-tv til 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9360,7 +9380,7 @@ msgstr "Vis bluray menyer"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr "Spill hovedspor: %d"
+msgstr "Spill av hovedspor: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
@@ -9760,7 +9780,7 @@ msgstr "7.1"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr "Spill grensesnittlyder"
+msgstr "Spill av grensesnittlyder"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"

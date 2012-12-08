@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -10753,3 +10753,7 @@ msgstr "Τηλεόραση και συσκευή AVR (ρητά)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Μη υποστηριζόμενη έκδοση libCEC. Η %x είναι μικρότερη από την έκδοση που το XBMC υποστηρίζει (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Φάκελος αντικειμένου"

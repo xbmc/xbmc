@@ -96,7 +96,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_autosync              = 1;
   m_fForcedAspectRatio    = 0.0f;
   m_send_eos              = false;
-  m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
+  m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
   RESOLUTION res  = g_graphicsContext.GetVideoResolution();
@@ -195,8 +195,8 @@ bool OMXPlayerVideo::CloseStream(bool bWaitForBuffers)
 
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
-  m_av_clock->HasVideo(false);
   m_omxVideo.Close();
+  m_av_clock->HasVideo(false);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
 
@@ -714,6 +714,7 @@ bool OMXPlayerVideo::OpenDecoder()
   // use aspect in stream always
   m_fForcedAspectRatio = m_hints.aspect;
 
+
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
 
@@ -743,9 +744,11 @@ bool OMXPlayerVideo::OpenDecoder()
       m_av_clock->SetRefreshRate(m_fFrameRate);
   }
 
+  m_av_clock->OMXStateExecute(false);
   m_av_clock->HasVideo(bVideoDecoderOpen);
   m_av_clock->OMXReset(false);
   m_av_clock->UnLock();
+
   return bVideoDecoderOpen;
 }
 

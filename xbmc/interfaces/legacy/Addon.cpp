@@ -33,9 +33,9 @@ namespace XBMCAddon
 {
   namespace xbmcaddon
   {
-    String Addon::getDefaultId() { return languageHook == NULL ? emptyString : languageHook->getAddonId(); }
+    String Addon::getDefaultId() { return languageHook == NULL ? emptyString : languageHook->GetAddonId(); }
 
-    String Addon::getAddonVersion() { return languageHook == NULL ? emptyString : languageHook->getAddonVersion(); }
+    String Addon::getAddonVersion() { return languageHook == NULL ? emptyString : languageHook->GetAddonVersion(); }
 
     Addon::Addon(const char* cid) throw (AddonException) : AddonClass("Addon") 
     {

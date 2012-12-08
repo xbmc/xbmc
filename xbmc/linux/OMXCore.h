@@ -71,9 +71,10 @@ public:
   ~COMXCoreTunel();
 
   void Initialize(COMXCoreComponent *src_component, unsigned int src_port, COMXCoreComponent *dst_component, unsigned int dst_port);
+  bool IsInitialized();
   OMX_ERRORTYPE Flush();
   OMX_ERRORTYPE Deestablish(bool noWait = false);
-  OMX_ERRORTYPE Establish(bool portSettingsChanged);
+  OMX_ERRORTYPE Establish(bool portSettingsChanged, bool enable_ports = true);
 private:
   pthread_mutex_t   m_lock;
   bool              m_portSettingsChanged;
@@ -85,6 +86,7 @@ private:
   bool              m_DllOMXOpen;
   void              Lock();
   void              UnLock();
+  bool              m_tunnel_set;
 };
 
 class COMXCoreComponent
@@ -115,7 +117,8 @@ public:
   OMX_ERRORTYPE UseEGLImage(OMX_BUFFERHEADERTYPE** ppBufferHdr, OMX_U32 nPortIndex, OMX_PTR pAppPrivate, void* eglImage);
 
   bool          Initialize( const std::string &component_name, OMX_INDEXTYPE index);
-  bool          Deinitialize();
+  bool          IsInitialized();
+  bool          Deinitialize(bool free_component = false);
 
   // OMXCore Decoder delegate callback routines.
   static OMX_ERRORTYPE DecoderEventHandlerCallback(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
@@ -159,6 +162,8 @@ public:
   OMX_ERRORTYPE FreeOutputBuffers();
 
   bool IsEOS() { return m_eos; };
+  bool BadState() { return m_resource_error; };
+  void ResetEos();
 
 private:
   OMX_HANDLETYPE m_handle;
@@ -166,6 +171,7 @@ private:
   unsigned int   m_output_port;
   std::string    m_componentName;
   pthread_mutex_t   m_omx_event_mutex;
+  pthread_mutex_t   m_omx_eos_mutex;
   pthread_mutex_t   m_lock;
   std::vector<omx_event> m_omx_events;
 
@@ -198,6 +204,7 @@ private:
   bool          m_eos;
   bool          m_flush_input;
   bool          m_flush_output;
+  bool          m_resource_error;
   void              Lock();
   void              UnLock();
 };

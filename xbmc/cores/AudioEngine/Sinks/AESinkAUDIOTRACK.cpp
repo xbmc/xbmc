@@ -115,7 +115,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_format.m_dataFormat = dataFormat;
 
   m_format.m_channelLayout = m_info.m_channels;
-  m_format.m_frameSize = format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3);
+  m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3);
 
   m_draining = false;
   m_volume_changed = false;

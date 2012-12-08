@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -273,6 +273,22 @@ msgstr "NNV"
 msgctxt "#87"
 msgid "VAR"
 msgstr "VAR"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Sud"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Nord"
+
+msgctxt "#90"
+msgid "West"
+msgstr "Vest"
+
+msgctxt "#91"
+msgid "East"
+msgstr "Est"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -2202,6 +2218,10 @@ msgctxt "#625"
 msgid "All songs of"
 msgstr "Toate cântecele din"
 
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "Seriale în curs de vizionare"
+
 msgctxt "#629"
 msgid "View mode"
 msgstr "Mod de vizualizare"
@@ -2686,6 +2706,14 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr "Acces la Internet"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr "Actualizare videotecă"
+
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "Imaginile mediatecii audio trebuie scanate din nou"
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "Dorești să efectuezi scanarea acum?"
@@ -3152,7 +3180,7 @@ msgstr "picățele"
 
 msgctxt "#1418"
 msgid "Thunderstorms"
-msgstr "furtuni(cu trăznete)"
+msgstr "Furtuni (cu trăznete)"
 
 msgctxt "#1420"
 msgid "Moderate"
@@ -3170,9 +3198,33 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "ceață"
 
+msgctxt "#1431"
+msgid "Dust"
+msgstr "Praf"
+
+msgctxt "#1432"
+msgid "Sand"
+msgstr "Nisip"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Furtună de nisip"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Mică"
+
+msgctxt "#1439"
+msgid "and"
+msgstr "şi"
+
+msgctxt "#1441"
+msgid "with"
+msgstr "cu"
+
+msgctxt "#1445"
+msgid "Cloud"
+msgstr "Nor"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -3602,6 +3654,14 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Element blocat"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "Actualizare imagini videotecă"
+
+msgctxt "#12351"
+msgid "The art cache in your video library needs updating."
+msgstr "Imaginile mediatecii video stocate în cache necesită actualizare"
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Reactivează blocarea"
@@ -3761,6 +3821,14 @@ msgstr "Acțiune buton de pornire (power)"
 msgctxt "#13016"
 msgid "Power off System"
 msgstr "Închidere sistem"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "Prevenire oprire în cazul inactivităţii"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "Permite oprire în cazul inactivităţii"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -4601,6 +4669,26 @@ msgstr "Foarte înalt(încet!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "Sincronizează redarea cu reîmprospătarea ecranului"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "Alege imagine"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Imagine actuală"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Imagine la distanţă"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "Imagine locală"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Fără imagine"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5528,19 +5616,19 @@ msgstr "Toate filmele"
 
 msgctxt "#16101"
 msgid "Unwatched"
-msgstr "neprivite"
+msgstr "nevăzute"
 
 msgctxt "#16102"
 msgid "Watched"
-msgstr "privite"
+msgstr "văzute"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Marchează ca privit"
+msgstr "Marchează ca văzut"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
-msgstr "Marchează ca neprivit"
+msgstr "Marchează ca nevăzut"
 
 msgctxt "#16105"
 msgid "Edit title"
@@ -5674,6 +5762,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "Auto - Optimizat ION"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Post-procesare video"
@@ -5682,13 +5774,45 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Timp de așteptare repaus ecran"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MByte"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i ore"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i zile"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Comută pe canalul"
 
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "Separă termenii căutării folosind AND, OR şi/sau NOT."
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Găseşte programe similare"
+
 msgctxt "#19008"
 msgid "Signal quality"
 msgstr "Calitatea semnalului"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
 
 msgctxt "#19013"
 msgid "Free to air"
@@ -5697,6 +5821,10 @@ msgstr "Necodificat"
 msgctxt "#19014"
 msgid "Fixed"
 msgstr "Fixă"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "Criptare"
 
 msgctxt "#19017"
 msgid "TV recordings"
@@ -5713,6 +5841,10 @@ msgstr "TV"
 msgctxt "#19021"
 msgid "Radio"
 msgstr "Radio"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Ascuns"
 
 msgctxt "#19023"
 msgid "TV channels"
@@ -5734,6 +5866,10 @@ msgctxt "#19031"
 msgid "Next"
 msgstr "Următorul"
 
+msgctxt "#19033"
+msgid "Information"
+msgstr "Informaţii"
+
 msgctxt "#19035"
 msgid "This channel cannot be played. Check the log for details."
 msgstr "Acest canal nu poate fi reprodus. Verifică log-ul pentru detalii."
@@ -5750,9 +5886,21 @@ msgctxt "#19039"
 msgid "Are you sure you want to hide this channel?"
 msgstr "Ești sigur că vrei să ascunzi acest canal?"
 
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Cronometru"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Înregistrare"
+
 msgctxt "#19046"
 msgid "New channel"
 msgstr "Canal nou"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "Administrare grup"
 
 msgctxt "#19049"
 msgid "Show channel"
@@ -5770,9 +5918,41 @@ msgctxt "#19052"
 msgid "Move channel to:"
 msgstr "Mută canal la:"
 
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Ascunde canal"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Opreşte inregistrarea"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "Sortează după: Canal"
+
+msgctxt "#19063"
+msgid "Go to begin"
+msgstr "Mergi la început"
+
 msgctxt "#19064"
 msgid "Go to end"
 msgstr "Du-te la sfârșit"
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "Interval actualizare EPG"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "Nu stoca EPG în baza de date"
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Întârziere schimb canal"
 
 msgctxt "#19074"
 msgid "Active:"
@@ -5797,6 +5977,14 @@ msgstr "Canal:"
 msgctxt "#19079"
 msgid "Day:"
 msgstr "Zi:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Început:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Sfârşit:"
 
 msgctxt "#19082"
 msgid "Priority:"
@@ -5854,6 +6042,10 @@ msgctxt "#19096"
 msgid "__-__-__-__-__-Sa-Su"
 msgstr "__-__-__-__-__-Sâ-Du"
 
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Avertizare"
+
 msgctxt "#19107"
 msgid "at"
 msgstr "la"
@@ -5866,21 +6058,149 @@ msgctxt "#19115"
 msgid "Address"
 msgstr "Adresă"
 
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Dimensiune disc"
+
 msgctxt "#19117"
 msgid "Search for channels"
 msgstr "Căutare canale"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "Nu se pot folosi funcţii PVR în timpul căutarii"
 
 msgctxt "#19120"
 msgid "Client number"
 msgstr "Număr client"
 
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "- Durată minimă"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "- Durată minimă"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Termen căutare"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Include descriere"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Canal indisponibil"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Nu există grupuri definite"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Caută în ghid"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "Administrare grup"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Nu există grupuri definite"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Grupuri"
+
 msgctxt "#19148"
 msgid "Channel"
 msgstr "Canal"
 
+msgctxt "#19149"
+msgid "Mo"
+msgstr "L"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Ma"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Mi"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "J"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "V"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "S"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "D"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "de la"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Înregistrarea următoare"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Înregistrarea curentă"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "de la"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "către"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Înregistrare activă"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "Înregistrări"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Nu se poate începe înregistrarea. Verificaţi jurnalul pentru detalii."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Schimbă"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "Informaţii PVR"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Scanează după icoane lipsă"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Ascunde fereastra cu informaţii video"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Durată înregistrare instant"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Prioritate predefinită a înregistrării"
 
 msgctxt "#19177"
 msgid "Playback"
@@ -5890,9 +6210,81 @@ msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
 
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Meniu/OSD"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Resetează baza de date PVR"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "Minimizat"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "Serviciu PVR"
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Continuă?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Acţiuni client"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Manager canale"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "Sursă EPG:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Nume canal:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Icoană canal:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Editează canal"
+
 msgctxt "#19204"
 msgid "New channel"
 msgstr "Canal nou"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "Administrare grup"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Activează EPG:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Grup:"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Opreşte inregistrarea"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Avertizare conflict"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "Limbi"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6578,6 +6970,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Trimite actualizări ale mediatecii prin UPnP"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Activează derulare automată pentru intrigă și recenzie"
@@ -6896,7 +7292,7 @@ msgstr "* Toate sezoanele"
 
 msgctxt "#20367"
 msgid "Hide watched"
-msgstr "Ascunde privite"
+msgstr "Ascunde văzute"
 
 msgctxt "#20368"
 msgid "Prod code"
@@ -6904,7 +7300,7 @@ msgstr "Cod producție"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "Arată intrigă pentru elementele neprivite"
+msgstr "Arată intrigă pentru elementele nevăzute"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -7368,7 +7764,7 @@ msgstr "Activează bări de derulare"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
-msgstr "Afișare filtrare privite ca un comutator în mediateca video"
+msgstr "Afișare filtrare văzute ca un comutator în mediateca video"
 
 msgctxt "#21385"
 msgid "Open"
@@ -7592,7 +7988,7 @@ msgstr "Dosar principal"
 
 msgctxt "#21441"
 msgid "Watched count"
-msgstr "Număr vizionate"
+msgstr "Număr văzute"
 
 msgctxt "#21442"
 msgid "Episode title"
@@ -7649,6 +8045,10 @@ msgstr "Cache plin"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Cache împlinit înainte de a ajunge la nivelul necesar pentru redare continuă"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Număr episoade văzute"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -9010,6 +9410,10 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "Nu folosi maparea tastelor pentru acest dispozitiv"
 
+msgctxt "#35101"
+msgid "Disable joystick when iMON is present"
+msgstr "Dezactivare joystick dacă iMON e prezent"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Locație"
@@ -9122,6 +9526,10 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "Trimite comanda 'sursă inactivă' când se oprește XBMC"
 
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr "Portul e ocupat. Un singur program poate accesa adaptorul CEC"
+
 msgctxt "#36035"
 msgid "Always"
 msgstr "Întotdeauna"
@@ -9129,3 +9537,7 @@ msgstr "Întotdeauna"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Amplificator / Receiver"

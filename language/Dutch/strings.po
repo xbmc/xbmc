@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2202,6 +2202,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Voer nummer in"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/sample"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Samplefrequentie"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Muziek CD's"
@@ -3222,6 +3230,10 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Bewolking"
 
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Pellets"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Hagel"
@@ -3254,6 +3266,10 @@ msgctxt "#1433"
 msgid "Spray"
 msgstr "Spray"
 
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Whirls"
+
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Zandstorm"
@@ -3261,6 +3277,10 @@ msgstr "Zandstorm"
 msgctxt "#1436"
 msgid "Blowing"
 msgstr "Waaien"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Pellet"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3297,6 +3317,10 @@ msgstr "Wolk"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Onbekend"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Squals"
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -4145,6 +4169,10 @@ msgstr "Gestart, alarm over %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Onderbroken met nog %im%is left"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -6958,6 +6986,18 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr "Registratie fout"
 
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Cliënt-eigen"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Cliënt-eigen instellingen"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Bevestig kanaalwisselingen met de OK-toets"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Anders/Onbekend"
@@ -8166,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Sorteer: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Scannen van films met %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Scannen van muziekvideo's met %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Scannen van TV-shows met %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Scannen van artiesten met %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Scannen van albums met %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Afspelen deel..."
@@ -9121,6 +9181,10 @@ msgstr "Cache is vol voordat benodigde hoeveelheid is bereikt voor continu afspe
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Externe opslag"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Aantal bekeken afleveringen"
 
 msgctxt "#21460"
 msgid "Subtitle location"

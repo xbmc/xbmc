@@ -28,9 +28,11 @@
 #include <Python.h>
 
 #include "interfaces/legacy/LanguageHook.h"
-#include "interfaces/python/CallbackHandler.h"
 #include "threads/ThreadLocal.h"
 #include "threads/Event.h"
+
+#include <set>
+#include <map>
 
 namespace XBMCAddon
 {
@@ -45,15 +47,22 @@ namespace XBMCAddon
      */
     class LanguageHook : public XBMCAddon::LanguageHook
     {
-      LanguageHook() : XBMCAddon::LanguageHook("Python::LanguageHook")  {  }
+      PyInterpreterState* m_interp;
+      CCriticalSection crit;
+      std::set<AddonClass*> currentObjects;
+
+      static std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> > hooks;
 
     public:
 
+      inline LanguageHook(PyInterpreterState* interp) : 
+        XBMCAddon::LanguageHook("Python::LanguageHook"), m_interp(interp)  {  }
+
       virtual ~LanguageHook();
 
-      virtual void delayedCallOpen();
-      virtual void delayedCallClose();
-      virtual void makePendingCalls();
+      virtual void DelayedCallOpen();
+      virtual void DelayedCallClose();
+      virtual void MakePendingCalls();
       
       /**
        * PythonCallbackHandler expects to be instantiated PER AddonClass instance
@@ -67,18 +76,31 @@ namespace XBMCAddon
        * See PythonCallbackHandler for more details
        * See PythonCallbackHandler::PythonCallbackHandler for more details
        */
-      virtual XBMCAddon::CallbackHandler* getCallbackHandler();
+      virtual XBMCAddon::CallbackHandler* GetCallbackHandler();
 
-      virtual String getAddonId();
-      virtual String getAddonVersion();
+      virtual String GetAddonId();
+      virtual String GetAddonVersion();
 
-      virtual void registerPlayerCallback(IPlayerCallback* player);
-      virtual void unregisterPlayerCallback(IPlayerCallback* player);
-      virtual void registerMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
-      virtual void unregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
-      virtual bool waitForEvent(CEvent& hEvent, unsigned int milliseconds);
+      virtual void RegisterPlayerCallback(IPlayerCallback* player);
+      virtual void UnregisterPlayerCallback(IPlayerCallback* player);
+      virtual void RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
+      virtual void UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor);
+      virtual bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
-      static LanguageHook* getInstance();
+      static AddonClass::Ref<LanguageHook> GetIfExists(PyInterpreterState* interp);
+      static bool IsAddonClassInstanceRegistered(AddonClass* obj);
+
+      void RegisterAddonClassInstance(AddonClass* obj);
+      void UnregisterAddonClassInstance(AddonClass* obj);
+      bool HasRegisteredAddonClassInstance(AddonClass* obj);
+      inline bool HasRegisteredAddonClasses() { Synchronize l(*this); return currentObjects.size() > 0; }
+
+      // You should hold the lock on the LanguageHook itself if you're
+      // going to do anything with the set that gets returned.
+      inline std::set<AddonClass*>& GetRegisteredAddonClasses() { return currentObjects; }
+
+      void UnregisterMe();
+      void RegisterMe();
     };
   }
 }

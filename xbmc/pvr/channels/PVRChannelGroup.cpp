@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
+#include "Util.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
@@ -247,10 +248,10 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
       continue;
 
     CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
-    CStdString strChannelName = groupMember.channel->ClientChannelName();
+    CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
 
-    CStdString strIconPath = strBasePath + groupMember.channel->ClientChannelName();
-    CStdString strIconPathLower = strBasePath + strChannelName.ToLower();
+    CStdString strIconPath = strBasePath + strSanitizedChannelName;
+    CStdString strIconPathLower = strBasePath + strSanitizedChannelName.ToLower();
     CStdString strIconPathUid;
     strIconPathUid.Format("%08d", groupMember.channel->UniqueID());
     strIconPathUid = URIUtils::AddFileToFolder(strBasePath, strIconPathUid);

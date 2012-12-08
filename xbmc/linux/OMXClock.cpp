@@ -282,16 +282,26 @@ void OMXClock::OMXSetClockPorts(OMX_TIME_CONFIG_CLOCKSTATETYPE *clock)
   if(!clock)
     return;
 
+  clock->nWaitMask = 0;
+
   if(m_has_audio)
   {
     m_audio_start = true;
     clock->nWaitMask |= OMX_CLOCKPORT0;
+  }
+  else
+  {
+    m_audio_start = false;
   }
 
   if(m_has_video)
   {
     m_video_start = true;
     clock->nWaitMask |= OMX_CLOCKPORT1;
+  }
+  else
+  {
+    m_video_start = false;
   }
 }
 
@@ -343,6 +353,9 @@ bool OMXClock::OMXInitialize(bool has_video, bool has_audio)
   if(!m_omx_clock.Initialize((const std::string)componentName, OMX_IndexParamOtherInit))
     return false;
 
+  m_omx_clock.DisableAllPorts();
+
+  /*
   if(!OMXSetReferenceClock(false))
     return false;
 
@@ -354,6 +367,7 @@ bool OMXClock::OMXInitialize(bool has_video, bool has_audio)
   omx_err = m_omx_clock.SetConfig(OMX_IndexConfigTimeClockState, &clock);
   if(omx_err != OMX_ErrorNone)
     CLog::Log(LOGWARNING, "OMXClock::OMXInitialize setting OMX_IndexConfigTimeClockState\n");
+  */
 
   return true;
 }
@@ -608,8 +622,6 @@ bool OMXClock::OMXReset(bool lock /* = true */)
   if(lock)
     Lock();
 
-  CLog::Log(LOGDEBUG, "OMXClock::OMXReset 0x%08x\n", m_omx_clock.GetState());
-
   m_audio_buffer = false;
 
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
@@ -622,6 +634,15 @@ bool OMXClock::OMXReset(bool lock /* = true */)
 
   OMX_TIME_CONFIG_CLOCKSTATETYPE clock;
   OMX_INIT_STRUCTURE(clock);
+
+  omx_err = m_omx_clock.GetConfig(OMX_IndexConfigTimeClockState, &clock);
+  if(omx_err != OMX_ErrorNone)
+  {
+    CLog::Log(LOGERROR, "OMXClock::OMXReset error getting OMX_IndexConfigTimeClockState\n");
+    if(lock)
+      UnLock();
+    return false;
+  }
 
   clock.eState    = OMX_TIME_ClockStateWaitingForStartTime;
   //clock.nOffset   = ToOMXTime(-1000LL * 200);
@@ -639,6 +660,9 @@ bool OMXClock::OMXReset(bool lock /* = true */)
       return false;
     }
   }
+
+  CLog::Log(LOGDEBUG, "OMXClock::OMXReset audio / video : %d / %d start audio / video : %d / %d wait mask %d\n", 
+      m_has_audio, m_has_video, m_audio_start, m_video_start, clock.nWaitMask);
 
   if(lock)
     UnLock();

@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3244,7 +3244,7 @@ msgstr "Písečná bouře"
 
 msgctxt "#1438"
 msgid "Small"
-msgstr "Malá"
+msgstr ""
 
 msgctxt "#1439"
 msgid "and"
@@ -10689,3 +10689,7 @@ msgstr "TV a AV přijímač (explicitně)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Nepodporovaná verze rozhraní libCEC. %x je nižší než verze podporovaná XBMC (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* složka položky"

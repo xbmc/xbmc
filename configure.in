@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [12.0b2], [http://trac.xbmc.org])
+AC_INIT([xbmc], [12.0b3], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
 m4_include([m4/ax_python_devel.m4])
@@ -569,13 +569,11 @@ case $host in
   i386-*-freebsd*)
      ARCH="x86-freebsd"
      MAKE="gmake"
-     use_external_ffmpeg="yes"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD -D_LINUX")
      ;;
   amd64-*-freebsd*)
      ARCH="x86_64-freebsd"
      MAKE="gmake"
-     use_external_ffmpeg="yes"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_FREEBSD -D_LINUX")
      ;;
   arm-apple-darwin*)
@@ -732,6 +730,7 @@ if echo "$ARCH" | grep -q "freebsd" ; then
   CXXFLAGS="$CXXFLAGS -I$LOCALBASE/include"
   CPPFLAGS="$CPPFLAGS -I$LOCALBASE/include"
   LDFLAGS="$LDFLAGS -L$LOCALBASE/lib"
+  FFMPEG_EXTRACFLAGS="-I$LOCALBASE/include"
 fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths

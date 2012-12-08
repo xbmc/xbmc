@@ -536,3 +536,7 @@ msgstr "Percentuale di precipitazioni"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Recuper informazioni previsioni..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Mappa e notifiche"

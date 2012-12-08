@@ -34,7 +34,6 @@ namespace PVR
   private:
     CCriticalSection             m_critSection;
     bool                         m_bIsUpdating;
-    CVideoThumbLoader            m_thumbLoader;
     std::vector<CPVRRecording *> m_recordings;
 
     virtual void UpdateFromClients(void);
@@ -44,7 +43,6 @@ namespace PVR
     virtual void GetContents(const CStdString &strDirectory, CFileItemList *results);
     virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true);
 
-    bool HasAllRecordingsPathExtension(const CStdString &strDirectory);
     CStdString AddAllRecordingsPathExtension(const CStdString &strDirectory);
     CStdString RemoveAllRecordingsPathExtension(const CStdString &strDirectory);
 
@@ -73,5 +71,7 @@ namespace PVR
     CFileItemPtr GetByPath(const CStdString &path);
     void SetPlayCount(const CFileItem &item, int iPlayCount);
     void GetAll(CFileItemList &items);
+
+    bool HasAllRecordingsPathExtension(const CStdString &strDirectory);
   };
 }

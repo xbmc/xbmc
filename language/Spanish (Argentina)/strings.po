@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2732,7 +2732,7 @@ msgstr "La colección de música necesita re-escanear portadas desde las etiquet
 
 msgctxt "#801"
 msgid "Would you like to scan now?"
-msgstr "¿Quiere que se escaneen ahora?"
+msgstr "¿Desea que se escaneen ahora?"
 
 msgctxt "#850"
 msgid "Invalid port number entered"
@@ -3780,7 +3780,7 @@ msgstr "Reactivar bloqueo"
 
 msgctxt "#12354"
 msgid "Would you like to update it now?"
-msgstr "¿Deseas actualizarlo ahora?"
+msgstr "¿Desea actualizarlo ahora?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -4080,7 +4080,7 @@ msgstr "Si continúa, puede que pierda el control de XBMC"
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr "¿Está seguro de que quiere parar el servidor de eventos?"
+msgstr "¿Está seguro de que desea detener el servidor de eventos?"
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
@@ -5016,7 +5016,7 @@ msgstr "XBMC necesita reiniciar para poder cambiar su"
 
 msgctxt "#14040"
 msgid "network setup.  Would you like to restart now?"
-msgstr "configuración de red. ¿Quiere reiniciar ahora?"
+msgstr "configuración de red. ¿Desea reiniciar ahora?"
 
 msgctxt "#14041"
 msgid "Internet connection bandwidth limitation"
@@ -5124,7 +5124,7 @@ msgstr "Introduzca la dirección IP"
 
 msgctxt "#14069"
 msgid "Apply these settings now?"
-msgstr "¿Quiere aplicar las opciones ahora?"
+msgstr "¿Desea aplicar las opciones ahora?"
 
 msgctxt "#14070"
 msgid "Apply changes now"
@@ -6092,11 +6092,11 @@ msgstr "Temporizadores"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
-msgstr "¿Está seguro de que quiere renombrar esta grabación?"
+msgstr "¿Está seguro de que desea renombrar esta grabación?"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr "¿Está seguro de que quiere renombrar este temporizador?"
+msgstr "¿Está seguro de que desea renombrar este temporizador?"
 
 msgctxt "#19043"
 msgid "Recording"
@@ -6364,7 +6364,7 @@ msgstr "No se pueden utilizar funciones PVR mientras durante la búsqueda."
 
 msgctxt "#19119"
 msgid "On which server you want to search?"
-msgstr "¿En qué servidor deseas buscar?"
+msgstr "¿En qué servidor desea buscar?"
 
 msgctxt "#19120"
 msgid "Client number"
@@ -7712,7 +7712,7 @@ msgstr "Encontrados ajustes antiguos."
 
 msgctxt "#20105"
 msgid "Do you want to use them?"
-msgstr "¿Deseas usarlos?"
+msgstr "¿Desea usarlos?"
 
 msgctxt "#20106"
 msgid "Old media sources found."
@@ -7768,7 +7768,7 @@ msgstr "Esto requiere asignar el bloqueo maestro."
 
 msgctxt "#20119"
 msgid "Would you like to set it now?"
-msgstr "Deseas hacerlo ahora?"
+msgstr "Desea hacerlo ahora?"
 
 msgctxt "#20120"
 msgid "Loading program information"
@@ -7828,7 +7828,7 @@ msgstr "Eliminar dirección de red"
 
 msgctxt "#20135"
 msgid "Do you want to scan the folder?"
-msgstr "¿Quieres realizar una exploración del directorio?"
+msgstr "¿Desea realizar una exploración del directorio?"
 
 msgctxt "#20136"
 msgid "Memory unit"
@@ -8292,7 +8292,7 @@ msgstr "Director"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "¿Deseas eliminar todos los elementos de"
+msgstr "¿Desea eliminar todos los elementos de"
 
 msgctxt "#20341"
 msgid "this path from the XBMC library?"
@@ -9932,11 +9932,11 @@ msgstr "Cambios"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr "¿Deseas activar este Add-on?"
+msgstr "¿Desea activar este Add-on?"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
-msgstr "¿Deseas desactivar este Add-on?"
+msgstr "¿Desea desactivar este Add-on?"
 
 msgctxt "#24061"
 msgid "Add-on update available!"

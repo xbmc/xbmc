@@ -363,6 +363,7 @@ lib/cmyth/Makefile
 /project/Win32BuildSetup/XBMC.log
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
+/project/Win32BuildSetup/xbmc-pvr-addons.nsi
 /project/Win32BuildSetup/BUILD_WIN32/
 /project/Win32BuildSetup/dependencies
 
