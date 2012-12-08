@@ -731,6 +731,10 @@ bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &it
     return false;
 
   item->SetFromVideoInfoTag(details);
+  if (item->GetLabel().empty())
+    item->SetLabel(CUtil::GetTitleFromPath(strFilename, false));
+  if (item->GetLabel())
+    item->SetLabel(URIUtils::GetFileName(strFilename));
   return true;
 }
 

@@ -1468,7 +1468,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 
 void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
 {
-  SetLabel(video.m_strTitle);
+  if (!video.m_strTitle.empty())
+    SetLabel(video.m_strTitle);
   if (video.m_strFileNameAndPath.IsEmpty())
   {
     m_strPath = video.m_strPath;
@@ -1489,7 +1490,8 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
 
 void CFileItem::SetFromAlbum(const CAlbum &album)
 {
-  SetLabel(album.strAlbum);
+  if (!album.strAlbum.empty())
+    SetLabel(album.strAlbum);
   m_bIsFolder = true;
   m_strLabel2 = StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator);
   GetMusicInfoTag()->SetAlbum(album);
@@ -1499,8 +1501,10 @@ void CFileItem::SetFromAlbum(const CAlbum &album)
 
 void CFileItem::SetFromSong(const CSong &song)
 {
-  SetLabel(song.strTitle);
-  m_strPath = song.strFileName;
+  if (!song.strTitle.empty())
+    SetLabel(song.strTitle);
+  if (!song.strFileName.empty())
+    m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lStartPartNumber = 1;
