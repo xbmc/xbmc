@@ -38,7 +38,7 @@ ${SYNC} "$SRCROOT/sounds" 		"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC"
 ${SYNC} "$SRCROOT/system" 		"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC"
 ${SYNC} "$SRCROOT/userdata" 	"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC"
 ${SYNCSKIN} "$SRCROOT/addons/skin.mediastream" 	"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC/addons"
-${SYNCSKIN} "$SRCROOT/addons/skin.plex" 	"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC/addons"
+#${SYNCSKIN} "$SRCROOT/addons/skin.plex" 	"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC/addons"
 
 # copy extra packages if applicable
 if [ -d "$SRCROOT/extras/system" ]; then
