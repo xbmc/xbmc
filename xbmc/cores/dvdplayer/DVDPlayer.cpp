@@ -4618,8 +4618,11 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
       return false;
     }
 
-    item = resolver->GetFinalItem();
-    m_itemWithDetails = resolver->GetFinalItemPtr();
+    if (resolver->Success() == true)
+    {
+      item = resolver->GetFinalItem();
+      m_itemWithDetails = resolver->GetFinalItemPtr();
+    }
   }
 
   // See if we need to resolve an indirect item.
