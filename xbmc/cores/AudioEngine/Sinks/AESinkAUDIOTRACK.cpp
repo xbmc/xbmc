@@ -276,38 +276,7 @@ void CAESinkAUDIOTRACK::Process()
 
   JNIEnv *jenv = NULL;
   CXBMCApp::AttachCurrentThread(&jenv, NULL);
-/*
-  in Java
-  AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-  int cur_volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-  int max_volume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-  mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, max_volume, 0);
-*/
 
-/*
-  jobject oActivity = state->activity->clazz;
-  jclass cActivity = env->GetObjectClass(oActivity);
-
-  jmethodID jmGetSystemService = jenv->GetMethodID(cActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
-  jstring   jsAudioService = jenv->NewStringUTF("audio");
-  jobject   joAudioManager = jenv->CallObjectMethod(oActivity, jmGetSystemService, jsAudioService);
-  jclass    jcAudioManager = jenv->GetObjectClass(joAudioManager);
-
-  jmethodID jm_getStreamVolume    = jenv->GetMethodID(jcAudioManager, "getStreamVolume", "(I)I");
-  jmethodID jm_setStreamVolume    = jenv->GetMethodID(jcAudioManager, "setStreamVolume", "(III)V");
-  jmethodID jm_getStreamMaxVolume = jenv->GetMethodID(jcAudioManager, "getStreamMaxVolume", "(I)I");
-
-  jint flags = 0;
-  jint stream_music  = GetStaticIntField(jenv, "AudioManager", "STREAM_MUSIC");
-  jint stream_system = GetStaticIntField(jenv, "AudioManager", "STREAM_SYSTEM");
-  jint cur_volume = jenv->CallIntMethod(joAudioManager, jm_getStreamVolume, stream_music);
-  jint max_volume = jenv->CallIntMethod(joAudioManager, jm_getStreamMaxVolume, stream_music);
-  jenv->CallIntMethod(joAudioManager, jm_setStreamVolume, stream_music, max_volume, flags);
-
-  env->DeleteLocalRef(jsAudioService);
-  env->DeleteLocalRef(joAudioManager);
-  env->DeleteLocalRef(jcAudioManager);
-*/
   jclass jcAudioTrack = jenv->FindClass("android/media/AudioTrack");
 
   jmethodID jmInit              = jenv->GetMethodID(jcAudioTrack, "<init>", "(IIIIII)V");
