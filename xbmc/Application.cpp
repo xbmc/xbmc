@@ -1317,9 +1317,7 @@ bool CApplication::Initialize()
 #endif
     g_windowManager.Add(new CGUIWindowSettingsScreenCalibration);
     g_windowManager.Add(new CGUIWindowSettingsCategory);
-#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowVideoNav);
-#endif
     g_windowManager.Add(new CGUIWindowVideoPlaylist);
     g_windowManager.Add(new CGUIWindowLoginScreen);
     g_windowManager.Add(new CGUIWindowSettingsProfile);
@@ -1384,10 +1382,8 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogMediaFilter);
 
     g_windowManager.Add(new CGUIWindowMusicPlayList);
-#ifndef __PLEX__
     g_windowManager.Add(new CGUIWindowMusicSongs);
     g_windowManager.Add(new CGUIWindowMusicNav);
-#endif
     g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);
 
     /* Load PVR related Windows and Dialogs */
@@ -1431,8 +1427,10 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIDialogRating);                 // window id = 200
     g_windowManager.Add(new CGUIDialogTimer);                 // window id = 201
     g_windowManager.Add(new CGUIDialogFilterSort);
+#if 0 // Add these later to enable filtering again
     g_windowManager.Add(new CGUIPlexMediaWindow);
     g_windowManager.Add(new CGUIPlexMusicWindow);
+#endif
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
