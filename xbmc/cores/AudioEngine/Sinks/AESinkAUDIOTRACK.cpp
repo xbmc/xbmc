@@ -88,7 +88,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 {
   m_format = format;
 
-  if (AE_IS_RAW(format.m_dataFormat))
+  if (AE_IS_RAW(m_format.m_dataFormat))
     m_passthrough = true;
   else
     m_passthrough = false;
