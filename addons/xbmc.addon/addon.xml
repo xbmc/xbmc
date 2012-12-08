@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="xbmc.addon" version="12.0" provider-name="Team XBMC">
+<addon id="xbmc.addon" version="12.0.0" provider-name="Team XBMC">
+  <backwards-compatibility abi="12.0"/>
   <requires>
-    <import addon="xbmc.core" version="0.1"/>
+    <import addon="xbmc.core" version="0.1.0"/>
   </requires>
   <extension-point id="metadata" schema="metadata.xsd"/>
   <extension-point id="repository" schema="repository.xsd"/>
