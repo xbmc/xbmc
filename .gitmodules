@@ -5,6 +5,3 @@
 [submodule "addons/skin.mediastream"]
 	path = addons/skin.mediastream
 	url = git@github.com:plexinc/plex-mediastream.git
-[submodule "addons/skin.plex"]
-	path = addons/skin.plex
-	url = git@github.com:plexinc/plex-skin.git

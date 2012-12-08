@@ -28,6 +28,7 @@ endif(APPLE)
 add_subdirectory(AutoUpdate)
 
 find_all_sources(. plex_SRCS)
+list(REMOVE_ITEM plex_SRCS ./pch_plex.cpp)
 set(Headers PlexTypes.h)
 if(APPLE)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtils.cpp)
@@ -64,7 +65,6 @@ target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRA
 
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
-file(GLOB MEDIA_IMAGES_PLEX ${root}/addons/skin.plex/Media/*.png ${root}/addons/skin.plex/Media/*.gif)
 
 if(NOT WIN32)
   # Build the packed textures
@@ -74,14 +74,8 @@ if(NOT WIN32)
     MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
     DEPENDS TexturePacker
   )
-  add_custom_command(
-    OUTPUT Textures_Plex.xbt
-    COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.plex/Media -output Textures_Plex.xbt
-    MAIN_DEPENDENCY ${MEDIA_IMAGES_PLEX}
-    DEPENDS TexturePacker
-  )
 
-  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
+  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
 endif()
 
 
@@ -111,9 +105,7 @@ install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMP
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
 if(NOT WIN32)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media RENAME Textures.xbt)
 else()
-  install(FILES ${MEDIA_IMAGES_PLEX} DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media)
   install(FILES ${MEDIA_IMAGES_MEDIASTREAM} DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media)
 endif()
 
