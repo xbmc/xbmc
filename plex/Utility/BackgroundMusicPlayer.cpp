@@ -84,7 +84,5 @@ void BackgroundMusicPlayer::PlayCurrentTheme()
 void BackgroundMusicPlayer::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
 {
   int volPercent = g_guiSettings.GetInt("backgroundmusic.bgmusicvolume");
-  int volDB = (int)(2000.0 * log10((float)volPercent/100.0));
-  
-  m_player->SetVolume(volDB);
+  m_player->SetVolume(volPercent / 100.0);
 }
