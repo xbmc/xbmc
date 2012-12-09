@@ -463,6 +463,13 @@ void PAPlayer::Process()
 
     double delay  = 100.0;
     double buffer = 100.0;
+    
+    if (IsPaused())
+    {
+      CThread::Sleep(10);
+      continue;
+    }
+    
     ProcessStreams(delay, buffer);
 
     double watermark = buffer * 0.5;
