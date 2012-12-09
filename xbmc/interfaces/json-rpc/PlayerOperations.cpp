@@ -140,17 +140,21 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
       if (player == Video)
       {
         bool additionalInfo = false;
+        bool streamdetails = false;
         for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
         {
           CStdString fieldValue = itr->asString();
           if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume")
             additionalInfo = true;
+          else if (fieldValue == "streamdetails" && !fileItem->GetVideoInfoTag()->m_streamDetails.HasItems())
+            streamdetails = true;
         }
 
-        if (additionalInfo)
+        CVideoDatabase videodatabase;
+        if ((additionalInfo || streamdetails) &&
+            videodatabase.Open())
         {
-          CVideoDatabase videodatabase;
-          if (videodatabase.Open())
+          if (additionalInfo)
           {
             switch (fileItem->GetVideoContentType())
             {
@@ -171,9 +175,12 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
               default:
                 break;
             }
-
-            videodatabase.Close();
           }
+
+          if (streamdetails)
+            videodatabase.GetStreamDetails(*(fileItem->GetVideoInfoTag()));
+
+          videodatabase.Close();
         }
       }
       else if (player == Audio)
