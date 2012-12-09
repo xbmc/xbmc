@@ -3064,11 +3064,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
       CStdString sink  = (*iter).second;
       pControl->AddLabel(label.c_str(), i);
 
-#ifndef __PLEX__ /* Upstream bug */
       if (currentDevice.Equals(sink))
-#else
-      if (currentDevice.Equals(label))
-#endif
         selectedValue = i;
 
       if (Passthrough)
