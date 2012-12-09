@@ -60,7 +60,7 @@ ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
 
 CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
-  : m_wakeLock(NULL)
+  : m_wakeLock(NULL), m_keyguardLock(NULL)
 {
   m_activity = nativeActivity;
   
@@ -98,6 +98,7 @@ ActivityResult CXBMCApp::onActivate()
   {
     case Uninitialized:
       acquireWakeLock();
+      disableKeyguard();
       
       pthread_attr_t attr;
       pthread_attr_init(&attr);
@@ -113,7 +114,8 @@ ActivityResult CXBMCApp::onActivate()
       
     case Paused:
       acquireWakeLock();
-      
+      disableKeyguard();
+
       XBMC_SetupDisplay();
       XBMC_Pause(false);
       setAppState(Rendering);
@@ -213,6 +215,7 @@ void CXBMCApp::onDestroyWindow()
     XBMC_DestroyDisplay();
     setAppState(Paused);
     releaseWakeLock();
+    reenableKeyguard();
   }
 }
 
@@ -321,6 +324,89 @@ void CXBMCApp::releaseWakeLock()
   DetachCurrentThread();
 }
 
+bool CXBMCApp::getKeyguardLock(JNIEnv *env)
+{
+  android_printf("%s", __PRETTY_FUNCTION__);
+  if (m_activity == NULL)
+  {
+    android_printf("  missing activity => unable to use KeyLocks");
+    return false;
+  }
+
+  if (env == NULL)
+    return false;
+
+  if (m_keyguardLock == NULL)
+  {
+    jobject oActivity = m_activity->clazz;
+    jclass cActivity = env->GetObjectClass(oActivity);
+
+    // get the wake lock
+    jmethodID midActivityGetSystemService = env->GetMethodID(cActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+    jstring sKeyguardService = env->NewStringUTF("keyguard"); // KEYGUARD_SERVICE
+    jobject oKeyguardManager = env->CallObjectMethod(oActivity, midActivityGetSystemService, sKeyguardService);
+
+    jclass cKeyguardManager = env->GetObjectClass(oKeyguardManager);
+    jmethodID midKeyguardLock = env->GetMethodID(cKeyguardManager, "newKeyguardLock", "(Ljava/lang/String;)Landroid/app/KeyguardManager$KeyguardLock;");
+    jstring sXbmcPackage = env->NewStringUTF("org.xbmc.xbmc");
+    jobject oKeyguardLock = env->CallObjectMethod(oKeyguardManager, midKeyguardLock, sXbmcPackage);
+    m_keyguardLock = env->NewGlobalRef(oKeyguardLock);
+
+    env->DeleteLocalRef(oKeyguardLock);
+    env->DeleteLocalRef(cKeyguardManager);
+    env->DeleteLocalRef(oKeyguardManager);
+    env->DeleteLocalRef(sKeyguardService);
+    env->DeleteLocalRef(sXbmcPackage);
+    env->DeleteLocalRef(cActivity);
+  }
+
+  return m_keyguardLock != NULL;
+}
+
+void CXBMCApp::reenableKeyguard()
+{
+  if (m_activity == NULL)
+    return;
+
+  JNIEnv *env = NULL;
+  AttachCurrentThread(&env);
+
+  if (!getKeyguardLock(env))
+  {
+    android_printf("%s: unable to acquire a KeyguardLock");
+    return;
+  }
+
+  jclass cKeyguardLock = env->GetObjectClass(m_keyguardLock);
+  jmethodID midKeyguardLockenable = env->GetMethodID(cKeyguardLock, "reenableKeyguard", "()V");
+  env->CallVoidMethod(m_keyguardLock, midKeyguardLockenable);
+  env->DeleteLocalRef(cKeyguardLock);
+
+  DetachCurrentThread();
+}
+
+void CXBMCApp::disableKeyguard()
+{
+  if (m_activity == NULL)
+    return;
+
+  JNIEnv *env = NULL;
+  AttachCurrentThread(&env);
+
+  if (!getKeyguardLock(env))
+  {
+    android_printf("%s: unable to acquire a KeyguardLock");
+    return;
+  }
+
+  jclass cKeyguardLock = env->GetObjectClass(m_keyguardLock);
+  jmethodID midKeyguardLockdisable = env->GetMethodID(cKeyguardLock, "disableKeyguard", "()V");
+  env->CallVoidMethod(m_keyguardLock, midKeyguardLockdisable);
+  env->DeleteLocalRef(cKeyguardLock);
+
+  DetachCurrentThread();
+}
+
 void CXBMCApp::run()
 {
     int status = 0;
@@ -378,6 +464,14 @@ void CXBMCApp::stop()
     
     env->DeleteGlobalRef(m_wakeLock);
     m_wakeLock = NULL;
+  }
+  if (m_keyguardLock != NULL && m_activity != NULL)
+  {
+    JNIEnv *env = NULL;
+    m_activity->vm->AttachCurrentThread(&env, NULL);
+    
+    env->DeleteGlobalRef(m_keyguardLock);
+    m_keyguardLock = NULL;
   }
 }
 
