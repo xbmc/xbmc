@@ -103,7 +103,11 @@ XBPyThread::~XBPyThread()
 void XBPyThread::setSource(const CStdString &src)
 {
 #ifdef TARGET_WINDOWS
-  CStdString strsrc = src;
+  CStdString strsrc;
+  if (m_type == 'F')
+    strsrc = CSpecialProtocol::TranslatePath(src);
+  else
+    strsrc = src;
   g_charsetConverter.utf8ToSystem(strsrc);
   m_source  = new char[strsrc.GetLength()+1];
   strcpy(m_source, strsrc);
