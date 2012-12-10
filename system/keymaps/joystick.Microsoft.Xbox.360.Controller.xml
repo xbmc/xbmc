@@ -1,5 +1,6 @@
 <!-- This file contains the mappings for a Microsoft Xbox 360 Controller to actions within XBMC    -->
-
+<!-- The drivers for Linux and Windows do not always match. Mappings for Win32 will be presented   -->
+<!-- first, with Linux alts second.                                                                -->
 <!-- The <global> section is a fall through - they will only be used if the button is not          -->
 <!-- used in the current window's section.  Note that there is only handling                       -->
 <!-- for a single action per button at this stage.                                                 -->
@@ -17,25 +18,36 @@
 
 <!-- Joystick Name: Xbox 360 Wireless Receiver                  -->
 
-<!-- Button Mappings:                    -->
-<!--                                     -->
-<!-- ID              Button              -->
-<!--                                     -->
-<!-- 1               A                   -->
-<!-- 2               B                   -->
-<!-- 3               X                   -->
-<!-- 4               Y                   -->
-<!-- 5               LB                  -->
-<!-- 6               RB                  -->
-<!-- 7               Start               -->
-<!-- 8               Guide               -->
-<!-- 9               Left Stick Button   -->
-<!-- 10              Right Stick Button  -->
-<!-- 11              D-Pad Up            -->
-<!-- 12              D-Pad Down          -->
-<!-- 13              D-Pad Left          -->
-<!-- 14              D-Pad Right         -->
-<!-- 15              Back                -->
+<!-- Button Mappings in Windows:               -->
+<!--                                           -->
+<!-- ID              Button                    -->
+<!--                                           -->
+<!-- 1               A                         -->
+<!-- 2               B                         -->
+<!-- 3               X                         -->
+<!-- 4               Y                         -->
+<!-- 5               Left Sholder              -->
+<!-- 6               Right Sholder             -->
+<!-- 7               Back                      -->
+<!-- 8               Start                     -->
+<!-- 9               Left Stick Button         -->
+<!-- 10              Right Stick Button        -->
+<!-- 11              D-Pad Up                  -->
+<!-- 12              D-Pad Down                -->
+<!-- 13              D-Pad Left                -->
+<!-- 14              D-Pad Right               -->
+<!-- 15              Back                      -->
+
+<!-- Linux alterations for default Xpad Driver -->
+<!-- 8               Does not map              -->
+<!-- 9               Guide                     -->
+<!-- 10              Left Stick Button         -->
+<!-- 11              Right Stick Button        -->
+<!-- 12              D-Pad Left                -->
+<!-- 13              D-Pad Right               -->
+<!-- 14              D-Pad Up                  -->
+<!-- 15              D-Pad Down                -->
+<!--                 Triggers do no map!       -->
 
 <!-- Axis Mappings:                   -->
 <!--                                  -->
@@ -61,8 +73,7 @@
 
 <keymap>
   <global>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -105,10 +116,48 @@
       <hat id="1" position="left">Left</hat>
       <hat id="1" position="right">Right</hat>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="1">Select</button>
+      <button id="2">Back</button>
+      <button id="3">ContextMenu</button>
+      <button id="4">FullScreen</button>
+      <button id="5">Queue</button>
+      <button id="6">Playlist</button>
+      <button id="7">PreviousMenu</button>
+      <button id="8">XBMC.ActivateWindow(Home)</button>
+      <button id="9">XBMC.ActivateWindow(Home)</button>
+      <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>
+      <button id="11">XBMC.ActivateWindow(PlayerControls)</button>
+      <button id="12">Left</button>
+      <button id="13">Right</button>
+      <button id="14">Up</button>
+      <button id="15">Down</button>
+      <axis id="1" limit="-1">AnalogSeekBack</axis>
+      <axis id="1" limit="+1">AnalogSeekForward</axis>
+      <axis id="2" limit="-1">AnalogSeekForward</axis>
+      <axis id="2" limit="+1">AnalogSeekBack</axis>
+      <axis id="4" limit="-1">VolumeDown</axis>
+      <axis id="4" limit="+1">VolumeUp</axis>
+      <axis id="5" limit="-1">VolumeUp</axis>
+      <axis id="5" limit="+1">VolumeDown</axis> <!--
+      <axis id="6" limit="-1">ScrollUp</axis>
+      <axis id="6" limit="+1">ScrollDown</axis> -->
+      <hat id="1" position="up">Up</hat>
+      <hat id="1" position="down">Down</hat>
+      <hat id="1" position="left">Left</hat>
+      <hat id="1" position="right">Right</hat>
+    </joystick>
   </global>
   <Home>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -119,10 +168,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
+    </joystick>
   </Home>
   <MyFiles>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -133,10 +192,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="6">Highlight</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="6">Highlight</button>
+    </joystick>
   </MyFiles>
   <MyMusicPlaylist>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -147,36 +216,25 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="5">Delete</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="5">Delete</button>
+    </joystick>
   </MyMusicPlaylist>
   <MyMusicFiles>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (XBOX 360 For Windows)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-    </joystick>
   </MyMusicFiles>
   <MyMusicLibrary>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (XBOX 360 For Windows)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-    </joystick>
   </MyMusicLibrary>
   <FullscreenVideo>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
+      
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -216,10 +274,39 @@
       <hat id="1" position="left">StepBack</hat>
       <hat id="1" position="right">StepForward</hat>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">OSD</button>
+      <button id="5">AspectRatio</button>
+      <button id="6">Info</button>
+      <button id="7">SmallStepBack</button>
+      <button id="8">CodecInfo</button>
+      <button id="9">XBMC.ActivateWindow(Home)</button>  <!-- guide -->
+      <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>  <!-- left stick -->
+      <button id="11">OSD</button>  <!-- right stick -->
+      <button id="12">StepBack</button>
+      <button id="13">StepForward</button>
+      <button id="14">BigStepForward</button>
+      <button id="15">BigStepBack</button> <!--
+      <axis id="6" limit="-1">AnalogRewind</axis>
+      <axis id="6" limit="+1">AnalogFastForward</axis> -->
+      <hat id="1" position="up">BigStepForward</hat>
+      <hat id="1" position="down">BigStepBack</hat>
+      <hat id="1" position="left">StepBack</hat>
+      <hat id="1" position="right">StepForward</hat>
+    </joystick>
   </FullscreenVideo>
   <FullscreenLiveTV>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -237,10 +324,27 @@
       <hat id="1" position="left">PreviousChannelGroup</hat>
       <hat id="1" position="right">NextChannelGroup</hat>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="12">PreviousChannelGroup</button>
+      <button id="13">NextChannelGroup</button>
+      <button id="14">ChannelUp</button>
+      <button id="15">ChannelDown</button>
+      <hat id="1" position="up">ChannelUp</hat>
+      <hat id="1" position="down">ChannelDown</hat>
+      <hat id="1" position="left">PreviousChannelGroup</hat>
+      <hat id="1" position="right">NextChannelGroup</hat>
+    </joystick>
   </FullscreenLiveTV>
   <FullscreenInfo>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -256,10 +360,25 @@
       <axis id="3" limit="+1">AnalogRewind</axis>
       <axis id="3" limit="-1">AnalogFastForward</axis>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">Close</button>
+      <button id="3">OSD</button>
+      <button id="6">Close</button>
+      <button id="11">OSD</button> <!--
+      <axis id="6" limit="+1">AnalogRewind</axis>
+      <axis id="6" limit="-1">AnalogFastForward</axis> -->
+    </joystick>
   </FullscreenInfo>
   <PlayerControls>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -272,10 +391,22 @@
       <button id="9">Close</button>
       <button id="10">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="3">Close</button>
+      <button id="10">Close</button>
+      <button id="11">Close</button>
+    </joystick>
   </PlayerControls>
   <Visualisation>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -301,10 +432,35 @@
       <hat id="1" position="left">PreviousPreset</hat>
       <hat id="1" position="right">NextPreset</hat>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <button id="6">Info</button>
+      <button id="11">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="12">PreviousPreset</button>
+      <button id="13">NextPreset</button>
+      <button id="14">SkipPrevious</button>
+      <button id="15">SkipNext</button> <!--
+      <axis id="6" limit="-1">AnalogRewind</axis>
+      <axis id="6" limit="+1">AnalogFastForward</axis> -->
+      <hat id="1" position="up">SkipNext</hat>
+      <hat id="1" position="down">SkipPrevious</hat>
+      <hat id="1" position="left">PreviousPreset</hat>
+      <hat id="1" position="right">NextPreset</hat>
+    </joystick>
   </Visualisation>
   <MusicOSD>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -317,10 +473,22 @@
       <button id="6">Info</button>
       <button id="10">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="3">Close</button>
+      <button id="6">Info</button>
+      <button id="11">Close</button>
+    </joystick>
   </MusicOSD>
   <VisualisationSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -329,12 +497,22 @@
       <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Close</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
     </joystick>
   </VisualisationSettings>
   <VisualisationPresetList>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -345,10 +523,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">Close</button>
+    </joystick>
   </VisualisationPresetList>
   <SlideShow>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -375,10 +563,36 @@
       <hat id="1" position="left">PreviousPicture</hat>
       <hat id="1" position="right">NextPicture</hat>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="1">Pause</button>
+      <button id="2">Stop</button>
+      <button id="4">ZoomNormal</button>
+      <button id="5">Rotate</button>
+      <button id="6">CodecInfo</button>
+      <button id="12">PreviousPicture</button>
+      <button id="13">NextPicture</button>
+      <button id="14">ZoomIn</button>
+      <button id="15">ZoomOut</button>
+      <axis id="1">AnalogMove</axis>
+      <axis id="2">AnalogMove</axis>  <!--
+      <axis id="6" limit="+1">ZoomOut</axis>
+      <axis id="6" limit="-1">ZoomIn</axis> -->
+      <hat id="1" position="up">ZoomIn</hat>
+      <hat id="1" position="down">ZoomOut</hat>
+      <hat id="1" position="left">PreviousPicture</hat>
+      <hat id="1" position="right">NextPicture</hat>
+    </joystick>
   </SlideShow>
   <ScreenCalibration>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -387,14 +601,26 @@
       <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="3">ResetCalibration</button>
+      <button id="5">NextResolution</button>
+      <button id="6">NextCalibration</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
       <button id="3">ResetCalibration</button>
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
     </joystick>
   </ScreenCalibration>
   <GUICalibration>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -407,10 +633,22 @@
       <button id="5">NextResolution</button>
       <button id="6">NextCalibration</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="3">ResetCalibration</button>
+      <button id="5">NextResolution</button>
+      <button id="6">NextCalibration</button>
+    </joystick>
   </GUICalibration>
   <VideoOSD>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -422,10 +660,21 @@
       <button id="3">Close</button>
       <button id="10">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="3">Close</button>
+      <button id="11">Close</button>
+    </joystick>
   </VideoOSD>
   <VideoMenu>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -439,10 +688,23 @@
       <button id="5">AspectRatio</button>
       <button id="6">Info</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">Stop</button>
+      <button id="3">OSD</button>
+      <button id="5">AspectRatio</button>
+      <button id="6">Info</button>
+    </joystick>
   </VideoMenu>
   <OSDVideoSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -451,13 +713,24 @@
       <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="5">AspectRatio</button>
+      <button id="3">Close</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -469,10 +742,21 @@
       <button id="5">AspectRatio</button>
       <button id="3">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="5">AspectRatio</button>
+      <button id="3">Close</button>
+    </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -481,38 +765,26 @@
       <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="5">Delete</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
       <button id="5">Delete</button>
     </joystick>
   </VideoBookmarks>
   <MyVideoLibrary>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (XBOX 360 For Windows)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-    </joystick>
   </MyVideoLibrary>
   <MyVideoFiles>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
-      <altname>Controller (XBOX 360 For Windows)</altname>
-      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
-      <altname>Controller (Xbox wireless receiver for windows)</altname>
-      <altname>XBOX 360 For Windows (Controller)</altname>
-      <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
-      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
-      <altname>Xbox wireless receiver for windows (Controller)</altname>
-    </joystick>
   </MyVideoFiles>
   <MyVideoPlaylist>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -523,10 +795,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="5">Delete</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="5">Delete</button>
+    </joystick>
   </MyVideoPlaylist>
   <VirtualKeyboard>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -542,10 +824,25 @@
       <axis id="3" limit="+1">CursorLeft</axis>
       <axis id="3" limit="-1">CursorRight</axis>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">BackSpace</button>
+      <button id="4">Symbols</button>
+      <button id="5">Shift</button>
+      <button id="10">Enter</button><!--
+      <axis id="6" limit="+1">CursorLeft</axis>
+      <axis id="6" limit="-1">CursorRight</axis> -->
+    </joystick>
   </VirtualKeyboard>
   <ContextMenu>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -557,10 +854,21 @@
       <button id="2">Close</button>
       <button id="6">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">Close</button>
+      <button id="6">Close</button>
+    </joystick>
   </ContextMenu>
   <Scripts>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -571,10 +879,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Info</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="3">Info</button>
+    </joystick>
   </Scripts>
   <Settings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -585,10 +903,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">PreviousMenu</button>
+    </joystick>
   </Settings>
   <AddonInformation>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -597,12 +925,22 @@
       <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Close</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
     </joystick>
   </AddonInformation>
   <AddonSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -611,12 +949,22 @@
       <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Close</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
     </joystick>
   </AddonSettings>
   <TextViewer>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -627,10 +975,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">Close</button>
+    </joystick>
   </TextViewer>
   <shutdownmenu>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -642,10 +1000,21 @@
       <button id="2">PreviousMenu</button>
       <button id="9">PreviousMenu</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">PreviousMenu</button>
+      <button id="10">PreviousMenu</button>
+    </joystick>
   </shutdownmenu>
   <submenu>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -656,10 +1025,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">PreviousMenu</button>
+    </joystick>
   </submenu>
   <MusicInformation>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -668,12 +1047,22 @@
       <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <button id="2">Close</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
     </joystick>
   </MusicInformation>
   <MovieInformation>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -684,10 +1073,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">Close</button>
+    </joystick>
   </MovieInformation>
   <NumericInput>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -699,10 +1098,21 @@
       <button id="2">BackSpace</button>
       <button id="9">Enter</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">BackSpace</button>
+      <button id="10">Enter</button>
+    </joystick>
   </NumericInput>
   <GamepadInput>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -713,10 +1123,20 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="9">Stop</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="11">Stop</button>
+    </joystick>
   </GamepadInput>
   <LockSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -728,10 +1148,21 @@
       <button id="2">PreviousMenu</button>
       <button id="9">Close</button>
     </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">PreviousMenu</button>
+      <button id="11">Close</button>
+    </joystick>
   </LockSettings>
   <ProfileSettings>
-    <joystick name="Xbox 360 Wireless Receiver">
-      <altname>Controller (Gamepad for Xbox 360)</altname>
+    <joystick name="Controller (Gamepad for Xbox 360)">
       <altname>Controller (XBOX 360 For Windows)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
@@ -742,6 +1173,18 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
       <button id="9">Close</button>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">PreviousMenu</button>
+      <button id="11">Close</button>
     </joystick>
   </ProfileSettings>
 </keymap>
