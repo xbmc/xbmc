@@ -62,6 +62,8 @@ CCoreAudioAE::~CCoreAudioAE()
 
 void CCoreAudioAE::Shutdown()
 {
+  CSingleLock engineLock(m_engineLock);
+
   Stop();
 
   Deinitialize();
@@ -90,6 +92,8 @@ void CCoreAudioAE::Shutdown()
 
 bool CCoreAudioAE::Initialize()
 {
+  CSingleLock engineLock(m_engineLock);
+
   Stop();
 
   Deinitialize();
@@ -445,6 +449,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
                          m_lastSampleRate != sampleRate ||
                          COREAUDIO_IS_RAW(dataFormat)))
   {
+    CSingleLock engineLock(m_engineLock);
     Stop();
     Deinitialize();
     m_Initialized = OpenCoreAudio(sampleRate, COREAUDIO_IS_RAW(dataFormat), dataFormat);
