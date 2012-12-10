@@ -76,7 +76,7 @@ if(WIN32)
 endif()
 
 # global definitions
-add_definitions(-D__PLEX__ -DPLEX_TARGET_NAME="PlexAlpha")
+add_definitions(-D__PLEX__ -DPLEX_TARGET_NAME="PlexAlpha" -D__PLEX__XBMC__)
 
 # Linux and OSX definitios
 if(UNIX)

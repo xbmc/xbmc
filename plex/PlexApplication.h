@@ -46,5 +46,5 @@ private:
   /// Members
   PlexServiceListenerPtr m_serviceListener;
   BackgroundMusicPlayerPtr m_bgMusicPlayer;
-  PlexAutoUpdate m_autoUpdater;
+  CPlexAutoUpdate m_autoUpdater;
 };

@@ -11,24 +11,8 @@
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
-#ifdef __OBJC__
-#include <Cocoa/Cocoa.h>
-#include <Sparkle/Sparkle.h>
-
-@interface PlexUpdaterDelegate : NSObject
-@end
-#endif
-
-class PlexAutoUpdateMac : public PlexAutoUpdate
+class CPlexAutoUpdateMac : public CPlexAutoUpdate
 {
-  public:
-    PlexAutoUpdateMac();
-    virtual void checkForUpdate();
-    ~PlexAutoUpdateMac();
-#ifdef __OBJC__
-  private:
-    PlexUpdaterDelegate *updateDelegate;
-#endif
 };
 
 #endif // PLEXAUTOUPDATEMAC_H

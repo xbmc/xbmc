@@ -28,7 +28,7 @@ PlexApplicationPtr PlexApplication::Create()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-PlexApplication::PlexApplication()
+PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/mac/pms.xml")
 {
   // We don't want the background music player whacked on exit (destructor issues), so we'll keep a reference.
   m_serviceListener = PlexServiceListener::Create();
