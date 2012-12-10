@@ -124,6 +124,7 @@ public:
 
 private:
   CCriticalSection  m_callbackLock;
+  CCriticalSection  m_engineLock;
   CCriticalSection  m_streamLock;
   CCriticalSection  m_soundLock;
   CCriticalSection  m_soundSampleLock;
