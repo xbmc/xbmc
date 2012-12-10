@@ -1448,6 +1448,9 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   if (item.HasVideoInfoTag())
   { // copy info across (TODO: premiered info is normally stored in m_dateTime by the db)
     *GetVideoInfoTag() = *item.GetVideoInfoTag();
+    // preferably use some information from PVR info tag if available
+    if (HasPVRRecordingInfoTag())
+      GetPVRRecordingInfoTag()->CopyClientInfo(GetVideoInfoTag());
     SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->m_playCount > 0);
   }
   if (item.HasMusicInfoTag())
