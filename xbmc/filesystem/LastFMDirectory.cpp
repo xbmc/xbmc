@@ -473,8 +473,6 @@ bool CLastFMDirectory::GetArtistInfo(CFileItemList &items)
     AddEntry(15263, "lastfm://xbmc/artist/%name%/toptracks/", "", true, items);
     AddEntry(15264, "lastfm://xbmc/artist/%name%/toptags/", "", true, items);
     AddEntry(15265, "lastfm://xbmc/artist/%name%/fans/", "", true, items);
-    AddEntry(15266, "lastfm://artist/%name%/fans", "", false, items);
-    AddEntry(15267, "lastfm://artist/%name%/similarartists", "", false, items);
   }
   else
     return false;
@@ -524,10 +522,6 @@ bool CLastFMDirectory::GetUserInfo(CFileItemList &items)
     AddEntry(15283, "lastfm://xbmc/user/%name%/recenttracks/", "", true, items);
     AddEntry(15293, "lastfm://xbmc/user/%name%/recentlovedtracks/", "", true, items);
     AddEntry(15294, "lastfm://xbmc/user/%name%/recentbannedtracks/", "", true, items);
-    AddEntry(15276, "lastfm://user/%name%/neighbours", "", false, items);
-    AddEntry(15277, "lastfm://user/%name%/personal", "", false, items);
-    AddEntry(15284, "lastfm://user/%name%/recommended/100", "", false, items);
-    AddEntry(15278, "lastfm://user/%name%/mix", "", false, items);
   }
   else
     return false;
@@ -553,7 +547,6 @@ bool CLastFMDirectory::GetTagInfo(CFileItemList &items)
     AddEntry(15257, "lastfm://xbmc/tag/%name%/topartists/", "", true, items);
     AddEntry(15258, "lastfm://xbmc/tag/%name%/topalbums/", "", true, items);
     AddEntry(15259, "lastfm://xbmc/tag/%name%/toptracks/", "", true, items);
-    AddEntry(15260, "lastfm://globaltags/%name%", "", false, items);
   }
 
   return true;
