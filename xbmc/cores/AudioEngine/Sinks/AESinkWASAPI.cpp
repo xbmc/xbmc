@@ -570,6 +570,10 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
   WAVEFORMATEX*        pwfxex = NULL;
   HRESULT              hr;
 
+#ifdef __PLEX__ // FIXME: This should not be needed
+  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
+
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %li", hr)
 
