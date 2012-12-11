@@ -1054,6 +1054,7 @@ void CGUIBaseContainer::Reset()
 {
   m_wasReset = true;
   m_items.clear();
+  m_lastItem.reset();
 }
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
