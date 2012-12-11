@@ -13,11 +13,11 @@ set(PLEX_VERSION_MAJOR 0)
 set(PLEX_VERSION_MINOR 9)
 set(PLEX_VERSION_PATCH 9)
 if(DEFINED ENV{BUILD_NUMBER})
-  set(PLEX_VERSION_BUILD $ENV{BUILD_NUMBER})
+  set(PLEX_VERSION_BUILD ".$ENV{BUILD_NUMBER}")
 else()
-  set(PLEX_VERSION_BUILD 0)
+  set(PLEX_VERSION_BUILD "")
 endif()
-set(PLEX_VERSION_STRING ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH}.${PLEX_VERSION_BUILD}-${PLEX_VERSION_REVISION})
+set(PLEX_VERSION_STRING ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH}${PLEX_VERSION_BUILD}-${PLEX_VERSION_REVISION})
 set(PLEX_VERSION_STRING_SHORT ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH})
 set(XBMC_VERSION "Frodo")
 
@@ -51,7 +51,10 @@ endif()
 if(WIN32)
   # override runtime
   set(CMAKE_C_FLAGS_DEBUG "/MP /Od /Oy- /D_DEBUG /Gm- /MTd /GS /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
-  set(CMAKE_CXX_FLAGS_DEBUG "/MP /Od /Oy- /D_DEBUG /Gm- /MTd /GS /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
+  set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+
+  set(CMAKE_C_FLAGS_RELEASE "/DNDEBUG /WX- /MP /Ox /Ot /Oy /GF- /Gm- /EHa /MT /GS /Gy- /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
+  set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
 
   set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /GR /EHa")
 endif()
@@ -72,7 +75,11 @@ endif()
 if(WIN32)
   set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x86" ${dependdir}/lib)
   set(ENV{LIBS} "$ENV{LIBS};${dependdir}/lib")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:\"libc\" /NODEFAULTLIB:\"msvcrt\" /NODEFAULTLIB:\"libcmt\" /NODEFAULTLIB:\"msvcrtd\" /NODEFAULTLIB:\"msvcprtd\" /DELAYLOAD:\"dnssd.dll\" /DELAYLOAD:\"dwmapi.dll\" /DELAYLOAD:\"libmicrohttpd-5.dll\" /DELAYLOAD:\"ssh.dll\" /DELAYLOAD:\"sqlite3.dll\" /DELAYLOAD:\"libsamplerate-0.dll\"  /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /ERRORREPORT:QUEUE")
+  if(${CMAKE_BUILD_TYPE} STREQUAL "debug")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:\"libc\" /NODEFAULTLIB:\"msvcrt\" /NODEFAULTLIB:\"libcmt\" /NODEFAULTLIB:\"msvcrtd\" /NODEFAULTLIB:\"msvcprtd\" /DELAYLOAD:\"dnssd.dll\" /DELAYLOAD:\"dwmapi.dll\" /DELAYLOAD:\"libmicrohttpd-5.dll\" /DELAYLOAD:\"ssh.dll\" /DELAYLOAD:\"sqlite3.dll\" /DELAYLOAD:\"libsamplerate-0.dll\"  /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /ERRORREPORT:QUEUE")
+  else()
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:\"libc\" /NODEFAULTLIB:\"msvcrt\" /NODEFAULTLIB:\"libci\" /NODEFAULTLIB:\"msvcprt\" /DELAYLOAD:\"dnssd.dll\" /DELAYLOAD:\"dwmapi.dll\" /DELAYLOAD:\"libmicrohttpd-5.dll\" /DELAYLOAD:\"ssh.dll\" /DELAYLOAD:\"sqlite3.dll\" /DELAYLOAD:\"libsamplerate-0.dll\"  /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /ERRORREPORT:QUEUE")
+  endif()
 endif()
 
 # global definitions
@@ -107,7 +114,6 @@ if(WIN32)
     -D_WINDOWS
     -D_MSVC
     -DWIN32
-    -D_DEBUG
     -D_WIN32_WINNT=0x0501
     -DNTDDI_VERSION=0x05010300
     -DNOMINMAX
@@ -120,7 +126,7 @@ if(WIN32)
     -DTAGLIB_STATIC
     -DBOOST_ALL_NO_LIB
     -DBOOST_THREAD_USE_LIB
-)
+  )
 endif()
 
 # MUST BE ADDED FIRST :)
@@ -200,9 +206,17 @@ if(NOT WIN32)
     DEPENDS ${plexdir}/scripts/generate_git.sh
     WORKING_DIRECTORY ${root}
   )
-  set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/git_revision.h PROPERTIES GENERATED TRUE HEADER_FILE_ONLY TRUE)
+else()
+  add_custom_target(git_rev.h ALL DEPENDS ${root}/git_rev.h)
+  add_custom_command(
+    OUTPUT ${root}/git_rev.h
+    COMMAND ${plexdir}/scripts/generate_git_win.cmd
+    DEPENDS ${plexdir}/scripts/generate_git_win.cmd
+    WORKING_DIRECTORY ${root}
+  )
 endif()
 
+set_source_files_properties(${root}/git_revision.h PROPERTIES GENERATED TRUE HEADER_FILE_ONLY TRUE)
 
 add_subdirectory(xbmc)
 if(APPLE)
@@ -220,8 +234,10 @@ set(CPACK_MONOLITHIC_INSTALL "1")
 set(CPACK_PACKAGE_FILE_NAME "Plex-${XBMC_VERSION}-${PLEX_VERSION_STRING}")
 if(APPLE)
   set(CPACK_GENERATOR "DragNDrop")
-else()
+elseif(UNIX)
   set(CPACK_GENERATOR "TGZ")
+elseif(WIN32)
+  set(CPACK_GENERATOR "ZIP")
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -215,6 +215,11 @@
 #include "../git_revision.h"
 #endif
 
+/* PLEX */
+#ifdef TARGET_WINDOWS
+#include "../git_rev.h"
+#endif
+
 #ifndef GIT_REV
 #define GIT_REV "Unknown"
 #endif
