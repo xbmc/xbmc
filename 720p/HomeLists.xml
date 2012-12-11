@@ -308,13 +308,13 @@
 	<!-- Poster Items -->
 	<include name="ListItemPoster">
 		<control type="image">
-			<width>142</width>
+			<width>151</width>
 			<height>202</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>116</width>
+			<width>125</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
@@ -322,7 +322,7 @@
 		</control>
 		<control type="image">
 			<include>PosListItem</include>
-			<width>116</width>
+			<width>125</width>
 			<height>176</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
@@ -331,13 +331,13 @@
 	</include>
 	<include name="ListItemPosterSelected">
 		<control type="image">
-			<width>148</width>
-			<height>210</height>
+			<width>153</width>
+			<height>205</height>
 			<include>Shadow</include>
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>122</width>
+			<width>131</width>
 			<height>182</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.Thumb]</texture>
@@ -346,7 +346,7 @@
 		</control>
 		<control type="image">
 			<include>PosListItemSelected</include>
-			<width>122</width>
+			<width>131</width>
 			<height>182</height>
 			<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 			<texture diffuse="mask-poster-small.png" background="true">$INFO[ListItem.GrandparentThumb]</texture>
@@ -368,7 +368,7 @@
 			<control type="image">
 				<posx>37</posx>
 				<posy>202</posy>
-				<width>116</width>
+				<width>125</width>
 				<height>25</height>
 				<include>Card</include>
 				<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
@@ -387,7 +387,7 @@
 			<posy>214</posy>
 			<posx>95</posx>
 			<control type="label">
-				<width>100</width>
+				<width>110</width>
 				<align>center</align>
 				<aligny>center</aligny>
 				<scroll>false</scroll>
@@ -399,7 +399,7 @@
 				<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 			</control>
 			<control type="label">
-				<width>100</width>
+				<width>110</width>
 				<align>center</align>
 				<aligny>center</aligny>
 				<scroll>false</scroll>
@@ -415,7 +415,7 @@
 	<include name="ListItemInProgress">
 		<control type="image">
 			<visible>ListItem.Status(InProgress)</visible>
-			<posx>133</posx>
+			<posx>141</posx>
 			<posy>207</posy>
 			<width>15</width>
 			<height>15</height>
@@ -426,7 +426,7 @@
 	<include name="ListItemPosterDimmer">
 		<posx>37</posx>
 		<posy>50</posy>
-		<width>116</width>
+		<width>125</width>
 		<height>176</height>
 		<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 		<texture diffuse="posterMaskSmall.png" background="true">posterMaskSmall.png</texture>
