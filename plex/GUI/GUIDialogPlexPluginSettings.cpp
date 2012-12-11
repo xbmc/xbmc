@@ -25,6 +25,7 @@
 #include "LocalizeStrings.h"
 #include "Settings.h"
 #include "ApplicationMessenger.h"
+#include "utils/XBMCTinyXML.h"
 
 #define CONTROL_AREA                    2
 #define CONTROL_DEFAULT_BUTTON          3
@@ -132,10 +133,10 @@ bool CPlexPluginSettings::Load(TiXmlElement* root)
       string value = attrib->Value();
       
       if (name == "id" || name == "value")
-        xmlValueSetting.SetAttribute(name, value);
+        xmlValueSetting.SetAttribute(name.c_str(), value.c_str());
       
       if (name != "value")
-        xmlSetting.SetAttribute(name, value);
+        xmlSetting.SetAttribute(name.c_str(), value.c_str());
       
       attrib = attrib->Next();
     }

@@ -1,6 +1,13 @@
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -fno-common")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -fno-common")
-add_definitions(-DXBMC -D_DLL)
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -fno-common")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -fno-common")
+  add_definitions(-D_DLL)
+else()
+  set(COMPILE_DEFINITIONS "")
+  add_definitions(-D_DLL -DWIN32 -D_DEBUG -D_WINDOWS -D_USRDLL -D_AFXDLL -DJAS_WIN_MSVC_BUILD -D_CRT_SECURE_NO_DEPRECATE -D_CONSOLE)
+  set(CMAKE_C_FLAGS_DEBUG "/MP /Od /Oy- /D_DEBUG /Gm- /MDd /GS /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
+  set(CMAKE_CXX_FLAGS_DEBUG "/MP /Od /Oy- /D_DEBUG /Gm- /MDd /GS /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
+endif()
 
 if(APPLE)
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
@@ -13,28 +20,54 @@ endif()
 #                                `cat ../../xbmc/cores/DllLoader/exports/wrapper.def` \
 #                                                ../../xbmc/cores/DllLoader/exports/wrapper.o
 
+if(WIN32)
+  # Use the zlib that comes with cximage
+  include_directories(zlib zlib/win32)
+endif()
+
 add_subdirectory(CxImage)
 add_subdirectory(jbig)
 add_subdirectory(raw)
 add_subdirectory(jasper)
 
-add_library(ImageLib-${ARCH} MODULE 
-  $<TARGET_OBJECTS:wrapper>
+set(OBJECTS
   $<TARGET_OBJECTS:cximage>
   $<TARGET_OBJECTS:cx_jbig>
   $<TARGET_OBJECTS:cx_raw>
   $<TARGET_OBJECTS:cx_jasper>
 )
-
-if(UNIX)
-  set(LIBS ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
+if(NOT WIN32)
+  list(APPEND OBJECTS $<TARGET_OBJECTS:wrapper>)
+  add_library(ImageLib-${ARCH} MODULE ${OBJECTS})
+  target_link_libraries(ImageLib-${ARCH} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
 else()
-  set(LIBS ${CONFIG_LIBRARY_ZLIB} ${CONFIG_LIBRARY_TURBOJPEG-STATIC})
+  add_subdirectory(zlib)
+  add_subdirectory(jpeg)
+  add_subdirectory(mng)
+  add_subdirectory(tiff)
+  add_subdirectory(png)
+
+  set(OBJECTS ${OBJECTS}
+    $<TARGET_OBJECTS:cx_mng>
+    $<TARGET_OBJECTS:cx_jpeg>
+    $<TARGET_OBJECTS:cx_png>
+    $<TARGET_OBJECTS:cx_tiff>
+    $<TARGET_OBJECTS:cx_zlib>
+  )
+
+  add_library(ImageLib SHARED ${OBJECTS})
+
+  set(LIBS kernel32 user32 gdi32 winspool comdlg32 advapi32 shell32 ole32 oleaut32 uuid odbc32 odbccp32)
+  foreach(l ${LIBS})
+    find_library(t ${l})
+    target_link_libraries(ImageLib ${t})
+  endforeach()
 endif()
 
-target_link_libraries(ImageLib-${ARCH} ${LIBS})
 if(APPLE)
   install(TARGETS ImageLib-${ARCH} DESTINATION ${RESOURCEPATH}/XBMC/system)
 elseif(UNIX)
   install(TARGETS ImageLib-${ARCH} DESTINATION ${BINPATH}/system)
+elseif(WIN32)
+  install(TARGETS ImageLib DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
 endif()
