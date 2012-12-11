@@ -232,12 +232,20 @@ set(CPACK_PACKAGE_VERSION_MINOR ${PLEX_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PLEX_VERSION_PATCH})
 set(CPACK_MONOLITHIC_INSTALL "1")
 set(CPACK_PACKAGE_FILE_NAME "Plex-${XBMC_VERSION}-${PLEX_VERSION_STRING}")
+
+# Windows installer stuff
+set(CPACK_NSIS_MUI_UNIICON ${plexdir}\\\\Resources\\\\Plex.ico)
+set(CPACK_NSIS_MUI_ICON ${plexdir}\\\\Resources\\\\Plex.ico)
+set(CPACK_PACKAGE_ICON ${plexdir}\\\\Resources\\\\PlexBanner.bmp)
+set(CPACK_NSIS_HELP_LINK "http://plexapp.com")
+set(CPACK_NSIS_URL_INFO_ABOUT ${CPACK_NSIS_HELP_LINK})
+
 if(APPLE)
   set(CPACK_GENERATOR "DragNDrop")
 elseif(UNIX)
   set(CPACK_GENERATOR "TGZ")
 elseif(WIN32)
-  set(CPACK_GENERATOR "ZIP")
+  set(CPACK_GENERATOR "NSIS")
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
