@@ -1323,8 +1323,15 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
-  g_matrices.Translatef(0.0f, capture->GetHeight(), 0.0f);
-  g_matrices.Scalef(1.0f, -1.0f, 1.0f);
+  // fixme - we know that cvref is already flipped in y direction
+  // but somehow this also effects the rendercapture here
+  // for cvref we have to skip the flip here or we get upside down
+  // images
+  if (m_renderMethod != RENDER_CVREF)
+  {
+    g_matrices.Translatef(0.0f, capture->GetHeight(), 0.0f);
+    g_matrices.Scalef(1.0f, -1.0f, 1.0f);
+  }
 
   capture->BeginRender();
 

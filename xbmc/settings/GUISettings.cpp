@@ -608,7 +608,9 @@ void CGUISettings::Initialize()
   else
   {
     shutdown.insert(make_pair(13009,POWERSTATE_QUIT));
+#if !defined(TARGET_DARWIN_IOS)
     shutdown.insert(make_pair(13014,POWERSTATE_MINIMIZE));
+#endif
     AddInt(pwm, "powermanagement.shutdownstate", 13008, POWERSTATE_QUIT, shutdown, SPIN_CONTROL_TEXT);
   }
 

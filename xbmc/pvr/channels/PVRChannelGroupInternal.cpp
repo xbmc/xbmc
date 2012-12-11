@@ -21,6 +21,7 @@
 #include "PVRChannelGroupInternal.h"
 
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
@@ -330,7 +331,9 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
   if (CPVRChannelGroup::UpdateGroupEntries(channels))
   {
     /* try to find channel icons */
-    SearchAndSetChannelIcons();
+    if (g_advancedSettings.m_bPVRChannelIconsAutoScan)
+      SearchAndSetChannelIcons();
+
     g_PVRTimers->UpdateChannels();
     Persist();
 
