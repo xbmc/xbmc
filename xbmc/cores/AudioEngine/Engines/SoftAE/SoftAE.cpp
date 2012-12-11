@@ -1019,8 +1019,10 @@ void CSoftAE::Run()
         restart = true;
     }
 
+#if !defined(TARGET_ANDROID)
     /* Handle idle or forced suspend */
     ProcessSuspend();
+#endif
 
     /* if we are told to restart */
     if (m_reOpen || restart || !m_sink)
