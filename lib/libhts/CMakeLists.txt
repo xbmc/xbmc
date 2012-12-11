@@ -1,4 +1,4 @@
-
+include_directories(${root}/xbmc)
 if(WIN32)
   include_directories(Win32/include)
 endif()

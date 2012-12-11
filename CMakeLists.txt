@@ -149,6 +149,7 @@ include_directories(
   ${dependdir}/include/libcec
   ${dependdir}/include/freetype2
   ${dependdir}/include/python2.6
+  ${root}/xbmc
 )
 
 # Platfrom includes
@@ -171,8 +172,6 @@ if(WIN32)
     "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"
   )
 endif()
-
-include_directories(${root}/xbmc)
 
 # Build the texturepacker
 if(NOT WIN32)

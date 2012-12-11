@@ -5,7 +5,9 @@ set(cximage_srcs
 	ximajbg.cpp ximalyr.cpp ximapcx.cpp ximasel.cpp ximath.cpp ximawbmp.cpp
 	xmemfile.cpp ximabmp.cpp ximaexif.cpp ximahist.cpp ximaint.cpp
 	ximajpg.cpp ximamng.cpp ximapng.cpp ximaska.cpp ximatif.cpp ximawmf.cpp
-        CxImageDLL/CxImageCrtDll.cpp
 )
+if(WIN32)
+  list(APPEND cximage_srcs CxImageDLL/CxImageCrtDll.cpp)
+endif()
 include_directories(../jasper/include)
 add_library(cximage OBJECT ${cximage_srcs})
