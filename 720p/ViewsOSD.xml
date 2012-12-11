@@ -278,16 +278,15 @@
 			<control type="group" id="200">
 				<posx>270</posx>
 				<posy>5</posy>
+				<defaultcontrol always="true">702</defaultcontrol>
 				<visible allowhiddenfocus="true">ControlGroup(200).HasFocus</visible>
 				<!-- language track -->
-				<control type="button" id="701">
+				<control type="image">
 					<posy>15</posy>
 					<posx>0</posx>
 					<width>30</width>
 					<height>23</height>
-					<texturefocus>b-audio.png</texturefocus>
-					<texturenofocus>b-audio.png</texturenofocus>
-					<onclick>Skin.ToggleSetting(showfrenchaudio)</onclick>
+					<texture>b-audio.png</texture>
 					<visible>!Control.HasFocus(701)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
@@ -303,7 +302,7 @@
 					<onup>300</onup>
 					<ondown>701</ondown>
 					<onclick>Skin.ToggleSetting(showfrenchaudio)</onclick>
-					<visible>Control.HasFocus(701)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(701)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- TO DELETE, JUST AN EXAMPLE -->
@@ -329,16 +328,22 @@
 					<visible>Control.HasFocus(701)</visible>
 				</control>
 				<!-- play/pause -->
-				<control type="togglebutton" id="702">
+				<control type="image">
 					<posy>13</posy>
 					<posx>341</posx>
 					<width>20</width>
 					<height>22</height>
-					<texturenofocus>b-pause2.png</texturenofocus>
-					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
-					<alttexturenofocus>b-play2.png</alttexturenofocus>
-					<onclick>PlayerControl(Play)</onclick>
-					<visible>!Control.HasFocus(702)</visible>
+					<texture>b-pause2.png</texture>
+					<visible>!Control.HasFocus(702) + !Player.Paused</visible>
+					<colordiffuse>FF666666</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>13</posy>
+					<posx>341</posx>
+					<width>20</width>
+					<height>22</height>
+					<texture>b-play2.png</texture>
+					<visible>!Control.HasFocus(702) + Player.Paused</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
 				<control type="togglebutton" id="702">
@@ -347,27 +352,23 @@
 					<width>20</width>
 					<height>22</height>
 					<texturefocus>b-pause2.png</texturefocus>
-					<texturenofocus>b-pause2.png</texturenofocus>
 					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 					<alttexturefocus>b-play2.png</alttexturefocus>
-					<alttexturenofocus>b-play2.png</alttexturenofocus>
 					<onleft>701</onleft>
 					<onright>703</onright>
 					<onup>300</onup>
 					<ondown>702</ondown>
 					<onclick>PlayerControl(Play)</onclick>
-					<visible>Control.HasFocus(702)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(702)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- subtitle track -->
-				<control type="button" id="703">
+				<control type="image">
 					<posy>15</posy>
 					<posx>530</posx>
 					<width>33</width>
 					<height>24</height>
-					<texturefocus>b-subtitles.png</texturefocus>
-					<texturenofocus>b-subtitles.png</texturenofocus>
-					<onclick>Skin.ToggleSetting(showfrenchsub)</onclick>
+					<texture>b-subtitles.png</texture>
 					<visible>!Control.HasFocus(703)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
@@ -383,7 +384,7 @@
 					<onup>300</onup>
 					<ondown>703</ondown>
 					<onclick>Skin.ToggleSetting(showfrenchsub)</onclick>
-					<visible>Control.HasFocus(703)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(703)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- TO DELETE, JUST AN EXAMPLE -->
@@ -414,17 +415,25 @@
 			<control type="group" id="300">
 				<posx>270</posx>
 				<posy>5</posy>
+				<defaultcontrol always="true">711</defaultcontrol>
 				<visible allowhiddenfocus="true">ControlGroup(300).HasFocus</visible>
 				<!-- play/pause -->
-				<control type="togglebutton" id="711">
+				<control type="image">
 					<posy>13</posy>
 					<posx>341</posx>
 					<width>20</width>
 					<height>22</height>
-					<texturenofocus>b-pause2.png</texturenofocus>
-					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
-					<alttexturenofocus>b-play2.png</alttexturenofocus>
-					<visible>!Control.HasFocus(711)</visible>
+					<texture>b-pause2.png</texture>
+					<visible>!Control.HasFocus(711) + !Player.Paused</visible>
+					<colordiffuse>FF666666</colordiffuse>
+				</control>
+				<control type="image">
+					<posy>13</posy>
+					<posx>341</posx>
+					<width>20</width>
+					<height>22</height>
+					<texture>b-play2.png</texture>
+					<visible>!Control.HasFocus(711) + Player.Paused</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
 				<control type="togglebutton" id="711">
@@ -433,29 +442,25 @@
 					<width>20</width>
 					<height>22</height>
 					<texturefocus>b-pause2.png</texturefocus>
-					<texturenofocus>b-pause2.png</texturenofocus>
 					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 					<alttexturefocus>b-play2.png</alttexturefocus>
-					<alttexturenofocus>b-play2.png</alttexturenofocus>
 					<onleft>713</onleft>
 					<onright>714</onright>
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<onclick>PlayerControl(Play)</onclick>
-					<visible>Control.HasFocus(711)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(711)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- audio settings -->
 				<control type="group">
 					<posy>15</posy>
-					<control type="button" id="717">
+					<control type="image">
 						<posy>0</posy>
 						<posx>-60</posx>
 						<width>30</width>
 						<height>23</height>
-						<texturefocus>b-audio.png</texturefocus>
-						<texturenofocus>b-audio.png</texturenofocus>
-						<onclick>ActivateWindow(124)</onclick>
+						<texture>b-audio.png</texture>
 						<visible>!Control.HasFocus(717)</visible>
 						<colordiffuse>FF666666</colordiffuse>
 					</control>
@@ -471,7 +476,7 @@
 						<onup>200</onup>
 						<ondown>200</ondown>
 						<onclick>ActivateWindow(124)</onclick>
-						<visible>Control.HasFocus(717)</visible>
+						<visible allowhiddenfocus="true">Control.HasFocus(717)</visible>
 						<colordiffuse>orange</colordiffuse>
 					</control>
 					<control type="group">
@@ -500,13 +505,12 @@
 					</control>
 				</control>
 				<!-- previous -->
-				<control type="button" id="712">
+				<control type="image">
 					<posy>13</posy>
 					<posx>208</posx>
 					<width>22</width>
 					<height>22</height>
-					<texturefocus>b-previous.png</texturefocus>
-					<texturenofocus>b-previous.png</texturenofocus>
+					<texture>b-previous.png</texture>
 					<visible>!Control.HasFocus(712)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
@@ -522,17 +526,16 @@
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<onclick>PlayerControl(Previous)</onclick>
-					<visible>Control.HasFocus(712)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(712)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- rewind -->
-				<control type="button" id="713">
+				<control type="image">
 					<posy>13</posy>
 					<posx>265</posx>
 					<width>41</width>
 					<height>22</height>
-					<texturefocus>b-rewind.png</texturefocus>
-					<texturenofocus>b-rewind.png</texturenofocus>
+					<texture>b-rewind.png</texture>
 					<visible>!Control.HasFocus(713)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
@@ -548,17 +551,16 @@
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<onclick>PlayerControl(Rewind)</onclick>
-					<visible>Control.HasFocus(713)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(713)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- forward -->
-				<control type="button" id="714">
+				<control type="image">
 					<posy>13</posy>
 					<posx>396</posx>
 					<width>41</width>
 					<height>22</height>
-					<texturefocus>b-forward.png</texturefocus>
-					<texturenofocus>b-forward.png</texturenofocus>
+					<texture>b-forward.png</texture>
 					<visible>!Control.HasFocus(714)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
@@ -574,17 +576,16 @@
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<onclick>PlayerControl(Forward)</onclick>
-					<visible>Control.HasFocus(714)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(714)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- next -->
-				<control type="button" id="715">
+				<control type="image">
 					<posy>13</posy>
 					<posx>472</posx>
 					<width>22</width>
 					<height>22</height>
-					<texturefocus>b-next.png</texturefocus>
-					<texturenofocus>b-next.png</texturenofocus>
+					<texture>b-next.png</texture>
 					<visible>!Control.HasFocus(715)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
@@ -600,17 +601,16 @@
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<onclick>PlayerControl(Next)</onclick>
-					<visible>Control.HasFocus(715)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(715)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- stop -->
-				<control type="button" id="716">
+				<control type="image">
 					<posy>13</posy>
 					<posx>529</posx>
 					<width>21</width>
 					<height>21</height>
-					<texturefocus>b-stop.png</texturefocus>
-					<texturenofocus>b-stop.png</texturenofocus>
+					<texture>b-stop.png</texture>
 					<visible>!Control.HasFocus(716)</visible>
 					<colordiffuse>FF666666</colordiffuse>
 				</control>
@@ -626,7 +626,7 @@
 					<onup>200</onup>
 					<ondown>200</ondown>
 					<onclick>PlayerControl(Stop)</onclick>
-					<visible>Control.HasFocus(716)</visible>
+					<visible allowhiddenfocus="true">Control.HasFocus(716)</visible>
 					<colordiffuse>orange</colordiffuse>
 				</control>
 				<!-- video settings -->
@@ -634,13 +634,11 @@
 					<posy>15</posy>
 					<posx>650</posx>
 					<control type="group">
-						<control type="button" id="718">
+						<control type="image">
 							<posy>0</posy>
 							<width>33</width>
 							<height>24</height>
-							<texturefocus>b-video.png</texturefocus>
-							<texturenofocus>b-video.png</texturenofocus>
-							<onclick>ActivateWindow(123)</onclick>
+							<texture>b-video.png</texture>
 							<visible>!Control.HasFocus(718)</visible>
 							<colordiffuse>FF666666</colordiffuse>
 						</control>
@@ -655,7 +653,7 @@
 							<onup>200</onup>
 							<ondown>200</ondown>
 							<onclick>ActivateWindow(123)</onclick>
-							<visible>Control.HasFocus(718)</visible>
+							<visible allowhiddenfocus="true">Control.HasFocus(718)</visible>
 							<colordiffuse>orange</colordiffuse>
 						</control>
 					</control>
