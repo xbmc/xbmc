@@ -112,7 +112,8 @@ bool CWinSystemX11::DestroyWindowSystem()
     //we don't call XCloseDisplay() here, since ati keeps a pointer to our m_dpy
     //so instead we just let m_dpy die on exit
     // i have seen core dumps on ATI if the display is not closed here
-    XCloseDisplay(m_dpy);
+    // crashes when shutting down via cec
+//    XCloseDisplay(m_dpy);
   }
 
   // m_SDLSurface is free()'d by SDL_Quit().
