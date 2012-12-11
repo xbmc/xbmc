@@ -1405,7 +1405,6 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
     int mediaToPlay = 0;
-    CFileItemList queueItems;
     for ( int i = 0; i < m_vecItems->Size(); i++ )
     {
       CFileItemPtr nItem = m_vecItems->Get(i);
@@ -1414,14 +1413,13 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
         continue;
 
       if (!nItem->IsPlayList() && !nItem->IsZIP() && !nItem->IsRAR())
-        queueItems.Add(nItem);
+        g_playlistPlayer.Add(iPlaylist, nItem);
 
       if (nItem == item)
       { // item that was clicked
-        mediaToPlay = queueItems.Size() - 1;
+        mediaToPlay = g_playlistPlayer.GetPlaylist(iPlaylist).size() - 1;
       }
     }
-    g_playlistPlayer.Add(iPlaylist, queueItems);
 
     // Save current window and directory to know where the selected item was
     if (m_guiState.get())
