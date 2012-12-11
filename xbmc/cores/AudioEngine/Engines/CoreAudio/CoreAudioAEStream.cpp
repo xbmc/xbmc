@@ -533,7 +533,7 @@ unsigned int CCoreAudioAEStream::GetSpace()
   if (!m_valid || m_draining)
     return 0;
 
-  return m_Buffer->GetWriteSize();
+  return m_Buffer->GetWriteSize() / m_OutputBytesPerSample  * m_StreamBytesPerSample;
 }
 
 double CCoreAudioAEStream::GetDelay()
