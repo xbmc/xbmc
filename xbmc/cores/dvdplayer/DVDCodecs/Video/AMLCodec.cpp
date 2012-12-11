@@ -1729,7 +1729,7 @@ void CAmlogic::Process()
         m_ready_event.Set();
 
         double app_pts = GetPlayerPtsSeconds();
-        if (fabs((double)pts_video/PTS_FREQ - app_pts) > 0.10)
+        if (fabs((double)pts_video/PTS_FREQ - app_pts) > 0.20)
           SyncToPlayerPtsSeconds(0.0);
       }
     }
