@@ -28,7 +28,11 @@ endif(APPLE)
 add_subdirectory(AutoUpdate)
 
 find_all_sources(. plex_SRCS)
+
 list(REMOVE_ITEM plex_SRCS ./pch_plex.cpp)
+list(APPEND plex_SRCS Resources/Plex.rc)
+list(APPEND plex_SRCS Resources/Plex.rc2)
+
 set(Headers PlexTypes.h)
 if(APPLE)
   list(REMOVE_ITEM plex_SRCS ./CocoaUtils.cpp)
