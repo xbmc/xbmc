@@ -230,8 +230,12 @@ set(CPACK_PACKAGE_VENDOR "Plex inc")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PLEX_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PLEX_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PLEX_VERSION_PATCH})
-set(CPACK_MONOLITHIC_INSTALL "1")
 set(CPACK_PACKAGE_FILE_NAME "Plex-${XBMC_VERSION}-${PLEX_VERSION_STRING}")
+
+set(CPACK_COMPONENT_QDXSETUP_DISPLAY_NAME "DirectX Installer")
+set(CPACK_COMPONENT_VCREDIST_DISPLAY_NAME "Visual Studio 2010 redistribution installer")
+set(CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Plex Media Center")
+set(CPACK_COMPONENT_RUNTIME_REQUIRED 1)
 
 # Windows installer stuff
 set(CPACK_NSIS_MUI_UNIICON ${plexdir}\\\\Resources\\\\Plex.ico)
@@ -239,6 +243,13 @@ set(CPACK_NSIS_MUI_ICON ${plexdir}\\\\Resources\\\\Plex.ico)
 set(CPACK_PACKAGE_ICON ${plexdir}\\\\Resources\\\\PlexBanner.bmp)
 set(CPACK_NSIS_HELP_LINK "http://plexapp.com")
 set(CPACK_NSIS_URL_INFO_ABOUT ${CPACK_NSIS_HELP_LINK})
+
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+  "IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\vcredist_x86.exe\\\" 0 +2
+   ExecWait \\\"$INSTDIR\\\\Dependencies\\\\vcredist_x86.exe /q /norestart\\\"
+   IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\dxsetup\\\\dxsetup.exe\\\" 0 +2
+   ExecWait \\\"$INSTDIR\\\\Dependencies\\\\dxsetup\\\\dxsetup.exe /silent\\\"
+   RMDir /r \\\"$INSTDIR\\\\Dependencies\\\"")
 
 if(APPLE)
   set(CPACK_GENERATOR "DragNDrop")
