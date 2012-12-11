@@ -8,6 +8,8 @@ set(CP_VERSION_MAJOR "0")
 set(CP_VERSION_MINOR "1")
 set(CP_VERSION_REV "3")
 
+include_directories(${dependdir}/include)
+
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
@@ -25,6 +27,7 @@ check_function_exists(gettext HAVE_DCGETTEXT)
 check_function_exists(dcgettext HAVE_DCGETTEXT)
 check_function_exists(iconv HAVE_ICONV)
 check_function_exists(stat HAVE_STAT)
+find_library(CONFIG_LIBRARY_EXPAT libexpat PATHS ${dependdir}/lib NO_DEFAULT_LIB)
 
 set(CP_ABI_COMPATIBILITY "\"0.1\"")
 
@@ -42,36 +45,43 @@ if(UNIX)
   endif()
 endif()
 
-add_definitions(-DCP_C_API=CP_EXPORT -DCP_HOST="${CP_HOST}" -DHAVE_CONFIG_H)
 include_directories(. libcpluff)
 
-configure_file(libcpluff/cpluffdef.h.in ${root}/lib/cpluff/libcpluff/cpluffdef.h)
-configure_file(config_plex.h.in ${root}/lib/cpluff/config.h)
+if(WIN32)
+  add_definitions(-DCP_C_API=CP_EXPORT -DWIN32 -D_DEBUG -D_WINDOWS -D_USRDLL -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
+  include_directories(libcpluff/win32)
+else()
+  add_definitions(-DCP_C_API=CP_EXPORT -DCP_HOST="${CP_HOST}" -DHAVE_CONFIG_H)
+  configure_file(libcpluff/cpluffdef.h.in ${root}/lib/cpluff/libcpluff/cpluffdef.h)
+  configure_file(config_plex.h.in ${root}/lib/cpluff/config.h)
+endif()
 
 set(libcpluff_srcs
+  libcpluff/context.c
+  libcpluff/cpluff.c
+  kazlib/hash.c
+  kazlib/list.c
+  libcpluff/logging.c
   libcpluff/psymbol.c
   libcpluff/pscan.c
   libcpluff/ploader.c
   libcpluff/pinfo.c
   libcpluff/pcontrol.c
   libcpluff/serial.c
-  libcpluff/logging.c
-  libcpluff/context.c
-  libcpluff/cpluff.c 
-  libcpluff/util.c 
-  kazlib/list.c
-  kazlib/list.h
-  kazlib/hash.c
-  kazlib/hash.h
-  libcpluff/internal.h
-  libcpluff/thread.h
-  libcpluff/util.h
-  libcpluff/defines.h
-  libcpluff/thread_posix.c
+  libcpluff/util.c
 )
-add_library(cpluff-${ARCH} MODULE ${libcpluff_srcs})
-if(APPLE)
-  install(TARGETS cpluff-${ARCH} DESTINATION ${RESOURCEPATH}/XBMC/system)
-elseif(UNIX)
-  install(TARGETS cpluff-${ARCH} DESTINATION ${BINPATH}/system)
+
+if(WIN32)
+  set(libcpluff_srcs ${libcpluff_srcs} libcpluff/thread_windows.c libcpluff/win32/dirent.c)
+  add_library(cpluff SHARED ${libcpluff_srcs})
+  target_link_libraries(cpluff ${CONFIG_LIBRARY_EXPAT})
+  install(TARGETS cpluff DESTINATION ${RESOURCEPATH}/system)
+else()
+  set(libcpluff_srcs ${libcpluff_srcs} libcpluff/thread_posix.c)
+  add_library(cpluff-${ARCH} MODULE ${libcpluff_srcs})
+  if(APPLE)
+    install(TARGETS cpluff-${ARCH} DESTINATION ${RESOURCEPATH}/XBMC/system)
+  elseif(UNIX)
+    install(TARGETS cpluff-${ARCH} DESTINATION ${BINPATH}/system)
+  endif()
 endif()

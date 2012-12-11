@@ -72,7 +72,7 @@ endif()
 if(WIN32)
   set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x86" ${dependdir}/lib)
   set(ENV{LIBS} "$ENV{LIBS};${dependdir}/lib")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:\"libc\" /NODEFAULTLIB:\"msvcrt\" /NODEFAULTLIB:\"libcmt\" /NODEFAULTLIB:\"msvcrtd\" /NODEFAULTLIB:\"msvcprtd\" /NODEFAULTLIB:\"msvcprt\" /DELAYLOAD:\"dnssd.dll\" /DELAYLOAD:\"dwmapi.dll\" /DELAYLOAD:\"libmicrohttpd-5.dll\" /DELAYLOAD:\"ssh.dll\" /DELAYLOAD:\"sqlite3.dll\" /DELAYLOAD:\"libsamplerate-0.dll\"  /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /ERRORREPORT:QUEUE")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:\"libc\" /NODEFAULTLIB:\"msvcrt\" /NODEFAULTLIB:\"libcmt\" /NODEFAULTLIB:\"msvcrtd\" /NODEFAULTLIB:\"msvcprtd\" /DELAYLOAD:\"dnssd.dll\" /DELAYLOAD:\"dwmapi.dll\" /DELAYLOAD:\"libmicrohttpd-5.dll\" /DELAYLOAD:\"ssh.dll\" /DELAYLOAD:\"sqlite3.dll\" /DELAYLOAD:\"libsamplerate-0.dll\"  /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /ERRORREPORT:QUEUE")
 endif()
 
 # global definitions
@@ -119,19 +119,9 @@ if(WIN32)
     -D_HAS_ITERATOR_DEBUGGING=0
     -DTAGLIB_STATIC
     -DBOOST_ALL_NO_LIB
+    -DBOOST_THREAD_USE_LIB
 )
 endif()
-
-# We need to add these before we compile the dependencies,
-# since CxImage depends on libjpeg and friends
-# But we don't add our own include directories to avoid
-# header confusion when building the dependencies.
-include_directories(
-  ${dependdir}/include
-  ${dependdir}/include/libcec
-  ${dependdir}/include/freetype2
-  ${dependdir}/include/python2.6
-)
 
 # MUST BE ADDED FIRST :)
 # This will download our dependency tree
@@ -142,7 +132,18 @@ endif()
 # Now check for available functions
 include(CMakeConfig.txt)
 
-include_directories(${root}/xbmc)
+# Now build auxilary xbmc libraries.
+# Note that we want to do this before we add all
+# our defines and includes, otherwise they will
+# carry over
+add_subdirectory(lib)
+
+include_directories(
+  ${dependdir}/include
+  ${dependdir}/include/libcec
+  ${dependdir}/include/freetype2
+  ${dependdir}/include/python2.6
+)
 
 # Platfrom includes
 if(UNIX)
@@ -165,11 +166,7 @@ if(WIN32)
   )
 endif()
 
-# Now build auxilary xbmc libraries.
-# Note that we want to do this before we add all
-# our defines and includes, otherwise they will
-# carry over
-add_subdirectory(lib)
+include_directories(${root}/xbmc)
 
 # Build the texturepacker
 if(NOT WIN32)

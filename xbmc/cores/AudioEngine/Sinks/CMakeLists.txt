@@ -4,8 +4,8 @@ if(DEFINED HAVE_LIBALSA)
   set(ae_SRCS ${ae_SRCS} AESinkALSA.cpp AESinkALSA.h)
 endif()
 
-if(WINDOWS)
-  set(ae_SRCS ${ae_SRCS} AESinkWSAPI.cpp AESinkWSAPI.h AESinkDirectSound.cpp AESinkDirectSound.h)
+if(WIN32)
+  set(ae_SRCS ${ae_SRCS} AESinkWASAPI.cpp AESinkWASAPI.h AESinkDirectSound.cpp AESinkDirectSound.h)
 endif()
 
 if(UNIX)

@@ -16,7 +16,8 @@
  */
 
 #ifdef _WIN32
-#include <windows.h>
+/* PLEX - Changed windows.h to ws2tcpip.h */
+#include <ws2tcpip.h>
 #else
 #include <rpc/types.h>
 #endif

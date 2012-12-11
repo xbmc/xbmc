@@ -112,7 +112,7 @@
 
 #if defined(TARGET_WINDOWS)
 #define HAS_SDL_JOYSTICK
-#if !defined(__PLEX__) || defined(TARGET_WINDOWS)
+#ifndef __PLEX__
 #define HAS_DVD_DRIVE
 #endif
 #define HAS_WIN32_NETWORK

@@ -59,7 +59,7 @@ else()
 endif()
 
 add_dependencies(Plex git_revision.h ffmpeg)
-target_link_libraries(Plex xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+target_link_libraries(Plex xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
 
 # find all image files in the skin
@@ -84,7 +84,6 @@ if(NOT WIN32)
   add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt Textures_Plex.xbt)
 endif()
 
-
 # Set some variables we need to configure the CMakeCompleteBundle file
 set(PLEXDIR ${plexdir})
 set(ROOTDIR ${root})
@@ -99,26 +98,35 @@ else()
   install(TARGETS Plex DESTINATION ${BINPATH} COMPONENT RUNTIME)
 endif()
 
-install(CODE "
-  execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh \"${RESOURCEPATH}\" \"${ROOTDIR}\" \"\${CMAKE_INSTALL_PREFIX}\")
-")
-
 # Replace some XBMC files in the output
-install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Splash.png)")
-install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html)")
-install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/XBMC/tools/darwin/runtime COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
 if(NOT WIN32)
+  install(CODE "
+    execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh \"${RESOURCEPATH}\" \"${ROOTDIR}\" \"\${CMAKE_INSTALL_PREFIX}\")
+  ")
+  install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Splash.png)")
+  install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html)")
+  install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/XBMC/tools/darwin/runtime COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media RENAME Textures.xbt)
+  install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
 else()
-  install(FILES ${MEDIA_IMAGES_PLEX} DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media)
-  install(FILES ${MEDIA_IMAGES_MEDIASTREAM} DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media)
+  install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
+  install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME PATTERN python EXCLUDE)
+  install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME PATTERN skin.confluence EXCLUDE PATTERN skin.touched EXCLUDE)
+  install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/media/Splash.png)")
+  install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
+  install(FILES ${root}/project/Win32BuildSetup/dependencies/glew32.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
+  install(FILES ${root}/project/Win32BuildSetup/dependencies/libiconv-2.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
 endif()
 
+
+
 if(NOT PLEX_SKIP_BUNDLING STREQUAL "1")
-  install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+  if(NOT WIN32)
+    install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+  endif()
 else()
   message("-- Skipping bundling ${PLEX_SKIP_BUNDLING}")
 endif()
