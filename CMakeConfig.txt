@@ -231,10 +231,10 @@ if(WIN32)
     yajl
     dxguid
     DxErr
+    Delayimp
   )
 
   set(external_libs
-    tinyxmlSTLd
     libfribidi
     libiconv
     turbojpeg-static
@@ -243,11 +243,17 @@ if(WIN32)
     freetype246MT
     sqlite3
     liblzo2
-    libboost_thread-vc100-mt-s-1_46_1
-    libboost_system-vc100-mt-s-1_46_1
     dnssd
     libcdio.dll
+    zlib
+    libsamplerate-0
   )
+
+  if(${CMAKE_BUILD_TYPE} STREQUAL "debug")
+    set(external_libs ${external_libs} tinyxmlSTLd libboost_thread-vc100-mt-sgd-1_46_1 libboost_system-vc100-mt-sgd-1_46_1)
+  else()
+    set(external_libs ${external_libs} tinyxmlSTL libboost_thread-vc100-mt-s-1_46_1 libboost_system-vc100-mt-s-1_46_1)
+  endif()
 endif()
 
 set(non_link_libs
@@ -291,9 +297,9 @@ macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
 
   # find the library, just searching in our paths
   if(${nodefaultpath})
-      find_library(CONFIG_LIBRARY_${LIBN} ${lib} PATHS ${searchpath} ${searchpath}64 NO_DEFAULT_PATH)
+    find_library(CONFIG_LIBRARY_${LIBN} ${lib} PATHS ${searchpath} ${searchpath}64 NO_DEFAULT_PATH)
   else()
-	  find_library(CONFIG_LIBRARY_${LIBN} ${lib} ${searchpath})
+    find_library(CONFIG_LIBRARY_${LIBN} ${lib} PATHS ${searchpath})
   endif()
 
   if(CONFIG_LIBRARY_${LIBN} MATCHES "NOTFOUND")
@@ -387,13 +393,13 @@ set(LIRC_DEVICE "/dev/lircd")
 
 #### Deal with some generated files
 if(APPLE)
-	set(ARCH "x86-osx")
+  set(ARCH "x86-osx")
 elseif(UNIX)
-    if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "x86_64")
-        set(ARCH "x86_64-linux")
-    else()
-        set(ARCH "i486-linux")
-    endif()
+  if(${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+    set(ARCH "x86_64-linux")
+  else()
+    set(ARCH "i486-linux")
+  endif()
 endif()
 
 if(APPLE)
@@ -401,11 +407,15 @@ if(APPLE)
   set(BINPATH Plex.app/Contents/MacOSX)
   set(RESOURCEPATH Plex.app/Contents/Resources)
   set(HAVE_LIBVDADECODER 1)
-else()
+elseif(UNIX)
   set(LIBPATH bin)
   set(BINPATH bin)
   set(RESOURCEPATH share)
-endif() 
+else()
+  set(LIBPATH .)
+  set(BINPATH .)
+  set(RESOURCEPATH .)
+endif()
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
 configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)

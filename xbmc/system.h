@@ -112,7 +112,7 @@
 
 #if defined(TARGET_WINDOWS)
 #define HAS_SDL_JOYSTICK
-#if !defined(__PLEX__) || defined(TARGET_WINDOWS)
+#ifndef __PLEX__
 #define HAS_DVD_DRIVE
 #endif
 #define HAS_WIN32_NETWORK
@@ -213,6 +213,11 @@
 
 #if defined(TARGET_DARWIN)
 #include "../git_revision.h"
+#endif
+
+/* PLEX */
+#ifdef TARGET_WINDOWS
+#include "../git_rev.h"
 #endif
 
 #ifndef GIT_REV

@@ -52,7 +52,7 @@ CAutoUpdateFunctionsXBMC::ParseItemElement(TiXmlElement *el, CAutoUpdateInfo& in
 
     const char* size = enclosure->Attribute("length");
     if (size)
-      info.m_enclosureSize = atoll(size);
+      info.m_enclosureSize = boost::lexical_cast<int64_t>(size);
 
     const char* version = enclosure->Attribute("sparkle:version");
     if (version)

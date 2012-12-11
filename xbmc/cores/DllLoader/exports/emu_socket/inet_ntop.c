@@ -16,7 +16,8 @@
  */
 
 #ifdef _WIN32
-#include <windows.h>
+/* PLEX - Changed windows.h to ws2tcpip.h */
+#include <WS2tcpip.h>
 typedef int socklen_t;
 #define snprintf _snprintf
 #else

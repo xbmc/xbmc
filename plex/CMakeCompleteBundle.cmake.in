@@ -10,6 +10,8 @@ if(APPLE)
   set(TARGET "Plex.app")
 elseif(UNIX)
   set(TARGET "${BINPATH}/Plex")
+else()
+  set(TARGET "${BINPATH}/Plex.exe")
 endif()
 
 function(gp_item_default_embedded_path_override item default_embedded_path_var)
@@ -30,8 +32,11 @@ endif()
 
 set(BU_CHMOD_BUNDLE_ITEMS ON)
 file(GLOB INST_LIBS ${CMAKE_INSTALL_PREFIX}/${LIBPATH}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
-set(plugins ${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/system/ImageLib-${ARCH}.so)
-fixup_bundle(${CMAKE_INSTALL_PREFIX}/${TARGET} "${plugins};${INST_LIBS}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64")
+if(NOT WIN32)
+  set(plugins ${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/system/ImageLib-${ARCH}.so)
+  fixup_bundle(${CMAKE_INSTALL_PREFIX}/${TARGET} "${plugins};${INST_LIBS}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64")
+else()
+  install(
 
 if(APPLE)
   message("Signing binary: ${CMAKE_INSTALL_PREFIX}/Plex.app")
