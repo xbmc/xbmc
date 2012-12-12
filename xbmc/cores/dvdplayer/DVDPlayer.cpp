@@ -1214,6 +1214,10 @@ void CDVDPlayer::Process()
   // make sure all selected stream have data on startup
   if (CachePVRStream())
     SetCaching(CACHESTATE_PVR);
+  /* PLEX */
+  else
+    SetCaching(CACHESTATE_FULL);
+  /* END PLEX */
 
   // make sure application know our info
   UpdateApplication(0);
@@ -1269,6 +1273,10 @@ void CDVDPlayer::Process()
 
       if (CachePVRStream())
         SetCaching(CACHESTATE_PVR);
+      /* PLEX */
+      else
+        SetCaching(CACHESTATE_FULL);
+      /* END PLEX */
 
       UpdateApplication(0);
       UpdatePlayState(0);
@@ -2516,11 +2524,14 @@ void CDVDPlayer::SetCaching(ECacheState state)
 {
   if(state == CACHESTATE_FLUSH)
   {
+#ifndef __PLEX__
     double level, delay, offset;
     if(GetCachingTimes(level, delay, offset))
       state = CACHESTATE_FULL;
     else
       state = CACHESTATE_INIT;
+#endif
+    state = CACHESTATE_FULL;
   }
 
   if(m_caching == state)
