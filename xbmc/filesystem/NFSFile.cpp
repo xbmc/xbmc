@@ -340,17 +340,16 @@ void CNfsConnection::CheckIfIdle()
   
   if( m_pNfsContext != NULL )
   {
+    CSingleLock lock(keepAliveLock);
     //handle keep alive on opened files
     for( tFileKeepAliveMap::iterator it = m_KeepAliveTimeouts.begin();it!=m_KeepAliveTimeouts.end();it++)
     {
-      CSingleLock lock(keepAliveLock);
       if(it->second.refreshCounter > 0)
       {
         it->second.refreshCounter--;
       }
       else
       {
-        lock.Leave();
         keepAlive(it->second.exportPath, it->first);
         //reset timeout
         resetKeepAlive(it->second.exportPath, it->first);
@@ -662,8 +661,10 @@ void CNFSFile::Close()
   {
     int ret = 0;
     CLog::Log(LOGDEBUG,"CNFSFile::Close closing file %s", m_url.GetFileName().c_str());
-    ret = gNfsConnection.GetImpl()->nfs_close(m_pNfsContext, m_pFileHandle);
+    // remove it from keep alive list before closing
+    // so keep alive code doens't process it anymore
     gNfsConnection.removeFromKeepAliveList(m_pFileHandle);
+    ret = gNfsConnection.GetImpl()->nfs_close(m_pNfsContext, m_pFileHandle);
         
 	  if (ret < 0) 
     {
