@@ -52,7 +52,7 @@ protected:
 private:
   void          PauseResume(int state);
   double        GetPlayerPtsSeconds();
-  void          SyncToPlayerPtsSeconds(double offset);
+  void          SetVideoPtsSeconds(double pts);
   void          ShowMainVideo(const bool show);
   void          SetVideoZoom(const float zoom);
   void          SetVideoContrast(const int contrast);
@@ -66,7 +66,6 @@ private:
   DllLibAmCodec *m_dll;
   am_private_t  *am_private;
   volatile int64_t m_1st_pts;
-  volatile double  m_app_pts;
   volatile int64_t m_cur_pts;
   volatile int64_t m_cur_pictcnt;
   volatile int64_t m_old_pictcnt;

@@ -1369,7 +1369,6 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
 {
   CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder");
   m_1st_pts = 0;
-  m_app_pts = 0.0;
   m_cur_pts = 0;
   m_cur_pictcnt = 0;
   m_old_pictcnt = 0;
@@ -1575,7 +1574,6 @@ void CAmlogic::Reset()
 
   // reset some interal vars
   m_1st_pts = 0;
-  m_app_pts = GetPlayerPtsSeconds();
   m_cur_pts = 0;
   m_cur_pictcnt = 0;
   m_old_pictcnt = 0;
@@ -1653,14 +1651,13 @@ bool CAmlogic::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   pDvdVideoPicture->pts = GetPlayerPtsSeconds() * (double)DVD_TIME_BASE;
-  //pDvdVideoPicture->pts = (double)m_cur_pts * (double)DVD_TIME_BASE / (double)PTS_FREQ;
+  // video pts cannot be late or dvdplayer goes nuts,
+  // so run it one frame ahead
+  pDvdVideoPicture->pts += pDvdVideoPicture->iDuration;
+
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->format = RENDER_FMT_BYPASS;
   pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
-
-  // video pts cannot be late or dvdplayer goes nuts,
-  // so run it two frames ahead
-  pDvdVideoPicture->pts += pDvdVideoPicture->iDuration;
 
   return true;
 }
@@ -1729,8 +1726,12 @@ void CAmlogic::Process()
         m_ready_event.Set();
 
         double app_pts = GetPlayerPtsSeconds();
+        // add in audio delay/display latency contribution
+        double offset  = g_renderManager.GetDisplayLatency() - g_settings.m_currentVideoSettings.m_AudioDelay;
+        // correct video pts by user set delay and rendering delay
+        app_pts += offset;
         if (fabs((double)pts_video/PTS_FREQ - app_pts) > 0.20)
-          SyncToPlayerPtsSeconds(0.0);
+          SetVideoPtsSeconds(app_pts);
       }
     }
     else
@@ -1765,14 +1766,9 @@ double CAmlogic::GetPlayerPtsSeconds()
   return clock_pts;
 }
 
-void CAmlogic::SyncToPlayerPtsSeconds(const double offset)
+void CAmlogic::SetVideoPtsSeconds(const double pts)
 {
-  CDVDClock *playerclock = CDVDClock::GetMasterClock();
-  if (playerclock)
-  {
-    m_app_pts = playerclock->GetClock() / DVD_TIME_BASE;
-    set_pts_pcrscr((int64_t)((m_app_pts + offset) * PTS_FREQ));
-  }
+  set_pts_pcrscr((int64_t)(pts * PTS_FREQ));
 }
 
 void CAmlogic::ShowMainVideo(const bool show)
