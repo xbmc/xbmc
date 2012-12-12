@@ -5793,15 +5793,10 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13437"
-msgid "Allow Vdpau OpenGL interop"
+msgid "Prefer VDPAU Video Mixer"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13438"
-msgid "Allow Vdpau OpenGL interop YUV"
-msgstr ""
-
-#empty strings from id 13439 to 13499
+#empty strings from id 13438 to 13499
 
 #: system/settings/settings.xml
 msgctxt "#13500"

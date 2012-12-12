@@ -374,11 +374,14 @@ bool CDecoder::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if (CSettings::Get().GetBool("videoplayer.usevdpauinteropyuv"))
+  if (!m_vdpauConfig.usePixmaps)
   {
     if (method == VS_INTERLACEMETHOD_RENDER_BOB)
       return true;
   }
+
+  if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
+    return false;
 
   for(SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
   {
@@ -1869,7 +1872,7 @@ void CMixer::SetDeinterlacing()
 
   SetDeintSkipChroma();
 
-  m_config.useInteropYuv = CSettings::Get().GetBool("videoplayer.usevdpauinteropyuv");
+  m_config.useInteropYuv = !CSettings::Get().GetBool("videoplayer.usevdpaumixer");
 }
 
 void CMixer::SetDeintSkipChroma()
@@ -2061,7 +2064,7 @@ void CMixer::Init()
   m_vdpError = false;
 
   m_config.upscale = g_advancedSettings.m_videoVDPAUScaling;
-  m_config.useInteropYuv = CSettings::Get().GetBool("videoplayer.usevdpauinteropyuv");
+  m_config.useInteropYuv = !CSettings::Get().GetBool("videoplayer.usevdpaumixer");
 
   CreateVdpauMixer();
 }
@@ -2171,11 +2174,12 @@ void CMixer::InitCycle()
                                         DVP_FLAG_INTERLACED);
       m_config.useInteropYuv = false;
     }
-    else if (method == VS_INTERLACEMETHOD_RENDER_BOB && m_config.useInteropYuv)
+    else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     {
       m_mixersteps = 1;
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
       m_mixerInput[1].DVDPic.format = RENDER_FMT_VDPAU_420;
+      m_config.useInteropYuv = true;
     }
     else
     {
@@ -3288,7 +3292,7 @@ bool COutput::GLInit()
   glVDPAUGetSurfaceivNV = NULL;
 #endif
 
-  m_config.usePixmaps = !CSettings::Get().GetBool("videoplayer.usevdpauinterop");
+  m_config.usePixmaps = false;
 
 #ifdef GL_NV_vdpau_interop
   if (glewIsSupported("GL_NV_vdpau_interop"))
@@ -3320,8 +3324,7 @@ bool COutput::GLInit()
 #endif
   {
     m_config.usePixmaps = true;
-    CSettings::Get().SetBool("videoplayer.usevdpauinterop",false);
-    CSettings::Get().SetBool("videoplayer.usevdpauinteropyuv",false);
+    CSettings::Get().SetBool("videoplayer.usevdpaumixer",true);
   }
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
