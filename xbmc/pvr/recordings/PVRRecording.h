@@ -132,6 +132,12 @@ namespace PVR
      */
     static CStdString GetTitleFromURL(const CStdString &url);
 
+    /*!
+     * @brief Copy some information from the client to the given video info tag
+     * @param target video info tag to which the information will be copied
+     */
+    void CopyClientInfo(CVideoInfoTag *target);
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
 
