@@ -175,14 +175,20 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const CStdString &method, ITransp
   if (params.isObject())
   {
     for (CVariant::const_iterator_map it = params.begin_map(); it != params.end_map(); it++)
-      argv += it->first + "=" + it->second.asString() + ",";
-    argv = argv.erase(argv.size() - 1);
+    {
+      if (it != params.begin_map())
+        argv += ",";
+      argv += it->first + "=" + it->second.asString();
+    }
   }
   else if (params.isArray())
   {
     for (CVariant::const_iterator_array it = params.begin_array(); it != params.end_array(); it++)
-      argv += it->asString() + ",";
-    argv = argv.erase(argv.size() - 1);
+    {
+      if (it != params.begin_array())
+        argv += ",";
+      argv += it->asString();
+    }
   }
   
   CStdString cmd;
