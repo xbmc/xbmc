@@ -335,6 +335,7 @@ protected:
   int m_DeintMode;
   int m_Deint;
   int m_Upscale;
+  unsigned int m_ColorMatrix       : 4;
   uint32_t *m_BlackBar;
   VdpVideoMixerPictureStructure m_mixerfield;
   int m_mixerstep;

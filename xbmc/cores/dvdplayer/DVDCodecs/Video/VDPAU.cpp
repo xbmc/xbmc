@@ -928,6 +928,7 @@ int CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     memset(&pic.DVDPic, 0, sizeof(pic.DVDPic));
     ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(&pic.DVDPic);
     pic.render = render;
+    pic.DVDPic.color_matrix = avctx->colorspace;
     m_bufferStats.IncDecoded();
     m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, &pic, sizeof(pic));
 
@@ -1538,10 +1539,6 @@ void CMixer::InitCSCMatrix(int Width)
   m_Procamp.contrast       = 1.0;
   m_Procamp.saturation     = 1.0;
   m_Procamp.hue            = 0;
-  vdp_st = m_config.vdpProcs.vdp_generate_csc_matrix(&m_Procamp,
-                                   (Width < 1000)? VDP_COLOR_STANDARD_ITUR_BT_601 : VDP_COLOR_STANDARD_ITUR_BT_709,
-                                   &m_CSCMatrix);
-  CheckStatus(vdp_st, __LINE__);
 }
 
 void CMixer::CheckFeatures()
@@ -1552,11 +1549,13 @@ void CMixer::CheckFeatures()
     m_Upscale = m_config.upscale;
   }
   if (m_Brightness != CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness ||
-      m_Contrast   != CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)
+      m_Contrast   != CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast ||
+      m_ColorMatrix != m_mixerInput[1].DVDPic.color_matrix)
   {
     SetColor();
     m_Brightness = CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness;
     m_Contrast = CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast;
+    m_ColorMatrix = m_mixerInput[1].DVDPic.color_matrix;
   }
   if (m_NoiseReduction != CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction)
   {
@@ -1707,13 +1706,27 @@ void CMixer::SetColor()
     m_Procamp.contrast = (float)((CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)+50) / 100;
 
   VdpColorStandard colorStandard;
-//  if(vid_height >= 600 || vid_width > 1024)
-  if(m_config.surfaceWidth > 1000)
-    colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;
-    //vdp_st = vdp_generate_csc_matrix(&m_Procamp, VDP_COLOR_STANDARD_ITUR_BT_709, &m_CSCMatrix);
-  else
-    colorStandard = VDP_COLOR_STANDARD_ITUR_BT_601;
-    //vdp_st = vdp_generate_csc_matrix(&m_Procamp, VDP_COLOR_STANDARD_ITUR_BT_601, &m_CSCMatrix);
+  switch(m_mixerInput[1].DVDPic.color_matrix)
+  {
+    case AVCOL_SPC_BT709:
+      colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;
+      break;
+    case AVCOL_SPC_BT470BG:
+    case AVCOL_SPC_SMPTE170M:
+      colorStandard = VDP_COLOR_STANDARD_ITUR_BT_601;
+      break;
+    case AVCOL_SPC_SMPTE240M:
+      colorStandard = VDP_COLOR_STANDARD_SMPTE_240M;
+      break;
+    case AVCOL_SPC_FCC:
+    case AVCOL_SPC_UNSPECIFIED:
+    case AVCOL_SPC_RGB:
+    default:
+      if(m_config.surfaceWidth > 1000)
+        colorStandard = VDP_COLOR_STANDARD_ITUR_BT_709;
+      else
+        colorStandard = VDP_COLOR_STANDARD_ITUR_BT_601;
+  }
 
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
   if (CSettings::Get().GetBool("videoscreen.limitedrange"))
@@ -2054,6 +2067,7 @@ void CMixer::Init()
   m_Sharpness = 0.0;
   m_DeintMode = 0;
   m_Deint = 0;
+  m_ColorMatrix = 0;
   m_PostProc = false;
   m_vdpError = false;
 
