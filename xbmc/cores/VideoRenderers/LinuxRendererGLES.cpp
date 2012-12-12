@@ -415,12 +415,21 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (m_RenderUpdateCallBackFn)
       (*m_RenderUpdateCallBackFn)(m_RenderUpdateCallBackCtx, m_sourceRect, m_destRect);
 
+    RESOLUTION res = GetResolution();
+    int iWidth = g_settings.m_ResInfo[res].iWidth;
+    int iHeight = g_settings.m_ResInfo[res].iHeight;
+
     g_graphicsContext.BeginPaint();
 
+    glScissor(m_destRect.x1, 
+              iHeight - m_destRect.y2, 
+              m_destRect.x2 - m_destRect.x1, 
+              m_destRect.y2 - m_destRect.y1);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glScissor(0, 0, iWidth, iHeight);
 
     g_graphicsContext.EndPaint();
     return;
