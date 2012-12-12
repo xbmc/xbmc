@@ -172,7 +172,7 @@ double CAESinkAUDIOTRACK::GetDelay()
   // AudioMixer (if any) and audio hardware driver.
 
   double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer->GetReadSize();
-  return sinkbuffer_seconds_to_empty + m_audiotrack_empty_sec;
+  return 0.100 + sinkbuffer_seconds_to_empty + m_audiotrack_empty_sec;
 }
 
 double CAESinkAUDIOTRACK::GetCacheTime()
