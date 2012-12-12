@@ -53,6 +53,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "video/VideoInfoScanner.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "pvr/recordings/PVRRecording.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -469,6 +470,10 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
         fetchedPlayCounts = true;
       }
       
+      // preferably use some information from PVR info tag if available
+      if (pItem->HasPVRRecordingInfoTag())
+        pItem->GetPVRRecordingInfoTag()->CopyClientInfo(pItem->GetVideoInfoTag());
+
       // set the watched overlay
       if (pItem->IsVideo())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_playCount > 0);
