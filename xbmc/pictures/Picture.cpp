@@ -158,6 +158,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
   unsigned int tile_width = g_advancedSettings.GetThumbSize() / num_across;
   unsigned int tile_height = g_advancedSettings.GetThumbSize() / num_down;
   unsigned int tile_gap = 1;
+  bool success = false;
 
   // create a buffer for the resulting thumb
   uint32_t *buffer = (uint32_t *)calloc(g_advancedSettings.GetThumbSize() * g_advancedSettings.GetThumbSize(), 4);
@@ -179,6 +180,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
       {
         if (!texture->GetOrientation() || OrientateImage(scaled, width, height, texture->GetOrientation()))
         {
+          success = true; // Flag that we at least had one succesfull image processed
           // drop into the texture
           unsigned int posX = x*tile_width + (tile_width - width)/2;
           unsigned int posY = y*tile_height + (tile_height - height)/2;
@@ -197,10 +199,12 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
     }
   }
   // now save to a file
-  bool ret = CreateThumbnailFromSurface((uint8_t *)buffer, g_advancedSettings.GetThumbSize(), g_advancedSettings.GetThumbSize(),
-                                        g_advancedSettings.GetThumbSize() * 4, thumb);
+  if (success)
+    success = CreateThumbnailFromSurface((uint8_t *)buffer, g_advancedSettings.GetThumbSize(), g_advancedSettings.GetThumbSize(),
+                                      g_advancedSettings.GetThumbSize() * 4, thumb);
+
   free(buffer);
-  return ret;
+  return success;
 }
 
 void CPicture::GetScale(unsigned int width, unsigned int height, unsigned int &out_width, unsigned int &out_height)
