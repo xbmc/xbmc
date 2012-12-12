@@ -39,7 +39,6 @@
 <!-- 15              Back                      -->
 
 <!-- Linux alterations for default Xpad Driver -->
-<!-- 8               Does not map              -->
 <!-- 9               Guide                     -->
 <!-- 10              Left Stick Button         -->
 <!-- 11              Right Stick Button        -->
@@ -47,7 +46,7 @@
 <!-- 13              D-Pad Right               -->
 <!-- 14              D-Pad Up                  -->
 <!-- 15              D-Pad Down                -->
-<!--                 Triggers do no map!       -->
+<!-- Axis 6 +1/-1    Triggers - malfunctioning -->
 
 <!-- Axis Mappings:                   -->
 <!--                                  -->
@@ -55,10 +54,10 @@
 <!--                                  -->
 <!-- 1               Left Stick L/R   -->
 <!-- 2               Left Stick U/D   -->
-<!-- 3               Left Trigger     -->
+<!-- 3 limit +1      Left Trigger     -->
+<!-- 3 limit -1      Right Trigger    -->
 <!-- 4               Right Stick L/R  -->
 <!-- 5               Right Stick U/D  -->
-<!-- 6               Right Trigger    -->
 
 <!-- Hat Mappings for some drivers:   -->
 <!--                                  -->
@@ -73,13 +72,17 @@
 
 <keymap>
   <global>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <!-- A selects. B goes back. X gets context menu. Y goes fullscreen and back. -->
@@ -147,9 +150,9 @@
       <axis id="4" limit="-1">VolumeDown</axis>
       <axis id="4" limit="+1">VolumeUp</axis>
       <axis id="5" limit="-1">VolumeUp</axis>
-      <axis id="5" limit="+1">VolumeDown</axis> <!--
+      <axis id="5" limit="+1">VolumeDown</axis>
       <axis id="6" limit="-1">ScrollUp</axis>
-      <axis id="6" limit="+1">ScrollDown</axis> -->
+      <axis id="6" limit="+1">ScrollDown</axis>
       <hat id="1" position="up">Up</hat>
       <hat id="1" position="down">Down</hat>
       <hat id="1" position="left">Left</hat>
@@ -157,13 +160,17 @@
     </joystick>
   </global>
   <Home>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="8">XBMC.Skin.ToggleSetting(HomeViewToggle)</button>
@@ -181,13 +188,17 @@
     </joystick>
   </Home>
   <MyFiles>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="6">Highlight</button>
@@ -205,13 +216,17 @@
     </joystick>
   </MyFiles>
   <MyMusicPlaylist>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="5">Delete</button>
@@ -233,14 +248,17 @@
   <MyMusicLibrary>
   </MyMusicLibrary>
   <FullscreenVideo>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <!--
@@ -254,14 +272,15 @@
       <button id="3">OSD</button>
       <!--
             Left shoulder changes aspect ratio.
-            Right shoulder displays info.
-            Right stick also opens the onscreen display.
+            Right shoulder changes subtitles.
+            Right stick changes Audio Language.
+            Start button displays info.
             -->
       <button id="5">AspectRatio</button>
-      <button id="6">Info</button>
+      <button id="6">ShowSubtitles</button>
       <button id="7">SmallStepBack</button>
-      <button id="8">CodecInfo</button>
-      <button id="10">OSD</button>
+      <button id="8">Info</button>
+      <button id="10">AudioNextLanguage</button>
       <button id="11">BigStepForward</button>
       <button id="12">BigStepBack</button>
       <button id="13">StepBack</button>
@@ -287,18 +306,18 @@
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
-      <button id="6">Info</button>
+      <button id="6">ShowSubtitles</button>
       <button id="7">SmallStepBack</button>
-      <button id="8">CodecInfo</button>
+      <button id="8">Info</button>
       <button id="9">XBMC.ActivateWindow(Home)</button>  <!-- guide -->
       <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>  <!-- left stick -->
-      <button id="11">OSD</button>  <!-- right stick -->
+      <button id="11">AudioNextLanguage</button>  <!-- right stick -->
       <button id="12">StepBack</button>
       <button id="13">StepForward</button>
       <button id="14">BigStepForward</button>
-      <button id="15">BigStepBack</button> <!--
+      <button id="15">BigStepBack</button>
       <axis id="6" limit="-1">AnalogRewind</axis>
-      <axis id="6" limit="+1">AnalogFastForward</axis> -->
+      <axis id="6" limit="+1">AnalogFastForward</axis>
       <hat id="1" position="up">BigStepForward</hat>
       <hat id="1" position="down">BigStepBack</hat>
       <hat id="1" position="left">StepBack</hat>
@@ -306,13 +325,17 @@
     </joystick>
   </FullscreenVideo>
   <FullscreenLiveTV>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="11">ChannelUp</button>
@@ -344,19 +367,22 @@
     </joystick>
   </FullscreenLiveTV>
   <FullscreenInfo>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
       <button id="3">OSD</button>
-      <button id="6">Close</button>
-      <button id="10">OSD</button>
+      <button id="8">Close</button>
       <axis id="3" limit="+1">AnalogRewind</axis>
       <axis id="3" limit="-1">AnalogFastForward</axis>
     </joystick>
@@ -371,20 +397,23 @@
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
       <button id="3">OSD</button>
-      <button id="6">Close</button>
-      <button id="11">OSD</button> <!--
+      <button id="8">Close</button>
       <axis id="6" limit="+1">AnalogRewind</axis>
-      <axis id="6" limit="-1">AnalogFastForward</axis> -->
+      <axis id="6" limit="-1">AnalogFastForward</axis>
     </joystick>
   </FullscreenInfo>
   <PlayerControls>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Close</button>
@@ -406,13 +435,17 @@
     </joystick>
   </PlayerControls>
   <Visualisation>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="1">Pause</button>
@@ -450,9 +483,9 @@
       <button id="12">PreviousPreset</button>
       <button id="13">NextPreset</button>
       <button id="14">SkipPrevious</button>
-      <button id="15">SkipNext</button> <!--
+      <button id="15">SkipNext</button>
       <axis id="6" limit="-1">AnalogRewind</axis>
-      <axis id="6" limit="+1">AnalogFastForward</axis> -->
+      <axis id="6" limit="+1">AnalogFastForward</axis>
       <hat id="1" position="up">SkipNext</hat>
       <hat id="1" position="down">SkipPrevious</hat>
       <hat id="1" position="left">PreviousPreset</hat>
@@ -460,18 +493,21 @@
     </joystick>
   </Visualisation>
   <MusicOSD>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Close</button>
       <button id="6">Info</button>
-      <button id="10">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -484,17 +520,20 @@
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="3">Close</button>
       <button id="6">Info</button>
-      <button id="11">Close</button>
     </joystick>
   </MusicOSD>
   <VisualisationSettings>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
@@ -512,13 +551,17 @@
     </joystick>
   </VisualisationSettings>
   <VisualisationPresetList>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
@@ -536,13 +579,17 @@
     </joystick>
   </VisualisationPresetList>
   <SlideShow>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="1">Pause</button>
@@ -582,9 +629,9 @@
       <button id="14">ZoomIn</button>
       <button id="15">ZoomOut</button>
       <axis id="1">AnalogMove</axis>
-      <axis id="2">AnalogMove</axis>  <!--
+      <axis id="2">AnalogMove</axis>
       <axis id="6" limit="+1">ZoomOut</axis>
-      <axis id="6" limit="-1">ZoomIn</axis> -->
+      <axis id="6" limit="-1">ZoomIn</axis>
       <hat id="1" position="up">ZoomIn</hat>
       <hat id="1" position="down">ZoomOut</hat>
       <hat id="1" position="left">PreviousPicture</hat>
@@ -592,13 +639,17 @@
     </joystick>
   </SlideShow>
   <ScreenCalibration>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">ResetCalibration</button>
@@ -620,13 +671,17 @@
     </joystick>
   </ScreenCalibration>
   <GUICalibration>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">ResetCalibration</button>
@@ -648,17 +703,20 @@
     </joystick>
   </GUICalibration>
   <VideoOSD>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Close</button>
-      <button id="10">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -670,23 +728,26 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="3">Close</button>
-      <button id="11">Close</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
-      <button id="6">Info</button>
+      <button id="8">Info</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -700,17 +761,21 @@
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
-      <button id="6">Info</button>
+      <button id="8">Info</button>
     </joystick>
   </VideoMenu>
   <OSDVideoSettings>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="5">AspectRatio</button>
@@ -730,13 +795,17 @@
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="5">AspectRatio</button>
@@ -756,13 +825,17 @@
     </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="5">Delete</button>
@@ -784,13 +857,17 @@
   <MyVideoFiles>
   </MyVideoFiles>
   <MyVideoPlaylist>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="5">Delete</button>
@@ -808,13 +885,17 @@
     </joystick>
   </MyVideoPlaylist>
   <VirtualKeyboard>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">BackSpace</button>
@@ -836,23 +917,27 @@
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
-      <button id="10">Enter</button><!--
+      <button id="10">Enter</button>
       <axis id="6" limit="+1">CursorLeft</axis>
-      <axis id="6" limit="-1">CursorRight</axis> -->
+      <axis id="6" limit="-1">CursorRight</axis>
     </joystick>
   </VirtualKeyboard>
   <ContextMenu>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
-      <button id="6">Close</button>
+      <button id="3">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -864,17 +949,21 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
-      <button id="6">Close</button>
+      <button id="3">Close</button>
     </joystick>
   </ContextMenu>
   <Scripts>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="3">Info</button>
@@ -892,13 +981,17 @@
     </joystick>
   </Scripts>
   <Settings>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
@@ -916,13 +1009,17 @@
     </joystick>
   </Settings>
   <AddonInformation>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
@@ -940,13 +1037,17 @@
     </joystick>
   </AddonInformation>
   <AddonSettings>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
@@ -964,13 +1065,17 @@
     </joystick>
   </AddonSettings>
   <TextViewer>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
@@ -988,13 +1093,17 @@
     </joystick>
   </TextViewer>
   <shutdownmenu>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
@@ -1014,13 +1123,17 @@
     </joystick>
   </shutdownmenu>
   <submenu>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
@@ -1038,13 +1151,17 @@
     </joystick>
   </submenu>
   <MusicInformation>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
@@ -1062,13 +1179,17 @@
     </joystick>
   </MusicInformation>
   <MovieInformation>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">Close</button>
@@ -1086,13 +1207,17 @@
     </joystick>
   </MovieInformation>
   <NumericInput>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">BackSpace</button>
@@ -1112,13 +1237,17 @@
     </joystick>
   </NumericInput>
   <GamepadInput>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="9">Stop</button>
@@ -1136,13 +1265,17 @@
     </joystick>
   </GamepadInput>
   <LockSettings>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
@@ -1162,13 +1295,17 @@
     </joystick>
   </LockSettings>
   <ProfileSettings>
-    <joystick name="Controller (Gamepad for Xbox 360)">
-      <altname>Controller (XBOX 360 For Windows)</altname>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
       <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
       <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>XBOX 360 For Windows</altname>
       <altname>XBOX 360 For Windows (Controller)</altname>
       <altname>Xbox 360 Wireless Controller</altname>
-      <altname>XBOX 360 For Windows</altname>
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <button id="2">PreviousMenu</button>
