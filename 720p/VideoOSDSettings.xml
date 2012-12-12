@@ -66,7 +66,7 @@
 			</control>
 			<control type="sliderex" id="10">
 				<description>default slider</description>
-				<textoffsety>-10</textoffsety>
+				<textoffsety>2</textoffsety>
 				<include>DialogTextControl</include>
 			</control>
 		</control>
