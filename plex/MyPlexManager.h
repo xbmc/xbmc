@@ -22,6 +22,7 @@
 #include "PlexLibrarySectionManager.h"
 #include "PlexServerManager.h"
 #include "xbmc/Util.h"
+#include "guilib/LocalizeStrings.h"
 
 #include "GUIInfoManager.h"
 

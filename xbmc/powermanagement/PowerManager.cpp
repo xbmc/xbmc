@@ -31,6 +31,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GraphicContext.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "plex/MyPlexManager.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -256,9 +257,7 @@ void CPowerManager::OnWake()
   g_weatherManager.Refresh();
 
   /* PLEX */
-#ifdef __APPLE__
-  PlexHelper::GetInstance().Restart();
-#endif
+  g_application.OnWakeUp();
   /* END PLEX */
 
   CAnnouncementManager::Announce(System, "xbmc", "OnWake");

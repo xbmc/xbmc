@@ -120,6 +120,8 @@ public:
 	  }
   }
 
+  void scanNow() { m_pmsBrowser->scanNow(); }
+
  private:
  
   PlexServiceListener()

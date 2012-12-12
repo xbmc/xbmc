@@ -6354,4 +6354,9 @@ void CApplication::Hide()
   g_Windowing.Hide();
 }
 
+void CApplication::OnWakeUp()
+{
+  m_plexApp->OnWakeUp();
+}
+
 /* END PLEX */

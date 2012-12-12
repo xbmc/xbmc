@@ -395,6 +395,8 @@ public:
 
   bool IsVisualizerActive();
   void ActivateVisualizer();
+
+  void OnWakeUp();
   /* END PLEX */
 protected:
   bool LoadSkin(const CStdString& skinID);

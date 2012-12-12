@@ -83,6 +83,9 @@ class NetworkServiceBrowser : public NetworkServiceBase
     
     return ret;
   }
+
+  // Force a scan event now.
+  void scanNow() { dprintf("Forced network scan running!"); m_timer.expires_from_now(boost::posix_time::milliseconds(1)); }
   
  private:
 

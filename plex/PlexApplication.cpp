@@ -14,6 +14,8 @@
 #include "GUIUserMessages.h"
 #include "ManualServerScanner.h"
 #include "MediaSource.h"
+#include "plex/Helper/PlexHelper.h"
+#include "MyPlexManager.h"
 
 BackgroundMusicPlayerPtr bgMusicPlayer;
 
@@ -77,6 +79,17 @@ bool PlexApplication::OnMessage(CGUIMessage& message)
   }
   
   return false;
+}
+
+void PlexApplication::OnWakeUp()
+{
+#ifdef TARGET_DARWIN_OSX
+  PlexHelper::GetInstance().Restart();
+#endif
+
+  m_serviceListener->scanNow();
+
+  MyPlexManager::Get().scanAsync();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

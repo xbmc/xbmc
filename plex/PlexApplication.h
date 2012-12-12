@@ -37,6 +37,8 @@ public:
   
   /// Handle global volume changes.
   void SetGlobalVolume(int volume);
+
+  void OnWakeUp();
     
 protected:
   /// Default constructor.
