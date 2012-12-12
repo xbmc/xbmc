@@ -12,6 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 #include <boost/thread/recursive_mutex.hpp>
+#include <boost/timer.hpp>
 
 #include "CocoaUtilsPlus.h"
 #include "threads/CriticalSection.h"
@@ -75,6 +76,7 @@ class HostSources
 
   // This lock is used in CPlexSourceScanner::Process to protect the vectors defined above from concurrent use.
   boost::recursive_mutex lock;
+  boost::timer m_lastScan;
 };
 
 typedef boost::shared_ptr<HostSources> HostSourcesPtr;

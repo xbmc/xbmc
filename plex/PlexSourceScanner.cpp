@@ -64,7 +64,7 @@ void CPlexSourceScanner::Process()
         url.find(g_guiSettings.GetString("myplex.token")) != string::npos)
       remoteOwned = true;
     
-    if (Cocoa_IsHostLocal(m_sources->host) == true || remoteOwned == true)
+    if (Cocoa_IsHostLocal(m_sources->host) == true)
     {
       realHostLabel = "";
       onlyShared = false;
@@ -136,6 +136,8 @@ void CPlexSourceScanner::Process()
   
   boost::recursive_mutex::scoped_lock lock(g_lock);
   g_activeScannerCount--;
+
+  m_sources->m_lastScan.restart();
   
   CLog::Log(LOGNOTICE, "Plex Source Scanner finished for host %s (%d left)", m_sources->host.c_str(), g_activeScannerCount);
 }
@@ -155,7 +157,11 @@ void CPlexSourceScanner::ScanHost(const std::string& uuid, const std::string& ho
     sources = g_hostSourcesMap[uuid];
     sources->urls.insert(url);
     
-    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld)", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size());
+    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size(), sources->m_lastScan.elapsed());
+    if (sources->m_lastScan.elapsed() < 5)
+    {
+      dprintf("Plex Source Scanner: Scanned in the last 5 seconds, let's just assume nothing changed..");
+    }
   }
   else
   {
@@ -164,7 +170,7 @@ void CPlexSourceScanner::ScanHost(const std::string& uuid, const std::string& ho
     g_hostSourcesMap[uuid] = sources;
     dprintf("Plex Source Scanner: got new server %s (local: %d count: %ld)", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size());
   }
-  
+
   new CPlexSourceScanner(sources);
 }
 
