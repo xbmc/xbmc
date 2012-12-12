@@ -92,7 +92,7 @@ bool CXRandR::Query(bool force, int screennum)
   pclose(file);
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (strcasecmp(pRootElement->Value(), "screen") != screennum)
+  if (atoi(pRootElement->Attribute("id")) != screennum)
   {
     // TODO ERROR
     return false;
