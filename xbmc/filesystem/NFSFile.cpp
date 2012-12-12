@@ -155,7 +155,8 @@ struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportna
       //its not timedout yet or caller wants the cached entry regardless of timeout
       //refresh access time of that
       //context and return it
-      CLog::Log(LOGDEBUG, "NFS: Refreshing context for %s, old: %"PRId64", new: %"PRId64, exportname.c_str(), it->second.lastAccessedTime, now);
+      if (!forceCacheHit) // only log it if this isn't the resetkeepalive on each read ;)
+        CLog::Log(LOGDEBUG, "NFS: Refreshing context for %s, old: %"PRId64", new: %"PRId64, exportname.c_str(), it->second.lastAccessedTime, now);
       it->second.lastAccessedTime = now;
       pRet = it->second.pContext;
     }
@@ -369,6 +370,8 @@ void CNfsConnection::removeFromKeepAliveList(struct nfsfh  *_pFileHandle)
 void CNfsConnection::resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle)
 {
   CSingleLock lock(keepAliveLock);
+  //refresh last access time of the context aswell
+  getContextFromMap(_exportPath, true);
   //adds new keys - refreshs existing ones
   m_KeepAliveTimeouts[_pFileHandle].exportPath = _exportPath;
   m_KeepAliveTimeouts[_pFileHandle].refreshCounter = KEEP_ALIVE_TIMEOUT;
