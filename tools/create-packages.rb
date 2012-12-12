@@ -63,7 +63,7 @@ def hash_to_xml(root,map)
 	map.each do |key,value|
 		element = REXML::Element.new(key)
 		if value.instance_of?(String)
-			element.text = value
+			element.text = value.dup
 		elsif value.instance_of?(Hash)
 			hash_to_xml(element,value)
 		elsif !value.nil?
