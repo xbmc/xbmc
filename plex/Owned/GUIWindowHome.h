@@ -37,6 +37,11 @@
 
 #define CONTENT_LIST_FANART            12000
 
+
+#define CONTEXT_BUTTON_SLEEP 1
+#define CONTEXT_BUTTON_QUIT 2
+#define CONTEXT_BUTTON_SHUTDOWN 3
+
 class PlexContentWorkerManager;
 class CGUIWindowHome;
 

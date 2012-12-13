@@ -58,6 +58,10 @@
 
 #include "plex/PlexMediaServerQueue.h"
 
+#include "powermanagement/PowerManager.h"
+
+#include "ApplicationMessenger.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -374,96 +378,26 @@ bool CGUIWindowHome::OnPopupMenu()
   int controlId = GetFocusedControl()->GetID();
   if (controlId == MAIN_MENU || controlId == POWER_MENU)
   {
-    CGUIBaseContainer* pControl = (CGUIBaseContainer*)GetFocusedControl();
-    CGUIListItemPtr pItem = pControl->GetListItem(pControl->GetSelectedItem());
-    int itemId = pControl->GetSelectedItemID();
-    
-    float menuOffset = 0;
-    int iHeading, iInfo, iAlreadySetMsg;
-    CStdString sAlarmName, sAction;
-    
-    if (controlId == POWER_MENU) menuOffset = 180;
-    
-    switch (itemId) 
-    {
-      case QUIT_ITEM:
-        iHeading = 40300;
-        iInfo = 40310;
-        iAlreadySetMsg = 40320;
-        sAlarmName = "plex_quit_timer";
-        sAction = "quit";
-        break;
-      case SLEEP_ITEM:       
-        iHeading = 40301;
-        iInfo = 40311;
-        iAlreadySetMsg = 40321;
-        sAlarmName = "plex_sleep_timer";
-        sAction = "sleepsystem";
-        break;
-      case SHUTDOWN_ITEM:
-        iHeading = 40302;
-        iInfo = 40312;
-        iAlreadySetMsg = 40322;
-        sAlarmName = "plex_shutdown_timer";
-        sAction = "shutdownsystem";
-        break;
-      case SLEEP_DISPLAY_ITEM:
-        iHeading = 40303;
-        iInfo = 40312;
-        iAlreadySetMsg = 40323;
-        sAlarmName = "plex_sleep_display_timer";
-        sAction = "sleepdisplay";
-      default:
-        return false;
-        break;
-    }
-    
-    // Check to see if any timers already exist
-    if (!CheckTimer("plex_quit_timer", sAlarmName, 40325, 40315, iAlreadySetMsg) ||
-        !CheckTimer("plex_sleep_timer", sAlarmName, 40325, 40316, iAlreadySetMsg) ||
-        !CheckTimer("plex_shutdown_timer", sAlarmName, 40325, 40317, iAlreadySetMsg) ||
-        !CheckTimer("plex_sleep_display_timer", sAlarmName, 40325, 40318, iAlreadySetMsg))
-      return false;
-    
-    
-    int iTime;
-    if (g_alarmClock.HasAlarm(sAlarmName))
-    {
-      iTime = (int)(g_alarmClock.GetRemaining(sAlarmName)/60);
-      iHeading += 5; // Change the title to "Change" not "Set".
-    }
-    else
-    {
-      iTime = 0;
-    }
-    
-    iTime = CGUIDialogTimer::ShowAndGetInput(iHeading, iInfo, iTime);
-    
-    // Dialog cancelled
-    if (iTime == -1) return false;
-    
-    // If the alarm's already been set, cancel it
-    if (g_alarmClock.HasAlarm(sAlarmName))
-      g_alarmClock.Stop(sAlarmName, false);
-    
-    // Start a new alarm
-    if (iTime > 0)
-      g_alarmClock.Start(sAlarmName, float(iTime*60), sAction, false);
-    
-    // Focus the main menu again
-    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), MAIN_MENU);
-    CSingleTryLock lock(g_graphicsContext);
-    if(lock.IsOwner())
-      CGUIWindow::OnMessage(msg);
-    else
-      g_windowManager.SendThreadMessage(msg, GetID());
-    
-    return true;
-    
-    if (pControl->GetSelectedItemID() == 1)
-    {
-      g_alarmClock.Start ("plex_quit_timer", 5, "ShutDown", false);      
-    }
+    CContextButtons buttons;
+    buttons.Add(CONTEXT_BUTTON_QUIT, 13009);
+
+    if(g_powerManager.CanSuspend())
+      buttons.Add(CONTEXT_BUTTON_SLEEP, 13011);
+
+    if (g_powerManager.CanPowerdown())
+      buttons.Add(CONTEXT_BUTTON_SHUTDOWN, 13005);
+
+    int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+
+    if (choice == CONTEXT_BUTTON_SLEEP)
+      CApplicationMessenger::Get().Suspend();
+
+    if (choice == CONTEXT_BUTTON_QUIT)
+      CApplicationMessenger::Get().Quit();
+
+    if (choice == CONTEXT_BUTTON_SHUTDOWN)
+      CApplicationMessenger::Get().Shutdown();
+
   }
   else if (controlId == CONTENT_LIST_ON_DECK || controlId == CONTENT_LIST_RECENTLY_ADDED)
   {
