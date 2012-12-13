@@ -70,7 +70,7 @@ CAutoUpdateFunctionsXBMC::DownloadFile(const string &url, string &localPath)
   CURL theUrl(url);
   localPath = GetLocalFileName(theUrl.GetFileNameWithoutPath());
   
-  struct stat mStat;
+  struct __stat64 mStat;
   if (CFile::Stat(string("file://") + localPath, &mStat) != -1)
   {
     return true;
