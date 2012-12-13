@@ -109,19 +109,12 @@ set -x
 
 # Bootstrap package
 if test "$libtool" = "yes"; then
-  set +x
-  echo "Running libtoolize"
-  set +e
   ${libtoolize} --copy --force
-  set -x
-  echo "Done"
   if test -n "$auxdir" -a ! "$auxdir" = "." -a -f "ltmain.sh"; then
     echo "$0: working around a minor libtool issue"
     mv ltmain.sh "$auxdir/"
   fi
 fi
-
-set -e
 
 aclocal${amvers} ${aclocalflags}
 autoconf${acvers}
