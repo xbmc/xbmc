@@ -352,6 +352,10 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
       // Recently accessed.
       m_contentLists[CONTENT_LIST_RECENTLY_ACCESSED] = Group(kVIDEO_LOADER);
       m_workerManager->enqueue(WINDOW_HOME, bestServerUrl + "channels/recentlyViewed?filter=" + filter, CONTENT_LIST_RECENTLY_ACCESSED);
+
+      globalArt = false;
+      m_globalArt = false;
+      m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, "channels/arts"), CONTENT_LIST_FANART);
     }
 
     // If we need to, load global art.
