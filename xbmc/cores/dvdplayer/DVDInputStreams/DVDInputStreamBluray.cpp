@@ -82,20 +82,6 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
 {
     BD_FILE_H *file = new BD_FILE_H;
 
-    CStdString strFilename(filename);
-    CStdString strExtension(URIUtils::GetExtension(filename));
-    if(strExtension == ".iso"
-    || strExtension == ".img")
-    {
-      CURL::Encode(strFilename);
-      strFilename.Format("udf://%s", strFilename);
-      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening file udf iso file %s... (%p)", strFilename.c_str(), file);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening file %s... (%p)", strFilename.c_str(), file);
-    }
-
     file->close = file_close;
     file->seek  = file_seek;
     file->read  = file_read;
@@ -104,7 +90,7 @@ BD_FILE_H * DllLibbluray::file_open(const char* filename, const char *mode)
     file->eof   = file_eof;
 
     CFile* fp = new CFile();
-    if(fp->Open(strFilename))
+    if(fp->Open(filename))
     {
       file->internal = (void*)fp;
       return file;
@@ -285,6 +271,17 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     }
     root     = strPath;
     filename = URIUtils::GetFileName(strFile);
+  }
+
+
+  /* translate to udf file system if needed */
+  CStdString ext(URIUtils::GetExtension(root));
+  if(ext == ".iso"
+  || ext == ".img")
+  {
+    CURL url("udf://");
+    url.SetHostName(root);
+    root = url.Get();
   }
 
   if (!m_dll)
