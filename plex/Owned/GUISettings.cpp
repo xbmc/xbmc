@@ -307,7 +307,7 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* mp = AddCategory(SETTINGS_MUSIC, "musicplayer", 14086);
   AddBool(mp, "musicplayer.autoplaynextitem", 489, true);
-  AddBool(mp, "musicplayer.queuebydefault", 14084, false);
+  AddBool(NULL, "musicplayer.queuebydefault", 14084, false);
   AddSeparator(mp, "musicplayer.sep1");
   map<int,int> gain;
   gain.insert(make_pair(351,REPLAY_GAIN_NONE));
@@ -713,7 +713,7 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* vp = AddCategory(SETTINGS_VIDEOS, "videoplayer", 14086);
 
-  AddBool(vp, "videoplayer.autoplaynextitem", 13433, false);
+  AddBool(NULL, "videoplayer.autoplaynextitem", 13433, false);
   AddSeparator(vp, "videoplayer.sep1");
 
   map<int, int> renderers;

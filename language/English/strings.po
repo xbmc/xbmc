@@ -11439,7 +11439,7 @@ msgstr ""
 #empty strings from id 11 to 262
 
 msgctxt "#263"
-msgid "Allow control of PLEX via HTTP"
+msgid "Allow control of Plex via HTTP"
 msgstr ""
 
 #empty strings from id 264 to 285
@@ -11503,25 +11503,25 @@ msgstr ""
 #empty strings from id 747 to 790
 
 msgctxt "#791"
-msgid "Allow programs on this system to control PLEX"
+msgid "Allow programs on this system to control Plex"
 msgstr ""
 
 #empty strings from id 792 to 793
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control PLEX"
+msgid "Allow programs on other systems to control Plex"
 msgstr ""
 
 #empty strings from id 795 to 1001
 
 msgctxt "#1002"
-msgid "PLEX was unable to connect to the network location."
+msgid "Plex was unable to connect to the network location."
 msgstr ""
 
 #empty strings from id 1003 to 1269
 
 msgctxt "#1270"
-msgid "Allow PLEX to receive AirPlay content"
+msgid "Allow Plex to receive AirPlay content"
 msgstr ""
 
 #empty strings from id 1271 to 13133
@@ -11553,7 +11553,7 @@ msgstr ""
 #empty string with id 13140
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control PLEX"
+msgid "If you proceed, you might not be able to control Plex"
 msgstr ""
 
 #empty string with id 13142
@@ -11565,7 +11565,7 @@ msgstr ""
 #empty strings from id 13144 to 13145
 
 msgctxt "#13146"
-msgid "PLEX, changing this setting might affect your ability"
+msgid "Plex, changing this setting might affect your ability"
 msgstr ""
 
 #empty string with id 13147
@@ -11607,13 +11607,13 @@ msgstr ""
 #empty strings from id 13186 to 13308
 
 msgctxt "#13309"
-msgid "instead of just PLEX?"
+msgid "instead of just Plex?"
 msgstr ""
 
 #empty strings from id 13310 to 13601
 
 msgctxt "#13602"
-msgid "Allow start of PLEX using the remote"
+msgid "Allow start of Plex using the remote"
 msgstr ""
 
 #empty strings from id 13603 to 13621
@@ -11675,7 +11675,7 @@ msgstr ""
 #empty string with id 14038
 
 msgctxt "#14039"
-msgid "PLEX requires a restart to change your"
+msgid "Plex requires a restart to change your"
 msgstr ""
 
 #empty strings from id 14040 to 15149
@@ -11687,7 +11687,7 @@ msgstr ""
 #empty strings from id 15151 to 15204
 
 msgctxt "#15205"
-msgid "Please update PLEX"
+msgid "Please update Plex"
 msgstr ""
 
 #empty strings from id 15206 to 16000
@@ -11778,7 +11778,7 @@ msgstr ""
 #empty strings from id 19022 to 20008
 
 msgctxt "#20009"
-msgid "Use PLEX"
+msgid "Use Plex"
 msgstr ""
 
 #empty strings from id 20010 to 20249
@@ -11790,39 +11790,39 @@ msgstr ""
 #empty strings from id 20251 to 20340
 
 msgctxt "#20341"
-msgid "this path from the PLEX library?"
+msgid "this path from the Plex library?"
 msgstr ""
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of PLEX via UPnP"
+msgid "Allow control of Plex via UPnP"
 msgstr ""
 
 #empty strings from id 21882 to 33074
 
 msgctxt "#33075"
-msgid "PLEX revision of %s or greater to run."
+msgid "Plex revision of %s or greater to run."
 msgstr ""
 
 msgctxt "#33076"
-msgid "Please update PLEX."
+msgid "Please update Plex."
 msgstr ""
 
 #empty strings from id 33077 to 36006
 
 msgctxt "#36007"
-msgid "Power on the TV when starting PLEX"
+msgid "Power on the TV when starting Plex"
 msgstr ""
 
 msgctxt "#36008"
-msgid "Power off devices when stopping PLEX"
+msgid "Power off devices when stopping Plex"
 msgstr ""
 
 #empty strings from id 36009 to 36012
 
 msgctxt "#36013"
-msgid "Unsupported libcec interface version. %d is greater than the version PLEX supports (%d)"
+msgid "Unsupported libcec interface version. %d is greater than the version Plex supports (%d)"
 msgstr ""
 
 #empty strings from id 36014 to 39999
