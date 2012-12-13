@@ -1005,7 +1005,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::videoResolution)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoResolution)]</texture>-->
 						<texture>1080i.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1015,7 +1015,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::audioCodec)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioCodec)]</texture>-->
 						<texture>dolbydigital.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1025,7 +1025,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::audioChannels)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioChannels)]</texture>-->
 						<texture>6.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1036,7 +1036,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::aspectRatio)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::aspectRatio)]</texture>-->
 						<texture>1080i.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1046,7 +1046,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::videoCodec)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoCodec)]</texture>-->
 						<texture>dolbydigital.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1056,7 +1056,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::videoFrameRate)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoFrameRate)]</texture>-->
 						<texture>6.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1070,7 +1070,7 @@
 					<posx>140r</posx>
 					<width>100</width>
 					<height>50</height>
-					<!--><texture>$INFO[Listitem.Property(mediaTag::Studio)]</texture>-->
+					<!--><texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>-->
 					<texture>Warner_Bros.png</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
@@ -1351,7 +1351,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::videoResolution)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoResolution)]</texture>-->
 						<texture>1080i.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1361,7 +1361,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::audioCodec)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioCodec)]</texture>-->
 						<texture>dolbydigital.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1371,7 +1371,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::audioChannels)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::audioChannels)]</texture>-->
 						<texture>6.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1382,7 +1382,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::aspectRatio)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::aspectRatio)]</texture>-->
 						<texture>1080i.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1392,7 +1392,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::videoCodec)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoCodec)]</texture>-->
 						<texture>dolbydigital.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1402,7 +1402,7 @@
 					<control type="image">
 						<width min="29" max="100">auto</width>
 						<height>18</height>
-						<!--><texture>$INFO[Listitem.Property(mediaTag::videoFrameRate)]</texture>-->
+						<!--><texture>$INFO[Listitem.Art(mediaTag::videoFrameRate)]</texture>-->
 						<texture>6.png</texture>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<colordiffuse>FF999999</colordiffuse>
@@ -1416,7 +1416,7 @@
 					<posx>140r</posx>
 					<width>100</width>
 					<height>50</height>
-					<!--><texture>$INFO[Listitem.Property(mediaTag::Studio)]</texture>-->
+					<!--><texture>$INFO[Listitem.Art(mediaTag::Studio)]</texture>-->
 					<texture>Warner_Bros.png</texture>
 					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<colordiffuse>FF999999</colordiffuse>
