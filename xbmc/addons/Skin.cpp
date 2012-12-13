@@ -199,7 +199,11 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncl
 
 int CSkinInfo::GetStartWindow() const
 {
+#ifndef __PLEX__
   int windowID = g_guiSettings.GetInt("lookandfeel.startupwindow");
+#else
+  int windowID = WINDOW_HOME;
+#endif
   assert(m_startupWindows.size());
   for (vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); it++)
   {

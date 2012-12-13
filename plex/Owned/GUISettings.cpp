@@ -932,7 +932,11 @@ void CGUISettings::Initialize()
   AddString(laf, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.font",13303,"Default", SPIN_CONTROL_TEXT);
   AddInt(laf, "lookandfeel.skinzoom",20109, 0, -20, 2, 20, SPIN_CONTROL_INT, MASK_PERCENT);
+#ifndef __PLEX__
   AddInt(laf, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+#else
+  AddInt(NULL, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
+#endif
   AddString(laf, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddBool(laf, "lookandfeel.enableglobalslideshow", 15150, true);
 
