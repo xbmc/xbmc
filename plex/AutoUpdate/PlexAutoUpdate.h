@@ -126,6 +126,7 @@ class CAutoUpdateInfo
 
     /* enclosure */
     std::string m_enclosureUrl;
+    std::string m_enclosureOs;
     CAutoUpdateInfoVersion m_enclosureVersion;
     int64_t m_enclosureSize;
 };
@@ -206,6 +207,9 @@ class CPlexAutoUpdate
 
     CAutoUpdateInfo m_newVersion;
     CAutoUpdateInfoVersion m_currentVersion;
+
+
+    std::string GetOsName() const;
 };
 
 #endif // PLEXAUTOUPDATE_H

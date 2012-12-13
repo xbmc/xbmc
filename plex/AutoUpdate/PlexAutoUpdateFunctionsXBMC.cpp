@@ -16,6 +16,7 @@
 
 #include "URL.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogOK.h"
 #include "JobManager.h"
 #include "Utility/PlexDownloadFileJob.h"
 #include "ApplicationMessenger.h"
@@ -138,6 +139,10 @@ CAutoUpdateFunctionsXBMC::ParseItemElement(TiXmlElement *el, CAutoUpdateInfo& in
     const char* version = enclosure->Attribute("sparkle:version");
     if (version)
       info.m_enclosureVersion = CAutoUpdateInfoVersion(version);
+
+    const char* os = enclosure->Attribute("sparkle:os");
+    if (os)
+      info.m_enclosureOs = os;
   }
 
   return true;
@@ -214,12 +219,19 @@ CAutoUpdateFunctionsXBMC::LogInfo(const std::string& msg)
 void
 CAutoUpdateFunctionsXBMC::NotifyNewVersion()
 {
+#ifndef TARGET_LINUX
   CStdString line1("Version " + m_updater->GetNewVersion().m_enclosureVersion.GetVersionString() + " is available, would you like to download it?");
-  CStdString line2("You current version is " + m_updater->GetCurrentVersion().GetVersionString());
+  CStdString line2("Your current version is " + m_updater->GetCurrentVersion().GetVersionString());
   bool cancel;
   CGUIDialogYesNo::ShowAndGetInput("New version available", line1, line2, "", cancel, "Cancel", "Download");
   if (!cancel)
   {
     m_updater->DownloadNewVersion();
   }
+#else
+  CStdString line1("Version " + m_updater->GetNewVersion().m_enclosureVersion.GetVersionString() + " is available");
+  CStdString line2("Your current version is " + m_updater->GetCurrentVersion().GetVersionString());
+  CStdString line3("Auto-update is not available for Linux, download manually...");
+  CGUIDialogOK::ShowAndGetInput("New version is available", line1, line2, line3);
+#endif
 }

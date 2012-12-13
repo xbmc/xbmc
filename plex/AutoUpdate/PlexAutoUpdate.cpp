@@ -69,6 +69,17 @@ bool CPlexAutoUpdate::DownloadNewVersion()
   return true;
 }
 
+std::string CPlexAutoUpdate::GetOsName() const
+{
+#ifdef TARGET_DARWIN_OSX
+  return "osx";
+#elif defined(TARGET_WINDOWS)
+  return "windows";
+#elif defined(TARGET_LINUX)
+  return "linux";
+#endif
+}
+
 bool CPlexAutoUpdate::CheckForNewVersion()
 {
   std::string data;
@@ -80,6 +91,9 @@ bool CPlexAutoUpdate::CheckForNewVersion()
     {
       BOOST_FOREACH(CAutoUpdateInfo info, list)
       {
+        if (info.m_enclosureOs != GetOsName())
+          continue;
+
         if(m_currentVersion < info.m_enclosureVersion)
         {
           m_functions->LogInfo("Found new version " + info.m_enclosureVersion.GetVersionString());
