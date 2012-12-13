@@ -274,3 +274,14 @@ CStdString CPVRRecording::GetTitleFromURL(const CStdString &url)
   }
   return StringUtils::EmptyString;
 }
+
+void CPVRRecording::CopyClientInfo(CVideoInfoTag *target)
+{
+  if (!target)
+    return;
+
+  if (g_PVRClients->SupportsRecordingPlayCount(m_iClientId))
+    target->m_playCount = m_playCount;
+  if (g_PVRClients->SupportsLastPlayedPosition(m_iClientId))
+    target->m_resumePoint = m_resumePoint;
+}

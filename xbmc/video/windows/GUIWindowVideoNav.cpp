@@ -53,6 +53,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "video/VideoInfoScanner.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "pvr/recordings/PVRRecording.h"
 
 /* PLEX */
 #include "BackgroundMusicPlayer.h"
@@ -486,6 +487,10 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
         fetchedPlayCounts = true;
       }
       
+      // preferably use some information from PVR info tag if available
+      if (pItem->HasPVRRecordingInfoTag())
+        pItem->GetPVRRecordingInfoTag()->CopyClientInfo(pItem->GetVideoInfoTag());
+
       // set the watched overlay
 #ifndef __PLEX__
       if (pItem->IsVideo())

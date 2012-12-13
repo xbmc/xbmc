@@ -62,6 +62,7 @@ taglib: cmake
 swig-native: buildtools pcre-native
 pcre-native: buildtools
 libnfs: rpl
+xbmc-pvr-addons: boost mysql
 
 
 X86OVERRIDES=XBMC_OVERRIDE_HOST=i686-android-linux XBMC_OVERRIDE_TOOLCHAIN=$(XBMC_X86_TOOLCHAIN)
