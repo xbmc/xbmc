@@ -9,10 +9,17 @@
 #include "PlexAutoUpdate.h"
 #include <boost/foreach.hpp>
 
+#ifdef __APPLE__
+#include "Mac/PlexAutoUpdateMac.h"
+#endif
+
 CPlexAutoUpdate::CPlexAutoUpdate(const std::string &updateUrl, int searchFrequency) :
-  m_updateUrl(updateUrl), m_searchFrequency(searchFrequency), m_stop(false), m_currentVersion("9.9.9.9")
+  m_updateUrl(updateUrl), m_searchFrequency(searchFrequency), m_stop(false), m_currentVersion("0.9.4.0")
 {
   m_functions = new CAutoUpdateFunctionsXBMC(this);
+#ifdef __APPLE__
+  m_installer = new CPlexAutoUpdateInstallerMac(m_functions->GetResourcePath());
+#endif
 
   boost::thread t(boost::bind(&CPlexAutoUpdate::run, this));
   t.detach();
@@ -29,7 +36,7 @@ void CPlexAutoUpdate::run()
   boost::mutex::scoped_lock lk(m_lock);
   m_functions->LogDebug("Thread is running...");
 
-  m_waitSleepCond.timed_wait(lk, boost::posix_time::seconds(5));
+  m_waitSleepCond.timed_wait(lk, boost::posix_time::seconds(10));
 
   while (!m_stop)
   {
@@ -39,6 +46,7 @@ void CPlexAutoUpdate::run()
     }
 
     boost::system_time const tmout = boost::get_system_time() + boost::posix_time::seconds(m_searchFrequency);
+    m_functions->LogDebug("Thread is going back to sleep");
     m_waitSleepCond.timed_wait(lk, tmout);
   }
 
@@ -47,7 +55,18 @@ void CPlexAutoUpdate::run()
 
 bool CPlexAutoUpdate::DownloadNewVersion()
 {
-  return false;
+  std::string localPath;
+  std::string destination;
+  if (m_functions->DownloadFile(m_newVersion.m_enclosureUrl, localPath))
+  {
+    // Successful download
+    if(m_functions->ShouldWeInstall(localPath))
+    {
+      m_installer->InstallUpdate(localPath, destination);
+    }
+  }
+  
+  return true;
 }
 
 bool CPlexAutoUpdate::CheckForNewVersion()

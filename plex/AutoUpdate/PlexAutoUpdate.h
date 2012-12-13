@@ -130,6 +130,16 @@ class CAutoUpdateInfo
     int64_t m_enclosureSize;
 };
 
+class CAutoUpdateInstallerBase
+{
+  public:
+    CAutoUpdateInstallerBase(const std::string& resourcePath) : m_resourcePath(resourcePath) {};
+    virtual bool InstallUpdate(const std::string& file, std::string& unpackPath) { return false; }
+  
+  protected:
+    std::string m_resourcePath;
+};
+
 typedef std::vector<CAutoUpdateInfo> CAutoUpdateInfoList;
 
 class CPlexAutoUpdate;
@@ -144,9 +154,13 @@ class CAutoUpdateFunctionsBase
     }
 
     virtual bool FetchUrlData(const std::string& url, std::string& data) { return false; }
+    virtual bool DownloadFile(const std::string& url, std::string& localPath) { return false; }
     virtual bool ParseXMLData(const std::string& xmlData, CAutoUpdateInfoList& infoList) { return false; }
     virtual void LogDebug(const std::string& msg) {};
     virtual void LogInfo(const std::string& msg) {};
+    virtual bool ShouldWeInstall(const std::string& localPath) { return false; }
+  
+    virtual std::string GetResourcePath() const { return std::string(); }
 
     /* Need to call CPlexAutoUpdate->DownloadNewVersion() when user confirms */
     virtual void NotifyNewVersion() {};
@@ -182,6 +196,8 @@ class CPlexAutoUpdate
     boost::condition_variable m_waitSleepCond;
 
     CAutoUpdateFunctionsBase *m_functions;
+    CAutoUpdateInstallerBase *m_installer;
+
     void run();
     std::string m_updateUrl;
     int m_searchFrequency;

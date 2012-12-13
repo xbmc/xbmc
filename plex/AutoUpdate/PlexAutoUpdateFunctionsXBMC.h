@@ -11,8 +11,12 @@
 
 #include "plex/AutoUpdate/PlexAutoUpdate.h"
 #include "utils/XBMCTinyXML.h"
+#include "Job.h"
+#include "JobManager.h"
+#include "dialogs/GUIDialogProgress.h"
 
-class CAutoUpdateFunctionsXBMC : public CAutoUpdateFunctionsBase
+
+class CAutoUpdateFunctionsXBMC : public CAutoUpdateFunctionsBase, IJobCallback
 {
    public:
 
@@ -21,11 +25,24 @@ class CAutoUpdateFunctionsXBMC : public CAutoUpdateFunctionsBase
     virtual bool ParseXMLData(const std::string &xmlData, CAutoUpdateInfoList &infoList);
     virtual void LogDebug(const std::string& msg);
     virtual void LogInfo(const std::string &msg);
+    virtual bool DownloadFile(const std::string &url, std::string &localPath);
+  
+    virtual std::string GetResourcePath() const;
 
     virtual void NotifyNewVersion();
 
+    virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+    virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
+  
+    virtual bool ShouldWeInstall(const std::string& localPath);
+
   private:
+    std::string GetLocalFileName(const std::string& baseName);
     bool ParseItemElement(TiXmlElement *el, CAutoUpdateInfo& info);
+    CGUIDialogProgress* m_progressDialog;
+    bool m_downloadingDone;
+    bool m_downloadSuccess;
+    int m_jobId;
 };
 
 #endif // PLEXAUTOUPDATEFUNCTIONSXBMC_H

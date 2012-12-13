@@ -11,8 +11,11 @@
 
 #include "AutoUpdate/PlexAutoUpdate.h"
 
-class CPlexAutoUpdateMac : public CPlexAutoUpdate
+class CPlexAutoUpdateInstallerMac : public CAutoUpdateInstallerBase
 {
+  public:
+    CPlexAutoUpdateInstallerMac(const std::string& resourcePath) : CAutoUpdateInstallerBase(resourcePath) {};
+  virtual bool InstallUpdate(const std::string &file, std::string& unpackpath);
 };
 
 #endif // PLEXAUTOUPDATEMAC_H
