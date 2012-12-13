@@ -24,6 +24,7 @@
  */
 
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
@@ -222,7 +223,7 @@ bool CPVRChannelGroup::SetChannelIconPath(CPVRChannelPtr channel, const std::str
 {
   if (CFile::Exists(strIconPath))
   {
-    channel->SetIconPath(strIconPath);
+    channel->SetIconPath(strIconPath, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
     return true;
   }
   return false;
