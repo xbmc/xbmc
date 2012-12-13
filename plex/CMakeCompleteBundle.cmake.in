@@ -35,8 +35,7 @@ file(GLOB INST_LIBS ${CMAKE_INSTALL_PREFIX}/${LIBPATH}/*${CMAKE_SHARED_LIBRARY_S
 if(NOT WIN32)
   set(plugins ${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/system/ImageLib-${ARCH}.so)
   fixup_bundle(${CMAKE_INSTALL_PREFIX}/${TARGET} "${plugins};${INST_LIBS}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64")
-else()
-  install(
+endif()
 
 if(APPLE)
   message("Signing binary: ${CMAKE_INSTALL_PREFIX}/Plex.app")
