@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <window id="123">
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol always="true">5</defaultcontrol>
 	<zorder>1</zorder>
 	<controls>
 		<!-- ViewsOSD.xml -->
