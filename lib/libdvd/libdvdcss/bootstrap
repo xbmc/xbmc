@@ -111,6 +111,7 @@ set -x
 if test "$libtool" = "yes"; then
   set +x
   echo "Running libtoolize"
+  set +e
   ${libtoolize} --copy --force
   set -x
   echo "Done"
@@ -119,6 +120,8 @@ if test "$libtool" = "yes"; then
     mv ltmain.sh "$auxdir/"
   fi
 fi
+
+set -e
 
 aclocal${amvers} ${aclocalflags}
 autoconf${acvers}
