@@ -1,4 +1,3 @@
-@ECHO OFF
 rem batch file to compile mingw libs via BuildSetup
 
 rem set M$ env
