@@ -251,7 +251,7 @@ set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
    RMDir /r \\\"$INSTDIR\\\\Dependencies\\\"")
 
 if(APPLE)
-  set(CPACK_GENERATOR "DragNDrop")
+  set(CPACK_GENERATOR "ZIP")
 elseif(UNIX)
   set(CPACK_GENERATOR "TGZ")
 elseif(WIN32)
