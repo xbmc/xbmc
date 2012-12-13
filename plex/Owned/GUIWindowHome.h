@@ -52,6 +52,7 @@ class CFanLoadingThread : public CThread
     void Process();
     void LoadFanWithDelay(const CStdString& key, int delay = 300);
     void CancelCurrent();
+    void StopThread(bool bWait);
 
   private:
     CStopWatch m_loadTimer;

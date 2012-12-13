@@ -92,7 +92,7 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 
 CGUIWindowHome::~CGUIWindowHome(void)
 {
-  m_loadingThread->StopThread();
+  m_loadingThread->StopThread(true);
 }
 
 bool CGUIWindowHome::OnAction(const CAction &action)
@@ -283,7 +283,7 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
         CGUIMessage msg(GUI_MSG_LABEL_BIND, MAIN_MENU, controlID, 0, 0, list.get());
         OnMessage(msg);
         
-        // Make sure it's visible.
+        // Make sure it's visible..
         SET_CONTROL_VISIBLE(controlID);
         SET_CONTROL_VISIBLE(controlID-1000);
         
@@ -861,4 +861,11 @@ void CFanLoadingThread::Process()
     else
       m_wakeMe.wait(lk);
   }
+}
+
+void CFanLoadingThread::StopThread(bool bWait)
+{
+  m_bStop = true;
+  m_wakeMe.notify_all();
+  CThread::StopThread(bWait);
 }
