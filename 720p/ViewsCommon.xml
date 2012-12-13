@@ -1556,10 +1556,10 @@
 					<control type="image">
 						<posy>135</posy>
 						<posx>10</posx>
-						<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating)) + Container.Content(tvshows)</visible>
+						<visible>!IsEmpty(Listitem.Art(mediaTag::contentRating)) + Container.Content(tvshows)</visible>
 						<height>20</height>
 						<width min="1" max="95">auto</width>
-						<info>Listitem.Property(mediaTag::contentRating)</info>
+						<info>Listitem.Art(mediaTag::contentRating)</info>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="group">
@@ -1859,10 +1859,10 @@
 					<!--<control type="image">
 						<posx>255</posx>
 						<posy>34</posy>
-						<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+						<visible>!IsEmpty(Listitem.Art(mediaTag::studio))</visible>
 						<height>109</height>
 						<width>161</width>
-						<info>Listitem.Property(mediaTag::studio)</info>
+						<info>Listitem.Art(mediaTag::studio)</info>
 						<aspectratio>keep</aspectratio>
 						<align>right</align>
 					</control>-->
@@ -2007,10 +2007,10 @@
 					<control type="image">
 						<posx>300</posx>
 						<posy>62</posy>
-						<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+						<visible>!IsEmpty(Listitem.Art(mediaTag::studio))</visible>
 						<height>60</height>
 						<width>80</width>
-						<info>Listitem.Property(mediaTag::studio)</info>
+						<info>Listitem.Art(mediaTag::studio)</info>
 						<aspectratio>keep</aspectratio>
 						<align>left</align>
 					</control>

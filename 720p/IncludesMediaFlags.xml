@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <includes>
 	<!-- Available Media Flags
-		Listitem.Property(mediaTag::videoResolution)
-		Listitem.Property(mediaTag::audioCodec)
-		Listitem.Property(mediaTag::videoCodec)
-		Listitem.Property(mediaTag::aspectRatio)
-		Listitem.Property(mediaTag::videoFrameRate)
-		Listitem.Property(mediaTag::audioChannels)
-		Listitem.Property(mediaTag::contentRating)
-		Listitem.Property(mediaTag::Studio)
+		Listitem.Art(mediaTag::videoResolution)
+		Listitem.Art(mediaTag::audioCodec)
+		Listitem.Art(mediaTag::videoCodec)
+		Listitem.Art(mediaTag::aspectRatio)
+		Listitem.Art(mediaTag::videoFrameRate)
+		Listitem.Art(mediaTag::audioChannels)
+		Listitem.Art(mediaTag::contentRating)
+		Listitem.Art(mediaTag::Studio)
 	-->
 	<include name="WideViewFlags">
 		<control type="group">
@@ -17,7 +17,7 @@
 				<posx>930</posx>
 				<posy>382</posy>
 				<height>60</height>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<info>Listitem.Art(mediaTag::contentRating)</info>
 				<aspectratio>keep</aspectratio>
 				<aligny>center</aligny>
 			</control>
@@ -27,7 +27,7 @@
 				<posy>390</posy>
 				<height>50</height>
 				<width>130</width>
-				<info>Listitem.Property(mediaTag::Studio)</info>
+				<info>Listitem.Art(mediaTag::Studio)</info>
 				<aspectratio>keep</aspectratio>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -40,72 +40,72 @@
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating)) + !Container.Content(tvshows)</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::contentRating)) + !Container.Content(tvshows)</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<info>Listitem.Property(Art::contentRating)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoResolution)</info>
+				<info>Listitem.Property(Art::videoResolution)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::aspectRatio))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::aspectRatio))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::aspectRatio)</info>
+				<info>Listitem.Art(mediaTag::aspectRatio)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoCodec))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoCodec)</info>
+				<info>Listitem.Art(mediaTag::videoCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoFrameRate))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoFrameRate))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoFrameRate)</info>
+				<info>Listitem.Property(Art::videoFrameRate)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<info>Listitem.Property(Art::audioCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioChannels)</info>
+				<info>Listitem.Art(mediaTag::audioChannels)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
 		<control type="image">
-			<visible>!IsEmpty(Listitem.Property(mediaTag::studio)) + Container.Content(movies)</visible>
+			<visible>!IsEmpty(Listitem.Art(mediaTag::studio)) + Container.Content(movies)</visible>
 			<posx>620</posx>
 			<posy>-25</posy>
 			<height>50</height>
 			<width>130</width>
-			<info>Listitem.Property(mediaTag::studio)</info>
+			<info>Listitem.Art(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 			<aligny>bottom</aligny>
 		</control>
 		<control type="image">
-			<visible>!IsEmpty(Listitem.Property(mediaTag::studio)) + Container.Content(tvshows)</visible>
+			<visible>!IsEmpty(Listitem.Art(mediaTag::studio)) + Container.Content(tvshows)</visible>
 			<posx>590</posx>
 			<posy>-35</posy>
 			<height>50</height>
 			<width>130</width>
-			<info>Listitem.Property(mediaTag::studio)</info>
+			<info>Listitem.Art(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 			<aligny>bottom</aligny>
 			<align>center</align>
@@ -116,17 +116,17 @@
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 				<height>20</height>
 				<width min="1" max="50">auto</width>
-				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<info>Listitem.Art(mediaTag::audioCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
 				<height>20</height>
 				<width min="1" max="50">auto</width>
-				<info>Listitem.Property(mediaTag::audioChannels)</info>
+				<info>Listitem.Art(mediaTag::audioChannels)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
@@ -137,7 +137,7 @@
 			<posx>385</posx>
 			<height>50</height>
 			<width min="1" max="95">auto</width>
-			<info>Listitem.Property(mediaTag::contentRating)</info>
+			<info>Listitem.Art(mediaTag::contentRating)</info>
 			<align>right</align>
 			<aspectratio>keep</aspectratio>
 			<aligny>bottom</aligny>
@@ -147,7 +147,7 @@
 			<posy>-210</posy>
 			<height>60</height>
 			<width min="1" max="95">auto</width>
-			<info>Listitem.Property(mediaTag::studio)</info>
+			<info>Listitem.Art(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 		<control type="grouplist">
@@ -155,45 +155,45 @@
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoResolution)</info>
+				<info>Listitem.Art(mediaTag::videoResolution)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::aspectRatio))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::aspectRatio))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::aspectRatio)</info>
+				<info>Listitem.Art(mediaTag::aspectRatio)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoCodec))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoCodec)</info>
+				<info>Listitem.Art(mediaTag::videoCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoFrameRate))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoFrameRate))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoFrameRate)</info>
+				<info>Listitem.Art(mediaTag::videoFrameRate)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<info>Listitem.Art(mediaTag::audioCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioChannels)</info>
+				<info>Listitem.Art(mediaTag::audioChannels)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
@@ -222,65 +222,65 @@
 				<visible>!IsEmpty(ListItem.StarRating) + Container.Content(movies)</visible>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoResolution)</info>
+				<info>Listitem.Art(mediaTag::videoResolution)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::aspectRatio))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::aspectRatio))</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::aspectRatio)</info>
+				<info>Listitem.Art(mediaTag::aspectRatio)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoCodec))</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoCodec)</info>
+				<info>Listitem.Art(mediaTag::videoCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoFrameRate))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoFrameRate))</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoFrameRate)</info>
+				<info>Listitem.Art(mediaTag::videoFrameRate)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<info>Listitem.Art(mediaTag::audioCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioChannels)</info>
+				<info>Listitem.Art(mediaTag::audioChannels)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
 		<control type="image">
-			<visible>!IsEmpty(Listitem.Property(mediaTag::studio)) + Container.Content(movies)</visible>
+			<visible>!IsEmpty(Listitem.Art(mediaTag::studio)) + Container.Content(movies)</visible>
 			<posx>870</posx>
 			<posy>-50</posy>
 			<height>80</height>
 			<width>130</width>
-			<info>Listitem.Property(mediaTag::studio)</info>
+			<info>Listitem.Art(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 			<aligny>bottom</aligny>
 		</control>
 		<control type="image">
-			<visible>!IsEmpty(Listitem.Property(mediaTag::studio)) + Container.Content(tvshows)</visible>
+			<visible>!IsEmpty(Listitem.Art(mediaTag::studio)) + Container.Content(tvshows)</visible>
 			<posx>760</posx>
 			<posy>-120</posy>
 			<height>80</height>
 			<width>130</width>
-			<info>Listitem.Property(mediaTag::studio)</info>
+			<info>Listitem.Art(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 			<aligny>bottom</aligny>
 			<align>center</align>
@@ -295,7 +295,7 @@
 				<posx>0</posx>
 				<height>25</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<info>Listitem.Art(mediaTag::contentRating)</info>
 				<align>right</align>
 				<aspectratio>keep</aspectratio>
 				<aligny>bottom</aligny>
@@ -305,45 +305,45 @@
 				<orientation>horizontal</orientation>
 				<itemgap>30</itemgap>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
 					<height>20</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::videoResolution)</info>
+					<info>Listitem.Art(mediaTag::videoResolution)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::aspectRatio))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::aspectRatio))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::aspectRatio)</info>
+					<info>Listitem.Art(mediaTag::aspectRatio)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::videoCodec))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::videoCodec)</info>
+					<info>Listitem.Art(mediaTag::videoCodec)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::videoFrameRate))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::videoFrameRate))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::videoFrameRate)</info>
+					<info>Listitem.Art(mediaTag::videoFrameRate)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::audioCodec)</info>
+					<info>Listitem.Art(mediaTag::audioCodec)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::audioChannels)</info>
+					<info>Listitem.Art(mediaTag::audioChannels)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 			</control>
@@ -356,7 +356,7 @@
 				<posx>200</posx>
 				<height>37</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<info>Listitem.Art(mediaTag::contentRating)</info>
 				<align>right</align>
 				<aspectratio>keep</aspectratio>
 				<aligny>bottom</aligny>
@@ -366,45 +366,45 @@
 				<orientation>horizontal</orientation>
 				<itemgap>30</itemgap>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
 					<height>20</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::videoResolution)</info>
+					<info>Listitem.Art(mediaTag::videoResolution)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::aspectRatio))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::aspectRatio))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::aspectRatio)</info>
+					<info>Listitem.Art(mediaTag::aspectRatio)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::videoCodec))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::videoCodec)</info>
+					<info>Listitem.Art(mediaTag::videoCodec)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::videoFrameRate))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::videoFrameRate))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::videoFrameRate)</info>
+					<info>Listitem.Art(mediaTag::videoFrameRate)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::audioCodec)</info>
+					<info>Listitem.Art(mediaTag::audioCodec)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">
-					<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+					<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
 					<height>17</height>
 					<width min="1" max="95">auto</width>
-					<info>Listitem.Property(mediaTag::audioChannels)</info>
+					<info>Listitem.Art(mediaTag::audioChannels)</info>
 					<aspectratio>keep</aspectratio>
 				</control>
 			</control>
@@ -428,12 +428,12 @@
 				<visible>!IsEmpty(ListItem.StarRating)</visible>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::studio))</visible>
 				<posx>290</posx>
 				<posy>-15</posy>
 				<height>50</height>
 				<width>130</width>
-				<info>Listitem.Property(mediaTag::studio)</info>
+				<info>Listitem.Art(mediaTag::studio)</info>
 				<aspectratio>keep</aspectratio>
 				<align>right</align>
 			</control>
@@ -444,40 +444,40 @@
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::contentRating))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<info>Listitem.Art(mediaTag::contentRating)</info>
 				<aspectratio>keep</aspectratio>
 				<aligny>center</aligny>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::videoResolution)</info>
+				<info>Listitem.Art(mediaTag::videoResolution)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<info>Listitem.Art(mediaTag::audioCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::audioChannels))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::audioChannels)</info>
+				<info>Listitem.Art(mediaTag::audioChannels)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
 				<animation effect="slide" start="0,0" end="0,-27.5" time="0" condition="TRUE">Conditional</animation>
-				<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+				<visible>!IsEmpty(Listitem.Art(mediaTag::studio))</visible>
 				<height>90</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::studio)</info>
+				<info>Listitem.Art(mediaTag::studio)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
