@@ -14,7 +14,7 @@
 #endif
 
 CPlexAutoUpdate::CPlexAutoUpdate(const std::string &updateUrl, int searchFrequency) :
-  m_updateUrl(updateUrl), m_searchFrequency(searchFrequency), m_stop(false), m_currentVersion("0.9.4.0")
+  m_updateUrl(updateUrl), m_searchFrequency(searchFrequency), m_stop(false), m_currentVersion(PLEX_VERSION)
 {
   m_functions = new CAutoUpdateFunctionsXBMC(this);
 #ifdef __APPLE__

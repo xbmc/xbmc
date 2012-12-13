@@ -72,9 +72,14 @@ file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png $
 
 if(NOT WIN32)
   # Build the packed textures
+  if(DEFINED USING_XCODE)
+    set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/Debug/TexturePacker)
+  else()
+    set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker)
+  endif()
   add_custom_command(
     OUTPUT Textures_MediaStream.xbt
-    COMMAND ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
+    COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
     MAIN_DEPENDENCY ${MEDIA_IMAGES_MEDIASTREAM}
     DEPENDS TexturePacker
   )
