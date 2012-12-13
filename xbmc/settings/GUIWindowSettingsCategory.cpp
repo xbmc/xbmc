@@ -1016,6 +1016,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
         pControl->SetEnabled(g_peripherals.GetNumberOfPeripherals() > 0);
     }
+    else if (strSetting.Equals("input.enablejoystick"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
+    }
   }
 
   g_guiSettings.SetChanged();
@@ -1061,6 +1067,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
     if (dialog)
       dialog->DoModal();
+    // refresh settings
+    UpdateSettings();
     return;
   }
 
@@ -1442,11 +1450,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
   }
-  else if (strSetting.Equals("input.enablejoystick") || strSetting.Equals("input.disablejoystickwithimon"))
+  else if (strSetting.Equals("input.enablejoystick"))
   {
 #if defined(HAS_SDL_JOYSTICK)
     g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick")  
-        && (CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 || !g_guiSettings.GetBool("input.disablejoystickwithimon")) );
+        && CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 #endif
   }
   else if (strSetting.Equals("videoscreen.screen"))

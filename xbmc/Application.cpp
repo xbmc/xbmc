@@ -1396,7 +1396,7 @@ bool CApplication::Initialize()
 
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick") &&
-                    (CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 || !g_guiSettings.GetBool("input.disablejoystickwithimon")) );
+                    CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
 
   return true;
