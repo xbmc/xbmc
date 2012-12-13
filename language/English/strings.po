@@ -11943,6 +11943,10 @@ msgctxt "#40028"
 msgid "Every Week"
 msgstr ""
 
+msgctxt "#40029"
+msgid "Current version"
+msgstr ""
+
 #empty strings from id 40029 to 40099
 
 msgctxt "#40100"

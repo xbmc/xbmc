@@ -179,7 +179,12 @@ class CPlexAutoUpdate
   public:
     CPlexAutoUpdate(const std::string& updateUrl, int searchFrequency = 21600);
     void Stop();
-    bool CheckForNewVersion();
+    void ForceCheckInBackground()
+    {
+      m_waitSleepCond.notify_all();
+    }
+
+    bool _CheckForNewVersion();
     bool DownloadNewVersion();
 
     CAutoUpdateInfo GetNewVersion() const

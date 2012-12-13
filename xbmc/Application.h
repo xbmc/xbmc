@@ -397,6 +397,8 @@ public:
   void ActivateVisualizer();
 
   void OnWakeUp();
+
+  void ForceVersionCheck();
   /* END PLEX */
 protected:
   bool LoadSkin(const CStdString& skinID);

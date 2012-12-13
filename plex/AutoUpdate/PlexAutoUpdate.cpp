@@ -40,7 +40,7 @@ void CPlexAutoUpdate::run()
 
   while (!m_stop)
   {
-    if (CheckForNewVersion())
+    if (_CheckForNewVersion())
     {
       DownloadNewVersion();
     }
@@ -80,7 +80,7 @@ std::string CPlexAutoUpdate::GetOsName() const
 #endif
 }
 
-bool CPlexAutoUpdate::CheckForNewVersion()
+bool CPlexAutoUpdate::_CheckForNewVersion()
 {
   std::string data;
   m_functions->LogInfo("Checking for new version");

@@ -6359,4 +6359,9 @@ void CApplication::OnWakeUp()
   m_plexApp->OnWakeUp();
 }
 
+void CApplication::ForceVersionCheck()
+{
+  m_plexApp->ForceVersionCheck();
+}
+
 /* END PLEX */

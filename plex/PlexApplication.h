@@ -39,6 +39,11 @@ public:
   void SetGlobalVolume(int volume);
 
   void OnWakeUp();
+
+  void ForceVersionCheck()
+  {
+    m_autoUpdater.ForceCheckInBackground();
+  }
     
 protected:
   /// Default constructor.

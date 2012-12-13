@@ -685,6 +685,10 @@ void CGUISettings::Initialize()
   AddInt(NULL, "cacheunknown.internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
 #endif
 
+  CSettingsCategory* update = AddCategory(SETTINGS_SYSTEM, "updates", 40000);
+  AddString(update, "updates.current", 40029, PLEX_VERSION, EDIT_CONTROL_INPUT, true);
+  AddString(update, "updates.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
+
   // video settings
   AddGroup(SETTINGS_VIDEOS, 3);
   //CSettingsCategory* vdl = AddCategory(SETTINGS_VIDEOS, "videolibrary", 14022);

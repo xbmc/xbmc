@@ -81,15 +81,18 @@ bool PlexApplication::OnMessage(CGUIMessage& message)
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::OnWakeUp()
 {
+  /* Scan servers */
+  m_serviceListener->scanNow();
+  MyPlexManager::Get().scanAsync();
+
+  /* Since this ugly function blocks a couple of seconds, put it last */
 #ifdef TARGET_DARWIN_OSX
   PlexHelper::GetInstance().Restart();
 #endif
 
-  m_serviceListener->scanNow();
-
-  MyPlexManager::Get().scanAsync();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

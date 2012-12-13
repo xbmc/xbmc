@@ -1098,6 +1098,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"));
     }
+    else if (strSetting.Equals("updates.checknow"))
+    {
+      g_application.ForceVersionCheck();
+    }
+    else if (strSetting.Equals("updates.current"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      if (pControl)
+        pControl->SetEnabled(false);
+    }
 
     /* END PLEX */
   }
