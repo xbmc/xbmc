@@ -116,7 +116,15 @@ if(NOT WIN32)
 else()
   install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
   install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME PATTERN python EXCLUDE)
-  install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME PATTERN skin.confluence EXCLUDE PATTERN skin.touched EXCLUDE)
+  install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME 
+          PATTERN skin.confluence EXCLUDE
+          PATTERN skin.touched EXCLUDE
+          REGEX screensaver.rsxs* EXCLUDE
+          REGEX library.* EXCLUDE
+          REGEX metadata.* EXCLUDE
+          REGEX weather.* EXCLUDE
+          PATTERN repository.xbmc.org EXCLUDE
+          PATTERN xbmc.python EXCLUDE)
   install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/media/Splash.png)")
   install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)

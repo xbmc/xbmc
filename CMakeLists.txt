@@ -240,9 +240,10 @@ set(CPACK_COMPONENT_RUNTIME_REQUIRED 1)
 # Windows installer stuff
 set(CPACK_NSIS_MUI_UNIICON ${plexdir}\\\\Resources\\\\Plex.ico)
 set(CPACK_NSIS_MUI_ICON ${plexdir}\\\\Resources\\\\Plex.ico)
-set(CPACK_PACKAGE_ICON ${plexdir}\\\\Resources\\\\PlexBanner.bmp)
+#set(CPACK_PACKAGE_ICON ${plexdir}\\\\Resources\\\\PlexBanner.bmp)
 set(CPACK_NSIS_HELP_LINK "http://plexapp.com")
 set(CPACK_NSIS_URL_INFO_ABOUT ${CPACK_NSIS_HELP_LINK})
+set(CPACK_PACKAGE_EXECUTABLES Plex;Plex Media Center)
 
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
   "IfFileExists \\\"$INSTDIR\\\\Dependencies\\\\vcredist_x86.exe\\\" 0 +2
@@ -253,6 +254,7 @@ set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
 
 if(APPLE)
   set(CPACK_GENERATOR "ZIP")
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
 elseif(UNIX)
   set(CPACK_GENERATOR "TGZ")
 elseif(WIN32)
@@ -262,5 +264,8 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CPACK_STRIP_FILES 0)
 endif()
+
+# We want to make sure that CPack uses our own NSIS.template.in
+list(APPEND CMAKE_MODULE_PATH ${plexdir}/Resources)
 
 include(CPack)
