@@ -483,7 +483,7 @@ AC_ARG_ENABLE([libmp3lame],
   [use_libmp3lame=$enableval],
   [use_libmp3lame=auto])
 
-AC_ARG_ENABLE([vorbisenc],
+AC_ARG_ENABLE([libvorbisenc],
   [AS_HELP_STRING([--enable-libvorbisenc],
   [enable vorbis encoder support (default is auto)])],
   [use_libvorbisenc=$enableval],
