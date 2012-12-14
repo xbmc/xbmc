@@ -60,7 +60,6 @@ CAddonStatusHandler::CAddonStatusHandler(const CStdString &addonID, ADDON_STATUS
   else
   {
     Create(true, THREAD_MINSTACKSIZE);
-    SetPriority(-15);
   }
 }
 
@@ -71,6 +70,7 @@ CAddonStatusHandler::~CAddonStatusHandler()
 
 void CAddonStatusHandler::OnStartup()
 {
+  SetPriority(GetMinPriority());
 }
 
 void CAddonStatusHandler::OnExit()
