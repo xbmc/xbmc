@@ -22,7 +22,7 @@ $(GIT_DIR)/HEAD:
 	cd $(TARBALLS_LOCATION); git clone --bare $(BASE_URL)
 
 $(GIT_DIR)/current/$(VERSION): $(GIT_DIR)/HEAD $(DEPS)
-	git rev-list -1 $(VERSION) >/dev/null || git fetch -a
+	git rev-list -1 $(VERSION) >/dev/null || git fetch origin "+refs/heads/*:refs/remotes/origin/*"
 	git rev-list -1 $(VERSION) >/dev/null
 	rm -rf $(GIT_DIR)/current; mkdir -p $(GIT_DIR)/current
 	touch $@
