@@ -374,8 +374,7 @@ bool CEpg::Load(void)
   int iEntriesLoaded = database->Get(*this);
   if (iEntriesLoaded <= 0)
   {
-    CLog::Log(LOGNOTICE, "EPG - %s - no database entries found for table '%s'.",
-        __FUNCTION__, m_strName.c_str());
+    CLog::Log(LOGDEBUG, "EPG - %s - no database entries found for table '%s'.", __FUNCTION__, m_strName.c_str());
   }
   else
   {
