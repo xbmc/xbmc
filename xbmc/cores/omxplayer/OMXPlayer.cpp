@@ -436,6 +436,13 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     if(IsRunning())
       CloseFile();
 
+    if(!m_av_clock.OMXInitialize(false, false))
+    {
+      return false;
+    }
+    if(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+      m_av_clock.HDMIClockSync();
+
     m_playSpeed = DVD_PLAYSPEED_NORMAL;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
@@ -934,15 +941,6 @@ void COMXPlayer::Process()
   bool bOmxWaitAudio = false;
 
   //bool bAEStopped = false;
-
-  if(!m_av_clock.OMXInitialize(false, false))
-  {
-    m_bAbortRequest = true;
-    return;
-  }
-  if(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-    m_av_clock.HDMIClockSync();
-
   //m_av_clock.OMXStateExecute();
   //m_av_clock.OMXStart();
 
@@ -2258,14 +2256,16 @@ void COMXPlayer::HandleMessages()
         m_playSpeed = speed;
         m_caching = CACHESTATE_DONE;
         m_av_clock.SetSpeed(speed);
+        m_av_clock.OMXSetSpeed(speed);
         m_player_audio.SetSpeed(speed);
         m_player_video.SetSpeed(speed);
-        m_av_clock.OMXSetSpeed(m_playSpeed);
 
         // TODO - we really shouldn't pause demuxer
         //        until our buffers are somewhat filled
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
+
+        CLog::Log(LOGDEBUG, "COMXPlayer - CDVDMsg::PLAYER_SETSPEED speed : %d", speed);
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
@@ -3789,8 +3789,13 @@ void COMXPlayer::UpdatePlayState(double timeout)
     state.chapter_count = m_pDemuxer->GetChapterCount();
     m_pDemuxer->GetChapterName(state.chapter_name);
 
-    state.time       = DVD_TIME_TO_MSEC(m_av_clock.GetClock() + m_offset_pts);
+    // TODO : workaround until omx clock handling is rewritten
+    if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
+      state.time       = DVD_TIME_TO_MSEC(m_av_clock.OMXMediaTime(true));
+    else
+      state.time       = DVD_TIME_TO_MSEC(m_av_clock.GetClock() + m_offset_pts);
     state.time_total = m_pDemuxer->GetStreamLength();
+
   }
 
   if(m_pInputStream)
