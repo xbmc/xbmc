@@ -583,10 +583,10 @@ bool COMXAudio::Deinitialize()
   m_omx_decoder.FlushInput();
 
   if(m_omx_render)
-    m_omx_render->Deinitialize();
+    m_omx_render->Deinitialize(true);
   if(!m_Passthrough)
-    m_omx_mixer.Deinitialize();
-  m_omx_decoder.Deinitialize();
+    m_omx_mixer.Deinitialize(true);
+  m_omx_decoder.Deinitialize(true);
 
   m_BytesPerSec = 0;
   m_BufferLen   = 0;
