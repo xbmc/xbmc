@@ -456,7 +456,11 @@ CStdString CWIN32Util::GetProfilePath()
   CUtil::GetHomePath(strHomePath);
 
   if(g_application.PlatformDirectoriesEnabled())
+#ifndef __PLEX__
     strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), "XBMC");
+#else
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), PLEX_TARGET_NAME);
+#endif
   else
     strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
 
