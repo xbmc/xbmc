@@ -880,7 +880,11 @@ void CGUISettings::Initialize()
 #ifdef HAS_WEB_SERVER
   //CSettingsCategory* srvWeb = AddCategory(SETTINGS_SERVICE, "webserver", 33101);
   AddBool(NULL,  "services.webserver",        263, false);
+#ifndef __PLEX__
   AddString(NULL,"services.webserverport",    730, CUtil::CanBindPrivileged()?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+#else
+  AddString(NULL,"services.webserverport",    730, "3005", EDIT_CONTROL_NUMBER_INPUT, false, 730);
+#endif
   AddString(NULL,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(NULL,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
   AddDefaultAddon(NULL, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
