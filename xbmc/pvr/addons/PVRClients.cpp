@@ -733,6 +733,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
   {
     hooks = client->GetMenuHooks();
     std::vector<int> hookIDs;
+    int selection = 0;
 
     CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDialog->Reset();
@@ -743,9 +744,11 @@ void CPVRClients::ProcessMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat, const CF
         pDialog->Add(client->GetString(hooks->at(i).iLocalizedStringId));
         hookIDs.push_back(i);
       }
-    pDialog->DoModal();
-
-    int selection = pDialog->GetSelectedLabel();
+    if (hookIDs.size() > 1)
+    {
+      pDialog->DoModal();
+      selection = pDialog->GetSelectedLabel();
+    }
     if (selection >= 0)
       client->CallMenuHook(hooks->at(hookIDs.at(selection)), item);
   }
