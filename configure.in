@@ -483,7 +483,7 @@ AC_ARG_ENABLE([libmp3lame],
   [use_libmp3lame=$enableval],
   [use_libmp3lame=auto])
 
-AC_ARG_ENABLE([vorbisenc],
+AC_ARG_ENABLE([libvorbisenc],
   [AS_HELP_STRING([--enable-libvorbisenc],
   [enable vorbis encoder support (default is auto)])],
   [use_libvorbisenc=$enableval],
@@ -1078,11 +1078,16 @@ XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
 
 # Audio encoders
-if test "x$use_libmp3lame" != "xno"; then
-  XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])
-  if test "x$use_libmp3lame" != "xno"; then
-    AC_CHECK_HEADER([lame/lame.h],, AC_MSG_ERROR($missing_headers))
-  fi
+if test "x$use_libmp3lame" = "xyes"; then
+    AC_CHECK_HEADER([lame/lame.h],
+    [XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])],
+    AC_MSG_ERROR(lame/lame.h not found)
+  )
+elif test "x$use_libmp3lame" != "xno"; then
+  AC_CHECK_HEADER([lame/lame.h],
+    [XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])],
+    AC_MSG_NOTICE(lame/lame.h not found)
+  )
 fi
 AS_CASE([x$use_libmp3lame],
   [xno],[
