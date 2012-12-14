@@ -9,6 +9,6 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Now Playing Visualization</summary>
     <description lang="en">Plex's yummy now playing visualization</description>
-    <platform>osx</platform>
+    <platform>all</platform>
   </extension>
 </addon>
