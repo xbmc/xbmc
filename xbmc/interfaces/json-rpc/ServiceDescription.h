@@ -3012,6 +3012,40 @@ namespace JSONRPC
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
+    /* PLEX */
+    "\"Input.PageUp\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Navigate up in GUI\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
+    "\"Input.PageDown\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Navigate up in GUI\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
+    "\"Input.NextLetter\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Navigate up in GUI\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
+    "\"Input.PreviousLetter\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Navigate up in GUI\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
+    /* END PLEX */
     "\"Input.Select\": {"
       "\"type\": \"method\","
       "\"description\": \"Select current item in GUI\","

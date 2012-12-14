@@ -171,6 +171,12 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "System.Reboot",                                CSystemOperations::Reboot },
 
 // Input operations
+  /* PLEX */
+  { "Input.PageUp",                                 CInputOperations::PageUp },
+  { "Input.PageDown",                               CInputOperations::PageDown },
+  { "Input.NextLetter",                             CInputOperations::NextLetter },
+  { "Input.PreviousLetter",                         CInputOperations::PreviousLetter },
+  /* END PLEX */
   { "Input.SendText",                               CInputOperations::SendText },
   { "Input.ExecuteAction",                          CInputOperations::ExecuteAction },
   { "Input.Left",                                   CInputOperations::Left },

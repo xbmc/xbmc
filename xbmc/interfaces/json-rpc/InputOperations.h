@@ -48,6 +48,16 @@ namespace JSONRPC
 
     static JSONRPC_STATUS SendAction(int actionID, bool wakeScreensaver = true, bool waitResult = false);
 
+
+    /* PLEX */
+    static JSONRPC_STATUS PageUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS PageDown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+
+    static JSONRPC_STATUS NextLetter(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS PreviousLetter(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    /* END PLEX */
+
+
   private:
     static JSONRPC_STATUS activateWindow(int windowID);
     static bool        handleScreenSaver();

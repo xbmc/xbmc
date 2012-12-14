@@ -139,3 +139,25 @@ JSONRPC_STATUS CInputOperations::ShowOSD(const CStdString &method, ITransportLay
 {
   return SendAction(ACTION_SHOW_OSD);
 }
+
+/* PLEX */
+JSONRPC_STATUS CInputOperations::PageUp(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_PAGE_UP);
+}
+
+JSONRPC_STATUS CInputOperations::PageDown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_PAGE_DOWN);
+}
+
+JSONRPC_STATUS CInputOperations::NextLetter(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_NEXT_LETTER);
+}
+
+JSONRPC_STATUS CInputOperations::PreviousLetter(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_PREV_LETTER);
+}
+/* END PLEX */
