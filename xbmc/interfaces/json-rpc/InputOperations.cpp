@@ -160,4 +160,24 @@ JSONRPC_STATUS CInputOperations::PreviousLetter(const CStdString &method, ITrans
 {
   return SendAction(ACTION_PREV_LETTER);
 }
+
+JSONRPC_STATUS CInputOperations::StepForward(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_STEP_FORWARD);
+}
+
+JSONRPC_STATUS CInputOperations::StepBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_STEP_BACK);
+}
+
+JSONRPC_STATUS CInputOperations::BigStepBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_BIG_STEP_BACK);
+}
+
+JSONRPC_STATUS CInputOperations::BigStepForward(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return SendAction(ACTION_BIG_STEP_FORWARD);
+}
 /* END PLEX */

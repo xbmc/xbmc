@@ -64,6 +64,10 @@ namespace JSONRPC
     
     static JSONRPC_STATUS SetAudioStream(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS SetSubtitle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+
+    /* PLEX */
+    static JSONRPC_STATUS PlexPlayMedia(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    /* END PLEX */
   private:
     static int GetActivePlayers();
     static PlayerType GetPlayer(const CVariant &player);

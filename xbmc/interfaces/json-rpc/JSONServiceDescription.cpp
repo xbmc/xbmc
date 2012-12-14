@@ -56,6 +56,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "JSONRPC.NotifyAll",                            CJSONRPC::NotifyAll },
 
 // Player
+  /* PLEX */
+  { "Player.PlexPlayMedia",                         CPlayerOperations::PlexPlayMedia },
+  /* END PLEX */
   { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
   { "Player.GetProperties",                         CPlayerOperations::GetProperties },
   { "Player.GetItem",                               CPlayerOperations::GetItem },
@@ -176,7 +179,12 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.PageDown",                               CInputOperations::PageDown },
   { "Input.NextLetter",                             CInputOperations::NextLetter },
   { "Input.PreviousLetter",                         CInputOperations::PreviousLetter },
+  { "Input.StepForward",                            CInputOperations::StepForward },
+  { "Input.StepBackward",                           CInputOperations::StepBackward },
+  { "Input.BigStepForward",                         CInputOperations::BigStepForward },
+  { "Input.BigStepBackward",                        CInputOperations::BigStepBackward },
   /* END PLEX */
+
   { "Input.SendText",                               CInputOperations::SendText },
   { "Input.ExecuteAction",                          CInputOperations::ExecuteAction },
   { "Input.Left",                                   CInputOperations::Left },

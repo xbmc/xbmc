@@ -42,6 +42,12 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
+/* PLEX */
+#include "FileSystem/PlexDirectory.h"
+#include "video/VideoThumbLoader.h"
+#include "pictures/PictureThumbLoader.h"
+/* END PLEX */
+
 using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace PVR;
@@ -1542,3 +1548,108 @@ bool CPlayerOperations::GetCurrentEpg(EPG::CEpgInfoTag &epg)
 
   return true;
 }
+
+/* PLEX */
+JSONRPC_STATUS CPlayerOperations::PlexPlayMedia(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CStdString path = parameterObject["path"].asString();
+  CStdString key = parameterObject["key"].asString();
+
+  if (path.empty() || key.empty())
+    return InvalidParams;
+
+  CFileItemList fileItems;
+  CPlexDirectory plexDir;
+  plexDir.GetDirectory(path, fileItems);
+  int itemIndex = -1;
+
+  for (int i=0; i < fileItems.Size(); ++i)
+  {
+    CFileItemPtr fileItem = fileItems[i];
+    if (fileItem->GetProperty("unprocessedKey") == key)
+    {
+      itemIndex = i;
+      break;
+    }
+  }
+
+  if (itemIndex == -1)
+    return FailedToExecute;
+
+  CFileItemPtr item = fileItems[itemIndex];
+  CStdString mediaType = item->GetProperty("type").asString();
+
+  if (!parameterObject["userAgent"].empty())
+    item->SetProperty("userAgent", parameterObject["userAgent"]);
+
+  if (!parameterObject["httpCookies"].empty())
+    item->SetProperty("httpCookies", parameterObject["httpCookies"]);
+
+  if (!parameterObject["viewOffset"].empty())
+  {
+    item->SetProperty("viewOffset", parameterObject["viewOffset"]);
+    item->m_lStartOffset = STARTOFFSET_RESUME;
+  }
+
+  // See if it's a plug-in.
+  if (mediaType.size() == 0)
+  {
+    CURL url(path);
+    if (url.GetFileName().Find("video/") == 0)
+      mediaType = "video";
+    else if (url.GetFileName().Find("music/") == 0)
+      mediaType = "track";
+    else if (url.GetFileName().Find("photos/") == 0)
+      mediaType = "photo";
+  }
+
+  // Load thumbs.
+  if (mediaType == "episode" || mediaType == "movie" || mediaType == "video")
+  {
+    CVideoThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else if (mediaType == "track")
+  {
+    CMusicThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else if (mediaType == "photo")
+  {
+    CPictureThumbLoader loader;
+    loader.LoadItem(item.get());
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "Unknown type: [%s] (path=%s)", mediaType.c_str(), path.c_str());
+  }
+
+  CKey emptyKey;
+  g_application.OnKey(emptyKey);
+
+  // Play the media.
+  if (mediaType == "track")
+  {
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Reset();
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, fileItems);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Play(itemIndex);
+  }
+  else if (mediaType == "photo")
+  {
+    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, false, itemIndex);
+    msg.SetStringParam(path);
+
+    CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    if (pWindow)
+      pWindow->OnMessage(msg);
+  }
+  else
+  {
+    CApplicationMessenger::Get().PlayFile(*item);
+  }
+
+  return ACK;
+}
+/* END PLEX */
