@@ -113,8 +113,9 @@ namespace PVR
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
      * @param bAsync True to (re)start the manager from another thread
+     * @param bOpenPVRWindow True to open the PVR window after starting, false otherwise
      */
-    void Start(bool bAsync = false);
+    void Start(bool bAsync = false, bool bOpenPVRWindow = false);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -554,6 +555,7 @@ namespace PVR
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
+    bool                            m_bOpenPVRWindow;
   };
 
   class CPVRRecordingsUpdateJob : public CJob
