@@ -29,10 +29,9 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
   {
     headers["Name"] = PlexUtils::GetHostName();
     headers["Port"] = g_guiSettings.GetString("services.webserverport");
-#ifndef _WIN32
     headers["Version"] = g_infoManager.GetVersion();
-#endif
     headers["Product"] = "Plex Media Center (frodo)";
+    headers["Protocol"] = "xbmcjson";
   }
   
   /// For subclasses to fill in.
