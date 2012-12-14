@@ -548,10 +548,18 @@
 	</include>
 	<include name="ListItemWideTitleProvider">
 		<control type="label">
+			<visible>IsEmpty(ListItem.Property(Recommender))</visible>
 			<posy>179</posy>
 			<include>ListItemTitleWide</include>
-			<textcolor>FF888888</textcolor>
+			<textcolor>FF999999</textcolor>
 			<label>$INFO[ListItem.Property(sourceTitle)]</label>
+		</control>
+		<control type="label">
+			<visible>!IsEmpty(ListItem.Property(Recommender))</visible>
+			<posy>179</posy>
+			<include>ListItemTitleWide</include>
+			<textcolor>FF999999</textcolor>
+			<label>$INFO[ListItem.Property(Recommender)] - $INFO[ListItem.Property(sourceTitle)]</label>
 		</control>
 	</include>
 	<!-- lists -->
@@ -570,49 +578,61 @@
 			<height>720</height>
 			<!-- list titles & bg's & arrows (see includes on top for formatting) -->
 			<control type="group">
-				<!-- "on deck" -->
+				<!-- "on deck" & "queue" -->
 				<control type="group">
-					<!-- with "recently added" -->
-				<control type="group">
-					<visible>Control.IsVisible(11000) + Control.IsVisible(11001)</visible>
-					<posy>220</posy>
-					<control type="image">
-						<include>ListTitleBg</include>
+					<!-- with "recently added" or "recommended" -->
+					<control type="group">
+						<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
+						<posy>220</posy>
+						<control type="image">
+							<include>ListTitleBg</include>
+						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>On Deck</label>
+							<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)]</visible>
+						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>Queue</label>
+							<visible>[Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
+						</control>
+						<control type="image">
+							<posy>120</posy>
+							<include>ListArrow</include>
+							<visible>Control.HasFocus(11001) | Control.HasFocus(11003)</visible>
+						</control>
 					</control>
-					<control type="label" id="8002">
-						<include>ListTitle</include>
-						<label>On Deck</label>
-					</control>
-					<control type="image">
-						<posy>120</posy>
-						<include>ListArrow</include>
-						<visible>Control.HasFocus(11001)</visible>
+					<!-- alone -->
+					<control type="group">
+						<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)]</visible>
+						<posy>320</posy>
+						<control type="image">
+							<include>ListTitleBg</include>
+						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>On Deck</label>
+							<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)]</visible>
+						</control>
+						<control type="label" id="8002">
+							<include>ListTitle</include>
+							<label>Queue</label>
+							<visible>[Control.IsVisible(11003) + !Control.IsVisible(11004)]</visible>
+						</control>
+						<control type="image">
+							<posy>120</posy>
+							<include>ListArrow</include>
+							<visible>Control.HasFocus(11001) | Control.HasFocus(11003)</visible>
+						</control>
 					</control>
 				</control>
-				<!-- alone -->
-				<control type="group">
-					<visible>!Control.IsVisible(11000) + Control.IsVisible(11001)</visible>
-					<posy>320</posy>
-					<control type="image">
-						<include>ListTitleBg</include>
-					</control>
-					<control type="label" id="8002">
-						<include>ListTitle</include>
-						<label>On Deck</label>
-					</control>
-					<control type="image">
-						<posy>120</posy>
-						<include>ListArrow</include>
-						<visible>Control.HasFocus(11001)</visible>
-					</control>
-				</control>
-				</control>
-				<!-- "recently added" & "recently used" -->
+				<!-- "recently added" & "recently used" & "recommendations" -->
 				<control type="group">
 					<visible>Control.IsVisible(11000) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004)</visible>
-					<!-- with "on deck" -->
+					<!-- with "on deck" or "queue + recommendations" -->
 					<control type="group">
-						<visible>Control.IsVisible(11001)</visible>
+						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
 						<posy>668</posy>
 						<control type="image">
 							<include>ListTitleBg</include>
@@ -620,11 +640,17 @@
 						<control type="label" id="8001">
 							<include>ListTitle</include>
 							<label>Recently Added</label>
+							<visible>Control.IsVisible(11001)</visible>
+						</control>
+						<control type="label" id="8001">
+							<include>ListTitle</include>
+							<label>Recommended</label>
+							<visible>[Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
 						</control>
 						<control type="image">
 							<posy>-130</posy>
 							<include>ListArrow</include>
-							<visible>Control.HasFocus(11000) | [Control.HasFocus(11003) + Control.IsVisible(11004)]</visible>
+							<visible>Control.HasFocus(11000) | Control.HasFocus(11004)</visible>
 						</control>
 					</control>
 					<!-- alone -->
@@ -643,11 +669,6 @@
 							<include>ListTitle</include>
 							<label>Recently Used</label>
 							<visible>Control.IsVisible(11002)</visible>
-						</control>
-						<control type="label" id="8001">
-							<include>ListTitle</include>
-							<label>Queue</label>
-							<visible>Control.IsVisible(11003) + !Control.IsVisible(11004)</visible>
 						</control>
 						<control type="label" id="8001">
 							<include>ListTitle</include>
@@ -1177,9 +1198,20 @@
 						<width>880</width>
 						<height>500</height>
 						<itemlayout width="216" height="230">
+							<!-- when both lists are visible -->
+							<control type="group">
+								<visible>Control.IsVisible(11004)</visible>
+								<posy>0</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
+							</control>
+							<!-- when only this list is visible -->
 							<control type="group">
 								<visible>!Control.IsVisible(11004)</visible>
-								<posy>108</posy>
+								<posy>103</posy>
 								<visible>ListItem.Type(clip)</visible>
 								<include>ListItemWideCard</include>
 								<include>ListItemWide</include>
@@ -1188,6 +1220,24 @@
 							</control>
 						</itemlayout>
 						<focusedlayout width="216" height="230">
+							<!-- when both lists are visible -->
+							<control type="group">
+								<visible>Control.IsVisible(11004)</visible>
+								<posy>0</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
+								<control type="image">
+									<posy>50</posy>
+									<posx>37</posx>
+									<width>195</width>
+									<height>117</height>
+									<include>Border</include>
+								</control>
+							</control>
+							<!-- when only this list is visible -->
 							<control type="group">
 								<visible>!Control.IsVisible(11004)</visible>
 								<posy>108</posy>
@@ -1205,212 +1255,6 @@
 								</control>
 							</control>
 						</focusedlayout>
-						<height>200</height>
-					</control>
-					<!-- title bar Labels -->
-					<control type="group">
-						<visible>false</visible>
-						<!--><visible>Control.HasFocus(11003)</visible>-->
-						<!-- when only this list is visible -->
-						<control type="grouplist">
-							<posx>26</posx>
-							<posy>483</posy>
-							<height>25</height>
-							<orientation>horizontal</orientation>
-							<visible>!Control.IsVisible(11004)</visible>
-							<itemgap>0</itemgap>
-							<!-- global -->
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11003).ListItem(0).TVShowTitle]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).TVShowTitle)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11003).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="300">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Title) + [!Container(11003).ListItem(0).Type(album) | !Container(11003).ListItem(0).Type(episode)]</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Date]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Date) + Container(11003).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="300">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Title) + Container(11003).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Property(sourceTitle)]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FF777777</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Property(sourceTitle))</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Artist]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>Container(11003).ListItem(0).Type(album) + !IsEmpty(Container(11003).ListItem(0).Artist)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Album]</label>
-								<font>SearchResultSmaller</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Album)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Year]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="100">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Year) + Container(11003).ListItem(0).Type(movie)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Duration]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Duration)</visible>
-							</control>
-						</control>
-						<!-- when both lists are visible -->
-						<control type="grouplist">
-							<posx>26</posx>
-							<posy>133</posy>
-							<height>25</height>
-							<orientation>horizontal</orientation>
-							<visible>Control.IsVisible(11004)</visible>
-							<itemgap>0</itemgap>
-							<!-- global -->
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11003).ListItem(0).TVShowTitle]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).TVShowTitle)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11003).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="300">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Title) + [!Container(11003).ListItem(0).Type(album) | !Container(11003).ListItem(0).Type(episode)]</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Date]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Date) + Container(11003).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Title) + Container(11003).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Property(sourceTitle)]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FF777777</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Property(sourceTitle))</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Artist]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>Container(11003).ListItem(0).Type(album) + !IsEmpty(Container(11003).ListItem(0).Artist)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Album]</label>
-								<font>SearchResultSmaller</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Album)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Year]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="100">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Year) + Container(11003).ListItem(0).Type(movie)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Duration]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Duration)</visible>
-							</control>
-						</control>
 					</control>
 				</control>
 				<!-- Recommended (11004) -->
@@ -1427,520 +1271,64 @@
 						<posy>0</posy>
 						<width>880</width>
 						<height>400</height>
-						<itemlayout width="140" height="230">
-							<!-- when only this list is visible -->
-							<control type="group">
-								<visible>!Control.IsVisible(11003)</visible>
-								<posy>15</posy>
-								<control type="image">
-									<posx>36</posx>
-									<posy>142</posy>
-									<width>118</width>
-									<height>42</height>
-									<texture border="10">BlackTransparent.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>28</posx>
-									<posy>30</posy>
-									<width>134</width>
-									<height>128</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>39</posy>
-									<width>116</width>
-									<height>110</height>
-									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-								</control>
-								<control type="image">
-									<posx>36</posx>
-									<posy>184</posy>
-									<width>118</width>
-									<height>32</height>
-									<texture border="10">blackwideroundedtflat.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>165</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Title]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(Recommender)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>!IsEmpty(ListItem.Property(Recommender))</visible>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(SourceTitle)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>IsEmpty(ListItem.Property(Recommender))</visible>
-								</control>
-							</control>
+						<itemlayout width="216" height="230">
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11003)</visible>
-								<posy>113</posy>
-								<control type="image">
-									<posx>36</posx>
-									<posy>142</posy>
-									<width>118</width>
-									<height>42</height>
-									<texture border="10">BlackTransparent.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>28</posx>
-									<posy>30</posy>
-									<width>134</width>
-									<height>128</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>39</posy>
-									<width>116</width>
-									<height>110</height>
-									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-								</control>
-								<!-- dimming mask when list not selected -->
-								<control type="image">
-									<posx>37</posx>
-									<posy>39</posy>
-									<width>116</width>
-									<height>110</height>
-									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">episodeMaskSmall.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<visible>ControlGroup(7003).HasFocus</visible>
-									<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
-									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
-								</control>
-								<control type="image">
-									<posx>36</posx>
-									<posy>184</posy>
-									<width>118</width>
-									<height>32</height>
-									<texture border="10">blackwideroundedtflat.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>165</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Title]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(Recommender)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>!IsEmpty(ListItem.Property(Recommender))</visible>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(SourceTitle)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>IsEmpty(ListItem.Property(Recommender))</visible>
-								</control>
+								<posy>100</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
+							</control>
+							<!-- when only this list is visible -->
+							<control type="group">
+								<visible>!Control.IsVisible(11003)</visible>
+								<posy>0</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
 							</control>
 						</itemlayout>
-						<focusedlayout width="165" height="250">
-							<!-- when only this list is visible -->
-							<control type="group">
-								<visible>!Control.IsVisible(11003)</visible>
-								<posy>15</posy>
-								<control type="image">
-									<posx>34</posx>
-									<posy>36</posy>
-									<width>122</width>
-									<height>116</height>
-									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-									<bordertexture border="10">frameOrange.png</bordertexture>
-									<bordersize>3</bordersize>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>165</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Title]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FF3d3d3d</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(Recommender)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FF3d3d3d</textcolor>
-									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>!IsEmpty(ListItem.Property(Recommender))</visible>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(SourceTitle)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FF3d3d3d</textcolor>
-									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>IsEmpty(ListItem.Property(Recommender))</visible>
-								</control>
-							</control>
+						<focusedlayout width="216" height="230">
 							<!-- when both lists are visible -->
 							<control type="group">
 								<visible>Control.IsVisible(11003)</visible>
-								<posy>113</posy>
+								<posy>100</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
 								<control type="image">
-									<posx>34</posx>
-									<posy>36</posy>
-									<width>122</width>
-									<height>116</height>
-									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
-									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-									<bordertexture border="10">frameOrange.png</bordertexture>
-									<bordersize>3</bordersize>
+									<posy>50</posy>
+									<posx>37</posx>
+									<width>195</width>
+									<height>117</height>
+									<include>Border</include>
 								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>165</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Title]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FF3d3d3d</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(Recommender)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FF3d3d3d</textcolor>
-									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>!IsEmpty(ListItem.Property(Recommender))</visible>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>198</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(SourceTitle)]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FF3d3d3d</textcolor>
-									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>IsEmpty(ListItem.Property(Recommender))</visible>
+							</control>
+							<!-- when only this list is visible -->
+							<control type="group">
+								<visible>!Control.IsVisible(11003)</visible>
+								<posy>0</posy>
+								<visible>ListItem.Type(clip)</visible>
+								<include>ListItemWideCard</include>
+								<include>ListItemWide</include>
+								<include>ListItemWideTitleProvider</include>
+								<include>ListItemWideTitle</include>
+								<control type="image">
+									<posy>50</posy>
+									<posx>37</posx>
+									<width>195</width>
+									<height>117</height>
+									<include>Border</include>
 								</control>
 							</control>
 						</focusedlayout>
-						<height>200</height>
-					</control>
-					<!-- title bar Labels -->
-					<control type="group">
-						<visible>Control.HasFocus(11004)</visible>
-						<!-- when only this list is visible -->
-						<control type="grouplist">
-							<posx>26</posx>
-							<posy>249</posy>
-							<height>25</height>
-							<orientation>horizontal</orientation>
-							<visible>false</visible>
-							<!--><visible>!Control.IsVisible(11003)</visible>-->
-							<itemgap>0</itemgap>
-							<!-- global -->
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11004).ListItem(0).TVShowTitle]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).TVShowTitle)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11004).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="300">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Title) + [!Container(11004).ListItem(0).Type(album) | !Container(11004).ListItem(0).Type(episode)]</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Date]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Date) + Container(11004).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Title) + Container(11004).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Property(sourceTitle)]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FF777777</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Property(sourceTitle))</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Artist]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>Container(11004).ListItem(0).Type(album) + !IsEmpty(Container(11004).ListItem(0).Artist)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Album]</label>
-								<font>SearchResultSmaller</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Album)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Year]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="100">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Year) + Container(11004).ListItem(0).Type(movie)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Property(Recommender)]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Property(Recommender))</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Duration]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Duration)</visible>
-							</control>
-						</control>
-						<!-- when both lists are visible -->
-						<control type="grouplist">
-							<posx>26</posx>
-							<posy>348</posy>
-							<height>25</height>
-							<orientation>horizontal</orientation>
-							<visible>false</visible>
-							<!--><visible>Control.IsVisible(11003) + Control.IsVisible(11004)</visible>-->
-							<itemgap>0</itemgap>
-							<!-- global -->
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11004).ListItem(0).TVShowTitle]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).TVShowTitle)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label>$INFO[Container(11004).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="300">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Title) + [!Container(11004).ListItem(0).Type(album) | !Container(11004).ListItem(0).Type(episode)]</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Date]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Date) + Container(11004).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Title]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Title) + Container(11004).ListItem(0).Type(episode)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Property(sourceTitle)]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FF777777</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Property(sourceTitle))</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Artist]</label>
-								<font>SearchResult</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>Container(11004).ListItem(0).Type(album) + !IsEmpty(Container(11004).ListItem(0).Artist)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Album]</label>
-								<font>SearchResultSmaller</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Album)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Year]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="100">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Year) + Container(11004).ListItem(0).Type(movie)</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Property(Recommender)]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>orange</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Property(Recommender))</visible>
-							</control>
-							<control type="label">
-								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Duration]</label>
-								<font>MediumSmallTitleFont2</font>
-								<scroll>false</scroll>
-								<textcolor>FFFFFFFF</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Duration)</visible>
-							</control>
-						</control>
 					</control>
 				</control>
 			</control>
