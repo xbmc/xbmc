@@ -1572,9 +1572,13 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
   if (iPlaylist != PLAYLIST_NONE && g_playlistPlayer.IsShuffled(iPlaylist))
      g_playlistPlayer.SetShuffle(iPlaylist, false);
 
+  CFileItemPtr movieItem(new CFileItem(*item));
+  if(!ShowPlaySelection(movieItem))
+    return false;
+
   // Call the base method to actually queue the items
   // and start playing the given item
-  return CGUIMediaWindow::OnPlayAndQueueMedia(item);
+  return CGUIMediaWindow::OnPlayAndQueueMedia(movieItem);
 }
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
