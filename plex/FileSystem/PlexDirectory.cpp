@@ -123,11 +123,18 @@ bool CPlexDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
     {
       url.SetHostName(server->address);
       url.SetPort(server->port);
-      strPath = url.Get();
       
       dprintf("Plex Server Manager: Using selected best server %s to make URL %s", server->name.c_str(), strPath.c_str());
     }
   }
+  
+  // Add accessibility flag if we are in the library
+  if (path.find("library/metadata") != string::npos)
+  {
+    url.SetOption("checkFiles", "1");
+  }
+  
+  strPath = url.Get();
   
   // Get the directory.
   bool ret = CPlexDirectory::ReallyGetDirectory(strPath, items);
@@ -842,7 +849,7 @@ class PlexMediaNode
          string url = theURL.Get();
 
          /* FIXME: attr here might be wrong? */
-         mediaItem->SetArt(attr, url);
+         mediaItem->SetArt("mediaTag::" + attr, url);
        }
 
        string value = val;
@@ -1019,6 +1026,12 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         duration = boost::lexical_cast<int>(part->Attribute("duration"));
         pItem->SetProperty("part::duration::" + boost::lexical_cast<string>(partIndex), duration);
       }
+      
+      if (part->Attribute("accessible"))
+        pItem->SetProperty("accessible", part->Attribute("accessible"));
+
+      if (part->Attribute("exists"))
+        pItem->SetProperty("exists", part->Attribute("exists"));      
       
       PlexMediaPartPtr mediaPart(new PlexMediaPart(partID, part->Attribute("key"), duration));
       mediaParts.push_back(mediaPart);
@@ -1240,6 +1253,13 @@ class PlexMediaNodeLibrary : public PlexMediaNode
           if (pItem->HasProperty("postHeaders"))
             theMediaItem->SetProperty("postHeaders", pItem->GetProperty("postHeaders"));
         }
+        
+        if (pItem->HasProperty("accessible"))
+          theMediaItem->SetProperty("accessible", pItem->GetProperty("accessible"));
+        
+        if (pItem->HasProperty("exists"))
+          theMediaItem->SetProperty("exists", pItem->GetProperty("exists"));
+
         
         // If it's not an STRM file then save the local path.
         if (URIUtils::GetExtension(localPath) != ".strm")
