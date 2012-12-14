@@ -211,7 +211,8 @@ int COMXAudioCodecOMX::Decode(BYTE* pData, int iSize)
 
   if(m_pCodecContext->sample_fmt != AV_SAMPLE_FMT_S16 && m_iBufferSize1 > 0)
   {
-    m_dllSwResample.swr_free(&m_pConvert);
+    if(m_pConvert && m_pCodecContext->sample_fmt != m_iSampleFormat)
+      m_dllSwResample.swr_free(&m_pConvert);
 
     if(!m_pConvert)
     {
