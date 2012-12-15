@@ -326,7 +326,9 @@ CStdString CEdenVideoArtUpdater::GetCachedActorThumb(const CFileItem &item)
 CStdString CEdenVideoArtUpdater::GetCachedSeasonThumb(int season, const CStdString &path)
 {
   CStdString label;
-  if (season == 0)
+  if (season == -1)
+    label = g_localizeStrings.Get(20366);
+  else if (season == 0)
     label = g_localizeStrings.Get(20381);
   else
     label.Format(g_localizeStrings.Get(20358), season);
