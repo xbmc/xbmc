@@ -71,6 +71,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/addons/PVRClients.h"
 #include "filesystem/PVRFile.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "utils/StreamUtils.h"
@@ -2857,6 +2858,17 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source, bool reset)
       hint.forced_aspect = true;
     }
     hint.software = true;
+  }
+
+  boost::shared_ptr<CPVRClient> client;
+  if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
+     pStream->type == STREAM_VIDEO &&
+     g_PVRClients->GetPlayingClient(client) && client->HandlesDemuxing())
+  {
+    // set the fps in hints
+    const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(pStream);
+    hint.fpsrate  = stream->iFpsRate;
+    hint.fpsscale = stream->iFpsScale;
   }
 
   CDVDInputStream::IMenus* pMenus = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
