@@ -131,6 +131,11 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     if (m_pOverlayCodec)
       m_pOverlayCodec->Flush();
 
+    /* We must flush active overlays on flush or if we have a file
+     * parser since it will re-populate active items.  */
+    if(pMsg->IsType(CDVDMsg::GENERAL_FLUSH) || m_pSubtitleFileParser)
+      m_pOverlayContainer->Clear();
+
     m_lastPts = DVD_NOPTS_VALUE;
   }
 
