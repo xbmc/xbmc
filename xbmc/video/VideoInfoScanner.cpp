@@ -1253,7 +1253,9 @@ namespace VIDEO
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     CStdString parentDir = GetParentDir(*pItem);
-    if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
+    if (pItem->IsOpticalMediaFile())
+      parentDir = URIUtils::GetParentPath(pItem->GetOpticalFolderPath());
+  if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
@@ -1553,8 +1555,21 @@ namespace VIDEO
 
       if (nfoFile.IsEmpty() && item->IsOpticalMediaFile())
       {
-        CFileItem parentDirectory(item->GetLocalMetadataPath(), true);
+        CFileItem parentDirectory(item->GetOpticalFolderPath(), true);
         nfoFile = GetnfoFile(&parentDirectory, true);
+        if (nfoFile.IsEmpty())
+        {
+          if (bGrabAny)
+            nfoFile = URIUtils::AddFileToFolder(URIUtils::GetParentPath(parentDirectory.GetPath()), "movie.nfo");
+          if (!CFile::Exists(nfoFile) )
+            nfoFile.clear();
+          nfoFile = parentDirectory.GetPath();
+          URIUtils::RemoveSlashAtEnd(nfoFile);
+          nfoFile = URIUtils::ReplaceExtension(nfoFile, ".nfo");
+
+          if (!nfoFile.IsEmpty())
+            return nfoFile;
+        }
       }
     }
     // folders (or stacked dvds) can take any nfo file if there's a unique one
