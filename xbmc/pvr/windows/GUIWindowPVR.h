@@ -82,6 +82,7 @@ namespace PVR
     CGUIWindowPVRRecordings *m_windowRecordings;
     CGUIWindowPVRSearch *    m_windowSearch;
     CGUIWindowPVRTimers *    m_windowTimers;
+    bool                     m_bWasReset;
 
     CCriticalSection         m_critSection;
   };

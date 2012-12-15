@@ -46,7 +46,8 @@ CGUIWindowPVR::CGUIWindowPVR(void) :
   m_windowGuide(NULL),
   m_windowRecordings(NULL),
   m_windowSearch(NULL),
-  m_windowTimers(NULL)
+  m_windowTimers(NULL),
+  m_bWasReset(false)
 {
   m_loadType = LOAD_EVERY_TIME;
 }
@@ -146,10 +147,19 @@ void CGUIWindowPVR::OnInitWindow(void)
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
     m_savedSubwindow->OnInitWindow();
+
+  bool bReset(m_bWasReset);
+  m_bWasReset = false;
   lock.Leave();
   graphicsLock.Leave();
 
   CGUIMediaWindow::OnInitWindow();
+
+  if (bReset)
+  {
+    CGUIMessage msg(GUI_MSG_FOCUSED, GetID(), CONTROL_BTNCHANNELS_TV, 0, 0);
+    OnMessageFocus(msg);
+  }
 }
 
 bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
@@ -288,6 +298,8 @@ void CGUIWindowPVR::Reset(void)
   m_windowGuide->ResetObservers();
   m_windowRecordings->ResetObservers();
   m_windowTimers->ResetObservers();
+
+  m_bWasReset = true;
 }
 
 void CGUIWindowPVR::Cleanup(void)
