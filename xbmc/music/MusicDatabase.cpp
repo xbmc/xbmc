@@ -5284,7 +5284,7 @@ bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaTy
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    CStdString sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i) AND media_type='artist'", mediaType.c_str(), mediaType.c_str(), mediaId);
+    CStdString sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i AND iOrder=0) AND media_type='artist'", mediaType.c_str(), mediaType.c_str(), mediaId);
     m_pDS2->query(sql.c_str());
     while (!m_pDS2->eof())
     {
@@ -5303,7 +5303,7 @@ bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaTy
 
 string CMusicDatabase::GetArtistArtForItem(int mediaId, const string &mediaType, const string &artType)
 {
-  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i) AND media_type='artist' AND type='%s'", mediaType.c_str(), mediaType.c_str(), mediaId, artType.c_str());
+  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i AND iOrder=0) AND media_type='artist' AND type='%s'", mediaType.c_str(), mediaType.c_str(), mediaId, artType.c_str());
   return GetSingleValue(query, m_pDS2);
 }
 
