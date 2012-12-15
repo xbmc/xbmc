@@ -596,27 +596,6 @@ CDateTime CEpg::GetLastDate(void) const
 
 //@}
 
-/** @name Protected methods */
-//@{
-
-bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
-{
-  bool bReturn = true;
-  CSingleLock lock(m_critSection);
-
-  m_strName        = epg.m_strName;
-  m_strScraperName = epg.m_strScraperName;
-  if (epg.m_pvrChannel)
-    SetChannel(epg.m_pvrChannel);
-
-  if (bUpdateDb)
-    bReturn = Persist();
-
-  return bReturn;
-}
-
-//@}
-
 /** @name Private methods */
 //@{
 

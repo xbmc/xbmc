@@ -67,14 +67,6 @@ namespace EPG
     CEpg &operator =(const CEpg &right);
 
     /*!
-     * @brief Update this table's info with the given info. Doesn't change the EpgID.
-     * @param epg The new info.
-     * @param bUpdateDb If true, persist the changes.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool UpdateMetadata(const CEpg &epg, bool bUpdateDb = false);
-
-    /*!
      * @brief Load all entries for this table from the database.
      * @return True if any entries were loaded, false otherwise.
      */
