@@ -311,7 +311,7 @@ void CVideoThumbLoader::SetArt(CFileItem &item, const map<string, string> &artwo
   { // set fallback for "thumb"
     if (artwork.find("poster") != artwork.end())
       item.SetArtFallback("thumb", "poster");
-    else if (artwork.find("poster") != artwork.end())
+    else if (artwork.find("banner") != artwork.end())
       item.SetArtFallback("thumb", "banner");
   }
 }
