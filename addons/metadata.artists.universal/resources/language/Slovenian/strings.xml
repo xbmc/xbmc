@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Slovenian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sl/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Vključi ozadja izvajalcev s HTBackdrops.com</string>
+    <string id="30001">Vključi sličice izvajalcev z allmusic.com</string>
+    <string id="30002">Vključi sličice izvajalcev z last.fm</string>
+    <string id="30003">Vključi sličice izvajalcev s HTBackrops.com</string>
+    <string id="30004">Vključi ozadja izvajalcev s fanart.tv</string>
+    <string id="30005">Vključi sličice izvajalcev s fanart.tv</string>
+    <string id="30006">Prenesi izvajalčev življenjepis z</string>
+    <string id="30007">Grafike</string>
+    <string id="30008">Prenesi izvajalčevo diskografijo z:</string>
+    <string id="30009">Prenesi izvajalčeve žanre z:</string>
+    <string id="30010">Prenesi izvajalčev stil z:</string>
+    <string id="30011">Prenesi izvajalčev rojstni dan z:</string>
+    <string id="30012">Prenesi izvajalčeva razpoloženja z:</string>
+    <string id="30014">Prenesi izvajalčevo obdobje delovanja z:</string>
+    <string id="30015">Privzet jezik</string>
+    <string id="30016">Rezervni vir izvajalčevega življenjepisa</string>
+    <string id="30017">Rezervni vir izvajalčeve diskografije</string>
+    <string id="30018">Rezervni vir izvajalčevih žanrov</string>
+    <string id="30019">Rezervni vir izvajalčevega stila</string>
+    <string id="30020">Rezervni vir izvajalčevega rojstnega dneva</string>
+    <string id="30021">Rezervni viri</string>
+    <string id="30022">Vključi sličice izvajalcev s theaudiodb.com</string>
+    <string id="30023">Vključi ozadja izvajalcev s theaudiodb.com</string>
+</strings>

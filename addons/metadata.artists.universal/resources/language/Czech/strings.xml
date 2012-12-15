@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Czech language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cs/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Povolit fanart umělců z HTBackdrops.com</string>
+    <string id="30001">Povolit náhledy umělců z allmusic.com</string>
+    <string id="30002">Povolit náhledy umělců z last.fm</string>
+    <string id="30003">Povolit náhledy umělců z HTBackdrops.com</string>
+    <string id="30004">Povolit fanart umělců z fanart.tv</string>
+    <string id="30005">Povolit náhledy umělců z fanart.tv</string>
+    <string id="30006">Získat biografii umělce z</string>
+    <string id="30007">Grafika</string>
+    <string id="30008">Získat diskografii umělce z</string>
+    <string id="30009">Získat žánry umělce z</string>
+    <string id="30010">Získat styly umělce z</string>
+    <string id="30011">Získat délku života z</string>
+    <string id="30012">Získat nálady interpreta z</string>
+    <string id="30014">Získat dobu působení umělce z</string>
+    <string id="30015">Upřednostňovaný jazyk</string>
+    <string id="30016">Při neúspěchu získat biografii umělce z</string>
+    <string id="30017">Při neúspěchu získat diskografii umělce z</string>
+    <string id="30018">Při neúspěchu získat žánry umělce z</string>
+    <string id="30019">Při neúspěchu získat styly umělce z</string>
+    <string id="30020">Při neúspěchu získat délku života umělce z</string>
+    <string id="30021">Záložní zdroje informací</string>
+    <string id="30022">Povolit náhledy umělců z theaudiodb.com</string>
+    <string id="30023">Povolit fanart umělců z theaudiodb.com</string>
+</strings>

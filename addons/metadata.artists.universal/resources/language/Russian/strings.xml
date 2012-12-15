@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Russian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Получать обложки исполнителя с HTBackdrops.com</string>
+    <string id="30001">Получать иконки исполнителя с allmusic.com</string>
+    <string id="30002">Получать иконки исполнителя с last.fm</string>
+    <string id="30003">Получать иконки и сполнителя с HTBackdrops.com</string>
+    <string id="30004">Получать обложки исполнителя с fanart.tv</string>
+    <string id="30005">Получать иконки исполнителя с fanart.tv</string>
+    <string id="30006">Получать биографию исполнителя с</string>
+    <string id="30007">Обложка</string>
+    <string id="30008">Получать дискографию исполнителя с</string>
+    <string id="30009">Получать жанры исполнителя с</string>
+    <string id="30010">Получать стили исполнителя с</string>
+    <string id="30011">Получать возраст исполнителя с</string>
+    <string id="30012">Получать направления исполнителя с</string>
+    <string id="30014">Получать период творчества исполнителя</string>
+    <string id="30015">Язык предпочтения</string>
+    <string id="30016">Ссылка на биографию исполнителя</string>
+    <string id="30017">Ссылка на дискографию исполнителя</string>
+    <string id="30018">Ссылка на жанры исполнителя</string>
+    <string id="30019">Ссылка на стили исполнителя</string>
+    <string id="30020">Ссылка на возраст исполнителя</string>
+    <string id="30021">Ссылки</string>
+    <string id="30022">Получать иконки и сполнителя с theaudiodb.com</string>
+    <string id="30023">Получать обложки исполнителя с theaudiodb.com</string>
+</strings>

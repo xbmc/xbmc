@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Spanish (Argentina) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es_AR/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Habilitar Fanarts de Artistas de HTBackdrops.com</string>
+    <string id="30001">Habilitar Miniaturas de Artistas de allmusic.com</string>
+    <string id="30002">Habilitar Miniaturas de Artistas de last.fm</string>
+    <string id="30003">Habilitar Miniaturas de Artistas de HTBackdrops.com</string>
+    <string id="30004">Habilitar Fanarts de Artistas de fanart.tv</string>
+    <string id="30005">Habilitar Miniaturas de Artistas de HTBackdrops.com</string>
+    <string id="30006">Obtener la Biografía del Artista de</string>
+    <string id="30007">Imágenes</string>
+    <string id="30008">Obtener la Discografía del Artista de</string>
+    <string id="30009">Obtener los Géneros del Artista de </string>
+    <string id="30010">Obtener los Estilos del Artista de</string>
+    <string id="30011">Obtener la Fecha de Debut del Artista de </string>
+    <string id="30012">Obtener los Estados de Animo del Artista de </string>
+    <string id="30014">Obtener los Años de ActivIdad del Artista de</string>
+    <string id="30015">Idioma Preferido</string>
+    <string id="30016">Biografía Alternativa del Artista de</string>
+    <string id="30017">Discografía Alternativa del Artista de</string>
+    <string id="30018">Generos Alternativos del Artista de</string>
+    <string id="30019">Estilos Alternativos del Artista de</string>
+    <string id="30020">Fecha Alternativa de Debut del Artista de</string>
+    <string id="30021">Alternativas</string>
+    <string id="30022">Habilitar Miniaturas de Artista de theaudiodb.com</string>
+    <string id="30023">Habilitar Fanarts de Artista de theaudiodb.com</string>
+</strings>

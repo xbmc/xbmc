@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Catalan language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ca/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Obté les miniatures d'àlbums des de fanart.tv</string>
+    <string id="30001">Obté les miniatures d'àlbums des de Last.fm</string>
+    <string id="30002">Obté l'anàlisi d'àlbums des de</string>
+    <string id="30003">Idioma preferit</string>
+    <string id="30004">Obté la qualificació d'àlbums des de</string>
+    <string id="30005">Obté els estils d'àlbums des de</string>
+    <string id="30006">Obté l'estat d'ànim dels àlbums des de</string>
+    <string id="30007">Obté el temes dels àlbums des de</string>
+    <string id="30008">Obté les miniatures dels àlbums des de allmusic.com</string>
+    <string id="30009">Art</string>
+    <string id="30010">Agafa les miniatures dels àlbums de theaudiodb.com</string>
+</strings>

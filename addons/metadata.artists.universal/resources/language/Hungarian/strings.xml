@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Hungarian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/hu/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Előadó fanartképek letöltése a HTBackdrops.com-ról</string>
+    <string id="30001">Előadó miniképek letöltése az allmusic.com-ról</string>
+    <string id="30002">Előadó miniképek letöltése a Last.fm-ről</string>
+    <string id="30003">Előadó miniképek letöltése a HTBackdrops.com-ról</string>
+    <string id="30004">Előadó fanartképek letöltése a fanart.tv-ről</string>
+    <string id="30005">Előadó miniképek letöltése a fanart.tv-ről</string>
+    <string id="30006">Előadó életrajzok letöltése innen:</string>
+    <string id="30007">Grafika</string>
+    <string id="30008">Előadó diszkográfiák forrása:</string>
+    <string id="30009">Előadó műfajok forrása:</string>
+    <string id="30010">Előadó stílusok forrása:</string>
+    <string id="30011">Előadó életpályák forrása:</string>
+    <string id="30012">Előadó hangulatok forrása:</string>
+    <string id="30014">Előadó aktív éveinek forrása:</string>
+    <string id="30015">Használni kívánt nyelv</string>
+    <string id="30016">Előadó életrajzok tartalék forrása:</string>
+    <string id="30017">Előadó diszkográfiák tartalék forrása:</string>
+    <string id="30018">Előadó műfajok tartalék forrása</string>
+    <string id="30019">Előadó stílusok tartalék forrása:</string>
+    <string id="30020">Előadó életpályák tartalék forrása:</string>
+    <string id="30021">Tartalékok</string>
+    <string id="30022">Előadó miniképek engedélyezése a theaudiodb.com-ról</string>
+    <string id="30023">Előadó fanart engedélyezése a theaudiodb.com-ról</string>
+</strings>

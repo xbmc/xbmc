@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Spanish (Mexico) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/es_MX/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Obtener Miniaturas de Álbumes de fanart.tv</string>
+    <string id="30001">Obtener Miniaturas de Álbumes de Last.fm</string>
+    <string id="30002">Obtener Reviews de Álbumes de</string>
+    <string id="30003">Lenguaje Preferido</string>
+    <string id="30004">Obtener Ratings de Álbumes de</string>
+    <string id="30005">Obtener Estilos de Álbumes de</string>
+    <string id="30006">Obtener Atmósfera de Álbumes de</string>
+    <string id="30007">Obtener Temas de Álbumes de</string>
+    <string id="30008">Obtener Miniaturas de Álbumes de allmusic.com</string>
+    <string id="30009">Artwork</string>
+    <string id="30010">Vistas de álbum desde theaudiodb.com</string>
+</strings>

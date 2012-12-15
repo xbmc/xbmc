@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Lithuanian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/lt/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Paimti albumų miniatiūras iš fanart.tv</string>
+    <string id="30001">Paimti albumų miniatiūras iš Last.fm</string>
+    <string id="30002">Gauti albumo apžvalgą iš</string>
+    <string id="30003">     Pageidaujama kalba</string>
+    <string id="30004">Gauti albumo reitingą iš</string>
+    <string id="30005">Gauti albumo stilių iš</string>
+    <string id="30006">Gauti albumo žanrą iš</string>
+    <string id="30007">Gauti albumo temą iš</string>
+    <string id="30008">Paimti albumų miniatiūras iš allmusic.com</string>
+    <string id="30009">Iliustracijos</string>
+    <string id="30010">Paimti albumų miniatiūras iš  theaudiodb.com</string>
+</strings>

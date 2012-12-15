@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Russian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ru/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Получать иконки альбома с fanart.tv</string>
+    <string id="30001">Получать иконки альбома с Last.fm</string>
+    <string id="30002">Получать обзор альбома с</string>
+    <string id="30003">Язык предпочтения</string>
+    <string id="30004">Получать рейтинг альбома с</string>
+    <string id="30005">Получать стиль альбома с</string>
+    <string id="30006">Получать направление альбома с</string>
+    <string id="30007">Получать темы альбома с</string>
+    <string id="30008">Получать иконки альбома с allmusic.com</string>
+    <string id="30009">Обложка</string>
+    <string id="30010">Получать иконки альбома с theaudiodb.com</string>
+</strings>

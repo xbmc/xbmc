@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Lithuanian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/lt/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Naudoti DVD Order</string>
+    <string id="30001">Naudoti 'Absoliutus Užsakymas' (vienas sezonas)</string>
+    <string id="30002">Įjungti Fanart</string>
+    <string id="30003">Pageidaujamas(-mi) Posters</string>
+    <string id="30004">Kalba</string>
+</strings>

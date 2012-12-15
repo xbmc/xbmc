@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Czech language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/cs/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Získat náhledy alb z fanart.tv</string>
+    <string id="30001">Získat náhledy alb z Last.fm</string>
+    <string id="30002">Získat recenzi alba z</string>
+    <string id="30003">Upřednostňovaný jazyk</string>
+    <string id="30004">Získat hodnocení alba z</string>
+    <string id="30005">Získat styly alba z</string>
+    <string id="30006">Získat náladu alba z</string>
+    <string id="30007">Získat téma alba z</string>
+    <string id="30008">Získat náhledy alb z allmusic.com</string>
+    <string id="30009">Grafika</string>
+    <string id="30010">Získat náhledy alb z theaudiodb.com</string>
+</strings>

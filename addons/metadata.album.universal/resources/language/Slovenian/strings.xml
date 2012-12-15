@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Slovenian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sl/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Prenesi sličice albumov s fanart.tv</string>
+    <string id="30001">Prenesi sličice albumov z Last.fm</string>
+    <string id="30002">Prenesi recenzije albuma z</string>
+    <string id="30003">Privzet jezik</string>
+    <string id="30004">Prenesi ocene albuma z</string>
+    <string id="30005">Prenesi stil albuma z</string>
+    <string id="30006">Prenesi razpoloženja albuma z</string>
+    <string id="30007">Prenesi teme albuma z</string>
+    <string id="30008">Prenesi sličice albumov z allmusic.com</string>
+    <string id="30009">Grafike</string>
+    <string id="30010">Prenesi sličice albumov z allmusic.com</string>
+</strings>

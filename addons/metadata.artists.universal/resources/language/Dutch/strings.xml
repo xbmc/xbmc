@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Dutch language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/nl/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Gebruik Artiesten Fanart van HTBackdrops.com</string>
+    <string id="30001">Gebruik Artiesten Miniaturen van AllMusic.com</string>
+    <string id="30002">Gebruik Artiesten Miniaturen van Last.fm</string>
+    <string id="30003">Gebruik Artiesten Miniaturen van HTBackdrops.com</string>
+    <string id="30004">Gebruik Artiesten Fanart van Fanart.tv</string>
+    <string id="30005">Gebruik Artiesten Miniaturen van Fanart.tv</string>
+    <string id="30006">Haal Artiesten Biografie van</string>
+    <string id="30007">Artwork</string>
+    <string id="30008">Haal Artiesten Discografie van</string>
+    <string id="30009">Haal Artiesten Genre van</string>
+    <string id="30010">Haal Artiesten Stijl van</string>
+    <string id="30011">Haal Artiesten Levensduur van</string>
+    <string id="30012">Haal Artiesten Stemmingen van</string>
+    <string id="30014">Haal Artiesten Jaren Actief van</string>
+    <string id="30015">Voorkeurstaal</string>
+    <string id="30016">Val terug op Artiesten Biografie van</string>
+    <string id="30017">Val terug op Artiesten Discografie van</string>
+    <string id="30018">Val terug op Artiesten Genre van</string>
+    <string id="30019">Val terug op Artiesten Stijl van</string>
+    <string id="30020">Val terug op Artiesten Levensduur van </string>
+    <string id="30021">Terugvallen</string>
+    <string id="30022">Gebruik Artiesten Miniaturen van theAudioDB.com</string>
+    <string id="30023">Gebruik Artiesten Fanart van theAudioDB.com</string>
+</strings>
