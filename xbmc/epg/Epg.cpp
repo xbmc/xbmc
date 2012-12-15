@@ -828,7 +828,7 @@ CEpgInfoTagPtr CEpg::GetPreviousEvent(const CEpgInfoTag& tag) const
 CPVRChannelPtr CEpg::Channel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel;
+  return m_pvrChannel ? m_pvrChannel : g_PVRChannelGroups->GetChannelByEpgId(m_iEpgID);
 }
 
 int CEpg::ChannelID(void) const
@@ -853,6 +853,7 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
     m_pvrChannel = channel;
     for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
       it->second->SetPVRChannel(m_pvrChannel);
+    channel->SetEpgID(m_iEpgID);
   }
 }
 

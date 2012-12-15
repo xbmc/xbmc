@@ -177,6 +177,12 @@ namespace PVR
      */
     bool Persist(CPVRChannelGroup &group);
 
+    /*!
+     * @brief Reset all epg ids to 0
+     * @return True when reset, false otherwise.
+     */
+    bool ResetEPG(void);
+
     //@}
 
     /*! @name Client methods */

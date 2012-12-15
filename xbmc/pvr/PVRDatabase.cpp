@@ -838,6 +838,12 @@ int CPVRDatabase::GetClientId(const CStdString &strClientUid)
   return atol(strValue.c_str());
 }
 
+bool CPVRDatabase::ResetEPG(void)
+{
+  CStdString strQuery = FormatSQL("UPDATE channels SET idEpg = 0");
+  return ExecuteQuery(strQuery);
+}
+
 bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 {
   bool bReturn(false);

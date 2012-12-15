@@ -570,6 +570,7 @@ void CPVRManager::ResetEPG(void)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
 
+  m_database->ResetEPG();
   Stop();
   g_EpgContainer.Reset();
   Start();
