@@ -1230,7 +1230,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
   return false;
 }
 
-bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs)
+bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo /* = false */)
 {
   try
   {
@@ -1238,6 +1238,8 @@ bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs)
       return false; // not in the database
 
     CStdString strSQL=PrepareSQL("select * from albumview where idAlbum = %ld", idAlbum);
+    if (scrapedInfo) // require additional information
+      strSQL += " and idAlbumInfo > 0";
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
@@ -5183,7 +5185,7 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
   if (idAlbum > -1)
   {
     CAlbum album;
-    if (GetAlbumInfo(idAlbum,album,NULL))
+    if (GetAlbumInfo(idAlbum,album,NULL,true)) // true to force additional information
       SetPropertiesFromAlbum(item,album);
   }
 }
