@@ -62,6 +62,9 @@ private:
 
   CDVDStreamInfo      m_streaminfo;
   double              m_lastPts;
+
+
+  CCriticalSection    m_section;
 };
 
 
