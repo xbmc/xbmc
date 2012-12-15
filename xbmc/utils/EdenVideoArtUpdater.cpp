@@ -201,7 +201,9 @@ void CEdenVideoArtUpdater::Process()
     {
       handle->SetProgress(j, items2.Size());
       CFileItemPtr episode = items2[j];
-      string cachedThumb = GetCachedVideoThumb(*episode);
+      string cachedThumb = GetCachedEpisodeThumb(*episode);
+      if (!CFile::Exists(cachedThumb))
+        cachedThumb = GetCachedVideoThumb(*episode);
       episode->SetPath(episode->GetVideoInfoTag()->m_strFileNameAndPath);
       episode->GetVideoInfoTag()->m_strPictureURL.Parse();
 
