@@ -5180,8 +5180,10 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
     if (GetArtistInfo(idArtist,artist))
       SetPropertiesFromArtist(item,artist);
   }
-  int idAlbum = GetAlbumByName(item.GetMusicInfoTag()->GetAlbum(),
-                               item.GetMusicInfoTag()->GetArtist());
+  int idAlbum = item.GetMusicInfoTag()->GetAlbumId();
+  if (idAlbum <= 0)
+    idAlbum = GetAlbumByName(item.GetMusicInfoTag()->GetAlbum(),
+                             item.GetMusicInfoTag()->GetArtist());
   if (idAlbum > -1)
   {
     CAlbum album;
