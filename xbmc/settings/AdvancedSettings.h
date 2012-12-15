@@ -99,6 +99,7 @@ class CAdvancedSettings
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
     int m_audioHeadRoom;
+    int m_audioPALatency;
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
