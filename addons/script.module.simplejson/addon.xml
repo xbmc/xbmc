@@ -4,7 +4,7 @@
        version="2.0.10" 
        provider-name="code.google.com/simplejson">
   <requires>
-    <import addon="xbmc.python" version="2.0"/>
+    <import addon="xbmc.python" version="2.0.0"/>
   </requires>
   <extension point="xbmc.python.module"
              library="lib" />
