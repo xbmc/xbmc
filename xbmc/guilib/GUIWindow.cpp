@@ -357,15 +357,15 @@ void CGUIWindow::DoRender()
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
 
-void CGUIWindow::Render()
+void CGUIWindow::AfterRender()
 {
-  CGUIControlGroup::Render();
   // Check to see if we should close at this point
   // We check after the controls have finished rendering, as we may have to close due to
   // the controls rendering after the window has finished it's animation
   // we call the base class instead of this class so that we can find the change
   if (m_closing && !CGUIControlGroup::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
     Close(true);
+
 }
 
 void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
