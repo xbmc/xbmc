@@ -46,6 +46,8 @@
 #include "guilib/GraphicContext.h"
 #include "utils/log.h"
 
+//#define PROFILE 1
+
 using namespace std;
 
 class CPulldownCorrection
@@ -1281,6 +1283,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       if (m_iDroppedRequest > 5)
       {
         m_iDroppedRequest--; //decrease so we only drop half the frames
+        CLog::Log(LOGDEBUG,"%s Too many drops (%d)", __FUNCTION__,m_iDroppedRequest);
         return result | EOS_DROPPED;
       }
       m_iDroppedRequest++;
@@ -1312,7 +1315,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     double next      = fabs(m_dropbase - (m_droptime + iFrameDuration));
 
     if( next < current && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
+    {
+      CLog::Log(LOGDEBUG,"%s frame out of sequence: %f vs %f", __FUNCTION__,next,current);
       return result | EOS_DROPPED;
+    }
 #endif
     
     double frametime = (double)DVD_TIME_BASE / maxfps;
@@ -1351,7 +1357,10 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   }
 
   if (index < 0)
+  {
+    CLog::Log(LOGDEBUG,"%s renderer not ready. Dropping...", __FUNCTION__);
     return EOS_DROPPED;
+  }
 
   g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
 
