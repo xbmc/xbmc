@@ -151,7 +151,16 @@ void CExternalPlayer::Process()
     if (protocol == "musicdb")
       mainFile = CMusicDatabaseFile::TranslateUrl(url);
     if (protocol == "bluray")
-      mainFile = URIUtils::AddFileToFolder(url.GetHostName(), url.GetFileName());
+    {
+      CURL base(url.GetHostName());
+      if(base.GetProtocol() == "udf")
+      {
+        mainFile = base.GetHostName(); /* image file */
+        archiveContent = base.GetFileName();
+      }
+      else
+        mainFile = URIUtils::AddFileToFolder(base.Get(), url.GetFileName());
+    }
   }
 
   if (m_filenameReplacers.size() > 0)
