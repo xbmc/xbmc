@@ -1339,8 +1339,9 @@ bool CWinSystemOSX::IsObscured(void)
     // the whole XBMC window and therefore would make the framerate limiter
     // kicking in. Unfortunatly even the alpha of these windows is 1.0 so
     // we have to check the ownerName.
-    if (CFStringCompare(ownerName, CFSTR("Shades"), 0)      == kCFCompareEqualTo ||
-        CFStringCompare(ownerName, CFSTR("SmartSaver"), 0)  == kCFCompareEqualTo  )
+    if (CFStringCompare(ownerName, CFSTR("Shades"), 0)            == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("SmartSaver"), 0)        == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("Brightness Slider"), 0) == kCFCompareEqualTo)
       continue;
 
     CFDictionaryRef rectDictionary = (CFDictionaryRef)CFDictionaryGetValue(windowDictionary, kCGWindowBounds);
