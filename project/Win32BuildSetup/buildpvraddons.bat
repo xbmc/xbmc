@@ -44,7 +44,7 @@ GOTO work
 IF NOT EXIST "%TMP_DIR%" MD "%TMP_DIR%"
 
 REM clone the git repository into SOURCE_DIR
-CALL %GITEXE% clone %GIT_URL% "%SOURCE_DIR%" > NUL
+CALL %GITEXE% clone %GIT_URL% "%SOURCE_DIR%" > NUL 2>&1
 
 :build
 REM run DownloadBuildDeps.bat of xbmc-pvr-addons
