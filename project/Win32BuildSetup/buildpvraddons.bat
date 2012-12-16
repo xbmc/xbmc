@@ -45,10 +45,13 @@ IF NOT EXIST "%TMP_DIR%" MD "%TMP_DIR%"
 
 REM clone the git repository into SOURCE_DIR
 CALL %GITEXE% clone %GIT_URL% "%SOURCE_DIR%" > NUL 2>&1
+CD "%SOURCE_DIR%"
+REM get the proper revision
+CALL %GITEXE% checkout %VERSION% > NUL 2>&1
 
 :build
 REM run DownloadBuildDeps.bat of xbmc-pvr-addons
-CD "%SOURCE_DIR%\project\BuildDependencies"
+CD "project\BuildDependencies"
 CALL DownloadBuildDeps.bat > NUL 2>&1
 CD "%CUR_DIR%"
 
