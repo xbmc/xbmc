@@ -834,11 +834,13 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
   if (m_pvrChannel != channel)
   {
     if (channel)
+    {
       SetName(channel->ChannelName());
+      channel->SetEpgID(m_iEpgID);
+    }
     m_pvrChannel = channel;
     for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
       it->second->SetPVRChannel(m_pvrChannel);
-    channel->SetEpgID(m_iEpgID);
   }
 }
 
