@@ -1183,23 +1183,26 @@ namespace VIDEO
     movieDetails.m_fanart.Unpack();
     movieDetails.m_strPictureURL.Parse();
 
-    CGUIListItem::ArtMap art;
+    CGUIListItem::ArtMap art = pItem->GetArt();
 
     // get and cache thumb images
     vector<string> artTypes = CVideoThumbLoader::GetArtTypes(ContentToMediaType(content, pItem->m_bIsFolder));
     vector<string>::iterator i = find(artTypes.begin(), artTypes.end(), "fanart");
     if (i != artTypes.end())
       artTypes.erase(i); // fanart is handled below
-    bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end();
-
+    bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end() &&
+                        art.find("thumb") == art.end();
     // find local art
     if (useLocal)
     {
       for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
       {
-        std::string image = CVideoThumbLoader::GetLocalArt(*pItem, *i, bApplyToDir);
-        if (!image.empty())
-          art.insert(make_pair(*i, image));
+        if (art.find(*i) == art.end())
+        {
+          std::string image = CVideoThumbLoader::GetLocalArt(*pItem, *i, bApplyToDir);
+          if (!image.empty())
+            art.insert(make_pair(*i, image));
+        }
       }
       // find and classify the local thumb (backcompat) if available
       if (lookForThumb)
@@ -1239,7 +1242,7 @@ namespace VIDEO
 
     // get & save fanart image (treated separately due to it being stored in m_fanart)
     bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
-    if (!isEpisode)
+    if (!isEpisode && art.find("fanart") == art.end())
     {
       string fanart = GetFanart(pItem, useLocal);
       if (!fanart.empty())
