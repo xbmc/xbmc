@@ -603,8 +603,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       // show dialog that we're downloading the movie info
 
       // clear artwork
-      item->SetArt("thumb", "");
-      item->SetArt("fanart", "");
+      item->ClearArt();
 
       CFileItemList list;
       CStdString strPath=item->GetPath();
