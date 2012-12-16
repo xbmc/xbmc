@@ -485,7 +485,6 @@ private:
 
   float                   m_current_volume;
   bool                    m_change_volume;
-  bool                    m_stats;
   CDVDOverlayContainer    m_overlayContainer;
   ECacheState             m_caching;
 };
