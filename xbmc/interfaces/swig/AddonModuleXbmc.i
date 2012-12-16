@@ -51,6 +51,7 @@ using namespace xbmc;
 
 %feature("python:method:play") Player
 {
+    TRACE;
     PyObject *pObject = NULL;
     PyObject *pObjectListItem = NULL;
     char bWindowed = false;
