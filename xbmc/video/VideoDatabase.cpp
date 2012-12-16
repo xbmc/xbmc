@@ -1825,7 +1825,7 @@ bool CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVi
     CStdString sql = PrepareSQL("select * from musicvideoview where idMVideo=%i", idMVideo);
     if (!m_pDS->query(sql.c_str()))
       return false;
-    details = GetDetailsForMusicVideo(m_pDS);
+    details = GetDetailsForMusicVideo(m_pDS, true);
     return !details.IsEmpty();
   }
   catch (...)
@@ -3283,6 +3283,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
         details.m_showLink.push_back(m_pDS2->fv(0).get_asString());
     }
     m_pDS2->close();
+
+    // get streamdetails
+    GetStreamDetails(details);
   }
   return details;
 }
@@ -3385,16 +3388,19 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
     if (!m_pDS2->eof())
       details.m_fEpBookmark = m_pDS2->fv("bookmark.timeInSeconds").get_asFloat();
     m_pDS2->close();
+
+    // get streamdetails
+    GetStreamDetails(details);
   }
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
+CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS, bool getDetails /* = false */)
 {
-  return GetDetailsForMusicVideo(pDS->get_sql_record());
+  return GetDetailsForMusicVideo(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record* const record)
+CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record* const record, bool getDetails /* = false */)
 {
   CVideoInfoTag details;
 
@@ -3418,16 +3424,23 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  // get tags
-  CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'musicvideo' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idMVideo);
-  m_pDS2->query(strSQL.c_str());
-  while (!m_pDS2->eof())
+  if (getDetails)
   {
-    details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
-    m_pDS2->next();
-  }
+    // get tags
+    CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'musicvideo' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idMVideo);
+    m_pDS2->query(strSQL.c_str());
+    while (!m_pDS2->eof())
+    {
+      details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
+      m_pDS2->next();
+    }
+    m_pDS2->close();
 
-  details.m_strPictureURL.Parse();
+    details.m_strPictureURL.Parse();
+
+    // get streamdetails
+    GetStreamDetails(details);
+  }
   return details;
 }
 
@@ -8297,7 +8310,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
 
     while (!m_pDS->eof())
     {
-      CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS);
+      CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS, true);
       map<string, string> artwork;
       if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !singleFiles)
       {
