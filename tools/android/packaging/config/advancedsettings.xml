@@ -6,10 +6,6 @@
     <setting>videoplayer.pauseafterrefreshchange</setting>
     <setting>videoplayer.usedisplayasclock</setting>
     <setting>videoplayer.synctype</setting>
-    <setting>videoplayer.teletextenabled</setting>
-    <setting>subtitles.charset</setting>
-    <setting>dvds.playerregion</setting>
-    <setting>dvds.automenu</setting>
     <setting>audiocds</setting>
     <setting>karaoke</setting>
     <setting>videoscreen.screenmode</setting>
@@ -18,7 +14,6 @@
     <setting>videoscreen.testpattern</setting>
     <setting>audiooutput.mode</setting>
     <setting>audiooutput.channellayout</setting>
-    <setting>audiooutput.dontnormalizelevels</setting>
     <setting>audiooutput.audiodevice</setting>
     <setting>audiooutput.customdevice</setting>
     <setting>audiooutput.passthroughdevice</setting>
