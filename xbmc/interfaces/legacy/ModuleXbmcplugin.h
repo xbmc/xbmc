@@ -103,9 +103,10 @@ namespace XBMCAddon
      * sortMethod  : integer - number for sortmethod see FileItem.h.
      * label2Mask  : [opt] string - the label mask to use for the second label.  Defaults to '%D'
      *               applies to: SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,
-     *                           SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE
-     *                           SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL
-     *                           SORT_METHOD_LABEL_IGNORE_THE
+     *                           SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE,
+     *                           SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL,
+     *                           SORT_METHOD_LABEL_IGNORE_THE, SORT_METHOD_VIDEO_SORT_TITLE,
+     *                           SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE
      * 
      * example:
      *   - xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_TITLE)
@@ -214,6 +215,8 @@ namespace XBMCAddon
     SWIG_CONSTANT(int,SORT_METHOD_PLAYLIST_ORDER);
     SWIG_CONSTANT(int,SORT_METHOD_EPISODE);
     SWIG_CONSTANT(int,SORT_METHOD_VIDEO_TITLE);
+    SWIG_CONSTANT(int,SORT_METHOD_VIDEO_SORT_TITLE);
+    SWIG_CONSTANT(int,SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE);
     SWIG_CONSTANT(int,SORT_METHOD_PRODUCTIONCODE);
     SWIG_CONSTANT(int,SORT_METHOD_SONG_RATING);
     SWIG_CONSTANT(int,SORT_METHOD_MPAA_RATING);

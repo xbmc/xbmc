@@ -179,6 +179,7 @@ namespace XBMCAddon
        *     plotoutline   : string (Short Description)
        *     title         : string (Big Fan)
        *     originaltitle : string (Big Fan)
+       *     sorttitle     : string (Big Fan)
        *     duration      : string (3:18)
        *     studio        : string (Warner Bros.)
        *     tagline       : string (An awesome movie) - short description of movie
