@@ -1335,11 +1335,12 @@ bool CWinSystemOSX::IsObscured(void)
     if (CFStringCompare(ownerName, CFSTR("Dock"), 0) == kCFCompareEqualTo)
       continue;
 
-    // Shades is a tool for dimming the screen. It also claims to cover
+    // Ignore known brightness tools for dimming the screen. They claim to cover
     // the whole XBMC window and therefore would make the framerate limiter
-    // kicking in. Unfortunatly even the alpha of this window is 1.0 so
+    // kicking in. Unfortunatly even the alpha of these windows is 1.0 so
     // we have to check the ownerName.
-    if (CFStringCompare(ownerName, CFSTR("Shades"), 0) == kCFCompareEqualTo)
+    if (CFStringCompare(ownerName, CFSTR("Shades"), 0)      == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("SmartSaver"), 0)  == kCFCompareEqualTo  )
       continue;
 
     CFDictionaryRef rectDictionary = (CFDictionaryRef)CFDictionaryGetValue(windowDictionary, kCGWindowBounds);
