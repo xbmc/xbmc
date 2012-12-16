@@ -1302,7 +1302,9 @@ bool CWinSystemOSX::IsObscured(void)
 
   CGWindowListOption opts;
   opts = kCGWindowListOptionOnScreenAboveWindow | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);  if (!windowIDs)
+  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);  
+
+  if (!windowIDs)
     return m_obscured;
 
   CFArrayRef windowDescs = CGWindowListCreateDescriptionFromArray(windowIDs);
