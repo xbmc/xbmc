@@ -956,7 +956,6 @@ void CGUISettings::Initialize()
   AddBool(pvrm, "pvrmenu.infotimeout", 19179, true);
   AddBool(pvrm, "pvrmenu.closechannelosdonswitch", 19229, false);
   AddInt(pvrm, "pvrmenu.infotime", 19184, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddBool(pvrm, "pvrmenu.hidevideolength", 19169, true);
   AddSeparator(pvrm, "pvrmenu.sep1");
   AddString(pvrm, "pvrmenu.iconpath", 19018, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(pvrm, "pvrmenu.searchicons", 19167, "", BUTTON_CONTROL_STANDARD);
