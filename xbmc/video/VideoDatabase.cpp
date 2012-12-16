@@ -8845,11 +8845,12 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
 bool CVideoDatabase::ImportArtFromXML(const TiXmlNode *node, map<string, string> &artwork)
 {
   if (!node) return false;
-  CStdString art;
-  if (XMLUtils::GetString(node, "thumb", art))
-    artwork.insert(make_pair("thumb", art));
-  if (XMLUtils::GetString(node, "fanart", art))
-    artwork.insert(make_pair("fanart", art));
+  const TiXmlNode *art = node->FirstChild();
+  while (art && art->FirstChild())
+  {
+    artwork.insert(make_pair(art->ValueStr(), art->FirstChild()->ValueStr()));
+    art = art->NextSibling();
+  }
   return !artwork.empty();
 }
 
