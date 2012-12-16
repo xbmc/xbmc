@@ -121,9 +121,9 @@ namespace PVR
 
     /*!
      * @brief Load all channels from the clients.
-     * @return The amount of channels that were loaded.
+     * @return True when updated succesfully, false otherwise.
      */
-    int LoadFromClients(void);
+    bool LoadFromClients(void);
 
     /*!
      * @brief Check if this group is the internal group containing all channels.
@@ -160,9 +160,9 @@ namespace PVR
      * Load the channels from the database.
      * If no channels are stored in the database, then the channels will be loaded from the clients.
      *
-     * @return The amount of channels that were added.
+     * @return True when loaded successfully, false otherwise.
      */
-    int Load(void);
+    bool Load(void);
 
     /*!
      * @brief Update the vfs paths of all channels.

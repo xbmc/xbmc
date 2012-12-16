@@ -226,10 +226,13 @@ void CPVRManager::Process(void)
   g_EpgContainer.Stop();
 
   /* load the pvr data from the db and clients if it's not already loaded */
-  if (!Load())
+  while (!Load() && GetState() == ManagerStateStarting)
   {
-    CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data", __FUNCTION__);
-    return;
+    CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
+    if (m_guiInfo) m_guiInfo->Stop();
+    if (m_addons) m_addons->Stop();
+    Cleanup();
+    Sleep(1000);
   }
 
   if (GetState() == ManagerStateStarting)

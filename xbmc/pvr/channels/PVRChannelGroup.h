@@ -409,9 +409,9 @@ namespace PVR
 
     /*!
      * @brief Load the channels from the database.
-     * @return The amount of channels that were added or -1 if an error occured.
+     * @return True when loaded successfully, false otherwise.
      */
-    virtual int Load(void);
+    virtual bool Load(void);
 
     /*!
      * @brief Clear this channel list.
@@ -420,9 +420,9 @@ namespace PVR
 
     /*!
      * @brief Load the channels from the clients.
-     * @return The amount of channels that were added.
+     * @return True when loaded successfully, false otherwise.
      */
-    virtual int LoadFromClients(void);
+    virtual bool LoadFromClients(void);
 
     /*!
      * @brief Remove invalid channels and updates the channel numbers.
