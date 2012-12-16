@@ -624,7 +624,7 @@ void XBPython::Finalize()
     // Other methods that rely on this flag from an incorrect interpretation.
     m_bInitialized    = false;
     PyThreadState* curTs = (PyThreadState*)m_mainThreadState;
-    m_mainThreadState = NULL;
+    m_mainThreadState = NULL; // clear the main thread state before releasing the lock
     {
       CSingleExit exit(m_critSection);
       PyEval_AcquireLock();

@@ -158,6 +158,7 @@ namespace XBMCAddon
     {
       TRACE;
       Synchronize l(*this);
+      obj->Acquire();
       currentObjects.insert(obj);
     }
 
@@ -165,7 +166,8 @@ namespace XBMCAddon
     {
       TRACE;
       Synchronize l(*this);
-      currentObjects.erase(obj);
+      if (currentObjects.erase(obj) > 0)
+        obj->Release();
     }
 
     bool LanguageHook::HasRegisteredAddonClassInstance(AddonClass* obj)
