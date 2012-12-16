@@ -813,7 +813,7 @@ CEpgInfoTagPtr CEpg::GetPreviousEvent(const CEpgInfoTag& tag) const
 CPVRChannelPtr CEpg::Channel(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_pvrChannel ? m_pvrChannel : g_PVRChannelGroups->GetChannelByEpgId(m_iEpgID);
+  return m_pvrChannel;
 }
 
 int CEpg::ChannelID(void) const
