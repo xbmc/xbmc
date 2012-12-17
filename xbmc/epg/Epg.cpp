@@ -782,7 +782,22 @@ bool CEpg::IsRemovableTag(const CEpgInfoTag &tag) const
 
 bool CEpg::LoadFromClients(time_t start, time_t end)
 {
-  return UpdateFromScraper(start, end);
+  bool bReturn(false);
+  CPVRChannelPtr channel = Channel();
+  if (channel)
+  {
+    CEpg tmpEpg(channel);
+    if (tmpEpg.UpdateFromScraper(start, end))
+      bReturn = UpdateEntries(tmpEpg, !g_guiSettings.GetBool("epg.ignoredbforclient"));
+  }
+  else
+  {
+    CEpg tmpEpg(m_iEpgID, m_strName, m_strScraperName);
+    if (tmpEpg.UpdateFromScraper(start, end))
+      bReturn = UpdateEntries(tmpEpg, !g_guiSettings.GetBool("epg.ignoredbforclient"));
+  }
+
+  return bReturn;
 }
 
 CEpgInfoTagPtr CEpg::GetNextEvent(const CEpgInfoTag& tag) const
