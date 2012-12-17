@@ -56,6 +56,8 @@ public:
   
 protected:
   void DisplayQueuePop(void);
+  void UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture);
+  void BGRA_to_YUV420P(uint8_t *bgra_ptr, int bgra_stride, DVDVideoPicture *picture);
 
   static void VDADecoderCallback(
     void *decompressionOutputRefCon, CFDictionaryRef frameInfo,
@@ -72,11 +74,15 @@ protected:
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
   int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
   int32_t           m_max_ref_frames;
+  bool              m_use_cvBufferRef;
   
   bool              m_convert_bytestream;
   bool              m_convert_3byteTo4byteNALSize;
   DllAvUtil         *m_dllAvUtil;
   DllAvFormat       *m_dllAvFormat;
+
+  DllSwScale        *m_dllSwScale;
+  DVDVideoPicture   m_videobuffer;
 };
 
 #endif
