@@ -94,16 +94,6 @@ JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITranspo
   if (!videodatabase.GetMovieInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
-  {
-    CStdString fieldValue = itr->asString();
-    if (fieldValue == "streamdetails")
-    {
-      videodatabase.GetStreamDetails(infos);
-      break;
-    }
-  }
-
   HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
@@ -309,16 +299,6 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITrans
   if (!videodatabase.GetEpisodeInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
-  {
-    CStdString fieldValue = itr->asString();
-    if (fieldValue == "streamdetails")
-    {
-      videodatabase.GetStreamDetails(infos);
-      break;
-    }
-  }
-
   CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
   // We need to set the correct base path to get the valid fanart
   int tvshowid = infos.m_iIdShow;
@@ -388,16 +368,6 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITr
   CVideoInfoTag infos;
   if (!videodatabase.GetMusicVideoInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
-
-  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
-  {
-    CStdString fieldValue = itr->asString();
-    if (fieldValue == "streamdetails")
-    {
-      videodatabase.GetStreamDetails(infos);
-      break;
-    }
-  }
 
   HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
   return OK;
@@ -495,9 +465,6 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const CStdString &method, ITranspo
   if (!videodatabase.GetMovieInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  // get stream details
-  videodatabase.GetStreamDetails(infos);
-
   // get artwork
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
@@ -592,9 +559,6 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const CStdString &method, ITrans
     return InvalidParams;
   }
 
-  // get stream details
-  videodatabase.GetStreamDetails(infos);
-
   // get artwork
   std::map<std::string, std::string> artwork;
   videodatabase.GetArtForItem(infos.m_iDbId, infos.m_type, artwork);
@@ -634,9 +598,6 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const CStdString &method, ITr
     videodatabase.Close();
     return InvalidParams;
   }
-
-  // get stream details
-  videodatabase.GetStreamDetails(infos);
 
   // get artwork
   std::map<std::string, std::string> artwork;
@@ -796,24 +757,19 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &paramete
     return InternalError;
 
   bool additionalInfo = false;
-  bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "showlink" || fieldValue == "tag")
+    if (fieldValue == "cast" || fieldValue == "showlink" || fieldValue == "tag" || fieldValue == "streamdetails")
       additionalInfo = true;
-    else if (fieldValue == "streamdetails")
-      streamdetails = true;
   }
 
-  if (additionalInfo || streamdetails)
+  if (additionalInfo)
   {
     for (int index = 0; index < items.Size(); index++)
     {
       if (additionalInfo)
         videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      if (streamdetails)
-        videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
     }
   }
 
@@ -831,24 +787,19 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parame
     return InternalError;
 
   bool additionalInfo = false;
-  bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast")
+    if (fieldValue == "cast" || fieldValue == "streamdetails")
       additionalInfo = true;
-    else if (fieldValue == "streamdetails")
-      streamdetails = true;
   }
 
-  if (additionalInfo || streamdetails)
+  if (additionalInfo)
   {
     for (int index = 0; index < items.Size(); index++)
     {
       if (additionalInfo)
         videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      if (streamdetails)
-        videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
     }
   }
   
@@ -868,14 +819,14 @@ JSONRPC_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &par
   bool streamdetails = false;
   for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
-    if (itr->asString() == "streamdetails")
+    if (itr->asString() == "tag" || itr->asString() == "streamdetails")
       streamdetails = true;
   }
 
   if (streamdetails)
   {
     for (int index = 0; index < items.Size(); index++)
-      videodatabase.GetStreamDetails(*(items[index]->GetVideoInfoTag()));
+      videodatabase.GetMusicVideoInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
   }
 
   int size = items.Size();
