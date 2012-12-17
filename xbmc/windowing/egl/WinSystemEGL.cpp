@@ -122,7 +122,6 @@ bool CWinSystemEGL::InitWindowSystem()
     CreateWindow(temp);
   }
 
-  m_extensions = m_egl->GetExtensions(m_display);
   return CWinSystemBase::InitWindowSystem();
 }
 
@@ -364,16 +363,6 @@ void CWinSystemEGL::UpdateResolutions()
   }
 }
 
-bool CWinSystemEGL::IsExtSupported(const char* extension)
-{
-  std::string name;
-
-  name  = " ";
-  name += extension;
-  name += " ";
-
-  return m_extensions.find(name) != std::string::npos;
-}
 
 bool CWinSystemEGL::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
