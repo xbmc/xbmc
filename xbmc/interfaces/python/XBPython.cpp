@@ -43,6 +43,7 @@
 #include "interfaces/AnnouncementManager.h"
 
 #include "interfaces/legacy/Monitor.h"
+#include "interfaces/legacy/AddonUtils.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -74,12 +75,14 @@ XBPython::XBPython()
 
 XBPython::~XBPython()
 {
+  TRACE;
   CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -116,6 +119,7 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
 // message all registered callbacks that we started playing
 void XBPython::OnPlayBackStarted()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -146,6 +150,7 @@ void XBPython::OnPlayBackPaused()
 // message all registered callbacks that we resumed playing
 void XBPython::OnPlayBackResumed()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -161,6 +166,7 @@ void XBPython::OnPlayBackResumed()
 // message all registered callbacks that user stopped playing
 void XBPython::OnPlayBackStopped()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -176,6 +182,7 @@ void XBPython::OnPlayBackStopped()
 // message all registered callbacks that playback speed changed (FF/RW)
 void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -191,6 +198,7 @@ void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 // message all registered callbacks that player is seeking
 void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -206,6 +214,7 @@ void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 // message all registered callbacks that player chapter seeked
 void XBPython::OnPlayBackSeekChapter(int iChapter)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -221,6 +230,7 @@ void XBPython::OnPlayBackSeekChapter(int iChapter)
 // message all registered callbacks that next item has been queued
 void XBPython::OnQueueNextItem()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -235,12 +245,14 @@ void XBPython::OnQueueNextItem()
 
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   m_vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
   while (it != m_vecPlayerCallbackList.end())
@@ -254,12 +266,14 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 
 void XBPython::RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   m_vecMonitorCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
   while (it != m_vecMonitorCallbackList.end())
@@ -273,6 +287,7 @@ void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallba
 
 void XBPython::OnSettingsChanged(const CStdString &ID)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -288,6 +303,7 @@ void XBPython::OnSettingsChanged(const CStdString &ID)
 
 void XBPython::OnScreensaverActivated()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -302,6 +318,7 @@ void XBPython::OnScreensaverActivated()
 
 void XBPython::OnScreensaverDeactivated()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -316,6 +333,7 @@ void XBPython::OnScreensaverDeactivated()
 
 void XBPython::OnDatabaseUpdated(const std::string &database)
 {
+  TRACE;
  CSingleLock lock(m_critSection);
  if (m_bInitialized)
  {
@@ -330,6 +348,7 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
 
 void XBPython::OnAbortRequested(const CStdString &ID)
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
@@ -461,6 +480,7 @@ void XBPython::UnloadExtensionLibs()
 
 void XBPython::InitializeInterpreter(ADDON::AddonPtr addon)
 {
+  TRACE;
   {
     GilSafeSingleLock lock(m_critSection);
     initModule_xbmcgui();
@@ -483,6 +503,7 @@ void XBPython::InitializeInterpreter(ADDON::AddonPtr addon)
 
 void XBPython::DeInitializeInterpreter()
 {
+  TRACE;
 }
 
 /**
@@ -490,6 +511,7 @@ void XBPython::DeInitializeInterpreter()
 */
 void XBPython::Initialize()
 {
+  TRACE;
   CLog::Log(LOGINFO, "initializing python engine. ");
   CSingleLock lock(m_critSection);
   m_iDllScriptCounter++;
@@ -582,6 +604,7 @@ void XBPython::Initialize()
 */
 void XBPython::FinalizeScript()
 {
+  TRACE;
   CSingleLock lock(m_critSection);
   // for linux - we never release the library. its loaded and stays in memory.
   if (m_iDllScriptCounter)
@@ -592,14 +615,20 @@ void XBPython::FinalizeScript()
 }
 void XBPython::Finalize()
 {
+  TRACE;
   if (m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python shared library because no scripts are running anymore");
 
+    // set the m_bInitialized flag before releasing the lock. This will prevent
+    // Other methods that rely on this flag from an incorrect interpretation.
+    m_bInitialized    = false;
+    PyThreadState* curTs = (PyThreadState*)m_mainThreadState;
+    m_mainThreadState = NULL; // clear the main thread state before releasing the lock
     {
       CSingleExit exit(m_critSection);
       PyEval_AcquireLock();
-      PyThreadState_Swap((PyThreadState*)m_mainThreadState);
+      PyThreadState_Swap(curTs);
 
       Py_Finalize();
       PyEval_ReleaseLock();
@@ -619,8 +648,6 @@ void XBPython::Finalize()
     // The implementation for osx can never unload the python dylib.
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif
-    m_mainThreadState = NULL;
-    m_bInitialized    = false;
   }
 }
 
@@ -684,6 +711,7 @@ void XBPython::Process()
 
 bool XBPython::StopScript(const CStdString &path)
 {
+  TRACE;
   int id = getScriptId(path);
   if (id != -1)
   {

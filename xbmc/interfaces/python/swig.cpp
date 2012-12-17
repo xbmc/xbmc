@@ -235,12 +235,23 @@ namespace PythonBindings
 
   static bool handleInterpRegistrationForClean(XBMCAddon::AddonClass* c)
   {
+    TRACE;
     if(c){
-      PyThreadState* state = PyThreadState_Get();
       XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook> lh = 
-        XBMCAddon::Python::LanguageHook::GetIfExists(state->interp);
-      if (lh.isNotNull()) lh->UnregisterAddonClassInstance(c);
-      return true;
+        XBMCAddon::AddonClass::Ref<XBMCAddon::AddonClass>(c->GetLanguageHook());
+
+      if (lh.isNotNull())
+      {
+        lh->UnregisterAddonClassInstance(c);
+        return true;
+      }
+      else
+      {
+        PyThreadState* state = PyThreadState_Get();
+        lh = XBMCAddon::Python::LanguageHook::GetIfExists(state->interp);
+        if (lh.isNotNull()) lh->UnregisterAddonClassInstance(c);
+        return true;
+      }
     }
     return false;
   }
