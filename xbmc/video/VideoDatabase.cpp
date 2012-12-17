@@ -4208,11 +4208,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       std::string filename = i->second;
       bool update = URIUtils::UpdateUrlEncoding(filename) &&
-                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", i->second.c_str())) || m_pDS->num_rows() <= 0);
+                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", filename.c_str())) || m_pDS->num_rows() <= 0);
       m_pDS->close();
 
       if (update)
-        m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", i->second.c_str(), i->first));
+        m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", filename.c_str(), i->first));
     }
   }
   if (iVersion < 72)
