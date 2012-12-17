@@ -72,7 +72,10 @@ void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
   {
     // switched views, save current history
     if (m_currentSubwindow)
+    {
       m_currentSubwindow->m_history = m_history;
+      m_currentSubwindow->m_iSelected = m_viewControl.GetSelectedItem();
+    }
 
     // update m_history
     if (window)
