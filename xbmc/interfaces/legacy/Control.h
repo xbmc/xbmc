@@ -621,6 +621,8 @@ namespace XBMCAddon
      */
     class ControlList : public Control 
     {
+      void internAddListItem(AddonClass::Ref<ListItem> listitem, bool sendMessage) throw(WindowException);
+
     public:
       ControlList(long x, long y, long width, long height, const char* font = NULL,
                   const char* textColor = NULL, const char* buttonTexture = NULL,
