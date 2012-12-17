@@ -95,11 +95,11 @@ void CEdenVideoArtUpdater::Process()
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
       std::string type;
-      if (!art.empty() && CacheTexture(art, cachedThumb, type))
+      if (CacheTexture(art, cachedThumb, item->GetLabel(), type))
         artwork.insert(make_pair(type, art));
 
       art = CVideoInfoScanner::GetFanart(item.get(), true);
-      if (!art.empty() && CacheTexture(art, cachedFanart))
+      if (CacheTexture(art, cachedFanart, item->GetLabel()))
         artwork.insert(make_pair("fanart", art));
 
       if (artwork.empty())
@@ -129,11 +129,11 @@ void CEdenVideoArtUpdater::Process()
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, item->GetVideoInfoTag()->m_basePath != item->GetPath(), "thumb");
       std::string type;
-      if (!art.empty() && CacheTexture(art, cachedThumb, type))
+      if (CacheTexture(art, cachedThumb, item->GetLabel(), type))
         artwork.insert(make_pair(type, art));
 
       art = CVideoInfoScanner::GetFanart(item.get(), true);
-      if (!art.empty() && CacheTexture(art, cachedFanart))
+      if (CacheTexture(art, cachedFanart, item->GetLabel()))
         artwork.insert(make_pair("fanart", art));
 
       if (artwork.empty())
@@ -163,11 +163,11 @@ void CEdenVideoArtUpdater::Process()
     {
       CStdString art = CVideoInfoScanner::GetImage(item.get(), true, false, "thumb");
       std::string type;
-      if (!art.empty() && CacheTexture(art, cachedThumb, type))
+      if (CacheTexture(art, cachedThumb, item->GetLabel(), type))
         artwork.insert(make_pair(type, art));
 
       art = CVideoInfoScanner::GetFanart(item.get(), true);
-      if (!art.empty() && CacheTexture(art, cachedFanart))
+      if (CacheTexture(art, cachedFanart, item->GetLabel()))
         artwork.insert(make_pair("fanart", art));
 
       if (artwork.empty())
@@ -189,7 +189,7 @@ void CEdenVideoArtUpdater::Process()
       {
         std::string cachedSeason = GetCachedSeasonThumb(j->first, item->GetVideoInfoTag()->m_strPath);
         std::string type;
-        if (CacheTexture(j->second.begin()->second, cachedSeason, type))
+        if (CacheTexture(j->second.begin()->second, cachedSeason, "", type))
           db.SetArtForItem(idSeason, "season", type, j->second.begin()->second);
       }
     }
@@ -212,7 +212,7 @@ void CEdenVideoArtUpdater::Process()
           || (artwork.size() == 1 && artwork.find("thumb") != artwork.end()))
       {
         CStdString art = CVideoInfoScanner::GetImage(episode.get(), true, episode->GetVideoInfoTag()->m_basePath != episode->GetPath(), "thumb");
-        if (!art.empty() && CacheTexture(art, cachedThumb))
+        if (CacheTexture(art, cachedThumb, episode->GetLabel()))
           artwork.insert(make_pair("thumb", art));
         else
           artwork.insert(make_pair("thumb", ""));
@@ -262,7 +262,7 @@ void CEdenVideoArtUpdater::Process()
         string cachedThumb = GetCachedActorThumb(*item);
 
         string art = CScraperUrl::GetThumbURL(item->GetVideoInfoTag()->m_strPictureURL.GetFirstThumb());
-        if (!art.empty() && CacheTexture(art, cachedThumb))
+        if (CacheTexture(art, cachedThumb, item->GetLabel()))
           artwork.insert(make_pair("thumb", art));
         else
           artwork.insert(make_pair("thumb", ""));
@@ -277,16 +277,24 @@ void CEdenVideoArtUpdater::Process()
   items.Clear();
 }
 
-bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const std::string &cachedFile)
+bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const std::string &cachedFile, const std::string &label)
 {
   std::string type;
-  return CacheTexture(originalUrl, cachedFile, type);
+  return CacheTexture(originalUrl, cachedFile, label, type);
 }
 
-bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const std::string &cachedFile, std::string &type)
+bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const std::string &cachedFile, const std::string &label, std::string &type)
 {
-  if (!CFile::Exists(cachedFile))
+  if (originalUrl.empty())
+  {
+    CLog::Log(LOGERROR, "%s No original url for item %s", __FUNCTION__, label.c_str());
     return false;
+  }
+  if (!CFile::Exists(cachedFile))
+  {
+    CLog::Log(LOGERROR, "%s No cached art for item %s (should be %s)", __FUNCTION__, label.c_str(), cachedFile.c_str());
+    return false;
+  }
 
   CTextureDetails details;
   details.updateable = false;
@@ -301,7 +309,7 @@ bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const st
     else
       details.file = CTextureCache::GetCacheFile(originalUrl) + ".jpg";
 
-    CLog::Log(LOGDEBUG, "Caching image '%s' ('%s') to '%s':", originalUrl.c_str(), cachedFile.c_str(), details.file.c_str());
+    CLog::Log(LOGDEBUG, "Caching image '%s' ('%s') to '%s' for item '%s'", originalUrl.c_str(), cachedFile.c_str(), details.file.c_str(), label.c_str());
 
     uint32_t width = 0, height = 0;
     if (CPicture::CacheTexture(texture, width, height, CTextureCache::GetCachedPath(details.file)))
@@ -314,7 +322,7 @@ bool CEdenVideoArtUpdater::CacheTexture(const std::string &originalUrl, const st
       return true;
     }
   }
-  CLog::Log(LOGDEBUG, "Can't cache image '%s' ('%s')", originalUrl.c_str(), cachedFile.c_str());
+  CLog::Log(LOGERROR, "Can't cache image '%s' ('%s') for item '%s'", originalUrl.c_str(), cachedFile.c_str(), label.c_str());
   return false;
 }
 
