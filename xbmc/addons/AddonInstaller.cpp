@@ -41,6 +41,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "URL.h"
+#include "pvr/PVRManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -557,6 +558,12 @@ bool CAddonInstallJob::OnPreInstall()
       service->Stop();
     return true;
   }
+
+  if (m_addon->Type() == ADDON_PVRDLL)
+  {
+    // stop the pvr manager, so running pvr add-ons are stopped and closed
+    PVR::CPVRManager::Get().Stop();
+  }
   return false;
 }
 
@@ -670,6 +677,12 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     VECADDONS addons;
     addons.push_back(m_addon);
     CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
+  }
+
+  if (m_addon->Type() == ADDON_PVRDLL)
+  {
+    // (re)start the pvr manager
+    PVR::CPVRManager::Get().Start(true);
   }
 }
 
