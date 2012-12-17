@@ -43,7 +43,6 @@ public:
   virtual bool  ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool  SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void  UpdateResolutions();
-  virtual bool  IsExtSupported(const char* extension);
 
   virtual void  ShowOSMouse(bool show);
   virtual bool  HasCursor();
@@ -76,7 +75,6 @@ protected:
 
   CEGLWrapper           *m_egl;
   bool                  m_iVSyncMode;
-  std::string           m_extensions;
 };
 
 XBMC_GLOBAL_REF(CWinSystemEGL,g_Windowing);
