@@ -12,6 +12,7 @@ CFLAGS+=-DANDROID
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --host=$(HOST) --without-libssh2 \
 ac_cv_file__dev_urandom=yes \
+ac_cv_lib_ssl_SSL_connect=yes \
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
