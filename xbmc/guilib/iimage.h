@@ -35,9 +35,10 @@ public:
   virtual ~IImage() {};
 
   //virtual bool LoadImageFromFile(std::string imagePath)=0;
-  virtual bool LoadImageFromMemory()=0;
-  virtual bool CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile);
-  virtual bool ReleaseImage()=0;
+  virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)=0;
+  virtual bool Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)=0;
+  virtual bool CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile)=0;
+  virtual void ReleaseImage() {return;}
 
   unsigned int Width()              { return m_width; }
   unsigned int Height()             { return m_height; }

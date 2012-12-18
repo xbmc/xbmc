@@ -668,6 +668,7 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIWindow.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIWindowManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIWrappingListContainer.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\imagefactory.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\IWindowManagerCallback.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\Key.cpp" />
@@ -1038,6 +1039,7 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\iimage.h" />
+    <ClInclude Include="..\..\xbmc\guilib\imagefactory.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\Addon.h" />

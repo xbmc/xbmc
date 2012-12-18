@@ -37,3 +37,12 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
 
   return NULL;
 }
+
+IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& mimeType)
+{
+  if(mimeType.compare("image/jpeg") == 0)
+  {
+    return new CJpegIO();
+  }
+  return NULL;
+}
