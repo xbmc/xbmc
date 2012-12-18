@@ -33,7 +33,7 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
 {
   std::string strType = url.GetFileType();
 
-  if((strType == "jpg") || (strType == "tbn"))
+  if((strType == "jpg") || (strType == "tbn") || (strType == "jpeg"))
     return new CJpegIO();
 
   return new CXImage();
@@ -42,8 +42,6 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
 IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& mimeType)
 {
   if(mimeType.compare("image/jpeg") == 0)
-  {
     return new CJpegIO();
-  }
   return new CXImage();
 }

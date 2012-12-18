@@ -28,22 +28,16 @@ CXImage::CXImage()
 
 CXImage::~CXImage()
 {
-  m_dll.ReleaseImage(&m_image);
 }
 
-bool CXImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height, const std::string& mimeType)
+bool CXImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height, const std::string& strExt)
 {
   if (!m_dll.Load())
     return false;
 
   memset(&m_image, 0, sizeof(m_image));
 
-  CStdString ext = mimeType;
-  int nPos = ext.Find('/');
-  if (nPos > -1)
-    ext.Delete(0, nPos + 1);
-
-  if(!m_dll.LoadImageFromMemory(buffer, bufSize, ext.c_str(), width, height, &m_image))
+  if(!m_dll.LoadImageFromMemory(buffer, bufSize, strExt.c_str(), width, height, &m_image))
   {
     CLog::Log(LOGERROR, "Texture manager unable to load image from memory");
     return false;
