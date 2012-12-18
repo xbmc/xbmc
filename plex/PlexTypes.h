@@ -11,6 +11,7 @@
 #define WINDOW_DIALOG_RATING              10200
 #define WINDOW_DIALOG_TIMER               10201
 #define WINDOW_DIALOG_FILTER_SORT         10202
+#define WINDOW_DIALOG_MYPLEX_PIN          10203
 
 // Sent when the set of remote sources has changed
 #define GUI_MSG_UPDATE_REMOTE_SOURCES GUI_MSG_USER + 40
@@ -34,6 +35,9 @@
 #define GUI_MSG_SEARCH_HELPER_COMPLETE GUI_MSG_USER + 47
 
 #define GUI_MSG_UPDATE_FILTERS GUI_MSG_USER + 48
+
+#define GUI_MSG_MYPLEX_GOT_PIN GUI_MSG_USER + 60
+#define GUI_MSG_MYPLEX_GOT_TOKEN GUI_MSG_USER + 61
 
 typedef boost::shared_ptr<CFileItemList> CFileItemListPtr;
 

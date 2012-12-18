@@ -128,6 +128,7 @@
 #include "MyPlexManager.h"
 #include "ManualServerScanner.h"
 #include "PlexUtils.h"
+#include "plex/GUI/GUIDialogMyPlexPin.h"
 /* END PLEX */
 
 using namespace std;
@@ -2126,24 +2127,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 
     if (g_guiSettings.GetString("myplex.token").empty())
     {
-      // We're signing in.
-      if (MyPlexManager::Get().signIn())
-      {
-        // Change the status to show success.
-        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
-
-        // Change button to "sign out"
-        pControl->SetLabel(g_localizeStrings.Get(44003));
-        pSettingString->SetLabel(44003);
-
-        // Make sure we scan when we have changed this status.
-        MyPlexManager::Get().scanAsync();
-      }
-      else
-      {
-        // Change the status to reflect an error.
-        g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44012));
-      }
+      CGUIDialogMyPlexPin::ShowAndGetInput();
     }
     else
     {

@@ -25,6 +25,8 @@
 #include "guilib/LocalizeStrings.h"
 
 #include "GUIInfoManager.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -47,6 +49,7 @@ class MyPlexManager
     return *instance;
   }
   
+#if 0
   /// Sign in.
   bool signIn()
   {
@@ -90,7 +93,8 @@ class MyPlexManager
     
     return false;
   }
-  
+#endif
+
   /// Sign out.
   void signOut()
   {
@@ -114,6 +118,66 @@ class MyPlexManager
     // Notify.
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
     g_windowManager.SendThreadMessage(msg2);
+  }
+
+  bool CreatePinRequest(int* pin, int* pageId)
+  {
+    CCurlFile http;
+    http.SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
+    string url = GetBaseUrl(true) + "/pins.xml";
+
+    CStdString returnData;
+    if (http.Post(url, "", returnData))
+    {
+      TiXmlDocument doc;
+      doc.Parse(returnData.c_str());
+      if (doc.RootElement() != 0)
+      {
+        TiXmlElement* root=doc.RootElement();
+        TiXmlElement* code=root->FirstChildElement("code");
+        if (code && code->GetText())
+          *pin = atoi(code->GetText());
+        else
+          return false;
+
+        TiXmlElement* id=root->FirstChildElement("id");
+        if (id && id->GetText())
+          *pageId = atoi(id->GetText());
+        else
+          return false;
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool TryGetTokenFromPin(int pageId)
+  {
+    CCurlFile http;
+    http.SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
+    CStdString url;
+    url.Format("%s/pins/%d.xml", GetBaseUrl(true), pageId);
+
+    CStdString data;
+    if (http.Get(url, data))
+    {
+      dprintf("Got pin data: %s", data.c_str());
+      TiXmlDocument doc;
+      doc.Parse(data.c_str());
+      if (doc.RootElement() != 0)
+      {
+        TiXmlElement* root=doc.RootElement();
+        TiXmlElement* token=root->FirstChildElement("auth_token");
+        if(token && token->GetText())
+        {
+          g_guiSettings.SetString("myplex.token", token->GetText());
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
   
   /// Get the contents of a playlist.
@@ -252,12 +316,14 @@ class MyPlexManager
   {
     dprintf("Scanning myPlex.");
     
+#if 0
     // If this is the first time through, sign in again, just to make sure everything is still valid.
     if (m_firstRun)
     {
       signIn();
       m_firstRun = false;
     }
+#endif
 
     m_didFetchThumbs = false;
     CFileItemList servers;
@@ -493,4 +559,38 @@ class MyPlexManager
 
   map<string, PlexServerPtr> m_remoteServers;
   vector<CFileItemPtr> m_sharedSections;
+};
+
+class MyPlexPinLogin : public CThread
+{
+  public:
+    MyPlexPinLogin() : CThread("MyPlexPinLoginThread")
+    {};
+
+    virtual void Process()
+    {
+      int pageId, pin;
+      if (MyPlexManager::Get().CreatePinRequest(&pin, &pageId))
+      {
+        CGUIMessage msg(GUI_MSG_MYPLEX_GOT_PIN, 0, WINDOW_DIALOG_MYPLEX_PIN, pin, 0);
+        g_windowManager.SendMessage(msg, WINDOW_DIALOG_MYPLEX_PIN);
+
+        bool gotToken = false;
+        while (!gotToken && !m_bStop)
+        {
+          if (MyPlexManager::Get().TryGetTokenFromPin(pageId))
+          {
+            CGUIMessage msg(GUI_MSG_MYPLEX_GOT_TOKEN, 0, WINDOW_DIALOG_MYPLEX_PIN, 0, 0);
+            g_windowManager.SendMessage(msg, WINDOW_DIALOG_MYPLEX_PIN);
+
+            g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
+            MyPlexManager::Get().scanAsync();
+
+            return;
+          }
+
+          Sleep(5000);
+        }
+      }
+    }
 };

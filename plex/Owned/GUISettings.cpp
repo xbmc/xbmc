@@ -413,8 +413,8 @@ void CGUISettings::Initialize()
   AddString(myPlex, "myplex.status", 15000, "", EDIT_CONTROL_INPUT, true);
   SetString("myplex.status", g_localizeStrings.Get(GetString("myplex.token").empty() ? 44010 : 44011));
   AddSeparator(NULL,"myplex.separator");
-  AddString(myPlex, "myplex.email", 44000, "", EDIT_CONTROL_INPUT, true, 44000);
-  AddString(myPlex, "myplex.password", 44001, "", EDIT_CONTROL_HIDDEN_INPUT, true, 44001);
+  // Button.
+  AddString(myPlex, "myplex.signin", GetString("myplex.token").empty() ? 44002 : 44003, "", BUTTON_CONTROL_STANDARD);
 
   //   -> Remote myPlex library quality.
   map<int,int> transcodeQualityMap;
@@ -424,8 +424,6 @@ void CGUISettings::Initialize()
   AddInt(myPlex, "myplex.remoteplexquality", 13149, -1, transcodeQualityMap, SPIN_CONTROL_TEXT);
   AddBool(myPlex, "myplex.searchsharedlibraries", 13143, true);
 
-  // Button.
-  AddString(myPlex, "myplex.signin", GetString("myplex.token").empty() ? 44002 : 44003, "", BUTTON_CONTROL_STANDARD);
 
   CSettingsCategory* vs = AddCategory(SETTINGS_SYSTEM, "videoscreen", 21373);
 

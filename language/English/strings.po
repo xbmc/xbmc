@@ -12266,6 +12266,26 @@ msgctxt "#44031"
 msgid "SORTING"
 msgstr ""
 
+msgctxt "#44100"
+msgid "Sign in to myPlex"
+msgstr ""
+
+msgctxt "#44101"
+msgid "From your computer go to http://my.plexapp.com/pin"
+msgstr ""
+
+msgctxt "#44102"
+msgid "retrieving code..."
+msgstr ""
+
+msgctxt "#44103"
+msgid "and enter this code:"
+msgstr ""
+
+msgctxt "#44104"
+msgid "Hooray we are signed in!"
+msgstr ""
+
 #### These are error strings shown from channels
 #### errorcode + 50000
 msgctxt "#52000"

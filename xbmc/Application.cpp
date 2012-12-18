@@ -351,6 +351,7 @@
 #include "plex/GUI/GUIPlexMediaWindow.h"
 #include "plex/GUI/GUIDialogFilterSort.h"
 #include "plex/GUI/GUIPlexMusicWindow.h"
+#include "plex/GUI/GUIDialogMyPlexPin.h"
 /* END PLEX */
 
 using namespace std;
@@ -1431,6 +1432,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIPlexMediaWindow);
     g_windowManager.Add(new CGUIPlexMusicWindow);
 #endif
+    g_windowManager.Add(new CGUIDialogMyPlexPin);
     /* END PLEX */
 
     /* window id's 3000 - 3100 are reserved for python */
