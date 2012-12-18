@@ -505,6 +505,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "firstgenre",       LISTITEM_FIRST_GENRE },
                                   { "stardiffuse",      LISTITEM_STAR_DIFFUSE },
                                   { "grandparentthumb", LISTITEM_GRANDPARENT_THUMB },
+                                  { "durationstr",      LISTITEM_DURATION_STRING },
                                   /* END PLEX */
                                   { "icon",             LISTITEM_ICON },
                                   { "actualicon",       LISTITEM_ACTUAL_ICON },
@@ -4759,6 +4760,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, CStdSt
       CStdString count;
       count.Format("%i", item->m_iprogramCount);
       return count;
+    }
+  case LISTITEM_DURATION_STRING:
+    {
+      if (item->HasVideoInfoTag())
+      {
+        if (item->GetVideoInfoTag()->GetDuration() > 0)
+          return StringUtils::SecondsToTimeString(item->GetVideoInfoTag()->GetDuration(), TIME_FORMAT_GUESS);
+      }
+      else
+        return GetItemLabel(item, LISTITEM_DURATION);
     }
   case LISTITEM_DURATION:
     {

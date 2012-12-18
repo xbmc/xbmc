@@ -1230,7 +1230,7 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         // Duration.
         const char* pDuration = el.Attribute("duration");
         if (pDuration && strlen(pDuration) > 0)
-          theVideoInfo.m_duration = atoi(pDuration);
+          theVideoInfo.m_duration = atoi(pDuration) / 1000;
 
         // Viewed.
         theVideoInfo.m_playCount = viewCount;
@@ -1369,7 +1369,7 @@ class PlexMediaDirectory : public PlexMediaNode
 
     // Duration.
     if (el.Attribute("duration"))
-      tag.m_duration = atoi(el.Attribute("duration"));
+      tag.m_duration = atoi(el.Attribute("duration")) / 1000;
 
     CFileItemPtr newItem(new CFileItem(tag));
     newItem->m_bIsFolder = true;
@@ -1564,7 +1564,7 @@ class PlexMediaVideo : public PlexMediaNode
 
     const char* pDuration = el.Attribute("duration");
     if (pDuration && strlen(pDuration) > 0)
-      videoInfo.m_duration = atoi(pDuration);
+      videoInfo.m_duration = atoi(pDuration) / 1000;
 
     // Path to the track itself.
     CURL url2(pItem->GetPath());

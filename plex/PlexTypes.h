@@ -80,6 +80,7 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 #define LISTITEM_THUMB2             (LISTITEM_START + 172)
 #define LISTITEM_THUMB3             (LISTITEM_START + 173)
 #define LISTITEM_THUMB4             (LISTITEM_START + 174)
+#define LISTITEM_DURATION_STRING    (LISTITEM_START + 175)
 
 #define PLAYER_HAS_MUSIC_PLAYLIST   90
 
