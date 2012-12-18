@@ -1134,10 +1134,7 @@ bool CPVRClients::UpdateAddons(void)
 void CPVRClients::Notify(const Observable &obs, const ObservableMessage msg)
 {
   if (msg == ObservableMessageAddons)
-  {
     UpdateAddons();
-    UpdateAndInitialiseClients();
-  }
 }
 
 bool CPVRClients::GetClient(const CStdString &strId, ADDON::AddonPtr &addon) const
