@@ -341,8 +341,9 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
           return true;
         }
       }
-      delete pImage;
+      
     }
+    delete pImage;
     CLog::Log(LOGDEBUG, "%s - Load of %s failed. Falling back to ImageLib", __FUNCTION__, texturePath.c_str());
   }
 
@@ -382,8 +383,8 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
           return true;
         }
       }
-      delete pImage;
     }
+    delete pImage;
   }
 
   return true;

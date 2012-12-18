@@ -31,6 +31,7 @@ public:
     m_originalWidth  = 0;
     m_originalHeight = 0;
     m_orientation    = 0;
+    m_hasAlpha   = false;
   };
   virtual ~IImage() {};
 

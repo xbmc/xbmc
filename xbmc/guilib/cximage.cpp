@@ -99,5 +99,8 @@ bool CXImage::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
 
 bool CXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile)
 {
-  return false;
+  if (!buffer || !m_dll.Load()) 
+    return false;
+
+  return m_dll.CreateThumbnailFromSurface(buffer, width, height, format, destFile.c_str());
 }

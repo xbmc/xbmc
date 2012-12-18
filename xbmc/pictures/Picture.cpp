@@ -34,6 +34,7 @@
 #include "DllSwScale.h"
 #include "guilib/JpegIO.h"
 #include "guilib/Texture.h"
+#include "guilib/imagefactory.h"
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"
 #endif
@@ -54,13 +55,16 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
     }
     delete omxImage;
 #endif
-    CJpegIO jpegImage;
-    if (jpegImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
-      return true;
   }
-  DllImageLib dll;
-  if (!buffer || !dll.Load()) return false;
-  return dll.CreateThumbnailFromSurface((BYTE *)buffer, width, height, stride, thumbFile.c_str());
+
+  IImage* pImage = ImageFactory::CreateLoader(thumbFile);
+  if(pImage != NULL && pImage->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
+  {
+    delete pImage;
+    return true;
+  }
+  delete pImage;
+  return false;
 }
 
 CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile)
