@@ -21,8 +21,8 @@
 		<posx>0</posx>
 		<texture background="true">arrow-big.png</texture>
 		<colordiffuse>orange</colordiffuse>
-		<animation effect="fade" start="0" end="100" time="600" condition="true">Visible</animation>
-		<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
+		<animation effect="fade" start="0" end="100" time="300" condition="true">Visible</animation>
+		<animation effect="fade" start="100" end="0" time="100" condition="true">Hidden</animation>
 	</include>
 	<include name="ListItemTitle1">
 		<posx>95</posx>
@@ -661,8 +661,8 @@
 							<width>900</width>
 							<height>200</height>
 							<include>Black</include>
-							<animation effect="fade" start="0" end="40" time="600" condition="true">Visible</animation>
-							<animation effect="fade" start="40" end="0" time="0" condition="true">Hidden</animation>
+							<animation effect="fade" start="0" end="40" time="300" condition="true">Visible</animation>
+							<animation effect="fade" start="40" end="0" time="200" condition="true">Hidden</animation>
 							<visible>[Control.IsVisible(11000) + Control.HasFocus(11001)]</visible>
 						</control>
 						<control type="label" id="8002">
@@ -718,8 +718,8 @@
 							<width>900</width>
 							<height>200</height>
 							<include>Black</include>
-							<animation effect="fade" start="0" end="40" time="600" condition="true">Visible</animation>
-							<animation effect="fade" start="40" end="0" time="0" condition="true">Hidden</animation>
+							<animation effect="fade" start="0" end="40" time="300" condition="true">Visible</animation>
+							<animation effect="fade" start="40" end="0" time="200" condition="true">Hidden</animation>
 							<visible>[Control.IsVisible(11001) + Control.HasFocus(11000)]</visible>
 						</control>
 						<control type="image">
