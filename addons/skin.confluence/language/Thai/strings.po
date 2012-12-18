@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.1
+# Addon version: 2.1.2
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -119,11 +119,11 @@ msgstr "เวลาสิ้นสุด"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "เรียง: มากไปน้อย"
+msgstr "เรียง: น้อยไปมาก"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "เรียง: น้อยไปมาก"
+msgstr "เรียง: มากไปน้อย"
 
 msgctxt "#31055"
 msgid "Open playlist"

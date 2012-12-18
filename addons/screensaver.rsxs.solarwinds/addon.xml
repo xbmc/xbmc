@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.0"
+  version="1.0.1"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -56,7 +56,7 @@
     <description lang="bg">Това е скрийнсейвър, който очарова с частиците си. Ще откриете, че можете да създадете изключително голям брой различни модели.</description>
     <description lang="ca">Aquest és un estalvi de pantalla amb uns efectes de partícules fascinants. Veurà que pot obtenir un nombre increïble de patrons diferents.</description>
     <description lang="cs">Spořič obrazovky s velmi fascinujícími částicovými efekty. Zjistíte, že můžete dosáhnout úžasného množství různých vzorů.</description>
-    <description lang="da">Dette er en meget tryllebindende pauseskærm med partikeleffekter. Du vil opdage at man kan opnå et forbløffende antal af forskellige mønstre.</description>
+    <description lang="da">Dette er en meget tryllebindende pauseskærm med partikeleffekter. Du vil opdage, at man kan opnå et forbløffende antal af forskellige mønstre.</description>
     <description lang="de">Dies ist ein faszinierender Bildschirmschoner mit Partikeleffekten. Du kannst eine verblüffend große Anzahl an verschiedenen Animationen einstellen.</description>
     <description lang="el">Αυτή είναι μία μαγευτική σωματιδιακή προφύλαξη οθόνης. Θα διαπιστώσετε ότι μπορείτε να επιτύχετε έναν απίστευτο αριθμό διαφορετικών σχεδίων.</description>
     <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>

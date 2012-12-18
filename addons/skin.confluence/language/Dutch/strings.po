@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.1
+# Addon version: 2.1.2
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -463,7 +463,7 @@ msgstr "Eerste sessie hulp..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Deze tab betekend dat er een menu met extra opties voor deze sectie aan de zijkant van het scherm beschikbaar is. Voor toegang tot het menu, navigeer naar links met de afstandsbediening of toetsenbord of ga met de muisaanwijzer naar de tab. \n[CR][CR]Klik \"Ok\" om het dialoogscherm te sluiten. Deze zal niet meer getoond worden. "
+msgstr "Deze tab betekent dat er een menu met extra opties voor deze sectie aan de zijkant van het scherm beschikbaar is. Voor toegang tot het menu, navigeer naar links met de afstandsbediening of toetsenbord of ga met de muisaanwijzer naar de tab. \n[CR][CR]Klik \"Ok\" om het dialoogscherm te sluiten. Deze zal niet meer getoond worden. "
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"

@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.1
+# Addon version: 2.1.2
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -179,7 +179,11 @@ msgstr "Gjem 'sett'-flagg fra videofilnavn [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Inaktive hovedmenyknapper"
+msgstr "Gjem hovedmenyknapper"
+
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "Skru på egendefinert bakgrunn"
 
 msgctxt "#31111"
 msgid "Hide"
@@ -229,9 +233,13 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Sangtekster"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr "Gjem Fanart i full skjerm visulasjon"
+
 msgctxt "#31132"
 msgid "Lyrics Add-on"
-msgstr "Tekst tillegg"
+msgstr "Sangtekst tillegg"
 
 msgctxt "#31133"
 msgid "Subtitle Add-on"
@@ -259,7 +267,7 @@ msgstr "Video OSD"
 
 msgctxt "#31200"
 msgid "Shortcuts"
-msgstr "Hurtigsti"
+msgstr "Snarveier"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
@@ -441,9 +449,41 @@ msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
 msgstr "[B]KONFIGURER TJENESTEINNSTILLINGER[/B][CR][CR]Konfigurer kontroll av XBMC via UPnP og HTTP · Konfigurer deling[CR]Slå på zeroconf · Konfigurer AirPlay"
 
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "Først kjør hjelp"
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Velg din XBMC brukerprofil[CR]for å logge inn og fortsette"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "Live TV"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Legg til gruppe"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Gi nytt navn på gruppe"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Slett gruppe"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Ledige[CR]Grupper"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Tidtaker stilt"
+
+msgctxt "#31511"
+msgid "Channel Options"
+msgstr "Kanal instillinger"
 
 msgctxt "#31901"
 msgid "36 Hour Forecast"
@@ -472,3 +512,7 @@ msgstr "Mulighet for nedbør"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Henter værvarsel..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Kart og varsler"
