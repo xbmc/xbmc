@@ -103,6 +103,68 @@
 		<value condition="ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem.Plot)">$INFO[Container(11000).ListItem.Plot]</value>
 		<!--><value>No plot available (debug).</value>-->
 	</variable>
+	<include name="HomeListItemFullInfoFlags">		
+		<control type="grouplist">
+			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+			<width>310</width>
+			<align>center</align>
+			<visible>[Control.HasFocus(11000)]</visible>
+			<posy>27</posy>
+			<orientation>horizontal</orientation>
+			<itemgap>40</itemgap>
+			<control type="image">
+				<visible>!IsEmpty(Container(11000).Listitem.Art(mediaTag::videoResolution))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Container(11000).Listitem.Art(mediaTag::videoResolution)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="image">
+				<visible>!IsEmpty(Container(11000).Listitem.Art(mediaTag::audioCodec))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Container(11000).Listitem.Art(mediaTag::audioCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="image">
+				<visible>!IsEmpty(Container(11000).Listitem.Art(mediaTag::audioChannels))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Container(11000).Listitem.Art(mediaTag::audioChannels)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+		</control>
+		<control type="grouplist">
+			<animation effect="fade" start="0" end="60" time="0" condition="true">Conditional</animation>
+			<width>310</width>
+			<align>center</align>
+			<visible>[Control.HasFocus(11001)]</visible>
+			<posy>27</posy>
+			<orientation>horizontal</orientation>
+			<itemgap>40</itemgap>
+			<control type="image">
+				<visible>!IsEmpty(Container(11001).Listitem.Art(mediaTag::videoResolution))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Container(11001).Listitem.Art(mediaTag::videoResolution)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="image">
+				<visible>!IsEmpty(Container(11001).Listitem.Art(mediaTag::audioCodec))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Container(11001).Listitem.Art(mediaTag::audioCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="image">
+				<visible>!IsEmpty(Container(11001).Listitem.Art(mediaTag::audioChannels))</visible>
+				<height>18</height>
+				<width min="1" max="95">auto</width>
+				<info>Container(11001).Listitem.Art(mediaTag::audioChannels)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+		</control>
+	</include>
 	<!-- slide for HomeListItemFullInfo -->
 	<include name="HomeListItemFullInfoSlide">
 		<animation effect="slide" start="0" end="391" time="200" tween="out" condition="[ControlGroup(7001).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]] | [ControlGroup(7002).HasFocus + [Container(11000).ListItem.Type(movie) | Container(11000).ListItem.Type(episode)]]">Conditional</animation>
@@ -271,6 +333,12 @@
 							<textcolor>white</textcolor>
 							<shadowcolor>ff222222</shadowcolor>
 						</control>
+					</control>
+					<!-- media flags -->
+					<control type="group">
+						<posy>650</posy>
+						<posx>34</posx>
+						<include>HomeListItemFullInfoFlags</include>
 					</control>
 				</control>
 			</control>

@@ -20,7 +20,7 @@
 				<colordiffuse>orange</colordiffuse>
 				<aspectratio>keep</aspectratio>
 				<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
-				<visible>true</visible>
+				<visible>!Control.Isvisible(999)</visible>
 			</control>
 			<control type="image">
 				<posx>372</posx>
