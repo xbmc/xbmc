@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3278,6 +3278,10 @@ msgctxt "#2050"
 msgid "Runtime"
 msgstr "Spilletid"
 
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Tom liste"
+
 msgctxt "#2100"
 msgid "Script failed! : %s"
 msgstr "Skript mislyktes! : %s"
@@ -3690,9 +3694,17 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Låst oppføring"
 
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Ingen nedlasting er nødvendig."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Reaktiver lås"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Vil du oppdatere den nå?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -5574,6 +5586,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (invertert)"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Kansellerer ..."
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Skriv inn artistnavn"
@@ -5830,6 +5846,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "eller bruk uttrykk for å finne eksakte treff, slik som \"Trollmannen fra Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Finn lignende programmer"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Importerer EPG fra klienter"
@@ -5849,6 +5869,10 @@ msgstr "Enhetsstatus"
 msgctxt "#19008"
 msgid "Signal quality"
 msgstr "Signalkvalitet"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
 
 msgctxt "#19014"
 msgid "Fixed"
@@ -6454,6 +6478,14 @@ msgctxt "#19212"
 msgid "This list contains changes"
 msgstr "Denne listen inneholder endringer"
 
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Alle radio-kanaler"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Alle tv-kanaler"
+
 msgctxt "#19218"
 msgid "Visible"
 msgstr "Synlig"
@@ -6593,6 +6625,22 @@ msgstr "* Alle opptak"
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
 msgstr "Ingen PVR-tillegg ble funnet"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Konflikt advarsel"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Konflikt feil"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Innspilling konflikt"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Innspilling feil"
 
 msgctxt "#19279"
 msgid "Client specific"
@@ -7421,6 +7469,10 @@ msgstr "Vennligst vent"
 msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
+
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Kunngjøre bibliotek oppdateringer via UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -8510,6 +8562,10 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr "Ekstern lagring"
 
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Sett episode teller"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Plassering av undertittel"
@@ -9141,6 +9197,10 @@ msgstr "Vær"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (standard)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "jenesten for vær informasjon"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"

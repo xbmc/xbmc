@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3174,6 +3174,10 @@ msgctxt "#1412"
 msgid "windy"
 msgstr "tuulista"
 
+msgctxt "#1413"
+msgid "Patches"
+msgstr "Paikat"
+
 msgctxt "#1414"
 msgid "Thunderstorm"
 msgstr "ukkosmyrskyä"
@@ -3214,6 +3218,14 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "utua"
 
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "Pilvistä"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Rakeita"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Rakeita"
@@ -3233,6 +3245,10 @@ msgstr "Pölyä"
 msgctxt "#1432"
 msgid "Sand"
 msgstr "Hiekkaa"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "Hiekkamyrsky"
 
 msgctxt "#1438"
 msgid "Small"
@@ -5614,6 +5630,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Synk. parilliset"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Peruutetaan..."
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Anna esittäjän nimi"
@@ -6889,6 +6909,14 @@ msgstr "* Kaikki nauhoitukset"
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
 msgstr "PVR-lisäosia ei löytynyt"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "Tarvitset virittimen, ohjelmiston, ja"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "lisäosa, joka mahdollistaa ohjelmiston käyttää nauhoitusta."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
@@ -10469,10 +10497,6 @@ msgstr "Älä käytä kustomoitua näppäinkarttaa tälle laitteellle"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Aktivoi joystick- ja PAD-ohjaintuki"
-
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Poista käytöstä joystick kun iMON on käytössä"
 
 msgctxt "#35500"
 msgid "Location"

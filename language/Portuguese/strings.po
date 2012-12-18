@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Activar suporte para joystick e gamepad"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Desactivar o joystick quando o iMON está presente"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Desactivar joystick sempre que o dispositivo esteja presente"
 
 msgctxt "#35500"
 msgid "Location"

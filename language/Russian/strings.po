@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6016,7 +6016,7 @@ msgstr "Радио"
 
 msgctxt "#19022"
 msgid "Hidden"
-msgstr "Скрытый"
+msgstr "Скрытые"
 
 msgctxt "#19023"
 msgid "TV channels"
@@ -10212,7 +10212,7 @@ msgstr "Сведения"
 
 msgctxt "#33030"
 msgid "Outlook"
-msgstr "Ожидается"
+msgstr "Прогноз"
 
 msgctxt "#33031"
 msgid "Coverflow"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Включить поддержку джойстика и геймпада"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Отключить джойстик при наличии iMON"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Отключить джойстик, когда присутствует это устройство"
 
 msgctxt "#35500"
 msgid "Location"
