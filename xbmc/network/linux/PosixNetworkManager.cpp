@@ -41,6 +41,8 @@
 #include "android/bionic_supplement/bionic_supplement.h"
 #endif
 
+#define ARPHRD_80211    801   // wifi
+
 // CPosixNetworkManager and CPosixConnection rely on the debian/ubuntu method of using
 // /etc/network/interfaces and pre-up/post-down scripts to handle bringing connection
 // to wired/wireless networks. The pre-up/post-down scripts handle wireless/wpa though
@@ -204,14 +206,14 @@ void CPosixNetworkManager::FindNetworkInterfaces()
 {
   m_connections.clear();
 
-  FILE* fp = fopen("/proc/net/dev", "r");
+  FILE *fp = fopen("/proc/net/dev", "r");
   if (!fp)
     return;
 
   int n, linenum = 0;
-  char*  line = NULL;
+  char   *line = NULL;
   size_t linel = 0;
-  char*  interfaceName;
+  char   *interfaceName;
   bool   managed = CanManageConnections();
 
   while (getdelim(&line, &linel, '\n', fp) > 0)
@@ -233,8 +235,22 @@ void CPosixNetworkManager::FindNetworkInterfaces()
     struct ifreq ifr;
     memset(&ifr, 0x00, sizeof(ifr));
     strcpy(ifr.ifr_name, interfaceName);
+    std::string essid = "Wired";
+    ConnectionType connection = NETWORK_CONNECTION_TYPE_WIRED;
+    EncryptionType encryption = NETWORK_CONNECTION_ENCRYPTION_NONE;
+
     if (ioctl(m_socket, SIOCGIFHWADDR, &ifr) >= 0)
     {
+#if defined(TARGET_ANDROID)
+      // Android cannot SIOCSIWSCAN (permissions error)
+      // So just flag as wifi with unknown encryption and use it.
+      if (IsWireless(m_socket, interfaceName))
+      {
+        essid = "Wifi";
+        connection = NETWORK_CONNECTION_TYPE_WIFI;
+        encryption = NETWORK_CONNECTION_ENCRYPTION_UNKNOWN;
+      }
+#else
       if (IsWireless(m_socket, interfaceName))
       {
         // get the list of access points on this interface, try this 3 times
@@ -243,9 +259,12 @@ void CPosixNetworkManager::FindNetworkInterfaces()
           retryCount++;
       }
       else
+#endif
       {
-        // and ignore loopback
-        if (ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER && !(ifr.ifr_flags & IFF_LOOPBACK))
+        // and ignore loopback, we also include ARPHRD_80211 but that will only
+        // apply if we are running on android.
+        if ((ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER || ifr.ifr_hwaddr.sa_family == ARPHRD_80211)
+           && !(ifr.ifr_flags & IFF_LOOPBACK))
         {
           char macaddress[1024] = {0};
           if (ioctl(m_socket, SIOCGIFHWADDR, &ifr) >= 0)
@@ -257,9 +276,7 @@ void CPosixNetworkManager::FindNetworkInterfaces()
               ifr.ifr_hwaddr.sa_data[4], ifr.ifr_hwaddr.sa_data[5]);
           }
           m_connections.push_back(CConnectionPtr(new CPosixConnection(managed,
-             m_socket, interfaceName, macaddress, "Wired",
-             NETWORK_CONNECTION_TYPE_WIRED, NETWORK_CONNECTION_ENCRYPTION_NONE, 100)));
-          //printf("CPosixNetworkManager::GetConnections access_point(%s) \n", access_point);
+             m_socket, interfaceName, macaddress, essid.c_str(), connection, encryption, 100)));
         }
       }
     }
@@ -412,8 +429,6 @@ bool CPosixNetworkManager::FindWifiConnections(const char *interfaceName)
           m_connections.push_back(CConnectionPtr(new CPosixConnection(managed,
             m_socket, interfaceName, macaddress, essid,
             NETWORK_CONNECTION_TYPE_WIFI, encryption, quality)));
-          //printf("CPosixNetworkManager::GetWifiConnections add access_point(%s), quality(%d), signalLevel(%d)\n",
-          //  access_point.c_str(), quality, signalLevel);
           memcpy(macaddress, cur_macaddress, sizeof(macaddress));
         }
         // reset encryption for parsing next access point
@@ -476,8 +491,6 @@ bool CPosixNetworkManager::FindWifiConnections(const char *interfaceName)
     m_connections.push_back(CConnectionPtr(new CPosixConnection(managed,
       m_socket, interfaceName, macaddress, essid,
       NETWORK_CONNECTION_TYPE_WIFI, encryption, quality)));
-    //printf("CPosixNetworkManager::GetWifiConnections add access_point(%s), quality(%d), signalLevel(%d)\n",
-    //  access_point.c_str(), quality, signalLevel);
   }
 
   free(res_buf);

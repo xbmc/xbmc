@@ -45,7 +45,7 @@
   #include <net/if_arp.h>
 #endif
 
-#ifdef TARGET_ANDROID
+#if defined(TARGET_ANDROID)
   #include "android/bionic_supplement/bionic_supplement.h"
   #include "sys/system_properties.h"
 #endif
@@ -354,9 +354,13 @@ ConnectionState CPosixConnection::GetState() const
     if (wrq.u.essid.length <= 0)
       return NETWORK_CONNECTION_STATE_DISCONNECTED;
 
+#if !defined(TARGET_ANDROID)
     std::string test_essid(essid, wrq.u.essid.length);
+    // Since Android cannot SIOCSIWSCAN (permissions error),
+    // m_essid was defaulted to 'Wifi'. So ignore this check.
     if (m_essid.find(test_essid) == std::string::npos)
       return NETWORK_CONNECTION_STATE_DISCONNECTED;
+#endif
   }
 
   // finally, we need to see if we have a gateway assigned to our interface.
