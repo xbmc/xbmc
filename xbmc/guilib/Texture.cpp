@@ -322,7 +322,7 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   if (Ext.Equals(".jpg") || Ext.Equals(".jpeg") || Ext.Equals(".tbn"))
   {
     IImage* pImage = ImageFactory::CreateLoader(texturePath);
-    if(pImage->LoadImageFromMemory(inputBuff, inputBuffSize, maxWidth, maxHeight))
+    if(pImage != NULL && pImage->LoadImageFromMemory(inputBuff, inputBuffSize, maxWidth, maxHeight))
     {
       if (pImage->Width() > 0 && pImage->Height() > 0)
       {
@@ -340,8 +340,8 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
           return true;
         }
       }
+      delete pImage;
     }
-    delete pImage;
     CLog::Log(LOGDEBUG, "%s - Load of %s failed. Falling back to ImageLib", __FUNCTION__, texturePath.c_str());
   }
 
@@ -382,7 +382,7 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   if (mimeType == "image/jpeg")
   {
     IImage* pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
-    if(pImage->LoadImageFromMemory(buffer, size, maxWidth, maxHeight))
+    if(pImage != NULL && pImage->LoadImageFromMemory(buffer, size, maxWidth, maxHeight))
     {
       if (pImage->Width() > 0 && pImage->Height() > 0)
       {
@@ -397,8 +397,8 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
           return true;
         }
       }
+      delete pImage;
     }
-    delete pImage;
   }
 
   DllImageLib dll;
