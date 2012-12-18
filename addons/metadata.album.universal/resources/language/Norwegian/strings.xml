@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Norwegian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/no/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Hent Album Thumbs fra fanart.tv</string>
+    <string id="30001">Hent Album Thumbs fra Last.fm</string>
+    <string id="30002">Hent Album Omtaler fra</string>
+    <string id="30003">Foretrukket Språk</string>
+    <string id="30004">Hent Album Omtale fra</string>
+    <string id="30005">Hent Album Stiler fra</string>
+    <string id="30006">Hent Album Humør fra</string>
+    <string id="30007">Hent Album Temaer fra</string>
+    <string id="30008">Hent Album Thumbs fra allmusic.com</string>
+    <string id="30009">Artwork</string>
+    <string id="30010">Hent Album Thumbs fra theaudiodb.com</string>
+</strings>

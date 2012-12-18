@@ -9,8 +9,8 @@ SET DEPS_DIR=..\BuildDependencies
 SET TMP_DIR=%DEPS_DIR%\tmp
 
 SET LIBNAME=xbmc-pvr-addons
-SET VERSION=1409bbaa9248646372cf5c838def8c49c90e6e11
-SET SOURCE=%LIBNAME%-%VERSION%
+SET VERSION=528780fab48a63637fd959f68cc996af2a272217
+SET SOURCE=%LIBNAME%
 SET GIT_URL=git://github.com/opdenkamp/%LIBNAME%.git
 SET SOURCE_DIR=%TMP_DIR%\%SOURCE%
 SET BUILT_ADDONS_DIR=%SOURCE_DIR%\addons
@@ -44,11 +44,14 @@ GOTO work
 IF NOT EXIST "%TMP_DIR%" MD "%TMP_DIR%"
 
 REM clone the git repository into SOURCE_DIR
-CALL %GITEXE% clone %GIT_URL% "%SOURCE_DIR%" > NUL
+CALL %GITEXE% clone %GIT_URL% "%SOURCE_DIR%" > NUL 2>&1
+CD "%SOURCE_DIR%"
+REM get the proper revision
+CALL %GITEXE% checkout %VERSION% > NUL 2>&1
 
 :build
 REM run DownloadBuildDeps.bat of xbmc-pvr-addons
-CD "%SOURCE_DIR%\project\BuildDependencies"
+CD "project\BuildDependencies"
 CALL DownloadBuildDeps.bat > NUL 2>&1
 CD "%CUR_DIR%"
 

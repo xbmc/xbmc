@@ -70,7 +70,8 @@ CPVRManager::CPVRManager(void) :
     m_database(NULL),
     m_bFirstStart(true),
     m_progressHandle(NULL),
-    m_managerState(ManagerStateStopped)
+    m_managerState(ManagerStateStopped),
+    m_bOpenPVRWindow(false)
 {
   ResetProperties();
 }
@@ -129,21 +130,24 @@ void CPVRManager::ResetProperties(void)
 class CPVRManagerStartJob : public CJob
 {
 public:
-  CPVRManagerStartJob(void) {}
+  CPVRManagerStartJob(bool bOpenPVRWindow = false) :
+    m_bOpenPVRWindow(bOpenPVRWindow) {}
   ~CPVRManagerStartJob(void) {}
 
   bool DoWork(void)
   {
-    g_PVRManager.Start(false);
+    g_PVRManager.Start(false, m_bOpenPVRWindow);
     return true;
   }
+private:
+  bool m_bOpenPVRWindow;
 };
 
-void CPVRManager::Start(bool bAsync /* = false */)
+void CPVRManager::Start(bool bAsync /* = false */, bool bOpenPVRWindow /* = false */)
 {
   if (bAsync)
   {
-    CPVRManagerStartJob *job = new CPVRManagerStartJob;
+    CPVRManagerStartJob *job = new CPVRManagerStartJob(bOpenPVRWindow);
     CJobManager::GetInstance().AddJob(job, NULL);
     return;
   }
@@ -159,6 +163,7 @@ void CPVRManager::Start(bool bAsync /* = false */)
 
   ResetProperties();
   SetState(ManagerStateStarting);
+  m_bOpenPVRWindow = bOpenPVRWindow;
 
   /* create and open database */
   if (!m_database)
@@ -221,10 +226,13 @@ void CPVRManager::Process(void)
   g_EpgContainer.Stop();
 
   /* load the pvr data from the db and clients if it's not already loaded */
-  if (!Load())
+  while (!Load() && GetState() == ManagerStateStarting)
   {
-    CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data", __FUNCTION__);
-    return;
+    CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
+    if (m_guiInfo) m_guiInfo->Stop();
+    if (m_addons) m_addons->Stop();
+    Cleanup();
+    Sleep(1000);
   }
 
   if (GetState() == ManagerStateStarting)
@@ -235,6 +243,12 @@ void CPVRManager::Process(void)
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
   g_EpgContainer.Start();
+
+  if (m_bOpenPVRWindow)
+  {
+    m_bOpenPVRWindow = false;
+    CApplicationMessenger::Get().ExecBuiltIn("XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)");
+  }
 
   bool bRestart(false);
   while (GetState() == ManagerStateStarted && m_addons && m_addons->HasConnectedClients() && !bRestart)
@@ -559,6 +573,7 @@ void CPVRManager::ResetEPG(void)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
 
+  m_database->ResetEPG();
   Stop();
   g_EpgContainer.Reset();
   Start();

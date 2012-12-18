@@ -90,6 +90,10 @@ public:
    */
   bool Render();
 
+  /*! \brief Do any post render activities.
+   */
+  void AfterRender();
+
   /*! \brief Per-frame updating of the current window and any dialogs
    FrameMove is called every frame to update the current window and any dialogs
    on screen. It should only be called from the application thread.

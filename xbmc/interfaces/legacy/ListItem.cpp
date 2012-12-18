@@ -336,6 +336,8 @@ namespace XBMCAddon
             item->GetVideoInfoTag()->m_strTitle = value;
           else if (key == "originaltitle")
             item->GetVideoInfoTag()->m_strOriginalTitle = value;
+          else if (key == "sorttitle")
+            item->GetVideoInfoTag()->m_strSortTitle = value;
           else if (key == "duration")
             item->GetVideoInfoTag()->m_duration = CVideoInfoTag::GetDurationFromMinuteString(value);
           else if (key == "studio")

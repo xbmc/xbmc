@@ -127,6 +127,7 @@ static const AVOption options[]={
 {"careful",    "consider things that violate the spec and have not been seen in the wild as errors", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_CAREFUL }, INT_MIN, INT_MAX, D, "err_detect"},
 {"compliant",  "consider all spec non compliancies as errors", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_COMPLIANT }, INT_MIN, INT_MAX, D, "err_detect"},
 {"aggressive", "consider things that a sane encoder shouldnt do as an error", 0, AV_OPT_TYPE_CONST, {.dbl = AV_EF_AGGRESSIVE }, INT_MIN, INT_MAX, D, "err_detect"},
+{"correct_ts_overflow", "correct single timestamp overflows", OFFSET(correct_ts_overflow), AV_OPT_TYPE_INT, {.dbl = 1}, 0, 1, D},
 {NULL},
 };
 

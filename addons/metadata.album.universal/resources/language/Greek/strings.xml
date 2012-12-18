@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Greek language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/el/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Μικρογραφίες Άλμπουμ από fanart.tv</string>
+    <string id="30001">Μικρογραφίες Άλμπουμ από Last.fm</string>
+    <string id="30002">Κριτική Άλμπουμ από</string>
+    <string id="30003">Προτιμώμενη Γλώσσα</string>
+    <string id="30004">Αξιολόγηση Άλμπουμ από</string>
+    <string id="30005">Στυλ Άλμπουμ από</string>
+    <string id="30006">Διαθέσεις Άλμπουμ από</string>
+    <string id="30007">Θέματα Άλμπουμ από</string>
+    <string id="30008">Μικρογραφίες Άλμπουμ από allmusic.com</string>
+    <string id="30009">Εικόνες</string>
+    <string id="30010">Μικρογραφίες Άλμπουμ από theaudiodb.com</string>
+</strings>

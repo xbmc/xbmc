@@ -1183,12 +1183,17 @@ namespace XBMCAddon
 
     void ControlList::addItemStream(const String& fileOrUrl, bool sendMessage) throw(UnimplementedException,WindowException)
     {
-      addListItem(ListItem::fromString(fileOrUrl),sendMessage);
+      internAddListItem(ListItem::fromString(fileOrUrl),sendMessage);
     }
 
     void ControlList::addListItem(const XBMCAddon::xbmcgui::ListItem* pListItem, bool sendMessage) throw(UnimplementedException,WindowException)
     {
-      if (pListItem == NULL)
+      internAddListItem(pListItem,sendMessage);
+    }
+
+    void ControlList::internAddListItem(AddonClass::Ref<ListItem> pListItem, bool sendMessage) throw (WindowException)
+    {
+      if (pListItem.isNull())
         throw WindowException("NULL ListItem passed to ControlList::addListItem");
 
       // add item to objects vector

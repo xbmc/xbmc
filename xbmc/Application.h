@@ -153,7 +153,7 @@ public:
   void StopUPnPRenderer();
   void StartUPnPServer();
   void StopUPnPServer();
-  void StartPVRManager();
+  void StartPVRManager(bool bOpenPVRWindow = false);
   void StopPVRManager();
   bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);

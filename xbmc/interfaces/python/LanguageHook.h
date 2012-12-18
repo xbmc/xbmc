@@ -51,7 +51,9 @@ namespace XBMCAddon
       CCriticalSection crit;
       std::set<AddonClass*> currentObjects;
 
-      static std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> > hooks;
+      // This constructor is only used to instantiate the global LanguageHook
+      inline LanguageHook() : 
+        XBMCAddon::LanguageHook("Python::LanguageHook(Global)"), m_interp(NULL)  {  }
 
     public:
 

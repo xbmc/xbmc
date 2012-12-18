@@ -374,8 +374,7 @@ bool CEpg::Load(void)
   int iEntriesLoaded = database->Get(*this);
   if (iEntriesLoaded <= 0)
   {
-    CLog::Log(LOGNOTICE, "EPG - %s - no database entries found for table '%s'.",
-        __FUNCTION__, m_strName.c_str());
+    CLog::Log(LOGDEBUG, "EPG - %s - no database entries found for table '%s'.", __FUNCTION__, m_strName.c_str());
   }
   else
   {
@@ -593,27 +592,6 @@ CDateTime CEpg::GetLastDate(void) const
     last = m_tags.rbegin()->second->StartAsUTC();
 
   return last;
-}
-
-//@}
-
-/** @name Protected methods */
-//@{
-
-bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
-{
-  bool bReturn = true;
-  CSingleLock lock(m_critSection);
-
-  m_strName        = epg.m_strName;
-  m_strScraperName = epg.m_strScraperName;
-  if (epg.m_pvrChannel)
-    SetChannel(epg.m_pvrChannel);
-
-  if (bUpdateDb)
-    bReturn = Persist();
-
-  return bReturn;
 }
 
 //@}
@@ -871,7 +849,10 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
   if (m_pvrChannel != channel)
   {
     if (channel)
+    {
       SetName(channel->ChannelName());
+      channel->SetEpgID(m_iEpgID);
+    }
     m_pvrChannel = channel;
     for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
       it->second->SetPVRChannel(m_pvrChannel);

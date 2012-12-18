@@ -408,7 +408,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_ACTIVATE:
       {
         if( WA_INACTIVE != wParam )
-          g_Joystick.Acquire();
+          g_Joystick.Reinitialize();
 
         bool active = g_application.m_AppActive;
         if (HIWORD(wParam))

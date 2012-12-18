@@ -1463,8 +1463,16 @@ bool CApplication::Initialize()
       CJSONRPC::Initialize();
 #endif
       ADDON::CAddonMgr::Get().StartServices(false);
-      StartPVRManager();
-      g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+      if (g_SkinInfo->GetFirstWindow() == WINDOW_PVR)
+      {
+        g_windowManager.ActivateWindow(WINDOW_HOME);
+        StartPVRManager(true);
+      }
+      else
+      {
+        StartPVRManager(false);
+        g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+      }
     }
 
   }
@@ -1907,10 +1915,10 @@ void CApplication::StopZeroconf()
 #endif
 }
 
-void CApplication::StartPVRManager()
+void CApplication::StartPVRManager(bool bOpenPVRWindow /* = false */)
 {
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
-    g_PVRManager.Start(true);
+    g_PVRManager.Start(true, bOpenPVRWindow);
 }
 
 void CApplication::StopPVRManager()

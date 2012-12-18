@@ -246,12 +246,21 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   CStdString strPath(strFile);
   CStdString filename;
   CStdString root;
+  CStdString ext(URIUtils::GetExtension(strPath));
 
   if(strPath.Left(7).Equals("bluray:"))
   {
     CURL url(strPath);
     root     = url.GetHostName();
     filename = URIUtils::GetFileName(url.GetFileName());
+  }
+  else if(ext == ".iso"
+       || ext == ".img")
+  {
+    CURL url("udf://");
+    url.SetHostName(strPath);
+    root     = url.Get();
+    filename = "index.bdmv";
   }
   else
   {
@@ -271,17 +280,6 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     }
     root     = strPath;
     filename = URIUtils::GetFileName(strFile);
-  }
-
-
-  /* translate to udf file system if needed */
-  CStdString ext(URIUtils::GetExtension(root));
-  if(ext == ".iso"
-  || ext == ".img")
-  {
-    CURL url("udf://");
-    url.SetHostName(root);
-    root = url.Get();
   }
 
   if (!m_dll)

@@ -108,7 +108,7 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group)
     m_members.push_back(group.m_members.at(iPtr));
 }
 
-int CPVRChannelGroup::Load(void)
+bool CPVRChannelGroup::Load(void)
 {
   /* make sure this container is empty before loading */
   Unload();
@@ -120,7 +120,12 @@ int CPVRChannelGroup::Load(void)
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
         __FUNCTION__, iChannelCount, m_strGroupName.c_str());
 
-  Update();
+  if (!Update())
+  {
+    CLog::Log(LOGERROR, "PVRChannelGroup - %s - failed to update channels", __FUNCTION__);
+    return false;
+  }
+
   if (Size() - iChannelCount > 0)
   {
     CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
@@ -132,7 +137,7 @@ int CPVRChannelGroup::Load(void)
   g_guiSettings.RegisterObserver(this);
   m_bLoaded = true;
 
-  return Size();
+  return true;
 }
 
 void CPVRChannelGroup::Unload(void)
@@ -146,7 +151,7 @@ bool CPVRChannelGroup::Update(void)
 {
   if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED ||
       !g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
-    return false;
+    return true;
 
   CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);
   PVRChannels_tmp.LoadFromClients();
@@ -571,14 +576,10 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
   return Size() - iChannelCount;
 }
 
-int CPVRChannelGroup::LoadFromClients(void)
+bool CPVRChannelGroup::LoadFromClients(void)
 {
-  int iCurSize = Size();
-
   /* get the channels from the backends */
-  g_PVRClients->GetChannelGroupMembers(this);
-
-  return Size() - iCurSize;
+  return g_PVRClients->GetChannelGroupMembers(this) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)

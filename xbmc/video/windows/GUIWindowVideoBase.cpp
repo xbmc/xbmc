@@ -638,8 +638,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2)
       // show dialog that we're downloading the movie info
 
       // clear artwork
-      item->SetArt("thumb", "");
-      item->SetArt("fanart", "");
+      item->ClearArt();
 
       CFileItemList list;
       CStdString strPath=item->GetPath();
@@ -1654,9 +1653,13 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item)
   if (iPlaylist != PLAYLIST_NONE && g_playlistPlayer.IsShuffled(iPlaylist))
      g_playlistPlayer.SetShuffle(iPlaylist, false);
 
+  CFileItemPtr movieItem(new CFileItem(*item));
+  if(!ShowPlaySelection(movieItem))
+    return false;
+
   // Call the base method to actually queue the items
   // and start playing the given item
-  return CGUIMediaWindow::OnPlayAndQueueMedia(item);
+  return CGUIMediaWindow::OnPlayAndQueueMedia(movieItem);
 }
 
 void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)

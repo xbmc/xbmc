@@ -5,7 +5,7 @@
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
-    <import addon="xbmc.gui" version="4.00"/>
+    <import addon="xbmc.gui" version="4.0.0"/>
   </requires>
   <extension
     point="xbmc.gui.skin"

@@ -1230,7 +1230,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
   return false;
 }
 
-bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs)
+bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo /* = false */)
 {
   try
   {
@@ -1238,6 +1238,8 @@ bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs)
       return false; // not in the database
 
     CStdString strSQL=PrepareSQL("select * from albumview where idAlbum = %ld", idAlbum);
+    if (scrapedInfo) // require additional information
+      strSQL += " and idAlbumInfo > 0";
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
@@ -1614,7 +1616,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from albumview order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from albumview where strAlbum != '' order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -5178,12 +5180,14 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
     if (GetArtistInfo(idArtist,artist))
       SetPropertiesFromArtist(item,artist);
   }
-  int idAlbum = GetAlbumByName(item.GetMusicInfoTag()->GetAlbum(),
-                               item.GetMusicInfoTag()->GetArtist());
+  int idAlbum = item.GetMusicInfoTag()->GetAlbumId();
+  if (idAlbum <= 0)
+    idAlbum = GetAlbumByName(item.GetMusicInfoTag()->GetAlbum(),
+                             item.GetMusicInfoTag()->GetArtist());
   if (idAlbum > -1)
   {
     CAlbum album;
-    if (GetAlbumInfo(idAlbum,album,NULL))
+    if (GetAlbumInfo(idAlbum,album,NULL,true)) // true to force additional information
       SetPropertiesFromAlbum(item,album);
   }
 }
@@ -5280,7 +5284,7 @@ bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaTy
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    CStdString sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i) AND media_type='artist'", mediaType.c_str(), mediaType.c_str(), mediaId);
+    CStdString sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i AND iOrder=0) AND media_type='artist'", mediaType.c_str(), mediaType.c_str(), mediaId);
     m_pDS2->query(sql.c_str());
     while (!m_pDS2->eof())
     {
@@ -5299,7 +5303,7 @@ bool CMusicDatabase::GetArtistArtForItem(int mediaId, const std::string &mediaTy
 
 string CMusicDatabase::GetArtistArtForItem(int mediaId, const string &mediaType, const string &artType)
 {
-  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i) AND media_type='artist' AND type='%s'", mediaType.c_str(), mediaType.c_str(), mediaId, artType.c_str());
+  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=(SELECT idArtist from %s_artist WHERE id%s=%i AND iOrder=0) AND media_type='artist' AND type='%s'", mediaType.c_str(), mediaType.c_str(), mediaId, artType.c_str());
   return GetSingleValue(query, m_pDS2);
 }
 

@@ -1078,16 +1078,11 @@ XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
 
 # Audio encoders
-if test "x$use_libmp3lame" = "xyes"; then
-    AC_CHECK_HEADER([lame/lame.h],
-    [XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])],
-    AC_MSG_ERROR(lame/lame.h not found)
-  )
-elif test "x$use_libmp3lame" != "xno"; then
-  AC_CHECK_HEADER([lame/lame.h],
-    [XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])],
-    AC_MSG_NOTICE(lame/lame.h not found)
-  )
+if test "x$use_libmp3lame" != "xno"; then
+  XB_FIND_SONAME([LAMEENC], [mp3lame], [use_libmp3lame])
+  if test "x$use_libmp3lame" != "xno"; then
+    AC_CHECK_HEADER([lame/lame.h],, AC_MSG_ERROR($missing_headers))
+  fi
 fi
 AS_CASE([x$use_libmp3lame],
   [xno],[

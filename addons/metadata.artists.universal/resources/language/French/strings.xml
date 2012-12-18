@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- French language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fr/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Activer les fanarts d'artiste de HTBackdrops.com</string>
+    <string id="30001">Activer les vignettes d'artiste de allmusic.com</string>
+    <string id="30002">Activer les vignettes d'artiste de last.fm</string>
+    <string id="30003">Activer les vignettes d'artiste de HTBackdrops.com</string>
+    <string id="30004">Activer les fanarts d'artiste de fanart.tv</string>
+    <string id="30005">Activer les vignettes d'artiste de fanart.tv</string>
+    <string id="30006">Récupérer la biographie de l'artiste depuis</string>
+    <string id="30007">Illustrations</string>
+    <string id="30008">Récupérer la discographie de l'artiste depuis</string>
+    <string id="30009">Récupérer les genres de l'artiste depuis</string>
+    <string id="30010">Récupérer les styles de l'artiste depuis</string>
+    <string id="30011">Récupérer l'entière production de l'artiste depuis</string>
+    <string id="30012">Récupérer les styles de l'artiste depuis</string>
+    <string id="30014">Récupérer la production de l'artiste depuis</string>
+    <string id="30015">Langue préférée</string>
+    <string id="30016">Revenir à la biographie de l'artiste depuis</string>
+    <string id="30017">Revenir à la discographie de l'artiste depuis</string>
+    <string id="30018">Revenir aux genres de l'artiste depuis</string>
+    <string id="30019">Revenir aux styles de l'artiste depuis</string>
+    <string id="30020">Revenir à l'entière production de l'artiste depuis</string>
+    <string id="30021">Retours</string>
+    <string id="30022">Activer les vignettes d'artiste de theaudiodb.com</string>
+    <string id="30023">Activer les fanarts d'artiste de theaudiodb.com</string>
+</strings>

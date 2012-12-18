@@ -56,13 +56,17 @@ CPVRChannelGroupInternal::~CPVRChannelGroupInternal(void)
   Unload();
 }
 
-int CPVRChannelGroupInternal::Load(void)
+bool CPVRChannelGroupInternal::Load(void)
 {
-  int iChannelCount = CPVRChannelGroup::Load();
-  UpdateChannelPaths();
-  CreateChannelEpgs();
+  if (CPVRChannelGroup::Load())
+  {
+    UpdateChannelPaths();
+    CreateChannelEpgs();
+    return true;
+  }
 
-  return iChannelCount;
+  CLog::Log(LOGERROR, "PVRChannelGroupInternal - %s - failed to load channels", __FUNCTION__);
+  return false;
 }
 
 void CPVRChannelGroupInternal::CheckGroupName(void)
@@ -112,9 +116,7 @@ bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel &channel, int iChannelN
 bool CPVRChannelGroupInternal::Update(void)
 {
   CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
-  PVRChannels_tmp.LoadFromClients();
-
-  return UpdateGroupEntries(PVRChannels_tmp);
+  return PVRChannels_tmp.LoadFromClients() && UpdateGroupEntries(PVRChannels_tmp);
 }
 
 bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
@@ -240,14 +242,10 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
   return Size() - iChannelCount;
 }
 
-int CPVRChannelGroupInternal::LoadFromClients(void)
+bool CPVRChannelGroupInternal::LoadFromClients(void)
 {
-  int iCurSize = Size();
-
   /* get the channels from the backends */
-  g_PVRClients->GetChannels(this);
-
-  return Size() - iCurSize;
+  return g_PVRClients->GetChannels(this) == PVR_ERROR_NO_ERROR;
 }
 
 bool CPVRChannelGroupInternal::Renumber(void)

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Italian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/it/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Abilita le fanart degli artisti di HTBackdrops.com</string>
+    <string id="30001">Abilita le miniature degli artisti di allmusic.com</string>
+    <string id="30002">Abilita le miniature degli artisti di last.fm</string>
+    <string id="30003">Abilita le miniature degli artisti di HTBackdrops.com</string>
+    <string id="30004">Abilita le fanart degli artisti di fanart.tv</string>
+    <string id="30005">Abilita le miniature degli artisti di fanart.tv</string>
+    <string id="30006">Ottieni la biografia dell'artista da</string>
+    <string id="30007">Artwork</string>
+    <string id="30008">Ottieni la discografia dell'artista da</string>
+    <string id="30009">Ottieni i generi dell'artista da</string>
+    <string id="30010">Ottieni gli stili dell'artista da</string>
+    <string id="30011">Ottieni la durata della vita dell'artista da</string>
+    <string id="30012">Ottieni i mood dell'artista da</string>
+    <string id="30014">Ottieni gli anni di attività dell'artista da</string>
+    <string id="30015">Lingua Preferita</string>
+    <string id="30016">Fallback della biografia dell'artista da</string>
+    <string id="30017">Fallback della discografia dell'artista da</string>
+    <string id="30018">Fallback dei generi dell'artista da</string>
+    <string id="30019">Fallback degli stili dell'artista da</string>
+    <string id="30020">Fallback della durata della vita dell'artista da</string>
+    <string id="30021">Fallback</string>
+    <string id="30022">Abilita le miniature dell'artista di theaudiodb.com</string>
+    <string id="30023">Abilita le fanart dell'artista di theaudiodb.com</string>
+</strings>

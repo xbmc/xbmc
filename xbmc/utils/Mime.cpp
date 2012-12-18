@@ -100,6 +100,7 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("dif",       "video/x-dv"));
   mimeTypes.insert(pair<string, string>("dir",       "application/x-director"));
   mimeTypes.insert(pair<string, string>("dl",        "video/dl"));
+  mimeTypes.insert(pair<string, string>("divx",      "video/x-msvideo"));
   mimeTypes.insert(pair<string, string>("doc",       "application/msword"));
   mimeTypes.insert(pair<string, string>("docx",      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
   mimeTypes.insert(pair<string, string>("dot",       "application/msword"));
@@ -491,6 +492,7 @@ map<string, string> fillMimeTypes()
   mimeTypes.insert(pair<string, string>("xpm",       "image/xpm"));
   mimeTypes.insert(pair<string, string>("x-png",     "image/png"));
   mimeTypes.insert(pair<string, string>("xsr",       "video/x-amt-showrun"));
+  mimeTypes.insert(pair<string, string>("xvid",      "video/x-msvideo"));
   mimeTypes.insert(pair<string, string>("xwd",       "image/x-xwd"));
   mimeTypes.insert(pair<string, string>("xyz",       "chemical/x-pdb"));
   mimeTypes.insert(pair<string, string>("z",         "application/x-compressed"));

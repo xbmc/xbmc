@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Lithuanian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/lt/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Įgalinti atlikėjo Fanarts iš HTBackdrops.com</string>
+    <string id="30001">Įgalinti atlikėjo miniatiūrą iš allmusic.com</string>
+    <string id="30002">Įgalinti atlikėjo miniatiūrą iš last.fm</string>
+    <string id="30003">Įgalinti atlikėjo miniatiūrą iš HTBackdrops.com</string>
+    <string id="30004">Įgalinti atlikėjo Fanarts iš fanart.tv</string>
+    <string id="30005">Įgalinti atlikėjo miniatiūrą iš fanart.tv</string>
+    <string id="30006">Gauti atlikėjo biografiją iš</string>
+    <string id="30007">Iliustracijos</string>
+    <string id="30008">Gauti atlikėjo diskografiją iš</string>
+    <string id="30009">Gauti atlikėjo žanrą iš</string>
+    <string id="30010">Gauti atlikėjo stilių iš</string>
+    <string id="30011">Gauti atlikėjo Life-Span iš</string>
+    <string id="30012">Gauti atlikėjo žanrą iš</string>
+    <string id="30014">Gauti atlikėjo (aktyvus metai) iš</string>
+    <string id="30015">     Pageidaujama kalba</string>
+    <string id="30016">Sugrįžti prie atlikėjo biografijos</string>
+    <string id="30017">Sugrįžti prie atlikėjo diskografijos</string>
+    <string id="30018">Sugrįžti prie atlikėjo žanro</string>
+    <string id="30019">Sugrįžti prie atlikėjo Stilius</string>
+    <string id="30020">Sugrįžti prie atlikėjo Life-Span</string>
+    <string id="30021">Sugrįžti</string>
+    <string id="30022">Įjungti artisto(-ų) miniatiųrą atsiustą iš theaudiodb.com</string>
+    <string id="30023">Įjungti artisto(-ų) FanArt atsiustą iš theaudiodb.com</string>
+</strings>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Macedonian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/mk/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Овозможи Artist Fanarts од HTBackdrops.com</string>
+    <string id="30001">Овозможи Artist Thumbs од allmusic.com</string>
+    <string id="30002">Овозможи Artist Thumbs од last.fm</string>
+    <string id="30003">Овозможи Artist Thumbs од HTBackdrops.com</string>
+    <string id="30004">Овозможи Artist Fanarts од fanart.tv</string>
+    <string id="30005">Овозможи Artist Thumbs од fanart.tv</string>
+    <string id="30006">Превземи Artist Biography од</string>
+    <string id="30007">Уметнини</string>
+    <string id="30008">Превземи Artist Discography од</string>
+    <string id="30009">Превземи Artist Genres од</string>
+    <string id="30010">Превземи Artist Styles од</string>
+    <string id="30011">Превземи Artist Life-Span од</string>
+    <string id="30012">Превземи Artist Moods од</string>
+    <string id="30014">Превземи Artist Years Active од</string>
+    <string id="30015">Посакуван јазик</string>
+    <string id="30016">Fallback to Artist Biography from</string>
+    <string id="30017">Fallback to Artist Discography од</string>
+    <string id="30018">Fallback to Artist Genres од</string>
+    <string id="30019">Fallback to Artist Styles од</string>
+    <string id="30020">Fallback to Artist Life-Span од</string>
+    <string id="30021">Fallbacks</string>
+    <string id="30022">Овозможи Artist Thumbs одtheaudiodb.com</string>
+    <string id="30023">Овозможи Artist Fanarts од theaudiodb.com</string>
+</strings>

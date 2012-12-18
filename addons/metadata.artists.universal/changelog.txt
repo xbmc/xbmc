@@ -1,3 +1,6 @@
+[B]2.4.1[/B]
+Updated language files from Transifex
+
 [B]2.4.0[/B]
 Re-enable fanart.tv scraping by default
 

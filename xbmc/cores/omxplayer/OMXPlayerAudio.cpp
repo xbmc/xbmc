@@ -325,30 +325,6 @@ bool OMXPlayerAudio::CodecChange()
   return false;
 }
 
-void OMXPlayerAudio::HandlePlayspeed(bool bDropPacket)
-{
-  if(!bDropPacket && m_speed == DVD_PLAYSPEED_NORMAL && m_av_clock->HasVideo())
-  {
-    if(GetDelay() < 0.1f && !m_av_clock->OMXAudioBuffer())
-    {
-      clock_gettime(CLOCK_REALTIME, &m_starttime);
-      m_av_clock->OMXAudioBufferStart();
-    }
-    else if(GetDelay() > (AUDIO_BUFFER_SECONDS * 0.75f) && m_av_clock->OMXAudioBuffer())
-    {
-      m_av_clock->OMXAudioBufferStop();
-    }
-    else if(m_av_clock->OMXAudioBuffer())
-    {
-      clock_gettime(CLOCK_REALTIME, &m_endtime);
-      if((m_endtime.tv_sec - m_starttime.tv_sec) > 1)
-      {
-        m_av_clock->OMXAudioBufferStop();
-      }
-    }
-  }
-}
-
 bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 {
   if(!pkt || m_bad_state || !m_pAudioCodec)
@@ -393,7 +369,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
       while(!m_bStop)
       {
-        HandlePlayspeed(bDropPacket);
         if(m_flush)
         {
           m_flush = false;
@@ -442,8 +417,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
     while(!m_bStop)
     {
-      HandlePlayspeed(bDropPacket);
-
       if(m_flush)
       {
         m_flush = false;
@@ -476,8 +449,15 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
   if(bDropPacket)
     m_stalled = false;
 
-  if(m_omxAudio.GetDelay() < 0.1)
+  if(m_omxAudio.GetCacheTime() < 0.1 /*&& min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*GetCacheTime())) > 10*/)
+  {
     m_stalled = true;
+    if(!m_av_clock->OMXAudioBuffer() && m_av_clock->HasVideo() && m_speed == DVD_PLAYSPEED_NORMAL)
+    {
+      clock_gettime(CLOCK_REALTIME, &m_starttime);
+      m_av_clock->OMXAudioBufferStart();
+    }
+  }
 
   // signal to our parent that we have initialized
   if(m_started == false)
@@ -520,11 +500,22 @@ void OMXPlayerAudio::Process()
 
       if(Decode(pPacket, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0 || bPacketDrop))
       {
-        if (m_stalled && (m_omxAudio.GetDelay() > (AUDIO_BUFFER_SECONDS * 0.75f)))
+        if (m_stalled && (m_omxAudio.GetCacheTime() > (AUDIO_BUFFER_SECONDS * 0.75f)))
         {
           CLog::Log(LOGINFO, "COMXPlayerAudio - Switching to normal playback");
           m_stalled = false;
+          if(m_av_clock->HasVideo() && m_av_clock->OMXAudioBuffer())
+            m_av_clock->OMXAudioBufferStop();
         }
+      }
+      // hard unlock audio out buffering
+      clock_gettime(CLOCK_REALTIME, &m_endtime);
+      //int iLevel = min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*GetCacheTime()));
+      if(/*iLevel < 10 &&*/ m_stalled && (m_endtime.tv_sec - m_starttime.tv_sec) > 1)
+      {
+        m_stalled = false;
+        if(m_av_clock->HasVideo() && m_av_clock->OMXAudioBuffer())
+          m_av_clock->OMXAudioBufferStop();
       }
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
@@ -552,6 +543,7 @@ void OMXPlayerAudio::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
+      CLog::Log(LOGDEBUG, "COMXPlayerAudio - CDVDMsg::GENERAL_RESET");
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
       m_av_clock->Lock();

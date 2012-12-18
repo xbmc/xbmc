@@ -112,6 +112,7 @@ void XBPyThread::setSource(const CStdString &src)
   m_source  = new char[strsrc.GetLength()+1];
   strcpy(m_source, strsrc);
 #else
+  if (m_source) delete [] m_source;
   m_source  = new char[src.GetLength()+1];
   strcpy(m_source, src);
 #endif
@@ -143,6 +144,27 @@ int XBPyThread::setArgv(const std::vector<CStdString> &argv)
     strcpy(m_argv[i], argv[i].c_str());
   }
   return 0;
+}
+
+#define GC_SCRIPT \
+  "import gc\n" \
+  "gc.collect(2)\n"
+
+static const CStdString getListOfAddonClassesAsString(XBMCAddon::AddonClass::Ref<XBMCAddon::Python::LanguageHook>& languageHook)
+{
+  CStdString message;
+  XBMCAddon::AddonClass::Synchronize l(*(languageHook.get()));
+  std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
+  bool firstTime = true;
+  for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin();
+       iter != acs.end(); iter++)
+  {
+    if (!firstTime) message += ",";
+    else firstTime = false;
+    message += (*iter)->GetClassname().c_str();
+  }
+
+  return message;
 }
 
 void XBPyThread::Process()
@@ -376,6 +398,10 @@ void XBPyThread::Process()
 
   m_pExecuter->DeInitializeInterpreter();
 
+  // run the gc before finishing
+  if (!m_stopping && languageHook->HasRegisteredAddonClasses() && PyRun_SimpleString(GC_SCRIPT) == -1)
+    CLog::Log(LOGERROR,"Failed to run the gc to clean up after running prior to shutting down the Interpreter %s",m_source);
+
   Py_EndInterpreter(state);
 
   // This is a total hack. Python doesn't necessarily release
@@ -387,40 +413,34 @@ void XBPyThread::Process()
   // interpreter. So we are going to keep creating and ending
   // interpreters until we have no more python objects hanging
   // around.
-  int countLimit;
-  for (countLimit = 0; languageHook->HasRegisteredAddonClasses() && countLimit < 10; countLimit++)
-  {
-    PyThreadState* tmpstate = Py_NewInterpreter();
-    Py_EndInterpreter(tmpstate);
-  }
-
-  // If necessary and successfull, debug log the results.
-  if (countLimit > 0 && !languageHook->HasRegisteredAddonClasses())
-    CLog::Log(LOGDEBUG,"It took %d Py_NewInterpreter/Py_EndInterpreter calls"
-              " to clean up the classes leftover from running \"%s.\"",
-              countLimit,m_source);
-
-  // If not successful, produce an error message detailing what's been left behind
   if (languageHook->HasRegisteredAddonClasses())
   {
-    CStdString message;
-    message.Format("The python script \"%s\" has left several "
-                   "classes in memory that should have been cleaned up. The classes include: ",
-                   m_source);
+    CLog::Log(LOGDEBUG, "The python script \"%s\" has left several "
+              "classes in memory that we will be attempting to clean up. The classes include: %s",
+              m_source, getListOfAddonClassesAsString(languageHook).c_str());
 
-    { XBMCAddon::AddonClass::Synchronize l(*(languageHook.get()));
-      std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
-      bool firstTime = true;
-      for (std::set<XBMCAddon::AddonClass*>::iterator iter = acs.begin();
-           iter != acs.end(); iter++)
-      {
-        if (!firstTime) message += ",";
-        else firstTime = false;
-        message += (*iter)->GetClassname().c_str();
-      }
+    int countLimit;
+    for (countLimit = 0; languageHook->HasRegisteredAddonClasses() && countLimit < 100; countLimit++)
+    {
+      PyThreadState* tmpstate = Py_NewInterpreter();
+      PyThreadState* oldstate = PyThreadState_Swap(tmpstate);
+      if (PyRun_SimpleString(GC_SCRIPT) == -1)
+        CLog::Log(LOGERROR,"Failed to run the gc to clean up after running %s",m_source);
+      PyThreadState_Swap(oldstate);
+      Py_EndInterpreter(tmpstate);
     }
-    
-    CLog::Log(LOGERROR, "%s", message.c_str());
+
+    // If necessary and successfull, debug log the results.
+    if (countLimit > 0 && !languageHook->HasRegisteredAddonClasses())
+      CLog::Log(LOGDEBUG,"It took %d Py_NewInterpreter/Py_EndInterpreter calls"
+                " to clean up the classes leftover from running \"%s.\"",
+                countLimit,m_source);
+
+    // If not successful, produce an error message detailing what's been left behind
+    if (languageHook->HasRegisteredAddonClasses())
+      CLog::Log(LOGERROR, "The python script \"%s\" has left several "
+                "classes in memory that we couldn't clean up. The classes include: %s",
+                m_source, getListOfAddonClassesAsString(languageHook).c_str());
   }
 
   // unregister the language hook

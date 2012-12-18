@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Italian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/it/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Prendi i Provini degli Album da fanart.tv</string>
+    <string id="30001">Prendi i Provini degli Album da Last.fm</string>
+    <string id="30002">Prendi Recensioni Albums da</string>
+    <string id="30003">Lingua Preferita</string>
+    <string id="30004">Prendi Votazioni Albums da</string>
+    <string id="30005">Prendi Generi Musicali Albums da</string>
+    <string id="30006">Prendi Atmosfere Albums da</string>
+    <string id="30007">Prendi Temi Albums da</string>
+    <string id="30008">Prendi i Provini degli Album da allmusic.com</string>
+    <string id="30009">Artwork</string>
+    <string id="30010">Ottieni le miniature degli album da theaudiodb.org</string>
+</strings>

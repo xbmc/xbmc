@@ -292,14 +292,20 @@ CEpg *CEpgContainer::GetByChannel(const CPVRChannel &channel) const
 
 void CEpgContainer::InsertFromDatabase(int iEpgID, const CStdString &strName, const CStdString &strScraperName)
 {
+  // table might already have been created when pvr channels were loaded
   CEpg* epg = GetById(iEpgID);
   if (epg)
   {
     if (!epg->Name().Equals(strName) || !epg->ScraperName().Equals(strScraperName))
+    {
+      // current table data differs from the info in the db
+      epg->SetChanged();
       SetChanged();
+    }
   }
   else
   {
+    // create a new epg table
     epg = new CEpg(iEpgID, strName, strScraperName, true);
     if (epg)
     {

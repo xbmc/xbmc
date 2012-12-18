@@ -2538,6 +2538,8 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
 #ifdef TARGET_DARWIN
   CVBufferRef cvBufferRef = m_buffers[index].cvBufferRef;
 
+  glEnable(m_textureTarget);
+
   if (cvBufferRef)
   {
     YUVFIELDS &fields = m_buffers[index].fields;
@@ -2554,12 +2556,9 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
       size_t        rowbytes    = CVPixelBufferGetBytesPerRow(cvBufferRef);
       unsigned char *bufferBase = (unsigned char*)CVPixelBufferGetBaseAddress(cvBufferRef);
 
-      glEnable(m_textureTarget);
       glBindTexture(m_textureTarget, plane.id);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, rowbytes/2, texHeight, GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, bufferBase);
       glBindTexture(m_textureTarget, 0);
-      glDisable(m_textureTarget);
 
       CVPixelBufferUnlockBaseAddress(cvBufferRef, kCVPixelBufferLock_ReadOnly);
     }
@@ -2573,7 +2572,6 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
       GLsizei       texHeight= IOSurfaceGetHeight(surface);
       OSType        format_type = CVPixelBufferGetPixelFormatType(cvBufferRef);
 
-      glEnable(m_textureTarget);
       glBindTexture(m_textureTarget, plane.id);
 
       if (format_type == kCVPixelFormatType_422YpCbCr8)
@@ -2584,20 +2582,19 @@ void CLinuxRendererGL::UploadCVRefTexture(int index)
           texWidth, texHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, surface, 0);
 
       glBindTexture(m_textureTarget, 0);
-      glDisable(m_textureTarget);
     }
 
     CVBufferRelease(cvBufferRef);
     m_buffers[index].cvBufferRef = NULL;
 
-    // Calculate Texture Source Rects
-    plane.rect   = m_sourceRect;
-    plane.width  = m_buffers[index].image.width;
-    plane.height = m_buffers[index].image.height;
     plane.flipindex = m_buffers[index].flipindex;
   }
 
   m_eventTexturesDone[index]->Set();
+
+  CalculateTextureSourceRects(index, 3);
+  glDisable(m_textureTarget);
+
 #endif
 }
 
@@ -2646,8 +2643,6 @@ bool CLinuxRendererGL::CreateCVRefTexture(int index)
     // 10.8 Mountain Lion breaks CGLTexImageIOSurface2D/GL_YCBCR_422_APPLE,
     // upload the old way.
     glBindTexture(m_textureTarget, plane.id);
-    // Set storage hint. Can also use GL_STORAGE_SHARED_APPLE see docs.
-    //glTexParameteri(m_textureTarget, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // This is necessary for non-power-of-two textures

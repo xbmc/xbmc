@@ -218,6 +218,24 @@ struct dcr_DCRAW {
 	void (*thumb_load_raw)(DCRAW *);
 	jmp_buf failure;
 	char *sz_error;
+  /* local statics below here */
+	unsigned getbits_bitbuf;
+	int      getbits_vbits;
+  int      getbits_reset;
+
+  int make_decoder_leaf;
+
+  unsigned long long ph1_bits_bitbuf;
+  int    ph1_bits_vbits;
+
+  uchar pana_bits_buf[0x4000];
+  int   pana_bits_vbits;
+
+	struct dcr_decode *radc_token_dstart[18], *radc_token_dindex;
+
+	unsigned sony_decrypt_pad[128], sony_decrypt_p;
+
+  unsigned foveon_decoder_huff[1024];
 };
 
 

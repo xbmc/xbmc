@@ -35,7 +35,7 @@ namespace XBMCAddon
     static AddonClass::Ref<LanguageHook> instance;
 
     static CCriticalSection hooksMutex;
-    std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> > LanguageHook::hooks;
+    static std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> > hooks;
 
     // vtab instantiation
     LanguageHook::~LanguageHook()
@@ -76,12 +76,26 @@ namespace XBMCAddon
       hooks.erase(m_interp);
     }
 
+    static AddonClass::Ref<XBMCAddon::Python::LanguageHook> g_languageHook;
+
+    // Ok ... we're going to get it even if it doesn't exist. If it doesn't exist then
+    // we're going to assume we're not in control of the interpreter. This (apparently)
+    // can be the case. E.g. Libspotify manages to call into a script using a ctypes
+    // extention but under the control of an Interpreter we know nothing about. In
+    // cases like this we're going to use a global interpreter 
     AddonClass::Ref<LanguageHook> LanguageHook::GetIfExists(PyInterpreterState* interp)
     {
       TRACE;
       CSingleLock lock(hooksMutex);
       std::map<PyInterpreterState*,AddonClass::Ref<LanguageHook> >::iterator iter = hooks.find(interp);
-      return iter == hooks.end() ? AddonClass::Ref<LanguageHook>(NULL) : AddonClass::Ref<LanguageHook>(iter->second);
+      if (iter != hooks.end())
+        return AddonClass::Ref<LanguageHook>(iter->second);
+
+      // if we got here then we need to use the global one.
+      if (g_languageHook.isNull())
+        g_languageHook = new XBMCAddon::Python::LanguageHook();
+
+      return g_languageHook;
     }
 
     bool LanguageHook::IsAddonClassInstanceRegistered(AddonClass* obj)
@@ -158,6 +172,7 @@ namespace XBMCAddon
     {
       TRACE;
       Synchronize l(*this);
+      obj->Acquire();
       currentObjects.insert(obj);
     }
 
@@ -165,7 +180,8 @@ namespace XBMCAddon
     {
       TRACE;
       Synchronize l(*this);
-      currentObjects.erase(obj);
+      if (currentObjects.erase(obj) > 0)
+        obj->Release();
     }
 
     bool LanguageHook::HasRegisteredAddonClassInstance(AddonClass* obj)

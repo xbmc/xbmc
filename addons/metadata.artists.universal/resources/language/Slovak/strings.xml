@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Slovak language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sk/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Povoliť Fanart interpretov zo stránky HTBackdrops.com</string>
+    <string id="30001">Povoliť náhľady interpretov zo stránky allmusic.com</string>
+    <string id="30002">Povoliť náhľady interpretov zo stránky last.fm</string>
+    <string id="30003">Povoliť náhľady interpretov zo stránky HTBackdrops.com</string>
+    <string id="30004">Povoliť Fanart interpretov zo stránky fanart.tv</string>
+    <string id="30005">Povoliť náhľady interpretov zo stránky fanart.tv</string>
+    <string id="30006">Získať životopis interpreta zo stránky</string>
+    <string id="30007">Umelecká grafika</string>
+    <string id="30008">Získať diskografiu interpreta zo stránky</string>
+    <string id="30009">Získať žánre interpreta zo stránky</string>
+    <string id="30010">Získať štýly interpreta zo stránky</string>
+    <string id="30011">Získať dĺžku života interpreta zo stránky</string>
+    <string id="30012">Získať povahu interpreta zo stránky</string>
+    <string id="30014">Získať údaje o rokoch aktívneho pôsobenia interpreta zo stránky</string>
+    <string id="30015">Uprednostňovaný jazyk</string>
+    <string id="30016">V prípade neúspechu načítať životopis autora zo stránky</string>
+    <string id="30017">V prípade neúspechu načítať diskografiu autora zo stránky</string>
+    <string id="30018">V prípade neúspechu načítať žánre autora zo stránky</string>
+    <string id="30019">V prípade neúspechu načítať štýly autora zo stránky</string>
+    <string id="30020">V prípade neúspechu načítať dĺžku života autora zo stránky</string>
+    <string id="30021">Záložné zdroje informácií</string>
+    <string id="30022">Povoliť získavanie náhľadov umelcov zo stránky theaudiodb.com</string>
+    <string id="30023">Povoliť získavanie umeleckej grafiky zo stránky theaudiodb.com</string>
+</strings>
