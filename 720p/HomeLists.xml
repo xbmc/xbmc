@@ -173,7 +173,7 @@
 	<include name="HomeListItemFullInfo">
 		<control type="group">
 			<!-- left side presentation -->
-			<control type="group">
+			<control type="group" id="999">
 				<include>HomeListItemFullInfoSlide</include>
 				<include>ShowHomeFullInfo</include>
 				<posx>-391</posx>
@@ -192,29 +192,29 @@
 						<visible>true</visible>
 					</control>
 					<control type="image">
-						<posx>20</posx>
+						<posx>0</posx>
 						<posy>333</posy>
-						<width>340</width>
-						<height>320</height>
-						<include>BlackRounded</include>
+						<width>390</width>
+						<height>324</height>
+						<include>Black</include>
 						<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
 						<visible>true</visible>
 					</control>
 					<!-- thumb -->
 					<control type="group">
-						<posy>-20</posy>
-						<posx>-10</posx>
+						<posy>-30</posy>
+						<posx>-20</posx>
 						<control type="image">
 							<posy>47</posy>
 							<posx>34</posx>
-							<width>341</width>
-							<height>203</height>
+							<width>361</width>
+							<height>213</height>
 							<include>BorderBlack</include>
 							<animation effect="fade" start="0" end="10" condition="true">Conditional</animation>
 						</control>
 						<control type="image">
-							<width>361</width>
-							<height>223</height>
+							<width>381</width>
+							<height>233</height>
 							<include>Shadow</include>
 						</control>
 						<!-- on deck -->
@@ -222,8 +222,8 @@
 							<visible>ControlGroup(7002).HasFocus</visible>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>335</width>
-								<height>197</height>
+								<width>355</width>
+								<height>207</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11001).ListItem.Thumb]</texture>
 								<fadetime>300</fadetime>
@@ -231,8 +231,8 @@
 							</control>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>335</width>
-								<height>197</height>
+								<width>355</width>
+								<height>207</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11001).ListItem.Property(Fanart_Image)]</texture>
 								<fadetime>300</fadetime>
@@ -240,8 +240,8 @@
 							</control>
 							<control type="image">
 								<visible>Container(11001).ListItem.Status(InProgress)</visible>
-								<posx>352</posx>
-								<posy>264</posy>
+								<posx>372</posx>
+								<posy>274</posy>
 								<width>19</width>
 								<height>19</height>
 								<texture>$INFO[Container(11001).ListItem.Overlay]</texture>
@@ -252,8 +252,8 @@
 							<visible>ControlGroup(7001).HasFocus</visible>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>335</width>
-								<height>197</height>
+								<width>355</width>
+								<height>207</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11000).ListItem.Thumb]</texture>
 								<fadetime>300</fadetime>
@@ -261,8 +261,8 @@
 							</control>
 							<control type="image">
 								<include>PosListItem</include>
-								<width>335</width>
-								<height>197</height>
+								<width>355</width>
+								<height>207</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="mask-wide-big.png" background="true">$INFO[Container(11000).ListItem.Property(Fanart_Image)]</texture>
 								<fadetime>300</fadetime>
@@ -651,9 +651,19 @@
 					<!-- with "recently added" or "recommended" -->
 					<control type="group">
 						<visible>[Control.IsVisible(11000) + Control.IsVisible(11001)] | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
-						<posy>220</posy>
+						<posy>217</posy>
 						<control type="image">
 							<include>ListTitleBg</include>
+						</control>
+						<control type="image">
+							<posy>36</posy>
+							<posx>0</posx>
+							<width>900</width>
+							<height>200</height>
+							<include>Black</include>
+							<animation effect="fade" start="0" end="40" time="600" condition="true">Visible</animation>
+							<animation effect="fade" start="40" end="0" time="0" condition="true">Hidden</animation>
+							<visible>[Control.IsVisible(11000) + Control.HasFocus(11001)]</visible>
 						</control>
 						<control type="label" id="8002">
 							<include>ListTitle</include>
@@ -701,7 +711,17 @@
 					<!-- with "on deck" or "queue + recommendations" -->
 					<control type="group">
 						<visible>Control.IsVisible(11001) | [Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
-						<posy>668</posy>
+						<posy>664</posy>
+						<control type="image">
+							<posy>-207</posy>
+							<posx>0</posx>
+							<width>900</width>
+							<height>200</height>
+							<include>Black</include>
+							<animation effect="fade" start="0" end="40" time="600" condition="true">Visible</animation>
+							<animation effect="fade" start="40" end="0" time="0" condition="true">Hidden</animation>
+							<visible>[Control.IsVisible(11001) + Control.HasFocus(11000)]</visible>
+						</control>
 						<control type="image">
 							<include>ListTitleBg</include>
 						</control>
@@ -716,7 +736,7 @@
 							<visible>[Control.IsVisible(11003) + Control.IsVisible(11004)]</visible>
 						</control>
 						<control type="image">
-							<posy>-130</posy>
+							<posy>-120</posy>
 							<include>ListArrow</include>
 							<visible>Control.HasFocus(11000) | Control.HasFocus(11004)</visible>
 						</control>
@@ -756,7 +776,7 @@
 			<control type="grouplist" id="5100">
 				<visible>true</visible>
 				<posx>0</posx>
-				<posy>90</posy>
+				<posy>84</posy>
 				<width>890</width>
 				<height>720</height>
 				<ondown>5200</ondown>
@@ -992,6 +1012,7 @@
 							</control>
 						</itemlayout>
 						<focusedlayout width="145" height="230">
+							<animation effect="fade" start="100" end="50" time="300" condition="ControlGroup(7002).HasFocus">Conditional</animation>
 							<!-- album -->
 							<control type="group">
 								<visible>ListItem.Type(album)</visible>
