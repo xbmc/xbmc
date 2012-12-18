@@ -835,14 +835,14 @@
 					<animation effect="fade" start="0" end="100" time="0" condition="true">Conditional</animation>
 					<visible>true</visible>
 				</control>
-				<!-- Duration -->
+				<!-- DurationStr -->
 				<control type="label">
 					<posy>40</posy>
 					<posx>40r</posx>
 					<width>200</width>
 					<height>40</height>
 					<align>right</align>
-					<!--><label>$INFO[ListItem.Duration]</label>-->
+					<!--><label>$INFO[ListItem.DurationStr]</label>-->
 					<label> 60min</label>
 					<font>CondensedBold-36</font>
 					<textcolor>FF999999</textcolor>
@@ -1167,11 +1167,11 @@
 					<textcolor>FF999999</textcolor>
 					<visible>true</visible>
 				</control>
-				<!-- Duration -->
+				<!-- DurationStr -->
 				<control type="label">
 					<width>600</width>
 					<height>15</height>
-					<!--><label>$INFO[ListItem.Duration]</label>-->
+					<!--><label>$INFO[ListItem.DurationStr]</label>-->
 					<label>162 min</label>
 					<font>Condensed-18</font>
 					<textcolor>white</textcolor>

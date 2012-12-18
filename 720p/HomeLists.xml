@@ -75,10 +75,10 @@
 	<variable name="HomeListItemFullInfoSecondTitle">
 		<!-- on deck -->
 		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(episode)">$INFO[Container(11001).ListItem.Title]</value>
-		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.Duration] &#xB7; $INFO[Container(11001).ListItem.Year]</value>
+		<value condition="ControlGroup(7002).HasFocus + Container(11001).ListItem.Type(movie)">$INFO[Container(11001).ListItem.DurationStr] &#xB7; $INFO[Container(11001).ListItem.Year]</value>
 		<!-- recently added -->
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(episode)">$INFO[Container(11000).ListItem.Title]</value>
-		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">$INFO[Container(11000).ListItem.Duration] &#xB7; $INFO[Container(11000).ListItem.Year]</value>
+		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">$INFO[Container(11000).ListItem.DurationStr] &#xB7; $INFO[Container(11000).ListItem.Year]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album)">$INFO[Container(11000).ListItem.Title]</value>
 		<!-- queue -->
 		<!--><value condition="ControlGroup(7003).HasFocus + [Container(11003).ListItem.Type(clip) | Container(11003).ListItem.Type(movie)]">$INFO[Container(11003).ListItem.Property(sourceTitle)]</value>-->
@@ -93,7 +93,7 @@
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(movie)">[UPPERCASE]$INFO[Container(11000).ListItem.Genre][/UPPERCASE]</value>
 		<value condition="ControlGroup(7001).HasFocus + Container(11000).ListItem.Type(album) + !IsEmpty(Container(11000).ListItem.Album)">$INFO[Container(11000).ListItem.Album]</value>
 		<!-- queue -->
-		<!--><value condition="ControlGroup(7003).HasFocus + [Container(11003).ListItem.Type(clip) | Container(11003).ListItem.Type(movie)]">$INFO[Container(11003).ListItem.Duration]</value>-->
+		<!--><value condition="ControlGroup(7003).HasFocus + [Container(11003).ListItem.Type(clip) | Container(11003).ListItem.Type(movie)]">$INFO[Container(11003).ListItem.DurationStr]</value>-->
 		<!--><value>No third title available (debug).</value>-->
 	</variable>
 	<variable name="HomeListItemFullInfoPlot">
@@ -783,7 +783,7 @@
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).DurationStr)</visible>
 						</control>
 						<control type="label">
 							<align>left</align>
@@ -793,7 +793,7 @@
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).Date) + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).Date) + !IsEmpty(Container(11001).ListItem(0).DurationStr)</visible>
 						</control>
 						<control type="label">
 							<align>left</align>
@@ -849,13 +849,13 @@
 						</control>
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11001).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).DurationStr)</visible>
 						</control>-->
 					</control>
 				</control>
@@ -1036,13 +1036,13 @@
 						</control>
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11000).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11000).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).DurationStr)</visible>
 						</control>
 					</control>
 					<!-- title bar Labels when only this list is visible -->
@@ -1160,13 +1160,13 @@
 						</control>
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11000).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11000).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).DurationStr)</visible>
 						</control>
 					</control>
 				</control>
@@ -1514,13 +1514,13 @@
 						<!-- general -->
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11002).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11002).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7003).HasFocus + !IsEmpty(Container(11002).ListItem(0).Duration) + Container(11002).ListItem(0).Type(clip)</visible>
+							<visible>ControlGroup(7003).HasFocus + !IsEmpty(Container(11002).ListItem(0).DurationStr) + Container(11002).ListItem(0).Type(clip)</visible>
 						</control>
 					</control>
 				</control>

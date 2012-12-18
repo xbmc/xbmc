@@ -333,12 +333,12 @@
 							<visible>true</visible>
 						</control>
 					</control>
-					<!-- Duration -->
+					<!-- DurationStr -->
 					<control type="label">
 						<posy>121</posy>
 						<width min="29" max="200">auto</width>
 						<height>15</height>
-						<label>Placeholder for Duration</label>
+						<label>Placeholder for DurationStr</label>
 						<font>Condensed-18</font>
 						<include>White2</include>
 						<shadowcolor>ff222222</shadowcolor>
@@ -382,7 +382,7 @@
 							<height>50</height>
 							<align>right</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Duration]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>Condensed-17</font>
 							<include>White2</include>
 						</control>
@@ -416,7 +416,7 @@
 							<height>50</height>
 							<align>right</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Duration]</label>
+							<label>$INFO[ListItem.DurationStr]</label>
 							<font>CondensedBold-17</font>
 							<textcolor>orangeLight</textcolor>
 							<animation effect="fade" start="0" end="100" time="100" delay="50" reversible="false" condition="Container.OnNext">Focus</animation>
