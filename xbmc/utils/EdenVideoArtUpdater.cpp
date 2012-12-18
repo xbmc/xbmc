@@ -145,7 +145,7 @@ void CEdenVideoArtUpdater::Process()
 
   // tvshows
   // count the number of episodes
-  db.GetTvShowsNav("videodb://3/2/", items);
+  db.GetTvShowsNav("videodb://2/2/", items);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
@@ -246,10 +246,10 @@ void CEdenVideoArtUpdater::Process()
   // now actors
   if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
   {
-    db.GetActorsNav("videodb://1/2/", items, VIDEODB_CONTENT_MOVIES);
-    db.GetActorsNav("videodb://2/2/", items, VIDEODB_CONTENT_TVSHOWS);
-    db.GetActorsNav("videodb://2/2/", items, VIDEODB_CONTENT_EPISODES);
-    db.GetActorsNav("videodb://3/2/", items, VIDEODB_CONTENT_MUSICVIDEOS);
+    db.GetActorsNav("videodb://1/4/", items, VIDEODB_CONTENT_MOVIES);
+    db.GetActorsNav("videodb://2/4/", items, VIDEODB_CONTENT_TVSHOWS);
+    db.GetActorsNav("videodb://2/4/", items, VIDEODB_CONTENT_EPISODES);
+    db.GetActorsNav("videodb://3/4/", items, VIDEODB_CONTENT_MUSICVIDEOS);
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
