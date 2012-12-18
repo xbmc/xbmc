@@ -33,7 +33,7 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
   m_effect = effect;
   // defaults
   m_delay = m_length = 0;
-  m_pTweener = NULL;
+  m_pTweener.reset();
   // time and delay
 
   float temp;
@@ -48,18 +48,16 @@ CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE ef
   m_delay = delay;
   m_length = length;
   m_effect = effect;
-  m_pTweener = new LinearTweener();
+  m_pTweener = boost::shared_ptr<Tweener>(new LinearTweener());
 }
 
 CAnimEffect::~CAnimEffect()
 {
-  if (m_pTweener)
-    m_pTweener->Free();
 }
 
 CAnimEffect::CAnimEffect(const CAnimEffect &src)
 {
-  m_pTweener = NULL;
+  m_pTweener.reset();
   *this = src;
 }
 
@@ -72,11 +70,7 @@ const CAnimEffect &CAnimEffect::operator=(const CAnimEffect &src)
   m_length = src.m_length;
   m_delay = src.m_delay;
 
-  if (m_pTweener)
-    m_pTweener->Free();
   m_pTweener = src.m_pTweener;
-  if (m_pTweener)
-    m_pTweener->IncRef();
   return *this;
 }
 
@@ -101,28 +95,28 @@ void CAnimEffect::ApplyState(ANIMATION_STATE state, const CPoint &center)
   ApplyEffect(offset, center);
 }
 
-Tweener* CAnimEffect::GetTweener(const TiXmlElement *pAnimationNode)
+boost::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationNode)
 {
-  Tweener* m_pTweener = NULL;
+  boost::shared_ptr<Tweener> m_pTweener;
   const char *tween = pAnimationNode->Attribute("tween");
   if (tween)
   {
     if (strcmpi(tween, "linear")==0)
-      m_pTweener = new LinearTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new LinearTweener());
     else if (strcmpi(tween, "quadratic")==0)
-      m_pTweener = new QuadTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new QuadTweener());
     else if (strcmpi(tween, "cubic")==0)
-      m_pTweener = new CubicTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new CubicTweener());
     else if (strcmpi(tween, "sine")==0)
-      m_pTweener = new SineTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new SineTweener());
     else if (strcmpi(tween, "back")==0)
-      m_pTweener = new BackTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new BackTweener());
     else if (strcmpi(tween, "circle")==0)
-      m_pTweener = new CircleTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new CircleTweener());
     else if (strcmpi(tween, "bounce")==0)
-      m_pTweener = new BounceTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new BounceTweener());
     else if (strcmpi(tween, "elastic")==0)
-      m_pTweener = new ElasticTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new ElasticTweener());
 
     const char *easing = pAnimationNode->Attribute("easing");
     if (m_pTweener && easing)
@@ -144,11 +138,11 @@ Tweener* CAnimEffect::GetTweener(const TiXmlElement *pAnimationNode)
     // or quadratic if we have acceleration
     if (accel)
     {
-      m_pTweener = new QuadTweener(accel);
+      m_pTweener = boost::shared_ptr<Tweener>(new QuadTweener(accel));
       m_pTweener->SetEasing(EASE_IN);
     }
     else
-      m_pTweener = new LinearTweener();
+      m_pTweener = boost::shared_ptr<Tweener>(new LinearTweener());
   }
 
   return m_pTweener;
@@ -709,7 +703,7 @@ void CAnimation::AddEffect(CAnimEffect *effect)
     m_length = effect->GetLength() - m_delay;
 }
 
-CScroller::CScroller(unsigned int duration /* = 200 */, Tweener *tweener /* = NULL */)
+CScroller::CScroller(unsigned int duration /* = 200 */, boost::shared_ptr<Tweener> tweener /* = NULL */)
 {
   m_scrollValue = 0;
   m_delta = 0;
@@ -719,12 +713,11 @@ CScroller::CScroller(unsigned int duration /* = 200 */, Tweener *tweener /* = NU
   m_lastTime = 0;
   m_duration = duration > 0 ? duration : 1;
   m_pTweener = tweener;
-  if (m_pTweener) m_pTweener->IncRef();
 }
 
 CScroller::CScroller(const CScroller& right)
 {
-  m_pTweener = NULL;
+  m_pTweener.reset();
   *this = right;
 }
 
@@ -739,17 +732,12 @@ const CScroller &CScroller::operator=(const CScroller &right)
   m_hasResumePoint = right.m_hasResumePoint;
   m_lastTime = right.m_lastTime;
   m_duration = right.m_duration;
-  if (m_pTweener)
-    m_pTweener->Free();
   m_pTweener = right.m_pTweener;
-  if (m_pTweener)
-    m_pTweener->IncRef();
   return *this;
 }
 
 CScroller::~CScroller()
 {
-  if (m_pTweener) m_pTweener->Free();
 }
 
 void CScroller::ScrollTo(float endPos)

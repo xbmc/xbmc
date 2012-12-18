@@ -663,6 +663,8 @@ void CSoftAE::Deinitialize()
   _aligned_free(m_converted);
   m_converted = NULL;
   m_convertedSize = 0;
+
+  m_sinkInfoList.clear();  
 }
 
 void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
