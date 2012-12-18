@@ -80,6 +80,7 @@ using namespace PVR;
 #define TEXT_OFF  351
 #define TEXT_NONE 231
 
+#ifndef __PLEX__
 #ifdef _LINUX
 #define DEFAULT_VISUALISATION "visualization.glspectrum"
 #elif defined(_WIN32)
@@ -88,6 +89,9 @@ using namespace PVR;
 #else
 #define DEFAULT_VISUALISATION "visualization.glspectrum"
 #endif
+#endif
+#else
+#define DEFAULT_VISUALISATION "visualization.nowplaying"
 #endif
 
 struct sortsettings
