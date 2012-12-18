@@ -65,17 +65,3 @@ int CGUIDialogOK::GetDefaultLabelID(int controlId) const
     return 186;
   return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
 }
-
-/* PLEX */
-void CGUIDialogOK::ShowAndGetInput(const CStdString& heading, const CStdString& line0, const CStdString& line1, const CStdString& line2)
-{
-  CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (!dialog) return;
-  dialog->SetHeading( heading );
-  dialog->SetLine( 0, line0 );
-  dialog->SetLine( 1, line1 );
-  dialog->SetLine( 2, line2 );
-  dialog->DoModal();
-  return ;
-}
-/* END PLEX */
