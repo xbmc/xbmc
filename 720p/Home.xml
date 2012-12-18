@@ -1241,7 +1241,7 @@
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).DurationStr)</visible>
 						</control>
 						<control type="label">
 							<align>left</align>
@@ -1251,7 +1251,7 @@
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).Date) + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).TVShowTitle) + !IsEmpty(Container(11001).ListItem(0).Date) + !IsEmpty(Container(11001).ListItem(0).DurationStr)</visible>
 						</control>
 						<control type="label">
 							<align>left</align>
@@ -1307,13 +1307,13 @@
 						</control>
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11001).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).DurationStr)</visible>
 						</control>
 					</control>
 					<!-- title bar Labels when only this list is visible -->
@@ -1430,13 +1430,13 @@
 						</control>
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11001).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11001).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7002).HasFocus + !IsEmpty(Container(11001).ListItem(0).DurationStr)</visible>
 						</control>
 					</control>
 				</control>
@@ -2171,13 +2171,13 @@
 						</control>
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11000).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11000).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).DurationStr)</visible>
 						</control>
 					</control>
 					<!-- title bar Labels when only this list is visible -->
@@ -2294,13 +2294,13 @@
 						</control>
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11000).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11000).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).Duration)</visible>
+							<visible>ControlGroup(7001).HasFocus + !IsEmpty(Container(11000).ListItem(0).DurationStr)</visible>
 						</control>
 					</control>
 				</control>
@@ -2701,13 +2701,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(11003).ListItem(0).DurationStr]</label>
 								<font>MediumSmallTitleFont2</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(11003).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 						<!-- when both lists are visible -->
@@ -2801,13 +2801,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(11003).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(11003).ListItem(0).DurationStr]</label>
 								<font>MediumSmallTitleFont2</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11003).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(11003).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 					</control>
@@ -3264,13 +3264,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(11004).ListItem(0).DurationStr]</label>
 								<font>MediumSmallTitleFont2</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(11004).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 						<!-- when both lists are visible -->
@@ -3374,13 +3374,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(11004).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(11004).ListItem(0).DurationStr]</label>
 								<font>MediumSmallTitleFont2</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(11004).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(11004).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 					</control>
@@ -3648,13 +3648,13 @@
 						<!-- general -->
 						<control type="label">
 							<align>left</align>
-							<label> &#xB7; $INFO[Container(11002).ListItem(0).Duration]</label>
+							<label> &#xB7; $INFO[Container(11002).ListItem(0).DurationStr]</label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
-							<visible>ControlGroup(7003).HasFocus + !IsEmpty(Container(11002).ListItem(0).Duration) + Container(11002).ListItem(0).Type(clip)</visible>
+							<visible>ControlGroup(7003).HasFocus + !IsEmpty(Container(11002).ListItem(0).DurationStr) + Container(11002).ListItem(0).Type(clip)</visible>
 						</control>
 					</control>
 				</control>

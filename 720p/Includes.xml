@@ -580,7 +580,7 @@
 		<control type="label">
 			<include>MusicInfoListItemDetailDims</include>
 			<align>right</align>
-			<info>ListItem.Duration</info>
+			<info>ListItem.DurationStr</info>
 		</control>
 	</include>
 	<constant name="MusicSongInfoDetailOffset">24</constant>

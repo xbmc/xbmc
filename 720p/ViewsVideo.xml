@@ -339,13 +339,13 @@
 							</control>
 							<control type="label">
 								<description>Duration</description>
-								<label> &#xB7; $INFO[ListItem.Duration]</label>
+								<label> &#xB7; $INFO[ListItem.DurationStr]</label>
 								<align>left</align>
 								<aligny>center</aligny>
 								<width min="1" max="100">auto</width>
 								<height>30</height>
 								<textcolor>FF999999</textcolor>
-								<visible>!IsEmpty(ListItem.Duration)</visible>
+								<visible>!IsEmpty(ListItem.DurationStr)</visible>
 							</control>
 							<control type="label">
 								<description>Duration</description>
@@ -355,7 +355,7 @@
 								<width min="1" max="300">auto</width>
 								<height>30</height>
 								<textcolor>FF999999</textcolor>
-								<visible>!IsEmpty(ListItem.Duration)</visible>
+								<visible>!IsEmpty(ListItem.DurationStr)</visible>
 							</control>
 						</control>
 						<control type="image">
@@ -514,13 +514,13 @@
 						</control>
 						<control type="label">
 							<description>Duration</description>
-							<label> &#xB7; $INFO[ListItem.Duration]</label>
+							<label> &#xB7; $INFO[ListItem.DurationStr]</label>
 							<align>left</align>
 							<aligny>center</aligny>
 							<width min="1" max="100">auto</width>
 							<height>30</height>
 							<textcolor>FF999999</textcolor>
-							<visible>!IsEmpty(ListItem.Duration)</visible>
+							<visible>!IsEmpty(ListItem.DurationStr)</visible>
 						</control>
 						<control type="label">
 							<description>Genre</description>
@@ -724,7 +724,7 @@
 							<control type="label">
 								<description>Cast</description>
 								<font>MediaPreviewSummary</font>
-								<label>$INFO[ListItem.Duration]</label>
+								<label>$INFO[ListItem.DurationStr]</label>
 								<align>left</align>
 								<width min="1" max="400">auto</width>
 							</control>
@@ -884,7 +884,7 @@
 							<height>27</height>
 							<orientation>horizontal</orientation>
 							<itemgap>10</itemgap>
-							<visible>!IsEmpty(ListItem.Duration)</visible>
+							<visible>!IsEmpty(ListItem.DurationStr)</visible>
 							<control type="label">
 								<description>Duration</description>
 								<font>MediaPreviewSummary</font>
@@ -896,7 +896,7 @@
 							<control type="label">
 								<description>Duration</description>
 								<font>MediaPreviewSummary</font>
-								<label>$INFO[ListItem.Duration]</label>
+								<label>$INFO[ListItem.DurationStr]</label>
 								<align>left</align>
 							</control>
 						</control>
@@ -1014,7 +1014,7 @@
 							<height>27</height>
 							<orientation>horizontal</orientation>
 							<itemgap>10</itemgap>
-							<visible>!IsEmpty(ListItem.Duration)</visible>
+							<visible>!IsEmpty(ListItem.DurationStr)</visible>
 							<control type="label">
 								<description>Duration</description>
 								<font>MediumSmallTitleFont2</font>
@@ -1026,7 +1026,7 @@
 							<control type="label">
 								<description>Duration</description>
 								<font>MediumSmallTitleFont2</font>
-								<label>$INFO[ListItem.Duration]</label>
+								<label>$INFO[ListItem.DurationStr]</label>
 								<align>left</align>
 							</control>
 						</control>

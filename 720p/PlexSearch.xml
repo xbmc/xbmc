@@ -681,13 +681,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(9001).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(9001).ListItem(0).DurationStr]</label>
 								<font>SearchResult</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(9001).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(9001).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 						<control type="fixedlist" id="9001">
@@ -815,13 +815,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(9002).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(9002).ListItem(0).DurationStr]</label>
 								<font>SearchResult</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(9002).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(9002).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 						<control type="fixedlist" id="9002">
@@ -960,13 +960,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(9004).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(9004).ListItem(0).DurationStr]</label>
 								<font>SearchResult</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(9004).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(9004).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 						<control type="fixedlist" id="9004">
@@ -1604,13 +1604,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(9010).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(9010).ListItem(0).DurationStr]</label>
 								<font>SearchResult</font>
 								<scroll>false</scroll>
 								<textcolor>orange</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(9010).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(9010).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 						<control type="fixedlist" id="9010">
@@ -1956,13 +1956,13 @@
 							</control>
 							<control type="label">
 								<align>left</align>
-								<label> &#xB7; $INFO[Container(9012).ListItem(0).Duration]</label>
+								<label> &#xB7; $INFO[Container(9012).ListItem(0).DurationStr]</label>
 								<font>SearchResult</font>
 								<scroll>false</scroll>
 								<textcolor>FFFFFFFF</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<width min="1" max="200">auto</width>
-								<visible>!IsEmpty(Container(9012).ListItem(0).Duration)</visible>
+								<visible>!IsEmpty(Container(9012).ListItem(0).DurationStr)</visible>
 							</control>
 						</control>
 						<visible allowhiddenfocus="false">true</visible>
@@ -2042,7 +2042,7 @@
 									<align>left</align>
 									<aligny>center</aligny>
 									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(originallyAvailableAt)] &#x2022; $INFO[ListItem.duration] &#x2022; $INFO[ListItem.Property(sourceTitle)]</label>
+									<label>$INFO[ListItem.Property(originallyAvailableAt)] &#x2022; $INFO[ListItem.DurationStr] &#x2022; $INFO[ListItem.Property(sourceTitle)]</label>
 									<font>SearchResultSmall</font>
 									<textcolor>FF777777</textcolor>
 									<wrapmultiline>false</wrapmultiline>
@@ -2124,7 +2124,7 @@
 									<align>left</align>
 									<aligny>center</aligny>
 									<scroll>false</scroll>
-									<label>$INFO[ListItem.Property(originallyAvailableAt)] &#x2022; $INFO[ListItem.duration] &#x2022; $INFO[ListItem.Property(sourceTitle)]</label>
+									<label>$INFO[ListItem.Property(originallyAvailableAt)] &#x2022; $INFO[ListItem.DurationStr] &#x2022; $INFO[ListItem.Property(sourceTitle)]</label>
 									<font>SearchResultSmall</font>
 									<textcolor>FF777777</textcolor>
 									<wrapmultiline>false</wrapmultiline>
