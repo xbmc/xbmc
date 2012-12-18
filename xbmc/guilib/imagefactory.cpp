@@ -21,6 +21,7 @@
 
 #include "imagefactory.h"
 #include "guilib/JpegIO.h"
+#include "guilib/cximage.h"
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
 {
@@ -35,7 +36,7 @@ IImage* ImageFactory::CreateLoader(const CURL& url)
   if((strType == "jpg") || (strType == "tbn"))
     return new CJpegIO();
 
-  return NULL;
+  return new CXImage();
 }
 
 IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& mimeType)
@@ -44,5 +45,5 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& mimeType)
   {
     return new CJpegIO();
   }
-  return NULL;
+  return new CXImage();
 }
