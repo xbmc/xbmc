@@ -26,6 +26,8 @@
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
 #include "JpegIO.h"
+#include "guilib/imagefactory.h"
+#include "filesystem/File.h"
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -295,33 +297,60 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
     return false;
   }
 
+  // Read image into memory to use our vfs
+  unsigned int imgsize = 0;
+  unsigned char *inputBuff = NULL;
+  unsigned int inputBuffSize = 0;
+
+  XFILE::CFile file;
+  if (file.Open(texturePath.c_str(), 0))
+  {
+    imgsize = (unsigned int)file.GetLength();
+    inputBuff = new unsigned char[imgsize];
+    inputBuffSize = file.Read(inputBuff, imgsize);
+    file.Close();
+
+    if ((imgsize != inputBuffSize) || (inputBuffSize == 0))
+      return false;
+  }
+  else
+    return false;
+
   //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
   CStdString Ext = URIUtils::GetExtension(texturePath);
   Ext.ToLower(); // Ignore case of the extension
   if (Ext.Equals(".jpg") || Ext.Equals(".jpeg") || Ext.Equals(".tbn"))
   {
-    CJpegIO jpegfile;
-    if (jpegfile.Open(texturePath, maxWidth, maxHeight))
+    IImage* pImage = ImageFactory::CreateLoader(texturePath);
+    if(pImage->LoadImageFromMemory(inputBuff, inputBuffSize, maxWidth, maxHeight))
     {
-      if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
+      if (pImage->Width() > 0 && pImage->Height() > 0)
       {
-        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_A8R8G8B8);
-        if (jpegfile.Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
+        Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
+        if (pImage->Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
         {
-          if (autoRotate && jpegfile.Orientation())
-            m_orientation = jpegfile.Orientation() - 1;
+          if (autoRotate && pImage->Orientation())
+            m_orientation = pImage->Orientation() - 1;
           m_hasAlpha=false;
+          m_originalWidth = pImage->originalWidth();
+          m_originalHeight = pImage->originalHeight();
           ClampToEdge();
+          delete pImage;
+          delete [] inputBuff;
           return true;
         }
       }
     }
+    delete pImage;
     CLog::Log(LOGDEBUG, "%s - Load of %s failed. Falling back to ImageLib", __FUNCTION__, texturePath.c_str());
   }
 
   DllImageLib dll;
   if (!dll.Load())
+  {
+    delete [] inputBuff;
     return false;
+  }
 
   ImageInfo image;
   memset(&image, 0, sizeof(image));
@@ -332,11 +361,14 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   if(!dll.LoadImage(texturePath.c_str(), width, height, &image))
   {
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
+    delete [] inputBuff;
     return false;
   }
 
   LoadFromImage(image, autoRotate);
   dll.ReleaseImage(&image);
+
+  delete [] inputBuff;
 
   return true;
 }
@@ -349,21 +381,26 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
   if (mimeType == "image/jpeg")
   {
-    CJpegIO jpegfile;
-    if (jpegfile.Read(buffer, size, maxWidth, maxHeight))
+    IImage* pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
+    if(pImage->LoadImageFromMemory(buffer, size, maxWidth, maxHeight))
     {
-      if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
+      if (pImage->Width() > 0 && pImage->Height() > 0)
       {
-        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_A8R8G8B8);
-        if (jpegfile.Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
+        Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
+        if (pImage->Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
         {
           m_hasAlpha=false;
+          m_originalWidth = pImage->originalWidth();
+          m_originalHeight = pImage->originalHeight();
           ClampToEdge();
+          delete pImage;
           return true;
         }
       }
     }
+    delete pImage;
   }
+
   DllImageLib dll;
   if (!dll.Load())
     return false;
