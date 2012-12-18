@@ -1415,7 +1415,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
       if (!nItem->IsPlayList() && !nItem->IsZIP() && !nItem->IsRAR())
         g_playlistPlayer.Add(iPlaylist, nItem);
 
-      if (nItem == item)
+      if (item->IsSamePath(nItem.get()))
       { // item that was clicked
         mediaToPlay = g_playlistPlayer.GetPlaylist(iPlaylist).size() - 1;
       }
