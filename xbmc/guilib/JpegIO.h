@@ -42,7 +42,7 @@ public:
   bool           CreateThumbnail(const CStdString& sourceFile, const CStdString& destFile, int minx, int miny, bool rotateExif);
   bool           CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny);
   virtual bool   CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile);
-  virtual bool   LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
+  virtual bool   LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height, const std::string& mimeType);
   void           Close();
 
   /*unsigned int   Width()       { return m_width; }
