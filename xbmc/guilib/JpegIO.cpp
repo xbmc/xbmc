@@ -683,3 +683,8 @@ unsigned int CJpegIO::GetExifOrientation(unsigned char* exif_data, unsigned int 
 
   return orientation;//done
 }
+
+bool CJpegIO::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)
+{
+  return Read(buffer, bufSize, width, height);
+}
