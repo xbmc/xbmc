@@ -1536,6 +1536,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CStdString strLanguage = pControl->GetCurrentLabel();
     if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
       g_guiSettings.SetLanguage(strLanguage);
+
+    // user set language, no longer use the TV's language
+    vector<CPeripheral *> cecDevices;
+    if (g_peripherals.GetPeripheralsWithFeature(cecDevices, FEATURE_CEC) > 0)
+    {
+      for (vector<CPeripheral *>::iterator it = cecDevices.begin(); it != cecDevices.end(); it++)
+        (*it)->SetSetting("use_tv_menu_language", false);
+    }
   }
   else if (strSetting.Equals("lookandfeel.skintheme"))
   { //a new Theme was chosen
@@ -2766,7 +2774,7 @@ void CGUIWindowSettingsCategory::FillInViewModes(CSetting *pSetting, int windowI
     window->Initialize();
     for (int i = 50; i < 60; i++)
     {
-      CGUIBaseContainer *control = (CGUIBaseContainer *)window->GetControl(i);
+      IGUIContainer *control = (IGUIContainer *)window->GetControl(i);
       if (control)
       {
         int type = (control->GetType() << 16) | i;

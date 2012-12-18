@@ -39,23 +39,46 @@
 #endif
 #include "FileItem.h"
 #include "storage/MediaManager.h"
+#include "URL.h"
+#include "filesystem/File.h"
+#include "utils/URIUtils.h"
+
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
 {
   CFileItem item(file.c_str(), false);
-  if (content != "bluray/iso" && (item.IsDVDFile(false, true) || item.IsDVDImage() ||
-#ifdef HAS_DVD_DRIVE
-    file.compare(g_mediaManager.TranslateDevicePath("")) == 0 ))
-#else
-  0 ))
-#endif
+
+  if(item.IsDVDImage())
   {
-    return (new CDVDInputStreamNavigator(pPlayer));
+#ifdef HAVE_LIBBLURAY
+    CURL url("udf://");
+    url.SetHostName(file);
+    url.SetFileName("BDMV/index.bdmv");
+    if(XFILE::CFile::Exists(url.Get()))
+        return new CDVDInputStreamBluray(pPlayer);
+#endif
+
+    return new CDVDInputStreamNavigator(pPlayer);
   }
+
+#ifdef HAS_DVD_DRIVE
+  if(file.compare(g_mediaManager.TranslateDevicePath("")) == 0)
+  {
+#ifdef HAVE_LIBBLURAY
+    if(XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV/index.bdmv")))
+        return new CDVDInputStreamBluray(pPlayer);
+#endif
+
+    return new CDVDInputStreamNavigator(pPlayer);
+  }
+#endif
+
+  if (item.IsDVDFile(false, true))
+    return (new CDVDInputStreamNavigator(pPlayer));
   else if(file.substr(0, 6) == "pvr://")
     return new CDVDInputStreamPVRManager(pPlayer);
 #ifdef HAVE_LIBBLURAY
-  else if (item.IsType(".bdmv") || item.IsType(".mpls") || content == "bluray/iso" || file.substr(0, 7) == "bluray:")
+  else if (item.IsType(".bdmv") || item.IsType(".mpls") || file.substr(0, 7) == "bluray:")
     return new CDVDInputStreamBluray(pPlayer);
 #endif
   else if(file.substr(0, 6) == "rtp://"

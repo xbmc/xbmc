@@ -64,8 +64,8 @@ namespace XBMCAddon
     static void makePendingCalls();
     static void clearPendingCalls(void* userData);
 
-    virtual bool isThreadStateOk() =  0;
-    virtual bool shouldRemoveCallback(void* userData) = 0;
+    virtual bool isStateOk(AddonClass* obj) =  0;
+    virtual bool shouldRemoveCallback(AddonClass* obj, void* userData) = 0;
   };
 
 }

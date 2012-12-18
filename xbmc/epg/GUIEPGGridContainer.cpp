@@ -46,7 +46,7 @@ using namespace std;
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width,
                                            float height, ORIENTATION orientation, int scrollTime,
                                            int preloadItems, int timeBlocks, int rulerUnit)
-    : CGUIControl(parentID, controlID, posX, posY, width, height)
+    : IGUIContainer(parentID, controlID, posX, posY, width, height)
 {
   ControlType             = GUICONTAINER_EPGGRID;
   m_blocksPerPage         = timeBlocks;
@@ -901,16 +901,7 @@ void CGUIEPGGridContainer::ChannelScroll(int amount)
 void CGUIEPGGridContainer::ProgrammesScroll(int amount)
 {
   // increase or decrease the horizontal offset
-  int offset = m_blockOffset + amount;
-
-  if (offset > m_blocks - m_blocksPerPage)
-  {
-    offset = m_blocks - m_blocksPerPage;
-  }
-
-  if (offset < 0) offset = 0;
-
-  ScrollToBlockOffset(offset);
+  ScrollToBlockOffset(m_blockOffset + amount);
 }
 
 bool CGUIEPGGridContainer::MoveChannel(bool direction, bool wrapAround)
@@ -1331,12 +1322,50 @@ int CGUIEPGGridContainer::GetSelectedItem() const
   return 0;
 }
 
-CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset) const
+CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
 {
-  if (!m_epgItemsPtr.size())
+  if (!m_channelItems.size())
     return CGUIListItemPtr();
 
-  return m_item->item;
+  int item = m_channelCursor + m_channelOffset + offset;
+  if (flag & INFOFLAG_LISTITEM_POSITION)
+    item = (int)(m_channelScrollOffset / m_channelLayout->Size(VERTICAL));
+
+  if (flag & INFOFLAG_LISTITEM_WRAP)
+  {
+    item %= (int)m_channelItems.size();
+    if (item < 0) item += m_channelItems.size();
+    return m_channelItems[item];
+  }
+  else
+  {
+    if (item >= 0 && item < (int)m_channelItems.size())
+      return m_channelItems[item];
+  }
+  return CGUIListItemPtr();
+}
+
+CStdString CGUIEPGGridContainer::GetLabel(int info) const
+{
+  CStdString label;
+  switch (info)
+  {
+  case CONTAINER_NUM_PAGES:
+    label.Format("%u", (m_channels + m_channelsPerPage - 1) / m_channelsPerPage);
+    break;
+  case CONTAINER_CURRENT_PAGE:
+    label.Format("%u", 1 + (m_channelCursor + m_channelOffset) / m_channelsPerPage );
+    break;
+  case CONTAINER_POSITION:
+    label.Format("%i", 1 + m_channelCursor + m_channelOffset);
+    break;
+  case CONTAINER_NUM_ITEMS:
+    label.Format("%u", m_channels);
+    break;
+  default:
+      break;
+  }
+  return label;
 }
 
 GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(const int &channel)
@@ -1471,6 +1500,9 @@ void CGUIEPGGridContainer::ScrollToChannelOffset(int offset)
 
 void CGUIEPGGridContainer::ScrollToBlockOffset(int offset)
 {
+  // make sure offset is in valid range
+  offset = std::max(0, std::min(offset, m_blocks - m_blocksPerPage));
+
   float size = m_blockSize;
   int range = m_blocksPerPage / 1;
 

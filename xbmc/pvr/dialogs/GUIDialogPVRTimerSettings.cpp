@@ -262,6 +262,9 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
       tag->m_iClientId         = channel->GetPVRChannelInfoTag()->ClientID();
       tag->m_bIsRadio          = channel->GetPVRChannelInfoTag()->IsRadio();
       tag->m_iChannelNumber    = channel->GetPVRChannelInfoTag()->ChannelNumber();
+
+      // Update channel pointer from above values
+      tag->UpdateChannel();
     }
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day > 10)
@@ -360,8 +363,14 @@ void CGUIDialogPVRTimerSettings::OnOkay()
 {
   m_cancelled = false;
   CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
-  if (tag->m_strTitle == g_localizeStrings.Get(19056))
-    tag->m_strTitle = g_PVRChannelGroups->GetByUniqueID(tag->m_iClientChannelUid, tag->m_iClientId)->ChannelName();
+
+  // Set the timer's title to the channel name if it's 'New Timer' or empty
+  if (tag->m_strTitle == g_localizeStrings.Get(19056) || tag->m_strTitle.IsEmpty())
+  {
+    CPVRChannelPtr channel = g_PVRChannelGroups->GetByUniqueID(tag->m_iClientChannelUid, tag->m_iClientId);
+    if (channel)
+      tag->m_strTitle = channel->ChannelName();
+  }
 
   if (m_bTimerActive)
     tag->m_state = PVR_TIMER_STATE_SCHEDULED;

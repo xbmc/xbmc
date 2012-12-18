@@ -105,9 +105,9 @@ void CGUIWindowPVRTimers::UpdateData(bool bUpdateSelectedFile /* = true */)
   CSingleLock graphicsLock(g_graphicsContext);
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
+  m_parent->m_viewControl.SetCurrentView(m_iControlList);
   ShowBusyItem();
   m_parent->m_vecItems->Clear();
-  m_parent->m_viewControl.SetCurrentView(m_iControlList);
   m_parent->m_vecItems->SetPath("pvr://timers/");
   m_parent->Update(m_parent->m_vecItems->GetPath());
   m_parent->m_vecItems->Sort(m_iSortMethod, m_iSortOrder);

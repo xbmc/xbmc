@@ -129,7 +129,7 @@ namespace PERIPHERALS
     static int CecAlert(void *cbParam, const CEC::libcec_alert alert, const CEC::libcec_parameter data);
     static void CecSourceActivated(void *param, const CEC::cec_logical_address address, const uint8_t activated);
     bool IsRunning(void) const;
-    void ReopenConnection(void);
+    bool ReopenConnection(void);
     void ProcessActivateSource(void);
     void ProcessStandbyDevices(void);
 
@@ -168,6 +168,8 @@ namespace PERIPHERALS
     bool                              m_bActiveSourcePending;
     bool                              m_bStandbyPending;
     CDateTime                         m_preventActivateSourceOnPlay;
+    bool                              m_bActiveSourceBeforeStandby;
+    bool                              m_bOnPlayReceived;
   };
 
   class CPeripheralCecAdapterUpdateThread : public CThread

@@ -114,7 +114,7 @@ void CPVRGUIInfo::Stop(void)
 
 void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageTimers)
+  if (msg == ObservableMessageTimers || msg == ObservableMessageTimersReset)
     UpdateTimersCache();
 }
 

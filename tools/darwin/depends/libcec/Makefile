@@ -3,14 +3,14 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libcec
-VERSION=2.0.3
+VERSION=2.0.5-3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-LIBDYLIB=$(SOURCE)/src/lib/.libs/$(LIBNAME).1.dylib
+LIBDYLIB=$(SOURCE)/src/lib/.libs/$(LIBNAME).2.dylib
 
 all: $(LIBDYLIB) .installed
 
@@ -34,6 +34,6 @@ $(LIBDYLIB): $(SOURCE)
 clean:
 	rm -rf $(SOURCE) .installed
 
-distclean::
+distclean:
 	rm -rf $(SOURCE) .installed
 

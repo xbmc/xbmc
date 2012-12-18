@@ -399,7 +399,7 @@ msgstr "Hent undertekster"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "Standard for skinnet"
+msgstr "Standard for skallet"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
@@ -411,7 +411,7 @@ msgstr "Arial-basert"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
-msgstr "[B]ENDRE DINE UTSEENDEINNSTILLINGER:[/B][CR][CR]Kalibrer GUI · Endre skinnet · Oppgi skjermsparer · Endre dine regionale innstillinger · Oppgi globale visningsalternativer"
+msgstr "[B]ENDRE DINE UTSEENDEINNSTILLINGER:[/B][CR][CR]Kalibrer GUI · Endre skallet · Oppgi skjermsparer · Endre dine regionale innstillinger · Oppgi globale visningsalternativer"
 
 msgctxt "#31401"
 msgid "[B]CONFIGURE VIDEO SETTINGS[/B][CR][CR]Manage your video library · Set video playback options · Change video listing options[CR]Set subtitle fonts"

@@ -506,6 +506,7 @@ void CSoftAE::Shutdown()
 
 bool CSoftAE::Initialize()
 {
+  CSingleLock lock(m_threadLock);
   InternalOpenSink();
   m_running = true;
   m_thread  = new CThread(this, "CSoftAE");
@@ -637,6 +638,7 @@ inline void CSoftAE::GetDeviceFriendlyName(std::string &device)
 
 void CSoftAE::Deinitialize()
 {
+  CSingleLock lock(m_threadLock);
   if (m_thread)
   {
     Stop();
@@ -1017,8 +1019,10 @@ void CSoftAE::Run()
         restart = true;
     }
 
+#if !defined(TARGET_ANDROID)
     /* Handle idle or forced suspend */
     ProcessSuspend();
+#endif
 
     /* if we are told to restart */
     if (m_reOpen || restart || !m_sink)

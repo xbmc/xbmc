@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3222,9 +3222,17 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "흐림"
 
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "싸라기"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "우박"
+
+msgctxt "#1427"
+msgid "Smoke"
+msgstr "연무"
 
 msgctxt "#1428"
 msgid "Volcanic"
@@ -3242,9 +3250,29 @@ msgctxt "#1432"
 msgid "Sand"
 msgstr "모래"
 
+msgctxt "#1433"
+msgid "Spray"
+msgstr "물보라"
+
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "회오리바람"
+
+msgctxt "#1435"
+msgid "Sandstorm"
+msgstr "모래폭풍"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "싸라기"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "낮음"
+
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "진눈깨비"
 
 msgctxt "#1442"
 msgid "Chance"
@@ -3261,6 +3289,10 @@ msgstr "구름"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "알수없음"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "스콜"
 
 msgctxt "#1448"
 msgid "Precipitation"

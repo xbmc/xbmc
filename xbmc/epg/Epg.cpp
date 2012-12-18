@@ -465,7 +465,7 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bF
 
   /* enforce advanced settings update interval override for TV Channels with no EPG data */
   if (m_tags.empty() && !bUpdate && ChannelID() > 0 && !Channel()->IsRadio())
-    iUpdateTime = g_advancedSettings.m_bEpgUpdateEmptyTagsInterval;
+    iUpdateTime = g_advancedSettings.m_iEpgUpdateEmptyTagsInterval;
 
   if (!bForceUpdate)
   {
@@ -773,7 +773,7 @@ const CStdString &CEpg::ConvertGenreIdToString(int iID, int iSubID)
       iLabelId = (iSubID <= 3) ? 19660 + iSubID : 19660;
       break;
     case EPG_EVENT_CONTENTMASK_USERDEFINED:
-      iLabelId = (iSubID <= 3) ? 19676 + iSubID : 19676;
+      iLabelId = (iSubID <= 8) ? 19676 + iSubID : 19676;
       break;
     default:
       break;
@@ -900,4 +900,12 @@ bool CEpg::NeedsSave(void) const
 {
   CSingleLock lock(m_critSection);
   return !m_changedTags.empty() || !m_deletedTags.empty() || m_bChanged;
+}
+
+bool CEpg::IsValid(void) const
+{
+  CSingleLock lock(m_critSection);
+  if (ScraperName() == "client")
+    return Channel().get() != NULL;
+  return true;
 }

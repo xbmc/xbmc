@@ -104,14 +104,27 @@ namespace PythonBindings
       doretrieveApiInstance(((PyHolder*)pythonType),((PyHolder*)pythonType)->typeInfo, expectedType, methodNamespacePrefix, methodNameForErrorString);
   }
 
-  inline void prepareForReturn(XBMCAddon::AddonClass* c) { if(c) c->Acquire(); }
-
-  inline void cleanForDealloc(XBMCAddon::AddonClass* c) { if(c) c->Release(); }
+  /**
+   * This method is a helper for the generated API. It's called prior to any API
+   * class constructor being returned from the generated code to Python
+   */
+  void prepareForReturn(XBMCAddon::AddonClass* c);
 
   /**
-   * There is a Catch-22 in the destruction of a Window. This resolves that.
+   * This method is a helper for the generated API. It's called prior to any API
+   * class destructor being dealloc-ed from the generated code from Python
    */
-  inline void cleanForDealloc(XBMCAddon::xbmcgui::Window* c) { if(c) { c->dispose(); c->Release(); } }
+  void cleanForDealloc(XBMCAddon::AddonClass* c);
+
+  /**
+   * This method is a helper for the generated API. It's called prior to any API
+   * class destructor being dealloc-ed from the generated code from Python
+   *
+   * There is a Catch-22 in the destruction of a Window. 'dispose' needs to be
+   * called on destruction but cannot be called from the destructor.
+   * This overrides the default cleanForDealloc to resolve that.
+   */
+  void cleanForDealloc(XBMCAddon::xbmcgui::Window* c);
 
   /**
    * This method allows for conversion of the native api Type to the Python type
@@ -119,24 +132,7 @@ namespace PythonBindings
    * NOTE: swigTypeString must be in the data segment. That is, it should be an explicit string since
    * the const char* is stored in a PyHolder struct and never deleted.
    */
-  inline PyObject* makePythonInstance(void* api, PyTypeObject* typeObj, TypeInfo* typeInfo, bool incrementRefCount)
-  {
-    // null api types result in Py_None
-    if (!api)
-    {
-      Py_INCREF(Py_None);
-      return Py_None;
-    }
-
-    PyHolder* self = (PyHolder*)typeObj->tp_alloc(typeObj,0);
-    if (!self) return NULL;
-    self->magicNumber = XBMC_PYTHON_TYPE_MAGIC_NUMBER;
-    self->typeInfo = typeInfo;
-    self->pSelf = api;
-    if (incrementRefCount)
-      Py_INCREF((PyObject*)self);
-    return (PyObject*)self;
-  }
+  PyObject* makePythonInstance(void* api, PyTypeObject* typeObj, TypeInfo* typeInfo, bool incrementRefCount);
 
   class Director
   {

@@ -295,6 +295,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
 
+  // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
+  ADDON::CAddonMgr::Get().ReInit();
+
   g_weatherManager.Refresh();
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;

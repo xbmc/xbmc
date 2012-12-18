@@ -93,7 +93,8 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
   {
     m_smsTimer.Stop();
   }
-  else if (message.GetMessage() == GUI_MSG_SET_TEXT)
+  else if (message.GetMessage() == GUI_MSG_SET_TEXT &&
+          ((message.GetControlId() <= 0 && HasFocus()) || (message.GetControlId() == GetID())))
   {
     SetLabel2(message.GetLabel());
     UpdateText();

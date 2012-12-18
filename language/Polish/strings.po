@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -344,7 +344,7 @@ msgstr "Utwórz ikony"
 
 msgctxt "#110"
 msgid "Create thumbnails"
-msgstr "Utwórz miniaturki"
+msgstr "Utwórz miniatury"
 
 msgctxt "#111"
 msgid "Shortcuts"
@@ -408,7 +408,7 @@ msgstr "Usunąć wybrane pliki? - Po usunięciu pliki są nie do odzyskania!"
 
 msgctxt "#126"
 msgid "Status"
-msgstr "Polecenie w toku"
+msgstr "Stan"
 
 msgctxt "#127"
 msgid "Objects"
@@ -1492,7 +1492,7 @@ msgstr "Brak recenzji tego albumu"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
-msgstr "Pobieram miniaturkę..."
+msgstr "Pobieram miniaturę..."
 
 msgctxt "#416"
 msgid "Not available"
@@ -2236,7 +2236,7 @@ msgstr "Wszystkie utwory"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "Programy TV w trakcie emisji"
+msgstr "Seriale w trakcie emisji"
 
 msgctxt "#629"
 msgid "View mode"
@@ -4170,6 +4170,10 @@ msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
 
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Anulowano na %im%is przed końcem"
+
 msgctxt "#13213"
 msgid "%2.0fm"
 msgstr "%2.0fm"
@@ -4924,7 +4928,7 @@ msgstr "- Procent"
 
 msgctxt "#14015"
 msgid "No files and at least one thumb"
-msgstr "Miniaturki, jeżeli nie ma plików"
+msgstr "Miniatury, jeżeli nie ma plików"
 
 msgctxt "#14016"
 msgid "At least one file and thumb"
@@ -4932,7 +4936,7 @@ msgstr "Przynajmniej jeden plik i ikona"
 
 msgctxt "#14017"
 msgid "Percentage of thumbs"
-msgstr "Procentowo miniaturki"
+msgstr "Procentowo miniatury"
 
 msgctxt "#14018"
 msgid "View options"
@@ -5080,7 +5084,7 @@ msgstr "Efekt ziarnistości"
 
 msgctxt "#14059"
 msgid "Search for thumbnails on remote shares"
-msgstr "Szukaj miniaturek w udziałach sieciowych"
+msgstr "Szukaj miniatur w udziałach sieciowych"
 
 msgctxt "#14060"
 msgid "Unknown type cache - Internet"
@@ -6024,11 +6028,11 @@ msgstr "Kanały radiowe"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
-msgstr "Nadchodzące nagrania"
+msgstr "Zaplanowane nagrania"
 
 msgctxt "#19026"
 msgid "Add timer..."
-msgstr "Dodaj Timer"
+msgstr "Dodaj zaplanowane nagranie"
 
 msgctxt "#19027"
 msgid "No search results"
@@ -6048,7 +6052,7 @@ msgstr "Teraz"
 
 msgctxt "#19031"
 msgid "Next"
-msgstr "Następny"
+msgstr "Następnie"
 
 msgctxt "#19032"
 msgid "Timeline"
@@ -6084,7 +6088,7 @@ msgstr "Czy na pewno chcesz ukryć kanał?"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr "Timer"
+msgstr "Zaplanowane nagranie"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
@@ -6092,7 +6096,7 @@ msgstr "Czy na pewno chcesz zmienic nazwę nagrania"
 
 msgctxt "#19042"
 msgid "Are you sure you want to rename this timer?"
-msgstr "Czy na pewno chcesz zmienić nazwę Timera?"
+msgstr "Czy na pewno chcesz zmienić nazwę zaplanowanego nagrania?"
 
 msgctxt "#19043"
 msgid "Recording"
@@ -6148,15 +6152,15 @@ msgstr "Brak dostępnych informacji"
 
 msgctxt "#19056"
 msgid "New timer"
-msgstr "Nowy Timer"
+msgstr "Nowe nagranie"
 
 msgctxt "#19057"
 msgid "Edit timer"
-msgstr "Edytuj Timer"
+msgstr "Edytuj zaplanowane nagranie"
 
 msgctxt "#19058"
 msgid "Timer enabled"
-msgstr "Timer włączony"
+msgstr "Zaplanowane nagranie włączone"
 
 msgctxt "#19059"
 msgid "Stop recording"
@@ -6164,11 +6168,11 @@ msgstr "Zatrzymaj nagrywanie"
 
 msgctxt "#19060"
 msgid "Delete timer"
-msgstr "Usuń Timer"
+msgstr "Usuń zaplanowane nagranie"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr "Dodaj Timer"
+msgstr "Dodaj zaplanowane nagranie"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -6204,7 +6208,7 @@ msgstr "Czas odświeżania EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "Nie sortuj EPG w bazie"
+msgstr "Nie przechowuj EPG w bazie"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -6240,7 +6244,7 @@ msgstr "Początek:"
 
 msgctxt "#19081"
 msgid "End:"
-msgstr "Zakończenie::"
+msgstr "Koniec:"
 
 msgctxt "#19082"
 msgid "Priority:"
@@ -6320,11 +6324,15 @@ msgstr "Wpisz nazwę folderu dla nagrań"
 
 msgctxt "#19106"
 msgid "Next timer on"
-msgstr "Następny licznik czasu "
+msgstr "Następne zaplanowane nagranie:"
+
+msgctxt "#19107"
+msgid "at"
+msgstr "o"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr "Zapisanie Timera niemożliwe. Sprawdź plik log"
+msgstr "Zapisanie zaplanowanego nagrania jest niemożliwe. Sprawdź plik log"
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
@@ -6368,7 +6376,7 @@ msgstr "Unikaj powtórzeń"
 
 msgctxt "#19122"
 msgid "This timer is still recording. Are you sure you want to delete this timer?"
-msgstr "Timer stale nagrwa. Czy chcesz usunąć ten Timer?"
+msgstr "Zaplanowane nagranie jest w toku. Chcesz usunąć to zaplanowane nagranie?"
 
 msgctxt "#19123"
 msgid "Free to air channels only"
@@ -6376,11 +6384,11 @@ msgstr "Tylko darmowe kanały"
 
 msgctxt "#19124"
 msgid "Ignore present timers"
-msgstr "Ignoruj obecne Timery"
+msgstr "Ignoruj zaplanowane nagrania"
 
 msgctxt "#19125"
 msgid "Ignore present recordings"
-msgstr "Ignoruj obecne nagrania"
+msgstr "Ignoruj istniejące nagrania"
 
 msgctxt "#19126"
 msgid "Start time"
@@ -6500,7 +6508,7 @@ msgstr "Nd"
 
 msgctxt "#19156"
 msgid "from"
-msgstr "z"
+msgstr "od"
 
 msgctxt "#19157"
 msgid "Next recording"
@@ -6512,7 +6520,7 @@ msgstr "Obecnie nagrywa"
 
 msgctxt "#19159"
 msgid "from"
-msgstr "z"
+msgstr "od"
 
 msgctxt "#19160"
 msgid "to"
@@ -6528,7 +6536,7 @@ msgstr "Nagrania"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr "Niemożna rozpocząć nagrywania. Sprawdź plik log"
+msgstr "Nie można rozpocząć nagrywania. Sprawdź plik log."
 
 msgctxt "#19165"
 msgid "Switch"
@@ -6616,7 +6624,7 @@ msgstr "Resetuj bazę EPG"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr "Resetuje EPG"
+msgstr "Resetowanie EPG"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
@@ -6672,7 +6680,7 @@ msgstr "Nazwa kanału"
 
 msgctxt "#19202"
 msgid "Channel icon:"
-msgstr "Miniaturka kanału: "
+msgstr "Miniatura kanału: "
 
 msgctxt "#19203"
 msgid "Edit channel"
@@ -6724,7 +6732,7 @@ msgstr "Wprowadź poprawny adres URL dla nowego kanału"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
-msgstr "Serwer PVR nie wspiera liczników czasu."
+msgstr "Serwer PVR nie wspiera zaplanowanych nagrań."
 
 msgctxt "#19216"
 msgid "All radio channels"
@@ -6796,7 +6804,7 @@ msgstr "Wyczyść rezultaty wyszukiwania"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr "Wyświetl powiadomienie przy aktualizacji licznika czasu"
+msgstr "Wyświetl powiadomienie przy zmianie zaplanowanych zadań"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
@@ -6812,7 +6820,7 @@ msgstr "Ładuję kanały od klientów"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr "Wczytuję liczniki czasu z klientów"
+msgstr "Wczytuję zaplanowane nagrania z klientów"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
@@ -6936,11 +6944,11 @@ msgstr "Blokada rodzicielska:"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
-msgstr "Nie pokazuj etykiet: \" brak dostępnych informacji\""
+msgstr "Nie pokazuj etykiet \"brak dostępnych informacji\""
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr "Nie pokazuj ostrzeżeń: \"połączenie zerwane\""
+msgstr "Nie pokazuj ostrzeżeń \"połączenie zerwane\""
 
 msgctxt "#19270"
 msgid "* All recordings"
@@ -7416,7 +7424,7 @@ msgstr "Brak ikony"
 
 msgctxt "#20019"
 msgid "Choose thumbnail"
-msgstr "Wybierz miniaturkę"
+msgstr "Wybierz miniaturę"
 
 msgctxt "#20023"
 msgid "Conflict"
@@ -8020,7 +8028,7 @@ msgstr "Obracaj zdjęcia na bazie danych EXIF"
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
-msgstr "Używaj widoku plakatu dla seriali TV "
+msgstr "Używaj widoku plakatu dla seriali"
 
 msgctxt "#20186"
 msgid "Please wait"
@@ -8208,7 +8216,7 @@ msgstr "Przeszukuję teledyski używając %s"
 
 msgctxt "#20319"
 msgid "Scanning tvshows using %s"
-msgstr "Przeszukuję seriale tv używając %s"
+msgstr "Przeszukuję seriale używając %s"
 
 msgctxt "#20320"
 msgid "Scanning artists using %s"
@@ -8296,7 +8304,7 @@ msgstr "Filmy"
 
 msgctxt "#20343"
 msgid "TV shows"
-msgstr "Seriale TV"
+msgstr "Seriale"
 
 msgctxt "#20344"
 msgid "This directory contains"
@@ -8328,7 +8336,7 @@ msgstr "głosów"
 
 msgctxt "#20351"
 msgid "TV show information"
-msgstr "Info o Serialu"
+msgstr "Info o serialu"
 
 msgctxt "#20352"
 msgid "Episode information"
@@ -8348,7 +8356,7 @@ msgstr "Wczytuję informacje o odcinkach w folderze"
 
 msgctxt "#20356"
 msgid "Select TV show:"
-msgstr "Wybierz Serial:"
+msgstr "Wybierz serial:"
 
 msgctxt "#20357"
 msgid "Enter the TV show name"
@@ -8380,7 +8388,7 @@ msgstr "Usuń serial z biblioteki"
 
 msgctxt "#20364"
 msgid "TV show"
-msgstr "Serial TV"
+msgstr "Serial"
 
 msgctxt "#20365"
 msgid "Episode plot"
@@ -8412,7 +8420,7 @@ msgstr "Ustaw ikonę sezonu"
 
 msgctxt "#20372"
 msgid "Season image"
-msgstr "Miniaturka dla sezonu"
+msgstr "Miniatura dla sezonu"
 
 msgctxt "#20373"
 msgid "Season"
@@ -8836,7 +8844,7 @@ msgstr "Dźwięki nawigacyjne podczas odtwarzania mediów"
 
 msgctxt "#21371"
 msgid "Thumbnail"
-msgstr "Miniaturka"
+msgstr "Miniatura"
 
 msgctxt "#21372"
 msgid "Forced DVD player region"
@@ -9584,7 +9592,7 @@ msgstr "po grupach"
 
 msgctxt "#22018"
 msgid "Live channels"
-msgstr "Kanały \"na żywo\""
+msgstr "Kanały na żywo"
 
 msgctxt "#22019"
 msgid "Recordings by title"

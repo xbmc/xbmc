@@ -71,13 +71,11 @@ namespace EPG
     virtual bool DeleteEpg(void);
 
     /*!
-     * @brief Erase all EPG entries for a table.
-     * @param table The table to remove the EPG entries for.
-     * @param start Remove entries after this time if set.
-     * @param end Remove entries before this time if set.
-     * @return True if the entries were removed successfully, false otherwise.
+     * @brief Delete an EPG table.
+     * @param table The table to remove.
+     * @return True if the table was removed successfully, false otherwise.
      */
-    virtual bool Delete(const CEpg &table, const time_t start = 0, const time_t end = 0);
+    virtual bool Delete(const CEpg &table);
 
     /*!
      * @brief Erase all EPG entries older than 1 day.

@@ -167,7 +167,8 @@ def clear():
 
 def parse_data(json):
     try:
-        reply = json.replace('"-999%"','""').replace('"-9999.00"','""').replace('"-9998"','""').replace('"NA"','""').replace(' <? END CHANCE OF PRECIP\n\n?>','') # wu api bug
+        raw = json.replace('<br>',' ').replace('&auml;','ä') # wu api bugs
+        reply = raw.replace('"-999%"','""').replace('"-9999.00"','""').replace('"-9998"','""').replace('"NA"','""') # wu will change these to null responses in the future
         data = simplejson.loads(reply)
     except:
         log('failed to parse weather data')

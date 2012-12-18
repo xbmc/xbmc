@@ -591,6 +591,11 @@ bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItemPtr &it
       return false;
   }
 
+  if (item->GetLabel().empty())
+    item->SetLabel(CUtil::GetTitleFromPath(strFilename, false));
+  if (item->GetLabel())
+    item->SetLabel(URIUtils::GetFileName(strFilename));
+
   return true;
 }
 

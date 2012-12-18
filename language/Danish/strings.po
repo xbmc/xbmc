@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -56,155 +56,155 @@ msgstr "xbmc mediecenter"
 
 msgctxt "#11"
 msgid "Monday"
-msgstr "mandag"
+msgstr "Mandag"
 
 msgctxt "#12"
 msgid "Tuesday"
-msgstr "tirsdag"
+msgstr "Tirsdag"
 
 msgctxt "#13"
 msgid "Wednesday"
-msgstr "onsdag"
+msgstr "Onsdag"
 
 msgctxt "#14"
 msgid "Thursday"
-msgstr "torsdag"
+msgstr "Torsdag"
 
 msgctxt "#15"
 msgid "Friday"
-msgstr "fredag"
+msgstr "Fredag"
 
 msgctxt "#16"
 msgid "Saturday"
-msgstr "lørdag"
+msgstr "Lørdag"
 
 msgctxt "#17"
 msgid "Sunday"
-msgstr "søndag"
+msgstr "Søndag"
 
 msgctxt "#21"
 msgid "January"
-msgstr "januar"
+msgstr "Januar"
 
 msgctxt "#22"
 msgid "February"
-msgstr "februar"
+msgstr "Februar"
 
 msgctxt "#23"
 msgid "March"
-msgstr "marts"
+msgstr "Marts"
 
 msgctxt "#24"
 msgid "April"
-msgstr "april"
+msgstr "April"
 
 msgctxt "#25"
 msgid "May"
-msgstr "maj"
+msgstr "Maj"
 
 msgctxt "#26"
 msgid "June"
-msgstr "juni"
+msgstr "Juni"
 
 msgctxt "#27"
 msgid "July"
-msgstr "juli"
+msgstr "Juli"
 
 msgctxt "#28"
 msgid "August"
-msgstr "august"
+msgstr "August"
 
 msgctxt "#29"
 msgid "September"
-msgstr "september"
+msgstr "September"
 
 msgctxt "#30"
 msgid "October"
-msgstr "oktober"
+msgstr "Oktober"
 
 msgctxt "#31"
 msgid "November"
-msgstr "november"
+msgstr "November"
 
 msgctxt "#32"
 msgid "December"
-msgstr "december"
+msgstr "December"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "man"
+msgstr "Man"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "tir"
+msgstr "Tir"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "ons"
+msgstr "Ons"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "tor"
+msgstr "Tor"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "fre"
+msgstr "Fre"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "lør"
+msgstr "Lør"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "søn"
+msgstr "Søn"
 
 msgctxt "#51"
 msgid "Jan"
-msgstr "jan"
+msgstr "Jan"
 
 msgctxt "#52"
 msgid "Feb"
-msgstr "feb"
+msgstr "Feb"
 
 msgctxt "#53"
 msgid "Mar"
-msgstr "mar"
+msgstr "Mar"
 
 msgctxt "#54"
 msgid "Apr"
-msgstr "apr"
+msgstr "Apr"
 
 msgctxt "#55"
 msgid "May"
-msgstr "maj"
+msgstr "Maj"
 
 msgctxt "#56"
 msgid "Jun"
-msgstr "jun"
+msgstr "Jun"
 
 msgctxt "#57"
 msgid "Jul"
-msgstr "jul"
+msgstr "Jul"
 
 msgctxt "#58"
 msgid "Aug"
-msgstr "aug"
+msgstr "Aug"
 
 msgctxt "#59"
 msgid "Sep"
-msgstr "sep"
+msgstr "Sep"
 
 msgctxt "#60"
 msgid "Oct"
-msgstr "okt"
+msgstr "Okt"
 
 msgctxt "#61"
 msgid "Nov"
-msgstr "nov"
+msgstr "Nov"
 
 msgctxt "#62"
 msgid "Dec"
-msgstr "dec"
+msgstr "Dec"
 
 msgctxt "#71"
 msgid "N"
@@ -312,7 +312,7 @@ msgstr "Vis: Liste"
 
 msgctxt "#102"
 msgid "Scan"
-msgstr "Skanne"
+msgstr "Gennemsøg"
 
 msgctxt "#103"
 msgid "Sort by: Name"
@@ -384,15 +384,15 @@ msgstr "Ny mappe"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Bekræft kopieringen af filen"
+msgstr "Bekræft kopiering af filen"
 
 msgctxt "#121"
 msgid "Confirm file move"
-msgstr "Bekræft flytningen af filen"
+msgstr "Bekræft flytning af filen"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Bekræft sletningen af filen?"
+msgstr "Bekræft sletning af filen?"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -736,7 +736,7 @@ msgstr "Pixelforhold"
 
 msgctxt "#218"
 msgid "DVD drive"
-msgstr "Dvd-drev"
+msgstr "DVD-drev"
 
 msgctxt "#219"
 msgid "Please insert disc"
@@ -880,7 +880,7 @@ msgstr "CDDB"
 
 msgctxt "#256"
 msgid "Fetching CD information"
-msgstr "Henter cd-information"
+msgstr "Henter CD-information"
 
 msgctxt "#257"
 msgid "Error"
@@ -996,11 +996,11 @@ msgstr "Ingen resultater fundet"
 
 msgctxt "#285"
 msgid "Preferred audio language"
-msgstr "Foretrukken lydsprog"
+msgstr "Foretrukket lydsprog"
 
 msgctxt "#286"
 msgid "Preferred subtitle language"
-msgstr "Foretrukken undertekstsprog"
+msgstr "Foretrukket undertekstsprog"
 
 msgctxt "#287"
 msgid "Subtitles"
@@ -1112,47 +1112,47 @@ msgstr "Oprydning af databasen gennemført"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "Rydder op i sangene..."
+msgstr "Rydder op i sange..."
 
 msgctxt "#319"
 msgid "Error cleaning songs"
-msgstr "Fejl ved oprydning af sange"
+msgstr "Fejl ved oprydning i sange"
 
 msgctxt "#320"
 msgid "Cleaning artists..."
-msgstr "Rydder op i kunstnerne..."
+msgstr "Rydder op i kunstnere..."
 
 msgctxt "#321"
 msgid "Error cleaning artists"
-msgstr "Fejl ved oprydning af kunstnerne"
+msgstr "Fejl ved oprydning i kunstnere"
 
 msgctxt "#322"
 msgid "Cleaning genres..."
-msgstr "Rydder op i genrerne..."
+msgstr "Rydder op i genrer..."
 
 msgctxt "#323"
 msgid "Error cleaning genres"
-msgstr "Fejl ved oprydning af genrerne"
+msgstr "Fejl ved oprydning i genrer"
 
 msgctxt "#324"
 msgid "Cleaning paths..."
-msgstr "Rydder op i stierne..."
+msgstr "Rydder op i stier..."
 
 msgctxt "#325"
 msgid "Error cleaning paths"
-msgstr "Fejl ved oprydning af stierne"
+msgstr "Fejl ved oprydning i stier"
 
 msgctxt "#326"
 msgid "Cleaning albums..."
-msgstr "Rydder op i albummerne..."
+msgstr "Rydder op i albummer..."
 
 msgctxt "#327"
 msgid "Error cleaning albums"
-msgstr "Fejl ved oprydning af albummerne"
+msgstr "Fejl ved oprydning i albummer"
 
 msgctxt "#328"
 msgid "Writing changes..."
-msgstr "Skriver ændringerne..."
+msgstr "Skriver ændringer..."
 
 msgctxt "#329"
 msgid "Error writing changes"
@@ -1324,87 +1324,87 @@ msgstr "Tordenvejr"
 
 msgctxt "#371"
 msgid "Partly"
-msgstr "delvist"
+msgstr "Delvist"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "mest"
+msgstr "Mest"
 
 msgctxt "#373"
 msgid "Sunny"
-msgstr "solrigt"
+msgstr "Solrigt"
 
 msgctxt "#374"
 msgid "Cloudy"
-msgstr "skyet"
+msgstr "Skyet"
 
 msgctxt "#375"
 msgid "Snow"
-msgstr "sne"
+msgstr "Sne"
 
 msgctxt "#376"
 msgid "Rain"
-msgstr "regn"
+msgstr "Regn"
 
 msgctxt "#377"
 msgid "Light"
-msgstr "let"
+msgstr "Let"
 
 msgctxt "#378"
 msgid "AM"
-msgstr "formiddag"
+msgstr "Formiddag"
 
 msgctxt "#379"
 msgid "PM"
-msgstr "eftermiddag"
+msgstr "Eftermiddag"
 
 msgctxt "#380"
 msgid "Showers"
-msgstr "byger"
+msgstr "Byger"
 
 msgctxt "#381"
 msgid "Few"
-msgstr "nogle"
+msgstr "Nogle"
 
 msgctxt "#382"
 msgid "Scattered"
-msgstr "spredte"
+msgstr "Spredte"
 
 msgctxt "#383"
 msgid "Wind"
-msgstr "blæst"
+msgstr "Blæst"
 
 msgctxt "#384"
 msgid "Strong"
-msgstr "hård"
+msgstr "Hård"
 
 msgctxt "#385"
 msgid "Fair"
-msgstr "tørt"
+msgstr "Tørt"
 
 msgctxt "#386"
 msgid "Clear"
-msgstr "skyfrit"
+msgstr "Skyfrit"
 
 msgctxt "#387"
 msgid "Clouds"
-msgstr "skyer"
+msgstr "Skyer"
 
 msgctxt "#388"
 msgid "Early"
-msgstr "tidligt"
+msgstr "Tidligt"
 
 msgctxt "#389"
 msgid "Shower"
-msgstr "byge"
+msgstr "Byge"
 
 msgctxt "#390"
 msgid "Flurries"
-msgstr "vindstød"
+msgstr "Vindstød"
 
 msgctxt "#391"
 msgid "Low"
-msgstr "lav"
+msgstr "Lav"
 
 msgctxt "#392"
 msgid "Medium"
@@ -1412,15 +1412,15 @@ msgstr "Mellem"
 
 msgctxt "#393"
 msgid "High"
-msgstr "høj"
+msgstr "Høj"
 
 msgctxt "#394"
 msgid "Fog"
-msgstr "tåge"
+msgstr "Tåge"
 
 msgctxt "#395"
 msgid "Haze"
-msgstr "dis"
+msgstr "Dis"
 
 msgctxt "#396"
 msgid "Select location"
@@ -1616,7 +1616,7 @@ msgstr "Dvd"
 
 msgctxt "#447"
 msgid "Autorun media"
-msgstr "Afspil automatisk mediet"
+msgstr "Afspil automatisk medier"
 
 msgctxt "#448"
 msgid "LCD"
@@ -1808,7 +1808,7 @@ msgstr "Hentning af albuminformation fejlede"
 
 msgctxt "#501"
 msgid "Looking for album names..."
-msgstr "Søger efter album navne..."
+msgstr "Søger efter album-navne..."
 
 msgctxt "#502"
 msgid "Open"
@@ -1856,7 +1856,7 @@ msgstr "Genre"
 
 msgctxt "#517"
 msgid "Recently played albums"
-msgstr "For nyligt afspillede albummer"
+msgstr "Nyligt afspillede albummer"
 
 msgctxt "#518"
 msgid "Launch"
@@ -1864,7 +1864,7 @@ msgstr "Start"
 
 msgctxt "#519"
 msgid "Launch in..."
-msgstr "Start i.."
+msgstr "Start i..."
 
 msgctxt "#521"
 msgid "Compilations"
@@ -6994,6 +6994,10 @@ msgctxt "#19280"
 msgid "Client specific settings"
 msgstr "Klient specifikke indstillinger"
 
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Bekræft kanalskift ved at trykke OK"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Anden/Ukendt"
@@ -9157,6 +9161,10 @@ msgstr "Cachen blev fyldt, før den nåede den påkrævede mængde, for at sikre
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Ekstern lager"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Antal sete episoder"
 
 msgctxt "#21460"
 msgid "Subtitle location"

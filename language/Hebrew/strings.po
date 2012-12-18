@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0-BETA2
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -10753,3 +10753,7 @@ msgstr "מקלט טלוויזיה "
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "גרסת ממשק libCEC . %x נמוכה מהגרסה ש XBMC (%x) תומך בה"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* תיקיית פריט"

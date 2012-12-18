@@ -374,7 +374,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CBuiltins::Execute("Quit");
 #endif
       vector<CStdString> dummy;
-      g_windowManager.ActivateWindow(iWindow, dummy, !execute.Equals("activatewindow"));
+      g_windowManager.ActivateWindow(iWindow, dummy, false);
 
       unsigned int iPtr = 1;
       while (params.size() > iPtr + 1)
