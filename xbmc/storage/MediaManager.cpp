@@ -638,7 +638,7 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 #ifdef TARGET_WINDOWS
   CWIN32Util::EjectTray(cDriveLetter);
 #else
-  CLibcdio *c_cdio = CLibcdio::GetInstance();
+  boost::shared_ptr<CLibcdio> c_cdio = CLibcdio::GetInstance();
   char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
   int nRetries=3;
