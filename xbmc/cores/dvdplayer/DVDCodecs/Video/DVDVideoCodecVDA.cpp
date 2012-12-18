@@ -804,7 +804,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
  
     m_use_cvBufferRef = true;
-    if (g_Windowing.GetRenderVendor().Find("Intel") > -1)
+    //TODO fix after Frodo if (g_Windowing.GetRenderVendor().Find("Intel") > -1)
     {
       m_dllSwScale = new DllSwScale;
       if (!m_dllSwScale->Load())
