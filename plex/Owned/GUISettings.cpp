@@ -519,19 +519,19 @@ void CGUISettings::Initialize()
   CSettingsCategory* aocat = ao;
 #endif
 
-  AddBool(aocat, "audiooutput.ac3passthrough"   , 364, true);
-  AddBool(aocat, "audiooutput.dtspassthrough"   , 254, true);
+  AddBool(aocat, "audiooutput.ac3passthrough"   , 364, false);
+  AddBool(aocat, "audiooutput.dtspassthrough"   , 254, false);
 
 
 #if !defined(TARGET_DARWIN) && !defined(TARGET_RASPBERRY_PI)
   AddBool(aocat, "audiooutput.passthroughaac"   , 299, false);
 #endif
 #if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_RASPBERRY_PI)
-  AddBool(aocat, "audiooutput.multichannellpcm" , 348, true );
+  AddBool(aocat, "audiooutput.multichannellpcm" , 348, false );
 #endif
 #if !defined(TARGET_DARWIN) && !defined(TARGET_RASPBERRY_PI)
-  AddBool(aocat, "audiooutput.truehdpassthrough", 349, true );
-  AddBool(aocat, "audiooutput.dtshdpassthrough" , 347, true );
+  AddBool(aocat, "audiooutput.truehdpassthrough", 349, false );
+  AddBool(aocat, "audiooutput.dtshdpassthrough" , 347, false );
 #endif
 
 #if !defined(TARGET_RASPBERRY_PI)
