@@ -2,6 +2,7 @@ add_subdirectory(libsquish)
 add_subdirectory(libhts)
 if(WIN32)
   add_subdirectory(win32)
+  add_subdirectory(libmad)
 endif()
 
 # build our external projects
