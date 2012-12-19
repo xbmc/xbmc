@@ -222,7 +222,7 @@ class MyPlexManager
         if (m_sectionThumbnails.find(path) != m_sectionThumbnails.end())
         {
           vector<CStdString> thumbs = m_sectionThumbnails[path];
-          for (int i = 0; i < thumbs.size() ; i++)
+          for (size_t i = 0; i < thumbs.size() ; i++)
           {
             dprintf("MyPlexManager: [%s] thumb%d = %s", path.c_str(), i, thumbs[i].c_str());
             section->SetArt(PLEX_ART_THUMB, i, thumbs[i]);
@@ -314,7 +314,7 @@ class MyPlexManager
         CStdString uuid = server->GetProperty("uuid").asString();
         CStdString address = server->GetProperty("address").asString();
         CStdString name = server->GetLabel();
-        int port = server->GetProperty("port").asInteger();
+        int64_t port = server->GetProperty("port").asInteger();
 
         PlexServerPtr serverPtr;
         if (owned)
