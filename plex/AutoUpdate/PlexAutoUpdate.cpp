@@ -13,12 +13,18 @@
 #include "Mac/PlexAutoUpdateMac.h"
 #endif
 
+#ifdef TARGET_WINDOWS
+#include "Win\PlexAutoUpdateInstallerWin.h"
+#endif
+
 CPlexAutoUpdate::CPlexAutoUpdate(const std::string &updateUrl, int searchFrequency) :
   m_updateUrl(updateUrl), m_searchFrequency(searchFrequency), m_stop(false), m_currentVersion(PLEX_VERSION)
 {
   m_functions = new CAutoUpdateFunctionsXBMC(this);
 #ifdef __APPLE__
-  m_installer = new CPlexAutoUpdateInstallerMac(m_functions->GetResourcePath());
+  m_installer = new CPlexAutoUpdateInstallerMac(m_functions);
+#elif defined(TARGET_WINDOWS)
+  m_installer = new CPlexAutoUpdateInstallerWin(m_functions);
 #endif
 
   boost::thread t(boost::bind(&CPlexAutoUpdate::run, this));
@@ -93,6 +99,8 @@ bool CPlexAutoUpdate::_CheckForNewVersion()
       {
         if (info.m_enclosureOs != GetOsName())
           continue;
+
+        m_functions->LogInfo("Found version " + info.m_enclosureVersion.GetVersionString());
 
         if(m_currentVersion < info.m_enclosureVersion)
         {

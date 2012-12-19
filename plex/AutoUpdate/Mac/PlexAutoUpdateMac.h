@@ -14,7 +14,7 @@
 class CPlexAutoUpdateInstallerMac : public CAutoUpdateInstallerBase
 {
   public:
-    CPlexAutoUpdateInstallerMac(const std::string& resourcePath) : CAutoUpdateInstallerBase(resourcePath) {};
+    CPlexAutoUpdateInstallerMac(CAutoUpdateFunctionsBase* functions) : CAutoUpdateInstallerBase(functions) {};
   virtual bool InstallUpdate(const std::string &file, std::string& unpackpath);
 };
 

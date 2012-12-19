@@ -131,16 +131,6 @@ class CAutoUpdateInfo
     int64_t m_enclosureSize;
 };
 
-class CAutoUpdateInstallerBase
-{
-  public:
-    CAutoUpdateInstallerBase(const std::string& resourcePath) : m_resourcePath(resourcePath) {};
-    virtual bool InstallUpdate(const std::string& file, std::string& unpackPath) { return false; }
-  
-  protected:
-    std::string m_resourcePath;
-};
-
 typedef std::vector<CAutoUpdateInfo> CAutoUpdateInfoList;
 
 class CPlexAutoUpdate;
@@ -160,6 +150,7 @@ class CAutoUpdateFunctionsBase
     virtual void LogDebug(const std::string& msg) {};
     virtual void LogInfo(const std::string& msg) {};
     virtual bool ShouldWeInstall(const std::string& localPath) { return false; }
+    virtual void TerminateApplication() {};
   
     virtual std::string GetResourcePath() const { return std::string(); }
 
@@ -167,6 +158,18 @@ class CAutoUpdateFunctionsBase
     virtual void NotifyNewVersion() {};
 
     CPlexAutoUpdate* m_updater;
+};
+
+
+class CAutoUpdateInstallerBase
+{
+  public:
+    CAutoUpdateInstallerBase(CAutoUpdateFunctionsBase* functions) : m_resourcePath(functions->GetResourcePath()) { m_functions = functions; };
+    virtual bool InstallUpdate(const std::string& file, std::string& unpackPath) { return false; }
+  
+  protected:
+    std::string m_resourcePath;
+    CAutoUpdateFunctionsBase* m_functions;
 };
 
 

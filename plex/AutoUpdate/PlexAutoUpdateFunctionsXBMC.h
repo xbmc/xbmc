@@ -35,6 +35,7 @@ class CAutoUpdateFunctionsXBMC : public CAutoUpdateFunctionsBase, IJobCallback
     virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
   
     virtual bool ShouldWeInstall(const std::string& localPath);
+    virtual void TerminateApplication();
 
   private:
     std::string GetLocalFileName(const std::string& baseName);

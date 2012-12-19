@@ -235,3 +235,10 @@ CAutoUpdateFunctionsXBMC::NotifyNewVersion()
   CGUIDialogOK::ShowAndGetInput("New version is available", line1, line2, line3);
 #endif
 }
+
+void
+CAutoUpdateFunctionsXBMC::TerminateApplication()
+{
+  CApplicationMessenger::Get().Quit();
+}
+

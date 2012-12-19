@@ -22,11 +22,10 @@ CPlexAutoUpdateInstallerMac::InstallUpdate(const std::string &file, std::string&
   @autoreleasepool
   {
     NSString *fileUrl = [NSString stringWithUTF8String:file.c_str()];
-    
-    [[NSWorkspace sharedWorkspace] selectFile:fileUrl inFileViewerRootedAtPath:nil];
-  
-    [NSApp terminate:nil];
+    [[NSWorkspace sharedWorkspace] selectFile:fileUrl inFileViewerRootedAtPath:nil];  
   }
+
+  m_functions->TerminateApplication();
   
   return true;
 }
