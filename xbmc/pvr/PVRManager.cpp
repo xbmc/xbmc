@@ -262,6 +262,9 @@ void CPVRManager::Stop(void)
 
   SetState(ManagerStateStopping);
 
+  if (g_windowManager.GetActiveWindow() == WINDOW_PVR)
+    g_windowManager.ActivateWindow(WINDOW_HOME);
+
   /* stop the EPG updater, since it might be using the pvr add-ons */
   g_EpgContainer.Stop();
 
