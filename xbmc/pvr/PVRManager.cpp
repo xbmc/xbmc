@@ -657,10 +657,21 @@ void CPVRManager::ResetEPG(void)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
 
+  if (m_addons && m_addons->IsPlaying())
+  {
+    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
+    CApplicationMessenger::Get().MediaStop();
+  }
+
   m_database->ResetEPG();
   Stop();
   g_EpgContainer.Reset();
-  Start();
+
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
+    Start();
+  }
 }
 
 bool CPVRManager::IsPlaying(void) const
