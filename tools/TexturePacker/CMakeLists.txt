@@ -20,4 +20,9 @@ target_link_libraries(TexturePacker
   ${CONFIG_LIBRARY_STDC++}
   lib_squish
 )
-target_link_libraries(TexturePacker ${CONFIG_LIBRARY_LZO2})
+if(NOT WIN32)
+  target_link_libraries(TexturePacker ${CONFIG_LIBRARY_LZO2})
+else()
+  find_library(LIB_LZO lzo ${root}/lib/win32/liblzo)
+  target_link_libraries(TexturePacker ${LIB_LZO})
+endif()

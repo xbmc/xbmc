@@ -247,33 +247,38 @@ if(WIN32)
     libcdio.dll
     zlib
     libsamplerate-0
-)
+  )
+
+  set(non_link_libs
+    SDL
+    SDL_image
+  )
 
   if(${CMAKE_BUILD_TYPE} STREQUAL "debug")
     set(external_libs ${external_libs} tinyxmlSTLd libboost_thread-vc100-mt-sgd-1_46_1 libboost_system-vc100-mt-sgd-1_46_1)
   else()
     set(external_libs ${external_libs} tinyxmlSTL libboost_thread-vc100-mt-s-1_46_1 libboost_system-vc100-mt-s-1_46_1)
   endif()
+else()
+  set(non_link_libs
+    rtmp
+    plist
+    shairport
+    curl
+    FLAC
+    modplug
+    vorbis
+    vorbisfile
+    vorbisenc
+    ogg
+    ass
+    mad
+    mpeg2
+    bluray
+    png
+    tiff
+  )
 endif()
-
-set(non_link_libs
-  rtmp
-  plist
-  shairport
-  curl
-  FLAC
-  modplug
-  vorbis
-  vorbisfile
-  vorbisenc
-  ogg
-  ass
-  mad
-  mpeg2
-  bluray
-  png
-  tiff
-)
 
 set(CONFIG_INTERNAL_LIBS
   lib_hts
@@ -339,11 +344,10 @@ foreach(lib ${external_libs})
   plex_find_library(${lib} 0 1 ${dependdir}/lib 1)
 endforeach()
 
-if(NOT WIN32)
-  foreach(lib ${non_link_libs})
-    plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
-  endforeach()
-endif()
+
+foreach(lib ${non_link_libs})
+  plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
+endforeach()
 
 # find our system libs
 foreach(lib ${system_libs})

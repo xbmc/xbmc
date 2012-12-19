@@ -175,9 +175,7 @@ if(WIN32)
 endif()
 
 # Build the texturepacker
-if(NOT WIN32)
-  add_subdirectory(tools/TexturePacker)
-endif()
+add_subdirectory(tools/TexturePacker)
 
 # global includes
 include_directories(
@@ -230,6 +228,7 @@ set(CPACK_PACKAGE_VENDOR "Plex inc")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PLEX_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PLEX_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PLEX_VERSION_PATCH})
+set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${CPACK_SYSTEM_PROCESSOR})
 set(CPACK_PACKAGE_FILE_NAME "Plex-${XBMC_VERSION}-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}")
 
 set(CPACK_COMPONENT_QDXSETUP_DISPLAY_NAME "DirectX Installer")
