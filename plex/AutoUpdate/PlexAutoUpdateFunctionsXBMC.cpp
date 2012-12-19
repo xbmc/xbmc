@@ -194,8 +194,9 @@ bool
 CAutoUpdateFunctionsXBMC::ShouldWeInstall(const std::string &localPath)
 {
   bool cancel;
-  CGUIDialogYesNo::ShowAndGetInput("Download finished", "", "Do you want to quit Plex and show the download folder?", "", cancel, "No", "Yes, do it!");
-  return !cancel;
+  if (CGUIDialogYesNo::ShowAndGetInput("Download finished", "", "Do you want to quit Plex and show the download folder?", "", cancel, "No", "Yes, do it!"))
+    return true;
+  return false;
 }
 
 std::string
@@ -222,12 +223,9 @@ CAutoUpdateFunctionsXBMC::NotifyNewVersion()
 #ifndef TARGET_LINUX
   CStdString line1("Version " + m_updater->GetNewVersion().m_enclosureVersion.GetVersionString() + " is available, would you like to download it?");
   CStdString line2("Your current version is " + m_updater->GetCurrentVersion().GetVersionString());
-  bool cancel;
-  CGUIDialogYesNo::ShowAndGetInput("New version available", line1, line2, "", cancel, "Cancel", "Download");
-  if (!cancel)
-  {
+
+  if (CGUIDialogYesNo::ShowAndGetInput("New version available", line1, line2, ""))
     m_updater->DownloadNewVersion();
-  }
 #else
   CStdString line1("Version " + m_updater->GetNewVersion().m_enclosureVersion.GetVersionString() + " is available");
   CStdString line2("Your current version is " + m_updater->GetCurrentVersion().GetVersionString());

@@ -46,10 +46,7 @@ void CPlexAutoUpdate::run()
 
   while (!m_stop)
   {
-    if (_CheckForNewVersion())
-    {
-      DownloadNewVersion();
-    }
+    _CheckForNewVersion();
 
     boost::system_time const tmout = boost::get_system_time() + boost::posix_time::seconds(m_searchFrequency);
     m_functions->LogDebug("Thread is going back to sleep");
