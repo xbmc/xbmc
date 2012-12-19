@@ -790,8 +790,13 @@ bool CVideoInfoTag::IsEmpty() const
 
 unsigned int CVideoInfoTag::GetDuration() const
 {
-  if (m_streamDetails.GetVideoDuration() > 0)
-    return m_streamDetails.GetVideoDuration();
+  /*
+   Prefer the duration from the stream if it isn't too
+   small (60%) compared to the duration from the tag.
+   */
+  unsigned int duration = m_streamDetails.GetVideoDuration();
+  if (duration > m_duration * 0.6)
+    return duration;
 
   return m_duration;
 }
