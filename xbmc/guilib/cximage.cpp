@@ -24,6 +24,7 @@
 CXImage::CXImage()
 {
   m_hasAlpha = false;
+  m_thumbnailbuffer = NULL;
 }
 
 CXImage::~CXImage()
@@ -102,5 +103,21 @@ bool CXImage::CreateThumbnailFromSurface(unsigned char* buffer, unsigned int wid
   if (!buffer || !m_dll.Load()) 
     return false;
 
-  return m_dll.CreateThumbnailFromSurface(buffer, width, height, format, destFile.c_str());
+  return m_dll.CreateThumbnailFromSurface(buffer, width, height, pitch, destFile.c_str());
+}
+
+bool CXImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+                                         unsigned char* &bufferout, unsigned int &bufferoutSize)
+{
+  if (!bufferin || !m_dll.Load()) 
+    return false;
+
+  bool ret = m_dll.CreateThumbnailFromSurface2((BYTE *)bufferin, width, height, pitch, destFile.c_str(), (BYTE *)m_thumbnailbuffer, bufferoutSize);
+  bufferout = m_thumbnailbuffer;
+  return ret;
+}
+
+void CXImage::ReleaseThumbnailBuffer()
+{
+  m_dll.FreeMemory(m_thumbnailbuffer);
 }

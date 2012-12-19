@@ -43,6 +43,9 @@ public:
   bool           CreateThumbnailFromMemory(unsigned char* buffer, unsigned int bufSize, const CStdString& destFile, unsigned int minx, unsigned int miny);
   virtual bool   CreateThumbnailFromSurface(unsigned char* buffer, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile);
   virtual bool   LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height, const std::string& mimeType);
+  virtual bool   CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const CStdString& destFile, 
+                                            unsigned char* &bufferout, unsigned int &bufferoutSize);
+  virtual void   ReleaseThumbnailBuffer();
   void           Close();
 
   /*unsigned int   Width()       { return m_width; }
@@ -58,6 +61,7 @@ protected:
   unsigned int   m_inputBuffSize;
   struct         jpeg_decompress_struct m_cinfo;
   CStdString     m_texturePath;
+  unsigned char* m_thumbnailbuffer;
 
  /* unsigned int   m_width;
   unsigned int   m_height;

@@ -330,6 +330,61 @@ extern "C"
     }
     return true;
   };
+
+  __declspec(dllexport) bool CreateThumbnailFromSurface2(BYTE * bufferin, unsigned int width, unsigned int height, unsigned int stride, const char *thumb, 
+                                                         BYTE * &bufferout, unsigned int &bufferoutSize)
+  {
+    if (!bufferin) return false;
+    // creates an image, and copies the surface data into it.
+    CxImage image(width, height, 24, CXIMAGE_FORMAT_PNG);
+    if (!image.IsValid()) return false;
+    image.AlphaCreate();
+    if (!image.AlphaIsValid()) return false;
+    bool fullyTransparent(true);
+    bool fullyOpaque(true);
+    for (unsigned int y = 0; y < height; y++)
+    {
+      BYTE *ptr = bufferin + (y * stride);
+      for (unsigned int x = 0; x < width; x++)
+      {
+        BYTE b = *ptr++;
+        BYTE g = *ptr++;
+        BYTE r = *ptr++;
+        BYTE a = *ptr++;  // alpha
+        if (a)
+          fullyTransparent = false;
+        if (a != 0xff)
+          fullyOpaque = false;
+        image.SetPixelColor(x, height - 1 - y, RGB(r, g, b));
+        image.AlphaSet(x, height - 1 - y, a);
+      }
+    }
+    if (fullyTransparent || fullyOpaque)
+      image.AlphaDelete();
+    image.SetJpegQuality(90);
+
+    DWORD type;
+    if (image.AlphaIsValid() || GetImageType(thumb) == CXIMAGE_FORMAT_PNG)
+      type = CXIMAGE_FORMAT_PNG;
+    else
+      type = CXIMAGE_FORMAT_JPG;
+
+    long buffout=0;
+
+    if (!image.Encode(bufferout, buffout, type))
+    {
+      printf("PICTURE::CreateThumbnailFromSurface: Unable to save thumb to %s", thumb);
+      return false;
+    }
+    bufferoutSize = buffout;
+    return true;
+  };
+
+  __declspec(dllexport) void	FreeMemory(void* memblock)
+  {
+    if (memblock)
+		  free(memblock);
+  };
 }
 
 #endif
