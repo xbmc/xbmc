@@ -98,7 +98,7 @@ if(APPLE)
   install(TARGETS Plex BUNDLE DESTINATION . COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 else()
-  install(TARGETS Plex DESTINATION ${BINPATH} COMPONENT RUNTIME)
+  install(TARGETS Plex RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
 endif()
 
 # Replace some XBMC files in the output
@@ -124,7 +124,9 @@ else()
           REGEX metadata.* EXCLUDE
           REGEX weather.* EXCLUDE
           PATTERN repository.xbmc.org EXCLUDE
+          REGEX visualization.* EXCLUDE
           PATTERN xbmc.python EXCLUDE)
+  install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
   install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/media/Splash.png)")
   install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
