@@ -25,6 +25,7 @@
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/Artist.h"
+#include "video/VideoThumbLoader.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -72,6 +73,13 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
       return true;
     if (pItem->GetMusicInfoTag()->GetType() == "artist")
       return true; // no fallback
+  }
+
+  if (pItem->HasVideoInfoTag() && pItem->GetArt().empty())
+  { // music video
+    CVideoThumbLoader loader;
+    if (loader.LoadItem(pItem))
+      return true;
   }
 
   if (!pItem->HasArt("fanart"))
