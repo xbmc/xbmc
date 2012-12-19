@@ -143,6 +143,11 @@ namespace PVR
     void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
 
     /*!
+     * @return True when updated, false when the pvr manager failed to load after the attempt
+     */
+    bool UpgradeOutdatedAddons(void);
+
+    /*!
      * @brief Get the TV database.
      * @return The TV database.
      */
