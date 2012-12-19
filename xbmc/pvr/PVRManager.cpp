@@ -88,6 +88,13 @@ CPVRManager &CPVRManager::Get(void)
   return pvrManagerInstance;
 }
 
+bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
+{
+  return !IsStarted() ||
+      !m_addons->IsInUse(strAddonId) ||
+      (!g_windowManager.IsWindowActive(WINDOW_PVR) && !IsPlaying());
+}
+
 void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);

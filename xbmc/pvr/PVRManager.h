@@ -127,7 +127,12 @@ namespace PVR
      */
     void Cleanup(void);
 
-  public:
+    /*!
+     * @brief Check whether an add-on can be upgraded or installed without restarting the pvr manager, when the add-on is in use or the pvr window is active
+     * @param strAddonId The add-on to check.
+     * @return True when the add-on can be installed, false otherwise.
+     */
+    bool InstallAddonAllowed(const std::string& strAddonId) const;
 
     /*!
      * @brief Get the TV database.
