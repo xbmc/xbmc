@@ -188,14 +188,9 @@ namespace PVR
 
     /*!
      * @brief Reset the TV database to it's initial state and delete all the data inside.
-     * @param bShowProgress True to show a progress bar, false otherwise.
+     * @param bResetEPGOnly True to only reset the EPG database, false to reset both PVR and EPG.
      */
-    void ResetDatabase(bool bShowProgress = true);
-
-    /*!
-     * @brief Delete all EPG data from the database and reload it from the clients.
-     */
-    void ResetEPG(void);
+    void ResetDatabase(bool bResetEPGOnly = false);
 
     /*!
      * @brief Check if a TV channel, radio channel or recording is playing.

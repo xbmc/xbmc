@@ -551,22 +551,18 @@ bool CPVRManager::ContinueLastChannel(void)
   return bReturn;
 }
 
-void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
+void CPVRManager::ResetDatabase(bool bResetEPGOnly /* = false */)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
 
   g_EpgContainer.Stop();
 
-  CGUIDialogProgress* pDlgProgress = NULL;
-  if (bShowProgress)
-  {
-    pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    pDlgProgress->SetLine(0, StringUtils::EmptyString);
-    pDlgProgress->SetLine(1, g_localizeStrings.Get(19186)); // All data in the PVR database is being erased
-    pDlgProgress->SetLine(2, StringUtils::EmptyString);
-    pDlgProgress->StartModal();
-    pDlgProgress->Progress();
-  }
+  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  pDlgProgress->SetLine(0, StringUtils::EmptyString);
+  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186)); // All data in the PVR database is being erased
+  pDlgProgress->SetLine(2, StringUtils::EmptyString);
+  pDlgProgress->StartModal();
+  pDlgProgress->Progress();
 
   if (m_addons && m_addons->IsPlaying())
   {
@@ -574,21 +570,17 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
     CApplicationMessenger::Get().MediaStop();
   }
 
-  if (bShowProgress)
-  {
-    pDlgProgress->SetPercentage(10);
-    pDlgProgress->Progress();
-  }
+  pDlgProgress->SetPercentage(10);
+  pDlgProgress->Progress();
+
+  /* reset the EPG pointers */
+  m_database->ResetEPG();
 
   /* stop the thread */
-  if (g_guiSettings.GetBool("pvrmanager.enabled"))
-    Stop();
+  Stop();
 
-  if (bShowProgress)
-  {
-    pDlgProgress->SetPercentage(20);
-    pDlgProgress->Progress();
-  }
+  pDlgProgress->SetPercentage(20);
+  pDlgProgress->Progress();
 
   if (!m_database)
     m_database = new CPVRDatabase;
@@ -596,40 +588,28 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (m_database && m_database->Open())
   {
     /* clean the EPG database */
-    g_EpgContainer.Clear(true);
-    if (bShowProgress)
-    {
-      pDlgProgress->SetPercentage(30);
-      pDlgProgress->Progress();
-    }
+    g_EpgContainer.Reset();
+    pDlgProgress->SetPercentage(30);
+    pDlgProgress->Progress();
 
-    m_database->DeleteChannelGroups();
-    if (bShowProgress)
+    if (!bResetEPGOnly)
     {
+      m_database->DeleteChannelGroups();
       pDlgProgress->SetPercentage(50);
       pDlgProgress->Progress();
-    }
 
-    /* delete all channels */
-    m_database->DeleteChannels();
-    if (bShowProgress)
-    {
+      /* delete all channels */
+      m_database->DeleteChannels();
       pDlgProgress->SetPercentage(70);
       pDlgProgress->Progress();
-    }
 
-    /* delete all channel settings */
-    m_database->DeleteChannelSettings();
-    if (bShowProgress)
-    {
+      /* delete all channel settings */
+      m_database->DeleteChannelSettings();
       pDlgProgress->SetPercentage(80);
       pDlgProgress->Progress();
-    }
 
-    /* delete all client information */
-    m_database->DeleteClients();
-    if (bShowProgress)
-    {
+      /* delete all client information */
+      m_database->DeleteClients();
       pDlgProgress->SetPercentage(90);
       pDlgProgress->Progress();
     }
@@ -637,9 +617,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
     m_database->Close();
   }
 
-  CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared", __FUNCTION__);
-
-  g_EpgContainer.Start();
+  CLog::Log(LOGNOTICE,"PVRManager - %s - %s database cleared", __FUNCTION__, bResetEPGOnly ? "EPG" : "PVR and EPG");
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
@@ -649,32 +627,8 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
     Start();
   }
 
-  if (bShowProgress)
-  {
-    pDlgProgress->SetPercentage(100);
-    pDlgProgress->Close();
-  }
-}
-
-void CPVRManager::ResetEPG(void)
-{
-  CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
-
-  if (m_addons && m_addons->IsPlaying())
-  {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
-    CApplicationMessenger::Get().MediaStop();
-  }
-
-  m_database->ResetEPG();
-  Stop();
-  g_EpgContainer.Reset();
-
-  if (g_guiSettings.GetBool("pvrmanager.enabled"))
-  {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
-    Start();
-  }
+  pDlgProgress->SetPercentage(100);
+  pDlgProgress->Close();
 }
 
 bool CPVRManager::IsPlaying(void) const
