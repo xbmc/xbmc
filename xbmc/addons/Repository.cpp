@@ -228,8 +228,10 @@ bool CRepositoryUpdateJob::DoWork()
         if (URIUtils::IsInternetStream(addons[i]->Path()))
           referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
-        if (addons[i]->Type() != ADDON_PVRDLL ||
-            PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
+        if (addons[i]->Type() == ADDON_PVRDLL &&
+            !PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
+          PVR::CPVRManager::Get().MarkAsOutdated(addon->ID(), referer);
+        else
           CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else if (g_settings.m_bAddonNotifications)

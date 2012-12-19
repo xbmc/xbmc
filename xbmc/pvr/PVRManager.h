@@ -23,6 +23,7 @@
 #include "utils/JobManager.h"
 #include "threads/Event.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include <map>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -133,6 +134,13 @@ namespace PVR
      * @return True when the add-on can be installed, false otherwise.
      */
     bool InstallAddonAllowed(const std::string& strAddonId) const;
+
+    /*!
+     * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
+     * @param strAddonId The add-on to mark as outdated
+     * @param strReferer The referer to use when downloading
+     */
+    void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
 
     /*!
      * @brief Get the TV database.
@@ -561,6 +569,7 @@ namespace PVR
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
     bool                            m_bOpenPVRWindow;
+    std::map<std::string, std::string> m_outdatedAddons;
   };
 
   class CPVRRecordingsUpdateJob : public CJob

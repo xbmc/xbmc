@@ -95,6 +95,15 @@ bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
       (!g_windowManager.IsWindowActive(WINDOW_PVR) && !IsPlaying());
 }
 
+void CPVRManager::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
+{
+  if (IsStarted() && g_settings.m_bAddonAutoUpdate)
+  {
+    CSingleLock lock(m_critSection);
+    m_outdatedAddons.insert(make_pair<string, string>(strAddonId, strReferer));
+  }
+}
+
 void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
@@ -110,6 +119,8 @@ void CPVRManager::Cleanup(void)
 
   m_currentFile           = NULL;
   m_bIsSwitchingChannels  = false;
+  m_outdatedAddons.clear();
+  m_bOpenPVRWindow = false;
 
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
     delete m_pendingUpdates.at(iJobPtr);
