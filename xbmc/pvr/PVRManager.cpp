@@ -89,11 +89,26 @@ CPVRManager &CPVRManager::Get(void)
   return pvrManagerInstance;
 }
 
+bool CPVRManager::IsPVRWindowActive(void) const
+{
+  return g_windowManager.IsWindowActive(WINDOW_PVR) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_CHANNEL_MANAGER) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GROUP_MANAGER) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GUIDE_INFO) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CUTTER) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_DIRECTOR) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_GUIDE) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_GUIDE_SEARCH) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_RECORDING_INFO) ||
+      g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_TIMER_SETTING);
+}
+
 bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
 {
   return !IsStarted() ||
       !m_addons->IsInUse(strAddonId) ||
-      (!g_windowManager.IsWindowActive(WINDOW_PVR) && !IsPlaying());
+      (!IsPVRWindowActive() && !IsPlaying());
 }
 
 void CPVRManager::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
