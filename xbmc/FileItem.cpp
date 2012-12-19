@@ -1412,25 +1412,29 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   if (IsMusicDb() && HasMusicInfoTag())
   {
     CFileItem dbItem(m_musicInfoTag->GetURL(), false);
-    dbItem.SetProperty("item_start", GetProperty("item_start"));
+    if (HasProperty("item_start"))
+      dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
   if (IsVideoDb() && HasVideoInfoTag())
   {
     CFileItem dbItem(m_videoInfoTag->m_strFileNameAndPath, false);
-    dbItem.SetProperty("item_start", GetProperty("item_start"));
+    if (HasProperty("item_start"))
+      dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
   if (item->IsMusicDb() && item->HasMusicInfoTag())
   {
     CFileItem dbItem(item->m_musicInfoTag->GetURL(), false);
-    dbItem.SetProperty("item_start", item->GetProperty("item_start"));
+    if (item->HasProperty("item_start"))
+      dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
   }
   if (item->IsVideoDb() && item->HasVideoInfoTag())
   {
     CFileItem dbItem(item->m_videoInfoTag->m_strFileNameAndPath, false);
-    dbItem.SetProperty("item_start", item->GetProperty("item_start"));
+    if (item->HasProperty("item_start"))
+      dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
   }
   if (HasProperty("original_listitem_url"))
