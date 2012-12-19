@@ -37,6 +37,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
+#include "filesystem/StackDirectory.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "interfaces/AnnouncementManager.h"
 
@@ -356,7 +357,12 @@ CStdString CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
   if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
     return GetThumb(item.GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
   else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-    return GetThumb(item.GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
+  {
+    CStdString path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (URIUtils::IsStack(path))
+      path = CStackDirectory::GetFirstStackedFile(path);
+    return GetThumb(path, g_settings.GetVideoThumbFolder(), true);
+  }
   return GetThumb(item.GetPath(), g_settings.GetVideoThumbFolder(), true);
 }
 
