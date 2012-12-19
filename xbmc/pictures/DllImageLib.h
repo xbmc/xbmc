@@ -93,6 +93,8 @@ public:
     virtual bool LoadImage(const char *, unsigned int, unsigned int, ImageInfo *)=0;
     virtual bool LoadImageFromMemory(const uint8_t*, unsigned int, const char *, unsigned int, unsigned int, ImageInfo *)=0;
     virtual bool CreateThumbnailFromSurface(BYTE *, unsigned int, unsigned int, unsigned int, const char *)=0;
+    virtual bool CreateThumbnailFromSurface2(BYTE *, unsigned int, unsigned int, unsigned int, const char *, BYTE * &, unsigned int&)=0;
+    virtual void FreeMemory(void*)=0;
 };
 
 class DllImageLib : public DllDynamic, DllImageLibInterface
@@ -102,10 +104,14 @@ class DllImageLib : public DllDynamic, DllImageLibInterface
   DEFINE_METHOD4(bool, LoadImage, (const char * p1, unsigned int p2, unsigned int p3, ImageInfo * p4))
   DEFINE_METHOD6(bool, LoadImageFromMemory, (const uint8_t * p1, unsigned int p2, const char *p3, unsigned int p4, unsigned int p5, ImageInfo * p6))
   DEFINE_METHOD5(bool, CreateThumbnailFromSurface, (BYTE * p1, unsigned int p2, unsigned int p3, unsigned int p4, const char * p5))
+  DEFINE_METHOD7(bool, CreateThumbnailFromSurface2, (BYTE * p1, unsigned int p2, unsigned int p3, unsigned int p4, const char * p5, BYTE * &p6, unsigned int &p7))
+  DEFINE_METHOD1(void, FreeMemory, (void *p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(ReleaseImage)
     RESOLVE_METHOD(LoadImage)
     RESOLVE_METHOD(LoadImageFromMemory)
     RESOLVE_METHOD(CreateThumbnailFromSurface)
+    RESOLVE_METHOD(CreateThumbnailFromSurface2)
+    RESOLVE_METHOD(FreeMemory)
   END_METHOD_RESOLVE()
 };

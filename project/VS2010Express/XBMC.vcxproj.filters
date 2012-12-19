@@ -2954,6 +2954,12 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\PyContext.cpp">
       <Filter>interfaces\python</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\imagefactory.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\cximage.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5769,6 +5775,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\PyContext.h">
       <Filter>interfaces\python</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\iimage.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\imagefactory.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\cximage.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

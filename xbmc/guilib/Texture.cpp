@@ -26,6 +26,8 @@
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
 #include "JpegIO.h"
+#include "guilib/imagefactory.h"
+#include "filesystem/File.h"
 #if defined(TARGET_DARWIN_IOS)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -295,48 +297,57 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
     return false;
   }
 
-  //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
-  CStdString Ext = URIUtils::GetExtension(texturePath);
-  Ext.ToLower(); // Ignore case of the extension
-  if (Ext.Equals(".jpg") || Ext.Equals(".jpeg") || Ext.Equals(".tbn"))
-  {
-    CJpegIO jpegfile;
-    if (jpegfile.Open(texturePath, maxWidth, maxHeight))
-    {
-      if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
-      {
-        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_A8R8G8B8);
-        if (jpegfile.Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
-        {
-          if (autoRotate && jpegfile.Orientation())
-            m_orientation = jpegfile.Orientation() - 1;
-          m_hasAlpha=false;
-          ClampToEdge();
-          return true;
-        }
-      }
-    }
-    CLog::Log(LOGDEBUG, "%s - Load of %s failed. Falling back to ImageLib", __FUNCTION__, texturePath.c_str());
-  }
-
-  DllImageLib dll;
-  if (!dll.Load())
-    return false;
-
-  ImageInfo image;
-  memset(&image, 0, sizeof(image));
-
   unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
   unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
 
-  if(!dll.LoadImage(texturePath.c_str(), width, height, &image))
+  // Read image into memory to use our vfs
+  unsigned int imgsize = 0;
+  unsigned char *inputBuff = NULL;
+  unsigned int inputBuffSize = 0;
+
+  XFILE::CFile file;
+  if (file.Open(texturePath.c_str(), 0))
   {
-    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
+    imgsize = (unsigned int)file.GetLength();
+    inputBuff = new unsigned char[imgsize];
+    inputBuffSize = file.Read(inputBuff, imgsize);
+    file.Close();
+
+    if ((imgsize != inputBuffSize) || (inputBuffSize == 0))
+      return false;
+  }
+  else
     return false;
+
+  //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
+  {
+    CURL url(texturePath);
+    IImage* pImage = ImageFactory::CreateLoader(url);
+    if(pImage != NULL && pImage->LoadImageFromMemory(inputBuff, inputBuffSize, width, height, url.GetFileType()))
+    {
+      if (pImage->Width() > 0 && pImage->Height() > 0)
+      {
+        Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
+        if (pImage->Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
+        {
+          if (autoRotate && pImage->Orientation())
+            m_orientation = pImage->Orientation() - 1;
+          m_hasAlpha = pImage->hasAlpha();
+          m_originalWidth = pImage->originalWidth();
+          m_originalHeight = pImage->originalHeight();
+          ClampToEdge();
+          delete pImage;
+          delete [] inputBuff;
+          return true;
+        }
+      }
+      
+    }
+    delete pImage;
+    CLog::Log(LOGDEBUG, "%s - Load of %s failed. Falling back to ImageLib", __FUNCTION__, texturePath.c_str());
   }
 
-  LoadFromImage(image, autoRotate);
-  dll.ReleaseImage(&image);
+  delete [] inputBuff;
 
   return true;
 }
@@ -346,46 +357,35 @@ bool CBaseTexture::LoadFromFileInMem(unsigned char* buffer, size_t size, const s
   if (!buffer || !size)
     return false;
 
+  unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+  unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+
   //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
-  if (mimeType == "image/jpeg")
   {
-    CJpegIO jpegfile;
-    if (jpegfile.Read(buffer, size, maxWidth, maxHeight))
+    std::string ext = mimeType;
+    int nPos = ext.find('/');
+    if (nPos > -1)
+      ext.erase(0, nPos + 1);
+
+    IImage* pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
+    if(pImage != NULL && pImage->LoadImageFromMemory(buffer, size, width, height, ext))
     {
-      if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
+      if (pImage->Width() > 0 && pImage->Height() > 0)
       {
-        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_A8R8G8B8);
-        if (jpegfile.Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
+        Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
+        if (pImage->Decode(m_pixels, GetPitch(), XB_FMT_A8R8G8B8))
         {
-          m_hasAlpha=false;
+          m_hasAlpha = pImage->hasAlpha();
+          m_originalWidth = pImage->originalWidth();
+          m_originalHeight = pImage->originalHeight();
           ClampToEdge();
+          delete pImage;
           return true;
         }
       }
     }
+    delete pImage;
   }
-  DllImageLib dll;
-  if (!dll.Load())
-    return false;
-
-  ImageInfo image;
-  memset(&image, 0, sizeof(image));
-
-  unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
-  unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
-
-  CStdString ext = mimeType;
-  int nPos = ext.Find('/');
-  if (nPos > -1)
-    ext.Delete(0, nPos + 1);
-
-  if(!dll.LoadImageFromMemory(buffer, size, ext.c_str(), width, height, &image))
-  {
-    CLog::Log(LOGERROR, "Texture manager unable to load image from memory");
-    return false;
-  }
-  LoadFromImage(image);
-  dll.ReleaseImage(&image);
 
   return true;
 }
