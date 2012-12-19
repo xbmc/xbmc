@@ -22,11 +22,8 @@ CPlexAutoUpdateInstallerMac::InstallUpdate(const std::string &file, std::string&
   @autoreleasepool
   {
     NSString *fileUrl = [NSString stringWithUTF8String:file.c_str()];
-    NSString *folderUrl = [fileUrl stringByDeletingLastPathComponent];
     
-    fprintf(stderr, "Opening %s\n", [folderUrl UTF8String]);
-    
-    [[NSWorkspace sharedWorkspace] openFile:folderUrl];
+    [[NSWorkspace sharedWorkspace] selectFile:fileUrl inFileViewerRootedAtPath:nil];
   
     [NSApp terminate:nil];
   }
