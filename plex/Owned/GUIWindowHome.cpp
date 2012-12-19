@@ -462,7 +462,7 @@ bool CGUIWindowHome::OnPopupMenu()
       {
         CStdString key(m_lastSelectedItemKey);
         m_lastSelectedItemKey.clear();
-        UpdateContentForSelectedItem(key);
+        m_loadingThread->LoadFanWithDelay(key, 150);
       }
 
     }
