@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 1.0.3
+# Addon version: 1.0.6
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -23,7 +23,7 @@ msgstr "Вызначыць месца"
 
 msgctxt "#32102"
 msgid "Advanced options"
-msgstr "Адмысловыя налады"
+msgstr "Адмысловыя"
 
 msgctxt "#32111"
 msgid "Location 1"
@@ -123,7 +123,7 @@ msgstr "Waning Crescent"
 
 msgctxt "#32510"
 msgid "Warning"
-msgstr "Warning"
+msgstr "Увага"
 
 msgctxt "#32511"
 msgid "Watch"
@@ -139,7 +139,7 @@ msgstr "Statement"
 
 msgctxt "#32514"
 msgid "Outlook"
-msgstr "Outlook"
+msgstr "Чакаецца"
 
 msgctxt "#32515"
 msgid "Forecast"

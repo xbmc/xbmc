@@ -103,7 +103,7 @@ Daily.%i.Snow
 Daily.%i.ChancePrecipitation
 
 
-WEEKEND [1-3]
+WEEKEND [1-2]
 -------------
 Weekend.IsFetched
 Weekend.%i.LongDay

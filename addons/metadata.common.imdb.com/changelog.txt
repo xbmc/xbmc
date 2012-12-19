@@ -1,3 +1,6 @@
+[B]2.6.1[/B]
+- fixed: will scrape director(s) as writer(s)
+
 [B]2.6.0[/B]
 - updated: outfactored outline/studio/country/top250 to common library
 [B]2.5.0[/B]

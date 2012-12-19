@@ -179,9 +179,9 @@
 	<ParseIMDBDirectors dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">Director[s]?.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
+				<expression clear="yes" noclean="1">Director(?:s)?:.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2">
 				<expression repeat="yes" fixchars="1" clear="yes">href=&quot;/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -196,10 +196,10 @@
 	<ParseIMDBWriters dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">Writer[s]?.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
+				<expression clear="yes" noclean="1">Writer(?:s)?:.*?&lt;/h4&gt;(.*?)&lt;div class</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
-				<expression repeat="yes" fixchars="1">href=&quot;/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2">
+				<expression repeat="yes" fixchars="1" clear="yes">href=&quot;/name[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
