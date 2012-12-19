@@ -79,6 +79,7 @@ private:
   void HideAllLists();
   virtual void SaveStateBeforePlay(CGUIBaseContainer* container);
 
+  void UpdateSections();
   bool SaveSelectedMenuItem();
   void RestoreSelectedMenuItem();
   int  LookupIDFromKey(const std::string& key);

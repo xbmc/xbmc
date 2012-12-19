@@ -521,192 +521,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_RESET:
   case GUI_MSG_UPDATE_MAIN_MENU:
   {
-    // This will be our new list.
-    vector<CGUIListItemPtr> newList;
-    
-    // Get the old list.
-    CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(MAIN_MENU);
-    if (control == 0)
-      control = (CGUIBaseContainer* )GetControl(300);
-    
-    if (control)
-    {
-      vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
-      
-      // First collect all the real items, minus the channel entries.
-      BOOST_FOREACH(CGUIListItemPtr item, oldList)
-      {
-        // Collect the channel items. They may get removed after that, so we'll keep them around.
-        CFileItem* fileItem = (CFileItem* )item.get();
-        if (fileItem->m_iprogramCount == CHANNELS_VIDEO)
-          m_videoChannelItem = item;
-        else if (fileItem->m_iprogramCount == CHANNELS_MUSIC)
-          m_musicChannelItem = item;
-        else if (fileItem->m_iprogramCount == CHANNELS_PHOTO)
-          m_photoChannelItem = item;
-        else if (fileItem->m_iprogramCount == CHANNELS_APPLICATION)
-          m_applicationChannelItem = item;
-        else if (item->HasProperty("plex") == false)
-          newList.push_back(item);
-      }
-      
-      // Now collect all the added items.
-      CPlexSourceScanner::Lock();
-      
-      map<string, HostSourcesPtr>& sourcesMap = CPlexSourceScanner::GetMap();
 
-      // Collect the channels, keeping track of how many there are.
-      int numVideo = 0;
-      int numPhoto = 0;
-      int numMusic = 0;
-      int numApplication = 0;
-      
-      BOOST_FOREACH(string_sources_pair nameSource, sourcesMap)
-      {
-        numVideo += nameSource.second->videoSources.size();
-        numPhoto += nameSource.second->pictureSources.size();
-        numMusic += nameSource.second->musicSources.size();
-        numApplication += nameSource.second->applicationSources.size();
-      }
-      
-      CPlexSourceScanner::Unlock();
-
-      // Now collect the library sections.
-      vector<CFileItemPtr> newSections;
-      PlexLibrarySectionManager::Get().getOwnedSections(newSections);
-      
-      // Count the names.
-      map<string, int> nameCounts;
-      BOOST_FOREACH(CFileItemPtr section, newSections)
-      {
-        CStdString sectionName = section->GetLabel();
-        ++nameCounts[sectionName.ToLower()];
-      }
-      
-      // Add the queue if needed.
-      CFileItemList queue;
-      if (MyPlexManager::Get().getPlaylist(queue, "queue", true) && queue.Size() > 0)
-      {
-        CFileItemPtr queue = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44021)));
-        queue->SetProperty("type", "mixed");
-        queue->SetProperty("typeNumber", PLEX_METADATA_MIXED);
-        queue->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("queue"));
-        queue->SetPath(queue->GetProperty("key").asString());
-        newSections.push_back(queue);
-      }
-      
-      // Add the shared content menu if needed.
-      if (PlexLibrarySectionManager::Get().getNumSharedSections() > 0)
-      {
-        CFileItemPtr shared = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44020)));
-        shared->SetProperty("key", "plex://shared");
-        shared->SetPath(shared->GetProperty("key").asString());
-        newSections.push_back(shared);
-      }
-            
-      // Clear the maps.
-      m_idToSectionUrlMap.clear();
-      m_idToSectionTypeMap.clear();
-
-      if (m_lastSelectedItemKey.empty())
-        SaveSelectedMenuItem();
-
-      // Now add the new ones.
-      bool itemStillExists = false;
-      int id = 1000;
-      BOOST_FOREACH(CFileItemPtr item, newSections)
-      {
-        CGUIStaticItemPtr newItem = CGUIStaticItemPtr(new CGUIStaticItem());
-        newItem->SetLabel(item->GetLabel());
-        newItem->SetProperty("plex", "1");
-
-        if (item->GetProperty("key").asString().find("/library/sections") != string::npos)
-          newItem->SetProperty("section", "1");
-        
-        CStdString sectionName = item->GetLabel();
-        if (nameCounts[sectionName.ToLower()] > 1)
-          newItem->SetLabel2(item->GetLabel2());
-
-        // Save the map from ID to library section ID.
-        m_idToSectionUrlMap[id] = item->GetPath();
-        m_idToSectionTypeMap[id] = item->GetProperty("typeNumber").asInteger();
-        
-        if (item->GetProperty("key").asString().find("/shared") != string::npos)
-        {
-          CStdString path = "XBMC.ActivateWindow(MySharedContent," + item->GetPath() + ",return)";
-          newItem->SetClickActions(CGUIAction("", path));
-          newItem->SetPath(path);
-        }
-        else if (item->GetProperty("type").asString() == "artist")
-        {
-          CStdString path = "XBMC.ActivateWindow(MyMusicFiles," + item->GetPath() + ",return)";
-          newItem->SetClickActions(CGUIAction("", path));
-          newItem->SetPath(path);
-        }
-        else if (item->GetProperty("type").asString() == "photo")
-        {
-          CStdString path = "XBMC.ActivateWindow(MyPictures," + item->GetPath() + ",return)";
-          newItem->SetClickActions(CGUIAction("", path));
-          newItem->SetPath(path);
-        }
-        else
-        {
-          CStdString path = "XBMC.ActivateWindow(MyVideoFiles," + item->GetPath() + ",return)";
-          newItem->SetClickActions(CGUIAction("", path));
-          newItem->SetPath(path);
-        }
-        
-        newItem->m_idepth = 0;
-        //newItem->SetQuickFanart(item->GetQuickFanart());
-        newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
-        newItem->m_iprogramCount = id++;
-
-        if (newItem->GetPath() == m_lastSelectedItemKey ||
-            (newItem->GetPath().empty() && newItem->GetLabel() == m_lastSelectedItemKey))
-          itemStillExists = true;
-
-        newList.push_back(newItem);
-      }
-
-      /* Maybe it's a channel? */
-      if (!itemStillExists)
-      {
-        if (m_lastSelectedItemKey == m_musicChannelItem->GetLabel() ||
-            m_lastSelectedItemKey == m_photoChannelItem->GetLabel() ||
-            m_lastSelectedItemKey == m_videoChannelItem->GetLabel() ||
-            m_lastSelectedItemKey == m_applicationChannelItem->GetLabel())
-          itemStillExists = true;
-      }
-      
-      // See what channel entries to add.
-      if (numApplication > 0)
-        newList.push_back(m_applicationChannelItem);
-      
-      if (numVideo > 0)
-        newList.push_back(m_videoChannelItem);
-
-      if (numPhoto > 0)
-        newList.push_back(m_photoChannelItem);
-
-      if (numMusic > 0)
-        newList.push_back(m_musicChannelItem);
-      
-      // Replace 'em.
-      control->SetStaticContent(newList);
-      
-      // Restore selection.
-      RestoreSelectedMenuItem();
-      
-      // See if the item for which we were showing the right hand lists still exists.
-      if (itemStillExists == false)
-      {
-        // Whack the right hand side.
-        dprintf("We don't have %s", m_lastSelectedItemKey.c_str());
-        HideAllLists();
-        m_workerManager->cancelPending();
-        m_contentLists.clear();
-      }
-    }
+    UpdateSections();
 
     if (message.GetMessage() != GUI_MSG_UPDATE_MAIN_MENU)
     {
@@ -796,6 +612,196 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   }
   
   return ret;
+}
+
+void CGUIWindowHome::UpdateSections()
+{
+  // This will be our new list.
+  vector<CGUIListItemPtr> newList;
+
+  // Get the old list.
+  CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(MAIN_MENU);
+  if (control == 0)
+    control = (CGUIBaseContainer* )GetControl(300);
+
+  if (control)
+  {
+    vector<CGUIListItemPtr>& oldList = control->GetStaticItems();
+
+    // First collect all the real items, minus the channel entries.
+    BOOST_FOREACH(CGUIListItemPtr item, oldList)
+    {
+      // Collect the channel items. They may get removed after that, so we'll keep them around.
+      CFileItem* fileItem = (CFileItem* )item.get();
+      if (fileItem->m_iprogramCount == CHANNELS_VIDEO)
+        m_videoChannelItem = item;
+      else if (fileItem->m_iprogramCount == CHANNELS_MUSIC)
+        m_musicChannelItem = item;
+      else if (fileItem->m_iprogramCount == CHANNELS_PHOTO)
+        m_photoChannelItem = item;
+      else if (fileItem->m_iprogramCount == CHANNELS_APPLICATION)
+        m_applicationChannelItem = item;
+      else if (item->HasProperty("plex") == false)
+        newList.push_back(item);
+    }
+
+    // Now collect all the added items.
+    CPlexSourceScanner::Lock();
+
+    map<string, HostSourcesPtr>& sourcesMap = CPlexSourceScanner::GetMap();
+
+    // Collect the channels, keeping track of how many there are.
+    int numVideo = 0;
+    int numPhoto = 0;
+    int numMusic = 0;
+    int numApplication = 0;
+
+    BOOST_FOREACH(string_sources_pair nameSource, sourcesMap)
+    {
+      numVideo += nameSource.second->videoSources.size();
+      numPhoto += nameSource.second->pictureSources.size();
+      numMusic += nameSource.second->musicSources.size();
+      numApplication += nameSource.second->applicationSources.size();
+    }
+
+    CPlexSourceScanner::Unlock();
+
+    // Now collect the library sections.
+    vector<CFileItemPtr> newSections;
+    PlexLibrarySectionManager::Get().getOwnedSections(newSections);
+
+    // Count the names.
+    map<string, int> nameCounts;
+    BOOST_FOREACH(CFileItemPtr section, newSections)
+    {
+      CStdString sectionName = section->GetLabel();
+      ++nameCounts[sectionName.ToLower()];
+    }
+
+    // Add the queue if needed.
+    CFileItemList queue;
+    if (MyPlexManager::Get().getPlaylist(queue, "queue", true) && queue.Size() > 0)
+    {
+      CFileItemPtr queue = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44021)));
+      queue->SetProperty("type", "mixed");
+      queue->SetProperty("typeNumber", PLEX_METADATA_MIXED);
+      queue->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("queue"));
+      queue->SetPath(queue->GetProperty("key").asString());
+      newSections.push_back(queue);
+    }
+
+    // Add the shared content menu if needed.
+    if (PlexLibrarySectionManager::Get().getNumSharedSections() > 0)
+    {
+      CFileItemPtr shared = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44020)));
+      shared->SetProperty("key", "plex://shared");
+      shared->SetPath(shared->GetProperty("key").asString());
+      newSections.push_back(shared);
+    }
+
+    // Clear the maps.
+    m_idToSectionUrlMap.clear();
+    m_idToSectionTypeMap.clear();
+
+    if (m_lastSelectedItemKey.empty())
+      SaveSelectedMenuItem();
+
+    // Now add the new ones.
+    bool itemStillExists = false;
+    int id = 1000;
+    BOOST_FOREACH(CFileItemPtr item, newSections)
+    {
+      CGUIStaticItemPtr newItem = CGUIStaticItemPtr(new CGUIStaticItem());
+      newItem->SetLabel(item->GetLabel());
+      newItem->SetProperty("plex", "1");
+
+      if (item->GetProperty("key").asString().find("/library/sections") != string::npos)
+        newItem->SetProperty("section", "1");
+
+      CStdString sectionName = item->GetLabel();
+      if (nameCounts[sectionName.ToLower()] > 1)
+        newItem->SetLabel2(item->GetLabel2());
+
+      // Save the map from ID to library section ID.
+      m_idToSectionUrlMap[id] = item->GetPath();
+      m_idToSectionTypeMap[id] = item->GetProperty("typeNumber").asInteger();
+
+      if (item->GetProperty("key").asString().find("/shared") != string::npos)
+      {
+        CStdString path = "XBMC.ActivateWindow(MySharedContent," + item->GetPath() + ",return)";
+        newItem->SetClickActions(CGUIAction("", path));
+        newItem->SetPath(path);
+      }
+      else if (item->GetProperty("type").asString() == "artist")
+      {
+        CStdString path = "XBMC.ActivateWindow(MyMusicFiles," + item->GetPath() + ",return)";
+        newItem->SetClickActions(CGUIAction("", path));
+        newItem->SetPath(path);
+      }
+      else if (item->GetProperty("type").asString() == "photo")
+      {
+        CStdString path = "XBMC.ActivateWindow(MyPictures," + item->GetPath() + ",return)";
+        newItem->SetClickActions(CGUIAction("", path));
+        newItem->SetPath(path);
+      }
+      else
+      {
+        CStdString path = "XBMC.ActivateWindow(MyVideoFiles," + item->GetPath() + ",return)";
+        newItem->SetClickActions(CGUIAction("", path));
+        newItem->SetPath(path);
+      }
+
+      newItem->m_idepth = 0;
+      //newItem->SetQuickFanart(item->GetQuickFanart());
+      newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
+      newItem->m_iprogramCount = id++;
+
+      if (newItem->GetPath() == m_lastSelectedItemKey ||
+          (newItem->GetPath().empty() && newItem->GetLabel() == m_lastSelectedItemKey))
+        itemStillExists = true;
+
+      newList.push_back(newItem);
+    }
+
+    /* Maybe it's a channel? */
+    if (!itemStillExists)
+    {
+      if (m_lastSelectedItemKey == m_musicChannelItem->GetLabel() ||
+          m_lastSelectedItemKey == m_photoChannelItem->GetLabel() ||
+          m_lastSelectedItemKey == m_videoChannelItem->GetLabel() ||
+          m_lastSelectedItemKey == m_applicationChannelItem->GetLabel())
+        itemStillExists = true;
+    }
+
+    // See what channel entries to add.
+    if (numApplication > 0)
+      newList.push_back(m_applicationChannelItem);
+
+    if (numVideo > 0)
+      newList.push_back(m_videoChannelItem);
+
+    if (numPhoto > 0)
+      newList.push_back(m_photoChannelItem);
+
+    if (numMusic > 0)
+      newList.push_back(m_musicChannelItem);
+
+    // Replace 'em.
+    control->SetStaticContent(newList);
+
+    // Restore selection.
+    RestoreSelectedMenuItem();
+
+    // See if the item for which we were showing the right hand lists still exists.
+    if (itemStillExists == false)
+    {
+      // Whack the right hand side.
+      dprintf("We don't have %s", m_lastSelectedItemKey.c_str());
+      HideAllLists();
+      m_workerManager->cancelPending();
+      m_contentLists.clear();
+    }
+  }
 }
 
 void CGUIWindowHome::SaveStateBeforePlay(CGUIBaseContainer* container)

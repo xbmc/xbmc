@@ -48,52 +48,6 @@ class MyPlexManager
     
     return *instance;
   }
-  
-#if 0
-  /// Sign in.
-  bool signIn()
-  {
-    if (g_guiSettings.GetString("myplex.email").empty() || g_guiSettings.GetString("myplex.password").empty())
-      return false;
-    
-    CCurlFile http;
-    SetupRequestHeaders(http);
-    
-    // Issue the sign-in request.
-    CStdString res;
-    string request = GetBaseUrl(true, g_guiSettings.GetString("myplex.email"), g_guiSettings.GetString("myplex.password")) + "/users/sign_in.xml";
-    bool success = http.Post(request, "", res);
-    
-    if (success && res.empty() == false)
-    {
-      // Parse returned xml.
-      TiXmlDocument doc;
-      if (doc.Parse(res.c_str()))
-      {
-        TiXmlElement* root = doc.RootElement();
-        if (root && root->ValueStr() == "user")
-        {
-          TiXmlNode* token = root->FirstChild("authentication-token");
-          if (token)
-          {
-            const char* strToken = token->FirstChild()->Value();
-            
-            // Save the token.
-            g_guiSettings.SetString("myplex.token", strToken);
-            g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
-            
-            return true;
-          }
-        }
-      }
-    }
-    
-    // Reset things.
-    signOut();
-    
-    return false;
-  }
-#endif
 
   /// Sign out.
   void signOut()
