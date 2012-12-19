@@ -37,6 +37,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
+#include "filesystem/StackDirectory.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "interfaces/AnnouncementManager.h"
 
@@ -145,7 +146,7 @@ void CEdenVideoArtUpdater::Process()
 
   // tvshows
   // count the number of episodes
-  db.GetTvShowsNav("videodb://3/2/", items);
+  db.GetTvShowsNav("videodb://2/2/", items);
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
@@ -246,10 +247,10 @@ void CEdenVideoArtUpdater::Process()
   // now actors
   if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
   {
-    db.GetActorsNav("videodb://1/2/", items, VIDEODB_CONTENT_MOVIES);
-    db.GetActorsNav("videodb://2/2/", items, VIDEODB_CONTENT_TVSHOWS);
-    db.GetActorsNav("videodb://2/2/", items, VIDEODB_CONTENT_EPISODES);
-    db.GetActorsNav("videodb://3/2/", items, VIDEODB_CONTENT_MUSICVIDEOS);
+    db.GetActorsNav("videodb://1/4/", items, VIDEODB_CONTENT_MOVIES);
+    db.GetActorsNav("videodb://2/4/", items, VIDEODB_CONTENT_TVSHOWS);
+    db.GetActorsNav("videodb://2/4/", items, VIDEODB_CONTENT_EPISODES);
+    db.GetActorsNav("videodb://3/4/", items, VIDEODB_CONTENT_MUSICVIDEOS);
     for (int i = 0; i < items.Size(); i++)
     {
       CFileItemPtr item = items[i];
@@ -356,7 +357,12 @@ CStdString CEdenVideoArtUpdater::GetCachedVideoThumb(const CFileItem &item)
   if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
     return GetThumb(item.GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
   else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-    return GetThumb(item.GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
+  {
+    CStdString path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (URIUtils::IsStack(path))
+      path = CStackDirectory::GetFirstStackedFile(path);
+    return GetThumb(path, g_settings.GetVideoThumbFolder(), true);
+  }
   return GetThumb(item.GetPath(), g_settings.GetVideoThumbFolder(), true);
 }
 

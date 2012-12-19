@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6172,7 +6172,7 @@ msgstr "Időzítő törlése"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr "Időzítő hozzáadása"
+msgstr "Időzítés"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -6540,7 +6540,7 @@ msgstr "A felvétel nem indítható el. Nézd meg a naplót a részletekért."
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr "Váltás"
+msgstr "Kapcsolás"
 
 msgctxt "#19166"
 msgid "PVR information"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Botkormány és gombkormány támogatás engedélyezése"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Joystick letiltása iMON jelenlétében "
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Joystick letiltása eszköz jelenlétében "
 
 msgctxt "#35500"
 msgid "Location"

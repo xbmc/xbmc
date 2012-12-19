@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2201,6 +2201,14 @@ msgstr "擷取音軌"
 msgctxt "#611"
 msgid "Enter number"
 msgstr "輸入數字"
+
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "位元/樣本"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "取樣率"
 
 msgctxt "#620"
 msgid "Audio CDs"
@@ -4714,6 +4722,10 @@ msgctxt "#13433"
 msgid "Play the next video automatically"
 msgstr "自動播放下一個影片"
 
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "只播放這個"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "影音同步方式"
@@ -5416,7 +5428,7 @@ msgstr "收聽 %name% 的同類型藝人在 Last.fm 廣播"
 
 msgctxt "#15268"
 msgid "Top artists for user %name%"
-msgstr "%name% 演出者排行"
+msgstr "%name% 的演出者排行"
 
 msgctxt "#15269"
 msgid "Top albums for user %name%"
@@ -5436,7 +5448,7 @@ msgstr "%name% 同好"
 
 msgctxt "#15273"
 msgid "Weekly artist chart for %name%"
-msgstr "%name% 演出者週排行"
+msgstr "%name% 的演出者週排行"
 
 msgctxt "#15274"
 msgid "Weekly album chart for %name%"
@@ -6762,6 +6774,10 @@ msgctxt "#19244"
 msgid "Backend idle time"
 msgstr "後端閒置時間"
 
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "設定喚醒命令 (cmd [timestamp])"
+
 msgctxt "#19246"
 msgid "Wakeup before recording"
 msgstr "錄影前喚醒"
@@ -6818,6 +6834,10 @@ msgctxt "#19259"
 msgid "Parental control"
 msgstr "家長控制"
 
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "解鎖時間"
+
 msgctxt "#19261"
 msgid "Change PIN"
 msgstr "修改 PIN"
@@ -6862,6 +6882,14 @@ msgctxt "#19271"
 msgid "No PVR add-ons could be found"
 msgstr "找不到任何 PVR 附加元件"
 
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "你需要一個接收器 (tuner)、後端軟體和為該後端軟體"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "設計的附加元件才能使用 PVR 功能。"
+
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
 msgstr "請拜訪 xbmc.org/pvr 以取得更多資訊。"
@@ -6881,6 +6909,10 @@ msgstr "錄影衝突"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "錄影錯誤"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "轉台時需要按OK確認"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8090,6 +8122,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "排序：標籤"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "正在使用 %s 掃描電影"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "正在使用 %s 掃描音樂影片"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "正在使用 %s 掃描電視節目"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "正在使用 %s 掃描演出者"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "正在使用 %s 掃描專輯"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "播放部分的…"
@@ -9046,6 +9098,10 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr "外部儲存"
 
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "已觀看的集數"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "字幕位置"
@@ -9648,7 +9704,7 @@ msgstr "電視資訊"
 
 msgctxt "#24015"
 msgid "Music video information"
-msgstr "音樂錄影帶資訊"
+msgstr "音樂影片資訊"
 
 msgctxt "#24016"
 msgid "Album information"
@@ -10442,10 +10498,6 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "啟用搖桿和手把支援"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "使用 iMON 時停用遊戲遙桿"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "位置"
@@ -10558,6 +10610,10 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "關閉 XBMC 時送出 \"非作用中來源\" 的命令"
 
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr "當電腦進入待機時讓裝置也待機"
+
 msgctxt "#36028"
 msgid "Ignore"
 msgstr "忽略"
@@ -10598,6 +10654,14 @@ msgctxt "#36038"
 msgid "Amplifier / AVR device"
 msgstr "放大器/AVR 裝置"
 
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "電視和 AVR 裝置(外接式)"
+
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "未支援的 libECE 介面版本。版本 %x 小於 XBMC 所支援的版本(%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* 項目資料夾"

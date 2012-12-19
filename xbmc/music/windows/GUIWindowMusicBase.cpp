@@ -302,6 +302,9 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     return;
   }
 
+  // this function called from outside this window - make sure the database is open
+  m_musicdatabase.Open();
+
   CStdString strPath = pItem->GetPath();
 
   // Try to find an album to lookup from the current item
@@ -348,7 +351,10 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->StartModal();
       m_dlgProgress->Progress();
       if (m_dlgProgress->IsCanceled())
+      {
+        m_musicdatabase.Close();
         return;
+      }
     }
     // check the first song we find in the folder, and grab it's album info
     for (int i = 0; i < items.Size() && !foundAlbum; i++)
@@ -376,12 +382,18 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       CLog::Log(LOGINFO, "%s called on a folder containing no songs with tag info - nothing can be done", __FUNCTION__);
       if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
+      m_musicdatabase.Close();
       return;
     }
 
     if (m_dlgProgress && bShowInfo)
       m_dlgProgress->Close();
   }
+  if (album.idAlbum == -1 && foundAlbum == false)
+    ShowArtistInfo(artist, pItem->GetPath(), false, bShowInfo);
+  else
+    ShowAlbumInfo(album, strPath, false, bShowInfo);
+  m_musicdatabase.Close();
 #endif
 }
 

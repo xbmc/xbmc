@@ -47,6 +47,8 @@ namespace JSONRPC
      */
     static void Initialize();
 
+    static void Cleanup();
+
     /*
      \brief Handles an incoming JSON-RPC request
      \param inputString received JSON-RPC request

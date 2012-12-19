@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.1
+# Addon version: 2.1.2
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -147,7 +147,7 @@ msgstr "Geçerli çalma listesi"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin."
+msgstr "Bu dosya yığınlandı, oynatmak istediğiniz bölümü seçin."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -179,7 +179,7 @@ msgstr "Video dosya adlarında etiket okumayı gizle [COLOR=grey3](Blu-ray, HD-D
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
-msgstr "Ana Menü Tuşlarını Gizle"
+msgstr "Ana Menü Düğmelerini Gizle"
 
 msgctxt "#31109"
 msgid "Enable Custom Background"
@@ -219,11 +219,11 @@ msgstr "Hava Durumu Sayfası"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Arkaplanda Oynatılan Videoyu göster"
+msgstr "Arkaplanda Oynatılan Videoyu Göster"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Arkaplanda Görsel Ögeyi göster"
+msgstr "Arkaplanda Görsel Ögeyi Göster"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
@@ -435,7 +435,7 @@ msgstr "[B]MÜZİK AYARLARINI YAPILANDIR[/B][CR][CR]Müzik kitaplığını yöne
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B]RESİM AYARLARINI YAPILANDIR[/B][CR][CR]Resim listeleme seçeneklerini değiştir · Slayt gösterisi ayarlarını yapılandır"
+msgstr "[B]RESİM AYARLARINI YAPILANDIR[/B][CR][CR]Resim listeleme seçeneklerini ayarla · Slayt gösterisi ayarlarını yapılandır"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
@@ -519,11 +519,11 @@ msgstr "Saatlik Hava Tahmini"
 
 msgctxt "#31903"
 msgid "Weekend Forecast"
-msgstr "Haftalık Hava Tahmini"
+msgstr "Hafta Sonu Hava Tahmini"
 
 msgctxt "#31904"
 msgid "10 Day Forecast"
-msgstr "10 Günlik Hava Tahmini"
+msgstr "10 Günlük Hava Tahmini"
 
 msgctxt "#31905"
 msgid "Forecast"

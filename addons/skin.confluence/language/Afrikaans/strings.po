@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.1
+# Addon version: 2.1.2
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -32,6 +32,10 @@ msgstr "Werk..."
 msgctxt "#31005"
 msgid "Hide Information"
 msgstr "Versteek INFO"
+
+msgctxt "#31006"
+msgid "View Options"
+msgstr "Besigtig Opsies"
 
 msgctxt "#31008"
 msgid "Fullscreen"
@@ -163,7 +167,7 @@ msgstr "Wys \"Gepouseer\" in prentjie skyfievertoning"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Speel Voorskoue in 'n venster [COLOR=grey3](Slegs Video Informasie Dialoog)[/COLOR]"
+msgstr "Speel Voorskoue in 'n venster [COLOR=grey3](Slegs Video Inligting Dialoog)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -177,6 +181,14 @@ msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
 msgstr "Versteek Hoof Kieslys Knoppies"
 
+msgctxt "#31109"
+msgid "Enable Custom Background"
+msgstr "Stel Pasgemaakte Agtergrond in staat"
+
+msgctxt "#31110"
+msgid "Background path:"
+msgstr "Agtergrond pad:"
+
 msgctxt "#31111"
 msgid "Hide"
 msgstr "Versteek"
@@ -184,6 +196,10 @@ msgstr "Versteek"
 msgctxt "#31112"
 msgid "Options"
 msgstr "Opsies"
+
+msgctxt "#31116"
+msgid "Show Recently added Albums"
+msgstr "Wys onlangs bygevoegde Albums"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
@@ -221,6 +237,30 @@ msgctxt "#31128"
 msgid "Lyrics"
 msgstr "Lirieke"
 
+msgctxt "#31129"
+msgid "Hide Fanart in full screen visualization"
+msgstr "Versteek Ondersteunerkuns in volskerm visualisering"
+
+msgctxt "#31132"
+msgid "Lyrics Add-on"
+msgstr "Lirieke Byvoegsel"
+
+msgctxt "#31133"
+msgid "Subtitle Add-on"
+msgstr "Subtitel Byvoegsel"
+
+msgctxt "#31134"
+msgid "Home Page Videos Submenu"
+msgstr "Tuis Blad Videos Subkieslys"
+
+msgctxt "#31135"
+msgid "Home Page Music Submenu"
+msgstr "Tuis Blad Musiek Subkieslys"
+
+msgctxt "#31136"
+msgid "Home Page Pictures Submenu"
+msgstr "Tuis Blad Prente Subkieslys"
+
 msgctxt "#31140"
 msgid "Music OSD"
 msgstr "Musiek OSD"
@@ -249,6 +289,10 @@ msgctxt "#31207"
 msgid "Find More Items"
 msgstr "Soek Meer Items"
 
+msgctxt "#31208"
+msgid "Upcoming Episodes"
+msgstr "Opkomende Episodes"
+
 msgctxt "#31300"
 msgid "Current Temp"
 msgstr "Huidige Temp"
@@ -256,6 +300,10 @@ msgstr "Huidige Temp"
 msgctxt "#31301"
 msgid "Last Updated"
 msgstr "Laas Opdateer"
+
+msgctxt "#31303"
+msgid "Data provider"
+msgstr "Data verskaffer"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
@@ -327,11 +375,15 @@ msgstr "Onlangs Bygevoeg"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Tydhouer gestel![/B] [COLOR=grey2] - Stelsel auto afskakel in[/COLOR]"
+msgstr "[B]Tydhouer gestel![/B] [COLOR=grey2] - Stelsel outo afskakel in[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
 msgstr "Kliek knoppie om[CR][CR]Fliek voorskou  te speel"
+
+msgctxt "#31331"
+msgid "Album Details"
+msgstr "Album Besonderhede"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -397,9 +449,61 @@ msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
 msgstr "[B]KONFIGUREER BYVOEGSELS[/B][CR][CR]Bestuur jou geïnstalleerde Byvoegsels · Soek en installeer Byvoegsels vanaf xbmc.org[CR]Verander Byvoeging verstellings"
 
+msgctxt "#31409"
+msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
+msgstr "[B]KONFIGUREER TV VERSTELLINGS[/B][CR][CR]Verander volskerm info · Bestuur EPG data verstellings"
+
+msgctxt "#31410"
+msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
+msgstr "[B]KONFIGUREER DIENS VERSTELLINGS[/B][CR][CR]Stel beheer van XBMC via UPnP en HTTP op · Konfigureer lêer deling[CR]Stel Zeroconf in staat · Konfigureer AirPlay"
+
+msgctxt "#31411"
+msgid "First run help...."
+msgstr "Loop eers hulp..."
+
+msgctxt "#31412"
+msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
+msgstr "Hierdie duimgids beteken daar is 'n kieslys van die kant van hierdie venster af wat ekstra opsies bevat vir hierdie seksie. Vir toegang tot die kieslys, navigeer na links met jou afstandbeheer of sleutelbord of plaas jou muis wyser oor die duimgids. [CR][CR]Kliek \"Ok\" om die dialoog toe te maak. Dit sal nie weer verskyn."
+
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
 msgstr "Selekteer jou XBMC gebruiker Profiel[CR]om in te log en voort te gaan"
+
+msgctxt "#31500"
+msgid "Recording Timers"
+msgstr "Opname Tydhouers"
+
+msgctxt "#31501"
+msgid "Scheduled Time"
+msgstr "Geskeduleerde Tyd"
+
+msgctxt "#31502"
+msgid "Live TV"
+msgstr "Lewendige TV"
+
+msgctxt "#31503"
+msgid "Add Group"
+msgstr "Voeg Groep by"
+
+msgctxt "#31504"
+msgid "Rename Group"
+msgstr "Verander Groep naam"
+
+msgctxt "#31505"
+msgid "Delete Group"
+msgstr "Wis Groep uit"
+
+msgctxt "#31506"
+msgid "Available[CR]Groups"
+msgstr "Beskikbare[CR]Groepe"
+
+msgctxt "#31509"
+msgid "Channel Group"
+msgstr "Kanaal Groep"
+
+msgctxt "#31510"
+msgid "Timer Set"
+msgstr "Tydhouer Gestel"
 
 msgctxt "#31511"
 msgid "Channel Options"
@@ -424,3 +528,15 @@ msgstr "10 Dae Voorspelling"
 msgctxt "#31905"
 msgid "Forecast"
 msgstr "Voorspelling"
+
+msgctxt "#31908"
+msgid "Chance of Precipitation"
+msgstr "Kans op Neerslag"
+
+msgctxt "#31909"
+msgid "Fetching forecast info..."
+msgstr "Gaan haal voorspelling info..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Kaart & Waarskuwings"

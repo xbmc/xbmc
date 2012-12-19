@@ -637,7 +637,14 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2)
       // 5. Download the movie information
       // show dialog that we're downloading the movie info
 
-      // clear artwork
+      // clear artwork and invalidate hashes
+      CTextureDatabase db;
+      if (db.Open())
+      {
+        for (CGUIListItem::ArtMap::const_iterator i = item->GetArt().begin(); i != item->GetArt().end(); ++i)
+          db.InvalidateCachedTexture(i->second);
+        db.Close();
+      }
       item->ClearArt();
 
       CFileItemList list;
@@ -1183,6 +1190,7 @@ bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item, const CStdString
     if(item_new->m_bIsFolder == false)
     {
       item.reset(new CFileItem(*item));
+      item->SetProperty("original_listitem_url", item->GetPath());
       item->SetPath(item_new->GetPath());
       return true;
     }

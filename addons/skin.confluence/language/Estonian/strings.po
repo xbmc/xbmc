@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.1
+# Addon version: 2.1.2
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -227,7 +227,7 @@ msgstr "Näita taustal \"Hetkel mängib\" visuaali"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Esita videoteegis telesaadete tunnusmuusikat (TvTunes lisamoodul)"
+msgstr "Esita videoteegis sarjade tunnusmuusikat (TvTunes lisamoodul)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -451,7 +451,7 @@ msgstr "[B]KONFIGUREERI LISAMOODULEID[/B][CR][CR]Halda enda lisamooduleid · Sir
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
-msgstr "[B]SEADISTA TV SEADEID[/B][CR][CR]Muuda täisekraani infot · Halda EPG andmete seadeid"
+msgstr "[B]SEADISTA TV SEADEID[/B][CR][CR]Muuda täisekraani infot · Halda elektroolise saatekava andmete seadeid"
 
 msgctxt "#31410"
 msgid "[B]CONFIGURE SERVICE SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Enable Zeroconf · Configure AirPlay"
@@ -536,3 +536,7 @@ msgstr "Võimalus sademeteks"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "Ilmateate andmete hankimine..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "Kaart ja hoiatused"

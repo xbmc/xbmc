@@ -25,6 +25,8 @@
 #include "GUISettings.h"
 #include "utils/Stopwatch.h"
 
+typedef boost::shared_ptr<CBaseSettingControl> BaseSettingControlPtr;
+
 class CGUIWindowSettingsCategory :
       public CGUIWindow
 {
@@ -74,14 +76,14 @@ protected:
   void CheckForUpdates();
   void FreeSettingsControls();
   virtual void FreeControls();
-  virtual void OnClick(CBaseSettingControl *pSettingControl);
-  virtual void OnSettingChanged(CBaseSettingControl *pSettingControl);
+  virtual void OnClick(BaseSettingControlPtr pSettingControl);
+  virtual void OnSettingChanged(BaseSettingControlPtr pSettingControl);
   CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
-  CBaseSettingControl* GetSetting(const CStdString &strSetting);
+  BaseSettingControlPtr GetSetting(const CStdString &strSetting);
 
-  void ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
+  void ValidatePortNumber(BaseSettingControlPtr pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
 
-  std::vector<CBaseSettingControl *> m_vecSettings;
+  std::vector<BaseSettingControlPtr> m_vecSettings;
   int m_iSection;
   int m_iScreen;
   vecSettingsCategory m_vecSections;
@@ -103,7 +105,7 @@ protected:
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
 
-  CBaseSettingControl *m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
+  boost::shared_ptr<CBaseSettingControl> m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
   CStopWatch           m_delayedTimer;   ///< Delayed setting timer
 };
 

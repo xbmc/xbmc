@@ -422,9 +422,9 @@ CButtonTranslator::CButtonTranslator()
   m_Loaded = false;
 }
 
-CButtonTranslator::~CButtonTranslator()
-{
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+void CButtonTranslator::ClearLircButtonMapEntries()
+{
   vector<lircButtonMap*> maps;
   for (map<CStdString,lircButtonMap*>::iterator it  = lircRemotesMap.begin();
                                                 it != lircRemotesMap.end();++it)
@@ -433,6 +433,13 @@ CButtonTranslator::~CButtonTranslator()
   vector<lircButtonMap*>::iterator itend = unique(maps.begin(),maps.end());
   for (vector<lircButtonMap*>::iterator it = maps.begin(); it != itend;++it)
     delete *it;
+}
+#endif
+
+CButtonTranslator::~CButtonTranslator()
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  ClearLircButtonMapEntries();
 #endif
 }
 
@@ -1342,6 +1349,7 @@ void CButtonTranslator::Clear()
 {
   m_translatorMap.clear();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  ClearLircButtonMapEntries();
   lircRemotesMap.clear();
 #endif
 

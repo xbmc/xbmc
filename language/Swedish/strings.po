@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1264,7 +1264,7 @@ msgstr "Tid innan skärmsläckare startar"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "Skärmsläckarläge"
+msgstr "Skärmsläckare"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -3956,7 +3956,7 @@ msgstr "Är en annan session aktiv, kanske över ssh?"
 
 msgctxt "#13021"
 msgid "Mounted removable harddrive"
-msgstr "Monterad flyttbar hårddisk"
+msgstr "Monterade flyttbar hårddisk"
 
 msgctxt "#13022"
 msgid "Unsafe device removal"
@@ -5192,7 +5192,7 @@ msgstr "Spela DVD'er automatiskt"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
-msgstr "Typsnitt för undertexter"
+msgstr "Undertextstypsnitt"
 
 msgctxt "#14090"
 msgid "International"
@@ -6600,7 +6600,7 @@ msgstr "TV"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr "Many/OSD"
+msgstr "Meny/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
@@ -8044,7 +8044,7 @@ msgstr "Annonsera biblioteksuppdateringar via UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
-msgstr "Aktivera automatisk rullning för handling & recension"
+msgstr "Aktivera automatisk bläddring för handling & recension"
 
 msgctxt "#20190"
 msgid "Custom"
@@ -8608,7 +8608,7 @@ msgstr "Aldrig"
 
 msgctxt "#20421"
 msgid "If only one season"
-msgstr "om endast en säsong"
+msgstr "Om endast en säsong"
 
 msgctxt "#20422"
 msgid "Always"
@@ -8892,7 +8892,7 @@ msgstr "Visa knapp för \"Lägg till källa\" i fillistan"
 
 msgctxt "#21383"
 msgid "Enable scrollbars"
-msgstr "Aktivera rullningslister"
+msgstr "Aktivera bläddringslister"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
@@ -9720,7 +9720,7 @@ msgstr "Igång"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr "Skala Teletext till 4:3"
+msgstr "Skala teletext till 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9892,7 +9892,7 @@ msgstr "Tillgängliga uppdateringar"
 
 msgctxt "#24044"
 msgid "Dependencies not met"
-msgstr "Beronden möts inte"
+msgstr "Beroenden möts inte"
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Aktivera joystick och gamepad-stöd"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Inaktivera joystick när iMON är tillgängligt"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Inaktivera joysticken när enheten är tillgänglig"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10652,7 +10652,7 @@ msgstr "Kunde inte hitta CEC-porten. Ställ in den manuellt"
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "Kunde inte hitta CEC-adaptern"
+msgstr "Kunde inte hitta CEC-adaptern. Kontrollera dina inställningar."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10753,3 +10753,7 @@ msgstr "TV och AVR-enhet (rättfram)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Ej stödd libCEC-gränsnittsversion. %x är lägre än versionen XBMC stödjer (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Objektsmapp"

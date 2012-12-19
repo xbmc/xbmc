@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.1
+# Addon version: 2.1.2
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Change Your"
-msgstr "Keičiami"
+msgstr "Pakeitimas"
 
 msgctxt "#31003"
 msgid "Power Options"
@@ -31,7 +31,7 @@ msgstr "Veikia..."
 
 msgctxt "#31005"
 msgid "Hide Information"
-msgstr "Paslėpti informaciją"
+msgstr "Slėpti informaciją"
 
 msgctxt "#31006"
 msgid "View Options"
@@ -39,7 +39,7 @@ msgstr "Rodinio parinktys"
 
 msgctxt "#31008"
 msgid "Fullscreen"
-msgstr "Per visą ekraną"
+msgstr "Visame ekrane"
 
 msgctxt "#31009"
 msgid "Total Duration"
@@ -83,7 +83,7 @@ msgstr "Miniatiūros"
 
 msgctxt "#31032"
 msgid "Image Wrap"
-msgstr "Paveikslėlių karuselė"
+msgstr "Nuotraukų karuselė"
 
 msgctxt "#31033"
 msgid "Info"
@@ -91,7 +91,7 @@ msgstr "Informacija"
 
 msgctxt "#31040"
 msgid "Now Playing"
-msgstr "Dabar rodoma/grojama"
+msgstr "Dabar atkuriama"
 
 msgctxt "#31042"
 msgid "PLAYING"
@@ -119,11 +119,11 @@ msgstr "Pabaigos laikas"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Ruš.: Didėjimo tvarka"
+msgstr "Rūš.: Didėjimo tvarka"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Ruš.: Mažėjimo tvarka"
+msgstr "Rūš.: Mažėjimo tvarka"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -139,7 +139,7 @@ msgstr "Uždaryti grojaraštį"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Sistemos audio failai"
+msgstr "Sistemos garso failai"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -147,7 +147,7 @@ msgstr "Aktualus grojaraštis"
 
 msgctxt "#31060"
 msgid "This file is stacked, select the part you want to play from."
-msgstr "Šie failai yra sugrupuoti, pasirinkite dalį katrą norite atkurti."
+msgstr "Šie failai yra sugrupuoti, pasirinkite dalį katrą norite atkūrti."
 
 msgctxt "#31061"
 msgid "Current Selected"
@@ -167,7 +167,7 @@ msgstr "Rodyti \"Pauzė\" prezentacijos režime"
 
 msgctxt "#31104"
 msgid "Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]"
-msgstr "Rodyti Filmo anonsą lange [COLOR=grey3](Tik informacijai apie filmo santrauką)[/COLOR]"
+msgstr "Atkūrti filmo anonsą lange [COLOR=grey3](Tik informacijai apie filmo dialogą)[/COLOR]"
 
 msgctxt "#31106"
 msgid "Miscellaneous options"
@@ -175,7 +175,7 @@ msgstr "Įvairios opcijos"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Paslėpti nuorodas iš skaitomo failo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Nerodyti nuorodos(-ų) iš skaitomo failo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -191,7 +191,7 @@ msgstr "Fono maršrutas:"
 
 msgctxt "#31111"
 msgid "Hide"
-msgstr "Paslėpti"
+msgstr "Nerodyti"
 
 msgctxt "#31112"
 msgid "Options"
@@ -211,7 +211,7 @@ msgstr "Pagrindinio ekrano submeniu"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Slėpti Fanart informaciją"
+msgstr "Slėpti fanart informaciją"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -219,15 +219,15 @@ msgstr "Orų puslapis"
 
 msgctxt "#31124"
 msgid "Show Background \"Now Playing\" Video"
-msgstr "Rodyti foninį \"Atkuriamasis\" video"
+msgstr "Rodyti foninį \"Dabar atkuriama\" Video"
 
 msgctxt "#31125"
 msgid "Show Background \"Now Playing\" Visualization"
-msgstr "Rodyti foninį \"Atkuriamasis\" vizualizacija"
+msgstr "Rodyti foninį \"Dabar atkuriama\" Vizualizacija"
 
 msgctxt "#31126"
 msgid "Play TV theme songs in video library (TvTunes add-on)"
-msgstr "Groti TV šou/serialų temų dainas vaizdo bibliotekoje (TvTunes priedas)"
+msgstr "Atkūri TV šou/serialų temų dainas vaizdo bibliotekoje (TvTunes priedas)"
 
 msgctxt "#31127"
 msgid "TvTunes"
@@ -239,7 +239,7 @@ msgstr "Dainų tekstai"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr "Slėpti Fanart viso ekrano vizualizacijai"
+msgstr "Slėpti fanart viso ekrano vizualizacijai"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -259,7 +259,7 @@ msgstr "Pagrindinio puslapio muzikos submeniu"
 
 msgctxt "#31136"
 msgid "Home Page Pictures Submenu"
-msgstr "Pagrindinio puslapio paveikslėlių submeniu"
+msgstr "Pagrindinio puslapio nuotraukų submeniu"
 
 msgctxt "#31140"
 msgid "Music OSD"
@@ -275,7 +275,7 @@ msgstr "Etiketės"
 
 msgctxt "#31203"
 msgid "Choose Your Song"
-msgstr "Išsirinkti savo dainą"
+msgstr "Pasirinkite savo dainą"
 
 msgctxt "#31205"
 msgid "Lyrics Source"
@@ -283,7 +283,7 @@ msgstr "Dainų tekstų šaltinis"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr "Iš viso"
+msgstr "Surasta"
 
 msgctxt "#31207"
 msgid "Find More Items"
@@ -299,7 +299,7 @@ msgstr "Dabartinė temperatūra"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Paskutiniai atnaujinimai"
+msgstr "Naujausi"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -307,7 +307,7 @@ msgstr "Duomenų teikėjas"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Paslėpti Fanart"
+msgstr "Nerodyti fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -323,7 +323,7 @@ msgstr "Takelio numeris"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Fanart vaizdas[CR][CR]nepasiekiamas[CR][CR] paspauskite pasirinkimui"
+msgstr "Fanart paveikslėlis[CR][CR]nepasiekiamas[CR][CR] paspauskite pasirinkimui"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -339,7 +339,7 @@ msgstr "Nuskaitomo turinio parinktys"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Nurodyti kelią iki Fanart"
+msgstr "Nurodyti kelią iki fanart"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -359,7 +359,7 @@ msgstr "Rodomas"
 
 msgctxt "#31325"
 msgid "Playlist Options"
-msgstr "Sąrašo opcijos"
+msgstr "Grojaraščio parinktys"
 
 msgctxt "#31326"
 msgid "Created"
@@ -367,15 +367,15 @@ msgstr "Sukūrta"
 
 msgctxt "#31327"
 msgid "Resolution"
-msgstr "Leidimas"
+msgstr "Rezoliucija"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Neseniai dadėta"
+msgstr "Vėliausiai pridėti"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
-msgstr "[B]Nustatytas laikrodis![/B] [COLOR=grey2] - Sistemos automatinis išjungimas po[/COLOR]"
+msgstr "[B]Nustatytas laikrodis![/B] [COLOR=grey2] - Sistemos automatinis išjungimas po...[/COLOR]"
 
 msgctxt "#31330"
 msgid "Click button to play[CR][CR]Movie trailer"
@@ -383,7 +383,7 @@ msgstr "Paspauskite norėdami atkūrti[CR][CR]filmo anonsą"
 
 msgctxt "#31331"
 msgid "Album Details"
-msgstr "Albumai detaliau"
+msgstr "Albumo informacija"
 
 msgctxt "#31351"
 msgid "Pause"
@@ -415,11 +415,11 @@ msgstr "Kaip yra"
 
 msgctxt "#31391"
 msgid "Skin default with no Caps"
-msgstr "Be 'Kaps'"
+msgstr "Teminė išvaizda kaip yra be 'Caps'"
 
 msgctxt "#31392"
 msgid "Arial based"
-msgstr "Arial"
+msgstr "Arial pagrindu"
 
 msgctxt "#31400"
 msgid "[B]CONFIGURE APPEARANCE SETTINGS[/B][CR][CR]Change the skin · Set language and region · Change file listing options[CR]Set up a screensaver"
@@ -435,7 +435,7 @@ msgstr "[B][COLOR=blue]MUZIKOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti
 
 msgctxt "#31403"
 msgid "[B]CONFIGURE PICTURE SETTINGS[/B][CR][CR]Set picture listing options · Configure slideshows"
-msgstr "[B][COLOR=blue]FOTO/PAVEIKSLĖLIŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti pavaikslėlių/nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją"
+msgstr "[B][COLOR=blue]NUOTRAUKŲ/PAVEIKSLĖLIŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Tvarkyti pavaikslėlių/nuotraukų biblioteką · Nustatyti pristatymą · Nustatyti prezentaciją"
 
 msgctxt "#31404"
 msgid "[B]CONFIGURE WEATHER SETTINGS[/B][CR][CR]Set three cities to collect weather information"
@@ -447,7 +447,7 @@ msgstr "[B][COLOR=blue]SISTEMOS PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustaty
 
 msgctxt "#31408"
 msgid "[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings"
-msgstr "[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti parametrų valdymą · Nustatyti diegimą iš xbmc.org · Nustatyti priedų pakeitimą"
+msgstr "[B][COLOR=blue]PRIEDŲ PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]Nustatyti priedų parametrų valdymą · Nustatyti diegimą iš xbmc.org · Nustatyti priedų pakeitimą"
 
 msgctxt "#31409"
 msgid "[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings"
@@ -459,11 +459,11 @@ msgstr "[B][COLOR=blue]TINKLO PARAMETRŲ NUSTATYMAI[/COLOR][/B][CR][CR]XBMC sąr
 
 msgctxt "#31411"
 msgid "First run help...."
-msgstr "Pagalba pirmam paleidimui..."
+msgstr "Pirmo paleidimo pagalba..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Šis skirtukas reiškia, kad yra meniu iki šio lango, kuriame yra papildomų galimybių šioje skyrio pusėje. Norėdami atidaryti meniu, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba padėkite pelės žymeklį virš skirtuko.[CR][CR] Spauskite \"Gerai\" uždaryti šį langą. Jis daugiau nebus rodomas."
+msgstr "Šis skirtukas reiškia, kad yra meniu iki šio lango, kuriame yra papildomų galimybių šioje skyrio pusėje. Norėdami atidaryti menių, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba pažimėkite pelės žymekliu virš skirtuko.[CR][CR] Spauskite \"OK\" uždaryti šį langą. Jis daugiau nebus rodomas."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
@@ -535,8 +535,8 @@ msgstr "Kritulių tikimybė"
 
 msgctxt "#31909"
 msgid "Fetching forecast info..."
-msgstr "Parsiunčiama prognozės informacija..."
+msgstr "Atsiunčiama prognozės informacija..."
 
 msgctxt "#31910"
 msgid "Map & Alerts"
-msgstr "Žemėlapis ir įspėjimai"
+msgstr "Žemėlapis ir Įspėjimai"

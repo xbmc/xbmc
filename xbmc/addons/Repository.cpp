@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "TextureDatabase.h"
 #include "URL.h"
+#include "pvr/PVRManager.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -206,6 +207,7 @@ bool CRepositoryUpdateJob::DoWork()
     // manager told us to feck off
     if (ShouldCancel(0,0))
       break;
+
     if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
       addons[i]->Props().broken = g_localizeStrings.Get(24044);
 
@@ -226,7 +228,11 @@ bool CRepositoryUpdateJob::DoWork()
         if (URIUtils::IsInternetStream(addons[i]->Path()))
           referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
-        CAddonInstaller::Get().Install(addon->ID(), true, referer);
+        if (addons[i]->Type() == ADDON_PVRDLL &&
+            !PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
+          PVR::CPVRManager::Get().MarkAsOutdated(addon->ID(), referer);
+        else
+          CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else if (g_settings.m_bAddonNotifications)
       {

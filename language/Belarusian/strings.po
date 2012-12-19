@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -208,27 +208,27 @@ msgstr "Сне"
 
 msgctxt "#71"
 msgid "N"
-msgstr "N"
+msgstr "паўн"
 
 msgctxt "#72"
 msgid "NNE"
-msgstr "NNE"
+msgstr "паўн-паўн-усх"
 
 msgctxt "#73"
 msgid "NE"
-msgstr "NE"
+msgstr "паўн-усх"
 
 msgctxt "#74"
 msgid "ENE"
-msgstr "ENE"
+msgstr "усх-паўн-усх"
 
 msgctxt "#75"
 msgid "E"
-msgstr "E"
+msgstr "усх"
 
 msgctxt "#76"
 msgid "ESE"
-msgstr "ESE"
+msgstr "усх-паўд-усх"
 
 msgctxt "#77"
 msgid "SE"
@@ -260,15 +260,15 @@ msgstr "зах"
 
 msgctxt "#84"
 msgid "WNW"
-msgstr "WNW"
+msgstr "зах-паўн-зах"
 
 msgctxt "#85"
 msgid "NW"
-msgstr "NW"
+msgstr "паўн-зах"
 
 msgctxt "#86"
 msgid "NNW"
-msgstr "NNW"
+msgstr "паўн-паўн-зах"
 
 msgctxt "#87"
 msgid "VAR"
@@ -276,19 +276,19 @@ msgstr "VAR"
 
 msgctxt "#88"
 msgid "South"
-msgstr "South"
+msgstr "Паўднёвы"
 
 msgctxt "#89"
 msgid "North"
-msgstr "North"
+msgstr "Паўночны"
 
 msgctxt "#90"
 msgid "West"
-msgstr "West"
+msgstr "Заходні"
 
 msgctxt "#91"
 msgid "East"
-msgstr "East"
+msgstr "Усходні"
 
 msgctxt "#92"
 msgid "Variable"
@@ -548,7 +548,7 @@ msgstr "Free"
 
 msgctxt "#161"
 msgid "Unavailable"
-msgstr "Unavailable"
+msgstr "Недаступна"
 
 msgctxt "#162"
 msgid "Tray open"
@@ -592,11 +592,11 @@ msgstr "Паказваць відэа 4:3 як"
 
 msgctxt "#175"
 msgid "Moods"
-msgstr "Moods"
+msgstr "Настроі"
 
 msgctxt "#176"
 msgid "Styles"
-msgstr "Styles"
+msgstr "Стылі"
 
 msgctxt "#179"
 msgid "Song"
@@ -604,15 +604,15 @@ msgstr "Song"
 
 msgctxt "#180"
 msgid "Duration"
-msgstr "Duration"
+msgstr "Працягласьць"
 
 msgctxt "#181"
 msgid "Select album"
-msgstr "Select album"
+msgstr "Абраць альбом"
 
 msgctxt "#182"
 msgid "Tracks"
-msgstr "Tracks"
+msgstr "Трэкі"
 
 msgctxt "#183"
 msgid "Review"
@@ -640,7 +640,7 @@ msgstr "Select all"
 
 msgctxt "#189"
 msgid "Scanning media info"
-msgstr "Scanning media info"
+msgstr "Сканаваньне зьвестак мэдыяў"
 
 msgctxt "#190"
 msgid "Save"
@@ -648,11 +648,11 @@ msgstr "Захаваць"
 
 msgctxt "#191"
 msgid "Shuffle"
-msgstr "Shuffle"
+msgstr "Выпадковы"
 
 msgctxt "#192"
 msgid "Clear"
-msgstr "Clear"
+msgstr "Сьцерці"
 
 msgctxt "#193"
 msgid "Scan"
@@ -708,7 +708,7 @@ msgstr "Прайграваньне"
 
 msgctxt "#209"
 msgid "Next"
-msgstr "Next"
+msgstr "Наступны"
 
 msgctxt "#210"
 msgid "Previous"
@@ -784,7 +784,7 @@ msgstr "Video filters"
 
 msgctxt "#231"
 msgid "None"
-msgstr "None"
+msgstr "Няма"
 
 msgctxt "#232"
 msgid "Point"
@@ -884,7 +884,7 @@ msgstr "Fetching CD information"
 
 msgctxt "#257"
 msgid "Error"
-msgstr "Error"
+msgstr "Памылка"
 
 msgctxt "#258"
 msgid "Enable tag reading"
@@ -1012,7 +1012,7 @@ msgstr "Шрыфт"
 
 msgctxt "#289"
 msgid "- Size"
-msgstr "- Size"
+msgstr "- Памер"
 
 msgctxt "#290"
 msgid "Dynamic range compression"
@@ -1204,7 +1204,7 @@ msgstr "Various artists"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "Play disc"
+msgstr "Дыск"
 
 msgctxt "#342"
 msgid "Movies"
@@ -1220,7 +1220,7 @@ msgstr "Actors"
 
 msgctxt "#345"
 msgid "Year"
-msgstr "Year"
+msgstr "Год"
 
 msgctxt "#346"
 msgid "Boost volume level on downmix"
@@ -1284,7 +1284,7 @@ msgstr "Ахоўнік экрану"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "R. Slideshow"
+msgstr "Слайдшоў R."
 
 msgctxt "#362"
 msgid "Screensaver dim level"
@@ -1488,7 +1488,7 @@ msgstr "Manual"
 
 msgctxt "#414"
 msgid "No review for this album"
-msgstr "No review for this album"
+msgstr "Няма рэцэнзій на гэты альбом"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
@@ -1624,7 +1624,7 @@ msgstr "LCD"
 
 msgctxt "#449"
 msgid "Enabled"
-msgstr "Enabled"
+msgstr "Уключаны"
 
 msgctxt "#450"
 msgid "Columns"
@@ -1692,7 +1692,7 @@ msgstr "Gamma"
 
 msgctxt "#467"
 msgid "Type"
-msgstr "Type"
+msgstr "Тып"
 
 msgctxt "#468"
 msgid "Move the bar to change the OSD position"
@@ -1824,7 +1824,7 @@ msgstr "Empty"
 
 msgctxt "#505"
 msgid "Loading media info from files..."
-msgstr "Loading media info from files..."
+msgstr "Чытаем зьвесткі мэдыяў з файлаў..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
@@ -1872,11 +1872,11 @@ msgstr "Compilations"
 
 msgctxt "#522"
 msgid "Remove source"
-msgstr "Remove source"
+msgstr "Выдаліць крыніцу"
 
 msgctxt "#523"
 msgid "Switch media"
-msgstr "Switch media"
+msgstr "Пераключыць медыі"
 
 msgctxt "#524"
 msgid "Select playlist"
@@ -1996,7 +1996,7 @@ msgstr "Памеру"
 
 msgctxt "#554"
 msgid "Track"
-msgstr "Track"
+msgstr "Трэк"
 
 msgctxt "#555"
 msgid "Time"
@@ -2004,19 +2004,19 @@ msgstr "Time"
 
 msgctxt "#556"
 msgid "Title"
-msgstr "Загалоўку"
+msgstr "Загаловак"
 
 msgctxt "#557"
 msgid "Artist"
-msgstr "Выканаўцы"
+msgstr "Выканаўца"
 
 msgctxt "#558"
 msgid "Album"
-msgstr "Album"
+msgstr "Альбом"
 
 msgctxt "#559"
 msgid "Playlist"
-msgstr "Playlist"
+msgstr "Сьпіс прайграваньня"
 
 msgctxt "#560"
 msgid "ID"
@@ -2024,11 +2024,11 @@ msgstr "ID"
 
 msgctxt "#561"
 msgid "File"
-msgstr "File"
+msgstr "Файл"
 
 msgctxt "#562"
 msgid "Year"
-msgstr "Year"
+msgstr "Год"
 
 msgctxt "#563"
 msgid "Rating"
@@ -2048,19 +2048,19 @@ msgstr "Выканаўца альбома"
 
 msgctxt "#567"
 msgid "Play count"
-msgstr "Play count"
+msgstr "Колькасьць прайграваньняў"
 
 msgctxt "#568"
 msgid "Last played"
-msgstr "Last played"
+msgstr "Апошняе прайграваньне"
 
 msgctxt "#569"
 msgid "Comment"
-msgstr "Comment"
+msgstr "Камэнтар"
 
 msgctxt "#570"
 msgid "Date added"
-msgstr "Date added"
+msgstr "Калі дададзены"
 
 msgctxt "#571"
 msgid "Default"
@@ -2068,11 +2068,11 @@ msgstr "Default"
 
 msgctxt "#572"
 msgid "Studio"
-msgstr "Studio"
+msgstr "Студыя"
 
 msgctxt "#573"
 msgid "Path"
-msgstr "Path"
+msgstr "Шлях"
 
 msgctxt "#574"
 msgid "Country"
@@ -2112,7 +2112,7 @@ msgstr "Descending"
 
 msgctxt "#586"
 msgid "Edit playlist"
-msgstr "Edit playlist"
+msgstr "Рэдагаваць сьпіс прайграваньня"
 
 msgctxt "#587"
 msgid "Filter"
@@ -2128,7 +2128,7 @@ msgstr "Party mode"
 
 msgctxt "#590"
 msgid "Random"
-msgstr "Random"
+msgstr "Выпадкова"
 
 msgctxt "#591"
 msgid "Off"
@@ -2148,15 +2148,15 @@ msgstr "Няма"
 
 msgctxt "#595"
 msgid "Repeat: Off"
-msgstr "Repeat: Off"
+msgstr "Паўтор: няма"
 
 msgctxt "#596"
 msgid "Repeat: One"
-msgstr "Repeat: One"
+msgstr "Паўтор: 1"
 
 msgctxt "#597"
 msgid "Repeat: All"
-msgstr "Repeat: All"
+msgstr "Паўтор: усе"
 
 msgctxt "#600"
 msgid "Rip audio CD"
@@ -2356,7 +2356,7 @@ msgstr "Browse for folder"
 
 msgctxt "#658"
 msgid "Song information"
-msgstr "Song information"
+msgstr "Зьвесткі пра кампазыцыю"
 
 msgctxt "#659"
 msgid "Non-linear stretch"
@@ -2552,7 +2552,7 @@ msgstr "Mirror image"
 
 msgctxt "#750"
 msgid "Are you sure?"
-msgstr "Are you sure?"
+msgstr "Вы ўпэўнены ?"
 
 msgctxt "#751"
 msgid "Removing source"
@@ -2984,7 +2984,7 @@ msgstr "Mount SMB shares"
 
 msgctxt "#1210"
 msgid "Remove"
-msgstr "Remove"
+msgstr "Выдаліць"
 
 msgctxt "#1211"
 msgid "Music"
@@ -3512,11 +3512,11 @@ msgstr "Playlist editor"
 
 msgctxt "#10504"
 msgid "Top 100 songs"
-msgstr "Top 100 songs"
+msgstr "Найлепшыя 100 кампазыцый"
 
 msgctxt "#10505"
 msgid "Top 100 albums"
-msgstr "Top 100 albums"
+msgstr "Найлепшыя 100 альбомаў"
 
 msgctxt "#10506"
 msgid "Programs"
@@ -3544,7 +3544,7 @@ msgstr "System info"
 
 msgctxt "#10516"
 msgid "Music - Library"
-msgstr "Music - Library"
+msgstr "Музыка - Бібліятэка"
 
 msgctxt "#10517"
 msgid "Now Playing - Music"
@@ -3556,7 +3556,7 @@ msgstr "Now Playing - Videos"
 
 msgctxt "#10523"
 msgid "Album info"
-msgstr "Album info"
+msgstr "Зьвесткі альбома"
 
 msgctxt "#10524"
 msgid "Movie info"
@@ -3668,23 +3668,23 @@ msgstr "*"
 
 msgctxt "#12325"
 msgid "Locked! Enter code..."
-msgstr "Locked! Enter code..."
+msgstr "Заблякавана ! Увядзіце код..."
 
 msgctxt "#12326"
 msgid "Enter password"
-msgstr "Enter password"
+msgstr "Увядзіце пароль"
 
 msgctxt "#12327"
 msgid "Enter master code"
-msgstr "Enter master code"
+msgstr "Увядзіце майстар-код"
 
 msgctxt "#12328"
 msgid "Enter unlock code"
-msgstr "Enter unlock code"
+msgstr "Увядзіце код каб разблякаваць"
 
 msgctxt "#12329"
 msgid "or press C to cancel"
-msgstr "or press C to cancel"
+msgstr "ці націсьніце C каб скасаваць"
 
 msgctxt "#12330"
 msgid "Enter gamepad button combo and"
@@ -3832,11 +3832,11 @@ msgstr "Use pan and zoom effects"
 
 msgctxt "#12383"
 msgid "12 hour clock"
-msgstr "12 hour clock"
+msgstr "12-гадзінны"
 
 msgctxt "#12384"
 msgid "24 hour clock"
-msgstr "24 hour clock"
+msgstr "24-гадзінны"
 
 msgctxt "#12385"
 msgid "Day/Month"
@@ -3844,7 +3844,7 @@ msgstr "Day/Month"
 
 msgctxt "#12386"
 msgid "Month/Day"
-msgstr "Month/Day"
+msgstr "Месяц / Дзень"
 
 msgctxt "#12390"
 msgid "System uptime"
@@ -3852,11 +3852,11 @@ msgstr "Час працы"
 
 msgctxt "#12391"
 msgid "Minutes"
-msgstr "Minutes"
+msgstr "Хвілінаў"
 
 msgctxt "#12392"
 msgid "Hours"
-msgstr "Hours"
+msgstr "Гадзін"
 
 msgctxt "#12393"
 msgid "Days"
@@ -3864,11 +3864,11 @@ msgstr "Дзён"
 
 msgctxt "#12394"
 msgid "Total uptime"
-msgstr "Total uptime"
+msgstr "Агульны час працы"
 
 msgctxt "#12395"
 msgid "Battery level"
-msgstr "Battery level"
+msgstr "Узровень зараду батарэі"
 
 msgctxt "#12600"
 msgid "Weather"
@@ -4056,7 +4056,7 @@ msgstr "VDPAU HQ Upscaling level"
 
 msgctxt "#13122"
 msgid "VDPAU Studio level color conversion"
-msgstr "VDPAU Studio level color conversion"
+msgstr "Ператварэньне ўзроўняў колераў VDPAU Studio"
 
 msgctxt "#13130"
 msgid "Blank other displays"
@@ -4344,7 +4344,7 @@ msgstr "Crossfade between songs"
 
 msgctxt "#13315"
 msgid "Regenerate thumbnails"
-msgstr "Regenerate thumbnails"
+msgstr "Перастварыць мініятуры"
 
 msgctxt "#13316"
 msgid "Recursive thumbnails"
@@ -4360,7 +4360,7 @@ msgstr "Recursive slideshow"
 
 msgctxt "#13319"
 msgid "Randomize"
-msgstr "Randomize"
+msgstr "Выпадковы"
 
 msgctxt "#13320"
 msgid "Stereo"
@@ -4424,7 +4424,7 @@ msgstr "Edit label"
 
 msgctxt "#13335"
 msgid "Make default"
-msgstr "Make default"
+msgstr "Зрабіць пачатковай"
 
 msgctxt "#13336"
 msgid "Remove button"
@@ -4476,15 +4476,15 @@ msgstr "Зараз прайграецца..."
 
 msgctxt "#13351"
 msgid "Album information"
-msgstr "Album information"
+msgstr "Зьвесткі пра альбом"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Scan item to library"
+msgstr "Сканаваць складнікі ў бібліятэку"
 
 msgctxt "#13353"
 msgid "Stop scanning"
-msgstr "Stop scanning"
+msgstr "Спыніць сканаваньне"
 
 msgctxt "#13354"
 msgid "Render method"
@@ -4584,7 +4584,7 @@ msgstr "There are no settings available\nfor this visualization"
 
 msgctxt "#13391"
 msgid "Eject/Load"
-msgstr "Eject/Load"
+msgstr "Прыняць / Узяць"
 
 msgctxt "#13392"
 msgid "Use visualization if playing audio"
@@ -4640,11 +4640,11 @@ msgstr "Працягнуць"
 
 msgctxt "#13405"
 msgid "Get thumb"
-msgstr "Get thumb"
+msgstr "Атрымаць мініятуры"
 
 msgctxt "#13406"
 msgid "Picture information"
-msgstr "Picture information"
+msgstr "Зьвесткі відарыса"
 
 msgctxt "#13407"
 msgid "%s presets"
@@ -4708,7 +4708,7 @@ msgstr "VDPAU"
 
 msgctxt "#13422"
 msgid "Start slideshow here"
-msgstr "Start slideshow here"
+msgstr "Пачаць слайдшоў адсюль"
 
 msgctxt "#13423"
 msgid "Remember for this path"
@@ -5032,7 +5032,7 @@ msgstr "%i min"
 
 msgctxt "#14045"
 msgid "%i sec"
-msgstr "%i sec"
+msgstr "%i сек"
 
 msgctxt "#14046"
 msgid "%i ms"
@@ -5144,7 +5144,7 @@ msgstr "Use daylight saving time"
 
 msgctxt "#14076"
 msgid "Add to favourites"
-msgstr "Дадаць ў упадабаныя"
+msgstr "Дадаць да ўпадабаных"
 
 msgctxt "#14077"
 msgid "Remove from favourites"
@@ -5168,7 +5168,7 @@ msgstr "Сьпісы файлаў"
 
 msgctxt "#14082"
 msgid "Show EXIF picture information"
-msgstr "Show EXIF picture information"
+msgstr "Паказваць EXIF зьвесткі відарыса"
 
 msgctxt "#14083"
 msgid "Use a fullscreen window rather than true fullscreen"
@@ -5216,7 +5216,7 @@ msgstr "Input devices"
 
 msgctxt "#14095"
 msgid "Power saving"
-msgstr "Power saving"
+msgstr "Энергазьберажэньне"
 
 msgctxt "#14096"
 msgid "Rip"
@@ -5240,7 +5240,7 @@ msgstr "Stop ripping CD"
 
 msgctxt "#15015"
 msgid "Remove"
-msgstr "Remove"
+msgstr "Выдаліць"
 
 msgctxt "#15016"
 msgid "Games"
@@ -5248,7 +5248,7 @@ msgstr "Games"
 
 msgctxt "#15019"
 msgid "Add"
-msgstr "Add"
+msgstr "Дадаць"
 
 msgctxt "#15052"
 msgid "Password"
@@ -5352,7 +5352,7 @@ msgstr "Submitting in %i secs"
 
 msgctxt "#15213"
 msgid "Play using..."
-msgstr "Play using..."
+msgstr "Прайграць з дапамогай..."
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronization"
@@ -5364,7 +5364,7 @@ msgstr "Hide file names in thumbs view"
 
 msgctxt "#15216"
 msgid "Play in party mode"
-msgstr "Play in party mode"
+msgstr "Граць у рэжыме вечарынкі"
 
 msgctxt "#15217"
 msgid "Submit songs to Libre.fm"
@@ -5416,23 +5416,23 @@ msgstr "Overall top tags"
 
 msgctxt "#15257"
 msgid "Top artists for tag %name%"
-msgstr "Top artists for tag %name%"
+msgstr "Лепшыя выканаўцы пад цэтлікам %name%"
 
 msgctxt "#15258"
 msgid "Top albums for tag %name%"
-msgstr "Top albums for tag %name%"
+msgstr "Лепшыя альбомы пад цэтлікам %name%"
 
 msgctxt "#15259"
 msgid "Top tracks for tag %name%"
-msgstr "Top tracks for tag %name%"
+msgstr "Лепшыя трэкі пад цэтлікам %name%"
 
 msgctxt "#15260"
 msgid "Listen to tag %name% Last.fm radio"
-msgstr "Listen to tag %name% Last.fm radio"
+msgstr "Слухаць радыё Last.fm па цэтліку %name%"
 
 msgctxt "#15261"
 msgid "Similar artists as %name%"
-msgstr "Similar artists as %name%"
+msgstr "Выканаўцы падобныя на %name%"
 
 msgctxt "#15262"
 msgid "Top %name% albums"
@@ -5460,23 +5460,23 @@ msgstr "Listen to %name% similar artists Last.fm radio"
 
 msgctxt "#15268"
 msgid "Top artists for user %name%"
-msgstr "Top artists for user %name%"
+msgstr "Лепшыя выканаўцы для карыстальніка %name%"
 
 msgctxt "#15269"
 msgid "Top albums for user %name%"
-msgstr "Top albums for user %name%"
+msgstr "Лепшыя альбомы для карыстальніка %name%"
 
 msgctxt "#15270"
 msgid "Top tracks for user %name%"
-msgstr "Top tracks for user %name%"
+msgstr "Лепшыя трэкі для карыстальніка %name%"
 
 msgctxt "#15271"
 msgid "Friends of user %name%"
-msgstr "Friends of user %name%"
+msgstr "Сябры карыстальніка %name%"
 
 msgctxt "#15272"
 msgid "Neighbours of user %name%"
-msgstr "Neighbours of user %name%"
+msgstr "Суседзі карыстальніка %name%"
 
 msgctxt "#15273"
 msgid "Weekly artist chart for %name%"
@@ -5504,11 +5504,11 @@ msgstr "Listen to %name%'s mix Last.fm radio"
 
 msgctxt "#15279"
 msgid "Retrieving list from Last.fm..."
-msgstr "Retrieving list from Last.fm..."
+msgstr "Атрымоўваньне сьпісу з Last.fm..."
 
 msgctxt "#15280"
 msgid "Can't retrieve list from Last.fm..."
-msgstr "Can't retrieve list from Last.fm..."
+msgstr "Немагчыма атрымаць сьпіс з Last.fm..."
 
 msgctxt "#15281"
 msgid "Enter an artist name to find related ones"
@@ -5636,15 +5636,15 @@ msgstr "Enter the album name"
 
 msgctxt "#16012"
 msgid "Enter the playlist name"
-msgstr "Enter the playlist name"
+msgstr "Увядзіце назву сьпісу прайграваньня"
 
 msgctxt "#16013"
 msgid "Enter new filename"
-msgstr "Enter new filename"
+msgstr "Увядзіце новую назву файла"
 
 msgctxt "#16014"
 msgid "Enter folder name"
-msgstr "Enter folder name"
+msgstr "Увядзіце назву каталёгу"
 
 msgctxt "#16015"
 msgid "Enter directory"
@@ -5704,11 +5704,11 @@ msgstr "Check the log file for details."
 
 msgctxt "#16030"
 msgid "Party mode aborted."
-msgstr "Party mode aborted."
+msgstr "Рэжым вечарынкі перапынены."
 
 msgctxt "#16031"
 msgid "No matching songs in the library."
-msgstr "No matching songs in the library."
+msgstr "Няма адпаведных кампазыцый у бібліятэцы."
 
 msgctxt "#16032"
 msgid "Could not initialize database."
@@ -5724,7 +5724,7 @@ msgstr "Could not get songs from database."
 
 msgctxt "#16035"
 msgid "Party mode playlist"
-msgstr "Party mode playlist"
+msgstr "Сьпіс прайграваньня для вечарынкі"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
@@ -5920,11 +5920,11 @@ msgstr "%i MByte"
 
 msgctxt "#17998"
 msgid "%i hours"
-msgstr "%i hours"
+msgstr "% гадзінаў"
 
 msgctxt "#17999"
 msgid "%i days"
-msgstr "%i days"
+msgstr "%i дні"
 
 msgctxt "#19000"
 msgid "Switch to channel"
@@ -5960,7 +5960,7 @@ msgstr "Device status"
 
 msgctxt "#19008"
 msgid "Signal quality"
-msgstr "Signal quality"
+msgstr "Якасьць сыгналу"
 
 msgctxt "#19009"
 msgid "SNR"
@@ -6000,7 +6000,7 @@ msgstr "TV recordings"
 
 msgctxt "#19018"
 msgid "Default folder for PVR thumbnails"
-msgstr "Default folder for PVR thumbnails"
+msgstr "Стандартны каталёг для мініятур PVR"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -6044,19 +6044,19 @@ msgstr "No EPG entries"
 
 msgctxt "#19029"
 msgid "Channel"
-msgstr "Channel"
+msgstr "Канал"
 
 msgctxt "#19030"
 msgid "Now"
-msgstr "Now"
+msgstr "Зараз"
 
 msgctxt "#19031"
 msgid "Next"
-msgstr "Next"
+msgstr "Далей"
 
 msgctxt "#19032"
 msgid "Timeline"
-msgstr "Timeline"
+msgstr "Часавая шкала"
 
 msgctxt "#19033"
 msgid "Information"
@@ -6076,7 +6076,7 @@ msgstr "This recording cannot be played. Check the log for details."
 
 msgctxt "#19037"
 msgid "Show signal quality"
-msgstr "Show signal quality"
+msgstr "Паказваць якасьць сыгналу"
 
 msgctxt "#19038"
 msgid "Not supported by the PVR backend."
@@ -6100,7 +6100,7 @@ msgstr "Are you sure you want to rename this timer?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr "Recording"
+msgstr "Запіс"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
@@ -6148,7 +6148,7 @@ msgstr "Hide channel"
 
 msgctxt "#19055"
 msgid "No information available"
-msgstr "No information available"
+msgstr "Зьвесткі недаступныя"
 
 msgctxt "#19056"
 msgid "New timer"
@@ -6188,7 +6188,7 @@ msgstr "Go to end"
 
 msgctxt "#19065"
 msgid "Default EPG window"
-msgstr "Default EPG window"
+msgstr "Стандартнае вакно EPG"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6204,15 +6204,15 @@ msgstr "EPG"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "EPG update interval"
+msgstr "Прамежак абнаўленьня EPG"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "Do not store the EPG in the database"
+msgstr "Не захоўваць EPG у базу"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
-msgstr "Delay channel switch"
+msgstr "Затрымаць пераключэньне каналу"
 
 msgctxt "#19074"
 msgid "Active:"
@@ -6312,7 +6312,7 @@ msgstr "Enter the name for the recording"
 
 msgctxt "#19098"
 msgid "Warning"
-msgstr "Warning"
+msgstr "Увага"
 
 msgctxt "#19102"
 msgid "Please switch to another channel."
@@ -6548,39 +6548,39 @@ msgstr "PVR information"
 
 msgctxt "#19167"
 msgid "Scan for missing icons"
-msgstr "Scan for missing icons"
+msgstr "Сканаваць для адсутных значкаў"
 
 msgctxt "#19169"
 msgid "Hide video information box"
-msgstr "Hide video information box"
+msgstr "Хаваць акно відэа інфармацыі"
 
 msgctxt "#19170"
 msgid "Timeout when starting playback"
-msgstr "Timeout when starting playback"
+msgstr "Тэрмін чаканьня пачатку прайграваньня"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
-msgstr "Start playback minimized"
+msgstr "Пачынаць прайграваньне ўвакне"
 
 msgctxt "#19172"
 msgid "Instant recording duration"
-msgstr "Instant recording duration"
+msgstr "Працягласьць імгненнага запісу"
 
 msgctxt "#19173"
 msgid "Default recording priority"
-msgstr "Default recording priority"
+msgstr "Стандартны прыярытэт запісу"
 
 msgctxt "#19174"
 msgid "Default recording lifetime"
-msgstr "Default recording lifetime"
+msgstr "Стандартны час захоўваньня запісу"
 
 msgctxt "#19175"
 msgid "Margin at the start of a recording"
-msgstr "Margin at the start of a recording"
+msgstr "Запас напачатку запісу"
 
 msgctxt "#19176"
 msgid "Margin at the end of a recording"
-msgstr "Margin at the end of a recording"
+msgstr "Запас напрыканцы запісу"
 
 msgctxt "#19177"
 msgid "Playback"
@@ -6600,7 +6600,7 @@ msgstr "ТВ"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr "Menu/OSD"
+msgstr "Мэню/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
@@ -6608,27 +6608,27 @@ msgstr "Days to display in the EPG"
 
 msgctxt "#19184"
 msgid "Channel information duration"
-msgstr "Channel information duration"
+msgstr "Паказваць зьвесткі пра канал на працягу"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr "Reset the PVR database"
+msgstr "Скінуць базу PVR"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "All data in the PVR database is being erased"
+msgstr "Усе зьвесткі з базы PVR будуць выдаленыя"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Reset the EPG database"
+msgstr "Скінуць базу EPG"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr "EPG is being reset"
+msgstr "EPG зараз скінецца"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
-msgstr "Continue last channel on startup"
+msgstr "Паказваць апошні канал на старце"
 
 msgctxt "#19190"
 msgid "Minimized"
@@ -6788,11 +6788,11 @@ msgstr "Запіс выдалены"
 
 msgctxt "#19229"
 msgid "Close channel OSD after switching channels"
-msgstr "Close channel OSD after switching channels"
+msgstr "Зачыніць OSD каналу пасьля пераключэньня каналаў"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
-msgstr "Prevent EPG updates while playing a TV stream"
+msgstr "Прадухіляць абнаўленьні EPG падчас прайграваньня плыні"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
@@ -6804,11 +6804,11 @@ msgstr "Выдаліць вынікі пошуку"
 
 msgctxt "#19233"
 msgid "Display a notification on timer updates"
-msgstr "Display a notification on timer updates"
+msgstr "Паказваць паведамленьне пра абнаўленьне таймэру"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Use backend channels numbers (only works with 1 enabled PVR addon)"
+msgstr "Нумарамі каналаў прыймача (толькі з 1 дадаткам PVR)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6848,23 +6848,23 @@ msgstr "in order to use the PVR functionality."
 
 msgctxt "#19244"
 msgid "Backend idle time"
-msgstr "Backend idle time"
+msgstr "Час чаканьня цюнеру"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
-msgstr "Set wakeup command (cmd [timestamp])"
+msgstr "Вызначыць каманду цюнеру каб прачнуцца (cmd [час])"
 
 msgctxt "#19246"
 msgid "Wakeup before recording"
-msgstr "Wakeup before recording"
+msgstr "Прачнуцца перад запісам"
 
 msgctxt "#19247"
 msgid "Daily wakeup"
-msgstr "Daily wakeup"
+msgstr "Прачынацца штодзённа"
 
 msgctxt "#19248"
 msgid "Daily wakeup time (HH:MM:SS)"
-msgstr "Daily wakeup time (HH:MM:SS)"
+msgstr "Прачынацца штодзённа а (ГД:ХВ:СК)"
 
 msgctxt "#19249"
 msgid "Filter channels"
@@ -6908,11 +6908,11 @@ msgstr "Разблякаваць канал"
 
 msgctxt "#19259"
 msgid "Parental control"
-msgstr "Parental control"
+msgstr "Бацькоўскі кантроль"
 
 msgctxt "#19260"
 msgid "Unlock duration"
-msgstr "Unlock duration"
+msgstr "Працягласьць разблякаваньня"
 
 msgctxt "#19261"
 msgid "Change PIN"
@@ -6920,11 +6920,11 @@ msgstr "Зьмяніць PIN"
 
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
-msgstr "Parental control. Enter PIN:"
+msgstr "Бацькоўскі кантроль. Увядзіце PIN:"
 
 msgctxt "#19263"
 msgid "Locked channel. Enter PIN:"
-msgstr "Locked channel. Enter PIN:"
+msgstr "Зяблякаваны канал. Увядзіце PIN:"
 
 msgctxt "#19264"
 msgid "Incorrect PIN"
@@ -6936,19 +6936,19 @@ msgstr "Уведзены нумар PIN - няправільны."
 
 msgctxt "#19266"
 msgid "Parental locked"
-msgstr "Parental locked"
+msgstr "Бацькоўскае блякаваньне"
 
 msgctxt "#19267"
 msgid "Parental locked:"
-msgstr "Parental locked:"
+msgstr "Бацькоўскае блякаваньне:"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
-msgstr "Do not show 'no information available' labels"
+msgstr "Не паказваць цэтлік 'зьвесткі недаступныя'"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr "Do not show 'connection lost' warnings"
+msgstr "Не паказваць папярэджаньне \"злучэньне згублена\""
 
 msgctxt "#19270"
 msgid "* All recordings"
@@ -6988,163 +6988,167 @@ msgstr "Recording error"
 
 msgctxt "#19279"
 msgid "Client specific"
-msgstr "Client specific"
+msgstr "Спэцыфічныя"
 
 msgctxt "#19280"
 msgid "Client specific settings"
-msgstr "Client specific settings"
+msgstr "Спэцыфічныя для кліента налады"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Пацьвярджаць зьмену каналу націсканьнем OK"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
-msgstr "Other/Unknown"
+msgstr "Іншая / Невядомыя"
 
 msgctxt "#19500"
 msgid "Movie/Drama"
-msgstr "Movie/Drama"
+msgstr "Фільм / Драма"
 
 msgctxt "#19501"
 msgid "Detective/Thriller"
-msgstr "Detective/Thriller"
+msgstr "Дэтэктыў / Трылер"
 
 msgctxt "#19502"
 msgid "Adventure/Western/War"
-msgstr "Adventure/Western/War"
+msgstr "Прыгоды / Вэстэрны / Вайсковыя"
 
 msgctxt "#19503"
 msgid "Science Fiction/Fantasy/Horror"
-msgstr "Science Fiction/Fantasy/Horror"
+msgstr "Фантастыка / Фэнтэзі / Жахі"
 
 msgctxt "#19504"
 msgid "Comedy"
-msgstr "Comedy"
+msgstr "Камэдыі"
 
 msgctxt "#19505"
 msgid "Soap/Melodrama/Folkloric"
-msgstr "Soap/Melodrama/Folkloric"
+msgstr "Мыльныя / Мэлядрамы / Фальклорныя"
 
 msgctxt "#19506"
 msgid "Romance"
-msgstr "Romance"
+msgstr "Рамантычныя"
 
 msgctxt "#19507"
 msgid "Serious/Classical/Religious/Historical Movie/Drama"
-msgstr "Serious/Classical/Religious/Historical Movie/Drama"
+msgstr "Сур'ёзныя / Клясычныя / Рэлігійныя / Гістарычныя фільмы / драмы"
 
 msgctxt "#19508"
 msgid "Adult Movie/Drama"
-msgstr "Adult Movie/Drama"
+msgstr "Фільмы для дарослых / Драмы"
 
 msgctxt "#19516"
 msgid "News/Current Affairs"
-msgstr "News/Current Affairs"
+msgstr "Навіны / Актуальныя падзеі"
 
 msgctxt "#19517"
 msgid "News/Weather Report"
-msgstr "News/Weather Report"
+msgstr "Навіны / Прагнозы надвор'я"
 
 msgctxt "#19518"
 msgid "News Magazine"
-msgstr "News Magazine"
+msgstr "Часопісы навінаў"
 
 msgctxt "#19519"
 msgid "Documentary"
-msgstr "Documentary"
+msgstr "Дакумэнтальныя фільмы"
 
 msgctxt "#19520"
 msgid "Discussion/Interview/Debate"
-msgstr "Discussion/Interview/Debate"
+msgstr "Дыскусіі / Інтэрвію / Дэбаты"
 
 msgctxt "#19532"
 msgid "Show/Game Show"
-msgstr "Show/Game Show"
+msgstr "Шоў / Гульнявыя шоў"
 
 msgctxt "#19533"
 msgid "Game Show/Quiz/Contest"
-msgstr "Game Show/Quiz/Contest"
+msgstr "Гульні / Віктарыны / Конкурсы"
 
 msgctxt "#19534"
 msgid "Variety Show"
-msgstr "Variety Show"
+msgstr "Вар'етэ"
 
 msgctxt "#19535"
 msgid "Talk Show"
-msgstr "Talk Show"
+msgstr "Гутарковыя шоў"
 
 msgctxt "#19548"
 msgid "Sports"
-msgstr "Sports"
+msgstr "Спартыўныя"
 
 msgctxt "#19549"
 msgid "Special Event"
-msgstr "Special Event"
+msgstr "Спэцыяльныя падзеі"
 
 msgctxt "#19550"
 msgid "Sport Magazine"
-msgstr "Sport Magazine"
+msgstr "Спартыўны часопіс"
 
 msgctxt "#19551"
 msgid "Football"
-msgstr "Football"
+msgstr "Футбол"
 
 msgctxt "#19552"
 msgid "Tennis/Squash"
-msgstr "Tennis/Squash"
+msgstr "Тэніс / Сквош"
 
 msgctxt "#19553"
 msgid "Team Sports"
-msgstr "Team Sports"
+msgstr "Камандны спорт"
 
 msgctxt "#19554"
 msgid "Athletics"
-msgstr "Athletics"
+msgstr "Атлетыка"
 
 msgctxt "#19555"
 msgid "Motor Sport"
-msgstr "Motor Sport"
+msgstr "Аўтаспорт"
 
 msgctxt "#19556"
 msgid "Water Sport"
-msgstr "Water Sport"
+msgstr "Водны спорт"
 
 msgctxt "#19557"
 msgid "Winter Sports"
-msgstr "Winter Sports"
+msgstr "Зімовы спорт"
 
 msgctxt "#19558"
 msgid "Equestrian"
-msgstr "Equestrian"
+msgstr "Конны спорт"
 
 msgctxt "#19559"
 msgid "Martial Sports"
-msgstr "Martial Sports"
+msgstr "Баявы спорт"
 
 msgctxt "#19564"
 msgid "Children's/Youth Programmes"
-msgstr "Children's/Youth Programmes"
+msgstr "Дзіцячыя / Юнацкія праграмы"
 
 msgctxt "#19565"
 msgid "Pre-school Children's Programmes"
-msgstr "Pre-school Children's Programmes"
+msgstr "Праграмы для дашкольнікаў"
 
 msgctxt "#19566"
 msgid "Entertainment Programmes for 6 to 14"
-msgstr "Entertainment Programmes for 6 to 14"
+msgstr "Забаўляльныя праграмы ад 6 да 14"
 
 msgctxt "#19567"
 msgid "Entertainment Programmes for 10 to 16"
-msgstr "Entertainment Programmes for 10 to 16"
+msgstr "Забаўляльныя праграмы ад 10 да 16"
 
 msgctxt "#19568"
 msgid "Informational/Educational/School Programme"
-msgstr "Informational/Educational/School Programme"
+msgstr "Інфармацыйныя / Адукацыйныя / Школьныя праграмы"
 
 msgctxt "#19569"
 msgid "Cartoons/Puppets"
-msgstr "Cartoons/Puppets"
+msgstr "Мультфільмы / Лялечныя шоў"
 
 msgctxt "#19580"
 msgid "Music/Ballet/Dance"
-msgstr "Music/Ballet/Dance"
+msgstr "Музыка / Балет / Танцы"
 
 msgctxt "#19581"
 msgid "Rock/Pop"
@@ -7152,51 +7156,51 @@ msgstr "Rock/Pop"
 
 msgctxt "#19582"
 msgid "Serious/Classical Music"
-msgstr "Serious/Classical Music"
+msgstr "Сур'ёзная / Клясычная музыка"
 
 msgctxt "#19583"
 msgid "Folk/Traditional Music"
-msgstr "Folk/Traditional Music"
+msgstr "Народная / Традыцыйная музыка"
 
 msgctxt "#19584"
 msgid "Musical/Opera"
-msgstr "Musical/Opera"
+msgstr "М'юзыклы / Опэра"
 
 msgctxt "#19585"
 msgid "Ballet"
-msgstr "Ballet"
+msgstr "Балет"
 
 msgctxt "#19596"
 msgid "Arts/Culture"
-msgstr "Arts/Culture"
+msgstr "Мастацтва / Культура"
 
 msgctxt "#19597"
 msgid "Performing Arts"
-msgstr "Performing Arts"
+msgstr "Выканальніцкае мастацтва"
 
 msgctxt "#19598"
 msgid "Fine Arts"
-msgstr "Fine Arts"
+msgstr "Выяўленчае мастацтва"
 
 msgctxt "#19599"
 msgid "Religion"
-msgstr "Religion"
+msgstr "Рэлігія"
 
 msgctxt "#19600"
 msgid "Popular Culture/Traditional Arts"
-msgstr "Popular Culture/Traditional Arts"
+msgstr "Папулярная культура / Традыцыйнае мастацтва"
 
 msgctxt "#19601"
 msgid "Literature"
-msgstr "Literature"
+msgstr "Літаратура"
 
 msgctxt "#19602"
 msgid "Film/Cinema"
-msgstr "Film/Cinema"
+msgstr "Кіно"
 
 msgctxt "#19603"
 msgid "Experimental Film/Video"
-msgstr "Experimental Film/Video"
+msgstr "Экспэрымэнтальнае кіно / відэа"
 
 msgctxt "#19604"
 msgid "Broadcasting/Press"
@@ -7420,7 +7424,7 @@ msgstr "No thumb"
 
 msgctxt "#20019"
 msgid "Choose thumbnail"
-msgstr "Choose thumbnail"
+msgstr "Абраць мініятуру"
 
 msgctxt "#20023"
 msgid "Conflict"
@@ -7796,7 +7800,7 @@ msgstr "Log off"
 
 msgctxt "#20128"
 msgid "Go to root"
-msgstr "Go to root"
+msgstr "Перайсьці да пачатку"
 
 msgctxt "#20129"
 msgid "Weave"
@@ -8068,11 +8072,11 @@ msgstr "Change scraper"
 
 msgctxt "#20196"
 msgid "Export music library"
-msgstr "Export music library"
+msgstr "Экспартаваць бібліятэку музыкі"
 
 msgctxt "#20197"
 msgid "Import music library"
-msgstr "Import music library"
+msgstr "Імпартаваць бібліятэку музыкі"
 
 msgctxt "#20198"
 msgid "No artist found!"
@@ -8202,6 +8206,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Sort by: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Scanning movies using %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Scanning music videos using %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Scanning tvshows using %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Scanning artists using %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Scanning albums using %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Play part..."
@@ -8224,15 +8248,15 @@ msgstr "Browse for destination"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr "Movies are in separate folders that match the movie title"
+msgstr "Фільмы ў асобных каталёгах, якія адпавядаюць назвам фільмаў"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
-msgstr "Use folder names for lookups"
+msgstr "Выкарыстоўваць назвы каталёгаў для пошуку"
 
 msgctxt "#20331"
 msgid "File"
-msgstr "File"
+msgstr "Файл"
 
 msgctxt "#20332"
 msgid "Use file or folder names in lookups?"
@@ -8240,11 +8264,11 @@ msgstr "Use file or folder names in lookups?"
 
 msgctxt "#20333"
 msgid "Set content"
-msgstr "Set content"
+msgstr "Вызначыць зьмесьціва"
 
 msgctxt "#20334"
 msgid "Folder"
-msgstr "Folder"
+msgstr "Каталёг"
 
 msgctxt "#20335"
 msgid "Look for content recursively?"
@@ -8256,15 +8280,15 @@ msgstr "Unlock sources"
 
 msgctxt "#20337"
 msgid "Actor"
-msgstr "Actor"
+msgstr "Актор"
 
 msgctxt "#20338"
 msgid "Movie"
-msgstr "Movie"
+msgstr "Фільм"
 
 msgctxt "#20339"
 msgid "Director"
-msgstr "Director"
+msgstr "Рэжысэр"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
@@ -8276,15 +8300,15 @@ msgstr "this path from the XBMC library?"
 
 msgctxt "#20342"
 msgid "Movies"
-msgstr "Movies"
+msgstr "Фільмы"
 
 msgctxt "#20343"
 msgid "TV shows"
-msgstr "TV shows"
+msgstr "ТВ шоў"
 
 msgctxt "#20344"
 msgid "This directory contains"
-msgstr "This directory contains"
+msgstr "Гэты каталёг утрымлівае"
 
 msgctxt "#20345"
 msgid "Run automated scan"
@@ -8292,7 +8316,7 @@ msgstr "Run automated scan"
 
 msgctxt "#20346"
 msgid "Scan recursively"
-msgstr "Scan recursively"
+msgstr "Сканаваць рэкурсіўна"
 
 msgctxt "#20347"
 msgid "as"
@@ -8344,11 +8368,11 @@ msgstr "Season %i"
 
 msgctxt "#20359"
 msgid "Episode"
-msgstr "Episode"
+msgstr "Эпізод"
 
 msgctxt "#20360"
 msgid "Episodes"
-msgstr "Episodes"
+msgstr "Эпізоды"
 
 msgctxt "#20361"
 msgid "Loading episode details"
@@ -8364,11 +8388,11 @@ msgstr "Remove TV show from library"
 
 msgctxt "#20364"
 msgid "TV show"
-msgstr "TV show"
+msgstr "ТВ шоў"
 
 msgctxt "#20365"
 msgid "Episode plot"
-msgstr "Episode plot"
+msgstr "Сюжэт эпізоду"
 
 msgctxt "#20366"
 msgid "* All seasons"
@@ -8392,19 +8416,19 @@ msgstr "* Hidden to prevent spoilers *"
 
 msgctxt "#20371"
 msgid "Set season thumb"
-msgstr "Set season thumb"
+msgstr "Прызначыць мініятуру сэзону"
 
 msgctxt "#20372"
 msgid "Season image"
-msgstr "Season image"
+msgstr "Выява сэзону"
 
 msgctxt "#20373"
 msgid "Season"
-msgstr "Season"
+msgstr "Сэзон"
 
 msgctxt "#20374"
 msgid "Downloading movie information"
-msgstr "Downloading movie information"
+msgstr "Зладаваць зьвесткі пра фільм"
 
 msgctxt "#20375"
 msgid "Unassign content"
@@ -8412,7 +8436,7 @@ msgstr "Unassign content"
 
 msgctxt "#20376"
 msgid "Original title"
-msgstr "Original title"
+msgstr "Зыходная назва"
 
 msgctxt "#20377"
 msgid "Refresh TV show information"
@@ -8424,11 +8448,11 @@ msgstr "Refresh info for all episodes?"
 
 msgctxt "#20379"
 msgid "Selected folder contains a single TV show"
-msgstr "Selected folder contains a single TV show"
+msgstr "Абраны каталёг утрымлівае адно ТВ шоў"
 
 msgctxt "#20380"
 msgid "Exclude selected folder from scans"
-msgstr "Exclude selected folder from scans"
+msgstr "Выключыць абраныя каталёгі з сканаваньня"
 
 msgctxt "#20381"
 msgid "Specials"
@@ -8440,7 +8464,7 @@ msgstr "Automatically grab season thumbs"
 
 msgctxt "#20383"
 msgid "Selected folder contains a single video"
-msgstr "Selected folder contains a single video"
+msgstr "Абраны каталёг утрымлівае адно відэа"
 
 msgctxt "#20384"
 msgid "Link to TV show"
@@ -8464,7 +8488,7 @@ msgstr "Studios"
 
 msgctxt "#20389"
 msgid "Music videos"
-msgstr "Music videos"
+msgstr "Музычныя відэа"
 
 msgctxt "#20390"
 msgid "Recently added music videos"
@@ -8472,7 +8496,7 @@ msgstr "Recently added music videos"
 
 msgctxt "#20391"
 msgid "Music video"
-msgstr "Music video"
+msgstr "Музычнае відэа"
 
 msgctxt "#20392"
 msgid "Remove music video from library"
@@ -8488,7 +8512,7 @@ msgstr "Loading music video information"
 
 msgctxt "#20395"
 msgid "Mixed"
-msgstr "Mixed"
+msgstr "Зьмяшаны"
 
 msgctxt "#20396"
 msgid "Go to albums by artist"
@@ -8512,7 +8536,7 @@ msgstr "Go to music videos by artist"
 
 msgctxt "#20401"
 msgid "Play music video"
-msgstr "Play music video"
+msgstr "Граць музычнае відэа"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
@@ -8628,7 +8652,7 @@ msgstr "Overwrite old files?"
 
 msgctxt "#20432"
 msgid "Exclude path from library updates"
-msgstr "Exclude path from library updates"
+msgstr "Выключыць шлях з абнаўленьняў бібліятэкі"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
@@ -8936,55 +8960,55 @@ msgstr "Use tween animations"
 
 msgctxt "#21400"
 msgid "contains"
-msgstr "contains"
+msgstr "утрымлівае"
 
 msgctxt "#21401"
 msgid "does not contain"
-msgstr "does not contain"
+msgstr "не ўтрымлівае"
 
 msgctxt "#21402"
 msgid "is"
-msgstr "is"
+msgstr "супадае з"
 
 msgctxt "#21403"
 msgid "is not"
-msgstr "is not"
+msgstr "не супадае з"
 
 msgctxt "#21404"
 msgid "starts with"
-msgstr "starts with"
+msgstr "пачынаецца з "
 
 msgctxt "#21405"
 msgid "ends with"
-msgstr "ends with"
+msgstr "сканчаецца на"
 
 msgctxt "#21406"
 msgid "greater than"
-msgstr "greater than"
+msgstr "большы за"
 
 msgctxt "#21407"
 msgid "less than"
-msgstr "less than"
+msgstr "меншы за"
 
 msgctxt "#21408"
 msgid "after"
-msgstr "after"
+msgstr "пасьля"
 
 msgctxt "#21409"
 msgid "before"
-msgstr "before"
+msgstr "перад"
 
 msgctxt "#21410"
 msgid "in the last"
-msgstr "in the last"
+msgstr "у апошніх"
 
 msgctxt "#21411"
 msgid "not in the last"
-msgstr "not in the last"
+msgstr "не ў апошніх"
 
 msgctxt "#21412"
 msgid "Scrapers"
-msgstr "Scrapers"
+msgstr "Скрэпэры"
 
 msgctxt "#21413"
 msgid "Default movie scraper"
@@ -9016,71 +9040,71 @@ msgstr "Value to match"
 
 msgctxt "#21421"
 msgid "Smart playlist rule"
-msgstr "Smart playlist rule"
+msgstr "Правілы спрытнага сьпісу прайграваньня"
 
 msgctxt "#21422"
 msgid "Match items where"
-msgstr "Match items where"
+msgstr "Супадзеньне складніку"
 
 msgctxt "#21423"
 msgid "New rule..."
-msgstr "New rule..."
+msgstr "Новае правіла..."
 
 msgctxt "#21424"
 msgid "Items must match"
-msgstr "Items must match"
+msgstr "Складнік павінен адпавядаць"
 
 msgctxt "#21425"
 msgid "all of the rules"
-msgstr "all of the rules"
+msgstr "усім правілам"
 
 msgctxt "#21426"
 msgid "one or more of the rules"
-msgstr "one or more of the rules"
+msgstr "аднаму альбо некалькім правілам"
 
 msgctxt "#21427"
 msgid "Limit to"
-msgstr "Limit to"
+msgstr "Абмежавана"
 
 msgctxt "#21428"
 msgid "No limit"
-msgstr "No limit"
+msgstr "Без абмежаваньняў"
 
 msgctxt "#21429"
 msgid "Order by"
-msgstr "Order by"
+msgstr "Упарадкавана па"
 
 msgctxt "#21430"
 msgid "ascending"
-msgstr "ascending"
+msgstr "наўпрост"
 
 msgctxt "#21431"
 msgid "descending"
-msgstr "descending"
+msgstr "адваротна"
 
 msgctxt "#21432"
 msgid "Edit smart playlist"
-msgstr "Edit smart playlist"
+msgstr "Рэдагаваць спрытны сьпіс прайграваньня"
 
 msgctxt "#21433"
 msgid "Name of the playlist"
-msgstr "Name of the playlist"
+msgstr "Назва сьпісу прайграваньня"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Find items where"
+msgstr "Дзе шукаць складнікі"
 
 msgctxt "#21435"
 msgid "Edit"
-msgstr "Edit"
+msgstr "Рэдагаваць"
 
 msgctxt "#21436"
 msgid "%i items"
-msgstr "%i items"
+msgstr "%i складнікаў"
 
 msgctxt "#21437"
 msgid "New smart playlist..."
-msgstr "New smart playlist..."
+msgstr "Новы спрытны сьпіс прайграваньня"
 
 msgctxt "#21438"
 msgid "%c Drive"
@@ -9158,6 +9182,10 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr "External storage"
 
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Watched episode count"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Месца субтытраў"
@@ -9196,19 +9224,19 @@ msgstr "%s to %s"
 
 msgctxt "#21800"
 msgid "File name"
-msgstr "File name"
+msgstr "Назва файлу"
 
 msgctxt "#21801"
 msgid "File path"
-msgstr "File path"
+msgstr "Каталёг файлу"
 
 msgctxt "#21802"
 msgid "File size"
-msgstr "File size"
+msgstr "Памер файлу"
 
 msgctxt "#21803"
 msgid "File date/time"
-msgstr "File date/time"
+msgstr "Дата/час файлу"
 
 msgctxt "#21804"
 msgid "Slide index"
@@ -9216,23 +9244,23 @@ msgstr "Slide index"
 
 msgctxt "#21805"
 msgid "Resolution"
-msgstr "Resolution"
+msgstr "Разрознасьць"
 
 msgctxt "#21806"
 msgid "Comment"
-msgstr "Comment"
+msgstr "Камэнтар"
 
 msgctxt "#21807"
 msgid "Colour/B&W"
-msgstr "Colour/B&W"
+msgstr "Каляровы/Чорна-белы"
 
 msgctxt "#21808"
 msgid "JPEG process"
-msgstr "JPEG process"
+msgstr "Працэс JPEG"
 
 msgctxt "#21820"
 msgid "Date/Time"
-msgstr "Date/Time"
+msgstr "Дата/Час"
 
 msgctxt "#21821"
 msgid "Description"
@@ -9240,63 +9268,63 @@ msgstr "Апісаньне"
 
 msgctxt "#21822"
 msgid "Camera make"
-msgstr "Camera make"
+msgstr "Зроблены камэрай"
 
 msgctxt "#21823"
 msgid "Camera model"
-msgstr "Camera model"
+msgstr "Мадэль камэры"
 
 msgctxt "#21824"
 msgid "EXIF comment"
-msgstr "EXIF comment"
+msgstr "Камэнтар EXIF"
 
 msgctxt "#21825"
 msgid "Firmware"
-msgstr "Firmware"
+msgstr "Прашыўка"
 
 msgctxt "#21826"
 msgid "Aperture"
-msgstr "Aperture"
+msgstr "Дыяфрагма"
 
 msgctxt "#21827"
 msgid "Focal length"
-msgstr "Focal length"
+msgstr "Фокусная адлегласьць"
 
 msgctxt "#21828"
 msgid "Focus distance"
-msgstr "Focus distance"
+msgstr "Фокус на адлегласьці"
 
 msgctxt "#21829"
 msgid "Exposure"
-msgstr "Exposure"
+msgstr "Насьвятленьне"
 
 msgctxt "#21830"
 msgid "Exposure time"
-msgstr "Exposure time"
+msgstr "Час насьвятленьня"
 
 msgctxt "#21831"
 msgid "Exposure bias"
-msgstr "Exposure bias"
+msgstr "Ускоснае насьвятленьне"
 
 msgctxt "#21832"
 msgid "Exposure mode"
-msgstr "Exposure mode"
+msgstr "Рэжым насьвятленьня"
 
 msgctxt "#21833"
 msgid "Flash used"
-msgstr "Flash used"
+msgstr "Фотаўспышка"
 
 msgctxt "#21834"
 msgid "White-balance"
-msgstr "White-balance"
+msgstr "Балянс белага"
 
 msgctxt "#21835"
 msgid "Light source"
-msgstr "Light source"
+msgstr "Крыніца сьвятла"
 
 msgctxt "#21836"
 msgid "Metering mode"
-msgstr "Metering mode"
+msgstr "Рэжым вымярэньня"
 
 msgctxt "#21837"
 msgid "ISO"
@@ -9304,27 +9332,27 @@ msgstr "ISO"
 
 msgctxt "#21838"
 msgid "Digital zoom"
-msgstr "Digital zoom"
+msgstr "Лічбавае павілічэньне"
 
 msgctxt "#21839"
 msgid "CCD width"
-msgstr "CCD width"
+msgstr "Шырыня CCD"
 
 msgctxt "#21840"
 msgid "GPS latitude"
-msgstr "GPS latitude"
+msgstr "Шырата па GPS"
 
 msgctxt "#21841"
 msgid "GPS longitude"
-msgstr "GPS longitude"
+msgstr "Даўжыня па GPS"
 
 msgctxt "#21842"
 msgid "GPS altitude"
-msgstr "GPS altitude"
+msgstr "Вышыня па GPS"
 
 msgctxt "#21843"
 msgid "Orientation"
-msgstr "Orientation"
+msgstr "Арыентацыя"
 
 msgctxt "#21860"
 msgid "Supplemental categories"
@@ -9484,7 +9512,7 @@ msgstr "Years active"
 
 msgctxt "#21899"
 msgid "Label"
-msgstr "Label"
+msgstr "Лэйбл"
 
 msgctxt "#21900"
 msgid "Born/Formed"
@@ -9508,11 +9536,11 @@ msgstr "%2.3fs"
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr "Delayed by: %2.3fs"
+msgstr "Затрымка ў: %2.3fs"
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr "Ahead by: %2.3fs"
+msgstr "Наперадзе на: %2.3fs"
 
 msgctxt "#22006"
 msgid "Subtitle offset"
@@ -9532,11 +9560,11 @@ msgstr "OpenGL version:"
 
 msgctxt "#22010"
 msgid "GPU temperature:"
-msgstr "GPU temperature:"
+msgstr "Тэмпэратура GPU:"
 
 msgctxt "#22011"
 msgid "CPU temperature:"
-msgstr "CPU temperature:"
+msgstr "Тэмпэратура CPU:"
 
 msgctxt "#22012"
 msgid "Total memory"
@@ -9740,7 +9768,7 @@ msgstr "Script"
 
 msgctxt "#24010"
 msgid "Visualization"
-msgstr "Visualization"
+msgstr "Візуалізацыя"
 
 msgctxt "#24011"
 msgid "Add-on repository"
@@ -9764,11 +9792,11 @@ msgstr "Music video information"
 
 msgctxt "#24016"
 msgid "Album information"
-msgstr "Album information"
+msgstr "Зьвесткі пра альбом"
 
 msgctxt "#24017"
 msgid "Artist information"
-msgstr "Artist information"
+msgstr "Зьвесткі пра артыста"
 
 msgctxt "#24018"
 msgid "Services"
@@ -9868,7 +9896,7 @@ msgstr "Dependencies not met"
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
-msgstr "Add-on does not have the correct structure"
+msgstr "Дадатак мае некарэктную структуру"
 
 msgctxt "#24046"
 msgid "%s is used by the following installed add-on(s)"
@@ -9976,7 +10004,7 @@ msgstr "Патрабуецца дадатак"
 
 msgctxt "#24080"
 msgid "Try to reconnect?"
-msgstr "Try to reconnect?"
+msgstr "Паспрабаваць злучыцца зноў ?"
 
 msgctxt "#24089"
 msgid "Add-on restarts"
@@ -10152,11 +10180,11 @@ msgstr "Precipitation"
 
 msgctxt "#33022"
 msgid "Precip"
-msgstr "Precip"
+msgstr "Ападкі"
 
 msgctxt "#33023"
 msgid "Humid"
-msgstr "Humid"
+msgstr "Вільготнасьць"
 
 msgctxt "#33024"
 msgid "Feels"
@@ -10172,11 +10200,11 @@ msgstr "Departure from normal"
 
 msgctxt "#33027"
 msgid "Sunrise"
-msgstr "Sunrise"
+msgstr "Усход"
 
 msgctxt "#33028"
 msgid "Sunset"
-msgstr "Sunset"
+msgstr "Захад"
 
 msgctxt "#33029"
 msgid "Details"
@@ -10184,7 +10212,7 @@ msgstr "Details"
 
 msgctxt "#33030"
 msgid "Outlook"
-msgstr "Outlook"
+msgstr "Чакаецца"
 
 msgctxt "#33031"
 msgid "Coverflow"
@@ -10200,7 +10228,7 @@ msgstr "Map list %s category"
 
 msgctxt "#33034"
 msgid "36 Hour"
-msgstr "36 Hour"
+msgstr "36 гадзінаў"
 
 msgctxt "#33035"
 msgid "Maps"
@@ -10224,7 +10252,7 @@ msgstr "Alert"
 
 msgctxt "#33050"
 msgid "Alerts"
-msgstr "Alerts"
+msgstr "Перасьцярогі"
 
 msgctxt "#33051"
 msgid "Choose Your"
@@ -10240,7 +10268,7 @@ msgstr "Configure the"
 
 msgctxt "#33054"
 msgid "Seasons"
-msgstr "Seasons"
+msgstr "Сэзоны"
 
 msgctxt "#33055"
 msgid "Use your"
@@ -10316,7 +10344,7 @@ msgstr "View Changelog"
 
 msgctxt "#33074"
 msgid "This version of %s requires an"
-msgstr "This version of %s requires an"
+msgstr "Гэтая вэрсія %s патрабуе"
 
 msgctxt "#33075"
 msgid "XBMC revision of %s or greater to run."
@@ -10460,11 +10488,11 @@ msgstr "Ніколі"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
-msgstr "Can't find a next item to play"
+msgstr "Ня знойдзена наступнага складніка для прайграваньня"
 
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
-msgstr "Can't find a previous item to play"
+msgstr "Ня знойдзена папярэдняга складніка для прайграваньня"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
@@ -10532,11 +10560,11 @@ msgstr "There are no settings available\nfor this peripheral."
 
 msgctxt "#35005"
 msgid "New device configured"
-msgstr "New device configured"
+msgstr "Новая прылада сканфігураваная"
 
 msgctxt "#35006"
 msgid "Device removed"
-msgstr "Device removed"
+msgstr "Прылада выдаленая"
 
 msgctxt "#35007"
 msgid "Keymap to use for this device"
@@ -10553,10 +10581,6 @@ msgstr "Do not use the custom keymap for this device"
 msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Enable joystick and gamepad support"
-
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Disable joystick when iMON is present"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10628,7 +10652,7 @@ msgstr "Could not initialise the CEC adapter. Please check your settings."
 
 msgctxt "#36015"
 msgid "HDMI port number"
-msgstr "HDMI port number"
+msgstr "Нумар порту HDMI"
 
 msgctxt "#36016"
 msgid "Connected"
@@ -10644,7 +10668,7 @@ msgstr "Use the TV's language setting"
 
 msgctxt "#36019"
 msgid "Connected to HDMI device"
-msgstr "Connected to HDMI device"
+msgstr "Далучана да HDMI прылады"
 
 msgctxt "#36020"
 msgid "Make XBMC the active source when starting"
@@ -10660,11 +10684,11 @@ msgstr "COM port (leave empty unless needed)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr "Configuration updated"
+msgstr "Канфігурацыя зьмененая"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
-msgstr "Failed to set the new configuration. Please check your settings."
+msgstr "Не атрымалася ўсталяваць новую канфігурацыю. Спраўдзіце вашыя налады."
 
 msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
@@ -10688,11 +10712,11 @@ msgstr "When the TV is switched off"
 
 msgctxt "#36030"
 msgid "Connection lost"
-msgstr "Connection lost"
+msgstr "Злучэньне згублена"
 
 msgctxt "#36031"
 msgid "This user does not have permissions to open the CEC adapter"
-msgstr "This user does not have permissions to open the CEC adapter"
+msgstr "Карыстальнік ня мае дазволу на адчыненьне CEC адаптэра"
 
 msgctxt "#36032"
 msgid "The port is busy. Only one program can access the CEC adapter"
@@ -10700,7 +10724,7 @@ msgstr "The port is busy. Only one program can access the CEC adapter"
 
 msgctxt "#36033"
 msgid "Pause playback when switching to another source"
-msgstr "Pause playback when switching to another source"
+msgstr "Прыпыняць прайграваньне падчас пераключэньня на іншую крыніцу"
 
 msgctxt "#36035"
 msgid "Always"
@@ -10724,4 +10748,8 @@ msgstr "TV and AVR device (explicit)"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
-msgstr "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Гэта вэрсія інтэрфэйсу libCEC не падтрымліваецца. %x меньшая чамся падтрымлівае XBMC (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Item folder"

@@ -56,6 +56,13 @@ namespace PVR
     virtual ~CPVRClients(void);
 
     /*!
+     * @brief Checks whether an add-on is loaded by the pvr manager
+     * @param strAddonId The add-on id to check
+     * @return True when in use, false otherwise
+     */
+    bool IsInUse(const std::string& strAddonId) const;
+
+    /*!
      * @brief Start the backend info updater thread.
      */
     void Start(void);

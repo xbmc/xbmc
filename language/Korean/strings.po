@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA2
+# XBMC-core v12.0-RC1
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6952,7 +6952,7 @@ msgstr "충돌 에러"
 
 msgctxt "#19277"
 msgid "Recording conflict"
-msgstr "녹화 충동"
+msgstr "녹화 충돌"
 
 msgctxt "#19278"
 msgid "Recording error"
@@ -10550,8 +10550,8 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "조이스틱과 게임패드 사용"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
 msgstr "iMON이 있으면 조이스틱 사용하지 않음"
 
 msgctxt "#35500"

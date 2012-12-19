@@ -129,7 +129,10 @@ private:
   bool LoadKeymap(const CStdString &keymapPath);
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   bool LoadLircMap(const CStdString &lircmapPath);
+  void ClearLircButtonMapEntries();
+
   void MapRemote(TiXmlNode *pRemote, const char* szDevice);
+
   typedef std::map<CStdString, CStdString> lircButtonMap;
   std::map<CStdString, lircButtonMap*> lircRemotesMap;
 #endif
