@@ -270,4 +270,10 @@ endif()
 # We want to make sure that CPack uses our own NSIS.template.in
 list(APPEND CMAKE_MODULE_PATH ${plexdir}/Resources)
 
+if(WIN32)
+  add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
+endif()
+
+
 include(CPack)
+

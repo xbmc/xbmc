@@ -7,7 +7,6 @@ rem
 setlocal
 
 set TargetFile=%~1
-set SigningCert=%~dp0PlexOfficialSPC.pfx
 if not exist "%SigningCert%" (
   set SigningCert=%~dp0PlexTestSPC.pfx
 )
