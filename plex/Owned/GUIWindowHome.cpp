@@ -724,7 +724,7 @@ void CGUIWindowHome::UpdateSections()
 
       // Save the map from ID to library section ID.
       m_idToSectionUrlMap[id] = item->GetPath();
-      m_idToSectionTypeMap[id] = item->GetProperty("typeNumber").asInteger();
+      m_idToSectionTypeMap[id] = (int)item->GetProperty("typeNumber").asInteger();
 
       if (item->GetProperty("key").asString().find("/shared") != string::npos)
       {

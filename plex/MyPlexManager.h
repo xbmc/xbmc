@@ -314,7 +314,7 @@ class MyPlexManager
         CStdString uuid = server->GetProperty("uuid").asString();
         CStdString address = server->GetProperty("address").asString();
         CStdString name = server->GetLabel();
-        int64_t port = server->GetProperty("port").asInteger();
+        int port = (int)server->GetProperty("port").asInteger();
 
         PlexServerPtr serverPtr;
         if (owned)
