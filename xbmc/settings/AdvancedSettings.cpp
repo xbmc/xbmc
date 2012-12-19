@@ -341,8 +341,11 @@ void CAdvancedSettings::Initialize()
   m_bEnablePlexTokensInLogs = false;
 
   /* Use Union and 1000ms by default */
+#ifndef TARGET_WINDOWS
   m_guiAlgorithmDirtyRegions = 1;
   m_guiDirtyRegionNoFlipTimeout = 1000;
+#endif
+
   m_bCollapseSingleSeason = true;
   /* END PLEX */
 
