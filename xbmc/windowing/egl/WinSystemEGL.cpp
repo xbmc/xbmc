@@ -372,7 +372,7 @@ bool CWinSystemEGL::IsExtSupported(const char* extension)
   name += extension;
   name += " ";
 
-  return m_extensions.find(name) != std::string::npos;
+  return (m_extensions.find(name) != std::string::npos || CRenderSystemGLES::IsExtSupported(extension));
 }
 
 bool CWinSystemEGL::PresentRenderImpl(const CDirtyRegionList &dirty)
