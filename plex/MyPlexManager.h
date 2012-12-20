@@ -49,6 +49,52 @@ class MyPlexManager
     return *instance;
   }
 
+  /// Sign in.
+  bool signIn()
+  {
+    if (g_guiSettings.GetString("myplex.email").empty() || g_guiSettings.GetString("myplex.password").empty())
+      return false;
+
+    CCurlFile http;
+    SetupRequestHeaders(http);
+
+    // Issue the sign-in request.
+    CStdString res;
+    string request = GetBaseUrl(true, g_guiSettings.GetString("myplex.email"), g_guiSettings.GetString("myplex.password")) + "/users/sign_in.xml";
+    bool success = http.Post(request, "", res);
+
+    if (success && res.empty() == false)
+    {
+      // Parse returned xml.
+      TiXmlDocument doc;
+      if (doc.Parse(res.c_str()))
+      {
+        TiXmlElement* root = doc.RootElement();
+        if (root && root->ValueStr() == "user")
+        {
+          TiXmlNode* token = root->FirstChild("authentication-token");
+          if (token)
+          {
+            const char* strToken = token->FirstChild()->Value();
+
+            // Save the token.
+            g_guiSettings.SetString("myplex.token", strToken);
+            g_guiSettings.SetString("myplex.status", g_localizeStrings.Get(44011));
+
+            scanAsync();
+
+            return true;
+          }
+        }
+      }
+    }
+
+    // Reset things.
+    signOut();
+
+    return false;
+  }
+
   /// Sign out.
   void signOut()
   {
@@ -74,7 +120,39 @@ class MyPlexManager
     g_windowManager.SendThreadMessage(msg2);
   }
 
-  bool CreatePinRequest(int* pin, int* pageId)
+  bool GetUserInfo()
+  {
+    if (g_guiSettings.GetString("myplex.token").empty() == true)
+      return false;
+
+    CStdString url = GetBaseUrl(true) + "/users/account.xml?X-Plex-Token=" + string(g_guiSettings.GetString("myplex.token"));
+
+    CCurlFile http;
+    SetupRequestHeaders(http);
+
+    CStdString data;
+    if (http.Get(url, data))
+    {
+      TiXmlDocument doc;
+      doc.Parse(data.c_str());
+      if (doc.RootElement() != 0)
+      {
+        TiXmlElement* root=doc.RootElement();
+        TiXmlElement* sub=root->FirstChildElement("subscription");
+        if (sub)
+        {
+          const char* active = sub->Attribute("active");
+          if (active && atoi(active) == 1)
+            m_activeSubscription = true;
+        }
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool CreatePinRequest(CStdString& pin, int* pageId)
   {
     CCurlFile http;
     http.SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
@@ -413,12 +491,17 @@ class MyPlexManager
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
     g_windowManager.SendThreadMessage(msg2);
   }
+
+  bool UserHaveSubscribed() const
+  {
+    return m_activeSubscription;
+  }
     
  protected:
   
   /// Constructor.
   MyPlexManager()
-    : m_firstRun(true)
+    : m_firstRun(true), m_activeSubscription(false)
   {
   }
   
@@ -461,7 +544,7 @@ class MyPlexManager
     // Initialize headers.
     http.SetRequestHeader("Content-Type", "application/xml");
     http.SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
-    http.SetRequestHeader("X-Plex-Product", "Plex Media Center");
+    http.SetRequestHeader("X-Plex-Product", PLEX_TARGET_NAME);
     http.SetRequestHeader("X-Plex-Version", g_infoManager.GetVersion());
     http.SetRequestHeader("X-Plex-Provides", "player");
     http.SetRequestHeader("X-Plex-Platform", Cocoa_GetMachinePlatform());
@@ -513,6 +596,8 @@ class MyPlexManager
 
   map<string, PlexServerPtr> m_remoteServers;
   vector<CFileItemPtr> m_sharedSections;
+
+  bool m_activeSubscription;
 };
 
 class MyPlexPinLogin : public CThread

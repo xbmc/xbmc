@@ -45,6 +45,15 @@
 class PlexContentWorkerManager;
 class CGUIWindowHome;
 
+class CAuxFanLoadThread : public CThread
+{
+  public:
+    CAuxFanLoadThread() : CThread("Aux Fan Load Thread"), m_numSeconds(5) {} ;
+    void Process();
+
+    int m_numSeconds;
+};
+
 class CFanLoadingThread : public CThread
 {
   public:
@@ -101,5 +110,6 @@ private:
   
   PlexContentWorkerManager*  m_workerManager;
   CFanLoadingThread*         m_loadingThread;
+  CAuxFanLoadThread*         m_auxLoadingThread;
 };
 

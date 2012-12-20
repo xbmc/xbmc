@@ -12231,11 +12231,15 @@ msgid "Password"
 msgstr ""
 
 msgctxt "#44002"
-msgid "Sign in"
+msgid "Sign in with PIN code"
 msgstr ""
 
 msgctxt "#44003"
 msgid "Sign out"
+msgstr ""
+
+msgctxt "#44004"
+msgid "Sign in"
 msgstr ""
 
 msgctxt "#44010"
@@ -12248,6 +12252,10 @@ msgstr ""
 
 msgctxt "#44012"
 msgid "Error signing in"
+msgstr ""
+
+msgctxt "#44013"
+msgid "Manually enter username and password to sign in"
 msgstr ""
 
 msgctxt "#44020"
@@ -12284,6 +12292,26 @@ msgstr ""
 
 msgctxt "#44104"
 msgid "Hooray we are signed in!"
+msgstr ""
+
+msgctxt "#44200"
+msgid "Need myPlex login"
+msgstr ""
+
+msgctxt "#44201"
+msgid "You need to sign in to myPlex and subscribe to PlexPass"
+msgstr ""
+
+msgctxt "#44202"
+msgid "Press OK to be taken to the Settings screen"
+msgstr ""
+
+msgctxt "#44203"
+msgid "PlexPass subscription needed"
+msgstr ""
+
+msgctxt "#44204"
+msgid "Press OK Quit"
 msgstr ""
 
 #### These are error strings shown from channels

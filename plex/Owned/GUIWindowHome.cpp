@@ -55,6 +55,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogVideoInfo.h"
+#include "dialogs/GUIDialogOK.h"
 
 #include "plex/PlexMediaServerQueue.h"
 
@@ -88,6 +89,8 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
   // Create the worker. We're not going to destroy it because whacking it on exit can cause problems.
   m_workerManager = new PlexContentWorkerManager();
   m_loadingThread = new CFanLoadingThread(this);
+  m_auxLoadingThread = new CAuxFanLoadThread();
+  m_auxLoadingThread->Create();
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -843,6 +846,40 @@ void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
     Create(true);
   else
     m_wakeMe.notify_one();
+}
+
+void CAuxFanLoadThread::Process()
+{
+#ifndef DEBUG
+  while (!m_bStop)
+  {
+    CLog::Log(LOGDEBUG, "CAFL: sleeping %d seconds", m_numSeconds);
+    boost::this_thread::sleep(boost::posix_time::seconds(m_numSeconds));
+
+    if (g_windowManager.GetActiveWindow() == 10016)
+      continue;
+
+    if (g_guiSettings.GetString("myplex.token").empty() == true)
+    {
+      CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(44200), g_localizeStrings.Get(44201), g_localizeStrings.Get(44202), "");
+      CApplicationMessenger::Get().ExecBuiltIn("XBMC.ActivateWindow(16)");
+    }
+    else
+    {
+      MyPlexManager::Get().GetUserInfo();
+      if (!MyPlexManager::Get().UserHaveSubscribed())
+      {
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(44203), g_localizeStrings.Get(44201), g_localizeStrings.Get(44202), "");
+        CApplicationMessenger::Get().ExecBuiltIn("XBMC.ActivateWindow(16)");
+      }
+      else
+      {
+        // Since we had a successful login we can sleep longer
+        m_numSeconds = 30 * 60;
+      }
+    }
+  }
+#endif
 }
 
 void CFanLoadingThread::Process()
