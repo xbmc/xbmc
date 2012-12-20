@@ -511,7 +511,7 @@ void CGUISettings::Initialize()
     channelLayout.insert(make_pair(34100+layout, layout));
   AddInt(ao, "audiooutput.channels", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.normalizelevels", 346, true);
-  AddBool(ao, "audiooutput.stereoupmix", 252, false);
+  AddBool(NULL, "audiooutput.stereoupmix", 252, false);
 
 #if defined(TARGET_DARWIN_IOS)
   CSettingsCategory* aocat = g_sysinfo.IsAppleTV2() ? ao : NULL;
