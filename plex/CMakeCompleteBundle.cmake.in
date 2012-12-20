@@ -32,8 +32,8 @@ if(NOT WIN32)
 
   set(BU_CHMOD_BUNDLE_ITEMS ON)
   file(GLOB INST_LIBS ${CMAKE_INSTALL_PREFIX}/${LIBPATH}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
-  set(plugins ${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/system/ImageLib-${ARCH}.so)
-  fixup_bundle(${CMAKE_INSTALL_PREFIX}/${TARGET} "${plugins};${INST_LIBS}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64")
+  set(plugins "${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/system/ImageLib-${ARCH}.so")
+  fixup_bundle("${CMAKE_INSTALL_PREFIX}/${TARGET}" "${plugins};${INST_LIBS}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64")
 
   if(APPLE)
     message("Signing binary: ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
