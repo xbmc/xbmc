@@ -37,7 +37,7 @@ if(NOT WIN32)
 
   if(APPLE)
     message("Signing binary: ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
-    execute_process(COMMAND codesign --force --sign "Developer ID Application: Plex Inc." -r ${PLEXDIR}/Resources/requirement.bin \"${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app\")
+    execute_process(COMMAND codesign --force --sign "Developer ID Application: Plex Inc." -r ${PLEXDIR}/Resources/requirement.bin "${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")
   endif()
 else()
   # On win we use this for code signing
