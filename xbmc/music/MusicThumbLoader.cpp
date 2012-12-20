@@ -25,6 +25,7 @@
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/Artist.h"
+#include "video/VideoThumbLoader.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

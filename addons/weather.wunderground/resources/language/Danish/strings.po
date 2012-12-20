@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 1.0.3
+# Addon version: 1.0.6
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -19,11 +19,11 @@ msgstr ""
 
 msgctxt "#32101"
 msgid "Location setup"
-msgstr "Placeringsopsætning"
+msgstr "Lokalitets-opsætning"
 
 msgctxt "#32102"
 msgid "Advanced options"
-msgstr "Avancerede valgmuligheder"
+msgstr "Avancerede indstillinger"
 
 msgctxt "#32111"
 msgid "Location 1"
@@ -71,19 +71,19 @@ msgstr "Weekend"
 
 msgctxt "#32122"
 msgid "Saturday/Sunday"
-msgstr "lørdag/søndag"
+msgstr "Lørdag/Søndag"
 
 msgctxt "#32123"
 msgid "Friday/Saturday"
-msgstr "fredag/lørdag"
+msgstr "Fredag/Lørdag"
 
 msgctxt "#32124"
 msgid "Thursday/Friday"
-msgstr "torsdag/fredag"
+msgstr "Torsdag/Fredag"
 
 msgctxt "#32125"
 msgid "Map zoom level"
-msgstr "kort zoom niveau"
+msgstr "Kort zoom-niveau"
 
 msgctxt "#32126"
 msgid "Animated map"

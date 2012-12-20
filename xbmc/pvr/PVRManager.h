@@ -129,6 +129,11 @@ namespace PVR
     void Cleanup(void);
 
     /*!
+     * @return True when a PVR window is active, false otherwise.
+     */
+    bool IsPVRWindowActive(void) const;
+
+    /*!
      * @brief Check whether an add-on can be upgraded or installed without restarting the pvr manager, when the add-on is in use or the pvr window is active
      * @param strAddonId The add-on to check.
      * @return True when the add-on can be installed, false otherwise.
@@ -188,14 +193,9 @@ namespace PVR
 
     /*!
      * @brief Reset the TV database to it's initial state and delete all the data inside.
-     * @param bShowProgress True to show a progress bar, false otherwise.
+     * @param bResetEPGOnly True to only reset the EPG database, false to reset both PVR and EPG.
      */
-    void ResetDatabase(bool bShowProgress = true);
-
-    /*!
-     * @brief Delete all EPG data from the database and reload it from the clients.
-     */
-    void ResetEPG(void);
+    void ResetDatabase(bool bResetEPGOnly = false);
 
     /*!
      * @brief Check if a TV channel, radio channel or recording is playing.

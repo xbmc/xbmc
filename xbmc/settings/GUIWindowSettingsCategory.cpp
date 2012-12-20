@@ -2040,7 +2040,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
         CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
     {
       CDateTime::ResetTimezoneBias();
-      g_PVRManager.ResetDatabase();
+      g_PVRManager.ResetDatabase(false);
     }
   }
   else if (strSetting.Equals("epg.resetepg"))
@@ -2048,7 +2048,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
     {
       CDateTime::ResetTimezoneBias();
-      g_PVRManager.ResetEPG();
+      g_PVRManager.ResetDatabase(true);
     }
   }
   else if (strSetting.Equals("pvrmanager.channelscan") && g_PVRManager.IsStarted())
