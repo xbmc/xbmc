@@ -278,7 +278,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${plexdir}/Resources)
 
 if(WIN32)
-  add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
+  add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
 endif()
 
 
