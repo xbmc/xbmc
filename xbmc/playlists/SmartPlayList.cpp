@@ -1174,9 +1174,7 @@ const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
     m_playlistType = "musicvideos";
 
   // load the playlist name
-  const TiXmlNode *name = rootElem->FirstChild("name");
-  if (name != NULL && name->FirstChild() != NULL)
-    m_playlistName = name->FirstChild()->Value();
+  XMLUtils::GetString(root, "name", m_playlistName);
 
   return root;
 }
@@ -1288,9 +1286,9 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encodi
   if (!root)
     return false;
 
-  const TiXmlNode *match = root->FirstChild("match");
-  if (match != NULL && match->FirstChild() != NULL)
-    m_ruleCombination.SetType(StringUtils::EqualsNoCase(match->FirstChild()->ValueStr(), "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
+  CStdString tmp;
+  if (XMLUtils::GetString(root, "match", tmp))
+    m_ruleCombination.SetType(StringUtils::EqualsNoCase(tmp, "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
 
   // now the rules
   const TiXmlNode *ruleNode = root->FirstChild("rule");
@@ -1305,9 +1303,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encodi
 
   // now any limits
   // format is <limit>25</limit>
-  const TiXmlNode *limit = root->FirstChild("limit");
-  if (limit != NULL && limit->FirstChild() != NULL)
-    m_limit = strtol(limit->FirstChild()->Value(), NULL, 0);
+  XMLUtils::GetUInt(root, "limit", m_limit);
 
   // and order
   // format is <order direction="ascending">field</order>
@@ -1344,16 +1340,10 @@ bool CSmartPlaylist::Save(const CStdString &path) const
     return false;
 
   // add the <name> tag
-  TiXmlText name(m_playlistName.c_str());
-  TiXmlElement nodeName("name");
-  nodeName.InsertEndChild(name);
-  pRoot->InsertEndChild(nodeName);
+  XMLUtils::SetString(pRoot, "name", m_playlistName);
 
   // add the <match> tag
-  TiXmlText match(m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? "all" : "one");
-  TiXmlElement nodeMatch("match");
-  nodeMatch.InsertEndChild(match);
-  pRoot->InsertEndChild(nodeMatch);
+  XMLUtils::SetString(pRoot, "match", m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? "all" : "one");
 
   // add <rule> tags
   for (CSmartPlaylistRules::const_iterator it = m_ruleCombination.m_rules.begin(); it != m_ruleCombination.m_rules.end(); ++it)
@@ -1361,14 +1351,7 @@ bool CSmartPlaylist::Save(const CStdString &path) const
 
   // add <limit> tag
   if (m_limit)
-  {
-    CStdString limitFormat;
-    limitFormat.Format("%i", m_limit);
-    TiXmlText limit(limitFormat);
-    TiXmlElement nodeLimit("limit");
-    nodeLimit.InsertEndChild(limit);
-    pRoot->InsertEndChild(nodeLimit);
-  }
+    XMLUtils::SetInt(pRoot, "limit", m_limit);
 
   // add <order> tag
   if (m_orderField != SortByNone)
