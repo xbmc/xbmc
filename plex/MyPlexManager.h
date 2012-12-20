@@ -90,7 +90,7 @@ class MyPlexManager
         TiXmlElement* root=doc.RootElement();
         TiXmlElement* code=root->FirstChildElement("code");
         if (code && code->GetText())
-          *pin = atoi(code->GetText());
+          pin = code->GetText();
         else
           return false;
 
@@ -521,12 +521,14 @@ class MyPlexPinLogin : public CThread
     MyPlexPinLogin() : CThread("MyPlexPinLoginThread")
     {};
 
+    CStdString m_pin;
+
     virtual void Process()
     {
-      int pageId, pin;
-      if (MyPlexManager::Get().CreatePinRequest(&pin, &pageId))
+      int pageId;
+      if (MyPlexManager::Get().CreatePinRequest(m_pin, &pageId))
       {
-        CGUIMessage msg(GUI_MSG_MYPLEX_GOT_PIN, 0, WINDOW_DIALOG_MYPLEX_PIN, pin, 0);
+        CGUIMessage msg(GUI_MSG_MYPLEX_GOT_PIN, 0, WINDOW_DIALOG_MYPLEX_PIN, 0, 0);
         g_windowManager.SendMessage(msg, WINDOW_DIALOG_MYPLEX_PIN);
 
         bool gotToken = false;

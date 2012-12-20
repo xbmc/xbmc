@@ -64,9 +64,8 @@ CGUIDialogMyPlexPin::OnMessage(CGUIMessage &message)
   }
   if (message.GetMessage() == GUI_MSG_MYPLEX_GOT_PIN)
   {
-    int pin = message.GetParam1();
     CStdString line;
-    line.Format("%s %d", g_localizeStrings.Get(44103), pin);
+    line.Format("%s %s", g_localizeStrings.Get(44103), m_pinLogin.m_pin);
     SetLine(2, line);
     return true;
   }
