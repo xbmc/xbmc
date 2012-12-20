@@ -34,7 +34,7 @@ class ISmartPlaylistRule
 public:
   virtual ~ISmartPlaylistRule() { }
 
-  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8") = 0;
+  virtual bool Load(const TiXmlNode *node, const std::string &encoding = "UTF-8") = 0;
   virtual bool Load(const CVariant &obj) = 0;
   virtual bool Save(TiXmlNode *parent) const = 0;
   virtual bool Save(CVariant &obj) const = 0;
@@ -44,6 +44,7 @@ class CSmartPlaylistRule : public ISmartPlaylistRule
 {
 public:
   CSmartPlaylistRule();
+  virtual ~CSmartPlaylistRule() { }
 
   enum SEARCH_OPERATOR { OPERATOR_START = 0,
                          OPERATOR_CONTAINS,
@@ -75,7 +76,7 @@ public:
                     TEXTIN_FIELD
                   };
 
-  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8");
+  virtual bool Load(const TiXmlNode *node, const std::string &encoding = "UTF-8");
   virtual bool Load(const CVariant &obj);
   virtual bool Save(TiXmlNode *parent) const;
   virtual bool Save(CVariant &obj) const;
@@ -117,13 +118,14 @@ class CSmartPlaylistRuleCombination : public ISmartPlaylistRule
 {
 public:
   CSmartPlaylistRuleCombination();
+  virtual ~CSmartPlaylistRuleCombination() { }
 
   typedef enum {
     CombinationOr = 0,
     CombinationAnd
   } Combination;
 
-  virtual bool Load(TiXmlElement *element, const CStdString &encoding = "UTF-8") { return false; }
+  virtual bool Load(const TiXmlNode *node, const std::string &encoding = "UTF-8") { return false; }
   virtual bool Load(const CVariant &obj);
   virtual bool Save(TiXmlNode *parent) const { return false; }
   virtual bool Save(CVariant &obj) const;
@@ -151,6 +153,7 @@ class CSmartPlaylist
 {
 public:
   CSmartPlaylist();
+  virtual ~CSmartPlaylist() { }
 
   bool Load(const CStdString &path);
   bool Load(const CVariant &obj);
@@ -160,8 +163,8 @@ public:
   bool Save(CVariant &obj, bool full = true) const;
   bool SaveAsJson(CStdString &json, bool full = true) const;
 
-  TiXmlElement *OpenAndReadName(const CStdString &path);
-  bool LoadFromXML(TiXmlElement *root, const CStdString &encoding = "UTF-8");
+  bool OpenAndReadName(const CStdString &path);
+  bool LoadFromXML(const TiXmlNode *root, const CStdString &encoding = "UTF-8");
 
   void Reset();
 
@@ -203,9 +206,10 @@ private:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;
 
-  TiXmlElement* readName();
-  TiXmlElement *readNameFromXml(const CStdString &xml);
-  bool load(TiXmlElement *root);
+  const TiXmlNode* readName(const TiXmlNode *root);
+  const TiXmlNode* readNameFromPath(const CStdString &path);
+  const TiXmlNode* readNameFromXml(const CStdString &xml);
+  bool load(const TiXmlNode *root);
 
   CSmartPlaylistRuleCombination m_ruleCombination;
   CStdString m_playlistName;

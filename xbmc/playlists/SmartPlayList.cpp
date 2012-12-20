@@ -145,8 +145,12 @@ CSmartPlaylistRule::CSmartPlaylistRule()
   m_parameter.clear();
 }
 
-bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding /* = "UTF-8" */)
+bool CSmartPlaylistRule::Load(const TiXmlNode *node, const std::string &encoding /* = "UTF-8" */)
 {
+  if (node == NULL)
+    return false;
+
+  const TiXmlElement *element = node->ToElement();
   if (element == NULL)
     return false;
 
@@ -165,14 +169,14 @@ bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding 
   if (m_operator == OPERATOR_TRUE || m_operator == OPERATOR_FALSE)
     return true;
 
-  TiXmlNode *parameter = element->FirstChild();
+  const TiXmlNode *parameter = element->FirstChild();
   if (parameter == NULL)
     return false;
 
   if (parameter->Type() == TiXmlNode::TINYXML_TEXT)
   {
     CStdString utf8Parameter;
-    if (encoding.IsEmpty()) // utf8
+    if (encoding.empty()) // utf8
       utf8Parameter = parameter->ValueStr();
     else
       g_charsetConverter.stringCharsetToUtf8(encoding, parameter->ValueStr(), utf8Parameter);
@@ -182,14 +186,14 @@ bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding 
   }
   else if (parameter->Type() == TiXmlNode::TINYXML_ELEMENT)
   {
-    TiXmlElement *valueElem = element->FirstChildElement("value");
-    while (valueElem != NULL)
+    const TiXmlNode *valueNode = element->FirstChild("value");
+    while (valueNode != NULL)
     {
-      TiXmlNode *value = valueElem->FirstChild();
+      const TiXmlNode *value = valueNode->FirstChild();
       if (value != NULL && value->Type() == TiXmlNode::TINYXML_TEXT)
       {
         CStdString utf8Parameter;
-        if (encoding.IsEmpty()) // utf8
+        if (encoding.empty()) // utf8
           utf8Parameter = value->ValueStr();
         else
           g_charsetConverter.stringCharsetToUtf8(encoding, value->ValueStr(), utf8Parameter);
@@ -198,7 +202,7 @@ bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding 
           m_parameter.push_back(utf8Parameter);
       }
 
-      valueElem = valueElem->NextSiblingElement("value");
+      valueNode = valueNode->NextSibling("value");
     }
   }
   else
@@ -1136,7 +1140,48 @@ CSmartPlaylist::CSmartPlaylist()
   Reset();
 }
 
-TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
+bool CSmartPlaylist::OpenAndReadName(const CStdString &path)
+{
+  if (readNameFromPath(path) == NULL)
+    return false;
+
+  return !m_playlistName.empty();
+}
+
+const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
+{
+  if (root == NULL)
+    return NULL;
+
+  const TiXmlElement *rootElem = root->ToElement();
+  if (rootElem == NULL)
+    return NULL;
+
+  if (!root || !StringUtils::EqualsNoCase(root->Value(),"smartplaylist"))
+  {
+    CLog::Log(LOGERROR, "Error loading Smart playlist");
+    return NULL;
+  }
+
+  // load the playlist type
+  const char* type = rootElem->Attribute("type");
+  if (type)
+    m_playlistType = type;
+  // backward compatibility:
+  if (m_playlistType == "music")
+    m_playlistType = "songs";
+  if (m_playlistType == "video")
+    m_playlistType = "musicvideos";
+
+  // load the playlist name
+  const TiXmlNode *name = rootElem->FirstChild("name");
+  if (name != NULL && name->FirstChild() != NULL)
+    m_playlistName = name->FirstChild()->Value();
+
+  return root;
+}
+
+const TiXmlNode* CSmartPlaylist::readNameFromPath(const CStdString &path)
 {
   CFileStream file;
   if (!file.Open(path))
@@ -1148,49 +1193,18 @@ TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
   m_xmlDoc.Clear();
   file >> m_xmlDoc;
 
-  TiXmlElement *root = readName();
+  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
   if (m_playlistName.empty())
   {
     m_playlistName = CUtil::GetTitleFromPath(path);
     if (URIUtils::GetExtension(m_playlistName) == ".xsp")
       URIUtils::RemoveExtension(m_playlistName);
   }
-  return root;
-}
-
-TiXmlElement* CSmartPlaylist::readName()
-{
-  if (m_xmlDoc.Error())
-  {
-    CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: %s)", m_xmlDoc.ErrorDesc());
-    return NULL;
-  }
-
-  TiXmlElement *root = m_xmlDoc.RootElement();
-  if (!root || !StringUtils::EqualsNoCase(root->Value(),"smartplaylist"))
-  {
-    CLog::Log(LOGERROR, "Error loading Smart playlist");
-    return NULL;
-  }
-  // load the playlist type
-  const char* type = root->Attribute("type");
-  if (type)
-    m_playlistType = type;
-  // backward compatibility:
-  if (m_playlistType == "music")
-    m_playlistType = "songs";
-  if (m_playlistType == "video")
-    m_playlistType = "musicvideos";
-
-  // load the playlist name
-  TiXmlHandle name = ((TiXmlHandle)root->FirstChild("name")).FirstChild();
-  if (name.Node())
-    m_playlistName = name.Node()->Value();
 
   return root;
 }
 
-TiXmlElement *CSmartPlaylist::readNameFromXml(const CStdString &xml)
+const TiXmlNode* CSmartPlaylist::readNameFromXml(const CStdString &xml)
 {
   if (xml.empty())
   {
@@ -1205,12 +1219,25 @@ TiXmlElement *CSmartPlaylist::readNameFromXml(const CStdString &xml)
     return NULL;
   }
 
-  return readName();
+  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
+
+  return root;
+}
+
+bool CSmartPlaylist::load(const TiXmlNode *root)
+{
+  if (root == NULL)
+    return false;
+
+  CStdString encoding;
+  XMLUtils::GetEncoding(&m_xmlDoc, encoding);
+
+  return LoadFromXML(root, encoding);
 }
 
 bool CSmartPlaylist::Load(const CStdString &path)
 {
-  return load(OpenAndReadName(path));
+  return load(readNameFromPath(path));
 }
 
 bool CSmartPlaylist::Load(const CVariant &obj)
@@ -1256,48 +1283,35 @@ bool CSmartPlaylist::LoadFromXml(const CStdString &xml)
   return load(readNameFromXml(xml));
 }
 
-bool CSmartPlaylist::load(TiXmlElement *root)
+bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encoding)
 {
   if (!root)
     return false;
 
-  // encoding:
-  CStdString encoding;
-  XMLUtils::GetEncoding(&m_xmlDoc, encoding);
-  
-  // from here we decode from XML
-  return LoadFromXML(root, encoding);
-}
-
-bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
-{
-  if (!root)
-    return false;
-
-  TiXmlHandle match = ((TiXmlHandle)root->FirstChild("match")).FirstChild();
-  if (match.Node())
-    m_ruleCombination.SetType(StringUtils::EqualsNoCase(match.Node()->ValueStr(), "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
+  const TiXmlNode *match = root->FirstChild("match");
+  if (match != NULL && match->FirstChild() != NULL)
+    m_ruleCombination.SetType(StringUtils::EqualsNoCase(match->FirstChild()->ValueStr(), "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
 
   // now the rules
-  TiXmlElement *ruleElement = root->FirstChildElement("rule");
-  while (ruleElement)
+  const TiXmlNode *ruleNode = root->FirstChild("rule");
+  while (ruleNode)
   {
     CSmartPlaylistRule rule;
-    if (rule.Load(ruleElement, encoding))
+    if (rule.Load(ruleNode, encoding))
       m_ruleCombination.AddRule(rule);
 
-    ruleElement = ruleElement->NextSiblingElement("rule");
+    ruleNode = ruleNode->NextSibling("rule");
   }
 
   // now any limits
   // format is <limit>25</limit>
-  TiXmlHandle limit = ((TiXmlHandle)root->FirstChild("limit")).FirstChild();
-  if (limit.Node())
-    m_limit = atoi(limit.Node()->Value());
+  const TiXmlNode *limit = root->FirstChild("limit");
+  if (limit != NULL && limit->FirstChild() != NULL)
+    m_limit = strtol(limit->FirstChild()->Value(), NULL, 0);
 
   // and order
   // format is <order direction="ascending">field</order>
-  TiXmlElement *order = root->FirstChildElement("order");
+  const TiXmlElement *order = root->FirstChildElement("order");
   if (order && order->FirstChild())
   {
     const char *direction = order->Attribute("direction");
