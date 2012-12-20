@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>Plex</string>
+	<string>Plex Home Theater</string>
 	<key>CFBundleGetInfoString</key>
   <string>Plex Home Theater</string>
 	<key>CFBundleIconFile</key>

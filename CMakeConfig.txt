@@ -167,7 +167,6 @@ if(APPLE)
 		DiskArbitration
 		QuartzCore
 		SystemConfiguration
-    Sparkle
     IOSurface
 	)
 endif()
@@ -357,13 +356,6 @@ endforeach()
 foreach(lib ${osx_frameworks})
   plex_find_library(${lib} 1 0 ${dependdir}/Frameworks 1)
 endforeach()
-
-#### find some header paths
-if(APPLE)
-  find_path(CONFIG_INCLUDE_PATH_SPARKLE Sparkle/Sparkle.h HINTS ${dependdir}/Frameworks)
-else()
-  set(CONFIG_INCLUDE_PATH_SPARKLE "")
-endif()
 
 ####
 if(DEFINED HAVE_LIBX11)
