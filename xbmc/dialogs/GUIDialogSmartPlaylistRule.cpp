@@ -372,12 +372,13 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   SendMessage(GUI_MSG_LABEL_RESET, CONTROL_OPERATOR);
 
   CONTROL_ENABLE(CONTROL_VALUE);
-  CONTROL_DISABLE(CONTROL_BROWSE);
+  if (CSmartPlaylistRule::IsFieldBrowseable(m_rule.m_field))
+    CONTROL_ENABLE(CONTROL_BROWSE);
+  else
+    CONTROL_DISABLE(CONTROL_BROWSE);
+
   switch (CSmartPlaylistRule::GetFieldType(m_rule.m_field))
   {
-  case CSmartPlaylistRule::BROWSEABLE_FIELD:
-    CONTROL_ENABLE(CONTROL_BROWSE);
-    // fall through...
   case CSmartPlaylistRule::TEXT_FIELD:
     // text fields - add the usual comparisons
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
@@ -388,9 +389,6 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_ENDS_WITH);
     break;
 
-  case CSmartPlaylistRule::BROWSEABLE_NUMERIC_FIELD:
-      CONTROL_ENABLE(CONTROL_BROWSE);
-      // fall through...
   case CSmartPlaylistRule::NUMERIC_FIELD:
   case CSmartPlaylistRule::SECONDS_FIELD:
     // numerical fields - less than greater than
@@ -438,8 +436,6 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   CSmartPlaylistRule::FIELD_TYPE fieldType = CSmartPlaylistRule::GetFieldType(m_rule.m_field);
   switch (fieldType)
   {
-  case CSmartPlaylistRule::BROWSEABLE_FIELD:
-  case CSmartPlaylistRule::BROWSEABLE_NUMERIC_FIELD:
   case CSmartPlaylistRule::TEXT_FIELD:
   case CSmartPlaylistRule::PLAYLIST_FIELD:
   case CSmartPlaylistRule::TEXTIN_FIELD:
