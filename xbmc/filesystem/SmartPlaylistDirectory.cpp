@@ -70,8 +70,10 @@ namespace XFILE
     sorting.limitEnd = playlist.GetLimit();
     sorting.sortBy = playlist.GetOrder();
     sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
+    sorting.sortAttributes = playlist.GetOrderAttributes();
     if (CSettings::Get().GetBool("filelists.ignorethewhensorting"))
-      sorting.sortAttributes = SortAttributeIgnoreArticle;
+      sorting.sortAttributes = (SortAttribute)(sorting.sortAttributes | SortAttributeIgnoreArticle);
+    items.SetSortIgnoreFolders((sorting.sortAttributes & SortAttributeIgnoreFolders) == SortAttributeIgnoreFolders);
 
     std::string option = !filter ? "xsp" : "filter";
     const CStdString& group = playlist.GetGroup();

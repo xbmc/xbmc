@@ -186,10 +186,11 @@ public:
 
   void SetOrder(SortBy order) { m_orderField = order; };
   SortBy GetOrder() const { return m_orderField; };
-
   void SetOrderAscending(bool orderAscending) { m_orderDirection = orderAscending ? SortOrderAscending : SortOrderDescending; };
   bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; };
   SortOrder GetOrderDirection() const { return m_orderDirection; }
+  void SetOrderAttributes(SortAttribute attributes) { m_orderAttributes = attributes; }
+  SortAttribute GetOrderAttributes() const { return m_orderAttributes; }
 
   void SetGroup(const CStdString &group) { m_group = group; }
   const CStdString& GetGroup() const { return m_group; }
@@ -229,6 +230,7 @@ private:
   unsigned int m_limit;
   SortBy m_orderField;
   SortOrder m_orderDirection;
+  SortAttribute m_orderAttributes;
   CStdString m_group;
   bool m_groupMixed;
 
