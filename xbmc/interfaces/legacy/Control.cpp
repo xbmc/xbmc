@@ -1273,7 +1273,8 @@ namespace XBMCAddon
       if ((vecItems.size() > 0) && pGUIControl)
       {
         pGUIControl->OnMessage(msg);
-        pListItem = vecItems[msg.GetParam1()];
+        if (msg.GetParam1() >= 0 && (size_t)msg.GetParam1() < vecItems.size())
+          pListItem = vecItems[msg.GetParam1()];
       }
 
       return pListItem.get();
