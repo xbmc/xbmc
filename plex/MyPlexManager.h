@@ -224,7 +224,7 @@ class MyPlexManager
           vector<CStdString> thumbs = m_sectionThumbnails[path];
           for (size_t i = 0; i < thumbs.size() ; i++)
           {
-            dprintf("MyPlexManager: [%s] thumb%d = %s", path.c_str(), i, thumbs[i].c_str());
+            dprintf("MyPlexManager: [%s] thumb%ld = %s", path.c_str(), i, thumbs[i].c_str());
             section->SetArt(PLEX_ART_THUMB, i, thumbs[i]);
           }
         }
