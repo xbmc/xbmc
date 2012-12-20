@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Plex</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Plex Media Center</string>
+  <string>Plex Home Theater</string>
 	<key>CFBundleIconFile</key>
 	<string>Plex.icns</string>
 	<key>CFBundleIdentifier</key>

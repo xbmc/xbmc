@@ -912,7 +912,7 @@ void CGUISettings::Initialize()
 
 #ifdef HAS_AIRPLAY
   CSettingsCategory* srvAirplay = AddCategory(SETTINGS_SERVICE, "airplay", 1273);
-  AddString(srvAirplay,"services.devicename", 1271, "Plex Media Center", EDIT_CONTROL_INPUT);
+  AddString(srvAirplay,"services.devicename", 1271, PLEX_TARGET_NAME, EDIT_CONTROL_INPUT);
   AddBool(srvAirplay, "services.airplay", 1270, false);
   AddBool(srvAirplay, "services.useairplaypassword", 1272, false);
   AddString(srvAirplay, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733);

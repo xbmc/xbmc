@@ -670,7 +670,7 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 #ifndef __PLEX__
   string = [ [ NSString alloc ] initWithUTF8String:"XBMC Media Center" ];
 #else
-  string = [ [ NSString alloc ] initWithUTF8String:"Plex Media Center" ];
+  string = [ [ NSString alloc ] initWithUTF8String:PLEX_TARGET_NAME ];
 #endif
   [ [ [new_context view] window] setTitle:string ];
   [ string release ];

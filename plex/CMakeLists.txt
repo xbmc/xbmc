@@ -54,17 +54,21 @@ set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
 ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
 if(APPLE)
-  add_executable(Plex MACOSX_BUNDLE ${PLEX_ALL_SRCS})
-  set_target_properties(Plex PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
+  add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE ${PLEX_ALL_SRCS})
+  set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PLEX_VERSION_STRING_SHORT}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${PLEX_VERSION_STRING}")
 else()
-  add_executable(Plex WIN32 ${PLEX_ALL_SRCS})
+  add_executable(${PLEX_TARGET_NAME} WIN32 ${PLEX_ALL_SRCS})
 endif()
 
-add_dependencies(Plex git_revision.h ffmpeg)
-target_link_libraries(Plex xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+# Set the correct binary name
+set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
+
+
+add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
+target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
 
 # find all image files in the skin
@@ -95,10 +99,10 @@ configure_file(CMakeCompleteBundle.cmake.in CMakeCompleteBundle.cmake @ONLY)
 
 install(FILES ${CONFIG_PLEX_INSTALL_LIBRARIES} DESTINATION ${LIBPATH} COMPONENT RUNTIME)
 if(APPLE)
-  install(TARGETS Plex BUNDLE DESTINATION . COMPONENT RUNTIME)
+  install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 else()
-  install(TARGETS Plex RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
+  install(TARGETS ${PLEX_TARGET_NAME} RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
 endif()
 
 # Replace some XBMC files in the output
@@ -106,8 +110,8 @@ if(NOT WIN32)
   install(CODE "
     execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh \"${RESOURCEPATH}\" \"${ROOTDIR}\" \"\${CMAKE_INSTALL_PREFIX}\")
   ")
-  install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Splash.png)")
-  install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html)")
+  install(CODE "file(REMOVE \"\${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Splash.png\")")
+  install(CODE "file(REMOVE \"\${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html\")")
   install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/XBMC/tools/darwin/runtime COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)

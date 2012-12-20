@@ -21,7 +21,7 @@ CPlexDownloadFileJob::DoWork()
   CCurlFile http;
   CFile file;
   CURL theUrl(m_url);
-  http.SetRequestHeader("X-Plex-Client", "Plex Media Center");
+  http.SetRequestHeader("X-Plex-Client", PLEX_TARGET_NAME);
 
   if (!file.OpenForWrite(m_destination, true))
   {

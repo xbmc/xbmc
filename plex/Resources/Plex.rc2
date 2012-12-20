@@ -70,12 +70,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "Plex, Inc."
-            VALUE "FileDescription", "Plex Media Center"
+            VALUE "FileDescription", "Plex Home Theater"
             VALUE "FileVersion", PLEX_VERSION
             VALUE "InternalName", "Plex.exe"
             VALUE "LegalCopyright", "Copyright (c) Plex, Inc.  All rights reserved."
-            VALUE "OriginalFilename", "Plex.exe"
-            VALUE "ProductName", "Plex Media Center"
+            VALUE "OriginalFilename", "PlexHomeTheater.exe"
+            VALUE "ProductName", "Plex Home Theater"
             VALUE "ProductVersion", PLEX_VERSION
         END
     END

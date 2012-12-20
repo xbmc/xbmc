@@ -1,4 +1,4 @@
-project("Plex")
+project("Plex Home Theater")
 cmake_minimum_required(VERSION 2.8.8)
 include(ExternalProject)
 
@@ -83,8 +83,17 @@ if(WIN32)
   endif()
 endif()
 
+# MUST BE ADDED FIRST :)
+# This will download our dependency tree
+if(NOT WIN32)
+  add_subdirectory(plex/Dependencies)
+endif()
+
+# Now check for available functions
+include(CMakeConfig.txt)
+
 # global definitions
-add_definitions(-D__PLEX__ -DPLEX_TARGET_NAME="PlexAlpha" -D__PLEX__XBMC__ -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}")
+add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_TARGET_NAME="${EXECUTABLE_NAME}" -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}")
 
 # Linux and OSX definitios
 if(UNIX)
@@ -129,15 +138,6 @@ if(WIN32)
     -DBOOST_THREAD_USE_LIB
   )
 endif()
-
-# MUST BE ADDED FIRST :)
-# This will download our dependency tree
-if(NOT WIN32)
-  add_subdirectory(plex/Dependencies)
-endif()
-
-# Now check for available functions
-include(CMakeConfig.txt)
 
 # Now build auxilary xbmc libraries.
 # Note that we want to do this before we add all
@@ -223,17 +223,17 @@ endif()
 add_subdirectory(plex)
 
 
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Plex Media Center")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Plex for Home Theater")
 set(CPACK_PACKAGE_VENDOR "Plex inc")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PLEX_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PLEX_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PLEX_VERSION_PATCH})
-set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${CPACK_SYSTEM_PROCESSOR})
-set(CPACK_PACKAGE_FILE_NAME "Plex-${XBMC_VERSION}-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}")
+set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+set(CPACK_PACKAGE_FILE_NAME "${PLEX_TARGET_NAME}-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}")
 
 set(CPACK_COMPONENT_QDXSETUP_DISPLAY_NAME "DirectX Installer")
 set(CPACK_COMPONENT_VCREDIST_DISPLAY_NAME "Visual Studio 2010 redistribution installer")
-set(CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Plex Media Center")
+set(CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Plex for Home Theater")
 set(CPACK_COMPONENT_RUNTIME_REQUIRED 1)
 
 # Windows installer stuff
@@ -242,7 +242,7 @@ set(CPACK_NSIS_MUI_ICON ${plexdir}\\\\Resources\\\\Plex.ico)
 #set(CPACK_PACKAGE_ICON ${plexdir}\\\\Resources\\\\PlexBanner.bmp)
 set(CPACK_NSIS_HELP_LINK "http://plexapp.com")
 set(CPACK_NSIS_URL_INFO_ABOUT ${CPACK_NSIS_HELP_LINK})
-set(CPACK_PACKAGE_EXECUTABLES Plex "Plex Media Center" ${CPACK_PACKAGE_EXECUTABLES})
+set(CPACK_PACKAGE_EXECUTABLES Plex "Plex for Home Theater" ${CPACK_PACKAGE_EXECUTABLES})
 set(CPACK_RESOURCE_FILE_LICENSE ${root}/LICENSE.GPL)
 set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 

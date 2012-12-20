@@ -11422,16 +11422,16 @@ msgctxt "#36041"
 msgid "* Item folder"
 msgstr ""
 
-### PLEX ###
+### PLEX/HT ###
 
 msgctxt "#6"
-msgid "Plex Git"
+msgid "Plex/HT Git"
 msgstr ""
 
 #empty strings from id 7 to 8
 
 msgctxt "#9"
-msgid "Plex Media Center"
+msgid "Plex for Home Theater"
 msgstr ""
 
 msgctxt "#10"
@@ -11441,7 +11441,7 @@ msgstr ""
 #empty strings from id 11 to 262
 
 msgctxt "#263"
-msgid "Allow control of Plex via HTTP"
+msgid "Allow control of Plex/HT via HTTP"
 msgstr ""
 
 #empty strings from id 264 to 285
@@ -11475,7 +11475,7 @@ msgstr ""
 #empty strings from id 312 to 481
 
 msgctxt "#482"
-msgid "About Plex"
+msgid "About Plex/HT"
 msgstr ""
 
 #empty strings from id 483 to 576
@@ -11499,31 +11499,31 @@ msgid "Sorry, No items have been added yet. Please check the Help section "
 msgstr ""
 
 msgctxt "#746"
-msgid "for information on adding Movies and/or TV shows to Plex."
+msgid "for information on adding Movies and/or TV shows to Plex/HT."
 msgstr ""
 
 #empty strings from id 747 to 790
 
 msgctxt "#791"
-msgid "Allow programs on this system to control Plex"
+msgid "Allow programs on this system to control Plex/HT"
 msgstr ""
 
 #empty strings from id 792 to 793
 
 msgctxt "#794"
-msgid "Allow programs on other systems to control Plex"
+msgid "Allow programs on other systems to control Plex/HT"
 msgstr ""
 
 #empty strings from id 795 to 1001
 
 msgctxt "#1002"
-msgid "Plex was unable to connect to the network location."
+msgid "Plex/HT was unable to connect to the network location."
 msgstr ""
 
 #empty strings from id 1003 to 1269
 
 msgctxt "#1270"
-msgid "Allow Plex to receive AirPlay content"
+msgid "Allow Plex/HT to receive AirPlay content"
 msgstr ""
 
 #empty strings from id 1271 to 13133
@@ -11555,7 +11555,7 @@ msgstr ""
 #empty string with id 13140
 
 msgctxt "#13141"
-msgid "If you proceed, you might not be able to control Plex"
+msgid "If you proceed, you might not be able to control Plex/HT"
 msgstr ""
 
 #empty string with id 13142
@@ -11567,7 +11567,7 @@ msgstr ""
 #empty strings from id 13144 to 13145
 
 msgctxt "#13146"
-msgid "Plex, changing this setting might affect your ability"
+msgid "Plex/HT, changing this setting might affect your ability"
 msgstr ""
 
 #empty string with id 13147
@@ -11609,13 +11609,13 @@ msgstr ""
 #empty strings from id 13186 to 13308
 
 msgctxt "#13309"
-msgid "instead of just Plex?"
+msgid "instead of just Plex/HT?"
 msgstr ""
 
 #empty strings from id 13310 to 13601
 
 msgctxt "#13602"
-msgid "Allow start of Plex using the remote"
+msgid "Allow start of Plex/HT using the remote"
 msgstr ""
 
 #empty strings from id 13603 to 13621
@@ -11677,7 +11677,7 @@ msgstr ""
 #empty string with id 14038
 
 msgctxt "#14039"
-msgid "Plex requires a restart to change your"
+msgid "Plex/HT requires a restart to change your"
 msgstr ""
 
 #empty strings from id 14040 to 15149
@@ -11689,7 +11689,7 @@ msgstr ""
 #empty strings from id 15151 to 15204
 
 msgctxt "#15205"
-msgid "Please update Plex"
+msgid "Please update Plex/HT"
 msgstr ""
 
 #empty strings from id 15206 to 16000
@@ -11780,7 +11780,7 @@ msgstr ""
 #empty strings from id 19022 to 20008
 
 msgctxt "#20009"
-msgid "Use Plex"
+msgid "Use Plex/HT"
 msgstr ""
 
 #empty strings from id 20010 to 20249
@@ -11792,39 +11792,39 @@ msgstr ""
 #empty strings from id 20251 to 20340
 
 msgctxt "#20341"
-msgid "this path from the Plex library?"
+msgid "this path from the Plex/HT library?"
 msgstr ""
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex via UPnP"
+msgid "Allow control of Plex/HT via UPnP"
 msgstr ""
 
 #empty strings from id 21882 to 33074
 
 msgctxt "#33075"
-msgid "Plex revision of %s or greater to run."
+msgid "Plex/HT revision of %s or greater to run."
 msgstr ""
 
 msgctxt "#33076"
-msgid "Please update Plex."
+msgid "Please update Plex/HT."
 msgstr ""
 
 #empty strings from id 33077 to 36006
 
 msgctxt "#36007"
-msgid "Power on the TV when starting Plex"
+msgid "Power on the TV when starting Plex/HT"
 msgstr ""
 
 msgctxt "#36008"
-msgid "Power off devices when stopping Plex"
+msgid "Power off devices when stopping Plex/HT"
 msgstr ""
 
 #empty strings from id 36009 to 36012
 
 msgctxt "#36013"
-msgid "Unsupported libcec interface version. %d is greater than the version Plex supports (%d)"
+msgid "Unsupported libcec interface version. %d is greater than the version Plex/HT supports (%d)"
 msgstr ""
 
 #empty strings from id 36014 to 39999
@@ -11842,7 +11842,7 @@ msgid "Install with Software Update"
 msgstr ""
 
 msgctxt "#40003"
-msgid "A new version of Plex is available."
+msgid "A new version of Plex/HT is available."
 msgstr ""
 
 msgctxt "#40004"
@@ -11854,11 +11854,11 @@ msgid "Would you like to download and install it now?"
 msgstr ""
 
 msgctxt "#40006"
-msgid "You currently have the latest version of Plex (%@)"
+msgid "You currently have the latest version of Plex/HT (%@)"
 msgstr ""
 
 msgctxt "#40007"
-msgid "Downloading Plex update"
+msgid "Downloading Plex/HT update"
 msgstr ""
 
 msgctxt "#40008"
@@ -11870,11 +11870,11 @@ msgid "%@ downloaded"
 msgstr ""
 
 msgctxt "#40010"
-msgid "Extracting Plex update"
+msgid "Extracting Plex/HT update"
 msgstr ""
 
 msgctxt "#40011"
-msgid "Installing Plex update"
+msgid "Installing Plex/HT update"
 msgstr ""
 
 msgctxt "#40012"
@@ -11922,7 +11922,7 @@ msgid "Check for Updates Automatically?"
 msgstr ""
 
 msgctxt "#40023"
-msgid "Would you like Plex to alert you when updates"
+msgid "Would you like Plex/HT to alert you when updates"
 msgstr ""
 
 msgctxt "#40024"
@@ -12080,7 +12080,7 @@ msgstr ""
 #empty string with id 40309
 
 msgctxt "#40310"
-msgid "Plex will quit at"
+msgid "Plex/HT will quit at"
 msgstr ""
 
 msgctxt "#40311"

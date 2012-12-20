@@ -597,6 +597,7 @@ void CApplication::Preflight()
 #endif
 
   // run any platform preflight scripts.
+#ifndef __PLEX__
 #if defined(TARGET_DARWIN_OSX)
   CStdString install_path;
 
@@ -604,6 +605,7 @@ void CApplication::Preflight()
   setenv("XBMC_HOME", install_path.c_str(), 0);
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());
+#endif
 #endif
 }
 

@@ -36,7 +36,7 @@ CAutoUpdateFunctionsXBMC::FetchUrlData(const std::string &url, std::string &data
 {
   CCurlFile http;
   CStdString htmlData;
-  http.SetRequestHeader("X-Plex-Client", "Plex Media Center");
+  http.SetRequestHeader("X-Plex-Client", PLEX_TARGET_NAME);
   bool ret = http.Get(url, htmlData);
   data = htmlData;
   return ret;

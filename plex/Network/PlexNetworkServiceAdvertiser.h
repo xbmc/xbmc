@@ -30,7 +30,7 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
     headers["Name"] = PlexUtils::GetHostName();
     headers["Port"] = g_guiSettings.GetString("services.webserverport");
     headers["Version"] = g_infoManager.GetVersion();
-    headers["Product"] = "Plex Media Center (frodo)";
+    headers["Product"] = PLEX_TARGET_NAME;
     headers["Protocol"] = "xbmcjson";
   }
   

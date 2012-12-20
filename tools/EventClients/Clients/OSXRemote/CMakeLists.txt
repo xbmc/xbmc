@@ -17,4 +17,4 @@ target_link_libraries(PlexHelper
   ${CONFIG_LIBRARY_CARBON}
 )
 
-install(TARGETS PlexHelper DESTINATION Plex.app/Contents/Resources/XBMC/tools/darwin/runtime)
+install(TARGETS PlexHelper DESTINATION "Plex Home Theater.app/Contents/Resources/XBMC/tools/darwin/runtime")
