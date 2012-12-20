@@ -120,10 +120,11 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   bool success = false;
 #ifdef HAS_PYTHON
   CStdString file = m_addon->LibPath();
-  if (g_pythonParser.evalFile(file, argv,m_addon) >= 0)
+  int id = g_pythonParser.evalFile(file, argv,m_addon);
+  if (id >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
-    success = WaitOnScriptResult(file, scriptName, retrievingDir);
+    success = WaitOnScriptResult(file, id, scriptName, retrievingDir);
   }
   else
 #endif
@@ -457,7 +458,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   return false;
 }
 
-bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName, bool retrievingDir)
+bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, int scriptId, const CStdString &scriptName, bool retrievingDir)
 {
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
@@ -467,7 +468,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   bool cancelled = false;
   bool inMainAppThread = g_application.IsCurrentThread();
 
-  CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
+  CLog::Log(LOGDEBUG, "%s - waiting on the %s (id=%d) plugin...", __FUNCTION__, scriptName.c_str(), scriptId);
   while (true)
   {
     {
@@ -481,7 +482,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
     // check our script is still running
 #ifdef HAS_PYTHON
-    if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(scriptPath.c_str())))
+    if (!g_pythonParser.isRunning(scriptId))
 #endif
     { // check whether we exited normally
       if (!m_fetchComplete.WaitMSec(0))
@@ -536,11 +537,10 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     if (cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript)
     { // cancel our script
 #ifdef HAS_PYTHON
-      int id = g_pythonParser.getScriptId(scriptPath.c_str());
-      if (id != -1 && g_pythonParser.isRunning(id))
+      if (scriptId != -1 && g_pythonParser.isRunning(scriptId))
       {
-        CLog::Log(LOGDEBUG, "%s- cancelling plugin %s", __FUNCTION__, scriptName.c_str());
-        g_pythonParser.stopScript(id);
+        CLog::Log(LOGDEBUG, "%s- cancelling plugin %s (id=%d)", __FUNCTION__, scriptName.c_str(), scriptId);
+        g_pythonParser.stopScript(scriptId);
         break;
       }
 #endif
