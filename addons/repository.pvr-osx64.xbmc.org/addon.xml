@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.pvr-osx64.xbmc.org"
+		name="XBMC.org PVR Add-ons"
+		version="1.0.0"
+		provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.addon" version="12.0.0"/>
+  </requires>
+	<extension point="xbmc.addon.repository"
+		name="Official XBMC.org PVR Add-on Repository">
+		<info compressed="true">http://mirrors.xbmc.org/addons/frodo/pvr/osx64/addons.xml</info>
+		<checksum>http://mirrors.xbmc.org/addons/frodo/pvr/osx64/addons.xml.md5</checksum>
+		<datadir zip="true">http://mirrors.xbmc.org/addons/frodo/pvr/osx64</datadir>
+		<hashes>true</hashes>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Install PVR Add-ons from XBMC.org</summary>
+		<description lang="en">Download and install PVR add-ons from the Official XBMC.org addon repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All addons on this repository have under gone basic testing, if you find a broken or not working addon please report it to Team XBMC so we can take any action needed.</description>
+		<disclaimer lang="en">Team XBMC did not make all the add-ons on this repository and are not responsible for their content</disclaimer>
+		<platform>osx64</platform>
+	</extension>
+</addon>
