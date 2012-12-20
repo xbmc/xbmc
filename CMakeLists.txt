@@ -232,6 +232,8 @@ if(APPLE)
   set(CPACK_SYSTEM_NAME "macosx-x86")
 elseif(WIN32)
   set(CPACK_SYSTEM_NAME "windows-x86")
+  # use a shorter path to hopefully avoid stupid windows 260 chars path.
+  set(CPACK_PACKAGE_DIRECTORY "C:/tmp")
 else()
   set(CPACK_SYSTEM_NAME "linux-${CMAKE_PROCESSOR_NAME}")
 endif()
