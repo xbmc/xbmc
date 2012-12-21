@@ -1884,7 +1884,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
       g_guiSettings.GetBool("videolibrary.groupmoviesets"))
   {
     CFileItemList groupedItems;
-    if (GroupUtils::Group(GroupBySet, items, groupedItems, GroupAttributeIgnoreSingleItems))
+    if (GroupUtils::Group(GroupBySet, m_strFilterPath, items, groupedItems, GroupAttributeIgnoreSingleItems))
     {
       items.ClearItems();
       items.Append(groupedItems);

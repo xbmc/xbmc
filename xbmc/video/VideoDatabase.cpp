@@ -4953,7 +4953,7 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
       return false;
 
     CFileItemList sets;
-    if (!GroupUtils::Group(GroupBySet, items, sets))
+    if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets))
       return false;
 
     items.ClearItems();
