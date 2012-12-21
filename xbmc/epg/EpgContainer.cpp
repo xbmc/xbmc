@@ -100,6 +100,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     m_epgs.clear();
     m_iNextEpgUpdate  = 0;
     m_bIsInitialising = true;
+    m_iNextEpgId = 0;
   }
 
   /* clear the database entries */
@@ -173,6 +174,8 @@ void CEpgContainer::LoadFromDB(void)
 
   if (!m_database.IsOpen())
     m_database.Open();
+
+  m_iNextEpgId = m_database.GetLastEPGId();
 
   bool bLoaded(true);
   unsigned int iCounter(0);
