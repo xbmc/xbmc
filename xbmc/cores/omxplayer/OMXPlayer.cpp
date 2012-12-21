@@ -421,6 +421,8 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_EdlAutoSkipMarkers.Clear();
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
+
+  m_messenger.Init();
 }
 
 COMXPlayer::~COMXPlayer()
@@ -538,8 +540,6 @@ void COMXPlayer::OnStartup()
   m_CurrentAudio.Clear();
   m_CurrentSubtitle.Clear();
   m_CurrentTeletext.Clear();
-
-  m_messenger.Init();
 
   CUtil::ClearTempFonts();
 }
@@ -2391,8 +2391,6 @@ void COMXPlayer::SetPlaySpeed(int speed)
     return;
 
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
-  m_player_audio.SetSpeed(speed);
-  m_player_video.SetSpeed(speed);
   SynchronizeDemuxer(100);
 }
 
