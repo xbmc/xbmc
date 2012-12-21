@@ -517,6 +517,18 @@ bool CEpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     if (bShowProgress && !bOnlyPending)
       UpdateProgressDialog(++iCounter, m_epgs.size(), epg->Name());
 
+    // we currently only support update via pvr add-ons. skip update when the pvr manager isn't started
+    if (!g_PVRManager.IsStarted())
+      continue;
+
+    // check the pvr manager when the channel pointer isn't set
+    if (!epg->Channel())
+    {
+      CPVRChannelPtr channel = g_PVRChannelGroups->GetChannelByEpgId(epg->EpgID());
+      if (channel)
+        epg->SetChannel(channel);
+    }
+
     if ((!bOnlyPending || epg->UpdatePending()) && epg->Update(start, end, m_iUpdateTime, bOnlyPending))
       iUpdatedTables++;
     else if (!epg->IsValid())
