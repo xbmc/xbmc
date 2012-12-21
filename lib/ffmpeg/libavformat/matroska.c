@@ -59,6 +59,7 @@ const CodecTags ff_mkv_codec_tags[]={
     {"S_ASS"            , CODEC_ID_SSA},
     {"S_SSA"            , CODEC_ID_SSA},
     {"S_VOBSUB"         , CODEC_ID_DVD_SUBTITLE},
+    {"S_DVBSUB"         , CODEC_ID_DVB_SUBTITLE},
     {"S_HDMV/PGS"       , CODEC_ID_HDMV_PGS_SUBTITLE},
 
     {"V_DIRAC"          , CODEC_ID_DIRAC},
