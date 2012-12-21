@@ -19,21 +19,21 @@
  */
 
 #include "SmartPlayList.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "filesystem/SmartPlaylistDirectory.h"
+#include "Util.h"
+#include "XBDateTime.h"
 #include "filesystem/File.h"
+#include "filesystem/SmartPlaylistDirectory.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "video/VideoDatabase.h"
-#include "Util.h"
-#include "XBDateTime.h"
-#include "guilib/LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -120,22 +120,23 @@ typedef struct
   int localizedString;
 } operatorField;
 
-static const operatorField operators[] = { { "contains", CSmartPlaylistRule::OPERATOR_CONTAINS, 21400 },
-                                           { "doesnotcontain", CSmartPlaylistRule::OPERATOR_DOES_NOT_CONTAIN, 21401 },
-                                           { "is", CSmartPlaylistRule::OPERATOR_EQUALS, 21402 },
-                                           { "isnot", CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL, 21403 },
-                                           { "startswith", CSmartPlaylistRule::OPERATOR_STARTS_WITH, 21404 },
-                                           { "endswith", CSmartPlaylistRule::OPERATOR_ENDS_WITH, 21405 },
-                                           { "greaterthan", CSmartPlaylistRule::OPERATOR_GREATER_THAN, 21406 },
-                                           { "lessthan", CSmartPlaylistRule::OPERATOR_LESS_THAN, 21407 },
-                                           { "after", CSmartPlaylistRule::OPERATOR_AFTER, 21408 },
-                                           { "before", CSmartPlaylistRule::OPERATOR_BEFORE, 21409 },
-                                           { "inthelast", CSmartPlaylistRule::OPERATOR_IN_THE_LAST, 21410 },
-                                           { "notinthelast", CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST, 21411 },
-                                           { "true", CSmartPlaylistRule::OPERATOR_TRUE, 20122 },
-                                           { "false", CSmartPlaylistRule::OPERATOR_FALSE, 20424 },
-                                           { "between", CSmartPlaylistRule::OPERATOR_BETWEEN, 21456 }
-                                         };
+static const operatorField operators[] = {
+  { "contains",        CSmartPlaylistRule::OPERATOR_CONTAINS,          21400 },
+  { "doesnotcontain",  CSmartPlaylistRule::OPERATOR_DOES_NOT_CONTAIN,  21401 },
+  { "is",              CSmartPlaylistRule::OPERATOR_EQUALS,            21402 },
+  { "isnot",           CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL,    21403 },
+  { "startswith",      CSmartPlaylistRule::OPERATOR_STARTS_WITH,       21404 },
+  { "endswith",        CSmartPlaylistRule::OPERATOR_ENDS_WITH,         21405 },
+  { "greaterthan",     CSmartPlaylistRule::OPERATOR_GREATER_THAN,      21406 },
+  { "lessthan",        CSmartPlaylistRule::OPERATOR_LESS_THAN,         21407 },
+  { "after",           CSmartPlaylistRule::OPERATOR_AFTER,             21408 },
+  { "before",          CSmartPlaylistRule::OPERATOR_BEFORE,            21409 },
+  { "inthelast",       CSmartPlaylistRule::OPERATOR_IN_THE_LAST,       21410 },
+  { "notinthelast",    CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST,   21411 },
+  { "true",            CSmartPlaylistRule::OPERATOR_TRUE,              20122 },
+  { "false",           CSmartPlaylistRule::OPERATOR_FALSE,             20424 },
+  { "between",         CSmartPlaylistRule::OPERATOR_BETWEEN,           21456 }
+};
 
 #define NUM_OPERATORS sizeof(operators) / sizeof(operatorField)
 
