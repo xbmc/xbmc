@@ -48,16 +48,10 @@ public:
   virtual bool  ShowWindow(bool show);
 
 protected:
-  int get_sysfs_str(const char *path, char *valstr, const int size) const;
-  int set_sysfs_str(const char *path, const char *val) const;
-  int set_sysfs_int(const char *path, const int val) const;
-  int get_sysfs_int(const char *path) const;
-
   bool SetDisplayResolution(const char *resolution);
   bool ModeToResolution(const char *mode, RESOLUTION_INFO *res) const;
   void EnableFreeScale();
   void DisableFreeScale();
-  void SetCpuMinLimit(bool limit);
 
 private:
   std::string m_framebuffer_name;

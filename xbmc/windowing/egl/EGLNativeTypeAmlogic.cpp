@@ -17,13 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include <EGL/egl.h>
+
 #include "EGLNativeTypeAmlogic.h"
+#include "guilib/gui3d.h"
+#include "utils/AMLUtils.h"
+#include "utils/StringUtils.h"
+
 #include <stdlib.h>
 #include <linux/fb.h>
 #include <sys/ioctl.h>
-#include "utils/StringUtils.h"
-#include "guilib/gui3d.h"
+#include <EGL/egl.h>
 
 CEGLNativeTypeAmlogic::CEGLNativeTypeAmlogic()
 {
@@ -49,7 +52,7 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
   char name[256] = {0};
   std::string modalias = "/sys/class/graphics/" + m_framebuffer_name + "/device/modalias";
 
-  get_sysfs_str(modalias.c_str(), name, 255);
+  aml_get_sysfs_str(modalias.c_str(), name, 255);
   CStdString strName = name;
   strName.Trim();
   if (strName == "platform:mesonfb")
@@ -59,12 +62,12 @@ bool CEGLNativeTypeAmlogic::CheckCompatibility()
 
 void CEGLNativeTypeAmlogic::Initialize()
 {
-  SetCpuMinLimit(true);
+  aml_cpufreq_limit(true);
   return;
 }
 void CEGLNativeTypeAmlogic::Destroy()
 {
-  SetCpuMinLimit(false);
+  aml_cpufreq_limit(false);
   return;
 }
 
@@ -122,7 +125,7 @@ bool CEGLNativeTypeAmlogic::DestroyNativeWindow()
 bool CEGLNativeTypeAmlogic::GetNativeResolution(RESOLUTION_INFO *res) const
 {
   char mode[256] = {0};
-  get_sysfs_str("/sys/class/display/mode", mode, 255);
+  aml_get_sysfs_str("/sys/class/display/mode", mode, 255);
   return ModeToResolution(mode, res);
 }
 
@@ -162,7 +165,7 @@ bool CEGLNativeTypeAmlogic::SetNativeResolution(const RESOLUTION_INFO &res)
 bool CEGLNativeTypeAmlogic::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
   char valstr[256] = {0};
-  get_sysfs_str("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr, 255);
+  aml_get_sysfs_str("/sys/class/amhdmitx/amhdmitx0/disp_cap", valstr, 255);
   std::vector<CStdString> probe_str;
   StringUtils::SplitString(valstr, "\n", probe_str);
 
@@ -197,73 +200,15 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
 bool CEGLNativeTypeAmlogic::ShowWindow(bool show)
 {
   std::string blank_framebuffer = "/sys/class/graphics/" + m_framebuffer_name + "/blank";
-  set_sysfs_int(blank_framebuffer.c_str(), show ? 0 : 1);
+  aml_set_sysfs_int(blank_framebuffer.c_str(), show ? 0 : 1);
   return true;
-}
-
-int CEGLNativeTypeAmlogic::get_sysfs_str(const char *path, char *valstr, const int size) const
-{
-  int fd = open(path, O_RDONLY);
-  if (fd >= 0)
-  {
-    int len = read(fd, valstr, size - 1);
-    if (len != -1 )
-      valstr[len] = '\0';
-    close(fd);
-  }
-  else
-  {
-    sprintf(valstr, "%s", "fail");
-    return -1;
-  }
-  return 0;
-}
-
-int CEGLNativeTypeAmlogic::set_sysfs_str(const char *path, const char *val) const
-{
-  int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
-  if (fd >= 0)
-  {
-    write(fd, val, strlen(val));
-    close(fd);
-    return 0;
-  }
-  return -1;
-}
-
-int CEGLNativeTypeAmlogic::set_sysfs_int(const char *path, const int val) const
-{
-  char bcmd[16];
-  int fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0644);
-  if (fd >= 0)
-  {
-    sprintf(bcmd, "%d", val);
-    write(fd, bcmd, strlen(bcmd));
-    close(fd);
-    return 0;
-  }
-  return -1;
-}
-
-int CEGLNativeTypeAmlogic::get_sysfs_int(const char *path) const
-{
-  int val = 0;
-  char bcmd[16];
-  int fd = open(path, O_RDONLY);
-  if (fd >= 0)
-  {
-    read(fd, bcmd, sizeof(bcmd));
-    val = strtol(bcmd, NULL, 16);
-    close(fd);
-  }
-  return val;
 }
 
 bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
 {
   CStdString modestr = resolution;
   // switch display resolution
-  set_sysfs_str("/sys/class/display/mode", modestr.c_str());
+  aml_set_sysfs_str("/sys/class/display/mode", modestr.c_str());
   usleep(500 * 1000);
 
   // setup gui freescale depending on display resolution
@@ -361,67 +306,67 @@ bool CEGLNativeTypeAmlogic::ModeToResolution(const char *mode, RESOLUTION_INFO *
 void CEGLNativeTypeAmlogic::EnableFreeScale()
 {
   // remove default OSD and video path (default_osd default)
-  set_sysfs_str("/sys/class/vfm/map", "rm all");
+  aml_set_sysfs_str("/sys/class/vfm/map", "rm all");
   usleep(60 * 1000);
 
   // add OSD path
-  set_sysfs_str("/sys/class/vfm/map", "add osdpath osd amvideo");
+  aml_set_sysfs_str("/sys/class/vfm/map", "add osdpath osd amvideo");
   // enable OSD free scale using frame buffer size of 720p
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
   usleep(60 * 1000);
   // remove OSD path
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  set_sysfs_str("/sys/class/vfm/map", "rm osdpath");
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  aml_set_sysfs_str("/sys/class/vfm/map", "rm osdpath");
   usleep(60 * 1000);
   // add video path
-  set_sysfs_str("/sys/class/vfm/map", "add videopath decoder ppmgr amvideo");
+  aml_set_sysfs_str("/sys/class/vfm/map", "add videopath decoder ppmgr amvideo");
   // enable video free scale (scaling to 1920x1080 with frame buffer size 1280x720)
-  set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
-  set_sysfs_int("/sys/class/video/disable_video", 1);
-  set_sysfs_int("/sys/class/ppmgr/ppscaler", 1);
-  set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1919 1079 0");
-  set_sysfs_str("/sys/class/ppmgr/disp", "1280 720");
+  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
+  aml_set_sysfs_int("/sys/class/video/disable_video", 1);
+  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 1);
+  aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1919 1079 0");
+  aml_set_sysfs_str("/sys/class/ppmgr/disp", "1280 720");
   usleep(60 * 1000);
   //
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
-  set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
   usleep(60 * 1000);
   //
-  set_sysfs_int("/sys/class/video/disable_video", 2);
-  set_sysfs_str("/sys/class/display/axis", "0 0 1279 719 0 0 0 0");
-  set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1279 719 1");
+  aml_set_sysfs_int("/sys/class/video/disable_video", 2);
+  aml_set_sysfs_str("/sys/class/display/axis", "0 0 1279 719 0 0 0 0");
+  aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1279 719 1");
 }
 
 void CEGLNativeTypeAmlogic::DisableFreeScale()
 {
   // turn off frame buffer freescale
-  set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
-  set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
-  set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
-  set_sysfs_str("/sys/class/display/wr_reg", "m 0x1d26 '0x00b1'");
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  aml_set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
+  aml_set_sysfs_str("/sys/class/display/wr_reg", "m 0x1d26 '0x00b1'");
   usleep(60 * 1000);
   // revert to default video paths
-  set_sysfs_str("/sys/class/vfm/map", "rm all");
-  set_sysfs_str("/sys/class/vfm/map", "add default_osd osd amvideo");
-  set_sysfs_str("/sys/class/vfm/map", "add default decoder ppmgr amvideo");
+  aml_set_sysfs_str("/sys/class/vfm/map", "rm all");
+  aml_set_sysfs_str("/sys/class/vfm/map", "add default_osd osd amvideo");
+  aml_set_sysfs_str("/sys/class/vfm/map", "add default decoder ppmgr amvideo");
   usleep(60 * 1000);
   // disable post processing scaler and disable_video special mode
-  set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
-  set_sysfs_int("/sys/class/video/disable_video", 0);
+  aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
+  aml_set_sysfs_int("/sys/class/video/disable_video", 0);
   usleep(60 * 1000);
 
   // revert display axis
@@ -435,29 +380,8 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
     {
       char daxis_str[255] = {0};
       sprintf(daxis_str, "%d %d %d %d 0 0 0 0", 0, 0, vinfo.xres, vinfo.yres);
-      set_sysfs_str("/sys/class/display/axis", daxis_str);
+      aml_set_sysfs_str("/sys/class/display/axis", daxis_str);
     }
     close(fd0);
   }
-}
-
-void CEGLNativeTypeAmlogic::SetCpuMinLimit(bool limit)
-{
-  // when playing hw decoded audio, we cannot drop below 600MHz
-  // or risk hw audio issues. AML code does a 2X scaling based off
-  // /sys/class/audiodsp/codec_mips but tests show that this is
-  // seems risky so we just clamp to 600Mhz to be safe.
-
-  // only adjust if we are running "ondemand"
-  char scaling_governor[256] = {0};
-  get_sysfs_str("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", scaling_governor, 255);
-  if (strncmp(scaling_governor, "ondemand", 255))
-    return;
-
-  int freq;
-  if (limit)
-    freq = 600000;
-  else
-    freq = get_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq");
-  set_sysfs_int("/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq", freq);
 }
