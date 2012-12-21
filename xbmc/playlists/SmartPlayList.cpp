@@ -140,6 +140,31 @@ static const operatorField operators[] = {
 
 #define NUM_OPERATORS sizeof(operators) / sizeof(operatorField)
 
+typedef struct
+{
+  std::string name;
+  Field field;
+  bool canMix;
+  int localizedString;
+} group;
+
+static const group groups[] = { { "",           FieldUnknown,   false,    571 },
+                                { "none",       FieldNone,      false,    231 },
+                                { "sets",       FieldSet,       true,   20434 },
+                                { "genres",     FieldGenre,     false,    135 },
+                                { "years",      FieldYear,      false,    652 },
+                                { "actors",     FieldActor,     false,    344 },
+                                { "directors",  FieldDirector,  false,  20348 },
+                                { "writers",    FieldWriter,    false,  20418 },
+                                { "studios",    FieldStudio,    false,  20388 },
+                                { "countries",  FieldCountry,   false,  20451 },
+                                { "artists",    FieldArtist,    false,    133 },
+                                { "albums",     FieldAlbum,     false,    132 },
+                                { "tags",       FieldTag,       false,  20459 },
+                              };
+
+#define NUM_GROUPS sizeof(groups) / sizeof(group)
+
 CSmartPlaylistRule::CSmartPlaylistRule()
 {
   m_field = FieldNone;
@@ -323,6 +348,28 @@ CStdString CSmartPlaylistRule::TranslateOperator(SEARCH_OPERATOR oper)
   for (unsigned int i = 0; i < NUM_OPERATORS; i++)
     if (oper == operators[i].op) return operators[i].string;
   return "contains";
+}
+
+Field CSmartPlaylistRule::TranslateGroup(const char *group)
+{
+  for (unsigned int i = 0; i < NUM_GROUPS; i++)
+  {
+    if (StringUtils::EqualsNoCase(group, groups[i].name))
+      return groups[i].field;
+  }
+
+  return FieldUnknown;
+}
+
+CStdString CSmartPlaylistRule::TranslateGroup(Field group)
+{
+  for (unsigned int i = 0; i < NUM_GROUPS; i++)
+  {
+    if (group == groups[i].field)
+      return groups[i].name;
+  }
+
+  return "";
 }
 
 CStdString CSmartPlaylistRule::GetLocalizedField(Field field)
@@ -619,11 +666,84 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const CStdString &type)
   return orders;
 }
 
+std::vector<Field> CSmartPlaylistRule::GetGroups(const CStdString &type)
+{
+  vector<Field> groups;
+  groups.push_back(FieldUnknown);
+
+  if (type == "artists")
+    groups.push_back(FieldGenre);
+  else if (type == "albums")
+    groups.push_back(FieldYear);
+  if (type == "movies")
+  {
+    groups.push_back(FieldNone);
+    groups.push_back(FieldSet);
+    groups.push_back(FieldGenre);
+    groups.push_back(FieldYear);
+    groups.push_back(FieldActor);
+    groups.push_back(FieldDirector);
+    groups.push_back(FieldWriter);
+    groups.push_back(FieldStudio);
+    groups.push_back(FieldCountry);
+    groups.push_back(FieldTag);
+  }
+  else if (type == "tvshows")
+  {
+    groups.push_back(FieldGenre);
+    groups.push_back(FieldYear);
+    groups.push_back(FieldActor);
+    groups.push_back(FieldDirector);
+    groups.push_back(FieldStudio);
+    groups.push_back(FieldTag);
+  }
+  else if (type == "episodes")
+  {
+    groups.push_back(FieldActor);
+    groups.push_back(FieldDirector);
+    groups.push_back(FieldWriter);
+  }
+  else if (type == "musicvideos")
+  {
+    groups.push_back(FieldArtist);
+    groups.push_back(FieldAlbum);
+    groups.push_back(FieldGenre);
+    groups.push_back(FieldYear);
+    groups.push_back(FieldDirector);
+    groups.push_back(FieldStudio);
+    groups.push_back(FieldTag);
+  }
+
+  return groups;
+}
+
 CStdString CSmartPlaylistRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
 {
   for (unsigned int i = 0; i < NUM_OPERATORS; i++)
     if (oper == operators[i].op) return g_localizeStrings.Get(operators[i].localizedString);
   return g_localizeStrings.Get(16018);
+}
+
+CStdString CSmartPlaylistRule::GetLocalizedGroup(Field group)
+{
+  for (unsigned int i = 0; i < NUM_GROUPS; i++)
+  {
+    if (group == groups[i].field)
+      return g_localizeStrings.Get(groups[i].localizedString);
+  }
+
+  return g_localizeStrings.Get(groups[0].localizedString);
+}
+
+bool CSmartPlaylistRule::CanGroupMix(Field group)
+{
+  for (unsigned int i = 0; i < NUM_GROUPS; i++)
+  {
+    if (group == groups[i].field)
+      return groups[i].canMix;
+  }
+
+  return false;
 }
 
 CStdString CSmartPlaylistRule::GetLocalizedRule() const

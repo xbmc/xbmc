@@ -35,6 +35,7 @@ namespace dbiplus
 
 typedef enum {
   // special fields used during sorting
+  FieldUnknown = -1,
   FieldNone = 0,
   FieldSort,        // used to store the string to use for sorting
   FieldSortSpecial, // whether the item needs special handling (0 = no, 1 = sort on top, 2 = sort on bottom)

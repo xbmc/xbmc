@@ -86,11 +86,17 @@ public:
   static CStdString           TranslateOrder(SortBy order);
   static CStdString           GetField(Field field, const CStdString& strType);
   static CStdString           TranslateOperator(SEARCH_OPERATOR oper);
+  static Field                TranslateGroup(const char *group);
+  static CStdString           TranslateGroup(Field group);
 
   static CStdString           GetLocalizedField(Field field);
   static CStdString           GetLocalizedOperator(SEARCH_OPERATOR oper);
+  static CStdString           GetLocalizedGroup(Field group);
+  static bool                 CanGroupMix(Field group);
+
   static std::vector<Field>   GetFields(const CStdString &type);
   static std::vector<SortBy>  GetOrders(const CStdString &type);
+  static std::vector<Field>   GetGroups(const CStdString &type);
   static FIELD_TYPE           GetFieldType(Field field);
   static bool                 IsFieldBrowseable(Field field);
 
