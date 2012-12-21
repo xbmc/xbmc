@@ -58,4 +58,7 @@ protected:
   void EnableFreeScale();
   void DisableFreeScale();
   void SetCpuMinLimit(bool limit);
+
+private:
+  std::string m_framebuffer_name;
 };

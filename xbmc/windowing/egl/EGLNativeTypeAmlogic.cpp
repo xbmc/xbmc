@@ -24,10 +24,19 @@
 #include <sys/ioctl.h>
 #include "utils/StringUtils.h"
 #include "guilib/gui3d.h"
-#define m_framebuffer_name "fb0"
 
 CEGLNativeTypeAmlogic::CEGLNativeTypeAmlogic()
 {
+  const char *env_framebuffer = getenv("FRAMEBUFFER");
+
+  // default to framebuffer 0
+  m_framebuffer_name = "fb0";
+  if (env_framebuffer)
+  {
+    std::string framebuffer(env_framebuffer);
+    std::string::size_type start = framebuffer.find("fb");
+    m_framebuffer_name = framebuffer.substr(start);
+  }
   m_nativeWindow = NULL;
 }
 
@@ -38,7 +47,9 @@ CEGLNativeTypeAmlogic::~CEGLNativeTypeAmlogic()
 bool CEGLNativeTypeAmlogic::CheckCompatibility()
 {
   char name[256] = {0};
-  get_sysfs_str("/sys/class/graphics/fb0/device/modalias", name, 255);
+  std::string modalias = "/sys/class/graphics/" + m_framebuffer_name + "/device/modalias";
+
+  get_sysfs_str(modalias.c_str(), name, 255);
   CStdString strName = name;
   strName.Trim();
   if (strName == "platform:mesonfb")
@@ -185,7 +196,7 @@ bool CEGLNativeTypeAmlogic::GetPreferredResolution(RESOLUTION_INFO *res) const
 
 bool CEGLNativeTypeAmlogic::ShowWindow(bool show)
 {
-  std::string blank_framebuffer = "/sys/class/graphics/fb0/blank";
+  std::string blank_framebuffer = "/sys/class/graphics/" + m_framebuffer_name + "/blank";
   set_sysfs_int(blank_framebuffer.c_str(), show ? 0 : 1);
   return true;
 }
@@ -253,7 +264,7 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
   CStdString modestr = resolution;
   // switch display resolution
   set_sysfs_str("/sys/class/display/mode", modestr.c_str());
-  usleep(250 * 1000);
+  usleep(500 * 1000);
 
   // setup gui freescale depending on display resolution
   DisableFreeScale();
@@ -400,17 +411,22 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
   // turn off frame buffer freescale
   set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
   set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
+  set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
+  set_sysfs_str("/sys/class/display/wr_reg", "m 0x1d26 '0x00b1'");
+  usleep(60 * 1000);
   // revert to default video paths
   set_sysfs_str("/sys/class/vfm/map", "rm all");
   set_sysfs_str("/sys/class/vfm/map", "add default_osd osd amvideo");
   set_sysfs_str("/sys/class/vfm/map", "add default decoder ppmgr amvideo");
+  usleep(60 * 1000);
   // disable post processing scaler and disable_video special mode
   set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
   set_sysfs_int("/sys/class/video/disable_video", 0);
+  usleep(60 * 1000);
 
   // revert display axis
   int fd0;
-  std::string framebuffer = "/dev/fb0";
+  std::string framebuffer = "/dev/" + m_framebuffer_name;
 
   if ((fd0 = open(framebuffer.c_str(), O_RDWR)) >= 0)
   {
