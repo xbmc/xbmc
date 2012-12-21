@@ -645,7 +645,11 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   double error = m_dvdAudio.GetPlayingPts() - clock;
   int64_t now;
 
+#if defined(TARGET_ANDROID)
+  if( fabs(error) > DVD_MSEC_TO_TIME(250) || m_syncclock )
+#else
   if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
+#endif
   {
     m_pClock->Discontinuity(clock+error);
     if(m_speed == DVD_PLAYSPEED_NORMAL)
