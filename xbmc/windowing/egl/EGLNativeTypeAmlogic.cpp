@@ -28,6 +28,7 @@
 
 CEGLNativeTypeAmlogic::CEGLNativeTypeAmlogic()
 {
+  m_nativeWindow = NULL;
 }
 
 CEGLNativeTypeAmlogic::~CEGLNativeTypeAmlogic()
@@ -101,7 +102,7 @@ bool CEGLNativeTypeAmlogic::DestroyNativeDisplay()
 
 bool CEGLNativeTypeAmlogic::DestroyNativeWindow()
 {
-  free(m_nativeWindow);
+  delete (fbdev_window*)m_nativeWindow, m_nativeWindow = NULL;
   return true;
 }
 
