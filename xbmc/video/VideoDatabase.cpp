@@ -9648,9 +9648,10 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
 
     // check if the filter playlist matches the item type
     if (xsp.GetType() == itemType ||
+       (xsp.GetGroup() == itemType && !xsp.IsGroupMixed()) ||
         // handle episode listings with videodb://tvshows/titles/ which get the rest
         // of the path (season and episodeid) appended later
-        (xsp.GetType() == "episodes" && itemType == "tvshows"))
+       (xsp.GetType() == "episodes" && itemType == "tvshows"))
     {
       std::set<CStdString> playlists;
       filter.AppendWhere(xsp.GetWhereClause(*this, playlists));

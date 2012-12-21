@@ -1275,7 +1275,11 @@ bool CSmartPlaylist::Load(const CVariant &obj)
     m_ruleCombination.Load(obj["rules"]);
 
   if (obj.isMember("group") && obj["group"].isMember("type") && obj["group"]["type"].isString())
+  {
     m_group = obj["group"]["type"].asString();
+    if (obj["group"].isMember("mixed") && obj["group"]["mixed"].isBoolean())
+      m_groupMixed = obj["group"]["mixed"].asBoolean();
+  }
 
   // now any limits
   if (obj.isMember("limit") && (obj["limit"].isInteger() || obj["limit"].isUnsignedInteger()) && obj["limit"].asUnsignedInteger() > 0)
@@ -1320,7 +1324,11 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encodi
 
   const TiXmlElement *groupElement = root->FirstChildElement("group");
   if (groupElement != NULL && groupElement->FirstChild() != NULL)
+  {
     m_group = groupElement->FirstChild()->ValueStr();
+    if (groupElement->QueryBoolAttribute("mixed", &m_groupMixed) != TIXML_SUCCESS)
+      m_groupMixed = false;
+  }
 
   // now any limits
   // format is <limit>25</limit>
@@ -1373,8 +1381,10 @@ bool CSmartPlaylist::Save(const CStdString &path) const
   // add <group> tag if necessary
   if (!m_group.empty())
   {
-    TiXmlText group(m_group.c_str());
     TiXmlElement nodeGroup("group");
+    if (m_groupMixed)
+      nodeGroup.SetAttribute("mixed", "true");
+    TiXmlText group(m_group.c_str());
     nodeGroup.InsertEndChild(group);
     pRoot->InsertEndChild(nodeGroup);
   }
@@ -1411,7 +1421,10 @@ bool CSmartPlaylist::Save(CVariant &obj, bool full /* = true */) const
 
   // add "group"
   if (!m_group.empty())
+  {
     obj["group"]["type"] = m_group;
+    obj["group"]["mixed"] = m_groupMixed;
+  }
 
   // add "limit"
   if (full && m_limit)
@@ -1448,6 +1461,7 @@ void CSmartPlaylist::Reset()
   m_orderDirection = SortOrderNone;
   m_playlistType = "songs"; // sane default
   m_group.clear();
+  m_groupMixed = false;
 }
 
 void CSmartPlaylist::SetName(const CStdString &name)

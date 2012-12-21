@@ -187,6 +187,8 @@ public:
 
   void SetGroup(const CStdString &group) { m_group = group; }
   const CStdString& GetGroup() const { return m_group; }
+  void SetGroupMixed(bool mixed) { m_groupMixed = mixed; }
+  bool IsGroupMixed() const { return m_groupMixed; }
 
   /*! \brief get the where clause for a playlist
    We handle playlists inside playlists separately in order to ensure we don't introduce infinite loops
@@ -222,6 +224,7 @@ private:
   SortBy m_orderField;
   SortOrder m_orderDirection;
   CStdString m_group;
+  bool m_groupMixed;
 
   CXBMCTinyXML m_xmlDoc;
 };

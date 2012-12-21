@@ -5507,7 +5507,8 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
       return false;
 
     // check if the filter playlist matches the item type
-    if (xsp.GetType() != "artists" || xsp.GetType()  == type)
+    if (xsp.GetType()  == type ||
+       (xsp.GetGroup() == type && !xsp.IsGroupMixed()))
     {
       std::set<CStdString> playlists;
       filter.AppendWhere(xsp.GetWhereClause(*this, playlists));
