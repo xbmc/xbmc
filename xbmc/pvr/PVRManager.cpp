@@ -277,9 +277,6 @@ void CPVRManager::Stop(void)
 
   SetState(ManagerStateStopping);
 
-  if (g_windowManager.GetActiveWindow() == WINDOW_PVR)
-    g_windowManager.ActivateWindow(WINDOW_HOME);
-
   /* stop the EPG updater, since it might be using the pvr add-ons */
   g_EpgContainer.Stop();
 
@@ -378,6 +375,11 @@ void CPVRManager::Process(void)
   {
     CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
     CApplicationMessenger::Get().ExecBuiltIn("StartPVRManager", false);
+  }
+  else
+  {
+    if (g_windowManager.GetActiveWindow() == WINDOW_PVR)
+      g_windowManager.ActivateWindow(WINDOW_HOME);
   }
 }
 

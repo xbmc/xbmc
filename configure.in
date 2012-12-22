@@ -2723,7 +2723,7 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
     CXX="$CXX" \
     CFLAGS="$TEMPCFLAGS" \ 
     CXXFLAGS="$CXXFLAGS" \
-    `if test "$host_vendor" = "apple"; then echo --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib; fi` \
+    `if test "$host_vendor" = "apple"; then echo --with-png=${prefix} --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib; fi` \
     --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
     --host=$host_alias \
     --build=$build_alias \

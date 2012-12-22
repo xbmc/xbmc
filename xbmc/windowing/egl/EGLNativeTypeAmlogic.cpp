@@ -28,6 +28,7 @@
 
 CEGLNativeTypeAmlogic::CEGLNativeTypeAmlogic()
 {
+  m_nativeWindow = NULL;
 }
 
 CEGLNativeTypeAmlogic::~CEGLNativeTypeAmlogic()
@@ -101,7 +102,9 @@ bool CEGLNativeTypeAmlogic::DestroyNativeDisplay()
 
 bool CEGLNativeTypeAmlogic::DestroyNativeWindow()
 {
-  free(m_nativeWindow);
+#if defined(_FBDEV_WINDOW_H_)
+  delete (fbdev_window*)m_nativeWindow, m_nativeWindow = NULL;
+#endif
   return true;
 }
 
@@ -407,7 +410,7 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
 
   // revert display axis
   int fd0;
-  std::string framebuffer = "/dev/fbo";
+  std::string framebuffer = "/dev/fb0";
 
   if ((fd0 = open(framebuffer.c_str(), O_RDWR)) >= 0)
   {

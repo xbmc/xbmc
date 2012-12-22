@@ -1070,10 +1070,16 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results)
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < m_members.size(); iChannelPtr++)
   {
-    if (!m_members.at(iChannelPtr).channel || m_members.at(iChannelPtr).channel->IsHidden())
-      continue;
-
-    m_members.at(iChannelPtr).channel->GetEPG(results);
+    if (m_members.at(iChannelPtr).channel && !m_members.at(iChannelPtr).channel->IsHidden())
+    {
+      CEpg* epg = m_members.at(iChannelPtr).channel->GetEPG();
+      if (epg)
+      {
+        // XXX channel pointers aren't set in some occasions. this works around the issue, but is not very nice
+        epg->SetChannel(m_members.at(iChannelPtr).channel);
+        epg->Get(results);
+      }
+    }
   }
 
   return results.Size() - iInitialSize;

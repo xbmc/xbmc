@@ -414,3 +414,12 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 
   return iReturn;
 }
+
+int CEpgDatabase::GetLastEPGId(void)
+{
+  CStdString strQuery = FormatSQL("SELECT MAX(idEpg) FROM epg");
+  CStdString strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    return atoi(strValue.c_str());
+  return 0;
+}

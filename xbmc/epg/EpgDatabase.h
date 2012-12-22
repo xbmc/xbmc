@@ -138,6 +138,11 @@ namespace EPG
      */
     virtual int Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true);
 
+    /*!
+     * @return Last EPG id in the database
+     */
+    int GetLastEPGId(void);
+
     //@}
 
   protected:
