@@ -1548,7 +1548,7 @@
 							<control type="textbox">
 								<description>Plot</description>
 								<width>InfoListTitleWidth</width>
-								<height>282</height>
+								<height>280</height>
 								<info>ListItem.plot</info>
 								<visible>Container.Content(tvshows)</visible>
 							</control>
