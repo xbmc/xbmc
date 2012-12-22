@@ -12295,11 +12295,11 @@ msgid "Hooray we are signed in!"
 msgstr ""
 
 msgctxt "#44200"
-msgid "Need myPlex login"
+msgid "PlexPass Required"
 msgstr ""
 
 msgctxt "#44201"
-msgid "You need to sign in to myPlex and subscribe to PlexPass"
+msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
 msgstr ""
 
 msgctxt "#44202"
@@ -12307,7 +12307,7 @@ msgid "Press OK to be taken to the Settings screen"
 msgstr ""
 
 msgctxt "#44203"
-msgid "PlexPass subscription needed"
+msgid "PlexPass Required"
 msgstr ""
 
 msgctxt "#44204"
