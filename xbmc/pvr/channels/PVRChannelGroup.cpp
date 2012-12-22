@@ -106,7 +106,6 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group)
   m_bChanged                    = group.m_bChanged;
   m_bUsingBackendChannelOrder   = group.m_bUsingBackendChannelOrder;
   m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
-  m_bIsDummy                    = group.m_bIsDummy;
 
   for (int iPtr = 0; iPtr < group.Size(); iPtr++)
     m_members.push_back(group.m_members.at(iPtr));

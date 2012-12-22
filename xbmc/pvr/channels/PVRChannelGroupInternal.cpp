@@ -103,10 +103,8 @@ void CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel, unsi
     m_members.push_back(newMember);
     m_bChanged = true;
 
-    if (!IsDummy()) {
-	CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - Group is not dummy, calling sort and renumber.",__FUNCTION__);
+    if (!IsDummy())
       SortAndRenumber();
-    }
   }
 }
 
@@ -308,6 +306,8 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
     if (!member.channel)
       continue;
 
+    SetIsDummy();
+
     /* check whether this channel is present in this container */
     CPVRChannelPtr existingChannel = GetByClient(member.channel->UniqueID(), member.channel->ClientID());
     if (existingChannel)
@@ -327,6 +327,10 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'", __FUNCTION__, m_bRadio ? "radio" : "TV", member.channel->ChannelName().c_str());
     }
   }
+
+  SetIsDummy(false);
+  if (m_bChanged)
+    SortAndRenumber();
 
   return bReturn;
 }
