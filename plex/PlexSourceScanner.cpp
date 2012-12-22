@@ -364,7 +364,7 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
         share.strPath = item->GetPath();
         share.m_strFanArtUrl = item->GetArt(PLEX_ART_FANART);
         share.m_ignore = true;        
-        share.m_strThumbnailImage = item->GetArt(PLEX_ART_FANART);;
+        share.m_strThumbnailImage = item->GetArt(PLEX_ART_THUMB);
                 
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
