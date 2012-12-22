@@ -103,7 +103,10 @@ void CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel, unsi
     m_members.push_back(newMember);
     m_bChanged = true;
 
-    SortAndRenumber();
+    if (!IsDummy()) {
+	CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - Group is not dummy, calling sort and renumber.",__FUNCTION__);
+      SortAndRenumber();
+    }
   }
 }
 
@@ -116,7 +119,13 @@ bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel &channel, int iChannelN
 bool CPVRChannelGroupInternal::Update(void)
 {
   CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
-  return PVRChannels_tmp.LoadFromClients() && UpdateGroupEntries(PVRChannels_tmp);
+  PVRChannels_tmp.SetIsDummy();
+  if (PVRChannels_tmp.LoadFromClients())
+  {
+    PVRChannels_tmp.SortAndRenumber();
+    return UpdateGroupEntries(PVRChannels_tmp);
+  }
+  return false;
 }
 
 bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
