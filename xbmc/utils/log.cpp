@@ -19,9 +19,8 @@
  */
 
 /* PLEX */
-#include <boost/regex.hpp>
-#include <boost/xpressive/xpressive.hpp>
 #include "AdvancedSettings.h"
+#include <stdexcept>
 /* END PLEX */
 
 #include "system.h"
@@ -37,11 +36,6 @@
 #elif defined(TARGET_WINDOWS)
 #include "win32/WIN32Util.h"
 #endif
-
-/* PLEX */
-using namespace boost;
-using namespace xpressive;
-/* END PLEX */
 
 #define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
 #define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
@@ -98,8 +92,10 @@ void CLog::Log(int loglevel, const char *format, ... )
     // Take out tokens.
     if (g_advancedSettings.m_bEnablePlexTokensInLogs == false && strData.find("X-Plex-Token") != std::string::npos)
     {
-      static sregex reToken = sregex::compile("X-Plex-Token=[0-9a-z]+", xpressive::regex_constants::icase);
-      strData = regex_replace(strData, reToken, "X-Plex-Token=<secret>");
+      int offset = strData.find("X-Plex-Token") + 13; // 13 == length of X-Plex-Token=
+
+      // NOTE we are assuming that tokens are 20 chars here
+      strData = strData.replace(offset, 20, "SECRETSTUFF");
     }
     /* END PLEX */
 
