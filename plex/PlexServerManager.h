@@ -245,7 +245,13 @@ public:
     PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, "", addr, port, ""));
     if (m_servers.find(server->key()) != m_servers.end())
     {
-      return m_servers[server->key()]->reachable();
+      bool isLive = m_servers[server->key()]->live;
+      bool isReachable = m_servers[server->key()]->reachable();
+
+      if (isLive != isReachable)
+        updateBestServer();
+
+      return isReachable;
     }
     return false;
   }

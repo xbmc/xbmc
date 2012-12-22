@@ -301,7 +301,11 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
     PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
     CStdString bestServerUrl;
     if(bestServer)
+    {
       bestServerUrl.Format("http://%s:%d/", bestServer->address, bestServer->port);
+      if (!bestServer->token.empty())
+        bestServerUrl += string("?X-Plex-Token=") + bestServer->token;
+    }
     else
       bestServerUrl = "http://127.0.0.1:32400/";
     
@@ -354,7 +358,9 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
 
       // Recently accessed.
       m_contentLists[CONTENT_LIST_RECENTLY_ACCESSED] = Group(kVIDEO_LOADER);
-      m_workerManager->enqueue(WINDOW_HOME, bestServerUrl + "channels/recentlyViewed?filter=" + filter, CONTENT_LIST_RECENTLY_ACCESSED);
+      CStdString filterUrl("channels/recentlyViewed?filter=");
+      filterUrl += filter;
+      m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, filterUrl), CONTENT_LIST_RECENTLY_ACCESSED);
 
       globalArt = false;
       m_globalArt = false;
@@ -367,7 +373,7 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
       m_globalArt = true;
       
       if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
-        m_workerManager->enqueue(WINDOW_HOME, bestServerUrl + "library/arts", CONTENT_LIST_FANART);
+        m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, "library/arts"), CONTENT_LIST_FANART);
       else
         SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
     }
@@ -527,6 +533,27 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
     UpdateSections();
 
+    if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
+    {
+      CGUIControl* pControl = (CGUIControl*)GetControl(SLIDESHOW_MULTIIMAGE);
+      if (pControl && !pControl->IsVisible())
+      {
+        PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
+        CStdString artUrl;
+        if (bestServer)
+          artUrl = PlexUtils::AppendPathToURL(bestServer->url(), "library/arts");
+        else
+          artUrl = "http://127.0.0.1:32400/library/arts";
+
+        m_workerManager->enqueue(WINDOW_HOME, artUrl, CONTENT_LIST_FANART);
+      }
+      else
+        SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
+    }
+    else
+      SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
+
+
     if (message.GetMessage() != GUI_MSG_UPDATE_MAIN_MENU)
     {
       // Reload if needed.
@@ -537,19 +564,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       }
       else
       {
-        if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
-        {
-          PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
-          CStdString artUrl;
-          if (bestServer)
-            artUrl.Format("http://%s:%d/library/arts", bestServer->address, bestServer->port);
-          else
-            artUrl = "http://127.0.0.1:32400/library/arts";
-
-          m_workerManager->enqueue(WINDOW_HOME, artUrl, CONTENT_LIST_FANART);
-        }
-        else
-          SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
       }
     }
   }

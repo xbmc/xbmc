@@ -22,6 +22,7 @@
 #include "PlexLibrarySectionManager.h"
 #include "URIUtils.h"
 #include "TextureCache.h"
+#include "PlexServerManager.h"
 
 map<std::string, HostSourcesPtr> CPlexSourceScanner::g_hostSourcesMap;
 boost::recursive_mutex CPlexSourceScanner::g_lock;
@@ -57,6 +58,18 @@ void CPlexSourceScanner::Process()
     bool onlyShared = false;
     string url = m_sources->url();
     dprintf("Plex Source Scanner using best URL %s", url.c_str());
+
+    CURL _url(url);
+    if (!PlexServerManager::Get().checkServerReachability(m_sources->uuid, m_sources->host, _url.GetPort()))
+    {
+      boost::recursive_mutex::scoped_lock lock(g_lock);
+      g_activeScannerCount--;
+
+      m_sources->m_lastScan.restart();
+
+      dprintf("Plex Source Scanner - Server %s failed reachability check.", url.c_str());
+      return;
+    }
 
     // Act a bit differently if we're talking to a local server.
     bool remoteOwned = false;
@@ -139,7 +152,7 @@ void CPlexSourceScanner::Process()
 
   m_sources->m_lastScan.restart();
   
-  CLog::Log(LOGNOTICE, "Plex Source Scanner finished for host %s (%d left)", m_sources->host.c_str(), g_activeScannerCount);
+  CLog::Log(LOGNOTICE, "Plex Source Scanner finished for host %s[%s] (%d left)", m_sources->host.c_str(), m_sources->hostLabel.c_str(), g_activeScannerCount);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
