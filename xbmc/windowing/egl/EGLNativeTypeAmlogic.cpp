@@ -102,7 +102,9 @@ bool CEGLNativeTypeAmlogic::DestroyNativeDisplay()
 
 bool CEGLNativeTypeAmlogic::DestroyNativeWindow()
 {
+#if defined(_FBDEV_WINDOW_H_)
   delete (fbdev_window*)m_nativeWindow, m_nativeWindow = NULL;
+#endif
   return true;
 }
 
