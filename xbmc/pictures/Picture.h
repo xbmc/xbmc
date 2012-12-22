@@ -62,10 +62,6 @@ private:
   static uint32_t *Rotate180CCW(uint32_t *pixels, unsigned int width, unsigned int height);
   static uint32_t *Transpose(uint32_t *pixels, unsigned int width, unsigned int height);
   static uint32_t *TransposeOffAxis(uint32_t *pixels, unsigned int width, unsigned int height);
-
-  /* PLEX */
-  static bool GetMediaFromPlexMediaServerCache(const CStdString& strFileName, const CStdString& strThumbFileName);
-  /* END PLEX */
 };
 
 //this class calls CreateThumbnailFromSurface in a CJob, so a png file can be written without halting the render thread
