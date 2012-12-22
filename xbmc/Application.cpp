@@ -2581,7 +2581,11 @@ bool CApplication::OnKey(const CKey& key)
     // to map key->action
 
     // first determine if we should use keyboard input directly
+#ifndef __PLEX__
     bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+#else
+    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC || iWin == WINDOW_PLEX_SEARCH);
+#endif
     CGUIWindow *window = g_windowManager.GetWindow(iWin);
     if (window)
     {

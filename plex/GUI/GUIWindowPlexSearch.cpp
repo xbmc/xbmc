@@ -38,6 +38,7 @@
 #include "Settings.h"
 #include "Util.h"
 #include "PlexUtils.h"
+#include "input/XBMC_vkeys.h"
 
 #define CTL_LABEL_EDIT       310
 #define CTL_BUTTON_BACKSPACE 8
@@ -131,7 +132,7 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
     g_windowManager.PreviousWindow();
     return true;
   }
-  else if (action.GetID() == ACTION_PARENT_DIR)
+  else if (action.GetID() == ACTION_PARENT_DIR || action.GetID() == ACTION_BACKSPACE)
   {
     Backspace();
     return true;
@@ -152,23 +153,36 @@ bool CGUIWindowPlexSearch::OnAction(const CAction &action)
     // Allow cursor keys to work.
     return CGUIWindow::OnAction(action);
   }
-  else
-  {
-    // Input from the keyboard.
-    switch (action.GetUnicode())
+  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
+  { // input from the keyboard (vkey, not ascii)
+    uint8_t b = action.GetID() & 0xFF;
+    if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER)
     {
-    case 8:  // backspace.
-      Backspace();
-      break;
-    case 27: // escape.
+      return CGUIWindow::OnAction(action);
+    }
+    else if (b == XBMCVK_DELETE)
+    {
+      if (GetCursorPos() < m_strEdit.GetLength())
+      {
+        MoveCursor(1);
+        Backspace();
+      }
+    }
+    else if (b == XBMCVK_BACK) Backspace();
+    else if (b == XBMCVK_ESCAPE) Close();
+  }
+  else if (action.GetID() >= KEY_ASCII)
+  {
+    int ch = action.GetUnicode();
+
+    // Input from the keyboard.
+    switch (ch)
+    {
+    case 0x1B: // escape.
       Close();
       break;
-    case 0:
+    case 0x0:
       return false;
-    case 13: // return.
-      return CGUIWindow::OnAction(action);
-      break;
-
     default:
       Character(action.GetUnicode());
     }
@@ -440,8 +454,7 @@ void CGUIWindowPlexSearch::StartSearch(const string& search)
   {
     if (PlexServerManager::Get().bestServer())
     {
-      CStdString url;
-      url.Format("http://%s:%d/search", PlexServerManager::Get().bestServer()->address, PlexServerManager::Get().bestServer()->port);
+      CStdString url = PlexUtils::AppendPathToURL(PlexServerManager::Get().bestServer()->url(), "search");
       // Issue the root of the new search.
       m_workerManager->enqueue(WINDOW_PLEX_SEARCH, BuildSearchUrl(url, search), 0);
     }
