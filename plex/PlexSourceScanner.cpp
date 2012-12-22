@@ -350,53 +350,9 @@ void CPlexSourceScanner::AutodetectPlexSources(CStdString strPlexPath, VECSOURCE
         
         share.strPath = item->GetPath();
         share.m_strFanArtUrl = item->GetArt(PLEX_ART_FANART);
-        share.m_ignore = true;
-        
-        // Download thumbnail if needed.
-        /*
-        CStdString cachedThumb(item->GetCachedPlexMediaServerThumb());
-        CStdString thumb(item->GetThumbnailImage());
-        
-        if (CFile::Exists(cachedThumb))
-        {
-          item->SetThumbnailImage(cachedThumb);
-        }
-        else
-        {
-          if(CPicture::CreateThumbnail(thumb, cachedThumb))
-            item->SetThumbnailImage(cachedThumb);
-          else
-            item->SetThumbnailImage("");
-        }
-        
-        share.m_strThumbnailImage = cachedThumb;*/
-        bool needsRecache = false;
-        CStdString imageURL = item->GetArt(PLEX_ART_THUMB);
-        CStdString loadPath = CTextureCache::Get().CheckCachedImage(item->GetArt(PLEX_ART_THUMB), false, needsRecache);
-
-        if (loadPath.IsEmpty())
-        {
-          CTextureDetails details;
-          // not in our texture cache, so try and load directly and then cache the result
-          if (CTextureCache::Get().CacheImage(imageURL, details))
-            imageURL = details.file;
-        }
-        else
-          imageURL = loadPath;
-
-        share.m_strThumbnailImage = imageURL;
-        
-        /* IS THIS REALLY NEEDED ? */
-#if 0
-        // Fanart.
-        if (!item->HasProperty("fanart_image"))
-        {
-          item->CacheLocalFanart();
-          if (CFile::Exists(item->GetCachedProgramFanart()))
-            item->SetProperty("fanart_image", item->GetCachedProgramFanart());
-        }
-#endif
-        
+        share.m_ignore = true;        
+        share.m_strThumbnailImage = item->GetArt(PLEX_ART_FANART);;
+                
         pmsSources.push_back(share);
         if (CUtil::GetMatchingSource(share.strName, dstSources, bIsSourceName) < 0)
           dstSources.push_back(share);
