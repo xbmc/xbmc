@@ -348,9 +348,10 @@
 						</control>
 						<control type="label">
 							<posx>547</posx>
-							<posy>8</posy>
 							<width>40</width>
+							<height>49</height>
 							<align>center</align>
+							<aligny>center</aligny>
 							<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
 							<textcolor>Unfocused</textcolor>
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount)) + !Container.Content(Albums)</visible>
@@ -444,9 +445,10 @@
 						</control>
 						<control type="label">
 							<posx>547</posx>
-							<posy>8</posy>
 							<width>40</width>
+							<height>49</height>
 							<align>center</align>
+							<aligny>center</aligny>
 							<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
 							<textcolor>Focused</textcolor>
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount)) + !Container.Content(Albums)</visible>
