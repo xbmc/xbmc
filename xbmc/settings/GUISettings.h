@@ -25,6 +25,7 @@
 #include "guilib/Resolution.h"
 #include "addons/IAddon.h"
 #include "utils/Observer.h"
+#include "utils/GlobalsHandling.h"
 
 class TiXmlNode;
 class TiXmlElement;
@@ -526,4 +527,5 @@ private:
   void LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced = false);
 };
 
-extern CGUISettings g_guiSettings;
+XBMC_GLOBAL_REF(CGUISettings, g_guiSettings);
+#define g_guiSettings XBMC_GLOBAL_USE(CGUISettings)
