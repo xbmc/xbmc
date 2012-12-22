@@ -973,7 +973,7 @@
 					<orientation>horizontal</orientation>
 					<itemgap>7</itemgap>
 					<control type="label">
-						<height>32</height>
+						<height>26</height>
 						<font>LargeTitleFont</font>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -1046,7 +1046,7 @@
 					<align>right</align>
 					<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
 					<width>10</width>
-					<height>32</height>
+					<height>26</height>
 					<aligny>center</aligny>
 				</control>
 				<control type="label">
@@ -1374,6 +1374,7 @@
 		<include>InfoListItemDetailInfoWide</include>
 		<include>MediaItemDetailFontFO</include>
 	</include>
+	<!-- PanelStream -->
 	<include name="PanelStreamVisible">
 		<visible>Control.IsVisible(52) + !Container.Content(secondary)</visible>
 	</include>
@@ -1439,7 +1440,6 @@
 		<include>PanelStreamAlbumNoThumbDims</include>
 		<include>NoThumbLabel</include>
 	</include>
-	<!-- PanelStream -->
 	<include name="PanelStreamLayout">
 		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles) | Container.content(plugincontent) | Container.content(plugins) | Container.content(clip)]" width="154" height="241">
 			<control type="image">
@@ -2031,6 +2031,7 @@
 		<height>500</height>
 		<include>PanelStreamLayout</include>
 	</include>
+	<!-- WallStream -->
 	<include name="WallStreamVisible">
 		<visible>Control.IsVisible(53)</visible>
 	</include>

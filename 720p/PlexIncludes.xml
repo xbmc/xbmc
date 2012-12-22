@@ -217,8 +217,7 @@
 		<onclick>XBMC.PlayerControl(Next)</onclick>
 	</include>
 	<include name="OSDPlayerControls">
-
-  </include>
+	</include>
 	<include name="OSDGroup">
 		<control type="grouplist">
 			<posy>69</posy>

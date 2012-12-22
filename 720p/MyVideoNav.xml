@@ -28,7 +28,7 @@
 					<orientation>horizontal</orientation>
 					<itemgap>7</itemgap>
 					<control type="label">
-						<height>32</height>
+						<height>26</height>
 						<font>LargeTitleFont</font>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -54,7 +54,7 @@
 					<orientation>horizontal</orientation>
 					<itemgap>7</itemgap>
 					<control type="label">
-						<height>32</height>
+						<height>26</height>
 						<font>LargeTitleFont</font>
 						<align>right</align>
 						<aligny>center</aligny>
@@ -75,7 +75,7 @@
 					<orientation>horizontal</orientation>
 					<itemgap>7</itemgap>
 					<control type="label">
-						<height>32</height>
+						<height>26</height>
 						<font>LargeTitleFont</font>
 						<align>right</align>
 						<aligny>center</aligny>
