@@ -546,11 +546,16 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
   map<CStdString, CStdString> options;
   mediaUrl.GetOptions(options);
   if (options.find("X-Plex-Token") != options.end())
+  {
     token = "&X-Plex-Token=" + options["X-Plex-Token"];
+    /* Don't include the token in the cache key */
+    mediaUrl.RemoveOption("X-Plex-Token");
+  }
 
   // We can safely assume it will always be local with respect to the server we're hitting.
   mediaUrl.SetHostName("127.0.0.1");
   mediaUrl.SetPort(32400);
+
 
   encodedUrl = mediaUrl.Get();
   CURL::Encode(encodedUrl);
