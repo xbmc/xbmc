@@ -37,6 +37,6 @@ typedef enum {
 class GroupUtils
 {
 public:
-  static bool Group(GroupBy groupBy, const CFileItemList &items, CFileItemList &groupedItems, GroupAttribute groupAttributes = GroupAttributeNone);
-  static bool GroupAndSort(GroupBy groupBy, const CFileItemList &items, const SortDescription &sortDescription, CFileItemList &groupedItems, GroupAttribute groupAttributes = GroupAttributeNone);
+  static bool Group(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, CFileItemList &groupedItems, GroupAttribute groupAttributes = GroupAttributeNone);
+  static bool GroupAndSort(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, const SortDescription &sortDescription, CFileItemList &groupedItems, GroupAttribute groupAttributes = GroupAttributeNone);
 };
