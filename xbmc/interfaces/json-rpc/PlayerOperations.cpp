@@ -113,14 +113,16 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
         if (IsPVRChannel())
         {
           CPVRChannelPtr currentChannel;
-          if (g_PVRManager.GetCurrentChannel(currentChannel))
+          if (g_PVRManager.GetCurrentChannel(currentChannel) && currentChannel.get() != NULL)
             fileItem = CFileItemPtr(new CFileItem(*currentChannel.get()));
         }
         else if (player == Video)
         {
           if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
           {
-            fileItem = CFileItemPtr(new CFileItem(*g_infoManager.GetCurrentMovieTag()));
+            const CVideoInfoTag *currentVideoTag = g_infoManager.GetCurrentMovieTag();
+            if (currentVideoTag != NULL)
+              fileItem = CFileItemPtr(new CFileItem(*currentVideoTag));
             fileItem->SetPath(g_application.CurrentFileItem().GetPath());
           }
         }
@@ -128,7 +130,9 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLa
         {
           if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
           {
-            fileItem = CFileItemPtr(new CFileItem(*g_infoManager.GetCurrentSongTag()));
+            const MUSIC_INFO::CMusicInfoTag *currentMusicTag = g_infoManager.GetCurrentSongTag();
+            if (currentMusicTag != NULL)
+              fileItem = CFileItemPtr(new CFileItem(*currentMusicTag));
             fileItem->SetPath(g_application.CurrentFileItem().GetPath());
           }
         }
