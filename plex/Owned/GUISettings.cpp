@@ -58,6 +58,7 @@
   #include "osx/DarwinUtils.h"
 #endif
 #include "Util.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
 using namespace ADDON;
@@ -692,7 +693,7 @@ void CGUISettings::Initialize()
 #endif
 
   CSettingsCategory* update = AddCategory(SETTINGS_SYSTEM, "updates", 40000);
-  AddString(update, "updates.current", 40029, PLEX_VERSION, EDIT_CONTROL_INPUT, true);
+  AddString(update, "updates.current", 40029, g_infoManager.GetVersion(), EDIT_CONTROL_INPUT, true);
   AddString(update, "updates.checknow", 40016, "", BUTTON_CONTROL_STANDARD);
 
   // video settings

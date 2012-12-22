@@ -4312,10 +4312,14 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
+#ifndef __PLEX__
 #ifdef GIT_REV
   tmp.Format("%d.%d%s Git:%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG, GIT_REV);
 #else
   tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
+#endif
+#else
+  tmp.Format("%s-%s(XBMC:%d.%d)", PLEX_VERSION, GIT_REV, VERSION_MAJOR, VERSION_MINOR);
 #endif
   return tmp;
 }

@@ -581,6 +581,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInAudioDevices(pSetting,true);
       continue;
     }
+    /* PLEX */
+    else if (strSetting.Equals("updates.current"))
+      g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
+    /* END PLEX */
+
     AddSetting(pSetting, group->GetWidth(), iControlID);
   }
 
@@ -1133,9 +1138,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("updates.current"))
     {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       if (pControl)
+      {
         pControl->SetEnabled(false);
+      }
+      g_guiSettings.SetString("updates.current", g_infoManager.GetVersion());
     }
 
     /* END PLEX */
