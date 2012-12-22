@@ -562,9 +562,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
         m_loadingThread->LoadFanWithDelay(m_lastSelectedItemKey);
         m_lastSelectedItemKey.clear();
       }
-      else
-      {
-      }
     }
   }
   break;
