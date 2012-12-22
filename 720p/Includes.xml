@@ -1337,7 +1337,7 @@
 		</control>
 	</include>
 	<include name="InfoListVisible">
-		<visible>Control.IsVisible(56)</visible>
+		<visible>Control.IsVisible(56) | Container.Content(secondary)</visible>
 	</include>
 	<constant name="InfoListTitleWidth">380</constant>
 	<include name="InfoListItemDetailInfo">
@@ -1375,7 +1375,7 @@
 		<include>MediaItemDetailFontFO</include>
 	</include>
 	<include name="PanelStreamVisible">
-		<visible>Control.IsVisible(52)</visible>
+		<visible>Control.IsVisible(52) + !Container.Content(secondary)</visible>
 	</include>
 	<constant name="PanelStreamDetailTextWidth">400</constant>
 	<constant name="PanelStreamEpisodeDetailTextWidth">480</constant>
@@ -2849,7 +2849,7 @@
 	</include>
 	<!-- Movie Video views -->
 	<include name="MediaPreviewVisible">
-		<visible>Control.IsVisible(51)</visible>
+		<visible>Control.IsVisible(51) + !Container.Content(secondary)</visible>
 	</include>
 	<!-- Little baby thumbs at the bottom -->
 	<include name="MediaPreviewThumbDetails">

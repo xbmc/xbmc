@@ -1075,6 +1075,7 @@
 			<include>MediaPreviewVisible</include>
 			<include>MediaViewFade</include>
 			<control type="wraplist" id="51">
+				<include>MediaPreviewVisible</include>
 				<viewtype label="Media Preview">wraplist</viewtype>
 				<include condition="Skin.HasSetting(ShowAnimMediaPreview)">MediaPreviewAnimList</include>
 				<posx>3</posx>
