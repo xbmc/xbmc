@@ -30,7 +30,7 @@ PlexApplicationPtr PlexApplication::Create()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-PlexApplication::PlexApplication() : m_autoUpdater("http://nightlies.plexapp.com/laika/latest/appcast.xml")
+PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/plexht/appcast.xml")
 {
   // We don't want the background music player whacked on exit (destructor issues), so we'll keep a reference.
   m_serviceListener = PlexServiceListener::Create();
