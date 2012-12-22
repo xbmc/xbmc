@@ -7,6 +7,10 @@
 #include <fstream>
 #include <iterator>
 
+/* PLEX */
+#include <boost/tokenizer.hpp>
+/* END PLEX */
+
 using namespace std;
 
 //instantiate XBMCHelper which registers itself to IR handling stuff
@@ -93,8 +97,23 @@ void ReadConfig()
   
 	// Tokenize.
 	string strData(oss.str());
-	istringstream is(strData);
-	vector<string> args = vector<string>(istream_iterator<string>(is), istream_iterator<string>());
+#ifndef __PLEX__
+  istringstream is(strData);
+  vector<string> args = vector<string>(istream_iterator<string>(is), istream_iterator<string>());
+#else
+  string separator1("");//dont let quoted arguments escape themselves
+  string separator2(" ");//split on spaces
+  string separator3("\"\'");//let it have quoted arguments
+
+  boost::escaped_list_separator<char> els(separator1,separator2,separator3);
+  boost::tokenizer< boost::escaped_list_separator<char> > tok(strData, els);
+  vector<string> args;
+
+  for(boost::tokenizer< boost::escaped_list_separator<char> >::iterator beg=tok.begin(); beg!=tok.end();++beg)
+  {
+    args.push_back(*beg);
+  }
+#endif
   
 	// Convert to char**.
 	int argc = args.size() + 1;
@@ -105,15 +124,17 @@ void ReadConfig()
 #else
   argv[i++] = (char*)"PlexHelper";
 #endif
-  
+
 	for (vector<string>::iterator it = args.begin(); it != args.end(); ){
+#ifndef __PLEX__
     //fixup the arguments, here: remove '"' like bash would normally do
     std::string::size_type j = 0;
     while ((j = it->find("\"", j)) != std::string::npos )
       it->replace(j, 1, "");
-		argv[i++] = (char* )(*it++).c_str();
+#endif
+    argv[i++] = (char* )(*it++).c_str();
   }
-	
+
 	argv[i] = 0;
   
 	// Parse the arguments.
