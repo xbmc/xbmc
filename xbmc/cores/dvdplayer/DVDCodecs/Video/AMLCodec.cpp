@@ -594,10 +594,10 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
                     para->playctrl_info.end_flag = 1;
                     CLog::Log(LOGDEBUG, "$$$$$$ write blocked, need reset decoder!$$$$$$");
                 }
-                pkt->data += len;
-                pkt->data_size -= len;
+                //pkt->data += len;
+                //pkt->data_size -= len;
                 usleep(RW_WAIT_TIME);
-                CLog::Log(LOGDEBUG, "usleep(RW_WAIT_TIME)");
+                CLog::Log(LOGDEBUG, "usleep(RW_WAIT_TIME), len(%d)", len);
                 return PLAYER_SUCCESS;
             }
         } else {
@@ -1621,10 +1621,8 @@ int CAmlogic::Decode(unsigned char *pData, size_t size, double dts, double pts)
   if (GetTimeSize() < 1.0)
     return VC_BUFFER;
 
-  // wait until we get a new frame or 25ms,
-  // but only if we have not gotten a new pict.
-  if (m_old_pictcnt == m_cur_pictcnt)
-    m_ready_event.WaitMSec(25);
+  // wait until we get a new frame or 100ms,
+  m_ready_event.WaitMSec(100);
 
   // we must return VC_BUFFER or VC_PICTURE,
   // default to VC_BUFFER.
@@ -1636,7 +1634,7 @@ int CAmlogic::Decode(unsigned char *pData, size_t size, double dts, double pts)
     // we got a new pict, try and keep hw buffered demux above 2 seconds.
     // this, combined with the above 1 second check, keeps hw buffered demux between 1 and 2 seconds.
     // we also check to make sure we keep from filling hw buffer.
-    if (GetTimeSize() < 2.0 && GetDataSize() < m_vbufsize/2)
+    if (GetTimeSize() < 2.0 && GetDataSize() < m_vbufsize/3)
       rtn |= VC_BUFFER;
   }
 /*
