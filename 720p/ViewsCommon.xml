@@ -257,7 +257,6 @@
 			<control type="group">
 				<include>MediaViewFade</include>
 				<control type="list" id="56">
-					<include>InfoListVisible</include>
 					<viewtype label="InfoList">list</viewtype>
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 					<posx>-34</posx>
@@ -1726,7 +1725,6 @@
 			<include>PanelStreamVisible</include>
 			<include>MediaViewFade</include>
 			<control type="panel" id="52">
-				<include>PanelStreamVisible</include>
 				<viewtype label="Panel Stream">panel</viewtype>
 				<onup>52</onup>
 				<ondown>52</ondown>
