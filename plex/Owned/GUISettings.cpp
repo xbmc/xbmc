@@ -822,9 +822,9 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
-  AddSeparator(vp, "videoplayer.sep5");
-  AddBool(vp, "videoplayer.teletextenabled", 23050, true);
-  AddBool(vp, "Videoplayer.teletextscale", 23055, true);
+  AddSeparator(NULL, "videoplayer.sep5");
+  AddBool(NULL, "videoplayer.teletextenabled", 23050, true);
+  AddBool(NULL, "Videoplayer.teletextscale", 23055, true);
 
   //CSettingsCategory* vid = AddCategory(SETTINGS_VIDEOS, "myvideos", 14081);
 
