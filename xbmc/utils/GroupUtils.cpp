@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
 #include "utils/URIUtils.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -33,7 +34,7 @@ using namespace std;
 
 typedef map<int, set<CFileItemPtr> > SetMap;
 
-bool GroupUtils::Group(GroupBy groupBy, const CFileItemList &items, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
+bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
 {
   if (items.Size() <= 0 || groupBy == GroupByNone)
     return false;
@@ -58,6 +59,10 @@ bool GroupUtils::Group(GroupBy groupBy, const CFileItemList &items, CFileItemLis
 
   if ((groupBy & GroupBySet) && setMap.size() > 0)
   {
+    CVideoDbUrl itemsUrl;
+    if (!itemsUrl.FromString(baseDir))
+      return false;
+
     for (SetMap::const_iterator set = setMap.begin(); set != setMap.end(); set++)
     {
       // only one item in the set, so just re-add it
@@ -70,7 +75,16 @@ bool GroupUtils::Group(GroupBy groupBy, const CFileItemList &items, CFileItemLis
       CFileItemPtr pItem(new CFileItem((*set->second.begin())->GetVideoInfoTag()->m_strSet));
       pItem->GetVideoInfoTag()->m_iDbId = set->first;
       pItem->GetVideoInfoTag()->m_type = "set";
-      pItem->SetPath(StringUtils::Format("videodb://1/7/%ld/", set->first));
+
+      std::string basePath = StringUtils::Format("videodb://1/7/%ld/", set->first);
+      CVideoDbUrl videoUrl;
+      if (!videoUrl.FromString(basePath))
+        pItem->SetPath(basePath);
+      else
+      {
+        videoUrl.AddOptions(itemsUrl.GetOptionsString());
+        pItem->SetPath(videoUrl.ToString());
+      }
       pItem->m_bIsFolder = true;
 
       CVideoInfoTag* setInfo = pItem->GetVideoInfoTag();
@@ -132,9 +146,9 @@ bool GroupUtils::Group(GroupBy groupBy, const CFileItemList &items, CFileItemLis
   return true;
 }
 
-bool GroupUtils::GroupAndSort(GroupBy groupBy, const CFileItemList &items, const SortDescription &sortDescription, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
+bool GroupUtils::GroupAndSort(GroupBy groupBy, const std::string &baseDir, const CFileItemList &items, const SortDescription &sortDescription, CFileItemList &groupedItems, GroupAttribute groupAttributes /* = GroupAttributeNone */)
 {
-  if (!Group(groupBy, items, groupedItems, groupAttributes))
+  if (!Group(groupBy, baseDir, items, groupedItems, groupAttributes))
     return false;
 
   groupedItems.Sort(sortDescription);
