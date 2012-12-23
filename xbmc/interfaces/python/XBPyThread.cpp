@@ -88,9 +88,9 @@ XBPyThread::~XBPyThread()
 {
   stop();
   g_pythonParser.PulseGlobalEvent();
-  CLog::Log(LOGDEBUG,"waiting for python thread %d to stop", m_id);
+  CLog::Log(LOGDEBUG,"waiting for python thread %d (%s) to stop", m_id, (m_source ? m_source : "unknown script"));
   StopThread();
-  CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
+  CLog::Log(LOGDEBUG,"python thread %d (%s) destructed", m_id, (m_source ? m_source : "unknown script"));
   delete [] m_source;
   if (m_argv)
   {

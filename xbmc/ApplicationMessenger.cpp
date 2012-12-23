@@ -64,6 +64,8 @@
 #include "pvr/PVRManager.h"
 #include "windows/GUIWindowLoginScreen.h"
 
+#include "utils/GlobalsHandling.h"
+
 using namespace PVR;
 using namespace std;
 using namespace MUSIC_INFO;
@@ -89,9 +91,9 @@ void CDelayedMessage::Process()
     CApplicationMessenger::Get().SendMessage(m_msg, false);
 }
 
+
 CApplicationMessenger& CApplicationMessenger::Get()
 {
-  static CApplicationMessenger s_messenger;
   return s_messenger;
 }
 

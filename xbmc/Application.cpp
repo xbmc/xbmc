@@ -468,8 +468,6 @@ CApplication::~CApplication(void)
   delete m_seekHandler;
   delete m_pInertialScrollingHandler;
 
-  if (m_network != NULL)
-     delete m_network;
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -3485,6 +3483,10 @@ bool CApplication::Cleanup()
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
 #endif
+
+    delete m_network;
+    m_network = NULL;
+
     return true;
   }
   catch (...)
