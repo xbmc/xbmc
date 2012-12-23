@@ -81,7 +81,6 @@ protected:
 
   struct timespec           m_starttime, m_endtime;
   bool                      m_buffer_empty;
-  bool                      m_flush;
   //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
   int                       m_synctype;
   int                       m_nChannels;
