@@ -229,16 +229,10 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 
   if (CPVRDatabase *database = GetPVRDatabase())
   {
-    if (!bQueueWrite)
-    {
-      bool bReturn = database->Persist(*this, false);
-      CSingleLock lock(m_critSection);
-      m_bChanged = !bReturn;
-    }
-    else
-    {
-      return database->Persist(*this, true);
-    }
+    bool bReturn = database->Persist(*this, bQueueWrite);
+    CSingleLock lock(m_critSection);
+    m_bChanged = !bReturn;
+    return bReturn;
   }
 
   return false;
