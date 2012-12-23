@@ -440,7 +440,7 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
     else if (it->first == "ALBUM ARTIST")              SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.toString().to8Bit(true));
-    else if (it->first == "TRACKNUMBER")               tag.SetTrackNumber(it->second.toString().toInt());
+    else if (it->first == "TRACKNUMBER" || it->first == "TRACK") tag.SetTrackNumber(it->second.toString().toInt());
     else if (it->first == "DISCNUMBER")                tag.SetPartOfSet(it->second.toString().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.toString().toInt());
     else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second.toStringList()));
