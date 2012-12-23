@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2011-2012 Team XBMC
+ *      Copyright (C) 2012 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,12 +18,30 @@
  *
  */
 
-int aml_set_sysfs_str(const char *path, const char *val);
-int aml_get_sysfs_str(const char *path, char *valstr, const int size);
-int aml_set_sysfs_int(const char *path, const int val);
-int aml_get_sysfs_int(const char *path);
+#include "powermanagement/IPowerSyscall.h"
 
-bool aml_present();
-int aml_get_cputype();
-void aml_cpufreq_limit(bool limit);
-void aml_set_audio_passthrough(bool passthrough);
+class CPivosPowerSyscall : public CPowerSyscallWithoutEvents
+{
+public:
+  CPivosPowerSyscall();
+  virtual ~CPivosPowerSyscall() {}
+
+  virtual bool Powerdown();
+  virtual bool Suspend();
+  virtual bool Hibernate();
+  virtual bool Reboot();
+
+  virtual bool CanPowerdown();
+  virtual bool CanSuspend();
+  virtual bool CanHibernate();
+  virtual bool CanReboot();
+  virtual int  BatteryLevel();
+
+  static bool HasPivosPowerSyscall();
+
+private:
+  bool m_CanPowerdown;
+  bool m_CanSuspend;
+  bool m_CanHibernate;
+  bool m_CanReboot;
+};

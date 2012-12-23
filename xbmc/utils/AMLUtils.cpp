@@ -93,7 +93,7 @@ bool aml_present()
   return has_aml;
 }
 
-void aml_cpufreq_limit(bool limit)
+int aml_get_cputype()
 {
   static int aml_cputype = -1;
   if (aml_cputype == -1)
@@ -113,17 +113,21 @@ void aml_cpufreq_limit(bool limit)
           aml_cputype = 3;
           break;
         }
+        else if (stdbuffer.find("MESON3") != std::string::npos)
+        {
+          aml_cputype = 3;
+          break;
+        }
       }
       fclose(cpuinfo_fd);
     }
   }
-  // On M1 SoCs, when playing hw decoded audio, we cannot drop below 600MHz
-  // or risk hw audio dropouts. AML code does a 2X scaling based off
-  // /sys/class/audiodsp/codec_mips but tests show that this is
-  // seems risky so we just clamp to 600Mhz to be safe.
-  if (aml_cputype == 3)
-    return;
 
+  return aml_cputype;
+}
+
+void aml_cpufreq_limit(bool limit)
+{
   int cpufreq = 300000;
   if (limit)
     cpufreq = 600000;
