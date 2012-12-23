@@ -348,7 +348,9 @@ void CDVDDemuxPVRClient::RequestStreams()
       if (stm)
       {
         st = dynamic_cast<CDemuxStreamAudioPVRClient*>(stm);
-        if (!st || (st->codec != (CodecID)props.stream[i].iCodecId))
+        if (!st
+            || (st->codec != (CodecID)props.stream[i].iCodecId)
+            || (st->iChannels != props.stream[i].iChannels))
           DisposeStream(i);
       }
       if (!m_streams[i])
