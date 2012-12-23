@@ -466,7 +466,18 @@ void PAPlayer::Process()
     ProcessStreams(delay, buffer);
 
     double watermark = buffer * 0.5;
-    if (delay < buffer && delay > watermark)
+#if defined(TARGET_DARWIN)
+    // In CoreAudio the delay can be bigger then the buffer
+    // because of delay from the HAL/Hardware
+    // This is the case when the buffer is full (e.x. 1 sec)
+    // and there is a HAL-Delay. In that case we would never sleep
+    // but load one cpu core up to 100% (happens on osx/ios whenever
+    // the first stream is finished and a prebuffered second stream
+    // starts to play. A BIG FIXME HERE.
+    if ((delay < buffer || buffer == 1) && delay > watermark)
+#else
+    if ((delay < buffer) && delay > watermark)
+#endif
       CThread::Sleep(MathUtils::round_int((delay - watermark) * 1000.0));
 
     GetTimeInternal(); //update for GUI
