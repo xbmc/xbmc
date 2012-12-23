@@ -18,6 +18,7 @@
  *
  */
 
+#include "network/Network.h"
 #include "URIUtils.h"
 #include "Application.h"
 #include "FileItem.h"

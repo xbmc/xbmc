@@ -1,3 +1,4 @@
+#include "network/Network.h"
 #include "UPnPRenderer.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"

@@ -24,6 +24,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+#include "network/Network.h"
 
 #include "ModuleXbmc.h"
 

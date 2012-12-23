@@ -18,6 +18,7 @@
  *
  */
 
+#include "network/Network.h"
 #include "system.h"
 #include "GUIInfoManager.h"
 #include "windows/GUIMediaWindow.h"
