@@ -147,7 +147,6 @@ void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
   m_errortime       = CurrentHostCounter();
   m_silence         = false;
   m_started         = false;
-  m_flush           = false;
   m_nChannels       = 0;
   m_synctype        = SYNC_DISCON;
   m_stalled         = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
@@ -369,12 +368,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
       while(!m_bStop)
       {
-        if(m_flush)
-        {
-          m_flush = false;
-          break;
-        }
-
         if(m_omxAudio.GetSpace() < (unsigned int)pkt->iSize)
         {
           Sleep(10);
@@ -417,12 +410,6 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
 
     while(!m_bStop)
     {
-      if(m_flush)
-      {
-        m_flush = false;
-        break;
-      }
-
       if(m_omxAudio.GetSpace() < (unsigned int)pkt->iSize)
       {
         Sleep(10);
@@ -623,7 +610,6 @@ void OMXPlayerAudio::Process()
 
 void OMXPlayerAudio::Flush()
 {
-  m_flush = true;
   m_messageQueue.Flush();
   m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);
 }
