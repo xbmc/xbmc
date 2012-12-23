@@ -36,8 +36,6 @@
 
 using namespace std;
 
-GUIFontManager g_fontManager;
-
 GUIFontManager::GUIFontManager(void)
 {
   m_fontsetUnicode=false;

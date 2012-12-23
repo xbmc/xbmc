@@ -128,7 +128,8 @@ private:
   FT_Library   m_library;
 };
 
-CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
+XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
+#define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
 CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
 {

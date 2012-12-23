@@ -30,6 +30,7 @@
 
 #include "GraphicContext.h"
 #include "IMsgTargetCallback.h"
+#include "utils/GlobalsHandling.h"
 
 // Forward
 class CGUIFont;
@@ -99,5 +100,6 @@ protected:
  \ingroup textures
  \brief
  */
-extern GUIFontManager g_fontManager;
+XBMC_GLOBAL_REF(GUIFontManager, g_fontManager);
+#define g_fontManager XBMC_GLOBAL_USE(GUIFontManager)
 #endif
