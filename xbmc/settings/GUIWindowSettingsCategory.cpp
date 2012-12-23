@@ -894,8 +894,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpass"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
-        pControl->SetEnabled(g_guiSettings.GetBool("scrobbler.lastfmsubmit") | g_guiSettings.GetBool("scrobbler.lastfmsubmitradio"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("scrobbler.lastfmsubmit"));
     }
     else if (strSetting.Equals("scrobbler.librefmusername") || strSetting.Equals("scrobbler.librefmpass"))
     {
@@ -1222,12 +1221,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       musicdatabase.Close();
     }
   }
-  else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpass"))
+  else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpass"))
   {
     CStdString strPassword=g_guiSettings.GetString("scrobbler.lastfmpass");
     CStdString strUserName=g_guiSettings.GetString("scrobbler.lastfmusername");
-    if ((g_guiSettings.GetBool("scrobbler.lastfmsubmit") ||
-         g_guiSettings.GetBool("scrobbler.lastfmsubmitradio")) &&
+    if (g_guiSettings.GetBool("scrobbler.lastfmsubmit") &&
          !strUserName.IsEmpty() && !strPassword.IsEmpty())
     {
       CLastfmScrobbler::GetInstance()->Init();
@@ -1237,12 +1235,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
       CLastfmScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting.Equals("scrobbler.librefmsubmit") || strSetting.Equals("scrobbler.librefmsubmitradio") || strSetting.Equals("scrobbler.librefmusername") || strSetting.Equals("scrobbler.librefmpass"))
+  else if (strSetting.Equals("scrobbler.librefmsubmit") || strSetting.Equals("scrobbler.librefmusername") || strSetting.Equals("scrobbler.librefmpass"))
   {
     CStdString strPassword=g_guiSettings.GetString("scrobbler.librefmpass");
     CStdString strUserName=g_guiSettings.GetString("scrobbler.librefmusername");
-    if ((g_guiSettings.GetBool("scrobbler.librefmsubmit") ||
-         g_guiSettings.GetBool("scrobbler.librefmsubmitradio")) &&
+    if (g_guiSettings.GetBool("scrobbler.librefmsubmit") &&
          !strUserName.IsEmpty() && !strPassword.IsEmpty())
     {
       CLibrefmScrobbler::GetInstance()->Init();
