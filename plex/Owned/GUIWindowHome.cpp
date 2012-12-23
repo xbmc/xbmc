@@ -350,6 +350,7 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
         globalArt = false;
         m_globalArt = false;
         m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(sectionUrl, "arts"), CONTENT_LIST_FANART);
+        SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
       }
     }
     else if (itemID >= 1 && itemID <= 4)
@@ -365,6 +366,7 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
       globalArt = false;
       m_globalArt = false;
       m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, "channels/arts"), CONTENT_LIST_FANART);
+      SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
     }
 
     // If we need to, load global art.
@@ -373,7 +375,10 @@ void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
       m_globalArt = true;
       
       if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
+      {
         m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, "library/arts"), CONTENT_LIST_FANART);
+        SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
+      }
       else
         SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
     }
@@ -525,6 +530,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
   {
     if (m_lastSelectedItemKey.empty())
       HideAllLists();
+    SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
   }
     
   case GUI_MSG_WINDOW_RESET:
@@ -546,9 +552,8 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           artUrl = "http://127.0.0.1:32400/library/arts";
 
         m_workerManager->enqueue(WINDOW_HOME, artUrl, CONTENT_LIST_FANART);
+        SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
       }
-      else
-        SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
     }
     else
       SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
