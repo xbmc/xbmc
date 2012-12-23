@@ -1376,7 +1376,7 @@
 	</include>
 	<!-- PanelStream -->
 	<include name="PanelStreamVisible">
-		<visible>Control.IsVisible(52) + !Container.Content(secondary)</visible>
+		<visible>Control.IsVisible(52)</visible>
 	</include>
 	<constant name="PanelStreamDetailTextWidth">400</constant>
 	<constant name="PanelStreamEpisodeDetailTextWidth">480</constant>

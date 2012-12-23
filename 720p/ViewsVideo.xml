@@ -1074,6 +1074,7 @@
 		<!-- main list -->
 		<control type="group">
 			<posy>502</posy>
+			<include>MediaPreviewVisible</include>
 			<include>MediaViewFade</include>
 			<control type="wraplist" id="51">
 				<viewtype label="Media Preview">wraplist</viewtype>
@@ -1366,9 +1367,6 @@
 					</control>
 				</focusedlayout>
 			</control>
-		</control>
-		<control type="group">
-			<include>MediaPreviewVisible</include>
 		</control>
 	</include>
 </includes>
