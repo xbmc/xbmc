@@ -501,7 +501,7 @@ void XBPyThread::stop()
     {
       if (timeout.IsTimePast())
       {
-        CLog::Log(LOGERROR, "XBPyThread::stop - script didn't stop in %d seconds - let's kill it", PYTHON_SCRIPT_TIMEOUT / 1000);
+        CLog::Log(LOGERROR, "XBPyThread::stop - script %s didn't stop in %d seconds - let's kill it", m_source, PYTHON_SCRIPT_TIMEOUT / 1000);
         break;
       }
       // We can't empty-spin in the main thread and expect scripts to be able to
