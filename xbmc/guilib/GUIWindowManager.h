@@ -32,7 +32,6 @@
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
 #include "DirtyRegionTracker.h"
-#include "utils/GlobalsHandling.h"
 
 class CGUIDialog;
 
@@ -180,7 +179,6 @@ private:
  \ingroup winman
  \brief
  */
-XBMC_GLOBAL_REF(CGUIWindowManager,g_windowManager);
-#define g_windowManager XBMC_GLOBAL_USE(CGUIWindowManager)
+extern CGUIWindowManager g_windowManager;
 #endif
 

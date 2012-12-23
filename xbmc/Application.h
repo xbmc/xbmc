@@ -26,7 +26,6 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/Key.h"
 #include "threads/Condition.h"
-#include "utils/GlobalsHandling.h"
 
 #include <map>
 
@@ -480,5 +479,4 @@ protected:
 
 };
 
-XBMC_GLOBAL_REF(CApplication,g_application);
-#define g_application XBMC_GLOBAL_USE(CApplication)
+extern CApplication g_application;
