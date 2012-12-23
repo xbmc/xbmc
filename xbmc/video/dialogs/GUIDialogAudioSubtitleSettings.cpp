@@ -96,9 +96,11 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   if (SupportsAudioFeature(IPC_AUD_SELECT_STREAM))
     AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
+#ifndef __PLEX__
   // only show stuff available in digital mode if we have digital output
   if (SupportsAudioFeature(IPC_AUD_OUTPUT_STEREO))
     AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
+#endif
 
   int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
   m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
