@@ -1347,7 +1347,7 @@ int set_header_info(am_private_t *para)
 }
 
 /*************************************************************************/
-CAmlogic::CAmlogic() : CThread("CAmlogic")
+CAMLCodec::CAMLCodec() : CThread("CAMLCodec")
 {
   am_private = new am_private_t;
   memset(am_private, 0, sizeof(am_private_t));
@@ -1357,7 +1357,7 @@ CAmlogic::CAmlogic() : CThread("CAmlogic")
 }
 
 
-CAmlogic::~CAmlogic()
+CAMLCodec::~CAMLCodec()
 {
   StopThread();
   delete am_private;
@@ -1365,9 +1365,9 @@ CAmlogic::~CAmlogic()
   delete m_dll, m_dll = NULL;
 }
 
-bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
+bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 {
-  CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder");
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder");
   m_1st_pts = 0;
   m_cur_pts = 0;
   m_cur_pictcnt = 0;
@@ -1442,11 +1442,11 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
     am_private->flv_flag = 1;
   }
 
-  CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), video_rate(%d)",
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), video_rate(%d)",
     hints.fpsrate, hints.fpsscale, am_private->video_rate);
-  CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
     hints.aspect, video_ratio.num, video_ratio.den);
-  CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder hints.orientation(%d), hints.forced_aspect(%d)",
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.orientation(%d), hints.forced_aspect(%d)",
     hints.orientation, hints.forced_aspect);
 
   // default video codec params
@@ -1506,7 +1506,7 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
   int ret = m_dll->codec_init(&am_private->vcodec);
   if (ret != CODEC_ERROR_NONE)
   {
-    CLog::Log(LOGDEBUG, "CAmlogic::OpenDecoder codec init failed, ret=0x%x", -ret);
+    CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, ret=0x%x", -ret);
     return false;
   }
 
@@ -1534,9 +1534,9 @@ bool CAmlogic::OpenDecoder(CDVDStreamInfo &hints)
   return true;
 }
 
-void CAmlogic::CloseDecoder()
+void CAMLCodec::CloseDecoder()
 {
-  CLog::Log(LOGDEBUG, "CAmlogic::CloseDecoder");
+  CLog::Log(LOGDEBUG, "CAMLCodec::CloseDecoder");
   StopThread();
 
   g_renderManager.RegisterRenderUpdateCallBack((const void*)NULL, NULL);
@@ -1550,9 +1550,9 @@ void CAmlogic::CloseDecoder()
   aml_set_sysfs_int("/sys/class/tsync/enable", 1);
 }
 
-void CAmlogic::Reset()
+void CAMLCodec::Reset()
 {
-  CLog::Log(LOGDEBUG, "CAmlogic::Reset");
+  CLog::Log(LOGDEBUG, "CAMLCodec::Reset");
 
   // set the system blackout_policy to leave the last frame showing
   int blackout_policy = aml_get_sysfs_int("/sys/class/video/blackout_policy");
@@ -1582,7 +1582,7 @@ void CAmlogic::Reset()
   aml_set_sysfs_int("/sys/class/video/blackout_policy", blackout_policy);
 }
 
-int CAmlogic::Decode(unsigned char *pData, size_t size, double dts, double pts)
+int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
 {
   // grr, m_RenderUpdateCallBackFn in g_renderManager is NULL'ed during
   // g_renderManager.Configure call by player, which happens after the codec
@@ -1638,14 +1638,14 @@ int CAmlogic::Decode(unsigned char *pData, size_t size, double dts, double pts)
       rtn |= VC_BUFFER;
   }
 /*
-  CLog::Log(LOGDEBUG, "CAmlogic::Decode: "
+  CLog::Log(LOGDEBUG, "CAMLCodec::Decode: "
     "rtn(%d), m_cur_pictcnt(%lld), m_cur_pts(%f), lastpts(%f), GetTimeSize(%f), GetDataSize(%d)",
     rtn, m_cur_pictcnt, (float)m_cur_pts/PTS_FREQ, (float)am_private->am_pkt.lastpts/PTS_FREQ, GetTimeSize(), GetDataSize());
 */
   return rtn;
 }
 
-bool CAmlogic::GetPicture(DVDVideoPicture *pDvdVideoPicture)
+bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   pDvdVideoPicture->pts = GetPlayerPtsSeconds() * (double)DVD_TIME_BASE;
@@ -1660,7 +1660,7 @@ bool CAmlogic::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   return true;
 }
 
-int CAmlogic::GetDataSize()
+int CAMLCodec::GetDataSize()
 {
   struct buf_status vbuf ={0};
   if (m_dll->codec_get_vbuf_state(&am_private->vcodec, &vbuf) >= 0)
@@ -1669,7 +1669,7 @@ int CAmlogic::GetDataSize()
   return vbuf.data_len;
 }
 
-double CAmlogic::GetTimeSize()
+double CAMLCodec::GetTimeSize()
 {
   // if m_cur_pts is zero, hw decoder was not started yet
   // so we use the pts of the 1st demux packet that was send
@@ -1690,9 +1690,9 @@ double CAmlogic::GetTimeSize()
   return timesize;
 }
 
-void CAmlogic::Process()
+void CAMLCodec::Process()
 {
-  CLog::Log(LOGDEBUG, "CAmlogic::Process Started");
+  CLog::Log(LOGDEBUG, "CAMLCodec::Process Started");
 
   // bump our priority to be level with SoftAE
   SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
@@ -1738,10 +1738,10 @@ void CAmlogic::Process()
     }
   }
   SetPriority(THREAD_PRIORITY_NORMAL);
-  CLog::Log(LOGDEBUG, "CAmlogic::Process Stopped");
+  CLog::Log(LOGDEBUG, "CAMLCodec::Process Stopped");
 }
 
-void CAmlogic::PauseResume(int state)
+void CAMLCodec::PauseResume(int state)
 {
   static int saved_state = -1;
   if (saved_state == state)
@@ -1754,7 +1754,7 @@ void CAmlogic::PauseResume(int state)
     m_dll->codec_resume(&am_private->vcodec);
 }
 
-double CAmlogic::GetPlayerPtsSeconds()
+double CAMLCodec::GetPlayerPtsSeconds()
 {
   double clock_pts = 0.0;
   CDVDClock *playerclock = CDVDClock::GetMasterClock();
@@ -1764,12 +1764,12 @@ double CAmlogic::GetPlayerPtsSeconds()
   return clock_pts;
 }
 
-void CAmlogic::SetVideoPtsSeconds(const double pts)
+void CAMLCodec::SetVideoPtsSeconds(const double pts)
 {
   set_pts_pcrscr((int64_t)(pts * PTS_FREQ));
 }
 
-void CAmlogic::ShowMainVideo(const bool show)
+void CAMLCodec::ShowMainVideo(const bool show)
 {
   static int saved_disable_video = -1;
 
@@ -1781,7 +1781,7 @@ void CAmlogic::ShowMainVideo(const bool show)
   saved_disable_video = disable_video;
 }
 
-void CAmlogic::SetVideoZoom(const float zoom)
+void CAMLCodec::SetVideoZoom(const float zoom)
 {
   // input zoom range is 0.5 to 2.0 with a default of 1.0.
   // output zoom range is 2 to 300 with default of 100.
@@ -1789,27 +1789,27 @@ void CAmlogic::SetVideoZoom(const float zoom)
   aml_set_sysfs_int("/sys/class/video/zoom", (int)(100 * zoom));
 }
 
-void CAmlogic::SetVideoContrast(const int contrast)
+void CAMLCodec::SetVideoContrast(const int contrast)
 {
   // input contrast range is 0 to 100 with default of 50.
   // output contrast range is -255 to 255 with default of 0.
   int aml_contrast = (255 * (contrast - 50)) / 50;
   aml_set_sysfs_int("/sys/class/video/contrast", aml_contrast);
 }
-void CAmlogic::SetVideoBrightness(const int brightness)
+void CAMLCodec::SetVideoBrightness(const int brightness)
 {
   // input brightness range is 0 to 100 with default of 50.
   // output brightness range is -127 to 127 with default of 0.
   int aml_brightness = (127 * (brightness - 50)) / 50;
   aml_set_sysfs_int("/sys/class/video/brightness", aml_brightness);
 }
-void CAmlogic::SetVideoSaturation(const int saturation)
+void CAMLCodec::SetVideoSaturation(const int saturation)
 {
   // output saturation range is -127 to 127 with default of 127.
   aml_set_sysfs_int("/sys/class/video/saturation", saturation);
 }
 
-void CAmlogic::GetRenderFeatures(Features &renderFeatures)
+void CAMLCodec::GetRenderFeatures(Features &renderFeatures)
 {
   renderFeatures.push_back(RENDERFEATURE_ZOOM);
   renderFeatures.push_back(RENDERFEATURE_CONTRAST);
@@ -1819,14 +1819,14 @@ void CAmlogic::GetRenderFeatures(Features &renderFeatures)
   return;
 }
 
-void CAmlogic::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
+void CAMLCodec::RenderFeaturesCallBack(const void *ctx, Features &renderFeatures)
 {
-  CAmlogic *codec = (CAmlogic*)ctx;
+  CAMLCodec *codec = (CAMLCodec*)ctx;
   if (codec)
     codec->GetRenderFeatures(renderFeatures);
 }
 
-void CAmlogic::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
+void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 {
   // this routine gets called every video frame
   // and is in the context of the renderer thread so
@@ -1900,15 +1900,15 @@ void CAmlogic::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   rectangle.Format("%i,%i,%i,%i",
     (int)dst_rect.x1, (int)dst_rect.y1,
     (int)dst_rect.Width(), (int)dst_rect.Height());
-  CLog::Log(LOGDEBUG, "CAmlogic::SetVideoRect:dst_rect(%s)", rectangle.c_str());
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:dst_rect(%s)", rectangle.c_str());
 
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
   ShowMainVideo(true);
 }
 
-void CAmlogic::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
+void CAMLCodec::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
 {
-  CAmlogic *codec = (CAmlogic*)ctx;
+  CAMLCodec *codec = (CAMLCodec*)ctx;
   codec->SetVideoRect(SrcRect, DestRect);
 }

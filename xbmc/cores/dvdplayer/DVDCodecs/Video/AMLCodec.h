@@ -30,11 +30,11 @@ typedef struct am_private_t am_private_t;
 
 class DllLibAmCodec;
 
-class CAmlogic : public CThread
+class CAMLCodec : public CThread
 {
 public:
-  CAmlogic();
-  virtual ~CAmlogic();
+  CAMLCodec();
+  virtual ~CAMLCodec();
 
   bool          OpenDecoder(CDVDStreamInfo &hints);
   void          CloseDecoder();

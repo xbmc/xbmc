@@ -82,7 +82,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   }
 
   m_hints = hints;
-  m_Codec = new CAmlogic();
+  m_Codec = new CAMLCodec();
   if (!m_Codec)
   {
     CLog::Log(LOGERROR, "%s: Failed to create Amlogic Codec", __MODULE_NAME__);

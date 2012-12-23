@@ -23,7 +23,7 @@
 #include "DVDVideoCodec.h"
 #include "DVDStreamInfo.h"
 
-class CAmlogic;
+class CAMLCodec;
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
 {
@@ -43,7 +43,7 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
-  CAmlogic        *m_Codec;
+  CAMLCodec       *m_Codec;
   const char      *m_pFormatName;
   DVDVideoPicture m_videobuffer;
   bool            m_opened;
