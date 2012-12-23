@@ -8,6 +8,7 @@ SRCS += karaokelyricstext.cpp
 SRCS += karaokelyricstextkar.cpp
 SRCS += karaokelyricstextlrc.cpp
 SRCS += karaokelyricstextustar.cpp
+SRCS += karaokevideobackground.cpp
 SRCS += karaokewindowbackground.cpp
 
 LIB = karaoke.a
