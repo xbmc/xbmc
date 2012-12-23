@@ -238,6 +238,7 @@ else()
   set(CPACK_SYSTEM_NAME "linux-${CMAKE_PROCESSOR_NAME}")
 endif()
 set(CPACK_PACKAGE_FILE_NAME "${PLEX_TARGET_NAME}-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PLEX_TARGET_NAME}-${PLEX_VERSION_STRING}-src")
 
 set(CPACK_COMPONENT_QDXSETUP_DISPLAY_NAME "DirectX Installer")
 set(CPACK_COMPONENT_VCREDIST_DISPLAY_NAME "Visual Studio 2010 redistribution installer")
@@ -265,7 +266,7 @@ if(APPLE)
   set(CPACK_GENERATOR "ZIP")
   set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
 elseif(UNIX)
-  set(CPACK_GENERATOR "TGZ")
+  set(CPACK_GENERATOR "TBZ2")
 elseif(WIN32)
   set(CPACK_GENERATOR "NSIS")
 endif()
@@ -273,6 +274,14 @@ endif()
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   set(CPACK_STRIP_FILES 0)
 endif()
+
+set(CPACK_SOURCE_GENERATOR TBZ2)
+set(CPACK_SOURCE_IGNORE_FILES
+  "^${PROJECT_SOURCE_DIR}/.git"
+  "^${PROJECT_SOURCE_DIR}/plex/build"
+  "^${PROJECT_SOURCE_DIR}/plex/Dependencies/laika-depends"
+  "^${PROJECT_SOURCE_DIR}/plex/Dependencies/.*-darwin-i686"
+)
 
 # We want to make sure that CPack uses our own NSIS.template.in
 list(APPEND CMAKE_MODULE_PATH ${plexdir}/Resources)
