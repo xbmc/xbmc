@@ -15,8 +15,8 @@
 		<control type="largeimage">
 			<description>Fanart background</description>
 			<include>FullScreenBGImage</include>
-			<info>MusicPlayer.Fanart</info>
-			<visible>!IsEmpty(MusicPlayer.Fanart)</visible>
+			<info>Player.Art(fanart)</info>
+			<visible>!IsEmpty(Player.Art(fanart))</visible>
 			<include>BackgroundFade</include>
 			<animation effect="fade" end="20" time="0" condition="true">conditional</animation>
 		</control>
