@@ -4319,7 +4319,7 @@ CStdString CGUIInfoManager::GetVersion()
   tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
 #endif
 #else
-  tmp.Format("%s-%s(XBMC:%d.%d)", PLEX_VERSION, GIT_REV, VERSION_MAJOR, VERSION_MINOR);
+  tmp.Format("%s-%s", PLEX_VERSION, GIT_REV);
 #endif
   return tmp;
 }
