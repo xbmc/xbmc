@@ -697,10 +697,10 @@
 							<texture>Unwatchedcount.png</texture>
 						</control>
 						<control type="label">
-							<posx>550</posx>
+							<posx>548</posx>
 							<posy>0</posy>
 							<width>104</width>
-							<height>42</height>
+							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label2]</label>
@@ -771,10 +771,10 @@
 							</control>
 						</control>
 						<control type="label">
-							<posx>550</posx>
+							<posx>548</posx>
 							<posy>0</posy>
 							<width>95</width>
-							<height>42</height>
+							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label2]</label>
@@ -782,10 +782,10 @@
 							<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 						</control>
 						<control type="label">
-							<posx>550</posx>
+							<posx>548</posx>
 							<posy>0</posy>
 							<width>95</width>
-							<height>42</height>
+							<height>49</height>
 							<align>center</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label2]</label>
