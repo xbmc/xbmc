@@ -346,7 +346,6 @@ void CAdvancedSettings::Initialize()
   m_guiDirtyRegionNoFlipTimeout = 1000;
 #endif
 
-  m_logLevelHint = m_logLevel = LOG_LEVEL_DEBUG;
   m_bCollapseSingleSeason = true;
   /* END PLEX */
 
