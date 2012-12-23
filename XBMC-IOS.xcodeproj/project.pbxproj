@@ -102,6 +102,8 @@
 		C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */; };
 		DF00493A162DB10400A971AD /* PVROperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF004938162DB10400A971AD /* PVROperations.cpp */; };
 		DF02A888153382A60084754E /* IOSKeyboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = DF02A887153382A60084754E /* IOSKeyboard.mm */; };
+		DF07254116873517008DCAAD /* karaokevideobackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF07253F16873517008DCAAD /* karaokevideobackground.cpp */; };
+		DF0725441687352C008DCAAD /* FFmpegVideoDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0725421687352C008DCAAD /* FFmpegVideoDecoder.cpp */; };
 		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
 		DF23462215FA675200A934F6 /* UPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23461915FA675200A934F6 /* UPnP.cpp */; };
 		DF23462315FA675200A934F6 /* UPnPInternal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF23461B15FA675200A934F6 /* UPnPInternal.cpp */; };
@@ -1230,6 +1232,10 @@
 		DF02A86D153381990084754E /* GUIKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIKeyboard.h; sourceTree = "<group>"; };
 		DF02A881153382560084754E /* IOSKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboard.h; sourceTree = "<group>"; };
 		DF02A887153382A60084754E /* IOSKeyboard.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboard.mm; sourceTree = "<group>"; };
+		DF07253F16873517008DCAAD /* karaokevideobackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokevideobackground.cpp; sourceTree = "<group>"; };
+		DF07254016873517008DCAAD /* karaokevideobackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokevideobackground.h; sourceTree = "<group>"; };
+		DF0725421687352C008DCAAD /* FFmpegVideoDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FFmpegVideoDecoder.cpp; sourceTree = "<group>"; };
+		DF0725431687352C008DCAAD /* FFmpegVideoDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFmpegVideoDecoder.h; sourceTree = "<group>"; };
 		DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF17E13A3AF9F008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		DF1ACFF615FCE57C00E10810 /* AddonModuleXbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonModuleXbmc.cpp; sourceTree = "<group>"; };
@@ -5714,6 +5720,8 @@
 				F56C85D1131F42EA000AD0F6 /* karaokelyricstextlrc.h */,
 				F56C85D2131F42EA000AD0F6 /* karaokelyricstextustar.cpp */,
 				F56C85D3131F42EA000AD0F6 /* karaokelyricstextustar.h */,
+				DF07253F16873517008DCAAD /* karaokevideobackground.cpp */,
+				DF07254016873517008DCAAD /* karaokevideobackground.h */,
 				F56C85D4131F42EA000AD0F6 /* karaokewindowbackground.cpp */,
 				F56C85D5131F42EA000AD0F6 /* karaokewindowbackground.h */,
 			);
@@ -6231,6 +6239,8 @@
 				F56C877E131F42EC000AD0F6 /* windows */,
 				F56C8789131F42EC000AD0F6 /* Bookmark.cpp */,
 				F56C878A131F42EC000AD0F6 /* Bookmark.h */,
+				DF0725421687352C008DCAAD /* FFmpegVideoDecoder.cpp */,
+				DF0725431687352C008DCAAD /* FFmpegVideoDecoder.h */,
 				F56C878B131F42EC000AD0F6 /* GUIViewStateVideo.cpp */,
 				F56C878C131F42EC000AD0F6 /* GUIViewStateVideo.h */,
 				F56C878D131F42EC000AD0F6 /* Teletext.cpp */,
@@ -7680,6 +7690,8 @@
 				F5EDC4A61651A74300B852D8 /* GroupUtils.cpp in Sources */,
 				7C7CEB5F165629F90059C9EB /* AELimiter.cpp in Sources */,
 				DFB02DFB16629DF200F37752 /* PyContext.cpp in Sources */,
+				DF07254116873517008DCAAD /* karaokevideobackground.cpp in Sources */,
+				DF0725441687352C008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
