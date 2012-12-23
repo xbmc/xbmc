@@ -42,6 +42,7 @@ using namespace std;
 class OMXPlayerAudio : public CThread
 {
 protected:
+  CCriticalSection      m_flushLock;
   CDVDMessageQueue      m_messageQueue;
   CDVDMessageQueue      &m_messageParent;
 
@@ -81,6 +82,7 @@ protected:
 
   struct timespec           m_starttime, m_endtime;
   bool                      m_buffer_empty;
+  bool                      m_flush;
   //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
   int                       m_synctype;
   int                       m_nChannels;

@@ -44,6 +44,7 @@ using namespace std;
 class OMXPlayerVideo : public CThread
 {
 protected:
+  CCriticalSection          m_flushLock;
   CDVDMessageQueue          m_messageQueue;
   int                       m_stream_id;
   bool                      m_open;
@@ -53,6 +54,7 @@ protected:
   COMXVideo                 m_omxVideo;
   float                     m_fFrameRate;
   bool                      m_Deinterlace;
+  bool                      m_flush;
   bool                      m_hdmi_clock_sync;
   double                    m_iVideoDelay;
   int                       m_speed;
