@@ -103,7 +103,8 @@ void CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel, unsi
     m_members.push_back(newMember);
     m_bChanged = true;
 
-    SortAndRenumber();
+    if (!IsDummy())
+      SortAndRenumber();
   }
 }
 
@@ -116,7 +117,13 @@ bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel &channel, int iChannelN
 bool CPVRChannelGroupInternal::Update(void)
 {
   CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
-  return PVRChannels_tmp.LoadFromClients() && UpdateGroupEntries(PVRChannels_tmp);
+  PVRChannels_tmp.SetIsDummy();
+  if (PVRChannels_tmp.LoadFromClients())
+  {
+    PVRChannels_tmp.SortAndRenumber();
+    return UpdateGroupEntries(PVRChannels_tmp);
+  }
+  return false;
 }
 
 bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
@@ -299,6 +306,8 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
     if (!member.channel)
       continue;
 
+    SetIsDummy();
+
     /* check whether this channel is present in this container */
     CPVRChannelPtr existingChannel = GetByClient(member.channel->UniqueID(), member.channel->ClientID());
     if (existingChannel)
@@ -318,6 +327,10 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'", __FUNCTION__, m_bRadio ? "radio" : "TV", member.channel->ChannelName().c_str());
     }
   }
+
+  SetIsDummy(false);
+  if (m_bChanged)
+    SortAndRenumber();
 
   return bReturn;
 }

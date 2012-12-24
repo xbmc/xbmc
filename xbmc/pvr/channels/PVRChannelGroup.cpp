@@ -49,7 +49,8 @@ CPVRChannelGroup::CPVRChannelGroup(void) :
     m_iGroupId(-1),
     m_bLoaded(false),
     m_bChanged(false),
-    m_bUsingBackendChannelOrder(false)
+    m_bUsingBackendChannelOrder(false),
+    m_bIsDummy(false)
 {
 }
 
@@ -60,7 +61,8 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CSt
     m_strGroupName(strGroupName),
     m_bLoaded(false),
     m_bChanged(false),
-    m_bUsingBackendChannelOrder(false)
+    m_bUsingBackendChannelOrder(false),
+    m_bIsDummy(false)
 {
 }
 
@@ -71,7 +73,8 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_strGroupName(group.strGroupName),
     m_bLoaded(false),
     m_bChanged(false),
-    m_bUsingBackendChannelOrder(false)
+    m_bUsingBackendChannelOrder(false),
+    m_bIsDummy(false)
 {
 }
 
@@ -1116,6 +1119,11 @@ CStdString CPVRChannelGroup::GroupName(void) const
   CSingleLock lock(m_critSection);
   CStdString strReturn(m_strGroupName);
   return strReturn;
+}
+
+void CPVRChannelGroup::SetIsDummy(bool bIsDummy /* = true */)
+{
+  m_bIsDummy = bIsDummy;
 }
 
 bool CPVRChannelGroup::UpdateChannel(const CFileItem &item, bool bHidden, bool bVirtual, bool bEPGEnabled, bool bParentalLocked, int iEPGSource, int iChannelNumber, const CStdString &strChannelName, const CStdString &strIconPath, const CStdString &strStreamURL)

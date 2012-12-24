@@ -181,6 +181,12 @@ namespace PVR
     bool IsRadio(void) const { return m_bRadio; }
 
     /*!
+     * @brief True if this group is a dummy group.
+     * @return True if this group is a dummy group.
+     */
+    bool IsDummy(void) const { return m_bIsDummy; }
+
+    /*!
      * @brief The database ID of this group.
      * @return The database ID of this group.
      */
@@ -202,6 +208,12 @@ namespace PVR
      * @brief Return the type of this group.
      */
     int GroupType(void) const;
+
+    /*!
+     * @brief Set whether this group is a dummy group or not.
+     * @param bIsDummy The new dummy value for this group.
+     */
+    void SetIsDummy(bool bIsDummy = true);
 
     /*!
      * @brief The name of this group.
@@ -473,6 +485,7 @@ namespace PVR
     bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */
     bool             m_bUsingBackendChannelNumbers; /*!< true to use the channel numbers from 1 backend, false otherwise */
     bool             m_bSelectedGroup;              /*!< true when this is the selected group, false otherwise */
+    bool             m_bIsDummy;                    /*!< true when the group is a dummy group, used for temporary channel storage */
     std::vector<PVRChannelGroupMember> m_members;
     CCriticalSection m_critSection;
   };
