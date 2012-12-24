@@ -98,6 +98,7 @@ XBPyThread::~XBPyThread()
       delete [] m_argv[i];
     delete [] m_argv;
   }
+  g_pythonParser.FinalizeScript();
 }
 
 void XBPyThread::setSource(const CStdString &src)
