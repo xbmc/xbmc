@@ -421,7 +421,9 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
     {
       if(m_flush)
       {
+        CSingleLock lock(m_flushLock);
         m_flush = false;
+        lock.Leave();
         break;
       }
 
