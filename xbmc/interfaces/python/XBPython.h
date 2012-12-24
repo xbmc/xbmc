@@ -26,8 +26,8 @@
 #include "threads/CriticalSection.h"
 #include "interfaces/IAnnouncer.h"
 #include "addons/IAddon.h"
-#include "boost/shared_ptr.hpp"
 
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 typedef struct {
