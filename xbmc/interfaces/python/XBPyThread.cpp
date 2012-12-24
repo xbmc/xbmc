@@ -425,8 +425,9 @@ void XBPyThread::Process()
     for (countLimit = 0; languageHook->HasRegisteredAddonClasses() && countLimit < 100; countLimit++)
     {
       PyThreadState* tmpstate = Py_NewInterpreter();
-//      if (PyRun_SimpleString(GC_SCRIPT) == -1)
-//        CLog::Log(LOGERROR,"Failed to run the gc to clean up after running %s",m_source);
+      PyThreadState_Swap(tmpstate);
+      if (PyRun_SimpleString(GC_SCRIPT) == -1)
+        CLog::Log(LOGERROR,"Failed to run the gc to clean up after running %s",m_source);
       Py_EndInterpreter(tmpstate);
     }
 
