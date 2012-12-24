@@ -328,9 +328,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       if (stm)
       {
         st = dynamic_cast<CDemuxStreamAudioPVRClient*>(stm);
-        if (!st
-            || (st->codec != (AVCodecID)props.stream[i].iCodecId)
-            || (st->iChannels != props.stream[i].iChannels))
+        if (!st || (st->codec != (AVCodecID)props.stream[i].iCodecId))
           DisposeStream(i);
       }
       if (!m_streams[i])
@@ -347,6 +345,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iBitsPerSample  = props.stream[i].iBitsPerSample;
       m_streams[i] = st;
       st->m_parser_split = true;
+      st->changes++;
     }
     else if (props.stream[i].iCodecType == XBMC_CODEC_TYPE_VIDEO)
     {
