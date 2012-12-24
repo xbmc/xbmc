@@ -558,7 +558,7 @@ bool CDVDPlayer::OpenInputStream()
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
-retry:
+
   // before creating the input stream, if this is an HLS playlist then get the
   // most appropriate bitrate based on our network settings
   if (filename.Left(7) == "http://" && filename.Right(5) == ".m3u8")
