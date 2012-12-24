@@ -29,6 +29,7 @@
 #include "bytestream.h"
 #include "libavutil/colorspace.h"
 #include "libavutil/imgutils.h"
+#include "libavutil/opt.h"
 
 #define RGBA(r,g,b,a) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
 
@@ -44,6 +45,7 @@ typedef struct PGSSubPictureReference {
     int x;
     int y;
     int picture_id;
+    int composition;
 } PGSSubPictureReference;
 
 typedef struct PGSSubPresentation {
@@ -284,7 +286,6 @@ static void parse_palette_segment(AVCodecContext *avctx,
  * @param buf pointer to the packet to process
  * @param buf_size size of packet to process
  * @todo TODO: Implement cropping
- * @todo TODO: Implement forcing of subtitles
  */
 static void parse_presentation_segment(AVCodecContext *avctx,
                                        const uint8_t *buf, int buf_size)
@@ -336,12 +337,10 @@ static void parse_presentation_segment(AVCodecContext *avctx,
         PGSSubPictureReference *reference = &ctx->presentation.objects[object_index];
         reference->picture_id             = bytestream_get_be16(&buf);
 
-         /*
-         * Skip 2 bytes of unknown:
-         *     window_id_ref,
-         *     composition_flag (0x80 - object cropped, 0x40 - object forced)
-         */
-        buf += 2;
+        /* Skip window_id_ref */
+        buf++;
+        /* composition_flag (0x80 - object cropped, 0x40 - object forced) */
+        reference->composition = bytestream_get_byte(&buf);
 
         reference->x = bytestream_get_be16(&buf);
         reference->y = bytestream_get_be16(&buf);
@@ -427,7 +426,11 @@ static int display_end_segment(AVCodecContext *avctx, void *data,
         sub->rects[rect]->nb_colors    = 256;
         sub->rects[rect]->pict.data[1] = av_mallocz(AVPALETTE_SIZE);
 
-        memcpy(sub->rects[rect]->pict.data[1], ctx->clut, sub->rects[rect]->nb_colors * sizeof(uint32_t));
+        /* Copy the forced flag */
+        sub->rects[rect]->flags = (ctx->presentation.objects[rect].composition & 0x40) != 0;
+
+        if (!avctx->forced_subs_only || ctx->presentation.objects[rect].composition & 0x40)
+            memcpy(sub->rects[rect]->pict.data[1], ctx->clut, sub->rects[rect]->nb_colors * sizeof(uint32_t));
     }
 
     return 1;

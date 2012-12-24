@@ -3246,6 +3246,13 @@ typedef struct AVCodecContext {
     int64_t pts_correction_last_pts;       /// PTS of the last frame
     int64_t pts_correction_last_dts;       /// DTS of the last frame
 
+    /** 
+     * Requests that only forced subpictures be decoded. 
+     * - decoding: set by user 
+     * - encoding: unused 
+     */ 
+    int forced_subs_only;
+
 } AVCodecContext;
 
 /**
@@ -3510,6 +3517,8 @@ typedef struct AVSubtitleRect {
      * struct.
      */
     char *ass;
+	
+    int flags;     ///< 1 if this subtitle should be displayed when subs disabled
 } AVSubtitleRect;
 
 typedef struct AVSubtitle {

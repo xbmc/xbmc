@@ -532,6 +532,7 @@ static const AVOption options[]={
 {"s32", "32-bit signed integer",  0, AV_OPT_TYPE_CONST, {.dbl = AV_SAMPLE_FMT_S32 }, INT_MIN, INT_MAX, A|D, "request_sample_fmt"},
 {"flt", "32-bit float",           0, AV_OPT_TYPE_CONST, {.dbl = AV_SAMPLE_FMT_FLT }, INT_MIN, INT_MAX, A|D, "request_sample_fmt"},
 {"dbl", "64-bit double",          0, AV_OPT_TYPE_CONST, {.dbl = AV_SAMPLE_FMT_DBL }, INT_MIN, INT_MAX, A|D, "request_sample_fmt"},
+{"forced_subs_only", "Only show forced subtitles", OFFSET(forced_subs_only), FF_OPT_TYPE_INT, 0, 0, 1, S|D},
 {NULL},
 };
 
