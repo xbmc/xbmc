@@ -103,6 +103,8 @@ XBPyThread::~XBPyThread()
 
 void XBPyThread::setSource(const CStdString &src)
 {
+  if (m_source) 
+    delete [] m_source;
 #ifdef TARGET_WINDOWS
   CStdString strsrc;
   if (m_type == 'F')
@@ -113,7 +115,6 @@ void XBPyThread::setSource(const CStdString &src)
   m_source  = new char[strsrc.GetLength()+1];
   strcpy(m_source, strsrc);
 #else
-  if (m_source) delete [] m_source;
   m_source  = new char[src.GetLength()+1];
   strcpy(m_source, src);
 #endif
