@@ -395,7 +395,6 @@ void XBPyThread::Process()
   }
 
   PyEval_AcquireLock();
-  CLog::Log(LOGDEBUG,"**** acquired lock");
   PyThreadState_Swap(state);
 
   m_pExecuter->DeInitializeInterpreter();
@@ -447,7 +446,6 @@ void XBPyThread::Process()
   languageHook->UnregisterMe();
 
   PyEval_ReleaseLock();
-  CLog::Log(LOGDEBUG,"**** released lock");
 
 }
 
