@@ -471,7 +471,11 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   CFileItemList items;
   if (!GetDirectory(iList, m_Directory[iList]->GetPath(), items))
   {
-    m_Directory[iList]->SetPath(strOldDirectory);
+    if (strDirectory != strOldDirectory && GetDirectory(iList, strOldDirectory, items))
+      m_Directory[iList]->SetPath(strOldDirectory); // Fallback to old (previous) path)
+    else
+      Update(iList, ""); // Fallback to root
+
     return false;
   }
 
@@ -1196,10 +1200,9 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
 void CGUIWindowFileManager::OnInitWindow()
 {
-  for (int i = 0; i < 2; i++)
-  {
-    Update(i, m_Directory[i]->GetPath());
-  }
+  bool bResult0 = Update(0, m_Directory[0]->GetPath());
+  bool bResult1 = Update(1, m_Directory[1]->GetPath());
+
   CGUIWindow::OnInitWindow();
 
   if (!bCheckShareConnectivity)
@@ -1208,6 +1211,15 @@ void CGUIWindowFileManager::OnInitWindow()
     CFileItem pItem(strCheckSharePath, true);
     ShowShareErrorMessage(&pItem); //show the error message after window is loaded!
     Update(0,""); // reset view to root
+  }
+  else if (!bResult0)
+  {
+    ShowShareErrorMessage(m_Directory[0]); //show the error message after window is loaded!
+  }
+
+  if (!bResult1)
+  {
+    ShowShareErrorMessage(m_Directory[1]); //show the error message after window is loaded!
   }
 }
 
