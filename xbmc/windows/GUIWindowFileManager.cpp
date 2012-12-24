@@ -1180,21 +1180,18 @@ void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob
 
 void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive)
-  {
-    int idMessageText=0;
-    CURL url(pItem->GetPath());
-    const CStdString& strHostName=url.GetHostName();
+  int idMessageText = 0;
+  CURL url(pItem->GetPath());
+  const CStdString& strHostName = url.GetHostName();
 
-    if (pItem->m_iDriveType!=CMediaSource::SOURCE_TYPE_REMOTE) //  Local shares incl. dvd drive
-      idMessageText=15300;
-    else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
-      idMessageText=15303;
-    else  //  All other remote shares
-      idMessageText=15301;
+  if (url.GetProtocol() == "smb" && strHostName.IsEmpty()) //  smb workgroup
+    idMessageText = 15303; // Workgroup not found
+  else if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_REMOTE || URIUtils::IsRemote(pItem->GetPath()))
+    idMessageText = 15301; // Could not connect to network server
+  else
+    idMessageText = 15300; // Path not found or invalid
 
-    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
-  }
+  CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
 }
 
 void CGUIWindowFileManager::OnInitWindow()
@@ -1209,11 +1206,6 @@ void CGUIWindowFileManager::OnInitWindow()
   {
     bCheckShareConnectivity = true; //reset
     CFileItem pItem(strCheckSharePath, true);
-    pItem.m_bIsShareOrDrive = true;
-    if (URIUtils::IsHD(strCheckSharePath))
-      pItem.m_iDriveType=CMediaSource::SOURCE_TYPE_LOCAL;
-    else //we asume that this is a remote share else we can set SOURCE_TYPE_UNKNOWN
-      pItem.m_iDriveType=CMediaSource::SOURCE_TYPE_REMOTE;
     ShowShareErrorMessage(&pItem); //show the error message after window is loaded!
     Update(0,""); // reset view to root
   }
