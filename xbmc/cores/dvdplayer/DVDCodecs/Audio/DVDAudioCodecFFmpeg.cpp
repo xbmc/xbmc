@@ -85,20 +85,25 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_pCodecContext->flags |= CODEC_FLAG_TRUNCATED;
 
   m_channels = 0;
-  m_pCodecContext->channels = hints.channels;
-  m_pCodecContext->sample_rate = hints.samplerate;
-  m_pCodecContext->block_align = hints.blockalign;
-  m_pCodecContext->bit_rate = hints.bitrate;
-  m_pCodecContext->bits_per_coded_sample = hints.bitspersample;
 
-  if(m_pCodecContext->bits_per_coded_sample == 0)
-    m_pCodecContext->bits_per_coded_sample = 16;
-
-  if( hints.extradata && hints.extrasize > 0 )
+  // TODO: fix this in ffmpeg
+  if (pCodec->id != CODEC_ID_AAC_LATM)
   {
-    m_pCodecContext->extradata_size = hints.extrasize;
-    m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
-    memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
+    m_pCodecContext->channels = hints.channels;
+    m_pCodecContext->sample_rate = hints.samplerate;
+    m_pCodecContext->block_align = hints.blockalign;
+    m_pCodecContext->bit_rate = hints.bitrate;
+    m_pCodecContext->bits_per_coded_sample = hints.bitspersample;
+
+    if(m_pCodecContext->bits_per_coded_sample == 0)
+      m_pCodecContext->bits_per_coded_sample = 16;
+
+    if( hints.extradata && hints.extrasize > 0 )
+    {
+      m_pCodecContext->extradata_size = hints.extrasize;
+      m_pCodecContext->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(hints.extrasize + FF_INPUT_BUFFER_PADDING_SIZE);
+      memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
+    }
   }
 
   if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
