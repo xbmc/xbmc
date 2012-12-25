@@ -2633,6 +2633,8 @@ bool CFileItemList::AlwaysCache() const
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
 {
   if (m_strPath.IsEmpty()
+   || m_strPath.Left(19).Equals("newsmartplaylist://")
+   || m_strPath.Left(14).Equals("newplaylist://")
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
@@ -2724,6 +2726,8 @@ CStdString CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) c
 {
   // ignore a bunch that are meaningless
   if (m_strPath.empty()
+   || m_strPath.Left(19).Equals("newsmartplaylist://")
+   || m_strPath.Left(14).Equals("newplaylist://")
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
