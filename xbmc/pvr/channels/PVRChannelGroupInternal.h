@@ -61,9 +61,8 @@ namespace PVR
     /*!
      * @brief Add a channel to this internal group.
      * @param iChannelNumber The channel number to use for this channel or 0 to add it to the back.
-     * @param bSortAndRenumber Set to false to not to sort the group after adding a channel
      */
-    bool InsertInGroup(CPVRChannel &channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
+    bool InsertInGroup(CPVRChannel &channel, int iChannelNumber = 0);
 
     /*!
      * @brief Callback for add-ons to update a channel.
@@ -80,7 +79,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(CPVRChannel &channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
+    bool AddToGroup(CPVRChannel &channel, int iChannelNumber = 0);
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
