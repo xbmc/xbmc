@@ -143,6 +143,7 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
 #define TRICKMODE_I     0x01
 #define TRICKMODE_FFFB  0x02
 
+// same as AV_NOPTS_VALUE
 #define INT64_0         INT64_C(0x8000000000000000)
 
 #define EXTERNAL_PTS    (1)
@@ -482,7 +483,7 @@ int check_in_pts(am_private_t *para, am_packet_t *pkt)
             last_v_duration = pkt->avduration ? pkt->avduration : 1;
         } else {
             if (!para->check_first_pts) {
-                if (para->m_dll->codec_checkin_pts(pkt->codec, pts) != 0) {
+                if (para->m_dll->codec_checkin_pts(pkt->codec, 0) != 0) {
                     CLog::Log(LOGDEBUG, "ERROR check in 0 to video pts error!");
                     return PLAYER_PTS_ERROR;
                 }
@@ -1395,8 +1396,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   //  video_ratio = m_dll->av_d2q(hints.aspect, SHRT_MAX);
   am_private->video_ratio      = ((int32_t)video_ratio.num << 16) | video_ratio.den;
   am_private->video_ratio64    = ((int64_t)video_ratio.num << 32) | video_ratio.den;
-  if (hints.fpsrate > 0 && hints.fpsscale != 0)
-    am_private->video_rate     = 0.5 + (float)UNIT_FREQ * hints.fpsscale / hints.fpsrate;
+  if (hints.rfpsrate > 0 && hints.rfpsscale != 0)
+    am_private->video_rate     = 0.5 + (float)UNIT_FREQ * hints.rfpsscale / hints.rfpsrate;
   else
   {
     // stupid PVR hacks because it does not fill in all of hints.
@@ -1442,8 +1443,8 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     am_private->flv_flag = 1;
   }
 
-  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), video_rate(%d)",
-    hints.fpsrate, hints.fpsscale, am_private->video_rate);
+  CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.fpsrate(%d), hints.fpsscale(%d), hints.rfpsrate(%d), hints.rfpsscale(%d), video_rate(%d)",
+    hints.fpsrate, hints.fpsscale, hints.rfpsrate, hints.rfpsscale, am_private->video_rate);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.aspect(%f), video_ratio.num(%d), video_ratio.den(%d)",
     hints.aspect, video_ratio.num, video_ratio.den);
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder hints.orientation(%d), hints.forced_aspect(%d)",
@@ -1601,10 +1602,14 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
       am_private->am_pkt.avpts = AV_NOPTS_VALUE;
     else
       am_private->am_pkt.avpts = 0.5 + (pts * PTS_FREQ) / DVD_TIME_BASE;
+
     if (dts == DVD_NOPTS_VALUE)
       am_private->am_pkt.avdts = AV_NOPTS_VALUE;
     else
       am_private->am_pkt.avdts = 0.5 + (dts * PTS_FREQ) / DVD_TIME_BASE;
+
+    //CLog::Log(LOGDEBUG, "CAMLCodec::Decode: dts(%f), pts(%f), avdts(%llx), avpts(%llx)",
+    //  dts, pts, am_private->am_pkt.avdts, am_private->am_pkt.avpts);
 
     set_header_info(am_private);
     write_av_packet(am_private, &am_private->am_pkt);
@@ -1647,15 +1652,15 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
 
 bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
+  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+  pDvdVideoPicture->format = RENDER_FMT_BYPASS;
+  pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
+
   pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   pDvdVideoPicture->pts = GetPlayerPtsSeconds() * (double)DVD_TIME_BASE;
   // video pts cannot be late or dvdplayer goes nuts,
   // so run it one frame ahead
-  pDvdVideoPicture->pts += pDvdVideoPicture->iDuration;
-
-  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->format = RENDER_FMT_BYPASS;
-  pDvdVideoPicture->iDuration = (double)(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
+  pDvdVideoPicture->pts += 2 * pDvdVideoPicture->iDuration;
 
   return true;
 }
@@ -1718,6 +1723,8 @@ void CAMLCodec::Process()
       pts_video = get_pts_video();
       if (m_cur_pts != pts_video)
       {
+        //CLog::Log(LOGDEBUG, "CAMLCodec::Process: pts_video(%lld), pts_video/PTS_FREQ(%f), duration(%f)",
+        //  pts_video, (double)pts_video/PTS_FREQ, 1.0/((double)(pts_video - m_cur_pts)/PTS_FREQ));
         // other threads look at these, do them first
         m_cur_pts = pts_video;
         m_cur_pictcnt++;
@@ -1766,6 +1773,7 @@ double CAMLCodec::GetPlayerPtsSeconds()
 
 void CAMLCodec::SetVideoPtsSeconds(const double pts)
 {
+  //CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoPtsSeconds: pts(%f)", pts);
   set_pts_pcrscr((int64_t)(pts * PTS_FREQ));
 }
 
