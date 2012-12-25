@@ -406,43 +406,11 @@ void XBPyThread::Process()
 
   Py_EndInterpreter(state);
 
-  // This is a total hack. Python doesn't necessarily release
-  // all of the objects associated with the interpreter when
-  // you end the interpreter. As a result there are objects 
-  // managed by the windowing system that still receive events
-  // until python decides to clean them up. Python will eventually
-  // clean them up on the creation or ending of a subsequent
-  // interpreter. So we are going to keep creating and ending
-  // interpreters until we have no more python objects hanging
-  // around.
+  // If we still have objects left around, produce an error message detailing what's been left behind
   if (languageHook->HasRegisteredAddonClasses())
-  {
-    CLog::Log(LOGDEBUG, "The python script \"%s\" has left several "
-              "classes in memory that we will be attempting to clean up. The classes include: %s",
+    CLog::Log(LOGWARNING, "The python script \"%s\" has left several "
+              "classes in memory that we couldn't clean up. The classes include: %s",
               m_source, getListOfAddonClassesAsString(languageHook).c_str());
-
-    int countLimit;
-    for (countLimit = 0; languageHook->HasRegisteredAddonClasses() && countLimit < 100; countLimit++)
-    {
-      PyThreadState* tmpstate = Py_NewInterpreter();
-      PyThreadState_Swap(tmpstate);
-      if (PyRun_SimpleString(GC_SCRIPT) == -1)
-        CLog::Log(LOGERROR,"Failed to run the gc to clean up after running %s",m_source);
-      Py_EndInterpreter(tmpstate);
-    }
-
-    // If necessary and successfull, debug log the results.
-    if (countLimit > 0 && !languageHook->HasRegisteredAddonClasses())
-      CLog::Log(LOGDEBUG,"It took %d Py_NewInterpreter/Py_EndInterpreter calls"
-                " to clean up the classes leftover from running \"%s.\"",
-                countLimit,m_source);
-
-    // If not successful, produce an error message detailing what's been left behind
-    if (languageHook->HasRegisteredAddonClasses())
-      CLog::Log(LOGERROR, "The python script \"%s\" has left several "
-                "classes in memory that we couldn't clean up. The classes include: %s",
-                m_source, getListOfAddonClassesAsString(languageHook).c_str());
-  }
 
   // unregister the language hook
   languageHook->UnregisterMe();
