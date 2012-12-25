@@ -140,6 +140,16 @@ void CNfsConnection::destroyOpenContexts()
   m_openContextMap.clear();
 }
 
+void CNfsConnection::destroyContext(const CStdString &exportName)
+{
+   struct nfs_context *context = getContextFromMap(exportName);
+   if(context) {
+      tOpenContextMap::iterator it = m_openContextMap.find(exportName.c_str());
+      m_openContextMap.erase(it);
+      m_pLibNfs->nfs_destroy_context(context);
+   }
+}
+
 struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportname, bool forceCacheHit/* = false*/)
 {
   struct nfs_context *pRet = NULL;
@@ -165,6 +175,7 @@ struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportna
       //context is timed out
       //destroy it and return NULL
       CLog::Log(LOGDEBUG, "NFS: Old context timed out - destroying it");
+      m_openContextMap.erase(it);
       m_pLibNfs->nfs_destroy_context(it->second.pContext);
     }
   }
@@ -288,6 +299,7 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
       if(nfsRet != 0) 
       {
         CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
+        destroyContext(url.GetHostName() + exportPath);
         return false;
       }
       CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s\n", url.GetHostName().c_str(), exportPath.c_str());
