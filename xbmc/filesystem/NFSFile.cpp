@@ -142,12 +142,13 @@ void CNfsConnection::destroyOpenContexts()
 
 void CNfsConnection::destroyContext(const CStdString &exportName)
 {
-   struct nfs_context *context = getContextFromMap(exportName);
-   if(context) {
-      tOpenContextMap::iterator it = m_openContextMap.find(exportName.c_str());
+  CSingleLock lock(openContextLock);
+  tOpenContextMap::iterator it = m_openContextMap.find(exportName.c_str());
+  if(it != m_openContextMap.end()) 
+  {
+      m_pLibNfs->nfs_destroy_context(it->second.pContext);
       m_openContextMap.erase(it);
-      m_pLibNfs->nfs_destroy_context(context);
-   }
+  }
 }
 
 struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportname, bool forceCacheHit/* = false*/)
@@ -175,8 +176,8 @@ struct nfs_context *CNfsConnection::getContextFromMap(const CStdString &exportna
       //context is timed out
       //destroy it and return NULL
       CLog::Log(LOGDEBUG, "NFS: Old context timed out - destroying it");
-      m_openContextMap.erase(it);
       m_pLibNfs->nfs_destroy_context(it->second.pContext);
+      m_openContextMap.erase(it);
     }
   }
   return pRet;
