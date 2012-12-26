@@ -962,7 +962,12 @@ void CPVRChannelGroup::ResetChannelNumbers(void)
 
 void CPVRChannelGroup::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageGuiSettings)
+  /* TODO: while pvr manager is starting up do accept setting changes. */
+  if(!g_PVRManager.IsStarted())
+  {
+    CLog::Log(LOGWARNING, "CPVRChannelGroup setting change ignored while PVRManager is starting\n");
+  }
+  else if (msg == ObservableMessageGuiSettings)
   {
     CSingleLock lock(m_critSection);
     bool bUsingBackendChannelOrder   = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
@@ -972,6 +977,7 @@ void CPVRChannelGroup::Notify(const Observable &obs, const ObservableMessage msg
 
     m_bUsingBackendChannelOrder   = bUsingBackendChannelOrder;
     m_bUsingBackendChannelNumbers = bUsingBackendChannelNumbers;
+    lock.Leave();
 
     /* check whether this channel group has to be renumbered */
     if (bChannelOrderChanged || bChannelNumbersChanged)
