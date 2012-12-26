@@ -613,6 +613,7 @@ void XBPython::FinalizeScript()
     CLog::Log(LOGERROR, "Python script counter attempted to become negative");
   m_endtime = XbmcThreads::SystemClockMillis();
 }
+
 void XBPython::Finalize()
 {
   TRACE;
@@ -656,16 +657,15 @@ void XBPython::FreeResources()
   CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
+    // with the m_critSection held, we should copy the PyList so that 
+    // we can operate on the values once we release it.
+    PyList tmpvec = m_vecPyList;
+    m_vecPyList.clear();
+
+    lock.Leave(); //unlock here because the python thread might lock when it exits
+
     // cleanup threads that are still running
-    PyList::iterator it = m_vecPyList.begin();
-    while (it != m_vecPyList.end())
-    {
-      lock.Leave(); //unlock here because the python thread might lock when it exits
-      delete it->pyThread;
-      lock.Enter();
-      it = m_vecPyList.erase(it);
-      FinalizeScript();
-    }
+    tmpvec.clear(); // boost releases the XBPyThreads which, if deleted, calls FinalizeScript
   }
 }
 
@@ -688,21 +688,21 @@ void XBPython::Process()
 
   if (m_bInitialized)
   {
-    PyList::iterator it = m_vecPyList.begin();
-    while (it != m_vecPyList.end())
+    PyList tmpvec;
+    for (PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end();)
     {
-      //delete scripts which are done
       if (it->bDone)
       {
-        {
-          CSingleExit exit(m_critSection);
-          delete it->pyThread;
-        }
+        tmpvec.push_back(*it);
         it = m_vecPyList.erase(it);
-        FinalizeScript();
       }
-      else ++it;
+      else
+        it++;
     }
+    lock.Leave();
+
+    //delete scripts which are done
+    tmpvec.clear(); // boost releases the XBPyThreads which, if deleted, calls FinalizeScript
 
     if(m_iDllScriptCounter == 0 && (XbmcThreads::SystemClockMillis() - m_endtime) > 10000 )
       Finalize();
@@ -753,7 +753,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
   if (!m_bInitialized) return -1;
 
   m_nextid++;
-  XBPyThread *pyThread = new XBPyThread(this, m_nextid);
+  boost::shared_ptr<XBPyThread> pyThread = boost::shared_ptr<XBPyThread>(new XBPyThread(this, m_nextid));
   pyThread->setArgv(argv);
   pyThread->setAddon(addon);
   pyThread->evalFile(src);
@@ -917,7 +917,7 @@ int XBPython::evalString(const CStdString &src, const std::vector<CStdString> &a
 
   // Previous implementation would create a new thread for every script
   m_nextid++;
-  XBPyThread *pyThread = new XBPyThread(this, m_nextid);
+  boost::shared_ptr<XBPyThread> pyThread = boost::shared_ptr<XBPyThread>(new XBPyThread(this, m_nextid));
   pyThread->setArgv(argv);
   pyThread->evalString(src);
 

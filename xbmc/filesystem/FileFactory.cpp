@@ -22,6 +22,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+#include "network/Network.h"
 #include "system.h"
 #include "FileFactory.h"
 #include "HDFile.h"

@@ -371,7 +371,9 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
       {
         if(m_flush)
         {
+          CSingleLock lock(m_flushLock);
           m_flush = false;
+          lock.Leave();
           break;
         }
 
@@ -419,7 +421,9 @@ bool OMXPlayerAudio::Decode(DemuxPacket *pkt, bool bDropPacket)
     {
       if(m_flush)
       {
+        CSingleLock lock(m_flushLock);
         m_flush = false;
+        lock.Leave();
         break;
       }
 
@@ -623,6 +627,7 @@ void OMXPlayerAudio::Process()
 
 void OMXPlayerAudio::Flush()
 {
+  CSingleLock lock(m_flushLock);
   m_flush = true;
   m_messageQueue.Flush();
   m_messageQueue.Put( new CDVDMsg(CDVDMsg::GENERAL_FLUSH), 1);

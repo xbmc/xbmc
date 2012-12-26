@@ -30,6 +30,7 @@
 #include "PlatformDefs.h"
 
 #include <queue>
+#include "utils/GlobalsHandling.h"
 
 class CFileItem;
 class CFileItemList;
@@ -143,6 +144,12 @@ class CGUIDialogCache;
 #include "PlexTypes.h"
 /* END PLEX */
 
+class CApplicationMessenger;
+namespace xbmcutil
+{
+   template<class T> class GlobalsSingleton;
+}
+
 class CApplicationMessenger
 {
 public:
@@ -246,12 +253,13 @@ public:
   void RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL);
   /* END PLEX */
 
+  virtual ~CApplicationMessenger();
 private:
   // private construction, and no assignements; use the provided singleton methods
+   friend class xbmcutil::GlobalsSingleton<CApplicationMessenger>;
   CApplicationMessenger();
   CApplicationMessenger(const CApplicationMessenger&);
   CApplicationMessenger const& operator=(CApplicationMessenger const&);
-  virtual ~CApplicationMessenger();
   void ProcessMessage(ThreadMessage *pMsg);
 
   std::queue<ThreadMessage*> m_vecMessages;
@@ -260,3 +268,8 @@ private:
   CCriticalSection m_critBuffer;
   CStdString bufferResponse;
 };
+
+XBMC_GLOBAL_REF(CApplicationMessenger,s_messenger);
+#define s_messenger XBMC_GLOBAL_USE(CApplicationMessenger)
+
+

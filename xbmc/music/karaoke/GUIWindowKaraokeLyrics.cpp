@@ -110,6 +110,10 @@ bool CGUIWindowKaraokeLyrics::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+void CGUIWindowKaraokeLyrics::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  dirtyregions.push_back(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+}
 
 void CGUIWindowKaraokeLyrics::Render()
 {
@@ -141,7 +145,7 @@ void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
 
     // Start the required video
     m_Lyrics->GetVideoParameters( path, offset );
-    m_Background->StartVideo( path, offset );
+    m_Background->StartVideo( path );
   }
   else if ( m_Lyrics->HasBackground() && g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs )
   {

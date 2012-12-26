@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "system.h"
 #if defined(TARGET_DARWIN)

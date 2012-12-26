@@ -34,6 +34,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   void    newSong( CKaraokeLyrics * lyrics );
   void    pauseSong( bool now_paused );

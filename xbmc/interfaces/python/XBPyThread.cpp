@@ -88,9 +88,9 @@ XBPyThread::~XBPyThread()
 {
   stop();
   g_pythonParser.PulseGlobalEvent();
-  CLog::Log(LOGDEBUG,"waiting for python thread %d to stop", m_id);
+  CLog::Log(LOGDEBUG,"waiting for python thread %d (%s) to stop", m_id, (m_source ? m_source : "unknown script"));
   StopThread();
-  CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
+  CLog::Log(LOGDEBUG,"python thread %d (%s) destructed", m_id, (m_source ? m_source : "unknown script"));
   delete [] m_source;
   if (m_argv)
   {
@@ -98,10 +98,13 @@ XBPyThread::~XBPyThread()
       delete [] m_argv[i];
     delete [] m_argv;
   }
+  g_pythonParser.FinalizeScript();
 }
 
 void XBPyThread::setSource(const CStdString &src)
 {
+  if (m_source) 
+    delete [] m_source;
 #ifdef TARGET_WINDOWS
   CStdString strsrc;
   if (m_type == 'F')
@@ -112,7 +115,6 @@ void XBPyThread::setSource(const CStdString &src)
   m_source  = new char[strsrc.GetLength()+1];
   strcpy(m_source, strsrc);
 #else
-  if (m_source) delete [] m_source;
   m_source  = new char[src.GetLength()+1];
   strcpy(m_source, src);
 #endif
@@ -404,50 +406,17 @@ void XBPyThread::Process()
 
   Py_EndInterpreter(state);
 
-  // This is a total hack. Python doesn't necessarily release
-  // all of the objects associated with the interpreter when
-  // you end the interpreter. As a result there are objects 
-  // managed by the windowing system that still receive events
-  // until python decides to clean them up. Python will eventually
-  // clean them up on the creation or ending of a subsequent
-  // interpreter. So we are going to keep creating and ending
-  // interpreters until we have no more python objects hanging
-  // around.
+  // If we still have objects left around, produce an error message detailing what's been left behind
   if (languageHook->HasRegisteredAddonClasses())
-  {
-    CLog::Log(LOGDEBUG, "The python script \"%s\" has left several "
-              "classes in memory that we will be attempting to clean up. The classes include: %s",
+    CLog::Log(LOGWARNING, "The python script \"%s\" has left several "
+              "classes in memory that we couldn't clean up. The classes include: %s",
               m_source, getListOfAddonClassesAsString(languageHook).c_str());
-
-    int countLimit;
-    for (countLimit = 0; languageHook->HasRegisteredAddonClasses() && countLimit < 100; countLimit++)
-    {
-      PyThreadState* tmpstate = Py_NewInterpreter();
-      PyThreadState* oldstate = PyThreadState_Swap(tmpstate);
-      if (PyRun_SimpleString(GC_SCRIPT) == -1)
-        CLog::Log(LOGERROR,"Failed to run the gc to clean up after running %s",m_source);
-      PyThreadState_Swap(oldstate);
-      Py_EndInterpreter(tmpstate);
-    }
-
-    // If necessary and successfull, debug log the results.
-    if (countLimit > 0 && !languageHook->HasRegisteredAddonClasses())
-      CLog::Log(LOGDEBUG,"It took %d Py_NewInterpreter/Py_EndInterpreter calls"
-                " to clean up the classes leftover from running \"%s.\"",
-                countLimit,m_source);
-
-    // If not successful, produce an error message detailing what's been left behind
-    if (languageHook->HasRegisteredAddonClasses())
-      CLog::Log(LOGERROR, "The python script \"%s\" has left several "
-                "classes in memory that we couldn't clean up. The classes include: %s",
-                m_source, getListOfAddonClassesAsString(languageHook).c_str());
-  }
 
   // unregister the language hook
   languageHook->UnregisterMe();
 
-  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
+
 }
 
 void XBPyThread::OnExit()
@@ -501,7 +470,7 @@ void XBPyThread::stop()
     {
       if (timeout.IsTimePast())
       {
-        CLog::Log(LOGERROR, "XBPyThread::stop - script didn't stop in %d seconds - let's kill it", PYTHON_SCRIPT_TIMEOUT / 1000);
+        CLog::Log(LOGERROR, "XBPyThread::stop - script %s didn't stop in %d seconds - let's kill it", m_source, PYTHON_SCRIPT_TIMEOUT / 1000);
         break;
       }
       // We can't empty-spin in the main thread and expect scripts to be able to

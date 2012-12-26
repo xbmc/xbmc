@@ -63,7 +63,6 @@
   CLocalizeStrings   g_localizeStrings;
   CLocalizeStrings   g_localizeStringsTemp;
 
-  CGUIWindowManager  g_windowManager;
   XFILE::CDirectoryCache g_directoryCache;
 
   CGUITextureManager g_TextureManager;
@@ -84,7 +83,6 @@
 #endif
   CAlarmClock        g_alarmClock;
   PLAYLIST::CPlayListPlayer g_playlistPlayer;
-  CApplication       g_application;
 
 #ifdef TARGET_RASPBERRY_PI
   CRBP               g_RBP;

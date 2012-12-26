@@ -26,8 +26,6 @@
 
 #include <IL/OMX_Video.h>
 
-#include "utils/BitstreamConverter.h"
-
 #include "OMXClock.h"
 
 #include "guilib/Geometry.h"
@@ -86,7 +84,6 @@ protected:
   uint8_t           *m_extradata;
   int               m_extrasize;
 
-  CBitstreamConverter   *m_converter;
   bool              m_video_convert;
   std::string       m_video_codec_name;
 

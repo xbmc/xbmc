@@ -27,13 +27,14 @@
 #include "interfaces/IAnnouncer.h"
 #include "addons/IAddon.h"
 
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 typedef struct {
   int id;
   bool bDone;
   std::string strFile;
-  XBPyThread *pyThread;
+  boost::shared_ptr<XBPyThread> pyThread;
 }PyElem;
 
 class LibraryLoader;

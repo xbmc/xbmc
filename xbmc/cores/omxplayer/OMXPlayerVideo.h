@@ -53,7 +53,6 @@ protected:
   COMXVideo                 m_omxVideo;
   float                     m_fFrameRate;
   bool                      m_Deinterlace;
-  bool                      m_flush;
   bool                      m_hdmi_clock_sync;
   double                    m_iVideoDelay;
   int                       m_speed;

@@ -18,6 +18,7 @@
  *
  */
 
+#include "network/Network.h"
 #include "system.h"
 #include "utils/AlarmClock.h"
 #include "utils/Screenshot.h"
