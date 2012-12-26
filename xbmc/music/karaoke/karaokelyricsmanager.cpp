@@ -109,15 +109,12 @@ bool CKaraokeLyricsManager::Start(const CStdString & strSongPath)
 
 void CKaraokeLyricsManager::Stop()
 {
-  m_CritSection.lock();
+  CSingleLock lock (m_CritSection);
 
   m_karaokeSongPlaying = false;
 
   if ( !m_Lyrics )
-  {
-    m_CritSection.unlock();
     return;
-  }
 
   // Clean up and close karaoke window when stopping
   CGUIWindowKaraokeLyrics *window = (CGUIWindowKaraokeLyrics*) g_windowManager.GetWindow(WINDOW_KARAOKELYRICS);
@@ -132,8 +129,6 @@ void CKaraokeLyricsManager::Stop()
   m_Lyrics->Shutdown();
   delete m_Lyrics;
   m_Lyrics = 0;
-  
-  m_CritSection.unlock();
 }
 
 
