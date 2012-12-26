@@ -78,7 +78,7 @@ CAESinkALSA::~CAESinkALSA()
   Deinitialize();
 }
 
-inline CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format)
+CAEChannelInfo CAESinkALSA::GetChannelLayout(AEAudioFormat format)
 {
   unsigned int count = 0;
 

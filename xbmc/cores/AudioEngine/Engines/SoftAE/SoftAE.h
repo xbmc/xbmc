@@ -121,9 +121,9 @@ private:
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
 
-  inline void ProcessSuspend(); /* enter suspend state if nothing to play and sink allows */
+  void ProcessSuspend(); /* enter suspend state if nothing to play and sink allows */
 
-  inline void GetDeviceFriendlyName(std::string &device);
+  void GetDeviceFriendlyName(std::string &device);
 
   IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough, std::string &device);
   void StopAllSounds();
