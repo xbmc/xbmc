@@ -174,45 +174,44 @@ endif()
 #### libraries we want to link to
 if(NOT WIN32)
   set(external_libs
-	ssh
-	lzo2
-	pcre
-	pcrecpp
-	fribidi
-	cdio
-	freetype
-	fontconfig
-	sqlite3
-	samplerate
-	microhttpd
-	yajl
-        jpeg
-	crypto
-	SDL
-	SDL_mixer
-        SDL_image
-	tinyxml
-	boost_thread
-	boost_system
-	z
-        GLEW
+    ssh
+    lzo2
+    pcre
+    pcrecpp
+    fribidi
+    cdio
+    freetype
+    fontconfig
+    sqlite3
+    samplerate
+    microhttpd
+    yajl
+    jpeg
+    crypto
+    SDL
+    SDL_mixer
+    SDL_image
+    tinyxml
+    boost_thread
+    boost_system
+    z
+    GLEW
   
-        # ffmpeg libraries
-        avcodec
-        avutil
-        avformat
-        avfilter
-        avdevice
-        postproc
-        swscale
-        swresample
+    # ffmpeg libraries
+    avcodec
+    avutil
+    avformat
+    avfilter
+    avdevice
+    postproc
+    swscale
+    swresample
   )
-else()
   if(NOT APPLE)
-      if(UNIX)
-          list(APPEND external_libs GL)
-          list(APPEND external_libs X11)
-      endif()
+    list(APPEND external_libs GL)
+    list(APPEND external_libs X11)
+  else()
+    list(APPEND external_libs cec)
   endif()
 endif()
 
