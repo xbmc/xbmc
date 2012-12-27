@@ -895,7 +895,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
 
   /* PLEX */
   // Save the default view mode.
-  if (strDirectory == directory)
+  if (strDirectory == strCurrentDirectory)
     items.SetDefaultViewMode(m_vecItems->GetDefaultViewMode());
 
 #ifndef __PLEX__
