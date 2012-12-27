@@ -1635,6 +1635,13 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
         }
       }
 
+      if (URIUtils::IsVideoDb(strPath))
+      {
+        CURL url(strParentPath);
+        url.SetOptions(""); // clear any URL options from recreated parent path
+        strParentPath = url.Get();
+      }
+
       URIUtils::AddSlashAtEnd(strPath);
       m_history.AddPathFront(strPath);
       m_history.SetSelectedItem(strPath, strParentPath);
