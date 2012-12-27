@@ -1,0 +1,11 @@
+* Upstream (XBMC) fixes
+** CPU maxout after playing a music track
+** Fix crashes on exit and other crashes
+* Probably enable CEC and CrystalHD on OSX, I have not been able to test this.
+* Fix a possible crash on startup
+* Removed some XBMC strings
+* Fix popups in Channels
+* Fix media flags in movie/tv-series listings
+* Fix view types when backing out of a movie section
+* Backport the Apple Remote keymapping from 0.9.6
+* Add some more debugging information to the resolution selector
