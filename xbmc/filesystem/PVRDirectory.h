@@ -39,6 +39,8 @@ public:
   static bool IsLiveTV(const CStdString& strPath);
   static bool HasRecordings();
 
+  virtual bool Exists(const char* strPath);
+
 private:
 };
 
