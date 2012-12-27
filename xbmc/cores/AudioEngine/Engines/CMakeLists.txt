@@ -1,9 +1,11 @@
 if(APPLE)
   add_subdirectory(CoreAudio)
+else()
+  add_subdirectory(SoftAE)
 endif()
 
 if(DEFINED USE_PULSE)
   add_subdirectory(PulseAE)
 endif()
 
-add_subdirectory(SoftAE)
+
