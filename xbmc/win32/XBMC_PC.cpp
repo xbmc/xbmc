@@ -66,7 +66,11 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   CreateMutex(NULL, FALSE, "XBMC Media Center");
   if(GetLastError() == ERROR_ALREADY_EXISTS)
   {
+#ifndef __PLEX__
     HWND m_hwnd = FindWindow("XBMC","XBMC");
+#else
+    HWND m_hwnd = FindWindow("XBMC","Plex/HT");
+#endif
     if(m_hwnd != NULL)
     {
       // switch to the running instance

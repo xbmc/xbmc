@@ -667,6 +667,7 @@ bool CApplication::Create()
   g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
+#ifndef __PLEX__
 #if defined(TARGET_DARWIN_OSX)
   CLog::Log(LOGNOTICE, "Starting XBMC (%s), Platform: Darwin OSX (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
 #elif defined(TARGET_DARWIN_IOS)
@@ -687,6 +688,29 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
   CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
+#endif
+#else
+#if defined(TARGET_DARWIN_OSX)
+  CLog::Log(LOGNOTICE, "Starting Plex Home Theater (%s), Platform: Darwin OSX (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
+#elif defined(TARGET_DARWIN_IOS)
+  CLog::Log(LOGNOTICE, "Starting Plex Home Theater (%s), Platform: Darwin iOS (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
+#elif defined(__FreeBSD__)
+  CLog::Log(LOGNOTICE, "Starting Plex Home Theater (%s), Platform: FreeBSD (%s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
+#elif defined(_LINUX)
+  CLog::Log(LOGNOTICE, "Starting Plex Home Theater (%s), Platform: Linux (%s, %s). Built on %s", g_infoManager.GetVersion().c_str(), g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__);
+#elif defined(_WIN32)
+  CLog::Log(LOGNOTICE, "Starting Plex Home Theater (%s), Platform: %s. Built on %s (compiler %i)", g_infoManager.GetVersion().c_str(), g_sysinfo.GetKernelVersion().c_str(), __DATE__, _MSC_VER);
+#if defined(__arm__)
+  if (g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON)
+    CLog::Log(LOGNOTICE, "ARM Features: Neon enabled");
+  else
+    CLog::Log(LOGNOTICE, "ARM Features: Neon disabled");
+#endif
+  CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
+  CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
+  CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
+  CLog::Log(LOGNOTICE, "Aero is %s", (g_sysinfo.IsAeroDisabled() == true) ? "disabled" : "enabled");
+#endif
 #endif
   CSpecialProtocol::LogPaths();
 
@@ -1078,7 +1102,7 @@ bool CApplication::InitDirectoriesLinux()
 #ifndef __PLEX__
     strTempPath = URIUtils::AddFileToFolder(strTempPath, ".xbmc/temp");
 #else
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, ".plex/temp");
+    strTempPath = URIUtils::AddFileToFolder(strTempPath, ".plexht/temp");
 #endif
     if (getenv("XBMC_TEMP"))
       strTempPath = getenv("XBMC_TEMP");
@@ -1174,11 +1198,23 @@ bool CApplication::InitDirectoriesOSX()
 
     // location for temp files
     #if defined(TARGET_DARWIN_IOS)
+#ifndef __PLEX__
       CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  "Library/Preferences/XBMC/temp");
+#else
+      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  "Library/Preferences/" + PLEX_TARGET_NAME +"/temp");
+#endif
     #else
+#ifndef __PLEX__
       CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
+#else
+      CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".plexht/");
+#endif
       CDirectory::Create(strTempPath);
+#ifndef __PLEX__
       strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
+#else
+      strTempPath = URIUtils::AddFileToFolder(userHome, ".plexht/temp");
+#endif
     #endif
     CSpecialProtocol::SetTempPath(strTempPath);
 
