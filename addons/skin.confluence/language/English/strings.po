@@ -126,6 +126,10 @@ msgctxt "#31045"
 msgid "REWIND"
 msgstr ""
 
+msgctxt "#31046"
+msgid "SEEKING"
+msgstr ""
+
 #empty strings from id 31046 to 31047
 
 msgctxt "#31048"
@@ -620,4 +624,46 @@ msgstr ""
 
 msgctxt "#31910"
 msgid "Map & Alerts"
+msgstr ""
+
+#empty strings from id 31910 to 31949
+
+msgctxt "#31950"
+msgid "WEATHER"
+msgstr ""
+
+msgctxt "#31951"
+msgid "PICTURES"
+msgstr ""
+
+msgctxt "#31952"
+msgid "LIVE TV"
+msgstr ""
+
+msgctxt "#31953"
+msgid "VIDEOS"
+msgstr ""
+
+msgctxt "#31954"
+msgid "MOVIES"
+msgstr ""
+
+msgctxt "#31955"
+msgid "TV SHOWS"
+msgstr ""
+
+msgctxt "#31956"
+msgid "MUSIC"
+msgstr ""
+
+msgctxt "#31957"
+msgid "PROGRAMS"
+msgstr ""
+
+msgctxt "#31958"
+msgid "PLAY DISC"
+msgstr ""
+
+msgctxt "#31959"
+msgid "SYSTEM"
 msgstr ""
