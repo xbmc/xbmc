@@ -532,7 +532,6 @@ static const AVOption options[]={
 {"s32", "32-bit signed integer",  0, AV_OPT_TYPE_CONST, {.dbl = AV_SAMPLE_FMT_S32 }, INT_MIN, INT_MAX, A|D, "request_sample_fmt"},
 {"flt", "32-bit float",           0, AV_OPT_TYPE_CONST, {.dbl = AV_SAMPLE_FMT_FLT }, INT_MIN, INT_MAX, A|D, "request_sample_fmt"},
 {"dbl", "64-bit double",          0, AV_OPT_TYPE_CONST, {.dbl = AV_SAMPLE_FMT_DBL }, INT_MIN, INT_MAX, A|D, "request_sample_fmt"},
-{"forced_subs_only", "Only show forced subtitles", OFFSET(forced_subs_only), FF_OPT_TYPE_INT, 0, 0, 1, S|D},
 {NULL},
 };
 
@@ -730,4 +729,29 @@ static const AVClass av_frame_class = {
 const AVClass *avcodec_get_frame_class(void)
 {
     return &av_frame_class;
+}
+
+#define SROFFSET(x) offsetof(AVSubtitleRect,x)
+
+static const AVOption subtitle_rect_options[]={
+{"x", "", SROFFSET(x), AV_OPT_TYPE_INT, {.i64 = 0 }, 0, INT_MAX, 0},
+{"y", "", SROFFSET(y), AV_OPT_TYPE_INT, {.i64 = 0 }, 0, INT_MAX, 0},
+{"w", "", SROFFSET(w), AV_OPT_TYPE_INT, {.i64 = 0 }, 0, INT_MAX, 0},
+{"h", "", SROFFSET(h), AV_OPT_TYPE_INT, {.i64 = 0 }, 0, INT_MAX, 0},
+{"type", "", SROFFSET(type), AV_OPT_TYPE_INT, {.i64 = 0 }, 0, INT_MAX, 0},
+{"flags", "", SROFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64 = 0}, 0, 1, 0, "flags"},
+{"forced", "", SROFFSET(flags), AV_OPT_TYPE_FLAGS, {.i64 = 0}, 0, 1, 0},
+{NULL},
+};
+
+static const AVClass av_subtitle_rect_class = {
+    .class_name             = "AVSubtitleRect",
+    .item_name              = NULL,
+    .option                 = subtitle_rect_options,
+    .version                = LIBAVUTIL_VERSION_INT,
+};
+
+const AVClass *avcodec_get_subtitle_rect_class(void)
+{
+    return &av_subtitle_rect_class;
 }
