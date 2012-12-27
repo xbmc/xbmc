@@ -283,6 +283,7 @@ set(CPACK_SOURCE_IGNORE_FILES
   "^${PROJECT_SOURCE_DIR}/plex/build"
   "^${PROJECT_SOURCE_DIR}/plex/Dependencies/laika-depends"
   "^${PROJECT_SOURCE_DIR}/plex/Dependencies/.*-darwin-i686"
+  "^${PROJECT_SOURCE_DIR}/upload"
 )
 
 # We want to make sure that CPack uses our own NSIS.template.in
