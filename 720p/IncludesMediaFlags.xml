@@ -43,14 +43,14 @@
 				<visible>!IsEmpty(Listitem.Art(mediaTag::contentRating)) + !Container.Content(tvshows)</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(Art::contentRating)</info>
+				<info>Listitem.Art(mediaTag::contentRating)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
 				<visible>!IsEmpty(Listitem.Art(mediaTag::videoResolution))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(Art::videoResolution)</info>
+				<info>Listitem.Art(mediaTag::videoResolution)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
@@ -71,14 +71,14 @@
 				<visible>!IsEmpty(Listitem.Art(mediaTag::videoFrameRate))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(Art::videoFrameRate)</info>
+				<info>Listitem.Art(mediaTag::videoFrameRate)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
 				<visible>!IsEmpty(Listitem.Art(mediaTag::audioCodec))</visible>
 				<height>17</height>
 				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(Art::audioCodec)</info>
+				<info>Listitem.Art(mediaTag::audioCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="image">
