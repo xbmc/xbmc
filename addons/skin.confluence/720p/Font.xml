@@ -82,9 +82,8 @@
 
 	 	<font>
 			<name>font_MainMenu</name>
-			<filename>Roboto-Bold.ttf</filename>
-			<style>uppercase</style>
-			<size>40</size>
+			<filename>DejaVuSans-Bold-Caps.ttf</filename>
+			<size>35</size>
 		</font>
 	 	<font>
 			<name>WeatherTemp</name>
