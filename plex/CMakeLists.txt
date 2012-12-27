@@ -142,21 +142,25 @@ else()
   install(DIRECTORY ${plexdir}/build/dependencies/dxsetup DESTINATION ${BINPATH}/Dependencies COMPONENT QDXSETUP)
 endif()
 
-add_custom_command(
-  OUTPUT "${EXECUTABLE_NAME}.dSYM"
-  COMMAND dsymutil -o "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.dSYM" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/MacOS/${EXECUTABLE_NAME}"
-  DEPENDS ${PLEX_TARGET_NAME}
-)
-add_custom_command(
-  OUTPUT "${EXECUTABLE_NAME}.dSYM.zip"
-  COMMAND ditto -c -k "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.dSYM" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.dSYM.zip"
-  DEPENDS "${EXECUTABLE_NAME}.dSYM"
-)
-add_custom_target(Symbols DEPENDS "${EXECUTABLE_NAME}.dSYM.zip")
+if(APPLE)
+  add_custom_command(
+    OUTPUT "${EXECUTABLE_NAME}.dSYM"
+    COMMAND dsymutil -o "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.dSYM" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/MacOS/${EXECUTABLE_NAME}"
+    DEPENDS ${PLEX_TARGET_NAME}
+  )
+  add_custom_command(
+    OUTPUT "${EXECUTABLE_NAME}.dSYM.zip"
+    COMMAND ditto -c -k "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.dSYM" "${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE_NAME}.dSYM.zip"
+    DEPENDS "${EXECUTABLE_NAME}.dSYM"
+  )
+  add_custom_target(Symbols DEPENDS "${EXECUTABLE_NAME}.dSYM.zip")
+endif()
 
 if(NOT PLEX_SKIP_BUNDLING STREQUAL "1")
   install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
-  add_custom_target(BundlingSymbol ALL DEPENDS Symbols)
+  if(APPLE)
+    add_custom_target(BundlingSymbol ALL DEPENDS Symbols)
+  endif()
 else()
   message("-- Skipping bundling ${PLEX_SKIP_BUNDLING}")
 endif()
