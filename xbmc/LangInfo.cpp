@@ -156,7 +156,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   // decimal separator is changed depending of the current language
   // (ie. "," in French or Dutch instead of "."). This breaks atof() and
   // others similar functions.
-#if defined(__FreeBSD__) || defined(TARGET_DARWIN_OSX)
+#if defined(__FreeBSD__) || defined(TARGET_DARWIN_OSX) || defined(TARGET_LINUX)
   // on FreeBSD and darwin libstdc++ is compiled with "generic" locale support
   if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL
   || setlocale(LC_CTYPE, strLocale.c_str()) == NULL)
