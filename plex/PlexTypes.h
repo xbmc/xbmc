@@ -4,8 +4,8 @@
 // Windows.
 #define WINDOW_NOW_PLAYING                10050
 #define WINDOW_PLEX_SEARCH                10051
-#define WINDOW_PLUGIN_SETTINGS            10140
-#define WINDOW_SHARED_CONTENT             10030
+#define WINDOW_PLUGIN_SETTINGS            10052
+#define WINDOW_SHARED_CONTENT             10053
 
 // Dialogs.
 #define WINDOW_DIALOG_RATING              10200

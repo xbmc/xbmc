@@ -11,6 +11,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "URL.h"
 #include "dialogs/GUIDialogBoxBase.h"
+#include "guilib/GUIWindowManager.h"
 
 class CPlexPluginSettings
 {
@@ -24,16 +25,17 @@ public:
   TiXmlElement* GetPluginRoot();
   
 private: 
-  TiXmlDocument   m_userXmlDoc;
-  TiXmlDocument   m_pluginXmlDoc;
+  TiXmlDocument    m_userXmlDoc;
+  TiXmlDocument    m_pluginXmlDoc;
 };
 
 class CGUIDialogPlexPluginSettings : public CGUIDialogBoxBase
 {
 public:
-  CGUIDialogPlexPluginSettings(CPlexPluginSettings& settings, const CStdString& heading);
+  CGUIDialogPlexPluginSettings();
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(const CStdString& path, const CStdString& compositeXml);
+  int GetDefaultLabelID(int controlId) const;
   
 private:
   void CreateControls();
@@ -45,7 +47,7 @@ private:
   bool SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
-  CPlexPluginSettings& m_settings;
+  CPlexPluginSettings* m_settings;
   CStdString m_strHeading;
   bool m_okSelected; 
 };

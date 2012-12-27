@@ -200,11 +200,9 @@ TiXmlElement* CPlexPluginSettings::GetPluginRoot()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CGUIDialogPlexPluginSettings::CGUIDialogPlexPluginSettings(CPlexPluginSettings& settings, const CStdString& heading)
+CGUIDialogPlexPluginSettings::CGUIDialogPlexPluginSettings()
   : CGUIDialogBoxBase(WINDOW_PLUGIN_SETTINGS, "DialogPluginSettings.xml")
-  , m_settings(settings)
   , m_okSelected(false)
-  , m_strHeading(heading)
 {}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,15 +258,22 @@ void CGUIDialogPlexPluginSettings::ShowAndGetInput(const CStdString& path, const
     return;
   
   // Load the settings.
-  CPlexPluginSettings settings;
-  settings.Load(root);
+  CPlexPluginSettings* settings = new CPlexPluginSettings;
+  settings->Load(root);
+
+  CGUIDialogPlexPluginSettings* pDialog = NULL;
+  pDialog = (CGUIDialogPlexPluginSettings*)g_windowManager.GetWindow(WINDOW_PLUGIN_SETTINGS);
+  if (!pDialog)
+    return;
+
+  pDialog->m_settings = settings;
+  /* FIXME */
+  //pDialog->SetHeading(CVariant(root->Attribute("title")));
+
+  pDialog->DoModal();
   
-  // Create the dialog.
-  CGUIDialogPlexPluginSettings dialog(settings, root->Attribute("title"));
-  dialog.DoModal();
-  
-  if (dialog.m_okSelected)
-    settings.Save(path);
+  if (pDialog->m_okSelected)
+    settings->Save(path);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -277,7 +282,7 @@ bool CGUIDialogPlexPluginSettings::ShowVirtualKeyboard(int iControl)
   int controlId = CONTROL_START_CONTROL;
   bool bCloseDialog = false;
   
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings->GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
     if (controlId == iControl)
@@ -331,7 +336,7 @@ bool CGUIDialogPlexPluginSettings::SaveSettings(void)
 {
   // Retrieve all the values from the GUI components and put them in the model
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings->GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
     CStdString id;
@@ -362,7 +367,7 @@ bool CGUIDialogPlexPluginSettings::SaveSettings(void)
         default:
           break;
       }
-      m_settings.Set(id, value);
+      m_settings->Set(id, value);
     }
     setting = setting->NextSiblingElement("setting");
     controlId++;
@@ -410,7 +415,7 @@ void CGUIDialogPlexPluginSettings::CreateControls()
   
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings->GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
     const char *type = setting->Attribute("type");
@@ -440,7 +445,7 @@ void CGUIDialogPlexPluginSettings::CreateControls()
         //((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y); FIXME
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
-          ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
+          ((CGUIButtonControl *)pControl)->SetLabel2(m_settings->Get(id));
         
         if (option && strcmpi(option, "hidden") == 0)
           ((CGUIButtonControl *)pControl)->SetHidden(true);
@@ -450,7 +455,7 @@ void CGUIDialogPlexPluginSettings::CreateControls()
         pControl = new CGUIRadioButtonControl(*pOriginalRadioButton);
         if (!pControl) return;
         ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
-        ((CGUIRadioButtonControl *)pControl)->SetSelected(m_settings.Get(id) == "true");
+        ((CGUIRadioButtonControl *)pControl)->SetSelected(m_settings->Get(id) == "true");
       }
       else if (strcmpi(type, "enum") == 0 || strcmpi(type, "labelenum") == 0)
       {
@@ -484,10 +489,10 @@ void CGUIDialogPlexPluginSettings::CreateControls()
         }
         if (strcmpi(type, "labelenum") == 0)
         { // need to run through all our settings and find the one that matches
-          ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings.Get(id));
+          ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings->Get(id));
         }
         else
-          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings.Get(id)));
+          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings->Get(id)));
         
       }
       else if (strcmpi(type, "lsep") == 0 && pOriginalLabel)
@@ -518,7 +523,7 @@ void CGUIDialogPlexPluginSettings::CreateControls()
 void CGUIDialogPlexPluginSettings::EnableControls()
 {
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings->GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
@@ -637,7 +642,7 @@ bool CGUIDialogPlexPluginSettings::TranslateSingleString(const CStdString &strCo
 void CGUIDialogPlexPluginSettings::SetDefaults()
 {
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings->GetPluginRoot()->FirstChildElement("setting");
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
@@ -683,4 +688,16 @@ void CGUIDialogPlexPluginSettings::SetDefaults()
   EnableControls();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+int CGUIDialogPlexPluginSettings::GetDefaultLabelID(int controlId) const
+{
+  if (controlId == ID_BUTTON_OK)
+    return 12321;
+  else if (controlId == ID_BUTTON_CANCEL)
+    return 222;
+  else if (controlId == ID_BUTTON_DEFAULT)
+    return 13278;
+
+  return CGUIDialogBoxBase::GetDefaultLabelID(controlId);
+}
 
