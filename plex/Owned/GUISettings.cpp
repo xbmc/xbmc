@@ -24,6 +24,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 
+#include "network/Network.h"
 #include "GUISettings.h"
 #include <limits.h>
 #include <float.h>
