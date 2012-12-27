@@ -186,7 +186,7 @@ bool CGUIWindowHome::SaveSelectedMenuItem()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CFileItem* CGUIWindowHome::CurrentFileItem() const
 {
-  CFileItem* returnVal;
+  CFileItem* returnVal = NULL;
   CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
   if (pControl)
   {
