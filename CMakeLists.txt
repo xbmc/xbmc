@@ -71,6 +71,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_CFLAGS}")
 if(UNIX)
   set(CMAKE_C_FLAGS_DEBUG "-g -O0")
   set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+  set(CMAKE_C_FLAGS_RELEASE "-g")
+  set(CMAKE_CXX_FLAGS_RELEASE "-g")
 endif()
 
 if(WIN32)
