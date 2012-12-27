@@ -80,7 +80,14 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
     CStdString defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
     if (defaultWide.IsEmpty())
       defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution");
-    TranslateResolution(defaultWide, m_defaultRes);
+    /* PLEX */
+    if (!TranslateResolution(defaultWide, m_defaultRes))
+    {
+      defaultWide = "720p";
+      m_defaultRes = RESOLUTION_INFO(1280, 720, 0, "720p");
+    }
+    CLog::Log(LOGDEBUG, "Selected defaultresolution %s: %d %d", defaultWide.c_str(), m_defaultRes.iWidth, m_defaultRes.iHeight);
+    /* END PLEX */
   }
 
   CStdString str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
