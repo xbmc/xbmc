@@ -2,6 +2,10 @@
 
 set(CMAKE_REQUIRED_INCLUDES ${dependdir}/include ${root}/lib/ffmpeg)
 
+if(UNIX)
+  set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
+endif()
+
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
@@ -78,6 +82,9 @@ set(headers
   ffmpeg/rgb2rgb
   libswresample/swresample
   libavresample/avresample
+  
+  # libcrystalHD
+  libcrystalhd/libcrystalhd_if
 )
 
 foreach(header ${headers})
@@ -382,6 +389,20 @@ CHECK_C_SOURCE_COMPILES("
   }
 "
 HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO)
+
+if(DEFINED HAVE_LIBCRYSTALHD_LIBCRYSTALHD_IF_H)
+  CHECK_C_SOURCE_COMPILES("
+    #include <libcrystalhd/bc_dts_types.h>
+    #include <libcrystalhd/bc_dts_defs.h>
+    PBC_INFO_CRYSTAL bCrystalInfo;
+    int main() {}
+  " CHECK_CRYSTALHD_VERSION)
+  if(CHECK_CRYSTALHD_VERSION)
+    set(HAVE_LIBCRYSTALHD 2)
+  else()
+    set(HAVE_LIBCRYSTALHD 1)
+  endif()
+endif()
 
 #### default lircdevice
 set(LIRC_DEVICE "/dev/lircd")
