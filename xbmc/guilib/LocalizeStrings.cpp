@@ -190,6 +190,18 @@ bool CLocalizeStrings::Load(const CStdString& strPathName, const CStdString& str
   CStdString encoding;
   Clear();
 
+  /* PLEX */
+  /* If the user requests English we try to load English_plex and then English,
+   * If the user requests German we try to load German_plex and then German and then English */
+
+  if (LoadStr2Mem(strPathName, strLanguage + "_plex", encoding))
+  {
+    CLog::Log(LOGDEBUG, "Managed to load %s_plex", strLanguage.c_str());
+  }
+  else
+    CLog::Log(LOGDEBUG, "Did not find %s_plex", strLanguage.c_str());
+  /* END PLEX */
+
   if (!LoadStr2Mem(strPathName, strLanguage, encoding))
   {
     // try loading the fallback
