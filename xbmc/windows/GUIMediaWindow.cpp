@@ -1188,21 +1188,18 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const CStdString& strPath, int iDrive
 // \brief Shows a standard errormessage for a given pItem.
 void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive)
-  {
-    int idMessageText=0;
-    const CURL& url=pItem->GetAsUrl();
-    const CStdString& strHostName=url.GetHostName();
+  int idMessageText = 0;
+  CURL url(pItem->GetPath());
+  const CStdString& strHostName = url.GetHostName();
 
-    if (pItem->m_iDriveType != CMediaSource::SOURCE_TYPE_REMOTE) //  Local shares incl. dvd drive
-      idMessageText=15300;
-    else if (url.GetProtocol() == "smb" && strHostName.IsEmpty()) //  smb workgroup
-      idMessageText=15303;
-    else  //  All other remote shares
-      idMessageText=15301;
+  if (url.GetProtocol() == "smb" && strHostName.IsEmpty()) //  smb workgroup
+    idMessageText = 15303; // Workgroup not found
+  else if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_REMOTE || URIUtils::IsRemote(pItem->GetPath()))
+    idMessageText = 15301; // Could not connect to network server
+  else
+    idMessageText = 15300; // Path not found or invalid
 
-    CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
-  }
+  CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
 }
 
 // \brief The functon goes up one level in the directory tree
