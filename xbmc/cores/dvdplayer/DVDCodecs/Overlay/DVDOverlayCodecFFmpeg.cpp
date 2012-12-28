@@ -259,6 +259,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->y        = rect.y;
     overlay->width    = rect.w;
     overlay->height   = rect.h;
+    overlay->bForced  = rect.flags;
 
     int right  = overlay->x + overlay->width;
     int bottom = overlay->y + overlay->height;
