@@ -428,6 +428,9 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
 COMXPlayer::~COMXPlayer()
 {
   CloseFile();
+
+  if(m_messenger.IsInited())
+    m_messenger.End();
 }
 
 bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
@@ -2015,7 +2018,7 @@ void COMXPlayer::OnExit()
     // clean up all selection streams
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
-    m_messenger.End();
+    m_messenger.Flush();
 
     m_av_clock.OMXDeinitialize();
 
