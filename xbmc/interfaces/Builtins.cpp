@@ -569,6 +569,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     // ask if we need to check guisettings to resume
     bool askToResume = true;
+    int playOffset = 0
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
       if (params[i].Equals("isdir"))
@@ -586,8 +587,10 @@ int CBuiltins::Execute(const CStdString& execString)
         // force the item to start at the beginning (m_lStartOffset is initialized to 0)
         askToResume = false;
       }
-      else if (params[i].Left(11).Equals("playoffset="))
-        item.SetProperty("playlist_starting_track", atoi(params[i].Mid(11)) - 1);
+      else if (params[i].Left(11).Equals("playoffset=")) {
+        playOffset = atoi(params[i].Mid(11)) - 1;
+        item.SetProperty("playlist_starting_track", playOffset);
+      }
     }
 
     if (!item.m_bIsFolder && item.IsPlugin())
@@ -614,7 +617,7 @@ int CBuiltins::Execute(const CStdString& execString)
       g_playlistPlayer.ClearPlaylist(playlist);
       g_playlistPlayer.Add(playlist, items);
       g_playlistPlayer.SetCurrentPlaylist(playlist);
-      g_playlistPlayer.Play();
+      g_playlistPlayer.Play(playOffset);
     }
     else
     {
