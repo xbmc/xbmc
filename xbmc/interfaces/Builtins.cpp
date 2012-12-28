@@ -569,7 +569,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     // ask if we need to check guisettings to resume
     bool askToResume = true;
-    int playOffset = 0
+    int playOffset = 0;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
       if (params[i].Equals("isdir"))
