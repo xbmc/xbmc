@@ -123,6 +123,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in screensaver
           return AddonPtr(new CAddon(props));
         }
+<<<<<<< HEAD
         if (type == ADDON_SCREENSAVER)
         { // Python screensaver
           CStdString library = CAddonMgr::Get().GetExtValue(props->configuration, "@library");
@@ -132,9 +133,16 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #if defined(TARGET_ANDROID)                                                                                                                                                      
           if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_android")) && value.empty())                                                                
             break;                                                                                                                                                                 
- #elif defined(_LINUX) && !defined(TARGET_DARWIN)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
-          break;
+#elif defined(_LINUX) && !defined(TARGET_DARWIN)
+#if defined(__amd64__)
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux64")) && value.empty())
+          if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+            break;
+#else
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux32")) && value.empty())
+          if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+            break;
+#endif
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl")) && value.empty())
           break;
@@ -330,22 +338,22 @@ void CAddonMgr::RemoveFromUpdateableAddons(AddonPtr &pAddon)
 {
   CSingleLock lock(m_critSection);
   VECADDONS::iterator it = std::find(m_updateableAddons.begin(), m_updateableAddons.end(), pAddon);
-  
+
   if(it != m_updateableAddons.end())
   {
     m_updateableAddons.erase(it);
   }
 }
 
-struct AddonIdFinder 
-{ 
+struct AddonIdFinder
+{
     AddonIdFinder(const CStdString& id)
       : m_id(id)
     {}
-    
-    bool operator()(const AddonPtr& addon) 
-    { 
-      return m_id.Equals(addon->ID()); 
+
+    bool operator()(const AddonPtr& addon)
+    {
+      return m_id.Equals(addon->ID());
     }
     private:
     CStdString m_id;
@@ -355,7 +363,7 @@ bool CAddonMgr::ReloadSettings(const CStdString &id)
 {
   CSingleLock lock(m_critSection);
   VECADDONS::iterator it = std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(id));
-  
+
   if( it != m_updateableAddons.end())
   {
     return (*it)->ReloadSettings();
@@ -887,4 +895,3 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
 }
 
 } /* namespace ADDON */
-
