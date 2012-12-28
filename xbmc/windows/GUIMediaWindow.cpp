@@ -777,16 +777,13 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   if (!GetDirectory(directory, items))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
-    // if the directory is the same as the old directory, then we'll return
-    // false.  Else, we assume we can get the previous directory
-    if (strDirectory.Equals(strCurrentDirectory))
-      return false;
+    // Try to return to the previous directory, if not the same
+    // else fallback to root
+    if (strDirectory.Equals(strCurrentDirectory) || !Update(m_history.RemoveParentPath()))
+      Update(""); // Fallback to root
 
-    // We assume, we can get the parent
-    // directory again, but we have to
-    // return false to be able to eg. show
+    // Return false to be able to eg. show
     // an error message.
-    Update(m_history.RemoveParentPath());
     return false;
   }
 
