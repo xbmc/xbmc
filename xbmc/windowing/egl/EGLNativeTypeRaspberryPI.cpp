@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "guilib/gui3d.h"
 #include "linux/DllBCM.h"
+#include "settings/AdvancedSettings.h"
 
 #ifndef __VIDEOCORE4__
 #define __VIDEOCORE4__
@@ -554,7 +555,8 @@ void CEGLNativeTypeRaspberryPI::CallbackTvServiceCallback(void *userdata, uint32
 
 bool CEGLNativeTypeRaspberryPI::ClampToGUIDisplayLimits(int &width, int &height)
 {
-  const int max_width = 1280, max_height = 720;
+  int max_width = g_advancedSettings.m_clampGUILimitWidth;
+  int max_height = g_advancedSettings.m_clampGUILimitHeight;
   float ar = (float)width/(float)height;
   // bigger than maximum, so need to clamp
   if (width > max_width || height > max_height) {

@@ -288,6 +288,12 @@ void CAdvancedSettings::Initialize()
 #endif
 
   m_bgInfoLoaderMaxThreads = 5;
+  
+#if defined(TARGET_RASPBERRY_PI)
+  m_clampGUILimitWidth = 1280;
+  m_clampGUILimitHeight = 720;
+#endif
+
 
   m_iPVRTimeCorrection             = 0;
   m_iPVRInfoToggleInterval         = 3000;
@@ -975,6 +981,28 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
+  
+#if defined(TARGET_RASPBERRY_PI)
+  if (!XMLUtils::GetInt(pRootElement, "clampguilimitwidth", m_clampGUILimitWidth)) 
+    m_clampGUILimitWidth = 1280;
+    
+  if (m_clampGUILimitWidth < 320)
+    // clamp to vhs resolution
+    m_clampGUILimitWidth = 320;
+  else if (m_clampGUILimitWidth > 3840)
+    // clamp to 4k (uhd) resolution
+    m_clampGUILimitWidth = 3840;
+
+  if (!XMLUtils::GetInt(pRootElement, "clampguilimitheight", m_clampGUILimitHeight)) 
+    m_clampGUILimitHeight = 720;
+
+  if (m_clampGUILimitHeight < 240)
+    // clamp to vhs resolution
+    m_clampGUILimitHeight = 240;
+  else if (m_clampGUILimitHeight > 2160)
+    // clamp to 4k (uhd) resolution
+    m_clampGUILimitHeight = 2160;
+#endif
 
   TiXmlElement *pPVR = pRootElement->FirstChildElement("pvr");
   if (pPVR)

@@ -327,6 +327,12 @@ class CAdvancedSettings
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
     int m_bgInfoLoaderMaxThreads;
+    
+#if defined(TARGET_RASPBERRY_PI)
+    /* display resolution clamping for windowing */
+    int m_clampGUILimitWidth;
+    int m_clampGUILimitHeight;
+#endif
 
     /* PVR/TV related advanced settings */
     int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
