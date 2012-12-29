@@ -259,7 +259,10 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->y        = rect.y;
     overlay->width    = rect.w;
     overlay->height   = rect.h;
-    overlay->bForced  = rect.flags;
+
+#if (!defined USE_EXTERNAL_FFMPEG) || (LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(54,71,100))
+    overlay->bForced  = rect.flags != 0;
+#endif
 
     int right  = overlay->x + overlay->width;
     int bottom = overlay->y + overlay->height;
