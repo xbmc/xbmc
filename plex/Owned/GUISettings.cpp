@@ -882,12 +882,12 @@ void CGUISettings::Initialize()
 
   //CSettingsCategory* srvUpnp = AddCategory(SETTINGS_SERVICE, "upnp", 20187);
   AddBool(NULL, "services.upnpserver", 21360, false);
-  AddBool(NULL, "services.upnpannounce", 20188, true);
+  AddBool(NULL, "services.upnpannounce", 20188, false);
   AddBool(NULL, "services.upnprenderer", 21881, false);
 
 #ifdef HAS_WEB_SERVER
   //CSettingsCategory* srvWeb = AddCategory(SETTINGS_SERVICE, "webserver", 33101);
-  AddBool(NULL,  "services.webserver",        263, false);
+  AddBool(NULL,  "services.webserver",        263, true);
 #ifndef __PLEX__
   AddString(NULL,"services.webserverport",    730, CUtil::CanBindPrivileged()?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #else
