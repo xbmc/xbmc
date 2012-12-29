@@ -716,6 +716,21 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           SetCookie(value);
         else if (name.Equals("Encoding"))
           SetContentEncoding(value);
+        else if (name.Equals("Proxy") && !g_guiSettings.GetBool("network.usehttpproxy"))
+          if (name.Equals("ProxyUserPass"))
+          {
+            SetProxyUserPass(value);
+          }
+          if (value.Equals('http://'))
+          {
+            m_proxy = value;
+          }
+          else
+          {
+            m_proxy = "http://" + value;
+          }
+          SetProxy(m_proxy);
+          CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
         else if (name.Equals("noshout") && value.Equals("true"))
           m_skipshout = true;
         else
