@@ -360,6 +360,9 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
     }
     return;
   }
+  // don't run repo update jobs while on the login screen which runs under the master profile
+  if((g_windowManager.GetActiveWindow() & WINDOW_ID_MASK) == WINDOW_LOGIN_SCREEN)
+    return;
   if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
     return;
   m_repoUpdateWatch.StartZero();
