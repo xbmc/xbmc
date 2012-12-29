@@ -267,6 +267,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("HasAutoThumb", true);
         pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);
+        // Item has cached autogen image but no art entry. Save it to db.
+        CVideoInfoTag* info = pItem->GetVideoInfoTag();
+        if (info->m_iDbId > 0 && !info->m_type.empty())
+          m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
       }
       else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
         g_guiSettings.GetBool("myvideos.extractflags"))
