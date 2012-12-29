@@ -352,7 +352,8 @@ static const ActionMapping windows[] =
         {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
         {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS},
         {"extendedprogressdialog"   , WINDOW_DIALOG_EXT_PROGRESS},
-        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER}};
+        {"mediafilter"              , WINDOW_DIALOG_MEDIA_FILTER},
+        {"addon"                    , WINDOW_ADDON_START}};
 
 static const ActionMapping mousecommands[] =
 {
@@ -908,6 +909,11 @@ int CButtonTranslator::GetFallbackWindow(int windowID)
     if (fallbackWindows[index].origin == windowID)
       return fallbackWindows[index].target;
   }
+  // for addon windows use WINDOW_ADDON_START
+  // because id is dynamic
+  if (windowID >= WINDOW_ADDON_START && windowID <= WINDOW_ADDON_END)
+    return WINDOW_ADDON_START;
+
   return -1;
 }
 
