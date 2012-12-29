@@ -169,7 +169,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
-    if ((!g_application.IsPlaying() || g_application.IsPaused()) && m_configuration.bPowerOffScreensaver == 1)
+    if ((!g_application.IsPlaying() && !g_application.IsPaused()) && m_configuration.bPowerOffScreensaver == 1)
     {
       m_screensaverLastActivated = CDateTime::GetCurrentDateTime();
       // only power off when we're the active source

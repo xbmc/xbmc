@@ -711,7 +711,7 @@ double OMXClock::OMXWallTime(bool lock /* = true */)
   return pts;
 }
 
-double OMXClock::OMXMediaTime(bool lock /* = true */)
+double OMXClock::OMXMediaTime(bool fixPreroll /* true */ , bool lock /* = true */)
 {
   if(m_omx_clock.GetComponent() == NULL)
     return 0;
@@ -737,7 +737,7 @@ double OMXClock::OMXMediaTime(bool lock /* = true */)
 
   pts = FromOMXTime(timeStamp.nTimestamp);
 
-  if(pts != 0.0f)
+  if(pts != 0.0f && fixPreroll)
     pts += (OMX_PRE_ROLL * 1000);
 
   if(lock)

@@ -251,7 +251,7 @@ std::string CCoreAudioDevice::GetName()
   {
     name = buff;
   }
-  delete buff;
+  delete[] buff;
 
 
   return name;

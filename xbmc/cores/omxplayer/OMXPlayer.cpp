@@ -428,6 +428,9 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
 COMXPlayer::~COMXPlayer()
 {
   CloseFile();
+
+  if(m_messenger.IsInited())
+    m_messenger.End();
 }
 
 bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
@@ -2015,7 +2018,7 @@ void COMXPlayer::OnExit()
     // clean up all selection streams
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
-    m_messenger.End();
+    m_messenger.Flush();
 
     m_av_clock.OMXDeinitialize();
 
@@ -3708,7 +3711,7 @@ bool COMXPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
-  double pts = m_av_clock.OMXMediaTime(false);
+  double pts = m_av_clock.OMXMediaTime(false, false);
 
   m_player_subtitle.GetCurrentSubtitle(strSubtitle, pts - m_player_video.GetSubtitleDelay());
 
@@ -3869,7 +3872,7 @@ void COMXPlayer::UpdatePlayState(double timeout)
 
     // TODO : workaround until omx clock handling is rewritten
     if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
-      state.time       = DVD_TIME_TO_MSEC(m_av_clock.OMXMediaTime(true));
+      state.time       = DVD_TIME_TO_MSEC(m_av_clock.OMXMediaTime(true, true));
     else
       state.time       = DVD_TIME_TO_MSEC(m_av_clock.GetClock() + m_offset_pts);
     state.time_total = m_pDemuxer->GetStreamLength();

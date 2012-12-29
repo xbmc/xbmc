@@ -1454,6 +1454,13 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   else
     g_langInfo.SetSubtitleLanguage("");
 
+  // we no longer ship the built-in slideshow screensaver, replace it if it's still in use
+  if (GetString("screensaver.mode") == "screensaver.xbmc.builtin.slideshow")
+  {
+    SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
+    updated = true;
+  }
+
   if (updated)
     g_settings.Save();
 }
