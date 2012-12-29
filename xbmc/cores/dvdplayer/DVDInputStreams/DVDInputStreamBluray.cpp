@@ -247,6 +247,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   CStdString filename;
   CStdString root;
   CStdString ext(URIUtils::GetExtension(strPath));
+  ext.ToLower();
 
   if(strPath.Left(7).Equals("bluray:"))
   {
