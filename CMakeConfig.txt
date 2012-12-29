@@ -217,8 +217,6 @@ if(NOT WIN32)
   if(NOT APPLE)
     list(APPEND external_libs GL)
     list(APPEND external_libs X11)
-  else()
-    list(APPEND external_libs cec)
   endif()
 endif()
 
@@ -283,6 +281,9 @@ else()
     png
     tiff
   )
+  if(APPLE)
+    list(APPEND non_link_libs cec)
+  endif()
 endif()
 
 set(CONFIG_INTERNAL_LIBS
@@ -326,6 +327,7 @@ macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
       
       # set the SONAME variable, needed for DllPaths_generated.h
       set(${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
+      set(LIB${LIBN}_SONAME ${FNAME} CACHE string "the soname for the current library")
       
       # set the HAVE_LIBX variable
       set(HAVE_LIB${LIBN} 1 CACHE string "the HAVE_LIBX variable")
@@ -348,7 +350,6 @@ endmacro()
 foreach(lib ${external_libs})
   plex_find_library(${lib} 0 1 ${dependdir}/lib 1)
 endforeach()
-
 
 foreach(lib ${non_link_libs})
   plex_find_library(${lib} 0 1 ${dependdir}/lib 0)
