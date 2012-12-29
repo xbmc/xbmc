@@ -2788,6 +2788,9 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting, const std::
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
+      /* PLEX - Ignore plex languages */
+      if (pItem->GetLabel().Find("_plex") != -1) continue;
+      /* END PLEX */
       vecLanguage.push_back(pItem->GetLabel());
     }
   }
