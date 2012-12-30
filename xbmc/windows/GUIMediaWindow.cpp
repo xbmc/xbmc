@@ -934,21 +934,8 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
     m_vecItems->RemoveDiscCache(GetID());
 
   // get the original number of items
-  int oldCount = m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size();
   if (!Update(strCurrentDirectory, false))
     return false;
-
-  // check if we previously had at least 1 item
-  // in the list and whether it now went down to 0
-  // if there are no more items to show after the update
-  // we go one level up in the hierachry to not show an
-  // empty list
-  if (oldCount > 0 &&
-     (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
-  {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
-    GoParentFolder();
-  }
 
   return true;
 }
