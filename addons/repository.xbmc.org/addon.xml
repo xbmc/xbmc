@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.xbmc.org"
 		name="XBMC.org Add-ons"
-		version="2.0.5"
+		version="2.0.6"
 		provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -15,6 +15,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="af">Installeer Byvoegsels vanaf XBMC.org</summary>
+		<summary lang="am">ከ XBMC.org ተጨማ-ሪዎች መግጠሚያ </summary>
 		<summary lang="ar">تثبيت الإضافات من XBMC.org</summary>
 		<summary lang="be">Усталяваць дадатак з XBMC.org</summary>
 		<summary lang="bg">Инсталира добавки от XBMC.org</summary>
@@ -28,6 +29,7 @@
 		<summary lang="es_AR">Instalar Add-ons de XBMC.org</summary>
 		<summary lang="es_MX">Installar Add-ons de XBMC.org</summary>
 		<summary lang="et">Paigalda lisasid lehelt XBMC.org</summary>
+		<summary lang="eu">Instalatu XBMC.org-eko gehigarriak</summary>
 		<summary lang="fi">Asenna lisäosia XBMC.org -sivustolta</summary>
 		<summary lang="fr">Installer des extensions depuis XBMC.org</summary>
 		<summary lang="gl">Instalar Engadidos dende XBMC.org</summary>
@@ -69,6 +71,7 @@
 		<description lang="es_AR">Descarga e instala add-ons desde el repositorio oficial de XBMC.[CR] Usando el repositorio oficial tendrás las ventajas de nuestro servicio de mirrors para ayudarte a conseguir unas descargas más rápidas de un sitio cercano a vos.[CR] Todos los add-ons en este repositorio han pasado por un periodo de pruebas básico, pero si encuentras algún add-on que no funciona, por favor informa de ello al equipo de XBMC para solucionar el problema.</description>
 		<description lang="es_MX">Descarga e instala add-ons del repositorio oficial XBMC.org.[CR] Al usar el repositorio oficial, tendrá la ventaja de los servicios de espejos, y así tener descargas más rápidas.[CR] Todos los add-ons en este repositorio se han probado de manera básica, si encuentra alguno que no funciona o roto, favor de reportarlo al Equipo de XBMC para poder tomar las medidas necesarias.</description>
 		<description lang="et">Lae alla ja installi lisasid ametlikust XBMC.org hoidlast.[CR]  Ametliku hoidla kasutamise eeliseks on võimalus kasutada meie ulatuslikku failide peegelteenust laadides faile sulle kõige lähemast serverist.[CR]  Kõik lisad selles hoidlas on läbinud elementaarse testimise. Siiski, kui sa leiad vigase või mittetöötava lisa, siis palun teavita sellest XBMC meeskonda, et me saaksime vajaliku abi osutada.</description>
+		<description lang="eu">Gehigarriak XMBC.org biltegi ofizialetik deskargatu eta instalatu.[CR]  &#10;Biltegi ofiziala erabiliaz zutaz gertu dagoen gune batetik deskargatu&#10;ditzakezu gure fitxategi-ispilu multzoaren abantailaz aprobetxatuaz.[CR]  &#10;Biltegi honetako gehigarri guztiek proba basikoak gainditu dituzte baina hondaturiko edo funtzionatzen ez duen gehigarri baten bat aurki ezkero honen berri XBMC taldeari eman beharrezko ekintzak burutu ditzagun.</description>
 		<description lang="fi">Lataa ja asenna lisäosia virallisesta XBMC.org -lisäosasäilöstä.[CR]  Käyttämällä virallista säilöä sinun on mahdollista käyttää hyväksesi meidän kattavaa tiedostojen peilauspalveluamme saavuttaaksesi korkeat latausnopeudet sinun lähialueeltasi.[CR]  Kaikki tämän säilön lisäosat on testattu toimiviksi, jos löydät rikkinäisen tai "ei toimivan" lisäosan, ilmoita siitä Team XBMC:lle, jotta voimme korjata asian.</description>
 		<description lang="fr">Télécharger et installer des extensions à partir du dépôt officiel XBMC.org.[CR]  En utilisant le dépôt officiel, vous bénéficierez de notre service de serveurs miroirs vous permettant de télécharger rapidement depuis une région proche de vous.[CR]  Toutes les extensions de ce dépôt ont été testées de manière basique, si vous trouvez une extension corrompue ou inutilisable, merci d'en informer la Team XBMC afin que nous puissions prendre les mesures nécessaires.</description>
 		<description lang="gl">Descargar e instalar Engadidos dende o repositorio de engadidos oficial de XBMC.org.[CR] Empregando o repositorio oficial, vostede poderá disfrutar das vanatexes do seu extenso servizo de replicación de arquivos para axudar a descargas rápidas dende unha rexión preto a vostede.[CR] Tódolos Engadidos deste repositorio pasaron por comprobacións básicas. Se atopa algún Engadido roto ou non funcional, por favor reporteo ó equipo de XBMC para que poidan actuar en consecuencia.</description>
@@ -110,6 +113,7 @@
 		<disclaimer lang="es_AR">El equipo de XBMC no ha hecho todos los Add-ons en este repositorio y no es responsable de su contenido</disclaimer>
 		<disclaimer lang="es_MX">El equipo de XBMC no hizo todos los add-ons en este repositorio y no es responsable de su contenido</disclaimer>
 		<disclaimer lang="et">XBMC meeskond ei teinud kõiki lisasid selles hoidlas ja ei vastuta ka nende sisu eest.</disclaimer>
+		<disclaimer lang="eu">XMBC taldeak ez ditu biltegi honetako gehigarri guztiak sortu eta ez da beren edukien erantzule.</disclaimer>
 		<disclaimer lang="fi">Team XBMC ei ole tehnyt kaikkia tässä säilössä olevia lisäosia, eikä siten ole vastuullinen kyseisten lisäosien sisällöstä</disclaimer>
 		<disclaimer lang="fr">La Team XBMC n'est pas l'auteur de toutes les extensions de ce dépôt et n'est pas responsable de leur contenu</disclaimer>
 		<disclaimer lang="gl">O equipo de XBMC non fai tódolos Engadidos deste repositorio e non é responsable do seu contido</disclaimer>
