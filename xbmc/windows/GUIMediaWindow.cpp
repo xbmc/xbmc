@@ -873,18 +873,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   //  filtering on the items, setting thumbs.
   OnPrepareFileItems(*m_vecItems);
 
-  // The idea here is to ensure we have something to focus if our file list
-  // is empty.  As such, this check MUST be last and ignore the hide parent
-  // fileitems settings.
-  if (m_vecItems->IsEmpty())
-  {
-    CFileItemPtr pItem(new CFileItem(".."));
-    pItem->SetPath(m_history.GetParentPath());
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    m_vecItems->AddFront(pItem, 0);
-  }
-
   m_vecItems->FillInDefaultIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
@@ -946,21 +934,8 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
     m_vecItems->RemoveDiscCache(GetID());
 
   // get the original number of items
-  int oldCount = m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size();
   if (!Update(strCurrentDirectory, false))
     return false;
-
-  // check if we previously had at least 1 item
-  // in the list and whether it now went down to 0
-  // if there are no more items to show after the update
-  // we go one level up in the hierachry to not show an
-  // empty list
-  if (oldCount > 0 &&
-     (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
-  {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
-    GoParentFolder();
-  }
 
   return true;
 }
@@ -1775,7 +1750,19 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
       }
     }
   }
-  
+
+  // The idea here is to ensure we have something to focus if our file list
+  // is empty.  As such, this check MUST be last and ignore the hide parent
+  // fileitems settings.
+  if (m_vecItems->IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->SetPath(m_history.GetParentPath());
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    m_vecItems->AddFront(pItem, 0);
+  }
+
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(currentItemPath);
