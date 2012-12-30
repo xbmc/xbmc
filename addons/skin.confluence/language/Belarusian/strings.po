@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.2
+# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -27,7 +27,7 @@ msgstr "Power Options"
 
 msgctxt "#31004"
 msgid "Working..."
-msgstr "Working..."
+msgstr "Ідзе праца..."
 
 msgctxt "#31005"
 msgid "Hide Information"
@@ -315,7 +315,7 @@ msgstr "Movie Details"
 
 msgctxt "#31309"
 msgid "Memory Used:"
-msgstr "Memory Used:"
+msgstr "Занята памяці:"
 
 msgctxt "#31310"
 msgid "Track Number"
@@ -343,11 +343,11 @@ msgstr "Шлях да ФанАрт'у"
 
 msgctxt "#31319"
 msgid "Selected Profile"
-msgstr "Selected Profile"
+msgstr "Абраны профіль"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Last Logged In"
+msgstr "Апошні ўваход"
 
 msgctxt "#31321"
 msgid "Karaoke Song Selector"

@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.2
+# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -175,7 +175,7 @@ msgstr "Įvairios opcijos"
 
 msgctxt "#31107"
 msgid "Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
-msgstr "Nerodyti nuorodos(-ų) iš skaitomo failo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
+msgstr "Nerodyti nuorodos iš skaitomo failo [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]"
 
 msgctxt "#31108"
 msgid "Hide Main Menu Buttons"
@@ -211,7 +211,7 @@ msgstr "Pagrindinio ekrano submeniu"
 
 msgctxt "#31119"
 msgid "Hide Background Fanart"
-msgstr "Slėpti fanart informaciją"
+msgstr "Slėpti Fanart informaciją"
 
 msgctxt "#31122"
 msgid "Weather Page"
@@ -239,7 +239,7 @@ msgstr "Dainų tekstai"
 
 msgctxt "#31129"
 msgid "Hide Fanart in full screen visualization"
-msgstr "Slėpti fanart viso ekrano vizualizacijai"
+msgstr "Slėpti Fanart viso ekrano vizualizacijai"
 
 msgctxt "#31132"
 msgid "Lyrics Add-on"
@@ -283,7 +283,7 @@ msgstr "Dainų tekstų šaltinis"
 
 msgctxt "#31206"
 msgid "Found"
-msgstr "Surasta"
+msgstr "Rasti"
 
 msgctxt "#31207"
 msgid "Find More Items"
@@ -299,7 +299,7 @@ msgstr "Dabartinė temperatūra"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "Naujausi"
+msgstr "Paskutinis atnaujinimas"
 
 msgctxt "#31303"
 msgid "Data provider"
@@ -307,7 +307,7 @@ msgstr "Duomenų teikėjas"
 
 msgctxt "#31307"
 msgid "Hide Fanart"
-msgstr "Nerodyti fanart"
+msgstr "Nerodyti Fanart"
 
 msgctxt "#31308"
 msgid "Movie Details"
@@ -323,7 +323,7 @@ msgstr "Takelio numeris"
 
 msgctxt "#31311"
 msgid "Fanart image[CR][CR]Unavailable[CR][CR] Click button to set"
-msgstr "Fanart paveikslėlis[CR][CR]nepasiekiamas[CR][CR] paspauskite pasirinkimui"
+msgstr "Fanart paveikslėlis[CR][CR]Nepasiekiamas[CR][CR] Spauskite mygtuką, norėdami nustatyti"
 
 msgctxt "#31312"
 msgid "Current Scraper"
@@ -339,7 +339,7 @@ msgstr "Nuskaitomo turinio parinktys"
 
 msgctxt "#31317"
 msgid "Set Fanart Path"
-msgstr "Nurodyti kelią iki fanart"
+msgstr "Nurodyti kelią iki Fanart"
 
 msgctxt "#31319"
 msgid "Selected Profile"
@@ -363,7 +363,7 @@ msgstr "Grojaraščio parinktys"
 
 msgctxt "#31326"
 msgid "Created"
-msgstr "Sukūrta"
+msgstr "Sukūrė"
 
 msgctxt "#31327"
 msgid "Resolution"
@@ -371,7 +371,7 @@ msgstr "Rezoliucija"
 
 msgctxt "#31328"
 msgid "Recently Added"
-msgstr "Vėliausiai pridėti"
+msgstr "Naujausi"
 
 msgctxt "#31329"
 msgid "[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]"
@@ -395,11 +395,11 @@ msgstr "Stop"
 
 msgctxt "#31353"
 msgid "Fast Forward"
-msgstr "Prasukimas pirmyn"
+msgstr "Prasukti pirmyn"
 
 msgctxt "#31354"
 msgid "Rewind"
-msgstr "Prasukimas atgal"
+msgstr "Prasukti atgal"
 
 msgctxt "#31355"
 msgid "Movie menu"
@@ -463,11 +463,11 @@ msgstr "Pirmo paleidimo pagalba..."
 
 msgctxt "#31412"
 msgid "This tab signifies that there is a menu off to the side of this window that contains extra options for this section.  To access the menu, navigate to the left with your remote control or keyboard or place your mouse pointer over the tab. [CR][CR]Click \"Ok\" to close this dialog. It will not appear again."
-msgstr "Šis skirtukas reiškia, kad yra meniu iki šio lango, kuriame yra papildomų galimybių šioje skyrio pusėje. Norėdami atidaryti menių, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba pažimėkite pelės žymekliu virš skirtuko.[CR][CR] Spauskite \"OK\" uždaryti šį langą. Jis daugiau nebus rodomas."
+msgstr "Šis skirtukas reiškia, kad yra meniu iki šio lango, kuriame yra papildomų galimybių šioje skyrio pusėje. Norėdami atidaryti menių, pereikite į kairę, naudojant nuotolinio valdymo pultą arba klaviatūrą arba pažimėkite pelės žymekliu virš skirtuko.[CR][CR] Spauskite \"OK\" uždaryti šį langą. Ir jis daugiau nebus rodomas."
 
 msgctxt "#31421"
 msgid "Select your XBMC user Profile[CR]to login and continue"
-msgstr "Pasirinkite XBMC vartotojo profilį[CR]įeiti į sistemą ir tęsti."
+msgstr "Pasirinkite XBMC vartotojo profilį[CR]įeikitei į sistemą ir tęskite."
 
 msgctxt "#31500"
 msgid "Recording Timers"
