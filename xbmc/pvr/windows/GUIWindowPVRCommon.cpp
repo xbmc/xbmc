@@ -821,8 +821,6 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
       {
         pDlgInfo->SetProgInfo(tag);
         pDlgInfo->DoModal();
-
-        UpdateData();
       }
     }
     delete tag;
