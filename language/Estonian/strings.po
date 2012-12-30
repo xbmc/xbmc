@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6406,6 +6406,10 @@ msgctxt "#19177"
 msgid "Playback"
 msgstr "Taasesitus"
 
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Automaatselt peida kanali info"
+
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
@@ -6417,6 +6421,10 @@ msgstr "Menüü/kuvaregulaator"
 msgctxt "#19182"
 msgid "Days to display in the EPG"
 msgstr "Saatekavas näidatav päevade arv"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "Kanali info kestvus"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
@@ -6434,6 +6442,14 @@ msgctxt "#19188"
 msgid "EPG is being reset"
 msgstr "Elektroonilisele saatekavale tehakse algseadistust"
 
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Käivitamisel jätka viimase kanaliga"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "minimeeritud"
+
 msgctxt "#19191"
 msgid "PVR service"
 msgstr "Elektroonilise saatekava teenus"
@@ -6442,9 +6458,41 @@ msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
 msgstr "Ükski ühendatud videosalvestaja põhi ei toeta kanalite skaneerimist."
 
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Jätka?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Kliendi tegevused"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Salvestamine algas: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Salvestamine lõppes: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Kanalihaldur"
+
 msgctxt "#19200"
 msgid "EPG source:"
 msgstr "Saatekava allikas:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Kanali nimi:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Kanali ikoon:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Muuda kanalit"
 
 msgctxt "#19204"
 msgid "New channel"
@@ -6458,13 +6506,37 @@ msgctxt "#19206"
 msgid "Activate EPG:"
 msgstr "Aktiveeri saatekava:"
 
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Grupp:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Sisesta uue kanali nimi"
+
 msgctxt "#19209"
 msgid "XBMC virtual backend"
 msgstr "XBMC virtuaalne põhi"
 
+msgctxt "#19210"
+msgid "Client"
+msgstr "Kilent"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Kustuta kanal"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Nimekiri sisaldab muudatusi"
+
 msgctxt "#19213"
 msgid "Select backend"
 msgstr "Vali põhi"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Sisesta korrektne URL uuele kanalile"
 
 msgctxt "#19215"
 msgid "The PVR backend does not support timers."
@@ -6522,9 +6594,21 @@ msgctxt "#19228"
 msgid "Recording deleted"
 msgstr "Salvestamine kustutatud"
 
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Sulge kanali OSD pärast kanali vahetust"
+
 msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
 msgstr "Hoidu telekanalit näidates elektroonilise saatekava uuendustest"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Puhasta otsingutulemused"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "PVR haldur käivitub"
 
 msgctxt "#19250"
 msgid "Loading EPG from database"

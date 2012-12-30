@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -956,19 +956,19 @@ msgstr "מיקום הכתוביות"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
-msgstr "כיוון יחס הפיקסלים"
+msgstr "התאמת יחס הפיקסלים"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr "הזז את הסמן לשינוי רמת סריקת היתר"
+msgstr "התאם את הסמן לשינוי רמת סריקת היתר"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
-msgstr "הזז את המצביע לשינוי מקום הכתוביות"
+msgstr "התאם את המצביע לשינוי מקום הכתוביות"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
-msgstr "כוון את המלבן כך שיהפוך לריבוע מושלם"
+msgstr "התאם את המלבן כך שיהפוך לריבוע מושלם"
 
 msgctxt "#279"
 msgid "Unable to load settings"
@@ -2276,7 +2276,7 @@ msgstr "תיקון עוצמת הקול"
 
 msgctxt "#638"
 msgid "Replaygain volume adjustments"
-msgstr "כיוונון תיקון עוצמת הקול"
+msgstr "התאמות תיקון עוצמת הקול"
 
 msgctxt "#639"
 msgid "Use track levels"

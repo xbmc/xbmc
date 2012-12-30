@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -984,7 +984,7 @@ msgstr "Lütfen XML dosyalarını denetleyin"
 
 msgctxt "#282"
 msgid "Found %i items"
-msgstr "%i öge bulundu"
+msgstr "%i öğe bulundu"
 
 msgctxt "#283"
 msgid "Search results"
@@ -2916,11 +2916,11 @@ msgstr "Klasör yükleniyor"
 
 msgctxt "#1041"
 msgid "Retrieved %i items"
-msgstr "%i öge alındı"
+msgstr "%i öğe alındı"
 
 msgctxt "#1042"
 msgid "Retrieved %i of %i items"
-msgstr "%i / %i  öge alındı"
+msgstr "%i / %i öğe alındı"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
@@ -4480,7 +4480,7 @@ msgstr "Albüm bilgisi"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Ögeleri kitaplık için tara"
+msgstr "Öğeleri kitaplık için tara"
 
 msgctxt "#13353"
 msgid "Stop scanning"
@@ -8292,7 +8292,7 @@ msgstr "Yönetmen"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "Bu yol içindeki tüm ögeleri XBMC kitaplığından"
+msgstr "Bu yol içindeki tüm öğeleri XBMC kitaplığından"
 
 msgctxt "#20341"
 msgid "this path from the XBMC library?"
@@ -8408,7 +8408,7 @@ msgstr "Üretim kodu"
 
 msgctxt "#20369"
 msgid "Show plot for unwatched items"
-msgstr "İzlenmemiş ögelerin içeriğini göster"
+msgstr "İzlenmemiş öğelerin içeriğini göster"
 
 msgctxt "#20370"
 msgid "* Hidden to prevent spoilers *"
@@ -9044,7 +9044,7 @@ msgstr "Akıllı çalma listesi kuralı"
 
 msgctxt "#21422"
 msgid "Match items where"
-msgstr "Eşleşen ögeler nerede"
+msgstr "Eşleşen öğeler nerede"
 
 msgctxt "#21423"
 msgid "New rule..."
@@ -9052,7 +9052,7 @@ msgstr "Yeni kural..."
 
 msgctxt "#21424"
 msgid "Items must match"
-msgstr "Ögeler eşleşmelidir"
+msgstr "Öğeler eşleşmelidir"
 
 msgctxt "#21425"
 msgid "all of the rules"
@@ -9092,7 +9092,7 @@ msgstr "Çalma listesinin adı"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Ögeleri bulun"
+msgstr "Öğeleri bulun"
 
 msgctxt "#21435"
 msgid "Edit"
@@ -9100,7 +9100,7 @@ msgstr "Düzenle"
 
 msgctxt "#21436"
 msgid "%i items"
-msgstr "%i ögeleri"
+msgstr "%i öğeleri"
 
 msgctxt "#21437"
 msgid "New smart playlist..."

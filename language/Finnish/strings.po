@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2202,6 +2202,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Anna numero"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bittiä/näyte"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Näytteenottotaajuus"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Ääni-CD-levyt"
@@ -3234,9 +3242,17 @@ msgctxt "#1427"
 msgid "Smoke"
 msgstr "Savua"
 
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Vulkaanista"
+
 msgctxt "#1429"
 msgid "Ash"
 msgstr "Tuhkaa"
+
+msgctxt "#1430"
+msgid "Widespread"
+msgstr "Laajalle levinnyttä"
 
 msgctxt "#1431"
 msgid "Dust"
@@ -3250,6 +3266,14 @@ msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Hiekkamyrsky"
 
+msgctxt "#1436"
+msgid "Blowing"
+msgstr "Kovaa tuulta"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Rakeita"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Pieni"
@@ -3258,6 +3282,10 @@ msgctxt "#1439"
 msgid "and"
 msgstr "ja"
 
+msgctxt "#1440"
+msgid "Sleet"
+msgstr "Räntää"
+
 msgctxt "#1441"
 msgid "with"
 msgstr "ja"
@@ -3265,6 +3293,10 @@ msgstr "ja"
 msgctxt "#1442"
 msgid "Chance"
 msgstr "Tsäänssit"
+
+msgctxt "#1443"
+msgid "of"
+msgstr " "
 
 msgctxt "#1444"
 msgid "Funnel"
@@ -3277,6 +3309,10 @@ msgstr "Pilvi"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Tuntematon"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Puuskia"
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -4125,6 +4161,10 @@ msgstr "Käynnistetty, hälytys %i minuutin kuluttua"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Hälytys!"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Peruutettu, %im%is jäljellä"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -6938,6 +6978,18 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr "Nauhoitusvirhe"
 
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Asiakasohjelmakohtainen"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Asiakasohjelmakohtaiset asetukset"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Vahvista kanavien vaihto painamalla OK"
+
 msgctxt "#19499"
 msgid "Other/Unknown"
 msgstr "Muu/Tuntematon"
@@ -8146,6 +8198,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Järjestä: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Skannataan elokuvia lähteestä %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Skannataan musiikkivideoita lähteestä %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Skannataan TV-sarjoja lähteestä %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Skannataan artisteja lähteestä %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Skannataan albumeja lähteestä %s"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Toista osa..."
@@ -9101,6 +9173,10 @@ msgstr "Välimuisti täyttyi ennen toistoon tarvittavaa määrää"
 msgctxt "#21456"
 msgid "External storage"
 msgstr "Ulkoinen tallennusmedia"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Katsottujen jaksojen lukumäärä"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -10498,6 +10574,10 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Aktivoi joystick- ja PAD-ohjaintuki"
 
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Älä käytä peliohjainta, kun laite on liitetty"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Sijainti"
@@ -10665,3 +10745,7 @@ msgstr "Televisio ja Viritinvahvistin (vain)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "libCEC-versio ei tuettu. %x on matalampi kun XBMC:n tukema versio (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Kohteiden kansio"

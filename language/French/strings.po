@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -9092,7 +9092,7 @@ msgstr "Nom de la playliste"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Trouver les chansons assorties"
+msgstr "Trouver les objets qui"
 
 msgctxt "#21435"
 msgid "Edit"
