@@ -479,8 +479,8 @@
 						<textcolor>grey2</textcolor>
 						<focusedcolor>white</focusedcolor>
 						<label>$LOCALIZE[31111] - $LOCALIZE[20342] [COLOR=grey3] ($LOCALIZE[20314])[/COLOR]</label>
-						<onclick>Skin.ToggleSetting(HomeMenuNoMoviesButton)</onclick>
-						<selected>Skin.HasSetting(HomeMenuNoMoviesButton)</selected>
+						<onclick>Skin.ToggleSetting(HomeMenuNoMovieButton)</onclick>
+						<selected>Skin.HasSetting(HomeMenuNoMovieButton)</selected>
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Library.HasContent(Movies)</enable>
@@ -493,8 +493,8 @@
 						<textcolor>grey2</textcolor>
 						<focusedcolor>white</focusedcolor>
 						<label>$LOCALIZE[31111] - $LOCALIZE[20343] [COLOR=grey3] ($LOCALIZE[20314])[/COLOR]</label>
-						<onclick>Skin.ToggleSetting(HomeMenuNoTVShowsButton)</onclick>
-						<selected>Skin.HasSetting(HomeMenuNoTVShowsButton)</selected>
+						<onclick>Skin.ToggleSetting(HomeMenuNoTVShowButton)</onclick>
+						<selected>Skin.HasSetting(HomeMenuNoTVShowButton)</selected>
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Library.HasContent(TVShows)</enable>
