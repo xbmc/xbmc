@@ -709,10 +709,6 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
   if( m_drop_state )
     return true;
 
-  // avi files with packed B frames have "not-coded" dummy frames that decoder doesn't like
-  if (m_codingType == OMX_VIDEO_CodingMPEG4 && iSize <= 7)
-    return true;
-
   unsigned int demuxer_bytes = (unsigned int)iSize;
   uint8_t *demuxer_content = pData;
 
