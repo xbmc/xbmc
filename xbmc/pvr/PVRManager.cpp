@@ -759,6 +759,9 @@ bool CPVRManager::CheckParentalLock(const CPVRChannel &channel)
 bool CPVRManager::IsParentalLocked(const CPVRChannel &channel)
 {
   bool bReturn(false);
+  CSingleLock lock(m_managerStateMutex);
+  if (!IsStarted())
+    return bReturn;
   CPVRChannelPtr currentChannel(new CPVRChannel(false));
 
   if (// different channel
