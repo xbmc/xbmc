@@ -37,6 +37,7 @@
 #include "utils/URIUtils.h"
 #include "addons/AddonInstaller.h"
 #include "Application.h"
+#include "pvr/PVRManager.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -225,9 +226,6 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
   database.Open();
   database.DisableAddon(m_localAddon->ID(), !enable);
   database.Close();
-
-  if (m_localAddon->Type() == ADDON_PVRDLL && enable)
-    g_application.StartPVRManager();
 
   SetItem(m_item);
   UpdateControls();
