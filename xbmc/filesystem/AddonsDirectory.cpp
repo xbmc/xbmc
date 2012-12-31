@@ -203,6 +203,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
 {
   CStdString xbmcPath = CSpecialProtocol::TranslatePath("special://xbmc/addons");
   items.ClearItems();
+  CAddonDatabase db;
   for (unsigned i=0; i < addons.size(); i++)
   {
     AddonPtr addon = addons[i];
@@ -214,8 +215,11 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
-    else if ((addon->Type() == ADDON_PVRDLL) && (CStdString(pItem->GetProperty("Addon.Path").asString()).Left(xbmcPath.size()).Equals(xbmcPath)))
+    else if (db.Open() && db.IsAddonDisabled(addon->ID()))
+    {
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24023));
+      db.Close();
+    }
 
     if (!addon->Props().broken.IsEmpty())
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24098));
