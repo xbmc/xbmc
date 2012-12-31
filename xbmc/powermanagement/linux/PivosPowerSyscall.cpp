@@ -37,6 +37,9 @@ CPivosPowerSyscall::CPivosPowerSyscall()
   }
   m_CanHibernate = false;
   m_CanReboot    = true;
+
+  m_OnResume  = false;
+  m_OnSuspend = false;
 }
 
 bool CPivosPowerSyscall::Powerdown()
@@ -46,9 +49,7 @@ bool CPivosPowerSyscall::Powerdown()
 
 bool CPivosPowerSyscall::Suspend()
 {
-  CPowerSyscallWithoutEvents::Suspend();
-
-  aml_set_sysfs_str("/sys/power/state",  "mem");
+  m_OnSuspend = true;
   return true;
 }
 
@@ -85,6 +86,29 @@ bool CPivosPowerSyscall::CanReboot()
 int CPivosPowerSyscall::BatteryLevel()
 {
   return 0;
+}
+
+bool CPivosPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
+{
+  if (m_OnSuspend)
+  {
+    // do the CPowerManager::OnSleep() callback
+    callback->OnSleep();
+    m_OnResume  = true;
+    m_OnSuspend = false;
+    // wait for all our threads to do their thing
+    usleep(1 * 1000 * 1000);
+    aml_set_sysfs_str("/sys/power/state", "mem");
+    usleep(100 * 1000);
+  }
+  else if (m_OnResume)
+  {
+    // do the CPowerManager::OnWake() callback
+    callback->OnWake();
+    m_OnResume = false;
+  }
+
+  return true;
 }
 
 bool CPivosPowerSyscall::HasPivosPowerSyscall()

@@ -20,7 +20,7 @@
 
 #include "powermanagement/IPowerSyscall.h"
 
-class CPivosPowerSyscall : public CPowerSyscallWithoutEvents
+class CPivosPowerSyscall : public IPowerSyscall
 {
 public:
   CPivosPowerSyscall();
@@ -36,6 +36,7 @@ public:
   virtual bool CanHibernate();
   virtual bool CanReboot();
   virtual int  BatteryLevel();
+  virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 
   static bool HasPivosPowerSyscall();
 
@@ -44,4 +45,7 @@ private:
   bool m_CanSuspend;
   bool m_CanHibernate;
   bool m_CanReboot;
+
+  bool m_OnResume;
+  bool m_OnSuspend;
 };
