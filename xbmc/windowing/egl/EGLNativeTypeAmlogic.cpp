@@ -209,7 +209,6 @@ bool CEGLNativeTypeAmlogic::SetDisplayResolution(const char *resolution)
   CStdString modestr = resolution;
   // switch display resolution
   aml_set_sysfs_str("/sys/class/display/mode", modestr.c_str());
-  usleep(500 * 1000);
 
   // setup gui freescale depending on display resolution
   DisableFreeScale();
@@ -307,7 +306,6 @@ void CEGLNativeTypeAmlogic::EnableFreeScale()
 {
   // remove default OSD and video path (default_osd default)
   aml_set_sysfs_str("/sys/class/vfm/map", "rm all");
-  usleep(60 * 1000);
 
   // add OSD path
   aml_set_sysfs_str("/sys/class/vfm/map", "add osdpath osd amvideo");
@@ -320,12 +318,10 @@ void CEGLNativeTypeAmlogic::EnableFreeScale()
   aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
   aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
   aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
-  usleep(60 * 1000);
   // remove OSD path
   aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
   aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
   aml_set_sysfs_str("/sys/class/vfm/map", "rm osdpath");
-  usleep(60 * 1000);
   // add video path
   aml_set_sysfs_str("/sys/class/vfm/map", "add videopath decoder ppmgr amvideo");
   // enable video free scale (scaling to 1920x1080 with frame buffer size 1280x720)
@@ -334,7 +330,6 @@ void CEGLNativeTypeAmlogic::EnableFreeScale()
   aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 1);
   aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1919 1079 0");
   aml_set_sysfs_str("/sys/class/ppmgr/disp", "1280 720");
-  usleep(60 * 1000);
   //
   aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
   aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
@@ -342,13 +337,14 @@ void CEGLNativeTypeAmlogic::EnableFreeScale()
   aml_set_sysfs_int("/sys/class/graphics/fb0/scale_height", 720);
   aml_set_sysfs_int("/sys/class/graphics/fb1/scale_width",  1280);
   aml_set_sysfs_int("/sys/class/graphics/fb1/scale_height", 720);
-  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
-  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
-  usleep(60 * 1000);
   //
   aml_set_sysfs_int("/sys/class/video/disable_video", 2);
   aml_set_sysfs_str("/sys/class/display/axis", "0 0 1279 719 0 0 0 0");
   aml_set_sysfs_str("/sys/class/ppmgr/ppscaler_rect", "0 0 1279 719 1");
+  //
+  aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 1);
+  aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 1);
+  aml_set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
 }
 
 void CEGLNativeTypeAmlogic::DisableFreeScale()
@@ -357,17 +353,14 @@ void CEGLNativeTypeAmlogic::DisableFreeScale()
   aml_set_sysfs_int("/sys/class/graphics/fb0/free_scale", 0);
   aml_set_sysfs_int("/sys/class/graphics/fb1/free_scale", 0);
   aml_set_sysfs_str("/sys/class/graphics/fb0/free_scale_axis", "0 0 1279 719");
-  aml_set_sysfs_str("/sys/class/display/wr_reg", "m 0x1d26 '0x00b1'");
-  usleep(60 * 1000);
   // revert to default video paths
   aml_set_sysfs_str("/sys/class/vfm/map", "rm all");
   aml_set_sysfs_str("/sys/class/vfm/map", "add default_osd osd amvideo");
   aml_set_sysfs_str("/sys/class/vfm/map", "add default decoder ppmgr amvideo");
-  usleep(60 * 1000);
   // disable post processing scaler and disable_video special mode
   aml_set_sysfs_int("/sys/class/ppmgr/ppscaler", 0);
   aml_set_sysfs_int("/sys/class/video/disable_video", 0);
-  usleep(60 * 1000);
+  aml_set_sysfs_int("/sys/class/video/disable_video", 1);
 
   // revert display axis
   int fd0;
