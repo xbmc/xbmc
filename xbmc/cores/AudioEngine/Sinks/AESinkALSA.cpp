@@ -582,6 +582,7 @@ bool CAESinkALSA::SoftSuspend()
   /* device as we are in exclusive mode and thus allow external */
   /* audio sources to play. This requires us to reinitialize    */
   /* on resume.                                                 */
+  CLog::Log(LOGDEBUG, "CAESinkALSA::SoftSuspend");
 
   Deinitialize();
 
@@ -593,6 +594,7 @@ bool CAESinkALSA::SoftResume()
   /* Sink asked to resume output. To release audio device in    */
   /* exclusive mode we release the device context and therefore */
   /* must reinitialize. Return false to force re-init by engine */
+  CLog::Log(LOGDEBUG, "CAESinkALSA::SoftResume");
 
   return false;
 }
