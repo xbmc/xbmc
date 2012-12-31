@@ -1379,6 +1379,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   m_brightness     = -1;
   m_vbufsize = 500000 * 2;
 
+  ShowMainVideo(false);
 
   am_packet_init(&am_private->am_pkt);
   // default stream type
@@ -1565,6 +1566,8 @@ void CAMLCodec::CloseDecoder()
   am_private->extradata = NULL;
   // return tsync to default so external apps work
   aml_set_sysfs_int("/sys/class/tsync/enable", 1);
+
+  ShowMainVideo(false);
 }
 
 void CAMLCodec::Reset()
