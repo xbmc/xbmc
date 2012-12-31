@@ -37,6 +37,8 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
+    XbmcThreads::ThreadLocal<ref> InterceptorBase::upcallTls;
+
     /**
      * Used in add/remove control. It only locks if it's given a 
      * non-NULL CCriticalSection. It's given a NULL CCriticalSection
