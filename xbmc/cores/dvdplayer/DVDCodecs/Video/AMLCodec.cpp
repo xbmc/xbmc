@@ -1728,8 +1728,11 @@ void CAMLCodec::Process()
       // this is a blocking poll that returns every vsync.
       // since we are running at a higher priority, make sure
       // we sleep if the call fails or does a timeout.
-      if (m_dll->codec_poll_cntl(&am_private->vcodec) <= 0)
+      if (m_dll->codec_poll_cntl(&am_private->vcodec) < 0)
+      {
+        CLog::Log(LOGDEBUG, "CAMLCodec::Process: codec_poll_cntl failed");
         Sleep(10);
+      }
 
       if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying())
       {
