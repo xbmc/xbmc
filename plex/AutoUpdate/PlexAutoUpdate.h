@@ -181,6 +181,12 @@ class CPlexAutoUpdate
 {
   public:
     CPlexAutoUpdate(const std::string& updateUrl, int searchFrequency = 21600);
+    ~CPlexAutoUpdate()
+    {
+      delete m_functions;
+      delete m_installer;
+    }
+
     void Stop();
     void ForceCheckInBackground()
     {
@@ -218,6 +224,7 @@ class CPlexAutoUpdate
 
 
     std::string GetOsName() const;
+    boost::thread m_autoUpdateThread;
 };
 
 #endif // PLEXAUTOUPDATE_H

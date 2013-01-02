@@ -18,7 +18,11 @@
 #endif
 
 CPlexAutoUpdate::CPlexAutoUpdate(const std::string &updateUrl, int searchFrequency) :
-  m_updateUrl(updateUrl), m_searchFrequency(searchFrequency), m_stop(false), m_currentVersion(PLEX_VERSION)
+  m_updateUrl(updateUrl),
+  m_searchFrequency(searchFrequency),
+  m_stop(false),
+  m_currentVersion(PLEX_VERSION),
+  m_autoUpdateThread(boost::bind(&CPlexAutoUpdate::run, this))
 {
   m_functions = new CAutoUpdateFunctionsXBMC(this);
 #ifdef __APPLE__
@@ -27,25 +31,35 @@ CPlexAutoUpdate::CPlexAutoUpdate(const std::string &updateUrl, int searchFrequen
   m_installer = new CPlexAutoUpdateInstallerWin(m_functions);
 #endif
 
-  boost::thread t(boost::bind(&CPlexAutoUpdate::run, this));
-  t.detach();
+  m_autoUpdateThread.detach();
+
 }
 
 void CPlexAutoUpdate::Stop()
 {
-  m_stop = true;
-  m_waitSleepCond.notify_all();
+  {
+    boost::mutex::scoped_lock lk(m_lock);
+    m_stop = true;
+    m_waitSleepCond.notify_one();
+    m_functions->LogDebug("Killing autoupdate thread...");
+  }
+  m_autoUpdateThread.join();
 }
 
 void CPlexAutoUpdate::run()
 {
-  boost::mutex::scoped_lock lk(m_lock);
   m_functions->LogDebug("Thread is running...");
 
-  m_waitSleepCond.timed_wait(lk, boost::posix_time::seconds(10));
+  {
+    // Waiting 10 seconds before polling for updates
+    boost::mutex::scoped_lock lk(m_lock);
+    m_waitSleepCond.timed_wait(lk, boost::posix_time::seconds(10));
+  }
 
   while (!m_stop)
   {
+    boost::mutex::scoped_lock lk(m_lock);
+
     _CheckForNewVersion();
 
     boost::system_time const tmout = boost::get_system_time() + boost::posix_time::seconds(m_searchFrequency);
