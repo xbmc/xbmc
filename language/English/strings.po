@@ -11689,7 +11689,9 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr ""
 
-#empty string with id 36010
+msgctxt "#36010"
+msgid "Wake devices when deactivating screensaver"
+msgstr ""
 
 #: xbmc/peripherals/devices/peripheralcecadapter.cpp
 msgctxt "#36011"
