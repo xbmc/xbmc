@@ -78,7 +78,7 @@ endif()
 if(WIN32)
   set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x86" ${dependdir}/lib)
   set(ENV{LIBS} "$ENV{LIBS};${dependdir}/lib")
-  if(${CMAKE_BUILD_TYPE} STREQUAL "debug")
+  if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:\"libc\" /NODEFAULTLIB:\"msvcrt\" /NODEFAULTLIB:\"libcmt\" /NODEFAULTLIB:\"msvcrtd\" /NODEFAULTLIB:\"msvcprtd\" /DELAYLOAD:\"dnssd.dll\" /DELAYLOAD:\"dwmapi.dll\" /DELAYLOAD:\"libmicrohttpd-5.dll\" /DELAYLOAD:\"ssh.dll\" /DELAYLOAD:\"sqlite3.dll\" /DELAYLOAD:\"libsamplerate-0.dll\"  /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /ERRORREPORT:QUEUE")
   else()
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:\"libc\" /NODEFAULTLIB:\"msvcrt\" /NODEFAULTLIB:\"libci\" /NODEFAULTLIB:\"msvcprt\" /DELAYLOAD:\"dnssd.dll\" /DELAYLOAD:\"dwmapi.dll\" /DELAYLOAD:\"libmicrohttpd-5.dll\" /DELAYLOAD:\"ssh.dll\" /DELAYLOAD:\"sqlite3.dll\" /DELAYLOAD:\"libsamplerate-0.dll\"  /SUBSYSTEM:WINDOWS /LARGEADDRESSAWARE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /ERRORREPORT:QUEUE")
@@ -97,11 +97,15 @@ include(CMakeConfig.txt)
 # global definitions
 add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_TARGET_NAME="${EXECUTABLE_NAME}" -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}")
 
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+  add_definitions(-DDEBUG)
+else()
+  add_definitions(-DNDEBUG)
+endif()
+
 # Linux and OSX definitios
 if(UNIX)
   add_definitions(
-    #	-DAPI_DEBUG
-    -DNDEBUG=1
     -DTARGET_POSIX
     -D_REENTRANT
     -D_FILE_DEFINED
