@@ -257,7 +257,7 @@ if(WIN32)
     SDL_image
   )
 
-  if(${CMAKE_BUILD_TYPE} STREQUAL "debug")
+  if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     set(external_libs ${external_libs} tinyxmlSTLd libboost_thread-vc100-mt-sgd-1_46_1 libboost_system-vc100-mt-sgd-1_46_1)
   else()
     set(external_libs ${external_libs} tinyxmlSTL libboost_thread-vc100-mt-s-1_46_1 libboost_system-vc100-mt-s-1_46_1)

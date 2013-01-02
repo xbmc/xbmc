@@ -51,7 +51,7 @@ endif()
 
 if(WIN32)
   # override runtime
-  set(CMAKE_C_FLAGS_DEBUG "/MP /Od /Oy- /D_DEBUG /Gm- /MTd /GS /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
+  set(CMAKE_C_FLAGS_DEBUG "/Zi /MP /Od /Oy- /D_DEBUG /Gm- /MTd /GS /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
   set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 
   set(CMAKE_C_FLAGS_RELEASE "/DNDEBUG /WX- /MP /Ox /Ot /Oy /GF- /Gm- /EHa /MT /GS /Gy- /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\"")
