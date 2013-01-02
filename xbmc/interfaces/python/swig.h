@@ -27,7 +27,6 @@
 #include "interfaces/legacy/Exception.h"
 #include "interfaces/legacy/AddonClass.h"
 #include "interfaces/legacy/Window.h"
-#include "threads/ThreadLocal.h"
 
 namespace PythonBindings
 {

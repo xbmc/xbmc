@@ -356,8 +356,9 @@ CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, co
 CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
 {
   CStdString label = m_prefix + info + m_postfix;
-  if (m_escaped) // escape all quotes, then quote
+  if (m_escaped) // escape all quotes and backslashes, then quote
   {
+    label.Replace("\\", "\\\\");
     label.Replace("\"", "\\\"");
     return "\"" + label + "\"";
   }

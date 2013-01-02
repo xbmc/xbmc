@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -3690,6 +3690,10 @@ msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "設定 & ファイルマネージャー"
 
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "全ビデオにデフォルトとして設定"
+
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
 msgstr "過去の設定値はリセットされます"
@@ -4622,6 +4626,10 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "ハードウェア アクセラレータを許可 (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "次のビデオを自動で再生する"
+
 msgctxt "#13434"
 msgid "Play only this"
 msgstr "これだけを再生"
@@ -4669,6 +4677,26 @@ msgstr "最高 (遅い!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "ディスプレイ同期周波数に合わせて再生"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "アートを選択"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "現在のアート"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "リモートアート"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "ローカルアート"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "アートなし"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -6298,6 +6326,10 @@ msgctxt "#19166"
 msgid "PVR information"
 msgstr "PVR 情報"
 
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "最小化で再生開始"
+
 msgctxt "#19177"
 msgid "Playback"
 msgstr "再生"
@@ -6341,6 +6373,10 @@ msgstr "EPG のリセット中"
 msgctxt "#19189"
 msgid "Continue last channel on startup"
 msgstr "起動時に前回のチャンネルを使う"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "最小化"
 
 msgctxt "#19191"
 msgid "PVR service"
@@ -6394,9 +6430,17 @@ msgctxt "#19205"
 msgid "Group management"
 msgstr "グループ管理"
 
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "EPG を有効に:"
+
 msgctxt "#19207"
 msgid "Group:"
 msgstr "グループ："
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "XBMC 仮想バックエンド"
 
 msgctxt "#19210"
 msgid "Client"
@@ -6449,6 +6493,10 @@ msgstr "録画が完了しました"
 msgctxt "#19228"
 msgid "Recording deleted"
 msgstr "録画が削除されました"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "検索結果をクリア"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6622,9 +6670,33 @@ msgctxt "#19508"
 msgid "Adult Movie/Drama"
 msgstr "アダルト映画・ドラマ"
 
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "ニュース/時事"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "ニュース/天気予報"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "ニュース雑誌"
+
 msgctxt "#19519"
 msgid "Documentary"
 msgstr "ドキュメンタリー"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "議論/インタビュー/討論"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "ショー/ゲームショー"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "ゲームショー/クイズ/コンテスト"
 
 msgctxt "#19534"
 msgid "Variety Show"
@@ -7581,6 +7653,10 @@ msgstr "お待ち下さい..."
 msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
+
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "UPnP でライブラリアップデートをアナウンス"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
@@ -10249,6 +10325,10 @@ msgstr "常に使用"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "アンプ/AVレシーバーデバイス"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"

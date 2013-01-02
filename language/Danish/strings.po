@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1284,7 +1284,7 @@ msgstr "Pauseskærm"
 
 msgctxt "#361"
 msgid "R. Slideshow"
-msgstr "Rek. diasshow"
+msgstr "Rekursivt diasshow"
 
 msgctxt "#362"
 msgid "Screensaver dim level"
@@ -1940,7 +1940,7 @@ msgstr "Store ikoner"
 
 msgctxt "#539"
 msgid "Wide"
-msgstr "Bred"
+msgstr "Brede"
 
 msgctxt "#540"
 msgid "Big wide"
@@ -2848,7 +2848,7 @@ msgstr "Søg efter ny kilde"
 
 msgctxt "#1024"
 msgid "Browse"
-msgstr "Søg"
+msgstr "Gennemse"
 
 msgctxt "#1025"
 msgid "Could not retrieve directory information."
@@ -2876,7 +2876,7 @@ msgstr "Søg efter billede"
 
 msgctxt "#1031"
 msgid "Browse for image folder"
-msgstr "Søg efter billedemappe"
+msgstr "Søg efter billedmappe"
 
 msgctxt "#1032"
 msgid "Add network location..."
@@ -4644,7 +4644,7 @@ msgstr "Hent miniaturebillede"
 
 msgctxt "#13406"
 msgid "Picture information"
-msgstr "Billedeinformation"
+msgstr "Billedinformation"
 
 msgctxt "#13407"
 msgid "%s presets"
@@ -7888,7 +7888,7 @@ msgstr "Luk ned om 120 minutter"
 
 msgctxt "#20150"
 msgid "Custom shutdown timer"
-msgstr "Brugerdefineret nedlukningstimer"
+msgstr "Nedlukningstimer"
 
 msgctxt "#20151"
 msgid "Cancel shutdown timer"
@@ -7900,7 +7900,7 @@ msgstr "Lås indstillinger til %s"
 
 msgctxt "#20153"
 msgid "Browse..."
-msgstr "Søg..."
+msgstr "Gennemse..."
 
 msgctxt "#20154"
 msgid "Summary information"

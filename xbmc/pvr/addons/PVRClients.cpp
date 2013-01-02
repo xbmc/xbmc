@@ -918,6 +918,17 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
           }
         }
 
+        // throttle connection attempts, no more than 1 attempt per 5 seconds
+        if (!bDisabled && addon->Enabled())
+        {
+          time_t now;
+          CDateTime::GetCurrentDateTime().GetAsTime(now);
+          std::map<int, time_t>::iterator it = m_connectionAttempts.find(iClientId);
+          if (it != m_connectionAttempts.end() && now < it->second)
+            continue;
+          m_connectionAttempts[iClientId] = now + 5;
+        }
+
         // re-check the enabled status. newly installed clients get disabled when they're added to the db
         if (!bDisabled && addon->Enabled() && (status = addon->Create(iClientId)) != ADDON_STATUS_OK)
         {

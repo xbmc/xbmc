@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="2.1.4"
+  version="2.1.5"
   name="Default"
   provider-name="Team XBMC">
   <requires>
@@ -41,7 +41,7 @@
     <summary lang="no">Team XBMC webgrensesnitt. (XBMC's standard webgrensesnitt)</summary>
     <summary lang="pl">Standardowy interfejs WWW XBMC.</summary>
     <summary lang="pt">Interface Web da Team XBMC. (Interface Web padrão do XBMC)</summary>
-    <summary lang="pt_BR">Interface Web Time XBMC. (XBMC interface web padrão)</summary>
+    <summary lang="pt_BR">Interface Web da Equipe XBMC. (interface web padrão do XBMC)</summary>
     <summary lang="ro">Interfață web XBMC. (interfață web implicită pentru XBMC)</summary>
     <summary lang="ru">Веб-интерфейс от разработчиков XBMC (веб-интерфейс XBMC по умолчанию).</summary>
     <summary lang="se">Team XBMC webbgränssnitt. (XBMC's standardwebbgränssnitt)</summary>
@@ -80,7 +80,7 @@
     <description lang="no">Standard webgrensesnitt for XBMC; Laget for alle oppløsninger</description>
     <description lang="pl">Domyślny interfejs WWW dla XBMC; Zaprojektowany dla urządzeń z dowolną rozdzielczością</description>
     <description lang="pt">Interface Web padrão do XBMC. Pensada para dispositivos com qualquer resolução</description>
-    <description lang="pt_BR">Interface web padrão para XBMC; Desenhada para dispositivos de todas as resoluções</description>
+    <description lang="pt_BR">Interface web padrão para XBMC; Concebida para dispositivos de todas as resoluções</description>
     <description lang="ro">Interfață web implicită pentru XBMC, realizată de echipa XBMC pentru dispozitive cu orice rezoluție.</description>
     <description lang="ru">Веб-интерфейс XBMC по умолчанию. Разработан для устройств с любыми разрешениями.</description>
     <description lang="se">XBMC's standardwebbgränsnitt; Designat för alla upplösningar</description>

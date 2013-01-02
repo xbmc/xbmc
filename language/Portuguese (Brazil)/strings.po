@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1896,7 +1896,7 @@ msgstr "Adicionar à coleção manualmente"
 
 msgctxt "#528"
 msgid "Enter title"
-msgstr "Digite o título"
+msgstr "Insira o título"
 
 msgctxt "#529"
 msgid "Error: Duplicate title"
@@ -1916,7 +1916,7 @@ msgstr "Adição manual"
 
 msgctxt "#533"
 msgid "Enter genre"
-msgstr "Adicione o gênero"
+msgstr "Insira o gênero"
 
 msgctxt "#534"
 msgid "View: %s"
@@ -1948,7 +1948,7 @@ msgstr "Bem largo"
 
 msgctxt "#541"
 msgid "Album icons"
-msgstr "Ícones de Álbum"
+msgstr "Ícones de álbum"
 
 msgctxt "#542"
 msgid "DVD icons"
@@ -2028,7 +2028,7 @@ msgstr "Arquivo"
 
 msgctxt "#562"
 msgid "Year"
-msgstr "Anos"
+msgstr "Ano"
 
 msgctxt "#563"
 msgid "Rating"
@@ -2044,7 +2044,7 @@ msgstr "Uso"
 
 msgctxt "#566"
 msgid "Album artist"
-msgstr "Artista"
+msgstr "Artista do álbum"
 
 msgctxt "#567"
 msgid "Play count"
@@ -2120,11 +2120,11 @@ msgstr "Filtro"
 
 msgctxt "#588"
 msgid "Cancel party mode"
-msgstr "Cancelar modo-festa"
+msgstr "Cancelar modo festa"
 
 msgctxt "#589"
 msgid "Party mode"
-msgstr "Modo-festa"
+msgstr "Modo festa"
 
 msgctxt "#590"
 msgid "Random"
@@ -2140,7 +2140,7 @@ msgstr "Uma"
 
 msgctxt "#593"
 msgid "All"
-msgstr "Todos"
+msgstr "Todas"
 
 msgctxt "#594"
 msgid "Off"
@@ -2156,7 +2156,7 @@ msgstr "Repetir: uma"
 
 msgctxt "#597"
 msgid "Repeat: All"
-msgstr "Repetir: todos"
+msgstr "Repetir: todas"
 
 msgctxt "#600"
 msgid "Rip audio CD"
@@ -2200,7 +2200,7 @@ msgstr "Extrair faixa de áudio"
 
 msgctxt "#611"
 msgid "Enter number"
-msgstr "Digite número"
+msgstr "Insira o número"
 
 msgctxt "#612"
 msgid "Bits/sample"
@@ -2460,7 +2460,7 @@ msgstr "Endereço IP inválido. O valor deve ser AAA.BBB.CCC.DDD"
 
 msgctxt "#725"
 msgid "with numbers between 0 and 255."
-msgstr "Com números entre 0 e 255."
+msgstr "com números entre 0 e 255."
 
 msgctxt "#726"
 msgid "Changes not saved. Continue without saving?"
@@ -3352,7 +3352,7 @@ msgstr "Falha no script! : %s"
 
 msgctxt "#2101"
 msgid "Newer version needed - See log"
-msgstr "Necessário versão mais nova - Veja o log"
+msgstr "Versão mais nova necessária - Veja o registro"
 
 msgctxt "#4501"
 msgid "Enable LCD/VFD"
@@ -3456,7 +3456,7 @@ msgstr "Vídeos/Lista de reprodução"
 
 msgctxt "#10029"
 msgid "Login screen"
-msgstr "Tela de Login"
+msgstr "Tela de login"
 
 msgctxt "#10034"
 msgid "Settings - Profiles"
@@ -3468,7 +3468,7 @@ msgstr "Navegador de Addons"
 
 msgctxt "#10100"
 msgid "Yes/No dialog"
-msgstr "Janela sim/não"
+msgstr "Janela de Sim/Não"
 
 msgctxt "#10101"
 msgid "Progress dialog"
@@ -3564,7 +3564,7 @@ msgstr "Informações de filmes"
 
 msgctxt "#12000"
 msgid "Select dialog"
-msgstr "Selec. janela"
+msgstr "Janela de seleção"
 
 msgctxt "#12001"
 msgid "Music/Info"
@@ -5700,7 +5700,7 @@ msgstr "Digite valor"
 
 msgctxt "#16029"
 msgid "Check the log file for details."
-msgstr "Para detalhes verifique o arquivo de logs."
+msgstr "Para detalhes, verifique o arquivo de registro."
 
 msgctxt "#16030"
 msgid "Party mode aborted."
@@ -6104,11 +6104,11 @@ msgstr "Gravando"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
-msgstr "Por favor verifique sua configuração ou verifique o log para detalhes."
+msgstr "Por favor verifique sua configuração ou confira o registro para detalhes."
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Nenhum cliente PRVR foi iniciado ainda. Aguarde pelo cliente Pvr iniciar ou verifique o log para detalhes."
+msgstr "Nenhum cliente PVR foi iniciado ainda. Aguarde pelo cliente PVR iniciar ou verifique o registro para detalhes."
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6196,7 +6196,7 @@ msgstr "Este evento já está sendo gravado."
 
 msgctxt "#19068"
 msgid "This recording could not be deleted. Check the log for details."
-msgstr "Esta gravação não pode ser deletada. Verifique o log para detalhes."
+msgstr "Esta gravação não pôde ser excluída. Verifique o registro para detalhes."
 
 msgctxt "#19069"
 msgid "EPG"
@@ -6332,15 +6332,15 @@ msgstr "em"
 
 msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
-msgstr "Não posso salvar o agenadamento. Verifique o log para detalhes."
+msgstr "Não foi possível guardar o agendamento. Verifique o registro para detalhes."
 
 msgctxt "#19110"
 msgid "An unexpected error occurred. Try again later or check the log for details."
-msgstr "Um erro inesperado ocorreu. Tente novamente mais tarde ou verifique o log para detalhes."
+msgstr "Um erro inesperado ocorreu. Tente novamente mais tarde ou verifique o registro para detalhes."
 
 msgctxt "#19111"
 msgid "PVR backend error. Check the log for details."
-msgstr "Erro backend PRV. Verifique o log para detalhes."
+msgstr "Erro backend PVR. Verifique o registro para detalhes."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6472,7 +6472,7 @@ msgstr "Grupos"
 
 msgctxt "#19147"
 msgid "The PVR backend does not support this action. Check the log for details."
-msgstr "O Backend PVR não suporta esta ação. Verifique o log para detalhes."
+msgstr "O backend PVR não suporta esta ação. Verifique o registro para detalhes."
 
 msgctxt "#19148"
 msgid "Channel"
@@ -6536,7 +6536,7 @@ msgstr "Gravações"
 
 msgctxt "#19164"
 msgid "Cannot start recording. Check the log for details."
-msgstr "Não posso iniciar gravação. Verifique o log para detalhes."
+msgstr "Não é possível iniciar gravação. Verifique o registro para detalhes."
 
 msgctxt "#19165"
 msgid "Switch"
@@ -6644,7 +6644,7 @@ msgstr "Nenhum dos PVR backends conectados suportam escaneamento de canais. "
 
 msgctxt "#19193"
 msgid "The channel scan cannot be started. Check the log for details."
-msgstr "O Canal escaneado não pode ser inicializado. Verifique o log para detalhes."
+msgstr "O escaneamento de canais não pode ser inicializado. Verifique o registro para detalhes."
 
 msgctxt "#19194"
 msgid "Continue?"
@@ -6764,7 +6764,7 @@ msgstr "EPG"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Nenhum Add-on PVR pode ser ativado. Verifique seus ajustes ou o Log para maiores informações."
+msgstr "Nenhum add-on PVR pôde ser ativado. Verifique seus ajustes ou o registro para maiores informações."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -7248,7 +7248,7 @@ msgstr "Tecnologia/Ciências Naturais"
 
 msgctxt "#19631"
 msgid "Medicine/Physiology/Psychology"
-msgstr "Medicina/Psicologia/Fisiologia"
+msgstr "Medicina/Fisiologia/Psicologia"
 
 msgctxt "#19632"
 msgid "Foreign Countries/Expeditions"
@@ -7348,7 +7348,7 @@ msgstr "Romance"
 
 msgctxt "#19683"
 msgid "Serious/ClassicalReligion/Historical"
-msgstr "Histórico"
+msgstr "Histórico/Clássico"
 
 msgctxt "#19684"
 msgid "Adult"
@@ -8128,7 +8128,7 @@ msgstr "Servidor WebDAV (HTTPS)"
 
 msgctxt "#20255"
 msgid "First logon, edit your profile"
-msgstr "Primeiro logon, editar seu perfil"
+msgstr "Primeiro logon, edite seu perfil"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
@@ -9804,7 +9804,7 @@ msgstr "Serviços"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "Clientes PVR"
+msgstr "Clientes de PVR"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9860,7 +9860,7 @@ msgstr "Forçar atualização"
 
 msgctxt "#24036"
 msgid "Change log"
-msgstr "Log de mudança"
+msgstr "Registro de mudanças"
 
 msgctxt "#24037"
 msgid "Uninstall"
@@ -9928,7 +9928,7 @@ msgstr "Licença:"
 
 msgctxt "#24054"
 msgid "Changelog"
-msgstr "Histórico de Alterações"
+msgstr "Histórico de alterações"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
@@ -10340,7 +10340,7 @@ msgstr "Ver o Readme/Leia-me"
 
 msgctxt "#33073"
 msgid "View Changelog"
-msgstr "Ver Changelog (alterações)"
+msgstr "Ver Histórico de Alterações"
 
 msgctxt "#33074"
 msgid "This version of %s requires an"
@@ -10500,7 +10500,7 @@ msgstr "Falha ao iniciar zeroconf"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
-msgstr "Verifique se o serviço Apple's Bonjour está instalado? Veja log para maiores informações."
+msgstr "O serviço Apple's Bonjour está instalado? Veja o registro para maiores informações."
 
 msgctxt "#34400"
 msgid "Video Rendering"
@@ -10744,7 +10744,7 @@ msgstr "TV"
 
 msgctxt "#36038"
 msgid "Amplifier / AVR device"
-msgstr "Amplificador / Dispositivo AVR"
+msgstr "Amplificador / Dispositivo AV"
 
 msgctxt "#36039"
 msgid "TV and AVR device (explicit)"
@@ -10756,4 +10756,4 @@ msgstr "Versão interface libCEC não suportada. %x é menor que a versão que o
 
 msgctxt "#36041"
 msgid "* Item folder"
-msgstr "* pasta item"
+msgstr "* Pasta do item"

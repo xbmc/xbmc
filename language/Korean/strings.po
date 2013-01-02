@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2076,7 +2076,7 @@ msgstr "국가"
 
 msgctxt "#575"
 msgid "In progress"
-msgstr "진행중"
+msgstr "감상 중"
 
 msgctxt "#576"
 msgid "Times played"
@@ -9992,7 +9992,7 @@ msgstr "(차단됨)"
 
 msgctxt "#24096"
 msgid "Add-on has been marked as broken in repository."
-msgstr "저장소의 추가기능이 깨진것으로 표시되어 있습니다."
+msgstr "저장소의 추가기능이 깨진 것으로 표시되어 있습니다."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"

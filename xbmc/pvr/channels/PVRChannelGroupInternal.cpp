@@ -107,19 +107,20 @@ void CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel, unsi
   }
 }
 
-bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
+bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */)
 {
   CSingleLock lock(m_critSection);
-  return CPVRChannelGroup::AddToGroup(channel, iChannelNumber, bSortAndRenumber);
+  return CPVRChannelGroup::AddToGroup(channel, iChannelNumber);
 }
 
 bool CPVRChannelGroupInternal::Update(void)
 {
   CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
+  PVRChannels_tmp.SetPreventSortAndRenumber();
   return PVRChannels_tmp.LoadFromClients() && UpdateGroupEntries(PVRChannels_tmp);
 }
 
-bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
+bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */)
 {
   CSingleLock lock(m_critSection);
 
@@ -136,8 +137,7 @@ bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumb
     realChannel->SetHidden(false);
     m_iHiddenChannels--;
 
-    if (bSortAndRenumber)
-      Renumber();
+    SortAndRenumber();
   }
 
   /* move this channel and persist */
@@ -290,6 +290,8 @@ bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
 bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)
 {
   bool bReturn(false);
+  SetPreventSortAndRenumber();
+
   CSingleLock lock(m_critSection);
 
   /* go through the channel list and check for updated or new channels */
@@ -318,6 +320,10 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'", __FUNCTION__, m_bRadio ? "radio" : "TV", member.channel->ChannelName().c_str());
     }
   }
+
+  SetPreventSortAndRenumber(false);
+  if (m_bChanged)
+    SortAndRenumber();
 
   return bReturn;
 }

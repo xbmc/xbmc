@@ -30,9 +30,9 @@ __addonid__    = __addon__.getAddonInfo('id')
 __cwd__        = __addon__.getAddonInfo('path').decode("utf-8")
 __version__    = __addon__.getAddonInfo('version')
 __language__   = __addon__.getLocalizedString
-__resource__   = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
+__resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
 
-sys.path.append (__resource__)
+sys.path.append(__resource__)
 
 from utilities import *
 from wunderground import wundergroundapi
@@ -533,7 +533,7 @@ def properties(data,loc):
     set_property('Map.IsFetched', 'true')
     filelist = []
     locid = base64.b16encode(loc)
-    addondir = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'logo'))
+    addondir = os.path.join(__cwd__, 'resources', 'logo')
     mapdir = xbmc.translatePath('special://profile/addon_data/%s/map' % __addonid__)
     set_property('MapPath', addondir)
     if not xbmcvfs.exists(mapdir):
@@ -567,7 +567,7 @@ def properties(data,loc):
         log('satellite image downloaded failed')
     if response != '':
         timestamp = time.strftime('%Y%m%d%H%M%S')
-        mapfile = xbmc.translatePath('special://profile/addon_data/%s/map/%s-%s.png' % (__addonid__,locid,timestamp))
+        mapfile = xbmc.translatePath('special://profile/addon_data/%s/map/%s-%s.png' % (__addonid__,locid,timestamp)).decode("utf-8")
         try:
             tmpmap = open(mapfile, 'wb')
             tmpmap.write(response)

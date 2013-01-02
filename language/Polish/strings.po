@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6556,7 +6556,7 @@ msgstr "Ukryj informacje o wideo"
 
 msgctxt "#19170"
 msgid "Timeout when starting playback"
-msgstr "Upłynął limit czasu podczas uruchamiania odtwarzania"
+msgstr "Limit czasu na uruchomienie odtwarzania"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
@@ -6592,7 +6592,7 @@ msgstr "Pokaż informację o kanale podczas zmiany kanału"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
-msgstr "Autoatycznie ukrywaj informację o kanale"
+msgstr "Automatycznie ukrywaj informację o kanale"
 
 msgctxt "#19180"
 msgid "TV"

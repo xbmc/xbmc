@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Confluence
 # Addon id: skin.confluence
-# Addon version: 2.1.2
+# Addon version: 2.1.3
 # Addon Provider: Jezz_X, Team XBMC
 msgid ""
 msgstr ""
@@ -203,7 +203,7 @@ msgstr "顯示最近加入的專輯"
 
 msgctxt "#31117"
 msgid "Show Recently added Videos"
-msgstr "顯示最近新增的影片"
+msgstr "顯示最近加入的影片"
 
 msgctxt "#31118"
 msgid "Home Page Programs Submenu"
@@ -532,3 +532,7 @@ msgstr "降雨機率"
 msgctxt "#31909"
 msgid "Fetching forecast info..."
 msgstr "正在擷取預報資訊..."
+
+msgctxt "#31910"
+msgid "Map & Alerts"
+msgstr "地圖 & 警報"

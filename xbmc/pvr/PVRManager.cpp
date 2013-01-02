@@ -759,6 +759,9 @@ bool CPVRManager::CheckParentalLock(const CPVRChannel &channel)
 bool CPVRManager::IsParentalLocked(const CPVRChannel &channel)
 {
   bool bReturn(false);
+  CSingleLock lock(m_managerStateMutex);
+  if (!IsStarted())
+    return bReturn;
   CPVRChannelPtr currentChannel(new CPVRChannel(false));
 
   if (// different channel
@@ -862,13 +865,27 @@ bool CPVRManager::OpenLiveStream(const CFileItem &channel)
   if (IsParentalLocked(*channel.GetPVRChannelInfoTag()))
     return bReturn;
 
+  CPVRChannelPtr playingChannel;
+  bool bPersistChannel(false);
   if ((bReturn = m_addons->OpenStream(*channel.GetPVRChannelInfoTag(), false)) != false)
   {
     CSingleLock lock(m_critSection);
     if(m_currentFile)
       delete m_currentFile;
     m_currentFile = new CFileItem(channel);
+
+    if (m_addons->GetPlayingChannel(playingChannel))
+    {
+      /* store current time in iLastWatched */
+      time_t tNow;
+      CDateTime::GetCurrentDateTime().GetAsTime(tNow);
+      playingChannel->SetLastWatched(tNow);
+      bPersistChannel = true;
+    }
   }
+
+  if (bPersistChannel)
+    playingChannel->Persist();
 
   return bReturn;
 }

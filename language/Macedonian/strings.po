@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6554,41 +6554,453 @@ msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
 msgstr "Филмовите се во различни папки кои се совпаѓаат со името на филмот"
 
+msgctxt "#20330"
+msgid "Use folder names for lookups"
+msgstr "Користи имиња на датотеки за пребарување"
+
 msgctxt "#20331"
 msgid "File"
 msgstr "Датоте."
+
+msgctxt "#20333"
+msgid "Set content"
+msgstr "Постави содржина"
 
 msgctxt "#20334"
 msgid "Folder"
 msgstr "Папки"
 
+msgctxt "#20337"
+msgid "Actor"
+msgstr "Глумец"
+
+msgctxt "#20338"
+msgid "Movie"
+msgstr "Филм"
+
+msgctxt "#20339"
+msgid "Director"
+msgstr "Режисер"
+
+msgctxt "#20340"
+msgid "Do you want to remove all items within"
+msgstr "Дали да ги одстранам сите ставки од"
+
+msgctxt "#20341"
+msgid "this path from the XBMC library?"
+msgstr "оваа патека во XBMC библиотеката?"
+
 msgctxt "#20342"
 msgid "Movies"
 msgstr "Филмови"
+
+msgctxt "#20343"
+msgid "TV shows"
+msgstr "ТВ Серии"
+
+msgctxt "#20344"
+msgid "This directory contains"
+msgstr "Директориумот содржи"
+
+msgctxt "#20345"
+msgid "Run automated scan"
+msgstr "Започни автоматско сканирање"
+
+msgctxt "#20347"
+msgid "as"
+msgstr "како"
+
+msgctxt "#20348"
+msgid "Directors"
+msgstr "Режисери"
+
+msgctxt "#20349"
+msgid "No video files found in this path!"
+msgstr "Нема пронајдени видео фајлови на оваа патека"
+
+msgctxt "#20350"
+msgid "votes"
+msgstr "гласови"
+
+msgctxt "#20351"
+msgid "TV show information"
+msgstr "Информации за ТВ Серија"
+
+msgctxt "#20352"
+msgid "Episode information"
+msgstr "Информации за Епизода"
+
+msgctxt "#20353"
+msgid "Loading TV show details"
+msgstr "Внесувам детали за ТВ Серија"
+
+msgctxt "#20356"
+msgid "Select TV show:"
+msgstr "Одбери ТВ Серија"
+
+msgctxt "#20357"
+msgid "Enter the TV show name"
+msgstr "Внеси име на Тв Серија"
+
+msgctxt "#20358"
+msgid "Season %i"
+msgstr "Сезона %i"
+
+msgctxt "#20359"
+msgid "Episode"
+msgstr "Епизода"
+
+msgctxt "#20360"
+msgid "Episodes"
+msgstr "Епизоди"
+
+msgctxt "#20362"
+msgid "Remove episode from library"
+msgstr "Одстрани епизода од библиотека"
+
+msgctxt "#20363"
+msgid "Remove TV show from library"
+msgstr "Одстарни ТВ Серија од библиотека"
+
+msgctxt "#20364"
+msgid "TV show"
+msgstr "ТВ Серија"
+
+msgctxt "#20365"
+msgid "Episode plot"
+msgstr "Кратка содржина"
+
+msgctxt "#20366"
+msgid "* All seasons"
+msgstr "Сите сезони"
+
+msgctxt "#20367"
+msgid "Hide watched"
+msgstr "Скриј гледани"
+
+msgctxt "#20368"
+msgid "Prod code"
+msgstr "Прод код"
+
+msgctxt "#20369"
+msgid "Show plot for unwatched items"
+msgstr "Прикажи кратка содржина за неизгледани ставки"
+
+msgctxt "#20372"
+msgid "Season image"
+msgstr "Слика од Сезона"
+
+msgctxt "#20373"
+msgid "Season"
+msgstr "Сезона"
+
+msgctxt "#20374"
+msgid "Downloading movie information"
+msgstr "Превземам информации за филмови"
+
+msgctxt "#20376"
+msgid "Original title"
+msgstr "Оригинален наслов"
+
+msgctxt "#20377"
+msgid "Refresh TV show information"
+msgstr "Освежи информации за ТВ Серија"
+
+msgctxt "#20378"
+msgid "Refresh info for all episodes?"
+msgstr "Освежи инфо за сите епизоди?"
+
+msgctxt "#20379"
+msgid "Selected folder contains a single TV show"
+msgstr "Селектираниот фолдер содржи една ТВ Серија"
+
+msgctxt "#20380"
+msgid "Exclude selected folder from scans"
+msgstr "Исклучи го селектираната датотека од сканирање"
+
+msgctxt "#20386"
+msgid "Recently added movies"
+msgstr "Неодамна додадени филмови"
+
+msgctxt "#20387"
+msgid "Recently added episodes"
+msgstr "Неодамна додадени епизоди"
+
+msgctxt "#20388"
+msgid "Studios"
+msgstr "Студиа"
+
+msgctxt "#20389"
+msgid "Music videos"
+msgstr "Музички видеа"
+
+msgctxt "#20390"
+msgid "Recently added music videos"
+msgstr "Неодамна додадени музички видеа"
+
+msgctxt "#20391"
+msgid "Music video"
+msgstr "Музичко видео"
+
+msgctxt "#20392"
+msgid "Remove music video from library"
+msgstr "Одстрани мизичко видео од библиотека"
+
+msgctxt "#20393"
+msgid "Music video information"
+msgstr "Информации за музичко видео"
+
+msgctxt "#20394"
+msgid "Loading music video information"
+msgstr "Внесувам информации за музичко видео"
+
+msgctxt "#20395"
+msgid "Mixed"
+msgstr "Мешано"
+
+msgctxt "#20407"
+msgid "Scraper settings"
+msgstr "Скрапер подесување"
+
+msgctxt "#20408"
+msgid "Downloading music video information"
+msgstr "Превземам информации за музичко видео"
+
+msgctxt "#20409"
+msgid "Downloading TV show information"
+msgstr "Превземам информации за ТВ серија"
+
+msgctxt "#20410"
+msgid "Trailer"
+msgstr "Трејлер"
+
+msgctxt "#20413"
+msgid "Get fanart"
+msgstr "Зан. слика"
 
 msgctxt "#20420"
 msgid "Never"
 msgstr "Никогаш"
 
+msgctxt "#20423"
+msgid "Has trailer"
+msgstr "Трејлер"
+
 msgctxt "#20429"
 msgid "Separate"
 msgstr "Одвоено"
+
+msgctxt "#20442"
+msgid "Change content"
+msgstr "Смени содржина"
 
 msgctxt "#20445"
 msgid "Fanart"
 msgstr "Зан. слика"
 
+msgctxt "#20448"
+msgid "Could not download information"
+msgstr "Неможе да се превземат информации"
+
+msgctxt "#20450"
+msgid "Would you like to continue scanning?"
+msgstr "Дали сакате да продолжите со скенирање"
+
+msgctxt "#20452"
+msgid "episode"
+msgstr "епизода"
+
+msgctxt "#20453"
+msgid "episodes"
+msgstr "епизоди"
+
+msgctxt "#21331"
+msgid "TuxBox client"
+msgstr "TuxBox клиент"
+
+msgctxt "#21336"
+msgid "Connecting to: %s"
+msgstr "Се поврзувам со: %s"
+
+msgctxt "#21337"
+msgid "TuxBox device"
+msgstr "TuxBox уред"
+
+msgctxt "#21366"
+msgid "Subtitle folder"
+msgstr "Титл фолдер"
+
+msgctxt "#21369"
+msgid "Enable mouse and Touch Screen support"
+msgstr "Овозможи подршка за Маус и Екран на допир"
+
+msgctxt "#21373"
+msgid "Video output"
+msgstr "Видео излез"
+
 msgctxt "#21375"
 msgid "Normal"
 msgstr "Нормален"
+
+msgctxt "#21376"
+msgid "Letterbox"
+msgstr "Letterbox"
+
+msgctxt "#21377"
+msgid "Widescreen"
+msgstr "Widescreen"
+
+msgctxt "#21378"
+msgid "Enable 480p"
+msgstr "Овозможи 480p"
+
+msgctxt "#21379"
+msgid "Enable 720p"
+msgstr "Овозможи 720p"
+
+msgctxt "#21380"
+msgid "Enable 1080i"
+msgstr "Овозможи 1080i"
 
 msgctxt "#21385"
 msgid "Open"
 msgstr "Отвори"
 
+msgctxt "#21386"
+msgid "Acoustic management level"
+msgstr "Подесување на акустично ниво"
+
 msgctxt "#21387"
 msgid "Fast"
 msgstr "Брзо"
+
+msgctxt "#21388"
+msgid "Quiet"
+msgstr "Тивко"
+
+msgctxt "#21389"
+msgid "Enable custom background"
+msgstr "Овозможи сопствени позадини"
+
+msgctxt "#21396"
+msgid "Chapter"
+msgstr "Поглавје"
+
+msgctxt "#21400"
+msgid "contains"
+msgstr "содржи"
+
+msgctxt "#21401"
+msgid "does not contain"
+msgstr "не содржи"
+
+msgctxt "#21402"
+msgid "is"
+msgstr "е"
+
+msgctxt "#21403"
+msgid "is not"
+msgstr "не е"
+
+msgctxt "#21404"
+msgid "starts with"
+msgstr "започнува со"
+
+msgctxt "#21405"
+msgid "ends with"
+msgstr "завршува со"
+
+msgctxt "#21406"
+msgid "greater than"
+msgstr "поголем од"
+
+msgctxt "#21407"
+msgid "less than"
+msgstr "помал од"
+
+msgctxt "#21408"
+msgid "after"
+msgstr "после"
+
+msgctxt "#21409"
+msgid "before"
+msgstr "пред"
+
+msgctxt "#21410"
+msgid "in the last"
+msgstr "е последен"
+
+msgctxt "#21418"
+msgid "Multilingual"
+msgstr "Повеќејазично"
+
+msgctxt "#21429"
+msgid "Order by"
+msgstr "Подреди по"
+
+msgctxt "#21430"
+msgid "ascending"
+msgstr "растечки"
+
+msgctxt "#21431"
+msgid "descending"
+msgstr "опаѓачки"
+
+msgctxt "#21435"
+msgid "Edit"
+msgstr "Уреди"
+
+msgctxt "#21442"
+msgid "Episode title"
+msgstr "Наслов на Епизода"
+
+msgctxt "#21443"
+msgid "Video resolution"
+msgstr "Видео Резолуција"
+
+msgctxt "#21444"
+msgid "Audio channels"
+msgstr "Аудио канали"
+
+msgctxt "#21445"
+msgid "Video codec"
+msgstr "Видео кодек"
+
+msgctxt "#21446"
+msgid "Audio codec"
+msgstr "Аудио кодек"
+
+msgctxt "#21447"
+msgid "Audio language"
+msgstr "Аудио јазик"
+
+msgctxt "#21448"
+msgid "Subtitle language"
+msgstr "Јазик на титл"
+
+msgctxt "#21449"
+msgid "Remote control sends keyboard presses"
+msgstr "Далечинското праќа сигнали како тастатура"
+
+msgctxt "#21450"
+msgid "- Edit"
+msgstr "- Уреди"
+
+msgctxt "#21451"
+msgid "Internet connection required."
+msgstr "Интернет конекција е потребна"
+
+msgctxt "#21452"
+msgid "Get More..."
+msgstr "Превземи повеќе"
+
+msgctxt "#21454"
+msgid "Cache full"
+msgstr "Кешот е полн"
+
+msgctxt "#21460"
+msgid "Subtitle location"
+msgstr "Локација на титл"
 
 msgctxt "#21805"
 msgid "Resolution"
@@ -6598,9 +7010,65 @@ msgctxt "#21806"
 msgid "Comment"
 msgstr "Коментар"
 
+msgctxt "#21820"
+msgid "Date/Time"
+msgstr "Дата/Време"
+
+msgctxt "#21821"
+msgid "Description"
+msgstr "Опис"
+
+msgctxt "#21837"
+msgid "ISO"
+msgstr "ISO"
+
+msgctxt "#21873"
+msgid "City"
+msgstr "Град"
+
+msgctxt "#21874"
+msgid "State"
+msgstr "Држава"
+
 msgctxt "#21875"
 msgid "Country"
 msgstr "Држава"
+
+msgctxt "#21887"
+msgid "Biography"
+msgstr "Биографија"
+
+msgctxt "#21888"
+msgid "Discography"
+msgstr "Дискографија"
+
+msgctxt "#21892"
+msgid "Instruments"
+msgstr "Инструменти"
+
+msgctxt "#21893"
+msgid "Born"
+msgstr "Роден"
+
+msgctxt "#21894"
+msgid "Formed"
+msgstr "Оформен"
+
+msgctxt "#21897"
+msgid "Died"
+msgstr "Починал"
+
+msgctxt "#22002"
+msgid "- DNS suffix"
+msgstr "- DNS суфикс"
+
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%2.3fs"
+
+msgctxt "#22006"
+msgid "Subtitle offset"
+msgstr "офсет на титл"
 
 msgctxt "#22030"
 msgid "Font"

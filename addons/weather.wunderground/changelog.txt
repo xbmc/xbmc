@@ -1,4 +1,8 @@
+v1.0.8
+- language update
+
 v1.0.7
+- fixed failed to run when there's a special char in username
 - switch to 2 day weekend forecast
 
 v1.0.6

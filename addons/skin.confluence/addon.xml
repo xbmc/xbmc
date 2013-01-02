@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.1.2"
+  version="2.1.3"
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
@@ -33,14 +33,14 @@
     <summary lang="fr">Thème Confluence par Jezz_X. (thème par défaut)</summary>
     <summary lang="gl">Pel Confluence por Jezz_Z. (Pel predeterminada de XBMC)</summary>
     <summary lang="he">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
-    <summary lang="hr">Confluence izgled autor Jezz_X. (XBMC-ov podrazumijevani izgled)</summary>
+    <summary lang="hr">Confluence izgled autora Jezz_X. (XBMC podrazumijevani izgled)</summary>
     <summary lang="hu">Confluence felszín. Készítő: Jezz_X (XBMC alapértelmezett felszín)</summary>
     <summary lang="is">Confluence eftir Jezz_X. (Sjálfgefið útlit XBMC)</summary>
     <summary lang="it">Skin Confluence da Jezz_X. (skin predefinita di XBMC)</summary>
     <summary lang="ja">Confluence スキン by Jezz_X. (XBMC デフォルトスキン)</summary>
     <summary lang="km">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="ko">Confluence 스킨 Jezz_X 만듦 (XBMC 기본 스킨)</summary>
-    <summary lang="lt">Teminė išvaizda Confluence sukūrta Jezz_X.(XBMC numatytoji teminė išvaizda)</summary>
+    <summary lang="lt">Teminė išvaizda Confluence sukurta Jezz_X.(XBMC numatytoji teminė išvaizda)</summary>
     <summary lang="mk">Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="nl">Confluence skin door Jezz_X</summary>
     <summary lang="no">Confluence tema av Jezz_X. (XBMC standardtema)</summary>

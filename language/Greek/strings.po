@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -276,19 +276,19 @@ msgstr "ΔΙΑΦ"
 
 msgctxt "#88"
 msgid "South"
-msgstr "Νότιος"
+msgstr "Νότια"
 
 msgctxt "#89"
 msgid "North"
-msgstr "Βόρειος"
+msgstr "Βόρεια"
 
 msgctxt "#90"
 msgid "West"
-msgstr "Δυτικός"
+msgstr "Δυτικά"
 
 msgctxt "#91"
 msgid "East"
-msgstr "Ανατολικός"
+msgstr "Ανατολικά"
 
 msgctxt "#92"
 msgid "Variable"
@@ -10024,7 +10024,7 @@ msgstr "(ανεπιθύμητο)"
 
 msgctxt "#24096"
 msgid "Add-on has been marked as broken in repository."
-msgstr "Το πρόσθετο έχει επισημανθεί ως προβληματικό στο αποθετήριο."
+msgstr "Το πρόσθετο έχει επισημανθεί ως κατεστραμμένο στο αποθετήριο."
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10032,7 +10032,7 @@ msgstr "Επιθυμείτε να απενεργοποιηθεί από το σ�
 
 msgctxt "#24098"
 msgid "Broken"
-msgstr "Προβληματικό"
+msgstr "Κατεστραμμένο"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
@@ -10172,7 +10172,7 @@ msgstr "Αύριο βράδυ"
 
 msgctxt "#33020"
 msgid "Condition"
-msgstr "Kατάσταση καιρού"
+msgstr "Συνθήκες"
 
 msgctxt "#33021"
 msgid "Precipitation"

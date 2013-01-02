@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-RC1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1008,7 +1008,7 @@ msgstr "Undertekster"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Skrift"
+msgstr "Skrifttype"
 
 msgctxt "#289"
 msgid "- Size"
@@ -1792,7 +1792,7 @@ msgstr "Kalibrering"
 
 msgctxt "#497"
 msgid "Show file extensions"
-msgstr "Skjul filtetternavn"
+msgstr "Vis filetternavn"
 
 msgctxt "#498"
 msgid "Sort by: Type"
@@ -4216,7 +4216,7 @@ msgstr "Hastighetskontroll for vifte"
 
 msgctxt "#13303"
 msgid "- Fonts"
-msgstr "- Skrift"
+msgstr "- Skrifttyper"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -5088,7 +5088,7 @@ msgstr "Bruk ett fullskjermsvindu istedenfor sann fullskjerm"
 
 msgctxt "#14084"
 msgid "Queue songs on selection"
-msgstr "Kø sanger ved valg"
+msgstr "Legg sanger i kø når de velges"
 
 msgctxt "#14086"
 msgid "Playback"
@@ -5136,7 +5136,7 @@ msgstr "Ripp"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr "Lyd CD innsatt hendelse"
+msgstr "Hendelse når musikk-CD settes inn"
 
 msgctxt "#14098"
 msgid "Play"
@@ -5870,6 +5870,14 @@ msgctxt "#19008"
 msgid "Signal quality"
 msgstr "Signalkvalitet"
 
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
 msgctxt "#19011"
 msgid "UNC"
 msgstr "UNC"
@@ -5972,7 +5980,7 @@ msgstr "Er du sikker på at du vil gi nytt navn til dette opptaket?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr "Tar opp"
+msgstr "Opptak"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
@@ -6478,6 +6486,10 @@ msgctxt "#19212"
 msgid "This list contains changes"
 msgstr "Denne listen inneholder endringer"
 
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Skriv inn gyldig URL for ny kanal"
+
 msgctxt "#19216"
 msgid "All radio channels"
 msgstr "Alle radio-kanaler"
@@ -6501,6 +6513,10 @@ msgstr "Kanaler i"
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Ingen PVR-tillegg kunne aktiveres. Kontroller innstillingene eller loggen for mer informasjon."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6546,9 +6562,21 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starter bakgrunnstråder"
 
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Oppvåkningskommando (cmd [timestamp])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Oppvåkning før opptak"
+
 msgctxt "#19247"
 msgid "Daily wakeup"
 msgstr "Daglig oppvåkning"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Tidspunkt for daglig oppvåkning (HH:MM:SS)"
 
 msgctxt "#19249"
 msgid "Filter channels"
@@ -6592,7 +6620,7 @@ msgstr "Lås opp kanal"
 
 msgctxt "#19259"
 msgid "Parental control"
-msgstr "Foreldrekontrol"
+msgstr "Foreldrekontroll"
 
 msgctxt "#19261"
 msgid "Change PIN"
@@ -6600,7 +6628,7 @@ msgstr "Endre PIN"
 
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
-msgstr "Foreldrekontroll. Skriv inn PIN"
+msgstr "Foreldrekontroll. Skriv inn PIN:"
 
 msgctxt "#19263"
 msgid "Locked channel. Enter PIN:"
@@ -6613,6 +6641,10 @@ msgstr "Feil PIN"
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "Innskrevet PIN-nummer var feil."
+
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Låst av foreldrekontroll:"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
@@ -6661,6 +6693,10 @@ msgstr "Komedie"
 msgctxt "#19506"
 msgid "Romance"
 msgstr "Romantikk"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Nyheter/værmelding"
 
 msgctxt "#19519"
 msgid "Documentary"
@@ -8568,7 +8604,7 @@ msgstr "Sett episode teller"
 
 msgctxt "#21460"
 msgid "Subtitle location"
-msgstr "Plassering av undertittel"
+msgstr "Plassering av undertekst"
 
 msgctxt "#21461"
 msgid "Fixed"
@@ -8988,7 +9024,7 @@ msgstr "Direct3D versjon:"
 
 msgctxt "#22030"
 msgid "Font"
-msgstr "Skrift"
+msgstr "Skrifttype"
 
 msgctxt "#22031"
 msgid "- Size"
@@ -9200,7 +9236,7 @@ msgstr "Weather.com (standard)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr "jenesten for vær informasjon"
+msgstr "Værtjeneste"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
