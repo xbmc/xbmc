@@ -334,7 +334,8 @@ bool OMXClock::OMXSetReferenceClock(bool lock /* = true */)
     ret = false;
   }
 
-  UnLock();
+  if(lock)
+    UnLock();
 
   return ret;
 }
@@ -634,7 +635,8 @@ bool OMXClock::OMXReset(bool lock /* = true */)
 
   if(!OMXSetReferenceClock(false))
   {
-    UnLock();
+    if(lock)
+      UnLock();
     return false;
   }
 
