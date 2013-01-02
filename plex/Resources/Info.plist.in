@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Plex.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.plexapp.plexmediacenter</string>
+	<string>com.plexapp.plexhometheater</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleLongVersionString</key>
@@ -32,7 +32,5 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Plex inc</string>
-        <key>SUFeedURL</key>
-        <string>https://plexapp.com/appcast/laika/alpha/appcast.xml</string>
 </dict>
 </plist>
