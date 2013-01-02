@@ -865,7 +865,11 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
       {
+#ifndef __PLEX__
         g_windowManager.PreviousWindow();
+#else
+        CApplicationMessenger::Get().MediaStop();
+#endif
       }
       ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_STOPPED);
     }
