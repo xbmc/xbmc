@@ -55,15 +55,9 @@ set(SRCS
   Neptune/Source/Core/NptUri.cpp
   Neptune/Source/Core/NptUtils.cpp
   Neptune/Source/Core/NptXml.cpp
-  Neptune/Source/System/Bsd/NptBsdSockets.cpp
-  Neptune/Source/System/Bsd/NptBsdNetwork.cpp
-  Neptune/Source/System/Posix/NptPosixSystem.cpp
-  Neptune/Source/System/Posix/NptSelectableMessageQueue.cpp
-  Neptune/Source/System/Posix/NptPosixQueue.cpp
-  Neptune/Source/System/Posix/NptPosixThreads.cpp
-  Neptune/Source/System/Posix/NptPosixTime.cpp
   Neptune/Source/System/StdC/NptStdcDebug.cpp
   Neptune/Source/System/StdC/NptStdcEnvironment.cpp
+  Neptune/Source/System/Bsd/NptBsdSockets.cpp
   Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.cpp
   Platinum/Source/Devices/MediaRenderer/PltMediaController.cpp
   Platinum/Source/Devices/MediaRenderer/AVTransportSCPD.cpp
@@ -71,13 +65,36 @@ set(SRCS
   Platinum/Source/Devices/MediaRenderer/RenderingControlSCPD.cpp
   Platinum/Source/Devices/MediaConnect/X_MS_MediaReceiverRegistrarSCPD.cpp
   Platinum/Source/Devices/MediaConnect/PltMediaConnect.cpp
+  Neptune/Source/System/Posix/NptPosixTime.cpp
 )
 
-if(APPLE)
-  list(APPEND SRCS Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm)
-  list(APPEND SRCS Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm)
-elseif(UNIX)
-  list(APPEND SRCS Neptune/Source/System/Posix/NptPosixEnvironment.cpp)
+if(UNIX)
+  set(SRCS
+    ${SRCS}
+    Neptune/Source/System/Posix/NptPosixSystem.cpp
+    Neptune/Source/System/Posix/NptSelectableMessageQueue.cpp
+    Neptune/Source/System/Posix/NptPosixQueue.cpp
+    Neptune/Source/System/Posix/NptPosixThreads.cpp
+    Neptune/Source/System/Bsd/NptBsdNetwork.cpp
+  )
+  if(APPLE)
+    list(APPEND SRCS Neptune/Source/System/Apple/NptAppleAutoreleasePool.mm)
+    list(APPEND SRCS Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm)
+  else()
+    list(APPEND SRCS Neptune/Source/System/Posix/NptPosixEnvironment.cpp)
+  endif()
+elseif(WIN32)
+  set(SRCS
+    ${SRCS}
+    Neptune/Source/System/Win32/NptWin32Debug.cpp
+    Neptune/Source/System/Win32/NptWin32DynamicLibraries.cpp
+    Neptune/Source/System/Win32/NptWin32File.cpp
+    Neptune/Source/System/Win32/NptWin32MessageQueue.cpp
+    Neptune/Source/System/Win32/NptWin32Network.cpp
+    Neptune/Source/System/Win32/NptWin32Queue.cpp
+    Neptune/Source/System/Win32/NptWin32System.cpp
+    Neptune/Source/System/Win32/NptWin32Threads.cpp
+  )
 endif()
 
 include_directories(
@@ -88,6 +105,7 @@ include_directories(
   Platinum/Source/Devices/MediaRenderer
   Platinum/Source/Devices/MediaServer
   Neptune/Source/System/Posix
+  Neptune/Source/System/Win32
   Platinum/Source/Extras
 )
 
