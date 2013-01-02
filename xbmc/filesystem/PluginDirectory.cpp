@@ -73,7 +73,24 @@ void CPluginDirectory::removeHandle(int handle)
 {
   CSingleLock lock(m_handleLock);
   if (handle >= 0 && handle < (int)globalHandles.size())
-    globalHandles.erase(globalHandles.begin() + handle);
+  {
+    // invalid the handle first.
+    globalHandles[handle] = NULL;
+    // purge all invalid handles at the end of the handle vector
+    while (handle >= 0 && handle + 1 == (int)globalHandles.size() && NULL == globalHandles[handle])
+    {
+      globalHandles.erase(globalHandles.begin() + handle);
+      --handle;
+    }
+  }
+}
+
+CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
+{
+  CSingleLock lock(m_handleLock);
+  if (handle >= 0 && handle < (int)globalHandles.size())
+    return globalHandles[handle];
+  return NULL;
 }
 
 bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir)
@@ -161,13 +178,13 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (NULL == dir)
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return false;
   }
 
-  CPluginDirectory *dir = globalHandles[handle];
   CFileItemPtr pItem(new CFileItem(*item));
   dir->m_listItems->Add(pItem);
   dir->m_totalItems = totalItems;
@@ -178,13 +195,13 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
 bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int totalItems)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (NULL == dir)
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return false;
   }
 
-  CPluginDirectory *dir = globalHandles[handle];
   CFileItemList pItemList;
   pItemList.Copy(*items);
   dir->m_listItems->Append(pItemList);
@@ -196,12 +213,12 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
 void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (NULL == dir)
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return;
   }
-  CPluginDirectory *dir = globalHandles[handle];
 
   // set cache to disc
   dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CACHE_IF_SLOW : CFileItemList::CACHE_NEVER);
@@ -219,13 +236,12 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (NULL == dir)
   {
     CLog::Log(LOGERROR, "%s - called with an invalid handle.", __FUNCTION__);
     return;
   }
-
-  CPluginDirectory *dir = globalHandles[handle];
 
   // TODO: Add all sort methods and fix which labels go on the right or left
   switch(sortMethod)
@@ -556,12 +572,12 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, int scri
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (NULL == dir)
   {
     CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
     return;
   }
-  CPluginDirectory* dir  = globalHandles[handle];
 
   dir->m_success = success;
   *dir->m_fileResult = *resultItem;
@@ -613,13 +629,13 @@ void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
 void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (NULL == dir)
   {
     CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
     return;
   }
 
-  CPluginDirectory *dir = globalHandles[handle];
   if (strProperty == "fanart_image")
     dir->m_listItems->SetArt("fanart", strValue);
   else
