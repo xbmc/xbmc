@@ -176,3 +176,6 @@
 
 /* SDL JOYSTICK */
 #define HAS_SDL_JOYSTICK 1
+
+/* Enable UPNP */
+#define USE_UPNP @USE_UPNP@

@@ -880,10 +880,10 @@ void CGUISettings::Initialize()
 
   //CSettingsCategory* srvGeneral = AddCategory(SETTINGS_SERVICE, "general", 16000);
 
-  //CSettingsCategory* srvUpnp = AddCategory(SETTINGS_SERVICE, "upnp", 20187);
+  CSettingsCategory* srvUpnp = AddCategory(SETTINGS_SERVICE, "upnp", 20187);
   AddBool(NULL, "services.upnpserver", 21360, false);
   AddBool(NULL, "services.upnpannounce", 20188, false);
-  AddBool(NULL, "services.upnprenderer", 21881, false);
+  AddBool(srvUpnp, "services.upnprenderer", 21881, false);
 
 #ifdef HAS_WEB_SERVER
   //CSettingsCategory* srvWeb = AddCategory(SETTINGS_SERVICE, "webserver", 33101);

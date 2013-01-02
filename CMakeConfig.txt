@@ -289,6 +289,7 @@ endif()
 set(CONFIG_INTERNAL_LIBS
   lib_hts
   lib_squish
+  lib_upnp
 )
 
 if(APPLE)
@@ -372,6 +373,8 @@ endif()
 if(DEFINED HAVE_LIBSDL)
   set(HAVE_SDL 1)
 endif()
+
+set(USE_UPNP 1)
 
 #### check FFMPEG member name
 if(DEFINED HAVE_LIBAVFILTER_AVFILTER_H)

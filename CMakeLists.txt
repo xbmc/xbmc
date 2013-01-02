@@ -201,7 +201,19 @@ include_directories(
 	${root}/xbmc/cores/AudioEngine
 )
 
- #### Generate git_revision.h
+# UPnP includes
+include_directories(
+  ${root}/lib/libUPnP/Platinum/Source/Platinum
+  ${root}/lib/libUPnP/Platinum/Source/Core
+  ${root}/lib/libUPnP/Platinum/Source/Extras
+  ${root}/lib/libUPnP/Platinum/Source/Devices/MediaConnect
+  ${root}/lib/libUPnP/Platinum/Source/Devices/MediaRenderer
+  ${root}/lib/libUPnP/Platinum/Source/Devices/MediaServer
+  ${root}/lib/libUPnP/Neptune/Source/Core
+  ${root}/lib/libUPnP/Neptune/Source/System/Posix
+)
+
+#### Generate git_revision.h
 if(NOT WIN32)
   add_custom_target(git_revision.h ALL DEPENDS ${root}/git_revision.h)
   add_custom_command(

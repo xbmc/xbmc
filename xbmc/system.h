@@ -142,8 +142,8 @@
 #define HAVE_LIBVORBISENC
 #ifndef __PLEX__
 #define HAS_MYSQL
-#define HAS_UPNP
 #endif
+#define HAS_UPNP
 
 #define DECLARE_UNUSED(a,b) a b;
 #endif
