@@ -252,7 +252,6 @@ void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void)
 {
   CLog::Log(LOGINFO, "PVRChannelGroupsContainer - %s - starting channel icon search", __FUNCTION__);
 
-  // TODO: Add Process dialog here
   CPVRChannelGroupPtr channelgrouptv  = GetGroupAllTV();
   CPVRChannelGroupPtr channelgroupradio = GetGroupAllRadio();
 
@@ -260,8 +259,6 @@ void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void)
     channelgrouptv->SearchAndSetChannelIcons(true);
   if (channelgroupradio)
     channelgroupradio->SearchAndSetChannelIcons(true);
-
-  CGUIDialogOK::ShowAndGetInput(19167,0,20177,0);
 }
 
 CFileItemPtr CPVRChannelGroupsContainer::GetLastPlayedChannel(void) const

@@ -852,6 +852,12 @@ bool CPVRChannelSettingsSaveJob::DoWork(void)
   return true;
 }
 
+bool CPVRSearchMissingChannelIconsJob::DoWork(void)
+{
+  g_PVRManager.SearchMissingChannelIcons();
+  return true;
+}
+
 bool CPVRManager::OpenLiveStream(const CFileItem &channel)
 {
   bool bReturn(false);
@@ -1217,7 +1223,11 @@ void CPVRManager::StartChannelScan(void)
 void CPVRManager::SearchMissingChannelIcons(void)
 {
   if (IsStarted() && m_channelGroups)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), g_localizeStrings.Get(19282));
     m_channelGroups->SearchMissingChannelIcons();
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), g_localizeStrings.Get(19283));
+  }
 }
 
 bool CPVRManager::IsJobPending(const char *strJobName) const
@@ -1291,6 +1301,18 @@ void CPVRManager::TriggerSaveChannelSettings(void)
     return;
 
   m_pendingUpdates.push_back(new CPVRChannelSettingsSaveJob());
+
+  lock.Leave();
+  m_triggerEvent.Set();
+}
+
+void CPVRManager::TriggerSearchMissingChannelIcons(void)
+{
+  CSingleLock lock(m_critSectionTriggers);
+  if (!IsStarted() || IsJobPending("pvr-search-missing-channel-icons"))
+    return;
+
+  m_pendingUpdates.push_back(new CPVRSearchMissingChannelIconsJob());
 
   lock.Leave();
   m_triggerEvent.Set();
