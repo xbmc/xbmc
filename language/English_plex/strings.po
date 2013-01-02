@@ -335,7 +335,7 @@ msgstr "this path from the Plex/HT library?"
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
-msgid "Allow control of Plex/HT via UPnP"
+msgid "Allow control of XBMC via UPnP"
 msgstr "Allow control of Plex/HT via UPnP"
 
 msgctxt "#22003"
