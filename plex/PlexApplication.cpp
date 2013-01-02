@@ -53,6 +53,7 @@ PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/p
 ////////////////////////////////////////////////////////////////////////////////
 PlexApplication::~PlexApplication()
 {
+  m_autoUpdater.Stop();
   bgMusicPlayer.reset();
 }
 
