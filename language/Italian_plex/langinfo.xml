@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language locale="it">
+  <charsets>
+    <gui>CP1252</gui>
+    <subtitle>CP1252</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>it</menu>
+    <audio>it</audio>
+    <subtitle>it</subtitle>
+  </dvd>
+
+  <regions>
+    <region name="Italia" locale="IT">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Svizzera" locale="CH">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Città del Vaticano" locale="IT">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+  </regions>
+  <sorttokens>
+    <token>Il</token>
+    <token>Lo</token>
+    <token>La</token>
+    <token>I</token>
+    <token>Gli</token>
+    <token>Le</token>
+    <token>Un</token>
+    <token>Uno</token>
+    <token>Una</token>
+    <token>The</token>
+  </sorttokens>
+</language>
