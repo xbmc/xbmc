@@ -338,7 +338,17 @@ msgctxt "#21881"
 msgid "Allow control of Plex/HT via UPnP"
 msgstr "Allow control of Plex/HT via UPnP"
 
-#empty strings from id 21882 to 33074
+msgctxt "#22003"
+msgid "%2.3fs"
+msgstr "%d ms"
+
+msgctxt "#22004"
+msgid "Delayed by: %2.3fs"
+msgstr "Delayed by: %d ms"
+
+msgctxt "#22005"
+msgid "Ahead by: %2.3fs"
+msgstr "Ahead by: %d ms"
 
 msgctxt "#33075"
 msgid "Plex/HT revision of %s or greater to run."
