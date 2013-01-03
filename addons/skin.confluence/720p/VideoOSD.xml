@@ -313,8 +313,8 @@
 				<onclick>Close</onclick>
 				<onclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
 				<altclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</altclick>
-				<altclick>Close</altclick>
-				<altclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</altclick>
+				<altclick condition="Window.IsVisible(VideoOSD)">Dialog.Close(VideoOSD)</altclick>
+				<altclick condition="!IsEmpty(Skin.String(SubtitleScript_Path))">XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</altclick>
 				<usealttexture>IsEmpty(Skin.String(SubtitleScript_Path))</usealttexture>
 			</control>
 			<control type="button" id="251">
