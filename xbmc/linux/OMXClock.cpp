@@ -704,9 +704,6 @@ double OMXClock::OMXWallTime(bool lock /* = true */)
 
   pts = FromOMXTime(timeStamp.nTimestamp);
 
-  if(pts != 0.0f)
-    pts += (OMX_PRE_ROLL * 1000);
-
   if(lock)
     UnLock();
   
@@ -739,7 +736,7 @@ double OMXClock::OMXMediaTime(bool fixPreroll /* true */ , bool lock /* = true *
 
   pts = FromOMXTime(timeStamp.nTimestamp);
 
-  if(pts != 0.0f && fixPreroll)
+  if(fixPreroll)
     pts += (OMX_PRE_ROLL * 1000);
 
   if(lock)
