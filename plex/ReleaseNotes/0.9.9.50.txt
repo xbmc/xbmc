@@ -1,0 +1,9 @@
+      Always start the webserver regardless of the settings.
+      Ignore _plex languages in settings dialog.
+      Fix loading of libcec
+      Fix crash on exit
+      Hopefully enable Plex/HT as a UPnP renderer.
+      Fix subtitle offset text in OSD.
+      Fix XBMC string in settings for UPnP
+      Fix deadlock when airplaying pictures.
+      Added first batch of translations (Danish, Dutch, French, German, Italian, Norwegian, Spanish and Swedish)

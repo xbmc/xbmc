@@ -1,7 +1,10 @@
 add_subdirectory(libsquish)
 add_subdirectory(libhts)
 add_subdirectory(libUPnP)
-add_subdirectory(xbmc-dll-symbols)
+if(NOT APPLE AND NOT WIN32)
+  add_subdirectory(xbmc-dll-symbols)
+endif()
+
 if(WIN32)
   add_subdirectory(win32)
   add_subdirectory(libmad)

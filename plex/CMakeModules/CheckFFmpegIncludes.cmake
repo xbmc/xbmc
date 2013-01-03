@@ -28,12 +28,27 @@ set(headers
 )
 
 foreach(header ${headers})
-  set(_HAVE_VAR HAVE_${header}_H)
-  string(TOUPPER ${_HAVE_VAR} _HAVE_VAR)
-  string(REPLACE "/" "_" _HAVE_VAR ${_HAVE_VAR})
-  find_path(_${_HAVE_VAR} NAMES ${header}.h HINTS ${FFMPEG_INCLUDE_DIRS})
-  get_property(v VARIABLE PROPERTY _${_HAVE_VAR})
-  if(v)
-    set(${_HAVE_VAR} 1)
-  endif()
+  plex_find_header(${header} ${FFMPEG_INCLUDE_DIRS})
 endforeach()
+
+include(CheckCSourceCompiles)
+
+#### check FFMPEG member name
+if(DEFINED HAVE_LIBAVFILTER_AVFILTER_H)
+  set(AVFILTER_INC "#include <libavfilter/avfilter.h>")
+else()
+  set(AVFILTER_INC "#include <ffmpeg/avfilter.h>")
+endif()
+CHECK_C_SOURCE_COMPILES("
+  ${AVFILTER_INC}
+  int main(int argc, char *argv[])
+  { 
+    static AVFilterBufferRefVideoProps test;
+    if(sizeof(test.sample_aspect_ratio))
+      return 0;
+    return 0;
+  }
+"
+HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO)
+
+
