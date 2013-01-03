@@ -34,7 +34,7 @@ public:
 
   virtual std::vector<CStdString> GetDiskUsage();
 
-  virtual bool Eject(CStdString mountpath) { return false; }
+  virtual bool Eject(CStdString mountpath);
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 private:
