@@ -4053,7 +4053,7 @@ bool CMusicDatabase::GetCompilationAlbums(const CStdString& strBaseDir, CFileIte
   musicUrl.AddOption("compilation", true);
   
   Filter filter;
-  return GetAlbumsByWhere(strBaseDir, filter, items);
+  return GetAlbumsByWhere(musicUrl.ToString(), filter, items);
 }
 
 bool CMusicDatabase::GetCompilationSongs(const CStdString& strBaseDir, CFileItemList& items)
