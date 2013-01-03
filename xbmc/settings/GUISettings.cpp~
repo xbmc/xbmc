@@ -652,8 +652,8 @@ void CGUISettings::Initialize()
   flattenTVShowOptions.insert(make_pair(20422, 2));
   AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
 
-  AddBool(vdl, "videolibrary.groupmoviesets", 20458, true);
-  AddBool(vdl, "videolibrary.updateonstartup", 22000, true);
+  AddBool(vdl, "videolibrary.groupmoviesets", 20458, false);
+  AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
   AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);
   AddSeparator(vdl, "videolibrary.sep3");
   AddString(vdl, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
@@ -780,7 +780,7 @@ void CGUISettings::Initialize()
   AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
   AddBool(vid, "myvideos.extractflags",20433, true);
   AddBool(vid, "myvideos.replacelabels", 20419, true);
-  AddBool(NULL, "myvideos.extractthumb",20433, false);
+  AddBool(NULL, "myvideos.extractthumb",20433, true);
 
   CSettingsCategory* sub = AddCategory(SETTINGS_VIDEOS, "subtitles", 287);
   AddString(sub, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
@@ -810,7 +810,7 @@ void CGUISettings::Initialize()
   CSettingsCategory* dvd = AddCategory(SETTINGS_VIDEOS, "dvds", 14087);
   AddBool(dvd, "dvds.autorun", 14088, false);
   AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
-  AddBool(dvd, "dvds.automenu", 21882, true);
+  AddBool(dvd, "dvds.automenu", 21882, false);
 
   AddDefaultAddon(NULL, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
   AddDefaultAddon(NULL, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
@@ -829,9 +829,9 @@ void CGUISettings::Initialize()
 
 #ifdef HAS_WEB_SERVER
   CSettingsCategory* srvWeb = AddCategory(SETTINGS_SERVICE, "webserver", 33101);
-  AddBool(srvWeb,  "services.webserver",        263, true);
+  AddBool(srvWeb,  "services.webserver",        263, false);
   AddString(srvWeb,"services.webserverport",    730, CUtil::CanBindPrivileged()?"80":"8080", EDIT_CONTROL_NUMBER_INPUT, false, 730);
-  AddString(srvWeb,"services.webserverusername",1048, "", EDIT_CONTROL_INPUT);
+  AddString(srvWeb,"services.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(srvWeb,"services.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
   AddDefaultAddon(srvWeb, "services.webskin",199, DEFAULT_WEB_INTERFACE, ADDON_WEB_INTERFACE);
 #endif
@@ -879,7 +879,7 @@ void CGUISettings::Initialize()
   AddInt(laf, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(laf, "lookandfeel.sep2");
-  AddBool(laf, "lookandfeel.enablerssfeeds",13305,  false);
+  AddBool(laf, "lookandfeel.enablerssfeeds",13305,  true);
   AddString(laf, "lookandfeel.rssedit", 21450, "", BUTTON_CONTROL_STANDARD);
 
   CSettingsCategory* loc = AddCategory(SETTINGS_APPEARANCE, "locale", 14090);

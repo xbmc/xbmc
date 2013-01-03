@@ -1,10 +1,17 @@
 <advancedsettings>
-  <video>
-    <defaultplayer>omxplayer</defaultplayer>
-    <defaultdvdplayer>omxplayer</defaultdvdplayer>
-  </video>
-  <audio>
-    <defaultplayer>omxplayer</defaultplayer>
-    <streamsilence>false</streamsilence>
-  </audio>
+<cputempcommand>/opt/vc/bin/vcgencmd measure_temp | sed -e 's/temp=\([0-9]*\).*/\1 C/'</cputempcommand>
+<gputempcommand>/opt/vc/bin/vcgencmd measure_temp | sed -e 's/temp=\([0-9]*\).*/\1 C/'</gputempcommand>
+<network>
+<cachemembuffersize>10485760</cachemembuffersize>
+</network>
+<imageres>540</imageres>
+<fanartres>720</fanartres>
+<video>
+<defaultplayer>omxplayer</defaultplayer>
+<defaultdvdplayer>omxplayer</defaultdvdplayer>
+</video>
+<audio>
+<defaultplayer>paplayer</defaultplayer>
+<streamsilence>false</streamsilence>
+</audio>
 </advancedsettings>
