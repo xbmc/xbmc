@@ -11,7 +11,7 @@
 #include "log.h"
 #include "JobManager.h"
 #include "filesystem/CurlFile.h"
-#include "FileSystem/File.h"
+#include "filesystem/File.h"
 
 using namespace XFILE;
 

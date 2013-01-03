@@ -57,33 +57,7 @@ set(headers
   wchar
   wctype
   
-  # ffmpeg
-  libavcodec/avcodec
-  libavfilter/avfilter
-  libavformat/avformat
-  libavutil/avutil
-  libpostproc/postprocess
-  libswscale/swscale
-  
-  ffmpeg/avcodec
-  ffmpeg/avfilter
-  ffmpeg/avformat
-  ffmpeg/avutil
-  postproc/postprocess
-  ffmpeg/swscale
-  
-  libavcore/avcore
-  libavcore/samplefmt
-  libavutil/mem
-  libavutil/samplefmt
-  libavutil/opt
-  libavutil/mathematics
-  libswscale/rgb2rgb
-  ffmpeg/rgb2rgb
-  libswresample/swresample
-  libavresample/avresample
-  
-  # libcrystalHD
+ # libcrystalHD
   libcrystalhd/libcrystalhd_if
 )
 

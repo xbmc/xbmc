@@ -4,7 +4,7 @@ else()
   add_subdirectory(SoftAE)
 endif()
 
-if(DEFINED USE_PULSE)
+if(DEFINED HAVE_LIBPULSE)
   add_subdirectory(PulseAE)
 endif()
 

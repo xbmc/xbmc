@@ -2,6 +2,7 @@ project("Plex Home Theater")
 cmake_minimum_required(VERSION 2.8.8)
 include(ExternalProject)
 
+
 execute_process(
   COMMAND git rev-parse --short HEAD
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -23,15 +24,22 @@ set(PLEX_VERSION_STRING_SHORT_BUILD ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.
 set(XBMC_VERSION "Frodo")
 
 set(root ${PROJECT_SOURCE_DIR})
-if(NOT WIN32)
-  set(dependdir ${root}/plex/Dependencies/laika-depends)
-else()
-  set(dependdir ${root}/project/BuildDependencies)
-endif()
-set(plexdir ${root}/plex)
-message("-- Using dependency dir ${dependdir}")
 
-include(CMakeFunctions.txt)
+if(APPLE OR WIN32)
+  if(NOT WIN32)
+    set(dependdir ${root}/plex/Dependencies/laika-depends)
+  else()
+    set(dependdir ${root}/project/BuildDependencies)
+  endif()
+  message("-- Using dependency dir ${dependdir}")
+else()
+  message("-- On Linux we don't use a dependency dir")
+endif()
+
+set(plexdir ${root}/plex)
+set(CMAKE_MODULE_PATH ${plexdir}/CMakeModules ${CMAKE_MODULE_PATH})
+
+include(CMakeFunctions)
 
 if(DEFINED XCODE_VERSION)
   message("Building with XCode Generator")
@@ -87,12 +95,16 @@ endif()
 
 # MUST BE ADDED FIRST :)
 # This will download our dependency tree
-if(NOT WIN32)
+if(APPLE)
   add_subdirectory(plex/Dependencies)
 endif()
 
 # Now check for available functions
-include(CMakeConfig.txt)
+if(APPLE OR WIN32)
+  include(CMakeConfig)
+else()
+  include(CMakeConfigLinux)
+endif()
 
 # global definitions
 add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_TARGET_NAME="${EXECUTABLE_NAME}" -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}")
@@ -115,6 +127,7 @@ if(UNIX)
     -D_LARGEFILE64_SOURCE
     -DUSE_EXTERNAL_FFMPEG
     -D_LINUX
+    -D__STDC_LIMIT_MACROS
   )
   if(APPLE)
     add_definitions(-DTARGET_DARWIN -DTARGET_DARWIN_OSX)

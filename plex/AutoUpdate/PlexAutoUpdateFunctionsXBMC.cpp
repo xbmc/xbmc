@@ -9,7 +9,7 @@
 #include "AutoUpdate/PlexAutoUpdateFunctionsXBMC.h"
 #include "utils/XBMCTinyXML.h"
 #include "filesystem/CurlFile.h"
-#include "Utils/log.h"
+#include "utils/log.h"
 #include "filesystem/File.h"
 #include "GUIWindowManager.h"
 #include "filesystem/SpecialProtocol.h"

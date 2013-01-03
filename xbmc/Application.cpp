@@ -1095,8 +1095,8 @@ bool CApplication::InitDirectoriesLinux()
     //CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     //CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
     /* PLEX */
-    CSpecialProtocol::SetHomePath(userHome + "/.plex");
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/.plex/userdata");
+    CSpecialProtocol::SetHomePath(userHome + "/.plexht");
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/.plexht/userdata");
     /* END PLEX */
 
     CStdString strTempPath = userHome;

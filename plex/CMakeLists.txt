@@ -66,7 +66,6 @@ endif()
 # Set the correct binary name
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
 
-
 add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
 target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
@@ -97,7 +96,10 @@ set(ROOTDIR ${root})
 set(DEPENDDIR ${dependdir})
 configure_file(CMakeCompleteBundle.cmake.in CMakeCompleteBundle.cmake @ONLY)
 
-install(FILES ${CONFIG_PLEX_INSTALL_LIBRARIES} DESTINATION ${LIBPATH} COMPONENT RUNTIME)
+if(APPLE OR WIN32)
+  install(FILES ${CONFIG_PLEX_INSTALL_LIBRARIES} DESTINATION ${LIBPATH} COMPONENT RUNTIME)
+endif()
+
 if(APPLE)
   install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
@@ -157,7 +159,9 @@ if(APPLE)
 endif()
 
 if(NOT PLEX_SKIP_BUNDLING STREQUAL "1")
-  install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+  if(APPLE OR WIN32)
+    install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+  endif()
   if(APPLE)
     add_custom_target(BundlingSymbol ALL DEPENDS Symbols)
   endif()
