@@ -443,7 +443,7 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
   m_dropbase = 0.0f;
 #endif
 
-  double pts_media = m_av_clock->OMXMediaTime();
+  double pts_media = m_av_clock->OMXMediaTime(false, false);
   ProcessOverlays(iGroupId, pts_media);
 
   while(!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < (iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500)) )
