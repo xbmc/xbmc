@@ -112,12 +112,12 @@
 				<textwidth>290</textwidth>
 				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
 				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
-				<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Powerdown())</onclick>
+				<onclick>XBMC.AlarmClock(shutdowntimer,XBMC.Shutdown())</onclick>
 				<pulseonselect>no</pulseonselect>
 				<font>font13</font>
 				<label>20150</label>
 				<visible>!System.HasAlarm(shutdowntimer)</visible>
-				<visible>System.CanPowerDown</visible>
+				<visible>System.CanPowerDown | System.CanSuspend | System.CanHibernate</visible>
 			</control>
 			<control type="button" id="5">
 				<description>Cancel Shutdown Timer</description>
