@@ -46,7 +46,8 @@ using namespace XFILE;
 using namespace std;
 using namespace ADDON;
 
-vector<CPluginDirectory *> CPluginDirectory::globalHandles;
+map<int, CPluginDirectory *> CPluginDirectory::globalHandles;
+int CPluginDirectory::handleCounter = 0;
 CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory()
@@ -64,23 +65,24 @@ CPluginDirectory::~CPluginDirectory(void)
 int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
 {
   CSingleLock lock(m_handleLock);
-  int handle = (int)globalHandles.size();
-  globalHandles.push_back(cp);
+  int handle = ++handleCounter;
+  globalHandles[handle] = cp;
   return handle;
 }
 
 void CPluginDirectory::removeHandle(int handle)
 {
   CSingleLock lock(m_handleLock);
-  if (handle >= 0 && handle < (int)globalHandles.size())
-    globalHandles.erase(globalHandles.begin() + handle);
+  if (!globalHandles.erase(handle))
+    CLog::Log(LOGWARNING, "Attempt to erase invalid handle %i", handle);
 }
 
 CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
 {
   CSingleLock lock(m_handleLock);
-  if (handle >= 0 && handle < (int)globalHandles.size())
-    return globalHandles[handle];
+  map<int, CPluginDirectory *>::iterator i = globalHandles.find(handle);
+  if (i != globalHandles.end())
+    return i->second;
   CLog::Log(LOGWARNING, "Attempt to use invalid handle %i", handle);
   return NULL;
 }
