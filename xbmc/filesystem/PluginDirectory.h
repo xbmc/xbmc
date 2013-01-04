@@ -71,6 +71,7 @@ private:
   static std::vector<CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
   static void removeHandle(int handle);
+  static CPluginDirectory *dirFromHandle(int handle);
   static CCriticalSection m_handleLock;
 
   CFileItemList* m_listItems;
