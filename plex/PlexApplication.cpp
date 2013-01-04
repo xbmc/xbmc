@@ -34,8 +34,7 @@ PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/p
 {
   // We don't want the background music player whacked on exit (destructor issues), so we'll keep a reference.
   m_serviceListener = PlexServiceListener::Create();
-  bgMusicPlayer = m_bgMusicPlayer = BackgroundMusicPlayer::Create();
-  
+
   // Make sure we always scan for localhost.
   ManualServerScanner::Get().addServer("127.0.0.1");
   
@@ -53,8 +52,6 @@ PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/p
 ////////////////////////////////////////////////////////////////////////////////
 PlexApplication::~PlexApplication()
 {
-  m_autoUpdater.Stop();
-  bgMusicPlayer.reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +71,7 @@ bool PlexApplication::OnMessage(CGUIMessage& message)
     }
     case GUI_MSG_BG_MUSIC_THEME_UPDATED:
     {
-      m_bgMusicPlayer->SetTheme(message.GetStringParam());
+      g_backgroundMusicPlayer.SetTheme(message.GetStringParam());
       return true;
     }
   }
@@ -94,10 +91,4 @@ void PlexApplication::OnWakeUp()
   PlexHelper::GetInstance().Restart();
 #endif
 
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void PlexApplication::SetGlobalVolume(int volume)
-{
-	m_bgMusicPlayer->SetGlobalVolumeAsPercent(volume);
 }

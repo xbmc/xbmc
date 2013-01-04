@@ -13,10 +13,7 @@
 #include "cores/IPlayer.h"
 #include "StdString.h"
 #include "PlexTypes.h"
-
-class BackgroundMusicPlayer;
-typedef boost::shared_ptr<BackgroundMusicPlayer> BackgroundMusicPlayerPtr;
-typedef boost::shared_ptr<IPlayer> PlayerPtr;
+#include "GlobalsHandling.h"
 
 //
 // Utility class for playing background theme music.
@@ -24,27 +21,23 @@ typedef boost::shared_ptr<IPlayer> PlayerPtr;
 class BackgroundMusicPlayer : public IPlayerCallback, IAudioCallback
 {
 public:
-  // Factory method.
-  static BackgroundMusicPlayerPtr Create();
-  
-  // Convenience method to send a background theme change message.
+   // Convenience method to send a background theme change message.
   static void SendThemeChangeMessage(const CStdString& theme = CStdString());
   
+  // Constructor.
+  BackgroundMusicPlayer();
+
   // Destructor
   virtual ~BackgroundMusicPlayer();
-  
-  // Set the global volume as a percentage of total possible volume.
-  void SetGlobalVolumeAsPercent(int volume);
   
   // Set the currently active theme id.
   void SetTheme(const CStdString& theme);
   
   // Play the currently selected theme music if there is any.
   void PlayCurrentTheme();
+  void FadeOutAndDie();
   
 private:
-  // Constructor.
-  BackgroundMusicPlayer();
   
   // Player callbacks.
   void OnPlayBackEnded(){};
@@ -59,5 +52,9 @@ private:
   // Member variables.
   int m_globalVolume;
   CStdString m_theme;
-  PlayerPtr m_player;
+  IPlayer *m_player;
 };
+
+XBMC_GLOBAL_REF(BackgroundMusicPlayer, g_backgroundMusicPlayer);
+#define g_backgroundMusicPlayer XBMC_GLOBAL_USE(BackgroundMusicPlayer)
+

@@ -34,9 +34,6 @@ public:
   
   /// Handle internal messages.
   virtual bool OnMessage(CGUIMessage& message);
-  
-  /// Handle global volume changes.
-  void SetGlobalVolume(int volume);
 
   void OnWakeUp();
 

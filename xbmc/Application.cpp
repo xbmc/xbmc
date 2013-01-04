@@ -835,7 +835,6 @@ bool CApplication::Create()
 
   // Create and initilize the plex application
   m_plexApp = PlexApplication::Create();
-  m_plexApp->SetGlobalVolume(g_application.GetVolume());
   /* END PLEX */
 
   // start-up Addons Framework

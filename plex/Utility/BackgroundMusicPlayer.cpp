@@ -17,12 +17,6 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-BackgroundMusicPlayerPtr BackgroundMusicPlayer::Create()
-{
-  return BackgroundMusicPlayerPtr(new BackgroundMusicPlayer());
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void BackgroundMusicPlayer::SendThemeChangeMessage(const CStdString& theme)
 {
   CGUIMessage msg(GUI_MSG_BG_MUSIC_THEME_UPDATED, 0, 0);
@@ -34,20 +28,14 @@ void BackgroundMusicPlayer::SendThemeChangeMessage(const CStdString& theme)
 BackgroundMusicPlayer::BackgroundMusicPlayer()
 {
   m_globalVolume = 100;
-  m_player.reset(CPlayerCoreFactory::CreatePlayer(EPC_DVDPLAYER, *this));
-  m_player->RegisterAudioCallback(this);
+  m_player = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 BackgroundMusicPlayer::~BackgroundMusicPlayer()
 {
-  m_player->UnRegisterAudioCallback();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void BackgroundMusicPlayer::SetGlobalVolumeAsPercent(int volume)
-{
-  return;
+  if (m_player)
+    delete m_player;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,12 +60,23 @@ void BackgroundMusicPlayer::SetTheme(const CStdString& theme)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void BackgroundMusicPlayer::FadeOutAndDie()
+{
+  // Fixme when they have nice fading in XBMC
+  delete m_player;
+  m_player = NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void BackgroundMusicPlayer::PlayCurrentTheme()
 {
-  if (m_theme.size())
+  if (!m_player)
+    m_player = CPlayerCoreFactory::CreatePlayer(EPC_DVDPLAYER, *this);;
+
+  if (m_theme.size() && m_player)
     m_player->OpenFile(CFileItem(m_theme, false), CPlayerOptions());
-  else if (m_player->IsPlaying())
-  	m_player->CloseFile();
+  else
+    FadeOutAndDie();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
