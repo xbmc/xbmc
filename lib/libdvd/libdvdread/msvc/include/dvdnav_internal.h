@@ -14,16 +14,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: dvdnav_internal.h 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DVDNAV_INTERNAL_H_INCLUDED
-#define DVDNAV_INTERNAL_H_INCLUDED
+#ifndef LIBDVDREAD_DVDNAV_INTERNAL_H
+#define LIBDVDREAD_DVDNAV_INTERNAL_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -182,4 +179,4 @@ struct dvdnav_s {
 #define S_OK  DVDNAV_STATUS_OK
 #endif /* MSC_VER */
 
-#endif /* DVDNAV_INTERNAL_H_INCLUDED */
+#endif /* LIBDVDREAD_DVDNAV_INTERNAL_H */

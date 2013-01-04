@@ -14,14 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * WIN32 PORT,
  * by Matthew Grooms <elon@altavista.com>
  *
  * unistd.h - This is mostly a catch all header that maps standard unix
- *            libc calls to the equivelent win32 functions.
+ *            libc calls to the equivalent win32 functions.
  *
  */
 
@@ -37,18 +37,18 @@
 
 #define inline __inline
 
-#define mkdir( A, B )	_mkdir( A )
-#define lstat			stat
+#define mkdir( A, B )   _mkdir( A )
+#define lstat                   stat
 
 #ifndef S_ISDIR
-#define S_ISDIR(A)		( S_IFDIR & A )
+#define S_ISDIR(A)              ( S_IFDIR & A )
 #endif
 
-#define S_IXUSR			S_IEXEC
-#define S_IXGRP			S_IEXEC
-#define S_IXOTH			S_IEXEC
+#define S_IXUSR                 S_IEXEC
+#define S_IXGRP                 S_IEXEC
+#define S_IXOTH                 S_IEXEC
 
-#define  M_PI			3.14159265358979323846  /* pi */
+#define  M_PI                   3.14159265358979323846  /* pi */
 
 #define bzero( A, B ) memset( A, 0, B )
 
@@ -63,7 +63,7 @@
 #define snprintf _snprintf
 #define vsnprintf _vsnprintf
 
-// FIXME : I dont remember why this is here
+// FIXME : I don't remember why this is here
 #define readlink
 
 #endif

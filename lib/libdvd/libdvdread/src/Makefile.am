@@ -15,5 +15,5 @@ libdvdread_la_LIBADD = $(DYNAMIC_LD_LIBS)
 libdvdread_la_LDFLAGS = -version-info $(DVDREAD_LT_CURRENT):$(DVDREAD_LT_REVISION):$(DVDREAD_LT_AGE) \
 	-export-symbols-regex "(^dvd.*|^nav.*|^ifo.*|^DVD.*|^UDF.*)"
 
-include_HEADERS = dvd_reader.h nav_read.h ifo_read.h \
-	nav_print.h ifo_print.h ifo_types.h nav_types.h dvd_udf.h bitreader.h
+include_HEADERS = dvdread/dvd_reader.h dvdread/nav_read.h dvdread/ifo_read.h \
+	dvdread/nav_print.h dvdread/ifo_print.h dvdread/ifo_types.h dvdread/nav_types.h dvdread/dvd_udf.h dvdread/bitreader.h
