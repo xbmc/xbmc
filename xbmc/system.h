@@ -80,10 +80,8 @@
   #define HAS_AIRPLAY
 #endif
 
-#ifndef __PLEX__
 #ifdef HAVE_LIBSHAIRPORT
   #define HAS_AIRTUNES
-#endif
 #endif
 
 #ifdef HAVE_MYSQL

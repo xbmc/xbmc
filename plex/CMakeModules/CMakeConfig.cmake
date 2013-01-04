@@ -14,6 +14,7 @@ endif()
 
 include(CheckFFmpegIncludes)
 include(CheckCrystalHDInclude)
+include(CheckLibshairportConfig)
 
 set(CONFIG_INTERNAL_LIBS
   lib_hts
