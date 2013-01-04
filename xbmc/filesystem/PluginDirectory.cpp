@@ -76,6 +76,15 @@ void CPluginDirectory::removeHandle(int handle)
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
+CPluginDirectory *CPluginDirectory::dirFromHandle(int handle)
+{
+  CSingleLock lock(m_handleLock);
+  if (handle >= 0 && handle < (int)globalHandles.size())
+    return globalHandles[handle];
+  CLog::Log(LOGWARNING, "Attempt to use invalid handle %i", handle);
+  return NULL;
+}
+
 bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir)
 {
   CURL url(strPath);
@@ -161,13 +170,10 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
 bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
     return false;
-  }
 
-  CPluginDirectory *dir = globalHandles[handle];
   CFileItemPtr pItem(new CFileItem(*item));
   dir->m_listItems->Add(pItem);
   dir->m_totalItems = totalItems;
@@ -178,13 +184,10 @@ bool CPluginDirectory::AddItem(int handle, const CFileItem *item, int totalItems
 bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int totalItems)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
     return false;
-  }
 
-  CPluginDirectory *dir = globalHandles[handle];
   CFileItemList pItemList;
   pItemList.Copy(*items);
   dir->m_listItems->Append(pItemList);
@@ -196,12 +199,9 @@ bool CPluginDirectory::AddItems(int handle, const CFileItemList *items, int tota
 void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
     return;
-  }
-  CPluginDirectory *dir = globalHandles[handle];
 
   // set cache to disc
   dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CACHE_IF_SLOW : CFileItemList::CACHE_NEVER);
@@ -219,13 +219,9 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, "%s - called with an invalid handle.", __FUNCTION__);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
     return;
-  }
-
-  CPluginDirectory *dir = globalHandles[handle];
 
   // TODO: Add all sort methods and fix which labels go on the right or left
   switch(sortMethod)
@@ -556,12 +552,9 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, int scri
 void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem *resultItem)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, " %s - called with an invalid handle.", __FUNCTION__);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
     return;
-  }
-  CPluginDirectory* dir  = globalHandles[handle];
 
   dir->m_success = success;
   *dir->m_fileResult = *resultItem;
@@ -572,14 +565,9 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
 
 CStdString CPluginDirectory::GetSetting(int handle, const CStdString &strID)
 {
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
-    return "";
-  }
-
-  CPluginDirectory *dir = globalHandles[handle];
-  if(dir->m_addon)
+  CSingleLock lock(m_handleLock);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if(dir && dir->m_addon)
     return dir->m_addon->GetSetting(strID);
   else
     return "";
@@ -587,39 +575,26 @@ CStdString CPluginDirectory::GetSetting(int handle, const CStdString &strID)
 
 void CPluginDirectory::SetSetting(int handle, const CStdString &strID, const CStdString &value)
 {
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
-    return;
-  }
-
-  CPluginDirectory *dir = globalHandles[handle];
+  CSingleLock lock(m_handleLock);
+  CPluginDirectory *dir = dirFromHandle(handle);
   if(dir->m_addon)
     dir->m_addon->UpdateSetting(strID, value);
 }
 
 void CPluginDirectory::SetContent(int handle, const CStdString &strContent)
 {
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
-    return;
-  }
-
-  CPluginDirectory *dir = globalHandles[handle];
-  dir->m_listItems->SetContent(strContent);
+  CSingleLock lock(m_handleLock);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (dir)
+    dir->m_listItems->SetContent(strContent);
 }
 
 void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue)
 {
   CSingleLock lock(m_handleLock);
-  if (handle < 0 || handle >= (int)globalHandles.size())
-  {
-    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
+  CPluginDirectory *dir = dirFromHandle(handle);
+  if (!dir)
     return;
-  }
-
-  CPluginDirectory *dir = globalHandles[handle];
   if (strProperty == "fanart_image")
     dir->m_listItems->SetArt("fanart", strValue);
   else
