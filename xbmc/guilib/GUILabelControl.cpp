@@ -103,7 +103,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 
   bool changed = false;
 
-  changed |= m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
   changed |= m_label.SetText(label);
 
   if (changed)
@@ -115,7 +115,7 @@ void CGUILabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
   bool changed = false;
 
   changed |= m_label.SetColor(IsDisabled() ? CGUILabel::COLOR_DISABLED : CGUILabel::COLOR_TEXT);
-  changed |= m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
   changed |= m_label.Process(currentTime);
 
   if (changed)
@@ -172,7 +172,10 @@ void CGUILabelControl::SetAlignment(uint32_t align)
 float CGUILabelControl::GetWidth() const
 {
   if (m_minWidth && m_minWidth != m_width)
-    return CLAMP(m_label.GetTextWidth(), m_minWidth, m_width);
+  {
+    float maxWidth = m_width ? m_width : m_label.GetTextWidth();
+    return CLAMP(m_label.GetTextWidth(), m_minWidth, maxWidth);
+  }
   return m_width;
 }
 
