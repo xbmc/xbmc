@@ -114,7 +114,7 @@
 						<posy>219</posy>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<visible>MusicPlayer.HasNext</visible>
 						<include>NowPlayingNextInfo</include>
 					</control>
 				</control>
@@ -221,7 +221,7 @@
 						<posy>219</posy>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<visible>MusicPlayer.HasNext</visible>
 						<include>NowPlayingNextInfoFlipped</include>
 					</control>
 				</control>

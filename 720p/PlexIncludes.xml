@@ -3,7 +3,6 @@
 	<include name="NowPlayingCurrentCover">
 		<control type="group">
 			<description>Current cover</description>
-			<visible>Player.HasMusicPlaylist</visible>
 			<control type="image">
 				<posx>-9</posx>
 				<posy>-9</posy>
@@ -24,7 +23,6 @@
 	<include name="NowPlayingNextCover">
 		<control type="group">
 			<description>Next cover</description>
-			<visible>Player.HasMusicPlaylist</visible>
 			<control type="image">
 				<posx>-9</posx>
 				<posy>-9</posy>
