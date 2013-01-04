@@ -579,7 +579,7 @@ void CPluginDirectory::SetSetting(int handle, const CStdString &strID, const CSt
 {
   CSingleLock lock(m_handleLock);
   CPluginDirectory *dir = dirFromHandle(handle);
-  if(dir->m_addon)
+  if(dir && dir->m_addon)
     dir->m_addon->UpdateSetting(strID, value);
 }
 
