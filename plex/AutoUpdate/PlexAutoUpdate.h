@@ -183,8 +183,12 @@ class CPlexAutoUpdate
     CPlexAutoUpdate(const std::string& updateUrl, int searchFrequency = 21600);
     ~CPlexAutoUpdate()
     {
+      Stop();
+
       delete m_functions;
+      m_functions = NULL;
       delete m_installer;
+      m_installer = NULL;
     }
 
     void Stop();

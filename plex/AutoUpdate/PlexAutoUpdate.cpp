@@ -66,8 +66,6 @@ void CPlexAutoUpdate::run()
     m_functions->LogDebug("Thread is going back to sleep");
     m_waitSleepCond.timed_wait(lk, tmout);
   }
-
-  m_functions->LogDebug("Thread is going away");
 }
 
 bool CPlexAutoUpdate::DownloadNewVersion()
