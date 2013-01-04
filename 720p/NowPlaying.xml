@@ -52,7 +52,6 @@
 				</control>
 				<control type="group">
 					<description>Info</description>
-					<visible>Player.HasMusicPlaylist</visible>
 					<posx>60</posx>
 					<posy>220</posy>
 					<control type="group">
@@ -97,7 +96,6 @@
 					<posx>60</posx>
 					<posy>220</posy>
 					<control type="group">
-						<visible>Player.HasMusicPlaylist</visible>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
 						<include>NowPlayingCurrentInfo</include>
@@ -161,7 +159,6 @@
 					<posx>720</posx>
 					<posy>220</posy>
 					<control type="group">
-						<visible>Player.HasMusicPlaylist</visible>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
 						<include>NowPlayingCurrentInfoFlipped</include>
@@ -206,7 +203,6 @@
 					<posx>560</posx>
 					<posy>220</posy>
 					<control type="group">
-						<visible>Player.HasMusicPlaylist</visible>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
 						<include>NowPlayingCurrentInfoFlipped</include>
