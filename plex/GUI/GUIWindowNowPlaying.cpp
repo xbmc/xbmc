@@ -98,6 +98,7 @@ bool CGUIWindowNowPlaying::OnMessage(CGUIMessage& message)
       m_flipTimer.StartZero();
     }
     break;
+
   }
   
   return CGUIWindow::OnMessage(message);

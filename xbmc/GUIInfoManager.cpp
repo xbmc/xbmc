@@ -4113,9 +4113,19 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) cons
 
 void CGUIInfoManager::ResetCurrentItem()
 {
+  /* PLEX */
+  CStdString art;
+  if (m_currentFile->HasArt("thumb") && m_currentFile->GetArt("thumb") == "special://temp/airtunes_album_thumb.jpg")
+    art = m_currentFile->GetArt("thumb");
+  /* END PLEX */
   m_currentFile->Reset();
   m_currentMovieThumb = "";
   m_currentMovieDuration = "";
+
+  /* PLEX */
+  if (art.empty() == false)
+    m_currentFile->SetArt("thumb", art);
+  /* END PLEX */
 }
 
 void CGUIInfoManager::SetCurrentItem(CFileItem &item)
@@ -4154,6 +4164,10 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.GetPath().c_str());
+  /* PLEX */
+  if (m_currentFile->HasArt("thumb") && m_currentFile->GetArt("thumb") == "special://temp/airtunes_album_thumb.jpg" && !item.HasArt("thumb"))
+    item.SetArt("thumb", m_currentFile->GetArt("thumb"));
+  /* END PLEX */
   *m_currentFile = item;
 
   m_currentFile->LoadMusicTag();
