@@ -516,6 +516,7 @@ void CGUISettings::Initialize()
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100+layout, layout));
   AddInt(ao, "audiooutput.channels", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+  AddInt(ao, "audiooutput.defaultdelay", 297, 0, (int)(-g_advancedSettings.m_videoAudioDelayRange*1000), 25, (int)(g_advancedSettings.m_videoAudioDelayRange*1000), SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddBool(ao, "audiooutput.normalizelevels", 346, true);
   AddBool(NULL, "audiooutput.stereoupmix", 252, false);
 
