@@ -331,12 +331,21 @@ NPT_Result
 CUPnPRenderer::SetupIcons()
 {
     NPT_String file_root = CSpecialProtocol::TranslatePath("special://xbmc/media/").c_str();
+#ifndef __PLEX__
     AddIcon(
         PLT_DeviceIcon("image/png", 256, 256, 24, "/icon-flat-256x256.png"),
         file_root);
     AddIcon(
         PLT_DeviceIcon("image/png", 120, 120, 24, "/icon-flat-120x120.png"),
         file_root);
+#else
+    AddIcon(
+        PLT_DeviceIcon("image/png", 256, 256, 24, "/plex-icon-256.png"),
+        file_root);
+    AddIcon(
+        PLT_DeviceIcon("image/png", 120, 120, 24, "/plex-icon-120.png"),
+        file_root);
+#endif
     return NPT_SUCCESS;
 }
 
