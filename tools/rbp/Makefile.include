@@ -1,8 +1,8 @@
-SDKSTAGE=/opt/bcm-rootfs
+SDKSTAGE=
 XBMCPREFIX=/opt/xbmc-bcm/xbmc-bin
-TARGETFS=/opt/bcm-rootfs
+TARGETFS=
 TOOLCHAIN=/usr
-BUILDROOT=/opt/bcm-rootfs
+BUILDROOT=
 USE_BUILDROOT=0
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 TARBALLS_LOCATION=/opt/xbmc-tarballs

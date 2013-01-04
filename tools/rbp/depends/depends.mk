@@ -24,10 +24,10 @@ ifeq ($(USE_BUILDROOT),1)
 else
 	export CFLAGS=-pipe -O3 -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated -Wno-deprecated-declarations -Wl, --dynamic-linker=/lib/ld-linux-armhf.so.3 
 	export HOST=arm-linux-gnueabihf
-	export BUILD=i686-linux
+	export BUILD=arm-linux-gnueabihf
 	export PREFIX=${XBMCPREFIX}
 	export TARGETFS
-	export SYSROOT=/usr/local/arm-linux-gnueabihf/arm-linux-gnueabihf/sys-root
+	export SYSROOT=
 
 #	export RLINK_PATH=-Wl,-rpath-link,${SYSROOT}/lib -Wl,-rpath-link,${TARGETFS}/lib -Wl,-rpath-link,${TARGETFS}/usr/lib -Wl,-rpath-link,${TARGETFS}/opt/vc/
 	export RLINK_PATH=-Wl,-rpath-link,${SYSROOT}/lib -Wl,-rpath-link,${TARGETFS}/lib/arm-linux-gnueabihf:${TARGETFS}/usr/lib/arm-linux-gnueabihf:${TARGETFS}/lib:${TARGETFS}/usr/lib:${TARGETFS}/usr/lib/pulseaudio -Wl,-rpath-link,${TARGETFS}/opt/vc/

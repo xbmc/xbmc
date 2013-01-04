@@ -7,10 +7,6 @@ ifeq ($(USE_BUILDROOT),1)
 	export PATH:=$(PREFIX)/bin:$(BUILDROOT)/output/host/usr/bin:$(SYSROOT)/usr/bin:$(PATH)
 endif
 
-#C_INCLUDE_PATH=/opt/vc/include:/opt/vc/include/interface/vcos/pthreads
-#CPLUS_INCLUDE_PATH=/opt/vc/include:/opt/vc/include/interface/vcos/pthreads
-#LDFLAGS="-L/opt/vc/lib"
-
 CONFIGURE=./configure --prefix=$(PREFIX) --build=$(BUILD) --host=$(HOST) \
 	--enable-gles --disable-sdl --disable-x11 --disable-xrandr --disable-openmax \
 	--enable-optical-drive --enable-dvdcss --disable-joystick --disable-debug \
@@ -18,7 +14,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) --build=$(BUILD) --host=$(HOST) \
 	--disable-pulse --disable-projectm --with-platform=raspberry-pi --enable-optimizations \
 	--disable-libcec --enable-player=omxplayer
 
-CONFIGURE=./configure --prefix=/usr --build=arm-linux-gnueabihf --host=arm-linux-gnueabihf \
+CONFIGURE=./configure --prefix=$(PREFIX) --build=$(BUILD) --host=$(HOST) \
     --localstatedir=/var/lib --with-platform=raspberry-pi \
     --disable-gl \
     --enable-gles \
@@ -54,8 +50,7 @@ CONFIGURE=./configure --prefix=/usr --build=arm-linux-gnueabihf --host=arm-linux
     --disable-external-ffmpeg \
     --disable-crystalhd \
     --enable-optical-drive \
-    --enable-libcec \
-    --enable-rpi-cec-api
+    --enable-libcec
 
 all: configure
 

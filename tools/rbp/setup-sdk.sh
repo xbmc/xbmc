@@ -14,11 +14,11 @@ if [ "$USE_BUILDROOT" = "1" ]; then
   TOOLCHAIN=$BUILDROOT/output/host/usr/
 else
   TARBALLS=/opt/xbmc-tarballs
-  SDKSTAGE=/opt/bcm-rootfs
+  SDKSTAGE=
   XBMCPREFIX=/opt/xbmc-bcm/xbmc-bin
-  TARGETFS=/opt/bcm-rootfs
+  TARGETFS=
   TOOLCHAIN=/usr
-  BUILDROOT=/opt/bcm-rootfs
+  BUILDROOT=
 fi
 
 sudo mkdir -p $XBMCPREFIX
