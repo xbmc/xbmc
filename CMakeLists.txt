@@ -100,11 +100,7 @@ if(APPLE)
 endif()
 
 # Now check for available functions
-if(APPLE OR WIN32)
-  include(CMakeConfig)
-else()
-  include(CMakeConfigLinux)
-endif()
+include(CMakeConfig)
 
 # global definitions
 add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_TARGET_NAME="${EXECUTABLE_NAME}" -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}")
