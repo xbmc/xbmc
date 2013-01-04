@@ -481,6 +481,16 @@ float CCPUInfo::getCPUFrequency()
   if (sysctlbyname("dev.cpu.0.freq", &hz, &len, NULL, 0) != 0)
     hz = 0;
   return (float)hz;
+#elif defined TARGET_RASPBERRY_PI
+  int         value = 0;
+  FILE        *p    = NULL;
+  p = popen ("vcgencmd measure_clock arm | cut -d ""="" -f2", "r");
+  if (p)
+  {
+    fscanf(p, "%d", &value);
+    pclose(p);
+  }
+  return value / 1000000.0;
 #else
   float mhz = 0.f;
   char buf[256],
@@ -510,8 +520,13 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
 
   temperature.SetState(CTemperature::invalid);
 
+#ifdef TARGET_RASPBERRY_PI
+  if (cmd.IsEmpty())
+    cmd = "/opt/vc/bin/vcgencmd measure_temp | sed -e 's/temp=\\([0-9]*\\).*/\\1 C/'";
+#else
   if (cmd.IsEmpty() && m_fProcTemperature == NULL)
     return false;
+#endif
 
   if (!cmd.IsEmpty())
   {
