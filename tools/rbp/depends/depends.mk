@@ -22,11 +22,11 @@ ifeq ($(USE_BUILDROOT),1)
 	export TEXTUREPACKER_NATIVE_ROOT=/usr
 	export PYTHON_LDFLAGS=-L$(SDKSTAGE)/usr/lib -lpython$(PYTHON_VERSION) -lpthread -ldl -lutil -lm
 else
-	export CFLAGS=-pipe -O3 -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated -Wno-deprecated-declarations -Wl, --dynamic-linker=/lib/ld-linux-armhf.so.3 
+	export CFLAGS=-pipe -O3 -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp -mabi=aapcs-linux -Wno-psabi -Wa,-mno-warn-deprecated -Wno-deprecated-declarations -Wl,--dynamic-linker=/lib/ld-linux-armhf.so.3 
 	export HOST=arm-linux-gnueabihf
 	export BUILD=arm-linux-gnueabihf
 	export PREFIX=${XBMCPREFIX}
-	export TARGETFS
+	export TARGETFS=
 	export SYSROOT=
 
 #	export RLINK_PATH=-Wl,-rpath-link,${SYSROOT}/lib -Wl,-rpath-link,${TARGETFS}/lib -Wl,-rpath-link,${TARGETFS}/usr/lib -Wl,-rpath-link,${TARGETFS}/opt/vc/
