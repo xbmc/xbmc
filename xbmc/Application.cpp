@@ -3705,12 +3705,6 @@ void CApplication::Stop(int exitCode)
     UpdateFileState("stop");
 #endif
 
-    /* PLEX */
-#ifdef TARGET_WINDOWS
-    ExitProcess(exitCode);
-#endif
-    /* END PLEX */
-
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
