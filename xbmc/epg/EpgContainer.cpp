@@ -228,6 +228,12 @@ void CEpgContainer::Process(void)
   bool bUpdateEpg(true);
   bool bHasPendingUpdates(false);
 
+  if (!CPVRManager::Get().WaitUntilInitialised())
+  {
+    CLog::Log(LOGDEBUG, "EPG - %s - pvr manager failed to load - exiting", __FUNCTION__);
+    return;
+  }
+
   while (!m_bStop && !g_application.m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
