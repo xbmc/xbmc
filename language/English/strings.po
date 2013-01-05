@@ -7460,6 +7460,7 @@ msgctxt "#19280"
 msgid "Client specific settings"
 msgstr ""
 
+#:xbmc/settings/GUISettings.cpp
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr ""
