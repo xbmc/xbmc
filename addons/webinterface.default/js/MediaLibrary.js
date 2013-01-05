@@ -32,6 +32,7 @@ MediaLibrary.prototype = {
     $('#tvshowLibrary').click(jQuery.proxy(this.tvshowLibraryOpen, this));
     $('#pictureLibrary').click(jQuery.proxy(this.pictureLibraryOpen, this));
     $('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
+    $('#profiles').click(jQuery.proxy(this.profilesOpen, this));
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
     $(document).on('keydown', jQuery.proxy(this.handleKeyPress, this));
@@ -43,6 +44,7 @@ MediaLibrary.prototype = {
     $('#tvshowLibrary').removeClass('selected');
     $('#remoteControl').removeClass('selected');
     $('#pictureLibrary').removeClass('selected');
+    $('#profilesLibrary').removeClass('selected');
     this.hideOverlay();
   },
   replaceAll: function (haystack, needle, thread) {
@@ -327,6 +329,10 @@ MediaLibrary.prototype = {
       case 'image':
       case 'directory':
         className = 'floatableAlbum';
+        code = '<p class="album" title="' + title + '">' + showTitle + '</p>';
+        break;
+      case 'profile':
+        className = 'floatableProfileThumb';
         code = '<p class="album" title="' + title + '">' + showTitle + '</p>';
         break;
     }
@@ -747,6 +753,15 @@ MediaLibrary.prototype = {
       }
     });
   },
+  loadProfile: function (event) {
+    return xbmc.rpc.request({
+      'context': this,
+      'method': 'Profiles.LoadProfile',
+        'params': {
+          'profile': event.data.profile.label
+        }
+    });
+  },
   movieLibraryOpen: function () {
     this.resetPage();
     $('#movieLibrary').addClass('selected');
@@ -888,6 +903,73 @@ MediaLibrary.prototype = {
       });
     } else {
       libraryContainer.prepend($(".toggle").detach()).show();
+      libraryContainer.trigger('scroll');
+    }
+  },
+  profilesOpen: function () {
+    this.resetPage();
+    $('#profiles').addClass('selected');
+    $('.contentContainer').hide();
+    var libraryContainer = $('#profilesContainer');
+    if (!libraryContainer || libraryContainer.length == 0) {
+      $('#spinner').show();
+      var currentProfile = "";
+      xbmc.rpc.request({
+          'method': 'Profiles.GetCurrentProfile',
+              'params': {
+                  'properties': [
+                      'lockmode'
+                   ]
+               },
+          'success': function (data) {
+              if (data)
+                  if (data.result)
+                      currentProfile = data.result.label;
+          }
+      });
+      xbmc.rpc.request({
+        'context': this,
+        'method': 'Profiles.GetProfiles',
+        'params': {
+          'limits': {
+            'start': 0
+          },
+          'properties': [
+            'thumbnail'
+          ],
+          'sort': {
+            'method': 'sorttitle',
+            'ignorearticle': true
+          }
+        },
+        'success': function (data) {
+          if (data && data.result && data.result.profiles) {
+            libraryContainer = $('<div>');
+            libraryContainer.attr('id', 'profilesContainer')
+                      .addClass('contentContainer');
+            $('#content').append(libraryContainer);
+          } else {
+            libraryContainer.html('');
+          }
+          $.each($(data.result.profiles), jQuery.proxy(function (i, item) {
+            var itemLabel = item.label;
+            if (currentProfile == itemLabel)
+            {
+              itemLabel = itemLabel + "*";
+            }
+            var floatableProfileThumb = this.generateThumb('profile', item.thumbnail, itemLabel);
+            floatableProfileThumb.bind('click', { profile: item }, jQuery.proxy(this.loadProfile, this));
+            libraryContainer.append(floatableProfileThumb);
+          }, this));
+          libraryContainer.append($('<div>').addClass('footerPadding'));
+          $('#spinner').hide();
+          libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
+          libraryContainer.trigger('scroll');
+          myScroll = new iScroll('profilesContainer');
+        }
+      });
+    } else {
+      libraryContainer.show();
       libraryContainer.trigger('scroll');
     }
   },
