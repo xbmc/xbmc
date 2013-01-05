@@ -467,6 +467,12 @@ namespace PVR
      */
     bool SetWakeupCommand(void);
 
+    /*!
+     * @brief Wait until the pvr manager is loaded
+     * @return True when loaded, false otherwise
+     */
+    bool WaitUntilInitialised(void);
+
   protected:
     /*!
      * @brief PVR update and control thread.
@@ -575,6 +581,7 @@ namespace PVR
     CStopWatch                     *m_parentalTimer;
     bool                            m_bOpenPVRWindow;
     std::map<std::string, std::string> m_outdatedAddons;
+    CEvent                             m_initialisedEvent;         /*!< triggered when the pvr manager initialised */
   };
 
   class CPVRRecordingsUpdateJob : public CJob
