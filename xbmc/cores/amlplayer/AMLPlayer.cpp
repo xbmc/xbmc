@@ -1443,6 +1443,26 @@ void CAMLPlayer::Process()
       vfs_protocol.name = http_name;
       url = "xb-" + url;
     }
+    else if (url.Left(strlen("udp://")).Equals("udp://"))
+    {
+      std::string udp_params;
+      // bump up the default udp params for ffmpeg.
+      // ffmpeg will strip out 'dummy=10', we only add it
+      // to make the logic below with prpending '&' work right.
+      // to watch for udp errors, 'cat /proc/net/udp'
+      if (url.find("?") == std::string::npos)
+        udp_params.append("?dummy=10");
+      if (url.find("pkt_size=") == std::string::npos)
+        udp_params.append("&pkt_size=1316");
+      if (url.find("buffer_size=") == std::string::npos)
+        udp_params.append("&buffer_size=1048576");
+      // newer ffmpeg uses fifo_size instead of buf_size
+      if (url.find("buf_size=") == std::string::npos)
+        udp_params.append("&buf_size=286720");
+
+      if (udp_params.size() > 0)
+        url.append(udp_params);
+    }
     CLog::Log(LOGDEBUG, "CAMLPlayer::Process: URL=%s", url.c_str());
 
     if (m_dll->player_init() != PLAYER_SUCCESS)
