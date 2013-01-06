@@ -498,12 +498,14 @@ void CAMLSubTitleThread::Process(void)
       }
       else
       {
-        usleep(100 * 1000);
+        if (!m_bStop)
+          usleep(100 * 1000);
       }
     }
     else
     {
-      usleep(250 * 1000);
+      if (!m_bStop)
+        usleep(250 * 1000);
     }
   }
   m_subtitle_strings.clear();
@@ -1334,7 +1336,6 @@ void CAMLPlayer::OnStartup()
 void CAMLPlayer::OnExit()
 {
   //CLog::Log(LOGNOTICE, "CAMLPlayer::OnExit()");
-  Sleep(1000);
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
@@ -1471,7 +1472,7 @@ void CAMLPlayer::Process()
       throw "CAMLPlayer::Process:player init failed";
     }
     CLog::Log(LOGDEBUG, "player init......");
-    usleep(250 * 1000);
+    usleep(50 * 1000);
 
     // must be after player_init
     m_dll->av_register_protocol2(&vfs_protocol, sizeof(vfs_protocol));
@@ -1658,7 +1659,8 @@ void CAMLPlayer::Process()
             stopPlaying = true;
             break;
         }
-        usleep(250 * 1000);
+        if (!stopPlaying)
+          usleep(250 * 1000);
       }
     }
   }
