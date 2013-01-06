@@ -210,8 +210,15 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
       else
       { // success
         lzo_uint optimSize = size;
-        lzo1x_optimize(packed, packedSize, data, &optimSize, NULL);
-        writer.AppendContent(packed, packedSize);
+        if (lzo1x_optimize(packed, packedSize, data, &optimSize, NULL) != LZO_E_OK || optimSize != size)
+        { //optimisation failed
+          packedSize = size;
+          writer.AppendContent(data, size);
+        }
+        else
+        { // success
+          writer.AppendContent(packed, packedSize);
+        }
       }
       delete[] working;
       delete[] packed;
