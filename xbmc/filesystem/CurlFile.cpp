@@ -229,7 +229,7 @@ CCurlFile::CReadState::~CReadState()
 {
   Disconnect();
 
-  if(m_easyHandle)
+  if(m_easyHandle && g_curlInterface.IsLoaded()) /* PLEX */
     g_curlInterface.easy_release(&m_easyHandle, &m_multiHandle);
 
   /* PLEX */
@@ -318,7 +318,7 @@ long CCurlFile::CReadState::Connect(unsigned int size)
 
 void CCurlFile::CReadState::Disconnect()
 {
-  if(m_multiHandle && m_easyHandle)
+  if(m_multiHandle && m_easyHandle && g_curlInterface.IsLoaded()) // PLEX
     g_curlInterface.multi_remove_handle(m_multiHandle, m_easyHandle);
 
   m_buffer.Clear();
@@ -384,9 +384,9 @@ void CCurlFile::Close()
   m_cookie.Empty();
 
   /* cleanup */
-  if( m_curlAliasList )
+  if( m_curlAliasList && g_curlInterface.IsLoaded() ) // PLEX
     g_curlInterface.slist_free_all(m_curlAliasList);
-  if( m_curlHeaderList )
+  if( m_curlHeaderList && g_curlInterface.IsLoaded() ) // PLEX
     g_curlInterface.slist_free_all(m_curlHeaderList);
 
   m_curlAliasList = NULL;

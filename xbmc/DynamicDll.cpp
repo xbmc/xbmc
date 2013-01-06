@@ -64,7 +64,12 @@ bool DllDynamic::Load()
 void DllDynamic::Unload()
 {
   if(m_dll)
+  {
+    /* PLEX - We want to make sure that m_dll is NULL before we unload it */
+    m_dll=NULL;
+    /* END PLEX */
     CSectionLoader::UnloadDLL(m_strDllName);
+  }
   m_dll=NULL;
 }
 
