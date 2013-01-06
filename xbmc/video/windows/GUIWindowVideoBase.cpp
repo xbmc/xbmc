@@ -1065,7 +1065,7 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
 bool CGUIWindowVideoBase::ShowPlaySelection(CFileItemPtr& item)
 {
   /* if asked to resume somewhere, we should not show anything */
-  if (item->m_lStartOffset)
+  if (item->m_lStartOffset || (GetDefaultPlayer(item) != EPC_DVDPLAYER && g_application.m_eForcedNextPlayer != EPC_DVDPLAYER))
     return true;
 
   if (item->IsBDFile())
@@ -1237,15 +1237,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
 
       if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
       { // get players
-        VECPLAYERCORES vecCores;
-        if (item->IsVideoDb())
-        {
-          CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-          CPlayerCoreFactory::GetPlayers(item2, vecCores);
-        }
-        else
-          CPlayerCoreFactory::GetPlayers(*item, vecCores);
-        if (vecCores.size() > 1)
+        if (GetDefaultPlayer(item) != EPC_NONE)
           buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
       }
       if (item->IsSmartPlayList())
@@ -2209,4 +2201,20 @@ void CGUIWindowVideoBase::OnInitWindow()
       g_settings.Save();
     }
   }
+}
+
+PLAYERCOREID CGUIWindowVideoBase::GetDefaultPlayer(const CFileItemPtr& item )
+{
+	VECPLAYERCORES vecCores;
+	if (item->IsVideoDb())
+	{
+		CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
+		CPlayerCoreFactory::GetPlayers(item2, vecCores);
+	}
+	else
+		CPlayerCoreFactory::GetPlayers(*item, vecCores);
+
+	if( vecCores.size() > 0 ) return vecCores.at(0);
+
+	return EPC_NONE;
 }

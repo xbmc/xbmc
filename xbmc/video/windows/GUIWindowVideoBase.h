@@ -24,6 +24,7 @@
 #include "video/VideoDatabase.h"
 #include "PlayListPlayer.h"
 #include "video/VideoThumbLoader.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver, public IStreamDetailsObserver
 {
@@ -80,6 +81,8 @@ public:
    \return string containing the resume position or an empty string if there is no resume position
    */
   static CStdString GetResumeString(const CFileItem &item);
+
+  static PLAYERCOREID GetDefaultPlayer(const CFileItemPtr& item );
 
 protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
