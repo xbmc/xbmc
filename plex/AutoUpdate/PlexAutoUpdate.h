@@ -16,6 +16,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 
+#include "threads/Thread.h"
+
 class CAutoUpdateInfoVersion
 {
   public:
@@ -177,13 +179,13 @@ class CAutoUpdateInstallerBase
 #include "plex/AutoUpdate/PlexAutoUpdateFunctionsXBMC.h"
 #endif
 
-class CPlexAutoUpdate
+class CPlexAutoUpdate : public CThread
 {
   public:
     CPlexAutoUpdate(const std::string& updateUrl, int searchFrequency = 21600);
     ~CPlexAutoUpdate()
     {
-      Stop();
+      StopThread(true);
 
       delete m_functions;
       m_functions = NULL;
@@ -191,10 +193,17 @@ class CPlexAutoUpdate
       m_installer = NULL;
     }
 
-    void Stop();
+    void StopThread(bool bWait)
+    {
+      m_bStop = true;
+      m_RunEvent.Set();
+
+      CThread::StopThread(bWait);
+    }
+
     void ForceCheckInBackground()
     {
-      m_waitSleepCond.notify_all();
+      m_RunEvent.Set();
     }
 
     bool _CheckForNewVersion();
@@ -211,24 +220,19 @@ class CPlexAutoUpdate
     }
 
   private:
-    boost::mutex m_lock;
-    boost::condition_variable m_waitSleepCond;
-
     CAutoUpdateFunctionsBase *m_functions;
     CAutoUpdateInstallerBase *m_installer;
 
-    void run();
+    void Process();
     std::string m_updateUrl;
     int m_searchFrequency;
-
-    bool m_stop;
 
     CAutoUpdateInfo m_newVersion;
     CAutoUpdateInfoVersion m_currentVersion;
 
-
     std::string GetOsName() const;
-    boost::thread m_autoUpdateThread;
+
+    CEvent m_RunEvent;
 };
 
 #endif // PLEXAUTOUPDATE_H
