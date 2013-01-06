@@ -220,7 +220,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
       return false;
     }
     lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
-    if (lzo1x_decompress(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
+    if (lzo1x_decompress_safe(buffer, (lzo_uint)frame.GetPackedSize(), unpacked, &s, NULL) != LZO_E_OK ||
         s != frame.GetUnpackedSize())
     {
       CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", name.c_str());
