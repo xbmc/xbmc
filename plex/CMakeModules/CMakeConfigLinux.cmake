@@ -27,6 +27,8 @@ set(LINK_PKG
   TinyXML
   GLEW
   Iconv
+  Avahi
+  Xrandr
 )
 
 foreach(l ${LINK_PKG})
@@ -45,49 +47,48 @@ set(INSTALL_LIB
   CURL
   PNG
   TIFF
+  Vorbis
+  LibMad
+  Mpeg2
+  Ass
+  RTMP
+  PLIST
+  ShairPort
+  CEC
+  VAAPI
+  VDPAU
 )
 
 foreach(l ${INSTALL_LIB})
   plex_find_package(${l} 1 0)
 endforeach()
 
-plex_find_package(PulseAudio 0 1)
-if(PULSEAUDIO_FOUND)
-  include_directories(${PULSEAUDIO_INCLUDE_DIR})
-  list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${PULSEAUDIO_LIBRARY})
-  set(HAVE_LIBPULSE 1)
+plex_find_package(Threads 1 0)
+if(CMAKE_USE_PTHREADS_INIT)
+  message(STATUS "Using pthreads: ${CMAKE_THREAD_LIBS_INIT}")
+  list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+  set(HAVE_LIBPTHREAD 1)
 endif()
 
-# Save some SONAMES we need
-plex_get_soname(CURL_SONAME ${CURL_LIBRARIES})
+plex_find_package(PulseAudio 0 1)
+plex_find_package(Alsa 0 1)
 
-set(non_link_libs
-  rtmp
-  plist
-  shairport
-  FLAC
-  modplug
-  vorbis
-  vorbisfile
-  vorbisenc
-  ogg
-  ass
-  mad
-  mpeg2
-  bluray
-  cec
-)
+if(VAAPI_FOUND)
+  list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${VAAPI_LIBRARIES})
+  include_directories(${VAAPI_INCLUDE_DIR})
+endif()
 
-set(CONFIG_INTERNAL_LIBS
-  lib_hts
-  lib_squish
-  lib_upnp
-  lib_dllsymbols
-)
+plex_get_soname(CURL_SONAME ${CURL_LIBRARY})
+
+list(APPEND CONFIG_INTERNAL_LIBS lib_dllsymbols)
 
 ####
 if(DEFINED X11_FOUND)
   set(HAVE_X11 1)
+endif()
+
+if(DEFINED OPENGL_FOUND)
+  set(HAVE_LIBGL 1)
 endif()
 
 #### default lircdevice
@@ -104,5 +105,5 @@ endif()
 
 set(LIBPATH bin)
 set(BINPATH bin)
-set(RESOURCEPATH share)
+set(RESOURCEPATH share/XBMC)
 

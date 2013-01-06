@@ -88,6 +88,9 @@ if(NOT WIN32)
   )
 
   add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
+  set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
+else()
+  set(EXCLUDE_TEXTURES ^foo)
 endif()
 
 # Set some variables we need to configure the CMakeCompleteBundle file
@@ -108,45 +111,39 @@ else()
 endif()
 
 # Replace some XBMC files in the output
+install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
+install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME PATTERN python EXCLUDE)
+install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME 
+        PATTERN skin.confluence EXCLUDE
+        PATTERN skin.touched EXCLUDE
+        REGEX screensaver.rsxs* EXCLUDE
+        REGEX library.* EXCLUDE
+        REGEX metadata.* EXCLUDE
+        REGEX weather.* EXCLUDE
+        PATTERN repository.xbmc.org EXCLUDE
+        REGEX visualization.* EXCLUDE
+        REGEX ${EXCLUDE_TEXTURES} EXCLUDE
+        PATTERN .git EXCLUDE
+        PATTERN xbmc.python EXCLUDE)
+install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
+install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/media/Splash.png)")
+install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
+install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
+install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
+
 if(NOT WIN32)
-  install(CODE "
-    execute_process(COMMAND ${plexdir}/scripts/copy-resources.sh \"${RESOURCEPATH}\" \"${ROOTDIR}\" \"\${CMAKE_INSTALL_PREFIX}\")
-  ")
-  install(CODE "file(REMOVE \"\${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/XBMC/media/Splash.png\")")
-  install(CODE "file(REMOVE \"\${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/Credits.html\")")
-  install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/XBMC/tools/darwin/runtime COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
-  #install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_Plex.xbt DESTINATION ${RESOURCEPATH}/XBMC/addons/skin.plex/Media RENAME Textures.xbt)
-  install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/XBMC/media COMPONENT RUNTIME)
-else()
-  install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-  install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME PATTERN python EXCLUDE)
-  install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME 
-          PATTERN skin.confluence EXCLUDE
-          PATTERN skin.touched EXCLUDE
-          REGEX screensaver.rsxs* EXCLUDE
-          REGEX library.* EXCLUDE
-          REGEX metadata.* EXCLUDE
-          REGEX weather.* EXCLUDE
-          PATTERN repository.xbmc.org EXCLUDE
-          REGEX visualization.* EXCLUDE
-          PATTERN xbmc.python EXCLUDE)
-  install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-  install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/media/Splash.png)")
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
+endif()
+
+if(APPLE)
+  install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/tools/darwin/runtime COMPONENT RUNTIME)
+elseif(WIN32)
   install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
+  install(FILES ${plexdir}/build/dependencies/vcredist/2010/vcredist_x86.exe DESTINATION ${BINPATH}/Dependencies COMPONENT VCREDIST)
+  install(DIRECTORY ${plexdir}/build/dependencies/dxsetup DESTINATION ${BINPATH}/Dependencies COMPONENT QDXSETUP)
   install(FILES ${root}/project/Win32BuildSetup/dependencies/glew32.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${root}/project/Win32BuildSetup/dependencies/libiconv-2.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Plex.ico ${plexdir}/Resources/PlexBanner.bmp DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-
-
-  install(FILES ${plexdir}/build/dependencies/vcredist/2010/vcredist_x86.exe DESTINATION ${BINPATH}/Dependencies COMPONENT VCREDIST)
-  install(DIRECTORY ${plexdir}/build/dependencies/dxsetup DESTINATION ${BINPATH}/Dependencies COMPONENT QDXSETUP)
 endif()
 
 if(APPLE)

@@ -5,6 +5,7 @@ set(headers
   libavfilter/avfilter
   libavformat/avformat
   libavutil/avutil
+  libavutil/pixfmt
   libpostproc/postprocess
   libswscale/swscale
   
@@ -32,6 +33,7 @@ foreach(header ${headers})
 endforeach()
 
 include(CheckCSourceCompiles)
+include(CheckCXXSourceCompiles)
 
 #### check FFMPEG member name
 if(DEFINED HAVE_LIBAVFILTER_AVFILTER_H)
@@ -51,4 +53,10 @@ CHECK_C_SOURCE_COMPILES("
 "
 HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO)
 
+if(DEFINED HAVE_LIBAVUTIL_PIXFMT_H)
+    CHECK_CXX_SOURCE_COMPILES("
+      #include <libavutil/pixfmt.h>
+      int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }" 
+    PIX_FMT_VDPAU_MPEG4_IN_AVUTIL)
+endif()
 

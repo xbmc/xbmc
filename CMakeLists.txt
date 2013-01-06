@@ -249,7 +249,12 @@ if(APPLE)
 endif()
 add_subdirectory(plex)
 
-
+if(XRANDR_FOUND)
+  add_executable(xbmc-xrandr xbmc-xrandr.c)
+  target_link_libraries(xbmc-xrandr ${CONFIG_LIBRARY_XRANDR} ${CONFIG_LIBRARY_X11} -lm)
+  install(TARGETS xbmc-xrandr DESTINATION ${BINPATH})
+endif()
+  
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Plex for Home Theater")
 set(CPACK_PACKAGE_VENDOR "Plex inc")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PLEX_VERSION_MAJOR})
@@ -262,7 +267,7 @@ elseif(WIN32)
   # use a shorter path to hopefully avoid stupid windows 260 chars path.
   set(CPACK_PACKAGE_DIRECTORY "C:/tmp")
 else()
-  set(CPACK_SYSTEM_NAME "linux-${CMAKE_PROCESSOR_NAME}")
+  set(CPACK_SYSTEM_NAME linux-${CMAKE_HOST_SYSTEM_PROCESSOR})
 endif()
 set(CPACK_PACKAGE_FILE_NAME "${PLEX_TARGET_NAME}-${PLEX_VERSION_STRING}-${CPACK_SYSTEM_NAME}")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PLEX_TARGET_NAME}-${PLEX_VERSION_STRING}-src")
@@ -293,13 +298,24 @@ if(APPLE)
   set(CPACK_GENERATOR "ZIP")
   set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
 elseif(UNIX)
-  set(CPACK_GENERATOR "TBZ2")
+  set(CPACK_GENERATOR "DEB;TBZ2")
 elseif(WIN32)
   set(CPACK_GENERATOR "NSIS")
 endif()
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   set(CPACK_STRIP_FILES 0)
+endif()
+
+#debian stuff
+set(CPACK_DEBIAN_PACKAGE_DEPENDS
+  "libasound2 (>= 1.0.23), libavahi-client3 (>= 0.6.16), libavahi-common3 (>= 0.6.16), libavcodec53 (>= 6:0.10.5~) | libavcodec-extra-53 (>= 6:0.10.6), libavfilter2 (>= 6:0.10.5~), libavformat53 (>= 6:0.10.5~), libavutil51 (>= 6:0.10.5~), libboost-system1.46.1 (>= 1.46.1-1), libboost-thread1.46.1 (>= 1.46.1-1), libc6 (>= 2.3.6-6~), libc6 (>= 2.8), libfreetype6 (>= 2.2.1), libfribidi0 (>= 0.19.2), libgcc1 (>= 1:4.1.1), libgl1-mesa-glx | libgl1, libglew1.6 (>= 1.6.0), libglu1-mesa | libglu1, libjpeg8 (>= 8c), liblzo2-2, libmicrohttpd5, libpcre3 (>= 8.10), libpostproc52 (>= 6:0.10.5~), libpulse0 (>= 1:1.0), libsamplerate0 (>= 0.1.7), libsdl1.2debian (>= 1.2.10-1), libsqlite3-0 (>= 3.6.11), libstdc++6 (>= 4.6), libswresample0 (>= 6:0.10.5~), libswscale2 (>= 6:0.10.5~), libtinyxml2.6.2, libx11-6, libxext6, libxrandr2 (>= 4.3), libyajl1 (>= 1.0.5), zlib1g (>= 1:1.1.4), libpulse0 (>= 1:1.1), libasound2 (>= 1.0.25), libcec2 (>= 2.0.5), libass4 (>= 0.10.0), libshairport1, libmad0 (>= 0.15.1b), libcurl3-gnutls (>= 7.16.2-1), libplist1 (>= 0.13), librtmp0 (>= 2.3), libvdpau1 (>= 0.2)")
+set(CPACK_PACKAGE_CONTACT "http://plexapp.com/")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Plex inc")
+set(CPACK_DEBIAN_PACKAGE_SECTION "universe/video")
+set(CPACK_DEBIAN_PACKAGE_NAME "plexhometheater")
+if(CPACK_GENERATOR MATCHES "DEB")
+  set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/plexhometheater")
 endif()
 
 set(CPACK_SOURCE_GENERATOR TBZ2)

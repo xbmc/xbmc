@@ -151,6 +151,10 @@ macro(plex_find_package package required addtolinklist)
     endif()
 
     set(HAVE_LIB${PKG_UPPER_NAME} 1 CACHE string "if this lib is around or not")
+  else()
+    if(${required})
+      message(FATAL_ERROR "Missing ${PKG_NAME}")
+    endif()
   endif()
 endmacro()
 

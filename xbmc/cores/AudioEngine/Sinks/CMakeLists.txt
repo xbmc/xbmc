@@ -1,6 +1,6 @@
 set(ae_SRCS AESinkNULL.cpp AESinkNULL.h AESinkProfiler.cpp AESinkProfiler.h)
 
-if(DEFINED HAVE_LIBALSA)
+if(DEFINED HAS_ALSA)
   set(ae_SRCS ${ae_SRCS} AESinkALSA.cpp AESinkALSA.h)
 endif()
 

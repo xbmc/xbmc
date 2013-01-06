@@ -20,7 +20,6 @@ endif()
 
 include(CheckFFmpegIncludes)
 include(CheckCrystalHDInclude)
-include(CheckLibshairportConfig)
 
 if(DEFINED SDL_FOUND)
   set(HAVE_SDL 1)

@@ -44,14 +44,14 @@ else (LIBSSH_LIBRARIES AND LIBSSH_INCLUDE_DIRS)
   )
 
   if (LIBSSH_INCLUDE_DIR AND SSH_LIBRARY)
-    set(SSH_FOUND TRUE)
+    set(LIBSSH_FOUND TRUE)
   endif (LIBSSH_INCLUDE_DIR AND SSH_LIBRARY)
 
   set(LIBSSH_INCLUDE_DIRS
     ${LIBSSH_INCLUDE_DIR}
   )
 
-  if (SSH_FOUND)
+  if (LIBSSH_FOUND)
     set(LIBSSH_LIBRARIES
       ${LIBSSH_LIBRARIES}
       ${SSH_LIBRARY}
@@ -79,7 +79,7 @@ else (LIBSSH_LIBRARIES AND LIBSSH_INCLUDE_DIRS)
         set(LIBSSH_FOUND FALSE)
       endif (LIBSSH_VERSION_MAJOR)
     endif (LibSSH_FIND_VERSION)
-  endif (SSH_FOUND)
+  endif (LIBSSH_FOUND)
 
   # If the version is too old, but libs and includes are set,
   # find_package_handle_standard_args will set LIBSSH_FOUND to TRUE again,
