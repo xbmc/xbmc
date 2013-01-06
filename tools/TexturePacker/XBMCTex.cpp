@@ -196,7 +196,8 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   if ((flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
   {
     // grab a temporary buffer for unpacking into
-    unsigned char *packed  = new unsigned char[size + size / 16 + 64 + 3]; // see simple.c in lzo
+    packedSize = size + size / 16 + 64 + 3; // see simple.c in lzo
+    unsigned char *packed  = new unsigned char[packedSize];
     unsigned char *working = new unsigned char[LZO1X_999_MEM_COMPRESS];
     if (packed && working)
     {
