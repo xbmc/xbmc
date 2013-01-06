@@ -38,6 +38,7 @@ MediaLibrary.prototype = {
     $('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
     $('#overlay').click(jQuery.proxy(this.hideOverlay, this));
     $(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
+    $(document).bind('keydown', jQuery.proxy(this.handleKeyPress, this));
   },
   resetPage: function() {
     $('#musicLibrary').removeClass('selected');
@@ -118,6 +119,35 @@ MediaLibrary.prototype = {
     }
 
     $('#spinner').hide();
+  },
+  handleKeyPress: function(event) {
+    if (!$('#remoteControl').hasClass('selected')) {
+      return;
+    }
+
+    var keys = {
+      8: "back",        // Back space
+      13: "ok",         // Enter
+      27: "home",       // Escape
+      32: "playpause",  // Space bar
+      37: "left",       // Left
+      38: "up",         // Up
+      39: "right",      // Right
+      40: "down",       // Down
+      107: "volumeup",  // +
+      109: "volumedown" // -
+    };
+
+    var key = keys[event.which];
+
+    if (key) {
+      event.data = {
+        key: key
+      };
+
+      this.pressRemoteKey(event);
+      return false;
+    }
   },
   pressRemoteKey: function(event) {
     var player = -1,
