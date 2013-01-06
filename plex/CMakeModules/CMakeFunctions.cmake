@@ -59,9 +59,9 @@ function(add_sources)
 endfunction(add_sources)
 
 
-macro(plex_get_soname library soname)
+macro(plex_get_soname sonamevar library)
       # split out the library name
-      get_filename_component(soname ${library} NAME)
+      get_filename_component(${sonamevar} ${library} NAME)
 endmacro()
 
 set(CMAKE_MODULE_PATH ${CMAKE_ROOT}/Modules ${CMAKE_MODULE_PATH})
@@ -167,7 +167,7 @@ macro(plex_find_header header hintpath)
   get_property(v VARIABLE PROPERTY _${_HAVE_VAR})
 
   if(NOT v MATCHES "NOTFOUND")
-    set(${_HAVE_VAR} 1)
+    set(${_HAVE_VAR} 1 CACHE STRING "Have this header?")
     if(NOT QUIET_FIND)
       message(STATUS "Looking for include file ${header}.h - found")
     endif()

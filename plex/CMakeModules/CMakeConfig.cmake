@@ -4,6 +4,12 @@ include(CheckSystemFunctions)
 
 set(PLEX_TARGET_NAME PlexHomeTheater)
 
+set(CONFIG_INTERNAL_LIBS
+  lib_hts
+  lib_squish
+  lib_upnp
+)
+
 if(APPLE)
   include(CMakeConfigOSX)
 elseif(WIN32)
@@ -15,12 +21,6 @@ endif()
 include(CheckFFmpegIncludes)
 include(CheckCrystalHDInclude)
 include(CheckLibshairportConfig)
-
-set(CONFIG_INTERNAL_LIBS
-  lib_hts
-  lib_squish
-  lib_upnp
-)
 
 if(DEFINED SDL_FOUND)
   set(HAVE_SDL 1)
