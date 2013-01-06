@@ -105,9 +105,11 @@ endif()
 
 if(APPLE)
   install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
 else()
   install(TARGETS ${PLEX_TARGET_NAME} RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 endif()
 
 # Replace some XBMC files in the output
@@ -129,11 +131,6 @@ install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN xbmc.python EXCLUDE)
 install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-if(APPLE)
-  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${EXECUTABLE_NAME}/Contents/Resources COMPONENT RUNTIME)
-else()
-  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-endif()
 install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 
