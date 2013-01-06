@@ -106,7 +106,7 @@ set(ARCH "x86-osx")
 
 set(LIBPATH "${EXECUTABLE_NAME}.app/Contents/Frameworks")
 set(BINPATH "${EXECUTABLE_NAME}.app/Contents/MacOSX")
-set(RESOURCEPATH "${EXECUTABLE_NAME}.app/Contents/Resources")
+set(RESOURCEPATH "${EXECUTABLE_NAME}.app/Contents/Resources/XBMC")
 set(FFMPEG_INCLUDE_DIRS ${dependdir}/include)
 
 set(HAVE_LIBVDADECODER 1)

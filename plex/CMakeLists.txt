@@ -111,7 +111,9 @@ else()
 endif()
 
 # Replace some XBMC files in the output
-install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
+install(DIRECTORY ${root}/media ${root}/sounds ${root}/language DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
+        PATTERN Splash.png EXCLUDE
+        PATTERN Credits.html EXCLUDE)
 install(DIRECTORY ${root}/system DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME PATTERN python EXCLUDE)
 install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME 
         PATTERN skin.confluence EXCLUDE
@@ -126,8 +128,12 @@ install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN .git EXCLUDE
         PATTERN xbmc.python EXCLUDE)
 install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
-install(CODE "file(REMOVE \${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/media/Splash.png)")
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
+if(APPLE)
+  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${EXECUTABLE_NAME}/Contents/Resources COMPONENT RUNTIME)
+else()
+  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
+endif()
 install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 
