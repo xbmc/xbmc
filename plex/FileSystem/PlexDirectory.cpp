@@ -93,6 +93,7 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog, bool repla
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::~CPlexDirectory()
 {
+  StopThread();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1932,6 +1933,9 @@ void CPlexDirectory::Process()
     url.SetPort(32400);
   }
 
+  if (m_bStop)
+    return;
+
   // Set request headers.
   m_http.SetRequestHeader("X-Plex-Version", g_infoManager.GetVersion());
   m_http.SetRequestHeader("X-Plex-Client-Identifier", g_guiSettings.GetString("system.uuid"));
@@ -1961,6 +1965,8 @@ void CPlexDirectory::Process()
   m_http.SetRequestHeader("X-Plex-Client-Capabilities", protocols);
   m_http.UseOldHttpVersion(true);
   m_http.SetTimeout(m_timeout);
+
+  if (m_bStop) return;
   
   if (m_body.empty() == false)
     m_bSuccess = m_http.Post(url.Get(), m_body, m_data);
@@ -1968,19 +1974,6 @@ void CPlexDirectory::Process()
     m_bSuccess = m_http.Get(url.Get(), m_data);
   
   m_downloadEvent.Set();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::OnExit()
-{
-  m_bStop = true;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CPlexDirectory::StopThread()
-{
-  m_bStop = true;
-  CThread::StopThread();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

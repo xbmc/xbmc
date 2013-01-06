@@ -62,8 +62,6 @@ class CPlexDirectory : public IDirectory,
  protected:
   
   virtual void Process();
-  virtual void OnExit();
-  virtual void StopThread();
   
   bool ReallyGetDirectory(const CStdString& strPath, CFileItemList &items);
   void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, std::string& strFileLabel, std::string& strSecondFileLabel, std::string& strDirLabel, std::string& strSecondDirLabel, bool isLocal);
