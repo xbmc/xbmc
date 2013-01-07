@@ -1454,12 +1454,12 @@ void CAMLPlayer::Process()
       if (url.find("?") == std::string::npos)
         udp_params.append("?dummy=10");
       if (url.find("pkt_size=") == std::string::npos)
-        udp_params.append("&pkt_size=1316");
+        udp_params.append("&pkt_size=5264");
       if (url.find("buffer_size=") == std::string::npos)
-        udp_params.append("&buffer_size=1048576");
+        udp_params.append("&buffer_size=5390336");
       // newer ffmpeg uses fifo_size instead of buf_size
       if (url.find("buf_size=") == std::string::npos)
-        udp_params.append("&buf_size=286720");
+        udp_params.append("&buf_size=5390336");
 
       if (udp_params.size() > 0)
         url.append(udp_params);
@@ -1496,13 +1496,19 @@ void CAMLPlayer::Process()
     play_control.need_start  =  1; // if 0,you can omit player_start_play API.
                                    // just play video/audio immediately.
                                    // if 1,then need call "player_start_play" API;
-    //play_control.auto_buffing_enable = 1;
-    //play_control.buffing_min        = 0.2;
-    //play_control.buffing_middle     = 0.5;
-    //play_control.buffing_max        = 0.8;
-    //play_control.byteiobufsize      =; // maps to av_open_input_file buffer size
-    //play_control.loopbufsize        =;
-    //play_control.enable_rw_on_pause =;
+
+    // tweak player playback buffers for udp
+    if (url.Left(strlen("udp://")).Equals("udp://"))
+    {
+      play_control.auto_buffing_enable = 1;
+      play_control.buffing_min        = 0.01; // default = 0.01
+      play_control.buffing_middle     = 0.02; // default = 0.02
+      play_control.buffing_max        = 0.20; // default = 0.80
+      play_control.byteiobufsize      = 1024 * 128; // maps to av_open_input_file buffer size (1024 * 32)
+      //play_control.loopbufsize        =;
+      //play_control.enable_rw_on_pause =;
+    }
+
     m_aml_state.clear();
     m_aml_state.push_back(0);
     m_pid = m_dll->player_start(&play_control, 0);
