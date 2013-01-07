@@ -261,6 +261,25 @@ static int XBMC_MapVirtualKey(int scancode, int vkey)
     case VK_RMENU:
     case VK_SNAPSHOT:
     case VK_PAUSE:
+    /* Multimedia keys are already handled */
+    case VK_BROWSER_BACK:
+    case VK_BROWSER_FORWARD:
+    case VK_BROWSER_REFRESH:
+    case VK_BROWSER_STOP:
+    case VK_BROWSER_SEARCH:
+    case VK_BROWSER_FAVORITES:
+    case VK_BROWSER_HOME:
+    case VK_VOLUME_MUTE:
+    case VK_VOLUME_DOWN:
+    case VK_VOLUME_UP:
+    case VK_MEDIA_NEXT_TRACK:
+    case VK_MEDIA_PREV_TRACK:
+    case VK_MEDIA_STOP:
+    case VK_MEDIA_PLAY_PAUSE:
+    case VK_LAUNCH_MAIL:
+    case VK_LAUNCH_MEDIA_SELECT:
+    case VK_LAUNCH_APP1:
+    case VK_LAUNCH_APP2:
       return vkey;
   }
   switch(mvke)
