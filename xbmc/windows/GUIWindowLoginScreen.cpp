@@ -71,7 +71,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_viewControl.Reset();
       m_vecItems->Clear();
     }
     break;
@@ -183,6 +182,12 @@ void CGUIWindowLoginScreen::OnWindowLoaded()
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(GetControl(CONTROL_BIG_LIST));
+}
+
+void CGUIWindowLoginScreen::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
 }
 
 void CGUIWindowLoginScreen::Update()

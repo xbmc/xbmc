@@ -43,6 +43,7 @@ public:
 protected:
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
   void Update();
   void SetLabel(int iControl, const CStdString& strLabel);
 
