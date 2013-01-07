@@ -1698,7 +1698,11 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   {
     if (items.HasProperty(PROPERTY_PATH_DB))
       m_strFilterPath = items.GetProperty(PROPERTY_PATH_DB).asString();
-    else
+    // only set m_strFilterPath if it hasn't been set before
+    // otherwise we might overwrite it with a non-filter path
+    // in case GetFilteredItems() returns true even though no
+    // db-based filter (e.g. watched filter) has been applied
+    else if (m_strFilterPath.empty())
       m_strFilterPath = items.GetPath();
   }
   
