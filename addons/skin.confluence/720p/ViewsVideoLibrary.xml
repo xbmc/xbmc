@@ -699,7 +699,7 @@
 			</control>
 			<control type="group">
 				<posx>40</posx>
-				<posy>200</posy>
+				<posy>195</posy>
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -718,7 +718,7 @@
 					<posx>0</posx>
 					<posy>30</posy>
 					<width>850</width>
-					<height>120</height>
+					<height>130</height>
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
