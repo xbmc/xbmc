@@ -106,9 +106,9 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fa
 
     for (size_t j = (int)RES_DESKTOP; j < g_settings.m_ResInfo.size(); j++)
     {
-      if (g_settings.m_ResInfo[j].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
-       && g_settings.m_ResInfo[j].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
-       && g_settings.m_ResInfo[j].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
+      if (g_settings.m_ResInfo[j].iScreenWidth  == g_settings.m_ResInfo[m_resolution].iScreenWidth
+       && g_settings.m_ResInfo[j].iScreenHeight == g_settings.m_ResInfo[m_resolution].iScreenHeight
+       && g_settings.m_ResInfo[j].iScreen       == g_settings.m_ResInfo[m_resolution].iScreen)
       {
         if (g_settings.m_ResInfo[j].fRefreshRate <= override.refreshmax
          && g_settings.m_ResInfo[j].fRefreshRate >= override.refreshmin)
@@ -161,9 +161,9 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
       for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
       {
         if (MathUtils::round_int(g_settings.m_ResInfo[i].fRefreshRate) == 60
-         && g_settings.m_ResInfo[i].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
-         && g_settings.m_ResInfo[i].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
-         && g_settings.m_ResInfo[i].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
+         && g_settings.m_ResInfo[i].iScreenWidth  == g_settings.m_ResInfo[m_resolution].iScreenWidth
+         && g_settings.m_ResInfo[i].iScreenHeight == g_settings.m_ResInfo[m_resolution].iScreenHeight
+         && g_settings.m_ResInfo[i].iScreen       == g_settings.m_ResInfo[m_resolution].iScreen)
         {
           if (fabs(g_settings.m_ResInfo[i].fRefreshRate - 60.0) < fabs(g_settings.m_ResInfo[m_resolution].fRefreshRate - 60.0))
             m_resolution = (RESOLUTION)i;
@@ -176,10 +176,10 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
         CLog::Log(LOGDEBUG, "60 hertz refreshrate not available, choosing highest");
         for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
         {
-          if (g_settings.m_ResInfo[i].fRefreshRate >  g_settings.m_ResInfo[m_resolution].fRefreshRate
-           && g_settings.m_ResInfo[i].iWidth       == g_settings.m_ResInfo[m_resolution].iWidth
-           && g_settings.m_ResInfo[i].iHeight      == g_settings.m_ResInfo[m_resolution].iHeight
-           && g_settings.m_ResInfo[i].iScreen      == g_settings.m_ResInfo[m_resolution].iScreen)
+          if (g_settings.m_ResInfo[i].fRefreshRate  >  g_settings.m_ResInfo[m_resolution].fRefreshRate
+           && g_settings.m_ResInfo[i].iScreenWidth  == g_settings.m_ResInfo[m_resolution].iScreenWidth
+           && g_settings.m_ResInfo[i].iScreenHeight == g_settings.m_ResInfo[m_resolution].iScreenHeight
+           && g_settings.m_ResInfo[i].iScreen       == g_settings.m_ResInfo[m_resolution].iScreen)
           {
             m_resolution = (RESOLUTION)i;
           }
@@ -195,8 +195,8 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 {
   RESOLUTION_INFO &curr = g_settings.m_ResInfo[current];
 
-  int iWidth  = curr.iWidth;
-  int iHeight = curr.iHeight;
+  int iScreenWidth  = curr.iScreenWidth;
+  int iScreenHeight = curr.iScreenHeight;
   float fRefreshRate = fps;
 
   /*
@@ -216,12 +216,12 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 
   if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
   {
-    iWidth /= 2;
+    iScreenWidth /= 2;
     fRefreshRate *= 2;
   }
   else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
   {
-    iHeight /= 2;
+    iScreenHeight /= 2;
     fRefreshRate *= 2;
   }
 
@@ -235,8 +235,8 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 
     //discard resolutions that are not the same width and height
     //or have a too low refreshrate
-    if (info.iWidth  != iWidth
-    ||  info.iHeight != iHeight
+    if (info.iScreenWidth  != iScreenWidth
+    ||  info.iScreenHeight != iScreenHeight
     ||  info.iScreen != curr.iScreen
     ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
       continue;
