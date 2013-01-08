@@ -5,8 +5,6 @@
     <setting key="enable_flip_commands" type="bool" value="1" label="36005" order="2" />
     <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" order="3" />
     <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" order="4" />
-    <setting key="key_user" value="" label="36004" order="5" />
-    <setting key="key_power" value="XBMC.ShutDown()" label="13015" order="6" />
   </peripheral>
 
   <peripheral vendor_product="2708:1001" bus="rpi" name="Raspberry Pi CEC Adapter" mapTo="cec">
