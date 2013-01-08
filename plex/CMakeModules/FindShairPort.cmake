@@ -24,21 +24,5 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SHAIRPORT DEFAULT_MSG SHAIRPORT_LIBRARY SHAIRPORT_INCLUDE_DIR)
 
 IF(SHAIRPORT_LIBRARY AND SHAIRPORT_INCLUDE_DIR)
-  include(CheckCSourceCompiles)
-  plex_find_header(shairport/shairport ${SHAIRPORT_INCLUDE_DIR})
-  if(DEFINED HAVE_SHAIRPORT_SHAIRPORT_H)
-    CHECK_C_SOURCE_COMPILES("
-    #include <shairport/shairport.h>
-    int main(int argc, char *argv[])
-    { 
-      static struct AudioOutput test;
-      if(sizeof(test.ao_set_metadata))
-        return 0;
-      return 0;
-    }
-    "
-    HAVE_STRUCT_AUDIOOUTPUT_AO_SET_METADATA)
-  endif()
-
   plex_get_soname(SHAIRPORT_SONAME ${SHAIRPORT_LIBRARY})
 ENDIF()
