@@ -168,8 +168,20 @@ void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outl
       uint32_t align = alignment;
       if (align & XBFONT_JUSTIFIED && string.m_carriageReturn)
         align &= ~XBFONT_JUSTIFIED;
+      // text centered horizontally must be computed using the original font, not the bordered
+      // font, as the bordered font will be wider, and thus will end up uncentered.
+      // TODO: We should really have a better way to handle text extent - at the moment we assume
+      //       that text is rendered from a posx, posy, width, and height which isn't enough to
+      //       accurately position text. We need a vertical and horizontal offset of the baseline
+      //       and cursor as well.
+      float bx = x;
+      if (align & XBFONT_CENTER_X)
+      {
+        bx -= m_font->GetTextWidth(string.m_text) * 0.5f;
+        align &= ~XBFONT_CENTER_X;
+      }
 
-      m_borderFont->DrawText(x, by, outlineColors, 0, string.m_text, align, maxWidth);
+      m_borderFont->DrawText(bx, by, outlineColors, 0, string.m_text, align, maxWidth);
       by += m_borderFont->GetLineHeight();
     }
     m_borderFont->End();
