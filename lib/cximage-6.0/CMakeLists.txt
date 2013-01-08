@@ -60,8 +60,8 @@ else()
     cx_zlib
   )
 
-  add_library(ImageLib SHARED)
-  target_link_libraries(ImageLib ${OBJECTS} ${SRC})
+  add_library(ImageLib SHARED ${SRC})
+  target_link_libraries(ImageLib ${OBJECTS})
 
   set(LIBS kernel32 user32 gdi32 winspool comdlg32 advapi32 shell32 ole32 oleaut32 uuid odbc32 odbccp32)
   foreach(l ${LIBS})
