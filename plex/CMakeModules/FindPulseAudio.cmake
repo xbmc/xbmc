@@ -1,77 +1,98 @@
-# Try to find the PulseAudio library
+# - Try to find pulseaudio-2.6
+# Once done this will define
 #
-# Once done this will define:
+# PULSEAUDIO_FOUND - system has pulseaudio
+# PULSEAUDIO_INCLUDE_DIRS - the pulseaudio include directory
+# PULSEAUDIO_LIBRARIES - Link these to use pulseaudio
+# PULSEAUDIO_DEFINITIONS - Compiler switches required for using pulseaudio
 #
-#  PULSEAUDIO_FOUND - system has the PulseAudio library
-#  PULSEAUDIO_INCLUDE_DIR - the PulseAudio include directory
-#  PULSEAUDIO_LIBRARY - the libraries needed to use PulseAudio
-#  PULSEAUDIO_MAINLOOP_LIBRARY - the libraries needed to use PulsAudio Mailoop
+# Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>
+# Modified for other libraries by Lasse Kärkkäinen <tronic>
 #
-# Copyright (c) 2008, Matthias Kretz, <kretz@kde.org>
-# Copyright (c) 2009, Marcus Hufgard, <Marcus.Hufgard@hufgard.de>
-#
-# Redistribution and use is allowed according to the terms of the BSD license.
+# Redistribution and use is allowed according to the terms of the New
+# BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
 
-if (NOT PULSEAUDIO_MINIMUM_VERSION)
-  set(PULSEAUDIO_MINIMUM_VERSION "0.9.9")
-endif (NOT PULSEAUDIO_MINIMUM_VERSION)
+if (PULSEAUDIO_LIBRARIES AND PULSEAUDIO_INCLUDE_DIRS)
+  # in cache already
+  set(PULSEAUDIO_FOUND TRUE)
+else (PULSEAUDIO_LIBRARIES AND PULSEAUDIO_INCLUDE_DIRS)
+  # use pkg-config to get the directories and then use these values
+  # in the FIND_PATH() and FIND_LIBRARY() calls
+  if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    include(UsePkgConfig)
+    pkgconfig(libpulse _PULSEAUDIO_INCLUDEDIR _PULSEAUDIO_LIBDIR _PULSEAUDIO_LDFLAGS _PULSEAUDIO_CFLAGS)
+  else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    find_package(PkgConfig)
+    if (PKG_CONFIG_FOUND)
+      pkg_check_modules(_PULSEAUDIO libpulse)
+    endif (PKG_CONFIG_FOUND)
+  endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+  find_path(PULSEAUDIO_INCLUDE_DIR
+    NAMES
+      pulse/pulseaudio.h
+    PATHS
+      ${_PULSEAUDIO_INCLUDEDIR}
+      /usr/include
+      /usr/local/include
+      /opt/local/include
+      /sw/include
+  )
+  
+  find_library(PULSEAUDIO_LIBRARY
+    NAMES
+      pulse
+    PATHS
+      ${_PULSEAUDIO_LIBDIR}
+      /usr/lib
+      /usr/local/lib
+      /opt/local/lib
+      /sw/lib
+  )
 
-if (PULSEAUDIO_INCLUDE_DIR AND PULSEAUDIO_LIBRARY AND PULSEAUDIO_MAINLOOP_LIBRARY)
-   # Already in cache, be silent
-   set(PULSEAUDIO_FIND_QUIETLY TRUE)
-endif (PULSEAUDIO_INCLUDE_DIR AND PULSEAUDIO_LIBRARY AND PULSEAUDIO_MAINLOOP_LIBRARY)
+find_library(PULSEAUDIO_SIMPLE_LIBRARY
+    NAMES
+      pulse-simple
+    PATHS
+      ${_PULSEAUDIO_LIBDIR}
+      /usr/lib
+      /usr/local/lib
+      /opt/local/lib
+      /sw/lib
+  )
 
-if (NOT WIN32)
-   include(FindPkgConfig)
-   pkg_check_modules(PC_PULSEAUDIO libpulse>=${PULSEAUDIO_MINIMUM_VERSION})
-   pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib)
-endif (NOT WIN32)
+  if (PULSEAUDIO_LIBRARY)
+    set(PULSEAUDIO_FOUND TRUE)
+  endif (PULSEAUDIO_LIBRARY)
 
-FIND_PATH(PULSEAUDIO_INCLUDE_DIR pulse/pulseaudio.h
-   HINTS
-   ${PC_PULSEAUDIO_INCLUDEDIR}
-   ${PC_PULSEAUDIO_INCLUDE_DIRS}
-   )
+  set(PULSEAUDIO_INCLUDE_DIRS
+    ${PULSEAUDIO_INCLUDE_DIR}
+  )
 
-FIND_LIBRARY(PULSEAUDIO_LIBRARY NAMES pulse libpulse
-   HINTS
-   ${PC_PULSEAUDIO_LIBDIR}
-   ${PC_PULSEAUDIO_LIBRARY_DIRS}
-   )
+  if (PULSEAUDIO_FOUND)
+    set(PULSEAUDIO_LIBRARIES
+      ${PULSEAUDIO_LIBRARIES}
+      ${PULSEAUDIO_SIMPLE_LIBRARY}
+      ${PULSEAUDIO_LIBRARY}
+    )
+  endif (PULSEAUDIO_FOUND)
 
-FIND_LIBRARY(PULSEAUDIO_MAINLOOP_LIBRARY NAMES pulse-mainloop pulse-mainloop-glib libpulse-mainloop-glib
-   HINTS
-   ${PC_PULSEAUDIO_LIBDIR}
-   ${PC_PULSEAUDIO_LIBRARY_DIRS}
-   )
+  if (PULSEAUDIO_INCLUDE_DIRS AND PULSEAUDIO_LIBRARIES)
+     set(PULSEAUDIO_FOUND TRUE)
+  endif (PULSEAUDIO_INCLUDE_DIRS AND PULSEAUDIO_LIBRARIES)
 
-if (PULSEAUDIO_INCLUDE_DIR AND PULSEAUDIO_LIBRARY)
-   include(MacroEnsureVersion)
+  if (PULSEAUDIO_FOUND)
+    if (NOT PULSEAUDIO_FIND_QUIETLY)
+      message(STATUS "Found pulseaudio: ${PULSEAUDIO_LIBRARIES}")
+    endif (NOT PULSEAUDIO_FIND_QUIETLY)
+  else (PULSEAUDIO_FOUND)
+    if (PULSEAUDIO_FIND_REQUIRED)
+      message(FATAL_ERROR "Could not find PulseAudio")
+    endif (PULSEAUDIO_FIND_REQUIRED)
+  endif (PULSEAUDIO_FOUND)
 
-   # get PulseAudio's version from its version.h, and compare it with our minimum version
-   file(STRINGS "${PULSEAUDIO_INCLUDE_DIR}/pulse/version.h" pulse_version_h
-        REGEX ".*pa_get_headers_version\\(\\).*"
-        )
-   string(REGEX REPLACE ".*pa_get_headers_version\\(\\)\ \\(\"([0-9]+\\.[0-9]+\\.[0-9]+)\"\\).*" "\\1"
-                         PULSEAUDIO_VERSION "${pulse_version_h}")
-   macro_ensure_version("${PULSEAUDIO_MINIMUM_VERSION}" "${PULSEAUDIO_VERSION}" PULSEAUDIO_FOUND)
-else (PULSEAUDIO_INCLUDE_DIR AND PULSEAUDIO_LIBRARY)
-   set(PULSEAUDIO_FOUND FALSE)
-endif (PULSEAUDIO_INCLUDE_DIR AND PULSEAUDIO_LIBRARY)
+  # show the PULSEAUDIO_INCLUDE_DIRS and PULSEAUDIO_LIBRARIES variables only in the advanced view
+  mark_as_advanced(PULSEAUDIO_INCLUDE_DIRS PULSEAUDIO_LIBRARIES)
 
-if (PULSEAUDIO_FOUND)
-   if (NOT PULSEAUDIO_FIND_QUIETLY)
-      message(STATUS "Found PulseAudio: ${PULSEAUDIO_LIBRARY}")
-      if (PULSEAUDIO_MAINLOOP_LIBRARY)
-          message(STATUS "Found PulseAudio Mainloop: ${PULSEAUDIO_MAINLOOP_LIBRARY}")
-      else (PULSAUDIO_MAINLOOP_LIBRARY)
-          message(STATUS "Could NOT find PulseAudio Mainloop Library")
-      endif (PULSEAUDIO_MAINLOOP_LIBRARY)
-   endif (NOT PULSEAUDIO_FIND_QUIETLY)
-   set(HAVE_LIBPULSE 1)
-else (PULSEAUDIO_FOUND)
-   message(STATUS "Could NOT find PulseAudio")
-endif (PULSEAUDIO_FOUND)
-
-mark_as_advanced(PULSEAUDIO_INCLUDE_DIR PULSEAUDIO_LIBRARY PULSEAUDIO_MAINLOOP_LIBRARY)
+endif (PULSEAUDIO_LIBRARIES AND PULSEAUDIO_INCLUDE_DIRS)
