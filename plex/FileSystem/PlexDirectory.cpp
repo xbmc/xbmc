@@ -542,10 +542,11 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
   //
   CStdString encodedUrl = imageURL;
   CURL mediaUrl(encodedUrl);
+  CURL url(parentURL);
 
   CStdString token;
   map<CStdString, CStdString> options;
-  mediaUrl.GetOptions(options);
+  url.GetOptions(options);
   if (options.find("X-Plex-Token") != options.end())
   {
     token = "&X-Plex-Token=" + options["X-Plex-Token"];
@@ -553,9 +554,12 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
     mediaUrl.RemoveOption("X-Plex-Token");
   }
 
-  // We can safely assume it will always be local with respect to the server we're hitting.
-  mediaUrl.SetHostName("127.0.0.1");
-  mediaUrl.SetPort(32400);
+  // If the image is on the same host as our transcoder, rewrite the URL to be local.
+  if (mediaUrl.GetHostName() == url.GetHostName())
+  {
+    mediaUrl.SetHostName("127.0.0.1");
+    mediaUrl.SetPort(32400);
+  }
 
 
   encodedUrl = mediaUrl.Get();
@@ -575,8 +579,6 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
     width = "800";
     height = "200";
   }
-
-  CURL url(parentURL);
   
   if (url.GetProtocol() == "plex")
   {
