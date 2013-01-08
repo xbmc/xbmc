@@ -68,7 +68,7 @@ class PlexServer
   /// Return the root URL.
   string url()
   {
-    string ret = "http://" + address + ":" + boost::lexical_cast<string>(port);
+    string ret = (port == 443 ? "https://" : "http://") + address + ":" + boost::lexical_cast<string>(port);
     if (token.empty() == false)
       ret += "?X-Plex-Token=" + token;
     
