@@ -61,7 +61,8 @@ endfunction(add_sources)
 
 macro(plex_get_soname sonamevar library)
       # split out the library name
-      get_filename_component(${sonamevar} ${library} NAME)
+      get_filename_component(REALNAME ${library} REALPATH)
+      get_filename_component(${sonamevar} ${REALNAME} NAME)
 endmacro()
 
 set(CMAKE_MODULE_PATH ${CMAKE_ROOT}/Modules ${CMAKE_MODULE_PATH})
