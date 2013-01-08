@@ -266,13 +266,15 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
   int idRepo = database.GetRepoChecksum(repo->ID(),checksum);
   CStdString reposum = repo->Checksum();
   VECADDONS addons;
-  if (idRepo == -1 || !checksum.Equals(reposum))
+  if (!checksum.Equals(reposum) || checksum.empty())
   {
     addons = repo->Parse();
-    if (!addons.empty())
-      database.AddRepository(repo->ID(),addons,reposum);
-    else
+    if (addons.empty())
+    {
       CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
+      reposum = checksum; // don't update the checksum
+    }
+    database.AddRepository(repo->ID(),addons,reposum);
   }
   else
     database.GetRepository(repo->ID(),addons);
