@@ -134,7 +134,7 @@ public:
   int GetFirstDataTrack() { return m_nFirstData; }
   int GetDataTrackCount() { return m_nNumData; }
   int GetAudioTrackCount() { return m_nNumAudio; }
-  ULONG GetCddbDiscId() { return m_ulCddbDiscId; }
+  uint32_t GetCddbDiscId() { return m_ulCddbDiscId; }
   int GetDiscLength() { return m_nLength; }
   CStdString GetDiscLabel(){ return m_strDiscLabel; }
 
@@ -229,7 +229,7 @@ public:
   void SetTrackInformation( int nTrack, trackinfo nInfo ) { if ( nTrack > 0 && nTrack <= 99 ) m_ti[nTrack - 1] = nInfo; }
   void SetDiscCDTextInformation( xbmc_cdtext_t cdtext ) { m_cdtext = cdtext; }
 
-  void SetCddbDiscId( ULONG ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
+  void SetCddbDiscId( uint32_t ulCddbDiscId ) { m_ulCddbDiscId = ulCddbDiscId; }
   void SetDiscLength( int nLength ) { m_nLength = nLength; }
   bool HasCDDBInfo() { return m_bHasCDDBInfo; }
   void SetNoCDDBInfo() { m_bHasCDDBInfo = false; }
@@ -244,7 +244,7 @@ private:
   int m_nNumTrack;
   int m_nFirstTrack;
   trackinfo m_ti[100];
-  ULONG m_ulCddbDiscId;
+  uint32_t m_ulCddbDiscId;
   int m_nLength;   // Disclength can be used for cddb query, also see trackinfo.nFrames
   bool m_bHasCDDBInfo;
   CStdString m_strDiscLabel;
@@ -313,7 +313,7 @@ protected:
   int GetJolietLevel( void );
   int GuessFilesystem(int start_session, track_t track_num);
 
-  ULONG CddbDiscId();
+  uint32_t CddbDiscId();
   int CddbDecDigitSum(int n);
   UINT MsfSeconds(msf_t *msf);
 
