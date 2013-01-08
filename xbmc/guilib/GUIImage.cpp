@@ -68,7 +68,7 @@ void CGUIImage::UpdateInfo(const CGUIListItem *item)
     return; // nothing to do
 
   // don't allow image to change while animating out
-  if (HasRendered() && IsAnimating(ANIM_TYPE_HIDDEN) && !IsVisibleFromSkin())
+  if (HasProcessed() && IsAnimating(ANIM_TYPE_HIDDEN) && !IsVisibleFromSkin())
     return;
 
   if (item)
@@ -253,7 +253,7 @@ void CGUIImage::FreeResourcesButNotAnims()
 {
   FreeTextures();
   m_bAllocated=false;
-  m_hasRendered = false;
+  m_hasProcessed = false;
 }
 
 void CGUIImage::DynamicResourceAlloc(bool bOnOff)
