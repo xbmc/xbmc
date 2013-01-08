@@ -34,15 +34,17 @@ add_subdirectory(raw)
 add_subdirectory(jasper)
 
 set(OBJECTS
-  $<TARGET_OBJECTS:cximage>
-  $<TARGET_OBJECTS:cx_jbig>
-  $<TARGET_OBJECTS:cx_raw>
-  $<TARGET_OBJECTS:cx_jasper>
+  cximage
+  cx_jbig
+  cx_raw
+  cx_jasper
 )
+set(SRC CxImage/DllInterface.cpp)
+
 if(NOT WIN32)
-  list(APPEND OBJECTS $<TARGET_OBJECTS:wrapper>)
-  add_library(ImageLib-${ARCH} MODULE ${OBJECTS})
-  target_link_libraries(ImageLib-${ARCH} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF})
+  list(APPEND OBJECTS wrapper)
+  add_library(ImageLib-${ARCH} MODULE ${SRC})
+  target_link_libraries(ImageLib-${ARCH} ${CONFIG_LIBRARY_Z} ${CONFIG_LIBRARY_PNG} ${CONFIG_LIBRARY_JPEG} ${CONFIG_LIBRARY_TIFF} ${OBJECTS})
 else()
   add_subdirectory(zlib)
   add_subdirectory(jpeg)
@@ -51,14 +53,15 @@ else()
   add_subdirectory(png)
 
   set(OBJECTS ${OBJECTS}
-    $<TARGET_OBJECTS:cx_mng>
-    $<TARGET_OBJECTS:cx_jpeg>
-    $<TARGET_OBJECTS:cx_png>
-    $<TARGET_OBJECTS:cx_tiff>
-    $<TARGET_OBJECTS:cx_zlib>
+    cx_mng
+    cx_jpeg
+    cx_png
+    cx_tiff
+    cx_zlib
   )
 
-  add_library(ImageLib SHARED ${OBJECTS})
+  add_library(ImageLib SHARED)
+  target_link_libraries(ImageLib ${OBJECTS} ${SRC})
 
   set(LIBS kernel32 user32 gdi32 winspool comdlg32 advapi32 shell32 ole32 oleaut32 uuid odbc32 odbccp32)
   foreach(l ${LIBS})

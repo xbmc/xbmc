@@ -1,1 +1,1 @@
-add_library(cx_raw OBJECT dcr.c libdcr.c)
+add_library(cx_raw STATIC dcr.c libdcr.c)

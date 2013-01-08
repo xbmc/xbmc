@@ -1,3 +1,3 @@
 set(jasper_srcs bmp/bmp_cod.c bmp/bmp_dec.c bmp/bmp_enc.c base/jas_cm.c base/jas_debug.c base/jas_getopt.c base/jas_icc.c base/jas_iccdata.c base/jas_image.c base/jas_init.c base/jas_malloc.c base/jas_seq.c base/jas_stream.c base/jas_string.c base/jas_tvp.c base/jas_version.c jp2/jp2_cod.c jp2/jp2_dec.c jp2/jp2_enc.c jpc/jpc_bs.c jpc/jpc_cs.c jpc/jpc_dec.c jpc/jpc_enc.c jpc/jpc_math.c jpc/jpc_mct.c jpc/jpc_mqcod.c jpc/jpc_mqdec.c jpc/jpc_mqenc.c jpc/jpc_qmfb.c jpc/jpc_t1cod.c jpc/jpc_t1dec.c jpc/jpc_t1enc.c jpc/jpc_t2cod.c jpc/jpc_t2dec.c jpc/jpc_t2enc.c jpc/jpc_tagtree.c jpc/jpc_tsfb.c jpc/jpc_util.c jpg/jpg_dummy.c jpg/jpg_val.c mif/mif_cod.c pgx/pgx_cod.c pgx/pgx_dec.c pgx/pgx_enc.c pnm/pnm_cod.c pnm/pnm_dec.c pnm/pnm_enc.c ras/ras_cod.c ras/ras_dec.c ras/ras_enc.c)
 include_directories(include)
-add_library(cx_jasper OBJECT ${jasper_srcs})
+add_library(cx_jasper STATIC ${jasper_srcs})
