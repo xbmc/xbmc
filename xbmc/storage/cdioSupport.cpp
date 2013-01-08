@@ -926,7 +926,7 @@ UINT CCdIoSupport::MsfSeconds(msf_t *msf)
 //    the total length of the disk, and
 //    the number of tracks.
 
-ULONG CCdIoSupport::CddbDiscId()
+uint32_t CCdIoSupport::CddbDiscId()
 {
   CSingleLock lock(*m_cdio);
 
