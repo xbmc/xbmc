@@ -223,6 +223,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
       return new CCurlFile();
     else if (strProtocol == "shout") return new CShoutcastFile();
     else if (strProtocol == "pipe") return new CPipeFile();
+#ifdef HAS_UPNP
+    else if (strProtocol == "upnp") return new CUPnPFile();
+#endif
+
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
