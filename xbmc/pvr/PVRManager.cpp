@@ -746,7 +746,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     else if (!bOnOff && channel->IsRecording())
     {
       /* delete active timers */
-      bReturn = m_timers->DeleteTimersOnChannel(*channel, false, true);
+      bReturn = m_timers->DeleteTimersOnChannel(*channel, true, true);
     }
   }
 
