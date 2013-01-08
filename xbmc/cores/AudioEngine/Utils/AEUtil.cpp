@@ -109,7 +109,9 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
     16,                  /* EAC3   */
     16,                  /* TRUEHD */
     16,                  /* DTS-HD */
+#ifdef TARGET_DARWIN
     32                   /* LPCM   */
+#endif
   };
 
   return formats[dataFormat];
@@ -151,7 +153,9 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_EAC3",
     "AE_FMT_TRUEHD",
     "AE_FMT_DTSHD",
+#ifdef TARGET_DARWIN
     "AE_FMT_LPCM"
+#endif
   };
 
   return formats[dataFormat];

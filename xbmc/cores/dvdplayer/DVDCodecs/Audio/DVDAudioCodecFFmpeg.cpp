@@ -173,13 +173,17 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
     m_iBuffered += iBytesUsed;
   else
     m_iBuffered = 0;
-    
+
+#ifdef TARGET_DARWIN
   if(m_bLpcmMode)
     ConvertToFloat();
+#endif
 
   return iBytesUsed;
 }
 
+#ifdef TARGET_DARWIN
+// used by the CoreAudio-specific "LPCM hog mode"
 void CDVDAudioCodecFFmpeg::ConvertToFloat()
 {
   if(m_pCodecContext->sample_fmt != AV_SAMPLE_FMT_FLT && m_iBufferSize1 > 0)
@@ -217,6 +221,7 @@ void CDVDAudioCodecFFmpeg::ConvertToFloat()
     m_iBufferSize2 = len * m_dllAvUtil.av_get_bytes_per_sample(AV_SAMPLE_FMT_FLT);
   }
 }
+#endif
 
 int CDVDAudioCodecFFmpeg::GetData(BYTE** dst)
 {
@@ -264,11 +269,13 @@ int CDVDAudioCodecFFmpeg::GetEncodedSampleRate()
 
 enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
 {
+#if TARGET_DARWIN
   if(m_bLpcmMode)
   {
     return AE_FMT_LPCM;
   }
   else
+#endif
   {
     switch(m_pCodecContext->sample_fmt)
     {

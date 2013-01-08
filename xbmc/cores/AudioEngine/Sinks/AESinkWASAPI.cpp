@@ -779,8 +779,6 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-      bool hasLpcm = false;
-
       // Try with KSAUDIO_SPEAKER_DIRECTOUT
       for (unsigned int k = WASAPI_SPEAKER_COUNT; k > 0; k--)
       {
@@ -791,11 +789,6 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
         hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
         if (SUCCEEDED(hr))
         {
-          if (k > 3) // Add only multichannel LPCM
-          {
-            deviceInfo.m_dataFormats.push_back(AE_FMT_LPCM);
-            hasLpcm = true;
-          }
           break;
         }
       }
@@ -810,11 +803,6 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
         hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
         if (SUCCEEDED(hr))
         {
-          if ( !hasLpcm && k > 3) // Add only multichannel LPCM
-          {
-            deviceInfo.m_dataFormats.push_back(AE_FMT_LPCM);
-            hasLpcm = true;
-          }
           break;
         }
       }
@@ -832,11 +820,6 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
         {
           if ( deviceChannels.Count() < nmbOfCh)
             deviceChannels = layoutsList[i];
-          if ( !hasLpcm && nmbOfCh > 3) // Add only multichannel LPCM
-          {
-            deviceInfo.m_dataFormats.push_back(AE_FMT_LPCM);
-            hasLpcm = true;
-          }
         }
       }
       pClient->Release();

@@ -194,7 +194,6 @@ void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info
       case CEA_861_FORMAT_DTS  : fmt = AE_FMT_DTS   ; break;
       case CEA_861_FORMAT_DTSHD: fmt = AE_FMT_DTSHD ; break;
       case CEA_861_FORMAT_EAC3 : fmt = AE_FMT_EAC3  ; break;
-      case CEA_861_FORMAT_LPCM : fmt = AE_FMT_LPCM  ; break;
       case CEA_861_FORMAT_MLP  : fmt = AE_FMT_TRUEHD; break;
     }
 
