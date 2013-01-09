@@ -209,15 +209,13 @@
  * Git revision
  *****************/
 
-#ifndef __PLEX__ // Leads to so many rebuilds
-#if defined(TARGET_DARWIN)
-#include "../git_revision.h"
-#endif
+//#if defined(TARGET_DARWIN)
+//#include "../git_revision.h"
+//#endif
 
-#ifndef GIT_REV
-#define GIT_REV "Unknown"
-#endif
-#endif
+//#ifndef GIT_REV
+//#define GIT_REV "Unknown"
+//#endif
 
 /****************************************
  * Additional platform specific includes
