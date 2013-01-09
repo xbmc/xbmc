@@ -9,6 +9,8 @@ endif()
 if(WIN32)
   add_subdirectory(win32)
   add_subdirectory(libmad)
+  add_subdirectory(libass)
+  add_subdirectory(enca)
 endif()
 
 # build our external projects

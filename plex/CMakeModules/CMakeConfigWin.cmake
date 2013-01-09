@@ -32,6 +32,7 @@ set(external_libs
 set(non_link_libs
   SDL
   SDL_image
+fontconfig
 )
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
