@@ -84,6 +84,7 @@ COMXVideo::COMXVideo()
   m_deinterlace       = false;
   m_hdmi_clock_sync   = false;
   m_first_frame       = true;
+  m_contains_valid_pts= false;
 }
 
 COMXVideo::~COMXVideo()
@@ -436,6 +437,23 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool deinterlace, b
     }
   }
 
+  // broadcom omx entension:
+  // When enabled, the timestamp fifo mode will change the way incoming timestamps are associated with output images.
+  // In this mode the incoming timestamps get used without re-ordering on output images.
+  if(hints.ptsinvalid)
+  {
+    OMX_CONFIG_BOOLEANTYPE timeStampMode;
+    OMX_INIT_STRUCTURE(timeStampMode);
+    timeStampMode.bEnabled = OMX_TRUE;
+
+    omx_err = m_omx_decoder.SetParameter((OMX_INDEXTYPE)OMX_IndexParamBrcmVideoTimestampFifo, &timeStampMode);
+    if (omx_err != OMX_ErrorNone)
+    {
+      CLog::Log(LOGERROR, "COMXVideo::Open OMX_IndexParamBrcmVideoTimestampFifo error (0%08x)\n", omx_err);
+      return false;
+    }
+  }
+
   if(NaluFormatStartCodes(hints.codec, m_extradata, m_extrasize))
   {
     OMX_NALSTREAMFORMATTYPE nalStreamFormat;
@@ -737,28 +755,28 @@ int COMXVideo::Decode(uint8_t *pData, int iSize, double dts, double pts)
       omx_buffer->nFlags = 0;
       omx_buffer->nOffset = 0;
 
-      uint64_t val  = (uint64_t)(pts == DVD_NOPTS_VALUE) ? 0 : pts;
+      // if a stream contains any pts values, then use those with UNKNOWNs. Otherwise try using dts.
+      if(pts != DVD_NOPTS_VALUE)
+        m_contains_valid_pts = true;
+      if(pts == DVD_NOPTS_VALUE && !m_contains_valid_pts)
+        pts = dts;
 
       if(m_av_clock->VideoStart())
       {
-        // only send dts on first frame to get nerly correct starttime
+        // only send dts on first frame to get nearly correct starttime
         if(pts == DVD_NOPTS_VALUE)
           pts = dts;
-        val  = (uint64_t)(pts == DVD_NOPTS_VALUE) ? 0 : pts;
-
         omx_buffer->nFlags = OMX_BUFFERFLAG_STARTTIME;
-        CLog::Log(LOGDEBUG, "OMXVideo::Decode VDec : setStartTime %f\n", (float)val / DVD_TIME_BASE);
+        CLog::Log(LOGDEBUG, "OMXVideo::Decode VDec : setStartTime %f\n", (pts == DVD_NOPTS_VALUE ? 0.0 : pts) / DVD_TIME_BASE);
         m_av_clock->VideoStart(false);
-        omx_buffer->nTimeStamp = ToOMXTime(val);
       }
       else
       {
         if(pts == DVD_NOPTS_VALUE)
           omx_buffer->nFlags = OMX_BUFFERFLAG_TIME_UNKNOWN;
-        omx_buffer->nTimeStamp = ToOMXTime(val);
       }
 
-
+      omx_buffer->nTimeStamp = ToOMXTime((uint64_t)(pts == DVD_NOPTS_VALUE) ? 0 : pts);
       omx_buffer->nFilledLen = (demuxer_bytes > omx_buffer->nAllocLen) ? omx_buffer->nAllocLen : demuxer_bytes;
       memcpy(omx_buffer->pBuffer, demuxer_content, omx_buffer->nFilledLen);
 
