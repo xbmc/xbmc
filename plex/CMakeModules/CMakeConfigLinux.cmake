@@ -29,6 +29,8 @@ set(LINK_PKG
   Iconv
   Avahi
   Xrandr
+  LibDl
+  LibRt
 )
 
 foreach(l ${LINK_PKG})
