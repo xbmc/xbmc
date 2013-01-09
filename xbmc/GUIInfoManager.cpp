@@ -4334,6 +4334,16 @@ CStdString CGUIInfoManager::GetVersion()
   tmp.Format("%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_TAG);
 #endif
 #else
+
+#ifdef TARGET_WINDOWS
+#include "git_rev.h"
+#else
+#include "git_revision.h"
+#endif
+#ifndef GIT_REV
+#define GIT_REV "Unknown"
+#endif
+
   tmp.Format("%s-%s", PLEX_VERSION, GIT_REV);
 #endif
   return tmp;
