@@ -4335,11 +4335,7 @@ CStdString CGUIInfoManager::GetVersion()
 #endif
 #else
 
-#ifdef TARGET_WINDOWS
-#include "git_rev.h"
-#else
 #include "git_revision.h"
-#endif
 #ifndef GIT_REV
 #define GIT_REV "Unknown"
 #endif
