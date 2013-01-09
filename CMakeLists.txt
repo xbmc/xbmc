@@ -2,13 +2,16 @@ project("Plex Home Theater")
 cmake_minimum_required(VERSION 2.8.7)
 include(ExternalProject)
 
+set(root ${PROJECT_SOURCE_DIR})
+set(plexdir ${root}/plex)
+set(CMAKE_MODULE_PATH ${plexdir}/CMakeModules ${CMAKE_MODULE_PATH})
 
-execute_process(
-  COMMAND git rev-parse --short HEAD
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-  OUTPUT_VARIABLE PLEX_VERSION_REVISION
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+include(GetGitRevisionDescription)
+include(GetDate)
+today(PLEX_CURRENT_DATE)
+get_git_head_revision(REFSPEC PLEX_FULL_GIT_REVISION)
+string(SUBSTRING ${PLEX_FULL_GIT_REVISION} 0 8 PLEX_GIT_REVISION)
+configure_file(${plexdir}/git_revision.h.in git_revision.h)
 
 set(PLEX_VERSION_MAJOR 0)
 set(PLEX_VERSION_MINOR 9)
@@ -19,12 +22,10 @@ if(DEFINED ENV{BUILD_NUMBER})
 else()
   set(PLEX_VERSION_BUILD "")
 endif()
-set(PLEX_VERSION_STRING ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH}.${PLEX_VERSION_SMALL}${PLEX_VERSION_BUILD}-${PLEX_VERSION_REVISION})
+set(PLEX_VERSION_STRING ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH}.${PLEX_VERSION_SMALL}${PLEX_VERSION_BUILD}-${PLEX_GIT_REVISION})
 set(PLEX_VERSION_STRING_SHORT ${PLEX_VERSION_MAJOR}.${PLEX_VERSION_MINOR}.${PLEX_VERSION_PATCH}.${PLEX_VERSION_SMALL})
 set(PLEX_VERSION_STRING_SHORT_BUILD ${PLEX_VERSION_STRING_SHORT}${PLEX_VERSION_BUILD})
 set(XBMC_VERSION "Frodo")
-
-set(root ${PROJECT_SOURCE_DIR})
 
 if(APPLE OR WIN32)
   if(NOT WIN32)
@@ -37,8 +38,6 @@ else()
   message("-- On Linux we don't use a dependency dir")
 endif()
 
-set(plexdir ${root}/plex)
-set(CMAKE_MODULE_PATH ${plexdir}/CMakeModules ${CMAKE_MODULE_PATH})
 
 include(CMakeFunctions)
 
@@ -195,20 +194,21 @@ add_subdirectory(tools/TexturePacker)
 
 # global includes
 include_directories(
+  ${CMAKE_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/xbmc
-	${plexdir}
-	${plexdir}/Utility
-	${plexdir}/Owned
+  ${plexdir}
+  ${plexdir}/Utility
+  ${plexdir}/Owned
 
-	${root}/xbmc/utils
-	${root}
-	${root}/xbmc/cores/dvdplayer
-	${root}/xbmc/settings
-	${root}/lib
-	${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff
-
-	${root}/tools/darwin/depends/libcrystalhd
-	${root}/xbmc/cores/AudioEngine
+  ${root}/xbmc/utils
+  ${root}
+  ${root}/xbmc/cores/dvdplayer
+  ${root}/xbmc/settings
+  ${root}/lib
+  ${CMAKE_BINARY_DIR}/lib/cpluff/cpluff-prefix/src/cpluff/libcpluff
+  
+  ${root}/tools/darwin/depends/libcrystalhd
+  ${root}/xbmc/cores/AudioEngine
 )
 
 # UPnP includes
@@ -222,27 +222,6 @@ include_directories(
   ${root}/lib/libUPnP/Neptune/Source/Core
   ${root}/lib/libUPnP/Neptune/Source/System/Posix
 )
-
-#### Generate git_revision.h
-if(NOT WIN32)
-  add_custom_target(git_revision.h ALL DEPENDS ${root}/git_revision.h)
-  add_custom_command(
-    OUTPUT ${root}/git_revision.h
-    COMMAND ${plexdir}/scripts/generate_git.sh
-    DEPENDS ${plexdir}/scripts/generate_git.sh
-    WORKING_DIRECTORY ${root}
-  )
-else()
-  add_custom_target(git_rev.h ALL DEPENDS ${root}/git_rev.h)
-  add_custom_command(
-    OUTPUT ${root}/git_rev.h
-    COMMAND ${plexdir}/scripts/generate_git_win.cmd
-    DEPENDS ${plexdir}/scripts/generate_git_win.cmd
-    WORKING_DIRECTORY ${root}
-  )
-endif()
-
-set_source_files_properties(${root}/git_revision.h PROPERTIES GENERATED TRUE HEADER_FILE_ONLY TRUE)
 
 add_subdirectory(xbmc)
 if(APPLE)
