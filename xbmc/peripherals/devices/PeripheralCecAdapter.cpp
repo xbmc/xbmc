@@ -1273,7 +1273,6 @@ void CPeripheralCecAdapter::SetConfigurationFromLibCEC(const CEC::libcec_configu
   // set the primary device type
   m_configuration.deviceTypes.Clear();
   m_configuration.deviceTypes.Add(config.deviceTypes[0]);
-  bChanged |= SetSetting("device_type", (int)config.deviceTypes[0]);
 
   // hide the "connected device" and "hdmi port number" settings when the PA was autodetected
   bool bPAAutoDetected(config.bAutodetectAddress == 1);
