@@ -262,7 +262,7 @@ JSONRPC_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer
   {
     case Video:
     case Audio:
-      CApplicationMessenger::Get().SendAction(CAction(ACTION_STOP));
+      CApplicationMessenger::Get().MediaStop(true, parameterObject["playerid"].asInteger());
       return ACK;
 
     case Picture:
