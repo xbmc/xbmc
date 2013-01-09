@@ -170,6 +170,7 @@ namespace PERIPHERALS
     CDateTime                         m_preventActivateSourceOnPlay;
     bool                              m_bActiveSourceBeforeStandby;
     bool                              m_bOnPlayReceived;
+    bool                              m_bPlaybackPaused;
   };
 
   class CPeripheralCecAdapterUpdateThread : public CThread

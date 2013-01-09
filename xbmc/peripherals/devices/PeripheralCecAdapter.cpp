@@ -132,6 +132,7 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bStandbyPending          = false;
   m_bActiveSourceBeforeStandby = false;
   m_bOnPlayReceived          = false;
+  m_bPlaybackPaused          = false;
 
   m_currentButton.iButton    = 0;
   m_currentButton.iDuration  = 0;
@@ -1198,17 +1199,23 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
   {
     bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
     CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW) : NULL;
+    bool bPlayingAndDeactivated = activated == 0 && (
+        (pSlideShow && pSlideShow->IsPlaying()) || g_application.IsPlaying());
+    bool bPausedAndActivated = activated == 1 && adapter->m_bPlaybackPaused && (
+        (pSlideShow && pSlideShow->IsPaused()) || g_application.IsPaused());
+    if (bPlayingAndDeactivated)
+      adapter->m_bPlaybackPaused = true;
+    else if (bPausedAndActivated)
+      adapter->m_bPlaybackPaused = false;
 
-    if (pSlideShow)
+    if (bPlayingAndDeactivated || bPausedAndActivated)
     {
-      // pause/resume slideshow
-      pSlideShow->OnAction(CAction(ACTION_PAUSE));
-    }
-    else if ((g_application.IsPlaying() && activated == 0) ||
-             (g_application.IsPaused() && activated == 1))
-    {
-      // pause/resume player
-      CApplicationMessenger::Get().MediaPause();
+      if (pSlideShow)
+        // pause/resume slideshow
+        pSlideShow->OnAction(CAction(ACTION_PAUSE));
+      else
+        // pause/resume player
+        CApplicationMessenger::Get().MediaPause();
     }
   }
 }
