@@ -83,7 +83,7 @@ public:
   static int android_printf(const char *format, ...);
   
   static int GetBatteryLevel();
-  static bool StartActivity(const std::string &package);
+  static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static bool ListApplications(std::vector <androidPackage> *applications);
   static bool GetIconSize(const std::string &packageName, int *width, int *height);
   static bool GetIcon(const std::string &packageName, void* buffer, unsigned int bufSize); 
