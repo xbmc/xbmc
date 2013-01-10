@@ -2789,7 +2789,7 @@ CStdString CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) co
     useFolder = true;
     strFile = GetLocalMetadataPath();
   }
-  else if (useFolder)
+  else if (useFolder && !(m_bIsFolder && !IsFileFolder()))
     strFile = URIUtils::GetDirectory(strFile);
 
   if (strFile.empty()) // empty filepath -> nothing to find
