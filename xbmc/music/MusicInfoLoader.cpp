@@ -138,7 +138,8 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
     if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
     { // Query map if we previously cached the file on HD
       *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
-      pItem->SetArt("thumb", mapItem->GetArt("thumb"));
+      if (mapItem->HasArt("thumb"))
+        pItem->SetArt("thumb", mapItem->GetArt("thumb"));
     }
     else
     {
@@ -158,7 +159,8 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
       if ((song=m_songsMap.Find(pItem->GetPath()))!=NULL)
       {  // Have we loaded this item from database before
         pItem->GetMusicInfoTag()->SetSong(*song);
-        pItem->SetArt("thumb", song->strThumb);
+        if (!song->strThumb.empty())
+          pItem->SetArt("thumb", song->strThumb);
       }
       else if (pItem->IsMusicDb())
       { // a music db item that doesn't have tag loaded - grab details from the database
@@ -168,7 +170,8 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
         if (m_musicDatabase.GetSongById(param.GetSongId(), song))
         {
           pItem->GetMusicInfoTag()->SetSong(song);
-          pItem->SetArt("thumb", song.strThumb);
+          if (!song.strThumb.empty())
+            pItem->SetArt("thumb", song.strThumb);
         }
       }
       else if (g_guiSettings.GetBool("musicfiles.usetags") || pItem->IsCDDA())

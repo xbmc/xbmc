@@ -4829,8 +4829,9 @@ void CApplication::StopPlaying()
     /* END PLEX */
 
     // turn off visualisation window when stopping
-    if (iWin == WINDOW_VISUALISATION
+    if ((iWin == WINDOW_VISUALISATION
     ||  iWin == WINDOW_FULLSCREEN_VIDEO)
+    && !m_bStop)
       g_windowManager.PreviousWindow();
 
     g_partyModeManager.Disable();

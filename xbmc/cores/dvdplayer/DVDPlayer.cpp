@@ -2253,6 +2253,11 @@ void CDVDPlayer::HandleMessages()
         double start = DVD_NOPTS_VALUE;
 
         int time = msg.GetRestore() ? (int)m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
+
+        // if input streams doesn't support seektime we must convert back to clock
+        if(dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInputStream) == NULL)
+          time -= DVD_TIME_TO_MSEC(m_State.time_offset);
+
         CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
         if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
         {
@@ -4089,6 +4094,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
     state.time       = DVD_TIME_TO_MSEC(m_clock.GetClock() + m_offset_pts);
     state.time_total = m_pDemuxer->GetStreamLength();
+    state.time_src   = ETIMESOURCE_CLOCK;
   }
 
   if(m_pInputStream)
@@ -4106,6 +4112,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     {
       state.time       = pDisplayTime->GetTime();
       state.time_total = pDisplayTime->GetTotalTime();
+      state.time_src   = ETIMESOURCE_INPUT;
     }
 
     if (dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))
@@ -4114,6 +4121,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       {
         state.time       = XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime;
         state.time_total = m_dvd.iDVDStillTime;
+        state.time_src   = ETIMESOURCE_MENU;
       }
     }
 
@@ -4139,12 +4147,14 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   state.player_state = "";
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    state.time_offset = DVD_MSEC_TO_TIME(state.time) - state.dts;
     if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(state.player_state))
       state.player_state = "";
   }
-  else
+
+  if (state.time_src == ETIMESOURCE_CLOCK)
     state.time_offset = 0;
+  else
+    state.time_offset = DVD_MSEC_TO_TIME(state.time) - state.dts;
 
   if (m_CurrentAudio.id >= 0 && m_pDemuxer)
   {

@@ -459,6 +459,13 @@ protected:
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;
 
+  enum ETimeSource
+  {
+    ETIMESOURCE_CLOCK,
+    ETIMESOURCE_INPUT,
+    ETIMESOURCE_MENU,
+  };
+
   struct SPlayerState
   {
     SPlayerState() { Clear(); }
@@ -468,6 +475,7 @@ protected:
       time          = 0;
       time_total    = 0;
       time_offset   = 0;
+      time_src      = ETIMESOURCE_CLOCK;
       dts           = DVD_NOPTS_VALUE;
       player_state  = "";
       chapter       = 0;
@@ -490,6 +498,7 @@ protected:
 
     double time;              // current playback time
     double time_total;        // total playback time
+    ETimeSource time_src;     // current time source
     double dts;               // last known dts
 
     std::string player_state;  // full player state
