@@ -73,7 +73,7 @@
 #endif
 #if defined(TARGET_DARWIN_OSX)
 #ifndef __PLEX__
-#include "XBMCHelper.h"
+#include "osx/XBMCHelper.h"
 #else
 #include "Helper/PlexHelper.h"
 #endif
@@ -2097,6 +2097,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
        dialog->DoModal();
     }
   }
+  else if (strSetting.Equals("pvrclient.menuhook") && g_PVRManager.IsStarted())
+  {
+    g_PVRManager.Get().Clients()->ProcessMenuHooks(-1, PVR_MENUHOOK_SETTING);
+  }
   else if (strSetting.compare(0, 12, "audiooutput.") == 0)
   {
     if (strSetting.Equals("audiooutput.audiodevice"))
@@ -2294,7 +2298,6 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
   {
     pControl = new CGUIEditControl(*m_pOriginalEdit);
     if (!pControl) return NULL;
-    ((CGUIEditControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
     ((CGUIEditControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(width);
     pSettingControl.reset(new CEditSettingControl((CGUIEditControl *)pControl, iControlID, pSetting));
@@ -2303,7 +2306,6 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
   {
     pControl = new CGUIButtonControl(*m_pOriginalButton);
     if (!pControl) return NULL;
-    ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
     ((CGUIButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(width);
     pSettingControl.reset(new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting));
