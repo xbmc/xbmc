@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Plex Home Theater
+Name[en_US]=Plex Home Theater
+Exec=/opt/plexhometheater/bin/plexhometheater
+Icon=plexhometheater
+Comment[en_US]=Plex Home Theater
+StartupNotify=true
+Categories=AudioVideo
