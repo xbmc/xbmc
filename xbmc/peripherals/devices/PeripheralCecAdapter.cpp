@@ -252,7 +252,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     {
       // display warning: libCEC could not be loaded
       CLog::Log(LOGERROR, "%s", g_localizeStrings.Get(36017).c_str());
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36029));
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36017));
       delete m_dll;
       m_dll = NULL;
       m_features.clear();
