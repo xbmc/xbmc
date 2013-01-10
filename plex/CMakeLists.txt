@@ -87,8 +87,13 @@ if(NOT WIN32)
     DEPENDS TexturePacker
   )
 
-  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
-  set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
+  if(PLEX_SKIP_BUNDLING STREQUAL "1")
+    set(EXCLUDE_TEXTURES ^foo)
+  else()
+    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
+    set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
+  endif()
 else()
   set(EXCLUDE_TEXTURES ^foo)
 endif()
@@ -138,10 +143,6 @@ install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media 
 install(FILES ${plexdir}/Resources/plex-icon-120.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/peripherals.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
-
-if(NOT WIN32)
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
-endif()
 
 if(APPLE)
   install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/tools/darwin/runtime COMPONENT RUNTIME)
