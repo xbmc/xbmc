@@ -8286,8 +8286,15 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         xmlDoc.InsertEndChild(decl);
       }
 
-      if (singleFiles && images && !bSkip)
+      if (images && !bSkip)
       {
+        if (!singleFiles)
+        {
+          CStdString strFileName(movie.m_strTitle);
+          if (movie.m_iYear > 0)
+            strFileName.AppendFormat("_%i", movie.m_iYear);
+          item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
+        }
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
         {
           CStdString savedThumb = item.GetLocalArt(i->first, false);
@@ -8374,8 +8381,15 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
-      if (singleFiles && images && !bSkip)
+      if (images && !bSkip)
       {
+        if (!singleFiles)
+        {
+          CStdString strFileName(StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
+          if (movie.m_iYear > 0)
+            strFileName.AppendFormat("_%i", movie.m_iYear);
+          item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
+        }
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
         {
           CStdString savedThumb = item.GetLocalArt(i->first, false);
@@ -8476,8 +8490,11 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
-      if (singleFiles && images && !bSkip)
+      if (images && !bSkip)
       {
+        if (!singleFiles)
+          item.SetPath(GetSafeFile(tvshowsDir, tvshow.m_strTitle));
+
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
         {
           CStdString savedThumb = item.GetLocalArt(i->first, true);
@@ -8575,8 +8592,14 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
           xmlDoc.InsertEndChild(decl);
         }
 
-        if (singleFiles && images && !bSkip)
+        if (images && !bSkip)
         {
+          if (!singleFiles)
+          {
+            CStdString epName;
+            epName.Format("s%02ie%02i.avi", episode.m_iSeason, episode.m_iEpisode);
+            item.SetPath(URIUtils::AddFileToFolder(showDir, epName));
+          }
           for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
           {
             CStdString savedThumb = item.GetLocalArt(i->first, false);
