@@ -1,0 +1,11 @@
+Upstream Changes
+[*] Correct handling of multimedia key presses
+[*] Fixes to JobManager
+[*] Fixes to TexturePacker
+
+Plex/HT Changes
+[*] Enabled Peripherals Preferences dialog (Thanks to andresendo for tracking this down!)
+[*] Fix some airplay crashes
+[*] Numerous Linux stability fixes
+[*] Codesigning fix on MacOSX (should fix firewall voes)
+[*] Include libass for Windows (should fix subtitles)
