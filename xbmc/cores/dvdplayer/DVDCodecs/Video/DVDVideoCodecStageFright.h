@@ -22,6 +22,7 @@
 #if defined(HAVE_LIBSTAGEFRIGHT)
 
 #include "DVDVideoCodec.h"
+#include "utils/BitstreamConverter.h"
 
 class CStageFrightVideo;
 class CDVDVideoCodecStageFright : public CDVDVideoCodec
@@ -43,23 +44,9 @@ class CDVDVideoCodecStageFright : public CDVDVideoCodec
   protected:
     const char        *m_pFormatName;
     CStageFrightVideo     *m_stf_decoder;
-
-    // bitstream to bytestream (Annex B) conversion support.
-    bool bitstream_convert_init(void *in_extradata, int in_extrasize);
-    bool bitstream_convert(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
-    void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
-        const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
-
-    typedef struct omx_bitstream_ctx {
-      uint8_t  length_size;
-      uint8_t  first_idr;
-      uint8_t *sps_pps_data;
-      uint32_t size;
-    } omx_bitstream_ctx;
-
-    uint32_t          m_sps_pps_size;
-    omx_bitstream_ctx m_sps_pps_context;
+    
     bool              m_convert_bitstream;
+    CBitstreamConverter   *m_converter;
 };
 
 #endif

@@ -24,13 +24,18 @@
 #include <string>
 #include <vector>
 
+#include <system/window.h>
 #include <android/native_activity.h>
 
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
 
 #include "xbmc.h"
+#include "utils/GlobalsHandling.h"
 
+#ifdef HAVE_LIBSTAGEFRIGHT
+#include <utils/StrongPointer.h>
+#endif
 
 // forward delares
 class CAESinkAUDIOTRACK;
@@ -53,7 +58,8 @@ struct androidPackage
 class CXBMCApp : public IActivityHandler
 {
 public:
-  CXBMCApp(ANativeActivity *nativeActivity);
+  CXBMCApp();
+  void SetActivity(ANativeActivity *nativeActivity);
   virtual ~CXBMCApp();
 
   bool isValid() { return m_activity != NULL; }
@@ -96,6 +102,14 @@ public:
   static int GetMaxSystemVolume();
 
   static int GetDPI();
+  
+#ifdef HAVE_LIBSTAGEFRIGHT
+  bool InitStagefrightSurface();
+  void UninitStagefrightSurface();
+
+  const android::sp<ANativeWindow>& GetAndroidVideoWindow() const { return m_VideoNativeWindow;}
+#endif
+
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
@@ -119,9 +133,16 @@ private:
   pthread_t m_thread;
   
   static ANativeWindow* m_window;
+#ifdef HAVE_LIBSTAGEFRIGHT
+  jobject m_SurfTexture;
+  android::sp<ANativeWindow> m_VideoNativeWindow;
+#endif
   
   void XBMC_Pause(bool pause);
   void XBMC_Stop();
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 };
+
+XBMC_GLOBAL_REF(CXBMCApp,g_xbmcapp);
+#define g_xbmcapp XBMC_GLOBAL_USE(CXBMCApp)

@@ -1851,7 +1851,7 @@ fi
 if test "$target_platform" = "target_android" ; then
   if test "$use_libstagefright" = "yes"; then
     USE_LIBSTAGEFRIGHT=1; AC_DEFINE([HAVE_LIBSTAGEFRIGHT],[1],["Define to 1 if libstagefright is enabled"])
-    LIBS+="-L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lbinder -lstagefright"
+    LIBS+="-L${prefix}/opt/android-libs -lstdc++ -lutils -lcutils -lbinder -lstagefright -lui"
   fi
 fi
 

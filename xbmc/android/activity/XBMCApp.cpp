@@ -18,6 +18,8 @@
  *
  */
 
+#include "system.h"
+
 #include <sstream>
 
 #include <unistd.h>
@@ -26,6 +28,7 @@
 #include <string.h>
 
 #include <android/native_window.h>
+#include <android/native_window_jni.h>
 #include <android/configuration.h>
 #include <jni.h>
 
@@ -63,9 +66,14 @@ ANativeWindow* CXBMCApp::m_window = NULL;
 CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
   : m_wakeLock(NULL)
 {
-  m_activity = nativeActivity;
   m_firstrun = true;
   m_exiting=false;
+}
+
+void CXBMCApp::SetActivity(ANativeActivity *nativeActivity)
+{
+  m_activity = nativeActivity;
+  
   if (m_activity == NULL)
   {
     android_printf("CXBMCApp: invalid ANativeActivity instance");
@@ -975,3 +983,53 @@ void CXBMCApp::SetSystemVolume(JNIEnv *env, float percent)
   env->DeleteLocalRef(cAudioManager);
 }
 
+#ifdef HAVE_LIBSTAGEFRIGHT
+bool CXBMCApp::InitStagefrightSurface()
+{
+  if (m_VideoNativeWindow != NULL)
+    return true;
+    
+  JNIEnv* env = xbmc_jnienv();
+
+  jclass cSurfaceTexture = env->FindClass("android/graphics/SurfaceTexture");
+  jmethodID midSurfaceTextureCtor = env->GetMethodID(cSurfaceTexture, "<init>", "(I)V");
+  //m_midUpdateTexImage = env->GetMethodID(cSurfaceTexture, "updateTexImage", "()V");
+  //m_midGetTransformMatrix  = env->GetMethodID(cSurfaceTexture, "getTransformMatrix", "([F)V");
+  jobject oSurfTexture = env->NewObject(cSurfaceTexture, midSurfaceTextureCtor, 0);
+  
+  //jfieldID fidSurfaceTexture = env->GetFieldID(cSurfaceTexture, ANDROID_GRAPHICS_SURFACETEXTURE_JNI_ID, "I");
+  //m_SurfaceTexture = (android::SurfaceTexture*)env->GetIntField(oSurfTexture, fidSurfaceTexture);
+  
+  env->DeleteLocalRef(cSurfaceTexture);
+  m_SurfTexture = env->NewGlobalRef(oSurfTexture);
+  env->DeleteLocalRef(oSurfTexture);
+  
+  jclass cSurface = env->FindClass("android/view/Surface");
+  jmethodID midSurfaceCtor = env->GetMethodID(cSurface, "<init>", "(Landroid/graphics/SurfaceTexture;)V");
+  jmethodID midSurfaceRelease = env->GetMethodID(cSurface, "release", "()V");
+  jobject oSurface = env->NewObject(cSurface, midSurfaceCtor, m_SurfTexture);
+  env->DeleteLocalRef(cSurface);
+
+  m_VideoNativeWindow = ANativeWindow_fromSurface(env, oSurface);
+
+  env->CallVoidMethod(oSurface, midSurfaceRelease);
+  env->DeleteLocalRef(oSurface);
+  
+  return true;
+}
+
+void CXBMCApp::UninitStagefrightSurface()
+{
+  JNIEnv* env = xbmc_jnienv();
+
+  ANativeWindow_release(m_VideoNativeWindow.get());
+  m_VideoNativeWindow.clear();
+  m_VideoNativeWindow = NULL;
+  
+  jclass cSurfaceTexture = env->GetObjectClass(m_SurfTexture);
+  jmethodID midSurfaceTextureRelease = env->GetMethodID(cSurfaceTexture, "release", "()V");
+  env->CallVoidMethod(m_SurfTexture, midSurfaceTextureRelease);
+  env->DeleteLocalRef(cSurfaceTexture);
+  env->DeleteGlobalRef(m_SurfTexture);
+}
+#endif

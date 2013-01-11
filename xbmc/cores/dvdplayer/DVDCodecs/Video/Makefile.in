@@ -25,7 +25,7 @@ endif
 ifeq (@USE_LIBSTAGEFRIGHT@,1)
 SRCS += StageFrightVideo.cpp
 SRCS += DVDVideoCodecStageFright.cpp
-INCLUDES += -I${prefix}/opt/android-source/frameworks/base/include -I${prefix}/opt/android-source/frameworks/base/native/include -I${prefix}/opt/android-source/system/core/include -I${prefix}/opt/android-source/frameworks/base/media/libstagefright -I${prefix}/opt/android-source/frameworks/base/include/media/stagefright/openmax -I${prefix}/opt/android-source/frameworks/base/media/libstagefright -I${prefix}/opt/android-source/libhardware/include
+INCLUDES += -I${prefix}/opt/android-source/frameworks/native/include -I${prefix}/opt/android-source/frameworks/av/include -I${prefix}/opt/android-source/system/core/include -I${prefix}/opt/android-source/frameworks/av/media/libstagefright -I${prefix}/opt/android-source/frameworks/native/include/media/openmax -I${prefix}/opt/android-source/frameworks/av/media/libstagefright -I${prefix}/opt/android-source/libhardware/include
 endif
 
 LIB=Video.a

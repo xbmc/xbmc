@@ -24,7 +24,9 @@
 #include "cores/dvdplayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
 
-class StagefrightContext;
+class CStageFrightVideoPrivate;
+
+namespace android { class MediaBuffer; }
 
 class CStageFrightVideo
 {
@@ -39,9 +41,12 @@ public:
   bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
+  
+  void LockOutputBuffer(EGLImageKHR eglimg);
+  void ReleaseOutputBuffer(EGLImageKHR eglimg);
 
 private:
-  StagefrightContext* m_context;
+  CStageFrightVideoPrivate* p;
 };
 
 // defined(HAVE_LIBSTAGEFRIGHT)

@@ -86,7 +86,8 @@ enum RenderMethod
   RENDER_POT    = 0x010,
   RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
-  RENDER_BYPASS = 0x100
+  RENDER_BYPASS = 0x100,
+  RENDER_ANDOES = 0x200
 };
 
 enum RenderQuality
@@ -158,6 +159,9 @@ public:
 #ifdef HAVE_VIDEOTOOLBOXDECODER
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
 #endif
+#ifdef HAVE_LIBSTAGEFRIGHT
+  virtual void         AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg);
+#endif
 
 protected:
   virtual void Render(DWORD flags, int index);
@@ -186,6 +190,10 @@ protected:
   void DeleteBYPASSTexture(int index);
   bool CreateBYPASSTexture(int index);
 
+  void UploadANDOESTexture(int index);
+  void DeleteANDOESTexture(int index);
+  bool CreateANDOESTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -193,6 +201,7 @@ protected:
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
+  void RenderAndroid(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
 
   CFrameBufferObject m_fbo;
@@ -216,6 +225,7 @@ protected:
   // Raw data used by renderer
   int m_currentField;
   int m_reloadShaders;
+  
 
   struct YUVPLANE
   {
@@ -247,7 +257,10 @@ protected:
     OpenMaxVideoBuffer *openMaxBuffer;
 #endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
-  struct __CVBuffer *cvBufferRef;
+    struct __CVBuffer *cvBufferRef;
+#endif
+#ifdef HAVE_LIBSTAGEFRIGHT
+    EGLImageKHR eglimg;
 #endif
 
   };
