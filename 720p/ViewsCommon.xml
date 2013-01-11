@@ -250,7 +250,7 @@
 				<description>Clip background</description>
 				<include>FullScreenBGImage</include>
 				<info background="true">ListItem.Art(thumb)</info>
-				<visible>!IsEmpty(ListItem.Art(thumb)) + Container.Content(clip)</visible>
+				<visible>IsEmpty(ListItem.Art(thumb)) + Container.Content(clip)</visible>
 				<animation effect="fade" start="0" end="6" time="0" condition="true">Conditional</animation>
 			</control>
 			<!-- main list -->
@@ -1212,6 +1212,65 @@
 								<aspectratio aligny="top">keep</aspectratio>
 								<visible>IsEmpty(ListItem.Plot)</visible>
 							</control>-->
+							<control type="image">
+								<visible>IsEmpty(ListItem.Plot) + ![Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
+								<posy>9</posy>
+								<posx>52</posx>
+								<width>334</width>
+								<height>334</height>
+								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
+								<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+							</control>
+							<!-- with plot -->
+							<control type="image">
+								<posx>-3</posx>
+								<posy>126</posy>
+								<width>436</width>
+								<height>230</height>
+								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
+								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
+								<visible>!Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
+							</control>
+							<control type="image">
+								<posx>-3</posx>
+								<posy>358</posy>
+								<width>436</width>
+								<height>230</height>
+								<info>ListItem.Icon</info>
+								<texture flipy="true" diffuse="DiffuseMirror.png"/>
+								<aspectratio aligny="top">keep</aspectratio>
+								<visible>!Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
+							</control>
+							<!-- channels directory, with plot -->
+							<control type="group">
+								<posy>70</posy>
+								<posx>215</posx>
+							<visible>Window.IsActive(1) + !IsEmpty(ListItem.Plot)</visible>
+							<control type="image">
+								<posx>0</posx>
+								<posy>26</posy>
+								<width>436</width>
+								<height>230</height>
+								<texture diffuse="bigPosterMask.png">$INFO[ListItem.Art(thumb)]</texture>
+								<aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
+							</control>
+							<control type="image">
+								<posx>0</posx>
+								<posy>258</posy>
+								<width>436</width>
+								<height>230</height>
+								<info>ListItem.Icon</info>
+								<texture flipy="true" diffuse="DiffuseMirror.png"/>
+								<aspectratio aligny="top">keep</aspectratio>
+							</control>
+							</control>
+						</control>
+						<!-- plugins FALLBACK HACK -->
+						<control type="group">
+							<posx>-280</posx>
+							<posy>50</posy>
+							<visible>[!Container.Content(movies) + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(photos) + !Container.Content(songs) + !Container.Content(albums) + !Container.Content(artists) + !Container.Content(secondary) + !Container.Content(clip)]</visible>
+							<!-- when no plot -->
 							<control type="image">
 								<visible>IsEmpty(ListItem.Plot) + ![Container.Content(albums) | Container.Content(artists) | Container.Content(songs)]</visible>
 								<posy>9</posy>
