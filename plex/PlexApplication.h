@@ -11,6 +11,11 @@
 
 #include "guilib/IMsgTargetCallback.h"
 #include "AutoUpdate/PlexAutoUpdate.h"
+#include "threads/Thread.h"
+
+#ifdef TARGET_DARWIN_OSX
+#include "Helper/PlexHelper.h"
+#endif
 
 class PlexApplication;
 class PlexServiceListener;
@@ -19,6 +24,8 @@ class BackgroundMusicPlayer;
 typedef boost::shared_ptr<PlexApplication> PlexApplicationPtr;
 typedef boost::shared_ptr<PlexServiceListener> PlexServiceListenerPtr;
 typedef boost::shared_ptr<BackgroundMusicPlayer > BackgroundMusicPlayerPtr;
+
+
 
 ///
 /// The hub of all Plex goodness.

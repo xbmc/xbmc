@@ -79,6 +79,20 @@ bool PlexApplication::OnMessage(CGUIMessage& message)
   return false;
 }
 
+#ifdef TARGET_DARWIN_OSX
+// Hack
+class CRemoteRestartThread : public CThread
+{
+  public:
+    CRemoteRestartThread() : CThread("RemoteRestart") {}
+    void Process()
+    {
+      // This blocks until the helper is restarted
+      PlexHelper::GetInstance().Restart();
+    }
+};
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 void PlexApplication::OnWakeUp()
 {
@@ -86,9 +100,9 @@ void PlexApplication::OnWakeUp()
   m_serviceListener->scanNow();
   MyPlexManager::Get().scanAsync();
 
-  /* Since this ugly function blocks a couple of seconds, put it last */
 #ifdef TARGET_DARWIN_OSX
-  PlexHelper::GetInstance().Restart();
+  CRemoteRestartThread* hack = new CRemoteRestartThread;
+  hack->Create(true);
 #endif
 
 }
