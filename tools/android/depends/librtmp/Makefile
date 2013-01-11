@@ -3,9 +3,13 @@ DEPS= ../Makefile.include Makefile prefix.patch
 
 # lib name, version
 LIBNAME=rtmpdump
-VERSION=2.3
+VERSION=e0056c51cc1710c9a44d2a2c4e2f344fa9cabcf4
+GIT_DIR=$(TARBALLS_LOCATION)/$(LIBNAME).git
+BASE_URL=git://git.ffmpeg.org/$(LIBNAME).git
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tgz
+#tell git to use the addons repo rather than xbmc's repo
+export GIT_DIR
+export GIT_WORK_TREE=$(PLATFORM)
 
 # configuration settings
 
@@ -15,16 +19,25 @@ CLEAN_FILES=$(ARCHIVE) $(PLATFORM)
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
+$(GIT_DIR)/HEAD:
+	cd $(TARBALLS_LOCATION); git clone --bare $(BASE_URL)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
-	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
-	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+$(GIT_DIR)/current/$(VERSION): $(GIT_DIR)/HEAD $(DEPS)
+	git rev-list -1 $(VERSION) >/dev/null || git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+	git rev-list -1 $(VERSION) >/dev/null
+	rm -rf $(GIT_DIR)/current; mkdir -p $(GIT_DIR)/current
+	touch $@
+
+$(PLATFORM)/bootstrap: $(GIT_DIR)/current/$(VERSION)
+	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
+	git checkout $(VERSION) -- .
+
+$(PLATFORM): $(PLATFORM)/bootstrap
+	cd $(PLATFORM); patch -p1 < ../librtmp-60-second-fix.patch
 	cd $(PLATFORM); patch -p0 < ../prefix.patch
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)/librtmp CROSS_COMPILE=$(CROSSTOOLS) PREFIX=$(PREFIX)
+	$(MAKE) -C $(PLATFORM)/librtmp CROSS_COMPILE=$(CROSSTOOLS) PREFIX=$(PREFIX) XCFLAGS="$(CFLAGS)" XLDFLAGS="$(LDFLAGS) -lm"
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/librtmp install PREFIX=$(PREFIX)
