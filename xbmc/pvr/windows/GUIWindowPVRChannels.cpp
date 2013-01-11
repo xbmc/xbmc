@@ -181,7 +181,11 @@ CPVRChannelGroupPtr CGUIWindowPVRChannels::SelectNextGroup(void)
 {
   CPVRChannelGroupPtr currentGroup = SelectedGroup();
   CPVRChannelGroupPtr nextGroup = currentGroup->GetNextGroup();
-  while (nextGroup && *nextGroup != *currentGroup && nextGroup->Size() == 0)
+  while (nextGroup && nextGroup->Size() == 0 &&
+      // break if the group matches
+      *nextGroup != *currentGroup &&
+      // or if we hit the first group
+      !nextGroup->IsInternalGroup())
     nextGroup = nextGroup->GetNextGroup();
 
   /* always update so users can reset the list */
