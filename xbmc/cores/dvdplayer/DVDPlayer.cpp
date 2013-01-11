@@ -784,44 +784,11 @@ bool CDVDPlayer::OpenDemuxStream()
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
 
-  /* PLEX */
-  // Compute the bitrate, letting the item override.
-  CFileItem& file = g_application.CurrentFileItem();
-  int bitrate = m_pDemuxer->GetStreamBitrate();
-
-  if (file.IsPlexMediaServerLibrary() && bitrate > file.GetBitrate())
-    ; // Take computed bitrate.
-  else if (file.GetBitrate() > 0)
-    bitrate = file.GetBitrate() * 1000;
-
-  // Set the cache size based on the bitrate.
-  if (bitrate > 0)
-  {
-    int numSeconds = g_guiSettings.GetInt("cache.seconds");
-    int totalData = (bitrate / 8) * numSeconds;
-
-    // At least 1024 KB as a floor.
-    if (totalData/1024 < 1024)
-      totalData = 1024 * 1024;
-
-    // At most 15MB as a ceiling.
-    if (totalData/1024 > 15*1024)
-      totalData = 1024 * 15 * 1024;
-
-    int audioCacheSize = totalData/2;
-    if (audioCacheSize < 1024*1024)
-      audioCacheSize = 1024*1024;
-
-    CLog::Log(LOGNOTICE, "Setting cache size to %dKB (bitrate of %d, numSeconds = %d)", totalData/1024, bitrate, numSeconds);
-    m_dvdPlayerVideo.SetMaxDataSize(totalData);
-    m_dvdPlayerAudio.SetMaxDataSize(audioCacheSize);
-  }
-
   // Update Plex streams from the demuxer.
   RelinkPlexStreams();
   /* END PLEX */
 
-  /* PLEX - This might not be needed ? */
+#if 0
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if(len > 0 && tim > 0)
@@ -831,7 +798,13 @@ bool CDVDPlayer::OpenDemuxStream()
     m_readRate = std::min((unsigned int)((len * 1000 / tim) * 1.25), (unsigned int) (40000000 / 8));
     m_pInputStream->SetReadRate(m_readRate);
   }
-  /* END PLEX */
+#else
+  /* There is probably a good reason why we limit the readRate in upsteam
+   * But I am just going to ignore that until I run into any problems.
+   */
+  m_readRate = 1048576000;
+  m_pInputStream->SetReadRate(m_readRate);
+#endif
 
   return true;
 }
@@ -1215,10 +1188,6 @@ void CDVDPlayer::Process()
   // make sure all selected stream have data on startup
   if (CachePVRStream())
     SetCaching(CACHESTATE_PVR);
-  /* PLEX */
-  else
-    SetCaching(CACHESTATE_FULL);
-  /* END PLEX */
 
   // make sure application know our info
   UpdateApplication(0);
@@ -1274,10 +1243,6 @@ void CDVDPlayer::Process()
 
       if (CachePVRStream())
         SetCaching(CACHESTATE_PVR);
-      /* PLEX */
-      else
-        SetCaching(CACHESTATE_FULL);
-      /* END PLEX */
 
       UpdateApplication(0);
       UpdatePlayState(0);
@@ -1291,10 +1256,6 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
-
-    /* PLEX */
-    UpdateReadRate();
-    /* END PLEX */
 
     if (CheckDelayedChannelEntry())
       continue;
@@ -4771,18 +4732,6 @@ int CDVDPlayer::GetSubtitlePlexID()
 {
   SelectionStream& stream = m_SelectionStreams.Get(STREAM_SUBTITLE, m_SelectionStreams.IndexOf(STREAM_SUBTITLE, *this));
   return stream.plexID;
-}
-
-void CDVDPlayer::UpdateReadRate()
-{
-  unsigned int bytespersecond = (GetVideoBitrate() + GetAudioBitrate()) / 8;
-  if (bytespersecond > m_readRate)
-  {
-    //if current bitrate * 1.25 is over 40 Mbs then cap at at max of actual bitrate or 40 Mb/s whichever is greater
-    //otherwise set read rate to current bitrate * 1.25
-    m_readRate = std::min((unsigned int)(bytespersecond * 1.25), std::max((unsigned int) bytespersecond, (unsigned int) (40000000 / 8)));
-    m_pInputStream->SetReadRate(m_readRate);
-  }
 }
 
 /* END PLEX */

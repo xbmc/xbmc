@@ -673,7 +673,7 @@ void CGUISettings::Initialize()
 
   /* PLEX */
   CSettingsCategory* cache = AddCategory(4, "cache", 439);
-  AddInt(cache, "cache.seconds", 14029, 5, 3, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddInt(cache, "cache.percent", 14029, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   /* END PLEX */
 
 #ifndef __PLEX__

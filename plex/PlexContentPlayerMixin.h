@@ -219,6 +219,7 @@ class PlexContentPlayerMixin
          {
            file->SetPath(file->m_mediaItems[choice]->GetPath());
            file->SetProperty("localPath", file->m_mediaItems[choice]->GetProperty("localPath"));
+           file->SetProperty("selectedQuality", choices[choice].second);
          }
          else
          {
@@ -262,6 +263,7 @@ class PlexContentPlayerMixin
                pickedIndex = qualityMap[q];
                file->SetPath(file->m_mediaItems[pickedIndex]->GetPath());
                file->SetProperty("localPath", file->m_mediaItems[pickedIndex]->GetProperty("localPath"));
+               file->SetProperty("selectedQuality", file->m_mediaItems[pickedIndex]->GetProperty("mediaTag-videoResolution").asString());
                break;
              }
            }

@@ -380,6 +380,8 @@ class CAdvancedSettings
     bool m_bEnableKeyboardBacklightControl;
     bool m_bEnablePlexTokensInLogs;
     bool m_bCollapseSingleSeason;
+
+    unsigned int m_smartCacheUpperLimit;
     /* END PLEX */
 };
 

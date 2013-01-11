@@ -281,16 +281,6 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   if (thumb && strlen(thumb) > 0)
     strThumb = ProcessMediaElement(strPath, thumb, MAX_THUMBNAIL_AGE, localServer);
 
-#if 0
-  // See if the item is too old.
-  if (strFanart.empty() == false)
-  {
-    string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strFanart));
-    if (PlexUtils::FileAge(cachedFile) > MAX_FANART_AGE)
-      CFile::Delete(cachedFile);
-  }
-#endif
-
   // Walk the parsed tree.
   string strFileLabel = "%N - %T";
   string strSecondFileLabel = "%D";
@@ -1039,7 +1029,13 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         pItem->SetProperty("accessible", part->Attribute("accessible"));
 
       if (part->Attribute("exists"))
-        pItem->SetProperty("exists", part->Attribute("exists"));      
+        pItem->SetProperty("exists", part->Attribute("exists"));
+
+      if (part->Attribute("size"))
+      {
+        uint64_t fileSize = boost::lexical_cast<uint64_t>(part->Attribute("size"));
+        pItem->SetProperty("fileSize", (uint64_t)fileSize);
+      }
       
       PlexMediaPartPtr mediaPart(new PlexMediaPart(partID, part->Attribute("key"), duration));
       mediaParts.push_back(mediaPart);
@@ -1268,7 +1264,9 @@ class PlexMediaNodeLibrary : public PlexMediaNode
         if (pItem->HasProperty("exists"))
           theMediaItem->SetProperty("exists", pItem->GetProperty("exists"));
 
-        
+        if (pItem->HasProperty("fileSize"))
+          theMediaItem->SetProperty("fileSize", pItem->GetProperty("fileSize"));
+
         // If it's not an STRM file then save the local path.
         if (URIUtils::GetExtension(localPath) != ".strm")
           theMediaItem->SetProperty("localPath", localPath);

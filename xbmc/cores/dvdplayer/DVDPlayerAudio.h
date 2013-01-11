@@ -120,9 +120,6 @@ public:
 
   bool IsStalled()                                  { return m_stalled;  }
   bool IsPassthrough() const;
-  /* PLEX */
-  void SetMaxDataSize(int dataSize)                     { m_messageQueue.SetMaxDataSize(dataSize); }
-  /* END PLEX */
 protected:
 
   virtual void OnStartup();

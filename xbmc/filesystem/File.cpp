@@ -33,6 +33,10 @@
 
 #include "commons/Exception.h"
 
+/* PLEX */
+#include "CircularCache.h"
+/* END PLEX */
+
 using namespace XFILE;
 using namespace std;
 
@@ -209,7 +213,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 }
 
 //*********************************************************************************************
-bool CFile::Open(const CStdString& strFileName, unsigned int flags)
+bool CFile::Open(const CStdString& strFileName, unsigned int flags, size_t cacheSize)
 {
   m_flags = flags;
   try
@@ -232,7 +236,16 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
 
     if (m_flags & READ_CACHED)
     {
-      m_pFile = new CFileCache();
+      /* PLEX */
+      if (cacheSize > 0)
+      {
+        CCircularCache *cirCache = new CCircularCache(cacheSize, std::max<unsigned int>(cacheSize / 4, 1024 * 1024));
+        m_pFile = new CFileCache(cirCache, true);
+      }
+      /* END PLEX */
+      else
+        m_pFile = new CFileCache();
+
       return m_pFile->Open(url);
     }
 
