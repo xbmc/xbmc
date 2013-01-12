@@ -29,6 +29,7 @@
 
 #include <sys/stat.h>
 #ifdef _LINUX
+#include <fcntl.h>
 #include <sys/ioctl.h>
 #else
 #include <io.h>
@@ -37,6 +38,7 @@
 #endif
 #include "utils/log.h"
 
+#include <algorithm>
 
 using namespace XFILE;
 
@@ -46,7 +48,8 @@ using namespace XFILE;
 
 //*********************************************************************************************
 CHDFile::CHDFile()
-    : m_hFile(INVALID_HANDLE_VALUE)
+    : m_hFile(INVALID_HANDLE_VALUE),
+      m_i64LastDropPos(0)
 {}
 
 //*********************************************************************************************
@@ -100,6 +103,7 @@ bool CHDFile::Open(const CURL& url)
 
   m_i64FilePos = 0;
   m_i64FileLen = 0;
+  m_i64LastDropPos = 0;
 
   return true;
 }
@@ -207,6 +211,20 @@ unsigned int CHDFile::Read(void *lpBuf, int64_t uiBufSize)
   if ( ReadFile((HANDLE)m_hFile, lpBuf, (DWORD)uiBufSize, &nBytesRead, NULL) )
   {
     m_i64FilePos += nBytesRead;
+#if defined(TARGET_LINUX)
+    // Drop the cache between where we last seeked and 16 MB behind where
+    // we are now, to make sure the file doesn't displace everything else.
+    // However, we never throw out the first 16 MB of the file, as we might
+    // want the header etc., and we never ask the OS to drop in chunks of
+    // less than 1 MB.
+    int64_t start_drop = std::max<int64_t>(m_i64LastDropPos, 16 << 20);
+    int64_t end_drop = std::max<int64_t>(m_i64FilePos - (16 << 20), 0);
+    if (end_drop - start_drop >= (1 << 20))
+    {
+      posix_fadvise((*m_hFile).fd, start_drop, end_drop - start_drop, POSIX_FADV_DONTNEED);
+      m_i64LastDropPos = end_drop;
+    }
+#endif
     return nBytesRead;
   }
   return 0;
@@ -257,6 +275,12 @@ int64_t CHDFile::Seek(int64_t iFilePosition, int iWhence)
   }
   if (bSuccess)
   {
+    if (m_i64FilePos != lNewPos.QuadPart)
+    {
+      // If we seek, disable the cache drop heuristic until we
+      // have played sequentially for a while again from here.
+      m_i64LastDropPos = lNewPos.QuadPart;
+    }
     m_i64FilePos = lNewPos.QuadPart;
     return m_i64FilePos;
   }
