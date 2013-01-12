@@ -114,6 +114,7 @@ protected:
 
   std::string m_name;
   bool              m_bSoftware;
+  bool  m_isHi10p;
   IHardwareDecoder *m_pHardware;
   int m_iLastKeyframe;
   double m_dts;
