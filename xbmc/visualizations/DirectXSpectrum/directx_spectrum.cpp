@@ -463,3 +463,10 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* val
   return ADDON_STATUS_UNKNOWN;
 }
 
+//-- Announce -----------------------------------------------------------------
+// Receive announcements from XBMC
+//-----------------------------------------------------------------------------
+
+extern "C" void ADDON_Announce(const char *flag, const char *sender, const char *message, const void *data)
+{
+}
