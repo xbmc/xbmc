@@ -464,6 +464,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           CLog::Log(LOGDEBUG, __FUNCTION__": Focus switched to process %s", procfile.c_str());
       }
       break;
+    /* needs to be reviewed after frodo. we reset the system idle timer
+       and the display timer directly now (see m_screenSaverTimer).
     case WM_SYSCOMMAND:
       switch( wParam&0xFFF0 )
       {
@@ -476,7 +478,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case SC_SCREENSAVE:
           return 0;
       }
-      break;
+      break;*/
     case WM_SYSKEYDOWN:
       switch (wParam)
       {
