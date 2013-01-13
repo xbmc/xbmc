@@ -2346,9 +2346,15 @@ else
 fi
 
 if test "x$add_players" != "xno"; then
-  final_message="$final_message\n  additional players:\tYes"
+  final_message="$final_message\n  additional players:\tYes, $add_players"
 else
   final_message="$final_message\n  additional players:\tNo"
+fi
+
+if test "x$add_codecs" != "xno"; then
+  final_message="$final_message\n  additional codecs:\tYes, $add_codecs"
+else
+  final_message="$final_message\n  additional codecs:\tNo"
 fi
 
 ### External libraries messages
