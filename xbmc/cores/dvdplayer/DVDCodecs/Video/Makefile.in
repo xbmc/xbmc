@@ -22,9 +22,18 @@ SRCS += OpenMax.cpp
 SRCS += OpenMaxVideo.cpp
 SRCS += DVDVideoCodecOpenMax.cpp
 endif
+ifeq (@USE_LIBSTAGEFRIGHT@,1)
+SRCS += StageFrightVideo.cpp
+SRCS += DVDVideoCodecStageFright.cpp
+INCLUDES += -I${prefix}/opt/android-source/frameworks/base/include -I${prefix}/opt/android-source/frameworks/base/native/include -I${prefix}/opt/android-source/system/core/include -I${prefix}/opt/android-source/frameworks/base/media/libstagefright -I${prefix}/opt/android-source/frameworks/base/include/media/stagefright/openmax -I${prefix}/opt/android-source/frameworks/base/media/libstagefright -I${prefix}/opt/android-source/libhardware/include
+endif
 
 LIB=Video.a
 
 include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
+ifeq (@USE_LIBSTAGEFRIGHT@,1)
+CXXFLAGS += -Wno-multichar -fno-rtti
+endif
 
