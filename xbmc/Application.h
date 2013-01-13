@@ -378,14 +378,15 @@ protected:
   // timer information
 #ifdef _WIN32
   CWinIdleTimer m_idleTimer;
+  CWinIdleTimer m_screenSaverTimer;
 #else
   CStopWatch m_idleTimer;
+  CStopWatch m_screenSaverTimer;
 #endif
   CStopWatch m_restartPlayerTimer;
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
-  CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
 
   bool m_bInhibitIdleShutdown;
