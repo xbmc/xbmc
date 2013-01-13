@@ -748,7 +748,12 @@ bool CAddonUnInstallJob::DoWork()
     // stop the pvr manager, so running pvr add-ons are stopped and closed
     PVR::CPVRManager::Get().Stop();
   }
-
+  if (m_addon->Type() == ADDON_SERVICE)
+  {
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    if (service)
+      service->Stop();
+  }
   if (!CAddonInstallJob::DeleteAddon(m_addon->Path()))
     return false;
 
