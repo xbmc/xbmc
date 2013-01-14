@@ -63,6 +63,7 @@ void BackgroundMusicPlayer::SetTheme(const CStdString& theme)
 void BackgroundMusicPlayer::FadeOutAndDie()
 {
   // Fixme when they have nice fading in XBMC
+  m_player->UnRegisterAudioCallback();
   delete m_player;
   m_player = NULL;
 }
@@ -71,7 +72,10 @@ void BackgroundMusicPlayer::FadeOutAndDie()
 void BackgroundMusicPlayer::PlayCurrentTheme()
 {
   if (!m_player)
-    m_player = CPlayerCoreFactory::CreatePlayer(EPC_DVDPLAYER, *this);;
+  {
+    m_player = CPlayerCoreFactory::CreatePlayer(EPC_DVDPLAYER, *this);
+    m_player->RegisterAudioCallback(this);
+  }
 
   if (m_theme.size() && m_player)
     m_player->OpenFile(CFileItem(m_theme, false), CPlayerOptions());

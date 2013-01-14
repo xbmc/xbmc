@@ -296,8 +296,8 @@ msgstr "Enable low battery warning"
 #empty strings from id 18010 to 18100
 
 msgctxt "#18101"
-msgid "Background Music Volume"
-msgstr "Background Music Volume"
+msgid "Theme Music Volume"
+msgstr "Theme Music Volume"
 
 msgctxt "#18102"
 msgid "Enable Theme Music"
