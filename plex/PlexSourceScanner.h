@@ -21,7 +21,7 @@
 #include "Settings.h"
 #include "threads/Thread.h"
 #include "URL.h"
-
+#include "PlexServer.h"
 #include <string>
 #include <set>
 
@@ -29,10 +29,12 @@ class HostSources
 {
  public:
 
-  HostSources(const std::string& uuid, const std::string& host, const std::string& hostLabel, const std::string& url) 
-    : uuid(uuid), host(host), hostLabel(hostLabel)
+  HostSources(PlexServerPtr server)
   {
-    urls.insert(url);
+    uuid = server->uuid;
+    hostLabel = server->name;
+    host = server->address;
+    servers.insert(server);
   }
     
   void reset()
@@ -47,26 +49,22 @@ class HostSources
   
   std::string url()
   {
-    std::string ret;
-    
-    BOOST_FOREACH(std::string url, urls)
+    PlexServerPtr highScore;
+    BOOST_FOREACH(PlexServerPtr server, servers)
     {
-      CURL theURL(url);
-      ret = url;
-
-      // If we found a local one, be happy.
-      if (Cocoa_IsHostLocal(theURL.GetHostName()))
-        return url;
+      if(!highScore || highScore->score() < server->score())
+        highScore = server;
     }
     
     // If we have a local one, prefer it.
-    return ret;
+    return highScore->url();
   }
+
   
   std::string        uuid;
   std::string        host;
   std::string        hostLabel;
-  std::set<std::string>   urls;
+  std::set<PlexServerPtr> servers;
   bool          localConnection;
   VECSOURCES    videoSources;
   VECSOURCES    musicSources;
@@ -89,8 +87,8 @@ public:
   
   virtual void Process();
   
-  static void ScanHost(const std::string& uuid, const std::string& host, const std::string& hostLabel, const std::string& url);
-  static void RemoveHost(const std::string& uuid, const std::string& url, bool force=false);
+  static void ScanHost(PlexServerPtr server);
+  static void RemoveHost(PlexServerPtr server, bool force=false);
   
   static void MergeSourcesForWindow(int windowId);
   

@@ -156,21 +156,21 @@ void CPlexSourceScanner::Process()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-void CPlexSourceScanner::ScanHost(const std::string& uuid, const std::string& host, const std::string& hostLabel, const std::string& url)
+void CPlexSourceScanner::ScanHost(PlexServerPtr server)
 {
   boost::recursive_mutex::scoped_lock lock(g_lock);
   
   // Find or create a new host sources.
   HostSourcesPtr sources;
   
-  dprintf("Plex Source Scanner: asked to scan host %s (%s)", host.c_str(), uuid.c_str());
-  if (g_hostSourcesMap.count(uuid) != 0)
+  dprintf("Plex Source Scanner: asked to scan host %s (%s)", server->name.c_str(), server->uuid.c_str());
+  if (g_hostSourcesMap.count(server->uuid) != 0)
   {
     // We have an addition source.
-    sources = g_hostSourcesMap[uuid];
-    sources->urls.insert(url);
+    sources = g_hostSourcesMap[server->uuid];
+    sources->servers.insert(server);
     
-    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size(), sources->m_lastScan.elapsed());
+    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f", server->name.c_str(), Cocoa_IsHostLocal(server->address), sources->servers.size(), sources->m_lastScan.elapsed());
     if (sources->m_lastScan.elapsed() < 5)
     {
       dprintf("Plex Source Scanner: Scanned in the last 5 seconds, let's just assume nothing changed..");
@@ -179,40 +179,40 @@ void CPlexSourceScanner::ScanHost(const std::string& uuid, const std::string& ho
   else
   {
     // New one.
-    sources = HostSourcesPtr(new HostSources(uuid, host, hostLabel, url));
-    g_hostSourcesMap[uuid] = sources;
-    dprintf("Plex Source Scanner: got new server %s (local: %d count: %ld)", host.c_str(), Cocoa_IsHostLocal(host), sources->urls.size());
+    sources = HostSourcesPtr(new HostSources(server));
+    g_hostSourcesMap[server->uuid] = sources;
+    dprintf("Plex Source Scanner: got new server %s (local: %d count: %ld)", server->name.c_str(), Cocoa_IsHostLocal(server->address), sources->servers.size());
   }
 
   new CPlexSourceScanner(sources);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-void CPlexSourceScanner::RemoveHost(const std::string& uuid, const std::string& url, bool force)
+void CPlexSourceScanner::RemoveHost(PlexServerPtr server, bool force)
 {
   { // Remove the entry from the map in case it was remote.
     boost::recursive_mutex::scoped_lock lock(g_lock);
  
-    dprintf("Removing host %s for sources (force: %d)", uuid.c_str(), force);
-    HostSourcesPtr sources = g_hostSourcesMap[uuid];
+    dprintf("Removing host %s for sources (force: %d)", server->uuid.c_str(), force);
+    HostSourcesPtr sources = g_hostSourcesMap[server->uuid];
     if (sources)
     {
       // Remove the URL, and if we still have routes to the sources, get out.
-      sources->urls.erase(url);
-      dprintf("Plex Source Scanner: removing server %s (url: %s), %ld urls left.", sources->hostLabel.c_str(), url.c_str(), sources->urls.size());
-      if (sources->urls.size() > 0)
+      sources->servers.erase(server);
+      dprintf("Plex Source Scanner: removing server %s (url: %s), %ld urls left.", sources->hostLabel.c_str(), server->url().c_str(), sources->servers.size());
+      if (sources->servers.size() > 0)
         return;
       
       // If the count went down to zero, whack it.
-      g_hostSourcesMap.erase(uuid);
+      g_hostSourcesMap.erase(server->uuid);
     }    
   }
   
   // Notify the library section manager.
-  PlexLibrarySectionManager::Get().removeLocalSections(uuid);
+  PlexLibrarySectionManager::Get().removeLocalSections(server->uuid);
     
   // Notify the UI.
-  CLog::Log(LOGNOTICE, "Notifying remote remove host on %s", uuid.c_str());
+  CLog::Log(LOGNOTICE, "Notifying remote remove host on %s", server->uuid.c_str());
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_REMOTE_SOURCES);
   g_windowManager.SendThreadMessage(msg);
   
