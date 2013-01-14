@@ -16,6 +16,7 @@
 #include "MediaSource.h"
 #include "plex/Helper/PlexHelper.h"
 #include "MyPlexManager.h"
+#include "AdvancedSettings.h"
 
 BackgroundMusicPlayerPtr bgMusicPlayer;
 
@@ -32,8 +33,8 @@ PlexApplicationPtr PlexApplication::Create()
 ////////////////////////////////////////////////////////////////////////////////
 PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/plexht/appcast.xml")
 {
-  // We don't want the background music player whacked on exit (destructor issues), so we'll keep a reference.
-  m_serviceListener = PlexServiceListener::Create();
+  if (g_advancedSettings.m_bEnableGDM)
+    m_serviceListener = PlexServiceListener::Create();
 
   // Make sure we always scan for localhost.
   ManualServerScanner::Get().addServer("127.0.0.1");
@@ -46,7 +47,7 @@ PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/p
       ManualServerScanner::Get().addServer(address);
   }
 
-  //m_autoUpdater = PlexAutoUpdate::GetAutoUpdater();
+  MyPlexManager::Get().scanAsync();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

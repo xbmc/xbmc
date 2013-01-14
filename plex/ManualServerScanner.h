@@ -63,7 +63,7 @@ class ManualServerScanner
   /// Add a new manual server.
   void addServer(const string& address, bool removeOthers=false)
   {
-    boost::mutex::scoped_lock lk(m_mutex);
+    boost::mutex::scoped_lock lk(m_condMutex);
     
     if (m_serverMap.find(address) == m_serverMap.end())
       m_serverMap[address] = ManualServerPtr(new ManualServer(address));
@@ -82,7 +82,7 @@ class ManualServerScanner
   /// Remove all servers except local.
   void removeAllServersButLocal()
   {
-    boost::mutex::scoped_lock lk(m_mutex);
+    boost::mutex::scoped_lock lk(m_condMutex);
     
     // Mark non-local as deleted.
     BOOST_FOREACH(address_server_pair pair, m_serverMap)
@@ -102,8 +102,6 @@ class ManualServerScanner
       // Wait to be signaled or for the timeout to occur.
       m_condition.timed_wait(lk, delay);
       
-      m_mutex.lock();
-      
       // Get a copy of the servers.
       map<string, ManualServerPtr> servers(m_serverMap);
       
@@ -111,8 +109,6 @@ class ManualServerScanner
       BOOST_FOREACH(address_server_pair pair, servers)
         if (pair.second->deleted)
           m_serverMap.erase(pair.first);
-      
-      m_mutex.unlock();
       
       // See if they're alive.
       BOOST_FOREACH(address_server_pair pair, servers)
@@ -166,5 +162,4 @@ class ManualServerScanner
   
   boost::condition m_condition;
   boost::mutex     m_condMutex;
-  boost::mutex     m_mutex;
 };

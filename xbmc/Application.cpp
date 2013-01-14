@@ -1565,10 +1565,6 @@ bool CApplication::Initialize()
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
 
-  /* PLEX */
-  MyPlexManager::Get().scanAsync();
-  /* END PLEX */
-
   return true;
 }
 
