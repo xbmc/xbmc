@@ -526,10 +526,11 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     // Cancel pending tasks and hide.
     m_workerManager->cancelPending();
     HideAllLists();
+    return true;
   }
 
   bool ret = CGUIWindow::OnMessage(message);
-  
+
   switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_INIT:
@@ -620,6 +621,7 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       }
       
       m_workerManager->destroy(worker->getID());
+      return true;
     }
   }
   break;
@@ -631,11 +633,12 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int iControl = message.GetSenderId();
       PlayFileFromContainer(GetControl(iControl));
+      return true;
     }
   }
   break;
   }
-  
+
   return ret;
 }
 

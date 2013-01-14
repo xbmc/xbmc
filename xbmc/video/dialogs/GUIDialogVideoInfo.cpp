@@ -643,6 +643,7 @@ void CGUIDialogVideoInfo::ClearCastList()
 
 void CGUIDialogVideoInfo::Play(bool resume)
 {
+#ifndef __PLEX__
   if (!m_movieItem->GetVideoInfoTag()->m_strEpisodeGuide.IsEmpty())
   {
     CStdString strPath;
@@ -670,6 +671,11 @@ void CGUIDialogVideoInfo::Play(bool resume)
     }
     pWindow->PlayMovie(&movie);
   }
+#else
+  CFileItem movie(*m_movieItem);
+  CApplicationMessenger::Get().PlayFile(movie);
+  Close();
+#endif
 }
 
 string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string, string> &currentArt)
