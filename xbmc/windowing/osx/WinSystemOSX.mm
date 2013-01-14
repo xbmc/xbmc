@@ -1476,13 +1476,17 @@ void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 
   if (!bEnable)
   {
-    CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
-    IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-      kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+    if (assertionID == 0)
+    {
+      CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
+      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
+        kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+    }
   }
   else if (assertionID != 0)
   {
     IOPMAssertionRelease(assertionID);
+    assertionID = 0;
   }
 
   m_use_system_screensaver = bEnable;
