@@ -306,6 +306,11 @@ void CGUITextBox::Scroll(unsigned int offset)
   ScrollToOffset(offset);
 }
 
+unsigned int CGUITextBox::MaxScroll() const
+{
+  return m_lines.size() > m_itemsPerPage ? m_lines.size() - m_itemsPerPage : 0;
+}
+
 void CGUITextBox::ScrollToOffset(int offset, bool autoScroll)
 {
   m_scrollOffset = m_offset * m_itemHeight;
