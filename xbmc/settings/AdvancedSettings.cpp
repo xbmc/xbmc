@@ -354,6 +354,7 @@ void CAdvancedSettings::Initialize()
 #endif
 
   m_iShowFirstRun = 1;
+  m_bEnableGDM = true;
   /* END PLEX */
 
 
@@ -1101,6 +1102,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetBoolean(pRootElement, "collapsesingleseason", m_bCollapseSingleSeason);
   XMLUtils::GetUInt(pRootElement, "smartcacheupperlimit", m_smartCacheUpperLimit);
   XMLUtils::GetInt(pRootElement, "showfirstrun", m_iShowFirstRun);
+  XMLUtils::GetBoolean(pRootElement, "enablegdm", m_bEnableGDM);
   /* END PLEX */
 
   // load in the GUISettings overrides:
