@@ -63,6 +63,8 @@
 
 #include "ApplicationMessenger.h"
 
+#include "AdvancedSettings.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -89,8 +91,12 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
   // Create the worker. We're not going to destroy it because whacking it on exit can cause problems.
   m_workerManager = new PlexContentWorkerManager();
   m_loadingThread = new CFanLoadingThread(this);
-  m_auxLoadingThread = new CAuxFanLoadThread();
-  m_auxLoadingThread->Create();
+
+  if (g_advancedSettings.m_iShowFirstRun != 77)
+  {
+    m_auxLoadingThread = new CAuxFanLoadThread();
+    m_auxLoadingThread->Create();
+  }
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -866,7 +872,6 @@ void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
 
 void CAuxFanLoadThread::Process()
 {
-#ifndef DEBUG
   while (!m_bStop)
   {
     CLog::Log(LOGDEBUG, "CAFL: sleeping %d seconds", m_numSeconds);
@@ -895,7 +900,6 @@ void CAuxFanLoadThread::Process()
       }
     }
   }
-#endif
 }
 
 void CFanLoadingThread::Process()

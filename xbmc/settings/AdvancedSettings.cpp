@@ -352,6 +352,8 @@ void CAdvancedSettings::Initialize()
 #else
   m_smartCacheUpperLimit = 1024 * 1024 * 100;
 #endif
+
+  m_iShowFirstRun = 1;
   /* END PLEX */
 
 
@@ -1098,6 +1100,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetBoolean(pRootElement, "enableplextokensinlogs", m_bEnablePlexTokensInLogs);
   XMLUtils::GetBoolean(pRootElement, "collapsesingleseason", m_bCollapseSingleSeason);
   XMLUtils::GetUInt(pRootElement, "smartcacheupperlimit", m_smartCacheUpperLimit);
+  XMLUtils::GetInt(pRootElement, "showfirstrun", m_iShowFirstRun);
   /* END PLEX */
 
   // load in the GUISettings overrides:

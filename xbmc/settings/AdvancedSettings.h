@@ -382,6 +382,7 @@ class CAdvancedSettings
     bool m_bCollapseSingleSeason;
 
     unsigned int m_smartCacheUpperLimit;
+    int m_iShowFirstRun;
     /* END PLEX */
 };
 
