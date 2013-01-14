@@ -28,7 +28,7 @@ AC_CONFIG_SRCDIR([decoder.h])
 
 AM_INIT_AUTOMAKE
 
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 
 dnl System type.
 
