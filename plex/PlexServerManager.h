@@ -282,7 +282,7 @@ public:
     
     dprintf("SERVERS:");
     BOOST_FOREACH(key_server_pair pair, m_servers)
-      dprintf("  * %s [%s:%d] local: %d live: %d (%s) count: %d", pair.second->name.c_str(), pair.second->address.c_str(), pair.second->port, pair.second->local, pair.second->live, pair.second->uuid.c_str(), pair.second->refCount());
+        dprintf("  * %s [%s:%d] (%s) local: %s, live: %s, score: %d, count: %d", pair.second->name.c_str(), pair.second->address.c_str(), pair.second->port, pair.second->uuid.c_str(), pair.second->local ? "yes" : "no", pair.second->live ? "yes" : "no", pair.second->score(), pair.second->refCount());
   }
   
   void run()
