@@ -168,12 +168,15 @@ void CPlexSourceScanner::ScanHost(PlexServerPtr server)
   {
     // We have an addition source.
     sources = g_hostSourcesMap[server->uuid];
+    int oldScore = sources->bestServer()->score();
+
     sources->servers.insert(server);
     
-    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f", server->name.c_str(), Cocoa_IsHostLocal(server->address), sources->servers.size(), sources->m_lastScan.elapsed());
-    if (sources->m_lastScan.elapsed() < 5)
+    dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f)", server->name.c_str(), Cocoa_IsHostLocal(server->address), sources->servers.size(), sources->m_lastScan.elapsed());
+    if (sources->m_lastScan.elapsed() < 5 && (oldScore >= server->score()))
     {
       dprintf("Plex Source Scanner: Scanned in the last 5 seconds, let's just assume nothing changed..");
+      return;
     }
   }
   else
