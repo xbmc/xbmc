@@ -1623,9 +1623,11 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
   delay = cache_left - play_left;
 
+#ifndef __PLEX__
   if (full && (currate < maxrate) )
     level = -1.0;                          /* buffer is full & our read rate is too low  */
   else
+#endif
     level = (cached + queued) / (cache_need + queued);
 
   return true;
