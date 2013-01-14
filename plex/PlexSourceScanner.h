@@ -47,7 +47,7 @@ class HostSources
     librarySections.Clear();
   }
   
-  std::string url()
+  PlexServerPtr bestServer()
   {
     PlexServerPtr highScore;
     BOOST_FOREACH(PlexServerPtr server, servers)
@@ -57,7 +57,7 @@ class HostSources
     }
     
     // If we have a local one, prefer it.
-    return highScore->url();
+    return highScore;
   }
 
   

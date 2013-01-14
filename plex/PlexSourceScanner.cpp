@@ -56,11 +56,11 @@ void CPlexSourceScanner::Process()
     // Compute the real host label (empty for local server).
     std::string realHostLabel = m_sources->hostLabel;
     bool onlyShared = false;
-    string url = m_sources->url();
+    PlexServerPtr server = m_sources->bestServer();
+    CStdString url = server->url();
     dprintf("Plex Source Scanner using best URL %s", url.c_str());
 
-    CURL _url(url);
-    if (!PlexServerManager::Get().checkServerReachability(m_sources->uuid, m_sources->host, _url.GetPort()))
+    if (!server->reachable())
     {
       boost::recursive_mutex::scoped_lock lock(g_lock);
       g_activeScannerCount--;
