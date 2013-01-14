@@ -78,6 +78,7 @@ plex_find_package(Alsa 0 1)
 if(VAAPI_FOUND)
   list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${VAAPI_LIBRARIES})
   include_directories(${VAAPI_INCLUDE_DIR})
+  set(HAVE_LIBVA 1)
 endif()
 
 plex_get_soname(CURL_SONAME ${CURL_LIBRARY})
@@ -108,4 +109,8 @@ endif()
 set(LIBPATH bin)
 set(BINPATH bin)
 set(RESOURCEPATH share/XBMC)
+
+
+set(PLEX_LINK_WHOLEARCHIVE -Wl,--whole-archive)
+set(PLEX_LINK_NOWHOLEARCHIVE -Wl,--no-whole-archive)
 
