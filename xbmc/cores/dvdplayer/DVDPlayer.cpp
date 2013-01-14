@@ -1619,7 +1619,7 @@ bool CDVDPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   double cache_sbp   = 1.1 * (double)DVD_TIME_BASE / currate;         /* underestimate by 10 % */
   double play_left   = play_sbp  * (remain + queued);                 /* time to play out all remaining bytes */
   double cache_left  = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
-  double cache_need  = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
+  double cache_need  = std::max(0.0, remain - (play_left / cache_sbp)); /* bytes needed until play_left == cache_left */
 
   delay = cache_left - play_left;
 
