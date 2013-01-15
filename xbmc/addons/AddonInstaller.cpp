@@ -556,12 +556,18 @@ bool CAddonInstallJob::OnPreInstall()
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
+    CAddonDatabase database;
+    database.Open();
+    bool running = !database.IsAddonDisabled(m_addon->ID()); //grab a current state
+    database.DisableAddon(m_addon->ID(),false); // enable it so we can remove it??
+    // regrab from manager to have the correct path set
     AddonPtr addon;
     ADDON::CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
     boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
     if (service)
       service->Stop();
-    return true;
+    CAddonMgr::Get().RemoveAddon(m_addon->ID()); // remove it
+    return running;
   }
 
   if (m_addon->Type() == ADDON_PVRDLL)
@@ -669,12 +675,18 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    // regrab from manager to have the correct path set
-    AddonPtr addon; 
-    CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
-    if (service)
-      service->Start();
+    CAddonDatabase database;
+    database.Open();
+    database.DisableAddon(m_addon->ID(),!reloadAddon); //return it into state it was before OnPreInstall()
+    if (reloadAddon) // reload/start it if it was running
+    {
+      // regrab from manager to have the correct path set
+      AddonPtr addon; 
+      CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
+      boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
+      if (service)
+        service->Start();
+    }
   }
 
   if (m_addon->Type() == ADDON_REPOSITORY)

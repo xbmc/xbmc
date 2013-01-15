@@ -296,7 +296,9 @@ void CGUIDialogAddonInfo::OnRollback()
     CStdString path = "special://home/addons/packages/";
     path += m_localAddon->ID()+"-"+m_rollbackVersions[choice]+".zip";
     // needed as cpluff won't downgrade
-    CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
+    if (!m_localAddon->IsType(ADDON_SERVICE))
+      //we will handle this for service addons in CAddonInstallJob::OnPostInstall
+      CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
     CAddonInstaller::Get().InstallFromZip(path);
     database.RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
     Close();
