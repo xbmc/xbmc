@@ -225,6 +225,8 @@ private:
   int                     m_audio_delay;
   bool                    m_audio_passthrough_ac3;
   bool                    m_audio_passthrough_dts;
+  bool                    m_audio_mute;
+  float                   m_audio_volume;
 
   int                     m_video_index;
   int                     m_video_count;
