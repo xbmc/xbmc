@@ -1048,7 +1048,9 @@ namespace VIDEO
     if (!m_database.Open())
       return -1;
 
-    GetArtwork(pItem, content, videoFolder, useLocal, showInfo ? showInfo->m_strPath : "");
+    if (!libraryImport)
+      GetArtwork(pItem, content, videoFolder, useLocal, showInfo ? showInfo->m_strPath : "");
+
     // ensure the art map isn't completely empty by specifying an empty thumb
     map<string, string> art = pItem->GetArt();
     if (art.empty())
@@ -1100,12 +1102,14 @@ namespace VIDEO
     {
       if (pItem->m_bIsFolder)
       {
-        // get and cache season thumbs
         map<int, map<string, string> > seasonArt;
-        GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes("season"), useLocal);
-        for (map<int, map<string, string> >::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
-          for (map<string, string>::iterator j = i->second.begin(); j != i->second.end(); ++j)
-            CTextureCache::Get().BackgroundCacheImage(j->second);
+        if (!libraryImport)
+        { // get and cache season thumbs
+          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes("season"), useLocal);
+          for (map<int, map<string, string> >::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+            for (map<string, string>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+              CTextureCache::Get().BackgroundCacheImage(j->second);
+        }
         lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = "tvshow";

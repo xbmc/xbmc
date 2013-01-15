@@ -321,7 +321,7 @@ void CGUIEPGGridContainer::Render()
     {
       /* first program starts before current view */
       int startBlock = blockOffset - 1;
-      while (m_gridIndex[channel][startBlock].item == item)
+      while (startBlock >= 0 && m_gridIndex[channel][startBlock].item == item)
         startBlock--;
 
       block = startBlock + 1;

@@ -558,7 +558,9 @@ bool CAddonInstallJob::OnPreInstall()
 
   if (m_addon->Type() == ADDON_SERVICE)
   {
-    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
+    AddonPtr addon;
+    ADDON::CAddonMgr::Get().GetAddon(m_addon->ID(), addon);
+    boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
     if (service)
       service->Stop();
     return true;

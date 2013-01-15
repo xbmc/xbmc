@@ -90,6 +90,7 @@ protected:
   bool              m_deinterlace;
   bool              m_hdmi_clock_sync;
   bool              m_first_frame;
+  bool              m_contains_valid_pts;
 
   bool NaluFormatStartCodes(enum CodecID codec, uint8_t *in_extradata, int in_extrasize);
 };
