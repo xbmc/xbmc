@@ -228,8 +228,8 @@ public:
   virtual float GetCachePercentage();
 
   virtual void  SetMute(bool bOnOff);
-  virtual bool  ControlsVolume() {return true;}
   virtual void  SetVolume(float fVolume);
+  virtual bool  ControlsVolume() {return true;}
   virtual void  SetDynamicRangeCompression(long drc)              {}
   virtual void  GetAudioInfo(CStdString &strAudioInfo);
   virtual void  GetVideoInfo(CStdString &strVideoInfo);

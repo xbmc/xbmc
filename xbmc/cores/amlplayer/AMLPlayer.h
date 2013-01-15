@@ -81,8 +81,8 @@ public:
   virtual void  SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();
   virtual void  SetMute(bool bOnOff);
-  virtual bool  ControlsVolume() {return true;}
   virtual void  SetVolume(float volume);
+  virtual bool  ControlsVolume() {return true;}
   virtual void  SetDynamicRangeCompression(long drc)              {}
   virtual void  GetAudioInfo(CStdString &strAudioInfo);
   virtual void  GetVideoInfo(CStdString &strVideoInfo);
