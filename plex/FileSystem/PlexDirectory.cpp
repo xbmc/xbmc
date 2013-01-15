@@ -1129,8 +1129,10 @@ class PlexMediaNodeLibrary : public PlexMediaNode
     CSong song;
 
     // Artist, album, year.
-    CStdString artist = StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator);
+    CStdString artist;
     SetValue(el, *parent, artist, "grandparentTitle");
+    song.artist.push_back(artist);
+
     SetValue(el, *parent, song.strAlbum, "parentTitle");
     SetValue(el, *parent, song.iYear, "parentYear");
 
