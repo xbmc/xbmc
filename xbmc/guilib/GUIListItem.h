@@ -38,6 +38,18 @@ class CGUIListItemLayout;
 class CArchive;
 class CVariant;
 
+/* PLEX */
+struct icompare
+{
+  bool operator()(const CStdString &s1, const CStdString &s2) const
+  {
+    return s1.CompareNoCase(s2) < 0;
+  }
+};
+
+typedef std::map<CStdString, CVariant, icompare> PropertyMap;
+/* END PLEX */
+
 /*!
  \ingroup controls
  \brief
@@ -196,15 +208,6 @@ protected:
 
   /* PLEX */
 public:
-  struct icompare
-  {
-    bool operator()(const CStdString &s1, const CStdString &s2) const
-    {
-      return s1.CompareNoCase(s2) < 0;
-    }
-  };
-
-  typedef std::map<CStdString, CVariant, icompare> PropertyMap;
   PropertyMap m_mapProperties;
 
   PropertyMap& GetPropertyDict() { return m_mapProperties; }
