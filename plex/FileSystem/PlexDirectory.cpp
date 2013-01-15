@@ -521,6 +521,27 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   if (IsHomeVideoSection(strPath))
     items.SetProperty("HomeVideoSection", true);
 
+#if 0
+  CLog::Log(LOGDEBUG, "**** PROPERTY DUMP OF %s ***", strPath.c_str());
+  PropertyMap pMap = items.GetPropertyDict();
+  BOOST_FOREACH(PropertyMap::value_type &val, pMap)
+  {
+    CLog::Log(LOGDEBUG, " * %s = %s", val.first.c_str(), val.second.c_str());
+  }
+  for (int i = 0; i < items.Size(); i ++)
+  {
+    CFileItemPtr item = items.Get(i);
+
+    CLog::Log(LOGDEBUG, "   > %s", item->GetPath().c_str());
+
+    PropertyMap pMap = item->GetPropertyDict();
+    BOOST_FOREACH(PropertyMap::value_type &val, pMap)
+    {
+      CLog::Log(LOGDEBUG, "     * %s = %s", val.first.c_str(), val.second.c_str());
+    }
+  }
+#endif
+
   return true;
 }
 
