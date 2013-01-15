@@ -777,6 +777,11 @@ float CAMLPlayer::GetPercentage()
     return 0.0f;
 }
 
+void CAMLPlayer::SetMute(bool bOnOff)
+{
+  // TODO: set mute
+}
+
 void CAMLPlayer::SetVolume(float volume)
 {
   CLog::Log(LOGDEBUG, "CAMLPlayer::SetVolume(%f)", volume);
