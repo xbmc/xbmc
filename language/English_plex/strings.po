@@ -861,6 +861,10 @@ msgctxt "#44204"
 msgid "Press OK Quit"
 msgstr "Press OK Quit"
 
+msgctxt "#44300"
+msgid "Allow control of Plex/HT from Plex Clients"
+msgstr "Allow control of Plex/HT from Plex Clients"
+
 #### These are error strings shown from channels
 #### errorcode + 50000
 msgctxt "#52000"

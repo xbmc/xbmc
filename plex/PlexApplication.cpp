@@ -18,21 +18,13 @@
 #include "MyPlexManager.h"
 #include "AdvancedSettings.h"
 
-BackgroundMusicPlayerPtr bgMusicPlayer;
-
 ////////////////////////////////////////////////////////////////////////////////
-PlexApplicationPtr PlexApplication::Create()
+void
+PlexApplication::Start()
 {
-#ifdef _WIN32
-  return PlexApplicationPtr(new PlexApplicationWin());
-#else
-  return PlexApplicationPtr(new PlexApplication());
-#endif
-}
 
-////////////////////////////////////////////////////////////////////////////////
-PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/plexht/appcast.xml")
-{
+  m_autoUpdater = new CPlexAutoUpdate("http://plexapp.com/appcast/plexht/appcast.xml");
+
   if (g_advancedSettings.m_bEnableGDM)
     m_serviceListener = PlexServiceListener::Create();
 
@@ -53,6 +45,7 @@ PlexApplication::PlexApplication() : m_autoUpdater("http://plexapp.com/appcast/p
 ////////////////////////////////////////////////////////////////////////////////
 PlexApplication::~PlexApplication()
 {
+  delete m_autoUpdater;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

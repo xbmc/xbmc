@@ -401,12 +401,21 @@ CUPnP::CreateRenderer(int port /* = 0 */)
         NPT_HttpUrl(m_IP,
                     atoi(g_guiSettings.GetString("services.webserverport")),
                     "/").ToString();
+#ifndef __PLEX__
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
     device->m_ModelDescription = "XBMC Media Center - Media Renderer";
     device->m_ModelURL         = "http://www.xbmc.org/";
     device->m_Manufacturer     = "Team XBMC";
     device->m_ManufacturerURL  = "http://www.xbmc.org/";
+#else
+    device->m_ModelName        = "Plex Home Theater";
+    device->m_ModelNumber      = g_infoManager.GetVersion().c_str();
+    device->m_ModelDescription = "Plex Home Theater - Media Renderer";
+    device->m_ModelURL         = "http://www.plexapp.com/";
+    device->m_Manufacturer     = "Plex inc";
+    device->m_ManufacturerURL  = "http://www.plexapp.com/";
+#endif
 
     return device;
 }

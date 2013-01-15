@@ -129,6 +129,7 @@
 #include "ManualServerScanner.h"
 #include "PlexUtils.h"
 #include "plex/GUI/GUIDialogMyPlexPin.h"
+#include "PlexApplication.h"
 /* END PLEX */
 
 using namespace std;
@@ -2226,6 +2227,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     {
       ManualServerScanner::Get().removeAllServersButLocal();
     }
+  }
+  else if (strSetting.Equals("services.plexplayer"))
+  {
+    if (g_guiSettings.GetBool(strSetting))
+      g_plexApplication.GetServiceListener()->startAdvertisement();
+    else
+      g_plexApplication.GetServiceListener()->stopAdvertisement();
   }
   /* END PLEX */
 

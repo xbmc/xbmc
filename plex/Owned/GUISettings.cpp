@@ -60,6 +60,8 @@
 #endif
 #include "Util.h"
 #include "GUIInfoManager.h"
+#include "PlexUtils.h"
+
 
 using namespace std;
 using namespace ADDON;
@@ -879,12 +881,20 @@ void CGUISettings::Initialize()
   // service settings
   AddGroup(SETTINGS_SERVICE, 14036);
 
-  //CSettingsCategory* srvGeneral = AddCategory(SETTINGS_SERVICE, "general", 16000);
+  CSettingsCategory* srvGeneral = AddCategory(SETTINGS_SERVICE, "Services", 14036);
 
-  CSettingsCategory* srvUpnp = AddCategory(SETTINGS_SERVICE, "upnp", 20187);
+  //CSettingsCategory* srvUpnp = AddCategory(SETTINGS_SERVICE, "upnp", 20187);
   AddBool(NULL, "services.upnpserver", 21360, false);
   AddBool(NULL, "services.upnpannounce", 20188, false);
-  AddBool(srvUpnp, "services.upnprenderer", 21881, false);
+
+
+  CStdString name;
+  name.Format("%s on %s", PLEX_TARGET_NAME, PlexUtils::GetHostName());
+
+  AddString(srvGeneral,"services.devicename", 1271, name, EDIT_CONTROL_INPUT);
+  AddBool(srvGeneral, "services.plexplayer", 44300, true);
+
+  AddBool(srvGeneral, "services.upnprenderer", 21881, false);
 
 #ifdef HAS_WEB_SERVER
   //CSettingsCategory* srvWeb = AddCategory(SETTINGS_SERVICE, "webserver", 33101);
@@ -918,12 +928,12 @@ void CGUISettings::Initialize()
 #endif
 
 #ifdef HAS_AIRPLAY
-  CSettingsCategory* srvAirplay = AddCategory(SETTINGS_SERVICE, "airplay", 1273);
-  AddString(srvAirplay,"services.devicename", 1271, PLEX_TARGET_NAME, EDIT_CONTROL_INPUT);
-  AddBool(srvAirplay, "services.airplay", 1270, false);
-  AddBool(srvAirplay, "services.useairplaypassword", 1272, false);
-  AddString(srvAirplay, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733);
+  //CSettingsCategory* srvAirplay = AddCategory(SETTINGS_SERVICE, "airplay", 1273);
+  AddBool(srvGeneral, "services.airplay", 1270, false);
+  AddBool(NULL, "services.useairplaypassword", 1272, false);
+  AddString(NULL, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733);
 #endif
+
 
 #ifndef _WIN32
   //CSettingsCategory* srvSmb = AddCategory(SETTINGS_SERVICE, "smb", 1200);

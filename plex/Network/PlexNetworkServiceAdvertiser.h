@@ -27,11 +27,12 @@ class PlexNetworkServiceAdvertiser : public NetworkServiceAdvertiser
   /// For subclasses to fill in.
   virtual void createReply(map<string, string>& headers) 
   {
-    headers["Name"] = PlexUtils::GetHostName();
+    headers["Name"] = g_guiSettings.GetString("services.devicename");
     headers["Port"] = g_guiSettings.GetString("services.webserverport");
     headers["Version"] = g_infoManager.GetVersion();
     headers["Product"] = PLEX_TARGET_NAME;
     headers["Protocol"] = "xbmcjson";
+    headers["Device-Class"] = "HTPC";
   }
   
   /// For subclasses to fill in.

@@ -16,6 +16,7 @@
 #include "PlexSourceScanner.h"
 #include "PlexNetworkServiceAdvertiser.h"
 #include "PlexServerManager.h"
+#include "settings/GUISettings.h"
 
 class PlexServiceListener;
 typedef boost::shared_ptr < PlexServiceListener > PlexServiceListenerPtr;
@@ -100,9 +101,8 @@ public:
     // Server browser.
     m_pmsBrowser = NetworkServiceBrowserPtr(new PlexNetworkServiceBrowser(m_ioService, NS_PLEX_MEDIA_SERVER_PORT));
     
-    // Player advertiser.
-    m_plexAdvertiser = NetworkServiceAdvertiserPtr(new PlexNetworkServiceAdvertiser(m_ioService));
-    m_plexAdvertiser->start();
+    // Player
+    startAdvertisement();
     
     // Start the I/O service in its own thread.
     m_ptrThread = ThreadPtr(new boost::thread(boost::bind(&boost::asio::io_service::run, &m_ioService)));
@@ -110,7 +110,7 @@ public:
 
   void stop()
   {
-    m_plexAdvertiser->stop();
+    stopAdvertisement();
     
     m_ioService.stop();
     if (m_ptrThread)
@@ -118,6 +118,27 @@ public:
 		  m_ptrThread->join();
       m_ptrThread.reset();
 	  }
+  }
+
+  void stopAdvertisement()
+  {
+    if (m_plexAdvertiser)
+    {
+      dprintf("NetworkService: shutting down player advertisement");
+      m_plexAdvertiser->stop();
+      m_plexAdvertiser.reset();
+    }
+  }
+
+  void startAdvertisement()
+  {
+    // Player advertiser.
+    if(g_guiSettings.GetBool("services.plexplayer"))
+    {
+      dprintf("NetworkService: starting player advertisement");
+      m_plexAdvertiser = NetworkServiceAdvertiserPtr(new PlexNetworkServiceAdvertiser(m_ioService));
+      m_plexAdvertiser->start();
+    }
   }
 
   void scanNow() { m_pmsBrowser->scanNow(); }

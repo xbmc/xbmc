@@ -506,7 +506,6 @@ protected:
 
   /* PLEX */
   LaunchHost *m_pLaunchHost;
-  PlexApplicationPtr m_plexApp;
   /* END PLEX */
 };
 

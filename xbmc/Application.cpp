@@ -833,8 +833,7 @@ bool CApplication::Create()
   // initialize the addon database (must be before the addon manager is init'd)
   CDatabaseManager::Get().Initialize(true);
 
-  // Create and initilize the plex application
-  m_plexApp = PlexApplication::Create();
+  g_plexApplication.Start();
   /* END PLEX */
 
   // start-up Addons Framework
@@ -3503,8 +3502,6 @@ bool CApplication::Cleanup()
   try
   {
     /* PLEX */
-    m_plexApp.reset();
-
     g_windowManager.Delete(WINDOW_SHARED_CONTENT);
     g_windowManager.Delete(WINDOW_NOW_PLAYING);
     g_windowManager.Delete(WINDOW_PLEX_SEARCH);
@@ -5124,7 +5121,7 @@ bool CApplication::IsIdleShutdownInhibited() const
 bool CApplication::OnMessage(CGUIMessage& message)
 {
   /* PLEX */
-  if (m_plexApp->OnMessage(message))
+  if (g_plexApplication.OnMessage(message))
     return true;
   /* END PLEX */
 
@@ -6435,12 +6432,12 @@ void CApplication::Hide()
 
 void CApplication::OnWakeUp()
 {
-  m_plexApp->OnWakeUp();
+  g_plexApplication.OnWakeUp();
 }
 
 void CApplication::ForceVersionCheck()
 {
-  m_plexApp->ForceVersionCheck();
+  g_plexApplication.ForceVersionCheck();
 }
 
 /* END PLEX */
