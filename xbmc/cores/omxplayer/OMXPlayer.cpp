@@ -460,6 +460,7 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     m_UpdateApplication = 0;
     m_offset_pts        = 0;
     m_current_volume    = 0;
+    m_current_mute      = false;
     m_change_volume     = true;
 
     m_item              = file;
@@ -1262,7 +1263,7 @@ void COMXPlayer::Process()
 
     if(m_change_volume)
     {
-      m_player_audio.SetCurrentVolume(m_current_volume);
+      m_player_audio.SetCurrentVolume(m_current_mute ? VOLUME_MINIMUM : m_current_volume);
       m_change_volume = false;
     }
 
@@ -4132,6 +4133,12 @@ bool COMXPlayer::CachePVRStream(void) const
 void COMXPlayer::GetVideoRect(CRect& SrcRect, CRect& DestRect)
 {
   g_renderManager.GetVideoRect(SrcRect, DestRect);
+}
+
+void COMXPlayer::SetMute(bool bOnOff)
+{
+  m_current_mute = bOnOff;
+  m_change_volume = true;
 }
 
 void COMXPlayer::SetVolume(float fVolume)
