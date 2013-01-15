@@ -43,8 +43,8 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
 #define kCGEventTapOptionDefault 0
 #endif
 
-#define NX_KEYSTATE_UP      0x0A
-#define NX_KEYSTATE_DOWN    0x0B
+#define NX_KEYSTATE_DOWN    0x0A
+#define NX_KEYSTATE_UP      0x0B
 
 @implementation HotKeyController
 
