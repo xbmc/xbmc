@@ -41,9 +41,6 @@ public:
   bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
-  
-  void LockOutputBuffer(EGLImageKHR eglimg);
-  void ReleaseOutputBuffer(EGLImageKHR eglimg);
 
 private:
   CStageFrightVideoPrivate* p;

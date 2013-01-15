@@ -33,9 +33,6 @@ CXXFLAGS+=@CXXFLAGS@
 CFLAGS+=@CFLAGS@
 LDFLAGS+=@LDFLAGS@
 INCLUDES+=-I@abs_top_srcdir@/lib
-ifeq (@USE_LIBSTAGEFRIGHT@,1)
-INCLUDES += -I$(prefix)/opt/android-source/frameworks/base/include -I$(prefix)/opt/android-source/frameworks/base/native/include -I$(prefix)/opt/android-source/system/core/include -I$(prefix)/opt/android-source/frameworks/base/media/libstagefright -I$(prefix)/opt/android-source/frameworks/base/include/media/stagefright/openmax -I$(prefix)/opt/android-source/frameworks/base/media/libstagefright -I$(prefix)/opt/android-source/libhardware/include
-endif
 INCLUDES+=-I@abs_top_srcdir@/xbmc
 INCLUDES+=$(sort @INCLUDES@)
 ifneq (@USE_EXTERNAL_FFMPEG@,1)

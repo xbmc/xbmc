@@ -19,6 +19,7 @@
  */
 #include <ui/FramebufferNativeWindow.h>
 #include <ui/GraphicBuffer.h>
+#include <ui/PixelFormat.h>
 #include <EGL/egl.h>
 
 using namespace android;
@@ -28,4 +29,9 @@ ANativeWindowBuffer* GraphicBuffer::getNativeBuffer() const
   return NULL;
 }
 
-
+namespace android {
+ssize_t bytesPerPixel(PixelFormat format)
+{
+  return 0;
+}
+}

@@ -249,7 +249,6 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
       case CODEC_ID_H264:
       case CODEC_ID_MPEG2VIDEO:
       case CODEC_ID_VC1:
-      case CODEC_ID_VP8:
         if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
         break;
       default:
@@ -264,10 +263,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
     switch(hint.codec)
     {
       case CODEC_ID_H264:
-      case CODEC_ID_MPEG2VIDEO:
       case CODEC_ID_MPEG4:
-      case CODEC_ID_WMV3:
+      case CODEC_ID_MPEG2VIDEO:
       case CODEC_ID_VC1:
+      case CODEC_ID_VP3:
+      case CODEC_ID_VP6:
+      case CODEC_ID_VP6F:
       case CODEC_ID_VP8:
         if ( (pCodec = OpenCodec(new CDVDVideoCodecStageFright(), hint, options)) ) return pCodec;
         break;

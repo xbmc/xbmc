@@ -87,7 +87,7 @@ enum RenderMethod
   RENDER_OMXEGL = 0x040,
   RENDER_CVREF  = 0x080,
   RENDER_BYPASS = 0x100,
-  RENDER_ANDOES = 0x200
+  RENDER_EGLIMG = 0x200
 };
 
 enum RenderQuality
@@ -160,7 +160,7 @@ public:
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
 #endif
 #ifdef HAVE_LIBSTAGEFRIGHT
-  virtual void         AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg);
+  virtual void         AddProcessor(EGLImageKHR eglimg);
 #endif
 
 protected:
@@ -190,9 +190,9 @@ protected:
   void DeleteBYPASSTexture(int index);
   bool CreateBYPASSTexture(int index);
 
-  void UploadANDOESTexture(int index);
-  void DeleteANDOESTexture(int index);
-  bool CreateANDOESTexture(int index);
+  void UploadEGLIMGTexture(int index);
+  void DeleteEGLIMGTexture(int index);
+  bool CreateEGLIMGTexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -201,7 +201,7 @@ protected:
   void RenderSinglePass(int index, int field);    // single pass glsl renderer
   void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
   void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
-  void RenderAndroid(int index, int field);       // Android OES texture
+  void RenderEglImage(int index, int field);       // Android OES texture
   void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
 
   CFrameBufferObject m_fbo;
@@ -226,7 +226,6 @@ protected:
   int m_currentField;
   int m_reloadShaders;
   
-
   struct YUVPLANE
   {
     GLuint id;
@@ -262,7 +261,6 @@ protected:
 #ifdef HAVE_LIBSTAGEFRIGHT
     EGLImageKHR eglimg;
 #endif
-
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];

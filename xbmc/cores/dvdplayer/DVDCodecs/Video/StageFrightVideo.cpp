@@ -20,6 +20,7 @@
 /***************************************************************************/
 
 #include "system.h"
+#include "system_gl.h"
 
 #include "StageFrightVideo.h"
 
@@ -29,6 +30,9 @@
 #include "threads/Event.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
+
+#include "xbmc/guilib/FrameBufferObject.h"
+#include "windowing/WindowingFactory.h"
 
 #include <binder/ProcessState.h>
 #include <media/stagefright/MetaData.h>
@@ -41,19 +45,22 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <ui/GraphicBuffer.h>
+#include <ui/PixelFormat.h>
 
 #include <new>
 #include <map>
 #include <queue>
 
 #define OMX_QCOM_COLOR_FormatYVU420SemiPlanar 0x7FA30C00
-//#define STAGEFRIGHT_DEBUG_VERBOSE 1
+#define STAGEFRIGHT_DEBUG_VERBOSE 1
 #define CLASSNAME "CStageFrightVideo"
 #define MINBUFIN 50
+#define NUMFBOTEX 8
 
 // EGL extension functions
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
 static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
+static PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
 #define GETEXTENSION(type, ext) \
 do \
 { \
@@ -66,6 +73,9 @@ do \
 
 #define EGL_NATIVE_BUFFER_ANDROID 0x3140
 #define EGL_IMAGE_PRESERVED_KHR   0x30D2
+
+GLint glerror;
+#define CheckEglError() glerror = eglGetError(); while(glerror != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, glerror);
 
 const char *MEDIA_MIMETYPE_VIDEO_WMV  = "video/x-ms-wmv";
 
@@ -94,6 +104,8 @@ class CStageFrightVideoPrivate : public MediaBufferObserver
 public:
   CStageFrightVideoPrivate()
     : source(NULL)
+    , eglDisplay(EGL_NO_DISPLAY), eglContext(EGL_NO_CONTEXT), eglSurface(EGL_NO_SURFACE)
+    , eglInitialized(false), cur_slot(0)
     , width(-1), height(-1)
     , cur_frame(NULL), prev_frame(NULL)
     , client(NULL), decoder(NULL), decoder_component(NULL)
@@ -114,13 +126,141 @@ public:
     return buf;
   }
 
-  sp<MetaData> meta;
+
+  void loadOESShader(GLenum shaderType, const char* pSource, GLuint* outShader)
+  {
+    CLog::Log(LOGDEBUG, ">>loadOESShader\n");
+
+    GLuint shader = glCreateShader(shaderType);
+    CheckEglError()
+    if (shader) {
+      glShaderSource(shader, 1, &pSource, NULL);
+      glCompileShader(shader);
+      GLint compiled = 0;
+      glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+      if (!compiled) {
+        GLint infoLen = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+        if (infoLen) {
+          char* buf = (char*) malloc(infoLen);
+          if (buf) {
+            glGetShaderInfoLog(shader, infoLen, NULL, buf);
+            printf("Shader compile log:\n%s\n", buf);
+            free(buf);
+          }
+        } else {
+          char* buf = (char*) malloc(0x1000);
+          if (buf) {
+            glGetShaderInfoLog(shader, 0x1000, NULL, buf);
+            printf("Shader compile log:\n%s\n", buf);
+            free(buf);
+          }
+        }
+        glDeleteShader(shader);
+        shader = 0;
+      }
+    }
+    *outShader = shader;
+  }
+
+  void createOESProgram(const char* pVertexSource, const char* pFragmentSource, GLuint* outPgm)
+  {
+    CLog::Log(LOGDEBUG, ">>createOESProgram\n");
+    GLuint vertexShader, fragmentShader;
+    {
+      loadOESShader(GL_VERTEX_SHADER, pVertexSource, &vertexShader);
+    }
+    {
+      loadOESShader(GL_FRAGMENT_SHADER, pFragmentSource, &fragmentShader);
+    }
+
+    GLuint program = glCreateProgram();
+    if (program) {
+      glAttachShader(program, vertexShader);
+      glAttachShader(program, fragmentShader);
+      glLinkProgram(program);
+      GLint linkStatus = GL_FALSE;
+      glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
+      if (linkStatus != GL_TRUE) {
+        GLint bufLength = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
+        if (bufLength) {
+          char* buf = (char*) malloc(bufLength);
+          if (buf) {
+            glGetProgramInfoLog(program, bufLength, NULL, buf);
+            printf("Program link log:\n%s\n", buf);
+            free(buf);
+          }
+        }
+        glDeleteProgram(program);
+        program = 0;
+      }
+    }
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    *outPgm = program;
+  }
+
+  void OES_shader_setUp()
+  {
+
+    const char vsrc[] =
+    "attribute vec4 vPosition;\n"
+    "varying vec2 texCoords;\n"
+    "uniform mat4 texMatrix;\n"
+    "void main() {\n"
+    "  vec2 vTexCoords = 0.5 * (vPosition.xy + vec2(1.0, 1.0));\n"
+    "  texCoords = (texMatrix * vec4(vTexCoords, 0.0, 1.0)).xy;\n"
+    "  gl_Position = vPosition;\n"
+    "}\n";
+
+    const char fsrc[] =
+    "#extension GL_OES_EGL_image_external : require\n"
+    "precision mediump float;\n"
+    "uniform samplerExternalOES texSampler;\n"
+    "varying vec2 texCoords;\n"
+    "void main() {\n"
+    "  gl_FragColor = texture2D(texSampler, texCoords);\n"
+    "}\n";
+
+    {
+      CLog::Log(LOGDEBUG, ">>OES_shader_setUp\n");
+      CheckEglError();
+      createOESProgram(vsrc, fsrc, &mPgm);
+    }
+
+    mPositionHandle = glGetAttribLocation(mPgm, "vPosition");
+    mTexSamplerHandle = glGetUniformLocation(mPgm, "texSampler");
+    mTexMatrixHandle = glGetUniformLocation(mPgm, "texMatrix");
+  }
+
   sp<MediaSource> source;
+  sp<ANativeWindow> natwin;
+  
+  GLuint mPgm;
+  GLint mPositionHandle;
+  GLint mTexSamplerHandle;
+  GLint mTexMatrixHandle;
+
+  CFrameBufferObject fbo;
+  EGLDisplay eglDisplay;
+  EGLSurface eglSurface;
+  EGLContext eglContext;
+  bool eglInitialized;
+
+  struct tex_slot
+  {
+    GLuint texid;
+    EGLImageKHR eglimg;
+  };
+  tex_slot slots[NUMFBOTEX];
+  int cur_slot;
+
+  sp<MetaData> meta;
   List<Frame*> in_queue;
-  std::map<EGLImageKHR, MediaBuffer*> out_map;
   pthread_mutex_t in_mutex;
   pthread_cond_t condition;
-  
+
   Frame *cur_frame;
   Frame *prev_frame;
   bool source_done;
@@ -133,7 +273,7 @@ public:
   int videoColorFormat;
   int videoStride;
   int videoSliceHeight;
-  
+
   bool drop_state;
 #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
   unsigned int cycle_time;
@@ -177,7 +317,7 @@ public:
 #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "%s: reading source(%d)\n", CLASSNAME,p->in_queue.size());
 #endif
-    
+
     if (p->in_queue.empty())
     {
       pthread_mutex_unlock(&p->in_mutex);
@@ -192,7 +332,7 @@ public:
 
     p->in_queue.erase(p->in_queue.begin());
     pthread_mutex_unlock(&p->in_mutex);
-    
+
 #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, ">>> exiting reading source(%d); pts:%llu\n", p->in_queue.size(),frame->pts);
 #endif
@@ -237,6 +377,9 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   case CODEC_ID_MPEG2VIDEO:
     mimetype = MEDIA_MIMETYPE_VIDEO_MPEG2;
     break;
+  case CODEC_ID_VP3:
+  case CODEC_ID_VP6:
+  case CODEC_ID_VP6F:
   case CODEC_ID_VP8:
     mimetype = MEDIA_MIMETYPE_VIDEO_VPX;
     break;
@@ -251,7 +394,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   p = new CStageFrightVideoPrivate;
   p->width     = hints.width;
   p->height    = hints.height;
- 
+
   sp<MetaData> outFormat;
   int32_t cropLeft, cropTop, cropRight, cropBottom;
 
@@ -279,28 +422,25 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   {
     CLog::Log(LOGERROR, "%s::%s - %s\n", CLASSNAME, __func__,"Cannot connect OMX client");
     goto fail;
-  }  
-  
-  g_xbmcapp.InitStagefrightSurface();
+  }
 
+  p->natwin = g_xbmcapp.GetAndroidVideoWindow();
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
                                          false, p->source, NULL,
                                          OMXCodec::kHardwareCodecsOnly,
-                                         g_xbmcapp.GetAndroidVideoWindow());
+                                         p->natwin);
 
   if (!(p->decoder != NULL && p->decoder->start() ==  OK))
   {
     p->client->disconnect();
-    g_xbmcapp.UninitStagefrightSurface();
     goto fail;
   }
 
   outFormat = p->decoder->getFormat();
-  if (!outFormat->findInt32(kKeyWidth, &p->width) || !outFormat->findInt32(kKeyHeight, &p->height) 
+  if (!outFormat->findInt32(kKeyWidth, &p->width) || !outFormat->findInt32(kKeyHeight, &p->height)
         || !outFormat->findInt32(kKeyColorFormat, &p->videoColorFormat))
   {
     p->client->disconnect();
-    g_xbmcapp.UninitStagefrightSurface();
     goto fail;
   }
   /*
@@ -310,32 +450,35 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   {
     CLog::Log(LOGERROR, "%s::%s - %s: %d\n", CLASSNAME, __func__,"Unsupported color format",p->videoColorFormat);
     p->client->disconnect();
-    g_xbmcapp.UninitStagefrightSurface();
     goto fail;
   }
   */
+  const char *component;
+  if (outFormat->findCString(kKeyDecoderComponent, &component))
+    CLog::Log(LOGDEBUG, "%s::%s - component: %s\n", CLASSNAME, __func__, component);
+
 
   if (!outFormat->findInt32(kKeyStride, &p->videoStride))
     p->videoStride = p->width;
   if (!outFormat->findInt32(kKeySliceHeight, &p->videoSliceHeight))
     p->videoSliceHeight = p->height;
-  
-  if (!outFormat->findRect(kKeyCropRect, &cropLeft, &cropTop, &cropRight, &cropBottom)) 
+
+  if (!outFormat->findRect(kKeyCropRect, &cropLeft, &cropTop, &cropRight, &cropBottom))
   {
-    p->x = 0;   
-    p->y = 0;   
+    p->x = 0;
+    p->y = 0;
   }
   else
   {
-    p->x = cropLeft;   
+    p->x = cropLeft;
     p->y = cropTop;
     p->width = cropRight - cropLeft + 1;
     p->height = cropBottom - cropTop + 1;
   }
-  
+
   pthread_mutex_init(&p->in_mutex, NULL);
   pthread_cond_init(&p->condition, NULL);
-  
+
   p->client->disconnect();
 
   if (!eglCreateImageKHR)
@@ -345,6 +488,10 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
   if (!eglDestroyImageKHR)
   {
     GETEXTENSION(PFNEGLDESTROYIMAGEKHRPROC, eglDestroyImageKHR);
+  }
+  if (!glEGLImageTargetTexture2DOES)
+  {
+    GETEXTENSION(PFNGLEGLIMAGETARGETTEXTURE2DOESPROC, glEGLImageTargetTexture2DOES);
   }
 
   return true;
@@ -372,7 +519,7 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
   int ret = VC_BUFFER;
   int32_t keyframe = 0;
   int32_t unreadable = 0;
-    
+
   if (demuxer_content)
   {
     frame = (Frame*)malloc(sizeof(Frame));
@@ -399,74 +546,74 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
     CLog::Log(LOGDEBUG, "%s::Decode: pushed IN frame (%d); tm:%d\n", CLASSNAME,p->in_queue.size(), XbmcThreads::SystemClockMillis() - time);
 #endif
   }
-  
+
   if (p->in_queue.size() < MINBUFIN)
     return ret;
 
   /* Output */
 
-	#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
+  #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
   time = XbmcThreads::SystemClockMillis();
-	CLog::Log(LOGDEBUG, "%s: >>> Handling frame\n", CLASSNAME);
-	#endif
+  CLog::Log(LOGDEBUG, "%s: >>> Handling frame\n", CLASSNAME);
+  #endif
   int32_t w, h, dw, dh;
-	frame = (Frame*)malloc(sizeof(Frame));
-	if (!frame) {
+  frame = (Frame*)malloc(sizeof(Frame));
+  if (!frame) {
     p->cur_frame = NULL;
-	  return VC_ERROR;
+    return VC_ERROR;
   }
-  
-	frame->medbuf = NULL;
-	frame->status = p->decoder->read(&frame->medbuf);
-	if (frame->status == INFO_FORMAT_CHANGED)
-	{
-	  sp<MetaData> outFormat = p->decoder->getFormat();
+
+  frame->medbuf = NULL;
+  frame->status = p->decoder->read(&frame->medbuf);
+  if (frame->status == INFO_FORMAT_CHANGED)
+  {
+    sp<MetaData> outFormat = p->decoder->getFormat();
 
     outFormat->findInt32(kKeyColorFormat, &p->videoColorFormat);
     if (!outFormat->findInt32(kKeyStride, &p->videoStride))
       p->videoStride = p->width;
     if (!outFormat->findInt32(kKeySliceHeight, &p->videoSliceHeight))
       p->videoSliceHeight = p->height;
-    
-	  if (frame->medbuf)
+
+    if (frame->medbuf)
       frame->medbuf->release();
-	  free(frame);
+    free(frame);
     p->cur_frame = NULL;
     return ret;
-	}
-	if (frame->status == OK)
-	{
+  }
+  if (frame->status == OK)
+  {
     if (!frame->medbuf)
       return ret;
-            
-	  sp<MetaData> outFormat = p->decoder->getFormat();
-	  outFormat->findInt32(kKeyWidth , &w);
-	  outFormat->findInt32(kKeyHeight, &h);
-    
- 	  if (!outFormat->findInt32(kKeyDisplayWidth , &dw))
+
+    sp<MetaData> outFormat = p->decoder->getFormat();
+    outFormat->findInt32(kKeyWidth , &w);
+    outFormat->findInt32(kKeyHeight, &h);
+
+     if (!outFormat->findInt32(kKeyDisplayWidth , &dw))
       dw = w;
-	  if (!outFormat->findInt32(kKeyDisplayHeight, &dh))
+    if (!outFormat->findInt32(kKeyDisplayHeight, &dh))
       dh = h;
-   
+
     if (!outFormat->findInt32(kKeyIsSyncFrame, &keyframe))
       keyframe = 0;
     if (!outFormat->findInt32(kKeyIsUnreadable, &unreadable))
       unreadable = 0;
-      
-	  frame->pts = 0;
 
-	  // The OMX.SEC decoder doesn't signal the modified width/height
-	  if (p->decoder_component && !strncmp(p->decoder_component, "OMX.SEC", 7) &&
-		  (w & 15 || h & 15))
-	  {
-		if (((w + 15)&~15) * ((h + 15)&~15) * 3/2 == frame->medbuf->range_length())
-		{
-		  w = (w + 15)&~15;
-		  h = (h + 15)&~15;
-		}
-	  }
-	  frame->width = w;
-	  frame->height = h;
+    frame->pts = 0;
+
+    // The OMX.SEC decoder doesn't signal the modified width/height
+    if (p->decoder_component && !strncmp(p->decoder_component, "OMX.SEC", 7) &&
+      (w & 15 || h & 15))
+    {
+    if (((w + 15)&~15) * ((h + 15)&~15) * 3/2 == frame->medbuf->range_length())
+    {
+      w = (w + 15)&~15;
+      h = (h + 15)&~15;
+    }
+    }
+    frame->width = w;
+    frame->height = h;
     frame->medbuf->meta_data()->findInt64(kKeyTime, &(frame->pts));
     if (!frame->medbuf->graphicBuffer().get())  // hw buffers
     {
@@ -477,20 +624,20 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
         return ret;
       }
     }
-	}
+  }
   else if (frame->status == INFO_FORMAT_CHANGED)
-	{
+  {
     int32_t cropLeft, cropTop, cropRight, cropBottom;
-	  sp<MetaData> outFormat = p->decoder->getFormat();
+    sp<MetaData> outFormat = p->decoder->getFormat();
 
-    if (!outFormat->findRect(kKeyCropRect, &cropLeft, &cropTop, &cropRight, &cropBottom)) 
+    if (!outFormat->findRect(kKeyCropRect, &cropLeft, &cropTop, &cropRight, &cropBottom))
     {
-      p->x = 0;   
-      p->y = 0;   
+      p->x = 0;
+      p->y = 0;
     }
     else
     {
-      p->x = cropLeft;   
+      p->x = cropLeft;
       p->y = cropTop;
       p->width = cropRight - cropLeft + 1;
       p->height = cropBottom - cropTop + 1;
@@ -500,27 +647,27 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
       p->videoStride = p->width;
     if (!outFormat->findInt32(kKeySliceHeight, &p->videoSliceHeight))
       p->videoSliceHeight = p->height;
-    
-	  if (frame->medbuf)
+
+    if (frame->medbuf)
       frame->medbuf->release();
-	  free(frame);
+    free(frame);
     p->cur_frame = NULL;
     return ret;
-	}
-	else
-	{
-	  CLog::Log(LOGERROR, "%s - decoding error (%d)\n", CLASSNAME,frame->status);
-	  if (frame->medbuf)
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "%s - decoding error (%d)\n", CLASSNAME,frame->status);
+    if (frame->medbuf)
       frame->medbuf->release();
-	  free(frame);
+    free(frame);
     p->cur_frame = NULL;
     return VC_ERROR;
-	}
-  
+  }
+
   p->cur_frame = frame;
-	#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
-	CLog::Log(LOGDEBUG, "%s: >>> pushed OUT frame; w:%d, h:%d, dw:%d, dh:%d, kf:%d, ur:%d, tm:%d\n", CLASSNAME, w, h, dw, dh, keyframe, unreadable, XbmcThreads::SystemClockMillis() - time);
-	#endif
+  #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s: >>> pushed OUT frame; w:%d, h:%d, dw:%d, dh:%d, kf:%d, ur:%d, tm:%d\n", CLASSNAME, w, h, dw, dh, keyframe, unreadable, XbmcThreads::SystemClockMillis() - time);
+  #endif
 
   if (p->cur_frame)
     ret |= VC_PICTURE;
@@ -535,12 +682,7 @@ bool CStageFrightVideo::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 #endif
   if (p->prev_frame) {
     if (p->prev_frame->medbuf)
-    {
-      if (pDvdVideoPicture->format == RENDER_FMT_ANDOES)
-        ReleaseOutputBuffer(pDvdVideoPicture->eglimg);
-      else
-        p->prev_frame->medbuf->release();
-    }
+      p->prev_frame->medbuf->release();
     free(p->prev_frame);
     p->prev_frame = NULL;
   }
@@ -562,7 +704,7 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   if (!p->cur_frame)
     return false;
-    
+
   Frame *frame = p->cur_frame;
   status  = frame->status;
 
@@ -586,31 +728,111 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iDisplayHeight = frame->height;
   pDvdVideoPicture->iFlags  = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->pts = pts_itod(frame->pts);
-  pDvdVideoPicture->eglimg = EGL_NO_IMAGE_KHR;
-  
+  pDvdVideoPicture->eglimg = NULL;
+
   if (frame->medbuf)
   {
     if (frame->medbuf->graphicBuffer() != 0)
     {
-      pDvdVideoPicture->format = RENDER_FMT_ANDOES;
-	  
-      android::GraphicBuffer* gb = static_cast<android::GraphicBuffer*>( frame->medbuf->graphicBuffer().get() );
-      EGLint eglImgAttrs[] = { EGL_IMAGE_PRESERVED_KHR, EGL_TRUE, EGL_NONE, EGL_NONE };
-      pDvdVideoPicture->eglimg = eglCreateImageKHR(eglGetDisplay(EGL_DEFAULT_DISPLAY), EGL_NO_CONTEXT,
-                                  EGL_NATIVE_BUFFER_ANDROID,
-                                  (EGLClientBuffer)gb->getNativeBuffer(),
-                                  eglImgAttrs);                                  
-      if (pDvdVideoPicture->eglimg == EGL_NO_IMAGE_KHR)
+      pDvdVideoPicture->format = RENDER_FMT_EGLIMG;
+
+      if (!p->eglInitialized)
       {
-        frame->medbuf->release();
-        pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+        p->eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        eglBindAPI(EGL_OPENGL_ES_API);
+        EGLint contextAttributes[] = {
+          EGL_CONTEXT_CLIENT_VERSION, 2,
+          EGL_NONE
+        };
+        p->eglContext = eglCreateContext(p->eglDisplay, g_Windowing.GetEGLConfig(), EGL_NO_CONTEXT, contextAttributes);
+        EGLint pbufferAttribs[] = {
+          EGL_WIDTH, p->width,
+          EGL_HEIGHT, p->height,
+          EGL_NONE
+        };
+        p->eglSurface = eglCreatePbufferSurface(p->eglDisplay, g_Windowing.GetEGLConfig(), pbufferAttribs);
+        eglMakeCurrent(p->eglDisplay, p->eglSurface, p->eglSurface, p->eglContext);
+        CheckEglError();
+
+        static const EGLint imageAttributes[] = {
+          EGL_IMAGE_PRESERVED_KHR, EGL_TRUE,
+          EGL_GL_TEXTURE_LEVEL_KHR, 0,
+          EGL_NONE
+        };
+
+        glEnable(GL_TEXTURE_2D);
+        for (int i=0; i<NUMFBOTEX; ++i)
+        {
+          glGenTextures(1, &(p->slots[i].texid));
+          glBindTexture(GL_TEXTURE_2D,  p->slots[i].texid);
+
+          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, p->width, p->height, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+          // This is necessary for non-power-of-two textures
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+          p->slots[i].eglimg = eglCreateImageKHR(p->eglDisplay, p->eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)(p->slots[i].texid),imageAttributes);
+
+        }
+        glDisable(GL_TEXTURE_2D);
+
+        p->fbo.Initialize();
+        p->OES_shader_setUp();
+
+        p->eglInitialized = true;
       }
-      else
-      {
-        p->out_map.insert( std::pair<EGLImageKHR, MediaBuffer*>(pDvdVideoPicture->eglimg, frame->medbuf) );
-        pDvdVideoPicture->stf = this;
-      }
-      
+
+      android::GraphicBuffer* graphicBuffer = static_cast<android::GraphicBuffer*>(frame->medbuf->graphicBuffer().get() );
+      int err = p->natwin.get()->queueBuffer(p->natwin.get(), graphicBuffer);
+      if (err == 0)
+        frame->medbuf->meta_data()->setInt32(kKeyRendered, 1);
+      frame->medbuf->release();
+      frame->medbuf = NULL;
+
+      g_xbmcapp.UpdateStagefrightTexture();
+
+      glEnable(GL_TEXTURE_2D);
+
+      p->cur_slot = (p->cur_slot == NUMFBOTEX-1 ? 0 : ++p->cur_slot);
+      p->fbo.BindToTexture(GL_TEXTURE_2D, p->slots[p->cur_slot].texid);
+      p->fbo.BeginRender();
+
+      glDisable(GL_DEPTH_TEST);
+      //glClear(GL_COLOR_BUFFER_BIT);
+
+      glEnable(GL_TEXTURE_EXTERNAL_OES);
+
+      const GLfloat triangleVertices[] = {
+      -1.0f, 1.0f,
+      -1.0f, -1.0f,
+      1.0f, -1.0f,
+      1.0f, 1.0f,
+      };
+
+      glVertexAttribPointer(p->mPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, triangleVertices);
+      glEnableVertexAttribArray(p->mPositionHandle);
+
+      glUseProgram(p->mPgm);
+      glUniform1i(p->mTexSamplerHandle, 0);
+      glBindTexture(GL_TEXTURE_EXTERNAL_OES, g_xbmcapp.GetAndroidTexture());
+
+      GLfloat texMatrix[16];
+      g_xbmcapp.GetStagefrightTransformMatrix(texMatrix);
+      glUniformMatrix4fv(p->mTexMatrixHandle, 1, GL_FALSE, texMatrix);
+
+      glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+      glDisable(GL_TEXTURE_EXTERNAL_OES);
+
+      p->fbo.EndRender();
+
+      pDvdVideoPicture->eglimg = p->slots[p->cur_slot].eglimg;
+      glDisable(GL_TEXTURE_2D);
+
     #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, ">>> pic pts:%f, textured, tm:%d\n", pDvdVideoPicture->pts, XbmcThreads::SystemClockMillis() - time);
     #endif
@@ -684,17 +906,6 @@ void CStageFrightVideo::Close()
     free(frame);
   }
 
-#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "Cleaning OUT(%d)\n",  p->out_map.size());
-#endif
-  std::map<EGLImageKHR, MediaBuffer*>::iterator it;
-  while (!p->out_map.empty())
-  {
-    it = p->out_map.begin();
-    it->second->release();
-    p->out_map.erase(it);
-  }
-
   if (p->cur_frame)
     free(p->cur_frame);
   if (p->prev_frame)
@@ -708,11 +919,24 @@ void CStageFrightVideo::Close()
 
   delete p->client;
 
+  p->fbo.Cleanup();
+  for (int i=0; i<NUMFBOTEX; ++i)
+  {
+    glDeleteTextures(1, &(p->slots[i].texid));
+    eglDestroyImageKHR(p->eglDisplay, p->slots[i].eglimg);
+  }
+
+  if (p->eglContext != EGL_NO_CONTEXT)
+    eglDestroyContext(p->eglDisplay, p->eglContext);
+  p->eglContext = EGL_NO_CONTEXT;
+
+  if (p->eglSurface != EGL_NO_SURFACE)
+    eglDestroySurface(p->eglDisplay, p->eglSurface);
+  p->eglSurface = EGL_NO_SURFACE;
+
   pthread_mutex_destroy(&p->in_mutex);
   pthread_cond_destroy(&p->condition);
   delete p;
-  
-  g_xbmcapp.UninitStagefrightSurface();
 }
 
 void CStageFrightVideo::Reset(void)
@@ -728,54 +952,6 @@ void CStageFrightVideo::SetDropState(bool bDrop)
 #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::SetDropState (%d)\n", CLASSNAME,bDrop);
 #endif
-  
+
   p->drop_state = bDrop;
-}
-
-/***********************************************/
-
-void CStageFrightVideo::LockOutputBuffer(EGLImageKHR eglimg)
-{
- #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
-  unsigned int time = XbmcThreads::SystemClockMillis();
-#endif
- std::map<EGLImageKHR, MediaBuffer*>::iterator it;
-  it = p->out_map.find(eglimg);
- 
- if (it != p->out_map.end())
-    it->second->add_ref();
-  else
-    CLog::Log(LOGERROR, "%s::LockOutputBuffer: EGL image not found\n", CLASSNAME);
-#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::LockOutputBuffer (%d)\n", CLASSNAME, XbmcThreads::SystemClockMillis() - time);
-#endif
-}
-
-void CStageFrightVideo::ReleaseOutputBuffer(EGLImageKHR eglimg)
-{
-#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
-  unsigned int time = XbmcThreads::SystemClockMillis();
-#endif
-  std::map<EGLImageKHR, MediaBuffer*>::iterator it;
-  it = p->out_map.find(eglimg);
-
-  if (it != p->out_map.end())
-  {
-    if(it->second->refcount() > 1)
-    {
-      it->second->release();
-      return;
-    }
-      
-    eglDestroyImageKHR(eglGetDisplay(EGL_DEFAULT_DISPLAY), it->first);
-    it->second->release();
-    p->out_map.erase(it);
-  }
-  else
-    CLog::Log(LOGERROR, "%s::ReleaseOutputBuffer: EGL image not found\n", CLASSNAME);
-    
-#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, "%s::ReleaseOutputBuffer (%d): buf:%d\n", CLASSNAME, XbmcThreads::SystemClockMillis() - time, p->out_map.size());
-#endif
-
 }

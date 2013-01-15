@@ -74,8 +74,11 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       case CODEC_ID_MPEG2VIDEO:
         m_pFormatName = "stf-mpeg2";
         break;
+      case CODEC_ID_VP3:
+      case CODEC_ID_VP6:
+      case CODEC_ID_VP6F:
       case CODEC_ID_VP8:
-        m_pFormatName = "stf-vp8";
+        m_pFormatName = "stf-vpx";
         break;
       case CODEC_ID_VC1:
         m_pFormatName = "stf-vc1";

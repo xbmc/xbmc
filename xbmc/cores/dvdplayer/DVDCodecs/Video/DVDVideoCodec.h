@@ -24,10 +24,6 @@
 
 #include <vector>
 #include "cores/VideoRenderers/RenderFormats.h"
-#ifdef HAVE_LIBSTAGEFRIGHT
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#endif
 
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
@@ -42,7 +38,7 @@ class CVDPAU;
 class COpenMax;
 class COpenMaxVideo;
 struct OpenMaxVideoBuffer;
-class CStageFrightVideo;
+typedef void* EGLImageKHR;
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -75,12 +71,9 @@ struct DVDVideoPicture
       struct __CVBuffer *cvBufferRef;
     };
     
-#ifdef HAVE_LIBSTAGEFRIGHT
     struct {
-      CStageFrightVideo* stf;
       EGLImageKHR eglimg;
     };
-#endif
   };
 
   unsigned int iFlags;

@@ -1,6 +1,11 @@
 include ../Makefile.include
 DEPS= ../Makefile.include Makefile 
-INCLUDES+=-I$(PREFIX)/opt/android-source/frameworks/base/include -I$(PREFIX)/opt/android-source/frameworks/base/native/include -I$(PREFIX)/opt/android-source/system/core/include -I$(PREFIX)/opt/android-source/frameworks/base/media/libstagefright -I$(PREFIX)/opt/android-source/frameworks/base/include/media/stagefright/openmax -I$(PREFIX)/opt/android-source/frameworks/base/media/libstagefright -I$(PREFIX)/opt/android-source/libhardware/include
+INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include
+INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/native/include
+INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include/media/stagefright
+INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include/media/stagefright/openmax
+INCLUDES += -I$(PREFIX)/opt/android-source/system/core/include
+INCLUDES += -I$(PREFIX)/opt/android-source/libhardware/include
 
 ANDROID_VERSION=ics
 ANDROID_SOURCE=android-source

@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-#include <system/window.h>
 #include <android/native_activity.h>
 
 #include "IActivityHandler.h"
@@ -32,10 +31,6 @@
 
 #include "xbmc.h"
 #include "utils/GlobalsHandling.h"
-
-#ifdef HAVE_LIBSTAGEFRIGHT
-#include <utils/StrongPointer.h>
-#endif
 
 // forward delares
 class CAESinkAUDIOTRACK;
@@ -106,8 +101,11 @@ public:
 #ifdef HAVE_LIBSTAGEFRIGHT
   bool InitStagefrightSurface();
   void UninitStagefrightSurface();
+  void UpdateStagefrightTexture();
+  void GetStagefrightTransformMatrix(float* transformMatrix);
 
-  const android::sp<ANativeWindow>& GetAndroidVideoWindow() const { return m_VideoNativeWindow;}
+  ANativeWindow* GetAndroidVideoWindow() const { return m_VideoNativeWindow;}
+  const unsigned int GetAndroidTexture() const { return m_VideoTextureId; }
 #endif
 
 protected:
@@ -134,8 +132,11 @@ private:
   
   static ANativeWindow* m_window;
 #ifdef HAVE_LIBSTAGEFRIGHT
+  unsigned int m_VideoTextureId;
   jobject m_SurfTexture;
-  android::sp<ANativeWindow> m_VideoNativeWindow;
+  jmethodID m_midUpdateTexImage;
+  jmethodID m_midGetTransformMatrix;
+  ANativeWindow* m_VideoNativeWindow;
 #endif
   
   void XBMC_Pause(bool pause);
