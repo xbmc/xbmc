@@ -1,5 +1,6 @@
 add_definitions(-D_USRDLL -DLIBASS_WIN32_EXPORTS -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
 find_all_sources(libass ass_SRCS)
+list(APPEND ass_SRCS xbmc/libass_win32/libass.def)
 include_directories(libass xbmc/libass_win32
                            ${root}/lib/freetype/include
                            ${root}/lib/freetype
