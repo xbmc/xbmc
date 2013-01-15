@@ -329,9 +329,18 @@ void CCoreAudioHardware::GetOutputDeviceName(std::string& name)
     if (ret != noErr)
       return;
 
-    const char *cstr = CFStringGetCStringPtr(theDeviceName, kCFStringEncodingUTF8);
+    /* PLEX */
+    int len = CFStringGetLength(theDeviceName) + 1;
+    char *cstr = (char*)malloc(len);
+    if (cstr && CFStringGetCString(theDeviceName, cstr, len, kCFStringEncodingUTF8))
+    {
+      if (cstr)
+        name = cstr;
+    }
     if (cstr)
-      name = cstr;
+      free(cstr);
+    /* END PLEX */
+
     CFRelease(theDeviceName);
   }
 }
