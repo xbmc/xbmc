@@ -222,6 +222,7 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_SCROLLOCK,              0,    0, XBMCVK_SCROLLLOCK,    "scrolllock" }
 , { XBMCK_PRINT,                  0,    0, XBMCVK_PRINTSCREEN,   "printscreen" }
 , { XBMCK_POWER,                  0,    0, XBMCVK_POWER,         "power" }
+, { XBMCK_SLEEP,                  0,    0, XBMCVK_SLEEP,         "sleep" }
 };
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable)/sizeof(XBMCKEYTABLE);
