@@ -167,6 +167,9 @@ endif()
 add_subdirectory(lib)
 
 include_directories(
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/xbmc
+
   ${dependdir}/include
   ${dependdir}/include/libcec
   ${dependdir}/include/freetype2
@@ -200,8 +203,6 @@ add_subdirectory(tools/TexturePacker)
 
 # global includes
 include_directories(
-  ${CMAKE_BINARY_DIR}
-  ${CMAKE_BINARY_DIR}/xbmc
   ${plexdir}
   ${plexdir}/Utility
   ${plexdir}/Owned
