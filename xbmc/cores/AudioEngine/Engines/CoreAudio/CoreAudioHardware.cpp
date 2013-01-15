@@ -329,7 +329,7 @@ void CCoreAudioHardware::GetOutputDeviceName(std::string& name)
     if (ret != noErr)
       return;
 
-    const char *cstr = CFStringGetCStringPtr(theDeviceName, kCFStringEncodingUTF8);
+    const char *cstr = CFStringGetCStringPtr(theDeviceName, CFStringGetSystemEncoding());
     if (cstr)
       name = cstr;
     CFRelease(theDeviceName);
