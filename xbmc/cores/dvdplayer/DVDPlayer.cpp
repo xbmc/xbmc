@@ -802,7 +802,7 @@ bool CDVDPlayer::OpenDemuxStream()
   /* There is probably a good reason why we limit the readRate in upsteam
    * But I am just going to ignore that until I run into any problems.
    */
-  m_readRate = 1048576000;
+  m_readRate = g_advancedSettings.m_cacheReadRate;
   m_pInputStream->SetReadRate(m_readRate);
 #endif
 

@@ -355,6 +355,9 @@ void CAdvancedSettings::Initialize()
 
   m_iShowFirstRun = 1;
   m_bEnableGDM = true;
+
+  /* Default to 1Gbps */
+  m_cacheReadRate = 1073741824;
   /* END PLEX */
 
 
@@ -1103,6 +1106,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetUInt(pRootElement, "smartcacheupperlimit", m_smartCacheUpperLimit);
   XMLUtils::GetInt(pRootElement, "showfirstrun", m_iShowFirstRun);
   XMLUtils::GetBoolean(pRootElement, "enablegdm", m_bEnableGDM);
+  XMLUtils::GetUInt(pRootElement, "cachereadrate", m_cacheReadRate);
   /* END PLEX */
 
   // load in the GUISettings overrides:

@@ -384,6 +384,7 @@ class CAdvancedSettings
     unsigned int m_smartCacheUpperLimit;
     int m_iShowFirstRun;
     bool m_bEnableGDM;
+    unsigned int m_cacheReadRate;
     /* END PLEX */
 };
 
