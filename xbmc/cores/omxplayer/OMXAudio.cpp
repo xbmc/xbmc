@@ -866,6 +866,8 @@ unsigned int COMXAudio::AddPackets(const void* data, unsigned int len, double dt
     if(m_av_clock->AudioStart())
     {
       omx_buffer->nFlags = OMX_BUFFERFLAG_STARTTIME;
+      if(pts == DVD_NOPTS_VALUE)
+        omx_buffer->nFlags |= OMX_BUFFERFLAG_TIME_UNKNOWN;
 
       m_last_pts = pts;
 
