@@ -21,6 +21,7 @@
 #include "PeripheralBusUSB.h"
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
 
 #include <sys/param.h>
 
@@ -224,7 +225,7 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
       result = (*interfaceInterface)->GetInterfaceClass(interfaceInterface, &bInterfaceClass);
       if (bInterfaceClass == kUSBHIDInterfaceClass || bInterfaceClass == kUSBCommunicationDataInterfaceClass)
       {
-        char ttlDeviceFilePath[MAXPATHLEN] = {0};
+        std::string ttlDeviceFilePath;
         CFStringRef deviceFilePathAsCFString;
         USBDevicePrivateData *privateDataRef;
         privateDataRef = new USBDevicePrivateData;
@@ -248,16 +249,16 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
               kIOServicePlane, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, kIORegistryIterateRecursively);
             if (deviceFilePathAsCFString)
             {
-              // Convert the path from a CFString to a NULL-terminated C string
-              CFStringGetCString((CFStringRef)deviceFilePathAsCFString,
-                ttlDeviceFilePath, MAXPATHLEN - 1, kCFStringEncodingASCII);
+              // Convert the path from a CFString to a std::string
+              if (!DarwinCFStringRefToString(deviceFilePathAsCFString, ttlDeviceFilePath))
+                CLog::Log(LOGWARNING, "CPeripheralBusUSB::DeviceAttachCallback failed to convert CFStringRef");
               CFRelease(deviceFilePathAsCFString);
             }
             IOObjectRelease(parent);
           }
         }
-        if (strlen(ttlDeviceFilePath))
-          privateDataRef->result.m_strLocation.Format("%s", ttlDeviceFilePath);
+        if (!ttlDeviceFilePath.empty())
+          privateDataRef->result.m_strLocation.Format("%s", ttlDeviceFilePath.c_str());
         else
           privateDataRef->result.m_strLocation.Format("%d", locationId);
 
