@@ -1847,6 +1847,7 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
 
   for (TiXmlElement* element = root->FirstChildElement(); element; element=element->NextSiblingElement())
   {
+    bool hasMediaNodes = element->FirstChild("Media") != 0;
     mediaNode = PlexMediaNode::Create(element);
     if (mediaNode != 0)
     {
@@ -1887,7 +1888,10 @@ void CPlexDirectory::Parse(const CURL& url, TiXmlElement* root, CFileItemList &i
       {
         // Set the content type for the item.
         if (!type.empty())
+        {
           item->SetProperty("mediaType", type);
+          item->SetProperty("IsSynthesized", !hasMediaNodes);
+        }
 
         // Tags.
         ParseTags(element, item, "Genre");

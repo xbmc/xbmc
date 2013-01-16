@@ -4604,7 +4604,9 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
   }
 
   CFileItem item = m_item;
+  if (item.GetProperty("IsSynthesized").asBoolean() == false)
   {
+    CLog::Log(LOGDEBUG, "DVDPlayer::PlexProcess Item is not synthesized, resolving...");
     PlexAsyncUrlResolverPtr resolver = PlexAsyncUrlResolver::ResolveFirst(item);
     // Wait for it to complete.
     for (bool done = false; done == false && m_bAbortRequest == false; )
