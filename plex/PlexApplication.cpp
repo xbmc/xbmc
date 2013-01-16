@@ -9,7 +9,6 @@
 
 #include "PlexNetworkServices.h"
 #include "PlexApplication.h"
-#include "PlexApplicationWin.h"
 #include "BackgroundMusicPlayer.h"
 #include "GUIUserMessages.h"
 #include "ManualServerScanner.h"
