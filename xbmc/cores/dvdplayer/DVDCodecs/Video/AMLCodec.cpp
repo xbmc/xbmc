@@ -518,6 +518,14 @@ static int write_header(am_private_t *para, am_packet_t *pkt)
             CLog::Log(LOGDEBUG, "[write_header]codec null!");
             return PLAYER_EMPTY_P;
         }
+        //some wvc1 es data not need to add header
+        if (para->video_format == VFORMAT_VC1 && para->video_codec_type == VIDEO_DEC_FORMAT_WVC1) {
+            if ((pkt->data) && (pkt->data_size >= 4)
+              && (pkt->data[0] == 0) && (pkt->data[1] == 0)
+              && (pkt->data[2] == 1) && (pkt->data[3] == 0xd || pkt->data[3] == 0xf)) {
+                return PLAYER_SUCCESS;
+            }
+        }
         while (1) {
             write_bytes = para->m_dll->codec_write(pkt->codec, pkt->hdr->data + len, pkt->hdr->size - len);
             if (write_bytes < 0 || write_bytes > (pkt->hdr->size - len)) {
