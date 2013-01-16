@@ -411,6 +411,10 @@ void CCoreAudioAEHALOSX::EnumerateOutputDevices(AEDeviceList &devices, bool pass
 
     deviceList.pop_front();
   }
+
+  /* PLEX */
+  devices.push_back(AEDevice(std::string("System Default (") + defaultDeviceName + ")", "CoreAudio:default"));
+  /* END PLEX */
 }
 
 void CCoreAudioAEHALOSX::Stop()

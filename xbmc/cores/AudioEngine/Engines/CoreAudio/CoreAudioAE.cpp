@@ -34,6 +34,10 @@
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
 
+/* PLEX */
+#include "CoreAudioHardware.h"
+/* END PLEX */
+
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416
 
@@ -217,11 +221,15 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
 
   if (m_outputDevice.empty())
     m_outputDevice = "default";
-
   AEAudioFormat initformat = m_format;
 
   // initialize audio hardware
   m_Initialized = HAL->Initialize(this, m_rawPassthrough, initformat, rawDataFormat, m_outputDevice, m_volume);
+
+  /* PLEX */
+  if (m_Initialized && m_outputDevice == "default")
+    CCoreAudioHardware::GetOutputDeviceName(m_lastDefaultAudioDevice);
+  /* END PLEX */
 
   unsigned int bps         = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   m_chLayoutCount          = m_format.m_channelLayout.Count();
@@ -443,11 +451,26 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   if ((options & AESTREAM_PAUSED) == 0)
     Stop();
 
+  /* PLEX */
+  bool audioDeviceChanged = false;
+  std::string deviceName;
+  CCoreAudioHardware::GetOutputDeviceName(deviceName);
+
+  if (g_guiSettings.GetString("audiooutput.audiodevice") == "CoreAudio:default" &&
+      !m_lastDefaultAudioDevice.empty() &&
+      m_lastDefaultAudioDevice != deviceName)
+  {
+    CLog::Log(LOGDEBUG, "DefaultAudioDevice changed, so we need to reinit");
+    audioDeviceChanged = true;
+  }
+  /* END PLEX */
+
   // reinit the engine if pcm format changes or always on raw format
   if (m_Initialized && ( m_lastStreamFormat != dataFormat ||
                          m_lastChLayoutCount != channelLayout.Count() ||
                          m_lastSampleRate != sampleRate ||
-                         COREAUDIO_IS_RAW(dataFormat)))
+                         COREAUDIO_IS_RAW(dataFormat) ||
+                         audioDeviceChanged)) // PLEX
   {
     CSingleLock engineLock(m_engineLock);
     Stop();
