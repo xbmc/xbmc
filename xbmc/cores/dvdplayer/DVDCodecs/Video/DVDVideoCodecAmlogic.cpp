@@ -152,6 +152,9 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
     m_opened = true;
   }
 
+  if (m_hints.ptsinvalid)
+    pts = DVD_NOPTS_VALUE;
+
   return m_Codec->Decode(pData, iSize, dts, pts);
 }
 
