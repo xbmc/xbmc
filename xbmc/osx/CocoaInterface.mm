@@ -373,31 +373,6 @@ void Cocoa_ShowMouse()
 }
 
 //---------------------------------------------------------------------------------
-static char strVersion[32];
-
-const char* Cocoa_GetAppVersion()
-{
-  // Get the main bundle for the app and return the version.
-  CFBundleRef mainBundle = CFBundleGetMainBundle();
-  CFStringRef versStr = (CFStringRef)CFBundleGetValueForInfoDictionaryKey(mainBundle, kCFBundleVersionKey);
-  
-  memset(strVersion,0,32);
-  
-  if (versStr != NULL && CFGetTypeID(versStr) == CFStringGetTypeID())
-  {
-    bool res = CFStringGetCString(versStr, strVersion, 32,kCFStringEncodingUTF8);
-    if (!res)
-    {
-      printf("Error converting version string\n");      
-      strcpy(strVersion, "SVN");
-    }
-  }
-  else
-    strcpy(strVersion, "SVN");
-  
-  return strVersion;
-}
-
 bool Cocoa_HasVDADecoder()
 {
   static int result = -1;
