@@ -22,6 +22,7 @@
 
 #include "CoreAudioAEHAL.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
 
 bool CCoreAudioHardware::GetAutoHogMode()
 {
@@ -329,17 +330,9 @@ void CCoreAudioHardware::GetOutputDeviceName(std::string& name)
     if (ret != noErr)
       return;
 
-    /* PLEX */
-    int len = CFStringGetLength(theDeviceName) + 1;
-    char *cstr = (char*)malloc(len);
-    if (cstr && CFStringGetCString(theDeviceName, cstr, len, kCFStringEncodingUTF8))
-    {
-      if (cstr)
-        name = cstr;
-    }
-    if (cstr)
-      free(cstr);
-    /* END PLEX */
+    CStdString n;
+    if (DarwinCFStringRefToString(theDeviceName, n))
+      name = n;
 
     CFRelease(theDeviceName);
   }

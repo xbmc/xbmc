@@ -35,6 +35,7 @@
   #import <sys/sysctl.h>
 #else
   #import <Cocoa/Cocoa.h>
+  #import <CoreFoundation/CoreFoundation.h>
   #import <IOKit/ps/IOPowerSources.h>
   #import <IOKit/ps/IOPSKeys.h>
 #endif
@@ -314,6 +315,31 @@ void DarwinSetScheduling(int message)
     THREAD_EXTENDED_POLICY_COUNT);
 
   result = pthread_setschedparam(this_pthread_self, policy, &param );
+}
+
+bool DarwinCFStringRefToString(CFStringRef source, std::string &destination)
+{
+  const char *cstr = CFStringGetCStringPtr(source, CFStringGetSystemEncoding());
+  if (!cstr)
+  {
+    CFIndex strLen = CFStringGetMaximumSizeForEncoding(CFStringGetLength(source),
+                                                       kCFStringEncodingUTF8);
+    char *allocStr = (char*)malloc(strLen + 1);
+
+    if(!allocStr)
+      return false;
+
+    if(!CFStringGetCString(source, allocStr, strLen, CFStringGetSystemEncoding()))
+      return false;
+
+    destination = allocStr;
+    free((void*)allocStr);
+
+    return true;
+  }
+
+  destination = cstr;
+  return true;
 }
 
 #endif

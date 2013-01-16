@@ -41,6 +41,7 @@
 #include "XBMCHelper.h"
 #include "utils/SystemInfo.h"
 #include "CocoaInterface.h"
+#include "osx/DarwinUtils.h"
 
 /* PLEX */
 #undef BOOL
@@ -1384,8 +1385,9 @@ bool CWinSystemOSX::IsObscured(void)
         // if the windowBounds completely encloses our bounds, we are obscured.
         if (!obscureLogged)
         {
-          const char* cstr = CFStringGetCStringPtr(ownerName, CFStringGetSystemEncoding());
-          CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", cstr);
+          std::string appName;
+          if (DarwinCFStringRefToString(ownerName, appName))
+            CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", appName.c_str());
           obscureLogged = true;
         }
         m_obscured = true;
