@@ -1,0 +1,18 @@
+Upstream fixes
+[*] CEC fixes
+[*] Log window name of windows that slows down the FPS of the interface. (If you see really sluggish performance, check the log)
+[*] A/V sync on certain AVI files
+
+Plex Fixes
+[*] Rewritten cache handling
+[*] VAAPI compile fix on Linux
+[*] Fixes to the priority of what server we should chose.
+[*] Fixes to channel browsing
+[*] Playing videos from the Movie/Series information dialog now works
+[*] Added advanced setting for disabling GDM server discovery
+[*] Theme music volume now works again
+[*] Manually entered servers are now scanned faster
+[*] Fix ASS/SSA subtitles on Windows
+[*] Missing artist name in the now playing screen
+[*] Bug where the default audio device would not show up in settings
+[*] System default audio device is now a option on OSX
