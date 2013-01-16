@@ -22,6 +22,7 @@
 
 #include "CoreAudioAEHAL.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
 
 bool CCoreAudioHardware::GetAutoHogMode()
 {
@@ -329,9 +330,8 @@ void CCoreAudioHardware::GetOutputDeviceName(std::string& name)
     if (ret != noErr)
       return;
 
-    const char *cstr = CFStringGetCStringPtr(theDeviceName, CFStringGetSystemEncoding());
-    if (cstr)
-      name = cstr;
+    DarwinCFStringRefToString(theDeviceName, name);
+
     CFRelease(theDeviceName);
   }
 }

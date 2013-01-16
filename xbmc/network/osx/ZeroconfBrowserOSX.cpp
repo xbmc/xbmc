@@ -26,33 +26,13 @@
 #include "guilib/GUIMessage.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
 namespace
 {
-  CStdString CFStringToCStdString(const CFStringRef cfstr)
-  {
-    //first try the short path
-    const char *p_tmp = CFStringGetCStringPtr(cfstr, kCFStringEncodingUTF8);
-    if (p_tmp)
-      return CStdString(p_tmp);
-    
-    // i'm not sure if CFStringGetMaximumSizeForEncoding
-    // includes space for the termination character or not?
-    // so i add 1 here to make sure..
-    CFIndex buf_len = 1 + CFStringGetMaximumSizeForEncoding(
-      CFStringGetLength(cfstr), kCFStringEncodingUTF8);
-
-    char *buffer = new char[buf_len];
-    CFStringGetCString(cfstr, buffer, buf_len, kCFStringEncodingUTF8);
-    CStdString myString(buffer);
-    delete[] buffer;
-
-    return myString;
-  }
-  
   //helper for getting a the txt-records list
   //returns true on success, false if nothing found or error
   CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(CFNetServiceRef serviceRef)  
@@ -78,12 +58,16 @@ namespace
 
           for(idx = 0; idx < numValues; idx++)
           {
-            recordMap.insert(
-              std::make_pair(
-                CFStringToCStdString(keys[idx]),
-                CStdString((const char *)CFDataGetBytePtr(values[idx]))
-              )
-            );
+            std::string key;
+            if (DarwinCFStringRefToString(keys[idx], key))
+            {
+              recordMap.insert(
+                std::make_pair(
+                  key,
+                  CStdString((const char *)CFDataGetBytePtr(values[idx]))
+                )
+              );
+            }
           }
         }
         CFRelease(dict);
@@ -161,11 +145,19 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     assert(service);
     //get our instance
     CZeroconfBrowserOSX* p_this = reinterpret_cast<CZeroconfBrowserOSX*>(info);
+
     //store the service
-    ZeroconfService s(
-      CFStringToCStdString(CFNetServiceGetName(service)),
-      CFStringToCStdString(CFNetServiceGetType(service)),
-      CFStringToCStdString(CFNetServiceGetDomain(service)));
+    std::string name, type, domain;
+    if (!DarwinCFStringRefToString(CFNetServiceGetName(service), name) ||
+        !DarwinCFStringRefToString(CFNetServiceGetType(service), type) ||
+        !DarwinCFStringRefToString(CFNetServiceGetDomain(service), domain))
+    {
+      CLog::Log(LOGWARNING, "CZeroconfBrowserOSX::BrowserCallback failed to convert service strings.");
+      return;
+    }
+
+    ZeroconfService s(name, type, domain);
+
     if (flags & kCFNetServiceFlagRemove)
     {
       CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback service named: %s, type: %s, domain: %s disappeared", 
