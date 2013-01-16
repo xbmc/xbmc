@@ -1785,7 +1785,10 @@ void CAMLCodec::Process()
         // correct video pts by user set delay and rendering delay
         app_pts += offset;
         if (fabs((double)pts_video/PTS_FREQ - app_pts) > 0.20)
+        {
+          CLog::Log(LOGDEBUG, "CAMLCodec::Process pts diff = %f", (double)pts_video/PTS_FREQ - app_pts);
           SetVideoPtsSeconds(app_pts);
+        }
       }
     }
     else
