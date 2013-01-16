@@ -294,7 +294,8 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
     m_active = NO;
     m_eventPort = NULL;
     m_runLoopSource = NULL;
-    m_controlSysPower = NO;
+    // power button controls xbmc sleep button (this will also trigger the osx shutdown menu - we can't prevent this as it seems)
+    m_controlSysPower = YES;
     m_controlSysVolume = YES; // volume keys control xbmc volume
   }
   return self;

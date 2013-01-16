@@ -417,7 +417,7 @@ static void setupWindowMenu(void)
   [pool release];
 }
 
-#define VK_SLEEP            0x5F
+#define VK_SLEEP            0x143
 #define VK_VOLUME_MUTE      0xAD
 #define VK_VOLUME_DOWN      0xAE
 #define VK_VOLUME_UP        0xAF
@@ -428,7 +428,7 @@ static void setupWindowMenu(void)
 #define VK_REWIND           0x9D
 #define VK_FAST_FWD         0x9E
 
-- (void)MediaKeyPower
+- (void)powerKeyNotification
 {
   SDL_Event event;
   memset(&event, 0, sizeof(event));
