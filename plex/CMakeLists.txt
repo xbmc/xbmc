@@ -45,7 +45,6 @@ endif(NOT APPLE)
 
 if(NOT WIN32)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)
-  list(REMOVE_ITEM plex_SRCS ./PlexApplicationWin.cpp)
 endif(NOT WIN32)
 
 get_property(PLEX_MODULE_SRCS GLOBAL PROPERTY SRCS_LIST)
