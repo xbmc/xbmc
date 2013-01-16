@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<window id="2004">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="group">
+			<include>MediaOverlayVisible</include>
+			<control type="videowindow" id="1">
+				<description>Video Preview</description>
+				<posx>12</posx>
+				<posy>54</posy>
+				<width>284</width>
+				<height>160</height>
+				<include>MusicNowPlayingSlideLeft</include>
+			</control>
+		</control>
+	</controls>
+</window>

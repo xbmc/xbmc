@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="0">XBMC Lyrics</string>
+  <string id="630">Ungewohntes Seitenlayout, noch kein parsing integriert....</string>
+  <string id="631">FEHLER! Habe keinen Linknamen bekommen</string>
+  <string id="632">Keine Lyrics gefunden</string>
+  <string id="633">Seite für Lied gefunden, doch sie ist leer</string>
+  
+  <string id="638">Mit was willst du dieses Script laufen lassen?</string>
+  <string id="639">Es wird gerade kein Lied gespielt, Dummkopf!!</string>
+  <string id="230">Feher beim speichern deiner Einstellungen!</string>
+  <string id="240">Scraper Änderungen werden erst nach einem Neustart übernommen.</string>
+  
+  <string id="201">Scraper</string>
+  <string id="202">Lyrics speichern</string>
+  <string id="203">Speicher Ordner</string>
+  <string id="204">Glattes blättern der Lyrics</string>
+  
+  <string id="203">ein Speicher Ordner</string>
+  
+  <string id="250">Ok</string>
+  <string id="251">Abbrechen</string>
+  <string id="252">Update</string>
+  <string id="253">Credits</string>
+
+  <string id="589">Party-Modus</string>
+
+  <string id="1007">Holen:</string>
+
+  <string id="1001">Holen der gegenwärtig markierten Versionen ...</string>
+  <string id="1002">ist neuer</string>
+  <string id="1003">Möchtest du aktualisieren?</string>
+  <string id="1004">Hole Dateiliste...</string>
+  <string id="1005">Bite warten...</string>
+  <string id="1000">Deine Version ist aktuell.</string>
+  <string id="1031">Fehler beim aktualisieren des Scripts.</string>
+  <string id="1008">Pfad:</string>
+  <string id="1009">Datei:</string>
+  <string id="1010">Deine neue Version wurde hier gespeichert:</string>
+  <string id="1006">Version</string>
+</strings>

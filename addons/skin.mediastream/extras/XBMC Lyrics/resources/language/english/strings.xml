@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">XBMC Lyrics</string>
+    <string id="1">xbmc media center</string>
+    <string id="2">Nuka1195</string>
+
+    <!-- User Messages -->
+    <string id="100">Exception for</string>
+    <string id="101">File</string>
+    <string id="102">Embedded</string>
+
+    <!-- Settings labels -->
+    <string id="201">Scraper</string>
+    <string id="202">Save lyrics</string>
+    <string id="203">Save folder</string>
+    <string id="204">Smooth scrolling for lyrics</string>
+    <string id="205">Show visualization window</string>
+    <string id="206">Use only filename for search</string>
+    <string id="207">Filename format</string>
+    <string id="208">Playlist folder</string>
+    <string id="209">Shuffle playlist</string>
+    <string id="210">Keep lyrics files xbox compatible</string>
+    <string id="211">Save lyrics files with extension</string>
+
+    <!-- Settings choices -->
+    <string id="2070">%A - %T</string>
+    <string id="2071">%A\%B\%T</string>
+    <string id="2072">%A\%B\%N %T</string>
+
+    <!-- Settings error messages -->
+    <string id="230">There was an error saving settings!</string>
+
+    <!-- Settings restart required message -->
+    <string id="240">Scraper changes won't take effect until you restart.</string>
+    <string id="241">Would you like to restart %s now?</string>
+
+    <!-- Settings buttons -->
+    <string id="250">Ok</string>
+    <string id="251">Cancel</string>
+    <string id="252">Update</string>
+    <string id="253">Credits</string>
+    <string id="254">Play Music</string>
+    <string id="255">Defaults</string>
+
+    <string id="270">Restart</string>
+    <string id="271">Later</string>
+    
+    <!-- Special XBMC strings -->
+    <string id="589">Party Mode</string>
+    
+    <!-- Error messages -->
+    <string id="630">Unusual page layout, no parsing built in yet!</string>
+    <string id="631">Artist not found!</string>
+    <string id="632">No lyrics found!</string>
+    <string id="633">Empty page found!</string>
+    <string id="638">What do you want to run this for?</string>
+    <string id="639">No music is playing fool!</string>
+
+    <!-- Credits -->
+    <string id="900">Version</string>
+    <string id="901">Team Credits:</string>
+    <string id="902">Additional Credits:</string>
+    <string id="903">Skin Credits:</string>
+
+    <!-- Credits headings-->
+    <string id="910">Head Developer &amp; Coder</string>
+    <string id="911">Original Author</string>
+    <string id="912">Original Skinning Mod</string>
+    <string id="913">Unicode Support</string>
+    <string id="914">Language File</string>
+
+    <!-- Update messages -->
+    <string id="1000">Your version is up to date.</string>
+    <string id="1001">Fetching current tagged versions...</string>
+    <string id="1002">is newer</string>
+    <string id="1003">Would you like to update?</string>
+    <string id="1004">Fetching file list...</string>
+    <string id="1005">Please wait...</string>
+    <string id="1006">Version</string>
+    <string id="1007">Fetching:</string>
+    <string id="1008">Path:</string>
+    <string id="1009">File:</string>
+    <string id="1010">Your new version was saved to:</string>
+
+    <!-- Update error messages -->
+    <string id="1030">No tagged versions were found!</string>
+    <string id="1031">There was an error updating script!</string>
+</strings>

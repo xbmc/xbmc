@@ -1,0 +1,42 @@
+<window id="112">
+	<controls>
+		<control type="group">
+			<visible>![Window.IsActive(12999) | Window.IsActive(2005) | Window.IsActive(script-XBMC_Lyrics-main.xml)]</visible>
+			<control type="label" id="401">
+				<posx>130r</posx>
+				<include>notificationTop</include>
+			</control>
+			<control type="label" id="405">
+				<posx>130r</posx>
+				<include>notificationBottom</include>
+			</control>
+			<control type="label" id="1">
+				<label>$INFO[Control.GetLabel(404),,%]</label>
+				<include>notificationSide</include>
+			</control>
+			<control type="progress" id="403">
+				<posx>15</posx>
+				<posy>71</posy>
+				<width>1300</width>
+				<texturebg>-</texturebg>
+				<lefttexture>-</lefttexture>
+				<midtexture>-</midtexture>
+				<righttexture>-</righttexture>
+				<overlaytexture>-</overlaytexture>
+				<visible>false</visible>
+			</control>
+			<control type="progress" id="404">
+				<posx>15</posx>
+				<posy>71</posy>
+				<width>1300</width>
+				<texturebg>-</texturebg>
+				<lefttexture>-</lefttexture>
+				<midtexture>-</midtexture>
+				<righttexture>-</righttexture>
+				<overlaytexture>-</overlaytexture>
+				<visible>false</visible>
+			</control>
+		</control>
+	</controls>
+</window>
+

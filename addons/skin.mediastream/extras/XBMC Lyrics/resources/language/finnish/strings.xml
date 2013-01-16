@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="0">XBMC Lyrics</string>
+	<string id="1">xbmc Media Center</string>
+    <string id="2">Mikko 70</string>
+	<!--   9.7.2008 Finnish   -->
+ 	<!-- User Messages -->
+    <string id="100">Poikkeus</string>
+    <string id="101">Tiedosto</string>
+    <string id="102">Sulautettu</string>
+
+    <!-- Settings labels -->
+    <string id="201">Hakupaikka</string>
+    <string id="202">Tallenna sanoitukset</string>
+    <string id="203">Kansioon:</string>
+    <string id="204">Sanoitusten tasainen vieritys</string>
+    <string id="205">Visualisointi käytössä</string>
+    <string id="206">Haetaan vain tiedostonimeä</string>
+    <string id="207">Tiedostonimen muoto</string>
+    <string id="208">Soittolistakansio</string>
+    <string id="209">Sekoita soittolista</string>
+    <string id="210">Säilytä sanoitusten Xbox yhteensopivuus</string>
+    <string id="211">Tallenna sanoitukset lopputunnisteen kanssa</string>
+
+  <!-- Settings choices -->
+    <string id="2070">%A - %T</string>
+    <string id="2071">%A\%B\%T</string>
+    <string id="2072">%A\%B\%N %T</string>
+
+    <!-- Settings error messages -->
+    <string id="230">Asetusten tallennuksessa tapahtui virhe!</string>
+
+    <!-- Settings restart required message -->
+    <string id="240">Skripti täytyy käynnistää uudelleen.</string>
+    <string id="241">Haluatko uudelleenkäynnistää %sin ?</string>
+
+    <!-- Settings buttons -->
+    <string id="250">Ok</string>
+    <string id="251">Peruuta</string>
+    <string id="252">Päivitä</string>
+    <string id="253">Tekijät</string>
+    <string id="254">Toista</string>
+    <string id="255">Oletukset</string>
+  
+    <string id="270">Käynnistä</string>
+    <string id="271">Ei</string>
+    
+    <!-- Special XBMC strings -->
+    <string id="589">Jukeboksi</string>
+    
+    <!-- Error messages -->
+    <string id="630">Epätavallinen sivun ulkoasu, hakua ei voida suorittaa!</string>
+    <string id="631">Esittäjää ei löydy!</string>
+    <string id="632">Sanotuksia ei löydy!</string>
+    <string id="633">Tyhjä sivu löydetty!</string>
+    <string id="638">Haluatko käynnistää skriptin?</string>
+    <string id="639">Musiikin toisto täytyy olla päällä!</string>
+    
+   <!-- Credits -->
+    <string id="900">Versio</string>
+    <string id="901">Tekijät:</string>
+    <string id="902">Kiitokset:</string>
+    <string id="903">Skinin tekijät</string>
+
+    <!-- Credits headings-->
+    <string id="910">Kehitys &amp; koodaus</string>
+    <string id="911">Alkuperäinen tekijä</string>
+    <string id="912">Alkuperäinen skini</string>
+    <string id="913">Unikoodin tuki</string>
+    <string id="914">Kielitiedosto</string>
+
+    <!-- Update messages -->
+    <string id="1000">Ohjelmasi on jo ajantasalla.</string>
+    <string id="1001">Tarkistetaan uusinta versiota...</string>
+    <string id="1002">on uudempi</string>
+    <string id="1003">Haluatko päivittää ohjelman?</string>
+    <string id="1004">Noudetaan tiedostoluetteloa...</string>
+    <string id="1005">Odota...</string>
+    <string id="1006">Versio</string>
+    <string id="1007">Haetaan:</string>
+    <string id="1008">Polku:</string>
+    <string id="1009">Tiedosto:</string>
+    <string id="1010">Ohjelma tallennettiin kansioon:</string>
+
+    <!-- Update error messages -->
+    <string id="1030">Uusinta versiota ei löytynyt!</string>
+    <string id="1031">Päivitys ei onnistunut!</string>
+</strings>

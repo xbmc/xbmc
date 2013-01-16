@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<window id="2006">
+	<defaultcontrol>90</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="visualisation" id="2">
+			<description>visualisation</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+		</control>
+		<!-- codec & viz infos -->
+		
+		<control type="group" id="0">
+			<visible>Player.ShowCodec + !Window.IsVisible(script-XBMC_Lyrics-main.xml)</visible>
+			<animation effect="fade" time="500">VisibleChange</animation>
+			<control type="image" id="0">
+				<description>preset background image</description>
+				<posx>-10</posx>
+				<posy>40</posy>
+				<width>740</width>
+				<height>90</height>
+				<texture>osd_menu_bg.png</texture>
+			</control>
+			<control type="label" id="0">
+				<description>Codecinfo</description>
+				<width>630</width>
+				<posx>50</posx>
+				<posy>50</posy>
+				<label>$LOCALIZE[445] | $INFO[musicplayer.Codec,Codec: ,]$INFO[musicplayer.Bitrate, - Bitrate: ,kbps]$INFO[musicplayer.bitspersample, - Bits:,bit]$INFO[musicplayer.Samplerate, - Freq.: ,kHz]$INFO[musicplayer.Channels, - Channels: ]</label>
+				<align>left</align>
+				<font>font12</font>
+			</control>
+			<control type="label" id="0">
+				<description>Presets label</description>
+				<posx>50</posx>
+				<posy>75</posy>
+				<width>630</width>
+				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name] - $LOCALIZE[20166]</label>
+				<font>font12</font>
+				<align>left</align>
+				<visible>Visualisation.Locked</visible>
+			</control>
+			<control type="label" id="0">
+				<description>Presets label</description>
+				<posx>50</posx>
+				<posy>75</posy>
+				<width>630</width>
+				<label>Visual | fps: $INFO[System.FPS] - $LOCALIZE[250] - $INFO[Visualisation.Name]</label>
+				<font>font12</font>
+				<align>left</align>
+				<visible>!Visualisation.Locked</visible>
+			</control>
+			<control type="label" id="0">
+				<description>Presets label</description>
+				<posx>50</posx>
+				<posy>100</posy>
+				<width>630</width>
+				<label>$LOCALIZE[13388] | $INFO[Visualisation.Preset]</label>
+				<font>font12</font>
+				<align>left</align>
+			</control>
+		</control>
+		
+	</controls>
+</window>

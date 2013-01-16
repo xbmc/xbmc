@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<window id="2004">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="group">
+			<include>MediaOverlayVisible</include>
+			<control type="group">
+				<include>MusicOverlayNowPlayingDims</include>
+				<include>MusicNowPlaying</include>
+			</control>
+		</control>
+	</controls>
+</window>

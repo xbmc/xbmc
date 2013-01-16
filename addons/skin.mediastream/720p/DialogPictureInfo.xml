@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<window id="139">
+	<defaultcontrol>61</defaultcontrol>
+	<controls>
+		<control type="group">
+			<posx>680</posx>
+			<posy>0</posy>
+			<include>VideoOSDSlideLeft</include>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>-38</posx>
+				<posy>0</posy>
+				<width>640</width>
+				<height>720</height>
+				<texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+			</control>
+			<control type="group">
+				<posx>-10</posx>
+				<posy>20</posy>
+				<control type="label">
+					<description>About Your label</description>
+					<width>PicInfoTextWidth</width>
+					<label>$LOCALIZE[31067]</label>
+					<font>MediumDefaultCapsFont</font>
+				</control>
+				<control type="label" id="1">
+					<description>Heading</description>
+					<posy>22</posy>
+					<width>PicInfoTextWidth</width>
+					<font>LargeTitleCapsFont</font>
+					<label>$LOCALIZE[31042]</label>
+				</control>
+				<control type="group">
+					<posy>62</posy>
+					<control type="list" id="5">
+						<width>640</width>
+						<height>634</height>
+						<onleft>61</onleft>
+						<onright>-</onright>
+						<onup>5</onup>
+						<ondown>5</ondown>
+						<pagecontrol>61</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="30">
+							<control type="label">
+								<info>ListItem.Label</info>
+								<width>240</width>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<info>ListItem.Label2</info>
+								<posx>248</posx>
+								<width>346</width>
+								<haspath>true</haspath>
+								<scroll>false</scroll>
+								<include>MediaInfoWideValue</include>
+							</control>
+						</itemlayout>
+						<focusedlayout height="30">
+							<control type="label">
+								<info>ListItem.Label</info>
+								<width>240</width>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<info>ListItem.Label2</info>
+								<posx>248</posx>
+								<width>346</width>
+								<haspath>true</haspath>
+								<include>MediaInfoWideValue</include>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+				<control type="scrollbar" id="61">
+					<posx>590</posx>
+					<posy>66</posy>
+					<height>628</height>
+					<onup>61</onup>
+					<ondown>61</ondown>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>
