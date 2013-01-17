@@ -143,6 +143,7 @@ static uint32_t SymMappingsX11[][2] =
 , {XK_Break, XBMCK_BREAK}
 , {XK_Menu, XBMCK_MENU}
 , {XF86XK_PowerOff, XBMCK_POWER}
+, {XF86XK_Sleep, XBMCK_SLEEP}
 , {XK_EcuSign, XBMCK_EURO}
 , {XK_Undo, XBMCK_UNDO}
   /* Media keys */
