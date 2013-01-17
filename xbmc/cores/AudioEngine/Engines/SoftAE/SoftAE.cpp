@@ -1388,15 +1388,21 @@ inline void CSoftAE::RemoveStream(StreamList &streams, CSoftAEStream *stream)
 inline void CSoftAE::ProcessSuspend()
 {
   bool sinkIsSuspended = false;
+  unsigned int curSystemClock = 0;
 
-  if (m_playingStreams.empty() && m_playing_sounds.empty() && 
-     !m_softSuspend && !g_advancedSettings.m_streamSilence)
+  if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
+      !g_advancedSettings.m_streamSilence)
   {
     m_softSuspend = true;
-    m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+    // only one call to SystemClockMillis, please.
+    curSystemClock = XbmcThreads::SystemClockMillis();
+    m_softSuspendTimer = curSystemClock + 10000; //10.0 second delay for softSuspend
   }
-
-  unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
+  else
+  {
+    // some hole in the logic, set this or we will consume cpu and bork audio.
+    m_softSuspend = false;
+  }
 
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */
@@ -1419,8 +1425,9 @@ inline void CSoftAE::ProcessSuspend()
       sinkLock.Leave();
     }
 
-    /* idle for platform-defined time */
-    m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
+    /* idle for platform-defined time if streams or sounds are empty */
+    if (m_playingStreams.empty() && m_playing_sounds.empty())
+      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
 
     /* check if we need to resume for stream or sound */
     if (!m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
