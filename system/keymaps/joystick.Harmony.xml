@@ -110,7 +110,7 @@
   </global>
   <Home>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">XBMC.ActivateWindow(PlayerControls)</button>
+      <!-- menu       	-->      <button id="6">ContextMenu</button>
       <!-- Info  	-->      <button id="31">XBMC.ActivateWindow(Settings)</button>
       <!-- Exit 	-->      <button id="51">XBMC.ActivateWindow(ShutdownMenu)</button>
       <!-- #enter	-->      <button id="36">XBMC.ActivateWindow(SystemInfo)</button>
