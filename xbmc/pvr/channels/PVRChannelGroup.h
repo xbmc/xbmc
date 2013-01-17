@@ -384,12 +384,14 @@ namespace PVR
 
   protected:
     /*!
-     * @brief Set a new channel icon path if the path exists
+     * @brief Set a new channel icon path if the path exists inside the given FileItemList
      * @param channel The channel to change
      * @param strIconPath The new path
+     * @param items The FileItemList to search inside of for the path
+     * @param bUpdateDb True if changed channels should be persisted to the database
      * @return True if the path exists, false otherwise
      */
-    bool SetChannelIconPath(CPVRChannelPtr channel, const std::string& strIconPath);
+    bool SetChannelIconPath(CPVRChannelPtr channel, const std::string& strIconPath, const CFileItemList &items, bool bUpdateDb = false);
 
     /*!
      * @brief Load the channels stored in the database.

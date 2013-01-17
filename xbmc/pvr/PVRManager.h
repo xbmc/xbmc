@@ -337,6 +337,11 @@ namespace PVR
     void TriggerSaveChannelSettings(void);
 
     /*!
+     * @brief Let the background thread search for missing channel icons.
+     */
+    void TriggerSearchMissingChannelIcons(void);
+
+    /*!
      * @brief Update the channel that is currently active.
      * @param item The new channel.
      * @return True if it was updated correctly, false otherwise.
@@ -630,6 +635,16 @@ namespace PVR
     CPVRChannelSettingsSaveJob(void) {}
     virtual ~CPVRChannelSettingsSaveJob() {}
     virtual const char *GetType() const { return "pvr-save-channelsettings"; }
+
+    bool DoWork();
+  };
+
+  class CPVRSearchMissingChannelIconsJob : public CJob
+  {
+  public:
+    CPVRSearchMissingChannelIconsJob(void) {}
+    virtual ~CPVRSearchMissingChannelIconsJob() {}
+    virtual const char *GetType() const { return "pvr-search-missing-channel-icons"; }
 
     bool DoWork();
   };

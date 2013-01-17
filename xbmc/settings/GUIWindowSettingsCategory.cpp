@@ -1925,7 +1925,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
   }
   else if (strSetting.Equals("pvrmenu.searchicons") && g_PVRManager.IsStarted())
   {
-    g_PVRManager.SearchMissingChannelIcons();
+    g_PVRManager.TriggerSearchMissingChannelIcons();
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {

@@ -31,6 +31,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "utils/log.h"
 #include "Util.h"
+#include "filesystem/Directory.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 
@@ -228,19 +229,37 @@ bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int 
   return true;
 }
 
-bool CPVRChannelGroup::SetChannelIconPath(CPVRChannelPtr channel, const std::string& strIconPath)
+bool CPVRChannelGroup::SetChannelIconPath(CPVRChannelPtr channel, const std::string& strIconPath, const CFileItemList &items, bool bUpdateDb /* = false */)
 {
-  if (CFile::Exists(strIconPath))
+  if (items.Contains(strIconPath))
   {
-    channel->SetIconPath(strIconPath, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
-    return true;
+    CPVRChannelPtr realChannel = GetByChannelID(channel->ChannelID());
+    if (realChannel.get())
+    {
+      CLog::Log(LOGDEBUG,"Found matching icon for channel %s with filename %s",channel->ChannelName().c_str(), strIconPath.c_str());
+      realChannel->SetIconPath(strIconPath, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
+
+      if (bUpdateDb)
+        realChannel->Persist();
+
+      return true;
+    }
   }
   return false;
 }
 
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
-  if (g_guiSettings.GetString("pvrmenu.iconpath").IsEmpty())
+  CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
+
+  if (strBasePath.IsEmpty())
+    return;
+
+  CFileItemList items;
+  items.SetFastLookup(true);
+  CDirectory::GetDirectory(strBasePath, items);
+
+  if (items.IsEmpty())
     return;
 
   CPVRDatabase *database = GetPVRDatabase();
@@ -249,15 +268,18 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
   CSingleLock lock(m_critSection);
 
-  for (unsigned int ptr = 0; ptr < m_members.size(); ptr++)
+  CPVRChannelGroup tempGroup(*this);
+
+  lock.Leave();
+
+  for (unsigned int ptr = 0; ptr < tempGroup.m_members.size(); ptr++)
   {
-    PVRChannelGroupMember groupMember = m_members.at(ptr);
+    PVRChannelGroupMember groupMember = tempGroup.m_members.at(ptr);
 
     /* skip if an icon is already set */
     if (!groupMember.channel->IconPath().IsEmpty())
       continue;
 
-    CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
     CStdString strSanitizedChannelName = CUtil::MakeLegalFileName(groupMember.channel->ClientChannelName());
 
     CStdString strIconPath = strBasePath + strSanitizedChannelName;
@@ -266,22 +288,20 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
     strIconPathUid.Format("%08d", groupMember.channel->UniqueID());
     strIconPathUid = URIUtils::AddFileToFolder(strBasePath, strIconPathUid);
 
-    SetChannelIconPath(groupMember.channel, strIconPath      + ".tbn") ||
-    SetChannelIconPath(groupMember.channel, strIconPath      + ".jpg") ||
-    SetChannelIconPath(groupMember.channel, strIconPath      + ".png") ||
+    SetChannelIconPath(groupMember.channel, strIconPath      + ".tbn", items, bUpdateDb) ||
+    SetChannelIconPath(groupMember.channel, strIconPath      + ".jpg", items, bUpdateDb) ||
+    SetChannelIconPath(groupMember.channel, strIconPath      + ".png", items, bUpdateDb) ||
 
-    SetChannelIconPath(groupMember.channel, strIconPathLower + ".tbn") ||
-    SetChannelIconPath(groupMember.channel, strIconPathLower + ".jpg") ||
-    SetChannelIconPath(groupMember.channel, strIconPathLower + ".png") ||
+    SetChannelIconPath(groupMember.channel, strIconPathLower + ".tbn", items, bUpdateDb) ||
+    SetChannelIconPath(groupMember.channel, strIconPathLower + ".jpg", items, bUpdateDb) ||
+    SetChannelIconPath(groupMember.channel, strIconPathLower + ".png", items, bUpdateDb) ||
 
-    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".tbn") ||
-    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".jpg") ||
-    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".png");
-
-    if (bUpdateDb)
-      groupMember.channel->Persist();
+    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".tbn", items, bUpdateDb) ||
+    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".jpg", items, bUpdateDb) ||
+    SetChannelIconPath(groupMember.channel, strIconPathUid   + ".png", items, bUpdateDb);
 
     /* TODO: start channel icon scraper here if nothing was found */
+
   }
 }
 

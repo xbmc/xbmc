@@ -7460,11 +7460,22 @@ msgctxt "#19280"
 msgid "Client specific settings"
 msgstr ""
 
+#:xbmc/settings/GUISettings.cpp
 msgctxt "#19281"
 msgid "Confirm channel switches by pressing OK"
 msgstr ""
 
-#empty strings from id 19282 to 19498
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19282"
+msgid "Started searching for missing channel icons"
+msgstr ""
+
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19283"
+msgid "Finished searching for missing channel icons"
+msgstr ""
+
+#empty strings from id 19284 to 19498
 
 msgctxt "#19499"
 msgid "Other/Unknown"
