@@ -15,7 +15,6 @@ set(LINK_PKG
   JPEG
   X11
   SQLite3
-  LibSSH
   PCRE
   Lzo2
   FriBiDi
