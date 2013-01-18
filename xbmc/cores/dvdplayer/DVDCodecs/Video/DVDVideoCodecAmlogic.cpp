@@ -30,7 +30,7 @@
 
 CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_Codec(NULL),
-  m_pFormatName("")
+  m_pFormatName("amcodec")
 {
 }
 
@@ -43,6 +43,9 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
 {
   switch(hints.codec)
   {
+    case CODEC_ID_MJPEG:
+      m_pFormatName = "am-mjpeg";
+      break;
     case CODEC_ID_MPEG1VIDEO:
     case CODEC_ID_MPEG2VIDEO:
     case CODEC_ID_MPEG2VIDEO_XVMC:
@@ -77,6 +80,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_pFormatName = "am-wmv3";
       break;
     default:
+      CLog::Log(LOGDEBUG, "%s: Unknown hints.codec(%d", __MODULE_NAME__, hints.codec);
       return false;
       break;
   }
