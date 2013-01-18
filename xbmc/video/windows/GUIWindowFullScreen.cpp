@@ -62,6 +62,9 @@
 #if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#endif
 
 using namespace PVR;
 
@@ -153,6 +156,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       // switch back to the menu
       OutputDebugString("Switching to GUI\n");
+#if defined(TARGET_ANDROID)
+      CXBMCApp::ShowActionBar();
+#endif
       g_windowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
       return true;
@@ -678,6 +684,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
+#if defined(TARGET_ANDROID)
+      CXBMCApp::HideActionBar();
+#endif
       // check whether we've come back here from a window during which time we've actually
       // stopped playing videos
       if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingVideo())
@@ -726,6 +735,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_DEINIT:
     {
+#if defined(TARGET_ANDROID)
+      CXBMCApp::ShowActionBar();
+#endif
       CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog) pDialog->Close(true);
       CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
@@ -764,7 +776,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         delete m_subsLayout;
         m_subsLayout = NULL;
       }
-
       return true;
     }
   case GUI_MSG_CLICKED:
@@ -854,6 +865,9 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
     {
       pOSD->SetAutoClose(3000);
       pOSD->DoModal();
+#if defined(TARGET_ANDROID)
+      CXBMCApp::HideActionBar();
+#endif
     }
     return EVENT_RESULT_HANDLED;
   }
