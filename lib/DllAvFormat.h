@@ -218,7 +218,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(int, av_write_trailer, (AVFormatContext *p1))
   DEFINE_METHOD2(int, av_write_frame  , (AVFormatContext *p1, AVPacket *p2))
   /* PLEX */
-  DEFINE_METHOD1(int64_t, avio_size, (AVIOContext *s))
+  DEFINE_METHOD1(int64_t, avio_size, (AVIOContext *p1))
   /* END PLEX */
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
