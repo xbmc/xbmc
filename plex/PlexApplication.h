@@ -18,7 +18,7 @@
 #include "GlobalsHandling.h"
 
 #ifdef TARGET_DARWIN_OSX
-#include "Helper/PlexHelper.h"
+#include "Helper/PlexHTHelper.h"
 #endif
 
 class PlexServiceListener;

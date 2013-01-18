@@ -41,7 +41,7 @@
 #include "osx/CocoaPowerSyscall.h"
 
 /* PLEX */
-#include "Helper/PlexHelper.h"
+#include "Helper/PlexHTHelper.h"
 /* END PLEX */
 
 #elif defined(TARGET_ANDROID)

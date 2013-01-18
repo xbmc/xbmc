@@ -9,12 +9,12 @@ set(helper_srcs
   HIDRemote/HIDRemote.h
 )
 
-add_executable(PlexHelper ${helper_srcs})
-target_link_libraries(PlexHelper
+add_executable(PlexHTHelper ${helper_srcs})
+target_link_libraries(PlexHTHelper
   ${CONFIG_LIBRARY_COCOA}
   ${CONFIG_LIBRARY_IOKIT}
   ${CONFIG_LIBRARY_STDC++}
   ${CONFIG_LIBRARY_CARBON}
 )
 
-install(TARGETS PlexHelper DESTINATION "Plex Home Theater.app/Contents/Resources/XBMC/tools/darwin/runtime")
+install(TARGETS PlexHTHelper DESTINATION "Plex Home Theater.app/Contents/Resources/XBMC/tools/darwin/runtime")

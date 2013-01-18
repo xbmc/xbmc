@@ -13,7 +13,7 @@
 #include "GUIUserMessages.h"
 #include "ManualServerScanner.h"
 #include "MediaSource.h"
-#include "plex/Helper/PlexHelper.h"
+#include "plex/Helper/PlexHTHelper.h"
 #include "MyPlexManager.h"
 #include "AdvancedSettings.h"
 
@@ -81,7 +81,7 @@ class CRemoteRestartThread : public CThread
     void Process()
     {
       // This blocks until the helper is restarted
-      PlexHelper::GetInstance().Restart();
+      PlexHTHelper::GetInstance().Restart();
     }
 };
 #endif

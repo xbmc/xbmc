@@ -22,11 +22,11 @@
  *
  */
 
-class PlexHelper
+class PlexHTHelper
 {
  public:
 
-  static PlexHelper& GetInstance();
+  static PlexHTHelper& GetInstance();
 
   void Start();
   void Stop();
@@ -46,10 +46,12 @@ class PlexHelper
   static void CaptureAllInput();
   static void ReleaseAllInput();
 
+  void KillOldHelpers();
+
 private:
-  PlexHelper();
-  PlexHelper(PlexHelper const& );
-  PlexHelper& operator=(PlexHelper const&);
+  PlexHTHelper();
+  PlexHTHelper(PlexHTHelper const& );
+  PlexHTHelper& operator=(PlexHTHelper const&);
 
   bool InstallHelper();
   void InstallLauncher();
@@ -76,7 +78,7 @@ private:
   std::string m_helperFile;
   std::string m_helperInstalledPath;
 
-  static PlexHelper* smp_instance;
+  static PlexHTHelper* smp_instance;
 };
 
 #endif

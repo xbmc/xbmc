@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.plexapp.helper</string>
+	<string>com.plexapp.ht.helper</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>${PATH}</string>

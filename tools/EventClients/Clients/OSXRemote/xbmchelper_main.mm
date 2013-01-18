@@ -31,7 +31,7 @@ bool g_verbose_mode = false;
 #ifndef __PLEX__
 const char* PROGNAME="XBMCHelper";
 #else
-const char* PROGNAME="PlexHelper";
+const char* PROGNAME="PlexHTHelper";
 #endif
 const char* PROGVERS="0.7";
 
@@ -80,7 +80,7 @@ void ReadConfig()
 #ifndef __PLEX__
   strFile += "/Library/Application Support/XBMC/XBMCHelper.conf";
 #else
-  strFile += "/Library/Application Support/"+ std::string(PLEX_TARGET_NAME) +"/PlexHelper.conf";
+  strFile += "/Library/Application Support/"+ std::string(PLEX_TARGET_NAME) +"/PlexHTHelper.conf";
 #endif
   
 	// Open file.
@@ -122,7 +122,7 @@ void ReadConfig()
 #ifndef __PLEX__
 	argv[i++] = (char*)"XBMCHelper";
 #else
-  argv[i++] = (char*)"PlexHelper";
+  argv[i++] = (char*)"PlexHTHelper";
 #endif
 
 	for (vector<string>::iterator it = args.begin(); it != args.end(); ){

@@ -75,7 +75,7 @@
 #ifndef __PLEX__
 #include "osx/XBMCHelper.h"
 #else
-#include "Helper/PlexHelper.h"
+#include "Helper/PlexHTHelper.h"
 #endif
 #endif
 #include "network/GUIDialogAccessPoints.h"
@@ -698,29 +698,29 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
 #else
       // if Plex helper is running, prompt user before effecting change
-      if ( PlexHelper::GetInstance().IsRunning() && PlexHelper::GetInstance().GetMode()!=remoteMode )
+      if ( PlexHTHelper::GetInstance().IsRunning() && PlexHTHelper::GetInstance().GetMode()!=remoteMode )
       {
         bool cancelled;
         if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
         {
           // user declined, restore previous spinner state and appleremote mode
           CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-          g_guiSettings.SetInt("input.appleremotemode", PlexHelper::GetInstance().GetMode());
-          pControl->SetValue(PlexHelper::GetInstance().GetMode());
+          g_guiSettings.SetInt("input.appleremotemode", PlexHTHelper::GetInstance().GetMode());
+          pControl->SetValue(PlexHTHelper::GetInstance().GetMode());
         }
         else
         {
           // reload configuration
-          PlexHelper::GetInstance().Configure();
+          PlexHTHelper::GetInstance().Configure();
         }
       }
       else
       {
         // set new configuration.
-        PlexHelper::GetInstance().Configure();
+        PlexHTHelper::GetInstance().Configure();
       }
 
-      if (PlexHelper::GetInstance().ErrorStarting() == true)
+      if (PlexHTHelper::GetInstance().ErrorStarting() == true)
       {
         // inform user about error
         CGUIDialogOK::ShowAndGetInput(13620, 13621, 20022, 20022);
@@ -1882,7 +1882,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
 #ifndef __PLEX__
     XBMCHelper::GetInstance().Configure();
 #else
-    PlexHelper::GetInstance().Configure();
+    PlexHTHelper::GetInstance().Configure();
 #endif
 #endif
 #endif

@@ -341,7 +341,7 @@
 #include "plex/PlexMediaServerQueue.h"
 #include "plex/MyPlexManager.h"
 #include "plex/PlexServerManager.h"
-#include "plex/Helper/PlexHelper.h"
+#include "plex/Helper/PlexHTHelper.h"
 #include "plex/GUI/GUIDialogRating.h"
 #include "plex/GUI/GUIWindowSharedContent.h"
 #include "plex/GUI/GUIDialogTimer.h"
@@ -860,7 +860,7 @@ bool CApplication::Create()
   // Configure and possible manually start the helper.
   //XBMCHelper::GetInstance().Configure();
   /* PLEX */
-  PlexHelper::GetInstance().Configure();
+  PlexHTHelper::GetInstance().Configure();
   /* END PLEX */
 #endif
 
@@ -3810,8 +3810,8 @@ void CApplication::Stop(int exitCode)
       XBMCHelper::GetInstance().Stop();
 #else
     /* PLEX */
-    if (PlexHelper::GetInstance().IsAlwaysOn() == false)
-      PlexHelper::GetInstance().Stop();
+    if (PlexHTHelper::GetInstance().IsAlwaysOn() == false)
+      PlexHTHelper::GetInstance().Stop();
     /* END PLEX */
 #endif
 #endif

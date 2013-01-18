@@ -144,7 +144,7 @@ install(FILES ${plexdir}/Resources/plex-icon-256.png DESTINATION ${RESOURCEPATH}
 install(FILES ${plexdir}/Resources/peripherals.xml DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
 
 if(APPLE)
-  install(FILES ${plexdir}/Resources/com.plexapp.helper.plist DESTINATION ${RESOURCEPATH}/tools/darwin/runtime COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/com.plexapp.ht.helper.plist DESTINATION ${RESOURCEPATH}/tools/darwin/runtime COMPONENT RUNTIME)
 elseif(WIN32)
   install(FILES ${root}/system/zlib1.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/build/dependencies/vcredist/2010/vcredist_x86.exe DESTINATION ${BINPATH}/Dependencies COMPONENT VCREDIST)

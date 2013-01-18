@@ -24,7 +24,7 @@
 #include <Carbon/Carbon.h>
 #include <mach-o/dyld.h>
 
-#include "PlexHelper.h"
+#include "PlexHTHelper.h"
 #include "PlatformDefs.h"
 #include "Util.h"
 
@@ -40,27 +40,27 @@
 #include "XFileUtils.h"
 
 static long sg_singleton_lock_variable = 0;
-PlexHelper* PlexHelper::smp_instance = 0;
+PlexHTHelper* PlexHTHelper::smp_instance = 0;
 
-#define PLEX_HELPER_PROGRAM "PlexHelper"
+#define PLEX_HELPER_PROGRAM "PlexHTHelper"
 #define SOFA_CONTROL_PROGRAM "Sofa Control"
-#define PLEX_LAUNCH_PLIST "com.plexapp.helper.plist"
+#define PLEX_LAUNCH_PLIST "com.plexapp.ht.helper.plist"
 
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
 
-PlexHelper&
-PlexHelper::GetInstance()
+PlexHTHelper&
+PlexHTHelper::GetInstance()
 {
   CAtomicSpinLock lock(sg_singleton_lock_variable);
   if( ! smp_instance )
   {
-    smp_instance = new PlexHelper();
+    smp_instance = new PlexHTHelper();
   }
   return *smp_instance;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-PlexHelper::PlexHelper()
+PlexHTHelper::PlexHTHelper()
   : m_alwaysOn(false)
   , m_mode(APPLE_REMOTE_DISABLED)
   , m_sequenceDelay(0)
@@ -90,7 +90,7 @@ PlexHelper::PlexHelper()
   m_configFile = getenv("HOME");
   m_configFile += "/Library/Application Support/";
   m_configFile += PLEX_TARGET_NAME;
-  m_configFile += "/PlexHelper.conf";
+  m_configFile += "/PlexHTHelper.conf";
 
   m_helperInstalledPath = getenv("HOME");
   m_helperInstalledPath += "/Library/Application Support/";
@@ -100,8 +100,28 @@ PlexHelper::PlexHelper()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::Start()
+void PlexHTHelper::KillOldHelpers()
 {
+  int pid = GetProcessPid("PlexHelper");
+  if (pid != -1)
+  {
+    CLog::Log(LOGINFO, "Killed old PlexHelper (%d)", pid);
+    kill(pid, SIGKILL);
+  }
+
+  pid = GetProcessPid("XBMCHelper");
+  if (pid != -1)
+  {
+    CLog::Log(LOGINFO, "Killed XBMCHelper (%d)", pid);
+    kill(pid, SIGKILL);
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void PlexHTHelper::Start()
+{
+  KillOldHelpers();
+
   int pid = GetProcessPid(PLEX_HELPER_PROGRAM);
 
   InstallHelper();
@@ -116,7 +136,7 @@ void PlexHelper::Start()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::Stop()
+void PlexHTHelper::Stop()
 {
 
   // Kill the process.
@@ -129,7 +149,7 @@ void PlexHelper::Stop()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::Restart()
+void PlexHTHelper::Restart()
 {
   if (m_mode == APPLE_REMOTE_DISABLED)
     return;
@@ -172,12 +192,14 @@ void PlexHelper::Restart()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::Configure()
+void PlexHTHelper::Configure()
 {
   int oldMode = m_mode;
   int oldDelay = m_sequenceDelay;
   int oldAlwaysOn = m_alwaysOn;
   int oldPort = m_port;
+
+  KillOldHelpers();
 
   // Read the new configuration.
   m_errorStarting = false;
@@ -273,7 +295,7 @@ void PlexHelper::Configure()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool PlexHelper::InstallHelper()
+bool PlexHTHelper::InstallHelper()
 {
   if(!CopyFile(m_helperFile.c_str(), m_helperInstalledPath.c_str(), FALSE))
   {
@@ -290,7 +312,7 @@ bool PlexHelper::InstallHelper()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::InstallLauncher()
+void PlexHTHelper::InstallLauncher()
 {
   // Make sure directory exists.
   std::string strDir = getenv("HOME");
@@ -329,7 +351,7 @@ void PlexHelper::InstallLauncher()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::UninstallLauncher()
+void PlexHTHelper::UninstallLauncher()
 {
   // Call the unloader.
   std::string cmd = "/bin/launchctl unload ";
@@ -345,13 +367,13 @@ void PlexHelper::UninstallLauncher()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool PlexHelper::IsRunning()
+bool PlexHTHelper::IsRunning()
 {
   return (GetProcessPid(PLEX_HELPER_PROGRAM)!=-1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::CaptureAllInput()
+void PlexHTHelper::CaptureAllInput()
 {
   // Take keyboard focus away from FrontRow and native screen saver
   if (g_sysinfo.IsAppleTV2())
@@ -364,7 +386,7 @@ void PlexHelper::CaptureAllInput()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::ReleaseAllInput()
+void PlexHTHelper::ReleaseAllInput()
 {
   // Give keyboard focus back to FrontRow and native screen saver
   if (g_sysinfo.IsAppleTV2())
@@ -374,7 +396,7 @@ void PlexHelper::ReleaseAllInput()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool PlexHelper::IsRemoteBuddyInstalled()
+bool PlexHTHelper::IsRemoteBuddyInstalled()
 {
   return false;
   // Check for existence of kext file.
@@ -382,7 +404,7 @@ bool PlexHelper::IsRemoteBuddyInstalled()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool PlexHelper::IsSofaControlRunning()
+bool PlexHTHelper::IsSofaControlRunning()
 {
   return false;
   // Check for a "Sofa Control" process running.
@@ -390,7 +412,7 @@ bool PlexHelper::IsSofaControlRunning()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-std::string PlexHelper::ReadFile(const char* fileName)
+std::string PlexHTHelper::ReadFile(const char* fileName)
 {
   std::string ret = "";
   std::ifstream is;
@@ -418,7 +440,7 @@ std::string PlexHelper::ReadFile(const char* fileName)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void PlexHelper::WriteFile(const char* fileName, const std::string& data)
+void PlexHTHelper::WriteFile(const char* fileName, const std::string& data)
 {
   std::ofstream out(fileName);
   if (!out)
@@ -435,7 +457,7 @@ void PlexHelper::WriteFile(const char* fileName, const std::string& data)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-int PlexHelper::GetProcessPid(const char* strProgram)
+int PlexHTHelper::GetProcessPid(const char* strProgram)
 {
   kinfo_proc* mylist = 0;
   size_t mycount = 0;
