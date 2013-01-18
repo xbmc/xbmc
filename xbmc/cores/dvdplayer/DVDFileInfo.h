@@ -39,4 +39,9 @@ public:
   static bool DemuxerToStreamDetails(CDVDInputStream* pInputStream, CDVDDemux *pDemux, CStreamDetails &details, const CStdString &path = "");
 
   static bool GetFileDuration(const CStdString &path, int &duration);
+
+  /** \brief Probe the streams of an external subtitle file and store the info in the StreamDetails parameter.
+  *   \param[out] details The external subtitle file's StreamDetails.
+  */
+  static bool AddExternalSubtitleToDetails(const CStdString &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename = "");
 };
