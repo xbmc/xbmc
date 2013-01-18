@@ -22,6 +22,29 @@
 
 #include "utils/StdString.h"
 
+
+/* PLEX */
+#ifdef TARGET_DARWIN_OSX
+#include "threads/Thread.h"
+#include "osx/CocoaInterface.h"
+
+class ScriptThread : public CThread
+{
+  public:
+    ScriptThread(const CStdString& scriptToRun) : CThread("ScriptThread"), scriptToRun(scriptToRun) {}
+
+    void Process()
+    {
+      Cocoa_DoAppleScript(scriptToRun);
+    }
+
+  private:
+    CStdString scriptToRun;
+};
+#endif
+
+/* END PLEX */
+
 class CBuiltins
 {
 public:

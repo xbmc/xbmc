@@ -409,7 +409,8 @@ int CBuiltins::Execute(const CStdString& execString)
     {
 #endif
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
-      Cocoa_DoAppleScriptFile(osxPath.c_str());
+      ScriptThread *scriptTh = new ScriptThread(osxPath.c_str());
+      scriptTh->Create(true);
     }
     else
 #endif
