@@ -422,7 +422,6 @@
 				</control>
 			</control>
 		</control>
-		<include>SideBladeRight</include>
 		<include>Clock</include>
 
 		<control type="label" id="20">
