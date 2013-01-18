@@ -1373,10 +1373,12 @@ int CDVDDemuxFFmpeg::GetStreamBitrate()
       missingStreamInfo = true;
   }
 
-  if (overallBitrate == 0 && aggregateBitrate == 0 && m_pFormatContext->file_size > 0 && m_pFormatContext->duration != (uint32_t)AV_NOPTS_VALUE)
+  int64_t fileSize = m_dllAvFormat.avio_size(m_pFormatContext->pb);
+
+  if (overallBitrate == 0 && aggregateBitrate == 0 && fileSize > 0 && m_pFormatContext->duration != (uint32_t)AV_NOPTS_VALUE)
   {
     int64_t seconds = m_pFormatContext->duration / AV_TIME_BASE;
-    int bitsPerSecond = (int)(m_pFormatContext->file_size / seconds * 8);
+    int bitsPerSecond = (int)(fileSize / seconds * 8);
 
     CLog::Log(LOGNOTICE, "Using file computed bitrate = %d", bitsPerSecond);
     return (int)bitsPerSecond;
