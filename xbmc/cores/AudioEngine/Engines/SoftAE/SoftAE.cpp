@@ -935,7 +935,11 @@ double CSoftAE::GetCacheTotal()
 
 bool CSoftAE::IsSuspended()
 {
+#if defined(TARGET_WINDOWS)
   return m_isSuspended;
+#else
+  return false;
+#endif
 }
 
 float CSoftAE::GetVolume()
@@ -968,8 +972,8 @@ void CSoftAE::StopAllSounds()
 bool CSoftAE::Suspend()
 {
   CLog::Log(LOGDEBUG, "CSoftAE::Suspend - Suspending AE processing");
+#if defined(TARGET_WINDOWS)
   m_isSuspended = true;
-
   CSingleLock streamLock(m_streamLock);
   
   for (StreamList::iterator itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
@@ -977,6 +981,7 @@ bool CSoftAE::Suspend()
     CSoftAEStream *stream = *itt;
     stream->Flush();
   }
+#endif
 
   return true;
 }
@@ -984,8 +989,10 @@ bool CSoftAE::Suspend()
 bool CSoftAE::Resume()
 {
   CLog::Log(LOGDEBUG, "CSoftAE::Resume - Resuming AE processing");
+#if defined(TARGET_WINDOWS)
   m_isSuspended = false;
   m_reOpen = true;
+#endif
 
   return true;
 }
@@ -1021,7 +1028,7 @@ void CSoftAE::Run()
         restart = true;
     }
 
-#if !defined(TARGET_ANDROID)
+#if defined(TARGET_WINDOWS)
     /* Handle idle or forced suspend */
     ProcessSuspend();
 #endif
@@ -1033,6 +1040,17 @@ void CSoftAE::Run()
       InternalOpenSink();
       m_isSuspended = false; // exit Suspend state
     }
+#if defined(TARGET_ANDROID)
+    else if (m_playingStreams.empty() 
+      &&     m_playing_sounds.empty()
+      && !g_advancedSettings.m_streamSilence)
+    {
+      // if we have nothing to do, take a dirt nap.
+      // we do not have to take a lock just to check empty.
+      // this keeps AE from sucking CPU if nothing is going on.
+      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
+    }
+#endif
   }
 }
 
@@ -1388,15 +1406,18 @@ inline void CSoftAE::RemoveStream(StreamList &streams, CSoftAEStream *stream)
 inline void CSoftAE::ProcessSuspend()
 {
   bool sinkIsSuspended = false;
+  unsigned int curSystemClock = 0;
 
-  if (m_playingStreams.empty() && m_playing_sounds.empty() && 
-     !m_softSuspend && !g_advancedSettings.m_streamSilence)
+  if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
+      !g_advancedSettings.m_streamSilence)
   {
     m_softSuspend = true;
     m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+    Sleep(10);
   }
 
-  unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
+  if (m_softSuspend)
+    curSystemClock = XbmcThreads::SystemClockMillis();
 
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */
