@@ -96,6 +96,7 @@ public:
   static bool GetExternalStorage(std::string &path, const std::string &type = "");
   static bool GetStorageUsage(const std::string &path, std::string &usage);
 
+  static void HideActionBar();
   static int GetDPI();
 protected:
   // limit who can access AttachCurrentThread/DetachCurrentThread
@@ -116,6 +117,11 @@ private:
 
   static ANativeActivity *m_activity;
   jobject m_wakeLock;
+  
+  //used for hiding action bar
+  static jobject m_runnable;
+  static jmethodID m_viewPost;
+  static jobject m_decorView;
   
   typedef enum {
     // XBMC_Initialize hasn't been executed yet

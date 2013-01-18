@@ -36,6 +36,7 @@
 #include "guilib/Key.h"
 #include "windowing/XBMC_events.h"
 #include <android/log.h>
+#include "AndroidFeatures.h"
 
 #include "Application.h"
 #include "settings/AdvancedSettings.h"
@@ -58,6 +59,9 @@ void* thread_run(void* obj)
 
 ANativeActivity *CXBMCApp::m_activity = NULL;
 ANativeWindow* CXBMCApp::m_window = NULL;
+jobject CXBMCApp::m_runnable = NULL;
+jmethodID CXBMCApp::m_viewPost = NULL;
+jobject CXBMCApp::m_decorView = NULL;
 
 CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
   : m_wakeLock(NULL)
@@ -81,11 +85,99 @@ CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
     return;
   }
 
+  /* setup required to hide the system ui on demand.
+   * JNI will not find custom classes
+   * See http://blog.tewdew.com/post/6852907694/using-jni-from-a-native-activity
+   */
+  if (CAndroidFeatures::GetVersion() >= 11)
+  {
+    JNIEnv *env = NULL;
+    AttachCurrentThread(&env);
+    if (env != NULL)
+    {
+      jobject oActivity = m_activity->clazz;
+      jclass cActivity = env->GetObjectClass(oActivity);
+      jclass cActivityClass = env->FindClass("android/app/NativeActivity");
+      jmethodID midGetClassLoader = env->GetMethodID(cActivityClass,"getClassLoader", "()Ljava/lang/ClassLoader;");
+      jobject oClassLoader = env->CallObjectMethod(m_activity->clazz, midGetClassLoader);
+      jclass cClassLoader = env->GetObjectClass(oClassLoader);
+      jmethodID midFindClass = env->GetMethodID(cClassLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+      
+      env->DeleteLocalRef(cClassLoader);
+      
+      jstring strClassName = env->NewStringUTF("org/xbmc/xbmc/HideActionBarRunnable");
+      jclass cHideActionBarRunnable = (jclass)env->CallObjectMethod(oClassLoader, midFindClass, strClassName);
+  
+      env->DeleteLocalRef(strClassName);
+      env->DeleteLocalRef(oClassLoader);
+      
+      jmethodID midHideActionBarRunnableConstructor = env->GetMethodID(cHideActionBarRunnable, "<init>", "()V");
+      jobject lRunnable = env->NewObject(cHideActionBarRunnable, midHideActionBarRunnableConstructor);
+      jmethodID midWindowGetWindow = env->GetMethodID(cActivity, "getWindow", "()Landroid/view/Window;");
+      jobject lWindow = env->CallObjectMethod(oActivity, midWindowGetWindow);
+  
+      env->DeleteLocalRef(cActivity);
+
+      jclass cWindow = env->GetObjectClass(lWindow);
+      jmethodID midViewGetDecorView = env->GetMethodID(cWindow, "getDecorView", "()Landroid/view/View;");
+      jobject lDecorView = env->CallObjectMethod(lWindow, midViewGetDecorView);
+  
+      env->DeleteLocalRef(lWindow);
+      env->DeleteLocalRef(cWindow);
+      
+      jclass cView = env->GetObjectClass(lDecorView);
+      jmethodID midSetRootView = env->GetMethodID(cHideActionBarRunnable, "setRootView", "(Landroid/view/View;)V");
+      env->CallObjectMethod(lRunnable, midSetRootView, lDecorView);
+      
+      jmethodID midViewPost = env->GetMethodID(cView, "post", "(Ljava/lang/Runnable;)Z");
+  
+      m_runnable = env->NewGlobalRef(lRunnable);
+      m_decorView = env->NewGlobalRef(lDecorView);
+      m_viewPost = midViewPost;
+      
+      env->DeleteLocalRef(cHideActionBarRunnable);
+      env->DeleteLocalRef(lRunnable);
+      env->DeleteLocalRef(lDecorView);
+      env->DeleteLocalRef(cView);
+      
+      DetachCurrentThread();
+    }
+  }
 }
 
 CXBMCApp::~CXBMCApp()
 {
   stop();
+
+  JNIEnv *env = NULL;
+  AttachCurrentThread(&env);
+  if (env != NULL)
+  {
+    jobject oActivity = m_activity->clazz;
+    jclass cActivity = env->GetObjectClass(oActivity);
+    
+    if(m_runnable != NULL)
+    {
+      env->DeleteGlobalRef(m_runnable);
+      m_runnable = NULL;
+    }
+    
+    if(m_viewPost != NULL)
+    {
+      m_viewPost = NULL;
+    }
+    
+    if(m_decorView != NULL)
+    {
+      env->DeleteGlobalRef(m_decorView);
+      m_decorView = NULL;
+    }
+    
+    env->DeleteLocalRef(oActivity);
+    env->DeleteLocalRef(cActivity);
+    
+    DetachCurrentThread();
+  }
 
   pthread_mutex_destroy(&m_state.mutex);
 }
@@ -446,6 +538,14 @@ int CXBMCApp::android_printf(const char *format, ...)
   int result = __android_log_vprint(ANDROID_LOG_VERBOSE, "XBMC", format, args);
   va_end(args);
   return result;
+}
+
+void CXBMCApp::HideActionBar()
+{
+  JNIEnv *env = NULL;
+  AttachCurrentThread(&env);
+  env->CallObjectMethod(m_decorView, m_viewPost, m_runnable);
+  DetachCurrentThread();
 }
 
 int CXBMCApp::GetDPI()

@@ -62,6 +62,9 @@
 #if defined(TARGET_DARWIN)
 #include "linux/LinuxResourceCounter.h"
 #endif
+#if defined(TARGET_ANDROID)
+#include "android/activity/XBMCApp.h"
+#endif
 
 using namespace PVR;
 
@@ -678,6 +681,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
+#if defined(TARGET_ANDROID)
+      CXBMCApp::HideActionBar();
+#endif
       // check whether we've come back here from a window during which time we've actually
       // stopped playing videos
       if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingVideo())
