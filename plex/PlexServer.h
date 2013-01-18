@@ -29,12 +29,10 @@ class PlexServer
  public:
 
   /// Constructor.
-  PlexServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token)
-    : uuid(uuid), name(name), address(addr), port(port), token(token), updatedAt(0), m_count(1)
+  PlexServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token, const string& deviceClass="desktop")
+    : uuid(uuid), name(name), address(addr), port(port), token(token), updatedAt(0), m_count(1), deviceClass(deviceClass)
   {
-    // See if it's running on this machine.
-    if (token.empty())
-      local = Cocoa_IsHostLocal(addr);
+    local = Cocoa_IsHostLocal(addr);
 
     // Default to live if we detected it.
     live = detected();
@@ -77,6 +75,9 @@ class PlexServer
     if (local) ret += 10;
     if (detected()) ret += 10;
 
+    /* non mobile classes get a big bonus */
+    if (!isMobile()) ret += 30;
+
     return ret;
   }
 
@@ -117,12 +118,18 @@ class PlexServer
     return m_count;
   }
 
+  bool isMobile() const
+  {
+    return deviceClass == "mobile";
+  }
+
   bool live;
   bool local;
   string uuid;
   string name;
   string token;
   string address;
+  string deviceClass;
   unsigned short port;
   time_t updatedAt;
 

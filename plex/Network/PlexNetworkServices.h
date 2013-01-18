@@ -43,10 +43,14 @@ public:
       string value = param->second;
       CLog().Log(LOGINFO, "%s -> %s", param->first.c_str(), param->second.c_str());
     }
+
+    std::string deviceClass = service->getParam("Device-Class");
+    if (deviceClass.empty())
+      deviceClass = "desktop";
     
     // Scan the host.
     dprintf("NetworkServiceBrowser: SERVICE arrived: %s", service->address().to_string().c_str());
-    PlexServerManager::Get().addServer(service->getResourceIdentifier(), service->getParam("Name"), service->address().to_string(), service->port());
+    PlexServerManager::Get().addServer(service->getResourceIdentifier(), service->getParam("Name"), service->address().to_string(), service->port(), "", deviceClass);
   }
   
   /// Notify of a service going away.

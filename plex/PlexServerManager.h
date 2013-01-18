@@ -56,10 +56,10 @@ public:
   }
   
   /// Server appeared.
-  void addServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token="")
+  void addServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token="", const string& deviceClass="desktop")
   {
     boost::recursive_mutex::scoped_lock lk(m_mutex);
-    PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, addr, port, token));
+    PlexServerPtr server = PlexServerPtr(new PlexServer(uuid, name, addr, port, token, deviceClass));
     
     // Keep a reference count for servers in case we get updated.
     if (m_servers.find(server->key()) != m_servers.end())
@@ -71,7 +71,7 @@ public:
     else
     {
       // Brand new server, add and scan.
-      dprintf("Plex Server Manager: added new server '%s' (%s).", name.c_str(), addr.c_str());
+      dprintf("Plex Server Manager: added new server '%s' (%s), deviceClass = %s.", name.c_str(), addr.c_str(), deviceClass.c_str());
       m_servers[server->key()] = server;
       CPlexSourceScanner::ScanHost(server);
     }
