@@ -35,7 +35,7 @@ class ScriptThread : public CThread
 
     void Process()
     {
-      Cocoa_DoAppleScript(scriptToRun);
+      Cocoa_DoAppleScriptFile(scriptToRun);
     }
 
   private:
