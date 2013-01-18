@@ -1453,7 +1453,7 @@
 						<height>30</height>
 						<posy>347</posy>
 						<align>right</align>
-						<label>Recently Added</label>
+						<label>$LOCALIZE[31045]</label>
 						<visible>Control.IsVisible(11000) + Control.IsVisible(11001)</visible>
 					</control>
 					<visible allowhiddenfocus="false">true</visible>
@@ -1467,7 +1467,7 @@
 						<height>30</height>
 						<posy>249</posy>
 						<align>right</align>
-						<label>Recently Added</label>
+						<label>$LOCALIZE[31045]</label>
 						<visible>Control.IsVisible(11000) + !Control.IsVisible(11001)</visible>
 					</control>
 					<!-- select arrow if only this list is visible -->
