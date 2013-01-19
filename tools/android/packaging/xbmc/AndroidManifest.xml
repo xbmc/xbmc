@@ -37,7 +37,8 @@
             android:finishOnTaskLaunch="true"
             android:label="XBMC"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
             <!-- Tell NativeActivity the name of or .so -->
             <meta-data

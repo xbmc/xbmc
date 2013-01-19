@@ -553,15 +553,18 @@ void CXBMCApp::ShowActionBar()
   jclass cActivity = env->GetObjectClass(oActivity);
   jmethodID mgetActionBar = env->GetMethodID(cActivity, "getActionBar", "()Landroid/app/ActionBar;");
   jobject oActionBar = env->CallObjectMethod(oActivity, mgetActionBar);
-
-  jclass cActionBar = env->GetObjectClass(oActionBar);
   
-  jmethodID mshowActionBar = env->GetMethodID(cActionBar, "show", "()V");
-  env->CallObjectMethod(oActionBar, mshowActionBar);
+  if (oActionBar != NULL)
+  {
+    jclass cActionBar = env->GetObjectClass(oActionBar);
+    jmethodID mshowActionBar = env->GetMethodID(cActionBar, "show", "()V");
+    env->CallObjectMethod(oActionBar, mshowActionBar);
+    
+    env->DeleteLocalRef(cActionBar);
+    env->DeleteLocalRef(oActionBar);
+  }
 
   env->DeleteLocalRef(cActivity);
-  env->DeleteLocalRef(oActionBar);
-  env->DeleteLocalRef(cActionBar);
 
   // Set UI Flags back to what they were before hiding the action bar
   env->CallObjectMethod(m_runnable, m_setNotHidden, true);
