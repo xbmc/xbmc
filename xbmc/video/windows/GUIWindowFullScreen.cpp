@@ -860,6 +860,9 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
     {
       pOSD->SetAutoClose(3000);
       pOSD->DoModal();
+#if defined(TARGET_ANDROID)
+      CXBMCApp::HideActionBar();
+#endif
     }
     return EVENT_RESULT_HANDLED;
   }
