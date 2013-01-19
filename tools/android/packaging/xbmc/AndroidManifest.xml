@@ -6,7 +6,7 @@
     android:versionName="12.0-RC3" >
 
     <!-- This is the platform API where NativeActivity was introduced. -->
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="14" />
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -37,8 +37,7 @@
             android:finishOnTaskLaunch="true"
             android:label="XBMC"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:screenOrientation="landscape" >
 
             <!-- Tell NativeActivity the name of or .so -->
             <meta-data
