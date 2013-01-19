@@ -2957,8 +2957,10 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
     m_player_video.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
 
   unsigned flags = 0;
-  if(m_filename.find("3DSBS") != string::npos) 
+  if(m_filename.find("3DSBS") != string::npos || m_filename.find("HSBS") != string::npos)
     flags = CONF_FLAGS_FORMAT_SBS;
+  else if(m_filename.find("3DTAB") != string::npos || m_filename.find("HTAB") != string::npos)
+    flags = CONF_FLAGS_FORMAT_TB;
   m_player_video.SetFlags(flags);
 
   /* store information about stream */

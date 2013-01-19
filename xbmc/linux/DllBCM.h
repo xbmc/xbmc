@@ -53,11 +53,12 @@ public:
   virtual int vc_tv_hdmi_power_on_best_3d(uint32_t width, uint32_t height, uint32_t frame_rate,
                                        HDMI_INTERLACED_T scan_mode, EDID_MODE_MATCH_FLAG_T match_flags) = 0;
 
-  virtual int vc_tv_hdmi_get_supported_modes(HDMI_RES_GROUP_T group, TV_SUPPORTED_MODE_T *supported_modes,
+  virtual int vc_tv_hdmi_get_supported_modes_new(HDMI_RES_GROUP_T group, TV_SUPPORTED_MODE_NEW_T *supported_modes,
                                              uint32_t max_supported_modes, HDMI_RES_GROUP_T *preferred_group,
                                              uint32_t *preferred_mode) = 0;
-  virtual int vc_tv_hdmi_power_on_explicit(HDMI_MODE_T mode, HDMI_RES_GROUP_T group, uint32_t code) = 0;
-  virtual int vc_tv_get_state(TV_GET_STATE_RESP_T *tvstate) = 0;
+  virtual int vc_tv_hdmi_power_on_explicit_new(HDMI_MODE_T mode, HDMI_RES_GROUP_T group, uint32_t code) = 0;
+  virtual int vc_tv_hdmi_set_property(const HDMI_PROPERTY_PARAM_T *property) = 0;
+  virtual int vc_tv_get_display_state(TV_DISPLAY_STATE_T *tvstate) = 0;
   virtual int vc_tv_show_info(uint32_t show) = 0;
   virtual int vc_gencmd(char *response, int maxlen, const char *string) = 0;
   virtual void vc_tv_register_callback(TVSERVICE_CALLBACK_T callback, void *callback_data) = 0;
@@ -97,14 +98,16 @@ public:
   virtual int vc_tv_hdmi_power_on_best_3d(uint32_t width, uint32_t height, uint32_t frame_rate,
                                        HDMI_INTERLACED_T scan_mode, EDID_MODE_MATCH_FLAG_T match_flags)
     { return ::vc_tv_hdmi_power_on_best_3d(width, height, frame_rate, scan_mode, match_flags); };
-  virtual int vc_tv_hdmi_get_supported_modes(HDMI_RES_GROUP_T group, TV_SUPPORTED_MODE_T *supported_modes,
+  virtual int vc_tv_hdmi_get_supported_modes_new(HDMI_RES_GROUP_T group, TV_SUPPORTED_MODE_NEW_T *supported_modes,
                                              uint32_t max_supported_modes, HDMI_RES_GROUP_T *preferred_group,
                                              uint32_t *preferred_mode)
-    { return ::vc_tv_hdmi_get_supported_modes(group, supported_modes, max_supported_modes, preferred_group, preferred_mode); };
-  virtual int vc_tv_hdmi_power_on_explicit(HDMI_MODE_T mode, HDMI_RES_GROUP_T group, uint32_t code)
-    { return ::vc_tv_hdmi_power_on_explicit(mode, group, code); };
-  virtual int vc_tv_get_state(TV_GET_STATE_RESP_T *tvstate)
-    { return ::vc_tv_get_state(tvstate); };
+    { return ::vc_tv_hdmi_get_supported_modes_new(group, supported_modes, max_supported_modes, preferred_group, preferred_mode); };
+  virtual int vc_tv_hdmi_power_on_explicit_new(HDMI_MODE_T mode, HDMI_RES_GROUP_T group, uint32_t code)
+    { return ::vc_tv_hdmi_power_on_explicit_new(mode, group, code); };
+  virtual int vc_tv_hdmi_set_property(const HDMI_PROPERTY_PARAM_T *property)
+    { return ::vc_tv_hdmi_set_property(property); };
+  virtual int vc_tv_get_display_state(TV_DISPLAY_STATE_T *tvstate)
+    { return ::vc_tv_get_display_state(tvstate); };
   virtual int vc_tv_show_info(uint32_t show)
     { return ::vc_tv_show_info(show); };
   virtual int vc_gencmd(char *response, int maxlen, const char *string)
@@ -162,10 +165,11 @@ class DllBcmHost : public DllDynamic, DllBcmHostInterface
                                                      HDMI_INTERLACED_T p4, EDID_MODE_MATCH_FLAG_T p5))
   DEFINE_METHOD5(int,     vc_tv_hdmi_power_on_best_3d, (uint32_t p1, uint32_t p2, uint32_t p3,
                                                      HDMI_INTERLACED_T p4, EDID_MODE_MATCH_FLAG_T p5))
-  DEFINE_METHOD5(int,     vc_tv_hdmi_get_supported_modes, (HDMI_RES_GROUP_T p1, TV_SUPPORTED_MODE_T *p2,
+  DEFINE_METHOD5(int,     vc_tv_hdmi_get_supported_modes_new, (HDMI_RES_GROUP_T p1, TV_SUPPORTED_MODE_NEW_T *p2,
                                                            uint32_t p3, HDMI_RES_GROUP_T *p4, uint32_t *p5))
-  DEFINE_METHOD3(int,     vc_tv_hdmi_power_on_explicit, (HDMI_MODE_T p1, HDMI_RES_GROUP_T p2, uint32_t p3))
-  DEFINE_METHOD1(int,     vc_tv_get_state, (TV_GET_STATE_RESP_T *p1))
+  DEFINE_METHOD3(int,     vc_tv_hdmi_power_on_explicit_new, (HDMI_MODE_T p1, HDMI_RES_GROUP_T p2, uint32_t p3))
+  DEFINE_METHOD1(int,     vc_tv_hdmi_set_property, (const HDMI_PROPERTY_PARAM_T *property))
+  DEFINE_METHOD1(int,     vc_tv_get_display_state, (TV_DISPLAY_STATE_T *p1))
   DEFINE_METHOD1(int,    vc_tv_show_info, (uint32_t p1))
   DEFINE_METHOD3(int,    vc_gencmd, (char *p1, int p2, const char *p3))
 
@@ -195,9 +199,10 @@ class DllBcmHost : public DllDynamic, DllBcmHostInterface
     RESOLVE_METHOD(graphics_get_display_size)
     RESOLVE_METHOD(vc_tv_hdmi_power_on_best)
     RESOLVE_METHOD(vc_tv_hdmi_power_on_best_3d)
-    RESOLVE_METHOD(vc_tv_hdmi_get_supported_modes)
-    RESOLVE_METHOD(vc_tv_hdmi_power_on_explicit)
-    RESOLVE_METHOD(vc_tv_get_state)
+    RESOLVE_METHOD(vc_tv_hdmi_get_supported_modes_new)
+    RESOLVE_METHOD(vc_tv_hdmi_power_on_explicit_new)
+    RESOLVE_METHOD(vc_tv_hdmi_set_property)
+    RESOLVE_METHOD(vc_tv_get_display_state)
     RESOLVE_METHOD(vc_tv_show_info)
     RESOLVE_METHOD(vc_gencmd)
     RESOLVE_METHOD(vc_tv_register_callback)

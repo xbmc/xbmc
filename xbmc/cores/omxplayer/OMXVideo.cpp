@@ -928,14 +928,8 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
     return;
 
   OMX_CONFIG_DISPLAYREGIONTYPE configDisplay;
-  OMX_INIT_STRUCTURE(configDisplay);
-  configDisplay.nPortIndex = m_omx_render.GetInputPort();
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  // DestRect is in GUI coordinates, rather than display coordinates, so we have to scale
-  float xscale = (float)g_settings.m_ResInfo[res].iScreenWidth  / (float)g_settings.m_ResInfo[res].iWidth;
-  float yscale = (float)g_settings.m_ResInfo[res].iScreenHeight / (float)g_settings.m_ResInfo[res].iHeight;
   float sx1 = SrcRect.x1, sy1 = SrcRect.y1, sx2 = SrcRect.x2, sy2 = SrcRect.y2;
-  float dx1 = DestRect.x1*xscale, dy1 = DestRect.y1*yscale, dx2 = DestRect.x2*xscale, dy2 = DestRect.y2*yscale;
+  float dx1 = DestRect.x1, dy1 = DestRect.y1, dx2 = DestRect.x2, dy2 = DestRect.y2;
   float sw = SrcRect.Width() / DestRect.Width();
   float sh = SrcRect.Height() / DestRect.Height();
 
@@ -949,6 +943,8 @@ void COMXVideo::SetVideoRect(const CRect& SrcRect, const CRect& DestRect)
     dy1 -= dy1;
   }
 
+  OMX_INIT_STRUCTURE(configDisplay);
+  configDisplay.nPortIndex = m_omx_render.GetInputPort();
   configDisplay.fullscreen = OMX_FALSE;
   configDisplay.noaspect   = OMX_TRUE;
 
