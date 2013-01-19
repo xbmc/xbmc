@@ -7848,7 +7848,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#19230"
-msgid "Prevent EPG updates while playing a TV stream"
+msgid "Prevent EPG updates during playback"
 msgstr ""
 
 #: system/settings/settings.xml
