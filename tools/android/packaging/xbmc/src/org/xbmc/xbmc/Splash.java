@@ -242,6 +242,18 @@ public class Splash extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Guarantee action bar gets hidden on devices that don't honor the NoTitleBar theme 
+		if (android.os.Build.VERSION.SDK_INT >= 11) {
+			View view = getWindow().getDecorView().findViewById(android.R.id.content);
+			if (android.os.Build.VERSION.SDK_INT >= 14) {
+				/* We're using Integers instead of the statics, because the symbol won't be defined at API level 11 */
+				view.setSystemUiVisibility(0x2); //View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+			}
+			else {
+				view.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+			}
+		}
+
 		// Check if XBMC is not already running
 		ActivityManager activityManager = (ActivityManager) getBaseContext()
 				.getSystemService(Context.ACTIVITY_SERVICE);
