@@ -192,6 +192,12 @@ public:
   virtual void SetDropState(bool bDrop) = 0;
 
   /*
+   * will be called by video player indicating the playback speed. see DVD_PLAYSPEED_NORMAL,
+   * DVD_PLAYSPEED_PAUSE and friends.
+   */
+  virtual void SetSpeed(int iSpeed) {};
+
+  /*
    * returns the number of demuxer bytes in any internal buffers
    */
   virtual int GetDataSize(void)
