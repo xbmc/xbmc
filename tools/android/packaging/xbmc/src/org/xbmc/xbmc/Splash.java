@@ -242,7 +242,7 @@ public class Splash extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Guarantee action bar gets hidden on devices that don't honor the NoTitleBar theme 
+		// Hide action bar no matter what
 		if (android.os.Build.VERSION.SDK_INT >= 11) {
 			View view = getWindow().getDecorView().findViewById(android.R.id.content);
 			if (android.os.Build.VERSION.SDK_INT >= 14) {
