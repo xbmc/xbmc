@@ -52,10 +52,10 @@
 #include <queue>
 
 #define OMX_QCOM_COLOR_FormatYVU420SemiPlanar 0x7FA30C00
-#define STAGEFRIGHT_DEBUG_VERBOSE 1
+//#define STAGEFRIGHT_DEBUG_VERBOSE 1
 #define CLASSNAME "CStageFrightVideo"
 #define MINBUFIN 50
-#define NUMFBOTEX 8
+#define NUMFBOTEX 4
 
 // EGL extension functions
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
@@ -75,7 +75,8 @@ do \
 #define EGL_IMAGE_PRESERVED_KHR   0x30D2
 
 GLint glerror;
-#define CheckEglError() glerror = eglGetError(); while(glerror != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",__FUNCTION__, glerror);
+#define CheckEglError(x) while((glerror = eglGetError()) != EGL_SUCCESS) CLog::Log(LOGERROR, "EGL error in %s: %x",x, glerror);
+#define CheckGlError(x)  while((glerror = glGetError()) != GL_NO_ERROR) CLog::Log(LOGERROR, "GL error in %s: %x",x, glerror);
 
 const char *MEDIA_MIMETYPE_VIDEO_WMV  = "video/x-ms-wmv";
 
@@ -132,7 +133,7 @@ public:
     CLog::Log(LOGDEBUG, ">>loadOESShader\n");
 
     GLuint shader = glCreateShader(shaderType);
-    CheckEglError()
+    CheckGlError("loadOESShader");
     if (shader) {
       glShaderSource(shader, 1, &pSource, NULL);
       glCompileShader(shader);
@@ -225,7 +226,7 @@ public:
 
     {
       CLog::Log(LOGDEBUG, ">>OES_shader_setUp\n");
-      CheckEglError();
+      CheckGlError("OES_shader_setUp");
       createOESProgram(vsrc, fsrc, &mPgm);
     }
 
@@ -752,7 +753,7 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
         };
         p->eglSurface = eglCreatePbufferSurface(p->eglDisplay, g_Windowing.GetEGLConfig(), pbufferAttribs);
         eglMakeCurrent(p->eglDisplay, p->eglSurface, p->eglSurface, p->eglContext);
-        CheckEglError();
+        CheckGlError("stf init");
 
         static const EGLint imageAttributes[] = {
           EGL_IMAGE_PRESERVED_KHR, EGL_TRUE,
@@ -795,16 +796,12 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
       g_xbmcapp.UpdateStagefrightTexture();
 
-      glEnable(GL_TEXTURE_2D);
-
-      p->cur_slot = (p->cur_slot == NUMFBOTEX-1 ? 0 : ++p->cur_slot);
+      p->cur_slot = (p->cur_slot < NUMFBOTEX-1 ? p->cur_slot+1 : 0);
       p->fbo.BindToTexture(GL_TEXTURE_2D, p->slots[p->cur_slot].texid);
       p->fbo.BeginRender();
 
       glDisable(GL_DEPTH_TEST);
       //glClear(GL_COLOR_BUFFER_BIT);
-
-      glEnable(GL_TEXTURE_EXTERNAL_OES);
 
       const GLfloat triangleVertices[] = {
       -1.0f, 1.0f,
@@ -826,12 +823,12 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
       glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-      glDisable(GL_TEXTURE_EXTERNAL_OES);
+      glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
 
       p->fbo.EndRender();
 
       pDvdVideoPicture->eglimg = p->slots[p->cur_slot].eglimg;
-      glDisable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, 0);
 
     #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
       CLog::Log(LOGDEBUG, ">>> pic pts:%f, textured, tm:%d\n", pDvdVideoPicture->pts, XbmcThreads::SystemClockMillis() - time);

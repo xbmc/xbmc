@@ -1326,7 +1326,6 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
 
   glDisable(GL_DEPTH_TEST);
 
-  glEnable(m_textureTarget);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, plane.id);
   glEGLImageTargetTexture2DOES(m_textureTarget, (EGLImageKHR)m_buffers[index].eglimg);
@@ -1379,7 +1378,7 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
   g_Windowing.DisableGUIShader();
   VerifyGLState();
 
-  glDisable(m_textureTarget);
+  glBindTexture(m_textureTarget, 0);
   VerifyGLState();
 #endif
 }

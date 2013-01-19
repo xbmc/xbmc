@@ -1000,6 +1000,9 @@ bool CXBMCApp::InitStagefrightSurface()
 
   m_VideoTextureId = -1;
 
+  glGenTextures(1, &m_VideoTextureId);
+
+  /*
   glEnable(GL_TEXTURE_EXTERNAL_OES);
   glGenTextures(1, &m_VideoTextureId);
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, m_VideoTextureId);
@@ -1008,7 +1011,9 @@ bool CXBMCApp::InitStagefrightSurface()
   glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   CLog::Log(LOGDEBUG, ">>> texid: %d\n", m_VideoTextureId);
-
+  glDisable(GL_TEXTURE_EXTERNAL_OES);
+  */
+  
   jclass cSurfaceTexture = env->FindClass("android/graphics/SurfaceTexture");
   jmethodID midSurfaceTextureCtor = env->GetMethodID(cSurfaceTexture, "<init>", "(I)V");
   m_midUpdateTexImage = env->GetMethodID(cSurfaceTexture, "updateTexImage", "()V");
