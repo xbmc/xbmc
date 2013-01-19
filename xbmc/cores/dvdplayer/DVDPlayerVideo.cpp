@@ -465,6 +465,8 @@ void CDVDPlayerVideo::Process()
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
       if(m_speed == DVD_PLAYSPEED_PAUSE)
         m_iNrOfPicturesNotToSkip = 0;
+      if (m_pVideoCodec)
+        m_pVideoCodec->SetSpeed(m_speed);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
     {
