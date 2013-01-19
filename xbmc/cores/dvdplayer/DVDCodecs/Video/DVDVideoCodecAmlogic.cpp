@@ -179,6 +179,11 @@ void CDVDVideoCodecAmlogic::SetDropState(bool bDrop)
 {
 }
 
+void CDVDVideoCodecAmlogic::SetSpeed(int iSpeed)
+{
+  m_Codec->SetSpeed(iSpeed);
+}
+
 int CDVDVideoCodecAmlogic::GetDataSize(void)
 {
   return m_Codec->GetDataSize();

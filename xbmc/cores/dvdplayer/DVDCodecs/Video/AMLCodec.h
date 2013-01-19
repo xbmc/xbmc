@@ -43,6 +43,7 @@ public:
   int           Decode(unsigned char *pData, size_t size, double dts, double pts);
 
   bool          GetPicture(DVDVideoPicture* pDvdVideoPicture);
+  void          SetSpeed(int speed);
   int           GetDataSize();
   double        GetTimeSize();
 
@@ -50,7 +51,6 @@ protected:
   virtual void  Process();
 
 private:
-  void          PauseResume(int state);
   double        GetPlayerPtsSeconds();
   void          SetVideoPtsSeconds(double pts);
   void          ShowMainVideo(const bool show);
@@ -65,6 +65,7 @@ private:
 
   DllLibAmCodec *m_dll;
   am_private_t  *am_private;
+  volatile int  m_speed;
   volatile int64_t m_1st_pts;
   volatile int64_t m_cur_pts;
   volatile int64_t m_cur_pictcnt;

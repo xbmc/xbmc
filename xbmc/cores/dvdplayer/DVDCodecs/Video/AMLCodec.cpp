@@ -24,7 +24,6 @@
 #include "AMLCodec.h"
 #include "DynamicDll.h"
 
-#include "Application.h"
 #include "cores/dvdplayer/DVDClock.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "settings/Settings.h"
@@ -65,6 +64,7 @@ public:
 
   virtual int codec_init_cntl(codec_para_t *pcodec)=0;
   virtual int codec_poll_cntl(codec_para_t *pcodec)=0;
+  virtual int codec_set_cntl_mode(codec_para_t *pcodec, unsigned int mode)=0;
   virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int)=0;
   virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh)=0;
 
@@ -96,6 +96,7 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
 
   DEFINE_METHOD1(int, codec_init_cntl,          (codec_para_t *p1))
   DEFINE_METHOD1(int, codec_poll_cntl,          (codec_para_t *p1))
+  DEFINE_METHOD2(int, codec_set_cntl_mode,      (codec_para_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, codec_set_cntl_avthresh,  (codec_para_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, codec_set_cntl_syncthresh,(codec_para_t *p1, unsigned int p2))
 
@@ -120,6 +121,7 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
 
     RESOLVE_METHOD(codec_init_cntl)
     RESOLVE_METHOD(codec_poll_cntl)
+    RESOLVE_METHOD(codec_set_cntl_mode)
     RESOLVE_METHOD(codec_set_cntl_avthresh)
     RESOLVE_METHOD(codec_set_cntl_syncthresh)
 
@@ -1454,6 +1456,7 @@ CAMLCodec::~CAMLCodec()
 bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
 {
   CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder");
+  m_speed = DVD_PLAYSPEED_NORMAL;
   m_1st_pts = 0;
   m_cur_pts = 0;
   m_cur_pictcnt = 0;
@@ -1702,6 +1705,7 @@ void CAMLCodec::Reset()
   }
 
   // reset some interal vars
+  m_speed = DVD_PLAYSPEED_NORMAL;
   m_1st_pts = 0;
   m_cur_pts = 0;
   m_cur_pictcnt = 0;
@@ -1752,9 +1756,8 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   }
 
   // keep hw buffered demux above 1 second
-  if (GetTimeSize() < 1.0)
+  if (GetTimeSize() < 1.0 && m_speed == DVD_PLAYSPEED_NORMAL)
   {
-    CLog::Log(LOGDEBUG, "CAMLCodec::Decode: GetTimeSize() < 1.0");
     return VC_BUFFER;
   }
 
@@ -1795,6 +1798,32 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->pts += 2 * pDvdVideoPicture->iDuration;
 
   return true;
+}
+
+void CAMLCodec::SetSpeed(int speed)
+{
+  CLog::Log(LOGDEBUG, "CAMLCodec::SetSpeed, speed(%d)", speed);
+  if (m_speed != speed)
+  {
+    switch(speed)
+    {
+      case DVD_PLAYSPEED_PAUSE:
+        m_dll->codec_pause(&am_private->vcodec);
+        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
+        break;
+      case DVD_PLAYSPEED_NORMAL:
+        m_dll->codec_resume(&am_private->vcodec);
+        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
+        break;
+      defaut:
+        Reset();
+        m_dll->codec_resume(&am_private->vcodec);
+        m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
+        //m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
+        break;
+    }
+  }
+  m_speed = speed;
 }
 
 int CAMLCodec::GetDataSize()
@@ -1847,14 +1876,6 @@ void CAMLCodec::Process()
         Sleep(10);
       }
 
-      if (g_application.m_pPlayer && g_application.m_pPlayer->IsPlaying())
-      {
-        if (g_application.m_pPlayer->IsPaused())
-          PauseResume(1);
-        else
-          PauseResume(2);
-      }
-
       pts_video = get_pts_video();
       if (m_cur_pts != pts_video)
       {
@@ -1884,19 +1905,6 @@ void CAMLCodec::Process()
   }
   SetPriority(THREAD_PRIORITY_NORMAL);
   CLog::Log(LOGDEBUG, "CAMLCodec::Process Stopped");
-}
-
-void CAMLCodec::PauseResume(int state)
-{
-  static int saved_state = -1;
-  if (saved_state == state)
-    return;
-
-  saved_state = state;
-  if (saved_state == 1)
-    m_dll->codec_pause(&am_private->vcodec);
-  else
-    m_dll->codec_resume(&am_private->vcodec);
 }
 
 double CAMLCodec::GetPlayerPtsSeconds()

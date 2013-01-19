@@ -37,6 +37,7 @@ public:
   virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
+  virtual void SetSpeed(int iSpeed);
   virtual void SetDropState(bool bDrop);
   virtual int  GetDataSize(void);
   virtual double GetTimeSize(void);
