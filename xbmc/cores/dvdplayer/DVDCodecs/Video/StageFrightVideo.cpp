@@ -425,6 +425,8 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
     goto fail;
   }
 
+  g_xbmcapp.InitStagefrightSurface();
+
   p->natwin = g_xbmcapp.GetAndroidVideoWindow();
   p->decoder  = OMXCodec::Create(p->client->interface(), p->meta,
                                          false, p->source, NULL,
@@ -761,7 +763,6 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           EGL_NONE
         };
 
-        glEnable(GL_TEXTURE_2D);
         for (int i=0; i<NUMFBOTEX; ++i)
         {
           glGenTextures(1, &(p->slots[i].texid));
@@ -770,8 +771,8 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, p->width, p->height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
           // This is necessary for non-power-of-two textures
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
           glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -779,7 +780,7 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           p->slots[i].eglimg = eglCreateImageKHR(p->eglDisplay, p->eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)(p->slots[i].texid),imageAttributes);
 
         }
-        glDisable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D,  0);
 
         p->fbo.Initialize();
         p->OES_shader_setUp();
@@ -916,6 +917,8 @@ void CStageFrightVideo::Close()
 
   delete p->client;
 
+  g_xbmcapp.UninitStagefrightSurface();
+
   p->fbo.Cleanup();
   for (int i=0; i<NUMFBOTEX; ++i)
   {
@@ -941,7 +944,17 @@ void CStageFrightVideo::Reset(void)
 #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::Reset\n", CLASSNAME);
 #endif
-  ::Sleep(100);
+  Frame* frame;
+  pthread_mutex_lock(&p->in_mutex);
+  while (!p->in_queue.empty())
+  {
+    frame = *p->in_queue.begin();
+    p->in_queue.erase(p->in_queue.begin());
+    if (frame->medbuf)
+      frame->medbuf->release();
+    free(frame);
+  }
+  pthread_mutex_unlock(&p->in_mutex);
 }
 
 void CStageFrightVideo::SetDropState(bool bDrop)
