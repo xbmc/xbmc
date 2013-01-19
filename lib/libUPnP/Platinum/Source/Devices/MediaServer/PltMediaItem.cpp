@@ -723,11 +723,6 @@ PLT_MediaItem::FromDidl(NPT_XmlElementNode* entry)
     }
 
     NPT_Result result = PLT_MediaObject::FromDidl(entry);
-    
-    // make sure we have at least one valid resource
-    if (m_Resources.GetItemCount() == 0) {
-        NPT_CHECK_SEVERE(NPT_ERROR_INVALID_PARAMETERS);
-    }
 
     return result;
 }
