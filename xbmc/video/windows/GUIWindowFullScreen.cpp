@@ -156,6 +156,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       // switch back to the menu
       OutputDebugString("Switching to GUI\n");
+#if defined(TARGET_ANDROID)
+      CXBMCApp::ShowActionBar();
+#endif
       g_windowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
       return true;
@@ -732,6 +735,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     }
   case GUI_MSG_WINDOW_DEINIT:
     {
+#if defined(TARGET_ANDROID)
+      CXBMCApp::ShowActionBar();
+#endif
       CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog) pDialog->Close(true);
       CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
@@ -770,7 +776,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         delete m_subsLayout;
         m_subsLayout = NULL;
       }
-
       return true;
     }
   case GUI_MSG_CLICKED:

@@ -97,6 +97,7 @@ public:
   static bool GetStorageUsage(const std::string &path, std::string &usage);
 
   static void HideActionBar();
+  static void ShowActionBar();
   static int GetDPI();
 protected:
   // limit who can access AttachCurrentThread/DetachCurrentThread
@@ -122,6 +123,7 @@ private:
   static jobject m_runnable;
   static jmethodID m_viewPost;
   static jobject m_decorView;
+  static jmethodID m_setNotHidden;
   
   typedef enum {
     // XBMC_Initialize hasn't been executed yet

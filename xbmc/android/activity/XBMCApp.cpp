@@ -62,6 +62,7 @@ ANativeWindow* CXBMCApp::m_window = NULL;
 jobject CXBMCApp::m_runnable = NULL;
 jmethodID CXBMCApp::m_viewPost = NULL;
 jobject CXBMCApp::m_decorView = NULL;
+jmethodID CXBMCApp::m_setNotHidden = NULL;
 
 CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
   : m_wakeLock(NULL)
@@ -128,12 +129,14 @@ CXBMCApp::CXBMCApp(ANativeActivity *nativeActivity)
       jclass cView = env->GetObjectClass(lDecorView);
       jmethodID midSetRootView = env->GetMethodID(cHideActionBarRunnable, "setRootView", "(Landroid/view/View;)V");
       env->CallObjectMethod(lRunnable, midSetRootView, lDecorView);
-      
       jmethodID midViewPost = env->GetMethodID(cView, "post", "(Ljava/lang/Runnable;)Z");
   
+      jmethodID midNotHiddenSet = env->GetMethodID(cHideActionBarRunnable, "setNotHidden", "(Z)V");
+
       m_runnable = env->NewGlobalRef(lRunnable);
       m_decorView = env->NewGlobalRef(lDecorView);
       m_viewPost = midViewPost;
+      m_setNotHidden = midNotHiddenSet;
       
       env->DeleteLocalRef(cHideActionBarRunnable);
       env->DeleteLocalRef(lRunnable);
@@ -540,10 +543,38 @@ int CXBMCApp::android_printf(const char *format, ...)
   return result;
 }
 
+void CXBMCApp::ShowActionBar()
+{
+  JNIEnv *env = NULL;
+  AttachCurrentThread(&env);
+
+  // Chances are good the action bar is hidden right now; call its show method to ensure it comes back onscreen w/o having to tap
+  jobject oActivity = m_activity->clazz;
+  jclass cActivity = env->GetObjectClass(oActivity);
+  jmethodID mgetActionBar = env->GetMethodID(cActivity, "getActionBar", "()Landroid/app/ActionBar;");
+  jobject oActionBar = env->CallObjectMethod(oActivity, mgetActionBar);
+
+  jclass cActionBar = env->GetObjectClass(oActionBar);
+  
+  jmethodID mshowActionBar = env->GetMethodID(cActionBar, "show", "()V");
+  env->CallObjectMethod(oActionBar, mshowActionBar);
+
+  env->DeleteLocalRef(cActivity);
+  env->DeleteLocalRef(oActionBar);
+  env->DeleteLocalRef(cActionBar);
+
+  // Set UI Flags back to what they were before hiding the action bar
+  env->CallObjectMethod(m_runnable, m_setNotHidden, true);
+  env->CallObjectMethod(m_decorView, m_viewPost, m_runnable);
+  
+  DetachCurrentThread();
+}
+
 void CXBMCApp::HideActionBar()
 {
   JNIEnv *env = NULL;
   AttachCurrentThread(&env);
+  env->CallObjectMethod(m_runnable, m_setNotHidden, false);
   env->CallObjectMethod(m_decorView, m_viewPost, m_runnable);
   DetachCurrentThread();
 }
