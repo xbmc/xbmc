@@ -138,10 +138,10 @@ macro(plex_find_package package required addtolinklist)
 
     include_directories(${PKG_INC})
 
-    if(${PKG_NAME}_LIBRARY)
-      get_property(PKG_LIB VARIABLE PROPERTY ${PKG_NAME}_LIBRARY)
-    else()
+    if(${PKG_NAME}_LIBRARIES)
       get_property(PKG_LIB VARIABLE PROPERTY ${PKG_NAME}_LIBRARIES)
+    else()
+      get_property(PKG_LIB VARIABLE PROPERTY ${PKG_NAME}_LIBRARY)
     endif()
 
     set(CONFIG_LIBRARY_${PKG_UPPER_NAME} ${PKG_LIB})
