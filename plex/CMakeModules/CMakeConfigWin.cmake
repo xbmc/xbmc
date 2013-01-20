@@ -19,7 +19,6 @@ set(external_libs
   libiconv
   turbojpeg-static
   libmicrohttpd.dll
-  ssh
   freetype246MT
   sqlite3
   liblzo2

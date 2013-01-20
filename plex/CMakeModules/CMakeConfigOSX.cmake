@@ -25,7 +25,6 @@ set(osx_frameworks
 )
 
 set(external_libs
-  ssh
   lzo2
   pcre
   pcrecpp
