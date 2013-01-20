@@ -423,7 +423,10 @@ bool CGUIWindowHome::OnPopupMenu()
       CApplicationMessenger::Get().Shutdown();
 
   }
-  else if (controlId == CONTENT_LIST_ON_DECK || controlId == CONTENT_LIST_RECENTLY_ADDED)
+  else if (controlId == CONTENT_LIST_ON_DECK ||
+           controlId == CONTENT_LIST_RECENTLY_ADDED ||
+           controlId == CONTENT_LIST_QUEUE ||
+           controlId == CONTENT_LIST_RECOMMENDATIONS)
   {
     CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(controlId);
     CGUIListItemPtr item = container->GetListItem(0);
