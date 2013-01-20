@@ -121,7 +121,9 @@
 #endif
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
+#ifndef __PLEX__
 #define HAVE_LIBSSH
+#endif
 #define HAS_LIBRTMP
 #ifndef __PLEX__
 #define HAVE_LIBBLURAY
