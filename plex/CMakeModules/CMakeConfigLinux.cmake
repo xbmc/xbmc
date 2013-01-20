@@ -72,6 +72,9 @@ if(CMAKE_USE_PTHREADS_INIT)
 endif()
 
 plex_find_package(PulseAudio 0 1)
+if(HAVE_LIBPULSEAUDIO)
+  set(HAVE_LIBPULSE 1)
+endif()
 plex_find_package(Alsa 0 1)
 
 plex_find_package(LibUSB 0 1)
