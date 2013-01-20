@@ -188,6 +188,7 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
      // create the yuv textures
     LoadShaders();
 
+    m_fbo.Initialize();
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       (this->*m_textureCreate)(i);
 
@@ -1994,7 +1995,7 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  //glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
   
   glDisable(m_textureTarget);
 

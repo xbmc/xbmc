@@ -171,4 +171,19 @@ bool CDVDVideoCodecStageFright::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
   return m_stf_decoder->ClearPicture(pDvdVideoPicture);
 }
 
+void CDVDVideoCodecStageFright::SetSpeed(int iSpeed)
+{
+  m_stf_decoder->SetSpeed(iSpeed);
+}
+
+int CDVDVideoCodecStageFright::GetDataSize(void)
+{
+  return m_stf_decoder->GetDataSize();
+}
+
+double CDVDVideoCodecStageFright::GetTimeSize(void)
+{
+  return m_stf_decoder->GetTimeSize();
+}
+
 #endif

@@ -27,26 +27,29 @@
 class CStageFrightVideo;
 class CDVDVideoCodecStageFright : public CDVDVideoCodec
 {
-  public:
-    CDVDVideoCodecStageFright();
-    virtual ~CDVDVideoCodecStageFright();
+public:
+  CDVDVideoCodecStageFright();
+  virtual ~CDVDVideoCodecStageFright();
 
-    // Required overrides
-    virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
-    virtual void Dispose(void);
-    virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
-    virtual void Reset(void);
-    virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
-    virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
-    virtual void SetDropState(bool bDrop);
-    virtual const char* GetName(void) { return (const char*)m_pFormatName; }
+  // Required overrides
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
+  virtual void Dispose(void);
+  virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
+  virtual void Reset(void);
+  virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
+  virtual bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
+  virtual void SetDropState(bool bDrop);
+  virtual const char* GetName(void) { return (const char*)m_pFormatName; }
+  virtual void SetSpeed(int iSpeed);
+  virtual int GetDataSize(void);
+  virtual double GetTimeSize(void);
 
-  protected:
-    const char        *m_pFormatName;
-    CStageFrightVideo     *m_stf_decoder;
-    
-    bool              m_convert_bitstream;
-    CBitstreamConverter   *m_converter;
+protected:
+  const char        *m_pFormatName;
+  CStageFrightVideo     *m_stf_decoder;
+  
+  bool              m_convert_bitstream;
+  CBitstreamConverter   *m_converter;
 };
 
 #endif

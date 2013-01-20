@@ -41,6 +41,9 @@ public:
   bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
+  virtual void SetSpeed(int iSpeed);
+  virtual int GetDataSize(void);
+  virtual double GetTimeSize(void);
 
 private:
   CStageFrightVideoPrivate* p;

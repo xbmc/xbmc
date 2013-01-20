@@ -97,6 +97,7 @@ struct Frame
   status_t status;
   int32_t width, height;
   int64_t pts;
+  int duration;
   MediaBuffer* medbuf;
 };
 
@@ -105,16 +106,18 @@ class CStageFrightVideoPrivate : public MediaBufferObserver
 public:
   CStageFrightVideoPrivate()
     : source(NULL)
-    , eglDisplay(EGL_NO_DISPLAY), eglContext(EGL_NO_CONTEXT), eglSurface(EGL_NO_SURFACE)
+    , eglDisplay(EGL_NO_DISPLAY), eglSurface(EGL_NO_SURFACE), eglContext(EGL_NO_CONTEXT)
     , eglInitialized(false), cur_slot(0)
-    , width(-1), height(-1)
+    , mDataSize(0), mTimeSize(0), mPrevPts(-1)
     , cur_frame(NULL), prev_frame(NULL)
+    , width(-1), height(-1)
     , client(NULL), decoder(NULL), decoder_component(NULL)
     , drop_state(false)
   {}
 
   virtual void signalBufferReturned(MediaBuffer *buffer)
   {
+    mDataSize -= buffer->size();
     buffer->setObserver(NULL);
     buffer->release();
   }
@@ -124,6 +127,7 @@ public:
     MediaBuffer* buf = new MediaBuffer(size);
     buf->setObserver(this);
     buf->add_ref();
+    mDataSize += size;
     return buf;
   }
 
@@ -262,6 +266,10 @@ public:
   pthread_mutex_t in_mutex;
   pthread_cond_t condition;
 
+  int mDataSize;
+  int64_t mTimeSize;
+  int64_t mPrevPts;
+
   Frame *cur_frame;
   Frame *prev_frame;
   bool source_done;
@@ -332,6 +340,7 @@ public:
       *buffer = frame->medbuf->clone();
 
     p->in_queue.erase(p->in_queue.begin());
+    p->mTimeSize -= frame->duration;
     pthread_mutex_unlock(&p->in_mutex);
 
 #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
@@ -531,6 +540,7 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
 
     frame->status  = OK;
     frame->pts = (dts != DVD_NOPTS_VALUE) ? pts_dtoi(dts) : ((pts != DVD_NOPTS_VALUE) ? pts_dtoi(pts) : 0);
+    frame->duration = 0;
     frame->medbuf = p->getBuffer(demuxer_bytes);
     if (!frame->medbuf)
     {
@@ -542,6 +552,12 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
     frame->medbuf->meta_data()->setInt64(kKeyTime, frame->pts);
 
     pthread_mutex_lock(&p->in_mutex);
+    if (p->mPrevPts >= 0)
+    {
+      frame->duration = frame->pts - p->mPrevPts;
+      p->mTimeSize += frame->duration;
+    }
+    p->mPrevPts = frame->pts;
     p->in_queue.push_back(frame);
     pthread_cond_signal(&p->condition);
     pthread_mutex_unlock(&p->in_mutex);
@@ -758,7 +774,7 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
         CheckGlError("stf init");
 
         static const EGLint imageAttributes[] = {
-          EGL_IMAGE_PRESERVED_KHR, EGL_TRUE,
+          EGL_IMAGE_PRESERVED_KHR, EGL_FALSE,
           EGL_GL_TEXTURE_LEVEL_KHR, 0,
           EGL_NONE
         };
@@ -844,11 +860,11 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       CLog::Log(LOGDEBUG, ">>> pic pts:%f, data:%p, tm:%d\n", pDvdVideoPicture->pts, frame->medbuf, XbmcThreads::SystemClockMillis() - time);
     #endif
 
-      unsigned int luma_pixels = frame->width * frame->height;
-      unsigned int chroma_pixels = luma_pixels/4;
+      //unsigned int luma_pixels = frame->width * frame->height;
+      //unsigned int chroma_pixels = luma_pixels/4;
       BYTE* data = NULL;
       if (frame->medbuf && !p->drop_state)
-        data = (BYTE*)(frame->medbuf->data() + frame->medbuf->range_offset());
+        data = (BYTE*)((long)frame->medbuf->data() + frame->medbuf->range_offset());
       switch (p->videoColorFormat)
       {
         case OMX_COLOR_FormatYUV420Planar:
@@ -954,6 +970,9 @@ void CStageFrightVideo::Reset(void)
       frame->medbuf->release();
     free(frame);
   }
+  p->mDataSize = 0;
+  p->mTimeSize = 0;
+  p->mPrevPts = -1;
   pthread_mutex_unlock(&p->in_mutex);
 }
 
@@ -964,4 +983,18 @@ void CStageFrightVideo::SetDropState(bool bDrop)
 #endif
 
   p->drop_state = bDrop;
+}
+
+void CStageFrightVideo::SetSpeed(int iSpeed)
+{
+}
+
+int CStageFrightVideo::GetDataSize(void)
+{
+  return p->mDataSize;
+}
+
+double CStageFrightVideo::GetTimeSize(void)
+{
+  return pts_itod(p->mTimeSize);
 }
