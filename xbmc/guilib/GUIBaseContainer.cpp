@@ -32,6 +32,10 @@
 #include "utils/MathUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+/* PLEX */
+#include "plex/PlexTypes.h"
+/* END PLEX */
+
 using namespace std;
 
 #define HOLD_TIME_START 100
@@ -481,6 +485,20 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 
           return true;
         }
+      }
+    }
+    else if (message.GetMessage() == GUI_MSG_LIST_REMOVE_ITEM)
+    {
+      if (message.GetParam1())
+      {
+        int removeItem = (int)message.GetParam1() - 1;
+        m_items.erase(m_items.begin() + removeItem);
+
+        if (removeItem == GetSelectedItem())
+          SelectItem(0);
+
+        SetInvalid();
+        return true;
       }
     }
     /* END PLEX */
