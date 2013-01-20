@@ -846,7 +846,7 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
 #endif
 #ifdef HAVE_LIBSTAGEFRIGHT
   else if(pic.format == RENDER_FMT_EGLIMG)
-    m_pRenderer->AddProcessor(pic.eglimg);
+    m_pRenderer->AddProcessor(pic.stf, pic.eglimg);
 #endif
 
   m_pRenderer->ReleaseImage(index, false);

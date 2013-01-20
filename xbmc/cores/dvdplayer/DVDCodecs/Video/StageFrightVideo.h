@@ -45,6 +45,9 @@ public:
   virtual int GetDataSize(void);
   virtual double GetTimeSize(void);
 
+  void LockBuffer(EGLImageKHR eglimg);
+  void ReleaseBuffer(EGLImageKHR eglimg);
+
 private:
   CStageFrightVideoPrivate* p;
 };

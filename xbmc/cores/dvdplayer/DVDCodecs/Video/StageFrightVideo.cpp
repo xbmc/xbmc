@@ -107,7 +107,7 @@ public:
   CStageFrightVideoPrivate()
     : source(NULL)
     , eglDisplay(EGL_NO_DISPLAY), eglSurface(EGL_NO_SURFACE), eglContext(EGL_NO_CONTEXT)
-    , eglInitialized(false), cur_slot(0)
+    , eglInitialized(false)
     , mDataSize(0), mTimeSize(0), mPrevPts(-1)
     , cur_frame(NULL), prev_frame(NULL)
     , width(-1), height(-1)
@@ -259,12 +259,14 @@ public:
     EGLImageKHR eglimg;
   };
   tex_slot slots[NUMFBOTEX];
-  int cur_slot;
+  std::map<EGLImageKHR, int> free_queue;
+  std::map<EGLImageKHR, int> busy_queue;
 
   sp<MetaData> meta;
   List<Frame*> in_queue;
   pthread_mutex_t in_mutex;
   pthread_cond_t condition;
+  pthread_mutex_t out_mutex;
 
   int mDataSize;
   int64_t mTimeSize;
@@ -490,6 +492,7 @@ bool CStageFrightVideo::Open(CDVDStreamInfo &hints)
 
   pthread_mutex_init(&p->in_mutex, NULL);
   pthread_cond_init(&p->condition, NULL);
+  pthread_mutex_init(&p->out_mutex, NULL);
 
   p->client->disconnect();
 
@@ -532,6 +535,56 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
   int32_t keyframe = 0;
   int32_t unreadable = 0;
 
+  if (!p->eglInitialized)
+  {
+    p->eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglBindAPI(EGL_OPENGL_ES_API);
+    EGLint contextAttributes[] = {
+      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_NONE
+    };
+    p->eglContext = eglCreateContext(p->eglDisplay, g_Windowing.GetEGLConfig(), EGL_NO_CONTEXT, contextAttributes);
+    EGLint pbufferAttribs[] = {
+      EGL_WIDTH, p->width,
+      EGL_HEIGHT, p->height,
+      EGL_NONE
+    };
+    p->eglSurface = eglCreatePbufferSurface(p->eglDisplay, g_Windowing.GetEGLConfig(), pbufferAttribs);
+    eglMakeCurrent(p->eglDisplay, p->eglSurface, p->eglSurface, p->eglContext);
+    CheckGlError("stf init");
+
+    static const EGLint imageAttributes[] = {
+      EGL_IMAGE_PRESERVED_KHR, EGL_FALSE,
+      EGL_GL_TEXTURE_LEVEL_KHR, 0,
+      EGL_NONE
+    };
+
+    for (int i=0; i<NUMFBOTEX; ++i)
+    {
+      glGenTextures(1, &(p->slots[i].texid));
+      glBindTexture(GL_TEXTURE_2D,  p->slots[i].texid);
+
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, p->width, p->height, 0,
+             GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      // This is necessary for non-power-of-two textures
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+      p->slots[i].eglimg = eglCreateImageKHR(p->eglDisplay, p->eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)(p->slots[i].texid),imageAttributes);
+      p->free_queue.insert(std::pair<EGLImageKHR, int>(p->slots[i].eglimg, i));
+
+    }
+    glBindTexture(GL_TEXTURE_2D,  0);
+
+    p->fbo.Initialize();
+    p->OES_shader_setUp();
+
+    p->eglInitialized = true;
+  }
+
   if (demuxer_content)
   {
     frame = (Frame*)malloc(sizeof(Frame));
@@ -566,7 +619,7 @@ int  CStageFrightVideo::Decode(BYTE *pData, int iSize, double dts, double pts)
 #endif
   }
 
-  if (p->in_queue.size() < MINBUFIN)
+  if (p->in_queue.size() < MINBUFIN || p->free_queue.empty())
     return ret;
 
   /* Output */
@@ -755,55 +808,6 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     {
       pDvdVideoPicture->format = RENDER_FMT_EGLIMG;
 
-      if (!p->eglInitialized)
-      {
-        p->eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-        eglBindAPI(EGL_OPENGL_ES_API);
-        EGLint contextAttributes[] = {
-          EGL_CONTEXT_CLIENT_VERSION, 2,
-          EGL_NONE
-        };
-        p->eglContext = eglCreateContext(p->eglDisplay, g_Windowing.GetEGLConfig(), EGL_NO_CONTEXT, contextAttributes);
-        EGLint pbufferAttribs[] = {
-          EGL_WIDTH, p->width,
-          EGL_HEIGHT, p->height,
-          EGL_NONE
-        };
-        p->eglSurface = eglCreatePbufferSurface(p->eglDisplay, g_Windowing.GetEGLConfig(), pbufferAttribs);
-        eglMakeCurrent(p->eglDisplay, p->eglSurface, p->eglSurface, p->eglContext);
-        CheckGlError("stf init");
-
-        static const EGLint imageAttributes[] = {
-          EGL_IMAGE_PRESERVED_KHR, EGL_FALSE,
-          EGL_GL_TEXTURE_LEVEL_KHR, 0,
-          EGL_NONE
-        };
-
-        for (int i=0; i<NUMFBOTEX; ++i)
-        {
-          glGenTextures(1, &(p->slots[i].texid));
-          glBindTexture(GL_TEXTURE_2D,  p->slots[i].texid);
-
-          glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, p->width, p->height, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, 0);
-
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-          // This is necessary for non-power-of-two textures
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-          p->slots[i].eglimg = eglCreateImageKHR(p->eglDisplay, p->eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)(p->slots[i].texid),imageAttributes);
-
-        }
-        glBindTexture(GL_TEXTURE_2D,  0);
-
-        p->fbo.Initialize();
-        p->OES_shader_setUp();
-
-        p->eglInitialized = true;
-      }
-
       android::GraphicBuffer* graphicBuffer = static_cast<android::GraphicBuffer*>(frame->medbuf->graphicBuffer().get() );
       int err = p->natwin.get()->queueBuffer(p->natwin.get(), graphicBuffer);
       if (err == 0)
@@ -813,8 +817,11 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
       g_xbmcapp.UpdateStagefrightTexture();
 
-      p->cur_slot = (p->cur_slot < NUMFBOTEX-1 ? p->cur_slot+1 : 0);
-      p->fbo.BindToTexture(GL_TEXTURE_2D, p->slots[p->cur_slot].texid);
+      pthread_mutex_lock(&p->out_mutex);
+      std::map<EGLImageKHR, int>::iterator it = p->free_queue.begin();
+      int cur_slot = it->second;
+      pthread_mutex_unlock(&p->out_mutex);
+      p->fbo.BindToTexture(GL_TEXTURE_2D, p->slots[cur_slot].texid);
       p->fbo.BeginRender();
 
       glDisable(GL_DEPTH_TEST);
@@ -844,7 +851,8 @@ bool CStageFrightVideo::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
       p->fbo.EndRender();
 
-      pDvdVideoPicture->eglimg = p->slots[p->cur_slot].eglimg;
+      pDvdVideoPicture->stf = this;
+      pDvdVideoPicture->eglimg = p->slots[cur_slot].eglimg;
       glBindTexture(GL_TEXTURE_2D, 0);
 
     #if defined(STAGEFRIGHT_DEBUG_VERBOSE)
@@ -952,6 +960,7 @@ void CStageFrightVideo::Close()
 
   pthread_mutex_destroy(&p->in_mutex);
   pthread_cond_destroy(&p->condition);
+  pthread_mutex_destroy(&p->out_mutex);
   delete p;
 }
 
@@ -997,4 +1006,42 @@ int CStageFrightVideo::GetDataSize(void)
 double CStageFrightVideo::GetTimeSize(void)
 {
   return pts_itod(p->mTimeSize);
+}
+
+/***************/
+
+void CStageFrightVideo::LockBuffer(EGLImageKHR eglimg)
+{
+  pthread_mutex_lock(&p->out_mutex);
+  std::map<EGLImageKHR, int>::iterator it = p->free_queue.find(eglimg);
+  if (it == p->free_queue.end())
+  {
+    pthread_mutex_unlock(&p->out_mutex);
+    return;
+  }
+#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "Locking %d\n", it->second);
+#endif
+
+  p->busy_queue.insert(std::pair<EGLImageKHR, int>(it->first, it->second));
+  p->free_queue.erase(it);
+  pthread_mutex_unlock(&p->out_mutex);
+}
+
+void CStageFrightVideo::ReleaseBuffer(EGLImageKHR eglimg)
+{
+  pthread_mutex_lock(&p->out_mutex);
+  std::map<EGLImageKHR, int>::iterator it = p->busy_queue.find(eglimg);
+  if (it == p->busy_queue.end())
+  {
+    pthread_mutex_unlock(&p->out_mutex);
+    return;
+  }
+#if defined(STAGEFRIGHT_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "Unlocking %d\n", it->second);
+#endif
+
+  p->free_queue.insert(std::pair<EGLImageKHR, int>(it->first, it->second));
+  p->busy_queue.erase(it);
+  pthread_mutex_unlock(&p->out_mutex);
 }
