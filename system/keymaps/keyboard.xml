@@ -95,6 +95,8 @@
       <backslash>ToggleFullScreen</backslash>
       <home>FirstPage</home>
       <end>LastPage</end>
+      <power>ActivateWindow(shutdownmenu)</power>
+      <sleep>ActivateWindow(shutdownmenu)</sleep>
       <!-- PVR windows -->
       <!-- PLEX remove PVR stuff 
       <e>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</e>

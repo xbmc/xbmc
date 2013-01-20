@@ -566,12 +566,9 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
 
     if (disable)
     {
-      CStdString sql = PrepareSQL("select id from disabled where addonID='%s'", addonID.c_str());
-      m_pDS->query(sql.c_str());
-      if (m_pDS->eof()) // not found
+      if (!IsAddonDisabled(addonID)) // Enabled
       {
-        m_pDS->close();
-        sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
+        CStdString sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
         m_pDS->exec(sql);
 
         AddonPtr addon;
@@ -593,12 +590,13 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
     }
     else
     {
+      bool disabled = IsAddonDisabled(addonID); //we need to know if service addon is running
       CStdString sql = PrepareSQL("delete from disabled where addonID='%s'", addonID.c_str());
       m_pDS->exec(sql);
 
       AddonPtr addon;
       // If the addon is a service, start it
-      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
+      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon && disabled)
       {
         boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
         if (service)

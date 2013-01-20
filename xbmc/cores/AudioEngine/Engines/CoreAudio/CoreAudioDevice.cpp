@@ -361,7 +361,8 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
       // even if setting hogmode was successfull our PID might not get written
       // into m_HogPid (so it stays -1). Readback hogstatus for judging if we
       // had success on getting hog status
-      m_HogPid = GetHogStatus();
+      if (m_HogPid == -1)
+        m_HogPid = GetHogStatus();
 
       if (ret || m_HogPid != getpid())
       {

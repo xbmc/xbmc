@@ -33,6 +33,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
+#include "threads/SystemClock.h"
 
 /* PLEX */
 #include "CoreAudioHardware.h"
@@ -54,7 +55,9 @@ CCoreAudioAE::CCoreAudioAE() :
   m_muted              (false         ),
   m_soundMode          (AE_SOUND_OFF  ),
   m_streamsPlaying     (false         ),
-  m_isSuspended        (false         )
+  m_isSuspended        (false         ),
+  m_softSuspend        (false         ),
+  m_softSuspendTimer   (0             )
 {
   HAL = new CCoreAudioAEHAL;
 }
@@ -436,7 +439,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
 {
   // if we are suspended we don't
   // want anyone to mess with us
-  if (m_isSuspended)
+  if (m_isSuspended && !m_softSuspend)
     return NULL;
 
   CAEChannelInfo channelInfo(channelLayout);
@@ -533,7 +536,7 @@ IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
 
 void CCoreAudioAE::PlaySound(IAESound *sound)
 {
-  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying) || m_isSuspended)
+  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying) || (m_isSuspended && !m_softSuspend))
     return;
 
   float *samples = ((CCoreAudioAESound*)sound)->GetSamples();
@@ -655,11 +658,40 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
 
 void CCoreAudioAE::GarbageCollect()
 {
+  if (g_advancedSettings.m_streamSilence)
+    return;
+  
+  if (!m_streamsPlaying && m_playing_sounds.empty())
+  {
+    if (!m_softSuspend)
+    {
+      m_softSuspend = true;
+      m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+    }
+  }
+  else
+  {
+    if (m_isSuspended)
+    {
+      CLog::Log(LOGDEBUG, "CCoreAudioAE::GarbageCollect - Acquire CA HAL.");
+      Start();
+      m_isSuspended = false;
+    }
+    m_softSuspend = false;
+  }
+  
+  unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
+  if (!m_isSuspended && m_softSuspend && curSystemClock > m_softSuspendTimer)
+  {
+    Stop();
+    m_isSuspended = true;
+    CLog::Log(LOGDEBUG, "CCoreAudioAE::GarbageCollect - Release CA HAL.");
+  }
 }
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
-  if (m_isSuspended)
+  if (m_isSuspended && !m_softSuspend)
     return;
 
   HAL->EnumerateOutputDevices(devices, passthrough);

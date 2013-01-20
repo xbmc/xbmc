@@ -4422,6 +4422,13 @@ void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
       SetPlaySpeed(iSpeed);
     }
 
+    // if player has volume control, set it.
+    if (m_pPlayer && m_pPlayer->ControlsVolume())
+    {
+       m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
+       m_pPlayer->SetMute(g_settings.m_bMute);
+    }
+
     if( IsPlayingAudio() )
     {
       if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -5750,10 +5757,6 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
     value = 1.0f;
 
   CAEFactory::SetVolume(value);
-
-  /* for platforms where we do not have AE */
-  if (!CAEFactory::GetEngine() && m_pPlayer)
-    m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
 }
 
 int CApplication::GetVolume() const
@@ -5768,6 +5771,13 @@ void CApplication::VolumeChanged() const
   data["volume"] = GetVolume();
   data["muted"] = g_settings.m_bMute;
   CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
+
+  // if player has volume control, set it.
+  if (m_pPlayer && m_pPlayer->ControlsVolume())
+  {
+     m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
+     m_pPlayer->SetMute(g_settings.m_bMute);
+  }
 }
 
 int CApplication::GetSubtitleDelay() const
@@ -5804,13 +5814,19 @@ void CApplication::SetPlaySpeed(int iSpeed)
   m_iPlaySpeed = iSpeed;
 
   m_pPlayer->ToFFRW(m_iPlaySpeed);
-  if (m_iPlaySpeed == 1)
-  { // restore volume
-    m_pPlayer->SetVolume(VOLUME_MAXIMUM);
-  }
-  else
-  { // mute volume
-    m_pPlayer->SetVolume(VOLUME_MINIMUM);
+
+  // if player has volume control, set it.
+  if (m_pPlayer->ControlsVolume())
+  {
+    if (m_iPlaySpeed == 1)
+    { // restore volume
+      m_pPlayer->SetVolume(VOLUME_MAXIMUM);
+    }
+    else
+    { // mute volume
+      m_pPlayer->SetVolume(VOLUME_MINIMUM);
+    }
+    m_pPlayer->SetMute(g_settings.m_bMute);
   }
 }
 
