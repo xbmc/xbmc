@@ -99,8 +99,8 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_messageQueue.SetMaxTimeSize(8.0);
 
   RESOLUTION res  = g_graphicsContext.GetVideoResolution();
-  m_video_width   = g_settings.m_ResInfo[res].iWidth;
-  m_video_height  = g_settings.m_ResInfo[res].iHeight;
+  m_video_width   = g_settings.m_ResInfo[res].iScreenWidth;
+  m_video_height  = g_settings.m_ResInfo[res].iScreenHeight;
 
   m_dst_rect.SetRect(0, 0, 0, 0);
 
@@ -337,15 +337,24 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
         flags |= CONF_FLAGS_FORMAT_SBS;
       }
     }
-
-    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: BYPASS",
-        __FUNCTION__, m_width, m_height, m_fps);
+    else if(m_flags & CONF_FLAGS_FORMAT_TB)
+    {
+      if(g_Windowing.Support3D(m_video_width, m_video_height, D3DPRESENTFLAG_MODE3DTB))
+      {
+        CLog::Log(LOGNOTICE, "3DTB movie found");
+        flags |= CONF_FLAGS_FORMAT_TB;
+      }
+    }
 
     unsigned int iDisplayWidth  = m_hints.width;
     unsigned int iDisplayHeight = m_hints.height;
+
     /* use forced aspect if any */
     if( m_fForcedAspectRatio != 0.0f )
       iDisplayWidth = (int) (iDisplayHeight * m_fForcedAspectRatio);
+
+    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. %dx%x format: BYPASS",
+        __FUNCTION__, m_width, m_height, m_fps, iDisplayWidth, iDisplayHeight);
 
     if(!g_renderManager.Configure(m_hints.width, m_hints.height,
           iDisplayWidth, iDisplayHeight, m_fps, flags, format, 0,
@@ -813,21 +822,22 @@ void OMXPlayerVideo::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   CRect gui, display, dst_rect;
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
   gui.SetRect(0, 0, g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
-  display.SetRect(0, 0, g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
+  display.SetRect(0, 0, g_settings.m_ResInfo[res].iScreenWidth, g_settings.m_ResInfo[res].iScreenHeight);
   
   dst_rect = m_dst_rect;
   if (gui != display)
   {
     float xscale = display.Width()  / gui.Width();
     float yscale = display.Height() / gui.Height();
+    // video is displayed in absolute coordinates (bypassing half width or height GUI mode)
+    if (m_flags & CONF_FLAGS_FORMAT_SBS) xscale *= 2.0f;
+    if (m_flags & CONF_FLAGS_FORMAT_TB)  yscale *= 2.0f;
     dst_rect.x1 *= xscale;
     dst_rect.x2 *= xscale;
     dst_rect.y1 *= yscale;
     dst_rect.y2 *= yscale;
   }
-
-  if(!(m_flags & CONF_FLAGS_FORMAT_SBS) && !(m_flags & CONF_FLAGS_FORMAT_TB))
-    m_omxVideo.SetVideoRect(SrcRect, m_dst_rect);
+  m_omxVideo.SetVideoRect(SrcRect, dst_rect);
 }
 
 void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect, const CRect &DestRect)
