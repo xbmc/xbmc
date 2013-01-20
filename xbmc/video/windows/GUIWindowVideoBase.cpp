@@ -1773,46 +1773,13 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
 #else
 void CGUIWindowVideoBase::MarkUnWatched(const CFileItemPtr &item)
 {
-  PlexMediaServerQueue::Get().onUnviewed(item);
-
-  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
-  if (item->GetVideoInfoTag())
-  {
-    item->GetVideoInfoTag()->m_playCount = 0;
-    item->ClearProperty("viewOffset");
-  }
-
-  // Fix numbers.
-  if (item->HasProperty("watchedepisodes"))
-  {
-    int watched = item->GetProperty("watchedepisodes").asInteger();
-    int unwatched = item->GetProperty("unwatchedepisodes").asInteger();
-
-    item->SetEpisodeData(watched+unwatched, 0);
-  }
+  item->MarkAsUnWatched();
 }
 
 //Add Mark a Title as watched
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
 {
-  PlexMediaServerQueue::Get().onViewed(item, true);
-
-  // Change the item.
-  item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
-  if (item->GetVideoInfoTag())
-  {
-    item->GetVideoInfoTag()->m_playCount++;
-    item->ClearProperty("viewOffset");
-  }
-
-  // Fix numbers.
-  if (item->HasProperty("watchedepisodes"))
-  {
-    int watched = item->GetProperty("watchedepisodes").asInteger();
-    int unwatched = item->GetProperty("unwatchedepisodes").asInteger();
-
-    item->SetEpisodeData(watched+unwatched, watched+unwatched);
-  }
+  item->MarkAsWatched();
 }
 #endif
 

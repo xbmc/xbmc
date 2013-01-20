@@ -3620,4 +3620,50 @@ bool CFileItemList::IsPlexMediaServerMusic() const
   return CFileItem::IsPlexMediaServerMusic();
 }
 
+#include "plex/PlexMediaServerQueue.h"
+
+//Add Mark a Title as watched
+void CFileItem::MarkAsWatched()
+{
+  PlexMediaServerQueue::Get().onViewed(shared_from_this(), true);
+
+  // Change the item.
+  SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+  if (GetVideoInfoTag())
+  {
+    GetVideoInfoTag()->m_playCount++;
+    ClearProperty("viewOffset");
+  }
+
+  // Fix numbers.
+  if (HasProperty("watchedepisodes"))
+  {
+    int watched = GetProperty("watchedepisodes").asInteger();
+    int unwatched = GetProperty("unwatchedepisodes").asInteger();
+
+    SetEpisodeData(watched+unwatched, watched+unwatched);
+  }
+}
+
+
+void CFileItem::MarkAsUnWatched()
+{
+  PlexMediaServerQueue::Get().onUnviewed(shared_from_this());
+  SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
+  if (GetVideoInfoTag())
+  {
+    GetVideoInfoTag()->m_playCount = 0;
+    ClearProperty("viewOffset");
+  }
+
+  // Fix numbers.
+  if (HasProperty("watchedepisodes"))
+  {
+    int watched = GetProperty("watchedepisodes").asInteger();
+    int unwatched = GetProperty("unwatchedepisodes").asInteger();
+
+    SetEpisodeData(watched+unwatched, 0);
+  }
+}
+
 /* END PLEX */

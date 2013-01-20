@@ -272,10 +272,11 @@ int CGUIWindowHome::LookupIDFromKey(const std::string& key)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key)
+void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key, bool hide)
 {
   // Hide lists.
-  HideAllLists();
+  if (hide)
+    HideAllLists();
 
   if (m_lastSelectedItemKey == key)
   {
@@ -472,12 +473,12 @@ bool CGUIWindowHome::OnPopupMenu()
       }
       else if (choice == CONTEXT_BUTTON_MARK_UNWATCHED)
       {
-        PlexMediaServerQueue::Get().onUnviewed(fileItem);
+        fileItem->MarkAsUnWatched();
         updateFanOut = true;
       }
       else if (choice == CONTEXT_BUTTON_MARK_WATCHED)
       {
-        PlexMediaServerQueue::Get().onViewed(fileItem);
+        fileItem->MarkAsWatched();
         updateFanOut = true;
       }
 
@@ -485,7 +486,7 @@ bool CGUIWindowHome::OnPopupMenu()
       {
         CStdString key(m_lastSelectedItemKey);
         m_lastSelectedItemKey.clear();
-        m_loadingThread->LoadFanWithDelay(key, 150);
+        m_loadingThread->LoadFanWithDelay(key, 150, false);
       }
 
     }
@@ -608,6 +609,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
           
           // Load thumbs.
           m_contentLists[controlID].loader->Load(*m_contentLists[controlID].list.get());
+        }
+        else
+        {
+          SET_CONTROL_HIDDEN(controlID);
         }
       }
       else if (controlID == CONTENT_LIST_FANART)
@@ -860,7 +865,7 @@ void CFanLoadingThread::CancelCurrent()
     m_wakeMe.notify_one();
 }
 
-void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
+void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay, bool hide)
 {
   boost::mutex::scoped_lock lk(m_mutex);
 
@@ -869,6 +874,7 @@ void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay)
   m_key = key;
   m_loadTimer.Start();
   m_delay = delay;
+  m_hide = hide;
 
   if (!IsRunning())
     Create(true);
@@ -917,7 +923,7 @@ void CFanLoadingThread::Process()
     {
       if(m_loadTimer.IsRunning() && m_loadTimer.GetElapsedMilliseconds() > m_delay)
       {
-        m_window->UpdateContentForSelectedItem(m_key);
+        m_window->UpdateContentForSelectedItem(m_key, m_hide);
         m_loadTimer.Stop();
         m_key.clear();
       }

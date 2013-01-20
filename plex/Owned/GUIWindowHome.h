@@ -59,7 +59,7 @@ class CFanLoadingThread : public CThread
   public:
     CFanLoadingThread(CGUIWindowHome *window) : CThread("Fan Loading Thread") { m_window = window; }
     void Process();
-    void LoadFanWithDelay(const CStdString& key, int delay = 300);
+    void LoadFanWithDelay(const CStdString& key, int delay = 300, bool hide = true);
     void CancelCurrent();
     void StopThread(bool bWait);
 
@@ -70,6 +70,7 @@ class CFanLoadingThread : public CThread
     boost::mutex m_mutex;
     boost::condition_variable m_wakeMe;
     int m_delay;
+    bool m_hide;
 };
 
 class CGUIWindowHome : public CGUIWindow,
@@ -78,7 +79,7 @@ class CGUIWindowHome : public CGUIWindow,
 public:
   CGUIWindowHome(void);
   virtual ~CGUIWindowHome(void);
-  virtual void UpdateContentForSelectedItem(const std::string& key);
+  virtual void UpdateContentForSelectedItem(const std::string& key, bool hide = true);
 
 private:
   virtual bool OnAction(const CAction &action);

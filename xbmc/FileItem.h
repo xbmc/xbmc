@@ -38,6 +38,7 @@
 #include "boost/shared_ptr.hpp"
 
 /* PLEX */
+#include <boost/enable_shared_from_this.hpp>
 class CFileItem;
 typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 /* END PLEX */
@@ -76,7 +77,7 @@ class CMediaSource;
   \sa CFileItemList
   */
 class CFileItem :
-  public CGUIListItem, public IArchivable, public ISerializable, public ISortable
+  public CGUIListItem, public IArchivable, public ISerializable, public ISortable, public boost::enable_shared_from_this<CFileItem> //PLEX
 {
 public:
   CFileItem(void);
@@ -444,6 +445,9 @@ public:
 
   void SetIsSettingsDir(bool issettings) { m_bIsSettingsDir = issettings; }
   bool IsSettingsDir() const { return m_bIsSettingsDir; }
+
+  void MarkAsWatched();
+  void MarkAsUnWatched();
 
   /* END PLEX */
 
