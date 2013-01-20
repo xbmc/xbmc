@@ -3724,7 +3724,7 @@ void CApplication::Stop(int exitCode)
       Sleep(50);
     }
 
-    g_backgroundMusicPlayer.FadeOutAndDie();
+    g_backgroundMusicPlayer.Die();
     /* END PLEX */
 
     // Update the settings information (volume, uptime etc. need saving)

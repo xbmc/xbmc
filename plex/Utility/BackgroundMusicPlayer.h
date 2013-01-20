@@ -36,6 +36,7 @@ public:
   // Play the currently selected theme music if there is any.
   void PlayCurrentTheme();
   void FadeOutAndDie();
+  void Die();
   
 private:
   
