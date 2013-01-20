@@ -650,6 +650,7 @@ void CCoreAudioAE::GarbageCollect()
   {
     if (m_isSuspended)
     {
+      CSingleLock engineLock(m_engineLock);
       CLog::Log(LOGDEBUG, "CCoreAudioAE::GarbageCollect - Acquire CA HAL.");
       Start();
       m_isSuspended = false;
@@ -660,8 +661,7 @@ void CCoreAudioAE::GarbageCollect()
   unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
   if (!m_isSuspended && m_softSuspend && curSystemClock > m_softSuspendTimer)
   {
-    Stop();
-    m_isSuspended = true;
+    Suspend();// locks m_engineLock internally
     CLog::Log(LOGDEBUG, "CCoreAudioAE::GarbageCollect - Release CA HAL.");
   }
 }
@@ -692,6 +692,7 @@ void CCoreAudioAE::Stop()
 
 bool CCoreAudioAE::Suspend()
 {
+  CSingleLock engineLock(m_engineLock);
   CLog::Log(LOGDEBUG, "CCoreAudioAE::Suspend - Suspending AE processing");
   m_isSuspended = true;
   // stop all gui sounds
