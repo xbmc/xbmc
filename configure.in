@@ -2582,7 +2582,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     # extra-cflags must be passed alone or it gets expanded wrong by the ffmpeg configure
     FFMPEG_EXTRACFLAGS="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated="
 
-    ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
+    LDFLAGS="$LDFLAGS" ./configure --extra-cflags="$FFMPEG_EXTRACFLAGS" $ffmpg_config --as="$AS"
 
     # if using llvm-gcc-4.2 as assembler, -MMD is not enough to generate
     # dependency files in the right place, replace it with something that works
