@@ -69,7 +69,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_ROOT}/Modules ${CMAKE_MODULE_PATH})
 
 # function to find library and set the variables we need
 macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
-  string(TOUPPER ${lib} LIB_UPPER)
+  string(TOUPPER ${lib} LIBN)
   
   if(CONFIG_LIBRARY_${LIBN})
     set(QUIET_FIND 1)
