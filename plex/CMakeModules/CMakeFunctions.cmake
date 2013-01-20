@@ -69,7 +69,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_ROOT}/Modules ${CMAKE_MODULE_PATH})
 
 # function to find library and set the variables we need
 macro(plex_find_library lib framework nodefaultpath searchpath addtolinklist)
-  string(TOUPPER ${lib} LIBN)
+  string(TOUPPER ${lib} LIB_UPPER)
   
   if(CONFIG_LIBRARY_${LIBN})
     set(QUIET_FIND 1)
@@ -127,6 +127,7 @@ macro(plex_find_package package required addtolinklist)
   
   string(TOUPPER ${package} PKG_UPPER_NAME)
   string(REPLACE "_" "" PKG_NAME ${PKG_UPPER_NAME})
+  string(REGEX REPLACE "^LIB" "" PKG_NO_LIB_NAME ${PKG_UPPER_NAME})
   
   if(${PKG_NAME}_FOUND)
     if(${PKG_NAME}_INCLUDE_DIR)
@@ -151,7 +152,7 @@ macro(plex_find_package package required addtolinklist)
       list(APPEND CONFIG_PLEX_INSTALL_LIBRARIES ${PKG_LIB})
     endif()
 
-    set(HAVE_LIB${PKG_UPPER_NAME} 1 CACHE string "if this lib is around or not")
+    set(HAVE_LIB${PKG_NO_LIB_NAME} 1 CACHE string "if this lib is around or not")
   else()
     if(${required})
       message(FATAL_ERROR "Missing ${PKG_NAME}")

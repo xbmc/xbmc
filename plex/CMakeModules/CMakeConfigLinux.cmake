@@ -74,6 +74,13 @@ endif()
 plex_find_package(PulseAudio 0 1)
 plex_find_package(Alsa 0 1)
 
+plex_find_package(LibUSB 0 1)
+plex_find_package(LibUDEV 0 1)
+
+if(NOT LIBUSB_FOUND AND NOT LIBUDEV_FOUND)
+  message(WARNING "No USB support")
+endif()
+
 if(VAAPI_FOUND)
   list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${VAAPI_LIBRARIES})
   include_directories(${VAAPI_INCLUDE_DIR})
