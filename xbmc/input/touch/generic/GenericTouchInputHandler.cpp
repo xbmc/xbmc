@@ -20,54 +20,36 @@
 
 #include <math.h>
 
-#include "TouchInput.h"
+#include "GenericTouchInputHandler.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#define TOUCH_HOLD_TIMEOUT  1000
 
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832795028842
 #endif
 
-CTouchInput::CTouchInput()
-     : m_holdTimeout(1000),
-       m_handler(NULL),
-       m_fRotateAngle(0.0f),
+CGenericTouchInputHandler::CGenericTouchInputHandler()
+     : m_fRotateAngle(0.0f),
        m_gestureState(TouchGestureUnknown),
        m_gestureStateOld(TouchGestureUnknown)
 {
   m_holdTimer = new CTimer(this);
 }
 
-CTouchInput::~CTouchInput()
+CGenericTouchInputHandler::~CGenericTouchInputHandler()
 {
   delete m_holdTimer;
 }
 
-CTouchInput &CTouchInput::Get()
+CGenericTouchInputHandler &CGenericTouchInputHandler::Get()
 {
-  static CTouchInput sTouchInput;
+  static CGenericTouchInputHandler sTouchInput;
   return sTouchInput;
 }
 
-void CTouchInput::RegisterHandler(ITouchHandler *touchHandler)
-{
-  m_handler = touchHandler;
-}
-
-void CTouchInput::UnregisterHandler()
-{
-  m_handler = NULL;
-}
-
-void CTouchInput::SetTouchHoldTimeout(int32_t timeout)
-{
-  if (timeout <= 0)
-    return;
-
-  m_holdTimeout = timeout;
-}
-
-bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32_t pointer /* = 0 */, float size /* = 0.0f */)
+bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer /* = 0 */, float size /* = 0.0f */)
 {
   if (time < 0 || pointer < 0 || pointer >= TOUCH_MAX_POINTERS)
     return false;
@@ -82,7 +64,7 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
 
   switch (event)
   {
-    case TouchEventAbort:
+    case TouchInputAbort:
     {
       setGestureState(TouchGestureUnknown);
       for (unsigned int pIndex = 0; pIndex < TOUCH_MAX_POINTERS; pIndex++)
@@ -92,7 +74,7 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
       break;
     }
 
-    case TouchEventDown:
+    case TouchInputDown:
     {
       m_pointers[pointer].down.x = x;
       m_pointers[pointer].down.y = y;
@@ -107,7 +89,7 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
         setGestureState(TouchGestureSingleTouch);
         result = OnSingleTouchStart(x, y);
 
-        m_holdTimer->Start(m_holdTimeout);
+        m_holdTimer->Start(TOUCH_HOLD_TIMEOUT);
       }
       // Otherwise it's the down event of another pointer
       else
@@ -117,19 +99,11 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
         if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold ||
             m_gestureState == TouchGestureMultiTouchDone)
         {
+          result = OnMultiTouchDown(x, y, pointer);
+          m_holdTimer->Stop(true);
+
           if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold)
-          {
-            result = OnMultiTouchStart(x, y);
-
-            m_holdTimer->Stop(true);
-            m_holdTimer->Start(m_holdTimeout);
-          }
-          else
-          {
-            result = OnMultiTouchDown(x, y, pointer);
-
-            m_holdTimer->Stop(false);
-          }
+            m_holdTimer->Start(TOUCH_HOLD_TIMEOUT);
 
           setGestureState(TouchGestureMultiTouchStart);
           m_fRotateAngle = 0.0f;
@@ -144,7 +118,7 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
       return result;
     }
 
-    case TouchEventUp:
+    case TouchInputUp:
     {
       // unexpected event => abort
       if (!m_pointers[pointer].valid() ||
@@ -159,7 +133,7 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
         result = OnSingleTouchEnd(x, y);
 
         if (m_gestureState == TouchGestureSingleTouch)
-          OnSingleTap(x, y);
+          OnTap(x, y, 1);
       }
       // A pan gesture started with a single pointer (ignoring any other pointers)
       else if (m_gestureState == TouchGesturePan)
@@ -168,9 +142,9 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
         float velocityY = 0.0f; // number of pixels per second
         m_pointers[pointer].velocity(velocityX, velocityY, false);
 
-        result = OnTouchGesturePanEnd(x, y,
-                                      x - m_pointers[pointer].down.x, y - m_pointers[pointer].down.y,
-                                      velocityX, velocityY);
+        result = OnTouchGestureEnd(x, y,
+                                   x - m_pointers[pointer].down.x, y - m_pointers[pointer].down.y,
+                                   velocityX, velocityY);
       }
       // we are in multi-touch
       else
@@ -196,22 +170,29 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
       {
         if (m_gestureState == TouchGestureMultiTouchDone)
         {
-          result = OnMultiTouchEnd(m_pointers[0].down.x, m_pointers[0].down.y);
+          float velocityX = 0.0f; // number of pixels per second
+          float velocityY = 0.0f; // number of pixels per second
+          m_pointers[pointer].velocity(velocityX, velocityY, false);
 
-          // if neither of the two pointers moved we have a double tap
+          result = OnTouchGestureEnd(x, y,
+                                     x - m_pointers[pointer].down.x, y - m_pointers[pointer].down.y,
+                                     velocityX, velocityY);
+
+          // if neither of the two pointers moved we have a single tap with multiple pointers
           if (m_gestureStateOld != TouchGestureMultiTouchHold && m_gestureStateOld != TouchGestureMultiTouch)
-            OnDoubleTap(m_pointers[0].down.x, m_pointers[0].down.y,
-                        m_pointers[1].down.x, m_pointers[1].down.y);
+            OnTap(fabs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
+                        fabs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
+                        2);
         }
 
         setGestureState(TouchGestureUnknown);
+        m_pointers[pointer].reset();
       }
 
-      m_pointers[pointer].reset();
       return result;
     }
 
-    case TouchEventMove:
+    case TouchInputMove:
     {
       // unexpected event => abort
       if (!m_pointers[pointer].valid() ||
@@ -220,15 +201,19 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
         break;
 
       if (m_pointers[pointer].moving)
+      {
         m_holdTimer->Stop();
+
+        // the touch is moving so we start a gesture
+        if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureMultiTouchStart)
+          result = OnTouchGestureStart(m_pointers[pointer].down.x, m_pointers[pointer].down.y);
+      }
 
       if (m_gestureState == TouchGestureSingleTouch)
       {
         // Check if the touch has moved far enough to count as movement
         if (!m_pointers[pointer].moving)
           break;
-
-        result = OnTouchGesturePanStart(m_pointers[pointer].down.x, m_pointers[pointer].down.y);
 
         m_pointers[pointer].last.copy(m_pointers[pointer].down);
         setGestureState(TouchGesturePan);
@@ -273,14 +258,14 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
     }
 
     default:
-      CLog::Log(LOGDEBUG, "CTouchInput: unknown TouchEvent");
+      CLog::Log(LOGDEBUG, "CGenericTouchInputHandler: unknown TouchInput");
       break;
   }
 
   return false;
 }
 
-bool CTouchInput::Update(int32_t pointer, float x, float y, int64_t time, float size /* = 0.0f */)
+bool CGenericTouchInputHandler::UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size /* = 0.0f */)
 {
   if (pointer < 0 || pointer >= TOUCH_MAX_POINTERS)
     return false;
@@ -309,19 +294,19 @@ bool CTouchInput::Update(int32_t pointer, float x, float y, int64_t time, float 
   return true;
 }
 
-void CTouchInput::saveLastTouch()
+void CGenericTouchInputHandler::saveLastTouch()
 {
   for (unsigned int pointer = 0; pointer < TOUCH_MAX_POINTERS; pointer++)
     m_pointers[pointer].last.copy(m_pointers[pointer].current);
 }
 
-void CTouchInput::handleMultiTouchGesture()
+void CGenericTouchInputHandler::handleMultiTouchGesture()
 {
   handleZoomPinch();
   handleRotation();
 }
 
-void CTouchInput::handleZoomPinch()
+void CGenericTouchInputHandler::handleZoomPinch()
 {
   Pointer& primaryPointer = m_pointers[0];
   Pointer& secondaryPointer = m_pointers[1];
@@ -348,7 +333,7 @@ void CTouchInput::handleZoomPinch()
   }
 }
 
-void CTouchInput::handleRotation()
+void CGenericTouchInputHandler::handleRotation()
 {
   Pointer& primaryPointer = m_pointers[0];
   Pointer& secondaryPointer = m_pointers[1];
@@ -381,7 +366,7 @@ void CTouchInput::handleRotation()
   }
 }
 
-void CTouchInput::OnTimeout()
+void CGenericTouchInputHandler::OnTimeout()
 {
   CSingleLock lock(m_critical);
 
@@ -391,7 +376,7 @@ void CTouchInput::OnTimeout()
       setGestureState(TouchGestureSingleTouchHold);
 
       OnSingleTouchHold(m_pointers[0].down.x, m_pointers[0].down.y);
-      OnSingleLongPress(m_pointers[0].down.x, m_pointers[0].down.y);
+      OnLongPress(m_pointers[0].down.x, m_pointers[0].down.y, 1);
       break;
 
     case TouchGestureMultiTouchStart:
@@ -400,197 +385,13 @@ void CTouchInput::OnTimeout()
         setGestureState(TouchGestureMultiTouchHold);
 
         OnMultiTouchHold(m_pointers[0].down.x, m_pointers[0].down.y);
-        OnDoubleLongPress(m_pointers[0].down.x, m_pointers[0].down.y, m_pointers[1].down.x, m_pointers[1].down.y);
+        OnLongPress(fabs((m_pointers[0].down.x + m_pointers[1].down.x) / 2),
+                          fabs((m_pointers[0].down.y + m_pointers[1].down.y) / 2),
+                          2);
       }
       break;
 
     default:
       break;
   }
-}
-
-void CTouchInput::OnTouchAbort()
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    m_handler->OnTouchAbort();
-}
-
-bool CTouchInput::OnSingleTouchStart(float x, float y)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnSingleTouchStart(x, y);
-
-  return true;
-}
-
-bool CTouchInput::OnSingleTouchHold(float x, float y)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnSingleTouchHold(x, y);
-
-  return true;
-}
-
-bool CTouchInput::OnSingleTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnSingleTouchMove(x, y, offsetX, offsetY, velocityX, velocityY);
-
-  return true;
-}
-
-bool CTouchInput::OnSingleTouchEnd(float x, float y)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnSingleTouchEnd(x, y);
-
-  return true;
-}
-
-bool CTouchInput::OnMultiTouchStart(float x, float y, int32_t pointers /* = 2 */)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnMultiTouchStart(x, y, pointers);
-
-  return true;
-}
-
-bool CTouchInput::OnMultiTouchDown(float x, float y, int32_t pointer)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnMultiTouchDown(x, y, pointer);
-
-  return true;
-}
-
-bool CTouchInput::OnMultiTouchHold(float x, float y, int32_t pointers /* = 2 */)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnMultiTouchHold(x, y, pointers);
-
-  return true;
-}
-
-bool CTouchInput::OnMultiTouchMove(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY, int32_t pointer)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnMultiTouchMove(x, y, offsetX, offsetY, velocityX, velocityY, pointer);
-
-  return true;
-}
-
-bool CTouchInput::OnMultiTouchUp(float x, float y, int32_t pointer)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnMultiTouchUp(x, y, pointer);
-
-  return true;
-}
-
-bool CTouchInput::OnMultiTouchEnd(float x, float y, int32_t pointers /* = 2 */)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnMultiTouchEnd(x, y, pointers);
-
-  return true;
-}
-
-bool CTouchInput::OnTouchGesturePanStart(float x, float y)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnTouchGesturePanStart(x, y);
-
-  return true;
-}
-
-bool CTouchInput::OnTouchGesturePan(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnTouchGesturePan(x, y, offsetX, offsetY, velocityX, velocityY);
-
-  return true;
-}
-
-bool CTouchInput::OnTouchGesturePanEnd(float x, float y, float offsetX, float offsetY, float velocityX, float velocityY)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    return m_handler->OnTouchGesturePanEnd(x, y, offsetX, offsetY, velocityX, velocityY);
-
-  return true;
-}
-
-void CTouchInput::OnSingleTap(float x, float y)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    m_handler->OnSingleTap(x, y);
-}
-
-void CTouchInput::OnSingleLongPress(float x, float y)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    m_handler->OnSingleLongPress(x, y);
-}
-
-void CTouchInput::OnDoubleTap(float x1, float y1, float x2, float y2)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    m_handler->OnDoubleTap(x1, y1, x2, y2);
-}
-
-void CTouchInput::OnDoubleLongPress(float x1, float y1, float x2, float y2)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-  
-  if (m_handler)
-    m_handler->OnDoubleLongPress(x1, y1, x2, y2);
-}
-
-void CTouchInput::OnZoomPinch(float centerX, float centerY, float zoomFactor)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-  
-  if (m_handler)
-    m_handler->OnZoomPinch(centerX, centerY, zoomFactor);
-}
-
-void CTouchInput::OnRotate(float centerX, float centerY, float angle)
-{
-  CLog::Log(LOGDEBUG, "%s", __FUNCTION__);
-
-  if (m_handler)
-    m_handler->OnRotate(centerX, centerY, angle);
 }
