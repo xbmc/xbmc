@@ -69,9 +69,12 @@ void BackgroundMusicPlayer::FadeOutAndDie()
 ////////////////////////////////////////////////////////////////////////////////
 void BackgroundMusicPlayer::Die()
 {
-  m_player->UnRegisterAudioCallback();
-  delete m_player;
-  m_player = NULL;
+  if (m_player)
+  {
+    m_player->UnRegisterAudioCallback();
+    delete m_player;
+    m_player = NULL;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
