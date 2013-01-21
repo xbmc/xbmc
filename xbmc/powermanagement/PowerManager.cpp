@@ -268,11 +268,6 @@ void CPowerManager::OnWake()
 #if defined(TARGET_WINDOWS)
     ShowWindow(g_hWnd,SW_RESTORE);
     SetForegroundWindow(g_hWnd);
-#elif !defined(TARGET_DARWIN_OSX)
-    // Hack to reclaim focus, thus rehiding system mouse pointer.
-    // Surely there's a better way?
-    g_graphicsContext.ToggleFullScreenRoot();
-    g_graphicsContext.ToggleFullScreenRoot();
 #endif
   }
   g_application.ResetScreenSaver();
