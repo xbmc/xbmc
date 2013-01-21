@@ -55,7 +55,7 @@ if(ZIP)
     OUTPUT presets.zip
     COMMAND ${ZIP} -q -j presets.zip ${CMAKE_CURRENT_SOURCE_DIR}/libprojectM/presets/*
   )
-  add_custom_target(ProjectMPresets DEPENDS presets.zip)
+  add_custom_target(ProjectMPresets ALL DEPENDS presets.zip)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/presets.zip DESTINATION ${RESOURCEPATH}/addons/visualization.projectm/resources)
 endif()
 
