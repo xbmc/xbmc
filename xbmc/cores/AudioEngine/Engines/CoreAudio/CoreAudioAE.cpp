@@ -455,7 +455,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
     Stop();
 
   /* PLEX */
-  bool audioDeviceChanged = false;
+  bool audioDeviceChanged = g_advancedSettings.m_bAlwaysReinitCoreAudio;
   std::string deviceName;
   CCoreAudioHardware::GetOutputDeviceName(deviceName);
 

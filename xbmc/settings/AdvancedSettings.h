@@ -385,6 +385,8 @@ class CAdvancedSettings
     int m_iShowFirstRun;
     bool m_bEnableGDM;
     unsigned int m_cacheReadRate;
+
+    bool m_bAlwaysReinitCoreAudio;
     /* END PLEX */
 };
 

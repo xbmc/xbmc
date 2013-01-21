@@ -358,6 +358,8 @@ void CAdvancedSettings::Initialize()
 
   /* Default to 1Gbps */
   m_cacheReadRate = 1073741824;
+
+  m_bAlwaysReinitCoreAudio = false;
   /* END PLEX */
 
 
@@ -1107,6 +1109,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   XMLUtils::GetInt(pRootElement, "showfirstrun", m_iShowFirstRun);
   XMLUtils::GetBoolean(pRootElement, "enablegdm", m_bEnableGDM);
   XMLUtils::GetUInt(pRootElement, "cachereadrate", m_cacheReadRate);
+  XMLUtils::GetBoolean(pRootElement, "alwaysreinitcoreaudio", m_bAlwaysReinitCoreAudio);
   /* END PLEX */
 
   // load in the GUISettings overrides:
