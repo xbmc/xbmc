@@ -238,7 +238,6 @@ private:
   CDVDPlayerSubtitle     *m_dvdPlayerSubtitle;
   CDVDOverlayContainer   *m_dvdOverlayContainer;
 
-  int                     m_chapter_index;
   int                     m_chapter_count;
 
   int                     m_show_mainvideo;

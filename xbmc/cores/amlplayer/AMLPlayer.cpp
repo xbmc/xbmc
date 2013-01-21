@@ -28,6 +28,7 @@
 #include "video/VideoThumbLoader.h"
 #include "Util.h"
 #include "cores/AudioEngine/AEFactory.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -592,7 +593,6 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     m_subtitle_delay =  0;
     m_subtitle_thread = NULL;
 
-    m_chapter_index  =  0;
     m_chapter_count  =  0;
 
     m_show_mainvideo = -1;
@@ -813,7 +813,6 @@ float CAMLPlayer::GetPercentage()
 void CAMLPlayer::SetMute(bool bOnOff)
 {
   m_audio_mute = bOnOff;
-#if !defined(TARGET_ANDROID)
   CSingleLock lock(m_aml_csection);
   if (m_dll->check_pid_valid(m_pid))
   {
@@ -822,11 +821,12 @@ void CAMLPlayer::SetMute(bool bOnOff)
     else
       m_dll->audio_set_volume(m_pid, m_audio_volume);
   }
-#endif
 }
 
 void CAMLPlayer::SetVolume(float volume)
 {
+  CLog::Log(LOGDEBUG, "CAMLPlayer::SetVolume(%f)", volume);
+  // volume is a float percent from 0.0 to 1.0
   m_audio_volume = 0.0f;
   if (volume > VOLUME_MINIMUM)
   {
@@ -836,11 +836,9 @@ void CAMLPlayer::SetVolume(float volume)
   if (m_audio_volume >= 0.99f)
     m_audio_volume = 1.0f;
 
-#if !defined(TARGET_ANDROID)
   CSingleLock lock(m_aml_csection);
   if (!m_audio_mute && m_dll->check_pid_valid(m_pid))
     m_dll->audio_set_volume(m_pid, m_audio_volume);
-#endif
 }
 
 void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
@@ -1083,14 +1081,16 @@ int CAMLPlayer::GetChapterCount()
 
 int CAMLPlayer::GetChapter()
 {
+  // returns a one based value or zero if no chapters
   GetStatus();
 
-  for (int i = 0; i < m_chapter_count - 1; i++)
+  int chapter_index = -1;
+  for (int i = 0; i < m_chapter_count; i++)
   {
-    if (m_elapsed_ms >= m_chapters[i]->seekto_ms && m_elapsed_ms < m_chapters[i + 1]->seekto_ms)
-      return i + 1;
+    if (m_elapsed_ms >= m_chapters[i]->seekto_ms)
+      chapter_index = i;
   }
-  return 0;
+  return chapter_index + 1;
 }
 
 void CAMLPlayer::GetChapterName(CStdString& strChapterName)
@@ -1553,7 +1553,7 @@ void CAMLPlayer::Process()
       // restore system volume setting.
       SetVolume(g_settings.m_fVolumeLevel);
 
-      // the default staturation is to high, drop it
+      // the default staturation is too high, drop it
       SetVideoSaturation(110);
 
       // drop CGUIDialogBusy dialog and release the hold in OpenFile.
@@ -1874,8 +1874,8 @@ bool CAMLPlayer::WaitForStopped(int timeout_ms)
     switch(pstatus)
     {
       default:
-        usleep(100 * 1000);
-        timeout_ms -= 100;
+        usleep(20 * 1000);
+        timeout_ms -= 20;
         break;
       case PLAYER_PLAYEND:
       case PLAYER_STOPED:
@@ -1900,8 +1900,8 @@ bool CAMLPlayer::WaitForSearchOK(int timeout_ms)
     switch(pstatus)
     {
       default:
-        usleep(100 * 1000);
-        timeout_ms -= 100;
+        usleep(20 * 1000);
+        timeout_ms -= 20;
         break;
       case PLAYER_STOPED:
         return false;
@@ -1925,19 +1925,17 @@ bool CAMLPlayer::WaitForPlaying(int timeout_ms)
   m_audio_mute = true;
   while (!m_bAbortRequest && (timeout_ms > 0))
   {
-#if !defined(TARGET_ANDROID)
     // anoying that we have to hammer audio_set_volume
     // but have to catch it before any audio comes out.
     m_dll->audio_set_volume(m_pid, 0.0);
-#endif
     player_status pstatus = (player_status)GetPlayerSerializedState();
     if (m_log_level > 5)
       CLog::Log(LOGDEBUG, "CAMLPlayer::WaitForPlaying: %s", m_dll->player_status2str(pstatus));
     switch(pstatus)
     {
       default:
-        usleep(100 * 1000);
-        timeout_ms -= 100;
+        usleep(20 * 1000);
+        timeout_ms -= 20;
         break;
       case PLAYER_ERROR:
       case PLAYER_EXIT:
@@ -1963,8 +1961,8 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
     switch(pstatus)
     {
       default:
-        usleep(100 * 1000);
-        timeout_ms -= 100;
+        usleep(20 * 1000);
+        timeout_ms -= 20;
         break;
       case PLAYER_ERROR:
       case PLAYER_EXIT:
@@ -1992,11 +1990,7 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             media_info.stream_info.cur_video_index,
             media_info.stream_info.cur_audio_index,
             media_info.stream_info.cur_sub_index,
-#if !defined(TARGET_ANDROID)
             media_info.stream_info.total_chapter_num);
-#else
-            0);
-#endif
         }
 
         // video info
@@ -2053,10 +2047,9 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             info->bit_rate        = media_info.audio_info[i]->bit_rate;
             info->duration        = media_info.audio_info[i]->duration;
             info->format          = media_info.audio_info[i]->aformat;
-#if !defined(TARGET_ANDROID)
             if (media_info.audio_info[i]->audio_language[0] != 0)
               info->language = std::string(media_info.audio_info[i]->audio_language, 3);
-#endif
+
             m_audio_streams.push_back(info);
           }
 
@@ -2091,7 +2084,6 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
         if (m_subtitle_count && m_subtitle_index != 0)
           m_subtitle_index = 0;
 
-#if !defined(TARGET_ANDROID)
         // chapter info
         if (media_info.stream_info.total_chapter_num > 0)
         {
@@ -2108,7 +2100,7 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             }
           }
         }
-#endif
+
         return true;
         break;
     }
