@@ -34,7 +34,7 @@ $(ANDROID_LIBS): $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFOR
 	mkdir -p $(PREFIX)/opt/$(ANDROID_LIBS)
 	cp $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFORM)/libbinder.so  $(PLATFORM)/libcutils.so $(PLATFORM)/libui.so $(PREFIX)/opt/$(ANDROID_LIBS)
 
-$(PLATFORM):
+$(PLATFORM): install-sources
 	mkdir -p $(PLATFORM)
 
 $(PLATFORM)/libstagefright.so:  $(PLATFORM) $(DEPS) libstagefright.cpp

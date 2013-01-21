@@ -1328,7 +1328,6 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, plane.id);
-  glEGLImageTargetTexture2DOES(m_textureTarget, (EGLImageKHR)m_buffers[index].eglimg);
   
   g_Windowing.EnableGUIShader(SM_TEXTURE_RGBA);
 
@@ -1951,6 +1950,17 @@ bool CLinuxRendererGLES::CreateBYPASSTexture(int index)
 void CLinuxRendererGLES::UploadEGLIMGTexture(int index)
 {
 #ifdef HAVE_LIBSTAGEFRIGHT
+  if(m_buffers[index].eglimg != EGL_NO_IMAGE_KHR)
+  {
+    YUVPLANE &plane = m_buffers[index].fields[0][0];
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(m_textureTarget, plane.id);
+    glEGLImageTargetTexture2DOES(m_textureTarget, (EGLImageKHR)m_buffers[index].eglimg);
+    glBindTexture(m_textureTarget, 0);
+    
+    plane.flipindex = m_buffers[index].flipindex;
+  }
   m_eventTexturesDone[index]->Set();
 #endif
 }
@@ -1999,7 +2009,7 @@ bool CLinuxRendererGLES::CreateEGLIMGTexture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  //glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
   
   glDisable(m_textureTarget);
 
