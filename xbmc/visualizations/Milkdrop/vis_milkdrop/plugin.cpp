@@ -485,6 +485,8 @@ Order of Function Calls
 #include <assert.h>
 //#include "../XmlDocument.h"
 
+#include <minmax.h>
+
 #define FRAND ((rand() % 7381)/7380.0f)
 #define strnicmp _strnicmp
 #define strcmpi  _strcmpi

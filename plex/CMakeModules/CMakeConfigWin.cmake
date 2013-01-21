@@ -12,6 +12,8 @@ set(system_libs
   dxguid
   DxErr
   Delayimp
+  opengl32
+  glu32
 )
 
 set(external_libs
@@ -31,7 +33,7 @@ set(external_libs
 set(non_link_libs
   SDL
   SDL_image
-fontconfig
+  fontconfig
 )
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -52,6 +54,7 @@ foreach(lib ${system_libs})
   plex_find_library(${lib} 0 0 "" 1)
 endforeach()
 
+set(CONFIG_LIBRARY_OPENGL ${CONFIG_LIBRARY_OPENGL32} ${CONFIG_LIBRARY_GLU32})
 
 set(ARCH "x86-win")
 set(EXECUTABLE_NAME "Plex Home Theater")
