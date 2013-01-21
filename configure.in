@@ -1030,9 +1030,6 @@ PKG_CHECK_MODULES([PCRE],       [libpcre],
   [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
   AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([CDIO],       [libcdio],
-  [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
   [INCLUDES="$INCLUDES $SAMPLERATE_CFLAGS"; LIBS="$LIBS $SAMPLERATE_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -1042,6 +1039,12 @@ PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
 PKG_CHECK_MODULES([TAGLIB],  [taglib >= 1.8],
   [INCLUDES="$INCLUDES $TAGLIB_CFLAGS"; LIBS="$LIBS $TAGLIB_LIBS"],
   AC_MSG_ERROR($missing_library))
+
+if test "$use_optical_drive" = "yes"; then
+  PKG_CHECK_MODULES([CDIO],       [libcdio],
+    [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
+    AC_MSG_ERROR($missing_library))
+fi
 
 if test "$target_platform" = "target_android" ; then
 PKG_CHECK_MODULES([ZIP],       [libzip],
