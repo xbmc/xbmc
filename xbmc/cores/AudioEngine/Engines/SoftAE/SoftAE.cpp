@@ -1525,7 +1525,8 @@ void CSoftAE::ProcessSuspend()
       m_saveSuspend.Set();
 
     /* idle for platform-defined time */
-    m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
+    if (m_playingStreams.empty() && m_playing_sounds.empty())
+      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
 
     /* check if we need to resume for stream or sound or somebody wants to open us
      * the suspend checks are only there to:
