@@ -14,6 +14,11 @@ set(eval_SRC
   vis_milkdrop/evallib/Yylex.c
 )
 
+set_source_files_properties(
+  vis_milkdrop/evallib/Compiler.c
+  PROPERTIES COMPILER_FLAGS "/DNDEBUG /WX- /MP /Od /Oy- /GF- /Gm- /EHa /MT /GS /Gy- /arch:SSE /fp:precise /Zc:wchar_t /Zc:forScope /wd\"4996\""
+)
+
 set_source_files_properties(vis_milkdrop/evallib/Cal_tab.c PROPERTIES LANGUAGE "C")
 
 add_definitions(
