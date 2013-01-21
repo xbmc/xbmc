@@ -292,22 +292,32 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
 
 AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
 {
+  AudioDeviceID deviceId = 0;
+  static AudioDeviceID lastDeviceId = 0;
+
   AudioObjectPropertyAddress  propertyAddress;
   propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
   propertyAddress.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-
-  AudioDeviceID deviceId = 0;
+  
   UInt32 size = sizeof(AudioDeviceID);
   OSStatus ret = AudioObjectGetPropertyData(kAudioObjectSystemObject, &propertyAddress, 0, NULL, &size, &deviceId);
+
   // outputDevice is set to 0 if there is no audio device available
   // or if the default device is set to an encoded format
   if (ret != noErr || !deviceId) 
   {
     CLog::Log(LOGERROR, "CCoreAudioHardware::GetDefaultOutputDevice:"
       " Unable to identify default output device. Error = %s", GetError(ret).c_str());
-    return 0;
+    // if there was no error and no deviceId was returned
+    // return the last known default device
+    if (ret == noErr && !deviceId)
+      return lastDeviceId;
+    else
+      return 0;
   }
+  
+  lastDeviceId = deviceId;
 
   return deviceId;
 }
