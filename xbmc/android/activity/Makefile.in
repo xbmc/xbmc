@@ -1,4 +1,4 @@
-include @abs_top_srcdir@/tools/android/depends/Makefile.include
+include @abs_top_srcdir@/tools/depends/Makefile.include
 
 GLUEPATH   = $(NDKROOT)/sources/android/native_app_glue
 APP_GLUE   = android_native_app_glue.o
