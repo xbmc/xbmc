@@ -639,6 +639,13 @@ case $host in
      use_cpu=cortex-a9
      ARCH="arm"
      ffmpeg_target_os=linux
+     use_joystick=no
+     use_neon=yes
+     use_gles=yes
+     use_optical_drive=no
+     use_sdl=no
+     use_x11=no
+     build_shared_lib=yes
      ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
