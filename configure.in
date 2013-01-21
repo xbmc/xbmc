@@ -632,6 +632,12 @@ case $host in
      ARCH="arm"
      use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
+     ffmpeg_target_os=linux
+     use_joystick=no
+     use_neon=yes
+     use_gles=yes
+     use_sdl=no
+     use_x11=no
      ;;
   arm*-*linux-android*)
      target_platform=target_android
