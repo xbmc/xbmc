@@ -108,5 +108,7 @@ set(BINPATH "${EXECUTABLE_NAME}.app/Contents/MacOSX")
 set(RESOURCEPATH "${EXECUTABLE_NAME}.app/Contents/Resources/XBMC")
 set(FFMPEG_INCLUDE_DIRS ${dependdir}/include)
 
+set(PLEX_LINK_WRAPPED "-arch i386 -undefined dynamic_lookup -read_only_relocs suppress -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+
 set(HAVE_LIBVDADECODER 1)
 set(AC_APPLE_UNIVERSAL_BUILD 0)

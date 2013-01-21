@@ -18,8 +18,8 @@ set(CMAKE_SHARED_MODULE_PREFIX "")
 if(NOT WIN32)
   set(CMAKE_SHARED_MODULE_SUFFIX ".so")
 endif()
+
 if(APPLE)
-	set(CMAKE_MODULE_LINKER_FLAGS "-arch i386 -undefined dynamic_lookup -read_only_relocs suppress")
 	set(CMAKE_SHARED_MODULE_CREATE_C_FLAGS "-bundle")
 endif(APPLE)
 

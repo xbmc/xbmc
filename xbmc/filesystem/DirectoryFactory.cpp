@@ -249,6 +249,7 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
+  if (strProtocol == "zip") return new CZipDirectory();
 
   if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
   {

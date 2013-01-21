@@ -330,7 +330,7 @@ void CGUISettings::Initialize()
   AddInt(mp, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(mp, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(mp, "musicplayer.sep3");
-  AddDefaultAddon(NULL, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, ADDON_VIZ);
+  AddDefaultAddon(mp, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, ADDON_VIZ);
 
   //CSettingsCategory* mf = AddCategory(SETTINGS_MUSIC, "musicfiles", 14081);
   AddBool(NULL, "musicfiles.usetags", 258, true);

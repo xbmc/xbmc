@@ -10,7 +10,7 @@ if(UNIX)
 endif(UNIX)
 
 foreach(dir ${subdirs})
-	add_subdirectory(${dir})
+  add_subdirectory(${dir})
 endforeach()
 
 if(WIN32)

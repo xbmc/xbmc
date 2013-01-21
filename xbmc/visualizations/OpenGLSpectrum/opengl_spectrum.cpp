@@ -29,7 +29,7 @@
  *  Ported to GLES 2.0 by Gimli
  */
 
-#define __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS 1
 
 #include "addons/include/xbmc_vis_dll.h"
 #include <string.h>

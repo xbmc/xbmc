@@ -132,7 +132,6 @@ install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         REGEX metadata.* EXCLUDE
         REGEX weather.* EXCLUDE
         PATTERN repository.xbmc.org EXCLUDE
-        REGEX visualization.* EXCLUDE
         REGEX ${EXCLUDE_TEXTURES} EXCLUDE
         PATTERN .git EXCLUDE
         PATTERN xbmc.python EXCLUDE)

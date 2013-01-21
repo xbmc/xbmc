@@ -213,7 +213,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
-  if (strProtocol == "file" || strProtocol.IsEmpty()) return new CHDFile();
+  if (strProtocol == "zip") return new CZipFile();
+  else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CHDFile();
   else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "filereader") return new CFileReaderFile();
 
