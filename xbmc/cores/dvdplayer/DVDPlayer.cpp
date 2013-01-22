@@ -429,7 +429,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       /* PLEX */
       m_hidingSub(false),
       m_vobsubToDisplay(-1),
-      m_bFileOpenComplete(false),
       m_readRate(0),
       /* END PLEX */
       m_ready(true)
@@ -476,10 +475,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     if(IsRunning())
       CloseFile();
 
-    /* PLEX */
-    m_bFileOpenComplete = false;
-    /* END PLEX */
-
     m_bAbortRequest = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
@@ -499,7 +494,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 #endif
 
     Create();
-#ifndef __PLEX__
     if(!m_ready.WaitMSec(100))
     {
       CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
@@ -507,7 +501,17 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
       {
         dialog->Show();
         while(!m_ready.WaitMSec(1))
+        {
+          /* PLEX */
+          if (dialog->IsCanceled())
+          {
+            m_bStop = true;
+            Abort();
+          }
+          /* END PLEX */
+
           g_windowManager.ProcessRenderLoop(false);
+        }
         dialog->Close();
       }
     }
@@ -516,13 +520,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     if (m_bStop || m_bAbortRequest)
       return false;
 
-    return true;
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
-    return false;
-#endif
     return true;
   }
   catch(...)
@@ -1087,7 +1084,6 @@ void CDVDPlayer::Process()
   {
     CApplicationMessenger::Get().RestartWithNewPlayer(0, ex->m_pNewUrl->Get());
     delete ex;
-    m_bFileOpenComplete = true;
     return;
   }
 #endif
@@ -1192,10 +1188,6 @@ void CDVDPlayer::Process()
   // make sure application know our info
   UpdateApplication(0);
   UpdatePlayState(0);
-
-  /* PLEX */
-  OpenFileComplete();
-  /* END PLEX */
 
   if(m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
@@ -2102,10 +2094,6 @@ void CDVDPlayer::OnExit()
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
-    /* PLEX */
-    OpenFileComplete();
-    /* END PLEX */
-
     // set event to inform openfile something went wrong in case openfile is still waiting for this event
     SetCaching(CACHESTATE_DONE);
 
@@ -2166,10 +2154,6 @@ void CDVDPlayer::OnExit()
     m_pInputStream = NULL;
     m_pDemuxer = NULL;
   }
-
-  /* PLEX */
-  OpenFileComplete();
-  /* END PLEX */
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
@@ -4319,31 +4303,6 @@ bool CDVDPlayer::CachePVRStream(void) const
 }
 
 /* PLEX */
-void CDVDPlayer::OpenFileComplete()
-{
-  if (m_bFileOpenComplete == false)
-  {
-    m_bFileOpenComplete = true;
-
-    bool ret = true;
-    if (m_bStop || m_bAbortRequest)
-      ret = false;
-
-    CStdString err;
-    if (m_pInputStream && m_pInputStream->GetError().size() > 0)
-      err = m_pInputStream->GetError(), ret = false;
-    else if (m_pDemuxer && m_pDemuxer->GetError().size() > 0)
-      err = m_pDemuxer->GetError(), ret = false;
-    else if (m_strError.size() > 0)
-      err = m_strError, ret = false;
-
-    CApplicationMessenger::Get().MediaOpenComplete(ret, err);
-
-    // allow renderer to switch to fullscreen if requested
-    m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
-  }
-}
-
 void CDVDPlayer::OpenDefaultStreams(bool reset)
 {
   int  count;
@@ -4674,7 +4633,6 @@ bool CDVDPlayer::PlexProcess(CStdString& stopURL)
     if (Cocoa_IsHostLocal(serverHost) == true)
     {
       CApplicationMessenger::Get().RestartWithNewPlayer(0, item.GetPath());
-      m_bFileOpenComplete = true;
       return false;
     }
 

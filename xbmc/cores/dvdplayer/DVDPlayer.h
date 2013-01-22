@@ -320,7 +320,7 @@ public:
 
     return -1;
   }
-  virtual bool CanOpenAsync() { return true; }
+  virtual bool CanOpenAsync() { return false; }
   virtual void Abort() { m_bAbortRequest = true; }
   bool PlexProcess(CStdString& stopURL);
   /* END PLEX */
@@ -550,11 +550,9 @@ protected:
   CPlayerOptions m_PlayerOptions;
 
   /* PLEX */
-  void OpenFileComplete();
   void RelinkPlexStreams();
   virtual CStdString TranscodeURL(CStdString& stopURL, const CStdString& url, int quality=-1, const CStdString& transcodeHost = "", const CStdString& extraOptions = "");
 
-  bool         m_bFileOpenComplete;
   CStdString   m_strError;
   CFileItemPtr m_itemWithDetails;
   bool         m_hidingSub;

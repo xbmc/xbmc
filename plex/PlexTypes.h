@@ -87,7 +87,6 @@ typedef boost::shared_ptr < CFileItem > CFileItemPtr;
 #define PLAYER_HAS_MUSIC_PLAYLIST   90
 
 // Message Ids for ApplicationMessenger
-#define TMSG_MEDIA_OPEN_COMPLETE  207
 #define TMSG_MEDIA_RESTART_WITH_NEW_PLAYER 208
 #define TMSG_HIDE                 911
 

@@ -814,11 +814,6 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
         g_application.RestartWithNewPlayer((CGUIDialogCache* )pMsg->lpVoid, pMsg->strParam);
       }
       break;
-    case TMSG_MEDIA_OPEN_COMPLETE:
-      {
-        g_application.FinishPlayingFile(pMsg->dwParam1 != 0, pMsg->strParam);
-      }
-      break;
     case TMSG_HIDE:
       {
         g_application.Hide();
@@ -1313,14 +1308,6 @@ void CApplicationMessenger::LoadProfile(unsigned int idx)
 }
 
 /* PLEX */
-void CApplicationMessenger::MediaOpenComplete(bool bStatus, const CStdString& strErrorMsg)
-{
-  ThreadMessage tMsg = {TMSG_MEDIA_OPEN_COMPLETE};
-  tMsg.dwParam1 = bStatus;
-  tMsg.strParam = strErrorMsg;
-  SendMessage(tMsg, true);
-}
-
 void CApplicationMessenger::RestartWithNewPlayer(CGUIDialogCache* dlg, const std::string& newURL)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_RESTART_WITH_NEW_PLAYER};

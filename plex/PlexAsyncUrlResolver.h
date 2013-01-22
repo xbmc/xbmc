@@ -40,7 +40,7 @@ class PlexAsyncUrlResolver
 
   PlexAsyncUrlResolver(const CFileItem& item)
     : m_item(item)
-    , m_bSuccess(true)
+    , m_bSuccess(false)
     , m_bStop(false)
     , m_indirect(false) {}
 
@@ -94,11 +94,11 @@ class PlexAsyncUrlResolver
         if (list.Size() > 0 && m_bStop == false)
         {
           m_finalItem = list.Get(0);
+          m_bSuccess = true;
         }
       }
       else
       {
-        m_bSuccess = false;
         m_bStop = true;
       }
     }
@@ -135,7 +135,6 @@ class PlexAsyncUrlResolver
       }
       else
       {
-        m_bSuccess = false;
         m_bStop = true;
       }
     }
@@ -167,12 +166,9 @@ class PlexAsyncUrlResolver
 
             // Set the final path, by reference.
             m_finalPath = finalFile->GetPath();
+            m_bSuccess = true;
           }
         }
-      }
-      else
-      {
-        m_bSuccess = false;
       }
     }
 

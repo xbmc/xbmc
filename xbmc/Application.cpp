@@ -4397,22 +4397,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     bResult = false;
   }
 
-  /* PLEX */
-  // If the player is opening asynchronously, we'll finish up with a callback.
-  // Otherwise complete the open synchronously.
-  //
-  if (m_pPlayer->CanOpenAsync() == false)
-    FinishPlayingFile(bResult);
-  else
-    ShowBusyIndicator();
-
-  return bResult;
-  /* END PLEX */
-}
-
-/* PLEX: note that we splitted the PlayFile method into two to handle the error above */
-void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
-{
   if(bResult)
   {
     if (m_iPlaySpeed != 1)
@@ -4509,7 +4493,8 @@ void CApplication::FinishPlayingFile(bool bResult, const CStdString& error)
   {
     ActivateVisualizer();
   }
-  //return bResult;
+
+  return bResult;
   /* END PLEX */
 }
 

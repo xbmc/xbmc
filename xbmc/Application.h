@@ -380,8 +380,6 @@ public:
   void ShowBusyIndicator();
   void HideBusyIndicator();
 
-  void FinishPlayingFile(bool bResult, const CStdString& error="");
-
   void UpdateFileState(const std::string& state="");
   void UpdateViewOffset();
 
