@@ -409,8 +409,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
 #endif
       CStdString osxPath = CSpecialProtocol::TranslatePath(strParameterCaseIntact);
-      ScriptThread *scriptTh = new ScriptThread(osxPath.c_str());
-      scriptTh->Create(true);
+      ScriptJob::DoScriptJob(ScriptJob::SCRIPT_JOB_APPLE_SCRIPT_FILE, osxPath);
     }
     else
 #endif
@@ -436,7 +435,7 @@ int CBuiltins::Execute(const CStdString& execString)
 #if defined(TARGET_DARWIN_OSX)
   else if (execute.Equals("runapplescript"))
   {
-    Cocoa_DoAppleScript(strParameterCaseIntact.c_str());
+    ScriptJob::DoScriptJob(ScriptJob::SCRIPT_JOB_APPLE_SCRIPT, strParameterCaseIntact.c_str());
   }
 #endif
   else if (execute.Equals("stopscript"))
@@ -1661,3 +1660,24 @@ int CBuiltins::Execute(const CStdString& execString)
     return -1;
   return 0;
 }
+
+/* PLEX */
+
+bool ScriptJob::DoWork()
+{
+#if TARGET_DARWIN_OSX
+  if (m_type == SCRIPT_JOB_APPLE_SCRIPT)
+    Cocoa_DoAppleScript(m_scriptData.c_str());
+  else if (m_type == SCRIPT_JOB_APPLE_SCRIPT_FILE)
+    Cocoa_DoAppleScriptFile(m_scriptData.c_str());
+#endif
+
+}
+
+void ScriptJob::DoScriptJob(ScriptJobType type, const CStdString &scriptData)
+{
+  ScriptJob* job = new ScriptJob(type, scriptData);
+  CJobManager::GetInstance().AddJob(job, NULL);
+}
+
+/* END PLEX */

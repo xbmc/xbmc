@@ -24,24 +24,31 @@
 
 
 /* PLEX */
-#ifdef TARGET_DARWIN_OSX
-#include "threads/Thread.h"
-#include "osx/CocoaInterface.h"
+#include "Job.h"
+#include "JobManager.h"
 
-class ScriptThread : public CThread
+
+class ScriptJob : public CJob
 {
   public:
-    ScriptThread(const CStdString& scriptToRun) : CThread("ScriptThread"), scriptToRun(scriptToRun) {}
-
-    void Process()
+    enum ScriptJobType
     {
-      Cocoa_DoAppleScriptFile(scriptToRun);
-    }
+      SCRIPT_JOB_APPLE_SCRIPT,
+      SCRIPT_JOB_APPLE_SCRIPT_FILE,
+    };
+
+    static void DoScriptJob(ScriptJobType type, const CStdString& scriptData);
+
+    ScriptJob(ScriptJobType type, const CStdString& scriptData) :
+      CJob(), m_type(type), m_scriptData(scriptData)
+    {}
+
+    bool DoWork();
 
   private:
-    CStdString scriptToRun;
+    CStdString m_scriptData;
+    ScriptJobType m_type;
 };
-#endif
 
 /* END PLEX */
 
