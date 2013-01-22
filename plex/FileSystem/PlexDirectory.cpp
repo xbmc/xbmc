@@ -327,9 +327,12 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
       pItem->SetArt(PLEX_ART_THUMB, strThumb);
 
     // Make sure sort label is lower case.
-    CStdString sortLabel = pItem->GetSortLabel();
-    boost::to_lower(sortLabel);
-    pItem->SetSortLabel(sortLabel);
+    CStdStringW sortLabel = pItem->GetSortLabel();
+    if (sortLabel.empty() == false)
+    {
+      boost::to_lower(sortLabel);
+      pItem->SetSortLabel(sortLabel);
+    }
 
     // See if there's a cookie property to set.
     if (httpCookies)
@@ -593,9 +596,9 @@ class PlexMediaNode
      
      // Sort label.
      if (el.Attribute("titleSort"))
-       pItem->SetSortLabel(CStdString(el.Attribute("titleSort")));
+       pItem->SetSortLabel(CStdStringW(el.Attribute("titleSort")));
      else
-       pItem->SetSortLabel(pItem->GetLabel());
+       pItem->SetSortLabel(CStdStringW(pItem->GetLabel()));
 
      // Set the key.
      pItem->SetProperty("unprocessedKey", key);
