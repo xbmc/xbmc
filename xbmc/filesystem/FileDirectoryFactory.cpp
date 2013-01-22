@@ -110,8 +110,10 @@ IFileDirectory* CFileDirectoryFactory::Create(const CStdString& strPath, CFileIt
   }
 #endif
 
+#ifndef __PLEX__ // This is actually blocking
   if (pItem->IsRSS())
     return new CRSSDirectory();
+#endif
 
 #endif
 #if defined(TARGET_ANDROID)
