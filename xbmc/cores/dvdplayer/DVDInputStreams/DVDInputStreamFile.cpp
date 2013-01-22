@@ -62,14 +62,14 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
   if (m_item.IsPlexMediaServerLibrary() && m_item.HasProperty("fileSize"))
   {
     CLog::Log(LOGDEBUG, "Cache selector: going to use cacheSize based on fileSize");
-    size_t fileSize = m_item.GetProperty("fileSize").asUnsignedInteger();
+    uint64_t fileSize = m_item.GetProperty("fileSize").asUnsignedInteger();
     float percent = g_guiSettings.GetInt("cache.percent") / 100.0;
-    unsigned int cacheSize = fileSize * percent;
+    uint64_t cacheSize = fileSize * percent;
 
     /* We need to resize the cache */
-    cacheSize = std::min(cacheSize, g_advancedSettings.m_smartCacheUpperLimit);
+    cacheSize = std::min(cacheSize, (uint64_t)g_advancedSettings.m_smartCacheUpperLimit);
     fileCacheSize = cacheSize;
-    CLog::Log(LOGDEBUG, "Cache selector: selected cacheSize: %d", cacheSize);
+    CLog::Log(LOGDEBUG, "Cache selector: selected cacheSize: %lld", cacheSize);
   }
   else if (m_item.IsInternetStream()) // Internet video?
   {
