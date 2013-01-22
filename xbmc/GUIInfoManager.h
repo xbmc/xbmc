@@ -360,6 +360,8 @@ namespace INFO
 #define INTEGER_GREATER_THAN        413
 #define STRING_STR_LEFT             414
 #define STRING_STR_RIGHT            415
+#define MATCHES_REGEX_CASE_SENSITIVE   416
+#define MATCHES_REGEX_CASE_INSENSITIVE 417
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601

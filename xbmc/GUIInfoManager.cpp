@@ -80,6 +80,7 @@
 #include "music/MusicThumbLoader.h"
 #include "video/VideoDatabase.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "utils/RegExp.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -751,6 +752,24 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString label = CGUIInfoLabel::GetLabel(cat.param(1)).ToLower();
       int compareString = ConditionalStringParameter(label);
       return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
+    }
+    else if (cat.name == "matchesregex" && (cat.num_params() == 2 || cat.num_params() == 3))
+    {
+      int regex_type = MATCHES_REGEX_CASE_SENSITIVE;
+      if(cat.num_params() == 3)
+      {
+        CStdString caselessStr = cat.param(2);
+        if(caselessStr.ToLower().Equals("true"))
+          regex_type = MATCHES_REGEX_CASE_INSENSITIVE;
+      }
+      
+      int info = TranslateSingleString(cat.param(0));
+      int info2 = TranslateSingleString(cat.param(1));
+      if (info2 > 0)
+        return AddMultiInfo(GUIInfo(regex_type, info, -info2));
+      CStdString label = CGUIInfoLabel::GetLabel(cat.param(1));
+      int regex = ConditionalStringParameter(label);
+      return AddMultiInfo(GUIInfo(regex_type, info, regex));
     }
     else if (cat.name == "integergreaterthan" && cat.num_params() == 2)
     {
@@ -2018,8 +2037,8 @@ bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWind
  TODO: what to do with item-based infobools...
  these crop up:
  1. if condition is between LISTITEM_START and LISTITEM_END
- 2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
-    corresponding label is between LISTITEM_START and LISTITEM_END
+ 2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN, MATCHES_REGEX_CASE_SENSITIVE,
+    MATCHES_REGEX_CASE_INSENSITIVE and the corresponding label is between LISTITEM_START and LISTITEM_END
 
  In both cases they shouldn't be in our cache as they depend on items outside of our control atm.
 
@@ -2560,6 +2579,38 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = GetImage(info.GetData1(), contextWindow).Equals(compare);
         }
         break;
+      case MATCHES_REGEX_CASE_SENSITIVE:
+      case MATCHES_REGEX_CASE_INSENSITIVE:
+      {
+          //Get our regular expression
+        CStdString regex;
+        if(info.GetData2() < 0) //info labels are stored with negative numbers
+        {
+          int regexID = -info.GetData2();
+          if (item && item->IsFileItem() && regexID >= LISTITEM_START && regexID < LISTITEM_END)
+            regex = GetItemImage((const CFileItem *)item, regexID);
+          else
+            regex = GetImage(regexID, contextWindow);
+        }
+        else if (info.GetData2() < (int)m_stringParameters.size())
+        { //conditional string
+          regex = m_stringParameters[info.GetData2()];
+        }
+        CRegExp regExp(condition==MATCHES_REGEX_CASE_INSENSITIVE);
+        if(regex.empty() || !regExp.RegComp(regex))
+          break;
+        
+          //Get our string we want to match
+        CStdString stringToMatch;
+        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+          stringToMatch = GetItemImage((const CFileItem *)item, info.GetData1());
+        else
+          stringToMatch = GetImage(info.GetData1(), contextWindow);
+        
+        bReturn =  (regExp.RegFind(stringToMatch, 0) == 0);
+        
+        break;
+      }
       case INTEGER_GREATER_THAN:
         {
           int integer;
