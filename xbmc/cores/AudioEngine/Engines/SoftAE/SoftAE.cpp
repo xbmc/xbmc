@@ -935,11 +935,7 @@ double CSoftAE::GetCacheTotal()
 
 bool CSoftAE::IsSuspended()
 {
-#if defined(TARGET_WINDOWS)
   return m_isSuspended;
-#else
-  return false;
-#endif
 }
 
 float CSoftAE::GetVolume()
@@ -972,7 +968,6 @@ void CSoftAE::StopAllSounds()
 bool CSoftAE::Suspend()
 {
   CLog::Log(LOGDEBUG, "CSoftAE::Suspend - Suspending AE processing");
-#if defined(TARGET_WINDOWS)
   m_isSuspended = true;
   CSingleLock streamLock(m_streamLock);
   
@@ -981,7 +976,6 @@ bool CSoftAE::Suspend()
     CSoftAEStream *stream = *itt;
     stream->Flush();
   }
-#endif
 
   return true;
 }
@@ -989,10 +983,8 @@ bool CSoftAE::Suspend()
 bool CSoftAE::Resume()
 {
   CLog::Log(LOGDEBUG, "CSoftAE::Resume - Resuming AE processing");
-#if defined(TARGET_WINDOWS)
   m_isSuspended = false;
   m_reOpen = true;
-#endif
 
   return true;
 }
@@ -1028,10 +1020,8 @@ void CSoftAE::Run()
         restart = true;
     }
 
-#if defined(TARGET_WINDOWS)
     /* Handle idle or forced suspend */
     ProcessSuspend();
-#endif
 
     /* if we are told to restart */
     if (m_reOpen || restart || !m_sink)
@@ -1408,6 +1398,7 @@ inline void CSoftAE::ProcessSuspend()
   bool sinkIsSuspended = false;
   unsigned int curSystemClock = 0;
 
+#if defined(TARGET_WINDOWS)
   if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
       !g_advancedSettings.m_streamSilence)
   {
@@ -1418,6 +1409,7 @@ inline void CSoftAE::ProcessSuspend()
 
   if (m_softSuspend)
     curSystemClock = XbmcThreads::SystemClockMillis();
+#endif
 
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */
