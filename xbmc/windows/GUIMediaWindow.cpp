@@ -2089,12 +2089,14 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
     // the filtered item to be able to keep the applied filters
     if (pItem->m_bIsFolder)
     {
+#ifndef __PLEX__
       CURL itemUrl(pItem->GetPath());
       if (!filterOption.empty())
         itemUrl.SetOption("filter", filterOption);
       else
         itemUrl.RemoveOption("filter");
       pItem->SetPath(itemUrl.Get());
+#endif
     }
   }
 
