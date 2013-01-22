@@ -216,6 +216,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       CSingleLock lock(m_critSection);
       bActivateSource = (m_configuration.bActivateSource &&
           !m_bOnPlayReceived &&
+          !m_cecAdapter->IsLibCECActiveSource() &&
           (!m_preventActivateSourceOnPlay.IsValid() || CDateTime::GetCurrentDateTime() - m_preventActivateSourceOnPlay > CDateTimeSpan(0, 0, 0, CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP)));
       m_bOnPlayReceived = true;
     }
