@@ -172,6 +172,4 @@ private:
   int               m_soundMode;
   bool              m_streamsPlaying;
   bool              m_isSuspended;
-  bool              m_softSuspend;
-  unsigned int      m_softSuspendTimer;
 };
