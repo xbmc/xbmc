@@ -52,7 +52,7 @@ if(UNIX)
   endif()
 endif()
 
-include_directories(. libcpluff)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} libcpluff)
 
 if(WIN32)
   add_definitions(-DCP_C_API=CP_EXPORT -DWIN32 -D_DEBUG -D_WINDOWS -D_USRDLL -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)

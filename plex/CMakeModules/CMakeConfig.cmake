@@ -32,3 +32,4 @@ set(HAS_LIBRTMP 1)
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
 configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
+set_source_files_properties(xbmc/config.h PROPERTIES GENERATED TRUE)

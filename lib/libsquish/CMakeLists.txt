@@ -1,4 +1,4 @@
-include_directories(.)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 find_all_sources(. squish_SRCS)
 add_definitions(-DSQUISH_USE_SSE=2)
 if(UNIX)

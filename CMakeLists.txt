@@ -177,7 +177,7 @@ endif()
 add_subdirectory(lib)
 
 include_directories(
-  ${CMAKE_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_BINARY_DIR}/xbmc
 
   ${dependdir}/include
@@ -197,8 +197,8 @@ if(APPLE)
 endif(APPLE)
 
 if(WIN32)
-  include_directories(${root}/xbmc/win32)
   include_directories(
+    ${root}/xbmc/win32
     ${root}/lib/ffmpeg
     ${root}/lib/ffmpeg/include-xbmc-win32
     ${root}/lib/liblame/include
