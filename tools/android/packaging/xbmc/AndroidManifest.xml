@@ -24,6 +24,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="tv.ouya.intent.category.APP"/>
             </intent-filter>
         </activity>
 
