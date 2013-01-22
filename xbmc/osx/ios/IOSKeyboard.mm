@@ -22,9 +22,12 @@
 #include "IOSKeyboard.h"
 #include "IOSKeyboardView.h"
 
+#import "AutoPool.h"
+
 
 bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
+  CCocoaAutoPool pool;
   bool confirmed = false;
   CGRect keyboardFrame;
 
