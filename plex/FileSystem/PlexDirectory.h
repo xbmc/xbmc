@@ -35,13 +35,12 @@ using namespace XFILE;
 #define METADATA_PHOTO_ALBUM  14
 #define PLEX_METADATA_MIXED   100
 
-class CPlexDirectory : public IDirectory, 
-                       public CThread
+class CPlexDirectory : public IDirectory
 {
  public:
   CPlexDirectory(bool parseResults, bool displayDialog, bool replaceLocalhost, int timeout=300);
   CPlexDirectory(bool parseResults=true, bool displayDialog=true);
-  virtual ~CPlexDirectory();
+  virtual ~CPlexDirectory() {};
   
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return m_dirCacheType; };
@@ -58,10 +57,12 @@ class CPlexDirectory : public IDirectory,
 
   static bool IsHomeVideoSection(const CStdString& url);
   static void AddHomeVideoSection(const CStdString& url);
+
+  void CancelDirectory();
   
  protected:
   
-  virtual void Process();
+  void Process();
   
   bool ReallyGetDirectory(const CStdString& strPath, CFileItemList &items);
   void Parse(const CURL& url, TiXmlElement* root, CFileItemList &items, std::string& strFileLabel, std::string& strSecondFileLabel, std::string& strDirLabel, std::string& strSecondDirLabel, bool isLocal);

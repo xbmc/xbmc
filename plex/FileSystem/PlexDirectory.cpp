@@ -62,8 +62,7 @@ boost::mutex g_homeVideoMapMutex;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog)
-: CThread("PlexDirectory")
-, m_bStop(false)
+: m_bStop(false)
 , m_bSuccess(true)
 , m_bParseResults(parseResults)
 , m_bReplaceLocalhost(true)
@@ -77,8 +76,7 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog, bool replaceLocalhost, int timeout)
-  : CThread("PlexDirectory")
-  , m_bStop(false)
+  : m_bStop(false)
   , m_bSuccess(true)
   , m_bParseResults(parseResults)
   , m_bReplaceLocalhost(replaceLocalhost)
@@ -88,12 +86,6 @@ CPlexDirectory::CPlexDirectory(bool parseResults, bool displayDialog, bool repla
 
   if (displayDialog)
     m_flags |= DIR_FLAG_ALLOW_PROMPT;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-CPlexDirectory::~CPlexDirectory()
-{
-  StopThread();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,48 +166,11 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
   // Start the download thread running.
   CLog::Log(LOGNOTICE, "PlexDirectory::GetDirectory(%s)", strRoot.c_str());
   m_url = strRoot;
-  CThread::Create(false, 0);
 
-  // Now display progress, look for cancel.
-  CGUIDialogProgress* dlgProgress = 0;
+  Process();
 
-  int time = XbmcThreads::SystemClockMillis();
-
-  while (m_downloadEvent.WaitMSec(100) == false)
-  {
-    // If enough time has passed, display the dialog.
-    if (XbmcThreads::SystemClockMillis() - time > 1000 && (m_flags & DIR_FLAG_ALLOW_PROMPT))
-    {
-      dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-      if (dlgProgress)
-      {
-        dlgProgress->ShowProgressBar(false);
-        dlgProgress->SetHeading(40203);
-        dlgProgress->SetLine(0, 40204);
-        dlgProgress->SetLine(1, "");
-        dlgProgress->SetLine(2, "");
-        dlgProgress->StartModal();
-      }
-    }
-
-    if (dlgProgress)
-    {
-      dlgProgress->Progress();
-      if (dlgProgress->IsCanceled())
-      {
-        items.m_wasListingCancelled = true;
-        m_http.Cancel();
-        StopThread();
-      }
-    }
-  }
-
-  if (dlgProgress)
-    dlgProgress->Close();
-
-  // Wait for the thread to exit.
-  WaitForThreadExit(0xFFFFFFFF);
-  StopThread();
+  if (m_bStop)
+    return false;
 
   // See if we suceeded.
   if (m_bSuccess == false)
@@ -2001,6 +1956,13 @@ void CPlexDirectory::Process()
     m_bSuccess = m_http.Get(url.Get(), m_data);
   
   m_downloadEvent.Set();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CPlexDirectory::CancelDirectory()
+{
+  m_http.Cancel();
+  m_bStop = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
