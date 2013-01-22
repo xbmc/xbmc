@@ -1672,6 +1672,7 @@ bool ScriptJob::DoWork()
     Cocoa_DoAppleScriptFile(m_scriptData.c_str());
 #endif
 
+  return true;
 }
 
 void ScriptJob::DoScriptJob(ScriptJobType type, const CStdString &scriptData)
