@@ -54,6 +54,10 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   {
     m_convert_bitstream = false;
 
+    CLog::Log(LOGDEBUG,
+          "%s::%s - trying to open, codec(%d), profile(%d), level(%d)", 
+          CLASSNAME, __func__, hints.codec, hints.profile, hints.level);
+
     switch (hints.codec)
     {
       case CODEC_ID_H264:
@@ -71,17 +75,15 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       case CODEC_ID_MPEG4:
         m_pFormatName = "stf-mpeg4";
         break;
-      case CODEC_ID_MPEG2VIDEO:
-        m_pFormatName = "stf-mpeg2";
-        break;
       case CODEC_ID_VP3:
       case CODEC_ID_VP6:
       case CODEC_ID_VP6F:
       case CODEC_ID_VP8:
         m_pFormatName = "stf-vpx";
         break;
+      case CODEC_ID_WMV3:
       case CODEC_ID_VC1:
-        m_pFormatName = "stf-vc1";
+        m_pFormatName = "stf-wmv";
         break;
       default:
         return false;

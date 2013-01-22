@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+//#define DEBUG_VERBOSE 1
 
 #include "system.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
@@ -1322,6 +1323,10 @@ void CLinuxRendererGLES::RenderOpenMax(int index, int field)
 void CLinuxRendererGLES::RenderEglImage(int index, int field)
 {
 #if defined(HAVE_LIBSTAGEFRIGHT)
+#ifdef DEBUG_VERBOSE
+  unsigned int time = XbmcThreads::SystemClockMillis();
+#endif
+
   YUVPLANE &plane = m_buffers[index].fields[field][0];
 
   glDisable(GL_DEPTH_TEST);
@@ -1379,6 +1384,10 @@ void CLinuxRendererGLES::RenderEglImage(int index, int field)
 
   glBindTexture(m_textureTarget, 0);
   VerifyGLState();
+  
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "RenderEglImage %d: tm:%d\n", index, XbmcThreads::SystemClockMillis() - time);
+#endif
 #endif
 }
 
@@ -1950,6 +1959,10 @@ bool CLinuxRendererGLES::CreateBYPASSTexture(int index)
 void CLinuxRendererGLES::UploadEGLIMGTexture(int index)
 {
 #ifdef HAVE_LIBSTAGEFRIGHT
+#ifdef DEBUG_VERBOSE
+  unsigned int time = XbmcThreads::SystemClockMillis();
+#endif
+
   if(m_buffers[index].eglimg != EGL_NO_IMAGE_KHR)
   {
     YUVPLANE &plane = m_buffers[index].fields[0][0];
@@ -1962,6 +1975,10 @@ void CLinuxRendererGLES::UploadEGLIMGTexture(int index)
     plane.flipindex = m_buffers[index].flipindex;
   }
   m_eventTexturesDone[index]->Set();
+  
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "UploadEGLIMGTexture %d: img:%p, tm:%d\n", index, m_buffers[index].eglimg, XbmcThreads::SystemClockMillis() - time);
+#endif
 #endif
 }
 void CLinuxRendererGLES::DeleteEGLIMGTexture(int index)
@@ -2214,6 +2231,10 @@ void CLinuxRendererGLES::AddProcessor(struct __CVBuffer *cvBufferRef)
 #ifdef HAVE_LIBSTAGEFRIGHT
 void CLinuxRendererGLES::AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg)
 {
+#ifdef DEBUG_VERBOSE
+  unsigned int time = XbmcThreads::SystemClockMillis();
+#endif
+
   YUVBUFFER &buf = m_buffers[NextYV12Texture()];
   if (buf.eglimg != EGL_NO_IMAGE_KHR)
     stf->ReleaseBuffer(buf.eglimg);
@@ -2221,6 +2242,10 @@ void CLinuxRendererGLES::AddProcessor(CStageFrightVideo* stf, EGLImageKHR eglimg
   
   buf.stf = stf;
   buf.eglimg = eglimg;
+  
+#ifdef DEBUG_VERBOSE
+  CLog::Log(LOGDEBUG, "AddProcessor %d: img:%p: tm:%d\n", NextYV12Texture(), eglimg, XbmcThreads::SystemClockMillis() - time);
+#endif
 }
 #endif
 
