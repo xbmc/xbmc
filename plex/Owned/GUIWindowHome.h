@@ -54,7 +54,7 @@ class CAuxFanLoadThread : public CThread
     int m_numSeconds;
 };
 
-class CFanLoadingThread : public CThread
+class  CFanLoadingThread : public CThread
 {
   public:
     CFanLoadingThread(CGUIWindowHome *window) : CThread("Fan Loading Thread") { m_window = window; }

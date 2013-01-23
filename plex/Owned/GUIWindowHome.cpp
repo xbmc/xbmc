@@ -867,6 +867,9 @@ void CFanLoadingThread::CancelCurrent()
 
 void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay, bool hide)
 {
+  if (g_advancedSettings.m_bHideFanouts == true)
+    return;
+
   boost::mutex::scoped_lock lk(m_mutex);
 
   dprintf("FanLoader: started to load fan with key: %s", key.c_str());

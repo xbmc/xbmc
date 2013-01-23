@@ -387,6 +387,7 @@ class CAdvancedSettings
     unsigned int m_cacheReadRate;
 
     bool m_bAlwaysReinitCoreAudio;
+    bool m_bHideFanouts;
     /* END PLEX */
 };
 
