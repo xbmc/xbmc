@@ -33,6 +33,7 @@
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "guilib/Texture.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/Crc32.h"
 #include "guilib/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -92,6 +93,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_ADD_BOOKMARK)
       {
         AddBookmark();
+        Update();
       }
       else if (iControl == CONTROL_CLEAR_BOOKMARKS)
       {
@@ -100,6 +102,7 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_ADD_EPISODE_BOOKMARK)
       {
         AddEpisodeBookmark();
+        Update();
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
       {
@@ -133,17 +136,21 @@ bool CGUIDialogVideoBookmarks::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_REFRESH_LIST:
+    {
+      OnRefreshList();
+    }
   }
 
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogVideoBookmarks::Update()
+void CGUIDialogVideoBookmarks::OnRefreshList()
 {
   m_bookmarks.clear();
   CBookmark resumemark;
-
-  // open the d/b and retrieve the bookmarks for the current movie
+  
+    // open the d/b and retrieve the bookmarks for the current movie
   CStdString path = g_application.CurrentFile();
   if (g_application.CurrentFileItem().HasProperty("original_listitem_url") && 
      !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
@@ -155,6 +162,32 @@ void CGUIDialogVideoBookmarks::Update()
   /* push in the resume mark first */
   if( videoDatabase.GetResumeBookMark(path, resumemark) )
     m_bookmarks.push_back(resumemark);
+  
+  videoDatabase.Close();
+  m_vecItems->Clear();
+    // cycle through each stored bookmark and add it to our list control
+  for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
+  {
+    if (m_bookmarks[i].type == CBookmark::RESUME)
+      m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
+    
+    CStdString bookmarkTime;
+    if (m_bookmarks[i].type == CBookmark::EPISODE)
+      bookmarkTime.Format("%s %i %s %i", g_localizeStrings.Get(20373), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
+    else
+      bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
+    
+    CFileItemPtr item(new CFileItem(bookmarkTime));
+    item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
+    m_vecItems->Add(item);
+  }
+  m_viewControl.SetItems(*m_vecItems);
+}
+
+void CGUIDialogVideoBookmarks::Update()
+{
+  CVideoDatabase videoDatabase;
+  videoDatabase.Open();
 
   if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
   {
@@ -174,7 +207,6 @@ void CGUIDialogVideoBookmarks::Update()
     CONTROL_DISABLE(CONTROL_ADD_EPISODE_BOOKMARK);
   }
 
-  videoDatabase.Close();
 
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
@@ -183,24 +215,11 @@ void CGUIDialogVideoBookmarks::Update()
   // empty the list ready for population
   Clear();
 
-  // cycle through each stored bookmark and add it to our list control
-  for (unsigned int i = 0; i < m_bookmarks.size(); ++i)
-  {
-    if (m_bookmarks[i].type == CBookmark::RESUME)
-      m_bookmarks[i].thumbNailImage = "bookmark-resume.png";
-
-    CStdString bookmarkTime;
-    if (m_bookmarks[i].type == CBookmark::EPISODE)
-      bookmarkTime.Format("%s %i %s %i", g_localizeStrings.Get(20373), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
-    else
-      bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
-
-    CFileItemPtr item(new CFileItem(bookmarkTime));
-    item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
-    m_vecItems->Add(item);
-  }
-  m_viewControl.SetItems(*m_vecItems);
+  OnRefreshList();
+  
   g_graphicsContext.Unlock();
+  
+  videoDatabase.Close();
 }
 
 void CGUIDialogVideoBookmarks::Clear()
@@ -234,7 +253,7 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
   Update();
 }
 
-void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
+bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
 {
   CVideoDatabase videoDatabase;
   CBookmark bookmark;
@@ -273,7 +292,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
       {
         Crc32 crc;
         crc.ComputeFromLowerCase(g_application.CurrentFile());
-        bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
+        bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, bookmark.timeInSeconds);
         bookmark.thumbNailImage = URIUtils::AddFileToFolder(CProfilesManager::Get().GetBookmarksThumbFolder(), bookmark.thumbNailImage);
         if (!CPicture::CreateThumbnailFromSurface(thumbnail->GetPixels(), width, height, thumbnail->GetWidth() * 4,
                                             bookmark.thumbNailImage))
@@ -298,7 +317,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     videoDatabase.AddBookMarkToFile(path, bookmark, CBookmark::STANDARD);
   }
   videoDatabase.Close();
-  Update();
+  return true;
 }
 
 void CGUIDialogVideoBookmarks::OnWindowLoaded()
@@ -322,7 +341,7 @@ CGUIControl *CGUIDialogVideoBookmarks::GetFirstFocusableControl(int id)
   return CGUIWindow::GetFirstFocusableControl(id);
 }
 
-void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
+bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 {
   vector<CVideoInfoTag> episodes;
   CVideoDatabase videoDatabase;
@@ -341,8 +360,49 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 
     int pressed = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if (pressed >= 0)
+    {
       AddBookmark(&episodes[pressed]);
+      return true;
+    }
   }
+  return false;
+}
+
+
+
+bool CGUIDialogVideoBookmarks::OnAddBookmark()
+{
+  if (!g_application.CurrentFileItem().IsVideo())
+    return false;
+  
+  if (CGUIDialogVideoBookmarks::AddBookmark()) 
+  {
+    g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+    return true;
+  }
+  return false;
+}
+
+bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
+{
+  bool bReturn = false;
+  if (g_application.CurrentFileItem().HasVideoInfoTag() && g_application.CurrentFileItem().GetVideoInfoTag()->m_iEpisode > -1)
+  {
+    CVideoDatabase videoDatabase;
+    videoDatabase.Open();
+    vector<CVideoInfoTag> episodes;
+    videoDatabase.GetEpisodesByFile(g_application.CurrentFile(),episodes);
+    if (episodes.size() > 1)
+    {
+      bReturn = CGUIDialogVideoBookmarks::AddEpisodeBookmark();
+      if(bReturn)
+      {
+        g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+      }
+    }
+    videoDatabase.Close();
+  }
+  return bReturn;
 }
 
 
