@@ -1761,7 +1761,7 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
   // if we have still frames, demux size will be small
   // and we need to pre-buffer more.
   double target_timesize = 1.0;
-  if (size < 100)
+  if (size < 20)
     target_timesize = 2.0;
 
   // keep hw buffered demux above 1 second
