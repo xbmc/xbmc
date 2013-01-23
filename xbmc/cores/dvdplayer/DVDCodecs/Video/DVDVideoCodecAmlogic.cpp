@@ -28,9 +28,20 @@
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
 
+typedef struct pts_queue {
+  double            dts;
+  double            pts;
+  double            sort_time;
+  struct pts_queue  *nextpts;
+} pts_queue;
+
 CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_Codec(NULL),
-  m_pFormatName("amcodec")
+  m_pFormatName("amcodec"),
+  m_last_pts(0.0),
+  m_pts_queue(NULL),
+  m_queue_depth(0),
+  m_framerate(0.0)
 {
 }
 
@@ -149,6 +160,7 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
 {
   // Handle Input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
+
   if (!m_opened)
   {
     if (m_Codec && !m_Codec->OpenDecoder(m_hints))
@@ -159,11 +171,17 @@ int CDVDVideoCodecAmlogic::Decode(BYTE *pData, int iSize, double dts, double pts
   if (m_hints.ptsinvalid)
     pts = DVD_NOPTS_VALUE;
 
+  if (pData)
+    FrameRateTracking(dts, pts);
+
   return m_Codec->Decode(pData, iSize, dts, pts);
 }
 
 void CDVDVideoCodecAmlogic::Reset(void)
 {
+  while (m_queue_depth)
+    PtsQueuePop();
+
   m_Codec->Reset();
 }
 
@@ -192,4 +210,100 @@ int CDVDVideoCodecAmlogic::GetDataSize(void)
 double CDVDVideoCodecAmlogic::GetTimeSize(void)
 {
   return m_Codec->GetTimeSize();
+}
+
+void CDVDVideoCodecAmlogic::PtsQueuePop(void)
+{
+  if (!m_pts_queue || m_queue_depth == 0)
+    return;
+
+  // pop the top frame off the queue
+  pts_queue *top_pts = m_pts_queue;
+  m_pts_queue = top_pts->nextpts;
+  m_queue_depth--;
+
+  // and release it
+  free(top_pts);
+}
+
+void CDVDVideoCodecAmlogic::PtsQueuePush(double dts, double pts)
+{
+  pts_queue *newpts = (pts_queue*)calloc(sizeof(pts_queue), 1);
+  newpts->dts = dts;
+  newpts->pts = pts;
+  // if both dts or pts are good we use those, else use decoder insert time for frame sort
+  if ((newpts->pts != DVD_NOPTS_VALUE) || (newpts->dts != DVD_NOPTS_VALUE))
+  {
+    // if pts is borked (stupid avi's), use dts for frame sort
+    if (newpts->pts == DVD_NOPTS_VALUE)
+      newpts->sort_time = newpts->dts;
+    else
+      newpts->sort_time = newpts->pts;
+  }
+  pts_queue *queueWalker = m_pts_queue;
+  if (!queueWalker || (newpts->sort_time < queueWalker->sort_time))
+  {
+    // we have an empty queue, or this frame earlier than the current queue head.
+    newpts->nextpts = queueWalker;
+    m_pts_queue = newpts;
+  } else {
+    // walk the queue and insert this frame where it belongs in display order.
+    bool ptrInserted = false;
+    pts_queue *nextpts = NULL;
+    //
+    while (!ptrInserted)
+    {
+      nextpts = queueWalker->nextpts;
+      if (!nextpts || (newpts->sort_time < nextpts->sort_time))
+      {
+        // if the next frame is the tail of the queue, or our new frame is earlier.
+        newpts->nextpts = nextpts;
+        queueWalker->nextpts = newpts;
+        ptrInserted = true;
+      }
+      queueWalker = nextpts;
+    }
+  }
+  m_queue_depth++;
+}
+
+void CDVDVideoCodecAmlogic::FrameRateTracking(double dts, double pts)
+{
+  PtsQueuePush(dts, pts);
+
+  // in case of out-of-order pts
+  if (m_queue_depth > 16)
+  {
+    if (pts == DVD_NOPTS_VALUE)
+      pts = m_pts_queue->dts;
+    else
+      pts = m_pts_queue->pts;
+
+    double duration  = pts - m_last_pts;
+    m_last_pts = pts;
+    if (duration > 0.0)
+    {
+      switch ((int)(0.5 + ((double)DVD_TIME_BASE / duration)))
+      {
+        case 60:
+          // 60, 59.94 -> 60
+          m_framerate = 1001.0 / 60000.0;
+        case 50:
+          // 50, 49.95 -> 50
+          m_framerate = 1001.0 / 50000.0;
+        case 30:
+          // 30, 29.97 -> 30
+          m_framerate = 1001.0 / 30000.0;
+        case 25:
+          // 25, 24.975 -> 25
+          m_framerate = 1001.0 / 25000.0;
+        case 24:
+          // 24, 23.976 -> 24
+          m_framerate = 1001.0 / 24000.0;
+        break;
+      }
+    }
+
+    PtsQueuePop();
+  }
 }

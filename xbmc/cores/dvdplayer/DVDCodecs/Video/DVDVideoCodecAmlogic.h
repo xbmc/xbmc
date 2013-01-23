@@ -24,6 +24,7 @@
 #include "DVDStreamInfo.h"
 
 class CAMLCodec;
+typedef struct pts_queue pts_queue;
 
 class CDVDVideoCodecAmlogic : public CDVDVideoCodec
 {
@@ -44,9 +45,17 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
+  void            PtsQueuePop(void);
+  void            PtsQueuePush(double dts, double pts);
+  void            FrameRateTracking(double dts, double pts);
+
   CAMLCodec       *m_Codec;
   const char      *m_pFormatName;
   DVDVideoPicture m_videobuffer;
   bool            m_opened;
   CDVDStreamInfo  m_hints;
+  double          m_last_pts;
+  pts_queue       *m_pts_queue;
+  int32_t         m_queue_depth;
+  double          m_framerate;
 };
