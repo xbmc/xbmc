@@ -218,6 +218,8 @@ static const ActionMapping actions[] =
         {"decreasepar"       , ACTION_DECREASE_PAR},
         {"volampup"          , ACTION_VOLAMP_UP},
         {"volampdown"        , ACTION_VOLAMP_DOWN},
+        {"createbookmark"        , ACTION_CREATE_BOOKMARK},
+        {"createepisodebookmark" , ACTION_CREATE_EPISODE_BOOKMARK},
 
         // PVR actions
         {"channelup"             , ACTION_CHANNEL_UP},
