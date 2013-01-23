@@ -84,7 +84,6 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
   {
     case TouchEventAbort:
     {
-      CLog::Log(LOGDEBUG, "CTouchInput: TouchEventAbort");
       setGestureState(TouchGestureUnknown);
       for (unsigned int pIndex = 0; pIndex < TOUCH_MAX_POINTERS; pIndex++)
         m_pointers[pIndex].reset();
@@ -95,7 +94,6 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
 
     case TouchEventDown:
     {
-      CLog::Log(LOGDEBUG, "CTouchInput: TouchEventDown");
       m_pointers[pointer].down.x = x;
       m_pointers[pointer].down.y = y;
       m_pointers[pointer].down.time = time;
@@ -148,7 +146,6 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
 
     case TouchEventUp:
     {
-      CLog::Log(LOGDEBUG, "CTouchInput: TouchEventUp");
       // unexpected event => abort
       if (!m_pointers[pointer].valid() ||
           m_gestureState == TouchGestureUnknown)
@@ -216,7 +213,6 @@ bool CTouchInput::Handle(TouchEvent event, float x, float y, int64_t time, int32
 
     case TouchEventMove:
     {
-      CLog::Log(LOGDEBUG, "CTouchInput: TouchEventMove");
       // unexpected event => abort
       if (!m_pointers[pointer].valid() ||
           m_gestureState == TouchGestureUnknown ||

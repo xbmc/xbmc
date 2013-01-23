@@ -36,7 +36,6 @@ CAndroidTouch::~CAndroidTouch()
 
 bool CAndroidTouch::onTouchEvent(AInputEvent* event)
 {
-  CXBMCApp::android_printf("%s", __PRETTY_FUNCTION__);
   if (event == NULL)
     return false;
 
