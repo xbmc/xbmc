@@ -306,6 +306,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   // flag extraction
   if (!pItem->m_bIsFolder &&
+      /* PLEX */
+      !pItem->IsPlexMediaServer() &&
+      /* END PLEX */
        pItem->HasVideoInfoTag() &&
        g_guiSettings.GetBool("myvideos.extractflags") &&
        (!pItem->GetVideoInfoTag()->HasStreamDetails() ||
