@@ -246,7 +246,7 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   m_currentMode = modeFound.id;
   char cmd[255];
   if (getenv("XBMC_BIN_HOME"))
-    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_BIN_HOME"), outputFound.name.c_str(), modeFound.id.c_str());
+    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --screen %d --output %s --mode %s", getenv("XBMC_BIN_HOME"), outputFound.screen, outputFound.name.c_str(), modeFound.id.c_str());
   else
     return false;
   CLog::Log(LOGINFO, "XRANDR: %s", cmd);
