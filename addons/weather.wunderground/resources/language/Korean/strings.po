@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 1.0.8
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -99,23 +98,15 @@ msgstr "초승달"
 
 msgctxt "#32503"
 msgid "First Quarter"
-msgstr "반달"
-
-msgctxt "#32504"
-msgid "Waxing Gibbous"
 msgstr "상현달"
 
 msgctxt "#32505"
 msgid "Full Moon"
 msgstr "보름달"
 
-msgctxt "#32506"
-msgid "Waning Gibbous"
-msgstr "하현달"
-
 msgctxt "#32507"
 msgid "Last Quarter"
-msgstr "반달"
+msgstr "하현달"
 
 msgctxt "#32508"
 msgid "Waning Crescent"
