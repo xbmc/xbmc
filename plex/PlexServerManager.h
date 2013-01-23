@@ -54,6 +54,48 @@ public:
     boost::recursive_mutex::scoped_lock lk(m_mutex);
     return m_bestServer;
   }
+
+  PlexServerPtr bestServerForTranscoding(bool webkit = false)
+  {
+    boost::recursive_mutex::scoped_lock lk(m_mutex);
+    if (m_bestServer->canTranscode())
+    {
+      if (webkit)
+      {
+        if (m_bestServer->canDoWebkit())
+          return m_bestServer;
+      }
+      else
+          return m_bestServer;
+    }
+
+    int bestScore = 0;
+    PlexServerPtr bestTranscoder;
+    BOOST_FOREACH(key_server_pair p, m_servers)
+    {
+      PlexServerPtr server = p.second;
+
+      if (server->canTranscode())
+      {
+        if (webkit)
+        {
+          if (server->canDoWebkit() && server->score() > bestScore)
+          {
+            bestTranscoder = server;
+            bestScore = server->score();
+          }
+          continue;
+        }
+        if (server->score() > bestScore)
+        {
+          bestTranscoder = server;
+          bestScore = server->score();
+        }
+      }
+    }
+
+    return bestTranscoder;
+  }
   
   /// Server appeared.
   void addServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token="", const string& deviceClass="desktop")
@@ -282,7 +324,16 @@ public:
     
     dprintf("SERVERS:");
     BOOST_FOREACH(key_server_pair pair, m_servers)
-        dprintf("  * %s [%s:%d] (%s) local: %s, live: %s, score: %d, count: %d", pair.second->name.c_str(), pair.second->address.c_str(), pair.second->port, pair.second->uuid.c_str(), pair.second->local ? "yes" : "no", pair.second->live ? "yes" : "no", pair.second->score(), pair.second->refCount());
+        dprintf("  * %s [%s:%d] (%s) local: %s, live: %s, dectected: %s, score: %d, count: %d",
+                pair.second->name.c_str(),
+                pair.second->address.c_str(),
+                pair.second->port,
+                pair.second->uuid.c_str(),
+                pair.second->local ? "yes" : "no",
+                pair.second->live ? "yes" : "no",
+                pair.second->detected() ? "yes" : "no",
+                pair.second->score(),
+                pair.second->refCount());
   }
   
   void run()

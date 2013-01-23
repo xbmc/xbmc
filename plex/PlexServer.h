@@ -13,6 +13,7 @@
 #include <boost/lexical_cast.hpp>
 #include <filesystem/CurlFile.h>
 #include <string>
+#include "XBMCTinyXML.h"
 
 using namespace std;
 using namespace XFILE;
@@ -30,7 +31,7 @@ class PlexServer
 
   /// Constructor.
   PlexServer(const string& uuid, const string& name, const string& addr, unsigned short port, const string& token, const string& deviceClass="desktop")
-    : uuid(uuid), name(name), address(addr), port(port), token(token), updatedAt(0), m_count(1), deviceClass(deviceClass)
+    : uuid(uuid), name(name), address(addr), port(port), token(token), updatedAt(0), m_count(1), deviceClass(deviceClass), m_canDoWebkit(false)
   {
     local = Cocoa_IsHostLocal(addr);
 
@@ -52,6 +53,24 @@ class PlexServer
     CStdString resp;
     live = http.Get(url(), resp);
 
+    CXBMCTinyXML doc;
+    doc.Parse(resp);
+    if (doc.RootElement() != 0)
+    {
+      TiXmlElement* el = doc.RootElement();
+      if (el->Attribute("webkit"))
+      {
+        CStdString webkit(el->Attribute("webkit"));
+        if (webkit == "1")
+          m_canDoWebkit = true;
+      }
+
+      if (el->Attribute("transcoderVideoQualities"))
+      {
+        m_canTranscode = true;
+      }
+    }
+
     return live;
   }
 
@@ -72,11 +91,14 @@ class PlexServer
 
     // Bonus for being alive, being localhost, and being detected.
     if (live) ret += PMS_LIVE_SCORE;
-    if (local) ret += 10;
-    if (detected()) ret += 10;
+    if (local) ret += 20;
+    if (detected()) ret += 20;
 
     /* non mobile classes get a big bonus */
     if (!isMobile()) ret += 30;
+
+    if (canDoWebkit()) ret += 10;
+    if (canTranscode()) ret += 10;
 
     return ret;
   }
@@ -123,6 +145,16 @@ class PlexServer
     return deviceClass == "mobile";
   }
 
+  bool canDoWebkit() const
+  {
+    return m_canDoWebkit;
+  }
+
+  bool canTranscode() const
+  {
+    return m_canTranscode;
+  }
+
   bool live;
   bool local;
   string uuid;
@@ -132,6 +164,8 @@ class PlexServer
   string deviceClass;
   unsigned short port;
   time_t updatedAt;
+  bool m_canDoWebkit;
+  bool m_canTranscode;
 
  private:
 
