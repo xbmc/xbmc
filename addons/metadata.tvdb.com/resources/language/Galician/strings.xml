@@ -4,5 +4,9 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
+    <string id="30000">Use DVD Order</string>
+    <string id="30001">Usar Oden Absoluto (Só unha tempada)</string>
+    <string id="30002">Habilitar Fanart</string>
+    <string id="30003">Preferir Carteis</string>
     <string id="30004">Idioma</string>
 </strings>

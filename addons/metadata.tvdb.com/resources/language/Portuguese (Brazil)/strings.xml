@@ -4,9 +4,9 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Usar Ordem DVD</string>
-    <string id="30001">Usar Ordenamento Absoluto (Temporada Única)</string>
+    <string id="30000">Usar a ordem do DVD</string>
+    <string id="30001">Usar ordenamento absoluto (Temporada Única)</string>
     <string id="30002">Ativar Fanart</string>
-    <string id="30003">Preferir Posters</string>
+    <string id="30003">Preferir Cartazes</string>
     <string id="30004">Idioma</string>
 </strings>
