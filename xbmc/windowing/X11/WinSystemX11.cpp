@@ -409,11 +409,11 @@ bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
   return true;
 }
 
-bool CWinSystemX11::RefreshGlxContext()
+bool CWinSystemX11::RefreshGlxContext(bool force)
 {
   bool retVal = false;
 
-  if (m_glContext)
+  if (m_glContext && !force)
   {
     CLog::Log(LOGDEBUG, "CWinSystemX11::RefreshGlxContext: refreshing context");
     glXMakeCurrent(m_dpy, None, NULL);
@@ -930,7 +930,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     }
 
     CDirtyRegionList dr;
-    RefreshGlxContext();
+    RefreshGlxContext(!m_currentOutput.Equals(output));
     XSync(m_dpy, FALSE);
     g_graphicsContext.Clear(0);
     g_graphicsContext.Flip(dr);

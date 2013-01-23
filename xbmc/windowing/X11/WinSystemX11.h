@@ -76,7 +76,7 @@ public:
   void NotifyMouseCoverage(bool covered);
 
 protected:
-  bool RefreshGlxContext();
+  bool RefreshGlxContext(bool force);
   void CheckDisplayEvents();
   void OnLostDevice();
   bool SetWindow(int width, int height, bool fullscreen, const CStdString &output);
