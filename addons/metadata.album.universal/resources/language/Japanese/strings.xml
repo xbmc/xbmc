@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Japanese language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ja/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">fanart.tv からアルバムサムネールを取得</string>
+    <string id="30001">アルバムサムネールを Last.fm から取得</string>
+    <string id="30002">アルバムレビューの取得先</string>
+    <string id="30003">優先する言語</string>
+    <string id="30004">アルバム評価の取得先</string>
+    <string id="30005">アルバムスタイルの取得先</string>
+    <string id="30006">アルバムムードの取得先</string>
+    <string id="30007">アルバムテーマの取得先</string>
+    <string id="30008">アルバムサムネールを allmusic.com から取得</string>
+    <string id="30009">アートワーク</string>
+    <string id="30010">アルバムサムネールを theaudiodb.com から取得</string>
+</strings>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Finnish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/fi/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Hae albumien pikkukuvat lähteestä fanart.tv</string>
+    <string id="30001">Hae albumien pikkukuvat lähteestä Last.fm</string>
+    <string id="30002">Hae albumien arvostelu lähteestä</string>
+    <string id="30003">Ensisijainen kieli</string>
+    <string id="30004">Hae albumien lähteestä</string>
+    <string id="30005">Hae albumien musiikkityylilajit lähteestä</string>
+    <string id="30006">Hae albumien mielentilat lähteestä</string>
+    <string id="30007">Hae albumien teemat lähteestä</string>
+    <string id="30008">Hae albumien pikkukuvat lähteestä allmusic.com</string>
+    <string id="30009">Kuvataide</string>
+    <string id="30010">Hae albumien pikkukuvat lähteestä theaudiodb.com</string>
+</strings>

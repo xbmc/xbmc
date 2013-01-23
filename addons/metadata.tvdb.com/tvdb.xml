@@ -242,11 +242,23 @@
 				<expression>&lt;EpisodeNumber&gt;([0-9]*)&lt;/EpisodeNumber&gt;.*?&lt;SeasonNumber&gt;0&lt;/SeasonNumber&gt;</expression>
 			</RegExp>
 			<!-- Normal Season/Episodes -->
-			<RegExp conditional="!absolutenumber" input="$$8" output="&lt;season&gt;\1&lt;/season&gt;" dest="4+">
-				<expression>&lt;SeasonNumber&gt;([^&lt;]*)&lt;/SeasonNumber&gt;</expression>
+			<RegExp conditional="!absolutenumber" input="$$9" output="&lt;season&gt;\1&lt;/season&gt;" dest="4+">
+				<RegExp conditional="!dvdorder" input="$$8" output="\1" dest="9">
+					<expression clear="yes">&lt;SeasonNumber&gt;([^&lt;]*)&lt;/SeasonNumber&gt;</expression>
+				</RegExp>
+				<RegExp conditional="dvdorder" input="$$8" output="\1" dest="9">
+					<expression>&lt;Combined_season&gt;([^&lt;]*)&lt;/Combined_season&gt;</expression>
+				</RegExp>
+				<expression/>
 			</RegExp>
-			<RegExp conditional="!absolutenumber" input="$$8" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
-				<expression>&lt;EpisodeNumber&gt;([^&lt;]*)&lt;/EpisodeNumber&gt;</expression>
+			<RegExp conditional="!absolutenumber" input="$$9" output="&lt;episode&gt;\1&lt;/episode&gt;" dest="4+">
+				<RegExp conditional="!dvdorder" input="$$8" output="\1" dest="9">
+					<expression clear="yes">&lt;EpisodeNumber&gt;([^&lt;]*)&lt;/EpisodeNumber&gt;</expression>
+				</RegExp>
+				<RegExp conditional="dvdorder" input="$$8" output="\1" dest="9">
+					<expression>&lt;Combined_episodenumber&gt;([^&lt;]*)&lt;/Combined_episodenumber&gt;</expression>
+				</RegExp>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$8" output="&lt;thumb&gt;http://thetvdb.com/banners/\1&lt;/thumb&gt;" dest="4+">
 				<expression>&lt;filename&gt;([^&lt;]+)&lt;/filename&gt;</expression>

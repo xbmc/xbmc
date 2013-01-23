@@ -5,10 +5,10 @@
 
 <strings>
     <string id="30000">Ativar Fanart</string>
-    <string id="30001">Preferir Trailer de HD-Trailers.net</string>
-    <string id="30002">Linguagem Preferida</string>
-    <string id="30003">Pegar classificação de</string>
-    <string id="30004">Ativar Trailer (YouTube)</string>
-    <string id="30005">Manter o Título Original</string>
-    <string id="30006">Preferir Certificação do País</string>
+    <string id="30001">Preferir trailer de HD-Trailers.net</string>
+    <string id="30002">Idioma preferido</string>
+    <string id="30003">Obter classificação de</string>
+    <string id="30004">Ativar trailer (YouTube)</string>
+    <string id="30005">Manter o título original</string>
+    <string id="30006">Preferir país de certificação</string>
 </strings>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Afrikaans language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/af/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Gryp Album Duimnaelsketse vanaf fanart.tv</string>
+    <string id="30001">Gryp Album Duimnaelsketse vanaf Last.fm</string>
+    <string id="30002">Kry Album Resensie vanaf</string>
+    <string id="30003">Verkose Taal</string>
+    <string id="30004">Kry Album Gradering vanaf</string>
+    <string id="30005">Kry Album Style vanaf</string>
+    <string id="30006">Kry Album Stemmings vanaf</string>
+    <string id="30007">Kry Album Temas vanaf</string>
+    <string id="30008">Gryp Album Duimnaelsketse vanaf allmusic.com</string>
+    <string id="30009">Kunswerk</string>
+    <string id="30010">Gryp Album Duimnaelsketse vanaf theaudiodb.com</string>
+</strings>
