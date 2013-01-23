@@ -199,6 +199,8 @@ bool CTagLoaderTagLib::Load(const string& strFileName, CMusicInfoTag& tag, Embed
     id3v2 = ttaFile->ID3v2Tag(false);
   else if (wvFile)
     ape = wvFile->APETag(false);
+  else if (mpcFile)
+    ape = mpcFile->APETag(false);
   else    // This is a catch all to get generic information for other files types (s3m, xm, it, mod, etc)
     generic = file->tag();
 
@@ -456,11 +458,11 @@ bool CTagLoaderTagLib::ParseAPETag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTa
   for (APE::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
     if (it->first == "ARTIST")                         SetArtist(tag, StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "ALBUM ARTIST")              SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+    else if (it->first == "ALBUM ARTIST" || it->first == "ALBUMARTIST") SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "ALBUM")                     tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")                     tag.SetTitle(it->second.toString().to8Bit(true));
     else if (it->first == "TRACKNUMBER" || it->first == "TRACK") tag.SetTrackNumber(it->second.toString().toInt());
-    else if (it->first == "DISCNUMBER")                tag.SetPartOfSet(it->second.toString().toInt());
+    else if (it->first == "DISCNUMBER" || it->first == "DISC") tag.SetPartOfSet(it->second.toString().toInt());
     else if (it->first == "YEAR")                      tag.SetYear(it->second.toString().toInt());
     else if (it->first == "GENRE")                     SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "COMMENT")                   tag.SetComment(it->second.toString().to8Bit(true));
