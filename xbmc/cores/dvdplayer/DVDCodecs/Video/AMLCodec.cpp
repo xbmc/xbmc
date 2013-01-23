@@ -1758,14 +1758,21 @@ int CAMLCodec::Decode(unsigned char *pData, size_t size, double dts, double pts)
       m_1st_pts = am_private->am_pkt.lastpts;
   }
 
+  // if we have still frames, demux size will be small
+  // and we need to pre-buffer more.
+  double target_timesize = 1.0;
+  if (size < 100)
+    target_timesize = 2.0;
+
   // keep hw buffered demux above 1 second
-  if (GetTimeSize() < 1.0 && m_speed == DVD_PLAYSPEED_NORMAL)
+  if (GetTimeSize() < target_timesize && m_speed == DVD_PLAYSPEED_NORMAL)
   {
     return VC_BUFFER;
   }
 
   // wait until we get a new frame or 100ms,
-  m_ready_event.WaitMSec(100);
+  if (m_old_pictcnt == m_cur_pictcnt)
+    m_ready_event.WaitMSec(100);
 
   // we must return VC_BUFFER or VC_PICTURE,
   // default to VC_BUFFER.
@@ -1818,15 +1825,15 @@ void CAMLCodec::SetSpeed(int speed)
         m_dll->codec_resume(&am_private->vcodec);
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
         break;
-      defaut:
+      default:
         Reset();
         m_dll->codec_resume(&am_private->vcodec);
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_I);
         //m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
         break;
     }
+    m_speed = speed;
   }
-  m_speed = speed;
 }
 
 int CAMLCodec::GetDataSize()
