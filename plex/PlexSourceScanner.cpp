@@ -170,7 +170,15 @@ void CPlexSourceScanner::ScanHost(PlexServerPtr server)
     sources = g_hostSourcesMap[server->uuid];
     int oldScore = sources->bestServer()->score();
 
-    sources->servers.insert(server);
+    bool found = false;
+    BOOST_FOREACH(PlexServerPtr serv, sources->servers)
+    {
+      if (serv->key() == server->key())
+        found = true;
+    }
+
+    if (!found)
+      sources->servers.insert(server);
     
     dprintf("Plex Source Scanner: got existing server %s (local: %d count: %ld lastScan: %f)", server->name.c_str(), Cocoa_IsHostLocal(server->address), sources->servers.size(), sources->m_lastScan.elapsed());
     if (sources->m_lastScan.elapsed() < 5 && (oldScore >= server->score()))
@@ -201,7 +209,12 @@ void CPlexSourceScanner::RemoveHost(PlexServerPtr server, bool force)
     if (sources)
     {
       // Remove the URL, and if we still have routes to the sources, get out.
-      sources->servers.erase(server);
+      BOOST_FOREACH(PlexServerPtr serv, sources->servers)
+      {
+        if (serv->key() == server->key())
+          sources->servers.erase(serv);
+      }
+
       dprintf("Plex Source Scanner: removing server %s (url: %s), %ld urls left.", sources->hostLabel.c_str(), server->url().c_str(), sources->servers.size());
       if (sources->servers.size() > 0)
         return;
