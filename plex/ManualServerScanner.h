@@ -119,9 +119,15 @@ class ManualServerScanner
         //
         CPlexDirectory dir(true, false, false, 5);
         CFileItemList  list;
-        
+        CCurlFile http;
+        struct __stat64 st;
+
         dprintf("Manual Server Scanner: About to manually test server %s (deleted: %d)", pair.second->address.c_str(), pair.second->deleted);
-        if (pair.second->deleted == false && dir.GetDirectory(pair.second->url(), list) && list.GetProperty("updatedAt").asString().empty() == false)
+
+        if (pair.second->deleted == false &&
+            http.Stat(CURL(pair.second->url()), &st) == 0 &&
+            dir.GetDirectory(pair.second->url(), list) &&
+            list.GetProperty("updatedAt").asString().empty() == false)
         {
           // Update name and UUID.
           pair.second->name = list.GetProperty("friendlyName").asString();
