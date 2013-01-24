@@ -396,8 +396,7 @@ void CCoreAudioAEHALOSX::EnumerateOutputDevices(AEDeviceList &devices, bool pass
   CoreAudioDeviceList deviceList;
   CCoreAudioHardware::GetOutputDevices(&deviceList);
 
-  std::string defaultDeviceName;
-  CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
+  devices.push_back(AEDevice("Default", "CoreAudio:default"));
 
   std::string deviceName;
   for (int i = 0; !deviceList.empty(); i++)

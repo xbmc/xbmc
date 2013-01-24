@@ -174,4 +174,5 @@ private:
   bool              m_isSuspended;
   bool              m_softSuspend;
   unsigned int      m_softSuspendTimer;
+  AudioDeviceID     m_currentAudioDevice;
 };
