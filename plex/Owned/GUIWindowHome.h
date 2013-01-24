@@ -25,8 +25,9 @@
 #include <string>
 
 #include "guilib/GUIWindow.h"
-#include "PlexContentWorker.h"
 #include "PlexContentPlayerMixin.h"
+#include "Job.h"
+#include <boost/timer.hpp>
 
 // List IDs.
 #define CONTENT_LIST_RECENTLY_ADDED    11000
@@ -42,35 +43,68 @@
 #define CONTEXT_BUTTON_QUIT 2
 #define CONTEXT_BUTTON_SHUTDOWN 3
 
-class PlexContentWorkerManager;
 class CGUIWindowHome;
 
 class CAuxFanLoadThread : public CThread
 {
   public:
-    CAuxFanLoadThread() : CThread("Aux Fan Load Thread"), m_numSeconds(5) {} ;
+    CAuxFanLoadThread() : CThread("Aux Fan Load Thread"), m_numSeconds(5) {}
     void Process();
 
     int m_numSeconds;
 };
 
-class  CFanLoadingThread : public CThread
+typedef std::pair<int, CFileItemListPtr> contentListPair;
+
+class CPlexSectionLoadJob : public CJob
 {
   public:
-    CFanLoadingThread(CGUIWindowHome *window) : CThread("Fan Loading Thread") { m_window = window; }
-    void Process();
-    void LoadFanWithDelay(const CStdString& key, int delay = 300, bool hide = true);
-    void CancelCurrent();
-    void StopThread(bool bWait);
+    CPlexSectionLoadJob(const CStdString& url, int contentType) :
+      CJob(), m_url(url), m_contentType(contentType), m_list(new CFileItemList) {}
+
+    bool DoWork()
+    {
+
+      CPlexDirectory dir(true, false);
+      m_list->Clear();
+      return dir.GetDirectory(m_url, *m_list.get());
+    }
+
+    int GetContentType() const { return m_contentType; }
+    CFileItemListPtr GetFileItemList() const { return m_list; }
+    CStdString GetUrl() const { return m_url; }
 
   private:
-    CStopWatch m_loadTimer;
-    CStdString m_key;
-    CGUIWindowHome *m_window;
-    boost::mutex m_mutex;
-    boost::condition_variable m_wakeMe;
-    int m_delay;
-    bool m_hide;
+    CStdString m_url;
+    CFileItemListPtr m_list;
+    int m_contentType;
+};
+
+class CPlexSectionFanout : public IJobCallback
+{
+  public:
+    CPlexSectionFanout(CGUIWindowHome *home, const CStdString& url, int sectionType);
+
+    std::vector<contentListPair> GetContentLists();
+    CFileItemListPtr GetContentList(int type);
+    void Refresh();
+    void Show();
+
+    bool NeedsRefresh();
+    static CStdString GetBestServerUrl(const CStdString& extraUrl="");
+
+  private:
+    int LoadSection(const CStdString& url, int contentType);
+    void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+    void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job) {}
+
+    std::map<int, CFileItemListPtr> m_fileLists;
+    CStdString m_url;
+    boost::timer m_age;
+    CCriticalSection m_critical;
+    CGUIWindowHome *m_home;
+    int m_sectionType;
+    std::vector<int> m_outstandingJobs;
 };
 
 class CGUIWindowHome : public CGUIWindow,
@@ -78,39 +112,42 @@ class CGUIWindowHome : public CGUIWindow,
 {
 public:
   CGUIWindowHome(void);
-  virtual ~CGUIWindowHome(void);
-  virtual void UpdateContentForSelectedItem(const std::string& key, bool hide = true);
+  virtual ~CGUIWindowHome(void) {}
+  virtual bool OnMessage(CGUIMessage& message);
+
 
 private:
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnPopupMenu();
   virtual bool CheckTimer(const CStdString& strExisting, const CStdString& strNew, int title, int line1, int line2);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+
   void HideAllLists();
-  virtual void SaveStateBeforePlay(CGUIBaseContainer* container);
+  void RestoreSection();
+  void RefreshSection(const CStdString& url, int type);
+  void RefreshAllSections(bool force = true);
+  void AddSection(const CStdString& url, int sectionType);
+  void RemoveSection(const CStdString& url);
+  bool ShowSection(const CStdString& url);
+  bool ShowCurrentSection();
+  std::vector<contentListPair> GetContentListsFromSection(const CStdString& url);
+  CFileItemListPtr GetContentListFromSection(const CStdString& url, int contentType);
+
+  CStdString GetCurrentItemName(bool onlySections=false);
+  CFileItem* GetCurrentFileItem();
 
   void UpdateSections();
-  bool SaveSelectedMenuItem();
-  void RestoreSelectedMenuItem();
-  int  LookupIDFromKey(const std::string& key);
-  bool KeyHaveFanout(const CStdString& key);
-  CFileItem* CurrentFileItem() const;
-  
-  std::string m_lastSelectedItemKey;
-  
-  std::map<int, std::string> m_idToSectionUrlMap;
-  std::map<int, int>         m_idToSectionTypeMap;
-  std::map<int, Group>       m_contentLists;
-  int                        m_selectedContainerID;
+    
   bool                       m_globalArt;
   
   CGUIListItemPtr            m_videoChannelItem;
   CGUIListItemPtr            m_musicChannelItem;
   CGUIListItemPtr            m_photoChannelItem;
   CGUIListItemPtr            m_applicationChannelItem;
+
+  std::map<CStdString, CPlexSectionFanout*> m_sections;
   
-  PlexContentWorkerManager*  m_workerManager;
-  CFanLoadingThread*         m_loadingThread;
   CAuxFanLoadThread*         m_auxLoadingThread;
+  CStdString                 m_lastSelectedItem;
 };
 

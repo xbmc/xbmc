@@ -44,7 +44,6 @@
 #include "Key.h"
 
 #include "MyPlexManager.h"
-#include "PlexContentWorker.h"
 #include "PlexDirectory.h"
 #include "PlexSourceScanner.h"
 #include "PlexLibrarySectionManager.h"
@@ -65,6 +64,9 @@
 
 #include "AdvancedSettings.h"
 
+#include "Job.h"
+#include "JobManager.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -84,26 +86,195 @@ using namespace boost;
 
 #define SLIDESHOW_MULTIIMAGE 10101
 
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
-  , m_globalArt(true)
-  , m_lastSelectedItemKey("Search")
-{
-  // Create the worker. We're not going to destroy it because whacking it on exit can cause problems.
-  m_workerManager = new PlexContentWorkerManager();
-  m_loadingThread = new CFanLoadingThread(this);
 
+//////////////////////////////////////////////////////////////////////////////
+CPlexSectionFanout::CPlexSectionFanout(CGUIWindowHome *home, const CStdString &url, int sectionType)
+  : m_url(url), m_sectionType(sectionType)
+{
+  m_home = home;
+  Refresh();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CPlexSectionFanout::GetContentList(int type)
+{
+  CSingleLock lk(m_critical);
+  return m_fileLists[type];
+}
+
+//////////////////////////////////////////////////////////////////////////////
+std::vector<contentListPair> CPlexSectionFanout::GetContentLists()
+{
+  CSingleLock lk(m_critical);
+  std::vector<contentListPair> ret;
+  BOOST_FOREACH(contentListPair p, m_fileLists)
+    ret.push_back(p);
+
+  return ret;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+int CPlexSectionFanout::LoadSection(const CStdString& url, int contentType)
+{
+  CPlexSectionLoadJob* job = new CPlexSectionLoadJob(url, contentType);
+  return CJobManager::GetInstance().AddJob(job, this, CJob::PRIORITY_HIGH);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+CStdString CPlexSectionFanout::GetBestServerUrl(const CStdString& extraUrl)
+{
+  CStdString bestServerUrl;
+  PlexServerPtr server = PlexServerManager::Get().bestServer();
+  if (server)
+  {
+    if (!extraUrl.empty())
+      bestServerUrl = PlexUtils::AppendPathToURL(server->url(), extraUrl);
+    else
+      bestServerUrl = server->url();
+
+    if (!server->token.empty())
+    {
+      CURL urlWithToken(bestServerUrl);
+      urlWithToken.SetOption("X-Plex-Token", server->token);
+      return urlWithToken.Get();
+    }
+
+    return bestServerUrl;
+  }
+
+  bestServerUrl = "http://127.0.0.1:32400/";
+  if (!extraUrl.empty())
+    bestServerUrl = PlexUtils::AppendPathToURL(bestServerUrl, extraUrl);
+
+  return bestServerUrl;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+void CPlexSectionFanout::Refresh()
+{
+  CPlexDirectory dir(true, false);
+
+  CSingleLock lk(m_critical);
+  m_fileLists.clear();
+
+  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:Refresh for %s", m_url.c_str());
+
+  CURL trueUrl(m_url);
+
+  if (trueUrl.GetProtocol() == "channel")
+  {
+    if (!g_advancedSettings.m_bHideFanouts)
+    {
+      CStdString filter = "channels/recentlyViewed?filter=" + trueUrl.GetHostName();
+      LoadSection(GetBestServerUrl(filter), CONTENT_LIST_RECENTLY_ACCESSED);
+    }
+
+    /* We always show this as fanart */
+    LoadSection(GetBestServerUrl("channels/arts"), CONTENT_LIST_FANART);
+  }
+  else if (trueUrl.GetProtocol() == "global")
+  {
+    if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
+      LoadSection(GetBestServerUrl("library/arts"), CONTENT_LIST_FANART);
+  }
+  else if (m_sectionType == PLEX_METADATA_MIXED)
+  {
+    if (!g_advancedSettings.m_bHideFanouts)
+      LoadSection(MyPlexManager::Get().getPlaylistUrl("/queue/unwatched"), CONTENT_LIST_QUEUE);
+  }
+  else
+  {
+    if (!g_advancedSettings.m_bHideFanouts)
+    {
+      m_outstandingJobs.push_back(LoadSection(PlexUtils::AppendPathToURL(m_url, "recentlyAdded?unwatched=1"), CONTENT_LIST_RECENTLY_ADDED));
+
+      if (m_sectionType == PLEX_METADATA_MOVIE || m_sectionType == PLEX_METADATA_SHOW)
+        m_outstandingJobs.push_back(LoadSection(PlexUtils::AppendPathToURL(m_url, "onDeck"), CONTENT_LIST_ON_DECK));
+    }
+
+    /* We don't want to wait on the fanart, so don't add it to the outstandingjobs map */
+    if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
+      LoadSection(PlexUtils::AppendPathToURL(m_url, "arts"), CONTENT_LIST_FANART);
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  CPlexSectionLoadJob *load = (CPlexSectionLoadJob*)job;
+  if (success)
+    m_fileLists[load->GetContentType()] = load->GetFileItemList();
+
+  m_age.restart();
+
+  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:OnJobComplete loaded %s", load->GetUrl().c_str());
+
+  vector<int>::iterator it = std::find(m_outstandingJobs.begin(), m_outstandingJobs.end(), jobID);
+  if (it != m_outstandingJobs.end())
+    m_outstandingJobs.erase(it);
+
+  if (m_outstandingJobs.size() == 0 && load->GetContentType() != CONTENT_LIST_FANART)
+  {
+    CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
+    msg.SetStringParam(m_url);
+    m_home->OnMessage(msg);
+  }
+  else if (load->GetContentType() == CONTENT_LIST_FANART)
+  {
+    CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
+    msg.SetStringParam(m_url);
+    m_home->OnMessage(msg);
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+void CPlexSectionFanout::Show()
+{
+  if (NeedsRefresh())
+    Refresh();
+  else
+  {
+    CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:Show we are up to date, just sending messages for %s", m_url.c_str());
+    /* we are up to date, just send the messages */
+    CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
+    msg.SetStringParam(m_url);
+    m_home->OnMessage(msg);
+
+    CGUIMessage msg2(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, CONTENT_LIST_FANART);
+    msg2.SetStringParam(m_url);
+    m_home->OnMessage(msg2);
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+bool CPlexSectionFanout::NeedsRefresh()
+{
+  int refreshTime = 5;
+  if (m_sectionType == PLEX_METADATA_ALBUM ||
+      m_sectionType == PLEX_METADATA_MIXED ||
+      (m_sectionType >= PLEX_METADATA_CHANNEL_VIDEO &&
+       m_sectionType <= PLEX_METADATA_CHANNEL_APPLICATION))
+    refreshTime = 20;
+
+  if (m_sectionType == PLEX_METADATA_GLOBAL_IMAGES)
+    refreshTime = 100;
+
+  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:NeedsRefresh %s, age %f, refresh %s", m_url.c_str(), m_age.elapsed(), m_age.elapsed() > refreshTime ? "yes" : "no");
+  return m_age.elapsed() > refreshTime;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_globalArt(true), m_lastSelectedItem("Search")
+{
   if (g_advancedSettings.m_iShowFirstRun != 77)
   {
     m_auxLoadingThread = new CAuxFanLoadThread();
     m_auxLoadingThread->Create();
   }
+  AddSection("global://art", PLEX_METADATA_GLOBAL_IMAGES);
 }
 
-CGUIWindowHome::~CGUIWindowHome(void)
-{
-  m_loadingThread->StopThread(true);
-}
-
+//////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PREVIOUS_MENU && GetFocusedControlID() > 9000)
@@ -137,24 +308,11 @@ bool CGUIWindowHome::OnAction(const CAction &action)
       CGUIListItemPtr pItem = pControl->GetListItem(0);
       if (pItem)
       {
-        // Save the selected menu item and if it's changed, get new lists.
-        if (SaveSelectedMenuItem() == true)
+        m_lastSelectedItem = GetCurrentItemName();
+        if (!ShowSection(pItem->GetProperty("sectionPath").asString()))
         {
-          // Hide lists.
           HideAllLists();
-          
-          // OK, let's load it after a delay.
-          CFileItem* pFileItem = (CFileItem* )pItem.get();
-          m_workerManager->cancelPending();
-          m_loadingThread->CancelCurrent();
-
-          CStdString path = pFileItem->GetPath();
-          if (path.empty())
-            path = pFileItem->GetLabel();
-          m_lastSelectedItemKey.clear();
-
-          if (KeyHaveFanout(path))
-            m_loadingThread->LoadFanWithDelay(path);
+          ShowSection("global://art");
         }
       }
     }
@@ -164,237 +322,24 @@ bool CGUIWindowHome::OnAction(const CAction &action)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowHome::SaveSelectedMenuItem()
-{
-  bool changed = false;
-
-  CFileItem* fileItem = CurrentFileItem();
-
-  if (fileItem)
-  {
-    CStdString path = fileItem->GetPath();
-    if (path.empty())
-      /* No path, means that this is a static item from the skin, store the label instead */
-      path = fileItem->GetLabel();
-
-    // See if it's changed.
-    if (m_lastSelectedItemKey != path)
-      changed = true;
-
-    // Save the current selection.
-    dprintf("Saved open item %s", path.c_str());
-    m_lastSelectedItemKey = path;
-  }
-  
-  return changed;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-CFileItem* CGUIWindowHome::CurrentFileItem() const
-{
-  CFileItem* returnVal = NULL;
-  CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
-  if (pControl)
-  {
-    CGUIListItemPtr listItem = pControl->GetListItem(0);
-    if (listItem->IsFileItem())
-      returnVal = (CFileItem*)listItem.get();
-  }
-  return returnVal;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::RestoreSelectedMenuItem()
-{
-  CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
-  if (pControl && m_lastSelectedItemKey.empty() == false)
-  {
-    CFileItem* fItem = CurrentFileItem();
-    if (fItem->GetPath() == m_lastSelectedItemKey)
-    {
-      dprintf("Already focused on %s", m_lastSelectedItemKey.c_str());
-      return;
-    }
-    int selectionItem = -1;
-    
-    // Figure out the ID with the selected key.
-    int i = 0;
-    BOOST_FOREACH(CGUIListItemPtr item, pControl->GetItems())
-    {
-      CFileItem* fileItem = (CFileItem* )item.get();
-      if (fileItem->GetPath() == m_lastSelectedItemKey ||
-          (fileItem->GetLabel() == m_lastSelectedItemKey && m_lastSelectedItemKey.empty() == false))
-      {
-        selectionItem = i;
-        break;
-      }      
-      i++;
-    }
-    
-    if (selectionItem != -1)
-    {
-      CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), pControl->GetID(), selectionItem+1, 0);
-      g_windowManager.SendThreadMessage(msg);
-    }
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-bool CGUIWindowHome::KeyHaveFanout(const CStdString& key)
-{
-  int id = LookupIDFromKey(key);
-  if (id < 1)
-    return false;
-
-  /* Channels has a ID less than 4 and sections greater than 1000 */
-  if (id <= 4 || id >= 1000)
-    return true;
-
-  return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-int CGUIWindowHome::LookupIDFromKey(const std::string& key)
+CFileItemPtr CGUIWindowHome::GetCurrentListItem(int offset)
 {
   CGUIBaseContainer* pControl = (CGUIBaseContainer* )GetControl(MAIN_MENU);
   if (pControl)
-  {
-    // Figure out the ID with the selected key.
-    BOOST_FOREACH(CGUIListItemPtr item, pControl->GetItems())
-    {
-      CFileItem* fileItem = (CFileItem* )item.get();
-      if (fileItem->GetPath() == key || fileItem->GetLabel() == key)
-        return fileItem->m_iprogramCount;
-    }
-  }
-  
-  return -1;
+    return boost::static_pointer_cast<CFileItem>(pControl->GetListItem(offset));
+  return CFileItemPtr();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void CGUIWindowHome::UpdateContentForSelectedItem(const std::string& key, bool hide)
+CFileItem* CGUIWindowHome::GetCurrentFileItem()
 {
-  // Hide lists.
-  if (hide)
-    HideAllLists();
-
-  if (m_lastSelectedItemKey == key)
-  {
-    // Bind the lists.
-    BOOST_FOREACH(int_list_pair pair, m_contentLists)
-    {
-      int controlID = pair.first;
-      CFileItemListPtr list = pair.second.list;
-    
-      CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
-      if (control && list->Size() > 0)
-      {
-        // Bind the list.
-        CGUIMessage msg(GUI_MSG_LABEL_BIND, MAIN_MENU, controlID, 0, 0, list.get());
-        OnMessage(msg);
-        
-        // Make sure it's visible..
-        SET_CONTROL_VISIBLE(controlID);
-        SET_CONTROL_VISIBLE(controlID-1000);
-        
-        // Load thumbs.
-        m_contentLists[controlID].loader->Load(*list.get());
-      }
-    }
-  }
-  else
-  {
-    bool globalArt = true;
-    PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
-    CStdString bestServerUrl;
-    if(bestServer)
-    {
-      bestServerUrl.Format("http://%s:%d/", bestServer->address, bestServer->port);
-      if (!bestServer->token.empty())
-        bestServerUrl += string("?X-Plex-Token=") + bestServer->token;
-    }
-    else
-      bestServerUrl = "http://127.0.0.1:32400/";
-    
-    // Clear old lists.
-    m_contentLists.clear();
-    
-    // Cancel any pending requests.
-    m_workerManager->cancelPending();
-    
-    // Depending on what's selected, get the appropriate content.
-    int itemID = LookupIDFromKey(key);
-    if (itemID >= 1000)
-    {
-      // A library section.
-      string sectionUrl = m_idToSectionUrlMap[itemID];
-      int typeID = m_idToSectionTypeMap[itemID];
-      
-      if (typeID == PLEX_METADATA_MIXED)
-      {
-        // Queue.
-        m_contentLists[CONTENT_LIST_QUEUE] = Group(kVIDEO_LOADER);
-        m_workerManager->enqueue(WINDOW_HOME, MyPlexManager::Get().getPlaylistUrl("queue/unwatched"), CONTENT_LIST_QUEUE);
-        
-        // Recommendations.
-        m_contentLists[CONTENT_LIST_RECOMMENDATIONS] = Group(kVIDEO_LOADER);
-        m_workerManager->enqueue(WINDOW_HOME, MyPlexManager::Get().getPlaylistUrl("recommendations/unwatched"), CONTENT_LIST_RECOMMENDATIONS);
-      }
-      else if (boost::ends_with(sectionUrl, "shared") == false)
-      {
-        // Recently added.
-        m_contentLists[CONTENT_LIST_RECENTLY_ADDED] = Group(typeID == PLEX_METADATA_ALBUM ? kMUSIC_LOADER : kVIDEO_LOADER);
-        m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(sectionUrl, "recentlyAdded?unwatched=1"), CONTENT_LIST_RECENTLY_ADDED);
-
-        if (typeID == PLEX_METADATA_SHOW || typeID == PLEX_METADATA_MOVIE)
-        {
-          // On deck.
-          m_contentLists[CONTENT_LIST_ON_DECK] = Group(kVIDEO_LOADER);
-          m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(sectionUrl, "onDeck"), CONTENT_LIST_ON_DECK);
-        }
-
-        // Asynchronously fetch the fanart for the section.
-        globalArt = false;
-        m_globalArt = false;
-        m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(sectionUrl, "arts"), CONTENT_LIST_FANART);
-        SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
-      }
-    }
-    else if (itemID >= 1 && itemID <= 4)
-    {
-      CStdString filter = (itemID==1) ? "video" : (itemID==2) ? "music" : (itemID==3) ? "photo" : "application";
-
-      // Recently accessed.
-      m_contentLists[CONTENT_LIST_RECENTLY_ACCESSED] = Group(kVIDEO_LOADER);
-      CStdString filterUrl("channels/recentlyViewed?filter=");
-      filterUrl += filter;
-      m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, filterUrl), CONTENT_LIST_RECENTLY_ACCESSED);
-
-      globalArt = false;
-      m_globalArt = false;
-      m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, "channels/arts"), CONTENT_LIST_FANART);
-      SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
-    }
-
-    // If we need to, load global art.
-    if (globalArt && m_globalArt == false)
-    {
-      m_globalArt = true;
-      
-      if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
-      {
-        m_workerManager->enqueue(WINDOW_HOME, PlexUtils::AppendPathToURL(bestServerUrl, "library/arts"), CONTENT_LIST_FANART);
-        SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
-      }
-      else
-        SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
-    }
-    
-    // Remember what the last one was.
-    m_lastSelectedItemKey = key;
-  }
+  CFileItemPtr listItem = GetCurrentListItem();
+  if (listItem->IsFileItem())
+    return (CFileItem*)listItem.get();
+  return NULL;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnPopupMenu()
 {
   if (!GetFocusedControl())
@@ -484,9 +429,8 @@ bool CGUIWindowHome::OnPopupMenu()
 
       if (updateFanOut)
       {
-        CStdString key(m_lastSelectedItemKey);
-        m_lastSelectedItemKey.clear();
-        m_loadingThread->LoadFanWithDelay(key, 150, false);
+        CFileItemPtr item = GetCurrentListItem();
+        RefreshSection(item->GetProperty("sectionPath").asString(), item->GetProperty("typeNumber").asInteger());
       }
 
     }
@@ -494,6 +438,7 @@ bool CGUIWindowHome::OnPopupMenu()
   return false;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::CheckTimer(const CStdString& strExisting, const CStdString& strNew, int title, int line1, int line2)
 {
   bool bReturn;
@@ -513,22 +458,21 @@ bool CGUIWindowHome::CheckTimer(const CStdString& strExisting, const CStdString&
     return true;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 typedef pair<string, HostSourcesPtr> string_sources_pair;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 static bool compare(CFileItemPtr first, CFileItemPtr second)
 {
   return first->GetLabel() < second->GetLabel();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() ==  GUI_MSG_WINDOW_DEINIT)
   {
-    // Save the selected menu item.
-    SaveSelectedMenuItem();
-    
-    // Cancel pending tasks and hide.
-    m_workerManager->cancelPending();
+    m_lastSelectedItem = GetCurrentItemName();
     HideAllLists();
     return true;
   }
@@ -537,123 +481,99 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_INIT:
-  {
-    if (m_lastSelectedItemKey.empty())
-      HideAllLists();
-    SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
-  }
-    
-  case GUI_MSG_WINDOW_RESET:
-  case GUI_MSG_UPDATE_MAIN_MENU:
-  {
-
-    UpdateSections();
-
-    if (g_guiSettings.GetBool("lookandfeel.enableglobalslideshow") == true)
+    case GUI_MSG_WINDOW_INIT:
     {
-      CGUIControl* pControl = (CGUIControl*)GetControl(SLIDESHOW_MULTIIMAGE);
-      if (pControl && !pControl->IsVisible())
-      {
-        PlexServerPtr bestServer = PlexServerManager::Get().bestServer();
-        CStdString artUrl;
-        if (bestServer)
-          artUrl = PlexUtils::AppendPathToURL(bestServer->url(), "library/arts");
-        else
-          artUrl = "http://127.0.0.1:32400/library/arts";
-
-        m_workerManager->enqueue(WINDOW_HOME, artUrl, CONTENT_LIST_FANART);
-        SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
-      }
-    }
-    else
+      if (!m_lastSelectedItem.empty())
+        HideAllLists();
       SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
 
-
-    if (message.GetMessage() != GUI_MSG_UPDATE_MAIN_MENU)
-    {
-      // Reload if needed.
-      if (KeyHaveFanout(m_lastSelectedItemKey))
-      {
-        m_loadingThread->LoadFanWithDelay(m_lastSelectedItemKey);
-        m_lastSelectedItemKey.clear();
-      }
     }
-  }
-  break;
-  
-  case GUI_MSG_SEARCH_HELPER_COMPLETE:
-  {
-    PlexContentWorkerPtr worker = m_workerManager->find(message.GetParam1());
-    if (worker)
-    {
-      CFileItemListPtr results = worker->getResults();
-      int controlID = message.GetParam2();
-      //printf("Processing results from worker: %d (context: %d).\n", worker->getID(), controlID);
 
-      // Copy the items across.
-      if (m_contentLists.find(controlID) != m_contentLists.end())
+    case GUI_MSG_WINDOW_RESET:
+    case GUI_MSG_UPDATE_MAIN_MENU:
+    {
+      UpdateSections();
+      RefreshSection("global://art", PLEX_METADATA_GLOBAL_IMAGES);
+
+      if (message.GetMessage() != GUI_MSG_UPDATE_MAIN_MENU)
+        RefreshAllSections(false);
+    }
+      break;
+
+    case GUI_MSG_PLEX_SECTION_LOADED:
+    {
+      int type = message.GetParam1();
+      CStdString url = message.GetStringParam();
+
+      CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage Plex Section loaded %s %d", url.c_str(), type);
+
+      if (type == CONTENT_LIST_FANART)
       {
-        m_contentLists[controlID].list = results;
-        
-        CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(controlID);
-        if (control && results->Size() > 0)
+        CFileItemListPtr list = GetContentListFromSection(url, CONTENT_LIST_FANART);
+        if (list)
         {
-          // Bind the list.
-          CGUIMessage msg(GUI_MSG_LABEL_BIND, MAIN_MENU, controlID, 0, 0, m_contentLists[controlID].list.get());
+          CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, list.get());
           OnMessage(msg);
-          
-          // Make sure it's visible.
-          SET_CONTROL_VISIBLE(controlID);
-          SET_CONTROL_VISIBLE(controlID-1000);
-          
-          // Load thumbs.
-          m_contentLists[controlID].loader->Load(*m_contentLists[controlID].list.get());
-        }
-        else
-        {
-          SET_CONTROL_HIDDEN(controlID);
-        }
-      }
-      else if (controlID == CONTENT_LIST_FANART)
-      {
-        if (results->Size() > 0)
-        {
-          // Send the right slideshow information over to the multiimage.
-          CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, results.get());
-          OnMessage(msg);
-          
-          // Make it visible.
           SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
         }
+
       }
-      
-      m_workerManager->destroy(worker->getID());
-      return true;
+      else
+      {
+        CLog::Log(LOGDEBUG, "CGUIWindowHome:OnMessage current highlighted section is %s and lastSelected %s",
+                  GetCurrentFileItem()->GetProperty("sectionPath").asString().c_str(),
+                  m_lastSelectedItem.c_str());
+
+        CStdString sectionToLoad = GetCurrentFileItem()->GetProperty("sectionPath").asString();
+        if (m_lastSelectedItem != sectionToLoad)
+          sectionToLoad = m_lastSelectedItem;
+
+        if (url == sectionToLoad)
+        {
+          HideAllLists();
+
+          BOOST_FOREACH(contentListPair p, GetContentListsFromSection(url))
+          {
+            if(p.second && p.second->Size() > 0)
+            {
+              CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), p.first, 0, 0, p.second.get());
+              OnMessage(msg);
+              SET_CONTROL_VISIBLE(p.first);
+            }
+            else
+              SET_CONTROL_HIDDEN(p.first);
+          }
+        }
+      }
     }
-  }
-  break;
-  
-  case GUI_MSG_CLICKED:
-  {
-    int iAction = message.GetParam1();
-    if (iAction == ACTION_SELECT_ITEM)
+
+      break;
+
+    case GUI_MSG_CLICKED:
     {
-      int iControl = message.GetSenderId();
-      PlayFileFromContainer(GetControl(iControl));
-      return true;
+      m_lastSelectedItem = GetCurrentItemName();
+
+      int iAction = message.GetParam1();
+      if (iAction == ACTION_SELECT_ITEM)
+      {
+        int iControl = message.GetSenderId();
+        PlayFileFromContainer(GetControl(iControl));
+        return true;
+      }
     }
-  }
-  break;
+      break;
   }
 
   return ret;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::UpdateSections()
 {
   // This will be our new list.
   vector<CGUIListItemPtr> newList;
+
+  CLog::Log(LOGDEBUG, "CGUIWindowHome::UpdateSections");
 
   // Get the old list.
   CGUIBaseContainer* control = (CGUIBaseContainer* )GetControl(MAIN_MENU);
@@ -735,13 +655,6 @@ void CGUIWindowHome::UpdateSections()
       newSections.push_back(shared);
     }
 
-    // Clear the maps.
-    m_idToSectionUrlMap.clear();
-    m_idToSectionTypeMap.clear();
-
-    if (m_lastSelectedItemKey.empty())
-      SaveSelectedMenuItem();
-
     // Now add the new ones.
     bool itemStillExists = false;
     int id = 1000;
@@ -758,9 +671,8 @@ void CGUIWindowHome::UpdateSections()
       if (nameCounts[sectionName.ToLower()] > 1)
         newItem->SetLabel2(item->GetLabel2());
 
-      // Save the map from ID to library section ID.
-      m_idToSectionUrlMap[id] = item->GetPath();
-      m_idToSectionTypeMap[id] = (int)item->GetProperty("typeNumber").asInteger();
+      // Adding the section for preloading the fans
+      AddSection(item->GetPath(), (int)item->GetProperty("typeNumber").asInteger());
 
       if (item->GetProperty("key").asString().find("/shared") != string::npos)
       {
@@ -788,64 +700,59 @@ void CGUIWindowHome::UpdateSections()
       }
 
       newItem->m_idepth = 0;
-      //newItem->SetQuickFanart(item->GetQuickFanart());
-      newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
+      if (item->HasArt(PLEX_ART_FANART))
+      {
+        CLog::Log(LOGDEBUG, "GUIWindowHome:UpdateSections we have fanart %s", item->GetArt(PLEX_ART_FANART).c_str());
+        newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
+      }
+      else
+        CLog::Log(LOGDEBUG, "GUIWindowHome:UpdateSections missing fanart on %s", item->GetPath().c_str());
       newItem->m_iprogramCount = id++;
-
-      if (newItem->GetPath() == m_lastSelectedItemKey ||
-          (newItem->GetPath().empty() && newItem->GetLabel() == m_lastSelectedItemKey))
-        itemStillExists = true;
+      newItem->SetProperty("sectionPath", item->GetPath());
 
       newList.push_back(newItem);
     }
 
-    /* Maybe it's a channel? */
-    if (!itemStillExists)
-    {
-      if (m_lastSelectedItemKey == m_musicChannelItem->GetLabel() ||
-          m_lastSelectedItemKey == m_photoChannelItem->GetLabel() ||
-          m_lastSelectedItemKey == m_videoChannelItem->GetLabel() ||
-          m_lastSelectedItemKey == m_applicationChannelItem->GetLabel())
-        itemStillExists = true;
-    }
-
     // See what channel entries to add.
     if (numApplication > 0)
+    {
       newList.push_back(m_applicationChannelItem);
+      m_applicationChannelItem->SetProperty("sectionPath", "channel://application");
+      AddSection("channel://application", PLEX_METADATA_CHANNEL_APPLICATION);
+    }
 
     if (numVideo > 0)
+    {
       newList.push_back(m_videoChannelItem);
+      m_videoChannelItem->SetProperty("sectionPath", "channel://video");
+      AddSection("channel://video", PLEX_METADATA_CHANNEL_VIDEO);
+    }
 
     if (numPhoto > 0)
+    {
       newList.push_back(m_photoChannelItem);
+      m_photoChannelItem->SetProperty("sectionPath", "channel://photo");
+      AddSection("channel://photo", PLEX_METADATA_CHANNEL_PHOTO);
+    }
 
     if (numMusic > 0)
+    {
       newList.push_back(m_musicChannelItem);
+      m_musicChannelItem->SetProperty("sectionPath", "channel://music");
+      AddSection("channel://music", PLEX_METADATA_CHANNEL_MUSIC);
+    }
 
     // Replace 'em.
     control->SetStaticContent(newList);
 
-    // Restore selection.
-    RestoreSelectedMenuItem();
-
-    // See if the item for which we were showing the right hand lists still exists.
-    if (itemStillExists == false)
-    {
-      // Whack the right hand side.
-      dprintf("We don't have %s", m_lastSelectedItemKey.c_str());
-      HideAllLists();
-      m_workerManager->cancelPending();
-      m_contentLists.clear();
-    }
+    RestoreSection();
   }
 }
 
-void CGUIWindowHome::SaveStateBeforePlay(CGUIBaseContainer* container)
-{
-}
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::HideAllLists()
 {
+  CLog::Log(LOGDEBUG, "CGUIWindowHome:HideAllLists");
   // Hide lists.
   short lists[] = {CONTENT_LIST_ON_DECK, CONTENT_LIST_RECENTLY_ACCESSED, CONTENT_LIST_RECENTLY_ADDED, CONTENT_LIST_QUEUE, CONTENT_LIST_RECOMMENDATIONS};
   BOOST_FOREACH(int id, lists)
@@ -855,36 +762,183 @@ void CGUIWindowHome::HideAllLists()
   }
 }
 
-void CFanLoadingThread::CancelCurrent()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::AddSection(const CStdString &url, int type)
 {
-  boost::mutex::scoped_lock lk(m_mutex);
-  m_key.clear();
-  m_loadTimer.Stop();
-
-  if (IsRunning())
-    m_wakeMe.notify_one();
+  CLog::Log(LOGDEBUG, "GUIWindowHome:AddSection %s", url.c_str());
+  if (m_sections.find(url) == m_sections.end())
+  {
+    CPlexSectionFanout* fan = new CPlexSectionFanout(this, url, type);
+    m_sections[url] = fan;
+  }
 }
 
-void CFanLoadingThread::LoadFanWithDelay(const CStdString &key, int delay, bool hide)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::RemoveSection(const CStdString &url)
 {
-  if (g_advancedSettings.m_bHideFanouts == true)
-    return;
+  if (m_sections.find(url) != m_sections.end())
+  {
+    CPlexSectionFanout* fan = m_sections[url];
+    m_sections.erase(url);
+    delete fan;
+  }
+}
 
-  boost::mutex::scoped_lock lk(m_mutex);
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<contentListPair> CGUIWindowHome::GetContentListsFromSection(const CStdString &url)
+{
+  if (m_sections.find(url) != m_sections.end())
+  {
+    CPlexSectionFanout* section = m_sections[url];
+    return section->GetContentLists();
+  }
+  return std::vector<contentListPair>();
+}
 
-  dprintf("FanLoader: started to load fan with key: %s", key.c_str());
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CFileItemListPtr CGUIWindowHome::GetContentListFromSection(const CStdString &url, int contentType)
+{
+  if (m_sections.find(url) != m_sections.end())
+  {
+    CPlexSectionFanout* section = m_sections[url];
+    CFileItemListPtr list = section->GetContentList(contentType);
+    if ((list && list->Size() > 0) || contentType != CONTENT_LIST_FANART)
+      return section->GetContentList(contentType);
+  }
 
-  m_key = key;
-  m_loadTimer.Start();
-  m_delay = delay;
-  m_hide = hide;
+  if (contentType == CONTENT_LIST_FANART &&
+      !g_guiSettings.GetBool("lookandfeel.enableglobalslideshow"))
+  {
+    /* Special case */
+    CGUIBaseContainer *container = (CGUIBaseContainer*)GetControl(MAIN_MENU);
+    CFileItemList* list = new CFileItemList();
+    CFileItemPtr defaultItem = CFileItemPtr(new CFileItem(CPlexSectionFanout::GetBestServerUrl(":/resources/show-fanart.jpg"), false));
 
-  if (!IsRunning())
-    Create(true);
+    if (!container)
+      list->Add(defaultItem);
+
+    BOOST_FOREACH(CGUIListItemPtr fileItem, container->GetItems())
+    {
+      if (fileItem->HasProperty("sectionPath") &&
+          fileItem->GetProperty("sectionPath").asString() == url)
+      {
+        if (fileItem->HasArt(PLEX_ART_FANART))
+          list->Add(CFileItemPtr(new CFileItem(fileItem->GetArt(PLEX_ART_FANART), false)));
+        else
+          list->Add(defaultItem);
+        break;
+      }
+    }
+
+    if (list->Size() == 0)
+      list->Add(defaultItem);
+
+    return CFileItemListPtr(list);
+  }
+
+  return CFileItemListPtr();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::RefreshSection(const CStdString &url, int type)
+{
+  if (m_sections.find(url) != m_sections.end())
+  {
+    CPlexSectionFanout* section = m_sections[url];
+    return section->Refresh();
+  }
   else
-    m_wakeMe.notify_one();
+    AddSection(url, type);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+typedef std::pair<CStdString, CPlexSectionFanout*> nameSectionPair;
+void CGUIWindowHome::RefreshAllSections(bool force)
+{
+  BOOST_FOREACH(nameSectionPair p, m_sections)
+  {
+    if (force || p.second->NeedsRefresh())
+      p.second->Refresh();
+  }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowHome::ShowSection(const CStdString &url)
+{
+  CLog::Log(LOGDEBUG, "GUIWindowHome:ShowSection %s", url.c_str());
+  if (m_sections.find(url) != m_sections.end())
+  {
+    CPlexSectionFanout* section = m_sections[url];
+    section->Show();
+    return true;
+  }
+  CLog::Log(LOGDEBUG, "GUIWindowHome:ShowSection NOT FOUND %s", url.c_str());
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool CGUIWindowHome::ShowCurrentSection()
+{
+  if (GetCurrentItemName(true))
+    return ShowSection(GetCurrentItemName(true));
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CStdString CGUIWindowHome::GetCurrentItemName(bool onlySections)
+{
+  CStdString name;
+
+  CFileItemPtr item = GetCurrentListItem();
+  if (!item)
+    return name;
+
+  if (item->HasProperty("sectionPath"))
+    name = item->GetProperty("sectionPath").asString();
+  else if (!onlySections)
+    name = item->GetLabel();
+
+  return name;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+void CGUIWindowHome::RestoreSection()
+{
+  CLog::Log(LOGDEBUG, "CGUIWindowHome:RestoreSection %s", m_lastSelectedItem.c_str());
+  if (m_lastSelectedItem == GetCurrentItemName())
+  {
+    ShowSection(m_lastSelectedItem);
+    return;
+  }
+
+  HideAllLists();
+
+  CGUIBaseContainer *pControl = (CGUIBaseContainer*)GetControl(MAIN_MENU);
+  if (pControl && !m_lastSelectedItem.empty())
+  {
+    int idx = 0;
+    BOOST_FOREACH(CGUIListItemPtr i, pControl->GetItems())
+    {
+      if (i->IsFileItem())
+      {
+        CFileItem* fItem = (CFileItem*)i.get();
+        if (m_lastSelectedItem == fItem->GetProperty("sectionPath").asString() ||
+            m_lastSelectedItem == fItem->GetLabel())
+        {
+          CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), pControl->GetID(), idx+1, 0);
+          g_windowManager.SendThreadMessage(msg);
+
+          if (fItem->HasProperty("sectionPath"))
+            ShowSection(fItem->GetProperty("sectionPath").asString());
+        }
+      }
+      idx++;
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
 void CAuxFanLoadThread::Process()
 {
   while (!m_bStop)
@@ -917,33 +971,3 @@ void CAuxFanLoadThread::Process()
   }
 }
 
-void CFanLoadingThread::Process()
-{
-  while (!m_bStop)
-  {
-    boost::mutex::scoped_lock lk(m_mutex);
-    if (m_key.empty() == false)
-    {
-      if(m_loadTimer.IsRunning() && m_loadTimer.GetElapsedMilliseconds() > m_delay)
-      {
-        m_window->UpdateContentForSelectedItem(m_key, m_hide);
-        m_loadTimer.Stop();
-        m_key.clear();
-      }
-      else
-      {
-        boost::system_time const tmout = boost::get_system_time() + boost::posix_time::milliseconds(m_delay - m_loadTimer.GetElapsedMilliseconds());
-        m_wakeMe.timed_wait(lk, tmout);
-      }
-    }
-    else
-      m_wakeMe.wait(lk);
-  }
-}
-
-void CFanLoadingThread::StopThread(bool bWait)
-{
-  m_bStop = true;
-  m_wakeMe.notify_all();
-  CThread::StopThread(bWait);
-}

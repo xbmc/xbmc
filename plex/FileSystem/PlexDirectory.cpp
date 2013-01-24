@@ -244,22 +244,6 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
 
   Parse(m_url, root, items, strFileLabel, strSecondFileLabel, strDirLabel, strSecondDirLabel, localServer);
 
-  // Check if any restrictions should be applied
-  bool disableFanart = false;
-
-  if (g_advancedSettings.m_bEnableViewRestrictions)
-  {
-    // Disable fanart
-    const char* strDisableFanart = root->Attribute("disableFanart");
-    if (strDisableFanart && strcmp(strDisableFanart, "1") == 0)
-      disableFanart = true;
-
-    // Disabled view modes
-    const char* disabledViewModes = root->Attribute("disabledViewModes");
-    if (disabledViewModes && strlen(disabledViewModes) > 0)
-      items.SetDisabledViewModes(disabledViewModes);
-  }
-
   // Set the window titles
   const char* title1 = root->Attribute("title1");
   const char* title2 = root->Attribute("title2");
@@ -305,21 +289,12 @@ bool CPlexDirectory::ReallyGetDirectory(const CStdString& strPath, CFileItemList
     }
     
     // Fall back to directory fanart?
-    if ((strFanart.size() > 0 && pItem->GetArt(PLEX_ART_FANART).size() == 0) || disableFanart)
+    if (strFanart.size() > 0 && !pItem->HasArt(PLEX_ART_FANART))
     {
       pItem->SetArt(PLEX_ART_FANART, strFanart);
 
       if (strFanart.find("/:/resources") != string::npos)
         pItem->SetProperty("fanart_fallback", "1");
-    }
-
-    // Save the fallback fanart in case we need it while loading the real one.
-    if (strFanart.size() > 0)
-    {
-      bool needsRecache = false;
-      std::string imageURL = CTextureCache::Get().CheckCachedImage(strFanart, false, needsRecache);
-      if (!imageURL.empty())
-        pItem->SetArt(PLEX_ART_FANART_FALLBACK, imageURL);
     }
 
     // Fall back to directory thumb?
@@ -1980,16 +1955,6 @@ string CPlexDirectory::ProcessMediaElement(const string& parentPath, const char*
       // Build a special URL to get the media from the media server.
       strMedia = CPlexDirectory::BuildImageURL(parentPath, strMedia, local);
     }
-#if 0
-    else
-    {
-      // See if the item is too old.
-      string cachedFile(CFileItem::GetCachedPlexMediaServerThumb(strMedia));
-      if (PlexUtils::FileAge(cachedFile) > maxAge)
-        CFile::Delete(cachedFile);
-    }
-#endif
-
     return strMedia;
   }
 
