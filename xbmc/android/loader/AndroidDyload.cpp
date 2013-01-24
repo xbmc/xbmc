@@ -201,7 +201,6 @@ void CAndroidDyload::GetDeps(string filename, strings *results)
 void* CAndroidDyload::Open(const char * path)
 {
   string filename = path;
-  filename = filename.substr(filename.find_last_of('/') +1);
   void *handle = NULL;
   m_lib.deps.clear();
   handle = Find(filename);
