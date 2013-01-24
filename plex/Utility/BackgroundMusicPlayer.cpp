@@ -89,7 +89,7 @@ void BackgroundMusicPlayer::PlayCurrentTheme()
   if (m_theme.size() && m_player)
     m_player->OpenFile(CFileItem(m_theme, false), CPlayerOptions());
   else
-    FadeOutAndDie();
+    m_player->CloseFile();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
