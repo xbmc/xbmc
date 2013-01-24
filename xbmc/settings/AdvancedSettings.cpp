@@ -1051,6 +1051,25 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
   }
 
+  pElement = pRootElement->FirstChildElement("libass");
+  if(pElement)
+  {
+    TiXmlElement* styleOverridesElement = pElement->FirstChildElement("styleoverrides");
+    if(styleOverridesElement)
+    {
+      TiXmlElement* style = styleOverridesElement->FirstChildElement("style");
+      while(style)
+      {
+        CStdString styleOverride("");
+        styleOverride += style->Attribute("name");
+        styleOverride += "=";
+        styleOverride += style->Attribute("value");
+        m_libassStyleOverrides.push_back(styleOverride);
+        style = style->NextSiblingElement("style");
+      }
+    }
+  }
+
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
@@ -1222,3 +1241,4 @@ void CAdvancedSettings::SetDebugMode(bool debug)
     CLog::SetLogLevel(level);
   }
 }
+

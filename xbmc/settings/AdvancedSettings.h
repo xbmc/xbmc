@@ -365,6 +365,8 @@ class CAdvancedSettings
     bool m_initialized;
 
     void SetDebugMode(bool debug);
+
+    CStdStringArray m_libassStyleOverrides;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

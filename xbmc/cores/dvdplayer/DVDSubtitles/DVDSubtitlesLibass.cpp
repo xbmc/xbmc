@@ -22,6 +22,7 @@
 #include "DVDClock.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
@@ -66,7 +67,36 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   //  so translate the path before calling into libass
   m_dll.ass_set_fonts_dir(m_library,  CSpecialProtocol::TranslatePath(strPath).c_str());
   m_dll.ass_set_extract_fonts(m_library, 1);
-  m_dll.ass_set_style_overrides(m_library, NULL);
+  if(g_advancedSettings.m_libassStyleOverrides.size() > 0)
+  {
+    CLog::Log(LOGINFO, "CDVDSubtitlesLiabss: applying advanced settings");
+    // convert string array to array of null terminated C strings that libass expects
+    char** settings = new char*[g_advancedSettings.m_libassStyleOverrides.size() + 1];
+    char** currentSetting = settings;
+    for(CStdStringArray::const_iterator it = g_advancedSettings.m_libassStyleOverrides.begin();
+        it != g_advancedSettings.m_libassStyleOverrides.end();
+        ++it)
+    {
+//      std::cerr << it->c_str() << std::endl;
+      int len = it->GetLength();
+      *currentSetting = new char[len + 1];
+      char const* buf = it->c_str(); // copy internal buffer
+      std::copy(buf, buf + len, *currentSetting);
+      (*currentSetting)[len] = 0;
+//      std::cerr << *currentSetting << std::endl;
+      currentSetting += 1;
+    }
+    *currentSetting = 0;
+    m_dll.ass_set_style_overrides(m_library, settings);
+    currentSetting = settings; // clean up memory : libass stores these settings internally
+    while(*currentSetting) {
+      delete[] *currentSetting;
+      currentSetting += 1;
+    }
+    delete[] settings;
+  }
+  else
+    m_dll.ass_set_style_overrides(m_library, NULL);
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS Renderer");
 
