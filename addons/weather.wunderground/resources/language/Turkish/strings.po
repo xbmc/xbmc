@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 1.0.8
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -120,6 +119,10 @@ msgstr "Son Dördün"
 msgctxt "#32510"
 msgid "Warning"
 msgstr "Uyarı"
+
+msgctxt "#32511"
+msgid "Watch"
+msgstr "İzle"
 
 msgctxt "#32514"
 msgid "Outlook"

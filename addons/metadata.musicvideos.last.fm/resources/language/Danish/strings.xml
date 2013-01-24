@@ -4,6 +4,6 @@
 <!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
 
 <strings>
-    <string id="30000">Hent album miniaturebilleder fra fanart.tv</string>
-    <string id="30001">Hent album miniaturebilleder fra Last.fm</string>
+    <string id="30000">Hent Miniaturebilleder af Albummer fra fanart.tv</string>
+    <string id="30001">Hent Miniaturebilleder af Albummer fra Last.fm</string>
 </strings>

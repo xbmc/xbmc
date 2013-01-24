@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.musicvideos.last.fm"
        name="Last.fm for Music Videos"
-       version="1.0.2"
+       version="1.0.3"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -17,7 +17,7 @@
     <summary lang="bg">Сваля инф. за музикални клипове от Last.fm</summary>
     <summary lang="ca">Arreplegador de videos musicals de Last.fm</summary>
     <summary lang="cs">Zdroj dat hudebních videí Last.fm</summary>
-    <summary lang="da">Last.fm musikvideo scraper</summary>
+    <summary lang="da">Last.fm Scraper til Musikvideor </summary>
     <summary lang="de">Last.fm Musik Video Scraper</summary>
     <summary lang="el">Scraper Μουσικών Βίντεο από Last.fm</summary>
     <summary lang="en">Last.fm Music Video Scraper</summary>
@@ -26,16 +26,18 @@
     <summary lang="es_MX">Scraper de Vídeos de Música de Last.fm</summary>
     <summary lang="fi">Last.fm musiikkivideotietojen lataaja</summary>
     <summary lang="fr">Collecter les clips vidéos Last.fm</summary>
+    <summary lang="gl">Scraper de música e vídeo de Last.fm</summary>
     <summary lang="he">Last.fm וידאו קליפ מוזיקה</summary>
     <summary lang="hu">Last.fm videóklip leolvasó</summary>
     <summary lang="it">Scaper Video Musicale di Last.fm</summary>
+    <summary lang="ja">Last.fm 音楽ビデオスクレーパー</summary>
     <summary lang="ko">Last.fm 뮤직 비디오 자료수집기</summary>
     <summary lang="lt">Last.fm vaizdo klipų Scraper</summary>
     <summary lang="mk">Last.fm Превземач на Музички видеа</summary>
     <summary lang="nl">Last.fm Muziek Video Scraper</summary>
     <summary lang="pl">Scraper teledysków Last.fm</summary>
     <summary lang="pt">Scraper de música Last.fm</summary>
-    <summary lang="pt_BR">Scraper de Concertos Last.FM</summary>
+    <summary lang="pt_BR">Scraper de Videoclipes do Last.fm</summary>
     <summary lang="ro">Informaţii Videoclipuri de la Last.fm</summary>
     <summary lang="ru">Инфоресурс видеоклипов Last.fm</summary>
     <summary lang="se">Skrapa för Last.fm musik</summary>
@@ -45,11 +47,12 @@
     <summary lang="th">ข้อมูลวิดีโอเพลงจาก Last.fm</summary>
     <summary lang="zh">Last.fm音乐电视刮削器</summary>
     <description lang="af">Laai Musiek Video inligting af</description>
+    <description lang="am">የሙዚቃ ቪዲዮ መረጃ ማውረጃ </description>
     <description lang="be">Зладаваць зьвесткі пра музычнае відэа</description>
     <description lang="bg">Сваля информация за музикални клипове</description>
     <description lang="ca">Baixa informació de videos musicals</description>
     <description lang="cs">Stáhnout informace o hudebním videu</description>
-    <description lang="da">Hent musikvideo information</description>
+    <description lang="da">Hent information til Musikvideoer</description>
     <description lang="de">Musik Video Information herunterladen</description>
     <description lang="el">Λήψη πληροφοριών Μουσικών Βίντεο</description>
     <description lang="en">Download Music Video information</description>
@@ -58,16 +61,18 @@
     <description lang="es_MX">Descarga Información de Vídeos de Músca</description>
     <description lang="fi">Lataa musiikkivideoiden tiedot</description>
     <description lang="fr">Télécharger les informations des clips vidéos</description>
+    <description lang="gl">Descargar información da música e vídeo</description>
     <description lang="he">הורד מידע וידאו קליפ</description>
     <description lang="hu">Videóklip információk letöltése a Last.fm webhelyről</description>
     <description lang="it">Scarica informazioni Video Musicale</description>
+    <description lang="ja">音楽ビデオ情報をダウンロード</description>
     <description lang="ko">뮤직 비디오 정보 다운로드</description>
     <description lang="lt">Atsisiusti vaizdo klipų informaciją</description>
     <description lang="mk">Превземи информации за музичко видео</description>
     <description lang="nl">Muziek Video informatie downloaden</description>
     <description lang="pl">Pobieraj informacje o teledyskach z last.fm</description>
     <description lang="pt">Descarregar informação de vídeoclipe</description>
-    <description lang="pt_BR">Download de informação de Concertos</description>
+    <description lang="pt_BR">Baixar informações do videoclipe</description>
     <description lang="ro">Descărcare informaţii videoclipuri</description>
     <description lang="ru">Загружать сведения о видеоклипах</description>
     <description lang="se">Ladda ner musikvideoinformation från last.fm</description>
@@ -76,5 +81,6 @@
     <description lang="sv">Ladda ner musikvideoinformation</description>
     <description lang="th">ดาวน์โหลดข้อมูลวิดีโอเพลง</description>
     <description lang="zh">从Last.fm下载音乐电视信息</description>
+    <broken>broken due to last.fm suspended XBMC API Account</broken>
   </extension>
 </addon>

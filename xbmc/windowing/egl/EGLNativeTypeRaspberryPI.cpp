@@ -362,6 +362,7 @@ bool CEGLNativeTypeRaspberryPI::SetNativeResolution(const RESOLUTION_INFO &res)
 #endif
 }
 
+#if defined(TARGET_RASPBERRY_PI)
 static float get_display_aspect_ratio(HDMI_ASPECT_T aspect)
 {
   float display_aspect;
@@ -389,6 +390,7 @@ static float get_display_aspect_ratio(SDTV_ASPECT_T aspect)
   }
   return display_aspect;
 }
+#endif
 
 bool CEGLNativeTypeRaspberryPI::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 {
