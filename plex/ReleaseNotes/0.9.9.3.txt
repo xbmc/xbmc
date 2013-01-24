@@ -1,0 +1,23 @@
+[b]Upstream fixes[/b]
+[*] UPnP fixes
+[*] AudioEngine sleep fixes (release locks when not playing)
+[*] VDA fixes on Intel (the greenline returs, but the frame drop will be gone)
+[*] Fixes a bug where Plex/HT could be moved to another desktop
+
+[b]Plex fixes[/b]
+[*] Spanish fixes from Javier Mazano
+[*] Desktop icons / shortcuts for Linux by Mark Walker
+[*] New Advanced Option: cachereadrate set in bps how fast the cache should be populated (defaults to 1Gbps)
+[*] New Advanced Option: alwaysreinitcoreaudio - set to debug coreaudio hdmi drop outs
+[*] New Advanced Option: hidefanouts - hide home page fanouts
+[*] Enable visualizations on all Platforms
+[*] Massive performance improvements for opening directories and playing movies
+[*] Internal rework of the home screen, should load faster, better, harder.
+[*] Make the "Show global slideshow" option under apparence work. 
+[*] Fix annoying assertion when loading files with sort title
+[*] Background music support, enable in settings and put your files in userdata/BackgroundMusic
+[*] Load higher resolution images for posters
+[*] Score fixes to selecting default server
+[*] Enable context menus for Queue and Recommendation fanouts.
+[*] Harmony mapping for context menu on Home screen was strange
+[*] Other small fixes
