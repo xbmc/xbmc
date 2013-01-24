@@ -169,3 +169,12 @@ protected:
   std::string m_content;
   CFileItem m_item;
 };
+
+struct DisplayTime
+{
+  int m_display_time;
+  int m_chapter;
+  std::string m_chapter_name;
+  double m_processing_time;
+  int player;
+};

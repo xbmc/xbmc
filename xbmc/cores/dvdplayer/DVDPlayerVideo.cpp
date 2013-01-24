@@ -473,6 +473,14 @@ void CDVDPlayerVideo::Process()
       if(m_started)
         m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
+    {
+      DisplayTime dTime = ((CDVDMsgType<DisplayTime>*)pMsg)->m_value;
+
+      dTime.m_processing_time = CDVDClock::GetAbsoluteClock();
+      dTime.player = DVDPLAYER_VIDEO;
+      m_messageParent.Put(new CDVDMsgType<DisplayTime>(CDVDMsg::PLAYER_DISPLAYTIME, dTime));
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_STREAMCHANGE))
     {
       CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
