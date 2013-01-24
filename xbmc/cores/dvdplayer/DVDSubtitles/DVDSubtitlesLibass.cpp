@@ -69,7 +69,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   m_dll.ass_set_extract_fonts(m_library, 1);
   if(g_advancedSettings.m_libassStyleOverrides.size() > 0)
   {
-    CLog::Log(LOGINFO, "CDVDSubtitlesLiabss: applying advanced settings");
+    CLog::Log(LOGINFO, "CDVDSubtitlesLibass: applying advanced settings");
     // convert string array to array of null terminated C strings that libass expects
     char** settings = new char*[g_advancedSettings.m_libassStyleOverrides.size() + 1];
     char** currentSetting = settings;
@@ -77,13 +77,11 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
         it != g_advancedSettings.m_libassStyleOverrides.end();
         ++it)
     {
-//      std::cerr << it->c_str() << std::endl;
       int len = it->GetLength();
       *currentSetting = new char[len + 1];
       char const* buf = it->c_str(); // copy internal buffer
       std::copy(buf, buf + len, *currentSetting);
       (*currentSetting)[len] = 0;
-//      std::cerr << *currentSetting << std::endl;
       currentSetting += 1;
     }
     *currentSetting = 0;
