@@ -6,7 +6,7 @@
     android:versionName="12.0-RC3" >
 
     <!-- This is the platform API where NativeActivity was introduced. -->
-    <uses-sdk android:minSdkVersion="9" />
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
