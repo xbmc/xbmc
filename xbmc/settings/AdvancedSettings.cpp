@@ -361,6 +361,9 @@ void CAdvancedSettings::Initialize()
 
   m_bAlwaysReinitCoreAudio = false;
   m_bHideFanouts = false;
+
+  /* Let's default to a higher quality of pics */
+  m_imageRes = 1080;
   /* END PLEX */
 
 
