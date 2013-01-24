@@ -661,8 +661,8 @@
 				<posy>235</posy>
 				<posx>1</posx>
 				<visible>[!Control.IsVisible(11000) + Control.IsVisible(11001)] | [!Control.IsVisible(11001) + Control.IsVisible(11000)] | [Control.IsVisible(11003) + !Control.IsVisible(11004)] | [!Control.IsVisible(11003) + Control.IsVisible(11004)] | Control.IsVisible(11002)</visible>
-				<!--<animation effect="fade" start="0" end="100" time="500" delay="0">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="100" delay="0">Hidden</animation>-->
+				<animation effect="fade" start="0" end="100" time="500" delay="0">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="100" delay="0">Hidden</animation>
 				<control type="image">
 					<texture background="true">newlistsinglebgunfocused1.png</texture>
 				</control>

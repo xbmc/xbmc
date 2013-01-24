@@ -207,8 +207,6 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
 
   m_age.restart();
 
-  CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:OnJobComplete loaded %s", load->GetUrl().c_str());
-
   vector<int>::iterator it = std::find(m_outstandingJobs.begin(), m_outstandingJobs.end(), jobID);
   if (it != m_outstandingJobs.end())
     m_outstandingJobs.erase(it);
@@ -234,7 +232,6 @@ void CPlexSectionFanout::Show()
     Refresh();
   else
   {
-    CLog::Log(LOGDEBUG, "GUIWindowHome:SectionFanout:Show we are up to date, just sending messages for %s", m_url.c_str());
     /* we are up to date, just send the messages */
     CGUIMessage msg(GUI_MSG_PLEX_SECTION_LOADED, WINDOW_HOME, 300, m_sectionType);
     msg.SetStringParam(m_url);
@@ -334,7 +331,7 @@ CFileItemPtr CGUIWindowHome::GetCurrentListItem(int offset)
 CFileItem* CGUIWindowHome::GetCurrentFileItem()
 {
   CFileItemPtr listItem = GetCurrentListItem();
-  if (listItem->IsFileItem())
+  if (listItem && listItem->IsFileItem())
     return (CFileItem*)listItem.get();
   return NULL;
 }
@@ -485,15 +482,15 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       if (!m_lastSelectedItem.empty())
         HideAllLists();
-      SET_CONTROL_HIDDEN(SLIDESHOW_MULTIIMAGE);
 
+      if (m_lastSelectedItem == "Search")
+        RefreshSection("global://art", PLEX_METADATA_GLOBAL_IMAGES);
     }
 
     case GUI_MSG_WINDOW_RESET:
     case GUI_MSG_UPDATE_MAIN_MENU:
     {
       UpdateSections();
-      RefreshSection("global://art", PLEX_METADATA_GLOBAL_IMAGES);
 
       if (message.GetMessage() != GUI_MSG_UPDATE_MAIN_MENU)
         RefreshAllSections(false);
@@ -504,30 +501,33 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
     {
       int type = message.GetParam1();
       CStdString url = message.GetStringParam();
+      CFileItem* currentFileItem = GetCurrentFileItem();
 
       CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage Plex Section loaded %s %d", url.c_str(), type);
 
+      CStdString sectionToLoad;
+      if (currentFileItem && currentFileItem->HasProperty("sectionPath"))
+        sectionToLoad = currentFileItem->GetProperty("sectionPath").asString();
+      if (m_lastSelectedItem != sectionToLoad)
+        sectionToLoad = m_lastSelectedItem;
+
       if (type == CONTENT_LIST_FANART)
       {
-        CFileItemListPtr list = GetContentListFromSection(url, CONTENT_LIST_FANART);
-        if (list)
+        if (url == sectionToLoad || url == "global://art")
         {
-          CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, list.get());
-          OnMessage(msg);
-          SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
-        }
+          CFileItemListPtr list = GetContentListFromSection(url, CONTENT_LIST_FANART);
+          if (list)
+          {
+            SET_CONTROL_VISIBLE(SLIDESHOW_MULTIIMAGE);
 
+            CLog::Log(LOGDEBUG, "GUIWindowHome:OnMessage activating global fanart with %d photos", list->Size());
+            CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), SLIDESHOW_MULTIIMAGE, 0, 0, list.get());
+            OnMessage(msg);
+          }
+        }
       }
       else
       {
-        CLog::Log(LOGDEBUG, "CGUIWindowHome:OnMessage current highlighted section is %s and lastSelected %s",
-                  GetCurrentFileItem()->GetProperty("sectionPath").asString().c_str(),
-                  m_lastSelectedItem.c_str());
-
-        CStdString sectionToLoad = GetCurrentFileItem()->GetProperty("sectionPath").asString();
-        if (m_lastSelectedItem != sectionToLoad)
-          sectionToLoad = m_lastSelectedItem;
-
         if (url == sectionToLoad)
         {
           HideAllLists();
@@ -701,12 +701,7 @@ void CGUIWindowHome::UpdateSections()
 
       newItem->m_idepth = 0;
       if (item->HasArt(PLEX_ART_FANART))
-      {
-        CLog::Log(LOGDEBUG, "GUIWindowHome:UpdateSections we have fanart %s", item->GetArt(PLEX_ART_FANART).c_str());
         newItem->SetArt(PLEX_ART_FANART, item->GetArt(PLEX_ART_FANART));
-      }
-      else
-        CLog::Log(LOGDEBUG, "GUIWindowHome:UpdateSections missing fanart on %s", item->GetPath().c_str());
       newItem->m_iprogramCount = id++;
       newItem->SetProperty("sectionPath", item->GetPath());
 
@@ -765,7 +760,6 @@ void CGUIWindowHome::HideAllLists()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void CGUIWindowHome::AddSection(const CStdString &url, int type)
 {
-  CLog::Log(LOGDEBUG, "GUIWindowHome:AddSection %s", url.c_str());
   if (m_sections.find(url) == m_sections.end())
   {
     CPlexSectionFanout* fan = new CPlexSectionFanout(this, url, type);
@@ -866,14 +860,12 @@ void CGUIWindowHome::RefreshAllSections(bool force)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::ShowSection(const CStdString &url)
 {
-  CLog::Log(LOGDEBUG, "GUIWindowHome:ShowSection %s", url.c_str());
   if (m_sections.find(url) != m_sections.end())
   {
     CPlexSectionFanout* section = m_sections[url];
     section->Show();
     return true;
   }
-  CLog::Log(LOGDEBUG, "GUIWindowHome:ShowSection NOT FOUND %s", url.c_str());
   return false;
 }
 
