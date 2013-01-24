@@ -130,6 +130,7 @@
 #include "PlexUtils.h"
 #include "plex/GUI/GUIDialogMyPlexPin.h"
 #include "PlexApplication.h"
+#include "BackgroundMusicPlayer.h"
 /* END PLEX */
 
 using namespace std;
@@ -1127,10 +1128,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
-    else if (strSetting.Equals("backgroundmusic.thememusicenabled") || strSetting.Equals("backgroundmusic.bgmusicvolume"))
+    else if (strSetting.Equals("backgroundmusic.bgmusicenabled"))
     {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"));
+      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
+        g_backgroundMusicPlayer.PlayElevatorMusic();
+      else
+        g_backgroundMusicPlayer.Die();
     }
     else if (strSetting.Equals("updates.checknow"))
     {

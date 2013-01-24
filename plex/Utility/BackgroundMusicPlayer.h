@@ -11,9 +11,33 @@
 #include <boost/shared_ptr.hpp>
 
 #include "cores/IPlayer.h"
+#include "cores/paplayer/PAPlayer.h"
 #include "StdString.h"
 #include "PlexTypes.h"
 #include "GlobalsHandling.h"
+#include "FileItem.h"
+#include "Job.h"
+#include "JobManager.h"
+
+class BackgroundMusicOpener : public CJob
+{
+  public:
+    BackgroundMusicOpener(PAPlayer *player, CFileItemPtr musicfile)
+    {
+      m_player = player;
+      m_musicfile = musicfile;
+      CJobManager::GetInstance().AddJob(this, NULL, CJob::PRIORITY_HIGH);
+    }
+
+    bool DoWork()
+    {
+      return m_player->OpenFile(*m_musicfile.get(), CPlayerOptions());
+    }
+
+  private:
+    PAPlayer *m_player;
+    CFileItemPtr m_musicfile;
+};
 
 //
 // Utility class for playing background theme music.
@@ -37,23 +61,31 @@ public:
   void PlayCurrentTheme();
   void FadeOutAndDie();
   void Die();
+
+  void PlayElevatorMusic(bool force = false);
+  void PauseElevatorMusic();
   
 private:
-  
+  bool InitElevatorMusic();
+  void InitPlayer();
+
   // Player callbacks.
   void OnPlayBackEnded(){};
   void OnPlayBackStarted(){};
   void OnPlayBackStopped(){};
-  void OnQueueNextItem(){};
+  void OnQueueNextItem();
   
   // Audio callbacks
-  void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
-  void OnAudioData(const float* pAudioData, int iAudioDataLength) {};
+  void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample) {};
+  void OnAudioData(const float* pAudioData, int iAudioDataLength) {}
   
   // Member variables.
   int m_globalVolume;
   CStdString m_theme;
-  IPlayer *m_player;
+  PAPlayer *m_player;
+
+  CFileItemList m_bgPlaylist;
+  int m_position;
 };
 
 XBMC_GLOBAL_REF(BackgroundMusicPlayer, g_backgroundMusicPlayer);

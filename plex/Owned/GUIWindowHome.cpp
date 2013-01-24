@@ -67,6 +67,8 @@
 #include "Job.h"
 #include "JobManager.h"
 
+#include "BackgroundMusicPlayer.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace boost;
@@ -485,6 +487,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 
       if (m_lastSelectedItem == "Search")
         RefreshSection("global://art", PLEX_METADATA_GLOBAL_IMAGES);
+
+      if (g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
+        g_backgroundMusicPlayer.PlayElevatorMusic();
+
     }
 
     case GUI_MSG_WINDOW_RESET:

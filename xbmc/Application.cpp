@@ -4399,6 +4399,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if(bResult)
   {
+    /* PLEX */
+    g_backgroundMusicPlayer.PauseElevatorMusic();
+    /* END PLEX */
+
     if (m_iPlaySpeed != 1)
     {
       int iSpeed = m_iPlaySpeed;
@@ -4585,6 +4589,11 @@ void CApplication::OnPlayBackStopped()
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
+
+  /* PLEX */
+  g_backgroundMusicPlayer.PlayElevatorMusic();
+  /* END PLEX */
+
 }
 
 void CApplication::OnPlayBackPaused()

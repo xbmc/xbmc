@@ -406,9 +406,9 @@ void CGUISettings::Initialize()
 
   /* PLEX */
   CSettingsCategory* bgm = AddCategory(SETTINGS_MUSIC, "backgroundmusic", 33068);
-  AddBool(0, "backgroundmusic.bgmusicenabled", 18104, true);
+  AddBool(bgm, "backgroundmusic.bgmusicenabled", 18104, true);
   AddBool(bgm, "backgroundmusic.thememusicenabled", 18102, true);
-  AddInt(bgm, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+   AddInt(bgm, "backgroundmusic.bgmusicvolume", 18101, 50, 5, 5, 100, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   /* END PLEX */
 
   // System settings

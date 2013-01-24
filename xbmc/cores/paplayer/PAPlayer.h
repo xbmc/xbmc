@@ -153,5 +153,12 @@ private:
   void UpdateStreamInfoPlayNextAtFrame(StreamInfo *si, unsigned int crossFadingTime);
   void UpdateGUIData(StreamInfo *si);
   int64_t GetTimeInternal();
+
+  /* PLEX */
+  float m_userRequestedVolume;
+  float GetMaxVolume();
+
+  /* END PLEX */
+
 };
 
