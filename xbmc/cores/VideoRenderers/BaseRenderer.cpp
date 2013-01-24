@@ -106,9 +106,9 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fa
 
     for (size_t j = (int)RES_DESKTOP; j < g_settings.m_ResInfo.size(); j++)
     {
-      if (g_settings.m_ResInfo[j].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
-       && g_settings.m_ResInfo[j].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
-       && g_settings.m_ResInfo[j].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
+      if (g_settings.m_ResInfo[j].iScreenWidth  == g_settings.m_ResInfo[m_resolution].iScreenWidth
+       && g_settings.m_ResInfo[j].iScreenHeight == g_settings.m_ResInfo[m_resolution].iScreenHeight
+       && g_settings.m_ResInfo[j].iScreen       == g_settings.m_ResInfo[m_resolution].iScreen)
       {
         if (g_settings.m_ResInfo[j].fRefreshRate <= override.refreshmax
          && g_settings.m_ResInfo[j].fRefreshRate >= override.refreshmin)
@@ -161,9 +161,9 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
       for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
       {
         if (MathUtils::round_int(g_settings.m_ResInfo[i].fRefreshRate) == 60
-         && g_settings.m_ResInfo[i].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
-         && g_settings.m_ResInfo[i].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
-         && g_settings.m_ResInfo[i].iScreen == g_settings.m_ResInfo[m_resolution].iScreen)
+         && g_settings.m_ResInfo[i].iScreenWidth  == g_settings.m_ResInfo[m_resolution].iScreenWidth
+         && g_settings.m_ResInfo[i].iScreenHeight == g_settings.m_ResInfo[m_resolution].iScreenHeight
+         && g_settings.m_ResInfo[i].iScreen       == g_settings.m_ResInfo[m_resolution].iScreen)
         {
           if (fabs(g_settings.m_ResInfo[i].fRefreshRate - 60.0) < fabs(g_settings.m_ResInfo[m_resolution].fRefreshRate - 60.0))
             m_resolution = (RESOLUTION)i;
@@ -176,10 +176,10 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
         CLog::Log(LOGDEBUG, "60 hertz refreshrate not available, choosing highest");
         for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
         {
-          if (g_settings.m_ResInfo[i].fRefreshRate >  g_settings.m_ResInfo[m_resolution].fRefreshRate
-           && g_settings.m_ResInfo[i].iWidth       == g_settings.m_ResInfo[m_resolution].iWidth
-           && g_settings.m_ResInfo[i].iHeight      == g_settings.m_ResInfo[m_resolution].iHeight
-           && g_settings.m_ResInfo[i].iScreen      == g_settings.m_ResInfo[m_resolution].iScreen)
+          if (g_settings.m_ResInfo[i].fRefreshRate  >  g_settings.m_ResInfo[m_resolution].fRefreshRate
+           && g_settings.m_ResInfo[i].iScreenWidth  == g_settings.m_ResInfo[m_resolution].iScreenWidth
+           && g_settings.m_ResInfo[i].iScreenHeight == g_settings.m_ResInfo[m_resolution].iScreenHeight
+           && g_settings.m_ResInfo[i].iScreen       == g_settings.m_ResInfo[m_resolution].iScreen)
           {
             m_resolution = (RESOLUTION)i;
           }
@@ -195,14 +195,12 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 {
   RESOLUTION_INFO &curr = g_settings.m_ResInfo[current];
 
-  int iWidth  = curr.iWidth;
-  int iHeight = curr.iHeight;
+  int iScreenWidth  = curr.iScreenWidth;
+  int iScreenHeight = curr.iScreenHeight;
   float fRefreshRate = fps;
 
   /*
    * For 3D modes the following is assumed :
-   *
-   * fps is fps * 2 : 25 fps -> 50 fps
    *
    * side-by-side :
    *
@@ -214,15 +212,23 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
    *
    */
 
+  // work out current non-3D resolution (in case we are currently in 3D mode)
+  if (curr.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
+  {
+    iScreenWidth *= 2;
+  }
+  else if (curr.dwFlags & D3DPRESENTFLAG_MODE3DTB)
+  {
+    iScreenHeight *= 2;
+  }
+  // work out resolution if we switch to 3D mode
   if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
   {
-    iWidth /= 2;
-    fRefreshRate *= 2;
+    iScreenWidth /= 2;
   }
   else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
   {
-    iHeight /= 2;
-    fRefreshRate *= 2;
+    iScreenHeight /= 2;
   }
 
   float last_diff = fRefreshRate;
@@ -235,8 +241,8 @@ RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RES
 
     //discard resolutions that are not the same width and height
     //or have a too low refreshrate
-    if (info.iWidth  != iWidth
-    ||  info.iHeight != iHeight
+    if (info.iScreenWidth  != iScreenWidth
+    ||  info.iScreenHeight != iScreenHeight
     ||  info.iScreen != curr.iScreen
     ||  info.fRefreshRate < (fRefreshRate * multiplier / 1.001) - 0.001)
       continue;
@@ -500,11 +506,6 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 //***************************************************************************************
 void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height)
 {
-  if(m_iFlags & CONF_FLAGS_FORMAT_SBS)
-    desired_width /= 2;
-  else if(m_iFlags & CONF_FLAGS_FORMAT_TB)
-    desired_height /= 2;
-
   m_sourceFrameRatio = (float)desired_width / desired_height;
 
   // Check whether mplayer has decided that the size of the video file should be changed
@@ -575,6 +576,9 @@ void CBaseRenderer::ManageDisplay()
 void CBaseRenderer::SetViewMode(int viewMode)
 {
   if (viewMode < VIEW_MODE_NORMAL || viewMode > VIEW_MODE_CUSTOM)
+    viewMode = VIEW_MODE_NORMAL;
+
+  if (m_iFlags & (CONF_FLAGS_FORMAT_SBS | CONF_FLAGS_FORMAT_TB))
     viewMode = VIEW_MODE_NORMAL;
 
   g_settings.m_currentVideoSettings.m_ViewMode = viewMode;
