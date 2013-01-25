@@ -275,10 +275,12 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
     streamLock.Leave();
   }
   
+#if defined(TARGET_DARWIN_OSX)
   if (m_Initialized)
   {
     m_currentAudioDevice = CCoreAudioHardware::FindAudioDevice(m_outputDevice);
   }
+#endif
 
   return m_Initialized;
 }
@@ -451,6 +453,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   m_streams.push_back(stream);
   streamLock.Leave();
 
+#if defined(TARGET_DARWIN_OSX)
   // check if default device has changed - in that case we need to reinit
   // TODO hook into osx callbacks for getting notifiaction on device
   // changes and then queue a change of the default device
@@ -462,6 +465,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
     if (currentId != m_currentAudioDevice)
       defaultDeviceChanged = true;
   }
+#endif
 
   if ((options & AESTREAM_PAUSED) == 0)
     Stop();
