@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <includes>
 	<include name="HomeSubMenuVideos">
 		<control type="image" id="90101">
@@ -285,7 +286,6 @@
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
 		</control>
 	</include>
-
 	<include name="HomeAddonItemsVideos">
 		<item>
 			<label>$INFO[system.addontitle(Skin.String(HomeVideosButton1))]</label>

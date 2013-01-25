@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<controls>
@@ -721,7 +722,7 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<enable>!IsEmpty(Skin.String(LyricScript_Path))</enable>
 							<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
-						</control> 
+						</control>
 						<control type="label" id="457">
 							<width>750</width>
 							<height>45</height>
@@ -755,8 +756,7 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<enable>!IsEmpty(Skin.String(SubtitleScript_Path))</enable>
 							<onclick>Addon.OpenSettings($INFO[Skin.String(SubtitleScript_Path)])</onclick>
-						</control> 
-
+						</control>
 						<control type="label" id="410">
 							<width>750</width>
 							<height>45</height>
@@ -827,7 +827,6 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomeVideosButton5,xbmc.addon.video,xbmc.addon.executable)</onclick>
 						</control>
-
 						<control type="label" id="420">
 							<width>750</width>
 							<height>45</height>
@@ -898,7 +897,6 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomeMusicButton5,xbmc.addon.audio,xbmc.addon.executable)</onclick>
 						</control>
-
 						<control type="label" id="430">
 							<width>750</width>
 							<height>45</height>
@@ -969,7 +967,6 @@
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomePictureButton5,xbmc.addon.image,xbmc.addon.executable)</onclick>
 						</control>
-
 						<control type="label" id="440">
 							<width>750</width>
 							<height>45</height>

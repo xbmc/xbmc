@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<onload>ClearProperty(TVGuide.MondayList,Home)</onload>
 	<onload>ClearProperty(TVGuide.TuesdayList,Home)</onload>
@@ -133,7 +134,7 @@
 			</control>
 		</control>
 		<control type="grouplist" id="2000">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<posx>40</posx>
 			<posy>60</posy>
 			<width>1200</width>
@@ -444,7 +445,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<description>left Arrow</description>
 				<posx>10</posx>

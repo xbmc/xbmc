@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window type="buttonMenu">
 	<defaultcontrol>9001</defaultcontrol>
 	<include>dialogeffect</include>

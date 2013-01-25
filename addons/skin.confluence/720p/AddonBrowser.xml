@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
@@ -7,11 +8,15 @@
 		<include>CommonBackground</include>
 		<include>ContentPanelBackgrounds</include>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
-			<include>CommonRootView</include> <!-- view id = 50 -->
-			<include>FullWidthList</include> <!-- view id = 51 -->
-			<include>AddonInfoListView1</include> <!-- view id = 550 -->
-			<include>AddonInfoThumbView1</include> <!-- view id = 551 -->
+			<include>Window_OpenClose_Animation</include>
+			<include>CommonRootView</include>
+			<!-- view id = 50 -->
+			<include>FullWidthList</include>
+			<!-- view id = 51 -->
+			<include>AddonInfoListView1</include>
+			<!-- view id = 550 -->
+			<include>AddonInfoThumbView1</include>
+			<!-- view id = 551 -->
 		</control>
 		<include>CommonPageCount</include>
 		<include>CommonNowPlaying</include>
@@ -97,21 +102,21 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-				<control type="radiobutton" id ="5">
+				<control type="radiobutton" id="5">
 					<description>Enable auto-updates</description>
 					<posx>0</posx>
 					<posy>130</posy>
 					<include>ButtonCommonValues</include>
 					<label>24063</label>
 				</control>
-				<control type="radiobutton" id ="6">
+				<control type="radiobutton" id="6">
 					<description>No notifications</description>
 					<posx>0</posx>
 					<posy>170</posy>
 					<include>ButtonCommonValues</include>
 					<label>25000</label>
 				</control>
-				<control type="radiobutton" id ="7">
+				<control type="radiobutton" id="7">
 					<description>Hide foreign</description>
 					<posx>0</posx>
 					<posy>210</posy>

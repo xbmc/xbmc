@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">9000</defaultcontrol>
-	<allowoverlay>no</allowoverlay>	
+	<allowoverlay>no</allowoverlay>
 	<onunload condition="Container(9000).Hasfocus(10) | Container(9000).Hasfocus(11) | ControlGroup(9010).HasFocus | ControlGroup(9016).HasFocus | ControlGroup(9017).HasFocus">SetProperty(VideosDirectLink,True)</onunload>
 	<onunload condition="Control.HasFocus(9000) + Container(9000).Hasfocus(2)">ClearProperty(VideosDirectLink)</onunload>
 	<controls>
@@ -736,56 +737,64 @@
 					<onleft>9010</onleft>
 					<onright>9010</onright>
 					<visible>Container(9000).HasFocus(2)</visible>
-					<include>HomeSubMenuVideos</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuVideos</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9016">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9016</onleft>
 					<onright>9016</onright>
 					<visible>Container(9000).HasFocus(10)</visible>
-					<include>HomeSubMenuMovies</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuMovies</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9017">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9017</onleft>
 					<onright>9017</onright>
 					<visible>Container(9000).HasFocus(11)</visible>
-					<include>HomeSubMenuTVShows</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuTVShows</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9011">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9011</onleft>
 					<onright>9011</onright>
 					<visible>Container(9000).HasFocus(3)</visible>
-					<include>HomeSubMenuMusic</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuMusic</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9012">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9012</onleft>
 					<onright>9012</onright>
 					<visible>Container(9000).HasFocus(5)</visible>
-					<include>HomeSubMenuSystem</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuSystem</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9013">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9013</onleft>
 					<onright>9013</onright>
 					<visible>Container(9000).HasFocus(6)</visible>
-					<include>HomeSubMenuPlayDisc</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuPlayDisc</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9014">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9014</onleft>
 					<onright>9014</onright>
 					<visible>Container(9000).HasFocus(12)</visible>
-					<include>HomeSubMenuLiveTV</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuLiveTV</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 				<control type="grouplist" id="9015">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9013</onleft>
 					<onright>9013</onright>
 					<visible>Container(9000).HasFocus(4)</visible>
-					<include>HomeSubMenuPictures</include> <!-- Buttons for the grouplist -->
+					<include>HomeSubMenuPictures</include>
+					<!-- Buttons for the grouplist -->
 				</control>
 			</control>
 			<control type="image">
@@ -1193,5 +1202,5 @@
 			<include>Window_OpenClose_Animation</include>
 			<animation effect="slide" start="0,0" end="-40,0" time="100" condition="Window.IsVisible(Mutebug)">conditional</animation>
 		</control>
-	</controls>	
+	</controls>
 </window>

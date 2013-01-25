@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">100</defaultcontrol>
 	<include>dialogeffect</include>
@@ -144,7 +145,6 @@
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
 		</control>
-
 		<!-- LiveTV -->
 		<control type="group" id="100">
 			<posx>325</posx>
@@ -287,7 +287,6 @@
 				<onclick>Dialog.Close(VideoOSD)</onclick>
 			</control>
 		</control>
-
 		<!-- !LiveTV -->
 		<control type="group">
 			<posx>300r</posx>
@@ -380,7 +379,6 @@
 				<animation effect="fade" start="100" end="50" time="100" condition="!VideoPlayer.HasMenu">Conditional</animation>
 			</control>
 		</control>
-
 		<!-- LiveTV -->
 		<control type="group">
 			<posx>240r</posx>
@@ -456,4 +454,4 @@
 			</control>
 		</control>
 	</controls>
- </window>
+</window>

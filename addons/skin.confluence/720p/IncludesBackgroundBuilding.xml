@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <includes>
 	<include name="CommonBackground">
 		<control type="image">
@@ -308,7 +309,7 @@
 			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
 		</control>
 		<control type="group">
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
 				<visible>Control.IsVisible(10) | Control.IsVisible(14) | Control.IsVisible(15) | Control.IsVisible(16) | Control.IsVisible(17)</visible>
@@ -393,5 +394,4 @@
 			</control>
 		</control>
 	</include>
-
 </includes>

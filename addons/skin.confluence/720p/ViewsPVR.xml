@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <includes>
 	<include name="LiveTVChannelView">
 		<control type="group">
@@ -306,7 +307,6 @@
 			</control>
 		</control>
 	</include>
-
 	<include name="LiveRadioChannelView">
 		<control type="group">
 			<description>Radio Channels group</description>
@@ -610,11 +610,10 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>([COLOR=blue]$INFO[Container(12).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(12).CurrentPage]/$INFO[Container(12).NumPages][/COLOR])</label>
-				<include>Window_OpenClose_Animation</include>		
+				<include>Window_OpenClose_Animation</include>
 			</control>
 		</control>
 	</include>
-
 	<include name="LiveTVRecordingsView">
 		<control type="group">
 			<description>Recordings group</description>
@@ -633,7 +632,7 @@
 				<pagecontrol>72</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="40" width="760">
-				<control type="image">
+					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>760</width>
@@ -793,7 +792,7 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>([COLOR=blue]$INFO[Container(13).NumItems][/COLOR]) $LOCALIZE[19163] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(13).CurrentPage]/$INFO[Container(13).NumPages][/COLOR])</label>
-				<include>Window_OpenClose_Animation</include>		
+				<include>Window_OpenClose_Animation</include>
 			</control>
 			<control type="group">
 				<posx>910</posx>
@@ -838,7 +837,6 @@
 			</control>
 		</control>
 	</include>
-
 	<include name="EPGTimelineView">
 		<control type="group">
 			<description>TV Guide Timeline</description>
@@ -1042,7 +1040,6 @@
 			</control>
 		</control>
 	</include>
-
 	<include name="LiveTVTimersView">
 		<control type="group">
 			<description>Timers group</description>
@@ -1350,11 +1347,10 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>([COLOR=blue]$INFO[Container(14).NumItems][/COLOR]) $LOCALIZE[19040] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(14).CurrentPage]/$INFO[Container(14).NumPages][/COLOR])</label>
-				<include>Window_OpenClose_Animation</include>		
+				<include>Window_OpenClose_Animation</include>
 			</control>
 		</control>
 	</include>
-
 	<include name="LiveTVSearchView">
 		<control type="group">
 			<description>TV Search group</description>
@@ -1708,7 +1704,6 @@
 			</control>
 		</control>
 	</include>
-
 	<include name="LiveTVGuideChannelView">
 		<control type="group">
 			<description>TV Guide Channel</description>
@@ -2032,7 +2027,6 @@
 			</control>
 		</control>
 	</include>
-
 	<include name="LiveTVGuideNowNextView">
 		<control type="group">
 			<description>TV Guide Now/Next</description>

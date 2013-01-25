@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">2</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
@@ -63,7 +64,7 @@
 				<aspectratio>keep</aspectratio>
 				<texture>Confluence_Logo.png</texture>
 			</control>
-			<control type="button" id ="4">
+			<control type="button" id="4">
 				<description>Enable Login screen</description>
 				<posx>10</posx>
 				<posy>90</posy>

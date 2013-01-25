@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol always="true">22</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
@@ -217,7 +218,6 @@
 					<ondown>16</ondown>
 				</control>
 			</control>
-
 			<control type="label">
 				<description>Name Label</description>
 				<posx>30</posx>
@@ -242,7 +242,6 @@
 				<onup>10</onup>
 				<ondown>17</ondown>
 			</control>
-
 			<control type="spincontrolex" id="17">
 				<posx>30</posx>
 				<posy>440</posy>
@@ -257,7 +256,6 @@
 				<onup>16</onup>
 				<ondown>18</ondown>
 			</control>
-
 			<control type="spincontrolex" id="18">
 				<posx>30</posx>
 				<posy>485</posy>
@@ -272,7 +270,6 @@
 				<onup>17</onup>
 				<ondown>9001</ondown>
 			</control>
-
 			<control type="togglebutton" id="19">
 				<posx>590</posx>
 				<posy>485</posy>

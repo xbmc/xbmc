@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol>3</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
@@ -133,7 +134,6 @@
 			</control>
 		</control>
 		<include>BehindDialogFadeOut</include>
-
 		<control type="button" id="10">
 			<description>Default Category Button</description>
 			<height>60</height>

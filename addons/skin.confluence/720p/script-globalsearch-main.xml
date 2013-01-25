@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<allowoverlay>no</allowoverlay>
 	<defaultcontrol>9000</defaultcontrol>
@@ -631,7 +632,6 @@
 							<label>([COLOR=blue]$INFO[Container(111).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(111).CurrentPage]/$INFO[Container(111).NumPages][/COLOR])</label>
 							<visible>Container(9000).Hasfocus(1)</visible>
 						</control>
-
 					</control>
 					<control type="group" id="129">
 						<posx>0</posx>
@@ -1119,7 +1119,7 @@
 							<label>-</label>
 							<font>-</font>
 							<textcolor>-</textcolor>
-							</control>
+						</control>
 						<control type="panel" id="151">
 							<visible>Container(9000).HasFocus(5)</visible>
 							<include>VisibleFadeEffect</include>

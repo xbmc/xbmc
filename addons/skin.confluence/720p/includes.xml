@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <includes>
 	<include file="defaults.xml" />
 	<include file="ViewsVideoLibrary.xml" />
@@ -16,10 +17,8 @@
 	<include file="weather\WeekendForecast.xml" />
 	<include file="weather\HourlyForecast.xml" />
 	<include file="weather\MapAlerts.xml" />
-
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
-
 	<variable name="BannerThumb">
 		<value condition="!IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
 		<value condition="IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Icon]</value>
@@ -28,7 +27,6 @@
 		<value condition="!IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value condition="IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Icon]</value>
 	</variable>
-
 	<include name="BehindDialogFadeOut">
 		<control type="image">
 			<posx>0</posx>
@@ -1208,8 +1206,8 @@
 		</focusedlayout>
 	</include>
 	<include name="backgroundfade">
-		 <animation effect="fade" time="600">Visible</animation>
-		 <animation effect="fade" time="600">Hidden</animation>
+		<animation effect="fade" time="600">Visible</animation>
+		<animation effect="fade" time="600">Hidden</animation>
 	</include>
 	<include name="Window_OpenClose_Animation">
 		<animation effect="fade" time="250">WindowOpen</animation>

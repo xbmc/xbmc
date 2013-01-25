@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <window>
 	<defaultcontrol>5</defaultcontrol>
 	<coordinates>
@@ -140,7 +141,6 @@
 			<height>2</height>
 			<texture>separator2.png</texture>
 		</control>
-
 		<control type="group" id="9000">
 			<posx>40</posx>
 			<posy>505</posy>
