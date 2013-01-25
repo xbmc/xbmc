@@ -58,7 +58,7 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libvdpau-dev, libvorbis-dev, libxinerama-dev, libxmu-dev, libxrandr-dev,
   libxt-dev, libyajl-dev, lsb-release, nasm [!amd64], python-dev,
   python-support, unzip, yasm, zip, zlib1g-dev, libcap-dev, swig, taglib(>= 1.8),
-  default-jre
+  default-jre, libtiff-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache
