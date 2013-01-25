@@ -33,6 +33,7 @@
 
 #if defined(TARGET_DARWIN_IOS)
 #include "CoreAudioAEHALIOS.h"
+#define AudioDeviceID unsigned
 #else
 #include "CoreAudioAEHALOSX.h"
 #endif
