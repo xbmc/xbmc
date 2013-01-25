@@ -3,7 +3,7 @@
 SET LOC_PATH=%CD%
 SET FILES=%LOC_PATH%\libshairplay_d.txt
 
-CALL dlextract.bat libnfs %FILES%
+CALL dlextract.bat libshairplay %FILES%
 
 cd %TMP_PATH%
 
