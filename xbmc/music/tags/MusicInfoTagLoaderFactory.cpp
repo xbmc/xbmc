@@ -74,6 +74,8 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
       strExtension == "m4a" || strExtension == "mp4" ||
       strExtension == "mpc" || strExtension == "mpp" || strExtension == "mp+" ||
       strExtension == "ogg" || strExtension == "oga" || strExtension == "oggstream" ||
+      strExtension == "aif" || strExtension == "aiff" ||
+      strExtension == "wav" ||
 #ifdef HAS_MOD_PLAYER
       ModPlayer::IsSupportedFormat(strExtension) ||
       strExtension == "mod" || strExtension == "nsf" || strExtension == "nsfstream" ||
@@ -94,11 +96,6 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
   else if (strExtension == "shn")
   {
     CMusicInfoTagLoaderSHN *pTagLoader = new CMusicInfoTagLoaderSHN();
-    return (IMusicInfoTagLoader*)pTagLoader;
-  }
-  else if (strExtension == "wav")
-  {
-    CMusicInfoTagLoaderWAV *pTagLoader = new CMusicInfoTagLoaderWAV();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
   else if (strExtension == "spc")

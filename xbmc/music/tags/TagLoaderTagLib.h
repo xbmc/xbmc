@@ -35,6 +35,7 @@
 #include <taglib/s3mfile.h>
 #include <taglib/trueaudiofile.h>
 #include <taglib/vorbisfile.h>
+#include <taglib/wavfile.h>
 #include <taglib/wavpackfile.h>
 #include <taglib/xmfile.h>
 
