@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C8F6C172-56F2-4E76-B5FA-C3B423B31BE7} = {C8F6C172-56F2-4E76-B5FA-C3B423B31BE7}
@@ -66,8 +66,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsidplay_dll", "..\..\lib\libsidplay2\libsidplay\win\VC\libsidplay.vcxproj", "{FB3AB83A-C37A-4636-87FD-827F8506A8FC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpluff", "..\..\lib\cpluff\libcpluff\win32\cpluff.vcxproj", "{88968763-3D6B-48A8-B495-CC8C187FAC02}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmp3lame_dll", "..\..\lib\liblame\vc_solution\vc10_libmp3lame_dll.vcxproj", "{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhdhomerun_dll", "..\..\lib\libhdhomerun\hdhomerun\hdhomerun.vcxproj", "{1E2FB608-3DD2-4021-A598-90008FA6DE85}"
 EndProject
@@ -411,16 +409,6 @@ Global
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{88968763-3D6B-48A8-B495-CC8C187FAC02}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug Testsuite|Win32.ActiveCfg = Debug|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Debug Testsuite|Win32.Build.0 = Debug|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (DirectX)|Win32.ActiveCfg = ReleaseNASM|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (DirectX)|Win32.Build.0 = ReleaseNASM|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (OpenGL)|Win32.ActiveCfg = ReleaseNASM|Win32
-		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (OpenGL)|Win32.Build.0 = ReleaseNASM|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{1E2FB608-3DD2-4021-A598-90008FA6DE85}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
