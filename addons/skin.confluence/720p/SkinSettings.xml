@@ -166,22 +166,22 @@
 					<item id="1">
 						<label>128</label>
 						<label2>5</label2>
-						<onclick>-</onclick>
+						<onclick>noop</onclick>
 					</item>
 					<item id="2">
 						<label>513</label>
 						<label2>31112</label2>
-						<onclick>-</onclick>
+						<onclick>noop</onclick>
 					</item>
 					<item id="3">
 						<label>31102</label>
 						<label2>31112</label2>
-						<onclick>-</onclick>
+						<onclick>noop</onclick>
 					</item>
 					<item id="4">
 						<label>24000</label>
 						<label2>31200</label2>
-						<onclick>-</onclick>
+						<onclick>noop</onclick>
 					</item>
 				</content>
 			</control>
