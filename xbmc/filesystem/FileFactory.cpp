@@ -63,10 +63,8 @@
 #if defined(TARGET_ANDROID)
 #include "APKFile.h"
 #endif
+#include "ArchiveFile.h"
 #include "ZipFile.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarFile.h"
-#endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "SFTPFile.h"
 #endif
@@ -124,10 +122,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   if (strProtocol == "zip") return new CZipFile();
   else if (strProtocol == "rar")
   {
-#ifdef HAS_FILESYSTEM_RAR
-    return new CRarFile();
+#ifdef HAVE_LIBARCHIVE
+    return new CArchiveFile(ARCHIVE_FORMAT_RAR, ARCHIVE_FILTER_NONE);
 #else
-    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s - Compiled without libarchive, rar support is disabled", __FUNCTION__);
 #endif
   }
   else if (strProtocol == "musicdb") return new CMusicDatabaseFile();

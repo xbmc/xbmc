@@ -83,10 +83,8 @@
 #if defined(TARGET_ANDROID)
 #include "APKDirectory.h"
 #endif
+#include "ArchiveDirectory.h"
 #include "ZipDirectory.h"
-#ifdef HAS_FILESYSTEM_RAR
-#include "RarDirectory.h"
-#endif
 #include "TuxBoxDirectory.h"
 #include "HDHomeRunDirectory.h"
 #include "SlingboxDirectory.h"
@@ -150,10 +148,26 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") 
   {
-#ifdef HAS_FILESYSTEM_RAR
-    return new CRarDirectory();
+#ifdef HAVE_LIBARCHIVE
+    CRegExp regex(true);
+    CStdString pattern = "^(rar://)(.*\\.(rar|\\d{3}))/$";
+    if (!regex.RegComp(pattern))
+    {
+      CLog::Log(LOGDEBUG, "%s - Regex compilation failed using pattern '%s'",
+                __FUNCTION__, pattern.c_str());
+    }
+    if (regex.RegFind(strPath) >= 0)
+    {
+      /*
+       * This is an actual archive file, return as a file directory.
+       * NOTE: rar:// protocol and slash at end are removed.
+       */
+      return Create(CURL::Decode(regex.GetMatch(2)));
+    }
+    /* This is a directory in an archive */
+    return new CArchiveDirectory(ARCHIVE_FORMAT_RAR, ARCHIVE_FILTER_NONE);
 #else
-    CLog::Log(LOGWARNING, "%s - Compiled without non-free, rar support is disabled", __FUNCTION__);
+    CLog::Log(LOGWARNING, "%s - Compiled without libarchive, rar support is disabled", __FUNCTION__);
 #endif
   }
   if (strProtocol == "multipath") return new CMultiPathDirectory();
