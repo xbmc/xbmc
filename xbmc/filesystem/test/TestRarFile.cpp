@@ -658,4 +658,137 @@ TEST_F(TestRarFile, NormalRAR)
   EXPECT_EQ(-1, file.Seek(-100, SEEK_SET));
   file.Close();
 }
+
+TEST_F(TestRarFile, Multivolume)
+{
+  XFILE::CFile file;
+  char buf[64];
+  memset(&buf, 0, sizeof(buf));
+  CStdString reffile, strrarpath, strpathinrar;
+  CFileItemList itemlist;
+
+  reffile =
+    XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.large.txt.part1.rar");
+  URIUtils::CreateArchivePath(strrarpath, "rar", reffile, "");
+  ASSERT_TRUE(XFILE::CDirectory::GetDirectory(strrarpath, itemlist, "",
+    XFILE::DIR_FLAG_NO_FILE_DIRS));
+  strpathinrar = itemlist[0]->GetPath();
+  ASSERT_TRUE(file.Open(strpathinrar));
+
+  /* Do some basic reads and seeks */
+  EXPECT_EQ(0, file.GetPosition());
+  EXPECT_EQ(1053632, file.GetLength());
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(63, file.GetPosition());
+  EXPECT_STREQ("About\n-----\nXBMC is an award-winning "
+               "free and open source (GPL)",
+               buf);
+  memset(&buf, 0, sizeof(buf));
+
+  EXPECT_TRUE(file.ReadString(buf, sizeof(buf)));
+  EXPECT_EQ(91, file.GetPosition());
+  EXPECT_STREQ(" software media player and\n\n", buf);
+  memset(&buf, 0, sizeof(buf));
+
+  EXPECT_EQ(100, file.Seek(100));
+  EXPECT_EQ(100, file.GetPosition());
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(163, file.GetPosition());
+  EXPECT_STREQ("ent hub for digital media. XBMC is "
+               "available for multiple platf",
+               buf);
+  memset(&buf, 0, sizeof(buf));
+
+  EXPECT_EQ(263, file.Seek(100, SEEK_CUR));
+  EXPECT_EQ(263, file.GetPosition());
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(326, file.GetPosition());
+  EXPECT_STREQ("veloped by volunteers located around the world. "
+               "More than 50\nso",
+               buf);
+  memset(&buf, 0, sizeof(buf));
+
+  EXPECT_EQ(1053569, file.Seek(-(int64_t)(sizeof(buf)-1), SEEK_END));
+  EXPECT_EQ(1053569, file.GetPosition());
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(1053632, file.GetPosition());
+  EXPECT_STREQ("ur\ncomputer will become a fully functional "
+               "multimedia jukebox.\n",
+               buf);
+  memset(&buf, 0, sizeof(buf));
+
+  EXPECT_EQ(1053732, file.Seek(100, SEEK_CUR));
+  EXPECT_EQ(1053732, file.GetPosition());
+  EXPECT_EQ(0, file.Seek(0, SEEK_SET));
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(63, file.GetPosition());
+  EXPECT_STREQ("About\n-----\nXBMC is an award-winning free "
+               "and open source (GPL)",
+               buf);
+  memset(&buf, 0, sizeof(buf));
+
+  /*
+   * Now check for expected behavior of seeking. This should be how
+   * lseek() behaves.
+   */
+  EXPECT_EQ(0, file.Seek(0, SEEK_SET));
+  EXPECT_EQ(0, file.Seek(0, SEEK_CUR));
+  EXPECT_EQ(-1, file.Seek(-100, SEEK_SET));
+  EXPECT_EQ(0, file.Seek(0, SEEK_CUR));
+  EXPECT_EQ(64, file.Seek(64, SEEK_SET));
+  EXPECT_EQ(64, file.Seek(0, SEEK_CUR));
+  EXPECT_EQ(-1, file.Seek(-128, SEEK_SET));
+  EXPECT_EQ(64, file.Seek(0, SEEK_CUR));
+  EXPECT_EQ(1053632, file.Seek(0, SEEK_END));
+  EXPECT_EQ(1053632, file.Seek(0, SEEK_CUR));
+  EXPECT_EQ(1053600, file.Seek(-32, SEEK_END));
+  EXPECT_EQ(1053600, file.Seek(0, SEEK_CUR));
+  EXPECT_EQ(1053632, file.Seek(32, SEEK_CUR));
+  EXPECT_EQ(1053664, file.Seek(32, SEEK_CUR));
+  EXPECT_EQ(1053696, file.Seek(32, SEEK_CUR));
+  EXPECT_EQ(1053728, file.Seek(32, SEEK_CUR));
+  EXPECT_EQ(1053664, file.Seek(32, SEEK_END));
+
+  /*
+   * Now check that reading between multivolume files works correctly.
+   * Seek to 32 bytes before the end of the third multivolume RAR
+   */
+  EXPECT_EQ(921271, file.Seek(921271 - 1053664, SEEK_CUR));
+  EXPECT_EQ(921271, file.GetPosition());
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(921334, file.GetPosition());
+  EXPECT_STREQ("ltiple platforms.\nCreated in 2003 by a "
+               "group of like minded pro",
+               buf);
+  memset(&buf, 0, sizeof(buf));
+
+  /* Seek to 32 bytes before the end of the first multivolume RAR */
+  EXPECT_EQ(307069, file.Seek(-746563, SEEK_END));
+  EXPECT_EQ(307069, file.GetPosition());
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(307132, file.GetPosition());
+  EXPECT_STREQ("winning free and open source (GPL) "
+               "software media player and\nen",
+               buf);
+  memset(&buf, 0, sizeof(buf));
+
+  /* Seek to 32 bytes before the end of the second multivolume RAR */
+  EXPECT_EQ(614170, file.Seek(614170, SEEK_SET));
+  EXPECT_EQ(614170, file.GetPosition());
+  EXPECT_EQ(sizeof(buf)-1, file.Read(buf, sizeof(buf)-1));
+  file.Flush();
+  EXPECT_EQ(614233, file.GetPosition());
+  EXPECT_STREQ("entertainment hub for digital media. "
+               "XBMC is available for mult",
+               buf);
+
+  file.Close();
+}
 #endif /*HAVE_LIBARCHIVE*/
