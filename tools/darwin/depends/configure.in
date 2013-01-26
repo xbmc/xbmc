@@ -19,12 +19,18 @@ AC_ARG_WITH([sdk],
 
 use_staging="/Users/Shared/xbmc-depends"
 
-# find xcodebuild, test in Xcode.app, if not there, fall back to normal location
-use_xcodepath="/Applications/Xcode.app/Contents/Developer"
-use_xcodebuild="/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"
-if [[ ! -f "$use_xcodebuild" ]]; then
-  use_xcodepath="/Developer"
-  use_xcodebuild="/usr/bin/xcodebuild"  
+# find xcodebuild and xcodepath by xcode-select
+# else test in Xcode.app, if not there, fall back to normal location
+if [[ -f "/usr/bin/xcode-select" ]]; then
+  use_xcodepath=`/usr/bin/xcode-select -print-path`
+  use_xcodebuild="$use_xcodepath/usr/bin/xcodebuild"
+else
+  use_xcodepath="/Applications/Xcode.app/Contents/Developer"
+  use_xcodebuild="/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild"
+  if [[ ! -f "$use_xcodebuild" ]]; then
+    use_xcodepath="/Developer"
+    use_xcodebuild="/usr/bin/xcodebuild"  
+  fi
 fi
 AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
 use_xcode=[`$use_xcodebuild -version | grep Xcode | awk '{ print $2}'`]
