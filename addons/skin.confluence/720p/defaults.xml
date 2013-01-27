@@ -85,7 +85,6 @@
 		<subtype>text</subtype>
 		<textoffsetx>-5</textoffsetx>
 		<textoffsety>0</textoffsety>
-		<aligny>-</aligny>
 		<pulseonselect>no</pulseonselect>
 	</default>
 	<default type="spincontrolex">

@@ -421,7 +421,6 @@
 				<height>45</height>
 				<label>1036</label>
 				<font>-</font>
-				<aligny>-</aligny>
 				<onclick>back</onclick>
 				<texturefocus border="5">floor_buttonFO.png</texturefocus>
 				<texturenofocus border="5">floor_button.png</texturenofocus>
@@ -447,7 +446,6 @@
 				<height>45</height>
 				<label>31003</label>
 				<font>-</font>
-				<aligny>-</aligny>
 				<onclick>ActivateWindow(home)</onclick>
 				<texturefocus border="5">floor_buttonFO.png</texturefocus>
 				<texturenofocus border="5">floor_button.png</texturenofocus>
