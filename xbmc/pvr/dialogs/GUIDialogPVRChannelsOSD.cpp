@@ -115,24 +115,6 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
       }
     }
     break;
-
-  case GUI_MSG_MOVE:
-    {
-      int iAction = message.GetParam1();
-
-      if (iAction == ACTION_MOVE_RIGHT || iAction == ACTION_MOVE_LEFT)
-      {
-        CPVRChannelGroupPtr group = GetPlayingGroup();
-        CPVRChannelGroupPtr nextGroup = iAction == ACTION_MOVE_RIGHT ? group->GetNextGroup() : group->GetPreviousGroup();
-        g_PVRManager.SetPlayingGroup(nextGroup);
-        SetLastSelectedItem(group->GroupID());
-
-        Update();
-
-        return true;
-      }
-    }
-    break;
   }
 
   return CGUIDialog::OnMessage(message);
