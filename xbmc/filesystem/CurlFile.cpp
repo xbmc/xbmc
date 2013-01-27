@@ -540,7 +540,6 @@ void CCurlFile::SetRequestHeaders(CReadState* state)
   // add user defined headers
   if (m_curlHeaderList && state->m_easyHandle)
     g_curlInterface.easy_setopt(state->m_easyHandle, CURLOPT_HTTPHEADER, m_curlHeaderList);
-
 }
 
 void CCurlFile::SetCorrectHeaders(CReadState* state)
@@ -829,7 +828,6 @@ void CCurlFile::Reset()
 
 bool CCurlFile::Open(const CURL& url)
 {
-
   m_opened = true;
 
   CURL url2(url);
