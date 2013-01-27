@@ -660,6 +660,7 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
 
 void CCoreAudioAE::GarbageCollect()
 {
+#if defined(TARGET_DARWIN_OSX)
   if (g_advancedSettings.m_streamSilence)
     return;
   
@@ -689,6 +690,7 @@ void CCoreAudioAE::GarbageCollect()
     Suspend();// locks m_engineLock internally
     CLog::Log(LOGDEBUG, "CCoreAudioAE::GarbageCollect - Release CA HAL.");
   }
+#endif // TARGET_DARWIN_OSX
 }
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
