@@ -2145,8 +2145,9 @@ void CMixer::InitCycle()
   EINTERLACEMETHOD method = GetDeinterlacingMethod();
   bool interlaced = m_mixerInput[1].DVDPic.iFlags & DVP_FLAG_INTERLACED;
 
-  if (mode == VS_DEINTERLACEMODE_FORCE ||
-     (mode == VS_DEINTERLACEMODE_AUTO && interlaced))
+  if (!(flags & DVP_FLAG_NO_POSTPROC) &&
+      (mode == VS_DEINTERLACEMODE_FORCE ||
+      (mode == VS_DEINTERLACEMODE_AUTO && interlaced)))
   {
     if((method == VS_INTERLACEMETHOD_AUTO && interlaced)
       ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
