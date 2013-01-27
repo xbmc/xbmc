@@ -2027,7 +2027,7 @@ void CDVDPlayer::HandleMessages()
 
         // if input streams doesn't support seektime we must convert back to clock
         if(dynamic_cast<CDVDInputStream::ISeekTime*>(m_pInputStream) == NULL)
-          time -= DVD_TIME_TO_MSEC(m_State.time_offset);
+          time -= DVD_TIME_TO_MSEC(m_State.time_offset - m_offset_pts);
 
         CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
         if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
@@ -3906,7 +3906,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   }
 
   if (state.time_src == ETIMESOURCE_CLOCK)
-    state.time_offset = 0;
+    state.time_offset = m_offset_pts;
   else
     state.time_offset = DVD_MSEC_TO_TIME(state.time) - state.dts;
 
