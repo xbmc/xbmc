@@ -13,28 +13,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: dvdnav_internal.h 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DVDNAV_INTERNAL_H_INCLUDED
-#define DVDNAV_INTERNAL_H_INCLUDED
+#ifndef LIBDVDNAV_DVDNAV_INTERNAL_H
+#define LIBDVDNAV_DVDNAV_INTERNAL_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
-/* Uncomment for VM command tracing */
-/* #define TRACE */
-
-#include "decoder.h"
-#include "dvdnav.h"
-#include "vm.h"
-#include "vmcmd.h"
 
 #ifdef WIN32
 
@@ -45,7 +34,7 @@ typedef CRITICAL_SECTION pthread_mutex_t;
 #define pthread_mutex_init(a, b) InitializeCriticalSection(a)
 #define pthread_mutex_lock(a)    EnterCriticalSection(a)
 #define pthread_mutex_unlock(a)  LeaveCriticalSection(a)
-#define pthread_mutex_destroy(a)
+#define pthread_mutex_destroy(a) DeleteCriticalSection(a)
 
 #ifndef HAVE_GETTIMEOFDAY
 /* replacement gettimeofday implementation */
@@ -71,7 +60,7 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 #endif /* WIN32 */
 
 /* where should libdvdnav write its messages (stdout/stderr) */
-#define MSG_OUT stdout
+#define MSG_OUT stderr
 
 /* Maximum length of an error string */
 #define MAX_ERR_LEN 255
@@ -186,6 +175,7 @@ struct dvdnav_s {
 /* converts a dvd_time_t to PTS ticks */
 int64_t dvdnav_convert_time(dvd_time_t *time);
 
+/* XBMC added functions */
 /*
  * Get current playback state
  */
@@ -195,8 +185,7 @@ dvdnav_status_t dvdnav_get_state(dvdnav_t *this, dvd_state_t *save_state);
  * Resume playback state
  */
 dvdnav_status_t dvdnav_set_state(dvdnav_t *this, dvd_state_t *save_state);
-
-
+/* end XBMC */
 
 /** USEFUL MACROS **/
 
@@ -215,4 +204,4 @@ dvdnav_status_t dvdnav_set_state(dvdnav_t *this, dvd_state_t *save_state);
 #define printerr(str) \
 	do { if (this) strncpy(this->err_str, str, MAX_ERR_LEN - 1); } while (0)
 
-#endif /* DVDNAV_INTERNAL_H_INCLUDED */
+#endif /* LIBDVDNAV_DVDNAV_INTERNAL_H */

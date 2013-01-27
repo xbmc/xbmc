@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001 Björn Englund, Håkan Hjort
+ * Copyright (C) 2000, 2001 BjÃ¶rn Englund, HÃ¥kan Hjort
  *
  * This file is part of libdvdnav, a DVD navigation library. It is a modified
  * file originally part of the Ogle DVD player project.
@@ -14,23 +14,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id$
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 /*
  * Various useful structs and enums for DVDs.
  */
 
-#ifndef DVD_H_INCLUDED
-#define DVD_H_INCLUDED
+#ifndef LIBDVDNAV_DVD_TYPES_H
+#define LIBDVDNAV_DVD_TYPES_H
 
 //#include <inttypes.h>
-
 
 /*
  * DVD Menu ID
@@ -199,7 +195,7 @@ typedef enum {
   DVD_SUBPICTURE_LANG_EXT_Forced  = 9,
   DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments  = 13,
   DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments  = 14,
-  DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments  = 15
+  DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments  = 15,
 } DVDSubpictureLangExt_t;  
 
 /* Karaoke Downmix mode */
@@ -264,6 +260,7 @@ typedef struct {
 } DVDSubpictureAttributes_t;
 
 typedef int DVDVideoCompression_t;
+
 /* Video attributes */
 typedef struct {
   DVDBool_t PanscanPermitted;
@@ -278,7 +275,6 @@ typedef struct {
   int more_to_come;
 } DVDVideoAttributes_t;
 
-
 #endif
 
-#endif /* DVD_H_INCLUDED */
+#endif /* LIBDVDNAV_DVD_TYPES_H */

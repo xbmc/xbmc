@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001 Martin Norb‰ck, HÂkan Hjort
+ * Copyright (C) 2000, 2001 Martin Norb√§ck, H√•kan Hjort
  *               2002-2004 the dvdnav project
  *
  * This file is part of libdvdnav, a DVD navigation library. It is modified
@@ -15,12 +15,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: decoder.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,12 +33,11 @@
 #include <dvdread/nav_types.h>
 #include <dvdread/ifo_types.h> /* vm_cmd_t */
 
-#include "dvd_types.h"
+#include "dvdnav/dvdnav.h"
 #include "remap.h"
 #include "decoder.h"
 #include "vm.h"
 #include "vmcmd.h"
-#include "dvdnav.h"
 #include "dvdnav_internal.h"
 
 uint32_t vm_getbits(command_t *command, int32_t start, int32_t count) {

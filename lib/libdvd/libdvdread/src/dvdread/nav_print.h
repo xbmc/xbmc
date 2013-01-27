@@ -1,4 +1,7 @@
 /*
+ * Copyright (C) 2001, 2002 Billy Biggs <vektor@dumbterm.net>,
+ *                          Håkan Hjort <d95hjort@dtek.chalmers.se>
+ *
  * This file is part of libdvdread.
  *
  * libdvdread is free software; you can redistribute it and/or modify
@@ -16,26 +19,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef LIBDVDREAD_DVDREAD_INTERNAL_H
-#define LIBDVDREAD_DVDREAD_INTERNAL_H
+#ifndef LIBDVDREAD_NAV_PRINT_H
+#define LIBDVDREAD_NAV_PRINT_H
 
-#include <stdint.h>
-#include <sys/types.h>
+#include "nav_types.h"
 
-#ifdef _WIN32
-#include <unistd.h>
-#endif /* _WIN32 */
+/**
+ * Pretty printing of the NAV packets, PCI and DSI structs.
+ */
 
-#include "dvdread/dvd_reader.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define CHECK_VALUE(arg) \
- if(!(arg)) { \
-   fprintf(stderr, "\n*** libdvdread: CHECK_VALUE failed in %s:%i ***" \
-                   "\n*** for %s ***\n\n", \
-                   __FILE__, __LINE__, # arg ); \
- }
+/**
+ * Prints information contained in the PCI to stdout.
+ *
+ * @param pci Pointer to the PCI data structure to be printed.
+ */
+void navPrint_PCI(pci_t *);
 
-int UDFReadBlocksRaw(dvd_reader_t *device, uint32_t lb_number,
-                     size_t block_count, unsigned char *data, int encrypted);
+/**
+ * Prints information contained in the DSI to stdout.
+ *
+ * @param dsi Pointer to the DSI data structure to be printed.
+ */
+void navPrint_DSI(dsi_t *);
 
-#endif /* LIBDVDREAD_DVDREAD_INTERNAL_H */
+#ifdef __cplusplus
+};
+#endif
+#endif /* LIBDVDREAD_NAV_PRINT_H */

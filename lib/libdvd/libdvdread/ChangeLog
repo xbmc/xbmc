@@ -1,3 +1,21 @@
+libdvdread (4.2.0)
+  * added OS/2 support
+  * fixed ARM memory alignment issue
+  * portability fixes for *BSD, Mac OS X, MINGW and OS/2
+  * added a missing DVDFileStat function
+  * exposed the dvd_stat_t struct in header
+  * fixed libdvdread closing stdin if it can't open the file/device
+  * fixed a segfault in UDFFileEntry on some badly mastered DVDs
+  * fixed big-endian builds
+  * Win32: large file support under Mingw to go over 2G limits
+  * configure: remove the special case test for uid=0
+  * provide BUP file support for more issues
+  * move UDFReadBlocksRaw declaration to dvdread_internal.h
+  * fixed double free of parental management information
+  * configure2: Use a single = instead of ==
+  * fixed crash when PTT is too short
+  * fixed segfault when reading certain DVDs, for example "Thor"
+
 libdvdread (4.1.3)
   * an embarassing amount of fixes regarding potential memory and resource leaks
     (patches contributed by Erik Hovland)

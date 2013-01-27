@@ -13,12 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: navigation.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,13 +26,12 @@
 #include <limits.h>
 #include <string.h>
 #include <sys/time.h>
-#include "dvd_types.h"
+#include "dvdnav/dvdnav.h"
 #include <dvdread/nav_types.h>
 #include <dvdread/ifo_types.h>
 #include "remap.h"
 #include "vm/decoder.h"
 #include "vm/vm.h"
-#include "dvdnav.h"
 #include "dvdnav_internal.h"
 
 /* Navigation API calls */
@@ -126,8 +122,88 @@ dvdnav_status_t dvdnav_current_title_info(dvdnav_t *this, int32_t *title, int32_
   return DVDNAV_STATUS_ERR;
 }
 
+dvdnav_status_t dvdnav_current_title_program(dvdnav_t *this, int32_t *title, int32_t *pgcn, int32_t *pgn) {
+  int32_t retval;
+  int32_t part;
+
+  pthread_mutex_lock(&this->vm_lock);
+  if (!this->vm->vtsi || !this->vm->vmgi) {
+    printerr("Bad VM state.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
+  if (!this->started) {
+    printerr("Virtual DVD machine not started.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
+  if (!this->vm->state.pgc) {
+    printerr("No current PGC.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
+  if ( (this->vm->state.domain == VTSM_DOMAIN)
+      || (this->vm->state.domain == VMGM_DOMAIN) ) {
+    /* Get current Menu ID: into *part. */
+    if(! vm_get_current_menu(this->vm, &part)) {
+      pthread_mutex_unlock(&this->vm_lock);
+      return DVDNAV_STATUS_ERR;
+    }
+    if (part > -1) {
+      *title = 0;
+      *pgcn = this->vm->state.pgcN;
+      *pgn = this->vm->state.pgN;
+      pthread_mutex_unlock(&this->vm_lock);
+      return DVDNAV_STATUS_OK;
+    }
+  }
+  if (this->vm->state.domain == VTS_DOMAIN) {
+    retval = vm_get_current_title_part(this->vm, title, &part);
+    *pgcn = this->vm->state.pgcN;
+    *pgn = this->vm->state.pgN;
+    pthread_mutex_unlock(&this->vm_lock);
+    return retval ? DVDNAV_STATUS_OK : DVDNAV_STATUS_ERR;
+  }
+  printerr("Not in a title or menu.");
+  pthread_mutex_unlock(&this->vm_lock);
+  return DVDNAV_STATUS_ERR;
+}
+
 dvdnav_status_t dvdnav_title_play(dvdnav_t *this, int32_t title) {
   return dvdnav_part_play(this, title, 1);
+}
+
+dvdnav_status_t dvdnav_program_play(dvdnav_t *this, int32_t title, int32_t pgcn, int32_t pgn) {
+  int32_t retval;
+
+  pthread_mutex_lock(&this->vm_lock);
+  if (!this->vm->vmgi) {
+    printerr("Bad VM state.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
+  if (!this->started) {
+    /* don't report an error but be nice */
+    vm_start(this->vm);
+    this->started = 1;
+  }
+  if (!this->vm->state.pgc) {
+    printerr("No current PGC.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
+  if((title < 1) || (title > this->vm->vmgi->tt_srpt->nr_of_srpts)) {
+    printerr("Title out of range.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
+
+  retval = vm_jump_title_program(this->vm, title, pgcn, pgn);
+  if (retval)
+    this->vm->hop_channel++;
+  pthread_mutex_unlock(&this->vm_lock);
+
+  return retval ? DVDNAV_STATUS_OK : DVDNAV_STATUS_ERR;
 }
 
 dvdnav_status_t dvdnav_part_play(dvdnav_t *this, int32_t title, int32_t part) {

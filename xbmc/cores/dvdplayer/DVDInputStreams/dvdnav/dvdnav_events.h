@@ -13,25 +13,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id$
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 /*
  * This header defines events and event types 
  */
 
-#ifndef DVDNAV_EVENTS_H_INCLUDED
-#define DVDNAV_EVENTS_H_INCLUDED
+#ifndef LIBDVDNAV_DVDNAV_EVENTS_H
+#define LIBDVDNAV_DVDNAV_EVENTS_H
 
 #include "ifo_types.h"
 #include "dvd_reader.h"
 #include "nav_types.h"
-
 
 /*
  * DVDNAV_BLOCK_OK
@@ -241,4 +237,4 @@ typedef struct {
 #define DVDNAV_WAIT			13
 
 
-#endif /* DVDNAV_EVENTS_H_INCLUDED */
+#endif /* LIBDVDNAV_DVDNAV_EVENTS_H */

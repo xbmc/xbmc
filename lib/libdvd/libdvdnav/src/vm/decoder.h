@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001 Martin Norb‰ck, HÂkan Hjort
+ * Copyright (C) 2000, 2001 Martin Norb√§ck, H√•kan Hjort
  *
  * This file is part of libdvdnav, a DVD navigation library. It is modified
  * from a file originally part of the Ogle DVD player.
@@ -14,16 +14,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: decoder.h 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DECODER_H_INCLUDED
-#define DECODER_H_INCLUDED
+#ifndef LIBDVDNAV_DECODER_H
+#define LIBDVDNAV_DECODER_H
 
 /* link command types */
 typedef enum {
@@ -109,4 +106,4 @@ void vm_print_link(link_t value);
 void vm_print_registers( registers_t *registers );
 #endif
 
-#endif /* DECODER_H_INCLUDED */
+#endif /* LIBDVDNAV_DECODER_H */

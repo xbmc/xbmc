@@ -13,12 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: menus.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #include <stdio.h>
@@ -27,12 +24,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "dvd_types.h"
-#include <dvdread/dvd_reader.h>
-#include <dvdread/nav_types.h>
-#include <dvdread/ifo_types.h> /* For vm_cmd_t */
-#include "dvdnav.h"
-#include "dvdnav_events.h"
+#include <dvdnav/dvdnav.h>
 
 /* shall we use libdvdnav's read ahead cache? */
 #define DVD_READ_CACHE 1
@@ -51,9 +43,14 @@ int main(int argc, char **argv) {
   int output_fd = 0;
   int dump = 0, tt_dump = 0;
 
+  if (argc < 2) {
+    printf("Specify DVD device.\n");
+    return 1;
+  }
+
   /* open dvdnav handle */
   printf("Opening DVD...\n");
-  if (dvdnav_open(&dvdnav, "/dev/dvd") != DVDNAV_STATUS_OK) {
+  if (dvdnav_open(&dvdnav, argv[1]) != DVDNAV_STATUS_OK) {
     printf("Error on dvdnav_open\n");
     return 1;
   }

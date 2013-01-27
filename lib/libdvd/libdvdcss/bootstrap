@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: bootstrap 2005 2008-07-16 20:51:50Z sam $
+# $Id: bootstrap 214 2008-08-29 18:57:45Z sam $
 
 # bootstrap: generic bootstrap/autogen.sh script for autotools projects
 #

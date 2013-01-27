@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001 Björn Englund, Håkan Hjort
+ * Copyright (C) 2000, 2001 BjÃ¶rn Englund, HÃ¥kan Hjort
  *
  * This file is part of libdvdnav, a DVD navigation library. It is a modified
  * file originally part of the Ogle DVD player project.
@@ -14,20 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: dvd_types.h 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 /*
  * Various useful structs and enums for DVDs.
  */
 
-#ifndef DVD_H_INCLUDED
-#define DVD_H_INCLUDED
+#ifndef LIBDVDNAV_DVD_TYPES_H
+#define LIBDVDNAV_DVD_TYPES_H
 
 /*
  * DVD Menu ID
@@ -275,4 +272,4 @@ typedef int DVDVideoCompression_t;
 
 #endif
 
-#endif /* DVD_H_INCLUDED */
+#endif /* LIBDVDNAV_DVD_TYPES_H */

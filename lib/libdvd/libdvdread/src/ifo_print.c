@@ -1,20 +1,19 @@
 /*
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * libdvdread is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * $Id: ifo_print.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #include <stdio.h>
@@ -25,9 +24,9 @@
 #include <ctype.h>
 #include <assert.h>
 
-#include "ifo_types.h"
-#include "ifo_read.h"
-#include "ifo_print.h"
+#include "dvdread/ifo_types.h"
+#include "dvdread/ifo_read.h"
+#include "dvdread/ifo_print.h"
 
 /* Put this in some other file / package?  It's used in nav_print too. */
 static void ifo_print_time(int level, dvd_time_t *dtime) {
@@ -131,7 +130,7 @@ static void ifo_print_video_attributes(int level, video_attr_t *attr) {
     printf("(please send a bug report), ");
   }
 
-  // Wide is allways allowed..!!!
+  // Wide is always allowed..!!!
   switch(attr->permitted_df) {
   case 0:
     printf("pan&scan+letterboxed, ");
@@ -329,7 +328,7 @@ static void ifo_print_audio_attributes(int level, audio_attr_t *attr) {
   case 1: // Normal audio
     printf("Normal Caption ");
     break;
-  case 2: // visually imparied
+  case 2: // visually impaired
     printf("Audio for visually impaired ");
     break;
   case 3: // Directors 1
@@ -427,7 +426,7 @@ static void ifo_print_subp_attributes(int level, subp_attr_t *attr) {
 }
 
 
-static void ifo_print_USER_OPS(user_ops_t *user_ops) {
+static void ifoPrint_USER_OPS(user_ops_t *user_ops) {
   uint32_t uops;
   unsigned char *ptr = (unsigned char *)user_ops;
 
@@ -496,7 +495,7 @@ static void ifo_print_USER_OPS(user_ops_t *user_ops) {
 }
 
 
-void ifo_print_VMGI_MAT(vmgi_mat_t *vmgi_mat) {
+static void ifoPrint_VMGI_MAT(vmgi_mat_t *vmgi_mat) {
 
   printf("VMG Identifier: %.12s\n", vmgi_mat->vmg_identifier);
   printf("Last Sector of VMG: %08x\n", vmgi_mat->vmg_last_sector);
@@ -545,7 +544,7 @@ void ifo_print_VMGI_MAT(vmgi_mat_t *vmgi_mat) {
 }
 
 
-void ifo_print_VTSI_MAT(vtsi_mat_t *vtsi_mat) {
+static void ifoPrint_VTSI_MAT(vtsi_mat_t *vtsi_mat) {
   int i;
 
   printf("VTS Identifier: %.12s\n", vtsi_mat->vts_identifier);
@@ -609,7 +608,7 @@ void ifo_print_VTSI_MAT(vtsi_mat_t *vtsi_mat) {
 }
 
 
-static void ifo_print_PGC_COMMAND_TBL(pgc_command_tbl_t *cmd_tbl) {
+static void ifoPrint_PGC_COMMAND_TBL(pgc_command_tbl_t *cmd_tbl) {
   int i;
 
   if(cmd_tbl == NULL) {
@@ -634,7 +633,7 @@ static void ifo_print_PGC_COMMAND_TBL(pgc_command_tbl_t *cmd_tbl) {
 }
 
 
-static void ifo_print_PGC_PROGRAM_MAP(pgc_program_map_t *program_map, int nr) {
+static void ifoPrint_PGC_PROGRAM_MAP(pgc_program_map_t *program_map, int nr) {
   int i;
 
   if(program_map == NULL) {
@@ -648,7 +647,7 @@ static void ifo_print_PGC_PROGRAM_MAP(pgc_program_map_t *program_map, int nr) {
 }
 
 
-static void ifo_print_CELL_PLAYBACK(cell_playback_t *cell_playback, int nr) {
+static void ifoPrint_CELL_PLAYBACK(cell_playback_t *cell_playback, int nr) {
   int i;
 
   if(cell_playback == NULL) {
@@ -686,7 +685,7 @@ static void ifo_print_CELL_PLAYBACK(cell_playback_t *cell_playback, int nr) {
 	break;
       case 2:
       case 3:
-	printf("(send bug repport) ");
+        printf("(send bug report) ");
 	break;
       }
     }
@@ -718,7 +717,7 @@ static void ifo_print_CELL_PLAYBACK(cell_playback_t *cell_playback, int nr) {
   }
 }
 
-static void ifo_print_CELL_POSITION(cell_position_t *cell_position, int nr) {
+static void ifoPrint_CELL_POSITION(cell_position_t *cell_position, int nr) {
   int i;
 
   if(cell_position == NULL) {
@@ -733,7 +732,7 @@ static void ifo_print_CELL_POSITION(cell_position_t *cell_position, int nr) {
 }
 
 
-void ifo_print_PGC(pgc_t *pgc) {
+static void ifoPrint_PGC(pgc_t *pgc) {
   int i;
 
   if (!pgc) {
@@ -748,7 +747,7 @@ void ifo_print_PGC(pgc_t *pgc) {
 
   /* If no programs/no time then does this mean anything? */
   printf("Prohibited user operations: ");
-  ifo_print_USER_OPS(&pgc->prohibited_ops);
+  ifoPrint_USER_OPS(&pgc->prohibited_ops);
 
     for(i = 0; i < 8; i++) {
       if(pgc->audio_control[i] & 0x8000) { /* The 'is present' bit */
@@ -782,15 +781,15 @@ void ifo_print_PGC(pgc_t *pgc) {
     }
   }
 
-  /* Memmory offsets to div. tables. */
-  ifo_print_PGC_COMMAND_TBL(pgc->command_tbl);
-  ifo_print_PGC_PROGRAM_MAP(pgc->program_map, pgc->nr_of_programs);
-  ifo_print_CELL_PLAYBACK(pgc->cell_playback, pgc->nr_of_cells);
-  ifo_print_CELL_POSITION(pgc->cell_position, pgc->nr_of_cells);
+  /* Memory offsets to div. tables. */
+  ifoPrint_PGC_COMMAND_TBL(pgc->command_tbl);
+  ifoPrint_PGC_PROGRAM_MAP(pgc->program_map, pgc->nr_of_programs);
+  ifoPrint_CELL_PLAYBACK(pgc->cell_playback, pgc->nr_of_cells);
+  ifoPrint_CELL_POSITION(pgc->cell_position, pgc->nr_of_cells);
 }
 
 
-void ifo_print_TT_SRPT(tt_srpt_t *tt_srpt) {
+static void ifoPrint_TT_SRPT(tt_srpt_t *tt_srpt) {
   int i;
 
   printf("Number of TitleTrack search pointers: %i\n",
@@ -807,7 +806,7 @@ void ifo_print_TT_SRPT(tt_srpt_t *tt_srpt) {
     printf("\tTitle playback type: (%02x)\n",
 	   *(uint8_t *)&(tt_srpt->title[i].pb_ty));
     printf("\t\t%s\n",
-       tt_srpt->title[i].pb_ty.multi_or_random_pgc_title ? "Random or Shuffle" : "Sequencial");
+           tt_srpt->title[i].pb_ty.multi_or_random_pgc_title ? "Random or Shuffle" : "Sequential");
     if (tt_srpt->title[i].pb_ty.jlc_exists_in_cell_cmd) printf("\t\tJump/Link/Call exists in cell cmd\n");
     if (tt_srpt->title[i].pb_ty.jlc_exists_in_prepost_cmd) printf("\t\tJump/Link/Call exists in pre/post cmd\n");
     if (tt_srpt->title[i].pb_ty.jlc_exists_in_button_cmd) printf("\t\tJump/Link/Call exists in button cmd\n");
@@ -823,7 +822,7 @@ void ifo_print_TT_SRPT(tt_srpt_t *tt_srpt) {
 }
 
 
-void ifo_print_VTS_PTT_SRPT(vts_ptt_srpt_t *vts_ptt_srpt) {
+static void ifoPrint_VTS_PTT_SRPT(vts_ptt_srpt_t *vts_ptt_srpt) {
   int i, j;
   printf(" nr_of_srpts %i last byte %i\n",
 	 vts_ptt_srpt->nr_of_srpts,
@@ -844,7 +843,7 @@ static void hexdump(uint8_t *ptr, int len) {
     printf("%02x ", *ptr++);
 }
 
-void ifo_print_PTL_MAIT(ptl_mait_t *ptl_mait) {
+static void ifoPrint_PTL_MAIT(ptl_mait_t *ptl_mait) {
   int i, j;
 
   printf("Number of Countries: %i\n", ptl_mait->nr_of_countries);
@@ -873,7 +872,7 @@ void ifo_print_PTL_MAIT(ptl_mait_t *ptl_mait) {
   }
 }
 
-void ifo_print_VTS_TMAPT(vts_tmapt_t *vts_tmapt) {
+static void ifoPrint_VTS_TMAPT(vts_tmapt_t *vts_tmapt) {
   unsigned int timeunit;
   int i, j;
 
@@ -896,7 +895,7 @@ void ifo_print_VTS_TMAPT(vts_tmapt_t *vts_tmapt) {
   }
 }
 
-void ifo_print_C_ADT(c_adt_t *c_adt) {
+static void ifoPrint_C_ADT(c_adt_t *c_adt) {
   int i, entries;
 
   printf("Number of VOBs in this VOBS: %i\n", c_adt->nr_of_vobs);
@@ -913,7 +912,7 @@ void ifo_print_C_ADT(c_adt_t *c_adt) {
 }
 
 
-void ifo_print_VOBU_ADMAP(vobu_admap_t *vobu_admap) {
+static void ifoPrint_VOBU_ADMAP(vobu_admap_t *vobu_admap) {
   int i, entries;
 
   entries = (vobu_admap->last_byte + 1 - VOBU_ADMAP_SIZE)/4;
@@ -923,7 +922,7 @@ void ifo_print_VOBU_ADMAP(vobu_admap_t *vobu_admap) {
   }
 }
 
-const char *ifo_print_menu_name(int type) {
+static const char *ifo_print_menu_name(int type) {
   const char *menu_name;
   menu_name="";
   switch (type) {
@@ -953,7 +952,7 @@ const char *ifo_print_menu_name(int type) {
 }
 
 /* pgc_type=1 for menu, 0 for title. */
-void ifo_print_PGCIT(pgcit_t *pgcit, int pgc_type) {
+static void ifoPrint_PGCIT(pgcit_t *pgcit, int pgc_type) {
   int i;
 
   printf("\nNumber of Program Chains: %3i\n", pgcit->nr_of_pgci_srp);
@@ -972,12 +971,12 @@ void ifo_print_PGCIT(pgcit_t *pgcit, int pgc_type) {
             pgcit->pgci_srp[i].entry_id);
     }
     printf("Parental ID mask 0x%04x\n", pgcit->pgci_srp[i].ptl_id_mask);
-    ifo_print_PGC(pgcit->pgci_srp[i].pgc);
+    ifoPrint_PGC(pgcit->pgci_srp[i].pgc);
   }
 }
 
 
-void ifo_print_PGCI_UT(pgci_ut_t *pgci_ut) {
+static void ifoPrint_PGCI_UT(pgci_ut_t *pgci_ut) {
   int i, menu;
 
   printf("Number of Menu Language Units (PGCI_LU): %3i\n", pgci_ut->nr_of_lus);
@@ -1017,12 +1016,12 @@ void ifo_print_PGCI_UT(pgci_ut_t *pgci_ut) {
       menu^=0x08;
     }
     printf("\n");
-    ifo_print_PGCIT(pgci_ut->lu[i].pgcit, 1);
+    ifoPrint_PGCIT(pgci_ut->lu[i].pgcit, 1);
   }
 }
 
 
-static void ifo_print_VTS_ATTRIBUTES(vts_attributes_t *vts_attributes) {
+static void ifoPrint_VTS_ATTRIBUTES(vts_attributes_t *vts_attributes) {
   int i;
 
   printf("VTS_CAT Application type: %08x\n", vts_attributes->vts_cat);
@@ -1066,13 +1065,13 @@ static void ifo_print_VTS_ATTRIBUTES(vts_attributes_t *vts_attributes) {
 }
 
 
-void ifo_print_VTS_ATRT(vts_atrt_t *vts_atrt) {
+static void ifoPrint_VTS_ATRT(vts_atrt_t *vts_atrt) {
   int i;
 
   printf("Number of Video Title Sets: %3i\n", vts_atrt->nr_of_vtss);
   for(i = 0; i < vts_atrt->nr_of_vtss; i++) {
     printf("\nVideo Title Set %i\n", i + 1);
-    ifo_print_VTS_ATTRIBUTES(&vts_atrt->vts[i]);
+    ifoPrint_VTS_ATTRIBUTES(&vts_atrt->vts[i]);
   }
 }
 
@@ -1090,37 +1089,37 @@ void ifo_print(dvd_reader_t *dvd, int title) {
   if(ifohandle->vmgi_mat) {
 
     printf("VMG top level\n-------------\n");
-    ifo_print_VMGI_MAT(ifohandle->vmgi_mat);
+    ifoPrint_VMGI_MAT(ifohandle->vmgi_mat);
 
     printf("\nFirst Play PGC\n--------------\n");
     if(ifohandle->first_play_pgc)
-      ifo_print_PGC(ifohandle->first_play_pgc);
+      ifoPrint_PGC(ifohandle->first_play_pgc);
     else
       printf("No First Play PGC present\n");
 
     printf("\nTitle Track search pointer table\n");
     printf(  "------------------------------------------------\n");
-    ifo_print_TT_SRPT(ifohandle->tt_srpt);
+    ifoPrint_TT_SRPT(ifohandle->tt_srpt);
 
     printf("\nMenu PGCI Unit table\n");
     printf(  "--------------------\n");
     if(ifohandle->pgci_ut) {
-      ifo_print_PGCI_UT(ifohandle->pgci_ut);
+      ifoPrint_PGCI_UT(ifohandle->pgci_ut);
     } else {
       printf("No PGCI Unit table present\n");
     }
 
-    printf("\nParental Manegment Information table\n");
+    printf("\nParental Management Information table\n");
     printf(  "------------------------------------\n");
     if(ifohandle->ptl_mait) {
-      ifo_print_PTL_MAIT(ifohandle->ptl_mait);
+      ifoPrint_PTL_MAIT(ifohandle->ptl_mait);
     } else {
       printf("No Parental Management Information present\n");
     }
 
     printf("\nVideo Title Set Attribute Table\n");
     printf(  "-------------------------------\n");
-    ifo_print_VTS_ATRT(ifohandle->vts_atrt);
+    ifoPrint_VTS_ATRT(ifohandle->vts_atrt);
 
     printf("\nText Data Manager Information\n");
     printf(  "-----------------------------\n");
@@ -1130,18 +1129,18 @@ void ifo_print(dvd_reader_t *dvd, int title) {
       printf("No Text Data Manager Information present\n");
     }
 
-    printf("\nMenu Cell Adress table\n");
+    printf("\nMenu Cell Address table\n");
     printf(  "-----------------\n");
     if(ifohandle->menu_c_adt) {
-      ifo_print_C_ADT(ifohandle->menu_c_adt);
+      ifoPrint_C_ADT(ifohandle->menu_c_adt);
     } else {
-      printf("No Menu Cell Adress table present\n");
+      printf("No Menu Cell Address table present\n");
     }
 
     printf("\nVideo Manager Menu VOBU address map\n");
     printf(  "-----------------\n");
     if(ifohandle->menu_vobu_admap) {
-      ifo_print_VOBU_ADMAP(ifohandle->menu_vobu_admap);
+      ifoPrint_VOBU_ADMAP(ifohandle->menu_vobu_admap);
     } else {
       printf("No Menu VOBU address map present\n");
     }
@@ -1151,20 +1150,20 @@ void ifo_print(dvd_reader_t *dvd, int title) {
   if(ifohandle->vtsi_mat) {
 
     printf("VTS top level\n-------------\n");
-    ifo_print_VTSI_MAT(ifohandle->vtsi_mat);
+    ifoPrint_VTSI_MAT(ifohandle->vtsi_mat);
 
     printf("\nPart of Title Track search pointer table\n");
     printf(  "----------------------------------------------\n");
-    ifo_print_VTS_PTT_SRPT(ifohandle->vts_ptt_srpt);
+    ifoPrint_VTS_PTT_SRPT(ifohandle->vts_ptt_srpt);
 
     printf("\nPGCI Unit table\n");
     printf(  "--------------------\n");
-    ifo_print_PGCIT(ifohandle->vts_pgcit, 0);
+    ifoPrint_PGCIT(ifohandle->vts_pgcit, 0);
 
     printf("\nMenu PGCI Unit table\n");
     printf(  "--------------------\n");
     if(ifohandle->pgci_ut) {
-      ifo_print_PGCI_UT(ifohandle->pgci_ut);
+      ifoPrint_PGCI_UT(ifohandle->pgci_ut);
     } else {
       printf("No Menu PGCI Unit table present\n");
     }
@@ -1172,80 +1171,35 @@ void ifo_print(dvd_reader_t *dvd, int title) {
     printf("\nVTS Time Map table\n");
     printf(  "-----------------\n");
     if(ifohandle->vts_tmapt) {
-      ifo_print_VTS_TMAPT(ifohandle->vts_tmapt);
+      ifoPrint_VTS_TMAPT(ifohandle->vts_tmapt);
     } else {
       printf("No VTS Time Map table present\n");
     }
 
-    printf("\nMenu Cell Adress table\n");
+    printf("\nMenu Cell Address table\n");
     printf(  "-----------------\n");
     if(ifohandle->menu_c_adt) {
-      ifo_print_C_ADT(ifohandle->menu_c_adt);
+      ifoPrint_C_ADT(ifohandle->menu_c_adt);
     } else {
-      printf("No Cell Adress table present\n");
+      printf("No Cell Address table present\n");
     }
 
     printf("\nVideo Title Set Menu VOBU address map\n");
     printf(  "-----------------\n");
     if(ifohandle->menu_vobu_admap) {
-      ifo_print_VOBU_ADMAP(ifohandle->menu_vobu_admap);
+      ifoPrint_VOBU_ADMAP(ifohandle->menu_vobu_admap);
     } else {
       printf("No Menu VOBU address map present\n");
     }
 
     printf("\nCell Adress table\n");
     printf(  "-----------------\n");
-    ifo_print_C_ADT(ifohandle->vts_c_adt);
+    ifoPrint_C_ADT(ifohandle->vts_c_adt);
 
     printf("\nVideo Title Set VOBU address map\n");
     printf(  "-----------------\n");
-    ifo_print_VOBU_ADMAP(ifohandle->vts_vobu_admap);
+    ifoPrint_VOBU_ADMAP(ifohandle->vts_vobu_admap);
   }
 
   ifoClose(ifohandle);
 }
-
-/*
- * $Log$
- * Revision 1.3  2004/10/22 11:36:19  jcdutton
- * Stop seg fault when using ifo_dump.
- *
- * Revision 1.2  2004/09/27 12:24:01  jcdutton
- * Add extra info to printout when using ifo_dump.
- *
- * Revision 1.1  2004/01/11 21:43:13  mroi
- * big build system changes
- *  * cleaned up all Makefiles and added a Makefile.common
- *  * added relchk script
- *  * moved libdvdread files to a dvdread subdir
- *  * moved DVD VM to a vm subdir
- *  * removed unused code in read_cache.c
- *
- * Revision 1.4  2004/01/01 15:13:13  jcdutton
- * Put ifo_print.c and .h back in.
- *
- * Revision 1.7  2003/04/28 15:17:17  jcdutton
- * Update ifodump to work with new libdvdnav cvs, instead of needing libdvdread.
- *
- * Revision 1.6  2003/04/05 22:49:04  jcdutton
- * Update with more info from the latest libdvdread.
- *
- * Revision 1.5  2003/04/05 13:03:49  jcdutton
- * Small updates.
- *
- * Revision 1.4  2003/04/01 08:01:03  jcdutton
- * Add VTS Time map display. Requires libdvdread 0.9.4. The same version that comes with xine.
- *
- * Revision 1.3  2003/03/14 15:49:18  mroi
- * adjust to new libdvdread version
- *
- * Revision 1.2  2002/08/30 05:12:33  jcdutton
- * Minor update now that I know what PGC Entry IDs are for.
- *
- * Revision 1.1.1.1  2002/08/28 09:48:35  jcdutton
- * Initial import into CVS.
- *
- *
- *
- */
-
