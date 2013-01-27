@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Afrikaans language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/af/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Stel Kunstenaar Ondersteunerkuns vanaf HTBackdrops.com in staat</string>
+    <string id="30001">Stel Kunstenaar Duimnaelsketse vanaf allmusic.com in staat</string>
+    <string id="30002">Stel Kunstenaar Duimnaelsketse vanaf last.fm in staat</string>
+    <string id="30003">Stel Kunstenaar Duinnaelsketse vanaf HTBackdrops.com in staat</string>
+    <string id="30004">Stel Kunstenaar Ondersteunerkuns vanaf fanart.tv in staat</string>
+    <string id="30005">Stel Kunstenaar Duimnaelsketse vanaf fanart.tv in staat</string>
+    <string id="30006">Kry Kunstenaar Biografie vanaf</string>
+    <string id="30007">Kunswerk</string>
+    <string id="30008">Kry Kunstenaar Diskografie vanaf</string>
+    <string id="30009">Kry Kunstenaar Genres vanaf</string>
+    <string id="30010">Kry Kunstenaar Style vanaf</string>
+    <string id="30011">Kry Kunstenaar Lewensduur vanaf</string>
+    <string id="30012">Kry Kunstenaar Stemming vanaf</string>
+    <string id="30014">Kry Kunstenaar Aktiewe Jare vanaf</string>
+    <string id="30015">Verkose Taal</string>
+    <string id="30016">Val terug na Kunstenaar Biografie vanaf</string>
+    <string id="30017">Val terug na Kunstenaar Diskografie vanaf</string>
+    <string id="30018">Val terug na Kunstenaar Genres vanaf</string>
+    <string id="30019">Val terug na Kunstenaar Style vanaf</string>
+    <string id="30020">Val terug na Kunstenaar Lewensduur vanaf</string>
+    <string id="30021">Terugval Opsies</string>
+    <string id="30022">Stel Kunstenaar Duimnaelsketse vanaf theaudiodb.com in staat</string>
+    <string id="30023">Stel Kunstenaar Ondersteunerkuns vanaf theaudiodb.com in staat</string>
+</strings>
