@@ -138,6 +138,25 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
+{
+  switch (action.GetID())
+  {
+  case ACTION_PREVIOUS_CHANNELGROUP:
+  case ACTION_NEXT_CHANNELGROUP:
+    {
+      CPVRChannelGroupPtr group = GetPlayingGroup();
+      CPVRChannelGroupPtr nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP ? group->GetNextGroup() : group->GetPreviousGroup();
+      g_PVRManager.SetPlayingGroup(nextGroup);
+      SetLastSelectedItem(group->GroupID());
+      Update();
+      return true;
+    }
+  }
+
+  return CGUIDialog::OnAction(action);
+}
+
 CPVRChannelGroupPtr CGUIDialogPVRChannelsOSD::GetPlayingGroup()
 {
   CPVRChannelPtr channel;
