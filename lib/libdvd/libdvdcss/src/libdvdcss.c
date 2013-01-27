@@ -556,7 +556,7 @@ LIBDVDCSS_EXPORT dvdcss_t dvdcss_open ( char *psz_target )
 
         sprintf( psz_debug, "using CSS key cache dir: %s",
                             dvdcss->psz_cachefile );
-        print_debug( dvdcss, psz_debug );
+        print_debug( dvdcss, "%s", psz_debug );
     }
     nocache:
 
