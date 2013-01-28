@@ -314,12 +314,14 @@
 {
   PRINT_SIGNATURE();
   pause = TRUE;
+  g_application.SetInBackground(true);
 }
 //--------------------------------------------------------------
 - (void) resumeAnimation
 {
   PRINT_SIGNATURE();
   pause = FALSE;
+  g_application.SetInBackground(false);
 }
 //--------------------------------------------------------------
 - (void) startAnimation

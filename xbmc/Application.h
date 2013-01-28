@@ -298,6 +298,10 @@ public:
 
   bool m_bPlaybackStarting;
 
+  bool m_bInBackground;
+  inline bool IsInBackground() { return m_bInBackground; };
+  void SetInBackground(bool background);
+
   CKaraokeLyricsManager* m_pKaraokeMgr;
 
   PLAYERCOREID m_eForcedNextPlayer;
