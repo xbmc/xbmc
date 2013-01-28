@@ -23,32 +23,43 @@
 #import "XBMCApplication.h"
 #import "XBMCController.h"
 #import "IOSScreenManager.h"
+#import "XBMCDebugHelpers.h"
 
 @implementation XBMCApplicationDelegate
 XBMCController *m_xbmcController;  
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+  PRINT_SIGNATURE();
+
   [m_xbmcController pauseAnimation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+  PRINT_SIGNATURE();
+
   [m_xbmcController resumeAnimation];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+  PRINT_SIGNATURE();
+
   [m_xbmcController pauseAnimation];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+  PRINT_SIGNATURE();
+
   [m_xbmcController pauseAnimation];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+  PRINT_SIGNATURE();
+
   [m_xbmcController resumeAnimation];
 }
 
@@ -84,6 +95,8 @@ XBMCController *m_xbmcController;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
+  PRINT_SIGNATURE();
+
   [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
   UIScreen *currentScreen = [UIScreen mainScreen];
 
@@ -123,11 +136,11 @@ int main(int argc, char *argv[]) {
   } 
   @catch (id theException) 
   {
-    NSLog(@"%@", theException);
+    ELOG(@"%@", theException);
   }
   @finally 
   {
-    NSLog(@"This always happens.");
+    ILOG(@"This always happens.");
   }
     
   [pool release];

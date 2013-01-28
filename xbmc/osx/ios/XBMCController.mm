@@ -528,7 +528,7 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
 { 
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   m_screenIdx = 0;
   self = [super init];
   if ( !self )
@@ -591,7 +591,7 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   
   // move this later into CocoaPowerSyscall
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -603,7 +603,7 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {  
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   
   [self pauseAnimation];
   
@@ -658,7 +658,7 @@ extern NSString* kBRScreenSaverDismissed;
 //--------------------------------------------------------------
 - (BOOL) recreateOnReselect
 { 
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   return YES;
 }
 //--------------------------------------------------------------
@@ -719,7 +719,7 @@ extern NSString* kBRScreenSaverDismissed;
   
   /* Give player time to pause */
   Sleep(2000);
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  PRINT_SIGNATURE();
   
   [m_glView pauseAnimation];
   
@@ -733,16 +733,22 @@ extern NSString* kBRScreenSaverDismissed;
   newEvent.appcommand.action = ACTION_PLAYER_PLAY;
   CWinEventsIOS::MessagePush(&newEvent);    
   
+  PRINT_SIGNATURE();
+
   [m_glView resumeAnimation];
 }
 //--------------------------------------------------------------
 - (void)startAnimation
 {
+  PRINT_SIGNATURE();
+
   [m_glView startAnimation];
 }
 //--------------------------------------------------------------
 - (void)stopAnimation
 {
+  PRINT_SIGNATURE();
+
   [m_glView stopAnimation];
 }
 #pragma mark -
@@ -750,7 +756,8 @@ extern NSString* kBRScreenSaverDismissed;
 //
 - (void)observeDefaultCenterStuff: (NSNotification *) notification
 {
-  //NSLog(@"default: %@", [notification name]);
+//  LOG(@"default: %@", [notification name]);
+//  LOG(@"userInfo: %@", [notification userInfo]);
 }
 
 @end
