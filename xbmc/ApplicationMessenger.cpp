@@ -512,6 +512,15 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       }
       break;
 
+    case TMSG_MEDIA_PAUSE_IF_PLAYING:
+      if (g_application.IsPlaying() && !g_application.IsPaused())
+      {
+        g_application.ResetScreenSaver();
+        g_application.WakeUpScreenSaverAndDPMS();
+        g_application.m_pPlayer->Pause();
+      }
+      break;
+
     case TMSG_SWITCHTOFULLSCREEN:
       if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
@@ -926,6 +935,18 @@ void CApplicationMessenger::MediaStop(bool bWait /* = true */, int playlistid /*
 void CApplicationMessenger::MediaPause()
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PAUSE};
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaUnPause()
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_UNPAUSE};
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaPauseIfPlaying()
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PAUSE_IF_PLAYING};
   SendMessage(tMsg, true);
 }
 
