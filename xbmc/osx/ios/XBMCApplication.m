@@ -19,6 +19,7 @@
  */
  
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVAudioSession.h>
 
 #import "XBMCApplication.h"
 #import "XBMCController.h"
@@ -33,6 +34,7 @@ XBMCController *m_xbmcController;
   PRINT_SIGNATURE();
 
   [m_xbmcController pauseAnimation];
+  [m_xbmcController becomeInactive];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -40,27 +42,30 @@ XBMCController *m_xbmcController;
   PRINT_SIGNATURE();
 
   [m_xbmcController resumeAnimation];
+  [m_xbmcController enterForeground];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
   PRINT_SIGNATURE();
 
-  [m_xbmcController pauseAnimation];
+  if (application.applicationState == UIApplicationStateBackground)
+  {
+    // the app is turn into background, not in by screen lock which has app state inactive.
+    [m_xbmcController enterBackground];
+  }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
   PRINT_SIGNATURE();
 
-  [m_xbmcController pauseAnimation];
+  [m_xbmcController stopAnimation];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
   PRINT_SIGNATURE();
-
-  [m_xbmcController resumeAnimation];
 }
 
 - (void)screenDidConnect:(NSNotification *)aNotification
@@ -104,6 +109,37 @@ XBMCController *m_xbmcController;
   m_xbmcController.wantsFullScreenLayout = YES;  
   [m_xbmcController startAnimation];
   [self registerScreenNotifications:YES];
+
+  NSError *err = nil;
+  if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&err])
+  {
+    ELOG(@"AVAudioSession setCategory failed: %@", err);
+  }
+  err = nil;
+  if (![[AVAudioSession sharedInstance] setActive: YES error: &err])
+  {
+    ELOG(@"AVAudioSession setActive failed: %@", err);
+  }
+  [[AVAudioSession sharedInstance] setDelegate:self];
+}
+
+- (void)beginInterruption
+{
+  PRINT_SIGNATURE();
+  [m_xbmcController beginInterruption];
+}
+- (void)endInterruptionWithFlags:(NSUInteger)flags
+{
+  LOG(@"%s: %d", __PRETTY_FUNCTION__, flags);
+  if (flags & AVAudioSessionInterruptionFlags_ShouldResume)
+  {
+    NSError *err = nil;
+    if (![[AVAudioSession sharedInstance] setActive: YES error: &err])
+    {
+      ELOG(@"AVAudioSession::endInterruption setActive failed: %@", err);
+    }
+    [m_xbmcController endInterruption];
+  }
 }
 
 - (void)dealloc

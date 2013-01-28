@@ -56,6 +56,7 @@
 
 #undef BOOL
 
+#import <AVFoundation/AVAudioSession.h>
 #import <MediaPlayer/MPMediaItem.h>
 #ifdef __IPHONE_5_0
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
@@ -178,12 +179,14 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
   }
   else if (msg == "OnPause")
   {
+    CAEFactory::Suspend();
     NSDictionary *item = dictionaryFromVariantMap(data["item"]);
     LOG(@"data: %@", item.description);
     [g_xbmcController performSelectorOnMainThread:@selector(onPause:) withObject:item  waitUntilDone:NO];
   }
   else if (msg == "OnStop")
   {
+    CAEFactory::Suspend();
     NSDictionary *item = dictionaryFromVariantMap(data["item"]);
     LOG(@"data: %@", item.description);
     [g_xbmcController performSelectorOnMainThread:@selector(onStop:) withObject:item  waitUntilDone:NO];
@@ -692,6 +695,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   if ( !self )
     return ( nil );
 
+  m_isPlayingBeforeInactive = NO;
+  m_isInterrupted = NO;
+
   m_window = [[UIWindow alloc] initWithFrame:frame];
   [m_window setRootViewController:self];  
   m_window.screen = screen;
@@ -915,30 +921,63 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   }
 }
 //--------------------------------------------------------------
+- (void)enterBackground
+{
+  PRINT_SIGNATURE();
+  if (g_application.IsPlaying() && !g_application.IsPaused())
+  {
+    m_isPlayingBeforeInactive = YES;
+    CApplicationMessenger::Get().MediaPauseIfPlaying();
+  }
+}
+
+- (void)enterForeground
+{
+  PRINT_SIGNATURE();
+  // when we come back, restore playing if we were.
+  if (m_isPlayingBeforeInactive)
+  {
+    CApplicationMessenger::Get().MediaUnPause();
+    m_isPlayingBeforeInactive = NO;
+  }
+  m_isInterrupted = NO;
+}
+
+- (void)becomeInactive
+{
+  LOG(@"%s: was interrupted: %d", __PRETTY_FUNCTION__,  m_isInterrupted);
+  // if we were interrupted, already paused here
+  // else if user background us or lock screen, only pause video here, audio keep playing.
+  if (g_application.IsPlayingVideo() && !g_application.IsPaused())
+  {
+    m_isPlayingBeforeInactive = YES;
+    CApplicationMessenger::Get().MediaPauseIfPlaying();
+  }
+}
+
+- (void)beginInterruption
+{
+  PRINT_SIGNATURE();
+  m_isInterrupted = YES;
+  CAEFactory::Suspend();
+}
+
+- (void)endInterruption
+{
+  PRINT_SIGNATURE();
+  if (CAEFactory::IsSuspended())
+    CAEFactory::Resume();
+}
+//--------------------------------------------------------------
 - (void)pauseAnimation
 {
-  XBMC_Event newEvent;
-  
-  newEvent.appcommand.type = XBMC_APPCOMMAND;
-  newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
-  CWinEventsIOS::MessagePush(&newEvent);
-  
-  /* Give player time to pause */
-  Sleep(2000);
   PRINT_SIGNATURE();
   
   [m_glView pauseAnimation];
-  
 }
 //--------------------------------------------------------------
 - (void)resumeAnimation
 {  
-  XBMC_Event newEvent;
-  
-  newEvent.appcommand.type = XBMC_APPCOMMAND;
-  newEvent.appcommand.action = ACTION_PLAYER_PLAY;
-  CWinEventsIOS::MessagePush(&newEvent);    
-  
   PRINT_SIGNATURE();
 
   [m_glView resumeAnimation];

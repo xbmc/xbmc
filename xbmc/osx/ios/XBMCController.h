@@ -42,6 +42,9 @@
   int  m_screenIdx;
 
   UIInterfaceOrientation orientation;
+  
+  bool m_isPlayingBeforeInactive;
+  bool m_isInterrupted;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
@@ -55,6 +58,11 @@
 - (void) resumeAnimation;
 - (void) startAnimation;
 - (void) stopAnimation;
+- (void) enterBackground;
+- (void) enterForeground;
+- (void) becomeInactive;
+- (void) beginInterruption;
+- (void) endInterruption;
 - (void) sendKey: (XBMCKey) key;
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
 - (void) initDisplayLink;

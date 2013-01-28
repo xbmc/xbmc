@@ -52,6 +52,7 @@
 		7CC3106F162AAFE3003E7579 /* EdenVideoArtUpdater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CC3106D162AAFE3003E7579 /* EdenVideoArtUpdater.cpp */; };
 		7CCFD9991514950700211D82 /* PCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCFD9971514950700211D82 /* PCMCodec.cpp */; };
 		7CEE2E7F13D6B7D4000ABF2A /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE2E7D13D6B7D4000ABF2A /* TimeSmoother.cpp */; };
+		8253940516B25C2C00A85509 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8253940416B25C2C00A85509 /* AVFoundation.framework */; };
 		8253940716B25C2C00A85509 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8253940616B25C2C00A85509 /* MediaPlayer.framework */; };
 		C80711AD135DB85F002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80711AB135DB85F002F601B /* InputOperations.cpp */; };
 		C8B929D01573557B00284190 /* Epg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B929C31573557B00284190 /* Epg.cpp */; };
@@ -1133,6 +1134,7 @@
 		7CCFD9981514950700211D82 /* PCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMCodec.h; sourceTree = "<group>"; };
 		7CEE2E7D13D6B7D4000ABF2A /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
 		7CEE2E7E13D6B7D4000ABF2A /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
+		8253940416B25C2C00A85509 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8253940616B25C2C00A85509 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		83D619BB13C0D25300418A0F /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.ios; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3287,6 +3289,7 @@
 				F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */,
 				18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */,
+				8253940516B25C2C00A85509 /* AVFoundation.framework in Frameworks */,
 				8253940716B25C2C00A85509 /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6438,6 +6441,7 @@
 				F589AE481288E07D00D8079E /* libxml2.dylib */,
 				F589AE461288E07400D8079E /* libz.dylib */,
 				F56B14A412CAF523009B4C96 /* AudioToolbox.framework */,
+				8253940416B25C2C00A85509 /* AVFoundation.framework */,
 				4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */,
 				3255316512B2D02400837CD2 /* CoreAudio.framework */,
 				F56B143312CAF279009B4C96 /* CoreVideo.framework */,
