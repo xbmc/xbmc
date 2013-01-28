@@ -425,6 +425,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if(m_started)
         m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
+    {
+      DisplayTime dTime = ((CDVDMsgType<DisplayTime>*)pMsg)->m_value;
+
+      dTime.m_processing_time = CDVDClock::GetAbsoluteClock();
+      dTime.player = DVDPLAYER_AUDIO;
+      m_messageParent.Put(new CDVDMsgType<DisplayTime>(CDVDMsg::PLAYER_DISPLAYTIME, dTime));
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_EOF");

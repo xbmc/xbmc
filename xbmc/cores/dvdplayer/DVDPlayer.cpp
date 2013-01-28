@@ -2278,6 +2278,20 @@ void CDVDPlayer::HandleMessages()
           m_CurrentVideo.started = true;
         CLog::Log(LOGDEBUG, "CDVDPlayer::HandleMessages - player started %d", player);
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_DISPLAYTIME))
+      {
+        DisplayTime dTime = ((CDVDMsgType<DisplayTime>*)pMsg)->m_value;
+
+        int player = dTime.player;
+        if(player == DVDPLAYER_AUDIO && m_CurrentAudio.started)
+        {
+          m_CurrentAudio.displayTime = dTime;
+        }
+        else if(player == DVDPLAYER_VIDEO && m_CurrentVideo.started)
+        {
+          m_CurrentVideo.displayTime = dTime;
+        }
+      }
     }
     catch (...)
     {
@@ -3193,6 +3207,8 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
       m_CurrentVideo.started    = false;
       m_CurrentSubtitle.started = false;
       m_CurrentTeletext.started = false;
+      m_CurrentVideo.displayTime.m_processing_time = DVD_NOPTS_VALUE;
+      m_CurrentAudio.displayTime.m_processing_time = DVD_NOPTS_VALUE;
     }
 
     if(pts != DVD_NOPTS_VALUE)
@@ -3876,10 +3892,40 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       state.player_state = "";
   }
 
-  if (state.time_src == ETIMESOURCE_CLOCK)
-    state.time_offset = 0;
-  else
+  if (state.time_src != ETIMESOURCE_CLOCK)
+  {
+    // calculate offset at dvdplayer input, it is supposed to stay constant
     state.time_offset = DVD_MSEC_TO_TIME(state.time) - state.dts;
+
+    // get display time from av players
+    // 1. send message through queue
+    DisplayTime dTime;
+    dTime.m_display_time = state.time;
+    dTime.m_chapter = state.chapter;
+    dTime.m_chapter_name = state.chapter_name;
+    if (m_CurrentVideo.inited)
+      m_dvdPlayerVideo.SendMessage(new CDVDMsgType<DisplayTime>(CDVDMsg::PLAYER_DISPLAYTIME, dTime));
+    else if (m_CurrentAudio.inited)
+      m_dvdPlayerAudio.SendMessage(new CDVDMsgType<DisplayTime>(CDVDMsg::PLAYER_DISPLAYTIME, dTime));
+
+    // 2. check if we got respose from av players
+    if (m_CurrentVideo.displayTime.m_processing_time != DVD_NOPTS_VALUE)
+    {
+      state.time = m_CurrentVideo.displayTime.m_display_time
+                 + DVD_TIME_TO_MSEC(CDVDClock::GetAbsoluteClock()-m_CurrentVideo.displayTime.m_processing_time);
+      state.chapter = m_CurrentVideo.displayTime.m_chapter;
+      state.chapter_name = m_CurrentVideo.displayTime.m_chapter_name;
+    }
+    else if (m_CurrentAudio.displayTime.m_processing_time != DVD_NOPTS_VALUE)
+    {
+      state.time = m_CurrentAudio.displayTime.m_display_time
+                 + DVD_TIME_TO_MSEC(CDVDClock::GetAbsoluteClock()-m_CurrentAudio.displayTime.m_processing_time);
+      state.chapter = m_CurrentAudio.displayTime.m_chapter;
+      state.chapter_name = m_CurrentAudio.displayTime.m_chapter_name;
+    }
+  }
+  else
+    state.time_offset = 0;
 
   if (m_CurrentAudio.id >= 0 && m_pDemuxer)
   {

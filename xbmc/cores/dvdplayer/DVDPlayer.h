@@ -31,6 +31,7 @@
 #include "DVDPlayerVideo.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDPlayerTeletext.h"
+#include "DVDInputStreams/DVDInputStream.h"
 
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
@@ -75,6 +76,8 @@ public:
   // stuff to handle starting after seek
   double   startpts;
 
+  DisplayTime      displayTime;
+
   CCurrentStream(StreamType t, int i)
     : type(t)
     , player(i)
@@ -94,6 +97,7 @@ public:
     inited = false;
     started = false;
     startpts  = DVD_NOPTS_VALUE;
+    displayTime.m_processing_time = DVD_NOPTS_VALUE;
   }
 
   double dts_end()
