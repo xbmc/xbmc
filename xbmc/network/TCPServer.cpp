@@ -182,7 +182,15 @@ void CTCPServer::Process()
           newconnection->m_socket = accept(*it, (sockaddr*)&newconnection->m_cliaddr, &newconnection->m_addrlen);
 
           if (newconnection->m_socket == INVALID_SOCKET)
-            CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed");
+          {
+            CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed: %d", errno);
+            if (EBADF == errno)
+            {
+              Sleep(1000);
+              Initialize();
+              break;
+            }
+          }
           else
           {
             CLog::Log(LOGINFO, "JSONRPC Server: New connection added");
