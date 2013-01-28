@@ -488,7 +488,11 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   // if we are suspended we don't
   // want anyone to mess with us
   if (m_isSuspended && !m_softSuspend)
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV)
+    Resume();
+#else
     return NULL;
+#endif
 
   CAEChannelInfo channelInfo(channelLayout);
   CLog::Log(LOGINFO, "CCoreAudioAE::MakeStream - %s, %u, %u, %s",
