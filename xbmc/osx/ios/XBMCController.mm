@@ -290,6 +290,7 @@ extern NSString* kBRScreenSaverDismissed;
 {
   [view removeFromSuperview];
   m_glView.userInteractionEnabled = YES; 
+  [self becomeFirstResponder];
 }
 //--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender 
@@ -601,6 +602,14 @@ extern NSString* kBRScreenSaverDismissed;
   [super viewWillAppear:animated];
 }
 //--------------------------------------------------------------
+-(void) viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+
+  [self becomeFirstResponder];
+  [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+}
+//--------------------------------------------------------------
 - (void)viewWillDisappear:(BOOL)animated
 {  
   PRINT_SIGNATURE();
@@ -613,8 +622,16 @@ extern NSString* kBRScreenSaverDismissed;
   [super viewWillDisappear:animated];
 }
 //--------------------------------------------------------------
+- (BOOL) canBecomeFirstResponder
+{
+  return YES;
+}
+//--------------------------------------------------------------
 - (void)viewDidUnload
 {
+  [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+  [self resignFirstResponder];
+
 	[super viewDidUnload];	
 }
 //--------------------------------------------------------------
@@ -707,6 +724,35 @@ extern NSString* kBRScreenSaverDismissed;
   [view removeFromSuperview];
   [m_window addSubview:view];  
   m_window.screen = screen;
+}
+//--------------------------------------------------------------
+- (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
+  LOG(@"%s: type %d, subtype: %d", __PRETTY_FUNCTION__, receivedEvent.type, receivedEvent.subtype);
+  if (receivedEvent.type == UIEventTypeRemoteControl)
+  {
+    switch (receivedEvent.subtype)
+    {
+      case UIEventSubtypeRemoteControlTogglePlayPause:
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAYPAUSE);
+        break;
+      case UIEventSubtypeRemoteControlPlay:
+        CApplicationMessenger::Get().SendAction(ACTION_PLAYER_PLAY);
+        break;
+      case UIEventSubtypeRemoteControlPause:
+        // ACTION_PAUSE sometimes cause unpause, use MediaPauseIfPlaying to make sure pause only
+        CApplicationMessenger::Get().MediaPauseIfPlaying();
+        break;
+      case UIEventSubtypeRemoteControlNextTrack:
+        CApplicationMessenger::Get().SendAction(ACTION_NEXT_ITEM);
+        break;
+      case UIEventSubtypeRemoteControlPreviousTrack:
+        CApplicationMessenger::Get().SendAction(ACTION_PREV_ITEM);
+        break;
+      default:
+        LOG(@"unhandled subtype: %d", receivedEvent.subtype);
+        break;
+    }
+  }
 }
 //--------------------------------------------------------------
 - (void)pauseAnimation
