@@ -18,6 +18,8 @@
  *
  */
 
+//#define DEBUG_VERBOSE 1
+
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
 #include "config.h"
 #elif defined(_WIN32)
@@ -137,6 +139,9 @@ void CDVDVideoCodecStageFright::SetDropState(bool bDrop)
 
 int CDVDVideoCodecStageFright::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
+#if defined(DEBUG_VERBOSE)
+  unsigned int time = XbmcThreads::SystemClockMillis();
+#endif
   int rtn;
   int demuxer_bytes = iSize;
   uint8_t *demuxer_content = pData;
@@ -152,6 +157,9 @@ int CDVDVideoCodecStageFright::Decode(BYTE* pData, int iSize, double dts, double
     else
       CLog::Log(LOGERROR,"%s::%s - bitstream_convert error", CLASSNAME, __func__);
   }
+#if defined(DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, ">>> decode conversion - tm:%d\n", XbmcThreads::SystemClockMillis() - time);
+#endif
 
   rtn = m_stf_decoder->Decode(demuxer_content, demuxer_bytes, dts, pts);
 
