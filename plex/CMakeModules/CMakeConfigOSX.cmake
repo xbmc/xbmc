@@ -1,7 +1,26 @@
 # vim: setlocal syntax=cmake:
 
+set(dependdir ${root}/plex/Dependencies/laika-depends)
+
+# MUST BE ADDED FIRST :)
+# This will download our dependency tree
+add_subdirectory(plex/Dependencies)
+
 set(CMAKE_REQUIRED_INCLUDES ${dependdir}/include ${root}/lib/ffmpeg)
 set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
+
+######################### Check if we are running within XCode
+if(DEFINED XCODE_VERSION)
+  message("Building with XCode Generator")
+  set(USING_XCODE 1)
+endif()
+
+######################### Compiler CFLAGS
+if(NOT DEFINED OSX_SDK)
+   set(OSX_SDK /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk)
+endif()
+
+set(EXTRA_CFLAGS "-arch i386 -mmacosx-version-min=10.6 -isysroot ${OSX_SDK}")
 
 ######################### CHECK LIBRARIES / FRAMEWORKS
 #### Frameworks for MacOSX
@@ -112,3 +131,6 @@ set(PLEX_LINK_WRAPPED "-arch i386 -undefined dynamic_lookup -read_only_relocs su
 
 set(HAVE_LIBVDADECODER 1)
 set(AC_APPLE_UNIVERSAL_BUILD 0)
+
+################## Definitions
+add_definitions(-DTARGET_DARWIN -DTARGET_DARWIN_OSX)

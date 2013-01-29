@@ -18,6 +18,19 @@ elseif(UNIX)
   include(CMakeConfigLinux)
 endif()
 
+if(UNIX)
+  include(CMakeConfigPOSIX)
+endif(UNIX)
+
+############ global definitions set for all platforms
+add_definitions(-D__PLEX__ -D__PLEX__XBMC__ -DPLEX_TARGET_NAME="${EXECUTABLE_NAME}" -DPLEX_VERSION="${PLEX_VERSION_STRING_SHORT_BUILD}")
+
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+  add_definitions(-DDEBUG)
+else()
+  add_definitions(-DNDEBUG)
+endif()
+
 include(CheckFFmpegIncludes)
 include(CheckCrystalHDInclude)
 include(CheckLibshairportConfig)

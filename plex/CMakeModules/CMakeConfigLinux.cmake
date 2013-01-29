@@ -1,5 +1,9 @@
 # vim: setlocal syntax=cmake:
 
+######################### Compiler CFLAGS
+set(EXTRA_CFLAGS "-fPIC -DPIC")
+
+######################### CHECK LIBRARIES / FRAMEWORKS
 if(UNIX)
   set(CMAKE_REQUIRED_FLAGS "-D__LINUX_USER__")
 endif()
@@ -124,3 +128,5 @@ set(PLEX_LINK_WRAPPED "-Wl,--unresolved-symbols=ignore-all -Wl,-wrap,_IO_getc -W
 set(PLEX_LINK_WHOLEARCHIVE -Wl,--whole-archive)
 set(PLEX_LINK_NOWHOLEARCHIVE -Wl,--no-whole-archive)
 
+############ Add our definitions
+add_definitions(-DTARGET_LINUX -D_LINUX)
