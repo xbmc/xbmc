@@ -918,7 +918,14 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   int actionID = GetActionCode(window, key, strAction);
   // if it's invalid, try to get it from the global map
   if (actionID == 0 && fallback)
-    actionID = GetActionCode( -1, key, strAction);
+  {
+    int fallbackWindow = GetFallbackWindow(window);
+    if (fallbackWindow > -1)
+      actionID = GetActionCode(fallbackWindow, key, strAction);
+    // still no valid action? use global map
+    if (actionID == 0)
+      actionID = GetActionCode( -1, key, strAction);
+  }
   // Now fill our action structure
   CAction action(actionID, strAction, key);
   return action;
