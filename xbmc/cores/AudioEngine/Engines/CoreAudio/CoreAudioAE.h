@@ -121,6 +121,8 @@ public:
   virtual OSStatus  Render(AudioUnitRenderActionFlags* actionFlags,
     const AudioTimeStamp* pTimeStamp, UInt32 busNumber,
     UInt32 frameCount, AudioBufferList* pBufList);
+    
+  void AudioDevicesChanged();
 
 
 private:
