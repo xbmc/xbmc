@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Japanese language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ja/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">HTBackdrops.com からアーティストファンアートを取得</string>
+    <string id="30001">allmusic.com からアーティストサムネールを取得</string>
+    <string id="30002">last.fm からアーティストサムネールを取得</string>
+    <string id="30003">HTBackdrops.com からアーティストサムネールを取得</string>
+    <string id="30004">fanart.tv からアーティストファンアートを取得</string>
+    <string id="30005">fanart.tv からアーティストサムネールを取得</string>
+    <string id="30006">アーティストバイオグラフィーの取得先</string>
+    <string id="30007">アートワーク</string>
+    <string id="30008">アーティストディスコグラフィーの取得先</string>
+    <string id="30009">アーティストジャンルの取得先</string>
+    <string id="30010">アーティストスタイルの取得先</string>
+    <string id="30011">アーティスト生年・没年の取得先</string>
+    <string id="30012">アーティストムードの取得先</string>
+    <string id="30014">アーティスト活動期間の取得先</string>
+    <string id="30015">優先する言語</string>
+    <string id="30022">theaudiodb.com からアーティストサムネールを取得</string>
+    <string id="30023">theaudiodb.com からアーティストサムネールを取得</string>
+</strings>

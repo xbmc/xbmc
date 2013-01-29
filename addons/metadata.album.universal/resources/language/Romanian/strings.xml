@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Romanian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ro/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Colectează pictogramele albumelor din fanart.tv</string>
+    <string id="30001">Colectează pictogramele albumelor de la Last.fm</string>
+    <string id="30002">Descarcă review-urile albumelor de la </string>
+    <string id="30003">Limba preferată</string>
+    <string id="30004">Descarcă evaluarea albumelor de la </string>
+    <string id="30005">Descarcă stilul albumelor de la </string>
+    <string id="30006">Descarcă Album Moods de la </string>
+    <string id="30007">Descarcă tema albumelor de la </string>
+    <string id="30008">Colectează pictogramele albumelor de la allmusic.com</string>
+    <string id="30009">Pictograme</string>
+    <string id="30010">Colectează pictogramele albumelor de la theaudiodb.com</string>
+</strings>

@@ -1,0 +1,93 @@
+# XBMC Media Center language file
+# Addon Name: Weather Underground
+# Addon id: weather.wunderground
+# Addon Provider: Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: Amharic (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/am/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: am\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "#32101"
+msgid "Location setup"
+msgstr "አካባቢ ማሰናጃ "
+
+msgctxt "#32102"
+msgid "Advanced options"
+msgstr "የረቀቁ ምርጫዎች"
+
+msgctxt "#32111"
+msgid "Location 1"
+msgstr "አካባቢ 1 "
+
+msgctxt "#32112"
+msgid "Location 2"
+msgstr "አካባቢ 2 "
+
+msgctxt "#32113"
+msgid "Location 3"
+msgstr "አካባቢ 3 "
+
+msgctxt "#32114"
+msgid "Location 1 display name"
+msgstr "አካባቢ 1 ስም ማሳያ "
+
+msgctxt "#32115"
+msgid "Location 2 display name"
+msgstr "አካባቢ 2 ስም ማሳያ"
+
+msgctxt "#32116"
+msgid "Location 3 display name"
+msgstr "አካባቢ 3 ስም ማሳያ"
+
+msgctxt "#32117"
+msgid "Location 1 id"
+msgstr "አካባቢ 1 መለያ "
+
+msgctxt "#32118"
+msgid "Location 2 id"
+msgstr "አካባቢ 2 መለያ"
+
+msgctxt "#32119"
+msgid "Location 3 id"
+msgstr "አካባቢ 3 መለያ"
+
+msgctxt "#32121"
+msgid "Weekend"
+msgstr "የሳምንቱ መጨረሻ"
+
+msgctxt "#32122"
+msgid "Saturday/Sunday"
+msgstr "ቅዳሜ / እሑድ "
+
+msgctxt "#32123"
+msgid "Friday/Saturday"
+msgstr "አርብ / ቅዳሜ "
+
+msgctxt "#32124"
+msgid "Thursday/Friday"
+msgstr "ሐሙስ / አርብ "
+
+msgctxt "#32501"
+msgid "New Moon"
+msgstr "አዲስ ጨረቃ "
+
+msgctxt "#32505"
+msgid "Full Moon"
+msgstr "ሙሉ ጨረቃ "
+
+msgctxt "#32510"
+msgid "Warning"
+msgstr "ማስጠንቀቂያ "
+
+msgctxt "#32515"
+msgid "Forecast"
+msgstr "ግምት "
