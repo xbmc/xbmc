@@ -354,7 +354,15 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   si->m_playNextAtFrame = 0;
   si->m_playNextTriggered = false;
 
-  PrepareStream(si);
+  if (!PrepareStream(si))
+  {
+    CLog::Log(LOGINFO, "PAPlayer::QueueNextFileEx - Error preparing stream");
+    
+    si->m_decoder.Destroy();
+    delete si;
+    m_callback.OnQueueNextItem();
+    return false;
+  }
 
   /* add the stream to the list */
   CExclusiveLock lock(m_streamsLock);
