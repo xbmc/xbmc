@@ -502,9 +502,9 @@ namespace INFO
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
 
-#define VERSION_MAJOR 12
+#define VERSION_MAJOR 13
 #define VERSION_MINOR 0
-#define VERSION_TAG "-RC3"
+#define VERSION_TAG "-ALPHA1"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
