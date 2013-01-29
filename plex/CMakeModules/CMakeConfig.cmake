@@ -40,8 +40,12 @@ if(DEFINED SDL_FOUND)
 endif()
 
 set(USE_UPNP 1)
-set(HAS_DVD_DRIVE 0)
 set(HAS_LIBRTMP 1)
+
+OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" OFF)
+if(ENABLE_DVD_DRIVE)
+  set(HAS_DVD_DRIVE 1)
+endif(ENABLE_DVD_DRIVE)
 
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
 configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)

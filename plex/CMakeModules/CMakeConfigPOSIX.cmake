@@ -1,7 +1,8 @@
 ######### Shared configuration between POSIX platforms
 ############ Special Clang cflags
+option(CLANG_COLOR "Show CLang color during compile" ON)
 if(${CMAKE_C_COMPILER} MATCHES "clang")
-  if(NOT DEFINED ${PLEX_DISABLE_COLORS})
+  if(CLANG_COLOR)
     set(EXTRA_CFLAGS "${EXTRA_CFLAGS} -fcolor-diagnostics")
   endif()
 endif()

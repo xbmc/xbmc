@@ -30,7 +30,10 @@
 
 #ifdef HAS_DVD_DRIVE
 
+#ifndef __PLEX__
 #include <taglib/id3v1genres.h>
+#endif
+
 #include "cddb.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
@@ -573,7 +576,9 @@ void Xcddb::parseData(const char *buffer)
           if (StringUtils::IsNaturalNumber(strGenre))
           {
             int iGenre = strtol(strGenre, NULL, 10);
+#ifndef __PLEX__
             m_strGenre = TagLib::ID3v1::genre(iGenre).to8Bit(true);
+#endif
           }
         }
       }
