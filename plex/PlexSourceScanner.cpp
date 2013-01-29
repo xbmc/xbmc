@@ -119,13 +119,6 @@ void CPlexSourceScanner::Process()
       item->SetLabel2(m_sources->hostLabel);
       item->SetProperty("machineIdentifier", m_sources->uuid);
       
-      // Load and set fanart.
-      /*
-      item->CacheLocalFanart();
-      if (CFile::Exists(item->GetCachedProgramFanart()))
-        item->SetProperty("fanart_image", item->GetCachedProgramFanart());
-      */
-      
       CLog::Log(LOGNOTICE, " -> Local section '%s' found.", item->GetLabel().c_str());
       sections.push_back(item);
     }
@@ -218,6 +211,8 @@ void CPlexSourceScanner::RemoveHost(PlexServerPtr server, bool force)
       dprintf("Plex Source Scanner: removing server %s (url: %s), %ld urls left.", sources->hostLabel.c_str(), server->url().c_str(), sources->servers.size());
       if (sources->servers.size() > 0)
         return;
+      
+      boost::recursive_mutex::scoped_lock sLock(sources->lock);
       
       // If the count went down to zero, whack it.
       g_hostSourcesMap.erase(server->uuid);

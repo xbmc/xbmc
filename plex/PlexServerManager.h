@@ -134,15 +134,19 @@ public:
       if (m_servers[server->key()]->decRef() == 0)
       {
         dprintf("Plex Server Manager: removed existing server '%s' (%s).", name.c_str(), addr.c_str());
-        m_servers.erase(server->key());
         CPlexSourceScanner::RemoveHost(server, true);
+
+        m_servers.erase(server->key());
       }
       else
       {
         dprintf("Plex Server Manager: lost a reference to server '%s' (%s) ref=%d.", name.c_str(), addr.c_str(), server->refCount());
+        /* We need to make sure that all other server refs with the same UUID runs their connectivity tests now
+         * because this can mean that we have lost the server */
       }
     }
-    
+
+    runRechabilityChecks();
     updateBestServer();
     dump();
   }
@@ -350,18 +354,29 @@ public:
       // Run connectivity checks.
       dprintf("Plex Server Manager: Running connectivity check.");
       BOOST_FOREACH(key_server_pair pair, servers)
-        pair.second->reachable();
+      {
+        if (!pair.second->reachable() && !pair.second->detected())
+          removeServer(pair.second->uuid, pair.second->name, pair.second->address, pair.second->port);
+      }
       
       updateBestServer();
       dump();
       
       // Sleep.
-      boost::this_thread::sleep(boost::posix_time::seconds(30));
+
+      /* Wait 30 seconds or when someone wakes us up */
+      m_connectivityEvent.WaitMSec(30 * 1000);
     }
+  }
+
+  void runRechabilityChecks()
+  {
+    m_connectivityEvent.Set();
   }
   
   PlexServerPtr              m_bestServer;
   map<string, PlexServerPtr> m_servers;
   vector<PlexServerPtr>      m_sharedServers;
   boost::recursive_mutex     m_mutex;
+  CEvent                     m_connectivityEvent;
 };
