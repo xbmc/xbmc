@@ -46,7 +46,9 @@ typedef enum {
 class ITouchInputHandler : public ITouchInputHandling
 {
 public:
-  ITouchInputHandler() { }
+  ITouchInputHandler()
+    : m_dpi(160.0f)
+  { }
   virtual ~ITouchInputHandler() { }
 
   /*!
@@ -91,4 +93,12 @@ public:
    * \sa Handle
    */
   virtual bool UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size = 0.0f) { return false; }
+
+  void SetScreenDPI(float dpi) { if (dpi > 0.0f) m_dpi = dpi; }
+
+protected:
+  /*!
+   * \brief DPI value of the touch screen
+   */
+  float m_dpi;
 };

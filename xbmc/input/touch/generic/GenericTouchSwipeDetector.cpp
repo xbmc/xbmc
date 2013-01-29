@@ -22,12 +22,16 @@
 
 #include "GenericTouchSwipeDetector.h"
 
+// maximum time between touch down and up (in nanoseconds)
 #define SWIPE_MAX_TIME      500000000
-#define SWIPE_MIN_DISTANCE  40
+// maxmium swipe distance between touch down and up (in multiples of screen DPI)
+#define SWIPE_MIN_DISTANCE  0.5
+// maximum distance the touch movement may vary in a direction transversal to
+// the swipe direction
 #define SWIPE_MAX_VARIANCE  30.0
 
-CGenericTouchSwipeDetector::CGenericTouchSwipeDetector(ITouchActionHandler *handler)
-  : IGenericTouchGestureDetector(handler),
+CGenericTouchSwipeDetector::CGenericTouchSwipeDetector(ITouchActionHandler *handler, float dpi)
+  : IGenericTouchGestureDetector(handler, dpi),
     m_directions(TouchMoveDirectionLeft | TouchMoveDirectionRight | TouchMoveDirectionUp | TouchMoveDirectionDown),
     m_swipeDetected(false)
 { }
@@ -115,7 +119,7 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     if (deltaYabs > SWIPE_MAX_VARIANCE)
       m_directions &= ~TouchMoveDirectionLeft;
     // check if the movement went far enough in the X direction
-    else if (deltaXabs > SWIPE_MIN_DISTANCE)
+    else if (deltaXabs > m_dpi * SWIPE_MIN_DISTANCE)
       m_swipeDetected = true;
   }
 
@@ -125,7 +129,7 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     if (deltaYabs > SWIPE_MAX_VARIANCE)
       m_directions &= ~TouchMoveDirectionRight;
     // check if the movement went far enough in the X direction
-    else if (deltaXabs > SWIPE_MIN_DISTANCE)
+    else if (deltaXabs > m_dpi * SWIPE_MIN_DISTANCE)
       m_swipeDetected = true;
   }
   
@@ -135,7 +139,7 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     if (deltaXabs > SWIPE_MAX_VARIANCE)
       m_directions &= ~TouchMoveDirectionUp;
     // check if the movement went far enough in the Y direction
-    else if (deltaYabs > SWIPE_MIN_DISTANCE)
+    else if (deltaYabs > m_dpi * SWIPE_MIN_DISTANCE)
       m_swipeDetected = true;
   }
 
@@ -145,7 +149,7 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     if (deltaXabs > SWIPE_MAX_VARIANCE)
       m_directions &= ~TouchMoveDirectionDown;
     // check if the movement went far enough in the Y direction
-    else if (deltaYabs > SWIPE_MIN_DISTANCE)
+    else if (deltaYabs > m_dpi * SWIPE_MIN_DISTANCE)
       m_swipeDetected = true;
   }
   

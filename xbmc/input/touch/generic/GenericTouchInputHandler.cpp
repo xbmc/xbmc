@@ -89,9 +89,10 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       // we start by assuming that it's a single touch
       if (pointer == 0)
       {
-        m_detectors.insert(new CGenericTouchSwipeDetector(this));
-        m_detectors.insert(new CGenericTouchPinchDetector(this));
-        m_detectors.insert(new CGenericTouchRotateDetector(this));
+        // create new gesture detectors
+        m_detectors.insert(new CGenericTouchSwipeDetector(this, m_dpi));
+        m_detectors.insert(new CGenericTouchPinchDetector(this, m_dpi));
+        m_detectors.insert(new CGenericTouchRotateDetector(this, m_dpi));
         triggerDetectors(event, pointer);
 
         setGestureState(TouchGestureSingleTouch);

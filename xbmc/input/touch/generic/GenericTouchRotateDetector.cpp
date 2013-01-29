@@ -26,8 +26,8 @@
 #define M_PI 3.1415926535897932384626433832795028842
 #endif
 
-CGenericTouchRotateDetector::CGenericTouchRotateDetector(ITouchActionHandler *handler)
-  : IGenericTouchGestureDetector(handler),
+CGenericTouchRotateDetector::CGenericTouchRotateDetector(ITouchActionHandler *handler, float dpi)
+  : IGenericTouchGestureDetector(handler, dpi),
     m_angle(0.0f)
 { }
 

@@ -31,7 +31,7 @@
 class CGenericTouchSwipeDetector : public IGenericTouchGestureDetector
 {
 public:
-  CGenericTouchSwipeDetector(ITouchActionHandler *handler);
+  CGenericTouchSwipeDetector(ITouchActionHandler *handler, float dpi);
   virtual ~CGenericTouchSwipeDetector() { }
 
   virtual bool OnTouchDown(unsigned int index, const Pointer &pointer);

@@ -31,8 +31,9 @@
 class IGenericTouchGestureDetector : public ITouchInputHandling
 {
 public:
-  IGenericTouchGestureDetector(ITouchActionHandler *handler)
-    : m_done(false)
+  IGenericTouchGestureDetector(ITouchActionHandler *handler, float dpi)
+    : m_done(false),
+      m_dpi(dpi)
   {
     RegisterHandler(handler);
   }
@@ -91,6 +92,10 @@ protected:
    * \brief Whether the gesture recognition is finished or not
    */
   bool m_done;
+  /*!
+   * \brief DPI value of the touch screen
+   */
+  float m_dpi;
   /*!
    * \brief Local list of all known touch pointers
    */

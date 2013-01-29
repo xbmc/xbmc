@@ -31,7 +31,7 @@
 class CGenericTouchRotateDetector : public IGenericTouchGestureDetector
 {
 public:
-  CGenericTouchRotateDetector(ITouchActionHandler *handler);
+  CGenericTouchRotateDetector(ITouchActionHandler *handler, float dpi);
   virtual ~CGenericTouchRotateDetector() { }
 
   virtual bool OnTouchDown(unsigned int index, const Pointer &pointer);

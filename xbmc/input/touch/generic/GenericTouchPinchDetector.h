@@ -31,8 +31,8 @@
 class CGenericTouchPinchDetector : public IGenericTouchGestureDetector
 {
 public:
-  CGenericTouchPinchDetector(ITouchActionHandler *handler)
-    : IGenericTouchGestureDetector(handler)
+  CGenericTouchPinchDetector(ITouchActionHandler *handler, float dpi)
+    : IGenericTouchGestureDetector(handler, dpi)
   { }
   virtual ~CGenericTouchPinchDetector() { }
 

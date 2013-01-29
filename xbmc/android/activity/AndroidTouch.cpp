@@ -92,5 +92,9 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
 void CAndroidTouch::setDPI(uint32_t dpi)
 {
   if (dpi != 0)
+  {
     m_dpi = dpi;
+
+    CGenericTouchInputHandler::Get().SetScreenDPI(m_dpi);
+  }
 }
