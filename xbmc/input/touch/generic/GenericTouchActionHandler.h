@@ -78,7 +78,6 @@ private:
   virtual ~CGenericTouchActionHandler() { }
 
   void touch(uint8_t type, uint8_t button, uint16_t x, uint16_t y);
-  void gesture(int32_t action, float posX, float posY, float offsetX, float offsetY);
   void sendEvent(int actionId, float x, float y, float x2 = 0.0f, float y2 = 0.0f, int pointers = 1);
   void focusControl(float x, float y);
 };

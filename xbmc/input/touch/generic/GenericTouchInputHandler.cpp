@@ -21,18 +21,15 @@
 #include <math.h>
 
 #include "GenericTouchInputHandler.h"
+#include "input/touch/generic/GenericTouchPinchDetector.h"
+#include "input/touch/generic/GenericTouchRotateDetector.h"
+#include "input/touch/generic/GenericTouchSwipeDetector.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #define TOUCH_HOLD_TIMEOUT  1000
-
-#ifndef M_PI
-#define M_PI 3.1415926535897932384626433832795028842
-#endif
-
 CGenericTouchInputHandler::CGenericTouchInputHandler()
-     : m_fRotateAngle(0.0f),
-       m_gestureState(TouchGestureUnknown),
+     : m_gestureState(TouchGestureUnknown),
        m_gestureStateOld(TouchGestureUnknown)
 {
   m_holdTimer = new CTimer(this);
@@ -41,6 +38,10 @@ CGenericTouchInputHandler::CGenericTouchInputHandler()
 CGenericTouchInputHandler::~CGenericTouchInputHandler()
 {
   delete m_holdTimer;
+
+  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
+    delete (*detector);
+  m_detectors.clear();
 }
 
 CGenericTouchInputHandler &CGenericTouchInputHandler::Get()
@@ -66,6 +67,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
   {
     case TouchInputAbort:
     {
+      triggerDetectors(event, pointer);
+
       setGestureState(TouchGestureUnknown);
       for (unsigned int pIndex = 0; pIndex < TOUCH_MAX_POINTERS; pIndex++)
         m_pointers[pIndex].reset();
@@ -86,6 +89,11 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       // we start by assuming that it's a single touch
       if (pointer == 0)
       {
+        m_detectors.insert(new CGenericTouchSwipeDetector(this));
+        m_detectors.insert(new CGenericTouchPinchDetector(this));
+        m_detectors.insert(new CGenericTouchRotateDetector(this));
+        triggerDetectors(event, pointer);
+
         setGestureState(TouchGestureSingleTouch);
         result = OnSingleTouchStart(x, y);
 
@@ -94,6 +102,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       // Otherwise it's the down event of another pointer
       else
       {
+        triggerDetectors(event, pointer);
+
         // If we so far assumed single touch or still have the primary
         // pointer of a previous multi touch pressed down, we can update to multi touch
         if (m_gestureState == TouchGestureSingleTouch || m_gestureState == TouchGestureSingleTouchHold ||
@@ -106,7 +116,6 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
             m_holdTimer->Start(TOUCH_HOLD_TIMEOUT);
 
           setGestureState(TouchGestureMultiTouchStart);
-          m_fRotateAngle = 0.0f;
         }
         // Otherwise we should ignore this pointer
         else
@@ -124,6 +133,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       if (!m_pointers[pointer].valid() ||
           m_gestureState == TouchGestureUnknown)
         break;
+
+      triggerDetectors(event, pointer);
 
       m_holdTimer->Stop(false);
 
@@ -200,6 +211,8 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
           m_gestureState == TouchGestureMultiTouchDone)
         break;
 
+      triggerDetectors(event, pointer);
+
       if (m_pointers[pointer].moving)
       {
         m_holdTimer->Stop();
@@ -248,8 +261,6 @@ bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event, float x, floa
       {
         if (m_pointers[pointer].moving)
           result = OnMultiTouchMove(x, y,offsetX, offsetY, velocityX, velocityY, pointer);
-
-        handleMultiTouchGesture();
       }
       else
         break;
@@ -291,6 +302,9 @@ bool CGenericTouchInputHandler::UpdateTouchPointer(int32_t pointer, float x, flo
       m_pointers[pointer].moving = true;
   }
 
+  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
+    (*detector)->OnTouchUpdate(pointer, m_pointers[pointer]);
+
   return true;
 }
 
@@ -298,72 +312,6 @@ void CGenericTouchInputHandler::saveLastTouch()
 {
   for (unsigned int pointer = 0; pointer < TOUCH_MAX_POINTERS; pointer++)
     m_pointers[pointer].last.copy(m_pointers[pointer].current);
-}
-
-void CGenericTouchInputHandler::handleMultiTouchGesture()
-{
-  handleZoomPinch();
-  handleRotation();
-}
-
-void CGenericTouchInputHandler::handleZoomPinch()
-{
-  Pointer& primaryPointer = m_pointers[0];
-  Pointer& secondaryPointer = m_pointers[1];
-
-  // calculate zoom/pinch
-  CVector primary = primaryPointer.down;
-  CVector secondary = secondaryPointer.down;
-  CVector diagonal = primary - secondary;
-
-  float baseDiffLength = diagonal.length();
-  if (baseDiffLength != 0.0f)
-  {
-    CVector primaryNow = primaryPointer.current;
-    CVector secondaryNow = secondaryPointer.current;
-    CVector diagonalNow = primaryNow - secondaryNow;
-    float curDiffLength = diagonalNow.length();
-
-    float centerX = (primary.x + secondary.x) / 2;
-    float centerY = (primary.y + secondary.y) / 2;
-
-    float zoom = curDiffLength / baseDiffLength;
-
-    OnZoomPinch(centerX, centerY, zoom);
-  }
-}
-
-void CGenericTouchInputHandler::handleRotation()
-{
-  Pointer& primaryPointer = m_pointers[0];
-  Pointer& secondaryPointer = m_pointers[1];
-
-  CVector last = primaryPointer.last - secondaryPointer.last;
-  CVector current = primaryPointer.current - secondaryPointer.current;
-
-  float length = last.length() * current.length();
-  if (length != 0.0f)
-  {
-    float centerX = (primaryPointer.current.x + secondaryPointer.current.x) / 2;
-    float centerY = (primaryPointer.current.y + secondaryPointer.current.y) / 2;
-
-    float scalar = last.scalar(current);
-    float angle = acos(scalar / length) * 180.0f / M_PI;
-
-    // make sure the result of acos is a valid number
-    if (angle == angle)
-    {
-      // calculate the direction of the rotation using the
-      // z-component of the cross-product of last and current
-      float direction = last.x * current.y - current.x * last.y;
-      if (direction < 0.0f)
-        m_fRotateAngle -= angle;
-      else
-        m_fRotateAngle += angle;
-
-      OnRotate(centerX, centerY, m_fRotateAngle);
-    }
-  }
 }
 
 void CGenericTouchInputHandler::OnTimeout()
@@ -394,4 +342,52 @@ void CGenericTouchInputHandler::OnTimeout()
     default:
       break;
   }
+}
+
+void CGenericTouchInputHandler::triggerDetectors(TouchInput event, int32_t pointer)
+{
+  switch (event)
+  {
+    case TouchInputAbort:
+    {
+      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
+        delete (*detector);
+      m_detectors.clear();
+      break;
+    }
+    
+    case TouchInputDown:
+    {
+      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
+        (*detector)->OnTouchDown(pointer, m_pointers[pointer]);
+      break;
+    }
+    
+    case TouchInputUp:
+    {
+      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
+        (*detector)->OnTouchUp(pointer, m_pointers[pointer]);
+      break;
+    }
+    
+    case TouchInputMove:
+    {
+      for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
+        (*detector)->OnTouchMove(pointer, m_pointers[pointer]);
+      break;
+    }
+
+    default:
+      return;
+  }
+
+  std::set<IGenericTouchGestureDetector*> finishedDetectors;
+  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = m_detectors.begin(); detector != m_detectors.end(); detector++)
+  {
+    if ((*detector)->IsDone())
+      finishedDetectors.insert(*detector);
+  }
+
+  for (std::set<IGenericTouchGestureDetector*>::const_iterator detector = finishedDetectors.begin(); detector != finishedDetectors.end(); detector++)
+    m_detectors.erase(*detector);
 }

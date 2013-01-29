@@ -19,12 +19,16 @@
  *
  */
 
+#include <set>
+
 #include "input/touch/ITouchInputHandler.h"
 #include "input/touch/TouchTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 
 #define TOUCH_MAX_POINTERS  2
+
+class IGenericTouchGestureDetector;
 
 /*!
  * \ingroup touch_generic
@@ -79,17 +83,13 @@ private:
   virtual void OnTimeout();
 
   void saveLastTouch();
-
-  void handleMultiTouchGesture();
-  void handleZoomPinch();
-  void handleRotation();
-
   void setGestureState(TouchGestureState gestureState) { m_gestureStateOld = m_gestureState; m_gestureState = gestureState; }
+  void triggerDetectors(TouchInput event, int32_t pointer);
 
   CCriticalSection m_critical;
   CTimer *m_holdTimer;
   Pointer m_pointers[TOUCH_MAX_POINTERS];
-  float m_fRotateAngle;
+  std::set<IGenericTouchGestureDetector*> m_detectors;
 
   TouchGestureState m_gestureState;
   TouchGestureState m_gestureStateOld;

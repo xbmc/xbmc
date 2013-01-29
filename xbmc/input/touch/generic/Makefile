@@ -1,5 +1,8 @@
 SRCS=GenericTouchActionHandler.cpp \
      GenericTouchInputHandler.cpp \
+     GenericTouchPinchDetector.cpp \
+     GenericTouchRotateDetector.cpp \
+     GenericTouchSwipeDetector.cpp \
 
 LIB=input_touch_generic.a
 
