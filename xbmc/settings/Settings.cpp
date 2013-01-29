@@ -169,7 +169,6 @@ bool CSettings::Reset()
 bool CSettings::Load()
 {
   CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
-  g_advancedSettings.Load();
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   if (!LoadSettings(GetSettingsFile()))
   {
@@ -793,6 +792,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // Configure the PlayerCoreFactory
   LoadPlayerCoreFactorySettings("special://xbmc/system/playercorefactory.xml", true);
   LoadPlayerCoreFactorySettings(GetUserDataItem("playercorefactory.xml"), false);
+
+  // Advanced settings
+  g_advancedSettings.Load();
 
   // Add the list of disc stub extensions (if any) to the list of video extensions
   if (!m_discStubExtensions.IsEmpty())

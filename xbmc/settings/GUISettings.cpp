@@ -1335,17 +1335,6 @@ void CGUISettings::GetSettingsGroup(CSettingsCategory* cat, vecSettings &setting
   }
 }
 
-bool CGUISettings::CheckHiddenOverride(CSetting *setting)
-{
-  for (CStdStringArray::iterator i = g_advancedSettings.m_settingsHidden.begin();
-      i != g_advancedSettings.m_settingsHidden.end(); i++)
-  {
-    if (strncmp(setting->GetSetting(), i->c_str(), i->size()) == 0)
-      return true;
-  }
-  return false;
-}
-
 void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)
 { // load our stuff...
   bool updated = false;
@@ -1471,16 +1460,6 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
 {
   CStdStringArray strSplit;
   StringUtils::SplitString((*it).first, ".", strSplit);
-
-  // Look for 'hidden' entries in as.xml and treat them as Advanced
-  // Be sure to disable advanced if it's not in the overrides list, else
-  // it may remain hidden which switching to a profile where it should not be.
-
-  if (CheckHiddenOverride((*it).second))
-    (*it).second->SetAdvanced(true);
-  else
-    (*it).second->SetAdvanced(false);
-
   if (strSplit.size() > 1)
   {
     const TiXmlNode *pChild = pRootElement->FirstChild(strSplit[0].c_str());
