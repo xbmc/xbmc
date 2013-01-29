@@ -697,6 +697,7 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 
   m_isPlayingBeforeInactive = NO;
   m_isInterrupted = NO;
+  m_bgTask = UIBackgroundTaskInvalid;
 
   m_window = [[UIWindow alloc] initWithFrame:frame];
   [m_window setRootViewController:self];  
@@ -743,6 +744,9 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
 //--------------------------------------------------------------
 - (void)dealloc
 {
+  // stop background task
+  [self enableNetworkAutoSuspend];
+
   AnnounceReceiver::dealloc();
   [m_glView stopAnimation];
   [m_glView release];
@@ -853,6 +857,29 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
   // Release any cached data, images, etc. that aren't in use.
 }
 //--------------------------------------------------------------
+- (void)disableNetworkAutoSuspend
+{
+  PRINT_SIGNATURE();
+  if (m_bgTask != UIBackgroundTaskInvalid)
+  {
+    [[UIApplication sharedApplication] endBackgroundTask: m_bgTask];
+    m_bgTask = UIBackgroundTaskInvalid;
+  }
+  // we have to alloc the background task for keep network working after screen lock and dark.
+  UIBackgroundTaskIdentifier newTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+  m_bgTask = newTask;  
+}
+//--------------------------------------------------------------
+- (void)enableNetworkAutoSuspend
+{
+  PRINT_SIGNATURE();
+  if (m_bgTask != UIBackgroundTaskInvalid)
+  {
+    [[UIApplication sharedApplication] endBackgroundTask: m_bgTask];
+    m_bgTask = UIBackgroundTaskInvalid;
+  }
+}
+//--------------------------------------------------------------
 - (void) disableSystemSleep
 {
 }
@@ -953,6 +980,8 @@ AnnounceReceiver *AnnounceReceiver::g_announceReceiver = NULL;
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::Get().MediaPauseIfPlaying();
   }
+  // TODO: only disable network auto-suspend when app is playing
+  [self disableNetworkAutoSuspend];
 }
 
 - (void)beginInterruption

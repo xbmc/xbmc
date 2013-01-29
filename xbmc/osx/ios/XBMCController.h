@@ -45,6 +45,7 @@
   
   bool m_isPlayingBeforeInactive;
   bool m_isInterrupted;
+  UIBackgroundTaskIdentifier m_bgTask;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
@@ -77,6 +78,8 @@
 - (void) activateKeyboard:(UIView *)view;
 - (void) deactivateKeyboard:(UIView *)view;
 
+- (void) disableNetworkAutoSuspend;
+- (void) enableNetworkAutoSuspend;
 - (void) disableSystemSleep;
 - (void) enableSystemSleep;
 - (void) disableScreenSaver;
