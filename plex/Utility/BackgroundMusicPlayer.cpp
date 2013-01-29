@@ -86,7 +86,8 @@ void BackgroundMusicPlayer::Die()
 ////////////////////////////////////////////////////////////////////////////////
 void BackgroundMusicPlayer::PlayElevatorMusic(bool force)
 {
-  if (g_application.IsPlaying())
+  if (g_application.IsPlaying() ||
+      !g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
     return;
 
   InitPlayer();
@@ -112,8 +113,12 @@ void BackgroundMusicPlayer::PlayElevatorMusic(bool force)
 ////////////////////////////////////////////////////////////////////////////////
 void BackgroundMusicPlayer::PauseElevatorMusic()
 {
-  if (m_player && m_player->IsPlaying())
-    m_player->Pause();
+  if (m_player &&
+      m_player->IsPlaying() &&
+      g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
+  {
+    Die();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +168,7 @@ void BackgroundMusicPlayer::PlayCurrentTheme()
       m_player->Pause();
 
     CFileItemPtr theme(new CFileItem(m_theme, false));
+    /* TODO: we can be pretty sure that our themes are mp3s, but yeah, this can be wrong */
     theme->SetMimeType("audio/mp3");
 
     new BackgroundMusicOpener(m_player, theme);
@@ -180,21 +186,14 @@ void BackgroundMusicPlayer::PlayCurrentTheme()
 ////////////////////////////////////////////////////////////////////////////////
 void BackgroundMusicPlayer::OnQueueNextItem()
 {
+  if (!g_guiSettings.GetBool("backgroundmusic.bgmusicenabled"))
+    return;
+  
   if (m_position + 1 < m_bgPlaylist.Size())
     m_position ++;
   else
     InitElevatorMusic();
-  m_player->QueueNextFile(*m_bgPlaylist.Get(m_position).get());
+  
+  if (m_bgPlaylist.Size() > 0)
+    m_player->QueueNextFile(*m_bgPlaylist.Get(m_position).get());
 }
-
-#if 0
-void BackgroundMusicPlayer::OnPlayBackEnded()
-{
-  if (m_position + 1 < m_bgPlaylist.Size())
-    m_position ++;
-  else
-    m_bgPlaylist.Clear();
-
-  PlayElevatorMusic();
-}
-#endif
