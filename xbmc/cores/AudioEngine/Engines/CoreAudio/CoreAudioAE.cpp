@@ -24,7 +24,6 @@
 
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
-#include "CoreAudioHardware.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
@@ -94,8 +93,7 @@ CCoreAudioAE::CCoreAudioAE() :
   m_streamsPlaying     (false         ),
   m_isSuspended        (false         ),
   m_softSuspend        (false         ),
-  m_softSuspendTimer   (0             ),
-  m_currentAudioDevice (0             )
+  m_softSuspendTimer   (0             )
 {
   HAL = new CCoreAudioAEHAL;
   
@@ -330,13 +328,6 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
       (*itt)->Initialize();
     streamLock.Leave();
   }
-  
-#if defined(TARGET_DARWIN_OSX)
-  if (m_Initialized)
-  {
-    m_currentAudioDevice = CCoreAudioHardware::FindAudioDevice(m_outputDevice);
-  }
-#endif
 
   return m_Initialized;
 }
@@ -494,7 +485,6 @@ CCoreAudioAEHAL* CCoreAudioAE::GetHAL()
 IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options)
 {
-  bool defaultDeviceChanged = false;
   // if we are suspended we don't
   // want anyone to mess with us
   if (m_isSuspended && !m_softSuspend)
@@ -509,20 +499,6 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   m_streams.push_back(stream);
   streamLock.Leave();
 
-#if defined(TARGET_DARWIN_OSX)
-  // check if default device has changed - in that case we need to reinit
-  // TODO hook into osx callbacks for getting notifiaction on device
-  // changes and then queue a change of the default device
-  // to a point where engine is idle.
-  std::string outputDevice = g_guiSettings.GetString("audiooutput.audiodevice");
-  if (outputDevice.compare("CoreAudio:default") == 0)
-  {
-    AudioDeviceID currentId = CCoreAudioHardware::FindAudioDevice("default");
-    if (currentId != m_currentAudioDevice)
-      defaultDeviceChanged = true;
-  }
-#endif
-
   if ((options & AESTREAM_PAUSED) == 0)
     Stop();
 
@@ -530,8 +506,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   if (m_Initialized && ( m_lastStreamFormat != dataFormat ||
                          m_lastChLayoutCount != channelLayout.Count() ||
                          m_lastSampleRate != sampleRate ||
-                         COREAUDIO_IS_RAW(dataFormat) ||
-                         defaultDeviceChanged))
+                         COREAUDIO_IS_RAW(dataFormat)))
   {
     CSingleLock engineLock(m_engineLock);
     Stop();
