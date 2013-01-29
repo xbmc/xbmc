@@ -143,11 +143,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
-#ifndef __PLEX__
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
-#else
-  m_messageQueue.SetMaxDataSize(2 * 1024 * 1024);
-#endif
   m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
