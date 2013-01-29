@@ -101,6 +101,8 @@ protected:
 
   /* PLEX */
   bool m_expireTimer;
+  
+  CCriticalSection m_filesCritical;
   /* END PLEX */
 };
 #endif

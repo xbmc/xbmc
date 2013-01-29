@@ -124,38 +124,44 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
 
 void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  // Set a viewport so that we don't render outside the defined area
-  if (m_directoryStatus == READY && !m_files.empty())
+  /* PLEX */
   {
-    unsigned int nextImage = m_currentImage + 1;
-    if (nextImage >= m_files.size())
-      nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
-
-    if (nextImage != m_currentImage)
+    CSingleLock lk(m_filesCritical);
+    
+    // Set a viewport so that we don't render outside the defined area
+    if (m_directoryStatus == READY && !m_files.empty())
     {
-      // check if we should be loading a new image yet
-      unsigned int timeToShow = m_timePerImage;
-      if (0 == nextImage) // last image should be paused for a bit longer if that's what the skinner wishes.
-        timeToShow += m_timeToPauseAtEnd;
-#ifndef __PLEX__
-      if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > timeToShow )
-#else
-      if (m_imageTimer.IsRunning() && (m_imageTimer.GetElapsedMilliseconds() > timeToShow || m_expireTimer))
-#endif
+      unsigned int nextImage = m_currentImage + 1;
+      if (nextImage >= m_files.size())
+        nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
+      
+      if (nextImage != m_currentImage)
       {
-        // grab a new image
-        m_currentImage = nextImage;
-        m_image.SetFileName(m_files[m_currentImage]);
-        MarkDirtyRegion();
-
-        m_imageTimer.StartZero();
-
-        /* PLEX */
-        m_expireTimer = false;
-        /* END PLEX */
+        // check if we should be loading a new image yet
+        unsigned int timeToShow = m_timePerImage;
+        if (0 == nextImage) // last image should be paused for a bit longer if that's what the skinner wishes.
+          timeToShow += m_timeToPauseAtEnd;
+#ifndef __PLEX__
+        if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > timeToShow )
+#else
+          if (m_imageTimer.IsRunning() && (m_imageTimer.GetElapsedMilliseconds() > timeToShow || m_expireTimer))
+#endif
+          {
+            // grab a new image
+            m_currentImage = nextImage;
+            m_image.SetFileName(m_files[m_currentImage]);
+            MarkDirtyRegion();
+            
+            m_imageTimer.StartZero();
+            
+            /* PLEX */
+            m_expireTimer = false;
+            /* END PLEX */
+          }
       }
     }
   }
+  /* END PLEX */
 
   if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
@@ -194,6 +200,8 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
   else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
   {
     CFileItemList* list = (CFileItemList* )message.GetPointer();
+    
+    CSingleLock lk(m_filesCritical);
 
     // Copy over files.
     m_files.clear();
@@ -244,6 +252,11 @@ void CGUIMultiImage::FreeResources(bool immediately)
   m_image.FreeResources(immediately);
   m_currentImage = 0;
   CancelLoading();
+  
+  /* PLEX */
+  CSingleLock lk(m_filesCritical);
+  /* END PLEX */
+  
   m_files.clear();
   CGUIControl::FreeResources(immediately);
 }
@@ -273,6 +286,9 @@ void CGUIMultiImage::SetAspectRatio(const CAspectRatio &ratio)
 void CGUIMultiImage::LoadDirectory()
 {
   // clear current stuff out
+  /* PLEX */
+  CSingleLock lk(m_filesCritical);
+  /* END PLEX */
   m_files.clear();
 
   // don't load any images if our path is empty
@@ -301,6 +317,10 @@ void CGUIMultiImage::LoadDirectory()
 
 void CGUIMultiImage::OnDirectoryLoaded()
 {
+  /* PLEX */
+  CSingleLock lk(m_filesCritical);
+  /* END PLEX */
+
   // Randomize or sort our images if necessary
   if (m_randomized)
   {
@@ -330,6 +350,11 @@ void CGUIMultiImage::CancelLoading()
 void CGUIMultiImage::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CSingleLock lock(m_section);
+
+  /* PLEX */
+  CSingleLock lk(m_filesCritical);
+  /* END PLEX */
+
   if (m_directoryStatus == LOADING && strncmp(job->GetType(), "multiimage", 10) == 0)
   {
     m_files = ((CMultiImageJob *)job)->m_files;
