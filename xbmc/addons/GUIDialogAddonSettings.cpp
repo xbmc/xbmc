@@ -523,7 +523,13 @@ void CGUIDialogAddonSettings::UpdateFromControls()
             value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
           break;
         case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
-          value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+          {
+            CStdString option = setting->Attribute("option");
+            if (option.size() == 0 || option.CompareNoCase("float") == 0)
+              value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+            else
+              value.Format("%i", ((CGUISettingsSliderControl *)control)->GetIntValue());
+          }
           break;
         default:
           break;
