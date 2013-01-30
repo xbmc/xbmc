@@ -40,6 +40,7 @@ CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float po
 
   m_pReader = NULL;
   m_rtl = false;
+  m_stopped = false;
   ControlType = GUICONTROL_RSS;
 }
 
@@ -52,6 +53,7 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
   m_strRSSTags = from.m_strRSSTags;
   m_pReader = NULL;
   m_rtl = from.m_rtl;
+  m_stopped = from.m_stopped;
   ControlType = GUICONTROL_RSS;
 }
 
@@ -71,6 +73,16 @@ void CGUIRSSControl::SetUrls(const vector<string> &vecUrl, bool rtl)
     m_scrollInfo.pixelSpeed *= -1;
   else if (m_scrollInfo.pixelSpeed < 0 && !rtl)
     m_scrollInfo.pixelSpeed *= -1;
+}
+
+void CGUIRSSControl::OnFocus()
+{
+  m_stopped = true;
+}
+
+void CGUIRSSControl::OnUnFocus()
+{
+  m_stopped = false;
 }
 
 void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
@@ -130,6 +142,12 @@ void CGUIRSSControl::Render()
       colors.push_back(m_label.textColor);
       colors.push_back(m_headlineColor);
       colors.push_back(m_channelColor);
+
+      if ( m_stopped )
+        m_scrollInfo.SetSpeed(0);
+      else
+        m_scrollInfo.SetSpeed(m_label.scrollSpeed);
+
       m_label.font->DrawScrollingText(m_posX, m_posY, colors, m_label.shadowColor, m_feed, 0, m_width, m_scrollInfo);
     }
 
