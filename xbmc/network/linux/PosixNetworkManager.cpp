@@ -231,6 +231,13 @@ void CPosixNetworkManager::FindNetworkInterfaces()
     n = strcspn(interfaceName, ": \t");
     interfaceName[n] = 0;
 
+#if defined(TARGET_ANDROID)
+    // only test ethX and wlanX interfaces,
+    // anything else is non-standard and we do not care about it.
+    if (strncmp(interfaceName, "eth", 3) != 0 && strncmp(interfaceName, "wlan", 4) != 0)
+      continue;
+#endif
+
     // make sure the device has ethernet encapsulation
     struct ifreq ifr;
     memset(&ifr, 0x00, sizeof(ifr));
@@ -275,6 +282,11 @@ void CPosixNetworkManager::FindNetworkInterfaces()
               ifr.ifr_hwaddr.sa_data[2], ifr.ifr_hwaddr.sa_data[3],
               ifr.ifr_hwaddr.sa_data[4], ifr.ifr_hwaddr.sa_data[5]);
           }
+          /*
+          CLog::Log(LOGDEBUG, "CPosixNetworkManager::FindNetworkInterfaces, "
+            "interfaceName(%s), macaddress(%s), essid(%s)",
+            interfaceName, macaddress, essid.c_str());
+          */
           m_connections.push_back(CConnectionPtr(new CPosixConnection(managed,
              m_socket, interfaceName, macaddress, essid.c_str(), connection, encryption, 100)));
         }

@@ -339,6 +339,7 @@ ConnectionState CPosixConnection::GetState() const
     if (ioctl(m_socket, SIOCGIWNAME, &wrq) < 0)
       return NETWORK_CONNECTION_STATE_DISCONNECTED;
 
+#if !defined(TARGET_ANDROID)
     // since the wifi interface can be connected to
     // any wifi access point, we need to compare the assigned
     // essid to our connection essid. If they match, then
@@ -354,7 +355,6 @@ ConnectionState CPosixConnection::GetState() const
     if (wrq.u.essid.length <= 0)
       return NETWORK_CONNECTION_STATE_DISCONNECTED;
 
-#if !defined(TARGET_ANDROID)
     std::string test_essid(essid, wrq.u.essid.length);
     // Since Android cannot SIOCSIWSCAN (permissions error),
     // m_essid was defaulted to 'Wifi'. So ignore this check.
