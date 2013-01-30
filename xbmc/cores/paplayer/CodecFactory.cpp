@@ -153,7 +153,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return new MP3Codec(); // if we got this far with internet radio - content-type was wrong. gamble on mp3.
   }
 
-  if (urlFile.GetFileType().Equals("wav"))
+  if (urlFile.GetFileType().Equals("wav") || strContent.Equals("audio/wav") || strContent.Equals("audio/x-wav"))
   {
     ICodec* codec;
     //lets see what it contains...
