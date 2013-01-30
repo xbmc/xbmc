@@ -53,21 +53,24 @@ class PlexServer
     CStdString resp;
     live = http.Get(url(), resp);
 
-    CXBMCTinyXML doc;
-    doc.Parse(resp);
-    if (doc.RootElement() != 0)
+    if (live)
     {
-      TiXmlElement* el = doc.RootElement();
-      if (el->Attribute("webkit"))
+      CXBMCTinyXML doc;
+      doc.Parse(resp);
+      if (doc.RootElement() != 0)
       {
-        CStdString webkit(el->Attribute("webkit"));
-        if (webkit == "1")
-          m_canDoWebkit = true;
-      }
-
-      if (el->Attribute("transcoderVideoQualities"))
-      {
-        m_canTranscode = true;
+        TiXmlElement* el = doc.RootElement();
+        if (el->Attribute("webkit"))
+        {
+          CStdString webkit(el->Attribute("webkit"));
+          if (webkit == "1")
+            m_canDoWebkit = true;
+        }
+        
+        if (el->Attribute("transcoderVideoQualities"))
+        {
+          m_canTranscode = true;
+        }
       }
     }
 
