@@ -135,6 +135,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();
+  else if( strContent.Equals("audio/x-ape") || strContent.Equals("audio/ape") )
+    return new DVDPlayerCodec();
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
   else if (strContent.Equals("audio/x-xbmc-pcm"))
