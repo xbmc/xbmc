@@ -71,6 +71,64 @@ using namespace xbmcvfs;
     return ret;
 }
 
+%feature("python:method:write") File
+{
+    TRACE;
+    static const char *keywords[] = {
+      "buffer",
+      NULL};
+
+
+    PyObject * bufferObj = 0 ;
+    if (!PyArg_ParseTupleAndKeywords(args,kwds,(char*)"O",
+         (char**)keywords,
+           &bufferObj
+         ))
+    {
+      return NULL;
+    }
+
+    if (!PyString_Check(bufferObj)) {
+      PyErr_SetString(PyExc_ValueError,"Expected a string");
+      return NULL;
+    }
+    const char *buffer = PyString_AsString(bufferObj);
+    unsigned long numBytes = PyString_Size(bufferObj);
+
+    bool  apiResult;
+    try
+    {
+
+      apiResult = (bool )((XBMCAddon::xbmcvfs::File*)retrieveApiInstance((PyObject*)self,&PyXBMCAddon_xbmcvfs_File_Type,"write","XBMCAddon::xbmcvfs::File"))-> write(  buffer,  numBytes  );
+
+    }
+    catch (const XBMCAddon::WrongTypeException& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetMessage()); 
+      return NULL; 
+    }
+    catch (const XbmcCommons::Exception& e)
+    { 
+      CLog::Log(LOGERROR,"EXCEPTION: %s",e.GetMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); 
+      return NULL; 
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR,"EXCEPTION: Unknown exception thrown from the call 'write'");
+      PyErr_SetString(PyExc_RuntimeError, "Unknown exception thrown from the call 'write'"); 
+      return NULL; 
+    }
+
+    PyObject* result;
+
+    // transform the result
+    result = Py_BuildValue((char*)"b", apiResult);
+
+    return result; 
+}
+
 %include "interfaces/legacy/File.h"
 
 %rename ("st_atime") XBMCAddon::xbmcvfs::Stat::atime;

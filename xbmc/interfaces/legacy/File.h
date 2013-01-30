@@ -66,7 +66,6 @@ namespace XBMCAddon
        *  f.close()
        */
       unsigned long read(void* buffer, unsigned long numBytes = 0);
-#endif
 
       /**
        * write(buffer)
@@ -78,7 +77,8 @@ namespace XBMCAddon
        *  result = f.write(buffer)
        *  f.close()
        */
-      bool write(const char* file);
+      bool write(const char* buffer, unsigned long numBytes);
+#endif
 
       /**
        * size()
