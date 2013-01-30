@@ -568,6 +568,10 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       }
     }
       break;
+    case GUI_MSG_UPDATE_SOURCES:
+    {
+      CLog::Log(LOGDEBUG, "GUIWindowHome::OnMessage update sources dude...");
+    }
   }
 
   return ret;

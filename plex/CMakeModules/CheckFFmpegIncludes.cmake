@@ -1,31 +1,31 @@
 include(CheckIncludeFiles)
 
 set(headers  
-  libavcodec/avcodec
-  libavfilter/avfilter
-  libavformat/avformat
-  libavutil/avutil
-  libavutil/pixfmt
-  libpostproc/postprocess
-  libswscale/swscale
+  libavcodec/avcodec.h
+  libavfilter/avfilter.h
+  libavformat/avformat.h
+  libavutil/avutil.h
+  libavutil/pixfmt.h
+  libpostproc/postprocess.h
+  libswscale/swscale.h
   
-  ffmpeg/avcodec
-  ffmpeg/avfilter
-  ffmpeg/avformat
-  ffmpeg/avutil
-  postproc/postprocess
-  ffmpeg/swscale
+  ffmpeg/avcodec.h
+  ffmpeg/avfilter.h
+  ffmpeg/avformat.h
+  ffmpeg/avutil.h
+  postproc/postprocess.h
+  ffmpeg/swscale.h
   
-  libavcore/avcore
-  libavcore/samplefmt
-  libavutil/mem
-  libavutil/samplefmt
-  libavutil/opt
-  libavutil/mathematics
-  libswscale/rgb2rgb
-  ffmpeg/rgb2rgb
-  libswresample/swresample
-  libavresample/avresample
+  libavcore/avcore.h
+  libavcore/samplefmt.h
+  libavutil/mem.h
+  libavutil/samplefmt.h
+  libavutil/opt.h
+  libavutil/mathematics.h
+  libswscale/rgb2rgb.h
+  ffmpeg/rgb2rgb.h
+  libswresample/swresample.h
+  libavresample/avresample.h
 )
 
 foreach(header ${headers})

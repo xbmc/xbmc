@@ -217,6 +217,14 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CHDFile();
   else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "filereader") return new CFileReaderFile();
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
+  else if (strProtocol == "cdda") return new CFileCDDA();
+#endif
+#ifdef HAS_FILESYSTEM
+  else if (strProtocol == "iso9660") return new CISOFile();
+#endif
+  else if(strProtocol == "udf") return new CUDFFile();
+
 
   if( g_application.getNetwork().IsAvailable() )
   {

@@ -2,6 +2,10 @@ add_subdirectory(libsquish)
 add_subdirectory(libhts)
 add_subdirectory(libUPnP)
 
+if(ENABLE_DVD_DRIVE)
+  add_subdirectory(libdvd)
+endif()
+
 if(UNIX AND NOT APPLE)
   add_subdirectory(xbmc-dll-symbols)
 endif()

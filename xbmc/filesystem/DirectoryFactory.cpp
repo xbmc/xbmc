@@ -250,6 +250,14 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
+  if (strProtocol == "cdda") return new CCDDADirectory();
+#endif
+#ifdef HAS_FILESYSTEM
+  if (strProtocol == "iso9660") return new CISO9660Directory();
+#endif
+  if (strProtocol == "udf") return new CUDFDirectory();
+
 
   if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
   {

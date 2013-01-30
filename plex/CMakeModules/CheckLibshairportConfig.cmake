@@ -1,4 +1,4 @@
-plex_find_header(shairport/shairport ${dependdir}/include)
+plex_find_header(shairport/shairport.h ${dependdir}/include)
 
 if(DEFINED HAVE_SHAIRPORT_SHAIRPORT_H)
   CHECK_C_SOURCE_COMPILES("

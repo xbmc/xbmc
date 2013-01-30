@@ -29,9 +29,7 @@
  * All platforms
  *****************/
 #define HAS_DVD_SWSCALE
-#ifndef __PLEX__
 #define HAS_DVDPLAYER
-#endif
 #define HAS_EVENT_SERVER
 //#define HAS_KARAOKE
 #define HAS_SCREENSAVER
@@ -110,9 +108,7 @@
 
 #if defined(TARGET_WINDOWS)
 #define HAS_SDL_JOYSTICK
-#ifndef __PLEX__
 #define HAS_DVD_DRIVE
-#endif
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
@@ -277,7 +273,9 @@
 #endif
 
 #ifdef HAS_DVD_DRIVE
+#ifndef __PLEX__
 #define HAS_CDDA_RIPPER
+#endif
 #endif
 
 #define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)

@@ -1,6 +1,6 @@
 
 if(APPLE)
-  plex_find_header(libcrystalhd/libcrystalhd_if ${dependdir}/include)
+  plex_find_header(libcrystalhd/libcrystalhd_if.h ${dependdir}/include)
 
   if(DEFINED HAVE_LIBCRYSTALHD_LIBCRYSTALHD_IF_H)
     CHECK_C_SOURCE_COMPILES("
