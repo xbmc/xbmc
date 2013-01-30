@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "#6"
 msgid "XBMC SVN"
-msgstr "Plex/HT SVN"
+msgstr "Plex/HT Git"
 
 
 #empty strings from id 7 to 8
@@ -277,7 +277,7 @@ msgstr "Vennligst oppdater Plex/HT"
 
 msgctxt "#16001"
 msgid "Configure Audio Hardware..."
-msgstr "Konfigurer audio-maskinvare"
+msgstr "Konfigurerer lydenheter"
 
 
 #empty strings from id 16002 to 17500
@@ -348,7 +348,7 @@ msgstr "Kalkulerer tid"
 
 msgctxt "#18009"
 msgid "Enable low battery warning"
-msgstr "Aktiver lite-batteri-advarsel"
+msgstr "Aktiver varsel for lavt batterinivå"
 
 
 #empty strings from id 18010 to 18100
@@ -514,12 +514,12 @@ msgstr "Sjekk konsollen for flere detaljer"
 
 msgctxt "#40015"
 msgid "Checking for updates"
-msgstr "Sjekker etter oppdateringer"
+msgstr "Søker etter oppdateringer"
 
 
 msgctxt "#40016"
 msgid "Check For Update Now..."
-msgstr "Sjekker etter oppdatering nå..."
+msgstr "Søk etter oppdatering nå..."
 
 
 msgctxt "#40017"

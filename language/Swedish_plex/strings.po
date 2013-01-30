@@ -323,12 +323,12 @@ msgstr "Nätström (laddar)"
 
 msgctxt "#18004"
 msgid "Battery power"
-msgstr "Batteritid"
+msgstr "Batteriström"
 
 
 msgctxt "#18005"
 msgid "Power level"
-msgstr ""
+msgstr "Volym"
 
 
 msgctxt "#18006"
@@ -355,7 +355,7 @@ msgstr "Aktivera varning för låg batteristyrka"
 
 msgctxt "#18101"
 msgid "Background Music Volume"
-msgstr "Bakgrundsmusik"
+msgstr "Bakgrundsmusikens ljudvolym"
 
 
 msgctxt "#18102"
@@ -387,7 +387,7 @@ msgstr "Använd Plex/HT"
 
 msgctxt "#20250"
 msgid "Recent Music Count"
-msgstr ""
+msgstr "Nyligen spelad musik"
 
 
 #empty strings from id 20251 to 20340
@@ -831,7 +831,7 @@ msgstr "Kunde inte fastställa indataformat"
 
 msgctxt "#42002"
 msgid "Could not read file header"
-msgstr ""
+msgstr "Kunde ej läsa filhuvudet"
 
 
 msgctxt "#42003"

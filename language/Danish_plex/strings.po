@@ -444,7 +444,7 @@ msgstr "Softwareopdatering"
 
 msgctxt "#40001"
 msgid "New Version Available"
-msgstr "En ny version af Plex/HT er tilgængelig."
+msgstr "En ny version er tilgængelig"
 
 
 msgctxt "#40002"
@@ -709,7 +709,7 @@ msgstr "Kvalitet"
 
 msgctxt "#40300"
 msgid "Set Quit Timer"
-msgstr "Sæt slukurret"
+msgstr "Indstil afslutnings timer"
 
 
 msgctxt "#40301"
@@ -770,12 +770,12 @@ msgstr "Systemet vil slukke skærmen klokken"
 
 msgctxt "#40315"
 msgid "You have already set a quit timer."
-msgstr "Du har allerede sat en dvale-timer."
+msgstr "Du har allerede indstillet en nedluknings timer"
 
 
 msgctxt "#40316"
 msgid "You have already set a sleep timer."
-msgstr "Du har allerede sat en dvale-timer."
+msgstr "Du har allerede indstillet en dvale timer."
 
 
 msgctxt "#40317"

@@ -38,7 +38,7 @@ msgstr "myPlex"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
-msgstr "Laat controle van Plex/HT via HTTP toe"
+msgstr "Sta bediening van Plex/HT via HTTP toe"
 
 
 msgctxt "#482"
@@ -50,14 +50,14 @@ msgstr "Over Plex/HT"
 
 msgctxt "#791"
 msgid "Allow programs on this system to control XBMC"
-msgstr "Laat programma's op dit systeem toe om Plex/HT te controleren"
+msgstr "Sta programma's op dit systeem toe Plex/HT te bedienen"
 
 
 #empty strings from id 792 to 793
 
 msgctxt "#794"
 msgid "Allow programs on other systems to control XBMC"
-msgstr "Laat programma's op ander systemen toe om Plex/HT te controleren"
+msgstr "Sta programma's op ander systemen toe Plex/HT te bedienen"
 
 
 #empty strings from id 795 to 1001
@@ -71,12 +71,12 @@ msgstr "Plex/HT kon geen connectie maken met de netwerklocatie."
 
 msgctxt "#1270"
 msgid "Allow XBMC to receive AirPlay content"
-msgstr "Laat Plex/HT toe om AirPlay content te ontvangen"
+msgstr "Sta Plex/HT toe om AirPlay content te ontvangen"
 
 
 msgctxt "#13134"
 msgid "H.264 Speed Boost"
-msgstr "H.265 Speed Boost"
+msgstr "H.264 Speed Boost"
 
 
 msgctxt "#13135"
@@ -108,7 +108,7 @@ msgstr "Selecteer de Ondertitels Automatisch"
 
 msgctxt "#13141"
 msgid "If you proceed, you might not be able to control XBMC"
-msgstr "Als u doorgaat, is het mogelijk dat u Plex/HT niet zal kunnen controleren"
+msgstr "Als u doorgaat, is het mogelijk dat u Plex/HT niet zal kunnen bedienen"
 
 
 #empty string with id 13142
@@ -180,14 +180,14 @@ msgstr "in plaats van enkel Plex/HT?"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
-msgstr "Sta toe Plex/HT te starten met de afstandbediening"
+msgstr "Sta het opstarten van Plex/HT met de afstandsbediening toe"
 
 
 #empty strings from id 13603 to 13621
 
 msgctxt "#13622"
 msgid "Please see Remote Buddy FAQ to uninstall."
-msgstr "Gelieve in de Externe Buddy FAQ te kijken om de installatie ongedaan te maken."
+msgstr "Raadpleeg de Remote Buddy FAQ om de installatie ongedaan te maken."
 
 
 msgctxt "#13623"
@@ -197,7 +197,7 @@ msgstr "Sofa Control is actief."
 
 msgctxt "#13624"
 msgid "Please see Sofa Control documentation to uninstall."
-msgstr "Gelieve de Zetel Controle documentatie te bekijken om de installatie ongedaan te maken."
+msgstr "Raadpleeg de Sofa Control documentatie om de installatie ongedaan te maken."
 
 
 #empty strings from id 13625 to 13629
@@ -277,14 +277,14 @@ msgstr "Update Plex/HT A.U.B."
 
 msgctxt "#16001"
 msgid "Configure Audio Hardware..."
-msgstr "Instellen Audio Hardware"
+msgstr "Configureer Audio Hardware..."
 
 
 #empty strings from id 16002 to 17500
 
 msgctxt "#17501"
 msgid "Display Brightness"
-msgstr "Helderheid"
+msgstr "Scherm Helderheid"
 
 
 #empty strings from id 17502 to 17700
@@ -328,7 +328,7 @@ msgstr "Batterij"
 
 msgctxt "#18005"
 msgid "Power level"
-msgstr "Stroom niveau"
+msgstr "Accuniveau"
 
 
 msgctxt "#18006"
@@ -343,7 +343,7 @@ msgstr "resterend"
 
 msgctxt "#18008"
 msgid "Calculating time"
-msgstr "Tijd aan het berekenen"
+msgstr "Resterende tijd berekenen"
 
 
 msgctxt "#18009"
@@ -365,7 +365,7 @@ msgstr "Activeer Titelmuziek"
 
 msgctxt "#18103"
 msgid "- Automatically Download Theme Music"
-msgstr "- Download automatisch thema muziek"
+msgstr "Download Titelmuziek Automatisch"
 
 
 msgctxt "#18104"
@@ -420,7 +420,7 @@ msgstr "Update Plex/HT a.u.b."
 
 msgctxt "#36007"
 msgid "Power on the TV when starting Plex/HT"
-msgstr "Zet de TV aan als Plex/HT start."
+msgstr "Zet de TV aan als u Plex/HT start."
 
 
 msgctxt "#36008"
@@ -469,7 +469,7 @@ msgstr "Wilt u het nu downloaden en installeren?"
 
 msgctxt "#40006"
 msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "U hebt momenteel de meest recente versie van Plex/HT (%@)"
+msgstr "U heeft momenteel de laatste versie van Plex/HT (%@)"
 
 
 msgctxt "#40007"
@@ -591,7 +591,7 @@ msgstr "Huidige versie"
 
 msgctxt "#40100"
 msgid "Applications"
-msgstr "Toepassingen"
+msgstr "Applicaties"
 
 
 msgctxt "#40101"

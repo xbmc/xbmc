@@ -64,7 +64,7 @@ msgstr "Programme anderer Geräte dürfen Plex/HT kontrollieren"
 
 msgctxt "#1002"
 msgid "XBMC was unable to connect to the network location."
-msgstr "Plex/HT konnte sich nicht mit der Netzwerkadresse verbinden"
+msgstr "Plex/HT konnte sich nicht mit der Netzwerkadresse verbinden."
 
 
 #empty strings from id 1003 to 1269
@@ -101,7 +101,7 @@ msgstr "Tonspur automatisch auswählen"
 
 msgctxt "#13139"
 msgid "Automatically Select Subtitle Stream"
-msgstr "Untertitel automatisch wählen"
+msgstr "Untertitelspur automatisch auswählen"
 
 
 #empty string with id 13140
@@ -115,7 +115,7 @@ msgstr "Wenn Sie fortfahren, können Sie eventuell nicht mehr auf Plex/HT zugrei
 
 msgctxt "#13143"
 msgid "Search Remote Libraries"
-msgstr "Entfernte Bibliotheken suchen"
+msgstr "Remote-Bibliotheken durchsuchen"
 
 
 #empty strings from id 13144 to 13145
@@ -129,7 +129,7 @@ msgstr "Diese Einstellungen können Ihre Berechtigungen einschränken "
 
 msgctxt "#13148"
 msgid "Allow Picking Alternate Library Media"
-msgstr "Erlaube alternative Medienbibliothek zu wählen"
+msgstr "Auswahl alternativer Mediatheken erlauben"
 
 
 msgctxt "#13149"
@@ -180,7 +180,7 @@ msgstr "nicht nur Plex/HT?"
 
 msgctxt "#13602"
 msgid "Allow start of XBMC using the remote"
-msgstr "Erlauben, Plex/HT mit der Fernbedienung zu starten"
+msgstr "Start von Plex/HT mit der Fernbedienung erlauben"
 
 
 #empty strings from id 13603 to 13621
@@ -192,7 +192,7 @@ msgstr "Zum deinstallieren bitte Remote Buddy FAQ lesen."
 
 msgctxt "#13623"
 msgid "Sofa Control is running."
-msgstr "Sofa control wird ausgeführt."
+msgstr "Sofa Control wird ausgeführt."
 
 
 msgctxt "#13624"
@@ -215,7 +215,7 @@ msgstr "Mode"
 
 msgctxt "#13632"
 msgid "- Always Running"
-msgstr "Immer an"
+msgstr "- Immer an"
 
 
 msgctxt "#13633"
@@ -303,7 +303,7 @@ msgstr "Mit Ladegerät verbinden"
 
 msgctxt "#18000"
 msgid "Model"
-msgstr "Model"
+msgstr "Modell"
 
 
 msgctxt "#18001"
@@ -328,7 +328,7 @@ msgstr "Batteriestrom"
 
 msgctxt "#18005"
 msgid "Power level"
-msgstr "Lautstärke"
+msgstr "Ladezustand"
 
 
 msgctxt "#18006"
@@ -365,7 +365,7 @@ msgstr "Titelmusik aktivieren"
 
 msgctxt "#18103"
 msgid "- Automatically Download Theme Music"
-msgstr "Titelmusik automatisch herunterladen"
+msgstr "- Titelmusik automatisch herunterladen"
 
 
 msgctxt "#18104"
@@ -394,14 +394,14 @@ msgstr "Kürzlich gespielte Musik"
 
 msgctxt "#20341"
 msgid "this path from the Plex/HT library?"
-msgstr "diesen Pfad der Plex/HT Bibliothek"
+msgstr "diesen Pfad der Plex/HT Bibliothek?"
 
 
 #empty strings from id 20342 to 21880
 
 msgctxt "#21881"
 msgid "Allow control of Plex/HT via UPnP"
-msgstr "Erlaube Änderungen von Plex/HT über UPnP"
+msgstr "Steuerung von Plex/HT über UPnP erlauben"
 
 
 #empty strings from id 21882 to 33074
@@ -489,7 +489,7 @@ msgstr "%@ heruntergeladen"
 
 msgctxt "#40010"
 msgid "Extracting Plex/HT update"
-msgstr "Extrahiere Plex/HT Update"
+msgstr "Entpacke Plex/HT Update"
 
 
 msgctxt "#40011"
@@ -504,12 +504,12 @@ msgstr "Update fehlgeschlagen"
 
 msgctxt "#40013"
 msgid "An error has occurred."
-msgstr "Fehler aufgetreten"
+msgstr "Ein Fehler ist aufgetreten."
 
 
 msgctxt "#40014"
 msgid "Please check the console for more details."
-msgstr "Bitte die Konsole für weitere Informationen kontrollieren"
+msgstr "Für weitere Informationen bitte in der Konsole nachsehen."
 
 
 msgctxt "#40015"
@@ -831,7 +831,7 @@ msgstr "Eingabeformat nicht bestimmbar"
 
 msgctxt "#42002"
 msgid "Could not read file header"
-msgstr "Kann Dateiheader nicht lesen"
+msgstr "Dateiheader nicht lesbar"
 
 
 msgctxt "#42003"
@@ -846,7 +846,7 @@ msgstr "Datei kann nicht gelesen werden"
 
 msgctxt "#42005"
 msgid "Not enough memory to open file"
-msgstr "Zu wenig Speicherplatz um Datei zu öffnen"
+msgstr "Zu wenig Speicher um die Datei zu öffnen"
 
 
 msgctxt "#42006"
@@ -989,7 +989,7 @@ msgstr "SORTIERUNG"
 
 msgctxt "#44100"
 msgid "Sign in to myPlex"
-msgstr "Anmelden bei MyPlex"
+msgstr "Bei myPlex anmelden"
 
 
 msgctxt "#44101"
@@ -1034,7 +1034,7 @@ msgstr "PlexPass benötigt"
 
 msgctxt "#44204"
 msgid "Press OK Quit"
-msgstr "Wählen Sie OK um zu Beenden"
+msgstr "Wählen Sie OK zum Beenden"
 
 
 #### These are error strings shown from channels

@@ -26,7 +26,7 @@ msgstr "Plex/HT SVN"
 
 msgctxt "#9"
 msgid "xbmc media center"
-msgstr "Plex para Home Theatre"
+msgstr "Plex Home Theater"
 
 
 msgctxt "#10"
@@ -101,7 +101,7 @@ msgstr "Selección automática de la pista de audio"
 
 msgctxt "#13139"
 msgid "Automatically Select Subtitle Stream"
-msgstr "Selección automática de la pista de subtítulos"
+msgstr "Selecciona automáticamente la pista de subtitulos"
 
 
 #empty string with id 13140
@@ -365,7 +365,7 @@ msgstr "Activar Sintonía"
 
 msgctxt "#18103"
 msgid "- Automatically Download Theme Music"
-msgstr "Descargar automaticamente Sintonía"
+msgstr "- Descargar automaticamente Sintonía"
 
 
 msgctxt "#18104"
@@ -425,7 +425,7 @@ msgstr "Enciende la TV cuando arranque Plex/HT"
 
 msgctxt "#36008"
 msgid "Power off devices when stopping Plex/HT"
-msgstr "Apaga dispositivos cuando se para Plex/HT"
+msgstr "Apagar dispositivos al parar Plex/HT"
 
 
 #empty strings from id 36009 to 36012
@@ -439,7 +439,7 @@ msgstr "Versión de interfaz libcec no soportada. La versión de %d es mayor de 
 
 msgctxt "#40000"
 msgid "Software Update"
-msgstr "Actualización Software"
+msgstr "Actualización de Software"
 
 
 msgctxt "#40001"
@@ -449,7 +449,7 @@ msgstr "Nueva Versión Disponible"
 
 msgctxt "#40002"
 msgid "Install with Software Update"
-msgstr "Instalar con Actualización de Software"
+msgstr "Instalar Actualización Software"
 
 
 msgctxt "#40003"
@@ -469,7 +469,7 @@ msgstr "¿Desea descargarla e instalarla?"
 
 msgctxt "#40006"
 msgid "You currently have the latest version of Plex/HT (%@)"
-msgstr "Tiene la versión actual de de Plex/HT (%@)"
+msgstr "Tiene la última versión de Plex/HT (%@)"
 
 
 msgctxt "#40007"
@@ -504,7 +504,7 @@ msgstr "Error de actualización"
 
 msgctxt "#40013"
 msgid "An error has occurred."
-msgstr "Un error ha ocurrido."
+msgstr "Ha ocurrido un error"
 
 
 msgctxt "#40014"
@@ -714,7 +714,7 @@ msgstr "Establecer Temporizador para Salir"
 
 msgctxt "#40301"
 msgid "Set Sleep Timer"
-msgstr "Establecer temporizador para dormir"
+msgstr "Establecer Temporizador para Sleep"
 
 
 msgctxt "#40302"
@@ -731,7 +731,7 @@ msgstr "Cambiar Temporizador para Salir"
 
 msgctxt "#40306"
 msgid "Change Sleep Timer"
-msgstr "Cambiar Temporizador para dormir"
+msgstr "Cambiar Temporizador para Sleep"
 
 
 msgctxt "#40307"
@@ -741,7 +741,7 @@ msgstr "Cambiar Temporizador de Apagado"
 
 msgctxt "#40308"
 msgid "Change Sleep Display Timer"
-msgstr "Cambiar Visualización del Temporizador de dormir"
+msgstr "Cambiar Visualización del Temporizador de Sleep"
 
 
 #empty string with id 40309
@@ -763,58 +763,58 @@ msgstr "El sistema se apagará a las"
 
 msgctxt "#40313"
 msgid "The system will sleep the display at"
-msgstr "El sistema apagará la pantalla a las "
+msgstr "El display se pondrá en modo Sleep a las"
 
 
 #empty string with id 40314
 
 msgctxt "#40315"
 msgid "You have already set a quit timer."
-msgstr "Ya ha establecido un temporizador de salir."
+msgstr "Has establecido un Temporizador para Salir."
 
 
 msgctxt "#40316"
 msgid "You have already set a sleep timer."
-msgstr "Ya ha establecido un temporizador para dormir."
+msgstr "Has establecido un Temporizador para Sleep."
 
 
 msgctxt "#40317"
 msgid "You have already set a shut down timer."
-msgstr "Ya ha establecido un temporizador de apagado"
+msgstr "Has establecido un Temporizador para Apagado"
 
 
 msgctxt "#40318"
 msgid "You have already set a sleep display timer."
-msgstr "Ya ha establecido un temporizador para apagar la pantalla"
+msgstr "Has establecido un Temporizador para poner el display en modo Sleep."
 
 
 #empty string with id 40319
 
 msgctxt "#40320"
 msgid "Would you like to set a quit timer instead?"
-msgstr "¿Desea establecer un temporizador para salir?"
+msgstr "Desea Establecer Temporizador para Salir?"
 
 
 msgctxt "#40321"
 msgid "Would you like to set a sleep timer instead?"
-msgstr "¿Desea establecer un temporizador para dormir?"
+msgstr "Desea Establecer Temporizador para Sleep?"
 
 
 msgctxt "#40322"
 msgid "Would you like to set a shut down timer instead?"
-msgstr "¿Desea establecer un temporizador de apagado?"
+msgstr "Desea Establecer Temporizador para Apagado?"
 
 
 msgctxt "#40323"
 msgid "Set Sleep Display Timer"
-msgstr "Establecer temporizador para el apagado de pantalla"
+msgstr "Establecer Temporizador para Display en modo Sleep."
 
 
 #empty string with id 40324
 
 msgctxt "#40325"
 msgid "Timer already set"
-msgstr "El temporizador ya está establecido"
+msgstr "Temporizador establecido."
 
 
 #empty strings from id 40326 to 41999
@@ -974,7 +974,7 @@ msgstr "Contenido compartido"
 
 msgctxt "#44021"
 msgid "Queue"
-msgstr "Cola"
+msgstr "Lista Online"
 
 
 msgctxt "#44030"
@@ -989,7 +989,7 @@ msgstr "CLASIFICACIÓN"
 
 msgctxt "#44100"
 msgid "Sign in to myPlex"
-msgstr "Iniciar sesión myPlex"
+msgstr "Iniciar sesión en myPlex"
 
 
 msgctxt "#44101"
@@ -1009,17 +1009,17 @@ msgstr "e introduzca este código:"
 
 msgctxt "#44104"
 msgid "Hooray we are signed in!"
-msgstr "¡Hurra, ha iniciado sessión!"
+msgstr "¡Hurra, ha iniciado sesión!"
 
 
 msgctxt "#44200"
 msgid "PlexPass Required"
-msgstr "Requiere PlexPass"
+msgstr "Usuario de PlexPass requerido"
 
 
 msgctxt "#44201"
 msgid "For this preview release, you must be signed into myPlex and have a PlexPass"
-msgstr "Para esta versión de prueba, debe de tener sesión iniciada en myPlex y tener PlexPass"
+msgstr "Para poder usar esta versión debes iniciar sesión en myPlex y disponer de una cuenta PlexPass"
 
 
 msgctxt "#44202"
@@ -1029,7 +1029,7 @@ msgstr "Presiona OK para ir al menú de Preferencias"
 
 msgctxt "#44203"
 msgid "PlexPass Required"
-msgstr "Requiere PlexPass"
+msgstr "Usuario de PlexPass requerido"
 
 
 msgctxt "#44204"
@@ -1051,7 +1051,7 @@ msgstr "El contenido no está disponible actualmente"
 
 msgctxt "#52002"
 msgid "This media has expired"
-msgstr "Este contenido ha caducado"
+msgstr "Este contenido ha expirado"
 
 
 msgctxt "#52003"
@@ -1066,6 +1066,6 @@ msgstr "No tienes autorización para acceder a este contenido"
 
 msgctxt "#52005"
 msgid "This media is geoblocked and can't be accessed from your current location."
-msgstr "Este contenido esta bloqueado por geoposición y no puede acceder desde su localización actual"
+msgstr "Este contenido esta bloqueado por geoposición y no puede ser accedido desde su localización actual"
 
 #### end error strings
