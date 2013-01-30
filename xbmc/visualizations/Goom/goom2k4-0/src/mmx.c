@@ -91,7 +91,7 @@ void zoom_filter_mmx (int prevX, int prevY,
 		"punpckhbw %%mm7, %%mm5 \n\t"	/* 00-c4-00-c4-00-c4-00-c4 */
 
 		/* ajouter la longueur de ligne a esi */
-		"addl 8(%%ebp),%1 \n\t"
+		"addl %4,%1 \n\t"
 
 		/* recuperation des 2 derniers pixels */
 		"movq (%3,%1,4), %%mm1 \n\t"
@@ -115,7 +115,7 @@ void zoom_filter_mmx (int prevX, int prevY,
 
 		"movd %%mm0,%0 \n\t"
 		  :"=g"(expix2[loop])
-		  :"r"(pos),"r"(coeffs),"r"(expix1)
+		  :"r"(pos),"r"(coeffs),"r"(expix1),"r"(prevX)
 
 		);
 
