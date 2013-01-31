@@ -17,6 +17,9 @@
 		18B700F613A6A7850009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700F413A6A7850009C1AF /* AddonVersion.cpp */; };
 		18E7CAD71578C691001D4554 /* CDDARipJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18E7CAD51578C691001D4554 /* CDDARipJob.cpp */; };
 		18ECC99D13CF17D200A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */; };
+		1D04C1DA16E67B5A0001BA1E /* Vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D04C1D816E67B5A0001BA1E /* Vector.cpp */; };
+		1D04C23B16E67BA20001BA1E /* GenericTouchActionHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D04C22916E67BA20001BA1E /* GenericTouchActionHandler.cpp */; };
+		1D04C24116E67BA20001BA1E /* ITouchInputHandling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D04C23716E67BA20001BA1E /* ITouchInputHandling.cpp */; };
 		1D638120161E20F2003603ED /* PeripheralImon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D63811E161E20F2003603ED /* PeripheralImon.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		3291892B1423A9B700E878CD /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329189291423A9B700E878CD /* JpegIO.cpp */; };
@@ -1061,6 +1064,15 @@
 		18E7CAD61578C691001D4554 /* CDDARipJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDARipJob.h; sourceTree = "<group>"; };
 		18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC99C13CF17D200A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
+		1D04C1D816E67B5A0001BA1E /* Vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector.cpp; sourceTree = "<group>"; };
+		1D04C1D916E67B5A0001BA1E /* Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
+		1D04C22916E67BA20001BA1E /* GenericTouchActionHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GenericTouchActionHandler.cpp; sourceTree = "<group>"; };
+		1D04C22A16E67BA20001BA1E /* GenericTouchActionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericTouchActionHandler.h; sourceTree = "<group>"; };
+		1D04C23516E67BA20001BA1E /* ITouchActionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITouchActionHandler.h; sourceTree = "<group>"; };
+		1D04C23616E67BA20001BA1E /* ITouchInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITouchInputHandler.h; sourceTree = "<group>"; };
+		1D04C23716E67BA20001BA1E /* ITouchInputHandling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ITouchInputHandling.cpp; sourceTree = "<group>"; };
+		1D04C23816E67BA20001BA1E /* ITouchInputHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITouchInputHandling.h; sourceTree = "<group>"; };
+		1D04C23A16E67BA20001BA1E /* TouchTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchTypes.h; sourceTree = "<group>"; };
 		1D63811E161E20F2003603ED /* PeripheralImon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralImon.cpp; sourceTree = "<group>"; };
 		1D63811F161E20F2003603ED /* PeripheralImon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralImon.h; sourceTree = "<group>"; };
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -3316,6 +3328,28 @@
 				8D576316048677EA00EA77CD /* XBMC.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		1D04C22716E67BA20001BA1E /* touch */ = {
+			isa = PBXGroup;
+			children = (
+				1D04C22816E67BA20001BA1E /* generic */,
+				1D04C23516E67BA20001BA1E /* ITouchActionHandler.h */,
+				1D04C23616E67BA20001BA1E /* ITouchInputHandler.h */,
+				1D04C23716E67BA20001BA1E /* ITouchInputHandling.cpp */,
+				1D04C23816E67BA20001BA1E /* ITouchInputHandling.h */,
+				1D04C23A16E67BA20001BA1E /* TouchTypes.h */,
+			);
+			path = touch;
+			sourceTree = "<group>";
+		};
+		1D04C22816E67BA20001BA1E /* generic */ = {
+			isa = PBXGroup;
+			children = (
+				1D04C22916E67BA20001BA1E /* GenericTouchActionHandler.cpp */,
+				1D04C22A16E67BA20001BA1E /* GenericTouchActionHandler.h */,
+			);
+			path = generic;
 			sourceTree = "<group>";
 		};
 		83D619BA13C0D23400418A0F /* Documentation */ = {
@@ -5637,6 +5671,7 @@
 		F56C8536131F42E9000AD0F6 /* input */ = {
 			isa = PBXGroup;
 			children = (
+				1D04C22716E67BA20001BA1E /* touch */,
 				F56C8537131F42E9000AD0F6 /* ButtonTranslator.cpp */,
 				F56C8538131F42E9000AD0F6 /* ButtonTranslator.h */,
 				DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */,
@@ -6265,6 +6300,8 @@
 				36A9467715CF20A500727135 /* UrlOptions.h */,
 				F56C875D131F42EC000AD0F6 /* Variant.cpp */,
 				F56C875E131F42EC000AD0F6 /* Variant.h */,
+				1D04C1D816E67B5A0001BA1E /* Vector.cpp */,
+				1D04C1D916E67B5A0001BA1E /* Vector.h */,
 				F56C875F131F42EC000AD0F6 /* Weather.cpp */,
 				F56C8760131F42EC000AD0F6 /* Weather.h */,
 				F56C8763131F42EC000AD0F6 /* WindowsShortcut.h */,
@@ -7740,6 +7777,9 @@
 				F56352F916E5440300D21BAD /* GUIDialogProfileSettings.cpp in Sources */,
 				F56352FA16E5440300D21BAD /* GUIDialogSettings.cpp in Sources */,
 				F56352FD16E5441600D21BAD /* AppParamParser.cpp in Sources */,
+				1D04C1DA16E67B5A0001BA1E /* Vector.cpp in Sources */,
+				1D04C23B16E67BA20001BA1E /* GenericTouchActionHandler.cpp in Sources */,
+				1D04C24116E67BA20001BA1E /* ITouchInputHandling.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
