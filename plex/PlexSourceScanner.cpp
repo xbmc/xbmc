@@ -202,11 +202,13 @@ void CPlexSourceScanner::RemoveHost(PlexServerPtr server, bool force)
     if (sources)
     {
       // Remove the URL, and if we still have routes to the sources, get out.
+      std::set<PlexServerPtr> newSet;
       BOOST_FOREACH(PlexServerPtr serv, sources->servers)
       {
-        if (serv->key() == server->key())
-          sources->servers.erase(serv);
+        if (serv->key() != server->key())
+          newSet.insert(serv);
       }
+      sources->servers = newSet;
 
       dprintf("Plex Source Scanner: removing server %s (url: %s), %ld urls left.", sources->hostLabel.c_str(), server->url().c_str(), sources->servers.size());
       if (sources->servers.size() > 0)
