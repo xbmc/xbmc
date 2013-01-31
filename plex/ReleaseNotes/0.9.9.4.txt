@@ -1,0 +1,11 @@
+[b]Upstream fixes[/b]
+[*] add Dreamweaver to the list of obscuring windows
+[*] If a audio device disapears Plex/HT will try to reinit (Fixes HDMI drop out issues when turning the TV off)
+[*] Synced with Frodo Final
+
+[b]Plex Fixes[/b]
+[*] Crash fixes for Theme/background music
+[*] Crash fixes to network browsing, fanart etc
+[*] Fix audioqueue starvation, should give stutter free playback with High Quality material
+[*] Enable DVD and VIDEO_TS playback
+[*] Fix milkdrop crash on windows
