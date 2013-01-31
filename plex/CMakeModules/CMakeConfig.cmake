@@ -42,7 +42,7 @@ endif()
 set(USE_UPNP 1)
 set(HAS_LIBRTMP 1)
 
-OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" OFF)
+OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" ON)
 if(ENABLE_DVD_DRIVE)
   set(HAS_DVD_DRIVE 1)
 endif(ENABLE_DVD_DRIVE)
