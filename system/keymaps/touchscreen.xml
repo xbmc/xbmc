@@ -1,0 +1,16 @@
+<keymap>
+  <global>
+    <touch>
+      <tap>LeftClick</tap>
+      <longpress>RightClick</longpress>
+      <tap pointers="2">RightClick</tap>
+      <pan>PanGesture</pan>
+    </touch>
+  </global>
+  <SlideShow>
+    <touch>
+      <zoom>ZoomGesture</zoom>
+      <rotate>RotateGesture</rotate>
+    </touch>
+  </SlideShow>
+</keymap>

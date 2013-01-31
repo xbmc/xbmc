@@ -97,6 +97,8 @@ public:
                                bool &fullrange);
 #endif
 
+  bool TranslateTouchAction(int window, int touchAction, int touchPointers, int &action);
+
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
 
@@ -105,6 +107,7 @@ private:
   // m_deviceList contains the list of connected HID devices
   std::list<CStdString> m_deviceList;
 
+  int GetActionCode(int window, int action);
   int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   typedef std::map<int, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
@@ -144,6 +147,12 @@ private:
   std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
   std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
 #endif
+
+  void MapTouchActions(int windowID, TiXmlNode *pTouch);
+  static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
+  int GetTouchActionCode(int window, int action);
+
+  std::map<int, buttonMap> m_touchMap;
 
   bool m_Loaded;
 };
