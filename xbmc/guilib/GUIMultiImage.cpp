@@ -238,9 +238,7 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
 
 void CGUIMultiImage::AllocResources()
 {
-#ifndef __PLEX__
   FreeResources();
-#endif
   CGUIControl::AllocResources();
 
   if (m_directoryStatus == UNLOADED)
