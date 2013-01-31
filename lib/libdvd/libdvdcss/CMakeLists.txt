@@ -2,7 +2,7 @@ set(DVDCSS_VERSION 1.2.10)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-plex_find_headers(HEADERS unistd.h sys/param.h limits.h pwd.h errno.h windows.h sys/ioctl.h linux/cdrom.h IOKit/storage/IODVDMediaBSDClient.h)
+plex_find_headers(HEADERS dlfcn.h unistd.h sys/param.h limits.h pwd.h errno.h windows.h sys/ioctl.h linux/cdrom.h IOKit/storage/IODVDMediaBSDClient.h)
 
 set(CAN_BUILD 1)
 if(HAVE_SYS_IOCTL_H)
