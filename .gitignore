@@ -122,6 +122,7 @@ config.log
 /addons/visualization.waveform/Waveform.vis
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
+/addons/visualization.fishbmc/fishbmc.vis
 /addons/script.module.pil/
 /addons/pvr.*
 
@@ -1222,6 +1223,7 @@ xbmc/visualizations/EGLHelpers/Makefile
 /xbmc/visualizations/XBMCProjectM/libprojectM/CMakeFiles/
 /xbmc/visualizations/XBMCProjectM/libprojectM/cmake_install.cmake
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
+/xbmc/visualizations/fishBMC/Makefile
 
 /xbmc/win32/git_rev.h
 
