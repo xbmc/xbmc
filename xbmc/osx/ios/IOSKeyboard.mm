@@ -37,21 +37,31 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   keyboardFrame.origin.x = frameHeight / 2;
   keyboardFrame.origin.y = (pCurrentScreen.bounds.size.width/2) - frameHeight*scale + 10;
   //create the keyboardview
-  KeyboardView *iosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
-
+  m_pIosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
+  KeyboardView *keyboard = (KeyboardView*)m_pIosKeyboard;
   m_pCharCallback = pCallback;
 
   // init keyboard stuff
-  [iosKeyboard setText:[NSString stringWithUTF8String:initialString.c_str()]];
-  [iosKeyboard SetHiddenInput:bHiddenInput];
-  [iosKeyboard SetHeading:[NSString stringWithUTF8String:heading.c_str()]];
-  [iosKeyboard RegisterKeyboard:this]; // for calling back
-  [iosKeyboard activate];//blocks and loops our application loop (like a modal dialog)
+  [keyboard setText:[NSString stringWithUTF8String:initialString.c_str()]];
+  [keyboard SetHiddenInput:bHiddenInput];
+  [keyboard SetHeading:[NSString stringWithUTF8String:heading.c_str()]];
+  [keyboard RegisterKeyboard:this]; // for calling back
+  [keyboard activate];//blocks and loops our application loop (like a modal dialog)
   // user is done - get resulted text and confirmation
-  typedString = [[iosKeyboard GetText] UTF8String];
-  confirmed = [iosKeyboard GetResult];
-  [iosKeyboard release]; // bye bye native keyboard
+  typedString = [[keyboard GetText] UTF8String];
+  confirmed = [keyboard GetResult];
+  [keyboard release]; // bye bye native keyboard
+  m_pIosKeyboard = NULL;
   return confirmed;
+}
+
+void CIOSKeyboard::Cancel()
+{
+  if (m_pIosKeyboard)
+  {
+    KeyboardView *keyboard = (KeyboardView*)m_pIosKeyboard;
+    [keyboard keyboardDidHide:nil];
+  }
 }
 
 //wrap our callback between objc and c++
