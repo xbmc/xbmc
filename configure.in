@@ -105,6 +105,8 @@ goom_disabled="== GOOM disabled. =="
 alsa_disabled="== ALSA support disabled. =="
 rsxs_enabled="== RSXS enabled. =="
 rsxs_disabled="== RSXS disabled. =="
+fishbmc_enabled="== FishBMC enabled. =="
+fishbmc_disabled="== FishBMC disabled. =="
 projectm_enabled="== ProjectM enabled. =="
 projectm_disabled="== ProjectM disabled. =="
 x11_enabled="== X11 enabled. =="
@@ -301,6 +303,12 @@ AC_ARG_ENABLE([rsxs],
   [enable really slick X screensavers (default is yes)])],
   [use_rsxs=$enableval],
   [use_rsxs=yes])
+
+AC_ARG_ENABLE([fishbmc],
+  [AS_HELP_STRING([--enable-fishbmc],
+  [enable FishBMC visualisation (default is yes)])],
+  [use_fishbmc=$enableval],
+  [use_fishbmc=yes])
 
 AC_ARG_ENABLE([projectm],
   [AS_HELP_STRING([--enable-projectm],
@@ -1255,6 +1263,16 @@ else
   fi
 fi
 
+# FISHBMC
+if test "$use_fishbmc" = "no" || test "$use_gl" = "no"; then
+  AC_MSG_NOTICE($fishbmc_disabled)   
+  DISABLE_FISHBMC=1
+  use_fishbmc="no"
+else
+  AC_MSG_NOTICE($fishbmc_enabled)
+  DISABLE_FISHBMC=0
+fi
+
 # PROJECTM
 if test "$use_projectm" = "no" || test "$use_gl" = "no"; then
   AC_MSG_NOTICE($projectm_disabled)
@@ -2007,6 +2025,12 @@ else
   final_message="$final_message\n  RSXS:\t\tNo"
 fi
 
+if test "$use_fishbmc" = "yes"; then
+  final_message="$final_message\n  FishBMC:\tYes"
+else
+  final_message="$final_message\n  FishBMC:\tNo"
+fi
+
 if test "$use_projectm" = "yes"; then
   final_message="$final_message\n  ProjectM:\tYes"
 else
@@ -2413,6 +2437,7 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_GOOM)
 AC_SUBST(DISABLE_RSXS)
+AC_SUBST(DISABLE_FISHBMC)
 AC_SUBST(DISABLE_PROJECTM)
 AC_SUBST(USE_SKIN_TOUCHED)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
