@@ -59,6 +59,7 @@ void SetPresetDir(const char *pack)
     // Normal folder
     strcpy(g_plugin->m_szPresetDir,  pack);
   }
+#ifndef __PLEX__
   if (strcmp (g_plugin->m_szPresetDir, lastPresetDir) == 0)
   {
     // If we have a valid last preset state AND the preset file(dir) is the same as last time
@@ -70,6 +71,7 @@ void SetPresetDir(const char *pack)
     g_plugin->LoadPreset(g_plugin->m_szCurrentPresetFile, g_plugin->m_fBlendTimeUser);
   }
   else
+#endif
     // If it is the first run or a newly chosen preset pack we choose a random preset as first
     g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
 }
