@@ -78,6 +78,11 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
     if (iControl == CONTROL_SCRAPER_LIST)
     {
+      // we handle only select actions
+      int action = message.GetParam1();
+      if (!(action == ACTION_SELECT_ITEM || action == ACTION_MOUSE_LEFT_CLICK))
+        break;
+
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(), CONTROL_SCRAPER_LIST);
       g_windowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
