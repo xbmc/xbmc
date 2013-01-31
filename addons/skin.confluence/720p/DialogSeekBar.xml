@@ -230,7 +230,7 @@
 				<aligny>center</aligny>
 				<font>font10_title</font>
 				<textcolor>blue</textcolor>
-				<label>[B]$LOCALIZE[773][/B]</label>
+				<label>$LOCALIZE[31046]</label>
 				<visible>Player.Seeking</visible>
 			</control>
 			<control type="label">
@@ -243,7 +243,7 @@
 				<aligny>center</aligny>
 				<font>font10_title</font>
 				<textcolor>blue</textcolor>
-				<label>[B]$LOCALIZE[773][/B][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</label>
+				<label>$LOCALIZE[31046][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</label>
 				<visible>Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]</visible>
 			</control>
 			<control type="label">
