@@ -42,8 +42,6 @@
   int  m_screenIdx;
 
   UIInterfaceOrientation orientation;
-
-  XBMC_Event lastEvent;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
@@ -51,7 +49,6 @@
 @property bool touchBeginSignaled;
 @property int  m_screenIdx;
 @property CGSize screensize;
-@property XBMC_Event lastEvent;
 
 // message from which our instance is obtained
 - (void) pauseAnimation;
