@@ -67,6 +67,13 @@ setfilepath /xbmc/system/players/dvdplayer
 checkfiles avcodec-53.dll avformat-53.dll avutil-51.dll postproc-52.dll swscale-2.dll avfilter-2.dll swresample-0.dll
 echo "##### building of ffmpeg dlls done #####"
 
+echo "##### building libdvd dlls #####"
+cd /xbmc/lib/libdvd/
+sh ./build-xbmc-win32.sh $MAKECLEAN
+setfilepath /xbmc/system/players/dvdplayer
+checkfiles libdvdcss-2.dll libdvdnav.dll
+echo "##### building of libdvd dlls done #####"
+
 echo "##### building timidity dlls #####"
 cd /xbmc/lib/timidity/
 if  [ "$MAKECLEAN" == "clean" ]; then
