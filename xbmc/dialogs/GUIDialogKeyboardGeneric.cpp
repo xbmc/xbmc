@@ -641,6 +641,12 @@ int CGUIDialogKeyboardGeneric::GetWindowId() const
   return GetID();
 }
 
+void CGUIDialogKeyboardGeneric::Cancel()
+{
+  m_bIsConfirmed = false;
+  Close();
+}
+
 bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
   CGUIDialogKeyboardGeneric *pKeyboard = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
