@@ -67,12 +67,13 @@ void CGUIKeyboardFactory::keyTypedCB(CGUIKeyboard *ref, const std::string &typed
         break;
     }
   }
+  ref->resetAutoCloseTimer();
 }
 
 // Show keyboard with initial value (aTextString) and replace with result string.
 // Returns: true  - successful display and input (empty result may return true or false depending on parameter)
 //          false - unsucessful display of the keyboard or cancelled editing
-bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVariant &heading, bool allowEmptyResult, bool hiddenInput /* = false */)
+bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVariant &heading, bool allowEmptyResult, bool hiddenInput /* = false */, unsigned int autoCloseMs /* = 0 */)
 {
   bool confirmed = false;
   CGUIKeyboard *kb = NULL;
@@ -96,6 +97,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
 
   if(kb)
   {
+    kb->startAutoCloseTimer(autoCloseMs);
     confirmed = kb->ShowAndGetInput(keyTypedCB, aTextString, aTextString, headingStr, hiddenInput);
     if(needsFreeing)
       delete kb;
@@ -110,29 +112,29 @@ bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, const CVarian
   return confirmed;
 }
 
-bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult)
+bool CGUIKeyboardFactory::ShowAndGetInput(CStdString& aTextString, bool allowEmptyResult, unsigned int autoCloseMs /* = 0 */)
 {
-  return ShowAndGetInput(aTextString, "", allowEmptyResult) != 0;
+  return ShowAndGetInput(aTextString, "", allowEmptyResult, autoCloseMs) != 0;
 }
 
 // Shows keyboard and prompts for a password.
 // Differs from ShowAndVerifyNewPassword() in that no second verification is necessary.
-bool CGUIKeyboardFactory::ShowAndGetNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty)
+bool CGUIKeyboardFactory::ShowAndGetNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty, unsigned int autoCloseMs /* = 0 */)
 {
-  return ShowAndGetInput(newPassword, heading, allowEmpty, true);
+  return ShowAndGetInput(newPassword, heading, allowEmpty, true, autoCloseMs);
 }
 
 // Shows keyboard and prompts for a password.
 // Differs from ShowAndVerifyNewPassword() in that no second verification is necessary.
-bool CGUIKeyboardFactory::ShowAndGetNewPassword(CStdString& newPassword)
+bool CGUIKeyboardFactory::ShowAndGetNewPassword(CStdString& newPassword, unsigned int autoCloseMs /* = 0 */)
 {
-  return ShowAndGetNewPassword(newPassword, 12340, false);
+  return ShowAndGetNewPassword(newPassword, 12340, false, autoCloseMs);
 }
 
-bool CGUIKeyboardFactory::ShowAndGetFilter(CStdString &filter, bool searching)
+bool CGUIKeyboardFactory::ShowAndGetFilter(CStdString &filter, bool searching, unsigned int autoCloseMs /* = 0 */)
 {
   m_filtering = searching ? FILTERING_SEARCH : FILTERING_CURRENT;
-  bool ret = ShowAndGetInput(filter, searching ? 16017 : 16028, true);
+  bool ret = ShowAndGetInput(filter, searching ? 16017 : 16028, true, autoCloseMs);
   m_filtering = FILTERING_NONE;
   return ret;
 }
@@ -143,17 +145,17 @@ bool CGUIKeyboardFactory::ShowAndGetFilter(CStdString &filter, bool searching)
 // \param heading Heading to display
 // \param allowEmpty Whether a blank password is valid or not.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty)
+bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty, unsigned int autoCloseMs /* = 0 */)
 {
   // Prompt user for password input
   CStdString userInput = "";
-  if (!ShowAndGetInput(userInput, heading, allowEmpty, true))
+  if (!ShowAndGetInput(userInput, heading, allowEmpty, true, autoCloseMs))
   { // user cancelled, or invalid input
     return false;
   }
   // success - verify the password
   CStdString checkInput = "";
-  if (!ShowAndGetInput(checkInput, 12341, allowEmpty, true))
+  if (!ShowAndGetInput(checkInput, 12341, allowEmpty, true, autoCloseMs))
   { // user cancelled, or invalid input
     return false;
   }
@@ -173,10 +175,10 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, cons
 // \brief Show keyboard twice to get and confirm a user-entered password string.
 // \param strNewPassword Overwritten with user input if return=true.
 // \return true if successful display and user input entry/re-entry. false if unsucessful display, no user input, or canceled editing.
-bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword)
+bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword, unsigned int autoCloseMs /* = 0 */)
 {
   CStdString heading = g_localizeStrings.Get(12340);
-  return ShowAndVerifyNewPassword(newPassword, heading, false);
+  return ShowAndVerifyNewPassword(newPassword, heading, false, autoCloseMs);
 }
 
 // \brief Show keyboard and verify user input against strPassword.
@@ -184,7 +186,7 @@ bool CGUIKeyboardFactory::ShowAndVerifyNewPassword(CStdString& newPassword)
 // \param dlgHeading String shown on dialog title. Converts to localized string if contains a positive integer.
 // \param iRetries If greater than 0, shows "Incorrect password, %d retries left" on dialog line 2, else line 2 is blank.
 // \return 0 if successful display and user input. 1 if unsucessful input. -1 if no user input or canceled editing.
-int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries)
+int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries, unsigned int autoCloseMs /* = 0 */)
 {
   CStdString strHeadingTemp;
   if (1 > iRetries && strHeading.size())
@@ -193,7 +195,7 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(CStdString& strPassword, const CS
     strHeadingTemp.Format("%s - %i %s", g_localizeStrings.Get(12326).c_str(), g_guiSettings.GetInt("masterlock.maxretries") - iRetries, g_localizeStrings.Get(12343).c_str());
 
   CStdString strUserInput = "";
-  if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
+  if (!ShowAndGetInput(strUserInput, strHeadingTemp, false, true, autoCloseMs))  //bool hiddenInput = false/true ? TODO: GUI Setting to enable disable this feature y/n?
     return -1; // user canceled out
 
   if (!strPassword.IsEmpty())

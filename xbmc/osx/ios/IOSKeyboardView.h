@@ -39,4 +39,5 @@
 - (void) setText:(NSMutableString *)text;
 - (void) activate;
 - (void) deactivate;
+- (void)keyboardDidHide:(id)sender;
 @end
