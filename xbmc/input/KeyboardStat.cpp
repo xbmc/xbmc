@@ -211,7 +211,7 @@ CStdString CKeyboardStat::GetKeyName(int KeyID)
     keyname.append(keytable.keyname);
   else
     keyname.AppendFormat("%i", keyid);
-  keyname.AppendFormat(" (%02x)", KeyID);
+  keyname.AppendFormat(" (%i)", KeyID);
 
   return keyname;
 }
