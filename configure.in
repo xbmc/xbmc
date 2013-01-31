@@ -1277,6 +1277,7 @@ fi
 if test "$use_projectm" = "no" || test "$use_gl" = "no"; then
   AC_MSG_NOTICE($projectm_disabled)
   DISABLE_PROJECTM=1
+  use_projectm="no"
 else
   AC_MSG_NOTICE($projectm_enabled)
   DISABLE_PROJECTM=0
