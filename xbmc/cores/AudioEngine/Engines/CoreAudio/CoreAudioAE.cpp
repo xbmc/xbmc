@@ -24,7 +24,6 @@
 
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
-#include "CoreAudioHardware.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
@@ -38,6 +37,46 @@
 
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416
+
+// on darwin when the devicelist changes
+// reinit by calling opencoreaudio with the last engine parameters 
+// (this will fallback to default
+// device when our current output device vanishes
+// and on the other hand will go back to that device
+// if it re-appears).
+#if defined(TARGET_DARWIN_OSX)
+OSStatus deviceChangedCB( AudioObjectID                       inObjectID,
+                          UInt32                              inNumberAddresses,
+                          const AudioObjectPropertyAddress    inAddresses[],
+                          void*                               inClientData)
+{
+  CCoreAudioAE *pEngine = (CCoreAudioAE *)inClientData;
+  pEngine->AudioDevicesChanged();
+  CLog::Log(LOGDEBUG, "CCoreAudioAE - audiodevicelist changed!");
+  return noErr;
+}
+
+void RegisterDeviceChangedCB(bool bRegister, void *ref)
+{
+  OSStatus ret = noErr;
+  const AudioObjectPropertyAddress inAdr = 
+  {  
+    kAudioHardwarePropertyDevices,
+    kAudioObjectPropertyScopeGlobal,
+    kAudioObjectPropertyElementMaster 
+  };
+  
+  if (bRegister)
+    ret = AudioObjectAddPropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+  else
+    ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, deviceChangedCB, ref);
+
+  if (ret != noErr)
+    CLog::Log(LOGERROR, "CCoreAudioAE::Deinitialize - error %s a listener callback for device changes!", bRegister?"attaching":"removing");   
+}
+#else//ios
+void RegisterDeviceChangedCB(bool bRegister, void *ref){}
+#endif
 
 CCoreAudioAE::CCoreAudioAE() :
   m_Initialized        (false         ),
@@ -54,14 +93,16 @@ CCoreAudioAE::CCoreAudioAE() :
   m_streamsPlaying     (false         ),
   m_isSuspended        (false         ),
   m_softSuspend        (false         ),
-  m_softSuspendTimer   (0             ),
-  m_currentAudioDevice (0             )
+  m_softSuspendTimer   (0             )
 {
   HAL = new CCoreAudioAEHAL;
+  
+  RegisterDeviceChangedCB(true, this);
 }
 
 CCoreAudioAE::~CCoreAudioAE()
 {
+  RegisterDeviceChangedCB(false, this);
   Shutdown();
 }
 
@@ -95,6 +136,17 @@ void CCoreAudioAE::Shutdown()
   HAL = NULL;
 }
 
+void CCoreAudioAE::AudioDevicesChanged()
+{
+  // give CA a bit time to realise that maybe the 
+  // default device might have changed now - else
+  // OpenCoreAudio might open the old default device
+  // again (yeah that really is the case - duh)
+  Sleep(500);
+  CSingleLock engineLock(m_engineLock);
+  OpenCoreAudio(m_lastSampleRate, COREAUDIO_IS_RAW(m_lastStreamFormat), m_lastStreamFormat);
+}
+
 bool CCoreAudioAE::Initialize()
 {
   CSingleLock engineLock(m_engineLock);
@@ -104,6 +156,8 @@ bool CCoreAudioAE::Initialize()
   Deinitialize();
 
   bool ret = OpenCoreAudio(44100, false, AE_FMT_FLOAT);
+  m_lastSampleRate = 44100;
+  m_lastStreamFormat = AE_FMT_FLOAT;
 
   Start();
 
@@ -274,13 +328,6 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
       (*itt)->Initialize();
     streamLock.Leave();
   }
-  
-#if defined(TARGET_DARWIN_OSX)
-  if (m_Initialized)
-  {
-    m_currentAudioDevice = CCoreAudioHardware::FindAudioDevice(m_outputDevice);
-  }
-#endif
 
   return m_Initialized;
 }
@@ -438,7 +485,6 @@ CCoreAudioAEHAL* CCoreAudioAE::GetHAL()
 IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   unsigned int sampleRate, unsigned int encodedSamplerate, CAEChannelInfo channelLayout, unsigned int options)
 {
-  bool defaultDeviceChanged = false;
   // if we are suspended we don't
   // want anyone to mess with us
   if (m_isSuspended && !m_softSuspend)
@@ -453,20 +499,6 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   m_streams.push_back(stream);
   streamLock.Leave();
 
-#if defined(TARGET_DARWIN_OSX)
-  // check if default device has changed - in that case we need to reinit
-  // TODO hook into osx callbacks for getting notifiaction on device
-  // changes and then queue a change of the default device
-  // to a point where engine is idle.
-  std::string outputDevice = g_guiSettings.GetString("audiooutput.audiodevice");
-  if (outputDevice.compare("CoreAudio:default") == 0)
-  {
-    AudioDeviceID currentId = CCoreAudioHardware::FindAudioDevice("default");
-    if (currentId != m_currentAudioDevice)
-      defaultDeviceChanged = true;
-  }
-#endif
-
   if ((options & AESTREAM_PAUSED) == 0)
     Stop();
 
@@ -474,8 +506,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   if (m_Initialized && ( m_lastStreamFormat != dataFormat ||
                          m_lastChLayoutCount != channelLayout.Count() ||
                          m_lastSampleRate != sampleRate ||
-                         COREAUDIO_IS_RAW(dataFormat) ||
-                         defaultDeviceChanged))
+                         COREAUDIO_IS_RAW(dataFormat)))
   {
     CSingleLock engineLock(m_engineLock);
     Stop();
