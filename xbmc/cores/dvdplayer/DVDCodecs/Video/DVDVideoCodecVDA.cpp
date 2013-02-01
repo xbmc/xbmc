@@ -23,6 +23,7 @@
 #endif
 
 #if defined(HAVE_LIBVDADECODER)
+#include "system_gl.h"
 #include "DynamicDll.h"
 #include "settings/GUISettings.h"
 #include "DVDClock.h"
@@ -33,6 +34,7 @@
 #include "DllSwScale.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "windowing/WindowingFactory.h"
 #include "osx/CocoaInterface.h"
 #include <CoreFoundation/CoreFoundation.h>
 
@@ -615,14 +617,6 @@ static DllLibVDADecoder *g_DllLibVDADecoder = (DllLibVDADecoder*)-1;
 ////////////////////////////////////////////////////////////////////////////////////////////
 CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 {
-  if (g_DllLibVDADecoder == (DllLibVDADecoder*)-1)
-  {
-    m_dll = new DllLibVDADecoder;
-    m_dll->Load();
-  }
-  else
-    m_dll = g_DllLibVDADecoder;
-
   m_vda_decoder = NULL;
   m_pFormatName = "vda-";
 
@@ -634,17 +628,31 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_convert_3byteTo4byteNALSize = false;
   m_dllAvUtil = NULL;
   m_dllAvFormat = NULL;
+  m_dllSwScale = NULL;
+  memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
 }
 
 CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
 {
   Dispose();
   pthread_mutex_destroy(&m_queue_mutex);
-  //delete m_dll;
 }
 
 bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  if (g_DllLibVDADecoder == (DllLibVDADecoder*)-1)
+  {
+    m_dll = new DllLibVDADecoder;
+    if (!m_dll->Load())
+    {
+      CLog::Log(LOGNOTICE, "%s - DllLibVDADecoder load failed", __FUNCTION__, hints.profile);
+      return false;
+    }
+    g_DllLibVDADecoder = m_dll;
+  }
+  else
+    m_dll = g_DllLibVDADecoder;
+
   if (g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
   {
     CCocoaAutoPool pool;
@@ -795,6 +803,53 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       return false;
     }
  
+    m_use_cvBufferRef = true;
+#if 0
+    //TODO fix after Frodo if (g_Windowing.GetRenderVendor().Find("Intel") > -1)
+    {
+      m_dllSwScale = new DllSwScale;
+      if (!m_dllSwScale->Load())
+      {
+        CFRelease(avcCData);
+        return false;
+      }
+
+      // allocate a YV12 DVDVideoPicture buffer.
+      // first make sure all properties are reset.
+      memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
+      unsigned int iPixels = width * height;
+      unsigned int iChromaPixels = iPixels/4;
+
+      m_videobuffer.dts = DVD_NOPTS_VALUE;
+      m_videobuffer.pts = DVD_NOPTS_VALUE;
+      m_videobuffer.iFlags = DVP_FLAG_ALLOCATED;
+      m_videobuffer.format = RENDER_FMT_YUV420P;
+      m_videobuffer.color_range  = 0;
+      m_videobuffer.color_matrix = 4;
+      m_videobuffer.iWidth  = width;
+      m_videobuffer.iHeight = height;
+      m_videobuffer.iDisplayWidth  = width;
+      m_videobuffer.iDisplayHeight = height;
+
+      m_videobuffer.iLineSize[0] = width;   //Y
+      m_videobuffer.iLineSize[1] = width/2; //U
+      m_videobuffer.iLineSize[2] = width/2; //V
+      m_videobuffer.iLineSize[3] = 0;
+
+      m_videobuffer.data[0] = (BYTE*)malloc(16 + iPixels);
+      m_videobuffer.data[1] = (BYTE*)malloc(16 + iChromaPixels);
+      m_videobuffer.data[2] = (BYTE*)malloc(16 + iChromaPixels);
+      m_videobuffer.data[3] = NULL;
+
+      // set all data to 0 for less artifacts.. hmm.. what is black in YUV??
+      memset(m_videobuffer.data[0], 0, iPixels);
+      memset(m_videobuffer.data[1], 0, iChromaPixels);
+      memset(m_videobuffer.data[2], 0, iChromaPixels);
+
+      m_use_cvBufferRef = false;
+    }
+#endif
+
     // setup the decoder configuration dict
     CFMutableDictionaryRef decoderConfiguration = CFDictionaryCreateMutable(
       kCFAllocatorDefault, 4, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
@@ -873,8 +928,19 @@ void CDVDVideoCodecVDA::Dispose()
   if (m_vda_decoder)
     m_dll->VDADecoderDestroy((VDADecoder)m_vda_decoder), m_vda_decoder = NULL;
 
+  if (!m_use_cvBufferRef && m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
+  {
+    free(m_videobuffer.data[0]), m_videobuffer.data[0] = NULL;
+    free(m_videobuffer.data[1]), m_videobuffer.data[1] = NULL;
+    free(m_videobuffer.data[2]), m_videobuffer.data[2] = NULL;
+    m_videobuffer.iFlags = 0;
+  }
+
   if (m_dllAvUtil)
     delete m_dllAvUtil, m_dllAvUtil = NULL;
+
+  if (m_dllSwScale)
+    delete m_dllSwScale, m_dllSwScale = NULL;
 
   if (m_dllAvFormat)
     delete m_dllAvFormat, m_dllAvFormat = NULL;
@@ -984,21 +1050,58 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // depth is less than the number of encoded reference frames. If queue depth
   // is greater than the number of encoded reference frames, then the top frame
   // will never change and we can just grab a ref to the top frame.
-  pthread_mutex_lock(&m_queue_mutex);
-  pDvdVideoPicture->dts             = m_display_queue->dts;
-  pDvdVideoPicture->pts             = m_display_queue->pts;
-  pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
-  m_display_queue->pixel_buffer_ref = NULL;
-  pthread_mutex_unlock(&m_queue_mutex);
+  if (m_use_cvBufferRef)
+  {
+    pthread_mutex_lock(&m_queue_mutex);
+    pDvdVideoPicture->dts             = m_display_queue->dts;
+    pDvdVideoPicture->pts             = m_display_queue->pts;
+    pDvdVideoPicture->cvBufferRef     = m_display_queue->pixel_buffer_ref;
+    m_display_queue->pixel_buffer_ref = NULL;
+    pthread_mutex_unlock(&m_queue_mutex);
 
-  pDvdVideoPicture->format          = RENDER_FMT_CVBREF;
-  pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->color_range     = 0;
-  pDvdVideoPicture->color_matrix    = 4;
-  pDvdVideoPicture->iWidth          = CVPixelBufferGetWidth(pDvdVideoPicture->cvBufferRef);
-  pDvdVideoPicture->iHeight         = CVPixelBufferGetHeight(pDvdVideoPicture->cvBufferRef);
-  pDvdVideoPicture->iDisplayWidth   = pDvdVideoPicture->iWidth;
-  pDvdVideoPicture->iDisplayHeight  = pDvdVideoPicture->iHeight;
+    pDvdVideoPicture->format          = RENDER_FMT_CVBREF;
+    pDvdVideoPicture->iFlags          = DVP_FLAG_ALLOCATED;
+    pDvdVideoPicture->color_range     = 0;
+    pDvdVideoPicture->color_matrix    = 4;
+    pDvdVideoPicture->iWidth          = CVPixelBufferGetWidth(pDvdVideoPicture->cvBufferRef);
+    pDvdVideoPicture->iHeight         = CVPixelBufferGetHeight(pDvdVideoPicture->cvBufferRef);
+    pDvdVideoPicture->iDisplayWidth   = pDvdVideoPicture->iWidth;
+    pDvdVideoPicture->iDisplayHeight  = pDvdVideoPicture->iHeight;
+  }
+  else
+  {
+    FourCharCode pixel_buffer_format;
+    CVPixelBufferRef picture_buffer_ref;
+
+    // clone the video picture buffer settings.
+    *pDvdVideoPicture = m_videobuffer;
+
+    // get the top yuv frame, we risk getting the wrong frame if the frame queue
+    // depth is less than the number of encoded reference frames. If queue depth
+    // is greater than the number of encoded reference frames, then the top frame
+    // will never change and we can just grab a ref to the top frame. This way
+    // we don't lockout the vdadecoder while doing color format convert.
+    pthread_mutex_lock(&m_queue_mutex);
+    picture_buffer_ref = m_display_queue->pixel_buffer_ref;
+    pixel_buffer_format = m_display_queue->pixel_buffer_format;
+    pDvdVideoPicture->dts = m_display_queue->dts;
+    pDvdVideoPicture->pts = m_display_queue->pts;
+    pthread_mutex_unlock(&m_queue_mutex);
+
+    // lock the CVPixelBuffer down
+    CVPixelBufferLockBaseAddress(picture_buffer_ref, 0);
+    int row_stride = CVPixelBufferGetBytesPerRowOfPlane(picture_buffer_ref, 0);
+    uint8_t *base_ptr = (uint8_t*)CVPixelBufferGetBaseAddressOfPlane(picture_buffer_ref, 0);
+    if (base_ptr)
+    {
+      if (pixel_buffer_format == kCVPixelFormatType_422YpCbCr8)
+        UYVY422_to_YUV420P(base_ptr, row_stride, pDvdVideoPicture);
+      else if (pixel_buffer_format == kCVPixelFormatType_32BGRA)
+        BGRA_to_YUV420P(base_ptr, row_stride, pDvdVideoPicture);
+    }
+    // unlock the CVPixelBuffer
+    CVPixelBufferUnlockBaseAddress(picture_buffer_ref, 0);
+  }
 
   // now we can pop the top frame.
   DisplayQueuePop();
@@ -1012,7 +1115,7 @@ bool CDVDVideoCodecVDA::ClearPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   // release any previous retained image buffer ref that
   // has not been passed up to renderer (ie. dropped frames, etc).
-  if (pDvdVideoPicture->cvBufferRef)
+  if (m_use_cvBufferRef && pDvdVideoPicture->cvBufferRef)
     CVBufferRelease(pDvdVideoPicture->cvBufferRef);
 
   return CDVDVideoCodec::ClearPicture(pDvdVideoPicture);
@@ -1035,6 +1138,46 @@ void CDVDVideoCodecVDA::DisplayQueuePop(void)
   if (top_frame->pixel_buffer_ref)
     CVBufferRelease(top_frame->pixel_buffer_ref);
   free(top_frame);
+}
+
+void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture)
+{
+  // convert PIX_FMT_UYVY422 to PIX_FMT_YUV420P.
+  struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
+    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+  if (swcontext)
+  {
+    uint8_t  *src[] = { yuv422_ptr, 0, 0, 0 };
+    int srcStride[] = { yuv422_stride, 0, 0, 0 };
+
+    uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
+    int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
+
+    m_dllSwScale->sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    m_dllSwScale->sws_freeContext(swcontext);
+  }
+}
+
+void CDVDVideoCodecVDA::BGRA_to_YUV420P(uint8_t *bgra_ptr, int bgra_stride, DVDVideoPicture *picture)
+{
+  // convert PIX_FMT_BGRA to PIX_FMT_YUV420P.
+  struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_BGRA, 
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
+    SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
+  if (swcontext)
+  {
+    uint8_t  *src[] = { bgra_ptr, 0, 0, 0 };
+    int srcStride[] = { bgra_stride, 0, 0, 0 };
+
+    uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
+    int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
+
+    m_dllSwScale->sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    m_dllSwScale->sws_freeContext(swcontext);
+  }
 }
 
 void CDVDVideoCodecVDA::VDADecoderCallback(

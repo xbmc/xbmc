@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Galician language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/gl/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Obter as miniaturas do álbum dende fanart.tv</string>
+    <string id="30001">Obter as miniaturas do álbum dende Last.fm</string>
+    <string id="30002">Obter a crítica do álbum dende</string>
+    <string id="30003">Idioma preferido</string>
+    <string id="30004">Obter a puntuación do álbum dende</string>
+    <string id="30005">Obter os estilos do álbum dende</string>
+    <string id="30006">Obter Sonoridades do Álbum de</string>
+    <string id="30007">Obter os temas do álbum dende</string>
+    <string id="30008">Obter as miniaturas do álbum dende allmusic.com</string>
+    <string id="30009">Ilustración</string>
+    <string id="30010">Obter as miniaturas do álbum dende theaudiodb.com</string>
+</strings>

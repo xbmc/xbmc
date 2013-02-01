@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: OpenGL Spectrum
 # Addon id: visualization.glspectrum
-# Addon version: 1.0.0
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -21,13 +21,49 @@ msgctxt "#30000"
 msgid "Mode"
 msgstr "Modus"
 
+msgctxt "#30001"
+msgid "Filled"
+msgstr "Gevul"
+
+msgctxt "#30002"
+msgid "Wireframe"
+msgstr "Draad Raamwerk"
+
+msgctxt "#30003"
+msgid "Points"
+msgstr "Punte"
+
+msgctxt "#30004"
+msgid "Bar Height"
+msgstr "Staaf Hoogte"
+
+msgctxt "#30005"
+msgid "Small"
+msgstr "Klein"
+
 msgctxt "#30006"
 msgid "Default"
 msgstr "Verstek"
 
+msgctxt "#30007"
+msgid "Big"
+msgstr "Groot"
+
+msgctxt "#30008"
+msgid "Very Big"
+msgstr "Baie Groot"
+
 msgctxt "#30009"
 msgid "Speed"
 msgstr "Spoed"
+
+msgctxt "#30010"
+msgid "Very Slow"
+msgstr "Baie Stadig"
+
+msgctxt "#30011"
+msgid "Slow"
+msgstr "Stadig"
 
 msgctxt "#30012"
 msgid "Default"
@@ -36,3 +72,7 @@ msgstr "Verstek"
 msgctxt "#30013"
 msgid "Fast"
 msgstr "Vinnig"
+
+msgctxt "#30014"
+msgid "Very Fast"
+msgstr "Baie Vinnig"

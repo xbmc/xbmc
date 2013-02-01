@@ -649,6 +649,8 @@ void CGUIControl::SetInitialVisibility()
     m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
   //  CLog::Log(LOGDEBUG, "Set initial visibility for control %i: %s", m_controlID, m_visible == VISIBLE ? "visible" : "hidden");
   }
+  else if (m_visible == DELAYED)
+    m_visible = VISIBLE;
   // and handle animation conditions as well
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {

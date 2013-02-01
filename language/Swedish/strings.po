@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -316,15 +316,15 @@ msgstr "Skanna"
 
 msgctxt "#103"
 msgid "Sort by: Name"
-msgstr "Sort: Namn"
+msgstr "Sortering: Namn"
 
 msgctxt "#104"
 msgid "Sort by: Date"
-msgstr "Sort: Datum"
+msgstr "Sortering: Datum"
 
 msgctxt "#105"
 msgid "Sort by: Size"
-msgstr "Sort: Storlek"
+msgstr "Sortering: Storlek"
 
 msgctxt "#106"
 msgid "No"
@@ -920,23 +920,23 @@ msgstr "Stoppa insp."
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Sort: Låtar"
+msgstr "Sortering: Låtar"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Sort: Speltid"
+msgstr "Sortering: Speltid"
 
 msgctxt "#268"
 msgid "Sort by: Title"
-msgstr "Sort: Titel"
+msgstr "Sortering: Titel"
 
 msgctxt "#269"
 msgid "Sort by: Artist"
-msgstr "Sort: Artist"
+msgstr "Sortering: Artist"
 
 msgctxt "#270"
 msgid "Sort by: Album"
-msgstr "Sort: Album"
+msgstr "Sortering: Album"
 
 msgctxt "#271"
 msgid "Top 100"
@@ -1264,7 +1264,7 @@ msgstr "Tid innan skärmsläckare startar"
 
 msgctxt "#356"
 msgid "Screensaver mode"
-msgstr "Skärmsläckarläge"
+msgstr "Skärmsläckare"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
@@ -1292,7 +1292,7 @@ msgstr "Nedtoningsnivå"
 
 msgctxt "#363"
 msgid "Sort by: File"
-msgstr "Sort: Filer"
+msgstr "Sortering: Filer"
 
 msgctxt "#364"
 msgid "- Dolby Digital (AC3) capable receiver"
@@ -1300,15 +1300,15 @@ msgstr "- Dolby Digital (AC3)-kapabel förstärkare"
 
 msgctxt "#365"
 msgid "Sort by: Name"
-msgstr "Sort: Namn"
+msgstr "Sortering: Namn"
 
 msgctxt "#366"
 msgid "Sort by: Year"
-msgstr "Sort: År"
+msgstr "Sortering: År"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "Sort: Betyg"
+msgstr "Sortering: Betyg"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1548,7 +1548,7 @@ msgstr "Var god sätt i följande skiva:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
-msgstr "Sort: DVD#"
+msgstr "Sortering: DVD#"
 
 msgctxt "#431"
 msgid "No cache"
@@ -1796,7 +1796,7 @@ msgstr "Visa filändelser"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "Sort: Typ"
+msgstr "Sortering: Typ"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
@@ -1828,7 +1828,7 @@ msgstr "Laddar mediainfo från filer..."
 
 msgctxt "#507"
 msgid "Sort by: Usage"
-msgstr "Sort: Använd."
+msgstr "Sortering: Använd"
 
 msgctxt "#510"
 msgid "Enable visualizations"
@@ -1980,7 +1980,7 @@ msgstr "Mixa ned flerkanalsljud till stereo"
 
 msgctxt "#550"
 msgid "Sort by: %s"
-msgstr "Sort: %s"
+msgstr "Sortering: %s"
 
 msgctxt "#551"
 msgid "Name"
@@ -3956,7 +3956,7 @@ msgstr "Är en annan session aktiv, kanske över ssh?"
 
 msgctxt "#13021"
 msgid "Mounted removable harddrive"
-msgstr "Monterad flyttbar hårddisk"
+msgstr "Monterade flyttbar hårddisk"
 
 msgctxt "#13022"
 msgid "Unsafe device removal"
@@ -4616,7 +4616,7 @@ msgstr "Genvägar"
 
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
-msgstr "Ignorera \"tokens\" i sortering (ex: \"the\")"
+msgstr "Ignorera bestämd form i sortering (ex: \"the\")"
 
 msgctxt "#13400"
 msgid "Crossfade between songs on the same album"
@@ -5192,7 +5192,7 @@ msgstr "Spela DVD'er automatiskt"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
-msgstr "Typsnitt för undertexter"
+msgstr "Undertextstypsnitt"
 
 msgctxt "#14090"
 msgid "International"
@@ -6176,7 +6176,7 @@ msgstr "Lägg till timer"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
-msgstr "Sort: Kanal"
+msgstr "Sortering: Kanal"
 
 msgctxt "#19063"
 msgid "Go to begin"
@@ -6600,7 +6600,7 @@ msgstr "TV"
 
 msgctxt "#19181"
 msgid "Menu/OSD"
-msgstr "Many/OSD"
+msgstr "Meny/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
@@ -7404,7 +7404,7 @@ msgstr "Vill du starta spelet?"
 
 msgctxt "#20014"
 msgid "Sort by: Playlist"
-msgstr "Sort: Spellista"
+msgstr "Sortering: Spellista"
 
 msgctxt "#20015"
 msgid "Remote thumb"
@@ -8044,7 +8044,7 @@ msgstr "Annonsera biblioteksuppdateringar via UPnP"
 
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
-msgstr "Aktivera automatisk rullning för handling & recension"
+msgstr "Aktivera automatisk bläddring för handling & recension"
 
 msgctxt "#20190"
 msgid "Custom"
@@ -8204,7 +8204,7 @@ msgstr "Filmer - Bibliotek"
 
 msgctxt "#20316"
 msgid "Sort by: ID"
-msgstr "Sort: ID"
+msgstr "Sortering: ID"
 
 msgctxt "#20317"
 msgid "Scanning movies using %s"
@@ -8576,7 +8576,7 @@ msgstr "Lägg ihop"
 
 msgctxt "#20412"
 msgid "Flatten TV shows"
-msgstr "Lägg ihop TV-serie"
+msgstr "Lägg ihop TV-serier"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -8608,7 +8608,7 @@ msgstr "Aldrig"
 
 msgctxt "#20421"
 msgid "If only one season"
-msgstr "om endast en säsong"
+msgstr "Om endast en säsong"
 
 msgctxt "#20422"
 msgid "Always"
@@ -8892,7 +8892,7 @@ msgstr "Visa knapp för \"Lägg till källa\" i fillistan"
 
 msgctxt "#21383"
 msgid "Enable scrollbars"
-msgstr "Aktivera rullningslister"
+msgstr "Aktivera bläddringslister"
 
 msgctxt "#21384"
 msgid "Make watched filtering a toggle in video library"
@@ -9720,7 +9720,7 @@ msgstr "Igång"
 
 msgctxt "#23055"
 msgid "Scale Teletext to 4:3"
-msgstr "Skala Teletext till 4:3"
+msgstr "Skala teletext till 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9892,7 +9892,7 @@ msgstr "Tillgängliga uppdateringar"
 
 msgctxt "#24044"
 msgid "Dependencies not met"
-msgstr "Beronden möts inte"
+msgstr "Beroenden möts inte"
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Aktivera joystick och gamepad-stöd"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Inaktivera joystick när iMON är tillgängligt"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Inaktivera joysticken när enheten är tillgänglig"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10652,7 +10652,7 @@ msgstr "Kunde inte hitta CEC-porten. Ställ in den manuellt"
 
 msgctxt "#36012"
 msgid "Could not initialise the CEC adapter. Please check your settings."
-msgstr "Kunde inte hitta CEC-adaptern"
+msgstr "Kunde inte hitta CEC-adaptern. Kontrollera dina inställningar."
 
 msgctxt "#36015"
 msgid "HDMI port number"
@@ -10753,3 +10753,7 @@ msgstr "TV och AVR-enhet (rättfram)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Ej stödd libCEC-gränsnittsversion. %x är lägre än versionen XBMC stödjer (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Objektsmapp"

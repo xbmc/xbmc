@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -5610,6 +5610,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (invertit)"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "S'està cancel·lant..."
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Introduïu el nom de l'artista"
@@ -9098,6 +9102,18 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr "Above video"
 
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f a %.1f"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d a %d"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s a %s"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Nom del fitxer"
@@ -9593,6 +9609,10 @@ msgstr "S'està aturant"
 msgctxt "#23054"
 msgid "Running"
 msgstr "S'està executant"
+
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Escala el Teletext a 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -10454,10 +10474,6 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Activa el suport de manaments de joc"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Desactivar el joystick quan estigui present l'iMON"
-
 msgctxt "#35500"
 msgid "Location"
 msgstr "Ubicació"
@@ -10613,6 +10629,14 @@ msgstr "En iniciar/aturar"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "Amplificador / Dispositiu AVR"
+
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "TV i dispositiu AVR (explícit)"
 
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"

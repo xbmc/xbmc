@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.solarwinds"
-  version="1.0.0"
+  version="1.0.2"
   name="Solarwinds"
   provider-name="mogumbo, Team XBMC">
   <requires>
@@ -41,7 +41,7 @@
     <summary lang="no">En hypnotiserende partikkel effekt skjermsparer</summary>
     <summary lang="pl">Wygaszacz hipnotyzujący efektami cząsteczek</summary>
     <summary lang="pt">Protecção de ecrã com um impressionante efeito de partículas</summary>
-    <summary lang="pt_BR">Um fascinante screensaver com efeitos de partículas</summary>
+    <summary lang="pt_BR">Um protetor de tela hipnotizante com efeitos de partículas</summary>
     <summary lang="ro">Un srceensaver cu efecte de particule fascinant</summary>
     <summary lang="ru">Завораживающая заставка с эффектами частиц</summary>
     <summary lang="se">En fascinerande skärmsläckare av partikeleffekter</summary>
@@ -56,7 +56,7 @@
     <description lang="bg">Това е скрийнсейвър, който очарова с частиците си. Ще откриете, че можете да създадете изключително голям брой различни модели.</description>
     <description lang="ca">Aquest és un estalvi de pantalla amb uns efectes de partícules fascinants. Veurà que pot obtenir un nombre increïble de patrons diferents.</description>
     <description lang="cs">Spořič obrazovky s velmi fascinujícími částicovými efekty. Zjistíte, že můžete dosáhnout úžasného množství různých vzorů.</description>
-    <description lang="da">Dette er en meget tryllebindende pauseskærm med partikeleffekter. Du vil opdage at man kan opnå et forbløffende antal af forskellige mønstre.</description>
+    <description lang="da">Dette er en meget tryllebindende pauseskærm med partikeleffekter. Du vil opdage, at man kan opnå et forbløffende antal af forskellige mønstre.</description>
     <description lang="de">Dies ist ein faszinierender Bildschirmschoner mit Partikeleffekten. Du kannst eine verblüffend große Anzahl an verschiedenen Animationen einstellen.</description>
     <description lang="el">Αυτή είναι μία μαγευτική σωματιδιακή προφύλαξη οθόνης. Θα διαπιστώσετε ότι μπορείτε να επιτύχετε έναν απίστευτο αριθμό διαφορετικών σχεδίων.</description>
     <description lang="en">This is a very mesmerizing particle effects screensaver. You'll find that you can achieve an amazing number of different patterns.</description>
@@ -79,7 +79,7 @@
     <description lang="no">Dette er en veldig hypnotiserende partikkel effekt skjermsparer. Du får se at der fins en utrolig mengde forskjellige mønster.</description>
     <description lang="pl">Bardzo hipnotyzujący wygaszacz. Przekonaj się, ile niespotykanch wzorów da się osiągnąć.</description>
     <description lang="pt">Uma fantástica protecção de ecrã com um impressionante efeito de partículas. Experimente e verá que obtém um número quase infinito de padrões.</description>
-    <description lang="pt_BR">Este é um screensaver de partículas com efeitos hipnotizantes. Você vai descobrir que poderá alcançar um incrível número de diferentes padrões.</description>
+    <description lang="pt_BR">Este é um protetor de tela com efeitos de partícula bem hipnotizante. Você verá que pode alcançar um incrível número de diferentes padrões.</description>
     <description lang="ro">Acesta este un screensaver cu efecte de particule foarte fascinant. O să vedeți că veți putea obține un număr uimitor de modele diferite.</description>
     <description lang="ru">Завораживающая заставка с эффектами частиц. Для этой заставки на выбор доступно огромное количество вариаций эффектов.</description>
     <description lang="se">Detta är en mycket fascinerande partikeleffektsskärmsläckare. Du kommer att upptäcka att du kan uppnå ett otroligt antal olika mönster.</description>
@@ -91,5 +91,3 @@
     <platform>linux osx</platform>
   </extension>
 </addon>
-
-

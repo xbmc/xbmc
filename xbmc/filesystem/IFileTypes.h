@@ -25,8 +25,8 @@ namespace XFILE
 
 struct SNativeIoControl
 {
-  int   request;
-  void* param;
+  unsigned long int   request;
+  void*               param;
 };
 
 struct SCacheStatus

@@ -101,7 +101,6 @@ bool CLastfmScrobbler::CanScrobble()
 {
   return (!g_guiSettings.GetString("scrobbler.lastfmusername").IsEmpty()  &&
           !g_guiSettings.GetString("scrobbler.lastfmpass").IsEmpty()  &&
-         (g_guiSettings.GetBool("scrobbler.lastfmsubmit") ||
-          g_guiSettings.GetBool("scrobbler.lastfmsubmitradio")));
+          g_guiSettings.GetBool("scrobbler.lastfmsubmit"));
 }
 

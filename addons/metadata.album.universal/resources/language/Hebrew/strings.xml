@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Hebrew language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/he/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">משוך תמונות אלבום מ- fanart.tv</string>
+    <string id="30001">משוך תמונות אלבום מ- Last.fm</string>
+    <string id="30002">השג סקירת אלבום מ-</string>
+    <string id="30003">     שפה מועדפת</string>
+    <string id="30004">השג דירוג אלבום מ-</string>
+    <string id="30005">השג סגנונות אלבום מ-</string>
+    <string id="30006">השג מצבי אלבום מ-</string>
+    <string id="30007">השג ערכות נושא אלבום מ-</string>
+    <string id="30008">משוך תמונות אלבום מ- allmusic.com</string>
+    <string id="30009">גרפיקה</string>
+    <string id="30010">משוך תמונות אלבום מ- theaudiodb.com</string>
+</strings>

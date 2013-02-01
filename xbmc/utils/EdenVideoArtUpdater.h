@@ -37,12 +37,13 @@ public:
 
 private:
   /*! \brief Caches the texture from oldCachedFile as if it came from originalUrl into the texture cache.
-   \param originalUrl the url that we think the oldCachedFile came from.
+   \param originalUrl [in/out] the url that we think the oldCachedFile came from. May be set if it's empty and an oldCachedFile exists.
    \param oldCachedFile the old cached file
+   \param label the label of the item for logging
    \param type [out] the type of art (poster/banner/thumb)
    */
-  bool CacheTexture(const std::string &originalUrl, const std::string &cachedFile, std::string &type);
-  bool CacheTexture(const std::string &originalUrl, const std::string &oldCachedFile);
+  bool CacheTexture(std::string &originalUrl, const std::string &cachedFile, const std::string &label, std::string &type);
+  bool CacheTexture(std::string &originalUrl, const std::string &oldCachedFile, const std::string &label);
 
   CStdString GetCachedActorThumb(const CFileItem &item);
   CStdString GetCachedSeasonThumb(int season, const CStdString &path);

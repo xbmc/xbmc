@@ -80,6 +80,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/addons/PVRClients.h"
 #include "filesystem/PVRFile.h"
 
 #include "utils/StringUtils.h"
@@ -396,15 +397,16 @@ void COMXSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
 COMXPlayer::COMXPlayer(IPlayerCallback &callback) 
     : IPlayer(callback),
       CThread("COMXPlayer"),
-      m_ready(true),
       m_CurrentAudio(STREAM_AUDIO, DVDPLAYER_AUDIO),
       m_CurrentVideo(STREAM_VIDEO, DVDPLAYER_VIDEO),
       m_CurrentSubtitle(STREAM_SUBTITLE, DVDPLAYER_SUBTITLE),
       m_CurrentTeletext(STREAM_TELETEXT, DVDPLAYER_TELETEXT),
+      m_messenger("player"),
       m_player_video(&m_av_clock, &m_overlayContainer, m_messenger),
       m_player_audio(&m_av_clock, m_messenger),
       m_player_subtitle(&m_overlayContainer),
-      m_messenger("player")
+      m_player_teletext(),
+      m_ready(true)
 {
   m_bAbortRequest     = false;
   m_pDemuxer          = NULL;
@@ -419,11 +421,16 @@ COMXPlayer::COMXPlayer(IPlayerCallback &callback)
   m_EdlAutoSkipMarkers.Clear();
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
+
+  m_messenger.Init();
 }
 
 COMXPlayer::~COMXPlayer()
 {
   CloseFile();
+
+  if(m_messenger.IsInited())
+    m_messenger.End();
 }
 
 bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
@@ -431,10 +438,18 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
   try
   {
     CLog::Log(LOGNOTICE, "COMXPlayer: Opening: %s", file.GetPath().c_str());
+
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
     if(IsRunning())
       CloseFile();
+
+    if(!m_av_clock.OMXInitialize(false, false))
+    {
+      return false;
+    }
+    if(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+      m_av_clock.HDMIClockSync();
 
     m_playSpeed = DVD_PLAYSPEED_NORMAL;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
@@ -445,6 +460,7 @@ bool COMXPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     m_UpdateApplication = 0;
     m_offset_pts        = 0;
     m_current_volume    = 0;
+    m_current_mute      = false;
     m_change_volume     = true;
 
     m_item              = file;
@@ -502,6 +518,7 @@ bool COMXPlayer::CloseFile()
     m_pSubtitleDemuxer->Abort();
 
   CLog::Log(LOGDEBUG, "COMXPlayer: waiting for threads to exit");
+
   // wait for the main thread to finish up
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
@@ -526,8 +543,7 @@ void COMXPlayer::OnStartup()
   m_CurrentVideo.Clear();
   m_CurrentAudio.Clear();
   m_CurrentSubtitle.Clear();
-
-  m_messenger.Init();
+  m_CurrentTeletext.Clear();
 
   CUtil::ClearTempFonts();
 }
@@ -559,7 +575,6 @@ retry:
     // determine the most appropriate stream
     m_filename = PLAYLIST::CPlayListM3U::GetBestBandwidthStream(m_filename, (size_t)maxrate);
   }
-
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype);
   if(m_pInputStream == NULL)
   {
@@ -571,19 +586,6 @@ retry:
 
   if (!m_pInputStream->Open(m_filename.c_str(), m_mimetype))
   {
-    if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      CLog::Log(LOGERROR, "COMXPlayer::OpenInputStream - failed to open [%s] as DVD ISO, trying Bluray", m_filename.c_str());
-      m_mimetype = "bluray/iso";
-      filename = m_filename;
-      filename = filename + "/BDMV/index.bdmv";
-      int title = (int)m_item.GetProperty("BlurayStartingTitle").asInteger();
-      if( title )
-        filename.AppendFormat("?title=%d",title);
-
-      m_filename = filename;
-      goto retry;
-    }
     CLog::Log(LOGERROR, "COMXPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
     return false;
   }
@@ -597,6 +599,7 @@ retry:
 
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
   &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
@@ -611,7 +614,7 @@ retry:
 
     for(unsigned int i=0;i<filenames.size();i++)
     {
-      // if vobsub subtitle:    
+      // if vobsub subtitle:
       if (URIUtils::GetExtension(filenames[i]) == ".idx")
       {
         CStdString strSubFile;
@@ -633,7 +636,7 @@ retry:
   SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   m_av_clock.Reset();
-  m_av_clock.OMXReset();
+  //m_av_clock.OMXReset();
   m_dvd.Clear();
   m_iChannelEntryTimeOut = 0;
 
@@ -756,8 +759,8 @@ void COMXPlayer::OpenDefaultStreams(bool reset)
     CloseTeletextStream(true);
   */
 
-  m_av_clock.OMXStop();
-  m_av_clock.OMXReset();
+  //m_av_clock.OMXStop();
+  //m_av_clock.OMXReset();
 }
 
 bool COMXPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
@@ -923,380 +926,353 @@ bool COMXPlayer::IsBetterStream(COMXCurrentStream& current, CDemuxStream* stream
   return false;
 }
 
-bool COMXPlayer::WaitForPausedThumbJobs(int timeout_ms)
-{
-  // use m_bStop and Sleep so we can get canceled.
-  while (!m_bStop && (timeout_ms > 0))
-  {
-    if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
-    {
-      Sleep(100);
-      timeout_ms -= 100;
-    }
-    else
-      return true;
-  }
-
-  return false;
-}
-
 void COMXPlayer::Process()
 {
-  //bool bAEStopped = false;
+  bool bOmxWaitVideo = false;
+  bool bOmxWaitAudio = false;
 
-  if(!m_av_clock.OMXInitialize(false, false))
+  if(!OpenInputStream())
   {
     m_bAbortRequest = true;
     return;
   }
-  if(g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-    m_av_clock.HDMIClockSync();
 
-  m_av_clock.OMXStateExecute();
-  m_av_clock.OMXStart();
-
-  //CLog::Log(LOGDEBUG, "COMXPlayer: Thread started");
-
-  try
+  if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    m_stats             = false;
+    CLog::Log(LOGNOTICE, "OMXPlayer: playing a dvd with menu's");
+    m_PlayerOptions.starttime = 0;
 
-    if(!OpenInputStream())
-    {
-      m_bAbortRequest = true;
-      return;
-    }
+    if(m_PlayerOptions.state.size() > 0)
+      ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(m_PlayerOptions.state);
+    else
+      ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(g_settings.m_currentVideoSettings.m_SubtitleOn);
 
-    if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      CLog::Log(LOGNOTICE, "OMXPlayer: playing a dvd with menu's");
-      m_PlayerOptions.starttime = 0;
-
-      if(m_PlayerOptions.state.size() > 0)
-        ((CDVDInputStreamNavigator*)m_pInputStream)->SetNavigatorState(m_PlayerOptions.state);
-      else
-        ((CDVDInputStreamNavigator*)m_pInputStream)->EnableSubtitleStream(g_settings.m_currentVideoSettings.m_SubtitleOn);
-
-      g_settings.m_currentVideoSettings.m_SubtitleCached = true;
-    }
-
-    if(!OpenDemuxStream())
-    {
-      m_bAbortRequest = true;
-      return;
-    }
-
-    m_player_video.EnableFullscreen(true);
-
-    OpenDefaultStreams();
-
-    // look for any EDL files
-    m_Edl.Clear();
-    m_EdlAutoSkipMarkers.Clear();
-    float fFramesPerSecond;
-    if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
-    {
-      fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
-      m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond, m_CurrentVideo.hint.height);
-    }
-
-    /*
-     * Check to see if the demuxer should start at something other than time 0. This will be the case
-     * if there was a start time specified as part of the "Start from where last stopped" (aka
-     * auto-resume) feature or if there is an EDL cut or commercial break that starts at time 0.
-     */
-    CEdl::Cut cut;
-    int starttime = 0;
-    if(m_PlayerOptions.starttime > 0 || m_PlayerOptions.startpercent > 0)
-    {
-      if (m_PlayerOptions.startpercent > 0 && m_pDemuxer)
-      {
-        int64_t playerStartTime = (int64_t) ( ( (float) m_pDemuxer->GetStreamLength() ) * ( m_PlayerOptions.startpercent/(float)100 ) );
-        starttime = m_Edl.RestoreCutTime(playerStartTime);
-      }
-      else
-      {
-        starttime = m_Edl.RestoreCutTime((int64_t)m_PlayerOptions.starttime * 1000); // s to ms
-      }
-      CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
-    }
-    else if(m_Edl.InCut(0, &cut)
-        && (cut.action == CEdl::CUT || cut.action == CEdl::COMM_BREAK))
-    {
-      starttime = cut.end;
-      CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut or commercial break: %d", __FUNCTION__, starttime);
-      if(cut.action == CEdl::COMM_BREAK)
-      {
-        /*
-         * Setup auto skip markers as if the commercial break had been skipped using standard
-         * detection.
-         */
-        m_EdlAutoSkipMarkers.commbreak_start = cut.start;
-        m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
-        m_EdlAutoSkipMarkers.seek_to_start   = true;
-      }
-    }
-    if(starttime > 0)
-    {
-      double startpts = DVD_NOPTS_VALUE;
-      if(m_pDemuxer)
-      {
-        if (m_pDemuxer->SeekTime(starttime, false, &startpts))
-          CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
-        else
-          CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
-      }
-
-      if(m_pSubtitleDemuxer)
-      {
-        if(m_pSubtitleDemuxer->SeekTime(starttime, false, &startpts))
-          CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %d", __FUNCTION__, starttime);
-        else
-          CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
-      }
-    }
-
-    // make sure all selected stream have data on startup
-    if (CachePVRStream())
-      SetCaching(CACHESTATE_PVR);
-
-    // make sure application know our info
-    UpdateApplication(0);
-    UpdatePlayState(0);
-
-    if (m_PlayerOptions.identify == false)
-      m_callback.OnPlayBackStarted();
-
-    // we are done initializing now, set the readyevent
-    m_ready.Set();
-
-    if (!CachePVRStream())
-      SetCaching(CACHESTATE_FLUSH);
-
-    // shutdown AE
-    /*
-    CAEFactory::Shutdown();
-    bAEStopped = true;
-    */
-
-    // stop thumb jobs
-    CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
-
-    /*
-    if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
-    {
-      if (!WaitForPausedThumbJobs(20000))
-      {
-        CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
-        CLog::Log(LOGINFO, "COMXPlayer::Process:thumbgen jobs still running !!!");
-      }
-    }
-    */
-
-    while (!m_bAbortRequest)
-    {
-      // handle messages send to this thread, like seek or demuxer reset requests
-      HandleMessages();
-
-      if(m_bAbortRequest)
-        break;
-
-      // should we open a new input stream?
-      if(!m_pInputStream)
-      {
-        if (OpenInputStream() == false)
-        {
-          m_bAbortRequest = true;
-          break;
-        }
-      }
-
-      // should we open a new demuxer?
-      if(!m_pDemuxer)
-      {
-        if (m_pInputStream->NextStream() == CDVDInputStream::NEXTSTREAM_NONE)
-          break;
-
-        if (m_pInputStream->IsEOF())
-          break;
-
-        if (OpenDemuxStream() == false)
-        {
-          m_bAbortRequest = true;
-          break;
-        }
-
-        OpenDefaultStreams();
-
-        if (CachePVRStream())
-          SetCaching(CACHESTATE_PVR);
-
-        UpdateApplication(0);
-        UpdatePlayState(0);
-      }
-
-      // handle eventual seeks due to playspeed
-      HandlePlaySpeed();
-
-      // update player state
-      UpdatePlayState(200);
-
-      // update application with our state
-      UpdateApplication(1000);
-
-      if (CheckDelayedChannelEntry())
-        continue;
-
-      // if the queues are full, no need to read more
-      if ((!m_player_audio.AcceptsData() && m_CurrentAudio.id >= 0)
-      ||  (!m_player_video.AcceptsData() && m_CurrentVideo.id >= 0))
-      {
-        Sleep(10);
-        continue;
-      }
-
-      // always yield to players if they have data
-      if((m_player_audio.HasData() || m_CurrentAudio.id < 0)
-      && (m_player_video.HasData() || m_CurrentVideo.id < 0))
-        Sleep(0);
-
-      DemuxPacket* pPacket = NULL;
-      CDemuxStream *pStream = NULL;
-      ReadPacket(pPacket, pStream);
-      if (pPacket && !pStream)
-      {
-        /* probably a empty packet, just free it and move on */
-        CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-        continue;
-      }
-
-      if (!pPacket)
-      {
-        // when paused, demuxer could be be returning empty
-        if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
-          continue;
-
-        // check for a still frame state
-        if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-        {
-          CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
-
-          // stills will be skipped
-          if(m_dvd.state == DVDSTATE_STILL)
-          {
-            if (m_dvd.iDVDStillTime > 0)
-            {
-              if ((XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime) >= m_dvd.iDVDStillTime)
-              {
-                m_dvd.iDVDStillTime = 0;
-                m_dvd.iDVDStillStartTime = 0;
-                m_dvd.state = DVDSTATE_NORMAL;
-                pStream->SkipStill();
-                continue;
-              }
-            }
-          }
-        }
-
-        // if there is another stream available, reopen demuxer
-        CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
-        if(next == CDVDInputStream::NEXTSTREAM_OPEN)
-        {
-          SAFE_DELETE(m_pDemuxer);
-          m_CurrentAudio.stream = NULL;
-          m_CurrentVideo.stream = NULL;
-          m_CurrentSubtitle.stream = NULL;
-          continue;
-        }
-
-        // input stream asked us to just retry
-        if(next == CDVDInputStream::NEXTSTREAM_RETRY)
-        {
-          Sleep(100);
-          continue;
-        }
- 
-        // make sure we tell all players to finish it's data
-        if(m_CurrentAudio.inited)
-          m_player_audio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
-        if(m_CurrentVideo.inited)
-          m_player_video.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
-        if(m_CurrentSubtitle.inited)
-          m_player_subtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
-        m_CurrentAudio.inited    = false;
-        m_CurrentVideo.inited    = false;
-        m_CurrentSubtitle.inited = false;
-        m_CurrentAudio.started    = false;
-        m_CurrentVideo.started    = false;
-        m_CurrentSubtitle.started = false;
-
-        // if we are caching, start playing it again
-        SetCaching(CACHESTATE_DONE);
-
-        // while players are still playing, keep going to allow seekbacks
-        if(m_player_video.HasData()
-        || m_player_audio.HasData())
-        {
-          Sleep(100);
-          continue;
-        }
-
-        // wait for omx components to finish
-        if(HasVideo() && !m_player_video.IsEOS())
-        {
-          Sleep(100);
-          continue;
-        }
-        if(HasAudio() && !m_player_audio.IsEOS())
-        {
-          Sleep(100);
-          continue;
-        }
-
-        if (!m_pInputStream->IsEOF())
-          CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
-
-        break;
-      }
-
-      // check so that none of our streams has become invalid
-      if (!IsValidStream(m_CurrentAudio)    && m_player_audio.IsStalled())    CloseAudioStream(true);
-      if (!IsValidStream(m_CurrentVideo)    && m_player_video.IsStalled())    CloseVideoStream(true);
-      if (!IsValidStream(m_CurrentSubtitle) && m_player_subtitle.IsStalled()) CloseSubtitleStream(true);
-
-      // see if we can find something better to play
-      if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream   (pStream->iId, pStream->source);
-      if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream   (pStream->iId, pStream->source);
-      if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
-
-      if(m_change_volume)
-      {
-        m_player_audio.SetCurrentVolume(m_current_volume);
-        m_change_volume = false;
-      }
-
-      ProcessPacket(pStream, pPacket);
-
-      // check if in a cut or commercial break that should be automatically skipped
-      CheckAutoSceneSkip();
-    }
+    g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
-  catch(...)
+
+  if(!OpenDemuxStream())
   {
-    CLog::Log(LOGERROR, "COMXPlayer::Process: Exception thrown");
+    m_bAbortRequest = true;
+    return;
+  }
+
+  m_player_video.EnableFullscreen(true);
+
+  OpenDefaultStreams();
+
+  // look for any EDL files
+  m_Edl.Clear();
+  m_EdlAutoSkipMarkers.Clear();
+  float fFramesPerSecond;
+  if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
+  {
+    fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+    m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond, m_CurrentVideo.hint.height);
   }
 
   /*
-  if(bAEStopped)
+   * Check to see if the demuxer should start at something other than time 0. This will be the case
+   * if there was a start time specified as part of the "Start from where last stopped" (aka
+   * auto-resume) feature or if there is an EDL cut or commercial break that starts at time 0.
+   */
+  CEdl::Cut cut;
+  int starttime = 0;
+  if(m_PlayerOptions.starttime > 0 || m_PlayerOptions.startpercent > 0)
   {
-    // start AE
-    CAEFactory::LoadEngine();
-    CAEFactory::StartEngine();
+    if (m_PlayerOptions.startpercent > 0 && m_pDemuxer)
+    {
+      int64_t playerStartTime = (int64_t) ( ( (float) m_pDemuxer->GetStreamLength() ) * ( m_PlayerOptions.startpercent/(float)100 ) );
+      starttime = m_Edl.RestoreCutTime(playerStartTime);
+    }
+    else
+    {
+      starttime = m_Edl.RestoreCutTime((int64_t)m_PlayerOptions.starttime * 1000); // s to ms
+    }
+    CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
+  }
+  else if(m_Edl.InCut(0, &cut)
+      && (cut.action == CEdl::CUT || cut.action == CEdl::COMM_BREAK))
+  {
+    starttime = cut.end;
+    CLog::Log(LOGDEBUG, "%s - Start position set to end of first cut or commercial break: %d", __FUNCTION__, starttime);
+    if(cut.action == CEdl::COMM_BREAK)
+    {
+      /*
+       * Setup auto skip markers as if the commercial break had been skipped using standard
+       * detection.
+       */
+      m_EdlAutoSkipMarkers.commbreak_start = cut.start;
+      m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
+      m_EdlAutoSkipMarkers.seek_to_start   = true;
+    }
+  }
+  if(starttime > 0)
+  {
+    double startpts = DVD_NOPTS_VALUE;
+    if(m_pDemuxer)
+    {
+      if (m_pDemuxer->SeekTime(starttime, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
+      else
+        CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
+    }
 
-    CAEFactory::SetMute     (g_settings.m_bMute);
-    CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
+    if(m_pSubtitleDemuxer)
+    {
+      if(m_pSubtitleDemuxer->SeekTime(starttime, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %d", __FUNCTION__, starttime);
+      else
+        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
+    }
+  }
+
+  // make sure all selected stream have data on startup
+  if (CachePVRStream())
+    SetCaching(CACHESTATE_PVR);
+
+  // make sure application know our info
+  UpdateApplication(0);
+  UpdatePlayState(0);
+
+  if(m_PlayerOptions.identify == false)
+    m_callback.OnPlayBackStarted();
+
+  // we are done initializing now, set the readyevent
+  m_ready.Set();
+
+  if (!CachePVRStream())
+    SetCaching(CACHESTATE_FLUSH);
+
+  // stop thumb jobs
+  CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
+
+  /*
+  if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
+  {
+    if (!WaitForPausedThumbJobs(20000))
+    {
+      CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
+      CLog::Log(LOGINFO, "COMXPlayer::Process:thumbgen jobs still running !!!");
+    }
   }
   */
+
+  while (!m_bAbortRequest)
+  {
+    // handle messages send to this thread, like seek or demuxer reset requests
+    HandleMessages();
+
+    if(m_bAbortRequest)
+      break;
+
+    // should we open a new input stream?
+    if(!m_pInputStream)
+    {
+      if (OpenInputStream() == false)
+      {
+        m_bAbortRequest = true;
+        break;
+      }
+    }
+
+    // should we open a new demuxer?
+    if(!m_pDemuxer)
+    {
+      if (m_pInputStream->NextStream() == CDVDInputStream::NEXTSTREAM_NONE)
+        break;
+
+      if (m_pInputStream->IsEOF())
+        break;
+
+      if (OpenDemuxStream() == false)
+      {
+        m_bAbortRequest = true;
+        break;
+      }
+
+      OpenDefaultStreams();
+
+      if (CachePVRStream())
+        SetCaching(CACHESTATE_PVR);
+
+      UpdateApplication(0);
+      UpdatePlayState(0);
+    }
+
+    // handle eventual seeks due to playspeed
+    HandlePlaySpeed();
+
+    // update player state
+    UpdatePlayState(200);
+
+    // update application with our state
+    UpdateApplication(1000);
+
+    // OMX emergency exit
+    if(HasAudio() && m_player_audio.BadState())
+    {
+      m_bAbortRequest = true;
+      break;
+    }
+
+    if (CheckDelayedChannelEntry())
+      continue;
+
+    // if the queues are full, no need to read more
+    if ((!m_player_audio.AcceptsData() && m_CurrentAudio.id >= 0)
+    ||  (!m_player_video.AcceptsData() && m_CurrentVideo.id >= 0))
+    {
+      Sleep(10);
+      continue;
+    }
+
+    // always yield to players if they have data levels > 50 percent
+    if((m_player_audio.GetLevel() > 50 || m_CurrentAudio.id < 0)
+    && (m_player_video.GetLevel() > 50 || m_CurrentVideo.id < 0))
+      Sleep(0);
+
+    DemuxPacket* pPacket = NULL;
+    CDemuxStream *pStream = NULL;
+    ReadPacket(pPacket, pStream);
+    if (pPacket && !pStream)
+    {
+      /* probably a empty packet, just free it and move on */
+      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+      continue;
+    }
+
+    if (!pPacket)
+    {
+      // when paused, demuxer could be be returning empty
+      if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
+        continue;
+
+      // check for a still frame state
+      if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+      {
+        CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
+
+        // stills will be skipped
+        if(m_dvd.state == DVDSTATE_STILL)
+        {
+          if (m_dvd.iDVDStillTime > 0)
+          {
+            if ((XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime) >= m_dvd.iDVDStillTime)
+            {
+              m_dvd.iDVDStillTime = 0;
+              m_dvd.iDVDStillStartTime = 0;
+              m_dvd.state = DVDSTATE_NORMAL;
+              pStream->SkipStill();
+              continue;
+            }
+          }
+        }
+      }
+
+      // if there is another stream available, reopen demuxer
+      CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
+      if(next == CDVDInputStream::NEXTSTREAM_OPEN)
+      {
+        SAFE_DELETE(m_pDemuxer);
+        m_CurrentAudio.stream = NULL;
+        m_CurrentVideo.stream = NULL;
+        m_CurrentSubtitle.stream = NULL;
+        continue;
+      }
+
+      // input stream asked us to just retry
+      if(next == CDVDInputStream::NEXTSTREAM_RETRY)
+      {
+        Sleep(100);
+        continue;
+      }
+      else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      {
+        CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
+        if (pStream->IsEOF())
+          break;
+
+        Sleep(100);
+        continue;
+      }
+
+      // make sure we tell all players to finish it's data
+      if(m_CurrentAudio.inited)
+      {
+        m_player_audio.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+        bOmxWaitAudio = true;
+      }
+      if(m_CurrentVideo.inited)
+      {
+        m_player_video.SendMessage   (new CDVDMsg(CDVDMsg::GENERAL_EOF));
+        bOmxWaitVideo = true;
+      }
+      if(m_CurrentSubtitle.inited)
+        m_player_subtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
+      if(m_CurrentTeletext.inited)
+        m_player_teletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_EOF));
+      m_CurrentAudio.inited    = false;
+      m_CurrentVideo.inited    = false;
+      m_CurrentSubtitle.inited = false;
+      m_CurrentTeletext.inited = false;
+      m_CurrentAudio.started    = false;
+      m_CurrentVideo.started    = false;
+      m_CurrentSubtitle.started = false;
+      m_CurrentTeletext.started = false;
+
+      // if we are caching, start playing it again
+      SetCaching(CACHESTATE_DONE);
+
+      // while players are still playing, keep going to allow seekbacks
+      if(m_player_video.HasData()
+      || m_player_audio.HasData())
+      {
+        Sleep(100);
+        continue;
+      }
+
+      // wait for omx components to finish
+      if(bOmxWaitVideo && !m_player_video.IsEOS())
+      {
+        Sleep(100);
+        continue;
+      }
+      if(bOmxWaitAudio && !m_player_audio.IsEOS())
+      {
+        Sleep(100);
+        continue;
+      }
+
+      if (!m_pInputStream->IsEOF())
+        CLog::Log(LOGINFO, "%s - eof reading from demuxer", __FUNCTION__);
+
+      break;
+    }
+
+    // check so that none of our streams has become invalid
+    if (!IsValidStream(m_CurrentAudio)    && m_player_audio.IsStalled())    CloseAudioStream(true);
+    if (!IsValidStream(m_CurrentVideo)    && m_player_video.IsStalled())    CloseVideoStream(true);
+    if (!IsValidStream(m_CurrentSubtitle) && m_player_subtitle.IsStalled()) CloseSubtitleStream(true);
+    if (!IsValidStream(m_CurrentTeletext))                                  CloseTeletextStream(true);
+
+    // see if we can find something better to play
+    if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream   (pStream->iId, pStream->source);
+    if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream   (pStream->iId, pStream->source);
+    if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
+    if (IsBetterStream(m_CurrentTeletext, pStream)) OpenTeletextStream(pStream->iId, pStream->source);
+
+    if(m_change_volume)
+    {
+      m_player_audio.SetCurrentVolume(m_current_mute ? VOLUME_MINIMUM : m_current_volume);
+      m_change_volume = false;
+    }
+
+    // process the packet
+    ProcessPacket(pStream, pPacket);
+
+    // check if in a cut or commercial break that should be automatically skipped
+    CheckAutoSceneSkip();
+  }
 
   // let thumbgen jobs resume.
   CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
@@ -1332,6 +1308,8 @@ void COMXPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
         ProcessVideoData(pStream, pPacket);
       else if (pPacket->iStreamId == m_CurrentSubtitle.id && pStream->source == m_CurrentSubtitle.source && pStream->type == STREAM_SUBTITLE)
         ProcessSubData(pStream, pPacket);
+      else if (pPacket->iStreamId == m_CurrentTeletext.id && pStream->source == m_CurrentTeletext.source && pStream->type == STREAM_TELETEXT)
+        ProcessTeletextData(pStream, pPacket);
       else
       {
         pStream->SetDiscard(AVDISCARD_ALL);
@@ -1364,6 +1342,7 @@ void COMXPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   CheckContinuity(m_CurrentAudio, pPacket);
   UpdateTimestamps(m_CurrentAudio, pPacket);
+
   bool drop = false;
   if (CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO))
     drop = true;
@@ -1453,6 +1432,30 @@ void COMXPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     m_player_subtitle.UpdateOverlayInfo((CDVDInputStreamNavigator*)m_pInputStream, LIBDVDNAV_BUTTON_NORMAL);
+}
+
+void COMXPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket)
+{
+  if (m_CurrentTeletext.stream  != (void*)pStream
+  ||  m_CurrentTeletext.changes != pStream->changes)
+  {
+    /* check so that dmuxer hints or extra data hasn't changed */
+    /* if they have, reopen stream */
+    if (m_CurrentTeletext.hint != CDVDStreamInfo(*pStream, true))
+      OpenTeletextStream( pPacket->iStreamId, pStream->source );
+
+    m_CurrentTeletext.stream = (void*)pStream;
+  }
+  UpdateTimestamps(m_CurrentTeletext, pPacket);
+
+  bool drop = false;
+  if (CheckPlayerInit(m_CurrentTeletext, DVDPLAYER_TELETEXT))
+    drop = true;
+
+  if (CheckSceneSkip(m_CurrentTeletext))
+    drop = true;
+
+  m_player_teletext.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
 }
 
 bool COMXPlayer::GetCachingTimes(double& level, double& delay, double& offset)
@@ -1881,7 +1884,7 @@ void COMXPlayer::CheckAutoSceneSkip()
     /*
      * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, true, false, true, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, true, true, true, false, true));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -1899,7 +1902,7 @@ void COMXPlayer::CheckAutoSceneSkip()
     /*
      * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, true, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, true, true, false, true));
     /*
      * Each commercial break is only skipped once so poorly detected commercial breaks can be
      * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
@@ -1952,6 +1955,8 @@ void COMXPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
     m_player_video.SendMessage(pMsg);
   if(target == DVDPLAYER_SUBTITLE)
     m_player_subtitle.SendMessage(pMsg);
+  if(target == DVDPLAYER_TELETEXT)
+    m_player_teletext.SendMessage(pMsg);
 }
 
 void COMXPlayer::OnExit()
@@ -1983,13 +1988,11 @@ void COMXPlayer::OnExit()
       CLog::Log(LOGNOTICE, "OMXPlayer: closing subtitle stream");
       CloseSubtitleStream(!m_bAbortRequest);
     }
-    /*
     if (m_CurrentTeletext.id >= 0)
     {
       CLog::Log(LOGNOTICE, "OMXPlayer: closing teletext stream");
       CloseTeletextStream(!m_bAbortRequest);
     }
-    */
     // destroy the demuxer
     if (m_pDemuxer)
     {
@@ -2016,7 +2019,7 @@ void COMXPlayer::OnExit()
     // clean up all selection streams
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NONE);
 
-    m_messenger.End();
+    m_messenger.Flush();
 
     m_av_clock.OMXDeinitialize();
 
@@ -2245,14 +2248,16 @@ void COMXPlayer::HandleMessages()
         m_playSpeed = speed;
         m_caching = CACHESTATE_DONE;
         m_av_clock.SetSpeed(speed);
+        m_av_clock.OMXSetSpeed(speed);
         m_player_audio.SetSpeed(speed);
         m_player_video.SetSpeed(speed);
-        m_av_clock.OMXSetSpeed(m_playSpeed);
 
         // TODO - we really shouldn't pause demuxer
         //        until our buffers are somewhat filled
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
+
+        CLog::Log(LOGDEBUG, "COMXPlayer - CDVDMsg::PLAYER_SETSPEED speed : %d", speed);
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
@@ -2390,8 +2395,6 @@ void COMXPlayer::SetPlaySpeed(int speed)
     return;
 
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
-  m_player_audio.SetSpeed(speed);
-  m_player_video.SetSpeed(speed);
   SynchronizeDemuxer(100);
 }
 
@@ -2491,7 +2494,6 @@ void COMXPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   bool restore = true;
-
   if (m_Edl.HasCut())
   {
     /*
@@ -2601,7 +2603,7 @@ void COMXPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
   if (!m_bStop)
   {
-    double dDelay = m_player_video.GetDelay() / DVD_TIME_BASE;
+    double dDelay = m_player_video.GetDelay() / DVD_TIME_BASE - g_renderManager.GetDisplayLatency();
 
     double apts = m_player_audio.GetCurrentPTS();
     double vpts = m_player_video.GetCurrentPTS();
@@ -2772,6 +2774,22 @@ void COMXPlayer::SetAudioStream(int iStream)
   SynchronizeDemuxer(100);
 }
 
+TextCacheStruct_t* COMXPlayer::GetTeletextCache()
+{
+  if (m_CurrentTeletext.id < 0)
+    return 0;
+
+  return m_player_teletext.GetTeletextCache();
+}
+
+void COMXPlayer::LoadPage(int p, int sp, unsigned char* buffer)
+{
+  if (m_CurrentTeletext.id < 0)
+      return;
+
+  return m_player_teletext.LoadPage(p, sp, buffer);
+}
+
 void COMXPlayer::SeekTime(int64_t iTime)
 {
   int seekOffset = (int)(iTime - GetTime());
@@ -2907,6 +2925,17 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
     hint.software = true;
   }
 
+  boost::shared_ptr<CPVRClient> client;
+  if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
+     pStream->type == STREAM_VIDEO &&
+     g_PVRClients->GetPlayingClient(client) && client->HandlesDemuxing())
+  {
+    // set the fps in hints
+    const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(pStream);
+    hint.fpsrate  = stream->iFpsRate;
+    hint.fpsscale = stream->iFpsScale;
+  }
+
   CDVDInputStream::IMenus* pMenus = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream);
   if(pMenus && pMenus->IsInMenu())
     hint.stills = true;
@@ -2929,8 +2958,10 @@ bool COMXPlayer::OpenVideoStream(int iStream, int source, bool reset)
     m_player_video.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
 
   unsigned flags = 0;
-  if(m_filename.find("3DSBS") != string::npos) 
+  if(m_filename.find("3DSBS") != string::npos || m_filename.find("HSBS") != string::npos)
     flags = CONF_FLAGS_FORMAT_SBS;
+  else if(m_filename.find("3DTAB") != string::npos || m_filename.find("HTAB") != string::npos)
+    flags = CONF_FLAGS_FORMAT_TB;
   m_player_video.SetFlags(flags);
 
   /* store information about stream */
@@ -3046,6 +3077,53 @@ bool COMXPlayer::OpenSubtitleStream(int iStream, int source)
   return true;
 }
 
+bool COMXPlayer::OpenTeletextStream(int iStream, int source)
+{
+  if (!m_pDemuxer)
+    return false;
+
+  CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
+  if(!pStream || pStream->disabled)
+    return false;
+
+  CDVDStreamInfo hint(*pStream, true);
+
+  if (!m_player_teletext.CheckStream(hint))
+    return false;
+
+  CLog::Log(LOGNOTICE, "Opening teletext stream: %i source: %i", iStream, source);
+
+  if(m_CurrentTeletext.id    < 0
+  || m_CurrentTeletext.hint != hint)
+  {
+    if(m_CurrentTeletext.id >= 0)
+    {
+      CLog::Log(LOGDEBUG, " - teletext codecs hints have changed, must close previous stream");
+      CloseTeletextStream(true);
+    }
+
+    if (!m_player_teletext.OpenStream(hint))
+    {
+      /* mark stream as disabled, to disallaw further attempts*/
+      CLog::Log(LOGWARNING, "%s - Unsupported teletext stream %d. Stream disabled.", __FUNCTION__, iStream);
+      pStream->disabled = true;
+      pStream->SetDiscard(AVDISCARD_ALL);
+      return false;
+    }
+  }
+  else
+    m_player_teletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
+
+  /* store information about stream */
+  m_CurrentTeletext.id      = iStream;
+  m_CurrentTeletext.source  = source;
+  m_CurrentTeletext.hint    = hint;
+  m_CurrentTeletext.stream  = (void*)pStream;
+  m_CurrentTeletext.started = false;
+
+  return true;
+}
+
 bool COMXPlayer::CloseAudioStream(bool bWaitForBuffers)
 {
   if (m_CurrentAudio.id < 0)
@@ -3091,6 +3169,22 @@ bool COMXPlayer::CloseSubtitleStream(bool bKeepOverlays)
   return true;
 }
 
+bool COMXPlayer::CloseTeletextStream(bool bWaitForBuffers)
+{
+  if (m_CurrentTeletext.id < 0)
+    return false;
+
+  CLog::Log(LOGNOTICE, "Closing teletext stream");
+
+  if(bWaitForBuffers)
+    SetCaching(CACHESTATE_DONE);
+
+  m_player_teletext.CloseStream(bWaitForBuffers);
+
+  m_CurrentTeletext.Clear();
+  return true;
+}
+
 void COMXPlayer::FlushBuffers(bool queued, double pts, bool accurate)
 {
   double startpts;
@@ -3125,6 +3219,7 @@ void COMXPlayer::FlushBuffers(bool queued, double pts, bool accurate)
     m_player_video.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_player_video.SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
     m_player_subtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
+    m_player_teletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     SynchronizePlayers(SYNCSOURCE_ALL);
   }
   else
@@ -3132,6 +3227,7 @@ void COMXPlayer::FlushBuffers(bool queued, double pts, bool accurate)
     m_player_video.Flush();
     m_player_audio.Flush();
     m_player_subtitle.Flush();
+    m_player_teletext.Flush();
 
     // clear subtitle and menu overlays
     m_overlayContainer.Clear();
@@ -3529,6 +3625,7 @@ bool COMXPlayer::OnAction(const CAction &action)
       return true; // message is handled
     }
   }
+
   if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
   {
     switch (action.GetID())
@@ -3617,7 +3714,7 @@ bool COMXPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
-  double pts = m_av_clock.OMXMediaTime();
+  double pts = m_av_clock.OMXMediaTime(false, false);
 
   m_player_subtitle.GetCurrentSubtitle(strSubtitle, pts - m_player_video.GetSubtitleDelay());
 
@@ -3629,7 +3726,7 @@ bool COMXPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 
   return !strSubtitle.IsEmpty();
 }
-  
+
 CStdString COMXPlayer::GetPlayerState()
 {
   CSingleLock lock(m_StateSection);
@@ -3776,8 +3873,13 @@ void COMXPlayer::UpdatePlayState(double timeout)
     state.chapter_count = m_pDemuxer->GetChapterCount();
     m_pDemuxer->GetChapterName(state.chapter_name);
 
-    state.time       = DVD_TIME_TO_MSEC(m_av_clock.GetClock() + m_offset_pts);
+    // TODO : workaround until omx clock handling is rewritten
+    if(m_playSpeed == DVD_PLAYSPEED_NORMAL)
+      state.time       = DVD_TIME_TO_MSEC(m_av_clock.OMXMediaTime(true, true));
+    else
+      state.time       = DVD_TIME_TO_MSEC(m_av_clock.GetClock() + m_offset_pts);
     state.time_total = m_pDemuxer->GetStreamLength();
+
   }
 
   if(m_pInputStream)
@@ -3992,6 +4094,11 @@ bool COMXPlayer::GetStreamDetails(CStreamDetails &details)
 
 CStdString COMXPlayer::GetPlayingTitle()
 {
+  /* Currently we support only Title Name from Teletext line 30 */
+  TextCacheStruct_t* ttcache = m_player_teletext.GetTeletextCache();
+  if (ttcache && !ttcache->line30.empty())
+    return ttcache->line30;
+
   return "";
 }
 
@@ -4030,10 +4137,33 @@ void COMXPlayer::GetVideoRect(CRect& SrcRect, CRect& DestRect)
   g_renderManager.GetVideoRect(SrcRect, DestRect);
 }
 
+void COMXPlayer::SetMute(bool bOnOff)
+{
+  m_current_mute = bOnOff;
+  m_change_volume = true;
+}
+
 void COMXPlayer::SetVolume(float fVolume)
 {
   m_current_volume = fVolume;
   m_change_volume = true;
+}
+
+bool COMXPlayer::WaitForPausedThumbJobs(int timeout_ms)
+{
+  // use m_bStop and Sleep so we can get canceled.
+  while (!m_bStop && (timeout_ms > 0))
+  {
+    if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
+    {
+      Sleep(100);
+      timeout_ms -= 100;
+    }
+    else
+      return true;
+  }
+
+  return false;
 }
 
 void COMXPlayer::Update(bool bPauseDrawing)

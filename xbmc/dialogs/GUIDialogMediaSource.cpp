@@ -258,12 +258,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
 
-    if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
-    {
-      share1.strName = "Last.FM";
-      share1.strPath = "lastfm://";
-      extraShares.push_back(share1);
-    }
  }
   else if (m_type == "video")
   {

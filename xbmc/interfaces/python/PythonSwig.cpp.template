@@ -180,7 +180,7 @@ void doMethod(method, MethodType methodType)
     }
     // now do the method call itself
     if (!destructor) {
-    if (constructor || !clazz) {  %>      XBMCAddon::SetLanguageHookGuard slhg(XBMCAddon::Python::LanguageHook::getInstance());<% println() }
+    if (constructor || !clazz) {  %>      XBMCAddon::SetLanguageHookGuard slhg(XBMCAddon::Python::LanguageHook::GetIfExists(PyThreadState_Get()->interp).get());<% println() }
 %>      <%
     if (returns != "void") { %>apiResult = (${SwigTypeParser.SwigType_lstr(returns)})<% }
     if (clazz && !constructor) {

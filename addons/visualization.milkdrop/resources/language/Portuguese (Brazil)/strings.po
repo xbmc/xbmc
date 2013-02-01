@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: MilkDrop
 # Addon id: visualization.milkdrop
-# Addon version: 1.0.0
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -19,11 +19,11 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Automatic Blend Time"
-msgstr "Tempo Mistura automática"
+msgstr "Tempo de mistura automático"
 
 msgctxt "#30001"
 msgid "Time Between Presets"
-msgstr "Tempo Entre os Presets"
+msgstr "Tempo entre as predefinições"
 
 msgctxt "#30002"
 msgid "Additional Random Time"
@@ -31,7 +31,7 @@ msgstr "Tempo aleatório adicional"
 
 msgctxt "#30003"
 msgid "Enable Anisotropic Filtering"
-msgstr "Ativar Filtragem anisotrópica"
+msgstr "Ativar filtragem anisotrópica"
 
 msgctxt "#30004"
 msgid "Enable Hard Cuts"
@@ -39,7 +39,7 @@ msgstr "Habilitar cortes rígidos"
 
 msgctxt "#30005"
 msgid "Loudness Threshold For Hard Cuts"
-msgstr "Threshold Loudness Para cortes rígidos"
+msgstr "Limite de volume para cortes rígidos"
 
 msgctxt "#30006"
 msgid "Average Time Between Hard Cuts"
@@ -47,7 +47,7 @@ msgstr "Tempo médio entre cortes rígidos"
 
 msgctxt "#30007"
 msgid "Maximum Refresh Rate"
-msgstr "Taxa máxima de renovação"
+msgstr "Taxa máxima de atualização"
 
 msgctxt "#30008"
 msgid "Enable Stereo 3D"
@@ -55,27 +55,27 @@ msgstr "Ativar Estéreo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Pacote Presets"
+msgstr "Pacote de predefinições"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Usar Pasta Presets"
+msgstr "Pasta de predefinições do usuário"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Shuffle Mode predefinido"
+msgstr "Modo Aleatório predefinido"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
-msgstr "WA51 Presets"
+msgstr "Predefinições WA51"
 
 msgctxt "#30021"
 msgid "Winamp Presets"
-msgstr "Winamp Presets"
+msgstr "Predefinições  Winamp"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Pasta Preset definida pelo usuário"
+msgstr "Pasta de predefinições definida pelo usuário"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

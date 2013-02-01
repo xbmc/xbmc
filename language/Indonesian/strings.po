@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -5041,3 +5041,7 @@ msgstr "Tidak Pernah"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Xbox sedang Tersambung"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Versi libCEC tidak didukung. %x lebih rendah dari versi XBMC mendukung (%x)"

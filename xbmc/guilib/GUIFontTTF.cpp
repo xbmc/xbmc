@@ -128,7 +128,8 @@ private:
   FT_Library   m_library;
 };
 
-CFreeTypeLibrary g_freeTypeLibrary; // our freetype library
+XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
+#define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
 CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
 {
@@ -422,7 +423,16 @@ float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecTe
   while (start != end)
   {
     Character *c = GetCharacter(*start++);
-    if (c) width += c->advance;
+    if (c)
+    {
+      // If last character in line, we want to add render width
+      // and not advance distance - this makes sure that italic text isn't
+      // choped on the end (as render width is larger than advance then).
+      if (start == end)
+        width += max(c->right - c->left + c->offsetX, c->advance);
+      else
+        width += c->advance;
+    }
   }
   return width;
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="xbmc.gui" version="4.0.0" provider-name="Team XBMC">
+  <backwards-compatibility abi="4.00"/>
   <requires>
-    <import addon="xbmc.core" version="0.1"/>
+    <import addon="xbmc.core" version="0.1.0"/>
   </requires>
   <extension-point id="skin" schema="skin.xsd"/>
   <extension-point id="webinterface" schema="webinterface.xsd"/>

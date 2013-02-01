@@ -203,8 +203,16 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
 {
   CSingleLock lock(m_section);
 
+  if (!m_running)
+    return 0;
+
+  // increment the job counter, ensuring 0 (invalid job) is never hit
+  m_jobCounter++;
+  if (m_jobCounter == 0)
+    m_jobCounter++;
+
   // create a work item for this job
-  CWorkItem work(job, m_jobCounter++, callback);
+  CWorkItem work(job, m_jobCounter, callback);
   m_jobQueue[priority].push_back(work);
 
   StartWorkers(priority);

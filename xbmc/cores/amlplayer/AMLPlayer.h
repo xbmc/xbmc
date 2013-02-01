@@ -80,6 +80,8 @@ public:
   virtual bool  SeekScene(bool bPlus = true);
   virtual void  SeekPercentage(float fPercent = 0.0f);
   virtual float GetPercentage();
+  virtual void  SetMute(bool bOnOff);
+  virtual bool  ControlsVolume() {return true;}
   virtual void  SetVolume(float volume);
   virtual void  SetDynamicRangeCompression(long drc)              {}
   virtual void  GetAudioInfo(CStdString &strAudioInfo);
@@ -223,6 +225,8 @@ private:
   int                     m_audio_delay;
   bool                    m_audio_passthrough_ac3;
   bool                    m_audio_passthrough_dts;
+  bool                    m_audio_mute;
+  float                   m_audio_volume;
 
   int                     m_video_index;
   int                     m_video_count;

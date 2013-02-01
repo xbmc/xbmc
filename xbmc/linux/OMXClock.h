@@ -35,9 +35,9 @@ static inline OMX_TICKS ToOMXTime(int64_t pts)
   ticks.nHighPart = pts >> 32;
   return ticks;
 }
-static inline uint64_t FromOMXTime(OMX_TICKS ticks)
+static inline int64_t FromOMXTime(OMX_TICKS ticks)
 {
-  uint64_t pts = ticks.nLowPart | ((uint64_t)ticks.nHighPart << 32);
+  int64_t pts = ticks.nLowPart | ((uint64_t)(ticks.nHighPart) << 32);
   return pts;
 }
 #else
@@ -115,7 +115,7 @@ public:
   bool OMXStart(bool lock = true);
   bool OMXReset(bool lock = true);
   double OMXWallTime(bool lock = true);
-  double OMXMediaTime(bool lock = true);
+  double OMXMediaTime(bool fixPreroll = true, bool lock = true);
   bool OMXPause(bool lock = true);
   bool OMXResume(bool lock = true);
   bool OMXUpdateClock(double pts, bool lock = true);

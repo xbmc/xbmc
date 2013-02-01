@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1172,7 +1172,7 @@ msgstr "Přejete si vyčistit knihovnu?"
 
 msgctxt "#334"
 msgid "Clean library..."
-msgstr "Čistím knihovnu..."
+msgstr "Vyčistit knihovnu..."
 
 msgctxt "#335"
 msgid "Start"
@@ -3241,10 +3241,6 @@ msgstr "Sprška"
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Písečná bouře"
-
-msgctxt "#1438"
-msgid "Small"
-msgstr "Malá"
 
 msgctxt "#1439"
 msgid "and"
@@ -10518,9 +10514,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Povolit ovládání joystickem a gamepadem"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Zakázat joystick při zjištění iMON"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Zakázat joystick, pokud je zařízení dostupné"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10689,3 +10685,7 @@ msgstr "TV a AV přijímač (explicitně)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Nepodporovaná verze rozhraní libCEC. %x je nižší než verze podporovaná XBMC (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* složka položky"

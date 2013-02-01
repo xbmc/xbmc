@@ -267,6 +267,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         pItem->SetProperty("HasAutoThumb", true);
         pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);
+        // Item has cached autogen image but no art entry. Save it to db.
+        CVideoInfoTag* info = pItem->GetVideoInfoTag();
+        if (info->m_iDbId > 0 && !info->m_type.empty())
+          m_database->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
       }
       else if (g_guiSettings.GetBool("myvideos.extractthumb") &&
         g_guiSettings.GetBool("myvideos.extractflags"))
@@ -311,7 +315,7 @@ void CVideoThumbLoader::SetArt(CFileItem &item, const map<string, string> &artwo
   { // set fallback for "thumb"
     if (artwork.find("poster") != artwork.end())
       item.SetArtFallback("thumb", "poster");
-    else if (artwork.find("poster") != artwork.end())
+    else if (artwork.find("banner") != artwork.end())
       item.SetArtFallback("thumb", "banner");
   }
 }
@@ -380,6 +384,18 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
 
 std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::string &type, bool checkFolder)
 {
+  /* Cache directory for (sub) folders on streamed filesystems. We need to do this
+     else entering (new) directories from the app thread becomes much slower. This
+     is caused by the fact that Curl Stat/Exist() is really slow and that the 
+     thumbloader thread accesses the streamed filesystem at the same time as the
+     App thread and the latter has to wait for it.
+   */
+  if (item.m_bIsFolder && item.IsInternetStream(true))
+  {
+    CFileItemList items; // Dummy list
+    CDirectory::GetDirectory(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+  }
+
   std::string art;
   if (!type.empty())
   {

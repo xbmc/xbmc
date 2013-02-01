@@ -1299,10 +1299,13 @@ bool CWinSystemOSX::IsObscured(void)
   // default to false before we start parsing though the windows.
   // if we are are obscured by any windows, then set true.
   m_obscured = false;
+  static bool obscureLogged = false;
 
   CGWindowListOption opts;
   opts = kCGWindowListOptionOnScreenAboveWindow | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);  if (!windowIDs)
+  CFArrayRef windowIDs =CGWindowListCreate(opts, (CGWindowID)[window windowNumber]);  
+
+  if (!windowIDs)
     return m_obscured;
 
   CFArrayRef windowDescs = CGWindowListCreateDescriptionFromArray(windowIDs);
@@ -1333,11 +1336,15 @@ bool CWinSystemOSX::IsObscured(void)
     if (CFStringCompare(ownerName, CFSTR("Dock"), 0) == kCFCompareEqualTo)
       continue;
 
-    // Shades is a tool for dimming the screen. It also claims to cover
+    // Ignore known brightness tools for dimming the screen. They claim to cover
     // the whole XBMC window and therefore would make the framerate limiter
-    // kicking in. Unfortunatly even the alpha of this window is 1.0 so
+    // kicking in. Unfortunatly even the alpha of these windows is 1.0 so
     // we have to check the ownerName.
-    if (CFStringCompare(ownerName, CFSTR("Shades"), 0) == kCFCompareEqualTo)
+    if (CFStringCompare(ownerName, CFSTR("Shades"), 0)            == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("SmartSaver"), 0)        == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("Brightness Slider"), 0) == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("Displaperture"), 0)     == kCFCompareEqualTo ||
+        CFStringCompare(ownerName, CFSTR("Dreamweaver"), 0)       == kCFCompareEqualTo)
       continue;
 
     CFDictionaryRef rectDictionary = (CFDictionaryRef)CFDictionaryGetValue(windowDictionary, kCGWindowBounds);
@@ -1350,6 +1357,12 @@ bool CWinSystemOSX::IsObscured(void)
       if (CGRectContainsRect(windowBounds, bounds))
       {
         // if the windowBounds completely encloses our bounds, we are obscured.
+        if (!obscureLogged)
+        {
+          const char* cstr = CFStringGetCStringPtr(ownerName, CFStringGetSystemEncoding());
+          CLog::Log(LOGDEBUG, "WinSystemOSX: Fullscreen window %s obscures XBMC!", cstr);
+          obscureLogged = true;
+        }
         m_obscured = true;
         break;
       }
@@ -1367,6 +1380,10 @@ bool CWinSystemOSX::IsObscured(void)
 
   if (!m_obscured)
   {
+    // if we are here we are not obscured by any fullscreen window - reset flag
+    // for allowing the logmessage above to show again if this changes.
+    if (obscureLogged)
+      obscureLogged = false;
     std::vector<CRect> rects = ourBounds.SubtractRects(partialOverlaps);
     // they got us covered
     if (rects.size() == 0)
@@ -1460,13 +1477,17 @@ void CWinSystemOSX::EnableSystemScreenSaver(bool bEnable)
 
   if (!bEnable)
   {
-    CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
-    IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
-      kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+    if (assertionID == 0)
+    {
+      CFStringRef reasonForActivity= CFSTR("XBMC requested disable system screen saver");
+      IOPMAssertionCreateWithName(kIOPMAssertionTypeNoDisplaySleep,
+        kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+    }
   }
   else if (assertionID != 0)
   {
     IOPMAssertionRelease(assertionID);
+    assertionID = 0;
   }
 
   m_use_system_screensaver = bEnable;

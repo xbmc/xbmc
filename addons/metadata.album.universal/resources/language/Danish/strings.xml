@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Danish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/da/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Hent Miniaturebilleder til Albummer fra fanart.tv</string>
+    <string id="30001">Hent Miniaturebilleder til Albummer fra Last.fm</string>
+    <string id="30002">Hent Albumanmeldelse fra</string>
+    <string id="30003">Foretrukket Sprog</string>
+    <string id="30004">Hent Albumbedømmelse fra</string>
+    <string id="30005">Hent Albumstilarter fra</string>
+    <string id="30006">Hent Albumstemninger fra</string>
+    <string id="30007">Hent Albumtemaer fra</string>
+    <string id="30008">Hent Miniaturebilleder til Albummer fra allmusic.com</string>
+    <string id="30009">Illustrationer</string>
+    <string id="30010">Hent Miniaturebilleder til Albummer fra theaudiodb.com</string>
+</strings>

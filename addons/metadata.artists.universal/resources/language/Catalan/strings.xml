@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Catalan language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/ca/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Activa fanarts d'artistes de HTBackdrops.com</string>
+    <string id="30001">Activa miniatures d'artistes de allmusic.com</string>
+    <string id="30002">Activa miniatures d'artistes de last.fm</string>
+    <string id="30003">Activa miniatures d'artistes de HTBackdrops.com</string>
+    <string id="30004">Activa fanarts d'artistes de fanart.tv</string>
+    <string id="30005">Activa miniatures d'artistes de fanart.tv</string>
+    <string id="30006">Obté la biografia de l'artista de</string>
+    <string id="30007">Art</string>
+    <string id="30008">Obté la discografia de l'artista de</string>
+    <string id="30009">Obté els géneres de l'artista de</string>
+    <string id="30010">Obté els estils de l'artista de</string>
+    <string id="30011">Obté la vida útil de l'artista de</string>
+    <string id="30012">Obté els estats d'ànim de l'artista de</string>
+    <string id="30014">Obté els anys actius de l'artista de</string>
+    <string id="30015">Idioma preferit</string>
+    <string id="30016">Recau a biografia d'artista des de</string>
+    <string id="30017">Recau a discografia d'artista des de</string>
+    <string id="30018">Recau a gèneres d'artista des de</string>
+    <string id="30019">Recau a estils d'artista des de</string>
+    <string id="30020">Recau a vida útil de l'artista des de</string>
+    <string id="30021">Alternatius</string>
+    <string id="30022">Activa les miniatures dels artistes de theaudiodb.com</string>
+    <string id="30023">Activa els fanarts de l'artista de theaudiodb.com</string>
+</strings>

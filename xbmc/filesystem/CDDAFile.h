@@ -53,7 +53,7 @@ protected:
   lsn_t m_lsnStart;  // Start of m_iTrack in logical sector number
   lsn_t m_lsnCurrent; // Position inside the track in logical sector number
   lsn_t m_lsnEnd;   // End of m_iTrack in logical sector number
-  MEDIA_DETECT::CLibcdio* m_cdio;
+  boost::shared_ptr<MEDIA_DETECT::CLibcdio> m_cdio;
 };
 }
 

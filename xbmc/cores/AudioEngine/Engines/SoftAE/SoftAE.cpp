@@ -506,6 +506,7 @@ void CSoftAE::Shutdown()
 
 bool CSoftAE::Initialize()
 {
+  CSingleLock lock(m_threadLock);
   InternalOpenSink();
   m_running = true;
   m_thread  = new CThread(this, "CSoftAE");
@@ -637,6 +638,7 @@ inline void CSoftAE::GetDeviceFriendlyName(std::string &device)
 
 void CSoftAE::Deinitialize()
 {
+  CSingleLock lock(m_threadLock);
   if (m_thread)
   {
     Stop();
@@ -661,6 +663,8 @@ void CSoftAE::Deinitialize()
   _aligned_free(m_converted);
   m_converted = NULL;
   m_convertedSize = 0;
+
+  m_sinkInfoList.clear();  
 }
 
 void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
@@ -965,7 +969,6 @@ bool CSoftAE::Suspend()
 {
   CLog::Log(LOGDEBUG, "CSoftAE::Suspend - Suspending AE processing");
   m_isSuspended = true;
-
   CSingleLock streamLock(m_streamLock);
   
   for (StreamList::iterator itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
@@ -1027,6 +1030,17 @@ void CSoftAE::Run()
       InternalOpenSink();
       m_isSuspended = false; // exit Suspend state
     }
+#if defined(TARGET_ANDROID)
+    else if (m_playingStreams.empty() 
+      &&     m_playing_sounds.empty()
+      && !g_advancedSettings.m_streamSilence)
+    {
+      // if we have nothing to do, take a dirt nap.
+      // we do not have to take a lock just to check empty.
+      // this keeps AE from sucking CPU if nothing is going on.
+      m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
+    }
+#endif
   }
 }
 
@@ -1382,15 +1396,20 @@ inline void CSoftAE::RemoveStream(StreamList &streams, CSoftAEStream *stream)
 inline void CSoftAE::ProcessSuspend()
 {
   bool sinkIsSuspended = false;
+  unsigned int curSystemClock = 0;
 
-  if (m_playingStreams.empty() && m_playing_sounds.empty() && 
-     !m_softSuspend && !g_advancedSettings.m_streamSilence)
+#if defined(TARGET_WINDOWS)
+  if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
+      !g_advancedSettings.m_streamSilence)
   {
     m_softSuspend = true;
     m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+    Sleep(10);
   }
 
-  unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
+  if (m_softSuspend)
+    curSystemClock = XbmcThreads::SystemClockMillis();
+#endif
 
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */

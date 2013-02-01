@@ -201,6 +201,7 @@ NPT_String CUPnPServer::BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
     else
       filename = URIUtils::GetFileName(file_path);
 
+    CURL::Encode(filename);
     md5state.append(file_path);
     md5state.getDigest(md5);
     md5 += "/" + filename;

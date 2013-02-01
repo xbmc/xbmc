@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: Dim
 # Addon id: screensaver.xbmc.builtin.dim
-# Addon version: 1.0.0
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""

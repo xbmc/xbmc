@@ -116,11 +116,16 @@ public:
    */
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
+  /*! \brief set the artwork map for an item
+   In addition, sets the standard fallbacks.
+   \param item the item on which to set art.
+   \param artwork the artwork map.
+   */
+  static void SetArt(CFileItem &item, const std::map<std::string, std::string> &artwork);
+
 protected:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
-
-  void SetArt(CFileItem &item, const std::map<std::string, std::string> &artwork);
 
   IStreamDetailsObserver *m_pStreamDetailsObs;
   CVideoDatabase *m_database;

@@ -64,7 +64,7 @@ void CGUIWindowPVRGuide::ResetObservers(void)
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  if (msg == ObservableMessageEpg)
+  if (msg == ObservableMessageEpg || msg == ObservableMessageEpgContainer)
   {
     m_bUpdateRequired = true;
 

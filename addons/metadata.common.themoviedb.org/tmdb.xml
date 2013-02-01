@@ -150,12 +150,26 @@
 	</GetTMDBLangSetByIdChain>
 	<ParseTMDBSet dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression noclean="1">&quot;belongs_to_collection&quot;:\{&quot;id&quot;:[0-9]+,&quot;name&quot;:&quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBSet&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;http://api.themoviedb.org/3/movie/$$8?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=en&lt;/url&gt;" dest="2">
+				<expression>^$</expression>
+			</RegExp>
+			<RegExp input="$$9" output="&lt;set&gt;\1&lt;/set&gt;" dest="2">
+				<expression>(.+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseTMDBSet>
+	<ParseFallbackTMDBSet dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;set&gt;\1&lt;/set&gt;" dest="2">
 				<expression noclean="1">&quot;belongs_to_collection&quot;:\{&quot;id&quot;:[0-9]+,&quot;name&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
-	</ParseTMDBSet>
+	</ParseFallbackTMDBSet>	
 
 	<GetTMDBCastByIdChain dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
@@ -170,11 +184,11 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes" noclean="1">&quot;cast&quot;:\[([^\]]*)</expression>
 			</RegExp>
-			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2">
-				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;character&quot;:&quot;([^&quot;]*)</expression>
-			</RegExp>
-			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;thumb&gt;http://cf2.imgobject.com/t/p/original\3&lt;/thumb&gt;&lt;/actor&gt;" dest="2+">
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;thumb&gt;http://cf2.imgobject.com/t/p/original\3&lt;/thumb&gt;&lt;/actor&gt;" dest="2">
 				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;character&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:[0-9]*,&quot;cast_id&quot;:[0-9]*,&quot;profile_path&quot;:&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2+">
+				<expression repeat="yes" fixchars="1">&quot;name&quot;:&quot;([^&quot;]*)&quot;,&quot;character&quot;:&quot;([^&quot;]*)&quot;,&quot;order&quot;:[0-9]*,&quot;cast_id&quot;:[0-9]*,&quot;profile_path&quot;:null</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -384,14 +398,6 @@
 			<expression noclean="1" />
 		</RegExp>
 	</GetTMDBFanartByIdChain>
-	<GetTMDBFanartById dest="4">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBFanart&quot; cache=&quot;tmdb-images-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1/images?api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
-				<expression />
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetTMDBFanartById>
 	<ParseTMDBFanart dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="7">
@@ -420,14 +426,6 @@
 			<expression noclean="1" />
 		</RegExp>
 	</GetTMDBLangThumbsByIdChain>
-	<GetTMDBThumbsById dest="4">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBThumbs&quot; cache=&quot;tmdb-images-$INFO[language]-\1.json&quot;&gt;http://api.themoviedb.org/3/movie/\1/images?api_key=57983e31fb435df4df77afb854740ea9&amp;amp;language=$INFO[language]&lt;/url&gt;" dest="5">
-				<expression />
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</GetTMDBThumbsById>
 	<ParseTMDBThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="8">

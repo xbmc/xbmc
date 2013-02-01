@@ -374,8 +374,7 @@ bool CEpg::Load(void)
   int iEntriesLoaded = database->Get(*this);
   if (iEntriesLoaded <= 0)
   {
-    CLog::Log(LOGNOTICE, "EPG - %s - no database entries found for table '%s'.",
-        __FUNCTION__, m_strName.c_str());
+    CLog::Log(LOGDEBUG, "EPG - %s - no database entries found for table '%s'.", __FUNCTION__, m_strName.c_str());
   }
   else
   {
@@ -465,7 +464,7 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bF
 
   /* enforce advanced settings update interval override for TV Channels with no EPG data */
   if (m_tags.empty() && !bUpdate && ChannelID() > 0 && !Channel()->IsRadio())
-    iUpdateTime = g_advancedSettings.m_bEpgUpdateEmptyTagsInterval;
+    iUpdateTime = g_advancedSettings.m_iEpgUpdateEmptyTagsInterval;
 
   if (!bForceUpdate)
   {
@@ -593,27 +592,6 @@ CDateTime CEpg::GetLastDate(void) const
     last = m_tags.rbegin()->second->StartAsUTC();
 
   return last;
-}
-
-//@}
-
-/** @name Protected methods */
-//@{
-
-bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
-{
-  bool bReturn = true;
-  CSingleLock lock(m_critSection);
-
-  m_strName        = epg.m_strName;
-  m_strScraperName = epg.m_strScraperName;
-  if (epg.m_pvrChannel)
-    SetChannel(epg.m_pvrChannel);
-
-  if (bUpdateDb)
-    bReturn = Persist();
-
-  return bReturn;
 }
 
 //@}
@@ -773,7 +751,7 @@ const CStdString &CEpg::ConvertGenreIdToString(int iID, int iSubID)
       iLabelId = (iSubID <= 3) ? 19660 + iSubID : 19660;
       break;
     case EPG_EVENT_CONTENTMASK_USERDEFINED:
-      iLabelId = (iSubID <= 3) ? 19676 + iSubID : 19676;
+      iLabelId = (iSubID <= 8) ? 19676 + iSubID : 19676;
       break;
     default:
       break;
@@ -871,7 +849,10 @@ void CEpg::SetChannel(PVR::CPVRChannelPtr channel)
   if (m_pvrChannel != channel)
   {
     if (channel)
+    {
       SetName(channel->ChannelName());
+      channel->SetEpgID(m_iEpgID);
+    }
     m_pvrChannel = channel;
     for (map<CDateTime, CEpgInfoTagPtr>::iterator it = m_tags.begin(); it != m_tags.end(); it++)
       it->second->SetPVRChannel(m_pvrChannel);
@@ -900,4 +881,12 @@ bool CEpg::NeedsSave(void) const
 {
   CSingleLock lock(m_critSection);
   return !m_changedTags.empty() || !m_deletedTags.empty() || m_bChanged;
+}
+
+bool CEpg::IsValid(void) const
+{
+  CSingleLock lock(m_critSection);
+  if (ScraperName() == "client")
+    return Channel().get() != NULL;
+  return true;
 }

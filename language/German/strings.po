@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -10582,8 +10582,8 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Unterstützung für Joystick und Gamepad aktivieren"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
 msgstr "Deaktiviere Joystick wenn iMON verfügbar ist"
 
 msgctxt "#35500"
@@ -10753,3 +10753,7 @@ msgstr "TV und AV-Receiver (explizit)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Nicht unterstützte libCEC Version. %x ist größer als die von XBMC unterstützte Version (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Artikel Ordner"

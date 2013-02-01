@@ -178,8 +178,6 @@ bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
 
     if (!bIsActive || m_bUpdateRequired)
       UpdateData();
-    else
-      m_iSelected = m_parent->m_viewControl.GetSelectedItem();
 
     bReturn = true;
   }
@@ -823,8 +821,6 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
       {
         pDlgInfo->SetProgInfo(tag);
         pDlgInfo->DoModal();
-
-        UpdateData();
       }
     }
     delete tag;

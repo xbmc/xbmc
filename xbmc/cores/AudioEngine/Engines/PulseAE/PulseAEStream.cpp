@@ -153,6 +153,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   }
   pa_format_info_set_rate         (info[0], m_SampleSpec.rate);
   pa_format_info_set_channels     (info[0], m_SampleSpec.channels);
+  pa_format_info_set_channel_map  (info[0], &map);
   pa_format_info_set_sample_format(info[0], m_SampleSpec.format);
   m_Stream = pa_stream_new_extended(m_Context, "audio stream", info, 1, NULL);
   pa_format_info_free(info[0]);

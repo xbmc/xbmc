@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -400,7 +400,7 @@ msgstr "Općenito"
 
 msgctxt "#129"
 msgid "Slideshow"
-msgstr "Slikovni Niz"
+msgstr "Slikovni niz"
 
 msgctxt "#130"
 msgid "System info"
@@ -428,7 +428,7 @@ msgstr "Žanrovi"
 
 msgctxt "#136"
 msgid "Playlists"
-msgstr "Liste Izvedbi"
+msgstr "Liste izvedbi"
 
 msgctxt "#137"
 msgid "Search"
@@ -664,7 +664,7 @@ msgstr "Tag"
 
 msgctxt "#203"
 msgid "Plot outline"
-msgstr "Kratak opis:"
+msgstr "Kratak opis"
 
 msgctxt "#205"
 msgid "Votes"
@@ -676,7 +676,7 @@ msgstr "Uloge"
 
 msgctxt "#207"
 msgid "Plot"
-msgstr "Radnja"
+msgstr "Zaplet"
 
 msgctxt "#208"
 msgid "Play"
@@ -740,7 +740,7 @@ msgstr "Okomiti pomak"
 
 msgctxt "#226"
 msgid "Test patterns..."
-msgstr "Uzorak ..."
+msgstr "Uzorak..."
 
 msgctxt "#227"
 msgid "Lookup audio CD track names from freedb.org"
@@ -796,7 +796,7 @@ msgstr "Poništi listu izvedbi po završetku"
 
 msgctxt "#240"
 msgid "Display Mode"
-msgstr "Način Prikaza"
+msgstr "Način prikaza"
 
 msgctxt "#241"
 msgid "Full Screen #%d"
@@ -808,11 +808,11 @@ msgstr "Prozorom"
 
 msgctxt "#243"
 msgid "Refresh Rate"
-msgstr "Osvježenje ekrana"
+msgstr "Osvježenje zaslona"
 
 msgctxt "#244"
 msgid "Full screen"
-msgstr "Puni ekran"
+msgstr "Puni zaslon"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
@@ -840,7 +840,7 @@ msgstr "Odaberi odredišni direktorij"
 
 msgctxt "#252"
 msgid "Output stereo to all speakers"
-msgstr "Prebaci Stereo na sve zvučnike"
+msgstr "Prebaci stereo na sve zvučnike"
 
 msgctxt "#253"
 msgid "Number of channels"
@@ -876,7 +876,7 @@ msgstr "Strujanje medija putem Interneta"
 
 msgctxt "#261"
 msgid "Waiting for start..."
-msgstr "Čekam početak ..."
+msgstr "Čekam početak..."
 
 msgctxt "#262"
 msgid "Scripts output"
@@ -1004,7 +1004,7 @@ msgstr "Audio"
 
 msgctxt "#293"
 msgid "Browse for subtitles"
-msgstr "Pretraži podnapise"
+msgstr "Protraži podnapise"
 
 msgctxt "#294"
 msgid "Create bookmark"
@@ -1676,7 +1676,7 @@ msgstr "Pomakni traku za promjenu OSD pozicije"
 
 msgctxt "#469"
 msgid "OSD position"
-msgstr "OSD Pozicija"
+msgstr "OSD pozicija"
 
 msgctxt "#470"
 msgid "Credits"
@@ -1708,7 +1708,7 @@ msgstr "OSD"
 
 msgctxt "#479"
 msgid "Skin & language"
-msgstr "Izgled i jezik"
+msgstr "Tema & Jezik"
 
 msgctxt "#480"
 msgid "Appearance"
@@ -1772,7 +1772,7 @@ msgstr "Prikaži proširenja datoteka"
 
 msgctxt "#498"
 msgid "Sort by: Type"
-msgstr "Složi po: vrsti"
+msgstr "Složi po: Vrsti"
 
 msgctxt "#499"
 msgid "Unable to connect to online lookup service"
@@ -1816,11 +1816,11 @@ msgstr "Omogući video promjenu"
 
 msgctxt "#512"
 msgid "Startup window"
-msgstr "Početni ekran"
+msgstr "Početni zaslon"
 
 msgctxt "#513"
 msgid "Home window"
-msgstr "Glavni ekran"
+msgstr "Glavni zaslon"
 
 msgctxt "#514"
 msgid "Manual settings"
@@ -1840,7 +1840,7 @@ msgstr "Pokreni"
 
 msgctxt "#519"
 msgid "Launch in..."
-msgstr "Pokreni u.."
+msgstr "Pokreni u..."
 
 msgctxt "#521"
 msgid "Compilations"
@@ -2072,7 +2072,7 @@ msgstr "Način slaganja"
 
 msgctxt "#582"
 msgid "View mode"
-msgstr "Način Prikaza"
+msgstr "Način prikaza"
 
 msgctxt "#583"
 msgid "Remember views for different folders"
@@ -2432,11 +2432,11 @@ msgstr "Promjene nisu sačuvane. Nastavi bez spremanja?"
 
 msgctxt "#727"
 msgid "Web server"
-msgstr "Web Server"
+msgstr "Web server"
 
 msgctxt "#728"
 msgid "FTP server"
-msgstr "FTP Server"
+msgstr "FTP server"
 
 msgctxt "#730"
 msgid "- Port"
@@ -3052,7 +3052,7 @@ msgstr "- Koristi zaštitu lozinkom"
 
 msgctxt "#1273"
 msgid "AirPlay"
-msgstr "Klima"
+msgstr "AirPlay"
 
 msgctxt "#1300"
 msgid "Custom audio device"
@@ -5450,6 +5450,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (Inverted)"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Povezivanje..."
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Upiši naziv izvođača"
@@ -5678,17 +5682,197 @@ msgctxt "#17500"
 msgid "Display sleep timeout"
 msgstr "Prikaži istjecanje vremena do stanja mirovanja"
 
+msgctxt "#17997"
+msgid "%i MByte"
+msgstr "%i MBit"
+
+msgctxt "#17998"
+msgid "%i hours"
+msgstr "%i sati"
+
+msgctxt "#17999"
+msgid "%i days"
+msgstr "%i dana"
+
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Prebaci na kanal"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "Status uređaja"
 
 msgctxt "#19014"
 msgid "Fixed"
 msgstr "Fiksni"
 
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "Zadana mapa za PVR sličice"
+
+msgctxt "#19019"
+msgid "Channels"
+msgstr "Kanali"
+
+msgctxt "#19020"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19021"
+msgid "Radio"
+msgstr "Radio"
+
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "Sakri"
+
+msgctxt "#19023"
+msgid "TV channels"
+msgstr "TV kanali"
+
+msgctxt "#19024"
+msgid "Radio channels"
+msgstr "Radio kanali"
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "Nema rezultata pretraživanja"
+
+msgctxt "#19029"
+msgid "Channel"
+msgstr "Kanal"
+
 msgctxt "#19031"
 msgid "Next"
 msgstr "Slijedeći"
+
+msgctxt "#19033"
+msgid "Information"
+msgstr "Obavjesti"
+
+msgctxt "#19040"
+msgid "Timer"
+msgstr "Tajmer"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "Snimanje"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "Novi kanal"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "Informacija snimanja"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "Sakrij kanal"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "Informacija nije dostupna"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "Zaustavi snimanje"
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "Mapa:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "Radio:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "Kanal:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "Dan:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "Započni:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "Kraj:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "Prioritet:"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "Pon-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-Uto-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-Sri-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-Čet-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-Pet-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-Sub-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-Ned"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "Upozorenje"
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Verzija"
+
+msgctxt "#19148"
+msgid "Channel"
+msgstr "Kanal"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "Pon"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "Uto"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "Sri"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "Čet"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "Pet"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "Sub"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "Ned"
 
 msgctxt "#19163"
 msgid "Recordings"
@@ -5697,6 +5881,54 @@ msgstr "Snimke"
 msgctxt "#19177"
 msgid "Playback"
 msgstr "Reprodukcija"
+
+msgctxt "#19180"
+msgid "TV"
+msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Izbornik/OSD"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR servis"
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Želite nastaviti?"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Ime kanala:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Ikona kanala:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Uredi kanal"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "Novi kanal"
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Svi radio kanali"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Svi TV kanali"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Započni snimanje"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "Zaustavi snimanje"
 
 msgctxt "#19635"
 msgid "Languages"
@@ -5720,11 +5952,11 @@ msgstr "Mapa Trainera"
 
 msgctxt "#20004"
 msgid "Screenshot folder"
-msgstr "Mapa screenshot-a"
+msgstr "Mapa ssnimke zaslona"
 
 msgctxt "#20006"
 msgid "Playlists folder"
-msgstr "Mapa Liste izvedbi"
+msgstr "Mapa liste izvedbi"
 
 msgctxt "#20007"
 msgid "Recordings"
@@ -8921,3 +9153,7 @@ msgstr "Pošaljite \"neaktivan izvor' naredbu kod zaustavljanja XBMC-a"
 msgctxt "#36035"
 msgid "Always"
 msgstr "Uvijek"
+
+msgctxt "#36037"
+msgid "TV"
+msgstr "TV"

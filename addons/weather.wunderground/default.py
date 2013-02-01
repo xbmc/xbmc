@@ -30,9 +30,9 @@ __addonid__    = __addon__.getAddonInfo('id')
 __cwd__        = __addon__.getAddonInfo('path').decode("utf-8")
 __version__    = __addon__.getAddonInfo('version')
 __language__   = __addon__.getLocalizedString
-__resource__   = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
+__resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ).encode("utf-8") ).decode("utf-8")
 
-sys.path.append (__resource__)
+sys.path.append(__resource__)
 
 from utilities import *
 from wunderground import wundergroundapi
@@ -167,7 +167,8 @@ def clear():
 
 def parse_data(json):
     try:
-        reply = json.replace('"-999%"','""').replace('"-9999.00"','""').replace('"-9998"','""').replace('"NA"','""').replace(' <? END CHANCE OF PRECIP\n\n?>','') # wu api bug
+        raw = json.replace('<br>',' ').replace('&auml;','ä') # wu api bugs
+        reply = raw.replace('"-999%"','""').replace('"-9999.00"','""').replace('"-9998"','""').replace('"NA"','""') # wu will change these to null responses in the future
         data = simplejson.loads(reply)
     except:
         log('failed to parse weather data')
@@ -336,11 +337,11 @@ def properties(data,loc):
 # weekend properties
     set_property('Weekend.IsFetched', 'true')
     if __addon__.getSetting('Weekend') == '2':
-        weekend = (3,4,5)
+        weekend = [4,5]
     elif __addon__.getSetting('Weekend') == '1':
-        weekend = (4,5,6)
+        weekend = [5,6]
     else:
-        weekend = (5,6,7)
+        weekend = [6,7]
     count = 0
     for item in data['forecast']['simpleforecast']['forecastday']:
         if date(item['date']['year'], item['date']['month'], item['date']['day']).isoweekday() in weekend:
@@ -411,7 +412,7 @@ def properties(data,loc):
                     set_property('Weekend.%i.LongOutlookDay'   % (count+1), data['forecast']['txt_forecast']['forecastday'][2*count]['fcttext_metric'])
                     set_property('Weekend.%i.LongOutlookNight' % (count+1), data['forecast']['txt_forecast']['forecastday'][2*count+1]['fcttext_metric'])
             count += 1
-            if count == 3:
+            if count == 2:
                 break
 # 36 hour properties
     set_property('36Hour.IsFetched', 'true')
@@ -532,7 +533,7 @@ def properties(data,loc):
     set_property('Map.IsFetched', 'true')
     filelist = []
     locid = base64.b16encode(loc)
-    addondir = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'logo'))
+    addondir = os.path.join(__cwd__, 'resources', 'logo')
     mapdir = xbmc.translatePath('special://profile/addon_data/%s/map' % __addonid__)
     set_property('MapPath', addondir)
     if not xbmcvfs.exists(mapdir):
@@ -566,7 +567,7 @@ def properties(data,loc):
         log('satellite image downloaded failed')
     if response != '':
         timestamp = time.strftime('%Y%m%d%H%M%S')
-        mapfile = xbmc.translatePath('special://profile/addon_data/%s/map/%s-%s.png' % (__addonid__,locid,timestamp))
+        mapfile = xbmc.translatePath('special://profile/addon_data/%s/map/%s-%s.png' % (__addonid__,locid,timestamp)).decode("utf-8")
         try:
             tmpmap = open(mapfile, 'wb')
             tmpmap.write(response)

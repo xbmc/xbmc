@@ -26,10 +26,12 @@
 #include "addons/PluginSource.h"
 #include "ApplicationMessenger.h"
 #include "TextureCache.h"
+#include "filesystem/File.h"
 
 using namespace std;
 using namespace JSONRPC;
 using namespace ADDON;
+using namespace XFILE;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -173,14 +175,20 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const CStdString &method, ITransp
   if (params.isObject())
   {
     for (CVariant::const_iterator_map it = params.begin_map(); it != params.end_map(); it++)
-      argv += it->first + "=" + it->second.asString() + ",";
-    argv = argv.erase(argv.size() - 1);
+    {
+      if (it != params.begin_map())
+        argv += ",";
+      argv += it->first + "=" + it->second.asString();
+    }
   }
   else if (params.isArray())
   {
     for (CVariant::const_iterator_array it = params.begin_array(); it != params.end_array(); it++)
-      argv += it->asString() + ",";
-    argv = argv.erase(argv.size() - 1);
+    {
+      if (it != params.begin_array())
+        argv += ",";
+      argv += it->asString();
+    }
   }
   
   CStdString cmd;
@@ -220,12 +228,11 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
     else if (field == "fanart" || field == "thumbnail")
     {
       CStdString url = addonInfo[field].asString();
+      // We need to check the existence of fanart and thumbnails as the addon simply
+      // holds where the art will be, not whether it exists.
       bool needsRecaching;
       CStdString image = CTextureCache::Get().CheckCachedImage(url, false, needsRecaching);
-      if (image.empty())
-        image = CTextureCache::Get().CacheImage(url);
-
-      if (!image.empty())
+      if (!image.empty() || CFile::Exists(url))
         object[field] = CTextureCache::Get().GetWrappedImageURL(url);
       else
         object[field] = "";

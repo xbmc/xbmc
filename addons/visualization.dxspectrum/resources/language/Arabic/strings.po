@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: DirectX Spectrum
 # Addon id: visualization.dxspectrum
-# Addon version: 1.0.0
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""

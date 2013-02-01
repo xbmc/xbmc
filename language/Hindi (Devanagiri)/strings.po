@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2698,6 +2698,10 @@ msgctxt "#10511"
 msgid "System info"
 msgstr "सिस्टम की सुकाना "
 
+msgctxt "#12321"
+msgid "Ok"
+msgstr "टेके"
+
 msgctxt "#12360"
 msgid "Master lock"
 msgstr "मास्टर ताला"
@@ -3065,6 +3069,10 @@ msgstr "उपयोगकर्ता नाम"
 msgctxt "#20176"
 msgid "Show video info"
 msgstr "वीडियो जानकारी दिखाएँ"
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "टेके"
 
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"

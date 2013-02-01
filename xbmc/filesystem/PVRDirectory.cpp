@@ -44,6 +44,15 @@ CPVRDirectory::~CPVRDirectory()
 {
 }
 
+bool CPVRDirectory::Exists(const char* strPath)
+{
+  CStdString directory(strPath);
+  if (directory.substr(0,17) == "pvr://recordings/")
+    return true;
+  else
+    return false;
+}
+
 bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString base(strPath);

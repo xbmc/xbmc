@@ -420,7 +420,7 @@
 				<onright>60</onright>
 				<onup>505</onup>
 				<ondown>505</ondown>
-				<viewtype label="$LOCALIZE[539] $LOCALIZE[536]">list</viewtype>
+				<viewtype label="$LOCALIZE[539]">list</viewtype>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>

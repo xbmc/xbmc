@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Chinese (Traditional) language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/zh_TW/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">使用 DVD 順序</string>
+    <string id="30001">使用原本的順序 (單季)</string>
+    <string id="30002">啟用 Fanart</string>
+    <string id="30003">下載海報</string>
+    <string id="30004">語言</string>
+</strings>

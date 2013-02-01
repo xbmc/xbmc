@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -2312,11 +2312,11 @@ msgstr "Видалити з медіатеки"
 
 msgctxt "#647"
 msgid "Export video library"
-msgstr "Експортувати відео медіатеку"
+msgstr "Експорт відео медіатеки…"
 
 msgctxt "#648"
 msgid "Import video library"
-msgstr "Імпортувати відео медіатеку"
+msgstr "Імпорт відео медіатеки…"
 
 msgctxt "#649"
 msgid "Importing"
@@ -6988,7 +6988,7 @@ msgstr "Помилка запису"
 
 msgctxt "#19279"
 msgid "Client specific"
-msgstr "Клієнтськ."
+msgstr "Клієнт"
 
 msgctxt "#19280"
 msgid "Client specific settings"
@@ -8072,11 +8072,11 @@ msgstr "Змінити інфоресурс"
 
 msgctxt "#20196"
 msgid "Export music library"
-msgstr "Експортувати музичну медіатеку"
+msgstr "Експорт музичної медіатеки…"
 
 msgctxt "#20197"
 msgid "Import music library"
-msgstr "Імпортувати музичну медіатеку"
+msgstr "Імпорт музичної медіатеки…"
 
 msgctxt "#20198"
 msgid "No artist found!"
@@ -8628,7 +8628,7 @@ msgstr "Слайд-шоу фанартів"
 
 msgctxt "#20426"
 msgid "Export to a single file or separate"
-msgstr "Експортувати одним файлом чи розділювати"
+msgstr "Експортувати одним файлом чи розділювати?"
 
 msgctxt "#20427"
 msgid "files per entry?"
@@ -9644,7 +9644,7 @@ msgstr "Експорт у форматі CSV"
 
 msgctxt "#22036"
 msgid "Import karaoke titles..."
-msgstr "Імпортувати текст караоке…"
+msgstr "Імпорт тексту караоке…"
 
 msgctxt "#22037"
 msgid "Show song selector automatically"
@@ -9652,7 +9652,7 @@ msgstr "Показувати вибір пісні автоматично"
 
 msgctxt "#22038"
 msgid "Export karaoke titles..."
-msgstr "Експортувати текст караоке…"
+msgstr "Експорт тексту караоке…"
 
 msgctxt "#22039"
 msgid "Enter song number"
@@ -10212,7 +10212,7 @@ msgstr "Відомості"
 
 msgctxt "#33030"
 msgid "Outlook"
-msgstr "Спостереження"
+msgstr "Прогноз"
 
 msgctxt "#33031"
 msgid "Coverflow"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Увімкнути джойстик і геймпад"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Відключити джойстик при наявності iMON"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Відключити джойстик, коли присутній цей пристрій"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10753,3 +10753,7 @@ msgstr "ТБ та А-В ресивер (явно)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Версія інтерфейсу libCEC %x не підтримується. Мінімальна підтримувана версія — %x."
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Папка об'єкту"

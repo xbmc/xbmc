@@ -114,7 +114,7 @@ public:
   bool DeleteAlbumInfo(int idArtist);
   int SetArtistInfo(int idArtist, const CArtist& artist);
   bool DeleteArtistInfo(int idArtist);
-  bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs);
+  bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs, bool scrapedInfo = false);
   bool HasAlbumInfo(int idAlbum);
   bool GetArtistInfo(int idArtist, CArtist &info, bool needAll=true);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song, int startOffset = 0);

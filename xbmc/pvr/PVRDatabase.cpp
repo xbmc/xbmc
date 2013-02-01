@@ -609,8 +609,19 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
   if (!group.IsInternalGroup())
   {
     /* First remove channels that don't exist in the main channels table */
-    CStdString strWhereClause = FormatSQL("idChannel IN (SELECT map_channelgroups_channels.idChannel FROM map_channelgroups_channels LEFT JOIN channels on map_channelgroups_channels.idChannel = channels.idChannel WHERE channels.idChannel IS NULL)");
-    bDelete = DeleteValues("map_channelgroups_channels", strWhereClause);
+
+    // XXX work around for frodo: fix this up so it uses one query for all db types
+    // mysql doesn't support subqueries when deleting and sqlite doesn't support joins when deleting
+    if (g_advancedSettings.m_databaseTV.type.Equals("mysql"))
+    {
+      CStdString strQuery = FormatSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
+      bDelete = ExecuteQuery(strQuery);
+    }
+    else
+    {
+      CStdString strWhereClause = FormatSQL("idChannel IN (SELECT m.idChannel FROM map_channelgroups_channels m LEFT JOIN channels on m.idChannel = channels.idChannel WHERE channels.idChannel IS NULL)");
+      bDelete = DeleteValues("map_channelgroups_channels", strWhereClause);
+    }
   }
 
   if (group.m_members.size() > 0)
@@ -836,6 +847,12 @@ int CPVRDatabase::GetClientId(const CStdString &strClientUid)
     return -1;
 
   return atol(strValue.c_str());
+}
+
+bool CPVRDatabase::ResetEPG(void)
+{
+  CStdString strQuery = FormatSQL("UPDATE channels SET idEpg = 0");
+  return ExecuteQuery(strQuery);
 }
 
 bool CPVRDatabase::Persist(CPVRChannelGroup &group)

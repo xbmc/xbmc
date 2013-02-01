@@ -102,6 +102,12 @@ void CJSONRPC::Initialize()
   CLog::Log(LOGINFO, "JSONRPC v%s: Successfully initialized", CJSONServiceDescription::GetVersion());
 }
 
+void CJSONRPC::Cleanup()
+{
+  CJSONServiceDescription::Cleanup();
+  m_initialized = false;
+}
+
 JSONRPC_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   return CJSONServiceDescription::Print(result, transport, client,

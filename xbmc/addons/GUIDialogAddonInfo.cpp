@@ -37,6 +37,7 @@
 #include "utils/URIUtils.h"
 #include "addons/AddonInstaller.h"
 #include "Application.h"
+#include "pvr/PVRManager.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_ENABLE           7
@@ -149,13 +150,12 @@ void CGUIDialogAddonInfo::UpdateControls()
     GrabRollbackVersions();
 
   // TODO: System addons should be able to be disabled
-  // TODO: the following line will have to be changed later, when the PVR add-ons are no longer part of our source tree
   bool isPVR = isInstalled && m_localAddon->Type() == ADDON_PVRDLL;
   bool canDisable = isInstalled && (!isSystem || isPVR) && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, (canDisable || canInstall) && !isPVR);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, canDisable);
@@ -227,9 +227,6 @@ void CGUIDialogAddonInfo::OnEnable(bool enable)
   database.DisableAddon(m_localAddon->ID(), !enable);
   database.Close();
 
-  if (m_localAddon->Type() == ADDON_PVRDLL && enable)
-    g_application.StartPVRManager();
-
   SetItem(m_item);
   UpdateControls();
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
@@ -299,7 +296,9 @@ void CGUIDialogAddonInfo::OnRollback()
     CStdString path = "special://home/addons/packages/";
     path += m_localAddon->ID()+"-"+m_rollbackVersions[choice]+".zip";
     // needed as cpluff won't downgrade
-    CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
+    if (!m_localAddon->IsType(ADDON_SERVICE))
+      //we will handle this for service addons in CAddonInstallJob::OnPostInstall
+      CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
     CAddonInstaller::Get().InstallFromZip(path);
     database.RemoveAddonFromBlacklist(m_localAddon->ID(),m_rollbackVersions[choice]);
     Close();

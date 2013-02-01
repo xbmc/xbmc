@@ -209,7 +209,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo, int inexact_list_select)
     return false;
   }
 
-  unsigned long discid = pInfo->GetCddbDiscId();
+  uint32_t discid = pInfo->GetCddbDiscId();
 
 
   //##########################################################
@@ -354,7 +354,7 @@ int Xcddb::cddb_sum(int n)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-unsigned long Xcddb::calc_disc_id(int tot_trks, toc cdtoc[])
+uint32_t Xcddb::calc_disc_id(int tot_trks, toc cdtoc[])
 {
   int i = 0, t = 0, n = 0;
 
@@ -505,7 +505,6 @@ void Xcddb::parseData(const char *buffer)
         strValue.Replace("\\n", "\n"); 
         strValue.Replace("\\t", "\t"); 
         strValue.Replace("\\\\", "\\"); 
-        g_charsetConverter.unknownToUTF8(strValue);
 
         std::map<CStdString, CStdString>::const_iterator it = keywords.find(strKeyword);
         if (it != keywords.end())
@@ -750,7 +749,7 @@ void Xcddb::setCacheDir(const CStdString& pCacheDir )
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-bool Xcddb::queryCache( unsigned long discid )
+bool Xcddb::queryCache( uint32_t discid )
 {
   if (cCacheDir.size() == 0)
     return false;
@@ -771,7 +770,7 @@ bool Xcddb::queryCache( unsigned long discid )
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-bool Xcddb::writeCacheFile( const char* pBuffer, unsigned long discid )
+bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid )
 {
   if (cCacheDir.size() == 0)
     return false;
@@ -821,7 +820,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
 
   int lead_out = pInfo->GetTrackCount();
   int real_track_count = pInfo->GetTrackCount();
-  unsigned long discid = pInfo->GetCddbDiscId();
+  uint32_t discid = pInfo->GetCddbDiscId();
   unsigned long frames[100];
 
 
@@ -829,7 +828,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   //
   if ( queryCache(discid) )
   {
-    CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [%08lx] already cached", discid);
+    CLog::Log(LOGDEBUG, "Xcddb::queryCDinfo discid [%08x] already cached", discid);
     return true;
   }
 
@@ -928,7 +927,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   strcat(query_buffer, "cddb query");
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %08lx", discid);
+    sprintf(tmp_buffer, " %08x", discid);
     strcat(query_buffer, tmp_buffer);
   }
   {
@@ -1066,7 +1065,7 @@ bool Xcddb::isCDCached( CCdInfo* pInfo )
   return XFILE::CFile::Exists(GetCacheFile(pInfo->GetCddbDiscId()));
 }
 
-CStdString Xcddb::GetCacheFile(unsigned int disc_id) const
+CStdString Xcddb::GetCacheFile(uint32_t disc_id) const
 {
   CStdString strFileName;
   strFileName.Format("%x.cddb", disc_id);

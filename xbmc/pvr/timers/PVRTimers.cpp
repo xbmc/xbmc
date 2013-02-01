@@ -434,30 +434,33 @@ bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items) c
 bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating /* = true */, bool bCurrentlyActiveOnly /* = false */)
 {
   bool bReturn = false;
-  CSingleLock lock(m_critSection);
-
-  for (map<CDateTime, vector<CPVRTimerInfoTagPtr>* >::reverse_iterator it = m_tags.rbegin(); it != m_tags.rend(); it++)
   {
-    for (vector<CPVRTimerInfoTagPtr>::iterator timerIt = it->second->begin(); timerIt != it->second->end(); )
-    {
-      bool bDeleteActiveItem = !bCurrentlyActiveOnly ||
-          (CDateTime::GetCurrentDateTime() > (*timerIt)->StartAsLocalTime() &&
-           CDateTime::GetCurrentDateTime() < (*timerIt)->EndAsLocalTime());
-      bool bDeleteRepeatingItem = bDeleteRepeating || !(*timerIt)->m_bIsRepeating;
-      bool bChannelsMatch = (*timerIt)->ChannelNumber() == channel.ChannelNumber() &&
-          (*timerIt)->m_bIsRadio == channel.IsRadio();
+    CSingleLock lock(m_critSection);
 
-      if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
+    for (map<CDateTime, vector<CPVRTimerInfoTagPtr>* >::reverse_iterator it = m_tags.rbegin(); it != m_tags.rend(); it++)
+    {
+      for (vector<CPVRTimerInfoTagPtr>::iterator timerIt = it->second->begin(); timerIt != it->second->end(); )
       {
-        bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
-        timerIt = it->second->erase(timerIt);
-      }
-      else
-      {
-        ++timerIt;
+        bool bDeleteActiveItem = !bCurrentlyActiveOnly || (*timerIt)->IsRecording();
+        bool bDeleteRepeatingItem = bDeleteRepeating || !(*timerIt)->m_bIsRepeating;
+        bool bChannelsMatch = *(*timerIt)->ChannelTag() == channel;
+
+        if (bDeleteActiveItem && bDeleteRepeatingItem && bChannelsMatch)
+        {
+          CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d", __FUNCTION__, (*timerIt)->m_iClientIndex, (*timerIt)->m_iClientId);
+          bReturn = (*timerIt)->DeleteFromClient(true) || bReturn;
+          timerIt = it->second->erase(timerIt);
+          SetChanged();
+        }
+        else
+        {
+          ++timerIt;
+        }
       }
     }
   }
+
+  NotifyObservers(ObservableMessageTimersReset);
 
   return bReturn;
 }
@@ -516,7 +519,11 @@ bool CPVRTimers::InstantTimer(const CPVRChannel &channel)
 bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
 {
   if (!item.m_channel)
+  {
+    CLog::Log(LOGERROR, "PVRTimers - %s - no channel given", __FUNCTION__);
+    CGUIDialogOK::ShowAndGetInput(19033,0,19109,0); // Couldn't save timer
     return false;
+  }
 
   if (!g_PVRClients->SupportsTimers(item.m_iClientId))
   {

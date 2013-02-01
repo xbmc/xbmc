@@ -658,21 +658,23 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
     sort(songs.begin(), songs.end(), SortSongsByTrack);
 
     // map the songs to their primary artists
-    bool compilation = !i->first.empty();
+    bool tracksOverlap = false;
+    bool hasAlbumArtist = false;
+
     map<string, vector<CSong *> > artists;
     for (vector<CSong *>::iterator j = songs.begin(); j != songs.end(); ++j)
     {
       CSong *song = *j;
       // test for song overlap
       if (j != songs.begin() && song->iTrack == (*(j-1))->iTrack)
-        compilation = false;
+        tracksOverlap = true;
 
       // get primary artist
       string primary;
       if (!song->albumArtist.empty())
       {
         primary = song->albumArtist[0];
-        compilation = false;
+        hasAlbumArtist = true;
       }
       else if (!song->artist.empty())
         primary = song->artist[0];
@@ -683,19 +685,30 @@ void CMusicInfoScanner::CategoriseAlbums(VECSONGS &songsToCheck, VECALBUMS &albu
 
     /*
      We have a compilation if
-     1. album name is non-empty
-     2. no tracks overlap
-     3. no album artist is specified
-     4. we have at least two different primary artists
+     1. album name is non-empty AND
+     2. no tracks overlap AND
+     3a. a unique primary artist is specified as "various" or "various artists" OR
+     3b. we have at least two primary artists and no album artist specified.
      */
+    bool compilation = !i->first.empty() && !tracksOverlap; // 1+2
     if (artists.size() == 1)
+    {
+      string artist = artists.begin()->first; StringUtils::ToLower(artist);
+      if (!StringUtils::EqualsNoCase(artist, "various") &&
+          !StringUtils::EqualsNoCase(artist, "various artists")) // 3a
+        compilation = false;
+    }
+    else if (hasAlbumArtist) // 3b
       compilation = false;
+
     if (compilation)
     {
+      CLog::Log(LOGDEBUG, "Album '%s' is a compilation as there's no overlapping tracks and %s", i->first.c_str(), hasAlbumArtist ? "the album artist is 'Various'" : "there is more than one unique artist");
       artists.clear();
       std::string various = g_localizeStrings.Get(340); // Various Artists
+      vector<string> va; va.push_back(various);
       for (vector<CSong *>::iterator j = songs.begin(); j != songs.end(); ++j)
-        (*j)->albumArtist.push_back(various);
+        (*j)->albumArtist = va;
       artists.insert(make_pair(various, songs));
     }
 

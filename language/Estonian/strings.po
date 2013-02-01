@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -208,70 +208,82 @@ msgstr "det"
 
 msgctxt "#71"
 msgid "N"
-msgstr "N"
+msgstr "Põhja"
 
 msgctxt "#72"
 msgid "NNE"
-msgstr "NNE"
+msgstr "Põhjakirde"
 
 msgctxt "#73"
 msgid "NE"
-msgstr "NE"
+msgstr "Kirde"
 
 msgctxt "#74"
 msgid "ENE"
-msgstr "ENE"
+msgstr "Idakirde"
 
 msgctxt "#75"
 msgid "E"
-msgstr "E"
+msgstr "Ida"
 
 msgctxt "#76"
 msgid "ESE"
-msgstr "ESE"
+msgstr "Idakagu"
 
 msgctxt "#77"
 msgid "SE"
-msgstr "SE"
+msgstr "kagu"
 
 msgctxt "#78"
 msgid "SSE"
-msgstr "SSE"
+msgstr "Lõunakagu"
 
 msgctxt "#79"
 msgid "S"
-msgstr "S"
+msgstr "Lõuna"
 
 msgctxt "#80"
 msgid "SSW"
-msgstr "SSW"
+msgstr "Lõunaedela"
 
 msgctxt "#81"
 msgid "SW"
-msgstr "SW"
+msgstr "Edela"
 
 msgctxt "#82"
 msgid "WSW"
-msgstr "WSW"
+msgstr "Lääneedela"
 
 msgctxt "#83"
 msgid "W"
-msgstr "W"
+msgstr "Lääne"
 
 msgctxt "#84"
 msgid "WNW"
-msgstr "WNW"
+msgstr "Lääneloode"
 
 msgctxt "#85"
 msgid "NW"
-msgstr "NW"
+msgstr "Loode"
 
 msgctxt "#86"
 msgid "NNW"
-msgstr "NNW"
+msgstr "Põhjaloode"
 
 msgctxt "#87"
 msgid "VAR"
+msgstr "Muutuja"
+
+msgctxt "#88"
+msgid "South"
+msgstr "Lõuna"
+
+msgctxt "#89"
+msgid "North"
+msgstr "Põhi"
+
+msgctxt "#92"
+msgid "Variable"
 msgstr "Muutuja"
 
 msgctxt "#98"
@@ -1316,7 +1328,7 @@ msgstr "pilvine"
 
 msgctxt "#375"
 msgid "Snow"
-msgstr "lumi"
+msgstr "lumesadu"
 
 msgctxt "#376"
 msgid "Rain"
@@ -1712,7 +1724,7 @@ msgstr "Rüü ja keel"
 
 msgctxt "#480"
 msgid "Appearance"
-msgstr "Välisilme"
+msgstr "Välimus"
 
 msgctxt "#481"
 msgid "Audio options"
@@ -2204,7 +2216,7 @@ msgstr "Kõik lood"
 
 msgctxt "#626"
 msgid "In progress TV shows"
-msgstr "Käimasolevad TV saated"
+msgstr "Jooksvad seriaalid"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2308,7 +2320,7 @@ msgstr "Uuenda teeki"
 
 msgctxt "#654"
 msgid "Show debug info"
-msgstr "Näita silumise infot"
+msgstr "Näita silumise andmeid"
 
 msgctxt "#655"
 msgid "Browse for executable"
@@ -3166,6 +3178,10 @@ msgctxt "#1418"
 msgid "Thunderstorms"
 msgstr "pikne"
 
+msgctxt "#1419"
+msgid "Shallow"
+msgstr "Madal"
+
 msgctxt "#1420"
 msgid "Moderate"
 msgstr "mõõdukas"
@@ -3182,9 +3198,29 @@ msgctxt "#1423"
 msgid "Mist"
 msgstr "udu"
 
+msgctxt "#1424"
+msgid "Overcast"
+msgstr "Lauspilvisus"
+
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Pelletid"
+
+msgctxt "#1428"
+msgid "Volcanic"
+msgstr "Vulkaaniline"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Pellet"
+
 msgctxt "#1438"
 msgid "Small"
 msgstr "Väike"
+
+msgctxt "#1442"
+msgid "Chance"
+msgstr "Võimalus"
 
 msgctxt "#1446"
 msgid "Unknown"
@@ -3193,6 +3229,10 @@ msgstr "Teadmata"
 msgctxt "#1448"
 msgid "Precipitation"
 msgstr "Sadememäär"
+
+msgctxt "#1449"
+msgid "Partial"
+msgstr "Osaline"
 
 msgctxt "#1450"
 msgid "Put display to sleep when idle"
@@ -3556,7 +3596,7 @@ msgstr "Sea lukk"
 
 msgctxt "#12333"
 msgid "Unlock"
-msgstr "Ava lukk"
+msgstr "Ava"
 
 msgctxt "#12334"
 msgid "Reset lock"
@@ -3649,6 +3689,10 @@ msgstr "Palun sisesta õige peakood"
 msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Seaded & failihaldur"
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "Säti vaikeväärtuseks kõikidele videodele"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3944,7 +3988,7 @@ msgstr "Esmane DNS"
 
 msgctxt "#13162"
 msgid "Initialize failed"
-msgstr "Käivitamine ebaõnnestus"
+msgstr "Algatamine ebaõnnestus"
 
 msgctxt "#13170"
 msgid "Never"
@@ -5732,7 +5776,7 @@ msgstr "või kasuta täpsemaks otsinguks väljendeid, näiteks \"The wizard of O
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Impordin klientidelt EPG´d"
+msgstr "Elektroonlise saatekava import klientidelt"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -5764,7 +5808,7 @@ msgstr "UNC"
 
 msgctxt "#19012"
 msgid "PVR Backend"
-msgstr "PVR Backend"
+msgstr "PVR põhi"
 
 msgctxt "#19013"
 msgid "Free to air"
@@ -5808,11 +5852,11 @@ msgstr "Peidetud"
 
 msgctxt "#19023"
 msgid "TV channels"
-msgstr "TV kanalid"
+msgstr "Telekanalid"
 
 msgctxt "#19024"
 msgid "Radio channels"
-msgstr "Raadio kanalid"
+msgstr "Raadiojaamad"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
@@ -5828,7 +5872,7 @@ msgstr "Otsingu tulemused puuduvad"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr "EPG kanded puuduvad"
+msgstr "Elektroonilisi saatekavu pole"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -5894,9 +5938,17 @@ msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
 msgstr "Palun kontrollige seadeid või tutvuge detailsema logiga."
 
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "PVR kliente ei ole veel käivitatud. Oota PVR klientide käivitamist või vaata täpsemate andmete saamiseks logi."
+
 msgctxt "#19046"
 msgid "New channel"
 msgstr "Uus kanal"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "Programmi info"
 
 msgctxt "#19048"
 msgid "Group management"
@@ -5968,7 +6020,7 @@ msgstr "Mine lõppu"
 
 msgctxt "#19065"
 msgid "Default EPG window"
-msgstr "Vaikimisi EPG aken"
+msgstr "Vaikimisi elektroonlilise saatekava aken"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -5980,15 +6032,15 @@ msgstr "Seda salvestust ei saa kustutada. Tutvu detailsema infoga."
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr "EPG"
+msgstr "Elektrooniline saatekava"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "EPG uuendamise intervall"
+msgstr "Elektroonilise saatekava uuendamise intervall"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "Ära lisa EPG´d andmebaasi"
+msgstr "Ära salvesta elektroonlisist saatekava andmebaasi"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -6114,25 +6166,333 @@ msgctxt "#19109"
 msgid "Couldn't save timer. Check the log for details."
 msgstr "Ajastust ei salvestatud. "
 
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Ilmnes ootamatu viga. Proovi hiljem uuesti või vaata täpsemate andmete saamiseks logi."
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR põhja viga. Täpsemate andmete saamiseks logi."
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "Versioon"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "Aadress"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "Kettaruum"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "Otsi kanaleid"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "PVR funktsioone ei saa otsimise ajal kasutada."
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "Millisest serverist soovid otsida?"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "Kliendi number"
+
+msgctxt "#19121"
+msgid "Avoid repeats"
+msgstr "Väldi korduseid"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "Taimer veel salvestab. Oled kindel, et soovid seda taimerit kustutada?"
+
+msgctxt "#19123"
+msgid "Free to air channels only"
+msgstr "Tasuta vaid õhukanalitele"
+
+msgctxt "#19124"
+msgid "Ignore present timers"
+msgstr "Eira praeguseid taimereid"
+
+msgctxt "#19125"
+msgid "Ignore present recordings"
+msgstr "Eira praeguseid salvestusi"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "Alguse aeg"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "Lõppemise aeg"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "Alguse kuupäev"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "Lõppemise kuupäev"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "Vähim kestvus"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "Suurim kestvus"
+
+msgctxt "#19132"
+msgid "Include unknown genres"
+msgstr "Hõlma tundmatud žanrid"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "Otsisõna"
+
+msgctxt "#19134"
+msgid "Include description"
+msgstr "Hõlma kirjeldus"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "Tõusutundlik"
+
+msgctxt "#19136"
+msgid "Channel unavailable"
+msgstr "Kanal pole saadaval"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "Gruppe pole määrateltud"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "Palun tee grupi nimekiri"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "Uue grupi nimi"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "Grupp"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "Otsingu juhis"
+
 msgctxt "#19143"
 msgid "Group management"
 msgstr "Gruppide haldamine"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "Gruppe pole määrateltud"
+
+msgctxt "#19145"
+msgid "Grouped"
+msgstr "Grupeeritud"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "Grupid"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "PVR põhi ei toeta seda tegevust. Täpsemate andmete saamiseks vaata logi."
 
 msgctxt "#19148"
 msgid "Channel"
 msgstr "Kanal"
 
+msgctxt "#19149"
+msgid "Mo"
+msgstr "E"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "T"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "K"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "N"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "R"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "L"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "P"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "alates"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "Järgmine salvestus"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "Praegu salvestab"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "alates"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "kuni"
+
+msgctxt "#19162"
+msgid "Recording active"
+msgstr "Salvestus aktiivne"
+
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "Salvestused"
+
+msgctxt "#19164"
+msgid "Cannot start recording. Check the log for details."
+msgstr "Salvesamist ei saa alustada. Täpsemate andmete saamiseks vaata logi."
+
+msgctxt "#19165"
+msgid "Switch"
+msgstr "Vaheta"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "Videosalvesti andmed"
+
+msgctxt "#19167"
+msgid "Scan for missing icons"
+msgstr "Skaneeri puuduvaid ikoone"
+
+msgctxt "#19169"
+msgid "Hide video information box"
+msgstr "Peida video andmete kast"
+
+msgctxt "#19170"
+msgid "Timeout when starting playback"
+msgstr "Taasesituse aegumine"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "Alusta taasesitust minimiseeritult"
+
+msgctxt "#19172"
+msgid "Instant recording duration"
+msgstr "Kohese salvestuse kestvus"
+
+msgctxt "#19173"
+msgid "Default recording priority"
+msgstr "Vaikimisi salvestuse prioriteet"
 
 msgctxt "#19177"
 msgid "Playback"
 msgstr "Taasesitus"
 
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "Automaatselt peida kanali info"
+
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "Menüü/kuvaregulaator"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "Saatekavas näidatav päevade arv"
+
+msgctxt "#19184"
+msgid "Channel information duration"
+msgstr "Kanali info kestvus"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "Lähtesta elektroonilise saatekava andmebaas"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "Kõik andmed elektroonilise saatekava andmebaasis on kustutamisel"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "Algseadista elektrooniline saatekava"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "Elektroonilisele saatekavale tehakse algseadistust"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "Käivitamisel jätka viimase kanaliga"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "minimeeritud"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "Elektroonilise saatekava teenus"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "Ükski ühendatud videosalvestaja põhi ei toeta kanalite skaneerimist."
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "Jätka?"
+
+msgctxt "#19195"
+msgid "Client actions"
+msgstr "Kliendi tegevused"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "Salvestamine algas: %s"
+
+msgctxt "#19198"
+msgid "Recording finished on: %s"
+msgstr "Salvestamine lõppes: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "Kanalihaldur"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "Saatekava allikas:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "Kanali nimi:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "Kanali ikoon:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "Muuda kanalit"
 
 msgctxt "#19204"
 msgid "New channel"
@@ -6142,17 +6502,209 @@ msgctxt "#19205"
 msgid "Group management"
 msgstr "Gruppide haldamine"
 
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "Aktiveeri saatekava:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "Grupp:"
+
+msgctxt "#19208"
+msgid "Enter the name of the new channel"
+msgstr "Sisesta uue kanali nimi"
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "XBMC virtuaalne põhi"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "Kilent"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "Kustuta kanal"
+
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "Nimekiri sisaldab muudatusi"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "Vali põhi"
+
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Sisesta korrektne URL uuele kanalile"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "PVR põhi ei toeta taimereid."
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Kõik raadiojaamad"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Kõik telekanalid"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "Nähtav"
+
+msgctxt "#19219"
+msgid "Ungrouped channels"
+msgstr "Gupeerimata kanalid"
+
+msgctxt "#19220"
+msgid "Channels in"
+msgstr "Kanalid"
+
+msgctxt "#19221"
+msgid "Synchronise channel groups with backends"
+msgstr "Sünkroniseeri kanalid põhjadega"
+
 msgctxt "#19222"
 msgid "EPG"
-msgstr "EPG"
+msgstr "Elektrooniline saatekava"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Ühtki PVR lisamoodulit ei saanud lubada. Kontrolli oma seadeid või täpema info saamiseks vaata logi."
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "Salvestamine katkestatud"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "Salvestamine planeeritud"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "Salvestamist alustatud"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "Salvestamine lõpetatud"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "Salvestamine kustutatud"
+
+msgctxt "#19229"
+msgid "Close channel OSD after switching channels"
+msgstr "Sulge kanali OSD pärast kanali vahetust"
+
+msgctxt "#19230"
+msgid "Prevent EPG updates while playing a TV stream"
+msgstr "Hoidu telekanalit näidates elektroonilise saatekava uuendustest"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "Puhasta otsingutulemused"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "PVR haldur käivitub"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "Andmebaasist elektroonilise saatekava laadimine"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "Uuenda saatekava andmeid"
+
+msgctxt "#19252"
+msgid "Schedule EPG update for this channel?"
+msgstr "Planeeri sellele kanalile elektroonlise saatekava uuendamine?"
+
+msgctxt "#19253"
+msgid "EPG update scheduled for channel"
+msgstr "Elektroonilise saatekava uuendamine kanalile planeeritud"
+
+msgctxt "#19254"
+msgid "EPG update failed for channel"
+msgstr "Kanali elektroonilise saatekava uuendus ebaõnnestus"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "Alusta salvestamist"
 
 msgctxt "#19256"
 msgid "Stop recording"
 msgstr "Peata salvestamine"
 
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "Ava kanal"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "Sisestatud PIN kood ei ole õige."
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "Sa vajad tuunerit, põhja tarkvara, ja"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Salvestamise vastuolu"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Salvestamise viga"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "Muu/Tundmatu"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "Jutusaade"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "Meeskonnasport"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "Veesport"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "Talisport"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "Laste/noorte programmid"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "Lavakunst"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "Religioon"
+
 msgctxt "#19635"
 msgid "Languages"
 msgstr "Keeled"
+
+msgctxt "#19661"
+msgid "Original Language"
+msgstr "Algupärane keel"
+
+msgctxt "#19663"
+msgid "Unpublished"
+msgstr "Avaldamata"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "Otseülekanne"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6828,7 +7380,7 @@ msgstr "Keera pilte kasutades EXIF andmeid"
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
-msgstr "Luba posteri vaade teleprogrammidele"
+msgstr "Luba posteri vaade seriaalidele"
 
 msgctxt "#20186"
 msgid "Please wait"
@@ -6982,6 +7534,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Järjesta: ID"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Filmide skaneerimine %s toel"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Muusikavideode skaneerimine %s toel"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Sarjade skaneerimine %s kaudu"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Artistide skaneerimine %s toel"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Albumite skaneerimine %s toel"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "Esita osa..."
@@ -7004,7 +7576,7 @@ msgstr "Vali sihtkoht"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr "Filmid, mis sellele pealkirjale vastavad, on erinevates kaustades"
+msgstr "Filmid on pealkirja järgi eri kaustades"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -7060,7 +7632,7 @@ msgstr "Filmid"
 
 msgctxt "#20343"
 msgid "TV shows"
-msgstr "Telesaated"
+msgstr "Seriaalid"
 
 msgctxt "#20344"
 msgid "This directory contains"
@@ -7092,7 +7664,7 @@ msgstr "häält"
 
 msgctxt "#20351"
 msgid "TV show information"
-msgstr "Teleprogrammi andmed"
+msgstr "Seriaali andmed"
 
 msgctxt "#20352"
 msgid "Episode information"
@@ -7100,7 +7672,7 @@ msgstr "Episoodi andmed"
 
 msgctxt "#20353"
 msgid "Loading TV show details"
-msgstr "Teleprogrammi andmete laadimine"
+msgstr "Seriaali andmete laadimine"
 
 msgctxt "#20354"
 msgid "Fetching episode guide"
@@ -7112,11 +7684,11 @@ msgstr "Kataloogis olevate osade andmete laadimine"
 
 msgctxt "#20356"
 msgid "Select TV show:"
-msgstr "Vali teleprogramm:"
+msgstr "Vali seriaal:"
 
 msgctxt "#20357"
 msgid "Enter the TV show name"
-msgstr "Sisesta teleprogrammi nimi"
+msgstr "Sisesta seriaali nimi"
 
 msgctxt "#20358"
 msgid "Season %i"
@@ -7128,7 +7700,7 @@ msgstr "Osa"
 
 msgctxt "#20360"
 msgid "Episodes"
-msgstr "Osad"
+msgstr "Osa"
 
 msgctxt "#20361"
 msgid "Loading episode details"
@@ -7140,11 +7712,11 @@ msgstr "Eemalda osa teegist"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
-msgstr "Eemalda telesaade teegist"
+msgstr "Eemalda seriaal teegist"
 
 msgctxt "#20364"
 msgid "TV show"
-msgstr "Teleprogramm"
+msgstr "Seriaal"
 
 msgctxt "#20365"
 msgid "Episode plot"
@@ -7196,7 +7768,7 @@ msgstr "Algupärane pealkiri"
 
 msgctxt "#20377"
 msgid "Refresh TV show information"
-msgstr "Värskenda teleprogrammi andmeid"
+msgstr "Värskenda seriaali andmeid"
 
 msgctxt "#20378"
 msgid "Refresh info for all episodes?"
@@ -7204,7 +7776,7 @@ msgstr "Värksenda kõikide osade andmeid?"
 
 msgctxt "#20379"
 msgid "Selected folder contains a single TV show"
-msgstr "Valitud kaust sisaldab ühte teleprogrammi"
+msgstr "Valitud kaust sisaldab üht seriaali"
 
 msgctxt "#20380"
 msgid "Exclude selected folder from scans"
@@ -7224,11 +7796,11 @@ msgstr "Valitud kaust sisaldab vaid ühte videot"
 
 msgctxt "#20384"
 msgid "Link to TV show"
-msgstr "Lingi teleprogramm"
+msgstr "Lingi seriaal"
 
 msgctxt "#20385"
 msgid "Remove link to TV show"
-msgstr "Eemalda teleprogrammi link"
+msgstr "Eemalda link seriaalile"
 
 msgctxt "#20386"
 msgid "Recently added movies"
@@ -7320,7 +7892,7 @@ msgstr "Muusikavideo andmete allalaadimine"
 
 msgctxt "#20409"
 msgid "Downloading TV show information"
-msgstr "Teleprogrammi andmete allalaadimine"
+msgstr "Seriaali andmete allalaadimine"
 
 msgctxt "#20410"
 msgid "Trailer"
@@ -7332,7 +7904,7 @@ msgstr "Tasanda"
 
 msgctxt "#20412"
 msgid "Flatten TV shows"
-msgstr "Tasanda teleprogrammid"
+msgstr "Tasanda seriaalid"
 
 msgctxt "#20413"
 msgid "Get fanart"
@@ -7505,6 +8077,18 @@ msgstr "Filmisett"
 msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Grupeeri filmid settideks"
+
+msgctxt "#20459"
+msgid "Tags"
+msgstr "Sildid"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "Eemalda %s"
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "Vali %s"
 
 msgctxt "#21330"
 msgid "Show hidden files and directories"
@@ -7748,7 +8332,7 @@ msgstr "Vaikimise filmi kraabits"
 
 msgctxt "#21414"
 msgid "Default tvshow scraper"
-msgstr "Vaikimisi telekraabits"
+msgstr "Vaikimisi seriaalikraabits"
 
 msgctxt "#21415"
 msgid "Default music video scraper"
@@ -7909,6 +8493,10 @@ msgstr "Vahemälu täis"
 msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Vahemälu täitus enne taasesituseks vajaliku mahu saavutamist"
+
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Vaadatud episoodide arv"
 
 msgctxt "#21460"
 msgid "Subtitle location"
@@ -8472,7 +9060,7 @@ msgstr "Ekraanisäästja"
 
 msgctxt "#24009"
 msgid "Script"
-msgstr "Asukoht"
+msgstr "Skript"
 
 msgctxt "#24010"
 msgid "Visualization"
@@ -8533,6 +9121,10 @@ msgstr "Ilm"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (standard)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Teenus ilmaandmeteks"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -9120,7 +9712,7 @@ msgstr "Flac"
 
 msgctxt "#34100"
 msgid "Speaker Configuration"
-msgstr "Kõlarisüsteem"
+msgstr "Kõlarite paigutus"
 
 msgctxt "#34101"
 msgid "2.0"
@@ -9330,6 +9922,14 @@ msgctxt "#36009"
 msgid "Put devices in standby mode when activating screensaver"
 msgstr "Lülita seadmed ooterežiimi kui ekraanisäästja tööle hakkab"
 
+msgctxt "#36011"
+msgid "Could not detect the CEC com port. Set it up manually."
+msgstr "Ei õnnestunud tuvastada CEC COM-porti. Määra see manuaalselt."
+
+msgctxt "#36012"
+msgid "Could not initialise the CEC adapter. Please check your settings."
+msgstr "CEC adapterit ei õnnestunud algatada. Palun kontrolli oma seadeid."
+
 msgctxt "#36015"
 msgid "HDMI port number"
 msgstr "HDMI pordi number"
@@ -9337,6 +9937,10 @@ msgstr "HDMI pordi number"
 msgctxt "#36016"
 msgid "Connected"
 msgstr "Ühendatud"
+
+msgctxt "#36017"
+msgid "Could not initialise the CEC adapter: libCEC was not found on your system."
+msgstr "CEC adapterit ei õnnestunud algatada: libCEC-i ei leitud sinu süsteemist."
 
 msgctxt "#36018"
 msgid "Use the TV's language setting"
@@ -9370,6 +9974,22 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "XBMC sulgemisel edasta käsk 'allikas pole aktiive'"
 
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr "See seade vajab hooldamist"
+
+msgctxt "#36029"
+msgid "When the TV is switched off"
+msgstr "Kui teler on välja lülitatud"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "Sellel kasutajal puudub CEC adapteri avamiseks luba"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr "See port on hõivatud. Ainult üks programm saab kasutada CEC adapterit"
+
 msgctxt "#36035"
 msgid "Always"
 msgstr "Alati"
@@ -9377,3 +9997,7 @@ msgstr "Alati"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "Toetuseta libCEC kasutajaliidese versioon. %x on madalam kui XBMC toetatud versioon (%x)"

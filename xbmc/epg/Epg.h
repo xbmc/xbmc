@@ -67,14 +67,6 @@ namespace EPG
     CEpg &operator =(const CEpg &right);
 
     /*!
-     * @brief Update this table's info with the given info. Doesn't change the EpgID.
-     * @param epg The new info.
-     * @param bUpdateDb If true, persist the changes.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool UpdateMetadata(const CEpg &epg, bool bUpdateDb = false);
-
-    /*!
      * @brief Load all entries for this table from the database.
      * @return True if any entries were loaded, false otherwise.
      */
@@ -299,6 +291,11 @@ namespace EPG
     size_t Size(void) const;
 
     bool NeedsSave(void) const;
+
+    /*!
+     * @return True when this EPG is valid and can be updated, false otherwise
+     */
+    bool IsValid(void) const;
   protected:
     CEpg(void);
 

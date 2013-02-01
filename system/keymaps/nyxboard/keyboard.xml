@@ -8,6 +8,7 @@
       <f4 mod="shift">ActivateWindow(music)</f4>    <!-- Green -->
       <f5 mod="shift">ActivateWindow(pictures)</f5> <!-- Yellow -->
       <f6 mod="shift">ActivateWindow(programs)</f6> <!-- Blue -->
+      <f4>ContextMenu</f4>                          <!-- User button -->
     </keyboard>
   </global>
 </keymap>

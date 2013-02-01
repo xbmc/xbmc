@@ -26,8 +26,6 @@
 
 #include <IL/OMX_Video.h>
 
-#include "utils/BitstreamConverter.h"
-
 #include "OMXClock.h"
 
 #include "guilib/Geometry.h"
@@ -59,6 +57,7 @@ public:
   void SetVideoRect(const CRect& SrcRect, const CRect& DestRect);
   int GetInputBufferSize();
   void WaitCompletion();
+  bool BadState() { return m_omx_decoder.BadState(); };
 protected:
   // Video format
   bool              m_drop_state;
@@ -85,13 +84,13 @@ protected:
   uint8_t           *m_extradata;
   int               m_extrasize;
 
-  CBitstreamConverter   *m_converter;
   bool              m_video_convert;
   std::string       m_video_codec_name;
 
   bool              m_deinterlace;
   bool              m_hdmi_clock_sync;
   bool              m_first_frame;
+  uint32_t          m_history_valid_pts;
 
   bool NaluFormatStartCodes(enum CodecID codec, uint8_t *in_extradata, int in_extrasize);
 };

@@ -18,6 +18,7 @@
  *
  */
 
+#include "network/Network.h"
 #include "URIUtils.h"
 #include "Application.h"
 #include "FileItem.h"
@@ -371,7 +372,7 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath)
   for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
       i != g_advancedSettings.m_pathSubstitutions.end(); i++)
   {
-    if (strncmp(strPath.c_str(), i->first.c_str(), i->first.size()) == 0)
+    if (strncmp(strPath.c_str(), i->first.c_str(), HasSlashAtEnd(i->first.c_str()) ? i->first.size()-1 : i->first.size()) == 0)
     {
       if (strPath.size() > i->first.size())
         return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));

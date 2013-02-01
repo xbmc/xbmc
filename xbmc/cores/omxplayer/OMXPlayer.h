@@ -39,6 +39,7 @@
 #include "OMXPlayerAudio.h"
 #include "OMXPlayerVideo.h"
 #include "DVDPlayerSubtitle.h"
+#include "DVDPlayerTeletext.h"
 
 #include "utils/BitstreamStats.h"
 
@@ -182,9 +183,11 @@ public:
   virtual bool  CloseAudioStream(bool bWaitForBuffers);
   virtual bool  CloseVideoStream(bool bWaitForBuffers);
   virtual bool  CloseSubtitleStream(bool bKeepOverlays);
+  virtual bool  CloseTeletextStream(bool bWaitForBuffers);
   virtual bool  OpenAudioStream(int iStream, int source, bool reset = true);
   virtual bool  OpenVideoStream(int iStream, int source, bool reset = true);
   virtual bool  OpenSubtitleStream(int iStream, int source); 
+  virtual bool  OpenTeletextStream(int iStream, int source);
   virtual void  OpenDefaultStreams(bool reset = true);
   virtual bool  OpenDemuxStream();
   virtual bool  OpenInputStream();
@@ -198,6 +201,7 @@ public:
   virtual void  ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   virtual void  ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   virtual void  ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
+  virtual void  ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
   virtual void  ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
   virtual void  SynchronizeDemuxer(unsigned int timeout);
   virtual void  SynchronizePlayers(unsigned int sources);
@@ -223,6 +227,8 @@ public:
   virtual float GetPercentage();
   virtual float GetCachePercentage();
 
+  virtual void  SetMute(bool bOnOff);
+  virtual bool  ControlsVolume() {return true;}
   virtual void  SetVolume(float fVolume);
   virtual void  SetDynamicRangeCompression(long drc)              {}
   virtual void  GetAudioInfo(CStdString &strAudioInfo);
@@ -257,8 +263,8 @@ public:
   virtual void  SetAudioStream(int iStream);
   virtual void  GetAudioStreamLanguage(int iStream, CStdString &strLanguage);
 
-  virtual TextCacheStruct_t* GetTeletextCache()                   {return NULL;};
-  virtual void  LoadPage(int p, int sp, unsigned char* buffer)    {};
+  virtual TextCacheStruct_t* GetTeletextCache();
+  virtual void  LoadPage(int p, int sp, unsigned char* buffer);
 
   virtual int   GetChapterCount();
   virtual int   GetChapter();
@@ -340,7 +346,6 @@ protected:
   bool WaitForPausedThumbJobs(int timeout_ms);
   virtual void  Process();
 
-  CEvent                m_ready;
   std::string           m_filename; // holds the actual filename
   CDVDInputStream       *m_pInputStream;
   CDVDDemux             *m_pDemuxer;
@@ -470,16 +475,19 @@ private:
 
   double                  m_offset_pts;
 
+  CDVDMessageQueue        m_messenger;
+
   OMXClock                m_av_clock;
   OMXPlayerVideo          m_player_video;
   OMXPlayerAudio          m_player_audio;
   CDVDPlayerSubtitle      m_player_subtitle;
+  CDVDTeletextData        m_player_teletext;
 
-  CDVDMessageQueue        m_messenger;
+  CEvent                  m_ready;
 
   float                   m_current_volume;
+  bool                    m_current_mute;
   bool                    m_change_volume;
-  bool                    m_stats;
   CDVDOverlayContainer    m_overlayContainer;
   ECacheState             m_caching;
 };

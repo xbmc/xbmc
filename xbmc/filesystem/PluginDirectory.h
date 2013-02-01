@@ -25,7 +25,7 @@
 #include "SortFileItem.h"
 
 #include <string>
-#include <vector>
+#include <map>
 #include "threads/CriticalSection.h"
 #include "addons/IAddon.h"
 #include "PlatformDefs.h"
@@ -66,12 +66,14 @@ public:
 private:
   ADDON::AddonPtr m_addon;
   bool StartScript(const CStdString& strPath, bool retrievingDir);
-  bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName, bool retrievingDir);
+  bool WaitOnScriptResult(const CStdString &scriptPath, int scriptId, const CStdString &scriptName, bool retrievingDir);
 
-  static std::vector<CPluginDirectory*> globalHandles;
+  static std::map<int,CPluginDirectory*> globalHandles;
   static int getNewHandle(CPluginDirectory *cp);
   static void removeHandle(int handle);
+  static CPluginDirectory *dirFromHandle(int handle);
   static CCriticalSection m_handleLock;
+  static int handleCounter;
 
   CFileItemList* m_listItems;
   CFileItem*     m_fileResult;

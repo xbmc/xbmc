@@ -51,6 +51,7 @@ protected:
   enum AVSampleFormat m_iSampleFormat;  
   CAEChannelInfo      m_channelLayout;
   bool                m_bLpcmMode;  
+  bool                m_bNeedConversion;
 
   AVFrame* m_pFrame1;
   int      m_iBufferSize1;

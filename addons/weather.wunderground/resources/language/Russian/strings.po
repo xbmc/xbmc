@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -39,15 +38,15 @@ msgstr "Местоположение 3"
 
 msgctxt "#32114"
 msgid "Location 1 display name"
-msgstr "Имя для местоположения 1"
+msgstr "Название местоположения 1"
 
 msgctxt "#32115"
 msgid "Location 2 display name"
-msgstr "Имя для местоположения 2"
+msgstr "Название местоположения 2"
 
 msgctxt "#32116"
 msgid "Location 3 display name"
-msgstr "Имя для местоположения 3"
+msgstr "Название местоположения 3"
 
 msgctxt "#32117"
 msgid "Location 1 id"
@@ -63,7 +62,7 @@ msgstr "ID местоположения 3"
 
 msgctxt "#32120"
 msgid "Enable logging"
-msgstr "Включить протоколирование"
+msgstr "Включить журнал"
 
 msgctxt "#32121"
 msgid "Weekend"
@@ -71,15 +70,15 @@ msgstr "Выходные"
 
 msgctxt "#32122"
 msgid "Saturday/Sunday"
-msgstr "Суббота/Воскресенье"
+msgstr "Суббота/воскресенье"
 
 msgctxt "#32123"
 msgid "Friday/Saturday"
-msgstr "Пятница/Суббота"
+msgstr "Пятница/суббота"
 
 msgctxt "#32124"
 msgid "Thursday/Friday"
-msgstr "Четверг/Пятница"
+msgstr "Четверг/пятница"
 
 msgctxt "#32125"
 msgid "Map zoom level"

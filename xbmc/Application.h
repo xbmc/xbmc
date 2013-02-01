@@ -26,6 +26,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/Key.h"
 #include "threads/Condition.h"
+#include "utils/GlobalsHandling.h"
 
 #include <map>
 
@@ -53,7 +54,6 @@ namespace MEDIA_DETECT
 #include "win32/WIN32Util.h"
 #endif
 #include "utils/Stopwatch.h"
-#include "network/Network.h"
 #include "utils/CharsetConverter.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
@@ -80,6 +80,9 @@ class CHTTPWebinterfaceHandler;
 class CHTTPWebinterfaceAddonsHandler;
 #endif
 #endif
+
+class CNetwork;
+
 namespace VIDEO
 {
   class CVideoInfoScanner;
@@ -146,7 +149,7 @@ public:
   void StopUPnPRenderer();
   void StartUPnPServer();
   void StopUPnPServer();
-  void StartPVRManager();
+  void StartPVRManager(bool bOpenPVRWindow = false);
   void StopPVRManager();
   bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);
@@ -262,13 +265,7 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-#if defined(HAS_LINUX_NETWORK)
-  CNetworkLinux& getNetwork();
-#elif defined(HAS_WIN32_NETWORK)
-  CNetworkWin32& getNetwork();
-#else
   CNetwork& getNetwork();
-#endif
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
@@ -381,14 +378,15 @@ protected:
   // timer information
 #ifdef _WIN32
   CWinIdleTimer m_idleTimer;
+  CWinIdleTimer m_screenSaverTimer;
 #else
   CStopWatch m_idleTimer;
+  CStopWatch m_screenSaverTimer;
 #endif
   CStopWatch m_restartPlayerTimer;
   CStopWatch m_frameTime;
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
-  CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
 
   bool m_bInhibitIdleShutdown;
@@ -462,13 +460,7 @@ protected:
 
   CSeekHandler *m_seekHandler;
   CInertialScrollingHandler *m_pInertialScrollingHandler;
-#if defined(HAS_LINUX_NETWORK)
-  CNetworkLinux m_network;
-#elif defined(HAS_WIN32_NETWORK)
-  CNetworkWin32 m_network;
-#else
-  CNetwork    m_network;
-#endif
+  CNetwork    *m_network;
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
 #endif
@@ -479,4 +471,5 @@ protected:
 
 };
 
-extern CApplication g_application;
+XBMC_GLOBAL_REF(CApplication,g_application);
+#define g_application XBMC_GLOBAL_USE(CApplication)

@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -276,19 +276,19 @@ msgstr "ΔΙΑΦ"
 
 msgctxt "#88"
 msgid "South"
-msgstr "Νότιος"
+msgstr "Νότια"
 
 msgctxt "#89"
 msgid "North"
-msgstr "Βόρειος"
+msgstr "Βόρεια"
 
 msgctxt "#90"
 msgid "West"
-msgstr "Δυτικός"
+msgstr "Δυτικά"
 
 msgctxt "#91"
 msgid "East"
-msgstr "Ανατολικός"
+msgstr "Ανατολικά"
 
 msgctxt "#92"
 msgid "Variable"
@@ -384,7 +384,7 @@ msgstr "Νέος φάκελος"
 
 msgctxt "#120"
 msgid "Confirm file copy"
-msgstr "Επιβεβαίωση αντιγραφής"
+msgstr "Επιβεβαίωση αντιγραφής αρχείου"
 
 msgctxt "#121"
 msgid "Confirm file move"
@@ -392,7 +392,7 @@ msgstr "Επιβεβαίωση μεταφοράς αρχείου"
 
 msgctxt "#122"
 msgid "Confirm file delete?"
-msgstr "Επιβεβαίωση διαγραφής"
+msgstr "Επιβεβαίωση διαγραφής;"
 
 msgctxt "#123"
 msgid "Copy these files?"
@@ -436,7 +436,7 @@ msgstr "Άλμπουμ"
 
 msgctxt "#133"
 msgid "Artists"
-msgstr "Καλλιτέχνης"
+msgstr "Καλλιτέχνες"
 
 msgctxt "#134"
 msgid "Songs"
@@ -448,7 +448,7 @@ msgstr "Είδος"
 
 msgctxt "#136"
 msgid "Playlists"
-msgstr "Λίστες αναπαραγωγής"
+msgstr "Λίστες αναπ/γής"
 
 msgctxt "#137"
 msgid "Search"
@@ -508,7 +508,7 @@ msgstr "Διεύθυνση IP"
 
 msgctxt "#151"
 msgid "Link:"
-msgstr "Σύνδεση:"
+msgstr "Σύνδεσμος:"
 
 msgctxt "#152"
 msgid "Half duplex"
@@ -540,7 +540,7 @@ msgstr "Ελεύθερη μνήμη"
 
 msgctxt "#159"
 msgid "No link"
-msgstr "Καμία σύνδεση"
+msgstr "Κανένας σύνδεσμος"
 
 msgctxt "#160"
 msgid "Free"
@@ -632,7 +632,7 @@ msgstr "Εντάξει"
 
 msgctxt "#187"
 msgid "No albums found!"
-msgstr "Δεν βρέθηκαν άλμπουμ!"
+msgstr "Δε βρέθηκαν άλμπουμ!"
 
 msgctxt "#188"
 msgid "Select all"
@@ -664,7 +664,7 @@ msgstr "Αναζήτηση..."
 
 msgctxt "#195"
 msgid "No info found!"
-msgstr "Δεν βρέθηκαν πληροφορίες!"
+msgstr "Δε βρέθηκαν πληροφορίες!"
 
 msgctxt "#196"
 msgid "Select movie:"
@@ -840,11 +840,11 @@ msgstr "Πλήρης οθόνη"
 
 msgctxt "#245"
 msgid "Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1) (VShift: %2.2f)"
-msgstr "Μέγεθος: (%i,%i)->(%i,%i) (Εστίαση x%2.2f) AR:%2.2f:1 (Εικονοστοιχεία: %2.2f:1) (ΚΜετατόπιση: %2.2f)"
+msgstr "Μέγεθος: (%i,%i)->(%i,%i) (Ζουμ x%2.2f) AR:%2.2f:1 (Εικονοστοιχεία: %2.2f:1) (ΚΜετατόπιση: %2.2f)"
 
 msgctxt "#247"
 msgid "Scripts"
-msgstr "Scripts"
+msgstr "Script"
 
 msgctxt "#248"
 msgid "Language"
@@ -860,7 +860,7 @@ msgstr "Οπτικοποίηση"
 
 msgctxt "#251"
 msgid "Select destination directory"
-msgstr "Επιλογή καταλόγου προορισμού"
+msgstr "Επιλογή φακέλου προορισμού"
 
 msgctxt "#252"
 msgid "Output stereo to all speakers"
@@ -872,7 +872,7 @@ msgstr "Αριθμός καναλιών"
 
 msgctxt "#254"
 msgid "- DTS capable receiver"
-msgstr "- Δέκτης ικανός για αναπαραγωγή DTS"
+msgstr "- Δέκτης με υποστήριξη DTS"
 
 msgctxt "#255"
 msgid "CDDB"
@@ -888,7 +888,7 @@ msgstr "Σφάλμα"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "Ενεργοποίηση ID3 ετικετών"
+msgstr "Ενεργοποίηση ετικετών ID3"
 
 msgctxt "#259"
 msgid "Opening"
@@ -904,7 +904,7 @@ msgstr "Αναμονή για την έναρξη..."
 
 msgctxt "#262"
 msgid "Scripts output"
-msgstr "Εξαγωγές Scripts"
+msgstr "Εξαγωγές Script"
 
 msgctxt "#263"
 msgid "Allow control of XBMC via HTTP"
@@ -920,11 +920,11 @@ msgstr "Διακοπή εγγραφής"
 
 msgctxt "#266"
 msgid "Sort by: Track"
-msgstr "Ταξ.: Κομμάτι"
+msgstr "Ταξ.: Τραγούδι"
 
 msgctxt "#267"
 msgid "Sort by: Time"
-msgstr "Ταξ.: Χρόνος"
+msgstr "Ταξ.: Διάρκεια"
 
 msgctxt "#268"
 msgid "Sort by: Title"
@@ -980,7 +980,7 @@ msgstr "Χρήση προεπιλεγμένων ρυθμίσεων"
 
 msgctxt "#281"
 msgid "Please check the XML files"
-msgstr "Παρακαλώ ελέγξτε τα αρχεία .XML"
+msgstr "Παρακαλώ ελέγξτε τα αρχεία XML"
 
 msgctxt "#282"
 msgid "Found %i items"
@@ -992,7 +992,7 @@ msgstr "Αποτελέσματα αναζήτησης"
 
 msgctxt "#284"
 msgid "No results found"
-msgstr "Δεν βρέθηκαν αποτελέσματα"
+msgstr "Δε βρέθηκαν αποτελέσματα"
 
 msgctxt "#285"
 msgid "Preferred audio language"
@@ -1032,11 +1032,11 @@ msgstr "Αναζήτηση για υπότιτλους"
 
 msgctxt "#294"
 msgid "Create bookmark"
-msgstr "Δημιουργία"
+msgstr "Δημιουργία σελ/κτη"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
-msgstr "Εκκαθάριση"
+msgstr "Εκκαθάριση σελ/κτων"
 
 msgctxt "#297"
 msgid "Audio offset"
@@ -1048,19 +1048,19 @@ msgstr "Σελιδοδείκτες"
 
 msgctxt "#299"
 msgid "- AAC capable receiver"
-msgstr "- Δέκτης ικανός για αναπαραγωγή AAC"
+msgstr "- Δέκτης με υποστήριξη AAC"
 
 msgctxt "#300"
 msgid "- MP1 capable receiver"
-msgstr "- Δέκτης ικανός για αναπαραγωγή MP1"
+msgstr "- Δέκτης με υποστήριξη MP1"
 
 msgctxt "#301"
 msgid "- MP2 capable receiver"
-msgstr "- Δέκτης ικανός για αναπαραγωγή MP2"
+msgstr "- Δέκτης με υποστήριξη MP2"
 
 msgctxt "#302"
 msgid "- MP3 capable receiver"
-msgstr "- Δέκτης ικανός για αναπαραγωγή MP3"
+msgstr "- Δέκτης με υποστήριξη MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1172,7 +1172,7 @@ msgstr "Σφάλμα κατά την συμπίεση της βάσης δεδο
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "Εκκαθάριση της συλλογής από τα περιεχόμενα;"
+msgstr "Να γίνει εκκαθάριση της συλλογής;"
 
 msgctxt "#334"
 msgid "Clean library..."
@@ -1228,15 +1228,15 @@ msgstr "Ενίσχυση έντασης ήχου κατά το χειρισμό 
 
 msgctxt "#347"
 msgid "- DTS-HD capable receiver"
-msgstr "Δέκτης με υποστήριξη DTS-HD"
+msgstr "- Δέκτης με υποστήριξη DTS-HD"
 
 msgctxt "#348"
 msgid "- Multichannel LPCM capable receiver"
-msgstr "Δέκτης με υποστήριξη πολυκάναλου LPCM"
+msgstr "- Δέκτης με υποστήριξη πολυκάναλου LPCM"
 
 msgctxt "#349"
 msgid "- TrueHD capable receiver"
-msgstr "Δέκτης με υποστήριξη TrueHD"
+msgstr "- Δέκτης με υποστήριξη TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -1260,7 +1260,7 @@ msgstr "Ίχνη πλέγματος"
 
 msgctxt "#355"
 msgid "Screensaver time"
-msgstr "Αναμονή για προφύλαξη οθόνης"
+msgstr "Χρόνος για προφύλαξη οθόνης"
 
 msgctxt "#356"
 msgid "Screensaver mode"
@@ -1268,7 +1268,7 @@ msgstr "Λειτουργία προφύλαξης οθόνης"
 
 msgctxt "#357"
 msgid "Shutdown function timer"
-msgstr "Λειτουργία χρονοδιακόπτη τερματισμού"
+msgstr "Χρονοδιακόπτης τερματισμού"
 
 msgctxt "#358"
 msgid "All albums"
@@ -1296,7 +1296,7 @@ msgstr "Ταξ.: Αρχείο"
 
 msgctxt "#364"
 msgid "- Dolby Digital (AC3) capable receiver"
-msgstr "- Δέκτης με ικανότητα αναπαραγωγής Dolby Digital (AC3)"
+msgstr "- Δέκτης με υποστήριξη Dolby Digital (AC3)"
 
 msgctxt "#365"
 msgid "Sort by: Name"
@@ -1308,7 +1308,7 @@ msgstr "Ταξ.: Έτος"
 
 msgctxt "#367"
 msgid "Sort by: Rating"
-msgstr "Ταξ.: Βαθμολογία"
+msgstr "Ταξ.: Αξιολόγηση"
 
 msgctxt "#368"
 msgid "IMDb"
@@ -1352,11 +1352,11 @@ msgstr "Ασθενής"
 
 msgctxt "#378"
 msgid "AM"
-msgstr "Προ μεσημβρίας"
+msgstr "π.μ."
 
 msgctxt "#379"
 msgid "PM"
-msgstr "Μετά μεσημβρίας"
+msgstr "μ.μ."
 
 msgctxt "#380"
 msgid "Showers"
@@ -1392,7 +1392,7 @@ msgstr "Νεφοσκεπής"
 
 msgctxt "#388"
 msgid "Early"
-msgstr "τις πρώτες πρωινές ώρες"
+msgstr "Τις πρώτες πρωινές ώρες"
 
 msgctxt "#389"
 msgid "Shower"
@@ -1468,7 +1468,7 @@ msgstr "Υγρασία"
 
 msgctxt "#409"
 msgid "Defaults"
-msgstr "Προεπιλεγμένα"
+msgstr "Προεπιλογές"
 
 msgctxt "#410"
 msgid "Accessing weather service"
@@ -1528,11 +1528,11 @@ msgstr "Επιλογή"
 
 msgctxt "#425"
 msgid "No album information found"
-msgstr "Δεν βρέθηκαν πληροφορίες για το άλμπουμ"
+msgstr "Δε βρέθηκαν πληροφορίες για το άλμπουμ"
 
 msgctxt "#426"
 msgid "No CD information found"
-msgstr "Δεν βρέθηκαν πληροφορίες για το CD"
+msgstr "Δε βρέθηκαν πληροφορίες για το CD"
 
 msgctxt "#427"
 msgid "Disc"
@@ -1544,7 +1544,7 @@ msgstr "Εισάγετε το σωστό CD/DVD"
 
 msgctxt "#429"
 msgid "Please insert the following disc:"
-msgstr "Παρακαλώ, εισάγετε τον ακόλουθο δίσκο:"
+msgstr "Εισάγετε τον ακόλουθο δίσκο:"
 
 msgctxt "#430"
 msgid "Sort by: DVD#"
@@ -1656,7 +1656,7 @@ msgstr "Μέθοδος"
 
 msgctxt "#457"
 msgid "Switch view"
-msgstr "Εναλλαγή προβολής"
+msgstr "Αλλαγή προβολής"
 
 msgctxt "#459"
 msgid "Subs"
@@ -1872,7 +1872,7 @@ msgstr "Συνθέσεις"
 
 msgctxt "#522"
 msgid "Remove source"
-msgstr "Απομάκρυνση πηγής"
+msgstr "Αφαίρεση πηγής"
 
 msgctxt "#523"
 msgid "Switch media"
@@ -2000,7 +2000,7 @@ msgstr "Κομμάτι"
 
 msgctxt "#555"
 msgid "Time"
-msgstr "Ώρα"
+msgstr "Διάρκεια"
 
 msgctxt "#556"
 msgid "Title"
@@ -2152,11 +2152,11 @@ msgstr "Επανάληψη: Όχι"
 
 msgctxt "#596"
 msgid "Repeat: One"
-msgstr "Επανάληψη: Μία φορά"
+msgstr "Επανάληψη: Το ίδιο"
 
 msgctxt "#597"
 msgid "Repeat: All"
-msgstr "Επανάληψη: Όλων"
+msgstr "Επανάληψη: Όλα"
 
 msgctxt "#600"
 msgid "Rip audio CD"
@@ -2188,7 +2188,7 @@ msgstr "Προς:"
 
 msgctxt "#608"
 msgid "Could not rip CD or track"
-msgstr "Αδυναμία αντιγραφής CD ή κομματιού"
+msgstr "Αδυναμία αντιγραφής CD ή τραγουδιού"
 
 msgctxt "#609"
 msgid "CDDARipPath is not set."
@@ -2196,7 +2196,7 @@ msgstr "Δεν ορίσθηκε διαδρομή αντιγραφής CDDA."
 
 msgctxt "#610"
 msgid "Rip audio track"
-msgstr "Αντιγραφή κομματιού"
+msgstr "Αντιγραφή τραγουδιού"
 
 msgctxt "#611"
 msgid "Enter number"
@@ -2228,7 +2228,7 @@ msgstr "Bitrate"
 
 msgctxt "#624"
 msgid "Include track number"
-msgstr "Συμπερίληψη αριθμού κομματιού"
+msgstr "Συμπερίληψη αριθμού τραγουδιού"
 
 msgctxt "#625"
 msgid "All songs of"
@@ -2280,7 +2280,7 @@ msgstr "Προσαρμογή έντασης ενίσχυσης ήχου"
 
 msgctxt "#639"
 msgid "Use track levels"
-msgstr "Σε επίπεδο κομματιού"
+msgstr "Σε επίπεδο τραγουδιού"
 
 msgctxt "#640"
 msgid "Use album levels"
@@ -2304,7 +2304,7 @@ msgstr "Αποκοπή μαύρων μπαρών"
 
 msgctxt "#645"
 msgid "Need to unpack a big file. Continue?"
-msgstr "Μεγάλο αρχείο προς αποσυμπίεση. Να συνεχίσει;"
+msgstr "Μεγάλο αρχείο προς αποσυμπίεση. Συνέχεια;"
 
 msgctxt "#646"
 msgid "Remove from library"
@@ -2556,7 +2556,7 @@ msgstr "Είστε σίγουρος;"
 
 msgctxt "#751"
 msgid "Removing source"
-msgstr "Απομάκρυνση πηγής"
+msgstr "Αφαίρεση πηγής"
 
 msgctxt "#754"
 msgid "Add program link"
@@ -2764,7 +2764,7 @@ msgstr "Αδυναμία σύνδεσης"
 
 msgctxt "#1002"
 msgid "XBMC was unable to connect to the network location."
-msgstr "Το XBMC δεν μπόρεσε να συνδεθεί στο δίκτυο."
+msgstr "Το XBMC δεν μπόρεσε να συνδεθεί στην τοποθεσία δικτύου."
 
 msgctxt "#1003"
 msgid "This could be due to the network not being connected."
@@ -2816,11 +2816,11 @@ msgstr "Αναζήτηση δικτυακού διακομιστή"
 
 msgctxt "#1016"
 msgid "Enter the network address of the server"
-msgstr "Εισαγωγή της δικτυακής διεύθυνσης για το διακομιστή"
+msgstr "Εισαγωγή της δικτυακής διεύθυνσης του διακομιστή"
 
 msgctxt "#1017"
 msgid "Enter the path on the server"
-msgstr "Εισαγωγή της διαδρομής στο διακομιστή"
+msgstr "Εισαγωγή της διαδρομής του διακομιστή"
 
 msgctxt "#1018"
 msgid "Enter the port number"
@@ -2984,7 +2984,7 @@ msgstr "Προσάρτηση κοινόχρηστων SMB"
 
 msgctxt "#1210"
 msgid "Remove"
-msgstr "Απομάκρυνση"
+msgstr "Αφαίρεση"
 
 msgctxt "#1211"
 msgid "Music"
@@ -3360,7 +3360,7 @@ msgstr "Ενεργοποίηση LCD/VFD"
 
 msgctxt "#10000"
 msgid "Home"
-msgstr "Αρχική τοποθεσία"
+msgstr "Αρχική"
 
 msgctxt "#10001"
 msgid "Programs"
@@ -3400,7 +3400,7 @@ msgstr "Ρυθμίσεις - Οθόνη"
 
 msgctxt "#10010"
 msgid "Settings - Appearance - GUI Calibration"
-msgstr "Ρυθμίσεις - Εμφάνιση - Βαθμονόμηση γραφικού περιβάλλοντος (GUI)"
+msgstr "Ρυθμίσεις - Εξατομίκευση - Βαθμονόμηση γραφικού περιβάλλοντος (GUI)"
 
 msgctxt "#10011"
 msgid "Settings - Videos - Screen Calibration"
@@ -3440,11 +3440,11 @@ msgstr "Ρυθμίσεις - Εξατομίκευση"
 
 msgctxt "#10020"
 msgid "Scripts"
-msgstr "Scripts"
+msgstr "Script"
 
 msgctxt "#10021"
 msgid "Web Browser"
-msgstr "Περιηγητής ιστού"
+msgstr "Περιηγητής Ιστού"
 
 msgctxt "#10025"
 msgid "Videos"
@@ -3452,7 +3452,7 @@ msgstr "Βίντεο"
 
 msgctxt "#10028"
 msgid "Videos/Playlist"
-msgstr "Βίντεο/Λίστα Αναπαραγωγής"
+msgstr "Βίντεο/Λίστα Αναπ/γής"
 
 msgctxt "#10029"
 msgid "Login screen"
@@ -3496,7 +3496,7 @@ msgstr "Άνοιγμα ροής"
 
 msgctxt "#10500"
 msgid "Music/Playlist"
-msgstr "Μουσική/Λίστα Αναπαραγωγής"
+msgstr "Μουσική/Λίστα Αναπ/γής"
 
 msgctxt "#10501"
 msgid "Music/Files"
@@ -3524,7 +3524,7 @@ msgstr "Εφαρμογές"
 
 msgctxt "#10507"
 msgid "Configuration"
-msgstr "Ρυθμίσεις"
+msgstr "Διαμόρφωση"
 
 msgctxt "#10508"
 msgid "Weather forecast"
@@ -3580,7 +3580,7 @@ msgstr "Βίντεο/Πληροφορίες"
 
 msgctxt "#12004"
 msgid "Scripts/Info"
-msgstr "Scripts/Πληροφορίες"
+msgstr "Script/Πληροφορίες"
 
 msgctxt "#12005"
 msgid "Fullscreen video"
@@ -3592,7 +3592,7 @@ msgstr "Μουσική οπτικοποίηση"
 
 msgctxt "#12008"
 msgid "File stacking dialog"
-msgstr "Παράθυρο στοιβαγμένου αρχείου"
+msgstr "Παράθυρο στοιβάγματος αρχείων"
 
 msgctxt "#12009"
 msgid "Rebuild index..."
@@ -3708,7 +3708,7 @@ msgstr "Επανατοποθέτηση κλειδώματος"
 
 msgctxt "#12335"
 msgid "Remove lock"
-msgstr "Απομάκρυνση κλειδώματος"
+msgstr "Αφαίρεση κλειδώματος"
 
 msgctxt "#12337"
 msgid "Numeric password"
@@ -3740,7 +3740,7 @@ msgstr "δοκιμές έμειναν "
 
 msgctxt "#12344"
 msgid "Passwords entered did not match."
-msgstr "Ο κωδικός πρόσβασης δεν ταιριάζει."
+msgstr "Οι κωδικοί δεν ταιριάζουν."
 
 msgctxt "#12345"
 msgid "Access denied"
@@ -3748,7 +3748,7 @@ msgstr "Δεν επιτρέπεται η πρόσβαση"
 
 msgctxt "#12346"
 msgid "Password retry limit exceeded."
-msgstr "Οι δοκιμές εισαγωγής κωδικού πρόσβασης εξαντλήθηκαν."
+msgstr "Οι προσπάθειες εισαγωγής κωδικού εξαντλήθηκαν."
 
 msgctxt "#12347"
 msgid "The system will now shut off."
@@ -3800,7 +3800,7 @@ msgstr "Κεντρικό κλείδωμα"
 
 msgctxt "#12362"
 msgid "Shutdown system if Master Lock retries exceeded"
-msgstr "Απενεργοποίηση συστήματος όταν εξαντληθούν οι προσπάθειες εισαγωγής"
+msgstr "Απενεργοποίηση συστήματος όταν εξαντληθούν οι προσπάθειες εισόδου"
 
 msgctxt "#12367"
 msgid "Master code is not valid"
@@ -3820,7 +3820,7 @@ msgstr "Ορισμός ως προεπιλογή για όλα τα βίντεο
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
-msgstr "Διαγράφει όλες τις προηγούμενες αποθηκευμένες τιμές"
+msgstr "Θα διαγραφούν όλες οι αποθηκευμένες τιμές"
 
 msgctxt "#12378"
 msgid "Amount of time to display each image"
@@ -3872,7 +3872,7 @@ msgstr "Επίπεδο φόρτισης"
 
 msgctxt "#12600"
 msgid "Weather"
-msgstr "Ο καιρός"
+msgstr "Καιρός"
 
 msgctxt "#12900"
 msgid "Screensaver"
@@ -3904,7 +3904,7 @@ msgstr "- Ελάχιστη διάρκεια αρχείου"
 
 msgctxt "#13005"
 msgid "Shutdown"
-msgstr "Παύση λειτουργίας"
+msgstr "Τερματισμός"
 
 msgctxt "#13008"
 msgid "Shutdown function"
@@ -3928,7 +3928,7 @@ msgstr "Έξοδος"
 
 msgctxt "#13013"
 msgid "Reboot"
-msgstr "Επανεκκίνηση Συστήματος"
+msgstr "Επανεκκίνηση"
 
 msgctxt "#13014"
 msgid "Minimize"
@@ -3936,11 +3936,11 @@ msgstr "Ελαχιστοποίηση"
 
 msgctxt "#13015"
 msgid "Power button action"
-msgstr "Ενέργεια πλήκτρου λειτουργίας"
+msgstr "Λειτουργία πλήκτρου τροφοδοσίας"
 
 msgctxt "#13016"
 msgid "Power off System"
-msgstr "Απενεργοποίηση συστήματος"
+msgstr "Απενεργοποίηση"
 
 msgctxt "#13017"
 msgid "Inhibit idle shutdown"
@@ -4080,7 +4080,7 @@ msgstr "Αν συνεχίσετε, μπορεί να χάσετε τον έλε�
 
 msgctxt "#13142"
 msgid "any longer. Are you sure you want to stop the Event server?"
-msgstr "Να διακοπεί η λειτουργία του απομακρυσμένου διακομιστή;"
+msgstr "Να διακοπεί η λειτουργία του απομακρυσμένου διακομιστή συμβάντων;"
 
 msgctxt "#13144"
 msgid "Change Apple Remote mode?"
@@ -4128,11 +4128,11 @@ msgstr "Μετά από %i δευτ."
 
 msgctxt "#13173"
 msgid "HDD install date:"
-msgstr "Ημερομηνία εγκατάστασης:"
+msgstr "Ημερομηνία εγκατάστασης HDD:"
 
 msgctxt "#13174"
 msgid "HDD power cycle count:"
-msgstr "Πλήθος περιστροφών σε ισχύ:"
+msgstr "Πλήθος κύκλων ενέργειας HDD:"
 
 msgctxt "#13200"
 msgid "Profiles"
@@ -4164,7 +4164,7 @@ msgstr "Διάρκεια κουδουνισμού (σε λεπτά)"
 
 msgctxt "#13210"
 msgid "Started, alarm in %im"
-msgstr "Εκκίνηση ξυπνητηριού σε %im"
+msgstr "Εκκίνηση ξυπνητηριού σε %i λεπτά"
 
 msgctxt "#13211"
 msgid "Alarm!"
@@ -4172,15 +4172,15 @@ msgstr "Συναγερμός!"
 
 msgctxt "#13212"
 msgid "Cancelled with %im%is left"
-msgstr "Ακυρώθηκε με %im%is να απομένουν"
+msgstr "Ακυρώθηκε με %i λεπτά %i δευτ. να απομένουν"
 
 msgctxt "#13213"
 msgid "%2.0fm"
-msgstr "%2.0fm"
+msgstr "%2.0f λεπτά"
 
 msgctxt "#13214"
 msgid "%2.0fs"
-msgstr "%2.0fs"
+msgstr "%2.0f δευτ."
 
 msgctxt "#13249"
 msgid "Search for subtitles in RARs"
@@ -4312,7 +4312,7 @@ msgstr "Εμφάνιση περιεχομένων αρχικού φακέλου"
 
 msgctxt "#13307"
 msgid "Track naming template"
-msgstr "Πρότυπο ονομασίας κομματιών"
+msgstr "Πρότυπο ονομασίας τραγουδιών"
 
 msgctxt "#13308"
 msgid "Do you wish to reboot your system"
@@ -4384,11 +4384,11 @@ msgstr "Διαφάνεια υποβάθρου"
 
 msgctxt "#13325"
 msgid "Foreground transparency"
-msgstr "Διαφάνεια προσκήνιου"
+msgstr "Διαφάνεια προσκηνίου"
 
 msgctxt "#13326"
 msgid "A/V delay"
-msgstr "A/V καθυστέρηση"
+msgstr "Καθυστέρηση A/V"
 
 msgctxt "#13327"
 msgid "Karaoke"
@@ -4396,11 +4396,11 @@ msgstr "Karaoke"
 
 msgctxt "#13328"
 msgid "%s not found"
-msgstr "%s δεν βρέθηκε"
+msgstr "Το %s δε βρέθηκε"
 
 msgctxt "#13329"
 msgid "Error opening %s"
-msgstr "Σφάλμα κατά το άνοιγμα %s"
+msgstr "Σφάλμα κατά το άνοιγμα του %s"
 
 msgctxt "#13330"
 msgid "Unable to load %s"
@@ -4424,7 +4424,7 @@ msgstr "Επεξεργασία ετικέτας"
 
 msgctxt "#13335"
 msgid "Make default"
-msgstr "Εξ' ορισμού επιλογή"
+msgstr "Να γίνει προεπιλογή"
 
 msgctxt "#13336"
 msgid "Remove button"
@@ -4432,7 +4432,7 @@ msgstr "Απαλοιφή πλήκτρου"
 
 msgctxt "#13340"
 msgid "Leave as is"
-msgstr "Παραμένει ως έχει"
+msgstr "Να μείνει ως έχει"
 
 msgctxt "#13341"
 msgid "Green"
@@ -4460,7 +4460,7 @@ msgstr "Πληροφορίες ταινίας"
 
 msgctxt "#13347"
 msgid "Queue item"
-msgstr "Κομμάτι σε αναμονή"
+msgstr "Αντικείμενο σε αναμονή"
 
 msgctxt "#13348"
 msgid "Search IMDb..."
@@ -4480,11 +4480,11 @@ msgstr "Πληροφορίες άλμπουμ"
 
 msgctxt "#13352"
 msgid "Scan item to library"
-msgstr "Ανίχνευση αντικειμένου στη συλλογή"
+msgstr "Σάρωση αντικειμένου στη συλλογή"
 
 msgctxt "#13353"
 msgid "Stop scanning"
-msgstr "Διακοπή αναζήτησης"
+msgstr "Διακοπή σάρωσης"
 
 msgctxt "#13354"
 msgid "Render method"
@@ -4568,7 +4568,7 @@ msgstr "Αναζήτηση βάσει χρόνου"
 
 msgctxt "#13387"
 msgid "Track naming template - right"
-msgstr "Πρότυπο ονομασίας κομματιού (δεξιά πλευρά)"
+msgstr "Πρότυπο ονομασίας τραγουδιών - δεξιά"
 
 msgctxt "#13388"
 msgid "Preset"
@@ -4584,7 +4584,7 @@ msgstr "Δεν υπάρχουν διαθέσιμες ρυθμίσεις\nγι' �
 
 msgctxt "#13391"
 msgid "Eject/Load"
-msgstr "Εξαγωγή/Εισαγωγή"
+msgstr "Εξαγωγή/Φόρτωση"
 
 msgctxt "#13392"
 msgid "Use visualization if playing audio"
@@ -4592,7 +4592,7 @@ msgstr "Χρήση οπτικοποιήσεων κατά την αναπαραγ
 
 msgctxt "#13393"
 msgid "Calculate size"
-msgstr "Υπολόγισε το μέγεθος"
+msgstr "Υπολογισμός μεγέθους"
 
 msgctxt "#13394"
 msgid "Calculating folder size"
@@ -4616,7 +4616,7 @@ msgstr "Συντομεύσεις"
 
 msgctxt "#13399"
 msgid "Ignore articles when sorting (e.g. \"the\")"
-msgstr "Αγνόησε τα άρθρα κατά την ταξινόμηση (π.χ. το \"The\")"
+msgstr "Να αγνοούνται τα άρθρα κατά την ταξινόμηση (π.χ. το \"The\")"
 
 msgctxt "#13400"
 msgid "Crossfade between songs on the same album"
@@ -4628,7 +4628,7 @@ msgstr "Αναζήτηση για %s"
 
 msgctxt "#13402"
 msgid "Show track position"
-msgstr "Εμφάνιση της θέσης του κομματιού"
+msgstr "Εμφάνιση της θέσης του τραγουδιού"
 
 msgctxt "#13403"
 msgid "Clear default"
@@ -4720,27 +4720,27 @@ msgstr "Χρήση αντικειμένων προσωρινής μνήμης pi
 
 msgctxt "#13425"
 msgid "Allow hardware acceleration (VDPAU)"
-msgstr "Έγκριση επιτάχυνσης υλικού (VDPAU)"
+msgstr "Χρήση επιτάχυνσης υλικού (VDPAU)"
 
 msgctxt "#13426"
 msgid "Allow hardware acceleration (VAAPI)"
-msgstr "Έγκριση επιτάχυνσης υλικού (VAAPI)"
+msgstr "Χρήση επιτάχυνσης υλικού (VAAPI)"
 
 msgctxt "#13427"
 msgid "Allow hardware acceleration (DXVA2)"
-msgstr "Έγκριση επιτάχυνσης υλικού (DXVA2)"
+msgstr "Χρήση επιτάχυνσης υλικού (DXVA2)"
 
 msgctxt "#13428"
 msgid "Allow hardware acceleration (CrystalHD)"
-msgstr "Έγκριση επιτάχυνσης υλικού (CrystalHD)"
+msgstr "Χρήση επιτάχυνσης υλικού (CrystalHD)"
 
 msgctxt "#13429"
 msgid "Allow hardware acceleration (VDADecoder)"
-msgstr "Έγκριση επιτάχυνσης υλικού (VDADecoder)"
+msgstr "Χρήση επιτάχυνσης υλικού (VDADecoder)"
 
 msgctxt "#13430"
 msgid "Allow hardware acceleration (OpenMax)"
-msgstr "Έγκριση επιτάχυνσης υλικού (OpenMax)"
+msgstr "Χρήση επιτάχυνσης υλικού (OpenMax)"
 
 msgctxt "#13431"
 msgid "Pixel Shaders"
@@ -4748,7 +4748,7 @@ msgstr "Σκιάσεις Pixel"
 
 msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
-msgstr "Έγκριση επιτάχυνσης υλικού (VideoToolbox)"
+msgstr "Χρήση επιτάχυνσης υλικού (VideoToolbox)"
 
 msgctxt "#13433"
 msgid "Play the next video automatically"
@@ -4784,7 +4784,7 @@ msgstr "Ποιότητα επανάληψης δειγματοληψίας"
 
 msgctxt "#13506"
 msgid "Low(fast)"
-msgstr "Χαμηλή (γρήγορη)"
+msgstr "Χαμηλή(γρήγορη)"
 
 msgctxt "#13507"
 msgid "Medium"
@@ -4796,7 +4796,7 @@ msgstr "Υψηλή"
 
 msgctxt "#13509"
 msgid "Really high(slow!)"
-msgstr "Πραγματικά υψηλή (αργή!)"
+msgstr "Πραγματικά υψηλή(αργή!)"
 
 msgctxt "#13510"
 msgid "Sync playback to display"
@@ -4872,7 +4872,7 @@ msgstr "Σφάλμα συσκευής Apple Remote"
 
 msgctxt "#13621"
 msgid "Apple Remote support could be enabled."
-msgstr "Αδυναμία υποστήριξης συσκευής Apple Remote."
+msgstr "Αδυναμία υποστήριξης Apple Remote."
 
 msgctxt "#14000"
 msgid "Stack"
@@ -4964,7 +4964,7 @@ msgstr "Χωρίς τηλεόραση"
 
 msgctxt "#14024"
 msgid "Enter the nearest large town"
-msgstr "Εισαγωγή της κοντινότερης μεγάλης πόλης"
+msgstr "Η κοντινότερη μεγάλη πόλη"
 
 msgctxt "#14025"
 msgid "Video/Audio/DVD cache - Harddisk"
@@ -5028,7 +5028,7 @@ msgstr "- Τερματισμός κατά την αναπαραγωγή"
 
 msgctxt "#14044"
 msgid "%i min"
-msgstr "%i λεπτ."
+msgstr "%i λεπτά"
 
 msgctxt "#14045"
 msgid "%i sec"
@@ -5112,7 +5112,7 @@ msgstr "Ορισμός ώρας"
 
 msgctxt "#14066"
 msgid "Enter the time in 24 hour HH:MM format"
-msgstr "Εισάγετε την ώρα σε 24ωρη μορφή (ΩΩ:ΛΛ)"
+msgstr "Εισάγετε την ώρα σε 24ωρη μορφή ΩΩ:ΛΛ"
 
 msgctxt "#14067"
 msgid "Enter the date in DD/MM/YYYY format"
@@ -5132,7 +5132,7 @@ msgstr "Εφαρμογή ρυθμίσεων τώρα"
 
 msgctxt "#14071"
 msgid "Allow file renaming and deletion"
-msgstr "Επιτρεπτή η μετονομασία και η διαγραφή αρχείων"
+msgstr "Να επιτρέπεται η μετονομασία και η διαγραφή αρχείων"
 
 msgctxt "#14074"
 msgid "Set timezone"
@@ -5148,7 +5148,7 @@ msgstr "Προσθήκη στα αγαπημένα"
 
 msgctxt "#14077"
 msgid "Remove from favourites"
-msgstr "Απομάκρυνση από τα αγαπημένα"
+msgstr "Αφαίρεση από τα αγαπημένα"
 
 msgctxt "#14078"
 msgid "- Colours"
@@ -5192,7 +5192,7 @@ msgstr "Αυτόματη αναπαραγωγή DVD"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
-msgstr "Χρήση γραμματοσειράς στους υπότιτλους"
+msgstr "Γραμματοσειρά υποτίτλων"
 
 msgctxt "#14090"
 msgid "International"
@@ -5240,7 +5240,7 @@ msgstr "Διακοπή αντιγραφής CD"
 
 msgctxt "#15015"
 msgid "Remove"
-msgstr "Απομάκρυνση"
+msgstr "Αφαίρεση"
 
 msgctxt "#15016"
 msgid "Games"
@@ -5304,7 +5304,7 @@ msgstr "Last.fm"
 
 msgctxt "#15201"
 msgid "Submit songs to Last.fm"
-msgstr "Αποστολή τραγουδιών στο Last.fm"
+msgstr "Υποβολή τραγουδιών στο Last.fm"
 
 msgctxt "#15202"
 msgid "Last.fm username"
@@ -5336,7 +5336,7 @@ msgstr "Αποσυνδεμένο"
 
 msgctxt "#15209"
 msgid "Submit interval %i"
-msgstr "Διάστημα αποστολής %i"
+msgstr "Διάστημα υποβολής %i"
 
 msgctxt "#15210"
 msgid "Cached %i songs"
@@ -5344,11 +5344,11 @@ msgstr "%i τραγούδια στη λανθάνουσα μνήμη"
 
 msgctxt "#15211"
 msgid "Submitting..."
-msgstr "Αποστολή..."
+msgstr "Υποβολή..."
 
 msgctxt "#15212"
 msgid "Submitting in %i secs"
-msgstr "Αποστολή σε %i δευτ."
+msgstr "Υποβολή σε %i δευτ."
 
 msgctxt "#15213"
 msgid "Play using..."
@@ -5356,11 +5356,11 @@ msgstr "Άνοιγμα με..."
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronization"
-msgstr "Χρήση συγχρονισμού Smoothed A/V"
+msgstr "Χρήση ομαλού συγχρονισμού A/V"
 
 msgctxt "#15215"
 msgid "Hide file names in thumbs view"
-msgstr "Απόκρυψη ονομάτων αρχείων στην προβολή μικρογραφιών"
+msgstr "Απόκρυψη ονομάτων αρχείων στις Μικρογραφίες"
 
 msgctxt "#15216"
 msgid "Play in party mode"
@@ -5368,7 +5368,7 @@ msgstr "Εκτέλεση σε λειτουργία party"
 
 msgctxt "#15217"
 msgid "Submit songs to Libre.fm"
-msgstr "Αποστολή τραγουδιών στο Libre.fm"
+msgstr "Υποβολή τραγουδιών στο Libre.fm"
 
 msgctxt "#15218"
 msgid "Libre.fm username"
@@ -5388,7 +5388,7 @@ msgstr "Υποβολή τραγουδιού"
 
 msgctxt "#15250"
 msgid "Submit Last.fm radio to Last.fm"
-msgstr "Αποστολή Last.fm radio στο Last.fm"
+msgstr "Υποβολή ραδιοφώνου Last.fm στο Last.fm"
 
 msgctxt "#15251"
 msgid "Connecting to Last.fm..."
@@ -5412,23 +5412,23 @@ msgstr "Το προφίλ σας (%name%)"
 
 msgctxt "#15256"
 msgid "Overall top tags"
-msgstr "Γενικά κορυφαίες ετικέτες"
+msgstr "Γενικά καλύτερες ετικέτες"
 
 msgctxt "#15257"
 msgid "Top artists for tag %name%"
-msgstr "Κορυφαίοι καλλιτέχνες για την ετικέτα %name%"
+msgstr "Καλύτεροι καλλιτέχνες για την ετικέτα %name%"
 
 msgctxt "#15258"
 msgid "Top albums for tag %name%"
-msgstr "Κορυφαία άλμπουμ για την ετικέτα %name%"
+msgstr "Καλύτερα άλμπουμ για την ετικέτα %name%"
 
 msgctxt "#15259"
 msgid "Top tracks for tag %name%"
-msgstr "Κορυφαία κομμάτια για την ετικέτα %name%"
+msgstr "Καλύτερα τραγούδια για την ετικέτα %name%"
 
 msgctxt "#15260"
 msgid "Listen to tag %name% Last.fm radio"
-msgstr "Ακρόαση της ετικέτας %name% στο Last.fm radio"
+msgstr "Ακρόαση της ετικέτας %name% στο ραδιόφωνο Last.fm"
 
 msgctxt "#15261"
 msgid "Similar artists as %name%"
@@ -5436,27 +5436,27 @@ msgstr "Παρόμοιοι καλλιτέχνες όπως ο %name%"
 
 msgctxt "#15262"
 msgid "Top %name% albums"
-msgstr "Κορυφαία άλμπουμ %name%"
+msgstr "Καλύτερα άλμπουμ %name%"
 
 msgctxt "#15263"
 msgid "Top %name% tracks"
-msgstr "Κορυφαία κομμάτια %name%"
+msgstr "Καλύτερα τραγούδια %name%"
 
 msgctxt "#15264"
 msgid "Top %name% tags"
-msgstr "Κορυφαίες ετικέτες %name%"
+msgstr "Καλύτερες ετικέτες %name%"
 
 msgctxt "#15265"
 msgid "Biggest fans of %name%"
-msgstr "Οι μεγαλύτεροι θαυμαστές του %name%"
+msgstr "Οι μεγαλύτεροι θαυμαστές %name%"
 
 msgctxt "#15266"
 msgid "Listen to %name% fans Last.fm radio"
-msgstr "Ακρόαση θαυμαστών του %name% στο Last.fm radio"
+msgstr "Ακρόαση θαυμαστών %name% στο ραδιόφωνο Last.fm"
 
 msgctxt "#15267"
 msgid "Listen to %name% similar artists Last.fm radio"
-msgstr "Ακρόαση καλλιτεχνών παρόμοιων με τον %name% στο Last.fm radio"
+msgstr "Ακρόαση καλλιτεχνών παρόμοιων με %name% στο ραδιόφωνο Last.fm"
 
 msgctxt "#15268"
 msgid "Top artists for user %name%"
@@ -5468,7 +5468,7 @@ msgstr "Τα καλύτερα άλμπουμ του χρήστη %name%"
 
 msgctxt "#15270"
 msgid "Top tracks for user %name%"
-msgstr "Τα καλύτερα κομμάτια του χρήστη %name%"
+msgstr "Τα καλύτερα τραγούδια του χρήστη %name%"
 
 msgctxt "#15271"
 msgid "Friends of user %name%"
@@ -5480,27 +5480,27 @@ msgstr "Γείτονες του χρήστη %name%"
 
 msgctxt "#15273"
 msgid "Weekly artist chart for %name%"
-msgstr "Εβδομαδιαίο chart του καλλιτέχνη %name%"
+msgstr "Εβδομαδιαίο chart καλλιτέχνη του %name%"
 
 msgctxt "#15274"
 msgid "Weekly album chart for %name%"
-msgstr "Εβδομαδιαίο chart του άλμπουμ %name%"
+msgstr "Εβδομαδιαίο chart άλμπουμ του %name%"
 
 msgctxt "#15275"
 msgid "Weekly track chart for %name%"
-msgstr "Εβδομαδιαίο chart του κομματιού %name%"
+msgstr "Εβδομαδιαίο chart τραγουδιών του %name%"
 
 msgctxt "#15276"
 msgid "Listen to %name%'s neighbours Last.fm radio"
-msgstr "Ακρόαση του Last.fm radio των γειτόνων του %name%"
+msgstr "Ακρόαση του ραδιοφώνου Last.fm των γειτόνων του %name%"
 
 msgctxt "#15277"
 msgid "Listen to %name%'s personal Last.fm radio"
-msgstr "Ακρόαση του προσωπικού Last.fm radio του %name%"
+msgstr "Ακρόαση του προσωπικού ραδιοφώνου Last.fm του %name%"
 
 msgctxt "#15278"
 msgid "Listen to %name%'s mix Last.fm radio"
-msgstr "Ακρόαση της μίξης Last.fm radio του %name%"
+msgstr "Ακρόαση της μίξης ραδιοφώνου Last.fm του %name%"
 
 msgctxt "#15279"
 msgid "Retrieving list from Last.fm..."
@@ -5520,27 +5520,27 @@ msgstr "Εισάγετε μία ετικέτα για να βρείτε παρό
 
 msgctxt "#15283"
 msgid "Tracks recently listened by %name%"
-msgstr "Κομμάτια που ακούστηκαν πρόσφατα από %name%"
+msgstr "Τραγούδια που ακούστηκαν πρόσφατα από %name%"
 
 msgctxt "#15284"
 msgid "Listen to %name%'s recommendations Last.fm radio"
-msgstr "Ακρόαση των προτιμήσεων του %name% στο Last.fm radio"
+msgstr "Ακρόαση των προτιμήσεων του %name% στο ραδιοφώνου Last.fm"
 
 msgctxt "#15285"
 msgid "Top tags for user %name%"
-msgstr "Κορυφαίες ετικέτες για τον χρήστη %name%"
+msgstr "Καλύτερες ετικέτες για το χρήστη %name%"
 
 msgctxt "#15287"
 msgid "Do you want to add the current track to your loved tracks?"
-msgstr "Να προστεθεί το παρόν κομμάτι στα αγαπημένα σας;"
+msgstr "Να προστεθεί το τρέχον τραγούδι στα αγαπημένα σας;"
 
 msgctxt "#15288"
 msgid "Do you want to ban the current track?"
-msgstr "Να αποκλειστεί το παρόν κομμάτι;"
+msgstr "Να αποκλειστεί το τρέχον τραγούδι;"
 
 msgctxt "#15289"
 msgid "Added to your loved tracks: '%s'."
-msgstr "Προσθήκη στα αγαπημένα σας κομμάτια: '%s'."
+msgstr "Προσθήκη στα αγαπημένα σας τραγούδια: '%s'."
 
 msgctxt "#15290"
 msgid "Could not add '%s' to your loved tracks."
@@ -5556,11 +5556,11 @@ msgstr "Δεν μπορεί να αποκλειστεί το '%s'."
 
 msgctxt "#15293"
 msgid "Tracks recently loved by %name%"
-msgstr "Πρόσφατα αγαπημένα κομμάτια από %name%"
+msgstr "Πρόσφατα αγαπημένα τραγούδια από %name%"
 
 msgctxt "#15294"
 msgid "Tracks recently banned by %name%"
-msgstr "Πρόσφατα αποκλεισμένα κομμάτια από %name%"
+msgstr "Πρόσφατα αποκλεισμένα τραγούδια από %name%"
 
 msgctxt "#15295"
 msgid "Remove from loved tracks"
@@ -5572,11 +5572,11 @@ msgstr "Άρση αποκλεισμού"
 
 msgctxt "#15297"
 msgid "Do you want to remove this track from your loved tracks?"
-msgstr "Να αφαιρεθεί το παρόν κομμάτι από τα αγαπημένα σας;"
+msgstr "Να αφαιρεθεί το τρέχον τραγούδι από τα αγαπημένα σας;"
 
 msgctxt "#15298"
 msgid "Do you want to un-ban this track?"
-msgstr "Να αρθεί ο αποκλεισμός για αυτό το κομμάτι;"
+msgstr "Να αρθεί ο αποκλεισμός για αυτό το τραγούδι;"
 
 msgctxt "#15300"
 msgid "Path not found or invalid"
@@ -5620,35 +5620,35 @@ msgstr "Αναπαραγωγή πολυμέσων από το δίσκο"
 
 msgctxt "#16008"
 msgid "Enter new title"
-msgstr "Εισάγετε νέο τίτλο"
+msgstr "Εισαγωγή νέου τίτλου"
 
 msgctxt "#16009"
 msgid "Enter the movie name"
-msgstr "Εισάγετε το όνομα της ταινίας"
+msgstr "Εισαγωγή ονόματος ταινίας"
 
 msgctxt "#16010"
 msgid "Enter the profile name"
-msgstr "Εισάγετε το όνομα του προφίλ"
+msgstr "Εισαγωγή ονόματος προφίλ"
 
 msgctxt "#16011"
 msgid "Enter the album name"
-msgstr "Εισάγετε το όνομα του άλμπουμ"
+msgstr "Εισαγωγή ονόματος άλμπουμ"
 
 msgctxt "#16012"
 msgid "Enter the playlist name"
-msgstr "Εισάγετε το όνομα της λίστας αναπ/γής"
+msgstr "Εισαγωγή ονόματος λίστας αναπ/γής"
 
 msgctxt "#16013"
 msgid "Enter new filename"
-msgstr "Εισάγετε νέο όνομα αρχείου"
+msgstr "Εισαγωγή νέου ονόματος αρχείου"
 
 msgctxt "#16014"
 msgid "Enter folder name"
-msgstr "Εισάγετε όνομα φακέλου"
+msgstr "Εισαγωγή ονόματος φακέλου"
 
 msgctxt "#16015"
 msgid "Enter directory"
-msgstr "Εισάγετε κατάλογο"
+msgstr "Εισαγωγή φακέλου"
 
 msgctxt "#16016"
 msgid "Available options: %A, %T, %N, %B, %D, %G, %Y, %F, %S"
@@ -5684,11 +5684,11 @@ msgstr "Ακύρωση..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
-msgstr "Εισάγετε το όνομα του καλλιτέχνη"
+msgstr "Εισαγωγή ονόματος καλλιτέχνη"
 
 msgctxt "#16026"
 msgid "Playback failed"
-msgstr "Η αναπαραγωγή απέτυχε"
+msgstr "Αποτυχία αναπαραγωγής"
 
 msgctxt "#16027"
 msgid "One or more items failed to play."
@@ -5716,11 +5716,11 @@ msgstr "Δεν είναι δυνατός ο συγχρονισμός με τη �
 
 msgctxt "#16033"
 msgid "Could not open database."
-msgstr "Απέτυχε το άνοιγμα της βάσης δεδομένων."
+msgstr "Αποτυχία ανοίγματος βάσης δεδομένων."
 
 msgctxt "#16034"
 msgid "Could not get songs from database."
-msgstr "Απέτυχε η λήψη τραγουδιών από τη βάση δεδομένων."
+msgstr "Αποτυχία λήψης τραγουδιών από τη βάση δεδομένων."
 
 msgctxt "#16035"
 msgid "Party mode playlist"
@@ -5764,11 +5764,11 @@ msgstr "Προβληθέντα"
 
 msgctxt "#16103"
 msgid "Mark as watched"
-msgstr "Επισήμανση ως προβληθέν"
+msgstr "Σήμανση ως προβληθέν"
 
 msgctxt "#16104"
 msgid "Mark as unwatched"
-msgstr "Επισήμανση ως μη προβληθέν"
+msgstr "Σήμανση ως μη προβληθέν"
 
 msgctxt "#16105"
 msgid "Edit title"
@@ -5780,27 +5780,27 @@ msgstr "Η διαδικασία ακυρώθηκε"
 
 msgctxt "#16201"
 msgid "Copy failed"
-msgstr "Η αντιγραφή απέτυχε"
+msgstr "Αποτυχία αντιγραφής"
 
 msgctxt "#16202"
 msgid "Failed to copy at least one file"
-msgstr "Απέτυχε η αντιγραφή τουλάχιστον ενός αρχείου"
+msgstr "Αποτυχία αντιγραφής τουλάχιστον ενός αρχείου"
 
 msgctxt "#16203"
 msgid "Move failed"
-msgstr "Η μετακίνηση απέτυχε"
+msgstr "Αποτυχία μετακίνησης"
 
 msgctxt "#16204"
 msgid "Failed to move at least one file"
-msgstr "Απέτυχε η μετακίνηση τουλάχιστον ενός αρχείου"
+msgstr "Αποτυχία μετακίνησης τουλάχιστον ενός αρχείου"
 
 msgctxt "#16205"
 msgid "Delete failed"
-msgstr "Η διαγραφή απέτυχε"
+msgstr "Αποτυχία διαγραφής"
 
 msgctxt "#16206"
 msgid "Failed to delete at least one file"
-msgstr "Απέτυχε η διαγραφή τουλάχιστον ενός αρχείου"
+msgstr "Αποτυχία διαγραφής τουλάχιστον ενός αρχείου"
 
 msgctxt "#16300"
 msgid "Video scaling method"
@@ -5924,7 +5924,7 @@ msgstr "%i ώρες"
 
 msgctxt "#17999"
 msgid "%i days"
-msgstr "%i ημέρες"
+msgstr "%i μέρες"
 
 msgctxt "#19000"
 msgid "Switch to channel"
@@ -5932,7 +5932,7 @@ msgstr "Μετάβαση στο κανάλι"
 
 msgctxt "#19001"
 msgid "Separate the search words by using AND, OR and/or NOT."
-msgstr "Χωρίστε τους όρους αναζήτησης χρησιμοποιώντας AND, OR και/ή NOT."
+msgstr "Χωρίστε τους όρους αναζήτησης χρησιμοποιώντας AND, OR ή/και NOT."
 
 msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
@@ -5944,7 +5944,7 @@ msgstr "Εύρεση παρόμοιων προγραμμάτων"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Εισαγωγή EPG από τους πελάτες"
+msgstr "Λήψη EPG από τους πελάτες"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -6352,7 +6352,7 @@ msgstr "Διεύθυνση"
 
 msgctxt "#19116"
 msgid "Disksize"
-msgstr "ΜέγεθοςΔίσκου"
+msgstr "Μέγεθος Δίσκου"
 
 msgctxt "#19117"
 msgid "Search for channels"
@@ -6616,7 +6616,7 @@ msgstr "Επαναφορά της βάσης δεδομένων PVR"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "Διαγράφονται όλα τα στοιχεία στη βάση δεδομένων του PVR"
+msgstr "Διαγράφονται όλα τα στοιχεία της βάσης δεδομένων του PVR"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
@@ -6736,11 +6736,11 @@ msgstr "Το PVR backend δεν υποστηρίζει χρονοδιακόπτ�
 
 msgctxt "#19216"
 msgid "All radio channels"
-msgstr "Όλοι οι ραδιοφωνικοί σταθμοί"
+msgstr "Όλοι οι ραδ. σταθμοί"
 
 msgctxt "#19217"
 msgid "All TV channels"
-msgstr "Όλα τα τηλεοπτικά κανάλια"
+msgstr "Όλα τα τηλ. κανάλια"
 
 msgctxt "#19218"
 msgid "Visible"
@@ -6932,7 +6932,7 @@ msgstr "Λανθασμένο PIN"
 
 msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
-msgstr "Το PIN που εισάγατε είναι λανθασμένο."
+msgstr "Το PIN που εισαγάγατε είναι λανθασμένο."
 
 msgctxt "#19266"
 msgid "Parental locked"
@@ -7368,7 +7368,7 @@ msgstr "Εξωτερικός αναπαραγωγέας DVD"
 
 msgctxt "#20003"
 msgid "Trainers folder"
-msgstr "Φάκελος trainers"
+msgstr "Φάκελος trainer"
 
 msgctxt "#20004"
 msgid "Screenshot folder"
@@ -7392,11 +7392,11 @@ msgstr "Χρήση XBMC"
 
 msgctxt "#20011"
 msgid "Music playlists"
-msgstr "Λίστες αναπαραγωγής μουσικής"
+msgstr "Λίστες αναπ/γής μουσικής"
 
 msgctxt "#20012"
 msgid "Video playlists"
-msgstr "Λίστες αναπαραγωγής βίντεο"
+msgstr "Λίστες αναπ/γής βίντεο"
 
 msgctxt "#20013"
 msgid "Do you wish to launch the game?"
@@ -7472,7 +7472,7 @@ msgstr "Κλείδωμα των ρυθμίσεων"
 
 msgctxt "#20044"
 msgid "Start fresh"
-msgstr "Νέα έναρξη"
+msgstr "Έναρξη με νέες ρυθμίσεις"
 
 msgctxt "#20045"
 msgid "Enter master mode"
@@ -7520,7 +7520,7 @@ msgstr "Μικρογραφία Allmusic.com"
 
 msgctxt "#20057"
 msgid "Remove thumbnail"
-msgstr "Απομάκρυνση μικρογραφίας"
+msgstr "Αφαίρεση μικρογραφίας"
 
 msgctxt "#20058"
 msgid "Add profile..."
@@ -7572,7 +7572,7 @@ msgstr "Αδύνατη η δημιουργία φακέλου"
 
 msgctxt "#20070"
 msgid "Profile directory"
-msgstr "Κατάλογος προφίλ"
+msgstr "Φάκελος προφίλ"
 
 msgctxt "#20071"
 msgid "Start with fresh media sources"
@@ -7580,7 +7580,7 @@ msgstr "Έναρξη με νέες πηγές πολυμέσων"
 
 msgctxt "#20072"
 msgid "Make sure the selected folder is writable"
-msgstr "Σιγουρευτείτε ότι ο επιλεγμένος φάκελος μπορεί να εγγραφεί"
+msgstr "Βεβαιωθείτε ότι ο επιλεγμένος φάκελος μπορεί να εγγραφεί"
 
 msgctxt "#20073"
 msgid "and that the new folder name is valid"
@@ -7604,7 +7604,7 @@ msgstr "Ρυθμίσεις κελύφους"
 
 msgctxt "#20078"
 msgid "- no link set -"
-msgstr "- δεν έχει οριστεί σύνδεση -"
+msgstr "- δεν έχει οριστεί σύνδεσμος -"
 
 msgctxt "#20079"
 msgid "Enable animations"
@@ -7620,7 +7620,7 @@ msgstr "Ενεργοποίηση πλήκτρων συντόμευσης"
 
 msgctxt "#20082"
 msgid "Show programs in main menu"
-msgstr "Εμφάνιση των εφαρμογών στο κεντρικό μενού"
+msgstr "Εμφάνιση εφαρμογών στο κεντρικό μενού"
 
 msgctxt "#20083"
 msgid "Show music info"
@@ -7652,7 +7652,7 @@ msgstr "Ελεύθερος χώρος"
 
 msgctxt "#20090"
 msgid "Enter the name of an existing share"
-msgstr "Εισάγετε όνομα κοινόχρηστου πόρου"
+msgstr "Εισαγωγή ονόματος κοινόχρηστου πόρου"
 
 msgctxt "#20091"
 msgid "Lock code"
@@ -7672,7 +7672,7 @@ msgstr "Πηγές πολυμέσων"
 
 msgctxt "#20095"
 msgid "Enter profile lock code"
-msgstr "Εισάγετε κωδικό κλειδώματος προφίλ"
+msgstr "Εισαγωγή κωδικού κλειδώματος προφίλ"
 
 msgctxt "#20096"
 msgid "Login screen"
@@ -7688,7 +7688,7 @@ msgstr "Λαμβάνονται πληροφορίες για το άλμπουμ
 
 msgctxt "#20099"
 msgid "Can't rip CD or track while playing from CD"
-msgstr "Αδυναμία αντιγραφής του CD ή του κομματιού κατά την αναπαραγωγή του CD"
+msgstr "Αδυναμία αντιγραφής του CD ή του τραγουδιού κατά την αναπαραγωγή του CD"
 
 msgctxt "#20100"
 msgid "Master lock code and settings"
@@ -7724,7 +7724,7 @@ msgstr "Ξεχωριστές (κλειδωμένο)"
 
 msgctxt "#20108"
 msgid "Root"
-msgstr "Root"
+msgstr "Αρχ. Φάκελος"
 
 msgctxt "#20109"
 msgid "- Zoom"
@@ -7800,7 +7800,7 @@ msgstr "Αποσύνδεση"
 
 msgctxt "#20128"
 msgid "Go to root"
-msgstr "Μετάβαση σε root"
+msgstr "Μετάβαση σε αρχ. φάκελο"
 
 msgctxt "#20129"
 msgid "Weave"
@@ -7824,7 +7824,7 @@ msgstr "Επεξεργασία τοποθεσίας δικτύου"
 
 msgctxt "#20134"
 msgid "Remove network location"
-msgstr "Απομάκρυνση τοποθεσίας δικτύου"
+msgstr "Αφαίρεση τοποθεσίας δικτύου"
 
 msgctxt "#20135"
 msgid "Do you want to scan the folder?"
@@ -7872,7 +7872,7 @@ msgstr "Χρόνος τερματισμού (σε λεπτά)"
 
 msgctxt "#20146"
 msgid "Started, shutdown in %im"
-msgstr "Ξεκίνησε, τερματισμός σε %im"
+msgstr "Ξεκίνησε, τερματισμός σε %i λεπτά"
 
 msgctxt "#20147"
 msgid "Shutdown in 30 minutes"
@@ -8028,7 +8028,7 @@ msgstr "Περιστροφή εικόνων που χρησιμοποιούν π
 
 msgctxt "#20185"
 msgid "Use poster view styles for TV shows"
-msgstr "Χρήση στυλ αφισών για τις τηλεοπτικές σειρές"
+msgstr "Χρήση στυλ αφισών για τις τηλ. σειρές"
 
 msgctxt "#20186"
 msgid "Please wait"
@@ -8060,11 +8060,11 @@ msgstr "Λήψη πρόσθετων πληροφοριών κατά τις εν�
 
 msgctxt "#20193"
 msgid "Default service for album information"
-msgstr "Προκαθορισμένη υπηρεσία πληροφοριών άλμπουμ"
+msgstr "Προεπιλεγμένη υπηρεσία πληροφοριών άλμπουμ"
 
 msgctxt "#20194"
 msgid "Default service for artist information"
-msgstr "Προκαθορισμένη υπηρεσία πληροφοριών καλλιτέχνη"
+msgstr "Προεπιλεγμένη υπηρεσία πληροφοριών καλλιτέχνη"
 
 msgctxt "#20195"
 msgid "Change scraper"
@@ -8148,7 +8148,7 @@ msgstr "Σύστημα Αρχείων Δικτύου (NFS)"
 
 msgctxt "#20260"
 msgid "Secure Shell (SSH/SFTP)"
-msgstr "Κέλυφος Ασφαλείας (SSH/SFTP)"
+msgstr "Ασφαλές Κέλυφος (SSH/SFTP)"
 
 msgctxt "#20261"
 msgid "Apple Filing Protocol (AFP)"
@@ -8192,7 +8192,7 @@ msgstr "Αμαύρωση LCD κατά την αναπαραγωγή"
 
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
-msgstr "Άγνωστο ή πάνω στην μητρική (προστατεύεται)"
+msgstr "Άγνωστο ή πάνω στην μητρική (με προστασία)"
 
 msgctxt "#20312"
 msgid "Dim LCD on paused"
@@ -8240,7 +8240,7 @@ msgstr "Επαναφορά των τιμών βαθμονόμησης για %s"
 
 msgctxt "#20327"
 msgid "to it's default values."
-msgstr "στις προκαθορισμένες τιμές."
+msgstr "στις προεπιλεγμένες τιμές."
 
 msgctxt "#20328"
 msgid "Browse for destination"
@@ -8248,7 +8248,7 @@ msgstr "Αναζήτηση προορισμού"
 
 msgctxt "#20329"
 msgid "Movies are in separate folders that match the movie title"
-msgstr "Οι ταινίες είναι σε διαφορετικούς φακέλους που ταιριάζουν με τον τίτλο της ταινίας"
+msgstr "Οι ταινίες είναι σε ξεχωριστούς φακέλους με αντίστοιχα ονόματα"
 
 msgctxt "#20330"
 msgid "Use folder names for lookups"
@@ -8272,7 +8272,7 @@ msgstr "Φάκελος"
 
 msgctxt "#20335"
 msgid "Look for content recursively?"
-msgstr "Έλεγχος περιεχομένου και των υποφακέλων;"
+msgstr "Έλεγχος περιεχομένου και στους υποφάκελους;"
 
 msgctxt "#20336"
 msgid "Unlock sources"
@@ -8292,11 +8292,11 @@ msgstr "Σκηνοθεσία"
 
 msgctxt "#20340"
 msgid "Do you want to remove all items within"
-msgstr "Θέλετε να απομακρύνετε όλα τα αντικείμενα"
+msgstr "Θέλετε να αφαιρέσετε όλα τα αντικείμενα"
 
 msgctxt "#20341"
 msgid "this path from the XBMC library?"
-msgstr "αυτής της διαδρομής από τη συλλογή του XBMC;"
+msgstr "αυτής της διαδρομής από τη συλλογή;"
 
 msgctxt "#20342"
 msgid "Movies"
@@ -8304,7 +8304,7 @@ msgstr "Ταινίες"
 
 msgctxt "#20343"
 msgid "TV shows"
-msgstr "Τηλεοπτικές σειρές"
+msgstr "Τηλ. Σειρές"
 
 msgctxt "#20344"
 msgid "This directory contains"
@@ -8336,7 +8336,7 @@ msgstr "ψήφοι"
 
 msgctxt "#20351"
 msgid "TV show information"
-msgstr "Πληροφορίες τηλεοπτικής σειράς"
+msgstr "Πληροφορίες τηλ. σειράς"
 
 msgctxt "#20352"
 msgid "Episode information"
@@ -8344,11 +8344,11 @@ msgstr "Πληροφορίες επεισοδίου"
 
 msgctxt "#20353"
 msgid "Loading TV show details"
-msgstr "Φόρτωση λεπτομερειών τηλεοπτικής σειράς"
+msgstr "Φόρτωση λεπτομερειών τηλ. σειράς"
 
 msgctxt "#20354"
 msgid "Fetching episode guide"
-msgstr "Ανάκτηση οδηγού επεισοδίου"
+msgstr "Ανάκτηση οδηγού επεισοδίων"
 
 msgctxt "#20355"
 msgid "Loading info for episodes in directory"
@@ -8356,11 +8356,11 @@ msgstr "Φόρτωση πληροφοριών για τα επεισόδια σ�
 
 msgctxt "#20356"
 msgid "Select TV show:"
-msgstr "Επιλεγμένη τηλεοπτική σειρά:"
+msgstr "Επιλεγμένη τηλ. σειρά:"
 
 msgctxt "#20357"
 msgid "Enter the TV show name"
-msgstr "Εισαγωγή ονόματος τηλεοπτικής σειράς"
+msgstr "Εισαγωγή ονόματος τηλ. σειράς"
 
 msgctxt "#20358"
 msgid "Season %i"
@@ -8376,7 +8376,7 @@ msgstr "Επεισόδια"
 
 msgctxt "#20361"
 msgid "Loading episode details"
-msgstr "Λαμβάνονται λεπτομέρειες για το επεισόδιο"
+msgstr "Φορτώνονται λεπτομέρειες για το επεισόδιο"
 
 msgctxt "#20362"
 msgid "Remove episode from library"
@@ -8384,11 +8384,11 @@ msgstr "Αφαίρεση επεισοδίου από τη συλλογή"
 
 msgctxt "#20363"
 msgid "Remove TV show from library"
-msgstr "Αφαίρεση τηλεοπτικής σειράς από τη συλλογή"
+msgstr "Αφαίρεση τηλ. σειράς από τη συλλογή"
 
 msgctxt "#20364"
 msgid "TV show"
-msgstr "Τηλεοπτική σειρά"
+msgstr "Τηλ. Σειρά"
 
 msgctxt "#20365"
 msgid "Episode plot"
@@ -8428,7 +8428,7 @@ msgstr "Κύκλος"
 
 msgctxt "#20374"
 msgid "Downloading movie information"
-msgstr "Λήψη πληροφοριών για την ταινία"
+msgstr "Λήψη πληροφοριών ταινίας"
 
 msgctxt "#20375"
 msgid "Unassign content"
@@ -8440,7 +8440,7 @@ msgstr "Πρωτότυπος τίτλος"
 
 msgctxt "#20377"
 msgid "Refresh TV show information"
-msgstr "Ανανέωση πληροφοριών τηλεοπτικής σειράς"
+msgstr "Ανανέωση πληροφοριών τηλ. σειράς"
 
 msgctxt "#20378"
 msgid "Refresh info for all episodes?"
@@ -8448,7 +8448,7 @@ msgstr "Ανανέωση πληροφοριών για όλα τα επεισό�
 
 msgctxt "#20379"
 msgid "Selected folder contains a single TV show"
-msgstr "Ο επιλεγμένος φάκελος περιέχει μόνο μία τηλεοπτική σειρά"
+msgstr "Ο επιλεγμένος φάκελος περιέχει μόνο μία τηλ. σειρά"
 
 msgctxt "#20380"
 msgid "Exclude selected folder from scans"
@@ -8468,11 +8468,11 @@ msgstr "Ο επιλεγμένος φάκελος περιέχει μόνο έν�
 
 msgctxt "#20384"
 msgid "Link to TV show"
-msgstr "Σύνδεση με τηλεοπτική σειρά"
+msgstr "Σύνδεση με τηλ. σειρά"
 
 msgctxt "#20385"
 msgid "Remove link to TV show"
-msgstr "Αφαίρεση συνδέσμου από τηλεοπτική σειρά"
+msgstr "Αφαίρεση συνδέσμου από τηλ. σειρά"
 
 msgctxt "#20386"
 msgid "Recently added movies"
@@ -8532,7 +8532,7 @@ msgstr "Μουσικά βίντεο από άλμπουμ"
 
 msgctxt "#20400"
 msgid "Go to music videos by artist"
-msgstr "Μουσικά βίντεο ανά καλλιτέχνη"
+msgstr "Μουσικά βίντεο καλλιτέχνη"
 
 msgctxt "#20401"
 msgid "Play music video"
@@ -8540,7 +8540,7 @@ msgstr "Αναπαραγωγή μουσικού βίντεο"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Λήψη μικρογραφιών ηθοποιού κατά την προσθήκη στη συλλογή"
+msgstr "Λήψη μικρογραφιών ηθοποιών κατά την προσθήκη στη συλλογή"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
@@ -8564,7 +8564,7 @@ msgstr "Λήψη πληροφοριών για το μουσικό βίντεο"
 
 msgctxt "#20409"
 msgid "Downloading TV show information"
-msgstr "Λήψη πληροφοριών για την τηλεοπτική σειρά"
+msgstr "Λήψη πληροφοριών για την τηλ. σειρά"
 
 msgctxt "#20410"
 msgid "Trailer"
@@ -8664,7 +8664,7 @@ msgstr "Ομάδες Ταινιών"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
-msgstr "Εξαγωγή μικρογραφιών ηθοποιού;"
+msgstr "Εξαγωγή μικρογραφιών ηθοποιών;"
 
 msgctxt "#20437"
 msgid "Choose fanart"
@@ -8696,7 +8696,7 @@ msgstr "Επιθυμείτε να ανανεώσετε τις πληροφορί
 
 msgctxt "#20444"
 msgid "items within this path?"
-msgstr "για όλα τα στοιχεία αυτής της διαδρομής;"
+msgstr "για όλα τα αντικείμενα αυτής της διαδρομής;"
 
 msgctxt "#20445"
 msgid "Fanart"
@@ -8820,7 +8820,7 @@ msgstr "Επεξεργασία κοινόχρηστων πολυμέσων"
 
 msgctxt "#21365"
 msgid "Remove media share"
-msgstr "Απομάκρυνση κοινόχρηστων πολυμέσων"
+msgstr "Αφαίρεση κοινόχρηστων πολυμέσων"
 
 msgctxt "#21366"
 msgid "Subtitle folder"
@@ -8884,7 +8884,7 @@ msgstr "Ενεργοποίηση 1080i"
 
 msgctxt "#21381"
 msgid "Enter name of new playlist"
-msgstr "Εισαγωγή ονόματος για τη νέα λίστα αναπ/γής"
+msgstr "Εισαγωγή ονόματος της νέας λίστας αναπ/γής"
 
 msgctxt "#21382"
 msgid "Show \"Add source\" buttons in file lists"
@@ -8948,7 +8948,7 @@ msgstr "Κεφάλαιο"
 
 msgctxt "#21397"
 msgid "High quality pixel shader v2"
-msgstr "Υψηλή ποιότητα (Σκίαση pixel v2)"
+msgstr "Υψηλής ποιότητας σκίαση pixel v2"
 
 msgctxt "#21398"
 msgid "Enable playlist at startup"
@@ -8956,7 +8956,7 @@ msgstr "Ενεργοποίηση λίστας αναπ/γής κατά την ε
 
 msgctxt "#21399"
 msgid "Use tween animations"
-msgstr "Ενεργοποίηση εφέ παλινδρομικής κίνησης"
+msgstr "Χρήση εφέ παλινδρομικής κίνησης"
 
 msgctxt "#21400"
 msgid "contains"
@@ -9016,7 +9016,7 @@ msgstr "Προεπιλεγμένο scraper ταινιών"
 
 msgctxt "#21414"
 msgid "Default tvshow scraper"
-msgstr "Προεπιλεγμένο scraper τηλεοπτικών σειρών"
+msgstr "Προεπιλεγμένο scraper τηλ. σειρών"
 
 msgctxt "#21415"
 msgid "Default music video scraper"
@@ -9168,7 +9168,7 @@ msgstr "Λήψη Περισσότερων..."
 
 msgctxt "#21453"
 msgid "Root filesystem"
-msgstr "Σύστημα αρχείων root"
+msgstr "Σύστημα αρχείων αρχικού φακέλου"
 
 msgctxt "#21454"
 msgid "Cache full"
@@ -9464,7 +9464,7 @@ msgstr "Λήψη πληροφοριών για τον καλλιτέχνη"
 
 msgctxt "#21887"
 msgid "Biography"
-msgstr "Βιογραφικό"
+msgstr "Βιογραφία"
 
 msgctxt "#21888"
 msgid "Discography"
@@ -9520,7 +9520,7 @@ msgstr "Γέννηση/Δημιουργία"
 
 msgctxt "#22000"
 msgid "Update library on startup"
-msgstr "Ενημέρωση της συλλογής κατά την εκκίνηση"
+msgstr "Ενημέρωση συλλογής κατά την εκκίνηση"
 
 msgctxt "#22001"
 msgid "Hide progress of library updates"
@@ -9532,15 +9532,15 @@ msgstr "- Κατάληξη DNS"
 
 msgctxt "#22003"
 msgid "%2.3fs"
-msgstr "%2.3fs"
+msgstr "%2.3f δευτ."
 
 msgctxt "#22004"
 msgid "Delayed by: %2.3fs"
-msgstr "Καθυστέρηση κατά: %2.3fs"
+msgstr "Καθυστέρηση κατά: %2.3f δευτ."
 
 msgctxt "#22005"
 msgid "Ahead by: %2.3fs"
-msgstr "Προβάδισμα κατά: %2.3fs"
+msgstr "Προβάδισμα κατά: %2.3f δευτ."
 
 msgctxt "#22006"
 msgid "Subtitle offset"
@@ -9576,7 +9576,7 @@ msgstr "Δεδομένα προφίλ"
 
 msgctxt "#22014"
 msgid "Use dim if paused during video playback"
-msgstr "Χρήση 'Αμυδρού φωτός' κατά την παύση αναπαραγωγής βίντεο"
+msgstr "Χρήση 'Αμυδρού φωτός' κατά την παύση"
 
 msgctxt "#22015"
 msgid "All recordings"
@@ -9840,7 +9840,7 @@ msgstr "Δεν είναι δυνατή η ρύθμιση αυτού του πρ�
 
 msgctxt "#24031"
 msgid "Error loading settings"
-msgstr "Σφάλμα στη λήψη ρυθμίσεων"
+msgstr "Σφάλμα κατά τη φόρτωση ρυθμίσεων"
 
 msgctxt "#24032"
 msgid "All Add-ons"
@@ -9864,7 +9864,7 @@ msgstr "Καταγραφή αλλαγών"
 
 msgctxt "#24037"
 msgid "Uninstall"
-msgstr "Κατάργηση εγκατάστασης"
+msgstr "Κατάργηση"
 
 msgctxt "#24038"
 msgid "Install"
@@ -9932,11 +9932,11 @@ msgstr "Αρχείο καταγραφής αλλαγών"
 
 msgctxt "#24059"
 msgid "Would you like to enable this Add-on?"
-msgstr "Επιθυμείτε να ενεργοποιηθεί αυτό το πρόσθετο;"
+msgstr "Να ενεργοποιηθεί αυτό το πρόσθετο;"
 
 msgctxt "#24060"
 msgid "Would you like to disable this Add-on?"
-msgstr "Επιθυμείτε να απενεργοποιηθεί αυτό το πρόσθετο;"
+msgstr "Να απενεργοποιηθεί αυτό το πρόσθετο;"
 
 msgctxt "#24061"
 msgid "Add-on update available!"
@@ -9976,7 +9976,7 @@ msgstr "Ενημέρωση"
 
 msgctxt "#24070"
 msgid "Add-on could not be loaded."
-msgstr "Αδυναμία χρήσης πρόσθετου."
+msgstr "Αδυναμία φόρτωσης πρόσθετου."
 
 msgctxt "#24071"
 msgid "An unknown error has occurred."
@@ -10036,7 +10036,7 @@ msgstr "Κατεστραμμένο"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "Επιθυμείτε να εφαρμοστεί αυτό το κέλυφος;"
+msgstr "Να εφαρμοστεί αυτό το κέλυφος;"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
@@ -10044,7 +10044,7 @@ msgstr "Για να χρησιμοποιήσετε αυτή τη λειτουρ�
 
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
-msgstr "Επιθυμείτε να κατεβάσετε αυτό το πρόσθετο;"
+msgstr "Να γίνει λήψη αυτού του πρόσθετου;"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
@@ -10136,7 +10136,7 @@ msgstr "Ορισμός φακέλου λήψης"
 
 msgctxt "#33011"
 msgid "Search duration"
-msgstr "Αναζήτηση διάρκειας"
+msgstr "Διάρκεια αναζήτησης"
 
 msgctxt "#33012"
 msgid "Short"
@@ -10148,7 +10148,7 @@ msgstr "Εκτεταμένος"
 
 msgctxt "#33014"
 msgid "Use DVD player instead of regular player"
-msgstr "Ορισμός αναπαραγωγέα DVD αντί του κανονικού"
+msgstr "Χρήση αναπαραγωγέα DVD αντί του κανονικού"
 
 msgctxt "#33015"
 msgid "Ask for download before playing video"
@@ -10172,7 +10172,7 @@ msgstr "Αύριο βράδυ"
 
 msgctxt "#33020"
 msgid "Condition"
-msgstr "Kατάσταση καιρού"
+msgstr "Συνθήκες"
 
 msgctxt "#33021"
 msgid "Precipitation"
@@ -10348,7 +10348,7 @@ msgstr "Για να εκτελεστεί η έκδοση %s απαιτείται
 
 msgctxt "#33075"
 msgid "XBMC revision of %s or greater to run."
-msgstr "η %s αναθεωρημένη έκδοση του XBMC ή νεώτερη."
+msgstr "η %s έκδοση του XBMC ή νεώτερη."
 
 msgctxt "#33076"
 msgid "Please update XBMC."
@@ -10380,7 +10380,7 @@ msgstr "Διαδρομή για το script"
 
 msgctxt "#33083"
 msgid "Enable custom script button"
-msgstr "Ενεργοποίηση προσαρμοσμένου πλήκτρου script"
+msgstr "Ενεργοποίηση πλήκτρου προσαρμοσμένου script"
 
 msgctxt "#33100"
 msgid "Failed to start"
@@ -10488,11 +10488,11 @@ msgstr "Ποτέ"
 
 msgctxt "#34201"
 msgid "Can't find a next item to play"
-msgstr "Αδυναμία εύρεσης επόμενου αντικειμένου για αναπαραγωγή"
+msgstr "Αδυναμία εύρεσης επόμενου αντικειμένου"
 
 msgctxt "#34202"
 msgid "Can't find a previous item to play"
-msgstr "Αδυναμία εύρεσης προηγούμενου αντικειμένου για αναπαραγωγή"
+msgstr "Αδυναμία εύρεσης προηγούμενου αντικειμένου"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
@@ -10528,7 +10528,7 @@ msgstr "1 κίνηση δακτύλου αριστερά,δεξιά,πάνω,κ�
 
 msgctxt "#34406"
 msgid "2 finger swipe left for backspace"
-msgstr "2 κινήσεις δακτύλου αριστερά για backspace"
+msgstr "2 κινήσεις δακτύλου αριστερά για διαγραφή"
 
 msgctxt "#34407"
 msgid "1 finger single tap for enter"
@@ -10560,7 +10560,7 @@ msgstr "Δεν υπάρχουν διαθέσιμες ρυθμίσεις\nγια 
 
 msgctxt "#35005"
 msgid "New device configured"
-msgstr "Η νέα συσκευή ρυθμίστηκε"
+msgstr "Η νέα συσκευή διαμορφώθηκε"
 
 msgctxt "#35006"
 msgid "Device removed"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Ενεργοποίηση υποστήριξης χειριστηρίων και gamepad"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Απενεργοποίηση χειριστηρίου κατά την παρουσία iMON"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Απενεργοποίηση χειριστηρίου κατά την παρουσία συσκευής"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10604,7 +10604,7 @@ msgstr "Προμηθευτής"
 
 msgctxt "#35504"
 msgid "Product ID"
-msgstr "Αναγνωριστικό προϊόντος"
+msgstr "Αναγνωριστικό προϊόντος (ID)"
 
 msgctxt "#36000"
 msgid "Pulse-Eight CEC adapter"
@@ -10620,7 +10620,7 @@ msgstr "Μετάβαση στο πληκτρολόγιο εντολών"
 
 msgctxt "#36003"
 msgid "Switch to remote side command"
-msgstr "Ενεργοποίηση διακόπτη εντολών"
+msgstr "Αλλαγή σε απομακρυσμένες εντολές"
 
 msgctxt "#36004"
 msgid "Press \"user\" button command"
@@ -10688,7 +10688,7 @@ msgstr "Θύρα COM (αφήστε κενή αν δεν χρειάζεται)"
 
 msgctxt "#36023"
 msgid "Configuration updated"
-msgstr "Ανανεώθηκαν οι ρυθμίσεις"
+msgstr "Ανανέωση διαμόρφωσης"
 
 msgctxt "#36024"
 msgid "Failed to set the new configuration. Please check your settings."
@@ -10753,3 +10753,7 @@ msgstr "Τηλεόραση και συσκευή AVR (ρητά)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Μη υποστηριζόμενη έκδοση libCEC. Η %x είναι μικρότερη από την έκδοση που το XBMC υποστηρίζει (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Φάκελος αντικειμένου"

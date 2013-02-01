@@ -42,6 +42,7 @@ using namespace std;
 class OMXPlayerAudio : public CThread
 {
 protected:
+  CCriticalSection      m_flushLock;
   CDVDMessageQueue      m_messageQueue;
   CDVDMessageQueue      &m_messageParent;
 
@@ -89,6 +90,7 @@ protected:
 
   DllBcmHost                m_DllBcmHost;
   bool                      m_send_eos;
+  bool                      m_bad_state;
 
   virtual void OnStartup();
   virtual void OnExit();
@@ -126,5 +128,7 @@ public:
   void SetSpeed(int iSpeed);
   int  GetAudioBitrate();
   std::string GetPlayerInfo();
+
+  bool BadState() { return m_bad_state; }
 };
 #endif

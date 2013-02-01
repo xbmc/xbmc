@@ -392,6 +392,8 @@ namespace JSONRPC
     
     static JSONSchemaTypeDefinitionPtr GetType(const std::string &identification);
 
+    static void Cleanup();
+
   private:
     static bool prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name);
     static bool addMethod(const std::string &jsonMethod, MethodCall method);
@@ -413,6 +415,8 @@ namespace JSONRPC
       JsonRpcMethodIterator begin() const;
       JsonRpcMethodIterator find(const std::string& key) const;
       JsonRpcMethodIterator end() const;
+
+      void clear();
     private:
       std::map<std::string, JsonRpcMethod> m_actionmap;
     };

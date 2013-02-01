@@ -31,16 +31,18 @@ namespace XBMCAddon
   {
     struct PyContextState
     {
-      inline PyContextState() : value(0), state(NULL), gilReleasedDepth(0) {}
+      inline PyContextState(bool pcreatedByGilRelease = false) : 
+        value(0), state(NULL), gilReleasedDepth(0), createdByGilRelease(pcreatedByGilRelease) {}
 
       int value;
       PyThreadState* state;
       int gilReleasedDepth;
+      bool createdByGilRelease;
     };
 
     static XbmcThreads::ThreadLocal<PyContextState> tlsPyContextState;
 
-    PyContext::PyContext() 
+    void* PyContext::enterContext()
     {
       PyContextState* cur = tlsPyContextState.get();
       if (cur == NULL)
@@ -51,9 +53,11 @@ namespace XBMCAddon
 
       // increment the count
       cur->value++;
+
+      return cur;
     }
 
-    PyContext::~PyContext()
+    void PyContext::leaveContext()
     {
       // here we ASSUME that the constructor was called.
       PyContextState* cur = tlsPyContextState.get();
@@ -78,37 +82,48 @@ namespace XBMCAddon
     void PyGILLock::releaseGil()
     {
       PyContextState* cur = tlsPyContextState.get();
-      if (cur) // this means we're within the python context
+
+      // This means we're not within the python context, but
+      // because we may be in a thread spawned by python itself,
+      // we need to handle this.
+      if (!cur)
       {
-        if (cur->gilReleasedDepth == 0) // true if we are at the outermost
-        {
-          PyThreadState* _save;
-          // this macro sets _save
-          {
-            Py_UNBLOCK_THREADS
-          }
-          cur->state = _save;
-        }
-        cur->gilReleasedDepth++; // the first time this goes to 1
+        cur = (PyContextState*)PyContext::enterContext();
+        cur->createdByGilRelease = true;
       }
+
+      if (cur->gilReleasedDepth == 0) // true if we are at the outermost
+      {
+        PyThreadState* _save;
+        // this macro sets _save
+        {
+          Py_UNBLOCK_THREADS
+        }
+        cur->state = _save;
+      }
+      cur->gilReleasedDepth++; // the first time this goes to 1
     }
 
     void PyGILLock::acquireGil()
     {
-      PyContextState* cur = tlsPyContextState.get(); // this must be non-null given we released the Gil in the constructor
-      if (cur) // we're within a PyContext
+      PyContextState* cur = tlsPyContextState.get(); 
+
+      // it's not possible for cur to be NULL (and if it is, we want to fail anyway).
+
+      // decrement the depth and make sure we're in the right place.
+      cur->gilReleasedDepth--;
+      if (cur->gilReleasedDepth == 0) // are we back to zero?
       {
-        // decrement the depth and make sure we're in the right place.
-        cur->gilReleasedDepth--;
-        if (cur->gilReleasedDepth == 0) // are we back to zero?
+        PyThreadState* _save = cur->state;
+        // This macros uses _save
         {
-          PyThreadState* _save = cur->state;
-          // This macros uses _save
-          {
-            Py_BLOCK_THREADS
-          }
-          cur->state = NULL; // clear the state to indicate we've reacquired the gil
+          Py_BLOCK_THREADS
         }
+        cur->state = NULL; // clear the state to indicate we've reacquired the gil
+
+        // we clear it only if we created it on this level.
+        if (cur->createdByGilRelease)
+          PyContext::leaveContext();
       }
     }
   }

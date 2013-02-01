@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: projectM
 # Addon id: visualization.projectm
-# Addon version: 1.0.1
+# Addon version: 1.0.3
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Render Quality"
-msgstr "Renderings kvalitet"
+msgstr "Renderingskvalitet"
 
 msgctxt "#30001"
 msgid "Low"
@@ -39,35 +39,35 @@ msgstr "Maximum"
 
 msgctxt "#30005"
 msgid "Shuffle Mode"
-msgstr "Shuffle Indstilling"
+msgstr "Blandingstilstand"
 
 msgctxt "#30006"
 msgid "Smooth Preset Duration"
-msgstr "Jævn forudindstillingsvarighed"
+msgstr "Jævn varighed af forudindstilling"
 
 msgctxt "#30007"
 msgid "Preset Duration"
-msgstr "Forudindstillet Varighed"
+msgstr "Varighed af forudindstilling"
 
 msgctxt "#30008"
 msgid "Beat Sensitivity"
-msgstr "Beat følsomhed"
+msgstr "Beat-følsomhed"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Forudindstillingspakke"
+msgstr "Forudindstillings-pakke"
 
 msgctxt "#30010"
 msgid "Default Pack"
-msgstr "Standard Pakke"
+msgstr "Standardpakke"
 
 msgctxt "#30011"
 msgid "User Defined Preset Folder"
-msgstr "Brugerdefineret forudindstillingsmappe"
+msgstr "Brugerdefineret mappe med forudindstillinger "
 
 msgctxt "#30012"
 msgid "User Preset Folder"
-msgstr "Brugers forudindstillingsmappe"
+msgstr "Brugermappe med forudindstillinger"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -396,15 +396,15 @@ msgstr "確認刪除檔案？"
 
 msgctxt "#123"
 msgid "Copy these files?"
-msgstr "複製這些檔案？"
+msgstr "要複製這些檔案嗎？"
 
 msgctxt "#124"
 msgid "Move these files?"
-msgstr "移動這些檔案？"
+msgstr "要移動些檔案嗎？"
 
 msgctxt "#125"
 msgid "Delete these files? - Deleting files cannot be undone!"
-msgstr "刪除這些檔案？ - 刪除後將無法復原！"
+msgstr "要刪除這些檔案嗎？ - 刪除後將無法復原！"
 
 msgctxt "#126"
 msgid "Status"
@@ -496,7 +496,7 @@ msgstr "靜態（手動指定）"
 
 msgctxt "#148"
 msgid "DHCP"
-msgstr "動態（自動分配）"
+msgstr "DHCP（自動分配）"
 
 msgctxt "#149"
 msgid "MAC address"
@@ -588,7 +588,7 @@ msgstr "發行日期"
 
 msgctxt "#173"
 msgid "Display 4:3 videos as"
-msgstr "播放4:3視訊的方式"
+msgstr "播放 4:3 視訊的方式"
 
 msgctxt "#175"
 msgid "Moods"
@@ -628,7 +628,7 @@ msgstr "正在搜尋專輯"
 
 msgctxt "#186"
 msgid "OK"
-msgstr "OK"
+msgstr "確定"
 
 msgctxt "#187"
 msgid "No albums found!"
@@ -696,7 +696,7 @@ msgstr "得票："
 
 msgctxt "#206"
 msgid "Cast"
-msgstr "演員表"
+msgstr "演員"
 
 msgctxt "#207"
 msgid "Plot"
@@ -888,7 +888,7 @@ msgstr "錯誤"
 
 msgctxt "#258"
 msgid "Enable tag reading"
-msgstr "啟用 檔案資訊讀取"
+msgstr "啟用檔案標籤讀取"
 
 msgctxt "#259"
 msgid "Opening"
@@ -1104,7 +1104,7 @@ msgstr "資料庫錯誤！"
 
 msgctxt "#316"
 msgid "Searching songs..."
-msgstr "搜尋歌曲…"
+msgstr "正在搜尋歌曲…"
 
 msgctxt "#317"
 msgid "Cleaned database successfully"
@@ -1112,7 +1112,7 @@ msgstr "成功清除資料庫！"
 
 msgctxt "#318"
 msgid "Cleaning songs..."
-msgstr "清除歌曲…"
+msgstr "正在清除歌曲…"
 
 msgctxt "#319"
 msgid "Error cleaning songs"
@@ -1164,7 +1164,7 @@ msgstr "這需要一些時間…"
 
 msgctxt "#331"
 msgid "Compressing database..."
-msgstr "壓縮資料庫…"
+msgstr "正在壓縮資料庫…"
 
 msgctxt "#332"
 msgid "Error compressing database"
@@ -1172,7 +1172,7 @@ msgstr "壓縮資料庫錯誤！"
 
 msgctxt "#333"
 msgid "Do you want to clean the library?"
-msgstr "要清除資料庫嗎？"
+msgstr "你確定要清除資料庫嗎？"
 
 msgctxt "#334"
 msgid "Clean library..."
@@ -1276,7 +1276,7 @@ msgstr "全部專輯"
 
 msgctxt "#359"
 msgid "Recently added albums"
-msgstr "新的專輯"
+msgstr "最近加入的專輯"
 
 msgctxt "#360"
 msgid "Screensaver"
@@ -1492,7 +1492,7 @@ msgstr "此專輯無評論"
 
 msgctxt "#415"
 msgid "Downloading thumbnail..."
-msgstr "下載縮略圖…"
+msgstr "正在下載縮略圖…"
 
 msgctxt "#416"
 msgid "Not available"
@@ -1560,7 +1560,7 @@ msgstr "從資料庫中移除影片"
 
 msgctxt "#433"
 msgid "Really remove '%s'?"
-msgstr "確定移除 '%s' 嗎？"
+msgstr "確定要移除 '%s' 嗎？"
 
 msgctxt "#434"
 msgid "From %s at %i %s"
@@ -1704,7 +1704,7 @@ msgstr "播放工具列位置"
 
 msgctxt "#470"
 msgid "Credits"
-msgstr "改機者"
+msgstr "工作人員"
 
 msgctxt "#471"
 msgid "Modchip"
@@ -1764,7 +1764,7 @@ msgstr "重複資料夾"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "自動播放下個項目"
+msgstr "自動播放下一首歌項目"
 
 msgctxt "#491"
 msgid "- Use big icons"
@@ -1824,7 +1824,7 @@ msgstr "空的"
 
 msgctxt "#505"
 msgid "Loading media info from files..."
-msgstr "從檔案載入媒體資訊…"
+msgstr "正在從檔案載入媒體資訊…"
 
 msgctxt "#507"
 msgid "Sort by: Usage"
@@ -1848,7 +1848,7 @@ msgstr "主界面"
 
 msgctxt "#514"
 msgid "Manual settings"
-msgstr "設定界面"
+msgstr "手動設定"
 
 msgctxt "#515"
 msgid "Genre"
@@ -1884,7 +1884,7 @@ msgstr "選擇播放列表"
 
 msgctxt "#525"
 msgid "New playlist..."
-msgstr "新播放列表…"
+msgstr "新增播放列表…"
 
 msgctxt "#526"
 msgid "Add to playlist"
@@ -1964,7 +1964,7 @@ msgstr "媒體資訊"
 
 msgctxt "#545"
 msgid "Audio output device"
-msgstr "音效輸出設備"
+msgstr "音效輸出裝置"
 
 msgctxt "#546"
 msgid "Passthrough output device"
@@ -2192,7 +2192,7 @@ msgstr "無法擷取 CD 或音軌"
 
 msgctxt "#609"
 msgid "CDDARipPath is not set."
-msgstr "CD 擷取路徑未設定。"
+msgstr "CDDA 擷取路徑未設定。"
 
 msgctxt "#610"
 msgid "Rip audio track"
@@ -2202,13 +2202,21 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "輸入數字"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "位元/樣本"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "取樣率"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "音樂 CD 擷取"
 
 msgctxt "#621"
 msgid "Encoder"
-msgstr "編碼"
+msgstr "編碼器"
 
 msgctxt "#622"
 msgid "Quality"
@@ -2308,11 +2316,11 @@ msgstr "匯入視訊資料庫"
 
 msgctxt "#649"
 msgid "Importing"
-msgstr "匯入中"
+msgstr "正在匯入"
 
 msgctxt "#650"
 msgid "Exporting"
-msgstr "匯出中"
+msgstr "正在匯出"
 
 msgctxt "#651"
 msgid "Browse for library"
@@ -2480,7 +2488,7 @@ msgstr "無密碼"
 
 msgctxt "#735"
 msgid "- Character set"
-msgstr "- 編碼"
+msgstr "- 字元編碼"
 
 msgctxt "#736"
 msgid "- Style"
@@ -2714,6 +2722,10 @@ msgctxt "#799"
 msgid "Library Update"
 msgstr "資料庫更新"
 
+msgctxt "#800"
+msgid "Music library needs to rescan art from tags"
+msgstr "音樂資料庫需要從標籤重新掃描圖片"
+
 msgctxt "#801"
 msgid "Would you like to scan now?"
 msgstr "你要現在就開始掃描嗎？"
@@ -2944,7 +2956,7 @@ msgstr "輸入網路位址"
 
 msgctxt "#1200"
 msgid "SMB client"
-msgstr "SMB 共享設定"
+msgstr "SMB 客戶端"
 
 msgctxt "#1202"
 msgid "Workgroup"
@@ -3092,7 +3104,7 @@ msgstr "過濾%s"
 
 msgctxt "#1300"
 msgid "Custom audio device"
-msgstr "自訂音效設備"
+msgstr "自訂音效裝置"
 
 msgctxt "#1301"
 msgid "Custom passthrough device"
@@ -3624,7 +3636,7 @@ msgstr "←"
 
 msgctxt "#12321"
 msgid "Ok"
-msgstr "Ok"
+msgstr "確定"
 
 msgctxt "#12322"
 msgid "*"
@@ -3656,7 +3668,7 @@ msgstr "輸入手把按鍵組合並且"
 
 msgctxt "#12331"
 msgid "press OK, or Back to cancel"
-msgstr "按 Start 確認，或按 Back 取消"
+msgstr "按「確定」確認，或按 Back 取消"
 
 msgctxt "#12332"
 msgid "Set lock"
@@ -4714,6 +4726,10 @@ msgctxt "#13433"
 msgid "Play the next video automatically"
 msgstr "自動播放下一個影片"
 
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "只播放這個"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "影音同步方式"
@@ -5416,7 +5432,7 @@ msgstr "收聽 %name% 的同類型藝人在 Last.fm 廣播"
 
 msgctxt "#15268"
 msgid "Top artists for user %name%"
-msgstr "%name% 演出者排行"
+msgstr "%name% 的演出者排行"
 
 msgctxt "#15269"
 msgid "Top albums for user %name%"
@@ -5436,7 +5452,7 @@ msgstr "%name% 同好"
 
 msgctxt "#15273"
 msgid "Weekly artist chart for %name%"
-msgstr "%name% 演出者週排行"
+msgstr "%name% 的演出者週排行"
 
 msgctxt "#15274"
 msgid "Weekly album chart for %name%"
@@ -6052,11 +6068,15 @@ msgstr "你確定要重新命名這個計時器嗎？"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr "錄影中"
+msgstr "錄影"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
 msgstr "請檢查你的設定或從日誌查看詳情。"
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "尚未有啟動的 PVR 客戶端。請等候 PVR 客戶端啟動，或檢查記錄中是否有相關問題細節。"
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6341,6 +6361,14 @@ msgstr "開始日期"
 msgctxt "#19129"
 msgid "End date"
 msgstr "結束日期"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "最小時間長度"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "最大時間長度"
 
 msgctxt "#19132"
 msgid "Include unknown genres"
@@ -6638,6 +6666,10 @@ msgctxt "#19211"
 msgid "Delete channel"
 msgstr "刪除頻道"
 
+msgctxt "#19212"
+msgid "This list contains changes"
+msgstr "此清單含變動項目"
+
 msgctxt "#19213"
 msgid "Select backend"
 msgstr "選擇後端"
@@ -6657,6 +6689,10 @@ msgstr "所有的廣播頻道"
 msgctxt "#19217"
 msgid "All TV channels"
 msgstr "所有的電視頻道"
+
+msgctxt "#19218"
+msgid "Visible"
+msgstr "可見的"
 
 msgctxt "#19219"
 msgid "Ungrouped channels"
@@ -6762,6 +6798,10 @@ msgctxt "#19244"
 msgid "Backend idle time"
 msgstr "後端閒置時間"
 
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "設定喚醒命令 (cmd [timestamp])"
+
 msgctxt "#19246"
 msgid "Wakeup before recording"
 msgstr "錄影前喚醒"
@@ -6818,6 +6858,10 @@ msgctxt "#19259"
 msgid "Parental control"
 msgstr "家長控制"
 
+msgctxt "#19260"
+msgid "Unlock duration"
+msgstr "解鎖時間"
+
 msgctxt "#19261"
 msgid "Change PIN"
 msgstr "修改 PIN"
@@ -6862,6 +6906,14 @@ msgctxt "#19271"
 msgid "No PVR add-ons could be found"
 msgstr "找不到任何 PVR 附加元件"
 
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "你需要一個接收器 (tuner)、後端軟體和為該後端軟體"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "設計的附加元件才能使用 PVR 功能。"
+
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
 msgstr "請拜訪 xbmc.org/pvr 以取得更多資訊。"
@@ -6881,6 +6933,18 @@ msgstr "錄影衝突"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "錄影錯誤"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "客戶端專用"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "客戶端專用設定"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "轉台時需要按「確定」確認"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8090,6 +8154,26 @@ msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "排序：標籤"
 
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "正在使用 %s 掃描電影"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "正在使用 %s 掃描音樂影片"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "正在使用 %s 掃描電視節目"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "正在使用 %s 掃描演出者"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "正在使用 %s 掃描專輯"
+
 msgctxt "#20324"
 msgid "Play part..."
 msgstr "播放部分的…"
@@ -9046,6 +9130,10 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr "外部儲存"
 
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "已觀看的集數"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "字幕位置"
@@ -9412,7 +9500,7 @@ msgstr "OpenGL 廠商："
 
 msgctxt "#22008"
 msgid "OpenGL renderer:"
-msgstr "OpenGL 渲染："
+msgstr "OpenGL 算繪器："
 
 msgctxt "#22009"
 msgid "OpenGL version:"
@@ -9588,11 +9676,11 @@ msgstr "外部播放機啟動"
 
 msgctxt "#23101"
 msgid "Click OK to terminate the player"
-msgstr "點選 OK 關閉播放機"
+msgstr "點選「確定」關閉播放機"
 
 msgctxt "#23104"
 msgid "Click OK when playback has ended"
-msgstr "播放完畢時點選 OK"
+msgstr "播放完畢時點選「確定」"
 
 msgctxt "#24000"
 msgid "Add-on"
@@ -9648,7 +9736,7 @@ msgstr "電視資訊"
 
 msgctxt "#24015"
 msgid "Music video information"
-msgstr "音樂錄影帶資訊"
+msgstr "音樂影片資訊"
 
 msgctxt "#24016"
 msgid "Album information"
@@ -9752,7 +9840,7 @@ msgstr "可取得的更新"
 
 msgctxt "#24044"
 msgid "Dependencies not met"
-msgstr "Dependencies 不相符"
+msgstr "無法滿足相依關係"
 
 msgctxt "#24045"
 msgid "Add-on does not have the correct structure"
@@ -9884,7 +9972,7 @@ msgstr "〈黑名單〉"
 
 msgctxt "#24096"
 msgid "Add-on has been marked as broken in repository."
-msgstr "附加元件已經被標記為\"已損壞\"。"
+msgstr "附加元件已經被標記為「已損壞」。"
 
 msgctxt "#24097"
 msgid "Would you like to disable it on your system?"
@@ -10208,11 +10296,11 @@ msgstr "運行此版本的 %s 需要"
 
 msgctxt "#33075"
 msgid "XBMC revision of %s or greater to run."
-msgstr "XBMC為 %s 或更高版本。"
+msgstr "XBMC 為 %s 或更高版本。"
 
 msgctxt "#33076"
 msgid "Please update XBMC."
-msgstr "請升級XBMC。"
+msgstr "請更新 XBMC。"
 
 msgctxt "#33077"
 msgid "No data found!"
@@ -10356,7 +10444,7 @@ msgstr "找不到前一個播放項目"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
-msgstr "Zeroconf啟動失敗"
+msgstr "Zeroconf 啟動失敗"
 
 msgctxt "#34301"
 msgid "Is Apple's Bonjour Service installed? See log for more info."
@@ -10442,9 +10530,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "啟用搖桿和手把支援"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "使用 iMON 時停用遊戲遙桿"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "當有裝置時停用搖桿"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10558,6 +10646,14 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "關閉 XBMC 時送出 \"非作用中來源\" 的命令"
 
+msgctxt "#36026"
+msgid "Put devices in standby mode when putting the PC in standby"
+msgstr "當電腦進入待機時讓裝置也待機"
+
+msgctxt "#36027"
+msgid "This device needs servicing"
+msgstr "此裝置需要服務"
+
 msgctxt "#36028"
 msgid "Ignore"
 msgstr "忽略"
@@ -10598,6 +10694,14 @@ msgctxt "#36038"
 msgid "Amplifier / AVR device"
 msgstr "放大器/AVR 裝置"
 
+msgctxt "#36039"
+msgid "TV and AVR device (explicit)"
+msgstr "電視和 AVR 裝置 (外接式)"
+
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "未支援的 libECE 介面版本。版本 %x 小於 XBMC 所支援的版本(%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* 項目資料夾"

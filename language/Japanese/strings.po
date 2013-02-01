@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -273,6 +273,22 @@ msgstr "北北西"
 msgctxt "#87"
 msgid "VAR"
 msgstr "不定"
+
+msgctxt "#88"
+msgid "South"
+msgstr "南"
+
+msgctxt "#89"
+msgid "North"
+msgstr "北"
+
+msgctxt "#90"
+msgid "West"
+msgstr "西"
+
+msgctxt "#91"
+msgid "East"
+msgstr "東"
 
 msgctxt "#98"
 msgid "View: Auto"
@@ -2178,6 +2194,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "番号を入力"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "ビットレート"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "サンプルレート"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "オーディオ CD"
@@ -2201,6 +2225,10 @@ msgstr "トラック番号を含む"
 msgctxt "#625"
 msgid "All songs of"
 msgstr "すべての曲"
+
+msgctxt "#626"
+msgid "In progress TV shows"
+msgstr "テレビ番組中"
 
 msgctxt "#629"
 msgid "View mode"
@@ -2686,6 +2714,14 @@ msgctxt "#798"
 msgid "Internet access"
 msgstr "インターネット接続"
 
+msgctxt "#799"
+msgid "Library Update"
+msgstr "ライブラリの更新"
+
+msgctxt "#801"
+msgid "Would you like to scan now?"
+msgstr "今すぐスキャンしますか？"
+
 msgctxt "#850"
 msgid "Invalid port number entered"
 msgstr "誤ったポート番号が入力されました"
@@ -3054,6 +3090,10 @@ msgctxt "#1273"
 msgid "AirPlay"
 msgstr "AirPlay"
 
+msgctxt "#1275"
+msgid "Filter %s"
+msgstr "フィルター %s"
+
 msgctxt "#1300"
 msgid "Custom audio device"
 msgstr "カスタムオーディオデバイス"
@@ -3129,6 +3169,10 @@ msgstr "with"
 msgctxt "#1412"
 msgid "windy"
 msgstr "windy"
+
+msgctxt "#1413"
+msgid "Patches"
+msgstr "パッチ"
 
 msgctxt "#1414"
 msgid "Thunderstorm"
@@ -3598,9 +3642,21 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "アイテム ロック"
 
+msgctxt "#12349"
+msgid "Updating video library art"
+msgstr "ビデオライブラリアートをアップデート中"
+
+msgctxt "#12350"
+msgid "Processing %s"
+msgstr "%s を処理中"
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "シェアロックが復活します"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "今すぐアップデートしますか？"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3633,6 +3689,10 @@ msgstr "正しいマスターコードを入力して下さい"
 msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "設定 & ファイルマネージャー"
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "全ビデオにデフォルトとして設定"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3757,6 +3817,14 @@ msgstr "電源ボタンを押した際の動作"
 msgctxt "#13016"
 msgid "Power off System"
 msgstr "システム終了・電源を切る"
+
+msgctxt "#13017"
+msgid "Inhibit idle shutdown"
+msgstr "アイドルシャットダウンオフ"
+
+msgctxt "#13018"
+msgid "Allow idle shutdown"
+msgstr "アイドルシャットダウンオン"
 
 msgctxt "#13020"
 msgid "Is another session active, perhaps over ssh?"
@@ -3977,6 +4045,10 @@ msgstr "%i 分後にアラームが作動します"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "アラーム!"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "残り%i分%i秒でキャンセルされました"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4554,6 +4626,14 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "ハードウェア アクセラレータを許可 (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "次のビデオを自動で再生する"
+
+msgctxt "#13434"
+msgid "Play only this"
+msgstr "これだけを再生"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V 同期方法"
@@ -4597,6 +4677,26 @@ msgstr "最高 (遅い!)"
 msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr "ディスプレイ同期周波数に合わせて再生"
+
+msgctxt "#13511"
+msgid "Choose art"
+msgstr "アートを選択"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "現在のアート"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "リモートアート"
+
+msgctxt "#13514"
+msgid "Local art"
+msgstr "ローカルアート"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "アートなし"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5009,6 +5109,10 @@ msgstr "再生"
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
 msgstr "リッピング完了後に CD をイジェクト"
+
+msgctxt "#14100"
+msgid "Stop ripping CD"
+msgstr "CD のリッピングを中止"
 
 msgctxt "#15015"
 msgid "Remove"
@@ -5450,6 +5554,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "EVEN フィールド表示"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "キャンセル中..."
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "アーティスト名を入力"
@@ -5670,6 +5778,10 @@ msgctxt "#16324"
 msgid "Software Blend"
 msgstr "Software Blend"
 
+msgctxt "#16325"
+msgid "Auto - ION Optimized"
+msgstr "自動 - ION に最適化"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "後処理"
@@ -5694,9 +5806,65 @@ msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "チャンネル切り替え"
 
+msgctxt "#19001"
+msgid "Separate the search words by using AND, OR and/or NOT."
+msgstr "複数の検索キーワードの間に AND, OR, NOT を入れてください。"
+
+msgctxt "#19002"
+msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
+msgstr "あるいは、\"The wizard of Oz\" のようにすると、フレーズの完全一致で検索ができます。"
+
+msgctxt "#19004"
+msgid "Importing EPG from clients"
+msgstr "端末からEPGをインポート中"
+
+msgctxt "#19005"
+msgid "PVR stream information"
+msgstr "PVR ストリーム情報"
+
+msgctxt "#19007"
+msgid "Device status"
+msgstr "装置状態"
+
+msgctxt "#19008"
+msgid "Signal quality"
+msgstr "信号品質"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
+
+msgctxt "#19012"
+msgid "PVR Backend"
+msgstr "PVR バックエンド"
+
 msgctxt "#19014"
 msgid "Fixed"
 msgstr "Fixed"
+
+msgctxt "#19015"
+msgid "Encryption"
+msgstr "暗号化"
+
+msgctxt "#19016"
+msgid "PVR Backend %i - %s"
+msgstr "PVR バックエンド %i - %s"
+
+msgctxt "#19017"
+msgid "TV recordings"
+msgstr "TV録画"
+
+msgctxt "#19018"
+msgid "Default folder for PVR thumbnails"
+msgstr "PVR サムネールのデフォルトフォルダー"
 
 msgctxt "#19019"
 msgid "Channels"
@@ -5710,6 +5878,10 @@ msgctxt "#19021"
 msgid "Radio"
 msgstr "ラジオ"
 
+msgctxt "#19022"
+msgid "Hidden"
+msgstr "隠された"
+
 msgctxt "#19023"
 msgid "TV channels"
 msgstr "TVチャンネル"
@@ -5717,6 +5889,18 @@ msgstr "TVチャンネル"
 msgctxt "#19024"
 msgid "Radio channels"
 msgstr "ラジオチャンネル"
+
+msgctxt "#19026"
+msgid "Add timer..."
+msgstr "タイマーの追加..."
+
+msgctxt "#19027"
+msgid "No search results"
+msgstr "検索結果はありません"
+
+msgctxt "#19028"
+msgid "No EPG entries"
+msgstr "EPG エントリがありません"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -5738,9 +5922,25 @@ msgctxt "#19033"
 msgid "Information"
 msgstr "情報"
 
+msgctxt "#19035"
+msgid "This channel cannot be played. Check the log for details."
+msgstr "このチャンネルは再生できません。詳しくはログを見てください。"
+
+msgctxt "#19036"
+msgid "This recording cannot be played. Check the log for details."
+msgstr "この録画は再生できません。詳しくはログを見てください。"
+
 msgctxt "#19037"
 msgid "Show signal quality"
 msgstr "電波状態を表示"
+
+msgctxt "#19038"
+msgid "Not supported by the PVR backend."
+msgstr "PVR バックエンドにサポートされていません。"
+
+msgctxt "#19039"
+msgid "Are you sure you want to hide this channel?"
+msgstr "このチャンネルを本当に隠していいですか？"
 
 msgctxt "#19040"
 msgid "Timer"
@@ -5750,21 +5950,1025 @@ msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
 msgstr "この録画の名称を本当に変更しますか？"
 
+msgctxt "#19042"
+msgid "Are you sure you want to rename this timer?"
+msgstr "このタイマーの名前を本当に変更していいですか？"
+
+msgctxt "#19043"
+msgid "Recording"
+msgstr "録画中"
+
+msgctxt "#19044"
+msgid "Please check your configuration or check the log for details."
+msgstr "設定をチェックするか、詳しくはログを参照ください。"
+
+msgctxt "#19045"
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
+msgstr "PVR クライアントが起動していません。PVR クライアントの起動を待つか、ログをチェックしてみてください。"
+
+msgctxt "#19046"
+msgid "New channel"
+msgstr "新規チャンネル"
+
+msgctxt "#19047"
+msgid "Programme info"
+msgstr "番組情報"
+
+msgctxt "#19048"
+msgid "Group management"
+msgstr "グループ管理"
+
+msgctxt "#19049"
+msgid "Show channel"
+msgstr "チャンネルを表示"
+
+msgctxt "#19053"
+msgid "Recording information"
+msgstr "録画情報"
+
+msgctxt "#19054"
+msgid "Hide channel"
+msgstr "チャンネルを隠す"
+
+msgctxt "#19055"
+msgid "No information available"
+msgstr "情報がありません"
+
+msgctxt "#19056"
+msgid "New timer"
+msgstr "新規タイマー"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "タイマーの編集"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "タイマーがセットされました"
+
+msgctxt "#19059"
+msgid "Stop recording"
+msgstr "録画を中止"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "タイマーを削除"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "タイマーを追加"
+
+msgctxt "#19062"
+msgid "Sort by: Channel"
+msgstr "ソート順: チャンネル"
+
+msgctxt "#19065"
+msgid "Default EPG window"
+msgstr "デフォルト EPG ウィンドウ"
+
+msgctxt "#19067"
+msgid "This event is already being recorded."
+msgstr "このイベントはすでに録画中です。"
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "録画を削除できませんでした。ログを確認してください。"
+
+msgctxt "#19069"
+msgid "EPG"
+msgstr "電子番組ガイド"
+
+msgctxt "#19071"
+msgid "EPG update interval"
+msgstr "EPG 更新間隔"
+
+msgctxt "#19072"
+msgid "Do not store the EPG in the database"
+msgstr "EPG 情報をデータベースに保存しない"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "アクティブ:"
+
+msgctxt "#19075"
+msgid "Name:"
+msgstr "名称："
+
+msgctxt "#19076"
+msgid "Folder:"
+msgstr "フォルダー:"
+
+msgctxt "#19077"
+msgid "Radio:"
+msgstr "ラジオ:"
+
+msgctxt "#19078"
+msgid "Channel:"
+msgstr "チャンネル:"
+
+msgctxt "#19079"
+msgid "Day:"
+msgstr "日:"
+
+msgctxt "#19080"
+msgid "Begin:"
+msgstr "開始:"
+
+msgctxt "#19081"
+msgid "End:"
+msgstr "終了:"
+
+msgctxt "#19082"
+msgid "Priority:"
+msgstr "優先度:"
+
+msgctxt "#19084"
+msgid "First day:"
+msgstr "最初の日："
+
+msgctxt "#19085"
+msgid "Unknown channel %u"
+msgstr "不明なチャンネル %u"
+
+msgctxt "#19086"
+msgid "Mo-__-__-__-__-__-__"
+msgstr "月-__-__-__-__-__-__"
+
+msgctxt "#19087"
+msgid "__-Tu-__-__-__-__-__"
+msgstr "__-火-__-__-__-__-__"
+
+msgctxt "#19088"
+msgid "__-__-We-__-__-__-__"
+msgstr "__-__-水-__-__-__-__"
+
+msgctxt "#19089"
+msgid "__-__-__-Th-__-__-__"
+msgstr "__-__-__-木-__-__-__"
+
+msgctxt "#19090"
+msgid "__-__-__-__-Fr-__-__"
+msgstr "__-__-__-__-金-__-__"
+
+msgctxt "#19091"
+msgid "__-__-__-__-__-Sa-__"
+msgstr "__-__-__-__-__-土-__"
+
+msgctxt "#19092"
+msgid "__-__-__-__-__-__-Su"
+msgstr "__-__-__-__-__-__-日"
+
+msgctxt "#19093"
+msgid "Mo-Tu-We-Th-Fr-__-__"
+msgstr "月-火-水-木-金-__-__"
+
+msgctxt "#19094"
+msgid "Mo-Tu-We-Th-Fr-Sa-__"
+msgstr "月-火-水-木-金-土-__"
+
+msgctxt "#19095"
+msgid "Mo-Tu-We-Th-Fr-Sa-Su"
+msgstr "月-火-水-木-金-土-日"
+
+msgctxt "#19096"
+msgid "__-__-__-__-__-Sa-Su"
+msgstr "__-__-__-__-__-土-日"
+
+msgctxt "#19097"
+msgid "Enter the name for the recording"
+msgstr "この録画の名前を入力"
+
+msgctxt "#19098"
+msgid "Warning"
+msgstr "警告"
+
+msgctxt "#19102"
+msgid "Please switch to another channel."
+msgstr "他のチャンネルに切り替えてください。"
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "この録画用のフォルダー名を入力"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "タイマーの保存が出来ません。詳しくはログを参照ください。"
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "予期しないエラーが発生しました。もう一度試してみるか、ログを確認してください。"
+
+msgctxt "#19111"
+msgid "PVR backend error. Check the log for details."
+msgstr "PVR バックエンドエラー。詳しくはログを参照ください。"
+
+msgctxt "#19114"
+msgid "Version"
+msgstr "バージョン"
+
+msgctxt "#19115"
+msgid "Address"
+msgstr "アドレス"
+
+msgctxt "#19116"
+msgid "Disksize"
+msgstr "ディスクサイズ"
+
+msgctxt "#19117"
+msgid "Search for channels"
+msgstr "チャンネルの検索"
+
+msgctxt "#19118"
+msgid "Cannot use PVR functions while searching."
+msgstr "検索中に PVR 機能を使うことはできません。"
+
+msgctxt "#19119"
+msgid "On which server you want to search?"
+msgstr "どのサーバーで検索を行いますか？"
+
+msgctxt "#19120"
+msgid "Client number"
+msgstr "クライアント番号"
+
+msgctxt "#19122"
+msgid "This timer is still recording. Are you sure you want to delete this timer?"
+msgstr "このタイマーは現在録画中です。本当にこのタイマーを削除していいですか？"
+
+msgctxt "#19126"
+msgid "Start time"
+msgstr "開始時刻"
+
+msgctxt "#19127"
+msgid "End time"
+msgstr "終了時刻"
+
+msgctxt "#19128"
+msgid "Start date"
+msgstr "開始日"
+
+msgctxt "#19129"
+msgid "End date"
+msgstr "終了日"
+
+msgctxt "#19130"
+msgid "Minimum duration"
+msgstr "最小継続時間"
+
+msgctxt "#19131"
+msgid "Maximum duration"
+msgstr "最長持続時間"
+
+msgctxt "#19133"
+msgid "Search string"
+msgstr "検索文字列"
+
+msgctxt "#19135"
+msgid "Case sensitive"
+msgstr "大文字と小文字を区別"
+
+msgctxt "#19137"
+msgid "No groups defined"
+msgstr "グループが定義されていません"
+
+msgctxt "#19138"
+msgid "Please create a group first"
+msgstr "まずグループを作ってください"
+
+msgctxt "#19139"
+msgid "Name of the new group"
+msgstr "新しいグループの名前"
+
+msgctxt "#19141"
+msgid "Group"
+msgstr "グループ"
+
+msgctxt "#19142"
+msgid "Search guide"
+msgstr "検索ガイド"
+
+msgctxt "#19143"
+msgid "Group management"
+msgstr "グループ管理"
+
+msgctxt "#19144"
+msgid "No groups defined"
+msgstr "グループがひとつも定義されていません"
+
+msgctxt "#19146"
+msgid "Groups"
+msgstr "グループ"
+
+msgctxt "#19147"
+msgid "The PVR backend does not support this action. Check the log for details."
+msgstr "PVR バックエンドはこの操作をサポートしていません。詳しくはログを参照してください。"
+
 msgctxt "#19148"
 msgid "Channel"
 msgstr "チャンネル"
+
+msgctxt "#19149"
+msgid "Mo"
+msgstr "月曜日"
+
+msgctxt "#19150"
+msgid "Tu"
+msgstr "火曜日"
+
+msgctxt "#19151"
+msgid "We"
+msgstr "水曜日"
+
+msgctxt "#19152"
+msgid "Th"
+msgstr "木曜日"
+
+msgctxt "#19153"
+msgid "Fr"
+msgstr "金曜日"
+
+msgctxt "#19154"
+msgid "Sa"
+msgstr "土曜日"
+
+msgctxt "#19155"
+msgid "Su"
+msgstr "日曜日"
+
+msgctxt "#19156"
+msgid "from"
+msgstr "から"
+
+msgctxt "#19157"
+msgid "Next recording"
+msgstr "次の録画"
+
+msgctxt "#19158"
+msgid "Currently recording"
+msgstr "現在録画中"
+
+msgctxt "#19159"
+msgid "from"
+msgstr "から"
+
+msgctxt "#19160"
+msgid "to"
+msgstr "まで"
 
 msgctxt "#19163"
 msgid "Recordings"
 msgstr "録音"
 
+msgctxt "#19165"
+msgid "Switch"
+msgstr "スイッチ"
+
+msgctxt "#19166"
+msgid "PVR information"
+msgstr "PVR 情報"
+
+msgctxt "#19171"
+msgid "Start playback minimized"
+msgstr "最小化で再生開始"
+
 msgctxt "#19177"
 msgid "Playback"
 msgstr "再生"
 
+msgctxt "#19178"
+msgid "Show channel information when switching channels"
+msgstr "チャンネル切り替え時にチャンネル情報を表示する"
+
+msgctxt "#19179"
+msgid "Automatically hide channel information"
+msgstr "チャンネル情報を自動的に隠す"
+
 msgctxt "#19180"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#19181"
+msgid "Menu/OSD"
+msgstr "メニュー/OSD"
+
+msgctxt "#19182"
+msgid "Days to display in the EPG"
+msgstr "EPG で表示する日数"
+
+msgctxt "#19185"
+msgid "Reset the PVR database"
+msgstr "PVR データベースのリセット"
+
+msgctxt "#19186"
+msgid "All data in the PVR database is being erased"
+msgstr "PVR データベース上の全データを削除中"
+
+msgctxt "#19187"
+msgid "Reset the EPG database"
+msgstr "EPG データベースのリセット"
+
+msgctxt "#19188"
+msgid "EPG is being reset"
+msgstr "EPG のリセット中"
+
+msgctxt "#19189"
+msgid "Continue last channel on startup"
+msgstr "起動時に前回のチャンネルを使う"
+
+msgctxt "#19190"
+msgid "Minimized"
+msgstr "最小化"
+
+msgctxt "#19191"
+msgid "PVR service"
+msgstr "PVR サービス"
+
+msgctxt "#19192"
+msgid "None of the connected PVR backends supports scanning for channels."
+msgstr "チャンネルのスキャンに対応した PVR バックエンドがありません。"
+
+msgctxt "#19193"
+msgid "The channel scan cannot be started. Check the log for details."
+msgstr "このチャンネルを起動できませんでした。ログを確認してください。"
+
+msgctxt "#19194"
+msgid "Continue?"
+msgstr "続行しますか？"
+
+msgctxt "#19196"
+msgid "PVR client specific actions"
+msgstr "PVR クライアント固有のアクション"
+
+msgctxt "#19197"
+msgid "Recording started on: %s"
+msgstr "録画開始時刻: %s"
+
+msgctxt "#19199"
+msgid "Channel manager"
+msgstr "チャンネルマネージャー"
+
+msgctxt "#19200"
+msgid "EPG source:"
+msgstr "EPG のソース:"
+
+msgctxt "#19201"
+msgid "Channel name:"
+msgstr "チャンネル名:"
+
+msgctxt "#19202"
+msgid "Channel icon:"
+msgstr "チャンネルアイコン:"
+
+msgctxt "#19203"
+msgid "Edit channel"
+msgstr "チャンネルの編集"
+
+msgctxt "#19204"
+msgid "New channel"
+msgstr "新規チャンネル"
+
+msgctxt "#19205"
+msgid "Group management"
+msgstr "グループ管理"
+
+msgctxt "#19206"
+msgid "Activate EPG:"
+msgstr "EPG を有効に:"
+
+msgctxt "#19207"
+msgid "Group:"
+msgstr "グループ："
+
+msgctxt "#19209"
+msgid "XBMC virtual backend"
+msgstr "XBMC 仮想バックエンド"
+
+msgctxt "#19210"
+msgid "Client"
+msgstr "クライアント"
+
+msgctxt "#19211"
+msgid "Delete channel"
+msgstr "チャンネルの削除"
+
+msgctxt "#19213"
+msgid "Select backend"
+msgstr "バックエンドの選択"
+
+msgctxt "#19215"
+msgid "The PVR backend does not support timers."
+msgstr "PVR バックエンドがタイマーをサポートしていません。"
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "全ラジオチャンネル"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "すべてのテレビチャンネル"
+
+msgctxt "#19222"
+msgid "EPG"
+msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "PVR アドオンを有効にできませんでした。設定を見直すか、ログを参照してください。"
+
+msgctxt "#19224"
+msgid "Recording aborted"
+msgstr "録画が中断されました"
+
+msgctxt "#19225"
+msgid "Recording scheduled"
+msgstr "録画予約完了"
+
+msgctxt "#19226"
+msgid "Recording started"
+msgstr "録画が開始しました"
+
+msgctxt "#19227"
+msgid "Recording completed"
+msgstr "録画が完了しました"
+
+msgctxt "#19228"
+msgid "Recording deleted"
+msgstr "録画が削除されました"
+
+msgctxt "#19232"
+msgid "Clear search results"
+msgstr "検索結果をクリア"
+
+msgctxt "#19235"
+msgid "PVR manager is starting up"
+msgstr "PVR マネージャーを起動中"
+
+msgctxt "#19236"
+msgid "Loading channels from clients"
+msgstr "クライアントからチャンネルを読み込み中"
+
+msgctxt "#19237"
+msgid "Loading timers from clients"
+msgstr "クライアントからタイマーを読み込み中"
+
+msgctxt "#19238"
+msgid "Loading recordings from clients"
+msgstr "クライアントから録画を読み込み中"
+
+msgctxt "#19240"
+msgid "No PVR add-on enabled"
+msgstr "PVR アドオンを有効にできませんでした"
+
+msgctxt "#19241"
+msgid "The PVR manager has been enabled without any"
+msgstr "PVR マネージャは起動しましたが、PVR アドオンが"
+
+msgctxt "#19242"
+msgid "enabled PVR add-on. Enable at least one add-on"
+msgstr "ひとつも有効になっていません。最低でも1つの"
+
+msgctxt "#19243"
+msgid "in order to use the PVR functionality."
+msgstr "アドオンを有効にしないと正しく機能しません。"
+
+msgctxt "#19244"
+msgid "Backend idle time"
+msgstr "バックエンドのアイドル時間"
+
+msgctxt "#19247"
+msgid "Daily wakeup"
+msgstr "デイリーモーニングコール"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "毎日の起床時間 (時間:分:秒)"
+
+msgctxt "#19249"
+msgid "Filter channels"
+msgstr "チャンネルのフィルタリング"
+
+msgctxt "#19250"
+msgid "Loading EPG from database"
+msgstr "データベースから EPG を読み出し中"
+
+msgctxt "#19251"
+msgid "Update EPG information"
+msgstr "EPG 情報のアップデート"
+
+msgctxt "#19255"
+msgid "Start recording"
+msgstr "録画の開始"
+
+msgctxt "#19256"
+msgid "Stop recording"
+msgstr "録画の中止"
+
+msgctxt "#19257"
+msgid "Lock channel"
+msgstr "チャンネルをロック"
+
+msgctxt "#19258"
+msgid "Unlock channel"
+msgstr "チャンネルロックを解除"
+
+msgctxt "#19259"
+msgid "Parental control"
+msgstr "ペアレンタルコントロール"
+
+msgctxt "#19261"
+msgid "Change PIN"
+msgstr "暗証番号を変更する"
+
+msgctxt "#19262"
+msgid "Parental control. Enter PIN:"
+msgstr "ペアレンタルコントロール。PIN を入力:"
+
+msgctxt "#19263"
+msgid "Locked channel. Enter PIN:"
+msgstr "ロックされたチャンネルです。PIN を入力:"
+
+msgctxt "#19264"
+msgid "Incorrect PIN"
+msgstr "暗証番号をエラー"
+
+msgctxt "#19265"
+msgid "The entered PIN number was incorrect."
+msgstr "入力された暗証番号が間違っていました。"
+
+msgctxt "#19270"
+msgid "* All recordings"
+msgstr "* 全録画"
+
+msgctxt "#19271"
+msgid "No PVR add-ons could be found"
+msgstr "PVR アドオンが見つかりませんでした"
+
+msgctxt "#19272"
+msgid "You need a tuner, backend software, and an"
+msgstr "チューナー、バックエンドのソフトウェア、そして"
+
+msgctxt "#19273"
+msgid "add-on for the backend to be able to use PVR."
+msgstr "PVR を利用するためのバックエンドアドオンが必要です"
+
+msgctxt "#19274"
+msgid "Please visit xbmc.org/pvr to learn more."
+msgstr "xbmc.org/pvr に詳しい情報があります"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "重複エラー"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "録画が重複しています"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "録画エラー"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "クライアント固有"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "クライアント固有の設定"
+
+msgctxt "#19499"
+msgid "Other/Unknown"
+msgstr "その他/不明"
+
+msgctxt "#19500"
+msgid "Movie/Drama"
+msgstr "映画/ドラマ"
+
+msgctxt "#19501"
+msgid "Detective/Thriller"
+msgstr "サスペンス/スリラー"
+
+msgctxt "#19502"
+msgid "Adventure/Western/War"
+msgstr "アドベンチャー/西部/戦争"
+
+msgctxt "#19503"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "SF /ファンタジー/ホラー"
+
+msgctxt "#19504"
+msgid "Comedy"
+msgstr "コメディ"
+
+msgctxt "#19505"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "昼ドラ/メロドラマ/フォルクローレ"
+
+msgctxt "#19506"
+msgid "Romance"
+msgstr "恋愛もの"
+
+msgctxt "#19508"
+msgid "Adult Movie/Drama"
+msgstr "アダルト映画・ドラマ"
+
+msgctxt "#19516"
+msgid "News/Current Affairs"
+msgstr "ニュース/時事"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "ニュース/天気予報"
+
+msgctxt "#19518"
+msgid "News Magazine"
+msgstr "ニュース雑誌"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "ドキュメンタリー"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "議論/インタビュー/討論"
+
+msgctxt "#19532"
+msgid "Show/Game Show"
+msgstr "ショー/ゲームショー"
+
+msgctxt "#19533"
+msgid "Game Show/Quiz/Contest"
+msgstr "ゲームショー/クイズ/コンテスト"
+
+msgctxt "#19534"
+msgid "Variety Show"
+msgstr "バラエティショー"
+
+msgctxt "#19535"
+msgid "Talk Show"
+msgstr "トークショー"
+
+msgctxt "#19548"
+msgid "Sports"
+msgstr "スポーツ"
+
+msgctxt "#19549"
+msgid "Special Event"
+msgstr "スペシャルイベント"
+
+msgctxt "#19550"
+msgid "Sport Magazine"
+msgstr "スポーツマガジン"
+
+msgctxt "#19551"
+msgid "Football"
+msgstr "サッカー"
+
+msgctxt "#19552"
+msgid "Tennis/Squash"
+msgstr "テニス/スカッシュ"
+
+msgctxt "#19553"
+msgid "Team Sports"
+msgstr "チームスポーツ"
+
+msgctxt "#19554"
+msgid "Athletics"
+msgstr "陸上競技"
+
+msgctxt "#19555"
+msgid "Motor Sport"
+msgstr "モータースポーツ"
+
+msgctxt "#19556"
+msgid "Water Sport"
+msgstr "ウォータースポーツ"
+
+msgctxt "#19557"
+msgid "Winter Sports"
+msgstr "ウィンタースポーツ"
+
+msgctxt "#19558"
+msgid "Equestrian"
+msgstr "乗馬スポーツ"
+
+msgctxt "#19559"
+msgid "Martial Sports"
+msgstr "武術・格闘技"
+
+msgctxt "#19564"
+msgid "Children's/Youth Programmes"
+msgstr "子供・若者向け番組"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "幼児向け番組"
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "6歳から14歳向けのエンターテインメント番組"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "10歳から16歳向けのエンターテインメント番組"
+
+msgctxt "#19568"
+msgid "Informational/Educational/School Programme"
+msgstr "情報/教育/学習番組"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "アニメ/人形"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "音楽/バレエ/ダンス"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "ロック/ポップ"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "シリアス/クラシック"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "フォーク/伝統音楽"
+
+msgctxt "#19584"
+msgid "Musical/Opera"
+msgstr "ミュージカル/オペラ"
+
+msgctxt "#19585"
+msgid "Ballet"
+msgstr "バレエ"
+
+msgctxt "#19596"
+msgid "Arts/Culture"
+msgstr "アート/カルチャー"
+
+msgctxt "#19597"
+msgid "Performing Arts"
+msgstr "舞台芸術"
+
+msgctxt "#19598"
+msgid "Fine Arts"
+msgstr "アート"
+
+msgctxt "#19599"
+msgid "Religion"
+msgstr "宗教"
+
+msgctxt "#19600"
+msgid "Popular Culture/Traditional Arts"
+msgstr "ポピュラー文化/伝統アート"
+
+msgctxt "#19601"
+msgid "Literature"
+msgstr "文学"
+
+msgctxt "#19602"
+msgid "Film/Cinema"
+msgstr "映画"
+
+msgctxt "#19603"
+msgid "Experimental Film/Video"
+msgstr "実験映画/ビデオ"
+
+msgctxt "#19604"
+msgid "Broadcasting/Press"
+msgstr "放送/プレス"
+
+msgctxt "#19605"
+msgid "New Media"
+msgstr "ニューメディア"
+
+msgctxt "#19606"
+msgid "Arts/Culture Magazines"
+msgstr "アート/カルチャーマガジン"
+
+msgctxt "#19607"
+msgid "Fashion"
+msgstr "ファッション"
+
+msgctxt "#19612"
+msgid "Social/Political/Economics"
+msgstr "社会/政治/経済"
+
+msgctxt "#19613"
+msgid "Magazines/Reports/Documentary"
+msgstr "マガジン/レポート/ドキュメンタリー"
+
+msgctxt "#19614"
+msgid "Economics/Social Advisory"
+msgstr "経済/社会状況"
+
+msgctxt "#19628"
+msgid "Education/Science/Factual"
+msgstr "教育/サイエンス"
+
+msgctxt "#19629"
+msgid "Nature/Animals/Environment"
+msgstr "自然/動物/環境"
+
+msgctxt "#19630"
+msgid "Technology/Natural Sciences"
+msgstr "テクノロジー/自然科学"
+
+msgctxt "#19631"
+msgid "Medicine/Physiology/Psychology"
+msgstr "医学/生理学/心理学"
+
+msgctxt "#19632"
+msgid "Foreign Countries/Expeditions"
+msgstr "海外/探検"
+
+msgctxt "#19633"
+msgid "Social/Spiritual Sciences"
+msgstr "ソーシャル/スピリチュアルサイエンス"
+
+msgctxt "#19634"
+msgid "Further Education"
+msgstr "生涯教育"
+
+msgctxt "#19635"
+msgid "Languages"
+msgstr "言語"
+
+msgctxt "#19644"
+msgid "Leisure/Hobbies"
+msgstr "レジャー/趣味"
+
+msgctxt "#19645"
+msgid "Tourism/Travel"
+msgstr "観光/旅行"
+
+msgctxt "#19646"
+msgid "Handicraft"
+msgstr "手芸"
+
+msgctxt "#19647"
+msgid "Motoring"
+msgstr "クルマ"
+
+msgctxt "#19648"
+msgid "Fitness &amp; Health"
+msgstr "フィットネス &amp; 健康"
+
+msgctxt "#19649"
+msgid "Cooking"
+msgstr "クッキング"
+
+msgctxt "#19650"
+msgid "Advertisement/Shopping"
+msgstr "宣伝/ショッピング"
+
+msgctxt "#19651"
+msgid "Gardening"
+msgstr "ガーデニング"
+
+msgctxt "#19662"
+msgid "Black &amp; White"
+msgstr "白黒"
+
+msgctxt "#19664"
+msgid "Live Broadcast"
+msgstr "生放送"
+
+msgctxt "#19676"
+msgid "Drama"
+msgstr "ドラマ"
+
+msgctxt "#19677"
+msgid "Detective/Thriller"
+msgstr "探偵・刑事もの/スリラー"
+
+msgctxt "#19678"
+msgid "Adventure/Western/War"
+msgstr "冒険/西部劇/戦争"
+
+msgctxt "#19679"
+msgid "Science Fiction/Fantasy/Horror"
+msgstr "SF/ファンタジー/ホラー"
+
+msgctxt "#19680"
+msgid "Comedy"
+msgstr "コメディー・お笑い"
+
+msgctxt "#19681"
+msgid "Soap/Melodrama/Folkloric"
+msgstr "メロドラマ系"
+
+msgctxt "#19682"
+msgid "Romance"
+msgstr "恋愛もの"
+
+msgctxt "#19683"
+msgid "Serious/ClassicalReligion/Historical"
+msgstr "シリアス/クラシック/宗教/歴史"
+
+msgctxt "#19684"
+msgid "Adult"
+msgstr "アダルト"
 
 msgctxt "#20000"
 msgid "Saved music folder"
@@ -6450,6 +7654,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "UPnP でライブラリアップデートをアナウンス"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "あらすじとレビューで自動スクロールを有効化"
@@ -6493,6 +7701,26 @@ msgstr "アーティストが見つかりませんでした!"
 msgctxt "#20199"
 msgid "Downloading artist info failed"
 msgstr "アーティスト情報の取得に失敗しました"
+
+msgctxt "#20240"
+msgid "Android music"
+msgstr "Android ミュージック"
+
+msgctxt "#20241"
+msgid "Android videos"
+msgstr "Android ビデオ"
+
+msgctxt "#20242"
+msgid "Android pictures"
+msgstr "Android ピクチャー"
+
+msgctxt "#20243"
+msgid "Android photos"
+msgstr "Android フォト"
+
+msgctxt "#20244"
+msgid "Android Apps"
+msgstr "Android アプリ"
 
 msgctxt "#20250"
 msgid "Party on! (videos)"
@@ -6593,6 +7821,26 @@ msgstr "ビデオ - ライブラリ"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "並べ替え：ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "%s で映画をスキャン中"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "%s で音楽ビデオをスキャン中"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "%s でTV番組をスキャン中"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "%s でアーティストをスキャン中"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "%s でアルバムをスキャン中"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -7118,6 +8366,30 @@ msgctxt "#20458"
 msgid "Group movies in sets"
 msgstr "Group movies in sets"
 
+msgctxt "#20459"
+msgid "Tags"
+msgstr "タグ"
+
+msgctxt "#20460"
+msgid "Add %s"
+msgstr "%s を追加"
+
+msgctxt "#20461"
+msgid "Remove %s"
+msgstr "%s を削除"
+
+msgctxt "#20462"
+msgid "New tag..."
+msgstr "新規タグ..."
+
+msgctxt "#20463"
+msgid "A tag with the name '%s' already exists."
+msgstr "「%s」という名前のタグは既に存在します"
+
+msgctxt "#20464"
+msgid "Select %s"
+msgstr "%s を選択"
+
 msgctxt "#21330"
 msgid "Show hidden files and directories"
 msgstr "隠しファイル/フォルダーを表示"
@@ -7522,6 +8794,10 @@ msgctxt "#21455"
 msgid "Cache filled before reaching required amount for continous playback"
 msgstr "Cache filled before reaching required amount for continous playback"
 
+msgctxt "#21456"
+msgid "External storage"
+msgstr "外部記憶"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "字幕の場所"
@@ -7545,6 +8821,18 @@ msgstr "映像の上側に重ねる"
 msgctxt "#21465"
 msgid "Above video"
 msgstr "映像の上"
+
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f から %.1f まで"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d から %d まで"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s から %s まで"
 
 msgctxt "#21800"
 msgid "File name"
@@ -8042,6 +9330,10 @@ msgctxt "#23054"
 msgid "Running"
 msgstr "Running"
 
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "文字多重放送を 4:3 にスケーリング"
+
 msgctxt "#23100"
 msgid "External Player Active"
 msgstr "External Player Active"
@@ -8122,6 +9414,10 @@ msgctxt "#24018"
 msgid "Services"
 msgstr "サービス"
 
+msgctxt "#24019"
+msgid "PVR clients"
+msgstr "PVR クライアント"
+
 msgctxt "#24020"
 msgid "Configure"
 msgstr "設定"
@@ -8145,6 +9441,10 @@ msgstr "天気"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (標準)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "天気情報用のサービス"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -8357,6 +9657,10 @@ msgstr "この機能を使うには以下のアドオンのダウンロードが
 msgctxt "#24101"
 msgid "Would you like to download this Add-on?"
 msgstr "このアドオンをダウンロードしますか?"
+
+msgctxt "#24102"
+msgid "Unable to load skin"
+msgstr "スキンの読み込みに失敗"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -8882,6 +10186,14 @@ msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
 msgstr "このデバイスではカスタムキーマップを使わないで下さい"
 
+msgctxt "#35100"
+msgid "Enable joystick and gamepad support"
+msgstr "ジョイスティックとゲームパッドのサポートを有効に"
+
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "ジョイスティックを無効にする"
+
 msgctxt "#35500"
 msgid "Location"
 msgstr "Location"
@@ -8994,6 +10306,18 @@ msgctxt "#36025"
 msgid "Send 'inactive source' command when stopping XBMC"
 msgstr "XBMC 終了時に'非アクティブソース'コマンドを送信"
 
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "無視"
+
+msgctxt "#36031"
+msgid "This user does not have permissions to open the CEC adapter"
+msgstr "ユーザーが CEC アダプターをオープンする権限がありません"
+
+msgctxt "#36032"
+msgid "The port is busy. Only one program can access the CEC adapter"
+msgstr "ポートは使用中です。CEC アダプターに複数のプログラムが同時にアクセスできません。"
+
 msgctxt "#36035"
 msgid "Always"
 msgstr "常に使用"
@@ -9001,3 +10325,15 @@ msgstr "常に使用"
 msgctxt "#36037"
 msgid "TV"
 msgstr "TV"
+
+msgctxt "#36038"
+msgid "Amplifier / AVR device"
+msgstr "アンプ/AVレシーバーデバイス"
+
+msgctxt "#36040"
+msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
+msgstr "サポートされていないバージョンの libCEC です。%x は、XBMC がサポートするバージョン (%x) より低くなっています。"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* アイテムフォルダー"

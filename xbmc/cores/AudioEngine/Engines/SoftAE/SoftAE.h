@@ -147,6 +147,7 @@ private:
   CCriticalSection m_soundLock;       /* m_sounds lock */
   CCriticalSection m_soundSampleLock; /* m_playing_sounds lock */
   CSharedSection   m_sinkLock;        /* lock for m_sink on re-open */
+  CCriticalSection m_threadLock;      /* locked while starting/stopping the thread */
 
   /* the current configuration */
   float               m_volume;

@@ -873,18 +873,6 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory, bool updateFilterPa
   //  filtering on the items, setting thumbs.
   OnPrepareFileItems(*m_vecItems);
 
-  // The idea here is to ensure we have something to focus if our file list
-  // is empty.  As such, this check MUST be last and ignore the hide parent
-  // fileitems settings.
-  if (m_vecItems->IsEmpty())
-  {
-    CFileItemPtr pItem(new CFileItem(".."));
-    pItem->SetPath(m_history.GetParentPath());
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    m_vecItems->AddFront(pItem, 0);
-  }
-
   m_vecItems->FillInDefaultIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
@@ -946,21 +934,8 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
     m_vecItems->RemoveDiscCache(GetID());
 
   // get the original number of items
-  int oldCount = m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size();
   if (!Update(strCurrentDirectory, false))
     return false;
-
-  // check if we previously had at least 1 item
-  // in the list and whether it now went down to 0
-  // if there are no more items to show after the update
-  // we go one level up in the hierachry to not show an
-  // empty list
-  if (oldCount > 0 &&
-     (m_filter.IsEmpty() ? m_vecItems->Size() : m_unfilteredItems->Size()) <= 0)
-  {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(2080), g_localizeStrings.Get(2081));
-    GoParentFolder();
-  }
 
   return true;
 }
@@ -1355,6 +1330,13 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
         }
       }
 
+      if (URIUtils::IsVideoDb(strPath))
+      {
+        CURL url(strParentPath);
+        url.SetOptions(""); // clear any URL options from recreated parent path
+        strParentPath = url.Get();
+      }
+
       URIUtils::AddSlashAtEnd(strPath);
       m_history.AddPathFront(strPath);
       m_history.SetSelectedItem(strPath, strParentPath);
@@ -1405,7 +1387,6 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
     g_playlistPlayer.ClearPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
     int mediaToPlay = 0;
-    CFileItemList queueItems;
     for ( int i = 0; i < m_vecItems->Size(); i++ )
     {
       CFileItemPtr nItem = m_vecItems->Get(i);
@@ -1414,14 +1395,13 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item)
         continue;
 
       if (!nItem->IsPlayList() && !nItem->IsZIP() && !nItem->IsRAR())
-        queueItems.Add(nItem);
+        g_playlistPlayer.Add(iPlaylist, nItem);
 
-      if (nItem == item)
+      if (item->IsSamePath(nItem.get()))
       { // item that was clicked
-        mediaToPlay = queueItems.Size() - 1;
+        mediaToPlay = g_playlistPlayer.GetPlaylist(iPlaylist).size() - 1;
       }
     }
-    g_playlistPlayer.Add(iPlaylist, queueItems);
 
     // Save current window and directory to know where the selected item was
     if (m_guiState.get())
@@ -1718,7 +1698,11 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   {
     if (items.HasProperty(PROPERTY_PATH_DB))
       m_strFilterPath = items.GetProperty(PROPERTY_PATH_DB).asString();
-    else
+    // only set m_strFilterPath if it hasn't been set before
+    // otherwise we might overwrite it with a non-filter path
+    // in case GetFilteredItems() returns true even though no
+    // db-based filter (e.g. watched filter) has been applied
+    else if (m_strFilterPath.empty())
       m_strFilterPath = items.GetPath();
   }
   
@@ -1770,7 +1754,19 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
       }
     }
   }
-  
+
+  // The idea here is to ensure we have something to focus if our file list
+  // is empty.  As such, this check MUST be last and ignore the hide parent
+  // fileitems settings.
+  if (m_vecItems->IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->SetPath(m_history.GetParentPath());
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    m_vecItems->AddFront(pItem, 0);
+  }
+
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(currentItemPath);

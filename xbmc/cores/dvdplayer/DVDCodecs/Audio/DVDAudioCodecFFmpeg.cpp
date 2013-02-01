@@ -42,6 +42,7 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
   m_layout = 0;
   
   m_bLpcmMode = false;
+  m_bNeedConversion = false;
 
   m_pFrame1 = NULL;
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
@@ -174,7 +175,7 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
   else
     m_iBuffered = 0;
     
-  if(m_bLpcmMode)
+  if(m_bLpcmMode || m_bNeedConversion)
     ConvertToFloat();
 
   return iBytesUsed;
@@ -277,9 +278,12 @@ enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
       case AV_SAMPLE_FMT_S32: return AE_FMT_S32NE;
       case AV_SAMPLE_FMT_FLT: return AE_FMT_FLOAT;
       case AV_SAMPLE_FMT_DBL: return AE_FMT_DOUBLE;
-      default:
+      case AV_SAMPLE_FMT_NONE:
         assert(false);
         return AE_FMT_INVALID;
+      default:
+        m_bNeedConversion = true;
+        return AE_FMT_FLOAT;
     }
   }
 }

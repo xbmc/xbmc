@@ -71,7 +71,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_viewControl.Reset();
       m_vecItems->Clear();
     }
     break;
@@ -185,6 +184,12 @@ void CGUIWindowLoginScreen::OnWindowLoaded()
   m_viewControl.AddView(GetControl(CONTROL_BIG_LIST));
 }
 
+void CGUIWindowLoginScreen::OnWindowUnload()
+{
+  CGUIWindow::OnWindowUnload();
+  m_viewControl.Reset();
+}
+
 void CGUIWindowLoginScreen::Update()
 {
   m_vecItems->Clear();
@@ -294,6 +299,9 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
   }
+
+  // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
+  ADDON::CAddonMgr::Get().ReInit();
 
   g_weatherManager.Refresh();
 #ifdef HAS_PYTHON

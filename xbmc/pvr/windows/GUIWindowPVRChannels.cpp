@@ -181,7 +181,11 @@ CPVRChannelGroupPtr CGUIWindowPVRChannels::SelectNextGroup(void)
 {
   CPVRChannelGroupPtr currentGroup = SelectedGroup();
   CPVRChannelGroupPtr nextGroup = currentGroup->GetNextGroup();
-  while (nextGroup && *nextGroup != *currentGroup && nextGroup->Size() == 0)
+  while (nextGroup && nextGroup->Size() == 0 &&
+      // break if the group matches
+      *nextGroup != *currentGroup &&
+      // or if we hit the first group
+      !nextGroup->IsInternalGroup())
     nextGroup = nextGroup->GetNextGroup();
 
   /* always update so users can reset the list */
@@ -206,10 +210,14 @@ void CGUIWindowPVRChannels::UpdateData(bool bUpdateSelectedFile /* = true */)
 
   CPVRChannelGroupPtr selectedGroup = SelectedGroup();
 
-  m_iSelected = m_parent->m_viewControl.GetSelectedItem();
+  if (!bUpdateSelectedFile)
+    m_iSelected = m_parent->m_viewControl.GetSelectedItem();
+  else
+    m_parent->m_viewControl.SetSelectedItem(0);
+
+  m_parent->m_viewControl.SetCurrentView(m_iControlList);
   ShowBusyItem();
   m_parent->m_vecItems->Clear();
-  m_parent->m_viewControl.SetCurrentView(m_iControlList);
 
   CPVRChannelGroupPtr currentGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
   if (!currentGroup)

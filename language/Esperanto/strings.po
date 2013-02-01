@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -4185,6 +4185,10 @@ msgstr "Uzulonomo"
 msgctxt "#20173"
 msgid "FTP server"
 msgstr "FTP Server"
+
+msgctxt "#20177"
+msgid "Done"
+msgstr "Bone"
 
 msgctxt "#20190"
 msgid "Custom"

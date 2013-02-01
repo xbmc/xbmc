@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Danish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/da/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Aktiver Fankunst til Kunstnere fra HTBackdrops.com</string>
+    <string id="30001">Aktiver Miniaturebilleder af Kunstnere fra allmusic.com</string>
+    <string id="30002">Aktiver Miniaturebilleder af Kunstnere fra last.fm</string>
+    <string id="30003">Aktiver Miniaturebilleder af Kunstnere fra HTBackdrops.com</string>
+    <string id="30004">Aktiver Fankunst til Kunstnere fra fanart.tv</string>
+    <string id="30005">Aktiver Miniaturebilleder af Kunstnere fra fanart.tv</string>
+    <string id="30006">Hent Kunstnerbiografi fra</string>
+    <string id="30007">Illustrationer</string>
+    <string id="30008">Hent Kunstnerdiskografi fra</string>
+    <string id="30009">Hent Kunstnergenrer fra</string>
+    <string id="30010">Hent Kunstner-stilarter fra</string>
+    <string id="30011">Hent Kunstners levetid fra</string>
+    <string id="30012">Hent Kunstner-stemninger fra</string>
+    <string id="30014">Hent Kunstners aktive år fra</string>
+    <string id="30015">Foretrukket Sprog</string>
+    <string id="30016">Reserve til Kunstnerbiografi fra</string>
+    <string id="30017">Reserve til Kunstnerdiskografi fra</string>
+    <string id="30018">Reserve til Kunstnergenrer fra</string>
+    <string id="30019">Reserve til Kunstner-stilarter fra</string>
+    <string id="30020">Reserve til Kunstners levetid fra</string>
+    <string id="30021">Reserver</string>
+    <string id="30022">Aktiver Miniaturebilleder af Kunstnere fra theaudiodb.com</string>
+    <string id="30023">Aktiver Fankunst til Kunstnere fra theaudiodb.com</string>
+</strings>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.black"
        name="Black"
-       version="1.0.0"
+       version="1.0.2"
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
@@ -11,7 +11,7 @@
     <summary lang="bg">Скрийнсейвър, който прави екрана черен</summary>
     <summary lang="ca">Estalvi de pantalla que posa la pantalla en negre</summary>
     <summary lang="cs">Šetřič obrazovky, který začerní Vaši obrazovku</summary>
-    <summary lang="da">Pauseskærm, der gør din skærm sort</summary>
+    <summary lang="da">Pauseskærm som gør din skærm sort</summary>
     <summary lang="de">Bildschirmshoner, welcher den Bildschirm schwarz färbt</summary>
     <summary lang="el">Προφύλαξη οθόνης που αμαυρώνει την οθόνη σας</summary>
     <summary lang="en">Screensaver that turns your screen black</summary>
@@ -35,7 +35,7 @@
     <summary lang="no">Skjermsparer som gjør skjermen din svart</summary>
     <summary lang="pl">Wygaszacz ekranu wyświetlający czarny ekran</summary>
     <summary lang="pt">Protecção que escurece o seu ecrã.</summary>
-    <summary lang="pt_BR">Screensaver que escurece sua tela</summary>
+    <summary lang="pt_BR">Protetor de tela que deixa sua tela preta</summary>
     <summary lang="ro">Screensaver care afișează un ecran negru</summary>
     <summary lang="ru">Заставка «чёрный экран»</summary>
     <summary lang="se">Skärmsläckare som gör din skärm svart</summary>
@@ -75,7 +75,7 @@
     <description lang="no">Black er en enkel skjermsparer som gjør skjermen din svart.</description>
     <description lang="pl">Ten wygaszacz ekranu wyświetla czarny ekran. Staraj się używać go na wyświetlaczach CRT i unikaj na LCD.</description>
     <description lang="pt">Uma protecção simples que escurece o seu ecrã.</description>
-    <description lang="pt_BR">Black é um screensaver simples que escurece sua tela</description>
+    <description lang="pt_BR">Black é um protetor de tela que vai deixar sua tela preta</description>
     <description lang="ro">Black este un screensaver simplu care afișează negru pe ecran.</description>
     <description lang="ru">Это простая заставка, которая делает экран чёрным.</description>
     <description lang="se">Mörka är en enkel skärmsläckare som gör din skärm svart.</description>
@@ -88,5 +88,3 @@
     <platform>all</platform>
   </extension>
 </addon>
-
-

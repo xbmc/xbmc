@@ -64,6 +64,8 @@
 #include "pvr/PVRManager.h"
 #include "windows/GUIWindowLoginScreen.h"
 
+#include "utils/GlobalsHandling.h"
+
 using namespace PVR;
 using namespace std;
 using namespace MUSIC_INFO;
@@ -89,9 +91,9 @@ void CDelayedMessage::Process()
     CApplicationMessenger::Get().SendMessage(m_msg, false);
 }
 
+
 CApplicationMessenger& CApplicationMessenger::Get()
 {
-  static CApplicationMessenger s_messenger;
   return s_messenger;
 }
 
@@ -466,9 +468,19 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     case TMSG_MEDIA_STOP:
       {
         // restore to previous window if needed
-        if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-            g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-            g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+        bool stopSlideshow = true;
+        bool stopVideo = true;
+        bool stopMusic = true;
+        if (pMsg->dwParam1 >= 0)
+        {
+          stopSlideshow = (pMsg->dwParam1 == PLAYLIST_PICTURE);
+          stopVideo = (pMsg->dwParam1 == PLAYLIST_VIDEO);
+          stopMusic = (pMsg->dwParam1 == PLAYLIST_MUSIC);
+        }
+
+        if ((stopSlideshow && g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) ||
+            (stopVideo && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
+            (stopMusic && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION))
           g_windowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
@@ -888,9 +900,10 @@ void CApplicationMessenger::PlayFile(const CFileItem &item, bool bRestart /*= fa
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::MediaStop(bool bWait /* = true */)
+void CApplicationMessenger::MediaStop(bool bWait /* = true */, int playlistid /* = -1 */)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_STOP};
+  tMsg.dwParam1 = playlistid;
   SendMessage(tMsg, bWait);
 }
 

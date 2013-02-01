@@ -1332,6 +1332,15 @@ JSONRPC_STATUS JsonRpcMethod::checkParameter(const CVariant &requestParameters, 
   return OK;
 }
 
+void CJSONServiceDescription::Cleanup()
+{
+  // reset all of the static data
+  m_notifications.clear();
+  m_actionMap.clear();
+  m_types.clear();
+  m_incompleteDefinitions.clear();
+}
+
 bool CJSONServiceDescription::prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name)
 {
   if (description.empty())
@@ -1964,6 +1973,11 @@ void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinitionP
 CJSONServiceDescription::CJsonRpcMethodMap::CJsonRpcMethodMap()
 {
   m_actionmap = std::map<std::string, JsonRpcMethod>();
+}
+
+void CJSONServiceDescription::CJsonRpcMethodMap::clear()
+{
+  m_actionmap.clear();
 }
 
 void CJSONServiceDescription::CJsonRpcMethodMap::add(const JsonRpcMethod &method)

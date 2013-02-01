@@ -70,13 +70,11 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
     while (GetPitch() < g_Windowing.GetMinDXTPitch())
       m_textureWidth += GetBlockSize();
 
-#if !defined(TARGET_RASPBERRY_PI)
   if (!g_Windowing.SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
   {
     m_textureWidth = PadPow2(m_textureWidth);
     m_textureHeight = PadPow2(m_textureHeight);
   }
-#endif
   if (m_format & XB_FMT_DXT_MASK)
   { // DXT textures must be a multiple of 4 in width and height
     m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
@@ -296,7 +294,9 @@ bool CBaseTexture::LoadFromFileInternal(const CStdString& texturePath, unsigned 
   }
 
   //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
-  if (URIUtils::GetExtension(texturePath).Equals(".jpg") || URIUtils::GetExtension(texturePath).Equals(".tbn"))
+  CStdString Ext = URIUtils::GetExtension(texturePath);
+  Ext.ToLower(); // Ignore case of the extension
+  if (Ext.Equals(".jpg") || Ext.Equals(".jpeg") || Ext.Equals(".tbn"))
   {
     CJpegIO jpegfile;
     if (jpegfile.Open(texturePath, maxWidth, maxHeight))

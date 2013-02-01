@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: MilkDrop
 # Addon id: visualization.milkdrop
-# Addon version: 1.0.0
+# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -55,15 +55,15 @@ msgstr "Aktiver stereo 3D"
 
 msgctxt "#30009"
 msgid "Preset Pack"
-msgstr "Forudstillingspakke"
+msgstr "Forudindstillings-pakke"
 
 msgctxt "#30010"
 msgid "User Preset Folder        "
-msgstr "Brugerdefineret mappe"
+msgstr "Brugermappe med forudindstillinger"
 
 msgctxt "#30011"
 msgid "Preset Shuffle Mode"
-msgstr "Forudindstillings blandingstilstand"
+msgstr "Forudindstillet blandingstilstand"
 
 msgctxt "#30020"
 msgid "WA51 Presets"
@@ -75,7 +75,7 @@ msgstr "Winamp forudindstillinger"
 
 msgctxt "#30022"
 msgid "User Defined Preset Folder"
-msgstr "Brugerdefineret forudindstillingsmappe"
+msgstr "Brugerdefineret mappe med forudindstillinger"
 
 msgctxt "#30050"
 msgid "%2.0f secs"

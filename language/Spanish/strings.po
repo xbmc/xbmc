@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -8660,7 +8660,7 @@ msgstr "Extraer los metadatos de información del medio"
 
 msgctxt "#20434"
 msgid "Sets"
-msgstr "Colecciones"
+msgstr "Sagas"
 
 msgctxt "#20436"
 msgid "Export actor thumbs?"
@@ -8748,7 +8748,7 @@ msgstr "Colección de Películas"
 
 msgctxt "#20458"
 msgid "Group movies in sets"
-msgstr "Agrupar películas en colecciones"
+msgstr "Agrupar películas en sagas"
 
 msgctxt "#20459"
 msgid "Tags"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Activar joystick y mando de juegos"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Deshabilitar joystick cuando iMON está conectado"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Desactivar el joystick cuando esté presente"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10753,3 +10753,7 @@ msgstr "TV y dispositivo AVR (explícito)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Versión de interfaz libCEC no soportada. %x es menor que la versión soportada por XBMC (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Capeta de Items"

@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "启用游戏杆和游戏手柄支持"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "使用iMON时禁用游戏杆"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "设备启用时禁用游戏杆"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10753,3 +10753,7 @@ msgstr "电视和AVR设备（详情）"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "不支持的libCEC接口版本，%x 低于XBMC支持的版本（%x）"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* 项目文件夹"

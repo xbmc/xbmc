@@ -37,6 +37,8 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
+    XbmcThreads::ThreadLocal<ref> InterceptorBase::upcallTls;
+
     /**
      * Used in add/remove control. It only locks if it's given a 
      * non-NULL CCriticalSection. It's given a NULL CCriticalSection
@@ -397,7 +399,7 @@ namespace XBMCAddon
     {
       TRACE;
       // DO NOT MAKE THIS A DELAYED CALL!!!!
-      bool ret = languageHook == NULL ? m_actionEvent.WaitMSec(milliseconds) : languageHook->waitForEvent(m_actionEvent,milliseconds);
+      bool ret = languageHook == NULL ? m_actionEvent.WaitMSec(milliseconds) : languageHook->WaitForEvent(m_actionEvent,milliseconds);
       if (ret)
         m_actionEvent.Reset();
       return ret;
@@ -706,7 +708,7 @@ namespace XBMCAddon
 //            Window_Close(self, NULL);
 //            break;
 //          }
-          languageHook->makePendingCalls(); // MakePendingCalls
+          languageHook->MakePendingCalls(); // MakePendingCalls
 
           bool stillWaiting;
           do
@@ -715,7 +717,7 @@ namespace XBMCAddon
               DelayedCallGuard dcguard(languageHook);            
               stillWaiting = WaitForActionEvent(100) ? false : true;
             }
-            languageHook->makePendingCalls();
+            languageHook->MakePendingCalls();
           } while (stillWaiting);
         }
       }

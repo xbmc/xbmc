@@ -27,13 +27,14 @@
 #include "interfaces/IAnnouncer.h"
 #include "addons/IAddon.h"
 
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 typedef struct {
   int id;
   bool bDone;
   std::string strFile;
-  XBPyThread *pyThread;
+  boost::shared_ptr<XBPyThread> pyThread;
 }PyElem;
 
 class LibraryLoader;
@@ -55,6 +56,7 @@ class XBPython :
   public IPlayerCallback,
   public ANNOUNCEMENT::IAnnouncer
 {
+  void Finalize();
 public:
   XBPython();
   virtual ~XBPython();
@@ -79,7 +81,6 @@ public:
   void OnDatabaseUpdated(const std::string &database);
   void OnAbortRequested(const CStdString &ID="");
   void Initialize();
-  void Finalize();
   void FinalizeScript();
   void FreeResources();
   void Process();

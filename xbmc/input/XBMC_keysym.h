@@ -214,6 +214,7 @@ typedef enum {
   XBMCK_POWER       = 0x140,    // Power Macintosh power key
   XBMCK_EURO        = 0x141,    // Some european keyboards
   XBMCK_UNDO        = 0x142,    // Atari keyboard has Undo
+  XBMCK_SLEEP       = 0x143,    // Sleep button on Nyxboard remote (and others?)
 
   // Add any other keys here
 

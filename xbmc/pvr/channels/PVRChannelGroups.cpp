@@ -245,7 +245,11 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
     // load only user defined groups, as internal group is already loaded
     if (!(*it)->IsInternalGroup())
     {
-      (*it)->Load();
+      if (!(*it)->Load())
+      {
+        CLog::Log(LOGDEBUG, "PVR - %s - failed to load channel group '%s'", __FUNCTION__, (*it)->GroupName().c_str());
+        return false;
+      }
 
       // remove empty groups when sync with backend is enabled
       if (bSyncWithBackends && (*it)->Size() == 0)
@@ -275,14 +279,21 @@ bool CPVRChannelGroups::Load(void)
   // create and load the internal channel group
   CPVRChannelGroupPtr internalChannels = CPVRChannelGroupPtr(new CPVRChannelGroupInternal(m_bRadio));
   m_groups.push_back(internalChannels);
-  internalChannels->Load();
+  if (!internalChannels->Load())
+  {
+    CLog::Log(LOGERROR, "PVR - %s - failed to load channels", __FUNCTION__);
+    return false;
+  }
 
   // load the other groups from the database
-  LoadUserDefinedChannelGroups();
+  if (!LoadUserDefinedChannelGroups())
+  {
+    CLog::Log(LOGERROR, "PVR - %s - failed to load channel groups", __FUNCTION__);
+    return false;
+  }
 
   // set the internal group as selected at startup
   internalChannels->SetSelectedGroup(true);
-  internalChannels->Renumber();
   m_selectedGroup = internalChannels;
 
   CLog::Log(LOGDEBUG, "PVR - %s - %d %s channel groups loaded", __FUNCTION__, (int) m_groups.size(), m_bRadio ? "radio" : "TV");

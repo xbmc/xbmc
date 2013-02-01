@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -124,6 +123,14 @@ msgstr "Zmniejszający się sierp Księżyca"
 msgctxt "#32510"
 msgid "Warning"
 msgstr "Uwaga"
+
+msgctxt "#32511"
+msgid "Watch"
+msgstr "Obserwuj"
+
+msgctxt "#32512"
+msgid "Advisory"
+msgstr "Porady"
 
 msgctxt "#32513"
 msgid "Statement"

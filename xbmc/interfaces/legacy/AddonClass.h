@@ -101,6 +101,9 @@ namespace XBMCAddon
     AddonClass(const char* classname);
     virtual ~AddonClass();
 
+    inline const String& GetClassname() const { return classname; }
+    inline LanguageHook* GetLanguageHook() { return languageHook; }
+
     /**
      * This method should be called while holding a Synchronize
      *  on the object. It will prevent the deallocation during
@@ -196,6 +199,8 @@ namespace XBMCAddon
       inline bool isNotNull() const { refcheck; return ac != NULL; }
       inline bool isSet() const { refcheck; return ac != NULL; }
       inline bool operator!() const { refcheck; return ac == NULL; }
+      inline bool operator==(const AddonClass::Ref<T>& oref) const { refcheck; return ac == oref.ac; }
+      inline bool operator<(const AddonClass::Ref<T>& oref) const { refcheck; return ac < oref.ac; } // std::set semantics
 
       // This is there only for boost compatibility
       template<class O> inline void reset(Ref<O> const & oref) { refcheck; (*this) = static_cast<T*>(oref.get()); refcheck; }

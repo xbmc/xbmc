@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -32,7 +32,7 @@ msgstr "Video's"
 
 msgctxt "#4"
 msgid "TV-Guide"
-msgstr "TV-gids"
+msgstr "TV gids"
 
 msgctxt "#5"
 msgid "Settings"
@@ -2202,6 +2202,14 @@ msgctxt "#611"
 msgid "Enter number"
 msgstr "Voer nummer in"
 
+msgctxt "#612"
+msgid "Bits/sample"
+msgstr "Bits/sample"
+
+msgctxt "#613"
+msgid "Sample rate"
+msgstr "Samplefrequentie"
+
 msgctxt "#620"
 msgid "Audio CDs"
 msgstr "Muziek CD's"
@@ -3222,6 +3230,10 @@ msgctxt "#1424"
 msgid "Overcast"
 msgstr "Bewolking"
 
+msgctxt "#1425"
+msgid "Pellets"
+msgstr "Pellets"
+
 msgctxt "#1426"
 msgid "Hail"
 msgstr "Hagel"
@@ -3254,6 +3266,10 @@ msgctxt "#1433"
 msgid "Spray"
 msgstr "Spray"
 
+msgctxt "#1434"
+msgid "Whirls"
+msgstr "Whirls"
+
 msgctxt "#1435"
 msgid "Sandstorm"
 msgstr "Zandstorm"
@@ -3261,6 +3277,10 @@ msgstr "Zandstorm"
 msgctxt "#1436"
 msgid "Blowing"
 msgstr "Waaien"
+
+msgctxt "#1437"
+msgid "Pellet"
+msgstr "Pellet"
 
 msgctxt "#1438"
 msgid "Small"
@@ -3297,6 +3317,10 @@ msgstr "Wolk"
 msgctxt "#1446"
 msgid "Unknown"
 msgstr "Onbekend"
+
+msgctxt "#1447"
+msgid "Squals"
+msgstr "Squals"
 
 msgctxt "#1448"
 msgid "Precipitation"
@@ -4145,6 +4169,10 @@ msgstr "Gestart, alarm over %im"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarm!"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr "Onderbroken met nog %im%is left"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -5916,7 +5944,7 @@ msgstr "Zoek soortgelijke programma's"
 
 msgctxt "#19004"
 msgid "Importing EPG from clients"
-msgstr "Gids van clients wordt geladen"
+msgstr "TV gids wordt geïmporteerd"
 
 msgctxt "#19005"
 msgid "PVR stream information"
@@ -6012,7 +6040,7 @@ msgstr "Geen zoekresultaten"
 
 msgctxt "#19028"
 msgid "No EPG entries"
-msgstr "Geen gids aanwezig"
+msgstr "Geen TV gids aanwezig"
 
 msgctxt "#19029"
 msgid "Channel"
@@ -6060,7 +6088,7 @@ msgstr "Bevestig verbergen van het kanaal"
 
 msgctxt "#19040"
 msgid "Timer"
-msgstr "Geplande opname"
+msgstr "Geplande opnames"
 
 msgctxt "#19041"
 msgid "Are you sure you want to rename this recording?"
@@ -6080,7 +6108,7 @@ msgstr "Controleer de instellingen van de server"
 
 msgctxt "#19045"
 msgid "No PVR clients have been started yet. Wait for the PVR clients to start up or check the log for details."
-msgstr "Geen PVR-clients beschikbaar"
+msgstr "Geen PVR add-ons beschikbaar"
 
 msgctxt "#19046"
 msgid "New channel"
@@ -6112,7 +6140,7 @@ msgstr "Verplaats kanaal naar:"
 
 msgctxt "#19053"
 msgid "Recording information"
-msgstr "Opname-informatie"
+msgstr "Opname informatie"
 
 msgctxt "#19054"
 msgid "Hide channel"
@@ -6160,7 +6188,7 @@ msgstr "Ga naar einde"
 
 msgctxt "#19065"
 msgid "Default EPG window"
-msgstr "Standaardgids"
+msgstr "Standaard TV gids"
 
 msgctxt "#19067"
 msgid "This event is already being recorded."
@@ -6172,15 +6200,15 @@ msgstr "Kon de opname niet verwijderen"
 
 msgctxt "#19069"
 msgid "EPG"
-msgstr "TV-gids"
+msgstr "TV gids"
 
 msgctxt "#19071"
 msgid "EPG update interval"
-msgstr "Vernieuwingsinterval van TV-gids"
+msgstr "Vernieuwingsinterval van TV gids"
 
 msgctxt "#19072"
 msgid "Do not store the EPG in the database"
-msgstr "TV-gids niet opslaan in de database"
+msgstr "TV gids niet opslaan in de database"
 
 msgctxt "#19073"
 msgid "Delay channel switch"
@@ -6424,7 +6452,7 @@ msgstr "Groep"
 
 msgctxt "#19142"
 msgid "Search guide"
-msgstr "Zoek in gids"
+msgstr "Zoek in TV gids"
 
 msgctxt "#19143"
 msgid "Group management"
@@ -6528,7 +6556,7 @@ msgstr "Verberg video lengte informatie"
 
 msgctxt "#19170"
 msgid "Timeout when starting playback"
-msgstr "Scan timeout voor kanaal afspelen"
+msgstr "Timeout bij het openen van een nieuw kanaal"
 
 msgctxt "#19171"
 msgid "Start playback minimized"
@@ -6560,11 +6588,11 @@ msgstr "Afspelen"
 
 msgctxt "#19178"
 msgid "Show channel information when switching channels"
-msgstr "Info bij wisselen kanaal"
+msgstr "Toon kanaal Informatie bij wisselen kanaal"
 
 msgctxt "#19179"
 msgid "Automatically hide channel information"
-msgstr "Timeout kanaal informatie"
+msgstr "Sluit kanaal informatie na wijzigen kanaal"
 
 msgctxt "#19180"
 msgid "TV"
@@ -6576,27 +6604,27 @@ msgstr "Menu/OSD"
 
 msgctxt "#19182"
 msgid "Days to display in the EPG"
-msgstr "Weergegeven dagen in de TV-gids"
+msgstr "Weergegeven dagen in de TV gids"
 
 msgctxt "#19184"
 msgid "Channel information duration"
-msgstr "Kanaal info tijd"
+msgstr "Kanaal informatie sluiten na"
 
 msgctxt "#19185"
 msgid "Reset the PVR database"
-msgstr "Wis TV-database"
+msgstr "Wis TV database"
 
 msgctxt "#19186"
 msgid "All data in the PVR database is being erased"
-msgstr "Alle gegevens in de TV-database worden gewist"
+msgstr "Alle gegevens in de TV database worden gewist"
 
 msgctxt "#19187"
 msgid "Reset the EPG database"
-msgstr "Wis TV-gids en lees nieuwe in"
+msgstr "Wis TV gids informatie en lees nieuwe in"
 
 msgctxt "#19188"
 msgid "EPG is being reset"
-msgstr "TV-gids wordt gewist"
+msgstr "TV gids wordt gewist"
 
 msgctxt "#19189"
 msgid "Continue last channel on startup"
@@ -6628,7 +6656,7 @@ msgstr "Client acties"
 
 msgctxt "#19196"
 msgid "PVR client specific actions"
-msgstr "PVR client specifieke acties"
+msgstr "PVR add-on specifieke acties"
 
 msgctxt "#19197"
 msgid "Recording started on: %s"
@@ -6728,15 +6756,15 @@ msgstr "Kanalen in"
 
 msgctxt "#19221"
 msgid "Synchronise channel groups with backends"
-msgstr "Synchroniseer groepen met backends"
+msgstr "Synchroniseer kanaal groepen met backends"
 
 msgctxt "#19222"
 msgid "EPG"
-msgstr "Gids"
+msgstr "TV gids"
 
 msgctxt "#19223"
 msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
-msgstr "Kon geen PVR client inschakelen. Kijk je instellingen of het logbestand na."
+msgstr "Kon geen PVR add-on inschakelen. Kijk je instellingen of het logbestand na."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6764,7 +6792,7 @@ msgstr "Sluit kanalen OSD na wijzigen kanaal"
 
 msgctxt "#19230"
 msgid "Prevent EPG updates while playing a TV stream"
-msgstr "Geen gids updates tijdens het afspelen van een TV stream"
+msgstr "TV gids niet updaten tijdens het afspelen van een TV stream"
 
 msgctxt "#19231"
 msgid "Always use the channel order from the backend(s)"
@@ -6780,7 +6808,7 @@ msgstr "Toon een melding bij timer updates"
 
 msgctxt "#19234"
 msgid "Use backend channels numbers (only works with 1 enabled PVR addon)"
-msgstr "Gebruik kanaalnummers van de backend (werkt alleen als 1 PVR addon actief is)"
+msgstr "Gebruik kanaalnummers van de backend (alleen als 1 PVR addon actief is)"
 
 msgctxt "#19235"
 msgid "PVR manager is starting up"
@@ -6788,15 +6816,15 @@ msgstr "PVR manager is starting up"
 
 msgctxt "#19236"
 msgid "Loading channels from clients"
-msgstr "Kanalen worden geladen van clienten"
+msgstr "Kanalen worden geladen van add-ons"
 
 msgctxt "#19237"
 msgid "Loading timers from clients"
-msgstr "Timers worden geladen van clienten"
+msgstr "Timers worden geladen van add-ons"
 
 msgctxt "#19238"
 msgid "Loading recordings from clients"
-msgstr "Opnames worden geladen van clienten"
+msgstr "Opnames worden geladen van add-ons"
 
 msgctxt "#19239"
 msgid "Starting background threads"
@@ -6808,19 +6836,19 @@ msgstr "No PVR add-on enabled"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "The PVR manager has been enabled without any"
+msgstr "De PVR manager is ingeschakeld zonder ingeschakelde"
 
 msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "enabled PVR add-on. Enable at least one add-on"
+msgstr "PVR add-on. Schakel tenminste een add-on"
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
-msgstr "in order to use the PVR functionality."
+msgstr "om de PVR functie te gebruiken."
 
 msgctxt "#19244"
 msgid "Backend idle time"
-msgstr "Backend idle time"
+msgstr "Negeer ontwaak commando binnen"
 
 msgctxt "#19245"
 msgid "Set wakeup command (cmd [timestamp])"
@@ -6832,11 +6860,11 @@ msgstr "Ontwaak voor opnames"
 
 msgctxt "#19247"
 msgid "Daily wakeup"
-msgstr "Daily wakeup"
+msgstr "Dagelijks ontwaken"
 
 msgctxt "#19248"
 msgid "Daily wakeup time (HH:MM:SS)"
-msgstr "Daily wakeup time (HH:MM:SS)"
+msgstr "Tijdstip dagelijks ontwaken (UU:MM:SS)"
 
 msgctxt "#19249"
 msgid "Filter channels"
@@ -6884,7 +6912,7 @@ msgstr "Ouderlijk toezicht"
 
 msgctxt "#19260"
 msgid "Unlock duration"
-msgstr "Ontgrendel duratie"
+msgstr "Duur ontgrendeling"
 
 msgctxt "#19261"
 msgid "Change PIN"
@@ -6916,11 +6944,11 @@ msgstr "Ouderlijk vergrendeld:"
 
 msgctxt "#19268"
 msgid "Do not show 'no information available' labels"
-msgstr "Toon de labels 'geen informatie beschikbaar' niet."
+msgstr "Toon de labels 'geen informatie beschikbaar' niet"
 
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
-msgstr "Toon de waarschuwingen 'verbinding verbroken' niet."
+msgstr "Toon de waarschuwingen 'verbinding verbroken' niet"
 
 msgctxt "#19270"
 msgid "* All recordings"
@@ -6940,7 +6968,7 @@ msgstr "add-on voor de backend om PVR te kunnen gebruiken."
 
 msgctxt "#19274"
 msgid "Please visit xbmc.org/pvr to learn more."
-msgstr "Bezoek alstublieft xbmc.org/pvr om meer te leren."
+msgstr "Zie xbmc.org/pvr voor meer informatie."
 
 msgctxt "#19275"
 msgid "Conflict warning"
@@ -6957,6 +6985,18 @@ msgstr "Het conflict word geregistreerd"
 msgctxt "#19278"
 msgid "Recording error"
 msgstr "Registratie fout"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Cliënt-eigen"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Cliënt-eigen instellingen"
+
+msgctxt "#19281"
+msgid "Confirm channel switches by pressing OK"
+msgstr "Bevestig kanaalwisselingen met de OK-toets"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -8092,7 +8132,7 @@ msgstr "Eerste aanmelding, profiel bijwerken"
 
 msgctxt "#20256"
 msgid "HTS Tvheadend client"
-msgstr "HTS tvheadend client"
+msgstr "HTS Tvheadend client"
 
 msgctxt "#20257"
 msgid "VDR Streamdev client"
@@ -8165,6 +8205,26 @@ msgstr "Video - Bibliotheek"
 msgctxt "#20316"
 msgid "Sort by: ID"
 msgstr "Sorteer: ID"
+
+msgctxt "#20317"
+msgid "Scanning movies using %s"
+msgstr "Scannen van films met %s"
+
+msgctxt "#20318"
+msgid "Scanning music videos using %s"
+msgstr "Scannen van muziekvideo's met %s"
+
+msgctxt "#20319"
+msgid "Scanning tvshows using %s"
+msgstr "Scannen van TV-shows met %s"
+
+msgctxt "#20320"
+msgid "Scanning artists using %s"
+msgstr "Scannen van artiesten met %s"
+
+msgctxt "#20321"
+msgid "Scanning albums using %s"
+msgstr "Scannen van albums met %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -9122,6 +9182,10 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr "Externe opslag"
 
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Aantal bekeken afleveringen"
+
 msgctxt "#21460"
 msgid "Subtitle location"
 msgstr "Plaats van de ondertitels"
@@ -9740,7 +9804,7 @@ msgstr "Processen"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "PVR-clients"
+msgstr "PVR add-ons"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -10518,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Schakel joystick en gamepad ondersteuning in"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Schakel joystick uit wanneer iMON aanwezig is"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Schakel joystick uit wanneer apparaat aanwezig is"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10689,3 +10753,7 @@ msgstr "TV and AVR apparaat (expliciet)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Niet-ondersteunde libCEC-interfaceversie. %x is lager dan de versie die XBMC ondersteunt (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr " * Item map"

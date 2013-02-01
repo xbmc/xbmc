@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Macedonian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/mk/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Грабни Сликички за Албум од fanart.tv</string>
+    <string id="30001">Грабни Сликички за Албум од Last.fm</string>
+    <string id="30002">Грабни преглед на Албум од</string>
+    <string id="30003">Посакуван јазик</string>
+    <string id="30004">Превземи рејтинг за албум од</string>
+    <string id="30005">Превземи стилови на албум од</string>
+    <string id="30006">Get Album Moods from</string>
+    <string id="30007">Превземи Теми на албуми од</string>
+    <string id="30008">Превземи сликички на албуми од allmusic.com</string>
+    <string id="30009">Уметнини</string>
+    <string id="30010">Превземи сликички на албум од theaudiodb.com</string>
+</strings>

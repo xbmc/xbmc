@@ -38,7 +38,7 @@ using namespace PVR;
 CPVRRecordings::CPVRRecordings(void) :
     m_bIsUpdating(false)
 {
-    m_thumbLoader.SetNumOfWorkers(1); 
+
 }
 
 void CPVRRecordings::UpdateFromClients(void)
@@ -102,6 +102,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     if (!IsDirectoryMember(RemoveAllRecordingsPathExtension(strDirectory), current->m_strDirectory, directMember))
       continue;
 
+    current->UpdateMetadata();
     CFileItemPtr pFileItem(new CFileItem(*current));
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
@@ -116,40 +117,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     if (!current->m_strFanartPath.IsEmpty())
       pFileItem->SetArt("fanart", current->m_strFanartPath);
 
-    // Set the play count either directly from client (if supported) or from video db
-    if (g_PVRClients->SupportsRecordingPlayCount(pFileItem->GetPVRRecordingInfoTag()->m_iClientId))
-    {
-      pFileItem->GetPVRRecordingInfoTag()->m_playCount=pFileItem->GetPVRRecordingInfoTag()->m_iRecPlayCount;
-    }
-    else
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
-    }
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
-
-    // Set the resumePoint either directly from client (if supported) or from video db
-    int positionInSeconds = current->GetLastPlayedPosition();
-    if (positionInSeconds > 0)
-    {
-      // If the back-end does report a saved position then make sure there is a corresponding resume bookmark
-      CBookmark bookmark;
-      bookmark.timeInSeconds = positionInSeconds;
-      bookmark.totalTimeInSeconds = (double)current->GetDuration();
-      pFileItem->GetPVRRecordingInfoTag()->m_resumePoint = bookmark;
-    }
-    else if (positionInSeconds < 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        CBookmark bookmark;
-        if (db.GetResumeBookMark(current->m_strFileNameAndPath, bookmark))
-          pFileItem->GetPVRRecordingInfoTag()->m_resumePoint = bookmark;
-        db.Close();
-      }
-    }
 
     results->Add(pFileItem);
   }
@@ -176,6 +144,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
 
     if (!results->Contains(strFilePath))
     {
+      current->UpdateMetadata();
       CFileItemPtr pFileItem;
       pFileItem.reset(new CFileItem(strCurrent, true));
       pFileItem->SetPath(strFilePath);
@@ -184,17 +153,10 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
       pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
 
       // Initialize folder overlay from play count (either directly from client or from video database)
-      CVideoDatabase db;
-      bool supportsPlayCount = g_PVRClients->SupportsRecordingPlayCount(current->m_iClientId);
-      if ((supportsPlayCount && current->m_iRecPlayCount > 0) ||
-          (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) > 0))
-      {
+      if (current->m_playCount > 0)
         pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
-      }
       else
-      {
         unwatchedFolders.insert(strFilePath);
-      }
 
       results->Add(pFileItem);
     }
@@ -206,10 +168,9 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
         pFileItem->m_dateTime  = current->RecordingTimeAsLocalTime();
 
       // Unset folder overlay if recording is unwatched
-      if (unwatchedFolders.find(strFilePath) == unwatchedFolders.end()) {
-        CVideoDatabase db;
-        bool supportsPlayCount = g_PVRClients->SupportsRecordingPlayCount(current->m_iClientId);
-        if ((supportsPlayCount && current->m_iRecPlayCount == 0) || (!supportsPlayCount && db.Open() && db.GetPlayCount(*pFileItem) == 0))
+      if (unwatchedFolders.find(strFilePath) == unwatchedFolders.end())
+      {
+        if (current->m_playCount == 0)
         {
           pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
           unwatchedFolders.insert(strFilePath);
@@ -427,7 +388,6 @@ bool CPVRRecordings::SetRecordingsPlayCount(const CFileItemPtr &item, int count)
 bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   bool bSuccess(false);
-  CFileItemList files;
 
   {
     CSingleLock lock(m_critSection);
@@ -440,19 +400,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
     {
       strFileName.erase(0, 10);
       GetSubDirectories(strFileName, &items, true);
-      GetContents(strFileName, &files);
       bSuccess = true;
-    }
-  }
-
-  if(bSuccess)
-  {
-    for (int i = 0; i < files.Size(); i++)
-    {
-      CFileItemPtr pFileItem = files.Get(i);
-      CFileItemPtr pThumbItem = items.Get(pFileItem->GetPath());
-      if (!pThumbItem->HasArt("thumb"))
-        m_thumbLoader.LoadItem(pThumbItem.get());
     }
   }
 
@@ -469,7 +417,7 @@ void CPVRRecordings::SetPlayCount(const CFileItem &item, int iPlayCount)
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
     CPVRRecording *current = m_recordings.at(iRecordingPtr);
-    if (*current == *recording)
+    if (current->m_iClientId == recording->m_iClientId && current->m_strRecordingId.Equals(recording->m_strRecordingId))
     {
       current->SetPlayCount(iPlayCount);
       break;
@@ -483,23 +431,12 @@ void CPVRRecordings::GetAll(CFileItemList &items)
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < m_recordings.size(); iRecordingPtr++)
   {
     CPVRRecording *current = m_recordings.at(iRecordingPtr);
+    current->UpdateMetadata();
 
     CFileItemPtr pFileItem(new CFileItem(*current));
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->SetPath(current->m_strFileNameAndPath);
-
-    // Set the play count either directly from client (if supported) or from video db
-    if (g_PVRClients->SupportsRecordingPlayCount(pFileItem->GetPVRRecordingInfoTag()->m_iClientId))
-    {
-      pFileItem->GetPVRRecordingInfoTag()->m_playCount=pFileItem->GetPVRRecordingInfoTag()->m_iRecPlayCount;
-    }
-    else
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      pFileItem->GetPVRRecordingInfoTag()->m_playCount=db.GetPlayCount(*pFileItem);
-    }
     pFileItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pFileItem->GetPVRRecordingInfoTag()->m_playCount > 0);
 
     items.Add(pFileItem);

@@ -25,6 +25,7 @@
 #include "XBDateTime.h"
 #include "addons/Service.h"
 #include "dbwrappers/dataset.h"
+#include "pvr/PVRManager.h"
 
 using namespace ADDON;
 using namespace std;
@@ -125,6 +126,8 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
+    bool bDisablePVRAddon = addon->Type() == ADDON_PVRDLL && !HasAddon(addon->ID());
+
     CStdString sql = PrepareSQL("insert into addon (id, type, name, summary,"
                                "description, stars, path, icon, changelog, "
                                "fanart, addonID, version, author, disclaimer, minversion)"
@@ -157,7 +160,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
       m_pDS->exec(sql.c_str());
     }
     // these need to be configured
-    if (addon->Type() == ADDON_PVRDLL)
+    if (bDisablePVRAddon)
       DisableAddon(addon->ID(), true);
     return idAddon;
   }
@@ -563,12 +566,9 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
 
     if (disable)
     {
-      CStdString sql = PrepareSQL("select id from disabled where addonID='%s'", addonID.c_str());
-      m_pDS->query(sql.c_str());
-      if (m_pDS->eof()) // not found
+      if (!IsAddonDisabled(addonID)) // Enabled
       {
-        m_pDS->close();
-        sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
+        CStdString sql = PrepareSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
         m_pDS->exec(sql);
 
         AddonPtr addon;
@@ -579,6 +579,10 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
           if (service)
             service->Stop();
         }
+        // restart the pvr manager when disabling a pvr add-on with the pvr manager enabled
+        else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon &&
+            PVR::CPVRManager::Get().IsStarted())
+          PVR::CPVRManager::Get().Start(true);
 
         return true;
       }
@@ -586,18 +590,21 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
     }
     else
     {
+      bool disabled = IsAddonDisabled(addonID); //we need to know if service addon is running
       CStdString sql = PrepareSQL("delete from disabled where addonID='%s'", addonID.c_str());
       m_pDS->exec(sql);
 
       AddonPtr addon;
       // If the addon is a service, start it
-      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon)
+      if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_SERVICE, false) && addon && disabled)
       {
         boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(addon);
         if (service)
           service->Start();
       }
-
+      // (re)start the pvr manager when enabling a pvr add-on
+      else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
+        PVR::CPVRManager::Get().Start(true);
     }
     return true;
   }

@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -568,7 +568,7 @@ msgstr "דיסק נמצא"
 
 msgctxt "#166"
 msgid "Skin"
-msgstr "סקין"
+msgstr "מעטפת"
 
 msgctxt "#167"
 msgid "Cancel file operations"
@@ -956,19 +956,19 @@ msgstr "מיקום הכתוביות"
 
 msgctxt "#275"
 msgid "Pixel ratio adjustment"
-msgstr "כיוון יחס הפיקסלים"
+msgstr "התאמת יחס הפיקסלים"
 
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
-msgstr "הזז את הסמן לשינוי רמת סריקת היתר"
+msgstr "התאם את הסמן לשינוי רמת סריקת היתר"
 
 msgctxt "#277"
 msgid "Adjust the bar to change the subtitles position"
-msgstr "הזז את המצביע לשינוי מקום הכתוביות"
+msgstr "התאם את המצביע לשינוי מקום הכתוביות"
 
 msgctxt "#278"
 msgid "Adjust the rectangle so it is perfectly square"
-msgstr "כוון את המלבן כך שיהפוך לריבוע מושלם"
+msgstr "התאם את המלבן כך שיהפוך לריבוע מושלם"
 
 msgctxt "#279"
 msgid "Unable to load settings"
@@ -1040,7 +1040,7 @@ msgstr "נקה סימניות"
 
 msgctxt "#297"
 msgid "Audio offset"
-msgstr "השהיית קול הנומתו"
+msgstr "השהיית קול בניגון"
 
 msgctxt "#298"
 msgid "Bookmarks"
@@ -1732,7 +1732,7 @@ msgstr "תפריט"
 
 msgctxt "#479"
 msgid "Skin & language"
-msgstr "סקין ושפה"
+msgstr "מעטפת ושפה"
 
 msgctxt "#480"
 msgid "Appearance"
@@ -2276,7 +2276,7 @@ msgstr "תיקון עוצמת הקול"
 
 msgctxt "#638"
 msgid "Replaygain volume adjustments"
-msgstr "כיוונון תיקון עוצמת הקול"
+msgstr "התאמות תיקון עוצמת הקול"
 
 msgctxt "#639"
 msgid "Use track levels"
@@ -5288,7 +5288,7 @@ msgstr "צלילי ניווט"
 
 msgctxt "#15109"
 msgid "Skin default"
-msgstr "ברירת מחדל של הסקין"
+msgstr "ברירת מחדל של המעטפת"
 
 msgctxt "#15111"
 msgid "- Theme"
@@ -6836,11 +6836,11 @@ msgstr "לא הופעל אף תוסף PVR"
 
 msgctxt "#19241"
 msgid "The PVR manager has been enabled without any"
-msgstr "מנהל PVR אותחל ללא כל"
+msgstr "מנהל PVR אותחל ללא כל תוסף PVR."
 
 msgctxt "#19242"
 msgid "enabled PVR add-on. Enable at least one add-on"
-msgstr "אתחל תוסף PVR.אתחל לפחות תוסף אחד "
+msgstr "אתחל לפחות תוסף PVR אחד "
 
 msgctxt "#19243"
 msgid "in order to use the PVR functionality."
@@ -7600,7 +7600,7 @@ msgstr "בקש קוד נעילה ראשי בזמן אתחול"
 
 msgctxt "#20077"
 msgid "Skin settings"
-msgstr "הגדרות סקין"
+msgstr "הגדרות מעטפת"
 
 msgctxt "#20078"
 msgid "- no link set -"
@@ -8020,7 +8020,7 @@ msgstr "רווח"
 
 msgctxt "#20183"
 msgid "Reload skin"
-msgstr "טען סקין מחדש"
+msgstr "טען מעטפת מחדש"
 
 msgctxt "#20184"
 msgid "Rotate pictures using EXIF information"
@@ -10036,7 +10036,7 @@ msgstr "לא תקין"
 
 msgctxt "#24099"
 msgid "Would you like to switch to this skin?"
-msgstr "תרצה להחליף לסקין זה?"
+msgstr "תרצה להחליף למעטפת זו?"
 
 msgctxt "#24100"
 msgid "To use this feature you must download an Add-on:"
@@ -10048,11 +10048,11 @@ msgstr "ברצונך להוריד הרחבה זו?"
 
 msgctxt "#24102"
 msgid "Unable to load skin"
-msgstr "לא ניתן לטעון את שכבת העיצוב"
+msgstr "לא ניתן לטעון את המעטפת"
 
 msgctxt "#24103"
 msgid "Skin is missing some files"
-msgstr "חסרים קבצים בשכבת העיצוב "
+msgstr "חסרים קבצים במעטפת"
 
 msgctxt "#25000"
 msgid "Notifications"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "אפשר תמיכת גויסטיק ולוח משחק"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "בטל גויסטיק כאשר שלט iMON נמצא"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "בטל ג'ויסטיק כאשר התקן נמצא"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10753,3 +10753,7 @@ msgstr "מקלט טלוויזיה "
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "גרסת ממשק libCEC . %x נמוכה מהגרסה ש XBMC (%x) תומך בה"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* תיקיית פריט"

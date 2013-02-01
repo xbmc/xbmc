@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1221,6 +1221,18 @@ msgstr "Urtea"
 msgctxt "#346"
 msgid "Boost volume level on downmix"
 msgstr "Bultzatu bolumena downmix mailara"
+
+msgctxt "#347"
+msgid "- DTS-HD capable receiver"
+msgstr "- DTS-HD gaitasuna duen hargailua"
+
+msgctxt "#348"
+msgid "- Multichannel LPCM capable receiver"
+msgstr "- Kanle-anitzeko LPCM gaitasuna duen hargailua"
+
+msgctxt "#349"
+msgid "- TrueHD capable receiver"
+msgstr "- TrueHD gaitasuna duen hargailua"
 
 msgctxt "#350"
 msgid "Programs"
@@ -3594,9 +3606,17 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Elementua blokeatuta"
 
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Ez da deskargarik behar."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Berraktibatu blokeoa"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Orain eguneratu nahi al duzu?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -3629,6 +3649,10 @@ msgstr "Please enter a valid master code"
 msgctxt "#12373"
 msgid "Settings & file manager"
 msgstr "Ezarpenak eta fitxategi kudeatzaileak"
+
+msgctxt "#12376"
+msgid "Set as default for all videos"
+msgstr "Ezarri bideo guztientzat lehenetsi gisa"
 
 msgctxt "#12377"
 msgid "This will reset any previously saved values"
@@ -3973,6 +3997,10 @@ msgstr "Hasi da, alarma %im minututan"
 msgctxt "#13211"
 msgid "Alarm!"
 msgstr "Alarma!"
+
+msgctxt "#13212"
+msgid "Cancelled with %im%is left"
+msgstr " %im%is falta zenean utzia"
 
 msgctxt "#13213"
 msgid "%2.0fm"
@@ -4550,6 +4578,10 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Baimendu hardware bidezko azelerazioa (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Erreproduzituko hurrengo bideoa autmatikoki"
+
 msgctxt "#13500"
 msgid "A/V sync method"
 msgstr "A/V sinkronia metodoa"
@@ -4989,6 +5021,10 @@ msgstr "Energia aurreztea"
 msgctxt "#14096"
 msgid "Rip"
 msgstr "Ripeatu"
+
+msgctxt "#14097"
+msgid "Audio CD Insert Action"
+msgstr "Audio CD sartze ekintza"
 
 msgctxt "#14098"
 msgid "Play"
@@ -5438,6 +5474,10 @@ msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (alderantziz)"
 
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Uzten"
+
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr "Sartu artistaren izena"
@@ -5481,6 +5521,18 @@ msgstr "Ezin izan da abestirik lortu datu basetik."
 msgctxt "#16035"
 msgid "Party mode playlist"
 msgstr "Festa moduko zerrenda"
+
+msgctxt "#16036"
+msgid "De-interlace (Half)"
+msgstr "gurutzelarkatuak (erdia)"
+
+msgctxt "#16037"
+msgid "Deinterlace video"
+msgstr "bideo gurutzelarkatua"
+
+msgctxt "#16038"
+msgid "Deinterlace method"
+msgstr "gurutzelarkatu metodoa"
 
 msgctxt "#16039"
 msgid "Off"
@@ -5622,6 +5674,26 @@ msgctxt "#16319"
 msgid "DXVA"
 msgstr "DXVA"
 
+msgctxt "#16320"
+msgid "DXVA Bob"
+msgstr "DXVA Bob"
+
+msgctxt "#16321"
+msgid "DXVA Best"
+msgstr "DXVA oberena"
+
+msgctxt "#16322"
+msgid "Spline36"
+msgstr "Spline36"
+
+msgctxt "#16323"
+msgid "Spline36 optimized"
+msgstr "optimizatutako Spline36"
+
+msgctxt "#16324"
+msgid "Software Blend"
+msgstr "Software nahastea"
+
 msgctxt "#16400"
 msgid "Post-processing"
 msgstr "Bideoaren osteko-tratamendua"
@@ -5645,6 +5717,10 @@ msgstr "%i egun"
 msgctxt "#19000"
 msgid "Switch to channel"
 msgstr "Aldatu kanala"
+
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Bilatu antzeko programak"
 
 msgctxt "#19007"
 msgid "Device status"
@@ -5766,6 +5842,10 @@ msgctxt "#19049"
 msgid "Show channel"
 msgstr "Ikusi kateak"
 
+msgctxt "#19050"
+msgid "Show visible channels"
+msgstr "Ikusi kanal ikusgarriak"
+
 msgctxt "#19051"
 msgid "Show hidden channels"
 msgstr "Ikusi ezkutatutako kateak"
@@ -5786,9 +5866,29 @@ msgctxt "#19055"
 msgid "No information available"
 msgstr "Ez dago argibiderik"
 
+msgctxt "#19056"
+msgid "New timer"
+msgstr "Programazio berria"
+
+msgctxt "#19057"
+msgid "Edit timer"
+msgstr "Editatu programazioa"
+
+msgctxt "#19058"
+msgid "Timer enabled"
+msgstr "Programazioa gaitua"
+
 msgctxt "#19059"
 msgid "Stop recording"
 msgstr "Gelditu grabatzea"
+
+msgctxt "#19060"
+msgid "Delete timer"
+msgstr "Ezabatu programazioa"
+
+msgctxt "#19061"
+msgid "Add timer"
+msgstr "Gehitu programazioa"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -5805,6 +5905,18 @@ msgstr "Joan amaierara"
 msgctxt "#19067"
 msgid "This event is already being recorded."
 msgstr "Gertakari hau dagoeneko grabatua izango da."
+
+msgctxt "#19068"
+msgid "This recording could not be deleted. Check the log for details."
+msgstr "Ezin da grabazioa hau ezabatu. Erregistroa ikusi xehetasunetarako."
+
+msgctxt "#19073"
+msgid "Delay channel switch"
+msgstr "Kate aldaketa atzerapena"
+
+msgctxt "#19074"
+msgid "Active:"
+msgstr "Aktibo:"
 
 msgctxt "#19075"
 msgid "Name:"
@@ -5837,6 +5949,10 @@ msgstr "Amaiera:"
 msgctxt "#19082"
 msgid "Priority:"
 msgstr "Lehentasuna:"
+
+msgctxt "#19083"
+msgid "Lifetime (days):"
+msgstr "Iraupena (egun):"
 
 msgctxt "#19084"
 msgid "First day:"
@@ -5901,6 +6017,18 @@ msgstr "Adi"
 msgctxt "#19102"
 msgid "Please switch to another channel."
 msgstr "Mesedez aldatu beste kate batera."
+
+msgctxt "#19104"
+msgid "Enter the name of the folder for the recording"
+msgstr "Idazti grabaketarako karpeta izena"
+
+msgctxt "#19109"
+msgid "Couldn't save timer. Check the log for details."
+msgstr "Ezin da programazioa gorde. Erregistroa ikusi xehetasunentzat."
+
+msgctxt "#19110"
+msgid "An unexpected error occurred. Try again later or check the log for details."
+msgstr "Ustekabeko errore bat geratu da. Berriz saiatu edo erregistroa ikusi xehetasunentzat."
 
 msgctxt "#19114"
 msgid "Version"
@@ -6278,9 +6406,37 @@ msgctxt "#19267"
 msgid "Parental locked:"
 msgstr "Gurasoek blokeatua:"
 
+msgctxt "#19269"
+msgid "Do not show 'connection lost' warnings"
+msgstr "Ez bistarazi 'konexioa galdua' oharrak"
+
 msgctxt "#19270"
 msgid "* All recordings"
 msgstr "* Grabaketa guztiak"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Elkar-jotze oharra"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Elkar-jotze errorea"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Grabaketa elkar-jotzea"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Grabaketa errorea"
+
+msgctxt "#19279"
+msgid "Client specific"
+msgstr "Bezeroarentzat espezifikoa"
+
+msgctxt "#19280"
+msgid "Client specific settings"
+msgstr "Bezeroaren ezarpen espezifikoa"
 
 msgctxt "#19499"
 msgid "Other/Unknown"
@@ -6309,6 +6465,18 @@ msgstr "Komedia"
 msgctxt "#19506"
 msgid "Romance"
 msgstr "Amodioa"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Berriak/Eguraldia"
+
+msgctxt "#19519"
+msgid "Documentary"
+msgstr "Dokumentala"
+
+msgctxt "#19520"
+msgid "Discussion/Interview/Debate"
+msgstr "Eztabaida/Entrebista/Debatea"
 
 msgctxt "#19535"
 msgid "Talk Show"
@@ -6361,6 +6529,38 @@ msgstr "Kirol martzialak"
 msgctxt "#19564"
 msgid "Children's/Youth Programmes"
 msgstr "Ume/gazte programak"
+
+msgctxt "#19565"
+msgid "Pre-school Children's Programmes"
+msgstr "Eskolaurreko haurren programa  "
+
+msgctxt "#19566"
+msgid "Entertainment Programmes for 6 to 14"
+msgstr "6 eta 14 arteko gazte programak"
+
+msgctxt "#19567"
+msgid "Entertainment Programmes for 10 to 16"
+msgstr "10 eta 16 arteko gazte programak"
+
+msgctxt "#19569"
+msgid "Cartoons/Puppets"
+msgstr "Marrazkiak/Txotxongiloak"
+
+msgctxt "#19580"
+msgid "Music/Ballet/Dance"
+msgstr "Musiska/Baleta/dantza"
+
+msgctxt "#19581"
+msgid "Rock/Pop"
+msgstr "Rock/Pop"
+
+msgctxt "#19582"
+msgid "Serious/Classical Music"
+msgstr "Serioa/Muska klasikoa"
+
+msgctxt "#19583"
+msgid "Folk/Traditional Music"
+msgstr "Folk/Musika tradizionala"
 
 msgctxt "#19602"
 msgid "Film/Cinema"
@@ -7150,6 +7350,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Liburutegi eguneraketak UPnP bidez zabaldu"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Gaitu auto korritze gidoi eta berrikuspenarentzat"
@@ -7257,6 +7461,10 @@ msgstr "Sare fitxategi-sistema (NFS)"
 msgctxt "#20260"
 msgid "Secure Shell (SSH/SFTP)"
 msgstr "shell segurua (SSH/SFTP)"
+
+msgctxt "#20261"
+msgid "Apple Filing Protocol (AFP)"
+msgstr "Apple Filing Protocol (AFP)"
 
 msgctxt "#20300"
 msgid "Web server directory (HTTP)"
@@ -8286,6 +8494,18 @@ msgctxt "#21465"
 msgid "Above video"
 msgstr "Bideo gainean"
 
+msgctxt "#21467"
+msgid "%.1f to %.1f"
+msgstr "%.1f -tik %.1f-ra"
+
+msgctxt "#21468"
+msgid "%d to %d"
+msgstr "%d -tik %d -ra"
+
+msgctxt "#21469"
+msgid "%s to %s"
+msgstr "%s -tik %s -ra"
+
 msgctxt "#21800"
 msgid "File name"
 msgstr "Fitxategiaren izena"
@@ -8890,6 +9110,10 @@ msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (arrunta)"
 
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Eguraldi argibide zerbitzua"
+
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
 msgstr "Gehigarri hau ezin da konfiguratu"
@@ -9065,6 +9289,10 @@ msgstr "Gehigarriak berrabiaraztean"
 msgctxt "#24090"
 msgid "Lock Add-on manager"
 msgstr "Blokeatu gehigarri kudeatzailea"
+
+msgctxt "#24094"
+msgid "(current)"
+msgstr "(unekoa)"
 
 msgctxt "#24096"
 msgid "Add-on has been marked as broken in repository."
@@ -9498,6 +9726,10 @@ msgctxt "#34120"
 msgid "Play GUI sounds"
 msgstr "Jo interfaze soinuak"
 
+msgctxt "#34121"
+msgid "Only when playback stopped"
+msgstr "Bakarrik erreprodukzioa geldirik dagoenean"
+
 msgctxt "#34122"
 msgid "Always"
 msgstr "Beti"
@@ -9505,6 +9737,14 @@ msgstr "Beti"
 msgctxt "#34123"
 msgid "Never"
 msgstr "Inoiz ez"
+
+msgctxt "#34201"
+msgid "Can't find a next item to play"
+msgstr "Ezin da erreproduzitzeko hurrengo elementua aurkitu"
+
+msgctxt "#34202"
+msgid "Can't find a previous item to play"
+msgstr "Ezin da erreproduzitzeko aurreko elementua aurkitu"
 
 msgctxt "#34300"
 msgid "Failed to start zeroconf"
@@ -9526,9 +9766,37 @@ msgctxt "#34403"
 msgid "Check your audiosettings"
 msgstr "Egiaztatu gailu ezarpenak"
 
+msgctxt "#35001"
+msgid "Generic HID device"
+msgstr "HID gailu generikoa"
+
+msgctxt "#35002"
+msgid "Generic network adapter"
+msgstr "Sare moldagailu generikoa"
+
+msgctxt "#35003"
+msgid "Generic disk"
+msgstr "Disko generikoa"
+
+msgctxt "#35004"
+msgid "There are no settings available\nfor this peripheral."
+msgstr "Ez dago ezarpen erabilgarririk\nperiferiko honentzat."
+
+msgctxt "#35005"
+msgid "New device configured"
+msgstr "Gailu berria konfiguraturik"
+
 msgctxt "#35006"
 msgid "Device removed"
 msgstr "Gailua ezabatua"
+
+msgctxt "#35007"
+msgid "Keymap to use for this device"
+msgstr "Gailu honekin erabiltzeko teklatu-mapa"
+
+msgctxt "#35008"
+msgid "Keymap enabled"
+msgstr "Teklatu-mapa gaiturik"
 
 msgctxt "#35009"
 msgid "Do not use the custom keymap for this device"
@@ -9538,9 +9806,21 @@ msgctxt "#35500"
 msgid "Location"
 msgstr "Kokalekua"
 
+msgctxt "#35501"
+msgid "Class"
+msgstr "Klasea"
+
 msgctxt "#35502"
 msgid "Name"
 msgstr "Izena"
+
+msgctxt "#35503"
+msgid "Vendor"
+msgstr "Saltzailea"
+
+msgctxt "#35504"
+msgid "Product ID"
+msgstr "ProduktuID"
 
 msgctxt "#36006"
 msgid "Could not open the adapter"
@@ -9561,6 +9841,18 @@ msgstr "Erabili TB hizkuntza ezarpenak"
 msgctxt "#36019"
 msgid "Connected to HDMI device"
 msgstr "HDMI gailura konektatua"
+
+msgctxt "#36023"
+msgid "Configuration updated"
+msgstr "Konfigurazioa eguneratua"
+
+msgctxt "#36024"
+msgid "Failed to set the new configuration. Please check your settings."
+msgstr "Huts konfigurazio berria ezartzean. Mesedez ezarpenak egiaztatu."
+
+msgctxt "#36028"
+msgid "Ignore"
+msgstr "Baztertu"
 
 msgctxt "#36029"
 msgid "When the TV is switched off"

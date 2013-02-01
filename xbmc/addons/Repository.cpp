@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "TextureDatabase.h"
 #include "URL.h"
+#include "pvr/PVRManager.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -206,6 +207,7 @@ bool CRepositoryUpdateJob::DoWork()
     // manager told us to feck off
     if (ShouldCancel(0,0))
       break;
+
     if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
       addons[i]->Props().broken = g_localizeStrings.Get(24044);
 
@@ -226,7 +228,11 @@ bool CRepositoryUpdateJob::DoWork()
         if (URIUtils::IsInternetStream(addons[i]->Path()))
           referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
-        CAddonInstaller::Get().Install(addon->ID(), true, referer);
+        if (addons[i]->Type() == ADDON_PVRDLL &&
+            !PVR::CPVRManager::Get().InstallAddonAllowed(addons[i]->ID()))
+          PVR::CPVRManager::Get().MarkAsOutdated(addon->ID(), referer);
+        else
+          CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
       else if (g_settings.m_bAddonNotifications)
       {
@@ -260,13 +266,15 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
   int idRepo = database.GetRepoChecksum(repo->ID(),checksum);
   CStdString reposum = repo->Checksum();
   VECADDONS addons;
-  if (idRepo == -1 || !checksum.Equals(reposum))
+  if (!checksum.Equals(reposum) || checksum.empty())
   {
     addons = repo->Parse();
-    if (!addons.empty())
-      database.AddRepository(repo->ID(),addons,reposum);
-    else
+    if (addons.empty())
+    {
       CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
+      reposum = checksum; // don't update the checksum
+    }
+    database.AddRepository(repo->ID(),addons,reposum);
   }
   else
     database.GetRepository(repo->ID(),addons);

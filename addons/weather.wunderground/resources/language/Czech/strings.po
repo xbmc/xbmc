@@ -1,7 +1,6 @@
 # XBMC Media Center language file
 # Addon Name: Weather Underground
 # Addon id: weather.wunderground
-# Addon version: 1.0.2
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -125,9 +124,17 @@ msgctxt "#32510"
 msgid "Warning"
 msgstr "Upozornění"
 
+msgctxt "#32511"
+msgid "Watch"
+msgstr "Sledovat"
+
 msgctxt "#32512"
 msgid "Advisory"
 msgstr "Doporučení"
+
+msgctxt "#32513"
+msgid "Statement"
+msgstr "Zpráva"
 
 msgctxt "#32514"
 msgid "Outlook"
@@ -136,3 +143,7 @@ msgstr "Výhled"
 msgctxt "#32515"
 msgid "Forecast"
 msgstr "Předpověď"
+
+msgctxt "#32516"
+msgid "Synopsis"
+msgstr "Synopse"

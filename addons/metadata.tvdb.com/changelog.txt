@@ -1,3 +1,12 @@
+[B]1.4.5[/B]
+- Fixed: dvdorder setting won't apply in GetEpisodeDetails (thx and credits to scudlee)
+
+[B]1.4.4[/B]
+- Updated: language files from Transifex
+
+[B]1.4.3[/B]
+- Updated: language files from Transifex
+
 [B]1.4.2[/B]
 - Added: cache to GetTVDBId
 

@@ -52,7 +52,6 @@ namespace PVR
     int           m_iLifetime;        /*!< lifetime of this recording */
     CStdString    m_strStreamURL;     /*!< stream URL. if empty use pvr client */
     CStdString    m_strDirectory;     /*!< directory of this recording on the client */
-    int           m_iRecPlayCount;    /*!< play count of this recording on the client */
     CStdString    m_strIconPath;      /*!< icon path */
     CStdString    m_strThumbnailPath; /*!< thumbnail path */
     CStdString    m_strFanartPath;    /*!< fanart path */
@@ -115,6 +114,12 @@ namespace PVR
     int GetLastPlayedPosition() const;
 
     /*!
+     * @brief Get the resume point and play count from the server (if supported) or the database
+     * @param bookmark The bookmark to update
+     */
+    void UpdateMetadata(void);
+
+    /*!
      * @brief Update this tag with the contents of the given tag.
      * @param tag The new tag info.
      */
@@ -132,8 +137,15 @@ namespace PVR
      */
     static CStdString GetTitleFromURL(const CStdString &url);
 
+    /*!
+     * @brief Copy some information from the client to the given video info tag
+     * @param target video info tag to which the information will be copied
+     */
+    void CopyClientInfo(CVideoInfoTag *target) const;
+
   private:
     CDateTime m_recordingTime; /*!< start time of the recording */
+    bool      m_bGotMetaData;
 
     void UpdatePath(void);
     void DisplayError(PVR_ERROR err) const;

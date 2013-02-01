@@ -37,7 +37,7 @@ namespace XBMCAddon
     bool File::write(const char* pBuffer)
     {
       DelayedCallGuard dg(languageHook);
-      return file->Write( (void*) pBuffer, strlen( pBuffer ) + 1 ) > 0;
+      return file->Write( (void*) pBuffer, strlen( pBuffer ) ) > 0;
     }
 
   }

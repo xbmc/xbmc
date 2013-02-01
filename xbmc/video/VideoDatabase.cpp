@@ -1825,7 +1825,7 @@ bool CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVi
     CStdString sql = PrepareSQL("select * from musicvideoview where idMVideo=%i", idMVideo);
     if (!m_pDS->query(sql.c_str()))
       return false;
-    details = GetDetailsForMusicVideo(m_pDS);
+    details = GetDetailsForMusicVideo(m_pDS, true);
     return !details.IsEmpty();
   }
   catch (...)
@@ -3090,6 +3090,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, i
       break;
     case VIDEODB_CONTENT_MUSICVIDEOS:
       GetMusicVideoInfo("", details, id);
+      break;
     default:
       break;
   }
@@ -3220,12 +3221,12 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
   return match;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool getDetails /* = false */)
 {
-  return GetDetailsForMovie(pDS->get_sql_record(), needsCast);
+  return GetDetailsForMovie(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* const record, bool getDetails /* = false */)
 {
   CVideoInfoTag details;
 
@@ -3255,7 +3256,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  if (needsCast)
+  if (getDetails)
   {
     GetCast("movie", "idMovie", details.m_iDbId, details.m_cast);
 
@@ -3283,16 +3284,19 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
         details.m_showLink.push_back(m_pDS2->fv(0).get_asString());
     }
     m_pDS2->close();
+
+    // get streamdetails
+    GetStreamDetails(details);
   }
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool getDetails /* = false */)
 {
-  return GetDetailsForTvShow(pDS->get_sql_record(), needsCast);
+  return GetDetailsForTvShow(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* const record, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* const record, bool getDetails /* = false */)
 {
   CVideoInfoTag details;
 
@@ -3315,7 +3319,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  if (needsCast)
+  if (getDetails)
   {
     GetCast("tvshow", "idShow", details.m_iDbId, details.m_cast);
 
@@ -3334,12 +3338,12 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool getDetails /* = false */)
 {
-  return GetDetailsForEpisode(pDS->get_sql_record(), needsCast);
+  return GetDetailsForEpisode(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* const record, bool needsCast /* = false */)
+CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* const record, bool getDetails /* = false */)
 {
   CVideoInfoTag details;
 
@@ -3373,7 +3377,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  if (needsCast)
+  if (getDetails)
   {
     GetCast("episode", "idEpisode", details.m_iDbId, details.m_cast);
     GetCast("tvshow", "idShow", details.m_iIdShow, details.m_cast);
@@ -3385,16 +3389,19 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
     if (!m_pDS2->eof())
       details.m_fEpBookmark = m_pDS2->fv("bookmark.timeInSeconds").get_asFloat();
     m_pDS2->close();
+
+    // get streamdetails
+    GetStreamDetails(details);
   }
   return details;
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
+CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS, bool getDetails /* = false */)
 {
-  return GetDetailsForMusicVideo(pDS->get_sql_record());
+  return GetDetailsForMusicVideo(pDS->get_sql_record(), getDetails);
 }
 
-CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record* const record)
+CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record* const record, bool getDetails /* = false */)
 {
   CVideoInfoTag details;
 
@@ -3418,16 +3425,23 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(const dbiplus::sql_record*
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
-  // get tags
-  CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'musicvideo' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idMVideo);
-  m_pDS2->query(strSQL.c_str());
-  while (!m_pDS2->eof())
+  if (getDetails)
   {
-    details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
-    m_pDS2->next();
-  }
+    // get tags
+    CStdString strSQL = PrepareSQL("SELECT tag.strTag FROM tag, taglinks WHERE taglinks.idMedia = %i AND taglinks.media_type = 'musicvideo' AND taglinks.idTag = tag.idTag ORDER BY tag.idTag", idMVideo);
+    m_pDS2->query(strSQL.c_str());
+    while (!m_pDS2->eof())
+    {
+      details.m_tags.push_back(m_pDS2->fv("tag.strTag").get_asString());
+      m_pDS2->next();
+    }
+    m_pDS2->close();
 
-  details.m_strPictureURL.Parse();
+    details.m_strPictureURL.Parse();
+
+    // get streamdetails
+    GetStreamDetails(details);
+  }
   return details;
 }
 
@@ -4195,11 +4209,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       std::string filename = i->second;
       bool update = URIUtils::UpdateUrlEncoding(filename) &&
-                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", i->second.c_str())) || m_pDS->num_rows() <= 0);
+                    (!m_pDS->query(PrepareSQL("SELECT idFile FROM files WHERE strFilename = '%s'", filename.c_str())) || m_pDS->num_rows() <= 0);
       m_pDS->close();
 
       if (update)
-        m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", i->second.c_str(), i->first));
+        m_pDS->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%d", filename.c_str(), i->first));
     }
   }
   if (iVersion < 72)
@@ -4940,7 +4954,7 @@ bool CVideoDatabase::GetSetsByWhere(const CStdString& strBaseDir, const Filter &
       return false;
 
     CFileItemList sets;
-    if (!GroupUtils::Group(GroupBySet, items, sets))
+    if (!GroupUtils::Group(GroupBySet, strBaseDir, items, sets))
       return false;
 
     items.ClearItems();
@@ -8266,14 +8280,23 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
             }
           }
         }
-
+      }
+      if (singleFiles)
+      {
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
 
-      if (singleFiles && images && !bSkip)
+      if (images && !bSkip)
       {
+        if (!singleFiles)
+        {
+          CStdString strFileName(movie.m_strTitle);
+          if (movie.m_iYear > 0)
+            strFileName.AppendFormat("_%i", movie.m_iYear);
+          item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
+        }
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
         {
           CStdString savedThumb = item.GetLocalArt(i->first, false);
@@ -8297,7 +8320,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
 
     while (!m_pDS->eof())
     {
-      CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS);
+      CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS, true);
       map<string, string> artwork;
       if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !singleFiles)
       {
@@ -8355,13 +8378,22 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
             }
           }
         }
-
+      }
+      if (singleFiles)
+      {
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
-      if (singleFiles && images && !bSkip)
+      if (images && !bSkip)
       {
+        if (!singleFiles)
+        {
+          CStdString strFileName(StringUtils::Join(movie.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + movie.m_strTitle);
+          if (movie.m_iYear > 0)
+            strFileName.AppendFormat("_%i", movie.m_iYear);
+          item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
+        }
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
         {
           CStdString savedThumb = item.GetLocalArt(i->first, false);
@@ -8457,13 +8489,18 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
             }
           }
         }
-
+      }
+      if (singleFiles)
+      {
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
-      if (singleFiles && images && !bSkip)
+      if (images && !bSkip)
       {
+        if (!singleFiles)
+          item.SetPath(GetSafeFile(tvshowsDir, tvshow.m_strTitle));
+
         for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
         {
           CStdString savedThumb = item.GetLocalArt(i->first, true);
@@ -8555,14 +8592,22 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
               }
             }
           }
-
+        }
+        if (singleFiles)
+        {
           xmlDoc.Clear();
           TiXmlDeclaration decl("1.0", "UTF-8", "yes");
           xmlDoc.InsertEndChild(decl);
         }
 
-        if (singleFiles && images && !bSkip)
+        if (images && !bSkip)
         {
+          if (!singleFiles)
+          {
+            CStdString epName;
+            epName.Format("s%02ie%02i.avi", episode.m_iSeason, episode.m_iEpisode);
+            item.SetPath(URIUtils::AddFileToFolder(showDir, epName));
+          }
           for (map<string, string>::const_iterator i = artwork.begin(); i != artwork.end(); ++i)
           {
             CStdString savedThumb = item.GetLocalArt(i->first, false);
@@ -8746,28 +8791,30 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       {
         info.Load(movie);
         CFileItem item(info);
-        map<string, string> artwork;
-        if (ImportArtFromXML(movie->FirstChild("art"), artwork))
-          item.SetArt(artwork);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
+        CStdString filename = info.m_strTitle;
+        if (info.m_iYear > 0)
+          filename.AppendFormat("_%i", info.m_iYear);
+        CFileItem artItem(item);
+        artItem.SetPath(GetSafeFile(moviesDir, filename) + ".avi");
+        scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+        item.SetArt(artItem.GetArt());
         scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, NULL, true);
-        CStdString strFileName(info.m_strTitle);
-        if (iVersion >= 1 && info.m_iYear > 0)
-          strFileName.AppendFormat("_%i", info.m_iYear);
         current++;
       }
       else if (strnicmp(movie->Value(), "musicvideo", 10) == 0)
       {
         info.Load(movie);
         CFileItem item(info);
-        map<string, string> artwork;
-        if (ImportArtFromXML(movie->FirstChild("art"), artwork))
-          item.SetArt(artwork);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.GetPath()) : false;
+        CStdString filename = StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle;
+        if (info.m_iYear > 0)
+          filename.AppendFormat("_%i", info.m_iYear);
+        CFileItem artItem(item);
+        artItem.SetPath(GetSafeFile(musicvideosDir, filename) + ".avi");
+        scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+        item.SetArt(artItem.GetArt());
         scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders, true, NULL, true);
-        CStdString strFileName(StringUtils::Join(info.m_artist, g_advancedSettings.m_videoItemSeparator) + "." + info.m_strTitle);
-        if (iVersion >= 1 && info.m_iYear > 0)
-          strFileName.AppendFormat("_%i", info.m_iYear);
         current++;
       }
       else if (strnicmp(movie->Value(), "tvshow", 6) == 0)
@@ -8778,30 +8825,21 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         URIUtils::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
         CFileItem showItem(info);
-        map<string, string> artwork;
-        if (ImportArtFromXML(movie->FirstChild("art"), artwork))
-          showItem.SetArt(artwork);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(showItem.GetPath(), true) : false;
+        CFileItem artItem(showItem);
+        CStdString artPath(GetSafeFile(tvshowsDir, info.m_strTitle));
+        artItem.SetPath(artPath);
+        scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+        showItem.SetArt(artItem.GetArt());
         int showID = scanner.AddVideo(&showItem, CONTENT_TVSHOWS, useFolders, true, NULL, true);
         // season artwork
-        TiXmlNode *art = movie->FirstChild("art");
-        if (art)
+        map<int, map<string, string> > seasonArt;
+        artItem.GetVideoInfoTag()->m_strPath = artPath;
+        scanner.GetSeasonThumbs(*artItem.GetVideoInfoTag(), seasonArt, CVideoThumbLoader::GetArtTypes("season"), true);
+        for (map<int, map<string, string> >::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
         {
-          TiXmlElement *season = art->FirstChildElement("season");
-          while (season)
-          {
-            if (season->FirstChild())
-            {
-              int seasonNum = -1;
-              season->Attribute("num", &seasonNum);
-              map<string, string> artwork;
-              
-              int seasonID = AddSeason(showID, seasonNum);
-              if (ImportArtFromXML(season, artwork) &&  seasonID > -1)
-                SetArtForItem(seasonID, "season", artwork);
-            }
-            season = season->NextSiblingElement("season");
-          }
+          int seasonID = AddSeason(showID, i->first);
+          SetArtForItem(seasonID, "season", i->second);
         }
         current++;
         // now load the episodes
@@ -8812,9 +8850,12 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           CVideoInfoTag info;
           info.Load(episode);
           CFileItem item(info);
-          map<string, string> artwork;
-          if (ImportArtFromXML(episode->FirstChild("art"), artwork))
-            item.SetArt(artwork);
+          CStdString filename;
+          filename.Format("s%02ie%02i.avi", info.m_iSeason, info.m_iEpisode);
+          CFileItem artItem(item);
+          artItem.SetPath(GetSafeFile(artPath, filename));
+          scanner.GetArtwork(&artItem, CONTENT_MOVIES, useFolders, true, actorsDir);
+          item.SetArt(artItem.GetArt());
           scanner.AddVideo(&item,CONTENT_TVSHOWS, false, false, showItem.GetVideoInfoTag(), true);
           episode = episode->NextSiblingElement("episodedetails");
         }
@@ -8845,11 +8886,12 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
 bool CVideoDatabase::ImportArtFromXML(const TiXmlNode *node, map<string, string> &artwork)
 {
   if (!node) return false;
-  CStdString art;
-  if (XMLUtils::GetString(node, "thumb", art))
-    artwork.insert(make_pair("thumb", art));
-  if (XMLUtils::GetString(node, "fanart", art))
-    artwork.insert(make_pair("fanart", art));
+  const TiXmlNode *art = node->FirstChild();
+  while (art && art->FirstChild())
+  {
+    artwork.insert(make_pair(art->ValueStr(), art->FirstChild()->ValueStr()));
+    art = art->NextSibling();
+  }
   return !artwork.empty();
 }
 

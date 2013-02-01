@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Bulgarian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/bg/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Сваляй миниатюри за албумите от fanart.tv</string>
+    <string id="30001">Сваляй миниатюри за албумите от Last.fm</string>
+    <string id="30002">Сваляй отзиви за албумите от</string>
+    <string id="30003">Предпочитан език</string>
+    <string id="30004">Сваляй рейтинги за албумите от</string>
+    <string id="30005">Сваляй стилове на албумите от</string>
+    <string id="30006">Сваляй настроения за албумите от</string>
+    <string id="30008">Сваляй миниатюри за албумите от allmusic.com</string>
+    <string id="30009">Изображения</string>
+    <string id="30010">Сваляй миниатюри за албумите от theaudiodb.com</string>
+</strings>

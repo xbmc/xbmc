@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -132,31 +132,31 @@ msgstr "Dezembro"
 
 msgctxt "#41"
 msgid "Mon"
-msgstr "Segunda"
+msgstr "Seg"
 
 msgctxt "#42"
 msgid "Tue"
-msgstr "Terça"
+msgstr "Ter"
 
 msgctxt "#43"
 msgid "Wed"
-msgstr "Quarta"
+msgstr "Qua"
 
 msgctxt "#44"
 msgid "Thu"
-msgstr "Quinta"
+msgstr "Qui"
 
 msgctxt "#45"
 msgid "Fri"
-msgstr "Sexta"
+msgstr "Sex"
 
 msgctxt "#46"
 msgid "Sat"
-msgstr "Sábado"
+msgstr "Sáb"
 
 msgctxt "#47"
 msgid "Sun"
-msgstr "Domingo"
+msgstr "Dom"
 
 msgctxt "#51"
 msgid "Jan"
@@ -424,7 +424,7 @@ msgstr "Apresentar Slides"
 
 msgctxt "#130"
 msgid "System info"
-msgstr "Info do sistema"
+msgstr "Info sistema"
 
 msgctxt "#131"
 msgid "Display"
@@ -1032,7 +1032,7 @@ msgstr "Procurar legendas"
 
 msgctxt "#294"
 msgid "Create bookmark"
-msgstr "Criar marcador de posição"
+msgstr "Criar marcador"
 
 msgctxt "#296"
 msgid "Clear bookmarks"
@@ -1324,11 +1324,11 @@ msgstr "Trovoadas"
 
 msgctxt "#371"
 msgid "Partly"
-msgstr "Parcialmente"
+msgstr "Parcial"
 
 msgctxt "#372"
 msgid "Mostly"
-msgstr "Geralmente"
+msgstr "Geral"
 
 msgctxt "#373"
 msgid "Sunny"
@@ -2900,15 +2900,15 @@ msgstr "Favoritos"
 
 msgctxt "#1037"
 msgid "Video Add-ons"
-msgstr "Addons Vídeo"
+msgstr "Vídeo Add-ons"
 
 msgctxt "#1038"
 msgid "Music Add-ons"
-msgstr "Addons Música"
+msgstr "Música Add-ons"
 
 msgctxt "#1039"
 msgid "Picture Add-ons"
-msgstr "Addons Fotos"
+msgstr "Imagem Add-ons"
 
 msgctxt "#1040"
 msgid "Loading directory"
@@ -2924,7 +2924,7 @@ msgstr "Encontrados %i itens de %i"
 
 msgctxt "#1043"
 msgid "Program Add-ons"
-msgstr "Add-ons Programas"
+msgstr "Programas Add-ons"
 
 msgctxt "#1044"
 msgid "Set plugin thumb"
@@ -3492,7 +3492,7 @@ msgstr "criando buffer"
 
 msgctxt "#10214"
 msgid "Opening stream"
-msgstr "Abrindo pista"
+msgstr "Abrindo emissão..."
 
 msgctxt "#10500"
 msgid "Music/Playlist"
@@ -5216,7 +5216,7 @@ msgstr "Dispositivos"
 
 msgctxt "#14095"
 msgid "Power saving"
-msgstr "Poupança de energia"
+msgstr "Poupança energia"
 
 msgctxt "#14096"
 msgid "Rip"
@@ -5668,7 +5668,7 @@ msgstr "Selecção automática"
 
 msgctxt "#16020"
 msgid "De-interlace"
-msgstr "Desinterlaçar"
+msgstr "Desentrelaçar"
 
 msgctxt "#16021"
 msgid "Bob"
@@ -5728,15 +5728,15 @@ msgstr "Lista de reprodução em modo de festa"
 
 msgctxt "#16036"
 msgid "De-interlace (Half)"
-msgstr "Desinterlaçar (metade)"
+msgstr "Desentrelaçar (metade)"
 
 msgctxt "#16037"
 msgid "Deinterlace video"
-msgstr "Desinterlaçar video"
+msgstr "Desentrelaçar video"
 
 msgctxt "#16038"
 msgid "Deinterlace method"
-msgstr "Método de desinterlaçar"
+msgstr "Método de desentrelaçar"
 
 msgctxt "#16039"
 msgid "Off"
@@ -6024,7 +6024,7 @@ msgstr "Canais de TV"
 
 msgctxt "#19024"
 msgid "Radio channels"
-msgstr "Estações de Radio"
+msgstr "Estações Rádio"
 
 msgctxt "#19025"
 msgid "Upcoming recordings"
@@ -6988,7 +6988,7 @@ msgstr "Erro na gravação"
 
 msgctxt "#19279"
 msgid "Client specific"
-msgstr "Específicas do cliente"
+msgstr "Específicas"
 
 msgctxt "#19280"
 msgid "Client specific settings"
@@ -7540,11 +7540,11 @@ msgstr "Separado"
 
 msgctxt "#20062"
 msgid "Shares with default"
-msgstr "Partilhas com definições padrão"
+msgstr "Partilhas com padrão"
 
 msgctxt "#20063"
 msgid "Shares with default (read only)"
-msgstr "Partilhas com definições padrão (só leitura)"
+msgstr "Partilhas com padrão (só leitura)"
 
 msgctxt "#20064"
 msgid "Copy default"
@@ -7864,7 +7864,7 @@ msgstr "Introduza palavra-passe para"
 
 msgctxt "#20144"
 msgid "Shutdown timer"
-msgstr "Temporizador para desligar"
+msgstr "Temporizador"
 
 msgctxt "#20145"
 msgid "Shutdown interval (in minutes)"
@@ -8208,23 +8208,23 @@ msgstr "Ordenar: ID"
 
 msgctxt "#20317"
 msgid "Scanning movies using %s"
-msgstr "Pesquisa de filmes usando %s"
+msgstr "Pesquisando filmes em %s"
 
 msgctxt "#20318"
 msgid "Scanning music videos using %s"
-msgstr "Pesquisa de videoclips usando %s"
+msgstr "Pesquisando vídeoclipes em %s"
 
 msgctxt "#20319"
 msgid "Scanning tvshows using %s"
-msgstr "Pesquisa de series usando %s"
+msgstr "Pesquisando séries de tv em %s"
 
 msgctxt "#20320"
 msgid "Scanning artists using %s"
-msgstr "Pesquisa de artistas usando %s"
+msgstr "Pesquisando artistas em %s"
 
 msgctxt "#20321"
 msgid "Scanning albums using %s"
-msgstr "Pesquisa de álbuns usando %s"
+msgstr "Pesquisando álbuns em %s"
 
 msgctxt "#20324"
 msgid "Play part..."
@@ -9804,7 +9804,7 @@ msgstr "Serviços"
 
 msgctxt "#24019"
 msgid "PVR clients"
-msgstr "Cliente PVR"
+msgstr "Clientes PVR"
 
 msgctxt "#24020"
 msgid "Configure"
@@ -9824,7 +9824,7 @@ msgstr "Add-on desactivado"
 
 msgctxt "#24027"
 msgid "Weather"
-msgstr "Serviço da Meteorologia"
+msgstr "Meteorologia"
 
 msgctxt "#24028"
 msgid "Weather.com (standard)"
@@ -9832,7 +9832,7 @@ msgstr "Weather.com (padrão)"
 
 msgctxt "#24029"
 msgid "Service for weather information"
-msgstr "Serviço de informação de metereologia"
+msgstr "Serviço de informação de meteorologia"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -10100,7 +10100,7 @@ msgstr "Qualidade do trailer"
 
 msgctxt "#33002"
 msgid "Stream"
-msgstr "Stream"
+msgstr "Transmissão"
 
 msgctxt "#33003"
 msgid "Download"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Activar suporte para joystick e gamepad"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Desactivar o joystick quando o iMON está presente"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Desactivar joystick sempre que o dispositivo esteja presente"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10753,3 +10753,7 @@ msgstr "Aparelhos TV e AVR (explícito)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Versão do interface libCEC não suportada. A versão %x é inferior à versão suportada pelo XBMC (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Pasta do Item"

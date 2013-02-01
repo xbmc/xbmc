@@ -59,3 +59,4 @@ ___wrap__stat _stat$INODE64
 ___wrap_opendir _opendir$INODE64$UNIX2003
 ___wrap_closedir _closedir$UNIX2003
 ___wrap_readdir _readdir$INODE64
+___wrap_opendir _opendir$INODE64

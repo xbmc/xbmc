@@ -1,3 +1,9 @@
+[B]3.7.2[/B]
+- updated language files from Transifex
+
+[B]3.7.1[/B]
+- updated language files from Transifex
+
 [B]3.7.0[/B]
 - updated: out factored studio and country scraping to common library
 

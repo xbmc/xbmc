@@ -56,6 +56,13 @@ namespace PVR
     virtual ~CPVRClients(void);
 
     /*!
+     * @brief Checks whether an add-on is loaded by the pvr manager
+     * @param strAddonId The add-on id to check
+     * @return True when in use, false otherwise
+     */
+    bool IsInUse(const std::string& strAddonId) const;
+
+    /*!
      * @brief Start the backend info updater thread.
      */
     void Start(void);
@@ -624,5 +631,6 @@ namespace PVR
     bool                  m_bNoAddonWarningDisplayed; /*!< true when a warning was displayed that no add-ons were found, false otherwise */
     CCriticalSection      m_critSection;
     CAddonDatabase        m_addonDb;
+    std::map<int, time_t> m_connectionAttempts;       /*!< last connection attempt per add-on */
   };
 }

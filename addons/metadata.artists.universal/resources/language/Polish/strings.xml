@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Polish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/pl/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Aktywuj fanarty artysty z HTBackdrops.com</string>
+    <string id="30001">Aktywuj ikony artysty z allmusic.com</string>
+    <string id="30002">Aktywuj ikony artysty z Last.fm</string>
+    <string id="30003">Aktywuj ikony artysty z HTBackdrops.com</string>
+    <string id="30004">Aktywuj fanarty artysty z fanart.tv</string>
+    <string id="30005">Aktywuj ikony artysty z fanart.tv</string>
+    <string id="30006">Pobierz biografie artysty z</string>
+    <string id="30007">Artwork</string>
+    <string id="30008">Pobierz dyskografie artysty z </string>
+    <string id="30009">Pobierz gatunek muzyczny artysty z</string>
+    <string id="30010">Pobierz style artysy z</string>
+    <string id="30011">Pobierz lata twórczości artysty z </string>
+    <string id="30012">Pobierz nastroje Artysty z</string>
+    <string id="30014">Pobierz okres twórczy artysty z</string>
+    <string id="30015">Preferowany język</string>
+    <string id="30016">Cofnij do biografii artysty z</string>
+    <string id="30017">Cofnij do dyskografii artysty z</string>
+    <string id="30018">Cofnij do gatunków artysty z</string>
+    <string id="30019">Cofnij do stylów artysty z</string>
+    <string id="30020">Alternatywe pobierz lat twórczości artysty z</string>
+    <string id="30021">Awaryjne</string>
+    <string id="30022">Aktywuj ikony artysty z theaudiodb.com</string>
+    <string id="30023">Aktywuj fanarty artysty z theaudiodb.com</string>
+</strings>

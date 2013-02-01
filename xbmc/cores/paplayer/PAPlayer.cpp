@@ -520,7 +520,18 @@ void PAPlayer::Process()
     ProcessStreams(delay, buffer);
 
     double watermark = buffer * 0.5;
-    if (delay < buffer && delay > watermark)
+#if defined(TARGET_DARWIN)
+    // In CoreAudio the delay can be bigger then the buffer
+    // because of delay from the HAL/Hardware
+    // This is the case when the buffer is full (e.x. 1 sec)
+    // and there is a HAL-Delay. In that case we would never sleep
+    // but load one cpu core up to 100% (happens on osx/ios whenever
+    // the first stream is finished and a prebuffered second stream
+    // starts to play. A BIG FIXME HERE.
+    if ((delay < buffer || buffer == 1) && delay > watermark)
+#else
+    if ((delay < buffer) && delay > watermark)
+#endif
       CThread::Sleep(MathUtils::round_int((delay - watermark) * 1000.0));
 
     GetTimeInternal(); //update for GUI
@@ -886,6 +897,29 @@ bool PAPlayer::CanSeek()
 
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
+  if (!CanSeek()) return;
+
+  __int64 seek;
+  if (g_advancedSettings.m_musicUseTimeSeeking && GetTotalTime() > 2 * g_advancedSettings.m_musicTimeSeekForwardBig)
+  {
+    if (bLargeStep)
+      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForwardBig : g_advancedSettings.m_musicTimeSeekBackwardBig;
+    else
+      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForward : g_advancedSettings.m_musicTimeSeekBackward;
+    seek *= 1000;
+    seek += GetTime();
+  }
+  else
+  {
+    float percent;
+    if (bLargeStep)
+      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForwardBig : (float)g_advancedSettings.m_musicPercentSeekBackwardBig;
+    else
+      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForward : (float)g_advancedSettings.m_musicPercentSeekBackward;
+    seek = (__int64)(GetTotalTime64() * (GetPercentage() + percent) / 100);
+  }
+
+  SeekTime(seek);
 }
 
 void PAPlayer::SeekTime(int64_t iTime /*=0*/)

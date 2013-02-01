@@ -2403,7 +2403,8 @@ static int latm_decode_audio_specific_config(struct LATMContext *latmctx,
     if (bits_consumed < 0)
         return AVERROR_INVALIDDATA;
 
-    if (ac->m4ac.sample_rate != m4ac.sample_rate ||
+    if (!latmctx->initialized ||
+        ac->m4ac.sample_rate != m4ac.sample_rate ||
         ac->m4ac.chan_config != m4ac.chan_config) {
 
         av_log(avctx, AV_LOG_INFO, "audio config changed\n");

@@ -284,3 +284,5 @@ lame_get_id3v2_tag	@2017
 lame_set_write_id3tag_automatic	@2018
 lame_get_write_id3tag_automatic	@2019
 id3tag_set_pad	@2020
+id3tag_set_textinfo_latin1  @2021
+id3tag_set_textinfo_ucs2  @2023

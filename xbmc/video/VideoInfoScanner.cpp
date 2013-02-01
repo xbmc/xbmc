@@ -115,7 +115,17 @@ namespace VIDEO
          * occurs.
          */
         CStdString directory = *m_pathsToScan.begin();
-        if (!DoScan(directory))
+        if (!CDirectory::Exists(directory))
+        {
+          /*
+           * Note that this will skip clean (if m_bClean is enabled) if the directory really
+           * doesn't exist rather than a NAS being switched off.  A manual clean from settings
+           * will still pick up and remove it though.
+           */
+          CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan%s.", __FUNCTION__, directory.c_str(), m_bClean ? " and clean" : "");
+          m_pathsToScan.erase(m_pathsToScan.begin());
+        }
+        else if (!DoScan(directory))
           bCancelled = true;
       }
 
@@ -1038,7 +1048,9 @@ namespace VIDEO
     if (!m_database.Open())
       return -1;
 
-    GetArtwork(pItem, content, videoFolder, useLocal, showInfo ? showInfo->m_strPath : "");
+    if (!libraryImport)
+      GetArtwork(pItem, content, videoFolder, useLocal, showInfo ? showInfo->m_strPath : "");
+
     // ensure the art map isn't completely empty by specifying an empty thumb
     map<string, string> art = pItem->GetArt();
     if (art.empty())
@@ -1090,12 +1102,14 @@ namespace VIDEO
     {
       if (pItem->m_bIsFolder)
       {
-        // get and cache season thumbs
         map<int, map<string, string> > seasonArt;
-        GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes("season"), useLocal);
-        for (map<int, map<string, string> >::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
-          for (map<string, string>::iterator j = i->second.begin(); j != i->second.end(); ++j)
-            CTextureCache::Get().BackgroundCacheImage(j->second);
+        if (!libraryImport)
+        { // get and cache season thumbs
+          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes("season"), useLocal);
+          for (map<int, map<string, string> >::iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+            for (map<string, string>::iterator j = i->second.begin(); j != i->second.end(); ++j)
+              CTextureCache::Get().BackgroundCacheImage(j->second);
+        }
         lResult = m_database.SetDetailsForTvShow(pItem->GetPath(), movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = "tvshow";
@@ -1173,23 +1187,26 @@ namespace VIDEO
     movieDetails.m_fanart.Unpack();
     movieDetails.m_strPictureURL.Parse();
 
-    CGUIListItem::ArtMap art;
+    CGUIListItem::ArtMap art = pItem->GetArt();
 
     // get and cache thumb images
     vector<string> artTypes = CVideoThumbLoader::GetArtTypes(ContentToMediaType(content, pItem->m_bIsFolder));
     vector<string>::iterator i = find(artTypes.begin(), artTypes.end(), "fanart");
     if (i != artTypes.end())
       artTypes.erase(i); // fanart is handled below
-    bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end();
-
+    bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end() &&
+                        art.find("thumb") == art.end();
     // find local art
     if (useLocal)
     {
       for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
       {
-        std::string image = CVideoThumbLoader::GetLocalArt(*pItem, *i, bApplyToDir);
-        if (!image.empty())
-          art.insert(make_pair(*i, image));
+        if (art.find(*i) == art.end())
+        {
+          std::string image = CVideoThumbLoader::GetLocalArt(*pItem, *i, bApplyToDir);
+          if (!image.empty())
+            art.insert(make_pair(*i, image));
+        }
       }
       // find and classify the local thumb (backcompat) if available
       if (lookForThumb)
@@ -1229,7 +1246,7 @@ namespace VIDEO
 
     // get & save fanart image (treated separately due to it being stored in m_fanart)
     bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
-    if (!isEpisode)
+    if (!isEpisode && art.find("fanart") == art.end())
     {
       string fanart = GetFanart(pItem, useLocal);
       if (!fanart.empty())
@@ -1334,6 +1351,9 @@ namespace VIDEO
       if (result == CNfoFile::FULL_NFO)
       {
         m_nfoReader.GetDetails(*item.GetVideoInfoTag());
+        // override with episode and season number
+        item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
+        item.GetVideoInfoTag()->m_iSeason = file->iSeason;
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
           return INFO_ERROR;
         continue;

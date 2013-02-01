@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Norwegian language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/no/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30001">Foretrekk trailer fra HD-Trailers.net</string>
+    <string id="30002">Foretrukket språk</string>
+    <string id="30003">Hent rangering fra</string>
+    <string id="30004">Aktive trailer (YouTube)</string>
+    <string id="30005">Bruk originaltittel</string>
+</strings>

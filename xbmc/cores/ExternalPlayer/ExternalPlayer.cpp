@@ -143,7 +143,7 @@ void CExternalPlayer::Process()
     // Unwind archive names
     CURL url(m_launchFilename);
     CStdString protocol = url.GetProtocol();
-    if (protocol == "zip" || protocol == "rar"/* || protocol == "iso9660" ??*/)
+    if (protocol == "zip" || protocol == "rar"/* || protocol == "iso9660" ??*/ || protocol == "udf")
     {
       mainFile = url.GetHostName();
       archiveContent = url.GetFileName();
@@ -151,7 +151,16 @@ void CExternalPlayer::Process()
     if (protocol == "musicdb")
       mainFile = CMusicDatabaseFile::TranslateUrl(url);
     if (protocol == "bluray")
-      mainFile = URIUtils::AddFileToFolder(url.GetHostName(), url.GetFileName());
+    {
+      CURL base(url.GetHostName());
+      if(base.GetProtocol() == "udf")
+      {
+        mainFile = base.GetHostName(); /* image file */
+        archiveContent = base.GetFileName();
+      }
+      else
+        mainFile = URIUtils::AddFileToFolder(base.Get(), url.GetFileName());
+    }
   }
 
   if (m_filenameReplacers.size() > 0)

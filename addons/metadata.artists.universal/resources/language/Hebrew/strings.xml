@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Hebrew language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/he/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">הפעל פאנארט אמנים מ-HTBackdrops.com</string>
+    <string id="30001">הפעל תמונות אמנים מ-allmusic.com</string>
+    <string id="30002">הפעל תמונות אמנים מ-last.fm</string>
+    <string id="30003">הפעל תמונות אמנים מ-HTBackdrops.com</string>
+    <string id="30004">הפעל פאנארט אמנים מ-last.fm</string>
+    <string id="30005">הפעל תמונות אמנים מ-last.fm</string>
+    <string id="30006">השג ביוגרפיית אמן מ-</string>
+    <string id="30007">גרפיקה</string>
+    <string id="30008">השג דיסקוגרפיית אמן מ-</string>
+    <string id="30009">השג ז'אנר אמן מ-</string>
+    <string id="30010">השג סגנונות אמן מ-</string>
+    <string id="30011">השג אורך חיים אמן מ-</string>
+    <string id="30012">השג מצבי רוח אמן מ-</string>
+    <string id="30014">השג שנות פעילות אמן מ-</string>
+    <string id="30015">     שפה מועדפת</string>
+    <string id="30016">חזר לביוגרפיות אומן מ</string>
+    <string id="30017">חזר לדיסקוגרפית אמן מ</string>
+    <string id="30018">חזר לסגנונות אומן מ</string>
+    <string id="30019">חזור לסגנונות אמן מ</string>
+    <string id="30020">חזור לתוחלת חיי אומן מ</string>
+    <string id="30021">נסיגות</string>
+    <string id="30022">הפעל תמונות אמן מ-theaudiodb.com</string>
+    <string id="30023">הפעל פאנארט אמן מ-theaudiodb.com</string>
+</strings>

@@ -23,6 +23,7 @@
 #include "utils/JobManager.h"
 #include "threads/Event.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include <map>
 
 class CGUIDialogProgressBarHandle;
 class CStopWatch;
@@ -113,8 +114,9 @@ namespace PVR
     /*!
      * @brief Start the PVRManager, which loads all PVR data and starts some threads to update the PVR data.
      * @param bAsync True to (re)start the manager from another thread
+     * @param bOpenPVRWindow True to open the PVR window after starting, false otherwise
      */
-    void Start(bool bAsync = false);
+    void Start(bool bAsync = false, bool bOpenPVRWindow = false);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
@@ -126,7 +128,29 @@ namespace PVR
      */
     void Cleanup(void);
 
-  public:
+    /*!
+     * @return True when a PVR window is active, false otherwise.
+     */
+    bool IsPVRWindowActive(void) const;
+
+    /*!
+     * @brief Check whether an add-on can be upgraded or installed without restarting the pvr manager, when the add-on is in use or the pvr window is active
+     * @param strAddonId The add-on to check.
+     * @return True when the add-on can be installed, false otherwise.
+     */
+    bool InstallAddonAllowed(const std::string& strAddonId) const;
+
+    /*!
+     * @brief Mark an add-on as outdated so it will be upgrade when it's possible again
+     * @param strAddonId The add-on to mark as outdated
+     * @param strReferer The referer to use when downloading
+     */
+    void MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer);
+
+    /*!
+     * @return True when updated, false when the pvr manager failed to load after the attempt
+     */
+    bool UpgradeOutdatedAddons(void);
 
     /*!
      * @brief Get the TV database.
@@ -169,14 +193,9 @@ namespace PVR
 
     /*!
      * @brief Reset the TV database to it's initial state and delete all the data inside.
-     * @param bShowProgress True to show a progress bar, false otherwise.
+     * @param bResetEPGOnly True to only reset the EPG database, false to reset both PVR and EPG.
      */
-    void ResetDatabase(bool bShowProgress = true);
-
-    /*!
-     * @brief Delete all EPG data from the database and reload it from the clients.
-     */
-    void ResetEPG(void);
+    void ResetDatabase(bool bResetEPGOnly = false);
 
     /*!
      * @brief Check if a TV channel, radio channel or recording is playing.
@@ -448,6 +467,12 @@ namespace PVR
      */
     bool SetWakeupCommand(void);
 
+    /*!
+     * @brief Wait until the pvr manager is loaded
+     * @return True when loaded, false otherwise
+     */
+    bool WaitUntilInitialised(void);
+
   protected:
     /*!
      * @brief PVR update and control thread.
@@ -554,6 +579,9 @@ namespace PVR
     CCriticalSection                m_managerStateMutex;
     ManagerState                    m_managerState;
     CStopWatch                     *m_parentalTimer;
+    bool                            m_bOpenPVRWindow;
+    std::map<std::string, std::string> m_outdatedAddons;
+    CEvent                             m_initialisedEvent;         /*!< triggered when the pvr manager initialised */
   };
 
   class CPVRRecordingsUpdateJob : public CJob

@@ -3245,6 +3245,12 @@ typedef struct AVCodecContext {
     int64_t pts_correction_num_faulty_dts; /// Number of incorrect DTS values so far
     int64_t pts_correction_last_pts;       /// PTS of the last frame
     int64_t pts_correction_last_dts;       /// DTS of the last frame
+    /** 
+     * Requests that only forced subpictures be decoded. 
+     * - decoding: set by user 
+     * - encoding: unused 
+     */ 
+    int forced_subs_only;
 
 } AVCodecContext;
 
@@ -3488,6 +3494,8 @@ enum AVSubtitleType {
     SUBTITLE_ASS,
 };
 
+#define AV_SUBTITLE_FLAG_FORCED 0x00000001
+
 typedef struct AVSubtitleRect {
     int x;         ///< top left corner  of pict, undefined when pict is not set
     int y;         ///< top left corner  of pict, undefined when pict is not set
@@ -3510,6 +3518,8 @@ typedef struct AVSubtitleRect {
      * struct.
      */
     char *ass;
+
+    int flags;
 } AVSubtitleRect;
 
 typedef struct AVSubtitle {
@@ -4893,6 +4903,14 @@ const AVClass *avcodec_get_class(void);
  * @see av_opt_find().
  */
 const AVClass *avcodec_get_frame_class(void);
+
+/**
+ * Get the AVClass for AVSubtitleRect. It can be used in combination with
+ * AV_OPT_SEARCH_FAKE_OBJ for examining options.
+ *
+ * @see av_opt_find().
+ */
+const AVClass *avcodec_get_subtitle_rect_class(void);
 
 /**
  * @return a positive value if s is open (i.e. avcodec_open2() was called on it

@@ -160,26 +160,19 @@ bool CEpgDatabase::DeleteEpg(void)
   return bReturn;
 }
 
-bool CEpgDatabase::Delete(const CEpg &table, const time_t start /* = 0 */, const time_t end /* = 0 */)
+bool CEpgDatabase::Delete(const CEpg &table)
 {
   /* invalid channel */
   if (table.EpgID() <= 0)
   {
-    CLog::Log(LOGERROR, "EpgDB - %s - invalid channel id: %d",
-        __FUNCTION__, table.EpgID());
+    CLog::Log(LOGERROR, "EpgDB - %s - invalid channel id: %d", __FUNCTION__, table.EpgID());
     return false;
   }
 
   CStdString strWhereClause;
   strWhereClause = FormatSQL("idEpg = %u", table.EpgID());
 
-  if (start != 0)
-    strWhereClause.append(FormatSQL(" AND iStartTime >= %u", start).c_str());
-
-  if (end != 0)
-    strWhereClause.append(FormatSQL(" AND iEndTime <= %u", end).c_str());
-
-  return DeleteValues("epgtags", strWhereClause);
+  return DeleteValues("epg", strWhereClause);
 }
 
 bool CEpgDatabase::DeleteOldEpgEntries(void)
@@ -420,4 +413,13 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   }
 
   return iReturn;
+}
+
+int CEpgDatabase::GetLastEPGId(void)
+{
+  CStdString strQuery = FormatSQL("SELECT MAX(idEpg) FROM epg");
+  CStdString strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    return atoi(strValue.c_str());
+  return 0;
 }

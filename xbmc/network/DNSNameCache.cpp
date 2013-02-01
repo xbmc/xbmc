@@ -38,6 +38,9 @@ CDNSNameCache::~CDNSNameCache(void)
 
 bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddress)
 {
+  if (strHostName.empty() && strIpAddress.empty())
+    return false;
+
   // first see if this is already an ip address
   unsigned long address = inet_addr(strHostName.c_str());
   strIpAddress.Empty();

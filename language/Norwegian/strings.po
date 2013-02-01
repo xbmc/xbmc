@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -704,7 +704,7 @@ msgstr "Handling"
 
 msgctxt "#208"
 msgid "Play"
-msgstr "Spill"
+msgstr "Spill av"
 
 msgctxt "#209"
 msgid "Next"
@@ -1008,7 +1008,7 @@ msgstr "Undertekster"
 
 msgctxt "#288"
 msgid "Font"
-msgstr "Skrift"
+msgstr "Skrifttype"
 
 msgctxt "#289"
 msgid "- Size"
@@ -1204,7 +1204,7 @@ msgstr "Diverse artister"
 
 msgctxt "#341"
 msgid "Play disc"
-msgstr "Spill plate"
+msgstr "Spill av plate"
 
 msgctxt "#342"
 msgid "Movies"
@@ -1764,7 +1764,7 @@ msgstr "Gjenta mapper"
 
 msgctxt "#489"
 msgid "Play the next song automatically"
-msgstr "Spill automatisk av neste fil"
+msgstr "Spill av neste sang automatisk"
 
 msgctxt "#491"
 msgid "- Use big icons"
@@ -1792,7 +1792,7 @@ msgstr "Kalibrering"
 
 msgctxt "#497"
 msgid "Show file extensions"
-msgstr "Skjul filtetternavn"
+msgstr "Vis filetternavn"
 
 msgctxt "#498"
 msgid "Sort by: Type"
@@ -3278,6 +3278,10 @@ msgctxt "#2050"
 msgid "Runtime"
 msgstr "Spilletid"
 
+msgctxt "#2080"
+msgid "Empty list"
+msgstr "Tom liste"
+
 msgctxt "#2100"
 msgid "Script failed! : %s"
 msgstr "Skript mislyktes! : %s"
@@ -3690,9 +3694,17 @@ msgctxt "#12348"
 msgid "Item locked"
 msgstr "Låst oppføring"
 
+msgctxt "#12352"
+msgid "No downloading is needed."
+msgstr "Ingen nedlasting er nødvendig."
+
 msgctxt "#12353"
 msgid "Reactivate lock"
 msgstr "Reaktiver lås"
+
+msgctxt "#12354"
+msgid "Would you like to update it now?"
+msgstr "Vil du oppdatere den nå?"
 
 msgctxt "#12356"
 msgid "Change lock"
@@ -4128,7 +4140,7 @@ msgstr "Harddisk"
 
 msgctxt "#13276"
 msgid "DVD-ROM"
-msgstr "DVD spiller"
+msgstr "DVD-ROM"
 
 msgctxt "#13277"
 msgid "Storage"
@@ -4204,7 +4216,7 @@ msgstr "Hastighetskontroll for vifte"
 
 msgctxt "#13303"
 msgid "- Fonts"
-msgstr "- Skrift"
+msgstr "- Skrifttyper"
 
 msgctxt "#13304"
 msgid "Enable flipping bi-directional strings"
@@ -4576,7 +4588,7 @@ msgstr "Minimum viftehastighet"
 
 msgctxt "#13412"
 msgid "Play from here"
-msgstr "Spill herfra"
+msgstr "Spill av herfra"
 
 msgctxt "#13413"
 msgid "Downloading"
@@ -4658,9 +4670,13 @@ msgctxt "#13432"
 msgid "Allow hardware acceleration (VideoToolbox)"
 msgstr "Tillat maskinvareakselerasjon (VideoToolbox)"
 
+msgctxt "#13433"
+msgid "Play the next video automatically"
+msgstr "Spill av neste video automatisk"
+
 msgctxt "#13500"
 msgid "A/V sync method"
-msgstr "A/V synkmetode"
+msgstr "Synkroniseringsmetode"
 
 msgctxt "#13501"
 msgid "Audio clock"
@@ -4705,6 +4721,18 @@ msgstr "Synkroniser avspilling til skjerm"
 msgctxt "#13511"
 msgid "Choose art"
 msgstr "Velg grafikk"
+
+msgctxt "#13512"
+msgid "Current art"
+msgstr "Gjeldende"
+
+msgctxt "#13513"
+msgid "Remote art"
+msgstr "Ekstern"
+
+msgctxt "#13515"
+msgid "No art"
+msgstr "Ingen"
 
 msgctxt "#13550"
 msgid "Pause during refresh rate change"
@@ -5060,7 +5088,7 @@ msgstr "Bruk ett fullskjermsvindu istedenfor sann fullskjerm"
 
 msgctxt "#14084"
 msgid "Queue songs on selection"
-msgstr "Kø sanger ved valg"
+msgstr "Legg sanger i kø når de velges"
 
 msgctxt "#14086"
 msgid "Playback"
@@ -5072,7 +5100,7 @@ msgstr "DVD-er"
 
 msgctxt "#14088"
 msgid "Play DVDs automatically"
-msgstr "Spill DVD-er automatisk"
+msgstr "Spill av DVD-er automatisk"
 
 msgctxt "#14089"
 msgid "Font to use for text subtitles"
@@ -5108,11 +5136,11 @@ msgstr "Ripp"
 
 msgctxt "#14097"
 msgid "Audio CD Insert Action"
-msgstr "Lyd CD innsatt hendelse"
+msgstr "Hendelse når musikk-CD settes inn"
 
 msgctxt "#14098"
 msgid "Play"
-msgstr "Spill"
+msgstr "Spill av"
 
 msgctxt "#14099"
 msgid "Eject disc when CD ripping is complete"
@@ -5232,7 +5260,7 @@ msgstr "Sender om %i sekunder"
 
 msgctxt "#15213"
 msgid "Play using..."
-msgstr "Spill med..."
+msgstr "Spill av med..."
 
 msgctxt "#15214"
 msgid "Use smoothed A/V synchronization"
@@ -5496,7 +5524,7 @@ msgstr "Spiller"
 
 msgctxt "#16004"
 msgid "Play media from disc"
-msgstr "Spill media fra plate"
+msgstr "Spill av media fra plate"
 
 msgctxt "#16008"
 msgid "Enter new title"
@@ -5557,6 +5585,10 @@ msgstr "Bob"
 msgctxt "#16022"
 msgid "Bob (inverted)"
 msgstr "Bob (invertert)"
+
+msgctxt "#16024"
+msgid "Cancelling..."
+msgstr "Kansellerer ..."
 
 msgctxt "#16025"
 msgid "Enter the artist name"
@@ -5814,6 +5846,10 @@ msgctxt "#19002"
 msgid "or use phrases to find an exact match, like \"The wizard of Oz\"."
 msgstr "eller bruk uttrykk for å finne eksakte treff, slik som \"Trollmannen fra Oz\"."
 
+msgctxt "#19003"
+msgid "Find similar programs"
+msgstr "Finn lignende programmer"
+
 msgctxt "#19004"
 msgid "Importing EPG from clients"
 msgstr "Importerer EPG fra klienter"
@@ -5833,6 +5869,18 @@ msgstr "Enhetsstatus"
 msgctxt "#19008"
 msgid "Signal quality"
 msgstr "Signalkvalitet"
+
+msgctxt "#19009"
+msgid "SNR"
+msgstr "SNR"
+
+msgctxt "#19010"
+msgid "BER"
+msgstr "BER"
+
+msgctxt "#19011"
+msgid "UNC"
+msgstr "UNC"
 
 msgctxt "#19014"
 msgid "Fixed"
@@ -5932,7 +5980,7 @@ msgstr "Er du sikker på at du vil gi nytt navn til dette opptaket?"
 
 msgctxt "#19043"
 msgid "Recording"
-msgstr "Tar opp"
+msgstr "Opptak"
 
 msgctxt "#19044"
 msgid "Please check your configuration or check the log for details."
@@ -6438,6 +6486,18 @@ msgctxt "#19212"
 msgid "This list contains changes"
 msgstr "Denne listen inneholder endringer"
 
+msgctxt "#19214"
+msgid "Enter a valid URL for the new channel"
+msgstr "Skriv inn gyldig URL for ny kanal"
+
+msgctxt "#19216"
+msgid "All radio channels"
+msgstr "Alle radio-kanaler"
+
+msgctxt "#19217"
+msgid "All TV channels"
+msgstr "Alle tv-kanaler"
+
 msgctxt "#19218"
 msgid "Visible"
 msgstr "Synlig"
@@ -6453,6 +6513,10 @@ msgstr "Kanaler i"
 msgctxt "#19222"
 msgid "EPG"
 msgstr "EPG"
+
+msgctxt "#19223"
+msgid "No PVR add-on could be enabled. Check your settings or the log for more info."
+msgstr "Ingen PVR-tillegg kunne aktiveres. Kontroller innstillingene eller loggen for mer informasjon."
 
 msgctxt "#19224"
 msgid "Recording aborted"
@@ -6498,9 +6562,21 @@ msgctxt "#19239"
 msgid "Starting background threads"
 msgstr "Starter bakgrunnstråder"
 
+msgctxt "#19245"
+msgid "Set wakeup command (cmd [timestamp])"
+msgstr "Oppvåkningskommando (cmd [timestamp])"
+
+msgctxt "#19246"
+msgid "Wakeup before recording"
+msgstr "Oppvåkning før opptak"
+
 msgctxt "#19247"
 msgid "Daily wakeup"
 msgstr "Daglig oppvåkning"
+
+msgctxt "#19248"
+msgid "Daily wakeup time (HH:MM:SS)"
+msgstr "Tidspunkt for daglig oppvåkning (HH:MM:SS)"
 
 msgctxt "#19249"
 msgid "Filter channels"
@@ -6544,7 +6620,7 @@ msgstr "Lås opp kanal"
 
 msgctxt "#19259"
 msgid "Parental control"
-msgstr "Foreldrekontrol"
+msgstr "Foreldrekontroll"
 
 msgctxt "#19261"
 msgid "Change PIN"
@@ -6552,7 +6628,7 @@ msgstr "Endre PIN"
 
 msgctxt "#19262"
 msgid "Parental control. Enter PIN:"
-msgstr "Foreldrekontroll. Skriv inn PIN"
+msgstr "Foreldrekontroll. Skriv inn PIN:"
 
 msgctxt "#19263"
 msgid "Locked channel. Enter PIN:"
@@ -6566,6 +6642,10 @@ msgctxt "#19265"
 msgid "The entered PIN number was incorrect."
 msgstr "Innskrevet PIN-nummer var feil."
 
+msgctxt "#19267"
+msgid "Parental locked:"
+msgstr "Låst av foreldrekontroll:"
+
 msgctxt "#19269"
 msgid "Do not show 'connection lost' warnings"
 msgstr "Ikke vis 'tilkobling brutt' advarsler"
@@ -6577,6 +6657,22 @@ msgstr "* Alle opptak"
 msgctxt "#19271"
 msgid "No PVR add-ons could be found"
 msgstr "Ingen PVR-tillegg ble funnet"
+
+msgctxt "#19275"
+msgid "Conflict warning"
+msgstr "Konflikt advarsel"
+
+msgctxt "#19276"
+msgid "Conflict error"
+msgstr "Konflikt feil"
+
+msgctxt "#19277"
+msgid "Recording conflict"
+msgstr "Innspilling konflikt"
+
+msgctxt "#19278"
+msgid "Recording error"
+msgstr "Innspilling feil"
 
 msgctxt "#19279"
 msgid "Client specific"
@@ -6597,6 +6693,10 @@ msgstr "Komedie"
 msgctxt "#19506"
 msgid "Romance"
 msgstr "Romantikk"
+
+msgctxt "#19517"
+msgid "News/Weather Report"
+msgstr "Nyheter/værmelding"
 
 msgctxt "#19519"
 msgid "Documentary"
@@ -7406,6 +7506,10 @@ msgctxt "#20187"
 msgid "UPnP"
 msgstr "UPnP"
 
+msgctxt "#20188"
+msgid "Announce library updates via UPnP"
+msgstr "Kunngjøre bibliotek oppdateringer via UPnP"
+
 msgctxt "#20189"
 msgid "Enable auto scrolling for plot & review"
 msgstr "Aktiver autorulling for plott og anmeldelse"
@@ -7552,7 +7656,7 @@ msgstr "Sorter etter: ID"
 
 msgctxt "#20324"
 msgid "Play part..."
-msgstr "Spill del..."
+msgstr "Spill av del..."
 
 msgctxt "#20325"
 msgid "Calibration reset"
@@ -7848,7 +7952,7 @@ msgstr "Gå til album"
 
 msgctxt "#20398"
 msgid "Play song"
-msgstr "Spill sang"
+msgstr "Spill av sang"
 
 msgctxt "#20399"
 msgid "Go to music videos from album"
@@ -7860,11 +7964,11 @@ msgstr "Gå til musikkvideoer av artist"
 
 msgctxt "#20401"
 msgid "Play music video"
-msgstr "Spill musikkvideo"
+msgstr "Spill av musikkvideo"
 
 msgctxt "#20402"
 msgid "Download actor thumbnails when adding to library"
-msgstr "Hent bilder for skuespiller automatisk når en legger til i bibliotek"
+msgstr "Last ned bilder av skuespiller automatisk"
 
 msgctxt "#20403"
 msgid "Set actor thumb"
@@ -7980,7 +8084,7 @@ msgstr "Ekskluder sti fra biblioteksoppdateringer"
 
 msgctxt "#20433"
 msgid "Extract thumbnails and video information"
-msgstr "Ekstraher miniatyrer og videoinformasjon"
+msgstr "Hent ut miniatyrer og videoinformasjon"
 
 msgctxt "#20434"
 msgid "Sets"
@@ -8494,13 +8598,17 @@ msgctxt "#21456"
 msgid "External storage"
 msgstr "Ekstern lagring"
 
+msgctxt "#21457"
+msgid "Watched episode count"
+msgstr "Sett episode teller"
+
 msgctxt "#21460"
 msgid "Subtitle location"
-msgstr "Plassering av undertittel"
+msgstr "Plassering av undertekst"
 
 msgctxt "#21461"
 msgid "Fixed"
-msgstr "Fast"
+msgstr "Låst"
 
 msgctxt "#21462"
 msgid "Bottom of video"
@@ -8916,7 +9024,7 @@ msgstr "Direct3D versjon:"
 
 msgctxt "#22030"
 msgid "Font"
-msgstr "Skrift"
+msgstr "Skrifttype"
 
 msgctxt "#22031"
 msgid "- Size"
@@ -8988,7 +9096,7 @@ msgstr "Mer..."
 
 msgctxt "#22083"
 msgid "Play all"
-msgstr "Spill alle"
+msgstr "Spill av alle"
 
 msgctxt "#23049"
 msgid "Teletext not available"
@@ -9013,6 +9121,10 @@ msgstr "Stopper"
 msgctxt "#23054"
 msgid "Running"
 msgstr "Kjører"
+
+msgctxt "#23055"
+msgid "Scale Teletext to 4:3"
+msgstr "Skaler tekst-tv til 4:3"
 
 msgctxt "#23100"
 msgid "External Player Active"
@@ -9121,6 +9233,10 @@ msgstr "Vær"
 msgctxt "#24028"
 msgid "Weather.com (standard)"
 msgstr "Weather.com (standard)"
+
+msgctxt "#24029"
+msgid "Service for weather information"
+msgstr "Værtjeneste"
 
 msgctxt "#24030"
 msgid "This Add-on can not be configured"
@@ -9360,7 +9476,7 @@ msgstr "Vis bluray menyer"
 
 msgctxt "#25004"
 msgid "Play main title: %d"
-msgstr "Spill hovedspor: %d"
+msgstr "Spill av hovedspor: %d"
 
 msgctxt "#25005"
 msgid "Title: %d"
@@ -9760,7 +9876,7 @@ msgstr "7.1"
 
 msgctxt "#34120"
 msgid "Play GUI sounds"
-msgstr "Spill grensesnittlyder"
+msgstr "Spill av grensesnittlyder"
 
 msgctxt "#34121"
 msgid "Only when playback stopped"

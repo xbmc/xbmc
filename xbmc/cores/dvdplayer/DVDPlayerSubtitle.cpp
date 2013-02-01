@@ -63,6 +63,8 @@ void CDVDPlayerSubtitle::Flush()
 
 void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 {
+  CSingleLock lock(m_section);
+
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
     CDVDMsgDemuxerPacket* pMsgDemuxerPacket = (CDVDMsgDemuxerPacket*)pMsg;
@@ -129,6 +131,11 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     if (m_pOverlayCodec)
       m_pOverlayCodec->Flush();
 
+    /* We must flush active overlays on flush or if we have a file
+     * parser since it will re-populate active items.  */
+    if(pMsg->IsType(CDVDMsg::GENERAL_FLUSH) || m_pSubtitleFileParser)
+      m_pOverlayContainer->Clear();
+
     m_lastPts = DVD_NOPTS_VALUE;
   }
 
@@ -137,6 +144,8 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
 
 bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
 {
+  CSingleLock lock(m_section);
+
   CloseStream(false);
   m_streaminfo = hints;
 
@@ -175,6 +184,8 @@ bool CDVDPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, string &filename)
 
 void CDVDPlayerSubtitle::CloseStream(bool flush)
 {
+  CSingleLock lock(m_section);
+
   if(m_pSubtitleStream)
     SAFE_DELETE(m_pSubtitleStream);
   if(m_pSubtitleFileParser)
@@ -190,6 +201,8 @@ void CDVDPlayerSubtitle::CloseStream(bool flush)
 
 void CDVDPlayerSubtitle::Process(double pts)
 {
+  CSingleLock lock(m_section);
+
   if (m_pSubtitleFileParser)
   {
     if(pts == DVD_NOPTS_VALUE)

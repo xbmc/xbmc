@@ -1,7 +1,7 @@
 # XBMC Media Center language file
 # Addon Name: projectM
 # Addon id: visualization.projectm
-# Addon version: 1.0.1
+# Addon version: 1.0.3
 # Addon Provider: Team XBMC
 msgid ""
 msgstr ""
@@ -17,6 +17,10 @@ msgstr ""
 "Language: af\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "#30000"
+msgid "Render Quality"
+msgstr "Verbeeld Kwaliteit"
+
 msgctxt "#30001"
 msgid "Low"
 msgstr "Laag"
@@ -28,3 +32,47 @@ msgstr "Medium"
 msgctxt "#30003"
 msgid "High"
 msgstr "Hoog"
+
+msgctxt "#30004"
+msgid "Maximum"
+msgstr "Maksimum"
+
+msgctxt "#30005"
+msgid "Shuffle Mode"
+msgstr "Skommel Modus"
+
+msgctxt "#30006"
+msgid "Smooth Preset Duration"
+msgstr "Gladde Voorafinstelling Duur"
+
+msgctxt "#30007"
+msgid "Preset Duration"
+msgstr "Voorafinstelling Duur"
+
+msgctxt "#30008"
+msgid "Beat Sensitivity"
+msgstr "Maatslag Sensitiwiteit"
+
+msgctxt "#30009"
+msgid "Preset Pack"
+msgstr "Voorafinstelling Pak"
+
+msgctxt "#30010"
+msgid "Default Pack"
+msgstr "Bestek Pak"
+
+msgctxt "#30011"
+msgid "User Defined Preset Folder"
+msgstr "Gebruiker Gedefinieerde Voorafinstelling Vouer"
+
+msgctxt "#30012"
+msgid "User Preset Folder"
+msgstr "Gebruiker Voorafinstelling Vouer"
+
+msgctxt "#30050"
+msgid "%2.0f secs"
+msgstr "%2.0f sek."
+
+msgctxt "#30051"
+msgid "%2.0f %%"
+msgstr "%2.0f %%"

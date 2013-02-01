@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -1048,19 +1048,19 @@ msgstr "Signets"
 
 msgctxt "#299"
 msgid "- AAC capable receiver"
-msgstr "- périphérique compatible ACC"
+msgstr "- Périphérique compatible AAC"
 
 msgctxt "#300"
 msgid "- MP1 capable receiver"
-msgstr "- périphérique compatible MP1"
+msgstr "- Périphérique compatible MP1"
 
 msgctxt "#301"
 msgid "- MP2 capable receiver"
-msgstr "- périphérique compatible MP2"
+msgstr "- Périphérique compatible MP2"
 
 msgctxt "#302"
 msgid "- MP3 capable receiver"
-msgstr "- périphérique compatible MP3"
+msgstr "- Périphérique compatible MP3"
 
 msgctxt "#303"
 msgid "Delay"
@@ -1228,15 +1228,15 @@ msgstr "Amplifier le volume lors du démultiplexage"
 
 msgctxt "#347"
 msgid "- DTS-HD capable receiver"
-msgstr "Amplificateur compatible DTS-HD"
+msgstr "- Périphérique compatible DTS-HD"
 
 msgctxt "#348"
 msgid "- Multichannel LPCM capable receiver"
-msgstr "Amplificateur compatible LPCM multicanal"
+msgstr "- Périphérique compatible LPCM multicanal"
 
 msgctxt "#349"
 msgid "- TrueHD capable receiver"
-msgstr "Amplificateur compatible TrueHD"
+msgstr "- Périphérique compatible TrueHD"
 
 msgctxt "#350"
 msgid "Programs"
@@ -9092,7 +9092,7 @@ msgstr "Nom de la playliste"
 
 msgctxt "#21434"
 msgid "Find items where"
-msgstr "Trouver les chansons assorties"
+msgstr "Trouver les objets qui"
 
 msgctxt "#21435"
 msgid "Edit"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Activer le support du joystick et du gamepad"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Désactiver le joystick si iMON est présent"
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Désactiver la manette de jeu si présente"
 
 msgctxt "#35500"
 msgid "Location"
@@ -10753,3 +10753,7 @@ msgstr "TV et amplificateur Home Cinéma (explicite)"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Version de libCEC non supportée. %x est inférieur à la version requise par XBMC (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Dossier de l'objet"

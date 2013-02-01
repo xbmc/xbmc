@@ -226,6 +226,9 @@ CSoftAEStream::~CSoftAEStream()
     m_ssrc = NULL;
   }
 
+  delete m_newPacket;
+  delete m_packet;
+
   CLog::Log(LOGDEBUG, "CSoftAEStream::~CSoftAEStream - Destructed");
 }
 

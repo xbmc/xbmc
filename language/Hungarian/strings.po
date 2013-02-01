@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# XBMC-core v12.0-BETA1
+# XBMC-core v12.0
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
@@ -6172,7 +6172,7 @@ msgstr "Időzítő törlése"
 
 msgctxt "#19061"
 msgid "Add timer"
-msgstr "Időzítő hozzáadása"
+msgstr "Időzítés"
 
 msgctxt "#19062"
 msgid "Sort by: Channel"
@@ -6368,7 +6368,7 @@ msgstr "Melyik kiszolgálón akarsz keresni ?"
 
 msgctxt "#19120"
 msgid "Client number"
-msgstr "TV ügyfelek száma"
+msgstr "TV ügyfél száma"
 
 msgctxt "#19121"
 msgid "Avoid repeats"
@@ -6540,7 +6540,7 @@ msgstr "A felvétel nem indítható el. Nézd meg a naplót a részletekért."
 
 msgctxt "#19165"
 msgid "Switch"
-msgstr "Váltás"
+msgstr "Kapcsolás"
 
 msgctxt "#19166"
 msgid "PVR information"
@@ -6988,7 +6988,7 @@ msgstr "Felvételi hiba"
 
 msgctxt "#19279"
 msgid "Client specific"
-msgstr "PVR ügyfélhez kapcsolódó"
+msgstr "PVR ügyfél"
 
 msgctxt "#19280"
 msgid "Client specific settings"
@@ -10582,9 +10582,9 @@ msgctxt "#35100"
 msgid "Enable joystick and gamepad support"
 msgstr "Botkormány és gombkormány támogatás engedélyezése"
 
-msgctxt "#35101"
-msgid "Disable joystick when iMON is present"
-msgstr "Joystick letiltása iMON jelenlétében "
+msgctxt "#35102"
+msgid "Disable joystick when device is present"
+msgstr "Joystick letiltása eszköz jelenlétében "
 
 msgctxt "#35500"
 msgid "Location"
@@ -10753,3 +10753,7 @@ msgstr "TV és AVR eszköz"
 msgctxt "#36040"
 msgid "Unsupported libCEC interface version. %x is lower than the version XBMC supports (%x)"
 msgstr "Nem támogatott libCEC interfész verzió. A meglévő verzió (%x) alacsonyabb mint az XBMC által támogatott (%x)"
+
+msgctxt "#36041"
+msgid "* Item folder"
+msgstr "* Elem mappa"

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Translated using Transifex web application. For support, or if you would like to to help out, please visit your language team! -->
+<!-- Swedish language-Team URL: http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/sv/ -->
+<!-- Report language file syntax bugs at: http://trac.xbmc.org/ -->
+
+<strings>
+    <string id="30000">Aktivera artistfanart från HTBackdrops.com</string>
+    <string id="30001">Aktivera artistminiatyrer från allmusic.com</string>
+    <string id="30002">Aktivera artistminiatyrer från last.fm</string>
+    <string id="30003">Aktivera artistminiatyrer från HTBackdrops.com</string>
+    <string id="30004">Aktivera artistfanart från fanart.tv</string>
+    <string id="30005">Aktivera artistminiatyrer från fanart.tv</string>
+    <string id="30006">Hämta artistbiografi från</string>
+    <string id="30007">Konstverk</string>
+    <string id="30008">Hämta artistdiskografi från</string>
+    <string id="30009">Hämta artistgenrer från</string>
+    <string id="30010">Hämta artiststilar från</string>
+    <string id="30011">Hämta artistlivslängd från</string>
+    <string id="30012">Hämta artisthumör från</string>
+    <string id="30014">Hämta artistens aktiva år från</string>
+    <string id="30015">Föredraget språk</string>
+    <string id="30016">Fall tillbaka på artistbiografi från</string>
+    <string id="30017">Fall tillbaka på artistdiskografi från</string>
+    <string id="30018">Fall tillbaka på artistgenrer från</string>
+    <string id="30019">Fall tillbaka på artiststilar från</string>
+    <string id="30020">Fall tillbaka på artistlivsländ från</string>
+    <string id="30021">Tillbakafallande</string>
+    <string id="30022">Aktivera artistminiatyrer från theaudiodb.com</string>
+    <string id="30023">Aktivera artistfanart från theaudiodb.com</string>
+</strings>
