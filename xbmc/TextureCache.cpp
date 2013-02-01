@@ -299,14 +299,14 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
 
 void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  if (strcmp(job->GetType(), "cacheimage") == 0)
+  if (strcmp(job->GetType(), kJobTypeCacheImage) == 0)
     OnCachingComplete(success, (CTextureCacheJob *)job);
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
 {
-  if (strcmp(job->GetType(), "cacheimage") == 0 && !progress)
+  if (strcmp(job->GetType(), kJobTypeCacheImage) == 0 && !progress)
   { // check our processing list
     {
       CSingleLock lock(m_processingSection);
