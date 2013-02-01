@@ -21,6 +21,7 @@
 
 #include "NetworkUtils.h"
 #include <stdio.h>
+#include <string.h>
 
 std::string CNetworkUtils::IPTotring(unsigned int ip)
 {
