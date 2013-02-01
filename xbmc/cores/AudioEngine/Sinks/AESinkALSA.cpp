@@ -680,8 +680,13 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
   /* ensure that ALSA has been initialized */
   snd_lib_error_set_handler(sndLibErrorHandler);
-  if(!snd_config)
+  if(!snd_config || force)
+  {
+    if(force)
+      snd_config_update_free_global();
+
     snd_config_update();
+  }
 
   snd_config_t *config;
   snd_config_copy(&config, snd_config);

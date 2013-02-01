@@ -74,7 +74,17 @@ CSoftAE::CSoftAE():
   m_outputStageFn      (NULL        ),
   m_streamStageFn      (NULL        )
 {
+  unsigned int c_retry = 5;
   CAESinkFactory::EnumerateEx(m_sinkInfoList);
+  while(m_sinkInfoList.size() == 0 && c_retry > 0)
+  {
+    CLog::Log(LOGNOTICE, "No Devices found - retry: %d", c_retry);
+    Sleep(2000);
+    c_retry--;
+    // retry the enumeration
+    CAESinkFactory::EnumerateEx(m_sinkInfoList, true);
+  }
+  CLog::Log(LOGNOTICE, "Found %lu Lists of Devices", m_sinkInfoList.size());
   for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
   {
     CLog::Log(LOGNOTICE, "Enumerated %s devices:", itt->m_sinkName.c_str());
