@@ -37,6 +37,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "utils/LangCodeExpander.h"
 
 using namespace std;
 using namespace XFILE;
@@ -165,6 +166,20 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
     g_application.m_pPlayer->GetAudioStreamName(i, strName);
     if (strName.length() == 0)
       strName = "Unnamed";
+
+    CStdString strLanguage;
+    g_application.m_pPlayer->GetAudioStreamLanguage(i, strLanguage);
+    if (strLanguage.length() > 0 && strLanguage.length() <= 3 && !g_LangCodeExpander.Lookup(strLanguage, strLanguage))
+      strLanguage = g_localizeStrings.Get(13205); // Unknown
+
+    // Check if the language is already given in the stream name.
+    // There are two cases for that:
+    // 1. the description of the stream is empty, cf. CDemuxStreamAudioFFmpeg::GetStreamName,
+    //    then we have "English - AC3 Stereo" instead of "2/0 - AC3 Stereo" for example.
+    //
+    // 2. a dvd is played, cf. CSelectionStreams::Update
+    if (strName.Find(strLanguage) < 0)
+      strName.Format("%s - %s", strLanguage.c_str(), strName.c_str());
 
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
