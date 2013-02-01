@@ -1268,7 +1268,7 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   CStdString strKey = szButton;
   if (strKey.Equals("key"))
   {
-    CStdString strID;
+    std::string strID;
     if (pButton->QueryValueAttribute("id", &strID) == TIXML_SUCCESS)
     {
       const char *str = strID.c_str();
