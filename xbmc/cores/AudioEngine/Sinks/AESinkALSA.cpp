@@ -676,7 +676,7 @@ bool CAESinkALSA::OpenPCMDevice(const std::string &name, const std::string &para
   return false;
 }
 
-void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list)
+void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
   /* ensure that ALSA has been initialized */
   snd_lib_error_set_handler(sndLibErrorHandler);
