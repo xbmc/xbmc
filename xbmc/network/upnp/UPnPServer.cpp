@@ -465,6 +465,23 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
     return id;
 }
 
+    
+static
+bool ObjectIDValidate(NPT_String& id)
+{
+    if(id.Find("..") != -1)
+        return false;
+    if(id.StartsWith("virtualpath://upnproot/"))
+        return true;
+    else if(id.StartsWith("library://video"))
+        return true;
+    else if(id.StartsWith("musicdb://"))
+        return true;
+    else if(id.StartsWith("special://"))
+           return true;
+    return false;
+}
+    
 /*----------------------------------------------------------------------
 |   CUPnPServer::OnBrowseMetadata
 +---------------------------------------------------------------------*/
@@ -489,6 +506,12 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     NPT_Reference<CThumbLoader>    thumb_loader;
 
     CLog::Log(LOGINFO, "Received UPnP Browse Metadata request for object '%s'", (const char*)object_id);
+    
+    if(!ObjectIDValidate(id))
+    {
+        action->SetError(701, "Incorrect ObjectID.");
+        return NPT_FAILURE;
+    }
 
     if (id.StartsWith("virtualpath://")) {
         id.TrimRight("/");
@@ -567,8 +590,12 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
 {
     CFileItemList items;
     NPT_String    parent_id = TranslateWMPObjectId(object_id);
-
     CLog::Log(LOGINFO, "UPnP: Received Browse DirectChildren request for object '%s', with sort criteria %s", object_id, sort_criteria);
+    if(!ObjectIDValidate(parent_id))
+    {
+        action->SetError(701, "Incorrect ObjectID.");
+        return NPT_FAILURE;
+    }
 
     items.SetPath(CStdString(parent_id));
 
