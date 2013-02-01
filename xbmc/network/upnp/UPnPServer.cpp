@@ -464,22 +464,25 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
     CLog::Log(LOGDEBUG, "UPnP Translated id to '%s'", (const char*)id);
     return id;
 }
-
     
-static
-bool ObjectIDValidate(NPT_String& id)
+NPT_Result
+ObjectIDValidate(NPT_String& id)
 {
     if(id.Find("..") != -1)
-        return false;
+        return NPT_ERROR_NO_SUCH_FILE;
     if(id.StartsWith("virtualpath://upnproot/"))
-        return true;
+        return NPT_SUCCESS;
     else if(id.StartsWith("library://video"))
-        return true;
+        return NPT_SUCCESS;
     else if(id.StartsWith("musicdb://"))
-        return true;
-    else if(id.StartsWith("special://"))
-           return true;
-    return false;
+        return NPT_SUCCESS;
+    else if(id.StartsWith("sources://video"))
+        return NPT_SUCCESS;
+    else if(id.StartsWith("videodb://"))
+        return NPT_SUCCESS;
+    else if(id.StartsWith("special://videoplaylist"))
+        return NPT_SUCCESS;
+    return NPT_ERROR_NO_SUCH_FILE;
 }
     
 /*----------------------------------------------------------------------
@@ -507,8 +510,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
 
     CLog::Log(LOGINFO, "Received UPnP Browse Metadata request for object '%s'", (const char*)object_id);
     
-    if(!ObjectIDValidate(id))
-    {
+    if(ObjectIDValidate(id)) {
         action->SetError(701, "Incorrect ObjectID.");
         return NPT_FAILURE;
     }
@@ -591,8 +593,8 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     CFileItemList items;
     NPT_String    parent_id = TranslateWMPObjectId(object_id);
     CLog::Log(LOGINFO, "UPnP: Received Browse DirectChildren request for object '%s', with sort criteria %s", object_id, sort_criteria);
-    if(!ObjectIDValidate(parent_id))
-    {
+    
+    if(ObjectIDValidate(parent_id)) {
         action->SetError(701, "Incorrect ObjectID.");
         return NPT_FAILURE;
     }
