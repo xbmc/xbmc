@@ -25,10 +25,11 @@
 #include "guilib/Key.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "network/NetworkUtils.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
-#include "settings/AdvancedSettings.h"
 
 #include <errno.h>
 #include <string.h>
@@ -36,6 +37,7 @@
 #include <sys/socket.h>
 #include <linux/wireless.h>
 #include <net/if_arp.h>
+#include <netinet/in.h>
 
 #if defined(TARGET_ANDROID)
 #include "android/bionic_supplement/bionic_supplement.h"
@@ -160,6 +162,65 @@ bool CPosixNetworkManager::PumpNetworkEvents(INetworkEventsCallback *callback)
   }
 
   return result;
+}
+
+bool CPosixNetworkManager::SendWakeOnLan(const char *mac)
+{
+  // Fetch the hardware address
+  unsigned char ethaddr[8] = {0};
+  if (!CNetworkUtils::in_ether(mac, ethaddr))
+  {
+    CLog::Log(LOGERROR, "%s - Invalid hardware address specified (%s)", __FUNCTION__, mac);
+    return false;
+  }
+
+  // Setup the socket
+  int packet = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  if (packet < 0)
+  {
+    CLog::Log(LOGERROR, "%s - Unable to create socket (%s)", __FUNCTION__, strerror (errno));
+    return false;
+  }
+
+  // Set socket options
+  struct sockaddr_in saddr = {0};
+  saddr.sin_family = AF_INET;
+  saddr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
+  saddr.sin_port = htons(9);
+
+  unsigned int value = 1;
+  if (setsockopt(packet, SOL_SOCKET, SO_BROADCAST, (char*)&value, sizeof(unsigned int)) == SOCKET_ERROR)
+  {
+    CLog::Log(LOGERROR, "%s - Unable to set socket options (%s)", __FUNCTION__, strerror (errno));
+    closesocket(packet);
+    return false;
+  }
+
+  // Build the magic packet (6 x 0xff + 16 x MAC address)
+  unsigned char buf[128] = {0};
+  unsigned char *ptr = buf;
+
+  for (int i = 0; i < 6; i++)
+    *ptr++ = 0xff;
+
+  for (int j = 0; j < 16; j++)
+  {
+    for (int i = 0; i < 6; i++)
+      *ptr++ = ethaddr[i];
+  }
+
+  // Send the magic packet
+  if (sendto(packet, (char*)buf, 102, 0, (struct sockaddr*)&saddr, sizeof(saddr)) < 0)
+  {
+    CLog::Log(LOGERROR, "%s - Unable to send magic packet (%s)", __FUNCTION__, strerror (errno));
+    closesocket(packet);
+    return false;
+  }
+
+  closesocket(packet);
+  CLog::Log(LOGINFO, "%s - Magic packet send to '%s'", __FUNCTION__, mac);
+
+  return true;
 }
 
 //-----------------------------------------------------------------------

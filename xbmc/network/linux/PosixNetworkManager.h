@@ -33,6 +33,7 @@ public:
   virtual ConnectionList GetConnections();
 
   virtual bool PumpNetworkEvents(INetworkEventsCallback *callback);
+  virtual bool SendWakeOnLan(const char *mac);
 private:
   void RestoreSavedConnection();
   void RestoreSystemConnection();

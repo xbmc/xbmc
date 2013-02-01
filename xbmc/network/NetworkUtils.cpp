@@ -29,3 +29,60 @@ std::string CNetworkUtils::IPTotring(unsigned int ip)
   std::string returnString = buffer;
   return returnString;
 }
+
+// slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot)
+bool CNetworkUtils::in_ether(const char *bufp, unsigned char *addr)
+{
+  if (strlen(bufp) != 17)
+    return false;
+
+  char c;
+  const char *orig;
+  unsigned char *ptr = addr;
+  unsigned val;
+
+  int i = 0;
+  orig = bufp;
+
+  while ((*bufp != '\0') && (i < 6))
+  {
+    val = 0;
+    c = *bufp++;
+
+    if (isdigit(c))
+      val = c - '0';
+    else if (c >= 'a' && c <= 'f')
+      val = c - 'a' + 10;
+    else if (c >= 'A' && c <= 'F')
+      val = c - 'A' + 10;
+    else
+      return false;
+
+    val <<= 4;
+    c = *bufp;
+    if (isdigit(c))
+      val |= c - '0';
+    else if (c >= 'a' && c <= 'f')
+      val |= c - 'a' + 10;
+    else if (c >= 'A' && c <= 'F')
+      val |= c - 'A' + 10;
+    else if (c == ':' || c == '-' || c == 0)
+      val >>= 4;
+    else
+      return false;
+
+    if (c != 0)
+      bufp++;
+
+    *ptr++ = (unsigned char) (val & 0377);
+    i++;
+
+    if (*bufp == ':' || *bufp == '-')
+      bufp++;
+  }
+
+  if (bufp - orig != 17)
+    return false;
+
+  return true;
+}

@@ -63,4 +63,6 @@ public:
   virtual      ConnectionList GetConnections() = 0;
 
   virtual bool PumpNetworkEvents(INetworkEventsCallback *callback) = 0;
+
+  virtual bool SendWakeOnLan(const char *mac) {return false;};
 };

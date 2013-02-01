@@ -26,4 +26,6 @@ class CNetworkUtils
 {
 public:
   static std::string IPTotring(unsigned int ip);
+  static bool in_ether(const char *bufp, unsigned char *addr);
+
 };
