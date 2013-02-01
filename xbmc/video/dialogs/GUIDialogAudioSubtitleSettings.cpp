@@ -38,6 +38,7 @@
 #include "pvr/PVRManager.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
+#include "utils/LangCodeExpander.h"
 
 using namespace std;
 using namespace XFILE;
@@ -162,16 +163,20 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   for (int i = 0; i <= setting.max; ++i)
   {
     CStdString strItem;
-    CStdString strName;
+    CStdString strLanguage;
 
     SPlayerAudioStreamInfo info;
     g_application.m_pPlayer->GetAudioStreamInfo(i, info);
 
-    strName = info.name;
-    if (strName.length() == 0)
-      strName = "Unnamed";
+    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+      strLanguage = g_localizeStrings.Get(13205); // Unknown
 
-    strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
+    if (info.name.length() == 0)
+      strItem = strLanguage;
+    else
+      strItem.Format("%s - %s", strLanguage.c_str(), info.name.c_str());
+
+    strItem.Format("%s (%i/%i)", strItem.c_str(), i + 1, (int)setting.max + 1);
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
 
@@ -207,15 +212,17 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     g_application.m_pPlayer->GetSubtitleStreamInfo(i, info);
 
     CStdString strItem;
-    CStdString strName = info.name;
+    CStdString strLanguage;
 
-    if (strName.length() == 0)
-      strName = "Unnamed";
+    if (!g_LangCodeExpander.Lookup(strLanguage, info.language))
+      strLanguage = g_localizeStrings.Get(13205); // Unknown
 
-    if (strName != info.language)
-      strName.Format("%s [%s]", strName.c_str(), info.language.c_str());
+    if (info.name.length() == 0)
+      strItem = strLanguage;
+    else
+      strItem.Format("%s - %s", strLanguage.c_str(), info.name.c_str());
 
-    strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
+    strItem.Format("%s (%i/%i)", strItem.c_str(), i + 1, (int)setting.max + 1);
 
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
   }
