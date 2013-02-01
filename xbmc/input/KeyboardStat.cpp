@@ -84,7 +84,7 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   if (keysym.mod & XBMCKMOD_SUPER)
     modifiers |= CKey::MODIFIER_SUPER;
 
-  CLog::Log(LOGDEBUG, "Keyboard: scancode: %02x, sym: %04x, unicode: %04x, modifier: %x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
+  CLog::Log(LOGDEBUG, "Keyboard: scancode: 0x%02x, sym: 0x%04x, unicode: 0x%04x, modifier: 0x%x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
   // The keysym.unicode is usually valid, even if it is zero. A zero
   // unicode just means this is a non-printing keypress. The ascii and
@@ -211,7 +211,7 @@ CStdString CKeyboardStat::GetKeyName(int KeyID)
     keyname.append(keytable.keyname);
   else
     keyname.AppendFormat("%i", keyid);
-  keyname.AppendFormat(" (%02x)", KeyID);
+  keyname.AppendFormat(" (0x%02x)", KeyID);
 
   return keyname;
 }
