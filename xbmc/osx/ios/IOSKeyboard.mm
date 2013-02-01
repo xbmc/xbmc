@@ -51,8 +51,9 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   [keyboard RegisterKeyboard:this]; // for calling back
   [keyboard activate];//blocks and loops our application loop (like a modal dialog)
   // user is done - get resulted text and confirmation
-  typedString = [[keyboard GetText] UTF8String];
   confirmed = [keyboard GetResult];
+  if (confirmed)
+    typedString = [[keyboard GetText] UTF8String];
   [keyboard release]; // bye bye native keyboard
   m_pIosKeyboard = NULL;
   return confirmed;
