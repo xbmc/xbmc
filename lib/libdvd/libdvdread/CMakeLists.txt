@@ -6,6 +6,8 @@ set(DVDREAD_MINOR 1)
 set(DVDREAD_SUB 3)
 set(VERSION ${DVDREAD_MAJOR}.${DVDREAD_MINOR}.${DVDREAD_SUB})
 
+plex_find_headers(HEADER dlfcn.h)
+
 configure_file(config_plex.h.in config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_definitions(-DHAVE_CONFIG_H -D_XBMC)
