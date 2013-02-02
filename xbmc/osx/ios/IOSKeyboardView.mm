@@ -119,6 +119,7 @@ static CEvent keyboardFinishedEvent;
   // basicall what our GUIDialog does if called modal
   while(!keyboardFinishedEvent.WaitMSec(500) && !g_application.m_bStop)
   {
+    // if we are not in xbmc main thread, ProcessRenderLoop() is nop.
     g_windowManager.ProcessRenderLoop();
   }
 }
