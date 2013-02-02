@@ -862,23 +862,22 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     }
     break;
 
-    case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-      {
-        m_bPlayingVideo = false;
-        g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-      }
-      break;
-
     case GUI_MSG_PLAYBACK_STARTED:
       {
-        if (m_bPlayingVideo)
-          g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+        m_bPlayingVideo = true;
+        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
       }
       break;
 
-    case GUI_MSG_PLAYBACK_STOPPED:
+    case GUI_MSG_PLAYBACK_ENDED:
+	case GUI_MSG_PLAYBACK_STOPPED:
       {
         if (m_bPlayingVideo)
+        {
+          m_bPlayingVideo = false;
+          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        }
+        else
         {
           m_bSlideShow = false;
           g_windowManager.PreviousWindow();
