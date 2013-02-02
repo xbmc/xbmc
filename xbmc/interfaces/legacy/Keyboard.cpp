@@ -23,6 +23,7 @@
 #include "LanguageHook.h"
 
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "ApplicationMessenger.h"
 
@@ -31,79 +32,45 @@ namespace XBMCAddon
   namespace xbmc
   {
     Keyboard::Keyboard(const String& line /* = nullString*/, const String& heading/* = nullString*/, bool hidden/* = false*/) 
-      : AddonClass("Keyboard"), strDefault(line), strHeading(heading), bHidden(hidden), dlg(NULL) 
+      : AddonClass("Keyboard"), strDefault(line), strHeading(heading), bHidden(hidden), bConfirmed(false)
     {
-      dlg = (CGUIDialogKeyboardGeneric*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
     }
 
     Keyboard::~Keyboard() {}
 
-    void Keyboard::doModal(int autoclose) throw (KeyboardException)
+    void Keyboard::doModal(int autoclose)
     {
       DelayedCallGuard dg(languageHook);
-      CGUIDialogKeyboardGeneric *pKeyboard = dlg;
-      if(!pKeyboard)
-        throw KeyboardException("Unable to load virtual keyboard");
-
-      pKeyboard->Initialize();
-      pKeyboard->SetHeading(strHeading);
-      pKeyboard->SetText(strDefault);
-      pKeyboard->SetHiddenInput(bHidden);
-      if (autoclose > 0)
-        pKeyboard->SetAutoClose(autoclose);
-
-      // do modal of dialog
-      ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, (DWORD)g_windowManager.GetActiveWindow()};
-      CApplicationMessenger::Get().SendMessage(tMsg, true);
+      // using keyboardfactory method to get native keyboard if there is.
+      strText = strDefault;
+      CStdString text(strDefault);
+      bConfirmed = CGUIKeyboardFactory::ShowAndGetInput(text, strHeading, true, bHidden, autoclose * 1000);
+      strText = text;
     }
 
-    void Keyboard::setDefault(const String& line) throw (KeyboardException)
+    void Keyboard::setDefault(const String& line)
     {
       strDefault = line;
-
-      CGUIDialogKeyboardGeneric *pKeyboard = dlg;
-      if(!pKeyboard)
-        throw KeyboardException("Unable to load keyboard");
-
-      pKeyboard->SetText(strDefault);
     }
 
-    void Keyboard::setHiddenInput(bool hidden) throw (KeyboardException)
+    void Keyboard::setHiddenInput(bool hidden)
     {
       bHidden = hidden;
-
-      CGUIDialogKeyboardGeneric *pKeyboard = dlg;
-      if(!pKeyboard)
-        throw KeyboardException("Unable to load keyboard");
-
-      pKeyboard->SetHiddenInput(bHidden);
     }
 
-    void Keyboard::setHeading(const String& heading) throw (KeyboardException)
+    void Keyboard::setHeading(const String& heading)
     {
       strHeading = heading;
-
-      CGUIDialogKeyboardGeneric *pKeyboard = dlg;
-      if(!pKeyboard)
-        throw KeyboardException("Unable to load keyboard");
-
-      pKeyboard->SetHeading(strHeading);
     }
 
-    String Keyboard::getText() throw (KeyboardException)
+    String Keyboard::getText()
     {
-      CGUIDialogKeyboardGeneric *pKeyboard = dlg;
-      if(!pKeyboard)
-        throw KeyboardException("Unable to load keyboard");
-      return pKeyboard->GetText();
+      return strText;
     }
 
-    bool Keyboard::isConfirmed() throw (KeyboardException)
+    bool Keyboard::isConfirmed()
     {
-      CGUIDialogKeyboardGeneric *pKeyboard = dlg;
-      if(!pKeyboard)
-        throw KeyboardException("Unable to load keyboard");
-      return pKeyboard->IsConfirmed();
+      return bConfirmed;
     }
   }
 }

@@ -46,6 +46,7 @@ static CEvent keyboardFinishedEvent;
     _iosKeyboard = nil;
     _text = [[NSMutableString alloc] initWithString:@""];
     _heading = [[NSMutableString alloc] initWithString:@""];    
+    _canceled = NULL;
 
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                           selector:@selector(keyboardDidHide:) 
@@ -119,6 +120,12 @@ static CEvent keyboardFinishedEvent;
   // basicall what our GUIDialog does if called modal
   while(!keyboardFinishedEvent.WaitMSec(500) && !g_application.m_bStop)
   {
+    if (NULL != _canceled && *_canceled)
+    {
+      [self deactivate];
+      _canceled = NULL;
+    }
+    // if we are not in xbmc main thread, ProcessRenderLoop() is nop.
     g_windowManager.ProcessRenderLoop();
   }
 }
@@ -220,6 +227,11 @@ static CEvent keyboardFinishedEvent;
   {
     _iosKeyboard->fireCallback([_text UTF8String]);
   }  
+}
+
+- (void) setCancelFlag:(bool *)cancelFlag
+{
+  _canceled = cancelFlag;
 }
 
 - (void) dealloc

@@ -58,7 +58,8 @@ namespace XBMCAddon
       String strDefault;
       String strHeading;
       bool bHidden;
-      CGUIDialogKeyboardGeneric* dlg;
+      String strText;
+      bool bConfirmed;
 
       Keyboard(const String& line = emptyString, const String& heading = emptyString, bool hidden = false);
       virtual ~Keyboard();
@@ -71,7 +72,7 @@ namespace XBMCAddon
        * example:
        *   - kb.doModal(30000)
        */
-      void doModal(int autoclose = 0) throw (KeyboardException);
+      void doModal(int autoclose = 0);
 
       // setDefault() Method
       /**
@@ -82,7 +83,7 @@ namespace XBMCAddon
        * example:
        *   - kb.setDefault('password')
        */
-      void setDefault(const String& line = emptyString) throw (KeyboardException);
+      void setDefault(const String& line = emptyString);
 
       /**
        * setHiddenInput(hidden) -- Allows hidden text entry.
@@ -91,7 +92,7 @@ namespace XBMCAddon
        * example:
        *   - kb.setHiddenInput(True)
        */
-      void setHiddenInput(bool hidden = false) throw (KeyboardException);
+      void setHiddenInput(bool hidden = false);
 
       // setHeading() Method
       /**
@@ -102,7 +103,7 @@ namespace XBMCAddon
        * example:
        *   - kb.setHeading('Enter password')
        */
-      void setHeading(const String& heading) throw (KeyboardException);
+      void setHeading(const String& heading);
 
       // getText() Method
       /**
@@ -114,7 +115,7 @@ namespace XBMCAddon
        * example:
        *   - text = kb.getText()
        */
-      String getText() throw (KeyboardException);
+      String getText();
 
       // isConfirmed() Method
       /**
@@ -123,7 +124,7 @@ namespace XBMCAddon
        * example:
        *   - if (kb.isConfirmed()):
        */
-      bool isConfirmed() throw (KeyboardException);
+      bool isConfirmed();
 
     };
   }

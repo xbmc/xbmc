@@ -28,6 +28,7 @@
     bool                                _result;
     bool                                _hiddenInput;
     CIOSKeyboard                        *_iosKeyboard;
+    bool                                *_canceled;
 }
 
 @property (nonatomic, retain, getter = GetText) NSMutableString *_text;
@@ -39,5 +40,5 @@
 - (void) setText:(NSMutableString *)text;
 - (void) activate;
 - (void) deactivate;
-- (void)keyboardDidHide:(id)sender;
+- (void) setCancelFlag:(bool *)cancelFlag;
 @end
