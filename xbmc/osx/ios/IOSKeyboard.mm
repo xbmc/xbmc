@@ -22,9 +22,12 @@
 #include "IOSKeyboard.h"
 #include "IOSKeyboardView.h"
 
+#import "AutoPool.h"
+
 
 bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
+  CCocoaAutoPool pool;
   bool confirmed = false;
   CGRect keyboardFrame;
 
@@ -37,8 +40,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   keyboardFrame.origin.x = frameHeight / 2;
   keyboardFrame.origin.y = (pCurrentScreen.bounds.size.width/2) - frameHeight*scale + 10;
   //create the keyboardview
-  m_pIosKeyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
-  KeyboardView *keyboard = (KeyboardView*)m_pIosKeyboard;
+  KeyboardView *keyboard = [[KeyboardView alloc] initWithFrame:keyboardFrame];
   m_pCharCallback = pCallback;
 
   // init keyboard stuff
@@ -46,22 +48,22 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
   [keyboard SetHiddenInput:bHiddenInput];
   [keyboard SetHeading:[NSString stringWithUTF8String:heading.c_str()]];
   [keyboard RegisterKeyboard:this]; // for calling back
-  [keyboard activate];//blocks and loops our application loop (like a modal dialog)
-  // user is done - get resulted text and confirmation
-  typedString = [[keyboard GetText] UTF8String];
-  confirmed = [keyboard GetResult];
+  if (!m_bCanceled)
+  {
+    [keyboard setCancelFlag:&m_bCanceled];
+    [keyboard activate];//blocks and loops our application loop (like a modal dialog)
+    // user is done - get resulted text and confirmation
+    confirmed = [keyboard GetResult];
+    if (confirmed)
+      typedString = [[keyboard GetText] UTF8String];
+  }
   [keyboard release]; // bye bye native keyboard
-  m_pIosKeyboard = NULL;
   return confirmed;
 }
 
 void CIOSKeyboard::Cancel()
 {
-  if (m_pIosKeyboard)
-  {
-    KeyboardView *keyboard = (KeyboardView*)m_pIosKeyboard;
-    [keyboard keyboardDidHide:nil];
-  }
+  m_bCanceled = true;
 }
 
 //wrap our callback between objc and c++
