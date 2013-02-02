@@ -19,21 +19,21 @@
  */
 
 #include "SmartPlayList.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "filesystem/SmartPlaylistDirectory.h"
+#include "Util.h"
+#include "XBDateTime.h"
 #include "filesystem/File.h"
+#include "filesystem/SmartPlaylistDirectory.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "video/VideoDatabase.h"
-#include "Util.h"
-#include "XBDateTime.h"
-#include "guilib/LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -44,70 +44,71 @@ typedef struct
   Field field;
   SortBy sort;
   CSmartPlaylistRule::FIELD_TYPE type;
+  bool browseable;
   int localizedString;
 } translateField;
 
 static const translateField fields[] = {
-  { "none",              FieldNone,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       231 },
-  { "filename",          FieldFilename,                SortByFile,                     CSmartPlaylistRule::TEXT_FIELD,       561 },
-  { "path",              FieldPath,                    SortByPath,                     CSmartPlaylistRule::BROWSEABLE_FIELD, 573 },
-  { "album",             FieldAlbum,                   SortByAlbum,                    CSmartPlaylistRule::BROWSEABLE_FIELD, 558 },
-  { "albumartist",       FieldAlbumArtist,             SortByNone,                     CSmartPlaylistRule::BROWSEABLE_FIELD, 566 },
-  { "artist",            FieldArtist,                  SortByArtist,                   CSmartPlaylistRule::BROWSEABLE_FIELD, 557 },
-  { "tracknumber",       FieldTrackNumber,             SortByTrackNumber,              CSmartPlaylistRule::NUMERIC_FIELD,    554 },
-  { "comment",           FieldComment,                 SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       569 },
-  { "review",            FieldReview,                  SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       183 },
-  { "themes",            FieldThemes,                  SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21895 },
-  { "moods",             FieldMoods,                   SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       175 },
-  { "styles",            FieldStyles,                  SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       176 },
-  { "type",              FieldAlbumType,               SortByAlbumType,                CSmartPlaylistRule::TEXT_FIELD,       564 },
-  { "label",             FieldMusicLabel,              SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21899 },
-  { "title",             FieldTitle,                   SortByTitle,                    CSmartPlaylistRule::BROWSEABLE_FIELD, 556 },
-  { "sorttitle",         FieldSortTitle,               SortBySortTitle,                CSmartPlaylistRule::TEXT_FIELD,       556 },
-  { "year",              FieldYear,                    SortByYear,                     CSmartPlaylistRule::BROWSEABLE_NUMERIC_FIELD, 562 },
-  { "time",              FieldTime,                    SortByTime,                     CSmartPlaylistRule::SECONDS_FIELD,    180 },
-  { "playcount",         FieldPlaycount,               SortByPlaycount,                CSmartPlaylistRule::NUMERIC_FIELD,    567 },
-  { "lastplayed",        FieldLastPlayed,              SortByLastPlayed,               CSmartPlaylistRule::DATE_FIELD,       568 },
-  { "inprogress",        FieldInProgress,              SortByNone,                     CSmartPlaylistRule::BOOLEAN_FIELD,    575 },
-  { "rating",            FieldRating,                  SortByRating,                   CSmartPlaylistRule::NUMERIC_FIELD,    563 },
-  { "votes",             FieldVotes,                   SortByVotes,                    CSmartPlaylistRule::TEXT_FIELD,       205 },
-  { "top250",            FieldTop250,                  SortByTop250,                   CSmartPlaylistRule::NUMERIC_FIELD,    13409 },
-  { "mpaarating",        FieldMPAA,                    SortByMPAA,                     CSmartPlaylistRule::TEXT_FIELD,       20074 },
-  { "dateadded",         FieldDateAdded,               SortByDateAdded,                CSmartPlaylistRule::DATE_FIELD,       570 },
-  { "genre",             FieldGenre,                   SortByGenre,                    CSmartPlaylistRule::BROWSEABLE_FIELD, 515 },
-  { "plot",              FieldPlot,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       207 },
-  { "plotoutline",       FieldPlotOutline,             SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       203 },
-  { "tagline",           FieldTagline,                 SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       202 },
-  { "set",               FieldSet,                     SortByNone,                     CSmartPlaylistRule::BROWSEABLE_FIELD, 20457 },
-  { "director",          FieldDirector,                SortByNone,                     CSmartPlaylistRule::BROWSEABLE_FIELD, 20339 },
-  { "actor",             FieldActor,                   SortByNone,                     CSmartPlaylistRule::BROWSEABLE_FIELD, 20337 },
-  { "writers",           FieldWriter,                  SortByNone,                     CSmartPlaylistRule::BROWSEABLE_FIELD, 20417 },
-  { "airdate",           FieldAirDate,                 SortByYear,                     CSmartPlaylistRule::DATE_FIELD,       20416 },
-  { "hastrailer",        FieldTrailer,                 SortByNone,                     CSmartPlaylistRule::BOOLEAN_FIELD,    20423 },
-  { "studio",            FieldStudio,                  SortByStudio,                   CSmartPlaylistRule::BROWSEABLE_FIELD, 572 },
-  { "country",           FieldCountry,                 SortByCountry,                  CSmartPlaylistRule::BROWSEABLE_FIELD, 574 },
-  { "tvshow",            FieldTvShowTitle,             SortByTvShowTitle,              CSmartPlaylistRule::BROWSEABLE_FIELD, 20364 },
-  { "status",            FieldTvShowStatus,            SortByTvShowStatus,             CSmartPlaylistRule::TEXT_FIELD,       126 },
-  { "season",            FieldSeason,                  SortBySeason,                   CSmartPlaylistRule::NUMERIC_FIELD,    20373 },
-  { "episode",           FieldEpisodeNumber,           SortByEpisodeNumber,            CSmartPlaylistRule::NUMERIC_FIELD,    20359 },
-  { "numepisodes",       FieldNumberOfEpisodes,        SortByNumberOfEpisodes,         CSmartPlaylistRule::NUMERIC_FIELD,    20360 },
-  { "numwatched",        FieldNumberOfWatchedEpisodes, SortByNumberOfWatchedEpisodes,  CSmartPlaylistRule::NUMERIC_FIELD,    21457 },
-  { "videoresolution",   FieldVideoResolution,         SortByVideoResolution,          CSmartPlaylistRule::NUMERIC_FIELD,    21443 },
-  { "videocodec",        FieldVideoCodec,              SortByVideoCodec,               CSmartPlaylistRule::TEXTIN_FIELD,     21445 },
-  { "videoaspect",       FieldVideoAspectRatio,        SortByVideoAspectRatio,         CSmartPlaylistRule::NUMERIC_FIELD,    21374 },
-  { "audiochannels",     FieldAudioChannels,           SortByAudioChannels,            CSmartPlaylistRule::NUMERIC_FIELD,    21444 },
-  { "audiocodec",        FieldAudioCodec,              SortByAudioCodec,               CSmartPlaylistRule::TEXTIN_FIELD,     21446 },
-  { "audiolanguage",     FieldAudioLanguage,           SortByAudioLanguage,            CSmartPlaylistRule::TEXTIN_FIELD,     21447 },
-  { "subtitlelanguage",  FieldSubtitleLanguage,        SortBySubtitleLanguage,         CSmartPlaylistRule::TEXTIN_FIELD,     21448 },
-  { "random",            FieldRandom,                  SortByRandom,                   CSmartPlaylistRule::TEXT_FIELD,       590 },
-  { "playlist",          FieldPlaylist,                SortByPlaylistOrder,            CSmartPlaylistRule::PLAYLIST_FIELD,   559 },
-  { "tag",               FieldTag,                     SortByNone,                     CSmartPlaylistRule::BROWSEABLE_FIELD, 20459 },
-  { "instruments",       FieldInstruments,             SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21892 },
-  { "biography",         FieldBiography,               SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21887 },
-  { "born",              FieldBorn,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21893 },
-  { "bandformed",        FieldBandFormed,              SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21894 },
-  { "disbanded",         FieldDisbanded,               SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21896 },
-  { "died",              FieldDied,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,       21897 }
+  { "none",              FieldNone,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 231 },
+  { "filename",          FieldFilename,                SortByFile,                     CSmartPlaylistRule::TEXT_FIELD,     false, 561 },
+  { "path",              FieldPath,                    SortByPath,                     CSmartPlaylistRule::TEXT_FIELD,     true,  573 },
+  { "album",             FieldAlbum,                   SortByAlbum,                    CSmartPlaylistRule::TEXT_FIELD,     true,  558 },
+  { "albumartist",       FieldAlbumArtist,             SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     true,  566 },
+  { "artist",            FieldArtist,                  SortByArtist,                   CSmartPlaylistRule::TEXT_FIELD,     true,  557 },
+  { "tracknumber",       FieldTrackNumber,             SortByTrackNumber,              CSmartPlaylistRule::NUMERIC_FIELD,  false, 554 },
+  { "comment",           FieldComment,                 SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 569 },
+  { "review",            FieldReview,                  SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 183 },
+  { "themes",            FieldThemes,                  SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21895 },
+  { "moods",             FieldMoods,                   SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 175 },
+  { "styles",            FieldStyles,                  SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 176 },
+  { "type",              FieldAlbumType,               SortByAlbumType,                CSmartPlaylistRule::TEXT_FIELD,     false, 564 },
+  { "label",             FieldMusicLabel,              SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21899 },
+  { "title",             FieldTitle,                   SortByTitle,                    CSmartPlaylistRule::TEXT_FIELD,     true,  556 },
+  { "sorttitle",         FieldSortTitle,               SortBySortTitle,                CSmartPlaylistRule::TEXT_FIELD,     false, 556 },
+  { "year",              FieldYear,                    SortByYear,                     CSmartPlaylistRule::NUMERIC_FIELD,  true,  562 },
+  { "time",              FieldTime,                    SortByTime,                     CSmartPlaylistRule::SECONDS_FIELD,  false, 180 },
+  { "playcount",         FieldPlaycount,               SortByPlaycount,                CSmartPlaylistRule::NUMERIC_FIELD,  false, 567 },
+  { "lastplayed",        FieldLastPlayed,              SortByLastPlayed,               CSmartPlaylistRule::DATE_FIELD,     false, 568 },
+  { "inprogress",        FieldInProgress,              SortByNone,                     CSmartPlaylistRule::BOOLEAN_FIELD,  false, 575 },
+  { "rating",            FieldRating,                  SortByRating,                   CSmartPlaylistRule::NUMERIC_FIELD,  false, 563 },
+  { "votes",             FieldVotes,                   SortByVotes,                    CSmartPlaylistRule::TEXT_FIELD,     false, 205 },
+  { "top250",            FieldTop250,                  SortByTop250,                   CSmartPlaylistRule::NUMERIC_FIELD,  false, 13409 },
+  { "mpaarating",        FieldMPAA,                    SortByMPAA,                     CSmartPlaylistRule::TEXT_FIELD,     false, 20074 },
+  { "dateadded",         FieldDateAdded,               SortByDateAdded,                CSmartPlaylistRule::DATE_FIELD,     false, 570 },
+  { "genre",             FieldGenre,                   SortByGenre,                    CSmartPlaylistRule::TEXT_FIELD,     true,  515 },
+  { "plot",              FieldPlot,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 207 },
+  { "plotoutline",       FieldPlotOutline,             SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 203 },
+  { "tagline",           FieldTagline,                 SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 202 },
+  { "set",               FieldSet,                     SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     true,  20457 },
+  { "director",          FieldDirector,                SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     true,  20339 },
+  { "actor",             FieldActor,                   SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     true,  20337 },
+  { "writers",           FieldWriter,                  SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     true,  20417 },
+  { "airdate",           FieldAirDate,                 SortByYear,                     CSmartPlaylistRule::DATE_FIELD,     false, 20416 },
+  { "hastrailer",        FieldTrailer,                 SortByNone,                     CSmartPlaylistRule::BOOLEAN_FIELD,  false, 20423 },
+  { "studio",            FieldStudio,                  SortByStudio,                   CSmartPlaylistRule::TEXT_FIELD,     true,  572 },
+  { "country",           FieldCountry,                 SortByCountry,                  CSmartPlaylistRule::TEXT_FIELD,     true,  574 },
+  { "tvshow",            FieldTvShowTitle,             SortByTvShowTitle,              CSmartPlaylistRule::TEXT_FIELD,     true,  20364 },
+  { "status",            FieldTvShowStatus,            SortByTvShowStatus,             CSmartPlaylistRule::TEXT_FIELD,     false, 126 },
+  { "season",            FieldSeason,                  SortBySeason,                   CSmartPlaylistRule::NUMERIC_FIELD,  false, 20373 },
+  { "episode",           FieldEpisodeNumber,           SortByEpisodeNumber,            CSmartPlaylistRule::NUMERIC_FIELD,  false, 20359 },
+  { "numepisodes",       FieldNumberOfEpisodes,        SortByNumberOfEpisodes,         CSmartPlaylistRule::NUMERIC_FIELD,  false, 20360 },
+  { "numwatched",        FieldNumberOfWatchedEpisodes, SortByNumberOfWatchedEpisodes,  CSmartPlaylistRule::NUMERIC_FIELD,  false, 21457 },
+  { "videoresolution",   FieldVideoResolution,         SortByVideoResolution,          CSmartPlaylistRule::NUMERIC_FIELD,  false, 21443 },
+  { "videocodec",        FieldVideoCodec,              SortByVideoCodec,               CSmartPlaylistRule::TEXTIN_FIELD,   false, 21445 },
+  { "videoaspect",       FieldVideoAspectRatio,        SortByVideoAspectRatio,         CSmartPlaylistRule::NUMERIC_FIELD,  false, 21374 },
+  { "audiochannels",     FieldAudioChannels,           SortByAudioChannels,            CSmartPlaylistRule::NUMERIC_FIELD,  false, 21444 },
+  { "audiocodec",        FieldAudioCodec,              SortByAudioCodec,               CSmartPlaylistRule::TEXTIN_FIELD,   false, 21446 },
+  { "audiolanguage",     FieldAudioLanguage,           SortByAudioLanguage,            CSmartPlaylistRule::TEXTIN_FIELD,   false, 21447 },
+  { "subtitlelanguage",  FieldSubtitleLanguage,        SortBySubtitleLanguage,         CSmartPlaylistRule::TEXTIN_FIELD,   false, 21448 },
+  { "random",            FieldRandom,                  SortByRandom,                   CSmartPlaylistRule::TEXT_FIELD,     false, 590 },
+  { "playlist",          FieldPlaylist,                SortByPlaylistOrder,            CSmartPlaylistRule::PLAYLIST_FIELD, false, 559 },
+  { "tag",               FieldTag,                     SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     true,  20459 },
+  { "instruments",       FieldInstruments,             SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21892 },
+  { "biography",         FieldBiography,               SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21887 },
+  { "born",              FieldBorn,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21893 },
+  { "bandformed",        FieldBandFormed,              SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21894 },
+  { "disbanded",         FieldDisbanded,               SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21896 },
+  { "died",              FieldDied,                    SortByNone,                     CSmartPlaylistRule::TEXT_FIELD,     false, 21897 }
 };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
@@ -119,22 +120,23 @@ typedef struct
   int localizedString;
 } operatorField;
 
-static const operatorField operators[] = { { "contains", CSmartPlaylistRule::OPERATOR_CONTAINS, 21400 },
-                                           { "doesnotcontain", CSmartPlaylistRule::OPERATOR_DOES_NOT_CONTAIN, 21401 },
-                                           { "is", CSmartPlaylistRule::OPERATOR_EQUALS, 21402 },
-                                           { "isnot", CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL, 21403 },
-                                           { "startswith", CSmartPlaylistRule::OPERATOR_STARTS_WITH, 21404 },
-                                           { "endswith", CSmartPlaylistRule::OPERATOR_ENDS_WITH, 21405 },
-                                           { "greaterthan", CSmartPlaylistRule::OPERATOR_GREATER_THAN, 21406 },
-                                           { "lessthan", CSmartPlaylistRule::OPERATOR_LESS_THAN, 21407 },
-                                           { "after", CSmartPlaylistRule::OPERATOR_AFTER, 21408 },
-                                           { "before", CSmartPlaylistRule::OPERATOR_BEFORE, 21409 },
-                                           { "inthelast", CSmartPlaylistRule::OPERATOR_IN_THE_LAST, 21410 },
-                                           { "notinthelast", CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST, 21411 },
-                                           { "true", CSmartPlaylistRule::OPERATOR_TRUE, 20122 },
-                                           { "false", CSmartPlaylistRule::OPERATOR_FALSE, 20424 },
-                                           { "between", CSmartPlaylistRule::OPERATOR_BETWEEN, 21456 }
-                                         };
+static const operatorField operators[] = {
+  { "contains",        CSmartPlaylistRule::OPERATOR_CONTAINS,          21400 },
+  { "doesnotcontain",  CSmartPlaylistRule::OPERATOR_DOES_NOT_CONTAIN,  21401 },
+  { "is",              CSmartPlaylistRule::OPERATOR_EQUALS,            21402 },
+  { "isnot",           CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL,    21403 },
+  { "startswith",      CSmartPlaylistRule::OPERATOR_STARTS_WITH,       21404 },
+  { "endswith",        CSmartPlaylistRule::OPERATOR_ENDS_WITH,         21405 },
+  { "greaterthan",     CSmartPlaylistRule::OPERATOR_GREATER_THAN,      21406 },
+  { "lessthan",        CSmartPlaylistRule::OPERATOR_LESS_THAN,         21407 },
+  { "after",           CSmartPlaylistRule::OPERATOR_AFTER,             21408 },
+  { "before",          CSmartPlaylistRule::OPERATOR_BEFORE,            21409 },
+  { "inthelast",       CSmartPlaylistRule::OPERATOR_IN_THE_LAST,       21410 },
+  { "notinthelast",    CSmartPlaylistRule::OPERATOR_NOT_IN_THE_LAST,   21411 },
+  { "true",            CSmartPlaylistRule::OPERATOR_TRUE,              20122 },
+  { "false",           CSmartPlaylistRule::OPERATOR_FALSE,             20424 },
+  { "between",         CSmartPlaylistRule::OPERATOR_BETWEEN,           21456 }
+};
 
 #define NUM_OPERATORS sizeof(operators) / sizeof(operatorField)
 
@@ -145,8 +147,12 @@ CSmartPlaylistRule::CSmartPlaylistRule()
   m_parameter.clear();
 }
 
-bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding /* = "UTF-8" */)
+bool CSmartPlaylistRule::Load(const TiXmlNode *node, const std::string &encoding /* = "UTF-8" */)
 {
+  if (node == NULL)
+    return false;
+
+  const TiXmlElement *element = node->ToElement();
   if (element == NULL)
     return false;
 
@@ -165,14 +171,14 @@ bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding 
   if (m_operator == OPERATOR_TRUE || m_operator == OPERATOR_FALSE)
     return true;
 
-  TiXmlNode *parameter = element->FirstChild();
+  const TiXmlNode *parameter = element->FirstChild();
   if (parameter == NULL)
     return false;
 
   if (parameter->Type() == TiXmlNode::TINYXML_TEXT)
   {
     CStdString utf8Parameter;
-    if (encoding.IsEmpty()) // utf8
+    if (encoding.empty()) // utf8
       utf8Parameter = parameter->ValueStr();
     else
       g_charsetConverter.stringCharsetToUtf8(encoding, parameter->ValueStr(), utf8Parameter);
@@ -182,14 +188,14 @@ bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding 
   }
   else if (parameter->Type() == TiXmlNode::TINYXML_ELEMENT)
   {
-    TiXmlElement *valueElem = element->FirstChildElement("value");
-    while (valueElem != NULL)
+    const TiXmlNode *valueNode = element->FirstChild("value");
+    while (valueNode != NULL)
     {
-      TiXmlNode *value = valueElem->FirstChild();
+      const TiXmlNode *value = valueNode->FirstChild();
       if (value != NULL && value->Type() == TiXmlNode::TINYXML_TEXT)
       {
         CStdString utf8Parameter;
-        if (encoding.IsEmpty()) // utf8
+        if (encoding.empty()) // utf8
           utf8Parameter = value->ValueStr();
         else
           g_charsetConverter.stringCharsetToUtf8(encoding, value->ValueStr(), utf8Parameter);
@@ -198,7 +204,7 @@ bool CSmartPlaylistRule::Load(TiXmlElement *element, const CStdString &encoding 
           m_parameter.push_back(utf8Parameter);
       }
 
-      valueElem = valueElem->NextSiblingElement("value");
+      valueNode = valueNode->NextSibling("value");
     }
   }
   else
@@ -280,7 +286,7 @@ bool CSmartPlaylistRule::Save(CVariant &obj) const
 Field CSmartPlaylistRule::TranslateField(const char *field)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
-    if (strcmpi(field, fields[i].string) == 0) return fields[i].field;
+    if (StringUtils::EqualsNoCase(field, fields[i].string)) return fields[i].field;
   return FieldNone;
 }
 
@@ -294,7 +300,7 @@ CStdString CSmartPlaylistRule::TranslateField(Field field)
 SortBy CSmartPlaylistRule::TranslateOrder(const char *order)
 {
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
-    if (strcmpi(order, fields[i].string) == 0) return fields[i].sort;
+    if (StringUtils::EqualsNoCase(order, fields[i].string)) return fields[i].sort;
   return SortByNone;
 }
 
@@ -308,7 +314,7 @@ CStdString CSmartPlaylistRule::TranslateOrder(SortBy order)
 CSmartPlaylistRule::SEARCH_OPERATOR CSmartPlaylistRule::TranslateOperator(const char *oper)
 {
   for (unsigned int i = 0; i < NUM_OPERATORS; i++)
-    if (strcmpi(oper, operators[i].string) == 0) return operators[i].op;
+    if (StringUtils::EqualsNoCase(oper, operators[i].string)) return operators[i].op;
   return OPERATOR_CONTAINS;
 }
 
@@ -331,6 +337,14 @@ CSmartPlaylistRule::FIELD_TYPE CSmartPlaylistRule::GetFieldType(Field field)
   for (unsigned int i = 0; i < NUM_FIELDS; i++)
     if (field == fields[i].field) return fields[i].type;
   return TEXT_FIELD;
+}
+
+bool CSmartPlaylistRule::IsFieldBrowseable(Field field)
+{
+  for (unsigned int i = 0; i < NUM_FIELDS; i++)
+    if (field == fields[i].field) return fields[i].browseable;
+
+  return false;
 }
 
 vector<Field> CSmartPlaylistRule::GetFields(const CStdString &type)
@@ -1136,7 +1150,46 @@ CSmartPlaylist::CSmartPlaylist()
   Reset();
 }
 
-TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
+bool CSmartPlaylist::OpenAndReadName(const CStdString &path)
+{
+  if (readNameFromPath(path) == NULL)
+    return false;
+
+  return !m_playlistName.empty();
+}
+
+const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
+{
+  if (root == NULL)
+    return NULL;
+
+  const TiXmlElement *rootElem = root->ToElement();
+  if (rootElem == NULL)
+    return NULL;
+
+  if (!root || !StringUtils::EqualsNoCase(root->Value(),"smartplaylist"))
+  {
+    CLog::Log(LOGERROR, "Error loading Smart playlist");
+    return NULL;
+  }
+
+  // load the playlist type
+  const char* type = rootElem->Attribute("type");
+  if (type)
+    m_playlistType = type;
+  // backward compatibility:
+  if (m_playlistType == "music")
+    m_playlistType = "songs";
+  if (m_playlistType == "video")
+    m_playlistType = "musicvideos";
+
+  // load the playlist name
+  XMLUtils::GetString(root, "name", m_playlistName);
+
+  return root;
+}
+
+const TiXmlNode* CSmartPlaylist::readNameFromPath(const CStdString &path)
 {
   CFileStream file;
   if (!file.Open(path))
@@ -1148,49 +1201,18 @@ TiXmlElement *CSmartPlaylist::OpenAndReadName(const CStdString &path)
   m_xmlDoc.Clear();
   file >> m_xmlDoc;
 
-  TiXmlElement *root = readName();
+  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
   if (m_playlistName.empty())
   {
     m_playlistName = CUtil::GetTitleFromPath(path);
     if (URIUtils::GetExtension(m_playlistName) == ".xsp")
       URIUtils::RemoveExtension(m_playlistName);
   }
-  return root;
-}
-
-TiXmlElement* CSmartPlaylist::readName()
-{
-  if (m_xmlDoc.Error())
-  {
-    CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: %s)", m_xmlDoc.ErrorDesc());
-    return NULL;
-  }
-
-  TiXmlElement *root = m_xmlDoc.RootElement();
-  if (!root || strcmpi(root->Value(),"smartplaylist") != 0)
-  {
-    CLog::Log(LOGERROR, "Error loading Smart playlist");
-    return NULL;
-  }
-  // load the playlist type
-  const char* type = root->Attribute("type");
-  if (type)
-    m_playlistType = type;
-  // backward compatibility:
-  if (m_playlistType == "music")
-    m_playlistType = "songs";
-  if (m_playlistType == "video")
-    m_playlistType = "musicvideos";
-
-  // load the playlist name
-  TiXmlHandle name = ((TiXmlHandle)root->FirstChild("name")).FirstChild();
-  if (name.Node())
-    m_playlistName = name.Node()->Value();
 
   return root;
 }
 
-TiXmlElement *CSmartPlaylist::readNameFromXml(const CStdString &xml)
+const TiXmlNode* CSmartPlaylist::readNameFromXml(const CStdString &xml)
 {
   if (xml.empty())
   {
@@ -1205,12 +1227,25 @@ TiXmlElement *CSmartPlaylist::readNameFromXml(const CStdString &xml)
     return NULL;
   }
 
-  return readName();
+  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
+
+  return root;
+}
+
+bool CSmartPlaylist::load(const TiXmlNode *root)
+{
+  if (root == NULL)
+    return false;
+
+  CStdString encoding;
+  XMLUtils::GetEncoding(&m_xmlDoc, encoding);
+
+  return LoadFromXML(root, encoding);
 }
 
 bool CSmartPlaylist::Load(const CStdString &path)
 {
-  return load(OpenAndReadName(path));
+  return load(readNameFromPath(path));
 }
 
 bool CSmartPlaylist::Load(const CVariant &obj)
@@ -1243,7 +1278,7 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   if (obj.isMember("order") && obj["order"].isMember("method") && obj["order"]["method"].isString())
   {
     if (obj["order"].isMember("direction") && obj["order"]["direction"].isString())
-      m_orderDirection = strcmpi(obj["order"]["direction"].asString().c_str(), "ascending") == 0 ? SortOrderAscending : SortOrderDescending;
+      m_orderDirection = StringUtils::EqualsNoCase(obj["order"]["direction"].asString(), "ascending") == 0 ? SortOrderAscending : SortOrderDescending;
 
     m_orderField = CSmartPlaylistRule::TranslateOrder(obj["order"]["method"].asString().c_str());
   }
@@ -1256,53 +1291,38 @@ bool CSmartPlaylist::LoadFromXml(const CStdString &xml)
   return load(readNameFromXml(xml));
 }
 
-bool CSmartPlaylist::load(TiXmlElement *root)
+bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const CStdString &encoding)
 {
   if (!root)
     return false;
 
-  // encoding:
-  CStdString encoding;
-  XMLUtils::GetEncoding(&m_xmlDoc, encoding);
-  
-  // from here we decode from XML
-  return LoadFromXML(root, encoding);
-}
-
-bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
-{
-  if (!root)
-    return false;
-
-  TiXmlHandle match = ((TiXmlHandle)root->FirstChild("match")).FirstChild();
-  if (match.Node())
-    m_ruleCombination.SetType(strcmpi(match.Node()->Value(), "all") == 0 ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
+  CStdString tmp;
+  if (XMLUtils::GetString(root, "match", tmp))
+    m_ruleCombination.SetType(StringUtils::EqualsNoCase(tmp, "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
 
   // now the rules
-  TiXmlElement *ruleElement = root->FirstChildElement("rule");
-  while (ruleElement)
+  const TiXmlNode *ruleNode = root->FirstChild("rule");
+  while (ruleNode)
   {
     CSmartPlaylistRule rule;
-    if (rule.Load(ruleElement, encoding))
+    if (rule.Load(ruleNode, encoding))
       m_ruleCombination.AddRule(rule);
 
-    ruleElement = ruleElement->NextSiblingElement("rule");
+    ruleNode = ruleNode->NextSibling("rule");
   }
 
   // now any limits
   // format is <limit>25</limit>
-  TiXmlHandle limit = ((TiXmlHandle)root->FirstChild("limit")).FirstChild();
-  if (limit.Node())
-    m_limit = atoi(limit.Node()->Value());
+  XMLUtils::GetUInt(root, "limit", m_limit);
 
   // and order
   // format is <order direction="ascending">field</order>
-  TiXmlElement *order = root->FirstChildElement("order");
+  const TiXmlElement *order = root->FirstChildElement("order");
   if (order && order->FirstChild())
   {
     const char *direction = order->Attribute("direction");
     if (direction)
-      m_orderDirection = strcmpi(direction, "ascending") == 0 ? SortOrderAscending : SortOrderDescending;
+      m_orderDirection = StringUtils::EqualsNoCase(direction, "ascending") ? SortOrderAscending : SortOrderDescending;
     m_orderField = CSmartPlaylistRule::TranslateOrder(order->FirstChild()->Value());
   }
   return true;
@@ -1330,16 +1350,10 @@ bool CSmartPlaylist::Save(const CStdString &path) const
     return false;
 
   // add the <name> tag
-  TiXmlText name(m_playlistName.c_str());
-  TiXmlElement nodeName("name");
-  nodeName.InsertEndChild(name);
-  pRoot->InsertEndChild(nodeName);
+  XMLUtils::SetString(pRoot, "name", m_playlistName);
 
   // add the <match> tag
-  TiXmlText match(m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? "all" : "one");
-  TiXmlElement nodeMatch("match");
-  nodeMatch.InsertEndChild(match);
-  pRoot->InsertEndChild(nodeMatch);
+  XMLUtils::SetString(pRoot, "match", m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd ? "all" : "one");
 
   // add <rule> tags
   for (CSmartPlaylistRules::const_iterator it = m_ruleCombination.m_rules.begin(); it != m_ruleCombination.m_rules.end(); ++it)
@@ -1347,14 +1361,7 @@ bool CSmartPlaylist::Save(const CStdString &path) const
 
   // add <limit> tag
   if (m_limit)
-  {
-    CStdString limitFormat;
-    limitFormat.Format("%i", m_limit);
-    TiXmlText limit(limitFormat);
-    TiXmlElement nodeLimit("limit");
-    nodeLimit.InsertEndChild(limit);
-    pRoot->InsertEndChild(nodeLimit);
-  }
+    XMLUtils::SetInt(pRoot, "limit", m_limit);
 
   // add <order> tag
   if (m_orderField != SortByNone)
