@@ -59,6 +59,8 @@ CSoftAE::CSoftAE():
   m_audiophile         (true        ),
   m_running            (false       ),
   m_reOpen             (false       ),
+  m_closeSink          (false       ),
+  m_realSuspend        (false       ),
   m_isSuspended        (false       ),
   m_softSuspend        (false       ),
   m_softSuspendTimer   (0           ),
@@ -85,20 +87,7 @@ CSoftAE::CSoftAE():
     CAESinkFactory::EnumerateEx(m_sinkInfoList, true);
   }
   CLog::Log(LOGNOTICE, "Found %lu Lists of Devices", m_sinkInfoList.size());
-  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
-  {
-    CLog::Log(LOGNOTICE, "Enumerated %s devices:", itt->m_sinkName.c_str());
-    int count = 0;
-    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
-    {
-      CLog::Log(LOGNOTICE, "    Device %d", ++count);
-      CAEDeviceInfo& info = *itt2;
-      std::stringstream ss((std::string)info);
-      std::string line;
-      while(std::getline(ss, line, '\n'))
-        CLog::Log(LOGNOTICE, "        %s", line.c_str());
-    }
-  }
+  PrintSinks();
 }
 
 CSoftAE::~CSoftAE()
@@ -189,6 +178,20 @@ void CSoftAE::OpenSink()
   m_wake.Set();
 }
 
+void CSoftAE::InternalCloseSink()
+{
+  /* close the old sink if it was open */
+  if (m_sink)
+  {
+    CExclusiveLock sinkLock(m_sinkLock);
+    m_sink->Drain();
+    m_sink->Deinitialize();
+    delete m_sink;
+    m_sink = NULL;
+  }
+  m_closeSink = false;
+  m_closeEvent.Set();
+}
 /* this must NEVER be called from outside the main thread or Initialization */
 void CSoftAE::InternalOpenSink()
 {
@@ -315,15 +318,8 @@ void CSoftAE::InternalOpenSink()
     CExclusiveLock sinkLock(m_sinkLock);
 
     reInit = true;
-
-    /* we are going to open, so close the old sink if it was open */
-    if (m_sink)
-    {
-      m_sink->Drain();
-      m_sink->Deinitialize();
-      delete m_sink;
-      m_sink = NULL;
-    }
+    //close the sink cause it gets reinited
+    InternalCloseSink();
 
     /* get the display name of the device */
     GetDeviceFriendlyName(device);
@@ -877,10 +873,19 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
   RemoveStream(m_playingStreams, (CSoftAEStream*)stream);
   RemoveStream(m_streams       , (CSoftAEStream*)stream);
   lock.Leave();
-
-  /* if it was the master stream we need to reopen before deletion */
-  if (m_masterStream == stream)
-    OpenSink();
+  // Close completely when we go to suspend, reopen as it was old behaviour
+  // m_realSuspend is currently only used on Linux Systems as it is needed
+  // for suspend and resume. Not opening when masterstream stops means
+  // clipping on S/PDIF.
+  if(m_realSuspend)
+  {
+    m_closeEvent.Reset();
+    m_closeSink = true;
+    m_closeEvent.Wait();
+    m_wake.Set();
+  }
+  else if (m_masterStream == stream)
+	  OpenSink();
 
   delete (CSoftAEStream*)stream;
   return NULL;
@@ -986,14 +991,52 @@ bool CSoftAE::Suspend()
     CSoftAEStream *stream = *itt;
     stream->Flush();
   }
+  #if defined(TARGET_LINUX)
+  /*workaround sinks not playing sound after resume */
+    StopAllSounds();
+    CExclusiveLock sinkLock(m_sinkLock);
+    for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+    {
+      itt->m_deviceInfoList.pop_back();
+    }
+    if(m_sink)
+    {
+      /* Deinitialize and delete current m_sink */
+      // we don't want that Run reopens our device.
+      // This is the only place m_realSuspend gets set true.
+      // If you find another one - please call for help.
+      // First thing when rewriting: kill this flag and make it generic again.
+      m_realSuspend = true;
+      m_sink->Drain();
+      m_sink->Deinitialize();
+      delete m_sink;
+      m_sink = NULL;
+    }
+    // The device list is now empty and must be reenumerated afterwards.
+    m_sinkInfoList.clear();
+  #endif
 
   return true;
 }
 
 bool CSoftAE::Resume()
 {
+#if defined(TARGET_LINUX)
+  // We must make sure, that we don't return empty.
+  if(m_realSuspend || m_sinkInfoList.empty())
+  {
+    CLog::Log(LOGDEBUG, "CSoftAE::Resume - Re Enumerating Sinks");
+    CExclusiveLock sinkLock(m_sinkLock);
+    // Forced enumeration - we are sure that we start completely fresh.
+    CAESinkFactory::EnumerateEx(m_sinkInfoList, true);
+    m_realSuspend = false;
+    sinkLock.Leave(); // we leave here explicitly to not lock while printing new sinks
+    PrintSinks();
+  }
+#endif
   CLog::Log(LOGDEBUG, "CSoftAE::Resume - Resuming AE processing");
   m_isSuspended = false;
+  // we flag reopen
   m_reOpen = true;
 
   return true;
@@ -1030,6 +1073,12 @@ void CSoftAE::Run()
         restart = true;
     }
 
+    //we are told to close the sink
+    if(m_closeSink)
+    {
+      InternalCloseSink();
+    }
+
     /* Handle idle or forced suspend */
     ProcessSuspend();
 
@@ -1040,6 +1089,7 @@ void CSoftAE::Run()
       InternalOpenSink();
       m_isSuspended = false; // exit Suspend state
     }
+
 #if defined(TARGET_ANDROID)
     else if (m_playingStreams.empty() 
       &&     m_playing_sounds.empty()
@@ -1290,6 +1340,24 @@ int CSoftAE::RunTranscodeStage(bool hasAudio)
   return encodedFrames;
 }
 
+void CSoftAE::PrintSinks()
+{
+  for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+  {
+    CLog::Log(LOGNOTICE, "Enumerated %s devices:", itt->m_sinkName.c_str());
+    int count = 0;
+    for (AEDeviceInfoList::iterator itt2 = itt->m_deviceInfoList.begin(); itt2 != itt->m_deviceInfoList.end(); ++itt2)
+    {
+      CLog::Log(LOGNOTICE, "    Device %d", ++count);
+      CAEDeviceInfo& info = *itt2;
+      std::stringstream ss((std::string)info);
+      std::string line;
+      while(std::getline(ss, line, '\n'))
+        CLog::Log(LOGNOTICE, "        %s", line.c_str());
+    }
+  }
+}
+
 unsigned int CSoftAE::RunRawStreamStage(unsigned int channelCount, void *out, bool &restart)
 {
   StreamList resumeStreams;
@@ -1424,14 +1492,14 @@ inline void CSoftAE::ProcessSuspend()
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */
   /* continuous streaming (silent stream) in as.xml      */
-  while ((m_isSuspended || (m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
-          m_running     && !m_reOpen)
+  while (m_realSuspend || ((m_isSuspended || (m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
+          m_running     && !m_reOpen))
   {
-    if (m_sink && !sinkIsSuspended)
+    if (!m_realSuspend && m_sink && !sinkIsSuspended)
     {
       /* put the sink in Suspend mode */
       CExclusiveLock sinkLock(m_sinkLock);
-      if (!m_sink->SoftSuspend())
+      if (m_sink && !m_sink->SoftSuspend())
       {
         sinkIsSuspended = false; //sink cannot be suspended
         m_softSuspend   = false; //break suspend loop
@@ -1442,11 +1510,17 @@ inline void CSoftAE::ProcessSuspend()
       sinkLock.Leave();
     }
 
+    // make sure that a outer thread does not have to wait forever
+    if(m_closeSink)
+    {
+      InternalCloseSink();
+    }
+
     /* idle for platform-defined time */
     m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
 
     /* check if we need to resume for stream or sound */
-    if (!m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
+    if (!m_realSuspend && !m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
     {
       m_reOpen = !m_sink->SoftResume(); // sink returns false if it requires reinit
       sinkIsSuspended = false; //sink processing data
