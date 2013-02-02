@@ -426,7 +426,6 @@ void CAESinkALSA::Deinitialize()
 
   if (m_pcm)
   {
-    snd_pcm_drop (m_pcm);
     snd_pcm_close(m_pcm);
     m_pcm = NULL;
   }
