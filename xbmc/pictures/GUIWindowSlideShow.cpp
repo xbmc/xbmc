@@ -522,7 +522,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_Image[m_iCurrentPic].Process(currentTime, regions);
   }
 
-  if (m_slides->Get(m_iCurrentSlide)->IsVideo())
+  // play video, but only if one isn't already playing
+  if (m_slides->Get(m_iCurrentSlide)->IsVideo() && !m_bPlayingVideo)
   { 
     CLog::Log(LOGDEBUG, "Playing slide %s as video", m_slides->Get(m_iCurrentSlide)->GetPath().c_str());
     m_bPlayingVideo = true;
