@@ -396,6 +396,36 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const C
        dir->m_listItems->AddSortMethod(SORT_METHOD_LISTENERS,20455,LABEL_MASKS("%T","%W"));
        break;
       }
+    case SORT_METHOD_DATEADDED:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_DATEADDED, 570, LABEL_MASKS("%T", "%a"));
+        break;
+      }
+    case SORT_METHOD_FULLPATH:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_FULLPATH, 573, LABEL_MASKS("%T", label2Mask));
+        break;
+      }
+    case SORT_METHOD_LABEL_IGNORE_FOLDERS:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL_IGNORE_FOLDERS, 551, LABEL_MASKS("%T", label2Mask));
+        break;
+      }
+    case SORT_METHOD_LASTPLAYED:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_LASTPLAYED, 568, LABEL_MASKS("%T", "%G"));
+        break;
+      }
+    case SORT_METHOD_PLAYCOUNT:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_PLAYCOUNT, 567, LABEL_MASKS("%T", "%V"));
+        break;
+      }
+    case SORT_METHOD_CHANNEL:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_CHANNEL, 19029, LABEL_MASKS("%T", label2Mask));
+        break;
+      }
    
     default:
       break;

@@ -97,19 +97,20 @@ namespace XBMCAddon
     void setResolvedUrl(int handle, bool succeeded, const XBMCAddon::xbmcgui::ListItem* listitem);
 
     /**
-     * addSortMethod(handle, sortMethod, label2) -- Adds a sorting method for the media list.
+     * addSortMethod(handle, sortMethod, label2Mask) -- Adds a sorting method for the media list.
      * 
      * handle      : integer - handle the plugin was started with.
-     * sortMethod  : integer - number for sortmethod see FileItem.h.
+     * sortMethod  : integer - number for sortmethod see SortFileItem.h.
      * label2Mask  : [opt] string - the label mask to use for the second label.  Defaults to '%D'
      *               applies to: SORT_METHOD_NONE, SORT_METHOD_UNSORTED, SORT_METHOD_VIDEO_TITLE,
      *                           SORT_METHOD_TRACKNUM, SORT_METHOD_FILE, SORT_METHOD_TITLE,
      *                           SORT_METHOD_TITLE_IGNORE_THE, SORT_METHOD_LABEL,
      *                           SORT_METHOD_LABEL_IGNORE_THE, SORT_METHOD_VIDEO_SORT_TITLE,
-     *                           SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE
+     *                           SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, SORT_METHOD_FULLPATH,
+     *                           SORT_METHOD_LABEL_IGNORE_FOLDERS, SORT_METHOD_CHANNEL
      * 
      * example:
-     *   - xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_TITLE)
+     *   - xbmcplugin.addSortMethod(int(sys.argv[1]), 1)
      */
     void addSortMethod(int handle, int sortMethod, const String& label2Mask = emptyString);
 
@@ -226,5 +227,12 @@ namespace XBMCAddon
     SWIG_CONSTANT(int,SORT_METHOD_UNSORTED);
     SWIG_CONSTANT(int,SORT_METHOD_BITRATE);
     SWIG_CONSTANT(int,SORT_METHOD_LISTENERS);
+    SWIG_CONSTANT(int,SORT_METHOD_COUNTRY);
+    SWIG_CONSTANT(int,SORT_METHOD_DATEADDED);
+    SWIG_CONSTANT(int,SORT_METHOD_FULLPATH);
+    SWIG_CONSTANT(int,SORT_METHOD_LABEL_IGNORE_FOLDERS);
+    SWIG_CONSTANT(int,SORT_METHOD_LASTPLAYED);
+    SWIG_CONSTANT(int,SORT_METHOD_PLAYCOUNT);
+    SWIG_CONSTANT(int,SORT_METHOD_CHANNEL);
   }
 }
