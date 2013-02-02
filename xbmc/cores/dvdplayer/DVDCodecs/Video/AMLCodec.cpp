@@ -1805,7 +1805,7 @@ bool CAMLCodec::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->pts = GetPlayerPtsSeconds() * (double)DVD_TIME_BASE;
   // video pts cannot be late or dvdplayer goes nuts,
   // so run it one frame ahead
-  pDvdVideoPicture->pts += 2 * pDvdVideoPicture->iDuration;
+  pDvdVideoPicture->pts += 1 * pDvdVideoPicture->iDuration;
 
   return true;
 }
