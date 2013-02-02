@@ -522,7 +522,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_Image[m_iCurrentPic].Process(currentTime, regions);
   }
 
-  if (m_slides->Get(m_iCurrentSlide)->IsVideo() && bSlideShow)
+  if (m_slides->Get(m_iCurrentSlide)->IsVideo())
   { 
     CLog::Log(LOGDEBUG, "Playing slide %s as video", m_slides->Get(m_iCurrentSlide)->GetPath().c_str());
     m_bPlayingVideo = true;
@@ -865,21 +865,20 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     case GUI_MSG_PLAYLISTPLAYER_STOPPED:
       {
         m_bPlayingVideo = false;
-        if (m_bSlideShow)
-          g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+        g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
       }
       break;
 
     case GUI_MSG_PLAYBACK_STARTED:
       {
-        if (m_bSlideShow && m_bPlayingVideo)
+        if (m_bPlayingVideo)
           g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
       }
       break;
 
     case GUI_MSG_PLAYBACK_STOPPED:
       {
-        if (m_bSlideShow && m_bPlayingVideo)
+        if (m_bPlayingVideo)
         {
           m_bSlideShow = false;
           g_windowManager.PreviousWindow();
