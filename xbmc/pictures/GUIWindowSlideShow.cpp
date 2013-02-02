@@ -837,6 +837,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       if (m_slides->Size() <= 1)
         m_bSlideShow = false;
 
+      // stop all video when becoming visible, e.g. an interrupted video
+      if (g_application.IsPlayingVideo())
+        g_application.StopPlaying();
+
       return true;
     }
     break;
