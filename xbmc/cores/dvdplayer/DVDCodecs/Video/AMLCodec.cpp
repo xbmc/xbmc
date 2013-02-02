@@ -1627,8 +1627,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
       }
       break;
     case VFORMAT_VC1:
-      // vc1 is extension id, from 0xfd55 to 0xfd5f according to ffmpeg
-      am_private->vcodec.video_pid = am_private->vcodec.video_pid >> 8;
       // vc1 in an avi file
       if (hints.ptsinvalid)
         am_private->vcodec.am_sysinfo.param = (void*)EXTERNAL_PTS;
@@ -1653,11 +1651,7 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
   aml_set_sysfs_int("/sys/class/tsync/enable", 0);
 
   am_private->am_pkt.codec = &am_private->vcodec;
-  if (!(am_private->video_format == VFORMAT_VC1 &&
-    am_private->video_codec_type == VIDEO_DEC_FORMAT_WMV3))
-  {
-    pre_header_feeding(am_private, &am_private->am_pkt);
-  }
+  pre_header_feeding(am_private, &am_private->am_pkt);
 
   Create();
 
@@ -1700,12 +1694,7 @@ void CAMLCodec::Reset()
   am_packet_release(&am_private->am_pkt);
   am_packet_init(&am_private->am_pkt);
   am_private->am_pkt.codec = &am_private->vcodec;
-
-  if (!(am_private->video_format == VFORMAT_VC1 &&
-    am_private->video_codec_type == VIDEO_DEC_FORMAT_WMV3))
-  {
-    pre_header_feeding(am_private, &am_private->am_pkt);
-  }
+  pre_header_feeding(am_private, &am_private->am_pkt);
 
   // reset some interal vars
   m_speed = DVD_PLAYSPEED_NORMAL;
