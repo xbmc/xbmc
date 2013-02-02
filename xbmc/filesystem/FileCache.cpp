@@ -248,10 +248,17 @@ void CFileCache::Process()
     {
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
       m_pCache->EndOfInput();
+      m_source.Close();
 
       // The thread event will now also cause the wait of an event to return a false.
       if (AbortableWait(m_seekEvent) == WAIT_SIGNALED)
       {
+        if (!m_source.Open(m_sourcePath, READ_NO_CACHE | READ_TRUNCATED | READ_CHUNKED))
+        {
+          CLog::Log(LOGERROR,"%s - failed to reopen source <%s>", __FUNCTION__, m_sourcePath.c_str());
+          break;
+        }
+        m_source.IoControl(IOCTRL_SET_CACHE,this);
         m_pCache->ClearEndOfInput();
         m_seekEvent.Set(); // hack so that later we realize seek is needed
       }
