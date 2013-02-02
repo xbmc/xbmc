@@ -823,52 +823,61 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
   return activeStream;
 }
 
-std::string CDVDInputStreamNavigator::GetSubtitleStreamLanguage(int iId)
+bool CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId, DVDNavStreamInfo &info)
 {
-  if (!m_dvdnav) return NULL;
+  if (!m_dvdnav) return false;
 
-  CStdString strLanguage;
-
-  subp_attr_t subp_attributes;
   int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
+  subp_attr_t subp_attributes;
+
   if( m_dll.dvdnav_get_stitle_info(m_dvdnav, streamId, &subp_attributes) == DVDNAV_STATUS_OK )
   {
+    SetSubtitleStreamName(info, subp_attributes);
 
-    if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
-        subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
+    char lang[3];
+    lang[2] = 0;
+    lang[1] = (subp_attributes.lang_code & 255);
+    lang[0] = (subp_attributes.lang_code >> 8) & 255;
+
+    CStdString temp;
+    g_LangCodeExpander.ConvertToThreeCharCode(temp, lang);
+    info.language = temp;
+
+    return true;
+  }
+  return false;
+}
+
+void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t subp_attributes)
+{
+  if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
+    subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
+  {
+    switch (subp_attributes.lang_extension)
     {
-      if (!g_LangCodeExpander.Lookup(strLanguage, subp_attributes.lang_code)) strLanguage = "Unknown";
+    case DVD_SUBPICTURE_LANG_EXT_NotSpecified:
+    case DVD_SUBPICTURE_LANG_EXT_NormalCaptions:
+    case DVD_SUBPICTURE_LANG_EXT_BigCaptions:
+    case DVD_SUBPICTURE_LANG_EXT_ChildrensCaptions:
+      break;
 
-      switch (subp_attributes.lang_extension)
-      {
-        case DVD_SUBPICTURE_LANG_EXT_NotSpecified:
-        case DVD_SUBPICTURE_LANG_EXT_NormalCaptions:
-        case DVD_SUBPICTURE_LANG_EXT_BigCaptions:
-        case DVD_SUBPICTURE_LANG_EXT_ChildrensCaptions:
-          break;
-
-        case DVD_SUBPICTURE_LANG_EXT_NormalCC:
-        case DVD_SUBPICTURE_LANG_EXT_BigCC:
-        case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
-          strLanguage+= " (CC)";
-          break;
-        case DVD_SUBPICTURE_LANG_EXT_Forced:
-          strLanguage+= " (Forced)";
-          break;
-        case DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments:
-        case DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments:
-        case DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments:
-          strLanguage+= " (Directors Comments)";
-          break;
-      }
-    }
-    else
-    {
-      strLanguage = "Unknown";
+    case DVD_SUBPICTURE_LANG_EXT_NormalCC:
+    case DVD_SUBPICTURE_LANG_EXT_BigCC:
+    case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
+      info.name += "(CC)";
+      break;
+    case DVD_SUBPICTURE_LANG_EXT_Forced:
+      info.name += "(Forced)";
+      break;
+    case DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments:
+    case DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments:
+    case DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments:
+      info.name += "(Directors Comments)";
+      break;
+    default:
+      break;
     }
   }
-
-  return strLanguage;
 }
 
 int CDVDInputStreamNavigator::GetSubTitleStreamCount()

@@ -105,8 +105,8 @@ public:
   bool IsInMenu() { return m_bInMenu; }
 
   int GetActiveSubtitleStream();
-  std::string GetSubtitleStreamLanguage(int iId);
   int GetSubTitleStreamCount();
+  bool GetSubtitleStreamInfo(const int iId, DVDNavStreamInfo &info);
 
   bool SetActiveSubtitleStream(int iId);
   void EnableSubtitleStream(bool bEnable);
@@ -155,6 +155,7 @@ protected:
   int ConvertSubtitleStreamId_ExternalToXBMC(int id);
 
   void SetAudioStreamName(DVDNavStreamInfo &info, const audio_attr_t audio_attributes);
+  void SetSubtitleStreamName(DVDNavStreamInfo &info, const subp_attr_t subp_attributes);
 
   DllDvdNav m_dll;
   bool m_bCheckButtons;
