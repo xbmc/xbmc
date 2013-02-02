@@ -132,7 +132,7 @@ unsigned int CRTVFile::Read(void *lpBuf, int64_t uiBufSize)
   // Read uiBufSize bytes from the m_rtvd connection
   lenread = rtv_read_file(m_rtvd, (char *) lpBuf, (size_t) uiBufSize);
 
-  CLog::Log(LOGDEBUG, "%s - Requested %"PRIdS", Recieved %"PRIdS"", __FUNCTION__, (size_t)uiBufSize, lenread);
+  CLog::Log(LOGDEBUG, "%s - Requested %"PRIdS", Received %"PRIdS"", __FUNCTION__, (size_t)uiBufSize, lenread);
 
   // Some extra checking so library behaves
   if(m_filePos + lenread > m_fileSize)
