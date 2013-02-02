@@ -390,6 +390,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     g_application.ResetScreenSaver();
   int iSlides = m_slides->Size();
   if (!iSlides) return ;
+  // prevent next image being shown between two consecutive videos; dont waste cpu
+  if (m_bPlayingVideo) return ;
 
   // if we haven't rendered yet, we should mark the whole screen
   if (!m_hasRendered)
