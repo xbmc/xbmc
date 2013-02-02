@@ -250,6 +250,12 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 bool CDAVDirectory::Exists(const char* strPath)
 {
   CCurlFile dav;
+
+  // Set the PROPFIND custom request else we may not find folders, depending
+  // on the server's configuration
+  CStdString strRequest = "PROPFIND";
+  dav.SetCustomRequest(strRequest);
+
   CURL url(strPath);
   return dav.Exists(url);
 }
