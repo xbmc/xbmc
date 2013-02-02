@@ -693,8 +693,6 @@
     <ClCompile Include="..\..\xbmc\guilib\XBTF.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\XBTFReader.cpp" />
     <ClCompile Include="..\..\xbmc\GUIPassword.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewControl.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewState.cpp" />
     <ClCompile Include="..\..\xbmc\input\ButtonTranslator.cpp" />
     <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardLayoutConfiguration.cpp" />
@@ -1646,7 +1644,9 @@
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoBase.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoNav.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.cpp" />
-    <ClCompile Include="..\..\xbmc\ViewDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\view\GUIViewControl.cpp" />
+    <ClCompile Include="..\..\xbmc\view\GUIViewState.cpp" />
+    <ClCompile Include="..\..\xbmc\view\ViewDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Testsuite|Win32'">Create</PrecompiledHeader>
@@ -2143,8 +2143,6 @@
     <ClInclude Include="..\..\xbmc\guilib\XBTFReader.h" />
     <ClInclude Include="..\..\xbmc\GUIPassword.h" />
     <ClInclude Include="..\..\xbmc\GUIUserMessages.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewControl.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewState.h" />
     <ClInclude Include="..\..\xbmc\input\ButtonTranslator.h" />
     <ClInclude Include="..\..\xbmc\input\InertialScrollingHandler.h" />
     <ClInclude Include="..\..\xbmc\input\KeyboardLayoutConfiguration.h" />
@@ -2492,8 +2490,10 @@
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoBase.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoNav.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.h" />
-    <ClInclude Include="..\..\xbmc\ViewDatabase.h" />
-    <ClInclude Include="..\..\xbmc\ViewState.h" />
+    <ClInclude Include="..\..\xbmc\view\GUIViewControl.h" />
+    <ClInclude Include="..\..\xbmc\view\GUIViewState.h" />
+    <ClInclude Include="..\..\xbmc\view\ViewDatabase.h" />
+    <ClInclude Include="..\..\xbmc\view\ViewState.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />
     <ClInclude Include="..\..\xbmc\XBDateTime.h" />
