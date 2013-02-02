@@ -18,7 +18,7 @@
  *
  */
 
-#include "GUIViewState.h"
+#include "view/GUIViewState.h"
 #include "pvr/windows/GUIViewStatePVR.h"
 #include "addons/GUIViewStateAddonBrowser.h"
 #include "music/GUIViewStateMusic.h"
@@ -35,7 +35,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
-#include "ViewState.h"
+#include "view/ViewState.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

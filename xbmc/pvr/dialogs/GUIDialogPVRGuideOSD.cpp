@@ -23,7 +23,7 @@
 #include "FileItem.h"
 #include "GUIDialogPVRGuideInfo.h"
 #include "guilib/GUIWindowManager.h"
-#include "ViewState.h"
+#include "view/ViewState.h"
 #include "epg/Epg.h"
 
 #include "pvr/PVRManager.h"

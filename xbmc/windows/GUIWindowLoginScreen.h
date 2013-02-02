@@ -21,7 +21,7 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "GUIViewControl.h"
+#include "view/GUIViewControl.h"
 #include "utils/Stopwatch.h"
 
 class CFileItemList;

@@ -20,7 +20,7 @@
 
 #include "GUIViewStatePictures.h"
 #include "FileItem.h"
-#include "ViewState.h"
+#include "view/ViewState.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

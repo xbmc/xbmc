@@ -27,7 +27,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "GUIDialogPVRGuideInfo.h"
-#include "ViewState.h"
+#include "view/ViewState.h"
 #include "settings/GUISettings.h"
 #include "GUIInfoManager.h"
 
