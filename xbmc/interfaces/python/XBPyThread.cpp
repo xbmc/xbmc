@@ -320,10 +320,14 @@ void XBPyThread::Process()
     }
   }
 
+  bool systemExitThrown = false;
   if (!PyErr_Occurred())
     CLog::Log(LOGINFO, "Scriptresult: Success");
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
+  {
+    systemExitThrown = true;
     CLog::Log(LOGINFO, "Scriptresult: Aborted");
+  }
   else
   {
     PythonBindings::PythonToCppException e;
@@ -401,7 +405,14 @@ void XBPyThread::Process()
   m_pExecuter->DeInitializeInterpreter();
 
   // run the gc before finishing
-  if (!m_stopping && languageHook->HasRegisteredAddonClasses() && PyRun_SimpleString(GC_SCRIPT) == -1)
+  //
+  // if the script exited by throwing a SystemExit excepton then going back
+  // into the interpreter causes this python bug to get hit:
+  //    http://bugs.python.org/issue10582
+  // and that causes major failures. So we are not going to go back in
+  // to run the GC if that's the case.
+  if (!m_stopping && languageHook->HasRegisteredAddonClasses() && !systemExitThrown &&
+      PyRun_SimpleString(GC_SCRIPT) == -1)
     CLog::Log(LOGERROR,"Failed to run the gc to clean up after running prior to shutting down the Interpreter %s",m_source);
 
   Py_EndInterpreter(state);
