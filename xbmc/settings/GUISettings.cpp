@@ -906,11 +906,6 @@ void CGUISettings::Initialize()
     AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   }
 #endif
-#ifdef HAS_TIME_SERVER
-  AddSeparator(loc, "locale.sep2");
-  AddBool(loc, "locale.timeserver", 168, false);
-  AddString(loc, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
-#endif
   AddSeparator(loc, "locale.sep3");
   AddString(loc, "locale.audiolanguage", 285, "original", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.subtitlelanguage", 286, "original", SPIN_CONTROL_TEXT);
