@@ -65,6 +65,7 @@ public:
   int              source;
   double           dts;    // last dts from demuxer, used to find disncontinuities
   double           dur;    // last frame expected duration
+  double           dts_state; // when did we last send a playback state update
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
   int              changes; // remembered counter from stream to track codec changes
@@ -87,6 +88,7 @@ public:
     id     = -1;
     source = STREAM_SOURCE_NONE;
     dts    = DVD_NOPTS_VALUE;
+    dts_state = DVD_NOPTS_VALUE;
     dur    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
@@ -407,11 +409,15 @@ protected:
     ETIMESOURCE_MENU,
   };
 
+  friend class CDVDPlayerVideo;
+  friend class CDVDPlayerAudio;
+
   struct SPlayerState
   {
     SPlayerState() { Clear(); }
     void Clear()
     {
+      player        = 0;
       timestamp     = 0;
       time          = 0;
       time_total    = 0;
@@ -433,6 +439,8 @@ protected:
       cache_delay   = 0.0;
       cache_offset  = 0.0;
     }
+
+    int    player;            // source of this data
 
     double timestamp;         // last time of update
     double time_offset;       // difference between time and pts
@@ -461,7 +469,7 @@ protected:
     double  cache_level;   // current estimated required cache level
     double  cache_delay;   // time until cache is expected to reach estimated level
     double  cache_offset;  // percentage of file ahead of current position
-  } m_State;
+  } m_State, m_StateInput;
   CCriticalSection m_StateSection;
 
   CEvent m_ready;
