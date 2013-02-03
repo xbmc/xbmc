@@ -85,6 +85,7 @@ CFileCache::CFileCache() : CThread("CFileCache")
    m_seekPos = 0;
    m_readPos = 0;
    m_writePos = 0;
+   m_length = 0;
    if (g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
@@ -101,6 +102,7 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache) : CThread("CFi
   m_seekPos = 0;
   m_readPos = 0;
   m_writePos = 0;
+  m_length = 0;
   m_nSeekResult = 0;
   m_chunkSize = 0;
 }
@@ -169,6 +171,7 @@ bool CFileCache::Open(const CURL& url)
 
   m_readPos = 0;
   m_writePos = 0;
+  m_length = m_source.GetLength();
   m_writeRate = 1024 * 1024;
   m_writeRateActual = 0;
   m_cacheFull = false;
@@ -401,7 +404,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
       return m_nSeekResult;
 
     /* never request closer to end than 2k, speeds up tag reading */
-    m_seekPos = std::min(iTarget, std::max((int64_t)0, m_source.GetLength() - m_chunkSize));
+    m_seekPos = std::min(iTarget, std::max((int64_t)0, m_length - m_chunkSize));
 
     m_seekEvent.Set();
     if (!m_seekEnded.Wait())
@@ -448,7 +451,7 @@ int64_t CFileCache::GetPosition()
 
 int64_t CFileCache::GetLength()
 {
-  return m_source.GetLength();
+  return m_length;
 }
 
 void CFileCache::StopThread(bool bWait /*= true*/)
