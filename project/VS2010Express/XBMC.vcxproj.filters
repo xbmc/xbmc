@@ -255,6 +255,7 @@
     </Filter>
     <Filter Include="music\spotyxbmc2">
       <UniqueIdentifier>{bf281ccd-63ef-4ed2-bba8-c916cfc3fb2e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="test">
       <UniqueIdentifier>{18ab66ab-877f-4d79-a963-c3b0865781e0}</UniqueIdentifier>
     </Filter>
@@ -2684,6 +2685,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\music\spotyXBMC\thumb\ThumbStore.cpp">
       <Filter>music\spotyxbmc2</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIKeyboardFactory.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -5754,6 +5756,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\spotyXBMC\thumb\ThumbStore.h">
       <Filter>music\spotyxbmc2</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h">
       <Filter>guilib</Filter>
     </ClInclude>
