@@ -44,6 +44,7 @@ namespace XBMCAddon
       inline void    OnScreensaverActivated() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverActivated)); }
       inline void    OnScreensaverDeactivated() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onScreensaverDeactivated)); }
       inline void    OnDatabaseUpdated(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseUpdated,database)); }
+      inline void    OnDatabaseScanStarted(const String &database) { TRACE; invokeCallback(new CallbackFunction<Monitor,const String>(this,&Monitor::onDatabaseScanStarted,database)); }
       inline void    OnAbortRequested() { TRACE; invokeCallback(new CallbackFunction<Monitor>(this,&Monitor::onAbortRequested)); }
 #endif
 
@@ -71,12 +72,21 @@ namespace XBMCAddon
       /**
        * onDatabaseUpdated(database) -- onDatabaseUpdated method.
        * 
-       * database - video/music as stri
+       * database - video/music as string
        * 
        * Will be called when database gets updated and return video or music to indicate which DB has been changed
        */
       virtual void    onDatabaseUpdated(const String database) { TRACE; }
 
+      /**
+       * onDatabaseScanStarted(database) -- onDatabaseScanStarted method.
+       *
+       * database - video/music as string
+       *
+       * Will be called when database update starts and return video or music to indicate which DB is being updated
+       */
+      virtual void    onDatabaseScanStarted(const String database) { TRACE; }
+      
       /**
        * onAbortRequested() -- onAbortRequested method.
        * 
