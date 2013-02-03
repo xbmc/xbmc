@@ -59,6 +59,20 @@
 #include "utils/AMLUtils.h"
 #include "DllLibamplayer.h"
 
+static float VolumePercentToScale(float volume)
+{
+  float audio_volume = 0.0;
+  if (volume > VOLUME_MINIMUM)
+  {
+    float dB = CAEUtil::PercentToGain(volume);
+    audio_volume = CAEUtil::GainToScale(dB);
+  }
+  if (audio_volume >= 0.99f)
+    audio_volume = 1.0f;
+
+  return audio_volume;
+}
+
 struct AMLChapterInfo
 {
   std::string name;
@@ -576,11 +590,14 @@ bool CAMLPlayer::OpenFile(const CFileItem &file, const CPlayerOptions &options)
     m_item = file;
     m_options = options;
 
+    m_pid = -1;
     m_elapsed_ms  =  0;
     m_duration_ms =  0;
 
     m_audio_info  = "none";
     m_audio_delay = 0;
+    m_audio_mute  = g_settings.m_bMute;
+    m_audio_volume = VolumePercentToScale(g_settings.m_fVolumeLevel);
     m_audio_passthrough_ac3 = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     m_audio_passthrough_dts = g_guiSettings.GetBool("audiooutput.dtspassthrough");
 
@@ -813,6 +830,7 @@ float CAMLPlayer::GetPercentage()
 void CAMLPlayer::SetMute(bool bOnOff)
 {
   m_audio_mute = bOnOff;
+
   CSingleLock lock(m_aml_csection);
   if (m_dll->check_pid_valid(m_pid))
   {
@@ -825,16 +843,8 @@ void CAMLPlayer::SetMute(bool bOnOff)
 
 void CAMLPlayer::SetVolume(float volume)
 {
-  CLog::Log(LOGDEBUG, "CAMLPlayer::SetVolume(%f)", volume);
   // volume is a float percent from 0.0 to 1.0
-  m_audio_volume = 0.0f;
-  if (volume > VOLUME_MINIMUM)
-  {
-    float dB = CAEUtil::PercentToGain(volume);
-    m_audio_volume = CAEUtil::GainToScale(dB);
-  }
-  if (m_audio_volume >= 0.99f)
-    m_audio_volume = 1.0f;
+  m_audio_volume = VolumePercentToScale(volume);
 
   CSingleLock lock(m_aml_csection);
   if (!m_audio_mute && m_dll->check_pid_valid(m_pid))
@@ -1163,8 +1173,6 @@ void CAMLPlayer::SeekTime(int64_t seek_ms)
     m_dll->player_timesearch(m_pid, (float)seek_ms/1000.0);
     WaitForSearchOK(5000);
     WaitForPlaying(5000);
-    // restore system volume setting.
-    SetVolume(m_audio_volume);
   }
 }
 
@@ -1547,12 +1555,6 @@ void CAMLPlayer::Process()
       // get our initial status.
       GetStatus();
 
-      // restore mute setting.
-      SetMute(g_settings.m_bMute);
-
-      // restore system volume setting.
-      SetVolume(g_settings.m_fVolumeLevel);
-
       // the default staturation is too high, drop it
       SetVideoSaturation(110);
 
@@ -1921,13 +1923,14 @@ bool CAMLPlayer::WaitForSearchOK(int timeout_ms)
 
 bool CAMLPlayer::WaitForPlaying(int timeout_ms)
 {
-  // force the volume off in case we are starting muted
-  m_audio_mute = true;
   while (!m_bAbortRequest && (timeout_ms > 0))
   {
-    // anoying that we have to hammer audio_set_volume
-    // but have to catch it before any audio comes out.
-    m_dll->audio_set_volume(m_pid, 0.0);
+    // anoying that we have to hammer setting audio volume via mute
+    // but we have to catch it before any audio comes out.
+    // we cannot do this for m1 (playback will bork) so trap it out.
+    if (aml_get_cputype() != 1)
+      SetMute(m_audio_mute);
+
     player_status pstatus = (player_status)GetPlayerSerializedState();
     if (m_log_level > 5)
       CLog::Log(LOGDEBUG, "CAMLPlayer::WaitForPlaying: %s", m_dll->player_status2str(pstatus));
@@ -1943,6 +1946,8 @@ bool CAMLPlayer::WaitForPlaying(int timeout_ms)
         return false;
         break;
       case PLAYER_RUNNING:
+        // restore mute/volume settings
+        SetMute(m_audio_mute);
         return true;
         break;
     }
