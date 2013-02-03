@@ -24,6 +24,7 @@
 #include "../IDVDPlayer.h"
 #include "../DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include <string>
+#include "guilib/Geometry.h"
 
 #include "DllDvdNav.h"
 
@@ -40,7 +41,6 @@
 class CDVDDemuxSPU;
 class CSPUInfo;
 class CDVDOverlayPicture;
-class CPoint;
 
 struct dvdnav_s;
 
