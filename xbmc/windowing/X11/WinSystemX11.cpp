@@ -207,25 +207,27 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
  
   XMode   currmode = g_xrandr.GetCurrentMode(out.name);
-
-  // flip h/w when rotated
-  if (m_bIsRotated)
+  if (!currmode.name.empty())
   {
-    int w = mode.w;
-    mode.w = mode.h;
-    mode.h = w;
-  }
+    // flip h/w when rotated
+    if (m_bIsRotated)
+    {
+      int w = mode.w;
+      mode.w = mode.h;
+      mode.h = w;
+    }
 
-  // only call xrandr if mode changes
-  if (currmode.w != mode.w || currmode.h != mode.h ||
-      currmode.hz != mode.hz || currmode.id != mode.id)
-  {
-    CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
-    OnLostDevice();
-    m_bIsInternalXrr = true;
-    g_xrandr.SetMode(out, mode);
-    if (m_glWindow)
-      return true;
+    // only call xrandr if mode changes
+    if (currmode.w != mode.w || currmode.h != mode.h ||
+        currmode.hz != mode.hz || currmode.id != mode.id)
+    {
+      CLog::Log(LOGNOTICE, "CWinSystemX11::SetFullScreen - calling xrandr");
+      OnLostDevice();
+      m_bIsInternalXrr = true;
+      g_xrandr.SetMode(out, mode);
+      if (m_glWindow)
+        return true;
+    }
   }
 #endif
 
@@ -272,9 +274,10 @@ void CWinSystemX11::UpdateResolutions()
   else
 #endif
   {
-    int x11screen = m_nScreen;
-    int w = DisplayWidth(m_dpy, x11screen);
-    int h = DisplayHeight(m_dpy, x11screen);
+    CSettings::Get().SetString("videoscreen.monitor", "Default");
+    m_nScreen = DefaultScreen(m_dpy);
+    int w = DisplayWidth(m_dpy, m_nScreen);
+    int h = DisplayHeight(m_dpy, m_nScreen);
     UpdateDesktopResolution(CDisplaySettings::Get().GetResolutionInfo(RES_DESKTOP), 0, w, h, 0.0);
   }
 
@@ -819,11 +822,19 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     Colormap cmap;
     XSetWindowAttributes swa;
     XVisualInfo *vi;
+    int x0 = 0;
+    int y0 = 0;
 
     XOutput *out = g_xrandr.GetOutput(output);
     if (!out)
       out = g_xrandr.GetOutput(m_currentOutput);
-    m_nScreen = out->screen;
+    if (out)
+    {
+      m_nScreen = out->screen;
+      x0 = out->x;
+      y0 = out->y;
+    }
+
     vi = glXChooseVisual(m_dpy, m_nScreen, att);
     cmap = XCreateColormap(m_dpy, RootWindow(m_dpy, vi->screen), vi->visual, AllocNone);
 
@@ -842,7 +853,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const CStd
     unsigned long mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWEventMask;
 
     m_glWindow = XCreateWindow(m_dpy, RootWindow(m_dpy, vi->screen),
-                    out->x, out->y, width, height, 0, vi->depth,
+                    x0, y0, width, height, 0, vi->depth,
                     InputOutput, vi->visual,
                     mask, &swa);
 
