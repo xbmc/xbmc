@@ -147,6 +147,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
+  m_iCurrentTime = -1;
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
@@ -302,6 +303,7 @@ void CDVDPlayerVideo::OnStartup()
   m_crop.x1 = m_crop.x2 = 0.0f;
   m_crop.y1 = m_crop.y2 = 0.0f;
 
+  m_iCurrentTime = -1;
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
 
@@ -497,6 +499,8 @@ void CDVDPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
+      if( pPacket->time != -1 )
+        m_iCurrentTime = pPacket->time;
       if (m_stalled)
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");

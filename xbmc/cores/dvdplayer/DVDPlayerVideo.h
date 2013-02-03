@@ -88,6 +88,7 @@ public:
 
   bool InitializedOutputDevice();
 
+  int     GetCurrentTime()                         { return m_iCurrentTime; }
   double GetCurrentPts()                           { return m_iCurrentPts; }
   int    GetPullupCorrection()                     { return m_pullupCorrection.GetPatternLength(); }
 
@@ -124,6 +125,7 @@ protected:
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
 
+  int m_iCurrentTime;    // time of last packet displayed
   double m_iCurrentPts; // last pts displayed
   double m_iVideoDelay;
   double m_iSubtitleDelay;
