@@ -113,7 +113,7 @@ public:
   }
   virtual int swr_init(struct SwrContext *s) { return ::avresample_open(s); }
   virtual void swr_free(struct SwrContext **s){ ::avresample_close(*s); *s = NULL; }
-  virtual int swr_convert(struct SwrContext *s, uint8_t **out, int out_count, const uint8_t **in , int in_count){ return ::avresample_convert(s, (void**)out, 0, out_count, (void**)in, 0,in_count); }
+  virtual int swr_convert(struct SwrContext *s, uint8_t **out, int out_count, const uint8_t **in , int in_count){ return ::avresample_convert(s, out, 0, out_count, (uint8_t**)in, 0,in_count); }
 };
 #endif
 
