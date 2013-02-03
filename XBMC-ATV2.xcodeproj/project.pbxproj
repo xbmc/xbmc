@@ -28,6 +28,7 @@
 		36A9468E15CF217400727135 /* MusicDbUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A9468C15CF217400727135 /* MusicDbUrl.cpp */; };
 		36A95DB41624898700727135 /* GUIDialogMediaFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36A95DB21624898700727135 /* GUIDialogMediaFilter.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
+		5500731516A75A2700097786 /* UPnPPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5500731316A75A2700097786 /* UPnPPlayer.cpp */; };
 		7C0A7ECD13A5DBF900AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */; };
 		7C0A7FC813A9E75400AFC2BD /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FC413A9E75400AFC2BD /* DirtyRegionSolvers.cpp */; };
 		7C0A7FC913A9E75400AFC2BD /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FC613A9E75400AFC2BD /* DirtyRegionTracker.cpp */; };
@@ -1078,6 +1079,8 @@
 		36A95DB21624898700727135 /* GUIDialogMediaFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogMediaFilter.cpp; sourceTree = "<group>"; };
 		36A95DB31624898700727135 /* GUIDialogMediaFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogMediaFilter.h; sourceTree = "<group>"; };
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		5500731316A75A2700097786 /* UPnPPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UPnPPlayer.cpp; sourceTree = "<group>"; };
+		5500731416A75A2700097786 /* UPnPPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UPnPPlayer.h; sourceTree = "<group>"; };
 		7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7ECC13A5DBF900AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
 		7C0A7FC313A9E75400AFC2BD /* DirtyRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegion.h; sourceTree = "<group>"; };
@@ -3556,6 +3559,8 @@
 				DF23460815FA671900A934F6 /* UPnP.h */,
 				DF23460915FA671900A934F6 /* UPnPInternal.cpp */,
 				DF23460A15FA671900A934F6 /* UPnPInternal.h */,
+				5500731316A75A2700097786 /* UPnPPlayer.cpp */,
+				5500731416A75A2700097786 /* UPnPPlayer.h */,
 				DF23460B15FA671900A934F6 /* UPnPRenderer.cpp */,
 				DF23460C15FA671900A934F6 /* UPnPRenderer.h */,
 				DF23460D15FA671900A934F6 /* UPnPServer.cpp */,
@@ -7667,6 +7672,7 @@
 				DFB02E0816629E1900F37752 /* PyContext.cpp in Sources */,
 				DF07255216873553008DCAAD /* karaokevideobackground.cpp in Sources */,
 				DF07255516873565008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
+				5500731516A75A2700097786 /* UPnPPlayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

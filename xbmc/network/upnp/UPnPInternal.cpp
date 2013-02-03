@@ -175,6 +175,23 @@ GetProtocolInfo(const CFileItem&              item,
     return proto;
 }
 
+  /*----------------------------------------------------------------------
+   |   CResourceFinder
+   +---------------------------------------------------------------------*/
+CResourceFinder::CResourceFinder(const char* protocol, const char* content)
+  : m_Protocol(protocol)
+  , m_Content(content)
+{
+}
+
+bool CResourceFinder::operator()(const PLT_MediaItemResource& resource) const {
+    if (m_Content.IsEmpty())
+        return (resource.m_ProtocolInfo.GetProtocol().Compare(m_Protocol, true) == 0);
+    else
+        return ((resource.m_ProtocolInfo.GetProtocol().Compare(m_Protocol, true) == 0)
+              && resource.m_ProtocolInfo.GetContentType().StartsWith(m_Content, true));
+}
+
 /*----------------------------------------------------------------------
 |   PopulateObjectFromTag
 +---------------------------------------------------------------------*/
@@ -311,7 +328,7 @@ BuildObject(CFileItem&                    item,
     PLT_MediaObject*      object = NULL;
     std::string thumb, fanart;
 
-    CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.GetPath());
+    CLog::Log(LOGDEBUG, "UPnP: Building didl for object '%s'", (const char*)item.GetPath());
 
     EClientQuirks quirks = GetClientQuirks(context);
 
@@ -326,6 +343,8 @@ BuildObject(CFileItem&                    item,
         rooturi = NPT_HttpUrl(context->GetLocalAddress().GetIpAddress().ToString(), context->GetLocalAddress().GetPort(), "/");
         ips.Remove(context->GetLocalAddress().GetIpAddress());
         ips.Insert(ips.GetFirstItem(), context->GetLocalAddress().GetIpAddress());
+    } else if(upnp_server) {
+        rooturi = NPT_HttpUrl("localhost", upnp_server->GetPort(), "/");
     }
 
     if (!item.m_bIsFolder) {
@@ -672,6 +691,221 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       }
     }
     return NPT_SUCCESS;
+}
+
+CFileItemPtr BuildObject(PLT_MediaObject* entry)
+{
+  NPT_String ObjectClass = entry->m_ObjectClass.type.ToLowercase();
+
+  CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));
+  pItem->SetLabelPreformated(true);
+  pItem->m_strTitle = (const char*)entry->m_Title;
+  pItem->m_bIsFolder = entry->IsContainer();
+
+  // if it's a container, format a string as upnp://uuid/object_id
+  if (pItem->m_bIsFolder) {
+
+    // look for metadata
+    if( ObjectClass.StartsWith("object.container.album.videoalbum") ) {
+      pItem->SetLabelPreformated(false);
+      UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, NULL);
+
+    } else if( ObjectClass.StartsWith("object.container.album.photoalbum")) {
+      //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
+
+    } else if( ObjectClass.StartsWith("object.container.album") ) {
+      pItem->SetLabelPreformated(false);
+      UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, NULL);
+    }
+
+  } else {
+    bool audio = false
+       , image = false
+       , video = false;
+    // set a general content type
+    const char* content = NULL;
+    if (ObjectClass.StartsWith("object.item.videoitem")) {
+      pItem->SetMimeType("video/octet-stream");
+      content = "video";
+      video = true;
+    }
+    else if(ObjectClass.StartsWith("object.item.audioitem")) {
+      pItem->SetMimeType("audio/octet-stream");
+      content = "audio";
+      audio = true;
+    }
+    else if(ObjectClass.StartsWith("object.item.imageitem")) {
+      pItem->SetMimeType("image/octet-stream");
+      content = "image";
+      image = true;
+    }
+
+    // attempt to find a valid resource (may be multiple)
+    PLT_MediaItemResource resource, *res = NULL;
+    if(NPT_SUCCEEDED(NPT_ContainerFind(entry->m_Resources,
+                                       CResourceFinder("http-get", content), resource))) {
+
+      // set metadata
+      if (resource.m_Size != (NPT_LargeSize)-1) {
+        pItem->m_dwSize  = resource.m_Size;
+      }
+      res = &resource;
+    }
+    // look for metadata
+    if(video) {
+        pItem->SetLabelPreformated(false);
+        UPNP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *entry, res);
+
+    } else if(audio) {
+        pItem->SetLabelPreformated(false);
+        UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, res);
+
+    } else if(image) {
+        //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
+
+    }
+  }
+
+  // look for date?
+  if(entry->m_Description.date.GetLength()) {
+    SYSTEMTIME time = {};
+    sscanf(entry->m_Description.date, "%hu-%hu-%huT%hu:%hu:%hu",
+           &time.wYear, &time.wMonth, &time.wDay, &time.wHour, &time.wMinute, &time.wSecond);
+    pItem->m_dateTime = time;
+  }
+
+  // if there is a thumbnail available set it here
+  if(entry->m_ExtraInfo.album_arts.GetItem(0))
+    // only considers first album art
+    pItem->SetArt("thumb", (const char*) entry->m_ExtraInfo.album_arts.GetItem(0)->uri);
+  else if(entry->m_Description.icon_uri.GetLength())
+    pItem->SetArt("thumb", (const char*) entry->m_Description.icon_uri);
+
+  PLT_ProtocolInfo fanart_mask("xbmc.org", "*", "fanart", "*");
+  for(unsigned i = 0; i < entry->m_Resources.GetItemCount(); ++i) {
+    PLT_MediaItemResource& res = entry->m_Resources[i];
+    if(res.m_ProtocolInfo.Match(fanart_mask)) {
+      pItem->SetArt("fanart", (const char*)res.m_Uri);
+      break;
+    }
+  }
+  // set the watched overlay, as this will not be set later due to
+  // content set on file item list
+  if (pItem->HasVideoInfoTag()) {
+    int episodes = pItem->GetVideoInfoTag()->m_iEpisode;
+    int played   = pItem->GetVideoInfoTag()->m_playCount;
+    const std::string& type = pItem->GetVideoInfoTag()->m_type;
+    bool watched(false);
+    if (type == "tvshow" || type == "season") {
+      pItem->SetProperty("totalepisodes", episodes);
+      pItem->SetProperty("numepisodes", episodes);
+      pItem->SetProperty("watchedepisodes", played);
+      pItem->SetProperty("unwatchedepisodes", episodes - played);
+      watched = (episodes && played == episodes);
+    }
+    else if (type == "episode" || type == "movie")
+      watched = (played > 0);
+    pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watched);
+  }
+  return pItem;
+}
+
+bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
+{
+  PLT_MediaItemResource resource;
+
+  // store original path so we remember it
+  item.SetProperty("original_listitem_url",  item.GetPath());
+  item.SetProperty("original_listitem_mime", item.GetMimeType(false));
+
+  // look for a resource with "xbmc-get" protocol
+  // if we can't find one, try to find a valid resource
+  if(NPT_FAILED(NPT_ContainerFind(entry->m_Resources,
+                                  CResourceFinder("xbmc-get"), resource))) {
+    const char* content = NULL;
+    if (entry->m_ObjectClass.type.StartsWith("object.item.audioItem"))
+      content = "audio";
+    else if (entry->m_ObjectClass.type.StartsWith("object.item.imageItem"))
+      content = "image";
+    else if (entry->m_ObjectClass.type.StartsWith("object.item.videoItem"))
+      content = "video";
+
+    if(NPT_FAILED(NPT_ContainerFind(entry->m_Resources,
+                                    CResourceFinder("http-get", content), resource))) {
+      if(entry->m_Resources.GetItemCount()) {
+        // last attempt to find something suitable
+        resource = entry->m_Resources[0];
+      }
+      else {
+        CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - no resources available for object %s", (const char*)entry->m_ObjectID);
+        return false;
+      }
+    }
+  }
+
+  // if it's an item, path is the first url to the item
+  // we hope the server made the first one reachable for us
+  // (it could be a format we dont know how to play however)
+  item.SetPath((const char*) resource.m_Uri);
+
+  // look for content type in protocol info
+  if (resource.m_ProtocolInfo.IsValid()) {
+    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetResource - resource protocol info '%s'",
+              (const char*)(resource.m_ProtocolInfo.ToString()));
+
+    if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
+      item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
+    }
+  } else {
+    CLog::Log(LOGERROR, "CUPnPDirectory::GetResource - invalid protocol info '%s'",
+              (const char*)(resource.m_ProtocolInfo.ToString()));
+  }
+
+  // look for subtitles
+  unsigned subs = 0;
+  for(unsigned r = 0; r < entry->m_Resources.GetItemCount(); r++)
+  {
+    const PLT_MediaItemResource& res  = entry->m_Resources[r];
+    const PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
+    static const char* allowed[] = { "text/srt"
+      , "text/ssa"
+      , "text/sub"
+      , "text/idx" };
+    for(unsigned type = 0; type < sizeof(allowed)/sizeof(allowed[0]); type++)
+    {
+      if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
+      {
+        CStdString prop;
+        prop.Format("upnp:subtitle:%d", ++subs);
+        item.SetProperty(prop, (const char*)res.m_Uri);
+        break;
+      }
+    }
+  }
+  return true;
+}
+
+CFileItemPtr GetFileItem(const NPT_String& uri, const NPT_String& meta)
+{
+    PLT_MediaObjectListReference list;
+    PLT_MediaObject*             object = NULL;
+    CFileItemPtr                 item;
+
+    if (NPT_SUCCEEDED(PLT_Didl::FromDidl(meta, list))) {
+        list->Get(0, object);
+    }
+
+    if (object) {
+        item = BuildObject(object);
+    }
+
+    if (item) {
+        item->SetPath((const char*)uri);
+        GetResource(object, *item);
+    } else {
+        item.reset(new CFileItem((const char*)uri, false));
+    }
+    return item;
 }
 
 } /* namespace UPNP */

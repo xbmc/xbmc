@@ -27,6 +27,7 @@
 
 class PLT_UPnP;
 class PLT_SyncMediaBrowser;
+class PLT_MediaController;
 class PLT_MediaObject;
 class PLT_MediaItemResource;
 
@@ -61,6 +62,7 @@ public:
 
     // class methods
     static CUPnP* GetInstance();
+    static CUPnPServer* GetServer();
     static void   ReleaseInstance(bool bWait);
     static bool   IsInstantiated() { return upnp != NULL; }
 
@@ -71,6 +73,7 @@ private:
 
 public:
     PLT_SyncMediaBrowser*       m_MediaBrowser;
+    PLT_MediaController*        m_MediaController;
 
 private:
     CStdString                  m_IP;

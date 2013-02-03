@@ -57,6 +57,7 @@ public:
     virtual NPT_Result OnStop(PLT_ActionReference& action);
     virtual NPT_Result OnSeek(PLT_ActionReference& action);
     virtual NPT_Result OnSetAVTransportURI(PLT_ActionReference& action);
+    virtual NPT_Result OnSetNextAVTransportURI(PLT_ActionReference& action);
 
     // RenderingControl methods
     virtual NPT_Result OnSetVolume(PLT_ActionReference& action);
@@ -66,8 +67,8 @@ private:
     NPT_Result SetupServices();
     NPT_Result SetupIcons();
     NPT_Result GetMetadata(NPT_String& meta);
-    NPT_Result PlayMedia(const char* uri,
-                         const char* metadata = NULL,
+    NPT_Result PlayMedia(const NPT_String& uri,
+                         const NPT_String& meta,
                          PLT_Action* action = NULL);
     NPT_Mutex m_state;
 };

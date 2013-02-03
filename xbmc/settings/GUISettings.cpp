@@ -827,6 +827,7 @@ void CGUISettings::Initialize()
   AddBool(srvUpnp, "services.upnpserver", 21360, false);
   AddBool(srvUpnp, "services.upnpannounce", 20188, true);
   AddBool(srvUpnp, "services.upnprenderer", 21881, false);
+  AddBool(srvUpnp, "services.upnpcontroller", 21361, false);
 
 #ifdef HAS_WEB_SERVER
   CSettingsCategory* srvWeb = AddCategory(SETTINGS_SERVICE, "webserver", 33101);
