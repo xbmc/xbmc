@@ -23,6 +23,7 @@
 #include "system.h" // until we get sane int types used here
 #include "IAudioCallback.h"
 #include "utils/StdString.h"
+#include "guilib/Geometry.h"
 
 struct TextCacheStruct_t;
 class TiXmlElement;
@@ -69,7 +70,6 @@ public:
 };
 
 class CFileItem;
-class CRect;
 
 enum IPlayerAudioCapabilities
 {

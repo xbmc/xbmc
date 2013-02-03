@@ -25,6 +25,7 @@
 #include "Texture.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "guilib/Geometry.h"
 
 #if defined(HAS_GL)
 

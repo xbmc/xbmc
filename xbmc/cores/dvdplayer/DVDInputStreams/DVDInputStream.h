@@ -25,6 +25,7 @@
 #include "filesystem/IFileTypes.h"
 
 #include "FileItem.h"
+#include "guilib/Geometry.h"
 
 enum DVDStreamType
 {
@@ -46,8 +47,6 @@ enum DVDStreamType
 
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
 #define DVDSTREAM_BLOCK_SIZE_DVD  2048
-
-class CPoint;
 
 namespace PVR
 {
