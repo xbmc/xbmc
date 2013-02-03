@@ -2699,19 +2699,25 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
   return false;
 }
 
-bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items)
+bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, const Filter &filter /* = Filter() */)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
+    Filter extFilter = filter;
     CMusicDbUrl musicUrl;
-    if (!musicUrl.FromString(strBaseDir))
+    SortDescription sorting;
+    if (!musicUrl.FromString(strBaseDir) || !GetFilter(musicUrl, extFilter, sorting))
       return false;
 
     // get years from album list
-    CStdString strSQL="select distinct iYear from album where iYear <> 0";
+    CStdString strSQL = "SELECT DISTINCT albumview.iYear FROM albumview ";
+    extFilter.AppendWhere("albumview.iYear <> 0");
+
+    if (!BuildSQL(strSQL, extFilter, strSQL))
+      return false;
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
