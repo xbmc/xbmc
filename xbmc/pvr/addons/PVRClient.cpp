@@ -29,7 +29,6 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "settings/GUISettings.h"
-#include "Application.h"
 
 using namespace std;
 using namespace ADDON;
@@ -878,10 +877,7 @@ bool CPVRClient::SeekTime(int time, bool backwards, double *startpts)
 {
   if (IsPlaying())
   {
-    // player time is added to time here, which is taken from the epg
-    // we can either substract it again here, or add special pvr cases in players
-    int iChangeTime = time - (int)g_application.m_pPlayer->GetTime();
-    try { return m_pStruct->SeekTime(iChangeTime, backwards, startpts); }
+    try { return m_pStruct->SeekTime(time, backwards, startpts); }
     catch (exception &e) { LogException(e, "SeekTime()"); }
   }
   return false;
