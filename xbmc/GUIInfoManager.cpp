@@ -3555,8 +3555,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
   switch (info)
   {
   case MUSICPLAYER_TITLE:
-    if(g_application.IsPlayingAudio())
-      return GetLabel(PLAYER_TITLE);
+    if (tag.GetTitle().size()) { return tag.GetTitle(); }
     break;
   case MUSICPLAYER_ALBUM:
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
