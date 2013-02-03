@@ -71,7 +71,7 @@ extern "C"
   char* dll_getenv(const char* szKey);
 }
 
-XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPyThread")
+XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPyThread"), stoppedEvent(true)
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
   m_pExecuter   = pExecuter;
@@ -441,7 +441,6 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
-  CSingleLock lock(m_pExecuter->m_critSection);
   if(m_stopping)
     return;
 
@@ -473,6 +472,7 @@ void XBPyThread::stop()
         CLog::Log(LOGERROR, "XBPyThread::stop - script %s didn't stop in %d seconds - let's kill it", m_source, PYTHON_SCRIPT_TIMEOUT / 1000);
         break;
       }
+
       // We can't empty-spin in the main thread and expect scripts to be able to
       // dismantle themselves. Python dialogs aren't normal XBMC dialogs, they rely
       // on TMSG_GUI_PYTHON_DIALOG messages, so pump the message loop.
@@ -487,11 +487,7 @@ void XBPyThread::stop()
       CLog::Log(LOGDEBUG, "XBPyThread::stop - script termination took %dms", PYTHON_SCRIPT_TIMEOUT - timeout.MillisLeft());
     
     //everything which didn't exit by now gets killed
-    {
-      // grabbing the PyLock while holding the XBPython m_critSection is asking for a deadlock
-      CSingleExit ex2(m_pExecuter->m_critSection);
-      PyEval_AcquireLock();
-    }
+    PyEval_AcquireLock();
 
     // since we released the XBPython m_critSection it's possible that the state is cleaned up 
     // so we need to recheck for m_threadState == NULL
@@ -514,7 +510,6 @@ void XBPyThread::stop()
     if (old != NULL)
       PyThreadState_Swap(old);
 
-    lock.Leave();
     PyEval_ReleaseLock();
   }
 }
