@@ -211,6 +211,8 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
 
+  timeout.Set(10000);
+
   /* if no path we want to attach to a already playing player */
   if(path != "") {
     if (file.IsVideoDb())
@@ -258,7 +260,6 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 
 
   /* wait for PLAYING state */
-  timeout.Set(10000);
   do {
     NPT_CHECK_LABEL_SEVERE(m_control->GetTransportInfo(m_delegate->m_device
                                                      , m_delegate->m_instance
