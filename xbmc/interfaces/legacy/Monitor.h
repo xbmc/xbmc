@@ -71,7 +71,7 @@ namespace XBMCAddon
       /**
        * onDatabaseUpdated(database) -- onDatabaseUpdated method.
        * 
-       * database - video/music as stri
+       * database - video/music as string
        * 
        * Will be called when database gets updated and return video or music to indicate which DB has been changed
        */
