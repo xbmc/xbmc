@@ -100,12 +100,16 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
   if (flag & VideoLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-    OnDatabaseUpdated("video");
+     OnDatabaseUpdated("video");
+   else if (strcmp(message, "OnScanStarted") == 0)
+     OnDatabaseScanStarted("video");
   }
   else if (flag & AudioLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-    OnDatabaseUpdated("music");
+     OnDatabaseUpdated("music");
+   else if (strcmp(message, "OnScanStarted") == 0)
+     OnDatabaseScanStarted("music");
   }
   else if (flag & GUI)
   {
@@ -345,6 +349,21 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
   }
  }  
 } 
+
+void XBPython::OnDatabaseScanStarted(const std::string &database)
+{
+  TRACE;
+  CSingleLock lock(m_critSection);
+  if (m_bInitialized)
+  {
+    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+    while (it != m_vecMonitorCallbackList.end())
+    {
+      ((XBMCAddon::xbmc::Monitor*)(*it))->OnDatabaseScanStarted(database);
+      it++;
+    }
+  }  
+}
 
 void XBPython::OnAbortRequested(const CStdString &ID)
 {
