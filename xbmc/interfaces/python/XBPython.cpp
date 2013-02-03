@@ -100,12 +100,12 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
   if (flag & VideoLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-    OnDatabaseUpdated("video");
+     OnDatabaseUpdated("video");
   }
   else if (flag & AudioLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
-    OnDatabaseUpdated("music");
+     OnDatabaseUpdated("music");
   }
   else if (flag & GUI)
   {
