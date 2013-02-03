@@ -95,9 +95,10 @@ using namespace MUSIC_INFO;
  *  %Y - Year
  *  %Z - tvshow title
  *  %a - Date Added
+ *  %p - Last Played
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWa"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWap"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -306,6 +307,10 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'a': // Date Added
     if (movie && movie->m_dateAdded.IsValid())
       value = movie->m_dateAdded.GetAsLocalizedDate();
+    break;
+  case 'p': // Last played
+    if (movie && movie->m_lastPlayed.IsValid())
+      value = movie->m_lastPlayed.GetAsLocalizedDate();
     break;
   }
   if (!value.IsEmpty())
