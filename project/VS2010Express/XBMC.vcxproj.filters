@@ -2798,6 +2798,9 @@
     <ClCompile Include="..\..\xbmc\network\upnp\UPnPInternal.cpp">
       <Filter>network\upnp</Filter>
     </ClCompile>
+     <ClCompile Include="..\..\xbmc\network\upnp\UPnPPlayer.cpp">
+      <Filter>network\upnp</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\network\upnp\UPnPRenderer.cpp">
       <Filter>network\upnp</Filter>
     </ClCompile>
@@ -5603,6 +5606,9 @@
       <Filter>network\upnp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPInternal.h">
+      <Filter>network\upnp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\upnp\UPnPPlayer.h">
       <Filter>network\upnp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPRenderer.h">

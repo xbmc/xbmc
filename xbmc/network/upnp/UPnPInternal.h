@@ -22,6 +22,8 @@
 #include "utils/StdString.h"
 #include "NptTypes.h"
 #include "NptReferences.h"
+#include "NptStrings.h"
+#include "FileItem.h"
 
 class CUPnPServer;
 class CFileItem;
@@ -37,6 +39,14 @@ class CVideoInfoTag;
 
 namespace UPNP
 {
+  class CResourceFinder {
+  public:
+    CResourceFinder(const char* protocol, const char* content = NULL);
+    bool operator()(const PLT_MediaItemResource& resource) const;
+  private:
+    NPT_String m_Protocol;
+    NPT_String m_Content;
+  };
 
   enum EClientQuirks
   {
@@ -87,5 +97,9 @@ namespace UPNP
                                       const PLT_HttpRequestContext* context = NULL,
                                       CUPnPServer*                  upnp_server = NULL);
 
+  CFileItemPtr     BuildObject(PLT_MediaObject* entry);
+
+  bool             GetResource(const PLT_MediaObject* entry, CFileItem& item);
+  CFileItemPtr     GetFileItem(const NPT_String& uri, const NPT_String& meta);
 }
 

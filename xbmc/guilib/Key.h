@@ -315,6 +315,8 @@
 
 #define ACTION_FILTER                 233
 
+#define ACTION_SWITCH_PLAYER          234
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000

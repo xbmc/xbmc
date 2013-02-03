@@ -41,6 +41,7 @@
       <q>Queue</q>
       <f>FastForward</f>
       <r>Rewind</r>
+      <y>SwitchPlayer</y>
       <left>Left</left>
       <right>Right</right>
       <up>Up</up>

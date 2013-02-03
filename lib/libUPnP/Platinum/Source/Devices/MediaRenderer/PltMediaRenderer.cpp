@@ -249,6 +249,9 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     if (name.Compare("SetAVTransportURI", true) == 0) {
         return OnSetAVTransportURI(action);
     }
+    if (name.Compare("SetNextAVTransportURI", true) == 0) {
+        return OnSetNextAVTransportURI(action);
+    }
     if (name.Compare("SetPlayMode", true) == 0) {
         return OnSetPlayMode(action);
     }
@@ -414,6 +417,33 @@ PLT_MediaRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
     serviceAVT->SetStateVariable("AVTransportURIMetaData", metadata);
 
     return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+ |   PLT_MediaRenderer::OnSetAVTransportURI
+ +---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
+{
+  if (m_Delegate) {
+    return m_Delegate->OnSetNextAVTransportURI(action);
+  }
+
+  // default implementation is using state variable
+  NPT_String uri;
+  NPT_CHECK_WARNING(action->GetArgumentValue("NextURI", uri));
+
+  NPT_String metadata;
+  NPT_CHECK_WARNING(action->GetArgumentValue("NextURIMetaData", metadata));
+
+  PLT_Service* serviceAVT;
+  NPT_CHECK_WARNING(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", serviceAVT));
+
+  // update service state variables
+  serviceAVT->SetStateVariable("NextAVTransportURI", uri);
+  serviceAVT->SetStateVariable("NextAVTransportURIMetaData", metadata);
+
+  return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
