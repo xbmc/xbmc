@@ -73,6 +73,7 @@ public:
   virtual ~CFile();
 
   bool Open(const CStdString& strFileName, unsigned int flags = 0);
+  bool IsOpen();
   bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
   unsigned int Read(void* lpBuf, int64_t uiBufSize);
   bool ReadString(char *szLine, int iLineLength);
