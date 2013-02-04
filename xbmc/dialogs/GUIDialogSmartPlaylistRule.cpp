@@ -298,10 +298,15 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldTag)
   {
-    if (m_type == "movies")
-      videodatabase.GetTagsNav(basePath + "9/", items, VIDEODB_CONTENT_MOVIES);
-    else
+    VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+    if (m_type == "tvshows")
+      type = VIDEODB_CONTENT_TVSHOWS;
+    else if (m_type == "musicvideos")
+      type = VIDEODB_CONTENT_MUSICVIDEOS;
+    else if (m_type != "movies")
       return;
+
+    videodatabase.GetTagsNav(basePath + "9/", items, type);
     iLabel = 20459;
   }
   else
