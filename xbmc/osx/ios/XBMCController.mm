@@ -168,7 +168,7 @@ extern NSString* kBRScreenSaverDismissed;
   doubleFingerSingleTap.delaysTouchesBegan = YES;
   doubleFingerSingleTap.numberOfTapsRequired = 1;
   doubleFingerSingleTap.numberOfTouchesRequired = 2;
-  [self.view addGestureRecognizer:doubleFingerSingleTap];
+  [m_glView addGestureRecognizer:doubleFingerSingleTap];
   [doubleFingerSingleTap release];
 
   //1 finger single long tab - right mouse - alernative
@@ -177,7 +177,7 @@ extern NSString* kBRScreenSaverDismissed;
 
   singleFingerSingleLongTap.delaysTouchesBegan = YES;
   singleFingerSingleLongTap.delaysTouchesEnded = YES;
-  [self.view addGestureRecognizer:singleFingerSingleLongTap];
+  [m_glView addGestureRecognizer:singleFingerSingleLongTap];
   [singleFingerSingleLongTap release];
 
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
@@ -187,7 +187,7 @@ extern NSString* kBRScreenSaverDismissed;
   swipeLeft.delaysTouchesBegan = YES;
   swipeLeft.numberOfTouchesRequired = 2;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-  [self.view addGestureRecognizer:swipeLeft];
+  [m_glView addGestureRecognizer:swipeLeft];
   [swipeLeft release];
 
   //for pan gestures with one finger
@@ -196,7 +196,7 @@ extern NSString* kBRScreenSaverDismissed;
 
   pan.delaysTouchesBegan = YES;
   pan.maximumNumberOfTouches = 1;
-  [self.view addGestureRecognizer:pan];
+  [m_glView addGestureRecognizer:pan];
   [pan release];
 
   //for zoom gesture
@@ -205,7 +205,7 @@ extern NSString* kBRScreenSaverDismissed;
 
   pinch.delaysTouchesBegan = YES;
   pinch.delegate = self;
-  [self.view addGestureRecognizer:pinch];
+  [m_glView addGestureRecognizer:pinch];
   [pinch release];
 
   //for rotate gesture
@@ -214,18 +214,20 @@ extern NSString* kBRScreenSaverDismissed;
 
   rotate.delaysTouchesBegan = YES;
   rotate.delegate = self;
-  [self.view addGestureRecognizer:rotate];
+  [m_glView addGestureRecognizer:rotate];
   [rotate release];
 }
 //--------------------------------------------------------------
 - (void) activateKeyboard:(UIView *)view
 {
   [self.view addSubview:view];
+  m_glView.userInteractionEnabled = NO;
 }
 //--------------------------------------------------------------
 - (void) deactivateKeyboard:(UIView *)view
 {
   [view removeFromSuperview];
+  m_glView.userInteractionEnabled = YES; 
 }
 //--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender 
