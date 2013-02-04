@@ -1,7 +1,7 @@
 #include "UPnPServer.h"
 #include "UPnPInternal.h"
 #include "Application.h"
-#include "GUIViewState.h"
+#include "view/GUIViewState.h"
 #include "Platinum.h"
 #include "video/VideoThumbLoader.h"
 #include "music/Artist.h"

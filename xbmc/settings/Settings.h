@@ -45,7 +45,7 @@
 
 #include "settings/VideoSettings.h"
 #include "Profile.h"
-#include "ViewState.h"
+#include "view/ViewState.h"
 #include "guilib/Resolution.h"
 #include "guilib/GraphicContext.h"
 

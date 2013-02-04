@@ -20,7 +20,7 @@
  *
  */
 
-#include "GUIViewState.h"
+#include "view/GUIViewState.h"
 #include "GUIWindowPVRCommon.h"
 
 namespace PVR
