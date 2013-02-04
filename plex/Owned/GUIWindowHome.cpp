@@ -182,7 +182,12 @@ void CPlexSectionFanout::Refresh()
   else if (m_sectionType == PLEX_METADATA_MIXED)
   {
     if (!g_advancedSettings.m_bHideFanouts)
-      LoadSection(MyPlexManager::Get().getPlaylistUrl("/queue/unwatched"), CONTENT_LIST_QUEUE);
+    {
+      if (m_url.Find("queue") != -1)
+        LoadSection(MyPlexManager::Get().getPlaylistUrl("/queue/unwatched"), CONTENT_LIST_QUEUE);
+      else if (m_url.Find("recommendations") != -1)
+        LoadSection(MyPlexManager::Get().getPlaylistUrl("/recommendations/unwatched"), CONTENT_LIST_QUEUE);
+    }
   }
   else
   {
@@ -644,6 +649,17 @@ void CGUIWindowHome::UpdateSections()
       queue->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("queue"));
       queue->SetPath(queue->GetProperty("key").asString());
       newSections.push_back(queue);
+    }
+    
+    CFileItemList recommendations;
+    if (MyPlexManager::Get().getPlaylist(recommendations, "recommendations", true) && recommendations.Size() > 0)
+    {
+      CFileItemPtr rec = CFileItemPtr(new CFileItem(g_localizeStrings.Get(44022)));
+      rec->SetProperty("type", "mixed");
+      rec->SetProperty("typeNumber", PLEX_METADATA_MIXED);
+      rec->SetProperty("key", MyPlexManager::Get().getPlaylistUrl("recommendations"));
+      rec->SetPath(rec->GetProperty("key").asString());
+      newSections.push_back(rec);
     }
 
     // Add the shared content menu if needed.

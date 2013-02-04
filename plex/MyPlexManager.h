@@ -486,6 +486,7 @@ class MyPlexManager
     // Get the queue.
     CFileItemList queue;
     getPlaylist(queue, "queue");
+    getPlaylist(queue, "recommendations");
 
     // Notify.
     CGUIMessage msg2(GUI_MSG_UPDATE_MAIN_MENU, WINDOW_HOME, 300);
