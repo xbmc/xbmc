@@ -21,24 +21,27 @@
 #import <UIKit/UIKit.h>
 #include "IOSKeyboard.h"
 
-@interface KeyboardView : UIView <UIKeyInput>
+@interface KeyboardView : UIView <UITextFieldDelegate>
 {
-    NSMutableString                    *_heading;
-    NSMutableString                    *_text;
-    bool                                _result;
-    bool                                _hiddenInput;
-    CIOSKeyboard                        *_iosKeyboard;
-    bool                                *_canceled;
+  NSMutableString *text;
+  BOOL _confirmed;
+  CIOSKeyboard *_iosKeyboard;
+  bool *_canceled;
+  UITextField *_textField;
+  UILabel *_heading;
+  BOOL _keyboardIsShowing;
+  CGFloat _kbHeight;
 }
 
-@property (nonatomic, retain, getter = GetText) NSMutableString *_text;
-@property (copy, setter = SetHeading:) NSMutableString *_heading;
-@property (getter = GetResult) bool _result;
-@property (setter = SetHiddenInput:) bool _hiddenInput;
-@property (assign, setter = RegisterKeyboard:) CIOSKeyboard *_iosKeyboard;
+@property (nonatomic, retain) NSMutableString *text;
+@property (getter = isConfirmed) BOOL _confirmed;
+@property (assign, setter = registerKeyboard:) CIOSKeyboard *_iosKeyboard;
 
-- (void) setText:(NSMutableString *)text;
+- (void) setDefault:(NSString *)defaultText;
+- (void) setHeading:(NSString *)heading;
+- (void) setHidden:(BOOL)hidden;
 - (void) activate;
 - (void) deactivate;
+- (void) textChanged:(NSNotification*)aNotification;
 - (void) setCancelFlag:(bool *)cancelFlag;
 @end
