@@ -27,15 +27,17 @@
 #import "IOSKeyboardView.h"
 #import "IOSScreenManager.h"
 #import "XBMCController.h"
+#import "XBMCDebugHelpers.h"
 #include "IOSKeyboard.h"
 
 static CEvent keyboardFinishedEvent;
 
+#define INPUT_BOX_HEIGHT 30
+#define SPACE_BETWEEN_INPUT_AND_KEYBOARD 0
+
 @implementation KeyboardView
-@synthesize _text;
-@synthesize _heading;
-@synthesize _result;
-@synthesize _hiddenInput;
+@synthesize text;
+@synthesize _confirmed;
 @synthesize _iosKeyboard;
 
 - (id)initWithFrame:(CGRect)frame
@@ -44,64 +46,121 @@ static CEvent keyboardFinishedEvent;
   if (self) 
   {
     _iosKeyboard = nil;
-    _text = [[NSMutableString alloc] initWithString:@""];
-    _heading = [[NSMutableString alloc] initWithString:@""];    
+    _keyboardIsShowing = NO;
+    _kbHeight = 0;
+    _confirmed = NO;
     _canceled = NULL;
+    
+    self.text = [NSMutableString stringWithString:@""];
 
+   // default input box position above the half screen.
+    CGRect textFieldFrame = CGRectMake(frame.size.width/2, 
+                                       frame.size.height/2-INPUT_BOX_HEIGHT-SPACE_BETWEEN_INPUT_AND_KEYBOARD, 
+                                       frame.size.width/2, 
+                                       INPUT_BOX_HEIGHT);
+    _textField = [[UITextField alloc] initWithFrame:textFieldFrame];
+    _textField.clearButtonMode = UITextFieldViewModeAlways;
+    _textField.borderStyle = UITextBorderStyleRoundedRect;
+    _textField.returnKeyType = UIReturnKeyDone;
+    _textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    _textField.delegate = self;
+    
+    CGRect labelFrame = textFieldFrame;
+    labelFrame.origin.x = 0;
+    _heading = [[UILabel alloc] initWithFrame:labelFrame];
+    _heading.adjustsFontSizeToFitWidth = YES;
+
+    [self addSubview:_heading];
+    [self addSubview:_textField];
+   
+    self.userInteractionEnabled = YES;
+
+    [self setAlpha:0.9];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textChanged:)
+                                                 name:UITextFieldTextDidChangeNotification
+                                               object:_textField];
     [[NSNotificationCenter defaultCenter] addObserver:self 
-                                          selector:@selector(keyboardDidHide:) 
-                                          name:UIKeyboardDidHideNotification
-                                          object:nil];
-    [self setBackgroundColor:[UIColor whiteColor]];
+                                             selector:@selector(keyboardDidHide:) 
+                                                 name:UIKeyboardDidHideNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
   }
   return self;
 }
 
-- (void)drawRect:(CGRect)rect
+- (void)layoutSubviews
 {
-  CGRect rectForText = CGRectInset(rect, 10.0, 5.0);
-  // init with heading
-  NSMutableString *drawText = [[NSMutableString alloc] initWithString:self._heading];;
-  [drawText appendString:@": "];
-  
-  if(_hiddenInput)//hidden input requested
+  CGFloat headingW = 0;
+  if (_heading.text and _heading.text.length > 0)
   {
-    NSMutableString *hiddenText = [[NSMutableString alloc] initWithString:@""];
-    // hide chars with *
-    for(unsigned int i = 0; i < [self._text length]; i++)
-    {
-      [hiddenText appendString:@"*"];
-    }
-    //append to heading
-    [drawText appendString:hiddenText];
-    [hiddenText release];
+    CGSize headingSize = [_heading.text sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+    headingW = MIN(self.bounds.size.width/2, headingSize.width+30);
   }
-  else
-  {
-    //append to heading
-    [drawText appendString:self._text];
-  }
-  //finally draw the text
-  [drawText drawInRect:rectForText withFont:[UIFont systemFontOfSize:14.0]];  
-  [drawText release];
+  CGFloat y = _kbHeight <= 0 ? 
+    _textField.frame.origin.y : 
+    MIN(self.bounds.size.height-_kbHeight, self.bounds.size.height/5*3) - INPUT_BOX_HEIGHT - SPACE_BETWEEN_INPUT_AND_KEYBOARD;
+  _heading.frame = CGRectMake(0, y, headingW, INPUT_BOX_HEIGHT);
+  _textField.frame = CGRectMake(headingW, y, self.bounds.size.width-headingW, INPUT_BOX_HEIGHT);
+}
+
+-(void)keyboardWillShow:(NSNotification *) notification{
+  NSDictionary* info = [notification userInfo];
+  CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+  LOG(@"keyboardWillShow: keyboard frame: %@", NSStringFromCGRect(kbRect));
+  _kbHeight = kbRect.size.width;
+  [self setNeedsLayout];
+  _keyboardIsShowing = YES;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  PRINT_SIGNATURE();
+  [_textField resignFirstResponder];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+  PRINT_SIGNATURE();
+  [self deactivate];
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField{
+  PRINT_SIGNATURE();
+  _confirmed = YES;
+  [_textField resignFirstResponder];
+  return YES;
 }
 
 - (void)keyboardDidHide:(id)sender
 {
-  // user left the keyboard by hiding it
-  // we treat this as a cancel
-  _result = false;
+  PRINT_SIGNATURE();
+  
+  _keyboardIsShowing = NO;
+
+  if (_textField.editing)
+  {
+    LOG(@"kb hide when editing, it could be a language switch");
+    return;
+  }
+
   [self deactivate];
 }
 
 - (void) doActivate:(NSDictionary *)dict
 {
+  PRINT_SIGNATURE();
   [g_xbmcController activateKeyboard:self];
-  [self becomeFirstResponder];
+  [_textField becomeFirstResponder];
+  [self setNeedsLayout];
 }
 
 - (void)activate
 {
+  PRINT_SIGNATURE();
   if([NSThread currentThread] != [NSThread mainThread])
   {
     [self performSelectorOnMainThread:@selector(doActivate:) withObject:nil  waitUntilDone:YES];  
@@ -132,10 +191,7 @@ static CEvent keyboardFinishedEvent;
 
 - (void) doDeactivate:(NSDictionary *)dict
 {
-  // allways calld in the mainloop context
-  // detach the keyboard view from our main controller
-  [g_xbmcController deactivateKeyboard:self];
-
+  PRINT_SIGNATURE();
   // invalidate our callback object
   if(_iosKeyboard)
   {
@@ -143,11 +199,25 @@ static CEvent keyboardFinishedEvent;
     _iosKeyboard = nil;
   }
   // give back the control to whoever
-  [self resignFirstResponder];
+  [_textField resignFirstResponder];
+
+  // allways calld in the mainloop context
+  // detach the keyboard view from our main controller
+  [g_xbmcController deactivateKeyboard:self];
+  
+  // until keyboard did hide, we let the calling thread break loop
+  if (!_keyboardIsShowing)
+  {
+    // no more notification we want to receive.
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    
+    keyboardFinishedEvent.Set();
+  }
 }
 
 - (void) deactivate
 {
+  PRINT_SIGNATURE();
   if([NSThread currentThread] != [NSThread mainThread])
   {
     [self performSelectorOnMainThread:@selector(doDeactivate:) withObject:nil  waitUntilDone:YES];  
@@ -156,77 +226,38 @@ static CEvent keyboardFinishedEvent;
   {
     [self doDeactivate:nil];
   }
-
-  keyboardFinishedEvent.Set();
 }
 
-// yes we can!
-- (BOOL)canBecomeFirstResponder
+- (void) setHeading:(NSString *)heading
 {
-    return YES; 
-}
-
-- (BOOL)hasText 
-{
-    return YES;
-}
-
-- (void) setText:(NSMutableString *)text
-{
-  [_text setString:@""];
-  if([NSThread currentThread] != [NSThread mainThread])
-  {
-    [self performSelectorOnMainThread:@selector(insertText:) withObject:text  waitUntilDone:YES];  
+  if (heading && heading.length > 0) {
+    _heading.text = [NSString stringWithFormat:@" %@:", heading];
   }
-  else
-  {
-    [self insertText:text];
+  else {
+    _heading.text = nil;
   }
 }
 
-- (void)insertText:(NSString *)newText 
+- (void) setDefault:(NSString *)defaultText
 {
-  for(int i=0; i < [newText length];i++)
+  [_textField setText:defaultText];
+  [self textChanged:nil];
+}
+
+- (void) setHidden:(BOOL)hidden
+{
+  [_textField setSecureTextEntry:hidden];
+}
+
+- (void) textChanged:(NSNotification*)aNotification; {
+  if (![self.text isEqualToString:_textField.text])
   {
-    // we leave the keyboard ui if enter was hit
-    // and treat it as an user confirmation
-    if([newText characterAtIndex:i] == '\n')
+    [self.text setString:_textField.text];
+    if (_iosKeyboard)
     {
-      _result = true;
-      [self deactivate];
-      return;
+      _iosKeyboard->fireCallback([self.text UTF8String]);
     }
   }
-  
-  // new typed text gets appended to the
-  // whole string
-  [self._text appendString:newText];
-  [self setNeedsDisplay]; // update the UI
-  
-  // fire the string callback to our
-  // handle realtime filtering and so on
-  if(_iosKeyboard)
-  {
-    _iosKeyboard->fireCallback([_text UTF8String]);
-  }
-}
-
-// handle backspace
-- (void)deleteBackward 
-{
-  if([self._text length] == 0)
-    return;
-
-  NSRange rangeToDelete = NSMakeRange(self._text.length-1, 1);
-  [self._text deleteCharactersInRange:rangeToDelete];
-  [self setNeedsDisplay];
-
-  // fire the string callback to our
-  // handle realtime filtering and so on
-  if(_iosKeyboard)
-  {
-    _iosKeyboard->fireCallback([_text UTF8String]);
-  }  
 }
 
 - (void) setCancelFlag:(bool *)cancelFlag
@@ -236,9 +267,8 @@ static CEvent keyboardFinishedEvent;
 
 - (void) dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-    [_text release];
-    [_heading release];
-    [super dealloc];
+  PRINT_SIGNATURE();
+  self.text = nil;
+  [super dealloc];
 }
 @end
