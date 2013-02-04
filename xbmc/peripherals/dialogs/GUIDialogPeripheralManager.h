@@ -20,7 +20,7 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "GUIViewControl.h"
+#include "view/GUIViewControl.h"
 
 namespace PERIPHERALS
 {

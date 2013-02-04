@@ -21,7 +21,7 @@
 #include "DatabaseManager.h"
 #include "utils/log.h"
 #include "addons/AddonDatabase.h"
-#include "ViewDatabase.h"
+#include "view/ViewDatabase.h"
 #include "TextureDatabase.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"

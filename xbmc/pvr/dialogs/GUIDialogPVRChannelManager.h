@@ -21,7 +21,7 @@
 
 #include "guilib/GUIDialog.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "GUIViewControl.h"
+#include "view/GUIViewControl.h"
 #include "../channels/PVRChannelGroup.h"
 
 namespace PVR

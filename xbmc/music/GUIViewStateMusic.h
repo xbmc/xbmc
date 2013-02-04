@@ -20,7 +20,7 @@
  *
  */
 
-#include "GUIViewState.h"
+#include "view/GUIViewState.h"
 
 class CGUIViewStateWindowMusic : public CGUIViewState
 {

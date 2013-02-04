@@ -34,7 +34,7 @@
 #include "utils/Weather.h"
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
-#include "ViewDatabase.h"
+#include "view/ViewDatabase.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
