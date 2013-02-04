@@ -54,7 +54,7 @@ void InfoExpression::Update(const CGUIListItem *item)
 #define OPERATOR_AND  2
 #define OPERATOR_OR   1
 
-short InfoExpression::GetOperator(const char ch) const
+short InfoExpression::GetOperator(const char ch)
 {
   if (ch == '[')
     return OPERATOR_LB;
@@ -74,9 +74,14 @@ void InfoExpression::Parse(const CStdString &expression)
 {
   stack<char> operators;
   CStdString operand;
+  bool escaped = false;
   for (unsigned int i = 0; i < expression.size(); i++)
   {
-    if (GetOperator(expression[i]))
+    if(expression[i]=='"') {
+      escaped = !escaped;
+    }
+    
+    if (!escaped && GetOperator(expression[i]))
     {
       // cleanup any operand, translate and put into our expression list
       if (!operand.IsEmpty())
@@ -123,7 +128,7 @@ void InfoExpression::Parse(const CStdString &expression)
     {
       operand += expression[i];
     }
-  }
+  }    
 
   if (!operand.empty())
   {
@@ -142,6 +147,9 @@ void InfoExpression::Parse(const CStdString &expression)
     operators.pop();
   }
 
+  if(escaped)
+    CLog::Log(LOGERROR, "No matching \" at the end of your string", expression.c_str());
+  
   // test evaluate
   bool test;
   if (!Evaluate(NULL, test))

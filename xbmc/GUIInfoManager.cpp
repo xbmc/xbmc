@@ -724,8 +724,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
   // trim whitespaces
   CStdString strTest = strCondition;
-  strTest.TrimLeft(" \t\r\n");
-  strTest.TrimRight(" \t\r\n");
+  strTest.TrimLeft(" \t\r\n\"");
+  strTest.TrimRight(" \t\r\n\"");
 
   vector< Property> info;
   SplitInfoString(strTest, info);
@@ -1998,6 +1998,19 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   return false;
 }
 
+bool HasOperator(const CStdString& expression)
+{
+  bool escaped=false;
+  for(unsigned int i=0; i<expression.size(); ++i)
+  {
+    if(expression[i]=='"')
+      escaped=!escaped;
+    if(!escaped && InfoExpression::GetOperator(expression[i]))
+      return true;
+  }
+  return false;
+}
+
 unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
 {
   CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
@@ -2016,7 +2029,7 @@ unsigned int CGUIInfoManager::Register(const CStdString &expression, int context
       return i+1;
   }
 
-  if (condition.find_first_of("|+[]!") != condition.npos)
+  if (HasOperator(condition))
     m_bools.push_back(new InfoExpression(condition, context));
   else
     m_bools.push_back(new InfoSingle(condition, context));
