@@ -115,6 +115,11 @@ void PlexHTHelper::KillOldHelpers()
     CLog::Log(LOGINFO, "Killed XBMCHelper (%d)", pid);
     kill(pid, SIGKILL);
   }
+  
+  /* Remove the old helper launcher */
+  CStdString oldLauncher = getenv("HOME");
+  oldLauncher += "/Library/LaunchAgents/com.plexapp.helper.plist";
+  DeleteFile(oldLauncher.c_str());
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -280,18 +285,40 @@ void PlexHTHelper::Configure()
   if (oldMode != APPLE_REMOTE_DISABLED && m_mode == APPLE_REMOTE_DISABLED)
   {
     Stop();
-    UninstallLauncher();
+    if (oldAlwaysOn)
+      UninstallLauncher();
+    return;
+  }
+  
+  if (oldMode != APPLE_REMOTE_DISABLED && m_mode == APPLE_REMOTE_DISABLED)
+  {
+    Stop();
+    
+    if (m_alwaysOn)
+      UninstallLauncher();
+  }
+  
+  if (m_mode != APPLE_REMOTE_DISABLED)
+  {
+    if (!oldAlwaysOn && m_alwaysOn)
+    {
+      Stop();
+      while (IsRunning())
+        usleep(100);
+    }
+    
+    if (oldAlwaysOn && !m_alwaysOn)
+      UninstallLauncher();
+    
+    if (!IsRunning())
+    {
+      if (m_alwaysOn)
+        InstallLauncher();
+      else
+        Start();
+    }
   }
 
-  // Turning on.
-  if (oldMode == APPLE_REMOTE_DISABLED && m_mode != APPLE_REMOTE_DISABLED)
-    Start();
-
-  // Installation/uninstallation.
-  if (oldAlwaysOn == false && m_alwaysOn == true)
-    InstallLauncher();
-  if (oldAlwaysOn == true && m_alwaysOn == false)
-    UninstallLauncher();
 }
 
 /////////////////////////////////////////////////////////////////////////////
