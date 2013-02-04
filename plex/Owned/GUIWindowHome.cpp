@@ -461,12 +461,6 @@ bool CGUIWindowHome::CheckTimer(const CStdString& strExisting, const CStdString&
 typedef pair<string, HostSourcesPtr> string_sources_pair;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-static bool compare(CFileItemPtr first, CFileItemPtr second)
-{
-  return first->GetLabel() < second->GetLabel();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() ==  GUI_MSG_WINDOW_DEINIT)
@@ -568,10 +562,6 @@ bool CGUIWindowHome::OnMessage(CGUIMessage& message)
       }
     }
       break;
-    case GUI_MSG_UPDATE_SOURCES:
-    {
-      CLog::Log(LOGDEBUG, "GUIWindowHome::OnMessage update sources dude...");
-    }
   }
 
   return ret;
@@ -666,7 +656,6 @@ void CGUIWindowHome::UpdateSections()
     }
 
     // Now add the new ones.
-    bool itemStillExists = false;
     int id = 1000;
     BOOST_FOREACH(CFileItemPtr item, newSections)
     {
