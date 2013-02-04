@@ -36,11 +36,13 @@ public:
     unsigned code() const { return mCode; };
     virtual void LogThrowMessage(const char *prefix) const;
     static bool write_minidump(EXCEPTION_POINTERS* pEp);
+    static bool write_stacktrace(EXCEPTION_POINTERS* pEp);
 protected:
     win32_exception(EXCEPTION_POINTERS*, const char* classname = NULL);
     static void translate(unsigned code, EXCEPTION_POINTERS* info);
 
     inline bool write_minidump() const { return write_minidump(mExceptionPointers); };
+    inline bool write_stacktrace() const { return write_stacktrace(mExceptionPointers); };
 private:
     const char* mWhat;
     Address mWhere;
