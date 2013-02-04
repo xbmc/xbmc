@@ -1468,6 +1468,19 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     updated = true;
   }
 
+  // replace broken default artist scrapers with universal scraper if it's still in use
+  if (GetString("musiclibrary.albumsscraper") == "metadata.albums.allmusic.com")
+  {
+    SetString("musiclibrary.albumsscraper", "metadata.album.universal");
+    updated = true;
+  }
+
+  if (GetString("musiclibrary.artistsscraper") == "metadata.artists.allmusic.com")
+  {
+    SetString("musiclibrary.artistsscraper", "metadata.artists.universal");
+    updated = true;
+  }
+
   if (updated)
     g_settings.Save();
 }
