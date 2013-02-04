@@ -466,7 +466,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
 }
     
 NPT_Result
-ObjectIDValidate(NPT_String& id)
+ObjectIDValidate(const NPT_String& id)
 {
     if(id.Find("..") != -1)
         return NPT_ERROR_NO_SUCH_FILE;
@@ -510,7 +510,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
 
     CLog::Log(LOGINFO, "Received UPnP Browse Metadata request for object '%s'", (const char*)object_id);
     
-    if(ObjectIDValidate(id)) {
+    if(NPT_FAILED(ObjectIDValidate(id))) {
         action->SetError(701, "Incorrect ObjectID.");
         return NPT_FAILURE;
     }
@@ -594,7 +594,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     NPT_String    parent_id = TranslateWMPObjectId(object_id);
     CLog::Log(LOGINFO, "UPnP: Received Browse DirectChildren request for object '%s', with sort criteria %s", object_id, sort_criteria);
     
-    if(ObjectIDValidate(parent_id)) {
+    if(NPT_FAILED(ObjectIDValidate(parent_id))) {
         action->SetError(701, "Incorrect ObjectID.");
         return NPT_FAILURE;
     }
