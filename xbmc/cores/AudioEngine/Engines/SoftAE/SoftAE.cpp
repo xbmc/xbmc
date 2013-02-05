@@ -1475,8 +1475,7 @@ inline void CSoftAE::ProcessSuspend()
 {
   bool sinkIsSuspended = false;
   unsigned int curSystemClock = 0;
-
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
   if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
       !g_advancedSettings.m_streamSilence)
   {
@@ -1488,7 +1487,6 @@ inline void CSoftAE::ProcessSuspend()
   if (m_softSuspend)
     curSystemClock = XbmcThreads::SystemClockMillis();
 #endif
-
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */
   /* continuous streaming (silent stream) in as.xml      */
@@ -1506,7 +1504,10 @@ inline void CSoftAE::ProcessSuspend()
         break;
       }
       else
+      {
+        CLog::Log(LOGDEBUG, "Suspended the Sink");
         sinkIsSuspended = true; //sink has suspended processing
+      }
       sinkLock.Leave();
     }
 
@@ -1525,6 +1526,7 @@ inline void CSoftAE::ProcessSuspend()
       m_reOpen = !m_sink->SoftResume(); // sink returns false if it requires reinit
       sinkIsSuspended = false; //sink processing data
       m_softSuspend   = false; //break suspend loop
+      CLog::Log(LOGDEBUG, "Resumed the Sink");
       break;
     }
   }

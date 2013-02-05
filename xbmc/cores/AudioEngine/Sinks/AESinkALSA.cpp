@@ -1129,6 +1129,27 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
   return true;
 }
 
+bool CAESinkALSA::SoftSuspend()
+{
+  if(m_pcm) // it is still there
+   Deinitialize();
+
+  return true;
+}
+bool CAESinkALSA::SoftResume()
+{
+	// reinit all the clibber
+    if(!m_pcm)
+    {
+      if (!snd_config)
+	    snd_config_update();
+
+      Initialize(m_initFormat, m_initDevice);
+    }
+   //we want that AE loves us again
+   return false; // force reinit
+}
+
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
 {
   va_list arg;
