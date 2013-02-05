@@ -35,8 +35,6 @@ SRCS=AlarmClock.cpp \
      JSONVariantWriter.cpp \
      LabelFormatter.cpp \
      LangCodeExpander.cpp \
-     LCD.cpp \
-     LCDFactory.cpp \
      log.cpp \
      md5.cpp \
      Observer.cpp \

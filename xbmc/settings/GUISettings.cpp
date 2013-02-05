@@ -449,9 +449,6 @@ void CGUISettings::Initialize()
   // Todo: Implement test pattern for DX
   AddString(vs, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
 #endif
-#if defined(HAS_LCD)
-  AddBool(vs, "videoscreen.haslcd", 4501, false);
-#endif
 
   CSettingsCategory* ao = AddCategory(SETTINGS_SYSTEM, "audiooutput", 772);
 

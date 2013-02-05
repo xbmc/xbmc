@@ -48,9 +48,6 @@
 #include "network/httprequesthandler/HTTPWebinterfaceAddonsHandler.h"
 #endif
 #endif
-#ifdef HAS_LCD
-#include "utils/LCDFactory.h"
-#endif
 #include "guilib/GUIControlProfiler.h"
 #include "utils/LangCodeExpander.h"
 #include "GUIInfoManager.h"
@@ -410,9 +407,6 @@ CApplication::CApplication(void)
   XInitThreads();
 #endif
 
-  //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
-  m_bIsPaused = false;
-
   /* for now always keep this around */
 #ifdef HAS_KARAOKE
   m_pKaraokeMgr = new CKaraokeLyricsManager();
@@ -611,7 +605,6 @@ bool CApplication::Create()
   CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
-  CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
 
   if (!CLog::Init(CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str()))
   {
@@ -1853,19 +1846,6 @@ void CApplication::StopPVRManager()
   g_EpgContainer.Stop();
 }
 
-void CApplication::DimLCDOnPlayback(bool dim)
-{
-#ifdef HAS_LCD
-  if (g_lcd)
-  {
-    if (dim)
-      g_lcd->DisableOnPlayback(IsPlayingVideo(), IsPlayingAudio());
-    else
-      g_lcd->SetBackLight(1);
-  }
-#endif
-}
-
 void CApplication::StartServices()
 {
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
@@ -1880,15 +1860,6 @@ void CApplication::StartServices()
   g_playlistPlayer.SetRepeat(PLAYLIST_VIDEO, g_settings.m_bMyVideoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   g_playlistPlayer.SetShuffle(PLAYLIST_VIDEO, g_settings.m_bMyVideoPlaylistShuffle);
   CLog::Log(LOGNOTICE, "DONE initializing playlistplayer");
-
-#ifdef HAS_LCD
-  CLCDFactory factory;
-  g_lcd = factory.Create();
-  if (g_lcd)
-  {
-    g_lcd->Initialize();
-  }
-#endif
 }
 
 void CApplication::StopServices()
@@ -2960,39 +2931,6 @@ bool CApplication::OnAction(const CAction &action)
   return false;
 }
 
-void CApplication::UpdateLCD()
-{
-#ifdef HAS_LCD
-  static unsigned int lTickCount = 0;
-
-  if (!g_lcd || !g_guiSettings.GetBool("videoscreen.haslcd"))
-    return ;
-  unsigned int lTimeOut = 1000;
-  if ( m_iPlaySpeed != 1)
-    lTimeOut = 0;
-  if ( (XbmcThreads::SystemClockMillis() - lTickCount) >= lTimeOut)
-  {
-    if (g_application.NavigationIdleTime() < 5)
-      g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);
-    else if (g_PVRManager.IsPlayingTV())
-      g_lcd->Render(ILCD::LCD_MODE_PVRTV);
-    else if (g_PVRManager.IsPlayingRadio())
-      g_lcd->Render(ILCD::LCD_MODE_PVRRADIO);
-    else if (IsPlayingVideo())
-      g_lcd->Render(ILCD::LCD_MODE_VIDEO);
-    else if (IsPlayingAudio())
-      g_lcd->Render(ILCD::LCD_MODE_MUSIC);
-    else if (IsInScreenSaver())
-      g_lcd->Render(ILCD::LCD_MODE_SCREENSAVER);
-    else
-      g_lcd->Render(ILCD::LCD_MODE_GENERAL);
-
-    // reset tick count
-    lTickCount = XbmcThreads::SystemClockMillis();
-  }
-#endif
-}
-
 void CApplication::FrameMove(bool processEvents, bool processGUI)
 {
   MEASURE_FUNCTION;
@@ -3020,8 +2958,6 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       g_graphicsContext.Unlock();
       CWinEvents::MessagePump();
     }
-
-    UpdateLCD();
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
     // Read the input from a remote
@@ -3674,15 +3610,6 @@ void CApplication::Stop(int exitCode)
   CLog::Log(LOGNOTICE, "stop python");
   g_pythonParser.FreeResources();
 #endif
-#ifdef HAS_LCD
-    if (g_lcd)
-    {
-      g_lcd->Stop();
-      delete g_lcd;
-      g_lcd=NULL;
-    }
-#endif
-
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindow();
     g_Windowing.DestroyWindowSystem();
@@ -4628,12 +4555,6 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
 {
   bool result;
 
-#ifdef HAS_LCD
-    // turn on lcd backlight
-    if (g_lcd && g_advancedSettings.m_lcdDimOnScreenSave)
-      g_lcd->SetBackLight(1);
-#endif
-
   // First reset DPMS, if active
   if (m_dpmsIsActive)
   {
@@ -4776,12 +4697,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), m_screenSaver))
     m_screenSaver.reset(new CScreenSaver(""));
 
-#ifdef HAS_LCD
-  // turn off lcd backlight if requested
-  if (g_lcd && g_advancedSettings.m_lcdDimOnScreenSave)
-    g_lcd->SetBackLight(0);
-#endif
-
   CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverActivated");
 
   // disable screensaver lock from the login screen
@@ -4914,8 +4829,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
       CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
-      DimLCDOnPlayback(true);
-
       if (IsPlayingAudio())
       {
         // Start our cdg parser as appropriate
@@ -5043,7 +4956,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!IsPlaying())
       {
         g_audioManager.Enable(true);
-        DimLCDOnPlayback(false);
       }
 
       if (!IsPlayingVideo())
@@ -5238,15 +5150,6 @@ void CApplication::ProcessSlow()
     m_pKaraokeMgr->ProcessSlow();
 #endif
 
-  // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
-  if(IsPaused() != m_bIsPaused)
-  {
-#ifdef HAS_LCD
-    DimLCDOnPlayback(m_bIsPaused);
-#endif
-    m_bIsPaused = IsPaused();
-  }
-
   if (!IsPlayingVideo())
     g_largeTextureManager.CleanupUnusedImages();
 
@@ -5283,18 +5186,6 @@ void CApplication::ProcessSlow()
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
     g_RemoteControl.Initialize();
-#endif
-
-#ifdef HAS_LCD
-  // attempt to reinitialize the LCD (e.g. after resuming from sleep)
-  if (!IsPlayingVideo())
-  {
-    if (g_lcd && !g_lcd->IsConnected())
-    {
-      g_lcd->Stop();
-      g_lcd->Initialize();
-    }
-  }
 #endif
 
   if (!IsPlayingVideo())

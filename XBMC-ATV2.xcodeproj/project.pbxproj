@@ -231,8 +231,6 @@
 		DFBE7FFD15F7D1A100D7D102 /* PltProtocolInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FFA15F7D1A100D7D102 /* PltProtocolInfo.cpp */; };
 		DFBE7FFF15F7D1B900D7D102 /* NptAppleAutoreleasePool.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFBE7FFE15F7D1B900D7D102 /* NptAppleAutoreleasePool.mm */; };
 		DFBE800215F7D1EE00D7D102 /* NptCocoaEnviroment.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFBE800115F7D1EE00D7D102 /* NptCocoaEnviroment.mm */; };
-		DFC0F8F51613A1960066D598 /* XLCDproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFC0F8F31613A1960066D598 /* XLCDproc.cpp */; };
-		DFC0F91C1613A3A00066D598 /* LCDFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFC0F91A1613A3A00066D598 /* LCDFactory.cpp */; };
 		DFC5393A1526659D00D5FD5C /* AppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = DFC539391526659D00D5FD5C /* AppIcon.png */; };
 		DFCA6B0C15224684000BFAAE /* HTTPJsonRpcHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6B0015224684000BFAAE /* HTTPJsonRpcHandler.cpp */; };
 		DFCA6B0D15224684000BFAAE /* HTTPVfsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6B0215224684000BFAAE /* HTTPVfsHandler.cpp */; };
@@ -815,7 +813,6 @@
 		F56C7B2C131EC155000AD0F6 /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7741131EC154000AD0F6 /* InfoLoader.cpp */; };
 		F56C7B2D131EC155000AD0F6 /* LabelFormatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7743131EC154000AD0F6 /* LabelFormatter.cpp */; };
 		F56C7B2E131EC155000AD0F6 /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7745131EC154000AD0F6 /* JobManager.cpp */; };
-		F56C7B2F131EC155000AD0F6 /* LCD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7748131EC154000AD0F6 /* LCD.cpp */; };
 		F56C7B30131EC155000AD0F6 /* log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C774A131EC154000AD0F6 /* log.cpp */; };
 		F56C7B31131EC155000AD0F6 /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C774C131EC154000AD0F6 /* md5.cpp */; };
 		F56C7B34131EC155000AD0F6 /* PerformanceSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7752131EC154000AD0F6 /* PerformanceSample.cpp */; };
@@ -1495,10 +1492,6 @@
 		DFBE800015F7D1D100D7D102 /* NptAutoreleasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptAutoreleasePool.h; path = lib/libUPnP/Neptune/Source/Core/NptAutoreleasePool.h; sourceTree = SOURCE_ROOT; };
 		DFBE800115F7D1EE00D7D102 /* NptCocoaEnviroment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptCocoaEnviroment.mm; path = lib/libUPnP/Neptune/Source/System/Cocoa/NptCocoaEnviroment.mm; sourceTree = SOURCE_ROOT; };
 		DFBE800C15F7D2B000D7D102 /* PltUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltUtilities.h; sourceTree = "<group>"; };
-		DFC0F8F31613A1960066D598 /* XLCDproc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XLCDproc.cpp; sourceTree = "<group>"; };
-		DFC0F8F41613A1960066D598 /* XLCDproc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLCDproc.h; sourceTree = "<group>"; };
-		DFC0F91A1613A3A00066D598 /* LCDFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LCDFactory.cpp; sourceTree = "<group>"; };
-		DFC0F91B1613A3A00066D598 /* LCDFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCDFactory.h; sourceTree = "<group>"; };
 		DFC539391526659D00D5FD5C /* AppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = AppIcon.png; path = media/AppIcon.png; sourceTree = "<group>"; };
 		DFCA6B0015224684000BFAAE /* HTTPJsonRpcHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTPJsonRpcHandler.cpp; sourceTree = "<group>"; };
 		DFCA6B0115224684000BFAAE /* HTTPJsonRpcHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPJsonRpcHandler.h; sourceTree = "<group>"; };
@@ -2802,8 +2795,6 @@
 		F56C7745131EC154000AD0F6 /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
 		F56C7746131EC154000AD0F6 /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
 		F56C7747131EC154000AD0F6 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
-		F56C7748131EC154000AD0F6 /* LCD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LCD.cpp; sourceTree = "<group>"; };
-		F56C7749131EC154000AD0F6 /* LCD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LCD.h; sourceTree = "<group>"; };
 		F56C774A131EC154000AD0F6 /* log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = log.cpp; sourceTree = "<group>"; };
 		F56C774B131EC154000AD0F6 /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
 		F56C774C131EC154000AD0F6 /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
@@ -5281,8 +5272,6 @@
 				F56C75BA131EC153000AD0F6 /* XFileUtils.h */,
 				F56C75BB131EC153000AD0F6 /* XHandle.cpp */,
 				F56C75BC131EC153000AD0F6 /* XHandle.h */,
-				DFC0F8F31613A1960066D598 /* XLCDproc.cpp */,
-				DFC0F8F41613A1960066D598 /* XLCDproc.h */,
 				F56C75BD131EC153000AD0F6 /* XMemUtils.cpp */,
 				F56C75BE131EC153000AD0F6 /* XMemUtils.h */,
 				F56C75C3131EC153000AD0F6 /* XTimeUtils.cpp */,
@@ -5804,10 +5793,6 @@
 				F56C7744131EC154000AD0F6 /* LabelFormatter.h */,
 				F56C771D131EC154000AD0F6 /* LangCodeExpander.cpp */,
 				F56C771E131EC154000AD0F6 /* LangCodeExpander.h */,
-				F56C7748131EC154000AD0F6 /* LCD.cpp */,
-				F56C7749131EC154000AD0F6 /* LCD.h */,
-				DFC0F91A1613A3A00066D598 /* LCDFactory.cpp */,
-				DFC0F91B1613A3A00066D598 /* LCDFactory.h */,
 				F56C774A131EC154000AD0F6 /* log.cpp */,
 				F56C774B131EC154000AD0F6 /* log.h */,
 				F56C770F131EC153000AD0F6 /* MathUtils.h */,
@@ -7239,7 +7224,6 @@
 				F56C7B2C131EC155000AD0F6 /* InfoLoader.cpp in Sources */,
 				F56C7B2D131EC155000AD0F6 /* LabelFormatter.cpp in Sources */,
 				F56C7B2E131EC155000AD0F6 /* JobManager.cpp in Sources */,
-				F56C7B2F131EC155000AD0F6 /* LCD.cpp in Sources */,
 				F56C7B30131EC155000AD0F6 /* log.cpp in Sources */,
 				F56C7B31131EC155000AD0F6 /* md5.cpp in Sources */,
 				F56C7B34131EC155000AD0F6 /* PerformanceSample.cpp in Sources */,
@@ -7620,8 +7604,6 @@
 				DF23461315FA671900A934F6 /* UPnPServer.cpp in Sources */,
 				DFAB4C0F15FCCB4300E1BAF6 /* TagLibVFSStream.cpp in Sources */,
 				DFAB4C1015FCCB4300E1BAF6 /* TagLoaderTagLib.cpp in Sources */,
-				DFC0F8F51613A1960066D598 /* XLCDproc.cpp in Sources */,
-				DFC0F91C1613A3A00066D598 /* LCDFactory.cpp in Sources */,
 				DFA0F9551618E1CD00611CBB /* DVDOverlayCodec.cpp in Sources */,
 				DF91D899161B759B004E6637 /* AddonsOperations.cpp in Sources */,
 				7C4458DB161E209100A905F6 /* Screenshot.cpp in Sources */,
