@@ -8,20 +8,20 @@ exec_prefix_set=no
 
 usage()
 {
-	cat <<EOF
+        cat <<EOF
 Usage: dvdnav-config [OPTIONS] [LIBRARIES]
 Options:
-	[--prefix[=DIR]]
-	[--exec-prefix[=DIR]]
-	[--version]
+        [--prefix[=DIR]]
+        [--exec-prefix[=DIR]]
+        [--version]
         [--libs]
-	[--cflags]
+        [--cflags]
 EOF
-	exit $1
+        exit $1
 }
 
 if test $# -eq 0; then
-	usage 1 1>&2
+        usage 1 1>&2
 fi
 
 while test $# -gt 0; do
@@ -64,11 +64,11 @@ while test $# -gt 0; do
 done
 
 if test "$echo_prefix" = "yes"; then
-	echo $prefix
+        echo $prefix
 fi
 
 if test "$echo_exec_prefix" = "yes"; then
-	echo $exec_prefix
+        echo $exec_prefix
 fi
 
 if test "$echo_cflags" = "yes"; then

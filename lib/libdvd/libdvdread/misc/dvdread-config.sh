@@ -2,19 +2,19 @@ dvdreadlib="-ldvdread"
 
 usage()
 {
-	cat <<EOF
+        cat <<EOF
 Usage: dvdread-config [OPTIONS] [LIBRARIES]
 Options:
-	[--prefix[=DIR]]
-	[--version]
+        [--prefix[=DIR]]
+        [--version]
         [--libs]
-	[--cflags]
+        [--cflags]
 EOF
-	exit $1
+        exit $1
 }
 
 if test $# -eq 0; then
-	usage 1 1>&2
+        usage 1 1>&2
 fi
 
 while test $# -gt 0; do
@@ -44,7 +44,7 @@ while test $# -gt 0; do
 done
 
 if test "$echo_prefix" = "yes"; then
-	echo $prefix
+        echo $prefix
 fi
 
 if test "$echo_cflags" = "yes"; then
@@ -53,4 +53,4 @@ fi
 
 if test "$echo_libs" = "yes"; then
       echo -L$libdir $dvdreadlib
-fi      
+fi

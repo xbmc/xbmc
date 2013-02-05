@@ -1,24 +1,26 @@
-#ifndef BSWAP_H_INCLUDED
-#define BSWAP_H_INCLUDED
-
 /*
  * Copyright (C) 2000, 2001 Billy Biggs <vektor@dumbterm.net>,
- *                          Håkan Hjort <d95hjort@dtek.chalmers.se>
+ *                          HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * libdvdread is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
+#ifndef LIBDVDREAD_BSWAP_H
+#define LIBDVDREAD_BSWAP_H
 
 #include <config.h>
 
@@ -71,16 +73,16 @@
  * functionality!
  */
 
-#elif defined(__FreeBSD__) || defined(__sun) || defined(__bsdi__) || defined(WIN32) || defined(__CYGWIN__) || defined(__BEOS__)
-#define B2N_16(x) \
- x = ((((x) & 0xff00) >> 8) | \
+#elif defined(__FreeBSD__) || defined(__sun) || defined(__bsdi__) || defined(WIN32) || defined(__CYGWIN__) || defined(__BEOS__) || defined(__OS2__)
+#define B2N_16(x)                             \
+ x = ((((x) & 0xff00) >> 8) |                 \
       (((x) & 0x00ff) << 8))
-#define B2N_32(x) \
- x = ((((x) & 0xff000000) >> 24) | \
-      (((x) & 0x00ff0000) >>  8) | \
-      (((x) & 0x0000ff00) <<  8) | \
+#define B2N_32(x)                             \
+ x = ((((x) & 0xff000000) >> 24) |            \
+      (((x) & 0x00ff0000) >>  8) |            \
+      (((x) & 0x0000ff00) <<  8) |            \
       (((x) & 0x000000ff) << 24))
-#define B2N_64(x) \
+#define B2N_64(x)                             \
  x = ((((x) & 0xff00000000000000ULL) >> 56) | \
       (((x) & 0x00ff000000000000ULL) >> 40) | \
       (((x) & 0x0000ff0000000000ULL) >> 24) | \
@@ -101,4 +103,4 @@
 
 #endif /* WORDS_BIGENDIAN */
 
-#endif /* BSWAP_H_INCLUDED */
+#endif /* LIBDVDREAD_BSWAP_H */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001, 2002, 2003 Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001, 2002, 2003 HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
  * Much of the contents in this file is based on VOBDUMP.
  *
@@ -19,18 +19,16 @@
  * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-#include "config.h"
 
 #include <stdio.h>
 #include <inttypes.h>
 
-#include "nav_types.h"
-#include "nav_print.h"
-#include "ifo_print.h"
+#include "dvdread/nav_types.h"
+#include "dvdread/nav_print.h"
+#include "dvdread/ifo_print.h"
 
 static void navPrint_PCI_GI(pci_gi_t *pci_gi) {
   int i;
@@ -69,7 +67,7 @@ static void navPrint_NSML_AGLI(nsml_agli_t *nsml_agli) {
   for(i = 0; i < 9; i++)
     if(nsml_agli->nsml_agl_dsta[i])
       printf("nsml_agl_c%d_dsta  0x%08x\n", i + 1,
-	     nsml_agli->nsml_agl_dsta[i]);
+             nsml_agli->nsml_agl_dsta[i]);
 }
 
 static void navPrint_HL_GI(hl_gi_t *hl_gi, int *btngr_ns, int *btn_ns) {
@@ -110,8 +108,8 @@ static void navPrint_BTN_COLIT(btn_colit_t *btn_colit) {
   for(i = 0; i < 3; i++)
     for(j = 0; j < 2; j++)
       printf("btn_cqoli %d  %s_coli:  %08x\n",
-	     i, (j == 0) ? "sl" : "ac",
-	     btn_colit->btn_coli[i][j]);
+             i, (j == 0) ? "sl" : "ac",
+             btn_colit->btn_coli[i][j]);
 }
 
 static void navPrint_BTNIT(btni_t *btni_table, int btngr_ns, int btn_ns) {
@@ -127,21 +125,21 @@ static void navPrint_BTNIT(btni_t *btni_table, int btngr_ns, int btn_ns) {
   for(i = 0; i < btngr_ns; i++) {
     for(j = 0; j < (36 / btngr_ns); j++) {
       if(j < btn_ns) {
-	btni_t *btni = &btni_table[(36 / btngr_ns) * i + j];
+        btni_t *btni = &btni_table[(36 / btngr_ns) * i + j];
 
-	printf("group %d btni %d:  ", i+1, j+1);
-	printf("btn_coln %d, auto_action_mode %d\n",
-	       btni->btn_coln, btni->auto_action_mode);
-	printf("coords   (%d, %d) .. (%d, %d)\n",
-	       btni->x_start, btni->y_start, btni->x_end, btni->y_end);
+        printf("group %d btni %d:  ", i+1, j+1);
+        printf("btn_coln %d, auto_action_mode %d\n",
+               btni->btn_coln, btni->auto_action_mode);
+        printf("coords   (%d, %d) .. (%d, %d)\n",
+               btni->x_start, btni->y_start, btni->x_end, btni->y_end);
 
-	printf("up %d, ", btni->up);
-	printf("down %d, ", btni->down);
-	printf("left %d, ", btni->left);
-	printf("right %d\n", btni->right);
+        printf("up %d, ", btni->up);
+        printf("down %d, ", btni->down);
+        printf("left %d, ", btni->left);
+        printf("right %d\n", btni->right);
 
-	/* ifoPrint_COMMAND(&btni->cmd); */
-	printf("\n");
+        /* ifoPrint_COMMAND(&btni->cmd); */
+        printf("\n");
       }
     }
   }
@@ -205,14 +203,14 @@ static void navPrint_SML_AGLI(sml_agli_t *sml_agli) {
   printf("sml_agli:\n");
   for(i = 0; i < 9; i++) {
     printf("agl_c%d address: 0x%08x size 0x%04x\n", i,
-	   sml_agli->data[i].address, sml_agli->data[i].size);
+           sml_agli->data[i].address, sml_agli->data[i].size);
   }
 }
 
 static void navPrint_VOBU_SRI(vobu_sri_t *vobu_sri) {
   int i;
   int stime[19] = { 240, 120, 60, 20, 15, 14, 13, 12, 11,
-		     10,   9,  8,  7,  6,  5,  4,  3,  2, 1};
+                     10,   9,  8,  7,  6,  5,  4,  3,  2, 1};
   printf("vobu_sri:\n");
   printf("Next VOBU with Video %08x\n", vobu_sri->next_video);
   for(i = 0; i < 19; i++) {
@@ -248,5 +246,3 @@ void navPrint_DSI(dsi_t *dsi) {
   navPrint_VOBU_SRI(&dsi->vobu_sri);
   navPrint_SYNCI(&dsi->synci);
 }
-
-

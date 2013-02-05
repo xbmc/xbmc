@@ -1,17 +1,17 @@
-%define	prefix  @prefix@
+%define prefix  @prefix@
 %define name    @PACKAGE_NAME@
 %define ver     @PACKAGE_VERSION@
 %define rel     0
 
-Name:		%{name}
-Summary:	Low level DVD access library
-Version:	%{ver}
-Release:	%{rel}
-Group:		Development/Libraries
-Copyright:	GPL
-Url:		http://dvd.sourceforge.net/
-Source:		%{name}-%{version}.tar.gz
-Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+Name:           %{name}
+Summary:        Low level DVD access library
+Version:        %{ver}
+Release:        %{rel}
+Group:          Development/Libraries
+Copyright:      GPL
+Url:            http://dvd.sourceforge.net/
+Source:         %{name}-%{version}.tar.gz
+Buildroot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 libdvdread provides support to applications wishing to make use of basic
@@ -21,7 +21,7 @@ DVD reading features.
 %setup
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix} 
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix}
 make
 
 %install

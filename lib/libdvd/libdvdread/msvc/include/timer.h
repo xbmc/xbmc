@@ -5,23 +5,23 @@
 #ifndef _ITIMER_
 #define _ITIMER_
 
-#define ITIMER_REAL		0
-#define ITIMER_VIRTUAL	1
+#define ITIMER_REAL             0
+#define ITIMER_VIRTUAL  1
 
-//	time reference
-//	----------------------------------
+//      time reference
+//      ----------------------------------
 //
-//	1,000			milliseconds / sec
-//	1,000,000		microseconds / sec
-//	1,000,000,000	nanoseconds  / sec
+//      1,000                   milliseconds / sec
+//      1,000,000               microseconds / sec
+//      1,000,000,000   nanoseconds  / sec
 //
 //  timeval.time_sec  = seconds
 //  timeval.time_usec = microseconds
 
 struct itimerval
 {
-	struct timeval it_interval;    /* timer interval */
-	struct timeval it_value;       /* current value */
+        struct timeval it_interval;    /* timer interval */
+        struct timeval it_value;       /* current value */
 };
 
 struct timezone {

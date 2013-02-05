@@ -14,7 +14,7 @@ getdir() {
   else
     filelist=`ls`
   fi
-  
+
   for file in $filelist; do
 
     if test -d $file -a $file != "CVS" -a $file != $distdir; then
@@ -33,7 +33,7 @@ getdir() {
 
         if test ! -e $distfile; then
           missingfile=${orifile##$topdir}
-	  echo "${missingfile#/} is missing in tarball" >> $logerror
+          echo "${missingfile#/} is missing in tarball" >> $logerror
         fi
 
       fi
@@ -60,7 +60,7 @@ main() {
 
   echo " * Log is ${log##*/}"
   echo " * Error log is ${logerror##*/}"
-  
+
 }
 
 main
