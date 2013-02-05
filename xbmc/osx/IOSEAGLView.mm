@@ -73,7 +73,7 @@
   CGRect frame = [IOSScreenManager getLandscapeResolution: currentScreen]; 
   CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];  
   //allow a maximum framebuffer size of 1080p
-  //needed for tvout on iPad3 and maybe AppleTV3
+  //needed for tvout on iPad3/4 and iphone4/5 and maybe AppleTV3
   if(frame.size.width * frame.size.height > 2073600)
     return;
   //resize the layer - ios will delay this
@@ -115,11 +115,11 @@
     }
     
     //if no retina display scale detected yet -
-    //ensure retina resolution on ipad3's mainScreen
+    //ensure retina resolution on supported devices mainScreen
     //even on older iOS SDKs
-    if (ret == 1.0 && screen == [UIScreen mainScreen] && DarwinIsIPad3())
+    if (ret == 1.0 && screen == [UIScreen mainScreen] && DarwinHasRetina())
     {
-      ret = 2.0;//iPad3 has scale factor 2 (like iPod 4g, iPhone4 and iPhone4s)
+      ret = 2.0;//all retina devices have a scale factor of 2.0
     }
   }
   return ret;
