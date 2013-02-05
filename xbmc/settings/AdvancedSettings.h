@@ -173,11 +173,6 @@ class CAdvancedSettings
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
 
-    bool m_lcdHeartbeat;
-    bool m_lcdDimOnScreenSave;
-    int m_lcdScrolldelay;
-    CStdString m_lcdHostName;
-
     int m_songInfoDuration;
     int m_logLevel;
     int m_logLevelHint;

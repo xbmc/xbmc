@@ -1784,9 +1784,7 @@ msgctxt "#447"
 msgid "Autorun media"
 msgstr ""
 
-msgctxt "#448"
-msgid "LCD"
-msgstr ""
+#empty string with id 448
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#449"
@@ -3747,14 +3745,7 @@ msgctxt "#2101"
 msgid "Newer version needed - See log"
 msgstr ""
 
-#empty strings from id 2102 to 4500
-
-#: xbmc/settings/GUISettings.cpp
-msgctxt "#4501"
-msgid "Enable LCD/VFD"
-msgstr ""
-
-#empty strings from id 4502 to 9999
+#empty strings from id 2102 to 9999
 
 msgctxt "#10000"
 msgid "Home"
@@ -9034,19 +9025,13 @@ msgctxt "#20309"
 msgid "Make new folder"
 msgstr ""
 
-msgctxt "#20310"
-msgid "Dim LCD on playback"
-msgstr ""
+#empty string with id 20310
 
 msgctxt "#20311"
 msgid "Unknown or onboard (protected)"
 msgstr ""
 
-msgctxt "#20312"
-msgid "Dim LCD on paused"
-msgstr ""
-
-#empty string with id 20313
+#empty strings from id 20312 to 20313
 
 msgctxt "#20314"
 msgid "Videos - Library"

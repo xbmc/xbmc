@@ -143,7 +143,6 @@
   #endif
   #define HAS_ZEROCONF
   #define HAS_LINUX_NETWORK
-  #define HAS_LCD
 #endif
 
 /*****************
@@ -155,7 +154,6 @@
 #define HAS_ZEROCONF
 #define HAS_AVAHI
 #endif
-#define HAS_LCD
 #ifdef HAVE_DBUS
 #define HAS_DBUS
 #endif
@@ -237,7 +235,6 @@
 #if defined(TARGET_ANDROID)
 #undef HAS_LINUX_EVENTS
 #undef HAS_LIRC
-#undef HAS_LCD
 #endif
 
 // EGL detected. Dont use GLX!

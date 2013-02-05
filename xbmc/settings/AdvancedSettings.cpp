@@ -127,11 +127,6 @@ void CAdvancedSettings::Initialize()
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
 
-  m_lcdHeartbeat = false;
-  m_lcdDimOnScreenSave = false;
-  m_lcdScrolldelay = 1;
-  m_lcdHostName = "localhost";
-
   m_songInfoDuration = 10;
 
   m_cddbAddress = "freedb.freedb.org";
@@ -676,14 +671,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetFloat(pElement, "blackbarcompensation", m_slideshowBlackBarCompensation, 0.0f, 50.0f);
   }
 
-  pElement = pRootElement->FirstChildElement("lcd");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
-    XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
-    XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
-    XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
-  }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
