@@ -47,6 +47,15 @@
 
 using namespace ANNOUNCEMENT;
 
+#define SAFE_COPY(type,dest,src) \
+  type dest; \
+  { \
+    CSingleLock lock(m_critSection); \
+    if (!m_bInitialized) return; \
+    dest = src; \
+  }
+    
+
 namespace PythonBindings {
   void initModule_xbmcgui(void);
   void initModule_xbmc(void);
@@ -83,15 +92,12 @@ XBPython::~XBPython()
 void XBPython::OnPlayBackEnded()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackEnded();
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackEnded();
+    it++;
   }
 }
 
@@ -124,30 +130,24 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
 void XBPython::OnPlayBackStarted()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackStarted();
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackStarted();
+    it++;
   }
 }
 
 // message all registered callbacks that we paused playing
 void XBPython::OnPlayBackPaused()
 {
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackPaused();
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackPaused();
+    it++;
   }
 }
 
@@ -155,15 +155,12 @@ void XBPython::OnPlayBackPaused()
 void XBPython::OnPlayBackResumed()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackResumed();
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackResumed();
+    it++;
   }
 }
 
@@ -171,15 +168,12 @@ void XBPython::OnPlayBackResumed()
 void XBPython::OnPlayBackStopped()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackStopped();
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackStopped();
+    it++;
   }
 }
 
@@ -187,15 +181,12 @@ void XBPython::OnPlayBackStopped()
 void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackSpeedChanged(iSpeed);
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackSpeedChanged(iSpeed);
+    it++;
   }
 }
 
@@ -203,15 +194,12 @@ void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackSeek(iTime, seekOffset);
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackSeek(iTime, seekOffset);
+    it++;
   }
 }
 
@@ -219,15 +207,12 @@ void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 void XBPython::OnPlayBackSeekChapter(int iChapter)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnPlayBackSeekChapter(iChapter);
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnPlayBackSeekChapter(iChapter);
+    it++;
   }
 }
 
@@ -235,15 +220,12 @@ void XBPython::OnPlayBackSeekChapter(int iChapter)
 void XBPython::OnQueueNextItem()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(PlayerCallbackList,tmp,m_vecPlayerCallbackList);
+  PlayerCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
-    while (it != m_vecPlayerCallbackList.end())
-    {
-      ((IPlayerCallback*)(*it))->OnQueueNextItem();
-      it++;
-    }
+    ((IPlayerCallback*)(*it))->OnQueueNextItem();
+    it++;
   }
 }
 
@@ -292,100 +274,82 @@ void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallba
 void XBPython::OnSettingsChanged(const CStdString &ID)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
-  {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    { 
-      if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)  
-        ((XBMCAddon::xbmc::Monitor*)(*it))->OnSettingsChanged();
-      it++;
-    }
-  }  
+  SAFE_COPY(MonitorCallbackList,tmp,m_vecMonitorCallbackList);
+  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
+  while (it != tmp.end())
+  { 
+    if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)  
+      ((XBMCAddon::xbmc::Monitor*)(*it))->OnSettingsChanged();
+    it++;
+  }
 }  
 
 void XBPython::OnScreensaverActivated()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(MonitorCallbackList,tmp,m_vecMonitorCallbackList);
+  MonitorCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    {
-      ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverActivated();
-      it++;
-    }
-  }  
+    ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverActivated();
+    it++;
+  }
 } 
 
 void XBPython::OnScreensaverDeactivated()
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(MonitorCallbackList,tmp,m_vecMonitorCallbackList);
+  MonitorCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    {
-      ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverDeactivated();
-      it++;
-    }
-  }  
+    ((XBMCAddon::xbmc::Monitor*)(*it))->OnScreensaverDeactivated();
+    it++;
+  }
 } 
 
 void XBPython::OnDatabaseUpdated(const std::string &database)
 {
   TRACE;
- CSingleLock lock(m_critSection);
- if (m_bInitialized)
- {
-  MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-  while (it != m_vecMonitorCallbackList.end())
+  SAFE_COPY(MonitorCallbackList,tmp,m_vecMonitorCallbackList);
+  MonitorCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
    ((XBMCAddon::xbmc::Monitor*)(*it))->OnDatabaseUpdated(database);
    it++;
   }
- }  
 } 
 
 void XBPython::OnDatabaseScanStarted(const std::string &database)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(MonitorCallbackList,tmp,m_vecMonitorCallbackList);
+  MonitorCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    {
-      ((XBMCAddon::xbmc::Monitor*)(*it))->OnDatabaseScanStarted(database);
-      it++;
-    }
-  }  
+    ((XBMCAddon::xbmc::Monitor*)(*it))->OnDatabaseScanStarted(database);
+    it++;
+  }
 }
 
 void XBPython::OnAbortRequested(const CStdString &ID)
 {
   TRACE;
-  CSingleLock lock(m_critSection);
-  if (m_bInitialized)
+  SAFE_COPY(MonitorCallbackList,tmp,m_vecMonitorCallbackList);
+  MonitorCallbackList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
-    MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
-    while (it != m_vecMonitorCallbackList.end())
-    {
-      if (ID.IsEmpty())
-      {    
-        ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
-      }
-      else
-      {
-        if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)
-          ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
-      }
-      it++;
+    if (ID.IsEmpty())
+    {    
+      ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
     }
-  }  
+    else
+    {
+      if (((XBMCAddon::xbmc::Monitor*)(*it))->GetId() == ID)
+        ((XBMCAddon::xbmc::Monitor*)(*it))->OnAbortRequested();
+    }
+    it++;
+  }
 } 
 
 /**
@@ -808,9 +772,10 @@ void XBPython::setDone(int id)
 void XBPython::stopScript(int id)
 {
   CSingleExit ex(g_graphicsContext);
-  CSingleLock lock(m_critSection);
-  PyList::iterator it = m_vecPyList.begin();
-  while (it != m_vecPyList.end())
+
+  SAFE_COPY(PyList,tmp,m_vecPyList);
+  PyList::iterator it = tmp.begin();
+  while (it != tmp.end())
   {
     if (it->id == id) {
       CLog::Log(LOGINFO, "Stopping script with id: %i", id);
