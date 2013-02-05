@@ -242,6 +242,7 @@
 		DFDB00251516403A005079A4 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB001E1516403A005079A4 /* DirectoryCache.cpp */; };
 		DFDB00261516403A005079A4 /* FileCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00201516403A005079A4 /* FileCache.cpp */; };
 		DFDB00271516403A005079A4 /* MemBufferCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB00221516403A005079A4 /* MemBufferCache.cpp */; };
+		DFDD077316C0B58B000A1F73 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DFDD077216C0B58B000A1F73 /* Default-568h@2x.png */; };
 		DFE3505B1532535500F84CAA /* IOSKeyboardView.mm in Sources */ = {isa = PBXBuildFile; fileRef = DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */; };
 		DFF7A92315F7C62900D316E9 /* PltMimeType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFF7A91F15F7C62900D316E9 /* PltMimeType.cpp */; };
 		DFF7A92415F7C62900D316E9 /* PltProtocolInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFF7A92115F7C62900D316E9 /* PltProtocolInfo.cpp */; };
@@ -1522,6 +1523,7 @@
 		DFDB00211516403A005079A4 /* FileCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileCache.h; sourceTree = "<group>"; };
 		DFDB00221516403A005079A4 /* MemBufferCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemBufferCache.cpp; sourceTree = "<group>"; };
 		DFDB00231516403A005079A4 /* MemBufferCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemBufferCache.h; sourceTree = "<group>"; };
+		DFDD077216C0B58B000A1F73 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "xbmc/osx/ios/Default-568h@2x.png"; sourceTree = "<group>"; };
 		DFE350591532535500F84CAA /* IOSKeyboardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSKeyboardView.h; sourceTree = "<group>"; };
 		DFE3505A1532535500F84CAA /* IOSKeyboardView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IOSKeyboardView.mm; sourceTree = "<group>"; };
 		DFF7A91F15F7C62900D316E9 /* PltMimeType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMimeType.cpp; sourceTree = "<group>"; };
@@ -3288,6 +3290,7 @@
 		089C166AFE841209C02AAC07 /* XBMC-frapp */ = {
 			isa = PBXGroup;
 			children = (
+				DFDD077216C0B58B000A1F73 /* Default-568h@2x.png */,
 				83D619BA13C0D23400418A0F /* Documentation */,
 				F56C8034131F42E5000AD0F6 /* Source */,
 				F589AE6D12890B6700D8079E /* Internal Libs */,
@@ -6606,6 +6609,7 @@
 				F56C8BA8131F4466000AD0F6 /* XBMC.png in Resources */,
 				F56C8BB9131F44AA000AD0F6 /* InfoPlist.strings in Resources */,
 				DFD4D1E713D7263000A47C47 /* README.platform in Resources */,
+				DFDD077316C0B58B000A1F73 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
