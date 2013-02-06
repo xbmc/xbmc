@@ -123,6 +123,11 @@ bool CPosixNetworkManager::CanManageConnections()
 
 ConnectionList CPosixNetworkManager::GetConnections()
 {
+  FindNetworkInterfaces(); 
+  if (CanManageConnections())
+    RestoreSavedConnection();
+  else
+    RestoreSystemConnection();
   return m_connections;
 }
 
