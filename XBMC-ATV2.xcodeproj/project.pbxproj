@@ -123,6 +123,8 @@
 		DF402A95164462FC001C56B8 /* swig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502C09C160F421600C96C76 /* swig.cpp */; };
 		DF402A96164462FC001C56B8 /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502C09E160F421600C96C76 /* XBPython.cpp */; };
 		DF402A97164462FC001C56B8 /* XBPyThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502C0A0160F421600C96C76 /* XBPyThread.cpp */; };
+		DF404AA716B98E6300D8023E /* cximage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404AA316B98E6300D8023E /* cximage.cpp */; };
+		DF404AA816B98E6300D8023E /* imagefactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404AA516B98E6300D8023E /* imagefactory.cpp */; };
 		DF4485351400651B0069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485321400651B0069344B /* PipesManager.cpp */; };
 		DF4485381400654A0069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485361400654A0069344B /* AirTunesServer.cpp */; };
 		DF527780151BAFD600B5B63B /* WebSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF527777151BAFD600B5B63B /* WebSocket.cpp */; };
@@ -1317,6 +1319,10 @@
 		DF33C2AC15509C5A0046CDCB /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilog.h; sourceTree = "<group>"; };
 		DF34890713FD96390026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
 		DF34890813FD96390026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
+		DF404AA316B98E6300D8023E /* cximage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cximage.cpp; sourceTree = "<group>"; };
+		DF404AA416B98E6300D8023E /* cximage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cximage.h; sourceTree = "<group>"; };
+		DF404AA516B98E6300D8023E /* imagefactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imagefactory.cpp; sourceTree = "<group>"; };
+		DF404AA616B98E6300D8023E /* imagefactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imagefactory.h; sourceTree = "<group>"; };
 		DF4485321400651B0069344B /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
 		DF4485331400651B0069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4485361400654A0069344B /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
@@ -5027,6 +5033,8 @@
 			children = (
 				F56C74FE131EC152000AD0F6 /* AnimatedGif.cpp */,
 				F56C74A0131EC152000AD0F6 /* AnimatedGif.h */,
+				DF404AA316B98E6300D8023E /* cximage.cpp */,
+				DF404AA416B98E6300D8023E /* cximage.h */,
 				F56C7500131EC152000AD0F6 /* D3DResource.cpp */,
 				F56C74A2131EC152000AD0F6 /* D3DResource.h */,
 				F56C7501131EC152000AD0F6 /* DDSImage.cpp */,
@@ -5171,6 +5179,8 @@
 				F56C7543131EC152000AD0F6 /* GUIWrappingListContainer.cpp */,
 				F56C74E9131EC152000AD0F6 /* GUIWrappingListContainer.h */,
 				F56C74EA131EC152000AD0F6 /* IAudioDeviceChangedCallback.h */,
+				DF404AA516B98E6300D8023E /* imagefactory.cpp */,
+				DF404AA616B98E6300D8023E /* imagefactory.h */,
 				F56C74EB131EC152000AD0F6 /* IMsgTargetCallback.h */,
 				F56C7544131EC152000AD0F6 /* IWindowManagerCallback.cpp */,
 				F56C74EC131EC152000AD0F6 /* IWindowManagerCallback.h */,
@@ -7659,6 +7669,8 @@
 				DFB02E0816629E1900F37752 /* PyContext.cpp in Sources */,
 				DF07255216873553008DCAAD /* karaokevideobackground.cpp in Sources */,
 				DF07255516873565008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
+				DF404AA716B98E6300D8023E /* cximage.cpp in Sources */,
+				DF404AA816B98E6300D8023E /* imagefactory.cpp in Sources */,
 				5500731516A75A2700097786 /* UPnPPlayer.cpp in Sources */,
 				DF64FE6C16C07B2C00D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE6D16C07B2C00D028FB /* GUIViewState.cpp in Sources */,

@@ -28,12 +28,11 @@
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "DllImageLib.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "DllSwScale.h"
-#include "guilib/JpegIO.h"
 #include "guilib/Texture.h"
+#include "guilib/imagefactory.h"
 #if defined(HAS_OMXPLAYER)
 #include "cores/omxplayer/OMXImage.h"
 #endif
@@ -54,13 +53,30 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
     }
     delete omxImage;
 #endif
-    CJpegIO jpegImage;
-    if (jpegImage.CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str()))
-      return true;
   }
-  DllImageLib dll;
-  if (!buffer || !dll.Load()) return false;
-  return dll.CreateThumbnailFromSurface((BYTE *)buffer, width, height, stride, thumbFile.c_str());
+
+  unsigned char *thumb = NULL;
+  unsigned int thumbsize=0;
+  IImage* pImage = ImageFactory::CreateLoader(thumbFile);
+  if(pImage == NULL || !pImage->CreateThumbnailFromSurface((BYTE *)buffer, width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  {
+    CLog::Log(LOGERROR, "Failed to CreateThumbnailFromSurface for %s", thumbFile.c_str());
+    delete pImage;
+    return false;
+  }
+
+  XFILE::CFile file;
+  if (file.OpenForWrite(thumbFile, true))
+  {
+    file.Write(thumb, thumbsize);
+    file.Close();
+    pImage->ReleaseThumbnailBuffer();
+    delete pImage;
+    return true;
+  }
+  pImage->ReleaseThumbnailBuffer();
+  delete pImage;
+  return false;
 }
 
 CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile)

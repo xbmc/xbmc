@@ -583,6 +583,7 @@
     <ClCompile Include="..\..\xbmc\GUIInfoManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\AnimatedGif.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\cximage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DDSImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp" />
@@ -668,6 +669,7 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIWindow.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIWindowManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIWrappingListContainer.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\imagefactory.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\IWindowManagerCallback.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\Key.cpp" />
@@ -1035,8 +1037,11 @@
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\filesystem\windows\WINSMBDirectory.h" />
+    <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
+    <ClInclude Include="..\..\xbmc\guilib\iimage.h" />
+    <ClInclude Include="..\..\xbmc\guilib\imagefactory.h" />
     <ClInclude Include="..\..\xbmc\input\windows\WINJoystick.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PVROperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\legacy\Addon.h" />
