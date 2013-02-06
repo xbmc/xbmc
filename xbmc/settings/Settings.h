@@ -240,12 +240,6 @@ public:
   CStdString m_defaultFileSource;
   CStdString m_defaultMusicLibSource;
 
-  CStdString m_UPnPUUIDServer;
-  int        m_UPnPPortServer;
-  int        m_UPnPMaxReturnedItems;
-  CStdString m_UPnPUUIDRenderer;
-  int        m_UPnPPortRenderer;
-
   int        m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
   int        m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
 
@@ -346,9 +340,6 @@ public:
   CStdString GetSourcesFile() const;
 
   CStdString GetSettingsFile() const;
-
-  bool LoadUPnPXml(const CStdString& strSettingsFile);
-  bool SaveUPnPXml(const CStdString& strSettingsFile) const;
 
   /*! \brief Load the user profile information from disk
    Loads the profiles.xml file and creates the list of profiles. If no profiles
