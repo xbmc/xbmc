@@ -2048,12 +2048,16 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   char video_axis[256] = {0};
   sprintf(video_axis, "%d %d %d %d", (int)dst_rect.x1, (int)dst_rect.y1, (int)dst_rect.x2, (int)dst_rect.y2);
   aml_set_sysfs_str("/sys/class/video/axis", video_axis);
+  // make sure we are in 'full stretch' so we can stretch
+  aml_set_sysfs_int("/sys/class/video/screen_mode", 1);
 
+/*
   CStdString rectangle;
   rectangle.Format("%i,%i,%i,%i",
     (int)dst_rect.x1, (int)dst_rect.y1,
     (int)dst_rect.Width(), (int)dst_rect.Height());
   CLog::Log(LOGDEBUG, "CAMLCodec::SetVideoRect:dst_rect(%s)", rectangle.c_str());
+*/
 
   // we only get called once gui has changed to something
   // that would show video playback, so show it.
