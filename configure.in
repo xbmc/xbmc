@@ -1047,6 +1047,10 @@ AS_CASE([x$use_libbluray],
     XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
+    AC_CHECK_LIB([bluray], [bd_register_argb_overlay_proc],
+      AC_CHECK_DECL([BD_EVENT_IDLE],
+        AC_DEFINE([HAVE_LIBBLURAY_BDJ], 1, [System has libbluray library with bdj support]),,
+        [[#include <libbluray/bluray.h>]]))
   ],[
     AC_SUBST([HAVE_LIBBLURAY], 0)
   ]

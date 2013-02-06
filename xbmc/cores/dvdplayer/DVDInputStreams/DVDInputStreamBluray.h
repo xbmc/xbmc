@@ -97,6 +97,9 @@ public:
   void GetStreamInfo(int pid, char* language);
 
   void OverlayCallback(const BD_OVERLAY * const);
+#ifdef HAVE_LIBBLURAY_BDJ
+  void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);
+#endif
 
   BLURAY_TITLE_INFO* GetTitleLongest();
   BLURAY_TITLE_INFO* GetTitleFile(const std::string& name);
@@ -111,6 +114,7 @@ protected:
   uint32_t           m_playlist;
   uint32_t           m_clip;
   uint32_t           m_angle;
+  bool               m_menu;
   bool m_navmode;
 
   typedef boost::shared_ptr<CDVDOverlayImage> SOverlay;
@@ -136,4 +140,7 @@ protected:
     HOLD_STILL,
   } m_hold;
   BD_EVENT m_event;
+#ifdef HAVE_LIBBLURAY_BDJ
+  struct bd_argb_buffer_s m_argb;
+#endif
 };

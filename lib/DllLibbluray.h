@@ -76,6 +76,9 @@ public:
   virtual int      bd_set_player_setting        (BLURAY *bd, uint32_t idx, uint32_t value)=0;
   virtual int      bd_set_player_setting_str    (BLURAY *bd, uint32_t idx, const char *s)=0;
   virtual void     bd_register_overlay_proc     (BLURAY *bd, void *handle, bd_overlay_proc_f func)=0;
+#ifdef HAVE_LIBBLURAY_BDJ
+  virtual void     bd_register_argb_overlay_proc(BLURAY *bd, void *handle, bd_argb_overlay_proc_f func, struct bd_argb_buffer_s *buf)=0;
+#endif
   virtual int      bd_menu_call                 (BLURAY *bd, int64_t pts)=0;
 };
 
@@ -120,6 +123,9 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD3(int,                 bd_set_player_setting,     (BLURAY *p1, uint32_t p2, uint32_t p3))
   DEFINE_METHOD3(int,                 bd_set_player_setting_str, (BLURAY *p1, uint32_t p2, const char *p3))
   DEFINE_METHOD3(void,                bd_register_overlay_proc,  (BLURAY *p1, void *p2, bd_overlay_proc_f p3))
+#ifdef HAVE_LIBBLURAY_BDJ
+  DEFINE_METHOD4(void,                bd_register_argb_overlay_proc, (BLURAY *p1, void *p2, bd_argb_overlay_proc_f p3, struct bd_argb_buffer_s *p4))
+#endif
   DEFINE_METHOD2(int,                 bd_menu_call,              (BLURAY *p1, int64_t p2))
 
   BEGIN_METHOD_RESOLVE()
@@ -160,6 +166,9 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_set_player_setting)
     RESOLVE_METHOD(bd_set_player_setting_str)
     RESOLVE_METHOD(bd_register_overlay_proc)
+#ifdef HAVE_LIBBLURAY_BDJ
+    RESOLVE_METHOD(bd_register_argb_overlay_proc)
+#endif
     RESOLVE_METHOD(bd_menu_call)
   END_METHOD_RESOLVE()
 
