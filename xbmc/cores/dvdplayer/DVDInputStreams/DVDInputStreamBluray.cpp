@@ -652,16 +652,93 @@ static uint32_t build_rgba(const BD_PG_PALETTE_ENTRY &e)
        | (uint32_t)clamp(b) << PIXEL_BSHIFT;
 }
 
+void CDVDInputStreamBluray::OverlayClose()
+{
+#if(BD_OVERLAY_INTERFACE_VERSION >= 2)
+  for(unsigned i = 0; i < 2; ++i)
+    m_planes[i].o.clear();
+  CDVDOverlayGroup* group   = new CDVDOverlayGroup();
+  group->bForced = true;
+  m_player->OnDVDNavResult(group, 0);
+#endif
+}
+
+void CDVDInputStreamBluray::OverlayInit(SPlane& plane, int w, int h)
+{
+#if(BD_OVERLAY_INTERFACE_VERSION >= 2)
+  plane.o.clear();
+  plane.w = w;
+  plane.h = h;
+#endif
+}
+
+void CDVDInputStreamBluray::OverlayClear(SPlane& plane, int x, int y, int w, int h)
+{
+#if(BD_OVERLAY_INTERFACE_VERSION >= 2)
+  CRect ovr(x
+          , y
+          , x + w
+          , y + h);
+
+  /* fixup existing overlays */
+  for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end();)
+  {
+    CRect old((*it)->x
+            , (*it)->y
+            , (*it)->x + (*it)->width
+            , (*it)->y + (*it)->height);
+
+    vector<CRect> rem = old.SubtractRect(ovr);
+
+    /* if no overlap we are done */
+    if(rem.size() == 1 && !(rem[0] != old))
+    {
+      it++;
+      continue;
+    }
+
+    SOverlays add;
+    for(vector<CRect>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
+    {
+      SOverlay overlay(new CDVDOverlayImage(*(*it)
+                                            , itr->x1
+                                            , itr->y1
+                                            , itr->Width()
+                                            , itr->Height())
+                    , std::ptr_fun(CDVDOverlay::Release));
+      add.push_back(overlay);
+    }
+
+    it = plane.o.erase(it);
+    plane.o.insert(it, add.begin(), add.end());
+  }
+#endif
+}
+
+void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
+{
+#if(BD_OVERLAY_INTERFACE_VERSION >= 2)
+  CDVDOverlayGroup* group   = new CDVDOverlayGroup();
+  group->bForced       = true;
+  group->iPTSStartTime = (double) pts;
+  group->iPTSStopTime  = 0;
+
+  for(unsigned i = 0; i < 2; ++i)
+  {
+    for(SOverlays::iterator it = m_planes[i].o.begin(); it != m_planes[i].o.end(); ++it)
+      group->m_overlays.push_back((*it)->Acquire());
+  }
+
+  m_player->OnDVDNavResult(group, 0);
+#endif
+}
+
 void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
 {
 #if(BD_OVERLAY_INTERFACE_VERSION >= 2)
   if(ov == NULL || ov->cmd == BD_OVERLAY_CLOSE)
   {
-    for(unsigned i = 0; i < 2; ++i)
-      m_planes[i].o.clear();
-    CDVDOverlayGroup* group   = new CDVDOverlayGroup();
-    group->bForced = true;
-    m_player->OnDVDNavResult(group, 0);
+    OverlayClose();
     return;
   }
 
@@ -681,53 +758,14 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
 
   if (ov->cmd == BD_OVERLAY_INIT)
   {
-    plane.o.clear();
-    plane.w = ov->w;
-    plane.h = ov->h;
+    OverlayInit(plane, ov->w, ov->h);
     return;
   }
 
   if (ov->cmd == BD_OVERLAY_DRAW
   ||  ov->cmd == BD_OVERLAY_WIPE)
-  {
-    CRect ovr(ov->x
-            , ov->y
-            , ov->x + ov->w
-            , ov->y + ov->h);
+    OverlayClear(plane, ov->x, ov->y, ov->w, ov->h);
 
-    /* fixup existing overlays */
-    for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end();)
-    {
-      CRect old((*it)->x
-              , (*it)->y
-              , (*it)->x + (*it)->width
-              , (*it)->y + (*it)->height);
-
-      vector<CRect> rem = old.SubtractRect(ovr);
-
-      /* if no overlap we are done */
-      if(rem.size() == 1 && !(rem[0] != old))
-      {
-        it++;
-        continue;
-      }
-
-      SOverlays add;
-      for(vector<CRect>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
-      {
-        SOverlay overlay(new CDVDOverlayImage(*(*it)
-                                              , itr->x1
-                                              , itr->y1
-                                              , itr->Width()
-                                              , itr->Height())
-                      , std::ptr_fun(CDVDOverlay::Release));
-        add.push_back(overlay);
-      }
-
-      it = plane.o.erase(it);
-      plane.o.insert(it, add.begin(), add.end());
-    }
-  }
 
   /* uncompress and draw bitmap */
   if (ov->img && ov->cmd == BD_OVERLAY_DRAW)
@@ -763,20 +801,7 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
   }
 
   if(ov->cmd == BD_OVERLAY_FLUSH)
-  {
-    CDVDOverlayGroup* group   = new CDVDOverlayGroup();
-    group->bForced       = true;
-    group->iPTSStartTime = (double) ov->pts;
-    group->iPTSStopTime  = 0;
-
-    for(unsigned i = 0; i < 2; ++i)
-    {
-      for(SOverlays::iterator it = m_planes[i].o.begin(); it != m_planes[i].o.end(); ++it)
-        group->m_overlays.push_back((*it)->Acquire());
-    }
-
-    m_player->OnDVDNavResult(group, 0);
-  }
+    OverlayFlush(ov->pts);
 #endif
 }
 
@@ -785,11 +810,7 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
 {
   if(ov == NULL || ov->cmd == BD_ARGB_OVERLAY_CLOSE)
   {
-    for(unsigned i = 0; i < 2; ++i)
-      m_planes[i].o.clear();
-    CDVDOverlayGroup* group   = new CDVDOverlayGroup();
-    group->bForced = true;
-    m_player->OnDVDNavResult(group, 0);
+    OverlayClose();
     return;
   }
 
@@ -803,52 +824,12 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
 
   if (ov->cmd == BD_ARGB_OVERLAY_INIT)
   {
-    plane.o.clear();
-    plane.w = ov->w;
-    plane.h = ov->h;
+    OverlayInit(plane, ov->w, ov->h);
     return;
   }
 
   if (ov->cmd == BD_ARGB_OVERLAY_DRAW)
-  {
-    CRect ovr(ov->x
-            , ov->y
-            , ov->x + ov->w
-            , ov->y + ov->h);
-
-    /* fixup existing overlays */
-    for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end();)
-    {
-      CRect old((*it)->x
-              , (*it)->y
-              , (*it)->x + (*it)->width
-              , (*it)->y + (*it)->height);
-
-      vector<CRect> rem = old.SubtractRect(ovr);
-
-      /* if no overlap we are done */
-      if(rem.size() == 1 && !(rem[0] != old))
-      {
-        it++;
-        continue;
-      }
-
-      SOverlays add;
-      for(vector<CRect>::iterator itr = rem.begin(); itr != rem.end(); ++itr)
-      {
-        SOverlay overlay(new CDVDOverlayImage(*(*it)
-                                              , itr->x1
-                                              , itr->y1
-                                              , itr->Width()
-                                              , itr->Height())
-                      , std::ptr_fun(CDVDOverlay::Release));
-        add.push_back(overlay);
-      }
-
-      it = plane.o.erase(it);
-      plane.o.insert(it, add.begin(), add.end());
-    }
-  }
+    OverlayClear(plane, ov->x, ov->y, ov->w, ov->h);
 
   /* uncompress and draw bitmap */
   if (ov->argb && ov->cmd == BD_ARGB_OVERLAY_DRAW)
@@ -874,20 +855,7 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
   }
 
   if(ov->cmd == BD_ARGB_OVERLAY_FLUSH)
-  {
-    CDVDOverlayGroup* group   = new CDVDOverlayGroup();
-    group->bForced       = true;
-    group->iPTSStartTime = (double) ov->pts;
-    group->iPTSStopTime  = 0;
-
-    for(unsigned i = 0; i < 2; ++i)
-    {
-      for(SOverlays::iterator it = m_planes[i].o.begin(); it != m_planes[i].o.end(); ++it)
-        group->m_overlays.push_back((*it)->Acquire());
-    }
-
-    m_player->OnDVDNavResult(group, 0);
-  }
+    OverlayFlush(ov->pts);
 }
 #endif
 

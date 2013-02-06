@@ -107,6 +107,13 @@ public:
   void ProcessEvent();
 
 protected:
+  struct SPlane;
+
+  void OverlayFlush(int64_t pts);
+  void OverlayClose();
+  void OverlayClear(SPlane& plane, int x, int y, int w, int h);
+  void OverlayInit (SPlane& plane, int w, int h);
+
   IDVDPlayer*   m_player;
   DllLibbluray *m_dll;
   BLURAY* m_bd;
