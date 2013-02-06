@@ -810,7 +810,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   LoadCalibration(pRootElement, strSettingsFile);
   g_guiSettings.LoadXML(pRootElement);
-  LoadSkinSettings(pRootElement);
 
   // Advanced settings
   g_advancedSettings.Load();
@@ -966,8 +965,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     localSettings->SaveXML(pRoot);
   else // save the global settings
     g_guiSettings.SaveXML(pRoot);
-
-  SaveSkinSettings(pRoot);
 
   // For mastercode
   SaveProfiles( PROFILES_FILE );
@@ -1370,65 +1367,6 @@ void CSettings::LoadSources()
   }
 }
 
-void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
-{
-  int number = 0;
-  const TiXmlElement *pElement = pRootElement->FirstChildElement("skinsettings");
-  if (pElement)
-  {
-    m_skinStrings.clear();
-    m_skinBools.clear();
-    const TiXmlElement *pChild = pElement->FirstChildElement("setting");
-    while (pChild)
-    {
-      CStdString settingName = pChild->Attribute("name");
-      if (pChild->Attribute("type") && strcmpi(pChild->Attribute("type"),"string") == 0)
-      { // string setting
-        CSkinString string;
-        string.name = settingName;
-        string.value = pChild->FirstChild() ? pChild->FirstChild()->Value() : "";
-        m_skinStrings.insert(pair<int, CSkinString>(number++, string));
-      }
-      else
-      { // bool setting
-        CSkinBool setting;
-        setting.name = settingName;
-        setting.value = pChild->FirstChild() ? strcmpi(pChild->FirstChild()->Value(), "true") == 0 : false;
-        m_skinBools.insert(pair<int, CSkinBool>(number++, setting));
-      }
-      pChild = pChild->NextSiblingElement("setting");
-    }
-  }
-}
-
-void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
-{
-  // add the <skinsettings> tag
-  TiXmlElement xmlSettingsElement("skinsettings");
-  TiXmlNode *pSettingsNode = pRootElement->InsertEndChild(xmlSettingsElement);
-  if (!pSettingsNode) return;
-  for (map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
-  {
-    // Add a <setting type="bool" name="name">true/false</setting>
-    TiXmlElement xmlSetting("setting");
-    xmlSetting.SetAttribute("type", "bool");
-    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
-    TiXmlText xmlBool((*it).second.value ? "true" : "false");
-    xmlSetting.InsertEndChild(xmlBool);
-    pSettingsNode->InsertEndChild(xmlSetting);
-  }
-  for (map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
-  {
-    // Add a <setting type="string" name="name">string</setting>
-    TiXmlElement xmlSetting("setting");
-    xmlSetting.SetAttribute("type", "string");
-    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
-    TiXmlText xmlLabel((*it).second.value);
-    xmlSetting.InsertEndChild(xmlLabel);
-    pSettingsNode->InsertEndChild(xmlSetting);
-  }
-}
-
 void CSettings::Clear()
 {
   m_vecProfiles.clear();
@@ -1442,8 +1380,6 @@ void CSettings::Clear()
   m_userAgent.clear();
 
   m_mapRssUrls.clear();
-  m_skinStrings.clear();
-  m_skinBools.clear();
 
   m_programSources.clear();
   m_pictureSources.clear();
@@ -1464,135 +1400,6 @@ void CSettings::Clear()
 
   for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
     (*it)->Clear();
-}
-
-int CSettings::TranslateSkinString(const CStdString &setting)
-{
-  CStdString settingName;
-  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
-  // run through and see if we have this setting
-  for (map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
-  {
-    if (settingName.Equals((*it).second.name))
-      return (*it).first;
-  }
-  // didn't find it - insert it
-  CSkinString skinString;
-  skinString.name = settingName;
-  m_skinStrings.insert(pair<int, CSkinString>(m_skinStrings.size() + m_skinBools.size(), skinString));
-  return m_skinStrings.size() + m_skinBools.size() - 1;
-}
-
-const CStdString &CSettings::GetSkinString(int setting) const
-{
-  map<int, CSkinString>::const_iterator it = m_skinStrings.find(setting);
-  if (it != m_skinStrings.end())
-  {
-    return (*it).second.value;
-  }
-  return StringUtils::EmptyString;
-}
-
-void CSettings::SetSkinString(int setting, const CStdString &label)
-{
-  map<int, CSkinString>::iterator it = m_skinStrings.find(setting);
-  if (it != m_skinStrings.end())
-  {
-    (*it).second.value = label;
-    return;
-  }
-  assert(false);
-  CLog::Log(LOGFATAL, "%s : Unknown setting requested", __FUNCTION__);
-}
-
-void CSettings::ResetSkinSetting(const CStdString &setting)
-{
-  CStdString settingName;
-  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
-  // run through and see if we have this setting as a string
-  for (map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
-  {
-    if (settingName.Equals((*it).second.name))
-    {
-      (*it).second.value = "";
-      return;
-    }
-  }
-  // and now check for the skin bool
-  for (map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
-  {
-    if (settingName.Equals((*it).second.name))
-    {
-      (*it).second.value = false;
-      return;
-    }
-  }
-}
-
-int CSettings::TranslateSkinBool(const CStdString &setting)
-{
-  CStdString settingName;
-  settingName.Format("%s.%s", g_guiSettings.GetString("lookandfeel.skin").c_str(), setting);
-  // run through and see if we have this setting
-  for (map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); it++)
-  {
-    if (settingName.Equals((*it).second.name))
-      return (*it).first;
-  }
-  // didn't find it - insert it
-  CSkinBool skinBool;
-  skinBool.name = settingName;
-  skinBool.value = false;
-  m_skinBools.insert(pair<int, CSkinBool>(m_skinBools.size() + m_skinStrings.size(), skinBool));
-  return m_skinBools.size() + m_skinStrings.size() - 1;
-}
-
-bool CSettings::GetSkinBool(int setting) const
-{
-  map<int, CSkinBool>::const_iterator it = m_skinBools.find(setting);
-  if (it != m_skinBools.end())
-  {
-    return (*it).second.value;
-  }
-  // default is to return false
-  return false;
-}
-
-void CSettings::SetSkinBool(int setting, bool set)
-{
-  map<int, CSkinBool>::iterator it = m_skinBools.find(setting);
-  if (it != m_skinBools.end())
-  {
-    (*it).second.value = set;
-    return;
-  }
-  assert(false);
-  CLog::Log(LOGFATAL,"%s : Unknown setting requested", __FUNCTION__);
-}
-
-void CSettings::ResetSkinSettings()
-{
-  CStdString currentSkin = g_guiSettings.GetString("lookandfeel.skin") + ".";
-  // clear all the settings and strings from this skin.
-  map<int, CSkinBool>::iterator it = m_skinBools.begin();
-  while (it != m_skinBools.end())
-  {
-    CStdString skinName = (*it).second.name;
-    if (skinName.Left(currentSkin.size()) == currentSkin)
-      (*it).second.value = false;
-
-    it++;
-  }
-  map<int, CSkinString>::iterator it2 = m_skinStrings.begin();
-  while (it2 != m_skinStrings.end())
-  {
-    CStdString skinName = (*it2).second.name;
-    if (skinName.Left(currentSkin.size()) == currentSkin)
-      (*it2).second.value = "";
-
-    it2++;
-  }
-  g_infoManager.ResetCache();
 }
 
 static CStdString ToWatchContent(const CStdString &content)

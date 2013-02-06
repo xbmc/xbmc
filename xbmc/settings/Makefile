@@ -2,6 +2,7 @@ SRCS=AdvancedSettings.cpp \
      GUISettings.cpp \
      Profile.cpp \
      Settings.cpp \
+     SkinSettings.cpp \
      VideoSettings.cpp \
 
 LIB=settings.a

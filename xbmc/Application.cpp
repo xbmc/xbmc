@@ -97,6 +97,7 @@
 #include "powermanagement/DPMSSupport.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
@@ -689,6 +690,7 @@ bool CApplication::Create()
 
   CLog::Log(LOGNOTICE, "load settings...");
   g_settings.RegisterSubSettings(&CPlayerCoreFactory::Get());
+  g_settings.RegisterSubSettings(&CSkinSettings::Get());
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
