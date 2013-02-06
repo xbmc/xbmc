@@ -5383,7 +5383,12 @@ msgctxt "#13515"
 msgid "No art"
 msgstr ""
 
-#empty strings from id 13516 to 13549
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#13516"
+msgid "Add art"
+msgstr ""
+
+#empty strings from id 13517 to 13549
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#13550"
