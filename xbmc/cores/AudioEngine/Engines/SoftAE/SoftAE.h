@@ -145,6 +145,7 @@ private:
   CEvent           m_reOpenEvent;
   CEvent           m_wake;
   CEvent           m_closeEvent;
+  CEvent           m_saveSuspend;
 
   CCriticalSection m_runningLock;     /* released when the thread exits */
   CCriticalSection m_streamLock;      /* m_streams lock */

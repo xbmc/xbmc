@@ -1006,11 +1006,18 @@ bool CSoftAE::Suspend()
       // This is the only place m_realSuspend gets set true.
       // If you find another one - please call for help.
       // First thing when rewriting: kill this flag and make it generic again.
+      m_saveSuspend.Reset();
       m_realSuspend = true;
+      // wait until we are looping in ProcessSuspend()
+      m_saveSuspend.Wait();
       m_sink->Drain();
       m_sink->Deinitialize();
       delete m_sink;
       m_sink = NULL;
+      // signal anybody, that the sink is closed now
+      // this should help us not to run into deadlocks
+      if(m_closeSink)
+       m_closeEvent.Set();
     }
     // The device list is now empty and must be reenumerated afterwards.
     m_sinkInfoList.clear();
@@ -1086,6 +1093,13 @@ void CSoftAE::Run()
     if (m_reOpen || restart || !m_sink)
     {
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
+      // ProcessSuspending() cannot guarantee that we get our sink back softresumed
+      if(m_sink && m_softSuspend)
+      {
+    	m_sink->SoftResume();
+    	m_softSuspend = false;
+    	CLog::Log(LOGDEBUG, "CSoftAE::Run - Soft resumed the sink outside");
+      }
       InternalOpenSink();
       m_isSuspended = false; // exit Suspend state
     }
@@ -1510,22 +1524,29 @@ inline void CSoftAE::ProcessSuspend()
       }
       sinkLock.Leave();
     }
-
-    // make sure that a outer thread does not have to wait forever
-    if(m_closeSink)
-    {
-      InternalCloseSink();
-    }
+    // Signal that the realSuspend can go on now.
+    // Idea: Outer thread calls Suspend() - but
+    // because of AddPackets does not care about locks, we must make
+    // sure, that our school bus (AE::Run) is currently driving through
+    // some gas station, before we move away the sink.
+    if(m_realSuspend)
+      m_saveSuspend.Set();
 
     /* idle for platform-defined time */
     m_wake.WaitMSec(SOFTAE_IDLE_WAIT_MSEC);
 
-    /* check if we need to resume for stream or sound */
+    /* check if we need to resume for stream or sound or somebody wants to open us
+     * the suspend checks are only there to:
+     * a) not run out of softSuspend directly when we are sleeping
+     * b) nail(!) the thread during real Suspend into this method
+     * Note: It is not enough to check the streams buffer, cause it might not be filled yet
+     * We have to check after ProcessSuspending() if the sink is still in softsleep and resume it
+     */
     if (!m_realSuspend && !m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
     {
-      m_reOpen = !m_sink->SoftResume(); // sink returns false if it requires reinit
+      m_reOpen = m_reOpen || !m_sink->SoftResume(); // sink returns false if it requires reinit
       sinkIsSuspended = false; //sink processing data
-      m_softSuspend   = false; //break suspend loop
+      m_softSuspend   = false; //break suspend loop (under some conditions)
       CLog::Log(LOGDEBUG, "Resumed the Sink");
       break;
     }
