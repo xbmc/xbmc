@@ -81,6 +81,7 @@ public:
   virtual bool OnMouseMove(const CPoint &point)  { return false; }
   virtual bool OnMouseClick(const CPoint &point) { return false; }
   virtual double GetTimeStampCorrection()        { return 0.0; }
+  virtual void SkipStill();
 
   void UserInput(bd_vk_key_e vk);
 
@@ -100,13 +101,16 @@ public:
   BLURAY_TITLE_INFO* GetTitleLongest();
   BLURAY_TITLE_INFO* GetTitleFile(const std::string& name);
 
+  void ProcessEvent();
+
 protected:
   IDVDPlayer*   m_player;
   DllLibbluray *m_dll;
   BLURAY* m_bd;
   BLURAY_TITLE_INFO* m_title;
-  bool               m_title_playing;
+  uint32_t           m_playlist;
   uint32_t           m_clip;
+  uint32_t           m_angle;
   bool m_navmode;
 
   typedef boost::shared_ptr<CDVDOverlayImage> SOverlay;
@@ -128,8 +132,8 @@ protected:
   enum EHoldState {
     HOLD_NONE = 0,
     HOLD_HELD,
-    HOLD_SKIP,
     HOLD_DATA,
+    HOLD_STILL,
   } m_hold;
   BD_EVENT m_event;
 };

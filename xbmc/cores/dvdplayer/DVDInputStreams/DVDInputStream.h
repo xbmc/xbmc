@@ -118,6 +118,7 @@ public:
     virtual bool OnMouseMove(const CPoint &point) = 0;
     virtual bool OnMouseClick(const CPoint &point) = 0;
     virtual bool IsInMenu() = 0;
+    virtual void SkipStill() = 0;
     virtual double GetTimeStampCorrection() = 0;
   };
 

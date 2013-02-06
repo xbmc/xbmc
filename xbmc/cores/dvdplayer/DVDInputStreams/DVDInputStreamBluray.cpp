@@ -176,7 +176,8 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
   CDVDInputStream(DVDSTREAM_TYPE_BLURAY)
 {
   m_title = NULL;
-  m_clip  = 0;
+  m_clip  = (uint32_t)-1;
+  m_playlist = (uint32_t)-1;
   m_bd    = NULL;
   m_dll = new DllLibbluray;
   if (!m_dll->Load())
@@ -186,7 +187,6 @@ CDVDInputStreamBluray::CDVDInputStreamBluray(IDVDPlayer* player) :
   }
   m_content = "video/x-mpegts";
   m_player  = player;
-  m_title_playing = false;
   m_navmode = false;
   m_hold = HOLD_NONE;
   memset(&m_event, 0, sizeof(m_event));
@@ -396,7 +396,6 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
       return false;
     }
     m_hold = HOLD_DATA;
-    m_title_playing = false;
   }
   else
   {
@@ -432,6 +431,135 @@ void CDVDInputStreamBluray::Close()
   m_title = NULL;
 }
 
+void CDVDInputStreamBluray::ProcessEvent() {
+
+  int pid = -1;
+  switch (m_event.event) {
+
+  case BD_EVENT_ERROR:
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ERROR");
+    break;
+
+  case BD_EVENT_ENCRYPTED:
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ENCRYPTED");
+    break;
+
+  /* playback control */
+
+  case BD_EVENT_SEEK:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SEEK");
+    break;
+
+  case BD_EVENT_STILL_TIME:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_STILL_TIME %d", m_event.param);
+    pid = m_event.param;
+    m_player->OnDVDNavResult((void*) &pid, 5);
+    m_hold = HOLD_STILL;
+    break;
+
+  case BD_EVENT_STILL:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_STILL %d",
+        m_event.param);
+    break;
+
+    /* playback position */
+
+  case BD_EVENT_ANGLE:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_ANGLE %d",
+        m_event.param);
+    m_angle = m_event.param;
+    if (m_title)
+      m_dll->bd_free_title_info(m_title);
+    m_title = m_dll->bd_get_playlist_info(m_bd, m_playlist, m_angle);
+    break;
+
+  case BD_EVENT_END_OF_TITLE:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_END_OF_TITLE %d",
+        m_event.param);
+    /* when a title ends, playlist WILL eventually change */
+    if (m_title)
+      m_dll->bd_free_title_info(m_title);
+    m_title = NULL;
+    break;
+
+  case BD_EVENT_TITLE:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_TITLE %d",
+        m_event.param);
+    break;
+
+  case BD_EVENT_PLAYLIST:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYLIST %d",
+        m_event.param);
+    m_playlist = m_event.param;
+    if(m_title)
+      m_dll->bd_free_title_info(m_title);
+    m_title = m_dll->bd_get_playlist_info(m_bd, m_playlist, m_angle);
+    break;
+
+  case BD_EVENT_PLAYITEM:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYITEM %d",
+        m_event.param);
+    m_clip    = m_event.param;
+    break;
+
+  case BD_EVENT_CHAPTER:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_CHAPTER %d",
+        m_event.param);
+    break;
+
+    /* stream selection */
+
+  case BD_EVENT_AUDIO_STREAM:
+    pid = -1;
+    if (m_title && m_title->clip_count > m_clip
+        && m_title->clips[m_clip].audio_stream_count
+            > (uint8_t) (m_event.param - 1))
+      pid = m_title->clips[m_clip].audio_streams[m_event.param - 1].pid;
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_AUDIO_STREAM %d %d",
+        m_event.param, pid);
+    m_player->OnDVDNavResult((void*) &pid, 2);
+    break;
+
+  case BD_EVENT_PG_TEXTST:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST %d",
+        m_event.param);
+    pid = m_event.param;
+    m_player->OnDVDNavResult((void*) &pid, 4);
+    break;
+
+  case BD_EVENT_PG_TEXTST_STREAM:
+    pid = -1;
+    if (m_title && m_title->clip_count > m_clip
+        && m_title->clips[m_clip].pg_stream_count
+            > (uint8_t) (m_event.param - 1))
+      pid = m_title->clips[m_clip].pg_streams[m_event.param - 1].pid;
+    CLog::Log(LOGDEBUG,
+        "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST_STREAM %d, %d",
+        m_event.param, pid);
+    m_player->OnDVDNavResult((void*) &pid, 3);
+    break;
+
+  case BD_EVENT_IG_STREAM:
+  case BD_EVENT_SECONDARY_AUDIO:
+  case BD_EVENT_SECONDARY_AUDIO_STREAM:
+  case BD_EVENT_SECONDARY_VIDEO:
+  case BD_EVENT_SECONDARY_VIDEO_SIZE:
+  case BD_EVENT_SECONDARY_VIDEO_STREAM:
+
+  case BD_EVENT_NONE:
+    break;
+
+  default:
+    CLog::Log(LOGWARNING,
+        "CDVDInputStreamBluray - unhandled libbluray event %d [param %d]",
+        m_event.event, m_event.param);
+    break;
+  }
+
+  /* event has been consumed */
+  m_event.event = BD_EVENT_NONE;
+}
+
 int CDVDInputStreamBluray::Read(BYTE* buf, int buf_size)
 {
   if(m_navmode)
@@ -442,140 +570,37 @@ int CDVDInputStreamBluray::Read(BYTE* buf, int buf_size)
       if(m_hold == HOLD_HELD)
         return 0;
 
-      if(m_hold == HOLD_SKIP)
-      {
-        /* m_event already holds data */
-        m_hold = HOLD_DATA;
-        result = 0;
-      }
-      else
-      {
-        result = m_dll->bd_read_ext (m_bd, buf, buf_size, &m_event);
+      result = m_dll->bd_read_ext (m_bd, buf, buf_size, &m_event);
 
-        if(m_hold == HOLD_NONE)
-        {
-          /* Check for holding events */
-          switch(m_event.event) {
-            case BD_EVENT_SEEK:
-            case BD_EVENT_TITLE:
-              if(m_title_playing)
-                m_player->OnDVDNavResult(NULL, 1);
-              m_hold = HOLD_HELD;
-              return result;
-
-            case BD_EVENT_PLAYLIST:
-            case BD_EVENT_PLAYITEM:
-              m_hold = HOLD_HELD;
-              return result;
-            default:
-              break;
-          }
-        }
-        if(result > 0)
-          m_hold = HOLD_NONE;
-      }
-      int pid = -1;
-      switch (m_event.event) {
-
-        case BD_EVENT_ERROR:
-          CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ERROR");
-          return -1;
-
-        case BD_EVENT_ENCRYPTED:
-          CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_ENCRYPTED");
-          return -1;
-
-        /* playback control */
-
+      /* Check for holding events */
+      switch(m_event.event) {
         case BD_EVENT_SEEK:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SEEK");
+        case BD_EVENT_TITLE:
+        case BD_EVENT_ANGLE:
+        case BD_EVENT_PLAYLIST:
+        case BD_EVENT_PLAYITEM:
+          if(m_hold != HOLD_DATA)
+          {
+            m_hold = HOLD_HELD;
+            return result;
+          }
           break;
 
         case BD_EVENT_STILL_TIME:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_STILL_TIME %d", m_event.param);
-          return 0;
-
-        case BD_EVENT_STILL:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_STILL %d", m_event.param);
-          break;
-
-        /* playback position */
-
-        case BD_EVENT_ANGLE:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_ANGLE %d", m_event.param);
-          break;
-
-        case BD_EVENT_END_OF_TITLE:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_END_OF_TITLE %d", m_event.param);
-          m_title_playing = false;
-          break;
-
-        case BD_EVENT_TITLE:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_TITLE %d", m_event.param);
-          if(m_title)
-            m_dll->bd_free_title_info(m_title);
-          m_title = m_dll->bd_get_title_info(m_bd, m_event.param, 0);
-          m_title_playing = true;
-          break;
-
-        case BD_EVENT_PLAYLIST:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYLIST %d", m_event.param);
-          if(m_title)
-            m_dll->bd_free_title_info(m_title);
-          m_title = m_dll->bd_get_playlist_info(m_bd, m_event.param, 0);
-          break;
-
-        case BD_EVENT_PLAYITEM:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYITEM %d", m_event.param);
-          m_clip = m_event.param;
-          break;
-
-        case BD_EVENT_CHAPTER:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_CHAPTER %d", m_event.param);
-          break;
-
-        /* stream selection */
-
-        case BD_EVENT_AUDIO_STREAM:
-          pid = -1;
-          if(m_title
-          && m_title->clip_count > m_clip
-          && m_title->clips[m_clip].audio_stream_count > (uint8_t)(m_event.param - 1))
-            pid = m_title->clips[m_clip].audio_streams[m_event.param-1].pid;
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_AUDIO_STREAM %d %d", m_event.param, pid);
-          m_player->OnDVDNavResult((void*)&pid, 2);
-          break;
-
-        case BD_EVENT_PG_TEXTST:
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST %d", m_event.param);
-          pid = m_event.param;
-          m_player->OnDVDNavResult((void*)&pid, 4);
-          break;
-
-        case BD_EVENT_PG_TEXTST_STREAM:
-          pid = -1;
-          if(m_title
-          && m_title->clip_count > m_clip
-          && m_title->clips[m_clip].pg_stream_count > (uint8_t)(m_event.param - 1))
-            pid = m_title->clips[m_clip].pg_streams[m_event.param-1].pid;
-          CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST_STREAM %d, %d", m_event.param, pid);
-          m_player->OnDVDNavResult((void*)&pid, 3);
-          break;
-
-        case BD_EVENT_IG_STREAM:
-        case BD_EVENT_SECONDARY_AUDIO:
-        case BD_EVENT_SECONDARY_AUDIO_STREAM:
-        case BD_EVENT_SECONDARY_VIDEO:
-        case BD_EVENT_SECONDARY_VIDEO_SIZE:
-        case BD_EVENT_SECONDARY_VIDEO_STREAM:
-
-        case BD_EVENT_NONE:
-          break;
+          if(m_hold == HOLD_STILL)
+            m_event.event = 0; /* Consume duplicate still event */
+          else
+            m_hold = HOLD_HELD;
+          return result;
 
         default:
-          CLog::Log(LOGWARNING, "CDVDInputStreamBluray - unhandled libbluray event %d [param %d]", m_event.event, m_event.param);
           break;
       }
+
+      if(result > 0)
+        m_hold = HOLD_NONE;
+
+      ProcessEvent();
 
     } while(result == 0);
 
@@ -850,17 +875,18 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
   if(!m_navmode)
     return NEXTSTREAM_NONE;
 
-  if(m_hold == HOLD_HELD)
-  {
-    m_hold = HOLD_SKIP;
-    return NEXTSTREAM_OPEN;
-  }
-  if(m_hold == HOLD_NONE)
-  {
-    m_hold = HOLD_DATA;
-    m_dll->bd_read_skip_still(m_bd);
-  }
-  return NEXTSTREAM_RETRY;
+  /* process any current event */
+  ProcessEvent();
+
+  /* process all queued up events */
+  while(m_dll->bd_get_event(m_bd, &m_event))
+    ProcessEvent();
+
+  if(m_hold == HOLD_STILL)
+    return NEXTSTREAM_RETRY;
+
+  m_hold = HOLD_DATA;
+  return NEXTSTREAM_OPEN;
 }
 
 void CDVDInputStreamBluray::UserInput(bd_vk_key_e vk)
@@ -895,6 +921,18 @@ bool CDVDInputStreamBluray::IsInMenu()
   if(m_planes[BD_OVERLAY_IG].o.size() > 0)
     return true;
   return false;
+}
+
+void CDVDInputStreamBluray::SkipStill()
+{
+  if(m_bd == NULL || !m_navmode)
+    return;
+
+  if(m_hold == HOLD_STILL)
+  {
+    m_hold = HOLD_HELD;
+    m_dll->bd_read_skip_still(m_bd);
+  }
 }
 
 #endif

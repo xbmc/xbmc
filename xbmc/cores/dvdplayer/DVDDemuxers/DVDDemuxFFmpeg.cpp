@@ -446,7 +446,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
+      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD)
+      ||  m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY)
+      || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }

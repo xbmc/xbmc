@@ -1111,10 +1111,8 @@ void CDVDPlayer::Process()
         continue;
 
       // check for a still frame state
-      if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+      if (CDVDInputStream::IMenus* pStream = dynamic_cast<CDVDInputStream::IMenus*>(m_pInputStream))
       {
-        CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
-
         // stills will be skipped
         if(m_dvd.state == DVDSTATE_STILL)
         {
@@ -3244,6 +3242,29 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
       m_dvd.iSelectedSPUStream   = *(int*)pData;
     else if(iMessage == 4)
       m_dvdPlayerVideo.EnableSubtitle(*(int*)pData ? true: false);
+    else if(iMessage == 5)
+    {
+      if (m_dvd.state != DVDSTATE_STILL)
+      {
+        // else notify the player we have received a still frame
+
+        m_dvd.iDVDStillTime      = *(int*)pData;
+        m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
+
+        /* adjust for the output delay in the video queue */
+        unsigned int time = 0;
+        if( m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0 )
+        {
+          time = (unsigned int)(m_dvdPlayerVideo.GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
+          if( time < 10000 && time > 0 )
+            m_dvd.iDVDStillTime += time;
+        }
+        m_dvd.state = DVDSTATE_STILL;
+        CLog::Log(LOGDEBUG,
+                  "DVDNAV_STILL_FRAME - waiting %i sec, with delay of %d sec",
+                  m_dvd.iDVDStillTime, time / 1000);
+      }
+    }
 
     return 0;
   }
