@@ -369,6 +369,14 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.type     = stream->type;
       s.id       = stream->iId;
       s.language = stream->language;
+
+      if (s.language.length() == 2)
+      {
+        CStdString lang;
+        g_LangCodeExpander.ConvertToThreeCharCode(lang, stream->language);
+        s.language = lang;
+      }
+
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       stream->GetStreamName(s.name);
