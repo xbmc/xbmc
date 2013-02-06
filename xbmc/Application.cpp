@@ -171,9 +171,9 @@
 // Windows includes
 #include "guilib/GUIWindowManager.h"
 #include "windows/GUIWindowHome.h"
-#include "settings/GUIWindowSettings.h"
+#include "settings/windows/GUIWindowSettings.h"
 #include "windows/GUIWindowFileManager.h"
-#include "settings/GUIWindowSettingsCategory.h"
+#include "settings/windows/GUIWindowSettingsCategory.h"
 #include "music/windows/GUIWindowMusicPlaylist.h"
 #include "music/windows/GUIWindowMusicSongs.h"
 #include "music/windows/GUIWindowMusicNav.h"
@@ -182,14 +182,14 @@
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
-#include "settings/GUIWindowSettingsProfile.h"
+#include "settings/windows/GUIWindowSettingsProfile.h"
 #ifdef HAS_GL
 #include "rendering/gl/GUIWindowTestPatternGL.h"
 #endif
 #ifdef HAS_DX
 #include "rendering/dx/GUIWindowTestPatternDX.h"
 #endif
-#include "settings/GUIWindowSettingsScreenCalibration.h"
+#include "settings/windows/GUIWindowSettingsScreenCalibration.h"
 #include "programs/GUIWindowPrograms.h"
 #include "pictures/GUIWindowPictures.h"
 #include "windows/GUIWindowWeather.h"
@@ -218,9 +218,9 @@
 #include "video/dialogs/GUIDialogVideoSettings.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
-#include "settings/GUIDialogProfileSettings.h"
-#include "settings/GUIDialogLockSettings.h"
-#include "settings/GUIDialogContentSettings.h"
+#include "settings/dialogs/GUIDialogProfileSettings.h"
+#include "settings/dialogs/GUIDialogLockSettings.h"
+#include "settings/dialogs/GUIDialogContentSettings.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogYesNo.h"

@@ -30,7 +30,7 @@
 #include "utils/URIUtils.h"
 #include "settings/GUISettings.h"
 #include "GUIDialogMediaSource.h"
-#include "settings/GUIDialogLockSettings.h"
+#include "settings/dialogs/GUIDialogLockSettings.h"
 #include "storage/MediaManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogYesNo.h"

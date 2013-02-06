@@ -20,7 +20,7 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "settings/GUIDialogSettings.h"
+#include "settings/dialogs/GUIDialogSettings.h"
 #include "FileItem.h"
 
 namespace PERIPHERALS

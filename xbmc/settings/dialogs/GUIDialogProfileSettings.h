@@ -20,9 +20,9 @@
  *
  */
 
-#include "GUIDialogSettings.h"
 #include "MediaSource.h"
-#include "Profile.h"
+#include "settings/Profile.h"
+#include "settings/dialogs/GUIDialogSettings.h"
 
 class CGUIDialogProfileSettings : public CGUIDialogSettings
 {

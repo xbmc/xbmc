@@ -55,7 +55,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
-#include "settings/GUIDialogContentSettings.h"
+#include "settings/dialogs/GUIDialogContentSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
