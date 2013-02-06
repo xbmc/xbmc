@@ -107,8 +107,8 @@
 			<control type="image">
 				<width>1280</width>
 				<height>720</height>
-				<texture>black.png</texture>
-				<aspectratio>stretch</aspectratio>
+				<texture border="300">black.png</texture>
+				<aspectratio>scale</aspectratio>
 				<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
 				<visible>true</visible>
 			</control>
@@ -116,8 +116,8 @@
 			<control type="image">
 				<width>1280</width>
 				<height>720</height>
-				<texture>black.png</texture>
-				<aspectratio>stretch</aspectratio>
+				<texture border="300">black.png</texture>
+				<aspectratio>scale</aspectratio>
 				<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
 				<visible>Control.IsVisible(11000) | Control.IsVisible(11001) | Control.IsVisible(11002) | Control.IsVisible(11003) | Control.IsVisible(11004) | Control.IsVisible(12000)</visible>
 			</control>
