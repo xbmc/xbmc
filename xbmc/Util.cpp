@@ -2189,6 +2189,204 @@ bool CUtil::IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdStr
   return false;
 }
 
+
+void CUtil::ScanForExternalAudio(const CStdString& strMovie, std::vector<CStdString>& vecAudio )
+{
+  unsigned int startTimer = XbmcThreads::SystemClockMillis();
+
+  // new array for commons audio sub dirs
+  const char * common_audio_dirs[] = {"audio",
+    "tracks",
+    NULL};
+
+  CFileItem item(strMovie, false);
+  if ( item.IsInternetStream()
+   ||  item.IsHDHomeRun()
+   ||  item.IsSlingbox()
+   ||  item.IsPlayList()
+   ||  item.IsLiveTV()
+   || !item.IsVideo()) 
+    return;
+
+  vector<CStdString> strLookInPaths;
+
+  CStdString strMovieFileName;
+  CStdString strPath;
+  
+  CStdStringArray audio_exts;
+  StringUtils::SplitString(g_settings.m_musicExtensions, "|", audio_exts);
+  
+  URIUtils::Split(strMovie, strPath, strMovieFileName);
+  CStdString strMovieFileNameNoExt(URIUtils::ReplaceExtension(strMovieFileName, ""));
+  strLookInPaths.push_back(strPath);
+
+  if (strMovie.Left(6) == "rar://") // <--- if this is found in main path then ignore it!
+  {
+    CURL url(strMovie);
+    CStdString strArchive = url.GetHostName();
+    URIUtils::Split(strArchive, strPath, strMovieFileName);
+    strLookInPaths.push_back(strPath);
+  }
+
+  int iSize = strLookInPaths.size();
+  for (int i=0; i<iSize; ++i)
+  {
+    CStdStringArray directories;
+    int nTokens = StringUtils::SplitString( strLookInPaths[i], "/", directories );
+    if (nTokens == 1)
+      StringUtils::SplitString( strLookInPaths[i], "\\", directories );
+
+    // if it's inside a cdX dir, add parent path
+    if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
+    {
+      CStdString strPath2;
+      URIUtils::GetParentPath(strLookInPaths[i], strPath2);
+      strLookInPaths.push_back(strPath2);
+    }
+  }
+
+  // checking if any of the common subdirs exist ..
+  iSize = strLookInPaths.size();
+  for (int i=0;i<iSize;++i)
+  {
+    for (int j=0; common_audio_dirs[j]; j++)
+    {
+      CStdString strPath2 = URIUtils::AddFileToFolder(strLookInPaths[i],common_audio_dirs[j]);
+      if (CDirectory::Exists(strPath2))
+        strLookInPaths.push_back(strPath2);
+    }
+  }
+
+  CStdString strLExt;
+  CStdString strDest;
+  CStdString strItem;
+
+  // 2 steps for movie directory and alternate audio directory
+  CLog::Log(LOGDEBUG,"%s: Searching for audio...", __FUNCTION__);
+  for (unsigned int step = 0; step < strLookInPaths.size(); step++)
+  {
+    if (strLookInPaths[step].length() != 0)
+    {
+      CFileItemList items;
+
+      CDirectory::GetDirectory(strLookInPaths[step], items, g_settings.m_musicExtensions, DIR_FLAG_NO_FILE_DIRS);
+      int fnl = strMovieFileNameNoExt.size();
+
+      for (int j = 0; j < items.Size(); j++)
+      {
+        URIUtils::Split(items[j]->GetPath(), strPath, strItem);
+
+        if (strItem.Left(fnl).Equals(strMovieFileNameNoExt))
+        {
+          // is this a rar or zip-file
+          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+          {
+            // zip-file name equals strMovieFileNameNoExt, don't check in zip-file
+            ScanArchiveForAudio( items[j]->GetPath(), "", vecAudio );
+          }
+          else    // not a rar/zip file
+          {
+            for (unsigned int i = 0; i < audio_exts.size(); i++)
+            {
+              //save audio with same name as movie
+              if (URIUtils::GetExtension(strItem).Equals(audio_exts[i]))
+              {
+                vecAudio.push_back( items[j]->GetPath() ); 
+                CLog::Log(LOGINFO, "%s: found external audio file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
+              }
+            }
+          }
+        }
+        else
+        {
+          // is this a rar or zip-file
+          if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+          {
+            // check strMovieFileNameNoExt in zip-file
+            ScanArchiveForAudio( items[j]->GetPath(), strMovieFileNameNoExt, vecAudio );
+          }
+        }
+      }
+    }
+  }
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
+}
+
+
+int CUtil::ScanArchiveForAudio( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecAudio )
+{
+  int nAudioAdded = 0;
+  CFileItemList ItemList;
+
+  CStdStringArray audio_exts;
+  StringUtils::SplitString(g_settings.m_musicExtensions, "|", audio_exts);
+
+  // zip only gets the root dir
+  if (URIUtils::GetExtension(strArchivePath).Equals(".zip"))
+  {
+    CStdString strZipPath;
+    URIUtils::CreateArchivePath(strZipPath,"zip",strArchivePath,"");
+    if (!CDirectory::GetDirectory(strZipPath,ItemList,"",DIR_FLAG_NO_FILE_DIRS))
+      return false;
+  }
+  else
+  {
+#ifdef HAS_FILESYSTEM_RAR
+    // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
+    // so now we dont have to find any subdirs anymore, all files in the rar is checked.
+    if( !g_RarManager.GetFilesInRar(ItemList, strArchivePath, false, "") )
+      return false;
+#else
+    return false;
+#endif
+  }
+  for (int it= 0 ; it <ItemList.Size();++it)
+  {
+    CStdString strPathInRar = ItemList[it]->GetPath();
+    CStdString strExt = URIUtils::GetExtension(strPathInRar);
+
+    CLog::Log(LOGDEBUG, "ScanArchiveForAudio:: Found file %s", strPathInRar.c_str());
+    // always check any embedded rar archives
+    // checking for embedded rars, I moved this outside the audio_exts[] loop. We only need to check this once for each file.
+    if (URIUtils::IsRAR(strPathInRar) || URIUtils::IsZIP(strPathInRar))
+    {
+      CStdString strRarInRar;
+      if (URIUtils::GetExtension(strPathInRar).Equals(".rar"))
+        URIUtils::CreateArchivePath(strRarInRar, "rar", strArchivePath, strPathInRar);
+      else
+        URIUtils::CreateArchivePath(strRarInRar, "zip", strArchivePath, strPathInRar);
+      ScanArchiveForAudio(strRarInRar,strMovieFileNameNoExt,vecAudio);
+    }
+    // done checking if this is a rar-in-rar
+
+    // check that the found filename matches the movie filename
+    int fnl = strMovieFileNameNoExt.size();
+    if (fnl && !URIUtils::GetFileName(strPathInRar).Left(fnl).Equals(strMovieFileNameNoExt))
+      continue;
+
+    unsigned int iPos=0;
+    while (iPos < audio_exts.size())
+    {
+      if (strExt.CompareNoCase(audio_exts[iPos]) == 0)
+      {
+        CStdString strSourceUrl;
+        if (URIUtils::GetExtension(strArchivePath).Equals(".rar"))
+          URIUtils::CreateArchivePath(strSourceUrl, "rar", strArchivePath, strPathInRar);
+        else
+          strSourceUrl = strPathInRar;
+
+        CLog::Log(LOGINFO, "%s: found audio file %s\n", __FUNCTION__, strSourceUrl.c_str() );
+        vecAudio.push_back( strSourceUrl );
+        nAudioAdded++;
+      }
+
+      iPos++;
+    }
+  }
+
+  return nAudioAdded;
+}
+
 bool CUtil::CanBindPrivileged()
 {
 #ifdef _LINUX
