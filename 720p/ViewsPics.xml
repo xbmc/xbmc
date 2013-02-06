@@ -77,7 +77,7 @@
 							<width>102</width>
 							<height>102</height>
 							<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
-							<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+							<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 							<bordertexture border="10">frameOrange.png</bordertexture>
 							<bordersize>3</bordersize>
 						</control>

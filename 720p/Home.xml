@@ -946,7 +946,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -990,7 +990,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 							</control>
 						</itemlayout>
@@ -1192,7 +1192,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -1216,7 +1216,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -1772,7 +1772,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -1807,7 +1807,7 @@
 									<width>116</width>
 									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 							</control>
 						</itemlayout>
@@ -1830,7 +1830,7 @@
 									<width>122</width>
 									<height>122</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -1889,7 +1889,7 @@
 									<width>122</width>
 									<height>122</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -2065,7 +2065,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -2080,7 +2080,7 @@
 									<width>122</width>
 									<height>182</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
@@ -3464,7 +3464,7 @@
 									<width>116</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 								</control>
 								<control type="label">
 									<posx>95</posx>
@@ -3491,7 +3491,7 @@
 									<width>122</width>
 									<height>122</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
-									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+									<texture diffuse="posterMaskSmall.png" background="true" fallback="posterFrameSmallShadow2.png">$INFO[ListItem.Art(thumb)]</texture>
 									<bordertexture border="10">frameOrange.png</bordertexture>
 									<bordersize>3</bordersize>
 								</control>
