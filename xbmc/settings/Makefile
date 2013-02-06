@@ -1,5 +1,4 @@
 SRCS=AdvancedSettings.cpp \
-     AppParamParser.cpp \
      GUISettings.cpp \
      Profile.cpp \
      Settings.cpp \

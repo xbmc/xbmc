@@ -19,7 +19,7 @@
  */
 
 #include "settings/AdvancedSettings.h"
-#include "settings/AppParamParser.h"
+#include "AppParamParser.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "threads/platform/win/Win32Exception.h"
