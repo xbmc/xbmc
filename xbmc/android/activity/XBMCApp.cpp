@@ -54,6 +54,8 @@
 #include <EGL/eglext.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+
+#define ANDROID_GRAPHICS_SURFACETEXTURE_JNI_ID "mSurfaceTexture"
 #endif
 
 #define GIGABYTES       1073741824
@@ -1001,27 +1003,23 @@ bool CXBMCApp::InitStagefrightSurface()
   m_VideoTextureId = -1;
 
   glGenTextures(1, &m_VideoTextureId);
-
-  /*
-  glEnable(GL_TEXTURE_EXTERNAL_OES);
-  glGenTextures(1, &m_VideoTextureId);
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, m_VideoTextureId);
-  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   CLog::Log(LOGDEBUG, ">>> texid: %d\n", m_VideoTextureId);
-  glDisable(GL_TEXTURE_EXTERNAL_OES);
-  */
+  glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
   
   jclass cSurfaceTexture = env->FindClass("android/graphics/SurfaceTexture");
   jmethodID midSurfaceTextureCtor = env->GetMethodID(cSurfaceTexture, "<init>", "(I)V");
+  midSurfaceTextureRelease = env->GetMethodID(cSurfaceTexture, "release", "()V");
   m_midUpdateTexImage = env->GetMethodID(cSurfaceTexture, "updateTexImage", "()V");
   m_midGetTransformMatrix  = env->GetMethodID(cSurfaceTexture, "getTransformMatrix", "([F)V");
   jobject oSurfTexture = env->NewObject(cSurfaceTexture, midSurfaceTextureCtor, m_VideoTextureId);
 
-  //jfieldID fidSurfaceTexture = env->GetFieldID(cSurfaceTexture, ANDROID_GRAPHICS_SURFACETEXTURE_JNI_ID, "I");
-  //m_SurfaceTexture = (android::SurfaceTexture*)env->GetIntField(oSurfTexture, fidSurfaceTexture);
+  jfieldID fidSurfaceTexture = env->GetFieldID(cSurfaceTexture, ANDROID_GRAPHICS_SURFACETEXTURE_JNI_ID, "I");
+  m_SurfaceTexture = (android::SurfaceTexture*)env->GetIntField(oSurfTexture, fidSurfaceTexture);
 
   env->DeleteLocalRef(cSurfaceTexture);
   m_SurfTexture = env->NewGlobalRef(oSurfTexture);
@@ -1029,16 +1027,13 @@ bool CXBMCApp::InitStagefrightSurface()
 
   jclass cSurface = env->FindClass("android/view/Surface");
   jmethodID midSurfaceCtor = env->GetMethodID(cSurface, "<init>", "(Landroid/graphics/SurfaceTexture;)V");
-  jmethodID midSurfaceRelease = env->GetMethodID(cSurface, "release", "()V");
+  midSurfaceRelease = env->GetMethodID(cSurface, "release", "()V");
   jobject oSurface = env->NewObject(cSurface, midSurfaceCtor, m_SurfTexture);
   env->DeleteLocalRef(cSurface);
-
-  m_VideoNativeWindow = ANativeWindow_fromSurface(env, oSurface);
-
-  env->CallVoidMethod(oSurface, midSurfaceRelease);
+  m_Surface = env->NewGlobalRef(oSurface);
   env->DeleteLocalRef(oSurface);
 
-  glDisable(GL_TEXTURE_EXTERNAL_OES);
+  m_VideoNativeWindow = ANativeWindow_fromSurface(env, m_Surface);
 
   return true;
 }
@@ -1052,17 +1047,15 @@ void CXBMCApp::UninitStagefrightSurface()
 
   ANativeWindow_release(m_VideoNativeWindow);
   m_VideoNativeWindow = NULL;
-  /*
-  m_SurfaceTexture.clear();
   m_SurfaceTexture = NULL;
-  */
-  glDeleteTextures(1, &m_VideoTextureId);
 
-  jclass cSurfaceTexture = env->GetObjectClass(m_SurfTexture);
-  jmethodID midSurfaceTextureRelease = env->GetMethodID(cSurfaceTexture, "release", "()V");
+  env->CallVoidMethod(m_Surface, midSurfaceRelease);
+  env->DeleteGlobalRef(m_Surface);
+
   env->CallVoidMethod(m_SurfTexture, midSurfaceTextureRelease);
-  env->DeleteLocalRef(cSurfaceTexture);
   env->DeleteGlobalRef(m_SurfTexture);
+
+  glDeleteTextures(1, &m_VideoTextureId);
 }
 
 void CXBMCApp::UpdateStagefrightTexture()

@@ -42,8 +42,6 @@ public:
   bool ClearPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
   virtual void SetSpeed(int iSpeed);
-  virtual int GetDataSize(void);
-  virtual double GetTimeSize(void);
 
   void LockBuffer(EGLImageKHR eglimg);
   void ReleaseBuffer(EGLImageKHR eglimg);

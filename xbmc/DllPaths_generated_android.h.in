@@ -93,3 +93,6 @@
 
 /* Android's libui for gralloc */
 #define DLL_PATH_LIBUI         "libui.so"
+
+/* Android's libs for stagefright */
+#define DLL_PATH_LIBBINDER     "libbinder.so"

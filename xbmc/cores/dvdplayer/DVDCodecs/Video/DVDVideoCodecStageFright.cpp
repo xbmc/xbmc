@@ -55,7 +55,6 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   if (g_guiSettings.GetBool("videoplayer.usestagefright") && !hints.software)
   {
     m_convert_bitstream = false;
-
     CLog::Log(LOGDEBUG,
           "%s::%s - trying to open, codec(%d), profile(%d), level(%d)", 
           CLASSNAME, __func__, hints.codec, hints.profile, hints.level);
@@ -73,6 +72,9 @@ bool CDVDVideoCodecStageFright::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
         m_converter     = new CBitstreamConverter();
         m_convert_bitstream = m_converter->Open(hints.codec, (uint8_t *)hints.extradata, hints.extrasize, true);
 
+        break;
+      case CODEC_ID_MPEG2VIDEO:
+        m_pFormatName = "stf-mpeg2";
         break;
       case CODEC_ID_MPEG4:
         m_pFormatName = "stf-mpeg4";
@@ -188,12 +190,12 @@ void CDVDVideoCodecStageFright::SetSpeed(int iSpeed)
 
 int CDVDVideoCodecStageFright::GetDataSize(void)
 {
-  return m_stf_decoder->GetDataSize();
+  return 0;
 }
 
 double CDVDVideoCodecStageFright::GetTimeSize(void)
 {
-  return m_stf_decoder->GetTimeSize();
+  return 0;
 }
 
 #endif

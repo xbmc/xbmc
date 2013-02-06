@@ -7,7 +7,7 @@ INCLUDES += -I$(PREFIX)/opt/android-source/frameworks/base/include/media/stagefr
 INCLUDES += -I$(PREFIX)/opt/android-source/system/core/include
 INCLUDES += -I$(PREFIX)/opt/android-source/libhardware/include
 
-ANDROID_VERSION=ics
+ANDROID_VERSION=ics-mr0
 ANDROID_SOURCE=android-source
 ANDROID_LIBS=android-libs
 
@@ -16,23 +16,23 @@ all: .installed-$(PLATFORM)
 .installed-$(PLATFORM): install-sources $(ANDROID_LIBS)
 	rm -rf $(PREFIX)/opt/$(ANDROID_LIBS)
 	mkdir -p $(PREFIX)/opt/$(ANDROID_LIBS)
-	cp $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFORM)/libbinder.so  $(PLATFORM)/libcutils.so $(PLATFORM)/libui.so $(PREFIX)/opt/$(ANDROID_LIBS)
+	cp $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFORM)/libbinder.so  $(PLATFORM)/libcutils.so $(PLATFORM)/libui.so $(PLATFORM)/libgui.so $(PREFIX)/opt/$(ANDROID_LIBS)
 	touch $@
 
 $(ANDROID_SOURCE):
 	echo "Fetching Android system headers"
-	git clone --depth=1 --branch $(ANDROID_VERSION)-release git://github.com/CyanogenMod/android_frameworks_base.git $(ANDROID_SOURCE)/frameworks/base
-	git clone --depth=1 --branch $(ANDROID_VERSION)-release git://github.com/CyanogenMod/android_system_core.git $(ANDROID_SOURCE)/system/core
-	git clone --depth=1 --branch $(ANDROID_VERSION)-release git://github.com/CyanogenMod/android_hardware_libhardware.git $(ANDROID_SOURCE)/libhardware
+	git clone --depth=1 --branch $(ANDROID_VERSION) https://android.googlesource.com/platform/frameworks/base $(ANDROID_SOURCE)/frameworks/base
+	git clone --depth=1 --branch $(ANDROID_VERSION) https://android.googlesource.com/platform/system/core $(ANDROID_SOURCE)/system/core
+	git clone --depth=1 --branch $(ANDROID_VERSION) https://android.googlesource.com/platform/hardware/libhardware $(ANDROID_SOURCE)/libhardware
 
 install-sources: $(ANDROID_SOURCE)
 	mkdir -p $(PREFIX)/opt
 	rm -f $(PREFIX)/opt/$(ANDROID_SOURCE)
 	ln -s $(CURDIR)/$(ANDROID_SOURCE) $(PREFIX)/opt/$(ANDROID_SOURCE)
 
-$(ANDROID_LIBS): $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFORM)/libbinder.so $(PLATFORM)/libcutils.so $(PLATFORM)/libui.so
+$(ANDROID_LIBS): $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFORM)/libbinder.so $(PLATFORM)/libcutils.so $(PLATFORM)/libui.so $(PLATFORM)/libgui.so
 	mkdir -p $(PREFIX)/opt/$(ANDROID_LIBS)
-	cp $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFORM)/libbinder.so  $(PLATFORM)/libcutils.so $(PLATFORM)/libui.so $(PREFIX)/opt/$(ANDROID_LIBS)
+	cp $(PLATFORM)/libstagefright.so $(PLATFORM)/libutils.so $(PLATFORM)/libbinder.so  $(PLATFORM)/libcutils.so $(PLATFORM)/libui.so $(PLATFORM)/libgui.so $(PREFIX)/opt/$(ANDROID_LIBS)
 
 $(PLATFORM): install-sources
 	mkdir -p $(PLATFORM)
@@ -52,8 +52,11 @@ $(PLATFORM)/libcutils.so:  $(PLATFORM) $(DEPS) libcutils.c
 $(PLATFORM)/libui.so:  $(PLATFORM) $(DEPS) libui.cpp
 	$(CXX) -Wno-multichar -fno-exceptions -fno-rtti $(INCLUDES) -shared -o $(PLATFORM)/libui.so libui.cpp
 
+$(PLATFORM)/libgui.so:  $(PLATFORM) $(DEPS) libgui.cpp
+	$(CXX) -Wno-multichar -fno-exceptions -fno-rtti $(INCLUDES) -shared -o $(PLATFORM)/libgui.so libgui.cpp
+
 clean:
 	rm -f $(PREFIX)/opt/$(ANDROID_SOURCE)
-	rm -rf .installed-$(PLATFORM) $(ANDROID_SOURCE) $(PLATFORM) $(ANDROID_LIBS_ARCHIVE)
+	rm -rf .installed-$(PLATFORM) $(ANDROID_SOURCE) $(PLATFORM) $(ANDROID_LIBS_ARCHIVE) $(ANDROID_LIBS)
 
 distclean: clean
