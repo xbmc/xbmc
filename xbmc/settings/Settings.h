@@ -44,13 +44,16 @@
 #endif // MID
 
 #include "settings/VideoSettings.h"
+#include "settings/ISubSettings.h"
 #include "Profile.h"
 #include "view/ViewState.h"
 #include "guilib/Resolution.h"
 #include "guilib/GraphicContext.h"
+#include "threads/CriticalSection.h"
 
 #include <vector>
 #include <map>
+#include <set>
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -100,11 +103,14 @@ class TiXmlElement;
 class TiXmlNode;
 class CMediaSource;
 
-class CSettings
+class CSettings : private ISubSettings
 {
 public:
   CSettings(void);
   virtual ~CSettings(void);
+
+  void RegisterSubSettings(ISubSettings *subSettings);
+  void UnregisterSubSettings(ISubSettings *subSettings);
 
   void Initialize();
 
@@ -392,12 +398,25 @@ protected:
   void LoadUserFolderLayout();
 
 private:
+  // implementation of ISubSettings
+  virtual bool Load(const TiXmlNode *settings);
+  virtual bool Save(TiXmlNode *settings) const;
+
+  virtual bool OnSettingsLoading();
+  virtual void OnSettingsLoaded();
+  virtual bool OnSettingsSaving() const;
+  virtual void OnSettingsSaved() const;
+
   std::vector<CProfile> m_vecProfiles;
   std::map<CStdString, int> m_watchMode;
   bool m_usingLoginScreen;
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile;
   int m_nextIdProfile; // for tracking the next available id to give to a new profile to ensure id's are not re-used
+  
+  CCriticalSection m_critical;
+  typedef std::set<ISubSettings*> SubSettings;
+  SubSettings m_subSettings;
 };
 
 extern class CSettings g_settings;

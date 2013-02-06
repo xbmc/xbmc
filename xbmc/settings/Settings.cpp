@@ -56,12 +56,31 @@
 #include "filesystem/DirectoryCache.h"
 #include "DatabaseManager.h"
 #include "network/upnp/UPnPSettings.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 using namespace XFILE;
 
 CSettings::CSettings(void)
 {
+}
+
+void CSettings::RegisterSubSettings(ISubSettings *subSettings)
+{
+  if (subSettings == NULL)
+    return;
+
+  CSingleLock lock(m_critical);
+  m_subSettings.insert(subSettings);
+}
+
+void CSettings::UnregisterSubSettings(ISubSettings *subSettings)
+{
+  if (subSettings == NULL)
+    return;
+
+  CSingleLock lock(m_critical);
+  m_subSettings.erase(subSettings);
 }
 
 void CSettings::Initialize()
@@ -168,6 +187,9 @@ bool CSettings::Reset()
 
 bool CSettings::Load()
 {
+  if (!OnSettingsLoading())
+    return false;
+
   CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   if (!LoadSettings(GetSettingsFile()))
@@ -180,6 +202,8 @@ bool CSettings::Load()
   LoadSources();
   LoadRSSFeeds();
   LoadUserFolderLayout();
+
+  OnSettingsLoaded();
 
   return true;
 }
@@ -817,7 +841,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", g_advancedSettings.m_logLevel);
   }  
   CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-  return true;
+
+  // load any ISubSettings implementations
+  return Load(pRootElement);
 }
 
 bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings /* = NULL */) const
@@ -826,6 +852,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   TiXmlElement xmlRootElement("settings");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
+
+  if (!OnSettingsSaving())
+    return false;
+
   // write our tags one by one - just a big list for now (can be flashed up later)
 
   // mymusic settings
@@ -946,6 +976,11 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   // For mastercode
   SaveProfiles( PROFILES_FILE );
+
+  OnSettingsSaved();
+
+  if (!Save(pRoot))
+    return false;
 
   // save the file
   return xmlDoc.SaveFile(strSettingsFile);
@@ -1431,6 +1466,9 @@ void CSettings::Clear()
   m_Calibrations.clear();
 
   CUPnPSettings::Get().Clear();
+
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+    (*it)->Clear();
 }
 
 int CSettings::TranslateSkinString(const CStdString &setting)
@@ -1876,4 +1914,63 @@ void CSettings::LoadMasterForLogin()
   m_lastUsedProfile = m_currentProfile;
   if (m_currentProfile != 0)
     LoadProfile(0);
+}
+
+bool CSettings::Load(const TiXmlNode *settings)
+{
+  bool ok = true;
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+    ok &= (*it)->Load(settings);
+
+  return ok;
+}
+
+bool CSettings::Save(TiXmlNode *settings) const
+{
+  CSingleLock lock(m_critical);
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+  {
+    if (!(*it)->Save(settings))
+      return false;
+  }
+
+  return true;
+}
+
+bool CSettings::OnSettingsLoading()
+{
+  CSingleLock lock(m_critical);
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+  {
+    if (!(*it)->OnSettingsLoading())
+      return false;
+  }
+
+  return true;
+}
+
+void CSettings::OnSettingsLoaded()
+{
+  CSingleLock lock(m_critical);
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+    (*it)->OnSettingsLoaded();
+}
+
+bool CSettings::OnSettingsSaving() const
+{
+  CSingleLock lock(m_critical);
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+  {
+    if (!(*it)->OnSettingsSaving())
+      return false;
+  }
+
+  return true;
+}
+
+void CSettings::OnSettingsSaved() const
+{
+  CSingleLock lock(m_critical);
+  for (std::set<ISubSettings*>::const_iterator it = m_subSettings.begin(); it != m_subSettings.end(); it++)
+    (*it)->OnSettingsSaved();
 }
