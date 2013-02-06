@@ -324,14 +324,30 @@ COverlayImageDX::~COverlayImageDX()
 
 COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
 {
-  uint32_t* rgba = convert_rgba(o, USE_PREMULTIPLIED_ALPHA);
+  uint32_t* rgba;
+  int stride;
+  if(o->palette)
+  {
+    m_pma  = !!USE_PREMULTIPLIED_ALPHA;
+    rgba   = convert_rgba(o, m_pma);
+    stride = o->width * 4;
+  }
+  else
+  {
+    m_pma  = false;
+    rgba   = (uint32_t*)o->data;
+    stride = o->linesize;
+  }
+
   if(!rgba)
   {
     CLog::Log(LOGERROR, "COverlayImageDX::COverlayImageDX - failed to convert overlay to rgb");
     return;
   }
-  Load(rgba, o->width, o->height, o->width * 4);
-  free(rgba);
+
+  Load(rgba, o->width, o->height, stride);
+  if((BYTE*)rgba != o->data)
+    free(rgba);
 
   if(o->source_width && o->source_height)
   {

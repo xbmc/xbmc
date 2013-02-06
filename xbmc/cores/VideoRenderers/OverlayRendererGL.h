@@ -47,6 +47,7 @@ namespace OVERLAY {
     GLuint m_texture;
     float  m_u;
     float  m_v;
+    bool   m_pma; /*< is alpha in texture premultipled in the values */
   };
 
   class COverlayGlyphGL
