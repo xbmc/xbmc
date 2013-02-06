@@ -397,6 +397,8 @@
 		DF402A65164461B9001C56B8 /* swig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFF0160F36AD00C96C76 /* swig.cpp */; };
 		DF402A66164461B9001C56B8 /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE6160F34FE00C96C76 /* XBPython.cpp */; };
 		DF402A67164461B9001C56B8 /* XBPyThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502BFE8160F34FE00C96C76 /* XBPyThread.cpp */; };
+		DF404A3916B9896C00D8023E /* cximage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3416B9896C00D8023E /* cximage.cpp */; };
+		DF404A3A16B9896C00D8023E /* imagefactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A3716B9896C00D8023E /* imagefactory.cpp */; };
 		DF448457140048A60069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF448455140048A60069344B /* AirTunesServer.cpp */; };
 		DF44845E140048C80069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44845B140048C80069344B /* PipesManager.cpp */; };
 		DF5276E1151BAEDA00B5B63B /* Base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52769A151BAEDA00B5B63B /* Base64.cpp */; };
@@ -1915,6 +1917,11 @@
 		DF34892913FD9C780026A711 /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
 		DF34897A13FDAA270026A711 /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
 		DF34898113FDAAF60026A711 /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
+		DF404A3416B9896C00D8023E /* cximage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cximage.cpp; sourceTree = "<group>"; };
+		DF404A3516B9896C00D8023E /* cximage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cximage.h; sourceTree = "<group>"; };
+		DF404A3616B9896C00D8023E /* iimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iimage.h; sourceTree = "<group>"; };
+		DF404A3716B9896C00D8023E /* imagefactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imagefactory.cpp; sourceTree = "<group>"; };
+		DF404A3816B9896C00D8023E /* imagefactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imagefactory.h; sourceTree = "<group>"; };
 		DF448455140048A60069344B /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
 		DF448456140048A60069344B /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
 		DF44845B140048C80069344B /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
@@ -3418,6 +3425,8 @@
 			children = (
 				18B7C7541294222E009E7A26 /* AnimatedGif.cpp */,
 				18B7C6F61294222D009E7A26 /* AnimatedGif.h */,
+				DF404A3416B9896C00D8023E /* cximage.cpp */,
+				DF404A3516B9896C00D8023E /* cximage.h */,
 				18B7C7561294222E009E7A26 /* D3DResource.cpp */,
 				18B7C6F81294222D009E7A26 /* D3DResource.h */,
 				18B7C7571294222E009E7A26 /* DDSImage.cpp */,
@@ -3562,6 +3571,9 @@
 				18B7C7991294222E009E7A26 /* GUIWrappingListContainer.cpp */,
 				18B7C73F1294222D009E7A26 /* GUIWrappingListContainer.h */,
 				18B7C7401294222D009E7A26 /* IAudioDeviceChangedCallback.h */,
+				DF404A3616B9896C00D8023E /* iimage.h */,
+				DF404A3716B9896C00D8023E /* imagefactory.cpp */,
+				DF404A3816B9896C00D8023E /* imagefactory.h */,
 				18B7C7411294222D009E7A26 /* IMsgTargetCallback.h */,
 				18B7C79A1294222E009E7A26 /* IWindowManagerCallback.cpp */,
 				18B7C7421294222D009E7A26 /* IWindowManagerCallback.h */,
@@ -7720,6 +7732,8 @@
 				DF64FE3D16C07AAA00D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE3E16C07AAA00D028FB /* GUIViewState.cpp in Sources */,
 				DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */,
+				DF404A3916B9896C00D8023E /* cximage.cpp in Sources */,
+				DF404A3A16B9896C00D8023E /* imagefactory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

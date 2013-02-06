@@ -124,6 +124,8 @@
 		DF402A83164462C3001C56B8 /* swig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502C076160F417B00C96C76 /* swig.cpp */; };
 		DF402A84164462C3001C56B8 /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502C078160F417B00C96C76 /* XBPython.cpp */; };
 		DF402A85164462C3001C56B8 /* XBPyThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F502C07A160F417B00C96C76 /* XBPyThread.cpp */; };
+		DF404A9416B98E4A00D8023E /* cximage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A8F16B98E4A00D8023E /* cximage.cpp */; };
+		DF404A9516B98E4A00D8023E /* imagefactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF404A9216B98E4A00D8023E /* imagefactory.cpp */; };
 		DF448572140065E10069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44856F140065E10069344B /* PipesManager.cpp */; };
 		DF4485751400662D0069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485731400662D0069344B /* AirTunesServer.cpp */; };
 		DF527757151BAF8200B5B63B /* WebSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF52774E151BAF8200B5B63B /* WebSocket.cpp */; };
@@ -1322,6 +1324,11 @@
 		DF33C29215509BF50046CDCB /* ilog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilog.h; sourceTree = "<group>"; };
 		DF3488F613FD961A0026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
 		DF3488F713FD961A0026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
+		DF404A8F16B98E4A00D8023E /* cximage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cximage.cpp; sourceTree = "<group>"; };
+		DF404A9016B98E4A00D8023E /* cximage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cximage.h; sourceTree = "<group>"; };
+		DF404A9116B98E4A00D8023E /* iimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iimage.h; sourceTree = "<group>"; };
+		DF404A9216B98E4A00D8023E /* imagefactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imagefactory.cpp; sourceTree = "<group>"; };
+		DF404A9316B98E4A00D8023E /* imagefactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imagefactory.h; sourceTree = "<group>"; };
 		DF44856F140065E10069344B /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
 		DF448570140065E10069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4485731400662D0069344B /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
@@ -5386,6 +5393,8 @@
 			children = (
 				F56C84E1131F42E9000AD0F6 /* AnimatedGif.cpp */,
 				F56C8483131F42E9000AD0F6 /* AnimatedGif.h */,
+				DF404A8F16B98E4A00D8023E /* cximage.cpp */,
+				DF404A9016B98E4A00D8023E /* cximage.h */,
 				F56C84E3131F42E9000AD0F6 /* D3DResource.cpp */,
 				F56C8485131F42E9000AD0F6 /* D3DResource.h */,
 				F56C84E4131F42E9000AD0F6 /* DDSImage.cpp */,
@@ -5452,9 +5461,9 @@
 				F56C84A4131F42E9000AD0F6 /* GUIIncludes.h */,
 				F56C84FF131F42E9000AD0F6 /* GUIInfoTypes.cpp */,
 				F56C84A5131F42E9000AD0F6 /* GUIInfoTypes.h */,
+				DF02A831153373EC0084754E /* GUIKeyboard.h */,
 				DF830C9C15BB215500602BE6 /* GUIKeyboardFactory.cpp */,
 				DF830C9D15BB215500602BE6 /* GUIKeyboardFactory.h */,
-				DF02A831153373EC0084754E /* GUIKeyboard.h */,
 				F56C8500131F42E9000AD0F6 /* GUILabel.cpp */,
 				F56C84A6131F42E9000AD0F6 /* GUILabel.h */,
 				F56C8501131F42E9000AD0F6 /* GUILabelControl.cpp */,
@@ -5530,6 +5539,9 @@
 				F56C8526131F42E9000AD0F6 /* GUIWrappingListContainer.cpp */,
 				F56C84CC131F42E9000AD0F6 /* GUIWrappingListContainer.h */,
 				F56C84CD131F42E9000AD0F6 /* IAudioDeviceChangedCallback.h */,
+				DF404A9116B98E4A00D8023E /* iimage.h */,
+				DF404A9216B98E4A00D8023E /* imagefactory.cpp */,
+				DF404A9316B98E4A00D8023E /* imagefactory.h */,
 				F56C84CE131F42E9000AD0F6 /* IMsgTargetCallback.h */,
 				F56C8527131F42E9000AD0F6 /* IWindowManagerCallback.cpp */,
 				F56C84CF131F42E9000AD0F6 /* IWindowManagerCallback.h */,
@@ -7688,6 +7700,8 @@
 				DFB02DFB16629DF200F37752 /* PyContext.cpp in Sources */,
 				DF07254116873517008DCAAD /* karaokevideobackground.cpp in Sources */,
 				DF0725441687352C008DCAAD /* FFmpegVideoDecoder.cpp in Sources */,
+				DF404A9416B98E4A00D8023E /* cximage.cpp in Sources */,
+				DF404A9516B98E4A00D8023E /* imagefactory.cpp in Sources */,
 				5500730E16A759D800097786 /* UPnPPlayer.cpp in Sources */,
 				DF64FE5616C07AF700D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE5716C07AF700D028FB /* GUIViewState.cpp in Sources */,
