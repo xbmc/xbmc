@@ -34,6 +34,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -416,7 +417,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
 
   CStdString result;
   bool flip=false;
-  VECSOURCES sources(g_settings.m_musicSources);
+  VECSOURCES sources(*CMediaSourceSettings::Get().GetSources("music"));
   AddItemPathToFileBrowserSources(sources, *m_albumItem);
   g_mediaManager.GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(1030), result, &flip))
@@ -513,7 +514,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   }
 
   CStdString result;
-  VECSOURCES sources(g_settings.m_musicSources);
+  VECSOURCES sources(*CMediaSourceSettings::Get().GetSources("music"));
   g_mediaManager.GetLocalDrives(sources);
   bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445))

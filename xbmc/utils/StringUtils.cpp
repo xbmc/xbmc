@@ -46,6 +46,7 @@ const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-
 
 /* empty string for use in returns by ref */
 const CStdString StringUtils::EmptyString = "";
+const std::string StringUtils::Empty = "";
 CStdString StringUtils::m_lastUUID = "";
 
 string StringUtils::Format(const char *fmt, ...)

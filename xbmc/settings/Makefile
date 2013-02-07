@@ -1,5 +1,6 @@
 SRCS=AdvancedSettings.cpp \
      GUISettings.cpp \
+     MediaSourceSettings.cpp \
      Profile.cpp \
      Settings.cpp \
      SkinSettings.cpp \

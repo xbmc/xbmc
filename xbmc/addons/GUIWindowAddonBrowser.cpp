@@ -43,6 +43,7 @@
 #include "Application.h"
 #include "AddonDatabase.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "settings/GUISettings.h"
 #include "LangInfo.h"
@@ -216,7 +217,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   if (item->GetPath() == "addons://install/")
   {
     // pop up filebrowser to grab an installed folder
-    VECSOURCES shares = g_settings.m_fileSources;
+    VECSOURCES shares = *CMediaSourceSettings::Get().GetSources("files");
     g_mediaManager.GetLocalDrives(shares);
     g_mediaManager.GetNetworkLocations(shares);
     CStdString path;

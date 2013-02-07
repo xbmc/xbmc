@@ -23,6 +23,7 @@
 #include "video/VideoDatabase.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/Key.h"
@@ -548,10 +549,14 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
-  if (!g_advancedSettings.m_bVirtualShares) return;
-  for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
+  if (!g_advancedSettings.m_bVirtualShares)
+    return;
+
+  VECSOURCES *musicSources = CMediaSourceSettings::Get().GetSources("music");
+
+  for (int i = 0; i < (int)musicSources->size(); ++i)
   {
-    CMediaSource share = g_settings.m_musicSources.at(i);
+    CMediaSource share = musicSources->at(i);
     if (share.strPath.Find("lastfm://") == 0)//lastfm share
       m_sources.push_back(share);
   }
@@ -652,8 +657,9 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
-  AddOrReplace(g_settings.m_musicSources, CGUIViewStateWindowMusic::GetSources());
-  return g_settings.m_musicSources;
+  VECSOURCES *musicSources = CMediaSourceSettings::Get().GetSources("music");
+  AddOrReplace(*musicSources, CGUIViewStateWindowMusic::GetSources());
+  return *musicSources;
 }
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

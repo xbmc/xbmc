@@ -44,6 +44,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
@@ -119,7 +120,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
       if (message.GetNumStringParams() && message.GetStringParam(0).Equals("Files") &&
-          g_settings.GetSourcesFromType("video")->empty())
+          CMediaSourceSettings::Get().GetSources("video")->empty())
       {
         message.SetStringParam("");
       }
@@ -370,7 +371,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     else if (!items.IsVirtualDirectoryRoot())
     { // load info from the database
       CStdString label;
-      if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), g_settings.GetSourcesFromType("video"), &label)) 
+      if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::Get().GetSources("video"), &label)) 
         items.SetLabel(label);
       if (!items.IsSourcesPath())
         LoadVideoInfo(items);
@@ -1214,7 +1215,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (!local)
         items.Add(noneitem);
 
-      VECSOURCES sources=g_settings.m_videoSources;
+      VECSOURCES sources=*CMediaSourceSettings::Get().GetSources("video");
       g_mediaManager.GetLocalDrives(sources);
       CStdString result;
       CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, *item);
@@ -1413,7 +1414,7 @@ void CGUIWindowVideoNav::OnChooseFanart(const CFileItem &videoItem)
   }
 
   CStdString result;
-  VECSOURCES sources(g_settings.m_videoSources);
+  VECSOURCES sources(*CMediaSourceSettings::Get().GetSources("video"));
   g_mediaManager.GetLocalDrives(sources);
   CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(sources, item);
   bool flip=false;
