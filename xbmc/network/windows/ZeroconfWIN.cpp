@@ -62,7 +62,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
                       const std::string& fcr_type,
                       const std::string& fcr_name,
                       unsigned int f_port,
-                      std::map<std::string, std::string> txt)
+                      const std::vector<std::pair<std::string, std::string> >& txt)
 {
   DNSServiceRef netService = NULL;
   TXTRecordRef txtRecord;
@@ -87,7 +87,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
   //add txt records
   if(!txt.empty())
   {
-    for(std::map<std::string, std::string>::const_iterator it = txt.begin(); it != txt.end(); ++it)
+    for(std::vector<std::pair<std::string, std::string> >::const_iterator it = txt.begin(); it != txt.end(); ++it)
     {
       CLog::Log(LOGDEBUG, "ZeroconfWIN: key:%s, value:%s",it->first.c_str(),it->second.c_str());
       uint8_t txtLen = (uint8_t)strlen(it->second.c_str());

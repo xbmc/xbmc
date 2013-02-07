@@ -1529,7 +1529,7 @@ bool CApplication::StartWebServer()
     bool started = false;
     if (m_WebServer.Start(webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword")))
     {
-      std::map<std::string, std::string> txt;
+      std::vector<std::pair<std::string, std::string> > txt;
       started = true;
       // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
@@ -1579,19 +1579,19 @@ bool CApplication::StartAirplayServer()
     if (CAirPlayServer::StartServer(listenPort, true))
     {
       CAirPlayServer::SetCredentials(usePassword, password);
-      std::map<std::string, std::string> txt;
+      std::vector<std::pair<std::string, std::string> > txt;
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
       {
-        txt["deviceid"] = iface->GetMacAddress();
+        txt.push_back(std::make_pair("deviceid", iface->GetMacAddress()));
       }
       else
       {
-        txt["deviceid"] = "FF:FF:FF:FF:FF:F2";
+        txt.push_back(std::make_pair("deviceid", "FF:FF:FF:FF:FF:F2"));
       }
-      txt["features"] = "0x77";
-      txt["model"] = "AppleTV2,1";
-      txt["srcvers"] = AIRPLAY_SERVER_VERSION_STR;
+      txt.push_back(std::make_pair("features", "0x77"));
+      txt.push_back(std::make_pair("model", "AppleTV2,1"));
+      txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
       CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), listenPort, txt);
       ret = true;
     }
@@ -1635,7 +1635,7 @@ bool CApplication::StartJSONRPCServer()
   {
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
-      std::map<std::string, std::string> txt;
+      std::vector<std::pair<std::string, std::string> > txt;
       CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), g_advancedSettings.m_jsonTcpPort, txt);
       return true;
     }
