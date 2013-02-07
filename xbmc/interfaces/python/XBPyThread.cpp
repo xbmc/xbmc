@@ -261,7 +261,7 @@ void XBPyThread::Process()
 
   // we need to check if we was asked to abort before we had inited
   bool stopping = false;
-  { CSingleLock lock(m_pExecuter->m_critSection);
+  { CSingleLock lock(m_critSec);
     m_threadState = state;
     stopping = m_stopping;
   }
@@ -389,13 +389,13 @@ void XBPyThread::Process()
   PyEval_ReleaseLock();
 
   //set stopped event - this allows ::stop to run and kill remaining threads
-  //this event has to be fired without holding m_pExecuter->m_critSection
-  //before
+  //this event has to be fired without holding m_critSec
+  //
   //Also the GIL (PyEval_AcquireLock) must not be held
   //if not obeyed there is still no deadlock because ::stop waits with timeout (smart one!)
   stoppedEvent.Set();
 
-  { CSingleLock lock(m_pExecuter->m_critSection);
+  { CSingleLock lock(m_critSec);
     m_threadState = NULL;
   }
 
@@ -440,7 +440,7 @@ void XBPyThread::OnException()
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
-  CSingleLock lock(m_pExecuter->m_critSection);
+  CSingleLock lock(m_critSec);
   m_threadState = NULL;
   CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
   m_pExecuter->setDone(m_id);
@@ -452,7 +452,7 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
-  CSingleLock lock(m_pExecuter->m_critSection);
+  CSingleLock lock(m_critSec);
   if(m_stopping)
     return;
 
@@ -499,12 +499,12 @@ void XBPyThread::stop()
     
     //everything which didn't exit by now gets killed
     {
-      // grabbing the PyLock while holding the XBPython m_critSection is asking for a deadlock
-      CSingleExit ex2(m_pExecuter->m_critSection);
+      // grabbing the PyLock while holding the m_critSec is asking for a deadlock
+      CSingleExit ex2(m_critSec);
       PyEval_AcquireLock();
     }
 
-    // since we released the XBPython m_critSection it's possible that the state is cleaned up 
+    // Since we released the m_critSec it's possible that the state is cleaned up 
     // so we need to recheck for m_threadState == NULL
     if (m_threadState)
     {
