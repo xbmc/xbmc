@@ -82,7 +82,7 @@ public:
   PLAYERCOREID SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX = 0, float posY = 0) const;
   PLAYERCOREID SelectPlayerDialog(float posX, float posY) const;
 
-  bool LoadConfiguration(TiXmlElement* pConfig, bool clear);
+  bool LoadConfiguration(const std::string &file, bool clear);
 
   void OnPlayerDiscovered(const CStdString& id, const CStdString& name, EPLAYERCORES core);
   void OnPlayerRemoved(const CStdString& id);

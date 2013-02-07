@@ -385,8 +385,6 @@ protected:
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
 
-  bool LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear);
-
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;

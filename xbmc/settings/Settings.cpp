@@ -790,8 +790,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   LoadSkinSettings(pRootElement);
 
   // Configure the PlayerCoreFactory
-  LoadPlayerCoreFactorySettings("special://xbmc/system/playercorefactory.xml", true);
-  LoadPlayerCoreFactorySettings(GetUserDataItem("playercorefactory.xml"), false);
+  CPlayerCoreFactory::Get().LoadConfiguration("special://xbmc/system/playercorefactory.xml", true);
+  CPlayerCoreFactory::Get().LoadConfiguration(GetUserDataItem("playercorefactory.xml"), false);
 
   // Advanced settings
   g_advancedSettings.Load();
@@ -818,25 +818,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   }  
   CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   return true;
-}
-
-bool CSettings::LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear)
-{
-  CLog::Log(LOGNOTICE, "Loading player core factory settings from %s.", fileStr.c_str());
-  if (!CFile::Exists(fileStr))
-  { // tell the user it doesn't exist
-    CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", fileStr.c_str());
-    return false;
-  }
-
-  CXBMCTinyXML playerCoreFactoryXML;
-  if (!playerCoreFactoryXML.LoadFile(fileStr))
-  {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", fileStr.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
-    return false;
-  }
-
-  return CPlayerCoreFactory::Get().LoadConfiguration(playerCoreFactoryXML.RootElement(), clear);
 }
 
 bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings /* = NULL */) const

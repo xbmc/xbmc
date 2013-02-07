@@ -286,9 +286,30 @@ PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(float posX, float posY) cons
   return SelectPlayerDialog(vecCores, posX, posY);
 }
 
-bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
+bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
 {
   CSingleLock lock(m_section);
+  CLog::Log(LOGNOTICE, "Loading player core factory settings from %s.", file.c_str());
+  if (!XFILE::CFile::Exists(file))
+  { // tell the user it doesn't exist
+    CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", file.c_str());
+    return false;
+  }
+
+  CXBMCTinyXML playerCoreFactoryXML;
+  if (!playerCoreFactoryXML.LoadFile(file))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", file.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pConfig = playerCoreFactoryXML.RootElement();
+  if (pConfig == NULL)
+  {
+      CLog::Log(LOGERROR, "Error loading %s, Bad structure", file.c_str());
+      return false;
+  }
+
   if (clear)
   {
     for(std::vector<CPlayerCoreConfig *>::iterator it = m_vecCoreConfigs.begin(); it != m_vecCoreConfigs.end(); it++)
