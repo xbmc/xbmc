@@ -106,6 +106,7 @@ public:
   static bool IsInteger(const CStdString& str);
   static CStdString SizeToString(int64_t size);
   static const CStdString EmptyString;
+  static const std::string Empty;
   static size_t FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const CStdString &dateString);

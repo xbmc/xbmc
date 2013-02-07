@@ -33,6 +33,7 @@
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "PasswordManager.h"
 #include "URL.h"
@@ -140,7 +141,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     CMediaSource share;
     unsigned int i,j=2;
     bool bConfirmed=false;
-    VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
+    VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(type);
     CStdString strName = dialog->m_name;
     while (!bConfirmed)
     {
@@ -158,7 +159,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     if (dialog->m_paths->Size() > 0) {
       share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetArt("thumb");
     }
-    g_settings.AddShare(type, share);
+    CMediaSourceSettings::Get().AddShare(type, share);
   }
   dialog->m_paths->Clear();
   return confirmed;
@@ -166,7 +167,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
 
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const CStdString&share)
 {
-  VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
+  VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(type);
   if (pShares)
   {
     for (unsigned int i=0;i<pShares->size();++i)
@@ -192,7 +193,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
   { // yay, add this share
     unsigned int i,j=2;
     bool bConfirmed=false;
-    VECSOURCES* pShares = g_settings.GetSourcesFromType(type);
+    VECSOURCES* pShares = CMediaSourceSettings::Get().GetSources(type);
     CStdString strName = dialog->m_name;
     while (!bConfirmed)
     {
@@ -209,7 +210,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
 
     CMediaSource newShare;
     newShare.FromNameAndPaths(type, strName, dialog->GetPaths());
-    g_settings.UpdateShare(type, strOldName, newShare);
+    CMediaSourceSettings::Get().UpdateShare(type, strOldName, newShare);
   }
   dialog->m_paths->Clear();
   return confirmed;
@@ -381,7 +382,7 @@ void CGUIDialogMediaSource::OnOK()
   CMediaSource share;
   share.FromNameAndPaths(m_type, m_name, GetPaths());
   // hack: Need to temporarily add the share, then get path, then remove share
-  VECSOURCES *shares = g_settings.GetSourcesFromType(m_type);
+  VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(m_type);
   if (shares)
     shares->push_back(share);
   if (share.strPath.Left(9).Equals("plugin://") || CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) || CGUIDialogYesNo::ShowAndGetInput(1001,1025,1003,1004))

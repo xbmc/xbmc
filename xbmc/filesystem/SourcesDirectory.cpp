@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "File.h"
 #include "settings/Settings.h"
+#include "settings/MediaSourceSettings.h"
 #include "guilib/TextureManager.h"
 #include "storage/MediaManager.h"
 
@@ -47,7 +48,7 @@ bool CSourcesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   URIUtils::RemoveSlashAtEnd(type);
 
   VECSOURCES sources;
-  VECSOURCES *sourcesFromType = g_settings.GetSourcesFromType(type);
+  VECSOURCES *sourcesFromType = CMediaSourceSettings::Get().GetSources(type);
   if (sourcesFromType)
     sources = *sourcesFromType;
   g_mediaManager.GetRemovableDrives(sources);

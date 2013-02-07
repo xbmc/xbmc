@@ -87,6 +87,7 @@
 #include <map>
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "input/MouseStat.h"
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -1570,7 +1571,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(BaseSettingControlPtr pSetting
     else if (strSetting.Equals("subtitles.custompath"))
     {
       bWriteOnly = false;
-      shares = g_settings.m_videoSources;
+      shares = *CMediaSourceSettings::Get().GetSources("video");
     }
 
     g_mediaManager.GetNetworkLocations(shares);

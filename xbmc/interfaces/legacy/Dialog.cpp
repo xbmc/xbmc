@@ -8,6 +8,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
@@ -132,7 +133,7 @@ namespace XBMCAddon
       DelayedCallGuard dcguard(languageHook);
       CStdString value;
       std::string mask = maskparam;
-      VECSOURCES *shares = g_settings.GetSourcesFromType(s_shares);
+      VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
       if (!shares) 
         throw WindowException("Error: GetSourcesFromType given %s is NULL.",s_shares.c_str());
 
@@ -154,7 +155,7 @@ namespace XBMCAddon
                           bool useFileDirectories, const String& defaultt ) throw (WindowException)
     {
       DelayedCallGuard dcguard(languageHook);
-      VECSOURCES *shares = g_settings.GetSourcesFromType(s_shares);
+      VECSOURCES *shares = CMediaSourceSettings::Get().GetSources(s_shares);
       CStdStringArray tmpret;
       String lmask = mask;
       if (!shares) 

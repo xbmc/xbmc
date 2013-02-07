@@ -87,7 +87,6 @@
 class CGUISettings;
 class TiXmlElement;
 class TiXmlNode;
-class CMediaSource;
 
 class CSettings : private ISettingsHandler, ISubSettings
 {
@@ -111,14 +110,6 @@ public:
   bool LoadProfile(unsigned int index);
   bool DeleteProfile(unsigned int index);
   void CreateProfileFolders();
-
-  VECSOURCES *GetSourcesFromType(const CStdString &type);
-  CStdString GetDefaultSourceFromType(const CStdString &type);
-
-  bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
-  bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
-  bool AddShare(const CStdString &type, const CMediaSource &share);
 
   /*! \brief Retreive the watched mode for the given content type
    \param content Current content type
@@ -199,16 +190,6 @@ public:
 
   CStdString m_userAgent;
 
-  VECSOURCES m_programSources;
-  VECSOURCES m_pictureSources;
-  VECSOURCES m_fileSources;
-  VECSOURCES m_musicSources;
-  VECSOURCES m_videoSources;
-
-  CStdString m_defaultProgramSource;
-  CStdString m_defaultMusicSource;
-  CStdString m_defaultPictureSource;
-  CStdString m_defaultFileSource;
   CStdString m_defaultMusicLibSource;
 
   int        m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
@@ -308,7 +289,6 @@ public:
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetLibraryFolder() const;
-  CStdString GetSourcesFile() const;
 
   CStdString GetSettingsFile() const;
 
@@ -329,21 +309,15 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
-  void LoadSources();
-  bool SaveSources();
-
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
   static bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
   static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
-  bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
 
   void ApplyCalibrations();
   void UpdateCalibrations();
 protected:
-  void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
-  bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
   // functions for writing xml files

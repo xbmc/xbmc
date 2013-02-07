@@ -95,6 +95,7 @@
 #include "powermanagement/DPMSSupport.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
@@ -707,6 +708,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "load settings...");
   g_settings.RegisterSettingsHandler(this);
   g_settings.RegisterSettingsHandler(&g_advancedSettings);
+  g_settings.RegisterSettingsHandler(&CMediaSourceSettings::Get());
   g_settings.RegisterSettingsHandler(&CPlayerCoreFactory::Get());
   g_settings.RegisterSettingsHandler(&CRssManager::Get());
 #ifdef HAS_UPNP

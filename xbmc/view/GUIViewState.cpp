@@ -38,6 +38,7 @@
 #include "view/ViewState.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "guilib/Key.h"
@@ -405,7 +406,7 @@ void CGUIViewState::AddAndroidSource(const CStdString &content, const CStdString
 
 void CGUIViewState::AddLiveTVSources()
 {
-  VECSOURCES *sources = g_settings.GetSourcesFromType("video");
+  VECSOURCES *sources = CMediaSourceSettings::Get().GetSources("video");
   for (IVECSOURCES it = sources->begin(); it != sources->end(); it++)
   {
     if (URIUtils::IsLiveTV((*it).strPath))
