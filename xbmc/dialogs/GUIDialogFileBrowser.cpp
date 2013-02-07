@@ -46,6 +46,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "URL.h"
+#include "view/ViewState.h"
 
 using namespace XFILE;
 

@@ -47,7 +47,6 @@
 #include "settings/ISubSettings.h"
 #include "settings/VideoSettings.h"
 #include "Profile.h"
-#include "view/ViewState.h"
 #include "guilib/Resolution.h"
 #include "guilib/GraphicContext.h"
 #include "threads/CriticalSection.h"
@@ -140,24 +139,6 @@ public:
 
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
-
-  CViewState m_viewStateMusicNavArtists;
-  CViewState m_viewStateMusicNavAlbums;
-  CViewState m_viewStateMusicNavSongs;
-  CViewState m_viewStateVideoNavActors;
-  CViewState m_viewStateVideoNavYears;
-  CViewState m_viewStateVideoNavGenres;
-  CViewState m_viewStateVideoNavTitles;
-  CViewState m_viewStateVideoNavEpisodes;
-  CViewState m_viewStateVideoNavSeasons;
-  CViewState m_viewStateVideoNavTvShows;
-  CViewState m_viewStateVideoNavMusicVideos;
-
-  CViewState m_viewStatePrograms;
-  CViewState m_viewStatePictures;
-  CViewState m_viewStateMusicFiles;
-  CViewState m_viewStateVideoFiles;
-
   bool m_bMyMusicPlaylistRepeat;
   bool m_bMyMusicPlaylistShuffle;
   int m_iMyMusicStartWindow;
@@ -318,11 +299,6 @@ public:
   void ApplyCalibrations();
   void UpdateCalibrations();
 protected:
-  void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
-
-  // functions for writing xml files
-  void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;
-
   bool LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile);
   bool SaveCalibration(TiXmlNode* pRootNode) const;
 

@@ -101,6 +101,7 @@
 #include "utils/CPUInfo.h"
 #include "utils/RssManager.h"
 #include "utils/SeekHandler.h"
+#include "view/ViewStateSettings.h"
 
 #include "input/KeyboardStat.h"
 #include "input/XBMC_vkeys.h"
@@ -716,6 +717,7 @@ bool CApplication::Create()
 #endif
 
   g_settings.RegisterSubSettings(&CSkinSettings::Get());
+  g_settings.RegisterSubSettings(&CViewStateSettings::Get());
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();

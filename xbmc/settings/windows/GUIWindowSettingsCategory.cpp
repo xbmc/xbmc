@@ -35,6 +35,7 @@
 #include "music/MusicDatabase.h"
 #include "video/VideoDatabase.h"
 #include "view/ViewDatabase.h"
+#include "view/ViewState.h"
 #include "PlayListPlayer.h"
 #include "addons/Skin.h"
 #include "guilib/GUIAudioManager.h"
