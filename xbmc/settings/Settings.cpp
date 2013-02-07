@@ -260,38 +260,6 @@ bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, 
   return false;
 }
 
-void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString &strTagName, CViewState &viewState, SORT_METHOD defaultSort, int defaultView)
-{
-  const TiXmlElement* pNode = pRootElement->FirstChildElement(strTagName);
-  if (!pNode)
-  {
-    viewState.m_sortMethod = defaultSort;
-    viewState.m_viewMode = defaultView;
-    return;
-  }
-  GetInteger(pNode, "viewmode", viewState.m_viewMode, defaultView, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-
-  int sortMethod;
-  GetInteger(pNode, "sortmethod", sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
-  viewState.m_sortMethod = (SORT_METHOD)sortMethod;
-
-  int sortOrder;
-  GetInteger(pNode, "sortorder", sortOrder, SortOrderAscending, SortOrderNone, SortOrderDescending);
-  viewState.m_sortOrder = (SortOrder)sortOrder;
-}
-
-void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName, const CViewState &viewState) const
-{
-  TiXmlElement newElement(strTagName);
-  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
-  if (pNewNode)
-  {
-    XMLUtils::SetInt(pNewNode, "viewmode", viewState.m_viewMode);
-    XMLUtils::SetInt(pNewNode, "sortmethod", (int)viewState.m_sortMethod);
-    XMLUtils::SetInt(pNewNode, "sortorder", (int)viewState.m_sortOrder);
-  }
-}
-
 bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& strSettingsFile)
 {
   m_Calibrations.clear();
@@ -513,28 +481,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     }
   }
 
-  pElement = pRootElement->FirstChildElement("viewstates");
-  if (pElement)
-  {
-    GetViewState(pElement, "musicnavartists", m_viewStateMusicNavArtists);
-    GetViewState(pElement, "musicnavalbums", m_viewStateMusicNavAlbums);
-    GetViewState(pElement, "musicnavsongs", m_viewStateMusicNavSongs);
-    GetViewState(pElement, "musiclastfm", m_viewStateMusicLastFM);
-    GetViewState(pElement, "videonavactors", m_viewStateVideoNavActors);
-    GetViewState(pElement, "videonavyears", m_viewStateVideoNavYears);
-    GetViewState(pElement, "videonavgenres", m_viewStateVideoNavGenres);
-    GetViewState(pElement, "videonavtitles", m_viewStateVideoNavTitles);
-    GetViewState(pElement, "videonavepisodes", m_viewStateVideoNavEpisodes, SORT_METHOD_EPISODE);
-    GetViewState(pElement, "videonavtvshows", m_viewStateVideoNavTvShows);
-    GetViewState(pElement, "videonavseasons", m_viewStateVideoNavSeasons);
-    GetViewState(pElement, "videonavmusicvideos", m_viewStateVideoNavMusicVideos);
-
-    GetViewState(pElement, "programs", m_viewStatePrograms, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
-    GetViewState(pElement, "pictures", m_viewStatePictures, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
-    GetViewState(pElement, "videofiles", m_viewStateVideoFiles, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
-    GetViewState(pElement, "musicfiles", m_viewStateMusicFiles, SORT_METHOD_LABEL, DEFAULT_VIEW_AUTO);
-  }
-
   // general settings
   pElement = pRootElement->FirstChildElement("general");
   if (pElement)
@@ -686,30 +632,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     if (!pChild) return false;
     XMLUtils::SetBoolean(pChild, "repeat", m_bMyVideoPlaylistRepeat);
     XMLUtils::SetBoolean(pChild, "shuffle", m_bMyVideoPlaylistShuffle);
-  }
-
-  // view states
-  TiXmlElement viewStateNode("viewstates");
-  pNode = pRoot->InsertEndChild(viewStateNode);
-  if (pNode)
-  {
-    SetViewState(pNode, "musicnavartists", m_viewStateMusicNavArtists);
-    SetViewState(pNode, "musicnavalbums", m_viewStateMusicNavAlbums);
-    SetViewState(pNode, "musicnavsongs", m_viewStateMusicNavSongs);
-    SetViewState(pNode, "musiclastfm", m_viewStateMusicLastFM);
-    SetViewState(pNode, "videonavactors", m_viewStateVideoNavActors);
-    SetViewState(pNode, "videonavyears", m_viewStateVideoNavYears);
-    SetViewState(pNode, "videonavgenres", m_viewStateVideoNavGenres);
-    SetViewState(pNode, "videonavtitles", m_viewStateVideoNavTitles);
-    SetViewState(pNode, "videonavepisodes", m_viewStateVideoNavEpisodes);
-    SetViewState(pNode, "videonavseasons", m_viewStateVideoNavSeasons);
-    SetViewState(pNode, "videonavtvshows", m_viewStateVideoNavTvShows);
-    SetViewState(pNode, "videonavmusicvideos", m_viewStateVideoNavMusicVideos);
-
-    SetViewState(pNode, "programs", m_viewStatePrograms);
-    SetViewState(pNode, "pictures", m_viewStatePictures);
-    SetViewState(pNode, "videofiles", m_viewStateVideoFiles);
-    SetViewState(pNode, "musicfiles", m_viewStateMusicFiles);
   }
 
   // general settings

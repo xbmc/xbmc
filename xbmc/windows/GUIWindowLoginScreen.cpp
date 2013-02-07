@@ -46,6 +46,7 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "addons/AddonManager.h"
+#include "view/ViewState.h"
 
 #define CONTROL_BIG_LIST               52
 #define CONTROL_LABEL_HEADER            2
