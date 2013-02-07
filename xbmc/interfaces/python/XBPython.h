@@ -47,10 +47,12 @@ namespace XBMCAddon
   }
 }
 
-typedef std::vector<PyElem> PyList;
-typedef std::vector<PVOID> PlayerCallbackList;
-typedef std::vector<XBMCAddon::xbmc::Monitor*> MonitorCallbackList;
-typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
+template <class T> class LockableType : public T, public CCriticalSection { };
+
+typedef LockableType<std::vector<PVOID> > PlayerCallbackList;
+typedef LockableType<std::vector<XBMCAddon::xbmc::Monitor*> > MonitorCallbackList;
+typedef LockableType<std::vector<PyElem> > PyList;
+typedef LockableType<std::vector<LibraryLoader*> > PythonExtensionLibraries;
 
 class XBPython : 
   public IPlayerCallback,
@@ -128,8 +130,8 @@ public:
   void* getMainThreadState();
 
   bool m_bLogin;
-  CCriticalSection    m_critSection;
 private:
+  CCriticalSection    m_critSection;
   bool              FileExist(const char* strFile);
 
   int               m_nextid;
