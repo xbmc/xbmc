@@ -246,7 +246,7 @@ public:
 
   virtual bool OnMRAdded(PLT_DeviceDataReference& device )
   {
-    CPlayerCoreFactory::OnPlayerDiscovered((const char*)device->GetUUID()
+    CPlayerCoreFactory::Get().OnPlayerDiscovered((const char*)device->GetUUID()
                                           ,(const char*)device->GetFriendlyName()
                                           , EPC_UPNPPLAYER);
     return true;
@@ -254,7 +254,7 @@ public:
 
   virtual void OnMRRemoved(PLT_DeviceDataReference& device )
   {
-    CPlayerCoreFactory::OnPlayerRemoved((const char*)device->GetUUID());
+    CPlayerCoreFactory::Get().OnPlayerRemoved((const char*)device->GetUUID());
   }
 };
 
