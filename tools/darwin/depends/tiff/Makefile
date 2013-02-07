@@ -2,12 +2,14 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=tiff
-VERSION=3.8.2
+VERSION=3.9.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=http://download.osgeo.org/libtiff
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) \
+  --without-x
 
 LIBDYLIB=$(SOURCE)/libtiff/.libs/lib$(LIBNAME).dylib
 
