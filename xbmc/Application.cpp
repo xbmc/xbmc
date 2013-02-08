@@ -691,6 +691,7 @@ bool CApplication::Create()
   }
 
   CLog::Log(LOGNOTICE, "load settings...");
+  g_settings.RegisterSubSettings(this);
   g_settings.RegisterSubSettings(&CPlayerCoreFactory::Get());
   g_settings.RegisterSubSettings(&CSkinSettings::Get());
   g_settings.RegisterSubSettings(&CMediaSourceSettings::Get());
@@ -1905,6 +1906,19 @@ void CApplication::ReloadSkin()
       pWindow->OnMessage(msg3);
     }
   }
+}
+
+bool CApplication::OnSettingsSaving() const
+{
+  if (m_bStop)
+  {
+    //don't save settings when we're busy stopping the application
+    //a lot of screens try to save settings on deinit and deinit is called
+    //for every screen when the application is stopping.
+    return false;
+  }
+
+  return true;
 }
 
 bool CApplication::LoadSkin(const CStdString& skinID)
