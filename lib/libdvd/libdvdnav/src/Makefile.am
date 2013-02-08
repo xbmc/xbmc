@@ -4,7 +4,7 @@ SUBDIRS = vm
 
 includedir = ${prefix}/include/dvdnav
 
-AM_CPPFLAGS = -DDVDNAV_COMPILE $(THREAD_CFLAGS) $(DVDREAD_CFLAGS) \
+AM_CPPFLAGS = $(THREAD_CFLAGS) $(DVDREAD_CFLAGS) \
 	-I$(top_srcdir)/src/vm
 
 EXTRA_DIST = README.MAP FELLOWSHIP.map
@@ -31,4 +31,4 @@ libdvdnavmini_la_LIBADD = $(THREAD_LIBS) \
 
 libdvdnavmini_la_LDFLAGS = $(libdvdnav_la_LDFLAGS)
 
-include_HEADERS = dvdnav.h dvdnav_events.h dvd_types.h
+include_HEADERS = dvdnav/dvdnav.h dvdnav/dvdnav_events.h dvdnav/dvd_types.h

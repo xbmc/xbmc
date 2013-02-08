@@ -631,6 +631,11 @@ lib/cmyth/Makefile
 /lib/libdvd/includes/dvdread/ifo_read.h
 /lib/libdvd/includes/dvdread/nav_types.h
 
+# /lib/libdvd/includes/dvdnav
+/lib/libdvd/includes/dvdnav/dvd_types.h
+/lib/libdvd/includes/dvdnav/dvdnav.h
+/lib/libdvd/includes/dvdnav/dvdnav_events.h
+
 # /lib/libdvd/libdvdcss/
 /lib/libdvd/libdvdcss/.auto/
 /lib/libdvd/libdvdcss/Makefile.in

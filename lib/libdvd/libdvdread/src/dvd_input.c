@@ -1,30 +1,31 @@
 /*
  * Copyright (C) 2002 Samuel Hocevar <sam@zoy.org>,
- *                    Håkan Hjort <d95hjort@dtek.chalmers.se>
+ *                    HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * libdvdread is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "dvd_reader.h"
+#include "config.h"
+#include "dvdread/dvd_reader.h"
 #include "dvd_input.h"
 
 
@@ -38,7 +39,7 @@ char *      (*dvdinput_error) (dvd_input_t);
 
 #ifdef HAVE_DVDCSS_DVDCSS_H
 /* linking to libdvdcss */
-#include "dvdcss/dvdcss.h"
+#include <dvdcss/dvdcss.h>
 #define DVDcss_open(a) dvdcss_open((char*)(a))
 #define DVDcss_close   dvdcss_close
 #define DVDcss_seek    dvdcss_seek
@@ -164,7 +165,7 @@ static dvd_input_t file_open(const char *target)
   }
 
   /* Open the device */
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__OS2__)
   dev->fd = open(target, O_RDONLY);
 #else
   dev->fd = open(target, O_RDONLY | O_BINARY);
@@ -286,13 +287,15 @@ int dvdinput_setup(void)
   #define CSS_LIB "libdvdcss.2.dylib"
 #elif defined(WIN32)
   #define CSS_LIB "libdvdcss.dll"
+#elif defined(__OS2__)
+  #define CSS_LIB "dvdcss.dll"
 #else
   #define CSS_LIB "libdvdcss.so.2"
 #endif
   dvdcss_library = dlopen(CSS_LIB, RTLD_LAZY);
 
   if(dvdcss_library != NULL) {
-#if defined(__OpenBSD__) && !defined(__ELF__)
+#if defined(__OpenBSD__) && !defined(__ELF__) || defined(__OS2__)
 #define U_S "_"
 #else
 #define U_S

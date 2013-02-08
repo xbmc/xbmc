@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001 Håkan Hjort
+ * Copyright (C) 2000, 2001 HÃ¥kan Hjort
  * Copyright (C) 2001 Rich Wareham <richwareham@users.sourceforge.net>
  *
  * This file is part of libdvdnav, a DVD navigation library. It is modified
@@ -15,16 +15,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: vm.h 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef VM_H_INCLUDED
-#define VM_H_INCLUDED
+#ifndef LIBDVDNAV_VM_H
+#define LIBDVDNAV_VM_H
 
 /* DOMAIN enum */
 
@@ -85,6 +82,7 @@ typedef struct {
   dvd_state_t   state;
   int32_t       hop_channel;
   char          dvd_name[50];
+  char          dvd_serial[15];
   remap_t      *map;
   int           stopped;
 } vm_t;
@@ -141,6 +139,7 @@ void vm_get_next_cell(vm_t *vm);
 int vm_jump_pg(vm_t *vm, int pg);
 int vm_jump_cell_block(vm_t *vm, int cell, int block);
 int vm_jump_title_part(vm_t *vm, int title, int part);
+int vm_jump_title_program(vm_t *vm, int title, int pgcn, int pgn);
 int vm_jump_top_pg(vm_t *vm);
 int vm_jump_next_pg(vm_t *vm);
 int vm_jump_prev_pg(vm_t *vm);
@@ -161,8 +160,8 @@ void vm_get_angle_info(vm_t *vm, int *current, int *num_avail);
 /* currently unused */
 void vm_get_audio_info(vm_t *vm, int *current, int *num_avail);
 void vm_get_subp_info(vm_t *vm, int *current, int *num_avail);
-void vm_get_video_res(vm_t *vm, int *width, int *height);
 // _XBMC #endif
+void vm_get_video_res(vm_t *vm, int *width, int *height);
 int  vm_get_video_aspect(vm_t *vm);
 int  vm_get_video_scale_permission(vm_t *vm);
 video_attr_t vm_get_video_attr(vm_t *vm);
@@ -182,4 +181,4 @@ void vm_position_print(vm_t *vm, vm_position_t *position);
 #endif
 
 
-#endif /* VM_HV_INCLUDED */
+#endif /* LIBDVDNAV_VM_H */

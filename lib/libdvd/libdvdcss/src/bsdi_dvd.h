@@ -1,9 +1,9 @@
 /*
- * $Id$
+ * $Id: bsdi_dvd.h 234 2010-08-02 15:38:08Z jb $
 */
 
-#ifndef	DVDCSS_DVD_H
-#define	DVDCSS_DVD_H
+#ifndef DVDCSS_BSDI_DVD_H
+#define DVDCSS_BSDI_DVD_H
 
 #include <sys/cdefs.h>
 #include <machine/endian.h>
@@ -341,4 +341,4 @@ typedef	struct
 	int	error;
 } tracktype;
 
-#endif /* DVDCSS_DVD_H */
+#endif /* DVDCSS_BSDI_DVD_H */

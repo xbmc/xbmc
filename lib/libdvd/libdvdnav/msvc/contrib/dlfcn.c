@@ -1,7 +1,4 @@
 /*
- * $Id: dlfcn.c 1135 2008-09-06 21:55:51Z rathann $
- * $Name$
- *
  * Adopted from Apache DSO code.
  * Portions copyright Apache Software Foundation
  *

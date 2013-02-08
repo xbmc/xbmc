@@ -13,12 +13,12 @@ dnl
 dnl These are defined in m4 so they can be passed to AC_INIT
 dnl --------------------------------------------------------------
 m4_define([dvdread_major], [4])
-m4_define([dvdread_minor], [1])
-m4_define([dvdread_sub],   [3])
+m4_define([dvdread_minor], [2])
+m4_define([dvdread_sub],   [0])
 m4_define([dvdread_pre],   [])
 
 AC_INIT([libdvdread], [dvdread_major.dvdread_minor.dvdread_sub[]dvdread_pre])
-AC_CONFIG_SRCDIR([src/dvd_reader.h])
+AC_CONFIG_SRCDIR([src/dvdread/dvd_reader.h])
 AM_INIT_AUTOMAKE([1.6])
 
 dnl create a config.h file (Automake will add -DHAVE_CONFIG_H)
@@ -145,6 +145,9 @@ case $host in
   *cygwin*)
     LDFLAGS="-no-undefined $LDFLAGS"
     ;;
+  *os2*)
+    LDFLAGS="-no-undefined -Zbin-files $LDFLAGS"
+    ;;
   *)
     AC_CHECK_LIB(c, dlopen,
 	         DYNAMIC_LD_LIBS="",
@@ -163,26 +166,6 @@ CFLAGS="-O3 -Wall -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE $CFLAGS"
 DEBUG_CFLAGS="-g -DDEBUG $CFLAGS"
 
 AC_SUBST(DEBUG_CFLAGS)
-
-dnl ---------------------------------------------
-dnl Get where .m4 should be installed.
-dnl ---------------------------------------------
-case "`id`" in
-  uid=0\(* )
-    AC_MSG_CHECKING(for aclocal directory)
-    if (aclocal --version) < /dev/null > /dev/null 2>&1; then
-      ACLOCAL_DIR="`eval $ACLOCAL --print-ac-dir`"
-      AC_MSG_RESULT($ACLOCAL_DIR)
-    else
-      ACLOCAL_DIR="/usr/local/share/aclocal"
-      AC_MSG_RESULT(none - will be installed in $ACLOCAL_DIR)
-    fi
-    escapedprefix="`echo $prefix | sed -e 's/\\//\\\\\//g'`"
-    ACLOCAL_DIR="`echo $ACLOCAL_DIR|sed -e 's/^'$escapedprefix/'\${prefix}'/`"
-    AC_SUBST(ACLOCAL_DIR)
-    ;;
-esac
-AM_CONDITIONAL(INSTALL_M4, test x"$ACLOCAL_DIR" != "x")
 
 dnl ---------------------------------------------
 dnl Check for doxygen (dynamic documentation generator)

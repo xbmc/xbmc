@@ -1,4 +1,20 @@
-$Id$
+$Id: NEWS 251 2012-03-11 13:33:49Z jb $
+
+Changes between 1.2.11 and 1.2.12:
+----------------------------------
+
+  * fix regression on RPC-I drives handling.
+
+
+Changes between 1.2.10 and 1.2.11:
+----------------------------------
+
+  * improvements on RPC-II handling.
+  * more robust key retrieval.
+  * fixes for MingW compilation.
+  * fixes for OS/2 compilation.
+  * various bug fixes for small issues, memleaks, crashes and build issues.
+
 
 Changes between 1.2.9 and 1.2.10:
 ---------------------------------

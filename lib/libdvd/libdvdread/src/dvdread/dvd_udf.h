@@ -1,39 +1,39 @@
-#ifndef DVD_UDF_H_INCLUDED
-#define DVD_UDF_H_INCLUDED
-
 /*
  * This code is based on dvdudf by:
  *   Christian Wolff <scarabaeus@convergence.de>.
  *
  * Modifications by:
  *   Billy Biggs <vektor@dumbterm.net>.
- *   Björn Englund <d4bjorn@dtek.chalmers.se>.
+ *   BjÃ¶rn Englund <d4bjorn@dtek.chalmers.se>.
  *
  * dvdudf: parse and read the UDF volume information of a DVD Video
  * Copyright (C) 1999 Christian Wolff for convergence integrated media
  * GmbH The author can be reached at scarabaeus@convergence.de, the
  * project's page is at http://linuxtv.org/dvd/
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or (at
- * your option) any later version.
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * libdvdread is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.  Or, point your browser to
- * http://www.gnu.org/copyleft/gpl.html
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
+#ifndef LIBDVDREAD_DVD_UDF_H
+#define LIBDVDREAD_DVD_UDF_H
 
 #include <inttypes.h>
 
-#include "dvd_reader.h"
+#include "dvdread/dvd_reader.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,4 +59,4 @@ void SetUDFCacheHandle(dvd_reader_t *device, void *cache);
 #ifdef __cplusplus
 };
 #endif
-#endif /* DVD_UDF_H_INCLUDED */
+#endif /* LIBDVDREAD_DVD_UDF_H */

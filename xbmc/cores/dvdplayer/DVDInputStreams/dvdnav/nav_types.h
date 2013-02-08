@@ -1,8 +1,5 @@
-#ifndef NAV_TYPES_H_INCLUDED
-#define NAV_TYPES_H_INCLUDED
-
 /*
- * Copyright (C) 2000, 2001, 2002 Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001, 2002 HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
  * The data structures in this file should represent the layout of the
  * pci and dsi packets as they are stored in the stream.  Information
@@ -24,10 +21,12 @@
  * the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
- * USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
+#ifndef LIBDVDREAD_NAV_TYPES_H
+#define LIBDVDREAD_NAV_TYPES_H
 
 //#include <inttypes.h>
 #include "ifo_types.h" /* only dvd_time_t, vm_cmd_t and user_ops_t */
@@ -217,7 +216,7 @@ typedef struct {
 } ATTRIBUTE_PACKED sml_pbi_t;
 
 /**
- * Seamless Angle Infromation for one angle
+ * Seamless Angle Information for one angle
  */
 typedef struct {
     uint32_t address; /**< offset to next ILVU, high bit is before/after */
@@ -225,7 +224,7 @@ typedef struct {
 } ATTRIBUTE_PACKED sml_agl_data_t;
 
 /**
- * Seamless Angle Infromation
+ * Seamless Angle Information
  */
 typedef struct {
   sml_agl_data_t data[9];
@@ -270,4 +269,4 @@ typedef struct {
 #pragma pack()
 #endif
 
-#endif /* NAV_TYPES_H_INCLUDED */
+#endif /* LIBDVDREAD_NAV_TYPES_H */

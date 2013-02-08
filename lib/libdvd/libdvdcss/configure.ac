@@ -4,8 +4,8 @@ AC_PREREQ(2.50)
 AC_CONFIG_AUX_DIR(.auto)
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(libdvdcss, 1.2.10)
-AC_CONFIG_HEADERS(config.h)
+AM_INIT_AUTOMAKE(libdvdcss, 1.2.12)
+AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AC_STDC_HEADERS
@@ -37,6 +37,10 @@ case x"${target_os}" in
     ;;
   xbeos*)
     AC_DEFINE(SYS_BEOS, 1, Have a BeOS system.)
+    ;;
+  xos2*)
+    LDFLAGS="-Zbin-files"
+    AC_DEFINE(SYS_OS2, 1, Have a OS/2 system.)
     ;;
   x*msvc*)
     SYS_MSVC=1

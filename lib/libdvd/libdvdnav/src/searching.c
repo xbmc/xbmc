@@ -13,12 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: searching.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -32,13 +29,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include "dvd_types.h"
+#include "dvdnav/dvdnav.h"
 #include <dvdread/nav_types.h>
 #include <dvdread/ifo_types.h>
 #include "remap.h"
 #include "vm/decoder.h"
 #include "vm/vm.h"
-#include "dvdnav.h"
 #include "dvdnav_internal.h"
 
 /*
@@ -51,7 +47,7 @@
 /* Return placed in vobu. */
 /* Returns error status */
 /* FIXME: Maybe need to handle seeking outside current cell. */
-static dvdnav_status_t dvdnav_scan_admap(dvdnav_t *this, int32_t domain, uint32_t seekto_block, uint32_t *vobu) {
+static dvdnav_status_t dvdnav_scan_admap(dvdnav_t *this, int32_t domain, uint32_t seekto_block, int next, uint32_t *vobu) {
   vobu_admap_t *admap = NULL;
 
 #ifdef LOG_DEBUG
@@ -93,20 +89,22 @@ static dvdnav_status_t dvdnav_scan_admap(dvdnav_t *this, int32_t domain, uint32_
       vobu_start = next_vobu;
       address++;
     }
-    *vobu = vobu_start;
+    *vobu = next ? next_vobu : vobu_start;
     return DVDNAV_STATUS_OK;
   }
   fprintf(MSG_OUT, "libdvdnav: admap not located\n");
   return DVDNAV_STATUS_ERR;
 }
 
+/* FIXME: right now, this function does not use the time tables but interpolates
+   only the cell times */
 dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
 				   uint64_t time) {
 
-  uint32_t target;
+  uint64_t target = time;
   uint64_t length = 0;
   uint32_t first_cell_nr, last_cell_nr, cell_nr;
-  int32_t found = 0;
+  int32_t found;
   cell_playback_t *cell;
   dvd_state_t *state;
 
@@ -130,7 +128,7 @@ dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
     return DVDNAV_STATUS_ERR;
   }
 
-  /* setup what cells we should be working within */
+  this->cur_cell_time = 0;
   if (this->pgc_based) {
     first_cell_nr = 1;
     last_cell_nr = state->pgc->nr_of_cells;
@@ -215,10 +213,9 @@ dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
 
 timemapdone:
 
-
+  found = 0;
   for(cell_nr = first_cell_nr; cell_nr <= last_cell_nr; cell_nr ++) {
     cell =  &(state->pgc->cell_playback[cell_nr-1]);
-
     if(cell->block_type == BLOCK_TYPE_ANGLE_BLOCK && cell->block_mode != BLOCK_MODE_FIRST_CELL)
       continue;
 
@@ -248,14 +245,13 @@ timemapdone:
       }
     }
   }
-
   if(found) {
     uint32_t vobu;
 #ifdef LOG_DEBUG
     fprintf(MSG_OUT, "libdvdnav: Seeking to cell %i from choice of %i to %i\n",
 	    cell_nr, first_cell_nr, last_cell_nr);
 #endif
-    if (dvdnav_scan_admap(this, state->domain, target, &vobu) == DVDNAV_STATUS_OK) {
+    if (dvdnav_scan_admap(this, state->domain, target, 0, &vobu) == DVDNAV_STATUS_OK) {
       uint32_t start = state->pgc->cell_playback[cell_nr-1].first_sector;
 
       if (vm_jump_cell_block(this->vm, cell_nr, vobu - start)) {
@@ -279,9 +275,13 @@ timemapdone:
 dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
 				     uint64_t offset, int32_t origin) {
   uint32_t target = 0;
+  uint32_t current_pos;
+  uint32_t cur_sector;
+  uint32_t cur_cell_nr;
   uint32_t length = 0;
   uint32_t first_cell_nr, last_cell_nr, cell_nr;
   int32_t found;
+  int forward = 0;
   cell_playback_t *cell;
   dvd_state_t *state;
   dvdnav_status_t result;
@@ -308,6 +308,10 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
   fprintf(MSG_OUT, "libdvdnav: seeking to offset=%llu pos=%u length=%u\n", offset, target, length);
   fprintf(MSG_OUT, "libdvdnav: Before cellN=%u blockN=%u\n", state->cellN, state->blockN);
 #endif
+
+  current_pos = target;
+  cur_sector = this->vobu.vobu_start + this->vobu.blockN;
+  cur_cell_nr = state->cellN;
 
   switch(origin) {
    case SEEK_SET:
@@ -340,6 +344,7 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
     pthread_mutex_unlock(&this->vm_lock);
     return DVDNAV_STATUS_ERR;
   }
+  forward = target > current_pos;
 
   this->cur_cell_time = 0;
   if (this->pgc_based) {
@@ -366,6 +371,27 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
     } else {
       /* convert the target sector from Cell-relative to absolute physical sector */
       target += cell->first_sector;
+      if (forward && (cell_nr == cur_cell_nr)) {
+        uint32_t vobu;
+        /* if we are seeking forward from the current position, make sure
+         * we move to a new position that is after our current position.
+         * simply truncating to the vobu will go backwards */
+        if (dvdnav_scan_admap(this, state->domain, target, 0, &vobu) != DVDNAV_STATUS_OK)
+          break;
+        if (vobu <= cur_sector) {
+          if (dvdnav_scan_admap(this, state->domain, target, 1, &vobu) != DVDNAV_STATUS_OK)
+            break;
+          if (vobu > cell->last_sector) {
+            if (cell_nr == last_cell_nr)
+              break;
+            cell_nr++;
+            cell =  &(state->pgc->cell_playback[cell_nr-1]);
+            target = cell->first_sector;
+          } else {
+            target = vobu;
+          }
+        }
+      }
       found = 1;
       break;
     }
@@ -377,7 +403,7 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
     fprintf(MSG_OUT, "libdvdnav: Seeking to cell %i from choice of %i to %i\n",
 	    cell_nr, first_cell_nr, last_cell_nr);
 #endif
-    if (dvdnav_scan_admap(this, state->domain, target, &vobu) == DVDNAV_STATUS_OK) {
+    if (dvdnav_scan_admap(this, state->domain, target, 0, &vobu) == DVDNAV_STATUS_OK) {
       int32_t start = state->pgc->cell_playback[cell_nr-1].first_sector;
 
       if (vm_jump_cell_block(this->vm, cell_nr, vobu - start)) {
@@ -647,7 +673,7 @@ uint32_t dvdnav_describe_title_chapters(dvdnav_t *this, int32_t title, uint64_t 
   uint16_t parts, i;
   title_info_t *ptitle = NULL;
   ptt_info_t *ptt = NULL;
-  ifo_handle_t *ifo;
+  ifo_handle_t *ifo = NULL;
   pgc_t *pgc;
   cell_playback_t *cell;
   uint64_t length, *tmp=NULL;
@@ -667,6 +693,7 @@ uint32_t dvdnav_describe_title_chapters(dvdnav_t *this, int32_t title, uint64_t 
   ifo = vm_get_title_ifo(this->vm, title);
   if(!ifo || !ifo->vts_pgcit) {
     printerr("Couldn't open IFO for chosen title, exit.");
+    retval = 0;
     goto fail;
   }
 
@@ -707,11 +734,14 @@ uint32_t dvdnav_describe_title_chapters(dvdnav_t *this, int32_t title, uint64_t 
   }
   *duration = length;
   vm_ifo_close(ifo);
+  ifo = NULL;
   retval = parts;
   *times = tmp;
 
 fail:
   pthread_mutex_unlock(&this->vm_lock);
+  if(!retval && ifo)
+    vm_ifo_close(ifo);
   if(!retval && tmp)
     free(tmp);
   return retval;

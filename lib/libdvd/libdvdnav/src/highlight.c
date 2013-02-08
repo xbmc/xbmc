@@ -13,12 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: highlight.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -33,13 +30,12 @@
 #include <string.h>
 #include <sys/time.h>
 #include <dvdread/nav_types.h>
-#include "dvd_types.h"
+#include "dvdnav/dvdnav.h"
 #include "remap.h"
 #include "vm/decoder.h"
 #include "vm/vm.h"
 #include "vm/vmcmd.h"
 #include "dvdnav_internal.h"
-#include "dvdnav.h"
 
 /*
 #define BUTTON_TESTING
@@ -372,7 +368,7 @@ dvdnav_status_t dvdnav_button_activate(dvdnav_t *this, pci_t *pci) {
 
   button_ptr = get_current_button(this, pci);
   /* Finally, make the VM execute the appropriate code and probably
-   * scedule a jump */
+   * schedule a jump */
 #ifdef BUTTON_TESTING
   fprintf(MSG_OUT, "libdvdnav: Evaluating Button Activation commands.\n");
 #endif
@@ -429,7 +425,7 @@ dvdnav_status_t dvdnav_button_select(dvdnav_t *this, pci_t *pci, int32_t button)
   }
 
   this->vm->state.HL_BTNN_REG = (button << 10);
-  this->position_current.button = -1; /* Force Highligh change */
+  this->position_current.button = -1; /* Force Highlight change */
 
   return DVDNAV_STATUS_OK;
 }

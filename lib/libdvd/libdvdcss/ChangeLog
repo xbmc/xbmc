@@ -1,4 +1,327 @@
 ------------------------------------------------------------------------
+r251 | jb | 2012-03-11 13:33:49 +0000 (Sun, 11 Mar 2012) | 3 lines
+Changed paths:
+   M /trunk/NEWS
+   M /trunk/configure.ac
+   M /trunk/doc/doxygen.cfg.in
+
+Prepare 1.2.12
+
+
+------------------------------------------------------------------------
+r250 | jb | 2012-03-11 12:37:40 +0000 (Sun, 11 Mar 2012) | 3 lines
+Changed paths:
+   M /trunk/AUTHORS
+
+Update Authors file
+
+
+------------------------------------------------------------------------
+r249 | jb | 2012-02-18 16:22:03 +0000 (Sat, 18 Feb 2012) | 4 lines
+Changed paths:
+   M /trunk/src/css.c
+
+If unsure, assume the drive is of RPC-I type
+
+This can happen when patched drives do not answer to ioctl_ReportRPC correctly
+
+------------------------------------------------------------------------
+r247 | jb | 2011-11-14 10:40:05 +0000 (Mon, 14 Nov 2011) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+
+Update Changelog
+
+
+------------------------------------------------------------------------
+r246 | jb | 2011-11-14 10:27:32 +0000 (Mon, 14 Nov 2011) | 3 lines
+Changed paths:
+   M /trunk/NEWS
+   M /trunk/configure.ac
+   M /trunk/doc/doxygen.cfg.in
+   M /trunk/msvc/config.h
+
+Bumping version to 1.2.11
+
+
+------------------------------------------------------------------------
+r245 | jb | 2011-11-14 10:26:47 +0000 (Mon, 14 Nov 2011) | 3 lines
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/README
+
+Update README and INSTALL to be a bit less out-of-date
+
+
+------------------------------------------------------------------------
+r244 | jb | 2011-10-26 05:10:24 +0000 (Wed, 26 Oct 2011) | 3 lines
+Changed paths:
+   M /trunk/Makefile.am
+
+Fix "doc" Makefile target
+
+
+------------------------------------------------------------------------
+r243 | jb | 2011-10-26 05:01:11 +0000 (Wed, 26 Oct 2011) | 12 lines
+Changed paths:
+   M /trunk/src/common.h
+
+Win32: Drop #define of snprintf() to _snprintf() if the former is undefined.
+
+This workaround was added for MinGW originally, but nowadays MinGW supports
+snprintf() directly so it has become unnecessary.
+
+Furthermore this can play havoc with Cygwin which does not have a _snprintf()
+declaration and gives implicit function declaration warnings. Depending on
+compiler flags, this can be a fatal error.
+
+Patch by Diego Biurrun - diego at biurrun d0t de
+
+
+------------------------------------------------------------------------
+r242 | jb | 2011-10-26 04:59:23 +0000 (Wed, 26 Oct 2011) | 8 lines
+Changed paths:
+   M /trunk/src/device.c
+
+Win32: consistently use snprintf() instead of _snprintf()
+
+Both functions are available on Cygwin and MinGW nowadays so there is
+no need to be inconsistent anymore.
+
+Patch by Diego Biurrun - diego at biurrun d0t de
+
+
+------------------------------------------------------------------------
+r241 | jb | 2011-08-16 10:41:24 +0000 (Tue, 16 Aug 2011) | 4 lines
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/README
+
+Fix typos in README and INSTALL
+
+Patch by bryce, ref http://trac.videolan.org/vlc/ticket/5200
+
+------------------------------------------------------------------------
+r240 | jb | 2011-03-23 15:00:06 +0000 (Wed, 23 Mar 2011) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.h
+
+Remove excessive whitespace
+
+
+------------------------------------------------------------------------
+r239 | jb | 2011-03-23 14:59:36 +0000 (Wed, 23 Mar 2011) | 5 lines
+Changed paths:
+   M /trunk/src/css.c
+
+Fix a small memleak
+
+Reported by Thélesphonse Bigorneault
+
+
+------------------------------------------------------------------------
+r238 | jb | 2011-02-09 22:48:29 +0000 (Wed, 09 Feb 2011) | 3 lines
+Changed paths:
+   M /trunk/doc/doxygen.cfg.in
+
+Update documentation version
+
+
+------------------------------------------------------------------------
+r237 | reimar | 2010-09-25 14:21:47 +0000 (Sat, 25 Sep 2010) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+Ensure dvdcss->css.p_disc_key is always initialized,
+even if _dvdcss_disckey fails.
+
+------------------------------------------------------------------------
+r236 | jb | 2010-08-02 15:59:13 +0000 (Mon, 02 Aug 2010) | 9 lines
+Changed paths:
+   M /trunk/src/css.h
+   M /trunk/src/device.h
+   M /trunk/src/libdvdcss.h
+
+Make libdvdcss headers self-sufficient
+
+This patch adds required #includes to libdvdcss headers so that they can be used
+without other headers as prerequisites.
+This leaves out limits.h and stdint.h, for the moment, since they aren't on all systems.
+
+Patch by Diego Biurrun - diego at biurrun d0t de
+
+
+------------------------------------------------------------------------
+r235 | jb | 2010-08-02 15:41:14 +0000 (Mon, 02 Aug 2010) | 8 lines
+Changed paths:
+   M /trunk/src/common.h
+   M /trunk/src/css.h
+   M /trunk/src/csstables.h
+   M /trunk/src/device.h
+   M /trunk/src/ioctl.h
+   M /trunk/src/libdvdcss.h
+
+Add multiple inclusion guards to header files
+
+Most header files in libdvdcss lack multiple inclusion guards, although they are
+a sensible thing to have for header files. This adds them where currently missing.
+
+Patch by Diego Biurrun - diego at biurrun d0t de
+
+
+------------------------------------------------------------------------
+r234 | jb | 2010-08-02 15:38:08 +0000 (Mon, 02 Aug 2010) | 7 lines
+Changed paths:
+   M /trunk/src/bsdi_dvd.h
+
+Use filename as multiple inclusion guard
+
+For some reason bsdi_dvd.h does not use the (full) filename as multiple
+inclusion guard.
+
+Patch by Diego Biurrun - diego at biurrun d0t de
+
+------------------------------------------------------------------------
+r233 | jb | 2010-08-02 14:04:16 +0000 (Mon, 02 Aug 2010) | 7 lines
+Changed paths:
+   M /trunk/doc/doxygen.cfg.in
+
+Shut up doxygen run
+
+Doxygen is terribly verbose by default and spams the console with useless by
+the metric ton. This patch makes its output more terse and thus more sensible.
+
+Patch by Diego Biurrun - diego at biurrun d0t de
+
+------------------------------------------------------------------------
+r232 | jb | 2010-08-02 13:56:10 +0000 (Mon, 02 Aug 2010) | 4 lines
+Changed paths:
+   M /trunk/src
+
+svn:ignore src/libdvdcss.pc
+
+As tipped by Diego
+
+------------------------------------------------------------------------
+r231 | jb | 2010-05-10 10:03:06 +0000 (Mon, 10 May 2010) | 5 lines
+Changed paths:
+   M /trunk/src/css.c
+
+Try other methods also if GetBusKey fails instead of failing completely
+
+Patch from MPlayer, from Reimar Döffinger, forwarded by Diego Biurrun
+
+
+------------------------------------------------------------------------
+r230 | sam | 2009-09-02 22:07:32 +0000 (Wed, 02 Sep 2009) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+Remove the RPC-II sanity check and only issue a warning. Capable drives are
+far too common.
+
+------------------------------------------------------------------------
+r229 | sam | 2009-09-02 22:01:07 +0000 (Wed, 02 Sep 2009) | 2 lines
+Changed paths:
+   M /trunk/src/device.c
+
+Use 64-bit IO and binary mode on OS/2. Patch courtesy of KO Myung-Hun.
+
+------------------------------------------------------------------------
+r228 | sam | 2009-05-13 21:28:53 +0000 (Wed, 13 May 2009) | 1 line
+Changed paths:
+   M /trunk/src/css.c
+
+Prepend 0x to the region mask for clarity.
+------------------------------------------------------------------------
+r227 | sam | 2009-05-13 21:00:31 +0000 (Wed, 13 May 2009) | 1 line
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+Duh, typo in the RPC-II sanity check.
+------------------------------------------------------------------------
+r226 | sam | 2009-05-13 20:54:40 +0000 (Wed, 13 May 2009) | 2 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+Add support for the DVDCSS_IGNORE_RPC environment variable in order to
+bypass our new RPC-II sanity check.
+------------------------------------------------------------------------
+r225 | sam | 2009-05-13 20:54:39 +0000 (Wed, 13 May 2009) | 1 line
+Changed paths:
+   M /trunk/src/css.c
+
+Add a debug message in the copyright information retrieval.
+------------------------------------------------------------------------
+r224 | sam | 2009-05-13 20:54:37 +0000 (Wed, 13 May 2009) | 3 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/libdvdcss.c
+
+Check drive's RPC status before trying to access a scrambled disc. Patch
+provided by Ori Avtalion <ori@avtalion.name> and refactored by Sam Hocevar
+<sam@hocevar.net>.
+------------------------------------------------------------------------
+r223 | sam | 2009-05-13 20:54:35 +0000 (Wed, 13 May 2009) | 1 line
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+Fix a potential format string crash.
+------------------------------------------------------------------------
+r221 | sam | 2009-02-09 00:45:44 +0000 (Mon, 09 Feb 2009) | 1 line
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+   M /trunk/src/error.c
+   M /trunk/src/ioctl.c
+   M /trunk/src/libdvdcss.c
+
+Remove occurrences of "this program" from the license headers.
+------------------------------------------------------------------------
+r220 | sam | 2009-02-09 00:45:33 +0000 (Mon, 09 Feb 2009) | 1 line
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/configure.ac
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+Adding OS/2 support, courtesy of KO Myung-Hun <komh@chollian.net>.
+------------------------------------------------------------------------
+r219 | jb | 2009-02-09 00:03:47 +0000 (Mon, 09 Feb 2009) | 5 lines
+Changed paths:
+   M /trunk/src/common.h
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/csstables.h
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/error.c
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+Update the FSF address.
+
+Patch by Diego Biurrun
+
+
+------------------------------------------------------------------------
+r218 | sam | 2008-08-29 19:00:14 +0000 (Fri, 29 Aug 2008) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/NEWS
+   M /trunk/configure.ac
+   M /trunk/msvc/config.h
+
+  * Bump version number to 1.2.10.
+  * Update NEWS and ChangeLog.
+------------------------------------------------------------------------
 r217 | sam | 2008-08-29 18:57:52 +0000 (Fri, 29 Aug 2008) | 2 lines
 Changed paths:
    M /trunk/src/Makefile.am
