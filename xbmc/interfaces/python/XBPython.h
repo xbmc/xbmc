@@ -47,12 +47,13 @@ namespace XBMCAddon
   }
 }
 
-template <class T> class LockableType : public T, public CCriticalSection { };
+template <class T> struct LockableType : public T, public CCriticalSection 
+{ bool hadSomethingRemoved; };
 
 typedef LockableType<std::vector<PVOID> > PlayerCallbackList;
 typedef LockableType<std::vector<XBMCAddon::xbmc::Monitor*> > MonitorCallbackList;
 typedef LockableType<std::vector<PyElem> > PyList;
-typedef LockableType<std::vector<LibraryLoader*> > PythonExtensionLibraries;
+typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 
 class XBPython : 
   public IPlayerCallback,
