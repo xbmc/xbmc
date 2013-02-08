@@ -695,6 +695,7 @@ bool CApplication::Create()
   g_settings.RegisterSubSettings(&CSkinSettings::Get());
   g_settings.RegisterSubSettings(&CMediaSourceSettings::Get());
   g_settings.RegisterSubSettings(&CViewStateSettings::Get());
+  g_settings.RegisterSubSettings(&g_advancedSettings);
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();

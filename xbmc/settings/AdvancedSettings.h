@@ -20,6 +20,7 @@
  */
 
 #include <vector>
+#include "settings/ISubSettings.h"
 #include "utils/StdString.h"
 #include "utils/GlobalsHandling.h"
 
@@ -69,7 +70,6 @@ struct RefreshOverride
   bool  fallback;
 };
 
-
 struct RefreshVideoLatency
 {
   float refreshmin;
@@ -80,12 +80,14 @@ struct RefreshVideoLatency
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings
+class CAdvancedSettings : public ISubSettings
 {
   public:
     CAdvancedSettings();
 
     static CAdvancedSettings* getInstance();
+
+    virtual void OnSettingsLoaded();
 
     void Initialize();
     bool Initialized() { return m_initialized; };
