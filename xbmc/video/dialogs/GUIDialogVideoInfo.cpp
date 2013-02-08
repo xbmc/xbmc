@@ -620,6 +620,15 @@ string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, map<string
       artTypes.push_back(i->first);
   }
 
+  // add any art types that exist for other media items of the same type
+  vector<string> dbArtTypes;
+  db.GetArtTypes(videoItem.GetVideoInfoTag()->m_type, dbArtTypes);
+  for (vector<string>::const_iterator it = dbArtTypes.begin(); it != dbArtTypes.end(); it++)
+  {
+    if (find(artTypes.begin(), artTypes.end(), *it) == artTypes.end())
+      artTypes.push_back(*it);
+  }
+
   for (vector<string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
   {
     string type = *i;
