@@ -1,0 +1,766 @@
+diff -uwr libdvdnav-4.2.0/Makefile xbmc/lib/libdvd/libdvdnav/Makefile
+--- libdvdnav-4.2.0/Makefile	2008-12-30 15:48:46 +0100
++++ xbmc/lib/libdvd/libdvdnav/Makefile	2013-02-07 14:42:34 +0100
+@@ -112,7 +112,7 @@
+ # Clean targets
+ 
+ clean:
+-	rm -rf  *~ $(.OBJDIR)/* version.h
++	rm -rf  *~ $(.OBJDIR)/* 
+ 
+ pcedit = sed \
+ 	-e 's,@prefix@,$(PREFIX),' \
+diff -uwr libdvdnav-4.2.0/src/dvdnav/dvdnav.h xbmc/lib/libdvd/libdvdnav/src/dvdnav/dvdnav.h
+--- libdvdnav-4.2.0/src/dvdnav/dvdnav.h	2011-02-26 21:32:32 +0100
++++ xbmc/lib/libdvd/libdvdnav/src/dvdnav/dvdnav.h	2013-02-07 14:42:34 +0100
+@@ -695,6 +695,42 @@
+  */
+ int8_t dvdnav_is_domain_vts(dvdnav_t *self);
+ 
++////////// RATDVD stuff ///////////////
++
++/*
++ * Get the number of audio streams.
++ */
++int32_t dvdnav_get_audio_stream_count(dvdnav_t * self);
++
++/*
++ * Get the number of subpicture streams.
++ */
++int32_t dvdnav_get_subpicture_stream_count(dvdnav_t * self);
++
++/*
++ * Get attributes of the current audio stream.
++ */
++dvdnav_status_t dvdnav_get_audio_info(dvdnav_t * self, int32_t streamid, audio_attr_t* audio_attributes);
++
++/*
++ * Get attributes of the current subpicture stream.
++ */
++dvdnav_status_t dvdnav_get_stitle_info(dvdnav_t * self, int32_t streamid, subp_attr_t* stitle_attributes);
++
++/*
++ * Get information about the current video stream
++ */
++dvdnav_status_t dvdnav_get_video_info(dvdnav_t * self, video_attr_t* video_attributes);
++
++/*
++ * Select the audio stream to be played
++ */
++dvdnav_status_t dvdnav_audio_change(dvdnav_t *self, int32_t audio);
++
++/*
++ * Select the spu stream to be displayed
++ */
++dvdnav_status_t dvdnav_subpicture_change(dvdnav_t *self, int32_t subpicture);
+ 
+ #ifdef __cplusplus
+ }
+diff -uwr libdvdnav-4.2.0/src/dvdnav.c xbmc/lib/libdvd/libdvdnav/src/dvdnav.c
+--- libdvdnav-4.2.0/src/dvdnav.c	2010-07-31 01:34:12 +0200
++++ xbmc/lib/libdvd/libdvdnav/src/dvdnav.c	2013-02-07 14:42:34 +0100
+@@ -337,7 +337,9 @@
+   }
+ #endif
+ 
+-  if(num_angle != 0) {
++  /* only use ILVU information if we are at the last vobunit in ILVU */
++  /* otherwise we will miss nav packets from vobunits inbetween */
++  if(num_angle != 0 && (nav_dsi->sml_pbi.category & 0x5000) == 0x5000 ) {
+ 
+     if((next = nav_pci->nsml_agli.nsml_agl_dsta[angle-1]) != 0) {
+       if((next & 0x3fffffff) != 0) {
+@@ -466,6 +468,10 @@
+ 	/* Decode nav into pci and dsi. Then get next VOBU info. */
+ 	if(!dvdnav_decode_packet(this, *buf, &this->dsi, &this->pci)) {
+ 	  printerr("Expected NAV packet but none found.");
++#ifdef _XBMC
++    /* skip this cell as we won't recover from this*/
++    vm_get_next_cell(this->vm);
++#endif
+ 	  pthread_mutex_unlock(&this->vm_lock);
+ 	  return DVDNAV_STATUS_ERR;
+ 	}
+@@ -618,9 +624,17 @@
+     cell_event->pgc_length = dvdnav_convert_time(&state->pgc->playback_time);
+ 
+     cell_event->cell_start = 0;
+-    for (i = 1; i < state->cellN; i++)
++    for (i = 0; i < state->cellN; i++)
++    {
++      /* only count the first angle cell */
++      if(  state->pgc->cell_playback[i].block_type == BLOCK_TYPE_ANGLE_BLOCK 
++        && state->pgc->cell_playback[i].block_mode != BLOCK_MODE_FIRST_CELL )
++        continue;
++
+       cell_event->cell_start +=
+-        dvdnav_convert_time(&state->pgc->cell_playback[i - 1].playback_time);
++          dvdnav_convert_time(&state->pgc->cell_playback[i].playback_time);
++    }    
++    cell_event->cell_start-= dvdnav_convert_time(&state->pgc->cell_playback[state->cellN-1].playback_time);
+ 
+     cell_event->pg_start = 0;
+     for (i = 1; i < state->pgc->program_map[state->pgN-1]; i++)
+@@ -769,6 +783,10 @@
+     /* Decode nav into pci and dsi. Then get next VOBU info. */
+     if(!dvdnav_decode_packet(this, *buf, &this->dsi, &this->pci)) {
+       printerr("Expected NAV packet but none found.");
++#ifdef _XBMC
++      /* skip this cell as we won't recover from this */
++      vm_get_next_cell(this->vm);
++#endif
+       pthread_mutex_unlock(&this->vm_lock);
+       return DVDNAV_STATUS_ERR;
+     }
+@@ -1166,6 +1184,10 @@
+ 
+   ops.ops_int = 0;
+ 
++  if(!this) {
++    printerr("Passed a NULL pointer.");
++    return ops.ops_struct;
++  }
+   if(!this->started) {
+     printerr("Virtual DVD machine not started.");
+     return ops.ops_struct;
+@@ -1180,3 +1202,263 @@
+ 
+   return ops.ops_struct;
+ }
++
++#ifdef _XBMC
++
++vm_t* dvdnav_get_vm(dvdnav_t *this) {
++  if(!this) return 0;
++  return this->vm;
++}
++
++int dvdnav_get_nr_of_subtitle_streams(dvdnav_t *this)
++{
++  int i;
++  int count = 0;
++  
++  if (this && this->vm && this->vm->state.pgc)
++  {
++    for (i = 0; i < 32; i++)
++    {
++      if (this->vm->state.pgc->subp_control[i] & (1<<31)) count++;
++    }
++  }
++  return count;
++  
++  /* old code
++  if(!this || !this->vm || !this->vm->vtsi || !this->vm->vtsi->vtsi_mat) return 0;
++  
++  switch ((this->vm->state).domain) {
++  case VTS_DOMAIN:
++    return this->vm->vtsi->vtsi_mat->nr_of_vts_subp_streams;
++  case VTSM_DOMAIN:
++    return this->vm->vtsi->vtsi_mat->nr_of_vtsm_subp_streams; // 1
++  case VMGM_DOMAIN:
++  case FP_DOMAIN:
++    return this->vm->vmgi->vmgi_mat->nr_of_vmgm_subp_streams; // 1
++  }
++
++  return 0;
++  */
++}
++
++int dvdnav_get_nr_of_audio_streams(dvdnav_t *this)
++{
++  int i;
++  int count = 0;
++  
++  if (this && this->vm && this->vm->state.pgc)
++  {
++    for (i = 0; i < 8; i++)
++    {
++      if (this->vm->state.pgc->audio_control[i] & (1<<15)) count++;
++    }
++  }
++  return count;
++  
++  /* old code
++  if(!this || !this->vm || !this->vm->vtsi || !this->vm->vtsi->vtsi_mat) return 0;
++   
++  switch ((this->vm->state).domain) {
++  case VTS_DOMAIN:
++    return this->vm->vtsi->vtsi_mat->nr_of_vts_audio_streams;
++  case VTSM_DOMAIN:
++    return this->vm->vtsi->vtsi_mat->nr_of_vtsm_audio_streams; // 1
++  case VMGM_DOMAIN:
++  case FP_DOMAIN:
++    return this->vm->vmgi->vmgi_mat->nr_of_vmgm_audio_streams; // 1
++  }
++  
++  return 0;
++  */
++}
++
++/* return the alpha and color for the current active button
++ * color, alpha [0][] = selection
++ * color, alpha = color
++ *
++ * argsize = [2][4]
++ */
++int dvdnav_get_button_info(dvdnav_t* this, int alpha[2][4], int color[2][4])
++{
++  int current_button, current_button_color, i;
++  pci_t* pci;
++  
++  if (!this) return -1;
++  
++  pci = dvdnav_get_current_nav_pci(this);
++  if (!pci) return -1;
++  
++  dvdnav_get_current_highlight(this, &current_button);
++  current_button_color = pci->hli.btnit[current_button - 1].btn_coln;
++  
++  for (i = 0; i < 2; i++)
++  {
++    alpha[i][0] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 0 & 0xf;
++    alpha[i][1] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 4 & 0xf;
++    alpha[i][2] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 8 & 0xf;
++    alpha[i][3] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 12 & 0xf;
++    
++    color[i][0] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 16 & 0xf;
++    color[i][1] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 20 & 0xf;
++    color[i][2] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 24 & 0xf;
++    color[i][3] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 28 & 0xf;
++  }
++  
++  return 0;
++}
++
++/*
++ * the next stuff is taken from ratdvd
++ */
++
++#undef printerr
++#define printerr(str) strncpy(self->err_str, str, MAX_ERR_LEN);
++
++dvdnav_status_t dvdnav_get_audio_info(dvdnav_t * self, int32_t streamid, audio_attr_t* audio_attributes)
++{
++    if(!self) {
++        printerr("Passed a NULL pointer.");
++        return -1;
++    }
++    if(!self->started) {
++        printerr("Virtual DVD machine not started.");
++        return -1;
++    }
++
++    pthread_mutex_lock(&self->vm_lock);
++    audio_attr_t attributes = vm_get_audio_attr(self->vm,streamid);
++    pthread_mutex_unlock(&self->vm_lock);
++	audio_attributes->audio_format = attributes.audio_format;
++	audio_attributes->multichannel_extension = attributes.multichannel_extension; 
++	audio_attributes->lang_type = attributes.lang_type; 
++	audio_attributes->application_mode = attributes.application_mode;
++	audio_attributes->quantization = attributes.quantization;
++	audio_attributes->sample_frequency = attributes.sample_frequency;
++	audio_attributes->channels = attributes.channels;
++	audio_attributes->lang_code = attributes.lang_code;
++	audio_attributes->lang_extension = attributes.lang_extension;
++	audio_attributes->code_extension = attributes.code_extension;
++	audio_attributes->unknown3 = attributes.unknown3;
++	audio_attributes->app_info = attributes.app_info;
++	return DVDNAV_STATUS_OK;
++}
++
++dvdnav_status_t dvdnav_get_stitle_info(dvdnav_t * self
++												 , int32_t streamid, subp_attr_t* stitle_attributes)
++{
++    if(!self) {
++        printerr("Passed a NULL pointer.");
++        return -1;
++    }
++    if(!self->started) {
++        printerr("Virtual DVD machine not started.");
++        return -1;
++    }
++
++    pthread_mutex_lock(&self->vm_lock);
++    subp_attr_t attributes = vm_get_subp_attr(self->vm,streamid);
++    pthread_mutex_unlock(&self->vm_lock);
++	stitle_attributes->code_mode = attributes.code_mode;
++	stitle_attributes->zero1 = attributes.zero1;
++	stitle_attributes->type = attributes.type;
++	stitle_attributes->zero2 = attributes.zero2;
++	stitle_attributes->lang_code = attributes.lang_code;
++	stitle_attributes->lang_extension = attributes.lang_extension;
++	stitle_attributes->code_extension = attributes.code_extension;
++	return DVDNAV_STATUS_OK;
++}
++
++dvdnav_status_t dvdnav_get_video_info(dvdnav_t * self, video_attr_t* video_attributes)
++{
++    if(!self) {
++        printerr("Passed a NULL pointer.");
++        return -1;
++    }
++    if(!self->started) {
++        printerr("Virtual DVD machine not started.");
++        return -1;
++    }
++
++    pthread_mutex_lock(&self->vm_lock);
++    video_attr_t attributes = vm_get_video_attr(self->vm);
++    pthread_mutex_unlock(&self->vm_lock);
++
++    video_attributes->video_format = attributes.video_format;
++    video_attributes->permitted_df  = attributes.permitted_df;
++    video_attributes->display_aspect_ratio = attributes.display_aspect_ratio;
++    video_attributes->mpeg_version = attributes.mpeg_version;
++    video_attributes->film_mode = attributes.film_mode;
++    video_attributes->letterboxed = attributes.letterboxed;
++    video_attributes->picture_size = attributes.picture_size;
++    video_attributes->bit_rate = attributes.bit_rate;
++    video_attributes->unknown1 = attributes.unknown1;
++    video_attributes->line21_cc_2 = attributes.line21_cc_2;
++    video_attributes->line21_cc_1 = attributes.line21_cc_1;
++	return DVDNAV_STATUS_OK;
++}
++
++dvdnav_status_t dvdnav_audio_change(dvdnav_t *self, int32_t audio)
++{
++  int32_t num;
++  
++  if(!self) {
++    printerr("Passed a NULL pointer.");
++    return DVDNAV_STATUS_ERR;
++  }
++
++  num = dvdnav_get_nr_of_audio_streams(self);
++  pthread_mutex_lock(&self->vm_lock);
++  /* Set subp AUDIO if valid */
++  if((audio >= 0) && (audio <= num)) {
++    self->vm->state.AST_REG = audio;
++  } else {
++    //printerr("Passed an invalid audio number.");
++    pthread_mutex_unlock(&self->vm_lock);
++    return DVDNAV_STATUS_ERR;
++  }
++  pthread_mutex_unlock(&self->vm_lock);
++
++  return DVDNAV_STATUS_OK;
++}
++
++dvdnav_status_t dvdnav_subpicture_change(dvdnav_t *self, int32_t subpicture)
++{
++  int32_t num;
++  
++  if(!self) {
++    printerr("Passed a NULL pointer.");
++    return DVDNAV_STATUS_ERR;
++  }
++
++  num = dvdnav_get_nr_of_subtitle_streams(self);
++  pthread_mutex_lock(&self->vm_lock);
++  /* Set subp SPRM if valid */
++  if((subpicture >= 0) && (subpicture <= num)) {
++    self->vm->state.SPST_REG = subpicture | 0x40;
++  } else if (subpicture & 0x80) {
++    self->vm->state.SPST_REG = subpicture & ~0x80;
++  } else {
++    self->vm->state.SPST_REG = subpicture;
++    //printerr("Passed an invalid subpicture number.");
++    //pthread_mutex_unlock(&self->vm_lock);
++    //return DVDNAV_STATUS_ERR;
++  }
++  pthread_mutex_unlock(&self->vm_lock);
++
++  return DVDNAV_STATUS_OK;
++}
++
++void dvdnav_lock(dvdnav_t *self)
++{
++	// we do not check for null pointer problems
++	pthread_mutex_lock(&self->vm_lock);
++}
++
++void dvdnav_unlock(dvdnav_t *self)
++{
++	// we do not check for null pointer problems
++	pthread_mutex_unlock(&self->vm_lock);
++}
++
++#endif // _XBMC
++
+diff -uwr libdvdnav-4.2.0/src/dvdnav_internal.h xbmc/lib/libdvd/libdvdnav/src/dvdnav_internal.h
+--- libdvdnav-4.2.0/src/dvdnav_internal.h	2010-06-01 12:02:38 +0200
++++ xbmc/lib/libdvd/libdvdnav/src/dvdnav_internal.h	2013-02-07 14:42:34 +0100
+@@ -175,6 +175,18 @@
+ /* converts a dvd_time_t to PTS ticks */
+ int64_t dvdnav_convert_time(dvd_time_t *time);
+ 
++/* XBMC added functions */
++/*
++ * Get current playback state
++ */
++dvdnav_status_t dvdnav_get_state(dvdnav_t *this, dvd_state_t *save_state);
++
++/*
++ * Resume playback state
++ */
++dvdnav_status_t dvdnav_set_state(dvdnav_t *this, dvd_state_t *save_state);
++/* end XBMC */
++
+ /** USEFUL MACROS **/
+ 
+ #ifdef __GNUC__
+diff -uwr libdvdnav-4.2.0/src/read_cache.c xbmc/lib/libdvd/libdvdnav/src/read_cache.c
+--- libdvdnav-4.2.0/src/read_cache.c	2008-12-30 15:48:46 +0100
++++ xbmc/lib/libdvd/libdvdnav/src/read_cache.c	2013-02-07 14:42:34 +0100
+@@ -338,7 +338,7 @@
+   pthread_mutex_lock(&cache->lock);
+   for (i = 0; i < READ_CACHE_CHUNKS; i++) {
+     if (cache->chunk[i].cache_buffer && buf >= cache->chunk[i].cache_buffer &&
+-        buf < cache->chunk[i].cache_buffer + cache->chunk[i].cache_malloc_size * DVD_VIDEO_LB_LEN) {
++        buf < cache->chunk[i].cache_buffer + cache->chunk[i].cache_malloc_size * DVD_VIDEO_LB_LEN && cache->chunk[i].usage_count > 0) {
+       cache->chunk[i].usage_count--;
+     }
+   }
+diff -uwr libdvdnav-4.2.0/src/searching.c xbmc/lib/libdvd/libdvdnav/src/searching.c
+--- libdvdnav-4.2.0/src/searching.c	2011-10-07 19:06:24 +0200
++++ xbmc/lib/libdvd/libdvdnav/src/searching.c	2013-02-07 14:42:34 +0100
+@@ -121,6 +121,12 @@
+     return DVDNAV_STATUS_ERR;
+   }
+ 
++  if((state->pgc->prohibited_ops.title_or_time_play == 1) ||
++      (this->pci.pci_gi.vobu_uop_ctl.title_or_time_play == 1 )){
++    printerr("operation forbidden.");
++    pthread_mutex_unlock(&this->vm_lock);
++    return DVDNAV_STATUS_ERR;
++  }
+ 
+   this->cur_cell_time = 0;
+   if (this->pgc_based) {
+@@ -136,24 +142,109 @@
+       last_cell_nr = state->pgc->nr_of_cells;
+   }
+ 
++  /* FIXME: using time map is not going to work unless we are pgc_based */
++  /*        we'd need to recalculate the time to be relative to full pgc first*/
++  if(!this->pgc_based)
++  {
++#ifdef LOG_DEBUG
++    fprintf(MSG_OUT, "libdvdnav: time_search - not pgc based\n");
++#endif
++    goto timemapdone;
++  }
++
++  if(!this->vm->vtsi->vts_tmapt){
++    /* no time map for this program chain */
++#ifdef LOG_DEBUG
++    fprintf(MSG_OUT, "libdvdnav: time_search - no time map for this program chain\n");
++#endif
++    goto timemapdone;
++  }
++
++  if(this->vm->vtsi->vts_tmapt->nr_of_tmaps < state->pgcN){
++    /* to few time maps for this program chain */
++#ifdef LOG_DEBUG
++    fprintf(MSG_OUT, "libdvdnav: time_search - to few time maps for this program chain\n");
++#endif
++    goto timemapdone;
++  }
++
++  /* get the tmpat corresponding to the pgc */
++  vts_tmap_t *tmap = &(this->vm->vtsi->vts_tmapt->tmap[state->pgcN-1]);
++
++  if(tmap->tmu == 0){
++    /* no time unit for this time map */
++#ifdef LOG_DEBUG
++    fprintf(MSG_OUT, "libdvdnav: time_search - no time unit for this time map\n");
++#endif
++    goto timemapdone;
++  }
++
++  /* time is in pts (90khz clock), get the number of tmu's that represent */
++  /* first entry defines at time tmu not time zero */
++  int entry = time / tmap->tmu / 90000 - 1;
++  if(entry > tmap->nr_of_entries)
++    entry = tmap->nr_of_entries -1;
++
++  if(entry > 0)
++  {
++    /* get the table entry, disregarding marking of discontinuity */
++    target = tmap->map_ent[entry] & 0x7fffffff;
++  }
++  else
++  {
++    /* start from first vobunit */
++    target = state->pgc->cell_playback[first_cell_nr-1].first_sector;;
++  }
++
++  /* if we have an additional entry we can interpolate next position */
++  /* allowed only if next entry isn't discontinious */
++
++  if( entry < tmap->nr_of_entries - 1)
++  {
++    const uint32_t target2 = tmap->map_ent[entry+1];
++    const uint64_t timeunit = tmap->tmu*90000;
++    if( !( target2 & 0x80000000) )
++    {
++      length = target2 - target;
++      target += (uint32_t) (length * ( time - (entry+1)*timeunit ) / timeunit);
++    }
++  }
++  found = 1;
++
++timemapdone:
++
+   found = 0;
+-  for(cell_nr = first_cell_nr; (cell_nr <= last_cell_nr) && !found; cell_nr ++) {
++  for(cell_nr = first_cell_nr; cell_nr <= last_cell_nr; cell_nr ++) {
+     cell =  &(state->pgc->cell_playback[cell_nr-1]);
+     if(cell->block_type == BLOCK_TYPE_ANGLE_BLOCK && cell->block_mode != BLOCK_MODE_FIRST_CELL)
+       continue;
++
++    if(found) {
++
++      if (target >= cell->first_sector
++      &&  target <= cell->last_sector)
++         break;
++
++    } else {
++
+     length = dvdnav_convert_time(&cell->playback_time);
+-    if (target >= length) {
+-      target -= length;
++      if (time >= length) {
++        time -= length;
+     } else {
+       /* FIXME: there must be a better way than interpolation */
+-      target = target * (cell->last_sector - cell->first_sector + 1) / length;
++        target = time * (cell->last_sector - cell->first_sector + 1) / length;
+       target += cell->first_sector;
+ 
++  #ifdef LOG_DEBUG
++        if( cell->first_sector > target || target > cell->last_sector )
++          fprintf(MSG_OUT, "libdvdnav: time_search - sector is not within cell min:%u, max:%u, cur:%u\n", cell->first_sector, cell->last_sector, target);
++  #endif
++
+       found = 1;
+       break;
+     }
+   }
+-
++  }
+   if(found) {
+     uint32_t vobu;
+ #ifdef LOG_DEBUG
+@@ -202,6 +293,7 @@
+ 
+   result = dvdnav_get_position(this, &target, &length);
+   if(!result) {
++    printerr("Cannot get current position");
+     return DVDNAV_STATUS_ERR;
+   }
+ 
+@@ -213,7 +305,7 @@
+     return DVDNAV_STATUS_ERR;
+   }
+ #ifdef LOG_DEBUG
+-  fprintf(MSG_OUT, "libdvdnav: seeking to offset=%lu pos=%u length=%u\n", offset, target, length);
++  fprintf(MSG_OUT, "libdvdnav: seeking to offset=%llu pos=%u length=%u\n", offset, target, length);
+   fprintf(MSG_OUT, "libdvdnav: Before cellN=%u blockN=%u\n", state->cellN, state->blockN);
+ #endif
+ 
+@@ -654,3 +746,62 @@
+     free(tmp);
+   return retval;
+ }
++
++dvdnav_status_t dvdnav_get_state(dvdnav_t *this, dvd_state_t *save_state)
++{
++  if(!this || !this->vm) return DVDNAV_STATUS_ERR;
++
++  pthread_mutex_lock(&this->vm_lock);
++  
++  if( !vm_get_state(this->vm, save_state) )
++  {
++    printerr("Failed to get vm state.");
++    pthread_mutex_unlock(&this->vm_lock);
++    return DVDNAV_STATUS_ERR;
++  }
++  
++  pthread_mutex_unlock(&this->vm_lock);
++  return DVDNAV_STATUS_OK;
++}
++
++dvdnav_status_t dvdnav_set_state(dvdnav_t *this, dvd_state_t *save_state)
++{
++  if(!this || !this->vm)
++  {
++    printerr("Passed a NULL pointer.");
++    return DVDNAV_STATUS_ERR;
++  }
++
++  if(!this->started) {
++    printerr("Virtual DVD machine not started.");
++    return DVDNAV_STATUS_ERR;
++  }
++
++  pthread_mutex_lock(&this->vm_lock);
++
++  /* reset the dvdnav state */
++  memset(&this->pci,0,sizeof(this->pci));
++  memset(&this->dsi,0,sizeof(this->dsi));
++  this->last_cmd_nav_lbn = SRI_END_OF_CELL;
++
++  /* Set initial values of flags */  
++  this->position_current.still = 0;
++  this->skip_still = 0;
++  this->sync_wait = 0;
++  this->sync_wait_skip = 0;
++  this->spu_clut_changed = 0;
++
++
++  /* set the state. this will also start the vm on that state */
++  /* means the next read block should be comming from that new */
++  /* state */
++  if( !vm_set_state(this->vm, save_state) )
++  {
++    printerr("Failed to set vm state.");
++    pthread_mutex_unlock(&this->vm_lock);
++    return DVDNAV_STATUS_ERR;
++  } 
++
++  pthread_mutex_unlock(&this->vm_lock);
++  return DVDNAV_STATUS_OK;
++}
+diff -uwr libdvdnav-4.2.0/src/vm/vm.c xbmc/lib/libdvd/libdvdnav/src/vm/vm.c
+--- libdvdnav-4.2.0/src/vm/vm.c	2010-11-22 00:59:44 +0100
++++ xbmc/lib/libdvd/libdvdnav/src/vm/vm.c	2013-02-07 14:42:34 +0100
+@@ -255,6 +255,15 @@
+     fprintf(MSG_OUT, "libdvdnav: ifoRead_TITLE_VOBU_ADMAP vtsi failed\n");
+     return 0;
+   }
++  if(!ifoRead_VTS_TMAPT(vm->vtsi)) {
++    fprintf(MSG_OUT, "libdvdnav: ifoRead_VTS_TMAPT vtsi failed\n");
++    return 0;
++  }
++  if(!ifoRead_TITLE_C_ADT(vm->vtsi)) {
++    fprintf(MSG_OUT, "libdvdnav: ifoRead_TITLE_C_ADT vtsi failed\n");
++    return 0;
++  }
++
+   (vm->state).vtsN = vtsN;
+ 
+   return 1;
+@@ -390,7 +399,15 @@
+       /* return 0; Not really used for now.. */
+     }
+     /* ifoRead_TXTDT_MGI(vmgi); Not implemented yet */
++#ifdef _XBMC
++    if(DVDUDFVolumeInfo(vm->dvd, vm->dvd_name, sizeof(vm->dvd_name), NULL, 0))
++      if(DVDISOVolumeInfo(vm->dvd, vm->dvd_name, sizeof(vm->dvd_name), NULL, 0))
++        strcpy(vm->dvd_name, "");
++
++    fprintf(MSG_OUT, "libdvdnav: vm: DVD Title: %s\n", vm->dvd_name);
++#else
+     dvd_read_name(vm->dvd_name, vm->dvd_serial, dvdroot);
++#endif
+     vm->map  = remap_loadmap(vm->dvd_name);
+   }
+   if (vm->vmgi) {
+@@ -846,7 +863,7 @@
+   }
+ }
+ 
+-#if 0
++// XBMC #if 0
+ /* currently unused */
+ void vm_get_audio_info(vm_t *vm, int *current, int *num_avail) {
+   switch ((vm->state).domain) {
+@@ -884,7 +901,7 @@
+     break;
+   }
+ }
+-#endif
++// XBMC #endif
+ 
+ void vm_get_video_res(vm_t *vm, int *width, int *height) {
+   video_attr_t attr = vm_get_video_attr(vm);
+@@ -1981,6 +1998,50 @@
+   ifoClose(ifo);
+ }
+ 
++int vm_get_state(vm_t *vm, dvd_state_t *save_state) {
++  *save_state = vm->state;
++  
++  /* remove the pgc pointer as it might not be valid later*/
++  save_state->pgc = NULL;
++
++  return 1;
++}
++
++int vm_set_state(vm_t *vm, dvd_state_t *save_state) {
++
++  /* restore state from save_state as taken from ogle */
++
++  /* open the needed vts */
++  if( !ifoOpenNewVTSI(vm, vm->dvd, save_state->vtsN) ) return 0;
++  // sets state.vtsN
++    
++  vm->state = *save_state;
++  /* set state.domain before calling */
++  //calls get_pgcit()
++  //      needs state.domain and sprm[0] set
++  //      sets pgcit depending on state.domain
++  //writes: state.pgc
++  //        state.pgN
++  //        state.TT_PGCN_REG
++  
++  if( !set_PGCN(vm, save_state->pgcN) ) return 0;
++  save_state->pgc = vm->state.pgc;
++
++  /* set the rest of state after the call */
++  vm->state = *save_state;
++
++  /* if we are not in standard playback, we must get all data */
++  /* otherwise we risk loosing stillframes, and overlays */
++  if(vm->state.domain != VTS_DOMAIN)
++    vm->state.blockN = 0;
++
++  /* force a flush of data here */
++  /* we don't need a hop seek here as it's a complete state*/
++  vm->hop_channel++;
++
++  return 1;
++}
++
+ /* Debug functions */
+ 
+ #ifdef TRACE
+diff -uwr libdvdnav-4.2.0/src/vm/vm.h xbmc/lib/libdvd/libdvdnav/src/vm/vm.h
+--- libdvdnav-4.2.0/src/vm/vm.h	2010-07-31 01:34:16 +0200
++++ xbmc/lib/libdvd/libdvdnav/src/vm/vm.h	2013-02-07 14:42:34 +0100
+@@ -156,11 +156,11 @@
+ int vm_get_audio_active_stream(vm_t *vm);
+ int vm_get_subp_active_stream(vm_t *vm, int mode);
+ void vm_get_angle_info(vm_t *vm, int *current, int *num_avail);
+-#if 0
++// _XBMC #if 0
+ /* currently unused */
+ void vm_get_audio_info(vm_t *vm, int *current, int *num_avail);
+ void vm_get_subp_info(vm_t *vm, int *current, int *num_avail);
+-#endif
++// _XBMC #endif
+ void vm_get_video_res(vm_t *vm, int *width, int *height);
+ int  vm_get_video_aspect(vm_t *vm);
+ int  vm_get_video_scale_permission(vm_t *vm);
+@@ -170,6 +170,9 @@
+ ifo_handle_t *vm_get_title_ifo(vm_t *vm, uint32_t title);
+ void vm_ifo_close(ifo_handle_t *ifo);
+ 
++int vm_get_state(vm_t *vm, dvd_state_t *save_state);
++int vm_set_state(vm_t *vm, dvd_state_t *save_state);
++
+ /* Uncomment for VM command tracing */
+ /* #define TRACE */
+ #ifdef TRACE
+Only in xbmc/lib/libdvd/libdvdnav: version.h

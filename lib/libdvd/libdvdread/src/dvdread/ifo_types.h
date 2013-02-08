@@ -1,27 +1,29 @@
-#ifndef IFO_TYPES_H_INCLUDED
-#define IFO_TYPES_H_INCLUDED
-
 /*
- * Copyright (C) 2000, 2001 Björn Englund <d4bjorn@dtek.chalmers.se>,
- *                          Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001 BjÃ¶rn Englund <d4bjorn@dtek.chalmers.se>,
+ *                          HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * libdvdread is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#ifndef LIBDVDREAD_IFO_TYPES_H
+#define LIBDVDREAD_IFO_TYPES_H
+
 #include <inttypes.h>
-#include "dvd_reader.h"
+#include "dvdread/dvd_reader.h"
 
 
 #undef ATTRIBUTE_PACKED
@@ -120,7 +122,7 @@ typedef struct {
       unsigned char dolby_encoded      : 1; /* suitable for surround decoding */
       unsigned char unknown6           : 3;
     } surround;
-  } app_info;
+  } ATTRIBUTE_PACKED app_info;
 } ATTRIBUTE_PACKED audio_attr_t;
 
 
@@ -209,6 +211,7 @@ typedef struct {
   unsigned int interleaved      : 1;
   unsigned int stc_discontinuity: 1;
   unsigned int seamless_angle   : 1;
+
   unsigned int playback_mode    : 1;  /**< When set, enter StillMode after each VOBU */
   unsigned int restricted       : 1;  /**< ?? drop out of fastforward? */
   unsigned int unknown2         : 6;
@@ -472,7 +475,8 @@ typedef struct {
  * Parental Management Information Unit Table.
  * Level 1 (US: G), ..., 7 (US: NC-17), 8
  */
-typedef uint16_t pf_level_t[8];
+#define PTL_MAIT_NUM_LEVEL 8
+typedef uint16_t pf_level_t[PTL_MAIT_NUM_LEVEL];
 
 /**
  * Parental Management Information Unit Table.
@@ -744,4 +748,4 @@ typedef struct {
   vobu_admap_t   *vts_vobu_admap;
 } ifo_handle_t;
 
-#endif /* IFO_TYPES_H_INCLUDED */
+#endif /* LIBDVDREAD_IFO_TYPES_H */

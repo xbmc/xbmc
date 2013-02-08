@@ -13,12 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: dvdnav.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,15 +33,13 @@
 #include <limits.h>
 #include <string.h>
 #include <sys/time.h>
-#include "dvd_types.h"
+#include "dvdnav/dvdnav.h"
 #include <dvdread/dvd_reader.h>
 #include <dvdread/nav_types.h>
 #include <dvdread/ifo_types.h> /* For vm_cmd_t */
 #include "remap.h"
 #include "vm/decoder.h"
 #include "vm/vm.h"
-#include "dvdnav.h"
-#include "dvdnav_events.h"
 #include "dvdnav_internal.h"
 #include "read_cache.h"
 #include <dvdread/nav_read.h>
@@ -57,12 +52,12 @@ static dvdnav_status_t dvdnav_clear(dvdnav_t * this) {
   if (this->file) DVDCloseFile(this->file);
   this->file = NULL;
 
+  memset(&this->position_current,0,sizeof(this->position_current));
   memset(&this->pci,0,sizeof(this->pci));
   memset(&this->dsi,0,sizeof(this->dsi));
   this->last_cmd_nav_lbn = SRI_END_OF_CELL;
 
   /* Set initial values of flags */
-  this->position_current.still = 0;
   this->skip_still = 0;
   this->sync_wait = 0;
   this->sync_wait_skip = 0;
@@ -183,9 +178,9 @@ dvdnav_status_t dvdnav_reset(dvdnav_t *this) {
 #ifdef LOG_DEBUG
   fprintf(MSG_OUT, "libdvdnav: clearing dvdnav\n");
 #endif
+  pthread_mutex_unlock(&this->vm_lock);
   result = dvdnav_clear(this);
 
-  pthread_mutex_unlock(&this->vm_lock);
   return result;
 }
 
@@ -674,7 +669,7 @@ dvdnav_status_t dvdnav_get_next_cache_block(dvdnav_t *this, uint8_t **buf,
     fprintf(MSG_OUT, "libdvdnav: SPU_CLUT_CHANGE\n");
 #endif
     (*len) = 16 * sizeof(uint32_t);
-    memcpy(*buf, state->pgc->palette, 16 * sizeof(uint32_t));
+    memcpy(*buf, &(state->pgc->palette), 16 * sizeof(uint32_t));
     this->spu_clut_changed = 0;
     pthread_mutex_unlock(&this->vm_lock);
     return DVDNAV_STATUS_OK;
@@ -848,6 +843,11 @@ dvdnav_status_t dvdnav_get_title_string(dvdnav_t *this, const char **title_str) 
   return DVDNAV_STATUS_OK;
 }
 
+dvdnav_status_t dvdnav_get_serial_string(dvdnav_t *this, const char **serial_str) {
+  (*serial_str) = this->vm->dvd_serial;
+  return DVDNAV_STATUS_OK;
+}
+
 uint8_t dvdnav_get_video_aspect(dvdnav_t *this) {
   uint8_t         retval;
 
@@ -861,6 +861,22 @@ uint8_t dvdnav_get_video_aspect(dvdnav_t *this) {
   pthread_mutex_unlock(&this->vm_lock);
 
   return retval;
+}
+int dvdnav_get_video_resolution(dvdnav_t *this, uint32_t *width, uint32_t *height) {
+  int w, h;
+
+  if(!this->started) {
+    printerr("Virtual DVD machine not started.");
+    return -1;
+  }
+
+  pthread_mutex_lock(&this->vm_lock);
+  vm_get_video_res(this->vm, &w, &h);
+  pthread_mutex_unlock(&this->vm_lock);
+
+  *width  = w;
+  *height = h;
+  return 0;
 }
 
 uint8_t dvdnav_get_video_scale_permission(dvdnav_t *this) {
@@ -1164,7 +1180,7 @@ user_ops_t dvdnav_get_restrictions(dvdnav_t* this) {
   union {
     user_ops_t ops_struct;
     uint32_t   ops_int;
-  } ops, tmp;
+  } ops;
 
   ops.ops_int = 0;
 
@@ -1178,13 +1194,10 @@ user_ops_t dvdnav_get_restrictions(dvdnav_t* this) {
   }
 
   pthread_mutex_lock(&this->vm_lock); 
-  tmp.ops_struct = this->pci.pci_gi.vobu_uop_ctl; 
-  ops.ops_int |= tmp.ops_int; 
+  ops.ops_int |= *(uint32_t*)&this->pci.pci_gi.vobu_uop_ctl;
 
-  if(this->vm && this->vm->state.pgc) { 
-    tmp.ops_struct = this->vm->state.pgc->prohibited_ops; 
-    ops.ops_int |= tmp.ops_int; 
-  }
+  if(this->vm && this->vm->state.pgc)
+    ops.ops_int |= *(uint32_t*)&this->vm->state.pgc->prohibited_ops;
   pthread_mutex_unlock(&this->vm_lock);
 
   return ops.ops_struct;

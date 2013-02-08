@@ -13,12 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: settings.c 1135 2008-09-06 21:55:51Z rathann $
- *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,13 +26,12 @@
 #include <limits.h>
 #include <string.h>
 #include <sys/time.h>
-#include "dvd_types.h"
+#include "dvdnav/dvdnav.h"
 #include <dvdread/nav_types.h>
 #include <dvdread/ifo_types.h>
 #include "remap.h"
 #include "vm/decoder.h"
 #include "vm/vm.h"
-#include "dvdnav.h"
 #include "dvdnav_internal.h"
 
 /* Characteristics/setting API calls */

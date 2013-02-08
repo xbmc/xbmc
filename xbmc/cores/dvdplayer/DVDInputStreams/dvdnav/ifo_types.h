@@ -1,24 +1,26 @@
-#ifndef IFO_TYPES_H_INCLUDED
-#define IFO_TYPES_H_INCLUDED
-
 /*
- * Copyright (C) 2000, 2001 Björn Englund <d4bjorn@dtek.chalmers.se>,
- *                          Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001 BjÃ¶rn Englund <d4bjorn@dtek.chalmers.se>,
+ *                          HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * libdvdread is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
+#ifndef LIBDVDREAD_IFO_TYPES_H
+#define LIBDVDREAD_IFO_TYPES_H
 
 //#include <inttypes.h>
 #include "dvd_reader.h"
@@ -68,14 +70,13 @@ typedef struct {
 typedef struct {
   uint8_t bytes[8];
 } ATTRIBUTE_PACKED vm_cmd_t;
-#define COMMAND_DATA_SIZE 8
+#define COMMAND_DATA_SIZE 8U
 
 
 /**
  * Video Attributes.
  */
 typedef struct {
-#ifdef WORDS_BIGENDIAN
   unsigned char mpeg_version         : 2;
   unsigned char video_format         : 2;
   unsigned char display_aspect_ratio : 2;
@@ -89,28 +90,12 @@ typedef struct {
   unsigned char picture_size         : 2;
   unsigned char letterboxed          : 1;
   unsigned char film_mode            : 1;
-#else
-  unsigned char permitted_df         : 2;
-  unsigned char display_aspect_ratio : 2;
-  unsigned char video_format         : 2;
-  unsigned char mpeg_version         : 2;
-  
-  unsigned char film_mode            : 1;
-  unsigned char letterboxed          : 1;
-  unsigned char picture_size         : 2;
-  
-  unsigned char bit_rate             : 1;
-  unsigned char unknown1             : 1;
-  unsigned char line21_cc_2          : 1;
-  unsigned char line21_cc_1          : 1;
-#endif
 } ATTRIBUTE_PACKED video_attr_t;
 
 /**
  * Audio Attributes.
  */
 typedef struct {
-#ifdef WORDS_BIGENDIAN
   unsigned char audio_format           : 3;
   unsigned char multichannel_extension : 1;
   unsigned char lang_type              : 2;
@@ -120,49 +105,24 @@ typedef struct {
   unsigned char sample_frequency       : 2;
   unsigned char unknown1               : 1;
   unsigned char channels               : 3;
-#else
-  unsigned char application_mode       : 2;
-  unsigned char lang_type              : 2;
-  unsigned char multichannel_extension : 1;
-  unsigned char audio_format           : 3;
-  
-  unsigned char channels               : 3;
-  unsigned char unknown1               : 1;
-  unsigned char sample_frequency       : 2;
-  unsigned char quantization           : 2;
-#endif
   uint16_t lang_code;
   uint8_t  lang_extension;
   uint8_t  code_extension;
   uint8_t unknown3;
   union {
     struct ATTRIBUTE_PACKED {
-#ifdef WORDS_BIGENDIAN
       unsigned char unknown4           : 1;
       unsigned char channel_assignment : 3;
       unsigned char version            : 2;
       unsigned char mc_intro           : 1; /* probably 0: true, 1:false */
       unsigned char mode               : 1; /* Karaoke mode 0: solo 1: duet */
-#else
-      unsigned char mode               : 1;
-      unsigned char mc_intro           : 1;
-      unsigned char version            : 2;
-      unsigned char channel_assignment : 3;
-      unsigned char unknown4           : 1;
-#endif
     } karaoke;
     struct ATTRIBUTE_PACKED {
-#ifdef WORDS_BIGENDIAN
       unsigned char unknown5           : 4;
       unsigned char dolby_encoded      : 1; /* suitable for surround decoding */
       unsigned char unknown6           : 3;
-#else
-      unsigned char unknown6           : 3;
-      unsigned char dolby_encoded      : 1;
-      unsigned char unknown5           : 4;
-#endif
     } surround;
-  } app_info;
+  } ATTRIBUTE_PACKED app_info;
 } ATTRIBUTE_PACKED audio_attr_t;
 
 
@@ -170,7 +130,6 @@ typedef struct {
  * MultiChannel Extension
  */
 typedef struct {
-#ifdef WORDS_BIGENDIAN
   unsigned int zero1      : 7;
   unsigned int ach0_gme   : 1;
 
@@ -194,31 +153,6 @@ typedef struct {
   unsigned int ach4_gv2e  : 1;
   unsigned int ach4_gmBe  : 1;
   unsigned int ach4_seBe  : 1;
-#else
-  unsigned char ach0_gme   : 1;
-  unsigned char zero1      : 7;
-
-  unsigned char ach1_gme   : 1;
-  unsigned char zero2      : 7;
-
-  unsigned char ach2_gm2e  : 1;
-  unsigned char ach2_gm1e  : 1;
-  unsigned char ach2_gv2e  : 1;
-  unsigned char ach2_gv1e  : 1;
-  unsigned char zero3      : 4;
-
-  unsigned char ach3_se2e  : 1;
-  unsigned char ach3_gmAe  : 1;
-  unsigned char ach3_gv2e  : 1;
-  unsigned char ach3_gv1e  : 1;
-  unsigned char zero4      : 4;
-
-  unsigned char ach4_seBe  : 1;
-  unsigned char ach4_gmBe  : 1;
-  unsigned char ach4_gv2e  : 1;
-  unsigned char ach4_gv1e  : 1;
-  unsigned char zero5      : 4;
-#endif
   uint8_t zero6[19];
 } ATTRIBUTE_PACKED multichannel_ext_t;
 
@@ -237,15 +171,9 @@ typedef struct {
    * language: indicates language if type == 1
    * lang extension: if type == 1 contains the lang extension
    */
-#ifdef WORDS_BIGENDIAN
   unsigned char code_mode : 3;
   unsigned char zero1     : 3;
   unsigned char type      : 2;
-#else
-  unsigned char type      : 2;
-  unsigned char zero1     : 3;
-  unsigned char code_mode : 3;
-#endif
   uint8_t  zero2;
   uint16_t lang_code;
   uint8_t  lang_extension;
@@ -266,7 +194,7 @@ typedef struct {
   vm_cmd_t *post_cmds;
   vm_cmd_t *cell_cmds;
 } ATTRIBUTE_PACKED pgc_command_tbl_t;
-#define PGC_COMMAND_TBL_SIZE 8
+#define PGC_COMMAND_TBL_SIZE 8U
 
 /**
  * PGC Program Map
@@ -277,7 +205,6 @@ typedef uint8_t pgc_program_map_t;
  * Cell Playback Information.
  */
 typedef struct {
-#ifdef WORDS_BIGENDIAN
   unsigned int block_mode       : 2;
   unsigned int block_type       : 2;
   unsigned int seamless_play    : 1;
@@ -288,18 +215,6 @@ typedef struct {
   unsigned int playback_mode    : 1;  /**< When set, enter StillMode after each VOBU */
   unsigned int restricted       : 1;  /**< ?? drop out of fastforward? */
   unsigned int unknown2         : 6;
-#else
-  unsigned char seamless_angle   : 1;
-  unsigned char stc_discontinuity: 1;
-  unsigned char interleaved      : 1;
-  unsigned char seamless_play    : 1;
-  unsigned char block_type       : 2;
-  unsigned char block_mode       : 2;
-  
-  unsigned char unknown2         : 6;
-  unsigned char restricted       : 1;
-  unsigned char playback_mode    : 1;
-#endif
   uint8_t still_time;
   uint8_t cell_cmd_nr;
   dvd_time_t playback_time;
@@ -330,7 +245,6 @@ typedef struct {
  * User Operations.
  */
 typedef struct {
-#ifdef WORDS_BIGENDIAN
   unsigned int zero                           : 7; /* 25-31 */
   unsigned int video_pres_mode_change         : 1; /* 24 */
   
@@ -360,37 +274,6 @@ typedef struct {
   unsigned int title_play                     : 1;
   unsigned int chapter_search_or_play         : 1;
   unsigned int title_or_time_play             : 1; /* 0 */
-#else
-  unsigned int video_pres_mode_change         : 1; /* 24 */
-  unsigned int zero                           : 7; /* 25-31 */
-  
-  unsigned int resume                         : 1; /* 16 */
-  unsigned int button_select_or_activate      : 1;
-  unsigned int still_off                      : 1;
-  unsigned int pause_on                       : 1;
-  unsigned int audio_stream_change            : 1;
-  unsigned int subpic_stream_change           : 1;
-  unsigned int angle_change                   : 1;
-  unsigned int karaoke_audio_pres_mode_change : 1; /* 23 */
-  
-  unsigned int forward_scan                   : 1; /* 8 */
-  unsigned int backward_scan                  : 1;
-  unsigned int title_menu_call                : 1;
-  unsigned int root_menu_call                 : 1;
-  unsigned int subpic_menu_call               : 1;
-  unsigned int audio_menu_call                : 1;
-  unsigned int angle_menu_call                : 1;
-  unsigned int chapter_menu_call              : 1; /* 15 */
-  
-  unsigned int title_or_time_play             : 1; /* 0 */
-  unsigned int chapter_search_or_play         : 1;
-  unsigned int title_play                     : 1;
-  unsigned int stop                           : 1;
-  unsigned int go_up                          : 1;
-  unsigned int time_or_chapter_search         : 1;
-  unsigned int prev_or_top_pg_search          : 1;
-  unsigned int next_pg_search                 : 1; /* 7 */
-#endif
 } ATTRIBUTE_PACKED user_ops_t;
 
 /**
@@ -419,27 +302,21 @@ typedef struct {
   cell_playback_t *cell_playback;
   cell_position_t *cell_position;
 } ATTRIBUTE_PACKED pgc_t;
-#define PGC_SIZE 236
+#define PGC_SIZE 236U
 
 /**
  * Program Chain Information Search Pointer.
  */
 typedef struct {
   uint8_t  entry_id;
-#ifdef WORDS_BIGENDIAN
   unsigned int block_mode : 2;
   unsigned int block_type : 2;
   unsigned int unknown1   : 4;
-#else
-  unsigned char unknown1   : 4;
-  unsigned char block_type : 2;
-  unsigned char block_mode : 2;
-#endif  
   uint16_t ptl_id_mask;
   uint32_t pgc_start_byte;
   pgc_t *pgc;
 } ATTRIBUTE_PACKED pgci_srp_t;
-#define PGCI_SRP_SIZE 8
+#define PGCI_SRP_SIZE 8U
 
 /**
  * Program Chain Information Table.
@@ -450,7 +327,7 @@ typedef struct {
   uint32_t last_byte;
   pgci_srp_t *pgci_srp;
 } ATTRIBUTE_PACKED pgcit_t;
-#define PGCIT_SIZE 8
+#define PGCIT_SIZE 8U
 
 /**
  * Menu PGCI Language Unit.
@@ -462,7 +339,7 @@ typedef struct {
   uint32_t lang_start_byte;
   pgcit_t *pgcit;
 } ATTRIBUTE_PACKED pgci_lu_t;
-#define PGCI_LU_SIZE 8
+#define PGCI_LU_SIZE 8U
 
 /**
  * Menu PGCI Unit Table.
@@ -473,7 +350,7 @@ typedef struct {
   uint32_t last_byte;
   pgci_lu_t *lu;
 } ATTRIBUTE_PACKED pgci_ut_t;
-#define PGCI_UT_SIZE 8
+#define PGCI_UT_SIZE 8U
 
 /**
  * Cell Address Information.
@@ -495,7 +372,7 @@ typedef struct {
   uint32_t last_byte;
   cell_adr_t *cell_adr_table;  /* No explicit size given. */
 } ATTRIBUTE_PACKED c_adt_t;
-#define C_ADT_SIZE 8
+#define C_ADT_SIZE 8U
 
 /**
  * VOBU Address Map.
@@ -504,7 +381,7 @@ typedef struct {
   uint32_t last_byte;
   uint32_t *vobu_start_sectors;
 } ATTRIBUTE_PACKED vobu_admap_t;
-#define VOBU_ADMAP_SIZE 4
+#define VOBU_ADMAP_SIZE 4U
 
 
 
@@ -559,7 +436,6 @@ typedef struct {
 } ATTRIBUTE_PACKED vmgi_mat_t;
 
 typedef struct {
-#ifdef WORDS_BIGENDIAN
   unsigned int zero_1                    : 1;
   unsigned int multi_or_random_pgc_title : 1; /* 0: one sequential pgc title */
   unsigned int jlc_exists_in_cell_cmd    : 1;
@@ -568,16 +444,6 @@ typedef struct {
   unsigned int jlc_exists_in_tt_dom      : 1;
   unsigned int chapter_search_or_play    : 1; /* UOP 1 */
   unsigned int title_or_time_play        : 1; /* UOP 0 */
-#else
-  unsigned char title_or_time_play        : 1;
-  unsigned char chapter_search_or_play    : 1;
-  unsigned char jlc_exists_in_tt_dom      : 1;
-  unsigned char jlc_exists_in_button_cmd  : 1;
-  unsigned char jlc_exists_in_prepost_cmd : 1;
-  unsigned char jlc_exists_in_cell_cmd    : 1;
-  unsigned char multi_or_random_pgc_title : 1;
-  unsigned char zero_1                    : 1;
-#endif
 } ATTRIBUTE_PACKED playback_type_t;
 
 /**
@@ -602,14 +468,15 @@ typedef struct {
   uint32_t last_byte;
   title_info_t *title;
 } ATTRIBUTE_PACKED tt_srpt_t;
-#define TT_SRPT_SIZE 8
+#define TT_SRPT_SIZE 8U
 
 
 /**
  * Parental Management Information Unit Table.
  * Level 1 (US: G), ..., 7 (US: NC-17), 8
  */
-typedef uint16_t pf_level_t[8];
+#define PTL_MAIT_NUM_LEVEL 8
+typedef uint16_t pf_level_t[PTL_MAIT_NUM_LEVEL];
 
 /**
  * Parental Management Information Unit Table.
@@ -621,7 +488,7 @@ typedef struct {
   uint16_t zero_2;
   pf_level_t *pf_ptl_mai; /* table of (nr_of_vtss + 1), video_ts is first */
 } ATTRIBUTE_PACKED ptl_mait_country_t;
-#define PTL_MAIT_COUNTRY_SIZE 8
+#define PTL_MAIT_COUNTRY_SIZE 8U
 
 /**
  * Parental Management Information Table.
@@ -632,7 +499,7 @@ typedef struct {
   uint32_t last_byte;
   ptl_mait_country_t *countries;
 } ATTRIBUTE_PACKED ptl_mait_t;
-#define PTL_MAIT_SIZE 8
+#define PTL_MAIT_SIZE 8U
 
 /**
  * Video Title Set Attributes.
@@ -663,8 +530,8 @@ typedef struct {
   uint8_t  nr_of_vtstt_subp_streams;
   subp_attr_t vtstt_subp_attr[32];
 } ATTRIBUTE_PACKED vts_attributes_t;
-#define VTS_ATTRIBUTES_SIZE 542
-#define VTS_ATTRIBUTES_MIN_SIZE 356
+#define VTS_ATTRIBUTES_SIZE 542U
+#define VTS_ATTRIBUTES_MIN_SIZE 356U
 
 /**
  * Video Title Set Attribute Table.
@@ -676,7 +543,7 @@ typedef struct {
   vts_attributes_t *vts;
   uint32_t *vts_atrt_offsets; /* offsets table for each vts_attributes */
 } ATTRIBUTE_PACKED vts_atrt_t;
-#define VTS_ATRT_SIZE 8
+#define VTS_ATRT_SIZE 8U
 
 /**
  * Text Data. (Incomplete)
@@ -709,7 +576,7 @@ typedef struct {
   uint32_t txtdt_start_byte;  /* prt, rel start of vmg_txtdt_mgi  */
   txtdt_t  *txtdt;
 } ATTRIBUTE_PACKED txtdt_lu_t;
-#define TXTDT_LU_SIZE 8
+#define TXTDT_LU_SIZE 8U
 
 /**
  * Text Data Manager Information. (Incomplete)
@@ -720,7 +587,7 @@ typedef struct {
   uint32_t last_byte;
   txtdt_lu_t *lu;
 } ATTRIBUTE_PACKED txtdt_mgi_t;
-#define TXTDT_MGI_SIZE 20
+#define TXTDT_MGI_SIZE 20U
 
 
 /**
@@ -812,7 +679,7 @@ typedef struct {
   ttu_t  *title;
   uint32_t *ttu_offset; /* offset table for each ttu */
 } ATTRIBUTE_PACKED vts_ptt_srpt_t;
-#define VTS_PTT_SRPT_SIZE 8
+#define VTS_PTT_SRPT_SIZE 8U
 
 
 /**
@@ -830,7 +697,7 @@ typedef struct {
   uint16_t nr_of_entries;
   map_ent_t *map_ent;
 } ATTRIBUTE_PACKED vts_tmap_t;
-#define VTS_TMAP_SIZE 4
+#define VTS_TMAP_SIZE 4U
 
 /**
  * Time Map Table.
@@ -842,7 +709,7 @@ typedef struct {
   vts_tmap_t *tmap;
   uint32_t *tmap_offset; /* offset table for each tmap */
 } ATTRIBUTE_PACKED vts_tmapt_t;
-#define VTS_TMAPT_SIZE 8
+#define VTS_TMAPT_SIZE 8U
 
 
 #if PRAGMA_PACK
@@ -881,4 +748,4 @@ typedef struct {
   vobu_admap_t   *vts_vobu_admap;
 } ifo_handle_t;
 
-#endif /* IFO_TYPES_H_INCLUDED */
+#endif /* LIBDVDREAD_IFO_TYPES_H */

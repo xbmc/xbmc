@@ -8,5 +8,5 @@ AUTOMAKE_OPTIONS = foreign dist-bzip2 subdir-objects
 doc-dummy:
 
 doc: doc-dummy
-	$(MAKE) -C doc doc
+	$(MAKE) -C doc
 

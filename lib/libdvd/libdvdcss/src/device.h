@@ -2,7 +2,7 @@
  * device.h: DVD device access
  *****************************************************************************
  * Copyright (C) 1998-2002 VideoLAN
- * $Id$
+ * $Id: device.h 236 2010-08-02 15:59:13Z jb $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -18,10 +18,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdcss; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
+
+#ifndef DVDCSS_DEVICE_H
+#define DVDCSS_DEVICE_H
 
 /*****************************************************************************
  * iovec structure: vectored data entry
@@ -32,6 +35,8 @@
 #   include <sys/types.h>
 #   include <sys/uio.h>                                      /* struct iovec */
 #endif
+
+#include "dvdcss/dvdcss.h"
 
 #if defined( WIN32 ) && !defined( SYS_CYGWIN )
 struct iovec
@@ -52,7 +57,8 @@ int  _dvdcss_close      ( dvdcss_t );
 /*****************************************************************************
  * Device reading prototypes, raw-device specific
  *****************************************************************************/
-#ifndef WIN32
+#if !defined(WIN32) && !defined(SYS_OS2)
 int _dvdcss_raw_open     ( dvdcss_t, char const * );
 #endif
 
+#endif /* DVDCSS_DEVICE_H */

@@ -10,6 +10,12 @@ A typical way to configure libdvdcss is:
 
 See `./configure --help' for more information.
 
+
+If you got libdvdcss from its version control system, please bootstrap first:
+ 
+   ./bootstrap
+
+
 Building libdvdcss
 ==================
 
@@ -34,7 +40,7 @@ You have two alternatives to build libdvdcss for Win32:
 
 - natively on Windows, using MSYS + MINGW (www.mingw.org):
 
- (MSYS is a minimal build environnement to compile unixish projects under
+ (MSYS is a minimal build environment to compile unixish projects under
   windoze. It provides all the common unix tools like sh, gmake...)
 
  You will need to download and install the latest MSYS (version 1.0.7 as

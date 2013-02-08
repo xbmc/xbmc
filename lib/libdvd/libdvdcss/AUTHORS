@@ -2,7 +2,7 @@
 # 
 # Authors and contributors are listed alphabetically.
 # 
-# The fields are: name (N), email (E), web-address (W), CVS account login (C),
+# The fields are: name (N), email (E), web-address (W), CVS/SVN account login (C),
 # PGP key ID and fingerprint (P), description (D), and snail-mail address (S).
 
 N: Billy Biggs 
@@ -20,6 +20,7 @@ D: cache bug fix for discs with identical content but different keys
 
 N: Håkan Hjort
 E: d95hjort@dtek.chalmers.se
+C: hjort
 D: Solaris port of the DVD ioctls
 D: libdvdcss enhancements
 
@@ -39,6 +40,15 @@ C: jlj
 D: Win32 port
 D: Fixes to the Darwin port
 
+N: KO Myung-Hun
+E: komh@chollian.net
+D: OS/2 port
+
+N: Jean-Baptiste Kempf
+C: jb
+E: jb@videolan.org
+D: maintainer
+
 N: Markus Kuespert
 E: ltlBeBoy@beosmail.com
 D: BeOS port of the DVD ioctls
@@ -46,6 +56,14 @@ D: BeOS port of the DVD ioctls
 N: Pascal Levesque
 E: Pascal.Levesque@mindready.com
 D: QNX port
+
+N: Steve Lhomme
+E: steve.lhomme@free.fr
+D: win32 improvements
+
+N: Christophe Massiot
+E: massiot@via.ecp.fr
+D: former maintainer
 
 N: Steven M. Schultz
 E: sms@TO.GD-ES.COM

@@ -1,25 +1,27 @@
-#ifndef DVD_READER_H_INCLUDED
-#define DVD_READER_H_INCLUDED
-
 /*
  * Copyright (C) 2001, 2002 Billy Biggs <vektor@dumbterm.net>,
- *                          Håkan Hjort <d95hjort@dtek.chalmers.se>,
- *                          Björn Englund <d4bjorn@dtek.chalmers.se>
+ *                          HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>,
+ *                          BjÃ¶rn Englund <d4bjorn@dtek.chalmers.se>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or (at
- * your option) any later version.
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * libdvdread is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
+#ifndef LIBDVDREAD_DVD_READER_H
+#define LIBDVDREAD_DVD_READER_H
 
 #ifdef _MSC_VER
 #include "config.h"
@@ -68,6 +70,15 @@ typedef struct dvd_reader_s dvd_reader_t;
 typedef struct dvd_file_s dvd_file_t;
 
 /**
+ * Public type that is used to provide statistics on a handle.
+ */
+typedef struct {
+  off_t size;          /**< Total size of file in bytes */
+  int nr_parts;        /**< Number of file parts */
+  off_t parts_size[9]; /**< Size of each part in bytes */
+} dvd_stat_t;
+
+/**
  * Opens a block device of a DVD-ROM file, or an image file, or a directory
  * name for a mounted DVD or HD copy of a DVD.
  *
@@ -113,6 +124,33 @@ typedef enum {
 				  the title set are opened and read as a
 				  single file. */
 } dvd_read_domain_t;
+
+/**
+ * Stats a file on the DVD given the title number and domain.
+ * The information about the file is stored in a dvd_stat_t
+ * which contains information about the size of the file and
+ * the number of parts in case of a multipart file and the respective
+ * sizes of the parts.
+ * A multipart file is for instance VTS_02_1.VOB, VTS_02_2.VOB, VTS_02_3.VOB
+ * The size of VTS_02_1.VOB will be stored in stat->parts_size[0],
+ * VTS_02_2.VOB in stat->parts_size[1], ...
+ * The total size (sum of all parts) is stored in stat->size and
+ * stat->nr_parts will hold the number of parts.
+ * Only DVD_READ_TITLE_VOBS (VTS_??_[1-9].VOB) can be multipart files.
+ *
+ * This function is only of use if you want to get the size of each file
+ * in the filesystem. These sizes are not needed to use any other
+ * functions in libdvdread.
+ *
+ * @param dvd  A dvd read handle.
+ * @param titlenum Which Video Title Set should be used, VIDEO_TS is 0.
+ * @param domain Which domain.
+ * @param stat Pointer to where the result is stored.
+ * @return If successful 0, otherwise -1.
+ *
+ * int DVDFileStat(dvd, titlenum, domain, stat);
+ */
+int DVDFileStat(dvd_reader_t *, int, dvd_read_domain_t, dvd_stat_t *);
 
 /**
  * Opens a file on the DVD given the title number and domain.
@@ -229,6 +267,8 @@ int DVDDiscID( dvd_reader_t *, unsigned char * );
 int DVDUDFVolumeInfo( dvd_reader_t *, char *, unsigned int,
 		      unsigned char *, unsigned int );
 
+int DVDFileSeekForce( dvd_file_t *, int offset, int force_size);
+
 /**
  * Get the ISO9660 VolumeIdentifier and VolumeSetIdentifier
  *
@@ -268,6 +308,6 @@ int DVDISOVolumeInfo( dvd_reader_t *, char *, unsigned int,
 int DVDUDFCacheLevel( dvd_reader_t *, int );
 
 #ifdef __cplusplus
-}
+};
 #endif
-#endif /* DVD_READER_H_INCLUDED */
+#endif /* LIBDVDREAD_DVD_READER_H */

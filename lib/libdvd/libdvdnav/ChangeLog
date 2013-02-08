@@ -1,3 +1,16 @@
+libdvdnav (4.2.0)
+  * OS/2 support
+  * added dvdnav_get_serial_string() function
+  * fixed ifo leak in dvdnav_describe_chapters()
+  * added dvdnav_get_video_resolution() to retrieve video resolution
+  * added dvdnav_program_play() & dvdnav_current_title_program() for
+    more reliable playback
+  * fixed deadlock between dvdnav_reset() and dvd_clear()
+  * fixed pthread_mutex_destroy macro for Win32
+  * fixed numerous assertion failures occuring when playing DVDs with
+    new "copy protection" schemes
+  * fixed forward seeks to always move forward
+
 libdvdnav (4.1.3)
   * an embarassing amount of fixes regarding potential memory and resource leaks
     (patches contributed by Erik Hovland)

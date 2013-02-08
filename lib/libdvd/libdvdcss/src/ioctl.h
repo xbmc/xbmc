@@ -2,7 +2,7 @@
  * ioctl.h: DVD ioctl replacement function
  *****************************************************************************
  * Copyright (C) 1999-2001 VideoLAN
- * $Id$
+ * $Id: ioctl.h 235 2010-08-02 15:41:14Z jb $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -16,10 +16,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdcss; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
+
+#ifndef DVDCSS_IOCTL_H
+#define DVDCSS_IOCTL_H
 
 int ioctl_ReadCopyright     ( int, int, int * );
 int ioctl_ReadDiscKey       ( int, int *, uint8_t * );
@@ -321,7 +324,7 @@ typedef struct SCSI_PASS_THROUGH_DIRECT
 typedef DWORD (CALLBACK *GETASPI32SUPPORTINFO)(VOID);
 typedef DWORD (CALLBACK *SENDASPI32COMMAND)(LPVOID);
 
-#if defined(_XBOX) || defined(WIN32)
+#if defined(_XBOX)
 #define WIN2K	1
 #else
 #define WIN2K               ( GetVersion() < 0x80000000 )
@@ -431,3 +434,5 @@ struct OS2_ExecSCSICmd
 #pragma pack()
 
 #endif
+
+#endif /* DVDCSS_IOCTL_H */

@@ -15,8 +15,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
- * MA 02111-1307, USA
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301 USA.
  */
 
 #if !defined( PTHREAD_H )
@@ -196,7 +196,7 @@ extern "C"
  *                              pthread_attr_setstackaddr
  *
  * _POSIX_THREAD_PRIORITY_SCHEDULING (set)
- *                      If set, you can use realtime scheduling.
+ *                      If set, you can use real-time scheduling.
  *                      Indicates the availability of:
  *                              pthread_attr_getinheritsched
  *                              pthread_attr_getschedparam
@@ -393,7 +393,7 @@ enum {
   PTHREAD_SCOPE_SYSTEM		= 1,  /* Default */
 
 /*
- * pthread_setcancelstate paramters
+ * pthread_setcancelstate parameters
  */
   PTHREAD_CANCEL_ENABLE		= 0,  /* Default */
   PTHREAD_CANCEL_DISABLE	= 1,
@@ -420,7 +420,7 @@ enum {
 /*
  * ====================
  * ====================
- * Cancelation
+ * Cancellation
  * ====================
  * ====================
  */

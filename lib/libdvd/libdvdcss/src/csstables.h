@@ -2,7 +2,7 @@
  * csstables.h: CSS Tables for DVD unscrambling
  *****************************************************************************
  * Copyright (C) 1999-2001 VideoLAN
- * $Id$
+ * $Id: csstables.h 235 2010-08-02 15:41:14Z jb $
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *
@@ -24,11 +24,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdcss; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+#ifndef DVDCSS_CSSTABLES_H
+#define DVDCSS_CSSTABLES_H
 
 static uint8_t p_css_tab1[ 256 ] =
 {
@@ -390,3 +392,4 @@ static uint8_t p_crypt_tab3[ 288 ] =
     0xC3, 0x82, 0xC9, 0x15, 0x57, 0x16, 0x5D, 0x81
 };
 
+#endif /* DVDCSS_CSSTABLES_H */

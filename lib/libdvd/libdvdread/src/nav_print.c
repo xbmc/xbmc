@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001, 2002, 2003 Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001, 2002, 2003 HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
  * Much of the contents in this file is based on VOBDUMP.
  *
@@ -19,18 +19,16 @@
  * PURPOSE.  See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-#include "config.h"
 
 #include <stdio.h>
 #include <inttypes.h>
 
-#include "nav_types.h"
-#include "nav_print.h"
-#include "ifo_print.h"
+#include "dvdread/nav_types.h"
+#include "dvdread/nav_print.h"
+#include "dvdread/ifo_print.h"
 
 static void navPrint_PCI_GI(pci_gi_t *pci_gi) {
   int i;
@@ -248,5 +246,3 @@ void navPrint_DSI(dsi_t *dsi) {
   navPrint_VOBU_SRI(&dsi->vobu_sri);
   navPrint_SYNCI(&dsi->synci);
 }
-
-

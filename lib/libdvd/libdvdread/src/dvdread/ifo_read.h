@@ -1,27 +1,29 @@
-#ifndef IFO_READ_H_INCLUDED
-#define IFO_READ_H_INCLUDED
-
 /*
- * Copyright (C) 2000, 2001, 2002 Björn Englund <d4bjorn@dtek.chalmers.se>,
- *                                Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001, 2002 BjÃ¶rn Englund <d4bjorn@dtek.chalmers.se>,
+ *                                HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * libdvdread is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#ifndef LIBDVDREAD_IFO_READ_H
+#define LIBDVDREAD_IFO_READ_H
+
 #include "ifo_types.h"
-#include "dvd_reader.h"
+#include "dvdread/dvd_reader.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -224,4 +226,4 @@ void ifoFree_TXTDT_MGI(ifo_handle_t *);
 #ifdef __cplusplus
 };
 #endif
-#endif /* IFO_READ_H_INCLUDED */
+#endif /* LIBDVDREAD_IFO_READ_H */

@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# $Id: autogen.sh 1091 2008-06-08 06:37:22Z nicodvb $
-#
 # run this to generate all the initial makefiles, etc.
 
 srcdir=`dirname "$0"`

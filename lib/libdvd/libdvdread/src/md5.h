@@ -16,10 +16,10 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software Foundation,
-   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.  */
 
-#ifndef _MD5_H
-#define _MD5_H 1
+#ifndef LIBDVDREAD_MD5_H
+#define LIBDVDREAD_MD5_H
 
 #include <stdio.h>
 
@@ -158,4 +158,4 @@ rol(md5_uint32 x, int n)
 # define rol(x,n) ( ((x) << (n)) | ((x) >> (32-(n))) )
 #endif
 
-#endif
+#endif /* LIBDVDREAD_MD5_H */

@@ -1,19 +1,21 @@
 /*
- * Copyright (C) 2000, 2001, 2002, 2003 Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001, 2002, 2003 HÃ¥kan Hjort <d95hjort@dtek.chalmers.se>
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of libdvdread.
+ *
+ * libdvdread is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * libdvdread is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #include "config.h"
@@ -24,10 +26,10 @@
 #include <inttypes.h>
 
 #include "bswap.h"
-#include "nav_types.h"
-#include "nav_read.h"
+#include "dvdread/nav_types.h"
+#include "dvdread/nav_read.h"
 #include "dvdread_internal.h"
-#include "bitreader.h"
+#include "dvdread/bitreader.h"
 
 #define getbits_init dvdread_getbits_init
 #define getbits dvdread_getbits
@@ -136,7 +138,6 @@ void navRead_PCI(pci_t *pci, unsigned char *buffer) {
     for(j = 0; j < 8; j++)
       pci->hli.btnit[i].cmd.bytes[j] = getbits(&state, 8 );
   }
-
 
 
 #ifndef NDEBUG
@@ -262,4 +263,3 @@ void navRead_DSI(dsi_t *dsi, unsigned char *buffer) {
   /* dsi dsi gi */
   CHECK_VALUE(dsi->dsi_gi.zero1 == 0);
 }
-

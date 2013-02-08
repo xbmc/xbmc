@@ -11,15 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
- *
- * $Id: remap.h 1135 2008-09-06 21:55:51Z rathann $
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef __REMAP__H
-#define __REMAP__H
+#ifndef LIBDVDNAV_REMAP_H
+#define LIBDVDNAV_REMAP_H
 typedef struct block_s block_t;
 
 typedef struct remap_s remap_t;
@@ -30,4 +28,4 @@ unsigned long remap_block(
 	remap_t *map, int domain, int title, int program,
 	unsigned long cblock, unsigned long offset);
 
-#endif
+#endif /* LIBDVDNAV_REMAP_H */
