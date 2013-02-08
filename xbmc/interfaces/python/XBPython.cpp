@@ -26,6 +26,8 @@
 // python.h should always be included first before any other includes
 #include <Python.h>
 
+#include <algorithm>
+
 #include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
@@ -82,9 +84,12 @@ XBPython::~XBPython()
 #define LOCK_AND_COPY(type, dest, src) \
   if (!m_bInitialized) return; \
   CSingleLock lock(src); \
+  src.hadSomethingRemoved = false; \
   type dest; \
   dest = src
 
+#define CHECK_FOR_ENTRY(l,v) \
+  (l.hadSomethingRemoved ? (std::find(l.begin(),l.end(),v) != l.end()) : true)
 
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
@@ -92,8 +97,8 @@ void XBPython::OnPlayBackEnded()
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackEnded();
-
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackEnded();
 }
 
 void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
@@ -127,7 +132,8 @@ void XBPython::OnPlayBackStarted()
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackStarted();
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackStarted();
 }
 
 // message all registered callbacks that we paused playing
@@ -136,7 +142,8 @@ void XBPython::OnPlayBackPaused()
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackPaused();
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackPaused();
 }
 
 // message all registered callbacks that we resumed playing
@@ -145,7 +152,8 @@ void XBPython::OnPlayBackResumed()
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackResumed();
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackResumed();
 }
 
 // message all registered callbacks that user stopped playing
@@ -154,7 +162,8 @@ void XBPython::OnPlayBackStopped()
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackStopped();
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackStopped();
 }
 
 // message all registered callbacks that playback speed changed (FF/RW)
@@ -163,7 +172,8 @@ void XBPython::OnPlayBackSpeedChanged(int iSpeed)
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackSpeedChanged(iSpeed);
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackSpeedChanged(iSpeed);
 }
 
 // message all registered callbacks that player is seeking
@@ -172,7 +182,8 @@ void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackSeek(iTime, seekOffset);
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackSeek(iTime, seekOffset);
 }
 
 // message all registered callbacks that player chapter seeked
@@ -181,7 +192,8 @@ void XBPython::OnPlayBackSeekChapter(int iChapter)
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnPlayBackSeekChapter(iChapter);
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnPlayBackSeekChapter(iChapter);
 }
 
 // message all registered callbacks that next item has been queued
@@ -190,7 +202,8 @@ void XBPython::OnQueueNextItem()
   TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
   for (PlayerCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    ((IPlayerCallback*)(*it))->OnQueueNextItem();
+    if (CHECK_FOR_ENTRY(m_vecPlayerCallbackList,(*it)))
+      ((IPlayerCallback*)(*it))->OnQueueNextItem();
 }
 
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
@@ -208,7 +221,10 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
   while (it != m_vecPlayerCallbackList.end())
   {
     if (*it == pCallback)
+    {
       it = m_vecPlayerCallbackList.erase(it);
+      m_vecPlayerCallbackList.hadSomethingRemoved = true;
+    }
     else
       it++;
   }
@@ -229,7 +245,10 @@ void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallba
   while (it != m_vecMonitorCallbackList.end())
   {
     if (*it == pCallback)
+    {
       it = m_vecMonitorCallbackList.erase(it);
+      m_vecMonitorCallbackList.hadSomethingRemoved = true;
+    }
     else
       it++;
   }
@@ -240,7 +259,7 @@ void XBPython::OnSettingsChanged(const CStdString &ID)
   TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    if ((*it)->GetId() == ID)  
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)) && ((*it)->GetId() == ID))
       (*it)->OnSettingsChanged();
 }  
 
@@ -249,7 +268,8 @@ void XBPython::OnScreensaverActivated()
   TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    (*it)->OnScreensaverActivated();
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnScreensaverActivated();
 } 
 
 void XBPython::OnScreensaverDeactivated()
@@ -257,7 +277,8 @@ void XBPython::OnScreensaverDeactivated()
   TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    (*it)->OnScreensaverDeactivated();
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnScreensaverDeactivated();
 } 
 
 void XBPython::OnDatabaseUpdated(const std::string &database)
@@ -265,7 +286,8 @@ void XBPython::OnDatabaseUpdated(const std::string &database)
   TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    (*it)->OnDatabaseUpdated(database);
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnDatabaseUpdated(database);
 } 
 
 void XBPython::OnDatabaseScanStarted(const std::string &database)
@@ -273,7 +295,8 @@ void XBPython::OnDatabaseScanStarted(const std::string &database)
   TRACE;
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
-    (*it)->OnDatabaseScanStarted(database);
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+      (*it)->OnDatabaseScanStarted(database);
 }
 
 void XBPython::OnAbortRequested(const CStdString &ID)
@@ -282,10 +305,13 @@ void XBPython::OnAbortRequested(const CStdString &ID)
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>,tmp,m_vecMonitorCallbackList);
   for (MonitorCallbackList::iterator it = tmp.begin(); (it != tmp.end()); it++)
   {
-    if (ID.IsEmpty())
-      (*it)->OnAbortRequested();
-    else if ((*it)->GetId() == ID)
-      (*it)->OnAbortRequested();
+    if (CHECK_FOR_ENTRY(m_vecMonitorCallbackList,(*it)))
+    {
+      if (ID.IsEmpty())
+        (*it)->OnAbortRequested();
+      else if ((*it)->GetId() == ID)
+        (*it)->OnAbortRequested();
+    }
   }  
 } 
 
@@ -578,6 +604,7 @@ void XBPython::FreeResources()
 {
   LOCK_AND_COPY(std::vector<PyElem>,tmpvec,m_vecPyList);
   m_vecPyList.clear();
+  m_vecPyList.hadSomethingRemoved = true;
 
   lock.Leave(); //unlock here because the python thread might lock when it exits
 
@@ -611,6 +638,7 @@ void XBPython::Process()
       {
         tmpvec.push_back(*it);
         it = m_vecPyList.erase(it);
+        m_vecPyList.hadSomethingRemoved = true;
       }
       else
         it++;
