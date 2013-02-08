@@ -30,6 +30,7 @@
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
+#include "settings/ApplicationSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIRSSControl.h"
@@ -129,7 +130,7 @@ void CRssReader::Process()
     m_strColors[iFeed] = "";
 
     CCurlFile http;
-    http.SetUserAgent(g_settings.m_userAgent);
+    http.SetUserAgent(CApplicationSettings::Get().GetUserAgent());
     http.SetTimeout(2);
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];

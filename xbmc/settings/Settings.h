@@ -58,10 +58,6 @@
 #define CACHE_VIDEO 1
 #define CACHE_VOB   2
 
-#define VOLUME_MINIMUM 0.0f        // -60dB
-#define VOLUME_MAXIMUM 1.0f        // 0dB
-#define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
-#define VOLUME_CONTROL_STEPS 90    // 90 steps
 #define VOLUME_DRC_MINIMUM 0    // 0dB
 #define VOLUME_DRC_MAXIMUM 6000 // 60dB
 
@@ -132,8 +128,6 @@ public:
   CStdString m_videoExtensions;
   CStdString m_discStubExtensions;
 
-  CStdString m_logFolder;
-
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
 
@@ -153,21 +147,12 @@ public:
   bool m_bMyVideoPlaylistShuffle;
   bool m_bMyVideoNavFlatten;
   bool m_bStartVideoWindowed;
-  bool m_bAddonAutoUpdate;
-  bool m_bAddonNotifications;
-  bool m_bAddonForeignFilter;
 
   int m_iVideoStartWindow;
 
   bool m_videoStacking;
 
   int iAdditionalSubtitleDirectoryChecked;
-
-  float m_fVolumeLevel;        // float 0.0 - 1.0 range
-  bool m_bMute;
-  int m_iSystemTimeTotalUp;    // Uptime in minutes!
-
-  CStdString m_userAgent;
 
   struct RssSet
   {

@@ -30,6 +30,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -113,7 +114,7 @@ bool CPVRManager::InstallAddonAllowed(const std::string& strAddonId) const
 
 void CPVRManager::MarkAsOutdated(const std::string& strAddonId, const std::string& strReferer)
 {
-  if (IsStarted() && g_settings.m_bAddonAutoUpdate)
+  if (IsStarted() && CApplicationSettings::Get().AutoUpdateAddons())
   {
     CSingleLock lock(m_critSection);
     m_outdatedAddons.insert(make_pair<string, string>(strAddonId, strReferer));

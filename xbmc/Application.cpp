@@ -97,6 +97,7 @@
 #include "powermanagement/DPMSSupport.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
@@ -597,7 +598,7 @@ bool CApplication::Create()
 #endif
 
   // only the InitDirectories* for the current platform should return true
-  // putting this before the first log entries saves another ifdef for g_settings.m_logFolder
+  // putting this before the first log entries saves another ifdef for CApplicationSettings::Get().GetLogFolder()
   bool inited = InitDirectoriesLinux();
   if (!inited)
     inited = InitDirectoriesOSX();
@@ -609,10 +610,10 @@ bool CApplication::Create()
   CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
 
-  if (!CLog::Init(CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str()))
+  if (!CLog::Init(CSpecialProtocol::TranslatePath(CApplicationSettings::Get().GetLogFolder()).c_str()))
   {
     fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc (%s)\n",
-      CSpecialProtocol::TranslatePath(g_settings.m_logFolder).c_str());
+      CSpecialProtocol::TranslatePath(CApplicationSettings::Get().GetLogFolder()).c_str());
     return false;
   }
 
@@ -648,7 +649,7 @@ bool CApplication::Create()
   CStdString executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   CLog::Log(LOGNOTICE, "Local hostname: %s", m_network->GetHostName().c_str());
-  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_settings.m_logFolder.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", CApplicationSettings::Get().GetLogFolder().c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   CStdString strExecutablePath;
@@ -665,7 +666,7 @@ bool CApplication::Create()
       for (int i=0;i<items.Size();++i)
           CFile::Cache(items[i]->GetPath(),"special://masterprofile/"+URIUtils::GetFileName(items[i]->GetPath()));
     }
-    g_settings.m_logFolder = "special://masterprofile/";
+    CApplicationSettings::Get().SetLogFolder("special://masterprofile/");
   }
 
 #ifdef HAS_XRANDR
@@ -693,6 +694,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "load settings...");
   g_settings.RegisterSubSettings(this);
   g_settings.RegisterSubSettings(&CPlayerCoreFactory::Get());
+  g_settings.RegisterSubSettings(&CApplicationSettings::Get());
   g_settings.RegisterSubSettings(&CSkinSettings::Get());
   g_settings.RegisterSubSettings(&CMediaSourceSettings::Get());
   g_settings.RegisterSubSettings(&CViewStateSettings::Get());
@@ -746,8 +748,8 @@ bool CApplication::Create()
   }
 
   // restore AE's previous volume state
-  SetHardwareVolume(g_settings.m_fVolumeLevel);
-  CAEFactory::SetMute     (g_settings.m_bMute);
+  SetHardwareVolume(CApplicationSettings::Get().GetVolumeLevel());
+  CAEFactory::SetMute     (CApplicationSettings::Get().GetMute());
   CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
 
   // initialize the addon database (must be before the addon manager is init'd)
@@ -1013,7 +1015,7 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
-    g_settings.m_logFolder = strTempPath;
+    CApplicationSettings::Get().SetLogFolder(strTempPath);
 
     CreateUserDirs();
 
@@ -1021,7 +1023,7 @@ bool CApplication::InitDirectoriesLinux()
   else
   {
     URIUtils::AddSlashAtEnd(xbmcPath);
-    g_settings.m_logFolder = xbmcPath;
+    CApplicationSettings::Get().SetLogFolder(xbmcPath);
 
     CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
@@ -1036,7 +1038,7 @@ bool CApplication::InitDirectoriesLinux()
     CreateUserDirs();
 
     URIUtils::AddSlashAtEnd(strTempPath);
-    g_settings.m_logFolder = strTempPath;
+    CApplicationSettings::Get().SetLogFolder(strTempPath);
   }
 
   return true;
@@ -1105,14 +1107,14 @@ bool CApplication::InitDirectoriesOSX()
       strTempPath = userHome + "/Library/Logs";
     #endif
     URIUtils::AddSlashAtEnd(strTempPath);
-    g_settings.m_logFolder = strTempPath;
+    CApplicationSettings::Get().SetLogFolder(strTempPath);
 
     CreateUserDirs();
   }
   else
   {
     URIUtils::AddSlashAtEnd(xbmcPath);
-    g_settings.m_logFolder = xbmcPath;
+    CApplicationSettings::Get().SetLogFolder(xbmcPath);
 
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
@@ -1123,7 +1125,7 @@ bool CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetTempPath(strTempPath);
 
     URIUtils::AddSlashAtEnd(strTempPath);
-    g_settings.m_logFolder = strTempPath;
+    CApplicationSettings::Get().SetLogFolder(strTempPath);
   }
 
   return true;
@@ -1144,7 +1146,7 @@ bool CApplication::InitDirectoriesWin32()
 
   CStdString strWin32UserFolder = CWIN32Util::GetProfilePath();
 
-  g_settings.m_logFolder = strWin32UserFolder;
+  CApplicationSettings::Get().SetLogFolder(strWin32UserFolder);
   CSpecialProtocol::SetHomePath(strWin32UserFolder);
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
   CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
@@ -2905,9 +2907,9 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      if (g_settings.m_bMute)
+      if (CApplicationSettings::Get().GetMute())
         UnMute();
-      float volume = g_settings.m_fVolumeLevel;
+      float volume = CApplicationSettings::Get().GetVolumeLevel();
 // Android has steps based on the max available volume level
 #if defined(TARGET_ANDROID)
       float step = (VOLUME_MAXIMUM - VOLUME_MINIMUM) / CXBMCApp::GetMaxSystemVolume();
@@ -3532,7 +3534,7 @@ void CApplication::Stop(int exitCode)
       g_Windowing.EnableSystemScreenSaver(true);
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
-    g_settings.m_iSystemTimeTotalUp = g_settings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
+    CApplicationSettings::Get().SetTotalSystemUpTime(CApplicationSettings::Get().GetTotalSystemUpTime() + (int)(CTimeUtils::GetFrameTime() / 60000));
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))
@@ -4136,8 +4138,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // if player has volume control, set it.
     if (m_pPlayer && m_pPlayer->ControlsVolume())
     {
-       m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
-       m_pPlayer->SetMute(g_settings.m_bMute);
+       m_pPlayer->SetVolume(CApplicationSettings::Get().GetVolumeLevel());
+       m_pPlayer->SetMute(CApplicationSettings::Get().GetMute());
     }
 
     if( IsPlayingAudio() )
@@ -5312,7 +5314,7 @@ bool CApplication::IsMuted() const
 
 void CApplication::ToggleMute(void)
 {
-  if (g_settings.m_bMute)
+  if (CApplicationSettings::Get().GetMute())
     UnMute();
   else
     Mute();
@@ -5324,7 +5326,7 @@ void CApplication::Mute()
     return;
 
   CAEFactory::SetMute(true);
-  g_settings.m_bMute = true;
+  CApplicationSettings::Get().SetMute(true);
   VolumeChanged();
 }
 
@@ -5334,7 +5336,7 @@ void CApplication::UnMute()
     return;
 
   CAEFactory::SetMute(false);
-  g_settings.m_bMute = false;
+  CApplicationSettings::Get().SetMute(false);
   VolumeChanged();
 }
 
@@ -5352,7 +5354,7 @@ void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
 void CApplication::SetHardwareVolume(float hardwareVolume)
 {
   hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
-  g_settings.m_fVolumeLevel = hardwareVolume;
+  CApplicationSettings::Get().SetVolumeLevel(hardwareVolume);
 
   float value = 0.0f;
   if (hardwareVolume > VOLUME_MINIMUM)
@@ -5369,21 +5371,21 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
 int CApplication::GetVolume() const
 {
   // converts the hardware volume to a percentage
-  return (int)(g_settings.m_fVolumeLevel * 100.0f);
+  return (int)(CApplicationSettings::Get().GetVolumeLevel() * 100.0f);
 }
 
 void CApplication::VolumeChanged() const
 {
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = GetVolume();
-  data["muted"] = g_settings.m_bMute;
+  data["muted"] = CApplicationSettings::Get().GetMute();
   CAnnouncementManager::Announce(Application, "xbmc", "OnVolumeChanged", data);
 
   // if player has volume control, set it.
   if (m_pPlayer && m_pPlayer->ControlsVolume())
   {
-     m_pPlayer->SetVolume(g_settings.m_fVolumeLevel);
-     m_pPlayer->SetMute(g_settings.m_bMute);
+     m_pPlayer->SetVolume(CApplicationSettings::Get().GetVolumeLevel());
+     m_pPlayer->SetMute(CApplicationSettings::Get().GetMute());
   }
 }
 
@@ -5433,7 +5435,7 @@ void CApplication::SetPlaySpeed(int iSpeed)
     { // mute volume
       m_pPlayer->SetVolume(VOLUME_MINIMUM);
     }
-    m_pPlayer->SetMute(g_settings.m_bMute);
+    m_pPlayer->SetMute(CApplicationSettings::Get().GetMute());
   }
 }
 

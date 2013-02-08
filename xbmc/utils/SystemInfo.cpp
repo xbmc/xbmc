@@ -31,6 +31,7 @@
 #include "network/Network.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
@@ -145,7 +146,7 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_settings.m_iSystemTimeTotalUp + ((int)(XbmcThreads::SystemClockMillis() / 60000));
+    iInputMinutes = CApplicationSettings::Get().GetTotalSystemUpTime() + ((int)(XbmcThreads::SystemClockMillis() / 60000));
   }
   else
   {

@@ -22,6 +22,7 @@
 #include "log.h"
 #include "stdio_utf8.h"
 #include "stat_utf8.h"
+#include "settings/ApplicationSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
@@ -139,7 +140,7 @@ bool CLog::Init(const char* path)
   CSingleLock waitLock(critSec);
   if (!m_file)
   {
-    // g_settings.m_logFolder is initialized in the CSettings constructor
+    // CApplicationSettings::Get().GetLogFolder() is initialized in the CSettings constructor
     // and changed in CApplication::Create()
     CStdString strLogFile, strLogFileOld;
 

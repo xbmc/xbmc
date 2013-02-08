@@ -107,12 +107,7 @@ void CSettings::Initialize()
   m_bMyVideoPlaylistShuffle = false;
   m_bMyVideoNavFlatten = false;
   m_bStartVideoWindowed = false;
-  m_bAddonAutoUpdate = true;
-  m_bAddonNotifications = true;
-  m_bAddonForeignFilter = false;
 
-  m_fVolumeLevel = 1.0f;
-  m_bMute = false;
   m_fZoomAmount = 1.0f;
   m_fPixelRatio = 1.0f;
   m_bNonLinStretch = false;
@@ -126,14 +121,6 @@ void CSettings::Initialize()
   // internal video extensions
   m_videoExtensions += "|.pvr";
 
-  #if defined(TARGET_DARWIN)
-    CStdString logDir = getenv("HOME");
-    logDir += "/Library/Logs/";
-    m_logFolder = logDir;
-  #else
-    m_logFolder = "special://home/";              // log file location
-  #endif
-
   iAdditionalSubtitleDirectoryChecked = 0;
   m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
   m_iVideoStartWindow = WINDOW_VIDEO_FILES;
@@ -141,10 +128,6 @@ void CSettings::Initialize()
   m_watchMode["movies"] = VIDEO_SHOW_ALL;
   m_watchMode["tvshows"] = VIDEO_SHOW_ALL;
   m_watchMode["musicvideos"] = VIDEO_SHOW_ALL;
-
-  m_iSystemTimeTotalUp = 0;
-
-  m_userAgent = g_sysinfo.GetUserAgent();
 
   m_usingLoginScreen = false;
   m_lastUsedProfile = 0;
@@ -474,16 +457,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     }
   }
 
-  // general settings
-  pElement = pRootElement->FirstChildElement("general");
-  if (pElement)
-  {
-    GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-    XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
-    XMLUtils::GetBoolean(pElement, "addonnotifications", m_bAddonNotifications);
-    XMLUtils::GetBoolean(pElement, "addonforeignfilter", m_bAddonForeignFilter);
-  }
-
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
@@ -533,13 +506,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
 
     m_defaultVideoSettings.m_SubtitleCached = false;
-  }
-  // audio settings
-  pElement = pRootElement->FirstChildElement("audio");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "mute", m_bMute);
-    GetFloat(pElement, "fvolumelevel", m_fVolumeLevel, VOLUME_MAXIMUM, VOLUME_MINIMUM, VOLUME_MAXIMUM);
   }
 
   LoadCalibration(pRootElement, strSettingsFile);
@@ -602,15 +568,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     XMLUtils::SetBoolean(pChild, "shuffle", m_bMyVideoPlaylistShuffle);
   }
 
-  // general settings
-  TiXmlElement generalNode("general");
-  pNode = pRoot->InsertEndChild(generalNode);
-  if (!pNode) return false;
-  XMLUtils::SetInt(pNode, "systemtotaluptime", m_iSystemTimeTotalUp);
-  XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
-  XMLUtils::SetBoolean(pNode, "addonnotifications", m_bAddonNotifications);
-  XMLUtils::SetBoolean(pNode, "addonforeignfilter", m_bAddonForeignFilter);
-
   // default video settings
   TiXmlElement videoSettingsNode("defaultvideosettings");
   pNode = pRoot->InsertEndChild(videoSettingsNode);
@@ -635,14 +592,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
   XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
   XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
-
-
-  // audio settings
-  TiXmlElement volumeNode("audio");
-  pNode = pRoot->InsertEndChild(volumeNode);
-  if (!pNode) return false;
-  XMLUtils::SetBoolean(pNode, "mute", m_bMute);
-  XMLUtils::SetFloat(pNode, "fvolumelevel", m_fVolumeLevel);
 
   SaveCalibration(pRoot);
 
@@ -851,9 +800,6 @@ void CSettings::Clear()
   m_musicExtensions.clear();
   m_videoExtensions.clear();
   m_discStubExtensions.clear();
-
-  m_logFolder.clear();
-  m_userAgent.clear();
 
   m_mapRssUrls.clear();
 

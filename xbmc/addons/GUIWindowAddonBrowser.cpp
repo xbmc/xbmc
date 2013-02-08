@@ -38,6 +38,7 @@
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "Application.h"
@@ -90,19 +91,19 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_AUTOUPDATE)
       {
-        g_settings.m_bAddonAutoUpdate = !g_settings.m_bAddonAutoUpdate;
+        CApplicationSettings::Get().SetAutoUpdateAddons(!CApplicationSettings::Get().AutoUpdateAddons());
         g_settings.Save();
         return true;
       }
       else if (iControl == CONTROL_SHUTUP)
       {
-        g_settings.m_bAddonNotifications = !g_settings.m_bAddonNotifications;
+        CApplicationSettings::Get().SetShowAddonNotifications(!CApplicationSettings::Get().ShowAddonNotifications());
         g_settings.Save();
         return true;
       }
       else if (iControl == CONTROL_FOREIGNFILTER)
       {
-        g_settings.m_bAddonForeignFilter = !g_settings.m_bAddonForeignFilter;
+        CApplicationSettings::Get().SetFilterForeignLanguageAddons(!CApplicationSettings::Get().FilterForeignLanguageAddons());
         g_settings.Save();
         Refresh();
         return true;
@@ -251,9 +252,9 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
 
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
-  SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
-  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,g_settings.m_bAddonNotifications);
-  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER,g_settings.m_bAddonForeignFilter);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,CApplicationSettings::Get().AutoUpdateAddons());
+  SET_CONTROL_SELECTED(GetID(),CONTROL_SHUTUP,CApplicationSettings::Get().ShowAddonNotifications());
+  SET_CONTROL_SELECTED(GetID(),CONTROL_FOREIGNFILTER,CApplicationSettings::Get().FilterForeignLanguageAddons());
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -298,14 +299,14 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
   else
   {
     result = CGUIMediaWindow::GetDirectory(strDirectory,items);
-    if (g_settings.m_bAddonForeignFilter)
+    if (CApplicationSettings::Get().FilterForeignLanguageAddons())
     {
       int i=0;
       while (i < items.Size())
       {
-        if (!FilterVar(g_settings.m_bAddonForeignFilter,
+        if (!FilterVar(CApplicationSettings::Get().FilterForeignLanguageAddons(),
                       items[i]->GetProperty("Addon.Language"), "en") ||
-            !FilterVar(g_settings.m_bAddonForeignFilter,
+            !FilterVar(CApplicationSettings::Get().FilterForeignLanguageAddons(),
                       items[i]->GetProperty("Addon.Language"),
                       g_langInfo.GetLanguageLocale()))
         {

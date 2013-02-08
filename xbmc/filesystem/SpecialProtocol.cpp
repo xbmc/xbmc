@@ -21,6 +21,7 @@
 #include "SpecialProtocol.h"
 #include "URL.h"
 #include "Util.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -145,7 +146,7 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
   else if (RootDir.Equals("skin"))
     URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName, translatedPath);
   else if (RootDir.Equals("logpath"))
-    URIUtils::AddFileToFolder(g_settings.m_logFolder, FileName, translatedPath);
+    URIUtils::AddFileToFolder(CApplicationSettings::Get().GetLogFolder(), FileName, translatedPath);
 
 
   // from here on, we have our "real" special paths

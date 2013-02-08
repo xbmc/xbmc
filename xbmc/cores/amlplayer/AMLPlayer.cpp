@@ -37,6 +37,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/ApplicationSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/VideoSettings.h"
@@ -1421,10 +1422,10 @@ void CAMLPlayer::Process()
       GetStatus();
 
       // restore mute setting.
-      SetMute(g_settings.m_bMute);
+      SetMute(CApplicationSettings::Get().GetMute());
 
       // restore system volume setting.
-      SetVolume(g_settings.m_fVolumeLevel);
+      SetVolume(CApplicationSettings::Get().GetVolumeLevel());
 
       // the default staturation is to high, drop it
       SetVideoSaturation(110);
