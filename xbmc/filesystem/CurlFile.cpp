@@ -499,6 +499,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (m_proxy.length() > 0)
   {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, g_advancedSettings.m_curlproxytype);
     if (m_proxyuserpass.length() > 0)
       g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, m_proxyuserpass.c_str());
 
@@ -665,7 +666,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         m_proxyuserpass = g_guiSettings.GetString("network.httpproxyusername");
         m_proxyuserpass += ":" + g_guiSettings.GetString("network.httpproxypassword");
       }
-      CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
+      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), g_advancedSettings.m_curlproxytype);
     }
 
     // get username and password
