@@ -37,9 +37,6 @@ extern "C" {
 #  include "nav_types.h"
 #  include "ifo_types.h" /* For vm_cmd_t */
 #  include "dvdnav_events.h"
-#  include "dvd_types.h"
-#  include "dvd_reader.h"
-#  include "ifo_types.h" /* For vm_cmd_t */
 
 
 
