@@ -486,7 +486,13 @@ double CAESinkALSA::GetCacheTotal()
 unsigned int CAESinkALSA::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
   if (!m_pcm)
-    return 0;
+  {
+    SoftResume();
+    if(!m_pcm)
+      return 0;
+
+    CLog::Log(LOGDEBUG, "CAESinkALSA - the grAEken is hunger, feed it (I am the downmost fallback - fix your code)");
+  }
 
   int ret;
 
