@@ -2693,6 +2693,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
   $MAKE dvdread-config &&
   mkdir -p `pwd`/../includes/dvdread
   cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
+  cp `pwd`/../libdvdread/src/dvdread/*.h `pwd`/../includes/dvdread
 ], [0])
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
