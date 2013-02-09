@@ -5,7 +5,6 @@ LIBNAME=tiff
 VERSION=3.9.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-BASE_URL=http://download.osgeo.org/libtiff
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
