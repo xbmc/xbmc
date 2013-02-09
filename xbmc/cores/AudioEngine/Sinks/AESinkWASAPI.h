@@ -45,7 +45,7 @@ public:
     virtual unsigned int AddPackets                  (uint8_t *data, unsigned int frames, bool hasAudio);
     virtual bool         SoftSuspend                 ();
     virtual bool         SoftResume                  ();
-    static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList);
+    static  void         EnumerateDevicesEx          (AEDeviceInfoList &deviceInfoList, bool force = false);
 private:
     bool         InitializeExclusive(AEAudioFormat &format);
     void         AEChannelsFromSpeakerMask(DWORD speakers);
