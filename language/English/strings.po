@@ -3255,7 +3255,42 @@ msgctxt "#1051"
 msgid "Enter web address"
 msgstr ""
 
-#empty strings from id 1052 to 1199
+#empty strings from id 1052 to 1179
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#1180"
+msgid "Proxy type"
+msgstr ""
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#1181"
+msgid "HTTP"
+msgstr ""
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#1182"
+msgid "SOCKS4"
+msgstr ""
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#1183"
+msgid "SOCKS4A"
+msgstr ""
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#1184"
+msgid "SOCKS5"
+msgstr ""
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#1185"
+msgid "SOCKS5 with remote dns resolving"
+msgstr ""
+
+#empty strings from id 1186 to 1189
+#strings 1186 to 1189 reserved for more proxy types
+
+#empty strings from id 1190 to 1199
 
 #: xbmc/settings/GUISettings.cpp
 msgctxt "#1200"

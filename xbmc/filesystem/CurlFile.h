@@ -38,6 +38,15 @@ namespace XFILE
   class CCurlFile : public IFile
   {
     public:
+      typedef enum
+      {
+        PROXY_HTTP = 0,
+        PROXY_SOCKS4,
+        PROXY_SOCKS4A,
+        PROXY_SOCKS5,
+        PROXY_SOCKS5_REMOTE,
+      } ProxyType;
+    
       CCurlFile();
       virtual ~CCurlFile();
       virtual bool Open(const CURL& url);
@@ -62,6 +71,7 @@ namespace XFILE
       void SetUserAgent(CStdString sUserAgent)                   { m_userAgent = sUserAgent; }
       void SetProxy(CStdString &proxy)                           { m_proxy = proxy; }
       void SetProxyUserPass(CStdString &proxyuserpass)           { m_proxyuserpass = proxyuserpass; }
+      void SetProxyType(ProxyType proxytype)                     { m_proxytype = proxytype; }
       void SetCustomRequest(CStdString &request)                 { m_customrequest = request; }
       void UseOldHttpVersion(bool bUse)                          { m_useOldHttpVersion = bUse; }
       void SetContentEncoding(CStdString encoding)               { m_contentencoding = encoding; }
@@ -133,6 +143,7 @@ namespace XFILE
       CStdString      m_userAgent;
       CStdString      m_proxy;
       CStdString      m_proxyuserpass;
+      ProxyType       m_proxytype;
       CStdString      m_customrequest;
       CStdString      m_contentencoding;
       CStdString      m_ftpauth;

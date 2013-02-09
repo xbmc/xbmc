@@ -208,7 +208,8 @@ extern "C" void __stdcall update_emu_environ()
   // Use a proxy, if the GUI was configured as such
   if (g_guiSettings.GetBool("network.usehttpproxy")
       && !g_guiSettings.GetString("network.httpproxyserver").empty()
-      && !g_guiSettings.GetString("network.httpproxyport").empty())
+      && !g_guiSettings.GetString("network.httpproxyport").empty()
+      && g_guiSettings.GetInt("network.httpproxytype") == 0)
   {
     CStdString strProxy;
     if (g_guiSettings.GetString("network.httpproxyusername") &&
