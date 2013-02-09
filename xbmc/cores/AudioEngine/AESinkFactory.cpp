@@ -129,15 +129,15 @@ IAESink *CAESinkFactory::Create(std::string &device, AEAudioFormat &desiredForma
   return NULL;
 }
 
-#define ENUMERATE_SINK(SINK) { \
+#define ENUMERATE_SINK(SINK, force) { \
   AESinkInfo info; \
   info.m_sinkName = #SINK; \
-  CAESink ##SINK::EnumerateDevicesEx(info.m_deviceInfoList); \
+  CAESink ##SINK::EnumerateDevicesEx(info.m_deviceInfoList, force); \
   if(!info.m_deviceInfoList.empty()) \
     list.push_back(info); \
 }
 
-void CAESinkFactory::EnumerateEx(AESinkInfoList &list)
+void CAESinkFactory::EnumerateEx(AESinkInfoList &list, bool force)
 {
 #if defined(TARGET_WINDOWS)
   ENUMERATE_SINK(DirectSound);
@@ -147,10 +147,10 @@ void CAESinkFactory::EnumerateEx(AESinkInfoList &list)
     ENUMERATE_SINK(AUDIOTRACK);
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
   #if defined(HAS_ALSA)
-    ENUMERATE_SINK(ALSA);
+    ENUMERATE_SINK(ALSA, force);
   #endif
 
-    ENUMERATE_SINK(OSS);
+    ENUMERATE_SINK(OSS, force);
 #endif
 
 }

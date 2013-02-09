@@ -464,7 +464,7 @@ double CAESinkDirectSound::GetCacheTotal()
   return (double)m_dwBufferLen / (double)m_AvgBytesPerSec;
 }
 
-void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList)
+void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force)
 {
   CAEDeviceInfo        deviceInfo;
 

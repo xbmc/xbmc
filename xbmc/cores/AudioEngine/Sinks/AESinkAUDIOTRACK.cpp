@@ -236,7 +236,7 @@ void  CAESinkAUDIOTRACK::SetVolume(float scale)
   m_volume_changed = true;
 }
 
-void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list)
+void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
   m_info.m_channels.Reset();
   m_info.m_dataFormats.clear();
