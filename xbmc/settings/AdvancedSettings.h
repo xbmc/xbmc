@@ -288,6 +288,7 @@ class CAdvancedSettings
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
     int m_curlretries;
+    int m_curlproxytype; // 0: http (default); 4: socks4; 5: socks5; 6: socks4a. conform to curl_proxytype in curl.h
     bool m_curlDisableIPV6;
 
     bool m_fullScreen;
