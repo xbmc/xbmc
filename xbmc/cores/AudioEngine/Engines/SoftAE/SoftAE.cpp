@@ -61,6 +61,7 @@ CSoftAE::CSoftAE():
   m_reOpen             (false       ),
   m_closeSink          (false       ),
   m_realSuspend        (false       ),
+  m_sinkIsSuspended    (false       ),
   m_isSuspended        (false       ),
   m_softSuspend        (false       ),
   m_softSuspendTimer   (0           ),
@@ -1089,17 +1090,20 @@ void CSoftAE::Run()
     /* Handle idle or forced suspend */
     ProcessSuspend();
 
+    /* Clean Up what the suspend guy might have forgotten */
+    // ProcessSuspending() cannot guarantee that we get our sink back softresumed
+    if(m_sinkIsSuspended && m_sink)
+    {
+      m_reOpen = m_reOpen || m_sink->SoftResume();
+      m_sinkIsSuspended = false;
+      m_softSuspend = false;
+      CLog::Log(LOGDEBUG, "CSoftAE::Run - Soft resumed the sink outside");
+    }
+
     /* if we are told to restart */
     if (m_reOpen || restart || !m_sink)
     {
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
-      // ProcessSuspending() cannot guarantee that we get our sink back softresumed
-      if(m_sink && m_softSuspend)
-      {
-    	m_sink->SoftResume();
-    	m_softSuspend = false;
-    	CLog::Log(LOGDEBUG, "CSoftAE::Run - Soft resumed the sink outside");
-      }
       InternalOpenSink();
       m_isSuspended = false; // exit Suspend state
     }
@@ -1487,7 +1491,7 @@ inline void CSoftAE::RemoveStream(StreamList &streams, CSoftAEStream *stream)
 
 inline void CSoftAE::ProcessSuspend()
 {
-  bool sinkIsSuspended = false;
+  m_sinkIsSuspended = false;
   unsigned int curSystemClock = 0;
 #if defined(TARGET_WINDOWS) || defined(TARGET_LINUX)
   if (!m_softSuspend && m_playingStreams.empty() && m_playing_sounds.empty() &&
@@ -1507,20 +1511,20 @@ inline void CSoftAE::ProcessSuspend()
   while (m_realSuspend || ((m_isSuspended || (m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
           m_running     && !m_reOpen))
   {
-    if (!m_realSuspend && m_sink && !sinkIsSuspended)
+    if (!m_realSuspend && m_sink && !m_sinkIsSuspended)
     {
       /* put the sink in Suspend mode */
       CExclusiveLock sinkLock(m_sinkLock);
       if (m_sink && !m_sink->SoftSuspend())
       {
-        sinkIsSuspended = false; //sink cannot be suspended
+        m_sinkIsSuspended = false; //sink cannot be suspended
         m_softSuspend   = false; //break suspend loop
         break;
       }
       else
       {
         CLog::Log(LOGDEBUG, "Suspended the Sink");
-        sinkIsSuspended = true; //sink has suspended processing
+        m_sinkIsSuspended = true; //sink has suspended processing
       }
       sinkLock.Leave();
     }
@@ -1545,7 +1549,7 @@ inline void CSoftAE::ProcessSuspend()
     if (!m_realSuspend && !m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
     {
       m_reOpen = m_reOpen || !m_sink->SoftResume(); // sink returns false if it requires reinit
-      sinkIsSuspended = false; //sink processing data
+      m_sinkIsSuspended = false; //sink processing data
       m_softSuspend   = false; //break suspend loop (under some conditions)
       CLog::Log(LOGDEBUG, "Resumed the Sink");
       break;
