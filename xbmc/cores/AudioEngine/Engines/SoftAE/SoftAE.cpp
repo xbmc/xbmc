@@ -1053,6 +1053,16 @@ void CSoftAE::Run()
   {
     bool restart = false;
 
+    /* Clean Up what the suspend guy might have forgotten */
+    // ProcessSuspending() cannot guarantee that we get our sink back softresumed
+    // that is a big problem as another thread could start adding packets
+    // this must be checked here, before writing anything on the sinks
+    if(m_sinkIsSuspended)
+    {
+    	CLog::Log(LOGDEBUG, "CSoftAE::Run - Someone has forgotten to resume us (device resumed)");
+    	m_sink->SoftResume();
+    	m_sinkIsSuspended = false;
+    }
     if ((this->*m_outputStageFn)(hasAudio) > 0)
       hasAudio = false; /* taken some audio - reset our silence flag */
 
@@ -1081,16 +1091,6 @@ void CSoftAE::Run()
 
     /* Handle idle or forced suspend */
     ProcessSuspend();
-
-    /* Clean Up what the suspend guy might have forgotten */
-    // ProcessSuspending() cannot guarantee that we get our sink back softresumed
-    if(m_sinkIsSuspended && m_sink)
-    {
-      m_reOpen = m_reOpen || m_sink->SoftResume();
-      m_sinkIsSuspended = false;
-      m_softSuspend = false;
-      CLog::Log(LOGDEBUG, "CSoftAE::Run - Soft resumed the sink outside");
-    }
 
     /* if we are told to restart */
     if (m_reOpen || restart || !m_sink)
@@ -1500,8 +1500,8 @@ inline void CSoftAE::ProcessSuspend()
   /* idle if nothing to play and user hasn't enabled     */
   /* continuous streaming (silent stream) in as.xml      */
   /* In case of Suspend stay in there until Resume is called from outer thread */
-  while (m_isSuspended || ((m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
-          m_running     && !m_reOpen)
+  while (m_isSuspended || ((m_softSuspend && (curSystemClock > m_softSuspendTimer)) &&
+          m_running     && !m_reOpen))
   {
     if (!m_isSuspended && m_sink && !m_sinkIsSuspended)
     {
