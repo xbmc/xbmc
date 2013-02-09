@@ -44,6 +44,7 @@ public:
   virtual double       GetCacheTotal      ();
   virtual unsigned int AddPackets         (uint8_t *data, unsigned int frames, bool hasAudio);
   static  void         EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList);
+  static  std::string  GetDefaultDevice   ();
 private:
   void          AEChannelsFromSpeakerMask(DWORD speakers);
   DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
