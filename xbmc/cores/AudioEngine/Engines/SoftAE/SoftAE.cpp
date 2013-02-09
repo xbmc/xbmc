@@ -60,7 +60,6 @@ CSoftAE::CSoftAE():
   m_running            (false       ),
   m_reOpen             (false       ),
   m_closeSink          (false       ),
-  m_realSuspend        (false       ),
   m_sinkIsSuspended    (false       ),
   m_isSuspended        (false       ),
   m_softSuspend        (false       ),
@@ -874,11 +873,9 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
   RemoveStream(m_playingStreams, (CSoftAEStream*)stream);
   RemoveStream(m_streams       , (CSoftAEStream*)stream);
   lock.Leave();
-  // Close completely when we go to suspend, reopen as it was old behaviour
-  // m_realSuspend is currently only used on Linux Systems as it is needed
-  // for suspend and resume. Not opening when masterstream stops means
-  // clipping on S/PDIF.
-  if(m_realSuspend)
+  // Close completely when we go to suspend, reopen as it was old behaviour.
+  // Not opening when masterstream stops means clipping on S/PDIF.
+  if(m_isSuspended)
   {
     m_closeEvent.Reset();
     m_closeSink = true;
@@ -1003,12 +1000,8 @@ bool CSoftAE::Suspend()
     if(m_sink)
     {
       /* Deinitialize and delete current m_sink */
-      // we don't want that Run reopens our device.
-      // This is the only place m_realSuspend gets set true.
-      // If you find another one - please call for help.
-      // First thing when rewriting: kill this flag and make it generic again.
+      // we don't want that Run reopens our device, so we wait.
       m_saveSuspend.Reset();
-      m_realSuspend = true;
       // wait until we are looping in ProcessSuspend()
       m_saveSuspend.Wait();
       m_sink->Drain();
@@ -1031,13 +1024,12 @@ bool CSoftAE::Resume()
 {
 #if defined(TARGET_LINUX)
   // We must make sure, that we don't return empty.
-  if(m_realSuspend || m_sinkInfoList.empty())
+  if(m_isSuspended || m_sinkInfoList.empty())
   {
     CLog::Log(LOGDEBUG, "CSoftAE::Resume - Re Enumerating Sinks");
     CExclusiveLock sinkLock(m_sinkLock);
     // Forced enumeration - we are sure that we start completely fresh.
     CAESinkFactory::EnumerateEx(m_sinkInfoList, true);
-    m_realSuspend = false;
     sinkLock.Leave(); // we leave here explicitly to not lock while printing new sinks
     PrintSinks();
   }
@@ -1105,7 +1097,6 @@ void CSoftAE::Run()
     {
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
       InternalOpenSink();
-      m_isSuspended = false; // exit Suspend state
     }
 
 #if defined(TARGET_ANDROID)
@@ -1508,10 +1499,11 @@ inline void CSoftAE::ProcessSuspend()
   /* idle while in Suspend() state until Resume() called */
   /* idle if nothing to play and user hasn't enabled     */
   /* continuous streaming (silent stream) in as.xml      */
-  while (m_realSuspend || ((m_isSuspended || (m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
-          m_running     && !m_reOpen))
+  /* In case of Suspend stay in there until Resume is called from outer thread */
+  while (m_isSuspended || ((m_softSuspend && (curSystemClock > m_softSuspendTimer))) &&
+          m_running     && !m_reOpen)
   {
-    if (!m_realSuspend && m_sink && !m_sinkIsSuspended)
+    if (!m_isSuspended && m_sink && !m_sinkIsSuspended)
     {
       /* put the sink in Suspend mode */
       CExclusiveLock sinkLock(m_sinkLock);
@@ -1528,12 +1520,12 @@ inline void CSoftAE::ProcessSuspend()
       }
       sinkLock.Leave();
     }
-    // Signal that the realSuspend can go on now.
+    // Signal that the Suspend can go on now.
     // Idea: Outer thread calls Suspend() - but
     // because of AddPackets does not care about locks, we must make
     // sure, that our school bus (AE::Run) is currently driving through
     // some gas station, before we move away the sink.
-    if(m_realSuspend)
+    if(m_isSuspended)
       m_saveSuspend.Set();
 
     /* idle for platform-defined time */
@@ -1546,7 +1538,7 @@ inline void CSoftAE::ProcessSuspend()
      * Note: It is not enough to check the streams buffer, cause it might not be filled yet
      * We have to check after ProcessSuspending() if the sink is still in softsleep and resume it
      */
-    if (!m_realSuspend && !m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
+    if (!m_isSuspended && (!m_playingStreams.empty() || !m_playing_sounds.empty()))
     {
       m_reOpen = m_reOpen || !m_sink->SoftResume(); // sink returns false if it requires reinit
       m_sinkIsSuspended = false; //sink processing data

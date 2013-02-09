@@ -138,7 +138,6 @@ private:
   /* internal vars */
   bool             m_running, m_reOpen;
   bool             m_closeSink;
-  bool             m_realSuspend; /* this flag is needed to unload a sink without calling OpenInternal again */
   bool             m_sinkIsSuspended; /* The sink is in unusable state, e.g. SoftSuspended */
   bool             m_isSuspended;      /* engine suspended by external function to release audio context */
   bool             m_softSuspend;      /* latches after last stream or sound played for timer below for idle */
