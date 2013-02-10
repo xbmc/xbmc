@@ -327,10 +327,9 @@ void CGUIWindow::CenterWindow()
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
-  unsigned int size = g_graphicsContext.AddGUITransform();
+  g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
-  if (size != g_graphicsContext.RemoveTransform())
-    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
+  g_graphicsContext.RemoveTransform();
 
   // check if currently focused control can have it
   // and fallback to default control if not
@@ -349,10 +348,9 @@ void CGUIWindow::DoRender()
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  unsigned int size = g_graphicsContext.AddGUITransform();
+  g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoRender();
-  if (size != g_graphicsContext.RemoveTransform())
-    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
+  g_graphicsContext.RemoveTransform();
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
