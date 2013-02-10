@@ -307,7 +307,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
 
         // If the NETRESOURCE structure represents a container resource,
         //  call the EnumerateFunc function recursively.
-        if (RESOURCEUSAGE_CONTAINER == (lpnrLocal[i].dwUsage & RESOURCEUSAGE_CONTAINER))
+        if(RESOURCEUSAGE_CONTAINER == (lpnrLocal[i].dwUsage & RESOURCEUSAGE_CONTAINER) && lpnrLocal[i].lpRemoteName != NULL)
           EnumerateFunc(&lpnrLocal[i], items);
       }
     }
