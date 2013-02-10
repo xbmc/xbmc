@@ -176,8 +176,8 @@ public:
   }
   inline TransformMatrix AddTransform(const TransformMatrix &matrix)
   {
-    ASSERT(m_groupTransform.size());
-    TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
+    ASSERT(!m_groupTransform.empty());
+    TransformMatrix absoluteMatrix = m_groupTransform.empty() ? matrix : m_groupTransform.top() * matrix;
     m_groupTransform.push(absoluteMatrix);
     UpdateFinalTransform(absoluteMatrix);
     return absoluteMatrix;
@@ -186,16 +186,16 @@ public:
   {
     // TODO: We only need to add it to the group transform as other transforms may be added on top of this one later on
     //       Once all transforms are cached then this can be removed and UpdateFinalTransform can be called directly
-    ASSERT(m_groupTransform.size());
+    ASSERT(!m_groupTransform.empty());
     m_groupTransform.push(matrix);
     UpdateFinalTransform(m_groupTransform.top());
   }
   inline void RemoveTransform()
   {
-    ASSERT(m_groupTransform.size());
-    if (m_groupTransform.size())
+    ASSERT(!m_groupTransform.empty());
+    if (!m_groupTransform.empty())
       m_groupTransform.pop();
-    if (m_groupTransform.size())
+    if (!m_groupTransform.empty())
       UpdateFinalTransform(m_groupTransform.top());
     else
       UpdateFinalTransform(TransformMatrix());
