@@ -989,32 +989,50 @@ bool CSoftAE::Suspend()
     CSoftAEStream *stream = *itt;
     stream->Flush();
   }
+  streamLock.Leave();
   #if defined(TARGET_LINUX)
   /*workaround sinks not playing sound after resume */
     StopAllSounds();
-    CExclusiveLock sinkLock(m_sinkLock);
-    for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
-    {
-      itt->m_deviceInfoList.pop_back();
-    }
+    bool ret = true;
     if(m_sink)
     {
       /* Deinitialize and delete current m_sink */
       // we don't want that Run reopens our device, so we wait.
       m_saveSuspend.Reset();
       // wait until we are looping in ProcessSuspend()
-      m_saveSuspend.Wait();
-      m_sink->Drain();
-      m_sink->Deinitialize();
-      delete m_sink;
-      m_sink = NULL;
-      // signal anybody, that the sink is closed now
-      // this should help us not to run into deadlocks
-      if(m_closeSink)
-       m_closeEvent.Set();
+      // this is more save to not come up unclean
+      // we cannot wait forever
+      ret = m_saveSuspend.WaitMSec(500);
+      if(ret)
+      {
+        CLog::Log(LOGDEBUG, "CSoftAE::Suspend - After Event");
+        CExclusiveLock sinkLock(m_sinkLock);
+        // remove all the sinks
+        for (AESinkInfoList::iterator itt = m_sinkInfoList.begin(); itt != m_sinkInfoList.end(); ++itt)
+        {
+          itt->m_deviceInfoList.pop_back();
+        }
+        m_sink->Drain();
+        m_sink->Deinitialize();
+        delete m_sink;
+        m_sink = NULL;
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "CSoftAE::Suspend - Unload failed will continue");
+    	m_saveSuspend.Reset();
+      }
     }
     // The device list is now empty and must be reenumerated afterwards.
-    m_sinkInfoList.clear();
+    if(ret)
+      m_sinkInfoList.clear();
+
+    // signal anybody, that we are gone now (beware of deadlocks)
+    // we don't unset the fields here, to care for reinit after resume
+    if(m_closeSink)
+      m_closeEvent.Set();
+    if(m_reOpen)
+      m_reOpenEvent.Set();
   #endif
 
   return true;
@@ -1378,7 +1396,6 @@ unsigned int CSoftAE::RunRawStreamStage(unsigned int channelCount, void *out, bo
   StreamList resumeStreams;
   static StreamList::iterator itt;
   CSingleLock streamLock(m_streamLock);
-
   /* handle playing streams */
   for (itt = m_playingStreams.begin(); itt != m_playingStreams.end(); ++itt)
   {
