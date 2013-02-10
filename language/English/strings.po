@@ -11746,3 +11746,33 @@ msgstr ""
 msgctxt "#36042"
 msgid "Use limited color range (16-235)"
 msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37000"
+msgid "(Visually Impaired)"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37001"
+msgid "(Directors Comments)"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37002"
+msgid "(Directors Comments 2)"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37011"
+msgid "(CC)"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37012"
+msgid "(Forced)"
+msgstr ""
+
+#: xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+msgctxt "#37013"
+msgid "(Directors Comments)"
+msgstr ""

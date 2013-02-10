@@ -28,6 +28,7 @@
 #include "guilib/Geometry.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "guilib/LocalizeStrings.h"
 #if defined(TARGET_DARWIN)
 #include "osx/CocoaInterface.h"
 #endif
@@ -864,15 +865,15 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(DVDNavStreamInfo &info, con
     case DVD_SUBPICTURE_LANG_EXT_NormalCC:
     case DVD_SUBPICTURE_LANG_EXT_BigCC:
     case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
-      info.name += "(CC)";
+      info.name += g_localizeStrings.Get(37011);
       break;
     case DVD_SUBPICTURE_LANG_EXT_Forced:
-      info.name += "(Forced)";
+      info.name += g_localizeStrings.Get(37012);
       break;
     case DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments:
     case DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments:
     case DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments:
-      info.name += "(Directors Comments)";
+      info.name += g_localizeStrings.Get(37013);
       break;
     default:
       break;
@@ -940,13 +941,13 @@ void CDVDInputStreamNavigator::SetAudioStreamName(DVDNavStreamInfo &info, const 
   switch( audio_attributes.code_extension )
   {
   case DVD_AUDIO_LANG_EXT_VisuallyImpaired:
-    info.name = "(Visually Impaired)";
+    info.name = g_localizeStrings.Get(37000);
     break;
   case DVD_AUDIO_LANG_EXT_DirectorsComments1:
-    info.name = "(Directors Comments)";
+    info.name = g_localizeStrings.Get(37001);
     break;
   case DVD_AUDIO_LANG_EXT_DirectorsComments2:
-    info.name = "(Directors Comments 2)";
+    info.name = g_localizeStrings.Get(37002);
     break;
   case DVD_AUDIO_LANG_EXT_NotSpecified:
   case DVD_AUDIO_LANG_EXT_NormalCaptions:
