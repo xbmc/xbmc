@@ -30,6 +30,7 @@ loadpng (char *file_name, int *w, int *h, unsigned int ***buf)
 	png_ptr = png_create_read_struct
 		(PNG_LIBPNG_VER_STRING, (png_voidp) NULL, NULL, NULL);
 	if (!png_ptr) {
+		fclose (fp);
 		fprintf (stderr, "Memory error\n");
 		return 1;
 	}
@@ -37,6 +38,7 @@ loadpng (char *file_name, int *w, int *h, unsigned int ***buf)
 	info_ptr = png_create_info_struct (png_ptr);
 	if (!info_ptr) {
 		png_destroy_read_struct (&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
+		fclose (fp);
 		fprintf (stderr, "Read error 1\n");
 		return 1;
 	}
@@ -44,6 +46,7 @@ loadpng (char *file_name, int *w, int *h, unsigned int ***buf)
 	end_info = png_create_info_struct (png_ptr);
 	if (!end_info) {
 		png_destroy_read_struct (&png_ptr, &info_ptr, (png_infopp) NULL);
+		fclose (fp);
 		fprintf (stderr, "Read error 2\n");
 		return 1;
 	}
