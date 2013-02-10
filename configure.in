@@ -687,6 +687,25 @@ case $use_platform in
      ;;
 esac
 
+# check for GIT_REV
+AC_CHECK_PROG(HAVE_GIT,git,"yes","no",)
+if test "$GIT_REV" = ""; then
+  if test -f VERSION ; then
+    GIT_REV=$(awk 'END{print substr($1,1,16)}' VERSION)
+  elif test "$HAVE_GIT" = "yes"; then
+    GIT_REV=$(git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
+  else
+    GIT_REV="Unknown"
+  fi
+fi
+final_message="$final_message\n  git Rev.:\t${GIT_REV}"
+
+if test "$host_vendor" = "apple"; then
+  echo "#define GIT_REV \"$GIT_REV\"" > git_revision.h
+else
+  SDL_DEFINES="$SDL_DEFINES -D'GIT_REV=\"$GIT_REV\"'"
+fi
+
 if test "$build_shared_lib" = "yes"; then
   final_message="$final_message\n Shared lib\tYes"
   AC_SUBST(USE_LIBXBMC,1)
@@ -1886,8 +1905,6 @@ if test "$ARCH" = "i486-linux" || test "$ARCH" = "x86-freebsd"; then
   fi
 fi
 
-AC_CHECK_PROG(HAVE_GIT,git,"yes","no",)
-
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
@@ -1943,7 +1960,7 @@ else
     USE_OPENGL=1
   else
     final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
-    SDL_DEFINES="-DHAS_SDL_2D"
+    SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_2D"
     USE_OPENGL=0
   fi
 fi
@@ -2154,23 +2171,6 @@ if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
 else
   final_message="$final_message\n  Avahi:\tNo"
-fi
-
-if test "$HAVE_GIT" = "yes"; then
-  GIT_REV=$(git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
-fi
-if test "$GIT_REV" = ""; then
-  if test -f VERSION ; then
-    GIT_REV=$(awk 'END{print substr($1,1,16)}' VERSION)
-    if test -z $GIT_REV ; then GIT_REV="Unknown" ; fi
-  else
-    GIT_REV="Unknown"
-  fi
-fi
-if test "$host_vendor" = "apple"; then
-  echo "#define GIT_REV \"$GIT_REV\"" > git_revision.h
-else
-  SDL_DEFINES="$SDL_DEFINES -D'GIT_REV=\"$GIT_REV\"'"
 fi
 
 if test "$use_nonfree" = "yes"; then
