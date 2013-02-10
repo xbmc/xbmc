@@ -357,6 +357,7 @@ protected:
 
   bool  m_controlIsDirty;
   CRect m_renderRegion;         // In screen coordinates
+  CRect m_cachedRenderRegion;
 };
 
 #endif

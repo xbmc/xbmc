@@ -345,6 +345,11 @@ public:
     return m_bTestMode;
   }
 
+  void SetBenchmarkTimer(unsigned int timer)
+  {
+    m_benchmarkTimer = timer;
+  }
+
   bool IsPresentFrame();
 
   void Minimize();

@@ -42,6 +42,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_AppFocused = true;
   m_ExitCode = EXITCODE_QUIT;
   m_renderGUI = false;
+  m_benchmarkTimer = 0;
 }
 
 CXBApplicationEx::~CXBApplicationEx()
@@ -90,6 +91,10 @@ INT CXBApplicationEx::Run()
   BYTE renderExceptionCount = 0;
   const BYTE MAX_EXCEPTION_COUNT = 10;
 #endif
+
+  m_firstFrameTime = XbmcThreads::SystemClockMillis();
+  if (m_benchmarkTimer)
+    m_benchmarkTimer += m_firstFrameTime;
 
   // Run xbmc
   while (!m_bStop)
@@ -209,9 +214,17 @@ INT CXBApplicationEx::Run()
       }
     }
 #endif
+    m_totalFrames++;
   } // while (!m_bStop)
+  unsigned int uptime = lastFrameTime - m_firstFrameTime;
   Destroy();
 
   CLog::Log(LOGNOTICE, "application stopped..." );
+
+  if (m_benchmarkTimer)
+  {
+    printf("Processed %llu Frames in %i msec.\n",m_totalFrames, uptime);
+  }
+
   return m_ExitCode;
 }

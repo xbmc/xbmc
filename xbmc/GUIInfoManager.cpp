@@ -2008,6 +2008,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   bool bReturn = false;
   int condition = abs(condition1);
 
+  if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
+    return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
   if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
     bReturn = GetItemBool(item, condition);
   // Ethernet Link state checking
@@ -2108,10 +2110,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)
     bReturn = m_playerShowCodec;
-  else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
-  {
-    return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
-  }
   else if (condition == SYSTEM_HASLOCKS)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_HAS_PVR)
