@@ -52,6 +52,15 @@ using namespace XCURL;
 
 #define dllselect select
 
+
+curl_proxytype proxyType2CUrlProxyType[] = {
+  CURLPROXY_HTTP,
+  CURLPROXY_SOCKS4,
+  CURLPROXY_SOCKS4A,
+  CURLPROXY_SOCKS5,
+  CURLPROXY_SOCKS5_HOSTNAME,
+};
+
 // curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
 {
@@ -360,6 +369,7 @@ CCurlFile::CCurlFile()
   m_username = "";
   m_password = "";
   m_httpauth = "";
+  m_proxytype = PROXY_HTTP;
   m_state = new CReadState();
   m_skipshout = false;
   m_httpresponse = -1;
@@ -541,6 +551,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (m_proxy.length() > 0)
   {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxytype]);
     if (m_proxyuserpass.length() > 0)
       g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, m_proxyuserpass.c_str());
 
@@ -700,14 +711,15 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         && !g_guiSettings.GetString("network.httpproxyport").empty()
         && m_proxy.IsEmpty())
     {
-      m_proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver");
+      m_proxy = g_guiSettings.GetString("network.httpproxyserver");
       m_proxy += ":" + g_guiSettings.GetString("network.httpproxyport");
       if (g_guiSettings.GetString("network.httpproxyusername").length() > 0 && m_proxyuserpass.IsEmpty())
       {
         m_proxyuserpass = g_guiSettings.GetString("network.httpproxyusername");
         m_proxyuserpass += ":" + g_guiSettings.GetString("network.httpproxypassword");
       }
-      CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
+      m_proxytype = (ProxyType)g_guiSettings.GetInt("network.httpproxytype");
+      CLog::Log(LOGDEBUG, "Using proxy %s, type %d", m_proxy.c_str(), proxyType2CUrlProxyType[m_proxytype]);
     }
 
     // get username and password
