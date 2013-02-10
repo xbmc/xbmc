@@ -1508,7 +1508,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 bool CUtil::SupportsWriteFileOperations(const CStdString& strPath)
 {
-  // currently only hd, smb, nfs and afp support delete and rename
+  // currently only hd, smb, nfs, afp and dav support delete and rename
   if (URIUtils::IsHD(strPath))
     return true;
   if (URIUtils::IsSmb(strPath))
@@ -1518,6 +1518,8 @@ bool CUtil::SupportsWriteFileOperations(const CStdString& strPath)
   if (URIUtils::IsNfs(strPath))
     return true;
   if (URIUtils::IsAfp(strPath))
+    return true;
+  if (URIUtils::IsDAV(strPath))
     return true;
   if (URIUtils::IsMythTV(strPath))
   {

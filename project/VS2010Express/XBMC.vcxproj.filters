@@ -2975,6 +2975,12 @@
     <ClCompile Include="..\..\xbmc\guilib\cximage.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DAVFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\DAVCommon.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5814,6 +5820,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\view\ViewState.h">
       <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DAVFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\DAVCommon.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
