@@ -779,8 +779,8 @@ namespace XBMCAddon
         if (pTuple.GetNumValuesSet() != 2)
           throw WindowException("Error unpacking tuple found in list");
 
-        const String& cAttr = pTuple.first();
-        const String& cEvent = pTuple.second();
+        const String& cEvent = pTuple.first();
+        const String& cAttr = pTuple.second();
 
         TiXmlElement pNode("animation");
         CStdStringArray attrs;
