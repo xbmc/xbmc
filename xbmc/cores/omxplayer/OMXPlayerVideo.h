@@ -59,6 +59,7 @@ protected:
   double                    m_iVideoDelay;
   int                       m_speed;
   double                    m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
+  double                    m_LastOutputTime;
   int                       m_audio_count;
   bool                      m_stalled;
   bool                      m_started;
