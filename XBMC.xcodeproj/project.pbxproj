@@ -499,6 +499,8 @@
 		DFCA6AC9152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6ABF152245CD000BFAAE /* HTTPWebinterfaceAddonsHandler.cpp */; };
 		DFCA6ACA152245CD000BFAAE /* HTTPWebinterfaceHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AC1152245CD000BFAAE /* HTTPWebinterfaceHandler.cpp */; };
 		DFCA6ACB152245CD000BFAAE /* IHTTPRequestHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCA6AC3152245CD000BFAAE /* IHTTPRequestHandler.cpp */; };
+		DFD5812516C828500008EEA0 /* DAVCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */; };
+		DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812316C828500008EEA0 /* DAVFile.cpp */; };
 		DFD928F316384B6800709DAE /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD928F116384B6800709DAE /* Timer.cpp */; };
 		DFDA3153160E34230047A626 /* DVDOverlayCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
@@ -2079,6 +2081,10 @@
 		DFCA6AC2152245CD000BFAAE /* HTTPWebinterfaceHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPWebinterfaceHandler.h; sourceTree = "<group>"; };
 		DFCA6AC3152245CD000BFAAE /* IHTTPRequestHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IHTTPRequestHandler.cpp; sourceTree = "<group>"; };
 		DFCA6AC4152245CD000BFAAE /* IHTTPRequestHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IHTTPRequestHandler.h; sourceTree = "<group>"; };
+		DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVCommon.cpp; sourceTree = "<group>"; };
+		DFD5812216C8284F0008EEA0 /* DAVCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVCommon.h; sourceTree = "<group>"; };
+		DFD5812316C828500008EEA0 /* DAVFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVFile.cpp; sourceTree = "<group>"; };
+		DFD5812416C828500008EEA0 /* DAVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVFile.h; sourceTree = "<group>"; };
 		DFD928F116384B6800709DAE /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
 		DFD928F216384B6800709DAE /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		DFDA3152160E34230047A626 /* DVDOverlayCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodec.cpp; sourceTree = "<group>"; };
@@ -5330,8 +5336,12 @@
 				E38E16AB0D25F9FA00618676 /* DAAPDirectory.h */,
 				DF93D66D1444A8B0007C6459 /* DAAPFile.cpp */,
 				DF93D66E1444A8B0007C6459 /* DAAPFile.h */,
+				DFD5812116C8284F0008EEA0 /* DAVCommon.cpp */,
+				DFD5812216C8284F0008EEA0 /* DAVCommon.h */,
 				7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */,
 				7C45DBE810F325C400D4BBF3 /* DAVDirectory.h */,
+				DFD5812316C828500008EEA0 /* DAVFile.cpp */,
+				DFD5812416C828500008EEA0 /* DAVFile.h */,
 				E38E16AC0D25F9FA00618676 /* Directory.cpp */,
 				E38E16AD0D25F9FA00618676 /* Directory.h */,
 				DF93D6651444A8B0007C6459 /* DirectoryCache.cpp */,
@@ -7734,6 +7744,8 @@
 				DF64FE4016C07AAA00D028FB /* ViewDatabase.cpp in Sources */,
 				DF404A3916B9896C00D8023E /* cximage.cpp in Sources */,
 				DF404A3A16B9896C00D8023E /* imagefactory.cpp in Sources */,
+				DFD5812516C828500008EEA0 /* DAVCommon.cpp in Sources */,
+				DFD5812616C828500008EEA0 /* DAVFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

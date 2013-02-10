@@ -241,6 +241,8 @@
 		DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1D813D725ED00A47C47 /* Implementation.cpp */; };
 		DFD4D1E713D7263000A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1E613D7263000A47C47 /* README.platform */; };
 		DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */; };
+		DFD5813116C829350008EEA0 /* DAVCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812D16C829350008EEA0 /* DAVCommon.cpp */; };
+		DFD5813216C829350008EEA0 /* DAVFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD5812F16C829350008EEA0 /* DAVFile.cpp */; };
 		DFD928FF16384B8500709DAE /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD928FD16384B8500709DAE /* Timer.cpp */; };
 		DFDB00241516403A005079A4 /* CircularCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB001C1516403A005079A4 /* CircularCache.cpp */; };
 		DFDB00251516403A005079A4 /* DirectoryCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFDB001E1516403A005079A4 /* DirectoryCache.cpp */; };
@@ -1523,6 +1525,10 @@
 		DFD4D1E613D7263000A47C47 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
 		DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		DFD4D1FD13D7283500A47C47 /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
+		DFD5812D16C829350008EEA0 /* DAVCommon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVCommon.cpp; sourceTree = "<group>"; };
+		DFD5812E16C829350008EEA0 /* DAVCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVCommon.h; sourceTree = "<group>"; };
+		DFD5812F16C829350008EEA0 /* DAVFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVFile.cpp; sourceTree = "<group>"; };
+		DFD5813016C829350008EEA0 /* DAVFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVFile.h; sourceTree = "<group>"; };
 		DFD928FD16384B8500709DAE /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
 		DFD928FE16384B8500709DAE /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		DFDB001C1516403A005079A4 /* CircularCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CircularCache.cpp; sourceTree = "<group>"; };
@@ -5097,8 +5103,12 @@
 				F56C8395131F42E8000AD0F6 /* DAAPDirectory.h */,
 				DF93D7A11444B105007C6459 /* DAAPFile.cpp */,
 				DF93D7A21444B105007C6459 /* DAAPFile.h */,
+				DFD5812D16C829350008EEA0 /* DAVCommon.cpp */,
+				DFD5812E16C829350008EEA0 /* DAVCommon.h */,
 				F56C8396131F42E8000AD0F6 /* DAVDirectory.cpp */,
 				F56C8397131F42E8000AD0F6 /* DAVDirectory.h */,
+				DFD5812F16C829350008EEA0 /* DAVFile.cpp */,
+				DFD5813016C829350008EEA0 /* DAVFile.h */,
 				F56C8398131F42E8000AD0F6 /* Directory.cpp */,
 				F56C8399131F42E8000AD0F6 /* Directory.h */,
 				DFDB001E1516403A005079A4 /* DirectoryCache.cpp */,
@@ -7706,6 +7716,8 @@
 				DF64FE5616C07AF700D028FB /* GUIViewControl.cpp in Sources */,
 				DF64FE5716C07AF700D028FB /* GUIViewState.cpp in Sources */,
 				DF64FE5916C07AF700D028FB /* ViewDatabase.cpp in Sources */,
+				DFD5813116C829350008EEA0 /* DAVCommon.cpp in Sources */,
+				DFD5813216C829350008EEA0 /* DAVFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
