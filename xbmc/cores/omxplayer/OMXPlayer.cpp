@@ -1043,11 +1043,8 @@ void COMXPlayer::Process()
   if (!CachePVRStream())
     SetCaching(CACHESTATE_FLUSH);
 
-  // stop thumb jobs
-  CJobManager::GetInstance().Pause(kJobTypeMediaFlags);
-
   /*
-  if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
+  if (CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW))
   {
     if (!WaitForPausedThumbJobs(20000))
     {
@@ -1273,9 +1270,6 @@ void COMXPlayer::Process()
     // check if in a cut or commercial break that should be automatically skipped
     CheckAutoSceneSkip();
   }
-
-  // let thumbgen jobs resume.
-  CJobManager::GetInstance().UnPause(kJobTypeMediaFlags);
 }
 
 bool COMXPlayer::CheckDelayedChannelEntry(void)
@@ -4154,7 +4148,7 @@ bool COMXPlayer::WaitForPausedThumbJobs(int timeout_ms)
   // use m_bStop and Sleep so we can get canceled.
   while (!m_bStop && (timeout_ms > 0))
   {
-    if (CJobManager::GetInstance().IsProcessing(kJobTypeMediaFlags) > 0)
+    if (CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW))
     {
       Sleep(100);
       timeout_ms -= 100;
