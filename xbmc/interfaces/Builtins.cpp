@@ -884,7 +884,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("setvolume"))
   {
     int oldVolume = g_application.GetVolume();
-    float volume = strtof(parameter.c_str(), NULL);
+    float volume = (float)strtod(parameter.c_str(), NULL);
 
     g_application.SetVolume(volume);
     if(oldVolume != (int)volume)
