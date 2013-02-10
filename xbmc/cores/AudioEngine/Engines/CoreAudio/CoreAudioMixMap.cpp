@@ -122,7 +122,7 @@ CCoreAudioMixMap *CCoreAudioMixMap::CreateMixMap(CAUOutputDevice  *audioUnit, AE
     for (unsigned int chan=0; chan < inputFormat.mChannelsPerFrame; chan++)
     {
       AudioChannelDescription* pDesc = &pInLayout->mChannelDescriptions[chan];
-      if (pDesc->mChannelLabel == kAudioChannelLabel_LeftSurround || pDesc->mChannelLabel == kAudioChannelLabel_LeftSurround)
+      if (pDesc->mChannelLabel == kAudioChannelLabel_LeftSurround || pDesc->mChannelLabel == kAudioChannelLabel_RightSurround)
         break; // Required condition cannot be true
 
       if (pDesc->mChannelLabel == kAudioChannelLabel_LeftSurroundDirect)
