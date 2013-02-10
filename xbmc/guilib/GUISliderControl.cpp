@@ -25,8 +25,8 @@
 #include "GUIWindowManager.h"
 
 static const SliderAction actions[] = {
-  {"seek",    "PlayerControl(SeekPercentage(%2d))", PLAYER_PROGRESS, false},
-  {"volume",  "SetVolume(%2d)",                     PLAYER_VOLUME,   true}
+  {"seek",    "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS, false},
+  {"volume",  "SetVolume(%2f)",                     PLAYER_VOLUME,   true}
  };
 
 CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
@@ -141,7 +141,7 @@ bool CGUISliderControl::OnMessage(CGUIMessage& message)
     switch (message.GetMessage())
     {
     case GUI_MSG_ITEM_SELECT:
-      SetPercentage( message.GetParam1() );
+      SetPercentage( (float)message.GetParam1() );
       return true;
       break;
 
@@ -223,13 +223,13 @@ void CGUISliderControl::Move(int iNumSteps)
 
   default:
     {
-      int &value = m_percentValues[m_currentSelector];
+      float &value = m_percentValues[m_currentSelector];
       value += m_iInterval * iNumSteps;
       if (value < 0) value = 0;
       if (value > 100) value = 100;
       if (m_percentValues[0] > m_percentValues[1])
       {
-        int valueLower = m_percentValues[0];
+        float valueLower = m_percentValues[0];
         m_percentValues[0] = m_percentValues[1];
         m_percentValues[1] = valueLower;
         rangeSwap = true;
@@ -246,8 +246,8 @@ void CGUISliderControl::Move(int iNumSteps)
 
 void CGUISliderControl::SendClick()
 {
-  int percent = MathUtils::round_int(100*GetProportion());
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), percent);
+  float percent = 100*GetProportion();
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(percent));
   if (m_action && (!m_dragging || m_action->fireOnDrag))
   {
     CStdString action;
@@ -285,31 +285,31 @@ void CGUISliderControl::SwitchRangeSelector()
     SetRangeSelector(RangeSelectorLower);
 }
 
-void CGUISliderControl::SetPercentage(int iPercent, RangeSelector selector /* = RangeSelectorLower */, bool updateCurrent /* = false */)
+void CGUISliderControl::SetPercentage(float percent, RangeSelector selector /* = RangeSelectorLower */, bool updateCurrent /* = false */)
 {
-  if (iPercent > 100) iPercent = 100;
-  else if (iPercent < 0) iPercent = 0;
+  if (percent > 100) percent = 100;
+  else if (percent < 0) percent = 0;
 
-  int iPercentLower = selector == RangeSelectorLower ? iPercent : m_percentValues[0];
-  int iPercentUpper = selector == RangeSelectorUpper ? iPercent : m_percentValues[1];
+  float percentLower = selector == RangeSelectorLower ? percent : m_percentValues[0];
+  float percentUpper = selector == RangeSelectorUpper ? percent : m_percentValues[1];
 
-  if (!m_rangeSelection || iPercentLower <= iPercentUpper)
+  if (!m_rangeSelection || percentLower <= percentUpper)
   {
-    m_percentValues[0] = iPercentLower;
-    m_percentValues[1] = iPercentUpper;
+    m_percentValues[0] = percentLower;
+    m_percentValues[1] = percentUpper;
     if (updateCurrent)
       m_currentSelector = selector;
   }
   else
   {
-    m_percentValues[0] = iPercentUpper;
-    m_percentValues[1] = iPercentLower;
+    m_percentValues[0] = percentUpper;
+    m_percentValues[1] = percentLower;
     if (updateCurrent)
         m_currentSelector = (selector == RangeSelectorLower ? RangeSelectorUpper : RangeSelectorLower);
   }
 }
 
-int CGUISliderControl::GetPercentage(RangeSelector selector /* = RangeSelectorLower */) const
+float CGUISliderControl::GetPercentage(RangeSelector selector /* = RangeSelectorLower */) const
 {
   return m_percentValues[selector];
 }
@@ -342,7 +342,7 @@ void CGUISliderControl::SetIntValue(int iValue, RangeSelector selector /* = Rang
     }
   }
   else
-    SetPercentage(iValue);
+    SetPercentage((float)iValue);
 }
 
 int CGUISliderControl::GetIntValue(RangeSelector selector /* = RangeSelectorLower */) const
@@ -352,7 +352,7 @@ int CGUISliderControl::GetIntValue(RangeSelector selector /* = RangeSelectorLowe
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     return m_intValues[selector];
   else
-    return m_percentValues[selector];
+    return MathUtils::round_int(m_percentValues[selector]);
 }
 
 void CGUISliderControl::SetFloatValue(float fValue, RangeSelector selector /* = RangeSelectorLower */, bool updateCurrent /* = false */)
@@ -383,7 +383,7 @@ void CGUISliderControl::SetFloatValue(float fValue, RangeSelector selector /* = 
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     SetIntValue((int)fValue);
   else
-    SetPercentage((int)fValue);
+    SetPercentage(fValue);
 }
 
 float CGUISliderControl::GetFloatValue(RangeSelector selector /* = RangeSelectorLower */) const
@@ -393,7 +393,7 @@ float CGUISliderControl::GetFloatValue(RangeSelector selector /* = RangeSelector
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     return (float)m_intValues[selector];
   else
-    return (float)m_percentValues[selector];
+    return m_percentValues[selector];
 }
 
 void CGUISliderControl::SetIntInterval(int iInterval)
@@ -515,8 +515,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector 
 
   default:
     {
-      int iValue = (int)(fPercent * 100 + 0.49f);
-      SetPercentage(iValue, m_currentSelector, true);
+      SetPercentage(fPercent * 100, m_currentSelector, true);
       break;
     }
   }
@@ -611,9 +610,9 @@ CStdString CGUISliderControl::GetDescription() const
   else
   {
     if (m_rangeSelection)
-      description.Format("[%i%%, %i%%]", m_percentValues[0], m_percentValues[1]);
+      description.Format("[%i%%, %i%%]", MathUtils::round_int(m_percentValues[0]), MathUtils::round_int(m_percentValues[1]));
     else
-      description.Format("%i%%", m_percentValues[0]);
+      description.Format("%i%%", MathUtils::round_int(m_percentValues[0]));
   }
   return description;
 }

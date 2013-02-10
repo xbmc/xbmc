@@ -74,7 +74,7 @@ void CGUIDialogSeekBar::FrameMove()
   { // position the bar at our current time
     CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
     if (pSlider && g_infoManager.GetTotalPlayTime())
-      pSlider->SetPercentage((int)((float)g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f));
+      pSlider->SetPercentage((float)g_infoManager.GetPlayTime()/g_infoManager.GetTotalPlayTime() * 0.1f);
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_SEEK_LABEL);
     msg.SetLabel(g_infoManager.GetCurrentPlayTime());
@@ -84,7 +84,7 @@ void CGUIDialogSeekBar::FrameMove()
   {
     CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
     if (pSlider)
-      pSlider->SetPercentage((int)g_application.GetSeekHandler()->GetPercent());
+      pSlider->SetPercentage(g_application.GetSeekHandler()->GetPercent());
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), POPUP_SEEK_LABEL);
     msg.SetLabel(g_infoManager.GetCurrentSeekTime());

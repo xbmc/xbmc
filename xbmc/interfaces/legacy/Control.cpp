@@ -536,13 +536,13 @@ namespace XBMCAddon
 
     float ControlSlider::getPercent() throw (UnimplementedException)
     {
-      return (pGUIControl) ? (float)((CGUISliderControl*)pGUIControl)->GetPercentage() : 0.0f;
+      return (pGUIControl) ? ((CGUISliderControl*)pGUIControl)->GetPercentage() : 0.0f;
     }
 
     void ControlSlider::setPercent(float pct) throw (UnimplementedException)
     {
       if (pGUIControl)
-        ((CGUISliderControl*)pGUIControl)->SetPercentage((int)pct);
+        ((CGUISliderControl*)pGUIControl)->SetPercentage(pct);
     }
 
     CGUIControl* ControlSlider::Create () throw (WindowException)
