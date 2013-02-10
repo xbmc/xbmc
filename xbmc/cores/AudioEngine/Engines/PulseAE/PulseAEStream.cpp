@@ -53,6 +53,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_Destroyed = false;
   m_Initialized = false;
   m_Paused = false;
+  m_ResumeCallback = false;
 
   m_Stream = NULL;
   m_Context = context;
@@ -350,13 +351,16 @@ bool CPulseAEStream::IsDraining()
     pa_operation_unref(m_DrainOperation);
     m_DrainOperation = NULL;
   }
-
+  ProcessCallbacks();
   return false;
 }
 
 bool CPulseAEStream::IsDrained()
 {
-  return m_DrainOperation == NULL;
+  bool ret = (m_DrainOperation == NULL);
+  ProcessCallbacks();
+
+  return ret;
 }
 
 bool CPulseAEStream::IsDestroyed()
@@ -551,9 +555,17 @@ void CPulseAEStream::StreamUnderflowCallback(pa_stream *s, void *userdata)
 void CPulseAEStream::StreamDrainComplete(pa_stream *s, int success, void *userdata)
 {
   CPulseAEStream *stream = (CPulseAEStream *)userdata;
-  if (stream->m_slave)
-    stream->m_slave->Resume();
+  if(stream)
+    stream->SetDrained();
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
+}
+
+void CPulseAEStream::ProcessCallbacks()
+{
+  if(m_ResumeCallback && m_slave)
+    m_slave->Resume();
+
+  m_ResumeCallback = false;
 }
 
 inline bool CPulseAEStream::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
