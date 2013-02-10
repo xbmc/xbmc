@@ -33,6 +33,9 @@ NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
 commands that need to be typed into a Terminal window. Note that the '$'
 character itself should NOT be typed as part of the command.
 
+ATTENTION: When using Mountain Lion (OSX 10.8.x) you need to download and install
+XQuartz from https://xquartz.macosforge.org/landing/ since its not part of OSX
+anymore.
 
 -----------------------------------------------------------------------------
 2. Getting the source code
