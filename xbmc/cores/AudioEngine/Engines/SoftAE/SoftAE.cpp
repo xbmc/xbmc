@@ -1024,7 +1024,7 @@ bool CSoftAE::Resume()
 {
 #if defined(TARGET_LINUX)
   // We must make sure, that we don't return empty.
-  if(m_isSuspended || m_sinkInfoList.empty())
+  if(m_sinkInfoList.empty())
   {
     CLog::Log(LOGDEBUG, "CSoftAE::Resume - Re Enumerating Sinks");
     CExclusiveLock sinkLock(m_sinkLock);
@@ -1095,6 +1095,12 @@ void CSoftAE::Run()
     /* if we are told to restart */
     if (m_reOpen || restart || !m_sink)
     {
+      if(m_sinkIsSuspended && m_sink)
+      {
+        m_reOpen = m_reOpen || m_sink->SoftResume();
+        m_sinkIsSuspended = false;
+        CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink was forgotten");   
+      }
       CLog::Log(LOGDEBUG, "CSoftAE::Run - Sink restart flagged");
       InternalOpenSink();
     }
