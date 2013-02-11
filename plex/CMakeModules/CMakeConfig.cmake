@@ -12,6 +12,14 @@ set(CONFIG_INTERNAL_LIBS
 
 OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" ON)
 OPTION(ENABLE_PYTHON "Enable Python addon support" OFF)
+OPTION(CREATE_BUNDLE "Create the finished bundle" ON)
+
+set(compress_default OFF)
+if(CREATE_BUNDLE AND NOT WIN32)
+  set(compress_default ON)
+endif()
+
+OPTION(COMPRESS_TEXTURES "If we should compress the textures or not" compress_default)
 
 if(APPLE)
   include(CMakeConfigOSX)
@@ -56,3 +64,9 @@ endif(ENABLE_DVD_DRIVE)
 configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h)
 configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
 set_source_files_properties(xbmc/config.h PROPERTIES GENERATED TRUE)
+
+message(STATUS "-- Configuration Summary:")
+message(STATUS "Enable DVD drive: " ${ENABLE_DVD_DRIVE})
+message(STATUS "Enable Python support: " ${ENABLE_PYTHON})
+message(STATUS "Enabling bundling: " ${CREATE_BUNDLE})
+message(STATUS "Compress textures: " ${COMPRESS_TEXTURES})

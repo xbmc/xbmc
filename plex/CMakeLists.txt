@@ -75,13 +75,14 @@ endif(ENABLE_PYTHON)
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
 
-if(NOT WIN32)
+if(COMPRESS_TEXTURES)
   # Build the packed textures
   if(DEFINED USING_XCODE)
     set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/Debug/TexturePacker)
   else()
     set(TEXTURE_PACKER_BIN ${CMAKE_BINARY_DIR}/tools/TexturePacker/TexturePacker)
   endif()
+
   add_custom_command(
     OUTPUT Textures_MediaStream.xbt
     COMMAND ${TEXTURE_PACKER_BIN} -input ${root}/addons/skin.mediastream/Media -output Textures_MediaStream.xbt
@@ -89,13 +90,9 @@ if(NOT WIN32)
     DEPENDS TexturePacker
   )
 
-  if(PLEX_SKIP_BUNDLING STREQUAL "1")
-    set(EXCLUDE_TEXTURES ^foo)
-  else()
-    add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
-    set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
-  endif()
+  add_custom_target(CompressTextures ALL DEPENDS Textures_MediaStream.xbt)
+  set(EXCLUDE_TEXTURES skin.mediastream/Media/*)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Textures_MediaStream.xbt DESTINATION ${RESOURCEPATH}/addons/skin.mediastream/Media RENAME Textures.xbt COMPONENT RUNTIME)
 else()
   set(EXCLUDE_TEXTURES ^foo)
 endif()
@@ -181,7 +178,6 @@ if(APPLE)
   add_custom_target(Symbols DEPENDS "${EXECUTABLE_NAME}.dSYM.zip")
 endif()
 
-OPTION(CREATE_BUNDLE "Create the finished bundle" ON)
 if(CREATE_BUNDLE)
   if(APPLE OR WIN32)
     install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
@@ -189,6 +185,4 @@ if(CREATE_BUNDLE)
   if(APPLE)
     add_custom_target(BundlingSymbol ALL DEPENDS Symbols)
   endif()
-else()
-  message(STATUS "Skipping bundling")
 endif()
