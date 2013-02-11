@@ -30,7 +30,7 @@
 #include "view/ViewState.h"
 #include "settings/GUISettings.h"
 #include "GUIInfoManager.h"
-
+#include "dialogs/GUIDialogSelect.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "epg/Epg.h"
@@ -106,10 +106,10 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
           GotoChannel(iItem);
           return true;
         }
-        else if (iAction == ACTION_SHOW_INFO || iAction == ACTION_MOUSE_RIGHT_CLICK)
+        else if (iAction == ACTION_SHOW_INFO || iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
           /* Show information Dialog */
-          ShowInfo(iItem);
+          OnPopupMenu(iItem);
           return true;
         }
       }
@@ -221,6 +221,75 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   m_group = GetPlayingGroup();
 
   CloseOrSelect(item);
+}
+
+bool CGUIDialogPVRChannelsOSD::OnPopupMenu(int iItem)
+{
+  // popup the context menu
+  // grab our context menu
+  CContextButtons buttons;
+
+  /* Check file item is in list range and get his pointer */
+  if (iItem < 0 || iItem >= (int)m_vecItems->Size()) return false;
+    
+  buttons.Add(CONTEXT_BUTTON_JUMP_TO_GROUP, "Jump to Group");
+  buttons.Add(CONTEXT_BUTTON_INFO, 22081);              /* Move channel up or down */
+
+  int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+
+  if (choice < 0)
+    return false;
+
+  return OnContextButton(iItem, (CONTEXT_BUTTON)choice);
+}
+
+bool CGUIDialogPVRChannelsOSD::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+{
+  /* Check file item is in list range and get his pointer */
+  if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return false;
+
+  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
+  if (!pItem)
+    return false;
+
+  if (button == CONTEXT_BUTTON_JUMP_TO_GROUP)
+  {
+  		CFileItemList 			*channelGroups = new CFileItemList;
+  		CPVRChannelGroupPtr		pChannelGroup;  
+  		CPVRChannelPtr channel;
+  		
+  		CGUIDialogSelect		*pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  	
+  		if (!pDlgSelect)
+    		return false;
+
+  		pDlgSelect->SetHeading(19146); // Select Groups
+  		
+  		g_PVRManager.GetCurrentChannel(channel);
+  	
+  		g_PVRChannelGroups->Get(channel->IsRadio())->GetGroupList(channelGroups);
+  	
+  		pDlgSelect->Add(*channelGroups);
+  	
+ 		pDlgSelect->DoModal();
+	
+		pChannelGroup = g_PVRChannelGroups->Get(channel->IsRadio())->GetByName(pDlgSelect->GetSelectedLabelText());
+	
+		if(pChannelGroup)
+		{	
+        	g_PVRManager.SetPlayingGroup(pChannelGroup);
+        	SetLastSelectedItem(pChannelGroup->GroupID());
+
+        	Update();
+		}
+
+		delete channelGroups;  
+	}
+  else if (button == CONTEXT_BUTTON_INFO)
+  {
+	ShowInfo(itemNumber);
+  }
+  return true;
 }
 
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
