@@ -25,13 +25,16 @@
 
 #include "AESinkNULL.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/Utils/AERingBuffer.h"
 #include "utils/log.h"
 
 CAESinkNULL::CAESinkNULL()
-  : CThread("nullsink")
+  : CThread("nullsink"),
+    m_draining(false),
+    m_sink_frameSize(0),
+    m_sinkbuffer_size(0),
+    m_sinkbuffer_level(0),
+    m_sinkbuffer_sec_per_byte(0)
 {
-  m_sinkbuffer = NULL;
 }
 
 CAESinkNULL::~CAESinkNULL()
@@ -47,13 +50,10 @@ bool CAESinkNULL::Initialize(AEAudioFormat &format, std::string &device)
   format.m_frameSize     = format.m_frameSamples * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
   m_format = format;
 
-  // setup a 500ms internal sink lockless ring buffer
-  if (m_sinkbuffer)
-    delete m_sinkbuffer, m_sinkbuffer = NULL;
+  // setup a pretend 500ms internal buffer
   m_sink_frameSize = format.m_channelLayout.Count() * CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3;
-  m_sinkbuffer = new AERingBuffer(m_sink_frameSize * format.m_sampleRate / 2);
+  m_sinkbuffer_size = (double)m_sink_frameSize * format.m_sampleRate / 2;
   m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_sink_frameSize * format.m_sampleRate);
-  m_sinkbuffer_sec = (double)m_sinkbuffer_sec_per_byte * m_sinkbuffer->GetMaxSize();
 
   m_draining = false;
   m_wake.Reset();
@@ -73,7 +73,6 @@ void CAESinkNULL::Deinitialize()
   // force m_bStop and set m_wake, if might be sleeping.
   m_bStop = true;
   StopThread();
-  delete m_sinkbuffer, m_sinkbuffer = NULL;
 }
 
 bool CAESinkNULL::IsCompatible(const AEAudioFormat format, const std::string device)
@@ -85,30 +84,30 @@ bool CAESinkNULL::IsCompatible(const AEAudioFormat format, const std::string dev
 
 double CAESinkNULL::GetDelay()
 {
-  double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer->GetReadSize();
+  double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_level;
   return sinkbuffer_seconds_to_empty;
 }
 
 double CAESinkNULL::GetCacheTime()
 {
-  double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer->GetReadSize();
+  double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_level;
   return sinkbuffer_seconds_to_empty;
 }
 
 double CAESinkNULL::GetCacheTotal()
 {
-  return m_sinkbuffer_sec;
+  return m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_size;
 }
 
 unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
-  unsigned int write_frames = m_sinkbuffer->GetWriteSize() / m_sink_frameSize;
+  unsigned int write_frames = (m_sinkbuffer_size - m_sinkbuffer_level) / m_sink_frameSize;
   if (write_frames > frames)
     write_frames = frames;
 
   if (hasAudio && write_frames)
   {
-    m_sinkbuffer->Write(data, write_frames * m_sink_frameSize);
+    m_sinkbuffer_level += write_frames * m_sink_frameSize;
     m_wake.Set();
   }
   // AddPackets runs under a non-idled AE thread we must block or sleep.
@@ -143,20 +142,21 @@ void CAESinkNULL::Process()
   {
     if (m_draining)
     {
-      m_sinkbuffer->Read(NULL, m_sinkbuffer->GetReadSize());
+      // TODO: is it correct to not take data at the appropriate rate while draining?
+      m_sinkbuffer_level = 0;
       m_draining = false;
     }
 
     // pretend we have a 64k audio buffer
     unsigned int min_buffer_size = 64 * 1024;
-    unsigned int read_bytes = m_sinkbuffer->GetReadSize();
+    unsigned int read_bytes = m_sinkbuffer_level;
     if (read_bytes > min_buffer_size)
       read_bytes = min_buffer_size;
 
     if (read_bytes > 0)
     {
       // drain it
-      m_sinkbuffer->Read(NULL, read_bytes);
+      m_sinkbuffer_level -= read_bytes;
 
       // we MUST drain at the correct audio sample rate
       // or the NULL sink will not work right. So calc
@@ -170,7 +170,7 @@ void CAESinkNULL::Process()
       #endif
     }
 
-    if (m_sinkbuffer->GetReadSize() == 0)
+    if (m_sinkbuffer_level == 0)
     {
       // sleep this audio thread, we will get woken when we have audio data.
       m_wake.WaitMSec(250);
