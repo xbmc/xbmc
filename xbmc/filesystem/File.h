@@ -64,6 +64,9 @@ public:
 /* calcuate bitrate for file while reading */
 #define READ_BITRATE   0x10
 
+/* indicate the caller will random seek frequently */
+#define READ_FREQ_RANDOM_SEEK 0x20
+
 class CFileStreamBuffer;
 
 class CFile

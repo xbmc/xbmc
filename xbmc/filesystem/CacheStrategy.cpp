@@ -57,13 +57,14 @@ void CCacheStrategy::ClearEndOfInput()
   m_bEndOfInput = false;
 }
 
-CSimpleFileCache::CSimpleFileCache()
+CSimpleFileCache::CSimpleFileCache(bool needFreqRandomSeek)
   : m_hCacheFileRead(NULL)
   , m_hCacheFileWrite(NULL)
   , m_hDataAvailEvent(NULL)
   , m_nStartPosition(0)
   , m_nWritePosition(0)
-  , m_nReadPosition(0) {
+  , m_nReadPosition(0)
+  , m_bNeedFreqRandomSeek(needFreqRandomSeek){
 }
 
 CSimpleFileCache::~CSimpleFileCache()
@@ -212,7 +213,16 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
   }
 
   int64_t nDiff = iTarget - m_nWritePosition;
-  if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)(iTarget - m_nReadPosition), 5000) == CACHE_RC_TIMEOUT)  ) {
+  int64_t ret;
+  if (nDiff > 0 && m_bNeedFreqRandomSeek)
+  {
+    if ((ret = WaitForData((unsigned int)(iTarget - m_nReadPosition), 300000)) < 0)
+    {
+      CLog::Log(LOGWARNING,"%s - attempt to seek past read data (seek to %"PRId64". max: %"PRId64". wait data ret (%"PRId64")", __FUNCTION__, iTarget, m_nWritePosition, ret);
+      return  CACHE_RC_ERROR;
+    }
+  }
+  else if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)(iTarget - m_nReadPosition), 5000) == CACHE_RC_TIMEOUT)  ) {
     CLog::Log(LOGWARNING,"%s - attempt to seek past read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64")", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition);
     return  CACHE_RC_ERROR;
   }
