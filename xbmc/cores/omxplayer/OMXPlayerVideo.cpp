@@ -124,6 +124,7 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   m_started     = false;
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_autosync    = 1;
+  m_iSleepEndTime = DVD_NOPTS_VALUE;
 
   m_audio_count = m_av_clock->HasAudio();
 
@@ -452,13 +453,23 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
   m_dropbase = 0.0f;
 #endif
 
+  // DVDPlayer sleeps until m_iSleepEndTime here before calling FlipPage.
+  // Video playback in asynchronous in OMXPlayer, so we don't want to do that here, as it prevents the video fifo from being kept full.
+  // So, we keep track of when FlipPage would have been called on DVDPlayer and return early if it is not time.
+  // m_iSleepEndTime == DVD_NOPTS_VALUE means we are not waiting to call FlipPage, otherwise it is the time we want to call FlipPage
+  if (m_iSleepEndTime == DVD_NOPTS_VALUE) {
+    m_iSleepEndTime = iCurrentClock + iSleepTime;
+  }
+
+  if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime)
+    return;
+
+  m_iSleepEndTime = DVD_NOPTS_VALUE;
+
   double pts_media = m_av_clock->OMXMediaTime(false, false);
   ProcessOverlays(iGroupId, pts_media);
 
-  if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < (iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500)) )
-    return;
-
-  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, FS_NONE);
+  g_renderManager.FlipPage(CThread::m_bStop, pts_media / DVD_TIME_BASE, -1, FS_NONE);
 
   //m_av_clock->WaitAbsoluteClock((iCurrentClock + iSleepTime));
 }
