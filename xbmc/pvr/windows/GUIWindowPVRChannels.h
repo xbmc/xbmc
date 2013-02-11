@@ -51,7 +51,7 @@ namespace PVR
     void Process(void);
     bool OnClickButton(CGUIMessage &message);
     bool OnClickList(CGUIMessage &message);
-	
+	bool OnContextButtonJumpToGroup(CFileItem *item, CONTEXT_BUTTON button);
 	bool OnContextButtonAddToGroup(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
     bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
