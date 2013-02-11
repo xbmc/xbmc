@@ -496,7 +496,7 @@ double CSoftAEStream::GetCacheTime()
 
   double time;
   time  = (double)(m_inputBuffer.Used() / m_format.m_frameSize) / (double)m_format.m_sampleRate;
-  time += (double)(m_waterLevel - m_framesBuffered)             / (double)AE.GetSampleRate();
+  time += (double)m_framesBuffered                              / (double)AE.GetSampleRate();
   time += AE.GetCacheTime();
   return time;
 }
