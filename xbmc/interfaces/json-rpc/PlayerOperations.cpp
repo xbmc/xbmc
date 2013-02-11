@@ -1395,6 +1395,10 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
             g_application.m_pPlayer->GetAudioStreamLanguage(index, value);
             audioStream["language"] = value;
 
+            audioStream["codec"] = g_application.m_pPlayer->GetAudioCodecName();
+            audioStream["bitrate"] = g_application.m_pPlayer->GetAudioBitrate();
+            audioStream["channels"] = g_application.m_pPlayer->GetChannels();
+
             result.append(audioStream);
           }
         }
