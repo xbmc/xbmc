@@ -101,20 +101,20 @@ double CAESinkNULL::GetCacheTotal()
 
 unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
-  unsigned int write_frames = (m_sinkbuffer_size - m_sinkbuffer_level) / m_sink_frameSize;
-  if (write_frames > frames)
-    write_frames = frames;
+  unsigned int max_frames = (m_sinkbuffer_size - m_sinkbuffer_level) / m_sink_frameSize;
+  if (frames > max_frames)
+    frames = max_frames;
 
-  if (hasAudio && write_frames)
+  if (hasAudio && frames)
   {
-    m_sinkbuffer_level += write_frames * m_sink_frameSize;
+    m_sinkbuffer_level += frames * m_sink_frameSize;
     m_wake.Set();
   }
   // AddPackets runs under a non-idled AE thread we must block or sleep.
   // Trying to calc the optimal sleep is tricky so just a minimal sleep.
   Sleep(10);
 
-  return hasAudio ? write_frames:frames;
+  return frames;
 }
 
 void CAESinkNULL::Drain()
