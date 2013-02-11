@@ -1144,16 +1144,17 @@ bool CAESinkALSA::SoftSuspend()
 }
 bool CAESinkALSA::SoftResume()
 {
-	// reinit all the clibber
+    // reinit all the clibber
+    bool ret = true; // all fine
     if(!m_pcm)
     {
       if (!snd_config)
-	    snd_config_update();
+        snd_config_update();
 
-      Initialize(m_initFormat, m_initDevice);
+      ret = Initialize(m_initFormat, m_initDevice);
     }
-   //we want that AE loves us again
-   return false; // force reinit
+   //we want that AE loves us again - reinit when initialize failed
+   return ret; // force reinit if false
 }
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
