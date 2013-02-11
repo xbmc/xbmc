@@ -809,6 +809,15 @@ void CPVRClients::StartChannelScan(void)
       __FUNCTION__, scanClient->GetFriendlyName().c_str());
   long perfCnt = XbmcThreads::SystemClockMillis();
 
+  /* stop live tv */
+  lock.Leave();
+  if (IsPlayingTV() || IsPlayingRadio())
+  {
+    CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
+    g_windowManager.SendMessage(msg);
+  }
+  lock.Enter();
+
   /* do the scan */
   if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
     /* an error occured */
