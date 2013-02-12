@@ -416,7 +416,6 @@
 		DF93D6A11444A8B1007C6459 /* FileReaderFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6731444A8B0007C6459 /* FileReaderFile.cpp */; };
 		DF93D6A21444A8B1007C6459 /* HDFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6751444A8B0007C6459 /* HDFile.cpp */; };
 		DF93D6A31444A8B1007C6459 /* ISOFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6771444A8B0007C6459 /* ISOFile.cpp */; };
-		DF93D6A41444A8B1007C6459 /* LastFMFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D6791444A8B0007C6459 /* LastFMFile.cpp */; };
 		DF93D6A51444A8B1007C6459 /* MusicDatabaseFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D67B1444A8B0007C6459 /* MusicDatabaseFile.cpp */; };
 		DF93D6A61444A8B1007C6459 /* NFSFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D67D1444A8B0007C6459 /* NFSFile.cpp */; };
 		DF93D6A71444A8B1007C6459 /* PipeFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF93D67F1444A8B0007C6459 /* PipeFile.cpp */; };
@@ -618,7 +617,6 @@
 		E38E20280D25F9FD00618676 /* IFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16EE0D25F9FA00618676 /* IFile.cpp */; };
 		E38E20290D25F9FD00618676 /* iso9660.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16F10D25F9FA00618676 /* iso9660.cpp */; };
 		E38E202A0D25F9FD00618676 /* ISO9660Directory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16F30D25F9FA00618676 /* ISO9660Directory.cpp */; };
-		E38E202B0D25F9FD00618676 /* LastFMDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16F50D25F9FA00618676 /* LastFMDirectory.cpp */; };
 		E38E20330D25F9FD00618676 /* MultiPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17080D25F9FA00618676 /* MultiPathDirectory.cpp */; };
 		E38E20340D25F9FD00618676 /* DirectoryNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E170B0D25F9FA00618676 /* DirectoryNode.cpp */; };
 		E38E20350D25F9FD00618676 /* DirectoryNodeAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E170D0D25F9FA00618676 /* DirectoryNodeAlbum.cpp */; };
@@ -738,8 +736,6 @@
 		E38E20D10D25F9FD00618676 /* GUIWindowWeather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18490D25F9FA00618676 /* GUIWindowWeather.cpp */; };
 		E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */; };
 		E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18580D25F9FA00618676 /* LangInfo.cpp */; };
-		E38E20D80D25F9FD00618676 /* LastFmManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E185A0D25F9FA00618676 /* LastFmManager.cpp */; };
-		E38E21670D25F9FD00618676 /* scrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1A250D25F9FB00618676 /* scrobbler.cpp */; };
 		E38E21740D25F9FD00618676 /* MediaCrawler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ABD0D25F9FB00618676 /* MediaCrawler.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		E38E21760D25F9FD00618676 /* PltMicroMediaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1AC20D25F9FB00618676 /* PltMicroMediaController.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
 		E38E21780D25F9FD00618676 /* PltAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1AC70D25F9FB00618676 /* PltAction.cpp */; settings = {COMPILER_FLAGS = "-I$SRCROOT/lib/libUPnP/Platinum/Source/Core -I$SRCROOT/lib/libUPnP/Platinum/Source/Platinum -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaConnect -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaRenderer -I$SRCROOT/lib/libUPnP/Platinum/Source/Devices/MediaServer -I$SRCROOT/lib/libUPnP/Platinum/Source/Extras -I$SRCROOT/lib/libUPnP/Neptune/Source/System/Posix -I$SRCROOT/lib/libUPnP/Neptune/Source/Core"; }; };
@@ -975,8 +971,6 @@
 		F59876BC0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59876BA0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp */; };
 		F59876C00FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59876BF0FBA351D008EF4FB /* VideoReferenceClock.cpp */; };
 		F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59879070FBAA0C3008EF4FB /* QuartzCore.framework */; };
-		F5987B250FBB9682008EF4FB /* librefmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987B220FBB9682008EF4FB /* librefmscrobbler.cpp */; };
-		F5987B260FBB9682008EF4FB /* lastfmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987B230FBB9682008EF4FB /* lastfmscrobbler.cpp */; };
 		F5987F050FBDF274008EF4FB /* DPMSSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987F040FBDF274008EF4FB /* DPMSSupport.cpp */; };
 		F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
 		F599CD2B108E65370010EC2A /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F599CD29108E65370010EC2A /* IoSupport.cpp */; };
@@ -1960,8 +1954,6 @@
 		DF93D6761444A8B0007C6459 /* HDFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDFile.h; sourceTree = "<group>"; };
 		DF93D6771444A8B0007C6459 /* ISOFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ISOFile.cpp; sourceTree = "<group>"; };
 		DF93D6781444A8B0007C6459 /* ISOFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISOFile.h; sourceTree = "<group>"; };
-		DF93D6791444A8B0007C6459 /* LastFMFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFMFile.cpp; sourceTree = "<group>"; };
-		DF93D67A1444A8B0007C6459 /* LastFMFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMFile.h; sourceTree = "<group>"; };
 		DF93D67B1444A8B0007C6459 /* MusicDatabaseFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicDatabaseFile.cpp; sourceTree = "<group>"; };
 		DF93D67C1444A8B0007C6459 /* MusicDatabaseFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicDatabaseFile.h; sourceTree = "<group>"; };
 		DF93D67D1444A8B0007C6459 /* NFSFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSFile.cpp; sourceTree = "<group>"; };
@@ -2361,8 +2353,6 @@
 		E38E16F20D25F9FA00618676 /* iso9660.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iso9660.h; sourceTree = "<group>"; };
 		E38E16F30D25F9FA00618676 /* ISO9660Directory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ISO9660Directory.cpp; sourceTree = "<group>"; };
 		E38E16F40D25F9FA00618676 /* ISO9660Directory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISO9660Directory.h; sourceTree = "<group>"; };
-		E38E16F50D25F9FA00618676 /* LastFMDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFMDirectory.cpp; sourceTree = "<group>"; };
-		E38E16F60D25F9FA00618676 /* LastFMDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMDirectory.h; sourceTree = "<group>"; };
 		E38E17080D25F9FA00618676 /* MultiPathDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathDirectory.cpp; sourceTree = "<group>"; };
 		E38E17090D25F9FA00618676 /* MultiPathDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiPathDirectory.h; sourceTree = "<group>"; };
 		E38E170B0D25F9FA00618676 /* DirectoryNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNode.cpp; sourceTree = "<group>"; };
@@ -2604,8 +2594,6 @@
 		E38E18570D25F9FA00618676 /* LangCodeExpander.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LangCodeExpander.h; sourceTree = "<group>"; };
 		E38E18580D25F9FA00618676 /* LangInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LangInfo.cpp; sourceTree = "<group>"; };
 		E38E18590D25F9FA00618676 /* LangInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LangInfo.h; sourceTree = "<group>"; };
-		E38E185A0D25F9FA00618676 /* LastFmManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LastFmManager.cpp; sourceTree = "<group>"; };
-		E38E185B0D25F9FA00618676 /* LastFmManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFmManager.h; sourceTree = "<group>"; };
 		E38E18830D25F9FA00618676 /* libexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libexif.h; sourceTree = "<group>"; };
 		E38E196E0D25F9FB00618676 /* hdhomerun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun.h; sourceTree = "<group>"; };
 		E38E196F0D25F9FB00618676 /* hdhomerun_channelscan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channelscan.h; sourceTree = "<group>"; };
@@ -2626,8 +2614,6 @@
 		E38E1A1F0D25F9FB00618676 /* rtv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtv.h; sourceTree = "<group>"; };
 		E38E1A200D25F9FB00618676 /* sleep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sleep.h; sourceTree = "<group>"; };
 		E38E1A220D25F9FB00618676 /* errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = errors.h; sourceTree = "<group>"; };
-		E38E1A250D25F9FB00618676 /* scrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scrobbler.cpp; sourceTree = "<group>"; };
-		E38E1A260D25F9FB00618676 /* scrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scrobbler.h; sourceTree = "<group>"; };
 		E38E1AB80D25F9FB00618676 /* SConstruct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SConstruct; sourceTree = "<group>"; };
 		E38E1ABD0D25F9FB00618676 /* MediaCrawler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MediaCrawler.cpp; sourceTree = "<group>"; };
 		E38E1ABE0D25F9FB00618676 /* MediaCrawler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaCrawler.h; sourceTree = "<group>"; };
@@ -3134,10 +3120,6 @@
 		F59876BE0FBA351D008EF4FB /* VideoReferenceClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoReferenceClock.h; sourceTree = "<group>"; };
 		F59876BF0FBA351D008EF4FB /* VideoReferenceClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoReferenceClock.cpp; sourceTree = "<group>"; };
 		F59879070FBAA0C3008EF4FB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
-		F5987B210FBB9682008EF4FB /* lastfmscrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lastfmscrobbler.h; sourceTree = "<group>"; };
-		F5987B220FBB9682008EF4FB /* librefmscrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = librefmscrobbler.cpp; sourceTree = "<group>"; };
-		F5987B230FBB9682008EF4FB /* lastfmscrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lastfmscrobbler.cpp; sourceTree = "<group>"; };
-		F5987B240FBB9682008EF4FB /* librefmscrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = librefmscrobbler.h; sourceTree = "<group>"; };
 		F5987F030FBDF274008EF4FB /* DPMSSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPMSSupport.h; sourceTree = "<group>"; };
 		F5987F040FBDF274008EF4FB /* DPMSSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DPMSSupport.cpp; sourceTree = "<group>"; };
 		F5987FD90FBE2DFD008EF4FB /* PAPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAPlayer.h; sourceTree = "<group>"; };
@@ -3640,8 +3622,6 @@
 				880DBE4A0DC223FF00E26B71 /* Artist.h */,
 				E38E17FB0D25F9FA00618676 /* GUIViewStateMusic.cpp */,
 				E38E17FC0D25F9FA00618676 /* GUIViewStateMusic.h */,
-				E38E185A0D25F9FA00618676 /* LastFmManager.cpp */,
-				E38E185B0D25F9FA00618676 /* LastFmManager.h */,
 				E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */,
 				E38E1D900D25F9FD00618676 /* MusicDatabase.h */,
 				36A9466515CF1FD200727135 /* MusicDbUrl.cpp */,
@@ -3990,7 +3970,6 @@
 			isa = PBXGroup;
 			children = (
 				DFCA6AB8152245CD000BFAAE /* httprequesthandler */,
-				4313772B12D6474F00680C15 /* libscrobbler */,
 				432D7CE112D86D4900CE4C49 /* linux */,
 				4313772312D646E300680C15 /* osx */,
 				DF2345D715FA639500A934F6 /* upnp */,
@@ -4039,20 +4018,6 @@
 				E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */,
 			);
 			path = osx;
-			sourceTree = "<group>";
-		};
-		4313772B12D6474F00680C15 /* libscrobbler */ = {
-			isa = PBXGroup;
-			children = (
-				E38E1A220D25F9FB00618676 /* errors.h */,
-				F5987B230FBB9682008EF4FB /* lastfmscrobbler.cpp */,
-				F5987B210FBB9682008EF4FB /* lastfmscrobbler.h */,
-				F5987B220FBB9682008EF4FB /* librefmscrobbler.cpp */,
-				F5987B240FBB9682008EF4FB /* librefmscrobbler.h */,
-				E38E1A250D25F9FB00618676 /* scrobbler.cpp */,
-				E38E1A260D25F9FB00618676 /* scrobbler.h */,
-			);
-			path = libscrobbler;
 			sourceTree = "<group>";
 		};
 		4313773012D647BB00680C15 /* dbwrappers */ = {
@@ -5414,10 +5379,6 @@
 				E38E16F40D25F9FA00618676 /* ISO9660Directory.h */,
 				DF93D6771444A8B0007C6459 /* ISOFile.cpp */,
 				DF93D6781444A8B0007C6459 /* ISOFile.h */,
-				E38E16F50D25F9FA00618676 /* LastFMDirectory.cpp */,
-				E38E16F60D25F9FA00618676 /* LastFMDirectory.h */,
-				DF93D6791444A8B0007C6459 /* LastFMFile.cpp */,
-				DF93D67A1444A8B0007C6459 /* LastFMFile.h */,
 				7C1F6EB913ECCFA7001726AB /* LibraryDirectory.cpp */,
 				7C1F6EBA13ECCFA7001726AB /* LibraryDirectory.h */,
 				E38E16970D25F9FA00618676 /* MemBufferCache.cpp */,
@@ -6887,7 +6848,6 @@
 				E38E20280D25F9FD00618676 /* IFile.cpp in Sources */,
 				E38E20290D25F9FD00618676 /* iso9660.cpp in Sources */,
 				E38E202A0D25F9FD00618676 /* ISO9660Directory.cpp in Sources */,
-				E38E202B0D25F9FD00618676 /* LastFMDirectory.cpp in Sources */,
 				E38E20330D25F9FD00618676 /* MultiPathDirectory.cpp in Sources */,
 				E38E20340D25F9FD00618676 /* DirectoryNode.cpp in Sources */,
 				E38E20350D25F9FD00618676 /* DirectoryNodeAlbum.cpp in Sources */,
@@ -7007,8 +6967,6 @@
 				E38E20D10D25F9FD00618676 /* GUIWindowWeather.cpp in Sources */,
 				E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */,
 				E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */,
-				E38E20D80D25F9FD00618676 /* LastFmManager.cpp in Sources */,
-				E38E21670D25F9FD00618676 /* scrobbler.cpp in Sources */,
 				E38E21740D25F9FD00618676 /* MediaCrawler.cpp in Sources */,
 				E38E21760D25F9FD00618676 /* PltMicroMediaController.cpp in Sources */,
 				E38E21780D25F9FD00618676 /* PltAction.cpp in Sources */,
@@ -7231,8 +7189,6 @@
 				F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
 				F59876BC0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */,
 				F59876C00FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */,
-				F5987B250FBB9682008EF4FB /* librefmscrobbler.cpp in Sources */,
-				F5987B260FBB9682008EF4FB /* lastfmscrobbler.cpp in Sources */,
 				83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */,
 				F5987F050FBDF274008EF4FB /* DPMSSupport.cpp in Sources */,
 				F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */,
@@ -7576,7 +7532,6 @@
 				DF93D6A11444A8B1007C6459 /* FileReaderFile.cpp in Sources */,
 				DF93D6A21444A8B1007C6459 /* HDFile.cpp in Sources */,
 				DF93D6A31444A8B1007C6459 /* ISOFile.cpp in Sources */,
-				DF93D6A41444A8B1007C6459 /* LastFMFile.cpp in Sources */,
 				DF93D6A51444A8B1007C6459 /* MusicDatabaseFile.cpp in Sources */,
 				DF93D6A61444A8B1007C6459 /* NFSFile.cpp in Sources */,
 				DF93D6A71444A8B1007C6459 /* PipeFile.cpp in Sources */,
