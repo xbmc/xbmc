@@ -30,6 +30,7 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "view/ViewState.h"
 #include "profiles/ProfilesManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "guilib/Texture.h"
@@ -378,6 +379,9 @@ bool CGUIDialogVideoBookmarks::OnAddBookmark()
   if (CGUIDialogVideoBookmarks::AddBookmark()) 
   {
     g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                          g_localizeStrings.Get(298),   //"Bookmarks"
+                                          g_localizeStrings.Get(21362));//"Bookmark created"
     return true;
   }
   return false;
@@ -398,6 +402,10 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
       if(bReturn)
       {
         g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, 
+                                              g_localizeStrings.Get(298),   //"Bookmarks"
+                                              g_localizeStrings.Get(21363));//"Episode Bookmark created"
+ 
       }
     }
     videoDatabase.Close();
