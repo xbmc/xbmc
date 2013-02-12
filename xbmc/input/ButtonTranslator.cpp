@@ -568,7 +568,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   TiXmlElement* pRoot = xmlDoc.RootElement();
   if (!pRoot)
   {
-    CLog::Log(LOGERROR, "Error getiing keymap root: %s", keymapPath.c_str());
+    CLog::Log(LOGERROR, "Error getting keymap root: %s", keymapPath.c_str());
     return false;
   }
   CStdString strValue = pRoot->Value();
