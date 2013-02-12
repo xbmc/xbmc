@@ -634,7 +634,7 @@ void CEGLNativeTypeRaspberryPI::GetSupportedModes(HDMI_RES_GROUP_T group, std::v
     }
   }
   if (supported_modes)
-    delete supported_modes;
+    delete [] supported_modes;
 }
 
 void CEGLNativeTypeRaspberryPI::TvServiceCallback(uint32_t reason, uint32_t param1, uint32_t param2)
