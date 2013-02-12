@@ -1347,7 +1347,7 @@ void Renderer::Sphere(int del_uhol_x, int del_uhol_y, float size)
 		//		g_device->DrawPrimitive(D3DPT_TRIANGLESTRIP, i*2*(del_y+1), 2*del_y );
 		m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2*del_uhol_y, &v[i*2*(del_uhol_y+1)], sizeof(PosColNormalUVVertex));
 
-	delete v;
+	delete [] v;
 	//  pd->DrawPrimitive( D3DPT_TRIANGLESTRIP, i*2*(del_y+1), 2*del_y );
 }
 
