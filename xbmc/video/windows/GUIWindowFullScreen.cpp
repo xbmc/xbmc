@@ -51,6 +51,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/URIUtils.h"
 #include "XBDateTime.h"
 #include "input/ButtonTranslator.h"
 #include "pvr/PVRManager.h"
@@ -228,8 +229,16 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         g_application.m_pPlayer->GetSubtitleName(g_application.m_pPlayer->GetSubtitle(),sub);
         g_application.m_pPlayer->GetSubtitleLanguage(g_application.m_pPlayer->GetSubtitle(),lang);
+        
         if (sub != lang)
-          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+        {
+          CStdString filename;
+          g_application.m_pPlayer->GetSubtitleFilename(g_application.m_pPlayer->GetSubtitle(),filename);
+          if (sub != URIUtils::GetFileName(filename))
+            sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+          else
+            sub.Format("%s [%s]", lang.c_str(), sub.c_str());
+        }
       }
       else
         sub = g_localizeStrings.Get(1223);
@@ -282,7 +291,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
         g_application.m_pPlayer->GetSubtitleLanguage(g_settings.m_currentVideoSettings.m_SubtitleStream,lang);
         if (sub != lang)
-          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+        {
+          CStdString filename;
+          g_application.m_pPlayer->GetSubtitleFilename(g_settings.m_currentVideoSettings.m_SubtitleStream,filename);
+          if (sub != URIUtils::GetFileName(filename))
+            sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+          else
+            sub.Format("%s [%s]", lang.c_str(), sub.c_str());
+        }
       }
       else
         sub = g_localizeStrings.Get(1223);

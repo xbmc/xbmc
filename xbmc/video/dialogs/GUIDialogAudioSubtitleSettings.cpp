@@ -208,7 +208,14 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     g_application.m_pPlayer->GetSubtitleLanguage(i, strLanguage);
 
     if (strName != strLanguage)
-      strName.Format("%s [%s]", strName.c_str(), strLanguage.c_str());
+    {
+      CStdString strFilename;
+      g_application.m_pPlayer->GetSubtitleFilename(i, strFilename);
+      if (strName != URIUtils::GetFileName(strFilename))
+        strName.Format("%s [%s]", strName.c_str(), strLanguage.c_str());
+      else
+        strName.Format("%s [%s]", strLanguage.c_str(), strName.c_str());
+    }
 
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
 

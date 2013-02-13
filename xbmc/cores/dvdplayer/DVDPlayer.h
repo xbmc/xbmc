@@ -208,6 +208,7 @@ public:
   virtual int GetSubtitle();
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName);
   virtual void GetSubtitleLanguage(int iStream, CStdString &strStreamLang);
+  virtual void GetSubtitleFilename(int iStream, CStdString &strStreamFilename);
   virtual void SetSubtitle(int iStream);
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);

@@ -2691,7 +2691,36 @@ void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
 {
   SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
   if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
-    strStreamLang = g_localizeStrings.Get(13205); // Unknown
+  {
+    if (s.filename.length() > 0)
+    {
+      // attempt to extract a language or description from the filename
+      CStdString strBase = URIUtils::GetFileName(m_filename);
+      URIUtils::RemoveExtension(strBase);
+      
+      CStdString strStreamFilename = URIUtils::GetFileName(s.filename).substr(strBase.length() + 1);
+      int iPos = strStreamFilename.ReverseFind(".");
+      if (iPos > 0)
+      {
+        strStreamFilename = strStreamFilename.Left(iPos);
+        if (strStreamFilename.length() > 0)
+        {
+          if (!g_LangCodeExpander.Lookup(strStreamLang, strStreamFilename))
+            strStreamLang = strStreamFilename;
+        }
+      }
+    }
+    if (!strStreamLang.length() > 0)
+      strStreamLang = g_localizeStrings.Get(13205); // Unknown
+  }
+}
+
+void CDVDPlayer::GetSubtitleFilename(int iStream, CStdString &strStreamFilename)
+{
+  strStreamFilename = "";
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  if (s.filename.length() > 0)
+    strStreamFilename = s.filename;
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
