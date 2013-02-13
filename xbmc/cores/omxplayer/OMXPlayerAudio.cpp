@@ -731,17 +731,10 @@ bool OMXPlayerAudio::OpenDecoder()
   /* GetDataFormat is setting up evrything */
   m_format.m_dataFormat = GetDataFormat(m_hints);
 
-  std::string device = "";
-  
-  if(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI)
-    device = "hdmi";
-  else
-    device = "local";
-
   m_av_clock->Lock();
   m_av_clock->OMXStop(false);
 
-  bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, device, m_av_clock, m_hints, m_passthrough, m_hw_decode);
+  bool bAudioRenderOpen = m_omxAudio.Initialize(m_format, m_av_clock, m_hints, m_passthrough, m_hw_decode);
 
   m_codec_name = "";
   m_bad_state  = !bAudioRenderOpen;
