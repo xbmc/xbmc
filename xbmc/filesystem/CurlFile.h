@@ -148,6 +148,7 @@ namespace XFILE
 
     protected:
       CReadState*     m_state;
+      CReadState*     m_oldState;
       unsigned int    m_bufferSize;
       int64_t         m_writeOffset;
 
