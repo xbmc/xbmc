@@ -90,6 +90,10 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case CODEC_ID_WMV3:
       m_pFormatName = "am-wmv3";
       break;
+    case CODEC_ID_AVS:
+    case CODEC_ID_CAVS:
+      m_pFormatName = "am-avs";
+      break;
     default:
       CLog::Log(LOGDEBUG, "%s: Unknown hints.codec(%d", __MODULE_NAME__, hints.codec);
       return false;

@@ -330,9 +330,11 @@ static vformat_t codecid_to_vformat(enum CodecID id)
     case CODEC_ID_WMV3:
       format = VFORMAT_VC1;
       break;
-    case CODEC_ID_VP6F:
-      format = VFORMAT_SW;
-      break;
+    case CODEC_ID_AVS:
+    case CODEC_ID_CAVS:
+        format = VFORMAT_AVS;
+        break;
+
     default:
       format = VFORMAT_UNSUPPORT;
       break;
