@@ -67,6 +67,7 @@ public:
   void DumpOvector(int iLog);
   const CRegExp& operator= (const CRegExp& re);
 
+  bool operator ==(const CRegExp &rhs) const;
 private:
   void Cleanup() { if (m_re) { PCRE::pcre_free(m_re); m_re = NULL; } }
 
