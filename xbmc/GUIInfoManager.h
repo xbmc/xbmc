@@ -33,7 +33,8 @@
 #include "XBDateTime.h"
 #include "utils/Observer.h"
 #include "interfaces/info/SkinVariable.h"
-
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 #include <list>
 #include <map>
 
@@ -360,8 +361,7 @@ namespace INFO
 #define INTEGER_GREATER_THAN        413
 #define STRING_STR_LEFT             414
 #define STRING_STR_RIGHT            415
-#define MATCHES_REGEX_CASE_SENSITIVE   416
-#define MATCHES_REGEX_CASE_INSENSITIVE 417
+#define MATCHES_REGEX               416
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
@@ -644,31 +644,105 @@ namespace EPG { class CEpgInfoTag; }
 #define INFOFLAG_LISTITEM_WRAP        ((uint32_t) (1 << 25))  // Wrap ListItem lookups
 #define INFOFLAG_LISTITEM_POSITION    ((uint32_t) (1 << 26))  // Absolute ListItem lookups
 
+class GUIInfo;
+class GUIRegexInfo;
+
+class GUIInfoInterface
+{
+public:
+  GUIInfoInterface(int info, uint32_t data1) 
+    : m_info(info),       
+      m_data1(data1)
+  {}
+  
+  virtual bool GetMultiInfoBool(int contextWindow = 0, const CGUIListItem *item = NULL) = 0;
+  virtual bool GetMultiInfoInt(int &value, int contextWindow = 0) const = 0;
+  virtual CStdString GetMultiInfoLabel(int contextWindow = 0, CStdString *fallback = NULL) = 0;
+  
+  bool operator ==(const GUIInfoInterface &rhs) const;
+   
+  uint32_t GetData1() const;
+  
+  int m_info;
+  
+  virtual bool compare2(const GUIInfo& info) const = 0;      //2nd dispatch functions
+  virtual bool compare2(const GUIRegexInfo& info) const = 0;
+protected:
+    //We need to do double dispatch so we can actually compare the base classes
+  virtual bool compare(const GUIInfoInterface &rhs) const = 0;
+
+  
+  uint32_t m_data1;
+};
+typedef boost::shared_ptr<GUIInfoInterface> GUIInfoPtr;
+
 // structure to hold multiple integer data
 // for storage referenced from a single integer
-class GUIInfo
+class GUIInfo : public GUIInfoInterface
 {
 public:
   GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
+    : GUIInfoInterface(info, data1),
+      m_data2(data2)
   {
-    m_info = info;
-    m_data1 = data1;
-    m_data2 = data2;
     if (flag)
       SetInfoFlag(flag);
   }
-  bool operator ==(const GUIInfo &right) const
-  {
-    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
-  };
+  
+  virtual bool GetMultiInfoBool(int contextWindow = 0, const CGUIListItem *item = NULL);
+  virtual bool GetMultiInfoInt(int &value, int contextWindow = 0) const;
+  virtual CStdString GetMultiInfoLabel(int contextWindow = 0, CStdString *fallback = NULL);
+  
   uint32_t GetInfoFlag() const;
-  uint32_t GetData1() const;
   int GetData2() const;
-  int m_info;
+protected:
+  virtual bool compare(const GUIInfoInterface &rhs) const { 
+    return rhs.compare2(*this); 
+  }
+  virtual bool compare2(const GUIInfo& info) const 
+  {
+    return m_data2 == info.m_data2;
+  }
+  virtual bool compare2(const GUIRegexInfo& info) const
+  {
+    return false;  //trying to compare different types!
+  };
 private:
   void SetInfoFlag(uint32_t flag);
-  uint32_t m_data1;
+
   int m_data2;
+};
+
+//structure to hold our compiled regex for the matchesRegex function
+class GUIRegexInfo : public GUIInfoInterface
+{
+public:
+  GUIRegexInfo(int info, uint32_t data1, CRegExp regularExpression)
+    : GUIInfoInterface(info, data1), m_regularExpression(regularExpression)
+  {}
+  
+  virtual bool GetMultiInfoBool(int contextWindow = 0, const CGUIListItem *item = NULL);
+  virtual bool GetMultiInfoInt(int &value, int contextWindow = 0) const
+  {
+    return 0;
+  }
+  virtual CStdString GetMultiInfoLabel(int contextWindow = 0, CStdString *fallback = NULL) 
+  {
+    return (fallback!=NULL) ? *fallback : StringUtils::EmptyString;
+  }
+  
+protected:
+  virtual bool compare(const GUIInfoInterface &rhs) const { return rhs.compare2(*this); }
+  virtual bool compare2(const GUIInfo& info) const 
+  {
+    return false;  //trying to compare different types!
+  }
+  virtual bool compare2(const GUIRegexInfo& info) const
+  {
+    return m_regularExpression == info.m_regularExpression;
+  }
+  
+  CRegExp m_regularExpression;
 };
 
 /*!
@@ -818,6 +892,7 @@ public:
   bool ConditionsChangedValues(const std::map<int, bool>& map);
 protected:
   friend class INFO::InfoSingle;
+  friend class GUIInfo; //Do not want to expose the internals right now... would be even more refactoring ^^
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
 
   // routines for window retrieval
@@ -839,9 +914,9 @@ protected:
     std::vector<CStdString> params;
   };
 
-  bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
-  bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, CStdString *fallback = NULL);
+  bool GetMultiInfoBool(const GUIInfoPtr info, int contextWindow = 0, const CGUIListItem *item = NULL);
+  bool GetMultiInfoInt(int &value, const GUIInfoPtr info, int contextWindow = 0) const;
+  CStdString GetMultiInfoLabel(const GUIInfoPtr info, int contextWindow = 0, CStdString *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
@@ -862,7 +937,7 @@ protected:
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
-  int AddMultiInfo(const GUIInfo &info);
+  int AddMultiInfo(const GUIInfoPtr info);
   int AddListItemProp(const CStdString &str, int offset=0);
 
   CStdString GetAudioScrobblerLabel(int item);
@@ -878,7 +953,7 @@ protected:
   CStdStringArray m_stringParameters;
 
   // Array of multiple information mapped to a single integer lookup
-  std::vector<GUIInfo> m_multiInfo;
+  std::vector<boost::shared_ptr<GUIInfoInterface> > m_multiInfo;
   std::vector<std::string> m_listitemProperties;
 
   CStdString m_currentMovieDuration;
