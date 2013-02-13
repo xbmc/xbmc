@@ -93,7 +93,7 @@ private:
 
   FILE* m_fProcStat;
   FILE* m_fProcTemperature;
-  FILE* m_fCPUInfo;
+  FILE* m_fCPUFreq;
 
   unsigned long long m_userTicks;
   unsigned long long m_niceTicks;
