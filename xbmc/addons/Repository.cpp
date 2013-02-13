@@ -33,6 +33,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "pvr/PVRManager.h"
+#include "filesystem/PluginDirectory.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -273,6 +274,13 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
     {
       CLog::Log(LOGERROR,"Repository %s returned no add-ons, listing may have failed",repo->Name().c_str());
       reposum = checksum; // don't update the checksum
+    }
+    if (!repo->Props().libname.empty())
+    {
+      CFileItemList dummy;
+      CStdString s;
+      s.Format("plugin://%s/?action=update", repo->ID());
+      CDirectory::GetDirectory(s, dummy);
     }
     database.AddRepository(repo->ID(),addons,reposum);
   }

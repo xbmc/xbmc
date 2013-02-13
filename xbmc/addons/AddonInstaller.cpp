@@ -476,6 +476,15 @@ CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash
 
 bool CAddonInstallJob::DoWork()
 {
+  CAddonDatabase database;
+  database.Open();
+  CStdString repo;
+  database.GetRepoForAddon(m_addon->ID(), repo);
+  AddonPtr repoPtr;
+  CAddonMgr::Get().GetAddon(repo, repoPtr);
+  CStdString installFrom;
+  if (!repoPtr || repoPtr->Props().libname.IsEmpty())
+  {
   // Addons are installed by downloading the .zip package on the server to the local
   // packages folder, then extracting from the local .zip package into the addons folder
   // Both these functions are achieved by "copying" using the vfs.
@@ -484,7 +493,6 @@ bool CAddonInstallJob::DoWork()
   CStdString package = URIUtils::AddFileToFolder("special://home/addons/packages/",
                                               URIUtils::GetFileName(m_addon->Path()));
 
-  CStdString installFrom;
   if (URIUtils::HasSlashAtEnd(m_addon->Path()))
   { // passed in a folder - all we need do is copy it across
     installFrom = m_addon->Path();
@@ -526,12 +534,14 @@ bool CAddonInstallJob::DoWork()
     }
     installFrom = archivedFiles[0]->GetPath();
   }
+    repoPtr.reset();
+  }
 
   // run any pre-install functions
   bool reloadAddon = OnPreInstall();
 
   // perform install
-  if (!Install(installFrom))
+  if (!Install(installFrom, repoPtr))
     return false; // something went wrong
 
   // run any post-install guff
@@ -592,8 +602,28 @@ bool CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
   return job.DoWork();
 }
 
-bool CAddonInstallJob::Install(const CStdString &installFrom)
+bool CAddonInstallJob::Install(const CStdString &installFrom, const AddonPtr& repo)
 {
+  if (repo)
+  {
+    CFileItemList dummy;
+    CStdString s;
+    ADDON::InfoMap::const_iterator it = m_addon->ExtraInfo().find("systempackage");
+    if (it == m_addon->ExtraInfo().end())
+    {
+      CLog::Log(LOGERROR, "System package installation requested,"
+                          "but no system package specified for %s", m_addon->ID().c_str());
+      return false;
+    }
+    ADDON::InfoMap::const_iterator it2 = m_addon->ExtraInfo().find("systempackage_version");
+    s.Format("plugin://%s/?action=install"
+             "&package=%s&version=%s", repo->ID().c_str(),
+                                       it->second.c_str(),
+                                       it2->second.c_str());
+    CDirectory::GetDirectory(s, dummy);
+  }
+  else
+  {
   CStdString addonFolder(installFrom);
   URIUtils::RemoveSlashAtEnd(addonFolder);
   addonFolder = URIUtils::AddFileToFolder("special://home/addons/",
@@ -648,6 +678,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
         return false;
       }
     }
+  }
   }
   return true;
 }
@@ -771,8 +802,24 @@ bool CAddonUnInstallJob::DoWork()
     if (service)
       service->Stop();
   }
-  if (!CAddonInstallJob::DeleteAddon(m_addon->Path()))
-    return false;
+  if (m_addon->ExtraInfo().find("systempackage") == m_addon->ExtraInfo().end())
+  {
+    if (!CAddonInstallJob::DeleteAddon(m_addon->Path()))
+      return false;
+  }
+  else
+  {
+    CAddonDatabase database;
+    database.Open();
+    CStdString repo;
+    database.GetRepoForAddon(m_addon->ID(), repo);
+    CFileItemList dummy;
+    CStdString s;
+    ADDON::InfoMap::const_iterator it = m_addon->ExtraInfo().find("systempackage");
+    s.Format("plugin://%s/?action=uninstall"
+             "&package=%s", repo.c_str(), it->second.c_str());
+    CDirectory::GetDirectory(s, dummy);
+  }
 
   OnPostUnInstall();
 
