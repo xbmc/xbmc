@@ -25,6 +25,7 @@
 #include "../Utils/AEDeviceInfo.h"
 
 #include "threads/CriticalSection.h"
+#include <Audioclient.h>
 
 class CAESinkDirectSound : public IAESink
 {
@@ -45,7 +46,10 @@ public:
   virtual unsigned int AddPackets         (uint8_t *data, unsigned int frames, bool hasAudio);
   static  std::string  GetDefaultDevice   ();
   static  void         EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList, bool force = false);
+  virtual bool         HasVolume();
+  virtual void         SetVolume(float volume);
 private:
+  bool          InitAudioSessionVolume();
   void          AEChannelsFromSpeakerMask(DWORD speakers);
   DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
   void          CheckPlayStatus();
@@ -78,4 +82,5 @@ private:
   bool                m_initialized;
   bool                m_isDirtyDS;
   CCriticalSection    m_runLock;
+  ISimpleAudioVolume  *m_pSimpleAudioVolume;
 };

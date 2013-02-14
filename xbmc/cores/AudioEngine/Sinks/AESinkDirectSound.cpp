@@ -35,6 +35,7 @@
 #include <Functiondiscoverykeys_devpkey.h>
 #include <Rpc.h>
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include <Audiopolicy.h>
 #pragma comment(lib, "Rpcrt4.lib")
 
 extern HWND g_hWnd;
@@ -121,7 +122,8 @@ CAESinkDirectSound::CAESinkDirectSound() :
   m_CacheLen      (0    ),
   m_dwChunkSize   (0    ),
   m_dwBufferLen   (0    ),
-  m_BufferTimeouts(0    )
+  m_BufferTimeouts(0    ),
+  m_pSimpleAudioVolume(NULL)
 {
   m_channelLayout.Reset();
 }
@@ -292,6 +294,9 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   CLog::Log(LOGDEBUG, "  Frame Samples   : %d", format.m_frameSamples);
   CLog::Log(LOGDEBUG, "  Frame Size      : %d", format.m_frameSize);
 
+  if(g_sysinfo.IsVistaOrHigher())
+    InitAudioSessionVolume();
+
   return true;
 }
 
@@ -299,6 +304,8 @@ void CAESinkDirectSound::Deinitialize()
 {
   if (!m_initialized)
     return;
+
+  SAFE_RELEASE(m_pSimpleAudioVolume);
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Cleaning up");
 
@@ -895,4 +902,52 @@ failed:
   SAFE_RELEASE(pEnumerator);
 
   return strDevName;
+}
+
+bool CAESinkDirectSound::HasVolume()
+{
+  if(g_sysinfo.IsVistaOrHigher())
+    return true;
+  return false;
+}
+
+bool CAESinkDirectSound::InitAudioSessionVolume()
+{
+  HRESULT hr = S_OK;
+
+  IMMDeviceEnumerator *pDeviceEnumerator = NULL;
+  IMMDevice *pDevice = NULL;
+  IAudioSessionManager *pAudioSessionManager = NULL;
+
+  // Get the enumerator for the audio endpoint devices.
+  hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pDeviceEnumerator));
+
+  if (FAILED(hr))
+    goto done;
+
+  // Get the default audio endpoint that the SAR will use.
+  hr = pDeviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDevice);
+
+  if (FAILED(hr))
+    goto done;
+
+  // Get the session manager for this device.
+  hr = pDevice->Activate(__uuidof(IAudioSessionManager), CLSCTX_INPROC_SERVER, NULL, (void**) &pAudioSessionManager);
+
+  if (FAILED(hr))
+    goto done;
+
+  hr = pAudioSessionManager->GetSimpleAudioVolume(&GUID_NULL, 0, &m_pSimpleAudioVolume);
+
+done:
+  SAFE_RELEASE(pDeviceEnumerator);
+  SAFE_RELEASE(pDevice);
+  SAFE_RELEASE(pAudioSessionManager);
+  return hr==S_OK;
+}
+
+void CAESinkDirectSound::SetVolume(float volume)
+{
+  if (m_pSimpleAudioVolume != NULL)
+    m_pSimpleAudioVolume->SetMasterVolume(volume, NULL);
 }
