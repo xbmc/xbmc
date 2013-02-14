@@ -103,11 +103,6 @@ CPosixNetworkManager::CPosixNetworkManager()
   CLog::Log(LOGDEBUG, "NetworkManager: PosixNetworkManager created");
   m_socket = socket(AF_INET, SOCK_DGRAM, 0);
   m_post_failed = false;
-  FindNetworkInterfaces();
-  if (CanManageConnections())
-    RestoreSavedConnection();
-  else
-    RestoreSystemConnection();
 }
 
 CPosixNetworkManager::~CPosixNetworkManager()
