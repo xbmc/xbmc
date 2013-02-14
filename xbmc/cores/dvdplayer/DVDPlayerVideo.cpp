@@ -23,6 +23,7 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
@@ -535,8 +536,8 @@ void CDVDPlayerVideo::Process()
       m_pVideoCodec->SetDropState(bRequestDrop);
 
       // ask codec to do deinterlacing if possible
-      EDEINTERLACEMODE mDeintMode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-      EINTERLACEMETHOD mInt       = g_renderManager.AutoInterlaceMethod(g_settings.m_currentVideoSettings.m_InterlaceMethod);
+      EDEINTERLACEMODE mDeintMode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+      EINTERLACEMETHOD mInt       = g_renderManager.AutoInterlaceMethod(CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod);
 
       unsigned int     mFilters = 0;
 
@@ -658,7 +659,7 @@ void CDVDPlayerVideo::Process()
               }
             }
 
-            if (g_settings.m_currentVideoSettings.m_PostProcess)
+            if (CMediaSettings::Get().GetCurrentVideoSettings().m_PostProcess)
             {
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
@@ -1364,7 +1365,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
   {
     RECT crop;
 
-    if (g_settings.m_currentVideoSettings.m_Crop)
+    if (CMediaSettings::Get().GetCurrentVideoSettings().m_Crop)
       AutoCrop(pPicture, crop);
     else
     { // reset to defaults
@@ -1386,16 +1387,16 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 
     //compare with hysteresis
 # define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
-    if(HYST(g_settings.m_currentVideoSettings.m_CropLeft  , crop.left)
-    || HYST(g_settings.m_currentVideoSettings.m_CropRight , crop.right)
-    || HYST(g_settings.m_currentVideoSettings.m_CropTop   , crop.top)
-    || HYST(g_settings.m_currentVideoSettings.m_CropBottom, crop.bottom))
+    if(HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft  , crop.left)
+    || HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight , crop.right)
+    || HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop   , crop.top)
+    || HYST(CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom, crop.bottom))
     {
-      g_settings.m_currentVideoSettings.m_CropLeft   = crop.left;
-      g_settings.m_currentVideoSettings.m_CropRight  = crop.right;
-      g_settings.m_currentVideoSettings.m_CropTop    = crop.top;
-      g_settings.m_currentVideoSettings.m_CropBottom = crop.bottom;
-      g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+      CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft   = crop.left;
+      CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight  = crop.right;
+      CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop    = crop.top;
+      CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom = crop.bottom;
+      g_renderManager.SetViewMode(CMediaSettings::Get().GetCurrentVideoSettings().m_ViewMode);
     }
 # undef HYST
   }
@@ -1403,10 +1404,10 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
 {
-  crop.left   = g_settings.m_currentVideoSettings.m_CropLeft;
-  crop.right  = g_settings.m_currentVideoSettings.m_CropRight;
-  crop.top    = g_settings.m_currentVideoSettings.m_CropTop;
-  crop.bottom = g_settings.m_currentVideoSettings.m_CropBottom;
+  crop.left   = CMediaSettings::Get().GetCurrentVideoSettings().m_CropLeft;
+  crop.right  = CMediaSettings::Get().GetCurrentVideoSettings().m_CropRight;
+  crop.top    = CMediaSettings::Get().GetCurrentVideoSettings().m_CropTop;
+  crop.bottom = CMediaSettings::Get().GetCurrentVideoSettings().m_CropBottom;
 
   int black  = 16; // what is black in the image
   int level  = 8;  // how high above this should we detect
@@ -1561,7 +1562,7 @@ void CDVDPlayerVideo::ResetFrameRateCalc()
   m_iFrameRateLength = 1;
   m_iFrameRateErr    = 0;
 
-  m_bAllowDrop       = (!m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO) ||
+  m_bAllowDrop       = (!m_bCalcFrameRate && CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod != VS_SCALINGMETHOD_AUTO) ||
                         g_advancedSettings.m_videoFpsDetect == 0;
 }
 
@@ -1575,7 +1576,7 @@ void CDVDPlayerVideo::CalcFrameRate()
 
   //only calculate the framerate if sync playback to display is on, adjust refreshrate is on,
   //or scaling method is set to auto
-  if (!m_bCalcFrameRate && g_settings.m_currentVideoSettings.m_ScalingMethod != VS_SCALINGMETHOD_AUTO)
+  if (!m_bCalcFrameRate && CMediaSettings::Get().GetCurrentVideoSettings().m_ScalingMethod != VS_SCALINGMETHOD_AUTO)
   {
     ResetFrameRateCalc();
     return;

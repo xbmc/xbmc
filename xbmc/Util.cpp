@@ -59,6 +59,7 @@
 #endif
 #include "utils/RegExp.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "guilib/TextureManager.h"
 #include "utils/fstrcmp.h"
 #include "storage/MediaManager.h"
@@ -515,7 +516,7 @@ bool CUtil::IsPicture(const CStdString& strFile)
     return false;
 
   extension.ToLower();
-  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+  if (CMediaSettings::Get().GetPictureExtensions().find(extension) != string::npos)
     return true;
 
   if (extension == ".tbn" || extension == ".dds")
@@ -1899,20 +1900,20 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   CStdString strMovieFileNameNoExt(URIUtils::ReplaceExtension(strMovieFileName, ""));
   strLookInPaths.push_back(strPath);
   
-  if (!g_settings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
+  if (!CMediaSettings::Get().GetAdditionalSubtitleDirectoryCheckedState() && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
   {
     if (!g_application.getNetwork().IsAvailable() && !URIUtils::IsHD(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
-      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      CMediaSettings::Get().SetAdditionalSubtitleDirectoryCheckedState(-1); // disabled
     }
     else if (!CDirectory::Exists(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
-      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      CMediaSettings::Get().SetAdditionalSubtitleDirectoryCheckedState(-1); // disabled
     }
     
-    g_settings.iAdditionalSubtitleDirectoryChecked = 1;
+    CMediaSettings::Get().SetAdditionalSubtitleDirectoryCheckedState(1);
   }
   
   if (strMovie.Left(6) == "rar://") // <--- if this is found in main path then ignore it!
@@ -1978,7 +1979,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   // .. done checking for cd-dirs
   
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
-  if (g_settings.iAdditionalSubtitleDirectoryChecked == 1)
+  if (CMediaSettings::Get().GetAdditionalSubtitleDirectoryCheckedState() == 1)
   {
     strPath = g_guiSettings.GetString("subtitles.custompath");
     URIUtils::AddSlashAtEnd(strPath);

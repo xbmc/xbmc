@@ -41,6 +41,7 @@
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -4063,7 +4064,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   if (iVersion < 50)
   {
     m_pDS->exec("ALTER TABLE settings ADD ScalingMethod integer");
-    m_pDS->exec(PrepareSQL("UPDATE settings set ScalingMethod=%i", g_settings.m_defaultVideoSettings.m_ScalingMethod));
+    m_pDS->exec(PrepareSQL("UPDATE settings set ScalingMethod=%i", CMediaSettings::Get().GetDefaultVideoSettings().m_ScalingMethod));
   }
   if (iVersion < 51)
   {
@@ -4154,7 +4155,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     m_pDS->exec("CREATE TRIGGER delete_set AFTER DELETE ON sets FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idSet AND media_type='set'; END");
     m_pDS->exec("CREATE TRIGGER delete_person AFTER DELETE ON actors FOR EACH ROW BEGIN DELETE FROM art WHERE media_id=old.idActor AND media_type IN ('actor','artist','writer','director'); END");
 
-    g_settings.m_videoNeedsUpdate = 63;
+    CMediaSettings::Get().SetVideoDatabaseUpdateVersion(63);
     g_settings.Save();
   }
   if (iVersion < 64)

@@ -27,6 +27,7 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "Util.h"
 #include "URL.h"
@@ -99,17 +100,17 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const CStdString &method, ITranspor
   if (media.Equals("video"))
   {
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-    extensions = g_settings.m_videoExtensions;
+    extensions = CMediaSettings::Get().GetVideoExtensions();
   }
   else if (media.Equals("music"))
   {
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-    extensions = g_settings.m_musicExtensions;
+    extensions = CMediaSettings::Get().GetMusicExtensions();
   }
   else if (media.Equals("pictures"))
   {
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-    extensions = g_settings.m_pictureExtensions;
+    extensions = CMediaSettings::Get().GetPictureExtensions();
   }
 
   if (CDirectory::GetDirectory(strPath, items, extensions))
@@ -334,17 +335,17 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       if (media.Equals("video"))
       {
         regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-        extensions = g_settings.m_videoExtensions;
+        extensions = CMediaSettings::Get().GetVideoExtensions();
       }
       else if (media.Equals("music"))
       {
         regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        extensions = g_settings.m_musicExtensions;
+        extensions = CMediaSettings::Get().GetMusicExtensions();
       }
       else if (media.Equals("pictures"))
       {
         regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-        extensions = g_settings.m_pictureExtensions;
+        extensions = CMediaSettings::Get().GetPictureExtensions();
       }
 
       CDirectory directory;

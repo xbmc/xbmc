@@ -28,6 +28,7 @@
 #include "utils/LangCodeExpander.h"
 #include "LangInfo.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -326,8 +327,8 @@ void CAdvancedSettings::OnSettingsLoaded()
   Load();
 
   // Add the list of disc stub extensions (if any) to the list of video extensions
-  if (!g_settings.m_discStubExtensions.IsEmpty())
-    g_settings.m_videoExtensions += "|" + g_settings.m_discStubExtensions;
+  if (!CMediaSettings::Get().GetDiscStubExtensions().empty())
+    CMediaSettings::Get().SetVideoExtensions(CMediaSettings::Get().GetVideoExtensions() + "|" + CMediaSettings::Get().GetDiscStubExtensions());
 
   // default players?
   CLog::Log(LOGNOTICE, "Default DVD Player: %s", m_videoDefaultDVDPlayer.c_str());
@@ -840,25 +841,38 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   if (pPictureExcludes)
     GetCustomRegexps(pPictureExcludes, m_pictureExcludeFromListingRegExps);
 
+  CStdString tmp;
   // picture extensions
   TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_settings.m_pictureExtensions);
+  {
+    GetCustomExtensions(pExts, tmp);
+    CMediaSettings::Get().SetPictureExtensions(tmp);
+  }
 
   // music extensions
   pExts = pRootElement->FirstChildElement("musicextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_settings.m_musicExtensions);
+  {
+    GetCustomExtensions(pExts, tmp);
+    CMediaSettings::Get().SetMusicExtensions(tmp);
+  }
 
   // video extensions
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_settings.m_videoExtensions);
+  {
+    GetCustomExtensions(pExts, tmp);
+    CMediaSettings::Get().SetVideoExtensions(tmp);
+  }
 
   // stub extensions
   pExts = pRootElement->FirstChildElement("discstubextensions");
   if (pExts)
-    GetCustomExtensions(pExts,g_settings.m_discStubExtensions);
+  {
+    GetCustomExtensions(pExts, tmp);
+    CMediaSettings::Get().SetDiscStubExtensions(tmp);
+  }
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);

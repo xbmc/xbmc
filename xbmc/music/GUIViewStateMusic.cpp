@@ -23,6 +23,7 @@
 #include "video/VideoDatabase.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
@@ -58,7 +59,7 @@ CStdString CGUIViewStateWindowMusic::GetLockType()
 
 CStdString CGUIViewStateWindowMusic::GetExtensions()
 {
-  return g_settings.m_musicExtensions;
+  return CMediaSettings::Get().GetMusicExtensions();
 }
 
 VECSOURCES& CGUIViewStateWindowMusic::GetSources()

@@ -32,6 +32,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/ApplicationSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "windows/GUIWindowPVR.h"
@@ -1017,7 +1018,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 
 bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)
 {
-  g_settings.m_bStartVideoWindowed = bPreview;
+  CMediaSettings::Get().SetVideoStartWindowed(bPreview);
   CApplicationMessenger::Get().MediaPlay(CFileItem(*channel));
   CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
       __FUNCTION__, channel->ChannelName().c_str());

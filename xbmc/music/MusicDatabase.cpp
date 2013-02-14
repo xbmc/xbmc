@@ -45,6 +45,7 @@
 #include "filesystem/File.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "FileItem.h"
 #include "Application.h"
 #ifdef HAS_KARAOKE
@@ -3678,7 +3679,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("DROP TABLE thumb");
 
-    g_settings.m_musicNeedsUpdate = 27;
+    CMediaSettings::Get().SetMusicDatabaseUpdateVersion(27);
     g_settings.Save();
   }
 

@@ -49,6 +49,7 @@
 #include "utils/RssReader.h"
 #include "PartyModeManager.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SkinSettings.h"
 #include "utils/StringUtils.h"
@@ -572,7 +573,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (params[i].Equals("isdir"))
         item.m_bIsFolder = true;
       else if (params[i].Equals("1")) // set fullscreen or windowed
-        g_settings.m_bStartVideoWindowed = true;
+        CMediaSettings::Get().SetVideoStartWindowed(true);
       else if (params[i].Equals("resume"))
       {
         // force the item to resume (if applicable) (see CApplication::PlayMedia)
@@ -601,7 +602,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (item.m_bIsFolder)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(),items,g_settings.m_videoExtensions);
+      CDirectory::GetDirectory(item.GetPath(),items,CMediaSettings::Get().GetVideoExtensions());
       int playlist = PLAYLIST_MUSIC;
       for (int i = 0; i < items.Size(); i++)
       {
@@ -817,11 +818,11 @@ int CBuiltins::Execute(const CStdString& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_settings.m_bMyMusicPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        CMediaSettings::Get().SetMusicPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_settings.m_bMyVideoPlaylistShuffle = g_playlistPlayer.IsShuffled(iPlaylist);
+        CMediaSettings::Get().SetVideoPlaylistShuffled(g_playlistPlayer.IsShuffled(iPlaylist));
         g_settings.Save();
       }
 
@@ -861,11 +862,11 @@ int CBuiltins::Execute(const CStdString& execString)
       switch (iPlaylist)
       {
       case PLAYLIST_MUSIC:
-        g_settings.m_bMyMusicPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        CMediaSettings::Get().SetMusicPlaylistRepeat((state == PLAYLIST::REPEAT_ALL));
         g_settings.Save();
         break;
       case PLAYLIST_VIDEO:
-        g_settings.m_bMyVideoPlaylistRepeat = (state == PLAYLIST::REPEAT_ALL);
+        CMediaSettings::Get().SetVideoPlaylistRepeat((state == PLAYLIST::REPEAT_ALL));
         g_settings.Save();
       }
 

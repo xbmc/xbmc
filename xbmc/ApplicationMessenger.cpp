@@ -36,6 +36,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "FileItem.h"
 #include "guilib/GUIDialog.h"
 #include "GUIInfoManager.h"
@@ -400,7 +401,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           else
             URIUtils::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
 
-          CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
+          CUtil::GetRecursiveListing(strPath, items, CMediaSettings::Get().GetPictureExtensions());
           if (items.Size() > 0)
           {
             pSlideShow->Reset();
@@ -435,7 +436,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
-        CStdString extensions = g_settings.m_pictureExtensions;
+        CStdString extensions = CMediaSettings::Get().GetPictureExtensions();
         if (pMsg->dwParam1)
           extensions += "|.tbn";
         CUtil::GetRecursiveListing(strPath, items, extensions);

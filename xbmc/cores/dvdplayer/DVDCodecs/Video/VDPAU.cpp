@@ -27,6 +27,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDClock.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
@@ -514,29 +515,29 @@ void CVDPAU::CheckFeatures()
     SetHWUpscaling();
   }
 
-  if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness ||
-      tmpContrast   != g_settings.m_currentVideoSettings.m_Contrast)
+  if (tmpBrightness != CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness ||
+      tmpContrast   != CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)
   {
     SetColor();
-    tmpBrightness = g_settings.m_currentVideoSettings.m_Brightness;
-    tmpContrast = g_settings.m_currentVideoSettings.m_Contrast;
+    tmpBrightness = CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness;
+    tmpContrast = CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast;
   }
-  if (tmpNoiseReduction != g_settings.m_currentVideoSettings.m_NoiseReduction)
+  if (tmpNoiseReduction != CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction)
   {
-    tmpNoiseReduction = g_settings.m_currentVideoSettings.m_NoiseReduction;
+    tmpNoiseReduction = CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction;
     SetNoiseReduction();
   }
-  if (tmpSharpness != g_settings.m_currentVideoSettings.m_Sharpness)
+  if (tmpSharpness != CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness)
   {
-    tmpSharpness = g_settings.m_currentVideoSettings.m_Sharpness;
+    tmpSharpness = CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness;
     SetSharpness();
   }
-  if (  tmpDeintMode != g_settings.m_currentVideoSettings.m_DeinterlaceMode ||
-        tmpDeintGUI  != g_settings.m_currentVideoSettings.m_InterlaceMethod ||
+  if (  tmpDeintMode != CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode ||
+        tmpDeintGUI  != CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod ||
        (tmpDeintGUI == VS_INTERLACEMETHOD_AUTO && tmpDeint != AutoInterlaceMethod()))
   {
-    tmpDeintMode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-    tmpDeintGUI  = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    tmpDeintMode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+    tmpDeintGUI  = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
     if (tmpDeintGUI == VS_INTERLACEMETHOD_AUTO)
       tmpDeint = AutoInterlaceMethod();
     else
@@ -580,10 +581,10 @@ void CVDPAU::SetColor()
 {
   VdpStatus vdp_st;
 
-  if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness)
-    m_Procamp.brightness = (float)((g_settings.m_currentVideoSettings.m_Brightness)-50) / 100;
-  if (tmpContrast != g_settings.m_currentVideoSettings.m_Contrast)
-    m_Procamp.contrast = (float)((g_settings.m_currentVideoSettings.m_Contrast)+50) / 100;
+  if (tmpBrightness != CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness)
+    m_Procamp.brightness = (float)((CMediaSettings::Get().GetCurrentVideoSettings().m_Brightness)-50) / 100;
+  if (tmpContrast != CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)
+    m_Procamp.contrast = (float)((CMediaSettings::Get().GetCurrentVideoSettings().m_Contrast)+50) / 100;
 
   if(vid_height >= 600 || vid_width > 1024)
     vdp_st = vdp_generate_csc_matrix(&m_Procamp, VDP_COLOR_STANDARD_ITUR_BT_709, &m_CSCMatrix);
@@ -613,7 +614,7 @@ void CVDPAU::SetNoiseReduction()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_NoiseReduction)
+  if (!CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction)
   {
     VdpBool enabled[]= {0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -623,8 +624,8 @@ void CVDPAU::SetNoiseReduction()
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* nr[] = { &g_settings.m_currentVideoSettings.m_NoiseReduction };
-  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",g_settings.m_currentVideoSettings.m_NoiseReduction);
+  void* nr[] = { &CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction };
+  CLog::Log(LOGNOTICE,"Setting Noise Reduction to %f",CMediaSettings::Get().GetCurrentVideoSettings().m_NoiseReduction);
   vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, nr);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -638,7 +639,7 @@ void CVDPAU::SetSharpness()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_Sharpness)
+  if (!CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness)
   {
     VdpBool enabled[]={0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -648,8 +649,8 @@ void CVDPAU::SetSharpness()
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-  void* sh[] = { &g_settings.m_currentVideoSettings.m_Sharpness };
-  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",g_settings.m_currentVideoSettings.m_Sharpness);
+  void* sh[] = { &CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness };
+  CLog::Log(LOGNOTICE,"Setting Sharpness to %f",CMediaSettings::Get().GetCurrentVideoSettings().m_Sharpness);
   vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, sh);
   CheckStatus(vdp_st, __LINE__);
 }
@@ -671,8 +672,8 @@ void CVDPAU::SetHWUpscaling()
 void CVDPAU::SetDeinterlacing()
 {
   VdpStatus vdp_st;
-  EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-  EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  EDEINTERLACEMODE   mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EINTERLACEMETHOD method = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
   if (method == VS_INTERLACEMETHOD_AUTO)
     method = AutoInterlaceMethod();
 
@@ -1381,8 +1382,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = OutHeight;
   }
 
-  EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-  EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  EDEINTERLACEMODE   mode = CMediaSettings::Get().GetCurrentVideoSettings().m_DeinterlaceMode;
+  EINTERLACEMETHOD method = CMediaSettings::Get().GetCurrentVideoSettings().m_InterlaceMethod;
   if (method == VS_INTERLACEMETHOD_AUTO)
     method = AutoInterlaceMethod();
 

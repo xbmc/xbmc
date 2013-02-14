@@ -42,6 +42,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
@@ -370,9 +371,9 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             {
               strMask = setting->Attribute("mask");
               // convert mask qualifiers
-              strMask.Replace("$AUDIO", g_settings.m_musicExtensions);
-              strMask.Replace("$VIDEO", g_settings.m_videoExtensions);
-              strMask.Replace("$IMAGE", g_settings.m_pictureExtensions);
+              strMask.Replace("$AUDIO", CMediaSettings::Get().GetMusicExtensions().c_str());
+              strMask.Replace("$VIDEO", CMediaSettings::Get().GetVideoExtensions().c_str());
+              strMask.Replace("$IMAGE", CMediaSettings::Get().GetPictureExtensions().c_str());
 #if defined(_WIN32_WINNT)
               strMask.Replace("$EXECUTABLE", ".exe|.bat|.cmd|.py");
 #else
@@ -382,9 +383,9 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             else
             {
               if (strcmpi(type, "video") == 0)
-                strMask = g_settings.m_videoExtensions;
+                strMask = CMediaSettings::Get().GetVideoExtensions();
               else if (strcmpi(type, "audio") == 0)
-                strMask = g_settings.m_musicExtensions;
+                strMask = CMediaSettings::Get().GetMusicExtensions();
               else if (strcmpi(type, "executable") == 0)
 #if defined(_WIN32_WINNT)
                 strMask = ".exe|.bat|.cmd|.py";

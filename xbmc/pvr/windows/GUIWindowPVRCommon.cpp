@@ -41,6 +41,7 @@
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/GUISettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -686,7 +687,7 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
     return true;
   }
 
-  g_settings.m_bStartVideoWindowed = bPlayMinimized;
+  CMediaSettings::Get().SetVideoStartWindowed(bPlayMinimized);
 
   if (item->HasPVRRecordingInfoTag())
   {

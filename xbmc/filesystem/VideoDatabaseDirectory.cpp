@@ -25,6 +25,7 @@
 #include "guilib/TextureManager.h"
 #include "File.h"
 #include "FileItem.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/Crc32.h"
 #include "guilib/LocalizeStrings.h"
@@ -229,7 +230,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_TITLE_MOVIES:
     if (strDirectory.Equals("videodb://1/2/"))
     {
-      if (g_settings.m_bMyVideoNavFlatten)
+      if (CMediaSettings::Get().IsVideoNavigationFlattened())
         return "DefaultMovies.png";
       return "DefaultMovieTitle.png";
     }
@@ -237,7 +238,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_TITLE_TVSHOWS:
     if (strDirectory.Equals("videodb://2/2/"))
     {
-      if (g_settings.m_bMyVideoNavFlatten)
+      if (CMediaSettings::Get().IsVideoNavigationFlattened())
         return "DefaultTVShows.png";
       return "DefaultTVShowTitle.png";
     }
@@ -245,7 +246,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_TITLE_MUSICVIDEOS:
     if (strDirectory.Equals("videodb://3/2/"))
     {
-      if (g_settings.m_bMyVideoNavFlatten)
+      if (CMediaSettings::Get().IsVideoNavigationFlattened())
         return "DefaultMusicVideos.png";
       return "DefaultMusicVideoTitle.png";
     }

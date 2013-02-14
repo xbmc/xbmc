@@ -24,6 +24,7 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/PluginDirectory.h"
@@ -74,9 +75,9 @@ CStdString CGUIViewStateWindowPictures::GetLockType()
 CStdString CGUIViewStateWindowPictures::GetExtensions()
 {
   if (g_guiSettings.GetBool("pictures.showvideos"))
-    return g_settings.m_pictureExtensions+"|"+g_settings.m_videoExtensions;
+    return CMediaSettings::Get().GetPictureExtensions()+"|"+CMediaSettings::Get().GetVideoExtensions();
 
-  return g_settings.m_pictureExtensions;
+  return CMediaSettings::Get().GetPictureExtensions();
 }
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()

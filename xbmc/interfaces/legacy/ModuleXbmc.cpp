@@ -45,6 +45,7 @@
 #include "utils/Crc32.h"
 #include "FileItem.h"
 #include "LangInfo.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
@@ -409,11 +410,11 @@ namespace XBMCAddon
       TRACE;
       String result;
       if (strcmpi(mediaType, "video") == 0)
-        result = g_settings.m_videoExtensions;
+        result = CMediaSettings::Get().GetVideoExtensions();
       else if (strcmpi(mediaType, "music") == 0)
-        result = g_settings.m_musicExtensions;
+        result = CMediaSettings::Get().GetMusicExtensions();
       else if (strcmpi(mediaType, "picture") == 0)
-        result = g_settings.m_pictureExtensions;
+        result = CMediaSettings::Get().GetPictureExtensions();
 
       // TODO:
       //    else
