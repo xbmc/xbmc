@@ -332,7 +332,6 @@ bool CAdvancedSettings::Load()
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
   Initialize(); // In case of profile switch.
-  CSpecialProtocol::SetProfilePath(g_settings.GetUserDataFolder());
   ParseSettingsFile("special://xbmc/system/advancedsettings.xml");
   for (unsigned int i = 0; i < m_settingsFiles.size(); i++)
     ParseSettingsFile(m_settingsFiles[i]);
@@ -926,26 +925,6 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     }
   }
 
-  TiXmlElement* pHideSettings = pRootElement->FirstChildElement("hidesettings");
-  if (pHideSettings)
-  {
-    m_settingsHidden.clear();
-    CLog::Log(LOGDEBUG,"Configuring hidden settings");
-    TiXmlNode* pSetting = pHideSettings->FirstChildElement("setting");
-    CStdString hiddenSetting;
-    while (pSetting)
-    {
-      hiddenSetting = pSetting->FirstChild()->Value();
-      if (!hiddenSetting.IsEmpty())
-      {
-        CLog::Log(LOGDEBUG,"    Hiding:  [%s]", hiddenSetting.c_str());
-        m_settingsHidden.push_back(hiddenSetting);
-      }
-      // get next one
-      pSetting = pSetting->NextSiblingElement("setting");
-    }
-  }
-
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
   XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 1080);
@@ -1077,6 +1056,9 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
   }
+
+  // load in the GUISettings overrides:
+  g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 }
 
 void CAdvancedSettings::Clear()

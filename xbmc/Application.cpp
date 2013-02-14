@@ -683,8 +683,7 @@ bool CApplication::Create()
   }
 
   CLog::Log(LOGNOTICE, "load settings...");
-  g_advancedSettings.Initialize();
-  g_advancedSettings.Load();
+
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
   if (!g_settings.Load())

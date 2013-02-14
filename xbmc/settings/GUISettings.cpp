@@ -1308,10 +1308,6 @@ void CGUISettings::GetSettingsGroup(CSettingsCategory* cat, vecSettings &setting
   vecSettings unorderedSettings;
   for (unsigned int index = 0; index < cat->m_settings.size(); index++)
   {
-    // filter out hidden settings
-    if (CheckHiddenOverride(cat->m_settings.at(index)))
-      continue;
-
     if (!cat->m_settings.at(index)->IsAdvanced())
       unorderedSettings.push_back(cat->m_settings.at(index));
   }
@@ -1337,17 +1333,6 @@ void CGUISettings::GetSettingsGroup(CSettingsCategory* cat, vecSettings &setting
       settings.push_back(setting);
     }
   }
-}
-
-bool CGUISettings::CheckHiddenOverride(CSetting *setting)
-{
-  for (CStdStringArray::iterator i = g_advancedSettings.m_settingsHidden.begin();
-      i != g_advancedSettings.m_settingsHidden.end(); i++)
-  {
-    if (strncmp(setting->GetSetting(), i->c_str(), i->size()) == 0)
-      return true;
-  }
-  return false;
 }
 
 void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = false */)

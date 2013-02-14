@@ -505,7 +505,6 @@ public:
   CSetting *GetSetting(const char *strSetting);
 
   void GetSettingsGroup(CSettingsCategory* cat, vecSettings &settings);
-  bool CheckHiddenOverride(CSetting *setting);
   void LoadXML(TiXmlElement *pRootElement, bool hideSettings = false);
   void SaveXML(TiXmlNode *pRootNode);
   void LoadMasterLock(TiXmlElement *pRootElement);

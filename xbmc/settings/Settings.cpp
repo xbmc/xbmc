@@ -793,6 +793,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   LoadPlayerCoreFactorySettings("special://xbmc/system/playercorefactory.xml", true);
   LoadPlayerCoreFactorySettings(GetUserDataItem("playercorefactory.xml"), false);
 
+  // Advanced settings
+  g_advancedSettings.Load();
+
   // Add the list of disc stub extensions (if any) to the list of video extensions
   if (!m_discStubExtensions.IsEmpty())
     g_settings.m_videoExtensions += "|" + m_discStubExtensions;
