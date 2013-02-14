@@ -671,7 +671,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("refreshrss"))
   {
     g_rssManager.Stop();
-    g_settings.LoadRSSFeeds();
+    g_rssManager.Load();
     g_rssManager.Start();
   }
   else if (execute.Equals("playercontrol"))

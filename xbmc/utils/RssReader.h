@@ -29,17 +29,16 @@
  *
  */
 
-#include "StdString.h"
-#include "threads/CriticalSection.h"
-#include "threads/Thread.h"
-
+#include <map>
 #include <vector>
 #include <list>
 
-#include "utils/XBMCTinyXML.h"
-
 #include "system.h"
-
+#include "StdString.h"
+#include "settings/ISubSettings.h"
+#include "threads/CriticalSection.h"
+#include "threads/Thread.h"
+#include "utils/XBMCTinyXML.h"
 
 #define RSS_COLOR_BODY  0
 #define RSS_COLOR_HEADLINE 1
@@ -95,11 +94,24 @@ private:
   bool m_requestRefresh;
 };
 
-class CRssManager
+typedef struct
+{
+  bool rtl;
+  std::vector<int> interval;
+  std::vector<std::string> url;
+} RssSet;
+typedef std::map<int, RssSet> RssUrls;
+
+class CRssManager : public ISubSettings
 {
 public:
   CRssManager();
   ~CRssManager();
+
+  virtual void OnSettingsLoaded();
+
+  bool Load();
+  void Clear();
 
   void Start();
   void Stop();
@@ -107,6 +119,7 @@ public:
   bool IsActive() { return m_bActive; }
 
   bool GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader);
+  const RssUrls& GetUrls() const { return m_mapRssUrls; }
 
 private:
   struct READERCONTROL
@@ -118,6 +131,8 @@ private:
 
   std::vector<READERCONTROL> m_readers;
   bool m_bActive;
+
+  RssUrls m_mapRssUrls;
 };
 
 extern CRssManager g_rssManager;

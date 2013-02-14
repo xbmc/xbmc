@@ -34,6 +34,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIRSSControl.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "threads/SingleLock.h"
 #include "log.h"
@@ -451,6 +452,76 @@ CRssManager::CRssManager()
 CRssManager::~CRssManager()
 {
   Stop();
+}
+
+void CRssManager::OnSettingsLoaded()
+{
+  Load();
+}
+
+bool CRssManager::Load()
+{
+  string rssXML = g_settings.GetUserDataItem("RssFeeds.xml");
+  if (!CFile::Exists(rssXML))
+    return false;
+
+  CXBMCTinyXML rssDoc;
+  if (!rssDoc.LoadFile(rssXML))
+  {
+    CLog::Log(LOGERROR, "CRssManager: error loading %s, Line %d\n%s", rssXML.c_str(), rssDoc.ErrorRow(), rssDoc.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = rssDoc.RootElement();
+  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), "rssfeeds"))
+  {
+    CLog::Log(LOGERROR, "CRssManager: error loading %s, no <rssfeeds> node", rssXML.c_str());
+    return false;
+  }
+
+  m_mapRssUrls.clear();
+  TiXmlElement* pSet = pRootElement->FirstChildElement("set");
+  while (pSet != NULL)
+  {
+    int iId;
+    if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
+    {
+      RssSet set;
+      set.rtl = pSet->Attribute("rtl") && strcasecmp(pSet->Attribute("rtl"), "true")==0;
+      TiXmlElement* pFeed = pSet->FirstChildElement("feed");
+      while (pFeed != NULL)
+      {
+        int iInterval;
+        if (pFeed->QueryIntAttribute("updateinterval", &iInterval) != TIXML_SUCCESS)
+        {
+          iInterval=30; // default to 30 min
+          CLog::Log(LOGDEBUG, "CRssManager: no interval set, default to 30!");
+        }
+        if (pFeed->FirstChild())
+        {
+          // TODO: UTF-8: Do these URLs need to be converted to UTF-8?
+          //              What about the xml encoding?
+          string strUrl = pFeed->FirstChild()->ValueStr();
+          set.url.push_back(strUrl);
+          set.interval.push_back(iInterval);
+        }
+        pFeed = pFeed->NextSiblingElement("feed");
+      }
+
+      m_mapRssUrls.insert(make_pair(iId,set));
+    }
+    else
+      CLog::Log(LOGERROR, "CRssManager: found rss url set with no id in RssFeeds.xml, ignored");
+
+    pSet = pSet->NextSiblingElement("set");
+  }
+
+  return true;
+}
+
+void CRssManager::Clear()
+{
+  m_mapRssUrls.clear();
 }
 
 void CRssManager::Start()

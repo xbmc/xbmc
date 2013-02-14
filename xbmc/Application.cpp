@@ -317,6 +317,7 @@
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/AlarmClock.h"
+#include "utils/RssReader.h"
 #include "utils/StringUtils.h"
 #include "DatabaseManager.h"
 
@@ -701,6 +702,7 @@ bool CApplication::Create()
   g_settings.RegisterSubSettings(&CMediaSourceSettings::Get());
   g_settings.RegisterSubSettings(&CViewStateSettings::Get());
   g_settings.RegisterSubSettings(&g_advancedSettings);
+  g_settings.RegisterSubSettings(&g_rssManager);
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
