@@ -64,6 +64,7 @@ CSoftAE::CSoftAE():
   m_isSuspended        (false       ),
   m_softSuspend        (false       ),
   m_softSuspendTimer   (0           ),
+  m_volume             (1.0         ),
   m_sink               (NULL        ),
   m_transcode          (false       ),
   m_rawPassthrough     (false       ),
