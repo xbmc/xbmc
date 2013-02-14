@@ -119,6 +119,7 @@ const BUILT_IN commands[] = {
   { "Minimize",                   false,  "Minimize XBMC" },
   { "Reset",                      false,  "Reset the system (same as reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
+  { "SetGUILanguage",             true,   "Set GUI Language" },
   { "ActivateWindow",             true,   "Activate the specified window" },
   { "ActivateWindowAndFocus",     true,   "Activate the specified window and sets focus to the specified id" },
   { "ReplaceWindow",              true,   "Replaces the current window with the new one" },
@@ -315,6 +316,13 @@ int CBuiltins::Execute(const CStdString& execString)
     CUtil::DeleteVideoDatabaseDirectoryCache();
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     g_windowManager.SendMessage(msg);
+  }
+  else if (execute.Equals("setguilanguage"))
+  {
+    if (params.size())
+    {
+      CApplicationMessenger::Get().SetGUILanguage(params[0]);
+    }
   }
   else if (execute.Equals("takescreenshot"))
   {
