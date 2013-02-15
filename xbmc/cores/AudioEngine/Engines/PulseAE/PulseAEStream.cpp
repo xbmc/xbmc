@@ -252,6 +252,10 @@ void CPulseAEStream::Destroy()
 
   if (m_Stream)
   {
+    pa_stream_set_state_callback(m_Stream, NULL, NULL);
+    pa_stream_set_write_callback(m_Stream, NULL, NULL);
+    pa_stream_set_latency_update_callback(m_Stream, NULL, NULL);
+    pa_stream_set_underflow_callback(m_Stream, NULL, NULL);
     pa_stream_disconnect(m_Stream);
     pa_stream_unref(m_Stream);
     m_Stream = NULL;
