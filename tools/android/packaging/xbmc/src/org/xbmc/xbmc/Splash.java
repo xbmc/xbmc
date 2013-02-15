@@ -28,7 +28,6 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.media.AudioManager;
 
 public class Splash extends Activity {
 
@@ -203,17 +202,6 @@ public class Splash extends Activity {
 		}
 	}
 
-	private boolean SetSystemVolumeMax() {
-		// Set the hardware buttons to control the music
-		//this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-		AudioManager mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		int max_volume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, max_volume, 0);
-
-		return true;
-	}
-
 	private boolean ParseCpuFeature() {
 		ProcessBuilder cmd;
 
@@ -243,9 +231,6 @@ public class Splash extends Activity {
 	}
 
 	protected void startXBMC() {
-		// Set the system volume to max so passthrough works
-		boolean ret = SetSystemVolumeMax();
-
 		// Run XBMC
 		Intent intent = new Intent();
 		intent.setClass(this, android.app.NativeActivity.class);
@@ -283,7 +268,6 @@ public class Splash extends Activity {
 				mState = State.InError;
 			}
 		}
-
 		if (mState != State.InError) {
 			sPackagePath = getPackageResourcePath();
 			fPackagePath = new File(sPackagePath);
