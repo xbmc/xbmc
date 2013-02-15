@@ -461,15 +461,15 @@ void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
     m_iSleepEndTime = iCurrentClock + iSleepTime;
   }
 
-  if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime)
+  if (!CThread::m_bStop && m_av_clock->GetAbsoluteClock(false) < m_iSleepEndTime + DVD_MSEC_TO_TIME(500))
     return;
-
-  m_iSleepEndTime = DVD_NOPTS_VALUE;
 
   double pts_media = m_av_clock->OMXMediaTime(false, false);
   ProcessOverlays(iGroupId, pts_media);
 
-  g_renderManager.FlipPage(CThread::m_bStop, pts_media / DVD_TIME_BASE, -1, FS_NONE);
+  g_renderManager.FlipPage(CThread::m_bStop, m_iSleepEndTime / DVD_TIME_BASE, -1, FS_NONE);
+
+  m_iSleepEndTime = DVD_NOPTS_VALUE;
 
   //m_av_clock->WaitAbsoluteClock((iCurrentClock + iSleepTime));
 }
@@ -580,12 +580,14 @@ void OMXPlayerVideo::Process()
       m_av_clock->OMXReset(false);
       m_av_clock->UnLock();
       m_started = false;
+      m_iSleepEndTime = DVD_NOPTS_VALUE;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (COMXPlayerVideo::Flush())
     {
       CLog::Log(LOGDEBUG, "COMXPlayerVideo - CDVDMsg::GENERAL_FLUSH");
       m_stalled = true;
       m_started = false;
+      m_iSleepEndTime = DVD_NOPTS_VALUE;
       m_av_clock->Lock();
       m_av_clock->OMXStop(false);
       m_omxVideo.Reset();
