@@ -203,7 +203,9 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
     return /*false*/;
   }
 
-  m_cacheSize = pa_stream_writable_size(m_Stream);
+  const pa_buffer_attr *streamBuffer;
+  streamBuffer = pa_stream_get_buffer_attr(m_Stream);
+  m_cacheSize = streamBuffer->maxlength;
 
   pa_threaded_mainloop_unlock(m_MainLoop);
 
