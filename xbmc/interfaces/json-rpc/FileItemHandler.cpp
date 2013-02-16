@@ -233,7 +233,6 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
 
   for (int i = start; i < end; i++)
   {
-    CVariant object;
     CFileItemPtr item = items.Get(i);
     HandleFileItem(ID, allowFile, resultname, item, parameterObject, fields, result, true, thumbLoader);
   }
