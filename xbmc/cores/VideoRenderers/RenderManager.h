@@ -68,11 +68,37 @@ public:
   void SetViewMode(int iViewMode);
 
   // Functions called from mplayer
+  /**
+   * Called by video player to configure renderer
+   * @param width width of decoded frame
+   * @param height height of decoded frame
+   * @param d_width displayed width of frame (aspect ratio)
+   * @param d_height displayed height of frame
+   * @param fps frames per second of video
+   * @param flags see RenderFlags.h
+   * @param format see RenderFormats.h
+   * @param extended_format used by DXVA
+   * @param orientation
+   * @param numbers of kept buffer references
+   */
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, ERenderFormat format, unsigned extended_format,  unsigned int orientation, int buffers = 0);
   bool IsConfigured() const;
 
   int AddVideoPicture(DVDVideoPicture& picture);
 
+  /**
+   * Called by video player to flip render buffers
+   * If buffering is enabled this method does not block. In case of disabled buffering
+   * this method blocks waiting for the render thread to pass by.
+   * When buffering is used there might be no free buffer available after the call to
+   * this method. Player has to call WaitForBuffer. A free buffer will become
+   * available after the main thread has flipped front / back buffers.
+   *
+   * @param bStop reference to stop flag of calling thread
+   * @param timestamp of frame delivered with AddVideoPicture
+   * @param source depreciated
+   * @param sync signals frame, top, or bottom field
+   */
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
@@ -136,8 +162,19 @@ public:
   void RegisterRenderUpdateCallBack(const void *ctx, RenderUpdateCallBackFn fn);
   void RegisterRenderFeaturesCallBack(const void *ctx, RenderFeaturesCallBackFn fn);
 
+  /**
+   * If player uses buffering it has to wait for a buffer before it calls
+   * AddVideoPicture and AddOverlay. It waits for max 50 ms before it returns -1
+   * in case no buffer is available. Player may call this in a loop and decides
+   * by itself when it wants to drop a frame.
+   * If no buffering is requested in Configure, player does not need to call this,
+   * because FlipPage will block.
+   */
   int WaitForBuffer(volatile bool& bStop, int timeout = 100);
 
+  /**
+   * Video player call this on flush in oder to discard any queued frames
+   */
   void DiscardBuffer();
 
 protected:
@@ -179,6 +216,14 @@ protected:
 
   double m_displayLatency;
   void UpdateDisplayLatency();
+
+  // Render Buffer State Description:
+  //
+  // Output:      is the buffer about to or having its texture prepared for render (ie from output thread).
+  //              Cannot go past the "Displayed" buffer (otherwise we will probably overwrite buffers not yet
+  //              displayed or even rendered).
+  // Render:      is the current buffer being or having been submitted for render to back buffer.
+  //              Cannot go past "Output" buffer (else it would be rendering old output).
 
   int m_QueueRender;
   int m_QueueOutput;
