@@ -41,7 +41,7 @@ namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
 typedef std::vector<int>     Features;
 
-#define NUM_BUFFERS 3
+#define NUM_BUFFERS 10
 
 
 #undef ALIGN
@@ -138,6 +138,9 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual void         ReorderDrawPoints();
+  virtual void         SetBufferSize(int numBuffers) { m_NumYV12Buffers = numBuffers; }
+  virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
+  virtual unsigned int GetProcessorSize() { return m_NumYV12Buffers; }
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -162,7 +165,6 @@ public:
 protected:
   virtual void Render(DWORD flags, int index);
 
-  virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
