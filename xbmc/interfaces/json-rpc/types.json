@@ -386,7 +386,7 @@
       "enum": [ "instrument", "style", "mood", "born", "formed",
                 "description", "genre", "died", "disbanded",
                 "yearsactive", "musicbrainzartistid", "fanart",
-                "thumbnail" ]
+                "thumbnail", "compilationartist" ]
     }
   },
   "Audio.Fields.Album": {
@@ -447,6 +447,7 @@
       "died": { "type": "string" },
       "disbanded": { "type": "string" },
       "yearsactive": { "$ref": "Array.String" },
+      "compilationartist": { "type": "boolean" },
       "musicbrainzartistid": { "type": "string" }
     }
   },

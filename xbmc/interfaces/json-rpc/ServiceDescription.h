@@ -413,7 +413,7 @@ namespace JSONRPC
         "\"enum\": [ \"instrument\", \"style\", \"mood\", \"born\", \"formed\","
                   "\"description\", \"genre\", \"died\", \"disbanded\","
                   "\"yearsactive\", \"musicbrainzartistid\", \"fanart\","
-                  "\"thumbnail\" ]"
+                  "\"compilationartist\", \"thumbnail\" ]"
       "}"
     "}",
     "\"Audio.Fields.Album\": {"
@@ -474,6 +474,7 @@ namespace JSONRPC
         "\"died\": { \"type\": \"string\" },"
         "\"disbanded\": { \"type\": \"string\" },"
         "\"yearsactive\": { \"$ref\": \"Array.String\" },"
+        "\"compilationartist\": { \"type\": \"boolean\" },"
         "\"musicbrainzartistid\": { \"type\": \"string\" }"
       "}"
     "}",
