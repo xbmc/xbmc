@@ -1142,7 +1142,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
         break;
       case RENDER_FMT_DXVA:
         formatstr = "DXVA";
-        buffering = false;
+        buffering = true;
         break;
       case RENDER_FMT_VAAPI:
         formatstr = "VAAPI";
