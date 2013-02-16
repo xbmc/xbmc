@@ -101,6 +101,7 @@ namespace MUSIC_INFO
 #define TMSG_GUI_INFOBOOL             609
 #define TMSG_GUI_ADDON_DIALOG         610
 #define TMSG_GUI_MESSAGE              611
+#define TMSG_START_ANDROID_ACTIVITY   612
 
 #define TMSG_CALLBACK             800
 
@@ -241,6 +242,7 @@ public:
   
   bool SetupDisplay();
   bool DestroyDisplay();
+  void StartAndroidActivity(const std::vector<CStdString> &params);
 
   virtual ~CApplicationMessenger();
 private:

@@ -65,6 +65,9 @@
 #include "windows/GUIWindowLoginScreen.h"
 
 #include "utils/GlobalsHandling.h"
+#if defined(TARGET_ANDROID)
+  #include "xbmc/android/activity/XBMCApp.h"
+#endif
 
 using namespace PVR;
 using namespace std;
@@ -805,6 +808,19 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
       CGUIWindowLoginScreen::LoadProfile(pMsg->dwParam1);
       break;
     }
+    case TMSG_START_ANDROID_ACTIVITY:
+    {
+#if defined(TARGET_ANDROID)
+      if (pMsg->params.size())
+      {
+        CXBMCApp::StartActivity(pMsg->params[0],
+                                pMsg->params.size() > 1 ? pMsg->params[1] : "",
+                                pMsg->params.size() > 2 ? pMsg->params[2] : "",
+                                pMsg->params.size() > 3 ? pMsg->params[3] : "");
+      }
+#endif
+      break;
+    }
   }
 }
 
@@ -1288,5 +1304,12 @@ void CApplicationMessenger::LoadProfile(unsigned int idx)
 {
   ThreadMessage tMsg = {TMSG_LOADPROFILE};
   tMsg.dwParam1 = idx;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::StartAndroidActivity(const vector<CStdString> &params)
+{
+  ThreadMessage tMsg = {TMSG_START_ANDROID_ACTIVITY};
+  tMsg.params = params;
   SendMessage(tMsg, false);
 }
