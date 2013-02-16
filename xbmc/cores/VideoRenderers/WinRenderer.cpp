@@ -111,21 +111,19 @@ static enum PixelFormat PixelFormatFromFormat(ERenderFormat format)
 
 void CWinRenderer::ManageTextures()
 {
-  int neededbuffers = 2;
-
-  if( m_NumYV12Buffers < neededbuffers )
+  if( m_NumYV12Buffers < m_neededBuffers )
   {
-    for(int i = m_NumYV12Buffers; i<neededbuffers;i++)
+    for(int i = m_NumYV12Buffers; i<m_neededBuffers;i++)
       CreateYV12Texture(i);
 
-    m_NumYV12Buffers = neededbuffers;
+    m_NumYV12Buffers = m_neededBuffers;
   }
-  else if( m_NumYV12Buffers > neededbuffers )
+  else if( m_NumYV12Buffers > m_neededBuffers )
   {
-    m_NumYV12Buffers = neededbuffers;
+    m_NumYV12Buffers = m_neededBuffers;
     m_iYV12RenderBuffer = m_iYV12RenderBuffer % m_NumYV12Buffers;
 
-    for(int i = m_NumYV12Buffers-1; i>=neededbuffers;i--)
+    for(int i = m_NumYV12Buffers-1; i>=m_neededBuffers;i--)
       DeleteYV12Texture(i);
   }
 }

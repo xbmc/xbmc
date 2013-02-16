@@ -32,13 +32,7 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 
-//#define MP_DIRECTRENDERING
-
-#ifdef MP_DIRECTRENDERING
-#define NUM_BUFFERS 3
-#else
-#define NUM_BUFFERS 2
-#endif
+#define NUM_BUFFERS 10
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
@@ -177,6 +171,8 @@ public:
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   virtual unsigned int GetProcessorSize() { return m_processor.Size(); }
+  virtual void         SetBufferSize(int numBuffers) { m_neededBuffers = numBuffers; }
+  virtual unsigned int GetMaxBufferSize() { return NUM_BUFFERS; }
 
 protected:
   virtual void Render(DWORD flags);
@@ -246,6 +242,8 @@ protected:
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
   unsigned int         m_destWidth;
   unsigned int         m_destHeight;
+
+  int                  m_neededBuffers;
 };
 
 #else
