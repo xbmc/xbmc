@@ -1566,7 +1566,7 @@ int CDVDPlayerVideo::CalcDropRequirement(double pts)
   int    iBufferLevel;
 
   // get decoder stats
-  if (!m_pVideoCodec->GetPts(iDecoderPts, iSkippedDeint, interlaced))
+  if (!m_pVideoCodec->GetCodecStats(iDecoderPts, iSkippedDeint, interlaced))
     iDecoderPts = pts;
   if (iDecoderPts == DVD_NOPTS_VALUE)
     iDecoderPts = pts;

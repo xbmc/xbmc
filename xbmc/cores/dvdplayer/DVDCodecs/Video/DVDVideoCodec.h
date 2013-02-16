@@ -156,7 +156,6 @@ class CDVDCodecOptions;
 #define VC_USERDATA 0x00000008  // the decoder found some userdata,  call Decode(NULL, 0) again to parse the rest of the data
 #define VC_FLUSHED  0x00000010  // the decoder lost it's state, we need to restart decoding again
 #define VC_DROPPED  0x00000020  // needed to identify if a picture was dropped
-#define VC_HURRY    0x00000040
 
 class CDVDVideoCodec
 {
@@ -292,10 +291,35 @@ public:
   */
   static bool IsCodecDisabled(DVDCodecAvailableType* map, unsigned int size, AVCodecID id);
 
-  virtual bool GetPts(double &pts, int &skippedDeint, int &interlaced)
+   /* For calculation of dropping requirements player asks for some information.
+   *
+   * - pts : right after decoder, used to detect gaps (dropped frames in decoder)
+   * - skippedDeint : indicates if decoder has just skipped a deinterlacing cycle
+   *   instead of dropping a full frame
+   * - interlaced : when detecting gaps in pts, player needs to know whether
+   *   it's interlaced or not
+   *
+   * If codec does not implement this method, pts of decoded frame at input
+   * video player is used. In case coded does post-proc and de-interlacing there
+   * may be quite some frames queued up between exit decoder and entry player.
+   */
+  virtual bool GetCodecStats(double &pts, int &skippedDeint, int &interlaced)
   {
     return false;
   }
 
+  /**
+   * Codec can be informed by player with the following flags:
+   *
+   * DVP_FLAG_NO_POSTPROC : if speed is not normal the codec can switch off
+   *                        postprocessing and de-interlacing
+   *
+   * DVP_FLAG_DRAIN : codecs may do postprocessing and de-interlacing.
+   *                  If video buffers in RenderManager are about to run dry,
+   *                  this is signaled to codec. Codec can wait for post-proc
+   *                  to be finished instead of returning empty and getting another
+   *                  packet.
+   *
+   */
   virtual void SetCodecControl(int flags) {}
 };

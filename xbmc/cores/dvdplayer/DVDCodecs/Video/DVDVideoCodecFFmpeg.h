@@ -68,7 +68,7 @@ public:
   virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
   virtual unsigned GetConvergeCount();
   virtual unsigned GetAllowedReferences();
-  virtual bool GetPts(double &pts, int &skippedDeint, int &interlaced) {pts=m_decoderPts; skippedDeint=m_skippedDeint; if (m_pFrame) interlaced = m_pFrame->interlaced_frame; return true;}
+  virtual bool GetCodecStats(double &pts, int &skippedDeint, int &interlaced);
   virtual void SetCodecControl(int flags);
 
   bool               IsHardwareAllowed()                     { return !m_bSoftware; }
