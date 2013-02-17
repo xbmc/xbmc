@@ -772,15 +772,7 @@ int CGUIWindowManager::GetTopMostModalDialogID(bool ignoreClosing /*= false*/) c
   return WINDOW_INVALID;
 }
 
-void CGUIWindowManager::SendThreadMessage(CGUIMessage& message)
-{
-  CSingleLock lock(m_critSection);
-
-  CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.push_back( pair<CGUIMessage*,int>(msg,0) );
-}
-
-void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window)
+void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0*/)
 {
   CSingleLock lock(m_critSection);
 
