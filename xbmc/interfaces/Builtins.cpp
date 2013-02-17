@@ -983,7 +983,9 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if( g_alarmClock.IsRunning() )
       g_alarmClock.Stop(params[0],silent);
-
+    // no negative times not allowed, loop must have a positive time
+    if (seconds < 0 || (seconds == 0 && loop))
+      return false;
     g_alarmClock.Start(params[0], seconds, params[1], silent, loop);
   }
   else if (execute.Equals("notification"))
