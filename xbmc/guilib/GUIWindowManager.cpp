@@ -824,6 +824,32 @@ void CGUIWindowManager::DispatchThreadMessages()
   }
 }
 
+int CGUIWindowManager::RemoveThreadMessageByMessageIds(int *pMessageIDList)
+{
+  CSingleLock lock(m_critSection);
+  int removedMsgCount = 0;
+  for (std::list < std::pair<CGUIMessage*,int> >::iterator it = m_vecThreadMessages.begin();
+       it != m_vecThreadMessages.end();)
+  {
+    CGUIMessage *pMsg = it->first;
+    int *pMsgID;
+    for(pMsgID = pMessageIDList; *pMsgID != 0; ++pMsgID)
+      if (pMsg->GetMessage() == *pMsgID)
+        break;
+    if (*pMsgID)
+    {
+      it = m_vecThreadMessages.erase(it);
+      delete pMsg;
+      ++removedMsgCount;
+    }
+    else
+    {
+      ++it;
+    }
+  }
+  return removedMsgCount;
+}
+
 void CGUIWindowManager::AddMsgTarget( IMsgTargetCallback* pMsgTarget )
 {
   m_vecMsgTargets.push_back( pMsgTarget );
