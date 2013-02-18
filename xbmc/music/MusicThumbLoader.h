@@ -23,7 +23,7 @@
 #include "ThumbLoader.h"
 
 #ifdef __PLEX__
-#include "plex/Owned/MusicThumbloader.h"
+#include "plex/Owned/MusicThumbLoader.h"
 #else
 
 class CFileItem;
