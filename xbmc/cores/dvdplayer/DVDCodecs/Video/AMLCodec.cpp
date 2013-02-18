@@ -59,16 +59,12 @@ public:
   virtual int codec_write(codec_para_t *pcodec, void *buffer, int len)=0;
   virtual int codec_checkin_pts(codec_para_t *pcodec, unsigned long pts)=0;
   virtual int codec_get_vbuf_state(codec_para_t *pcodec, struct buf_status *)=0;
-  virtual int codec_set_volume(codec_para_t *pcodec, float val)=0;
-  virtual int codec_get_volume(codec_para_t *pcodec, float *val)=0;
 
   virtual int codec_init_cntl(codec_para_t *pcodec)=0;
   virtual int codec_poll_cntl(codec_para_t *pcodec)=0;
   virtual int codec_set_cntl_mode(codec_para_t *pcodec, unsigned int mode)=0;
   virtual int codec_set_cntl_avthresh(codec_para_t *pcodec, unsigned int)=0;
   virtual int codec_set_cntl_syncthresh(codec_para_t *pcodec, unsigned int syncthresh)=0;
-
-  virtual int codec_audio_set_delay(codec_para_t *pcodec, int delay)=0;
 
   // grab these from libamplayer
   virtual int h263vld(unsigned char *inbuf, unsigned char *outbuf, int inbuf_len, int s263)=0;
@@ -91,16 +87,12 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
   DEFINE_METHOD3(int, codec_write,              (codec_para_t *p1, void *p2, int p3))
   DEFINE_METHOD2(int, codec_checkin_pts,        (codec_para_t *p1, unsigned long p2))
   DEFINE_METHOD2(int, codec_get_vbuf_state,     (codec_para_t *p1, struct buf_status * p2))
-  DEFINE_METHOD2(int, codec_set_volume,         (codec_para_t *p1, float  p2))
-  DEFINE_METHOD2(int, codec_get_volume,         (codec_para_t *p1, float *p2))
 
   DEFINE_METHOD1(int, codec_init_cntl,          (codec_para_t *p1))
   DEFINE_METHOD1(int, codec_poll_cntl,          (codec_para_t *p1))
   DEFINE_METHOD2(int, codec_set_cntl_mode,      (codec_para_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, codec_set_cntl_avthresh,  (codec_para_t *p1, unsigned int p2))
   DEFINE_METHOD2(int, codec_set_cntl_syncthresh,(codec_para_t *p1, unsigned int p2))
-
-  DEFINE_METHOD2(int, codec_audio_set_delay,    (codec_para_t *p1, int p2))
 
   DEFINE_METHOD4(int, h263vld,                  (unsigned char *p1, unsigned char *p2, int p3, int p4))
   DEFINE_METHOD1(int, decodeble_h263,           (unsigned char *p1))
@@ -116,16 +108,12 @@ class DllLibAmCodec : public DllDynamic, DllLibamCodecInterface
     RESOLVE_METHOD(codec_write)
     RESOLVE_METHOD(codec_checkin_pts)
     RESOLVE_METHOD(codec_get_vbuf_state)
-    RESOLVE_METHOD(codec_set_volume)
-    RESOLVE_METHOD(codec_get_volume)
 
     RESOLVE_METHOD(codec_init_cntl)
     RESOLVE_METHOD(codec_poll_cntl)
     RESOLVE_METHOD(codec_set_cntl_mode)
     RESOLVE_METHOD(codec_set_cntl_avthresh)
     RESOLVE_METHOD(codec_set_cntl_syncthresh)
-
-    RESOLVE_METHOD(codec_audio_set_delay)
 
     RESOLVE_METHOD(h263vld)
     RESOLVE_METHOD(decodeble_h263)
@@ -1642,10 +1630,6 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, ret=0x%x", -ret);
     return false;
   }
-
-  float volume;
-  if (m_dll->codec_get_volume(NULL, &volume) == 0 && volume != 1.0)
-    m_dll->codec_set_volume(NULL, 1.0);
 
 	m_dll->codec_set_cntl_avthresh(&am_private->vcodec, AV_SYNC_THRESH);
 	m_dll->codec_set_cntl_syncthresh(&am_private->vcodec, 0);
