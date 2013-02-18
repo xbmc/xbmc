@@ -41,7 +41,8 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic() :
   m_last_pts(0.0),
   m_pts_queue(NULL),
   m_queue_depth(0),
-  m_framerate(0.0)
+  m_framerate(0.0),
+  m_video_rate(0)
 {
 }
 
@@ -275,36 +276,82 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(double dts, double pts)
 {
   PtsQueuePush(dts, pts);
 
-  // in case of out-of-order pts
+  // we might have out-of-order pts,
+  // so make sure we wait for at least 16 values in sorted queue.
   if (m_queue_depth > 16)
   {
-    if (pts == DVD_NOPTS_VALUE)
-      pts = m_pts_queue->dts;
+    float cur_pts;
+    if (m_pts_queue->pts == DVD_NOPTS_VALUE)
+      cur_pts = m_pts_queue->dts;
     else
-      pts = m_pts_queue->pts;
+      cur_pts = m_pts_queue->pts;
 
-    double duration  = pts - m_last_pts;
-    m_last_pts = pts;
-    if (duration > 0.0)
+    float duration = cur_pts - m_last_pts;
+    m_last_pts = cur_pts;
+
+    // clamp duration to sensible range,
+    // 66 fsp to 20 fsp
+    if (duration >= 15000.0 && duration <= 50000.0)
     {
-      switch ((int)(0.5 + ((double)DVD_TIME_BASE / duration)))
+      double framerate;
+      switch((int)(0.5 + duration))
       {
-        case 60:
-          // 60, 59.94 -> 60
-          m_framerate = 1001.0 / 60000.0;
-        case 50:
-          // 50, 49.95 -> 50
-          m_framerate = 1001.0 / 50000.0;
-        case 30:
-          // 30, 29.97 -> 30
-          m_framerate = 1001.0 / 30000.0;
-        case 25:
-          // 25, 24.975 -> 25
-          m_framerate = 1001.0 / 25000.0;
-        case 24:
-          // 24, 23.976 -> 24
-          m_framerate = 1001.0 / 24000.0;
-        break;
+        // 59.940 (16683.333333)
+        case 16000 ... 17000:
+          framerate = 60000.0 / 1001.0;
+          break;
+
+        // 50.000 (20000.000000)
+        case 20000:
+          framerate = 50000.0 / 1000.0;
+          break;
+
+        // 49.950 (20020.000000)
+        case 20020:
+          framerate = 50000.0 / 1001.0;
+          break;
+
+        // 29.970 (33366.666656)
+        case 32000 ... 35000:
+          framerate = 30000.0 / 1001.0;
+          break;
+
+        // 25.000 (40000.000000)
+        case 40000:
+          framerate = 25000.0 / 1000.0;
+          break;
+
+        // 24.975 (40040.000000)
+        case 40040:
+          framerate = 25000.0 / 1001.0;
+          break;
+
+        /*
+        // 24.000 (41666.666666)
+        case 41667:
+          framerate = 24000.0 / 1000.0;
+          break;
+        */
+
+        // 23.976 (41708.33333)
+        case 40200 ... 43200:
+          // 23.976 seems to have the crappiest encodings :)
+          framerate = 24000.0 / 1001.0;
+          break;
+
+        default:
+          framerate = 0.0;
+          CLog::Log(LOGDEBUG, "%s: unknown duration(%f), cur_pts(%f)",
+            __MODULE_NAME__, duration, cur_pts);
+          break;
+      }
+
+      if (framerate > 0.0 && (int)m_framerate != (int)framerate)
+      {
+        m_framerate = framerate;
+        m_video_rate = (int)(0.5 + (96000.0 / framerate));
+        CLog::Log(LOGDEBUG, "%s: detected new framerate(%f), video_rate(%d)",
+          __MODULE_NAME__, m_framerate, m_video_rate);
       }
     }
 

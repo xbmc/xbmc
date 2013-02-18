@@ -58,4 +58,5 @@ protected:
   pts_queue       *m_pts_queue;
   int32_t         m_queue_depth;
   double          m_framerate;
+  int             m_video_rate;
 };
