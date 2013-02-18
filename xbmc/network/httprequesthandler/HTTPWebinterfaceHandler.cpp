@@ -19,6 +19,8 @@
  */
 
 #include "HTTPWebinterfaceHandler.h"
+
+#if defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)
 #include "network/WebServer.h"
 #include "addons/AddonManager.h"
 #include "utils/URIUtils.h"
@@ -130,3 +132,4 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
 
   return MHD_HTTP_OK;
 }
+#endif // defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)

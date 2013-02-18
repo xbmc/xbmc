@@ -19,6 +19,8 @@
  */
 
 #include "HTTPJsonRpcHandler.h"
+
+#if defined(HAS_WEB_SERVER) && defined(HAS_JSONRPC)
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/json-rpc/JSONServiceDescription.h"
 #include "interfaces/json-rpc/JSONUtils.h"
@@ -119,3 +121,4 @@ bool CHTTPJsonRpcHandler::CHTTPClient::SetAnnouncementFlags(int flags)
 {
   return false;
 }
+#endif // defined(HAS_WEB_SERVER) && defined(HAS_JSONRPC)

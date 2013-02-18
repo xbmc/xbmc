@@ -20,6 +20,8 @@
  */
 
 #include "IHTTPRequestHandler.h"
+
+#if defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)
 #include "addons/IAddon.h"
 
 class CHTTPWebinterfaceHandler : public IHTTPRequestHandler
@@ -40,3 +42,4 @@ public:
 private:
   std::string m_url;
 };
+#endif // defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)

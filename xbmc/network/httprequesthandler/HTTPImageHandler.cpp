@@ -19,6 +19,8 @@
  */
 
 #include "HTTPImageHandler.h"
+
+#ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
 #include "URL.h"
 #include "filesystem/ImageFile.h"
@@ -56,3 +58,4 @@ int CHTTPImageHandler::HandleHTTPRequest(const HTTPRequest &request)
 
   return MHD_YES;
 }
+#endif // HAS_WEB_SERVER

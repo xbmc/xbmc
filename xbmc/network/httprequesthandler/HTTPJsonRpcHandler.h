@@ -20,6 +20,8 @@
  */
 
 #include "IHTTPRequestHandler.h"
+
+#if defined(HAS_WEB_SERVER) && defined(HAS_JSONRPC)
 #include "interfaces/json-rpc/IClient.h"
 
 class CHTTPJsonRpcHandler : public IHTTPRequestHandler
@@ -55,3 +57,4 @@ private:
     virtual bool SetAnnouncementFlags(int flags);
   };
 };
+#endif // defined(HAS_WEB_SERVER) && defined(HAS_JSONRPC)

@@ -20,6 +20,7 @@
 
 #include "IHTTPRequestHandler.h"
 
+#ifdef HAS_WEB_SERVER
 void IHTTPRequestHandler::AddPostField(const std::string &key, const std::string &value)
 {
   if (key.empty())
@@ -43,3 +44,4 @@ bool IHTTPRequestHandler::AddPostData(const char *data, unsigned int size)
   
   return true;
 }
+#endif // HAS_WEB_SERVER

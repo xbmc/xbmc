@@ -21,6 +21,7 @@
 
 #include "IHTTPRequestHandler.h"
 
+#if defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)
 class CHTTPWebinterfaceAddonsHandler : public IHTTPRequestHandler
 {
 public:
@@ -38,3 +39,4 @@ public:
 private:
   std::string m_response;
 };
+#endif // defined(HAS_WEB_SERVER) && defined(HAS_WEB_INTERFACE)

@@ -21,6 +21,7 @@
 
 #include "IHTTPRequestHandler.h"
 
+#ifdef HAS_WEB_SERVER
 #include "utils/StdString.h"
 
 class CHTTPImageHandler : public IHTTPRequestHandler
@@ -39,3 +40,4 @@ public:
 private:
   CStdString m_path;
 };
+#endif // HAS_WEB_SERVER

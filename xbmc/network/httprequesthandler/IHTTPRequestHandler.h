@@ -19,6 +19,8 @@
  *
  */
 
+#include "system.h"
+#ifdef HAS_WEB_SERVER
 #include <string>
 #include <map>
 
@@ -104,3 +106,4 @@ protected:
 
   std::map<std::string, std::string> m_postFields;
 };
+#endif // HAS_WEB_SERVER
