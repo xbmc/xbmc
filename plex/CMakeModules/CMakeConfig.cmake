@@ -10,6 +10,9 @@ set(CONFIG_INTERNAL_LIBS
   lib_upnp
 )
 
+OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" ON)
+OPTION(ENABLE_PYTHON "Enable Python addon support" OFF)
+
 if(APPLE)
   include(CMakeConfigOSX)
 elseif(WIN32)
@@ -39,10 +42,13 @@ if(DEFINED SDL_FOUND)
   set(HAVE_SDL 1)
 endif()
 
+if(ENABLE_PYTHON)
+  set(HAS_PYTHON 1)
+endif()
+
 set(USE_UPNP 1)
 set(HAS_LIBRTMP 1)
 
-OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" ON)
 if(ENABLE_DVD_DRIVE)
   set(HAS_DVD_DRIVE 1)
 endif(ENABLE_DVD_DRIVE)

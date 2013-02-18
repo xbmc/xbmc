@@ -65,7 +65,7 @@ def fix_install_name(path):
   for root, dirs, files in os.walk(path):
     for f in files:
       fpath = os.path.join(root, f)
-      if f.endswith(".dylib") and not os.path.islink(fpath) and os.path.exists(fpath):
+      if (f.endswith(".dylib") or f.endswith(".so")) and not os.path.islink(fpath) and os.path.exists(fpath):
         
         if not os.access(fpath, os.W_OK) or not os.access(fpath, os.R_OK):
           os.chmod(fpath, 0o644)

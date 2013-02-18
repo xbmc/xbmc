@@ -32,9 +32,14 @@ if(NOT WIN32)
 
   set(BU_CHMOD_BUNDLE_ITEMS ON)
   file(GLOB INST_LIBS ${CMAKE_INSTALL_PREFIX}/${LIBPATH}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
+  
+  if(ENABLE_PYTHON)
+    file(GLOB PYTHON_DYLIB ${CMAKE_INSTALL_PREFIX}/${LIBPATH}/lib/python2.7/lib-dynload/*.so)
+  endif(ENABLE_PYTHON)
+  
   set(plugins "${CMAKE_INSTALL_PREFIX}/${RESOURCEPATH}/system/ImageLib-${ARCH}.so")
   message(${CMAKE_INSTALL_PREFIX}/${TARGET}.app)
-  fixup_bundle("${CMAKE_INSTALL_PREFIX}/${TARGET}.app" "${plugins};${INST_LIBS}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64" COMPONENT RUNTIME)
+  fixup_bundle("${CMAKE_INSTALL_PREFIX}/${TARGET}.app" "${plugins};${INST_LIBS};${PYTHON_DYLIB}" "${DEPENDDIR}/lib;${DEPENDDIR}/Frameworks;${DEPENDDIR}/lib64" COMPONENT RUNTIME)
 
   if(APPLE)
     message("Signing binary: ${CMAKE_INSTALL_PREFIX}/${EXECUTABLE_NAME}.app")

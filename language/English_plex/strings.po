@@ -813,6 +813,10 @@ msgctxt "#44021"
 msgid "Queue"
 msgstr "Queue"
 
+msgctxt "#44022"
+msgid "Recommendations"
+msgstr "Recommendations"
+
 msgctxt "#44030"
 msgid "FILTERS"
 msgstr "FILTERS"

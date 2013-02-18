@@ -174,7 +174,6 @@ macro(plex_find_header header hintpath)
   string(REPLACE "/" "_" _HAVE_VAR ${_HAVE_VAR})
   string(REPLACE ".H" "" _HAVE_VAR ${_HAVE_VAR})
   
-  message(${_HAVE_VAR} = ${${_HAVE_VAR}})
   if(DEFINED ${_HAVE_VAR})
     set(QUIET_FIND 1)
   endif()

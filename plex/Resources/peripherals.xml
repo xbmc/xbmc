@@ -3,8 +3,8 @@
     <setting key="do_not_use_custom_keymap" type="bool" value="0" label="35009" order="1" />
     <setting key="keymap" value="nyxboard" label="35007" configurable="0" />
     <setting key="enable_flip_commands" type="bool" value="1" label="36005" order="2" />
-    <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" order="3" />
-    <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" order="4" />
+    <setting key="flip_keyboard" value="Plex.ActivateWindow(10051)" label="36002" order="3" />
+    <setting key="flip_remote" value="PreviousMenu" label="36003" order="4" />
     <setting key="key_user" value="" label="36004" order="5" />
     <setting key="key_power" value="XBMC.ShutDown()" label="13015" order="6" />
   </peripheral>

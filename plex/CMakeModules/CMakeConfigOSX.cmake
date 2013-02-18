@@ -74,8 +74,12 @@ set(external_libs
   avdevice
   postproc
   swscale
-  swresample 
+  swresample
 )
+
+if(ENABLE_PYTHON)
+  list(APPEND external_libs python2.7)
+endif()
 
 set(non_link_libs
   rtmp

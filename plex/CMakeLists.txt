@@ -67,6 +67,10 @@ set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NA
 add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
 target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
+if(ENABLE_PYTHON)
+  target_link_libraries(${PLEX_TARGET_NAME} addons_python)
+endif(ENABLE_PYTHON)
+
 
 # find all image files in the skin
 file(GLOB MEDIA_IMAGES_MEDIASTREAM ${root}/addons/skin.mediastream/Media/*.png ${root}/addons/skin.mediastream/Media/*.gif)
@@ -133,7 +137,17 @@ install(DIRECTORY ${root}/addons DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME
         PATTERN repository.xbmc.org EXCLUDE
         REGEX ${EXCLUDE_TEXTURES} EXCLUDE
         PATTERN .git EXCLUDE
-        PATTERN xbmc.python EXCLUDE)
+        PATTERN xbmc.python EXCLUDE
+)
+
+if(ENABLE_PYTHON)
+  install(DIRECTORY ${dependdir}/lib/python2.7 DESTINATION ${LIBPATH}/lib/ COMPONENT RUNTIME 
+    PATTERN python2.7/test EXCLUDE
+    REGEX .*\\.pyc$ EXCLUDE
+    REGEX .*\\.pyo$ EXCLUDE
+  )
+  install(FILES ${dependdir}/include/python2.7/pyconfig.h DESTINATION ${LIBPATH}/include/python2.7 COMPONENT RUNTIME)
+endif()
 
 install(DIRECTORY ${plexdir}/addons DESTINATION DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
 install(FILES ${plexdir}/Resources/Splash.png DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
