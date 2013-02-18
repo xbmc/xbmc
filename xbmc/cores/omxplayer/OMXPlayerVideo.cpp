@@ -83,9 +83,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_iSubtitleDelay        = 0;
   m_FlipTimeStamp         = 0.0;
   m_bRenderSubs           = false;
-  m_width                 = 0;
-  m_height                = 0;
-  m_fps                   = 0.0f;
   m_flags                 = 0;
   m_bAllowFullscreen      = false;
   m_iCurrentPts           = DVD_NOPTS_VALUE;
@@ -98,12 +95,7 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_messageQueue.SetMaxDataSize(10 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
 
-  RESOLUTION res  = g_graphicsContext.GetVideoResolution();
-  m_video_width   = g_settings.m_ResInfo[res].iScreenWidth;
-  m_video_height  = g_settings.m_ResInfo[res].iScreenHeight;
-
   m_dst_rect.SetRect(0, 0, 0, 0);
-
 }
 
 OMXPlayerVideo::~OMXPlayerVideo()
@@ -126,6 +118,8 @@ bool OMXPlayerVideo::OpenStream(CDVDStreamInfo &hints)
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
   m_autosync    = 1;
   m_iSleepEndTime = DVD_NOPTS_VALUE;
+  // force SetVideoRect to be called initially
+  m_dst_rect.SetRect(0, 0, 0, 0);
 
   m_audio_count = m_av_clock->HasAudio();
 
@@ -221,154 +215,45 @@ void OMXPlayerVideo::ProcessOverlays(int iGroupId, double pts)
   if (m_started)
     m_pOverlayContainer->CleanUp(pts - m_iSubtitleDelay);
 
-  enum EOverlay
-  { OVERLAY_AUTO // select mode auto
-  , OVERLAY_GPU  // render osd using gpu
-  , OVERLAY_BUF  // render osd on buffer
-  } render = OVERLAY_AUTO;
-
-  /*
-  if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
-    || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
-    || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) )
-      render = OVERLAY_BUF;
-  */
-
-  if(render == OVERLAY_BUF)
-  {
-    // rendering spu overlay types directly on video memory costs a lot of processing power.
-    // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
-    // then do all the rendering on that temp picture and finaly copy it to video memory.
-    // In almost all cases this is 5 or more times faster!.
-
-    if(m_pTempOverlayPicture && ( m_pTempOverlayPicture->iWidth  != m_width
-                               || m_pTempOverlayPicture->iHeight != m_height))
-    {
-      CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
-      m_pTempOverlayPicture = NULL;
-    }
-
-    if(!m_pTempOverlayPicture)
-      m_pTempOverlayPicture = CDVDCodecUtils::AllocatePicture(m_width, m_height);
-    if(!m_pTempOverlayPicture)
-      return;
-    m_pTempOverlayPicture->format = RENDER_FMT_YUV420P;
-  }
-
-  if(render == OVERLAY_AUTO)
-    render = OVERLAY_GPU;
-
   VecOverlays overlays;
 
+  CSingleLock lock(*m_pOverlayContainer);
+
+  VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
+  VecOverlaysIter it = pVecOverlays->begin();
+
+  //Check all overlays and render those that should be rendered, based on time and forced
+  //Both forced and subs should check timeing, pts == 0 in the stillframe case
+  while (it != pVecOverlays->end())
   {
-    CSingleLock lock(*m_pOverlayContainer);
+    CDVDOverlay* pOverlay = *it++;
+    if(!pOverlay->bForced && !m_bRenderSubs)
+      continue;
 
-    VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
-    VecOverlaysIter it = pVecOverlays->begin();
+    if(pOverlay->iGroupId != iGroupId)
+      continue;
 
-    //Check all overlays and render those that should be rendered, based on time and forced
-    //Both forced and subs should check timeing, pts == 0 in the stillframe case
-    while (it != pVecOverlays->end())
+    double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
+
+    if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
     {
-      CDVDOverlay* pOverlay = *it++;
-      if(!pOverlay->bForced && !m_bRenderSubs)
-        continue;
-
-      if(pOverlay->iGroupId != iGroupId)
-        continue;
-
-      double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
-
-      if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
-      {
-        if(pOverlay->IsOverlayType(DVDOVERLAY_TYPE_GROUP))
-          overlays.insert(overlays.end(), static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.begin()
-                                        , static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.end());
-        else
-          overlays.push_back(pOverlay);
-
-      }
+      if(pOverlay->IsOverlayType(DVDOVERLAY_TYPE_GROUP))
+        overlays.insert(overlays.end(), static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.begin()
+                                      , static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.end());
+      else
+        overlays.push_back(pOverlay);
     }
+  }
 
-    for(it = overlays.begin(); it != overlays.end(); ++it)
-    {
-      double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
-
-      if (render == OVERLAY_GPU)
-        g_renderManager.AddOverlay(*it, pts2);
-
-      /*
-      printf("subtitle : DVDOVERLAY_TYPE_SPU %d DVDOVERLAY_TYPE_IMAGE %d DVDOVERLAY_TYPE_SSA %d\n",
-         m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU),
-         m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE),
-         m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) );
-      */
-
-      if (render == OVERLAY_BUF)
-        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, *it, pts2);
-    }
+  for(it = overlays.begin(); it != overlays.end(); ++it)
+  {
+    double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
+    g_renderManager.AddOverlay(*it, pts2);
   }
 }
 
 void OMXPlayerVideo::Output(int iGroupId, double pts, bool bDropPacket)
 {
-
-  if (!g_renderManager.IsConfigured()
-    || m_video_width != m_width
-    || m_video_height != m_height
-    || m_fps != m_fFrameRate)
-  {
-    m_width   = m_video_width;
-    m_height  = m_video_height;
-    m_fps     = m_fFrameRate;
-
-    unsigned flags = 0;
-    ERenderFormat format = RENDER_FMT_BYPASS;
-
-    if(m_bAllowFullscreen)
-    {
-      flags |= CONF_FLAGS_FULLSCREEN;
-      m_bAllowFullscreen = false; // only allow on first configure
-    }
-
-    if(m_flags & CONF_FLAGS_FORMAT_SBS)
-    {
-      if(g_Windowing.Support3D(m_video_width, m_video_height, D3DPRESENTFLAG_MODE3DSBS))
-      {
-        CLog::Log(LOGNOTICE, "3DSBS movie found");
-        flags |= CONF_FLAGS_FORMAT_SBS;
-      }
-    }
-    else if(m_flags & CONF_FLAGS_FORMAT_TB)
-    {
-      if(g_Windowing.Support3D(m_video_width, m_video_height, D3DPRESENTFLAG_MODE3DTB))
-      {
-        CLog::Log(LOGNOTICE, "3DTB movie found");
-        flags |= CONF_FLAGS_FORMAT_TB;
-      }
-    }
-
-    unsigned int iDisplayWidth  = m_hints.width;
-    unsigned int iDisplayHeight = m_hints.height;
-
-    /* use forced aspect if any */
-    if( m_fForcedAspectRatio != 0.0f )
-      iDisplayWidth = (int) (iDisplayHeight * m_fForcedAspectRatio);
-
-    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. %dx%x format: BYPASS",
-        __FUNCTION__, m_width, m_height, m_fps, iDisplayWidth, iDisplayHeight);
-
-    if(!g_renderManager.Configure(m_hints.width, m_hints.height,
-          iDisplayWidth, iDisplayHeight, m_fps, flags, format, 0,
-          m_hints.orientation))
-    {
-      CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
-      return;
-    }
-
-    g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
-  }
-
   if (!g_renderManager.IsStarted()) {
     CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return;
@@ -731,6 +616,7 @@ bool OMXPlayerVideo::OpenDecoder()
   m_av_clock->OMXStop(false);
 
   bool bVideoDecoderOpen = m_omxVideo.Open(m_hints, m_av_clock, m_Deinterlace, m_hdmi_clock_sync);
+  m_omxVideo.RegisterResolutionUpdateCallBack((void *)this, ResolutionUpdateCallBack);
 
   if(!bVideoDecoderOpen)
   {
@@ -864,5 +750,64 @@ void OMXPlayerVideo::RenderUpdateCallBack(const void *ctx, const CRect &SrcRect,
 {
   OMXPlayerVideo *player = (OMXPlayerVideo*)ctx;
   player->SetVideoRect(SrcRect, DestRect);
+}
+
+void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height)
+{
+  RESOLUTION res  = g_graphicsContext.GetVideoResolution();
+  uint32_t video_width   = g_settings.m_ResInfo[res].iScreenWidth;
+  uint32_t video_height  = g_settings.m_ResInfo[res].iScreenHeight;
+
+  unsigned flags = 0;
+  ERenderFormat format = RENDER_FMT_BYPASS;
+
+  if(m_bAllowFullscreen)
+  {
+    flags |= CONF_FLAGS_FULLSCREEN;
+    m_bAllowFullscreen = false; // only allow on first configure
+  }
+
+  if(m_flags & CONF_FLAGS_FORMAT_SBS)
+  {
+    if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DSBS))
+    {
+      CLog::Log(LOGNOTICE, "3DSBS movie found");
+      flags |= CONF_FLAGS_FORMAT_SBS;
+    }
+  }
+  else if(m_flags & CONF_FLAGS_FORMAT_TB)
+  {
+    if(g_Windowing.Support3D(video_width, video_height, D3DPRESENTFLAG_MODE3DTB))
+    {
+      CLog::Log(LOGNOTICE, "3DTB movie found");
+      flags |= CONF_FLAGS_FORMAT_TB;
+    }
+  }
+
+  unsigned int iDisplayWidth  = width;
+  unsigned int iDisplayHeight = height;
+
+  /* use forced aspect if any */
+  if( m_fForcedAspectRatio != 0.0f )
+    iDisplayWidth = (int) (iDisplayHeight * m_fForcedAspectRatio);
+
+  CLog::Log(LOGDEBUG,"%s - change configuration. video:%dx%d. framerate: %4.2f. %dx%d format: BYPASS",
+      __FUNCTION__, video_width, video_height, m_fFrameRate, iDisplayWidth, iDisplayHeight);
+
+  if(!g_renderManager.Configure(width, height,
+        iDisplayWidth, iDisplayHeight, m_fFrameRate, flags, format, 0,
+        m_hints.orientation))
+  {
+    CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
+    return;
+  }
+
+  g_renderManager.RegisterRenderUpdateCallBack((const void*)this, RenderUpdateCallBack);
+}
+
+void OMXPlayerVideo::ResolutionUpdateCallBack(void *ctx, uint32_t width, uint32_t height)
+{
+  OMXPlayerVideo *player = static_cast<OMXPlayerVideo*>(ctx);
+  player->ResolutionUpdateCallBack(width, height);
 }
 
