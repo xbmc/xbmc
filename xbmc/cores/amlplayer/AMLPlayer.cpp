@@ -831,6 +831,7 @@ void CAMLPlayer::SetMute(bool bOnOff)
 {
   m_audio_mute = bOnOff;
 
+#if defined(HAS_AMLPLAYER_AUDIO_SETVOLUME)
   CSingleLock lock(m_aml_csection);
   if (m_dll->check_pid_valid(m_pid))
   {
@@ -839,6 +840,7 @@ void CAMLPlayer::SetMute(bool bOnOff)
     else
       m_dll->audio_set_volume(m_pid, m_audio_volume);
   }
+#endif
 }
 
 void CAMLPlayer::SetVolume(float volume)
@@ -846,9 +848,11 @@ void CAMLPlayer::SetVolume(float volume)
   // volume is a float percent from 0.0 to 1.0
   m_audio_volume = VolumePercentToScale(volume);
 
+#if defined(HAS_AMLPLAYER_AUDIO_SETVOLUME)
   CSingleLock lock(m_aml_csection);
   if (!m_audio_mute && m_dll->check_pid_valid(m_pid))
     m_dll->audio_set_volume(m_pid, m_audio_volume);
+#endif
 }
 
 void CAMLPlayer::GetAudioInfo(CStdString &strAudioInfo)
@@ -927,11 +931,13 @@ void CAMLPlayer::SetAVDelay(float fValue)
   CLog::Log(LOGDEBUG, "CAMLPlayer::SetAVDelay (%f)", fValue);
   m_audio_delay = fValue * 1000.0;
 
+#if defined(HAS_AMLPLAYER_AUDIO_SETDELAY)
   if (m_audio_streams.size() && m_dll->check_pid_valid(m_pid))
   {
     CSingleLock lock(m_aml_csection);
     m_dll->audio_set_delay(m_pid, m_audio_delay);
   }
+#endif
 }
 
 float CAMLPlayer::GetAVDelay()
@@ -1504,6 +1510,7 @@ void CAMLPlayer::Process()
     play_control.need_start  =  1; // if 0,you can omit player_start_play API.
                                    // just play video/audio immediately.
                                    // if 1,then need call "player_start_play" API;
+    play_control.displast_frame = 0; // 0:black out when player exit	1:keep last frame when player exit
 
     // tweak player playback buffers for udp
     if (url.Left(strlen("udp://")).Equals("udp://"))
@@ -1978,25 +1985,44 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
 
         ClearStreamInfos();
 
-        media_info_t media_info;
+        media_info_t media_info = {{0}};
+#if defined(TARGET_ANDROID)
+        // media_info_t might be different so check its size.
+        // player_get_media_info will memset to zero the passed
+        // structure so alloc more space and preset to a know value
+        // so we can compare the size we use to the size the lib uses. 
+        int msize = sizeof(media_info_t) + 10240;
+        media_info_t *test_media_info = (media_info_t*)calloc(msize, 1);
+        memset(test_media_info, 0xEF, msize);
+
+        int res = m_dll->player_get_media_info(m_pid, test_media_info);
+
+        uint8_t *t1 = (uint8_t*)test_media_info;
+        for (size_t i = msize-1; i >= 0; i--)
+        {
+          if (t1[i] != 0xEF)
+          {
+            if (sizeof(media_info_t) != i+1)
+            {
+              CLog::Log(LOGERROR, "CAMLPlayer::media_info_t(%d) size changed to %d",
+                sizeof(media_info_t), i+1);
+              // size is different, we cannot trust it
+              free(test_media_info);
+              return false;
+            }
+            break;
+          }
+        }
+        media_info = *test_media_info;
+        free(test_media_info);
+#else
         int res = m_dll->player_get_media_info(m_pid, &media_info);
+#endif
         if (res != PLAYER_SUCCESS)
           return false;
 
         if (m_log_level > 5)
-        {
           media_info_dump(&media_info);
-
-          // m_video_index, m_audio_index, m_subtitle_index might be -1 eventhough
-          // total_video_xxx is > 0, not sure why, they should be set to zero or
-          // some other sensible value.
-          CLog::Log(LOGDEBUG, "CAMLPlayer::WaitForFormatValid: "
-            "m_video_index(%d), m_audio_index(%d), m_subtitle_index(%d), m_chapter_count(%d)",
-            media_info.stream_info.cur_video_index,
-            media_info.stream_info.cur_audio_index,
-            media_info.stream_info.cur_sub_index,
-            media_info.stream_info.total_chapter_num);
-        }
 
         // video info
         if (media_info.stream_info.has_video && media_info.stream_info.total_video_num > 0)
@@ -2052,8 +2078,10 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             info->bit_rate        = media_info.audio_info[i]->bit_rate;
             info->duration        = media_info.audio_info[i]->duration;
             info->format          = media_info.audio_info[i]->aformat;
+#if defined(HAS_AMLPLAYER_AUDIO_LANG)
             if (media_info.audio_info[i]->audio_language[0] != 0)
               info->language = std::string(media_info.audio_info[i]->audio_language, 3);
+#endif
 
             m_audio_streams.push_back(info);
           }
@@ -2089,6 +2117,7 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
         if (m_subtitle_count && m_subtitle_index != 0)
           m_subtitle_index = 0;
 
+#if defined(HAS_AMLPLAYER_CHAPTERS)
         // chapter info
         if (media_info.stream_info.total_chapter_num > 0)
         {
@@ -2105,6 +2134,7 @@ bool CAMLPlayer::WaitForFormatValid(int timeout_ms)
             }
           }
         }
+#endif
 
         return true;
         break;
