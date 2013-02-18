@@ -22,10 +22,6 @@
 #include <map>
 #include "ThumbLoader.h"
 
-#ifdef __PLEX__
-#include "plex/Owned/MusicThumbloader.h"
-#else
-
 class CFileItem;
 class CMusicDatabase;
 
@@ -65,9 +61,9 @@ protected:
   virtual void OnLoaderStart();
   virtual void OnLoaderFinish();
   
+#ifndef __PLEX__
   CMusicDatabase *m_database;
+#endif
   typedef std::map<int, std::map<std::string, std::string> > ArtCache;
   ArtCache m_albumArt;
 };
-
-#endif

@@ -210,7 +210,13 @@ void CPlexSectionFanout::OnJobComplete(unsigned int jobID, bool success, CJob *j
 {
   CPlexSectionLoadJob *load = (CPlexSectionLoadJob*)job;
   if (success)
+  {
     m_fileLists[load->GetContentType()] = load->GetFileItemList();
+    
+    /* Pre-cache stuff */
+    if (load->GetContentType() != CONTENT_LIST_FANART)
+      m_videoThumb.Load(*m_fileLists[load->GetContentType()].get());
+  }
 
   m_age.restart();
 

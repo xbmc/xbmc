@@ -29,6 +29,11 @@
 #include "Job.h"
 #include <boost/timer.hpp>
 
+#include "VideoThumbLoader.h"
+#include "MusicThumbLoader.h"
+#include "PictureThumbLoader.h"
+
+
 // List IDs.
 #define CONTENT_LIST_RECENTLY_ADDED    11000
 #define CONTENT_LIST_ON_DECK           11001
@@ -105,6 +110,9 @@ class CPlexSectionFanout : public IJobCallback
     CGUIWindowHome *m_home;
     int m_sectionType;
     std::vector<int> m_outstandingJobs;
+  
+    /* Thumb loaders, we pre-cache posters to make the fanouts quick and nice */
+    CVideoThumbLoader m_videoThumb;
 };
 
 class CGUIWindowHome : public CGUIWindow,

@@ -33,6 +33,8 @@
 #include "boost/shared_ptr.hpp"
 #include "boost/foreach.hpp"
 
+#include "IProgressCallback.h"
+
 #ifdef _WIN32
 #define usleep(a) Sleep(a/1000)
 #endif
