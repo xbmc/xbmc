@@ -1673,6 +1673,12 @@ void CAMLCodec::Reset()
   int blackout_policy = aml_get_sysfs_int("/sys/class/video/blackout_policy");
   aml_set_sysfs_int("/sys/class/video/blackout_policy", 0);
 
+  // restore the speed (some amcodec versions require this)
+  if (m_speed != DVD_PLAYSPEED_NORMAL)
+  {
+    m_dll->codec_resume(&am_private->vcodec);
+    m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
+  }
   // reset the decoder
   m_dll->codec_reset(&am_private->vcodec);
 
