@@ -655,8 +655,9 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     CStdString partial, filename(url2.GetFileName());
     CStdStringArray array;
 
-    /* our current client doesn't support utf8 */
-    g_charsetConverter.utf8ToStringCharset(filename);
+    // if server sent us the filename in non-utf8, we need send back with same encoding.
+    if (url2.GetProtocolOption("utf8") == "0")
+      g_charsetConverter.utf8ToStringCharset(filename);
 
     /* TODO: create a tokenizer that doesn't skip empty's */
     CUtil::Tokenize(filename, array, "/");
