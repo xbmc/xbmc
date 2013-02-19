@@ -29,6 +29,20 @@ namespace XCURL
   typedef void CURL_HANDLE;
   typedef void CURLM;
   struct curl_slist;
+
+  class CurlSList
+  {
+  public:
+    CurlSList() : _lst(NULL) {}
+    CurlSList(const char *val) : _lst(NULL) { this->append(val); }
+    ~CurlSList() { this->release(); }
+    void append(const char *val);
+    void release();
+    struct curl_slist *get() { return _lst; }
+    operator bool() const { return _lst != NULL; }
+  protected:
+    struct curl_slist *_lst;
+  };
 }
 
 class CHttpHeader;
@@ -181,8 +195,7 @@ namespace XFILE
 
       int             m_stillRunning;     // Is background url fetch still in progress?
 
-      struct XCURL::curl_slist* m_curlAliasList;
-      struct XCURL::curl_slist* m_curlHeaderList;
+      struct XCURL::CurlSList m_curlHeaderList;
 
       typedef std::map<CStdString, CStdString> MAPHTTPHEADERS;
       MAPHTTPHEADERS m_requestheaders;
