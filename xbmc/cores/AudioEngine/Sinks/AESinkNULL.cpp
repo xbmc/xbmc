@@ -20,21 +20,21 @@
 
 #include "system.h"
 
-#include "AESinkNULL.h"
 #include <stdint.h>
 #include <limits.h>
 
-#include "guilib/LocalizeStrings.h"
-#include "dialogs/GUIDialogKaiToast.h"
-
-#include "Utils/AEUtil.h"
-#include "utils/StdString.h"
+#include "AESinkNULL.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
-#include "utils/MathUtils.h"
-#include "utils/TimeUtils.h"
-#include "settings/GUISettings.h"
 
-CAESinkNULL::CAESinkNULL() {
+CAESinkNULL::CAESinkNULL()
+  : CThread("nullsink"),
+    m_draining(false),
+    m_sink_frameSize(0),
+    m_sinkbuffer_size(0),
+    m_sinkbuffer_level(0),
+    m_sinkbuffer_sec_per_byte(0)
+{
 }
 
 CAESinkNULL::~CAESinkNULL()
@@ -43,56 +43,138 @@ CAESinkNULL::~CAESinkNULL()
 
 bool CAESinkNULL::Initialize(AEAudioFormat &format, std::string &device)
 {
-  m_msPerFrame           = 1000.0f / format.m_sampleRate;
-  m_ts                   = 0;
-
+  // setup for a 250ms sink feed from SoftAE 
   format.m_dataFormat    = AE_IS_RAW(format.m_dataFormat) ? AE_FMT_S16NE : AE_FMT_FLOAT;
-  format.m_frames        = format.m_sampleRate / 1000 * 500; /* 500ms */
+  format.m_frames        = format.m_sampleRate / 1000 * 250;
   format.m_frameSamples  = format.m_channelLayout.Count();
   format.m_frameSize     = format.m_frameSamples * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
+  m_format = format;
 
-#if 0
-  /* FIXME, CAUSES A DEADLOCK */
-  /* display failure notification */
-  CGUIDialogKaiToast::QueueNotification(
-    CGUIDialogKaiToast::Error,
-    g_localizeStrings.Get(34402),
-    g_localizeStrings.Get(34403),
-    TOAST_DISPLAY_TIME,
-    false
-  );
-#endif
+  // setup a pretend 500ms internal buffer
+  m_sink_frameSize = format.m_channelLayout.Count() * CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3;
+  m_sinkbuffer_size = (double)m_sink_frameSize * format.m_sampleRate / 2;
+  m_sinkbuffer_sec_per_byte = 1.0 / (double)(m_sink_frameSize * format.m_sampleRate);
+
+  m_draining = false;
+  m_wake.Reset();
+  m_inited.Reset();
+  Create();
+  if (!m_inited.WaitMSec(100))
+  {
+    while(!m_inited.WaitMSec(1))
+      Sleep(10);
+  }
 
   return true;
 }
 
 void CAESinkNULL::Deinitialize()
 {
+  // force m_bStop and set m_wake, if might be sleeping.
+  m_bStop = true;
+  StopThread();
 }
 
 bool CAESinkNULL::IsCompatible(const AEAudioFormat format, const std::string device)
 {
-  return false;
+  return ((m_format.m_sampleRate    == format.m_sampleRate) &&
+          (m_format.m_dataFormat    == format.m_dataFormat) &&
+          (m_format.m_channelLayout == format.m_channelLayout));
 }
 
 double CAESinkNULL::GetDelay()
 {
-  return std::max(0.0, (double)(m_ts - CurrentHostCounter()) / 1000000.0f);
+  double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_level;
+  return sinkbuffer_seconds_to_empty;
+}
+
+double CAESinkNULL::GetCacheTime()
+{
+  double sinkbuffer_seconds_to_empty = m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_level;
+  return sinkbuffer_seconds_to_empty;
+}
+
+double CAESinkNULL::GetCacheTotal()
+{
+  return m_sinkbuffer_sec_per_byte * (double)m_sinkbuffer_size;
 }
 
 unsigned int CAESinkNULL::AddPackets(uint8_t *data, unsigned int frames, bool hasAudio)
 {
-  float timeout = m_msPerFrame * frames;
-  m_ts = CurrentHostCounter() + MathUtils::round_int(timeout * 1000000.0f);
-  Sleep(MathUtils::round_int(timeout));
+  unsigned int max_frames = (m_sinkbuffer_size - m_sinkbuffer_level) / m_sink_frameSize;
+  if (frames > max_frames)
+    frames = max_frames;
+
+  if (hasAudio && frames)
+  {
+    m_sinkbuffer_level += frames * m_sink_frameSize;
+    m_wake.Set();
+  }
+  // AddPackets runs under a non-idled AE thread we must block or sleep.
+  // Trying to calc the optimal sleep is tricky so just a minimal sleep.
+  Sleep(10);
+
   return frames;
 }
 
 void CAESinkNULL::Drain()
 {
+  m_draining = true;
+  m_wake.Set();
 }
 
 void CAESinkNULL::EnumerateDevices (AEDeviceList &devices, bool passthrough)
 {
-  /* we never return any devices */
+  // we never return any devices
+}
+
+void CAESinkNULL::Process()
+{
+  CLog::Log(LOGDEBUG, "CAESinkNULL::Process");
+
+  // The object has been created and waiting to play,
+  m_inited.Set();
+  // yield to give other threads a chance to do some work.
+  sched_yield();
+
+  SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
+  while (!m_bStop)
+  {
+    if (m_draining)
+    {
+      // TODO: is it correct to not take data at the appropriate rate while draining?
+      m_sinkbuffer_level = 0;
+      m_draining = false;
+    }
+
+    // pretend we have a 64k audio buffer
+    unsigned int min_buffer_size = 64 * 1024;
+    unsigned int read_bytes = m_sinkbuffer_level;
+    if (read_bytes > min_buffer_size)
+      read_bytes = min_buffer_size;
+
+    if (read_bytes > 0)
+    {
+      // drain it
+      m_sinkbuffer_level -= read_bytes;
+
+      // we MUST drain at the correct audio sample rate
+      // or the NULL sink will not work right. So calc
+      // an approximate sleep time.
+      int frames_written = read_bytes / m_sink_frameSize;
+      double empty_ms = 1000.0 * (double)frames_written / m_format.m_sampleRate;
+      #if defined(_LINUX)
+        usleep(empty_ms * 1000.0);
+      #else
+        Sleep((int)empty_ms);
+      #endif
+    }
+
+    if (m_sinkbuffer_level == 0)
+    {
+      // sleep this audio thread, we will get woken when we have audio data.
+      m_wake.WaitMSec(250);
+    }
+  }
+  SetPriority(THREAD_PRIORITY_NORMAL);
 }
