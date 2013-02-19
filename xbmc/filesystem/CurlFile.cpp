@@ -1211,7 +1211,6 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   if(url2.GetProtocol() == "ftp")
   {
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
   }
 
