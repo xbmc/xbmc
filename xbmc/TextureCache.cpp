@@ -44,7 +44,7 @@ CTextureCache &CTextureCache::Get()
 CTextureCache::CTextureCache()
 /* PLEX */
 #ifndef TARGET_RPI
-  : CJobQueue(false, 5)
+  : CJobQueue(false, 2)
 #endif
 /* END PLEX */
 {

@@ -523,6 +523,11 @@ string CPlexDirectory::BuildImageURL(const string& parentURL, const string& imag
     width = "800";
     height = "200";
   }
+  else if (strstr(imageURL.c_str(), "system"))
+  {
+    width = "0";
+    height = "0";
+  }
   
   if (url.GetProtocol() == "plex")
   {
@@ -798,10 +803,17 @@ class PlexMediaNode
          else
            theURL.SetOptions("?t=" + version + "&" + theURL.GetOptions().substr(1));
        
-         string url = theURL.Get();
-
+         string url = CPlexDirectory::BuildImageURL(baseURL, theURL.Get(), true);
+         
          /* FIXME: attr here might be wrong? */
          mediaItem->SetArt("mediaTag::" + attr, url);
+         
+         /* Cache this in the bg */
+         if(resource != "studio")
+         {
+           if (!CTextureCache::Get().HasCachedImage(url))
+             CTextureCache::Get().BackgroundCacheImage(url);
+         }
        }
 
        string value = val;

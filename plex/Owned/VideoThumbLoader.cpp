@@ -60,13 +60,27 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->IsPlexMediaServer())
     return false;
   
+  /*
   const CGUIListItem::ArtMap artMap = pItem->GetArt();
   pair<string, string> stringPair;
   BOOST_FOREACH(stringPair, artMap)
   {
     if (!CTextureCache::Get().HasCachedImage(stringPair.second))
       CTextureCache::Get().BackgroundCacheImage(stringPair.second);
-  }
+  }*/
+
+  if (pItem->HasArt("thumb") &&
+      !CTextureCache::Get().HasCachedImage(pItem->GetArt("thumb")))
+    CTextureCache::Get().BackgroundCacheImage(pItem->GetArt("thumb"));
+  
+  if (pItem->HasArt("fanart") &&
+      !CTextureCache::Get().HasCachedImage(pItem->GetArt("fanart")))
+    CTextureCache::Get().BackgroundCacheImage(pItem->GetArt("fanart"));
+
+  if (pItem->HasArt("grandParentThumb") &&
+      !CTextureCache::Get().HasCachedImage(pItem->GetArt("grandParentThumb")))
+    CTextureCache::Get().BackgroundCacheImage(pItem->GetArt("grandParentThumb"));
+
   
   return true;
 }
