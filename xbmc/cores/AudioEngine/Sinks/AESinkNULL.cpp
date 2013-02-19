@@ -135,11 +135,7 @@ void CAESinkNULL::Process()
   // The object has been created and waiting to play,
   m_inited.Set();
   // yield to give other threads a chance to do some work.
-#ifdef TARGET_WINDOWS
   Sleep(0);
-#else
-  sched_yield();
-#endif
 
   SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
   while (!m_bStop)
