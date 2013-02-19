@@ -3098,6 +3098,19 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, i
   return details;
 }
 
+bool CVideoDatabase::GetStreamDetails(CFileItem& item)
+{
+  if (!item.HasVideoInfoTag())
+    return false;
+
+  CVideoInfoTag *tag = item.GetVideoInfoTag();
+  if (tag->m_iFileId < 0)
+    tag->m_iFileId = GetFileId(item);
+
+  return GetStreamDetails(*tag);
+}
+
+
 bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
 {
   if (tag.m_iFileId < 0)

@@ -200,10 +200,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
   m_database->Open();
 
-  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails() &&
-     (pItem->GetVideoInfoTag()->m_type == "movie" || pItem->GetVideoInfoTag()->m_type == "episode" || pItem->GetVideoInfoTag()->m_type == "musicvideo"))
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails() && pItem->IsVideo())
   {
-    if (m_database->GetStreamDetails(*pItem->GetVideoInfoTag()))
+    if (m_database->GetStreamDetails(*pItem))
       pItem->SetInvalid();
   }
 
