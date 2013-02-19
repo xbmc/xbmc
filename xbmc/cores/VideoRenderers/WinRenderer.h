@@ -33,14 +33,6 @@
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 
-//#define MP_DIRECTRENDERING
-
-#ifdef MP_DIRECTRENDERING
-#define NUM_BUFFERS 3
-#else
-#define NUM_BUFFERS 2
-#endif
-
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
 
