@@ -33,10 +33,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
-
-/* PLEX */
-#include "CoreAudioHardware.h"
-/* END PLEX */
+#include "threads/SystemClock.h"
 
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416
@@ -94,7 +91,9 @@ CCoreAudioAE::CCoreAudioAE() :
   m_muted              (false         ),
   m_soundMode          (AE_SOUND_OFF  ),
   m_streamsPlaying     (false         ),
-  m_isSuspended        (false         )
+  m_isSuspended        (false         ),
+  m_softSuspend        (false         ),
+  m_softSuspendTimer   (0             )
 {
   HAL = new CCoreAudioAEHAL;
   
@@ -277,15 +276,11 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw,
 
   if (m_outputDevice.empty())
     m_outputDevice = "default";
+
   AEAudioFormat initformat = m_format;
 
   // initialize audio hardware
   m_Initialized = HAL->Initialize(this, m_rawPassthrough, initformat, rawDataFormat, m_outputDevice, m_volume);
-
-  /* PLEX */
-  if (m_Initialized && m_outputDevice == "default")
-    CCoreAudioHardware::GetOutputDeviceName(m_lastDefaultAudioDevice);
-  /* END PLEX */
 
   unsigned int bps         = CAEUtil::DataFormatToBits(m_format.m_dataFormat);
   m_chLayoutCount          = m_format.m_channelLayout.Count();
@@ -492,7 +487,7 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
 {
   // if we are suspended we don't
   // want anyone to mess with us
-  if (m_isSuspended)
+  if (m_isSuspended && !m_softSuspend)
     return NULL;
 
   CAEChannelInfo channelInfo(channelLayout);
@@ -507,26 +502,11 @@ IAEStream* CCoreAudioAE::MakeStream(enum AEDataFormat dataFormat,
   if ((options & AESTREAM_PAUSED) == 0)
     Stop();
 
-  /* PLEX */
-  bool audioDeviceChanged = g_advancedSettings.m_bAlwaysReinitCoreAudio;
-  std::string deviceName;
-  CCoreAudioHardware::GetOutputDeviceName(deviceName);
-
-  if (g_guiSettings.GetString("audiooutput.audiodevice") == "CoreAudio:default" &&
-      !m_lastDefaultAudioDevice.empty() &&
-      m_lastDefaultAudioDevice != deviceName)
-  {
-    CLog::Log(LOGDEBUG, "DefaultAudioDevice changed, so we need to reinit");
-    audioDeviceChanged = true;
-  }
-  /* END PLEX */
-
   // reinit the engine if pcm format changes or always on raw format
   if (m_Initialized && ( m_lastStreamFormat != dataFormat ||
                          m_lastChLayoutCount != channelLayout.Count() ||
                          m_lastSampleRate != sampleRate ||
-                         COREAUDIO_IS_RAW(dataFormat) ||
-                         audioDeviceChanged)) // PLEX
+                         COREAUDIO_IS_RAW(dataFormat)))
   {
     CSingleLock engineLock(m_engineLock);
     Stop();
@@ -589,7 +569,7 @@ IAEStream* CCoreAudioAE::FreeStream(IAEStream *stream)
 
 void CCoreAudioAE::PlaySound(IAESound *sound)
 {
-  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying) || m_isSuspended)
+  if (m_soundMode == AE_SOUND_OFF || (m_soundMode == AE_SOUND_IDLE && m_streamsPlaying) || (m_isSuspended && !m_softSuspend))
     return;
 
   float *samples = ((CCoreAudioAESound*)sound)->GetSamples();
@@ -715,7 +695,7 @@ void CCoreAudioAE::GarbageCollect()
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
-  if (m_isSuspended)
+  if (m_isSuspended && !m_softSuspend)
     return;
 
   HAL->EnumerateOutputDevices(devices, passthrough);

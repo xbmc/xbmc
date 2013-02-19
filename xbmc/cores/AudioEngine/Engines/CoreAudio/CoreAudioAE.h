@@ -178,4 +178,7 @@ private:
   /* PLEX */
   std::string       m_lastDefaultAudioDevice;
   /* END PLEX */
+
+  bool              m_softSuspend;
+  unsigned int      m_softSuspendTimer;
 };
