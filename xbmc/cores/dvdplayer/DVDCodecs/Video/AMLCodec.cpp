@@ -1882,10 +1882,22 @@ void CAMLCodec::Process()
         double offset  = g_renderManager.GetDisplayLatency() - g_settings.m_currentVideoSettings.m_AudioDelay;
         // correct video pts by user set delay and rendering delay
         app_pts += offset;
-        if (fabs((double)pts_video/PTS_FREQ - app_pts) > 0.20)
+
+        double error = app_pts - (double)pts_video/PTS_FREQ;
+        double abs_error = fabs(error);
+        if (abs_error > 0.040)
         {
-          //CLog::Log(LOGDEBUG, "CAMLCodec::Process pts diff = %f", (double)pts_video/PTS_FREQ - app_pts);
-          SetVideoPtsSeconds(app_pts);
+          //CLog::Log(LOGDEBUG, "CAMLCodec::Process pts diff = %f", error);
+          if (abs_error > 0.125)
+          {
+            // big error so try to reset pts_pcrscr
+            SetVideoPtsSeconds(app_pts);
+          }
+          else
+          {
+            // small error so try to avoid a frame jump
+            SetVideoPtsSeconds((double)pts_video/PTS_FREQ + error/4);
+          }
         }
       }
     }
