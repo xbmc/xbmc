@@ -2,20 +2,21 @@ set(subdirs cores addons cdrip dbwrappers dialogs filesystem guilib input interf
 peripherals pictures playlists powermanagement programs rendering settings storage threads
 utils video windowing windows pvr commons epg main)
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
 	list(APPEND subdirs osx)
-endif(APPLE)
-if(UNIX)
+endif(TARGET_COMMON_DARWIN)
+
+if(TARGET_POSIX)
 	list(APPEND subdirs linux)
-endif(UNIX)
+endif(TARGET_POSIX)
+
+if(TARGET_WIN32)
+  list(APPEND subdirs win32)
+endif(TARGET_WIN32)
 
 foreach(dir ${subdirs})
   add_subdirectory(${dir})
 endforeach()
-
-if(WIN32)
-  add_subdirectory(win32)
-endif()
 
 set(PlexOwnedFiles BackgroundInfoLoader.cpp)
 

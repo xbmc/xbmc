@@ -10,7 +10,6 @@ plex_find_headers(HEADERS unistd.h string.h)
 
 add_definitions(-D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -DHAVE_CONFIG_H -D_XBMC)
 
-
 configure_file(config_plex.h.in config.h)
 include_directories(src src/vm ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../includes)
 set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${PLEX_LINK_WRAPPED}")
@@ -20,10 +19,10 @@ find_all_sources(src/vm dvdnavvm_SRC)
 add_library(dvdnav-${ARCH} MODULE ${dvdnav_SRC} ${dvdnavvm_SRC})
 target_link_libraries(dvdnav-${ARCH} dvdread dvdcss wrapper)
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   install(TARGETS dvdnav-${ARCH} DESTINATION ${RESOURCEPATH}/system/players/dvdplayer COMPONENT RUNTIME)
-elseif(UNIX)
+elseif(TARGET_COMMON_LINUX)
   install(TARGETS dvdnav-${ARCH} DESTINATION ${BINPATH}/system/players/dvdplayer COMPONENT RUNTIME)
-elseif(WIN32)
+elseif(TARGET_WIN32)
   install(TARGETS dvdnav RUNTIME DESTINATION ${RESOURCEPATH}/system/players/dvdplayer LIBRARY DESTINATION ${RESOURCEPATH}/system COMPONENT RUNTIME)
-endif()
+endif(TARGET_COMMON_DARWIN)

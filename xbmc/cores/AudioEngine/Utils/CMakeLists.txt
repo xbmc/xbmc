@@ -1,8 +1,8 @@
 find_all_sources(. ae_SRCS)
 
-if(WIN32)
+if(TARGET_WIN32)
   list(REMOVE_ITEM ae_SRCS ./AEELDParser.cpp)
   list(REMOVE_ITEM ae_SRCS ./AEELDParser.h)
-endif()
+endif(TARGET_WIN32)
   
 add_sources(${ae_SRCS})

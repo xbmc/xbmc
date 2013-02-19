@@ -67,15 +67,15 @@ include_directories(
 )
 
 # Platfrom includes
-if(UNIX)
+if(TARGET_POSIX)
   include_directories(${root}/xbmc/linux)
-endif(UNIX)
+endif(TARGET_POSIX)
 
-if(APPLE)
+if(TARGET_COMMON_DARWIN)
   include_directories(${root}/xbmc/osx)
-endif(APPLE)
+endif(TARGET_COMMON_DARWIN)
 
-if(WIN32)
+if(TARGET_WIN32)
   include_directories(
     ${root}/xbmc/win32
     ${root}/lib/ffmpeg
@@ -85,7 +85,7 @@ if(WIN32)
     ${root}/lib/win32
     "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include"
   )
-endif()
+endif(TARGET_WIN32)
 
 # Build the texturepacker
 add_subdirectory(tools/TexturePacker)
@@ -123,7 +123,7 @@ include_directories(
 )
 
 add_subdirectory(xbmc)
-if(APPLE)
+if(TARGET_OSX)
   add_subdirectory(tools/EventClients/Clients/OSXRemote)
 endif()
 add_subdirectory(plex)

@@ -3,9 +3,9 @@ set(CPACK_PACKAGE_VENDOR "Plex inc")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PLEX_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PLEX_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PLEX_VERSION_PATCH}0${PLEX_VERSION_SMALL})
-if(APPLE)
+if(TARGET_OSX)
   set(CPACK_SYSTEM_NAME "macosx-x86")
-elseif(WIN32)
+elseif(TARGET_WIN32)
   set(CPACK_SYSTEM_NAME "windows-x86")
   # use a shorter path to hopefully avoid stupid windows 260 chars path.
   set(CPACK_PACKAGE_DIRECTORY "C:/tmp")
@@ -37,12 +37,12 @@ set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
    ExecWait \\\"$INSTDIR\\\\Dependencies\\\\dxsetup\\\\dxsetup.exe /silent\\\"
    RMDir /r \\\"$INSTDIR\\\\Dependencies\\\"")
 
-if(APPLE)
+if(TARGET_OSX)
   set(CPACK_GENERATOR "ZIP")
   set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
-elseif(UNIX)
+elseif(TARGET_COMMON_LINUX)
   set(CPACK_GENERATOR "DEB;TBZ2")
-elseif(WIN32)
+elseif(TARGET_WIN32)
   set(CPACK_GENERATOR "NSIS")
 endif()
 
@@ -73,7 +73,7 @@ set(CPACK_SOURCE_IGNORE_FILES
 # We want to make sure that CPack uses our own NSIS.template.in
 list(APPEND CMAKE_MODULE_PATH ${plexdir}/Resources)
 
-if(WIN32)
+if(TARGET_WIN32)
   add_custom_target(signed_package ${plexdir}/scripts/WindowsSign.cmd ${CPACK_PACKAGE_DIRECTORY}/${CPACK_PACKAGE_FILE_NAME}.exe DEPENDS package)
 endif()
 

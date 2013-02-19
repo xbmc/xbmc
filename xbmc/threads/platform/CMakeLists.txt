@@ -1,5 +1,5 @@
 set(SRC Implementation.cpp)
-if(WIN32)
+if(TARGET_WIN32)
   list(APPEND SRC win/Win32Exception.cpp)
-endif()
+endif(TARGET_WIN32)
 add_sources(${SRC})
