@@ -294,6 +294,10 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->SetProperty("numepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode); // info view has no concept of current watched/unwatched filter as we could come here from files view, but set for consistency
       m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
+      if ( m_movieItem->GetVideoInfoTag()->m_iEpisode > 0)
+        m_movieItem->SetProperty("percentwatched", (int)((100.0f * m_movieItem->GetVideoInfoTag()->m_playCount / m_movieItem->GetVideoInfoTag()->m_iEpisode) + 0.5f));
+      else
+        m_movieItem->SetProperty("percentwatched", 0);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
     }
     else if (type == VIDEODB_CONTENT_EPISODES)

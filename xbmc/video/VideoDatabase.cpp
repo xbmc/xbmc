@@ -5654,6 +5654,10 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", it->second.numEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", it->second.numWatched);
         pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
+        if (it->second.numEpisodes > 0)
+          pItem->SetProperty("percentwatched", (int)((100.0f * it->second.numWatched / it->second.numEpisodes) + 0.5f));
+        else
+          pItem->SetProperty("percentwatched", 0);
         if (iSeason == 0) pItem->SetProperty("isspecial", true);
         pItem->GetVideoInfoTag()->m_playCount = (it->second.numEpisodes == it->second.numWatched) ? 1 : 0;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -5697,6 +5701,10 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watchedEpisodes);
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
+        if (totalEpisodes > 0)
+          pItem->SetProperty("percentwatched", (int)((100.0f * watchedEpisodes / totalEpisodes) + 0.5f));
+        else
+          pItem->SetProperty("percentwatched", 0);
         if (iSeason == 0) pItem->SetProperty("isspecial", true);
         pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -5980,11 +5988,14 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const Filte
         CStdString path; path.Format("%ld/", record->at(0).get_asInt());
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
-
         pItem->m_dateTime = movie.m_premiered;
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
         pItem->SetProperty("totalseasons", record->at(VIDEODB_DETAILS_TVSHOW_NUM_SEASONS).get_asInt());
         pItem->SetProperty("totalepisodes", movie.m_iEpisode);
+        if (movie.m_iEpisode > 0)
+          pItem->SetProperty("percentwatched", (int)((100.0f * movie.m_playCount / movie.m_iEpisode) + 0.5f));
+        else
+          pItem->SetProperty("percentwatched", 0);
         pItem->SetProperty("numepisodes", movie.m_iEpisode); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", movie.m_playCount);
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);

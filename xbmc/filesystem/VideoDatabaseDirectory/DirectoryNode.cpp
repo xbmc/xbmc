@@ -337,6 +337,10 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
         pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watched);
         pItem->SetProperty("unwatchedepisodes", unwatched);
+        if (watched + unwatched > 0)
+          pItem->SetProperty("percentwatched", (int)((100.0f * watched / (watched + unwatched)) + 0.5f));
+        else
+          pItem->SetProperty("percentwatched", 0);
         if (items.Size() && items[0]->GetVideoInfoTag())
         {
           *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
