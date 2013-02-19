@@ -1559,7 +1559,6 @@ void CApplication::StopWebServer()
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
       CZeroconf::GetInstance()->RemoveService("servers.webserver");
       CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-http");
-      CZeroconf::GetInstance()->RemoveService("servers.webapi");
     } else
       CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
   }
