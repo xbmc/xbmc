@@ -1630,9 +1630,12 @@ bool CAMLCodec::OpenDecoder(CDVDStreamInfo &hints)
     CLog::Log(LOGDEBUG, "CAMLCodec::OpenDecoder codec init failed, ret=0x%x", -ret);
     return false;
   }
+  // make sure we are not stuck in pause (amcodec bug)
+  m_dll->codec_resume(&am_private->vcodec);
+  m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
 
-	m_dll->codec_set_cntl_avthresh(&am_private->vcodec, AV_SYNC_THRESH);
-	m_dll->codec_set_cntl_syncthresh(&am_private->vcodec, 0);
+  m_dll->codec_set_cntl_avthresh(&am_private->vcodec, AV_SYNC_THRESH);
+  m_dll->codec_set_cntl_syncthresh(&am_private->vcodec, 0);
   // disable tsync, we are playing video disconnected from audio.
   aml_set_sysfs_int("/sys/class/tsync/enable", 0);
 
