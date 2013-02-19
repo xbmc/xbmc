@@ -44,8 +44,6 @@ namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 namespace VAAPI   { struct CHolder; }
 
-#define NUM_BUFFERS 10
-
 
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))

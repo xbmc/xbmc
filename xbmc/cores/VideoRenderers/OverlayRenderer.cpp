@@ -97,7 +97,7 @@ CRenderer::CRenderer()
 
 CRenderer::~CRenderer()
 {
-  for(int i = 0; i < 10; i++)
+  for(int i = 0; i < NUM_BUFFERS; i++)
     Release(m_buffers[i]);
 }
 

@@ -41,8 +41,6 @@ namespace Shaders { class BaseVideoFilterShader; }
 class COpenMaxVideo;
 typedef std::vector<int>     Features;
 
-#define NUM_BUFFERS 10
-
 
 #undef ALIGN
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))

@@ -28,12 +28,13 @@
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
+#define NUM_BUFFERS 10
 
 class CSetting;
 
 typedef struct YV12Image
 {
-  BYTE *   plane[MAX_PLANES];
+  uint8_t* plane[MAX_PLANES];
   int      planesize[MAX_PLANES];
   unsigned stride[MAX_PLANES];
   unsigned width;

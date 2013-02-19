@@ -23,6 +23,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+#include "BaseRenderer.h"
 
 #include <vector>
 
@@ -127,7 +128,7 @@ namespace OVERLAY {
     void      Release(SElementV& list);
 
     CCriticalSection m_section;
-    SElementV        m_buffers[10];
+    SElementV        m_buffers[NUM_BUFFERS];
     int              m_iNumBuffers;
     int              m_render;
 
