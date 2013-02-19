@@ -287,7 +287,9 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), m_gl
 //////////////////////////////////////////////////////////////////////////////
 bool CGUIWindowHome::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU && GetFocusedControlID() > 9000)
+  /* > 9000 is the fans and 506 is preferences */
+  if ((action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK) &&
+      (GetFocusedControlID() > 9000 || GetFocusedControlID() == 506))
   {
     CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), 300);
     OnMessage(msg);
