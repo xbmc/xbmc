@@ -21,10 +21,9 @@
 
 #include "system.h"
 
-#include "Interfaces/AESink.h"
-#include <stdint.h>
+#include "cores/AudioEngine/Interfaces/AESink.h"
 
-class CAESinkNULL : public IAESink
+class CAESinkNULL : public CThread, public IAESink
 {
 public:
   virtual const char *GetName() { return "NULL"; }
@@ -32,18 +31,26 @@ public:
   CAESinkNULL();
   virtual ~CAESinkNULL();
 
-  virtual bool Initialize  (AEAudioFormat &format, std::string &device);
+  virtual bool Initialize(AEAudioFormat &format, std::string &device);
   virtual void Deinitialize();
   virtual bool IsCompatible(const AEAudioFormat format, const std::string device);
 
   virtual double       GetDelay        ();
-  virtual double       GetCacheTime    () { return 0.0; }
-  virtual double       GetCacheTotal   () { return 0.0; }
+  virtual double       GetCacheTime    ();
+  virtual double       GetCacheTotal   ();
   virtual unsigned int AddPackets      (uint8_t *data, unsigned int frames, bool hasAudio);
   virtual void         Drain           ();
 
   static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
-  int64_t m_ts;
-  float   m_msPerFrame;
+  virtual void         Process();
+
+  CEvent               m_wake;
+  CEvent               m_inited;
+  volatile bool        m_draining;
+  AEAudioFormat        m_format;
+  unsigned int         m_sink_frameSize;
+  unsigned int         m_sinkbuffer_size;  ///< total size of the buffer
+  unsigned int         m_sinkbuffer_level; ///< current level in the buffer
+  double               m_sinkbuffer_sec_per_byte;
 };
