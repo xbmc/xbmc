@@ -120,6 +120,11 @@ int aml_get_cputype()
           aml_cputype = 3;
           break;
         }
+        else if (stdbuffer.find("Meson6") != std::string::npos)
+        {
+          aml_cputype = 6;
+          break;
+        }
       }
       fclose(cpuinfo_fd);
     }
