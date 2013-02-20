@@ -40,5 +40,7 @@
 	<string>4.1</string>
 	<key>NSPrincipalClass</key>
 	<string>XBMCAppliance</string>
+	<key>FRApplianceName</key>
+	<string>XBMC</string>
 </dict>
 </plist>

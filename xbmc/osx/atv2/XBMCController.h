@@ -44,6 +44,24 @@
 - (void) enableSystemSleep;
 - (void) disableScreenSaver;
 - (void) enableScreenSaver;
+- (void) pauseAnimation;
+- (void) resumeAnimation;
+- (void) startAnimation;
+- (void) stopAnimation;
+- (bool) changeScreen: (unsigned int)screenIdx withMode:(UIScreenMode *)mode;
+- (void) activateScreen: (UIScreen *)screen;
+- (id) glView;
+- (void) setGlView:(id)view;
+- (BOOL) ATVClientEventFromBREvent:(id)event Result:(int *)xbmc_ir_key;
+- (void) setUserEvent:(int) eventId withHoldTime:(unsigned int) holdTime;
+- (void) startKeyPressTimer:(int) keyId;
+- (void) stopKeyPressTimer;
+- (void) setSystemSleepTimeout:(id) timeout;
+- (id) systemSleepTimeout;
+- (void) setKeyTimer:(id) timer;
+- (id) keyTimer;
+- (void) setSystemScreenSaverTimeout:(id) timeout;
+- (id) systemScreenSaverTimeout;
 
 @end
 

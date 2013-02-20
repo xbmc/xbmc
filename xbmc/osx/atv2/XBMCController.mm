@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2010-2013 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,10 +13,39 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with XBMC; see the file COPYING.  If not, see
+ *  <http://www.gnu.org/licenses/>.
  *
+ */
+
+
+/* HowTo code in this file:
+ * Since AppleTV/iOS6.x (atv2 version 5.2) Apple removed the AppleTV.framework and put all those classes into the
+ * AppleTV.app. So we can't use standard obj-c coding here anymore. Instead we need to use the obj-c runtime
+ * functions for subclassing and adding methods to our instances during runtime (hooking).
+ * 
+ * 1. For implementing a method of a base class:
+ *  a) declare it in the form <XBMCController$nameOfMethod> like the others 
+ *  b) these methods need to be static and have XBMCController* self, SEL _cmd (replace XBMCAppliance with the class the method gets implemented for) as minimum params. 
+ *  c) add the method to the XBMCController.h for getting rid of the compiler warnings of unresponsive selectors (declare the method like done in the baseclass).
+ *  d) in initControllerRuntimeClasses exchange the base class implementation with ours by calling MSHookMessageEx
+ *  e) if we need to call the base class implementation as well we have to save the original implementation (see brEventAction$Orig for reference)
+ *
+ * 2. For implementing a new method which is not part of the base class:
+ *  a) same as 1.a
+ *  b) same as 1.b
+ *  c) same as 1.c
+ *  d) in initControllerRuntimeClasses add the method to our class via class_addMethod
+ *
+ * 3. Never access any BackRow classes directly - but always get the class via objc_getClass - if the class is used in multiple places 
+ *    save it as static (see BRWindowCls)
+ * 
+ * 4. Keep the structure of this file based on the section comments (marked with // SECTIONCOMMENT).
+ * 5. really - obey 4.!
+ *
+ * 6. for adding class members use associated objects - see timerKey
+ *
+ * For further reference see https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html
  */
 
 //hack around problem with xbmc's typedef int BOOL
@@ -25,16 +54,21 @@
 #import "WinEventsIOS.h"
 #import "XBMC_events.h"
 #include "utils/log.h"
+#include "osx/DarwinUtils.h"
+#include "threads/Event.h"
+#include "Application.h"
 #undef BOOL
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <BackRow/BackRow.h>
 
 #import "XBMCController.h"
 #import "XBMCEAGLView.h"
 #import "XBMCDebugHelpers.h"
 
+#import "XBMCEAGLView.h"
+#include "XBMC_keysym.h"
+#include "substrate.h"
 typedef enum {
 
   ATV_BUTTON_UP                 = 1,
@@ -111,6 +145,9 @@ typedef enum {
   kBREventRemoteActionPlay      = 5,
   kBREventRemoteActionLeft      = 6,
   kBREventRemoteActionRight     = 7,
+  kBREventRemoteActionRewind2   = 8,  
+  kBREventRemoteActionFastFwd2  = 9,  
+
 
   kBREventRemoteActionALPlay    = 10,
 
@@ -161,11 +198,12 @@ XBMCController *g_xbmcController;
 
 //--------------------------------------------------------------
 // so we don't have to include AppleTV.frameworks/PrivateHeaders/ATVSettingsFacade.h
-@interface ATVSettingsFacade : BRSettingsFacade {}
+@interface XBMCSettingsFacade : NSObject
 -(int)screenSaverTimeout;
 -(void)setScreenSaverTimeout:(int) f_timeout;
 -(void)setSleepTimeout:(int)timeout;
 -(int)sleepTimeout;
+-(void)flushDiskChanges;
 @end
 
 // notification messages
@@ -174,151 +212,203 @@ extern NSString* kBRScreenSaverDismissed;
 
 //--------------------------------------------------------------
 //--------------------------------------------------------------
-@interface XBMCController (PrivateMethods)
-XBMCEAGLView  *m_glView;
-int           m_screensaverTimeout;
-int           m_systemsleepTimeout;
+// SECTIONCOMMENT
+// orig method handlers we wanna call in hooked methods ([super method])
+static BOOL (*XBMCController$brEventAction$Orig)(XBMCController*, SEL, BREvent*);
+static id (*XBMCController$init$Orig)(XBMCController*, SEL);
+static void (*XBMCController$dealloc$Orig)(XBMCController*, SEL);
+static void (*XBMCController$controlWasActivated$Orig)(XBMCController*, SEL);
+static void (*XBMCController$controlWasDeactivated$Orig)(XBMCController*, SEL);
 
-- (void) observeDefaultCenterStuff: (NSNotification *) notification;
-@end
+// SECTIONCOMMENT
+// classes we need multiple times
+static Class BRWindowCls;
+
+int padding[16];//obsolete? - was commented with "credit is due here to SapphireCompatibilityClasses!!"
+  
+//--------------------------------------------------------------
+//--------------------------------------------------------------
+// SECTIONCOMMENT
+// since we can't inject ivars we need to use associated objects
+// these are the keys for XBMCController
+static char timerKey;
+static char glviewKey;
+static char screensaverKey;
+static char systemsleepKey;
+
 //
 //
-@implementation XBMCController
-/*
-+ (XBMCController*) sharedInstance
-{
-  // the instance of this class is stored here
-  static XBMCController *myInstance = nil;
-
-  // check to see if an instance already exists
-  if (nil == myInstance)
-    myInstance  = [[[[self class] alloc] init] autorelease];
-
-  // return the instance of this class
-  return myInstance;
+// SECTIONCOMMENT
+//implementation XBMCController
+ 
+static id XBMCController$keyTimer(XBMCController* self, SEL _cmd) 
+{ 
+  return objc_getAssociatedObject(self, &timerKey);
 }
-*/
 
-- (void) applicationDidExit
+static void XBMCController$setKeyTimer(XBMCController* self, SEL _cmd, id timer) 
+{ 
+  objc_setAssociatedObject(self, &timerKey, timer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+static id XBMCController$glView(XBMCController* self, SEL _cmd) 
+{ 
+  return objc_getAssociatedObject(self, &glviewKey);
+}
+
+static void XBMCController$setGlView(XBMCController* self, SEL _cmd, id view) 
+{ 
+  objc_setAssociatedObject(self, &glviewKey, view, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+static id XBMCController$systemScreenSaverTimeout(XBMCController* self, SEL _cmd) 
+{ 
+  return objc_getAssociatedObject(self, &screensaverKey);
+}
+
+static void XBMCController$setSystemScreenSaverTimeout(XBMCController* self, SEL _cmd, id timeout) 
+{ 
+  objc_setAssociatedObject(self, &screensaverKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+static id XBMCController$systemSleepTimeout(XBMCController* self, SEL _cmd) 
+{ 
+  return objc_getAssociatedObject(self, &systemsleepKey);
+}
+
+static void XBMCController$setSystemSleepTimeout(XBMCController* self, SEL _cmd, id timeout) 
+{ 
+  objc_setAssociatedObject(self, &systemsleepKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+static void XBMCController$applicationDidExit(XBMCController* self, SEL _cmd) 
 {
-  [m_glView stopAnimation];
+  //NSLog(@"%s", __PRETTY_FUNCTION__);
 
+  [[self glView] stopAnimation];
   [self enableScreenSaver];
   [self enableSystemSleep];
-
   [[self stack] popController];
 }
-- (void) initDisplayLink
+
+static void XBMCController$initDisplayLink(XBMCController* self, SEL _cmd) 
 {
-  [m_glView initDisplayLink];
+  //NSLog(@"%s", __PRETTY_FUNCTION__);
+
+  [[self glView] initDisplayLink];
 }
-- (void) deinitDisplayLink
+
+static void XBMCController$deinitDisplayLink(XBMCController* self, SEL _cmd) 
 {
-  [m_glView deinitDisplayLink];
+  //NSLog(@"%s", __PRETTY_FUNCTION__);
+
+  [[self glView] deinitDisplayLink];
 }
-- (double) getDisplayLinkFPS
+
+static double XBMCController$getDisplayLinkFPS(XBMCController* self, SEL _cmd) 
 {
-  return [m_glView getDisplayLinkFPS];
+  //NSLog(@"%s", __PRETTY_FUNCTION__);
+
+  return [[self glView] getDisplayLinkFPS];
 }
-- (void) setFramebuffer
-{
-  [m_glView setFramebuffer];
+
+static void XBMCController$setFramebuffer(XBMCController* self, SEL _cmd) 
+{   
+  [[self glView] setFramebuffer];
 }
-- (bool) presentFramebuffer
-{
-  return [m_glView presentFramebuffer];
+
+static bool XBMCController$presentFramebuffer(XBMCController* self, SEL _cmd) 
+{    
+  return [[self glView] presentFramebuffer];
 }
-- (CGSize) getScreenSize
+
+static CGSize XBMCController$getScreenSize(XBMCController* self, SEL _cmd) 
 {
   CGSize screensize;
-
-  screensize.width  = [BRWindow interfaceFrame].size.width;
-  screensize.height = [BRWindow interfaceFrame].size.height;
-
+  screensize.width  = [BRWindowCls interfaceFrame].size.width;
+  screensize.height = [BRWindowCls interfaceFrame].size.height;
   //NSLog(@"%s UpdateResolutions width=%f, height=%f", 
-	//	__PRETTY_FUNCTION__, screensize.width, screensize.height);
-
+  //__PRETTY_FUNCTION__, screensize.width, screensize.height);
   return screensize;
 }
 
 
-- (id) init
-{  
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+static id XBMCController$init(XBMCController* self, SEL _cmd) 
+{
+  if((self = XBMCController$init$Orig(self, _cmd)) != nil)  
+  {
+    //NSLog(@"%s", __PRETTY_FUNCTION__);
 
-  self = [super init];
-  if ( !self )
-    return ( nil );
+    NSNotificationCenter *center;
+    // first the default notification center, which is all
+    // notifications that only happen inside of our program
+    center = [NSNotificationCenter defaultCenter];
+    [center addObserver: self
+      selector: @selector(observeDefaultCenterStuff:)
+      name: nil
+      object: nil];
 
-  NSNotificationCenter *center;
-  // first the default notification center, which is all
-  // notifications that only happen inside of our program
-  center = [NSNotificationCenter defaultCenter];
-  [center addObserver: self
-    selector: @selector(observeDefaultCenterStuff:)
-    name: nil
-    object: nil];
-  
-  CGRect interfaceFrame = [BRWindow interfaceFrame];
-  NSLog(@"XBMC: interfaceFrame: %f, %f, %f, %f", interfaceFrame.origin.x, interfaceFrame.origin.y, interfaceFrame.size.width, interfaceFrame.size.height);   
-  //init glview with interfaceframe (might be more the resolution - ios scales for us)
-  m_glView = [[XBMCEAGLView alloc] initWithFrame:interfaceFrame];
-
-  g_xbmcController = self;
-
+    XBMCEAGLView *view = [[XBMCEAGLView alloc] initWithFrame:[BRWindowCls interfaceFrame]];
+    [self setGlView:view];
+  	g_xbmcController = self;
+  }
   return self;
 }
 
-- (void)dealloc
+static void XBMCController$dealloc(XBMCController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
-  [m_glView stopAnimation];
-  [m_glView release];
+  [[self glView] stopAnimation];
+  [[self glView] release];
 
   NSNotificationCenter *center;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
 
-  [super dealloc];
+  XBMCController$dealloc$Orig(self, _cmd);
 }
 
-- (void)controlWasActivated
+static void XBMCController$controlWasActivated(XBMCController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
-  
-  [super controlWasActivated];
+
+  XBMCController$controlWasActivated$Orig(self, _cmd);
 
   [self disableSystemSleep];
   [self disableScreenSaver];
-
+  
+  XBMCEAGLView *view = [self glView];
   //inject our gles layer into the backrow root layer
-  [[BRWindow rootLayer] addSublayer:m_glView.layer];
+  [[BRWindowCls rootLayer] addSublayer:view.layer];
 
-  [m_glView startAnimation];
+  [[self glView] startAnimation];
 }
 
-- (void)controlWasDeactivated
+static void XBMCController$controlWasDeactivated(XBMCController* self, SEL _cmd) 
 {
   NSLog(@"XBMC was forced by FrontRow to exit via controlWasDeactivated");
 
-  [m_glView stopAnimation];
-  [m_glView.layer removeFromSuperlayer];
+  [[self glView] stopAnimation];
+  [[[self glView] layer] removeFromSuperlayer];
 
   [self enableScreenSaver];
   [self enableSystemSleep];
 
-  [super controlWasDeactivated];
+  XBMCController$controlWasDeactivated$Orig(self, _cmd);
 }
 
-- (BOOL) recreateOnReselect
-{ 
+static BOOL XBMCController$recreateOnReselect(XBMCController* self, SEL _cmd) 
+{
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   return YES;
 }
 
-- (eATVClientEvent) ATVClientEventFromBREvent:(BREvent*) f_event
+static void XBMCController$ATVClientEventFromBREvent(XBMCController* self, SEL _cmd, BREvent* f_event, int * result) 
 {
+  if(f_event == nil)// paranoia
+    return;
+
   int remoteAction = [f_event remoteAction];
   CLog::Log(LOGDEBUG,"XBMCPureController: Button press remoteAction = %i", remoteAction);
 
@@ -328,251 +418,259 @@ int           m_systemsleepTimeout;
     case kBREventRemoteActionUp:
     case 65676:
       if([f_event value] == 1)
-        return ATV_BUTTON_UP;
+        *result = ATV_BUTTON_UP;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_BUTTON_UP_RELEASE;
+	  return;
 
     // tap down
     case kBREventRemoteActionDown:
     case 65677:
       if([f_event value] == 1)
-        return ATV_BUTTON_DOWN;
+        *result = ATV_BUTTON_DOWN;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_BUTTON_DOWN_RELEASE;
-
+	  return;
     // tap left
     case kBREventRemoteActionLeft:
     case 65675:
       if([f_event value] == 1)
-        return ATV_BUTTON_LEFT;
+        *result = ATV_BUTTON_LEFT;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_BUTTON_LEFT_RELEASE;
-
+	  return;
     // hold left
     case 786612:
       if([f_event value] == 1)
-        return ATV_LEARNED_REWIND;
+        *result = ATV_LEARNED_REWIND;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_LEARNED_REWIND_RELEASE;
+	  return;
 
     // tap right
     case kBREventRemoteActionRight:
     case 65674:
       if ([f_event value] == 1)
-        return ATV_BUTTON_RIGHT;
+        *result = ATV_BUTTON_RIGHT;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_BUTTON_RIGHT_RELEASE;
-
+	  return;
     // hold right
     case 786611:
       if ([f_event value] == 1)
-        return ATV_LEARNED_FORWARD;
+        *result = ATV_LEARNED_FORWARD;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_LEARNED_FORWARD_RELEASE;
-
+	  return;
     // tap play
     case kBREventRemoteActionPlay:
     case 65673:
-      return ATV_BUTTON_PLAY;
-
+      *result = ATV_BUTTON_PLAY;
+	  return;
     // hold play
     case kBREventRemoteActionPlayHold:
     case kBREventRemoteActionCenterHold:
     case kBREventRemoteActionCenterHold42:
     case 65668:
-      return ATV_BUTTON_PLAY_H;
-
+      *result = ATV_BUTTON_PLAY_H;
+	  return;
     // menu
     case kBREventRemoteActionMenu:
     case 65670:
-      return ATV_BUTTON_MENU;
-
+      *result = ATV_BUTTON_MENU;
+	  return;
     // hold menu
     case kBREventRemoteActionMenuHold:
     case 786496:
-      return ATV_BUTTON_MENU_H;
-
+      *result = ATV_BUTTON_MENU_H;
+	  return;
     // learned play
     case 786608:
-      return ATV_LEARNED_PLAY;
-
+      *result = ATV_LEARNED_PLAY;
+	  return;
     // learned pause
     case 786609:
-      return ATV_LEARNED_PAUSE;
-
+      *result = ATV_LEARNED_PAUSE;
+	  return;
     // learned stop
     case 786615:
-      return ATV_LEARNED_STOP;
-
+      *result = ATV_LEARNED_STOP;
+	  return;
     // learned next
     case 786613:
-      return ATV_LEARNED_NEXT;
-
+      *result = ATV_LEARNED_NEXT;
+	  return;
     // learned previous
     case 786614:
-      return ATV_LEARNED_PREVIOUS;
-
+      *result = ATV_LEARNED_PREVIOUS;
+	  return;
     // learned enter, like go into something
     case 786630:
-      return ATV_LEARNED_ENTER;
-
+      *result = ATV_LEARNED_ENTER;
+	  return;
     // learned return, like go back
     case 786631:
-      return ATV_LEARNED_RETURN;
-
+      *result = ATV_LEARNED_RETURN;
+	  return;
     // tap play on new Al IR remote
     case kBREventRemoteActionALPlay:
     case 786637:
-      return ATV_ALUMINIUM_PLAY;
+      *result = ATV_ALUMINIUM_PLAY;
+	  return;
 
     case kBREventRemoteActionKeyPress:
     case kBREventRemoteActionKeyPress42:
-      return ATV_BTKEYPRESS;
-
+      *result = ATV_BTKEYPRESS;
+	  return;
     // PageUp
     case kBREventRemoteActionPageUp:
       if ([f_event value] == 1)
-        return ATV_BUTTON_PAGEUP;
+        *result = ATV_BUTTON_PAGEUP;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // PageDown
     case kBREventRemoteActionPageDown:
       if ([f_event value] == 1)
-        return ATV_BUTTON_PAGEDOWN;
+        *result = ATV_BUTTON_PAGEDOWN;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Pause
     case kBREventRemoteActionPause:
       if ([f_event value] == 1)
-        return ATV_BUTTON_PAUSE;
+        *result = ATV_BUTTON_PAUSE;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Play2
     case kBREventRemoteActionPlay2:
       if ([f_event value] == 1)
-        return ATV_BUTTON_PLAY2;
+        *result = ATV_BUTTON_PLAY2;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Stop
     case kBREventRemoteActionStop:
       if ([f_event value] == 1)
-        return ATV_BUTTON_STOP;
+        *result = ATV_BUTTON_STOP;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_BUTTON_STOP_RELEASE;
-
+	  return;
     // Fast Forward
     case kBREventRemoteActionFastFwd:
+    case kBREventRemoteActionFastFwd2:
       if ([f_event value] == 1)
-        return ATV_BUTTON_FASTFWD;
+        *result = ATV_BUTTON_FASTFWD;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_BUTTON_FASTFWD_RELEASE;
-
+	  return;
     // Rewind
     case kBREventRemoteActionRewind:
+    case kBREventRemoteActionRewind2:
       if ([f_event value] == 1)
-        return ATV_BUTTON_REWIND;
+        *result = ATV_BUTTON_REWIND;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
         //return ATV_BUTTON_REWIND_RELEASE;
-
+	  return;
     // Skip Forward
     case kBREventRemoteActionSkipFwd:
       if ([f_event value] == 1)
-        return ATV_BUTTON_SKIPFWD;
+        *result = ATV_BUTTON_SKIPFWD;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Skip Back
     case kBREventRemoteActionSkipBack:
       if ([f_event value] == 1)
-        return ATV_BUTTON_SKIPBACK;
+        *result = ATV_BUTTON_SKIPBACK;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Gesture Swipe Left
     case kBREventRemoteActionSwipeLeft:
       if ([f_event value] == 1)
-        return ATV_GESTURE_SWIPE_LEFT;
+        *result = ATV_GESTURE_SWIPE_LEFT;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Gesture Swipe Right
     case kBREventRemoteActionSwipeRight:
       if ([f_event value] == 1)
-        return ATV_GESTURE_SWIPE_RIGHT;
+        *result = ATV_GESTURE_SWIPE_RIGHT;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
+	  return;
 
     // Gesture Swipe Up
     case kBREventRemoteActionSwipeUp:
       if ([f_event value] == 1)
-        return ATV_GESTURE_SWIPE_UP;
+        *result = ATV_GESTURE_SWIPE_UP;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Gesture Swipe Down
     case kBREventRemoteActionSwipeDown:
       if ([f_event value] == 1)
-        return ATV_GESTURE_SWIPE_DOWN;
+        *result = ATV_GESTURE_SWIPE_DOWN;
       else
-        return ATV_INVALID_BUTTON;
+        *result = ATV_INVALID_BUTTON;
+	  return;
 
     // Gesture Flick Left
     case kBREventRemoteActionFlickLeft:
       if ([f_event value] == 1)
-        return ATV_GESTURE_FLICK_LEFT;
+        *result = ATV_GESTURE_FLICK_LEFT;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Gesture Flick Right
     case kBREventRemoteActionFlickRight:
       if ([f_event value] == 1)
-        return ATV_GESTURE_FLICK_RIGHT;
+        *result = ATV_GESTURE_FLICK_RIGHT;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Gesture Flick Up
     case kBREventRemoteActionFlickUp:
       if ([f_event value] == 1)
-        return ATV_GESTURE_FLICK_UP;
+        *result = ATV_GESTURE_FLICK_UP;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
     // Gesture Flick Down
     case kBREventRemoteActionFlickDown:
       if ([f_event value] == 1)
-        return ATV_GESTURE_FLICK_DOWN;
+        *result = ATV_GESTURE_FLICK_DOWN;
       else
-        return ATV_INVALID_BUTTON;
-
+        *result = ATV_INVALID_BUTTON;
+	  return;
 
 
     default:
       ELOG(@"XBMCPureController: Unknown button press remoteAction = %i", remoteAction);
-      return ATV_INVALID_BUTTON;
+      *result = ATV_INVALID_BUTTON;
   }
 }
 
-- (BOOL)brEventAction:(BREvent*)event
+static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent* event) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
-	if ([m_glView isAnimating])
+  if ([[self glView] isAnimating])
   {
     BOOL is_handled = NO;
-    eATVClientEvent xbmc_ir_key = [self ATVClientEventFromBREvent:event];
+	int xbmc_ir_key = ATV_INVALID_BUTTON;
+    [self ATVClientEventFromBREvent:event Result:&xbmc_ir_key];
     
     if ( xbmc_ir_key != ATV_INVALID_BUTTON )
     {
@@ -592,7 +690,7 @@ int           m_systemsleepTimeout;
           const char* wstr = [key_nsstring cStringUsingEncoding:NSUTF16StringEncoding];
           //NSLog(@"%s, key: wstr[0] = %d, wstr[1] = %d", __PRETTY_FUNCTION__, wstr[0], wstr[1]);
 
-          if (wstr[0] != 92) // trap out "\" which toggle fullscreen/windowed
+          if (wstr[0] != 92) 
           {
             if (wstr[0] == 62 && wstr[1] == -9)
             {
@@ -603,7 +701,7 @@ int           m_systemsleepTimeout;
             else
             {
               newEvent.key.keysym.sym = (XBMCKey)wstr[0];
-              newEvent.key.keysym.unicode = wstr[0];
+              newEvent.key.keysym.unicode = wstr[0] | (wstr[1] << 8);
             }
             newEvent.type = XBMC_KEYDOWN;
             CWinEventsIOS::MessagePush(&newEvent);
@@ -623,17 +721,17 @@ int           m_systemsleepTimeout;
       }
     }
     return is_handled;
-	}
+  }
   else
   {
-		return [super brEventAction:event];
-	}
+    return XBMCController$brEventAction$Orig(self, _cmd, event);
+  }
 }
 
 #pragma mark -
 #pragma mark private helper methods
 //
-- (void)observeDefaultCenterStuff: (NSNotification *) notification
+static void XBMCController$observeDefaultCenterStuff(XBMCController* self, SEL _cmd, NSNotification * notification) 
 {
   //NSLog(@"default: %@", [notification name]);
 
@@ -647,329 +745,450 @@ int           m_systemsleepTimeout;
   //  [m_glView startAnimation];
 }
 
-- (void) disableSystemSleep
+static void XBMCController$disableSystemSleep(XBMCController* self, SEL _cmd) 
 {
-  m_systemsleepTimeout = [[ATVSettingsFacade singleton] sleepTimeout];
-  [[ATVSettingsFacade singleton] setSleepTimeout: -1];
-  [[ATVSettingsFacade singleton] flushDiskChanges];
+  Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
+  XBMCSettingsFacade *single = (XBMCSettingsFacade *)[ATVSettingsFacadeCls singleton];
+
+  int tmpTimeout = [single sleepTimeout];
+  NSNumber *timeout = [NSNumber numberWithInt:tmpTimeout];
+  [self setSystemSleepTimeout:timeout];
+  [single setSleepTimeout: -1];
+  [single flushDiskChanges];
 }
 
-- (void) enableSystemSleep
+static void XBMCController$enableSystemSleep(XBMCController* self, SEL _cmd) 
 {
-  [[ATVSettingsFacade singleton] setSleepTimeout: m_systemsleepTimeout];
-  [[ATVSettingsFacade singleton] flushDiskChanges];
+  Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
+  int timeoutInt = [[self systemSleepTimeout] intValue];
+  [[ATVSettingsFacadeCls singleton] setSleepTimeout:timeoutInt];
+  [[ATVSettingsFacadeCls singleton] flushDiskChanges];
 }
 
-- (void) disableScreenSaver
+static void XBMCController$disableScreenSaver(XBMCController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   //store screen saver state and disable it
 
-  m_screensaverTimeout = [[ATVSettingsFacade singleton] screenSaverTimeout];
-  [[ATVSettingsFacade singleton] setScreenSaverTimeout: -1];
-  [[ATVSettingsFacade singleton] flushDiskChanges];
+  Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
+  XBMCSettingsFacade *single = (XBMCSettingsFacade *)[ATVSettingsFacadeCls singleton];
+
+  int tmpTimeout = [single screenSaverTimeout];
+  NSNumber *timeout = [NSNumber numberWithInt:tmpTimeout];
+  [self setSystemScreenSaverTimeout:timeout];
+  [single setScreenSaverTimeout: -1];
+  [single flushDiskChanges];
 
   // breaks in 4.2.1 [[BRBackgroundTaskManager singleton] holdOffBackgroundTasks];
 }
 
-- (void) enableScreenSaver
+static void XBMCController$enableScreenSaver(XBMCController* self, SEL _cmd) 
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   //reset screen saver to user settings
+  Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
 
-  [[ATVSettingsFacade singleton] setScreenSaverTimeout: m_screensaverTimeout];
-  [[ATVSettingsFacade singleton] flushDiskChanges];
+  int timeoutInt = [[self systemScreenSaverTimeout] intValue];
+  [[ATVSettingsFacadeCls singleton] setScreenSaverTimeout:timeoutInt];
+  [[ATVSettingsFacadeCls singleton] flushDiskChanges];
 
   // breaks in 4.2.1 [[BRBackgroundTaskManager singleton] okToDoBackgroundProcessing];
 }
 
+/*
 - (XBMC_Event) translateCocoaToXBMCEvent: (unichar) c
 {
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
-/*
-  switch (c)
-  {
-    // Alt
-    case NSMenuFunctionKey: 
-          return "Alt";
-
-      // "Apps"
-      // "BrowserBack"
-      // "BrowserForward"
-      // "BrowserHome"
-      // "BrowserRefresh"
-      // "BrowserSearch"
-      // "BrowserStop"
-      // "CapsLock"
-
-      // "Clear"
-      case NSClearLineFunctionKey:
-          return "Clear";
-
-      // "CodeInput"
-      // "Compose"
-      // "Control"
-      // "Crsel"
-      // "Convert"
-      // "Copy"
-      // "Cut"
-
-      // "Down"
-      case NSDownArrowFunctionKey:
-          return "Down";
-      // "End"
-      case NSEndFunctionKey:
-          return "End";
-      // "Enter"
-      case 0x3: case 0xA: case 0xD: // Macintosh calls the one on the main keyboard Return, but Windows calls it Enter, so we'll do the same for the DOM
-          return "Enter";
-
-      // "EraseEof"
-
-      // "Execute"
-      case NSExecuteFunctionKey:
-          return "Execute";
-
-      // "Exsel"
-
-      // "F1"
-      case NSF1FunctionKey:
-          return "F1";
-      // "F2"
-      case NSF2FunctionKey:
-          return "F2";
-      // "F3"
-      case NSF3FunctionKey:
-          return "F3";
-      // "F4"
-      case NSF4FunctionKey:
-          return "F4";
-      // "F5"
-      case NSF5FunctionKey:
-          return "F5";
-      // "F6"
-      case NSF6FunctionKey:
-          return "F6";
-      // "F7"
-      case NSF7FunctionKey:
-          return "F7";
-      // "F8"
-      case NSF8FunctionKey:
-          return "F8";
-      // "F9"
-      case NSF9FunctionKey:
-          return "F9";
-      // "F10"
-      case NSF10FunctionKey:
-          return "F10";
-      // "F11"
-      case NSF11FunctionKey:
-          return "F11";
-      // "F12"
-      case NSF12FunctionKey:
-          return "F12";
-      // "F13"
-      case NSF13FunctionKey:
-          return "F13";
-      // "F14"
-      case NSF14FunctionKey:
-          return "F14";
-      // "F15"
-      case NSF15FunctionKey:
-          return "F15";
-      // "F16"
-      case NSF16FunctionKey:
-          return "F16";
-      // "F17"
-      case NSF17FunctionKey:
-          return "F17";
-      // "F18"
-      case NSF18FunctionKey:
-          return "F18";
-      // "F19"
-      case NSF19FunctionKey:
-          return "F19";
-      // "F20"
-      case NSF20FunctionKey:
-          return "F20";
-      // "F21"
-      case NSF21FunctionKey:
-          return "F21";
-      // "F22"
-      case NSF22FunctionKey:
-          return "F22";
-      // "F23"
-      case NSF23FunctionKey:
-          return "F23";
-      // "F24"
-      case NSF24FunctionKey:
-          return "F24";
-
-      // "FinalMode"
-
-      // "Find"
-      case NSFindFunctionKey:
-          return "Find";
-
-      // "FullWidth"
-      // "HalfWidth"
-      // "HangulMode"
-      // "HanjaMode"
-
-      // "Help"
-      case NSHelpFunctionKey:
-          return "Help";
-
-      // "Hiragana"
-
-      // "Home"
-      case NSHomeFunctionKey:
-          return "Home";
-      // "Insert"
-      case NSInsertFunctionKey:
-          return "Insert";
-
-      // "JapaneseHiragana"
-      // "JapaneseKatakana"
-      // "JapaneseRomaji"
-      // "JunjaMode"
-      // "KanaMode"
-      // "KanjiMode"
-      // "Katakana"
-      // "LaunchApplication1"
-      // "LaunchApplication2"
-      // "LaunchMail"
-
-      // "Left"
-      case NSLeftArrowFunctionKey:
-          return "Left";
-
-      // "Meta"
-      // "MediaNextTrack"
-      // "MediaPlayPause"
-      // "MediaPreviousTrack"
-      // "MediaStop"
-
-      // "ModeChange"
-      case NSModeSwitchFunctionKey:
-          return "ModeChange";
-
-      // "Nonconvert"
-      // "NumLock"
-
-      // "PageDown"
-      case NSPageDownFunctionKey:
-          return "PageDown";
-      // "PageUp"
-      case NSPageUpFunctionKey:
-          return "PageUp";
-
-      // "Paste"
-
-      // "Pause"
-      case NSPauseFunctionKey:
-          return "Pause";
-
-      // "Play"
-      // "PreviousCandidate"
-
-      // "PrintScreen"
-      case NSPrintScreenFunctionKey:
-          return "PrintScreen";
-
-      // "Process"
-      // "Props"
-
-      // "Right"
-      case NSRightArrowFunctionKey:
-          return "Right";
-
-      // "RomanCharacters"
-
-      // "Scroll"
-      case NSScrollLockFunctionKey:
-          return "Scroll";
-      // "Select"
-      case NSSelectFunctionKey:
-          return "Select";
-
-      // "SelectMedia"
-      // "Shift"
-
-      // "Stop"
-      case NSStopFunctionKey:
-          return "Stop";
-      // "Up"
-      case NSUpArrowFunctionKey:
-          return "Up";
-      // "Undo"
-      case NSUndoFunctionKey:
-          return "Undo";
-
-      // "VolumeDown"
-      // "VolumeMute"
-      // "VolumeUp"
-      // "Win"
-      // "Zoom"
-
-      // More function keys, not in the key identifier specification.
-      case NSF25FunctionKey:
-          return "F25";
-      case NSF26FunctionKey:
-          return "F26";
-      case NSF27FunctionKey:
-          return "F27";
-      case NSF28FunctionKey:
-          return "F28";
-      case NSF29FunctionKey:
-          return "F29";
-      case NSF30FunctionKey:
-          return "F30";
-      case NSF31FunctionKey:
-          return "F31";
-      case NSF32FunctionKey:
-          return "F32";
-      case NSF33FunctionKey:
-          return "F33";
-      case NSF34FunctionKey:
-          return "F34";
-      case NSF35FunctionKey:
-          return "F35";
-
-      // Turn 0x7F into 0x08, because backspace needs to always be 0x08.
-      case 0x7F:
-          XBMCK_BACKSPACE
-      // Standard says that DEL becomes U+007F.
-      case NSDeleteFunctionKey:
-          XBMCK_DELETE;
-          
-      // Always use 0x09 for tab instead of AppKit's backtab character.
-      case NSBackTabCharacter:
-          return "U+0009";
-
-      case NSBeginFunctionKey:
-      case NSBreakFunctionKey:
-      case NSClearDisplayFunctionKey:
-      case NSDeleteCharFunctionKey:
-      case NSDeleteLineFunctionKey:
-      case NSInsertCharFunctionKey:
-      case NSInsertLineFunctionKey:
-      case NSNextFunctionKey:
-      case NSPrevFunctionKey:
-      case NSPrintFunctionKey:
-      case NSRedoFunctionKey:
-      case NSResetFunctionKey:
-      case NSSysReqFunctionKey:
-      case NSSystemFunctionKey:
-      case NSUserFunctionKey:
+  
+   switch (c)
+   {
+   // Alt
+   case NSMenuFunctionKey: 
+   return "Alt";
+   
+   // "Apps"
+   // "BrowserBack"
+   // "BrowserForward"
+   // "BrowserHome"
+   // "BrowserRefresh"
+   // "BrowserSearch"
+   // "BrowserStop"
+   // "CapsLock"
+   
+   // "Clear"
+   case NSClearLineFunctionKey:
+   return "Clear";
+   
+   // "CodeInput"
+   // "Compose"
+   // "Control"
+   // "Crsel"
+   // "Convert"
+   // "Copy"
+   // "Cut"
+   
+   // "Down"
+   case NSDownArrowFunctionKey:
+   return "Down";
+   // "End"
+   case NSEndFunctionKey:
+   return "End";
+   // "Enter"
+   case 0x3: case 0xA: case 0xD: // Macintosh calls the one on the main keyboard Return, but Windows calls it Enter, so we'll do the same for the DOM
+   return "Enter";
+   
+   // "EraseEof"
+   
+   // "Execute"
+   case NSExecuteFunctionKey:
+   return "Execute";
+   
+   // "Exsel"
+   
+   // "F1"
+   case NSF1FunctionKey:
+   return "F1";
+   // "F2"
+   case NSF2FunctionKey:
+   return "F2";
+   // "F3"
+   case NSF3FunctionKey:
+   return "F3";
+   // "F4"
+   case NSF4FunctionKey:
+   return "F4";
+   // "F5"
+   case NSF5FunctionKey:
+   return "F5";
+   // "F6"
+   case NSF6FunctionKey:
+   return "F6";
+   // "F7"
+   case NSF7FunctionKey:
+   return "F7";
+   // "F8"
+   case NSF8FunctionKey:
+   return "F8";
+   // "F9"
+   case NSF9FunctionKey:
+   return "F9";
+   // "F10"
+   case NSF10FunctionKey:
+   return "F10";
+   // "F11"
+   case NSF11FunctionKey:
+   return "F11";
+   // "F12"
+   case NSF12FunctionKey:
+   return "F12";
+   // "F13"
+   case NSF13FunctionKey:
+   return "F13";
+   // "F14"
+   case NSF14FunctionKey:
+   return "F14";
+   // "F15"
+   case NSF15FunctionKey:
+   return "F15";
+   // "F16"
+   case NSF16FunctionKey:
+   return "F16";
+   // "F17"
+   case NSF17FunctionKey:
+   return "F17";
+   // "F18"
+   case NSF18FunctionKey:
+   return "F18";
+   // "F19"
+   case NSF19FunctionKey:
+   return "F19";
+   // "F20"
+   case NSF20FunctionKey:
+   return "F20";
+   // "F21"
+   case NSF21FunctionKey:
+   return "F21";
+   // "F22"
+   case NSF22FunctionKey:
+   return "F22";
+   // "F23"
+   case NSF23FunctionKey:
+   return "F23";
+   // "F24"
+   case NSF24FunctionKey:
+   return "F24";
+   
+   // "FinalMode"
+   
+   // "Find"
+   case NSFindFunctionKey:
+   return "Find";
+   
+   // "FullWidth"
+   // "HalfWidth"
+   // "HangulMode"
+   // "HanjaMode"
+   
+   // "Help"
+   case NSHelpFunctionKey:
+   return "Help";
+   
+   // "Hiragana"
+   
+   // "Home"
+   case NSHomeFunctionKey:
+   return "Home";
+   // "Insert"
+   case NSInsertFunctionKey:
+   return "Insert";
+   
+   // "JapaneseHiragana"
+   // "JapaneseKatakana"
+   // "JapaneseRomaji"
+   // "JunjaMode"
+   // "KanaMode"
+   // "KanjiMode"
+   // "Katakana"
+   // "LaunchApplication1"
+   // "LaunchApplication2"
+   // "LaunchMail"
+   
+   // "Left"
+   case NSLeftArrowFunctionKey:
+   return "Left";
+   
+   // "Meta"
+   // "MediaNextTrack"
+   // "MediaPlayPause"
+   // "MediaPreviousTrack"
+   // "MediaStop"
+   
+   // "ModeChange"
+   case NSModeSwitchFunctionKey:
+   return "ModeChange";
+   
+   // "Nonconvert"
+   // "NumLock"
+   
+   // "PageDown"
+   case NSPageDownFunctionKey:
+   return "PageDown";
+   // "PageUp"
+   case NSPageUpFunctionKey:
+   return "PageUp";
+   
+   // "Paste"
+   
+   // "Pause"
+   case NSPauseFunctionKey:
+   return "Pause";
+   
+   // "Play"
+   // "PreviousCandidate"
+   
+   // "PrintScreen"
+   case NSPrintScreenFunctionKey:
+   return "PrintScreen";
+   
+   // "Process"
+   // "Props"
+   
+   // "Right"
+   case NSRightArrowFunctionKey:
+   return "Right";
+   
+   // "RomanCharacters"
+   
+   // "Scroll"
+   case NSScrollLockFunctionKey:
+   return "Scroll";
+   // "Select"
+   case NSSelectFunctionKey:
+   return "Select";
+   
+   // "SelectMedia"
+   // "Shift"
+   
+   // "Stop"
+   case NSStopFunctionKey:
+   return "Stop";
+   // "Up"
+   case NSUpArrowFunctionKey:
+   return "Up";
+   // "Undo"
+   case NSUndoFunctionKey:
+   return "Undo";
+   
+   // "VolumeDown"
+   // "VolumeMute"
+   // "VolumeUp"
+   // "Win"
+   // "Zoom"
+   
+   // More function keys, not in the key identifier specification.
+   case NSF25FunctionKey:
+   return "F25";
+   case NSF26FunctionKey:
+   return "F26";
+   case NSF27FunctionKey:
+   return "F27";
+   case NSF28FunctionKey:
+   return "F28";
+   case NSF29FunctionKey:
+   return "F29";
+   case NSF30FunctionKey:
+   return "F30";
+   case NSF31FunctionKey:
+   return "F31";
+   case NSF32FunctionKey:
+   return "F32";
+   case NSF33FunctionKey:
+   return "F33";
+   case NSF34FunctionKey:
+   return "F34";
+   case NSF35FunctionKey:
+   return "F35";
+   
+   // Turn 0x7F into 0x08, because backspace needs to always be 0x08.
+   case 0x7F:
+   XBMCK_BACKSPACE
+   // Standard says that DEL becomes U+007F.
+   case NSDeleteFunctionKey:
+   XBMCK_DELETE;
+   
+   // Always use 0x09 for tab instead of AppKit's backtab character.
+   case NSBackTabCharacter:
+   return "U+0009";
+   
+   case NSBeginFunctionKey:
+   case NSBreakFunctionKey:
+   case NSClearDisplayFunctionKey:
+   case NSDeleteCharFunctionKey:
+   case NSDeleteLineFunctionKey:
+   case NSInsertCharFunctionKey:
+   case NSInsertLineFunctionKey:
+   case NSNextFunctionKey:
+   case NSPrevFunctionKey:
+   case NSPrintFunctionKey:
+   case NSRedoFunctionKey:
+   case NSResetFunctionKey:
+   case NSSysReqFunctionKey:
+   case NSSystemFunctionKey:
+   case NSUserFunctionKey:
           // FIXME: We should use something other than the vendor-area Unicode values for the above keys.
           // For now, just fall through to the default.
       default:
           return String::format("U+%04X", toASCIIUpper(c));
   }
-*/
   return newEvent;
+}*/
+
+// SECTIONCOMMENT
+// c'tor - this sets up our class at runtime by 
+// 1. subclassing from the base classes
+// 2. adding new methods to our class
+// 3. exchanging (hooking) base class methods with ours
+// 4. register the classes to the objc runtime system
+static __attribute__((constructor)) void initControllerRuntimeClasses() 
+{
+  char _typeEncoding[1024];
+  unsigned int i = 0;
+
+  // subclass BRController into XBMCController
+  Class XBMCControllerCls = objc_allocateClassPair(objc_getClass("BRController"), "XBMCController", 0);
+  // add our custom methods which are not part of the baseclass
+  // XBMCController::glView
+  class_addMethod(XBMCControllerCls, @selector(glView), (IMP)&XBMCController$glView, "@@:");
+  // XBMCController::setGlView
+  class_addMethod(XBMCControllerCls, @selector(setGlView:), (IMP)&XBMCController$setGlView, "v@:@");
+  // XBMCController::systemScreenSaverTimeout
+  class_addMethod(XBMCControllerCls, @selector(systemScreenSaverTimeout), (IMP)&XBMCController$systemScreenSaverTimeout, "@@:");
+  // XBMCController::setSystemScreenSaverTimeout
+  class_addMethod(XBMCControllerCls, @selector(setSystemScreenSaverTimeout:), (IMP)&XBMCController$setSystemScreenSaverTimeout, "v@:@");
+  // XBMCController::systemSleepTimeout
+  class_addMethod(XBMCControllerCls, @selector(systemSleepTimeout), (IMP)&XBMCController$systemSleepTimeout, "@@:");
+  // XBMCController::setSystemSleepTimeout
+  class_addMethod(XBMCControllerCls, @selector(setSystemSleepTimeout:), (IMP)&XBMCController$setSystemSleepTimeout, "v@:@");
+  // XBMCController::applicationDidExit
+  class_addMethod(XBMCControllerCls, @selector(applicationDidExit), (IMP)&XBMCController$applicationDidExit, "v@:");
+  // XBMCController::initDisplayLink
+  class_addMethod(XBMCControllerCls, @selector(initDisplayLink), (IMP)&XBMCController$initDisplayLink, "v@:");
+  // XBMCController::deinitDisplayLink
+  class_addMethod(XBMCControllerCls, @selector(deinitDisplayLink), (IMP)&XBMCController$deinitDisplayLink, "v@:");
+  // XBMCController::getDisplayLinkFPS
+  class_addMethod(XBMCControllerCls, @selector(getDisplayLinkFPS), (IMP)&XBMCController$getDisplayLinkFPS, "d@:");
+  // XBMCController::setFramebuffer
+  class_addMethod(XBMCControllerCls, @selector(setFramebuffer), (IMP)&XBMCController$setFramebuffer, "v@:");
+  // XBMCController::presentFramebuffer
+  class_addMethod(XBMCControllerCls, @selector(presentFramebuffer), (IMP)&XBMCController$presentFramebuffer, "B@:");
+  // XBMCController::disableSystemSleep
+  class_addMethod(XBMCControllerCls, @selector(disableSystemSleep), (IMP)&XBMCController$disableSystemSleep, "v@:");
+  // XBMCController__enableSystemSleep
+  class_addMethod(XBMCControllerCls, @selector(enableSystemSleep), (IMP)&XBMCController$enableSystemSleep, "v@:");
+  // XBMCController::disableScreenSaver
+  class_addMethod(XBMCControllerCls, @selector(disableScreenSaver), (IMP)&XBMCController$disableScreenSaver, "v@:");
+  // XBMCController::enableScreenSaver
+  class_addMethod(XBMCControllerCls, @selector(enableScreenSaver), (IMP)&XBMCController$enableScreenSaver, "v@:");
+
+  i = 0;
+  memcpy(_typeEncoding + i, @encode(CGSize), strlen(@encode(CGSize)));
+  i += strlen(@encode(CGSize));
+  _typeEncoding[i] = '@';
+  i += 1;
+  _typeEncoding[i] = ':';
+  i += 1;
+  _typeEncoding[i] = '\0';
+  // XBMCController::getScreenSize
+  class_addMethod(XBMCControllerCls, @selector(getScreenSize), (IMP)&XBMCController$getScreenSize, _typeEncoding);
+ 
+  i = 0;
+  _typeEncoding[i] = 'v';
+  i += 1;
+  _typeEncoding[i] = '@';
+  i += 1;
+  _typeEncoding[i] = ':';
+  i += 1;
+  memcpy(_typeEncoding + i, @encode(BREvent*), strlen(@encode(BREvent*)));
+  i += strlen(@encode(BREvent*));
+  _typeEncoding[i] = '^';
+  _typeEncoding[i + 1] = 'i';
+  i += 2;
+  _typeEncoding[i] = '\0';
+  // XBMCController::ATVClientEventFromBREvent
+  class_addMethod(XBMCControllerCls, @selector(ATVClientEventFromBREvent:Result:), (IMP)&XBMCController$ATVClientEventFromBREvent, _typeEncoding);
+ 
+  i = 0;
+  _typeEncoding[i] = 'v';
+  i += 1;
+  _typeEncoding[i] = '@';
+  i += 1;
+  _typeEncoding[i] = ':';
+  i += 1;
+  memcpy(_typeEncoding + i, @encode(NSNotification *), strlen(@encode(NSNotification *)));
+  i += strlen(@encode(NSNotification *));
+  _typeEncoding[i] = '\0';
+  // XBMCController:observeDefaultCenterStuff
+  class_addMethod(XBMCControllerCls, @selector(observeDefaultCenterStuff:), (IMP)&XBMCController$observeDefaultCenterStuff, _typeEncoding);
+
+  // and hook up our methods (implementation of the base class methods)
+  // XBMCController::brEventAction
+  MSHookMessageEx(XBMCControllerCls, @selector(brEventAction:), (IMP)&XBMCController$brEventAction, (IMP*)&XBMCController$brEventAction$Orig); 
+  // XBMCController::init
+  MSHookMessageEx(XBMCControllerCls, @selector(init), (IMP)&XBMCController$init, (IMP*)&XBMCController$init$Orig);
+  // XBMCController::dealloc
+  MSHookMessageEx(XBMCControllerCls, @selector(dealloc), (IMP)&XBMCController$dealloc, (IMP*)&XBMCController$dealloc$Orig);
+  // XBMCController::controlWasActivated
+  MSHookMessageEx(XBMCControllerCls, @selector(controlWasActivated), (IMP)&XBMCController$controlWasActivated, (IMP*)&XBMCController$controlWasActivated$Orig);
+  // XBMCController::controlWasDeactivated
+  MSHookMessageEx(XBMCControllerCls, @selector(controlWasDeactivated), (IMP)&XBMCController$controlWasDeactivated, (IMP*)&XBMCController$controlWasDeactivated$Orig);
+  // XBMCController::recreateOnReselect
+  MSHookMessageEx(XBMCControllerCls, @selector(recreateOnReselect), (IMP)&XBMCController$recreateOnReselect, nil);
+
+  // and register the class to the runtime
+  objc_registerClassPair(XBMCControllerCls);
+  
+  // save this as static for referencing it in multiple methods
+  BRWindowCls = objc_getClass("BRWindow");
 }
 
-@end
