@@ -308,6 +308,7 @@ void CAdvancedSettings::Initialize()
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 3;
   m_guiDirtyRegionNoFlipTimeout = 0;
+  m_guiFrameRate = 100;
   m_logEnableAirtunes = false;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
@@ -1036,6 +1037,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
+    XMLUtils::GetUInt(pElement, "framerate",                m_guiFrameRate);
+    m_guiFrameRate = std::max(m_guiFrameRate, 1U); // Divide by zero in CApplication::Render
   }
 
   // load in the GUISettings overrides:

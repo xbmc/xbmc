@@ -345,6 +345,7 @@ class CAdvancedSettings
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
     int  m_guiDirtyRegionNoFlipTimeout;
+    unsigned int m_guiFrameRate;
     unsigned int m_addonPackageFolderSize;
 
     unsigned int m_cacheMemBufferSize;
