@@ -952,10 +952,12 @@ int CBuiltins::Execute(const CStdString& execString)
     float seconds = 0;
     if (params.size() > 2)
     {
-      if (params[2].Find(':') == -1)
-        seconds = static_cast<float>(atoi(params[2].c_str())*60);
-      else
+      if (params[2].Find(':') != -1)
         seconds = (float)StringUtils::TimeStringToSeconds(params[2]);
+      else if (params[2].Find('ms') != -1)
+        seconds = static_cast<float>(atof(params[2].c_str())/1000.0f);
+      else
+        seconds = static_cast<float>(atoi(params[2].c_str())*60);
     }
     else
     { // check if shutdown is specified in particular, and get the time for it
