@@ -4085,11 +4085,21 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)
   {
-    bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
+    bool result = CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
     if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
-      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect = m_dvdPlayerVideo.GetAspectRatio();
-      ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime() / 1000;
+      /* 
+       * We can only obtain the aspect & duration from dvdplayer when the Process() thread is running
+       * and UpdatePlayState() has been called at least once. In this case dvdplayer duration/AR will
+       * return 0 and we'll have to fallback to the (less accurate) info from the demuxer.
+       */
+      float aspect = m_dvdPlayerVideo.GetAspectRatio();
+      if (aspect > 0.0f)
+        ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect = aspect;
+
+      int64_t duration = GetTotalTime() / 1000;
+      if (duration > 0)
+        ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = duration;
     }
     return result;
   }
