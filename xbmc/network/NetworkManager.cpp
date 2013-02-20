@@ -38,6 +38,7 @@
 //-----------------------------------------------------------------------
 CNetworkManager::CNetworkManager()
 {
+  m_timer = NULL;
   m_instance = NULL;
   m_state = NETWORK_CONNECTION_STATE_UNKNOWN;
 }
@@ -73,6 +74,22 @@ void CNetworkManager::Initialize()
 
 bool CNetworkManager::PumpNetworkEvents()
 {
+  if (!g_application.m_pPlayer)
+  {
+    if (!m_timer && !IsConnected())
+    {
+      CLog::Log(LOGDEBUG, "NetworkManager: not connected, bgn timout");
+      m_timer = new CStopWatch();
+      m_timer->StartZero();
+    }
+  }
+  if (m_timer && m_timer->GetElapsedSeconds() > 15)
+  {
+    CLog::Log(LOGDEBUG, "NetworkManager: not connected, end timout");
+    OnConnectionListChange(m_instance->GetConnections());
+    delete m_timer, m_timer = NULL;
+  }
+
   return m_instance->PumpNetworkEvents(this);
 }
 

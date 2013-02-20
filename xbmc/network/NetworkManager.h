@@ -22,6 +22,8 @@
 
 #include "INetworkManager.h"
 
+class CStopWatch;
+
 class CNetworkManager : public INetworkEventsCallback
 {
 public:
@@ -77,4 +79,5 @@ private:
   CConnectionPtr   m_defaultConnection;
   ConnectionList   m_connections;
   ConnectionState  m_state;
+  CStopWatch      *m_timer;
 };
