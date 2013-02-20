@@ -144,6 +144,7 @@ const BUILT_IN commands[] = {
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
+  { "BuiltInSequence",            true,   "Executes a Sequence Of BuiltIns" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
   { "RipCD",                      false,  "Rip the currently inserted audio CD"},
@@ -987,6 +988,12 @@ int CBuiltins::Execute(const CStdString& execString)
     if (seconds < 0 || (seconds == 0 && loop))
       return false;
     g_alarmClock.Start(params[0], seconds, params[1], silent, loop);
+  }
+  //Execute BuiltIn Sequence by looping through parameters, recursive
+  else if (execute.Equals("builtinsequence"))
+  {
+    for (unsigned int i = 0; i < params.size() ; i++)
+      CBuiltins::Execute(params[i]);
   }
   else if (execute.Equals("notification"))
   {
