@@ -216,9 +216,7 @@ public:
 
   virtual int GetAudioStreamCount();
   virtual int GetAudioStream();
-  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void SetAudioStream(int iStream);
-  virtual void GetAudioStreamLanguage(int iStream, CStdString &strLanguage);
 
   virtual TextCacheStruct_t* GetTeletextCache();
   virtual void LoadPage(int p, int sp, unsigned char* buffer);
@@ -234,15 +232,14 @@ public:
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
-  virtual int GetAudioBitrate();
+
   virtual int GetVideoBitrate();
   virtual int GetSourceBitrate();
-  virtual int GetChannels();
-  virtual CStdString GetAudioCodecName();
   virtual CStdString GetVideoCodecName();
   virtual int GetPictureWidth();
   virtual int GetPictureHeight();
   virtual bool GetStreamDetails(CStreamDetails &details);
+  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
 
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
 

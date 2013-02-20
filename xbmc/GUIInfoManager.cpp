@@ -1460,7 +1460,11 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
-      strLabel = g_application.m_pPlayer->GetAudioCodecName();
+    {
+      SPlayerAudioStreamInfo info;
+      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
+      strLabel = info.audioCodecName;
+    }
     break;
   case VIDEOPLAYER_VIDEO_ASPECT:
     if (g_application.IsPlaying() && g_application.m_pPlayer)
@@ -1472,7 +1476,11 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
-      strLabel.Format("%i", g_application.m_pPlayer->GetChannels());
+    {
+      SPlayerAudioStreamInfo info;
+      g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
+      strLabel.Format("%i", info.channels);
+    }
     break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:
@@ -3343,6 +3351,10 @@ CStdString CGUIInfoManager::GetPlaylistLabel(int item) const
 CStdString CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!g_application.IsPlaying() || !m_currentFile->HasMusicInfoTag()) return "";
+
+  SPlayerAudioStreamInfo info;
+  g_application.m_pPlayer->GetAudioStreamInfo(g_application.m_pPlayer->GetAudioStream(), info);
+
   switch (item)
   {
   case MUSICPLAYER_PLAYLISTLEN:
@@ -3362,7 +3374,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
       float fTimeSpan = (float)(CTimeUtils::GetFrameTime() - m_lastMusicBitrateTime);
       if (fTimeSpan >= 500.0f)
       {
-        m_MusicBitrate = g_application.m_pPlayer->GetAudioBitrate();
+        m_MusicBitrate = info.bitrate;
         m_lastMusicBitrateTime = CTimeUtils::GetFrameTime();
       }
       CStdString strBitrate = "";
@@ -3374,9 +3386,9 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CHANNELS:
     {
       CStdString strChannels = "";
-      if (g_application.m_pPlayer->GetChannels() > 0)
+      if (info.channels > 0)
       {
-        strChannels.Format("%i", g_application.m_pPlayer->GetChannels());
+        strChannels.Format("%i", info.channels);
       }
       return strChannels;
     }
@@ -3404,7 +3416,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CODEC:
     {
       CStdString strCodec;
-      strCodec.Format("%s", g_application.m_pPlayer->GetAudioCodecName().c_str());
+      strCodec.Format("%s", info.audioCodecName);
       return strCodec;
     }
     break;

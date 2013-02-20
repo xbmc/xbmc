@@ -846,25 +846,6 @@ int CAMLPlayer::GetAudioStream()
   return m_audio_index;
 }
 
-void CAMLPlayer::GetAudioStreamName(int iStream, CStdString &strStreamName)
-{
-  //CLog::Log(LOGDEBUG, "CAMLPlayer::GetAudioStreamName");
-  CSingleLock lock(m_aml_csection);
-
-  strStreamName.Format("Undefined");
-
-  if (iStream > (int)m_audio_streams.size() || iStream < 0)
-    return;
-
-  if ( m_audio_streams[iStream]->language.size())
-  {
-    CStdString name;
-    g_LangCodeExpander.Lookup( name, m_audio_streams[iStream]->language);
-    strStreamName = name;
-  }
-
-}
-
 void CAMLPlayer::SetAudioStream(int SetAudioStream)
 {
   //CLog::Log(LOGDEBUG, "CAMLPlayer::SetAudioStream");
@@ -1128,13 +1109,29 @@ __int64 CAMLPlayer::GetTotalTime()
   return m_duration_ms;
 }
 
-int CAMLPlayer::GetAudioBitrate()
+void CAMLPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
   CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
-    return 0;
+  if (index < 0 || m_audio_streams.size() == 0 || index > (int)(m_audio_streams.size() - 1))
+    return;
 
-  return m_audio_streams[m_audio_index]->bit_rate;
+  info.bitrate = m_audio_streams[index]->bit_rate;
+
+  if ( m_audio_streams[index]->language.size())
+    info.language = m_audio_streams[index]->language;
+
+  info.channels = m_audio_streams[index]->channel;
+
+  info.audioCodecName = AudioCodecName(m_audio_streams[index]->format);
+
+  info.name.Format("Undefined");
+    
+  if ( m_audio_streams[index]->language.size())
+  {
+    CStdString name;
+    g_LangCodeExpander.Lookup( name, m_audio_streams[index]->language);
+    info.name = name;
+  }
 }
 
 int CAMLPlayer::GetVideoBitrate()
@@ -1152,15 +1149,6 @@ int CAMLPlayer::GetSourceBitrate()
   return 0;
 }
 
-int CAMLPlayer::GetChannels()
-{
-  CSingleLock lock(m_aml_csection);
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
-    return 0;
-  
-  return m_audio_streams[m_audio_index]->channel;
-}
-
 int CAMLPlayer::GetBitsPerSample()
 {
   CLog::Log(LOGDEBUG, "CAMLPlayer::GetBitsPerSample");
@@ -1174,17 +1162,6 @@ int CAMLPlayer::GetSampleRate()
     return 0;
   
   return m_audio_streams[m_audio_index]->sample_rate;
-}
-
-CStdString CAMLPlayer::GetAudioCodecName()
-{
-  CStdString strAudioCodec = "";
-  if (m_audio_streams.size() == 0 || m_audio_index > (int)(m_audio_streams.size() - 1))
-    return strAudioCodec;
-
-  strAudioCodec = AudioCodecName(m_audio_streams[m_audio_index]->format);
-
-  return strAudioCodec;
 }
 
 CStdString CAMLPlayer::GetVideoCodecName()

@@ -259,9 +259,7 @@ public:
 
   virtual int   GetAudioStreamCount();
   virtual int   GetAudioStream();
-  virtual void  GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void  SetAudioStream(int iStream);
-  virtual void  GetAudioStreamLanguage(int iStream, CStdString &strLanguage);
 
   virtual TextCacheStruct_t* GetTeletextCache();
   virtual void  LoadPage(int p, int sp, unsigned char* buffer);
@@ -276,11 +274,9 @@ public:
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
   virtual void  ToFFRW(int iSpeed = 0);
-  virtual int   GetAudioBitrate();
+  virtual void  GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   virtual int   GetVideoBitrate();
   virtual int   GetSourceBitrate();
-  virtual int   GetChannels();
-  virtual CStdString GetAudioCodecName();
   virtual CStdString GetVideoCodecName();
   virtual int   GetPictureWidth();
   virtual int   GetPictureHeight();

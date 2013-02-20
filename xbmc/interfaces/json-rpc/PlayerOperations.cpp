@@ -1354,17 +1354,15 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
           int index = g_application.m_pPlayer->GetAudioStream();
           if (index >= 0)
           {
-            result["index"] = index;
-            CStdString value;
-            g_application.m_pPlayer->GetAudioStreamName(index, value);
-            result["name"] = value;
-            value.Empty();
-            g_application.m_pPlayer->GetAudioStreamLanguage(index, value);
-            result["language"] = value;
+            SPlayerAudioStreamInfo info;
+            g_application.m_pPlayer->GetAudioStreamInfo(index, info);
 
-            result["codec"] = g_application.m_pPlayer->GetAudioCodecName();
-            result["bitrate"] = g_application.m_pPlayer->GetAudioBitrate();
-            result["channels"] = g_application.m_pPlayer->GetChannels();
+            result["index"] = index;
+            result["name"] = info.name;
+            result["language"] = info.language;
+            result["codec"] = info.audioCodecName;
+            result["bitrate"] = info.bitrate;
+            result["channels"] = info.channels;
           }
         }
         else
@@ -1387,14 +1385,13 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStd
         {
           for (int index = 0; index < g_application.m_pPlayer->GetAudioStreamCount(); index++)
           {
+            SPlayerAudioStreamInfo info;
+            g_application.m_pPlayer->GetAudioStreamInfo(index, info);
+
             CVariant audioStream(CVariant::VariantTypeObject);
             audioStream["index"] = index;
-            CStdString value;
-            g_application.m_pPlayer->GetAudioStreamName(index, value);
-            audioStream["name"] = value;
-            value.Empty();
-            g_application.m_pPlayer->GetAudioStreamLanguage(index, value);
-            audioStream["language"] = value;
+            audioStream["name"] = info.name;
+            audioStream["language"] = info.language;
 
             result.append(audioStream);
           }

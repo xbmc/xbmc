@@ -364,7 +364,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_settings.m_currentVideoSettings.m_AudioStream = 0;
       g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
       CStdString aud;
-      g_application.m_pPlayer->GetAudioStreamName(g_settings.m_currentVideoSettings.m_AudioStream,aud);
+      SPlayerAudioStreamInfo info;
+      g_application.m_pPlayer->GetAudioStreamInfo(g_settings.m_currentVideoSettings.m_AudioStream, info);
+      aud = info.name;
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(460), aud, DisplTime, false, MsgTime);
       return true;
     }

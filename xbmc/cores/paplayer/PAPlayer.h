@@ -63,11 +63,9 @@ public:
   virtual void ToFFRW(int iSpeed = 0);
   virtual int GetCacheLevel() const;
   virtual int64_t GetTotalTime();
-  virtual int GetAudioBitrate();
-  virtual int GetChannels();
+  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info);
   virtual int GetBitsPerSample();
   virtual int GetSampleRate();
-  virtual CStdString GetAudioCodecName();
   virtual int64_t GetTime();
   virtual void SeekTime(int64_t iTime = 0);
   virtual bool SkipNext();

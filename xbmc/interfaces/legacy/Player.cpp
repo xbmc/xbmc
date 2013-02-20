@@ -457,13 +457,14 @@ namespace XBMCAddon
         int streamCount = g_application.m_pPlayer->GetAudioStreamCount();
         std::vector<String>* ret = new std::vector<String>(streamCount);
         for (int iStream=0; iStream < streamCount; iStream++)
-        {  
-          CStdString strName;
+        {
+          SPlayerAudioStreamInfo info;
+          g_application.m_pPlayer->GetAudioStreamInfo(iStream, info);
+
           CStdString FullLang;
-          g_application.m_pPlayer->GetAudioStreamLanguage(iStream, strName);
-          g_LangCodeExpander.Lookup(FullLang, strName);
+          g_LangCodeExpander.Lookup(FullLang, info.language);
           if (FullLang.IsEmpty())
-            g_application.m_pPlayer->GetAudioStreamName(iStream, FullLang);
+            FullLang = info.name;
           (*ret)[iStream] = FullLang;
         }
         return ret;

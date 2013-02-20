@@ -89,6 +89,21 @@ enum IPlayerSubtitleCapabilities
   IPC_SUBS_OFFSET
 };
 
+struct SPlayerAudioStreamInfo
+{
+  int bitrate;
+  int channels;
+  std::string language;
+  std::string name;
+  std::string audioCodecName;
+
+  SPlayerAudioStreamInfo()
+  {
+    bitrate = 0;
+    channels = 0;
+  }
+};
+
 class IPlayer
 {
 public:
@@ -145,9 +160,8 @@ public:
 
   virtual int  GetAudioStreamCount()  { return 0; }
   virtual int  GetAudioStream()       { return -1; }
-  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName){};
   virtual void SetAudioStream(int iStream){};
-  virtual void GetAudioStreamLanguage(int iStream, CStdString &strLanguage){};
+  virtual void GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info){};
 
   virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
@@ -168,13 +182,10 @@ public:
    \brief total time in milliseconds
    */
   virtual int64_t GetTotalTime() { return 0; }
-  virtual int GetAudioBitrate(){ return 0;}
   virtual int GetVideoBitrate(){ return 0;}
   virtual int GetSourceBitrate(){ return 0;}
-  virtual int GetChannels(){ return 0;};
   virtual int GetBitsPerSample(){ return 0;};
   virtual int GetSampleRate(){ return 0;};
-  virtual CStdString GetAudioCodecName(){ return "";}
   virtual CStdString GetVideoCodecName(){ return "";}
   virtual int GetPictureWidth(){ return 0;}
   virtual int GetPictureHeight(){ return 0;}

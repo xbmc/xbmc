@@ -104,14 +104,6 @@ void COMXSelectionStreams::Clear(StreamType type, StreamSource source)
   }
 }
 
-void COMXPlayer::GetAudioStreamLanguage(int iStream, CStdString &strLanguage)
-{
-  strLanguage = "";
-  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
-  if(s.language.length() > 0)
-    strLanguage = s.language;
-}
-
 OMXSelectionStream& COMXSelectionStreams::Get(StreamType type, int index)
 {
   CSingleLock lock(m_section);
@@ -2754,19 +2746,6 @@ int COMXPlayer::GetAudioStream()
 {
   return m_SelectionStreams.IndexOf(STREAM_AUDIO, *this);
 }
-
-void COMXPlayer::GetAudioStreamName(int iStream, CStdString &strStreamName)
-{
-  strStreamName = "";
-  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, iStream);
-  if(s.name.length() > 0)
-    strStreamName += s.name;
-  else
-    strStreamName += "Unknown";
-
-  if(s.type == STREAM_NONE)
-    strStreamName += " (Invalid)";
-}
  
 void COMXPlayer::SetAudioStream(int iStream)
 {
@@ -3799,9 +3778,39 @@ double COMXPlayer::GetQueueTime()
   return max(a, v) * 8000.0 / 100;
 }
 
-int COMXPlayer::GetAudioBitrate()
+void COMXPlayer::GetAudioStreamInfo(int index, SPlayerAudioStreamInfo &info)
 {
-  return m_player_audio.GetAudioBitrate();
+  if (index < 0 || index > GetAudioStreamCount() - 1)
+    return;
+
+  if (index == GetAudioStream())
+    info.bitrate = m_player_audio.GetAudioBitrate();
+  else
+    info.bitrate = m_pDemuxer->GetStreamFromAudioId(index)->iBitRate;
+
+  OMXSelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, index);
+  if(s.language.length() > 0)
+    info.language = s.language;
+
+  if(s.name.length() > 0)
+    info.name = s.name;
+  else
+    info.name += "Unknown";
+
+  if(s.type == STREAM_NONE)
+    info.name += " (Invalid)";
+
+  if (m_pDemuxer)
+  {
+    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStreamFromAudioId(index));
+    if (stream)
+    {
+      info.channels = stream->iChannels;
+      CStdString codecName;
+      m_pDemuxer->GetStreamCodecName(stream->iId, codecName);
+      info.audioCodecName = codecName;
+    }
+  }
 }
 
 int COMXPlayer::GetVideoBitrate()
@@ -4025,25 +4034,6 @@ bool COMXPlayer::Record(bool bOnOff)
     return true;
   }
   return false;
-}
-
-int COMXPlayer::GetChannels()
-{
-  if (m_pDemuxer && (m_CurrentAudio.id != -1))
-  {
-    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStream(m_CurrentAudio.id));
-    if (stream)
-      return stream->iChannels;
-  }
-  return -1;
-}
-
-CStdString COMXPlayer::GetAudioCodecName()
-{
-  CStdString retVal;
-  if (m_pDemuxer && (m_CurrentAudio.id != -1))
-    m_pDemuxer->GetStreamCodecName(m_CurrentAudio.id, retVal);
-  return retVal;
 }
 
 CStdString COMXPlayer::GetVideoCodecName()

@@ -162,7 +162,11 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
   {
     CStdString strItem;
     CStdString strName;
-    g_application.m_pPlayer->GetAudioStreamName(i, strName);
+
+    SPlayerAudioStreamInfo info;
+    g_application.m_pPlayer->GetAudioStreamInfo(i, info);
+
+    strName = info.name;
     if (strName.length() == 0)
       strName = "Unnamed";
 
