@@ -2795,7 +2795,7 @@
     <ClCompile Include="..\..\xbmc\network\upnp\UPnPInternal.cpp">
       <Filter>network\upnp</Filter>
     </ClCompile>
-     <ClCompile Include="..\..\xbmc\network\upnp\UPnPPlayer.cpp">
+    <ClCompile Include="..\..\xbmc\network\upnp\UPnPPlayer.cpp">
       <Filter>network\upnp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\network\upnp\UPnPRenderer.cpp">
