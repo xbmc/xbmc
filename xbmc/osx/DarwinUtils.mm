@@ -43,47 +43,109 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
-bool SysctlMatches(std::string key, std::string searchValue)
+enum iosPlatform
 {
-  int result = -1;
-#if defined(TARGET_DARWIN_IOS)
-  char        buffer[512];
-  size_t      len = 512;
-  result = 0;
+  iDeviceUnknown = -1,
+  iPhone2G,
+  iPhone3G,
+  iPhone3GS,
+  iPodTouch1G,
+  iPodTouch2G,
+  iPodTouch3G,
+  iPad,
+  iPad3G,
+  iPad2WIFI,
+  iPad2CDMA,
+  iPad2,
+  iPadMini,
+  iPadMiniGSMCDMA,
+  iPadMiniWIFI,
+  AppleTV2,
+  iPhone4,            //from here on list devices with retina support (e.x. mainscreen scale == 2.0)
+  iPhone4CDMA,
+  iPhone4S,
+  iPhone5,
+  iPhone5GSMCDMA, 
+  iPodTouch4G,
+  iPodTouch5G,  
+  iPad3WIFI,
+  iPad3GSMCDMA,
+  iPad3,
+  iPad4WIFI,
+  iPad4,
+  iPad4GSMCDMA,  
+};
 
-  if (sysctlbyname(key.c_str(), &buffer, &len, NULL, 0) == 0)
-    key = buffer;
+enum iosPlatform getIosPlatform()
+{
+#if defined(TARGET_DARWIN_IOS)
+  // Gets a string with the device model
+  size_t size;  
+  sysctlbyname("hw.machine", NULL, &size, NULL, 0);  
+  char *machine = new char[size];  
+  sysctlbyname("hw.machine", machine, &size, NULL, 0);  
+  NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];  
+  delete [] machine; 
   
-  if (key.find(searchValue) != std::string::npos)
-    result = 1;   
+  if ([platform isEqualToString:@"iPhone1,1"])    return iPhone2G;
+  if ([platform isEqualToString:@"iPhone1,2"])    return iPhone3G;
+  if ([platform isEqualToString:@"iPhone2,1"])    return iPhone3GS;
+  if ([platform isEqualToString:@"iPhone3,1"])    return iPhone4;
+  if ([platform isEqualToString:@"iPhone3,2"])    return iPhone4;
+  if ([platform isEqualToString:@"iPhone3,3"])    return iPhone4CDMA;    
+  if ([platform isEqualToString:@"iPhone4,1"])    return iPhone4S;
+  if ([platform isEqualToString:@"iPhone5,1"])    return iPhone5;
+  if ([platform isEqualToString:@"iPhone5,2"])    return iPhone5GSMCDMA;
+  
+  if ([platform isEqualToString:@"iPod1,1"])      return iPodTouch1G;
+  if ([platform isEqualToString:@"iPod2,1"])      return iPodTouch2G;
+  if ([platform isEqualToString:@"iPod3,1"])      return iPodTouch3G;
+  if ([platform isEqualToString:@"iPod4,1"])      return iPodTouch4G;
+  if ([platform isEqualToString:@"iPod5,1"])      return iPodTouch5G;
+  
+  if ([platform isEqualToString:@"iPad1,1"])      return iPad;
+  if ([platform isEqualToString:@"iPad1,2"])      return iPad;
+  if ([platform isEqualToString:@"iPad2,1"])      return iPad2WIFI;
+  if ([platform isEqualToString:@"iPad2,2"])      return iPad2;
+  if ([platform isEqualToString:@"iPad2,3"])      return iPad2CDMA;
+  if ([platform isEqualToString:@"iPad2,4"])      return iPad2;
+  if ([platform isEqualToString:@"iPad2,5"])      return iPadMiniWIFI;
+  if ([platform isEqualToString:@"iPad2,6"])      return iPadMini;
+  if ([platform isEqualToString:@"iPad2,7"])      return iPadMiniGSMCDMA;
+  if ([platform isEqualToString:@"iPad3,1"])      return iPad3WIFI;
+  if ([platform isEqualToString:@"iPad3,2"])      return iPad3GSMCDMA;
+  if ([platform isEqualToString:@"iPad3,3"])      return iPad3;
+  if ([platform isEqualToString:@"iPad3,4"])      return iPad4WIFI;
+  if ([platform isEqualToString:@"iPad3,5"])      return iPad4;
+  if ([platform isEqualToString:@"iPad3,6"])      return iPad4GSMCDMA;
+  if ([platform isEqualToString:@"AppleTV2,1"])   return AppleTV2;
 #endif
-  return result;
+  return iDeviceUnknown;
 }
 
 bool DarwinIsAppleTV2(void)
 {
-  static int result = -1;
+  static enum iosPlatform platform = iDeviceUnknown;
 #if defined(TARGET_DARWIN_IOS)
-  if( result == -1 )
+  if( platform == iDeviceUnknown )
   {
-    result = SysctlMatches("hw.machine", "AppleTV2,1");
+    platform = getIosPlatform();
   }
 #endif
-  return (result == 1);
+  return (platform == AppleTV2);
 }
 
-bool DarwinIsIPad3(void)
+bool DarwinHasRetina(void)
 {
-  static int result = -1;
+  static enum iosPlatform platform = iDeviceUnknown;
+
 #if defined(TARGET_DARWIN_IOS)
-  if( result == -1 )
+  if( platform == iDeviceUnknown )
   {
-    //valid ipad3 identifiers - iPad3,1 iPad3,2 and iPad3,3
-    //taken from http://stackoverflow.com/questions/9638970/ios-the-new-ipad-uidevicehardware-hw-machine-codename
-    result = SysctlMatches("hw.machine", "iPad3");
+    platform = getIosPlatform();
   }
 #endif
-  return (result == 1);
+  return (platform >= iPhone4);
 }
 
 

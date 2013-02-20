@@ -684,13 +684,9 @@ void CPartyModeManager::AddToHistory(int type, int songID)
 
 void CPartyModeManager::GetRandomSelection(vector< pair<int,int> >& in, unsigned int number, vector< pair<int,int> >& out)
 {
-  // only works if we have < 32768 in the in vector
-  for (unsigned int i = 0; i < number; i++)
-  {
-    int num = rand() % in.size();
-    out.push_back(in[num]);
-    in.erase(in.begin() + num);
-  }
+  number = min(number, (unsigned int)in.size());
+  random_shuffle(in.begin(), in.end());
+  out.assign(in.begin(), in.begin() + number);
 }
 
 bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT_UNKNOWN */) const

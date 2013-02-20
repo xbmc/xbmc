@@ -16,7 +16,7 @@
  
  char *ssh_get_user_home_dir(void) {
 +#if defined(__ANDROID__)
-+  return NULL;
++  return strdup(getenv("HOME"));
 +#else
    char *szPath = NULL;
    struct passwd pwd;

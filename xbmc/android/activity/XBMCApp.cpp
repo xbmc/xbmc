@@ -127,7 +127,6 @@ ActivityResult CXBMCApp::onActivate()
     default:
       break;
   }
-  
   return ActivityOK;
 }
 
@@ -975,3 +974,71 @@ bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
   usage = fmt.str();
   return true;
 }
+
+// Used in Application.cpp to figure out volume steps
+int CXBMCApp::GetMaxSystemVolume()
+{
+  static int maxVolume = -1;
+  if (maxVolume == -1)
+  {
+    JNIEnv *env = NULL;
+    AttachCurrentThread(&env);
+    maxVolume = GetMaxSystemVolume(env);
+    DetachCurrentThread();
+  }
+  return maxVolume;
+}
+
+int CXBMCApp::GetMaxSystemVolume(JNIEnv *env)
+{
+  jobject oActivity = m_activity->clazz;
+  jclass cActivity = env->GetObjectClass(oActivity);
+
+  // Get Audio manager
+  //  (AudioManager)getSystemService(Context.AUDIO_SERVICE)
+  jmethodID mgetSystemService = env->GetMethodID(cActivity, "getSystemService","(Ljava/lang/String;)Ljava/lang/Object;");
+  jstring sAudioService = env->NewStringUTF("audio");
+  jobject oAudioManager = env->CallObjectMethod(oActivity, mgetSystemService, sAudioService);
+  env->DeleteLocalRef(sAudioService);
+  env->DeleteLocalRef(cActivity);
+
+  // Get max volume
+  //  int max_volume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+  jclass cAudioManager = env->GetObjectClass(oAudioManager);
+  jmethodID mgetStreamMaxVolume = env->GetMethodID(cAudioManager, "getStreamMaxVolume", "(I)I");
+  jfieldID fstreamMusic = env->GetStaticFieldID(cAudioManager, "STREAM_MUSIC", "I");
+  jint stream_music = env->GetStaticIntField(cAudioManager, fstreamMusic);
+  int maxVolume = (int)env->CallObjectMethod(oAudioManager, mgetStreamMaxVolume, stream_music); // AudioManager.STREAM_MUSIC
+
+  env->DeleteLocalRef(oAudioManager);
+  env->DeleteLocalRef(cAudioManager);
+
+  return maxVolume;
+}
+
+void CXBMCApp::SetSystemVolume(JNIEnv *env, float percent)
+{
+  CLog::Log(LOGDEBUG, "CXBMCApp::SetSystemVolume: %f", percent);
+
+  jobject oActivity = m_activity->clazz;
+  jclass cActivity = env->GetObjectClass(oActivity);
+
+  // Get Audio manager
+  //  (AudioManager)getSystemService(Context.AUDIO_SERVICE)
+  jmethodID mgetSystemService = env->GetMethodID(cActivity, "getSystemService","(Ljava/lang/String;)Ljava/lang/Object;");
+  jstring sAudioService = env->NewStringUTF("audio");
+  jobject oAudioManager = env->CallObjectMethod(oActivity, mgetSystemService, sAudioService);
+  jclass cAudioManager = env->GetObjectClass(oAudioManager);
+  env->DeleteLocalRef(sAudioService);
+  env->DeleteLocalRef(cActivity);
+
+  // Set volume
+  //   mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, max_volume, 0);
+  jfieldID fstreamMusic = env->GetStaticFieldID(cAudioManager, "STREAM_MUSIC", "I");
+  jint stream_music = env->GetStaticIntField(cAudioManager, fstreamMusic);
+  jmethodID msetStreamVolume = env->GetMethodID(cAudioManager, "setStreamVolume", "(III)V");
+  env->CallObjectMethod(oAudioManager, msetStreamVolume, stream_music, int(GetMaxSystemVolume(env)*percent), 0);
+  env->DeleteLocalRef(oAudioManager);
+  env->DeleteLocalRef(cAudioManager);
+}
+

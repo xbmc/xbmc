@@ -243,49 +243,49 @@
 						<item id="1">
 							<label>$LOCALIZE[342]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(110)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(119)</visible>
 						</item>
 						<item id="2">
 							<label>$LOCALIZE[20343]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(120)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(129)</visible>
 						</item>
 						<item id="3">
 							<label>$LOCALIZE[33054]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(130)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(139)</visible>
 						</item>
 						<item id="4">
 							<label>$LOCALIZE[20360]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(140)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(149)</visible>
 						</item>
 						<item id="5">
 							<label>$LOCALIZE[20389]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(150)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(159)</visible>
 						</item>
 						<item id="6">
 							<label>$LOCALIZE[133]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(160)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(169)</visible>
 						</item>
 						<item id="7">
 							<label>$LOCALIZE[132]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(170)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(179)</visible>
 						</item>
 						<item id="8">
 							<label>$LOCALIZE[134]</label>
 							<label2>$LOCALIZE[31206] $INFO[Control.GetLabel(180)] $LOCALIZE[31025]</label2>
-							<onclick>-</onclick>
+							<onclick>noop</onclick>
 							<visible>Control.IsVisible(189)</visible>
 						</item>
 						<item id="10">

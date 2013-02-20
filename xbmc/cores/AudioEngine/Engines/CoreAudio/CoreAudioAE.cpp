@@ -691,6 +691,37 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
 
 void CCoreAudioAE::GarbageCollect()
 {
+#if defined(TARGET_DARWIN_OSX)
+  if (g_advancedSettings.m_streamSilence)
+    return;
+  
+  if (!m_streamsPlaying && m_playing_sounds.empty())
+  {
+    if (!m_softSuspend)
+    {
+      m_softSuspend = true;
+      m_softSuspendTimer = XbmcThreads::SystemClockMillis() + 10000; //10.0 second delay for softSuspend
+    }
+  }
+  else
+  {
+    if (m_isSuspended)
+    {
+      CSingleLock engineLock(m_engineLock);
+      CLog::Log(LOGDEBUG, "CCoreAudioAE::GarbageCollect - Acquire CA HAL.");
+      Start();
+      m_isSuspended = false;
+    }
+    m_softSuspend = false;
+  }
+  
+  unsigned int curSystemClock = XbmcThreads::SystemClockMillis();
+  if (!m_isSuspended && m_softSuspend && curSystemClock > m_softSuspendTimer)
+  {
+    Suspend();// locks m_engineLock internally
+    CLog::Log(LOGDEBUG, "CCoreAudioAE::GarbageCollect - Release CA HAL.");
+  }
+#endif // TARGET_DARWIN_OSX
 }
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
@@ -719,6 +750,7 @@ void CCoreAudioAE::Stop()
 
 bool CCoreAudioAE::Suspend()
 {
+  CSingleLock engineLock(m_engineLock);
   CLog::Log(LOGDEBUG, "CCoreAudioAE::Suspend - Suspending AE processing");
   m_isSuspended = true;
   // stop all gui sounds

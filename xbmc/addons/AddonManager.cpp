@@ -374,7 +374,15 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
       AddonPtr repoAddon;
       for (unsigned int j = 0; j < temp.size(); j++)
       {
-        if (!m_database.GetAddon(temp[j]->ID(), repoAddon))
+        // Ignore duplicates due to add-ons with multiple extension points
+        bool found = false;
+        for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); addonIt++)
+        {
+          if ((*addonIt)->ID() == temp[j]->ID())
+            found = true;
+        }
+
+        if (found || !m_database.GetAddon(temp[j]->ID(), repoAddon))
           continue;
 
         if (temp[j]->Version() < repoAddon->Version() &&

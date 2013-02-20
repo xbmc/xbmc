@@ -35,6 +35,11 @@
 #pragma comment(lib, "ssh.lib")
 #endif
 
+#ifdef TARGET_WINDOWS
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
+
 #ifdef _MSC_VER
 #define O_RDONLY _O_RDONLY
 #endif
@@ -187,19 +192,20 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
   return false;
 }
 
-bool CSFTPSession::Exists(const char *path)
+bool CSFTPSession::DirectoryExists(const char *path)
 {
   bool exists = false;
-  CSingleLock lock(m_critSect);
-  if(m_connected)
-  {
-    sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
-    exists = attributes != NULL;
+  uint32_t permissions = 0;
+  exists = GetItemPermissions(path, permissions);
+  return exists && S_ISDIR(permissions);
+}
 
-    if (attributes)
-      sftp_attributes_free(attributes);
-  }
-  return exists;
+bool CSFTPSession::FileExists(const char *path)
+{
+  bool exists = false;
+  uint32_t permissions = 0;
+  exists = GetItemPermissions(path, permissions);
+  return exists && S_ISREG(permissions);
 }
 
 int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
@@ -422,6 +428,33 @@ void CSFTPSession::Disconnect()
   m_session = NULL;
 }
 
+/*!
+ \brief Gets POSIX compatible permissions information about the specified file or directory.
+ \param path Remote SSH path to the file or directory.
+ \param permissions POSIX compatible permissions information for the file or directory (if it exists). i.e. can use macros S_ISDIR() etc.
+ \return Returns \e true, if it was possible to get permissions for the file or directory, \e false otherwise.
+ */
+bool CSFTPSession::GetItemPermissions(const char *path, uint32_t &permissions)
+{
+  bool gotPermissions = false;
+  CSingleLock lock(m_critSect);
+  if(m_connected)
+  {
+    sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
+    if (attributes)
+    {
+      if (attributes->flags & SSH_FILEXFER_ATTR_PERMISSIONS)
+      {
+        permissions = attributes->permissions;
+        gotPermissions = true;
+      }
+
+      sftp_attributes_free(attributes);
+    }
+  }
+  return gotPermissions;
+}
+
 CCriticalSection CSFTPSessionManager::m_critSect;
 map<CStdString, CSFTPSessionPtr> CSFTPSessionManager::sessions;
 
@@ -554,7 +587,7 @@ bool CSFTPFile::Exists(const CURL& url)
 {
   CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url);
   if (session)
-    return session->Exists(url.GetFileName().c_str());
+    return session->FileExists(url.GetFileName().c_str());
   else
   {
     CLog::Log(LOGERROR, "SFTPFile: Failed to create session to check exists");

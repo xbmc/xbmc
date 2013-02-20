@@ -142,7 +142,32 @@
 
 - (id) applianceCategories
 {
-	return _applianceCategories;
+  // on ios 5.x this gets called whenever a user hits the xbmc icon
+  // in the frontrow mainmenu
+  // we use this indication for faking the "select" key.
+  // This leads to a one click start of XBMC instead of needing
+  // to hit select on the only XBMC category called "XBMC" again ;)
+  Class cls = NSClassFromString(@"ATVVersionInfo");
+  if (cls != nil && [[cls currentOSVersion] rangeOfString:@"5."].location != NSNotFound)
+  {
+    // eventaction 5 == kBREventRemoteActionPlay from XBMCController.m
+    // value == 1 meanse we pressed that key
+    BREvent *eventKeySelect = [BREvent eventWithAction:5 value:1];
+    // when we suppress the sound below
+    // this will even suppress the initial click
+    // sound because this is threaded
+    // thats why we just play that first click sound
+    // directly here before suppressing the sounds
+    // and doing the fake click (which would result in an unwanted
+    // second click sound without that hack)
+    [BRSoundHandler playSound:1];// sound number 1 is the ios click sound
+    // ios >= 5 only - so ignore the compiler warning on older SDKs
+    // since we guarded that code with the currentOSVersion above
+    [BRSoundHandler setSoundSuppressed:TRUE];
+    [[BRApplication sharedApplication] postEvent:eventKeySelect];
+  }
+
+  return _applianceCategories;
 }
 
 - (id) identifierForContentAlias:(id)contentAlias
