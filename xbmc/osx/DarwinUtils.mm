@@ -177,7 +177,7 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
   *pathsize = 0;
 
   // a) XBMC frappliance running under ATV2
-  Class XBMCfrapp = NSClassFromString(@"XBMCAppliance");
+  Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
   if (XBMCfrapp != NULL)
   {
     pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"Frameworks" ofType:@""];
@@ -234,7 +234,7 @@ int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
   NSString *pathname;
 
   // a) XBMC frappliance running under ATV2
-  Class XBMCfrapp = NSClassFromString(@"XBMCAppliance");
+  Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
   if (XBMCfrapp != NULL)
   {
     pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"XBMC" ofType:@""];
@@ -260,7 +260,7 @@ bool DarwinHasVideoToolboxDecoder(void)
 
   if (DecoderAvailable == -1)
   {
-    Class XBMCfrapp = NSClassFromString(@"XBMCAppliance");
+    Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
     if (XBMCfrapp != NULL)
     {
       // atv2 has seatbelt profile key removed so nothing to do here
