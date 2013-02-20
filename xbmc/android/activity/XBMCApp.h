@@ -58,9 +58,6 @@ public:
 
   bool isValid() { return m_activity != NULL; }
 
-  ActivityResult onActivate();
-  void onDeactivate();
-
   void onStart();
   void onResume();
   void onPause();
@@ -121,37 +118,11 @@ private:
 
   static ANativeActivity *m_activity;
   jobject m_wakeLock;
-  typedef enum {
-    // XBMC_Initialize hasn't been executed yet
-    Uninitialized,
-    // XBMC_Initialize has been successfully executed
-    Initialized,
-    // XBMC is currently rendering
-    Rendering,
-    // XBMC has stopped rendering because it has lost focus
-    // but it still has an EGLContext
-    Unfocused,
-    // XBMC has been paused/stopped and does not have an
-    // EGLContext
-    Paused,
-    // XBMC is being stopped
-    Stopping,
-    // XBMC has stopped
-    Stopped,
-    // An error has occured
-    Error
-  } AppState;
-
-  typedef struct {
-    pthread_t thread;
-    pthread_mutex_t mutex;
-    AppState appState;
-  } State;
-
-  State m_state;
   
-  void setAppState(AppState state);
-    
+  bool m_firstrun;
+  bool m_exiting;
+  pthread_t m_thread;
+  
   static ANativeWindow* m_window;
   
   void XBMC_Pause(bool pause);
