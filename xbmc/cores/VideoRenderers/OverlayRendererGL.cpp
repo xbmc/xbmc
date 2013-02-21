@@ -374,7 +374,7 @@ COverlayGlyphGL::~COverlayGlyphGL()
 
 void COverlayGlyphGL::Render(SRenderState& state)
 {
-  if (m_texture == 0)
+  if ((m_texture == 0) || (m_count == 0))
     return;
 
   glEnable(GL_TEXTURE_2D);
@@ -433,21 +433,32 @@ void COverlayGlyphGL::Render(SRenderState& state)
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, x));
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, r));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, u));
+  // stack object until VBOs will be used
+  std::vector<VERTEX> vecVertices( 6 * m_count);
+  VERTEX *vertices = &vecVertices[0];
+
+  for (int i=0; i<m_count*4; i+=4)
+  {
+    *vertices++ = m_vertex[i];
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+2];
+
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+3];
+    *vertices++ = m_vertex[i+2];
+  }
+
+  vertices = &vecVertices[0];
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)vertices + offsetof(VERTEX, x));
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(VERTEX), (char*)vertices + offsetof(VERTEX, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)vertices + offsetof(VERTEX, u));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  // GLES2 version
-  // As using triangle strips, have to do in sets of 4.
-  // This is due to limitations of ES, in that tex/col has to be same size as ver!
-  for (int i=0; i<(m_count*4); i+=4)
-  {
-    glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
-  }
+  glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
