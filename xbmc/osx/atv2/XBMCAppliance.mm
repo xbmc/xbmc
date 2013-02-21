@@ -187,8 +187,8 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
 // since we can't inject ivars we need to use associated objects
 // these are the keys for XBMCAppliance
 //implementation XBMCAppliance
-static char const * const topShelfControllerKey = "topShelfController";
-static char const * const applianceCategoriesKey = "applianceCategories";
+static char topShelfControllerKey;
+static char applianceCategoriesKey;
 
 static NSString* XBMCApplianceInfo$key(XBMCApplianceInfo* self, SEL _cmd)
 {
@@ -307,23 +307,23 @@ static id XBMCAppliance$applianceInfo(XBMCAppliance* self, SEL _cmd)
 
 static id XBMCAppliance$topShelfController(XBMCAppliance* self, SEL _cmd) 
 { 
-  return objc_getAssociatedObject(self, (const void*)topShelfControllerKey);
+  return objc_getAssociatedObject(self, &topShelfControllerKey);
 }
 
 
 static void XBMCAppliance$setTopShelfController(XBMCAppliance* self, SEL _cmd, id topShelfControl) 
 { 
-  objc_setAssociatedObject(self, (const void*)topShelfControllerKey, topShelfControl, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, &topShelfControllerKey, topShelfControl, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static id XBMCAppliance$applianceCategories(XBMCAppliance* self, SEL _cmd) 
 {
-  return objc_getAssociatedObject(self, (const void*)applianceCategoriesKey);
+  return objc_getAssociatedObject(self, &applianceCategoriesKey);
 }
 
 static void XBMCAppliance$setApplianceCategories(XBMCAppliance* self, SEL _cmd, id applianceCategories)
 { 
-  objc_setAssociatedObject(self, (const void*)applianceCategoriesKey, applianceCategories, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, &applianceCategoriesKey, applianceCategories, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static id XBMCAppliance$initWithApplianceInfo(XBMCAppliance* self, SEL _cmd, id applianceInfo) 
