@@ -52,6 +52,9 @@ CSlideShowPic::CSlideShowPic()
   m_bIsFinished = false;
   m_bDrawNextImage = false;
   m_bTransistionImmediately = false;
+
+  m_bCanMoveHorizontally = false;
+  m_bCanMoveVertically = false;
 }
 
 CSlideShowPic::~CSlideShowPic()
@@ -481,6 +484,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     float w = maxx - minx;
     float h = maxy - miny;
     m_bCanMoveHorizontally = (w >= fScreenWidth);
+    m_bCanMoveVertically   = (h >= fScreenHeight);
     if (w >= fScreenWidth)
     { // must have no black bars
       if (minx + m_fZoomLeft*w > fOffsetX)
