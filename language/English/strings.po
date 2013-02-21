@@ -12008,3 +12008,8 @@ msgstr ""
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr ""
+
+#: xbmc/settings/GUISettings.cpp
+msgctxt "#36042"
+msgid "Use limited color range (16-235)"
+msgstr ""

@@ -433,6 +433,7 @@ void CGUISettings::Initialize()
 #else
   AddBool(vs, "videoscreen.blankdisplays", 13130, false);
 #endif
+
   AddSeparator(vs, "videoscreen.sep1");
 #endif
 
@@ -449,6 +450,12 @@ void CGUISettings::Initialize()
 #if defined(HAS_GL)
   // Todo: Implement test pattern for DX
   AddString(vs, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+#endif
+
+#if defined(HAS_GL) || defined(HAS_DX)
+  AddBool(vs  , "videoscreen.limitedrange", 36042, false);
+#else
+  AddBool(NULL, "videoscreen.limitedrange", 36042, false);
 #endif
 
   CSettingsCategory* ao = AddCategory(SETTINGS_SYSTEM, "audiooutput", 772);
@@ -768,7 +775,7 @@ void CGUISettings::Initialize()
   AddSeparator(vp, "videoplayer.sep1.5");
 #ifdef HAVE_LIBVDPAU
   AddBool(NULL, "videoplayer.vdpauUpscalingLevel", 13121, false);
-  AddBool(vp, "videoplayer.vdpaustudiolevel", 13122, false);
+  AddBool(NULL, "videoplayer.vdpaustudiolevel", 0, false); //depreciated
 #endif
 #endif
   AddSeparator(vp, "videoplayer.sep5");
@@ -1411,6 +1418,13 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
   }
 #endif
+
+  // map old vpdau color range, to now global setting
+  if (GetBool("videoplayer.vdpaustudiolevel"))
+  {
+    SetBool("videoscreen.limitedrange", true);
+    SetBool("videoplayer.vdpaustudiolevel", false);
+  }
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
 
