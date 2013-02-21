@@ -307,23 +307,23 @@ static id XBMCAppliance$applianceInfo(XBMCAppliance* self, SEL _cmd)
 
 static id XBMCAppliance$topShelfController(XBMCAppliance* self, SEL _cmd) 
 { 
-  return objc_getAssociatedObject(self, topShelfControllerKey);
+  return objc_getAssociatedObject(self, (const void*)topShelfControllerKey);
 }
 
 
 static void XBMCAppliance$setTopShelfController(XBMCAppliance* self, SEL _cmd, id topShelfControl) 
 { 
-  objc_setAssociatedObject(self, topShelfControllerKey, topShelfControl, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, (const void*)topShelfControllerKey, topShelfControl, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static id XBMCAppliance$applianceCategories(XBMCAppliance* self, SEL _cmd) 
 {
-  return objc_getAssociatedObject(self, applianceCategoriesKey);
+  return objc_getAssociatedObject(self, (const void*)applianceCategoriesKey);
 }
 
 static void XBMCAppliance$setApplianceCategories(XBMCAppliance* self, SEL _cmd, id applianceCategories)
 { 
-  objc_setAssociatedObject(self, applianceCategoriesKey, applianceCategories, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, (const void*)applianceCategoriesKey, applianceCategories, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static id XBMCAppliance$initWithApplianceInfo(XBMCAppliance* self, SEL _cmd, id applianceInfo) 
