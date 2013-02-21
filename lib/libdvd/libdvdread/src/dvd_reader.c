@@ -446,7 +446,7 @@ dvd_reader_t *DVDOpen( const char *ppath )
         cdir = -1;
         if( retval == -1 ) {
 #if defined(_XBMC)
-          perror("libdvdread: failed to reset working directory to \".\""); /* but ignore error */
+          fprintf( stderr, "libdvdread: failed to reset working directory to \".\": %s\n", strerror(errno)); /* but ignore error */
 #else
           goto DVDOpen_error;
 #endif // _XBMC
