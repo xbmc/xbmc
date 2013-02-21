@@ -242,42 +242,42 @@ static char const * const systemsleepKey = "m_systemsleepTimeout";
  
 static id XBMCController$keyTimer(XBMCController* self, SEL _cmd) 
 { 
-  return objc_getAssociatedObject(self, timerKey);
+  return objc_getAssociatedObject(self, (const void*)timerKey);
 }
 
 static void XBMCController$setKeyTimer(XBMCController* self, SEL _cmd, id timer) 
 { 
-  objc_setAssociatedObject(self, timerKey, timer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, (const void*)timerKey, timer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static id XBMCController$glView(XBMCController* self, SEL _cmd) 
 { 
-  return objc_getAssociatedObject(self, glviewKey);
+  return objc_getAssociatedObject(self, (const void*)glviewKey);
 }
 
 static void XBMCController$setGlView(XBMCController* self, SEL _cmd, id view) 
 { 
-  objc_setAssociatedObject(self, glviewKey, view, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, (const void*)glviewKey, view, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static id XBMCController$systemScreenSaverTimeout(XBMCController* self, SEL _cmd) 
 { 
-  return objc_getAssociatedObject(self, screensaverKey);
+  return objc_getAssociatedObject(self, (const void*)screensaverKey);
 }
 
 static void XBMCController$setSystemScreenSaverTimeout(XBMCController* self, SEL _cmd, id timeout) 
 { 
-  objc_setAssociatedObject(self, screensaverKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, (const void*)screensaverKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static id XBMCController$systemSleepTimeout(XBMCController* self, SEL _cmd) 
 { 
-  return objc_getAssociatedObject(self, systemsleepKey);
+  return objc_getAssociatedObject(self, (const void*)systemsleepKey);
 }
 
 static void XBMCController$setSystemSleepTimeout(XBMCController* self, SEL _cmd, id timeout) 
 { 
-  objc_setAssociatedObject(self, systemsleepKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, (const void*)systemsleepKey, timeout, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static void XBMCController$applicationDidExit(XBMCController* self, SEL _cmd) 
