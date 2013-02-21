@@ -176,6 +176,7 @@ static CEvent keyboardFinishedEvent;
   [g_xbmcController activateKeyboard:self];
   [_textField becomeFirstResponder];
   [self setNeedsLayout];
+  keyboardFinishedEvent.Reset();
 }
 
 - (void)activate
@@ -190,8 +191,6 @@ static CEvent keyboardFinishedEvent;
     // this would be fatal! We never should be called from the ios mainthread
     return;
   }
-
-  keyboardFinishedEvent.Reset();
 
   // emulate a modale dialog here
   // we are waiting on the user finishing the keyboard
