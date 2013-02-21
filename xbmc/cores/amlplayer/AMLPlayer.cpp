@@ -27,6 +27,7 @@
 #include "GUIInfoManager.h"
 #include "video/VideoThumbLoader.h"
 #include "Util.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoRenderers/RenderFlags.h"
 #include "cores/VideoRenderers/RenderFormats.h"
 #include "cores/VideoRenderers/RenderManager.h"
