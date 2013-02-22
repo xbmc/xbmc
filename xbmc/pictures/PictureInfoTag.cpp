@@ -31,6 +31,7 @@ void CPictureInfoTag::Reset()
   memset(&m_exifInfo, 0, sizeof(m_exifInfo));
   memset(&m_iptcInfo, 0, sizeof(m_iptcInfo));
   m_isLoaded = false;
+  m_isExternallyLoaded = false;  // Distiguish between loaded from file and loaded by external call to SetInfo
 }
 
 const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
@@ -39,20 +40,39 @@ const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
   memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
   memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
   m_isLoaded = right.m_isLoaded;
+  m_isExternallyLoaded = right.m_isExternallyLoaded;
   return *this;
 }
 
 bool CPictureInfoTag::Load(const CStdString &path)
 {
+  CStdString exiftime = "";
+  CStdString resolution = "";
   m_isLoaded = false;
 
   DllLibExif exifDll;
   if (path.IsEmpty() || !exifDll.Load())
     return false;
-
+ 
+  /* Its possible that exiftime and resolution were already set externally */
+  /* Retrieve them so they can be used if not found in file */
+  if (m_isExternallyLoaded){
+	exiftime = GetInfo(TranslateString("exiftime"));
+	resolution = GetInfo(TranslateString("resolution"));
+  }
+  
   if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
     m_isLoaded = true;
 
+  /* Prefer to use the actual file metadata, but if it doesn't exist */
+  /* put the externally set metadata back in. */
+  if (m_isExternallyLoaded){
+    if ((GetInfo(TranslateString("exiftime")) == "") && (exiftime != "")) 
+	  SetInfo(TranslateString("exiftime"),exiftime);
+	if ((GetInfo(TranslateString("resolution")) == "") && (resolution != "")) 
+	  SetInfo(TranslateString("resolution"),resolution);  
+  }
+  
   return m_isLoaded;
 }
 
@@ -267,7 +287,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
 
 const CStdString CPictureInfoTag::GetInfo(int info) const
 {
-  if (!m_isLoaded)
+  if (!m_isLoaded && !m_isExternallyLoaded)
     return "";
 
   CStdString value;
@@ -590,12 +610,14 @@ void CPictureInfoTag::SetInfo(int info, const CStdString& value)
       {
         m_exifInfo.Width = atoi(dimension[0].c_str());
         m_exifInfo.Height = atoi(dimension[1].c_str());
+		m_isExternallyLoaded = true;
       }
       break;
     }
   case SLIDE_EXIF_DATE_TIME:
     {
       strcpy(m_exifInfo.DateTime, value.c_str());
+	  m_isExternallyLoaded = true;
       break;
     }
   default:
@@ -605,6 +627,6 @@ void CPictureInfoTag::SetInfo(int info, const CStdString& value)
 
 void CPictureInfoTag::SetLoaded(bool loaded)
 {
-  m_isLoaded = loaded;
+  m_isExternallyLoaded = loaded;  // Don't set m_isLoaded variable. That indicates loaded from file
 }
 
