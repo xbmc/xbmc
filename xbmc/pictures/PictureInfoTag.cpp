@@ -53,7 +53,7 @@ bool CPictureInfoTag::Load(const CStdString &path)
   DllLibExif exifDll;
   if (path.IsEmpty() || !exifDll.Load())
     return false;
- 
+
   /* Its possible that exiftime and resolution were already set externally */
   /* Retrieve them so they can be used if not found in file */
   if (m_isExternallyLoaded){
@@ -68,9 +68,9 @@ bool CPictureInfoTag::Load(const CStdString &path)
   /* put the externally set metadata back in. */
   if (m_isExternallyLoaded){
     if ((GetInfo(TranslateString("exiftime")) == "") && (exiftime != "")) 
-	  SetInfo(TranslateString("exiftime"),exiftime);
+      SetInfo(TranslateString("exiftime"),exiftime);
 	if ((GetInfo(TranslateString("resolution")) == "") && (resolution != "")) 
-	  SetInfo(TranslateString("resolution"),resolution);  
+      SetInfo(TranslateString("resolution"),resolution);  
   }
   
   return m_isLoaded;
