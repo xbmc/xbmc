@@ -69,7 +69,7 @@ bool CPictureInfoTag::Load(const CStdString &path)
   if (m_isExternallyLoaded){
     if ((GetInfo(TranslateString("exiftime")) == "") && (exiftime != "")) 
       SetInfo(TranslateString("exiftime"),exiftime);
-	if ((GetInfo(TranslateString("resolution")) == "") && (resolution != "")) 
+    if ((GetInfo(TranslateString("resolution")) == "") && (resolution != "")) 
       SetInfo(TranslateString("resolution"),resolution);  
   }
   
