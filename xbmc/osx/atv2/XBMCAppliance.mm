@@ -357,6 +357,24 @@ static id XBMCAppliance$controllerForIdentifier(XBMCAppliance* self, SEL _cmd, i
   return menuController;
 }
 
+// helper function. If the given class responds to the selector
+// we hook via MSHookMessageEx
+// bCheckSuperClass <- indicates if the hookClass or ist superclass should be checked for hookSelector
+// return true if we hooked - else false
+static BOOL safeHook(Class hookClass, SEL hookSelector, IMP ourMethod, IMP *theirMethod, BOOL bCheckSuperClass = true)
+{
+  Class checkClass = class_getSuperclass(hookClass);
+  if (!bCheckSuperClass || !checkClass)
+    checkClass = hookClass;
+
+  if (class_respondsToSelector(checkClass, hookSelector))
+  {
+    MSHookMessageEx(hookClass, hookSelector, ourMethod, theirMethod);
+    return TRUE;
+  }
+  return FALSE;
+}
+
 // SECTIONCOMMENT
 // c'tor - this sets up our class at runtime by 
 // 1. subclassing from the base classes
@@ -370,20 +388,12 @@ static __attribute__((constructor)) void initApplianceRuntimeClasses()
 
   // and hook up our methods (implementation of the base class methods)
   // XBMCApplianceInfo::key
-  MSHookMessageEx(XBMCApplianceInfoCls,@selector(key), (IMP)&XBMCApplianceInfo$key, nil);
+  safeHook(XBMCApplianceInfoCls,@selector(key), (IMP)&XBMCApplianceInfo$key, nil);
   // XBMCApplianceInfo::name
-  MSHookMessageEx(XBMCApplianceInfoCls,@selector(name), (IMP)&XBMCApplianceInfo$name, nil);
-  
-  //not available in ios4.x - so probe or crash&burn
-  if (class_respondsToSelector(objc_getClass("BRApplianceInfo"),@selector(localizedStringsFileName)))
-  {
-    // XBMCApplianceInfo::localizedStringsFileName
-    MSHookMessageEx(XBMCApplianceInfoCls,@selector(localizedStringsFileName), (IMP)&XBMCApplianceInfo$localizedStringsFileName, nil);
-  }
-  else// else we need to add it
-  {
-    class_addMethod(XBMCApplianceInfoCls,@selector(localizedStringsFileName), (IMP)&XBMCApplianceInfo$localizedStringsFileName, "@@:");
-  }
+  safeHook(XBMCApplianceInfoCls,@selector(name), (IMP)&XBMCApplianceInfo$name, nil);
+  // XBMCApplianceInfo::localizedStringsFileName
+  safeHook(XBMCApplianceInfoCls,@selector(localizedStringsFileName), (IMP)&XBMCApplianceInfo$localizedStringsFileName, nil);
+
   // and register the class to the runtime
   objc_registerClassPair(XBMCApplianceInfoCls);
 
@@ -397,33 +407,21 @@ static __attribute__((constructor)) void initApplianceRuntimeClasses()
 
   // and hook up our methods (implementation of the base class methods)
   // XBMCAppliance::init
-  MSHookMessageEx(XBMCApplianceCls,@selector(init), (IMP)&XBMCAppliance$init, (IMP*)&XBMCAppliance$init$Orig);
+  safeHook(XBMCApplianceCls,@selector(init), (IMP)&XBMCAppliance$init, (IMP*)&XBMCAppliance$init$Orig);
   // XBMCAppliance::identifierForContentAlias
-  MSHookMessageEx(XBMCApplianceCls,@selector(identifierForContentAlias:), (IMP)&XBMCAppliance$identifierForContentAlias, nil);
-
-  // not there in ios6 - probing for getting rid of the syslog warning
-  if (class_respondsToSelector(objc_getClass("BRBaseAppliance"),@selector(handleObjectSelection:userInfo:)))
-  {
-    // XBMCAppliance::handleObjectSelection
-    MSHookMessageEx(XBMCApplianceCls,@selector(handleObjectSelection:userInfo:), (IMP)&XBMCAppliance$handleObjectSelection, nil);
-  }
-
+  safeHook(XBMCApplianceCls,@selector(identifierForContentAlias:), (IMP)&XBMCAppliance$identifierForContentAlias, nil);
+  // XBMCAppliance::handleObjectSelection
+  safeHook(XBMCApplianceCls,@selector(handleObjectSelection:userInfo:), (IMP)&XBMCAppliance$handleObjectSelection, nil);
   // XBMCAppliance::applianceInfo
-  MSHookMessageEx(XBMCApplianceCls,@selector(applianceInfo), (IMP)&XBMCAppliance$applianceInfo, (IMP *)&XBMCAppliance$applianceInfo$Orig);
+  safeHook(XBMCApplianceCls,@selector(applianceInfo), (IMP)&XBMCAppliance$applianceInfo, (IMP *)&XBMCAppliance$applianceInfo$Orig);
   // XBMCAppliance::topShelfController
-  MSHookMessageEx(XBMCApplianceCls,@selector(topShelfController), (IMP)&XBMCAppliance$topShelfController, nil);
+  safeHook(XBMCApplianceCls,@selector(topShelfController), (IMP)&XBMCAppliance$topShelfController, nil);
   // XBMCAppliance::applianceCategories
-  MSHookMessageEx(XBMCApplianceCls,@selector(applianceCategories), (IMP)&XBMCAppliance$applianceCategories, nil);
-  
-  // not there on ios 4.x - probing ...
-  if (class_respondsToSelector(objc_getClass("BRBaseAppliance"),@selector(initWithApplianceInfo:)))
-  {
-    // XBMCAppliance::initWithApplianceInfo
-    MSHookMessageEx(XBMCApplianceCls,@selector(initWithApplianceInfo:), (IMP)&XBMCAppliance$initWithApplianceInfo, (IMP*)&XBMCAppliance$initWithApplianceInfo$Orig);
-  }
-
+  safeHook(XBMCApplianceCls,@selector(applianceCategories), (IMP)&XBMCAppliance$applianceCategories, nil);  
+  // XBMCAppliance::initWithApplianceInfo
+  safeHook(XBMCApplianceCls,@selector(initWithApplianceInfo:), (IMP)&XBMCAppliance$initWithApplianceInfo, (IMP*)&XBMCAppliance$initWithApplianceInfo$Orig);
   // XBMCAppliance::controllerForIdentifier
-  MSHookMessageEx(XBMCApplianceCls,@selector(controllerForIdentifier:args:), (IMP)&XBMCAppliance$controllerForIdentifier, nil);
+  safeHook(XBMCApplianceCls,@selector(controllerForIdentifier:args:), (IMP)&XBMCAppliance$controllerForIdentifier, nil);
 
   // and register the class to the runtime
   objc_registerClassPair(XBMCApplianceCls);
