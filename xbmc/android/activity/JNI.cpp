@@ -19,11 +19,13 @@
  */
 #include <string>
 #include <jni.h>
+#include "Intents.h"
 
 extern "C"{
 
   static void jni_ReceiveIntent(JNIEnv *env, jobject thiz, jobject intent)
   {
+     CAndroidIntents::getInstance().ReceiveIntent(env, intent);
   }
 
   static JNINativeMethod jniMethods[] =
